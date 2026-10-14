@@ -1,6 +1,6 @@
 # 固定 SIG_TIME：900L 骨干方差形状梯度最小预登记
 
-状态 LOCAL_VERIFIED / NOT_LAUNCHED。代码/config 6907495c3c35147a08a5daa5c30f85fce9060ba8；独立新增包P0/P1 PASS，本地11负例/可微分/尺度不变/W无依赖与入口依赖/REMOTE/INSPECT compile PASS。真实checkpoint无query smoke为发布首步，PASS立即继续，不设新审批。
+当前状态 ANALYZED / VERIFIED，源资格PASS，完整结果见[final_analysis.md](final_analysis.md)。以下保留预登记历史。原预登记状态 LOCAL_VERIFIED / NOT_LAUNCHED。代码/config 6907495c3c35147a08a5daa5c30f85fce9060ba8；独立新增包P0/P1 PASS，本地11负例/可微分/尺度不变/W无依赖与入口依赖/REMOTE/INSPECT compile PASS。真实checkpoint无query smoke为发布首步，PASS立即继续，不设新审批。
 
 源依据是已完成BF的936保存矩阵拆分（结果b6014d5ae）：原归一化目标的终轮径向项占85.92%至96.54%，径向项12/12下降，加权角向项12/12上升；纯形状cos未全面改善。新问题是直接RAW方差向量角度目标是否传递真实t1/t2梯度，且与同批身份监督兼容。既有目标负结果只作已知上下文，不用来选父权重、阈值或参数。
 
@@ -17,3 +17,6 @@
 普通N607既有CVS-RFFI/fullFP32，CUDA_VISIBLE_DEVICES空，OMP/MKL/OpenBLAS2线程，CPU-only不分配GPU、不占用/更改健康GPU任务；每GPU全owner最多3进程规则保持。CWD PROJECT/releases/cvs_source_variance_angle_20261015_r01，入口 python -u -m experiments.cvs_source_variance_angle.audit；不可变根 PROJECT/runs/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01，单owner codex/root/source-variance-angle-20261015。本地verifiedPython经原runner调用 experiments.cvs_source_variance_angle.publish --output local_artifacts/source_variance_angle_delivery_r01。完整路径/config/seed/来源见experiment.json。
 
 只一次普通N607 preflight、单archive本地/远端SHA比较、remotecompile和真实CPnoquery smoke，发布后独立PID/CWD/argv/loggrowth核实。技术停止限run-owned角色/query/来源错误、非有限或不可识别方向、状态更新、预算/产物/独立复算错误、输出冲突/不可启动；保留partial/failure、不自动重试、不碰其他任务。源资格FAIL保留负结果，不改规则重跑。预期preflight/submit、row resolved_config/actual_source_gradients/analysis/completion及顶层source_qualification/independent_artifact_recount/analysis/completion；本run明确只做源诊断，不训练、不产生目标预测或truth评分。
+
+
+源诊断已完成：真实900L/10矩阵/30向量独立复算VERIFIED，两层ANGLE对同批CE全局cos0.646206/0.593616、均5/5非零，源资格PASS。当前无新训练或目标性能结果；固定02/03同公式源扩展决定见source_extension_decision.json，尚未实现/发布。

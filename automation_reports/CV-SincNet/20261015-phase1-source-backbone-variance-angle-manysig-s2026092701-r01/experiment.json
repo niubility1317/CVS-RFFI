@@ -33,7 +33,8 @@
     "config_paths": [
       "experiments/cvs_source_variance_angle/design.py"
     ],
-    "reused_parent_execution": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07"
+    "reused_parent_execution": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07",
+    "execution_commit": "30047816ba3beaa581a18cc0384ee947413fff6d"
   },
   "data": {
     "dataset": "ManySig",
@@ -216,7 +217,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/backbone-fishr50-20261014",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -254,11 +255,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "feature_difference_min": 1e-06,
+            "feature_difference_min": 0.000001,
             "actual_extra_batches": 650,
             "gradient_batches": 52,
             "all_candidate_gradient_parameters_nonzero_at": [
@@ -462,5 +463,18 @@
     "One ordinarypreflight/archiveSHA/remotecompile/realCPnoquerysmoke, postlaunch PID/CWD/argv/loggrowth; second independentrecountprocess aftersavedartifacts",
     "On sourceFAIL no seedextension/training ofthisformula; sourcePASS onlyallows separatelyregistered remainingseed diagnostic, never automatic training or targetaccess"
   ],
-  "registered_at": "2026-10-14T20:05:56+00:00"
+  "registered_at": "2026-10-14T20:05:56+00:00",
+  "status": "ANALYZED",
+  "result": {
+    "status": "VERIFIED",
+    "source_qualification": "PASS",
+    "source_packets": 900,
+    "gradient_batches": 5,
+    "actual_matrices": 10,
+    "saved_vectors": 30,
+    "head_fit_updates": 0,
+    "new_training_epochs": 0,
+    "query_read": false,
+    "remaining_source_decision": "source_extension_decision.json"
+  }
 }

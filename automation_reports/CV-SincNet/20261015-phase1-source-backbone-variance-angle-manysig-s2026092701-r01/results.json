@@ -1,0 +1,262 @@
+{
+  "status": "VERIFIED",
+  "analysis": {
+    "status": "ANALYZED",
+    "config": {
+      "schema": "source_backbone_variance_angle_v1",
+      "run_id": "20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01",
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "source_config_ref": {
+        "run_id": "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+        "row_id": "SIG_TIME-s2026092701"
+      },
+      "role": "L_s",
+      "source_pool_count": 6300,
+      "source_packets": 900,
+      "cohort_indices": [
+        0,
+        1,
+        2,
+        3,
+        4
+      ],
+      "cohort_packets": 180,
+      "cohort_definition": "First five existing deterministic BF L180 cohorts; TX/day/RX2 each",
+      "source_only": true,
+      "query_read": false,
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "V_forward": false,
+      "V_gradient": false,
+      "V_builder": "Shared VALIDATED_ONCE source builder returns V; discard without forward",
+      "parameters": [
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight"
+      ],
+      "classifier": "Existing default cosine6x160scale30 unchanged",
+      "objective": "RAW within-RX unbiased CE-gradient variance vectors; mean ten pairwise 1-cos, mean t1/t2",
+      "variance_norm_epsilon": 1e-15,
+      "label_smoothing": 0.01,
+      "auxiliary_W": "Original W constant in per-packet CE derivative graph; never fitted",
+      "main_CE_gradient": "Mean actual same-L180 per-packet CE derivative matrices",
+      "compare": "Original normalized RAW variance objective, unweighted derivatives for both",
+      "checkpoint_epoch": 50,
+      "checkpoint_parent_run": "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "checkpoint_parent_execution": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07",
+      "model_mode": "eval; actual t1/t2 parameter derivatives only; state never updated",
+      "extra_training_epochs": 0,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "qualification": {
+        "source_only": true,
+        "sample_count": 900,
+        "cohorts": 5,
+        "all_layer_cohort_gradients_nonzero": true,
+        "nonzero_floor": 1e-12,
+        "aggregate_angle_CE_cosine_min": 0,
+        "both_t1_t2_required": true,
+        "no_parameter_update": true,
+        "no_automatic_training_release": true,
+        "on_fail": "Do not expand this fixed RAW-angle formula or train it",
+        "on_pass": "Only a separately registered remaining-seed source diagnostic may follow"
+      },
+      "output_root": "PROJECT/runs/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01/SIG_TIME-s2026092701",
+      "launch_owner": "codex/root/source-variance-angle-20261015"
+    },
+    "source_packets": 900,
+    "gradient_summary": [
+      {
+        "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "cohorts": 5,
+        "RAW": {
+          "global_gradient": {
+            "CE_norm": 0.044355681880036434,
+            "auxiliary_norm": 7.877177249890184,
+            "auxiliary_over_CE": 177.5911656863861,
+            "cosine": 0.5905876061237691
+          },
+          "nonzero_cohorts": 5
+        },
+        "ANGLE": {
+          "global_gradient": {
+            "CE_norm": 0.044355681880036434,
+            "auxiliary_norm": 1.1078301040132672,
+            "auxiliary_over_CE": 24.97605846776258,
+            "cosine": 0.6462064392913733
+          },
+          "nonzero_cohorts": 5
+        }
+      },
+      {
+        "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "cohorts": 5,
+        "RAW": {
+          "global_gradient": {
+            "CE_norm": 0.0374142159134536,
+            "auxiliary_norm": 6.084594709718247,
+            "auxiliary_over_CE": 162.6278825084322,
+            "cosine": 0.5899775838102156
+          },
+          "nonzero_cohorts": 5
+        },
+        "ANGLE": {
+          "global_gradient": {
+            "CE_norm": 0.0374142159134536,
+            "auxiliary_norm": 0.8049108547010474,
+            "auxiliary_over_CE": 21.51350322462894,
+            "cosine": 0.5936163800507323
+          },
+          "nonzero_cohorts": 5
+        }
+      }
+    ],
+    "qualification": {
+      "status": "PASS",
+      "fixed_rules": {
+        "source_only": true,
+        "sample_count": 900,
+        "cohorts": 5,
+        "all_layer_cohort_gradients_nonzero": true,
+        "nonzero_floor": 1e-12,
+        "aggregate_angle_CE_cosine_min": 0,
+        "both_t1_t2_required": true,
+        "no_parameter_update": true,
+        "no_automatic_training_release": true,
+        "on_fail": "Do not expand this fixed RAW-angle formula or train it",
+        "on_pass": "Only a separately registered remaining-seed source diagnostic may follow"
+      },
+      "source_only": true,
+      "no_automatic_training_release": true,
+      "target_metrics_used": false,
+      "sample_scope": "Fixed first five L180 cohorts only"
+    },
+    "cohort_losses": [
+      {
+        "cohort": 0,
+        "RAW": 3.5005638609040552,
+        "ANGLE": 0.38396213764846127,
+        "source_CE_mean": 0.1010836735367775
+      },
+      {
+        "cohort": 1,
+        "RAW": 3.6760728269407092,
+        "ANGLE": 0.4812298394738884,
+        "source_CE_mean": 0.09959357231855392
+      },
+      {
+        "cohort": 2,
+        "RAW": 2.945851135558839,
+        "ANGLE": 0.4784014139331577,
+        "source_CE_mean": 0.09715692698955536
+      },
+      {
+        "cohort": 3,
+        "RAW": 3.6859283332506734,
+        "ANGLE": 0.43036924976355373,
+        "source_CE_mean": 0.09515972435474396
+      },
+      {
+        "cohort": 4,
+        "RAW": 2.54247862497874,
+        "ANGLE": 0.5222669671825869,
+        "source_CE_mean": 0.0964106023311615
+      }
+    ],
+    "model_parameters_buffers_unchanged": true,
+    "new_model_parameters": 0,
+    "head_updates": 0,
+    "optimizer_steps": 0,
+    "query_read": false,
+    "U_truth_read": false,
+    "V_forward": false,
+    "seconds": 26.18630814552307,
+    "limitation": "One frozen terminal seed and fixed900-L subset; no training, U, target, generalization or new-TX benefit claim"
+  },
+  "qualification": {
+    "status": "PASS",
+    "fixed_rules": {
+      "source_only": true,
+      "sample_count": 900,
+      "cohorts": 5,
+      "all_layer_cohort_gradients_nonzero": true,
+      "nonzero_floor": 1e-12,
+      "aggregate_angle_CE_cosine_min": 0,
+      "both_t1_t2_required": true,
+      "no_parameter_update": true,
+      "no_automatic_training_release": true,
+      "on_fail": "Do not expand this fixed RAW-angle formula or train it",
+      "on_pass": "Only a separately registered remaining-seed source diagnostic may follow"
+    },
+    "source_only": true,
+    "no_automatic_training_release": true,
+    "target_metrics_used": false,
+    "sample_scope": "Fixed first five L180 cohorts only"
+  },
+  "recount": {
+    "status": "VERIFIED",
+    "source_packets": 900,
+    "actual_matrices": 10,
+    "gradient_batches": 5,
+    "layer_records": 10,
+    "saved_vectors": 30,
+    "model_forward": 0,
+    "query_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0
+  },
+  "completion": {
+    "status": "ANALYZED",
+    "models": 1,
+    "source_packets": 900,
+    "forward_packets": 900,
+    "gradient_batches": 5,
+    "layer_records": 10,
+    "saved_vectors": 30,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0
+  },
+  "preflight": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "forbidden_roles": 3,
+      "invalid_directions": 2,
+      "config_negatives": 6,
+      "differentiable": true,
+      "scale_invariant": true,
+      "auxiliary_W_gradient_absent": true,
+      "query_read": false,
+      "real_IQ_or_checkpoint_read": false,
+      "optimizer_steps": 0
+    },
+    "actual_audit_import": true,
+    "real_checkpoint_no_query_smoke": true,
+    "synthetic_IQ_packets": 2,
+    "training_inherits_checkpoint": false,
+    "source_only": true,
+    "query_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0
+  },
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 2639945,
+    "cwd": "PROJECT/releases/cvs_source_variance_angle_20261015_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_source_variance_angle.audit"
+    ],
+    "log": "PROJECT/releases/cvs_source_variance_angle_20261015_r01/dispatcher.stdout.log",
+    "commit": "30047816ba3beaa581a18cc0384ee947413fff6d",
+    "run_id": "20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01"
+  },
+  "failure": null,
+  "log_bytes": 695
+}

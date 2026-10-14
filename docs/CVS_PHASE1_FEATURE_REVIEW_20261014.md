@@ -404,3 +404,8 @@ CONF_FEATURE_MT02/03四个原worker仍live，最近完成23/27/27/26轮且loggro
 ## 直接形状目标的最小源端证伪
 
 新增20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01，固定原BF SIG seed01终轮模型/前5个平衡L180，共900源样本。只比较同批默认CE与原RAW/纯角度目标的真实t1/t2导数，不训练/换头/访问query；两层汇总cos>=0且各5/5非零才源PASS，无自动训练发布。代码6907495c3c35147a08a5daa5c30f85fce9060ba8，本地11负例/实际可微公式和一次独立P0P1 PASS，当前未发布。见[最小预登记](../automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01/report.md)。
+
+
+## 方差形状目标900L真实源检验完成
+
+20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01 已ANALYZED/VERIFIED，执行30047816ba3beaa581a18cc0384ee947413fff6d，实际900L/10矩阵/30向量独立复算；t1/t2 ANGLE对同批CE全局cos0.646206/0.593616、5/5批非零，两层资格PASS，无模型/头/optimizer更新或query。旧RAW/新ANGLE的未加权导数幅度差异明显，不能仅据cos宣称几何机制更优或推断训练贡献。固定02/03同900L源扩展决定已写入原run source_extension_decision.json，当前未实现/发布，不自动开始训练。完整[源结果](../automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01/final_analysis.md)。

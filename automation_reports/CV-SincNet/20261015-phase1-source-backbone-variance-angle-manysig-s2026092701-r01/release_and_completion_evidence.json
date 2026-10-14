@@ -1,0 +1,84 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "30047816ba3beaa581a18cc0384ee947413fff6d",
+  "code_commit": "6907495c3c35147a08a5daa5c30f85fce9060ba8",
+  "source_only": true,
+  "ordinary_preflight": "PASS",
+  "archive_transport": "Single archive local/remote SHA comparison passed",
+  "remote_compile": "PASS",
+  "real_checkpoint_no_query_smoke": "PASS",
+  "initial_submit": {
+    "status": "SUBMITTED",
+    "pid": 2639945,
+    "cwd": "PROJECT/releases/cvs_source_variance_angle_20261015_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_source_variance_angle.audit"
+    ],
+    "log": "PROJECT/releases/cvs_source_variance_angle_20261015_r01/dispatcher.stdout.log",
+    "commit": "30047816ba3beaa581a18cc0384ee947413fff6d",
+    "run_id": "20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01"
+  },
+  "initial_independent_process_observation": {
+    "status": "VERIFIED",
+    "process_live": true,
+    "basis": "First publisher INSPECT checked actual PID/CWD/argv; stdout records VERIFIED process_live true, log_bytes0"
+  },
+  "final_independent_process_observation": {
+    "status": "VERIFIED",
+    "process_live": false,
+    "completion": {
+      "status": "ANALYZED",
+      "models": 1,
+      "source_packets": 900,
+      "forward_packets": 900,
+      "gradient_batches": 5,
+      "layer_records": 10,
+      "saved_vectors": 30,
+      "source_only": true,
+      "query_read": false,
+      "U_truth_read": false,
+      "head_updates": 0,
+      "optimizer_steps": 0
+    },
+    "failure": null
+  },
+  "log_bytes_initial": 0,
+  "log_bytes_final": 695,
+  "source_progress": [
+    {
+      "source_cohorts": 1,
+      "source_packets": 180
+    },
+    {
+      "source_cohorts": 2,
+      "source_packets": 360
+    },
+    {
+      "source_cohorts": 3,
+      "source_packets": 540
+    },
+    {
+      "source_cohorts": 4,
+      "source_packets": 720
+    },
+    {
+      "source_cohorts": 5,
+      "source_packets": 900
+    }
+  ],
+  "independent_recount": {
+    "status": "VERIFIED",
+    "source_packets": 900,
+    "actual_matrices": 10,
+    "gradient_batches": 5,
+    "layer_records": 10,
+    "saved_vectors": 30,
+    "model_forward": 0,
+    "query_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0
+  }
+}

@@ -82241,25 +82241,25 @@
     },
     {
       "direction": "骨干梯度方差形状的源端证伪",
-      "status": "SOURCE_ANGLE_PROBE_IMPLEMENTED_CHECKED_P0P1_PASS_NOT_LAUNCHED",
-      "source_evidence": "Actual1872views show radial dominates and amplitude-normalized angular contribution notimproved universally; original normalization alreadyactive",
+      "status": "FIRST_SOURCE_PASS_REMAINING_SOURCE_FIXED_NOT_IMPLEMENTED",
+      "source_evidence": "ActualfrozenSIG01 fiveL180/900 uniqueL, unweightedANGLEsamepacketCEcos .646206/.593616,5/5 nonzeroeach,30vectors secondprocessrecount; no model/headupdates. Magnitudes RAW178/163 vsANGLE25/22 timesCE differ, no causaltrainingclaim",
       "hypothesis": "If a direct unweighted RX variance-vector angle objective has stable source identity-compatible derivatives, test it separately; no assumption oftargetgain",
       "location": "Actual t1/t2 backbone derivative statistics, unchanged ftheta/default joint head",
       "path_into_z": "Existing ftheta gradients only, no new classifier or architecture",
       "minimum_control": "Before any newtraining, frozenSIG source-only same-L CE versus potential angleloss derivative; later single-seed matched ZERO control only if sourceevidence warrants",
       "cost": "Reuse936savedmatrices now; newgradientcheck/training cost must be fixed before launch, <=50 permodel",
-      "failure": "No newtraining released; do not scan oldFishrweights, repeat normalization, fithead or selecttargets"
+      "failure": "Source01PASS only; fixed02/03 same900L sourceextension next, no new training release; rejectfixedformula if remainingseedsourceFAIL"
     }
   ],
   "next_actions_max2": [
-    "继续已固定CONF_FEATURE_MT02/03四模型scratch50，逐row自动默认头clean/独立评分并完整三seed交付；当前原PID实际23至27轮，保持配方",
-    "下一新DG训练前，先以合法源同图默认CE检验纯方差形状目标的真实t1/t2梯度与身份监督兼容性；原目标已有归一化，不重复SAM/feature-sharpness，不扫Fishr系数或据目标分数选父权重"
+    "完成既定CONF_FEATURE_MT02/03四模型scratch50自动clean与独立评分，保留完整3seed/配对差/负结果并上传；不据结果改机制或训练预算",
+    "按已固定源PASS决定扩展RAW方差形状目标的02/03同900L源诊断，默认头不拟合、同源判据不改；明确梯度幅度差异，未源验证前不发布新训练"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "继续已固定CONF_FEATURE_MT02/03四模型scratch50，逐row自动默认头clean/独立评分并完整三seed交付；当前原PID实际23至27轮，保持配方",
-    "下一新DG训练前，先以合法源同图默认CE检验纯方差形状目标的真实t1/t2梯度与身份监督兼容性；原目标已有归一化，不重复SAM/feature-sharpness，不扫Fishr系数或据目标分数选父权重"
+    "完成既定CONF_FEATURE_MT02/03四模型scratch50自动clean与独立评分，保留完整3seed/配对差/负结果并上传；不据结果改机制或训练预算",
+    "按已固定源PASS决定扩展RAW方差形状目标的02/03同900L源诊断，默认头不拟合、同源判据不改；明确梯度幅度差异，未源验证前不发布新训练"
   ],
   "current_priority": {
     "at": "2026-10-14T18:08:17.724Z",
@@ -83239,7 +83239,7 @@
       "report": "automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/source_variance_decomposition.md"
     },
     "source_variance_angle": {
-      "status": "PREREGISTERED_CHECKS_P0P1_PASS_NOT_LAUNCHED",
+      "status": "ANALYZED_VERIFIED_SOURCE_PASS",
       "run_id": "20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01",
       "release": "cvs_source_variance_angle_20261015_r01",
       "code_commit": "6907495c3c35147a08a5daa5c30f85fce9060ba8",
@@ -83263,7 +83263,25 @@
         "on_fail": "Do not expand this fixed RAW-angle formula or train it",
         "on_pass": "Only a separately registered remaining-seed source diagnostic may follow"
       },
-      "report": "automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01/report.md"
+      "report": "automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01/report.md",
+      "execution_commit": "30047816ba3beaa581a18cc0384ee947413fff6d",
+      "source_qualification": "PASS",
+      "actual_source_packets": 900,
+      "actual_matrices": 10,
+      "saved_vectors": 30,
+      "new_model_forwards": 900,
+      "global_ANGLE_CE_cosines": [
+        0.6462064392913733,
+        0.5936163800507323
+      ],
+      "actual_nonzero_cohorts": [
+        5,
+        5
+      ],
+      "source_model_state_unchanged": true,
+      "remaining_source_run": "20261015-phase1-source-backbone-variance-angle-manysig-s0203-m2-r01",
+      "remaining_source_state": "SOURCE_DECISION_FROZEN_NOT_IMPLEMENTED_NOT_LAUNCHED",
+      "result_ref": "automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01/final_analysis.md"
     }
   }
 }
