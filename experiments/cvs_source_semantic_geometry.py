@@ -1,4 +1,4 @@
-"""No-fit geometry analysis of the registered balanced L90 feature witness.
+"""No-fit geometry analysis of balanced visible source feature witnesses.
 
 The margin is fixed before inspecting geometry. This is a source result
 analysis, not a training objective, model selection, or transfer evaluation.
@@ -10,30 +10,39 @@ MARGIN = .1
 
 
 def measure(features, labels, receivers, days, physical_ids):
-    if features.shape != (90, 160) or not torch.isfinite(features).all():
-        raise ValueError('Actual finite balanced source L90 joint160 required')
-    if any(len(v) != 90 for v in (labels, receivers, days, physical_ids)):
+    count = len(features)
+    if count not in (90, 6300) or features.shape != (count, 160) or not torch.isfinite(features).all():
+        raise ValueError('Actual finite balanced source L90 or full L6300 joint160 required')
+    if any(len(v) != count for v in (labels, receivers, days, physical_ids)):
         raise ValueError('Visible L metadata must match each feature')
     keys = [(int(y), int(r), int(d)) for y, r, d in zip(labels, receivers, days)]
     expected = {(y, r, d) for y in range(6) for r in (1, 3, 4, 6, 8)
                 for d in (1, 2, 3)}
-    if set(keys) != expected or len(set(keys)) != 90:
-        raise ValueError('One observed L packet per TX/RX/day cell required')
-    if len({tuple(int(v) for v in pid) for pid in physical_ids}) != 90:
+    if set(keys) != expected:
+        raise ValueError('Original source TX/RX/day cells required')
+    if len({tuple(int(v) for v in pid) for pid in physical_ids}) != count:
         raise ValueError('Physical packets must be distinct')
     if (features.float().norm(dim=1) <= 1e-4).any():
         raise ValueError('Undefined normalized feature geometry')
-    index = {key: i for i, key in enumerate(keys)}
+    index = {}
+    offsets = []
+    for i, key in enumerate(keys):
+        indices = index.setdefault(key, [])
+        offsets.append(len(indices))
+        indices.append(i)
+    if any(len(indices) != count // 90 for indices in index.values()):
+        raise ValueError('Equal original source packet count per cell required')
     triplets = []
     for i, (y, r, day) in enumerate(keys):
         for reference_rx in (1, 3, 4, 6, 8):
             if reference_rx == r:
                 continue
-            p = index[y, reference_rx, day]
+            p = index[y, reference_rx, day][offsets[i]]
             for negative_y in range(6):
                 if negative_y != y:
-                    triplets.append((i, p, index[negative_y, reference_rx, day]))
-    if len(triplets) != 1800:
+                    triplets.append((i, p, index[negative_y, reference_rx, day][offsets[i]]))
+    relation_count = count * 20
+    if len(triplets) != relation_count:
         raise ValueError('Fixed all-reference source relation count differs')
     # A detached feature copy measures local derivative without modifying any
     # model, saved feature, optimizer, teacher, or training RNG.
@@ -58,18 +67,19 @@ def measure(features, labels, receivers, days, physical_ids):
                     margin_unsatisfied_rate=float((g < MARGIN).float().mean()),
                     hinge_mean=float(l.mean()))
 
-    result = dict(status='SOURCE_GEOMETRY_COMPLETE', source_count=90,
+    result = dict(status='SOURCE_GEOMETRY_COMPLETE', source_count=count,
                   feature='actualjoint160', margin=MARGIN,
                   relation_rule='Same day; anchor RX differs from one reference RX; '
-                                'positive and all five other-TX negatives share reference RX.',
+                                'positive and all five other-TX negatives share reference RX; '
+                                'same fixed within-cell ordinal, no mining or margin scan.',
                   metadata='Observed visible L labels/RX/day and matched physical IDs',
-                  overall=summary(torch.ones(1800, dtype=torch.bool, device=x.device)),
+                  overall=summary(torch.ones(relation_count, dtype=torch.bool, device=x.device)),
                   local_feature_gradient_norm=float(gradient.norm()),
                   local_feature_gradient_nonzero_packets=int((gradient.norm(dim=1) > 0).sum()),
                   extra_IQ_forwards=0, optimizer_updates=0, head_fit_updates=0,
                   U_truth_read=False, target_access=False,
-                  limitation='90 seen-source packets, deterministic first packet per cell; '
-                             '1800 correlated relations, not independent samples. '
+                  limitation='Seen-source packets, deterministic within-cell ordinal pairing; '
+                             '20 correlated relations per anchor, not independent samples. '
                              'Nonzero hinge is only potential supervision, not efficacy, '
                              'novelty, cumulative training effect or Phase2 evidence.')
     anchors = ids[:, 0].cpu().tolist()
