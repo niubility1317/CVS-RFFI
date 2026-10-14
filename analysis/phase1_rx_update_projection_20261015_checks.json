@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "executed_by": "adamw_counterfactual",
+  "torch": "2.10.0+cu128",
+  "device": "cpu",
+  "command": "experiments.cvs_rx_update_projection20.checks_projection",
+  "closed_form_solution": [
+    -0.5,
+    0.5
+  ],
+  "closed_form_projection_norm": 3.5355339059327378,
+  "closed_form_retained_ratio": 0.19611613513818402,
+  "halfspace_closed_form": true,
+  "conflicting_cone": true,
+  "zero_and_rank_deficient_gradients": true,
+  "near_parallel_and_near_opposite": true,
+  "positive_row_scale_invariance": true,
+  "input_and_RNG_preserved": true,
+  "nonfinite_shape_role_negatives": true,
+  "FP64_and_cast_risk_separate": true,
+  "actual_parameter_addition_not_measured": true,
+  "data_or_checkpoint_reads": 0,
+  "actual_optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "remote_actions": 0,
+  "limitation": "Pure mathematical primitive; no source-learning utility, novelty proof, production integration or generalization conclusion. Real source stage remains unlaunched."
+}

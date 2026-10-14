@@ -146,3 +146,6 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 
 本版跨RX loss-gap闭环为负结果：CROSS_GAP81.0853%，相对BASE_SSL−0.0480百分点，净−242/504000；三seed未到84%。15模型全部20轮/4440更新/默认头truth-last，270CM与300源epoch完整。source V180真实initial/final表明17selected张量均变化，但身份间隔相对SSL两降一升；feature-only/W删除接口PASS只证明解耦结构。全局shadow容差受unusedHz参数放大，原PASS不证明紧精度。保留SIG_TIME/CENTER历史正路线，关闭本版loss-gap参数扫描；下一个最多两动作：同身份跨RX分支证据重组的source原型，以及真实feature更新采集。新主训练尚未发布，84%目标active。
+
+
+2026-10-15：SIG_TIME＋CENTER25K 同TX/eq/day跨RX PA完整交换源原型已ANALYZED/VERIFIED，run `20261015-phase1-SIGTIME-PA-evidence-recomposition-sourceLV-s2026092701-r01`，执行`047dfc2f4e88d18c5ebe0f584f88f8fc48ccfd64`。own BASE_CE第一seed initial/final20×4L90×ZERO/SELF/SWAP_PA，固定gate0/8；初始梯度相对差.004381至.005784，末态1.053592至10.727818但V身份间隔最高3.59e−7、preWCE减少最高8.70e−7均低于预登记条件。真实4项joint含reference、auxW及3gainNone、2至6Sinc核辅助变化均核实；360L/180V/5404forwards/48tempAdamW，0realtrain/headfit/EMA/U/target，原状态不变，进程自然退出。关闭该固定完整交换变体，不扫描混合/权重/U donor，不证明中期或其他重组无效。新独立假设为源RX身份风险约束下的AdamW实际feature位移，仅设计/纯数学原型，真实源验证和主训练未发布；V不得作投影梯度。SIG_TIME/CENTER/COMPACT/LONG历史正路线独立保留，84%默认头clean三seed仍active。详见[源原型完整报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-PA-evidence-recomposition-sourceLV-s2026092701-r01/report.md)和[下一独立机制方案](../analysis/phase1_rx_update_projection_20261015.md)。

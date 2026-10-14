@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Current user: 结合报告和之前实验优化探索；training-mechanism goal. Source-only assay precedes any separately preregistered E20 training.",
   "code": {
-    "commit": "release_commit.txt (resolved once from actual Git HEAD at launch)",
+    "commit": "047dfc2f4e88d18c5ebe0f584f88f8fc48ccfd64",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account; CVS-RFFI Python; CPU 2 threads; immutable E20 runtime plus this committed overlay",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_PA_evidence_recomposition_sourceLV_20261015_r01"
@@ -157,5 +157,25 @@
     "Four real branch outputs captured call-locally; no joint subtraction or fake normalization.",
     "All original healthy tasks/historical outputs preserved. Current source assay requires no target prediction or truth-side scoring."
   ],
-  "registered_at": "2026-10-14T20:05:20+00:00"
+  "registered_at": "2026-10-14T20:05:20+00:00",
+  "result": {
+    "status": "SOURCE_SCREEN_NOT_PASSED",
+    "qualified_cells": 0,
+    "gate_result": {
+      "passed": false,
+      "qualified_cells": [],
+      "qualified_by_state": {
+        "INITIAL": 0,
+        "FINAL20": 0
+      }
+    },
+    "actual_optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "training_matrix_launched": false,
+    "evidence_ref": "result_evidence.json",
+    "decision": "CLOSE_FIXED_PA_FULL_SWAP_VARIANT",
+    "goal84_completed": false
+  }
 }
