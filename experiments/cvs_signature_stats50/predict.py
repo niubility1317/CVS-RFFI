@@ -5,7 +5,8 @@ from . import model as api
 from experiments.cvs_feature_multiscale50 import predict as historical
 from experiments.cvs_identity_mixstyle50.predict import baseline as shared_baseline
 
-def source_proof(c):
+def source_proof(c,*,design=None):
+ d=design or globals()['d']
  d.validate(c)
  if c['source_config'] is not None:return historical.source_proof(c['source_config'])
  p=Path(c['output_root']);done=d.read(p/'completion.json');resolved=d.read(p/'resolved_config.json');init=d.read(p/'initialization.json');args=d.read(p/'actual_native_args.json');args=args.get('args',args)
@@ -19,15 +20,17 @@ def source_proof(c):
  from experiments.cvs_phase1_stack.recover import verify_contract
  verify_contract(d.read(p/'source_contract.json'),d.read(d.SOURCE));return p
 
-def own_model(c,device):
+def own_model(c,device,*,design=None):
+ d=design or globals()['d']
  if c['source_config'] is not None:return historical.own_model(c['source_config'],device)
  import torch
- p=source_proof(c);ck=torch.load(p/'final_ssdg.pth',map_location='cpu',weights_only=False)
+ p=source_proof(c,design=d);ck=torch.load(p/'final_ssdg.pth',map_location='cpu',weights_only=False)
  if ck['epoch']!=50 or ck['a1_ema_successful_updates']!=11100 or ck['run_id']!=d.RUN or ck['candidate_id']!=c['row_id'] or ck['checkpoint_selection']!='final_only':raise ValueError('Own checkpoint identity differs')
- model=api.build(c,device);model.load_state_dict(ck['model'],strict=True);return model.eval().requires_grad_(False)
-def baseline(c,ids):return shared_baseline(c,ids,design=d)
-def pipeline():
+ model=api.build(c,device,design=d);model.load_state_dict(ck['model'],strict=True);return model.eval().requires_grad_(False)
+def baseline(c,ids,*,design=None):return shared_baseline(c,ids,design=design or d)
+def pipeline(*,design=None):
+ d=design or globals()['d']
  from experiments.cvs_default_head.pipeline import DefaultPipeline
- return DefaultPipeline(d,source_proof,own_model,baseline)
-def predict(row):return pipeline().predict(row)
-def preflight(row):return pipeline().preflight(row)
+ return DefaultPipeline(d,lambda c:source_proof(c,design=d),lambda c,device:own_model(c,device,design=d),lambda c,ids:baseline(c,ids,design=d))
+def predict(row,*,design=None):return pipeline(design=design).predict(row)
+def preflight(row,*,design=None):return pipeline(design=design).preflight(row)
