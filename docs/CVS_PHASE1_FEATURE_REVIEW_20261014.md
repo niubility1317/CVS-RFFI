@@ -1,3 +1,7 @@
+<!-- CURRENT_TRAINING_PRIORITY_20261014 -->
+
+当前用户要求：固定既有单路 SIG_TIME 网络及默认 cosine 头的联合训练，重心为泛化训练和半监督学习机制，不再新增骨干、分支、层级或签名阶数。当前并行工作为签名身份训练的原样三种子确认，以及独立 SIG_TIME 随机／PAIR 半监督参照；两者不叠加。所有额外头拟合禁止，旧头诊断仅作为历史保留。最近首seed RAW−SIG为+0.0548个百分点、DYNAMIC−SIG为−0.1339个百分点，完整三seed尚待完成，84%未达成。
+
 # Phase1 特征提取复盘与完整实验交付
 
 当前主任务只做Phase1：实际joint160/id_feat_joint增强，默认ResidualPhysicalHead6×160/scale30按原损失与骨干正常联合训练，禁止单独头训练/重训/替换或RX诊断分类头。原頭clean三固定seed均值84%是研究目标；当前仍未达到。历史换头结果仅保留为档案，不能用于本轮主指标或新增fit。Phase2/newTX/未知拒识不在本轮开发范围。
@@ -261,3 +265,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 固定SIG_TIME半监督参照已真实发布 20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01，执行86c22cb76e5eff4a7b106cca769d198879ab22b4：realSIGcheckpoint noquery90/单归档SHA/remotecompile与2samePID/CWD/argv/GPU4/5/loggrowth VERIFIED，3/3epoch且实际采样记录1至4轮均无Ufetch/迭代，原50/33+17不改。旧baseline默认预测复用已评分；暂无新target分数。另SIG有界身份机制首seed仍同PID健康42/41/42epoch，未修改或重启。
+
+
+固定SIG_TIME签名内训练首seed闭环：RAW83.6363%、ZERO83.5815%（+.0548pp，修正588引入496净+92/168000）；DYNAMIC83.4476%（−.1339pp，修正573引入798净−225），DYNAMIC−RAW−.1887pp。4row/3新150model-epochs33300updates＋旧50/11100，200完整源epoch/672000defaultpred/72metrics/8250extraL90/1980实际层cohortgrad/7920向量保存复算VERIFIED，0头拟合。三fθ实际5pool张量全元素更新、export差0/W独立；初态函数同，源特征RAW/DYNAMIC−ZERO L2=1.310938/1.795317。更强gradient/去常量源几何不代表收益；仅n1、完整3seed84未达成。SOURCEPASS决定d56f9b79c9fea83629c525e362d473ff0fcafb1e先于新target数字回收，两候选原样02/03六新已发布同commit、samePID/CWD/argv/GPU/loggrowth VERIFIED（6/6/6/6/6/5），未择优、改参或重跑。报告20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01/final_analysis.md。

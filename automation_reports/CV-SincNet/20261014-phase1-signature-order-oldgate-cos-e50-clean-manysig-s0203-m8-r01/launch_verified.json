@@ -1,0 +1,238 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+  "implementation_commit": "5eda4e0862e8e13cc3a2c79c3c31ef634a2fe72d",
+  "execution_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e",
+  "source_decision_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e",
+  "first_source_qualification": "PASS",
+  "source_decision_before_first_new_target_numeric_results": true,
+  "first_seed_retrained": false,
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "real_checkpoint_no_query_smoke": true,
+    "zero_IQ_packets": 90,
+    "source_checkpoint": "fixedfirstSIG_TIMEZERO final50, provenance verified by original own_model",
+    "training_inherits_checkpoint": false,
+    "query_read": false,
+    "head_fit": false,
+    "optimizer_updates": 0,
+    "clock": {
+      "clock_min": 1,
+      "clock_max": 1,
+      "mean_clock_energy_fraction": 0.5152022242546082
+    },
+    "source_qualification": {
+      "status": "PASS",
+      "source_only": true,
+      "first_run": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "first_execution": "2658815a2fe5ef931f24558a6c6c61146433fd9c",
+      "qualification": {
+        "status": "PASS",
+        "source_only": true,
+        "target_metrics_read_for_decision": false,
+        "final_L_CE": {
+          "SIG_TIME-s2026092701": 0.2471538574040473,
+          "SIG_RAW_ORDER-s2026092701": 0.2484736009626775,
+          "SIG_DYNAMIC_ORDER-s2026092701": 0.24892498952177194
+        },
+        "candidates": [
+          {
+            "arm": "SIG_RAW_ORDER",
+            "actual_L720zL2": 1.3109384775161743,
+            "actual_t1_t2_SIGprojection_gradient_nonzero_17_33_50": true,
+            "passed": true
+          },
+          {
+            "arm": "SIG_DYNAMIC_ORDER",
+            "actual_L720zL2": 1.7953169345855713,
+            "actual_t1_t2_SIGprojection_gradient_nonzero_17_33_50": true,
+            "passed": true
+          }
+        ],
+        "actual_observations": {
+          "SIG_TIME-s2026092701": {
+            "status": "VERIFIED",
+            "steps": 11100,
+            "extra_batches": 2750,
+            "extra_source_packet_forwards": 247500,
+            "U_steps": 3774,
+            "U_packets": 963900,
+            "U_accepted": 15452,
+            "gradient_epochs": [
+              1,
+              17,
+              33,
+              50
+            ],
+            "gradient_batches": 220,
+            "layer_gradient_records": 660,
+            "head_fit_updates": 0,
+            "auxiliary_classW_dependency": false,
+            "default_head_jointly_trained": true,
+            "U_truth_read": false,
+            "source_only": true,
+            "saved_gradient_recount": "VERIFIED"
+          },
+          "SIG_RAW_ORDER-s2026092701": {
+            "status": "VERIFIED",
+            "steps": 11100,
+            "extra_batches": 2750,
+            "extra_source_packet_forwards": 247500,
+            "U_steps": 3774,
+            "U_packets": 963900,
+            "U_accepted": 15445,
+            "gradient_epochs": [
+              1,
+              17,
+              33,
+              50
+            ],
+            "gradient_batches": 220,
+            "layer_gradient_records": 660,
+            "head_fit_updates": 0,
+            "auxiliary_classW_dependency": false,
+            "default_head_jointly_trained": true,
+            "U_truth_read": false,
+            "source_only": true,
+            "saved_gradient_recount": "VERIFIED"
+          },
+          "SIG_DYNAMIC_ORDER-s2026092701": {
+            "status": "VERIFIED",
+            "steps": 11100,
+            "extra_batches": 2750,
+            "extra_source_packet_forwards": 247500,
+            "U_steps": 3774,
+            "U_packets": 963900,
+            "U_accepted": 15428,
+            "gradient_epochs": [
+              1,
+              17,
+              33,
+              50
+            ],
+            "gradient_batches": 220,
+            "layer_gradient_records": 660,
+            "head_fit_updates": 0,
+            "auxiliary_classW_dependency": false,
+            "default_head_jointly_trained": true,
+            "U_truth_read": false,
+            "source_only": true,
+            "saved_gradient_recount": "VERIFIED"
+          }
+        },
+        "fixed_rules": {
+          "final_L_CE_max": 0.5,
+          "feature_difference_min": 0.000001,
+          "actual_extra_batches": 2750,
+          "gradient_batches": 220,
+          "all_candidate_gradient_parameters_nonzero_at": [
+            17,
+            33,
+            50
+          ],
+          "source_only": true,
+          "expansion": "Both candidates must pass same source rules; expand both fixed02/03 unchanged, no target ranking"
+        },
+        "predefined_remaining_seeds": [
+          2026092702,
+          2026092703
+        ],
+        "expand_both_candidates_only_after_both_source_PASS": true,
+        "configuration_changes_for_expansion": false,
+        "head_fit_updates": 0
+      },
+      "remaining_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "configuration_changed": false,
+      "target_metric_read": false,
+      "first_seed_retrained": false
+    }
+  },
+  "workers": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "pid": 2412374,
+      "gpu": 1,
+      "process_live": true,
+      "same_pid": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "epoch": 6,
+      "log_bytes": 37640,
+      "previous_log_bytes": 6558,
+      "log_growth": true
+    },
+    {
+      "row_id": "SIG_RAW_ORDER-s2026092702",
+      "pid": 2412452,
+      "gpu": 2,
+      "process_live": true,
+      "same_pid": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "epoch": 6,
+      "log_bytes": 37745,
+      "previous_log_bytes": 6598,
+      "log_growth": true
+    },
+    {
+      "row_id": "SIG_DYNAMIC_ORDER-s2026092702",
+      "pid": 2412535,
+      "gpu": 0,
+      "process_live": true,
+      "same_pid": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "epoch": 6,
+      "log_bytes": 37826,
+      "previous_log_bytes": 6630,
+      "log_growth": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "pid": 2412706,
+      "gpu": 6,
+      "process_live": true,
+      "same_pid": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "epoch": 6,
+      "log_bytes": 37646,
+      "previous_log_bytes": 6558,
+      "log_growth": true
+    },
+    {
+      "row_id": "SIG_RAW_ORDER-s2026092703",
+      "pid": 2412784,
+      "gpu": 7,
+      "process_live": true,
+      "same_pid": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "epoch": 6,
+      "log_bytes": 37745,
+      "previous_log_bytes": 6598,
+      "log_growth": true
+    },
+    {
+      "row_id": "SIG_DYNAMIC_ORDER-s2026092703",
+      "pid": 2412865,
+      "gpu": 3,
+      "process_live": true,
+      "same_pid": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "epoch": 5,
+      "log_bytes": 32623,
+      "previous_log_bytes": 6630,
+      "log_growth": true
+    }
+  ],
+  "all_owner_capacity_within3": true,
+  "failure": null,
+  "completion": null,
+  "read_at": 1791985041.9066231,
+  "goal_84": false
+}

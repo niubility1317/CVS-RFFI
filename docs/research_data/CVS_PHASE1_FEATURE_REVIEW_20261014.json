@@ -36081,7 +36081,7 @@
       "route": "unchanged signature-training remaining seeds conditional packaging",
       "run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
       "parent_run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
-      "status": "CONDITIONAL_REGISTERED_NOT_LAUNCHED",
+      "status": "RUNNING",
       "implementation_commit": "5eda4e0862e8e13cc3a2c79c3c31ef634a2fe72d",
       "model_seeds": [
         2026092702,
@@ -36094,10 +36094,250 @@
       "source_qualification_negative_tests": 10,
       "native_contexts": 6,
       "first_seed_retrained": false,
-      "source_qualification_pending": true,
+      "source_qualification_pending": false,
       "target_metric_read_for_decision": false,
       "goal_84": false,
-      "report": "automation_reports/CV-SincNet/20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md"
+      "report": "automation_reports/CV-SincNet/20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md",
+      "execution_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e",
+      "source_decision_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e",
+      "launch": {
+        "status": "VERIFIED",
+        "run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+        "implementation_commit": "5eda4e0862e8e13cc3a2c79c3c31ef634a2fe72d",
+        "execution_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e",
+        "source_decision_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e",
+        "first_source_qualification": "PASS",
+        "source_decision_before_first_new_target_numeric_results": true,
+        "first_seed_retrained": false,
+        "real_checkpoint_no_query_smoke": {
+          "status": "PASS",
+          "real_checkpoint_no_query_smoke": true,
+          "zero_IQ_packets": 90,
+          "source_checkpoint": "fixedfirstSIG_TIMEZERO final50, provenance verified by original own_model",
+          "training_inherits_checkpoint": false,
+          "query_read": false,
+          "head_fit": false,
+          "optimizer_updates": 0,
+          "clock": {
+            "clock_min": 1,
+            "clock_max": 1,
+            "mean_clock_energy_fraction": 0.5152022242546082
+          },
+          "source_qualification": {
+            "status": "PASS",
+            "source_only": true,
+            "first_run": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+            "first_execution": "2658815a2fe5ef931f24558a6c6c61146433fd9c",
+            "qualification": {
+              "status": "PASS",
+              "source_only": true,
+              "target_metrics_read_for_decision": false,
+              "final_L_CE": {
+                "SIG_TIME-s2026092701": 0.2471538574040473,
+                "SIG_RAW_ORDER-s2026092701": 0.2484736009626775,
+                "SIG_DYNAMIC_ORDER-s2026092701": 0.24892498952177194
+              },
+              "candidates": [
+                {
+                  "arm": "SIG_RAW_ORDER",
+                  "actual_L720zL2": 1.3109384775161743,
+                  "actual_t1_t2_SIGprojection_gradient_nonzero_17_33_50": true,
+                  "passed": true
+                },
+                {
+                  "arm": "SIG_DYNAMIC_ORDER",
+                  "actual_L720zL2": 1.7953169345855713,
+                  "actual_t1_t2_SIGprojection_gradient_nonzero_17_33_50": true,
+                  "passed": true
+                }
+              ],
+              "actual_observations": {
+                "SIG_TIME-s2026092701": {
+                  "status": "VERIFIED",
+                  "steps": 11100,
+                  "extra_batches": 2750,
+                  "extra_source_packet_forwards": 247500,
+                  "U_steps": 3774,
+                  "U_packets": 963900,
+                  "U_accepted": 15452,
+                  "gradient_epochs": [
+                    1,
+                    17,
+                    33,
+                    50
+                  ],
+                  "gradient_batches": 220,
+                  "layer_gradient_records": 660,
+                  "head_fit_updates": 0,
+                  "auxiliary_classW_dependency": false,
+                  "default_head_jointly_trained": true,
+                  "U_truth_read": false,
+                  "source_only": true,
+                  "saved_gradient_recount": "VERIFIED"
+                },
+                "SIG_RAW_ORDER-s2026092701": {
+                  "status": "VERIFIED",
+                  "steps": 11100,
+                  "extra_batches": 2750,
+                  "extra_source_packet_forwards": 247500,
+                  "U_steps": 3774,
+                  "U_packets": 963900,
+                  "U_accepted": 15445,
+                  "gradient_epochs": [
+                    1,
+                    17,
+                    33,
+                    50
+                  ],
+                  "gradient_batches": 220,
+                  "layer_gradient_records": 660,
+                  "head_fit_updates": 0,
+                  "auxiliary_classW_dependency": false,
+                  "default_head_jointly_trained": true,
+                  "U_truth_read": false,
+                  "source_only": true,
+                  "saved_gradient_recount": "VERIFIED"
+                },
+                "SIG_DYNAMIC_ORDER-s2026092701": {
+                  "status": "VERIFIED",
+                  "steps": 11100,
+                  "extra_batches": 2750,
+                  "extra_source_packet_forwards": 247500,
+                  "U_steps": 3774,
+                  "U_packets": 963900,
+                  "U_accepted": 15428,
+                  "gradient_epochs": [
+                    1,
+                    17,
+                    33,
+                    50
+                  ],
+                  "gradient_batches": 220,
+                  "layer_gradient_records": 660,
+                  "head_fit_updates": 0,
+                  "auxiliary_classW_dependency": false,
+                  "default_head_jointly_trained": true,
+                  "U_truth_read": false,
+                  "source_only": true,
+                  "saved_gradient_recount": "VERIFIED"
+                }
+              },
+              "fixed_rules": {
+                "final_L_CE_max": 0.5,
+                "feature_difference_min": 0.000001,
+                "actual_extra_batches": 2750,
+                "gradient_batches": 220,
+                "all_candidate_gradient_parameters_nonzero_at": [
+                  17,
+                  33,
+                  50
+                ],
+                "source_only": true,
+                "expansion": "Both candidates must pass same source rules; expand both fixed02/03 unchanged, no target ranking"
+              },
+              "predefined_remaining_seeds": [
+                2026092702,
+                2026092703
+              ],
+              "expand_both_candidates_only_after_both_source_PASS": true,
+              "configuration_changes_for_expansion": false,
+              "head_fit_updates": 0
+            },
+            "remaining_seeds": [
+              2026092702,
+              2026092703
+            ],
+            "configuration_changed": false,
+            "target_metric_read": false,
+            "first_seed_retrained": false
+          }
+        },
+        "workers": [
+          {
+            "row_id": "SIG_TIME-s2026092702",
+            "pid": 2412374,
+            "gpu": 1,
+            "process_live": true,
+            "same_pid": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "epoch": 6,
+            "log_bytes": 37640,
+            "previous_log_bytes": 6558,
+            "log_growth": true
+          },
+          {
+            "row_id": "SIG_RAW_ORDER-s2026092702",
+            "pid": 2412452,
+            "gpu": 2,
+            "process_live": true,
+            "same_pid": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "epoch": 6,
+            "log_bytes": 37745,
+            "previous_log_bytes": 6598,
+            "log_growth": true
+          },
+          {
+            "row_id": "SIG_DYNAMIC_ORDER-s2026092702",
+            "pid": 2412535,
+            "gpu": 0,
+            "process_live": true,
+            "same_pid": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "epoch": 6,
+            "log_bytes": 37826,
+            "previous_log_bytes": 6630,
+            "log_growth": true
+          },
+          {
+            "row_id": "SIG_TIME-s2026092703",
+            "pid": 2412706,
+            "gpu": 6,
+            "process_live": true,
+            "same_pid": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "epoch": 6,
+            "log_bytes": 37646,
+            "previous_log_bytes": 6558,
+            "log_growth": true
+          },
+          {
+            "row_id": "SIG_RAW_ORDER-s2026092703",
+            "pid": 2412784,
+            "gpu": 7,
+            "process_live": true,
+            "same_pid": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "epoch": 6,
+            "log_bytes": 37745,
+            "previous_log_bytes": 6598,
+            "log_growth": true
+          },
+          {
+            "row_id": "SIG_DYNAMIC_ORDER-s2026092703",
+            "pid": 2412865,
+            "gpu": 3,
+            "process_live": true,
+            "same_pid": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "epoch": 5,
+            "log_bytes": 32623,
+            "previous_log_bytes": 6630,
+            "log_growth": true
+          }
+        ],
+        "all_owner_capacity_within3": true,
+        "failure": null,
+        "completion": null,
+        "read_at": 1791985041.9066231,
+        "goal_84": false
+      }
     },
     {
       "route": "fixedSIG_TIME semi-supervised integration reference",
@@ -36217,6 +36457,215 @@
           ]
         }
       }
+    },
+    {
+      "route": "fixedSIG_TIME signature identity training firstseed",
+      "run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "status": "ANALYZED_FIRST_SEED",
+      "implementation_commit": "f6dfdb587c505b5720469d4a4a101b8df8b321f4",
+      "execution_commit": "2658815a2fe5ef931f24558a6c6c61146433fd9c",
+      "source_decision_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e",
+      "model_seeds": [
+        2026092701
+      ],
+      "default_head_only": true,
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 1,
+          "accuracy_mean": 0.8066845238095238,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238
+          },
+          "macro_f1_mean": 0.8017335328586674,
+          "worst_RX_mean": 0.7061666666666667,
+          "worst_day_mean": 0.7545238095238095
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 1,
+          "accuracy_mean": 0.8358154761904761,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8358154761904761
+          },
+          "macro_f1_mean": 0.831524328433198,
+          "worst_RX_mean": 0.714875,
+          "worst_day_mean": 0.7894523809523809
+        },
+        {
+          "arm": "SIG_RAW_ORDER",
+          "seed_count": 1,
+          "accuracy_mean": 0.8363630952380953,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8363630952380953
+          },
+          "macro_f1_mean": 0.8320760014149698,
+          "worst_RX_mean": 0.712,
+          "worst_day_mean": 0.7922142857142858
+        },
+        {
+          "arm": "SIG_DYNAMIC_ORDER",
+          "seed_count": 1,
+          "accuracy_mean": 0.8344761904761905,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8344761904761905
+          },
+          "macro_f1_mean": 0.8300746958488023,
+          "worst_RX_mean": 0.7044166666666667,
+          "worst_day_mean": 0.7897857142857143
+        }
+      ],
+      "paired": [
+        {
+          "arm": "SIG_DYNAMIC_ORDER",
+          "control": "SIG_RAW_ORDER",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.001886904761904784
+          ],
+          "mean_difference": -0.001886904761904784,
+          "sd_difference": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "SIG_DYNAMIC_ORDER",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.001339285714285654
+          ],
+          "mean_difference": -0.001339285714285654,
+          "sd_difference": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "SIG_DYNAMIC_ORDER",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.02779166666666666
+          ],
+          "mean_difference": 0.02779166666666666,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_RAW_ORDER",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.00054761904761913
+          ],
+          "mean_difference": 0.00054761904761913,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.029130952380952313
+          ],
+          "mean_difference": 0.029130952380952313,
+          "sd_difference": null,
+          "positive_seeds": 1
+        }
+      ],
+      "error_transitions": [
+        {
+          "arm": "SIG_DYNAMIC_ORDER",
+          "control": "SIG_RAW_ORDER",
+          "seed": 2026092701,
+          "corrected_errors": 405,
+          "introduced_errors": 722,
+          "both_correct": 139787,
+          "both_wrong": 27086,
+          "count": 168000
+        },
+        {
+          "arm": "SIG_DYNAMIC_ORDER",
+          "control": "SIG_TIME",
+          "seed": 2026092701,
+          "corrected_errors": 573,
+          "introduced_errors": 798,
+          "both_correct": 139619,
+          "both_wrong": 27010,
+          "count": 168000
+        },
+        {
+          "arm": "SIG_DYNAMIC_ORDER",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 10252,
+          "introduced_errors": 5583,
+          "both_correct": 129940,
+          "both_wrong": 22225,
+          "count": 168000
+        },
+        {
+          "arm": "SIG_RAW_ORDER",
+          "control": "SIG_TIME",
+          "seed": 2026092701,
+          "corrected_errors": 588,
+          "introduced_errors": 496,
+          "both_correct": 139921,
+          "both_wrong": 26995,
+          "count": 168000
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 10229,
+          "introduced_errors": 5335,
+          "both_correct": 130188,
+          "both_wrong": 22248,
+          "count": 168000
+        }
+      ],
+      "audit": {
+        "models": 4,
+        "new_models": 3,
+        "reused_models": 1,
+        "source_epochs": 200,
+        "new_updates": 33300,
+        "historical_updates": 11100,
+        "default_decisions": 672000,
+        "metric_records": 72,
+        "auxiliary_steps": 8250,
+        "gradient_layer_cohorts": 1980,
+        "saved_gradient_vectors": 7920
+      },
+      "source_pairs": [
+        {
+          "arm": "SIG_DYNAMIC_ORDER",
+          "initial_parameters_identical": true,
+          "source_zL2": 1.7953169345855713
+        },
+        {
+          "arm": "SIG_RAW_ORDER",
+          "initial_parameters_identical": true,
+          "source_zL2": 1.3109384775161743
+        }
+      ],
+      "goal_84": false,
+      "full_three_seed_pending": true,
+      "report": "automation_reports/CV-SincNet/20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01/final_analysis.md"
     }
   ],
   "diagnostics": {
@@ -81575,14 +82024,14 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "依据已有合法源梯度方差和RX/day特征差异，设计一项直接作用浅/中层且不依赖分类W的特征训练目标；不扫描本权重参数或按target选择父权重",
-    "先小矩阵source机制检验、默认头正常联合/≤50轮/原旧gatecos对照，再按固定source条件扩种子、逐row测试并Git交付"
+    "Finish remaining fixedSIG_TIME signature-training02/03 andcomplete12row3seed comparison unchanged; retainRAW andDYNAMIC, no targetranking.",
+    "Finish independent fixedSIG_TIME RANDOMvsPAIR uniformU reference andactual33/34/50Ugradient evidence; architecture/head fixed, no newlossstack or weight/calendar scan."
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "Finish existing fixedSIG_TIME bounded identity training/fullsourcequalification anddefaulttruthlast, no architecturesearch.",
-    "Run independent fixedSIG_TIME RANDOMvsPAIR uniformU reference with actualUgradients before designing a newSSL target; no purecoverage/weight/calendar sweep."
+    "Finish remaining fixedSIG_TIME signature-training02/03 andcomplete12row3seed comparison unchanged; retainRAW andDYNAMIC, no targetranking.",
+    "Finish independent fixedSIG_TIME RANDOMvsPAIR uniformU reference andactual33/34/50Ugradient evidence; architecture/head fixed, no newlossstack or weight/calendar scan."
   ],
   "current_priority": {
     "at": "2026-10-14T13:05:43.186Z",

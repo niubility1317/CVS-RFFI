@@ -1260,18 +1260,150 @@
     "SOURCE allcandidatePASS only permitsboth predefined02/03 unchanged; no targetdrivenpromotion or singleseedgoal.",
     "Latestdefaultheadrule overridesoldheadrefit requirements; no separatelyfit RX/day/TX classifier."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "results": {
-    "status": "PENDING",
-    "launch_verification": "VERIFIED",
-    "new_models": 3,
-    "current_epoch_counts": [
-      3,
-      2,
-      2
+    "status": "VERIFIED",
+    "first_seed_only": true,
+    "model_seed": 2026092701,
+    "summary": [
+      {
+        "arm": "OLD_GATE_COS50",
+        "seed_count": 1,
+        "accuracy_mean": 0.8066845238095238,
+        "accuracy_sd": null,
+        "seed_accuracy": {
+          "2026092701": 0.8066845238095238
+        },
+        "macro_f1_mean": 0.8017335328586674,
+        "worst_RX_mean": 0.7061666666666667,
+        "worst_day_mean": 0.7545238095238095
+      },
+      {
+        "arm": "SIG_TIME",
+        "seed_count": 1,
+        "accuracy_mean": 0.8358154761904761,
+        "accuracy_sd": null,
+        "seed_accuracy": {
+          "2026092701": 0.8358154761904761
+        },
+        "macro_f1_mean": 0.831524328433198,
+        "worst_RX_mean": 0.714875,
+        "worst_day_mean": 0.7894523809523809
+      },
+      {
+        "arm": "SIG_RAW_ORDER",
+        "seed_count": 1,
+        "accuracy_mean": 0.8363630952380953,
+        "accuracy_sd": null,
+        "seed_accuracy": {
+          "2026092701": 0.8363630952380953
+        },
+        "macro_f1_mean": 0.8320760014149698,
+        "worst_RX_mean": 0.712,
+        "worst_day_mean": 0.7922142857142858
+      },
+      {
+        "arm": "SIG_DYNAMIC_ORDER",
+        "seed_count": 1,
+        "accuracy_mean": 0.8344761904761905,
+        "accuracy_sd": null,
+        "seed_accuracy": {
+          "2026092701": 0.8344761904761905
+        },
+        "macro_f1_mean": 0.8300746958488023,
+        "worst_RX_mean": 0.7044166666666667,
+        "worst_day_mean": 0.7897857142857143
+      }
     ],
+    "paired": [
+      {
+        "arm": "SIG_DYNAMIC_ORDER",
+        "control": "SIG_RAW_ORDER",
+        "seeds": [
+          2026092701
+        ],
+        "seed_differences": [
+          -0.001886904761904784
+        ],
+        "mean_difference": -0.001886904761904784,
+        "sd_difference": null,
+        "positive_seeds": 0
+      },
+      {
+        "arm": "SIG_DYNAMIC_ORDER",
+        "control": "SIG_TIME",
+        "seeds": [
+          2026092701
+        ],
+        "seed_differences": [
+          -0.001339285714285654
+        ],
+        "mean_difference": -0.001339285714285654,
+        "sd_difference": null,
+        "positive_seeds": 0
+      },
+      {
+        "arm": "SIG_DYNAMIC_ORDER",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701
+        ],
+        "seed_differences": [
+          0.02779166666666666
+        ],
+        "mean_difference": 0.02779166666666666,
+        "sd_difference": null,
+        "positive_seeds": 1
+      },
+      {
+        "arm": "SIG_RAW_ORDER",
+        "control": "SIG_TIME",
+        "seeds": [
+          2026092701
+        ],
+        "seed_differences": [
+          0.00054761904761913
+        ],
+        "mean_difference": 0.00054761904761913,
+        "sd_difference": null,
+        "positive_seeds": 1
+      },
+      {
+        "arm": "SIG_TIME",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701
+        ],
+        "seed_differences": [
+          0.029130952380952313
+        ],
+        "mean_difference": 0.029130952380952313,
+        "sd_difference": null,
+        "positive_seeds": 1
+      }
+    ],
+    "source_qualification": "PASS",
+    "source_decision_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e",
+    "source_decision_before_target_numbers": true,
+    "counts": {
+      "models": 4,
+      "new_models": 3,
+      "reused_models": 1,
+      "source_epochs": 200,
+      "new_updates": 33300,
+      "historical_updates": 11100,
+      "default_decisions": 672000,
+      "metric_records": 72,
+      "auxiliary_steps": 8250,
+      "gradient_layer_cohorts": 1980,
+      "saved_gradient_vectors": 7920
+    },
     "head_fit_updates": 0,
-    "goal_84": false
+    "goal_84": false,
+    "full_three_seed_pending": true,
+    "result_ref": "results.json",
+    "analysis_ref": "final_analysis.md",
+    "figure_ref": "results.png"
   },
   "registered_at": "2026-10-14T12:52:33.406Z",
   "execution_commit": "2658815a2fe5ef931f24558a6c6c61146433fd9c"

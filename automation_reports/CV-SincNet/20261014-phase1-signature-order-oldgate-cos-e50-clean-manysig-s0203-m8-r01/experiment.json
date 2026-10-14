@@ -2421,14 +2421,18 @@
     "Prepared whilefirsthealthytraining; no publish until bothSOURCEPASS andfirst4rowclosure. No additional core scientific hypothesis/review; unchangeduniqueP0P1 reused, 10 sourcequalificationnegative/sixactualnativecontexts checked.",
     "Latestuserpriority: freeze existingSIG_TIME backbone/defaulthead; research training/generalization/SSL mechanisms only."
   ],
-  "status": "QUEUED",
+  "status": "RUNNING",
   "results": {
-    "status": "SOURCE_QUALIFIED_NOT_LAUNCHED",
-    "source_qualification": "PASS",
-    "source_only_decision_before_new_target_numbers": true,
+    "status": "PENDING",
+    "first_source_qualification": "PASS",
+    "source_decision_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e",
+    "source_decision_before_first_new_target_numeric_results": true,
     "new_models": 6,
     "first_seed_retrained": false,
+    "launch_verification": "VERIFIED",
+    "head_fit_updates": 0,
     "goal_84": false
   },
-  "registered_at": "2026-10-14T13:05:17.364Z"
+  "registered_at": "2026-10-14T13:05:17.364Z",
+  "execution_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e"
 }
