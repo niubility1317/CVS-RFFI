@@ -26,3 +26,5 @@ d^*=\arg\min_d\frac12\lVert d-d_0\rVert_2^2,
 SIG_TIME、固定 CENTER25K、COMPACT_LINEAR 和 LONG_SILU 历史正收益的原配方和产物分别保留；不同成本或结构的历史数值不相加，也不以新目标分数重新挑选父 checkpoint。
 
 纯数学原型 `project(d0, gradients_by_RX, role="L_s")` 已通过 CPU focused checks：二维闭式投影 `(2,3)→(-.5,.5)`、冲突锥、零／相关／近相关约束、正行尺度变化、输入和 RNG 保持及负例。输出原 dtype／device，分别报告 FP64 与转换位移的风险；真实参数加法舍入仍未测量。该 PASS 只验证数学原型，不替代真实源可用性。见 [原型检查证据](phase1_rx_update_projection_20261015_checks.json)。
+
+2026-10-15实际源否证已ANALYZED/VERIFIED，run `20261015-phase1-SIGTIME-RX-update-projection-sourceL-s2026092701-r01`，执行`846a539adeeec9a0d76d41e4d89e14bd3ce0705e`。固定gate0/8；INITIAL无需修正，FINAL20 RAW/GRAD仍3RX正风险，UPDATE保留91.6%至92.6%位移、真实16浅中层tensor与joint改变，但held均值CE相对RAW升1.05e-6至1.30e-6，未通过预登记条件。相对更新前，两者平均heldCE都下降，UPDATE改善较小。720L/10444forwards/16tempAdamW，0realtrain/headfit/U/V/target，原状态保持且自然终止。关闭本固定Rx-average版本，不改阈值；下一独立证据补偿设计未实现或发布。详见[完整源报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-RX-update-projection-sourceL-s2026092701-r01/report.md)。

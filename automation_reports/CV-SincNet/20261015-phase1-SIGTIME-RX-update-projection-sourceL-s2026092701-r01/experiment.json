@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active goal continuation; user requests concrete innovative training mechanism and optimization from reports/experiments. Bounded source-only falsification precedes new E20 training.",
   "code": {
-    "commit": "release_commit.txt (actual Git HEAD resolved at publication)",
+    "commit": "846a539adeeec9a0d76d41e4d89e14bd3ce0705e",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account; CVS-RFFI Python; CPU2threads/GPU0; immutable own E20 runtime plus committed three-namespace overlay",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_update_projection_sourceL_20261015_r01"
@@ -163,5 +163,42 @@
     "Three temporary subsets are within original L_s, not redefined V roles or unseen domains.",
     "Healthy other runs and immutable source parent preserved. Source-only diagnostic needs no target prediction/truth scoring."
   ],
-  "registered_at": "2026-10-14T20:31:55+00:00"
+  "registered_at": "2026-10-14T20:31:55+00:00",
+  "result": {
+    "status": "SOURCE_SCREEN_NOT_PASSED",
+    "qualified_cells": 0,
+    "gate_result": {
+      "passed": false,
+      "qualified_cells": [],
+      "UPDATE_GRAD_distinct_cells": [
+        {
+          "state": "FINAL20",
+          "ordinal": 0
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 17
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 35
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 52
+        }
+      ],
+      "qualified_by_state": {
+        "INITIAL": 0,
+        "FINAL20": 0
+      }
+    },
+    "real_training_launched": false,
+    "actual_optimizer_updates": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "evidence_ref": "result_evidence.json",
+    "decision": "CLOSE_FIXED_RX_AVERAGE_UPDATE_PROJECTION",
+    "goal84_completed": false
+  }
 }
