@@ -1,0 +1,166 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-evidence-compensation-sourceVU-s2026092701-r01",
+  "group_id": "phase1-evidence-compensation-source",
+  "display_name": "有停止条件的身份主路径证据补偿：全源V与隐藏U机会普查",
+  "description": "同包PA/reference增量分别减半，辅助端点与默认W/三个gain停止梯度，仅身份主路径与SIG_TIME学习补偿。先完整冻结普查原q内机会及sourceV活跃子集可靠性；无拟合、U真值或目标访问。",
+  "kind": "diagnostic",
+  "stage": "Phase1 source opportunity census",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "stop_loss",
+    "evidence_compensation",
+    "hidden_U",
+    "CENTER25K",
+    "SIG_TIME",
+    "default_head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active goal continuation; user requests training/loss mechanism exploration combining reports and prior evidence. Full source census before new actual training.",
+  "code": {
+    "commit": "release_commit.txt (actual Git HEAD resolved at publication)",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "N607 ordinary account; CVS-RFFI Python; CPU2threads/GPU0; immutable own E20 runtime plus committed three-namespace overlay",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_compensation_sourceVU_20261015_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md",
+    "physical_ids_ref": "Unchanged validated own E20 source role_ids; exact five-native-int IDs with unique base_index; no TX metadata for U selection",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": {
+      "L": 0.07,
+      "U": 0.63,
+      "V": 0.3
+    },
+    "validation_ref": "Existing VALIDATED_ONCE handles unchanged, reused without data hash/revalidation",
+    "protocol_schema": "p2_min_v1 handles unchanged, unused by source-only stage"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "claim_scope": "Frozen source opportunity and V-proxy active precision only; not hiddenU precision, training efficacy or novelty proof"
+  },
+  "checkpoint": {
+    "initialization": "strict own BASE_CE fixed firstseed final20; teacher deepcopy this exact student",
+    "sources": [
+      "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01/BASE_CE-s2026092701/source"
+    ],
+    "provenance_verdict": "source_proof before torch.load and validate_checkpoint before state use; exact source roles/scratch-only ancestry/final-only source freeze; no fallback",
+    "selection_rule": "Fixed BASE_CE firstseed, not target-highest model. No EMA state inherited or updated."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/compensation-census-20261015",
+    "gpu_policy": "CPU only/GPU0; other owners unchanged",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-evidence-compensation-sourceVU-s2026092701-r01/source_diagnostic",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_compensation_sourceVU_20261015_r01/source_census.stdout.log",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_SIGTIME_evidence_compensation_sourceVU_20261015_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_compensation_sourceVU_20261015_r01/experiments/cvs_evidence_compensation20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_compensation_sourceVU_20261015_r01/resolved_request.json",
+    "stop_rule": "Exact run-owned provenance/role/physical-ID/state mismatch, nonfinite or unhandled technical failure: preserve outputs, stop this census only, reconcile before any retry. Fixed scientific gate failure closes this exact entry configuration without pi/beta/gate/sampler scan or target feedback."
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "release_commit.txt",
+    "resolved_request.json",
+    "submit.json",
+    "runtime.json",
+    "progress.json",
+    "V_proxy.json",
+    "U_s.json",
+    "summary.json",
+    "independent_readback.json",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "matrix": "One same own E20 BASE_CE firstseed final20 state; complete V27000 then U56700, all SELF/PA_WEAK/REF_WEAK readouts",
+    "budget": "83700unique sourceIQ;167404packet networkforwards including4zeroIQsmoke;0realtraining/gradient/temporaryoptimizer/EMA/headfit/target",
+    "acceptance": "Original BASE_SSL rx/day quantile.86 clamped .92/.97, batch physical-neighbor window2/minconf.8 plus strong agreement; domain gate off; same strongGaussian.015. No extra confidence or challengedargmax mask.",
+    "census_mode": "Student/teacher eval; teacher is BASE_CE final20 deepcopy. Original predicate but not contemporaneous EMA/train-dropout mask.",
+    "sampling": "U native original RandomSampler U256/drop_lastFalse; V fixed random permutation batch256/no PAIRS; sampling seed2026101501, V loader generator seed2026101502. U no TX metadata/index access for sampling. Frozen pass order differs from historical training epochs.",
+    "loss": "h(p)=relu(log(.9)-logp); EVIDENCE .1/(2B)sum q*(h(PAweak)+h(REFweak)); SELF same denominator with two SELF terms; beta.5. FullB, not accepted/active denominator. Only scalar diagnosis; no gradients in census.",
+    "reporting": "Full counts/all masks/class pseudo histograms; accepted/active/new-vsSELF opportunities; per15RX/day and5RX; probability stats; V accepted AND active subset precision/errors only after decisions fixed. U trueaccuracy/precision/error fields null. IDs only transient memory; no perpacket features/IQ artifact.",
+    "source_falsification": {
+      "U_EVIDENCE_active_min": 567,
+      "U_EVIDENCE_new_vs_SELF_min": 100,
+      "V_EVIDENCE_active_min": 100,
+      "V_EVIDENCE_active_precision_min": 0.98,
+      "V_each_RX_EVIDENCE_active_min": 10,
+      "V_each_RX_EVIDENCE_active_precision_min": 0.95,
+      "interpretation": "Frozen source opportunity/reliability proxy only; no hiddenU precision or training efficacy proof"
+    },
+    "stop_rule": "Exact run-owned provenance/role/physical-ID/state mismatch, nonfinite or unhandled technical failure: preserve outputs, stop this census only, reconcile before any retry. Fixed scientific gate failure closes this exact entry configuration without pi/beta/gate/sampler scan or target feedback.",
+    "future": "Only if sufficient reliable proxy opportunities: separately preregister true graph/same-state AdamW and independent sourceL finite-step comparison. Future actual E20+20 requires common pureCE increment control/defaulthead/automatic clean truthlast."
+  },
+  "rows": [
+    {
+      "row_id": "BASE_CE-s2026092701-source-census",
+      "method": "EVIDENCE_COMPENSATION_OPPORTUNITY",
+      "purpose": "fixed source opportunity/reliability falsification",
+      "config_ref": "experiments/cvs_evidence_compensation20/configs/source_census.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_compensation_sourceVU_20261015_r01/resolved_request.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": 2026101501,
+        "support": null,
+        "evaluation": 2026101502
+      },
+      "seed_notes": "Original physical split unchanged. Frozen diagnostic Gaussian/Ushuffle fork seed and independent fixed V random sampler; no target/support seed.",
+      "k": null,
+      "scenario": null,
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "metrics_plan.budget",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-evidence-compensation-sourceVU-s2026092701-r01/source_diagnostic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_compensation_sourceVU_20261015_r01/source_census.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_compensation_sourceVU_20261015_r01/experiments/cvs_evidence_compensation20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_compensation_sourceVU_20261015_r01/resolved_request.json",
+      "expected_artifacts": [
+        "preflight.json",
+        "release_commit.txt",
+        "resolved_request.json",
+        "submit.json",
+        "runtime.json",
+        "progress.json",
+        "V_proxy.json",
+        "U_s.json",
+        "summary.json",
+        "independent_readback.json",
+        "report.md"
+      ]
+    }
+  ],
+  "notes": [
+    "No classifier/head fitting or replacement; actual deployed additive features/head preserved.",
+    "V only complete source proxy counts, no gradient/EMA/prototype/normalization update; no V role split.",
+    "RSC/FixMatch are conceptual precedents, not an originality or efficacy claim for this concrete mechanism.",
+    "Scientific failure closes fixed evidence-compensation U entry; no beta/pi/gate/sampler scan based on this result."
+  ],
+  "registered_at": "2026-10-14T21:03:13+00:00"
+}

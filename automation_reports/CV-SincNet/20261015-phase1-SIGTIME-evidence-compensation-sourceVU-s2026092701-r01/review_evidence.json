@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "reviewer": "sigtime_feature_path",
+  "independent_candidate_reviews": 1,
+  "scope": "Only direct P0/P1 affecting next real source run legality/correctness/launchability",
+  "initial_P1": "Unarchived old gate adapter dependency",
+  "fix": "Same native gate adapter inside committed overlay namespace",
+  "targeted_rereviews": 1,
+  "targeted_rereview_status": "PASS",
+  "original_gate_semantics_unchanged": true,
+  "P0_P1_findings": [],
+  "reviewer_data_checkpoint_remote_reads": 0
+}
