@@ -1328,14 +1328,21 @@
   "result": {
     "status": "RUNNING_VERIFIED",
     "epochs_observed": [
-      3,
-      3,
-      3
+      34,
+      37,
+      37
     ],
     "first_source_replayed_steps_per_model": 444,
     "source_qualification": null,
     "training_complete": false,
     "new_target_summary_read": false,
-    "goal_84": false
+    "goal_84": false,
+    "all_three_in_pseudo_stage": true,
+    "actual_U_packet_observations_prefix": [
+      93820,
+      282608,
+      269296
+    ],
+    "supervised_risk_steps_replayed": 25086
   }
 }

@@ -83431,7 +83431,29 @@
       "latest_source_evidence": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/epoch17_source_evidence.json",
       "paired_source_steps_replayed": 11322,
       "candidate_epoch17_actual_body_and_W_signal": "13/13 each; original ERM control delta0 at observed diagnostic epoch",
-      "remaining_preparation_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01"
+      "remaining_preparation_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "semisupervised_phase_source_evidence": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/semisupervised_phase_source_evidence.json",
+      "actual_all_three_U_phase": true,
+      "latest_actual_U_packets": [
+        {
+          "arm": "SIG_TIME",
+          "packet_observations": 93820,
+          "truth_available": false
+        },
+        {
+          "arm": "RX_BALANCED",
+          "packet_observations": 282608,
+          "truth_available": false
+        },
+        {
+          "arm": "RX_DRO",
+          "packet_observations": 269296,
+          "truth_available": false
+        }
+      ],
+      "latest_supervised_risk_steps_replayed": 25086,
+      "latest_body_signal_epoch": 33,
+      "complete_source_qualification": "PENDING"
     }
   }
 }

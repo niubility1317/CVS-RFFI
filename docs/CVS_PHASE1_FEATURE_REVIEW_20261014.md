@@ -432,3 +432,6 @@ CONF_FEATURE_MT02/03四个原worker仍live，最近完成23/27/27/26轮且loggro
 ## 接收机风险训练中期与固定扩展准备
 
 原执行 977d4fb609436bac23621ef8e32c2017495acef7 的三进程保持，当前源流11322步群权/CE/原生消费独立重算通过；两个候选epoch17实际t1/t2/SIG及普通W的风险增量梯度各13/13非零，无另训头，无新目标准确率读回。完整source资格和50轮仍未完成。条件适配器 20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01（code 8522fb75680c7b51c7d3d631f67c1b2b212eba8b）已LOCAL_VERIFIED/PREREGISTERED/NOT_LAUNCHED；六真实native上下文只seed/run/candidate/output差异，同seed初态相同，12负例/原U对象/默认头梯度和一次adapter-only P0P1 PASS。仅原sourcePASS且源决定先推送才发布；不是新机制或源资格通过。详见[条件预登记](../automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md)。
+
+
+接收机风险三臂已实测进入半监督，原batch_neighbor/ownEMA/cos、33+17、smoothing.01、UCE.16/entropy.01保持。源流快照U包处理SIG93820/BALANCED282608/DRO269296，U真值0、EMA逐步更新核实；监督risk流25086步独立回放，进入U后所用原生L loss仍一致。E33候选t1/t2/SIG增量各13/13，ERM0。当前仅源运行证据，原50轮/自动评分仍继续，未读本轮新目标准确率，未发布条件扩展。

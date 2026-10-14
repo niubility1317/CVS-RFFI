@@ -1,0 +1,143 @@
+{
+  "status": "VERIFIED",
+  "scope": "Partial runtime source-only evidence after all three models entered pseudo stage; not final qualification or performance",
+  "execution_commit": "977d4fb609436bac23621ef8e32c2017495acef7",
+  "rows": [
+    {
+      "arm": "SIG_TIME",
+      "native_steps_recounted": 7693,
+      "entered_epoch": 35,
+      "U_steps": 367,
+      "U_packet_observations": 93820,
+      "U_accepted_by_original_gate": 1507,
+      "U_truth_read": false,
+      "actual_own_EMA_updates": 7693,
+      "actual_recipe": {
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "ema_decay": 0.999,
+        "pseudo_temporal_gate": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "label_smoothing": 0.01,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "phase1_lr_schedule": "cosine",
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "from_scratch": true,
+        "freeze_backbone": false
+      },
+      "supervised_risk_replay": {
+        "steps": 7770,
+        "paired_native_loss_steps": 7770,
+        "gradient_epochs": [
+          1,
+          17,
+          33
+        ],
+        "latest_gradient_epoch": 33,
+        "actual_body_delta_nonzero": [
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    {
+      "arm": "RX_BALANCED",
+      "native_steps_recounted": 8432,
+      "entered_epoch": 38,
+      "U_steps": 1106,
+      "U_packet_observations": 282608,
+      "U_accepted_by_original_gate": 4646,
+      "U_truth_read": false,
+      "actual_own_EMA_updates": 8432,
+      "actual_recipe": {
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "ema_decay": 0.999,
+        "pseudo_temporal_gate": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "label_smoothing": 0.01,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "phase1_lr_schedule": "cosine",
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "from_scratch": true,
+        "freeze_backbone": false
+      },
+      "supervised_risk_replay": {
+        "steps": 8658,
+        "paired_native_loss_steps": 8658,
+        "gradient_epochs": [
+          1,
+          17,
+          33
+        ],
+        "latest_gradient_epoch": 33,
+        "actual_body_delta_nonzero": [
+          13,
+          13,
+          13
+        ]
+      }
+    },
+    {
+      "arm": "RX_DRO",
+      "native_steps_recounted": 8380,
+      "entered_epoch": 38,
+      "U_steps": 1054,
+      "U_packet_observations": 269296,
+      "U_accepted_by_original_gate": 4412,
+      "U_truth_read": false,
+      "actual_own_EMA_updates": 8380,
+      "actual_recipe": {
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "ema_decay": 0.999,
+        "pseudo_temporal_gate": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "label_smoothing": 0.01,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "phase1_lr_schedule": "cosine",
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "from_scratch": true,
+        "freeze_backbone": false
+      },
+      "supervised_risk_replay": {
+        "steps": 8658,
+        "paired_native_loss_steps": 8658,
+        "gradient_epochs": [
+          1,
+          17,
+          33
+        ],
+        "latest_gradient_epoch": 33,
+        "actual_body_delta_nonzero": [
+          13,
+          13,
+          13
+        ]
+      }
+    }
+  ],
+  "source_only": true,
+  "query_read": false,
+  "head_fit_updates": 0,
+  "source_qualification_ready": false,
+  "new_numeric_target_summary_read": false,
+  "training_complete": false,
+  "goal_84": false
+}
