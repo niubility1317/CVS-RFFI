@@ -1,0 +1,147 @@
+{
+  "status": "VERIFIED",
+  "scope": "Partial actual source wiring, not final sourcequalification or target performance",
+  "execution_commit": "977d4fb609436bac23621ef8e32c2017495acef7",
+  "paired_source_steps_replayed": 11322,
+  "rows": [
+    {
+      "arm": "SIG_TIME",
+      "source_steps_replayed": 3552,
+      "paired_native_loss_steps": 3552,
+      "native_steps_visible": 3758,
+      "source_completed_epochs": 16,
+      "gradient_epochs": [
+        1
+      ],
+      "last_group_weights": [
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224
+      ],
+      "native_fitted_probes_disabled": true,
+      "latest_gradient_period": {
+        "epoch": 1,
+        "batches": 13,
+        "objects": [
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "selected_nonzero": 13,
+            "delta_nonzero": 0
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "selected_nonzero": 13,
+            "delta_nonzero": 0
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+            "selected_nonzero": 13,
+            "delta_nonzero": 0
+          },
+          {
+            "parameter": "existing_default_W",
+            "selected_nonzero": 13,
+            "delta_nonzero": 0
+          }
+        ]
+      }
+    },
+    {
+      "arm": "RX_BALANCED",
+      "source_steps_replayed": 3996,
+      "paired_native_loss_steps": 3996,
+      "native_steps_visible": 4041,
+      "source_completed_epochs": 18,
+      "gradient_epochs": [
+        1,
+        17
+      ],
+      "last_group_weights": [
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224
+      ],
+      "native_fitted_probes_disabled": true,
+      "latest_gradient_period": {
+        "epoch": 17,
+        "batches": 13,
+        "objects": [
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "selected_nonzero": 13,
+            "delta_nonzero": 13
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "selected_nonzero": 13,
+            "delta_nonzero": 13
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+            "selected_nonzero": 13,
+            "delta_nonzero": 13
+          },
+          {
+            "parameter": "existing_default_W",
+            "selected_nonzero": 13,
+            "delta_nonzero": 13
+          }
+        ]
+      }
+    },
+    {
+      "arm": "RX_DRO",
+      "source_steps_replayed": 3774,
+      "paired_native_loss_steps": 3774,
+      "native_steps_visible": 3981,
+      "source_completed_epochs": 17,
+      "gradient_epochs": [
+        1,
+        17
+      ],
+      "last_group_weights": [
+        0.11801864951848984,
+        0.3669049143791199,
+        0.08812227100133896,
+        0.11874917149543762,
+        0.3082049787044525
+      ],
+      "native_fitted_probes_disabled": true,
+      "latest_gradient_period": {
+        "epoch": 17,
+        "batches": 13,
+        "objects": [
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "selected_nonzero": 13,
+            "delta_nonzero": 13
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "selected_nonzero": 13,
+            "delta_nonzero": 13
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+            "selected_nonzero": 13,
+            "delta_nonzero": 13
+          },
+          {
+            "parameter": "existing_default_W",
+            "selected_nonzero": 13,
+            "delta_nonzero": 13
+          }
+        ]
+      }
+    }
+  ],
+  "source_qualification_ready": false,
+  "new_numeric_target_summary_read": false,
+  "head_fit_updates": 0,
+  "U_truth_read": false,
+  "training_complete": false
+}

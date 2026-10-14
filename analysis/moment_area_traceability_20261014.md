@@ -204,3 +204,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 
 
 - 2026-10-15：20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01 实际执行 977d4fb609436bac23621ef8e32c2017495acef7 已RUNNING/VERIFIED，GPU1/2/0三新完成3轮；preflight/单archive/compile/CPsmoke和实际进程日志核实。每臂444源步重算/原生消费一致，首轮候选三fθ对象+W各13/13增量非零、ERM0；不是性能结果或完整source资格，无新numeric target读回。
+
+
+- 2026-10-15：RX风险训练原exec 977d4fb609436bac23621ef8e32c2017495acef7 保持运行，源11322步群权/CE/原生消费重算VERIFIED；两个候选E17实际t1/t2/SIG/W增量各13/13非零，无头拟合/目标摘要。条件02/03适配 20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01，code 8522fb75680c7b51c7d3d631f67c1b2b212eba8b，6new/8row，每新50，12负例/6native真实上下文/唯一新adapter P0P1 PASS，NOT_LAUNCHED，原sourcePASS尚待完整结果。

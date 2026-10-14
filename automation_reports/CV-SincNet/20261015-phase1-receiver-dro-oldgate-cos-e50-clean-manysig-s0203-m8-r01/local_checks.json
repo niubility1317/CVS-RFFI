@@ -1,0 +1,99 @@
+{
+  "status": "PASS",
+  "unchanged_core_checks": {
+    "status": "PASS",
+    "protocol_and_config_negatives": 9,
+    "exact_original_ERM_graph": true,
+    "known_group_mean_and_multiplicative_update": true,
+    "detached_adversarial_weights": true,
+    "missing_RX_handled": true,
+    "actual_native_hook_executed": true,
+    "original_U_loss_returned_unchanged": true,
+    "native_budgets_verified": true,
+    "three_actual_initial_states_equal": true,
+    "actual_t1_t2_SIG_and_default_W_joint_gradients_nonzero": true,
+    "real_IQ_or_checkpoint_read": false,
+    "head_fit_updates": 0
+  },
+  "negatives": 12,
+  "native_contexts": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_observer_context_joint_gradients_and_U_path": true
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092702",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_observer_context_joint_gradients_and_U_path": true
+    },
+    {
+      "row_id": "RX_DRO-s2026092702",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_observer_context_joint_gradients_and_U_path": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_observer_context_joint_gradients_and_U_path": true
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092703",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_observer_context_joint_gradients_and_U_path": true
+    },
+    {
+      "row_id": "RX_DRO-s2026092703",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_observer_context_joint_gradients_and_U_path": true
+    }
+  ],
+  "real_IQ_checkpoint_or_first_qualification_read": false,
+  "first_seed_retrained": false,
+  "new_scientific_hypothesis": false,
+  "new_models": 6,
+  "historical_baselines_reused": 2,
+  "head_fit_updates": 0
+}

@@ -427,3 +427,8 @@ CONF_FEATURE_MT02/03四个原worker仍live，最近完成23/27/27/26轮且loggro
 
 
 源接收机群风险矩阵已RUNNING/VERIFIED：执行 977d4fb609436bac23621ef8e32c2017495acef7，三新GPU1/2/0完成3轮，单归档/remotecompile/真实CP无query smoke和同PID-CWD-argv-loggrowth核实。每臂444原生源步骤的权重/CE消费独立重算通过，候选首轮真实t1/t2/SIG及默认W增量梯度13/13非零，ERM均0；无另训头。50轮完整训练/自动truth-last仍待完成，未回收新目标数值；源PASS决定先推送的要求保持。
+
+
+## 接收机风险训练中期与固定扩展准备
+
+原执行 977d4fb609436bac23621ef8e32c2017495acef7 的三进程保持，当前源流11322步群权/CE/原生消费独立重算通过；两个候选epoch17实际t1/t2/SIG及普通W的风险增量梯度各13/13非零，无另训头，无新目标准确率读回。完整source资格和50轮仍未完成。条件适配器 20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01（code 8522fb75680c7b51c7d3d631f67c1b2b212eba8b）已LOCAL_VERIFIED/PREREGISTERED/NOT_LAUNCHED；六真实native上下文只seed/run/candidate/output差异，同seed初态相同，12负例/原U对象/默认头梯度和一次adapter-only P0P1 PASS。仅原sourcePASS且源决定先推送才发布；不是新机制或源资格通过。详见[条件预登记](../automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md)。
