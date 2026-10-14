@@ -103,3 +103,6 @@ PA正式训练已发布VERIFIED：20261014-phase1-PA-recomposition-pair-oldgate-
 
 
 PA 重组首种子源条件已 VERIFIED：ZERO/SAME_RX/CROSS_RX 的 final L CE .287650/.288041/.286805，源 V 97.8926%/97.8667%/97.9037%，共同队列覆盖率均为 54.8170%。每行 2,498 辅助调用与四个真实梯度/AdamW 点齐全；辅助 W/增益梯度为 None。预定源条件通过，后6个模型已自动启动。首3个冻结模型的同 L90 函数见证均确认特征变化与 W 独立，不能认定辅助收益。将对已保存源特征进行 margin=.1、同 day/同参照 RX 的1,800关系分析，0新增训练；不为制造梯度扫描 margin。完整 PA 三种子结果尚待返回，84%仍 active。详见[PA 重组报告](../automation_reports/CV-SincNet/20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01/report.md)。
+
+
+首种子固定 margin=.1 的源 L90 诊断已完成：ZERO/SAME_RX/CROSS_RX 各1,800关系，未满足95/96/98，hinge均值 .009905/.009622/.009890。ZERO 的94.72%关系已满足，但有56个直接排序错误，RX3/day1的未满足率约10.28%/10.33%。54至56个包收到局部特征导数；这不是实际模型新损失梯度或泛化收益。0新增IQ前向/拟合/训练/Utruth/target；不增大 margin 制造信号。需要完整源学习空间核验与独立 SupCon 对照，暂不叠加 PA。原报告首次只读入口的导入顺序错误已修正，诊断输出 VERIFIED，健康训练未受影响。
