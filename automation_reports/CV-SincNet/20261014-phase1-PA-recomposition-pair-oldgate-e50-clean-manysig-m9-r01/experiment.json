@@ -1964,7 +1964,7 @@
     "Mathematicalfeaturemixing has priorwork. CVS actualPA separableincrement/sameidentity-crossRX/defaultheadgradient boundary is newcandidate hypothesis, not demonstrated novelty or gain.",
     "Defaultheadonly clean, exposedbenchmark, noUtruth/newhead/Phase2; allpositive/negative/technicalfailures preserved."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "registered_at": "2026-10-14T08:22:30+00:00",
   "independent_review": {
     "status": "PASS",
@@ -2021,5 +2021,7 @@
         "default_head_unchanged": true
       }
     ]
-  }
+  },
+  "actual_execution_commit": "76ab0b9944210f8aa3f09f051ea9694f55457cd6",
+  "launch_evidence_ref": "launch_evidence.json"
 }

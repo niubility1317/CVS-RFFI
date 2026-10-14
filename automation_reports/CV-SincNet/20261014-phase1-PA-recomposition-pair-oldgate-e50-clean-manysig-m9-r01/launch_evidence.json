@@ -1,0 +1,107 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01",
+  "execution_commit": "76ab0b9944210f8aa3f09f051ea9694f55457cd6",
+  "preflight_status": "PASS",
+  "real_checkpoint_noquery": true,
+  "strict_student_ownEMA": true,
+  "runtime_observer_counterfactual_imported": true,
+  "remote_compile_before_preflight": true,
+  "single_release_archive_transport_comparison": true,
+  "workers": [
+    {
+      "row_id": "ZERO-s2026092701",
+      "pid": 2263276,
+      "GPU": 6,
+      "epoch": 16,
+      "log_before_bytes": 58096,
+      "log_after_bytes": 89075,
+      "PID_CWD_argv_GPU_verified": true,
+      "log_growth_verified": true,
+      "parameters": 844754,
+      "default_head_shape": [
+        6,
+        160
+      ]
+    },
+    {
+      "row_id": "SAME_RX-s2026092701",
+      "pid": 2263375,
+      "GPU": 7,
+      "epoch": 12,
+      "log_before_bytes": 42686,
+      "log_after_bytes": 68534,
+      "PID_CWD_argv_GPU_verified": true,
+      "log_growth_verified": true,
+      "parameters": 844754,
+      "default_head_shape": [
+        6,
+        160
+      ]
+    },
+    {
+      "row_id": "CROSS_RX-s2026092701",
+      "pid": 2263456,
+      "GPU": 7,
+      "epoch": 13,
+      "log_before_bytes": 47880,
+      "log_after_bytes": 73739,
+      "PID_CWD_argv_GPU_verified": true,
+      "log_growth_verified": true,
+      "parameters": 844754,
+      "default_head_shape": [
+        6,
+        160
+      ]
+    }
+  ],
+  "actual_source_signals": [
+    {
+      "arm": "ZERO",
+      "observed_epoch": 10,
+      "auxiliary_calls": 278,
+      "cohort_coverage": 0.5532823741007195,
+      "first_probe_step": 1112,
+      "aux_L_gradient_ratio": 0.0,
+      "aux_gradient_norm": 0.0,
+      "W_gain_gradients_None": true,
+      "actual_aux_increment_norm": 2.4440586731435983e-08,
+      "actual_shadow_error": 1.4901161193847656e-08,
+      "actual_t1_changed_values": 3840,
+      "actual_PA_b1_changed_values": 8159
+    },
+    {
+      "arm": "SAME_RX",
+      "observed_epoch": 7,
+      "auxiliary_calls": 111,
+      "cohort_coverage": 0.5543355855855856,
+      "first_probe_step": 1112,
+      "aux_L_gradient_ratio": 0.11684492522943096,
+      "aux_gradient_norm": 0.1291138572360955,
+      "W_gain_gradients_None": true,
+      "actual_aux_increment_norm": 0.00042506941333001337,
+      "actual_shadow_error": 1.4901161193847656e-08,
+      "actual_t1_changed_values": 3840,
+      "actual_PA_b1_changed_values": 8159
+    },
+    {
+      "arm": "CROSS_RX",
+      "observed_epoch": 8,
+      "auxiliary_calls": 167,
+      "cohort_coverage": 0.555436002994012,
+      "first_probe_step": 1112,
+      "aux_L_gradient_ratio": 0.10375264098882418,
+      "aux_gradient_norm": 0.10794016198310567,
+      "W_gain_gradients_None": true,
+      "actual_aux_increment_norm": 0.00032420218615634435,
+      "actual_shadow_error": 1.4901161193847656e-08,
+      "actual_t1_changed_values": 3840,
+      "actual_PA_b1_changed_values": 8160
+    }
+  ],
+  "source_current_signal_not_performance": true,
+  "goal_84": null,
+  "head_fit_updates": 0,
+  "extra_IQ_forward_packets": 0,
+  "numerical_note": "CPU syntheticZERO step differenceexact0; actualGPU autograd subtraction may leave2.44e-8 lastbit residue. Auxgradient exactly0, activeincrements~3.24e-4/4.25e-4; no claimbitwisezero acrossGPU routes."
+}

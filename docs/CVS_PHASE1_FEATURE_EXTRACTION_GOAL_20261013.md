@@ -94,3 +94,6 @@ PA证据重组原型已实现并验证，见 experiments/cvs_pa_recomposition/RE
 
 
 PA重组已接入真实native已有L128前向，主LCE独立不变，EMA在boundcallbacks前copy，原U/teacher/oldgate/cos/tail33+17保持。ZERO/SAME/CROSS同cohort端点曝光，α=.2/λ=.1先于新target固定、5epochwarmup/every4共2498calls、0额外IQforward/0新param。三组191states/CPUrng/nativeinstall/EMA deepcopy/真实coreloss→callback→probe→backward→clip→AdamW接线PASS，ZEROauxgradient/update差0，activeaux/Lnorm约.1168且actual-shadowerror0。唯一P0/P1 review PASS，新run 20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01 已预登记但尚未发布；等U源阶段校验后执行，不从calendar/旧交互target选参数或parent。默认头与自动cleantruthlast闭环已实现，实际三seed性能/真实cohort/参数更新仍待训练，84%active。
+
+
+PA正式训练已发布VERIFIED：20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01，执行76ab0b9944210f8aa3f09f051ea9694f55457cd6，3首seed真实第1112步auxiliary/AdamW/参数更新已核实，cohort约55%、active aux/Lnorm约.1168/.1038、auxW/gainsNone，t1/PA真实更新。CPU ZERO差0但真实GPU出现2.44e−8数值残差，梯度仍0，active增量约3至4e−4；如实保留。source/currentcheckpoint smoke/archive/compile/PID-CWD-argv-GPU-loggrowth PASS，0额外IQ前向/0新params/0头拟合，当前无3seed性能。等U首3 source-only资格及实际相同L/U/update预算已核实，后6运行；原结构交互完整负结果闭合。84%目标active。

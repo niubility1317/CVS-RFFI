@@ -43,3 +43,7 @@
 - 产物：preflight、实际source args/契约/初始化/完整step与50epoch日志、2498PA调用/cohort/CE/margins、4actual gradient/AdamW/parameterupdates、finalcheckpoint/freeze、W独立featureexport、逐row默认head prediction/score/completion、source-only扩展决定、queue/analysis/finalreport。
 
 唯一独立P0/P1审查PASS，无阻断问题。当前未发布PA、无真实训练/性能证据；等U/source阶段验证完成后按固定方案执行，既有结构交互和正收益路线独立保留。84%目标active，不能用发布或source信号代替验收。
+
+## 实际发布与首个训练信号
+
+RUNNING/VERIFIED，执行commit `76ab0b9944210f8aa3f09f051ea9694f55457cd6`；一次archive传输比较、remotecompile、真实同契约student/ownEMA strict noquery和实际runtime依赖import PASS。3首seed PID/CWD/argv/GPU/参数和日志增长核实，当前轮数[16, 12, 13]。第1112步实际梯度/AdamW/参数更新已观测，cohort约55%，SAME/CROSS aux/Lfeature normratio约.1168/.1038，W/PArefgains辅助grad None，真实t1/PA_b1参数更新有限非零；active增量约4.25e−4/3.24e−4。ZERO梯度0，GPU临时分支差2.44e−8为浮点抵消残差，不能写成bitwise0；totalshadow误差≤1.49e−8。没有本轮完整性能结论，后6row仅按原source条件，84%active。
