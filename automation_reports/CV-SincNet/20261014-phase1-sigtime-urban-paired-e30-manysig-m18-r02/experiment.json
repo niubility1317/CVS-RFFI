@@ -3307,5 +3307,31 @@
     "support/capsule_id/split_id/K are Phase2 fields, not applicable to thisPhase1 experiment; reuse existing VALIDATED_ONCE Phase1 IQ.",
     "r01 failed before submission at Windows-to-POSIX metadata path boundary; no training or target prediction launched. r02 is same scientific plan and budget."
   ],
-  "registered_at": "2026-10-14T14:29:24+00:00"
+  "registered_at": "2026-10-14T14:29:24+00:00",
+  "source_analyses": {
+    "ema_vcal": {
+      "status": "PLANNED",
+      "source_role": "V",
+      "U_opened": false,
+      "query_read": false,
+      "added_training_updates": 0,
+      "epochs_added": 0,
+      "rows": [
+        "C4-s2026092701",
+        "C4-s2026092702",
+        "C4-s2026092703"
+      ],
+      "thresholds": [
+        0.92,
+        0.95,
+        0.97
+      ],
+      "weak_std": 0.01,
+      "weak_seed": 2026101501,
+      "output": "source_ema_vcal",
+      "release": "cvs_sigtime_urban_paired_20261014_r02_ema_vcal",
+      "command": "python -u -m experiments.cvs_urban_sigtime.ema_source",
+      "plan_ref": "ema_source_plan.md"
+    }
+  }
 }

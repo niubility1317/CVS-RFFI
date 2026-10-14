@@ -11,7 +11,7 @@ c=CONFIG;project=Path(c['project']);release=project/'releases'/c['release'];run=
 analysis=c.get('analysis',False)
 if release.exists() or (run.exists() and not analysis):raise FileExistsError('Existing release/run; reconcile before resubmit')
 if analysis and not (run/'complete.json').is_file():raise ValueError('Post-freeze analysis requires completed registered rows')
-if analysis and (run/'source_mechanism').exists():raise FileExistsError('Existing source mechanism output; reconcile before retry')
+if analysis and (run/c.get('analysis_output','source_mechanism')).exists():raise FileExistsError('Existing source analysis output; reconcile before retry')
 archive=project/'releases'/c['archive']
 if hashlib.sha256(archive.read_bytes()).hexdigest()!=c['sha256']:raise ValueError('Single archive transfer comparison failed')
 if subprocess.check_output(['whoami'],text=True).strip()!='szu2070436088' or subprocess.check_output(['hostname'],text=True).strip()!='dell-DSS8440':raise ValueError('Ordinary account/host differs')
@@ -30,7 +30,7 @@ preflight=dict(status='VERIFIED',archive_transfer='VERIFIED',remote_compile='PAS
  gpu=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.free','--format=csv,noheader,nounits'],text=True),
  cwd=str(release),python=python,commit=c['commit'],read_at=time.time())
 (release/'preflight.json').write_text(json.dumps(preflight,indent=2)+'\n')
-command=[python,'-u','-m','experiments.cvs_urban_sigtime.mechanism' if analysis else 'experiments.cvs_urban_sigtime.dispatch']
+command=[python,'-u','-m',c.get('analysis_module','experiments.cvs_urban_sigtime.mechanism') if analysis else 'experiments.cvs_urban_sigtime.dispatch']
 logpath=release/'dispatcher.log'
 with logpath.open('x') as f:child=subprocess.Popen(command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=f,stderr=subprocess.STDOUT,start_new_session=True)
 submitted=dict(status='SUBMITTED',pid=child.pid,cwd=str(release),argv=command,log=str(logpath),commit=c['commit'],run_root=str(run))
@@ -39,7 +39,7 @@ print(json.dumps(submitted))
 '''
 
 INSPECT=r'''
-import json,os,time,subprocess
+import json,os,time,subprocess,sys
 from pathlib import Path
 c=CONFIG;release=Path(c['project'])/'releases'/c['release'];base=Path(c['project'])/'runs'/c['run']
 def read(p):return json.loads(p.read_text()) if p.is_file() else None
@@ -48,6 +48,20 @@ def process(pid):
  try:return dict(pid=pid,cwd=os.readlink(p/'cwd'),argv=(p/'cmdline').read_bytes().decode().strip('\0').split('\0'))
  except (FileNotFoundError,ProcessLookupError,PermissionError):return None
 submit=read(release/'submit.json');main=process(submit['pid']) if submit else None
+if c.get('analysis',False):
+ output=base/c.get('analysis_output','source_mechanism');result=read(output/'results.json')
+ valid_live=bool(main and main['cwd']==str(release) and main['argv']==submit['argv'])
+ valid_done=bool(result and result.get('source_only') and not result.get('query_read') and
+     result.get('status') in ('ANALYZED','SOURCE_EMA_CALIBRATION_COMPLETE'))
+ log=release/'dispatcher.log'
+ print(json.dumps(dict(status='VERIFIED' if valid_live or valid_done else 'FAILED' if submit and not main else 'UNKNOWN',
+     submit=submit,process=main,workers=[],failure=None if valid_live or valid_done else 'Source analysis not running and not complete',
+     completion={k:result.get(k) for k in ('status','source_only','query_read','seconds','commit')} if result else None,
+     analysis_completed=valid_done,analysis_progress=read(output/'progress.json'),
+     log_bytes=log.stat().st_size if log.is_file() else 0,log_mtime=log.stat().st_mtime if log.is_file() else None,
+     dispatcher_log_tail=log.read_text(errors='replace')[-4000:] if log.is_file() else None,
+     preflight=read(release/'preflight.json'),read_at=time.time())))
+ sys.exit(0)
 workers=[]
 for row in (read(base/'launch.json') or {}).get('rows',[]):
  src=base/row['row_id']/'source';ep=src/'epoch_metrics.jsonl'
@@ -69,7 +83,11 @@ print(json.dumps(dict(status='FAILED' if failure else 'VERIFIED' if valid else '
  gpu=subprocess.check_output(['nvidia-smi','--query-compute-apps=pid,gpu_uuid,used_memory','--format=csv,noheader,nounits'],text=True))))
 '''
 
-def configuration(analysis=False):return dict(project=d.PROJECT,release=d.RELEASE+('_analysis' if analysis else ''),run=d.RUN,analysis=analysis)
+def configuration(analysis=False):
+    if analysis=='ema':
+        return dict(project=d.PROJECT,release=d.RELEASE+'_ema_vcal',run=d.RUN,analysis=True,
+            analysis_module='experiments.cvs_urban_sigtime.ema_source',analysis_output='source_ema_vcal')
+    return dict(project=d.PROJECT,release=d.RELEASE+('_analysis' if analysis else ''),run=d.RUN,analysis=analysis)
 
 def inspect(output,analysis=False):
     value=remote(INSPECT.replace('CONFIG',repr(configuration(analysis))))
@@ -96,5 +114,7 @@ def publish(output,analysis=False):
     d.write(output/'submission.json',value);print(json.dumps(value));return value
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--inspect',action='store_true');p.add_argument('--analysis',action='store_true');a=p.parse_args()
-    inspect(a.output,a.analysis) if a.inspect else publish(a.output,a.analysis)
+    p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--inspect',action='store_true');p.add_argument('--analysis',action='store_true');p.add_argument('--ema-source',action='store_true');a=p.parse_args()
+    if a.analysis and a.ema_source:p.error('Select only one source analysis')
+    mode='ema' if a.ema_source else a.analysis
+    inspect(a.output,mode) if a.inspect else publish(a.output,mode)
