@@ -353,3 +353,6 @@ PA 重组首种子源条件已 VERIFIED：ZERO/SAME_RX/CROSS_RX 的 final L CE .
 
 
 PA 重组 9 模型已完整 ANALYZED / VERIFIED：ZERO 80.6710%、SAME 80.5823%、CROSS 80.6165%。CROSS − ZERO −0.0546 个百分点、1/3 正差；关闭固定 PA 矩阵，不延伸隐藏 U donor 硬类别。完整训练/独立默认头评分、全曲线、36 特征梯度及 AdamW 点、纠错/引错、9 个函数见证均已核实。完整三个 ZERO 的 L6300 几何有 20,497/378,000 条固定 margin=.1 关系未满足。新报告将主线转向受控证据候选集合监督，排序原型保留未发布；正收益结构独立保留，84% 仍 active。详见[PA 完整报告](../automation_reports/CV-SincNet/20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01/report.md)。
+
+
+受控证据集合首seed完整V27000可行性已ANALYZED/VERIFIED，但科学条件不通过：原硬门控补集2570个样本只保留81.9066%真实TX，465个集合排除真类；S1有效1554中417个排除真类，多类有效集合192中70个排除真类。固定beta=.5/pi=.9版本关闭，不扫参数、不启动B0/B1/S0/S1，不追加seed。54,000源前向/4无查询smoke，0训练/头拟合/U/target访问；270项独立逐包计数核实。下一步严格可见周期残差源可预测性检查，历史正收益结构独立保留，84%仍active。详见[集合可行性报告](../automation_reports/CV-SincNet/20261014-phase1-evidence-set-sourceV-manysig-s2026092701-r01/report.md)。

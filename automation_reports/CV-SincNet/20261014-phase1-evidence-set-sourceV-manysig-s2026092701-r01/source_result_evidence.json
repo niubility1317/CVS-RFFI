@@ -1,0 +1,2953 @@
+{
+  "status": "VERIFIED",
+  "scientific_decision": "REJECT_FIXED_BETA_PI_NO_TRAINING",
+  "run_id": "20261014-phase1-evidence-set-sourceV-manysig-s2026092701-r01",
+  "analysis_code_commit": "159bc715f1eba0656b540283344899b349707fd1",
+  "source_execution_commit": "76ab0b9944210f8aa3f09f051ea9694f55457cd6",
+  "unique_independent_P0_P1_review": "PASS, read-only review_identity_tangent; no duplicate review",
+  "archive_SHA_comparison": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_checkpoint_no_query_smoke_packets": 4,
+  "source_summary": {
+    "status": "SOURCE_FEASIBILITY_COMPLETE",
+    "run_id": "20261014-phase1-evidence-set-sourceV-manysig-s2026092701-r01",
+    "source_row": "ZERO-s2026092701",
+    "analysis_code_commit": "159bc715f1eba0656b540283344899b349707fd1",
+    "source_execution_commit": "76ab0b9944210f8aa3f09f051ea9694f55457cd6",
+    "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01/ZERO-s2026092701/source/final_ssdg.pth",
+    "source_role": "V",
+    "source_current_final_epoch": 50,
+    "own_EMA_successful_updates": 11100,
+    "source_count": 27000,
+    "beta": 0.5,
+    "probability": 0.9,
+    "coefficient": 0.16,
+    "student_change": "S1 fixed PA increment half weakening only; reference unchanged",
+    "GPU": 3,
+    "records": {
+      "overall": {
+        "count": 27000,
+        "subsets": {
+          "all": {
+            "count": 27000,
+            "size_histogram": {
+              "1": 26569,
+              "2": 403,
+              "3": 25,
+              "4": 3,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 26532,
+            "true_class_excluded": 468,
+            "truth_retention": 0.9826666666666667,
+            "S0": {
+              "active": 2280,
+              "active_multiclass": 169,
+              "active_true_excluded": 382,
+              "multiclass_active_true_excluded": 64,
+              "mean_candidate_mass": 0.9627383855247043,
+              "mean_hinge_full_group": 0.033971155399801556
+            },
+            "S1": {
+              "active": 3396,
+              "active_multiclass": 192,
+              "active_true_excluded": 419,
+              "multiclass_active_true_excluded": 70,
+              "mean_candidate_mass": 0.9476601405804976,
+              "mean_hinge_full_group": 0.040477605388948214
+            }
+          },
+          "hard_accepted": {
+            "count": 24430,
+            "size_histogram": {
+              "1": 24430,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 24427,
+            "true_class_excluded": 3,
+            "truth_retention": 0.9998772001637332,
+            "S0": {
+              "active": 898,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9835208797608542,
+              "mean_hinge_full_group": 0.005319107516325257
+            },
+            "S1": {
+              "active": 1842,
+              "active_multiclass": 0,
+              "active_true_excluded": 2,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9690080243711388,
+              "mean_hinge_full_group": 0.010951102646071551
+            }
+          },
+          "complement": {
+            "count": 2570,
+            "size_histogram": {
+              "1": 2139,
+              "2": 403,
+              "3": 25,
+              "4": 3,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 2105,
+            "true_class_excluded": 465,
+            "truth_retention": 0.8190661478599222,
+            "S0": {
+              "active": 1382,
+              "active_multiclass": 169,
+              "active_true_excluded": 382,
+              "multiclass_active_true_excluded": 64,
+              "mean_candidate_mass": 0.7651833916767881,
+              "mean_hinge_full_group": 0.30633284014428636
+            },
+            "S1": {
+              "active": 1554,
+              "active_multiclass": 192,
+              "active_true_excluded": 417,
+              "multiclass_active_true_excluded": 70,
+              "mean_candidate_mass": 0.7447306460258822,
+              "mean_hinge_full_group": 0.32115171511987306
+            }
+          }
+        }
+      },
+      "RX/1": {
+        "count": 5400,
+        "subsets": {
+          "all": {
+            "count": 5400,
+            "size_histogram": {
+              "1": 5374,
+              "2": 25,
+              "3": 0,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 5381,
+            "true_class_excluded": 19,
+            "truth_retention": 0.9964814814814815,
+            "S0": {
+              "active": 167,
+              "active_multiclass": 11,
+              "active_true_excluded": 13,
+              "multiclass_active_true_excluded": 3,
+              "mean_candidate_mass": 0.9835180033841687,
+              "mean_hinge_full_group": 0.013243288822748042
+            },
+            "S1": {
+              "active": 365,
+              "active_multiclass": 14,
+              "active_true_excluded": 15,
+              "multiclass_active_true_excluded": 3,
+              "mean_candidate_mass": 0.9687365288518507,
+              "mean_hinge_full_group": 0.01820019881758425
+            }
+          },
+          "hard_accepted": {
+            "count": 5219,
+            "size_histogram": {
+              "1": 5219,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 5219,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 72,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9911934358677569,
+              "mean_hinge_full_group": 0.0018726123515091812
+            },
+            "S1": {
+              "active": 255,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9770038329817184,
+              "mean_hinge_full_group": 0.006147407235131224
+            }
+          },
+          "complement": {
+            "count": 181,
+            "size_histogram": {
+              "1": 155,
+              "2": 25,
+              "3": 0,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 162,
+            "true_class_excluded": 19,
+            "truth_retention": 0.8950276243093923,
+            "S0": {
+              "active": 95,
+              "active_multiclass": 11,
+              "active_true_excluded": 13,
+              "multiclass_active_true_excluded": 3,
+              "mean_candidate_mass": 0.7622026324899898,
+              "mean_hinge_full_group": 0.3411082639796299
+            },
+            "S1": {
+              "active": 110,
+              "active_multiclass": 14,
+              "active_true_excluded": 15,
+              "multiclass_active_true_excluded": 3,
+              "mean_candidate_mass": 0.7303549804884261,
+              "mean_hinge_full_group": 0.36573345444643696
+            }
+          }
+        }
+      },
+      "RX/3": {
+        "count": 5400,
+        "subsets": {
+          "all": {
+            "count": 5400,
+            "size_histogram": {
+              "1": 5186,
+              "2": 201,
+              "3": 13,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 5142,
+            "true_class_excluded": 258,
+            "truth_retention": 0.9522222222222222,
+            "S0": {
+              "active": 984,
+              "active_multiclass": 89,
+              "active_true_excluded": 206,
+              "multiclass_active_true_excluded": 34,
+              "mean_candidate_mass": 0.922028944828996,
+              "mean_hinge_full_group": 0.0802518439044555
+            },
+            "S1": {
+              "active": 1288,
+              "active_multiclass": 97,
+              "active_true_excluded": 229,
+              "multiclass_active_true_excluded": 36,
+              "mean_candidate_mass": 0.9058865140685467,
+              "mean_hinge_full_group": 0.08743103113715295
+            }
+          },
+          "hard_accepted": {
+            "count": 4149,
+            "size_histogram": {
+              "1": 4149,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4148,
+            "true_class_excluded": 1,
+            "truth_retention": 0.9997589780670041,
+            "S0": {
+              "active": 310,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9700109482414897,
+              "mean_hinge_full_group": 0.011840503997732628
+            },
+            "S1": {
+              "active": 529,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.953216565110707,
+              "mean_hinge_full_group": 0.020330640137425443
+            }
+          },
+          "complement": {
+            "count": 1251,
+            "size_histogram": {
+              "1": 1037,
+              "2": 201,
+              "3": 13,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 994,
+            "true_class_excluded": 257,
+            "truth_retention": 0.7945643485211831,
+            "S0": {
+              "active": 674,
+              "active_multiclass": 89,
+              "active_true_excluded": 206,
+              "multiclass_active_true_excluded": 34,
+              "mean_candidate_mass": 0.7628943867487111,
+              "mean_hinge_full_group": 0.3071412517965364
+            },
+            "S1": {
+              "active": 759,
+              "active_multiclass": 97,
+              "active_true_excluded": 229,
+              "multiclass_active_true_excluded": 36,
+              "mean_candidate_mass": 0.7489141865114538,
+              "mean_hinge_full_group": 0.3099726156758176
+            }
+          }
+        }
+      },
+      "RX/4": {
+        "count": 5400,
+        "subsets": {
+          "all": {
+            "count": 5400,
+            "size_histogram": {
+              "1": 5355,
+              "2": 40,
+              "3": 3,
+              "4": 2,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 5323,
+            "true_class_excluded": 77,
+            "truth_retention": 0.9857407407407407,
+            "S0": {
+              "active": 236,
+              "active_multiclass": 29,
+              "active_true_excluded": 63,
+              "multiclass_active_true_excluded": 17,
+              "mean_candidate_mass": 0.9783855787995789,
+              "mean_hinge_full_group": 0.016072672368199738
+            },
+            "S1": {
+              "active": 476,
+              "active_multiclass": 34,
+              "active_true_excluded": 71,
+              "multiclass_active_true_excluded": 20,
+              "mean_candidate_mass": 0.9596177212452447,
+              "mean_hinge_full_group": 0.02439297248505884
+            }
+          },
+          "hard_accepted": {
+            "count": 5144,
+            "size_histogram": {
+              "1": 5144,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 5142,
+            "true_class_excluded": 2,
+            "truth_retention": 0.999611197511664,
+            "S0": {
+              "active": 105,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9883010138005807,
+              "mean_hinge_full_group": 0.0025961135860248633
+            },
+            "S1": {
+              "active": 327,
+              "active_multiclass": 0,
+              "active_true_excluded": 2,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9710705497622212,
+              "mean_hinge_full_group": 0.00844721961476801
+            }
+          },
+          "complement": {
+            "count": 256,
+            "size_histogram": {
+              "1": 211,
+              "2": 40,
+              "3": 3,
+              "4": 2,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 181,
+            "true_class_excluded": 75,
+            "truth_retention": 0.70703125,
+            "S0": {
+              "active": 131,
+              "active_multiclass": 29,
+              "active_true_excluded": 63,
+              "multiclass_active_true_excluded": 17,
+              "mean_candidate_mass": 0.7791473067482002,
+              "mean_hinge_full_group": 0.2868672753975261
+            },
+            "S1": {
+              "active": 149,
+              "active_multiclass": 34,
+              "active_true_excluded": 69,
+              "multiclass_active_true_excluded": 20,
+              "mean_candidate_mass": 0.7294874482322484,
+              "mean_hinge_full_group": 0.34480294422246516
+            }
+          }
+        }
+      },
+      "RX/6": {
+        "count": 5400,
+        "subsets": {
+          "all": {
+            "count": 5400,
+            "size_histogram": {
+              "1": 5383,
+              "2": 13,
+              "3": 4,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 5386,
+            "true_class_excluded": 14,
+            "truth_retention": 0.9974074074074074,
+            "S0": {
+              "active": 142,
+              "active_multiclass": 7,
+              "active_true_excluded": 10,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.9861253830335206,
+              "mean_hinge_full_group": 0.007816469466520681
+            },
+            "S1": {
+              "active": 346,
+              "active_multiclass": 10,
+              "active_true_excluded": 12,
+              "multiclass_active_true_excluded": 2,
+              "mean_candidate_mass": 0.9710489615949768,
+              "mean_hinge_full_group": 0.013702946697120313
+            }
+          },
+          "hard_accepted": {
+            "count": 5288,
+            "size_histogram": {
+              "1": 5288,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 5288,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 89,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9903727302527825,
+              "mean_hinge_full_group": 0.0021058320858249506
+            },
+            "S1": {
+              "active": 279,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9755972441336571,
+              "mean_hinge_full_group": 0.007790087223470031
+            }
+          },
+          "complement": {
+            "count": 112,
+            "size_histogram": {
+              "1": 95,
+              "2": 13,
+              "3": 4,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 98,
+            "true_class_excluded": 14,
+            "truth_retention": 0.875,
+            "S0": {
+              "active": 53,
+              "active_multiclass": 7,
+              "active_true_excluded": 10,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.7855899178955171,
+              "mean_hinge_full_group": 0.27744013436936904
+            },
+            "S1": {
+              "active": 67,
+              "active_multiclass": 10,
+              "active_true_excluded": 12,
+              "multiclass_active_true_excluded": 2,
+              "mean_candidate_mass": 0.7563050503044256,
+              "mean_hinge_full_group": 0.2928743832744658
+            }
+          }
+        }
+      },
+      "RX/8": {
+        "count": 5400,
+        "subsets": {
+          "all": {
+            "count": 5400,
+            "size_histogram": {
+              "1": 5271,
+              "2": 124,
+              "3": 5,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 5300,
+            "true_class_excluded": 100,
+            "truth_retention": 0.9814814814814815,
+            "S0": {
+              "active": 751,
+              "active_multiclass": 33,
+              "active_true_excluded": 90,
+              "multiclass_active_true_excluded": 9,
+              "mean_candidate_mass": 0.9436340175772568,
+              "mean_hinge_full_group": 0.05247150243708381
+            },
+            "S1": {
+              "active": 921,
+              "active_multiclass": 37,
+              "active_true_excluded": 92,
+              "multiclass_active_true_excluded": 9,
+              "mean_candidate_mass": 0.9330109771418695,
+              "mean_hinge_full_group": 0.0586608778078247
+            }
+          },
+          "hard_accepted": {
+            "count": 4630,
+            "size_histogram": {
+              "1": 4630,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4630,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 322,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9738422708300226,
+              "mean_hinge_full_group": 0.010055363567678768
+            },
+            "S1": {
+              "active": 452,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9643288050659532,
+              "mean_hinge_full_group": 0.014352875684044017
+            }
+          },
+          "complement": {
+            "count": 770,
+            "size_histogram": {
+              "1": 641,
+              "2": 124,
+              "3": 5,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 670,
+            "true_class_excluded": 100,
+            "truth_retention": 0.8701298701298701,
+            "S0": {
+              "active": 429,
+              "active_multiclass": 33,
+              "active_true_excluded": 90,
+              "multiclass_active_true_excluded": 9,
+              "mean_candidate_mass": 0.7619921830833539,
+              "mean_hinge_full_group": 0.30751919459987
+            },
+            "S1": {
+              "active": 469,
+              "active_multiclass": 37,
+              "active_true_excluded": 92,
+              "multiclass_active_true_excluded": 9,
+              "mean_candidate_mass": 0.7446972845593927,
+              "mean_hinge_full_group": 0.32508431914951896
+            }
+          }
+        }
+      },
+      "day/1": {
+        "count": 9000,
+        "subsets": {
+          "all": {
+            "count": 9000,
+            "size_histogram": {
+              "1": 8835,
+              "2": 153,
+              "3": 11,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 8850,
+            "true_class_excluded": 150,
+            "truth_retention": 0.9833333333333333,
+            "S0": {
+              "active": 712,
+              "active_multiclass": 51,
+              "active_true_excluded": 127,
+              "multiclass_active_true_excluded": 21,
+              "mean_candidate_mass": 0.9645041161855269,
+              "mean_hinge_full_group": 0.03282559561646647
+            },
+            "S1": {
+              "active": 1072,
+              "active_multiclass": 60,
+              "active_true_excluded": 137,
+              "multiclass_active_true_excluded": 22,
+              "mean_candidate_mass": 0.9500996472158779,
+              "mean_hinge_full_group": 0.037880820249517756
+            }
+          },
+          "hard_accepted": {
+            "count": 8184,
+            "size_histogram": {
+              "1": 8184,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 8184,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 294,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9839039445833785,
+              "mean_hinge_full_group": 0.00530432067804206
+            },
+            "S1": {
+              "active": 600,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.969530527011099,
+              "mean_hinge_full_group": 0.010434686274559967
+            }
+          },
+          "complement": {
+            "count": 816,
+            "size_histogram": {
+              "1": 651,
+              "2": 153,
+              "3": 11,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 666,
+            "true_class_excluded": 150,
+            "truth_retention": 0.8161764705882353,
+            "S0": {
+              "active": 418,
+              "active_multiclass": 51,
+              "active_true_excluded": 127,
+              "multiclass_active_true_excluded": 21,
+              "mean_candidate_mass": 0.7699352490188389,
+              "mean_hinge_full_group": 0.30884779426360537
+            },
+            "S1": {
+              "active": 472,
+              "active_multiclass": 60,
+              "active_true_excluded": 137,
+              "multiclass_active_true_excluded": 22,
+              "mean_candidate_mass": 0.7552193527991026,
+              "mean_hinge_full_group": 0.31314939923365326
+            }
+          }
+        }
+      },
+      "day/2": {
+        "count": 9000,
+        "subsets": {
+          "all": {
+            "count": 9000,
+            "size_histogram": {
+              "1": 8898,
+              "2": 97,
+              "3": 4,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 8868,
+            "true_class_excluded": 132,
+            "truth_retention": 0.9853333333333333,
+            "S0": {
+              "active": 686,
+              "active_multiclass": 34,
+              "active_true_excluded": 102,
+              "multiclass_active_true_excluded": 12,
+              "mean_candidate_mass": 0.9660819982265433,
+              "mean_hinge_full_group": 0.030398635379970073
+            },
+            "S1": {
+              "active": 1054,
+              "active_multiclass": 40,
+              "active_true_excluded": 120,
+              "multiclass_active_true_excluded": 16,
+              "mean_candidate_mass": 0.9517026594841025,
+              "mean_hinge_full_group": 0.03623450766172674
+            }
+          },
+          "hard_accepted": {
+            "count": 8265,
+            "size_histogram": {
+              "1": 8265,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 8263,
+            "true_class_excluded": 2,
+            "truth_retention": 0.9997580157289776,
+            "S0": {
+              "active": 293,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9839004041423094,
+              "mean_hinge_full_group": 0.005177243932838233
+            },
+            "S1": {
+              "active": 613,
+              "active_multiclass": 0,
+              "active_true_excluded": 2,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9700666258660361,
+              "mean_hinge_full_group": 0.010638670178881864
+            }
+          },
+          "complement": {
+            "count": 735,
+            "size_histogram": {
+              "1": 633,
+              "2": 97,
+              "3": 4,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 605,
+            "true_class_excluded": 130,
+            "truth_retention": 0.8231292517006803,
+            "S0": {
+              "active": 393,
+              "active_multiclass": 34,
+              "active_true_excluded": 102,
+              "multiclass_active_true_excluded": 12,
+              "mean_candidate_mass": 0.7657158419084387,
+              "mean_hinge_full_group": 0.31401060859159546
+            },
+            "S1": {
+              "active": 441,
+              "active_multiclass": 40,
+              "active_true_excluded": 118,
+              "multiclass_active_true_excluded": 16,
+              "mean_candidate_mass": 0.7452017313933799,
+              "mean_hinge_full_group": 0.3240570883361661
+            }
+          }
+        }
+      },
+      "day/3": {
+        "count": 9000,
+        "subsets": {
+          "all": {
+            "count": 9000,
+            "size_histogram": {
+              "1": 8836,
+              "2": 153,
+              "3": 10,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 8814,
+            "true_class_excluded": 186,
+            "truth_retention": 0.9793333333333333,
+            "S0": {
+              "active": 882,
+              "active_multiclass": 84,
+              "active_true_excluded": 153,
+              "multiclass_active_true_excluded": 31,
+              "mean_candidate_mass": 0.9576290421620425,
+              "mean_hinge_full_group": 0.038689235202968124
+            },
+            "S1": {
+              "active": 1270,
+              "active_multiclass": 92,
+              "active_true_excluded": 162,
+              "multiclass_active_true_excluded": 32,
+              "mean_candidate_mass": 0.9411781150415126,
+              "mean_hinge_full_group": 0.047317488255600136
+            }
+          },
+          "hard_accepted": {
+            "count": 7981,
+            "size_histogram": {
+              "1": 7981,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 7980,
+            "true_class_excluded": 1,
+            "truth_retention": 0.9998747024182433,
+            "S0": {
+              "active": 311,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9827350419560347,
+              "mean_hinge_full_group": 0.00548118219393833
+            },
+            "S1": {
+              "active": 629,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9673759603489911,
+              "mean_hinge_full_group": 0.011804204503705128
+            }
+          },
+          "complement": {
+            "count": 1019,
+            "size_histogram": {
+              "1": 855,
+              "2": 153,
+              "3": 10,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 834,
+            "true_class_excluded": 185,
+            "truth_retention": 0.8184494602551521,
+            "S0": {
+              "active": 571,
+              "active_multiclass": 84,
+              "active_true_excluded": 153,
+              "multiclass_active_true_excluded": 31,
+              "mean_candidate_mass": 0.7609941213025224,
+              "mean_hinge_full_group": 0.2987809634316892
+            },
+            "S1": {
+              "active": 641,
+              "active_multiclass": 92,
+              "active_true_excluded": 162,
+              "multiclass_active_true_excluded": 32,
+              "mean_candidate_mass": 0.7359916543948142,
+              "mean_hinge_full_group": 0.3254642180140634
+            }
+          }
+        }
+      },
+      "TX/0": {
+        "count": 4500,
+        "subsets": {
+          "all": {
+            "count": 4500,
+            "size_histogram": {
+              "1": 4456,
+              "2": 40,
+              "3": 3,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4447,
+            "true_class_excluded": 53,
+            "truth_retention": 0.9882222222222222,
+            "S0": {
+              "active": 338,
+              "active_multiclass": 32,
+              "active_true_excluded": 42,
+              "multiclass_active_true_excluded": 10,
+              "mean_candidate_mass": 0.9646721180520124,
+              "mean_hinge_full_group": 0.029391885300477347
+            },
+            "S1": {
+              "active": 420,
+              "active_multiclass": 35,
+              "active_true_excluded": 43,
+              "multiclass_active_true_excluded": 11,
+              "mean_candidate_mass": 0.9577126827355888,
+              "mean_hinge_full_group": 0.03336427594059044
+            }
+          },
+          "hard_accepted": {
+            "count": 4280,
+            "size_histogram": {
+              "1": 4280,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4280,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 208,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9786852555993562,
+              "mean_hinge_full_group": 0.00743568734761989
+            },
+            "S1": {
+              "active": 290,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9716171089072372,
+              "mean_hinge_full_group": 0.010969909329280676
+            }
+          },
+          "complement": {
+            "count": 220,
+            "size_histogram": {
+              "1": 176,
+              "2": 40,
+              "3": 3,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 167,
+            "true_class_excluded": 53,
+            "truth_retention": 0.759090909090909,
+            "S0": {
+              "active": 130,
+              "active_multiclass": 32,
+              "active_true_excluded": 42,
+              "multiclass_active_true_excluded": 10,
+              "mean_candidate_mass": 0.6920528966764158,
+              "mean_hinge_full_group": 0.45653973638334056
+            },
+            "S1": {
+              "active": 130,
+              "active_multiclass": 35,
+              "active_true_excluded": 43,
+              "multiclass_active_true_excluded": 11,
+              "mean_candidate_mass": 0.6872083917598832,
+              "mean_hinge_full_group": 0.4690364991060712
+            }
+          }
+        }
+      },
+      "TX/1": {
+        "count": 4500,
+        "subsets": {
+          "all": {
+            "count": 4500,
+            "size_histogram": {
+              "1": 4445,
+              "2": 50,
+              "3": 5,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4432,
+            "true_class_excluded": 68,
+            "truth_retention": 0.9848888888888889,
+            "S0": {
+              "active": 648,
+              "active_multiclass": 26,
+              "active_true_excluded": 53,
+              "multiclass_active_true_excluded": 10,
+              "mean_candidate_mass": 0.940593206954913,
+              "mean_hinge_full_group": 0.05521324385868179
+            },
+            "S1": {
+              "active": 981,
+              "active_multiclass": 34,
+              "active_true_excluded": 61,
+              "multiclass_active_true_excluded": 11,
+              "mean_candidate_mass": 0.916025415904406,
+              "mean_hinge_full_group": 0.06380377461844021
+            }
+          },
+          "hard_accepted": {
+            "count": 3988,
+            "size_histogram": {
+              "1": 3988,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 3988,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 338,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.968840184988624,
+              "mean_hinge_full_group": 0.014494374528930801
+            },
+            "S1": {
+              "active": 640,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.942094670498413,
+              "mean_hinge_full_group": 0.026143973928651098
+            }
+          },
+          "complement": {
+            "count": 512,
+            "size_histogram": {
+              "1": 457,
+              "2": 50,
+              "3": 5,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 444,
+            "true_class_excluded": 68,
+            "truth_retention": 0.8671875,
+            "S0": {
+              "active": 310,
+              "active_multiclass": 26,
+              "active_true_excluded": 53,
+              "multiclass_active_true_excluded": 10,
+              "mean_candidate_mass": 0.720575729614211,
+              "mean_hinge_full_group": 0.3723750619974453
+            },
+            "S1": {
+              "active": 341,
+              "active_multiclass": 34,
+              "active_true_excluded": 61,
+              "multiclass_active_true_excluded": 11,
+              "mean_candidate_mass": 0.712970362543274,
+              "mean_hinge_full_group": 0.35713831592875067
+            }
+          }
+        }
+      },
+      "TX/2": {
+        "count": 4500,
+        "subsets": {
+          "all": {
+            "count": 4500,
+            "size_histogram": {
+              "1": 4473,
+              "2": 24,
+              "3": 2,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4467,
+            "true_class_excluded": 33,
+            "truth_retention": 0.9926666666666667,
+            "S0": {
+              "active": 161,
+              "active_multiclass": 19,
+              "active_true_excluded": 27,
+              "multiclass_active_true_excluded": 10,
+              "mean_candidate_mass": 0.982218681777517,
+              "mean_hinge_full_group": 0.011066301602456304
+            },
+            "S1": {
+              "active": 235,
+              "active_multiclass": 22,
+              "active_true_excluded": 29,
+              "multiclass_active_true_excluded": 11,
+              "mean_candidate_mass": 0.9755173498176866,
+              "mean_hinge_full_group": 0.013861020214027828
+            }
+          },
+          "hard_accepted": {
+            "count": 4367,
+            "size_histogram": {
+              "1": 4367,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4367,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 96,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9884836989776313,
+              "mean_hinge_full_group": 0.002682439945356672
+            },
+            "S1": {
+              "active": 161,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9823674884095246,
+              "mean_hinge_full_group": 0.004497168496513848
+            }
+          },
+          "complement": {
+            "count": 133,
+            "size_histogram": {
+              "1": 106,
+              "2": 24,
+              "3": 2,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 100,
+            "true_class_excluded": 33,
+            "truth_retention": 0.7518796992481203,
+            "S0": {
+              "active": 65,
+              "active_multiclass": 19,
+              "active_true_excluded": 27,
+              "multiclass_active_true_excluded": 10,
+              "mean_candidate_mass": 0.776509432808349,
+              "mean_hinge_full_group": 0.28634693210286305
+            },
+            "S1": {
+              "active": 74,
+              "active_multiclass": 22,
+              "active_true_excluded": 29,
+              "multiclass_active_true_excluded": 11,
+              "mean_candidate_mass": 0.7505958819187674,
+              "mean_hinge_full_group": 0.32131921908909217
+            }
+          }
+        }
+      },
+      "TX/3": {
+        "count": 4500,
+        "subsets": {
+          "all": {
+            "count": 4500,
+            "size_histogram": {
+              "1": 4265,
+              "2": 229,
+              "3": 6,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4279,
+            "true_class_excluded": 221,
+            "truth_retention": 0.9508888888888889,
+            "S0": {
+              "active": 855,
+              "active_multiclass": 52,
+              "active_true_excluded": 184,
+              "multiclass_active_true_excluded": 16,
+              "mean_candidate_mass": 0.9218363397210423,
+              "mean_hinge_full_group": 0.08284661726819144
+            },
+            "S1": {
+              "active": 1199,
+              "active_multiclass": 53,
+              "active_true_excluded": 203,
+              "multiclass_active_true_excluded": 18,
+              "mean_candidate_mass": 0.8970381339111676,
+              "mean_hinge_full_group": 0.09446841258472867
+            }
+          },
+          "hard_accepted": {
+            "count": 3172,
+            "size_histogram": {
+              "1": 3172,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 3169,
+            "true_class_excluded": 3,
+            "truth_retention": 0.9990542244640606,
+            "S0": {
+              "active": 164,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.978493788503909,
+              "mean_hinge_full_group": 0.00568537039900713
+            },
+            "S1": {
+              "active": 414,
+              "active_multiclass": 0,
+              "active_true_excluded": 2,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.952074800273885,
+              "mean_hinge_full_group": 0.016351753679041906
+            }
+          },
+          "complement": {
+            "count": 1328,
+            "size_histogram": {
+              "1": 1093,
+              "2": 229,
+              "3": 6,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1110,
+            "true_class_excluded": 218,
+            "truth_retention": 0.8358433734939759,
+            "S0": {
+              "active": 691,
+              "active_multiclass": 52,
+              "active_true_excluded": 184,
+              "multiclass_active_true_excluded": 16,
+              "mean_candidate_mass": 0.7865069515137731,
+              "mean_hinge_full_group": 0.2671504388563335
+            },
+            "S1": {
+              "active": 785,
+              "active_multiclass": 53,
+              "active_true_excluded": 201,
+              "multiclass_active_true_excluded": 18,
+              "mean_candidate_mass": 0.7655800723881707,
+              "mean_hinge_full_group": 0.2810542876215046
+            }
+          }
+        }
+      },
+      "TX/4": {
+        "count": 4500,
+        "subsets": {
+          "all": {
+            "count": 4500,
+            "size_histogram": {
+              "1": 4458,
+              "2": 34,
+              "3": 8,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4440,
+            "true_class_excluded": 60,
+            "truth_retention": 0.9866666666666667,
+            "S0": {
+              "active": 196,
+              "active_multiclass": 25,
+              "active_true_excluded": 53,
+              "multiclass_active_true_excluded": 9,
+              "mean_candidate_mass": 0.9779688923189209,
+              "mean_hinge_full_group": 0.018550234794616698
+            },
+            "S1": {
+              "active": 252,
+              "active_multiclass": 29,
+              "active_true_excluded": 55,
+              "multiclass_active_true_excluded": 9,
+              "mean_candidate_mass": 0.9735217554722395,
+              "mean_hinge_full_group": 0.021913446245921984
+            }
+          },
+          "hard_accepted": {
+            "count": 4257,
+            "size_histogram": {
+              "1": 4257,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4257,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 64,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9902745196243561,
+              "mean_hinge_full_group": 0.0017874112673452098
+            },
+            "S1": {
+              "active": 99,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9875932594952461,
+              "mean_hinge_full_group": 0.002981935054350829
+            }
+          },
+          "complement": {
+            "count": 243,
+            "size_histogram": {
+              "1": 201,
+              "2": 34,
+              "3": 8,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 183,
+            "true_class_excluded": 60,
+            "truth_retention": 0.7530864197530864,
+            "S0": {
+              "active": 132,
+              "active_multiclass": 25,
+              "active_true_excluded": 53,
+              "multiclass_active_true_excluded": 9,
+              "mean_candidate_mass": 0.7623925324866678,
+              "mean_hinge_full_group": 0.3122100691797802
+            },
+            "S1": {
+              "active": 153,
+              "active_multiclass": 29,
+              "active_true_excluded": 55,
+              "multiclass_active_true_excluded": 9,
+              "mean_candidate_mass": 0.7270098516617906,
+              "mean_hinge_full_group": 0.3535654756390018
+            }
+          }
+        }
+      },
+      "TX/5": {
+        "count": 4500,
+        "subsets": {
+          "all": {
+            "count": 4500,
+            "size_histogram": {
+              "1": 4472,
+              "2": 26,
+              "3": 1,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4467,
+            "true_class_excluded": 33,
+            "truth_retention": 0.9926666666666667,
+            "S0": {
+              "active": 82,
+              "active_multiclass": 15,
+              "active_true_excluded": 23,
+              "multiclass_active_true_excluded": 9,
+              "mean_candidate_mass": 0.9891410743238197,
+              "mean_hinge_full_group": 0.006758649574385749
+            },
+            "S1": {
+              "active": 309,
+              "active_multiclass": 19,
+              "active_true_excluded": 28,
+              "multiclass_active_true_excluded": 10,
+              "mean_candidate_mass": 0.9661455056418975,
+              "mean_hinge_full_group": 0.015454702729980152
+            }
+          },
+          "hard_accepted": {
+            "count": 4366,
+            "size_histogram": {
+              "1": 4366,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 4366,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 28,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9937742327639011,
+              "mean_hinge_full_group": 0.0006780277697034129
+            },
+            "S1": {
+              "active": 238,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9718521917755047,
+              "mean_hinge_full_group": 0.007357091769623855
+            }
+          },
+          "complement": {
+            "count": 134,
+            "size_histogram": {
+              "1": 106,
+              "2": 26,
+              "3": 1,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 101,
+            "true_class_excluded": 33,
+            "truth_retention": 0.753731343283582,
+            "S0": {
+              "active": 54,
+              "active_multiclass": 15,
+              "active_true_excluded": 23,
+              "multiclass_active_true_excluded": 9,
+              "mean_candidate_mass": 0.8381830911193766,
+              "mean_hinge_full_group": 0.20487801374784156
+            },
+            "S1": {
+              "active": 71,
+              "active_multiclass": 19,
+              "active_true_excluded": 28,
+              "multiclass_active_true_excluded": 10,
+              "mean_candidate_mass": 0.7802097469901861,
+              "mean_hinge_full_group": 0.27929178819949946
+            }
+          }
+        }
+      },
+      "RXday/1/1": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1792,
+              "2": 8,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1791,
+            "true_class_excluded": 9,
+            "truth_retention": 0.995,
+            "S0": {
+              "active": 43,
+              "active_multiclass": 2,
+              "active_true_excluded": 6,
+              "multiclass_active_true_excluded": 2,
+              "mean_candidate_mass": 0.9862487177390398,
+              "mean_hinge_full_group": 0.013471333152718014
+            },
+            "S1": {
+              "active": 114,
+              "active_multiclass": 4,
+              "active_true_excluded": 7,
+              "multiclass_active_true_excluded": 2,
+              "mean_candidate_mass": 0.970996014892848,
+              "mean_hinge_full_group": 0.01773749598612388
+            }
+          },
+          "hard_accepted": {
+            "count": 1748,
+            "size_histogram": {
+              "1": 1748,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1748,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 16,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9928505952284592,
+              "mean_hinge_full_group": 0.0016011847417537353
+            },
+            "S1": {
+              "active": 81,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9779686452970079,
+              "mean_hinge_full_group": 0.005693136256196679
+            }
+          },
+          "complement": {
+            "count": 52,
+            "size_histogram": {
+              "1": 44,
+              "2": 8,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 43,
+            "true_class_excluded": 9,
+            "truth_retention": 0.8269230769230769,
+            "S0": {
+              "active": 27,
+              "active_multiclass": 2,
+              "active_true_excluded": 6,
+              "multiclass_active_true_excluded": 2,
+              "mean_candidate_mass": 0.764324066748556,
+              "mean_hinge_full_group": 0.4124909374289788
+            },
+            "S1": {
+              "active": 33,
+              "active_multiclass": 4,
+              "active_true_excluded": 7,
+              "multiclass_active_true_excluded": 2,
+              "mean_candidate_mass": 0.7366083620760876,
+              "mean_hinge_full_group": 0.4226132807536767
+            }
+          }
+        }
+      },
+      "RXday/1/2": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1794,
+              "2": 6,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1796,
+            "true_class_excluded": 4,
+            "truth_retention": 0.9977777777777778,
+            "S0": {
+              "active": 45,
+              "active_multiclass": 5,
+              "active_true_excluded": 3,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9861622390316592,
+              "mean_hinge_full_group": 0.009515888620581892
+            },
+            "S1": {
+              "active": 98,
+              "active_multiclass": 5,
+              "active_true_excluded": 4,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9742586505826977,
+              "mean_hinge_full_group": 0.013388812372254
+            }
+          },
+          "hard_accepted": {
+            "count": 1763,
+            "size_histogram": {
+              "1": 1763,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1763,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 25,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9916633357733945,
+              "mean_hinge_full_group": 0.0015637722337577267
+            },
+            "S1": {
+              "active": 76,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9799876107759795,
+              "mean_hinge_full_group": 0.004934804096724996
+            }
+          },
+          "complement": {
+            "count": 37,
+            "size_histogram": {
+              "1": 31,
+              "2": 6,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 33,
+            "true_class_excluded": 4,
+            "truth_retention": 0.8918918918918919,
+            "S0": {
+              "active": 20,
+              "active_multiclass": 5,
+              "active_true_excluded": 3,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.724042413202492,
+              "mean_hinge_full_group": 0.38842348834952795
+            },
+            "S1": {
+              "active": 22,
+              "active_multiclass": 5,
+              "active_true_excluded": 4,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.7012814392109175,
+              "mean_hinge_full_group": 0.4162108823657036
+            }
+          }
+        }
+      },
+      "RXday/1/3": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1788,
+              "2": 11,
+              "3": 0,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1794,
+            "true_class_excluded": 6,
+            "truth_retention": 0.9966666666666667,
+            "S0": {
+              "active": 79,
+              "active_multiclass": 4,
+              "active_true_excluded": 4,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.9781430533818073,
+              "mean_hinge_full_group": 0.01674264469494422
+            },
+            "S1": {
+              "active": 153,
+              "active_multiclass": 5,
+              "active_true_excluded": 4,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.9609549210800065,
+              "mean_hinge_full_group": 0.02347428809437487
+            }
+          },
+          "hard_accepted": {
+            "count": 1708,
+            "size_histogram": {
+              "1": 1708,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1708,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 31,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9890124358114649,
+              "mean_hinge_full_group": 0.002469181783270501
+            },
+            "S1": {
+              "active": 98,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9729365658983413,
+              "mean_hinge_full_group": 0.007863967542032727
+            }
+          },
+          "complement": {
+            "count": 92,
+            "size_histogram": {
+              "1": 80,
+              "2": 11,
+              "3": 0,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 86,
+            "true_class_excluded": 6,
+            "truth_retention": 0.9347826086956522,
+            "S0": {
+              "active": 48,
+              "active_multiclass": 4,
+              "active_true_excluded": 4,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.7763506056659896,
+              "mean_hinge_full_group": 0.2817325865768868
+            },
+            "S1": {
+              "active": 55,
+              "active_multiclass": 5,
+              "active_true_excluded": 4,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.7385130803222242,
+              "mean_hinge_full_group": 0.3132832826965529
+            }
+          }
+        }
+      },
+      "RXday/3/1": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1743,
+              "2": 53,
+              "3": 4,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1745,
+            "true_class_excluded": 55,
+            "truth_retention": 0.9694444444444444,
+            "S0": {
+              "active": 290,
+              "active_multiclass": 23,
+              "active_true_excluded": 40,
+              "multiclass_active_true_excluded": 11,
+              "mean_candidate_mass": 0.9327991965123349,
+              "mean_hinge_full_group": 0.06383289967974028
+            },
+            "S1": {
+              "active": 381,
+              "active_multiclass": 26,
+              "active_true_excluded": 47,
+              "multiclass_active_true_excluded": 11,
+              "mean_candidate_mass": 0.9181773518460492,
+              "mean_hinge_full_group": 0.06991694754196538
+            }
+          },
+          "hard_accepted": {
+            "count": 1470,
+            "size_histogram": {
+              "1": 1470,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1470,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 120,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9693617820334273,
+              "mean_hinge_full_group": 0.011991785415986769
+            },
+            "S1": {
+              "active": 187,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9538043080442616,
+              "mean_hinge_full_group": 0.019681378986154283
+            }
+          },
+          "complement": {
+            "count": 330,
+            "size_histogram": {
+              "1": 273,
+              "2": 53,
+              "3": 4,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 275,
+            "true_class_excluded": 55,
+            "truth_retention": 0.8333333333333334,
+            "S0": {
+              "active": 170,
+              "active_multiclass": 23,
+              "active_true_excluded": 40,
+              "multiclass_active_true_excluded": 11,
+              "mean_candidate_mass": 0.7699294973729235,
+              "mean_hinge_full_group": 0.29476149958191494
+            },
+            "S1": {
+              "active": 194,
+              "active_multiclass": 26,
+              "active_true_excluded": 47,
+              "multiclass_active_true_excluded": 11,
+              "mean_candidate_mass": 0.759475456054012,
+              "mean_hinge_full_group": 0.29369357110876027
+            }
+          }
+        }
+      },
+      "RXday/3/2": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1743,
+              "2": 56,
+              "3": 1,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1721,
+            "true_class_excluded": 79,
+            "truth_retention": 0.9561111111111111,
+            "S0": {
+              "active": 279,
+              "active_multiclass": 14,
+              "active_true_excluded": 61,
+              "multiclass_active_true_excluded": 6,
+              "mean_candidate_mass": 0.9312523744037996,
+              "mean_hinge_full_group": 0.07123862342288097
+            },
+            "S1": {
+              "active": 374,
+              "active_multiclass": 16,
+              "active_true_excluded": 71,
+              "multiclass_active_true_excluded": 8,
+              "mean_candidate_mass": 0.918973695722719,
+              "mean_hinge_full_group": 0.06995444363190068
+            }
+          },
+          "hard_accepted": {
+            "count": 1441,
+            "size_histogram": {
+              "1": 1441,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1441,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 96,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.971099821314226,
+              "mean_hinge_full_group": 0.011383837002337931
+            },
+            "S1": {
+              "active": 169,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9562778269495921,
+              "mean_hinge_full_group": 0.01871319557750167
+            }
+          },
+          "complement": {
+            "count": 359,
+            "size_histogram": {
+              "1": 302,
+              "2": 56,
+              "3": 1,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 280,
+            "true_class_excluded": 79,
+            "truth_retention": 0.7799442896935933,
+            "S0": {
+              "active": 183,
+              "active_multiclass": 14,
+              "active_true_excluded": 61,
+              "multiclass_active_true_excluded": 6,
+              "mean_candidate_mass": 0.7713076083928678,
+              "mean_hinge_full_group": 0.3114914012279019
+            },
+            "S1": {
+              "active": 205,
+              "active_multiclass": 16,
+              "active_true_excluded": 71,
+              "multiclass_active_true_excluded": 8,
+              "mean_candidate_mass": 0.7692376146700057,
+              "mean_hinge_full_group": 0.2756331022569396
+            }
+          }
+        }
+      },
+      "RXday/3/3": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1700,
+              "2": 92,
+              "3": 8,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1676,
+            "true_class_excluded": 124,
+            "truth_retention": 0.9311111111111111,
+            "S0": {
+              "active": 415,
+              "active_multiclass": 52,
+              "active_true_excluded": 105,
+              "multiclass_active_true_excluded": 17,
+              "mean_candidate_mass": 0.9020352635708534,
+              "mean_hinge_full_group": 0.10568400861074527
+            },
+            "S1": {
+              "active": 533,
+              "active_multiclass": 55,
+              "active_true_excluded": 111,
+              "multiclass_active_true_excluded": 17,
+              "mean_candidate_mass": 0.8805084946368718,
+              "mean_hinge_full_group": 0.1224217022375928
+            }
+          },
+          "hard_accepted": {
+            "count": 1238,
+            "size_histogram": {
+              "1": 1238,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1237,
+            "true_class_excluded": 1,
+            "truth_retention": 0.9991922455573505,
+            "S0": {
+              "active": 94,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9695143474563835,
+              "mean_hinge_full_group": 0.012192421166981557
+            },
+            "S1": {
+              "active": 173,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9489554500685755,
+              "mean_hinge_full_group": 0.022984235858926866
+            }
+          },
+          "complement": {
+            "count": 562,
+            "size_histogram": {
+              "1": 462,
+              "2": 92,
+              "3": 8,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 439,
+            "true_class_excluded": 123,
+            "truth_retention": 0.7811387900355872,
+            "S0": {
+              "active": 321,
+              "active_multiclass": 52,
+              "active_true_excluded": 105,
+              "multiclass_active_true_excluded": 17,
+              "mean_candidate_mass": 0.7533891677518385,
+              "mean_hinge_full_group": 0.3116316692075059
+            },
+            "S1": {
+              "active": 360,
+              "active_multiclass": 55,
+              "active_true_excluded": 111,
+              "multiclass_active_true_excluded": 17,
+              "mean_candidate_mass": 0.7297303259100937,
+              "mean_hinge_full_group": 0.34146722426034803
+            }
+          }
+        }
+      },
+      "RXday/4/1": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1788,
+              "2": 11,
+              "3": 0,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1778,
+            "true_class_excluded": 22,
+            "truth_retention": 0.9877777777777778,
+            "S0": {
+              "active": 79,
+              "active_multiclass": 10,
+              "active_true_excluded": 21,
+              "multiclass_active_true_excluded": 4,
+              "mean_candidate_mass": 0.9774029751121998,
+              "mean_hinge_full_group": 0.017665695887472896
+            },
+            "S1": {
+              "active": 154,
+              "active_multiclass": 11,
+              "active_true_excluded": 22,
+              "multiclass_active_true_excluded": 5,
+              "mean_candidate_mass": 0.9600020700610347,
+              "mean_hinge_full_group": 0.022704827955199614
+            }
+          },
+          "hard_accepted": {
+            "count": 1734,
+            "size_histogram": {
+              "1": 1734,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1734,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 40,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9869044881309742,
+              "mean_hinge_full_group": 0.003580394586614809
+            },
+            "S1": {
+              "active": 112,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9698819543354239,
+              "mean_hinge_full_group": 0.00857345837210289
+            }
+          },
+          "complement": {
+            "count": 66,
+            "size_histogram": {
+              "1": 54,
+              "2": 11,
+              "3": 0,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 44,
+            "true_class_excluded": 22,
+            "truth_retention": 0.6666666666666666,
+            "S0": {
+              "active": 39,
+              "active_multiclass": 10,
+              "active_true_excluded": 21,
+              "multiclass_active_true_excluded": 4,
+              "mean_candidate_mass": 0.7277723148916707,
+              "mean_hinge_full_group": 0.38772497551910806
+            },
+            "S1": {
+              "active": 42,
+              "active_multiclass": 11,
+              "active_true_excluded": 22,
+              "multiclass_active_true_excluded": 5,
+              "mean_candidate_mass": 0.7004305650338982,
+              "mean_hinge_full_group": 0.3939744470020135
+            }
+          }
+        }
+      },
+      "RXday/4/2": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1784,
+              "2": 12,
+              "3": 3,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1772,
+            "true_class_excluded": 28,
+            "truth_retention": 0.9844444444444445,
+            "S0": {
+              "active": 63,
+              "active_multiclass": 7,
+              "active_true_excluded": 22,
+              "multiclass_active_true_excluded": 5,
+              "mean_candidate_mass": 0.9821844607715805,
+              "mean_hinge_full_group": 0.012053199455969863
+            },
+            "S1": {
+              "active": 139,
+              "active_multiclass": 11,
+              "active_true_excluded": 27,
+              "multiclass_active_true_excluded": 7,
+              "mean_candidate_mass": 0.9644585484431849,
+              "mean_hinge_full_group": 0.02057976476434204
+            }
+          },
+          "hard_accepted": {
+            "count": 1710,
+            "size_histogram": {
+              "1": 1710,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1708,
+            "true_class_excluded": 2,
+            "truth_retention": 0.9988304093567252,
+            "S0": {
+              "active": 20,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9909928360180548,
+              "mean_hinge_full_group": 0.0014921793463634468
+            },
+            "S1": {
+              "active": 89,
+              "active_multiclass": 0,
+              "active_true_excluded": 2,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9756296779677185,
+              "mean_hinge_full_group": 0.005783123313857798
+            }
+          },
+          "complement": {
+            "count": 90,
+            "size_histogram": {
+              "1": 74,
+              "2": 12,
+              "3": 3,
+              "4": 1,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 64,
+            "true_class_excluded": 26,
+            "truth_retention": 0.7111111111111111,
+            "S0": {
+              "active": 43,
+              "active_multiclass": 7,
+              "active_true_excluded": 22,
+              "multiclass_active_true_excluded": 5,
+              "mean_candidate_mass": 0.8148253310885695,
+              "mean_hinge_full_group": 0.2127125815384918
+            },
+            "S1": {
+              "active": 50,
+              "active_multiclass": 11,
+              "active_true_excluded": 25,
+              "multiclass_active_true_excluded": 7,
+              "mean_candidate_mass": 0.7522070874770482,
+              "mean_hinge_full_group": 0.3017159523235427
+            }
+          }
+        }
+      },
+      "RXday/4/3": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1783,
+              "2": 17,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1773,
+            "true_class_excluded": 27,
+            "truth_retention": 0.985,
+            "S0": {
+              "active": 94,
+              "active_multiclass": 12,
+              "active_true_excluded": 20,
+              "multiclass_active_true_excluded": 8,
+              "mean_candidate_mass": 0.9755693005149563,
+              "mean_hinge_full_group": 0.018499121761156454
+            },
+            "S1": {
+              "active": 183,
+              "active_multiclass": 12,
+              "active_true_excluded": 22,
+              "multiclass_active_true_excluded": 8,
+              "mean_candidate_mass": 0.9543925452315145,
+              "mean_hinge_full_group": 0.02989432473563486
+            }
+          },
+          "hard_accepted": {
+            "count": 1700,
+            "size_histogram": {
+              "1": 1700,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1700,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 45,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9870178135177669,
+              "mean_hinge_full_group": 0.0027025749359060737
+            },
+            "S1": {
+              "active": 126,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9676969704908484,
+              "mean_hinge_full_group": 0.010998223537907881
+            }
+          },
+          "complement": {
+            "count": 100,
+            "size_histogram": {
+              "1": 83,
+              "2": 17,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 73,
+            "true_class_excluded": 27,
+            "truth_retention": 0.73,
+            "S0": {
+              "active": 49,
+              "active_multiclass": 12,
+              "active_true_excluded": 20,
+              "multiclass_active_true_excluded": 8,
+              "mean_candidate_mass": 0.7809445794671774,
+              "mean_hinge_full_group": 0.2870404177904129
+            },
+            "S1": {
+              "active": 57,
+              "active_multiclass": 12,
+              "active_true_excluded": 22,
+              "multiclass_active_true_excluded": 8,
+              "mean_candidate_mass": 0.7282173158228398,
+              "mean_hinge_full_group": 0.35112804509699347
+            }
+          }
+        }
+      },
+      "RXday/6/1": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1790,
+              "2": 6,
+              "3": 4,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1798,
+            "true_class_excluded": 2,
+            "truth_retention": 0.9988888888888889,
+            "S0": {
+              "active": 52,
+              "active_multiclass": 4,
+              "active_true_excluded": 2,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9853991710394621,
+              "mean_hinge_full_group": 0.008934639563990964
+            },
+            "S1": {
+              "active": 129,
+              "active_multiclass": 5,
+              "active_true_excluded": 2,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9680048652448588,
+              "mean_hinge_full_group": 0.01757683980382151
+            }
+          },
+          "hard_accepted": {
+            "count": 1756,
+            "size_histogram": {
+              "1": 1756,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1756,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 30,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9902261208428881,
+              "mean_hinge_full_group": 0.0024054390388903693
+            },
+            "S1": {
+              "active": 102,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9737563051181529,
+              "mean_hinge_full_group": 0.009558819628963438
+            }
+          },
+          "complement": {
+            "count": 44,
+            "size_histogram": {
+              "1": 34,
+              "2": 6,
+              "3": 4,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 42,
+            "true_class_excluded": 2,
+            "truth_retention": 0.9545454545454546,
+            "S0": {
+              "active": 22,
+              "active_multiclass": 4,
+              "active_true_excluded": 2,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.7927599925209176,
+              "mean_hinge_full_group": 0.26950909688391467
+            },
+            "S1": {
+              "active": 27,
+              "active_multiclass": 5,
+              "active_true_excluded": 2,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.738470128483393,
+              "mean_hinge_full_group": 0.33756873587315733
+            }
+          }
+        }
+      },
+      "RXday/6/2": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1797,
+              "2": 3,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1794,
+            "true_class_excluded": 6,
+            "truth_retention": 0.9966666666666667,
+            "S0": {
+              "active": 42,
+              "active_multiclass": 1,
+              "active_true_excluded": 4,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.987592603204151,
+              "mean_hinge_full_group": 0.00523963015112612
+            },
+            "S1": {
+              "active": 117,
+              "active_multiclass": 1,
+              "active_true_excluded": 5,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9711191290368636,
+              "mean_hinge_full_group": 0.012173348897033268
+            }
+          },
+          "hard_accepted": {
+            "count": 1766,
+            "size_histogram": {
+              "1": 1766,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1766,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 28,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9905325056539926,
+              "mean_hinge_full_group": 0.0016989062201666265
+            },
+            "S1": {
+              "active": 99,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9743925087567364,
+              "mean_hinge_full_group": 0.008281439795904495
+            }
+          },
+          "complement": {
+            "count": 34,
+            "size_histogram": {
+              "1": 31,
+              "2": 3,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 28,
+            "true_class_excluded": 6,
+            "truth_retention": 0.8235294117647058,
+            "S0": {
+              "active": 14,
+              "active_multiclass": 1,
+              "active_true_excluded": 4,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.8348906112506109,
+              "mean_hinge_full_group": 0.18914899668272803
+            },
+            "S1": {
+              "active": 18,
+              "active_multiclass": 1,
+              "active_true_excluded": 5,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.8010959353517083,
+              "mean_hinge_full_group": 0.21432368632625132
+            }
+          }
+        }
+      },
+      "RXday/6/3": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1796,
+              "2": 4,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1794,
+            "true_class_excluded": 6,
+            "truth_retention": 0.9966666666666667,
+            "S0": {
+              "active": 48,
+              "active_multiclass": 2,
+              "active_true_excluded": 4,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.9853843748569489,
+              "mean_hinge_full_group": 0.009275138684444958
+            },
+            "S1": {
+              "active": 100,
+              "active_multiclass": 4,
+              "active_true_excluded": 5,
+              "multiclass_active_true_excluded": 2,
+              "mean_candidate_mass": 0.9740228905032079,
+              "mean_hinge_full_group": 0.011358651390506161
+            }
+          },
+          "hard_accepted": {
+            "count": 1766,
+            "size_histogram": {
+              "1": 1766,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1766,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 31,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9903587340836076,
+              "mean_hinge_full_group": 0.00221484752703091
+            },
+            "S1": {
+              "active": 78,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9786324941828459,
+              "mean_hinge_full_group": 0.005540017717826947
+            }
+          },
+          "complement": {
+            "count": 34,
+            "size_histogram": {
+              "1": 30,
+              "2": 4,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 28,
+            "true_class_excluded": 6,
+            "truth_retention": 0.8235294117647058,
+            "S0": {
+              "active": 17,
+              "active_multiclass": 2,
+              "active_true_excluded": 4,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.7270103044369641,
+              "mean_hinge_full_group": 0.3759949676254216
+            },
+            "S1": {
+              "active": 22,
+              "active_multiclass": 4,
+              "active_true_excluded": 5,
+              "multiclass_active_true_excluded": 2,
+              "mean_candidate_mass": 0.7345946523196557,
+              "mean_hinge_full_group": 0.3135853298008442
+            }
+          }
+        }
+      },
+      "RXday/8/1": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1722,
+              "2": 75,
+              "3": 3,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1738,
+            "true_class_excluded": 62,
+            "truth_retention": 0.9655555555555555,
+            "S0": {
+              "active": 248,
+              "active_multiclass": 12,
+              "active_true_excluded": 58,
+              "multiclass_active_true_excluded": 4,
+              "mean_candidate_mass": 0.9406705205245979,
+              "mean_hinge_full_group": 0.060223409798410205
+            },
+            "S1": {
+              "active": 294,
+              "active_multiclass": 14,
+              "active_true_excluded": 59,
+              "multiclass_active_true_excluded": 4,
+              "mean_candidate_mass": 0.9333179340345992,
+              "mean_hinge_full_group": 0.06146798996047841
+            }
+          },
+          "hard_accepted": {
+            "count": 1476,
+            "size_histogram": {
+              "1": 1476,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1476,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 88,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9767451028473332,
+              "mean_hinge_full_group": 0.008503665158217192
+            },
+            "S1": {
+              "active": 118,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9697594360768956,
+              "mean_hinge_full_group": 0.010069498035117863
+            }
+          },
+          "complement": {
+            "count": 324,
+            "size_histogram": {
+              "1": 246,
+              "2": 75,
+              "3": 3,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 262,
+            "true_class_excluded": 62,
+            "truth_retention": 0.808641975308642,
+            "S0": {
+              "active": 160,
+              "active_multiclass": 12,
+              "active_true_excluded": 58,
+              "multiclass_active_true_excluded": 4,
+              "mean_candidate_mass": 0.7763307566099145,
+              "mean_hinge_full_group": 0.29583557982595615
+            },
+            "S1": {
+              "active": 176,
+              "active_multiclass": 14,
+              "active_true_excluded": 59,
+              "multiclass_active_true_excluded": 4,
+              "mean_candidate_mass": 0.7673066469530264,
+              "mean_hinge_full_group": 0.295616675398232
+            }
+          }
+        }
+      },
+      "RXday/8/2": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1780,
+              "2": 20,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1785,
+            "true_class_excluded": 15,
+            "truth_retention": 0.9916666666666667,
+            "S0": {
+              "active": 257,
+              "active_multiclass": 7,
+              "active_true_excluded": 12,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.943218313721526,
+              "mean_hinge_full_group": 0.05394583524929153
+            },
+            "S1": {
+              "active": 326,
+              "active_multiclass": 7,
+              "active_true_excluded": 13,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.9297032736350471,
+              "mean_hinge_full_group": 0.0650761686431037
+            }
+          },
+          "hard_accepted": {
+            "count": 1585,
+            "size_histogram": {
+              "1": 1585,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1585,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 124,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9718620707748065,
+              "mean_hinge_full_group": 0.011405038781910664
+            },
+            "S1": {
+              "active": 180,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9607458905748765,
+              "mean_hinge_full_group": 0.017507047970024194
+            }
+          },
+          "complement": {
+            "count": 215,
+            "size_histogram": {
+              "1": 195,
+              "2": 20,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 200,
+            "true_class_excluded": 15,
+            "truth_retention": 0.9302325581395349,
+            "S0": {
+              "active": 133,
+              "active_multiclass": 7,
+              "active_true_excluded": 12,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.7320538721892029,
+              "mean_hinge_full_group": 0.36756054409021555
+            },
+            "S1": {
+              "active": 146,
+              "active_multiclass": 7,
+              "active_true_excluded": 13,
+              "multiclass_active_true_excluded": 1,
+              "mean_candidate_mass": 0.7008542138693291,
+              "mean_hinge_full_group": 0.4157601512795271
+            }
+          }
+        }
+      },
+      "RXday/8/3": {
+        "count": 1800,
+        "subsets": {
+          "all": {
+            "count": 1800,
+            "size_histogram": {
+              "1": 1769,
+              "2": 29,
+              "3": 2,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1777,
+            "true_class_excluded": 23,
+            "truth_retention": 0.9872222222222222,
+            "S0": {
+              "active": 246,
+              "active_multiclass": 14,
+              "active_true_excluded": 20,
+              "multiclass_active_true_excluded": 4,
+              "mean_candidate_mass": 0.9470132184856468,
+              "mean_hinge_full_group": 0.043245262263549696
+            },
+            "S1": {
+              "active": 301,
+              "active_multiclass": 16,
+              "active_true_excluded": 20,
+              "multiclass_active_true_excluded": 4,
+              "mean_candidate_mass": 0.9360117237559623,
+              "mean_hinge_full_group": 0.049438474819891984
+            }
+          },
+          "hard_accepted": {
+            "count": 1569,
+            "size_histogram": {
+              "1": 1569,
+              "2": 0,
+              "3": 0,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 1569,
+            "true_class_excluded": 0,
+            "truth_retention": 1.0,
+            "S0": {
+              "active": 110,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9731118929013848,
+              "mean_hinge_full_group": 0.01015164886902213
+            },
+            "S1": {
+              "active": 154,
+              "active_multiclass": 0,
+              "active_true_excluded": 0,
+              "multiclass_active_true_excluded": 0,
+              "mean_candidate_mass": 0.9628395176830377,
+              "mean_hinge_full_group": 0.015196025675463022
+            }
+          },
+          "complement": {
+            "count": 231,
+            "size_histogram": {
+              "1": 200,
+              "2": 29,
+              "3": 2,
+              "4": 0,
+              "5": 0,
+              "6": 0
+            },
+            "true_class_retained": 208,
+            "true_class_excluded": 23,
+            "truth_retention": 0.9004329004329005,
+            "S0": {
+              "active": 136,
+              "active_multiclass": 14,
+              "active_true_excluded": 20,
+              "multiclass_active_true_excluded": 4,
+              "mean_candidate_mass": 0.7697455987527773,
+              "mean_hinge_full_group": 0.26802396103417203
+            },
+            "S1": {
+              "active": 147,
+              "active_multiclass": 16,
+              "active_true_excluded": 20,
+              "multiclass_active_true_excluded": 4,
+              "mean_candidate_mass": 0.7537917727967361,
+              "mean_hinge_full_group": 0.2820203047229614
+            }
+          }
+        }
+      }
+    },
+    "qualification": {
+      "passed": false,
+      "checks": {
+        "complement_exists": true,
+        "complement_truth_retention": false,
+        "worst_RX_complement_truth_retention": false,
+        "S0_active_multiclass": true,
+        "S1_active_multiclass": true,
+        "S0_active_truth_retention": false,
+        "S1_active_truth_retention": false,
+        "nonvacuous_sets": true
+      },
+      "source_only": true,
+      "parameter_scan": false,
+      "target_access": false,
+      "rule": "Retain >=98% true TX in original-hard complement and >=95% in every RX; at least100 active multiclass sets and >=95% active truth retention in each arm; >=50% complement non-full sets. Failure closes this fixed beta/pi feasibility, without tuning them to create gradients."
+    },
+    "local_feature_gradients": {
+      "S0": {
+        "weighted_loss": 0.0046653361059725285,
+        "gradient_norm": 0.000354773917933926,
+        "nonzero_packets": 1382,
+        "denominator": 27000,
+        "parameters_updated": false,
+        "limitation": "Derivative only on detached source feature copies; not an actual AdamW update or efficacy result."
+      },
+      "S1": {
+        "weighted_loss": 0.004891021642833948,
+        "gradient_norm": 0.0003728145966306329,
+        "nonzero_packets": 1554,
+        "denominator": 27000,
+        "parameters_updated": false,
+        "limitation": "Derivative only on detached source feature copies; not an actual AdamW update or efficacy result."
+      }
+    },
+    "teacher_top1_accuracy": 0.979,
+    "model_parameters_buffers_gradients_unchanged": true,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0,
+    "EMA_updates": 0,
+    "V_gradient_updates": 0,
+    "U_forward_packets": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "extra_V_IQ_forwards": 54000,
+    "noquery_smoke_packets": 4,
+    "augmentation_RNG_restored": true,
+    "labels_enter_candidates_or_gate": false,
+    "wall_seconds": 11.007602251134813,
+    "limitation": "Final seen-source V proxy with current final own EMA. Does not establish hidden U accuracy, early training signal, unseen RX transfer or Phase2 deployment."
+  },
+  "independent_recount": {
+    "status": "VERIFIED",
+    "fresh_CPU": true,
+    "algorithm": "Independent standard-Python per-packet tally over frozen source_census.pt; 270 group/subset/arm checks",
+    "checks": 270,
+    "extra_IQ_forwards": 0
+  },
+  "independent_terminal_poststate": {
+    "process": null,
+    "log_bytes": 2802,
+    "fatal_markers": [],
+    "source_artifacts_complete": true,
+    "live_PID_observation": "Source process completed in11s before first independent inspection; PID/CWD/argv preserved in submit, terminal absence independently read; no relaunch for telemetry"
+  },
+  "new_training_models": 0,
+  "new_training_updates": 0,
+  "new_target_predictions": 0,
+  "default_head_only": true,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "U_truth_read": false,
+  "goal_84": false,
+  "next": "No B0/B1/S0/S1 launch for this unsafe fixed set. Preserve source rejection and prior positive structures; continue separate strict-visible repeated-observation predictability feasibility."
+}

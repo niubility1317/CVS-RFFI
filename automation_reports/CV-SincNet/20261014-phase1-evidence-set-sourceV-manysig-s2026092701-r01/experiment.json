@@ -172,5 +172,17 @@
     "Derivative stops at mass>=.9; set ratios are not held fixed; FULL U batch normalization and defaultW/gains detach only auxiliary path.",
     "Positive TIME/LONG_SILU/Sinc results remain separate; no cross-recipe gain addition. ORDER prototype preserved unlaunched backup."
   ],
-  "registered_at": "2026-10-14T11:18:06+00:00"
+  "registered_at": "2026-10-14T11:18:06+00:00",
+  "status": "ANALYZED",
+  "result_summary": {
+    "status": "VERIFIED",
+    "source_only": true,
+    "scientific_qualification": false,
+    "scientific_decision": "REJECT_FIXED_BETA_PI_NO_TRAINING",
+    "result_ref": "source_result_evidence.json",
+    "source_count": 27000,
+    "new_training_models": 0,
+    "target_access": false,
+    "goal_84": false
+  }
 }
