@@ -10,7 +10,7 @@
 | R04 | 五·顺序1 | MixStyle全部种子回收且不按负分改计划 | 已提交三种子MixStyle报告 | verified | f1d1e860e；1512000预测/162指标独立复算 | 历史RX/day探针违规如实披露 |
 | R05 | 二·结构分析 | 区分面积、统计形状和常数时间坐标；不把顺序敏感视为泛化证据 | checks.py/report | verified | float64：cov置乱不变、area反转/内部顺序及时间项恒等式PASS | 性能只由真实冻结测试证明 |
 | R06 | 三·路线三 | 独立比较t2与t2.pool取点 | experiments/cvs_source_dropout；后续独立训练矩阵 | implemented | 固定L720/8mask源诊断和63统计重算VERIFIED，训练对照未发布 | 未改当前descriptor实验；无性能结论 |
-| R07 | 三·路线二 | 连续4→2→1层级含三个边界增量和统一全局时间 | 后续独立矩阵 | deferred | 当前不加入层级 | 避免同时改变窗口/容量 |
+| R07 | 三·路线二 | 连续4→2→1层级含三个边界增量和统一全局时间 | experiments/cvs_source_hierarchy；后续真实训练 | implemented | 固定L720连续组合/135统计/保存数组复算VERIFIED | 真实层级训练对照尚未实现发布 |
 | R08 | 三·路线四 | 可信门控内有界stopgrad难度权重及真实训练梯度 | 后续训练侧备选 | deferred | 当前保持原U损失 | 报告建议不抢占结构路线 |
 | R09 | 五及目标 | 首seed同路径SIG_TIME与两个描述子、旧基线；源PASS才扩02/03；自动默认头truthlast、Git | design/source/dispatch/score/report | verified | 完整三seed12row／99900steps／2016000默认预测／216组指标复算VERIFIED，Git交付 | 不使用目标分数控制扩seed |
 
@@ -38,3 +38,6 @@ R09完整3seed闭环 verified：9新/3历史，12row／450新增model-epochs／9
 
 
 R06首seed实际训练/默认评分完成：PRE83.3595% vsPOST83.7488%，−.3893pp；源初始function同、最终L2 2.131700、0额外fit、22200steps/504000pred/54metrics复算VERIFIED。02/03在target读取前依据SOURCE PASS原样发布4新模型，执行038ec31397797e4631a969d0da8167de2ba861c3，完整3seed未完成，R06维持implemented。6verified/1implemented/2deferred，0blocked/rejected；最高剩余风险是完整取点效果，不能把source噪声诊断当提升。实际验证python -m experiments.cvs_read_position50.audit、python -m experiments.cvs_read_position_seeds.publish --output <delivery> --inspect 均VERIFIED；源码按报告route3只移取点，主干Dropout不变。
+
+
+R07源几何已完成：20261014-phase1-source-hierarchy-geometry-manysig-s01-m1-r01，实现13728d263、执行4cc15c4db，720实际源包/135统计/0训练或分类头拟合。continuous/direct64误差8.882e-16，native32误差7.153e-7；省略cross-area的feature/time相对RMS37.0827%/87.0831%。必须保留global-time-only局部控制与同容量大窗统计控制，不能把描述子差异写成性能提升。6verified/2implemented/1deferred，0blocked/rejected；最高待验证是实际层级训练是否提供稳定收益及取点完整三seed结果。理论按一阶＋二阶反对称截断严格实现，不是全阶signature。验证：python -m experiments.cvs_source_hierarchy.checks；publish --inspect；results中的saved_geometry_recount=VERIFIED。

@@ -13,3 +13,5 @@ L_s6300 中每6TX×5RX×3day单元按physical ID取前8，共720包；U_s56700 I
 停止规则：角色/来源/非有限/形状/模型状态变化或组合误差超限时保留产物并停止，无自动重试、换权重或重采样。预期results.json、resolved_config.json、source_geometry.pt、completion.json以及release preflight/submit/log。登记后逐项核实结果、Git推送并独立比较remoteOID。
 
 边界：本诊断只测描述子几何。局部签名遗漏的跨窗信息不证明整个已有骨干都无法表达该信息；源域非零差异不证明层级训练有效、性能提高或新类迁移。实际网络和固定预算对照另行发布。
+
+实际已完成 ANALYZED／VERIFIED。连续组合 float64 最大误差8.882e-16、float32 7.153e-7；720源包135统计、保存数组复算通过、0训练/分类头更新。详见 final_analysis.md/results.json。
