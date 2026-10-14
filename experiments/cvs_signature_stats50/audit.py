@@ -6,7 +6,7 @@ from .predict import source_proof,preflight,baseline
 from experiments.cvs_identity_mixstyle50.audit import pseudo_count,metrics
 from experiments.cvs_pa_cross_delay.score import row_completion,validate_records
 
-def run(*,design=None):
+def run(*,design=None,build_fn=None):
  d=design or default_design;started=time.time()
  # All rows must have scored immutable predictions before truth can be read.
  for row in d.rows():
@@ -16,7 +16,7 @@ def run(*,design=None):
  from experiments.cvs_report_ssl.evaluate import truth_arrays
  rows=[];records=[];decisions={};truth=None;common_ids=None;step_total=0
  for row in d.rows():
-  c=d.config(row);p=d.BASE/row['row_id'];source=source_proof(c,design=d);preflight(row['row_id'],design=d)
+  c=d.config(row);p=d.BASE/row['row_id'];source=source_proof(c,design=d);preflight(row['row_id'],design=d,build_fn=build_fn)
   epochs=[json.loads(line) for line in (source/'epoch_metrics.jsonl').read_text().splitlines()]
   if [e['epoch'] for e in epochs]!=list(range(1,51)) or any(e['test_tx_total']!=0 or e['test_tx_acc'] is not None or e['val_tx_total']!=27000 for e in epochs):raise ValueError('Source epoch health/no-target history differs')
   accepted=sum(int(e.get('train_pseudo_selected',0)) for e in epochs);total=sum(int(e.get('train_pseudo_total',0)) for e in epochs)

@@ -8,7 +8,7 @@ from .features import export
 from experiments.cvs_identity_mixstyle50.feature_check import parameter_changes,compare_features
 from experiments.cvs_feature_diagnostics.feature_change import measure
 
-def run(seed=None,only_row=None,*,design=None):
+def run(seed=None,only_row=None,*,design=None,build_fn=None):
  d=design or default_design
  if seed is not None and seed not in d.SEEDS:raise ValueError('Unregistered feature-check seed')
  if only_row is not None and only_row not in {r['row_id'] for r in d.training_rows()}:raise ValueError('Unregistered feature-check row')
@@ -26,9 +26,9 @@ def run(seed=None,only_row=None,*,design=None):
     if row['model_seed']!=model_seed or only_row is not None and row['row_id']!=only_row:continue
     c=d.config(row);p=Path(c['output_root'])
     if not (p/'source_frozen.json').exists():missing.append(row['row_id']);continue
-    source_proof(c,design=d);final=own_model(c,'cpu',design=d);initial=copy.deepcopy(final)
+    source_proof(c,design=d);final=own_model(c,'cpu',design=d,build_fn=build_fn);initial=copy.deepcopy(final)
     initial.load_state_dict(torch.load(p/'initial_smoke.pt',map_location='cpu',weights_only=False)['model'],strict=True);initial.eval().requires_grad_(False)
-    expected=195041 if c['arm']=='SIG_TIME' else 232033
+    expected=getattr(d,'FEATURE_PARAMETER_COUNT',195041 if c['arm']=='SIG_TIME' else 232033)
     change=parameter_changes(initial,final,expected_feature_count=expected)
     added=[v for v in change['records'] if '.sequence_pool.' in v['parameter']]
     if not added or any(v['changed_elements']==0 for v in added):raise ValueError('Added feature parameter did not update numerically')
@@ -37,7 +37,7 @@ def run(seed=None,only_row=None,*,design=None):
    if only_row is None and len(models)==3:
     first=initials['SIG_TIME'].state_dict();native={k:v for k,v in first.items() if '.sequence_pool.' not in k}
     if any(any(not torch.equal(v,m.state_dict()[k]) for k,v in native.items()) for m in initials.values()):raise ValueError('Actual same-seed initial native body/head differs')
-    a,b=initials['SIG_TIME_X3'],initials[d.PRIMARY];aa,bb=dict(a.named_parameters()),dict(b.named_parameters())
+    control=getattr(d,'FEATURE_CONTROL','SIG_TIME_X3');a,b=initials[control],initials[d.PRIMARY];aa,bb=dict(a.named_parameters()),dict(b.named_parameters())
     if set(aa)!=set(bb) or any(not torch.equal(v,bb[k]) for k,v in aa.items()):raise ValueError('Same-capacity actual initial parameters differ')
-    paired.append(dict(seed=model_seed,arm=d.PRIMARY,control='SIG_TIME_X3',actual_initial_native_body_and_head_equal=True,actual_initial_parameters_identical=True,source_features=compare_features(models['SIG_TIME_X3'],models[d.PRIMARY],source),actual_final_parameter_difference=parameter_changes(models['SIG_TIME_X3'],models[d.PRIMARY],expected_feature_count=232033)))
+    paired.append(dict(seed=model_seed,arm=d.PRIMARY,control=control,actual_initial_native_body_and_head_equal=True,actual_initial_parameters_identical=True,source_features=compare_features(models[control],models[d.PRIMARY],source),actual_final_parameter_difference=parameter_changes(models[control],models[d.PRIMARY],expected_feature_count=getattr(d,'FEATURE_PARAMETER_COUNT',232033))))
  return dict(status='VERIFIED' if not missing else 'PARTIAL',run_id=d.RUN,models=len(rows),missing=missing,rows=rows,paired=paired,source_only=True,head_fit=False,head_updates=0,query_read=False,U_IQ_read=False,U_truth_read=False,V_cache_materialized=True,V_forward=False,source_IQ='fixed L720 first8 perTX/RX/day',seconds=time.time()-start)

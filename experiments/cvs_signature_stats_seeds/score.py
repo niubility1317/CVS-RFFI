@@ -13,7 +13,8 @@ def checked_records(design):
   records.extend(v['records'])
  return records
 
-def summarize(records,seeds):
+def summarize(records,seeds,*,design=None):
+ d=design or globals()['d']
  summary=[];index={}
  for arm in d.ARMS:
   overall=[r for r in records if r['arm']==arm and r['dimension']=='overall']
