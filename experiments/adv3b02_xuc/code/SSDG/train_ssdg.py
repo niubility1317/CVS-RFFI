@@ -17,6 +17,7 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 # Scoped source-only feature objective; default baseline execution is unchanged.
 _source_feature_auxiliary_hook = None
 _trusted_pseudo_loss_hook = None
+_urban_practical_training_hook = None
 
 import numpy as np
 
@@ -11372,6 +11373,19 @@ def train(args) -> int:
                 scaled_closed_loss = float(tail_closed_scale) * loss_closed
                 scaled_open_loss = float(dg_health_open_scale) * loss_open
                 loss = scaled_closed_loss + scaled_open_loss
+                urban_training_metrics = {}
+                if _urban_practical_training_hook is not None:
+                    urban_adjustment, urban_training_metrics = _urban_practical_training_hook(
+                        model=model, args=args, epoch=epoch, batch_idx=batch_idx,
+                        clean_iq=x_l_main, labels=y_l, clean_meta=extra_l[1],
+                        clean_output=out_l, clean_ce=loss_tx_l,
+                        unlabeled_iq=x_u if legacy_unlabeled_active else None,
+                        unlabeled_meta=extra_u[1] if legacy_unlabeled_active else None,
+                        teacher_prob=prob_w.detach() if legacy_unlabeled_active else None,
+                        weak_mask=base_mask.detach() if legacy_unlabeled_active else None,
+                    )
+                    loss = loss + urban_adjustment
+                    scaled_closed_loss = scaled_closed_loss + urban_adjustment
             telemetry_epochs = {
                 int(value)
                 for value in str(getattr(args, "rc4_gradient_telemetry_epochs", "")).split(",")
@@ -11691,6 +11705,7 @@ def train(args) -> int:
                     **r3_u_logs,
                     **ecrs_cross_rx_logs,
                     **feature_auxiliary_metrics,
+                    **urban_training_metrics,
                     "train/ecrs_cross_rx_successful_steps": float(ecrs_cross_rx_successful_steps),
                     "train/a1_runtime_fast": float(bool(args.a1_runtime_fast)),
                     "train/a1_ema_effective_decay": a1_effective_ema_decay,
