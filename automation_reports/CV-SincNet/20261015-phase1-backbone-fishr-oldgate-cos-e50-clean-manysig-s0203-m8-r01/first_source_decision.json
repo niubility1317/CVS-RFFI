@@ -1,0 +1,152 @@
+{
+  "status": "SOURCE_QUALIFIED",
+  "at": "2026-10-14T17:10:00.844Z",
+  "first_run": "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+  "first_execution_commit": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07",
+  "source_qualification": {
+    "status": "PASS",
+    "source_only": true,
+    "target_metrics_read_for_decision": false,
+    "final_L_CE": {
+      "SIG_TIME-s2026092701": 0.24721003219753773,
+      "BONE_RAW_FISHR-s2026092701": 0.2489144201012882,
+      "BONE_COND_FISHR-s2026092701": 0.24821629559805802
+    },
+    "candidates": [
+      {
+        "arm": "BONE_RAW_FISHR",
+        "actual_L720zL2": 1.6659400463104248,
+        "actual_t1_t2_gradient_nonzero_17_33_50": true,
+        "passed": true
+      },
+      {
+        "arm": "BONE_COND_FISHR",
+        "actual_L720zL2": 1.4148471355438232,
+        "actual_t1_t2_gradient_nonzero_17_33_50": true,
+        "passed": true
+      }
+    ],
+    "actual_observations": {
+      "SIG_TIME-s2026092701": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "extra_batches": 650,
+        "extra_source_packet_forwards": 117000,
+        "U_steps": 3774,
+        "U_packets": 963900,
+        "U_accepted": 15432,
+        "gradient_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "gradient_batches": 52,
+        "layer_gradient_records": 156,
+        "actual_per_sample_matrices": 104,
+        "head_fit_updates": 0,
+        "auxiliary_classW_dependency": false,
+        "auxiliary_uses_current_default_W_as_constant": true,
+        "default_head_jointly_trained": true,
+        "U_truth_read": false,
+        "source_only": true,
+        "saved_gradient_recount": "VERIFIED"
+      },
+      "BONE_RAW_FISHR-s2026092701": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "extra_batches": 650,
+        "extra_source_packet_forwards": 117000,
+        "U_steps": 3774,
+        "U_packets": 963900,
+        "U_accepted": 15412,
+        "gradient_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "gradient_batches": 52,
+        "layer_gradient_records": 156,
+        "actual_per_sample_matrices": 104,
+        "head_fit_updates": 0,
+        "auxiliary_classW_dependency": false,
+        "auxiliary_uses_current_default_W_as_constant": true,
+        "default_head_jointly_trained": true,
+        "U_truth_read": false,
+        "source_only": true,
+        "saved_gradient_recount": "VERIFIED"
+      },
+      "BONE_COND_FISHR-s2026092701": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "extra_batches": 650,
+        "extra_source_packet_forwards": 117000,
+        "U_steps": 3774,
+        "U_packets": 963900,
+        "U_accepted": 15411,
+        "gradient_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "gradient_batches": 52,
+        "layer_gradient_records": 156,
+        "actual_per_sample_matrices": 104,
+        "head_fit_updates": 0,
+        "auxiliary_classW_dependency": false,
+        "auxiliary_uses_current_default_W_as_constant": true,
+        "default_head_jointly_trained": true,
+        "U_truth_read": false,
+        "source_only": true,
+        "saved_gradient_recount": "VERIFIED"
+      }
+    },
+    "fixed_rules": {
+      "final_L_CE_max": 0.5,
+      "feature_difference_min": 0.000001,
+      "actual_extra_batches": 650,
+      "gradient_batches": 52,
+      "all_candidate_gradient_parameters_nonzero_at": [
+        17,
+        33,
+        50
+      ],
+      "required_gradient_parameters": [
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight"
+      ],
+      "source_only": true,
+      "expansion": "Both candidates pass same exact budgets/defaultfeature/source health and actual t1/t2 gradients; expand both fixed02/03 unchanged, no target ranking"
+    },
+    "predefined_remaining_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "expand_both_candidates_only_after_both_source_PASS": true,
+    "configuration_changes_for_expansion": false,
+    "head_fit_updates": 0
+  },
+  "completion_counts": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 4,
+    "new_trained_models": 3,
+    "reused_baseline_models": 1,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 672000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "new_target_numeric_metrics_retrieved_before_decision": false,
+  "decision": "Expand both RAW and TX_DAY_CENTERED candidates and SIG_TIME control to fixed seeds 2026092702/03 without any scientific change; retain all firstseed results",
+  "remaining_run": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+  "remaining_code_commit": "729c01e878a0df790c1056d00d1b547f709a57be",
+  "remaining_new_models": 6,
+  "historical_baseline_rows": 2,
+  "head_fit_updates": 0,
+  "limitation": "Source health, actual gradient and feature-path qualification only; not target DG efficacy or goal completion"
+}

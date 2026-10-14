@@ -51,3 +51,6 @@ local_checks.json：实际网络一/二阶导数、主头正常更新、auxW常�
 ## 第17轮实际接线证据
 
 三新模型各13L180/2340额外源包、逐包t1/t2矩阵存在、生产端保存复算VERIFIED。RAW/COND t1与t2各13批effective梯度均非零，ZERO均0；RAW effective/mainLCE范数比均值.658707/.616297，COND .512669/.492663。独立L128与auxL180图的导数，不作为累计AdamW或DG收益。具体源统计见epoch17_source_evidence.json；终轮完整独立审计仍待。
+
+
+源资格 PASS，完整首seed已闭环；固定02/03双候选原样扩展决定在回收新目标数值前提交。源证据与决定见 source_qualification.json；完整独立审计与目标分析随后执行。

@@ -82407,17 +82407,18 @@
     "prepared_conditional_seed_extensions": [
       {
         "run_id": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-        "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+        "status": "SOURCE_QUALIFIED_NOT_LAUNCHED",
         "code_commit": "729c01e878a0df790c1056d00d1b547f709a57be",
         "remaining_seeds": [
           2026092702,
           2026092703
         ],
         "new_models": 6,
-        "source_qualification_status": "PENDING_FIRST_RUN",
+        "source_qualification_status": "PASS",
         "original_mechanism_changed": false,
         "local_negative_tests": 10,
-        "head_fit_updates": 0
+        "head_fit_updates": 0,
+        "source_decision_before_new_target_retrieval": true
       },
       {
         "run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
@@ -82458,6 +82459,14 @@
         "actual_gradient_layer_records": 7992,
         "head_fit_updates": 0
       }
+    },
+    "backbone_first_seed_source_decision": {
+      "status": "PASS",
+      "run": "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "new_target_numeric_metrics_read": false,
+      "remaining_run": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "all_candidates_retained": true,
+      "configuration_changed": false
     }
   }
 }

@@ -30,3 +30,8 @@
 
 
 技术预防修复 729c01e878a0df790c1056d00d1b547f709a57be：同一汇总依赖改用发布包已有且AST相同的signature_stats_seeds helper，preflight导入dispatcher确认真实链可用。科学配置未变，仍未发布，原source条件待。
+
+
+## 首 seed 源决定已回收，目标数值尚未读回
+
+首 run 20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 的四行已闭环。原 source 资格 PASS：终 LCE ZERO=.2472100322、RAW=.2489144201、TX_DAY_CENTERED=.2482162956；候选−ZERO 合法 L720 zL2 分别1.6659400463/1.4148471355；两个实际 t1/t2 对象在17/33/50有效梯度均非零；每新11100更新/650额外L180/117000包/52诊断cohort完整。当前只读源资格与闭环计量，未回收新目标准确率。按原计划两候选均原样扩固定02/03，不重排、改权重或重跑；源资格不等于DG收益。技术依赖修复代码 729c01e878a0df790c1056d00d1b547f709a57be，原算法/矩阵不变。详情first_source_decision.json。
