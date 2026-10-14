@@ -8,7 +8,7 @@ def statistics(v):
  y,rx,day,z=(v[k] for k in ('y','rx','day','z'))
  if z.shape!=(720,160) or set(y.tolist())!=set(range(6)) or set(rx.tolist())!={1,3,4,6,8} or set(day.tolist())!={1,2,3} or not torch.isfinite(z).all():raise ValueError('Fixed L feature shape differs')
  if any(int(((y==t)&(rx==r)&(day==a)).sum())!=8 for t in range(6) for r in (1,3,4,6,8) for a in (1,2,3)):raise ValueError('Balanced fixed source cell count differs')
- unit=F.normalize(z.double(),dim=1);distance=(2-2*(unit@unit.T)).clamp_min(0);tri=torch.ones(720,720,dtype=torch.bool).triu(1);sameTX=y[:,None]==y[None,:];sameRX=rx[:,None]==rx[None,:];sameDay=day[:,None]==day[None,:]
+ unit=F.normalize(z.double(),dim=1);norm=unit.square().sum(1);distance=(norm[:,None]+norm[None,:]-2*(unit@unit.T)).clamp_min(0);tri=torch.ones(720,720,dtype=torch.bool).triu(1);sameTX=y[:,None]==y[None,:];sameRX=rx[:,None]==rx[None,:];sameDay=day[:,None]==day[None,:]
  relations=[('within_TX_same_RX_same_day',sameTX&sameRX&sameDay,2520),('within_TX_cross_RX_same_day',sameTX&~sameRX&sameDay,11520),('between_TX_same_RX_same_day',~sameTX&sameRX&sameDay,14400),('between_TX_cross_RX_same_day',~sameTX&~sameRX&sameDay,57600)]
  records=[]
  for name,keep,expected in relations:
