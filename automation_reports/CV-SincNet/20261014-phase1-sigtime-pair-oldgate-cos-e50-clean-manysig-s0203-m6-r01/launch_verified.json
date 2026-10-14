@@ -1,0 +1,107 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+  "implementation_commit": "e1c5f12f68881f8757efae3d9d1bf8f2618f2982",
+  "execution_commit": "f5b19b97bb259de87737dda7a2366036604d12b1",
+  "source_decision_commit": "f5b19b97bb259de87737dda7a2366036604d12b1",
+  "real_checkpoint_no_query_smoke": "PASS",
+  "source_qualification": "PASS",
+  "processes": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "pid": 2426629,
+      "gpu": 5,
+      "same_pid": true,
+      "cwd_verified": true,
+      "argv_verified": true,
+      "previous_epoch": 8,
+      "current_epoch": 10,
+      "previous_log_bytes": 47950,
+      "current_log_bytes": 58308,
+      "log_growth": true
+    },
+    {
+      "row_id": "SIG_PAIR-s2026092702",
+      "pid": 2426707,
+      "gpu": 4,
+      "same_pid": true,
+      "cwd_verified": true,
+      "argv_verified": true,
+      "previous_epoch": 9,
+      "current_epoch": 12,
+      "previous_log_bytes": 53121,
+      "current_log_bytes": 68658,
+      "log_growth": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "pid": 2426866,
+      "gpu": 5,
+      "same_pid": true,
+      "cwd_verified": true,
+      "argv_verified": true,
+      "previous_epoch": 7,
+      "current_epoch": 10,
+      "previous_log_bytes": 42772,
+      "current_log_bytes": 58311,
+      "log_growth": true
+    },
+    {
+      "row_id": "SIG_PAIR-s2026092703",
+      "pid": 2426941,
+      "gpu": 0,
+      "same_pid": true,
+      "cwd_verified": true,
+      "argv_verified": true,
+      "previous_epoch": 7,
+      "current_epoch": 10,
+      "previous_log_bytes": 42767,
+      "current_log_bytes": 58306,
+      "log_growth": true
+    }
+  ],
+  "gpu_capacity": {
+    "0": {
+      "experiment_process_count": 2,
+      "free_mb": 17402,
+      "within_limit": true
+    },
+    "1": {
+      "experiment_process_count": 1,
+      "free_mb": 20753,
+      "within_limit": true
+    },
+    "2": {
+      "experiment_process_count": 1,
+      "free_mb": 20753,
+      "within_limit": true
+    },
+    "3": {
+      "experiment_process_count": 1,
+      "free_mb": 20753,
+      "within_limit": true
+    },
+    "4": {
+      "experiment_process_count": 1,
+      "free_mb": 20769,
+      "within_limit": true
+    },
+    "5": {
+      "experiment_process_count": 2,
+      "free_mb": 17418,
+      "within_limit": true
+    },
+    "6": {
+      "experiment_process_count": 1,
+      "free_mb": 20753,
+      "within_limit": true
+    },
+    "7": {
+      "experiment_process_count": 1,
+      "free_mb": 20753,
+      "within_limit": true
+    }
+  },
+  "verified_at": "2026-10-14T14:07:47.544Z",
+  "private_remote_paths_omitted": true
+}

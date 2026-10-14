@@ -1051,18 +1051,17 @@
     "SOURCEqualifies fixed02/03 expansion before newtargetnumeric summaries; no bestseed/targetparent or selective rerun.",
     "Oldbaseline anchor hasoriginalnetwork; onlySIG_PAIR-SIG_TIME isolates sampling onfixedSIG architecture."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "results": {
-    "status": "PENDING",
-    "launch_verification": "VERIFIED",
-    "new_models": 2,
-    "current_epoch_counts": [
-      3,
-      3
-    ],
-    "label_stage_sampling_verified_no_U": true,
-    "head_fit_updates": 0,
-    "goal_84": false
+    "scope": "firstseed_only",
+    "accuracy": {
+      "SIG_TIME": 0.8367380952380953,
+      "SIG_PAIR": 0.838452380952381
+    },
+    "paired_difference": 0.0017142857142856682,
+    "goal84": false,
+    "report": "final_analysis.md",
+    "aggregate": "results.json"
   },
   "registered_at": "2026-10-14T13:18:20.675Z",
   "execution_commit": "86c22cb76e5eff4a7b106cca769d198879ab22b4"

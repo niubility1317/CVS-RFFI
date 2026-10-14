@@ -101,3 +101,8 @@ S01/S02首seed实际训练与默认测试verified：固定SIG_TIME签名内训�
 
 
 固定SIG_TIME半监督参照健康训练时，仅准备同机制02/03条件扩展（无新科学假设、不改已发布archive）：源码资格固定finalLCE<=.5、PAIR整17U曝光接收>=.25、实际fθ变化/export/W独立及精确预算；首3row闭环SOURCEPASS后原样扩两臂，目标数字不参与。另实际第34轮两臂各56700U，RANDOM接受908/32emptybatch，PAIR51378/0empty；源loss/真实参数梯度已读回，尚不证明性能。
+
+
+### 固定 SIG_TIME 半监督配对训练首种子
+
+20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01 已独立审计：PAIR83.8452%−RANDOM83.6738%=+0.1714个百分点，n=1；固定网络/默认联合头，U顺序为唯一机制差异；0额外前向/0头拟合；source资格提交 f5b19b97bb259de87737dda7a2366036604d12b1 后扩展02/03。完整分析与源证据见对应final_analysis.md/results.json；未完成三种子84%。

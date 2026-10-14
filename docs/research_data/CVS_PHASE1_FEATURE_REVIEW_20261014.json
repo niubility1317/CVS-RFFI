@@ -82183,14 +82183,14 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "Finish remaining fixedSIG_TIME signature-training02/03 andcomplete12row3seed comparison unchanged; retainRAW andDYNAMIC, no targetranking.",
-    "Finish independent fixedSIG_TIME RANDOMvsPAIR uniformU reference andactual33/34/50Ugradient evidence; architecture/head fixed, no newlossstack or weight/calendar scan."
+    "完成固定 SIG_TIME 签名身份泛化损失的完整三种子结果及 Git 交付",
+    "完成固定 SIG_TIME RANDOM/PAIR 半监督参照的完整三种子结果及 Git 交付"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "Finish remaining fixedSIG_TIME signature-training02/03 andcomplete12row3seed comparison unchanged; retainRAW andDYNAMIC, no targetranking.",
-    "Finish independent fixedSIG_TIME RANDOMvsPAIR uniformU reference andactual33/34/50Ugradient evidence; architecture/head fixed, no newlossstack or weight/calendar scan."
+    "完成固定 SIG_TIME 签名身份泛化损失的完整三种子结果及 Git 交付",
+    "完成固定 SIG_TIME RANDOM/PAIR 半监督参照的完整三种子结果及 Git 交付"
   ],
   "current_priority": {
     "at": "2026-10-14T13:05:43.186Z",
@@ -82198,6 +82198,17 @@
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
     "next_semi_supervised_work": "Independent fixedSIG_TIME RANDOMvsPAIR uniformU reference, then source-evidenced reliable identity supervision; no coverage/weight/calendar-only scans",
-    "structural_exploration": false
+    "structural_exploration": false,
+    "fixed_architecture": "SIG_TIME112→joint160; existing default cosine head jointly trained",
+    "latest_ssl_first_seed": {
+      "run_id": "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "status": "ANALYZED",
+      "seeds": 1,
+      "SIG_TIME": 0.8367380952380953,
+      "SIG_PAIR": 0.838452380952381,
+      "paired_difference": 0.0017142857142856682,
+      "three_seed_goal_met": false,
+      "remaining_run": "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
+    }
   }
 }
