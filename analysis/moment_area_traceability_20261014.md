@@ -116,3 +116,8 @@ S01/S02首seed实际训练与默认测试verified：固定SIG_TIME签名内训�
 ### 固定 SIG_TIME RANDOM/PAIR：完整三种子
 
 20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s0203-m6-r01 ANALYZED：PAIR82.7667% vs RANDOM82.6645%，配对+0.1022±0.1220个百分点，2/3为正，净+515/504000；未形成可靠稳定收益，84%未完成。450源轮次/1512000默认决策/162指标/11988实际层批梯度独立复核；导出0差/W独立，单训头0。sourceonly三种子U覆盖91.5781%vs1.6146%，平均梯度更小，不能代替性能或伪标签准确率。后续只研发固定网络的训练/DG/SSL机制。
+
+
+### 真实骨干梯度方差首种子准备
+
+20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 LOCAL_VERIFIED；code 9c981766a0727cf072755ddd46cd5b639bae89ce；固定SIG_TIME/defaultjointhead，真实t1/t2梯度，无extrahead/PAIR。source依据为此前L180真实方差诊断与一般Fishr思想；不是目标反馈选参或原论文逐项复现。局部9负例/真实2阶/训练hook/源资格窄回归和一次P0/P1 PASS，尚无新性能证据。

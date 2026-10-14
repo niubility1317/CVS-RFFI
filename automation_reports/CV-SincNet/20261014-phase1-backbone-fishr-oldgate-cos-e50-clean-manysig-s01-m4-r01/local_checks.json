@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "protocol_negative_tests": 9,
+  "actual_backbone_second_derivatives": [
+    {
+      "mode": "RAW",
+      "loss": 0.04927929093873833,
+      "gradient_norms": [
+        0.1155976951122284,
+        0.19432944059371948,
+        0.051765523850917816,
+        null
+      ],
+      "auxiliary_W_gradient": false
+    },
+    {
+      "mode": "TX_DAY_CENTERED",
+      "loss": 0.13249068107485007,
+      "gradient_norms": [
+        0.2875022292137146,
+        0.4891808032989502,
+        0.1794135719537735,
+        null
+      ],
+      "auxiliary_W_gradient": false
+    }
+  ],
+  "feature_only_W_independence": true,
+  "default_head_normal_joint_update": true,
+  "head_fit_updates": 0,
+  "source_data_read": false,
+  "query_read": false,
+  "auxiliary_mode_RNG_requires_grad_buffers_restored": true,
+  "variance_denominator_derivative_finite_difference": "PASS",
+  "normalized_objective_scale_invariance": "PASS",
+  "coefficient": 0.01,
+  "seconds": 8.970097780227661,
+  "training_hook": {
+    "status": "PASS",
+    "actual_native_hook": [
+      {
+        "arm": "SIG_TIME",
+        "effective_gradient_norms": [
+          0,
+          0,
+          0
+        ],
+        "original_U_loss_returned": true
+      },
+      {
+        "arm": "BONE_COND_FISHR",
+        "effective_gradient_norms": [
+          0.0019361480372026563,
+          0.0029628437478095293,
+          0.0016062199138104916
+        ],
+        "original_U_loss_returned": true
+      }
+    ],
+    "zero_warmup_main_gradients_equal": true,
+    "original_U_loss_identity": true,
+    "cohorts35": true,
+    "remote_script_compile": "PASS"
+  },
+  "qualification_fix": {
+    "status": "PASS",
+    "zero_diagnostic_SIG_projection_is_nonblocking": true,
+    "each_required_backbone_zero_rejected": true,
+    "missing_epoch_rejected": true,
+    "evidence": "check_qualification_fix.py actual tool output"
+  },
+  "independent_P0P1": "PASS after required2object source qualification fix; one unique review",
+  "implementation_commit": "9c981766a0727cf072755ddd46cd5b639bae89ce"
+}
