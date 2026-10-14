@@ -1,0 +1,73 @@
+{
+  "status": "VERIFIED",
+  "all_epochs_used": true,
+  "rows": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "epochs": 50,
+      "sumEpochSeconds": 2334.8399138450623,
+      "last": {
+        "epoch": 50,
+        "epoch_time_s": 63.0074257850647,
+        "val_tx_acc": 97.88518518518518,
+        "train_loss_tx_labeled": 0.2884262464940548,
+        "train_pseudo_total": 56700,
+        "train_pseudo_selected": 894,
+        "train_pseudo_truth_available": 0,
+        "train_reliable_ratio": 0.015730574324324325,
+        "train_pseudo_conf": 0.9845474888612559,
+        "train_strong_pass": 0.9797802462771132,
+        "train_temporal_pass": 0.016223254504504504
+      },
+      "last5CE": 0.26565861665719265,
+      "prior5CE": 0.2682841490316498,
+      "last5V": 97.88888888888889,
+      "prior5V": 97.79555555555555
+    },
+    {
+      "arm": "SIG_TIME",
+      "epochs": 50,
+      "sumEpochSeconds": 2394.8282663822174,
+      "last": {
+        "epoch": 50,
+        "epoch_time_s": 69.91170525550842,
+        "val_tx_acc": 98.13703703703703,
+        "train_loss_tx_labeled": 0.24766588640642595,
+        "train_pseudo_total": 56700,
+        "train_pseudo_selected": 908,
+        "train_pseudo_truth_available": 0,
+        "train_reliable_ratio": 0.015976914414414414,
+        "train_pseudo_conf": 0.9861213631995089,
+        "train_strong_pass": 0.9870120874933295,
+        "train_temporal_pass": 0.01639921171171171
+      },
+      "last5CE": 0.22823603209611534,
+      "prior5CE": 0.2339799642495744,
+      "last5V": 98.15037037037038,
+      "prior5V": 98.13629629629631
+    },
+    {
+      "arm": "FEATURE_MT",
+      "epochs": 50,
+      "sumEpochSeconds": 2360.222954273224,
+      "last": {
+        "epoch": 50,
+        "epoch_time_s": 68.28170800209045,
+        "val_tx_acc": 98.12222222222222,
+        "train_loss_tx_labeled": 0.24878544581902995,
+        "train_pseudo_total": 56700,
+        "train_pseudo_selected": 896,
+        "train_pseudo_truth_available": 0,
+        "train_reliable_ratio": 0.015765765765765764,
+        "train_pseudo_conf": 0.9840636210398631,
+        "train_strong_pass": 0.9870648746554916,
+        "train_temporal_pass": 0.01639921171171171
+      },
+      "last5CE": 0.22931855792129366,
+      "prior5CE": 0.23472121023648493,
+      "last5V": 98.1362962962963,
+      "prior5V": 98.12
+    }
+  ],
+  "limitation": "Native per-epoch wall times on shared GPUs; not a controlled speed benchmark or proof of convergence"
+}

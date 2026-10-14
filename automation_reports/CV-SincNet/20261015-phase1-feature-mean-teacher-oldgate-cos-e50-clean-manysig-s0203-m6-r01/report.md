@@ -35,3 +35,8 @@ sourcePASS才做标准普通账户preflight、一次archive本地/远端SHA比�
 R01 dispatcher import FAILED：score引用发布包没有包含的旧SPSseeds汇总包。独立post-state确认PID已退出、workers0、run根目录未创建，因此没有新模型训练/更新或健康任务重启。保留R01 release/archive/log。修复提交 729c01e878a0df790c1056d00d1b547f709a57be 改用已发布的相同AST helper，并在实际release preflight导入dispatcher消费依赖链；针对该P1窄复审PASS。
 
 同一run/rows/科学配置/源决定保持，恢复使用不可变 cvs_feature_mean_teacher_seeds_20261015_r02 和本地local_artifacts/feature_mean_teacher_seeds_delivery_r02。本机等价函数AST、dispatcher import与archivepaths检查PASS；真实release仍按原compile/no-query smoke后发布。技术修复发生在目标读回后，但只修启动依赖，不调整方法、系数、种子或预算；原source决定 ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9 保持。
+
+
+## R02 恢复发布已验证
+
+状态 RUNNING / VERIFIED，execution ab2c3127e14b48dea5bc2e064ce42c0be7cfdeeb。一次 archive SHA 对比、remote compile、真实checkpoint无query smoke PASS；4新worker的PID/CWD/argv/GPU及后续loggrowth均独立核实，已各完成4至5轮，2历史row复用；所有owner每GPU进程数最大2≤3，失败0。R01失败包保留，未改变科学配置或重启健康任务。原始运行细节留本地/远端，Git聚合证据见 release_R02_launch_evidence.json。

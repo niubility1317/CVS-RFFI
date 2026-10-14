@@ -47,3 +47,8 @@ actual_U_phase_source_evidence.json已从运行中源产物回收：两臂完成
 ## 首seed源资格决定
 
 训练/预测/评分三row已完整关闭。源规则PASS，feature discrepancy比.821487695≤.95，终LCE .247665886/.248785446，实际L720z差2.058244944。依据source_qualification.json记录决定：原样扩固定02/03，两臂不重排、不重跑或改权重；新目标准确率尚未读取，本次先提交源决定。完整独立审计与性能报告随后回收。
+
+
+## 首 seed 完整结论
+
+独立审计 VERIFIED，完整结果见 final_analysis.md、results.json 和 source_curves_and_clean_result.png。FEATURE_MT 83.3619%，同架构 SIG_TIME 83.6679%，−0.3060 个百分点；n=1，非三种子结论。源资格扩展决定在新目标数值回收前已提交 ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9，固定02/03继续，不据目标改配方。

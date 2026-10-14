@@ -82408,7 +82408,7 @@
       {
         "run_id": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
         "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
-        "code_commit": "b69d6ffbbd229284c4cfde35124db10bf871fe07",
+        "code_commit": "729c01e878a0df790c1056d00d1b547f709a57be",
         "remaining_seeds": [
           2026092702,
           2026092703
@@ -82421,8 +82421,8 @@
       },
       {
         "run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-        "status": "SOURCE_QUALIFIED_NOT_LAUNCHED",
-        "code_commit": "68b3143dbdfcde27c80997f970121a23e34e5f2e",
+        "status": "RUNNING_VERIFIED_R02",
+        "code_commit": "729c01e878a0df790c1056d00d1b547f709a57be",
         "remaining_seeds": [
           2026092702,
           2026092703
@@ -82431,7 +82431,12 @@
         "source_qualification_status": "PASS",
         "original_mechanism_changed": false,
         "local_negative_tests": 11,
-        "head_fit_updates": 0
+        "head_fit_updates": 0,
+        "execution_commit": "ab2c3127e14b48dea5bc2e064ce42c0be7cfdeeb",
+        "source_decision_commit": "ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9",
+        "recovery_release": "cvs_feature_mean_teacher_seeds_20261015_r02",
+        "failed_R01_before_workers_preserved": true,
+        "scientific_rows_unchanged": true
       }
     ],
     "feature_mean_teacher_first_seed": {
@@ -82442,7 +82447,17 @@
       "paired_difference_pp": -0.305952380952379,
       "n": 1,
       "goal84_achieved": false,
-      "source_decision_commit": "ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9"
+      "source_decision_commit": "ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9",
+      "report_run": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "full_audit": {
+        "models": 3,
+        "new_steps": 22200,
+        "epochs": 150,
+        "predictions": 504000,
+        "metrics": 54,
+        "actual_gradient_layer_records": 7992,
+        "head_fit_updates": 0
+      }
     }
   }
 }

@@ -141,3 +141,8 @@ S01/S02首seed实际训练与默认测试verified：固定SIG_TIME签名内训�
 ### 实际U特征梯度及固定02/03执行准备
 
 FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非零、ZERO全0，Waux梯度None检查及producer保存复算VERIFIED；36轮170100U/臂仅部分预算，目标/终轮独立审计待。BF02/03 20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01 code b69d6ffbbd229284c4cfde35124db10bf871fe07 与FEATURE_MT02/03 20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01 code 68b3143dbdfcde27c80997f970121a23e34e5f2e 已LOCAL_VERIFIED_NOT_LAUNCHED：配方未改、10/11 source负例PASS、同seed初态和args配对通过，无新假设/另训头。仅原首SOURCEPASS后发布，未根据目标排名/扫参或扩种子。
+
+
+### 固定 SIG_TIME 均值教师首种子闭环与扩展技术恢复
+
+20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01 ANALYZED/VERIFIED：FEATURE_MT 83.3619% vs SIG_TIME 83.6679%，−0.3060 个百分点，纠正544/引入1058，n=1。原baseline80.6685%架构不同，不能归因SSL。完整150源epoch、22200新step、504000默认决定/54指标、原生＋feature共7992层记录/23976向量独立重计；真实可部署joint160导出一致、W独立、193460 feature元素/默认960W元素更新，另训头0。源U discrepancy比.8214877且实际梯度生效，但未形成首seed泛化收益。源PASS扩展决定 ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9 先于目标数字读回提交，固定02/03原样继续。扩展R01缺失import在workers0/runroot不存在时FAILED，保留release；技术修复 729c01e878a0df790c1056d00d1b547f709a57be、针对P1复审PASS，R02 execution ab2c3127e14b48dea5bc2e064ce42c0be7cfdeeb 四新PID/CWD/argv/GPU/loggrowth VERIFIED，科学配方未变。完整三seed/84%仍待证据。
