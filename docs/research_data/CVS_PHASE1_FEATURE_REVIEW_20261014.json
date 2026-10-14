@@ -33117,7 +33117,7 @@
     },
     {
       "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
-      "status": "IMPLEMENTED_REVIEWED",
+      "status": "RUNNING",
       "method": "identity protected t1/t2 MixStyle",
       "implementation_path": "experiments/cvs_identity_mixstyle50",
       "model_seeds": [
@@ -33142,7 +33142,51 @@
       "source_basis": "20261014-phase1-source-style-profile-manysig-s01-m1-r01",
       "route_independent_from_other": "other branch latest990ffabe0 single-basis temporal control; no PAIRS/Sinc/TIME stacking",
       "target_results": null,
-      "three_seed_goal_complete": false
+      "three_seed_goal_complete": false,
+      "execution_commit": "b2a4146b7571d8713ddbd98cd096fb98b2b4c00c",
+      "launch": "VERIFIED",
+      "source_style_early": [
+        {
+          "arm": "MATCHED_CONTROL",
+          "epochs": 4,
+          "layers": {
+            "t1": {
+              "calls": 0,
+              "enabled_calls": 0,
+              "packet_calls": 0,
+              "eligible_packets": 0,
+              "changed_packets": 0
+            },
+            "t2": {
+              "calls": 0,
+              "enabled_calls": 0,
+              "packet_calls": 0,
+              "eligible_packets": 0,
+              "changed_packets": 0
+            }
+          }
+        },
+        {
+          "arm": "IDENTITY_MIXSTYLE",
+          "epochs": 4,
+          "layers": {
+            "t1": {
+              "calls": 222,
+              "enabled_calls": 107,
+              "packet_calls": 28416,
+              "eligible_packets": 28327,
+              "changed_packets": 13467
+            },
+            "t2": {
+              "calls": 222,
+              "enabled_calls": 96,
+              "packet_calls": 28416,
+              "eligible_packets": 28327,
+              "changed_packets": 12089
+            }
+          }
+        }
+      ]
     }
   ],
   "diagnostics": {

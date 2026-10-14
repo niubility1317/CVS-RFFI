@@ -21,3 +21,5 @@ local negatives/实际adapter梯度及数值更新/teacher U eval隔离PASS，�
 发布代码、预登记、最终分析和必要聚合表Git上传，checkpoint/IQ/私密配置/大型预测/原日志保留远端，禁止上传。
 
 唯一独立 P0/P1 审查 PASS，无直接缺陷；未增加旧框架重复审查。登记、本地路径和特征边界检查 PASS。
+
+发布 VERIFIED：实际代码 b2a4146b7571d8713ddbd98cd096fb98b2b4c00c；remote compile、real-checkpoint no-query smoke PASS。2新模型 PID1981402/GPU1 与 PID1981480/GPU2，CWD/argv/commit 与固定配置匹配，日志6614→22188、6630→17020增长；首轮222个主L调用闭合。源首轮证据与单archive传输登记见 launch_evidence.json，尚无新候选target结果。

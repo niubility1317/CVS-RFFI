@@ -1,0 +1,350 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "b2a4146b7571d8713ddbd98cd096fb98b2b4c00c",
+  "package": {
+    "project": "/home/szu2070436088/2510044040/CV-SincNet",
+    "run": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "release": "cvs_identity_mixstyle50_20261014_r01",
+    "commit": "b2a4146b7571d8713ddbd98cd096fb98b2b4c00c",
+    "archive": "cvs_identity_mixstyle50_20261014_r01.tar.gz",
+    "sha256": "a130f0946a558ce2c57b57d29f083135f8567add78e812f9ec91632aa09ddee1"
+  },
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 1981170,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_mixstyle50_20261014_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_identity_mixstyle50.dispatch"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_mixstyle50_20261014_r01/dispatcher.stdout.log",
+    "commit": "b2a4146b7571d8713ddbd98cd096fb98b2b4c00c",
+    "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01"
+  },
+  "preflight": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "role_negative": true,
+      "private_operator_RNG": true,
+      "real_main_L_t1_t2_gradient_and_update": true,
+      "default_W_normal_joint_gradient": true,
+      "source_joint160_changed": true,
+      "teacher_U_eval_no_intervention": true,
+      "same_seed_initial_state_exact": true,
+      "new_parameters": 0,
+      "query_read": false,
+      "checkpoint_read": false
+    },
+    "source_evidence_run": "20261014-phase1-source-style-profile-manysig-s01-m1-r01",
+    "real_checkpoint_no_query_smoke": true,
+    "query_read": false,
+    "head_fit": false,
+    "training_inherits_checkpoint": false
+  },
+  "first_snapshot": {
+    "at": "2026-10-14T00:31:17.787Z",
+    "read_at": 1791937815.45295,
+    "workers": [
+      {
+        "row": "OLD_GATE_COS50-s2026092701",
+        "pid": 1981312,
+        "gpu": 0,
+        "log_bytes": 121,
+        "epochs": 50,
+        "process": null,
+        "commit": "5fa536f9ca2d90e7d30d547d58503a41b612d57f"
+      },
+      {
+        "row": "MATCHED_CONTROL-s2026092701",
+        "pid": 1981402,
+        "gpu": 1,
+        "log_bytes": 6614,
+        "epochs": 0,
+        "process": {
+          "pid": 1981402,
+          "start_ticks": 118549548,
+          "state": "R",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_mixstyle50_20261014_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_mixstyle50.dispatch",
+            "--worker",
+            "MATCHED_CONTROL-s2026092701"
+          ],
+          "gpu": "1"
+        },
+        "commit": "b2a4146b7571d8713ddbd98cd096fb98b2b4c00c"
+      },
+      {
+        "row": "IDENTITY_MIXSTYLE-s2026092701",
+        "pid": 1981480,
+        "gpu": 2,
+        "log_bytes": 6630,
+        "epochs": 0,
+        "process": {
+          "pid": 1981480,
+          "start_ticks": 118549883,
+          "state": "R",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_mixstyle50_20261014_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_mixstyle50.dispatch",
+            "--worker",
+            "IDENTITY_MIXSTYLE-s2026092701"
+          ],
+          "gpu": "2"
+        },
+        "commit": "b2a4146b7571d8713ddbd98cd096fb98b2b4c00c"
+      }
+    ],
+    "capacity": {
+      "0": {
+        "pids": [],
+        "free_mb": 24124
+      },
+      "1": {
+        "pids": [
+          1981402
+        ],
+        "free_mb": 21905
+      },
+      "2": {
+        "pids": [
+          1981480
+        ],
+        "free_mb": 23085
+      },
+      "3": {
+        "pids": [],
+        "free_mb": 24124
+      },
+      "4": {
+        "pids": [],
+        "free_mb": 24124
+      },
+      "5": {
+        "pids": [],
+        "free_mb": 24124
+      },
+      "6": {
+        "pids": [],
+        "free_mb": 24124
+      },
+      "7": {
+        "pids": [],
+        "free_mb": 24124
+      }
+    }
+  },
+  "second_snapshot": {
+    "at": "2026-10-14T00:32:41.948Z",
+    "read_at": 1791937899.5496504,
+    "workers": [
+      {
+        "row": "OLD_GATE_COS50-s2026092701",
+        "pid": 1981312,
+        "gpu": 0,
+        "log_bytes": 121,
+        "epochs": 50,
+        "process": null,
+        "commit": "5fa536f9ca2d90e7d30d547d58503a41b612d57f"
+      },
+      {
+        "row": "MATCHED_CONTROL-s2026092701",
+        "pid": 1981402,
+        "gpu": 1,
+        "log_bytes": 22188,
+        "epochs": 3,
+        "process": {
+          "pid": 1981402,
+          "start_ticks": 118549548,
+          "state": "S",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_mixstyle50_20261014_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_mixstyle50.dispatch",
+            "--worker",
+            "MATCHED_CONTROL-s2026092701"
+          ],
+          "gpu": "1"
+        },
+        "commit": "b2a4146b7571d8713ddbd98cd096fb98b2b4c00c"
+      },
+      {
+        "row": "IDENTITY_MIXSTYLE-s2026092701",
+        "pid": 1981480,
+        "gpu": 2,
+        "log_bytes": 17020,
+        "epochs": 2,
+        "process": {
+          "pid": 1981480,
+          "start_ticks": 118549883,
+          "state": "R",
+          "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_mixstyle50_20261014_r01",
+          "argv": [
+            "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+            "-u",
+            "-m",
+            "experiments.cvs_identity_mixstyle50.dispatch",
+            "--worker",
+            "IDENTITY_MIXSTYLE-s2026092701"
+          ],
+          "gpu": "2"
+        },
+        "commit": "b2a4146b7571d8713ddbd98cd096fb98b2b4c00c"
+      }
+    ],
+    "capacity": {
+      "0": {
+        "pids": [],
+        "free_mb": 24124
+      },
+      "1": {
+        "pids": [
+          1981402
+        ],
+        "free_mb": 20773
+      },
+      "2": {
+        "pids": [
+          1981480
+        ],
+        "free_mb": 20773
+      },
+      "3": {
+        "pids": [],
+        "free_mb": 24124
+      },
+      "4": {
+        "pids": [],
+        "free_mb": 24124
+      },
+      "5": {
+        "pids": [],
+        "free_mb": 24124
+      },
+      "6": {
+        "pids": [],
+        "free_mb": 24124
+      },
+      "7": {
+        "pids": [],
+        "free_mb": 24124
+      }
+    }
+  },
+  "log_growth_verified": true,
+  "source_initial_epochs": [
+    {
+      "arm": "MATCHED_CONTROL",
+      "epochs": 4,
+      "last": {
+        "epoch": 4,
+        "main_L_calls": 0,
+        "layers": {
+          "t1": {
+            "calls": 0,
+            "enabled_calls": 0,
+            "packet_calls": 0,
+            "eligible_packets": 0,
+            "changed_packets": 0
+          },
+          "t2": {
+            "calls": 0,
+            "enabled_calls": 0,
+            "packet_calls": 0,
+            "eligible_packets": 0,
+            "changed_packets": 0
+          }
+        },
+        "teacher_style_calls": 0,
+        "U_style_calls": 0,
+        "eval_style_calls": 0
+      },
+      "args": {
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "use_mixstyle": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "ema_decay": 0.999,
+        "pseudo_temporal_gate": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "pseudo_temporal_window": 2,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "label_smoothing": 0.01,
+        "phase1_lr_schedule": "cosine",
+        "freeze_backbone": false,
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "teacher_ckpt": "",
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false
+      }
+    },
+    {
+      "arm": "IDENTITY_MIXSTYLE",
+      "epochs": 4,
+      "last": {
+        "epoch": 4,
+        "main_L_calls": 222,
+        "layers": {
+          "t1": {
+            "calls": 222,
+            "enabled_calls": 107,
+            "packet_calls": 28416,
+            "eligible_packets": 28327,
+            "changed_packets": 13467
+          },
+          "t2": {
+            "calls": 222,
+            "enabled_calls": 96,
+            "packet_calls": 28416,
+            "eligible_packets": 28327,
+            "changed_packets": 12089
+          }
+        },
+        "teacher_style_calls": 0,
+        "U_style_calls": 0,
+        "eval_style_calls": 0
+      },
+      "args": {
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "use_mixstyle": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "ema_decay": 0.999,
+        "pseudo_temporal_gate": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "pseudo_temporal_window": 2,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "label_smoothing": 0.01,
+        "phase1_lr_schedule": "cosine",
+        "freeze_backbone": false,
+        "from_scratch": true,
+        "baseline_ckpt": "",
+        "teacher_ckpt": "",
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false
+      }
+    }
+  ],
+  "completion": false,
+  "head_fit": false,
+  "new_target_results": false,
+  "other_owner_mutation": false
+}
