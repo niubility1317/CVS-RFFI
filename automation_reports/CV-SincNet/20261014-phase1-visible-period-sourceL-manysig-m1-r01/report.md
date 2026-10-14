@@ -1,43 +1,41 @@
-# 可见周期预测留出残差：完整L6300可预测性与身份关系
+# 完整 L6300 可见周期观测可行性结果
 
-- run_id：`20261014-phase1-visible-period-sourceL-manysig-m1-r01`
-- group_id：`phase1-visible-period-observation-feasibility`；类别：`diagnostic`；阶段：`Phase1`
-- 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+固定版本已完成并独立复算，状态 ANALYZED / VERIFIED。科学决定：`REJECT_UNIFORM_RELATIVE_REFERENCE_PRETEXT`。可见三周期均值总体优于零残差参考，但 RX1、RX4、RX6 出现误差反向，因此未通过事先固定的“所有源 RX 不反向”条件。该版本不进入训练，不改变阈值，也不剔除不利 RX。
 
-## 目的与对照
+## 固定方案与数据边界
 
-No learned model: sourceL6300 visible-only phase/scale/public reference calibration, fixedcopy_cycle1/visible_mean/reference baselines, downstream RX/day/TX counts and fixedcrossRX residual24 geometry. No decoder/backbone/head fitting, checkpoint, U/V IQ or target access.
+Run `20261014-phase1-visible-period-sourceL-manysig-m1-r01`；执行 Git `684b27ec3baf8dfee3f73aaed51c423f7632f53d`。只读原合法 L_s 6,300 个物理样本，TX 0 至 5、RX 1/3/4/6/8、day 1/2/3，90 cell 各70包。无模型种子、checkpoint、网络或 decoder/分类头拟合。固定 visible `[80:100],[100:120],[140:160]`，留出 `[120:140]`，可见均方根/相位/公共参考延迟与增益只由可见位置确定；留出目标全停止梯度。12占用 FFT 坐标对应24实残差。三种预测为固定 cycle1、可见均值、已知参考零残差，使用完全相同的有效包集合。
 
-## 数据、seed与模型来源
+预登记必要条件：有效覆盖率≥95%；可见均值 pooled MSE 相对参考下降≥10%；所有源 RX 下降非负；固定跨 RX 身份 cosine gap≥.02，并在至少4/5 RX为正。实际仅所有 RX 不反向条件失败。该条件为源可行性，不能证明泛化或实际骨干收益。
 
-实际数据契约、权限例外、完整seed角色、checkpoint来源和选择规则见experiment.json。
-逐行配置通过config_ref/resolved_config_ref定位；待补项必须在对应生命周期补齐。
+## 预测误差
 
-## 执行与存储
+6,300/6,300 包可见有效，无留出能量筛选。参考 MSE 0.23741776；cycle1 MSE 0.21627174，下降8.9067%；可见均值 MSE 0.15304889，下降35.5360%。均值收益是 pooled sum 的比，不是逐包比例均值。
 
-命令、环境、CWD、commit、launch owner、输出和日志路径见experiment.json。
-实际PID/GPU、读取时间、remote readback、失败或替代关系在此追加，并用record命令记录证据指针。
+| 源 RX | 参考 MSE | 可见均值 MSE | 误差下降 |
+|---|---:|---:|---:|
+| 1 | 0.01080119 | 0.01157563 | -7.1700% |
+| 3 | 0.67712740 | 0.48484703 | +28.3965% |
+| 4 | 0.02608834 | 0.02623155 | -0.5490% |
+| 6 | 0.02625737 | 0.03145991 | -19.8136% |
+| 8 | 0.44681451 | 0.21113031 | +52.7477% |
 
-## 结果与覆盖
+目标能量中位数 .00429307，均值 .23741776。可见均值误差中位数 .00258477，q99为3.08356424；前1%包占59.0209%误差，表明统一平方误差会受尾部影响。分布来自固定源计算；独立复算覆盖全部均值、和及分组关系，未另重复其分位数计算。
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
-源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
+## 下游身份关系
 
-## 交接
+126,000 条固定同 day、同 cell 序号关系全部有效，无拟合。跨 RX 同 TX cosine均值 .12242586，参照 RX异 TX均值 .09591670，gap .02650916；58,623 条（46.5262%）gap≤0。五 RX gap全部为正，但预测改善最大的RX3/8 gap仅.00751348/.00709755。
 
-记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+独立25,200条跨 RX 同 TX有序pair平均cosine .12242586，而31,500条同 RX异 TX为 .31964857。这是源接收机关联的描述，不是可辨识硬件因果证据。相关pair不能冒充独立模型种子；24维物理残差不等于实际部署joint160。
 
-## 固定最小诊断
+## 执行证据与成本
 
-完整原有 L6300，6TX × 5源RX(1/3/4/6/8) × 3day(1/2/3) × 每cell70包。每包只读取一次；无网络、checkpoint、decoder或分类头拟合。留出120:140，只用80:100、100:120、140:160校准尺度/相位/公开reference delay及复增益。固定copy cycle1、visible mean、knownreference三个基线，预测真实留出参考残差24；所有valid/预测先于合法L标签统计。掩码输入留出段及其他位置为零，不填可见均值。
+预登记、一次独立 P0/P1 review、唯一输出根、N607 preflight、单archive本地/远端SHA及compile、活PID/CWD/argv和日志增长均 VERIFIED。完成后新只读证据确认进程自然终止、完整summary和census保留、无fatal。独立fresh CPU读取原census，用标准Python/Torch复算135项和全部126,000关系，0新增IQ读取。
 
-三个基线在完全相同的可见valid集合上报告每包24维实数MSE、全组/有效组分母、poolederror/energy，以及RX/day/TX/RXday。不能依据留出能量筛样本或只报告修剪后的均值；同时披露能量/误差前1%占比。
+实际6,300源IQ读取、2个零IQ无查询fixture、0网络IQ前向、0训练更新、0头拟合、0EMA、0U/V/target读取、0GPU；主要源处理耗时3.2586秒。原始census与runtime保留在原不可变run根，不提交原向量或机器状态。公开汇总见[source_result_evidence.json](source_result_evidence.json)、[误差分组](baseline_source_metrics.csv)、[关系分组](source_relation_metrics.csv)。
 
-visible_mean残差24仅做无拟合关系统计，不是f_theta joint160。固定同day、原cell ordinal，anchor与4个其他RX的同TXpositive，以及该reference RX五个异TXnegative，潜在126000条关系；visible-valid掩码后报告cospositive/negative/gap分布、ordering和全部计数。不hardmine、不加margin、不拟合另一个头。同RX异TX相似度补充描述RX关联，不能单凭差值归因于接收机捷径。
+## 下一步
 
-在读真实源结果前固定可行性条件：至少95% visible-valid；visible mean pooledMSE比reference改善至少10%，每RX不反转；跨RX身份cosgap至少.02，至少4/5RX为正。失败关闭本固定pretext版本，不扫描遮挡位置、tone、phase或损失权重。即使通过，也仅支持源条件预测及身份关系，不证明decoder胜过visible mean或新训练的泛化收益；另行预登记后才允许训练。
+本次拒绝均匀24维相对参考预测损失。下一独立假设使用公共周期线性参考加DC子空间的固定正交补（7个复坐标），不拟合延迟/响应增益，并以可见重复波动构成有界停止预算。该预算只是IID噪声动机的观测容差，缓存上游均衡及噪声独立性未知；不声称TX独占或真实RX成分被去除。新版本须另行源验证，不能据此把旧失败改为通过。
 
-CPU2threads/0GPU。精确命令/CWD/源码Gitcommit在experiment.json及release_commit.txt。首步2个无数据zeroIQfixture后立即继续源数据；本stage不消费checkpoint，所以不加载无关权重制造smoke。一次P0/P1限本次run正确性，单archiveSHA比较/远程compile；启动后独立读PID/CWD/argv、log增长及完整终态。系统技术失败保留partial；低可预测性或低身份gap是科学结果，不能停止无关任务。
-
-只保留接收后缓存表示结论，上游equalization和原始噪声独立性未证明，不称TX硬件参数。历史正收益TIME/LONG_SILU/Sinc保持独立，不合并不同recipe；本次没有目标预测/评分，不把源诊断冒充84%目标完成。
+SIG_TIME、COMPACT、LONG_SILU、Sinc的既有正收益按各自配方独立保留；不相加或按目标挑父权重。默认分类头原联合训练方式保持。固定三种子84%目标仍active，本次无性能成功结论。

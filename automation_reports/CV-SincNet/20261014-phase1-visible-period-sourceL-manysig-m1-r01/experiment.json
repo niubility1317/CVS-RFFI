@@ -174,5 +174,14 @@
     "B0/B1/S0/S1 wasnotlaunched aftersource rejection; thisdiagnostic addsno trainingmatrix.",
     "Originalobservationsourcebuilder code is reused, not model/checkpointfromparent PA."
   ],
-  "registered_at": "2026-10-14T11:58:36+00:00"
+  "registered_at": "2026-10-14T11:58:36+00:00",
+  "status": "ANALYZED",
+  "source_result": {
+    "decision": "REJECT_UNIFORM_RELATIVE_REFERENCE_PRETEXT",
+    "scientific_qualification": false,
+    "report_ref": "report.md",
+    "evidence_ref": "source_result_evidence.json",
+    "target_access": false,
+    "head_fit_updates": 0
+  }
 }

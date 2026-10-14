@@ -112,3 +112,6 @@ PA 重组 9 模型已完整 ANALYZED / VERIFIED：ZERO 80.6710%、SAME 80.5823%�
 
 
 受控证据集合首seed完整V27000可行性已ANALYZED/VERIFIED，但科学条件不通过：原硬门控补集2570个样本只保留81.9066%真实TX，465个集合排除真类；S1有效1554中417个排除真类，多类有效集合192中70个排除真类。固定beta=.5/pi=.9版本关闭，不扫参数、不启动B0/B1/S0/S1，不追加seed。54,000源前向/4无查询smoke，0训练/头拟合/U/target访问；270项独立逐包计数核实。下一步严格可见周期残差源可预测性检查，历史正收益结构独立保留，84%仍active。详见[集合可行性报告](../automation_reports/CV-SincNet/20261014-phase1-evidence-set-sourceV-manysig-s2026092701-r01/report.md)。
+
+
+完整 L6300 可见周期残差诊断已 ANALYZED / VERIFIED：均值预测相对参考 pooled MSE 下降35.5360%，但RX1/4/6分别反向7.1700%/.5490%/19.8136%，固定所有RX不反向条件失败，24维统一预测版本关闭。126,000固定关系gap .02650916，但同RX异TX cosine .31964857高于跨RX同TX .12242586；前1%包占59.0209%均值预测误差。6,300源IQ读取、0网络前向/更新/头拟合/U/V/target；135项及全部关系独立复算。下一独立假设为公共周期线性参考正交补观测＋可见重复波动停止预算，先源验证，不能冒充已有效训练。SIG_TIME等正路线按各自配方保留，84%目标active。详见[可见周期源报告](../automation_reports/CV-SincNet/20261014-phase1-visible-period-sourceL-manysig-m1-r01/report.md)。
