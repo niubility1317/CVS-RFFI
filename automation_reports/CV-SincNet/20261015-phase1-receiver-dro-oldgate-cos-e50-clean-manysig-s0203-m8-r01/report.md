@@ -15,3 +15,6 @@
 发布时普通N607既有CVS-RFFI/FP32，每worker CPU2线程；CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_receiver_dro_seeds_20261015_r01`，命令 `python -u -m experiments.cvs_receiver_dro_seeds.dispatch`；owner `codex/root/receiver-dro-seeds-20261015`，不可复用输出根 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01`，日志 `<run>/logs/<row>.log`。共享GPU0..7按现行调度分配，所有owner每GPU最多3总实验进程且发布时至少12000MiB空闲，保护健康任务。实际release才执行一次普通预检、单归档SHA比较、远端编译及真实first SIG固定final50的2样本synthetic no-query smoke，PASS后直接启动；训练从零，不继承该CP。
 
 停止规则及预期产物见experiment.json；仅run-owned技术失败停止，保留产物不自动重启。当前不创建远端输出、不占GPU。原始数据/CP/预测/PT/日志不入Git，必要聚合结果和实现上传并独立核实远端OID。
+
+
+首种子完整source资格PASS且独立重算一致，已形成source_expansion_decision.json：三臂固定原样扩02/03，发布前提交/推送该决定。当前状态READY_FOR_FIXED_RELEASE，尚未启动本矩阵；决定不参考新目标数值。

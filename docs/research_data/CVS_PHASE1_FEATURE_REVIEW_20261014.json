@@ -82269,8 +82269,8 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "发布固定首seed三臂接收机风险训练，各50/11100，逐row默认头自动clean预测和独立truth-last；不添加结构、换头或改U配方",
-    "仅回收完整源资格，满足提前规则才冻结原样三臂02/03扩展并commit/push，再回收新目标准确率；FAIL不扩，不依据目标调权或重跑"
+    "首种子sourcePASS决定commit/push并验证后，发布固定原样三臂02/03扩展；每模型50/11100，逐row自动默认头clean预测评分",
+    "源决定冻结后回收首seed完整目标与源曲线；完成已有SSL梯度几何分析报告，不能凭半数冲突认定过强或自动改机制"
   ],
   "current_priority": {
     "at": "2026-10-15",
@@ -82619,7 +82619,7 @@
       {
         "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
         "package": "experiments/cvs_receiver_dro_seeds",
-        "status": "LOCAL_VERIFIED_PREREGISTERED_SOURCE_CONDITIONAL_NOT_LAUNCHED",
+        "status": "SOURCE_PASS_READY_FOR_FIXED_RELEASE",
         "code_commit": "8522fb75680c7b51c7d3d631f67c1b2b212eba8b",
         "source_qualification_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
         "source_qualification": "PENDING",
@@ -82641,7 +82641,8 @@
         ],
         "local_negatives": 12,
         "independent_adapter_P0P1": "PASS",
-        "report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md"
+        "report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md",
+        "source_decision": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/source_expansion_decision.json"
       }
     ],
     "feature_mean_teacher_first_seed": {
@@ -83377,7 +83378,7 @@
       "full_report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
     },
     "receiver_dro_training": {
-      "status": "RUNNING_VERIFIED",
+      "status": "SOURCE_PASS_TARGET_PENDING",
       "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
       "release": "cvs_receiver_dro50_20261015_r01",
       "code_commit": "341d0dc0bdab44fce88e0af3d8fc29eb50b39912",
@@ -83422,11 +83423,11 @@
         "RX_DRO": 0
       },
       "epochs_observed": [
-        3,
-        3,
-        3
+        50,
+        50,
+        50
       ],
-      "source_steps_replayed_per_model": 444,
+      "source_steps_replayed_per_model": 11100,
       "new_target_summary_read": false,
       "latest_source_evidence": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/epoch17_source_evidence.json",
       "paired_source_steps_replayed": 11322,
@@ -83453,7 +83454,10 @@
       ],
       "latest_supervised_risk_steps_replayed": 25086,
       "latest_body_signal_epoch": 33,
-      "complete_source_qualification": "PENDING"
+      "complete_source_qualification": "PASS",
+      "source_risk_ratio": 0.8174760405897794,
+      "source_expansion_decision": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/source_expansion_decision.json",
+      "remaining_status": "READY_FOR_FIXED_RELEASE"
     }
   }
 }
