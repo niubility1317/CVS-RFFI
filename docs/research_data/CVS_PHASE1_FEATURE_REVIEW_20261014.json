@@ -34491,6 +34491,137 @@
       "execution_commit": "038ec31397797e4631a969d0da8167de2ba861c3",
       "launch_evidence": "automation_reports/CV-SincNet/20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01/launch_evidence.json",
       "fitted_native_probes": "disabled in all4 resolved configs; actual closure pending"
+    },
+    {
+      "route": "SIG_TIME read position",
+      "run_ids": [
+        "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+        "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
+      ],
+      "implementation_commit": "087b3f61abb4444f05e7c22f4af6f631865188df",
+      "execution_commits": [
+        "b4d55dba50c8601017604a2a0eb0d037f8d835e8",
+        "038ec31397797e4631a969d0da8167de2ba861c3"
+      ],
+      "status": "ANALYZED",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 3,
+          "accuracy_mean": 0.8052678571428572,
+          "accuracy_sd": 0.023775723031464996,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238,
+            "2026092702": 0.7808154761904762,
+            "2026092703": 0.8283035714285715
+          },
+          "macro_f1_mean": 0.8000238637751929,
+          "worst_RX_mean": 0.6797083333333334,
+          "worst_day_mean": 0.7605555555555555
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 3,
+          "accuracy_mean": 0.8269087301587301,
+          "accuracy_sd": 0.01683620649409677,
+          "seed_accuracy": {
+            "2026092701": 0.8374880952380952,
+            "2026092702": 0.8074940476190476,
+            "2026092703": 0.8357440476190476
+          },
+          "macro_f1_mean": 0.8214384888268065,
+          "worst_RX_mean": 0.7060416666666667,
+          "worst_day_mean": 0.7854920634920635
+        },
+        {
+          "arm": "SIG_TIME_PRE",
+          "seed_count": 3,
+          "accuracy_mean": 0.8255992063492064,
+          "accuracy_sd": 0.015656334038990048,
+          "seed_accuracy": {
+            "2026092701": 0.8335952380952381,
+            "2026092702": 0.8075595238095238,
+            "2026092703": 0.8356428571428571
+          },
+          "macro_f1_mean": 0.8200396829494118,
+          "worst_RX_mean": 0.6972638888888889,
+          "worst_day_mean": 0.7833809523809524
+        }
+      ],
+      "paired": [
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.030803571428571375,
+            0.02667857142857144,
+            0.007440476190476164
+          ],
+          "mean_difference": 0.021640873015872992,
+          "sd_difference": 0.012469657523326577,
+          "positive_seeds": 3
+        },
+        {
+          "arm": "SIG_TIME_PRE",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            -0.0038928571428571423,
+            0.00006547619047614361,
+            -0.0001011904761905047
+          ],
+          "mean_difference": -0.0013095238095238344,
+          "sd_difference": 0.0022387837720015923,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_TIME_PRE",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.026910714285714232,
+            0.026744047619047584,
+            0.007339285714285659
+          ],
+          "mean_difference": 0.02033134920634916,
+          "sd_difference": 0.011251765629482394,
+          "positive_seeds": 3
+        }
+      ],
+      "audit": {
+        "status": "VERIFIED",
+        "models": 9,
+        "new_step_records_parsed": 66600,
+        "epoch_records_parsed": 450,
+        "prediction_count": 1512000,
+        "metric_records_independently_recounted": 162,
+        "truth_last_recount": true,
+        "head_fit": false,
+        "native_fitted_probes_disabled_for_all6_new_models": true,
+        "recount_added_target_forward": 0
+      },
+      "default_head_only": true,
+      "extra_head_fit_updates": 0,
+      "goal84": false,
+      "report": "automation_reports/CV-SincNet/20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
     }
   ],
   "diagnostics": {
@@ -79700,6 +79831,19 @@
       "report": "automation_reports/CV-SincNet/20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01/final_analysis.md",
       "seconds": 1.6405260562896729,
       "scope": "Isolated native Dropout replay after frozen t2.pool; does not reproduce whole training stream or prove performance"
+    },
+    "source_hierarchy": {
+      "route": "Continuous hierarchical signature geometry",
+      "run_id": "20261014-phase1-source-hierarchy-geometry-manysig-s01-m1-r01",
+      "status": "ANALYZED",
+      "source_packets": 720,
+      "statistics": 135,
+      "training_updates": 0,
+      "head_fit_updates": 0,
+      "target_access": false,
+      "direct_composition_error64": 8.881784197001252e-16,
+      "direct_composition_error32": 7.152557373046875e-7,
+      "report": "automation_reports/CV-SincNet/20261014-phase1-source-hierarchy-geometry-manysig-s01-m1-r01/final_analysis.md"
     }
   },
   "next_directions": [
@@ -79708,8 +79852,8 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "Launch source-qualified matched random/neighbor-pair scratch50 firstseed, original old gates/EMA/default head, automaticclean/truth-last; remainingseeds only fixedsource conditions",
-    "Complete same-row logs/Umetadata/source features/full3seeddefault metrics and upload code plus positive/negative results; no target tuning"
+    "Implement fixed route2 hierarchy with local-global-time and matched-capacity large-window statistics controls; one core hypothesis, default jointly trained head, scratch50",
+    "Only unchanged predefined remaining seeds after preregistered source-only qualification; complete fixed predictions/truth-last and Git delivery"
   ],
   "goal_84": false,
   "Phase2_development": false,

@@ -1,0 +1,42 @@
+{
+  "status": "VERIFIED",
+  "first": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 3,
+    "new_trained_models": 2,
+    "reused_baseline_models": 1,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 504000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "remaining": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 6,
+    "new_trained_models": 4,
+    "reused_baseline_models": 2,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 1008000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "combined": {
+    "status": "VERIFIED",
+    "models": 9,
+    "new_step_records_parsed": 66600,
+    "epoch_records_parsed": 450,
+    "prediction_count": 1512000,
+    "metric_records_independently_recounted": 162,
+    "truth_last_recount": true,
+    "head_fit": false,
+    "native_fitted_probes_disabled_for_all6_new_models": true,
+    "recount_added_target_forward": 0
+  },
+  "analysis_updates": 0
+}

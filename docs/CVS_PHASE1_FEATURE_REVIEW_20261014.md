@@ -207,3 +207,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 报告路线二真实源几何已核实：20261014-phase1-source-hierarchy-geometry-manysig-s01-m1-r01，L720、3边界/global32、135统计、0训练/拟合/目标forward。连续组合direct64误差8.882e-16，native32为7.153e-7；省略cross-area的feature/time相对RMS37.0827%/87.0831%。下一步独立检验层级网络，单列global-time局部和同容量大窗统计控制，源差异不作性能结论。详见对应final_analysis.md/results.json。
+
+
+取点完整三seed已回收：PRE82.5599%±1.5656pp、POST82.6909%±1.6836pp，配对−.1310±.2239pp、1/3正差，修正/引入错误净−660。全部9row/6新3历史、450epoch记录/66600新增steps/1512000默认pred/162指标复算VERIFIED，6新模型零额外拟合、真实pool更新/精确导出/W独立，原seed未重训。新机制未强化SIG_TIME，84未达；报告路线二已具备源几何证据，后续保持预定globaltime局部和同容量大窗统计控制。详见 20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md。

@@ -43,3 +43,6 @@ results.json保存完整曲线/组指标/错误转换，source_features.json保�
 ![完整50轮源曲线和首种子默认头结果](results.png)
 
 剩余20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01已按读target前提交的SOURCE PASS原样发布；4新模型健康训练，默认头/50轮/自动clean/truthlast不变。完整三seed主指标未完成，84%未达。后续保留全部正负结果，不据首seed分数改方向、重排或选择性重跑；R2连续层级/R4门控内U权重仍为后置独立路线。
+
+
+完整三种子已闭环：PRE82.5599%、POST82.6909%，配对−.1310±.2239个百分点、1/3正差。首seed保留，完整结果见 ../20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md，不将单seed当最终结论。

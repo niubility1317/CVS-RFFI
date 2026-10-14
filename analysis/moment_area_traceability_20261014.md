@@ -9,7 +9,7 @@
 | R03 | 五·约束 | 默认cosine联合训练，禁止额外头/探针拟合 | source.py/predict.py | verified | 首seed3实际source closures均零拟合；feature-only导出/W独立PASS | 旧门控EMAcos/scratch50/33+17 |
 | R04 | 五·顺序1 | MixStyle全部种子回收且不按负分改计划 | 已提交三种子MixStyle报告 | verified | f1d1e860e；1512000预测/162指标独立复算 | 历史RX/day探针违规如实披露 |
 | R05 | 二·结构分析 | 区分面积、统计形状和常数时间坐标；不把顺序敏感视为泛化证据 | checks.py/report | verified | float64：cov置乱不变、area反转/内部顺序及时间项恒等式PASS | 性能只由真实冻结测试证明 |
-| R06 | 三·路线三 | 独立比较t2与t2.pool取点 | experiments/cvs_source_dropout；后续独立训练矩阵 | implemented | 固定L720/8mask源诊断和63统计重算VERIFIED，训练对照未发布 | 未改当前descriptor实验；无性能结论 |
+| R06 | 三·路线三 | 独立比较t2与t2.pool取点 | experiments/cvs_read_position50及seeds | verified | 完整3seed/9row/66600steps/1512000pred/162metrics独立复算VERIFIED | PRE82.5599vsPOST82.6909，无稳定提升 |
 | R07 | 三·路线二 | 连续4→2→1层级含三个边界增量和统一全局时间 | experiments/cvs_source_hierarchy；后续真实训练 | implemented | 固定L720连续组合/135统计/保存数组复算VERIFIED | 真实层级训练对照尚未实现发布 |
 | R08 | 三·路线四 | 可信门控内有界stopgrad难度权重及真实训练梯度 | 后续训练侧备选 | deferred | 当前保持原U损失 | 报告建议不抢占结构路线 |
 | R09 | 五及目标 | 首seed同路径SIG_TIME与两个描述子、旧基线；源PASS才扩02/03；自动默认头truthlast、Git | design/source/dispatch/score/report | verified | 完整三seed12row／99900steps／2016000默认预测／216组指标复算VERIFIED，Git交付 | 不使用目标分数控制扩seed |
@@ -41,3 +41,6 @@ R06首seed实际训练/默认评分完成：PRE83.3595% vsPOST83.7488%，−.389
 
 
 R07源几何已完成：20261014-phase1-source-hierarchy-geometry-manysig-s01-m1-r01，实现13728d263、执行4cc15c4db，720实际源包/135统计/0训练或分类头拟合。continuous/direct64误差8.882e-16，native32误差7.153e-7；省略cross-area的feature/time相对RMS37.0827%/87.0831%。必须保留global-time-only局部控制与同容量大窗统计控制，不能把描述子差异写成性能提升。6verified/2implemented/1deferred，0blocked/rejected；最高待验证是实际层级训练是否提供稳定收益及取点完整三seed结果。理论按一阶＋二阶反对称截断严格实现，不是全阶signature。验证：python -m experiments.cvs_source_hierarchy.checks；publish --inspect；results中的saved_geometry_recount=VERIFIED。
+
+
+R06完整3seed已闭环verified：PRE82.5599%±1.5656pp、POST82.6909%±1.6836pp，配对−.1310±.2239pp、1/3正差，净正确−660/504000。所有6新模型pool实际更新、初态L720function完全同、最终源z差异、精确导出/W独立和native零额外拟合核实。450epoch记录/66600新增steps/1512000固定pred/162指标复算VERIFIED。现7verified/1implemented（R07网络尚未训练）/1deferred（R08），0blocked/rejected；最高剩余风险是层级实际训练是否有收益，源几何非性能。验证：experiments.cvs_read_position_seeds.audit固定保存产物重算，未新增forward。
