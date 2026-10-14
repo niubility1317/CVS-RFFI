@@ -11419,6 +11419,12 @@ def train(args) -> int:
                     "rc4/cos_Pcond_to_labeled": gradient_cosines.get("partial_conditional", float("nan")),
                     "rc4/gradient_telemetry_active": 1.0,
                 }
+            feature_auxiliary_metrics = {}
+            auxiliary_hook = getattr(model, "_source_feature_auxiliary_hook", None)
+            if auxiliary_hook is not None:
+                auxiliary_loss, feature_auxiliary_metrics = auxiliary_hook(model, r3_optimizer_steps + 1, loss_tx_l)
+                loss = loss + auxiliary_loss
+                scaled_closed_loss = scaled_closed_loss + auxiliary_loss
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
@@ -11760,6 +11766,7 @@ def train(args) -> int:
                         os_grad_info.get("objective_u_geometry_effective_norm", float("nan"))
                     ),
                     "train/loss_tx_labeled": loss_tx_l.detach(),
+                    **feature_auxiliary_metrics,
                     "train/loss_muse_local_labeled": loss_muse_local_l.detach(),
                     "train/loss_domain_labeled": loss_dom_l.detach(),
                     "train/loss_adv_labeled": loss_adv_l.detach(),
