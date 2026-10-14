@@ -1,0 +1,62 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r01",
+  "execution_commit": "2eba72c52e7cb85671c76bc68b793a0880642518",
+  "preflight_status": "PASS",
+  "real_checkpoint_noquery": true,
+  "strict_student_ownEMA": true,
+  "remote_compile_passed_before_preflight": true,
+  "release_archive_transfer_singlecomparison": true,
+  "independent_remote_HEAD_vs_local_verified": true,
+  "source_current_optimizer_probes": "Pending preregistered four actualtraining stages; syntheticremote smoke does not substitute",
+  "workers": [
+    {
+      "row_id": "TAIL-s2026092701",
+      "pid": 2215947,
+      "GPU": 5,
+      "epoch": 8,
+      "log_bytes_before": 11596,
+      "log_bytes_after": 47687,
+      "PID_CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "actual_parameters": 844754,
+      "head_shape": [
+        6,
+        160
+      ]
+    },
+    {
+      "row_id": "MID-s2026092701",
+      "pid": 2216040,
+      "GPU": 5,
+      "epoch": 8,
+      "log_bytes_before": 11587,
+      "log_bytes_after": 47663,
+      "PID_CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "actual_parameters": 844754,
+      "head_shape": [
+        6,
+        160
+      ]
+    },
+    {
+      "row_id": "SPREAD-s2026092701",
+      "pid": 2216119,
+      "GPU": 6,
+      "epoch": 9,
+      "log_bytes_before": 11615,
+      "log_bytes_after": 52880,
+      "PID_CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "actual_parameters": 844754,
+      "head_shape": [
+        6,
+        160
+      ]
+    }
+  ],
+  "goal_complete": false,
+  "performance_evidence_available": false,
+  "no_healthytask_interference": true
+}

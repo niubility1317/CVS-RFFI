@@ -55,3 +55,7 @@ TAIL 测量步 7327/8437/9769/10879；MID 为 3553/4663/5995/7105；SPREAD 为 3
 第三项是同参照 RX 的有停止条件语义间隔，达到 margin 后停止该约束，并与 SupCon 控制比较。第四项分支更新约束仅在已有有用辅助信号时推进。当前尚未实施/发布这两项；不因关系蒸馏失败而只增大温度、权重或扩充判定链。
 
 唯一独立 P0/P1 审查 PASS，无直接阻断问题。当前未发布、无本轮性能结论；首步真实 checkpoint smoke 随发布立即执行并在 PASS 后启动队列。
+
+## 发布后真实状态
+
+RUNNING/VERIFIED，执行 commit `2eba72c52e7cb85671c76bc68b793a0880642518`。一次 archive 传输比较、remote compile、真实同契约历史 student/ownEMA strict no-query smoke PASS。首种子三组 PID/CWD/argv/GPU/实际844754参数与日志增长独立核实，当前完成轮数 [8, 8, 9]。后续6行仅按预定源条件放行；4次当前教师/真实AdamW状态测量尚待对应训练阶段，不用合成 smoke 替代。当前无本轮性能结论，84%目标保持active。
