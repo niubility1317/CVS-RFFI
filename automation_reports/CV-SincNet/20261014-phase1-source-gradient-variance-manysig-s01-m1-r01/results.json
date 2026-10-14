@@ -1,0 +1,426 @@
+{
+  "results": {
+    "status": "VERIFIED",
+    "run_id": "20261014-phase1-source-gradient-variance-manysig-s01-m1-r01",
+    "row_id": "SOURCE_GRADVAR-s2026092701",
+    "model_seed": 2026092701,
+    "source_only": true,
+    "source_role": "L_s",
+    "source_packets": 180,
+    "source_pool_packets": 6300,
+    "packet_forwards": 180,
+    "domain_count": 5,
+    "domain_packets": 36,
+    "parameter_names": [
+      "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+      "id_backbone.encoder.core.id_backbone.t2.pw.weight"
+    ],
+    "statistics": {
+      "id_backbone.encoder.core.id_backbone.t1.pw.weight": {
+        "raw": {
+          "records": [
+            {
+              "receiver": 1,
+              "count": 36,
+              "mean_gradient_L2": 0.055869560850227186,
+              "variance_trace": 0.20185969682458227,
+              "coordinate_variance_mean": 0.00005840847709044626,
+              "variance_vector_L2": 0.011372264058209826
+            },
+            {
+              "receiver": 3,
+              "count": 36,
+              "mean_gradient_L2": 0.36932994942533925,
+              "variance_trace": 2.55804561854254,
+              "coordinate_variance_mean": 0.0007401752368467998,
+              "variance_vector_L2": 0.12805909604894034
+            },
+            {
+              "receiver": 4,
+              "count": 36,
+              "mean_gradient_L2": 0.9503345085803812,
+              "variance_trace": 20.21930182523413,
+              "coordinate_variance_mean": 0.005850492426283023,
+              "variance_vector_L2": 1.146374572523644
+            },
+            {
+              "receiver": 6,
+              "count": 36,
+              "mean_gradient_L2": 0.03187137091373338,
+              "variance_trace": 0.01474188365501453,
+              "coordinate_variance_mean": 0.000004265591335363,
+              "variance_vector_L2": 0.0007022985636406535
+            },
+            {
+              "receiver": 8,
+              "count": 36,
+              "mean_gradient_L2": 0.42844531632241994,
+              "variance_trace": 3.5039907703796596,
+              "coordinate_variance_mean": 0.0010138862182811515,
+              "variance_vector_L2": 0.1614250269351882
+            }
+          ],
+          "coordinate_variance_discrepancy": 0.000055796165636757,
+          "normalized_coordinate_variance_discrepancy": 2.4558026916006606,
+          "gradient_elements": 3456,
+          "variance_estimator": "unbiased within each RX (n=36)",
+          "conditional_centering": null
+        },
+        "TX_day_centered": {
+          "records": [
+            {
+              "receiver": 1,
+              "count": 36,
+              "mean_gradient_L2": 0.360641996000137,
+              "variance_trace": 1.2274096357484465,
+              "coordinate_variance_mean": 0.0003551532510846199,
+              "variance_vector_L2": 0.0652280106978772
+            },
+            {
+              "receiver": 3,
+              "count": 36,
+              "mean_gradient_L2": 0.11072124770824174,
+              "variance_trace": 2.322889526992453,
+              "coordinate_variance_mean": 0.0006721323862825386,
+              "variance_vector_L2": 0.1161946391428461
+            },
+            {
+              "receiver": 4,
+              "count": 36,
+              "mean_gradient_L2": 0.6217136849018732,
+              "variance_trace": 15.369083465318058,
+              "coordinate_variance_mean": 0.004447072761955457,
+              "variance_vector_L2": 0.8636411562022709
+            },
+            {
+              "receiver": 6,
+              "count": 36,
+              "mean_gradient_L2": 0.329054660647844,
+              "variance_trace": 0.7818558110272131,
+              "coordinate_variance_mean": 0.00022623142680185565,
+              "variance_vector_L2": 0.04171929609959274
+            },
+            {
+              "receiver": 8,
+              "count": 36,
+              "mean_gradient_L2": 0.15748285480920426,
+              "variance_trace": 3.0809579482798255,
+              "coordinate_variance_mean": 0.0008914808878124495,
+              "variance_vector_L2": 0.14272764372099264
+            }
+          ],
+          "coordinate_variance_discrepancy": 0.000028723011901181937,
+          "normalized_coordinate_variance_discrepancy": 1.7149846225973626,
+          "gradient_elements": 3456,
+          "variance_estimator": "unbiased within each RX (n=36)",
+          "conditional_centering": "TX/day mean across all5RX, removes shared TX/day mean only; not causal disentanglement"
+        }
+      },
+      "id_backbone.encoder.core.id_backbone.t2.pw.weight": {
+        "raw": {
+          "records": [
+            {
+              "receiver": 1,
+              "count": 36,
+              "mean_gradient_L2": 0.0598854333817646,
+              "variance_trace": 0.21603539331853733,
+              "coordinate_variance_mean": 0.00003125512056113098,
+              "variance_vector_L2": 0.012894518527794649
+            },
+            {
+              "receiver": 3,
+              "count": 36,
+              "mean_gradient_L2": 0.4349171037572885,
+              "variance_trace": 3.4729104317041326,
+              "coordinate_variance_mean": 0.0005024465323646025,
+              "variance_vector_L2": 0.24749555712085747
+            },
+            {
+              "receiver": 4,
+              "count": 36,
+              "mean_gradient_L2": 1.0512767182749516,
+              "variance_trace": 24.0263979102519,
+              "coordinate_variance_mean": 0.0034760413643304257,
+              "variance_vector_L2": 1.6942743727131375
+            },
+            {
+              "receiver": 6,
+              "count": 36,
+              "mean_gradient_L2": 0.040396565892310894,
+              "variance_trace": 0.02036254742104745,
+              "coordinate_variance_mean": 0.0000029459704023506147,
+              "variance_vector_L2": 0.0010870284248110913
+            },
+            {
+              "receiver": 8,
+              "count": 36,
+              "mean_gradient_L2": 0.5183185612416075,
+              "variance_trace": 5.170089040488204,
+              "coordinate_variance_mean": 0.0007479874190521129,
+              "variance_vector_L2": 0.3826334628084783
+            }
+          ],
+          "coordinate_variance_discrepancy": 0.00005876318197786774,
+          "normalized_coordinate_variance_discrepancy": 1.9386903301745773,
+          "gradient_elements": 6912,
+          "variance_estimator": "unbiased within each RX (n=36)",
+          "conditional_centering": null
+        },
+        "TX_day_centered": {
+          "records": [
+            {
+              "receiver": 1,
+              "count": 36,
+              "mean_gradient_L2": 0.4171765305282966,
+              "variance_trace": 1.490419879311673,
+              "coordinate_variance_mean": 0.00021562787605782305,
+              "variance_vector_L2": 0.10484992914482606
+            },
+            {
+              "receiver": 3,
+              "count": 36,
+              "mean_gradient_L2": 0.11133007302755617,
+              "variance_trace": 3.017829642615065,
+              "coordinate_variance_mean": 0.00043660729783204065,
+              "variance_vector_L2": 0.20730972132745848
+            },
+            {
+              "receiver": 4,
+              "count": 36,
+              "mean_gradient_L2": 0.6688407148273783,
+              "variance_trace": 18.361746809430453,
+              "coordinate_variance_mean": 0.002656502721271767,
+              "variance_vector_L2": 1.29236691769713
+            },
+            {
+              "receiver": 6,
+              "count": 36,
+              "mean_gradient_L2": 0.3780642443519381,
+              "variance_trace": 0.9863878096251602,
+              "coordinate_variance_mean": 0.00014270656967956598,
+              "variance_vector_L2": 0.06906677763720913
+            },
+            {
+              "receiver": 8,
+              "count": 36,
+              "mean_gradient_L2": 0.1742303311682051,
+              "variance_trace": 4.39105872978931,
+              "coordinate_variance_mean": 0.0006352804875273886,
+              "variance_vector_L2": 0.32162429600954306
+            }
+          ],
+          "coordinate_variance_discrepancy": 0.00003067921792750018,
+          "normalized_coordinate_variance_discrepancy": 1.3731951221664738,
+          "gradient_elements": 6912,
+          "variance_estimator": "unbiased within each RX (n=36)",
+          "conditional_centering": "TX/day mean across all5RX, removes shared TX/day mean only; not causal disentanglement"
+        }
+      }
+    },
+    "source_subset_CE_mean": 0.11767326825194889,
+    "source_subset_correct": 179,
+    "parameters_buffers_unchanged": true,
+    "accumulated_gradients": false,
+    "optimizer_steps": 0,
+    "head_fit": false,
+    "head_updates": 0,
+    "training_epochs": 0,
+    "U_IQ_read": false,
+    "U_truth_read": false,
+    "query_read": false,
+    "V_cache_materialized": true,
+    "V_forward": false,
+    "checkpoint_budget": {
+      "epochs": 50,
+      "updates": 11100
+    },
+    "checkpoint_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092701/source/final_ssdg.pth",
+    "seconds": 1.8813343048095703,
+    "scope": "Fixed first model seed, 180 balanced source packets, actual t1/t2 feature-weight derivatives of default CE; no training gradients, model-seed uncertainty, Fishr efficacy, causal RX invariance or new-TX transfer claim"
+  },
+  "resolved": {
+    "config": {
+      "schema": "source_gradient_variance_v1",
+      "run_id": "20261014-phase1-source-gradient-variance-manysig-s01-m1-r01",
+      "row_id": "SOURCE_GRADVAR-s2026092701",
+      "arm": "SOURCE_GRADVAR",
+      "model_seed": 2026092701,
+      "source_config": {
+        "schema": "feature_multiscale_oldgate50_v1",
+        "run_id": "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01",
+        "stage": "repair",
+        "arm": "OLD_GATE_COS50",
+        "model_seed": 2026092701,
+        "row_id": "OLD_GATE_COS50-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092701/source",
+        "epochs": 50,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 0.000001,
+        "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "updates": 11100,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 0.000001
+        },
+        "source_falsification": {
+          "first_seed": 2026092701,
+          "maximum_final_L_CE": 0.5,
+          "metric": "mean train/loss_tx_labeled over final222updates; no V or target feedback"
+        },
+        "training_recipe": "historical batch_neighbor pseudo gate+EMA+cos; no satellite; allarms identical",
+        "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "time": false,
+          "PA": false,
+          "time_layers": [
+            "t1",
+            "t2",
+            "t3"
+          ],
+          "PA_layers": [
+            "pa_b1",
+            "pa_b2",
+            "pa_b3"
+          ],
+          "time_kernel_dilation": [
+            [
+              3,
+              1
+            ],
+            [
+              5,
+              1
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "PA_kernels": [
+            3,
+            5,
+            7
+          ],
+          "PA_dilation_by_layer": [
+            1,
+            2,
+            4
+          ],
+          "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+          "output_embedding": 160
+        },
+        "classifier": "unchanged baseline ResidualPhysicalHead/6x160 cosine/scale30/branchLN/gain; no newhead/readout/calibration",
+        "test_views": [
+          "clean"
+        ],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "primary": "JOINT_MS50",
+          "clean_three_seed_mean": 0.84,
+          "feedback_to_training": false
+        },
+        "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+        "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
+      },
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-gradient-variance-manysig-s01-m1-r01/SOURCE_GRADVAR-s2026092701",
+      "launch_owner": "codex/root/source-gradient-variance-20261014",
+      "source_role": "L_s",
+      "source_pool_count": 6300,
+      "samples_per_TX_RX_day": 2,
+      "source_sample_count": 180,
+      "shuffle_seed": 2026190202,
+      "domains": "5 actual source RX; 36 packets each, balanced6TXx3daysx2",
+      "gradient_parameters": [
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight"
+      ],
+      "gradient_elements": [
+        3456,
+        6912
+      ],
+      "loss": "per-example default cosine CE label_smoothing .01; no batch-mean scaling",
+      "statistics": "unbiased coordinate gradient variance within RX; raw and TX/day-centered residual; no cross-layer raw-unit ranking",
+      "model_mode": "eval; read-only derivative observer",
+      "training_epochs": 0,
+      "optimizer_updates": 0,
+      "head_fit": false,
+      "query_read": false,
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "V_cache_materialized": true,
+      "V_forward": false,
+      "stop_rule": "Role/provenance/shape/nonfinite/state mutation failure preserves outputs and stops; no automatic retry; no target feedback"
+    },
+    "execution_commit": "c0f068f5463e34d0ad94aec8d59c44ce33e6a283",
+    "CUDA_VISIBLE_DEVICES": "",
+    "parameters_buffers_unchanged": true
+  },
+  "completion": {
+    "status": "ANALYZED",
+    "models": 1,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0,
+    "source_packets": 180,
+    "source_gradient_recount": "VERIFIED"
+  }
+}

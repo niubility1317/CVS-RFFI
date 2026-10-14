@@ -155,3 +155,5 @@ MixStyle 剩余两种子现已发布并运行：实际代码 `2b8371027c11cab4b8
 固定 source-only run 20261014-phase1-source-gradient-variance-manysig-s01-m1-r01 已实现，本地平衡采样/无偏方差/6协议负例/真实native无查询求导与CPU依赖检查 PASS。一个固定旧基线seed2026092701 final50，取 L_s180（每TX/day/RX2），对实际t1/t2 pointwise权重10368坐标求逐包默认CE导数，按5RX各36包统计 raw 与 TX/day均值去除后的方差。模型eval、参数/buffers不变、无新训练/头拟合/辅助classifier/目标读取；V cache物化后丢弃，无V前向。此为Fishr前的缺失源机制测量，未启用Fishr损失，不宣称有效。唯一新增直接P0/P1审查发现release执行提交读取路径错误，已改为既有release_commit.txt；尚未发布，当前LOCAL_VERIFIED。完整[预登记](../automation_reports/CV-SincNet/20261014-phase1-source-gradient-variance-manysig-s01-m1-r01/report.md)。
 
 源梯度方差新增唯一直接审查现已 PASS，P1完成记录路径修复并针对性确认通过。用户新增明确要求：以SIG_TIME为基础综合MEAN_VAR/COV。将核实原配方，以同参数多SIG_TIME控制区分增容与统计信息；不读取或挑选目标最高权重继续训练，不重复加入SIG，不热改已发布任务。
+
+源梯度方差已完成，执行c0f068f54，源180包/CPU1.8813秒，保存梯度独立重算VERIFIED、所有参数buffers不变。t1/t2归一化RX方差差异raw2.455803/1.938690，去TX/day共同均值后1.714985/1.373195；一模型seed描述统计，不证明Fishr有效或因果RX信息删除，无头拟合/更新或目标读取。当前按用户要求优先SIG_TIME＋MEAN_VAR＋COV组合，不将此诊断自动堆入。完整[源分析](../automation_reports/CV-SincNet/20261014-phase1-source-gradient-variance-manysig-s01-m1-r01/final_analysis.md)。
