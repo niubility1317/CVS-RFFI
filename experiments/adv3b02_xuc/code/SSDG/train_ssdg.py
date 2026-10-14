@@ -18,6 +18,7 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 _source_feature_auxiliary_hook = None
 _trusted_pseudo_loss_hook = None
 _unlabeled_feature_observer_hook = None
+_unlabeled_outputs_observer_hook = None
 
 import numpy as np
 
@@ -10811,6 +10812,12 @@ def train(args) -> int:
                             model=model, args=args, epoch=epoch, batch_idx=batch_idx,
                             teacher_features=out_w["id_feat_joint"],
                             student_features=out_s["id_feat_joint"],
+                        )
+                    if _unlabeled_outputs_observer_hook is not None:
+                        _unlabeled_outputs_observer_hook(
+                            model=model, args=args, epoch=epoch, batch_idx=batch_idx,
+                            teacher_features=out_w["id_feat_joint"], student_features=out_s["id_feat_joint"],
+                            teacher_logits=out_w["tx_logits"], student_logits=out_s["tx_logits"],
                         )
                     zero_u = out_s["tx_logits"].sum() * 0.0
                     loss_u_domain = zero_u
