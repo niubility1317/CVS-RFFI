@@ -1,0 +1,181 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-identity-correspondence-confirm-sourceL-s2026092701-r01",
+  "group_id": "phase1-identity-correspondence-source",
+  "display_name": "真实L跨RX独立行列匹配新样本确认",
+  "description": "保留上一BI0/8及ROW探索正迹象，以全新900L等曝光SAME_ROW确认actualjoint160真实身份对应学习信号。",
+  "kind": "diagnostic",
+  "stage": "Phase1 identity training source confirmation",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "identity_matching",
+    "ROW_confirmation",
+    "default_head",
+    "SIG_TIME",
+    "CENTER25K"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01",
+    "20261015-phase1-SIGTIME-identity-transport-sourceL-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user goal: improve training/loss and actualfeature generalization, defaulthead only, fixedsource permission and E20+20 budget.",
+  "code": {
+    "commit": "release_commit.txt (actual Git HEAD at publication)",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "N607 ordinary account/CVS-RFFI Python/CPU2threads/GPU0/six namespaceoverlay on immutable ownE20runtime",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_correspondence_confirm_sourceL_20261015_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md",
+    "physical_ids_ref": "Existing ownE20 sourcehandles; deterministic new900L disjoint current/held and old900 completeIDs/baseindices",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "roles": {
+      "L_s": 6300,
+      "U_s": "hidden/noIQ",
+      "V": "noIQ"
+    },
+    "train_ratio": {
+      "L": 0.07,
+      "U": 0.63,
+      "V": 0.3
+    },
+    "validation_ref": "VALIDATED_ONCE reused; unchanged data bytes/roles/schema",
+    "protocol_schema": "p2_min_v1 unchanged and unused here"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "claim_scope": "Late-stage source identity learning opportunity; parent saw heldL, not unseenRX/DG efficacy"
+  },
+  "checkpoint": {
+    "initialization": "strict ownBASECE firstseed final20 and savedoptimizer",
+    "sources": [
+      "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01/BASE_CE-s2026092701/source"
+    ],
+    "provenance_verdict": "source_proof fullactualroles/scratch ancestry/fixedfinalfreeze beforeload, validateactualargs; nofallback",
+    "selection_rule": "Fixed ownCE firstseed final20; no target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/identity-correspondence-confirm-20261015",
+    "gpu_policy": "CPUonly/GPU0; otherowners unchanged",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-identity-correspondence-confirm-sourceL-s2026092701-r01/source_diagnostic",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_correspondence_confirm_sourceL_20261015_r01/source_probe.stdout.log",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_SIGTIME_identity_correspondence_confirm_sourceL_20261015_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_correspondence_confirm_sourceL_20261015_r01/experiments/cvs_identity_correspondence20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_correspondence_confirm_sourceL_20261015_r01/resolved_request.json",
+    "stop_rule": "Illegal role/provenance/physical-ID/traversal, nonfinite or technical error: preserve outputs and stop only this owned assay; reconcile before retry. Scientific failure closes fixed ROW confirmation, no tau/pi/lambda/LR/RMS-floor scan, control substitution or target feedback."
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "release_commit.txt",
+    "resolved_request.json",
+    "submit.json",
+    "runtime.json",
+    "12state/mode/cohortscalarrecords",
+    "summary.json",
+    "independent_readback.json",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "matrix": "FINAL20 x current ord2/3,19/20,37/38,54/55 x ZERO/SAME_ROW/CROSS_ROW; held66/67; disjoint previous0/1,17/18,35/36,52/53,68/69",
+    "budget": "900uniqueL/6300metadata/3062packetforwards/24temporaryCPUAdamW/0realtraining/headfit/EMA/U/V/target",
+    "method": {
+      "cost": "squared actualjoint distance/160, double center cost, differentiable centered-cost RMS",
+      "RMS_floor": 1e-08,
+      "temperature": 0.1,
+      "stop_probability": 0.9,
+      "weight": 0.1,
+      "matching": "independent row and column softmax, no shared capacity",
+      "Sinkhorn_iterations": 0,
+      "gradients": "both actualjoint endpoints; original W absent from auxiliary, all three gains included"
+    },
+    "optimizer": "Actual savedm/v/step/options, restartLR2e-4,188 originalparameters andclip5; nostatefilter/reset.",
+    "pairing": "BothROW modes60 sixbysix/720 directionaldecisions/eachpacket4endpointexposures; SAME15unique repeated4, CROSS60unique.",
+    "evaluation": "Bothactualendpoints F71/195041coord with3gains, auxWNone/mainW normaljointCE. Afterall188 weights actualjoint; ACTUAL/PRE_W same FP64 defaultcos30 eps1e-4, aftergains retained nofit.",
+    "source_falsification": {
+      "minimum_qualified_cohorts": 2,
+      "actual_F_difference_norm_min": 1e-06,
+      "held_feature_RMS_difference_min": 1e-05,
+      "shallow_middle_difference_tensors_min": 1,
+      "held_correct_matching_mass_gain_vs_each_control_min": 0.0001,
+      "held_matching_errors_increase_tolerance": 0,
+      "held_CE_increase_tolerance": 1e-06,
+      "held_accuracy_difference_min": 0.0,
+      "controls": [
+        "ZERO",
+        "SAME_ROW"
+      ],
+      "readouts": [
+        "ACTUAL",
+        "PRE_W"
+      ],
+      "raw_cosine_margin": "report separately; matching permits common receiver offsets",
+      "interpretation": "Independent new-L confirmation of late-stage identity training signal; not unseenRX/DG"
+    },
+    "stop_rule": "Illegal role/provenance/physical-ID/traversal, nonfinite or technical error: preserve outputs and stop only this owned assay; reconcile before retry. Scientific failure closes fixed ROW confirmation, no tau/pi/lambda/LR/RMS-floor scan, control substitution or target feedback.",
+    "future": "Atleast2/4 simultaneousZERO+SAMEpass supports separately fixed E20+20 mainmatrix with pureCE and originalhiddenU SSL controls, then perrowauto clean defaulthead prediction/truthlast. No targetfeedback."
+  },
+  "rows": [
+    {
+      "row_id": "BASE_CE-s2026092701-source-ROW-confirm",
+      "method": "TRUE_L_CROSS_RX_ROW_CONFIRM",
+      "purpose": "Independent newphysical subset confirms crossRX beyond sameRX identitycontrast",
+      "config_ref": "experiments/cvs_identity_correspondence20/configs/source_probe.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_correspondence_confirm_sourceL_20261015_r01/resolved_request.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "FixedLordinals, noUtrueTX group",
+      "k": null,
+      "scenario": null,
+      "optimizer": "temporaryCPU originalAdamW",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "metrics_plan.budget",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-identity-correspondence-confirm-sourceL-s2026092701-r01/source_diagnostic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_correspondence_confirm_sourceL_20261015_r01/source_probe.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_correspondence_confirm_sourceL_20261015_r01/experiments/cvs_identity_correspondence20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_correspondence_confirm_sourceL_20261015_r01/resolved_request.json",
+      "expected_artifacts": [
+        "preflight.json",
+        "release_commit.txt",
+        "resolved_request.json",
+        "submit.json",
+        "runtime.json",
+        "12state/mode/cohortscalarrecords",
+        "summary.json",
+        "independent_readback.json",
+        "report.md"
+      ]
+    }
+  ],
+  "notes": [
+    "PreviousCROSS_BI0/8 remainsclosed, newROWdiscovery requiresindependentconfirmation, noautomaticfallback.",
+    "HeldL seenbyparent; no newdata role or unseenRX claim.",
+    "Rawcosmargin reportednotgate asloss permits commonRXoffset. Sameactualaccuracy required.",
+    "HistoricalSIG_TIME/CENTER25K/COMPACT_LINEAR/LONG_SILU positives separateandretained; fixedrecipe differences notadditive; 84% goalactive."
+  ],
+  "registered_at": "2026-10-14T23:00:40+00:00"
+}
