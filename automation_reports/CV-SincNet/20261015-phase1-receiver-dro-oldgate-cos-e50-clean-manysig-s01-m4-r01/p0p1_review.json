@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "scope": "Single independent next-run P0/P1 review: receiver-risk package and default-off native labelled hook only",
+  "findings": [],
+  "reviewer": "independent signature_fix_p0p1",
+  "one_review": true,
+  "source_IQ_weights_or_remote_read": false,
+  "verified": [
+    "risk enters total loss",
+    "original ERM graph andUloss preserved",
+    "DRO stopgradient/missinggroup normalization",
+    "independent replay numerical convention",
+    "dependency closure/fourrow prediction-scoring pipeline"
+  ]
+}

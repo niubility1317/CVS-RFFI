@@ -82249,6 +82249,17 @@
       "minimum_control": "Before any newtraining, frozenSIG source-only same-L CE versus potential angleloss derivative; later single-seed matched ZERO control only if sourceevidence warrants",
       "cost": "Reuse936savedmatrices now; newgradientcheck/training cost must be fixed before launch, <=50 permodel",
       "failure": "Original criteria FAIL for both remainingseeds. No training/weightscan of this fixedformula."
+    },
+    {
+      "direction": "源接收机群风险分配训练",
+      "status": "LOCAL_VERIFIED_PREREGISTERED_NOT_LAUNCHED",
+      "source_evidence": "Prior sourcevariance training loss decreased without stableDG gain; pureangle terminalsourcecompatibilityfails2/3. No GroupDRO implementation in checked risk-action packages; direct identityrisk reweighting distinct.",
+      "hypothesis": "Adaptive weights on five legal sourceRX identity risks may reduce reliance on easier source receivers; original GroupDRO warns naive weighting canfail; notassumed to improve target.",
+      "location": "Original L_s CE, actual t1/t2/SIG and defaultW receive normaljoint weightedCE gradients",
+      "minimum_control": "OriginalERM vsRX-balanced vsRX-DRO withsameinit/oldgateEMAcos/WD/budget; reusedoldgatecos externalbaseline",
+      "cost": "3new scratch50/11100each; zeroextra training forward; actualrisk/derivative diagnostics recorded",
+      "failure": "Fixed source health/defaultfeature/bodygradient plus worstRXtrainingrisk rule; no targetfeedback, only sourcePASS permits unchanged02/03 extension",
+      "report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/report.md"
     }
   ],
   "next_actions_max2": [
@@ -82258,14 +82269,14 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "三模型方差方向源检验已FAIL，归档并停止该固定公式，不调判据/系数/父权重或重跑",
-    "核实未重复的源RX风险优化或监督/SSL梯度耦合训练机制，选定一个最小固定对照后实现；保持SIG_TIME、默认联合头、旧门控EMAcos、单模型<=50及独立评分"
+    "发布固定首seed三臂接收机风险训练，各50/11100，逐row默认头自动clean预测和独立truth-last；不添加结构、换头或改U配方",
+    "仅回收完整源资格，满足提前规则才冻结原样三臂02/03扩展并commit/push，再回收新目标准确率；FAIL不扩，不依据目标调权或重跑"
   ],
   "current_priority": {
     "at": "2026-10-15",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
-    "active_generalization_mechanism": "No active DG training; direct RAW-angle source extension completed FAIL (1/3 modelPASS), fixedformula not trained",
+    "active_generalization_mechanism": "Receiver-group supervised-risk optimization, firstseed ERM/RX_BALANCED/RX_DRO matched scratch50; LOCAL_VERIFIED_NOT_LAUNCHED; fixed SIG/defaulthead/oldgateEMAcos",
     "next_semi_supervised_work": "All-U and confidence FEATURE_MT complete3 negative; design a distinct training-objective mechanism from legal source evidence, no stronger-feature-consistency scan",
     "structural_exploration": false,
     "fixed_architecture": "SIG_TIME112→joint160; existing default cosine head jointly trained",
@@ -83337,6 +83348,46 @@
       "head_fit_updates": 0,
       "goal84": false,
       "full_report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
+    },
+    "receiver_dro_training": {
+      "status": "LOCAL_VERIFIED_PREREGISTERED_NOT_LAUNCHED",
+      "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "release": "cvs_receiver_dro50_20261015_r01",
+      "code_commit": "341d0dc0bdab44fce88e0af3d8fc29eb50b39912",
+      "network": "Fixed SIG_TIME joint160/default original joint head",
+      "arms": [
+        "SIG_TIME",
+        "RX_BALANCED",
+        "RX_DRO"
+      ],
+      "model_seed": 2026092701,
+      "epochs_per_new_model": 50,
+      "new_models": 3,
+      "new_native_updates": 33300,
+      "original_U_unchanged": true,
+      "extra_training_forwards": 0,
+      "new_heads": 0,
+      "source_falsification": {
+        "final5_unweighted_L_CE_max": 0.5,
+        "feature_difference_min": 0.000001,
+        "native_steps": 11100,
+        "actual_U_packets": 963900,
+        "required_gradient_epochs": [
+          17,
+          33,
+          50
+        ],
+        "required_gradient_parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "DRO_final5_training_worst_RX_CE_max_relative_to_BALANCED": 1,
+        "DRO_final5_mean_max_group_weight_min": 0.2001,
+        "source_only": true,
+        "expansion": "If exact source budget/defaultfeature/body-gradient health and fixed risk thresholds pass, extend all three unchanged arms to02/03 before reading new target summaries; otherwise no expansion. Source V health only, no epoch or candidate selection."
+      },
+      "report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/report.md"
     }
   }
 }

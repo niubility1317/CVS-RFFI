@@ -419,3 +419,8 @@ CONF_FEATURE_MT02/03四个原worker仍live，最近完成23/27/27/26轮且loggro
 ## 方差方向源检验：三模型未通过，停止固定公式
 
 20261015-phase1-source-backbone-variance-angle-manysig-s0203-m2-r01 已ANALYZED/VERIFIED，执行 e493b3e28c6ffb2824a52f7d6d71028c00015077。相同900个源物理样本、固定五个L180，保留原01结果，本次只新增02/03。ANGLE相对同批CE的t1/t2聚合余弦分别为01(.646206,.593616)、02(−.111682,−.024725)、03(−.009819,.087680)；只有1/3模型满足原两层非负判据，虽然六层均5/5批非零。独立逐行矩阵/向量复算通过，0训练/头拟合/optimizer更新，无U/V前向或query。按原规则停止该固定公式，不以调整标准/幅度或挑seed延续。完整[负结果](../automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s0203-m2-r01/final_analysis.md)。下一训练机制另行依据合法源证据设计，固定SIG_TIME/default联合头/旧门控cos/<=50，84%目标未完成。
+
+
+## 固定 SIG_TIME：源接收机风险训练对照
+
+20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01，实现 341d0dc0bdab44fce88e0af3d8fc29eb50b39912，LOCAL_VERIFIED/PREREGISTERED，尚未发布。首seed三新scratch50：原CE、源RX等权CE、GroupDRO式动态RX风险加权；旧门控/EMA/cos/默认联合头和WD不变，不增加训练前向或模块，不另训分类头。9负例、真实native接入、三实际网络同初态/骨干及默认W非零联合梯度与一次独立P0P1 PASS。源规则提前固定，PASS才原样扩三臂02/03，源决定先推送再回收新目标数值；每行自动clean默认头预测/独立truth-last。完整[预登记](../automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/report.md)。没有新性能结果，84%仍未完成。

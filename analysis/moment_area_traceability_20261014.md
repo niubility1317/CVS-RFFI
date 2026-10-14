@@ -198,3 +198,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 
 
 - 2026-10-15：方差方向源固定02/03扩展 20261015-phase1-source-backbone-variance-angle-manysig-s0203-m2-r01 ANALYZED/VERIFIED，code 5cc440c08feba25ce127cbcf73f489bf04b93e5d、exec e493b3e28c6ffb2824a52f7d6d71028c00015077；新增1800模型样本次/20矩阵/60向量第二进程复算通过。三模型仅01 PASS，02两层cos负、03浅层cos负，六层均非零；按原规则不训练/扫权或改标准。源状态不更新、头拟合0、query/Utruth/Vforward0。完整负结果已保存，84%仍未达成。
+
+
+- 2026-10-15：独立源监督群风险机制 20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01 已实现/预登记，code 341d0dc0bdab44fce88e0af3d8fc29eb50b39912，未发布。SIG_TIME/default头/原U/oldgatecos不变，ERM/源RX等权/DRO三新各50/11100；实际原生L CE hook默认None，9负例/三模型同初态/骨干及W联合梯度/唯一P0P1 PASS；0新头或额外训练前向。按原source判据决定扩三臂，非目标反馈。
