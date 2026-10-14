@@ -186,3 +186,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 ## SIG_TIME 统计组合三种子完成（2026-10-14）
 
 组合82.4972±0.9973%，本轮单SIG_TIME82.6655±1.5986%，同参数X383.1855±1.2176%。组合−单分支−0.1683±0.6057个百分点（1/3正差），组合−X3−0.6883±0.2437个百分点（0/3）。12行2016000默认决策、216组CM及99900新step/600epoch已独立复算；9新模型实际无拟合探针，W独立导出与新参数更新通过。组合未达84%，无重训/换seed/按目标调参。原sequence50的83.0393%因随机流条件不同保留独立记录，不混合矩阵。详见 [完整三种子报告](../automation_reports/CV-SincNet/20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md)。下一轮报告路线一在读取此完整均值前已冻结发布，保持原计划。
+
+
+同投影 shape 首种子已闭环：SIG_TIME 83.7661%、COV_SHAPE 83.7351%、AREA_SHAPE 82.0667%。AREA−COV −1.6685 个百分点，源模块更新和导出通过不代表性能提高。独立 33300 steps／672000 predictions／72 metrics 复算 VERIFIED，三模型 native 拟合探针均关闭。20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s0203-m8-r01 已在首种子目标分数读取前根据源 PASS 原样发布，六新模型运行。执行提交 8bd34db31787cd80c4ad53ee7327ff6a55daee72；详细正负结果见对应 final_analysis.md，保持 84% 未达。

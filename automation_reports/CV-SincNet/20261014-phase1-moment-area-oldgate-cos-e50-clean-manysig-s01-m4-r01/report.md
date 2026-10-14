@@ -22,3 +22,6 @@ Stop：本run自身的角色/来源/非有限数/默认头/预算/export/物理I
 
 
 实际发布代码 512c10a267b5e654cfd2c983ab1debdeebc7f626，dispatcher PID2087690。三新模型PID/CWD/命令/GPU/日志增长及关闭fitted probes配置均 VERIFIED；单归档核对、remotecompile和真实旧seed01 CP无查询smoke PASS。当前 source训练进行中，尚无候选目标结果。发布证据见 launch_evidence.json。
+
+
+首种子四行已 ANALYZED，完整默认头评分、源边界检查和独立复算通过。AREA_SHAPE 82.0667%，相对 COV_SHAPE −1.6685 个百分点，没有提升证据；详细结果见 final_analysis.md、results.json、results.png。剩余两种子按目标分数读取前冻结的 source PASS 决定继续，当前不宣称三种子达标。

@@ -1,12 +1,12 @@
 # 报告落实记录：统计形状与有序面积（2026-10-14）
 
-依据用户附件 e2e8f861-e763-457f-821f-b9041c097e79/已粘贴的文本.txt，现按报告路线一先实施单因素描述子比较。已有 MixStyle 三种子结果已完整回收，更新为80.7246%，相对同路径控制无稳定收益；SIG_TIME统计组合剩余六个健康模型保持不可变计划。此轮依据报告及实际算子结构，不依据当前首seed目标分数调参数或选父权重。
+依据用户附件 e2e8f861-e763-457f-821f-b9041c097e79/已粘贴的文本.txt，现按报告路线一先实施单因素描述子比较。已有 MixStyle 三种子结果已完整回收，更新为80.7246%，相对同路径控制无稳定收益；SIG_TIME统计组合已完成三种子闭环，组合82.4972%，相对三路SIG_TIME −0.6883个百分点，0/3正差；全部负结果已上传。此轮依据报告及实际算子结构，不依据当前首seed目标分数调参数或选父权重。
 
 | ID | Source section | Requirement | Target files | Status | Verification | Notes |
 |---|---|---|---|---|---|---|
 | R01 | 三·路线一 | 同6D投影、四窗，μ/方差/协方差 vs μ/方差/有序面积，27D同固定lift→28 | experiments/cvs_moment_area50/features.py | verified | local_check.json：公式、同lift、同初始参数PASS | 只替换15个交叉关系槽位 |
 | R02 | 三·路线一 | 同输出112→160/norm/gain/参数量及初始化，加入真实joint160 | model.py/features.py | verified | 三真实native：联合grad、新参数数值更新、精确导出、W独立、teacher deepcopy PASS | 保持t2完整输出，暂不改Dropout取点 |
-| R03 | 五·约束 | 默认cosine联合训练，禁止额外头/探针拟合 | source.py/predict.py | implemented | 复用已验证默认头入口；待实际运行 | 旧门控EMAcos/scratch50/33+17 |
+| R03 | 五·约束 | 默认cosine联合训练，禁止额外头/探针拟合 | source.py/predict.py | verified | 首seed3实际source closures均零拟合；feature-only导出/W独立PASS | 旧门控EMAcos/scratch50/33+17 |
 | R04 | 五·顺序1 | MixStyle全部种子回收且不按负分改计划 | 已提交三种子MixStyle报告 | verified | f1d1e860e；1512000预测/162指标独立复算 | 历史RX/day探针违规如实披露 |
 | R05 | 二·结构分析 | 区分面积、统计形状和常数时间坐标；不把顺序敏感视为泛化证据 | checks.py/report | verified | float64：cov置乱不变、area反转/内部顺序及时间项恒等式PASS | 性能只由真实冻结测试证明 |
 | R06 | 三·路线三 | 独立比较t2与t2.pool取点 | 后续独立矩阵 | deferred | 当前不改变取点 | 依报告顺序，避免和描述子混杂 |
@@ -21,3 +21,8 @@
 
 
 实际发布 VERIFIED：run 20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s01-m4-r01，执行提交 512c10a267b5e654cfd2c983ab1debdeebc7f626；真实checkpoint无查询smoke、归档传输比较、remotecompile和三worker进程/CWD/命令/GPU/日志增长均PASS。R03/R09仍是implemented：完整训练收尾零拟合及预测/独立评分须等真实产物，不用RUNNING冒充verified。
+
+
+首seed真实执行/独立复算已完成：200epoch记录、33300新增steps、672000固定默认头预测、72分组指标 VERIFIED；R03升级verified。R09源PASS→原样扩02/03已实际执行，完整三seed仍待六模型结束，维持implemented。现为5项verified、1项implemented、3项deferred、0项rejected/blocked。严格按路线一公式实现，无报告近似替换。最高剩余风险是三seed有序面积能否提供稳定性能收益，首seed实际为负；不依据此目标分数改参数或取消健康实验。
+
+实际验证入口：python -m experiments.cvs_moment_area50.checks（既有一次局部PASS）；python -m experiments.cvs_moment_area50.audit（已固定产物复算，无新forward）；python -m experiments.cvs_moment_area_seeds.publish --output <delivery> --inspect（实际PID/CWD/argv/GPU/日志增长VERIFIED）。

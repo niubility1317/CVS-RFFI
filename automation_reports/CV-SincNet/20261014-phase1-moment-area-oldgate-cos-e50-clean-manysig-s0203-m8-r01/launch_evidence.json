@@ -1,0 +1,281 @@
+{
+  "schema": "moment_area_remaining_launch_v1",
+  "status": "VERIFIED",
+  "execution_commit": "8bd34db31787cd80c4ad53ee7327ff6a55daee72",
+  "implementation_commit": "d14fdcfacaa61f10a4e389c7b29de3596f35934b",
+  "run_id": "20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+  "source_expansion_decision": "source_expansion_decision.json",
+  "archive_transfer": {
+    "status": "VERIFIED",
+    "single_archive_comparison": true,
+    "remote_compile": true,
+    "archive": "cvs_moment_area_seeds_20261014_r01"
+  },
+  "preflight": {
+    "status": "PASS",
+    "real_checkpoint_no_query_smoke": true,
+    "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092702/source/final_ssdg.pth",
+    "source_seed": 2026092702,
+    "query_read": false,
+    "head_fit": false,
+    "training_inherits_checkpoint": false
+  },
+  "dispatcher": {
+    "pid": 2116969,
+    "start_ticks": 120082197,
+    "state": "S",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_moment_area_seeds.dispatch"
+    ],
+    "gpu": null
+  },
+  "workers": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "pid": 2117122,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_moment_area_seeds.dispatch",
+        "--worker",
+        "OLD_GATE_COS50-s2026092702"
+      ],
+      "process": null,
+      "epoch_count": 50,
+      "log_bytes": 121,
+      "log_growth_bytes": 0,
+      "baseline_reused": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "pid": 2117215,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_moment_area_seeds.dispatch",
+        "--worker",
+        "SIG_TIME-s2026092702"
+      ],
+      "process": {
+        "pid": 2117215,
+        "start_ticks": 120082690,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_area_seeds.dispatch",
+          "--worker",
+          "SIG_TIME-s2026092702"
+        ],
+        "gpu": "7"
+      },
+      "epoch_count": 1,
+      "log_bytes": 11697,
+      "log_growth_bytes": 5171,
+      "baseline_reused": false
+    },
+    {
+      "row_id": "COV_SHAPE-s2026092702",
+      "pid": 2117297,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_moment_area_seeds.dispatch",
+        "--worker",
+        "COV_SHAPE-s2026092702"
+      ],
+      "process": {
+        "pid": 2117297,
+        "start_ticks": 120083023,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_area_seeds.dispatch",
+          "--worker",
+          "COV_SHAPE-s2026092702"
+        ],
+        "gpu": "6"
+      },
+      "epoch_count": 1,
+      "log_bytes": 11707,
+      "log_growth_bytes": 5173,
+      "baseline_reused": false
+    },
+    {
+      "row_id": "AREA_SHAPE-s2026092702",
+      "pid": 2117382,
+      "gpu": 6,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_moment_area_seeds.dispatch",
+        "--worker",
+        "AREA_SHAPE-s2026092702"
+      ],
+      "process": {
+        "pid": 2117382,
+        "start_ticks": 120083356,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_area_seeds.dispatch",
+          "--worker",
+          "AREA_SHAPE-s2026092702"
+        ],
+        "gpu": "6"
+      },
+      "epoch_count": 1,
+      "log_bytes": 11717,
+      "log_growth_bytes": 5175,
+      "baseline_reused": false
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "pid": 2117464,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_moment_area_seeds.dispatch",
+        "--worker",
+        "OLD_GATE_COS50-s2026092703"
+      ],
+      "process": null,
+      "epoch_count": 50,
+      "log_bytes": 121,
+      "log_growth_bytes": 0,
+      "baseline_reused": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "pid": 2117546,
+      "gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_moment_area_seeds.dispatch",
+        "--worker",
+        "SIG_TIME-s2026092703"
+      ],
+      "process": {
+        "pid": 2117546,
+        "start_ticks": 120084022,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_area_seeds.dispatch",
+          "--worker",
+          "SIG_TIME-s2026092703"
+        ],
+        "gpu": "2"
+      },
+      "epoch_count": 1,
+      "log_bytes": 11697,
+      "log_growth_bytes": 5171,
+      "baseline_reused": false
+    },
+    {
+      "row_id": "COV_SHAPE-s2026092703",
+      "pid": 2117625,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_moment_area_seeds.dispatch",
+        "--worker",
+        "COV_SHAPE-s2026092703"
+      ],
+      "process": {
+        "pid": 2117625,
+        "start_ticks": 120084354,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_area_seeds.dispatch",
+          "--worker",
+          "COV_SHAPE-s2026092703"
+        ],
+        "gpu": "3"
+      },
+      "epoch_count": 1,
+      "log_bytes": 11707,
+      "log_growth_bytes": 5173,
+      "baseline_reused": false
+    },
+    {
+      "row_id": "AREA_SHAPE-s2026092703",
+      "pid": 2117707,
+      "gpu": 7,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_moment_area_seeds.dispatch",
+        "--worker",
+        "AREA_SHAPE-s2026092703"
+      ],
+      "process": {
+        "pid": 2117707,
+        "start_ticks": 120084687,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_moment_area_seeds_20261014_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_moment_area_seeds.dispatch",
+          "--worker",
+          "AREA_SHAPE-s2026092703"
+        ],
+        "gpu": "7"
+      },
+      "epoch_count": 1,
+      "log_bytes": 11717,
+      "log_growth_bytes": 5175,
+      "baseline_reused": false
+    }
+  ],
+  "completion": null,
+  "failure": null,
+  "read_at": 1791953189.3621013,
+  "new_models": 6,
+  "scratch_epochs_each": 50,
+  "head_fit_updates": 0,
+  "goal84_verified": false
+}
