@@ -67,3 +67,6 @@ Sinc坐标9row全部完成，6新scratch50/300模型轮次/66600更新、3历史
 切向路线完整3seed已收尾：ZERO80.6038%、RAW80.5579%、IDSAFE80.3077%，原首seedRAW正差未确认稳定收益。保留负结果，不将该路线当作已确认正收益继续叠加。COMPACT_LINEAR/LONG_SILU/Sinc的独立既有证据保留；关系/响应矩阵按原源规则推进，目标active、84%未达。
 
 关系首seed完整A/B/C/D＝81.0488/79.3310/79.5982/79.7000%；D对C有小增量但整体低于A，不宣称有效或达84%。原source-only规则已在target汇总前通过，remaining8rows启动；保持冻结参数/预算，不从本结果反调。
+
+
+同包源方向诊断已完整 VERIFIED：四 firstseed frozen models/720 seen-L probes/9360额外前向、0拟合及0 U/target访问。强视图 R+E 与同包默认头CE实际参数余弦仅 .0590 至 .1061，签名教师分支响应不保证改善身份间隔；下一机制须检验有效身份学习方向，不能靠增大关系loss或更多门控。当前8row仍按原固定预算自然完成，positive COMPACT/LONG_SILU/Sinc路线保留。详见主报告和源诊断run。84%目标active。

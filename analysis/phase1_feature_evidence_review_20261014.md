@@ -316,3 +316,8 @@ SINGLE三seed末轮源CE0.248543/0.239481/0.234405，V98.3259%/98.3037%/98.5222%
 切向路线完整3seed合并已VERIFIED/ANALYZED：BASE80.5268%、ZERO80.6038%、RAW80.5579%、IDSAFE80.3077%。RAW相对ZERO平均−0.0458pp，IDSAFE−0.2960pp；IDSAFE三seed都低于RAW，平均−0.2502pp，最差RX也较差。9新模型全源日志/辅助记录扫描与2016000固定决定/216CM重算通过，未出现技术失败。首seedRAW正差不再描述为确认正收益；保留完整负证据，不target反调或选择性重跑，84%仍未达。
 
 关系/响应首seed四行完整：A81.0488%、B79.3310%、C79.5982%、D79.7000%。D−C＋0.1018pp但D−A−1.3488pp，当前不支持有效新机制。source-only标准在target汇总前通过，remaining8rows已实际启动，参数/矩阵保持。84%未达；等完整3seed证据，旧COMPACT/LONG/Sinc独立正收益证据保留。
+
+
+## 同包源身份方向诊断（固定首种子四模型）
+
+[关系学习信号完整报告](../automation_reports/CV-SincNet/20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01/report.md) 已 ANALYZED/VERIFIED，四个 source-frozen student/ownEMA，seen-L180 anchors 与 disjoint720 probes，9360 次 IQ 前向，无拟合/参数/buffer/EMA/U/target 访问。强视图 R+E 的六批实际参数梯度串接余弦 ZERO/ALL/CROSS/RESP 为 0.0597/0.0590/0.1061/0.0833，辅助/同包CE范数比1.4505/.5708/.5022/.5395。虽然浅层与 PA/ref 非零，实际身份方向相关仍弱；partial joint 反向约68%至70%不是整模型更新结论。教师 branch 增量在约四分之一 source 包降低真实类间隔，保留全部 signed response 可能复制不利分支偏好；只是合法已见L机制证据，不推断 U 精度或新RX。当前 R/E 参数、健康8row和source标准不改，完整三seed结果仍待回收。COMPACT/LONG_SILU/Sinc既有正收益证据保留，当前诊断不能代替新机制独立/组合性能验证，84%未达。

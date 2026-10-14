@@ -1,0 +1,627 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01",
+  "completion": {
+    "status": "ANALYZED",
+    "run_id": "20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01",
+    "models": 4,
+    "source_physical_packets": 720,
+    "source_count": 2880,
+    "source_forward_packets": 9360,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0,
+    "EMA_updates": 0,
+    "U_IQ_read": false,
+    "U_truth_read": false,
+    "target_access": false,
+    "threshold_fit": false
+  },
+  "independent_tensor_recount": "VERIFIED",
+  "paired_source_ids": true,
+  "probe_count": 720,
+  "anchor_count": 180,
+  "source_only": true,
+  "target_access": false,
+  "U_truth_read": false,
+  "rows": [
+    {
+      "row_id": "SIGNAL-ZERO-s2026092701",
+      "teacher_accuracy": 0.9944444298744202,
+      "teacher_semantics": {
+        "PA": {
+          "same_TX_signed_response": {
+            "mean": 0.022475887089967728,
+            "positive_fraction": 0.769444465637207,
+            "negative_fraction": 0.23055554926395416
+          },
+          "default_true_margin_increment": {
+            "mean": 2.338426351547241,
+            "positive_fraction": 0.8291666507720947,
+            "negative_fraction": 0.17083333432674408
+          },
+          "same_TX_full_relation_mass": {
+            "mean": 0.7059332728385925,
+            "positive_fraction": 1.0,
+            "negative_fraction": 0.0
+          },
+          "relation_margin_sign_disagree_fraction": 0.1597222238779068
+        },
+        "ref": {
+          "same_TX_signed_response": {
+            "mean": 0.007111983839422464,
+            "positive_fraction": 0.7555555701255798,
+            "negative_fraction": 0.24444444477558136
+          },
+          "default_true_margin_increment": {
+            "mean": 0.897834837436676,
+            "positive_fraction": 0.7388888597488403,
+            "negative_fraction": 0.2611111104488373
+          },
+          "same_TX_full_relation_mass": {
+            "mean": 0.7059332728385925,
+            "positive_fraction": 1.0,
+            "negative_fraction": 0.0
+          },
+          "relation_margin_sign_disagree_fraction": 0.18333333730697632
+        }
+      },
+      "views": {
+        "CLEAN_EVAL": {
+          "student_accuracy": 0.9944444298744202,
+          "CE": 0.11246329545974731,
+          "alignment": {
+            "ALL_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 6,
+              "mean_parameter_cosine": 0.36355081880673557,
+              "concatenated_batch_cosine": 0.35787528891894493,
+              "aux_CE_norm_ratio": 0.03442026896349972,
+              "partial_joint_positive_fraction": 0.47361111640930176,
+              "partial_joint_negative_fraction": 0.5263888835906982,
+              "partial_joint_mean_cosine": 0.000645043544501703
+            },
+            "CROSS_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 6,
+              "mean_parameter_cosine": 0.36232821949526883,
+              "concatenated_batch_cosine": 0.3574774837782528,
+              "aux_CE_norm_ratio": 0.0358670481018978,
+              "partial_joint_positive_fraction": 0.47083333134651184,
+              "partial_joint_negative_fraction": 0.5291666388511658,
+              "partial_joint_mean_cosine": -0.0020777299526251
+            },
+            "CROSS_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 5,
+              "mean_parameter_cosine": 0.255209950832813,
+              "concatenated_batch_cosine": 0.283195171990056,
+              "aux_CE_norm_ratio": 0.0032820090572286287,
+              "partial_joint_positive_fraction": 0.5013889074325562,
+              "partial_joint_negative_fraction": 0.49861112236976624,
+              "partial_joint_mean_cosine": -0.0017119154761134027
+            },
+            "CROSS_R_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 5,
+              "mean_parameter_cosine": 0.3607913960736126,
+              "concatenated_batch_cosine": 0.3588362964290695,
+              "aux_CE_norm_ratio": 0.03832140769450533,
+              "partial_joint_positive_fraction": 0.48472222685813904,
+              "partial_joint_negative_fraction": 0.5152778029441833,
+              "partial_joint_mean_cosine": 0.001530922648688257
+            }
+          }
+        },
+        "STRONG_NATIVE": {
+          "student_accuracy": 0.9902777671813965,
+          "CE": 0.11341135948896408,
+          "alignment": {
+            "ALL_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 5,
+              "mean_parameter_cosine": 0.07428021216414502,
+              "concatenated_batch_cosine": 0.0621149640028952,
+              "aux_CE_norm_ratio": 1.399780692373886,
+              "partial_joint_positive_fraction": 0.32083332538604736,
+              "partial_joint_negative_fraction": 0.6791666746139526,
+              "partial_joint_mean_cosine": -0.12602692252729425
+            },
+            "CROSS_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 5,
+              "mean_parameter_cosine": 0.07067723807723782,
+              "concatenated_batch_cosine": 0.0604993564639962,
+              "aux_CE_norm_ratio": 1.4112834248458026,
+              "partial_joint_positive_fraction": 0.3194444477558136,
+              "partial_joint_negative_fraction": 0.6805555820465088,
+              "partial_joint_mean_cosine": -0.12265499987110175
+            },
+            "CROSS_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 3,
+              "mean_parameter_cosine": 0.04026210849555824,
+              "concatenated_batch_cosine": 0.01644216152280202,
+              "aux_CE_norm_ratio": 0.07160933769027428,
+              "partial_joint_positive_fraction": 0.3361110985279083,
+              "partial_joint_negative_fraction": 0.6638888716697693,
+              "partial_joint_mean_cosine": -0.12929206221010345
+            },
+            "CROSS_R_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 5,
+              "mean_parameter_cosine": 0.07044654080494335,
+              "concatenated_batch_cosine": 0.05967707423328089,
+              "aux_CE_norm_ratio": 1.4504589286279925,
+              "partial_joint_positive_fraction": 0.3194444477558136,
+              "partial_joint_negative_fraction": 0.6805555820465088,
+              "partial_joint_mean_cosine": -0.12461219080097102
+            }
+          }
+        }
+      },
+      "seconds": 12.355915331980214
+    },
+    {
+      "row_id": "SIGNAL-ALL_REL-s2026092701",
+      "teacher_accuracy": 0.9944444298744202,
+      "teacher_semantics": {
+        "PA": {
+          "same_TX_signed_response": {
+            "mean": 0.022730687633156776,
+            "positive_fraction": 0.7097222208976746,
+            "negative_fraction": 0.29027777910232544
+          },
+          "default_true_margin_increment": {
+            "mean": 2.2824270725250244,
+            "positive_fraction": 0.7652778029441833,
+            "negative_fraction": 0.23472222685813904
+          },
+          "same_TX_full_relation_mass": {
+            "mean": 0.7943083047866821,
+            "positive_fraction": 1.0,
+            "negative_fraction": 0.0
+          },
+          "relation_margin_sign_disagree_fraction": 0.17777778208255768
+        },
+        "ref": {
+          "same_TX_signed_response": {
+            "mean": 0.004528851713985205,
+            "positive_fraction": 0.7333333492279053,
+            "negative_fraction": 0.2666666805744171
+          },
+          "default_true_margin_increment": {
+            "mean": 0.8720566034317017,
+            "positive_fraction": 0.7472222447395325,
+            "negative_fraction": 0.2527777850627899
+          },
+          "same_TX_full_relation_mass": {
+            "mean": 0.7943083047866821,
+            "positive_fraction": 1.0,
+            "negative_fraction": 0.0
+          },
+          "relation_margin_sign_disagree_fraction": 0.17499999701976776
+        }
+      },
+      "views": {
+        "CLEAN_EVAL": {
+          "student_accuracy": 0.9944444298744202,
+          "CE": 0.11740772426128387,
+          "alignment": {
+            "ALL_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 6,
+              "mean_parameter_cosine": 0.317736013579851,
+              "concatenated_batch_cosine": 0.26214134772817865,
+              "aux_CE_norm_ratio": 0.06140001541903801,
+              "partial_joint_positive_fraction": 0.7569444179534912,
+              "partial_joint_negative_fraction": 0.2430555522441864,
+              "partial_joint_mean_cosine": 0.07209464183684654
+            },
+            "CROSS_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 6,
+              "mean_parameter_cosine": 0.3200279418241098,
+              "concatenated_batch_cosine": 0.26849456399967764,
+              "aux_CE_norm_ratio": 0.06600271311633144,
+              "partial_joint_positive_fraction": 0.7472222447395325,
+              "partial_joint_negative_fraction": 0.2527777850627899,
+              "partial_joint_mean_cosine": 0.08495773865362136
+            },
+            "CROSS_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 6,
+              "mean_parameter_cosine": 0.3256458421710305,
+              "concatenated_batch_cosine": 0.28626408430244554,
+              "aux_CE_norm_ratio": 0.007295049999911819,
+              "partial_joint_positive_fraction": 0.543055534362793,
+              "partial_joint_negative_fraction": 0.45694443583488464,
+              "partial_joint_mean_cosine": 0.03686822295665806
+            },
+            "CROSS_R_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 6,
+              "mean_parameter_cosine": 0.3380504439782917,
+              "concatenated_batch_cosine": 0.27715877094600305,
+              "aux_CE_norm_ratio": 0.07147411615154352,
+              "partial_joint_positive_fraction": 0.7486110925674438,
+              "partial_joint_negative_fraction": 0.25138887763023376,
+              "partial_joint_mean_cosine": 0.08391458034023845
+            }
+          }
+        },
+        "STRONG_NATIVE": {
+          "student_accuracy": 0.9888888597488403,
+          "CE": 0.114566370844841,
+          "alignment": {
+            "ALL_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 4,
+              "mean_parameter_cosine": -0.0029391534003108143,
+              "concatenated_batch_cosine": 0.07303341903720859,
+              "aux_CE_norm_ratio": 0.5397955595921418,
+              "partial_joint_positive_fraction": 0.2944444417953491,
+              "partial_joint_negative_fraction": 0.7055555582046509,
+              "partial_joint_mean_cosine": -0.12411975317960675
+            },
+            "CROSS_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 4,
+              "mean_parameter_cosine": -0.009637149787122252,
+              "concatenated_batch_cosine": 0.06005377894593908,
+              "aux_CE_norm_ratio": 0.5499377165333693,
+              "partial_joint_positive_fraction": 0.2944444417953491,
+              "partial_joint_negative_fraction": 0.7055555582046509,
+              "partial_joint_mean_cosine": -0.12107339952607575
+            },
+            "CROSS_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 3,
+              "mean_parameter_cosine": -0.001553404293384827,
+              "concatenated_batch_cosine": 0.014981489739427555,
+              "aux_CE_norm_ratio": 0.04511064244928031,
+              "partial_joint_positive_fraction": 0.3499999940395355,
+              "partial_joint_negative_fraction": 0.6499999761581421,
+              "partial_joint_mean_cosine": -0.11119279370357177
+            },
+            "CROSS_R_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 4,
+              "mean_parameter_cosine": -0.007626088751436511,
+              "concatenated_batch_cosine": 0.05904165071177856,
+              "aux_CE_norm_ratio": 0.570811497746406,
+              "partial_joint_positive_fraction": 0.29722222685813904,
+              "partial_joint_negative_fraction": 0.7027778029441833,
+              "partial_joint_mean_cosine": -0.1231611923898416
+            }
+          }
+        }
+      },
+      "seconds": 11.391280072042719
+    },
+    {
+      "row_id": "SIGNAL-CROSS_REL-s2026092701",
+      "teacher_accuracy": 0.9944444298744202,
+      "teacher_semantics": {
+        "PA": {
+          "same_TX_signed_response": {
+            "mean": 0.02246483787894249,
+            "positive_fraction": 0.75,
+            "negative_fraction": 0.25
+          },
+          "default_true_margin_increment": {
+            "mean": 2.2823119163513184,
+            "positive_fraction": 0.7736111283302307,
+            "negative_fraction": 0.22638888657093048
+          },
+          "same_TX_full_relation_mass": {
+            "mean": 0.7950102090835571,
+            "positive_fraction": 1.0,
+            "negative_fraction": 0.0
+          },
+          "relation_margin_sign_disagree_fraction": 0.20416666567325592
+        },
+        "ref": {
+          "same_TX_signed_response": {
+            "mean": 0.004331557545810938,
+            "positive_fraction": 0.7166666388511658,
+            "negative_fraction": 0.28333333134651184
+          },
+          "default_true_margin_increment": {
+            "mean": 0.8357046246528625,
+            "positive_fraction": 0.7458333373069763,
+            "negative_fraction": 0.2541666626930237
+          },
+          "same_TX_full_relation_mass": {
+            "mean": 0.7950102090835571,
+            "positive_fraction": 1.0,
+            "negative_fraction": 0.0
+          },
+          "relation_margin_sign_disagree_fraction": 0.17916665971279144
+        }
+      },
+      "views": {
+        "CLEAN_EVAL": {
+          "student_accuracy": 0.9958333373069763,
+          "CE": 0.11653541773557663,
+          "alignment": {
+            "ALL_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 4,
+              "mean_parameter_cosine": 0.14367494864018912,
+              "concatenated_batch_cosine": 0.17664353837285152,
+              "aux_CE_norm_ratio": 0.05452975729667667,
+              "partial_joint_positive_fraction": 0.7597222328186035,
+              "partial_joint_negative_fraction": 0.24027778208255768,
+              "partial_joint_mean_cosine": 0.07723711632397354
+            },
+            "CROSS_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 4,
+              "mean_parameter_cosine": 0.14337219613338614,
+              "concatenated_batch_cosine": 0.17587627830349245,
+              "aux_CE_norm_ratio": 0.059188020464712915,
+              "partial_joint_positive_fraction": 0.769444465637207,
+              "partial_joint_negative_fraction": 0.23055554926395416,
+              "partial_joint_mean_cosine": 0.0926068438537079
+            },
+            "CROSS_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 6,
+              "mean_parameter_cosine": 0.2714043095865644,
+              "concatenated_batch_cosine": 0.24681814104094874,
+              "aux_CE_norm_ratio": 0.006122732510944688,
+              "partial_joint_positive_fraction": 0.5208333134651184,
+              "partial_joint_negative_fraction": 0.4791666567325592,
+              "partial_joint_mean_cosine": 0.013685007903619657
+            },
+            "CROSS_R_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 4,
+              "mean_parameter_cosine": 0.16023539822322616,
+              "concatenated_batch_cosine": 0.18666856331016665,
+              "aux_CE_norm_ratio": 0.06386167509035635,
+              "partial_joint_positive_fraction": 0.7708333134651184,
+              "partial_joint_negative_fraction": 0.2291666716337204,
+              "partial_joint_mean_cosine": 0.08579310593666314
+            }
+          }
+        },
+        "STRONG_NATIVE": {
+          "student_accuracy": 0.9861111044883728,
+          "CE": 0.11759538948535919,
+          "alignment": {
+            "ALL_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 3,
+              "mean_parameter_cosine": 0.009972289251963315,
+              "concatenated_batch_cosine": 0.13410684422306413,
+              "aux_CE_norm_ratio": 0.47560620195338094,
+              "partial_joint_positive_fraction": 0.3013888895511627,
+              "partial_joint_negative_fraction": 0.6986111402511597,
+              "partial_joint_mean_cosine": -0.11578133370948016
+            },
+            "CROSS_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 3,
+              "mean_parameter_cosine": -0.003955605982714772,
+              "concatenated_batch_cosine": 0.11083634568373034,
+              "aux_CE_norm_ratio": 0.4835681173982736,
+              "partial_joint_positive_fraction": 0.2986111044883728,
+              "partial_joint_negative_fraction": 0.7013888955116272,
+              "partial_joint_mean_cosine": -0.11273639248610251
+            },
+            "CROSS_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 3,
+              "mean_parameter_cosine": -0.03449055633782259,
+              "concatenated_batch_cosine": -0.007448684636385366,
+              "aux_CE_norm_ratio": 0.04241910828123692,
+              "partial_joint_positive_fraction": 0.3333333432674408,
+              "partial_joint_negative_fraction": 0.6666666865348816,
+              "partial_joint_mean_cosine": -0.11670887700853189
+            },
+            "CROSS_R_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 3,
+              "mean_parameter_cosine": -0.0030445772329910914,
+              "concatenated_batch_cosine": 0.10609505994068238,
+              "aux_CE_norm_ratio": 0.5022003037102134,
+              "partial_joint_positive_fraction": 0.3027777671813965,
+              "partial_joint_negative_fraction": 0.6972222328186035,
+              "partial_joint_mean_cosine": -0.11582484100929634
+            }
+          }
+        }
+      },
+      "seconds": 11.32028437498957
+    },
+    {
+      "row_id": "SIGNAL-CROSS_RESP-s2026092701",
+      "teacher_accuracy": 0.9958333373069763,
+      "teacher_semantics": {
+        "PA": {
+          "same_TX_signed_response": {
+            "mean": 0.021946601569652557,
+            "positive_fraction": 0.6847222447395325,
+            "negative_fraction": 0.3152777850627899
+          },
+          "default_true_margin_increment": {
+            "mean": 2.245166301727295,
+            "positive_fraction": 0.7597222328186035,
+            "negative_fraction": 0.24027778208255768
+          },
+          "same_TX_full_relation_mass": {
+            "mean": 0.7928159236907959,
+            "positive_fraction": 1.0,
+            "negative_fraction": 0.0
+          },
+          "relation_margin_sign_disagree_fraction": 0.1805555522441864
+        },
+        "ref": {
+          "same_TX_signed_response": {
+            "mean": 0.004288411699235439,
+            "positive_fraction": 0.7263888716697693,
+            "negative_fraction": 0.2736110985279083
+          },
+          "default_true_margin_increment": {
+            "mean": 0.8567470908164978,
+            "positive_fraction": 0.7486110925674438,
+            "negative_fraction": 0.25138887763023376
+          },
+          "same_TX_full_relation_mass": {
+            "mean": 0.7928159236907959,
+            "positive_fraction": 1.0,
+            "negative_fraction": 0.0
+          },
+          "relation_margin_sign_disagree_fraction": 0.17222222685813904
+        }
+      },
+      "views": {
+        "CLEAN_EVAL": {
+          "student_accuracy": 0.9958333373069763,
+          "CE": 0.11801742762327194,
+          "alignment": {
+            "ALL_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 5,
+              "mean_parameter_cosine": 0.2304027499491997,
+              "concatenated_batch_cosine": 0.22019810289309494,
+              "aux_CE_norm_ratio": 0.06077853046291315,
+              "partial_joint_positive_fraction": 0.7652778029441833,
+              "partial_joint_negative_fraction": 0.23472222685813904,
+              "partial_joint_mean_cosine": 0.11118821620044086
+            },
+            "CROSS_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 4,
+              "mean_parameter_cosine": 0.20837552264099055,
+              "concatenated_batch_cosine": 0.20756161933601908,
+              "aux_CE_norm_ratio": 0.0662403019216271,
+              "partial_joint_positive_fraction": 0.762499988079071,
+              "partial_joint_negative_fraction": 0.23749999701976776,
+              "partial_joint_mean_cosine": 0.11724101462774976
+            },
+            "CROSS_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 6,
+              "mean_parameter_cosine": 0.1832524095559773,
+              "concatenated_batch_cosine": 0.17451925791764744,
+              "aux_CE_norm_ratio": 0.006827790691458096,
+              "partial_joint_positive_fraction": 0.5291666388511658,
+              "partial_joint_negative_fraction": 0.47083333134651184,
+              "partial_joint_mean_cosine": 0.03458253324608043
+            },
+            "CROSS_R_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 5,
+              "mean_parameter_cosine": 0.21011938617977077,
+              "concatenated_batch_cosine": 0.2081349613000827,
+              "aux_CE_norm_ratio": 0.07178286821720005,
+              "partial_joint_positive_fraction": 0.7652778029441833,
+              "partial_joint_negative_fraction": 0.23472222685813904,
+              "partial_joint_mean_cosine": 0.11500257798587948
+            }
+          }
+        },
+        "STRONG_NATIVE": {
+          "student_accuracy": 0.987500011920929,
+          "CE": 0.11663179099559784,
+          "alignment": {
+            "ALL_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 4,
+              "mean_parameter_cosine": 0.02385567073642546,
+              "concatenated_batch_cosine": 0.09544461370545007,
+              "aux_CE_norm_ratio": 0.5151678284604305,
+              "partial_joint_positive_fraction": 0.2916666567325592,
+              "partial_joint_negative_fraction": 0.7083333134651184,
+              "partial_joint_mean_cosine": -0.12375579948386814
+            },
+            "CROSS_R": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 3,
+              "mean_parameter_cosine": 0.011558064602786052,
+              "concatenated_batch_cosine": 0.08384634794117808,
+              "aux_CE_norm_ratio": 0.5233469646422745,
+              "partial_joint_positive_fraction": 0.29722222685813904,
+              "partial_joint_negative_fraction": 0.7027778029441833,
+              "partial_joint_mean_cosine": -0.12074440005247199
+            },
+            "CROSS_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 3,
+              "mean_parameter_cosine": -0.028842282068198517,
+              "concatenated_batch_cosine": 0.027090465374066217,
+              "aux_CE_norm_ratio": 0.03972691865272717,
+              "partial_joint_positive_fraction": 0.33472222089767456,
+              "partial_joint_negative_fraction": 0.6652777791023254,
+              "partial_joint_mean_cosine": -0.1193867886314986
+            },
+            "CROSS_R_E": {
+              "batch_count": 6,
+              "positive_parameter_dot_batches": 3,
+              "mean_parameter_cosine": 0.009176974527035552,
+              "concatenated_batch_cosine": 0.08332434862066126,
+              "aux_CE_norm_ratio": 0.5395415889767027,
+              "partial_joint_positive_fraction": 0.29722222685813904,
+              "partial_joint_negative_fraction": 0.7027778029441833,
+              "partial_joint_mean_cosine": -0.12321039648892272
+            }
+          }
+        }
+      },
+      "seconds": 11.223952420055866
+    }
+  ],
+  "execution_commit": "f3065f9227599de635c2d4e236265c144692845b",
+  "post_state": {
+    "status": "VERIFIED",
+    "completion": {
+      "status": "ANALYZED",
+      "run_id": "20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01",
+      "models": 4,
+      "source_physical_packets": 720,
+      "source_count": 2880,
+      "source_forward_packets": 9360,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0,
+      "EMA_updates": 0,
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "target_access": false,
+      "threshold_fit": false
+    },
+    "preflight": {
+      "status": "PASS",
+      "real_checkpoint_noquery": true,
+      "strict_student_ownEMA": true,
+      "checkpoint_contract_match": true,
+      "source_parents": 4,
+      "query_access": false,
+      "head_fit_updates": 0,
+      "checks": {
+        "status": "PASS",
+        "positive_negative_zero_gradient_directions": true,
+        "hidden_TX_negative": true,
+        "gradient_shape_negative": true
+      }
+    },
+    "submit": {
+      "status": "SUBMITTED",
+      "pid": 2163584,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_signal_source_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_relation_signal_diagnostic.audit"
+      ],
+      "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_signal_source_20261014_r01/dispatcher.stdout.log",
+      "commit": "f3065f9227599de635c2d4e236265c144692845b",
+      "run_id": "20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01"
+    },
+    "process": null,
+    "log_size": 282,
+    "log_tail": "SOURCE_SIGNAL_DIAGNOSTIC_COMPLETE SIGNAL-ZERO-s2026092701\nSOURCE_SIGNAL_DIAGNOSTIC_COMPLETE SIGNAL-ALL_REL-s2026092701\nSOURCE_SIGNAL_DIAGNOSTIC_COMPLETE SIGNAL-CROSS_REL-s2026092701\nSOURCE_SIGNAL_DIAGNOSTIC_COMPLETE SIGNAL-CROSS_RESP-s2026092701\n{\"status\": \"ANALYZED\", \"models\": 4}\n"
+  }
+}

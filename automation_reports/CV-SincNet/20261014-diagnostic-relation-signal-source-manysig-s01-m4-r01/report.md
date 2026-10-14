@@ -32,3 +32,22 @@
 当前为预登记，无真实诊断结果。84% 三种子泛化目标仍未达到。
 
 唯一 P0/P1 审查发现旧 multiscale validator 会拒绝新 relation parent config；已改用 relation.make_args 比较 checkpoint 参数，并保留 row 身份。该问题的一次定向复审 PASS，其余直接 P0/P1 未发现。下一步为发布首步真实 checkpoint no-query smoke。
+
+## 已完成源结果
+
+状态 **ANALYZED / VERIFIED**。四 frozen student/ownEMA 均完成，720 个固定 seen-L 探针×4 模型、9360 次 IQ 前向；参数/buffer/.grad/EMA/headfit/optimizer 更新均为 0，U IQ/TX 与 target 未访问。保存张量由独立 CPU 进程完整复算，四模型物理 IDs 与每个 TX/RX/day 的 8 包计数一致；单 archive transport 比较、远端 compile、真实 checkpoint no-query smoke 和独立 post-state 已核实。
+
+| 冻结模型 | clean R+E 参数余弦 | strong R+E 参数余弦 | strong 辅助/CE 范数比 | strong 正向批次 | strong joint 部分梯度反向比例 |
+|---|---:|---:|---:|---:|---:|
+| ZERO-s2026092701 | 0.3588 | 0.0597 | 1.4505 | 5/6 | 68.06% |
+| ALL_REL-s2026092701 | 0.2772 | 0.0590 | 0.5708 | 4/6 | 70.28% |
+| CROSS_REL-s2026092701 | 0.1867 | 0.1061 | 0.5022 | 3/6 | 69.72% |
+| CROSS_RESP-s2026092701 | 0.2081 | 0.0833 | 0.5395 | 3/6 | 70.28% |
+
+参数余弦采用六个批次梯度串接后的点积除范数，逐批均值及所有 norm/dot 另存 result_evidence。STRONG_NATIVE 三种关系训练模型的同包 R+E 正向批次仅 3 或 4 个；总余弦仍为正，不能写作全部参数梯度反向。逐包 joint 部分梯度固定 PA/ref 增量，它约 70% 反向也不能替代完整参数更新结论。
+
+教师 clean 默认头在 seen-L 探针的准确率为 99.44% 至 99.58%。关系训练模型的跨 RX 同 TX 参照质量约 79.3% 至 79.5%，高于 ZERO 的 70.6%；这种源关系集中并未证明域泛化更好。PA 增量使真实类间隔降低的包比例为 17.08% 至 24.03%，ref 为 25.14% 至 26.11%。因此教师的签名关系响应不自动等于有益身份贡献；仍需区分补充分支证据和复制当前分支偏好。
+
+源证据支持的下一研究问题是：如何提供与身份学习方向更一致的跨 RX 证据信号。它不支持直接增大 R/E 权重，不触发当前健康矩阵调参或重跑；也未证明信号冲突是目标下降的唯一原因。seen-L 小代理、单 seed、终轮冻结模型、原强视图 Dropout、label_smoothing=.01 以及默认头坐标都会影响该解释，真实 U 正确率及未见 RX 仍未知。
+
+当前诊断只完成机制测量，不是 84% 泛化目标完成，也不确认本关系机制有效。

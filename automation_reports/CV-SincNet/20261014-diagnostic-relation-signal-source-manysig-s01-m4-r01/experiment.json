@@ -109,7 +109,7 @@
     "host": "N607 ordinary account",
     "launch_owner": "codex/root/relation-signal-source-20261014",
     "gpu_policy": "CPU only; CUDA_VISIBLE_DEVICES empty;2 intraop/BLAS threads; healthy GPU jobs unchanged",
-    "remote_run_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_relation_signal_source_20261014_r01/dispatcher.stdout.log",
     "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_relation_signal_source_20261014_r01",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_relation_signal_diagnostic.audit",
@@ -155,7 +155,7 @@
       "method": "relation_signal_source",
       "purpose": "Frozen same-packet source gradient/identity evidence measurement",
       "config_ref": "experiments/cvs_relation_signal_diagnostic/configs/SIGNAL-ZERO-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01\\SIGNAL-ZERO-s2026092701\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01/SIGNAL-ZERO-s2026092701/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -382,7 +382,7 @@
       "method": "relation_signal_source",
       "purpose": "Frozen same-packet source gradient/identity evidence measurement",
       "config_ref": "experiments/cvs_relation_signal_diagnostic/configs/SIGNAL-ALL_REL-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01\\SIGNAL-ALL_REL-s2026092701\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01/SIGNAL-ALL_REL-s2026092701/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -609,7 +609,7 @@
       "method": "relation_signal_source",
       "purpose": "Frozen same-packet source gradient/identity evidence measurement",
       "config_ref": "experiments/cvs_relation_signal_diagnostic/configs/SIGNAL-CROSS_REL-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01\\SIGNAL-CROSS_REL-s2026092701\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01/SIGNAL-CROSS_REL-s2026092701/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -836,7 +836,7 @@
       "method": "relation_signal_source",
       "purpose": "Frozen same-packet source gradient/identity evidence measurement",
       "config_ref": "experiments/cvs_relation_signal_diagnostic/configs/SIGNAL-CROSS_RESP-s2026092701.json",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01\\SIGNAL-CROSS_RESP-s2026092701\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01/SIGNAL-CROSS_RESP-s2026092701/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -1065,7 +1065,7 @@
     "Dot>0 supports local steepest CE descent only, not an actual AdamW update prediction.",
     "R/E losses, weights, source rules and live eight-row training remain unchanged."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "ANALYZED",
   "registered_at": "2026-10-14T06:02:29+00:00",
   "independent_review": {
     "status": "PASS",
@@ -1096,5 +1096,16 @@
       "cosine": -0.10974008691890753,
       "local_descent_reduces_CE": false
     }
+  },
+  "actual_execution_commit": "f3065f9227599de635c2d4e236265c144692845b",
+  "result_summary": {
+    "status": "VERIFIED",
+    "source_models": 4,
+    "source_count": 2880,
+    "source_forward_packets": 9360,
+    "source_only": true,
+    "target_access": false,
+    "independent_tensor_recount": "VERIFIED",
+    "result_ref": "result_evidence.json"
   }
 }
