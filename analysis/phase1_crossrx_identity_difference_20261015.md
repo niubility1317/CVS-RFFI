@@ -1,6 +1,8 @@
 # 下一独立训练假设：跨 RX 类间特征差方向一致
 
-状态：**设计，尚未实现或发布实际源诊断**。没有新训练、泛化收益或完整原创性证明。84% 原默认头 clean 三种子目标仍未完成。
+状态：**已实现，实际源诊断 ANALYZED / VERIFIED，固定gate0/8，关闭原变体**。没有实际训练、泛化收益或完整原创性证明。84% 原默认头 clean 三种子目标仍未完成。
+
+以下保留执行前设计，实际结果和处置见文末。
 
 ## 从新证据得到的约束
 
@@ -60,3 +62,6 @@ V只无拟合健康诊断，U不解封，target不访问。只有该独立源检
 [Supervised Contrastive Learning](https://arxiv.org/abs/2004.11362)以真实类别聚合正样本并区分不同类别，是标签对比关系的基础；不能称本任务首先使用真实身份关系。[Domain Generalization using Causal Matching](https://arxiv.org/abs/2006.07500)说明类条件域不变本身不足以保证泛化，类内因素也需考虑。因此本提案的相对类别方向不能作为充分DG保证。[Negatives-Dominant Contrastive Learning](https://arxiv.org/abs/2601.21999)也在不均衡DG中强化类间判别信号并结合其他约束；本数据的固定源平衡构造不直接采用其不均衡结论。上述为已核实的相关原始论文，不是完整“文献无同款”证明。
 
 拟检验的具体研究区别是 CVS 原四项部署结构里的**同RX相减、跨RX比较、真实L身份语义、对a/s定向辅助和有限停止**。跨RX相对判别结构是否能补足浅中层特征学习，仍完全未证实。SIG_TIME、CENTER25K、COMPACT_LINEAR、LONG_SILU历史正收益独立保留；结构收益与新loss收益必须各自实测，不相加，也不根据target高分挑父权重。
+
+
+2026-10-15实际run `20261015-phase1-SIGTIME-crossRX-identity-difference-sourceL-s2026092701-r01`，执行`1c629a7f54fd69a0b1dc9751368f38165b21505a`。INITIAL/FINAL20各4L180，独立heldL180，FINAL20跨RX活跃103至129/300、梯度/位移/浅中层/核实际不同，heldraw身份margin相对CE及SELF四单元均正但仅1.90e-7至5.16e-7，低于1e-5，gate0/8。INITIAL CE相对RAW四减、相对SELF三减一增，但margin仍不足，不能代替FINAL20晋级。900L/6124forwards/32tempsteps/0realtrain/headfit/U/V/target，原状态不变/自然终态核实。关闭固定源变体、不扫权重或停止值、不扩main；没有模拟optimizerreset阶段，后续仅纯CE阶段余量独立诊断，不能直接复活CROSS。见[完整报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-crossRX-identity-difference-sourceL-s2026092701-r01/report.md)。

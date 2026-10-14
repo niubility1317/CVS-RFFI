@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED",
+  "commit": "1c629a7f54fd69a0b1dc9751368f38165b21505a",
+  "remote_oid": "1c629a7f54fd69a0b1dc9751368f38165b21505a",
+  "archive_SHA_comparison": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "owned_process_CWD_command_verified": true,
+  "owned_log_grew": true,
+  "CPU_only": true,
+  "GPU_allocations": 0,
+  "GPU_process_absent": true,
+  "real_checkpoint_no_query_smokes": {
+    "INITIAL": true,
+    "FINAL20": true
+  },
+  "independent_read_at": 1792013237.9869308,
+  "owned_process_naturally_terminal": true,
+  "summary_status": "SOURCE_SCREEN_NOT_PASSED",
+  "failure": null,
+  "live_state_unchanged": true
+}

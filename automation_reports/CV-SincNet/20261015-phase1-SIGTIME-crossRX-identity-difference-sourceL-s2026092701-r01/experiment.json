@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Active goal continuation; user requests concrete training/loss mechanism research combining source reports and prior experiments.",
   "code": {
-    "commit": "release_commit.txt (actual Git HEAD resolved at publication)",
+    "commit": "1c629a7f54fd69a0b1dc9751368f38165b21505a",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account; CVS-RFFI Python; CPU2threads/GPU0; immutable own E20 runtime plus committed three-namespace overlay",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_crossRX_identity_difference_sourceL_20261015_r01"
@@ -162,5 +162,26 @@
     "SourceL groups are ephemeral subsets of originalL_s, not new persistentroles; V/U/target IQ notread.",
     "Conceptualpriors SupCon/MatchDG/NDCL; concrete mechanism novelty/efficacy unproved. Main goal84 remains active."
   ],
-  "registered_at": "2026-10-14T21:23:16+00:00"
+  "registered_at": "2026-10-14T21:23:16+00:00",
+  "result": {
+    "status": "SOURCE_SCREEN_NOT_PASSED",
+    "gate_result": {
+      "passed": false,
+      "qualified_cells": [],
+      "qualified_by_state": {
+        "INITIAL": 0,
+        "FINAL20": 0
+      },
+      "INITIAL_not_a_substitute_for_FINAL20": true,
+      "interpretation": "Known-source finite-step feature signal only; FINAL20 gate for further E20+20 investigation, no actual training/target/novelty proof"
+    },
+    "decision": "CLOSE_FIXED_IDENTITY_DIFFERENCE_SOURCE_VARIANT",
+    "evidence_ref": "result_evidence.json",
+    "real_training_launched": false,
+    "actual_optimizer_updates": 0,
+    "source_weak_positive_geometry_preserved": true,
+    "U_truth_read": false,
+    "target_access": false,
+    "goal84_completed": false
+  }
 }
