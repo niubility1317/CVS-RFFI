@@ -29,3 +29,6 @@
 
 
 R06已独立实施源诊断：20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01，执行b9144fee45b26342442e8a39bbe475bd19c03bd5，源feature area扰动比31.9940%，8mask不是模型seed；真实训练取点对照仍待落实，因此标implemented而非性能verified。现5verified／2implemented／2deferred，0rejected/blocked。
+
+
+R06独立真实训练已发布：20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01，实现087b3f61abb4444f05e7c22f4af6f631865188df，执行b4d55dba50c8601017604a2a0eb0d037f8d835e8。只移descriptor取点，主干Dropout.1/公式/参数保持；本地真实两模型gradient/数值更新/teacher/export/W独立/初态参数和eval函数PASS，实际resolved取点/零fit配置正确。完整训练结果仍pending，R06维持implemented；5verified/2implemented/2deferred、0blocked/rejected。既有R1六模型继续，不热改旧release。

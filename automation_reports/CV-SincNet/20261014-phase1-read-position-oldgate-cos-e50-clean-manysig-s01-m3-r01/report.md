@@ -17,3 +17,5 @@ seed2026092701三行：OLD_GATE_COS50历史对照只读复用；SIG_TIME post与
 Stop：本run角色/来源/预算/非有限/defaulthead/export/物理ID/prediction/truthlast系统技术失败停止新增派发，保留健康进程和产物，无自动重试；不按target早停/改配方/换seed/重启。每row final冻结即自动clean168000默认头逐包prediction，固定后独立truth-last；3行504000 decisions/54分组指标。保留配对差/正差数、MacroF1、最差RX/day、修正/引入错误、完整50epoch源曲线/U接受/时间、真实feature更新/零fit收尾。只有完整3预定义seed均值≥84才达标，单seed/其他读出/source不能替代。
 
 预期release preflight/submit；run launch/queue/每行initial-final-frozen/resolved/args/roles/50epoch/11100step/source_feature_witness/default prediction/complete/scores/metrics/completion/source_features/source_qualification/analysis。数据、weights、rawlogs及大型prediction留远端，聚合/实现/config/报告Git上传并核remoteOID。只测clean旧6TX，不声称新TX/Phase2/卫星部署。当前已登记实现，尚未发布。
+
+实际发布 VERIFIED：执行 b4d55dba50c8601017604a2a0eb0d037f8d835e8，dispatcher PID 2132655。两新worker PID/CWD/argv/GPU核实，实际resolved读t2/t2.pool且native fits关闭，epoch2日志分别增长10341/10356bytes。真实旧CP no-query smoke、一个archive比较及remotecompile PASS，failure=null；目标结果尚无，详见 launch_evidence.json。

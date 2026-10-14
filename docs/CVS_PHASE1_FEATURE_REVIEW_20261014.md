@@ -192,3 +192,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 报告路线三源诊断闭环：固定 first SIG_TIME 权重和 L720，8次CPU末端Dropout.1独立回放，63分层统计，0训练/头拟合/目标forward。feature-feature area噪声/clean RMS31.9940%，time area21.7255%，COV shape12.7249%，实际残差160为25.2901%；保存数组重算、eval pre/post一致、状态不变均 VERIFIED。固定分母和绝对RMS完整保留；不是完整训练流或性能因果效果。下一步单独固定SIG_TIME描述子比较t2与t2.pool，不叠加描述子替换/层级/U权重，依据此源证据与用户报告。详见 20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01/final_analysis.md。
+
+
+路线三已实际发布 20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01：两新scratch50/11100，SIG_TIME post 与 SIG_TIME_PRE pre，只改descriptor hook t2→t2.pool，主干Dropout.1/公式/18976pool参数/default联合头保持。执行 b4d55dba50c8601017604a2a0eb0d037f8d835e8；固定源诊断依据 20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01，不使用目标误差调参。两个resolved实际取点正确且native fitted probes关闭，默认clean/truthlast自动串联，当前source训练中，无性能结论。
