@@ -82983,8 +82983,8 @@
       "execution_commit": "704cf37536d3cb6b8764af2131547db4a9939480",
       "release": "cvs_confidence_feature50_20261015_r01",
       "source_epoch_snapshot": [
-        1,
-        1
+        7,
+        7
       ],
       "actual_workers": [
         {
@@ -83001,7 +83001,46 @@
       "real_checkpoint_noquery_smoke": "PASS",
       "new_target_numeric_results_read": false,
       "source_only_handoff": "local_artifacts/confidence_feature50_delivery_r01/source_qualification_only.py",
-      "first_seed_is_not_goal_completion": true
+      "first_seed_is_not_goal_completion": true,
+      "actual_initial_state_comparison": {
+        "status": "VERIFIED",
+        "state_tensors": 198,
+        "state_elements": 864924,
+        "parameters_buffers_exactly_equal": true,
+        "pre_stage_metrics_identical": false,
+        "backend_cudnn_deterministic": false,
+        "feature_starts_epoch": 34,
+        "head_or_model_updates_for_diagnostic": 0,
+        "query_read": false,
+        "report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/actual_initial_and_pre_stage_comparison.json"
+      }
+    },
+    "backbone_fishr_source_progress": {
+      "status": "PARTIAL_SOURCE_ONLY",
+      "run_id": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "source_epoch_snapshot": [
+        43,
+        43,
+        40,
+        40,
+        40,
+        40
+      ],
+      "common_window": [
+        36,
+        40
+      ],
+      "raw_primary_ratio_to_SIG": [
+        0.8725716168807904,
+        0.8739619808586556
+      ],
+      "conditional_primary_ratio_to_SIG": [
+        0.908072493594967,
+        0.9264827013804985
+      ],
+      "budget_unchanged": true,
+      "query_read": false,
+      "report": "automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/source_training_progress.md"
     }
   }
 }

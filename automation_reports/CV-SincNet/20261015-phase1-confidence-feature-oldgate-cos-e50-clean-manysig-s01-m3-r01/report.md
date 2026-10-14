@@ -23,3 +23,7 @@
 ## 发布后状态
 
 RUNNING / VERIFIED：执行commit 704cf37536d3cb6b8764af2131547db4a9939480，单archiveSHA/remotecompile/真实CPnoquery smoke PASS。SIG worker2588400/GPU3、CONF worker2588549/GPU6的PID/CWD/argv/GPU/loggrowth核实，两个scratch50模型均已完成第1轮（新feature机制按计划从第34轮启用），历史baseline自动clean链已执行；当次failure0。新目标数值摘要尚未读取，源资格与扩种子决定仍先行commit/push。完整过程见release_launch_evidence.json；训练/测试/性能结论尚未完成。
+
+## 实际初始化与前段训练核验
+
+另进程只读两模型initial_smoke.pt，198个参数/buffer张量、864924个状态元素逐值相同，scratch/无父权重/数据角色一致；无新前向或模型更新。第3轮源CE分别0.403988/0.402676、V95.1741%/95.2741%，此时feature系数/loss/U前向均0，因此不能计作新机制收益。两模型cudnn_deterministic=false，轨迹未保证逐步数值完全一致；实际初始化匹配与未启用阶段的训练波动分别记录于actual_initial_and_pre_stage_comparison.json，不改变健康训练或配方。

@@ -1,0 +1,98 @@
+{
+  "status": "VERIFIED_SOURCE_PRE_MECHANISM",
+  "run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "actual_initial_state_comparison": {
+    "status": "VERIFIED",
+    "run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "state_tensors": 198,
+    "state_elements": 864924,
+    "all_initial_parameters_and_buffers_exactly_equal": true,
+    "different_keys": [],
+    "metadata": [
+      {
+        "row_id": "SIG_TIME-s2026092701",
+        "model_seed": 2026092701,
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "scratch": {
+          "scratch_only": true,
+          "checkpoint_sources": [],
+          "ancestors": [],
+          "source_roles": "EXACT_MATCH",
+          "target_contact": false,
+          "teacher_origin": "own scratch student only",
+          "seed": 2026092701
+        }
+      },
+      {
+        "row_id": "CONF_FEATURE_MT-s2026092701",
+        "model_seed": 2026092701,
+        "backend_flags": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "scratch": {
+          "scratch_only": true,
+          "checkpoint_sources": [],
+          "ancestors": [],
+          "source_roles": "EXACT_MATCH",
+          "target_contact": false,
+          "teacher_origin": "own scratch student only",
+          "seed": 2026092701
+        }
+      }
+    ],
+    "source_checkpoint_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "new_model_forwards": 0,
+    "optimizer_updates": 0
+  },
+  "phase": "label only; feature mechanism scheduled from epoch34",
+  "source_epoch_snapshot": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "metrics": {
+        "epoch": 3,
+        "train_loss_labeled": 0.40398753226340356,
+        "val_tx_acc": 95.17407407407407,
+        "train_feature_mean_teacher_coefficient": 0,
+        "train_feature_mean_teacher_loss": 0,
+        "train_feature_mean_teacher_U_packets": 0,
+        "train_optimizer_step_applied": 1,
+        "train_skipped_nonfinite_grad": 0,
+        "train_skipped_nonfinite_loss": 0,
+        "stage_test_eval_ran": 0,
+        "test_tx_total": 0
+      }
+    },
+    {
+      "row_id": "CONF_FEATURE_MT-s2026092701",
+      "metrics": {
+        "epoch": 3,
+        "train_loss_labeled": 0.40267624289871334,
+        "val_tx_acc": 95.27407407407408,
+        "train_feature_mean_teacher_coefficient": 0,
+        "train_feature_mean_teacher_loss": 0,
+        "train_feature_mean_teacher_U_packets": 0,
+        "train_optimizer_step_applied": 1,
+        "train_skipped_nonfinite_grad": 0,
+        "train_skipped_nonfinite_loss": 0,
+        "stage_test_eval_ran": 0,
+        "test_tx_total": 0
+      }
+    }
+  ],
+  "pre_stage_metrics_are_not_identical": true,
+  "interpretation": "Exact initial tensors match; cudnn_deterministic is false for both. Pre-mechanism source differences are training variability and cannot be counted as confidence-gate benefit; source trajectories are not claimed bit-identical.",
+  "new_model_forward_or_update_for_this_comparison": false,
+  "new_target_numeric_results_read": false
+}
