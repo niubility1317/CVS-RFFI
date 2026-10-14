@@ -17,3 +17,6 @@
 仅停止 run 所属的系统性技术失败：数据／隐藏 U／默认头契约不符、非有限损失或梯度、固定遮挡不可辨认、随机回放失败、预算缺失、重复启动失败或输出碰撞。保留部分产物，不自动重试，不触碰其他健康任务，不依据目标停止。归档包含已提交的 experiment.json、report.md、events.jsonl；完整 canonical 配置仅替换 PROJECT 路径前缀，不折叠 source_config，读取时仅登记文件还原该前缀。
 
 预期产物：每 row 的原生配置、源契约、初始化／final50／freeze、11100 step 与遮挡计数、4 个梯度时期、实际 feature-only 导出证据、prediction／独立 scores／completion；矩阵 source_features、source_observations、analysis 和 completion。原始 IQ、权重、PT、预测、日志与私密运行信息不入 Git；实现、登记及聚合正负结果提交推送。
+
+
+原首种子终轮source资格现已PASS；真实部署特征及默认W边界通过，50／11100／963900U／22200额外L前向和17／33／50骨干增量条件完整。主代理尚未读取新目标数值，现冻结原样三臂02/03扩展，先将源决定推送再发布；本文件更新时尚未启动。源决定见 `automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json`。

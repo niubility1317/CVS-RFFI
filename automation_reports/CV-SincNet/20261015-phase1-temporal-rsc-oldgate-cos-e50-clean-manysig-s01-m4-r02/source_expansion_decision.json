@@ -1,0 +1,69 @@
+{
+  "status": "FROZEN_SOURCE_PASS_EXPAND_UNCHANGED",
+  "first_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
+  "first_execution_commit": "e7a6215aa5d0a05e71c1c842e78cdfc845d57530",
+  "source_only": true,
+  "new_model_target_numeric_read_by_primary": false,
+  "source_qualification": "PASS",
+  "fixed_rules": {
+    "final5_unmasked_L_CE_max": 0.5,
+    "feature_difference_min": 0.000001,
+    "native_steps": 11100,
+    "additional_L_forwards": 22200,
+    "actual_U_packets": 963900,
+    "required_gradient_epochs": [
+      17,
+      33,
+      50
+    ],
+    "required_gradient_parameters": [
+      "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+      "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+      "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+    ],
+    "source_only": true,
+    "expansion": "If exact source budgets, default deployment feature, unmasked CE health and nonzero t1/t2/SIG delta gradients pass for BOTH variants, extend all three unchanged arms to02/03; freeze and push decision before reading new target numeric summaries. No target-based expansion/cancellation or masking retuning."
+  },
+  "remaining_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+  "remaining_code_commit": "2f99d65f8a594ab1f56d84d1d7ee1011740da52c",
+  "remaining_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "all_three_arms": [
+    "SIG_TIME",
+    "MATCHED_RANDOM",
+    "TEMPORAL_RSC"
+  ],
+  "new_models": 6,
+  "historical_models_reused": 2,
+  "first_seed_retrained": false,
+  "model_initialization": "scratch per predefined nominal seed; no weight inheritance",
+  "epochs_per_model": 50,
+  "label_epochs": 33,
+  "pseudo_epochs": 17,
+  "native_updates_per_model": 11100,
+  "additional_L_forwards_per_model": 22200,
+  "original_U_gate_ownEMA_cos_unchanged": true,
+  "architecture": "Fixed SIG_TIME195041, actual joint160, default6x160cos head normal joint training",
+  "head_fit_updates": 0,
+  "source_L720_variant_feature_distance": {
+    "TEMPORAL_RSC": 3.638345241546631,
+    "MATCHED_RANDOM": 3.324662685394287
+  },
+  "source_last5_unmasked_CE": {
+    "SIG_TIME": 0.22823313233685924,
+    "MATCHED_RANDOM": 0.23389472309667786,
+    "TEMPORAL_RSC": 0.235278137504786
+  },
+  "source_body_signal": {
+    "SIG_TIME": false,
+    "MATCHED_RANDOM": true,
+    "TEMPORAL_RSC": true
+  },
+  "source_validation_not_used_for_epoch_or_candidate_selection": true,
+  "no_target_based_expansion_cancellation_or_reordering": true,
+  "source_decision_must_be_pushed_before_new_target_numeric_retrieval": true,
+  "goal_84": false,
+  "limitation": "Actual feature learning and valid interface only; no target or new-TX performance conclusion"
+}

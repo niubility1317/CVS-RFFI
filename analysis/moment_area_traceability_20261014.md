@@ -234,3 +234,6 @@ DRO完整固定3seed闭环：9新模型450epochs99900steps，12row2016000default
 
 
 2026-10-15：RSC三原模型40轮、真实U阶段和原EMA/cos接线已核实；完整源曲线快照36轮已图示，U覆盖约1.6%但无U真值／精度声明。E33保存梯度和对应原生CE／6编码类别覆盖完成复核，累计25974匹配step／468层1404向量／117mask批；不是完整3seed或feature导出收益，final50资格和实际f_theta更新仍待完成。证据`automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/semisupervised_entry_verified.json`。
+
+
+2026-10-15：actual RSC首seed终轮sourcePASS和真实f_theta数值更新／joint160导出／旧W独立性均完成，0另训头；源决定`automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json`在主代理新目标数值前冻结，原样三臂02/03准备发布，不重训01，不按target取消或改序。sourcePASS不等于84或泛化收益。

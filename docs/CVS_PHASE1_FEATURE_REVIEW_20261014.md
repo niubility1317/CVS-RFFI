@@ -468,3 +468,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 时序自挑战三原进程已40轮并实测进入U，原33＋17／EMA0.999／UCE0.16／entropy0.01／cos逐项核对，真U标签可用数始终0。完整36轮源曲线快照的后续可见U前缀为SIG221044／随机224116／RSC221812包，接纳率约1.64%／1.63%／1.62%，窗口不等且不是伪标签精度。E33实际梯度加入后117批／468层1404向量，RSC t1/t2/SIG余弦 .87216/.87034/.80670、增量范数比 .60237/.60692/.79518，保存logit CE与原生步对齐误差<=4.77e-7。源流25974匹配步和117mask批复核通过，源曲线图已渲染查看。终轮feature witness／源资格／新目标仍未完成，条件02/03不发布。[阶段证据](../automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/report.md)。
+
+
+时序自挑战首seed终轮source资格已PASS，新模型目标数值尚未读取。三臂完整50／11100／原U963900／额外L前向22200；随机与RSC实际L720部署特征相对SIG距离3.324663／3.638345，195041实际f_theta中193912／193847元素改变，默认W正常联合更新960元素，W删除／清零不改z且feature-only导出逐元素一致。原17／33／50骨干增量条件与源CE健康通过，冻结原样全部三臂02/03扩展，先推送决定再读目标数值，不以sourcePASS称DG成功。源决定`automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json`。

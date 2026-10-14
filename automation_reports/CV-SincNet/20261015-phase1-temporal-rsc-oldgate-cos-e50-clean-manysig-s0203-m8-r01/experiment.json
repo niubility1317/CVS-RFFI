@@ -2485,9 +2485,12 @@
     "Source PASS is not DG success; known historical target benchmark is not a new blind test. Full final positive/negative combined3-seed analysis, sampleSD, paired differences, RX/day/MacroF1/errors/costs uploaded to Git after actual evidence."
   ],
   "results": {
-    "status": "PREPARED_CONDITIONAL_NOT_LAUNCHED",
-    "source_qualification_complete": false,
-    "new_model_target_metrics_read": false
+    "status": "SOURCE_PASS_READY_NOT_LAUNCHED",
+    "source_qualification_complete": true,
+    "original_source_qualification_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
+    "new_model_target_metrics_read": false,
+    "decision": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json",
+    "training_formula_unchanged": true
   },
   "registered_at": "2026-10-14T22:52:13+00:00"
 }

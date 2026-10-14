@@ -82263,14 +82263,14 @@
     }
   ],
   "next_actions_max2": [
-    "继续首seed三新模型固定50/11100和原U预算，保留全部健康进程；完成实际源资格、完整曲线/梯度/遮挡和默认部署特征复核，逐row自动默认头clean/truth-last",
-    "02/03适配器已完成本地验证/唯一adapter审查/预登记但未发布；仅原首sourcePASS后先提交推送源域决定再回收新目标数值，原样扩全部三臂并保留正负结果，完整三seed检验84%目标"
+    "按已固定源PASS决定发布全部三臂02/03，复用已验证适配器和本轮N607预检，核对实际PID/CWD/argv/GPU/loggrowth；不重训01或据目标改变矩阵",
+    "源决定推送后回收首seed完整默认头clean结果、全部曲线和误差迁移；后续合并预定义三seed独立统计与实际feature witness检验84%，保留全部正负结果"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "继续首seed三新模型固定50/11100和原U预算，保留全部健康进程；完成实际源资格、完整曲线/梯度/遮挡和默认部署特征复核，逐row自动默认头clean/truth-last",
-    "02/03适配器已完成本地验证/唯一adapter审查/预登记但未发布；仅原首sourcePASS后先提交推送源域决定再回收新目标数值，原样扩全部三臂并保留正负结果，完整三seed检验84%目标"
+    "按已固定源PASS决定发布全部三臂02/03，复用已验证适配器和本轮N607预检，核对实际PID/CWD/argv/GPU/loggrowth；不重训01或据目标改变矩阵",
+    "源决定推送后回收首seed完整默认头clean结果、全部曲线和误差迁移；后续合并预定义三seed独立统计与实际feature witness检验84%，保留全部正负结果"
   ],
   "current_priority": {
     "at": "2026-10-14T22:46:38.755Z",
@@ -82710,10 +82710,10 @@
       },
       {
         "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-        "status": "LOCAL_VERIFIED_PREREGISTERED_NOT_LAUNCHED",
+        "status": "SOURCE_PASS_READY_NOT_LAUNCHED",
         "code_commit": "2f99d65f8a594ab1f56d84d1d7ee1011740da52c",
         "original_source_qualification_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
-        "original_source_qualification_complete": false,
+        "original_source_qualification_complete": true,
         "first_seed_retrained": false,
         "new_models": 6,
         "historical_models_reused": 2,
@@ -82722,7 +82722,8 @@
         "local_native_contexts": 6,
         "negative_checks": 12,
         "public_config_roundtrip": "PASS",
-        "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md"
+        "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md",
+        "source_decision": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json"
       }
     ],
     "feature_mean_teacher_first_seed": {
@@ -84054,22 +84055,22 @@
       "report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
     },
     "temporal_rsc_training": {
-      "status": "RUNNING_VERIFIED",
+      "status": "SOURCE_FROZEN_VERIFIED_AWAITING_TARGET_ANALYSIS",
       "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
       "new_models": 3,
       "reused_historical_models": 1,
       "source_completed_epochs": [
-        40,
-        40,
-        40
+        50,
+        50,
+        50
       ],
-      "actual_native_steps_recounted": 25974,
-      "additional_L_forwards_recounted": 51948,
+      "actual_native_steps_recounted": 33300,
+      "additional_L_forwards_recounted": 66600,
       "actual_L_packet_observations_recounted": 1703680,
       "unique_physical_sample_count_not_inferred": true,
-      "gradient_layer_records_recounted": 468,
-      "saved_vectors_recounted": 1404,
-      "saved_mask_batches_recounted": 117,
+      "gradient_layer_records_recounted": 624,
+      "saved_vectors_recounted": 1872,
+      "saved_mask_batches_recounted": 156,
       "first_epoch_delta_nonzero_batches_t1_t2_SIG_W": {
         "SIG_TIME": [
           0,
@@ -84090,7 +84091,7 @@
           13
         ]
       },
-      "source_qualification_complete": false,
+      "source_qualification_complete": true,
       "default_head_fit_updates": 0,
       "actual_L_forwards_planned_per_model": 33300,
       "additional_L_forwards_planned_per_model": 22200,
@@ -84162,14 +84163,18 @@
         3655,
         3597
       ],
-      "U_truth_available": 0
+      "U_truth_available": 0,
+      "source_qualification": "PASS",
+      "source_decision": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json",
+      "source_feature_witness": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_feature_mechanism.json",
+      "new_model_target_metrics_read": false
     },
     "temporal_rsc_conditional_extension": {
       "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-      "status": "LOCAL_VERIFIED_PREREGISTERED_NOT_LAUNCHED",
+      "status": "SOURCE_PASS_READY_NOT_LAUNCHED",
       "code_commit": "2f99d65f8a594ab1f56d84d1d7ee1011740da52c",
       "original_source_qualification_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
-      "original_source_qualification_complete": false,
+      "original_source_qualification_complete": true,
       "first_seed_retrained": false,
       "new_models": 6,
       "historical_models_reused": 2,
@@ -84178,7 +84183,8 @@
       "local_native_contexts": 6,
       "negative_checks": 12,
       "public_config_roundtrip": "PASS",
-      "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md"
+      "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md",
+      "source_decision": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json"
     }
   }
 }
