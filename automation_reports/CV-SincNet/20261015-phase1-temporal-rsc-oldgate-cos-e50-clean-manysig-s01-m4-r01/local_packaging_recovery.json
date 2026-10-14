@@ -1,0 +1,16 @@
+{
+  "status": "FAILED_LOCAL_PACKAGING_RECONCILED",
+  "failed_layer": "local git-show registration material lookup before archive metadata/precheck/SCP/SSH submission",
+  "missing_files": [
+    "experiment.json",
+    "report.md",
+    "events.jsonl"
+  ],
+  "fix": "Add existing minimal preregistration under the filenames consumed by the shared publisher; public project placeholders only",
+  "training_code_or_formula_changed": false,
+  "partial_local_archive_preserved": true,
+  "remote_submission_attempted": false,
+  "rerun_training": false,
+  "next_delivery": "new local directory r02; same never-submitted remote immutable release/run identifiers",
+  "code_commit": "3524398286beb12aa89f527bd740e2d990db5acc"
+}
