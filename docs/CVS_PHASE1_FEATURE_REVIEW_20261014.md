@@ -462,3 +462,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 时序自挑战 02/03 条件适配器已 LOCAL_VERIFIED／PREREGISTERED／NOT_LAUNCHED：`20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01`，代码 `2f99d65f8a594ab1f56d84d1d7ee1011740da52c`。固定6新 scratch50＋2历史，不重训01，不增新机制；六个实际原生上下文仅 seed/run/candidate/output 不同、同 seed 三臂初态相等，实际前向/L损失/骨干与默认W梯度/原U对象/遮挡清理、12负例、完整公开配置还原与一次adapter-only P0/P1均通过。原首种子仍健康训练，完整source资格尚未完成；本适配器只在原规则PASS且源决定先提交推送后发布，不以target决定扩展，不重复审查未改机制。[条件预登记](../automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md)。
+
+
+时序自挑战实际训练已核实21轮／原PID，E1/E17全部78个固定诊断批、312层936向量的只读梯度分析完成。RSC E17 t1/t2/SIG 的所选对原CE余弦均值 .84465/.85215/.74941，增量范数比 .61280/.59495/.90914；三个层13/13非零且无负余弦，SIG增量0，匹配随机也改变骨干。源探针大反向不能代替实际联合训练方向；这不是DG或导出特征提升证明，终轮feature witness仍待完成。原生／遮挡流13310匹配步及78mask批复核通过，无新目标分数、配方和源扩展规则保持。[中期机制记录](../automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/report.md)。

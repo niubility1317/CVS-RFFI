@@ -84059,17 +84059,17 @@
       "new_models": 3,
       "reused_historical_models": 1,
       "source_completed_epochs": [
-        2,
-        2,
-        2
+        21,
+        21,
+        21
       ],
-      "actual_native_steps_recounted": 1332,
-      "additional_L_forwards_recounted": 2664,
-      "actual_L_packet_observations_recounted": 170496,
+      "actual_native_steps_recounted": 13310,
+      "additional_L_forwards_recounted": 26620,
+      "actual_L_packet_observations_recounted": 1703680,
       "unique_physical_sample_count_not_inferred": true,
-      "gradient_layer_records_recounted": 156,
-      "saved_vectors_recounted": 468,
-      "saved_mask_batches_recounted": 39,
+      "gradient_layer_records_recounted": 312,
+      "saved_vectors_recounted": 936,
+      "saved_mask_batches_recounted": 78,
       "first_epoch_delta_nonzero_batches_t1_t2_SIG_W": {
         "SIG_TIME": [
           0,
@@ -84096,13 +84096,44 @@
       "additional_L_forwards_planned_per_model": 22200,
       "oldgate_U_ownEMA_cos_preserved": true,
       "launch_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/launch_verified.json",
-      "source_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_progress.json",
+      "source_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_progress_e17.json",
       "technical_failure_recovery": {
         "failed_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r01",
         "failed_before_workers_or_updates": true,
         "failed_outputs_preserved": true,
         "new_run_has_separate_immutable_root": true,
         "training_formula_unchanged": true
+      },
+      "actual_gradient_geometry": {
+        "status": "PARTIAL_VERIFIED",
+        "epochs": [
+          1,
+          17
+        ],
+        "models": 3,
+        "nominal_seed_count": 1,
+        "gradient_batches": 78,
+        "layer_records": 312,
+        "vectors": 936,
+        "implementation": "analysis/temporal_rsc_gradient_geometry_20261015.py",
+        "result": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_gradient_geometry_e1_e17.json",
+        "RSC_E17_selected_cosine_t1_t2_SIG": [
+          0.844649730964334,
+          0.8521493323985292,
+          0.7494136444528663
+        ],
+        "RSC_E17_delta_over_unmasked_norm_t1_t2_SIG": [
+          0.6127994206203491,
+          0.594948575315775,
+          0.9091374834882165
+        ],
+        "RSC_E17_negative_selected_cosine_counts": [
+          0,
+          0,
+          0
+        ],
+        "no_new_selection_rule": true,
+        "actual_export_feature_witness_pending_final50": true
       }
     },
     "temporal_rsc_conditional_extension": {

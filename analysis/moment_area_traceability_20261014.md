@@ -228,3 +228,6 @@ DRO完整固定3seed闭环：9新模型450epochs99900steps，12row2016000default
 
 
 2026-10-15：已提前完成时序自挑战固定02/03条件扩展，代码`2f99d65f8a594ab1f56d84d1d7ee1011740da52c`，仅seed/run/output适配，六真实原生上下文/12负例/唯一adapter审查通过；原source资格未完成，未发布。严格保留首run原规则、默认联合头和原U/EMA/cos，入口与完整公开配置还原、八row自动truth-last已接通。见`automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md`，不构成新性能结果或84%完成。
+
+
+2026-10-15：actual RSC训练E1/E17只读梯度几何312层936向量复核，源流13310匹配step／78mask批通过；E17实际RSC三骨干层梯度余弦均值正、增量强度约.59至.91，不能把已训练父模型eval探针的反向响应冒充训练方向。只保留机制接线证据，不据此判DG/84或改源门槛；actual export witness待final50。分析`analysis/temporal_rsc_gradient_geometry_20261015.py`与结果`automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_gradient_geometry_e1_e17.json`。
