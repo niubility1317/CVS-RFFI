@@ -122,9 +122,12 @@ def run():
     all_results={};checkpoints=[('E50_controls',reference,True),('E50_fixed_reference',reference,False)]
     from .model import own_model
     checkpoints.extend((row['row_id'],None,False) for row in eligible)
+    # The same predeclared first-seed arms also receive the original controlled
+    # damage interventions, so strata improvements are not treated as causes.
+    checkpoints.extend((row['row_id']+'_controls',None,True) for row in eligible if row['model_seed']==d.SEEDS[0])
     with gzip.open(out/'sample_branches.jsonl.gz','xt',encoding='utf-8',compresslevel=3) as f:
         for row,model,controls in checkpoints:
-            if model is None:model=own_model(d.config(next(r for r in eligible if r['row_id']==row)),'cpu')
+            if model is None:model=own_model(d.config(next(r for r in eligible if r['row_id']==row.removesuffix('_controls'))),'cpu')
             result,groups=evaluate(model,panel,fixed,reference_controls=controls);all_results[row]=result
             for key,items in groups.items():
                 for item in items:f.write(json.dumps(dict(row=row,scene=key[0],condition=key[1],state=key[2],lock=key[3],quality=key[4],**item))+'\n')
