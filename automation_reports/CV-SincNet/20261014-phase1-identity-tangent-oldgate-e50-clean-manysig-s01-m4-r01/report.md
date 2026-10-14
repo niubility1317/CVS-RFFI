@@ -77,3 +77,18 @@ Git 工作树：E:/type10-7/code/worktrees/report_physical_ssl_delivery_20261011
 
 
 实际源机制启用已核实：ZERO/RAW_MATCHED/IDSAFE分别第7/7/6轮，辅助记录111/111/56条；前5轮按计划0调用。当前末条IDSAFE来自t2、step1332，身份均值秩5，保留原方向70.9385%能量、投影重合约6.97e-28，真实辅助/主LCE特征梯度比0.04（ramp阶段）；RAW匹配后的方向能量一致，ZERO的R和R梯度均为0。采样/正负干预实际在源L运行，无头拟合和目标反馈。此处是单seed局部源阶段证据，未完成33+17、默认预测或泛化结果，不能解释为已达84%。详见source_running_evidence.json。
+
+## 完整首种子结果（2026-10-14）
+
+独立回读为 VERIFIED；四行默认头 clean 预测均固定后由独立 truth-last scorer 完成，逐行 168000 包。新三模型均完成 50 epoch、11100 更新、2498 次辅助调用，额外 L 前向各 449640 包；head fit=0。
+
+| 行 | clean accuracy | Macro-F1 | 最差 RX | 最差 day |
+|---|---:|---:|---:|---:|
+| BASE_REF | 80.6685% | 0.801734 | 70.6167% | 75.4524% |
+| ZERO | 80.7399% | 0.802405 | 70.8958% | 75.7167% |
+| RAW_MATCHED | 81.4405% | 0.810335 | 70.1875% | 77.3214% |
+| IDSAFE | 81.0298% | 0.805329 | 69.2833% | 76.4238% |
+
+ZERO−BASE_REF 为 +0.0714 个百分点；RAW_MATCHED−ZERO 为 +0.7006 个百分点；IDSAFE−ZERO 为 +0.2899 个百分点；IDSAFE−RAW_MATCHED 为 −0.4107 个百分点。仅一个固定 model seed，不能说明三种子稳定增益，也未达成 84% 目标。身份子空间投影首种子未优于等能量 RAW，因此本轮不把投影优势或创新有效性写成结论。源健康判据通过已在读取目标汇总前固定，保留该事实；后续资源按用户新指示转向可信纠错，暂不自动扩种子。
+
+结果证据：remote `runs/20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s01-m4-r01/analysis.json`、`source_extension_decision.json`、每行 `scores/metrics.json` 和 completion；本地完整回读保存于 `local_artifacts/cvs_identity_tangent50_20261014_r01/final_analysis.json`。

@@ -10791,6 +10791,17 @@ def train(args) -> int:
                     else:
                         strong_mask = torch.ones_like(base_mask)
                     mask = base_mask & strong_mask
+                    selection_hook = getattr(model, "_source_unlabeled_selection_hook", None)
+                    if selection_hook is not None:
+                        if not bool((y_u == -1).all()):
+                            raise ValueError("Trusted correction requires hidden U_s labels")
+                        mask, selection_metrics = selection_hook(
+                            model=model, teacher=pseudo_source, x_u=x_u,
+                            teacher_logits=out_w["tx_logits"], student_logits=out_s["tx_logits"],
+                            pseudo=pseudo, base_mask=base_mask, strong_mask=strong_mask,
+                            extra=extra_u, domains=d_u, optimizer_step=r3_optimizer_steps + 1,
+                        )
+                        r3_u_logs.update(selection_metrics)
                     pseudo_total = int(pseudo.numel())
                     pseudo_selected = int(mask.sum().detach().item())
                     # A label-blind U_s loader uses -1 sentinels. Never present
@@ -10803,7 +10814,7 @@ def train(args) -> int:
                         loss_u = out_s["tx_logits"].sum() * 0.0
                     prob_s = out_s["tx_logits"].softmax(dim=1)
                     entropy_per_sample = -(prob_s * prob_s.clamp_min(1e-8).log()).sum(dim=1)
-                    loss_ent = entropy_per_sample.mean()
+                    loss_ent = entropy_per_sample.mean() if float(args.lambda_ent) > 0 else out_s["tx_logits"].sum() * 0.0
                     zero_u = out_s["tx_logits"].sum() * 0.0
                     loss_u_domain = zero_u
                     loss_u_adv = zero_u

@@ -288,3 +288,9 @@ SINGLE三seed末轮源CE0.248543/0.239481/0.234405，V98.3259%/98.3037%/98.5222%
 
 
 身份切向训练发布更新：20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s01-m4-r01 已 RUNNING/VERIFIED，执行 840be47b7d6b43dbb00ac2cf3864a4025fd41ca8。3新模型首读回第1至2轮，BASE_REF历史预测/评分复用，无失败。归档/compile/真实checkpoint noquery与3owned进程、GPU、日志增长核实；前5轮warmup尚未启用切向正则。不把接线/启动当泛化结果，当前84%目标保持未达。
+
+## 2026-10-14 更新：有效学习信号优先
+
+切向平坦化固定首种子完成：BASE_REF 80.6685%、ZERO 80.7399%、RAW_MATCHED 81.4405%、IDSAFE 81.0298%。所有预测先固定、独立 truth-last 评分；新模型均 50 epoch/11100 更新，分类头按原路径联合训练。IDSAFE 对等能量 RAW 低 0.4107 个百分点，投影优势未获首种子证据，三种子 84% 目标未完成。保留完整负证据，不依据目标分数修改候选。
+
+最新用户要求将主线转向“教师可信度与学生学习价值分开”，先用 PAIR 2×2 区分强一致性硬否决和全局 U entropy。此前 PAIR 覆盖大幅增加而目标均值仅增约 0.0984 个百分点，不能以接纳率解释有效性。第一步固定 0.99 双弱视图信任、10% 数量/25% 原 CE mass 上限，在三冻结 PAIR seed 的完整源 V 上验证新纠错子集可靠性；源标签不进决策、不拟合阈值、无 U 真值和目标访问。详见 `automation_reports/CV-SincNet/20261014-diagnostic-trusted-correction-source-manysig-m3-r01`。可信纠错、证据支路教学、能力触发和跨 RX 更新效用分开检验，不能把普通一致性或修复原否决单独宣称为新算法。
