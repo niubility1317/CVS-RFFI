@@ -1,0 +1,168 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+  "implementation_commit": "9c981766a0727cf072755ddd46cd5b639bae89ce",
+  "execution_commit": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07",
+  "real_checkpoint_no_query_smoke": "PASS",
+  "single_release_archive_transfer_check": "VERIFIED by existing publisher SHA comparison, compile and submitted immutable release; no member rehash",
+  "release_archive_sha256": "98b8c583b97d55c09c88e1e448ccb5940dbae09fb735d5ceb049722105094ab0",
+  "remote_compile": "PASS before submitted immutable dispatcher",
+  "processes": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "pid": 2471235,
+      "gpu": 4,
+      "same_pid": true,
+      "cwd_verified": true,
+      "argv_verified": true,
+      "previous_log_bytes": 6534,
+      "current_log_bytes": 11707,
+      "log_growth": true,
+      "epoch": 1,
+      "default_fitted_probes_disabled": true
+    },
+    {
+      "row_id": "BONE_RAW_FISHR-s2026092701",
+      "pid": 2471383,
+      "gpu": 5,
+      "same_pid": true,
+      "cwd_verified": true,
+      "argv_verified": true,
+      "previous_log_bytes": 6582,
+      "current_log_bytes": 11766,
+      "log_growth": true,
+      "epoch": 1,
+      "default_fitted_probes_disabled": true
+    },
+    {
+      "row_id": "BONE_COND_FISHR-s2026092701",
+      "pid": 2471468,
+      "gpu": 0,
+      "same_pid": true,
+      "cwd_verified": true,
+      "argv_verified": true,
+      "previous_log_bytes": 6590,
+      "current_log_bytes": 11776,
+      "log_growth": true,
+      "epoch": 1,
+      "default_fitted_probes_disabled": true
+    }
+  ],
+  "gpu_capacity": {
+    "0": {
+      "all_owner_experiment_processes": 1,
+      "free_mb_after_start": 20553,
+      "within_max3": true
+    },
+    "1": {
+      "all_owner_experiment_processes": 2,
+      "free_mb_after_start": 17362,
+      "within_max3": true
+    },
+    "2": {
+      "all_owner_experiment_processes": 1,
+      "free_mb_after_start": 20733,
+      "within_max3": true
+    },
+    "3": {
+      "all_owner_experiment_processes": 1,
+      "free_mb_after_start": 20751,
+      "within_max3": true
+    },
+    "4": {
+      "all_owner_experiment_processes": 1,
+      "free_mb_after_start": 20553,
+      "within_max3": true
+    },
+    "5": {
+      "all_owner_experiment_processes": 1,
+      "free_mb_after_start": 20553,
+      "within_max3": true
+    },
+    "6": {
+      "all_owner_experiment_processes": 2,
+      "free_mb_after_start": 17362,
+      "within_max3": true
+    },
+    "7": {
+      "all_owner_experiment_processes": 2,
+      "free_mb_after_start": 17082,
+      "within_max3": true
+    }
+  },
+  "epoch1_source_evidence": {
+    "status": "VERIFIED",
+    "rows": [
+      {
+        "arm": "SIG_TIME",
+        "observed_epochs": [
+          1
+        ],
+        "E1_batches": 13,
+        "E1_extra_batches": 13,
+        "E1_packets": 2340,
+        "E1_coefficient_zero": true,
+        "E1_effective_zero": true,
+        "parameter_objects": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "per_sample_t1_t2_matrix_artifact_present": true,
+        "producer_saved_gradient_recount": "VERIFIED",
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "query_read": false
+      },
+      {
+        "arm": "BONE_RAW_FISHR",
+        "observed_epochs": [
+          1
+        ],
+        "E1_batches": 13,
+        "E1_extra_batches": 13,
+        "E1_packets": 2340,
+        "E1_coefficient_zero": true,
+        "E1_effective_zero": true,
+        "parameter_objects": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "per_sample_t1_t2_matrix_artifact_present": true,
+        "producer_saved_gradient_recount": "VERIFIED",
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "query_read": false
+      },
+      {
+        "arm": "BONE_COND_FISHR",
+        "observed_epochs": [
+          1
+        ],
+        "E1_batches": 13,
+        "E1_extra_batches": 13,
+        "E1_packets": 2340,
+        "E1_coefficient_zero": true,
+        "E1_effective_zero": true,
+        "parameter_objects": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "per_sample_t1_t2_matrix_artifact_present": true,
+        "producer_saved_gradient_recount": "VERIFIED",
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "query_read": false
+      }
+    ],
+    "scope": "Actual completed epoch1 producer PT recount and extra-source stream; final independent fullrun audit pending"
+  },
+  "first_epoch_regularizer_weight_zero": true,
+  "builtin_logits_Fishr_disabled": true,
+  "custom_actual_backbone_Fishr_hook_active": true,
+  "verified_at": "2026-10-14T15:19:39.584Z",
+  "private_connection_paths_omitted": true,
+  "new_candidate_target_results_available": false
+}

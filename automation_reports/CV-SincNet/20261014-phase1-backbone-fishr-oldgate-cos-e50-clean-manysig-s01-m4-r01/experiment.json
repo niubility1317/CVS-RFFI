@@ -108,7 +108,8 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01/logs",
     "local_artifact_root": "local_artifacts/backbone_fishr50_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_backbone_fishr50.dispatch",
-    "stop_rule": "Scoped systemictechnicalfailure only: source role/provenance, nonfinite skipped update, actual11100native/650extra budget, modeRNG/W flag violation, illegalprediction/scoring. Preserve own outputs; no automatic retry or stopping by target score; never touch healthy otherowner."
+    "stop_rule": "Scoped systemictechnicalfailure only: source role/provenance, nonfinite skipped update, actual11100native/650extra budget, modeRNG/W flag violation, illegalprediction/scoring. Preserve own outputs; no automatic retry or stopping by target score; never touch healthy otherowner.",
+    "execution_commit": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07"
   },
   "expected_artifacts": [
     "source/initial_smoke.pt",
@@ -1326,7 +1327,8 @@
     "Earlier actual source180 parameter-gradient measurement used historical baseline, not currentSIG; motivates a falsifiable mechanism, does not establish currentSIG or DG efficacy.",
     "W is a constant only insideauxiliary graph; regularizer values still use currentdefaultW, so no claim of W-free training objective. Deployed z remains W-independent."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "results": {},
-  "registered_at": "2026-10-14T15:07:17+00:00"
+  "registered_at": "2026-10-14T15:07:17+00:00",
+  "execution_commit": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07"
 }

@@ -1,6 +1,6 @@
 # 固定 SIG_TIME：真实骨干梯度方差训练预登记
 
-状态 LOCAL_VERIFIED。实现 9c981766a0727cf072755ddd46cd5b639bae89ce，分支 codex/phase1-feature-challenge-20261013。本报告不包含新目标结果，也不宣称方法有效。唯一独立 P0/P1 审查修复后 PASS；无额外设计审批、seal、成员hash或重复数据验证门槛。
+状态 RUNNING（独立核实三新模型已完成首轮）。实现 9c981766a0727cf072755ddd46cd5b639bae89ce，分支 codex/phase1-feature-challenge-20261013。本报告不包含新目标结果，也不宣称方法有效。唯一独立 P0/P1 审查修复后 PASS；无额外设计审批、seal、成员hash或重复数据验证门槛。
 
 ## 研究问题与既有证据
 
@@ -41,3 +41,8 @@ RAW用g_i；CENTERED用g_i减去同TX/day在全部5RX、10包的平均梯度。�
 ## 本地已验证
 
 local_checks.json：实际网络一/二阶导数、主头正常更新、auxW常量、模式/RNG/参数开关/buffers恢复、零预热主梯度一致、原U loss对象不变、归一化可微分母有限差分和尺度不变、9协议负例、发布脚本编译均PASS。唯一独立P0/P1修复了源资格误用第三诊断对象，窄回归PASS。环境标准预检已直接核对身份、项目和GPU，最初本机whoami路径错误在进入SSH前退出，后以仅子进程PATH修复并成功；无系统或远端配置修改。
+
+
+## 启动后实证
+
+执行提交 600afeeefe84e0d9f50f07c38ae0767bf1cabf07；归档一次SHA/远端编译/真实checkpoint无query二阶smoke通过后，三新模型实际在GPU4/5/0启动。各PID/CWD/argv与日志增长均VERIFIED，全部owner每GPU进程数在3以内；历史旧门控行复用并已关闭。首轮每新模型实际13个L180/2340额外包，逐包参数梯度PT存在且生产端保存重算VERIFIED，有效正则梯度为0符合5轮预热。内置logits-Fishr仍关闭，新hook的真实骨干梯度目标已实际运行。完整训练与终轮独立产物复核尚待完成，没有新目标性能结果。一个只读观察脚本最初按关闭gzip读活跃日志得到EOF，已改为读取当前完整压缩片段，训练无故障、未重启或热改。

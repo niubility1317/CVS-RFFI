@@ -1,5 +1,5 @@
 <!-- CURRENT_TRAINING_PRIORITY_20261014 -->
-固定 SIG_TIME 和默认联合分类头，研发重点为泛化与半监督训练机制。当前两项矩阵均完成：签名排序未形成稳定增益；半监督PAIR82.7667% vs RANDOM82.6645%，配对+0.1022个百分点，2/3种子为正，84%目标未达成。旧结构探索仅作历史记录，后续不再新增网络结构。
+固定 SIG_TIME 和默认联合分类头，继续研发训练/DG/SSL机制。新真实骨干梯度方差首seed矩阵已RUNNING，三新模型首轮与真实二阶产物已核实；处于零权重预热，暂无新性能结论。此前PAIR完整三种子82.7667%、配对+0.1022个百分点，84%目标仍未达到；旧结构路线只保留历史。
 
 
 当前用户要求：固定既有单路 SIG_TIME 网络及默认 cosine 头的联合训练，重心为泛化训练和半监督学习机制，不再新增骨干、分支、层级或签名阶数。当前并行工作为签名身份训练的原样三种子确认，以及独立 SIG_TIME 随机／PAIR 半监督参照；两者不叠加。所有额外头拟合禁止，旧头诊断仅作为历史保留。最近首seed RAW−SIG为+0.0548个百分点、DYNAMIC−SIG为−0.1339个百分点，完整三seed尚待完成，84%未达成。
@@ -346,3 +346,6 @@ PAIR82.7667%±1.6363%，同路径RANDOM82.6645%±1.6928%；配对+0.1022±0.1220
 ## 固定 SIG_TIME 的真实骨干梯度方差训练
 
 新运行 20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01，实现 9c981766a0727cf072755ddd46cd5b639bae89ce，当前LOCAL_VERIFIED，尚未启动/没有性能结果。三新50轮ZERO/RAW/TXdaycentered，真实t1/t2参数逐包CE梯度、五RX方差匹配；无新增网络或头，原oldgateEMAcos33+17保持。9负例、真实二阶反传、训练hook、zero预热、默认W正常联合更新及唯一P0/P1修复后PASS。原始矩阵和梯度留远端，公平额外暴露650L180/model。完整预登记与精确命令见对应report.md/experiment.json。84%目标保持未达成。
+
+
+骨干梯度方差矩阵 20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 已启动核实，执行 600afeeefe84e0d9f50f07c38ae0767bf1cabf07；三新GPU4/5/0，同PID/CWD/argv/loggrowth及首轮13L180/保存矩阵重算VERIFIED，无额外头。5轮预热故E1有效R为0，不把启动或局部梯度当性能证据。启动聚合见对应launch_verified.json与epoch1_source_evidence.json；完整固定50轮/自动truth-last仍运行。

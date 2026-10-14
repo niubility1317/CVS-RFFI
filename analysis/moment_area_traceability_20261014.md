@@ -121,3 +121,8 @@ S01/S02首seed实际训练与默认测试verified：固定SIG_TIME签名内训�
 ### 真实骨干梯度方差首种子准备
 
 20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 LOCAL_VERIFIED；code 9c981766a0727cf072755ddd46cd5b639bae89ce；固定SIG_TIME/defaultjointhead，真实t1/t2梯度，无extrahead/PAIR。source依据为此前L180真实方差诊断与一般Fishr思想；不是目标反馈选参或原论文逐项复现。局部9负例/真实2阶/训练hook/源资格窄回归和一次P0/P1 PASS，尚无新性能证据。
+
+
+### 真实骨干梯度方差矩阵启动
+
+20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 RUNNING，execution 600afeeefe84e0d9f50f07c38ae0767bf1cabf07；三新实际首轮/13L180/2340额外包，预热有效R0、逐包参数梯度矩阵和生产端保存复算已核实。同PID/CWD/argv/GPU/loggrowth VERIFIED；完整独立审计与性能待终轮，无头拟合或Phase2声明。

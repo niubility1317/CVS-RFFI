@@ -82183,14 +82183,14 @@
     "固定SIG_TIME：源端检查实际骨干对优化扰动的损失敏感性，证实后才考虑特征参数稳定性训练；当前未发布"
   ],
   "next_actions_max2": [
-    "发布固定SIG_TIME真实骨干梯度方差首种子矩阵，完成actualPID/GPU/log证据及自动clean/truth-last",
-    "用合法有标签源样本诊断伪标签错误与fθ梯度，作为下一独立SSL机制依据；当前未新增该训练"
+    "完成固定SIG_TIME真实骨干梯度方差首种子50轮、自动clean评分与源资格；新目标数字不用于改配方或挑候选",
+    "仅用合法有标签源样本诊断伪标签错误与fθ梯度，为下一独立SSL机制提供依据；当前未新增该训练"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "发布固定SIG_TIME真实骨干梯度方差首种子矩阵，完成actualPID/GPU/log证据及自动clean/truth-last",
-    "用合法有标签源样本诊断伪标签错误与fθ梯度，作为下一独立SSL机制依据；当前未新增该训练"
+    "完成固定SIG_TIME真实骨干梯度方差首种子50轮、自动clean评分与源资格；新目标数字不用于改配方或挑候选",
+    "仅用合法有标签源样本诊断伪标签错误与fθ梯度，为下一独立SSL机制提供依据；当前未新增该训练"
   ],
   "current_priority": {
     "at": "2026-10-14T15:10:10.019Z",
@@ -82233,7 +82233,7 @@
       "goal84": false
     },
     "new_backbone_gradient_variance": {
-      "status": "LOCAL_VERIFIED",
+      "status": "RUNNING",
       "implementation_commit": "9c981766a0727cf072755ddd46cd5b639bae89ce",
       "objects": [
         "actualt1PW3456",
@@ -82242,7 +82242,10 @@
       "new_heads": 0,
       "architecture_changes": false,
       "source_basis": "Previous actual source180 variance diagnostic plus general Fishr theory; not target feedback",
-      "target_results": null
+      "target_results": null,
+      "execution_commit": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07",
+      "first_epoch_actual_extra_batches": 13,
+      "first_epoch_regularizer_zero_by_warmup": true
     }
   }
 }

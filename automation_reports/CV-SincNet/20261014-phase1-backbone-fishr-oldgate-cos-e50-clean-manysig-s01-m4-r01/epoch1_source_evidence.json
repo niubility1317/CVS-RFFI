@@ -1,0 +1,69 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "arm": "SIG_TIME",
+      "observed_epochs": [
+        1
+      ],
+      "E1_batches": 13,
+      "E1_extra_batches": 13,
+      "E1_packets": 2340,
+      "E1_coefficient_zero": true,
+      "E1_effective_zero": true,
+      "parameter_objects": [
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+      ],
+      "per_sample_t1_t2_matrix_artifact_present": true,
+      "producer_saved_gradient_recount": "VERIFIED",
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "query_read": false
+    },
+    {
+      "arm": "BONE_RAW_FISHR",
+      "observed_epochs": [
+        1
+      ],
+      "E1_batches": 13,
+      "E1_extra_batches": 13,
+      "E1_packets": 2340,
+      "E1_coefficient_zero": true,
+      "E1_effective_zero": true,
+      "parameter_objects": [
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+      ],
+      "per_sample_t1_t2_matrix_artifact_present": true,
+      "producer_saved_gradient_recount": "VERIFIED",
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "query_read": false
+    },
+    {
+      "arm": "BONE_COND_FISHR",
+      "observed_epochs": [
+        1
+      ],
+      "E1_batches": 13,
+      "E1_extra_batches": 13,
+      "E1_packets": 2340,
+      "E1_coefficient_zero": true,
+      "E1_effective_zero": true,
+      "parameter_objects": [
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+      ],
+      "per_sample_t1_t2_matrix_artifact_present": true,
+      "producer_saved_gradient_recount": "VERIFIED",
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "query_read": false
+    }
+  ],
+  "scope": "Actual completed epoch1 producer PT recount and extra-source stream; final independent fullrun audit pending"
+}
