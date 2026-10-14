@@ -1114,6 +1114,7 @@
     "MeanTeacher official generally matches output probabilities; this is a featurelevel variant with unchanged ownEMA and no projector/predictor, not literalreproduction or theory guarantee.",
     "Diagnostic derivatives/backward and vectorstorage add measurable overhead despite0 extra model forwards. Firstseed source-only5% discrepancy reduction needed before samefixed02/03 extension. No sourceV gradient or target feedback."
   ],
-  "status": "REGISTERED",
-  "registered_at": "2026-10-14T15:51:00+00:00"
+  "status": "RUNNING",
+  "registered_at": "2026-10-14T15:51:00+00:00",
+  "execution_commit": "6b23a5b033ee063dea97d6783d5634e220a1d93d"
 }

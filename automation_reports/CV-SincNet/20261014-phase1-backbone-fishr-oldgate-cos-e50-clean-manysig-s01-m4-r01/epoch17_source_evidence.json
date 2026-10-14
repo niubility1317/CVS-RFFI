@@ -1,0 +1,249 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "arm": "SIG_TIME",
+      "observed_epochs": [
+        1,
+        17
+      ],
+      "epoch": 17,
+      "extra_batches": 13,
+      "extra_source_packets": 2340,
+      "coefficient_values": [
+        0
+      ],
+      "mean_raw_losses": {
+        "RAW": 2.5425158400974532,
+        "TX_DAY_CENTERED": 2.0462007793927803
+      },
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 13,
+          "RAW": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.7625196899452935,
+            "mean_cosine": 0.06096079220472765
+          },
+          "TX_DAY_CENTERED": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.6005212317123608,
+            "mean_cosine": 0.05875136912572498
+          },
+          "effective": {
+            "nonzero_batches": 0,
+            "mean_ratio": 0,
+            "mean_cosine": null
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 13,
+          "RAW": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.7073529595517819,
+            "mean_cosine": 0.0755020892848484
+          },
+          "TX_DAY_CENTERED": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.5624592730230225,
+            "mean_cosine": 0.07350289355902752
+          },
+          "effective": {
+            "nonzero_batches": 0,
+            "mean_ratio": 0,
+            "mean_cosine": null
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 13,
+          "RAW": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.6433767046728621,
+            "mean_cosine": 0.0613005517005966
+          },
+          "TX_DAY_CENTERED": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.5007105137327851,
+            "mean_cosine": 0.06215803900187363
+          },
+          "effective": {
+            "nonzero_batches": 0,
+            "mean_ratio": 0,
+            "mean_cosine": null
+          }
+        }
+      ],
+      "per_sample_t1_t2_matrix_artifact_present": true,
+      "producer_saved_gradient_recount": "VERIFIED",
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "query_read": false
+    },
+    {
+      "arm": "BONE_RAW_FISHR",
+      "observed_epochs": [
+        1,
+        17
+      ],
+      "epoch": 17,
+      "extra_batches": 13,
+      "extra_source_packets": 2340,
+      "coefficient_values": [
+        0.01
+      ],
+      "mean_raw_losses": {
+        "RAW": 2.568005615037462,
+        "TX_DAY_CENTERED": 2.06928116272407
+      },
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 13,
+          "RAW": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.6587067877911861,
+            "mean_cosine": 0.0738999402975473
+          },
+          "TX_DAY_CENTERED": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.5203303053901129,
+            "mean_cosine": 0.07052127664559227
+          },
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.6587067877911861,
+            "mean_cosine": 0.0738999402975473
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 13,
+          "RAW": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.6162968593529972,
+            "mean_cosine": 0.09700420906713786
+          },
+          "TX_DAY_CENTERED": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.4898499494809835,
+            "mean_cosine": 0.09228116091521239
+          },
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.6162968593529972,
+            "mean_cosine": 0.09700420906713786
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 13,
+          "RAW": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.5801968362723818,
+            "mean_cosine": 0.06165467387447398
+          },
+          "TX_DAY_CENTERED": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.4527157553162145,
+            "mean_cosine": 0.06251319938765897
+          },
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.5801968362723818,
+            "mean_cosine": 0.06165467387447398
+          }
+        }
+      ],
+      "per_sample_t1_t2_matrix_artifact_present": true,
+      "producer_saved_gradient_recount": "VERIFIED",
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "query_read": false
+    },
+    {
+      "arm": "BONE_COND_FISHR",
+      "observed_epochs": [
+        1,
+        17
+      ],
+      "epoch": 17,
+      "extra_batches": 13,
+      "extra_source_packets": 2340,
+      "coefficient_values": [
+        0.01
+      ],
+      "mean_raw_losses": {
+        "RAW": 2.4829144905688962,
+        "TX_DAY_CENTERED": 1.9973122435749069
+      },
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 13,
+          "RAW": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.637458286949956,
+            "mean_cosine": 0.007882360536835572
+          },
+          "TX_DAY_CENTERED": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.5126690459024128,
+            "mean_cosine": 0.006069299280144798
+          },
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.5126690459024128,
+            "mean_cosine": 0.006069299280144798
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 13,
+          "RAW": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.6095988199993817,
+            "mean_cosine": 0.039617204849582685
+          },
+          "TX_DAY_CENTERED": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.4926633959498455,
+            "mean_cosine": 0.03440061898913832
+          },
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.4926633959498455,
+            "mean_cosine": 0.03440061898913832
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 13,
+          "RAW": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.5387388712256752,
+            "mean_cosine": 0.05969547180794847
+          },
+          "TX_DAY_CENTERED": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.4239706492973792,
+            "mean_cosine": 0.06866916410451485
+          },
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.4239706492973792,
+            "mean_cosine": 0.06866916410451485
+          }
+        }
+      ],
+      "per_sample_t1_t2_matrix_artifact_present": true,
+      "producer_saved_gradient_recount": "VERIFIED",
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "query_read": false
+    }
+  ],
+  "scope": "Actual complete epoch17 source-gradient records and producer saved-PT recount; separateL128/auxL180 graphs, not cumulativeAdamW/causalDG; final independent fullaudit pending"
+}

@@ -1,6 +1,6 @@
 # 固定 SIG_TIME：教师学生特征一致性训练预登记
 
-状态 REGISTERED，代码 373262b51f037f03e3238471b3aefb88e45fba5b，分支 codex/phase1-feature-challenge-20261013。一个独立SSL假设，不叠加运行中的BF/PAIR/签名排序。一次P0/P1审查与实际网络检查PASS；没有新目标结果。
+状态 RUNNING，代码 373262b51f037f03e3238471b3aefb88e45fba5b，分支 codex/phase1-feature-challenge-20261013。一个独立SSL假设，不叠加运行中的BF/PAIR/签名排序。一次P0/P1审查与实际网络检查PASS；没有新目标结果。
 
 ## 依据、方法与固定矩阵
 
@@ -33,3 +33,7 @@ FEATURE_MT权重固定.1×clip((epoch−33)/5,0,1)：34开始，38到.1；此前
 停止规则仅所属run数据/query/来源/默认头协议、无法执行或合法预测、非有限/跳过更新、预算/路径碰撞/scorer等系统技术失败：先核实所属PID/CWD/argv/产物，保留partial、无自动重试，不按分数停机，不改动其他owner。50轮预算不冒充收敛，完整源趋势在结果返回后分析。
 
 本地8协议负例、同初态/RANDOM顺序RNG、真实feature/head更新、原UCE对象保持、auxW梯度None/mainW梯度不变、warmup主梯度一致、teacher停梯度、hook恢复、feature导出/W独立与发布脚本编译PASS。唯一独立P0/P1未发现直接问题。
+
+## 实际启动证据
+
+执行提交 6b23a5b033ee063dea97d6783d5634e220a1d93d。一次归档比较/remotecompile/真实checkpoint no-query feature smoke PASS；两新worker实际在GPU7/2启动，各PID/CWD/argv匹配、日志增长与首轮完成已VERIFIED。全部owner每GPU≤3；前33轮没有U特征项，真正半监督阶段及最终性能仍待证据，当前不宣称有效。

@@ -46,3 +46,8 @@ local_checks.json：实际网络一/二阶导数、主头正常更新、auxW常�
 ## 启动后实证
 
 执行提交 600afeeefe84e0d9f50f07c38ae0767bf1cabf07；归档一次SHA/远端编译/真实checkpoint无query二阶smoke通过后，三新模型实际在GPU4/5/0启动。各PID/CWD/argv与日志增长均VERIFIED，全部owner每GPU进程数在3以内；历史旧门控行复用并已关闭。首轮每新模型实际13个L180/2340额外包，逐包参数梯度PT存在且生产端保存重算VERIFIED，有效正则梯度为0符合5轮预热。内置logits-Fishr仍关闭，新hook的真实骨干梯度目标已实际运行。完整训练与终轮独立产物复核尚待完成，没有新目标性能结果。一个只读观察脚本最初按关闭gzip读活跃日志得到EOF，已改为读取当前完整压缩片段，训练无故障、未重启或热改。
+
+
+## 第17轮实际接线证据
+
+三新模型各13L180/2340额外源包、逐包t1/t2矩阵存在、生产端保存复算VERIFIED。RAW/COND t1与t2各13批effective梯度均非零，ZERO均0；RAW effective/mainLCE范数比均值.658707/.616297，COND .512669/.492663。独立L128与auxL180图的导数，不作为累计AdamW或DG收益。具体源统计见epoch17_source_evidence.json；终轮完整独立审计仍待。

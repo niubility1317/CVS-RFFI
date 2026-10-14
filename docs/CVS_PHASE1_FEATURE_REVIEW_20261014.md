@@ -1,7 +1,7 @@
 <!-- CURRENT_TRAINING_PRIORITY_20261014 -->
-固定 SIG_TIME 和默认联合分类头，继续研发训练、泛化与半监督机制。真实骨干梯度方差首种子矩阵 RUNNING，三新模型已有实际训练与二阶梯度产物，暂无新性能结论；只读源域伪标签错误梯度诊断已完成三模型与保存产物独立复算。PAIR 完整三种子82.7667%、配对+0.1022个百分点，84%目标仍未达到。
+固定SIG_TIME和默认联合分类头，两项独立训练机制正在验证：真实t1/t2梯度方差约束已有17轮实际非零effective梯度；同U包joint160教师学生一致性两新模型已启动，仍在前33轮监督阶段。新目标结果均未回收，84%目标仍未达到。三模型源伪标签诊断已完成，但不能据其设置特征可靠度阈值。
 
-当前两项工作：完成实际t1/t2骨干梯度方差训练及自动独立测试；用固定已有SIG_TIME模型检查合法L伪标签错误梯度与L/V joint160视图一致性，为下一半监督机制提供依据。签名RAW/DYNAMIC完整三种子已结束，未显示稳定增益，后续不再改结构。全部默认分类头按原训练方式；禁止新拟合/重训/替换头。
+当前只推进这两项训练及源资格/自动独立评分，保持旧门控+cos基线、每模型≤50、默认头原联合训练，无单独头拟合、结构或Phase2开发。已发布健康任务不热改。
 
 # Phase1 特征提取复盘与完整实验交付
 
@@ -357,3 +357,14 @@ PAIR82.7667%±1.6363%，同路径RANDOM82.6645%±1.6928%；配对+0.1022±0.1220
 L的CONFIDENCE_STRONG接受6024/6061/6075、FULL_OLD接受848/851/855，均观察0错误；错误梯度全0、pseudo和matchedtrue梯度相等是标签相同的必然结果，未识别错误影响，不能推出U准确率或训练早期无害。V的CONFIDENCE_STRONG错误28/34/40；实际joint160错误/正确cos中位数为.700940/.682370、.713649/.675108、.699859/.680247，分位范围大量重叠，均值方向不一致；当前证据不支持增加简单特征一致性可靠度阈值。V无梯度/拟合，不扫描tau或新头。
 
 完整源分析、成本、局限与图见 automation_reports/CV-SincNet/20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01/source_pseudo_gradient_analysis.md 与 results.json。下一步完成正在运行的真实骨干梯度方差训练，再检验独立SSL表征假设。84%未达成；本次没有新目标性能结果。
+
+
+## 固定网络训练机制：实际梯度与独立半监督候选
+
+BF 20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 RUNNING：epoch17三新各13个L180/2340源包，RAW/COND的实际t1/t2各13批effective梯度均非零，ZERO全0。RAW effective/mainLCE范数比均值t1/t2=.658707/.616297，COND=.512669/.492663，平均cos分别.073900/.097004和.006069/.034401。这是独立L128/auxL180图的实际导数观测，不代表累计AdamW贡献或DG收益。逐包矩阵存在，生产端保存复算VERIFIED；终轮完整独立审计仍待完成。
+
+新独立SSL 20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01 RUNNING，code 373262b51f037f03e3238471b3aefb88e45fba5b，execution 6b23a5b033ee063dea97d6783d5634e220a1d93d。同包原EMAweak/学生strong joint160的unit特征匹配；coefficient.1，epoch34至38五轮ramp，原hardUCE/entropy/ownEMA/RANDOM和默认头保持。ZERO同路径控制，旧基线复用；没有新模块、头、模型前向、TX/RX/day/confidence目标或阈值。辅助W梯度None，主W梯度不变，实际t1/t2/SIG及头正常更新与export/W独立局部验证PASS；唯一P0/P1 PASS。
+
+两新scratch50/11100各，源预算100model-epochs22200更新＋历史50/11100，17x56700 U每模型。全部source合法，无query训练；真实semi机制在34轮前尚未启用，不把当前几轮当SSL效果。预登记source最后5轮U feature discrepancy比ZERO≤.95，配合源CE<=.5/梯度/特征边界才原样扩02/03，先冻结/提交源决定再看新目标摘要。不根据目标调权、选父或重跑；每row完成自动clean默认预测及独立truth-last评分。
+
+一次archive/remotecompile/真实checkpoint no-query smoke及两worker PID/CWD/argv/GPU/loggrowth均VERIFIED，GPU7/2实际启动，所有owner每GPU≤3。报告、全矩阵与source规则在automation_reports/CV-SincNet/20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md/experiment.json，阶段交付不宣称性能或84%达标。

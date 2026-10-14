@@ -1,0 +1,41 @@
+{
+  "status": "VERIFIED",
+  "implementation_commit": "373262b51f037f03e3238471b3aefb88e45fba5b",
+  "execution_commit": "6b23a5b033ee063dea97d6783d5634e220a1d93d",
+  "release_archive_SHA_comparison": "PASS",
+  "remote_compile": "PASS",
+  "real_checkpoint_no_query_smoke": true,
+  "preflight": "PASS",
+  "new_workers": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "gpu": 7,
+      "live": true,
+      "PID_CWD_argv_match": true,
+      "observed_completed_epochs": 4,
+      "log_growth_bytes": 27327
+    },
+    {
+      "row_id": "FEATURE_MT-s2026092701",
+      "gpu": 2,
+      "live": true,
+      "PID_CWD_argv_match": true,
+      "observed_completed_epochs": 3,
+      "log_growth_bytes": 22165
+    }
+  ],
+  "all_owner_GPU_experiment_process_counts": {
+    "0": 2,
+    "1": 2,
+    "2": 3,
+    "3": 2,
+    "4": 2,
+    "5": 2,
+    "6": 2,
+    "7": 3
+  },
+  "failure": null,
+  "head_fit_updates": 0,
+  "source_only_training": true,
+  "target_results": null
+}

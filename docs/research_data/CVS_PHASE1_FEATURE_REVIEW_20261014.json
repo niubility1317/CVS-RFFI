@@ -82204,61 +82204,73 @@
     }
   },
   "next_directions": [
-    "固定SIG_TIME：核实既有Fishr梯度对象/五源RX分组，先区分身份构成与域梯度差异，再实施一个浅中层骨干梯度统计消融",
-    "固定SIG_TIME：仅用合法有标签源样本诊断teacher伪标签错误及梯度偏向，再设计独立可靠身份监督机制；不解封U真值或改变默认头",
-    "固定SIG_TIME：源端检查实际骨干对优化扰动的损失敏感性，证实后才考虑特征参数稳定性训练；当前未发布"
+    {
+      "direction": "实际骨干梯度方差训练",
+      "status": "RUNNING",
+      "source_evidence": "Existing actual L180 t1/t2 gradient variance; epoch17 two candidates all13 actualeffective gradients nonzero, no extra head",
+      "hypothesis": "匹配源RX的实际梯度统计改善固定SIG的训练稳定性；需实际独立性能验证",
+      "location": "t1/t2真实参数导数，按RAW或TX/day去均值",
+      "path_into_z": "原fθ优化，无网络或头结构变化",
+      "minimum_control": "同SIG/同额外L180曝光ZERO与RAW/COND；旧门控+cos外部基线",
+      "cost": "每新模型50/11100，650extraL180/117000extra源包与真实二阶导数",
+      "failure": "固定源预算/健康/真实梯度资格；性能负结果保留"
+    },
+    {
+      "direction": "无标签自身EMA特征一致性",
+      "status": "RUNNING",
+      "source_evidence": "FrozenSIG acceptedcorrect weak/strong joint160 cos约.66-.67；V cosine不能稳定分离错误，故不设可靠度阈值",
+      "hypothesis": "同一U包跨扰动直接约束部署特征，补充分类CE以外的表征训练",
+      "location": "现有U EMAweak/studentstrong的joint160",
+      "path_into_z": "全U normalize features匹配，无classW梯度或新projector/head",
+      "minimum_control": "同路径同RANDOM同原UCE的SIGZERO vs FEATURE_MT；旧门控+cos外部基线",
+      "cost": "两新各50/11100，原17x56700 U、额外前向0；诊断反传和保存成本实测",
+      "failure": "预定源CE<=.5、真实梯度/feature边界、最后5轮源U featureloss比ZERO<=.95；不合格不扩种子"
+    },
+    {
+      "direction": "源身份目标的骨干扰动稳定性",
+      "status": "NOT_IMPLEMENTED",
+      "source_evidence": "后续只在完整合法源优化曲线/实际梯度证据支持时选择；当前未测，不假定有效",
+      "hypothesis": "固定源身份监督下的小骨干扰动稳定性可能提高特征训练的可重复性",
+      "location": "原fθ优化步骤，默认W仍按原流程正常联合学习",
+      "path_into_z": "仅优化已有fθ，不加分类器或结构",
+      "minimum_control": "原步骤与同数据/更新预算的扰动训练；额外前向/反向单独报告",
+      "cost": "额外扰动梯度与前向成本待具体预登记，不超过50/model",
+      "failure": "未实现/未验证；不与当前两机制叠加，不作为已证收益"
+    }
   ],
   "next_actions_max2": [
-    "完成固定SIG_TIME真实骨干梯度方差首种子50轮、自动clean评分与源资格；新目标数字不用于改配方或挑候选",
-    "基于已完成源诊断设计一个独立SSL表征学习假设与匹配对照；不把特征一致性阈值、覆盖增加或整体放大U梯度当可靠性证据，不另训头"
+    "完成真实骨干梯度方差首种子50轮，先回收/提交source资格再检视新目标摘要；sourcePASS才原样扩固定02/03，两候选不按目标择优",
+    "完成独立joint160教师学生特征一致性与ZERO对照50轮；核实34轮actualU接线和真实参数梯度，按源预登记资格决定扩种子并自动truthlast评分，不扫描参数"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "完成固定SIG_TIME真实骨干梯度方差首种子50轮、自动clean评分与源资格；新目标数字不用于改配方或挑候选",
-    "基于已完成源诊断设计一个独立SSL表征学习假设与匹配对照；不把特征一致性阈值、覆盖增加或整体放大U梯度当可靠性证据，不另训头"
+    "完成真实骨干梯度方差首种子50轮，先回收/提交source资格再检视新目标摘要；sourcePASS才原样扩固定02/03，两候选不按目标择优",
+    "完成独立joint160教师学生特征一致性与ZERO对照50轮；核实34轮actualU接线和真实参数梯度，按源预登记资格决定扩种子并自动truthlast评分，不扫描参数"
   ],
   "current_priority": {
-    "at": "2026-10-14T15:39:40.166Z",
+    "at": "2026-10-14T16:00:14.585Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
     "next_semi_supervised_work": {
-      "run_id": "20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01",
-      "status": "ANALYZED",
-      "implementation_commit": "d17f140c3528d8964ffedf464976532bc56e0760",
-      "execution_commit": "3bc96d53291ca3b2f1eeb0c19236e236a8d25866",
-      "cost": {
-        "models": 3,
-        "source_packet_forwards": 199800,
-        "forward_batches": 786,
-        "L_gradient_batches": 75,
-        "scope_gradient_batches": 150,
-        "layer_scope_gradient_records": 450,
-        "saved_vectors": 1800,
-        "model_updates": 0,
-        "optimizer_steps": 0,
-        "head_updates": 0,
-        "U_IQ_read": false,
-        "U_truth_read": false,
-        "query_read": false,
-        "total_seconds": 122.13224792480469,
-        "independent_saved_artifact_recount": "VERIFIED"
-      },
-      "results": "automation_reports/CV-SincNet/20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01/source_pseudo_gradient_analysis.md",
-      "L_accepted_errors": [
-        0,
-        0,
-        0
+      "run_id": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "status": "RUNNING",
+      "implementation_commit": "373262b51f037f03e3238471b3aefb88e45fba5b",
+      "execution_commit": "6b23a5b033ee063dea97d6783d5634e220a1d93d",
+      "architecture_changes": false,
+      "feature": "actual joint160 ownEMAweak/studentstrong",
+      "coefficient": 0.1,
+      "ramp_epochs": 5,
+      "pseudo_start_epoch": 34,
+      "extra_training_model_forwards": 0,
+      "new_heads": 0,
+      "observed_completed_epochs": [
+        4,
+        3
       ],
-      "V_confidence_strong_errors": [
-        28,
-        34,
-        40
-      ],
-      "V_feature_reliability_gate_supported": false,
-      "error_gradient_identified": false,
-      "conclusion": "Frozenfinal50 L contains no accepted errors; V featureagreement overlaps and wrong medians exceedcorrect across3 models. No thresholdfit/scan or U inference."
+      "actual_SSL_stage_verified": false,
+      "target_results": null
     },
     "structural_exploration": false,
     "fixed_architecture": "SIG_TIME112→joint160; existing default cosine head jointly trained",
@@ -82309,11 +82321,67 @@
       "first_epoch_actual_extra_batches": 13,
       "first_epoch_regularizer_zero_by_warmup": true,
       "observed_completed_epochs": [
-        11,
-        11,
-        10
+        20,
+        19,
+        17
       ],
-      "post_warmup_nonzero_coefficient_observed": true
-    }
+      "post_warmup_nonzero_coefficient_observed": true,
+      "observed_epoch17_actual_gradient_evidence": {
+        "status": "VERIFIED",
+        "extra_batches_each": 13,
+        "actual_source_packets_each": 2340,
+        "RAW_t1_t2_mean_effective_over_main_CE": [
+          0.6587067877911861,
+          0.6162968593529972
+        ],
+        "COND_t1_t2_mean_effective_over_main_CE": [
+          0.5126690459024128,
+          0.4926633959498455
+        ],
+        "both_candidates_effective_nonzero_each13_batches": true,
+        "ZERO_effective_zero": true,
+        "producer_saved_matrix_recount": "VERIFIED",
+        "final_independent_full_audit": "PENDING",
+        "target_results": null
+      }
+    },
+    "latest_source_pseudo_error_diagnostic": {
+      "run_id": "20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01",
+      "status": "ANALYZED",
+      "implementation_commit": "d17f140c3528d8964ffedf464976532bc56e0760",
+      "execution_commit": "3bc96d53291ca3b2f1eeb0c19236e236a8d25866",
+      "cost": {
+        "models": 3,
+        "source_packet_forwards": 199800,
+        "forward_batches": 786,
+        "L_gradient_batches": 75,
+        "scope_gradient_batches": 150,
+        "layer_scope_gradient_records": 450,
+        "saved_vectors": 1800,
+        "model_updates": 0,
+        "optimizer_steps": 0,
+        "head_updates": 0,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "query_read": false,
+        "total_seconds": 122.13224792480469,
+        "independent_saved_artifact_recount": "VERIFIED"
+      },
+      "results": "automation_reports/CV-SincNet/20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01/source_pseudo_gradient_analysis.md",
+      "L_accepted_errors": [
+        0,
+        0,
+        0
+      ],
+      "V_confidence_strong_errors": [
+        28,
+        34,
+        40
+      ],
+      "V_feature_reliability_gate_supported": false,
+      "error_gradient_identified": false,
+      "conclusion": "Frozenfinal50 L contains no accepted errors; V featureagreement overlaps and wrong medians exceedcorrect across3 models. No thresholdfit/scan or U inference."
+    },
+    "active_ssl_mechanism": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01"
   }
 }
