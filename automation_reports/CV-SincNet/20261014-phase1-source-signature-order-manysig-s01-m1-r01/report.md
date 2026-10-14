@@ -7,3 +7,6 @@
 矩阵、精确command/CWD/环境CPU2/GPU不可见/immutableoutput/stoprule/期望产物及来源见experiment.json。总0epoch/optimizer/headfit，6300sourceforward+90zeroIQ realCP smoke；rawPT留远端，公开聚合与保存后的全部重算。12负例、四actualnativeview/梯度/Wnone/不变性及REMOTEcompilePASS；一次直接P0/P1后发布。
 
 当前LOCAL_VERIFIED，未有真实L结果，不宣称任何性能、RX不变性或新TX增益。六个正在训练的已登记local_order模型保持原配置；本诊断不替代其完整三seed评分，也不把源几何当泛化排名。
+
+
+已完成全部四视图源诊断，0 训练/头拟合/query；见 final_analysis.md 与 results.json。远端完成及保存产物复算 VERIFIED。

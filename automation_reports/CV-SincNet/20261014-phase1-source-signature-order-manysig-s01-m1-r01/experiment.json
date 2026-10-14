@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户持续Phase1可迁移特征84%目标、默认分类头禁止单独训练；当前只读合法源机制诊断，GPU健康训练保持；实现和对应结果Git上传。",
   "code": {
-    "commit": "Actual Git commit fixed before release",
+    "commit": "6bf2fda405d58ba203f90fe69a6ced7f66231cd6",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32 CPU; CUDA_VISIBLE_DEVICES empty; Torch/OMP/MKL/OpenBLAS2threads",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_signature_order_20261014_r01",
@@ -190,7 +190,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/local-order50-20261014",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -228,11 +228,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_added_feature_difference_min": 1e-06,
+            "source_added_feature_difference_min": 0.000001,
             "actual_extra_batches": 2750,
             "gradient_epoch_batches": 220,
             "source_only": true,
@@ -402,7 +402,23 @@
     "Clockinformation-free coordinate can affectcosinenormalization, but anygeometry/gradientimprovement is notperformance proof.",
     "No early/midactualtrainingclaim, no newhead, no Utruth, no targetIQ/stats/groups used."
   ],
-  "status": "LOCAL_VERIFIED",
-  "results": null,
+  "status": "ANALYZED",
+  "results": {
+    "status": "VERIFIED",
+    "source_packets": 6300,
+    "cohorts": 70,
+    "relations_per_view": 126000,
+    "views": 4,
+    "gradient_records": 840,
+    "CE_gradient_records": 210,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0,
+    "query_read": false,
+    "source_recount": "VERIFIED",
+    "clock_energy_fraction_mean": 0.1765107810497284,
+    "result_ref": "results.json",
+    "analysis_ref": "final_analysis.md",
+    "goal_84": false
+  },
   "registered_at": "2026-10-14T12:31:32+00:00"
 }

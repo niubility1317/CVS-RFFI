@@ -240,3 +240,9 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 浅中层有界排序首seed闭环：ORDER83.6238%、SIG83.5452%、SupCon83.4583%、旧gatecos80.6685%，ORDER−SIG+.0786pp/修正538引入406净+132；ORDER−SupCon+.1655pp。4row/3新150epochs33300steps＋1历史50epochs11100，200源epoch/8250auxsteps/672000defaultdecisions/72metrics/1980实际层cohort梯度保存复算VERIFIED，额外头拟合0。实际五pooltensor全元素更新/导出差0/W独立、初态函数同、ORDER−SIGL720zL2=1.592485。SupCon源未满足率更低/梯度更强而target首seed更低，不据源几何排序；单seed+.0786不宣称稳定增益或84。SOURCEPASS决定6d65f77a7659cb182bdb39852dc6c6b76001e81d先于新target数字读取并原样发布02/03六新，执行同commit，完整3seedpending。详见20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01/final_analysis.md。
+
+
+冻结 SIG_TIME 四视图源诊断完成：全 L6300/70cohort、各126000关系、840辅助＋210CE真实层批梯度保存复算 VERIFIED。固定时间增量4坐标严格为1、平方范数占比均值17.6511%；SIG_RAW/DYNAMIC未满足率29.0008%/26.0841%，错误次序19097/18859，样本覆盖99.8889%/99.6508%。直接签名梯度进入浅中层及实际SIG投影，W辅助无依赖，0训练/头拟合/query；几何变化不证明DG收益。运行 20261014-phase1-source-signature-order-manysig-s01-m1-r01，实现 6bf2fda405d58ba203f90fe69a6ced7f66231cd6，见同run final_analysis.md。
+
+
+完整浅中层有界排序3seed闭环：ORDER82.7127%±1.4787pp，SIG82.6067%±1.7438pp，SupCon82.5843%±1.7028pp，旧gatecos80.5268%±2.3776pp。ORDER−SIG+.1060±.2932pp/2 of3，修正2168引入1634净+534/504000；−SupCon+.1284pp2/3。12row9新450epochs99900steps＋3历史150epochs33300，600完整源epoch/2016000defaultpred/216metrics/5940实际层cohortgrad保存复算VERIFIED，0头拟合/新增targetforward。9fθ实际更新/export0/W独立；初态同，最终ORDER−SIGsourceL2 1.592485/1.398321/1.142613。更低SupCon源关系率和更强梯度没有均值收益，不据几何调参。实现26bfdf044caa1be3c966370248c3bc3372009943，剩余执行6d65f77a7659cb182bdb39852dc6c6b76001e81d，报告20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md；84未达成。

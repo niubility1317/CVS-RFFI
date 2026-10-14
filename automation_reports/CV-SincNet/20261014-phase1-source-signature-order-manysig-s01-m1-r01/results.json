@@ -1,0 +1,1864 @@
+{
+  "clock_summary": {
+    "packets": 6300,
+    "clock_coordinates": 4,
+    "minimum_clock_value": 1,
+    "maximum_clock_value": 1,
+    "clock_energy_fraction_mean": 0.1765107810497284,
+    "clock_energy_fraction_median": 0.1753339022397995,
+    "clock_energy_fraction_min": 0.10736265778541565,
+    "clock_energy_fraction_max": 0.32639461755752563,
+    "interpretation": "Input-independent fixed time-step coordinates in auxiliary normalization only; deployed descriptor/network unchanged"
+  },
+  "relation_summary": [
+    {
+      "level": "T2_WINDOW",
+      "relations": 126000,
+      "unsatisfied_relations": 102691,
+      "unsatisfied_rate": 0.8150079365079365,
+      "wrong_order_relations": 34558,
+      "active_physical_packets": 6300,
+      "active_packet_rate": 1,
+      "source_packets": 6300,
+      "margin": 0.1,
+      "mean_hinge": 0.07045323324333581,
+      "TX_pairs": [
+        {
+          "anchorTX": 0,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 4139,
+          "wrong_order": 1763,
+          "active_packets": 2090
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 3203,
+          "wrong_order": 1119,
+          "active_packets": 1956
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 4084,
+          "wrong_order": 1973,
+          "active_packets": 2087
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 1675,
+          "wrong_order": 173,
+          "active_packets": 1782
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 2574,
+          "wrong_order": 349,
+          "active_packets": 1925
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 3921,
+          "wrong_order": 817,
+          "active_packets": 2066
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 3229,
+          "wrong_order": 539,
+          "active_packets": 1909
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 4097,
+          "wrong_order": 1698,
+          "active_packets": 2085
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 3508,
+          "wrong_order": 141,
+          "active_packets": 2066
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 2878,
+          "wrong_order": 218,
+          "active_packets": 1932
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 3999,
+          "wrong_order": 1895,
+          "active_packets": 2087
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 4139,
+          "wrong_order": 2332,
+          "active_packets": 2095
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 4154,
+          "wrong_order": 2279,
+          "active_packets": 2098
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 3621,
+          "wrong_order": 1234,
+          "active_packets": 2090
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 3814,
+          "wrong_order": 1509,
+          "active_packets": 2094
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 4070,
+          "wrong_order": 995,
+          "active_packets": 2081
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 4144,
+          "wrong_order": 2065,
+          "active_packets": 2091
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 3288,
+          "wrong_order": 473,
+          "active_packets": 1941
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 2522,
+          "wrong_order": 308,
+          "active_packets": 2015
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 2685,
+          "wrong_order": 306,
+          "active_packets": 1924
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 1468,
+          "wrong_order": 187,
+          "active_packets": 1744
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 3517,
+          "wrong_order": 502,
+          "active_packets": 2086
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 2074,
+          "wrong_order": 265,
+          "active_packets": 1876
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 2740,
+          "wrong_order": 426,
+          "active_packets": 2054
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 2975,
+          "wrong_order": 686,
+          "active_packets": 1994
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 3852,
+          "wrong_order": 1464,
+          "active_packets": 2086
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 4154,
+          "wrong_order": 2495,
+          "active_packets": 2095
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 3908,
+          "wrong_order": 1790,
+          "active_packets": 2094
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 4140,
+          "wrong_order": 2089,
+          "active_packets": 2098
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 4119,
+          "wrong_order": 2468,
+          "active_packets": 2092
+        }
+      ],
+      "RX_pairs": [
+        {
+          "anchorRX": 1,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 5642,
+          "wrong_order": 2032
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 4657,
+          "wrong_order": 1834
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 4826,
+          "wrong_order": 1299
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 4469,
+          "wrong_order": 2050
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 5740,
+          "wrong_order": 1953
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 5596,
+          "wrong_order": 1748
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 5452,
+          "wrong_order": 1820
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 4990,
+          "wrong_order": 2339
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 4999,
+          "wrong_order": 1483
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 5516,
+          "wrong_order": 1765
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 4702,
+          "wrong_order": 1582
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 4275,
+          "wrong_order": 2010
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 5316,
+          "wrong_order": 1302
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 5647,
+          "wrong_order": 1860
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 4741,
+          "wrong_order": 1734
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 4561,
+          "wrong_order": 2170
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 5378,
+          "wrong_order": 1219
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 5792,
+          "wrong_order": 1556
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 5080,
+          "wrong_order": 1249
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 5312,
+          "wrong_order": 1553
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "relations": 42000,
+          "unsatisfied": 33958,
+          "wrong_order": 11580,
+          "active_packets": 2100
+        },
+        {
+          "day": 2,
+          "relations": 42000,
+          "unsatisfied": 33703,
+          "wrong_order": 9982,
+          "active_packets": 2100
+        },
+        {
+          "day": 3,
+          "relations": 42000,
+          "unsatisfied": 35030,
+          "wrong_order": 12996,
+          "active_packets": 2100
+        }
+      ]
+    },
+    {
+      "level": "SIG_RAW",
+      "relations": 126000,
+      "unsatisfied_relations": 36541,
+      "unsatisfied_rate": 0.2900079365079365,
+      "wrong_order_relations": 19097,
+      "active_physical_packets": 6293,
+      "active_packet_rate": 0.9988888888888889,
+      "source_packets": 6300,
+      "margin": 0.1,
+      "mean_hinge": 0.039200600628992395,
+      "TX_pairs": [
+        {
+          "anchorTX": 0,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 943,
+          "wrong_order": 402,
+          "active_packets": 1388
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 836,
+          "wrong_order": 366,
+          "active_packets": 1227
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 1220,
+          "wrong_order": 614,
+          "active_packets": 1546
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 361,
+          "wrong_order": 143,
+          "active_packets": 664
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 608,
+          "wrong_order": 253,
+          "active_packets": 1021
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 265,
+          "wrong_order": 139,
+          "active_packets": 435
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 456,
+          "wrong_order": 183,
+          "active_packets": 749
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 2188,
+          "wrong_order": 969,
+          "active_packets": 1869
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 379,
+          "wrong_order": 176,
+          "active_packets": 613
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 307,
+          "wrong_order": 144,
+          "active_packets": 482
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 1660,
+          "wrong_order": 839,
+          "active_packets": 1748
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 2301,
+          "wrong_order": 1342,
+          "active_packets": 1985
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 2808,
+          "wrong_order": 1670,
+          "active_packets": 2058
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 929,
+          "wrong_order": 324,
+          "active_packets": 1446
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 1579,
+          "wrong_order": 791,
+          "active_packets": 1764
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 530,
+          "wrong_order": 263,
+          "active_packets": 804
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 2415,
+          "wrong_order": 1106,
+          "active_packets": 1927
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 647,
+          "wrong_order": 268,
+          "active_packets": 961
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 512,
+          "wrong_order": 235,
+          "active_packets": 792
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 523,
+          "wrong_order": 224,
+          "active_packets": 746
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 379,
+          "wrong_order": 191,
+          "active_packets": 590
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 878,
+          "wrong_order": 504,
+          "active_packets": 1135
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 390,
+          "wrong_order": 189,
+          "active_packets": 600
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 833,
+          "wrong_order": 469,
+          "active_packets": 1102
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 503,
+          "wrong_order": 303,
+          "active_packets": 735
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 2048,
+          "wrong_order": 958,
+          "active_packets": 1989
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 2947,
+          "wrong_order": 1796,
+          "active_packets": 2081
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 2436,
+          "wrong_order": 1378,
+          "active_packets": 2053
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 2985,
+          "wrong_order": 2037,
+          "active_packets": 2080
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 1675,
+          "wrong_order": 821,
+          "active_packets": 1877
+        }
+      ],
+      "RX_pairs": [
+        {
+          "anchorRX": 1,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 2398,
+          "wrong_order": 1269
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 1653,
+          "wrong_order": 940
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 1651,
+          "wrong_order": 798
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 1384,
+          "wrong_order": 527
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 2416,
+          "wrong_order": 1291
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 1934,
+          "wrong_order": 988
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 1980,
+          "wrong_order": 1066
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 1858,
+          "wrong_order": 953
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 1545,
+          "wrong_order": 832
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 1945,
+          "wrong_order": 1093
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 1611,
+          "wrong_order": 972
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 1731,
+          "wrong_order": 959
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 1864,
+          "wrong_order": 1055
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 2161,
+          "wrong_order": 1207
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 1913,
+          "wrong_order": 1268
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 1924,
+          "wrong_order": 1227
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 1437,
+          "wrong_order": 598
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 1670,
+          "wrong_order": 730
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 1726,
+          "wrong_order": 736
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 1740,
+          "wrong_order": 588
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "relations": 42000,
+          "unsatisfied": 11751,
+          "wrong_order": 6080,
+          "active_packets": 2097
+        },
+        {
+          "day": 2,
+          "relations": 42000,
+          "unsatisfied": 11301,
+          "wrong_order": 5938,
+          "active_packets": 2096
+        },
+        {
+          "day": 3,
+          "relations": 42000,
+          "unsatisfied": 13489,
+          "wrong_order": 7079,
+          "active_packets": 2100
+        }
+      ]
+    },
+    {
+      "level": "SIG_DYNAMIC",
+      "relations": 126000,
+      "unsatisfied_relations": 32866,
+      "unsatisfied_rate": 0.2608412698412698,
+      "wrong_order_relations": 18859,
+      "active_physical_packets": 6278,
+      "active_packet_rate": 0.9965079365079365,
+      "source_packets": 6300,
+      "margin": 0.1,
+      "mean_hinge": 0.04098768970526991,
+      "TX_pairs": [
+        {
+          "anchorTX": 0,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 876,
+          "wrong_order": 426,
+          "active_packets": 1334
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 780,
+          "wrong_order": 383,
+          "active_packets": 1161
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 1115,
+          "wrong_order": 630,
+          "active_packets": 1493
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 330,
+          "wrong_order": 156,
+          "active_packets": 610
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 592,
+          "wrong_order": 294,
+          "active_packets": 989
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 219,
+          "wrong_order": 128,
+          "active_packets": 363
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 386,
+          "wrong_order": 192,
+          "active_packets": 647
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 1944,
+          "wrong_order": 957,
+          "active_packets": 1806
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 337,
+          "wrong_order": 180,
+          "active_packets": 550
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 260,
+          "wrong_order": 146,
+          "active_packets": 418
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 1356,
+          "wrong_order": 785,
+          "active_packets": 1634
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 2118,
+          "wrong_order": 1337,
+          "active_packets": 1955
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 2588,
+          "wrong_order": 1641,
+          "active_packets": 2046
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 777,
+          "wrong_order": 315,
+          "active_packets": 1308
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 1454,
+          "wrong_order": 804,
+          "active_packets": 1710
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 449,
+          "wrong_order": 244,
+          "active_packets": 699
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 2204,
+          "wrong_order": 1126,
+          "active_packets": 1879
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 564,
+          "wrong_order": 276,
+          "active_packets": 842
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 454,
+          "wrong_order": 243,
+          "active_packets": 711
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 488,
+          "wrong_order": 252,
+          "active_packets": 696
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 327,
+          "wrong_order": 181,
+          "active_packets": 516
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 801,
+          "wrong_order": 503,
+          "active_packets": 1060
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 355,
+          "wrong_order": 197,
+          "active_packets": 549
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 740,
+          "wrong_order": 465,
+          "active_packets": 999
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 481,
+          "wrong_order": 323,
+          "active_packets": 700
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 1658,
+          "wrong_order": 814,
+          "active_packets": 1886
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 2716,
+          "wrong_order": 1742,
+          "active_packets": 2071
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 2229,
+          "wrong_order": 1359,
+          "active_packets": 2027
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 2769,
+          "wrong_order": 1968,
+          "active_packets": 2065
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 1499,
+          "wrong_order": 792,
+          "active_packets": 1814
+        }
+      ],
+      "RX_pairs": [
+        {
+          "anchorRX": 1,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 2172,
+          "wrong_order": 1227
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 1499,
+          "wrong_order": 928
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 1487,
+          "wrong_order": 799
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 1183,
+          "wrong_order": 508
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 2208,
+          "wrong_order": 1281
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 1725,
+          "wrong_order": 978
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 1781,
+          "wrong_order": 1053
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 1683,
+          "wrong_order": 938
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 1396,
+          "wrong_order": 821
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 1756,
+          "wrong_order": 1088
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 1457,
+          "wrong_order": 963
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 1546,
+          "wrong_order": 911
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 1700,
+          "wrong_order": 1033
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 1966,
+          "wrong_order": 1185
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 1771,
+          "wrong_order": 1240
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 1773,
+          "wrong_order": 1201
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 1264,
+          "wrong_order": 625
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 1460,
+          "wrong_order": 742
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 1509,
+          "wrong_order": 737
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 1530,
+          "wrong_order": 601
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "relations": 42000,
+          "unsatisfied": 10541,
+          "wrong_order": 5996,
+          "active_packets": 2089
+        },
+        {
+          "day": 2,
+          "relations": 42000,
+          "unsatisfied": 10172,
+          "wrong_order": 5839,
+          "active_packets": 2090
+        },
+        {
+          "day": 3,
+          "relations": 42000,
+          "unsatisfied": 12153,
+          "wrong_order": 7024,
+          "active_packets": 2099
+        }
+      ]
+    },
+    {
+      "level": "JOINT160",
+      "relations": 126000,
+      "unsatisfied_relations": 13184,
+      "unsatisfied_rate": 0.10463492063492064,
+      "wrong_order_relations": 2725,
+      "active_physical_packets": 5543,
+      "active_packet_rate": 0.8798412698412699,
+      "source_packets": 6300,
+      "margin": 0.1,
+      "mean_hinge": 0.007444525188633374,
+      "TX_pairs": [
+        {
+          "anchorTX": 0,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 907,
+          "wrong_order": 87,
+          "active_packets": 1326
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 240,
+          "wrong_order": 39,
+          "active_packets": 476
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 942,
+          "wrong_order": 77,
+          "active_packets": 1275
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 10,
+          "wrong_order": 2,
+          "active_packets": 20
+        },
+        {
+          "anchorTX": 0,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 97,
+          "wrong_order": 19,
+          "active_packets": 190
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 707,
+          "wrong_order": 58,
+          "active_packets": 1138
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 133,
+          "wrong_order": 35,
+          "active_packets": 283
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 2354,
+          "wrong_order": 226,
+          "active_packets": 1911
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 27,
+          "wrong_order": 7,
+          "active_packets": 67
+        },
+        {
+          "anchorTX": 1,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 122,
+          "wrong_order": 31,
+          "active_packets": 264
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 151,
+          "wrong_order": 3,
+          "active_packets": 317
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 100,
+          "wrong_order": 12,
+          "active_packets": 210
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 118,
+          "wrong_order": 5,
+          "active_packets": 241
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 40,
+          "wrong_order": 5,
+          "active_packets": 94
+        },
+        {
+          "anchorTX": 2,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 519,
+          "wrong_order": 73,
+          "active_packets": 979
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 1099,
+          "wrong_order": 126,
+          "active_packets": 1494
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 2689,
+          "wrong_order": 544,
+          "active_packets": 2075
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 253,
+          "wrong_order": 65,
+          "active_packets": 479
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 39,
+          "wrong_order": 14,
+          "active_packets": 98
+        },
+        {
+          "anchorTX": 3,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 153,
+          "wrong_order": 59,
+          "active_packets": 313
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 235,
+          "wrong_order": 161,
+          "active_packets": 494
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 285,
+          "wrong_order": 192,
+          "active_packets": 566
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 318,
+          "wrong_order": 240,
+          "active_packets": 614
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 267,
+          "wrong_order": 189,
+          "active_packets": 540
+        },
+        {
+          "anchorTX": 4,
+          "negativeTX": 5,
+          "relations": 4200,
+          "unsatisfied": 561,
+          "wrong_order": 389,
+          "active_packets": 994
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 0,
+          "relations": 4200,
+          "unsatisfied": 50,
+          "wrong_order": 3,
+          "active_packets": 134
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 1,
+          "relations": 4200,
+          "unsatisfied": 78,
+          "wrong_order": 6,
+          "active_packets": 183
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 2,
+          "relations": 4200,
+          "unsatisfied": 458,
+          "wrong_order": 40,
+          "active_packets": 878
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 3,
+          "relations": 4200,
+          "unsatisfied": 50,
+          "wrong_order": 5,
+          "active_packets": 123
+        },
+        {
+          "anchorTX": 5,
+          "negativeTX": 4,
+          "relations": 4200,
+          "unsatisfied": 182,
+          "wrong_order": 13,
+          "active_packets": 358
+        }
+      ],
+      "RX_pairs": [
+        {
+          "anchorRX": 1,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 784,
+          "wrong_order": 95
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 354,
+          "wrong_order": 36
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 272,
+          "wrong_order": 28
+        },
+        {
+          "anchorRX": 1,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 620,
+          "wrong_order": 77
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 1062,
+          "wrong_order": 345
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 947,
+          "wrong_order": 339
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 883,
+          "wrong_order": 264
+        },
+        {
+          "anchorRX": 3,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 1060,
+          "wrong_order": 359
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 471,
+          "wrong_order": 54
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 807,
+          "wrong_order": 105
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 283,
+          "wrong_order": 33
+        },
+        {
+          "anchorRX": 4,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 767,
+          "wrong_order": 96
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 320,
+          "wrong_order": 64
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 718,
+          "wrong_order": 104
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 286,
+          "wrong_order": 60
+        },
+        {
+          "anchorRX": 6,
+          "referenceRX": 8,
+          "relations": 6300,
+          "unsatisfied": 617,
+          "wrong_order": 93
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 1,
+          "relations": 6300,
+          "unsatisfied": 671,
+          "wrong_order": 89
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 3,
+          "relations": 6300,
+          "unsatisfied": 930,
+          "wrong_order": 205
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 4,
+          "relations": 6300,
+          "unsatisfied": 714,
+          "wrong_order": 151
+        },
+        {
+          "anchorRX": 8,
+          "referenceRX": 6,
+          "relations": 6300,
+          "unsatisfied": 618,
+          "wrong_order": 128
+        }
+      ],
+      "days": [
+        {
+          "day": 1,
+          "relations": 42000,
+          "unsatisfied": 4102,
+          "wrong_order": 750,
+          "active_packets": 1749
+        },
+        {
+          "day": 2,
+          "relations": 42000,
+          "unsatisfied": 3916,
+          "wrong_order": 589,
+          "active_packets": 1798
+        },
+        {
+          "day": 3,
+          "relations": 42000,
+          "unsatisfied": 5166,
+          "wrong_order": 1386,
+          "active_packets": 1996
+        }
+      ]
+    }
+  ],
+  "gradient_summary": [
+    {
+      "objective": "T2_WINDOW",
+      "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 70,
+      "mean_auxiliary_norm": 0.0026317715262170935,
+      "mean_CE_norm": 0.0893555924913866,
+      "mean_ratio": 0.03995659036636973,
+      "mean_cosine": -0.13519271366614974
+    },
+    {
+      "objective": "T2_WINDOW",
+      "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 70,
+      "mean_auxiliary_norm": 0.0017868275485901353,
+      "mean_CE_norm": 0.07837214971331867,
+      "mean_ratio": 0.030590957947766652,
+      "mean_cosine": -0.16235968342779616
+    },
+    {
+      "objective": "T2_WINDOW",
+      "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 0,
+      "mean_auxiliary_norm": 0,
+      "mean_CE_norm": 0.0928780463901932,
+      "mean_ratio": 0,
+      "mean_cosine": null
+    },
+    {
+      "objective": "SIG_RAW",
+      "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 70,
+      "mean_auxiliary_norm": 0.00486232992034336,
+      "mean_CE_norm": 0.0893555924913866,
+      "mean_ratio": 0.07294619196815305,
+      "mean_cosine": 0.02586324457382303
+    },
+    {
+      "objective": "SIG_RAW",
+      "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 70,
+      "mean_auxiliary_norm": 0.003947235847147222,
+      "mean_CE_norm": 0.07837214971331867,
+      "mean_ratio": 0.06688093645483835,
+      "mean_cosine": 0.02976884950641362
+    },
+    {
+      "objective": "SIG_RAW",
+      "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 70,
+      "mean_auxiliary_norm": 0.009326274725732659,
+      "mean_CE_norm": 0.0928780463901932,
+      "mean_ratio": 0.14982179264712545,
+      "mean_cosine": -0.0779476103818651
+    },
+    {
+      "objective": "SIG_DYNAMIC",
+      "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 70,
+      "mean_auxiliary_norm": 0.005598612709914384,
+      "mean_CE_norm": 0.0893555924913866,
+      "mean_ratio": 0.08378110208612827,
+      "mean_cosine": 0.03463062948764175
+    },
+    {
+      "objective": "SIG_DYNAMIC",
+      "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 70,
+      "mean_auxiliary_norm": 0.0045142754400511265,
+      "mean_CE_norm": 0.07837214971331867,
+      "mean_ratio": 0.07636841804765485,
+      "mean_cosine": 0.03765111040061898
+    },
+    {
+      "objective": "SIG_DYNAMIC",
+      "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 70,
+      "mean_auxiliary_norm": 0.010714199350044577,
+      "mean_CE_norm": 0.0928780463901932,
+      "mean_ratio": 0.1719919176587774,
+      "mean_cosine": -0.06604833777828492
+    },
+    {
+      "objective": "JOINT160",
+      "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 70,
+      "mean_auxiliary_norm": 0.0019564682160728543,
+      "mean_CE_norm": 0.0893555924913866,
+      "mean_ratio": 0.02889120186501641,
+      "mean_cosine": -0.019249837345509682
+    },
+    {
+      "objective": "JOINT160",
+      "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 70,
+      "mean_auxiliary_norm": 0.0017639116632759049,
+      "mean_CE_norm": 0.07837214971331867,
+      "mean_ratio": 0.02915877007331785,
+      "mean_cosine": -0.061763425417189564
+    },
+    {
+      "objective": "JOINT160",
+      "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+      "cohort_count": 70,
+      "nonzero_cohorts": 70,
+      "mean_auxiliary_norm": 0.0006054515600336469,
+      "mean_CE_norm": 0.0928780463901932,
+      "mean_ratio": 0.009318794922802584,
+      "mean_cosine": 0.3133792013361687
+    }
+  ],
+  "source_packets": 6300,
+  "cohorts": 70,
+  "triplets_per_view": 126000,
+  "gradient_records": 840,
+  "view_shapes": {
+    "T2_WINDOW": [
+      90,
+      384
+    ],
+    "SIG_RAW": [
+      90,
+      112
+    ],
+    "SIG_DYNAMIC": [
+      90,
+      108
+    ],
+    "JOINT160": [
+      90,
+      160
+    ]
+  },
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "query_read": false,
+  "U_truth_read": false,
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-source-signature-order-manysig-s01-m1-r01",
+  "row_id": "SOURCE_SIGNATURE_ORDER-s2026092701",
+  "evidence": {
+    "seconds": 20.102942943572998,
+    "source_forwards": 6300,
+    "parameters_buffers_unchanged": true,
+    "global_RNG_unchanged": true,
+    "accumulated_gradients": false,
+    "auxiliary_class_W_gradient": false
+  },
+  "saved_artifact_recount": "VERIFIED",
+  "scope": "Actual deployed descriptor112 and source-only dynamic108 removing4constant time-step slots, not modifying network or inferring efficacy. AllL6300,126000 sampledtriples perview, frozenfinal50eval only, no target/Phase2/newTX/causalinvariance claims.",
+  "code_commit": "6bf2fda405d58ba203f90fe69a6ced7f66231cd6",
+  "completion": {
+    "status": "ANALYZED",
+    "models": 1,
+    "source_only": true,
+    "source_packets": 6300,
+    "query_read": false,
+    "U_truth_read": false,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "recount": "VERIFIED"
+  }
+}

@@ -2420,19 +2420,183 @@
     "Firstseedfalsification only; remainingtwo authorized conditional onSOURCEPASS withunchangedrecipe, no target feedback.",
     "Prepared whilefirsthealthytraining, do notpublishunlesssourcePASS. CoreuniqueP0/P1reused unchanged; sixnativecontext/eightqualificationnegativechecks only."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "results": {
-    "status": "PARTIAL",
-    "first_source_qualification": "PASS",
-    "new_training_rows": 6,
-    "new_seed_models": [
+    "status": "VERIFIED",
+    "complete_three_seeds": true,
+    "model_seeds": [
+      2026092701,
       2026092702,
       2026092703
     ],
-    "first_seed_retrained": false,
-    "target_results_not_used_for_expansion": true,
-    "launch_verification": "VERIFIED",
-    "goal_84": false
+    "summary": [
+      {
+        "arm": "OLD_GATE_COS50",
+        "seed_count": 3,
+        "accuracy_mean": 0.8052678571428572,
+        "accuracy_sd": 0.023775723031464996,
+        "seed_accuracy": {
+          "2026092701": 0.8066845238095238,
+          "2026092702": 0.7808154761904762,
+          "2026092703": 0.8283035714285715
+        },
+        "macro_f1_mean": 0.8000238637751929,
+        "worst_RX_mean": 0.6797083333333334,
+        "worst_day_mean": 0.7605555555555555
+      },
+      {
+        "arm": "SIG_TIME",
+        "seed_count": 3,
+        "accuracy_mean": 0.8260674603174604,
+        "accuracy_sd": 0.017438416436687962,
+        "seed_accuracy": {
+          "2026092701": 0.835452380952381,
+          "2026092702": 0.8059464285714286,
+          "2026092703": 0.8368035714285714
+        },
+        "macro_f1_mean": 0.8206065280270484,
+        "worst_RX_mean": 0.7036527777777778,
+        "worst_day_mean": 0.7852936507936508
+      },
+      {
+        "arm": "LOCAL_SUPCON",
+        "seed_count": 3,
+        "accuracy_mean": 0.825843253968254,
+        "accuracy_sd": 0.0170277721134665,
+        "seed_accuracy": {
+          "2026092701": 0.8345833333333333,
+          "2026092702": 0.8062202380952381,
+          "2026092703": 0.8367261904761905
+        },
+        "macro_f1_mean": 0.8202260524931598,
+        "worst_RX_mean": 0.7007916666666667,
+        "worst_day_mean": 0.7838333333333334
+      },
+      {
+        "arm": "LOCAL_ORDER",
+        "seed_count": 3,
+        "accuracy_mean": 0.8271269841269842,
+        "accuracy_sd": 0.014787092486824697,
+        "seed_accuracy": {
+          "2026092701": 0.8362380952380952,
+          "2026092702": 0.8100654761904762,
+          "2026092703": 0.8350773809523809
+        },
+        "macro_f1_mean": 0.821682835472412,
+        "worst_RX_mean": 0.7046527777777778,
+        "worst_day_mean": 0.7856904761904762
+      }
+    ],
+    "paired": [
+      {
+        "arm": "LOCAL_ORDER",
+        "control": "LOCAL_SUPCON",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.0016547619047618811,
+          0.0038452380952380683,
+          -0.0016488095238095246
+        ],
+        "mean_difference": 0.0012837301587301415,
+        "sd_difference": 0.0027657527415720215,
+        "positive_seeds": 2
+      },
+      {
+        "arm": "LOCAL_ORDER",
+        "control": "SIG_TIME",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.0007857142857142785,
+          0.004119047619047578,
+          -0.0017261904761904923
+        ],
+        "mean_difference": 0.001059523809523788,
+        "sd_difference": 0.002932222849478223,
+        "positive_seeds": 2
+      },
+      {
+        "arm": "LOCAL_ORDER",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.0295535714285714,
+          0.029249999999999998,
+          0.00677380952380946
+        ],
+        "mean_difference": 0.021859126984126953,
+        "sd_difference": 0.013065149867566813,
+        "positive_seeds": 3
+      },
+      {
+        "arm": "LOCAL_SUPCON",
+        "control": "SIG_TIME",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          -0.0008690476190476026,
+          0.0002738095238095095,
+          -0.00007738095238096765
+        ],
+        "mean_difference": -0.0002242063492063536,
+        "sd_difference": 0.000585404889892098,
+        "positive_seeds": 1
+      },
+      {
+        "arm": "SIG_TIME",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.028767857142857123,
+          0.02513095238095242,
+          0.008499999999999952
+        ],
+        "mean_difference": 0.020799603174603165,
+        "sd_difference": 0.010805875612430644,
+        "positive_seeds": 3
+      }
+    ],
+    "counts": {
+      "models": 12,
+      "new_models": 9,
+      "reused_models": 3,
+      "new_model_epochs": 450,
+      "new_optimizer_updates": 99900,
+      "historical_model_epochs": 150,
+      "historical_optimizer_updates": 33300,
+      "source_epoch_records": 600,
+      "default_decisions": 2016000,
+      "metric_records": 216,
+      "paired_error_records": 15,
+      "actual_auxiliary_steps": 24750,
+      "extra_source_packet_forwards": 2227500,
+      "actual_gradient_layer_cohorts": 5940,
+      "saved_gradient_vectors": 23760
+    },
+    "head_fit_updates": 0,
+    "source_expansion_before_target_numeric_results": true,
+    "goal_84": false,
+    "result_ref": "results.json",
+    "analysis_ref": "final_analysis.md",
+    "figure_ref": "results.png"
   },
   "registered_at": "2026-10-14T11:30:55+00:00"
 }

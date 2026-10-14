@@ -35748,6 +35748,238 @@
         "ratio_not_DG_selector": true,
         "withinTX_crossRX_distance_increased_3_of_3": true
       }
+    },
+    {
+      "route": "report31957 shallow-middle bounded identity order",
+      "run_id": "20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "parent_run_id": "20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "status": "ANALYZED_FULL_THREE_SEEDS",
+      "implementation_commit": "26bfdf044caa1be3c966370248c3bc3372009943",
+      "first_execution_commit": "f34078d1a0775ef6fa66365689481ad5a1932e4c",
+      "remaining_execution_commit": "6d65f77a7659cb182bdb39852dc6c6b76001e81d",
+      "report_merge_commit": "7b41c04298c994651896d1ab6bcad4f0339c4420",
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "default_head_only": true,
+      "first_seed_retrained": false,
+      "source_only_expansion_before_target_numeric_scores": true,
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 3,
+          "accuracy_mean": 0.8052678571428572,
+          "accuracy_sd": 0.023775723031464996,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238,
+            "2026092702": 0.7808154761904762,
+            "2026092703": 0.8283035714285715
+          },
+          "macro_f1_mean": 0.8000238637751929,
+          "worst_RX_mean": 0.6797083333333334,
+          "worst_day_mean": 0.7605555555555555
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 3,
+          "accuracy_mean": 0.8260674603174604,
+          "accuracy_sd": 0.017438416436687962,
+          "seed_accuracy": {
+            "2026092701": 0.835452380952381,
+            "2026092702": 0.8059464285714286,
+            "2026092703": 0.8368035714285714
+          },
+          "macro_f1_mean": 0.8206065280270484,
+          "worst_RX_mean": 0.7036527777777778,
+          "worst_day_mean": 0.7852936507936508
+        },
+        {
+          "arm": "LOCAL_SUPCON",
+          "seed_count": 3,
+          "accuracy_mean": 0.825843253968254,
+          "accuracy_sd": 0.0170277721134665,
+          "seed_accuracy": {
+            "2026092701": 0.8345833333333333,
+            "2026092702": 0.8062202380952381,
+            "2026092703": 0.8367261904761905
+          },
+          "macro_f1_mean": 0.8202260524931598,
+          "worst_RX_mean": 0.7007916666666667,
+          "worst_day_mean": 0.7838333333333334
+        },
+        {
+          "arm": "LOCAL_ORDER",
+          "seed_count": 3,
+          "accuracy_mean": 0.8271269841269842,
+          "accuracy_sd": 0.014787092486824697,
+          "seed_accuracy": {
+            "2026092701": 0.8362380952380952,
+            "2026092702": 0.8100654761904762,
+            "2026092703": 0.8350773809523809
+          },
+          "macro_f1_mean": 0.821682835472412,
+          "worst_RX_mean": 0.7046527777777778,
+          "worst_day_mean": 0.7856904761904762
+        }
+      ],
+      "paired": [
+        {
+          "arm": "LOCAL_ORDER",
+          "control": "LOCAL_SUPCON",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.0016547619047618811,
+            0.0038452380952380683,
+            -0.0016488095238095246
+          ],
+          "mean_difference": 0.0012837301587301415,
+          "sd_difference": 0.0027657527415720215,
+          "positive_seeds": 2
+        },
+        {
+          "arm": "LOCAL_ORDER",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.0007857142857142785,
+            0.004119047619047578,
+            -0.0017261904761904923
+          ],
+          "mean_difference": 0.001059523809523788,
+          "sd_difference": 0.002932222849478223,
+          "positive_seeds": 2
+        },
+        {
+          "arm": "LOCAL_ORDER",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.0295535714285714,
+            0.029249999999999998,
+            0.00677380952380946
+          ],
+          "mean_difference": 0.021859126984126953,
+          "sd_difference": 0.013065149867566813,
+          "positive_seeds": 3
+        },
+        {
+          "arm": "LOCAL_SUPCON",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            -0.0008690476190476026,
+            0.0002738095238095095,
+            -0.00007738095238096765
+          ],
+          "mean_difference": -0.0002242063492063536,
+          "sd_difference": 0.000585404889892098,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.028767857142857123,
+            0.02513095238095242,
+            0.008499999999999952
+          ],
+          "mean_difference": 0.020799603174603165,
+          "sd_difference": 0.010805875612430644,
+          "positive_seeds": 3
+        }
+      ],
+      "error_aggregates": [
+        {
+          "arm": "LOCAL_ORDER",
+          "control": "LOCAL_SUPCON",
+          "corrected_errors": 2363,
+          "introduced_errors": 1716,
+          "net_corrected": 647,
+          "count": 504000
+        },
+        {
+          "arm": "LOCAL_ORDER",
+          "control": "OLD_GATE_COS50",
+          "corrected_errors": 27396,
+          "introduced_errors": 16379,
+          "net_corrected": 11017,
+          "count": 504000
+        },
+        {
+          "arm": "LOCAL_ORDER",
+          "control": "SIG_TIME",
+          "corrected_errors": 2168,
+          "introduced_errors": 1634,
+          "net_corrected": 534,
+          "count": 504000
+        },
+        {
+          "arm": "LOCAL_SUPCON",
+          "control": "SIG_TIME",
+          "corrected_errors": 2006,
+          "introduced_errors": 2119,
+          "net_corrected": -113,
+          "count": 504000
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "corrected_errors": 27294,
+          "introduced_errors": 16811,
+          "net_corrected": 10483,
+          "count": 504000
+        }
+      ],
+      "counts": {
+        "models": 12,
+        "new_models": 9,
+        "reused_models": 3,
+        "new_model_epochs": 450,
+        "new_optimizer_updates": 99900,
+        "historical_model_epochs": 150,
+        "historical_optimizer_updates": 33300,
+        "source_epoch_records": 600,
+        "default_decisions": 2016000,
+        "metric_records": 216,
+        "paired_error_records": 15,
+        "actual_auxiliary_steps": 24750,
+        "extra_source_packet_forwards": 2227500,
+        "actual_gradient_layer_cohorts": 5940,
+        "saved_gradient_vectors": 23760
+      },
+      "source_feature_L2": [
+        1.5924851894378662,
+        1.3983213901519775,
+        1.1426128149032593
+      ],
+      "all_export_exact": true,
+      "W_independent": true,
+      "head_fit_updates": 0,
+      "goal_84": false,
+      "report": "automation_reports/CV-SincNet/20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
     }
   ],
   "diagnostics": {
@@ -81022,6 +81254,82 @@
       ],
       "limitations": "Fixed frozen L6300 proxy with source student Dropout replay/strongnoise. Source labels used for L CE and post-mask accuracy only. Not hiddenU precision/coverage or actual33/34/50 training gradient history, effective weighting or target/newTX transfer proof.",
       "report": "automation_reports/CV-SincNet/20261014-phase1-source-trusted-weight-manysig-s01-m1-r01/report.md"
+    },
+    "source_signature_order": {
+      "run_id": "20261014-phase1-source-signature-order-manysig-s01-m1-r01",
+      "status": "VERIFIED",
+      "code_commit": "6bf2fda405d58ba203f90fe69a6ced7f66231cd6",
+      "source_packets": 6300,
+      "cohorts": 70,
+      "views": 4,
+      "relations_per_view": 126000,
+      "gradient_records": 840,
+      "clock_energy_fraction_mean": 0.1765107810497284,
+      "relations": [
+        {
+          "level": "T2_WINDOW",
+          "relations": 126000,
+          "unsatisfied_relations": 102691,
+          "unsatisfied_rate": 0.8150079365079365,
+          "wrong_order_relations": 34558,
+          "active_physical_packets": 6300,
+          "active_packet_rate": 1,
+          "source_packets": 6300,
+          "margin": 0.1,
+          "mean_hinge": 0.07045323324333581
+        },
+        {
+          "level": "SIG_RAW",
+          "relations": 126000,
+          "unsatisfied_relations": 36541,
+          "unsatisfied_rate": 0.2900079365079365,
+          "wrong_order_relations": 19097,
+          "active_physical_packets": 6293,
+          "active_packet_rate": 0.9988888888888889,
+          "source_packets": 6300,
+          "margin": 0.1,
+          "mean_hinge": 0.039200600628992395
+        },
+        {
+          "level": "SIG_DYNAMIC",
+          "relations": 126000,
+          "unsatisfied_relations": 32866,
+          "unsatisfied_rate": 0.2608412698412698,
+          "wrong_order_relations": 18859,
+          "active_physical_packets": 6278,
+          "active_packet_rate": 0.9965079365079365,
+          "source_packets": 6300,
+          "margin": 0.1,
+          "mean_hinge": 0.04098768970526991
+        },
+        {
+          "level": "JOINT160",
+          "relations": 126000,
+          "unsatisfied_relations": 13184,
+          "unsatisfied_rate": 0.10463492063492064,
+          "wrong_order_relations": 2725,
+          "active_physical_packets": 5543,
+          "active_packet_rate": 0.8798412698412699,
+          "source_packets": 6300,
+          "margin": 0.1,
+          "mean_hinge": 0.007444525188633374
+        }
+      ],
+      "head_fit_updates": 0,
+      "optimizer_updates": 0,
+      "query_read": false,
+      "result_ref": "automation_reports/CV-SincNet/20261014-phase1-source-signature-order-manysig-s01-m1-r01/results.json"
+    },
+    "source_layer_order": {
+      "run_id": "20261014-phase1-source-layer-order-manysig-s01-m1-r01",
+      "status": "VERIFIED",
+      "source_packets": 6300,
+      "cohorts": 70,
+      "relations_per_view": 126000,
+      "gradient_records": 1050,
+      "optimizer_updates": 0,
+      "head_fit_updates": 0,
+      "query_read": false
     }
   },
   "next_directions": [
@@ -81036,7 +81344,7 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "Complete unchanged read-position02/03 and full3seed default-head metrics/Git; no target-driven reconfiguration",
-    "Keep report continuous hierarchy/U weighting deferred until this independent method closes; use only legal source evidence for future designs"
+    "Complete predefined LOCAL_ORDER 3-seed matrix: DONE; retain small inconsistent +.1060pp2/3 and all negative results.",
+    "Independent future source-grounded signature-view supervision with raw/dynamic constants control; no weight/day/seed scan or target-selected parent."
   ]
 }

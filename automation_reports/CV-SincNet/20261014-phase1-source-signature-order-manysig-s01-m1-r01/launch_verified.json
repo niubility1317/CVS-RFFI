@@ -1,0 +1,112 @@
+{
+  "status": "VERIFIED",
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 2378991,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_signature_order_20261014_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_source_signature_order.probe"
+    ],
+    "log": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_signature_order_20261014_r01/dispatcher.stdout.log",
+    "commit": "6bf2fda405d58ba203f90fe69a6ced7f66231cd6",
+    "run_id": "20261014-phase1-source-signature-order-manysig-s01-m1-r01"
+  },
+  "process": null,
+  "completion": {
+    "status": "ANALYZED",
+    "models": 1,
+    "source_only": true,
+    "source_packets": 6300,
+    "query_read": false,
+    "U_truth_read": false,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "recount": "VERIFIED"
+  },
+  "failure": null,
+  "preflight": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "protocol_negative_tests": 12,
+      "actual_native_views": [
+        {
+          "view": "T2_WINDOW",
+          "shape": [
+            90,
+            384
+          ],
+          "gradient_norms": [
+            0.020131317898631096,
+            0.01647529937326908,
+            0
+          ],
+          "class_W_dependency": false
+        },
+        {
+          "view": "SIG_RAW",
+          "shape": [
+            90,
+            112
+          ],
+          "gradient_norms": [
+            0.053658291697502136,
+            0.06422678381204605,
+            0.15234531462192535
+          ],
+          "class_W_dependency": false
+        },
+        {
+          "view": "SIG_DYNAMIC",
+          "shape": [
+            90,
+            108
+          ],
+          "gradient_norms": [
+            0.11565915495157242,
+            0.1327580213546753,
+            0.2837904393672943
+          ],
+          "class_W_dependency": false
+        },
+        {
+          "view": "JOINT160",
+          "shape": [
+            90,
+            160
+          ],
+          "gradient_norms": [
+            0.0035089070443063974,
+            0.00495389336720109,
+            0.0009217549813911319
+          ],
+          "class_W_dependency": false
+        }
+      ],
+      "clock_coordinates_removed": 4,
+      "network_and_deployed_features_modified": false,
+      "state_RNG_grad_unchanged": true,
+      "optimizer_updates": 0,
+      "head_fit_updates": 0,
+      "query_read": false,
+      "synthetic_IQ_only": true
+    },
+    "real_checkpoint_no_query_smoke": {
+      "status": "PASS",
+      "zero_IQ_packets": 90,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0,
+      "query_read": false
+    },
+    "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01/SIG_TIME-s2026092701/source/final_ssdg.pth",
+    "query_read": false,
+    "U_truth_read": false,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0
+  },
+  "log_bytes": 523,
+  "read_at": 1791981311.3801675
+}

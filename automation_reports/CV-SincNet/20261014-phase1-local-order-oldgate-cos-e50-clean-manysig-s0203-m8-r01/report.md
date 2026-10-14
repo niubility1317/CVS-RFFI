@@ -11,3 +11,6 @@
 首seedSOURCE PASS已独立读回并按资格负例验证（尚未读新target数字）：三finalLCE .247704585/.248384086/.247982446，ORDER−SIGL720zL2=1.592485189，actualfθupdate/export/W独立/earlymidlategradient预算均PASS。按原配置发布固定02/03六新模型，不回流目标结果。
 
 远端实际归档/compile/sourcePASS/realCPnoquerysmoke及六新worker的PID/CWD/argv/GPU/loggrowth均VERIFIED；新02/03默认头拟合探针关闭，GPU1/2/0/4/5/3，当前继续固定50训练。首seed目标只在SOURCE决定提交及六模型发布后回收，不修改本健康矩阵。
+
+
+完整三seed已闭环：LOCAL_ORDER82.7127%±1.4787pp，SIG_TIME82.6067%±1.7438pp，配对+0.1060±0.2932pp（2/3）。全部12row/2016000defaultpred/216metrics/600sourceepoch/5940实际层cohort梯度复算VERIFIED，额外头拟合0；84%未达成。见 final_analysis.md、results.json、results.png。
