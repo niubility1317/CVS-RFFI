@@ -3076,7 +3076,7 @@
     "Cudnn_deterministic=False retained from frozen parent recipe. Matching initial state does not prove exactly equal preU trajectories.",
     "Sinc centered coordinate positive route kept independent; it is not stacked in this matrix."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "registered_at": "2026-10-14T06:32:02+00:00",
   "independent_review": {
     "status": "PASS",
@@ -3160,5 +3160,7 @@
         ]
       }
     ]
-  }
+  },
+  "actual_execution_commit": "0af34c5345cba3488a5e4a5d429b2a26447fd09d",
+  "launch_evidence_ref": "launch_evidence.json"
 }

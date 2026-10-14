@@ -73,3 +73,6 @@ Sinc坐标9row全部完成，6新scratch50/300模型轮次/66600更新、3历史
 
 
 关系12row三seed完整ANALYZED/VERIFIED：ZERO80.6899%、ALL80.1006%、CROSS80.0782%、RESP80.1050%；RESP对CROSS＋.0268pp/2正、对ZERO−.5849pp/1正，没有确认稳定机制收益。600ep/133200更新/2016000决定/216CM和全量source日志已完成。原源决策触发的COMPACT/LONG×ZERO/RESP匹配组合另立run，保持原R/E参数，Sinc独立保留。研究目标84%仍active，本矩阵闭合，不能用接线或小增量缩小目标。
+
+
+已落实预定正收益结构组合：`20261014-phase1-relation-temporal-factorial-oldgate-e50-clean-manysig-m12-r01`，执行`0af34c5345cba3488a5e4a5d429b2a26447fd09d`。COMPACT_LINEAR/LONG_SILU×ZERO/原CROSS_RESP，12new scratch50、先4seed01源资格后8row，τ/α/权重/PAIR/旧gate/ownEMA/entropy/strong均沿用。真实四200tensor初值与CPU RNG相同，native安装入口一致、default6×160和auxW/gainNone/浅层gradient负例通过；GPU实际4worker第15至18轮，preflight/archive/compile/PID-CWD-argv-GPU-log增长VERIFIED。原关系三seed未有效的结果独立保留，此组合尚无性能结论；Sinc正收益路线独立、不堆入本矩阵。84%研究目标active。

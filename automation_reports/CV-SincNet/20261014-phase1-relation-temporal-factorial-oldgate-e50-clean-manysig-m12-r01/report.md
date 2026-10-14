@@ -45,3 +45,7 @@ PA、frequency、reference 原结构与真实 joint160 保持。所有模型9054
 数学负例与真实 native auxiliary callback 已核实 mode 正确，ZERO梯度0、RESP真实t1/ref非零、W/gains辅助梯度None、hidden U TX negative PASS。合成梯度 fixture 将初始0的 ref gain设.1，仅用于本地接线；实际训练初值和冻结 checkpoint 不做此修改。唯一独立P0/P1审查、首步真实checkpoint no-query smoke、一次archive传输比较/compile和postlaunch进程读回由最小发布流程完成。当前没有新实验性能结论，84%目标继续 active。
 
 唯一P0/P1审查发现 shared train 要求 model.install；已加入真实结构安装入口，并核实 native build_baseline_model→NoCFO→install 的200个初始state tensor逐项等于推理build。该问题的一次定向复审PASS，其余直接P0/P1无阻断。当前只待发布首步真实checkpoint no-query smoke，未宣称泛化有效。
+
+## 真实发布读回
+
+状态RUNNING/VERIFIED，执行commit `0af34c5345cba3488a5e4a5d429b2a26447fd09d`。首步真实历史temporal student/ownEMA strict no-query smoke与source L180probe梯度PASS，archive单次local/remote比较和remotecompile PASS。4个首seed worker PID/CWD/argv/GPU/log增长已独立核实，当前第15至18轮，真实各905426参数/default6×160/机制参数0。后8row仅按固定source规则扩展；无新target成绩，无性能成功结论。原关系12row已完整闭合，低分及CUDA非确定性限制保留，不热改任何健康任务。

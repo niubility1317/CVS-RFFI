@@ -326,3 +326,6 @@ SINGLE三seed末轮源CE0.248543/0.239481/0.234405，V98.3259%/98.3037%/98.5222%
 ## 关系＋响应完整三种子收尾
 
 原run已ANALYZED/VERIFIED：12scratch50/600epoch/133200更新、2016000固定默认头决定和216CM完整复算，无缺项，进程自然终止。ZERO/ALL_REL/CROSS_REL/CROSS_RESP clean均值80.6899/80.1006/80.0782/80.1050%；D−C＋0.0268个百分点/2正，但D−ZERO−0.5849个百分点/1正。D逐seed最差RX均值提高1.0722个百分点而总体均值下降，完整报告取舍；响应稳定收益与84%均未成立。全量600epoch/45288aux/11566800U观察、48实际梯度和48更新、0非有限跳步/0Utruth/0headfit已核实。初始相同但CUDA native轨迹不逐位同的限制保留，不挑分重跑。原源规则放行的已验证结构匹配组合另立COMPACT/LONG×ZERO/RESP运行，τ/α/权重与旧配方保持，Sinc不同时堆叠。完整逐seed/源曲线/配对/限制见[关系矩阵收尾报告](../automation_reports/CV-SincNet/20261014-phase1-evidence-relation-pair-oldgate-e50-clean-manysig-m12-r01/report.md)。
+
+
+已落实预定正收益结构组合：`20261014-phase1-relation-temporal-factorial-oldgate-e50-clean-manysig-m12-r01`，执行`0af34c5345cba3488a5e4a5d429b2a26447fd09d`。COMPACT_LINEAR/LONG_SILU×ZERO/原CROSS_RESP，12new scratch50、先4seed01源资格后8row，τ/α/权重/PAIR/旧gate/ownEMA/entropy/strong均沿用。真实四200tensor初值与CPU RNG相同，native安装入口一致、default6×160和auxW/gainNone/浅层gradient负例通过；GPU实际4worker第15至18轮，preflight/archive/compile/PID-CWD-argv-GPU-log增长VERIFIED。原关系三seed未有效的结果独立保留，此组合尚无性能结论；Sinc正收益路线独立、不堆入本矩阵。84%研究目标active。
