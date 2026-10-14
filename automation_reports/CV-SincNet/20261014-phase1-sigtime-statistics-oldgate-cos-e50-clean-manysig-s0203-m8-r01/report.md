@@ -1,6 +1,6 @@
 # SIG_TIME 统计组合：固定剩余两种子
 
-本登记是首种子固定源条件 PASS 后的原样扩种子准备，尚未启动。用户优先要求完成 SIG_TIME + MEAN_VAR + COV 与单 SIG_TIME、同参数三路 SIG_TIME 控制的组合验证。原首 seed 的不可变运行保持。
+本登记是首种子固定源条件 PASS 后的原样扩种子准备，首 seed 固定源资格及四行闭环已核实，现准备发布，仍未启动。用户优先要求完成 SIG_TIME + MEAN_VAR + COV 与单 SIG_TIME、同参数三路 SIG_TIME 控制的组合验证。原首 seed 的不可变运行保持。
 
 矩阵：2026092702/03 × OLD_GATE_COS50、SIG_TIME、SIG_TIME_X3、SIG_TIME_MV_COV。两个历史 baseline 只读复用，六个新模型独立 scratch50/11100；不加载或续训首 seed 及历史最高 SIG_TIME checkpoint。新增 300 model-epochs / 66600 更新；完整三 seed 共九个新模型 450 / 99900，历史三个 baseline 150 单列复用。首 seed 不重训、替换或筛除。
 
@@ -19,3 +19,6 @@ Stop：运行自身的角色/来源/非有限数/预算/默认头/导出/物理 
 每行冻结后自动以 checkpoint 默认头生成 clean168000 逐包预测；预测固定后独立 truth-last 评分。八行共 1344000 次决策/144 组 CM、accuracy、Macro-F1；与原首 seed 合并 12 行、2016000 次/216 组。记录三 seed 平均/样本 SD、各 seed 配对差、正差数、最差 RX/day 与错误修正/引入；仅完整候选三 seed clean 均值≥84% 才能满足主指标。
 
 预期产物：release 中 preflight.json/source_expansion_evidence.json；run launch/queue、每新行 initial/final/source_frozen/resolved/actual_args/initialization/50epoch/11100step/source_feature_witness、每行 prediction/complete、scores/metrics、source_features、analysis、combined_three_seed_analysis、completion。原数据/权重/原始预测/日志留产物目录；实现、报告与必要聚合 Git 上传并核对远端 OID。这里只验证暴露 ManySig clean 的旧六 TX；没有卫星部署、Phase2 或新 TX 声称。
+
+
+首 seed 源条件 PASS：LCE 0.248702/0.227253/0.233990，固定 L720 组合 vs X3 L2=2.240102；实际新增参数数值更新及 W 独立导出通过。首 seed 四行全部独立评分完毕；此扩种子决定未读取其新目标分数。详见 source_expansion_decision.json。

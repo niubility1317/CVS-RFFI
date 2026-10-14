@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "target_metrics_read_for_decision": false,
+  "final_L_CE": {
+    "SIG_TIME-s2026092701": 0.2487022556901515,
+    "SIG_TIME_X3-s2026092701": 0.22725283626366305,
+    "SIG_TIME_MV_COV-s2026092701": 0.2339898528078118
+  },
+  "actual_source_candidate_minus_X3_L2": 2.2401020526885986,
+  "fixed_rules": {
+    "final_L_CE_max": 0.5,
+    "source_added_feature_difference_min": 0.000001,
+    "source_only": true,
+    "description": "All3 new final LCE<=.5, real default feature export exact/W-independent, added modules numerically updated and candidate differs from same-capacity X3 on fixedL720. Future predefined seed expansion only from these source facts."
+  },
+  "head_fit": false,
+  "source_feature_export_exact": true,
+  "actual_initial_native_body_and_head_equal": true,
+  "predefined_remaining_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "configuration_changes_for_expansion": false
+}

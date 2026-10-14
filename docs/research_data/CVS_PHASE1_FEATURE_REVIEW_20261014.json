@@ -33399,7 +33399,7 @@
     },
     {
       "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s01-m4-r01",
-      "status": "RUNNING",
+      "status": "ARTIFACTS_COMPLETE",
       "method": "SIG_TIME plus independent mean/variance and covariance views with parameter-matched threeSIG_TIME control",
       "model_seeds": [
         2026092701
@@ -33425,7 +33425,7 @@
         55968
       ],
       "source_scientific_qualification": "all3 new finalLCE<=.5, real feature export/W-independent, added parameter update, candidate-vsX3 sourceL720 difference>=1e-6",
-      "target_results": null,
+      "target_results": "first-seed scores complete, values not yet read for expansion",
       "source_parent_commit": "990ffabe0",
       "reported_historical_SIG_TIME_mean": 0.8303928571428572,
       "user_directed_exposed_benchmark_base": true,
@@ -33447,11 +33447,50 @@
           "gpu": 3
         }
       ],
-      "native_nuisance_fitted_probes_disabled": true
+      "native_nuisance_fitted_probes_disabled": true,
+      "source_qualification": {
+        "status": "PASS",
+        "source_only": true,
+        "target_metrics_read_for_decision": false,
+        "final_L_CE": {
+          "SIG_TIME-s2026092701": 0.2487022556901515,
+          "SIG_TIME_X3-s2026092701": 0.22725283626366305,
+          "SIG_TIME_MV_COV-s2026092701": 0.2339898528078118
+        },
+        "actual_source_candidate_minus_X3_L2": 2.2401020526885986,
+        "fixed_rules": {
+          "final_L_CE_max": 0.5,
+          "source_added_feature_difference_min": 0.000001,
+          "source_only": true,
+          "description": "All3 new final LCE<=.5, real default feature export exact/W-independent, added modules numerically updated and candidate differs from same-capacity X3 on fixedL720. Future predefined seed expansion only from these source facts."
+        },
+        "head_fit": false,
+        "source_feature_export_exact": true,
+        "actual_initial_native_body_and_head_equal": true,
+        "predefined_remaining_seeds": [
+          2026092702,
+          2026092703
+        ],
+        "configuration_changes_for_expansion": false
+      },
+      "completion": {
+        "status": "EXPERIMENT_COMPLETE",
+        "models": 4,
+        "new_trained_models": 3,
+        "reused_baseline_models": 1,
+        "views": 1,
+        "readouts": [
+          "ORIGINAL_HEAD"
+        ],
+        "prediction_count": 672000,
+        "truth_last": true,
+        "goal_84": false
+      },
+      "next": "Publish source-qualified unchanged remaining seeds"
     },
     {
       "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-      "status": "REGISTERED_WAITING_FIRST_SEED_SOURCE",
+      "status": "READY_TO_LAUNCH",
       "method": "Unchanged SIG_TIME/3SIG_TIME/statistical composition remaining model seeds",
       "model_seeds": [
         2026092702,
@@ -33472,7 +33511,9 @@
       "code_commit": "a722e2593947ca804e2534ac75e4c081029d022c",
       "target_scores_read_for_this_design": false,
       "target_results": "pending; not launched",
-      "goal_84": false
+      "goal_84": false,
+      "first_source_qualification": "PASS",
+      "source_expansion_decision_before_target_scores": true
     }
   ],
   "diagnostics": {
