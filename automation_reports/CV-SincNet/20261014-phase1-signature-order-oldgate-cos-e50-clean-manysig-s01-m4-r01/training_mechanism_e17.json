@@ -1,0 +1,60 @@
+{
+  "status": "OBSERVED_SAVED_TRAINING_ARTIFACT",
+  "run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+  "execution_commit": "2658815a2fe5ef931f24558a6c6c61146433fd9c",
+  "epoch": 17,
+  "batches_per_arm": 55,
+  "parameters": [
+    "t1.pw.weight",
+    "t2.pw.weight",
+    "SIG.local_projection.weight"
+  ],
+  "rows": [
+    {
+      "arm": "SIG_TIME",
+      "nonzero_batches": [
+        0,
+        0,
+        0
+      ],
+      "mean_effective_auxiliary_over_main_CE": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "arm": "SIG_RAW_ORDER",
+      "nonzero_batches": [
+        55,
+        55,
+        55
+      ],
+      "mean_effective_auxiliary_over_main_CE": [
+        0.01858636525462569,
+        0.017759426325665798,
+        0.028269209667292766
+      ]
+    },
+    {
+      "arm": "SIG_DYNAMIC_ORDER",
+      "nonzero_batches": [
+        55,
+        55,
+        55
+      ],
+      "mean_effective_auxiliary_over_main_CE": [
+        0.020883061336751732,
+        0.019840032638312848,
+        0.031006704820947535
+      ]
+    }
+  ],
+  "source_only": true,
+  "query_read": false,
+  "U_truth_read": false,
+  "head_fit_updates": 0,
+  "artifact_saved_recount_reported": "VERIFIED",
+  "independent_full_PT_recount": "pending completed matrix audit",
+  "scope": "Actual training epoch17 mainL128 CE versus separateL90 auxiliary; no performance or newTX/Phase2 claim; not cumulative optimizer contribution."
+}
