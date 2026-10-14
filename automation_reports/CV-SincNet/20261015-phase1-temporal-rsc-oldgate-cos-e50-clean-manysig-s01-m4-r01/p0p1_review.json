@@ -1,0 +1,25 @@
+{
+  "status": "PASS_AFTER_TARGETED_P1_FIX",
+  "scope": "Only direct P0/P1 defects affecting next actual run legality, correctness, preservation, launch or legal predictions",
+  "reviewer": "independent signature_fix_p0p1",
+  "finding": {
+    "priority": "P1",
+    "problem": "Release closure omitted cvs_source_self_challenge imported by objective.py",
+    "fix": "Explicitly package experiments/cvs_source_self_challenge and assert release dependency",
+    "targeted_confirmation": "PASS"
+  },
+  "other_direct_P0_P1": [],
+  "independent_synthetic_CUDA_checks": {
+    "original_control_logits_exact": true,
+    "CPU_and_CUDA_RNG_restored": true,
+    "native_and_additional_L_counters": [
+      1,
+      2
+    ],
+    "temporary_mask_hook_cleared": true
+  },
+  "real_IQ_checkpoint_or_target_read": false,
+  "formal_experiment_launched_by_reviewer": false,
+  "extra_review_cycles": 0,
+  "code_commit": "3524398286beb12aa89f527bd740e2d990db5acc"
+}

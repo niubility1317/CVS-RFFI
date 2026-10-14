@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "protocol_and_config_negatives": 10,
+  "three_initial_states_equal": true,
+  "actual_native_call_checks": [
+    {
+      "arm": "SIG_TIME",
+      "actual_native_forward_hook": true,
+      "ambient_rng_unchanged": true,
+      "model_buffers_equal_to_original": true,
+      "actual_t1_t2_SIG_and_W_gradients_nonzero": true,
+      "extra_forward_counter": 2,
+      "native_context_counter": 1,
+      "optimizer_and_EMA_equivalence": true,
+      "head_fit_updates": 0
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "actual_native_forward_hook": true,
+      "ambient_rng_unchanged": true,
+      "model_buffers_equal_to_original": true,
+      "actual_t1_t2_SIG_and_W_gradients_nonzero": true,
+      "extra_forward_counter": 2,
+      "native_context_counter": 1,
+      "optimizer_and_EMA_equivalence": false,
+      "head_fit_updates": 0
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "actual_native_forward_hook": true,
+      "ambient_rng_unchanged": true,
+      "model_buffers_equal_to_original": true,
+      "actual_t1_t2_SIG_and_W_gradients_nonzero": true,
+      "extra_forward_counter": 2,
+      "native_context_counter": 1,
+      "optimizer_and_EMA_equivalence": false,
+      "head_fit_updates": 0
+    }
+  ],
+  "real_IQ_or_checkpoint_read": false,
+  "head_fit_updates": 0
+}
