@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "用户持续Phase1可迁移特征84%目标、默认分类头禁止单独训练；当前只读合法源机制诊断，GPU健康训练保持；实现和对应结果Git上传。",
   "code": {
-    "commit": "061f8c1bd21b135903f904714c3d3ab5812a1fc0",
+    "commit": "d34a7b91b91fb8672e622c3e39fb5142a1774dce",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32 CPU; CUDA_VISIBLE_DEVICES empty; Torch/OMP/MKL/OpenBLAS2threads",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_dropout_20261014_r01",
@@ -190,7 +190,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/moment-area-20261014",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -228,11 +228,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_added_feature_difference_min": 1e-06,
+            "source_added_feature_difference_min": 0.000001,
             "source_only": true,
             "description": "All3 finalLCE<=.5, real joint160 W-independent export, actual new parameter updates and AREA vs COV sourceL720 difference>=1e-6; predefined02/03 only from source verdict"
           },

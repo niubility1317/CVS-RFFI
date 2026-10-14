@@ -13,3 +13,5 @@
 入口 python -u -m experiments.cvs_source_dropout.probe，普通N607既有CVS-RFFI CPU，CUDA_VISIBLE_DEVICES为空，Torch/OMP/MKL/OpenBLAS2threads；CWD /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_dropout_20261014_r01；不可变output /home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01。source contract复用原392005及既有L/U/V角色。不占GPU、不停止或热修改其他owner。
 
 Stop：角色／来源／非有限／形状／模型状态变化失败保留输出并停止，无自动重试；不按目标或本诊断结果重采样、换checkpoint、扫Dropout参数。源诊断本身无目标测试或84%结论。预期results／resolved／observed_descriptors／completion、release preflight／submit及日志。独立PID/CWD/cmdline与产物复算核实完成后登记ANALYZED，Git提交推送并核对remoteOID。
+
+实现提交 d34a7b91b91fb8672e622c3e39fb5142a1774dce；唯一新增执行 P0/P1 审查 PASS，无发现。固定来源／全eval／L720／8确定性CPU回放／保存重算及零训练拟合路径已核对，尚未发布实际源诊断。
