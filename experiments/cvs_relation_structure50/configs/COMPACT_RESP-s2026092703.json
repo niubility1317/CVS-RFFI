@@ -1,0 +1,189 @@
+{
+  "schema": "relation_structure50_v1",
+  "run_id": "20261014-phase1-relation-temporal-factorial-oldgate-e50-clean-manysig-m12-r01",
+  "stage": "repair",
+  "arm": "COMPACT_RESP",
+  "model_seed": 2026092703,
+  "row_id": "COMPACT_RESP-s2026092703",
+  "features": [
+    "ema",
+    "pseudo",
+    "twostage"
+  ],
+  "variant": "reference_response",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-relation-temporal-factorial-oldgate-e50-clean-manysig-m12-r01/COMPACT_RESP-s2026092703/source",
+  "epochs": 50,
+  "steps_per_epoch": 222,
+  "model_initialization": "scratch",
+  "checkpoint_sources": [],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "method": "cvs_legacy_no_sat",
+  "target_access": false,
+  "pseudo_domain_gate": false,
+  "temporal_mode": "batch_neighbor",
+  "temporal_min_streak": 2,
+  "lr_schedule": "cosine",
+  "lr_min": 1e-06,
+  "launch_owner": "codex/root/relation-structure-20261014",
+  "label_epochs": 33,
+  "pseudo_epochs": 17,
+  "updates": 11100,
+  "legacy_reference_config": {
+    "schema": "legacy_no_sat_v1",
+    "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+    "stage": "repair",
+    "arm": "legacy_cosine_no_sat",
+    "model_seed": 2026092703,
+    "row_id": "legacy_cosine_no_sat-s2026092703",
+    "features": [
+      "ema",
+      "pseudo",
+      "twostage"
+    ],
+    "variant": "reference_response",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+    "epochs": 200,
+    "steps_per_epoch": 222,
+    "model_initialization": "scratch",
+    "checkpoint_sources": [],
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "method": "cvs_legacy_no_sat",
+    "target_access": false,
+    "pseudo_domain_gate": false,
+    "temporal_mode": "batch_neighbor",
+    "temporal_min_streak": 2,
+    "lr_schedule": "cosine",
+    "lr_min": 1e-06
+  },
+  "source_falsification": {
+    "final_L_CE_max": 0.5,
+    "V_mean_drop_max": 0.01,
+    "V_worst_RX_drop_max": 0.02,
+    "nonzero_relation_fraction_min": 0.5,
+    "mean_aux_to_L_feature_gradient_min": 1e-05
+  },
+  "training_recipe": "historical batch_neighbor pseudo gate+EMA+cos; no satellite; allarms identical",
+  "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+  "explicit_CFO_identity_feature": false,
+  "feature_extractor": {
+    "time_layers": [
+      "t1",
+      "t2",
+      "t3"
+    ],
+    "PA_changed": false,
+    "frequency_changed": false,
+    "reference_changed": false,
+    "settings": [
+      [
+        3,
+        1
+      ],
+      [
+        5,
+        1
+      ],
+      [
+        5,
+        1
+      ]
+    ],
+    "branch_activation": "identity",
+    "postprocessing": "unchanged GN/ReLU/pool/dropout",
+    "skip": "unchanged learned1x1 before original GN",
+    "output_embedding": 160,
+    "extra_parameters": 60672,
+    "classifier_changed": false,
+    "matched_new_arm_parameters": true,
+    "initial_functions_equal": "compact/long dilation differs",
+    "initialization_seed_offset": 48213,
+    "RNG_policy": "CPU fork_rng during added module init; restore native CPU/global loader/augmentation stream; no new stochastic forward ops",
+    "structural_changes": true,
+    "mechanism_extra_parameters": 0,
+    "training_mechanism": "unchanged crossRX relation and signed PA/ref response"
+  },
+  "classifier": "unchanged baseline ResidualPhysicalHead/6x160 cosine/scale30/branchLN/gain; no newhead/readout/calibration",
+  "test_views": [
+    "clean"
+  ],
+  "checkpoint_selection": "final_only",
+  "goal": {
+    "primary": "LONG_RESP",
+    "clean_three_seed_mean": 0.84,
+    "feedback_to_training": false
+  },
+  "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+  "cost_claim": "12new scratch50/133200updates, first4seed01 only then fixed source expansion; no historical target decisions reused,3060anchor Lforward/model; no headfit",
+  "baseline_reference": null,
+  "baseline_reuse": false,
+  "relation": {
+    "mode": "CROSS_RESP",
+    "tau": 0.2,
+    "alpha": 0.5,
+    "lambda_relation": 1.0,
+    "lambda_response": 1.0,
+    "response_norm": "SmoothL1 beta.02 sum anchor coordinates, mean RX/branches/packets",
+    "all_legal_U": true,
+    "U_TX_read": false,
+    "feature": "actual id_feat_joint joint160; auxiliary reconstructs exact values with detached PA/ref gains",
+    "anchor_role": "L_s only",
+    "anchor_pool_count": 180,
+    "anchors_per_TX_RX_day": 2,
+    "anchors_per_query": 120,
+    "anchors_per_query_TX": 20,
+    "anchor_day_counts_per_TX": [
+      7,
+      7,
+      6
+    ],
+    "RX_groups": 4,
+    "teacher": "ownEMA only, detached",
+    "refresh_updates": 222,
+    "refresh_first_update": 7327,
+    "refresh_calls": 17,
+    "extra_L_forward_packets": 3060,
+    "auxiliary_calls": 3774,
+    "U_packet_observations": 963900,
+    "weakstrong": "original EMA clean/native strong noise.015 and Dropout",
+    "gradient_reweight": false,
+    "probability_thresholds_added": false,
+    "pseudo_gate_changed": false,
+    "early_U": false,
+    "global_entropy_changed": false,
+    "class_W_used": false,
+    "aux_gain_gradients": false,
+    "deployment_reference_bank": false
+  },
+  "source_neighbor_sampling": {
+    "mode": "PAIRS",
+    "original_gates": true
+  },
+  "readouts": [
+    "NATIVE_HEAD"
+  ],
+  "separate_head_training": false,
+  "structure_factor": "COMPACT_LINEAR",
+  "mechanism_factor": "CROSS_RESP",
+  "structure_origin": {
+    "run_id": "20261014-phase1-time-coverage-nonlinearity-oldgate-e50-clean-manysig-m15-r01",
+    "initialization": "same original48213 CPU fork_rng; all four new tensor draws identical; compact/long settings differ",
+    "checkpoint_inherited": false
+  },
+  "combination_authorization": "User asks prior clear positive routes continue. Existing goal preregisters matched combinations after CROSS_RESP source pass; original firstseed source passed before target read. No new loss parameter, temperature, schedule or target-based parent selection."
+}
