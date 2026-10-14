@@ -1,6 +1,6 @@
 # 固定 SIG_TIME：中层时间特征自挑战的源证伪
 
-状态：PLANNED；只有实现和本地检查，尚无真实源结果或新训练。代码`50d265cb0e8e48cdc2580c9f7b13e342f26b50c8`。本轮是source-only诊断，0训练轮/0优化器步/0分类头拟合，不触发目标预测。
+状态：ANALYZED / VERIFIED；首模型真实源诊断已完成，0新训练，完整结果见final_analysis.md。代码`50d265cb0e8e48cdc2580c9f7b13e342f26b50c8`。本轮是source-only诊断，0训练轮/0优化器步/0分类头拟合，不触发目标预测。
 
 研究依据：训练时只重复现有简单身份判断，可能没有迫使骨干利用其他可用证据。这里核查RSC的源机制兼容性：以真类默认头logit对中层的梯度选择遮挡，再检查真实骨干CE导数。它不等于发现新身份证据或泛化改善。机制参考[RSC原论文](https://www.ecva.net/papers/eccv_2020/papers_ECCV/papers/123470120.pdf)与[DomainBed项目RSC实现](https://github.com/facebookresearch/DomainBed/blob/main/domainbed/algorithms.py)；不是原图像任务复现或新的通用算法声明。固定one-third来自已有方法，未经本项目目标调节。
 
@@ -26,3 +26,6 @@
 仅run-owned角色/query/CP来源错误、未定义mask、非有限数值、状态/梯度累计修改、预算/关键产物/复算缺失或输出冲突停止，保留现场不自动重启；不修改其他进程。发布一次普通预检、单归档本地/远端SHA比较、远端compile及真实CP2个synthetic IQ no-query smoke，然后直接诊断。PID/CWD/argv/log增长或自然完成产物核实。保存rawsource梯度/labels/physicalIDs/logits/masks在运行根，另独立进程重算全部mask、损失、预算和决定。Git只上传实现、必要聚合报告和结果，原始IQ/CP/PT/预测/日志不入库。
 
 本地13个协议/shape/nonfinite/undefined-mask负例和真实随机初始化网络检查PASS，覆盖t2形状、正常默认头及骨干导数、相同随机对照曝光、RNG/状态不变、无积累梯度和hook移除。初始全零合成IQ导致概率下降全并列，这是假输入无信息，失败已保留；检查改用固定独立随机合成IQ，科学规则不改。入口和生成远端脚本compilePASS。唯一独立直接P0/P1审查PASS，无发现；未让文档/重复审查成为额外门。
+
+
+首模型sourcePASS：900唯一L、3600源forward、300选择包、3300时间零位置，两种mask同预算；RSC/随机CE均值0.283861/0.140787，差0.143074。t1/t2/SIG增量5/5非零，t1/t2原CE余弦−0.556406/−0.620389，不能当正收益或训练安全证据。原状态/正常W未更新、独立复算一致，全部产物保存。按固定规则仅准备原样02/03源复核，不自动训练或访问target，固定父模型等待DRO02/03正常final50完成。

@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED",
+  "source_packets": 900,
+  "selected_packets": 300,
+  "time_positions_masked": 3300,
+  "time_positions_total": 28800,
+  "mean_CE": {
+    "ORIGINAL": 0.09843086302280427,
+    "RSC_SELECTED": 0.2838607430458069,
+    "MATCHED_RANDOM": 0.14078717827796935
+  },
+  "mean_probability_drop": {
+    "RSC_SELECTED": 0.10371721982955932,
+    "MATCHED_RANDOM": 0.030950432270765306
+  },
+  "RSC_CE_minus_random": 0.14307356476783753,
+  "RSC_probability_drop_minus_random": 0.07276678755879402,
+  "source_only": true,
+  "training_epochs": 0,
+  "head_fit_updates": 0,
+  "query_read": false
+}

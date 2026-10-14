@@ -444,3 +444,6 @@ CONF_FEATURE_MT02/03四个原worker仍live，最近完成23/27/27/26轮且loggro
 
 
 下一独立训练假设源预检：RSC启发的actual t2时序遮挡，固定SIG_TIME推理结构/默认头，无SAM/权重扰动/新头；run`20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01`代码`50d265cb0e8e48cdc2580c9f7b13e342f26b50c8`。只读预定义SIG_TIME01父的L900，定向与同物理包同零数随机对照，3600前向包次/20层60向量/0更新。源规则预先固定，唯一P0/P1和本地检查PASS；当前未发布，不声称有效。源PASS只允许独立登记02/03源诊断，不能自动训练或据target调mask。
+
+
+自挑战首模型源结果verified：RSC−匹配随机CE+.143074，900L/3600源forward/300选择包/3300时间零位置，骨干增量5/5真实非零。t1/t2导数余弦−.556406/−.620389，较大且反向；这是挑战接通，不是泛化改善，0更新/头fit/query。固定sourcePASS只准备02/03源复核，待原DRO矩阵SIG02/03父模型自然final50完成，不另选父或直接训练。

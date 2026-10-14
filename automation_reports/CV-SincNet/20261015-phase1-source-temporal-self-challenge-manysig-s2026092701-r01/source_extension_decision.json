@@ -1,0 +1,40 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "fixed_qualification": {
+    "status": "PASS",
+    "fixed_rules": {
+      "source_only": true,
+      "physical_packets": 900,
+      "cohorts": 5,
+      "three_actual_body_delta_gradients_nonzero_each_cohort": true,
+      "mean_selected_RSC_CE_minus_matched_random_min_exclusive": 0,
+      "mean_selected_RSC_true_probability_drop_minus_matched_random_min_exclusive": 0,
+      "model_state_and_default_head_unchanged": true,
+      "no_automatic_training_release": true,
+      "on_pass": "Only a separately registered unchanged02/03 source diagnostic may follow",
+      "on_fail": "Stop this fixed source self-challenge route; no mask-rate or layer scan"
+    },
+    "source_only": true,
+    "target_metrics_used": false,
+    "mean_RSC_CE_minus_random": 0.14307356476783753,
+    "mean_RSC_probability_drop_minus_random": 0.07276678755879402,
+    "no_automatic_training_release": true
+  },
+  "code_commit": "50d265cb0e8e48cdc2580c9f7b13e342f26b50c8",
+  "execution_commit": "2266f50a7be42eaa2a283bd7a6dd561adef548ab",
+  "remaining_model_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "remaining_parent_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+  "remaining_parent_rows": [
+    "SIG_TIME-s2026092702",
+    "SIG_TIME-s2026092703"
+  ],
+  "parent_selection": "Predefined own nominalseed SIG_TIME controls final50 only, never target-best",
+  "remaining_readiness": "Wait for original healthy parents final50 source completion and exactsource_proof; no earlyCP or otherparent fallback",
+  "decision": "Prepare separatelyregistered unchanged02/03 source replication; no automatic training or target access",
+  "new_target_metric_read": false,
+  "head_fit_updates": 0
+}

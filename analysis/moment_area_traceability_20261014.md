@@ -213,3 +213,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 
 
 训练自挑战源假设独立登记：cvs_source_self_challenge只作用actual t2时间位置、保留SIG_TIME/defaulthead；L900源readonly定向vs匹配随机，0优化/头fit/query；不重做已有localORDER或SIG结构。代码与预登记一致，唯一P0/P1PASS，真实源结果待发布。
+
+
+自挑战源首模型真实闭环：900L、3600sourceforward、20层60参数向量，第二进程完整mask/损失/向量复算VERIFIED；定向与同包同零数随机差CE+.143074，但t1/t2梯度与原始CE明显反向，不能晋级为性能改善。sourcePASS决定只扩预定义02/03源复核，父模型仍按原DRO训练健康运行，不用target改mask/层，不自动训练。

@@ -1,0 +1,67 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "50d265cb0e8e48cdc2580c9f7b13e342f26b50c8",
+  "execution_commit": "2266f50a7be42eaa2a283bd7a6dd561adef548ab",
+  "ordinary_preflight": "PASS",
+  "archive_transfer_and_remote_compile": "VERIFIED_BY_ORIGINAL_PUBLISH",
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "forbidden_or_invalid_cases": 13,
+      "exact_random_packet_and_zero_counts": true,
+      "isolated_mask_RNG": true,
+      "actual_SIG_TIME_t2_shape": [
+        12,
+        96,
+        32
+      ],
+      "actual_native_default_head_gradients": true,
+      "model_state_unchanged": true,
+      "accumulated_parameter_gradients": false,
+      "head_fit_updates": 0,
+      "real_IQ_or_checkpoint_read": false
+    },
+    "real_checkpoint_no_query_smoke": true,
+    "synthetic_IQ_packets": 2,
+    "checkpoint_parent_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+    "checkpoint_epoch": 50,
+    "training_inherits_checkpoint": false,
+    "source_only": true,
+    "query_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0
+  },
+  "initial_process": {
+    "pid": 2697855,
+    "start_ticks": 126251739,
+    "state": "R",
+    "cwd": "PROJECT/releases/cvs_source_self_challenge_20261015_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_source_self_challenge.audit"
+    ],
+    "gpu": ""
+  },
+  "initial_log_bytes": 0,
+  "final_log_bytes": 890,
+  "completion": {
+    "status": "ANALYZED",
+    "models": 1,
+    "source_packets": 900,
+    "forward_packets": 3600,
+    "gradient_batches": 5,
+    "layer_records": 20,
+    "saved_vectors": 60,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0
+  },
+  "failure": null,
+  "CPU_threads": 2,
+  "GPU_allocation": 0
+}

@@ -83508,7 +83508,7 @@
       "report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/source_gradient_geometry.md"
     },
     "source_temporal_self_challenge": {
-      "status": "PLANNED_SOURCE_ONLY",
+      "status": "ANALYZED_VERIFIED_SOURCE_PASS",
       "run_id": "20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01",
       "release": "cvs_source_self_challenge_20261015_r01",
       "code_commit": "50d265cb0e8e48cdc2580c9f7b13e342f26b50c8",
@@ -83522,21 +83522,35 @@
       "training_epochs": 0,
       "head_fit_updates": 0,
       "U_or_V_or_query_forward": false,
-      "source_qualification": {
-        "source_only": true,
-        "physical_packets": 900,
-        "cohorts": 5,
-        "three_actual_body_delta_gradients_nonzero_each_cohort": true,
-        "mean_selected_RSC_CE_minus_matched_random_min_exclusive": 0,
-        "mean_selected_RSC_true_probability_drop_minus_matched_random_min_exclusive": 0,
-        "model_state_and_default_head_unchanged": true,
-        "no_automatic_training_release": true,
-        "on_pass": "Only a separately registered unchanged02/03 source diagnostic may follow",
-        "on_fail": "Stop this fixed source self-challenge route; no mask-rate or layer scan"
-      },
+      "source_qualification": "PASS",
       "report": "automation_reports/CV-SincNet/20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01/report.md",
       "parent_rule": "Fixed first nominalseed SIG_TIME control, never target-best",
-      "source_parent": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01"
+      "source_parent": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "execution_commit": "2266f50a7be42eaa2a283bd7a6dd561adef548ab",
+      "actual_source_packets": 900,
+      "actual_selected_packets": 300,
+      "actual_time_masked_positions": 3300,
+      "source_mean_CE": {
+        "ORIGINAL": 0.09843086302280427,
+        "RSC_SELECTED": 0.2838607430458069,
+        "MATCHED_RANDOM": 0.14078717827796935
+      },
+      "RSC_minus_random_CE": 0.14307356476783753,
+      "actual_RSC_gradient_cosines": [
+        -0.5564058965410233,
+        -0.6203891438049205,
+        0.016416534759690914
+      ],
+      "actual_RSC_gradient_norm_ratios": [
+        14.148153292619252,
+        15.751968751016683,
+        25.165024774012025
+      ],
+      "source_extension_decision": "automation_reports/CV-SincNet/20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01/source_extension_decision.json",
+      "no_automatic_training_release": true,
+      "remaining_source_parents": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "remaining_source_readiness": "Parents still original healthy50epoch training; only fixedSIG02/03 final50 may be used",
+      "result_ref": "automation_reports/CV-SincNet/20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01/final_analysis.md"
     }
   }
 }
