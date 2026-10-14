@@ -19,6 +19,7 @@ _source_feature_auxiliary_hook = None
 _trusted_pseudo_loss_hook = None
 _unlabeled_feature_observer_hook = None
 _unlabeled_outputs_observer_hook = None
+_labeled_identity_loss_hook = None
 
 import numpy as np
 
@@ -9123,6 +9124,13 @@ def train(args) -> int:
                         out_l["tx_logits"][:concat_sat_clean_bsz],
                         y_l[:concat_sat_clean_bsz],
                         label_smoothing=float(args.label_smoothing),
+                    )
+                if _labeled_identity_loss_hook is not None:
+                    loss_tx_l = _labeled_identity_loss_hook(
+                        model=model, args=args, epoch=epoch, batch_idx=batch_idx,
+                        logits=out_l["tx_logits"], labels=y_l,
+                        receivers=receiver_l_base, clean_count=labeled_clean_count,
+                        original_loss=loss_tx_l, role="L_s",
                     )
                 if d_l is not None and cur_w["fishr"] > 0.0:
                     loss_fishr_l = fishr_logit_gradient_variance_loss(
