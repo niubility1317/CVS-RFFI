@@ -17,3 +17,5 @@ L6300/U56700 hidden/V27000原契约、physicalIDs/split392005/RX1/3/4/6/8/day1/2
 代码/config提交 c98bfcd54c870a03195f220644ab4f7a46ba8d8b，全部模块编译及唯一直接P0/P1审查PASS；真实SIG checkpoint noquerysmoke为发布首步，PASS后直接继续。
 
 远端执行 86c22cb76e5eff4a7b106cca769d198879ab22b4：单归档一次local/remoteSHA比较、compile与真实SIG checkpoint noquery90 smoke PASS。两actualsamePID/CWD/argv/GPU/loggrowth VERIFIED，GPU4/5，初次核实3/3epoch；source_sampling保存记录1至4epoch均U_IQ_fetched=false且sampler未迭代，无failure。固定50继续，尚无新target性能，不宣称半监督收益。
+
+真实第34轮机制回收：RANDOM接受908/56700（1.6014%）且32个空UCE批；PAIR接受51378/56700（90.6138%）且无空批。三实际特征参数的U/主CE范数比均值和批间波动更低，epoch33 U项全0。不同批/轨迹，不能据此声称梯度质量、U准确率、目标收益或累计AdamW贡献；独立全PT审计待完整闭环。见training_mechanism_e34.json及mechanism_e34.md，当前健康训练不改权重/日程。

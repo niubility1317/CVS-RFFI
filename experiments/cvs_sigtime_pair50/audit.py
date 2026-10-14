@@ -1,11 +1,11 @@
 import gzip,json,statistics as st,time
 import torch
-from . import design as d,model as api
+from . import design as default_design,model as api
 from .observer import gradient_stats
 from experiments.cvs_signature_stats50.audit import run as shared
 
-def run():
- torch.set_num_threads(2);start=time.time();audit=shared(design=d,build_fn=api.build);observations=[]
+def run(*,design=None,build_fn=None):
+ d=design or default_design;torch.set_num_threads(2);start=time.time();audit=shared(design=d,build_fn=build_fn or api.build);observations=[]
  for row in d.training_rows():
   p=d.BASE/row['row_id']/'source';v=d.read(p/'ssl_training_observation.json');saved=d.read(p/'ssl_gradient_records.json');sampling=d.read(p/'source_sampling_epoch_diagnostic.json')['records'];records=saved['batch_records'];count=0
   if v['status']!='VERIFIED' or v['steps']!=11100 or v['U_packets']!=963900 or v['gradient_epochs']!=[33,34,50] or v['gradient_batches']!=666 or len(records)!=666 or v['head_fit_updates'] or v['U_truth_read'] or v['extra_model_forwards'] or not v['loss_returned_unchanged']:raise ValueError('Actual fixedSIG SSL budget differs')

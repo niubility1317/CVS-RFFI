@@ -268,3 +268,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 固定SIG_TIME签名内训练首seed闭环：RAW83.6363%、ZERO83.5815%（+.0548pp，修正588引入496净+92/168000）；DYNAMIC83.4476%（−.1339pp，修正573引入798净−225），DYNAMIC−RAW−.1887pp。4row/3新150model-epochs33300updates＋旧50/11100，200完整源epoch/672000defaultpred/72metrics/8250extraL90/1980实际层cohortgrad/7920向量保存复算VERIFIED，0头拟合。三fθ实际5pool张量全元素更新、export差0/W独立；初态函数同，源特征RAW/DYNAMIC−ZERO L2=1.310938/1.795317。更强gradient/去常量源几何不代表收益；仅n1、完整3seed84未达成。SOURCEPASS决定d56f9b79c9fea83629c525e362d473ff0fcafb1e先于新target数字回收，两候选原样02/03六新已发布同commit、samePID/CWD/argv/GPU/loggrowth VERIFIED（6/6/6/6/6/5），未择优、改参或重跑。报告20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01/final_analysis.md。
+
+
+固定SIG_TIME半监督第34轮真实机制：RANDOM 908/56700接受（1.6014%）、32emptybatch；PAIR51378/56700（90.6138%）、0empty。t1 .16UCE/mainLCE均值12.7656%vs4.6682%，批间SD31.5486vs3.3222个百分点；t2/SIG投影同样均值与波动更低。epoch33两臂U梯度全0；不访问Utruth，不把覆盖/梯度统计当性能，不调lambda或日程。所有222批来自真实保存日志/grad记录；训练产物报告PT复算VERIFIED，独立全PT审计待矩阵完成。详见20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01/mechanism_e34.md。
