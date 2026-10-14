@@ -59,3 +59,7 @@ TAIL 测量步 7327/8437/9769/10879；MID 为 3553/4663/5995/7105；SPREAD 为 3
 ## 发布后真实状态
 
 RUNNING/VERIFIED，执行 commit `2eba72c52e7cb85671c76bc68b793a0880642518`。一次 archive 传输比较、remote compile、真实同契约历史 student/ownEMA strict no-query smoke PASS。首种子三组 PID/CWD/argv/GPU/实际844754参数与日志增长独立核实，当前完成轮数 [8, 8, 9]。后续6行仅按预定源条件放行；4次当前教师/真实AdamW状态测量尚待对应训练阶段，不用合成 smoke 替代。当前无本轮性能结论，84%目标保持active。
+
+## 技术失败与保留
+
+MID/SPREAD完成16轮后进入第17轮当前V代理时，原发布包缺少 `experiments.cvs_source_label_gate`，两行同一ModuleNotFoundError。原archive隔离导入已复现。按预登记系统技术故障条件仅关闭绑定PID/CWD/argv/GPU/parent的本run剩余TAIL和dispatcher，poststate VERIFIED，其他健康run不干预。全部partial产物保留；已完成模型轮次至少 60，另有可能未完成轮次，不能记成完整预算或机制负结果。无目标预测或评分。替代run `20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r02` 保持原日历/矩阵/预算/种子/源规则，仅修复发布依赖并在首preflight实际导入，全部从零，不继承R01。

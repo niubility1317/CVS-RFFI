@@ -2134,7 +2134,7 @@
     "Benchmark exposed and user selectedE50 recipe. Not newindependentblindtest; no targetfeedback.",
     "No newparam/loss/architecture/head, no satellite/Phase2. Temporal/Sinc positiveevidence retainedindependently; healthytemporal×relation continuesunchanged."
   ],
-  "status": "RUNNING",
+  "status": "FAILED_TECHNICAL_STOPPED",
   "registered_at": "2026-10-14T07:32:39+00:00",
   "independent_review": {
     "status": "PASS",
@@ -2400,5 +2400,7 @@
     "fixture": "Local syntheticIQ/model proxy and syntheticCVS optimizer losses; no real source/U/target data"
   },
   "actual_execution_commit": "2eba72c52e7cb85671c76bc68b793a0880642518",
-  "launch_evidence_ref": "launch_evidence.json"
+  "launch_evidence_ref": "launch_evidence.json",
+  "technical_failure_ref": "failure_evidence.json",
+  "superseded_by": "20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r02"
 }

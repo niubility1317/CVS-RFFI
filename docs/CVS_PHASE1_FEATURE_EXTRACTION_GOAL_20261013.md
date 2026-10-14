@@ -84,3 +84,5 @@ Sinc坐标9row全部完成，6新scratch50/300模型轮次/66600更新、3历史
 每模型在第1/6/12/17个U轮前使用当时ownEMA、原完整V27000做无拟合当前教师accuracy/ECE/coverage/precision代理，V标签只用于下游计数，状态与训练随机流保护，不能用最终教师回填早期阶段，也不冒充U真实精度。在对应首batch用同真实AdamW状态的两个临时分支测量 `.16pseudoCE+.01entropy` 对更新的增量，各自clip5并纳入moments/weightdecay；真实模型只更新一次，总临时分支读回匹配实际更新。模型间L1420800/U963900曝光相等，额外V216000前向/模型和8临时步骤单列，无额外实际更新。三组191初始state及CPU随机状态、native安装入口、日历负例和本地真实模型优化回调已PASS。冻结逐行自动clean预测与独立truth-last，原数据/目标反馈禁令保持。
 
 下一独立创新主机制为同TX、同day、跨RX的PA实际增量证据重组，用detached既有W和辅助增益计算有标签CE，保留PA特征梯度，主CE正常联合训练默认头。原样、同RX重组、跨RX重组三控制先在L进行，不能把不同采集包解释为同波形硬件反事实；不新增U伪类判定链。有停止条件的语义间隔随后，分支更新约束仅在有用辅助信号出现后研究。已发布的时序×关系组合继续原计划，必须报告结构内机制差和交互；COMPACT/LONG_SILU/Sinc既有正收益独立保留。84%固定三seed目标仍active，任何接线、源诊断或发布状态都不是目标完成。
+
+等U时序R01发生确定技术失败：原不可变archive缺少既有source_label_gate，MID/SPREAD第17轮当前V代理导入时同异常。两行各完整16轮，按预登记系统技术故障仅停止绑定的本run TAIL/dispatcher（TAIL完整28轮），至少60模型轮次与可能partial成本保留；无target预测/评分，不当作机制负结果。原archive隔离复现、实际publish PATHS修复后隔离导入/原gate负例PASS，只有一次对应P1定向复审。替代run `20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r02` 新根、新scratch，日历/矩阵/seed/预算/源规则保持；无R01权重继承，不影响其他健康run。

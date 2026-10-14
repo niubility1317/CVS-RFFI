@@ -1,7 +1,7 @@
 import argparse,copy,json
 from pathlib import Path
 import torch
-from . import design as d,model
+from . import design as d,model,proxy
 from .checks import run as checks
 from .counterfactual import simulate
 
@@ -18,6 +18,7 @@ def run():
   opt.step();opt.zero_grad(set_to_none=True)
  cf=simulate(opt,[torch.ones_like(x) for x in params],[torch.ones_like(x)*4 for x in params],names=['t1','PA'],max_grad_norm=5.)
  if not all(cf['summary'][k] for k in ('live_parameters_unchanged','live_gradients_unchanged','live_optimizer_state_unchanged','rng_unchanged')):raise ValueError('Counterfactual changed remote live state')
- return dict(status='PASS',real_checkpoint_noquery=True,strict_student_ownEMA=True,same_contract=True,no_inherited_training=True,query_access=False,head_fit_updates=0,checks=checks(),remote_AdamW_synthetic_probe=cf['summary'],actual_current_optimizer_probes='Four per realtraining model, not replaced by synthetic smoke')
+ from experiments.cvs_source_label_gate.audit import check as gate_check
+ return dict(status='PASS',real_checkpoint_noquery=True,strict_student_ownEMA=True,same_contract=True,no_inherited_training=True,query_access=False,head_fit_updates=0,checks=checks(),runtime_proxy_dependency_imported=True,original_gate_negative_check=gate_check(),remote_AdamW_synthetic_probe=cf['summary'],actual_current_optimizer_probes='Four per realtraining model, not replaced by synthetic smoke')
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--remote-preflight',action='store_true');p.add_argument('--output',type=Path,required=True);d.write(p.parse_args().output,run());print(json.dumps(dict(status='PASS')))

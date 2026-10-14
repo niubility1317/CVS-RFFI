@@ -1,0 +1,68 @@
+{
+  "status": "VERIFIED",
+  "experiment_state": "FAILED_TECHNICAL_STOPPED",
+  "failed_layer": "immutable_release_dependency_missing",
+  "fingerprint": "ModuleNotFoundError: experiments.cvs_source_label_gate",
+  "matching_pre_prediction_failures": 2,
+  "isolated_original_archive_reproduction": true,
+  "technical_stop": {
+    "status": "VERIFIED",
+    "run_id": "20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r01",
+    "state": "SYSTEMIC_TECHNICAL_FAILURE_STOPPED",
+    "reason": "Two identical preprediction ModuleNotFoundError from missing release dependency; no target contact",
+    "fingerprint": "experiments.cvs_source_label_gate missing",
+    "exact_PID_CWD_cmdline_GPU_parent_verified": true,
+    "stopped": [
+      2215947,
+      2215799
+    ],
+    "poststate": [
+      {
+        "pid": 2215947,
+        "process": null
+      },
+      {
+        "pid": 2215799,
+        "process": null
+      }
+    ],
+    "artifacts_preserved": true,
+    "unrelated_tasks_untouched": true,
+    "no_automatic_unmodified_retry": true
+  },
+  "rows": [
+    {
+      "row_id": "TAIL-s2026092701",
+      "completed_source_epochs": 28,
+      "source_frozen": false,
+      "prediction_complete": false,
+      "score_complete": false,
+      "process_naturally_failed": false,
+      "exact_runowned_technical_stop": true
+    },
+    {
+      "row_id": "MID-s2026092701",
+      "completed_source_epochs": 16,
+      "source_frozen": false,
+      "prediction_complete": false,
+      "score_complete": false,
+      "process_naturally_failed": true,
+      "exact_runowned_technical_stop": false
+    },
+    {
+      "row_id": "SPREAD-s2026092701",
+      "completed_source_epochs": 16,
+      "source_frozen": false,
+      "prediction_complete": false,
+      "score_complete": false,
+      "process_naturally_failed": true,
+      "exact_runowned_technical_stop": false
+    }
+  ],
+  "completed_model_epochs_minimum": 60,
+  "possible_partial_epoch_additional_cost": true,
+  "no_target_contact": true,
+  "artifacts_preserved": true,
+  "new_run": "20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r02",
+  "recovery_changes": "Bundle existing audit dependency, import proxy and audit negatives in firstpreflight, inspectqueuefailures immediately. All scientificsettings unchanged. New immutable root andscratch; no R01 weights reused."
+}

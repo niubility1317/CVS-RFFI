@@ -2,8 +2,8 @@ from pathlib import Path
 from experiments.cvs_evidence_relation import design as parent
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,CAPSULE,TRUTH,CLASSES,SEEDS,FULL_FP32_POLICY,read,write=(getattr(parent,k) for k in ('PROJECT','SOURCE','CAPSULE','TRUTH','CLASSES','SEEDS','FULL_FP32_POLICY','read','write'))
-RUN='20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r01'
-RELEASE='cvs_U_schedule50_20261014_r01';OWNER='codex/root/U-calendar-20261014';BASE=Path(PROJECT)/'runs'/RUN
+RUN='20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r02'
+RELEASE='cvs_U_schedule50_20261014_r02';OWNER='codex/root/U-calendar-20261014';BASE=Path(PROJECT)/'runs'/RUN
 ARMS=('TAIL','MID','SPREAD');PRIMARY=('MID',);VIEWS=('clean',);READOUTS=('NATIVE_HEAD',)
 TITLE='等 U 曝光量的训练时序：默认头固定三种子'
 CALENDARS=dict(TAIL=list(range(34,51)),MID=list(range(17,34)),SPREAD=list(range(17,50,2)))
