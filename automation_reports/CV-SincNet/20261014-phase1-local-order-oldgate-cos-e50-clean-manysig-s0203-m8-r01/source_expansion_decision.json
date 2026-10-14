@@ -1,0 +1,110 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "first_run": "20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+  "first_execution": "f34078d1a0775ef6fa66365689481ad5a1932e4c",
+  "qualification": {
+    "status": "PASS",
+    "source_only": true,
+    "target_metrics_read_for_decision": false,
+    "final_L_CE": {
+      "SIG_TIME-s2026092701": 0.2477045853261475,
+      "LOCAL_SUPCON-s2026092701": 0.24838408623058517,
+      "LOCAL_ORDER-s2026092701": 0.24798244613784928
+    },
+    "actual_ORDER_minus_SIG_L720zL2": 1.5924851894378662,
+    "actual_ORDER_effective_gradient_t1_t2_nonzero_17_33_50": true,
+    "actual_observations": {
+      "SIG_TIME-s2026092701": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "extra_batches": 2750,
+        "extra_source_packet_forwards": 247500,
+        "U_steps": 3774,
+        "U_packets": 963900,
+        "U_accepted": 15430,
+        "gradient_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "gradient_batches": 220,
+        "layer_gradient_records": 660,
+        "head_fit_updates": 0,
+        "auxiliary_classW_dependency": false,
+        "default_head_jointly_trained": true,
+        "U_truth_read": false,
+        "source_only": true,
+        "saved_gradient_recount": "VERIFIED"
+      },
+      "LOCAL_SUPCON-s2026092701": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "extra_batches": 2750,
+        "extra_source_packet_forwards": 247500,
+        "U_steps": 3774,
+        "U_packets": 963900,
+        "U_accepted": 15422,
+        "gradient_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "gradient_batches": 220,
+        "layer_gradient_records": 660,
+        "head_fit_updates": 0,
+        "auxiliary_classW_dependency": false,
+        "default_head_jointly_trained": true,
+        "U_truth_read": false,
+        "source_only": true,
+        "saved_gradient_recount": "VERIFIED"
+      },
+      "LOCAL_ORDER-s2026092701": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "extra_batches": 2750,
+        "extra_source_packet_forwards": 247500,
+        "U_steps": 3774,
+        "U_packets": 963900,
+        "U_accepted": 15431,
+        "gradient_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "gradient_batches": 220,
+        "layer_gradient_records": 660,
+        "head_fit_updates": 0,
+        "auxiliary_classW_dependency": false,
+        "default_head_jointly_trained": true,
+        "U_truth_read": false,
+        "source_only": true,
+        "saved_gradient_recount": "VERIFIED"
+      }
+    },
+    "fixed_rules": {
+      "final_L_CE_max": 0.5,
+      "source_added_feature_difference_min": 1e-06,
+      "actual_extra_batches": 2750,
+      "gradient_epoch_batches": 220,
+      "source_only": true,
+      "description": "All3finalLCE<=.5; actualupdate/export/Windependence/identicalinitialeval; ORDER-SIGL720zL2>=1e-6; exactextra/gradientbudget; ORDER t1/t2 effectiveauxnonzero at17/33/50; no target score used for expansion."
+    },
+    "predefined_remaining_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "configuration_changes_for_expansion": false,
+    "head_fit_updates": 0
+  },
+  "remaining_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "configuration_changed": false,
+  "target_metric_read": false,
+  "first_seed_retrained": false
+}

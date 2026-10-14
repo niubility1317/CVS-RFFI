@@ -7,3 +7,5 @@
 合法数据/physicalIDs/六类seed/CWD/GPUowner/命令/不可变root/stoprule/每rowconfig/产物在experiment.json。每GPU≤3总进程/free>=12000MiB，其他健康任务保持；源失败不发布，技术失败保留产物，不盲重启。
 
 包装复用唯一已审核心，不重复审查。8source资格负例、六nativecontext/同seed初态/原aux配置一致/zeroIQforward/REMOTEcompile/dependenciesPASS，qualification仅远端preflight读firstsource。当前CONDITIONAL_REGISTERED，尚未发布，无首seed新target数字读取。
+
+首seedSOURCE PASS已独立读回并按资格负例验证（尚未读新target数字）：三finalLCE .247704585/.248384086/.247982446，ORDER−SIGL720zL2=1.592485189，actualfθupdate/export/W独立/earlymidlategradient预算均PASS。按原配置发布固定02/03六新模型，不回流目标结果。

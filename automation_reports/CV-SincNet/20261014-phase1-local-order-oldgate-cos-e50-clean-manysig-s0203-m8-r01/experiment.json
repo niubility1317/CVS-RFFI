@@ -28,7 +28,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确要求将并列MEAN_VAR/COV综合到SIG_TIME基础上继续强化特征性能；默认分类头不可单独训练，每模型<=50，基线旧门控+cos；实现及对应实验结果Git上传。",
   "code": {
-    "commit": "Actual Git commit fixed before release",
+    "commit": "9cd9a031652058936e381cd9ad3e85df539fd6c1",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32/2threads; warm CUDA before native seed; private feature initialization RNG",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_local_order_seeds_20261014_r01",
@@ -222,7 +222,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -260,11 +260,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
@@ -359,7 +359,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -397,7 +397,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -603,7 +603,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -641,11 +641,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
@@ -853,7 +853,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -891,11 +891,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
@@ -1103,7 +1103,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1141,11 +1141,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
@@ -1353,7 +1353,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1391,11 +1391,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
@@ -1490,7 +1490,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -1528,7 +1528,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -1734,7 +1734,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1772,11 +1772,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
@@ -1984,7 +1984,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -2022,11 +2022,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
@@ -2234,7 +2234,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -2272,11 +2272,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
@@ -2420,7 +2420,15 @@
     "Firstseedfalsification only; remainingtwo authorized conditional onSOURCEPASS withunchangedrecipe, no target feedback.",
     "Prepared whilefirsthealthytraining, do notpublishunlesssourcePASS. CoreuniqueP0/P1reused unchanged; sixnativecontext/eightqualificationnegativechecks only."
   ],
-  "status": "CONDITIONAL_REGISTERED",
-  "results": null,
+  "status": "SOURCE_QUALIFIED",
+  "results": {
+    "status": "SOURCE_QUALIFIED",
+    "source_only": true,
+    "target_metric_read_for_decision": false,
+    "first_source_qualification": "PASS",
+    "decision_ref": "source_expansion_decision.json",
+    "new_target_results_read": false,
+    "goal_84": false
+  },
   "registered_at": "2026-10-14T11:30:55+00:00"
 }
