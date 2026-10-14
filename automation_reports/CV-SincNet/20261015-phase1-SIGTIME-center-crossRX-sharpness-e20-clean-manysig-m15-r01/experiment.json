@@ -3372,7 +3372,7 @@
     "Prior targetbenchmark exposed; no claim of newblindtest",
     "Scratch50 cost distinct from E20/E20+20 histories"
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "local_verification": "math,actual native/defaulthead gradient/checkpoint/teacher checks,pipeline protocol negatives PASS",
   "independent_review": {
     "status": "PASS",
@@ -3384,11 +3384,12 @@
   "stop_rule": "Only exactrunowned systemictechnicalfailure: source/metadata/checkpoint/role mismatch, nonfinite, unavailabledependency, live state/callback/actualupdate inconsistency, forbidden truth/head fit, unable legal predictions or scoring. Preserve partial; no automatic retry, healthyotherowners untouched.",
   "launch_evidence_ref": "launch_evidence.json",
   "result": {
-    "status": "RUNNING",
-    "launch_status": "VERIFIED",
-    "training_rows_launched": 5,
-    "pending_source_rule_rows": 10,
-    "test_rows_completed": 0,
-    "goal_84": null
+    "scientific_decision": "EXPERIMENT_COMPLETE",
+    "completed_rows": 15,
+    "registered_rows": 15,
+    "seed_count": 3,
+    "result_ref": "result_evidence.json",
+    "default_head_only": true,
+    "numeric_three_seed_84_verified": false
   }
 }

@@ -140,3 +140,9 @@ SIG_TIME 训练机制首 seed 四组已完整 ANALYZED / VERIFIED：BASE 83.3625
 ## 2026-10-15：源可用性通过后发布 E20 跨 RX 脆弱性矩阵
 
 跨RX源原型4/4满足既定lossgap/实际梯度/滤波器条件，只证明信号可用，不证明识别收益。新增固定 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01`：SIG_TIME＋CENTER25K、原默认头、scratch20/4440更新，BASE_CE、BASE_SSL、CLEAN_CE、GLOBAL_GAP、CROSS_GAP各三seed；先首seed5行源证据，满足固定健康与信号条件再扩其余10。BASE_CE20L/0U、U/EMA实际关闭；其余13L＋7U/原oldgateownEMA，全部普通L增强与星地训练关闭，U专用Gaussian保留。250scheduledauxcalls/四实际探针，默认头clean逐row自动预测＋独立truth-last。训练和规则不接受target反馈；原E20与历史正负结果保留，0E50训练权重继承。84%默认头三seed目标仍active。实际codecommit/命令/环境/GPU/停止条件/产物见新run预登记；源原型不是新盲测或原创性证明。
+
+
+E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01` 已ANALYZED/VERIFIED：实际15行/3seed，CROSS_GAP=81.0853%，相对BASE_SSL=-0.0480百分点；源决定EXPERIMENT_COMPLETE。完整默认头truth-last/配对错误/源曲线见[结果报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01/report.md)。84%三seed数值核验=False；该布尔值不替代机制对照或整体目标完成判定。未改参或选择性重跑，历史正负路线保留。
+
+
+本版跨RX loss-gap闭环为负结果：CROSS_GAP81.0853%，相对BASE_SSL−0.0480百分点，净−242/504000；三seed未到84%。15模型全部20轮/4440更新/默认头truth-last，270CM与300源epoch完整。source V180真实initial/final表明17selected张量均变化，但身份间隔相对SSL两降一升；feature-only/W删除接口PASS只证明解耦结构。全局shadow容差受unusedHz参数放大，原PASS不证明紧精度。保留SIG_TIME/CENTER历史正路线，关闭本版loss-gap参数扫描；下一个最多两动作：同身份跨RX分支证据重组的source原型，以及真实feature更新采集。新主训练尚未发布，84%目标active。

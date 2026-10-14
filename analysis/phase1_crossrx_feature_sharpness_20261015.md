@@ -46,3 +46,9 @@ held bank 仍是模型此前训练过的源 L，只在当前梯度步骤排除�
 
 
 数值证据限定：实际probe的shadow容差为1e−6×所有optimizer参数的最大绝对值，包含未参与梯度的大Hz参数，因此首seed为8.3271195。该容差过宽，不能凭PASS证明微小feature辅助增量精确落地；另seed已观察到最大shadow差约2.4e−5。一次真实AdamW计数、辅助17张量/默认W-gain梯度None、实际初末Sinc/特征变化与独立默认头测试需分别解读。保留原probe数值及判据，不热改或重跑健康任务，不新增发布阻塞。冻结后的feature-only/默认W不影响z核对作为源端结果证据，无头拟合/query。详见shadow_tolerance_limit.json。
+
+
+E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01` 已ANALYZED/VERIFIED：实际15行/3seed，CROSS_GAP=81.0853%，相对BASE_SSL=-0.0480百分点；源决定EXPERIMENT_COMPLETE。完整默认头truth-last/配对错误/源曲线见[结果报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01/report.md)。84%三seed数值核验=False；该布尔值不替代机制对照或整体目标完成判定。未改参或选择性重跑，历史正负路线保留。
+
+
+本版跨RX loss-gap闭环为负结果：CROSS_GAP81.0853%，相对BASE_SSL−0.0480百分点，净−242/504000；三seed未到84%。15模型全部20轮/4440更新/默认头truth-last，270CM与300源epoch完整。source V180真实initial/final表明17selected张量均变化，但身份间隔相对SSL两降一升；feature-only/W删除接口PASS只证明解耦结构。全局shadow容差受unusedHz参数放大，原PASS不证明紧精度。保留SIG_TIME/CENTER历史正路线，关闭本版loss-gap参数扫描；下一个最多两动作：同身份跨RX分支证据重组的source原型，以及真实feature更新采集。新主训练尚未发布，84%目标active。

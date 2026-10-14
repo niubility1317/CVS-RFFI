@@ -1,3 +1,27 @@
+# E20 跨 RX 特征脆弱性完整结果
+
+固定矩阵已完成 15/15 行、3 个模型种子；状态 VERIFIED。执行 commit `6693e4480ef990bc23c5021ff1440b547fe5fcaf`。每行 scratch20／4440 主更新／默认头 clean168000 决定及独立truth-last。
+
+|方案|实际seed数|clean均值|SD（百分点）|Macro-F1|
+|---|---:|---:|---:|---:|
+|BASE_CE|3|81.0774%|0.8888|0.805631|
+|BASE_SSL|3|81.1333%|1.0191|0.806057|
+|CLEAN_CE|3|81.1573%|0.9407|0.806461|
+|GLOBAL_GAP|3|81.0431%|0.9362|0.805158|
+|CROSS_GAP|3|81.0853%|0.9254|0.805715|
+
+CROSS_GAP 相对 BASE_SSL：-0.0480 个百分点。完整配对更正／引入错误见 paired_errors.csv；270个6×6混淆矩阵和300条源epoch已复算。只有完整三seed才检验84%数值门槛，本次结果为False。泛化机制结论需结合全部对照差，梯度非零和滤波器变化本身不证明识别收益。
+
+源规则状态：EXPERIMENT_COMPLETE；原因：首seed预登记源条件通过。未启动行保留，不依据target重排、改参或选择性重跑。
+
+全部条件保留SIG_TIME＋固定CENTER25K和原默认头联合训练。BASE_CE20L/0U，U与EMA实际关闭；其余13L＋7U，完整U曝光396900/model、旧门控ownEMA/entropy保留。普通L增强及星地训练关闭，U专用Gaussian保持。辅助仅17个部署feature参数，默认W/gain辅助梯度None，主损失正常联合训练；250scheduled/model，四actualprobe和一次真实更新核验通过。原seenL bank不称未训练holdout或未见RX。
+
+历史CENTER/SIG_TIME正路线与全部负结果保留，不相加跨配方增益。该基准已暴露，不称新独立盲测或部署完成；不据target结果回流本矩阵。源曲线的缺测/关闭字段及nonfinite遥测计数如实保留，不把它们冒充实际loss非有限。
+
+原预登记与发布记录如下。
+
+---
+
 **首seed源条件 VERIFIED／全部通过。** 五行已完成20轮／4440更新、默认头clean预测和独立truth-last，共840000决定。CROSS_GAP为250/250合法辅助调用、四个实际梯度探针活跃，GLOBAL为244/250正gap调用且四点活跃；每SSL模型完整U曝光396900，BASE_CE为0。默认头健康条件通过，后续10行按源规则继续，不使用目标成绩作扩展依据。当前仅首seed完整，尚无三seed泛化收益或84%达成结论。
 
 **发布状态 VERIFIED，训练中。** 执行 commit `6693e4480ef990bc23c5021ff1440b547fe5fcaf`。远端compile和realcheckpoint/noquerysmoke PASS；单archiveSHA比较通过。独立回读确认首seed5行PID/CWD/cmd/GPU与日志增长，实际20轮config吻合，所有GPU总进程数未超过3。尚无冻结target结果；10行等待既定source规则，84%目标仍active。
@@ -23,3 +47,53 @@
 
 
 真实冻结权重的接口核验 PASS：CROSS_GAP首seed final20，经原source proof后strict加载。在3个预定synthetic输入上，独立encoder.features的raw joint160与默认forward id_feat_joint严格相同；类别W清零或删除后z不变，恢复W后原logits严格恢复，全部feature参数/buffers不变。保留norm/gain/reference/NoExplicitCFO内部路径，没有另做feature归一化。15个synthetic网络前向，0source/U/V/queryIQ读取、0头拟合/optimizer更新；原训练产物和健康进程不变。auditcode commit `1facacabb92a520b86dddd59fcd2cb00dc95eb12`，training execution仍为 `6693e4480ef990bc23c5021ff1440b547fe5fcaf`。仅证明此真实CP的接口与W无关性，不证明新TX迁移或识别增益。见feature_boundary_evidence.json。
+
+
+## 逐种子与配对结论
+
+|方案|seed01|seed02|seed03|
+|---|---:|---:|---:|
+|BASE_CE|81.8054%|80.0869%|81.3399%|
+|BASE_SSL|81.8667%|79.9696%|81.5637%|
+|CLEAN_CE|81.9143%|80.1042%|81.4536%|
+|GLOBAL_GAP|81.6827%|79.9685%|81.4780%|
+|CROSS_GAP|81.6619%|80.0179%|81.5762%|
+
+|配对|均差（百分点）|配对SD|正差seed数|更正错误|引入错误|
+|---|---:|---:|---:|---:|---:|
+|CROSS_GAP − BASE_SSL|-0.0480|0.1369|2/3|1398|1640|
+|CROSS_GAP − GLOBAL_GAP|+0.0423|0.0598|2/3|1832|1619|
+|CROSS_GAP − CLEAN_CE|-0.0720|0.1879|1/3|1492|1855|
+|BASE_SSL − BASE_CE|+0.0560|0.1706|2/3|2248|1966|
+
+CROSS_GAP为81.0853%，与84%相差2.9147个百分点。相对BASE_SSL更正1398个错误、引入1640个错误，净少判对242个；两个seed小幅正差不足以抵消首seed下降。GLOBAL_GAP、额外源CE和SSL相对纯CE的结果均如实保留；微小平均正差不能确认稳定收益。结束本版loss-gap路线，不调整rho/系数/启用时序继续追分。
+
+SIG_TIME与固定CENTER25K此前各自正结果保留。它们的历史E50配方与本次E20/13＋7、普通L增强关闭的匹配家族不同，不相加增益，也不把历史成绩当当前同配方对照。
+
+## 实际特征与证据边界
+
+固定source V180：90个TX/RX/day源cell、每cell ordinal0/1，6TX/5已见源RX/3day；仅冻结后分析，不进入梯度或排序。使用真实同row initial_smoke与final20，所有checkpoint加载前均核对完整source provenance。15个模型选定17张量均真实变化，raw joint160初末RMS差约1.047至1.182。纯feature输出由部署API生成，余弦关系仅用于无拟合指标，没有改变导出，也没有训练诊断头。
+
+|seed|BASE_SSL身份间隔|CROSS身份间隔|CROSS − SSL|
+|---|---:|---:|---:|
+|2026092701|0.330965|0.326208|-0.004757|
+|2026092702|0.260560|0.254720|-0.005840|
+|2026092703|0.276369|0.281073|+0.004703|
+
+身份间隔为同TX/同day/跨RX平均cos减去不同TX/同day/同RX平均cos，固定1440/1800个有向关系；RX相似性超额再对照不同TX/跨RX的7200关系。source两降一升不支持一致身份结构改善；180个已见RX验证样本不证明未见RX或新TX迁移，也不用于追逐V微小准确率。
+
+真实firstseed CP的feature-only／W清零／W删除检查PASS，保留全部feature变换与raw160输出；3个synthetic输入仅证明接口，不能替代实际识别结果。shadow全局容差8.3271195受unused Hz参数影响，过宽，既有PASS不证明微小辅助增量精确匹配；数值原记录保留。该限制不改变真实一次更新计数、源角色、默认头预测和独立CM结果。
+
+## 下一步（最多两个动作）
+
+1. 只做同身份跨RX分支证据重组的固定源原型：先检验真实部署分支能否产生身份保持的新组合、有效梯度及独立源特征信号；不按本轮target误差挑样本、父权重或参数。该机制是待证假设，尚未实现或发布新主训练。
+2. 在下一实现中直接记录每个feature张量的真实更新，必要shadow使用实际optimizer梯度，避免混合单位的全局容差。历史训练和probe不覆盖、重跑或追溯改判。
+
+完整实际成本：300model-epoch、66600真实更新、2520000clean决定、270CM、300源epoch；辅助extraL forward计数见result_evidence，另有180个source V读样本/5400feature观察前向与15个synthetic接口前向，0新增真实optimizer或头拟合。
+
+以上追加结果属于同一固定矩阵的完整分析，原预登记与发布记录继续保留。
+
+
+![完整源曲线、默认头结果与源身份间隔](training_and_feature_results.png)
+
+图中源loss/validation显示三seed均值和样本SD；13.5虚线为SSL固定阶段切换，BASE_CE始终L；84%虚线是未达到的研究门槛。V180身份间隔仅机制诊断，不能替代clean默认头性能或未见RX验证。
