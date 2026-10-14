@@ -21,3 +21,7 @@ teacher eval/stopgrad，student 原 train dropout/strong noise .015；拒绝 Bat
 技术停止规则：本 run 来源/数据权限/query/defaulthead/非有限数/状态更新/输出冲突失败则保存 partial、写 failure，仅停止本诊断，无自动重试，不触碰其他健康任务。源资格失败是科学负结果，不重启或调整。发布后独立核对 PID/CWD/argv/CPU 环境/loggrowth；完成后另进程重开源 observations 和向量复算全部统计，无新模型前向/反传。
 
 预期产物：每 row resolved_config.json、source_policy_observations.pt、L_source_gradient_vectors.pt、analysis.json、source_gradient_recount.json、completion.json；全 run analysis/completion/preflight 与独立复算。原始 PT/日志留运行产物，Git 只交聚合 JSON、报告/图和登记，结果未生成前不宣称提升。
+
+## 完整结果
+
+ANALYZED / VERIFIED：6/6 V 源资格 PASS，全部非空。教师对学生错保留率69.04%至76.25%，教师错学生对40.74%至48.44%；整体L梯度方向仍混合，未证明目标增益。本次199800源观测/399600forward包次/7200向量已另进程独立复算，V梯度/头/optimizer/model更新0，进程自然结束/failure0。实际每row复算文件名为independent_artifact_recount.json（预登记的source_gradient_recount.json是描述笔误，已在完成登记更正；未改运行或重跑）。完整表/图/限制见source_teacher_confidence_analysis.md、results.json、source_confidence_summary.json。

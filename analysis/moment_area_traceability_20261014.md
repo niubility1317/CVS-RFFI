@@ -161,3 +161,7 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 ### 固定SIG_TIME同L强图CE/feature：六模型完整源诊断
 
 20261015-phase1-source-feature-ce-gradient-manysig-m6-r01 ANALYZED/VERIFIED，code da1aafdde1931fcef67ecd509e079cfa371ec166 / execution 2fb6cf1ee4cdbf830f3921a19ef2346c4f1de185。两臂×三固定seed/各L6300，同强图trueCE(.01)与原feature(.1诊断权重)，四组共全批分母；CPU2threads122.91秒模型计时，头/optimizer/model更新0，V缓存物化但forward0，U/query0。独立150批/450层记录/4950向量复算，实际参数buffer不变。教师对学生错组18/18对象余弦正；教师错学生对16/18负但仅3至8个seen-L样本/模型，整体符号混合，不能解释实际U或目标下降因果。源诊断不是84%或新类能力。仅后续源证伪一个固定零置信差teacher>=student规则，尚未实现/启动，不按目标调阈值或另训头；BF6新仍健康24至27轮。
+
+## 2026-10-15 固定置信度次序源证伪完成
+
+20261015-phase1-source-teacher-confidence-manysig-m6-r01：代码e2eee613b9657d336657012eb33d060072a402d7、执行3003478354f9e9d3a45175f8140cae45f1f282eb；六个预定义50轮SIG/MT模型，L梯度/V仅no_grad，真实checkpoint+默认头/ownEMA不更新。固定FP32 teacherweak置信度>=studentstrong，ties kept，零阈值差且不扫描；V两个对错不一致组非空并6/6有益保留率严格高于有害，源资格PASS。399600forward包次/7200向量独立复算VERIFIED，头/optimizer/model/V梯度/Utruth/query0。整体梯度并非普遍改善，未证明实际U或目标增益；后续单一训练对照须另行实现/检查/预登记，不能将源资格当训练成功。详见automation_reports/CV-SincNet/20261015-phase1-source-teacher-confidence-manysig-m6-r01/source_teacher_confidence_analysis.md。

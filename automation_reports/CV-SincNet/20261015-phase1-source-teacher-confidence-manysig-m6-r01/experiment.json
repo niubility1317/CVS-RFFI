@@ -161,7 +161,7 @@
         "source_policy_observations.pt",
         "L_source_gradient_vectors.pt",
         "analysis.json",
-        "source_gradient_recount.json",
+        "independent_artifact_recount.json",
         "completion.json"
       ],
       "config": {
@@ -203,7 +203,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher50-20261014",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -241,11 +241,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -501,7 +501,7 @@
         "source_policy_observations.pt",
         "L_source_gradient_vectors.pt",
         "analysis.json",
-        "source_gradient_recount.json",
+        "independent_artifact_recount.json",
         "completion.json"
       ],
       "config": {
@@ -543,7 +543,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher50-20261014",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -581,11 +581,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -841,7 +841,7 @@
         "source_policy_observations.pt",
         "L_source_gradient_vectors.pt",
         "analysis.json",
-        "source_gradient_recount.json",
+        "independent_artifact_recount.json",
         "completion.json"
       ],
       "config": {
@@ -883,7 +883,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -921,11 +921,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -1188,7 +1188,7 @@
         "source_policy_observations.pt",
         "L_source_gradient_vectors.pt",
         "analysis.json",
-        "source_gradient_recount.json",
+        "independent_artifact_recount.json",
         "completion.json"
       ],
       "config": {
@@ -1230,7 +1230,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -1268,11 +1268,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -1535,7 +1535,7 @@
         "source_policy_observations.pt",
         "L_source_gradient_vectors.pt",
         "analysis.json",
-        "source_gradient_recount.json",
+        "independent_artifact_recount.json",
         "completion.json"
       ],
       "config": {
@@ -1577,7 +1577,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -1615,11 +1615,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -1882,7 +1882,7 @@
         "source_policy_observations.pt",
         "L_source_gradient_vectors.pt",
         "analysis.json",
-        "source_gradient_recount.json",
+        "independent_artifact_recount.json",
         "completion.json"
       ],
       "config": {
@@ -1924,7 +1924,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -1962,11 +1962,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -2206,6 +2206,28 @@
     "Qualification failure blocks this cue promotion only; no automatic training release even on PASS",
     "PT/raw logs/checkpoints never committed; aggregate report/results only"
   ],
-  "status": "PLANNED",
-  "registered_at": "2026-10-14T18:23:03+00:00"
+  "status": "ANALYZED",
+  "registered_at": "2026-10-14T18:23:03+00:00",
+  "execution_commit": "3003478354f9e9d3a45175f8140cae45f1f282eb",
+  "results": {
+    "status": "VERIFIED",
+    "analysis": "source_teacher_confidence_analysis.md",
+    "aggregate": "results.json",
+    "summary": "source_confidence_summary.json",
+    "figure": "source_confidence_order_and_gradients.png",
+    "models": 6,
+    "source_qualification": "PASS",
+    "source_packets": 199800,
+    "forward_packets": 399600,
+    "gradient_batches": 150,
+    "layer_records": 450,
+    "saved_vectors": 7200,
+    "independent_saved_artifact_recount": "VERIFIED",
+    "V_gradients": 0,
+    "head_updates": 0,
+    "optimizer_steps": 0,
+    "query_read": false,
+    "U_truth_read": false,
+    "training_candidate_launched": false
+  }
 }

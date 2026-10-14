@@ -1,0 +1,31 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
+  "code_commit": "e2eee613b9657d336657012eb33d060072a402d7",
+  "execution_commit": "3003478354f9e9d3a45175f8140cae45f1f282eb",
+  "archive": {
+    "name": "cvs_source_teacher_confidence_20261015_r01.tar.gz",
+    "sha256": "1f2b74cb64309f805689988f9574dad6b2bb4ef4c2cc597c07b3497fece50867",
+    "single_local_remote_comparison": "PASS"
+  },
+  "remote_compile": "PASS",
+  "real_checkpoint_no_query_smoke": true,
+  "preflight_status": "PASS",
+  "process": {
+    "pid": 2576666,
+    "cwd": "PROJECT/releases/cvs_source_teacher_confidence_20261015_r01",
+    "argv": [
+      "EXISTING_CVS_RFFI_PYTHON",
+      "-u",
+      "-m",
+      "experiments.cvs_source_teacher_confidence.audit"
+    ],
+    "CUDA_VISIBLE_DEVICES": ""
+  },
+  "log_growth": {
+    "before": 0,
+    "after": 87
+  },
+  "models_complete_at_readback": 1,
+  "no_other_process_mutation": true
+}

@@ -1,0 +1,2247 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
+  "code_commit": "e2eee613b9657d336657012eb33d060072a402d7",
+  "execution_commit": "3003478354f9e9d3a45175f8140cae45f1f282eb",
+  "source_qualification": {
+    "status": "PASS",
+    "source_only": true,
+    "role": "V",
+    "rows": [
+      {
+        "row_id": "SIG_TIME-s2026092701",
+        "helpful": {
+          "count": 206,
+          "retained": 147,
+          "retention": 0.7135922330097088
+        },
+        "harmful": {
+          "count": 81,
+          "retained": 39,
+          "retention": 0.48148148148148145
+        },
+        "identifiable": true,
+        "passed": true
+      },
+      {
+        "row_id": "FEATURE_MT-s2026092701",
+        "helpful": {
+          "count": 200,
+          "retained": 142,
+          "retention": 0.71
+        },
+        "harmful": {
+          "count": 85,
+          "retained": 38,
+          "retention": 0.4470588235294118
+        },
+        "identifiable": true,
+        "passed": true
+      },
+      {
+        "row_id": "SIG_TIME-s2026092702",
+        "helpful": {
+          "count": 240,
+          "retained": 183,
+          "retention": 0.7625
+        },
+        "harmful": {
+          "count": 64,
+          "retained": 31,
+          "retention": 0.484375
+        },
+        "identifiable": true,
+        "passed": true
+      },
+      {
+        "row_id": "FEATURE_MT-s2026092702",
+        "helpful": {
+          "count": 246,
+          "retained": 179,
+          "retention": 0.7276422764227642
+        },
+        "harmful": {
+          "count": 64,
+          "retained": 29,
+          "retention": 0.453125
+        },
+        "identifiable": true,
+        "passed": true
+      },
+      {
+        "row_id": "SIG_TIME-s2026092703",
+        "helpful": {
+          "count": 209,
+          "retained": 149,
+          "retention": 0.7129186602870813
+        },
+        "harmful": {
+          "count": 81,
+          "retained": 33,
+          "retention": 0.4074074074074074
+        },
+        "identifiable": true,
+        "passed": true
+      },
+      {
+        "row_id": "FEATURE_MT-s2026092703",
+        "helpful": {
+          "count": 197,
+          "retained": 136,
+          "retention": 0.6903553299492385
+        },
+        "harmful": {
+          "count": 77,
+          "retained": 33,
+          "retention": 0.42857142857142855
+        },
+        "identifiable": true,
+        "passed": true
+      }
+    ],
+    "fixed_rules": {
+      "source_only": true,
+      "all_six_models_required": true,
+      "role": "V",
+      "groups_must_be_nonempty": true,
+      "helpful_retention_strictly_greater_than_harmful_retention": true,
+      "no_automatic_training_release": true
+    },
+    "no_automatic_training_release": true,
+    "threshold_scan": false,
+    "query_read": false,
+    "U_truth_read": false
+  },
+  "completion": {
+    "status": "ANALYZED",
+    "models": 6,
+    "source_packets": 199800,
+    "forward_packets": 399600,
+    "gradient_batches": 150,
+    "layer_records": 450,
+    "saved_vectors": 7200,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0
+  },
+  "rows": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "seed": 2026092701,
+      "seconds": 52.25876832008362,
+      "L": {
+        "count": 6300,
+        "retained": 5966,
+        "retention": 0.946984126984127,
+        "ties": 0,
+        "weak_correct": 6284,
+        "strong_correct": 6267,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 6259,
+            "retained": 5937,
+            "retention": 0.9485540821217446
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 25,
+            "retained": 22,
+            "retention": 0.88
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 8,
+            "retained": 4,
+            "retention": 0.5
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 8,
+            "retained": 3,
+            "retention": 0.375
+          }
+        }
+      },
+      "V": {
+        "count": 27000,
+        "retained": 25367,
+        "retention": 0.9395185185185185,
+        "ties": 0,
+        "weak_correct": 26500,
+        "strong_correct": 26375,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 26294,
+            "retained": 24947,
+            "retention": 0.9487715828706169
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 206,
+            "retained": 147,
+            "retention": 0.7135922330097088
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 81,
+            "retained": 39,
+            "retention": 0.48148148148148145
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 419,
+            "retained": 234,
+            "retention": 0.5584725536992841
+          }
+        }
+      },
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "original": {
+            "CE_norm": 0.02246761428191451,
+            "auxiliary_norm": 0.0038277395872089192,
+            "auxiliary_over_CE": 0.17036697974159587,
+            "cosine": -0.0780306791983081,
+            "orthogonal_fraction": 0.9969509582240497
+          },
+          "gated": {
+            "CE_norm": 0.02246761428191451,
+            "auxiliary_norm": 0.0037990957208797753,
+            "auxiliary_over_CE": 0.16909208397519485,
+            "cosine": -0.06565717643691928,
+            "orthogonal_fraction": 0.9978422396262504
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6259,
+              "count_retained": 5937,
+              "original": {
+                "CE_norm": 0.018471875041751195,
+                "auxiliary_norm": 0.003816705698767055,
+                "auxiliary_over_CE": 0.2066225377846221,
+                "cosine": -0.06637514435164388,
+                "orthogonal_fraction": 0.9977947385170451
+              },
+              "gated": {
+                "CE_norm": 0.018471875041751195,
+                "auxiliary_norm": 0.0037927812583035733,
+                "auxiliary_over_CE": 0.2053273557627967,
+                "cosine": -0.050008049074510744,
+                "orthogonal_fraction": 0.9987488147816553
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 25,
+              "count_retained": 22,
+              "original": {
+                "CE_norm": 0.009386882658429177,
+                "auxiliary_norm": 0.000021493941580534234,
+                "auxiliary_over_CE": 0.002289784837273238,
+                "cosine": 0.07480316885205932,
+                "orthogonal_fraction": 0.9971983182545437
+              },
+              "gated": {
+                "CE_norm": 0.009386882658429177,
+                "auxiliary_norm": 0.00002114537912342706,
+                "auxiliary_over_CE": 0.002252651907227056,
+                "cosine": 0.06096295707109088,
+                "orthogonal_fraction": 0.9981400291868613
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 8,
+              "count_retained": 4,
+              "original": {
+                "CE_norm": 0.003685539414416781,
+                "auxiliary_norm": 0.000006523380874593093,
+                "auxiliary_over_CE": 0.0017699935182012934,
+                "cosine": -0.23303416555319917,
+                "orthogonal_fraction": 0.9724685484296776
+              },
+              "gated": {
+                "CE_norm": 0.003685539414416781,
+                "auxiliary_norm": 0.000009881962765163004,
+                "auxiliary_over_CE": 0.002681279903426776,
+                "cosine": -0.463422810364299,
+                "orthogonal_fraction": 0.8861372911880274
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 8,
+              "count_retained": 3,
+              "original": {
+                "CE_norm": 0.007013221165351567,
+                "auxiliary_norm": 0.000004972067462110539,
+                "auxiliary_over_CE": 0.0007089563190556095,
+                "cosine": -0.2002251985782689,
+                "orthogonal_fraction": 0.979749901686289
+              },
+              "gated": {
+                "CE_norm": 0.007013221165351567,
+                "auxiliary_norm": 0.000004746452831249854,
+                "auxiliary_over_CE": 0.0006767864180156535,
+                "cosine": -0.279895631025274,
+                "orthogonal_fraction": 0.9600304347951495
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "original": {
+            "CE_norm": 0.017824254518422154,
+            "auxiliary_norm": 0.0038532974228243826,
+            "auxiliary_over_CE": 0.21618280971256498,
+            "cosine": 0.022286123203320615,
+            "orthogonal_fraction": 0.9997516335133274
+          },
+          "gated": {
+            "CE_norm": 0.017824254518422154,
+            "auxiliary_norm": 0.003799430991292618,
+            "auxiliary_over_CE": 0.21316072362890345,
+            "cosine": 0.024152007730725455,
+            "orthogonal_fraction": 0.9997082977161763
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6259,
+              "count_retained": 5937,
+              "original": {
+                "CE_norm": 0.01487404725926414,
+                "auxiliary_norm": 0.003844037010330927,
+                "auxiliary_over_CE": 0.25843920913567825,
+                "cosine": 0.06846202551350455,
+                "orthogonal_fraction": 0.9976537230234688
+              },
+              "gated": {
+                "CE_norm": 0.01487404725926414,
+                "auxiliary_norm": 0.0037940219472893393,
+                "auxiliary_over_CE": 0.25507663658432134,
+                "cosine": 0.07757286341438072,
+                "orthogonal_fraction": 0.9969866853984028
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 25,
+              "count_retained": 22,
+              "original": {
+                "CE_norm": 0.007475532849559693,
+                "auxiliary_norm": 0.000019416777332853534,
+                "auxiliary_over_CE": 0.0025973770329960058,
+                "cosine": 0.14287808248312595,
+                "orthogonal_fraction": 0.9897402960099912
+              },
+              "gated": {
+                "CE_norm": 0.007475532849559693,
+                "auxiliary_norm": 0.000020058802787590717,
+                "auxiliary_over_CE": 0.0026832606037939057,
+                "cosine": 0.14288191067700226,
+                "orthogonal_fraction": 0.9897397433675628
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 8,
+              "count_retained": 4,
+              "original": {
+                "CE_norm": 0.0035009772981209834,
+                "auxiliary_norm": 0.0000065430657836232334,
+                "auxiliary_over_CE": 0.001868925510352488,
+                "cosine": -0.3851137510400048,
+                "orthogonal_fraction": 0.9228691124747307
+              },
+              "gated": {
+                "CE_norm": 0.0035009772981209834,
+                "auxiliary_norm": 0.000010233542030104475,
+                "auxiliary_over_CE": 0.0029230529531273854,
+                "cosine": -0.542839811054376,
+                "orthogonal_fraction": 0.8398362575731352
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 8,
+              "count_retained": 3,
+              "original": {
+                "CE_norm": 0.005742610140639604,
+                "auxiliary_norm": 0.0000046565234407604456,
+                "auxiliary_over_CE": 0.0008108722909477899,
+                "cosine": -0.14375798050261088,
+                "orthogonal_fraction": 0.9896128753415706
+              },
+              "gated": {
+                "CE_norm": 0.005742610140639604,
+                "auxiliary_norm": 0.0000047689078762400826,
+                "auxiliary_over_CE": 0.0008304425617353381,
+                "cosine": -0.29844503120680327,
+                "orthogonal_fraction": 0.9544268245119529
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "original": {
+            "CE_norm": 0.032473740367974145,
+            "auxiliary_norm": 0.003167400538976117,
+            "auxiliary_over_CE": 0.09753728714601144,
+            "cosine": -0.3106989686636801,
+            "orthogonal_fraction": 0.9505083644404848
+          },
+          "gated": {
+            "CE_norm": 0.032473740367974145,
+            "auxiliary_norm": 0.0029992923613543086,
+            "auxiliary_over_CE": 0.09236054508559888,
+            "cosine": -0.30580714849344254,
+            "orthogonal_fraction": 0.952093476466628
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6259,
+              "count_retained": 5937,
+              "original": {
+                "CE_norm": 0.025907573899025156,
+                "auxiliary_norm": 0.0031466597919083254,
+                "auxiliary_over_CE": 0.12145713852529925,
+                "cosine": -0.20573434171297084,
+                "orthogonal_fraction": 0.9786078788973296
+              },
+              "gated": {
+                "CE_norm": 0.025907573899025156,
+                "auxiliary_norm": 0.002983636897775509,
+                "auxiliary_over_CE": 0.11516465838925105,
+                "cosine": -0.1985464198569614,
+                "orthogonal_fraction": 0.9800914850981939
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 25,
+              "count_retained": 22,
+              "original": {
+                "CE_norm": 0.013435130124607286,
+                "auxiliary_norm": 0.000021331867071172195,
+                "auxiliary_over_CE": 0.0015877678052482378,
+                "cosine": 0.11305671749305424,
+                "orthogonal_fraction": 0.9935885358787588
+              },
+              "gated": {
+                "CE_norm": 0.013435130124607286,
+                "auxiliary_norm": 0.000018947779924144903,
+                "auxiliary_over_CE": 0.0014103160705113567,
+                "cosine": 0.09972282078075048,
+                "orthogonal_fraction": 0.9950152556697461
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 8,
+              "count_retained": 4,
+              "original": {
+                "CE_norm": 0.004770875991578901,
+                "auxiliary_norm": 0.000005200160063350217,
+                "auxiliary_over_CE": 0.0010899801362536036,
+                "cosine": -0.11958351101614023,
+                "orthogonal_fraction": 0.9928241455026428
+              },
+              "gated": {
+                "CE_norm": 0.004770875991578901,
+                "auxiliary_norm": 0.0000035257818809177374,
+                "auxiliary_over_CE": 0.0007390219085847366,
+                "cosine": -0.23026020201046773,
+                "orthogonal_fraction": 0.9731290969702316
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 8,
+              "count_retained": 3,
+              "original": {
+                "CE_norm": 0.010280740126905318,
+                "auxiliary_norm": 0.000006265398100946669,
+                "auxiliary_over_CE": 0.0006094306463938082,
+                "cosine": -0.06407420178708342,
+                "orthogonal_fraction": 0.9979451371019091
+              },
+              "gated": {
+                "CE_norm": 0.010280740126905318,
+                "auxiliary_norm": 0.0000030103207828126455,
+                "auxiliary_over_CE": 0.000292811679475727,
+                "cosine": -0.07670569815893012,
+                "orthogonal_fraction": 0.9970537778224157
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "FEATURE_MT-s2026092701",
+      "arm": "FEATURE_MT",
+      "seed": 2026092701,
+      "seconds": 52.81019163131714,
+      "L": {
+        "count": 6300,
+        "retained": 5805,
+        "retention": 0.9214285714285714,
+        "ties": 0,
+        "weak_correct": 6282,
+        "strong_correct": 6266,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 6259,
+            "retained": 5779,
+            "retention": 0.9233104329765138
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 23,
+            "retained": 21,
+            "retention": 0.9130434782608695
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 7,
+            "retained": 1,
+            "retention": 0.14285714285714285
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 11,
+            "retained": 4,
+            "retention": 0.36363636363636365
+          }
+        }
+      },
+      "V": {
+        "count": 27000,
+        "retained": 24631,
+        "retention": 0.9122592592592592,
+        "ties": 0,
+        "weak_correct": 26498,
+        "strong_correct": 26383,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 26298,
+            "retained": 24236,
+            "retention": 0.9215909955129667
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 200,
+            "retained": 142,
+            "retention": 0.71
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 85,
+            "retained": 38,
+            "retention": 0.4470588235294118
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 417,
+            "retained": 215,
+            "retention": 0.5155875299760192
+          }
+        }
+      },
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "original": {
+            "CE_norm": 0.022670418459382446,
+            "auxiliary_norm": 0.002319037594517465,
+            "auxiliary_over_CE": 0.10229355045529392,
+            "cosine": -0.08637642473392831,
+            "orthogonal_fraction": 0.9962625724427191
+          },
+          "gated": {
+            "CE_norm": 0.022670418459382446,
+            "auxiliary_norm": 0.002288345965654016,
+            "auxiliary_over_CE": 0.10093973208981304,
+            "cosine": -0.06159353478113989,
+            "orthogonal_fraction": 0.9981013157356143
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6259,
+              "count_retained": 5779,
+              "original": {
+                "CE_norm": 0.01928213869096382,
+                "auxiliary_norm": 0.0023122507662143806,
+                "auxiliary_over_CE": 0.11991671687840152,
+                "cosine": -0.024748021692813257,
+                "orthogonal_fraction": 0.9996937208076743
+              },
+              "gated": {
+                "CE_norm": 0.01928213869096382,
+                "auxiliary_norm": 0.002284971186208412,
+                "auxiliary_over_CE": 0.11850195783931464,
+                "cosine": 0.02030969013168975,
+                "orthogonal_fraction": 0.9997937369711588
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 23,
+              "count_retained": 21,
+              "original": {
+                "CE_norm": 0.00812148355578118,
+                "auxiliary_norm": 0.000014394954716679773,
+                "auxiliary_over_CE": 0.00177245384021407,
+                "cosine": 0.2560705624521269,
+                "orthogonal_fraction": 0.966658092111917
+              },
+              "gated": {
+                "CE_norm": 0.00812148355578118,
+                "auxiliary_norm": 0.000014506878621673995,
+                "auxiliary_over_CE": 0.0017862350544744314,
+                "cosine": 0.2441875112113027,
+                "orthogonal_fraction": 0.9697280337127673
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 7,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.002932772787131474,
+                "auxiliary_norm": 0.0000055608747429873385,
+                "auxiliary_over_CE": 0.0018961150919660553,
+                "cosine": -0.17322775545403432,
+                "orthogonal_fraction": 0.9848817922676596
+              },
+              "gated": {
+                "CE_norm": 0.002932772787131474,
+                "auxiliary_norm": 0.000007060893356277683,
+                "auxiliary_over_CE": 0.002407582812845143,
+                "cosine": -0.26077113553767617,
+                "orthogonal_fraction": 0.9654006499222957
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 11,
+              "count_retained": 4,
+              "original": {
+                "CE_norm": 0.0067560221391075185,
+                "auxiliary_norm": 0.00000868542692201118,
+                "auxiliary_over_CE": 0.001285582957423307,
+                "cosine": -0.024941925002887253,
+                "orthogonal_fraction": 0.9996889017975293
+              },
+              "gated": {
+                "CE_norm": 0.0067560221391075185,
+                "auxiliary_norm": 0.000005948025354067382,
+                "auxiliary_over_CE": 0.0008804034728715566,
+                "cosine": -0.0821603640789128,
+                "orthogonal_fraction": 0.9966191221195891
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "original": {
+            "CE_norm": 0.018040450067393212,
+            "auxiliary_norm": 0.0025291057819086605,
+            "auxiliary_over_CE": 0.14019083628516749,
+            "cosine": 0.06870006329496105,
+            "orthogonal_fraction": 0.9976373596168442
+          },
+          "gated": {
+            "CE_norm": 0.018040450067393212,
+            "auxiliary_norm": 0.0024624443606904313,
+            "auxiliary_over_CE": 0.13649572773913876,
+            "cosine": 0.07281840142766524,
+            "orthogonal_fraction": 0.997345216268429
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6259,
+              "count_retained": 5779,
+              "original": {
+                "CE_norm": 0.01573042409517059,
+                "auxiliary_norm": 0.002523679244450655,
+                "auxiliary_over_CE": 0.16043300734819044,
+                "cosine": 0.14807082643523267,
+                "orthogonal_fraction": 0.9889767592612009
+              },
+              "gated": {
+                "CE_norm": 0.01573042409517059,
+                "auxiliary_norm": 0.002459086240241203,
+                "auxiliary_over_CE": 0.1563267605096654,
+                "cosine": 0.17821073260386344,
+                "orthogonal_fraction": 0.9839923448811958
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 23,
+              "count_retained": 21,
+              "original": {
+                "CE_norm": 0.006613501359630067,
+                "auxiliary_norm": 0.000012432231900930834,
+                "auxiliary_over_CE": 0.0018798260142228569,
+                "cosine": 0.272374760541757,
+                "orthogonal_fraction": 0.9621912438906418
+              },
+              "gated": {
+                "CE_norm": 0.006613501359630067,
+                "auxiliary_norm": 0.000013278176319992688,
+                "auxiliary_over_CE": 0.0020077377470646527,
+                "cosine": 0.2592911324577862,
+                "orthogonal_fraction": 0.965799207200316
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 7,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.0025182724960812948,
+                "auxiliary_norm": 0.0000053569201524440805,
+                "auxiliary_over_CE": 0.002127220211784082,
+                "cosine": -0.201844855325214,
+                "orthogonal_fraction": 0.9794175076946212
+              },
+              "gated": {
+                "CE_norm": 0.0025182724960812948,
+                "auxiliary_norm": 0.000007670527287467725,
+                "auxiliary_over_CE": 0.003045948085206783,
+                "cosine": -0.24811989967220507,
+                "orthogonal_fraction": 0.9687293303016353
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 11,
+              "count_retained": 4,
+              "original": {
+                "CE_norm": 0.006197333545898363,
+                "auxiliary_norm": 0.000008428107902272766,
+                "auxiliary_over_CE": 0.0013599571234714026,
+                "cosine": 0.09116842889842079,
+                "orthogonal_fraction": 0.9958354872026772
+              },
+              "gated": {
+                "CE_norm": 0.006197333545898363,
+                "auxiliary_norm": 0.000006025339446818179,
+                "auxiliary_over_CE": 0.0009722470804893152,
+                "cosine": -0.011368959903321648,
+                "orthogonal_fraction": 0.999935371286923
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "original": {
+            "CE_norm": 0.03328383755635467,
+            "auxiliary_norm": 0.0022848729083232043,
+            "auxiliary_over_CE": 0.06864812101232504,
+            "cosine": -0.34064500481409365,
+            "orthogonal_fraction": 0.940191991401334
+          },
+          "gated": {
+            "CE_norm": 0.03328383755635467,
+            "auxiliary_norm": 0.0020889190392905537,
+            "auxiliary_over_CE": 0.06276076296051174,
+            "cosine": -0.33201291890908435,
+            "orthogonal_fraction": 0.9432748388870922
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6259,
+              "count_retained": 5779,
+              "original": {
+                "CE_norm": 0.02695157855576346,
+                "auxiliary_norm": 0.002270981683716551,
+                "auxiliary_over_CE": 0.08426154627707001,
+                "cosine": -0.2554267308904,
+                "orthogonal_fraction": 0.966828415566404
+              },
+              "gated": {
+                "CE_norm": 0.02695157855576346,
+                "auxiliary_norm": 0.00208103323473895,
+                "auxiliary_over_CE": 0.07721377916448353,
+                "cosine": -0.24665623858113023,
+                "orthogonal_fraction": 0.9691030388813197
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 23,
+              "count_retained": 21,
+              "original": {
+                "CE_norm": 0.011964301540678434,
+                "auxiliary_norm": 0.000012297037676482706,
+                "auxiliary_over_CE": 0.0010278107447119229,
+                "cosine": 0.12846795390111526,
+                "orthogonal_fraction": 0.9917136607007393
+              },
+              "gated": {
+                "CE_norm": 0.011964301540678434,
+                "auxiliary_norm": 0.00001157044289754065,
+                "auxiliary_over_CE": 0.0009670805151643267,
+                "cosine": 0.09745782806163895,
+                "orthogonal_fraction": 0.9952396554345632
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 7,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.004285145048700788,
+                "auxiliary_norm": 0.0000054845180648861846,
+                "auxiliary_over_CE": 0.0012798908794345327,
+                "cosine": -0.1941065939960281,
+                "orthogonal_fraction": 0.980980443315391
+              },
+              "gated": {
+                "CE_norm": 0.004285145048700788,
+                "auxiliary_norm": 0.000001901216752892798,
+                "auxiliary_over_CE": 0.0004436761722848162,
+                "cosine": -0.1047295073883538,
+                "orthogonal_fraction": 0.994500744234107
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 11,
+              "count_retained": 4,
+              "original": {
+                "CE_norm": 0.010031705710654754,
+                "auxiliary_norm": 0.000006395713395896688,
+                "auxiliary_over_CE": 0.0006375499421901651,
+                "cosine": -0.04388858690810026,
+                "orthogonal_fraction": 0.999036431737707
+              },
+              "gated": {
+                "CE_norm": 0.010031705710654754,
+                "auxiliary_norm": 0.0000032216765457141326,
+                "auxiliary_over_CE": 0.0003211494274889229,
+                "cosine": -0.08941137286165848,
+                "orthogonal_fraction": 0.9959947823171532
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "seed": 2026092702,
+      "seconds": 53.04788517951965,
+      "L": {
+        "count": 6300,
+        "retained": 6048,
+        "retention": 0.96,
+        "ties": 0,
+        "weak_correct": 6281,
+        "strong_correct": 6251,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 6248,
+            "retained": 6009,
+            "retention": 0.9617477592829705
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 33,
+            "retained": 28,
+            "retention": 0.8484848484848485
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 3,
+            "retained": 2,
+            "retention": 0.6666666666666666
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 16,
+            "retained": 9,
+            "retention": 0.5625
+          }
+        }
+      },
+      "V": {
+        "count": 27000,
+        "retained": 25601,
+        "retention": 0.9481851851851851,
+        "ties": 0,
+        "weak_correct": 26554,
+        "strong_correct": 26378,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 26314,
+            "retained": 25162,
+            "retention": 0.956221023029566
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 240,
+            "retained": 183,
+            "retention": 0.7625
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 64,
+            "retained": 31,
+            "retention": 0.484375
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 382,
+            "retained": 225,
+            "retention": 0.5890052356020943
+          }
+        }
+      },
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "original": {
+            "CE_norm": 0.03443483031513274,
+            "auxiliary_norm": 0.004205673548776135,
+            "auxiliary_over_CE": 0.1221342899119183,
+            "cosine": -0.2322865291463534,
+            "orthogonal_fraction": 0.9726474018765178
+          },
+          "gated": {
+            "CE_norm": 0.03443483031513274,
+            "auxiliary_norm": 0.004126705063947691,
+            "auxiliary_over_CE": 0.11984101638317553,
+            "cosine": -0.23078207431546618,
+            "orthogonal_fraction": 0.9730054646170548
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6248,
+              "count_retained": 6009,
+              "original": {
+                "CE_norm": 0.01947840081370017,
+                "auxiliary_norm": 0.004203558148304664,
+                "auxiliary_over_CE": 0.2158061223048703,
+                "cosine": -0.13525143097088196,
+                "orthogonal_fraction": 0.9908113091907705
+              },
+              "gated": {
+                "CE_norm": 0.01947840081370017,
+                "auxiliary_norm": 0.0041235707203394496,
+                "auxiliary_over_CE": 0.2116996543904738,
+                "cosine": -0.13093787904824522,
+                "orthogonal_fraction": 0.9913905748141583
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 33,
+              "count_retained": 28,
+              "original": {
+                "CE_norm": 0.018401577034647534,
+                "auxiliary_norm": 0.000045316958508155806,
+                "auxiliary_over_CE": 0.002462667108521757,
+                "cosine": 0.6586840485403841,
+                "orthogonal_fraction": 0.7524196463400254
+              },
+              "gated": {
+                "CE_norm": 0.018401577034647534,
+                "auxiliary_norm": 0.00004528165832890561,
+                "auxiliary_over_CE": 0.0024607487849354834,
+                "cosine": 0.6665278071988366,
+                "orthogonal_fraction": 0.7454801689050558
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 3,
+              "count_retained": 2,
+              "original": {
+                "CE_norm": 0.0019157237316467372,
+                "auxiliary_norm": 0.000004418689830618489,
+                "auxiliary_over_CE": 0.00230653812844936,
+                "cosine": -0.3721600955634006,
+                "orthogonal_fraction": 0.9281685532651064
+              },
+              "gated": {
+                "CE_norm": 0.0019157237316467372,
+                "auxiliary_norm": 0.0000043100501678335946,
+                "auxiliary_over_CE": 0.002249828666124378,
+                "cosine": -0.32383775704841866,
+                "orthogonal_fraction": 0.9461126291884331
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 16,
+              "count_retained": 9,
+              "original": {
+                "CE_norm": 0.008458402325788858,
+                "auxiliary_norm": 0.000008567503085885789,
+                "auxiliary_over_CE": 0.0010128985068213524,
+                "cosine": 0.028600582896948716,
+                "orthogonal_fraction": 0.9995909196556133
+              },
+              "gated": {
+                "CE_norm": 0.008458402325788858,
+                "auxiliary_norm": 0.000006984541311555557,
+                "auxiliary_over_CE": 0.0008257518432600871,
+                "cosine": -0.27904933061584775,
+                "orthogonal_fraction": 0.9602767679595541
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "original": {
+            "CE_norm": 0.02358825694976004,
+            "auxiliary_norm": 0.0035136573681934092,
+            "auxiliary_over_CE": 0.1489579062868888,
+            "cosine": -0.1394419964349473,
+            "orthogonal_fraction": 0.9902302407168931
+          },
+          "gated": {
+            "CE_norm": 0.02358825694976004,
+            "auxiliary_norm": 0.0034615328569836457,
+            "auxiliary_over_CE": 0.14674814100746258,
+            "cosine": -0.14048715032480757,
+            "orthogonal_fraction": 0.9900825019126512
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6248,
+              "count_retained": 6009,
+              "original": {
+                "CE_norm": 0.01417751808538442,
+                "auxiliary_norm": 0.0035138352874458296,
+                "auxiliary_over_CE": 0.2478455866734698,
+                "cosine": 0.05163236769947311,
+                "orthogonal_fraction": 0.9986661597379509
+              },
+              "gated": {
+                "CE_norm": 0.01417751808538442,
+                "auxiliary_norm": 0.0034608022663787427,
+                "auxiliary_over_CE": 0.24410494457040952,
+                "cosine": 0.05580231807508713,
+                "orthogonal_fraction": 0.9984418367123079
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 33,
+              "count_retained": 28,
+              "original": {
+                "CE_norm": 0.011890916864828275,
+                "auxiliary_norm": 0.00003695176213581707,
+                "auxiliary_over_CE": 0.0031075620623600008,
+                "cosine": 0.5378768113230225,
+                "orthogonal_fraction": 0.8430234491643621
+              },
+              "gated": {
+                "CE_norm": 0.011890916864828275,
+                "auxiliary_norm": 0.00003716864781273941,
+                "auxiliary_over_CE": 0.0031258016715833958,
+                "cosine": 0.5437982014483002,
+                "orthogonal_fraction": 0.8392160127771597
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 3,
+              "count_retained": 2,
+              "original": {
+                "CE_norm": 0.0015496717185300751,
+                "auxiliary_norm": 0.000005268694481140203,
+                "auxiliary_over_CE": 0.003399877805176549,
+                "cosine": -0.5930208624991261,
+                "orthogonal_fraction": 0.805187094184198
+              },
+              "gated": {
+                "CE_norm": 0.0015496717185300751,
+                "auxiliary_norm": 0.000005312404721903179,
+                "auxiliary_over_CE": 0.003428083934410447,
+                "cosine": -0.5708261532116711,
+                "orthogonal_fraction": 0.8210709487063622
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 16,
+              "count_retained": 9,
+              "original": {
+                "CE_norm": 0.007469295881165831,
+                "auxiliary_norm": 0.000007637843743744677,
+                "auxiliary_over_CE": 0.0010225654285571746,
+                "cosine": 0.09648956077435654,
+                "orthogonal_fraction": 0.9953339965366258
+              },
+              "gated": {
+                "CE_norm": 0.007469295881165831,
+                "auxiliary_norm": 0.0000058429549457895306,
+                "auxiliary_over_CE": 0.0007822631528793506,
+                "cosine": -0.014922353636539511,
+                "orthogonal_fraction": 0.9998886554821722
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "original": {
+            "CE_norm": 0.03774186771815747,
+            "auxiliary_norm": 0.003499880270548763,
+            "auxiliary_over_CE": 0.09273203691678947,
+            "cosine": 0.0822393018790844,
+            "orthogonal_fraction": 0.996612611412499
+          },
+          "gated": {
+            "CE_norm": 0.03774186771815747,
+            "auxiliary_norm": 0.0033697468913163687,
+            "auxiliary_over_CE": 0.08928405230182065,
+            "cosine": 0.08644496262401909,
+            "orthogonal_fraction": 0.996256627800755
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6248,
+              "count_retained": 6009,
+              "original": {
+                "CE_norm": 0.024984857523598997,
+                "auxiliary_norm": 0.003466752673167005,
+                "auxiliary_over_CE": 0.13875415018446857,
+                "cosine": 0.03499301867356191,
+                "orthogonal_fraction": 0.9993875567787062
+              },
+              "gated": {
+                "CE_norm": 0.024984857523598997,
+                "auxiliary_norm": 0.0033401022769841276,
+                "auxiliary_over_CE": 0.1336850639964344,
+                "cosine": 0.041105381456873744,
+                "orthogonal_fraction": 0.9991548166401866
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 33,
+              "count_retained": 28,
+              "original": {
+                "CE_norm": 0.019966068994423578,
+                "auxiliary_norm": 0.00003568289786565745,
+                "auxiliary_over_CE": 0.0017871769287997302,
+                "cosine": 0.247698577218368,
+                "orthogonal_fraction": 0.9688371456772269
+              },
+              "gated": {
+                "CE_norm": 0.019966068994423578,
+                "auxiliary_norm": 0.00003323726713285469,
+                "auxiliary_over_CE": 0.001664687582825527,
+                "cosine": 0.2581359219923875,
+                "orthogonal_fraction": 0.96610860972105
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 3,
+              "count_retained": 2,
+              "original": {
+                "CE_norm": 0.0013714150397577578,
+                "auxiliary_norm": 0.000002226911988708919,
+                "auxiliary_over_CE": 0.0016238060136064087,
+                "cosine": -0.03474071497123001,
+                "orthogonal_fraction": 0.9993963591705184
+              },
+              "gated": {
+                "CE_norm": 0.0013714150397577578,
+                "auxiliary_norm": 0.00000200124192379018,
+                "auxiliary_over_CE": 0.001459253300987331,
+                "cosine": 0.019036799788329003,
+                "orthogonal_fraction": 0.9998187837072372
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 16,
+              "count_retained": 9,
+              "original": {
+                "CE_norm": 0.009047992869308292,
+                "auxiliary_norm": 0.000007759823178761576,
+                "auxiliary_over_CE": 0.0008576292323443006,
+                "cosine": -0.08301604552919295,
+                "orthogonal_fraction": 0.9965482106675496
+              },
+              "gated": {
+                "CE_norm": 0.009047992869308292,
+                "auxiliary_norm": 0.000005924564275751516,
+                "auxiliary_over_CE": 0.0006547932078779855,
+                "cosine": -0.0728134924941521,
+                "orthogonal_fraction": 0.9973455746684817
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "FEATURE_MT-s2026092702",
+      "arm": "FEATURE_MT",
+      "seed": 2026092702,
+      "seconds": 53.047685861587524,
+      "L": {
+        "count": 6300,
+        "retained": 5848,
+        "retention": 0.9282539682539682,
+        "ties": 0,
+        "weak_correct": 6282,
+        "strong_correct": 6253,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 6250,
+            "retained": 5814,
+            "retention": 0.93024
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 32,
+            "retained": 26,
+            "retention": 0.8125
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 3,
+            "retained": 1,
+            "retention": 0.3333333333333333
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 15,
+            "retained": 7,
+            "retention": 0.4666666666666667
+          }
+        }
+      },
+      "V": {
+        "count": 27000,
+        "retained": 24952,
+        "retention": 0.9241481481481482,
+        "ties": 0,
+        "weak_correct": 26555,
+        "strong_correct": 26373,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 26309,
+            "retained": 24522,
+            "retention": 0.9320764757307385
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 246,
+            "retained": 179,
+            "retention": 0.7276422764227642
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 64,
+            "retained": 29,
+            "retention": 0.453125
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 381,
+            "retained": 222,
+            "retention": 0.5826771653543307
+          }
+        }
+      },
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "original": {
+            "CE_norm": 0.03355833781137716,
+            "auxiliary_norm": 0.002403136071199361,
+            "auxiliary_over_CE": 0.07161070028875609,
+            "cosine": 0.19809294310923442,
+            "orthogonal_fraction": 0.9801832409760542
+          },
+          "gated": {
+            "CE_norm": 0.03355833781137716,
+            "auxiliary_norm": 0.0023023010570432136,
+            "auxiliary_over_CE": 0.06860593245064339,
+            "cosine": 0.16677045552662378,
+            "orthogonal_fraction": 0.9859957480453161
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6250,
+              "count_retained": 5814,
+              "original": {
+                "CE_norm": 0.020922986003980147,
+                "auxiliary_norm": 0.0023847715641858703,
+                "auxiliary_over_CE": 0.11397854798221528,
+                "cosine": 0.23891045115666237,
+                "orthogonal_fraction": 0.971041603809085
+              },
+              "gated": {
+                "CE_norm": 0.020922986003980147,
+                "auxiliary_norm": 0.0022881453301142763,
+                "auxiliary_over_CE": 0.10936036231535048,
+                "cosine": 0.22143140955667645,
+                "orthogonal_fraction": 0.9751759486686202
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 32,
+              "count_retained": 26,
+              "original": {
+                "CE_norm": 0.017545128636583175,
+                "auxiliary_norm": 0.00004682223089213535,
+                "auxiliary_over_CE": 0.002668674129553361,
+                "cosine": 0.7924617826715563,
+                "orthogonal_fraction": 0.6099215711917549
+              },
+              "gated": {
+                "CE_norm": 0.017545128636583175,
+                "auxiliary_norm": 0.00004622020189926706,
+                "auxiliary_over_CE": 0.002634360958909915,
+                "cosine": 0.7888631100001068,
+                "orthogonal_fraction": 0.6145689494930242
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 3,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.001827614595928853,
+                "auxiliary_norm": 0.000003879476802244672,
+                "auxiliary_over_CE": 0.0021226996166951685,
+                "cosine": -0.3471803903744339,
+                "orthogonal_fraction": 0.9377983666756173
+              },
+              "gated": {
+                "CE_norm": 0.001827614595928853,
+                "auxiliary_norm": 0.000002305238480867148,
+                "auxiliary_over_CE": 0.001261337311489106,
+                "cosine": -0.0871750973085531,
+                "orthogonal_fraction": 0.9961930045976253
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 15,
+              "count_retained": 7,
+              "original": {
+                "CE_norm": 0.008241267340216058,
+                "auxiliary_norm": 0.000010599739441258283,
+                "auxiliary_over_CE": 0.0012861783271528226,
+                "cosine": 0.0030233227702494815,
+                "orthogonal_fraction": 0.9999954297492698
+              },
+              "gated": {
+                "CE_norm": 0.008241267340216058,
+                "auxiliary_norm": 0.0000058331232219315266,
+                "auxiliary_over_CE": 0.0007077944424235364,
+                "cosine": -0.37135939804414336,
+                "orthogonal_fraction": 0.9284892015981077
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "original": {
+            "CE_norm": 0.023746807601376742,
+            "auxiliary_norm": 0.001981962449185166,
+            "auxiliary_over_CE": 0.08346226922183257,
+            "cosine": 0.13692307835555637,
+            "orthogonal_fraction": 0.9905816829588755
+          },
+          "gated": {
+            "CE_norm": 0.023746807601376742,
+            "auxiliary_norm": 0.0019319829446457556,
+            "auxiliary_over_CE": 0.08135758612596612,
+            "cosine": 0.10673430033082633,
+            "orthogonal_fraction": 0.9942875786878206
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6250,
+              "count_retained": 5814,
+              "original": {
+                "CE_norm": 0.015109930055562371,
+                "auxiliary_norm": 0.001976290886412835,
+                "auxiliary_over_CE": 0.13079417834136892,
+                "cosine": 0.2588361979944157,
+                "orthogonal_fraction": 0.9659212300223013
+              },
+              "gated": {
+                "CE_norm": 0.015109930055562371,
+                "auxiliary_norm": 0.0019296630852264727,
+                "auxiliary_over_CE": 0.12770827383917055,
+                "cosine": 0.2527983190731414,
+                "orthogonal_fraction": 0.9675189971642904
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 32,
+              "count_retained": 26,
+              "original": {
+                "CE_norm": 0.012200064461224567,
+                "auxiliary_norm": 0.000035119958019846464,
+                "auxiliary_over_CE": 0.0028786698735460076,
+                "cosine": 0.7263167342223223,
+                "orthogonal_fraction": 0.6873601687533403
+              },
+              "gated": {
+                "CE_norm": 0.012200064461224567,
+                "auxiliary_norm": 0.00003540303359456122,
+                "auxiliary_over_CE": 0.002901872666909473,
+                "cosine": 0.7159644566733834,
+                "orthogonal_fraction": 0.6981367321523679
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 3,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.0013949863506472946,
+                "auxiliary_norm": 0.0000045612515699816695,
+                "auxiliary_over_CE": 0.0032697463798589716,
+                "cosine": -0.5622503400629979,
+                "orthogonal_fraction": 0.8269670822342587
+              },
+              "gated": {
+                "CE_norm": 0.0013949863506472946,
+                "auxiliary_norm": 0.0000026793231997971993,
+                "auxiliary_over_CE": 0.001920680584834363,
+                "cosine": -0.40397086374191543,
+                "orthogonal_fraction": 0.9147718520197322
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 15,
+              "count_retained": 7,
+              "original": {
+                "CE_norm": 0.007105001492494308,
+                "auxiliary_norm": 0.000008618055356131394,
+                "auxiliary_over_CE": 0.0012129561640818048,
+                "cosine": 0.10342811214145653,
+                "orthogonal_fraction": 0.9946369315578697
+              },
+              "gated": {
+                "CE_norm": 0.007105001492494308,
+                "auxiliary_norm": 0.0000041459901190871165,
+                "auxiliary_over_CE": 0.0005835312101576505,
+                "cosine": -0.1842781044515848,
+                "orthogonal_fraction": 0.9828741426142672
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "original": {
+            "CE_norm": 0.03546076801254115,
+            "auxiliary_norm": 0.002465182199009576,
+            "auxiliary_over_CE": 0.06951857890211889,
+            "cosine": -0.05198633115464474,
+            "orthogonal_fraction": 0.9986477964593321
+          },
+          "gated": {
+            "CE_norm": 0.03546076801254115,
+            "auxiliary_norm": 0.002268230189438527,
+            "auxiliary_over_CE": 0.06396449700797058,
+            "cosine": -0.03587061638252653,
+            "orthogonal_fraction": 0.9993564423569489
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6250,
+              "count_retained": 5814,
+              "original": {
+                "CE_norm": 0.02751012718842019,
+                "auxiliary_norm": 0.002443089305337065,
+                "auxiliary_over_CE": 0.08880690694754155,
+                "cosine": -0.04412680769734413,
+                "orthogonal_fraction": 0.9990259380228531
+              },
+              "gated": {
+                "CE_norm": 0.02751012718842019,
+                "auxiliary_norm": 0.002249632965828293,
+                "auxiliary_over_CE": 0.08177472064815565,
+                "cosine": -0.026700287619476085,
+                "orthogonal_fraction": 0.999643483768607
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 32,
+              "count_retained": 26,
+              "original": {
+                "CE_norm": 0.01638733837965715,
+                "auxiliary_norm": 0.000023068136885151465,
+                "auxiliary_over_CE": 0.0014076805122781681,
+                "cosine": 0.21635004426869467,
+                "orthogonal_fraction": 0.9763158599269675
+              },
+              "gated": {
+                "CE_norm": 0.01638733837965715,
+                "auxiliary_norm": 0.000021451757513666427,
+                "auxiliary_over_CE": 0.0013090446426795045,
+                "cosine": 0.21334461194204402,
+                "orthogonal_fraction": 0.9769770092255491
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 3,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.0013656435479091403,
+                "auxiliary_norm": 0.0000020337870440849438,
+                "auxiliary_over_CE": 0.001489251750355179,
+                "cosine": -0.05081501287766052,
+                "orthogonal_fraction": 0.9987080827079768
+              },
+              "gated": {
+                "CE_norm": 0.0013656435479091403,
+                "auxiliary_norm": 0.0000015911491009365803,
+                "auxiliary_over_CE": 0.001165127681650676,
+                "cosine": 0.11415707076811216,
+                "orthogonal_fraction": 0.9934627135396901
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 15,
+              "count_retained": 7,
+              "original": {
+                "CE_norm": 0.00803931841367427,
+                "auxiliary_norm": 0.000006801629307113732,
+                "auxiliary_over_CE": 0.0008460455174340001,
+                "cosine": -0.09923343255169913,
+                "orthogonal_fraction": 0.9950641817812594
+              },
+              "gated": {
+                "CE_norm": 0.00803931841367427,
+                "auxiliary_norm": 0.00000396574773716735,
+                "auxiliary_over_CE": 0.0004932940248295072,
+                "cosine": -0.12721802706799232,
+                "orthogonal_fraction": 0.991874777171457
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "seed": 2026092703,
+      "seconds": 53.86933159828186,
+      "L": {
+        "count": 6300,
+        "retained": 5945,
+        "retention": 0.9436507936507936,
+        "ties": 0,
+        "weak_correct": 6289,
+        "strong_correct": 6260,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 6257,
+            "retained": 5912,
+            "retention": 0.9448617548345852
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 32,
+            "retained": 27,
+            "retention": 0.84375
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 3,
+            "retained": 1,
+            "retention": 0.3333333333333333
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 8,
+            "retained": 5,
+            "retention": 0.625
+          }
+        }
+      },
+      "V": {
+        "count": 27000,
+        "retained": 25247,
+        "retention": 0.9350740740740741,
+        "ties": 0,
+        "weak_correct": 26524,
+        "strong_correct": 26396,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 26315,
+            "retained": 24838,
+            "retention": 0.9438723161694851
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 209,
+            "retained": 149,
+            "retention": 0.7129186602870813
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 81,
+            "retained": 33,
+            "retention": 0.4074074074074074
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 395,
+            "retained": 227,
+            "retention": 0.5746835443037974
+          }
+        }
+      },
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "original": {
+            "CE_norm": 0.025051529269919458,
+            "auxiliary_norm": 0.009602380799417802,
+            "auxiliary_over_CE": 0.38330517454468654,
+            "cosine": -0.036496182845312954,
+            "orthogonal_fraction": 0.9993337924025794
+          },
+          "gated": {
+            "CE_norm": 0.025051529269919458,
+            "auxiliary_norm": 0.00927987560320224,
+            "auxiliary_over_CE": 0.37043150153491916,
+            "cosine": -0.03859640262930386,
+            "orthogonal_fraction": 0.9992548812510633
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6257,
+              "count_retained": 5912,
+              "original": {
+                "CE_norm": 0.018518175745894223,
+                "auxiliary_norm": 0.009523612398210547,
+                "auxiliary_over_CE": 0.5142845887679884,
+                "cosine": 0.2731649726827444,
+                "orthogonal_fraction": 0.9619672019872796
+              },
+              "gated": {
+                "CE_norm": 0.018518175745894223,
+                "auxiliary_norm": 0.00920877375162527,
+                "auxiliary_over_CE": 0.49728298715746905,
+                "cosine": 0.27595172309729027,
+                "orthogonal_fraction": 0.9611714969346711
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 32,
+              "count_retained": 27,
+              "original": {
+                "CE_norm": 0.013283745503344793,
+                "auxiliary_norm": 0.0000871914048722464,
+                "auxiliary_over_CE": 0.006563766586034938,
+                "cosine": 0.08919900393226432,
+                "orthogonal_fraction": 0.9960138240493913
+              },
+              "gated": {
+                "CE_norm": 0.013283745503344793,
+                "auxiliary_norm": 0.00007876009002954314,
+                "auxiliary_over_CE": 0.005929057434118388,
+                "cosine": 0.0632987462549332,
+                "orthogonal_fraction": 0.9979946235940119
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 3,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.0019881420144467576,
+                "auxiliary_norm": 0.000016720565624614795,
+                "auxiliary_over_CE": 0.0084101465102168,
+                "cosine": -0.24199721618675116,
+                "orthogonal_fraction": 0.9702769436392183
+              },
+              "gated": {
+                "CE_norm": 0.0019881420144467576,
+                "auxiliary_norm": 0.000011188378884955525,
+                "auxiliary_over_CE": 0.005627555176469084,
+                "cosine": -0.47508825754240214,
+                "orthogonal_fraction": 0.8799381498408421
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 8,
+              "count_retained": 5,
+              "original": {
+                "CE_norm": 0.01138224007417863,
+                "auxiliary_norm": 0.000027321083759426673,
+                "auxiliary_over_CE": 0.0024003257338954193,
+                "cosine": 0.8024045456238005,
+                "orthogonal_fraction": 0.5967804832283496
+              },
+              "gated": {
+                "CE_norm": 0.01138224007417863,
+                "auxiliary_norm": 0.000019859629904084338,
+                "auxiliary_over_CE": 0.0017447909879477266,
+                "cosine": 0.7945555543085819,
+                "orthogonal_fraction": 0.6071914616637671
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "original": {
+            "CE_norm": 0.021312752747551834,
+            "auxiliary_norm": 0.008075547065135915,
+            "auxiliary_over_CE": 0.37890680574162533,
+            "cosine": -0.08281373259481258,
+            "orthogonal_fraction": 0.9965650433833784
+          },
+          "gated": {
+            "CE_norm": 0.021312752747551834,
+            "auxiliary_norm": 0.007811578749064413,
+            "auxiliary_over_CE": 0.3665213424841012,
+            "cosine": -0.08695840557418735,
+            "orthogonal_fraction": 0.9962119431626962
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6257,
+              "count_retained": 5912,
+              "original": {
+                "CE_norm": 0.014318299743218832,
+                "auxiliary_norm": 0.008011078093395504,
+                "auxiliary_over_CE": 0.5594992587852173,
+                "cosine": 0.378792260195893,
+                "orthogonal_fraction": 0.9254817251657036
+              },
+              "gated": {
+                "CE_norm": 0.014318299743218832,
+                "auxiliary_norm": 0.007751263317509491,
+                "auxiliary_over_CE": 0.5413536143619637,
+                "cosine": 0.38094500559413796,
+                "orthogonal_fraction": 0.9245976977652941
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 32,
+              "count_retained": 27,
+              "original": {
+                "CE_norm": 0.010299452365122738,
+                "auxiliary_norm": 0.00007595633453140151,
+                "auxiliary_over_CE": 0.007374793517043112,
+                "cosine": 0.04111527304292219,
+                "orthogonal_fraction": 0.9991544096497827
+              },
+              "gated": {
+                "CE_norm": 0.010299452365122738,
+                "auxiliary_norm": 0.0000697901235157995,
+                "auxiliary_over_CE": 0.0067761004218177,
+                "cosine": -0.0022745238644379523,
+                "orthogonal_fraction": 0.9999974132672494
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 3,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.0018373295756298543,
+                "auxiliary_norm": 0.000014777788688432724,
+                "auxiliary_over_CE": 0.008043079959329973,
+                "cosine": -0.08903791296391428,
+                "orthogonal_fraction": 0.9960282375791514
+              },
+              "gated": {
+                "CE_norm": 0.0018373295756298543,
+                "auxiliary_norm": 0.000009335144305449525,
+                "auxiliary_over_CE": 0.005080821878268273,
+                "cosine": -0.4426840833307406,
+                "orthogonal_fraction": 0.8966776468528821
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 8,
+              "count_retained": 5,
+              "original": {
+                "CE_norm": 0.012169593932394897,
+                "auxiliary_norm": 0.000029087820872351176,
+                "auxiliary_over_CE": 0.002390204721204439,
+                "cosine": 0.8299690661515378,
+                "orthogonal_fraction": 0.5578094201710332
+              },
+              "gated": {
+                "CE_norm": 0.012169593932394897,
+                "auxiliary_norm": 0.000020304123849526562,
+                "auxiliary_over_CE": 0.0016684306775000867,
+                "cosine": 0.8212464288635495,
+                "orthogonal_fraction": 0.570573661396026
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "original": {
+            "CE_norm": 0.032553842584590736,
+            "auxiliary_norm": 0.0030918645008804146,
+            "auxiliary_over_CE": 0.09497694451419199,
+            "cosine": 0.10071063658046875,
+            "orthogonal_fraction": 0.9949157590869474
+          },
+          "gated": {
+            "CE_norm": 0.032553842584590736,
+            "auxiliary_norm": 0.0029566739012576457,
+            "auxiliary_over_CE": 0.09082411373019228,
+            "cosine": 0.10446464691912652,
+            "orthogonal_fraction": 0.9945286006666989
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6257,
+              "count_retained": 5912,
+              "original": {
+                "CE_norm": 0.02319523489694816,
+                "auxiliary_norm": 0.003069147566469283,
+                "auxiliary_over_CE": 0.13231802049450667,
+                "cosine": -0.020329335338353037,
+                "orthogonal_fraction": 0.9997933377076988
+              },
+              "gated": {
+                "CE_norm": 0.02319523489694816,
+                "auxiliary_norm": 0.0029393628653245573,
+                "auxiliary_over_CE": 0.12672270310620112,
+                "cosine": -0.016336270912539808,
+                "orthogonal_fraction": 0.9998665542224483
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 32,
+              "count_retained": 27,
+              "original": {
+                "CE_norm": 0.01654204092896105,
+                "auxiliary_norm": 0.000027959409413730038,
+                "auxiliary_over_CE": 0.001690203133567393,
+                "cosine": 0.3896998064816582,
+                "orthogonal_fraction": 0.9209419421593079
+              },
+              "gated": {
+                "CE_norm": 0.01654204092896105,
+                "auxiliary_norm": 0.000022103350971576165,
+                "auxiliary_over_CE": 0.0013361924968326383,
+                "cosine": 0.3990804066012944,
+                "orthogonal_fraction": 0.9169159334786071
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 3,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.002188641239247479,
+                "auxiliary_norm": 0.000002678036669859765,
+                "auxiliary_over_CE": 0.001223606967572518,
+                "cosine": 0.020165532321812868,
+                "orthogonal_fraction": 0.99979665497849
+              },
+              "gated": {
+                "CE_norm": 0.002188641239247479,
+                "auxiliary_norm": 0.0000021146297880333787,
+                "auxiliary_over_CE": 0.0009661838359403537,
+                "cosine": 0.01926308982577951,
+                "orthogonal_fraction": 0.9998144494706825
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 8,
+              "count_retained": 5,
+              "original": {
+                "CE_norm": 0.006505866858044468,
+                "auxiliary_norm": 0.000004684846864369928,
+                "auxiliary_over_CE": 0.0007200957176947359,
+                "cosine": 0.15876562728739851,
+                "orthogonal_fraction": 0.9873162996689758
+              },
+              "gated": {
+                "CE_norm": 0.006505866858044468,
+                "auxiliary_norm": 0.000003679741613192974,
+                "auxiliary_over_CE": 0.0005656035841930879,
+                "cosine": 0.16669779303375679,
+                "orthogonal_fraction": 0.9860080353616165
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "row_id": "FEATURE_MT-s2026092703",
+      "arm": "FEATURE_MT",
+      "seed": 2026092703,
+      "seconds": 54.43494200706482,
+      "L": {
+        "count": 6300,
+        "retained": 5797,
+        "retention": 0.9201587301587302,
+        "ties": 0,
+        "weak_correct": 6288,
+        "strong_correct": 6259,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 6255,
+            "retained": 5763,
+            "retention": 0.9213429256594724
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 33,
+            "retained": 28,
+            "retention": 0.8484848484848485
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 4,
+            "retained": 1,
+            "retention": 0.25
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 8,
+            "retained": 5,
+            "retention": 0.625
+          }
+        }
+      },
+      "V": {
+        "count": 27000,
+        "retained": 24500,
+        "retention": 0.9074074074074074,
+        "ties": 1,
+        "weak_correct": 26527,
+        "strong_correct": 26407,
+        "groups": {
+          "WEAK_RIGHT_STRONG_RIGHT": {
+            "count": 26330,
+            "retained": 24116,
+            "retention": 0.9159134067603494
+          },
+          "WEAK_RIGHT_STRONG_WRONG": {
+            "count": 197,
+            "retained": 136,
+            "retention": 0.6903553299492385
+          },
+          "WEAK_WRONG_STRONG_RIGHT": {
+            "count": 77,
+            "retained": 33,
+            "retention": 0.42857142857142855
+          },
+          "WEAK_WRONG_STRONG_WRONG": {
+            "count": 396,
+            "retained": 215,
+            "retention": 0.5429292929292929
+          }
+        }
+      },
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "original": {
+            "CE_norm": 0.024104318517971388,
+            "auxiliary_norm": 0.005723481161021027,
+            "auxiliary_over_CE": 0.23744629646981255,
+            "cosine": 0.03857628162821612,
+            "orthogonal_fraction": 0.9992556582255316
+          },
+          "gated": {
+            "CE_norm": 0.024104318517971388,
+            "auxiliary_norm": 0.005434864095319525,
+            "auxiliary_over_CE": 0.22547263019560035,
+            "cosine": 0.029044849311520796,
+            "orthogonal_fraction": 0.999578109368383
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6255,
+              "count_retained": 5763,
+              "original": {
+                "CE_norm": 0.018103619586094605,
+                "auxiliary_norm": 0.005667705121999394,
+                "auxiliary_over_CE": 0.31307027277311766,
+                "cosine": 0.16656880572192717,
+                "orthogonal_fraction": 0.9860298337070592
+              },
+              "gated": {
+                "CE_norm": 0.018103619586094605,
+                "auxiliary_norm": 0.0053761821607448985,
+                "auxiliary_over_CE": 0.29696725205573504,
+                "cosine": 0.1766976459295509,
+                "orthogonal_fraction": 0.9842651786601795
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 33,
+              "count_retained": 28,
+              "original": {
+                "CE_norm": 0.014261211398019375,
+                "auxiliary_norm": 0.00006626133993352735,
+                "auxiliary_over_CE": 0.004646263075711076,
+                "cosine": 0.3246407825364608,
+                "orthogonal_fraction": 0.9458373868240324
+              },
+              "gated": {
+                "CE_norm": 0.014261211398019375,
+                "auxiliary_norm": 0.00007146553776681789,
+                "auxiliary_over_CE": 0.005011182835193311,
+                "cosine": 0.26296123954933254,
+                "orthogonal_fraction": 0.9648063984523935
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 4,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.00229861901098341,
+                "auxiliary_norm": 0.00001824470827991832,
+                "auxiliary_over_CE": 0.007937247622481271,
+                "cosine": -0.20553728261361326,
+                "orthogonal_fraction": 0.9786492862388506
+              },
+              "gated": {
+                "CE_norm": 0.00229861901098341,
+                "auxiliary_norm": 0.00001066967201988358,
+                "auxiliary_over_CE": 0.004641774895666077,
+                "cosine": -0.4378808282148407,
+                "orthogonal_fraction": 0.8990330251341634
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 8,
+              "count_retained": 5,
+              "original": {
+                "CE_norm": 0.01062032431477063,
+                "auxiliary_norm": 0.0000316247738120791,
+                "auxiliary_over_CE": 0.0029777597062733492,
+                "cosine": 0.7992560489288119,
+                "orthogonal_fraction": 0.6009906557099741
+              },
+              "gated": {
+                "CE_norm": 0.01062032431477063,
+                "auxiliary_norm": 0.000023763883469775784,
+                "auxiliary_over_CE": 0.0022375854790729166,
+                "cosine": 0.7864266359811283,
+                "orthogonal_fraction": 0.6176836943123932
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "original": {
+            "CE_norm": 0.021307101994482783,
+            "auxiliary_norm": 0.004692824432378952,
+            "auxiliary_over_CE": 0.2202469596097162,
+            "cosine": -0.004426465405665025,
+            "orthogonal_fraction": 0.9999902031540171
+          },
+          "gated": {
+            "CE_norm": 0.021307101994482783,
+            "auxiliary_norm": 0.00447339862273998,
+            "auxiliary_over_CE": 0.20994871211947605,
+            "cosine": -0.020513796673089873,
+            "orthogonal_fraction": 0.9997895699326209
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6255,
+              "count_retained": 5763,
+              "original": {
+                "CE_norm": 0.01466355948375768,
+                "auxiliary_norm": 0.004648161643676867,
+                "auxiliary_over_CE": 0.31698726689283563,
+                "cosine": 0.22528568112734793,
+                "orthogonal_fraction": 0.974292749577347
+              },
+              "gated": {
+                "CE_norm": 0.01466355948375768,
+                "auxiliary_norm": 0.004423357309949565,
+                "auxiliary_over_CE": 0.30165645079894593,
+                "cosine": 0.23386920947958992,
+                "orthogonal_fraction": 0.9722680663569033
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 33,
+              "count_retained": 28,
+              "original": {
+                "CE_norm": 0.010798788872290969,
+                "auxiliary_norm": 0.00005889641088871814,
+                "auxiliary_over_CE": 0.005453982996171239,
+                "cosine": 0.3216118095273755,
+                "orthogonal_fraction": 0.9468716090223253
+              },
+              "gated": {
+                "CE_norm": 0.010798788872290969,
+                "auxiliary_norm": 0.00006489529267931211,
+                "auxiliary_over_CE": 0.006009497310002,
+                "cosine": 0.23484978444728002,
+                "orthogonal_fraction": 0.9720316757930608
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 4,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.002140328386094215,
+                "auxiliary_norm": 0.000015845135972962197,
+                "auxiliary_over_CE": 0.007403133124761871,
+                "cosine": 0.040718953856409536,
+                "orthogonal_fraction": 0.9991706394789829
+              },
+              "gated": {
+                "CE_norm": 0.002140328386094215,
+                "auxiliary_norm": 0.000008775713023740585,
+                "auxiliary_over_CE": 0.00410017130116887,
+                "cosine": -0.3642634730261274,
+                "orthogonal_fraction": 0.9312959369711347
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 8,
+              "count_retained": 5,
+              "original": {
+                "CE_norm": 0.011593571528837566,
+                "auxiliary_norm": 0.00003388391701597473,
+                "auxiliary_over_CE": 0.002922646997234002,
+                "cosine": 0.8566197424190604,
+                "orthogonal_fraction": 0.5159482695948331
+              },
+              "gated": {
+                "CE_norm": 0.011593571528837566,
+                "auxiliary_norm": 0.00002430560151060863,
+                "auxiliary_over_CE": 0.002096472295025866,
+                "cosine": 0.845174863042827,
+                "orthogonal_fraction": 0.5344898978283299
+              }
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "original": {
+            "CE_norm": 0.032108358465143434,
+            "auxiliary_norm": 0.0019890000943272135,
+            "auxiliary_over_CE": 0.06194648961847288,
+            "cosine": 0.13800334180607568,
+            "orthogonal_fraction": 0.9904317632479056
+          },
+          "gated": {
+            "CE_norm": 0.032108358465143434,
+            "auxiliary_norm": 0.0018513455035057175,
+            "auxiliary_over_CE": 0.05765930094232387,
+            "cosine": 0.14759355091994458,
+            "orthogonal_fraction": 0.9890480998044745
+          },
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count_full": 6255,
+              "count_retained": 5763,
+              "original": {
+                "CE_norm": 0.022944622092983157,
+                "auxiliary_norm": 0.001971493774686829,
+                "auxiliary_over_CE": 0.08592400287515498,
+                "cosine": -0.040679443513392914,
+                "orthogonal_fraction": 0.9991722488517386
+              },
+              "gated": {
+                "CE_norm": 0.022944622092983157,
+                "auxiliary_norm": 0.0018352629479725933,
+                "auxiliary_over_CE": 0.07998662782656363,
+                "cosine": -0.030879590222554782,
+                "orthogonal_fraction": 0.9995231117426385
+              }
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count_full": 33,
+              "count_retained": 28,
+              "original": {
+                "CE_norm": 0.017507368401186413,
+                "auxiliary_norm": 0.000022818427906320475,
+                "auxiliary_over_CE": 0.0013033613838144946,
+                "cosine": 0.49956043534506206,
+                "orthogonal_fraction": 0.8662790378612726
+              },
+              "gated": {
+                "CE_norm": 0.017507368401186413,
+                "auxiliary_norm": 0.000021967801708093953,
+                "auxiliary_over_CE": 0.0012547746300126566,
+                "cosine": 0.5167407344368936,
+                "orthogonal_fraction": 0.8561419352967239
+              }
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count_full": 4,
+              "count_retained": 1,
+              "original": {
+                "CE_norm": 0.0022367711245169287,
+                "auxiliary_norm": 0.0000023725944794042024,
+                "auxiliary_over_CE": 0.001060722956139112,
+                "cosine": -0.031131581809475516,
+                "orthogonal_fraction": 0.9995152948374727
+              },
+              "gated": {
+                "CE_norm": 0.0022367711245169287,
+                "auxiliary_norm": 0.0000018341402771759,
+                "auxiliary_over_CE": 0.0008199946150377884,
+                "cosine": -0.08722063686809094,
+                "orthogonal_fraction": 0.9961890184620209
+              }
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count_full": 8,
+              "count_retained": 5,
+              "original": {
+                "CE_norm": 0.006347847925788543,
+                "auxiliary_norm": 0.000004420609646851714,
+                "auxiliary_over_CE": 0.0006963950142681744,
+                "cosine": 0.16374256420702038,
+                "orthogonal_fraction": 0.9865031032221387
+              },
+              "gated": {
+                "CE_norm": 0.006347847925788543,
+                "auxiliary_norm": 0.0000034816737119245073,
+                "auxiliary_over_CE": 0.0005484809580550886,
+                "cosine": 0.14948610631467904,
+                "orthogonal_fraction": 0.9887638262087041
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "independent_recount": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "status": "VERIFIED",
+      "source_packets": 33300,
+      "forward_packets": 66600,
+      "gradient_batches": 25,
+      "layer_records": 75,
+      "saved_vectors": 1200,
+      "V_gradients": 0,
+      "policy_recount": "VERIFIED"
+    },
+    {
+      "row_id": "FEATURE_MT-s2026092701",
+      "status": "VERIFIED",
+      "source_packets": 33300,
+      "forward_packets": 66600,
+      "gradient_batches": 25,
+      "layer_records": 75,
+      "saved_vectors": 1200,
+      "V_gradients": 0,
+      "policy_recount": "VERIFIED"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "status": "VERIFIED",
+      "source_packets": 33300,
+      "forward_packets": 66600,
+      "gradient_batches": 25,
+      "layer_records": 75,
+      "saved_vectors": 1200,
+      "V_gradients": 0,
+      "policy_recount": "VERIFIED"
+    },
+    {
+      "row_id": "FEATURE_MT-s2026092702",
+      "status": "VERIFIED",
+      "source_packets": 33300,
+      "forward_packets": 66600,
+      "gradient_batches": 25,
+      "layer_records": 75,
+      "saved_vectors": 1200,
+      "V_gradients": 0,
+      "policy_recount": "VERIFIED"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "status": "VERIFIED",
+      "source_packets": 33300,
+      "forward_packets": 66600,
+      "gradient_batches": 25,
+      "layer_records": 75,
+      "saved_vectors": 1200,
+      "V_gradients": 0,
+      "policy_recount": "VERIFIED"
+    },
+    {
+      "row_id": "FEATURE_MT-s2026092703",
+      "status": "VERIFIED",
+      "source_packets": 33300,
+      "forward_packets": 66600,
+      "gradient_batches": 25,
+      "layer_records": 75,
+      "saved_vectors": 1200,
+      "V_gradients": 0,
+      "policy_recount": "VERIFIED"
+    }
+  ],
+  "scope": "Same6300L/27000V physical samples measured with6 frozen models, not independent datasets; no U/query/head fits/model updates",
+  "gradient_comparison": "Gated group derivative compared against original full-group trueCE, not retained-only CE"
+}
