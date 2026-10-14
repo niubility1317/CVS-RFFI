@@ -1,17 +1,25 @@
-# 可信门控内有界权重：冻结源代理预登记
+# 可信门控内有界权重：源代理结果
 
-依据用户附件报告路线四，当前只做源代理准备，不全面展开新GPU训练、不改8个健康层级模型。固定原moment-area SIG_TIME最低seed2026092701/final50/11100，执行512c10a267b5e654cfd2c983ab1debdeebc7f626；加载前source_proof核对原roles/physicalIDs/scratch来源/ownEMA、默认头额外fitdisabled及无target训练/选模。复用与前两个源诊断一致的固定source anchor，不按目标分数选父权重；无新模型训练初始化。
+源代理已完成，统计和保存梯度独立复算 VERIFIED。原门控接受 867/6300 包（13.7619%），867 包均正确；uniform 与 weighted precision 均为 100%。这次没有精度提升空间，不能证明权重改善伪标签正确率。加权确实增强同一时域参数对象的伪标签梯度，但未开展此机制的真实训练或目标测试。
 
-完整L_s6300只观测一次，固定shuffle2026101411、Dropoutseed2026101412、25个batch（24×256＋156）。每包teacherweak、studentclean、studentstrong三次forward，共18900。student.train仅回放原Dropout/strongnoise.015，identity无BN；teacher.eval读取同checkpoint的ownEMA。所有权重/buffers不更新，无optimizer或headfit；只暂开t1/t2/t3.pw.weight导数对象3456/6912/9216，autograd.grad计算监督LCE、原UniformU CE、WeightedU CE，结束恢复eval/requires_gradFalse，检查原tensors逐值相同和.grad未累积。不是实际训练阶段梯度历史。
+Run 20261014-phase1-source-trusted-weight-manysig-s01-m1-r01；实现 051de1a177819c0f8a9cfe5aba0fd09e7cefef6d；实际执行 c84b17396bc0861b8856e867d17aab54206436c5。固定原 moment-area SIG_TIME seed2026092701/final50/11100及其ownEMA，来源执行512c10a267b5e654cfd2c983ab1debdeebc7f626，加载前核对source roles/physicalIDs/scratch无继承污染、默认头额外fit关闭，无目标训练/选模。最低预定义seed作为与前两源诊断相同的固定anchor，未按目标成绩选权重。
 
-原教师confidence、physical batch_neighbor window2、studentstrong argmax一致门控按原helper执行；不放松门控/变采样/改阶段/信道增强/EMA/头。h_i=1-p_student,strong(teacher伪类别)，w=stopgrad(.75+.5×clip(h/.1,0,1))，raw界[.75,1.25]、scale.1于源观测前固定，不扫描。lossU=.16×sum(a*w*CE)/sum(a*w)，空accept返回0；entropy路径不改，本代理只比较CE项。raw界不等于归一化effective系数同界，其理论界[.6,1.6667]。h只表示学生难度，不表示教师正确。
+原teacher confidence＋physical batch_neighbor window2＋studentstrong一致门控不变。h=1−p_student,strong(teacher伪类别)；raw w=stopgrad(.75+.5×clip(h/.1,0,1))；lambdaU=.16，按已接受样本权重和归一化CE。raw界[.75,1.25]，effective归一化权重理论界[.6,1.6667]，二者不能混称。scale/bounds在观测前固定，无扫描。L标签只用于原合法physical metadata、clean监督CE及形成mask/weights后的精度统计，不输入新难度计算。
 
-source labels允许用于clean LCE和mask/weights形成后的代理precision，也用于既有helper构造已批准physical metadata；不传入新门控或难度。15项overall/5RX/3day/6source-class-index统计保留count/accepted/hits/precision/weightedprecision/有效权重分母，source-class索引映射见原contract。25batch×3层=75项参数梯度范数、weighted−uniform差/cos及同层U/L比；不同层参数量不同，不把跨层norm排名解释为重要性。保存私有source_weight.pt后只重读arrays/gradientvectors复算，不新增IQ forward。
+完整L6300固定shuffle2026101411/Dropoutseed2026101412，一次25batch（24×256＋156）；teacherweak/studentclean/studentstrong共18900包前向。源观测耗时14.946秒（不含发布/加载前检查）。CPU2线程/CUDA为空；无U IQ/真值、V forward或目标访问，既有Vcache materialize后discard。student.train仅回放原Dropout/strongnoise.015，无identity BN；原student/EMA所有state逐值保持，optimizer/head更新0，额外分类头拟合0。
 
-L6300每physical cell70包，U56700每cell630包，随机邻包可见率不同；同一个Lproxy同时用于监督/伪标签观察，与真实训练的独立L128/U256批不同。源precision/coverage和冻结梯度比不能冒充隐藏U真值、训练33/34/50梯度或性能收益。无U IQ/真值、V forward或目标访问；既有Vcache可materialize后discard。NoExplicitCFO及内部补偿、split392005/sourceRX1/3/4/6/8/day1/2/3/旧6TX与物理roles保持，复用VALIDATED_ONCE。
+| 梯度对象 | 元素数 | Uniform λU/L 均值 | Weighted λU/L 均值 | 两种U梯度余弦均值 |
+|---|---:|---:|---:|---:|
+| t1.pw.weight | 3456 | 0.243982 | 0.356582 | 0.996384 |
+| t2.pw.weight | 6912 | 0.240009 | 0.348997 | 0.995777 |
+| t3.pw.weight | 9216 | 0.227731 | 0.320118 | 0.994168 |
 
-实现/config 051de1a177819c0f8a9cfe5aba0fd09e7cefef6d；local native真实模型2zeroIQ、stopgrad/原mask/归一化CE梯度精确/空accept/11负例/source统计与grad数学检查PASS，未读源/目标IQ。一次独立直接P0/P1 PASS，无发现；不重复父框架或报告审查。
+表中为25batch逐批比值/余弦的算术均值，不是合并全数据梯度，也不是实际epoch33/34/50训练轨迹。每层只比较同一参数对象，参数量不同，不以跨层norm排名解释重要性。75层批记录及15个overall/RX/day/source-class统计完整保存在results.json，保留accepted/hits/有效权重分母。15项有接受样本的精度均100%；接受样本平均h=0.01461584，观察raw范围[0.75010610,1.25]。
 
-入口python -u -m experiments.cvs_source_weight.probe；普通N607现有CVS-RFFI CPU、CUDA_VISIBLE_DEVICES空、Torch/OMP/MKL/OpenBLAS2threads。CWD /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_weight_20261014_r01，immutable output /home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-trusted-weight-manysig-s01-m1-r01，owner codex/root/source-weight-20261014。一次archive本地/remote SHA比较及remotecompile；真实sourceCP2zeroIQ无查询smoke PASS直接继续，核对PID/CWD/argv/loggrowth/完成及保存数据复算。不占GPU、不停/改/重启其他owner。
+L每physical cell70包，实际U每cell630包，邻包可见率不同；同一Lproxy用于监督和伪标签，与真实L128/U256分离采样不同。13.7619%覆盖和100%精度只属于本源代理，不能外推隐藏U。梯度方向基本保持，主要观测到贡献增大；不能据此断言改善身份信息、新TX迁移或目标性能，84%目标尚未达成。
 
-Stop：角色/provenance/非有限/shape/原gate/state/grad/savedrecount失败保留输出停止，无自动retry、换source模型、改scale/bounds或选择性重采样。预期results/resolved/source_weight/completion及release preflight/submit/log。0新增epochs/optimizer/headupdates。只上传代码/config/聚合结果与报告，原IQ/weights/大日志/梯度数组不入Git。源诊断无target测试或84%达标结论；下一真实训练若发布仍须按报告固定33/34/50位置记录实际L/U贡献，不能用本代理替代。
+本地stopgrad/原mask/归一化梯度/空accept/11配置负例/真实native2zeroIQ PASS，一次独立直接P0/P1 PASS无发现。一次release archive本地/remote SHA比较及remotecompile成功；真实checkpoint无查询2zeroIQ smoke PASS。独立readback核对PID2248792/CWD/argv正确，日志0→212bytes，completion字段精确匹配；私有source_weight.pt重读复算15统计及75梯度记录VERIFIED，无新增IQ forward。
+
+运行入口 python -u -m experiments.cvs_source_weight.probe；CWD /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_weight_20261014_r01；保存产物 /home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-trusted-weight-manysig-s01-m1-r01/SOURCE_WEIGHT-s2026092701。原IQ、checkpoint、梯度数组与大日志不入Git。原发布第一次因未同步HEAD在本地包装前停止，无远端写入；同步提交并核对remoteOID后发布一次，未重复源forward。完整固定方案见preregistration.md。
+
+后续真实训练若落实，保留旧门控、默认头正常联合训练、scratch总计50轮、33＋17，预先固定实际33/34/50的L/U特征参数梯度记录。当前源代理不能替代这一验证；8个健康层级实验保持原方案。

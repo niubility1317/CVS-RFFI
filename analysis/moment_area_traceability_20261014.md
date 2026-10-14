@@ -11,7 +11,7 @@
 | R05 | 二·结构分析 | 区分面积、统计形状和常数时间坐标；不把顺序敏感视为泛化证据 | checks.py/report | verified | float64：cov置乱不变、area反转/内部顺序及时间项恒等式PASS | 性能只由真实冻结测试证明 |
 | R06 | 三·路线三 | 独立比较t2与t2.pool取点 | experiments/cvs_read_position50及seeds | verified | 完整3seed/9row/66600steps/1512000pred/162metrics独立复算VERIFIED | PRE82.5599vsPOST82.6909，无稳定提升 |
 | R07 | 三·路线二 | 连续4→2→1层级含三个边界增量和统一全局时间 | experiments/cvs_hierarchy50及source_hierarchy | implemented | 源L720/135统计VERIFIED，真实4新模型已发布健康训练 | 等待固定终轮默认头及源资格；保留GT局部和同容量大窗统计控制 |
-| R08 | 三·路线四 | 可信门控内有界stopgrad难度权重及真实训练梯度 | 后续训练侧备选 | deferred | 当前保持原U损失 | 报告建议不抢占结构路线 |
+| R08 | 三·路线四 | 可信门控内有界stopgrad难度权重及真实训练梯度 | experiments/cvs_source_weight；实际训练待落实 | implemented | 固定L6300/15统计/75参数梯度保存复算VERIFIED，无训练/头拟合 | 只证明源代理接线及梯度变化，真实33/34/50训练贡献和性能未验证 |
 | R09 | 五及目标 | 首seed同路径SIG_TIME与两个描述子、旧基线；源PASS才扩02/03；自动默认头truthlast、Git | design/source/dispatch/score/report | verified | 完整三seed12row／99900steps／2016000默认预测／216组指标复算VERIFIED，Git交付 | 不使用目标分数控制扩seed |
 
 当前最高风险未完成项：新描述子能否在真实source训练中更新并保持合法默认预测路径；局部算子通过不等于识别提升。实施按路线一的公式严格对齐，其他路线按原报告顺序有意后置；无需新增报告审批、签名或数据重验。
@@ -50,3 +50,6 @@ R07连续层级网络已实现并发布：20261014-phase1-hierarchy-oldgate-cos-
 
 
 R07首seed真实闭环：20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s01-m5-r01，4新+1历史，250epoch记录/44400steps/840000defaultpred/90指标复算VERIFIED；HIER_ORDER82.7732% vs同容量HIER_STAT83.9994%（−1.2262pp），vsSIG_TIME83.5899%（−.8167pp），不将83.9994四舍五入作84达标。全部4新增参数更新、导出/W独立/零拟合和匹配初态完成；L720候选−统计zL2 2.944889。source PASS后先提交 63f59df3933c6fcb778c76d9b1eaed3087f4213c 再发布原样02/03八新模型，实际8进程/配置/GPU/日志增长VERIFIED，target值随后读取。现7verified/1implemented/1deferred，0blocked/rejected；最高风险完整3seed层级效果仍未证实，source PASS非性能PASS。严格一阶+二阶skewarea/3bridge/globaltime实现；统计与签名rawscale/信息不同披露，不能从配对单独断言顺序因果。验证python -m experiments.cvs_hierarchy50.audit只读固定产物；hierarchy_seeds.publish --inspect确认活进程，不重复审查或测试。
+
+
+R08源代理已实施完成：20261014-phase1-source-trusted-weight-manysig-s01-m1-r01，实现051de1a177819c0f8a9cfe5aba0fd09e7cefef6d、执行c84b17396bc0861b8856e867d17aab54206436c5；L6300/18900包前向/25batch/15分层/75实际t1/t2/t3导数记录保存复算VERIFIED。旧mask接受867包均正确，weighted precision未提高；同层λU/L由.244/.240/.228升至.357/.349/.320，cos .994至.996，不能冒充真实U或训练阶段/性能收益。0训练/optimizer/默认头或额外头拟合，student/EMA state保持。现7verified/2implemented/0deferred、0blocked/rejected。最高未完成项：R07完整三seed层级性能及R08实际33/34/50训练梯度/固定默认头结果。严格落实报告的stopgrad/bounds/accepted加权均值；源代理是明确范围缩小，不能标为完整训练路线已验证。验证 python -m experiments.cvs_source_weight.checks（一次PASS）、preflight真实CP2zeroIQ（PASS）、publish --inspect及source_weight.pt重读复算（VERIFIED）。

@@ -1,0 +1,1368 @@
+{
+  "schema": "source_trusted_weight_result_v1",
+  "run_id": "20261014-phase1-source-trusted-weight-manysig-s01-m1-r01",
+  "implementation_commit": "051de1a177819c0f8a9cfe5aba0fd09e7cefef6d",
+  "execution_commit": "c84b17396bc0861b8856e867d17aab54206436c5",
+  "status": "VERIFIED",
+  "completion": {
+    "status": "ANALYZED",
+    "models": 1,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0,
+    "source_packets": 6300,
+    "source_weight_gradient_recount": "VERIFIED"
+  },
+  "row_id": "SOURCE_WEIGHT-s2026092701",
+  "model_seed": 2026092701,
+  "source_packets": 6300,
+  "source_batches": 25,
+  "packet_forwards": 18900,
+  "source_only": true,
+  "query_read": false,
+  "U_IQ_read": false,
+  "U_truth_read": false,
+  "V_cache_materialized": true,
+  "V_forward": false,
+  "training_epochs": 0,
+  "optimizer_steps": 0,
+  "head_fit": false,
+  "head_updates": 0,
+  "student_EMA_state_unchanged": true,
+  "old_gate_unchanged": true,
+  "weight_stopgrad": true,
+  "weight_bounds": [
+    0.75,
+    1.25
+  ],
+  "hardness_scale": 0.1,
+  "records": [
+    {
+      "dimension": "overall",
+      "stratum": null,
+      "count": 6300,
+      "accepted": 867,
+      "accepted_correct": 867,
+      "coverage": 0.1376190476190476,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 867.0000059008598,
+      "hardness_mean": 0.014615844002781993,
+      "raw_weight_min": 0.7501060962677002,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "receiver",
+      "stratum": 1,
+      "count": 1260,
+      "accepted": 186,
+      "accepted_correct": 186,
+      "coverage": 0.14761904761904762,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 179.0782392024994,
+      "hardness_mean": 0.006310393733362998,
+      "raw_weight_min": 0.7503916025161743,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "receiver",
+      "stratum": 3,
+      "count": 1260,
+      "accepted": 153,
+      "accepted_correct": 153,
+      "coverage": 0.12142857142857143,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 162.98725163936615,
+      "hardness_mean": 0.030081200054268432,
+      "raw_weight_min": 0.7507259845733643,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "receiver",
+      "stratum": 4,
+      "count": 1260,
+      "accepted": 172,
+      "accepted_correct": 172,
+      "coverage": 0.1365079365079365,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 168.9679275751114,
+      "hardness_mean": 0.01198722248853639,
+      "raw_weight_min": 0.7501060962677002,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "receiver",
+      "stratum": 6,
+      "count": 1260,
+      "accepted": 149,
+      "accepted_correct": 149,
+      "coverage": 0.11825396825396825,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 143.5342173576355,
+      "hardness_mean": 0.007989414186285647,
+      "raw_weight_min": 0.7503200769424438,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "receiver",
+      "stratum": 8,
+      "count": 1260,
+      "accepted": 207,
+      "accepted_correct": 207,
+      "coverage": 0.16428571428571428,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 212.4323701262474,
+      "hardness_mean": 0.01760171461796415,
+      "raw_weight_min": 0.7501204013824463,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "day",
+      "stratum": 1,
+      "count": 2100,
+      "accepted": 267,
+      "accepted_correct": 267,
+      "coverage": 0.12714285714285714,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 267.6119552850723,
+      "hardness_mean": 0.014584844924983907,
+      "raw_weight_min": 0.7501204013824463,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "day",
+      "stratum": 2,
+      "count": 2100,
+      "accepted": 292,
+      "accepted_correct": 292,
+      "coverage": 0.13904761904761906,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 290.8452647924423,
+      "hardness_mean": 0.012942859979525004,
+      "raw_weight_min": 0.7501060962677002,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "day",
+      "stratum": 3,
+      "count": 2100,
+      "accepted": 308,
+      "accepted_correct": 308,
+      "coverage": 0.14666666666666667,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 308.5427858233452,
+      "hardness_mean": 0.01622879234227267,
+      "raw_weight_min": 0.7503200769424438,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "source_class",
+      "stratum": 0,
+      "count": 1050,
+      "accepted": 155,
+      "accepted_correct": 155,
+      "coverage": 0.14761904761904762,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 156.44336158037186,
+      "hardness_mean": 0.015027845290399367,
+      "raw_weight_min": 0.7506645917892456,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "source_class",
+      "stratum": 1,
+      "count": 1050,
+      "accepted": 145,
+      "accepted_correct": 145,
+      "coverage": 0.1380952380952381,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 148.7081059217453,
+      "hardness_mean": 0.02142712741062559,
+      "raw_weight_min": 0.7507075071334839,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "source_class",
+      "stratum": 2,
+      "count": 1050,
+      "accepted": 138,
+      "accepted_correct": 138,
+      "coverage": 0.13142857142857142,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 137.12513250112534,
+      "hardness_mean": 0.013453976399656654,
+      "raw_weight_min": 0.7501060962677002,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "source_class",
+      "stratum": 3,
+      "count": 1050,
+      "accepted": 141,
+      "accepted_correct": 141,
+      "coverage": 0.13428571428571429,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 145.2881481051445,
+      "hardness_mean": 0.02223773881898704,
+      "raw_weight_min": 0.7508147954940796,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "source_class",
+      "stratum": 4,
+      "count": 1050,
+      "accepted": 129,
+      "accepted_correct": 129,
+      "coverage": 0.12285714285714286,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 126.80608969926834,
+      "hardness_mean": 0.011927145396092142,
+      "raw_weight_min": 0.7503707408905029,
+      "raw_weight_max": 1.25
+    },
+    {
+      "dimension": "source_class",
+      "stratum": 5,
+      "count": 1050,
+      "accepted": 159,
+      "accepted_correct": 159,
+      "coverage": 0.15142857142857144,
+      "uniform_precision": 1,
+      "weighted_precision": 1,
+      "effective_weight_mass": 152.6291680932045,
+      "hardness_mean": 0.004433431340463506,
+      "raw_weight_min": 0.7503200769424438,
+      "raw_weight_max": 1.088045597076416
+    }
+  ],
+  "batch_records": [
+    {
+      "batch_index": 0,
+      "count": 256,
+      "accepted": 41,
+      "L_CE": 0.0905415415763855,
+      "uniform_U_CE": 0.014524211175739765,
+      "weighted_U_CE": 0.019937528297305107,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.07752970146714296,
+          "lambdaU_uniform_gradient_norm": 0.014006544430260916,
+          "lambdaU_weighted_gradient_norm": 0.02029042369468467,
+          "uniform_U_to_L": 0.1806603684163144,
+          "weighted_U_to_L": 0.2617116190403976,
+          "weighted_uniform_gradient_difference_norm": 0.006386495468746676,
+          "weighted_uniform_cosine": 0.9977125411438438
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.0558678548643091,
+          "lambdaU_uniform_gradient_norm": 0.01136157757161795,
+          "lambdaU_weighted_gradient_norm": 0.01634586149932773,
+          "uniform_U_to_L": 0.203365201674787,
+          "weighted_U_to_L": 0.2925807969364187,
+          "weighted_uniform_gradient_difference_norm": 0.005094355650831246,
+          "weighted_uniform_cosine": 0.9970132337755816
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.023006621972499322,
+          "lambdaU_uniform_gradient_norm": 0.0066009785916778295,
+          "lambdaU_weighted_gradient_norm": 0.009815603288743759,
+          "uniform_U_to_L": 0.28691646255448655,
+          "weighted_U_to_L": 0.42664252494245863,
+          "weighted_uniform_gradient_difference_norm": 0.003329307840045379,
+          "weighted_uniform_cosine": 0.9942086063889284
+        }
+      ]
+    },
+    {
+      "batch_index": 1,
+      "count": 256,
+      "accepted": 31,
+      "L_CE": 0.09673493355512619,
+      "uniform_U_CE": 0.01377040147781372,
+      "weighted_U_CE": 0.018820445984601974,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.08014826293704716,
+          "lambdaU_uniform_gradient_norm": 0.012594381502321466,
+          "lambdaU_weighted_gradient_norm": 0.018743826007397612,
+          "uniform_U_to_L": 0.15713854599960306,
+          "weighted_U_to_L": 0.23386440729376806,
+          "weighted_uniform_gradient_difference_norm": 0.006336439614494222,
+          "weighted_uniform_cosine": 0.9950547931304021
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.07550755048032587,
+          "lambdaU_uniform_gradient_norm": 0.010222571701995307,
+          "lambdaU_weighted_gradient_norm": 0.015193157217021816,
+          "uniform_U_to_L": 0.13538476135123578,
+          "weighted_U_to_L": 0.2012137477692449,
+          "weighted_uniform_gradient_difference_norm": 0.0051738483708026846,
+          "weighted_uniform_cosine": 0.993361841069162
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.047518151620290494,
+          "lambdaU_uniform_gradient_norm": 0.005662738175441945,
+          "lambdaU_weighted_gradient_norm": 0.008035643689857028,
+          "uniform_U_to_L": 0.11917000098597957,
+          "weighted_U_to_L": 0.1691068237264045,
+          "weighted_uniform_gradient_difference_norm": 0.0025829966431896974,
+          "weighted_uniform_cosine": 0.9885592817806101
+        }
+      ]
+    },
+    {
+      "batch_index": 2,
+      "count": 256,
+      "accepted": 42,
+      "L_CE": 0.10128243267536163,
+      "uniform_U_CE": 0.018812939524650574,
+      "weighted_U_CE": 0.02507813274860382,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.08672926658112716,
+          "lambdaU_uniform_gradient_norm": 0.01368751092410141,
+          "lambdaU_weighted_gradient_norm": 0.020202008518838355,
+          "uniform_U_to_L": 0.1578188247596677,
+          "weighted_U_to_L": 0.2329318500571114,
+          "weighted_uniform_gradient_difference_norm": 0.006656720319503216,
+          "weighted_uniform_cosine": 0.9966127604974475
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.0703919872845879,
+          "lambdaU_uniform_gradient_norm": 0.01155068495442311,
+          "lambdaU_weighted_gradient_norm": 0.016916977706971374,
+          "uniform_U_to_L": 0.16409090579762756,
+          "weighted_U_to_L": 0.24032533189576952,
+          "weighted_uniform_gradient_difference_norm": 0.005475902359736226,
+          "weighted_uniform_cosine": 0.9969590776644478
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.03857628780627456,
+          "lambdaU_uniform_gradient_norm": 0.007107612413881389,
+          "lambdaU_weighted_gradient_norm": 0.009903188177678343,
+          "uniform_U_to_L": 0.18424822133158475,
+          "weighted_U_to_L": 0.25671698187785597,
+          "weighted_uniform_gradient_difference_norm": 0.002888337022356209,
+          "weighted_uniform_cosine": 0.9962547115304543
+        }
+      ]
+    },
+    {
+      "batch_index": 3,
+      "count": 256,
+      "accepted": 39,
+      "L_CE": 0.09683692455291748,
+      "uniform_U_CE": 0.016698628664016724,
+      "weighted_U_CE": 0.022758040577173233,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.07766313378566356,
+          "lambdaU_uniform_gradient_norm": 0.026621933827527262,
+          "lambdaU_weighted_gradient_norm": 0.03961768652528059,
+          "uniform_U_to_L": 0.3427872728004907,
+          "weighted_U_to_L": 0.5101221724405091,
+          "weighted_uniform_gradient_difference_norm": 0.013080799934003262,
+          "weighted_uniform_cosine": 0.9989486394554132
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.06687141801183347,
+          "lambdaU_uniform_gradient_norm": 0.019844352473977225,
+          "lambdaU_weighted_gradient_norm": 0.02977063443480421,
+          "uniform_U_to_L": 0.29675387578091433,
+          "weighted_U_to_L": 0.4451922109612816,
+          "weighted_uniform_gradient_difference_norm": 0.010001288775377285,
+          "weighted_uniform_cosine": 0.9987349722180273
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.0377126572930641,
+          "lambdaU_uniform_gradient_norm": 0.008767758325240236,
+          "lambdaU_weighted_gradient_norm": 0.013104574574165593,
+          "uniform_U_to_L": 0.23248847879125065,
+          "weighted_U_to_L": 0.34748478401641864,
+          "weighted_uniform_gradient_difference_norm": 0.0044506715837456705,
+          "weighted_uniform_cosine": 0.9956461182576323
+        }
+      ]
+    },
+    {
+      "batch_index": 4,
+      "count": 256,
+      "accepted": 19,
+      "L_CE": 0.09217101335525513,
+      "uniform_U_CE": 0.0530182421207428,
+      "weighted_U_CE": 0.07068553566932678,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.10936411358539255,
+          "lambdaU_uniform_gradient_norm": 0.12820261209577616,
+          "lambdaU_weighted_gradient_norm": 0.1825756719837858,
+          "uniform_U_to_L": 1.1722548456964754,
+          "weighted_U_to_L": 1.6694294499194102,
+          "weighted_uniform_gradient_difference_norm": 0.05448040556603621,
+          "weighted_uniform_cosine": 0.9997503928360107
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.08688911903359843,
+          "lambdaU_uniform_gradient_norm": 0.0999494185091368,
+          "lambdaU_weighted_gradient_norm": 0.14210402085558144,
+          "uniform_U_to_L": 1.1503099538906383,
+          "weighted_U_to_L": 1.635463938823369,
+          "weighted_uniform_gradient_difference_norm": 0.042249466379941605,
+          "weighted_uniform_cosine": 0.9997181303379388
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.053925599864422136,
+          "lambdaU_uniform_gradient_norm": 0.033457713269717304,
+          "lambdaU_weighted_gradient_norm": 0.046603817581894476,
+          "uniform_U_to_L": 0.6204421156896821,
+          "weighted_U_to_L": 0.8642243702260924,
+          "weighted_uniform_gradient_difference_norm": 0.01323195388870813,
+          "weighted_uniform_cosine": 0.9992738384739422
+        }
+      ]
+    },
+    {
+      "batch_index": 5,
+      "count": 256,
+      "accepted": 41,
+      "L_CE": 0.10560502856969833,
+      "uniform_U_CE": 0.013767115771770477,
+      "weighted_U_CE": 0.018075590953230858,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.11795454668495045,
+          "lambdaU_uniform_gradient_norm": 0.021435849635736425,
+          "lambdaU_weighted_gradient_norm": 0.03181479378768565,
+          "uniform_U_to_L": 0.18172974453447988,
+          "weighted_U_to_L": 0.2697207923036749,
+          "weighted_uniform_gradient_difference_norm": 0.01073959080530348,
+          "weighted_uniform_cosine": 0.9944159939124155
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.1133764193228147,
+          "lambdaU_uniform_gradient_norm": 0.018474916485982797,
+          "lambdaU_weighted_gradient_norm": 0.027081993057184145,
+          "uniform_U_to_L": 0.1629520194440035,
+          "weighted_U_to_L": 0.23886795172172495,
+          "weighted_uniform_gradient_difference_norm": 0.008987974980809521,
+          "weighted_uniform_cosine": 0.9933025943994073
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.08646850933102608,
+          "lambdaU_uniform_gradient_norm": 0.010714315059945528,
+          "lambdaU_weighted_gradient_norm": 0.015001295896414612,
+          "uniform_U_to_L": 0.12391002392475714,
+          "weighted_U_to_L": 0.17348854528051802,
+          "weighted_uniform_gradient_difference_norm": 0.004553966075397622,
+          "weighted_uniform_cosine": 0.992657180586377
+        }
+      ]
+    },
+    {
+      "batch_index": 6,
+      "count": 256,
+      "accepted": 35,
+      "L_CE": 0.09837642312049866,
+      "uniform_U_CE": 0.012275299057364464,
+      "weighted_U_CE": 0.015095377340912819,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.07112912428177223,
+          "lambdaU_uniform_gradient_norm": 0.019302416320994973,
+          "lambdaU_weighted_gradient_norm": 0.027607273886260292,
+          "uniform_U_to_L": 0.2713714883446339,
+          "weighted_U_to_L": 0.38812897199319263,
+          "weighted_uniform_gradient_difference_norm": 0.008460058819654033,
+          "weighted_uniform_cosine": 0.9975586422698536
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.06220329675802925,
+          "lambdaU_uniform_gradient_norm": 0.013216484916159763,
+          "lambdaU_weighted_gradient_norm": 0.018994255972423327,
+          "uniform_U_to_L": 0.21247241874609757,
+          "weighted_U_to_L": 0.3053577054976838,
+          "weighted_uniform_gradient_difference_norm": 0.005937172622320277,
+          "weighted_uniform_cosine": 0.9962806714642932
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.03528761233106737,
+          "lambdaU_uniform_gradient_norm": 0.00461511563434817,
+          "lambdaU_weighted_gradient_norm": 0.006158711596972353,
+          "uniform_U_to_L": 0.13078571570808722,
+          "weighted_U_to_L": 0.1745289972920666,
+          "weighted_uniform_gradient_difference_norm": 0.0016599042407436878,
+          "weighted_uniform_cosine": 0.9934456001441276
+        }
+      ]
+    },
+    {
+      "batch_index": 7,
+      "count": 256,
+      "accepted": 36,
+      "L_CE": 0.10772499442100525,
+      "uniform_U_CE": 0.009249796159565449,
+      "weighted_U_CE": 0.009921742603182793,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.07873675864326932,
+          "lambdaU_uniform_gradient_norm": 0.0062142574006308045,
+          "lambdaU_weighted_gradient_norm": 0.006839516226634075,
+          "uniform_U_to_L": 0.0789244757811988,
+          "weighted_U_to_L": 0.08686560565214148,
+          "weighted_uniform_gradient_difference_norm": 0.0006889469283292101,
+          "weighted_uniform_cosine": 0.9990153609512004
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.07114497976225814,
+          "lambdaU_uniform_gradient_norm": 0.005184252912524681,
+          "lambdaU_weighted_gradient_norm": 0.005720691054769103,
+          "uniform_U_to_L": 0.07286885075867133,
+          "weighted_U_to_L": 0.0804089209651288,
+          "weighted_uniform_gradient_difference_norm": 0.0005862400773548196,
+          "weighted_uniform_cosine": 0.9990573795771617
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.04232483841728166,
+          "lambdaU_uniform_gradient_norm": 0.0032375705766946655,
+          "lambdaU_weighted_gradient_norm": 0.0035400182628971787,
+          "uniform_U_to_L": 0.07649339484241795,
+          "weighted_U_to_L": 0.08363926231675237,
+          "weighted_uniform_gradient_difference_norm": 0.00033176098097626697,
+          "weighted_uniform_cosine": 0.9991889603892835
+        }
+      ]
+    },
+    {
+      "batch_index": 8,
+      "count": 256,
+      "accepted": 34,
+      "L_CE": 0.10874834656715393,
+      "uniform_U_CE": 0.0201864130795002,
+      "weighted_U_CE": 0.027495715767145157,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.16744961736855385,
+          "lambdaU_uniform_gradient_norm": 0.026893160439515052,
+          "lambdaU_weighted_gradient_norm": 0.040161481958224846,
+          "uniform_U_to_L": 0.16060449024690004,
+          "weighted_U_to_L": 0.23984218411099792,
+          "weighted_uniform_gradient_difference_norm": 0.013368211275670349,
+          "weighted_uniform_cosine": 0.9987682655695527
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.11572882982082629,
+          "lambdaU_uniform_gradient_norm": 0.019542218726989684,
+          "lambdaU_weighted_gradient_norm": 0.0291079129962198,
+          "uniform_U_to_L": 0.16886214746356065,
+          "weighted_U_to_L": 0.2515182521182082,
+          "weighted_uniform_gradient_difference_norm": 0.009647040020002742,
+          "weighted_uniform_cosine": 0.9986262455422803
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.06048036600903568,
+          "lambdaU_uniform_gradient_norm": 0.005863501943485606,
+          "lambdaU_weighted_gradient_norm": 0.008669464250916586,
+          "uniform_U_to_L": 0.0969488501873419,
+          "weighted_U_to_L": 0.14334344884125502,
+          "weighted_uniform_gradient_difference_norm": 0.002837711240690845,
+          "weighted_uniform_cosine": 0.99823757074467
+        }
+      ]
+    },
+    {
+      "batch_index": 9,
+      "count": 256,
+      "accepted": 56,
+      "L_CE": 0.1097484678030014,
+      "uniform_U_CE": 0.009138159453868866,
+      "weighted_U_CE": 0.010489962995052338,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.11868633476126642,
+          "lambdaU_uniform_gradient_norm": 0.006797236387456721,
+          "lambdaU_weighted_gradient_norm": 0.008517399365007788,
+          "uniform_U_to_L": 0.05727058975348033,
+          "weighted_U_to_L": 0.07176394301955867,
+          "weighted_uniform_gradient_difference_norm": 0.0018638923184353374,
+          "weighted_uniform_cosine": 0.9955511193491546
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.1018902822256337,
+          "lambdaU_uniform_gradient_norm": 0.005787477514863831,
+          "lambdaU_weighted_gradient_norm": 0.007090016884646094,
+          "uniform_U_to_L": 0.05680107453277629,
+          "weighted_U_to_L": 0.06958481937409314,
+          "weighted_uniform_gradient_difference_norm": 0.0014600508137396022,
+          "weighted_uniform_cosine": 0.9946977280912139
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.05977023940654739,
+          "lambdaU_uniform_gradient_norm": 0.003676448213464958,
+          "lambdaU_weighted_gradient_norm": 0.004310516214961938,
+          "uniform_U_to_L": 0.06150967856190702,
+          "weighted_U_to_L": 0.0721181018808125,
+          "weighted_uniform_gradient_difference_norm": 0.0007514856305241407,
+          "weighted_uniform_cosine": 0.9948670277540269
+        }
+      ]
+    },
+    {
+      "batch_index": 10,
+      "count": 256,
+      "accepted": 35,
+      "L_CE": 0.09347282350063324,
+      "uniform_U_CE": 0.017441516742110252,
+      "weighted_U_CE": 0.022907065227627754,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.06864373308286414,
+          "lambdaU_uniform_gradient_norm": 0.02622499190270684,
+          "lambdaU_weighted_gradient_norm": 0.03788465742189491,
+          "uniform_U_to_L": 0.3820449547965145,
+          "weighted_U_to_L": 0.5519026387472542,
+          "weighted_uniform_gradient_difference_norm": 0.011855445045309658,
+          "weighted_uniform_cosine": 0.9976831091459011
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.05800425448435418,
+          "lambdaU_uniform_gradient_norm": 0.01860995100291537,
+          "lambdaU_weighted_gradient_norm": 0.02735381786677647,
+          "uniform_U_to_L": 0.32083768972386567,
+          "weighted_U_to_L": 0.47158295731832517,
+          "weighted_uniform_gradient_difference_norm": 0.008924780852134308,
+          "weighted_uniform_cosine": 0.9968603424343726
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.030273124842939824,
+          "lambdaU_uniform_gradient_norm": 0.011097715222272425,
+          "lambdaU_weighted_gradient_norm": 0.016605198156544085,
+          "uniform_U_to_L": 0.3665863791679434,
+          "weighted_U_to_L": 0.5485128556332922,
+          "weighted_uniform_gradient_difference_norm": 0.005551991927694053,
+          "weighted_uniform_cosine": 0.9986644054318561
+        }
+      ]
+    },
+    {
+      "batch_index": 11,
+      "count": 256,
+      "accepted": 40,
+      "L_CE": 0.0994042456150055,
+      "uniform_U_CE": 0.025890346616506577,
+      "weighted_U_CE": 0.03634059429168701,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.08826131629589293,
+          "lambdaU_uniform_gradient_norm": 0.023065205590161043,
+          "lambdaU_weighted_gradient_norm": 0.03577846063449908,
+          "uniform_U_to_L": 0.26132859284395626,
+          "weighted_U_to_L": 0.40536966970391725,
+          "weighted_uniform_gradient_difference_norm": 0.012886553582553379,
+          "weighted_uniform_cosine": 0.9973120409920917
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.07220715307667731,
+          "lambdaU_uniform_gradient_norm": 0.018052981849860913,
+          "lambdaU_weighted_gradient_norm": 0.028185609064915,
+          "uniform_U_to_L": 0.2500165299508529,
+          "weighted_U_to_L": 0.39034372446431304,
+          "weighted_uniform_gradient_difference_norm": 0.01031531084297925,
+          "weighted_uniform_cosine": 0.9963293516281286
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.04789416191207992,
+          "lambdaU_uniform_gradient_norm": 0.01070760373506047,
+          "lambdaU_weighted_gradient_norm": 0.01710959262712969,
+          "uniform_U_to_L": 0.2235680364282517,
+          "weighted_U_to_L": 0.3572375409457637,
+          "weighted_uniform_gradient_difference_norm": 0.006531716646597721,
+          "weighted_uniform_cosine": 0.9954207546341363
+        }
+      ]
+    },
+    {
+      "batch_index": 12,
+      "count": 256,
+      "accepted": 27,
+      "L_CE": 0.09139450639486313,
+      "uniform_U_CE": 0.00263217487372458,
+      "weighted_U_CE": 0.0027110851369798183,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.05984024076671741,
+          "lambdaU_uniform_gradient_norm": 0.0031328406260726503,
+          "lambdaU_weighted_gradient_norm": 0.00333151398293456,
+          "uniform_U_to_L": 0.05235340944375189,
+          "weighted_U_to_L": 0.05567347223621997,
+          "weighted_uniform_gradient_difference_norm": 0.0002030198758734282,
+          "weighted_uniform_cosine": 0.9999163576625978
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.05370310923212022,
+          "lambdaU_uniform_gradient_norm": 0.0027647346077618305,
+          "lambdaU_weighted_gradient_norm": 0.002942234845171772,
+          "uniform_U_to_L": 0.051481834986720335,
+          "weighted_U_to_L": 0.054787048408213954,
+          "weighted_uniform_gradient_difference_norm": 0.00018166597918058358,
+          "weighted_uniform_cosine": 0.9999080340533008
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.046937817340402914,
+          "lambdaU_uniform_gradient_norm": 0.0018262148297863684,
+          "lambdaU_weighted_gradient_norm": 0.0019477326602639646,
+          "uniform_U_to_L": 0.038907110156875736,
+          "weighted_U_to_L": 0.04149602113235471,
+          "weighted_uniform_gradient_difference_norm": 0.00012435905228367294,
+          "weighted_uniform_cosine": 0.9999017999678154
+        }
+      ]
+    },
+    {
+      "batch_index": 13,
+      "count": 256,
+      "accepted": 39,
+      "L_CE": 0.09526008367538452,
+      "uniform_U_CE": 0.01290021650493145,
+      "weighted_U_CE": 0.01593867689371109,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.06759025949674091,
+          "lambdaU_uniform_gradient_norm": 0.016071979180916802,
+          "lambdaU_weighted_gradient_norm": 0.023879919797512028,
+          "uniform_U_to_L": 0.2377854338862505,
+          "weighted_U_to_L": 0.3533041591394316,
+          "weighted_uniform_gradient_difference_norm": 0.008105236036558978,
+          "weighted_uniform_cosine": 0.9938367060415781
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.05718088534798275,
+          "lambdaU_uniform_gradient_norm": 0.012785151232923234,
+          "lambdaU_weighted_gradient_norm": 0.018288070990755696,
+          "uniform_U_to_L": 0.22359134796737237,
+          "weighted_U_to_L": 0.3198283985891602,
+          "weighted_uniform_gradient_difference_norm": 0.0059045827551986365,
+          "weighted_uniform_cosine": 0.9902017473465675
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.031623475602292984,
+          "lambdaU_uniform_gradient_norm": 0.006793752944584137,
+          "lambdaU_weighted_gradient_norm": 0.007558699817066036,
+          "uniform_U_to_L": 0.21483258292113624,
+          "weighted_U_to_L": 0.23902179229527706,
+          "weighted_uniform_gradient_difference_norm": 0.0009603086270042417,
+          "weighted_uniform_cosine": 0.9967182452403212
+        }
+      ]
+    },
+    {
+      "batch_index": 14,
+      "count": 256,
+      "accepted": 31,
+      "L_CE": 0.09158320724964142,
+      "uniform_U_CE": 0.0076500168070197105,
+      "weighted_U_CE": 0.008539083413779736,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.06773321520444019,
+          "lambdaU_uniform_gradient_norm": 0.004913150545480692,
+          "lambdaU_weighted_gradient_norm": 0.006028575864051309,
+          "uniform_U_to_L": 0.07253679794545785,
+          "weighted_U_to_L": 0.08900472014882459,
+          "weighted_uniform_gradient_difference_norm": 0.0013011873686292045,
+          "weighted_uniform_cosine": 0.9924219189021406
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.054945137171250984,
+          "lambdaU_uniform_gradient_norm": 0.0048374657428099715,
+          "lambdaU_weighted_gradient_norm": 0.005787280593315863,
+          "uniform_U_to_L": 0.08804174476319417,
+          "weighted_U_to_L": 0.10532834917270803,
+          "weighted_uniform_gradient_difference_norm": 0.00113653098773031,
+          "weighted_uniform_cosine": 0.9930426201285301
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.01685946993718474,
+          "lambdaU_uniform_gradient_norm": 0.002989642357866112,
+          "lambdaU_weighted_gradient_norm": 0.0033759280022370064,
+          "uniform_U_to_L": 0.17732718578964612,
+          "weighted_U_to_L": 0.20023927293177593,
+          "weighted_uniform_gradient_difference_norm": 0.0005177112923077751,
+          "weighted_uniform_cosine": 0.9941142111768515
+        }
+      ]
+    },
+    {
+      "batch_index": 15,
+      "count": 256,
+      "accepted": 32,
+      "L_CE": 0.10203073173761368,
+      "uniform_U_CE": 0.011909578926861286,
+      "weighted_U_CE": 0.01425124704837799,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.11022144697459565,
+          "lambdaU_uniform_gradient_norm": 0.01227810651107471,
+          "lambdaU_weighted_gradient_norm": 0.01713653748890805,
+          "uniform_U_to_L": 0.11139489498722173,
+          "weighted_U_to_L": 0.15547371187077372,
+          "weighted_uniform_gradient_difference_norm": 0.005255226470619044,
+          "weighted_uniform_cosine": 0.9904634672908823
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.09239399254727175,
+          "lambdaU_uniform_gradient_norm": 0.010167158992163625,
+          "lambdaU_weighted_gradient_norm": 0.013463985466708586,
+          "uniform_U_to_L": 0.11004134264423931,
+          "weighted_U_to_L": 0.1457236027528519,
+          "weighted_uniform_gradient_difference_norm": 0.003719037979336072,
+          "weighted_uniform_cosine": 0.9891804796475587
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.05844580764538118,
+          "lambdaU_uniform_gradient_norm": 0.006519622041281552,
+          "lambdaU_weighted_gradient_norm": 0.007976103094744596,
+          "uniform_U_to_L": 0.11154986651633311,
+          "weighted_U_to_L": 0.1364700637407468,
+          "weighted_uniform_gradient_difference_norm": 0.0016797590943117416,
+          "weighted_uniform_cosine": 0.9932669452024686
+        }
+      ]
+    },
+    {
+      "batch_index": 16,
+      "count": 256,
+      "accepted": 38,
+      "L_CE": 0.09277057647705078,
+      "uniform_U_CE": 0.009748096577823162,
+      "weighted_U_CE": 0.011498543433845043,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.10521815958337542,
+          "lambdaU_uniform_gradient_norm": 0.0095146456917397,
+          "lambdaU_weighted_gradient_norm": 0.012683522948828846,
+          "uniform_U_to_L": 0.09042779050131784,
+          "weighted_U_to_L": 0.12054499906718437,
+          "weighted_uniform_gradient_difference_norm": 0.0035352333451352247,
+          "weighted_uniform_cosine": 0.9898238835485633
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.07975029361571619,
+          "lambdaU_uniform_gradient_norm": 0.007695831938199926,
+          "lambdaU_weighted_gradient_norm": 0.00994326478620635,
+          "uniform_U_to_L": 0.09649910475919964,
+          "weighted_U_to_L": 0.12467997715618262,
+          "weighted_uniform_gradient_difference_norm": 0.0025694272090984126,
+          "weighted_uniform_cosine": 0.9898656075090776
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.057263762505058026,
+          "lambdaU_uniform_gradient_norm": 0.004773061255695021,
+          "lambdaU_weighted_gradient_norm": 0.005675118635438223,
+          "uniform_U_to_L": 0.08335221171108732,
+          "weighted_U_to_L": 0.09910488565848162,
+          "weighted_uniform_gradient_difference_norm": 0.0010488367748629685,
+          "weighted_uniform_cosine": 0.9947143688555082
+        }
+      ]
+    },
+    {
+      "batch_index": 17,
+      "count": 256,
+      "accepted": 30,
+      "L_CE": 0.09261877834796906,
+      "uniform_U_CE": 0.012516546063125134,
+      "weighted_U_CE": 0.015061412937939167,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.0929079942504127,
+          "lambdaU_uniform_gradient_norm": 0.007897592268676356,
+          "lambdaU_weighted_gradient_norm": 0.01037159806457625,
+          "uniform_U_to_L": 0.08500444264667004,
+          "weighted_U_to_L": 0.11163299938024633,
+          "weighted_uniform_gradient_difference_norm": 0.00271372868531565,
+          "weighted_uniform_cosine": 0.9924086876460001
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.06258715630704567,
+          "lambdaU_uniform_gradient_norm": 0.007796974051110738,
+          "lambdaU_weighted_gradient_norm": 0.010129466140083202,
+          "uniform_U_to_L": 0.12457786087707269,
+          "weighted_U_to_L": 0.16184576417546695,
+          "weighted_uniform_gradient_difference_norm": 0.0025412432492427266,
+          "weighted_uniform_cosine": 0.9935590756522424
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.018335633789171097,
+          "lambdaU_uniform_gradient_norm": 0.0058369263715474075,
+          "lambdaU_weighted_gradient_norm": 0.007381035254909104,
+          "uniform_U_to_L": 0.3183378572381096,
+          "weighted_U_to_L": 0.40255141108175346,
+          "weighted_uniform_gradient_difference_norm": 0.001702915863795185,
+          "weighted_uniform_cosine": 0.9940155575304305
+        }
+      ]
+    },
+    {
+      "batch_index": 18,
+      "count": 256,
+      "accepted": 34,
+      "L_CE": 0.10843266546726227,
+      "uniform_U_CE": 0.04255513474345207,
+      "weighted_U_CE": 0.06401821225881577,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.13128845771528827,
+          "lambdaU_uniform_gradient_norm": 0.07044945279219296,
+          "lambdaU_weighted_gradient_norm": 0.10874883670915096,
+          "uniform_U_to_L": 0.5366005056207562,
+          "weighted_U_to_L": 0.8283198584370862,
+          "weighted_uniform_gradient_difference_norm": 0.03830930999708702,
+          "weighted_uniform_cosine": 0.9999503723632006
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.10234837436552391,
+          "lambdaU_uniform_gradient_norm": 0.0639374067238369,
+          "lambdaU_weighted_gradient_norm": 0.09864772864944758,
+          "uniform_U_to_L": 0.6247036860154981,
+          "weighted_U_to_L": 0.963842652714151,
+          "weighted_uniform_gradient_difference_norm": 0.03472273272286972,
+          "weighted_uniform_cosine": 0.9999316884955723
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.06561788486005836,
+          "lambdaU_uniform_gradient_norm": 0.03944775621299909,
+          "lambdaU_weighted_gradient_norm": 0.06069040763191232,
+          "uniform_U_to_L": 0.6011738460806584,
+          "weighted_U_to_L": 0.9249064909871029,
+          "weighted_uniform_gradient_difference_norm": 0.021258072562748902,
+          "weighted_uniform_cosine": 0.9998631198223034
+        }
+      ]
+    },
+    {
+      "batch_index": 19,
+      "count": 256,
+      "accepted": 31,
+      "L_CE": 0.10340528190135956,
+      "uniform_U_CE": 0.028786929324269295,
+      "weighted_U_CE": 0.04085427150130272,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.10115648645475557,
+          "lambdaU_uniform_gradient_norm": 0.041693094754299956,
+          "lambdaU_weighted_gradient_norm": 0.06256371890348503,
+          "uniform_U_to_L": 0.412164322976442,
+          "weighted_U_to_L": 0.6184844995725312,
+          "weighted_uniform_gradient_difference_norm": 0.020915835942394875,
+          "weighted_uniform_cosine": 0.9996378648925399
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.08145751438888742,
+          "lambdaU_uniform_gradient_norm": 0.04011240408403152,
+          "lambdaU_weighted_gradient_norm": 0.06026922688731085,
+          "uniform_U_to_L": 0.4924334407324333,
+          "weighted_U_to_L": 0.739885415599336,
+          "weighted_uniform_gradient_difference_norm": 0.02018701303892779,
+          "weighted_uniform_cosine": 0.9997480934946237
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.04839017468622716,
+          "lambdaU_uniform_gradient_norm": 0.03796210998365587,
+          "lambdaU_weighted_gradient_norm": 0.05701052064248401,
+          "uniform_U_to_L": 0.7845003707841681,
+          "weighted_U_to_L": 1.1781424847534263,
+          "weighted_uniform_gradient_difference_norm": 0.019059753633229037,
+          "weighted_uniform_cosine": 0.99990013584423
+        }
+      ]
+    },
+    {
+      "batch_index": 20,
+      "count": 256,
+      "accepted": 44,
+      "L_CE": 0.11550360918045044,
+      "uniform_U_CE": 0.00971538107842207,
+      "weighted_U_CE": 0.012379060499370098,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.18671877789821886,
+          "lambdaU_uniform_gradient_norm": 0.01068056413636616,
+          "lambdaU_weighted_gradient_norm": 0.016114300769374833,
+          "uniform_U_to_L": 0.05720133912930909,
+          "weighted_U_to_L": 0.08630251842243099,
+          "weighted_uniform_gradient_difference_norm": 0.005522830599038368,
+          "weighted_uniform_cosine": 0.9971641245908002
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.16711602523875213,
+          "lambdaU_uniform_gradient_norm": 0.010413630100459603,
+          "lambdaU_weighted_gradient_norm": 0.01583207549270553,
+          "uniform_U_to_L": 0.06231377323378806,
+          "weighted_U_to_L": 0.09473702758360165,
+          "weighted_uniform_gradient_difference_norm": 0.005486780180653145,
+          "weighted_uniform_cosine": 0.9977400100263222
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.11172847405406114,
+          "lambdaU_uniform_gradient_norm": 0.011708432347508391,
+          "lambdaU_weighted_gradient_norm": 0.01788157101061294,
+          "uniform_U_to_L": 0.10479362979434524,
+          "weighted_U_to_L": 0.16004488705323883,
+          "weighted_uniform_gradient_difference_norm": 0.006220809632391471,
+          "weighted_uniform_cosine": 0.9985889927531514
+        }
+      ]
+    },
+    {
+      "batch_index": 21,
+      "count": 256,
+      "accepted": 32,
+      "L_CE": 0.11675260961055756,
+      "uniform_U_CE": 0.014271966181695461,
+      "weighted_U_CE": 0.01797952502965927,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.1076490358125103,
+          "lambdaU_uniform_gradient_norm": 0.015064790484408433,
+          "lambdaU_weighted_gradient_norm": 0.022209535474329013,
+          "uniform_U_to_L": 0.13994357098233942,
+          "weighted_U_to_L": 0.20631430004641024,
+          "weighted_uniform_gradient_difference_norm": 0.007426959623219485,
+          "weighted_uniform_cosine": 0.9938544986128949
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.08950906588232863,
+          "lambdaU_uniform_gradient_norm": 0.01246123429280794,
+          "lambdaU_weighted_gradient_norm": 0.017862686663002964,
+          "uniform_U_to_L": 0.13921756606408855,
+          "weighted_U_to_L": 0.1995628765301361,
+          "weighted_uniform_gradient_difference_norm": 0.0056556026051845015,
+          "weighted_uniform_cosine": 0.9936876343612657
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.04905231201313485,
+          "lambdaU_uniform_gradient_norm": 0.00602574343439713,
+          "lambdaU_weighted_gradient_norm": 0.008218457843082947,
+          "uniform_U_to_L": 0.1228432093635791,
+          "weighted_U_to_L": 0.1675447599877101,
+          "weighted_uniform_gradient_difference_norm": 0.0024028616758599835,
+          "weighted_uniform_cosine": 0.9902493685001202
+        }
+      ]
+    },
+    {
+      "batch_index": 22,
+      "count": 256,
+      "accepted": 28,
+      "L_CE": 0.08607214689254761,
+      "uniform_U_CE": 0.008992376737296581,
+      "weighted_U_CE": 0.011863491497933865,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.03350860135325821,
+          "lambdaU_uniform_gradient_norm": 0.017689123913525947,
+          "lambdaU_weighted_gradient_norm": 0.02721673869676371,
+          "uniform_U_to_L": 0.5278980082469465,
+          "weighted_U_to_L": 0.8122314151473018,
+          "weighted_uniform_gradient_difference_norm": 0.009795160978513304,
+          "weighted_uniform_cosine": 0.9946309692697175
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.027676534365314632,
+          "lambdaU_uniform_gradient_norm": 0.012029544168790813,
+          "lambdaU_weighted_gradient_norm": 0.01829348447427912,
+          "uniform_U_to_L": 0.4346477781505307,
+          "weighted_U_to_L": 0.660974536508634,
+          "weighted_uniform_gradient_difference_norm": 0.006622049436174142,
+          "weighted_uniform_cosine": 0.9895152622357064
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.014121983882134672,
+          "lambdaU_uniform_gradient_norm": 0.0042265359288362935,
+          "lambdaU_weighted_gradient_norm": 0.005403767112083019,
+          "uniform_U_to_L": 0.29928768961301294,
+          "weighted_U_to_L": 0.382649290438518,
+          "weighted_uniform_gradient_difference_norm": 0.0017900690577928849,
+          "weighted_uniform_cosine": 0.9601896583319742
+        }
+      ]
+    },
+    {
+      "batch_index": 23,
+      "count": 256,
+      "accepted": 38,
+      "L_CE": 0.10295955836772919,
+      "uniform_U_CE": 0.01178044080734253,
+      "weighted_U_CE": 0.014641089364886284,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.08930839270441522,
+          "lambdaU_uniform_gradient_norm": 0.016354079659971557,
+          "lambdaU_weighted_gradient_norm": 0.02368523543806349,
+          "uniform_U_to_L": 0.18311918023313664,
+          "weighted_U_to_L": 0.26520727471218436,
+          "weighted_uniform_gradient_difference_norm": 0.007438361196184973,
+          "weighted_uniform_cosine": 0.9979561490720754
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.07513313630175766,
+          "lambdaU_uniform_gradient_norm": 0.014949597832803682,
+          "lambdaU_weighted_gradient_norm": 0.021579324223486,
+          "uniform_U_to_L": 0.19897476091988925,
+          "weighted_U_to_L": 0.2872144740080706,
+          "weighted_uniform_gradient_difference_norm": 0.0067043413164452675,
+          "weighted_uniform_cosine": 0.9984579763954112
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.0404418622878086,
+          "lambdaU_uniform_gradient_norm": 0.009826098420174807,
+          "lambdaU_weighted_gradient_norm": 0.014213651017469645,
+          "uniform_U_to_L": 0.24296849512632193,
+          "weighted_U_to_L": 0.3514588649829417,
+          "weighted_uniform_gradient_difference_norm": 0.004424163758706922,
+          "weighted_uniform_cosine": 0.9988450657476936
+        }
+      ]
+    },
+    {
+      "batch_index": 24,
+      "count": 156,
+      "accepted": 14,
+      "L_CE": 0.10938449203968048,
+      "uniform_U_CE": 0.013208277523517609,
+      "weighted_U_CE": 0.01824539341032505,
+      "gradient_records": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "elements": 3456,
+          "L_gradient_norm": 0.17413065877067974,
+          "lambdaU_uniform_gradient_norm": 0.032941256466340565,
+          "lambdaU_weighted_gradient_norm": 0.05056654523024939,
+          "uniform_U_to_L": 0.18917551164681656,
+          "weighted_U_to_L": 0.29039426823074665,
+          "weighted_uniform_gradient_difference_norm": 0.017706053207091416,
+          "weighted_uniform_cosine": 0.9991434614823568
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "elements": 6912,
+          "L_gradient_norm": 0.1491994110367689,
+          "lambdaU_uniform_gradient_norm": 0.023722033659890757,
+          "lambdaU_weighted_gradient_norm": 0.036416910789155515,
+          "uniform_U_to_L": 0.15899549130287563,
+          "weighted_U_to_L": 0.2440821350171475,
+          "weighted_uniform_gradient_difference_norm": 0.0127861615239972,
+          "weighted_uniform_cosine": 0.9986537409021465
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+          "elements": 9216,
+          "L_gradient_norm": 0.10389142026747598,
+          "lambdaU_uniform_gradient_norm": 0.007306748422842118,
+          "lambdaU_weighted_gradient_norm": 0.01062566930182653,
+          "uniform_U_to_L": 0.07033062406915186,
+          "weighted_U_to_L": 0.10227667765509389,
+          "weighted_uniform_gradient_difference_norm": 0.0036012407191926324,
+          "weighted_uniform_cosine": 0.9874180721599253
+        }
+      ]
+    }
+  ],
+  "parameters": [
+    "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+    "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+    "id_backbone.encoder.core.id_backbone.t3.pw.weight"
+  ],
+  "saved_weight_gradient_recount": "VERIFIED",
+  "source_execution_commit": "512c10a267b5e654cfd2c983ab1debdeebc7f626",
+  "seconds": 14.945590496063232,
+  "scope": "Fixed frozen L6300 proxy with source student Dropout replay/strongnoise. Source labels used for L CE and post-mask accuracy only. Not hiddenU precision/coverage or actual33/34/50 training gradient history, effective weighting or target/newTX transfer proof.",
+  "gradient_batch_arithmetic_means": [
+    {
+      "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+      "batches": 25,
+      "mean_L": 0.09878270545841403,
+      "mean_uniform_U_to_L": 0.24398157608880516,
+      "mean_weighted_U_to_L": 0.35658166002773223,
+      "mean_difference": 0.011001268120147997,
+      "mean_cos": 0.9963836848251455
+    },
+    {
+      "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+      "batches": 25,
+      "mean_L": 0.08172335123703876,
+      "mean_uniform_U_to_L": 0.24000940646127733,
+      "mean_weighted_U_to_L": 0.3489973046424488,
+      "mean_difference": 0.008882824029202725,
+      "mean_cos": 0.9957773415380134
+    },
+    {
+      "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+      "batches": 25,
+      "mean_L": 0.04903792998707681,
+      "mean_uniform_U_to_L": 0.22773088149352463,
+      "mean_weighted_U_to_L": 0.3201180455871245,
+      "mean_difference": 0.004539706618606273,
+      "mean_cos": 0.9941683838899539
+    }
+  ]
+}

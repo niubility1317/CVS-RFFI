@@ -216,3 +216,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 连续层级首seed已完整回收：HIER_ORDER82.7732%、HIER_STAT83.9994%、SIG_TIME83.5899%、LOCAL_GTIME83.5946%、OLD80.6685；候选−统计−1.2262pp、候选−SIG−.8167pp；统计控制精确低于84%，不更换primary。4新+1历史/44400steps/840000默认pred/90指标复算VERIFIED，新4模型真实pool更新/精确导出/W独立/零额外拟合，源HIER_ORDER−STAT zL2 2.944889。sourcePASS扩02/03决定 63f59df3933c6fcb778c76d9b1eaed3087f4213c 在target数值读取前提交发布，八新模型正常运行，完整3seedpending。结果见 20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s01-m5-r01/final_analysis.md。
+
+
+可信门控内难度权重源代理已完成（20261014-phase1-source-trusted-weight-manysig-s01-m1-r01）：接受867/6300全部正确，uniform/weighted precision均100%，不能声称精度改善；t1/t2/t3平均λU/L由.244/.240/.228升至.357/.349/.320，两种U梯度cos .994至.996。0训练/头拟合/目标或隐藏U访问，15统计/75层批梯度保存复算VERIFIED。实现051de1a177819c0f8a9cfe5aba0fd09e7cefef6d、执行c84b17396bc0861b8856e867d17aab54206436c5；完整报告automation_reports/CV-SincNet/20261014-phase1-source-trusted-weight-manysig-s01-m1-r01/report.md。真实权重训练尚未发布，层级八模型保持原配方。
