@@ -225,3 +225,6 @@ DRO完整固定3seed闭环：9新模型450epochs99900steps，12row2016000default
 
 
 2026-10-15：时序自挑战训练 r02 已实际发布并核实运行，固定 SIG_TIME/default 联合头及旧 U/EMA/cos，三新同成本前向对照；源前1332步和E1实际梯度/遮挡已复核，非目标性能证据。r01仅登记不匹配失败、0 worker/0更新，保留后用新不可变目录恢复；路径恢复保留全部配置差异。实现、源证据和扩种子规则见 `automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/report.md`。后续完成50、源决定先推送、逐row默认头自动truth-last；目标84仍ACTIVE。
+
+
+2026-10-15：已提前完成时序自挑战固定02/03条件扩展，代码`2f99d65f8a594ab1f56d84d1d7ee1011740da52c`，仅seed/run/output适配，六真实原生上下文/12负例/唯一adapter审查通过；原source资格未完成，未发布。严格保留首run原规则、默认联合头和原U/EMA/cos，入口与完整公开配置还原、八row自动truth-last已接通。见`automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md`，不构成新性能结果或84%完成。

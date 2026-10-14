@@ -1,0 +1,111 @@
+{
+  "status": "PASS",
+  "adapter_only_checks": true,
+  "unchanged_first_candidate_tests_not_repeated": true,
+  "negatives": 12,
+  "native_contexts": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_native_forward_and_loss_hooks": true,
+      "actual_t1_t2_SIG_W_joint_gradients": true,
+      "actual_original_U_loss_object": true,
+      "temporary_mask_and_hooks_cleared": true,
+      "public_full_config_roundtrip": true
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_native_forward_and_loss_hooks": true,
+      "actual_t1_t2_SIG_W_joint_gradients": true,
+      "actual_original_U_loss_object": true,
+      "temporary_mask_and_hooks_cleared": true,
+      "public_full_config_roundtrip": true
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_native_forward_and_loss_hooks": true,
+      "actual_t1_t2_SIG_W_joint_gradients": true,
+      "actual_original_U_loss_object": true,
+      "temporary_mask_and_hooks_cleared": true,
+      "public_full_config_roundtrip": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_native_forward_and_loss_hooks": true,
+      "actual_t1_t2_SIG_W_joint_gradients": true,
+      "actual_original_U_loss_object": true,
+      "temporary_mask_and_hooks_cleared": true,
+      "public_full_config_roundtrip": true
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_native_forward_and_loss_hooks": true,
+      "actual_t1_t2_SIG_W_joint_gradients": true,
+      "actual_original_U_loss_object": true,
+      "temporary_mask_and_hooks_cleared": true,
+      "public_full_config_roundtrip": true
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "native_difference_keys": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "scientific_dictionary_identical": true,
+      "actual_same_seed_initial_state": true,
+      "actual_native_forward_and_loss_hooks": true,
+      "actual_t1_t2_SIG_W_joint_gradients": true,
+      "actual_original_U_loss_object": true,
+      "temporary_mask_and_hooks_cleared": true,
+      "public_full_config_roundtrip": true
+    }
+  ],
+  "real_IQ_checkpoint_or_first_qualification_read": false,
+  "first_seed_retrained": false,
+  "new_scientific_hypothesis": false,
+  "new_models": 6,
+  "historical_baselines_reused": 2,
+  "head_fit_updates": 0,
+  "evidence_origin": "Transcribed aggregate from successful local experiments.cvs_temporal_rsc_seeds.checks stdout; not a second execution or real experiment"
+}

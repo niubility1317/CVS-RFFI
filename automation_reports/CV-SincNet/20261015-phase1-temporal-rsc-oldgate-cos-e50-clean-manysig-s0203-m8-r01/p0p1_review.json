@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "scope": "Adapter-only direct P0/P1 review; unchanged first-seed training mechanism not re-reviewed",
+  "reviewer": "independent signature_fix_p0p1",
+  "direct_P0_P1": [],
+  "verified": [
+    "original first r02 source qualification guard",
+    "six native contexts differ only seed/run/candidate/output",
+    "8rows/6newmodels/2historical and automatic default-head scoring",
+    "complete public config restore preserves field differences",
+    "release dependencies and entrypoint/compile"
+  ],
+  "real_IQ_checkpoint_or_target_read": false,
+  "formal_experiment_launched": false,
+  "code_commit": "2f99d65f8a594ab1f56d84d1d7ee1011740da52c"
+}
