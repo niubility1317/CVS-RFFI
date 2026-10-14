@@ -100,3 +100,6 @@ PA正式训练已发布VERIFIED：20261014-phase1-PA-recomposition-pair-oldgate-
 
 
 等 U 时序 9 模型已完整 ANALYZED / VERIFIED：TAIL 80.5853%、MID 80.6206%、SPREAD 80.6403%。MID − TAIL +0.0353 个百分点、1/3 正；SPREAD − TAIL +0.0550 个百分点、2/3 正，未确认稳定收益，不继续按目标扫描日历。450 轮/99,900 更新/1,512,000 决定/162 混淆矩阵、全量源曲线、36 实际优化器点与36 当前 EMA 的 V 代理、0 非有限/0 U 真值/0 另训头已核实，进程自然退出。9 模型同90个合法L包的初始/最终特征见证均证明函数变化与 W 独立，不能证明时序贡献。原 R01 技术失败及成本保留。已固定 PA 重组继续，历史正收益独立保留；84% 仍 active。详见[等 U 时序完整报告](../automation_reports/CV-SincNet/20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r02/report.md)。
+
+
+PA 重组首种子源条件已 VERIFIED：ZERO/SAME_RX/CROSS_RX 的 final L CE .287650/.288041/.286805，源 V 97.8926%/97.8667%/97.9037%，共同队列覆盖率均为 54.8170%。每行 2,498 辅助调用与四个真实梯度/AdamW 点齐全；辅助 W/增益梯度为 None。预定源条件通过，后6个模型已自动启动。首3个冻结模型的同 L90 函数见证均确认特征变化与 W 独立，不能认定辅助收益。将对已保存源特征进行 margin=.1、同 day/同参照 RX 的1,800关系分析，0新增训练；不为制造梯度扫描 margin。完整 PA 三种子结果尚待返回，84%仍 active。详见[PA 重组报告](../automation_reports/CV-SincNet/20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01/report.md)。

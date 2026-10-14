@@ -1,0 +1,251 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01",
+  "execution_commit": "76ab0b9944210f8aa3f09f051ea9694f55457cd6",
+  "source_only": true,
+  "target_metrics_read": false,
+  "source_rule_passed": true,
+  "rows": [
+    {
+      "row_id": "ZERO-s2026092701",
+      "arm": "ZERO",
+      "final_L_CE": 0.2876502883931001,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.978925925925926,
+        "source_val_rx_accuracy": {
+          "1": 0.9953703703703703,
+          "3": 0.9440740740740741,
+          "4": 0.9835185185185186,
+          "6": 0.9972222222222222,
+          "8": 0.9744444444444444
+        },
+        "source_val_worst_rx": 0.9440740740740741
+      },
+      "auxiliary_calls": 2498,
+      "L_packet_observations": 1420800,
+      "active_L_packet_observations": 319744,
+      "mean_common_cohort_coverage": 0.5481697858286629,
+      "actual_aux_L_feature_gradient_ratios": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "actual_AdamW_points": [
+        {
+          "step": 1112,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 2.4440586731435983e-08,
+          "actual_shadow_max_abs_error": 1.4901161193847656e-08
+        },
+        {
+          "step": 3556,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 1.68768297459127e-08,
+          "actual_shadow_max_abs_error": 1.4901161193847656e-08
+        },
+        {
+          "step": 7328,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 2.661776221503309e-08,
+          "actual_shadow_max_abs_error": 1.4901161193847656e-08
+        },
+        {
+          "step": 10880,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 4.2678561945965885e-09,
+          "actual_shadow_max_abs_error": 7.450580596923828e-09
+        }
+      ],
+      "aux_W_and_gains_gradients_None": true,
+      "default_head_joint_training": true,
+      "extra_IQ_forward_packets": 0,
+      "extra_actual_optimizer_steps": 0,
+      "U_truth_read": false,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "SAME_RX-s2026092701",
+      "arm": "SAME_RX",
+      "final_L_CE": 0.2880413200337071,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9786666666666667,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9425925925925925,
+          "4": 0.9837037037037037,
+          "6": 0.9972222222222222,
+          "8": 0.9746296296296296
+        },
+        "source_val_worst_rx": 0.9425925925925925
+      },
+      "auxiliary_calls": 2498,
+      "L_packet_observations": 1420800,
+      "active_L_packet_observations": 319744,
+      "mean_common_cohort_coverage": 0.5481697858286629,
+      "actual_aux_L_feature_gradient_ratios": [
+        0.11684492522943096,
+        0.08135103009380026,
+        0.14976628706062728,
+        0.06300909987377355
+      ],
+      "actual_AdamW_points": [
+        {
+          "step": 1112,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 0.00042506941333001337,
+          "actual_shadow_max_abs_error": 1.4901161193847656e-08
+        },
+        {
+          "step": 3556,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 0.00023484263454332012,
+          "actual_shadow_max_abs_error": 1.4901161193847656e-08
+        },
+        {
+          "step": 7328,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 0.00025199375450275167,
+          "actual_shadow_max_abs_error": 1.4901161193847656e-08
+        },
+        {
+          "step": 10880,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 4.005578384666806e-06,
+          "actual_shadow_max_abs_error": 5.684341886080802e-14
+        }
+      ],
+      "aux_W_and_gains_gradients_None": true,
+      "default_head_joint_training": true,
+      "extra_IQ_forward_packets": 0,
+      "extra_actual_optimizer_steps": 0,
+      "U_truth_read": false,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "CROSS_RX-s2026092701",
+      "arm": "CROSS_RX",
+      "final_L_CE": 0.2868054821617431,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.979037037037037,
+        "source_val_rx_accuracy": {
+          "1": 0.9953703703703703,
+          "3": 0.9437037037037037,
+          "4": 0.9837037037037037,
+          "6": 0.9972222222222222,
+          "8": 0.9751851851851852
+        },
+        "source_val_worst_rx": 0.9437037037037037
+      },
+      "auxiliary_calls": 2498,
+      "L_packet_observations": 1420800,
+      "active_L_packet_observations": 319744,
+      "mean_common_cohort_coverage": 0.5481697858286629,
+      "actual_aux_L_feature_gradient_ratios": [
+        0.10375264098882418,
+        0.08693944801871856,
+        0.12715632416539618,
+        0.0599244602412537
+      ],
+      "actual_AdamW_points": [
+        {
+          "step": 1112,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 0.00032420218615634435,
+          "actual_shadow_max_abs_error": 1.4901161193847656e-08
+        },
+        {
+          "step": 3556,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 0.00022619526696372334,
+          "actual_shadow_max_abs_error": 1.4901161193847656e-08
+        },
+        {
+          "step": 7328,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 0.00018539717198899576,
+          "actual_shadow_max_abs_error": 3.725290298461914e-09
+        },
+        {
+          "step": 10880,
+          "actual_optimizer_steps": 1,
+          "temporary_steps": 2,
+          "aux_increment_norm": 3.999079553665869e-06,
+          "actual_shadow_max_abs_error": 1.1368683772161603e-13
+        }
+      ],
+      "aux_W_and_gains_gradients_None": true,
+      "default_head_joint_training": true,
+      "extra_IQ_forward_packets": 0,
+      "extra_actual_optimizer_steps": 0,
+      "U_truth_read": false,
+      "head_fit_updates": 0
+    }
+  ],
+  "source_functional_witness": [
+    {
+      "row_id": "ZERO-s2026092701",
+      "source_execution_commit": "76ab0b9944210f8aa3f09f051ea9694f55457cd6",
+      "analysis_code_commit": "f716267ce1bf576330890203456283b126d919fc",
+      "source_count": 90,
+      "forward_packets": 450,
+      "feature_delta_from_own_scratch_initial_mean": 15.77746868133545,
+      "feature_cosine_from_own_scratch_initial_mean": 0.23462225496768951,
+      "full_vs_pure_max_abs_error": 0.0,
+      "W_zero_max_abs_error": 0.0,
+      "W_removed_max_abs_error": 0.0,
+      "features_changed_from_own_initial": true,
+      "parameters_buffers_gradients_unchanged": true,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "SAME_RX-s2026092701",
+      "source_execution_commit": "76ab0b9944210f8aa3f09f051ea9694f55457cd6",
+      "analysis_code_commit": "f716267ce1bf576330890203456283b126d919fc",
+      "source_count": 90,
+      "forward_packets": 450,
+      "feature_delta_from_own_scratch_initial_mean": 15.76732349395752,
+      "feature_cosine_from_own_scratch_initial_mean": 0.23196038603782654,
+      "full_vs_pure_max_abs_error": 0.0,
+      "W_zero_max_abs_error": 0.0,
+      "W_removed_max_abs_error": 0.0,
+      "features_changed_from_own_initial": true,
+      "parameters_buffers_gradients_unchanged": true,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "CROSS_RX-s2026092701",
+      "source_execution_commit": "76ab0b9944210f8aa3f09f051ea9694f55457cd6",
+      "analysis_code_commit": "f716267ce1bf576330890203456283b126d919fc",
+      "source_count": 90,
+      "forward_packets": 450,
+      "feature_delta_from_own_scratch_initial_mean": 15.78439998626709,
+      "feature_cosine_from_own_scratch_initial_mean": 0.23009513318538666,
+      "full_vs_pure_max_abs_error": 0.0,
+      "W_zero_max_abs_error": 0.0,
+      "W_removed_max_abs_error": 0.0,
+      "features_changed_from_own_initial": true,
+      "parameters_buffers_gradients_unchanged": true,
+      "head_fit_updates": 0
+    }
+  ],
+  "extra_L_diagnostic_forward_packets": 1350,
+  "head_fit_updates": 0,
+  "remaining_rows": 6,
+  "remaining_rows_automatically_released": true,
+  "limitation": "Only one complete seed/source evidence; no complete three-seed performance conclusion. Feature change from own initialization is not causal PA benefit."
+}

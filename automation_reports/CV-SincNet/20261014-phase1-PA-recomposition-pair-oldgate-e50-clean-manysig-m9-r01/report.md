@@ -47,3 +47,27 @@
 ## 实际发布与首个训练信号
 
 RUNNING/VERIFIED，执行commit `76ab0b9944210f8aa3f09f051ea9694f55457cd6`；一次archive传输比较、remotecompile、真实同契约student/ownEMA strict noquery和实际runtime依赖import PASS。3首seed PID/CWD/argv/GPU/参数和日志增长核实，当前轮数[16, 12, 13]。第1112步实际梯度/AdamW/参数更新已观测，cohort约55%，SAME/CROSS aux/Lfeature normratio约.1168/.1038，W/PArefgains辅助grad None，真实t1/PA_b1参数更新有限非零；active增量约4.25e−4/3.24e−4。ZERO梯度0，GPU临时分支差2.44e−8为浮点抵消残差，不能写成bitwise0；totalshadow误差≤1.49e−8。没有本轮完整性能结论，后6row仅按原source条件，84%active。
+
+## 首种子源资格与实际特征证据
+
+VERIFIED：三个条件均已按原固定配方训练至 final50，预定 source-only 健康条件通过，余下 6 行自动启动；未用目标分数排序或修改配方。
+
+| 条件 | 最终 L CE | 源 V 准确率 | 最差源 RX | 同配对队列覆盖率 | 四点辅助/L 特征梯度比均值 |
+|---|---:|---:|---:|---:|---:|
+| ZERO | 0.287650 | 97.8926% | 94.4074% | 54.8170% | 0.000% |
+| SAME_RX | 0.288041 | 97.8667% | 94.2593% | 54.8170% | 10.274% |
+| CROSS_RX | 0.286805 | 97.9037% | 94.3704% | 54.8170% | 9.444% |
+
+每模型 2,498 次辅助构造、4 个实际梯度点及 4 个实际 AdamW 更新观测齐全。ZERO 辅助梯度为 0；SAME_RX 与 CROSS_RX 的辅助特征梯度非零，W/PA/ref 增益的辅助梯度均为 None。全部实际 shadow 逐元素误差小于 1e−6，训练没有额外真实更新或 IQ 前向。ZERO 的差分增量约 4.3e−9 至 2.7e−8，来自浮点减法的微小残差，不声称 GPU 上逐位为零。
+
+首三个冻结模型在自身同一合法 L90 上均有初始至最终实际 joint160 的函数变化；full/pure、W 置零/删除误差为 0，参数/buffer/梯度保持。增加 1,350 次源 L 前向、0 拟合/优化/EMA 更新。该见证只说明实际特征被训练改变，不证明 PA 重组的因果贡献；完整三种子默认头 clean 效果仍待返回。
+
+## 固定语义间隔的源结果分析
+
+后续只读分析先使用已保存、实际部署的 L90 特征，不启动新训练、不叠加 PA 损失。固定 margin=0.1；anchor 与 positive 同 TX、同 day、跨 RX，positive 与五个异 TX negative 来自同一参照 RX/day。每个源模型 90 个包产生 1,800 个确定关系。用真实可见 L 标签及原物理 ID 逐包匹配已存 tensor；不从预测反推类别。
+
+记录 gap=cos(anchor,positive)−cos(anchor,negative)、违反排序/未满足固定间隔的比例、[0.1−gap]+ 及其局部特征导数。只对 detached 特征副本求导，0 IQ 前向/模型拟合/训练更新/U 真值/目标访问，CPU 运行；每行独立新 source_semantic_geometry 目录，已完成复用、不覆盖。源特征读取需原 source_proof 与源 witness 都已完成且 ID 对应；输入/输出异常保留产物，不干预健康训练。
+
+本诊断不根据目标结果选择 margin 或排序条件；若基本已满足，不增大间隔制造梯度。90 个已见源包和 1,800 个相关关系不等于独立样本；非零 hinge 只表明可能存在监督空间，不能据此认定新损失有效。后续若独立训练，必须保留匹配原配方与普通 SupCon 对照，默认头正常联合训练；本次尚未发布该训练机制。
+
+三元间隔本身已有 [FaceNet](https://arxiv.org/abs/1503.03832) 等研究；标签正负组织已有 [SupCon](https://papers.nips.cc/paper/2020/hash/d89a66c7c80a29b1bdbab0f2a1a94af8-Abstract.html) 基础。拟检验的问题是实际 CVS 特征的同参照 RX 身份关系和满足后停止的作用，不把通用间隔公式称为原创理论。代码 experiments/cvs_source_semantic_geometry.py；有限间隔停止、非零局部导数、状态/RNG 不变与五个非法输入本地检查已通过。这是现有源结果分析，不增加发布门槛、候选审批或重复 review。
