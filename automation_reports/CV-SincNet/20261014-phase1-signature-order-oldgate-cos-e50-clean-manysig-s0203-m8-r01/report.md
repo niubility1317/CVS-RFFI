@@ -9,3 +9,5 @@
 原样复用唯一已审核心，不新增假设或重复核心审查。10source资格负例拒绝singlecandidate/缺梯度/缺实际feature差/target反馈/改seed/换头等；六native上下文与same-seed同初态、原signature_order配置逐项一致、50/33+17/oldEMA/gate以及archive关键依赖/REMOTEcompile均PASS。只读audit增加可选design/build参数供本包装复用，不改已发布首seedarchive、训练或健康任务。
 
 完整data/角色/physicalIDs/seed/CWD/GPU/owner/命令/output/log/stoprule见experiment.json。发布入口实验首步强制复核首seedsource资格、既定执行commit与原矩阵，然后真实SIGcheckpoint无query smoke，PASS后自动继续；没有额外审批、seal或数据重验。每GPU总进程≤3且free>=12000MiB，其他健康任务保持。技术失败保留产物，不自动重试；暂无新目标准确率或84结论。
+
+包装代码提交 5eda4e0862e8e13cc3a2c79c3c31ef634a2fe72d，本地六native/10source负例PASS；首SOURCE资格尚待完成，当前未发布扩种。

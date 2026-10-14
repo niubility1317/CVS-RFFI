@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确要求将并列MEAN_VAR/COV综合到SIG_TIME基础上继续强化特征性能；默认分类头不可单独训练，每模型<=50，基线旧门控+cos；实现及对应实验结果Git上传。",
   "code": {
-    "commit": null,
+    "commit": "5eda4e0862e8e13cc3a2c79c3c31ef634a2fe72d",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32/2threads; warm CUDA before native seed; private feature initialization RNG",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_signature_order_seeds_20261014_r01",

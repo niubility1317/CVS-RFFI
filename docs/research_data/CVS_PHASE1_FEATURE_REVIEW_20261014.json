@@ -36076,6 +36076,28 @@
         "head_fit_updates": 0,
         "goal_84": false
       }
+    },
+    {
+      "route": "unchanged signature-training remaining seeds conditional packaging",
+      "run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "parent_run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "status": "CONDITIONAL_REGISTERED_NOT_LAUNCHED",
+      "implementation_commit": "5eda4e0862e8e13cc3a2c79c3c31ef634a2fe72d",
+      "model_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "new_models": 6,
+      "reused_models": 2,
+      "epochs_each": 50,
+      "default_head_only": true,
+      "source_qualification_negative_tests": 10,
+      "native_contexts": 6,
+      "first_seed_retrained": false,
+      "source_qualification_pending": true,
+      "target_metric_read_for_decision": false,
+      "goal_84": false,
+      "report": "automation_reports/CV-SincNet/20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md"
     }
   ],
   "diagnostics": {
