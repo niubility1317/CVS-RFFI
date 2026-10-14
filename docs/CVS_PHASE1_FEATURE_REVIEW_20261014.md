@@ -252,3 +252,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 签名内监督首seed已发布 20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01，执行2658815a2fe5ef931f24558a6c6c61146433fd9c；真实SIG CP noquerysmoke、单归档/compile及三samePID/CWD/argv/GPU/loggrowth均VERIFIED，3/2/2epoch/GPU1/2/0，无failure，旧baseline默认预测复用已评分。固定50训练继续，RAW/DYNAMIC两候选不按target排行，source资格后才可原样扩02/03。暂无新目标数字或84结论。
+
+
+2026-10-14 用户最新要求：固定现有单路SIG_TIME网络和默认分类头，探索重心转为训练机制，包括泛化训练与半监督学习。后续不新增/扩大骨干、分支、签名阶数或取特征位置，不重新以结构变体作为核心研发。当前SIG_RAW/DYNAMIC均只改辅助训练目标，部署SIG112及joint160/头结构不变，已发布健康任务保持原计划。下一步半监督工作首先统一SIG_TIME上的RANDOM/PAIR数据利用参照，区分覆盖、伪标签质量与实际梯度方向；不直接继续增大U权重、提早日程或叠加一致性。该整合为独立训练参照，不冒充新84%算法，不据目标结果选择模型/参数。

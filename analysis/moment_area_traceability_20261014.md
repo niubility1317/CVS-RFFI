@@ -79,3 +79,9 @@ R08完整3seed9row已闭环verified：weighted82.7030%±1.6081pp、uniform82.751
 S01/S02本地实现与三实际native检查verified：8negative，actualt1/t2/SIGprojection更新、同初态warmup、1800显式公式、W辅助None/defaultjointupdate、mode/RNG保持PASS；唯一直接P0/P1 PASS。实现f6dfdb587c505b5720469d4a4a101b8df8b321f4；S03自动defaultclean/truthlast/源资格已实现，远端真实checkpoint/archive/compile/启动证据待发布，不把实现当训练结果。
 
 S03发布路径verified：20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01，执行2658815a2fe5ef931f24558a6c6c61146433fd9c，realSIGCP noquery90/单归档一次SHA/remotecompile及3实际samePID/CWD/argv/GPU/loggrowthVERIFIED，首3/2/2epoch，继续固定50及自动defaultclean/truthlast。S01/S02实际训练更新/完整多seed性能仍implemented待证据，不以本地检查或启动替代结果，0deferred/blocked/rejected。
+
+
+签名内监督健康首seed运行时，仅准备原样02/03条件扩展包装：不新增科学假设，不修改首seed已发布archive。新增wrapper复用相同Observer/模型/预算，检查first执行2658815a2及bothSOURCEPASS后才可发布；无目标数字选择。此步骤为implemented待验证，不代表已扩种或已有性能。
+
+
+用户2026-10-14最新重心已纳入主报告：SIG_TIME网络足够，固定网络/默认头，研发泛化训练与半监督机制。当前signature内监督仅trainingloss改变，不改部署结构；后续不再层级/分支/阶数/位置扩展。半监督先核对现有sourcegate/PAIR实现与同SIG参照，再选独立学习机制，禁止将覆盖率或梯度幅值当作收益。

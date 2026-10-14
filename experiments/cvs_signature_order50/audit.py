@@ -1,11 +1,11 @@
 import gzip,json,statistics as st,time
 import torch
-from . import design as d,model as api
+from . import design as default_design,model as api
 from .observer import gradient_stats
 from experiments.cvs_signature_stats50.audit import run as shared
 
-def run():
- torch.set_num_threads(2);start=time.time();audit=shared(design=d,build_fn=api.build);observations=[]
+def run(*,design=None,build_fn=None):
+ d=design or default_design;torch.set_num_threads(2);start=time.time();audit=shared(design=d,build_fn=build_fn or api.build);observations=[]
  for row in d.training_rows():
   c=d.config(row);p=d.BASE/row['row_id']/'source';done=d.read(p/'signature_training_observation.json');saved=d.read(p/'signature_gradient_records.json');batches=saved['batch_records'];gradient_count=0
   if done['status']!='VERIFIED' or done['steps']!=11100 or done['extra_batches']!=2750 or done['extra_source_packet_forwards']!=247500 or done['U_packets']!=963900 or done['gradient_epochs']!=[1,17,33,50] or done['gradient_batches']!=220 or len(batches)!=220 or done['head_fit_updates'] or done['U_truth_read']:raise ValueError('Actual signature training budget differs')
