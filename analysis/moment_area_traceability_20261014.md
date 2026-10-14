@@ -165,3 +165,7 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 ## 2026-10-15 固定置信度次序源证伪完成
 
 20261015-phase1-source-teacher-confidence-manysig-m6-r01：代码e2eee613b9657d336657012eb33d060072a402d7、执行3003478354f9e9d3a45175f8140cae45f1f282eb；六个预定义50轮SIG/MT模型，L梯度/V仅no_grad，真实checkpoint+默认头/ownEMA不更新。固定FP32 teacherweak置信度>=studentstrong，ties kept，零阈值差且不扫描；V两个对错不一致组非空并6/6有益保留率严格高于有害，源资格PASS。399600forward包次/7200向量独立复算VERIFIED，头/optimizer/model/V梯度/Utruth/query0。整体梯度并非普遍改善，未证明实际U或目标增益；后续单一训练对照须另行实现/检查/预登记，不能将源资格当训练成功。详见automation_reports/CV-SincNet/20261015-phase1-source-teacher-confidence-manysig-m6-r01/source_teacher_confidence_analysis.md。
+
+## 2026-10-15 置信度门控特征训练最小实现
+
+20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01：实际code325d113dff08206cb2f174e74d33e48f3e0b2ad5（主体cadd843d569e85b81b5e9e8bc14c73b0ab4e00ae），基于六模型TCF source资格PASS，只增加固定detached FP32 teacherweak>=studentstrong的joint160一致性mask/fullbatch分母。SIG_TIME/默认头/旧batch_neighbor+ownEMA+cos不改，2scratch50匹配首seed模型+历史baseline，原U CE/entropy完全保留，不堆叠Fishr，无新增前向/模块/头。local10负例/实际合成optimizer+featureexport等PASS；唯一P0P1发现发布依赖缺失，最小修复后定点PASS。source扩种子规则/逐rowclean168000+truthlast已预登记，未启动、无新训练结果。

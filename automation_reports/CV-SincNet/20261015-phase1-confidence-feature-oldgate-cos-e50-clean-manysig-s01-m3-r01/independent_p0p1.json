@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "scope": "One candidate direct P0/P1 review plus one targeted check of identified dependency fix",
+  "implementation_commit": "cadd843d569e85b81b5e9e8bc14c73b0ab4e00ae",
+  "fix_commit": "325d113dff08206cb2f174e74d33e48f3e0b2ad5",
+  "issue": "Missing FMS seeds package in release dependency list would prevent objective/preflight import",
+  "fix": "Added package and matching assertion; imports/REMOTE/INSPECT compile PASS",
+  "no_other_direct_P0P1": true,
+  "read_only": true,
+  "no_real_data_model_or_remote_access": true,
+  "reviewer": "/root/signature_fix_p0p1"
+}

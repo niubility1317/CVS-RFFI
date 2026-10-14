@@ -82246,7 +82246,7 @@
   "Phase2_development": false,
   "next_actions": [
     "完成健康运行的RAW/TX_DAY_CENTERED泛化固定02/03矩阵，原轮次/系数/默认头不改，逐row自动clean独立评分后完整三seed分析",
-    "以固定零置信差源资格6/6PASS为依据，实现单一置信度门控feature-consistency对照：相同SIG_TIME/default联合头/旧门控EMAcos/scratch50，不堆叠Fishr、不扫阈值；最小检查/审查/预登记后发布"
+    "发布已实现/检查及独立P0P1 PASS的单一置信度门控feature-consistency固定首seed对照；source资格决定02/03且先commit/push后新目标摘要，不改SIG_TIME/default联合头/旧门控EMAcos/scratch50"
   ],
   "current_priority": {
     "at": "2026-10-14T18:08:17.724Z",
@@ -82950,13 +82950,36 @@
       "no_head_or_model_update": true
     },
     "next_confidence_gated_feature_training": {
-      "status": "SOURCE_JUSTIFIED_NOT_IMPLEMENTED_NOT_LAUNCHED",
+      "status": "PREREGISTERED_LOCAL_VERIFIED_NOT_LAUNCHED",
       "source_basis_run": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
       "source_basis": "Fixed all6 V qualification PASS, same-L groups support testable confidence-order mechanism; not target-derived",
       "hypothesis": "Only confidence-ordered ownEMA feature targets reduce unhelpful allU feature imitation; fixed zero gap, fullbatch denominator, same .1 ramp, fixed SIG_TIME/defaulthead/old gateEMAcos",
       "one_new_core_hypothesis": true,
       "no_Fishr_stack": true,
-      "requires_minimal_code_review_prereg_before_launch": true
+      "requires_minimal_code_review_prereg_before_launch": true,
+      "run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "code_commit": "325d113dff08206cb2f174e74d33e48f3e0b2ad5",
+      "implementation_commit": "cadd843d569e85b81b5e9e8bc14c73b0ab4e00ae",
+      "local_checks": "PASS",
+      "independent_p0p1": "PASS after one direct missingdependency fix",
+      "new_training_rows": 2,
+      "reused_historical_baseline_rows": 1,
+      "seed": 2026092701,
+      "scratch_epochs_per_model": 50,
+      "source_expansion_rule": {
+        "final_L_CE_max": 0.5,
+        "source_feature_difference_min": 0.000001,
+        "actual_feature_gradients_nonzero_at": [
+          34,
+          50
+        ],
+        "last5_retained_feature_mean_ratio_max": 0.95,
+        "last5_allU_feature_mean_ratio_max": 1,
+        "last5_candidate_retention_min": 0.5,
+        "source_only": true,
+        "expansion": "Source health/exact11100 updates/all17x56700 U/featureboundary/nonzero actual t1t2SIG plus retained mean ratio<=.95,allU discrepancy ratio<=1.,coverage>=.5. Freeze decision before any new target summary retrieval; predefined02/03 only and no target ranking, parameter change or selective rerun."
+      },
+      "report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md"
     }
   }
 }
