@@ -33610,7 +33610,7 @@
     },
     {
       "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "method": "Unchanged SIG_TIME/3SIG_TIME/statistical composition remaining model seeds",
       "model_seeds": [
         2026092702,
@@ -33624,103 +33624,242 @@
       "new_optimizer_steps": 66600,
       "head": "Default jointly trained only",
       "head_fit": false,
-      "native_fitted_probes": "disabled by existing reviewed native scope; actual run pending",
+      "native_fitted_probes": "all9 new models actual disabled closure1/head_fit_updates0 verified",
       "first_source_qualification_required": true,
       "first_run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s01-m4-r01",
       "first_seed_retrained": false,
       "code_commit": "a722e2593947ca804e2534ac75e4c081029d022c",
       "target_scores_read_for_this_design": false,
-      "target_results": "pending full remaining seeds",
+      "target_results": "Complete corresponding predefined three-seed default-head clean",
       "goal_84": false,
       "first_source_qualification": "PASS",
       "source_expansion_decision_before_target_scores": true,
       "execution_commit": "85b3294db8416c81545eef1682ccfb576fe19f52",
-      "launch_evidence": {
-        "status": "VERIFIED",
-        "execution_commit": "85b3294db8416c81545eef1682ccfb576fe19f52",
-        "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-        "dispatcher_pid": 2070797,
-        "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_signature_stats_seeds_20261014_r01",
-        "archive_transfer_compare": "PASS from executed publisher single-archive check",
-        "remote_compile": "PASS from executed publisher",
-        "real_checkpoint_no_query_preflight": {
-          "status": "PASS",
-          "real_checkpoint_no_query_smoke": true,
-          "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092702/source/final_ssdg.pth",
-          "source_seed": 2026092702,
-          "query_read": false,
-          "head_fit": false,
-          "training_inherits_checkpoint": false
+      "combined_summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 3,
+          "accuracy_mean": 0.8052678571428572,
+          "accuracy_sd": 0.023775723031464996,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238,
+            "2026092702": 0.7808154761904762,
+            "2026092703": 0.8283035714285715
+          },
+          "macro_f1_mean": 0.8000238637751929,
+          "worst_RX_mean": 0.6797083333333334,
+          "worst_day_mean": 0.7605555555555555
         },
-        "source_qualification_PASS_before_target_scores": true,
-        "source_expansion_decision_commit": "85b3294db8416c81545eef1682ccfb576fe19f52",
-        "new_models": [
-          {
-            "row_id": "SIG_TIME-s2026092702",
-            "pid": 2071029,
-            "gpu": 1,
-            "epoch": 19,
-            "log_grew": true,
-            "cwd_matches": true,
-            "command_matches": true,
-            "native_fitted_probes_disabled": true
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 3,
+          "accuracy_mean": 0.826654761904762,
+          "accuracy_sd": 0.015985897847436085,
+          "seed_accuracy": {
+            "2026092701": 0.8357559523809523,
+            "2026092702": 0.8081964285714286,
+            "2026092703": 0.8360119047619048
           },
-          {
-            "row_id": "SIG_TIME_X3-s2026092702",
-            "pid": 2071107,
-            "gpu": 2,
-            "epoch": 18,
-            "log_grew": true,
-            "cwd_matches": true,
-            "command_matches": true,
-            "native_fitted_probes_disabled": true
+          "macro_f1_mean": 0.8211239740333783,
+          "worst_RX_mean": 0.7043333333333334,
+          "worst_day_mean": 0.7846269841269841
+        },
+        {
+          "arm": "SIG_TIME_X3",
+          "seed_count": 3,
+          "accuracy_mean": 0.8318551587301587,
+          "accuracy_sd": 0.01217606385843377,
+          "seed_accuracy": {
+            "2026092701": 0.8383333333333334,
+            "2026092702": 0.8178095238095238,
+            "2026092703": 0.8394226190476191
           },
-          {
-            "row_id": "SIG_TIME_MV_COV-s2026092702",
-            "pid": 2071188,
-            "gpu": 0,
-            "epoch": 18,
-            "log_grew": true,
-            "cwd_matches": true,
-            "command_matches": true,
-            "native_fitted_probes_disabled": true
+          "macro_f1_mean": 0.8269570291344669,
+          "worst_RX_mean": 0.7182638888888889,
+          "worst_day_mean": 0.8006507936507936
+        },
+        {
+          "arm": "SIG_TIME_MV_COV",
+          "seed_count": 3,
+          "accuracy_mean": 0.8249722222222222,
+          "accuracy_sd": 0.009973402719748127,
+          "seed_accuracy": {
+            "2026092701": 0.831220238095238,
+            "2026092702": 0.8134702380952381,
+            "2026092703": 0.8302261904761905
           },
-          {
-            "row_id": "SIG_TIME-s2026092703",
-            "pid": 2071347,
-            "gpu": 4,
-            "epoch": 18,
-            "log_grew": true,
-            "cwd_matches": true,
-            "command_matches": true,
-            "native_fitted_probes_disabled": true
-          },
-          {
-            "row_id": "SIG_TIME_X3-s2026092703",
-            "pid": 2071425,
-            "gpu": 5,
-            "epoch": 17,
-            "log_grew": true,
-            "cwd_matches": true,
-            "command_matches": true,
-            "native_fitted_probes_disabled": true
-          },
-          {
-            "row_id": "SIG_TIME_MV_COV-s2026092703",
-            "pid": 2071584,
-            "gpu": 3,
-            "epoch": 18,
-            "log_grew": true,
-            "cwd_matches": true,
-            "command_matches": true,
-            "native_fitted_probes_disabled": true
-          }
-        ],
-        "reused_baselines": 2,
-        "maximum_all_owner_processes_per_GPU": 3,
-        "root_completion": null,
-        "run_failure": null
-      }
+          "macro_f1_mean": 0.819566472168747,
+          "worst_RX_mean": 0.7146666666666667,
+          "worst_day_mean": 0.7903412698412698
+        }
+      ],
+      "combined_paired": [
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.029071428571428526,
+            0.027380952380952395,
+            0.007708333333333317
+          ],
+          "mean_difference": 0.021386904761904746,
+          "sd_difference": 0.011876106882414778,
+          "positive_seeds": 3
+        },
+        {
+          "arm": "SIG_TIME_X3",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.0025773809523810254,
+            0.00961309523809517,
+            0.003410714285714267
+          ],
+          "mean_difference": 0.005200396825396821,
+          "sd_difference": 0.003844156809000379,
+          "positive_seeds": 3
+        },
+        {
+          "arm": "SIG_TIME_MV_COV",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            -0.00453571428571431,
+            0.005273809523809514,
+            -0.005785714285714283
+          ],
+          "mean_difference": -0.0016825396825396928,
+          "sd_difference": 0.006056708735815717,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_TIME_MV_COV",
+          "control": "SIG_TIME_X3",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            -0.007113095238095335,
+            -0.004339285714285657,
+            -0.00919642857142855
+          ],
+          "mean_difference": -0.006882936507936514,
+          "sd_difference": 0.00243673736058583,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "SIG_TIME_MV_COV",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.024535714285714216,
+            0.03265476190476191,
+            0.0019226190476190341
+          ],
+          "mean_difference": 0.019704365079365054,
+          "sd_difference": 0.01592553303702038,
+          "positive_seeds": 3
+        }
+      ],
+      "full_recount": {
+        "models": 12,
+        "new_models": 9,
+        "new_step_records": 99900,
+        "epoch_records": 600,
+        "predictions": 2016000,
+        "metric_records": 216
+      },
+      "source_feature_pair_L2": [
+        {
+          "seed": 2026092701,
+          "L2": 2.2401020526885986
+        },
+        {
+          "seed": 2026092702,
+          "L2": 2.820376396179199
+        },
+        {
+          "seed": 2026092703,
+          "L2": 3.66048002243042
+        }
+      ],
+      "source_feature_count": [
+        {
+          "arm": "SIG_TIME",
+          "seed": 2026092701,
+          "feature_parameters": 195041,
+          "changed_elements": 193460
+        },
+        {
+          "arm": "SIG_TIME_X3",
+          "seed": 2026092701,
+          "feature_parameters": 232033,
+          "changed_elements": 230582
+        },
+        {
+          "arm": "SIG_TIME_MV_COV",
+          "seed": 2026092701,
+          "feature_parameters": 232033,
+          "changed_elements": 230517
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed": 2026092702,
+          "feature_parameters": 195041,
+          "changed_elements": 191848
+        },
+        {
+          "arm": "SIG_TIME_X3",
+          "seed": 2026092702,
+          "feature_parameters": 232033,
+          "changed_elements": 228905
+        },
+        {
+          "arm": "SIG_TIME_MV_COV",
+          "seed": 2026092702,
+          "feature_parameters": 232033,
+          "changed_elements": 229162
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed": 2026092703,
+          "feature_parameters": 195041,
+          "changed_elements": 193347
+        },
+        {
+          "arm": "SIG_TIME_X3",
+          "seed": 2026092703,
+          "feature_parameters": 232033,
+          "changed_elements": 230017
+        },
+        {
+          "arm": "SIG_TIME_MV_COV",
+          "seed": 2026092703,
+          "feature_parameters": 232033,
+          "changed_elements": 230017
+        }
+      ],
+      "next": "No statistical-composition overall gain; keep separately preregistered report route1 unchanged",
+      "launch_history": "automation_reports/CV-SincNet/20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01/launch_evidence.json"
     },
     {
       "run_id": "20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s01-m4-r01",
@@ -78910,7 +79049,7 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "Keep immutable SIG_TIME statistics seed02/03 healthy and complete fixed full-three-seed scoring/report/Git",
-    "Run report route1 matched covariance vs area single-projection default-head matrix; Dropout/hierarchy/U-hardness deferred"
+    "Finish fixed moment/ordered-area firstseed source/default-head test and unchanged source-rule seed expansion",
+    "Study report Dropout read position separately from descriptor choice using legal source evidence; no target-driven structure changes"
   ]
 }

@@ -181,3 +181,8 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 ## 用户报告路线一已实现（2026-10-14）
 
 下一核心假设仅比较同6D路径的 μ/variance/offdiagCov 与 μ/variance/skewArea，27→28同lift、同初始化/容量和默认头，t2取点不变。三真实模型梯度/更新/export/W独立及算子检查 PASS，唯一直接P0/P1和定向修复确认PASS。当前只是已登记，尚无新训练成绩。参见 [落实记录](../analysis/moment_area_traceability_20261014.md) 与 [预登记](../automation_reports/CV-SincNet/20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s01-m4-r01/report.md)。其他活动分支最新 de7f179f3 为 receiver tangent；本路线不同。
+
+
+## SIG_TIME 统计组合三种子完成（2026-10-14）
+
+组合82.4972±0.9973%，本轮单SIG_TIME82.6655±1.5986%，同参数X383.1855±1.2176%。组合−单分支−0.1683±0.6057个百分点（1/3正差），组合−X3−0.6883±0.2437个百分点（0/3）。12行2016000默认决策、216组CM及99900新step/600epoch已独立复算；9新模型实际无拟合探针，W独立导出与新参数更新通过。组合未达84%，无重训/换seed/按目标调参。原sequence50的83.0393%因随机流条件不同保留独立记录，不混合矩阵。详见 [完整三种子报告](../automation_reports/CV-SincNet/20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md)。下一轮报告路线一在读取此完整均值前已冻结发布，保持原计划。

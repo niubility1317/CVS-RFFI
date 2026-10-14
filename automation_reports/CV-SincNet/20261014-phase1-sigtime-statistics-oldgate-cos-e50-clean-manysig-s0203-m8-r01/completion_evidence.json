@@ -1,0 +1,108 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "85b3294db8416c81545eef1682ccfb576fe19f52",
+  "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+  "dispatcher_terminal": true,
+  "completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 8,
+    "new_trained_models": 6,
+    "reused_baseline_models": 2,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 1344000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "rows": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_completion": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "probes_disabled": null,
+      "head_fit_updates": null,
+      "optimizer_steps": 11100
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_completion": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "probes_disabled": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 11100
+    },
+    {
+      "row_id": "SIG_TIME_X3-s2026092702",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_completion": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "probes_disabled": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 11100
+    },
+    {
+      "row_id": "SIG_TIME_MV_COV-s2026092702",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_completion": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "probes_disabled": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 11100
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_completion": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "probes_disabled": null,
+      "head_fit_updates": null,
+      "optimizer_steps": 11100
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_completion": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "probes_disabled": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 11100
+    },
+    {
+      "row_id": "SIG_TIME_X3-s2026092703",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_completion": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "probes_disabled": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 11100
+    },
+    {
+      "row_id": "SIG_TIME_MV_COV-s2026092703",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_completion": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "probes_disabled": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 11100
+    }
+  ],
+  "full_recount": {
+    "new_steps": 66600,
+    "predictions": 1344000,
+    "metrics": 144
+  },
+  "missing": [],
+  "failure": null
+}

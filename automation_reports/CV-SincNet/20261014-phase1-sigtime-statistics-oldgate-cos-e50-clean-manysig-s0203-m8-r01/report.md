@@ -25,3 +25,8 @@ Stop：运行自身的角色/来源/非有限数/预算/默认头/导出/物理 
 
 
 实际发布代码 85b3294db8416c81545eef1682ccfb576fe19f52，dispatcher PID2070797。六个新 worker 的 PID/CWD/命令/GPU/日志增长及关闭 fitted probes 状态均 VERIFIED；单归档传输核对、remote compile 和 seed02 真实 checkpoint no-query smoke PASS。当前均健康运行，两个历史 baseline 已复用并评分。详见 launch_evidence.json。
+
+
+## 完整三种子闭环
+
+原首seed与剩余八行已全部完成默认head预测/独立truth-last，完整日志和216组指标复算精确一致。组合82.4972%、单SIG_TIME82.6655%、X383.1855%，组合整体无增益，未达84%。参见 [三种子完整报告](final_analysis.md)。此前RUNNING段落是发布时快照，当前均已完成。

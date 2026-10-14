@@ -47,3 +47,6 @@
 只验证暴露 ManySig clean、旧六 TX、七个目标 RX、四个日期，预测固定后独立 truth-last。没有卫星部署、Phase2 或未见 TX 声明。用户现要求结合新报告开始下一步；剩余六个健康模型保持原计划，下一步结构设计以报告和源证据为依据，不根据此首种子目标分数改参数。
 
 证据：[完整结果](results.json)、[源特征](source_features.json)、[源条件](source_qualification.json)、[扩种子决定](seed_expansion_decision.json)、[四行闭环](completion_evidence.json)。
+
+
+完整三种子已回收：组合82.4972%，单SIG_TIME82.6655%，X383.1855%。本文件保留原单seed结果；完整均值/SD和配对结论见 [三种子报告](../20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md)。
