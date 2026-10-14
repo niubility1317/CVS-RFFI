@@ -20,6 +20,7 @@ SOURCE_TX = tuple(range(6))
 PACKET_COUNT = 6300
 CELL_COUNT = 70
 NORMALIZE_EPS = 1e-12
+VECTOR_KINDS = {"visible_mean_physical_residual24": 24, "visible_mean_null_reference14": 14}
 _INTEGER_DTYPES = tuple(
     getattr(torch, name)
     for name in ("uint8", "uint16", "uint32", "uint64", "int8", "int16", "int32", "int64")
@@ -113,11 +114,14 @@ def _pair_summary(cosine, valid):
 
 
 @torch.no_grad()
-def measure(vectors, labels, receivers, days, physical_ids, valid, role="L_s"):
+def measure(vectors, labels, receivers, days, physical_ids, valid, role="L_s", *,
+            vector_kind="visible_mean_physical_residual24"):
     """Census all 126000 fixed source relations without fitting or resampling.
 
-    ``vectors`` is the CPU real floating ``[6300, 24]`` visible-mean physical
-    residual, not a learned joint160 feature. Each TX/RX/day cell must contain
+    ``vectors`` is the CPU real floating visible-mean observation: the default
+    physical residual ``[6300,24]`` or explicit null reference ``[6300,14]``.
+    The kind fixes the dimension; no arbitrary dimensions or zero-padding are
+    accepted. This is not a learned joint160 feature. Each TX/RX/day cell must contain
     exactly 70 distinct physical packets. The original input order within a cell
     defines its ordinal. An anchor is compared to its same-TX/same-day/same-
     ordinal packet in each other RX and to all five other-TX packets at that
@@ -130,11 +134,14 @@ def measure(vectors, labels, receivers, days, physical_ids, valid, role="L_s"):
     """
     if role != "L_s":
         raise ValueError("measure accepts only visible labelled source role L_s")
+    if not isinstance(vector_kind,str) or vector_kind not in VECTOR_KINDS:
+        raise ValueError("unknown fixed vector kind")
+    dimension = VECTOR_KINDS[vector_kind]
     if not isinstance(vectors, torch.Tensor):
-        raise ValueError("vectors must be a CPU real floating tensor of shape [6300, 24]")
+        raise ValueError(f"vectors must be a CPU real floating tensor of shape [6300, {dimension}]")
     if (vectors.device.type != "cpu" or vectors.layout != torch.strided
-            or vectors.shape != (PACKET_COUNT, 24) or not vectors.is_floating_point()):
-        raise ValueError("vectors must be a CPU real floating tensor of shape [6300, 24]")
+            or vectors.shape != (PACKET_COUNT, dimension) or not vectors.is_floating_point()):
+        raise ValueError(f"vectors must be a CPU real floating tensor of shape [6300, {dimension}]")
     if not bool(torch.isfinite(vectors).all()):
         raise ValueError("vectors must be finite")
     labels = _integer_metadata(labels, "labels")
@@ -219,7 +226,7 @@ def measure(vectors, labels, receivers, days, physical_ids, valid, role="L_s"):
     same_cosine = (normalized[same_anchor] * normalized[same_negative]).sum(dim=1)
     zero = (residuals == 0).all(dim=1)
     summary = {
-        "role": role, "vector_kind": "visible_mean_physical_residual24",
+        "role": role, "vector_kind": vector_kind,
         "input_count": PACKET_COUNT, "visible_valid_packet_count": int(valid.sum()),
         "visible_invalid_packet_count": int((~valid).sum()),
         "cell_count": len(cell_counts), "packets_per_cell": CELL_COUNT, "cells": cell_counts,
@@ -235,6 +242,9 @@ def measure(vectors, labels, receivers, days, physical_ids, valid, role="L_s"):
         "no_fitted_state": True,
         "boundary": "seen-source-RX physical residual geometry; not learned-model performance, DG, new-TX identification or causal nuisance evidence; caller asserts data provenance",
     }
+    if vector_kind == "visible_mean_null_reference14":
+        summary.update(vector_dimension=dimension,
+                       boundary="seen-source-RX null-tone observation geometry; not learned-model performance, DG, new-TX identification, TX exclusivity or causal nuisance evidence; caller asserts data provenance")
     return {
         "summary": summary,
         "tensors": {

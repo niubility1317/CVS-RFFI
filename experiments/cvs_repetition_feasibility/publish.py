@@ -9,7 +9,12 @@ RELEASE='cvs_visible_period_sourceL_20261014_r01'
 PROJECT='/home/szu2070436088/2510044040/CV-SincNet'
 PYTHON='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
 
-def main():
+def main(*,run_id=RUN,release_id=RELEASE,request_config='sourceL.json'):
+    if (run_id,release_id,request_config) not in (
+        ('20261014-phase1-visible-period-sourceL-manysig-m1-r01','cvs_visible_period_sourceL_20261014_r01','sourceL.json'),
+        ('20261014-phase1-null-budget-sourceL-manysig-m1-r01','cvs_null_budget_sourceL_20261014_r01','null_sourceL.json')):
+        raise ValueError('Unregistered source-only publication')
+    RUN,RELEASE=run_id,release_id
     local=ROOT/'local_artifacts'/RELEASE;local.mkdir(parents=True,exist_ok=True)
     git='C:/Program Files/Git/cmd/git.exe'
     commit=subprocess.check_output([git,'-C',str(ROOT),'rev-parse','HEAD'],text=True).strip()
@@ -36,7 +41,7 @@ with tarfile.open(archive) as tar:
   if not member.isfile() or not (release/member.name).resolve().is_relative_to(release.resolve()):raise ValueError('Invalid archive path')
  tar.extractall(release)
 subprocess.run([c['python'],'-m','compileall','-q',str(release/'experiments/cvs_repetition_feasibility')],cwd=release,check=True)
-request=json.loads((release/'experiments/cvs_repetition_feasibility/configs/sourceL.json').read_text())
+request=json.loads((release/'experiments/cvs_repetition_feasibility/configs'/c['request_config']).read_text())
 request['analysis_code_commit']=(release/'release_commit.txt').read_text().strip()
 (release/'resolved_request.json').write_text(json.dumps(request,indent=2)+'\n')
 command=[c['python'],'-u',str(release/'experiments/cvs_repetition_feasibility/runner.py'),str(release/'resolved_request.json')]
@@ -54,7 +59,7 @@ last=proc();result=dict(status='SUBMITTED',pid=child.pid,cwd=str(release),argv=c
 (release/'submit.json').write_text(json.dumps(result,indent=2)+'\n')
 print(json.dumps(result))
 '''
-    cfg=dict(release=remote,archive=PROJECT+'/releases/'+archive.name,run_root=PROJECT+'/runs/'+RUN,sha256=digest,python=PYTHON)
+    cfg=dict(release=remote,archive=PROJECT+'/releases/'+archive.name,run_root=PROJECT+'/runs/'+RUN,sha256=digest,python=PYTHON,request_config=request_config)
     submitted=json.loads(ssh(script.replace('CONFIG',repr(cfg))))
     (local/'submit.json').write_text(json.dumps(submitted,indent=2)+'\n',encoding='utf-8');print(json.dumps(submitted))
 

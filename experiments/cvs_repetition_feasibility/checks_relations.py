@@ -79,6 +79,20 @@ def run_checks():
     python_lists=measure(tx_vectors,labels.tolist(),receivers.tolist(),days.tolist(),identifiers,valid)
     assert python_lists["summary"] == tx["summary"]
     assert torch.equal(python_lists["tensors"]["relations"], indices)
+    explicit24=measure(tx_vectors,labels,receivers,days,identifiers,valid,
+                       vector_kind="visible_mean_physical_residual24")
+    assert explicit24["summary"]==tx["summary"]
+    for key in tx["tensors"]:assert torch.equal(explicit24["tensors"][key],tx["tensors"][key])
+    tx14_vectors=F.one_hot(labels,14).to(torch.float64).requires_grad_()
+    tx14=measure(tx14_vectors,labels.tolist(),receivers.tolist(),days.tolist(),identifiers,valid,
+                 vector_kind="visible_mean_null_reference14")
+    assert tx14["summary"]["vector_kind"]=="visible_mean_null_reference14"
+    assert tx14["summary"]["vector_dimension"]==14
+    assert tx14["summary"]["overall"]==tx["summary"]["overall"]
+    for name in ("RX","day","TX"):
+        assert tx14["summary"][name]==tx["summary"][name]
+    for key in tx["tensors"]:assert torch.equal(tx14["tensors"][key],tx["tensors"][key])
+    assert tx14_vectors.grad is None
     rx_index=torch.tensor([{1:0,3:1,4:2,6:3,8:4}[int(receiver)] for receiver in receivers])
     rx_vectors=F.one_hot(rx_index,24).to(torch.float64)
     rx=measure(rx_vectors,labels,receivers,days,identifiers,valid)
@@ -86,6 +100,10 @@ def run_checks():
     assert rx["summary"]["overall"]["ordering_le_zero_count"] == 126000
     assert rx["summary"]["same_RX_other_TX_pairs"]["cosine"]["mean"] == 1.0
     assert rx["summary"]["cross_RX_same_TX_pairs"]["cosine"]["mean"] == 0.0
+    rx14=measure(F.one_hot(rx_index,14).to(torch.float64),labels,receivers,days,identifiers,valid,
+                 vector_kind="visible_mean_null_reference14")
+    assert rx14["summary"]["overall"]["gap_mean"]==0.
+    assert rx14["summary"]["same_RX_other_TX_pairs"]["cosine"]["mean"]==1.
     invalid_one=valid.clone();invalid_one[0]=False
     excluded=measure(tx_vectors,labels,receivers,days,identifiers,invalid_one)
     assert excluded["summary"]["overall"]["valid_count"] == 125940
@@ -93,6 +111,10 @@ def run_checks():
     assert excluded["summary"]["overall"]["gap"]["mean"] == 1.0
     assert excluded["summary"]["cross_RX_same_TX_pairs"]["invalid_count"] == 8
     assert excluded["summary"]["same_RX_other_TX_pairs"]["invalid_count"] == 10
+    excluded14=measure(tx14_vectors,labels,receivers,days,identifiers,invalid_one,
+                       vector_kind="visible_mean_null_reference14")
+    assert excluded14["summary"]["overall"]==excluded["summary"]["overall"]
+    assert torch.equal(excluded14["tensors"]["relation_valid"],excluded["tensors"]["relation_valid"])
     empty=measure(tx_vectors,labels,receivers,days,identifiers,torch.zeros_like(valid))
     assert empty["summary"]["overall"]["valid_count"] == 0
     assert empty["summary"]["overall"]["invalid_count"] == 126000
@@ -112,6 +134,13 @@ def run_checks():
     _raises(lambda:measure(tx_vectors,labels,receivers,days,duplicates,valid))
     for role in ("U_s","V","query"):
         _raises(lambda role=role:measure(tx_vectors,labels,receivers,days,identifiers,valid,role=role))
+        _raises(lambda role=role:measure(tx14_vectors,labels,receivers,days,identifiers,valid,role=role,
+                                         vector_kind="visible_mean_null_reference14"))
+    _raises(lambda:measure(tx14_vectors,labels,receivers,days,identifiers,valid))
+    _raises(lambda:measure(tx_vectors,labels,receivers,days,identifiers,valid,
+                           vector_kind="visible_mean_null_reference14"))
+    _raises(lambda:measure(tx14_vectors,labels,receivers,days,identifiers,valid,
+                           vector_kind="arbitrary14"))
     _raises(lambda:measure(tx_vectors[:6299],labels[:6299],receivers[:6299],days[:6299],identifiers[:6299],valid[:6299]))
     _raises(lambda:measure(tx_vectors[:,:23],labels,receivers,days,identifiers,valid))
     _raises(lambda:measure(tx_vectors,labels.to(torch.float64),receivers,days,identifiers,valid))
@@ -137,12 +166,14 @@ def run_checks():
     assert random.getstate()==python_rng and torch.equal(torch.get_rng_state(),torch_rng)
     current_numpy=np.random.get_state()
     assert current_numpy[0]==numpy_rng[0] and np.array_equal(current_numpy[1],numpy_rng[1]) and current_numpy[2:]==numpy_rng[2:]
-    for result in (tx,rx,excluded,empty,zero,shuffled,retained):json.dumps(result["summary"],allow_nan=False)
+    for result in (tx,rx,excluded,empty,zero,shuffled,retained,tx14,rx14,excluded14):json.dumps(result["summary"],allow_nan=False)
     return {"status":"VERIFIED","environment":{"torch":torch.__version__,"device":"cpu","dtype":"float64"},
             "checks":{"TX_onehot_gap1":True,"RX_onehot_gap0_same_RX_other_TX_cos1":True,
                       "single_invalid_excludes_exactly60":True,"allinvalid_null_statistics":True,
                       "original_cell_ordinal_preserved":True,"zero_vectors_disclosed_not_filtered":True,
                       "root_summary_keys_and_Python_list_metadata":True,
+                      "residual24_default_output_compatible":True,"explicit_null14_same_relation_plan":True,
+                      "null14_kind_shape_and_role_negatives":True,
                       "invalid_source_cells_IDs_roles_rejected":True,"inputs_gradients_RNG_unchanged":True},
             "relation_count":126000,"single_invalid_remaining":125940,
             "boundary":"visible_mean physical residual source geometry only; no model-performance, DG or new-TX claim"}

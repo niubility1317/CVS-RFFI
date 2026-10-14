@@ -3,6 +3,7 @@ import math
 import torch
 
 ARMS=('copy_cycle1','visible_mean','known_reference')
+OBSERVATION_KINDS={'physical_residual24':(24,ARMS),'null_reference14':(14,ARMS)}
 
 def _distribution(values):
     if not len(values):return dict(mean=None,median=None,q95=None,q99=None,maximum=None,top_one_percent_fraction=None)
@@ -11,14 +12,26 @@ def _distribution(values):
                 q99=float(torch.quantile(values,.99)),maximum=float(values.max()),
                 top_one_percent_fraction=float(values.topk(number).values.sum())/total if total>0 else None)
 
-def summarize(valid,target,predictions,labels,receivers,days):
+def summarize(valid,target,predictions,labels,receivers,days,*,observation_kind='physical_residual24'):
+    """Census one explicit fixed observation; no arbitrary dimension/padding.
+
+    The physical_residual24 default preserves the historical return format.
+    For null_reference14, map the external zero_reference baseline to the fixed
+    known_reference key; it must be exactly zero. Metadata remains downstream
+    of frozen predictions and does not select packets by hidden target energy.
+    """
+    if not isinstance(observation_kind,str) or observation_kind not in OBSERVATION_KINDS:
+        raise ValueError('Unknown fixed observation kind')
+    dimension,arms_for_kind=OBSERVATION_KINDS[observation_kind]
     n=len(valid)
-    if valid.dtype!=torch.bool or valid.ndim!=1 or target.shape!=(n,24) or set(predictions)!=set(ARMS):
+    if valid.dtype!=torch.bool or valid.ndim!=1 or target.shape!=(n,dimension) or set(predictions)!=set(arms_for_kind):
         raise ValueError('Invalid fixed residual census shape/arms')
     if any(p.shape!=target.shape for p in predictions.values()) or not all(torch.isfinite(x).all() for x in (target,*predictions.values())):
         raise ValueError('Nonfinite or mismatched observation predictions')
     if any(x.shape!=(n,) for x in (labels,receivers,days)) or any(x.requires_grad for x in (target,*predictions.values())):
         raise ValueError('Only frozen predictions and downstream source metadata')
+    if observation_kind=='null_reference14' and bool((predictions['known_reference']!=0).any()):
+        raise ValueError('null_reference14 requires the fixed zero-reference baseline')
     energy=target.double().square().mean(1)
     errors={k:(p.double()-target.double()).square().mean(1) for k,p in predictions.items()}
     groups={'overall':torch.ones(n,dtype=torch.bool)}
@@ -41,8 +54,13 @@ def summarize(valid,target,predictions,labels,receivers,days):
                            distribution=_distribution(val))
         records[name]=dict(count=count,valid=good,invalid=count-good,valid_fraction=good/count if count else None,
                            target_energy_sum=energy_sum,target_energy=_distribution(e),arms=arms)
-    return dict(records=records,packet_target_energy=energy,packet_MSE=errors,
+    result=dict(records=records,packet_target_energy=energy,packet_MSE=errors,
                 normalization='Per-packet mean over24 real residual coordinates; ratio of pooled sums on identical visible-valid packets. Invalid packets explicitly counted; never selected by hidden-target energy.')
+    if observation_kind=='null_reference14':
+        result.update(observation_kind=observation_kind,dimension=dimension,
+                      reference_baseline='fixed zero null-tone observation (external zero_reference mapped to known_reference)',
+                      normalization='Per-packet mean over14 real null-tone coordinates; reference is the fixed zero observation. Ratio of pooled sums on identical visible-valid packets. Invalid packets explicitly counted; never selected by hidden-target energy.')
+    return result
 
 def qualification(metrics,relations):
     overall=metrics['records']['overall'];geometry=relations['overall']
