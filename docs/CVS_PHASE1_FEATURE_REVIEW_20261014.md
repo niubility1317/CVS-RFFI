@@ -198,3 +198,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 取点02/03条件式扩展已实现登记 20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01，4新scratch50+2历史对照；首seed源资格未完成时不发布，不读取其目标分数控制扩展。实际4模型上下文/同初态/初始eval同/源资格负例/两种子配对及108/162指标汇总检查通过，复用该候选已有唯一核心审查。
+
+
+同投影shape路线完整三seed闭环：SIG_TIME82.7931%±1.6294pp、COV_SHAPE82.6188%±1.9129pp、AREA_SHAPE82.0833%±1.6870pp。AREA−COV −0.5355pp±0.9818pp、AREA−SIG −0.7097pp±0.9055pp，均1/3正差；primary距84还差1.9167pp。9新/3历史、99900新增steps/600epoch记录/2016000默认pred/216组指标独立复算VERIFIED；9模型实际pool更新/精确导出/W独立/零拟合收尾全部通过，但无性能强化证据。详见 20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md 与 results.json/results.png。取点实验和条件式02/03仍依原源规则不变。

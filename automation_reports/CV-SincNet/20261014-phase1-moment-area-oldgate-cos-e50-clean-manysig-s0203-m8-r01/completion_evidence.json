@@ -1,0 +1,54 @@
+{
+  "status": "VERIFIED",
+  "run_ids": [
+    "20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+    "20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s0203-m8-r01"
+  ],
+  "completion": [
+    {
+      "status": "EXPERIMENT_COMPLETE",
+      "models": 4,
+      "new_trained_models": 3,
+      "reused_baseline_models": 1,
+      "views": 1,
+      "readouts": [
+        "ORIGINAL_HEAD"
+      ],
+      "prediction_count": 672000,
+      "truth_last": true,
+      "goal_84": false
+    },
+    {
+      "status": "EXPERIMENT_COMPLETE",
+      "models": 8,
+      "new_trained_models": 6,
+      "reused_baseline_models": 2,
+      "views": 1,
+      "readouts": [
+        "ORIGINAL_HEAD"
+      ],
+      "prediction_count": 1344000,
+      "truth_last": true,
+      "goal_84": false
+    }
+  ],
+  "audit": {
+    "status": "VERIFIED",
+    "models": 12,
+    "new_models": 9,
+    "historical_baselines": 3,
+    "new_step_records_parsed": 99900,
+    "epoch_records_parsed": 600,
+    "prediction_count": 2016000,
+    "metric_records_independently_recounted": 216,
+    "truth_last_recount": true,
+    "head_fit": false,
+    "native_fitted_probes_disabled_for_new_models": true,
+    "analysis_uses_existing_predictions": true,
+    "optimizer_updates_by_analysis": 0
+  },
+  "default_head_fit_updates": 0,
+  "all_predefined_model_seeds_complete": true,
+  "first_seed_retrained": false,
+  "goal84": false
+}

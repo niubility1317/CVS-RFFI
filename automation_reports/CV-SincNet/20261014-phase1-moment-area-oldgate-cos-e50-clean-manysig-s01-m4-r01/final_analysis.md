@@ -59,3 +59,6 @@ results.json 保存完整源曲线、逐组指标、配对修正／引入错误�
 ![全部 50 轮曲线及首种子结果](results.png)
 
 下一步只完成已经冻结的剩余两种子，再按三种子主指标报告全部正负结果。报告路线三的 t2 与 t2.pool 取点将另做合法源诊断，不依据本次目标错误调取点／Dropout 参数；路线二的连续层级和路线四的 U 权重保持后置。84% 目标仍未达到。
+
+
+后续完整3seed已闭环，AREA82.0833%／COV82.6188%／SIG_TIME82.7931%；本文件仍保留原首seed结果，完整统计见 ../20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md。

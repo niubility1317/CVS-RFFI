@@ -34104,11 +34104,12 @@
         "predictions": 672000,
         "group_metrics": 72
       },
-      "report": "automation_reports/CV-SincNet/20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s01-m4-r01/final_analysis.md"
+      "report": "automation_reports/CV-SincNet/20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s01-m4-r01/final_analysis.md",
+      "complete_three_seed_ref": "automation_reports/CV-SincNet/20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
     },
     {
       "run_id": "20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "method": "Unchanged report route1 remaining model seeds",
       "model_seeds": [
         2026092702,
@@ -34124,15 +34125,185 @@
       "source_only_qualification_required": true,
       "source_qualification_run": "20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s01-m4-r01",
       "code_commit": "d14fdcfacaa61f10a4e389c7b29de3596f35934b",
-      "target_results": "Remaining6 new source training; no full3seed result",
+      "target_results": "Complete3seeds: AREA82.0833%, COV82.6188%, SIG82.7931%; negative matched comparisons, all retained",
       "head": "Default jointly trained only",
-      "fitted_native_probes": "disabled in all6 resolved configs; final closure pending",
+      "fitted_native_probes": "disabled in all9 actual new closures; zero extra fits",
       "goal_84": false,
       "source_qualification": "PASS",
       "source_expansion_decision_before_target_scores": true,
       "execution_commit": "8bd34db31787cd80c4ad53ee7327ff6a55daee72",
       "launch_evidence": "automation_reports/CV-SincNet/20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s0203-m8-r01/launch_evidence.json",
-      "dispatcher_pid": 2116969
+      "dispatcher_pid": 2116969,
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 3,
+          "accuracy_mean": 0.8052678571428572,
+          "accuracy_sd": 0.023775723031464996,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238,
+            "2026092702": 0.7808154761904762,
+            "2026092703": 0.8283035714285715
+          },
+          "macro_f1_mean": 0.8000238637751929,
+          "worst_RX_mean": 0.6797083333333334,
+          "worst_day_mean": 0.7605555555555555
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 3,
+          "accuracy_mean": 0.8279305555555556,
+          "accuracy_sd": 0.016294473344773148,
+          "seed_accuracy": {
+            "2026092701": 0.8376607142857143,
+            "2026092702": 0.8091190476190476,
+            "2026092703": 0.8370119047619048
+          },
+          "macro_f1_mean": 0.8225248572135795,
+          "worst_RX_mean": 0.7069444444444445,
+          "worst_day_mean": 0.7866825396825396
+        },
+        {
+          "arm": "COV_SHAPE",
+          "seed_count": 3,
+          "accuracy_mean": 0.826188492063492,
+          "accuracy_sd": 0.019128534729349035,
+          "seed_accuracy": {
+            "2026092701": 0.8373511904761904,
+            "2026092702": 0.8041011904761904,
+            "2026092703": 0.8371130952380952
+          },
+          "macro_f1_mean": 0.8208384237505196,
+          "worst_RX_mean": 0.711111111111111,
+          "worst_day_mean": 0.7837063492063492
+        },
+        {
+          "arm": "AREA_SHAPE",
+          "seed_count": 3,
+          "accuracy_mean": 0.8208333333333333,
+          "accuracy_sd": 0.016869665109510306,
+          "seed_accuracy": {
+            "2026092701": 0.8206666666666667,
+            "2026092702": 0.804047619047619,
+            "2026092703": 0.8377857142857142
+          },
+          "macro_f1_mean": 0.8155741989776812,
+          "worst_RX_mean": 0.697625,
+          "worst_day_mean": 0.7817698412698413
+        }
+      ],
+      "paired": [
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.03097619047619049,
+            0.028303571428571428,
+            0.008708333333333318
+          ],
+          "mean_difference": 0.022662698412698412,
+          "sd_difference": 0.012158492987191178,
+          "positive_seeds": 3
+        },
+        {
+          "arm": "COV_SHAPE",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            -0.0003095238095238706,
+            -0.005017857142857185,
+            0.00010119047619039367
+          ],
+          "mean_difference": -0.001742063492063554,
+          "sd_difference": 0.002844343437079521,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "AREA_SHAPE",
+          "control": "COV_SHAPE",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            -0.016684523809523788,
+            -0.0000535714285714306,
+            0.0006726190476190608
+          ],
+          "mean_difference": -0.0053551587301587196,
+          "sd_difference": 0.009818234208760756,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "AREA_SHAPE",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            -0.01699404761904766,
+            -0.005071428571428616,
+            0.0007738095238094544
+          ],
+          "mean_difference": -0.007097222222222273,
+          "sd_difference": 0.009055499257298935,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "AREA_SHAPE",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.013982142857142832,
+            0.023232142857142812,
+            0.009482142857142772
+          ],
+          "mean_difference": 0.015565476190476138,
+          "sd_difference": 0.007010408927682717,
+          "positive_seeds": 3
+        }
+      ],
+      "combined_model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "combined_models": 12,
+      "combined_new_models": 9,
+      "independent_recount": {
+        "status": "VERIFIED",
+        "models": 12,
+        "new_models": 9,
+        "historical_baselines": 3,
+        "new_step_records_parsed": 99900,
+        "epoch_records_parsed": 600,
+        "prediction_count": 2016000,
+        "metric_records_independently_recounted": 216,
+        "truth_last_recount": true,
+        "head_fit": false,
+        "native_fitted_probes_disabled_for_new_models": true,
+        "analysis_uses_existing_predictions": true,
+        "optimizer_updates_by_analysis": 0
+      },
+      "goal84": false,
+      "gap_to84_percentage_points": 1.9166666666666665,
+      "report": "automation_reports/CV-SincNet/20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
     },
     {
       "run_id": "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01",
@@ -79406,7 +79577,7 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "Complete fixed moment/area remaining02/03 and report all full3seed default-head positive/negative results",
-    "Complete independent SIG_TIME pre/post read-position firstseed; source PASS only for unchanged02/03 expansion, no target tuning"
+    "Finish immutable SIG_TIME pre/post firstseed default-head experiment; source PASS only for unchanged02/03 expansion",
+    "Retain full negative moment/area evidence and deferred hierarchy/U routes; no target-driven descriptor or Dropout scan"
   ]
 }

@@ -38,7 +38,7 @@
   "data": {
     "dataset": "ManySig",
     "version": "existing source contract",
-    "representation": "raw/post_sync/noeq IQ2x256; original time/frequency/PA/reference/NoExplicitCFO internal compensation; only t2 independent local signature/moment/covariance composite enters actual joint160",
+    "representation": "raw/post_sync/noeq IQ2x256; unchanged native time/frequency/PA/reference/NoExplicitCFO; one6D t2 path,4windows,commonmean6/variance6 plus covariance15 versus skewarea15, same27to28lift, joint160",
     "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
     "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
@@ -214,7 +214,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/moment-area-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -252,11 +252,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "source_only": true,
           "description": "All3 finalLCE<=.5, real joint160 W-independent export, actual new parameter updates and AREA vs COV sourceL720 difference>=1e-6; predefined02/03 only from source verdict"
         },
@@ -349,7 +349,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -387,7 +387,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -555,7 +555,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/moment-area-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -593,11 +593,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "source_only": true,
           "description": "All3 finalLCE<=.5, real joint160 W-independent export, actual new parameter updates and AREA vs COV sourceL720 difference>=1e-6; predefined02/03 only from source verdict"
         },
@@ -765,7 +765,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/moment-area-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -803,11 +803,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "source_only": true,
           "description": "All3 finalLCE<=.5, real joint160 W-independent export, actual new parameter updates and AREA vs COV sourceL720 difference>=1e-6; predefined02/03 only from source verdict"
         },
@@ -975,7 +975,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/moment-area-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1013,11 +1013,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "source_only": true,
           "description": "All3 finalLCE<=.5, real joint160 W-independent export, actual new parameter updates and AREA vs COV sourceL720 difference>=1e-6; predefined02/03 only from source verdict"
         },
@@ -1185,7 +1185,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/moment-area-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1223,11 +1223,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "source_only": true,
           "description": "All3 finalLCE<=.5, real joint160 W-independent export, actual new parameter updates and AREA vs COV sourceL720 difference>=1e-6; predefined02/03 only from source verdict"
         },
@@ -1320,7 +1320,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -1358,7 +1358,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -1526,7 +1526,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/moment-area-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1564,11 +1564,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "source_only": true,
           "description": "All3 finalLCE<=.5, real joint160 W-independent export, actual new parameter updates and AREA vs COV sourceL720 difference>=1e-6; predefined02/03 only from source verdict"
         },
@@ -1736,7 +1736,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/moment-area-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1774,11 +1774,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "source_only": true,
           "description": "All3 finalLCE<=.5, real joint160 W-independent export, actual new parameter updates and AREA vs COV sourceL720 difference>=1e-6; predefined02/03 only from source verdict"
         },
@@ -1946,7 +1946,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/moment-area-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1984,11 +1984,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "source_only": true,
           "description": "All3 finalLCE<=.5, real joint160 W-independent export, actual new parameter updates and AREA vs COV sourceL720 difference>=1e-6; predefined02/03 only from source verdict"
         },
@@ -2090,7 +2090,9 @@
     "Existing default cosine6x160 scale30 jointly trained; all native fitted RX/day/channel probes disabled.",
     "Other active branch de7f179f3 uses receiver-tangent route; this route is distinct.",
     "Previous SIG_TIME composition remaining six healthy runs continue immutable; no cancellation or selective restart.",
-    "Conditional preparation only. Source gate reads first source_qualification/source_features/completion/experiment metadata, never target analysis or metrics. Existing firstseed remains immutable."
+    "Conditional preparation only. Source gate reads first source_qualification/source_features/completion/experiment metadata, never target analysis or metrics. Existing firstseed remains immutable.",
+    "Representation text corrected after complete evidence to single-projection moment/area; original copied description retained. Fixed row configs and immutable remote execution unchanged."
   ],
-  "registered_at": "2026-10-14T04:32:18+00:00"
+  "registered_at": "2026-10-14T04:32:18+00:00",
+  "historical_representation_text": "raw/post_sync/noeq IQ2x256; original time/frequency/PA/reference/NoExplicitCFO internal compensation; only t2 independent local signature/moment/covariance composite enters actual joint160"
 }

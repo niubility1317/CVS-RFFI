@@ -25,3 +25,6 @@ Stop：本run自身角色/来源/非有限数/预算/default head/export/物理I
 
 
 发布 VERIFIED：执行提交 8bd34db31787cd80c4ad53ee7327ff6a55daee72，dispatcher PID 2116969；六个新进程 CWD/argv/GPU/resolved config 核实，首轮日志均增长 5171 至 5175 字节，epoch=1，failure=null。一个 archive local/remote SHA 比较及 remote compile 通过，旧 seed02 真实 checkpoint no-query smoke PASS，无训练继承/另训头。详见 launch_evidence.json。
+
+
+已完成完整三seed ANALYZED：SIG_TIME82.7931%、COV_SHAPE82.6188%、AREA_SHAPE82.0833%；AREA−COV −0.5355pp（1/3正），AREA−SIG −0.7097pp（1/3正），goal84=false，gap1.9167pp。9新模型/3历史、99900steps/2016000pred/216metrics独立复算VERIFIED。全部完整指标/源曲线/错误配对/参数和fθ边界证据见 final_analysis.md/results.json/source_features.json/results.png，负结果保留，不改另一个健康取点run。
