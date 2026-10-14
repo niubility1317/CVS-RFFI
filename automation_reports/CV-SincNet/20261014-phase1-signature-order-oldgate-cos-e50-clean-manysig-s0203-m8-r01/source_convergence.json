@@ -1,0 +1,257 @@
+{
+  "status": "VERIFIED",
+  "scope": "Complete saved training telemetry; no new data/model forward or optimizer update; not a model-selection rule",
+  "run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+  "epochs": [
+    41,
+    50
+  ],
+  "per_model": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "final_L_CE": 0.2884262464940548,
+      "E31_40_L_CE_mean": 0.2853302926529903,
+      "E41_50_L_CE_mean": 0.26697138284442123,
+      "E41_50_L_CE_min": 0.24120630508473329,
+      "E41_50_L_CE_max": 0.30662964099833556,
+      "E41_50_L_CE_slope_per_epoch": 0.00001781721368794169,
+      "E41_50_V_accuracy_mean": 97.8422222222222,
+      "E41_50_V_accuracy_slope_pp_per_epoch": 0.014904601571267611,
+      "final_V_accuracy": 97.88518518518518,
+      "stop_or_model_selection_changed": false
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "seed": 2026092701,
+      "final_L_CE": 0.2471538574040473,
+      "E31_40_L_CE_mean": 0.24362699595523307,
+      "E41_50_L_CE_mean": 0.23063202130499186,
+      "E41_50_L_CE_min": 0.20820346555194338,
+      "E41_50_L_CE_max": 0.2668503932319246,
+      "E41_50_L_CE_slope_per_epoch": -0.0005268649930612934,
+      "E41_50_V_accuracy_mean": 98.14592592592592,
+      "E41_50_V_accuracy_slope_pp_per_epoch": 0.002693602693602598,
+      "final_V_accuracy": 98.15185185185184,
+      "stop_or_model_selection_changed": false
+    },
+    {
+      "row_id": "SIG_RAW_ORDER-s2026092701",
+      "arm": "SIG_RAW_ORDER",
+      "seed": 2026092701,
+      "final_L_CE": 0.2484736009626775,
+      "E31_40_L_CE_mean": 0.244542558289863,
+      "E41_50_L_CE_mean": 0.23140164419404557,
+      "E41_50_L_CE_min": 0.20903324188144357,
+      "E41_50_L_CE_max": 0.26784044527658474,
+      "E41_50_L_CE_slope_per_epoch": -0.0004575880307937132,
+      "E41_50_V_accuracy_mean": 98.14370370370371,
+      "E41_50_V_accuracy_slope_pp_per_epoch": 0.0043097643097639495,
+      "final_V_accuracy": 98.15185185185184,
+      "stop_or_model_selection_changed": false
+    },
+    {
+      "row_id": "SIG_DYNAMIC_ORDER-s2026092701",
+      "arm": "SIG_DYNAMIC_ORDER",
+      "seed": 2026092701,
+      "final_L_CE": 0.24892498952177194,
+      "E31_40_L_CE_mean": 0.24473213958176404,
+      "E41_50_L_CE_mean": 0.2316952406856659,
+      "E41_50_L_CE_min": 0.2094279438391462,
+      "E41_50_L_CE_max": 0.26792641893566194,
+      "E41_50_L_CE_slope_per_epoch": -0.0005005519646961061,
+      "E41_50_V_accuracy_mean": 98.11444444444444,
+      "E41_50_V_accuracy_slope_pp_per_epoch": 0.0046015712682388405,
+      "final_V_accuracy": 98.11481481481482,
+      "stop_or_model_selection_changed": false
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092702,
+      "final_L_CE": 0.2791937226177873,
+      "E31_40_L_CE_mean": 0.2877091054779452,
+      "E41_50_L_CE_mean": 0.28477468660420124,
+      "E41_50_L_CE_min": 0.26965633283058804,
+      "E41_50_L_CE_max": 0.3157738415977439,
+      "E41_50_L_CE_slope_per_epoch": 0.0008755739114175803,
+      "E41_50_V_accuracy_mean": 97.79888888888888,
+      "E41_50_V_accuracy_slope_pp_per_epoch": 0.005499438832772581,
+      "final_V_accuracy": 97.82222222222222,
+      "stop_or_model_selection_changed": false
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "seed": 2026092702,
+      "final_L_CE": 0.2396338777700523,
+      "E31_40_L_CE_mean": 0.24255953309302392,
+      "E41_50_L_CE_mean": 0.24471786685690686,
+      "E41_50_L_CE_min": 0.22973252792616147,
+      "E41_50_L_CE_max": 0.27060810302023414,
+      "E41_50_L_CE_slope_per_epoch": 0.0005217069166542354,
+      "E41_50_V_accuracy_mean": 98.34555555555555,
+      "E41_50_V_accuracy_slope_pp_per_epoch": 0.003389450056117095,
+      "final_V_accuracy": 98.35555555555555,
+      "stop_or_model_selection_changed": false
+    },
+    {
+      "row_id": "SIG_RAW_ORDER-s2026092702",
+      "arm": "SIG_RAW_ORDER",
+      "seed": 2026092702,
+      "final_L_CE": 0.23975927104149852,
+      "E31_40_L_CE_mean": 0.24250376561136394,
+      "E41_50_L_CE_mean": 0.24467633430351005,
+      "E41_50_L_CE_min": 0.22925809562743246,
+      "E41_50_L_CE_max": 0.270883039747541,
+      "E41_50_L_CE_slope_per_epoch": 0.0005096345094426427,
+      "E41_50_V_accuracy_mean": 98.33000000000001,
+      "E41_50_V_accuracy_slope_pp_per_epoch": 0.0032098765432107086,
+      "final_V_accuracy": 98.34814814814816,
+      "stop_or_model_selection_changed": false
+    },
+    {
+      "row_id": "SIG_DYNAMIC_ORDER-s2026092702",
+      "arm": "SIG_DYNAMIC_ORDER",
+      "seed": 2026092702,
+      "final_L_CE": 0.24029084231268177,
+      "E31_40_L_CE_mean": 0.24300450968245668,
+      "E41_50_L_CE_mean": 0.24517003581397706,
+      "E41_50_L_CE_min": 0.23005629995384733,
+      "E41_50_L_CE_max": 0.27141582714142026,
+      "E41_50_L_CE_slope_per_epoch": 0.0005768272752176702,
+      "E41_50_V_accuracy_mean": 98.32777777777778,
+      "E41_50_V_accuracy_slope_pp_per_epoch": 0.0032547699214367665,
+      "final_V_accuracy": 98.34074074074074,
+      "stop_or_model_selection_changed": false
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092703,
+      "final_L_CE": 0.2704701284366148,
+      "E31_40_L_CE_mean": 0.28992731073149686,
+      "E41_50_L_CE_mean": 0.27237187357501946,
+      "E41_50_L_CE_min": 0.2456644562383493,
+      "E41_50_L_CE_max": 0.30898675987043894,
+      "E41_50_L_CE_slope_per_epoch": -0.0037228618196506417,
+      "E41_50_V_accuracy_mean": 98.00370370370372,
+      "E41_50_V_accuracy_slope_pp_per_epoch": -0.002424242424242028,
+      "final_V_accuracy": 98.02222222222223,
+      "stop_or_model_selection_changed": false
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "seed": 2026092703,
+      "final_L_CE": 0.22637590712255184,
+      "E31_40_L_CE_mean": 0.25032579314198583,
+      "E41_50_L_CE_mean": 0.23500438281209082,
+      "E41_50_L_CE_min": 0.21547475765954266,
+      "E41_50_L_CE_max": 0.266683532176791,
+      "E41_50_L_CE_slope_per_epoch": -0.003271591050106421,
+      "E41_50_V_accuracy_mean": 98.24592592592593,
+      "E41_50_V_accuracy_slope_pp_per_epoch": -0.005925925925924785,
+      "final_V_accuracy": 98.23703703703704,
+      "stop_or_model_selection_changed": false
+    },
+    {
+      "row_id": "SIG_RAW_ORDER-s2026092703",
+      "arm": "SIG_RAW_ORDER",
+      "seed": 2026092703,
+      "final_L_CE": 0.22754907044204506,
+      "E31_40_L_CE_mean": 0.25143494954718665,
+      "E41_50_L_CE_mean": 0.23622938423409118,
+      "E41_50_L_CE_min": 0.21722716223951932,
+      "E41_50_L_CE_max": 0.2674542501703039,
+      "E41_50_L_CE_slope_per_epoch": -0.003280427367707403,
+      "E41_50_V_accuracy_mean": 98.28222222222222,
+      "E41_50_V_accuracy_slope_pp_per_epoch": -0.005342312008978965,
+      "final_V_accuracy": 98.25925925925925,
+      "stop_or_model_selection_changed": false
+    },
+    {
+      "row_id": "SIG_DYNAMIC_ORDER-s2026092703",
+      "arm": "SIG_DYNAMIC_ORDER",
+      "seed": 2026092703,
+      "final_L_CE": 0.2274949354295795,
+      "E31_40_L_CE_mean": 0.2512464864464762,
+      "E41_50_L_CE_mean": 0.23631214334016987,
+      "E41_50_L_CE_min": 0.21686645795230394,
+      "E41_50_L_CE_max": 0.26763648331702294,
+      "E41_50_L_CE_slope_per_epoch": -0.0033203021377333198,
+      "E41_50_V_accuracy_mean": 98.26592592592593,
+      "E41_50_V_accuracy_slope_pp_per_epoch": -0.0065095398428725,
+      "final_V_accuracy": 98.24074074074075,
+      "stop_or_model_selection_changed": false
+    }
+  ],
+  "late_source_relation_totals": [
+    {
+      "arm": "SIG_TIME",
+      "seeds": 3,
+      "SIG_RAW": {
+        "relations": 2970000,
+        "unsatisfied": 937935,
+        "wrong_order": 528994,
+        "mean_hinge": 0.047142281863048224,
+        "active_packet_occurrences": 148407,
+        "packet_occurrences": 148500
+      },
+      "SIG_DYNAMIC": {
+        "relations": 2970000,
+        "unsatisfied": 863983,
+        "wrong_order": 526016,
+        "mean_hinge": 0.04998148495274961,
+        "active_packet_occurrences": 148266,
+        "packet_occurrences": 148500
+      }
+    },
+    {
+      "arm": "SIG_RAW_ORDER",
+      "seeds": 3,
+      "SIG_RAW": {
+        "relations": 2970000,
+        "unsatisfied": 849367,
+        "wrong_order": 455635,
+        "mean_hinge": 0.03968287550364479,
+        "active_packet_occurrences": 148247,
+        "packet_occurrences": 148500
+      },
+      "SIG_DYNAMIC": {
+        "relations": 2970000,
+        "unsatisfied": 774903,
+        "wrong_order": 452157,
+        "mean_hinge": 0.041847526957139815,
+        "active_packet_occurrences": 147958,
+        "packet_occurrences": 148500
+      }
+    },
+    {
+      "arm": "SIG_DYNAMIC_ORDER",
+      "seeds": 3,
+      "SIG_RAW": {
+        "relations": 2970000,
+        "unsatisfied": 835016,
+        "wrong_order": 445537,
+        "mean_hinge": 0.03863601865641999,
+        "active_packet_occurrences": 148191,
+        "packet_occurrences": 148500
+      },
+      "SIG_DYNAMIC": {
+        "relations": 2970000,
+        "unsatisfied": 759164,
+        "wrong_order": 440167,
+        "mean_hinge": 0.040457870115836465,
+        "active_packet_occurrences": 147878,
+        "packet_occurrences": 148500
+      }
+    }
+  ],
+  "head_fit_updates": 0,
+  "source_gradient_updates": 0,
+  "target_feedback": false,
+  "interpretation": "Final10sourceCE fluctuates, sourceVchanges small and seeddependent. Fixed50 is budget, not proven convergence. More satisfied source relations do not establish DG."
+}
