@@ -1,0 +1,774 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+  "execution_commit": "977d4fb609436bac23621ef8e32c2017495acef7",
+  "source_decision_commit": "a283291279cb01b939325cf5ccba1d0a671b28c4",
+  "source_decision_before_own_new_numeric_target": true,
+  "metrics_recomputed": 72,
+  "default_decisions": 672000,
+  "epochs_represented": 200,
+  "new_training_updates": 33300,
+  "risk_steps_replayed": 33300,
+  "gradient_layer_records": 624,
+  "saved_gradient_vectors": 1872,
+  "rows": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 135523,
+      "accuracy": 0.8066845238095238,
+      "macro_f1": 0.8017335328586674
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 19929,
+      "accuracy": 0.830375,
+      "macro_f1": 0.8172884729892399
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 16948,
+      "accuracy": 0.7061666666666667,
+      "macro_f1": 0.6853753367654388
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 20878,
+      "accuracy": 0.8699166666666667,
+      "macro_f1": 0.8672982470863246
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 17410,
+      "accuracy": 0.7254166666666667,
+      "macro_f1": 0.7264113050957538
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 20955,
+      "accuracy": 0.873125,
+      "macro_f1": 0.8618630030139972
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 18994,
+      "accuracy": 0.7914166666666667,
+      "macro_f1": 0.773705120944035
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 20409,
+      "accuracy": 0.850375,
+      "macro_f1": 0.838859708437757
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27366,
+      "accuracy": 0.9773571428571428,
+      "macro_f1": 0.16475815482426037
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 13628,
+      "accuracy": 0.4867142857142857,
+      "macro_f1": 0.10912526824893502
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 22373,
+      "accuracy": 0.7990357142857143,
+      "macro_f1": 0.14804888862419682
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 17687,
+      "accuracy": 0.6316785714285714,
+      "macro_f1": 0.12904473190769075
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27949,
+      "accuracy": 0.9981785714285715,
+      "macro_f1": 0.16651474259295668
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 26520,
+      "accuracy": 0.9471428571428572,
+      "macro_f1": 0.16214233308877476
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 33281,
+      "accuracy": 0.792404761904762,
+      "macro_f1": 0.785626106680838
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 35071,
+      "accuracy": 0.8350238095238095,
+      "macro_f1": 0.8315746782363199
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 31690,
+      "accuracy": 0.7545238095238095,
+      "macro_f1": 0.7475948582531378
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 35481,
+      "accuracy": 0.8447857142857143,
+      "macro_f1": 0.8401276562648019
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 140545,
+      "accuracy": 0.836577380952381,
+      "macro_f1": 0.8322973280043113
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 19080,
+      "accuracy": 0.795,
+      "macro_f1": 0.7717443240909375
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 17102,
+      "accuracy": 0.7125833333333333,
+      "macro_f1": 0.698026621978835
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 21143,
+      "accuracy": 0.8809583333333333,
+      "macro_f1": 0.8788342405029975
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 19456,
+      "accuracy": 0.8106666666666666,
+      "macro_f1": 0.8092921172441306
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 21948,
+      "accuracy": 0.9145,
+      "macro_f1": 0.9122093876190576
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 20302,
+      "accuracy": 0.8459166666666667,
+      "macro_f1": 0.8355851904724676
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 21514,
+      "accuracy": 0.8964166666666666,
+      "macro_f1": 0.8932149176267695
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27463,
+      "accuracy": 0.9808214285714286,
+      "macro_f1": 0.16505297826178414
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 15491,
+      "accuracy": 0.55325,
+      "macro_f1": 0.11872954557647943
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 22679,
+      "accuracy": 0.8099642857142857,
+      "macro_f1": 0.1491676368252465
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 19743,
+      "accuracy": 0.7051071428571428,
+      "macro_f1": 0.13784219676182896
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27886,
+      "accuracy": 0.9959285714285714,
+      "macro_f1": 0.1663266888546923
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 27283,
+      "accuracy": 0.9743928571428572,
+      "macro_f1": 0.16450506183335442
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 33237,
+      "accuracy": 0.7913571428571429,
+      "macro_f1": 0.781183619831939
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 36163,
+      "accuracy": 0.8610238095238095,
+      "macro_f1": 0.8577470702783886
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 34121,
+      "accuracy": 0.8124047619047619,
+      "macro_f1": 0.808453899660516
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 37024,
+      "accuracy": 0.8815238095238095,
+      "macro_f1": 0.8785043686659829
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 140427,
+      "accuracy": 0.835875,
+      "macro_f1": 0.8314548922200372
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 19206,
+      "accuracy": 0.80025,
+      "macro_f1": 0.7786596471534941
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 16866,
+      "accuracy": 0.70275,
+      "macro_f1": 0.6886709728428023
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 21193,
+      "accuracy": 0.8830416666666666,
+      "macro_f1": 0.8811430804772956
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 19456,
+      "accuracy": 0.8106666666666666,
+      "macro_f1": 0.8090728317522137
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 22075,
+      "accuracy": 0.9197916666666667,
+      "macro_f1": 0.9178486604825822
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 20204,
+      "accuracy": 0.8418333333333333,
+      "macro_f1": 0.8314826277720666
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 21427,
+      "accuracy": 0.8927916666666667,
+      "macro_f1": 0.8892129070461335
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27459,
+      "accuracy": 0.9806785714285714,
+      "macro_f1": 0.16504084098162605
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 15314,
+      "accuracy": 0.5469285714285714,
+      "macro_f1": 0.11785258038201658
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 22711,
+      "accuracy": 0.8111071428571428,
+      "macro_f1": 0.14928385031518474
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 19771,
+      "accuracy": 0.7061071428571428,
+      "macro_f1": 0.13795677991529032
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27926,
+      "accuracy": 0.9973571428571428,
+      "macro_f1": 0.16644613715743423
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 27246,
+      "accuracy": 0.9730714285714286,
+      "macro_f1": 0.16439199218042935
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 33143,
+      "accuracy": 0.7891190476190476,
+      "macro_f1": 0.778717867250119
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 36237,
+      "accuracy": 0.8627857142857143,
+      "macro_f1": 0.8592602783727262
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 34038,
+      "accuracy": 0.8104285714285714,
+      "macro_f1": 0.8066403068161193
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 37009,
+      "accuracy": 0.8811666666666667,
+      "macro_f1": 0.8778837718692937
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 138743,
+      "accuracy": 0.8258511904761905,
+      "macro_f1": 0.8207780954907108
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 19555,
+      "accuracy": 0.8147916666666667,
+      "macro_f1": 0.7936627434601001
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 15893,
+      "accuracy": 0.6622083333333333,
+      "macro_f1": 0.6527289718592842
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 20994,
+      "accuracy": 0.87475,
+      "macro_f1": 0.8720122372590557
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 19070,
+      "accuracy": 0.7945833333333333,
+      "macro_f1": 0.7936556449211168
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 21695,
+      "accuracy": 0.9039583333333333,
+      "macro_f1": 0.900077533267352
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 20202,
+      "accuracy": 0.84175,
+      "macro_f1": 0.8340012669845583
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 21334,
+      "accuracy": 0.8889166666666667,
+      "macro_f1": 0.8835241779168453
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27304,
+      "accuracy": 0.9751428571428571,
+      "macro_f1": 0.1645691691981291
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 13469,
+      "accuracy": 0.4810357142857143,
+      "macro_f1": 0.10826561206362985
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 23177,
+      "accuracy": 0.82775,
+      "macro_f1": 0.1509597410294989
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 19975,
+      "accuracy": 0.7133928571428572,
+      "macro_f1": 0.138787562966823
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27934,
+      "accuracy": 0.9976428571428572,
+      "macro_f1": 0.16647000631696882
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 26884,
+      "accuracy": 0.9601428571428572,
+      "macro_f1": 0.1632777008478488
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 32448,
+      "accuracy": 0.7725714285714286,
+      "macro_f1": 0.7580815907090558
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 35692,
+      "accuracy": 0.8498095238095238,
+      "macro_f1": 0.8470454413060895
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 33598,
+      "accuracy": 0.799952380952381,
+      "macro_f1": 0.7936558067593537
+    },
+    {
+      "row_id": "RX_DRO-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 37005,
+      "accuracy": 0.8810714285714286,
+      "macro_f1": 0.8785713131468436
+    }
+  ],
+  "error_transitions": [
+    {
+      "arm": "RX_DRO",
+      "control": "RX_BALANCED",
+      "seed": 2026092701,
+      "corrected_errors": 2404,
+      "introduced_errors": 4088,
+      "both_correct": 136339,
+      "both_wrong": 25169,
+      "count": 168000,
+      "net_correct": -1684
+    },
+    {
+      "arm": "RX_DRO",
+      "control": "SIG_TIME",
+      "seed": 2026092701,
+      "corrected_errors": 2471,
+      "introduced_errors": 4273,
+      "both_correct": 136272,
+      "both_wrong": 24984,
+      "count": 168000,
+      "net_correct": -1802
+    },
+    {
+      "arm": "RX_BALANCED",
+      "control": "SIG_TIME",
+      "seed": 2026092701,
+      "corrected_errors": 899,
+      "introduced_errors": 1017,
+      "both_correct": 139528,
+      "both_wrong": 26556,
+      "count": 168000,
+      "net_correct": -118
+    },
+    {
+      "arm": "RX_DRO",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 10061,
+      "introduced_errors": 6841,
+      "both_correct": 128682,
+      "both_wrong": 22416,
+      "count": 168000,
+      "net_correct": 3220
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 10375,
+      "introduced_errors": 5353,
+      "both_correct": 130170,
+      "both_wrong": 22102,
+      "count": 168000,
+      "net_correct": 5022
+    }
+  ],
+  "source_trends": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "first5_L_CE": 0.714216242717193,
+      "previous5_L_CE": 0.2682841490316498,
+      "last5_L_CE": 0.26565861665719265,
+      "last5_V_accuracy": 97.88888888888889,
+      "last_V_accuracy": 97.88518518518518,
+      "U_packets": 963900,
+      "U_accepted": 15214,
+      "U_accepted_pct": 1.5783794999481273,
+      "total_training_s": 2334.8399138450623
+    },
+    {
+      "arm": "SIG_TIME",
+      "first5_L_CE": 0.6062987820924939,
+      "previous5_L_CE": 0.2338930266129004,
+      "last5_L_CE": 0.22845839254625208,
+      "last5_V_accuracy": 98.13851851851851,
+      "last_V_accuracy": 98.12962962962963,
+      "U_packets": 963900,
+      "U_accepted": 15432,
+      "U_accepted_pct": 1.6009959539371306,
+      "total_training_s": 2329.8614201545715
+    },
+    {
+      "arm": "RX_BALANCED",
+      "first5_L_CE": 0.6078486054196014,
+      "previous5_L_CE": 0.23418055786877065,
+      "last5_L_CE": 0.2300481685177163,
+      "last5_V_accuracy": 98.15111111111112,
+      "last_V_accuracy": 98.14444444444445,
+      "U_packets": 963900,
+      "U_accepted": 15422,
+      "U_accepted_pct": 1.5999585019192863,
+      "total_training_s": 2014.7640573978424
+    },
+    {
+      "arm": "RX_DRO",
+      "first5_L_CE": 0.6430221355981655,
+      "previous5_L_CE": 0.2598880764868882,
+      "last5_L_CE": 0.25555045524159,
+      "last5_V_accuracy": 98.12148148148148,
+      "last_V_accuracy": 98.12222222222222,
+      "U_packets": 963900,
+      "U_accepted": 15404,
+      "U_accepted_pct": 1.5980910882871666,
+      "total_training_s": 2046.4944465160372
+    }
+  ],
+  "head_fit_updates": 0,
+  "optimizer_updates_by_analysis": 0,
+  "goal84": false
+}

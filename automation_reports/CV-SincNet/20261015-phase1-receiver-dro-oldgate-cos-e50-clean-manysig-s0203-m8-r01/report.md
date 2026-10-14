@@ -18,3 +18,6 @@
 
 
 首种子完整source资格PASS且独立重算一致，已形成source_expansion_decision.json：三臂固定原样扩02/03，发布前提交/推送该决定。当前状态READY_FOR_FIXED_RELEASE，尚未启动本矩阵；决定不参考新目标数值。
+
+
+已发布RUNNING / VERIFIED：实际执行`a283291279cb01b939325cf5ccba1d0a671b28c4`，原源决定`a283291279cb01b939325cf5ccba1d0a671b28c4`在第一新目标读取前已推送验证。一次普通预检、单归档传输SHA比较与远端编译通过；首seed SIG真实CP的2样本synthetic no-query smoke通过，不继承到训练。六原worker PID/CWD/argv/GPU和日志增长核实，当前2至3轮；分别GPU1/2/0与4/5/3，所有GPU容量符合原规则。旧基线行各自完成评估；六新scratch训练按50轮固定继续，逐row自动clean和truth-last评分。剩余新目标准确率未回收，不因首seed目标负结果停止或热改。证据见launch_verified.json。

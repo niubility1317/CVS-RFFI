@@ -1,0 +1,287 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+  "code_commit": "8522fb75680c7b51c7d3d631f67c1b2b212eba8b",
+  "execution_commit": "a283291279cb01b939325cf5ccba1d0a671b28c4",
+  "source_decision_commit": "a283291279cb01b939325cf5ccba1d0a671b28c4",
+  "source_decision_before_first_own_new_numeric_target": true,
+  "ordinary_preflight": "PASS",
+  "single_archive_local_remote_SHA_and_compile": "VERIFIED_BY_ORIGINAL_PUBLISH",
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "unchanged_core_checks": {
+        "status": "PASS",
+        "protocol_and_config_negatives": 9,
+        "exact_original_ERM_graph": true,
+        "known_group_mean_and_multiplicative_update": true,
+        "detached_adversarial_weights": true,
+        "missing_RX_handled": true,
+        "actual_native_hook_executed": true,
+        "original_U_loss_returned_unchanged": true,
+        "native_budgets_verified": true,
+        "three_actual_initial_states_equal": true,
+        "actual_t1_t2_SIG_and_default_W_joint_gradients_nonzero": true,
+        "real_IQ_or_checkpoint_read": false,
+        "head_fit_updates": 0
+      },
+      "negatives": 12,
+      "native_contexts": [
+        {
+          "row_id": "SIG_TIME-s2026092702",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        },
+        {
+          "row_id": "RX_BALANCED-s2026092702",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        },
+        {
+          "row_id": "RX_DRO-s2026092702",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        },
+        {
+          "row_id": "SIG_TIME-s2026092703",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        },
+        {
+          "row_id": "RX_BALANCED-s2026092703",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        },
+        {
+          "row_id": "RX_DRO-s2026092703",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        }
+      ],
+      "real_IQ_checkpoint_or_first_qualification_read": false,
+      "first_seed_retrained": false,
+      "new_scientific_hypothesis": false,
+      "new_models": 6,
+      "historical_baselines_reused": 2,
+      "head_fit_updates": 0
+    },
+    "source_qualification": "PASS",
+    "source_qualification_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+    "real_checkpoint_no_query_smoke": true,
+    "synthetic_IQ_packets": 2,
+    "source_checkpoint": "Predetermined first SIG_TIME final50, same source contract",
+    "training_inherits_checkpoint": false,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0
+  },
+  "submit": {
+    "status": "SUBMITTED",
+    "pid": 2688606
+  },
+  "workers": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "pid": 2688838,
+      "gpu": 1,
+      "cwd": "<release>",
+      "argv": [
+        "python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_dro_seeds.dispatch",
+        "--worker",
+        "SIG_TIME-s2026092702"
+      ],
+      "initial_epochs": 1,
+      "epochs": 3,
+      "log_bytes_before": 11705,
+      "log_bytes_after": 22049,
+      "pid_cwd_argv_gpu_log_growth": "VERIFIED"
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092702",
+      "pid": 2688916,
+      "gpu": 2,
+      "cwd": "<release>",
+      "argv": [
+        "python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_dro_seeds.dispatch",
+        "--worker",
+        "RX_BALANCED-s2026092702"
+      ],
+      "initial_epochs": 1,
+      "epochs": 3,
+      "log_bytes_before": 11736,
+      "log_bytes_after": 22093,
+      "pid_cwd_argv_gpu_log_growth": "VERIFIED"
+    },
+    {
+      "row_id": "RX_DRO-s2026092702",
+      "pid": 2688997,
+      "gpu": 0,
+      "cwd": "<release>",
+      "argv": [
+        "python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_dro_seeds.dispatch",
+        "--worker",
+        "RX_DRO-s2026092702"
+      ],
+      "initial_epochs": 1,
+      "epochs": 3,
+      "log_bytes_before": 11685,
+      "log_bytes_after": 22020,
+      "pid_cwd_argv_gpu_log_growth": "VERIFIED"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "pid": 2689156,
+      "gpu": 4,
+      "cwd": "<release>",
+      "argv": [
+        "python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_dro_seeds.dispatch",
+        "--worker",
+        "SIG_TIME-s2026092703"
+      ],
+      "initial_epochs": 1,
+      "epochs": 3,
+      "log_bytes_before": 11706,
+      "log_bytes_after": 22048,
+      "pid_cwd_argv_gpu_log_growth": "VERIFIED"
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092703",
+      "pid": 2689234,
+      "gpu": 5,
+      "cwd": "<release>",
+      "argv": [
+        "python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_dro_seeds.dispatch",
+        "--worker",
+        "RX_BALANCED-s2026092703"
+      ],
+      "initial_epochs": 1,
+      "epochs": 2,
+      "log_bytes_before": 11736,
+      "log_bytes_after": 16913,
+      "pid_cwd_argv_gpu_log_growth": "VERIFIED"
+    },
+    {
+      "row_id": "RX_DRO-s2026092703",
+      "pid": 2689731,
+      "gpu": 3,
+      "cwd": "<release>",
+      "argv": [
+        "python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_dro_seeds.dispatch",
+        "--worker",
+        "RX_DRO-s2026092703"
+      ],
+      "initial_epochs": 1,
+      "epochs": 2,
+      "log_bytes_before": 11684,
+      "log_bytes_after": 16853,
+      "pid_cwd_argv_gpu_log_growth": "VERIFIED"
+    }
+  ],
+  "capacity": [
+    {
+      "gpu": "0",
+      "total_experiment_processes": 1,
+      "free_mb": 20769
+    },
+    {
+      "gpu": "1",
+      "total_experiment_processes": 1,
+      "free_mb": 20769
+    },
+    {
+      "gpu": "2",
+      "total_experiment_processes": 1,
+      "free_mb": 20769
+    },
+    {
+      "gpu": "3",
+      "total_experiment_processes": 1,
+      "free_mb": 20769
+    },
+    {
+      "gpu": "4",
+      "total_experiment_processes": 1,
+      "free_mb": 20769
+    },
+    {
+      "gpu": "5",
+      "total_experiment_processes": 1,
+      "free_mb": 20769
+    },
+    {
+      "gpu": "6",
+      "total_experiment_processes": 0,
+      "free_mb": 24124
+    },
+    {
+      "gpu": "7",
+      "total_experiment_processes": 0,
+      "free_mb": 24124
+    }
+  ],
+  "failure": null,
+  "new_training_epochs_each": 50,
+  "head_fit_updates": 0,
+  "remaining_target_metrics_read": false
+}

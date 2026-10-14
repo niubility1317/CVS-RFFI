@@ -82269,8 +82269,8 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "首种子sourcePASS决定commit/push并验证后，发布固定原样三臂02/03扩展；每模型50/11100，逐row自动默认头clean预测评分",
-    "源决定冻结后回收首seed完整目标与源曲线；完成已有SSL梯度几何分析报告，不能凭半数冲突认定过强或自动改机制"
+    "完成已冻结的接收机三臂02/03六新模型50轮，逐row自动默认头clean预测/独立truth-last，再与首seed原样合并完整三seed；不因首seed负结果调权、重跑或取消",
+    "依据已保存源机制证据提出下一条独立SSL可证伪假设；全U/置信mask特征回归均无三seed收益，实际F梯度弱且近正交，不能只提高系数、堆机制或用目标成绩选择"
   ],
   "current_priority": {
     "at": "2026-10-15",
@@ -82619,7 +82619,7 @@
       {
         "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
         "package": "experiments/cvs_receiver_dro_seeds",
-        "status": "SOURCE_PASS_READY_FOR_FIXED_RELEASE",
+        "status": "RUNNING_VERIFIED",
         "code_commit": "8522fb75680c7b51c7d3d631f67c1b2b212eba8b",
         "source_qualification_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
         "source_qualification": "PENDING",
@@ -82642,7 +82642,19 @@
         "local_negatives": 12,
         "independent_adapter_P0P1": "PASS",
         "report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md",
-        "source_decision": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/source_expansion_decision.json"
+        "source_decision": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/source_expansion_decision.json",
+        "execution_commit": "a283291279cb01b939325cf5ccba1d0a671b28c4",
+        "source_decision_commit": "a283291279cb01b939325cf5ccba1d0a671b28c4",
+        "actual_new_workers": 6,
+        "epochs_observed": [
+          3,
+          3,
+          3,
+          3,
+          2,
+          2
+        ],
+        "source_decision_before_own_new_target": true
       }
     ],
     "feature_mean_teacher_first_seed": {
@@ -83378,7 +83390,7 @@
       "full_report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
     },
     "receiver_dro_training": {
-      "status": "SOURCE_PASS_TARGET_PENDING",
+      "status": "ANALYZED_VERIFIED_FIRST_SEED",
       "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
       "release": "cvs_receiver_dro50_20261015_r01",
       "code_commit": "341d0dc0bdab44fce88e0af3d8fc29eb50b39912",
@@ -83428,7 +83440,7 @@
         50
       ],
       "source_steps_replayed_per_model": 11100,
-      "new_target_summary_read": false,
+      "new_target_summary_read": true,
       "latest_source_evidence": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/epoch17_source_evidence.json",
       "paired_source_steps_replayed": 11322,
       "candidate_epoch17_actual_body_and_W_signal": "13/13 each; original ERM control delta0 at observed diagnostic epoch",
@@ -83457,7 +83469,43 @@
       "complete_source_qualification": "PASS",
       "source_risk_ratio": 0.8174760405897794,
       "source_expansion_decision": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/source_expansion_decision.json",
-      "remaining_status": "READY_FOR_FIXED_RELEASE"
+      "remaining_status": "RUNNING_VERIFIED",
+      "source_decision_commit": "a283291279cb01b939325cf5ccba1d0a671b28c4",
+      "accuracy_SIG": 0.836577380952381,
+      "accuracy_BALANCED": 0.835875,
+      "accuracy_DRO": 0.8258511904761905,
+      "DRO_minus_SIG_pp": -1.07261904761905,
+      "DRO_minus_BALANCED_pp": -1.0023809523809546,
+      "predictions": 672000,
+      "metric_records": 72,
+      "head_fit_updates": 0,
+      "goal84": false,
+      "remaining_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "remaining_execution": "a283291279cb01b939325cf5ccba1d0a671b28c4",
+      "result_ref": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/final_analysis.md"
+    },
+    "ssl_gradient_geometry": {
+      "status": "ANALYZED_VERIFIED_SOURCE_ONLY",
+      "analysis_code_commit": "d2e88339c7e6261df231a6c6722d78a998f84aac",
+      "models": 12,
+      "studies": 2,
+      "model_seeds_per_study": 3,
+      "paired_batches": 7992,
+      "layer_batch_pairs": 23976,
+      "saved_vectors": 143856,
+      "terminal_mean_F_over_L_range": [
+        0.008702168533513887,
+        0.019338833858454415
+      ],
+      "feature_induced_CE_reversals": 0,
+      "feature_norm_exceeds_CE": 0,
+      "head_fit_updates": 0,
+      "new_forwards": 0,
+      "new_gradient_calls": 0,
+      "new_training": 0,
+      "IQ_or_checkpoint_or_truth_read": false,
+      "interpretation": "Late feature loss gradients small and near orthogonal; negative cosine frequency alone does not establish oversized destructive feature gradient or justify projection/capping scan",
+      "report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/source_gradient_geometry.md"
     }
   }
 }

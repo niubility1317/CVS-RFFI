@@ -207,3 +207,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 
 
 - 2026-10-15：RX风险训练原exec 977d4fb609436bac23621ef8e32c2017495acef7 保持运行，源11322步群权/CE/原生消费重算VERIFIED；两个候选E17实际t1/t2/SIG/W增量各13/13非零，无头拟合/目标摘要。条件02/03适配 20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01，code 8522fb75680c7b51c7d3d631f67c1b2b212eba8b，6new/8row，每新50，12负例/6native真实上下文/唯一新adapter P0P1 PASS，NOT_LAUNCHED，原sourcePASS尚待完整结果。
+
+
+2026-10-15训练机制补充：固定SIG_TIME/defaulthead，首seed接收机风险训练完成，源规则PASS决定先推送再读新目标；目标DRO−SIG−1.072619pp，无性能晋级，固定02/03扩展健康运行。实际33300steps/624层1872向量/672000默认决策独立重算。SSL只读源梯度几何覆盖12旧模型7992批，F弱且近正交，0新增CE方向反转；不据目标负结果扫描梯度投影/裁剪。详见两个现有run的final_analysis.md、source_gradient_geometry.md。
