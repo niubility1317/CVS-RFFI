@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "scope": "One independent direct P0/P1 review of new execution differences only; no core re-review, report-only gate, target reads or remote actions",
+  "reviewer": "/root/signature_fix_p0p1",
+  "reviewed_code_commit": "a722e2593947ca804e2534ac75e4c081029d022c",
+  "findings": [],
+  "checks": {
+    "status": "PASS",
+    "first_fixed_configs_unchanged": true,
+    "rows": 8,
+    "new_models": 6,
+    "real_model_contexts": [
+      {
+        "seed": 2026092702,
+        "arm": "SIG_TIME",
+        "pool": 18976
+      },
+      {
+        "seed": 2026092702,
+        "arm": "SIG_TIME_X3",
+        "pool": 55968
+      },
+      {
+        "seed": 2026092702,
+        "arm": "SIG_TIME_MV_COV",
+        "pool": 55968
+      },
+      {
+        "seed": 2026092703,
+        "arm": "SIG_TIME",
+        "pool": 18976
+      },
+      {
+        "seed": 2026092703,
+        "arm": "SIG_TIME_X3",
+        "pool": 55968
+      },
+      {
+        "seed": 2026092703,
+        "arm": "SIG_TIME_MV_COV",
+        "pool": 55968
+      }
+    ],
+    "same_seed_initial_native_body_head_equal": true,
+    "X3_candidate_initial_parameters_equal": true,
+    "foreign_context_rejected": true,
+    "three_seed_summary": true,
+    "release_dependency_and_compile": true
+  },
+  "source_negative_checks": {
+    "status": "PASS",
+    "negative_source_qualification_rejected": true,
+    "source_gate_does_not_read_target_metrics": true,
+    "all_six_feature_rows_and_two_distinct_seed_pairs": true,
+    "explicit_child_design_in_every_source_build": true,
+    "scope": "Context and source negative tests; actual feature math/native model verified separately."
+  }
+}

@@ -33448,6 +33448,31 @@
         }
       ],
       "native_nuisance_fitted_probes_disabled": true
+    },
+    {
+      "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "status": "REGISTERED_WAITING_FIRST_SEED_SOURCE",
+      "method": "Unchanged SIG_TIME/3SIG_TIME/statistical composition remaining model seeds",
+      "model_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "new_models": 6,
+      "baseline_reuse_models": 2,
+      "epochs_each": 50,
+      "label_epochs": 33,
+      "pseudo_epochs": 17,
+      "new_optimizer_steps": 66600,
+      "head": "Default jointly trained only",
+      "head_fit": false,
+      "native_fitted_probes": "disabled by existing reviewed native scope; actual run pending",
+      "first_source_qualification_required": true,
+      "first_run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "first_seed_retrained": false,
+      "code_commit": "a722e2593947ca804e2534ac75e4c081029d022c",
+      "target_scores_read_for_this_design": false,
+      "target_results": "pending; not launched",
+      "goal_84": false
     }
   ],
   "diagnostics": {
