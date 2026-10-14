@@ -1,0 +1,5 @@
+# 一次独立直接 P0/P1 审查
+
+/root/signature_fix_p0p1只读核心候选。发现独立归档未包含design/model依赖的cvs_trusted_weight50，会使真实preflight导入失败；同次定点修复，cvs_trusted_weight50与cvs_source_layer_order均加入PATHS，REMOTEcompilePASS。其余限定范围未发现直接P0/P1，最终PASS。没有重复完整审查或新增gate。
+
+三arm真实native初态参数/warmup梯度一致，13协议负例、vectorSupCon与源定义等价、aux进t1/t2且无t3/W导数、defaulthead原流程联合update、额外evalmode/CPU RNG/buffer恢复PASS；syntheticIQ-only，无真实source/query或新headfit。真实CPnoquerysmoke仍由不可变remote发布首步完成。

@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "protocol_negative_tests": 13,
+  "models": 3,
+  "actual_initial_parameters_equal": true,
+  "zero_warmup_main_CE_gradients_equal": true,
+  "vectorized_SUPCON_matches_source_reference": true,
+  "actual_native_source_updates": [
+    {
+      "arm": "SIG_TIME",
+      "auxiliary_W_gradient": false,
+      "default_head_joint_update": true
+    },
+    {
+      "arm": "LOCAL_SUPCON",
+      "auxiliary_W_gradient": false,
+      "default_head_joint_update": true
+    },
+    {
+      "arm": "LOCAL_ORDER",
+      "auxiliary_W_gradient": false,
+      "default_head_joint_update": true
+    }
+  ],
+  "auxiliary_modes_RNG_buffers_restored": true,
+  "source_IQ": false,
+  "query_read": false,
+  "no_separate_head_fitting": true,
+  "remote_script_compile": "PASS"
+}
