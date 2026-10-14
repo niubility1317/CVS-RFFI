@@ -23,3 +23,6 @@
 唯一完整P0/P1审查与原两项P1的一次定点确认均 PASS。环境重置后仅恢复未完成的该两项定点确认；未重复全面审查。实际CPU/CUDA RNG与主L/U/eval/teacher绑定合成检查通过，其余新执行路径无直接缺陷。接下来提交代码/config Git HEAD并发布，启动后记录实际GPU/ownedPID/CWD/argv/配置/log-growth，不再增加门槛。
 
 实际发布 VERIFIED，执行代码 eda57144de34d479288f42d14c037eb7802c1ecd，dispatcher PID2051754，三个新模型 GPU4/5/3（SIG_TIME/X3/MV_COV），epoch2/2/2，配置与owned进程/CWD/argv/log-growth独立核实。原生另训probe禁用=true；newpool18976/55968/55968与设计一致。旧baseline行已复用评分，三个新模型固定50，不热改。单archiveSHA与remotecompile、真实同契约CP no-query smoke PASS。新性能结果尚未产生；详见[启动证据](launch_evidence.json)。
+
+
+首种子四行均已评分和独立复算，组合83.1220%未优于单分支83.5756%/X3 83.8333%；完整三种子尚在运行。详见 [完整首种子分析](final_analysis.md)。

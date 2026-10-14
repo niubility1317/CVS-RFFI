@@ -33399,7 +33399,7 @@
     },
     {
       "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s01-m4-r01",
-      "status": "ARTIFACTS_COMPLETE",
+      "status": "ANALYZED",
       "method": "SIG_TIME plus independent mean/variance and covariance views with parameter-matched threeSIG_TIME control",
       "model_seeds": [
         2026092701
@@ -33425,7 +33425,7 @@
         55968
       ],
       "source_scientific_qualification": "all3 new finalLCE<=.5, real feature export/W-independent, added parameter update, candidate-vsX3 sourceL720 difference>=1e-6",
-      "target_results": "first-seed scores complete, values not yet read for expansion",
+      "target_results": "Complete firstseed only",
       "source_parent_commit": "990ffabe0",
       "reported_historical_SIG_TIME_mean": 0.8303928571428572,
       "user_directed_exposed_benchmark_base": true,
@@ -33486,11 +33486,131 @@
         "truth_last": true,
         "goal_84": false
       },
-      "next": "Publish source-qualified unchanged remaining seeds"
+      "next": "Publish source-qualified unchanged remaining seeds",
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 1,
+          "accuracy_mean": 0.8066845238095238,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238
+          },
+          "macro_f1_mean": 0.8017335328586674,
+          "worst_RX_mean": 0.7061666666666667,
+          "worst_day_mean": 0.7545238095238095
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 1,
+          "accuracy_mean": 0.8357559523809523,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8357559523809523
+          },
+          "macro_f1_mean": 0.8315010211911552,
+          "worst_RX_mean": 0.7102916666666667,
+          "worst_day_mean": 0.7892619047619047
+        },
+        {
+          "arm": "SIG_TIME_X3",
+          "seed_count": 1,
+          "accuracy_mean": 0.8383333333333334,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8383333333333334
+          },
+          "macro_f1_mean": 0.833982455583456,
+          "worst_RX_mean": 0.7084583333333333,
+          "worst_day_mean": 0.8101190476190476
+        },
+        {
+          "arm": "SIG_TIME_MV_COV",
+          "seed_count": 1,
+          "accuracy_mean": 0.831220238095238,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.831220238095238
+          },
+          "macro_f1_mean": 0.8266944784379467,
+          "worst_RX_mean": 0.7169583333333334,
+          "worst_day_mean": 0.7988809523809524
+        }
+      ],
+      "paired": [
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.029071428571428526
+          ],
+          "mean_difference": 0.029071428571428526,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_TIME_X3",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.0025773809523810254
+          ],
+          "mean_difference": 0.0025773809523810254,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_TIME_MV_COV",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.00453571428571431
+          ],
+          "mean_difference": -0.00453571428571431,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "SIG_TIME_MV_COV",
+          "control": "SIG_TIME_X3",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.007113095238095335
+          ],
+          "mean_difference": -0.007113095238095335,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "SIG_TIME_MV_COV",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.024535714285714216
+          ],
+          "mean_difference": 0.024535714285714216,
+          "positive_seeds": 1
+        }
+      ],
+      "full_recount": {
+        "new_step_records": 33300,
+        "epoch_records": 200,
+        "predictions": 672000,
+        "metric_records": 72
+      },
+      "goal_84": false,
+      "remaining_seed_run": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01"
     },
     {
       "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-      "status": "READY_TO_LAUNCH",
+      "status": "RUNNING",
       "method": "Unchanged SIG_TIME/3SIG_TIME/statistical composition remaining model seeds",
       "model_seeds": [
         2026092702,
@@ -33510,10 +33630,97 @@
       "first_seed_retrained": false,
       "code_commit": "a722e2593947ca804e2534ac75e4c081029d022c",
       "target_scores_read_for_this_design": false,
-      "target_results": "pending; not launched",
+      "target_results": "pending full remaining seeds",
       "goal_84": false,
       "first_source_qualification": "PASS",
-      "source_expansion_decision_before_target_scores": true
+      "source_expansion_decision_before_target_scores": true,
+      "execution_commit": "85b3294db8416c81545eef1682ccfb576fe19f52",
+      "launch_evidence": {
+        "status": "VERIFIED",
+        "execution_commit": "85b3294db8416c81545eef1682ccfb576fe19f52",
+        "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+        "dispatcher_pid": 2070797,
+        "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_signature_stats_seeds_20261014_r01",
+        "archive_transfer_compare": "PASS from executed publisher single-archive check",
+        "remote_compile": "PASS from executed publisher",
+        "real_checkpoint_no_query_preflight": {
+          "status": "PASS",
+          "real_checkpoint_no_query_smoke": true,
+          "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092702/source/final_ssdg.pth",
+          "source_seed": 2026092702,
+          "query_read": false,
+          "head_fit": false,
+          "training_inherits_checkpoint": false
+        },
+        "source_qualification_PASS_before_target_scores": true,
+        "source_expansion_decision_commit": "85b3294db8416c81545eef1682ccfb576fe19f52",
+        "new_models": [
+          {
+            "row_id": "SIG_TIME-s2026092702",
+            "pid": 2071029,
+            "gpu": 1,
+            "epoch": 19,
+            "log_grew": true,
+            "cwd_matches": true,
+            "command_matches": true,
+            "native_fitted_probes_disabled": true
+          },
+          {
+            "row_id": "SIG_TIME_X3-s2026092702",
+            "pid": 2071107,
+            "gpu": 2,
+            "epoch": 18,
+            "log_grew": true,
+            "cwd_matches": true,
+            "command_matches": true,
+            "native_fitted_probes_disabled": true
+          },
+          {
+            "row_id": "SIG_TIME_MV_COV-s2026092702",
+            "pid": 2071188,
+            "gpu": 0,
+            "epoch": 18,
+            "log_grew": true,
+            "cwd_matches": true,
+            "command_matches": true,
+            "native_fitted_probes_disabled": true
+          },
+          {
+            "row_id": "SIG_TIME-s2026092703",
+            "pid": 2071347,
+            "gpu": 4,
+            "epoch": 18,
+            "log_grew": true,
+            "cwd_matches": true,
+            "command_matches": true,
+            "native_fitted_probes_disabled": true
+          },
+          {
+            "row_id": "SIG_TIME_X3-s2026092703",
+            "pid": 2071425,
+            "gpu": 5,
+            "epoch": 17,
+            "log_grew": true,
+            "cwd_matches": true,
+            "command_matches": true,
+            "native_fitted_probes_disabled": true
+          },
+          {
+            "row_id": "SIG_TIME_MV_COV-s2026092703",
+            "pid": 2071584,
+            "gpu": 3,
+            "epoch": 18,
+            "log_grew": true,
+            "cwd_matches": true,
+            "command_matches": true,
+            "native_fitted_probes_disabled": true
+          }
+        ],
+        "reused_baselines": 2,
+        "maximum_all_owner_processes_per_GPU": 3,
+        "root_completion": null,
+        "run_failure": null
+      }
     }
   ],
   "diagnostics": {

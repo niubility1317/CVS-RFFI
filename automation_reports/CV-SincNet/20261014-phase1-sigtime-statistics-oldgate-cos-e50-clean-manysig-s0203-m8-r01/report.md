@@ -22,3 +22,6 @@ Stop：运行自身的角色/来源/非有限数/预算/默认头/导出/物理 
 
 
 首 seed 源条件 PASS：LCE 0.248702/0.227253/0.233990，固定 L720 组合 vs X3 L2=2.240102；实际新增参数数值更新及 W 独立导出通过。首 seed 四行全部独立评分完毕；此扩种子决定未读取其新目标分数。详见 source_expansion_decision.json。
+
+
+实际发布代码 85b3294db8416c81545eef1682ccfb576fe19f52，dispatcher PID2070797。六个新 worker 的 PID/CWD/命令/GPU/日志增长及关闭 fitted probes 状态均 VERIFIED；单归档传输核对、remote compile 和 seed02 真实 checkpoint no-query smoke PASS。当前均健康运行，两个历史 baseline 已复用并评分。详见 launch_evidence.json。
