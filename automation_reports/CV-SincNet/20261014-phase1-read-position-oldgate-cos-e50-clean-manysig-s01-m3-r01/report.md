@@ -19,3 +19,5 @@ Stop：本run角色/来源/预算/非有限/defaulthead/export/物理ID/predicti
 预期release preflight/submit；run launch/queue/每行initial-final-frozen/resolved/args/roles/50epoch/11100step/source_feature_witness/default prediction/complete/scores/metrics/completion/source_features/source_qualification/analysis。数据、weights、rawlogs及大型prediction留远端，聚合/实现/config/报告Git上传并核remoteOID。只测clean旧6TX，不声称新TX/Phase2/卫星部署。当前已登记实现，尚未发布。
 
 实际发布 VERIFIED：执行 b4d55dba50c8601017604a2a0eb0d037f8d835e8，dispatcher PID 2132655。两新worker PID/CWD/argv/GPU核实，实际resolved读t2/t2.pool且native fits关闭，epoch2日志分别增长10341/10356bytes。真实旧CP no-query smoke、一个archive比较及remotecompile PASS，failure=null；目标结果尚无，详见 launch_evidence.json。
+
+登记文字纠正：复制模板中的4row/3new成本与多描述子representation改为实际3row/2new、100model-epochs/22200新增更新、504000决策/54指标；原文字在 historical_registration_text 保留。实际row configs、3行代码与健康远端release一直为正确3/2预算，未热改/重跑/改变实验。

@@ -195,3 +195,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 路线三已实际发布 20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01：两新scratch50/11100，SIG_TIME post 与 SIG_TIME_PRE pre，只改descriptor hook t2→t2.pool，主干Dropout.1/公式/18976pool参数/default联合头保持。执行 b4d55dba50c8601017604a2a0eb0d037f8d835e8；固定源诊断依据 20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01，不使用目标误差调参。两个resolved实际取点正确且native fitted probes关闭，默认clean/truthlast自动串联，当前source训练中，无性能结论。
+
+
+取点02/03条件式扩展已实现登记 20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01，4新scratch50+2历史对照；首seed源资格未完成时不发布，不读取其目标分数控制扩展。实际4模型上下文/同初态/初始eval同/源资格负例/两种子配对及108/162指标汇总检查通过，复用该候选已有唯一核心审查。

@@ -36,7 +36,7 @@
   "data": {
     "dataset": "ManySig",
     "version": "existing source contract",
-    "representation": "raw/post_sync/noeq IQ2x256; original time/frequency/PA/reference/NoExplicitCFO internal compensation; only t2 independent local signature/moment/covariance composite enters actual joint160",
+    "representation": "raw/post_sync/noeq IQ2x256; original time/frequency/PA/reference/NoExplicitCFO internal compensation; same single SIG_TIME pool on t2 versus t2.pool enters joint160",
     "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
     "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
@@ -121,7 +121,7 @@
     "failure.json only if failed"
   ],
   "metrics_plan": {
-    "primary": "Complete corresponding predefined3seed clean mean>=84% ultimate goal; current single-seed4row cannot satisfy goal",
+    "primary": "Complete predefined3seed SIG_TIME_PRE clean mean>=84% ultimate goal; current3row single-seed is not goal completion",
     "secondary": [
       "SIG_TIME_PRE vs matchedpost SIG_TIME accuracy/CM/MacroF1/worstRX/day",
       "Primary vs historicaloldgate; all seed results retained",
@@ -129,11 +129,11 @@
       "Complete50source curves/U acceptance/modeltime/positive-negative results"
     ],
     "source_only_selection": "All fixedfinal50; no V microgain chasing or target selection; remaining02/03 only unchanged recipe from fixedsource criteria",
-    "test": "clean168000 perrow, 4rows672000 decisions/72metric records; predictions fixed then independent truthlast",
+    "test": "clean168000 perrow, 3rows504000 decisions/54metric records; fixed prediction then independent truthlast",
     "readouts": [
       "ORIGINAL_HEAD"
     ],
-    "new_training_cost": "3x50=150 model-epochs/33300 optimizer updates; one historical50 baseline reused separately; no classifier-only training"
+    "new_training_cost": "2x50=100 model-epochs/22200 optimizer updates; one historical50 baseline reused separately; no classifier-only training"
   },
   "rows": [
     {
@@ -209,7 +209,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/read-position-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -247,11 +247,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "source_only": true,
           "description": "Both2 finalLCE<=.5; actual newfeature updates/exact export/W independence, same initial full parameters and initial evalfunction; PRE-POST finalL720L2>=1e-6. Only unchanged predefined02/03 from source PASS."
         },
@@ -344,7 +344,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -382,7 +382,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -541,7 +541,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/read-position-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -579,11 +579,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "source_only": true,
           "description": "Both2 finalLCE<=.5; actual newfeature updates/exact export/W independence, same initial full parameters and initial evalfunction; PRE-POST finalL720L2>=1e-6. Only unchanged predefined02/03 from source PASS."
         },
@@ -742,7 +742,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/read-position-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -780,11 +780,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "source_only": true,
           "description": "Both2 finalLCE<=.5; actual newfeature updates/exact export/W independence, same initial full parameters and initial evalfunction; PRE-POST finalL720L2>=1e-6. Only unchanged predefined02/03 from source PASS."
         },
@@ -876,7 +876,14 @@
     "Only sequence descriptor read-position t2 versus t2.pool; native mainbody Dropout.1 remains. SameSIG_TIME28/4windows/single6Dprojection/output160/gain18976parameters.",
     "No COV/AREA/hierarchy/U weighting/PAIR/Sinc/SiLU stacked. Existing healthy moment/area remaining6 runs immutable.",
     "Default cosine6x160scale30 jointly trained; native fitted probes disabled. Both new models scratch50/11100, matchedinitial fullweights and initialevalfunction.",
-    "Fixed firstseed sourcePASS only permits unchanged predefined02/03; source V healthonly/final50, no target feedback or selective rerun."
+    "Fixed firstseed sourcePASS only permits unchanged predefined02/03; source V healthonly/final50, no target feedback or selective rerun.",
+    "20261014 documentation correction: copied4row/3new textual cost and representation corrected to actual3row/2new SIG_TIME pre/post design. Original text retained in historical_registration_text; all row configs and immutable remote release unchanged."
   ],
-  "registered_at": "2026-10-14T05:11:16+00:00"
+  "registered_at": "2026-10-14T05:11:16+00:00",
+  "historical_registration_text": {
+    "primary": "Complete corresponding predefined3seed clean mean>=84% ultimate goal; current single-seed4row cannot satisfy goal",
+    "test": "clean168000 perrow, 4rows672000 decisions/72metric records; predictions fixed then independent truthlast",
+    "new_training_cost": "3x50=150 model-epochs/33300 optimizer updates; one historical50 baseline reused separately; no classifier-only training",
+    "representation": "raw/post_sync/noeq IQ2x256; original time/frequency/PA/reference/NoExplicitCFO internal compensation; only t2 independent local signature/moment/covariance composite enters actual joint160"
+  }
 }

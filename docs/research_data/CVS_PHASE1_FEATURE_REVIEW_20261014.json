@@ -34162,6 +34162,27 @@
       "report": "automation_reports/CV-SincNet/20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md",
       "target_results": "not available; both source models healthy",
       "goal84": false
+    },
+    {
+      "run_id": "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "status": "REGISTERED",
+      "method": "Unchanged report route3 conditional02/03 expansion",
+      "model_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "new_models": 4,
+      "baseline_reuse_models": 2,
+      "epochs_each": 50,
+      "new_optimizer_steps": 44400,
+      "source_qualification_run": "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "first_seed_retrained": false,
+      "code_commit": "ea3228433751d21751cf0f275326dceb71b3c7d5",
+      "core_candidate_review_reused": true,
+      "first_fixed_configs_unchanged": true,
+      "source_pass_required_before_launch": true,
+      "target_result": "Not launched; no first read-position target metrics read for expansion",
+      "goal84": false
     }
   ],
   "diagnostics": {
