@@ -9109,11 +9109,16 @@ def train(args) -> int:
                 loss_tx_l = core_losses["loss_cls"]
                 source_labeled_feature_hook = getattr(model, "_source_labeled_feature_hook", None)
                 if source_labeled_feature_hook is not None:
-                    source_labeled_feature_loss, labeled_feature_metrics = source_labeled_feature_hook(
+                    source_labeled_kwargs = dict(
                         model=model, labeled_output=out_l,
                         labels=y_l[:labeled_clean_count], extra=extra_l,
                         domains=d_l, optimizer_step=r3_optimizer_steps + 1,
                         identity_loss=loss_tx_l, labeled_count=labeled_clean_count,
+                    )
+                    if getattr(source_labeled_feature_hook, "_accepts_labeled_inputs", False):
+                        source_labeled_kwargs["labeled_inputs"] = x_l[:labeled_clean_count]
+                    source_labeled_feature_loss, labeled_feature_metrics = source_labeled_feature_hook(
+                        **source_labeled_kwargs
                     )
                 loss_dom_l = core_losses["loss_dom"]
                 loss_adv_l = core_losses["loss_adv"]
@@ -11492,13 +11497,23 @@ def train(args) -> int:
                 feature_auxiliary_metrics.update(labeled_feature_metrics)
             source_step_probe = getattr(model, "_source_optimizer_update_probe_hook", None)
             if source_step_probe is not None:
-                source_step_probe(
+                source_probe_result = source_step_probe(
                     model=model, optimizer=optimizer, epoch=epoch,
                     batch_idx=batch_idx, phase=phase,
                     optimizer_step=r3_optimizer_steps + 1, total_loss=loss,
                     unlabeled_loss=float(args.lambda_u) * loss_u + float(args.lambda_ent) * loss_ent,
                     labeled_count=labeled_clean_count, unlabeled_count=pseudo_total,
                 )
+                if isinstance(source_probe_result, dict) and "post_core_auxiliary_loss" in source_probe_result:
+                    post_core_auxiliary_loss = source_probe_result["post_core_auxiliary_loss"]
+                    if (not torch.is_tensor(post_core_auxiliary_loss)
+                            or post_core_auxiliary_loss.ndim != 0
+                            or not post_core_auxiliary_loss.is_floating_point()
+                            or post_core_auxiliary_loss.device != loss.device):
+                        raise ValueError("Post-core source auxiliary must be a floating scalar on loss device")
+                    loss = loss + post_core_auxiliary_loss
+                    scaled_closed_loss = scaled_closed_loss + post_core_auxiliary_loss
+                    feature_auxiliary_metrics.update(source_probe_result.get("post_core_auxiliary_metrics", {}))
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
