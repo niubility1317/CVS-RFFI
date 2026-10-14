@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "Active user goal: report-grounded innovative feature training, defaulthead only, fixed source permission and scratch20/E20+20 budget.",
   "code": {
-    "commit": "release_commit.txt (actual Git HEAD at publication)",
+    "commit": "6b4f3fde6ed607b95f0502e81dd71c8e74ff5bbb",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account/CVS-RFFI Python/CPU2threads/GPU0/five namespaceoverlay on immutable ownE20runtime",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_transport_sourceL_20261015_r01"
@@ -181,5 +181,136 @@
     "Rawcosmargin reported but not usedas correspondenceproxy becausepublicRX offset allowed; thisisnew method-specific prereg, not revivalofclosedRX_M_FILTER.",
     "Historicalpositive routes retained separately, goal84active."
   ],
-  "registered_at": "2026-10-14T22:37:39+00:00"
+  "registered_at": "2026-10-14T22:37:39+00:00",
+  "result": {
+    "status": "SOURCE_SCREEN_NOT_PASSED",
+    "gate_result": {
+      "passed": false,
+      "stage_signal": null,
+      "qualified_ordinals_by_state": {
+        "INITIAL": [],
+        "FINAL20": []
+      },
+      "cell_conditions": [
+        {
+          "state": "INITIAL",
+          "ordinal": 0,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:ACTUAL_CE_harm",
+            "ZERO:PRE_W_CE_harm",
+            "SAME_BI:ACTUAL_CE_harm",
+            "SAME_BI:PRE_W_CE_harm",
+            "CROSS_ROW:held_correct_matching_mass_gain",
+            "CROSS_ROW:matching_error_harm"
+          ]
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 17,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:matching_error_harm",
+            "ZERO:ACTUAL_CE_harm",
+            "ZERO:PRE_W_CE_harm",
+            "SAME_BI:matching_error_harm",
+            "SAME_BI:ACTUAL_CE_harm",
+            "SAME_BI:PRE_W_CE_harm",
+            "CROSS_ROW:held_correct_matching_mass_gain",
+            "CROSS_ROW:matching_error_harm",
+            "CROSS_ROW:ACTUAL_CE_harm",
+            "CROSS_ROW:PRE_W_CE_harm"
+          ]
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 35,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:ACTUAL_CE_harm",
+            "ZERO:PRE_W_CE_harm",
+            "SAME_BI:ACTUAL_CE_harm",
+            "SAME_BI:PRE_W_CE_harm"
+          ]
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 52,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:ACTUAL_CE_harm",
+            "ZERO:PRE_W_CE_harm",
+            "SAME_BI:ACTUAL_CE_harm",
+            "SAME_BI:PRE_W_CE_harm",
+            "CROSS_ROW:matching_error_harm",
+            "CROSS_ROW:ACTUAL_CE_harm",
+            "CROSS_ROW:PRE_W_CE_harm"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 0,
+          "qualified": false,
+          "failed_conditions": [
+            "SAME_BI:held_correct_matching_mass_gain",
+            "SAME_BI:ACTUAL_CE_harm",
+            "SAME_BI:PRE_W_CE_harm",
+            "CROSS_ROW:held_correct_matching_mass_gain",
+            "CROSS_ROW:ACTUAL_CE_harm",
+            "CROSS_ROW:PRE_W_CE_harm"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 17,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:held_correct_matching_mass_gain",
+            "SAME_BI:held_correct_matching_mass_gain",
+            "CROSS_ROW:held_correct_matching_mass_gain",
+            "CROSS_ROW:ACTUAL_CE_harm",
+            "CROSS_ROW:PRE_W_CE_harm"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 35,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:held_correct_matching_mass_gain",
+            "SAME_BI:held_correct_matching_mass_gain",
+            "CROSS_ROW:held_correct_matching_mass_gain",
+            "CROSS_ROW:ACTUAL_CE_harm",
+            "CROSS_ROW:PRE_W_CE_harm"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 52,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:held_correct_matching_mass_gain",
+            "SAME_BI:held_correct_matching_mass_gain",
+            "SAME_BI:ACTUAL_CE_harm",
+            "SAME_BI:PRE_W_CE_harm",
+            "CROSS_ROW:held_correct_matching_mass_gain",
+            "CROSS_ROW:ACTUAL_CE_harm",
+            "CROSS_ROW:PRE_W_CE_harm"
+          ]
+        }
+      ],
+      "controls_not_fallback": true,
+      "interpretation": "True-label source identity correspondence signal at specified stage; not unseenRX/DG/novelty proof"
+    },
+    "decision": "CLOSE_FIXED_BILATERAL_MATCHING",
+    "exploratory_ROW_positive_preserved": true,
+    "exploratory_ROW_not_primary_substitution": true,
+    "next_confirmation_launched": false,
+    "real_training_launched": false,
+    "actual_optimizer_updates": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "evidence_ref": "result_evidence.json",
+    "goal84_completed": false
+  }
 }
