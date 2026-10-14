@@ -1,0 +1,89 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "840be47b7d6b43dbb00ac2cf3864a4025fd41ca8",
+  "archive_transport_once": "PASS",
+  "remote_compile": "PASS",
+  "real_checkpoint_noquery": true,
+  "read_at": 1791945121.1295583,
+  "dispatcher_pid": 2040593,
+  "workers": [
+    {
+      "row_id": "ZERO-s2026092701",
+      "pid": 2040767,
+      "gpu": 1,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_tangent50_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_identity_tangent50.dispatch",
+        "--worker",
+        "ZERO-s2026092701"
+      ],
+      "epoch": 2,
+      "log_bytes": 16804,
+      "identity_verified": true
+    },
+    {
+      "row_id": "RAW_MATCHED-s2026092701",
+      "pid": 2040909,
+      "gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_tangent50_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_identity_tangent50.dispatch",
+        "--worker",
+        "RAW_MATCHED-s2026092701"
+      ],
+      "epoch": 2,
+      "log_bytes": 16889,
+      "identity_verified": true
+    },
+    {
+      "row_id": "IDSAFE-s2026092701",
+      "pid": 2040990,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_tangent50_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_identity_tangent50.dispatch",
+        "--worker",
+        "IDSAFE-s2026092701"
+      ],
+      "epoch": 1,
+      "log_bytes": 11665,
+      "identity_verified": true
+    }
+  ],
+  "queue": {
+    "active": [
+      "ZERO-s2026092701",
+      "RAW_MATCHED-s2026092701",
+      "IDSAFE-s2026092701"
+    ],
+    "pending": [],
+    "completed": [
+      "BASE_REF-s2026092701"
+    ],
+    "failures": [],
+    "source_screen_not_passed": null,
+    "max_total_processes_per_GPU": 3,
+    "updated_at": 1791945120.0015094
+  },
+  "all_GPU_total_process_counts": {
+    "0": 1,
+    "1": 1,
+    "2": 1,
+    "3": 0,
+    "4": 0,
+    "5": 0,
+    "6": 0,
+    "7": 0
+  },
+  "target_scores_read_for_training": false,
+  "source_auxiliary_still_in_warmup": true
+}

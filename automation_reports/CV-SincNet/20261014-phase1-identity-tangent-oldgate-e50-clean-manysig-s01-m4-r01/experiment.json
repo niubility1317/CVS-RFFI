@@ -1063,12 +1063,14 @@
     "Source health decision before target metric reads permits a separately registered unchanged seed02/03 confirmation; target score cannot alter epsilon/layer/projection/cap or this decision.",
     "REJECTED_EXTRA_GATE: generic brainstorming design-approval/spec-approval stages are NONBLOCKING under user exclusive eight-step CVS workflow; one minimal report plus existing authorization is sufficient."
   ],
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING",
   "local_verification": "Math negatives and real native CPU/CUDA wiring PASS; real checkpoint no-query smoke occurs once in remote launcher first step",
   "independent_review": {
     "status": "PASS",
     "scope": "One independent P0/P1 review of candidate code and native main-loss hook; no blockers",
     "reviewer": "review_identity_tangent"
   },
-  "registered_at": "2026-10-14T02:26:09+00:00"
+  "registered_at": "2026-10-14T02:26:09+00:00",
+  "actual_execution_commit": "840be47b7d6b43dbb00ac2cf3864a4025fd41ca8",
+  "launch_evidence_ref": "launch_evidence.json"
 }

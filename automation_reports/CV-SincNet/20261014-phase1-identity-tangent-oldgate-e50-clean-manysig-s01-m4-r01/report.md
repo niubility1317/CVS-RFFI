@@ -3,7 +3,7 @@
 - run_id：`20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s01-m4-r01`
 - group_id：`phase1-identity-protected-receiver-tangent`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前状态：LOCAL_VERIFIED。数学负例和真实原生 CPU/CUDA 接线通过；唯一独立 P0/P1 审查 PASS。尚无训练或识别结果。
+- 当前状态：RUNNING / VERIFIED。数学负例和真实原生 CPU/CUDA 接线通过；唯一独立 P0/P1 审查 PASS。训练已启动，完整识别结果尚未返回。
 
 ## 目的与对照
 
@@ -71,3 +71,9 @@ Git 工作树：E:/type10-7/code/worktrees/report_physical_ssl_delivery_20261011
 ## 交接
 
 记录已完成、当前run/commit、证据路径、阻塞与下一步；恢复先查原run，不重复启动。
+
+
+2026-10-14 发布状态：RUNNING / VERIFIED。实际执行 840be47b7d6b43dbb00ac2cf3864a4025fd41ca8；commit/push 与独立 remote OID 一致，归档传输一次比较、remote compile、真实同契约 checkpoint 无 query smoke PASS。3 新训练 owned PID/CWD/argv/GPU、日志增长已核实，首轮读回在第1至2轮。历史 BASE_REF 原预测/评分已复用；辅助机制前5轮按计划关闭，尚无三种子或新识别结论。详见 launch_evidence.json。
+
+
+实际源机制启用已核实：ZERO/RAW_MATCHED/IDSAFE分别第7/7/6轮，辅助记录111/111/56条；前5轮按计划0调用。当前末条IDSAFE来自t2、step1332，身份均值秩5，保留原方向70.9385%能量、投影重合约6.97e-28，真实辅助/主LCE特征梯度比0.04（ramp阶段）；RAW匹配后的方向能量一致，ZERO的R和R梯度均为0。采样/正负干预实际在源L运行，无头拟合和目标反馈。此处是单seed局部源阶段证据，未完成33+17、默认预测或泛化结果，不能解释为已达84%。详见source_running_evidence.json。

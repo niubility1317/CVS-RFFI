@@ -1,0 +1,215 @@
+{
+  "status": "VERIFIED_SOURCE_RUNNING",
+  "execution_commit": "840be47b7d6b43dbb00ac2cf3864a4025fd41ca8",
+  "workers": [
+    {
+      "row_id": "BASE_REF-s2026092701",
+      "pid": 2040735,
+      "gpu": 0,
+      "live": false,
+      "process_verified": false,
+      "epochs": 50,
+      "log_size": 70,
+      "log_tail": "PREDICTIONS_COMPLETE BASE_REF-s2026092701\nSCORED BASE_REF-s2026092701\n",
+      "source_status": "SOURCE_TRAINED",
+      "prediction_fixed": true,
+      "scored": true
+    },
+    {
+      "row_id": "ZERO-s2026092701",
+      "pid": 2040767,
+      "gpu": 1,
+      "live": true,
+      "process_verified": true,
+      "epochs": 7,
+      "log_size": 42629,
+      "log_tail": "runs/20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s01-m4-r01/ZERO-s2026092701/source/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s01-m4-r01/ZERO-s2026092701/source/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E007/050\n====================================================================================================================================\n",
+      "source_status": null,
+      "prediction_fixed": false,
+      "scored": false
+    },
+    {
+      "row_id": "RAW_MATCHED-s2026092701",
+      "pid": 2040909,
+      "gpu": 2,
+      "live": true,
+      "process_verified": true,
+      "epochs": 7,
+      "log_size": 42786,
+      "log_tail": "phase1-identity-tangent-oldgate-e50-clean-manysig-s01-m4-r01/RAW_MATCHED-s2026092701/source/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s01-m4-r01/RAW_MATCHED-s2026092701/source/final_ssdg.pth (written after training; telemetry_best=0)\n[EPOCH-END] E007/050\n====================================================================================================================================\n",
+      "source_status": null,
+      "prediction_fixed": false,
+      "scored": false
+    },
+    {
+      "row_id": "IDSAFE-s2026092701",
+      "pid": 2040990,
+      "gpu": 0,
+      "live": true,
+      "process_verified": true,
+      "epochs": 6,
+      "log_size": 37507,
+      "log_tail": "/20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s01-m4-r01/IDSAFE-s2026092701/source/NOT_SAVED_FINAL_ONLY (recovery) | final_only -> /home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s01-m4-r01/IDSAFE-s2026092701/source/final_ssdg.pth (written after training; telemetry_best=1)\n[EPOCH-END] E006/050\n====================================================================================================================================\n",
+      "source_status": null,
+      "prediction_fixed": false,
+      "scored": false
+    }
+  ],
+  "source_tangent_observation": [
+    {
+      "row_id": "ZERO-s2026092701",
+      "execution": {
+        "auxiliary_calls": 111,
+        "extra_L_forward_packets": 19980,
+        "teacher_intervention": false,
+        "U_intervention": false,
+        "head_fit_updates": 0,
+        "source_only": true
+      },
+      "tangent_records": 111,
+      "last_tangent": {
+        "step": 1552,
+        "call": 111,
+        "day": 3,
+        "layer": "t1",
+        "detail": {
+          "identity_rank": 5,
+          "raw_energy": 312.8379401602217,
+          "safe_retained_energy_fraction": 0.5633300200547459,
+          "matched_energy": 144.7865543417299,
+          "safe_energy": 144.78655434172992,
+          "identity_overlap_RAW": 54.673048631504656,
+          "identity_overlap_IDSAFE": 1.1089319194420459e-27,
+          "maximum_coordinate": 0.0,
+          "direction_requires_grad": false,
+          "role": "L_s",
+          "class_centers_used_for_prediction": false,
+          "layer": "t1",
+          "mode": "ZERO",
+          "epsilon": 0.1,
+          "raw_flatness": 0.0,
+          "forward_packets": 180,
+          "forward_calls": 3,
+          "teacher_calls": 0,
+          "U_calls": 0,
+          "head_fit_updates": 0
+        },
+        "budget": {
+          "CE_feature_gradient_norm": 1.1347907539403965,
+          "raw_feature_gradient_norm": 0.0,
+          "detached_coefficient": 0.0,
+          "actual_norm_ratio": 0.0,
+          "maximum_ratio": 0.2,
+          "class_W_in_budget": false
+        },
+        "weighted_loss": 0.0,
+        "U_truth_read": false,
+        "main_CE_unchanged": true
+      }
+    },
+    {
+      "row_id": "RAW_MATCHED-s2026092701",
+      "execution": {
+        "auxiliary_calls": 111,
+        "extra_L_forward_packets": 19980,
+        "teacher_intervention": false,
+        "U_intervention": false,
+        "head_fit_updates": 0,
+        "source_only": true
+      },
+      "tangent_records": 111,
+      "last_tangent": {
+        "step": 1552,
+        "call": 111,
+        "day": 3,
+        "layer": "t1",
+        "detail": {
+          "identity_rank": 5,
+          "raw_energy": 311.74360656562646,
+          "safe_retained_energy_fraction": 0.5678985189734652,
+          "matched_energy": 140.3844945929904,
+          "safe_energy": 140.3844945929904,
+          "identity_overlap_RAW": 52.051445939026856,
+          "identity_overlap_IDSAFE": 8.995606742010315e-28,
+          "maximum_coordinate": 1.0,
+          "direction_requires_grad": false,
+          "role": "L_s",
+          "class_centers_used_for_prediction": false,
+          "layer": "t1",
+          "mode": "RAW_MATCHED",
+          "epsilon": 0.1,
+          "raw_flatness": 0.03177151829004288,
+          "forward_packets": 180,
+          "forward_calls": 3,
+          "teacher_calls": 0,
+          "U_calls": 0,
+          "head_fit_updates": 0
+        },
+        "budget": {
+          "CE_feature_gradient_norm": 1.1336860652810006,
+          "raw_feature_gradient_norm": 0.28792600861753465,
+          "detached_coefficient": 0.31357483173073747,
+          "actual_norm_ratio": 0.07963963963929278,
+          "maximum_ratio": 0.2,
+          "class_W_in_budget": false
+        },
+        "weighted_loss": 0.009962747804820538,
+        "U_truth_read": false,
+        "main_CE_unchanged": true
+      }
+    },
+    {
+      "row_id": "IDSAFE-s2026092701",
+      "execution": {
+        "auxiliary_calls": 56,
+        "extra_L_forward_packets": 10080,
+        "teacher_intervention": false,
+        "U_intervention": false,
+        "head_fit_updates": 0,
+        "source_only": true
+      },
+      "tangent_records": 56,
+      "last_tangent": {
+        "step": 1332,
+        "call": 56,
+        "day": 2,
+        "layer": "t2",
+        "detail": {
+          "identity_rank": 5,
+          "raw_energy": 524.1007800571535,
+          "safe_retained_energy_fraction": 0.7093849823901932,
+          "matched_energy": 266.95517679217386,
+          "safe_energy": 266.9551767921738,
+          "identity_overlap_RAW": 66.37749042691235,
+          "identity_overlap_IDSAFE": 6.971309238117898e-28,
+          "maximum_coordinate": 0.9921558975759281,
+          "direction_requires_grad": false,
+          "role": "L_s",
+          "class_centers_used_for_prediction": false,
+          "layer": "t2",
+          "mode": "IDSAFE",
+          "epsilon": 0.1,
+          "raw_flatness": 0.030425408855080605,
+          "forward_packets": 180,
+          "forward_calls": 3,
+          "teacher_calls": 0,
+          "U_calls": 0,
+          "head_fit_updates": 0
+        },
+        "budget": {
+          "CE_feature_gradient_norm": 2.07300472773353,
+          "raw_feature_gradient_norm": 0.3037571106104035,
+          "detached_coefficient": 0.2729818865554756,
+          "actual_norm_ratio": 0.039999999999849024,
+          "maximum_ratio": 0.2,
+          "class_W_in_budget": false
+        },
+        "weighted_loss": 0.008305585011839867,
+        "U_truth_read": false,
+        "main_CE_unchanged": true
+      }
+    }
+  ],
+  "target_scores_used": false,
+  "scope": "Partial source stage, not performance or three-model-seed evidence"
+}
