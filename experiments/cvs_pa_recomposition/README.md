@@ -1,6 +1,6 @@
 # PA 身份证据跨 RX 重组：数学与真实模型原型
 
-当前状态是已验证原型，尚未发布训练实验，也没有泛化性能结论。用户最新 c718649d 报告要求先验证等 U 时序，再主攻同身份证据重组。等 U 时序 R02 已保持原计划独立运行；本原型没有叠加时序、Sinc、关系蒸馏或新伪标签规则。
+数学原型和实际训练闭环已实现并完成本地验证，尚未发布 PA 训练实验，也没有泛化性能结论。用户最新 c718649d 报告要求先验证等 U 时序，再主攻同身份证据重组。等 U 时序 R02 已保持原计划独立运行，首次当前教师/真实 AdamW 测量已完成；本机制独立保留原 tail33+17，不叠加时序、Sinc、关系蒸馏或新伪标签规则。
 
 研究问题是：CVS 实际 PA 增量能否被训练成同一身份在不同接收条件下可重组的判别证据？特征插值已有 [Manifold Mixup（ICML 2019）](https://proceedings.mlr.press/v97/verma19a.html)；[MixStyle（ICLR 2021）](https://openreview.net/pdf?id=6xHJ37MVxxp)研究实例级特征统计混合。这里待检验的贡献在于 CVS 可分离 PA 增量、同身份跨 RX 配对和原默认头的学习信号，不能把混合特征本身当成新发明。
 
@@ -35,4 +35,6 @@ ZERO 同成本计算诊断，但辅助训练梯度精确为0；SAME_RX 与 CROSS
 
 数学检查入口为 `python -m experiments.cvs_pa_recomposition.checks --compact`。原型接口返回 compact JSON 计数、CE/true-margin/probability/替换范数，以及仅供即时检查的配对与图张量；训练时不得跨步保留计算图。
 
-下一步按相同默认头与预算，独立比较原训练、同 RX、跨 RX；先仅把本机制用于 L，保持原 U 训练方式。必须报告真实 L cohort 覆盖、分支梯度/参数更新、源健康、固定种子 clean 结果与负例，再判断可交换性。若跨 RX 明显损害身份而同 RX 没有，应接受反证；不增加 α 强行制造收益。原已接受 U+合法 L donor 的扩展、语义间隔、分支更新约束都尚未实施。
+已实现默认头与预算匹配的 ZERO/SAME_RX/CROSS_RX 实际训练入口，只把新机制用于已有 L128 前向，保持原 U 和教师方式。5 轮 warmup 后每4步调用，共2498次；4次实际特征梯度和当前 AdamW 双临时分支更新测量，真实仍一步。native 主 L CE 保留独立，辅助单独加总；EMA 在训练回调安装前 deepcopy。三个模型的191初始state/CPU随机状态、native安装入口一致；真实native L/coreloss→callback→probe→backward→clip→AdamW接线PASS，ZERO梯度与更新差为0，active实际aux/L梯度比约.1168、actual-shadow误差0。这些是合成源形状接线，不是正式训练或性能证据。
+
+正式 run 为 `20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01`，9new scratch50、先首seed3源健康后6pending；完整源学习信号、实际覆盖和性能验证待执行。必须报告真实 L cohort 覆盖、分支梯度/参数更新、源健康、固定种子 clean 结果与负例，再判断可交换性。若跨 RX 明显损害身份而同 RX 没有，应接受反证；不增加 α 强行制造收益。原已接受 U+合法 L donor 的扩展、语义间隔、分支更新约束都尚未实施。

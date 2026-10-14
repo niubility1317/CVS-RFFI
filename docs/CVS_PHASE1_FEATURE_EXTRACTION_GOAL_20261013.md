@@ -91,3 +91,6 @@ PA证据重组原型已实现并验证，见 experiments/cvs_pa_recomposition/RE
 
 
 结构×关系12row已完整ANALYZED/VERIFIED：COMPACT_ZERO81.4137%、COMPACT_RESP80.6952%、LONG_ZERO81.4754%、LONG_RESP81.0359%。关系在COMPACT内−.7185pp/0正，在LONG内−.4395pp/1正；交互＋.2790pp只表示损害较小，不支持关系收益。600ep/133200更新/2016000决定/216CM、全量source日志和48梯度/48实际更新、0非有限/0Utruth/0headfit已核实，进程自然退出。旧COMPACT/LONG/Sinc正结果独立保留，不将结构组合高于旧模型当作机制成功。已固定的等U时序和PA真实身份重组继续，84%仍active。详见[结构交互完整报告](../automation_reports/CV-SincNet/20261014-phase1-relation-temporal-factorial-oldgate-e50-clean-manysig-m12-r01/report.md)。
+
+
+PA重组已接入真实native已有L128前向，主LCE独立不变，EMA在boundcallbacks前copy，原U/teacher/oldgate/cos/tail33+17保持。ZERO/SAME/CROSS同cohort端点曝光，α=.2/λ=.1先于新target固定、5epochwarmup/every4共2498calls、0额外IQforward/0新param。三组191states/CPUrng/nativeinstall/EMA deepcopy/真实coreloss→callback→probe→backward→clip→AdamW接线PASS，ZEROauxgradient/update差0，activeaux/Lnorm约.1168且actual-shadowerror0。唯一P0/P1 review PASS，新run 20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01 已预登记但尚未发布；等U源阶段校验后执行，不从calendar/旧交互target选参数或parent。默认头与自动cleantruthlast闭环已实现，实际三seed性能/真实cohort/参数更新仍待训练，84%active。

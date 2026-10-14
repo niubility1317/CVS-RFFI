@@ -8995,6 +8995,8 @@ def train(args) -> int:
             r3_x_l = x_l
             r3_l_logs, r3_u_logs = {}, {}
             source_unlabeled_feature_loss = None
+            source_labeled_feature_loss = None
+            labeled_feature_metrics = {}
             ecrs_cross_rx_logs = {}
             ecrs_cross_rx_valid_anchors = 0
             if muse_state is not None:
@@ -9105,6 +9107,14 @@ def train(args) -> int:
                     group_ce_mode=str(args.group_ce_mode),
                 )
                 loss_tx_l = core_losses["loss_cls"]
+                source_labeled_feature_hook = getattr(model, "_source_labeled_feature_hook", None)
+                if source_labeled_feature_hook is not None:
+                    source_labeled_feature_loss, labeled_feature_metrics = source_labeled_feature_hook(
+                        model=model, labeled_output=out_l,
+                        labels=y_l[:labeled_clean_count], extra=extra_l,
+                        domains=d_l, optimizer_step=r3_optimizer_steps + 1,
+                        identity_loss=loss_tx_l, labeled_count=labeled_clean_count,
+                    )
                 loss_dom_l = core_losses["loss_dom"]
                 loss_adv_l = core_losses["loss_adv"]
                 loss_adv_discriminator_l = loss_adv_l * 0.0
@@ -11476,6 +11486,10 @@ def train(args) -> int:
             if source_unlabeled_feature_loss is not None:
                 loss = loss + source_unlabeled_feature_loss
                 scaled_closed_loss = scaled_closed_loss + source_unlabeled_feature_loss
+            if source_labeled_feature_loss is not None:
+                loss = loss + source_labeled_feature_loss
+                scaled_closed_loss = scaled_closed_loss + source_labeled_feature_loss
+                feature_auxiliary_metrics.update(labeled_feature_metrics)
             source_step_probe = getattr(model, "_source_optimizer_update_probe_hook", None)
             if source_step_probe is not None:
                 source_step_probe(

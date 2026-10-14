@@ -1,0 +1,144 @@
+{
+  "schema": "source_PA_recomposition50_v1",
+  "run_id": "20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01",
+  "stage": "repair",
+  "arm": "ZERO",
+  "model_seed": 2026092703,
+  "row_id": "ZERO-s2026092703",
+  "features": [
+    "ema",
+    "pseudo",
+    "twostage"
+  ],
+  "variant": "reference_response",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01/ZERO-s2026092703/source",
+  "epochs": 50,
+  "steps_per_epoch": 222,
+  "model_initialization": "scratch",
+  "checkpoint_sources": [],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "method": "cvs_legacy_no_sat",
+  "target_access": false,
+  "pseudo_domain_gate": false,
+  "temporal_mode": "batch_neighbor",
+  "temporal_min_streak": 2,
+  "lr_schedule": "cosine",
+  "lr_min": 1e-06,
+  "launch_owner": "codex/root/PA-recomposition-20261014",
+  "label_epochs": 33,
+  "pseudo_epochs": 17,
+  "updates": 11100,
+  "legacy_reference_config": {
+    "schema": "legacy_no_sat_v1",
+    "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+    "stage": "repair",
+    "arm": "legacy_cosine_no_sat",
+    "model_seed": 2026092703,
+    "row_id": "legacy_cosine_no_sat-s2026092703",
+    "features": [
+      "ema",
+      "pseudo",
+      "twostage"
+    ],
+    "variant": "reference_response",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+    "epochs": 200,
+    "steps_per_epoch": 222,
+    "model_initialization": "scratch",
+    "checkpoint_sources": [],
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "method": "cvs_legacy_no_sat",
+    "target_access": false,
+    "pseudo_domain_gate": false,
+    "temporal_mode": "batch_neighbor",
+    "temporal_min_streak": 2,
+    "lr_schedule": "cosine",
+    "lr_min": 1e-06
+  },
+  "source_falsification": {
+    "final_L_CE_max": 0.5,
+    "V_mean_drop_max": 0.01,
+    "V_worst_RX_drop_max": 0.02,
+    "aux_gradient_ratio_min": 1e-05,
+    "mean_common_cohort_coverage_min": 0.25
+  },
+  "training_recipe": "historical batch_neighbor pseudo gate+EMA+cos; no satellite; allarms identical",
+  "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+  "explicit_CFO_identity_feature": false,
+  "feature_extractor": {
+    "structural_changes": false,
+    "extra_parameters": 0,
+    "output_embedding": 160,
+    "classifier_changed": false,
+    "training_mechanism": "L_s PA additive increment recomposition, actual joint160; detached currentdefaultW and auxgains only"
+  },
+  "classifier": "unchanged baseline ResidualPhysicalHead/6x160 cosine/scale30/branchLN/gain; no newhead/readout/calibration",
+  "test_views": [
+    "clean"
+  ],
+  "checkpoint_selection": "final_only",
+  "goal": {
+    "primary": "CROSS_RX",
+    "clean_three_seed_mean": 0.84,
+    "feedback_to_training": false
+  },
+  "budget_authorization": "User c718649d report explicitlyrequests sameTX/day crossRXPAincrement CE with detacheddefaultW/gains and sameRX/originalcontrols. Fixedprototype alpha.2/coefficient.1 established beforeUcalendar target; new mechanism independent originaltail33+17 baseline, no timing/R/E/Sinc/temporal stacking.",
+  "cost_claim": "9new scratch50/99900updates; first3seed01 sourcehealth then6pendingrows. ExistingLforward only,2498lowcost recompositioncalls/model,0extraIQforwards/0additionalparameters/0extraactualupdates; fourgradient/currentAdamW/updateprobes",
+  "baseline_reference": null,
+  "baseline_reuse": false,
+  "recomposition": {
+    "mode": "ZERO",
+    "alpha": 0.2,
+    "coefficient": 0.1,
+    "warmup_steps": 1110,
+    "frequency": 4,
+    "auxiliary_calls": 2498,
+    "role": "L_s",
+    "old_L_CE_unchanged": true,
+    "U_training_unchanged": true,
+    "teacher_training_unchanged": true,
+    "aux_head_and_gain_detach": true,
+    "internal_feature_gradients": true,
+    "cosine_eps": 0.0001,
+    "cosine_scale": 30.0,
+    "aux_label_smoothing": 0.0,
+    "sampling": "ExistingL128batch only; eachTX/day balancedqualifiedRXcells>=2 distinctphysicalpackets/cell and>=2cells, privateCPUgenerator; SAMEwithinRXcycle/CROSSbetweenRXcycle; everycohortpacket1anchor+1donor inbothconditions",
+    "sampling_seed_formula": "model_seed+91273+optimizer_step*701",
+    "no_extra_model_forward": true,
+    "extra_L_forward_packets": 0,
+    "extra_U_forward_packets": 0,
+    "extra_actual_optimizer_steps": 0,
+    "gradient_and_update_probe_steps": [
+      1112,
+      3556,
+      7328,
+      10880
+    ],
+    "bank": false,
+    "loss_basis": "GroundtruthLidentity, not teachergeometry; do not treat differentpackets as samewaveform hardwarecounterfactual"
+  },
+  "source_neighbor_sampling": {
+    "mode": "PAIRS",
+    "original_gates": true
+  },
+  "readouts": [
+    "NATIVE_HEAD"
+  ],
+  "separate_head_training": false
+}
