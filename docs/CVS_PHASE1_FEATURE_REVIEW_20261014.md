@@ -222,3 +222,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 连续层级完整三seed已闭环：HIER_ORDER82.8734%±1.9546pp，vsSIG_TIME+.1784±.9861pp（2/3），vs同容量HIER_STAT+.3230±1.5336pp（2/3）；SIG_TIME82.6950%、LOCAL_GTIME82.7385%、HIER_STAT82.5504%、旧门控cos80.5268%。primary距84均值1.1266pp；最高seed84.8762不代替目标。15row/12新600epochs133200steps＋3历史150epochs，750epoch记录/2520000默认预测/270metrics/21错误表/12真实feature witness/3匹配初态完成VERIFIED，额外头拟合0。首seed未重训、source-only扩seed决定先于新target数字读取，不依据结果调参。完整报告automation_reports/CV-SincNet/20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s0203-m10-r01/report.md。下一步只按已完成源权重诊断与原报告路线四落实独立SIG_TIME权重训练，不加载目标高分层级权重或叠加机制。
+
+
+报告路线四真实训练已实施并发布：20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01，实现23ea591bba17dd938d2b9a93f8b9d9dc5f02e97a、执行7708d4afcef141bb614e0c2171f2a9207c4469ff；固定历史oldgatecos＋scratch50 SIG_TIME uniform/weighted两新模型，结构/旧mask/EMA/cos/defaultjointhead相同，仅acceptedCE boundedstopgrad权重，entropy.01保持。局部真实模型update/RNG/state/33inactive/9negative PASS，一次独立直接P0/P1 PASS；真实CPnoquery smoke/归档compile/两实际workerPID-CWD-argv-GPU0/3-日志增长VERIFIED，目前2epoch。33/34/50全部222批/1998层批梯度的真实预算已接线，尚未到声明轮；未有新性能结果，不称有效或84达标。首seed自动默认头predict/truthlast，sourcePASS才原样扩剩余预定义seed，目标不回流。

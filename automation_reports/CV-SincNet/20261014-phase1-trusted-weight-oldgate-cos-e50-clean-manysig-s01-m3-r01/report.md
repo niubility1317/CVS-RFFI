@@ -17,3 +17,6 @@
 Stop：role/provenance/初始化/非有限/shape/默认头/实际oldgate/原loss对齐/预算/保存梯度复算/export/predictions或truthlast系统技术失败停止新增dispatch、保留健康row和输出，无自动retry或目标早停。预期source checkpoint/initial/defaultguard/fullstep/full50epochs/trustedweightsteps/三轮gradpt与records/source witness/sourcefreeze、逐rowfixedpred/scores/completion、矩阵source qualification/sourcefeatures/analysis/launch/queue/completion。Git仅实现/config/聚合结果与报告，不提交IQ/checkpoint/rawgrad/prediction/大日志或私密本机状态。
 
 局部真实两native模型loss/梯度/正常joint默认头更新、pool5tensor更新、observer无参数/.grad/RNG干扰、初始全部参数及真实z相同、9负配置、33轮inactive梯度及scope恢复PASS；12新py＋native compile PASS。本地使用2zero/ones合成IQ，不读真实源/目标；局部检查不冒充实际训练。一次独立仅直接P0/P1审查PASS，无直接缺陷；实现/config 23ea591bba17dd938d2b9a93f8b9d9dc5f02e97a，尚未发布或训练。
+
+
+实际发布 RUNNING/VERIFIED：执行7708d4afcef141bb614e0c2171f2a9207c4469ff，dispatcher2264227，两新worker2264466（SIG_TIME，GPU0）/2264545（TRUSTED_WEIGHT，GPU3），实际PID/CWD/argv/default联合头/fitdisabled与weight active=false/true核实；两模型均2轮，日志6534→16879/6582→16952bytes，无failure。一个archive传输比较/remotecompile与真实historical CP2zeroIQ noquery smoke PASS。当前训练中，真实33/34/50梯度及候选默认头评分尚未产生，不能宣称机制有效或84达标；代码/config和登记已同步远端。

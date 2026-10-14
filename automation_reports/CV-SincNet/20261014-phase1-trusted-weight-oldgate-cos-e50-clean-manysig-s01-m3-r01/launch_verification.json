@@ -1,0 +1,62 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "execution_commit": "7708d4afcef141bb614e0c2171f2a9207c4469ff",
+  "implementation_commit": "23ea591bba17dd938d2b9a93f8b9d9dc5f02e97a",
+  "dispatcher_pid": 2264227,
+  "dispatcher_live": true,
+  "preflight_status": "PASS",
+  "real_checkpoint_no_query_smoke": true,
+  "training_inherits_checkpoint": false,
+  "new_models": 2,
+  "reused_models": 1,
+  "query_read_by_smoke": false,
+  "completion": null,
+  "failure": null,
+  "observed_at": 1791968286.876936,
+  "workers": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "pid": 2264374,
+      "gpu": 6,
+      "live": false,
+      "epoch_count": 50,
+      "log_bytes_before": 121,
+      "log_bytes_after": 121,
+      "log_growth": false,
+      "cwd_matches": null,
+      "argv_matches": null,
+      "actual_commit": "5fa536f9ca2d90e7d30d547d58503a41b612d57f"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "pid": 2264466,
+      "gpu": 0,
+      "live": true,
+      "epoch_count": 2,
+      "log_bytes_before": 6534,
+      "log_bytes_after": 16879,
+      "log_growth": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "actual_commit": "7708d4afcef141bb614e0c2171f2a9207c4469ff",
+      "default_fitted_probes_disabled": true,
+      "weight_active": false
+    },
+    {
+      "row_id": "TRUSTED_WEIGHT-s2026092701",
+      "pid": 2264545,
+      "gpu": 3,
+      "live": true,
+      "epoch_count": 2,
+      "log_bytes_before": 6582,
+      "log_bytes_after": 16952,
+      "log_growth": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "actual_commit": "7708d4afcef141bb614e0c2171f2a9207c4469ff",
+      "default_fitted_probes_disabled": true,
+      "weight_active": true
+    }
+  ]
+}

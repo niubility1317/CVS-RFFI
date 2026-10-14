@@ -35148,6 +35148,96 @@
           "net_correct": 11827
         }
       ]
+    },
+    {
+      "route": "report route4 trusted accepted difficulty weighting",
+      "run_id": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "status": "RUNNING_VERIFIED",
+      "implementation_commit": "23ea591bba17dd938d2b9a93f8b9d9dc5f02e97a",
+      "execution_commit": "7708d4afcef141bb614e0c2171f2a9207c4469ff",
+      "model_seeds": [
+        2026092701
+      ],
+      "new_models": 2,
+      "reused_models": 1,
+      "epochs_each": 50,
+      "updates_each": 11100,
+      "stages": "33label+17pseudo",
+      "default_head": "joint original6x160scale30; no separate classifier fit",
+      "feature": "same SIG_TIME joint160; no hierarchy stack",
+      "source_basis_run": "20261014-phase1-source-trusted-weight-manysig-s01-m1-r01",
+      "actual_gradient_epochs": [
+        33,
+        34,
+        50
+      ],
+      "actual_gradient_batches_each": 666,
+      "actual_gradient_layer_records_each": 1998,
+      "target_feedback": false,
+      "goal_84_passed": false,
+      "report": "automation_reports/CV-SincNet/20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md",
+      "launch_verification": {
+        "status": "VERIFIED",
+        "run_id": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+        "execution_commit": "7708d4afcef141bb614e0c2171f2a9207c4469ff",
+        "implementation_commit": "23ea591bba17dd938d2b9a93f8b9d9dc5f02e97a",
+        "dispatcher_pid": 2264227,
+        "dispatcher_live": true,
+        "preflight_status": "PASS",
+        "real_checkpoint_no_query_smoke": true,
+        "training_inherits_checkpoint": false,
+        "new_models": 2,
+        "reused_models": 1,
+        "query_read_by_smoke": false,
+        "completion": null,
+        "failure": null,
+        "observed_at": 1791968286.876936,
+        "workers": [
+          {
+            "row_id": "OLD_GATE_COS50-s2026092701",
+            "pid": 2264374,
+            "gpu": 6,
+            "live": false,
+            "epoch_count": 50,
+            "log_bytes_before": 121,
+            "log_bytes_after": 121,
+            "log_growth": false,
+            "cwd_matches": null,
+            "argv_matches": null,
+            "actual_commit": "5fa536f9ca2d90e7d30d547d58503a41b612d57f"
+          },
+          {
+            "row_id": "SIG_TIME-s2026092701",
+            "pid": 2264466,
+            "gpu": 0,
+            "live": true,
+            "epoch_count": 2,
+            "log_bytes_before": 6534,
+            "log_bytes_after": 16879,
+            "log_growth": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "actual_commit": "7708d4afcef141bb614e0c2171f2a9207c4469ff",
+            "default_fitted_probes_disabled": true,
+            "weight_active": false
+          },
+          {
+            "row_id": "TRUSTED_WEIGHT-s2026092701",
+            "pid": 2264545,
+            "gpu": 3,
+            "live": true,
+            "epoch_count": 2,
+            "log_bytes_before": 6582,
+            "log_bytes_after": 16952,
+            "log_growth": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "actual_commit": "7708d4afcef141bb614e0c2171f2a9207c4469ff",
+            "default_fitted_probes_disabled": true,
+            "weight_active": true
+          }
+        ]
+      }
     }
   ],
   "diagnostics": {
@@ -80430,8 +80520,8 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "独立落实SIG_TIME可信门控内有界难度权重训练，固定旧门控/50轮/默认联合头及33/34/50实际L/U梯度记录；不叠加层级机制",
-    "按原源资格规则完成首seed闭环，再决定是否原样扩两个预定义种子；目标成绩不控制扩种子或调参"
+    "按固定50轮完成已发布SIG_TIME uniform/weighted首seed，回收真实33/34/50梯度和defaulthead truthlast结果，Git交付",
+    "只依据预登记source资格PASS原样扩2026092702/03；不按目标成绩调weight/bounds/scale/seed或加载高分父权重"
   ],
   "goal_84": false,
   "Phase2_development": false,
