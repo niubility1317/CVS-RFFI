@@ -1,0 +1,31 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "torch": "2.10.0+cu128",
+  "commands": [
+    "experiments.cvs_rx_update_projection20.checks_materialize",
+    "experiments.cvs_rx_update_projection20.checks_gradient_control",
+    "experiments.cvs_rx_update_projection20.checks_source",
+    ".codex_tmp/check_RX_update_partition_20261015.py"
+  ],
+  "source_gradient_protection": true,
+  "static_feature_tensors": 68,
+  "static_feature_coordinates": 194561,
+  "None_zero_optimizer_semantics": true,
+  "gradient_symbol_closed_form": true,
+  "synthetic_gradient_descent_risk": -1.0,
+  "synthetic_saved_moment_AdamW_risk": 0.06488347053527832,
+  "actual_rounding_can_swallow_update": true,
+  "ideal_feasible_actual_positive_counterexample": true,
+  "per_RX_measured_error_bound": true,
+  "actual_constructor_partition": true,
+  "fixed_RX36_negative": true,
+  "fixed_role_query_truth_negatives": true,
+  "zero_update_and_risk_only_not_useful": true,
+  "state_RNG_cache_preservation": true,
+  "new_scope_compile": true,
+  "actual_data_or_checkpoint_reads": 0,
+  "actual_optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "boundary": "Focused synthetic implementation evidence only, not source-learning utility or training efficacy"
+}

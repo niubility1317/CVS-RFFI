@@ -1,0 +1,167 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-RX-update-projection-sourceL-s2026092701-r01",
+  "group_id": "phase1-RX-update-projection-source",
+  "display_name": "源RX身份风险约束：AdamW真实特征位移否证",
+  "description": "同一源CE状态下比较RAW、先投影下降梯度再AdamW、先AdamW再投影实际feature位移。静态部署encoder范围排除默认W和三个融合gain，原主CE对全部原参数保持joint gradient。风险只来自物理不交源L，独立held-L无梯度评价，V/U/target均不读取IQ。",
+  "kind": "diagnostic",
+  "stage": "Phase1 source mechanism",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "actual_update",
+    "RX",
+    "AdamW",
+    "CENTER25K",
+    "SIG_TIME",
+    "default_head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active goal continuation; user requests concrete innovative training mechanism and optimization from reports/experiments. Bounded source-only falsification precedes new E20 training.",
+  "code": {
+    "commit": "release_commit.txt (actual Git HEAD resolved at publication)",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "N607 ordinary account; CVS-RFFI Python; CPU2threads/GPU0; immutable own E20 runtime plus committed three-namespace overlay",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_update_projection_sourceL_20261015_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md",
+    "physical_ids_ref": "Unchanged validated parent design.SOURCE native role_ids; full5-int IDs/unique base_index from L_s",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "roles": {
+      "L_s": 6300,
+      "U_s": "hidden/no IQ read",
+      "V": 27000
+    },
+    "train_ratio": {
+      "L": 0.07,
+      "U": 0.63,
+      "V": 0.3
+    },
+    "validation_ref": "Existing VALIDATED_ONCE source/capsule/split handles reused without new hash/revalidation",
+    "protocol_schema": "p2_min_v1 handles unchanged, unused by source-only stage"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "claim_scope": "Known source L signal and CPU hypothetical finite-step direction only; no unseenRX, newTX or performance claim"
+  },
+  "checkpoint": {
+    "initialization": "strict source BASE_CE fixed firstseed own initial/final20",
+    "sources": [
+      "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01/BASE_CE-s2026092701/source"
+    ],
+    "provenance_verdict": "source_proof and validate_checkpoint before either torch.load; no fallback",
+    "selection_rule": "Preregistered control firstseed and final-only selection, not highest target; own scratch ancestry only"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/RX-update-source-20261015",
+    "gpu_policy": "CPU only/GPU0; other owners unchanged",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-RX-update-projection-sourceL-s2026092701-r01/source_diagnostic",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_update_projection_sourceL_20261015_r01/source_probe.stdout.log",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_SIGTIME_RX_update_projection_sourceL_20261015_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_update_projection_sourceL_20261015_r01/experiments/cvs_rx_update_projection20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_update_projection_sourceL_20261015_r01/resolved_request.json",
+    "stop_rule": "Exact run-owned provenance/role/physical-ID/state mismatch, nonfinite, unsupported or invalid solver, unlaunchable dependency or unhandled technical failure: preserve outputs and stop this assay; no unchanged retry/other-process changes. Scientific fixed gate failure closes this exact projection variant without threshold, metric, step-size or loss-weight scan."
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "release_commit.txt",
+    "resolved_request.json",
+    "submit.json",
+    "runtime.json",
+    "eight state/ordinal scalar records",
+    "summary.json",
+    "independent_readback.json",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "matrix": "INITIAL/FINAL20 x L90 ord0/17/35/52 x RAW/GRAD_CONE/UPDATE_CONE",
+    "budget": "720uniqueL;6300Lmetadata;10444packet networkforwards;16temporaryCPUAdamWsteps;0realupdates/epochs/headfit/EMA/U/V/target",
+    "banks": "current360; risk180 ordinal66/67; independentheld180 ordinal68/69; all sourceL, disjoint fullphysicalIDs/base_index, each balanced6TXx5RXx3day. No new persistent data roles.",
+    "optimizer": "Native AdamW recipe. INITIAL explicitly fresh moments/lr2e-4; FINAL20 saved moments/lr1e-6. One simulate(base,gradcone) pair/cell, independently clip5; UPDATE materializes corrected RAW after-before without another optimizer step. CPU diagnostic, not contemporaneous CUDA.",
+    "scope": "Static deployed id_backbone.encoder.* optimizer parameters except nativeW/PA/reference/SIG gains. RiskCE default W+3gains detached; current mainCE originaljoint. No dynamic gradient mask.",
+    "projection": "min .5||d-d0||² subject to five sourceRX g_r dot d<=0; current CENTER25K Euclidean chart. <=32active sets FP64Gram<=5x5/KKT. No learned params/radius/LR/weight scan.",
+    "rounding": "Project actual RAW FP32 parameter after-before in FP64; materialize theta.double+idealDelta to originaldtype, remeasure actualDelta double. PerRX actual risk and measured sum|g|*|actual-ideal| plus solver tolerance, not globalmaxparameter tolerance.",
+    "evaluation": "No-grad temporarymodel originalpreW/allgainfixed, rawjoint160; risk/independentheld perRX CE in double; actualfeatureRMS, retainednorm and shallow/mid/kernel changes. Firstorder constraints do not guarantee finite-step CE.",
+    "source_falsification": {
+      "minimum_qualified_cells": 2,
+      "minimum_RAW_positive_risk_RX": 1,
+      "UPDATE_RAW_relative_displacement_difference_min": 0.01,
+      "UPDATE_retained_actual_displacement_ratio_min": 0.5,
+      "UPDATE_RAW_held_worst_RX_CE_delta_reduction_min": 1e-06,
+      "UPDATE_RAW_held_mean_CE_increase_max": 1e-06,
+      "UPDATE_RAW_held_feature_RMS_min": 1e-07,
+      "minimum_shallow_or_middle_tensors_changed_from_RAW": 1,
+      "minimum_UPDATE_GRAD_distinct_cells": 2,
+      "UPDATE_GRAD_relative_displacement_difference_min": 0.01,
+      "interpretation": "Known-source actual displacement and independent-L finite-step signal only; no training efficacy, target selection or novelty proof"
+    },
+    "stop_rule": "Exact run-owned provenance/role/physical-ID/state mismatch, nonfinite, unsupported or invalid solver, unlaunchable dependency or unhandled technical failure: preserve outputs and stop this assay; no unchanged retry/other-process changes. Scientific fixed gate failure closes this exact projection variant without threshold, metric, step-size or loss-weight scan.",
+    "literature": "PCGrad arxiv2001.06782 and CAGrad arxiv2110.14048 are explicit gradient-projection priors; this CVS RX/current-defaulthead/actualAdamW-displacement hypothesis has unproved novelty/efficacy.",
+    "future_training": "Only after fixed source gate: separately preregister scratch20 or verified E20+20 with matched pureCE/SSL controls, hiddenU/defaulthead/auto-cleantruthlast; no oldE50 continuation."
+  },
+  "rows": [
+    {
+      "row_id": "BASE_CE-s2026092701-source-assay",
+      "method": "RX_ACTUAL_FEATURE_UPDATE_PROJECTION",
+      "purpose": "bounded source falsification",
+      "config_ref": "experiments/cvs_rx_update_projection20/configs/source_probe.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_update_projection_sourceL_20261015_r01/resolved_request.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Parent exact physical split/roles unchanged; ordinals fixed, no augmentation/support/query stochastic sampling. Null roles not additional seeds.",
+      "k": null,
+      "scenario": null,
+      "optimizer": "temporary CPU nativeAdamW copies",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "metrics_plan.budget",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-RX-update-projection-sourceL-s2026092701-r01/source_diagnostic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_update_projection_sourceL_20261015_r01/source_probe.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_update_projection_sourceL_20261015_r01/experiments/cvs_rx_update_projection20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_update_projection_sourceL_20261015_r01/resolved_request.json",
+      "expected_artifacts": [
+        "preflight.json",
+        "release_commit.txt",
+        "resolved_request.json",
+        "submit.json",
+        "runtime.json",
+        "eight state/ordinal scalar records",
+        "summary.json",
+        "independent_readback.json",
+        "report.md"
+      ]
+    }
+  ],
+  "notes": [
+    "No fitted/retained diagnostic head, classifier replacement or architecture parameter.",
+    "Three temporary subsets are within original L_s, not redefined V roles or unseen domains.",
+    "Healthy other runs and immutable source parent preserved. Source-only diagnostic needs no target prediction/truth scoring."
+  ],
+  "registered_at": "2026-10-14T20:31:55+00:00"
+}

@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "reviewer": "sigtime_feature_path",
+  "independent_candidate_reviews": 1,
+  "scope": "Only direct P0/P1 defects making the next real source run wrong/unauthorized/destructive/unlaunchable or unable to produce legal results",
+  "checkpoint_proof_before_both_loads": true,
+  "static_F_and_protected_gradients": true,
+  "three_source_L_subsets_physically_disjoint": true,
+  "actual_rounding_and_control_semantics": true,
+  "explicit_fixed_readout_partitions": true,
+  "live_state_RNG_cache_preservation": true,
+  "counts_and_three_namespace_archive": true,
+  "P0_P1_findings": [],
+  "reviewer_data_or_remote_actions": false
+}

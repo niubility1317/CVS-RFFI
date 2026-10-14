@@ -1,0 +1,48 @@
+{
+  "run_id": "20261015-phase1-SIGTIME-RX-update-projection-sourceL-s2026092701-r01",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-RX-update-projection-sourceL-s2026092701-r01/source_diagnostic",
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_center_crossRX_sharpness20_20261015_r01",
+  "source_row": "BASE_CE-s2026092701",
+  "model_seed": 2026092701,
+  "states": [
+    "INITIAL",
+    "FINAL20"
+  ],
+  "modes": [
+    "RAW",
+    "GRAD_CONE",
+    "UPDATE_CONE"
+  ],
+  "anchor_ordinals": [
+    0,
+    17,
+    35,
+    52
+  ],
+  "risk_ordinals": [
+    66,
+    67
+  ],
+  "held_ordinals": [
+    68,
+    69
+  ],
+  "source_role": "L_s",
+  "U_truth_read": false,
+  "V_gradient": false,
+  "target_access": false,
+  "source_falsification": {
+    "minimum_qualified_cells": 2,
+    "minimum_RAW_positive_risk_RX": 1,
+    "UPDATE_RAW_relative_displacement_difference_min": 0.01,
+    "UPDATE_retained_actual_displacement_ratio_min": 0.5,
+    "UPDATE_RAW_held_worst_RX_CE_delta_reduction_min": 1e-06,
+    "UPDATE_RAW_held_mean_CE_increase_max": 1e-06,
+    "UPDATE_RAW_held_feature_RMS_min": 1e-07,
+    "minimum_shallow_or_middle_tensors_changed_from_RAW": 1,
+    "minimum_UPDATE_GRAD_distinct_cells": 2,
+    "UPDATE_GRAD_relative_displacement_difference_min": 0.01,
+    "interpretation": "Known-source actual displacement and independent-L finite-step signal only; no training efficacy, target selection or novelty proof"
+  },
+  "analysis_code_commit": "release_commit.txt"
+}
