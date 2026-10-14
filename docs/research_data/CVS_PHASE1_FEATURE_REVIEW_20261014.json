@@ -83575,7 +83575,31 @@
       "remaining_source_readiness": "Parents still original healthy50epoch training; only fixedSIG02/03 final50 may be used",
       "result_ref": "automation_reports/CV-SincNet/20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01/final_analysis.md",
       "remaining_source_run": "20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01",
-      "remaining_source_status": "PLANNED_AWAITING_PREDEFINED_PARENT_FINAL50"
+      "remaining_source_status": "PLANNED_AWAITING_PREDEFINED_PARENT_FINAL50",
+      "saved_mask_coverage": {
+        "status": "VERIFIED_SOURCE_ONLY",
+        "TX_internal_1_3_selected_fraction": 0.67,
+        "RX3_8_selected_fraction": 0.59,
+        "original_source_correct": 899,
+        "RSC_source_correct": 822,
+        "random_source_correct": 884,
+        "RSC_introduced_source_errors": 77,
+        "random_introduced_source_errors": 15,
+        "time_mask_counts_range": [
+          16,
+          218
+        ],
+        "random_time_mask_counts_range": [
+          90,
+          119
+        ],
+        "new_forwards": 0,
+        "new_gradients": 0,
+        "new_updates": 0,
+        "query_or_U_truth": false,
+        "report": "automation_reports/CV-SincNet/20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01/saved_mask_coverage.md",
+        "interpretation": "Source sensitivity concentrated in subset ofTX/RX/timepositions; not proof of RXshortcut or transferability and not newqualification gate"
+      }
     }
   }
 }

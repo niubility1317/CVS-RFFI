@@ -30,3 +30,6 @@
 下一步只准备原样seed02/03源复核：父来源按各自固定DRO矩阵SIG_TIME控制final50指定，等原训练自然完成后才读取，不换用其他得分模型。完成三模型源结果前不决定正式RSC训练日程或SSL扩展。目标84%仍未达到，此结果无任何新目标准确率。
 
 ![Temporal source challenge](source_challenge_summary.png)
+
+
+只读保存mask覆盖补充：TX内部索引1/3占选择包67%，源RX3/8占59%，day分布接近均匀；定向位置零计数16至218、随机90至119，两者总计3300。此源敏感性集中不能当RX捷径或DG收益，固定02/03源复核不改。详见saved_mask_coverage.md/JSON/图；无新增前向或更新。
