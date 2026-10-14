@@ -61,6 +61,6 @@ def checks():
   else:raise AssertionError('Unregistered protocol accepted')
  from .publish import configure
  from experiments.cvs_report_ssl import publish as transport
- configure();assert all(p in transport.PATHS for p in ('experiments/cvs_feature_mean_teacher50','experiments/cvs_sigtime_pair50','experiments/cvs_neighbor_pair50'));compile(transport.REMOTE.replace('CONFIG',repr(dict(project='/tmp',release='r',run='x',archive='a',sha256='s',commit='c'))),'<remote>','exec')
+ configure();assert all(p in transport.PATHS for p in ('experiments/cvs_feature_mean_teacher50','experiments/cvs_feature_mean_teacher_seeds','experiments/cvs_confidence_feature50','experiments/cvs_source_teacher_confidence','experiments/cvs_source_feature_ce_gradient','experiments/cvs_sigtime_pair50','experiments/cvs_neighbor_pair50'));compile(transport.REMOTE.replace('CONFIG',repr(dict(project='/tmp',release='r',run='x',archive='a',sha256='s',commit='c'))),'<remote>','exec')
  return dict(status='PASS',protocol_negative_tests=negative,matched_initial_models=True,native_RANDOM_order_RNG_preserved=True,actual_checks=results,feature_parameters=195041,feature_export_exact=True,W_independent=True,zero_pre_pseudo_gradient_unchanged=True,teacher_stopgradient=True,hook_restore=True,no_extra_head_or_modules=True,synthetic_IQ_only=True,query_read=False,remote_compile='PASS')
 if __name__=='__main__':print(json.dumps(checks()))
