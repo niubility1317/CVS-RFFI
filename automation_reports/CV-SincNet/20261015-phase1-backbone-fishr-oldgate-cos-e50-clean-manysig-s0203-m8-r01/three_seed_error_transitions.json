@@ -1,0 +1,232 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "arm": "BONE_COND_FISHR",
+      "control": "BONE_RAW_FISHR",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "corrected": 1325,
+      "introduced": 2098,
+      "net_correct": -773,
+      "count": 504000,
+      "per_seed": [
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "BONE_RAW_FISHR",
+          "seed": 2026092701,
+          "corrected_errors": 364,
+          "introduced_errors": 531,
+          "both_correct": 140176,
+          "both_wrong": 26929,
+          "count": 168000
+        },
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "BONE_RAW_FISHR",
+          "seed": 2026092702,
+          "corrected_errors": 487,
+          "introduced_errors": 802,
+          "both_correct": 134703,
+          "both_wrong": 32008,
+          "count": 168000
+        },
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "BONE_RAW_FISHR",
+          "seed": 2026092703,
+          "corrected_errors": 474,
+          "introduced_errors": 765,
+          "both_correct": 139653,
+          "both_wrong": 27108,
+          "count": 168000
+        }
+      ]
+    },
+    {
+      "arm": "BONE_COND_FISHR",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "corrected": 1685,
+      "introduced": 2386,
+      "net_correct": -701,
+      "count": 504000,
+      "per_seed": [
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "SIG_TIME",
+          "seed": 2026092701,
+          "corrected_errors": 794,
+          "introduced_errors": 590,
+          "both_correct": 139746,
+          "both_wrong": 26870,
+          "count": 168000
+        },
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "SIG_TIME",
+          "seed": 2026092702,
+          "corrected_errors": 455,
+          "introduced_errors": 803,
+          "both_correct": 134735,
+          "both_wrong": 32007,
+          "count": 168000
+        },
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "SIG_TIME",
+          "seed": 2026092703,
+          "corrected_errors": 436,
+          "introduced_errors": 993,
+          "both_correct": 139691,
+          "both_wrong": 26880,
+          "count": 168000
+        }
+      ]
+    },
+    {
+      "arm": "BONE_COND_FISHR",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "corrected": 26944,
+      "introduced": 16942,
+      "net_correct": 10002,
+      "count": 504000,
+      "per_seed": [
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 10356,
+          "introduced_errors": 5339,
+          "both_correct": 130184,
+          "both_wrong": 22121,
+          "count": 168000
+        },
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092702,
+          "corrected_errors": 9450,
+          "introduced_errors": 5437,
+          "both_correct": 125740,
+          "both_wrong": 27373,
+          "count": 168000
+        },
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092703,
+          "corrected_errors": 7138,
+          "introduced_errors": 6166,
+          "both_correct": 132989,
+          "both_wrong": 21707,
+          "count": 168000
+        }
+      ]
+    },
+    {
+      "arm": "BONE_RAW_FISHR",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "corrected": 2109,
+      "introduced": 2037,
+      "net_correct": 72,
+      "count": 504000,
+      "per_seed": [
+        {
+          "arm": "BONE_RAW_FISHR",
+          "control": "SIG_TIME",
+          "seed": 2026092701,
+          "corrected_errors": 863,
+          "introduced_errors": 492,
+          "both_correct": 139844,
+          "both_wrong": 26801,
+          "count": 168000
+        },
+        {
+          "arm": "BONE_RAW_FISHR",
+          "control": "SIG_TIME",
+          "seed": 2026092702,
+          "corrected_errors": 623,
+          "introduced_errors": 656,
+          "both_correct": 134882,
+          "both_wrong": 31839,
+          "count": 168000
+        },
+        {
+          "arm": "BONE_RAW_FISHR",
+          "control": "SIG_TIME",
+          "seed": 2026092703,
+          "corrected_errors": 623,
+          "introduced_errors": 889,
+          "both_correct": 139795,
+          "both_wrong": 26693,
+          "count": 168000
+        }
+      ]
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "corrected": 27511,
+      "introduced": 16808,
+      "net_correct": 10703,
+      "count": 504000,
+      "per_seed": [
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 10377,
+          "introduced_errors": 5564,
+          "both_correct": 129959,
+          "both_wrong": 22100,
+          "count": 168000
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092702,
+          "corrected_errors": 9732,
+          "introduced_errors": 5371,
+          "both_correct": 125806,
+          "both_wrong": 27091,
+          "count": 168000
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092703,
+          "corrected_errors": 7402,
+          "introduced_errors": 5873,
+          "both_correct": 133282,
+          "both_wrong": 21443,
+          "count": 168000
+        }
+      ]
+    }
+  ],
+  "new_target_forwards": false,
+  "head_fit_updates": 0
+}

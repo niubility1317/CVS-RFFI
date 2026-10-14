@@ -2543,8 +2543,36 @@
     "Local6 context initialstates withinseed identical, args differ onlyseed/run/candidate/output;10negative sourcequalification testsPASS. Originalcore independentP0/P1 review reused; no duplicate unchangedreview.",
     "New run6models300epochs66600updates/3900extraL180/702000extra sourcepackets,936layercohorts/624matrices/3744vectors. Whole3seed9new450epochs99900updates plus3historical150epochs33300updates;2016000decisions/216metrics expected, not yet obtained."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "registered_at": "2026-10-14T16:12:23+00:00",
   "source_decision": "first_source_decision.json",
-  "execution_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6"
+  "execution_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6",
+  "results": {
+    "status": "VERIFIED",
+    "analysis": "final_analysis.md",
+    "aggregate": "results.json",
+    "independent_statistics": "independent_three_seed_statistics.json",
+    "source_curves": "complete_three_seed_source_curves.json",
+    "mechanism": "three_seed_mechanism_summary.json",
+    "error_transitions": "three_seed_error_transitions.json",
+    "figure": "complete_three_seed_results_and_curves.png",
+    "combined_models": 12,
+    "combined_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "default_decision_count": 2016000,
+    "metric_records": 216,
+    "new_optimizer_updates": 99900,
+    "new_epochs": 450,
+    "reused_historical_epochs": 150,
+    "head_fit_updates": 0,
+    "RAW_minus_SIG_pp": 0.014285714285714827,
+    "COND_minus_SIG_pp": -0.1390873015872966,
+    "RAW_positive_seeds": 1,
+    "COND_positive_seeds": 1,
+    "goal_84": false,
+    "source_decision_before_target": "3c052b2d36903e28694674a39e232a73acd8b6a6"
+  }
 }

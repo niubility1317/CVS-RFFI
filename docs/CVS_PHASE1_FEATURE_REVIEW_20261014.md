@@ -1,9 +1,9 @@
 <!-- CURRENT_TRAINING_PRIORITY_20261014 -->
 固定 SIG_TIME 和默认联合分类头，研发重点保持训练泛化与半监督机制。均值教师完整三seed已 ANALYZED/VERIFIED：FEATURE_MT82.4359%±1.5874pp，匹配SIG82.6806%±1.7906pp；配对−.2446±.2101个百分点，0/3正，净−1233/504000。三seed源U特征损失均下降约18%至21%，但未形成DG收益；保留完整负结果，不扫权重或换头补结论。完整报告 20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md。
 
-当前RAW/TX_DAY_CENTERED泛化固定02/03扩展仍健康运行（源快照 40 至 43 轮），首seed同计算SIG83.5333%、RAW83.7542%（+.2208pp）、条件化83.6548%（+.1214pp），仅n=1。两条扩展的源决定均先于本路线新目标数字读回提交，科学配方不变。
+RAW/TX_DAY_CENTERED骨干Fishr完整三seed已ANALYZED/VERIFIED：RAW82.6647%±1.7402pp、匹配SIG82.6504%±1.7118pp，配对+0.0143±0.1918个百分点，1/3正；COND82.5113%±1.7719pp，对SIG−0.1391±0.2340个百分点，1/3正，对RAW0/3正。源penalty均下降但未转成稳定DG收益；12模型/2016000默认头决策/216CM/936梯度矩阵独立复算，头拟合0。两扩展源决定先于新目标数字回收，无目标反馈改参；完整报告20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md。
 
-同L强图CE/feature源诊断 20261015-phase1-source-feature-ce-gradient-manysig-m6-r01 已ANALYZED/VERIFIED：6模型、4950向量独立复算，头/模型/optimizer更新0。教师对学生错18/18对象同向，教师错学生对16/18反向，但每模型该组仅3至8个seen-L样本；整体符号混合，不支持普遍冲突或实际U因果解释。固定零置信差源诊断 20261015-phase1-source-teacher-confidence-manysig-m6-r01 已ANALYZED/VERIFIED：7200向量独立复算，6/6 V有益代理组保留69.04%至76.25% > 有害40.74%至48.44%，资格PASS；L全局方向仍混合（11/18相关对象cosine增加）。固定门控feature-consistency训练对照 20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01 已实现/本地检查和唯一独立P0P1 PASS，首seed两新模型scratch50+历史旧门控基线，已RUNNING/VERIFIED（GPU3/6，源快照均7轮，feature从34轮启用），源扩展规则已固定，尚未读取新目标数值；无另训头、结构或Phase2开发。84%三seed目标仍未达到。
+同L强图CE/feature源诊断 20261015-phase1-source-feature-ce-gradient-manysig-m6-r01 已ANALYZED/VERIFIED：6模型、4950向量独立复算，头/模型/optimizer更新0。教师对学生错18/18对象同向，教师错学生对16/18反向，但每模型该组仅3至8个seen-L样本；整体符号混合，不支持普遍冲突或实际U因果解释。固定零置信差源诊断 20261015-phase1-source-teacher-confidence-manysig-m6-r01 已ANALYZED/VERIFIED：7200向量独立复算，6/6 V有益代理组保留69.04%至76.25% > 有害40.74%至48.44%，资格PASS；L全局方向仍混合（11/18相关对象cosine增加）。固定门控feature-consistency首seed 20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01 已真实训练：34轮候选.02、56700U/222batch、mask覆盖94.0758%、t1/t2/SIG全部批有效梯度，W无辅助梯度。完整固定源规则已PASS（retained均值比0.820886、全U均值比0.828006、覆盖0.920871），在该run新目标数值读回前冻结02/03原配方扩展决定，矩阵代码尚未实现/发布；无另训头、结构或Phase2开发。84%三seed目标仍未达到。
 
 # Phase1 特征提取复盘与完整实验交付
 

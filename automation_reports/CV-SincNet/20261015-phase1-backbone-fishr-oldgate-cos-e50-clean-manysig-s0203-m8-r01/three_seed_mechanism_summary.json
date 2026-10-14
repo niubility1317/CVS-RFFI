@@ -1,0 +1,686 @@
+{
+  "status": "VERIFIED",
+  "source": [
+    {
+      "arm": "SIG_TIME",
+      "CE_last5": 0.2338199479421517,
+      "CE_previous5": 0.24185851262183164,
+      "V_last5": 98.26049382716049,
+      "V_previous5": 98.2558024691358,
+      "U_acceptance": [
+        0.016009959539371305,
+        0.016243386243386244,
+        0.016185288930386968
+      ],
+      "RAW_ratios": [
+        1,
+        1,
+        1
+      ],
+      "CENTERED_ratios": [
+        1,
+        1,
+        1
+      ],
+      "epoch_seconds": 20286.370194911957
+    },
+    {
+      "arm": "BONE_RAW_FISHR",
+      "CE_last5": 0.23381609408794582,
+      "CE_previous5": 0.24171030290491946,
+      "V_last5": 98.24839506172839,
+      "V_previous5": 98.25135802469136,
+      "U_acceptance": [
+        0.01598921049901442,
+        0.01618321402635128,
+        0.0161624649859944
+      ],
+      "RAW_ratios": [
+        0.8458336431180336,
+        0.8605045725627262,
+        0.8462892464110594
+      ],
+      "CENTERED_ratios": [
+        0.8507528880049648,
+        0.8612561213145,
+        0.8732617116121787
+      ],
+      "epoch_seconds": 20640.69140601158
+    },
+    {
+      "arm": "BONE_COND_FISHR",
+      "CE_last5": 0.23341555473906497,
+      "CE_previous5": 0.24140920020617526,
+      "V_last5": 98.2385185185185,
+      "V_previous5": 98.23555555555556,
+      "U_acceptance": [
+        0.015988173046996578,
+        0.016193588546529723,
+        0.016159352629940865
+      ],
+      "RAW_ratios": [
+        0.8626770076806082,
+        0.8780019593711635,
+        0.8843841805794822
+      ],
+      "CENTERED_ratios": [
+        0.8691234455240476,
+        0.872022217167179,
+        0.9016125025908663
+      ],
+      "epoch_seconds": 21206.57448077202
+    }
+  ],
+  "actual_gradient_checks": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "active_records": 9,
+      "nonzero_effective_records": 0,
+      "zero_effective_records": 9
+    },
+    {
+      "row_id": "BONE_RAW_FISHR-s2026092701",
+      "active_records": 9,
+      "nonzero_effective_records": 9,
+      "zero_effective_records": 0
+    },
+    {
+      "row_id": "BONE_COND_FISHR-s2026092701",
+      "active_records": 9,
+      "nonzero_effective_records": 9,
+      "zero_effective_records": 0
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "active_records": 9,
+      "nonzero_effective_records": 0,
+      "zero_effective_records": 9
+    },
+    {
+      "row_id": "BONE_RAW_FISHR-s2026092702",
+      "active_records": 9,
+      "nonzero_effective_records": 9,
+      "zero_effective_records": 0
+    },
+    {
+      "row_id": "BONE_COND_FISHR-s2026092702",
+      "active_records": 9,
+      "nonzero_effective_records": 9,
+      "zero_effective_records": 0
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "active_records": 9,
+      "nonzero_effective_records": 0,
+      "zero_effective_records": 9
+    },
+    {
+      "row_id": "BONE_RAW_FISHR-s2026092703",
+      "active_records": 9,
+      "nonzero_effective_records": 9,
+      "zero_effective_records": 0
+    },
+    {
+      "row_id": "BONE_COND_FISHR-s2026092703",
+      "active_records": 9,
+      "nonzero_effective_records": 9,
+      "zero_effective_records": 0
+    }
+  ],
+  "features": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "seed": 2026092701,
+      "feature_parameters": 195041,
+      "feature_changed_elements": 193459,
+      "class_changed_elements": 960,
+      "export_exact": true,
+      "W_zeroing_unchanged": true,
+      "head_fit": false,
+      "feature_updates_by_diagnostic": 0,
+      "signature_parameters": [
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.577584128113758,
+          "maximum_abs_change": 0.3212994933128357,
+          "relative_L2": 0.7978296470431117,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "elements": 576,
+          "changed_elements": 576,
+          "delta_L2": 0.9851165274735726,
+          "maximum_abs_change": 0.15188809111714363,
+          "relative_L2": 0.6728124680164567,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+          "elements": 17920,
+          "changed_elements": 17920,
+          "delta_L2": 5.613937226793821,
+          "maximum_abs_change": 0.19763754308223724,
+          "relative_L2": 0.7660980378773137,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.802862914216128,
+          "maximum_abs_change": 0.35830581188201904,
+          "relative_L2": 0.22158576945350253,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 0.4332770281370961,
+          "maximum_abs_change": 0.2156195342540741,
+          "relative_L2": null,
+          "scope": "f_theta"
+        }
+      ]
+    },
+    {
+      "row_id": "BONE_RAW_FISHR-s2026092701",
+      "arm": "BONE_RAW_FISHR",
+      "seed": 2026092701,
+      "feature_parameters": 195041,
+      "feature_changed_elements": 193460,
+      "class_changed_elements": 960,
+      "export_exact": true,
+      "W_zeroing_unchanged": true,
+      "head_fit": false,
+      "feature_updates_by_diagnostic": 0,
+      "signature_parameters": [
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.5633520781183474,
+          "maximum_abs_change": 0.32266461849212646,
+          "relative_L2": 0.7934244556467603,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "elements": 576,
+          "changed_elements": 576,
+          "delta_L2": 0.9834365246157355,
+          "maximum_abs_change": 0.15152883529663086,
+          "relative_L2": 0.671665063788091,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+          "elements": 17920,
+          "changed_elements": 17920,
+          "delta_L2": 5.5892077625830145,
+          "maximum_abs_change": 0.19508326053619385,
+          "relative_L2": 0.7627233663688336,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.7870203745851927,
+          "maximum_abs_change": 0.35955190658569336,
+          "relative_L2": 0.22033330672462156,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 0.42772318816761906,
+          "maximum_abs_change": 0.21312394738197327,
+          "relative_L2": null,
+          "scope": "f_theta"
+        }
+      ]
+    },
+    {
+      "row_id": "BONE_COND_FISHR-s2026092701",
+      "arm": "BONE_COND_FISHR",
+      "seed": 2026092701,
+      "feature_parameters": 195041,
+      "feature_changed_elements": 193460,
+      "class_changed_elements": 960,
+      "export_exact": true,
+      "W_zeroing_unchanged": true,
+      "head_fit": false,
+      "feature_updates_by_diagnostic": 0,
+      "signature_parameters": [
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.5653281343630168,
+          "maximum_abs_change": 0.32362836599349976,
+          "relative_L2": 0.7940360966942925,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "elements": 576,
+          "changed_elements": 576,
+          "delta_L2": 0.9846469822117007,
+          "maximum_abs_change": 0.15629637241363525,
+          "relative_L2": 0.6724917791459779,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+          "elements": 17920,
+          "changed_elements": 17920,
+          "delta_L2": 5.597275146519267,
+          "maximum_abs_change": 0.1914501041173935,
+          "relative_L2": 0.7638242705568727,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.790111849348735,
+          "maximum_abs_change": 0.3606679439544678,
+          "relative_L2": 0.22057770926416467,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 0.42876722792976296,
+          "maximum_abs_change": 0.21245501935482025,
+          "relative_L2": null,
+          "scope": "f_theta"
+        }
+      ]
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "seed": 2026092702,
+      "feature_parameters": 195041,
+      "feature_changed_elements": 192170,
+      "class_changed_elements": 960,
+      "export_exact": true,
+      "W_zeroing_unchanged": true,
+      "head_fit": false,
+      "feature_updates_by_diagnostic": 0,
+      "signature_parameters": [
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.490272502159032,
+          "maximum_abs_change": 0.29930180311203003,
+          "relative_L2": 0.7708044171162052,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "elements": 576,
+          "changed_elements": 576,
+          "delta_L2": 1.04119872863541,
+          "maximum_abs_change": 0.2033943012356758,
+          "relative_L2": 0.7406903308915492,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+          "elements": 17920,
+          "changed_elements": 17920,
+          "delta_L2": 5.623185052119489,
+          "maximum_abs_change": 0.19016852229833603,
+          "relative_L2": 0.7691005670216204,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.6947062631662595,
+          "maximum_abs_change": 0.33017516136169434,
+          "relative_L2": 0.21303523541816188,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 0.41985603346242023,
+          "maximum_abs_change": 0.2106281816959381,
+          "relative_L2": null,
+          "scope": "f_theta"
+        }
+      ]
+    },
+    {
+      "row_id": "BONE_RAW_FISHR-s2026092702",
+      "arm": "BONE_RAW_FISHR",
+      "seed": 2026092702,
+      "feature_parameters": 195041,
+      "feature_changed_elements": 192492,
+      "class_changed_elements": 960,
+      "export_exact": true,
+      "W_zeroing_unchanged": true,
+      "head_fit": false,
+      "feature_updates_by_diagnostic": 0,
+      "signature_parameters": [
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.494882360999366,
+          "maximum_abs_change": 0.2971935272216797,
+          "relative_L2": 0.7722312888956312,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "elements": 576,
+          "changed_elements": 576,
+          "delta_L2": 1.0392114901016223,
+          "maximum_abs_change": 0.19886315613985062,
+          "relative_L2": 0.7392766446022077,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+          "elements": 17920,
+          "changed_elements": 17920,
+          "delta_L2": 5.6295323110694095,
+          "maximum_abs_change": 0.18984271120280027,
+          "relative_L2": 0.7699687014351548,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.699057213614008,
+          "maximum_abs_change": 0.3275582790374756,
+          "relative_L2": 0.21337920825319726,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 0.41369429896999027,
+          "maximum_abs_change": 0.21067583560943604,
+          "relative_L2": null,
+          "scope": "f_theta"
+        }
+      ]
+    },
+    {
+      "row_id": "BONE_COND_FISHR-s2026092702",
+      "arm": "BONE_COND_FISHR",
+      "seed": 2026092702,
+      "feature_parameters": 195041,
+      "feature_changed_elements": 192492,
+      "class_changed_elements": 960,
+      "export_exact": true,
+      "W_zeroing_unchanged": true,
+      "head_fit": false,
+      "feature_updates_by_diagnostic": 0,
+      "signature_parameters": [
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.4970956169452068,
+          "maximum_abs_change": 0.30140143632888794,
+          "relative_L2": 0.7729163494493593,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "elements": 576,
+          "changed_elements": 576,
+          "delta_L2": 1.043139576109771,
+          "maximum_abs_change": 0.2013644203543663,
+          "relative_L2": 0.7420710154030243,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+          "elements": 17920,
+          "changed_elements": 17920,
+          "delta_L2": 5.620597247233883,
+          "maximum_abs_change": 0.18538818787783384,
+          "relative_L2": 0.7687466248720356,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.7010946948299948,
+          "maximum_abs_change": 0.33234381675720215,
+          "relative_L2": 0.21354028528650545,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 0.4174585177012846,
+          "maximum_abs_change": 0.20879991352558136,
+          "relative_L2": null,
+          "scope": "f_theta"
+        }
+      ]
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "seed": 2026092703,
+      "feature_parameters": 195041,
+      "feature_changed_elements": 193090,
+      "class_changed_elements": 960,
+      "export_exact": true,
+      "W_zeroing_unchanged": true,
+      "head_fit": false,
+      "feature_updates_by_diagnostic": 0,
+      "signature_parameters": [
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.478904696946483,
+          "maximum_abs_change": 0.3288115859031677,
+          "relative_L2": 0.7672857843307761,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "elements": 576,
+          "changed_elements": 576,
+          "delta_L2": 1.0504463144597564,
+          "maximum_abs_change": 0.12808078527450562,
+          "relative_L2": 0.7465459327420052,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+          "elements": 17920,
+          "changed_elements": 17920,
+          "delta_L2": 5.9776765967036685,
+          "maximum_abs_change": 0.2122667022049427,
+          "relative_L2": 0.8200548665721997,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.68481442041366,
+          "maximum_abs_change": 0.364770770072937,
+          "relative_L2": 0.2122532165843008,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 0.4396576723046365,
+          "maximum_abs_change": 0.21981844305992126,
+          "relative_L2": null,
+          "scope": "f_theta"
+        }
+      ]
+    },
+    {
+      "row_id": "BONE_RAW_FISHR-s2026092703",
+      "arm": "BONE_RAW_FISHR",
+      "seed": 2026092703,
+      "feature_parameters": 195041,
+      "feature_changed_elements": 193412,
+      "class_changed_elements": 960,
+      "export_exact": true,
+      "W_zeroing_unchanged": true,
+      "head_fit": false,
+      "feature_updates_by_diagnostic": 0,
+      "signature_parameters": [
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.479471044503207,
+          "maximum_abs_change": 0.32654398679733276,
+          "relative_L2": 0.7674610836998078,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "elements": 576,
+          "changed_elements": 576,
+          "delta_L2": 1.0473637401484035,
+          "maximum_abs_change": 0.13602231442928314,
+          "relative_L2": 0.7443551655577736,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+          "elements": 17920,
+          "changed_elements": 17920,
+          "delta_L2": 5.979160641087975,
+          "maximum_abs_change": 0.21102212741971016,
+          "relative_L2": 0.8202584570140499,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.685773084060015,
+          "maximum_abs_change": 0.3619999885559082,
+          "relative_L2": 0.2123290056001129,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 0.4346336632434436,
+          "maximum_abs_change": 0.2168765366077423,
+          "relative_L2": null,
+          "scope": "f_theta"
+        }
+      ]
+    },
+    {
+      "row_id": "BONE_COND_FISHR-s2026092703",
+      "arm": "BONE_COND_FISHR",
+      "seed": 2026092703,
+      "feature_parameters": 195041,
+      "feature_changed_elements": 193411,
+      "class_changed_elements": 960,
+      "export_exact": true,
+      "W_zeroing_unchanged": true,
+      "head_fit": false,
+      "feature_updates_by_diagnostic": 0,
+      "signature_parameters": [
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.4737194856695743,
+          "maximum_abs_change": 0.32851552963256836,
+          "relative_L2": 0.7656808259366819,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "elements": 576,
+          "changed_elements": 576,
+          "delta_L2": 1.048489088229028,
+          "maximum_abs_change": 0.13227558135986328,
+          "relative_L2": 0.7451549437291515,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+          "elements": 17920,
+          "changed_elements": 17920,
+          "delta_L2": 5.976060608876647,
+          "maximum_abs_change": 0.21221720054745674,
+          "relative_L2": 0.8198331753079716,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 2.679167914605264,
+          "maximum_abs_change": 0.3643984794616699,
+          "relative_L2": 0.21180682110490326,
+          "scope": "f_theta"
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+          "elements": 160,
+          "changed_elements": 160,
+          "delta_L2": 0.4359660995148632,
+          "maximum_abs_change": 0.21735642850399017,
+          "relative_L2": null,
+          "scope": "f_theta"
+        }
+      ]
+    }
+  ],
+  "cost": {
+    "new_models": 9,
+    "new_epochs": 450,
+    "new_optimizer_updates": 99900,
+    "reused_historical_models": 3,
+    "historical_epochs": 150,
+    "historical_updates": 33300,
+    "represented_total_epoch_records": 600,
+    "total_default_decisions": 2016000,
+    "metric_records": 216,
+    "extra_source_batches": 5850,
+    "extra_source_packet_forwards": 1053000,
+    "gradient_layer_records": 1404,
+    "saved_parameter_gradient_matrices": 936,
+    "native_epoch_seconds_by_arm": {
+      "SIG_TIME": 20286.370194911957,
+      "BONE_RAW_FISHR": 20640.69140601158,
+      "BONE_COND_FISHR": 21206.57448077202
+    },
+    "native_epoch_time_includes_auxiliary": true,
+    "shared_GPU_not_speed_comparison": true,
+    "head_fit_updates": 0
+  }
+}

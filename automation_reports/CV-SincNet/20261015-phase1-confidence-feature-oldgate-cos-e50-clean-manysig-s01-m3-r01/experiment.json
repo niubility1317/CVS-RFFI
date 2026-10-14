@@ -1184,5 +1184,15 @@
     "head_fit_updates": 0
   },
   "registered_at": "2026-10-14T18:37:11+00:00",
-  "execution_commit": "704cf37536d3cb6b8764af2131547db4a9939480"
+  "execution_commit": "704cf37536d3cb6b8764af2131547db4a9939480",
+  "source_qualification": {
+    "status": "PASS",
+    "evidence": "source_expansion_decision.json",
+    "fixed_remaining_run": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+    "remaining_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "new_target_numeric_results_read": false
+  }
 }

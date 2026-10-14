@@ -27,3 +27,11 @@ RUNNING / VERIFIED：执行commit 704cf37536d3cb6b8764af2131547db4a9939480，单
 ## 实际初始化与前段训练核验
 
 另进程只读两模型initial_smoke.pt，198个参数/buffer张量、864924个状态元素逐值相同，scratch/无父权重/数据角色一致；无新前向或模型更新。第3轮源CE分别0.403988/0.402676、V95.1741%/95.2741%，此时feature系数/loss/U前向均0，因此不能计作新机制收益。两模型cudnn_deterministic=false，轨迹未保证逐步数值完全一致；实际初始化匹配与未启用阶段的训练波动分别记录于actual_initial_and_pre_stage_comparison.json，不改变健康训练或配方。
+
+## 真实第34轮半监督接线
+
+两模型均按计划遍历56700个隐藏TX的U样本/222batch。候选系数.02，mask保留53341/56700（94.0758%），全部使用完整batchN作分母；这是新feature一致性覆盖，不是伪标签正确率或旧硬门接受率。t1/t2/SIG投影有效梯度均222/222非零；对照系数0、有效feature梯度0/222，未加权诊断梯度均222/222非零。运行期已保存向量并复算，classW辅助梯度缺失的实际检查通过；完整50轮独立向量复算/参数变化仍待收尾。原UCE/entropy不改，U真值标志0，无跳过更新/新目标访问/额外分析前向。证据见actual_pseudo_epoch34.json。
+
+## 目标数值读取前的纯源决定
+
+源资格PASS：retained feature均值比0.820886、全U均值比0.828006、候选覆盖0.920871、finalLCE0.248933、真实t1/t2/SIG有效信号34/50均满足。默认头/特征边界合法，固定决定扩展02/03，同scratch50/原机制与所有超参数，代码尚未实现/发布；source_expansion_decision.json/md在读取此run新目标数字前commit+push。目标表现好坏都不取消源规则已固定的扩展。

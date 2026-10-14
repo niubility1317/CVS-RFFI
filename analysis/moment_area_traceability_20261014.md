@@ -171,3 +171,9 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01：实际code325d113dff08206cb2f174e74d33e48f3e0b2ad5（主体cadd843d569e85b81b5e9e8bc14c73b0ab4e00ae），基于六模型TCF source资格PASS，只增加固定detached FP32 teacherweak>=studentstrong的joint160一致性mask/fullbatch分母。SIG_TIME/默认头/旧batch_neighbor+ownEMA+cos不改，2scratch50匹配首seed模型+历史baseline，原U CE/entropy完全保留，不堆叠Fishr，无新增前向/模块/头。local10负例/实际合成optimizer+featureexport等PASS；唯一P0P1发现发布依赖缺失，最小修复后定点PASS。source扩种子规则/逐rowclean168000+truthlast已预登记，未启动、无新训练结果。
 
 发布后VERIFIED：20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01执行704cf37536d3cb6b8764af2131547db4a9939480，实际SIG2588400/GPU3与CONF2588549/GPU6均完成第1轮，首步真实CPnoquery/单archiveSHA/remotecompile/PID-CWD-argv-GPU-loggrowth PASS，failure0。原baseline默认头自动clean链完成，新变体仍训练，feature从34轮启用，无新目标数值读回。源资格读取入口local_artifacts/confidence_feature50_delivery_r01/source_qualification_only.py，扩种子决定须先commit/push；不以启动或源PASS宣称性能提升。
+
+## 2026-10-15 骨干Fishr完整三seed与门控SSL源决定
+
+20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 + 20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01 全12行已ANALYZED/VERIFIED：RAW−SIG +0.0143±0.1918pp/1正，COND−SIG −0.1391±0.2340pp/1正，COND−RAW0正；216CM、2016000默认头决策、936参数梯度矩阵独立复算，9新模型450轮/99900更新、头拟合0。源penalty优化并无稳定DG增益，保留完整负结果，不扫权重。
+
+20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01 实际E34门控接线确认；完整预登记source规则PASS（retained比0.820886/allU比0.828006/coverage0.920871），在任何该run新目标数值读回前冻结 20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01 固定02/03同配方scratch50扩展（4新模型/200轮/44400updates），当前尚未实现或发布。该决定先commit/push，再回收首seed目标结果，目标分数不取消已确定扩展。

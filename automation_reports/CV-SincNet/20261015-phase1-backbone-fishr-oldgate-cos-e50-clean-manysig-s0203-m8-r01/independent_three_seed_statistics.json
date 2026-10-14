@@ -1,0 +1,158 @@
+{
+  "status": "VERIFIED",
+  "CM_records_recounted": 216,
+  "default_decision_count": 2016000,
+  "summary": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "seed_count": 3,
+      "accuracy_mean": 0.8052678571428572,
+      "accuracy_sd": 0.023775723031465,
+      "seed_accuracy": {
+        "2026092701": 0.8066845238095238,
+        "2026092702": 0.7808154761904762,
+        "2026092703": 0.8283035714285715
+      },
+      "macro_f1_mean": 0.8000238637751927,
+      "worst_RX_mean": 0.6797083333333332,
+      "worst_day_mean": 0.7605555555555555
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed_count": 3,
+      "accuracy_mean": 0.8265039682539682,
+      "accuracy_sd": 0.01711817971396425,
+      "seed_accuracy": {
+        "2026092701": 0.8353333333333334,
+        "2026092702": 0.8067738095238095,
+        "2026092703": 0.8374047619047619
+      },
+      "macro_f1_mean": 0.8210197081311522,
+      "worst_RX_mean": 0.7042638888888889,
+      "worst_day_mean": 0.7851746031746032
+    },
+    {
+      "arm": "BONE_RAW_FISHR",
+      "seed_count": 3,
+      "accuracy_mean": 0.8266468253968254,
+      "accuracy_sd": 0.017401918141617557,
+      "seed_accuracy": {
+        "2026092701": 0.8375416666666666,
+        "2026092702": 0.806577380952381,
+        "2026092703": 0.8358214285714286
+      },
+      "macro_f1_mean": 0.8211978246576419,
+      "worst_RX_mean": 0.7057083333333334,
+      "worst_day_mean": 0.7856507936507936
+    },
+    {
+      "arm": "BONE_COND_FISHR",
+      "seed_count": 3,
+      "accuracy_mean": 0.8251130952380953,
+      "accuracy_sd": 0.01771888241211167,
+      "seed_accuracy": {
+        "2026092701": 0.8365476190476191,
+        "2026092702": 0.804702380952381,
+        "2026092703": 0.8340892857142858
+      },
+      "macro_f1_mean": 0.8194474711483375,
+      "worst_RX_mean": 0.7005833333333333,
+      "worst_day_mean": 0.783063492063492
+    }
+  ],
+  "paired": [
+    {
+      "arm": "BONE_COND_FISHR",
+      "control": "BONE_RAW_FISHR",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        -0.0009940476190475334,
+        -0.00187499999999996,
+        -0.0017321428571428488
+      ],
+      "mean_difference": -0.001533730158730114,
+      "sd_difference": 0.0004728054288446829,
+      "positive_seeds": 0,
+      "net_correct": -773
+    },
+    {
+      "arm": "BONE_COND_FISHR",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.0012142857142857233,
+        -0.002071428571428502,
+        -0.0033154761904761187
+      ],
+      "mean_difference": -0.0013908730158729659,
+      "sd_difference": 0.0023403103697172386,
+      "positive_seeds": 1,
+      "net_correct": -701
+    },
+    {
+      "arm": "BONE_COND_FISHR",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.029863095238095272,
+        0.023886904761904804,
+        0.005785714285714283
+      ],
+      "mean_difference": 0.01984523809523812,
+      "sd_difference": 0.012537199466581567,
+      "positive_seeds": 3,
+      "net_correct": 10002
+    },
+    {
+      "arm": "BONE_RAW_FISHR",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.0022083333333332567,
+        -0.00019642857142854186,
+        -0.00158333333333327
+      ],
+      "mean_difference": 0.00014285714285714826,
+      "sd_difference": 0.001918468171410794,
+      "positive_seeds": 1,
+      "net_correct": 72
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.02864880952380955,
+        0.025958333333333306,
+        0.009101190476190402
+      ],
+      "mean_difference": 0.021236111111111084,
+      "sd_difference": 0.010594899227682524,
+      "positive_seeds": 3,
+      "net_correct": 10703
+    }
+  ],
+  "score_labels_reopened": false,
+  "new_model_or_target_forwards": false,
+  "head_fit_updates": 0
+}

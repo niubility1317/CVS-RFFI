@@ -82245,14 +82245,44 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "完成健康运行的RAW/TX_DAY_CENTERED泛化固定02/03矩阵，原轮次/系数/默认头不改，逐row自动clean独立评分后完整三seed分析",
-    "完成健康运行的固定首seed CONF_FEATURE_MT/SIG匹配scratch50，自动逐rowclean独立评分；先只读取source资格并冻结02/03决定commit/push，再取新目标数值摘要，不改阈值/系数或默认头"
+    "按已冻结源PASS决定实现并发布CONF_FEATURE_MT固定02/03扩展（4新scratch50+2历史基线），独立回收首seed完整结果，目标好坏不改既定扩展/权重/预算/默认头",
+    "提出新DG候选前先检验合法源域跨RX身份特征差异与默认头身份导数是否支持新约束；不扫Fishr系数，不自动堆叠，尚未发布第三个训练假设"
   ],
   "current_priority": {
     "at": "2026-10-14T18:08:17.724Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
-    "active_generalization_mechanism": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+    "active_generalization_mechanism": {
+      "status": "ANALYZED_VERIFIED",
+      "run_ids": [
+        "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+        "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01"
+      ],
+      "source_expansion_decision_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6",
+      "models": 12,
+      "new_models": 9,
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "new_epochs": 450,
+      "new_updates": 99900,
+      "default_decisions": 2016000,
+      "metric_records": 216,
+      "RAW_mean": 0.8266468253968254,
+      "SIG_mean": 0.8265039682539682,
+      "COND_mean": 0.8251130952380953,
+      "RAW_minus_SIG": 0.00014285714285714826,
+      "COND_minus_SIG": -0.0013908730158729659,
+      "positive_seeds_RAW": 1,
+      "positive_seeds_COND": 1,
+      "COND_vs_RAW_positive_seeds": 0,
+      "no_stable_new_gain": true,
+      "goal84": false,
+      "head_fit_updates": 0,
+      "report": "automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
+    },
     "next_semi_supervised_work": {
       "run_id": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
       "status": "COMPLETE_THREE_SEED_NEGATIVE",
@@ -82432,7 +82462,7 @@
       "goal84": false
     },
     "new_backbone_gradient_variance": {
-      "status": "FIRST_SEED_ANALYZED_REMAINING_RUNNING",
+      "status": "ANALYZED_VERIFIED_NO_STABLE_GAIN",
       "implementation_commit": "9c981766a0727cf072755ddd46cd5b639bae89ce",
       "objects": [
         "actualt1PW3456",
@@ -82620,7 +82650,8 @@
           "epoch": 24,
           "PID_CWD_argv_verified": true
         }
-      ]
+      ],
+      "full_three_seed_ref": "automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
     },
     "latest_source_pseudo_error_diagnostic": {
       "run_id": "20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01",
@@ -82663,7 +82694,7 @@
     "prepared_conditional_seed_extensions": [
       {
         "run_id": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-        "status": "RUNNING_VERIFIED",
+        "status": "ANALYZED_VERIFIED",
         "code_commit": "729c01e878a0df790c1056d00d1b547f709a57be",
         "remaining_seeds": [
           2026092702,
@@ -82677,7 +82708,9 @@
         "source_decision_before_new_target_retrieval": true,
         "execution_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6",
         "source_decision_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6",
-        "scientific_rows_unchanged": true
+        "scientific_rows_unchanged": true,
+        "full_three_seed_ref": "automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md",
+        "goal84": false
       },
       {
         "run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
@@ -82699,6 +82732,20 @@
         "scientific_rows_unchanged": true,
         "complete_seed_count": 3,
         "goal84": false
+      },
+      {
+        "run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+        "status": "SOURCE_DECISION_FROZEN_NOT_IMPLEMENTED_NOT_LAUNCHED",
+        "source_parent": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+        "source_evidence": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_expansion_decision.json",
+        "new_models": 4,
+        "seeds": [
+          2026092702,
+          2026092703
+        ],
+        "epochs_per_model": 50,
+        "source_only": true,
+        "new_target_numeric_results_read": false
       }
     ],
     "feature_mean_teacher_first_seed": {
@@ -82950,7 +82997,7 @@
       "no_head_or_model_update": true
     },
     "next_confidence_gated_feature_training": {
-      "status": "RUNNING_VERIFIED",
+      "status": "SOURCE_PASS_EXPANSION_FROZEN_PENDING_TARGET_READBACK",
       "source_basis_run": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
       "source_basis": "Fixed all6 V qualification PASS, same-L groups support testable confidence-order mechanism; not target-derived",
       "hypothesis": "Only confidence-ordered ownEMA feature targets reduce unhelpful allU feature imitation; fixed zero gap, fullbatch denominator, same .1 ramp, fixed SIG_TIME/defaulthead/old gateEMAcos",
@@ -83013,34 +83060,54 @@
         "head_or_model_updates_for_diagnostic": 0,
         "query_read": false,
         "report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/actual_initial_and_pre_stage_comparison.json"
-      }
+      },
+      "source_qualification": {
+        "status": "PASS",
+        "retained_feature_mean_ratio": 0.8208861910850132,
+        "allU_feature_mean_ratio": 0.8280055792664944,
+        "coverage": 0.9208712522045855,
+        "actual_feature_signal": true,
+        "first_target_numeric_results_read": false
+      },
+      "remaining_run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "remaining_state": "NOT_IMPLEMENTED_NOT_LAUNCHED",
+      "actual_epoch34_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/actual_pseudo_epoch34.json",
+      "source_decision_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_expansion_decision.json"
     },
     "backbone_fishr_source_progress": {
-      "status": "PARTIAL_SOURCE_ONLY",
-      "run_id": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-      "source_epoch_snapshot": [
-        43,
-        43,
-        40,
-        40,
-        40,
-        40
+      "status": "SUPERSEDED_BY_FULL_ANALYSIS",
+      "report": "automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
+    },
+    "backbone_fishr_full_three_seed": {
+      "status": "ANALYZED_VERIFIED",
+      "run_ids": [
+        "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+        "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01"
       ],
-      "common_window": [
-        36,
-        40
+      "source_expansion_decision_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6",
+      "models": 12,
+      "new_models": 9,
+      "model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
       ],
-      "raw_primary_ratio_to_SIG": [
-        0.8725716168807904,
-        0.8739619808586556
-      ],
-      "conditional_primary_ratio_to_SIG": [
-        0.908072493594967,
-        0.9264827013804985
-      ],
-      "budget_unchanged": true,
-      "query_read": false,
-      "report": "automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/source_training_progress.md"
+      "new_epochs": 450,
+      "new_updates": 99900,
+      "default_decisions": 2016000,
+      "metric_records": 216,
+      "RAW_mean": 0.8266468253968254,
+      "SIG_mean": 0.8265039682539682,
+      "COND_mean": 0.8251130952380953,
+      "RAW_minus_SIG": 0.00014285714285714826,
+      "COND_minus_SIG": -0.0013908730158729659,
+      "positive_seeds_RAW": 1,
+      "positive_seeds_COND": 1,
+      "COND_vs_RAW_positive_seeds": 0,
+      "no_stable_new_gain": true,
+      "goal84": false,
+      "head_fit_updates": 0,
+      "report": "automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
     }
   }
 }

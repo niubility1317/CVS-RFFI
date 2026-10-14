@@ -16,3 +16,5 @@ PARTIAL_SOURCE_ONLY。20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manys
 RAW的直接优化项低约12.6%至12.7%，COND的直接优化项低约7.4%至9.2%；RAW也降低centered项，故这不是条件化更优的证据。源CE接近、V约98.23%至98.31%，窗口无跳过更新、U真值可用标志均0。源V只作健康诊断，不能以这些微小差异改排候选/预算或宣称DG收益。完整实际梯度/参数/导出边界及终轮测试仍按预登记执行；达到当前轮次不是收敛证明。
 
 完整白名单源曲线和共同窗口见source_training_progress.json；不保存/提交原始训练日志或权重。源资格与02/03扩展决定已在此前新目标结果读回前冻结并上传，本次不改变扩展决定。
+
+此训练中快照已由完整50轮/三seed的final_analysis.md与complete_three_seed_source_curves.json取代；不得继续当作当前状态。

@@ -40,3 +40,7 @@
 ## 固定02/03扩展已发布
 
 RUNNING / VERIFIED，execution 3c052b2d36903e28694674a39e232a73acd8b6a6，核心算法原审查复用、依赖技术修复 729c01e878a0df790c1056d00d1b547f709a57be。普通账户preflight、一次archive本地/远端SHA比较、remotecompile和真实checkpoint无query smoke PASS；6新worker实际PID/CWD/argv/GPU及首轮loggrowth VERIFIED，2历史baseline直接复用。所有owner每GPU进程数最大2≤3；无失败、没有停止或重启健康任务。源决定已先提交，目标不回流配置，原始产物留既定远端目录；Git聚合证据release_launch_evidence.json。训练完成逐row自动clean/defaulthead/独立truth-last，不等待新测试许可。
+
+## 完整三种子结果已交付
+
+ANALYZED / VERIFIED：剩余8行自然完成/failure0，完整12行/2016000默认头决策/216指标与936保存梯度矩阵复算通过。RAW82.6647%、匹配SIG82.6504%（+0.0143±0.1918pp，1/3正）；COND82.5113%（−0.1391±0.2340pp，1/3正），对RAW0/3正。没有稳定新增收益，84%目标未达；不扫权重或按目标选择性重跑。完整逐seed、错误迁移、实际源曲线/特征变化/预算/限制见final_analysis.md及相关聚合JSON/图；历史部分状态保留为原时点记录。

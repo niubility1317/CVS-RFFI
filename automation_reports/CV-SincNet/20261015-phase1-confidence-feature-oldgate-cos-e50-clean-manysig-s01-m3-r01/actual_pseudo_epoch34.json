@@ -1,0 +1,78 @@
+{
+  "status": "VERIFIED_RUNTIME_SOURCE",
+  "run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "rows": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "epoch": 34,
+      "coefficient": 0,
+      "batches": 222,
+      "U_packets": 56700,
+      "retained": 53156,
+      "retention": 0.9374955908289242,
+      "ties": 1,
+      "fullU_feature_mean": 0.3293699488332873,
+      "gated_fullbatch_feature_mean": 0.30835851817114224,
+      "retained_feature_mean": 0.3289172996520386,
+      "gradient_layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "unweighted_nonzero_batches": 222,
+          "effective_nonzero_batches": 0
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "unweighted_nonzero_batches": 222,
+          "effective_nonzero_batches": 0
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "unweighted_nonzero_batches": 222,
+          "effective_nonzero_batches": 0
+        }
+      ],
+      "runtime_gradient_saved_recount": "VERIFIED",
+      "classW_auxiliary_gradient_absent": true,
+      "fullbatch_denominator_verified": true
+    },
+    {
+      "row_id": "CONF_FEATURE_MT-s2026092701",
+      "epoch": 34,
+      "coefficient": 0.02,
+      "batches": 222,
+      "U_packets": 56700,
+      "retained": 53341,
+      "retention": 0.9407583774250441,
+      "ties": 0,
+      "fullU_feature_mean": 0.3225143971981405,
+      "gated_fullbatch_feature_mean": 0.30257378011784225,
+      "retained_feature_mean": 0.3216275160323514,
+      "gradient_layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "unweighted_nonzero_batches": 222,
+          "effective_nonzero_batches": 222
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "unweighted_nonzero_batches": 222,
+          "effective_nonzero_batches": 222
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "unweighted_nonzero_batches": 222,
+          "effective_nonzero_batches": 222
+        }
+      ],
+      "runtime_gradient_saved_recount": "VERIFIED",
+      "classW_auxiliary_gradient_absent": true,
+      "fullbatch_denominator_verified": true
+    }
+  ],
+  "query_read": false,
+  "U_truth_read": false,
+  "no_new_model_forwards": true,
+  "no_optimizer_updates_for_analysis": true,
+  "gradient_statistics_evidence": "Runtime saved-vector recount; final independent complete50 recount remains pending",
+  "at": "2026-10-14T19:06:54.154855+00:00"
+}
