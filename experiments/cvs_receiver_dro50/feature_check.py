@@ -3,11 +3,13 @@ from . import design as d, model as api
 from experiments.cvs_signature_stats50.feature_check import run as shared
 
 
-def run(seed=None, only_row=None):
-    value = shared(seed, only_row, design=d, build_fn=api.build)
+def run(seed=None, only_row=None, *, design=None, build_fn=None):
+    d = design or globals()['d']
+    build_fn = build_fn or api.build
+    value = shared(seed, only_row, design=d, build_fn=build_fn)
     if only_row is None and value['status'] == 'VERIFIED':
         shadow = SimpleNamespace(**vars(d)); shadow.PRIMARY = 'RX_BALANCED'
-        other = shared(seed, only_row, design=shadow, build_fn=api.build)
+        other = shared(seed, only_row, design=shadow, build_fn=build_fn)
         if other['status'] != 'VERIFIED' or other['models'] != value['models']:
             raise ValueError('Receiver-balanced feature comparison incomplete')
         value['paired'] += other['paired']

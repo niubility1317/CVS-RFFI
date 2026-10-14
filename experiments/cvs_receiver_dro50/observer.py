@@ -9,7 +9,11 @@ from experiments.cvs_source_layer_order.probe import gradient_stats
 
 
 class Observer:
+    def __init__(self, *, design=None):
+        self.design = design or d
+
     def initialize(self, model, c, out):
+        d = self.design
         d.validate(c)
         self.c, self.model, self.out = c, model, out
         self.steps = self.U_steps = self.U_packets = self.U_accepted = 0
@@ -35,6 +39,7 @@ class Observer:
 
     def labeled(self, *, model, args, epoch, batch_idx, logits, labels, receivers,
                 clean_count, original_loss, role):
+        d = self.design
         step = (epoch - 1) * 222 + batch_idx
         if model is not self.model or step != self.steps + 1 or role != 'L_s':
             raise ValueError('Actual labelled risk step differs')
@@ -73,6 +78,7 @@ class Observer:
         return loss_u
 
     def epoch(self, model, ctx, rows, out, device):
+        d = self.design
         epoch = int(rows[-1]['epoch']); self.stream.flush()
         if self.steps != epoch * 222:
             raise ValueError('Receiver risk source budget incomplete')
@@ -94,6 +100,7 @@ class Observer:
                 head_fit_updates=0, default_W_normal_joint_CE=True, U_truth_read=False))
 
     def finish(self):
+        d = self.design
         if self.steps != 11100 or self.U_steps != 3774 or self.U_packets != 963900:
             raise ValueError('Receiver risk/native U exposure incomplete')
         if self.saved != list(d.DIAGNOSTIC_EPOCHS) or len(self.records) != 52:

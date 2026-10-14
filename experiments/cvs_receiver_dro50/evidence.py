@@ -6,7 +6,8 @@ from . import design as d
 from experiments.cvs_source_layer_order.probe import gradient_stats
 
 
-def recount(row):
+def recount(row, *, design=None):
+    d = design or globals()['d']
     c = d.config(row); p = d.BASE / row['row_id'] / 'source'
     observed = d.read(p / 'receiver_risk_training_observation.json')
     if observed['status'] != 'VERIFIED' or observed['steps'] != 11100 or observed['U_packets'] != 963900:

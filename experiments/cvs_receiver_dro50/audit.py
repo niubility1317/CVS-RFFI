@@ -4,11 +4,12 @@ from .evidence import recount
 from experiments.cvs_signature_stats50.audit import run as shared
 
 
-def run():
+def run(*, design=None, build_fn=None):
+    d = design or globals()['d']
     start = time.time()
-    native = shared(design=d, build_fn=api.build)
-    source = [recount(r) for r in d.training_rows()]
+    native = shared(design=d, build_fn=build_fn or api.build)
+    source = [recount(r, design=d) for r in d.training_rows()]
     return dict(status='VERIFIED', audit=native, actual_training_observations=source,
-        risk_steps_recounted=33300, gradient_layer_records_recounted=624,
-        saved_vectors_recounted=1872, extra_model_forwards=0, head_fit_updates=0,
+        risk_steps_recounted=11100 * len(source), gradient_layer_records_recounted=208 * len(source),
+        saved_vectors_recounted=624 * len(source), extra_model_forwards=0, head_fit_updates=0,
         U_truth_read=False, seconds=time.time() - start)
