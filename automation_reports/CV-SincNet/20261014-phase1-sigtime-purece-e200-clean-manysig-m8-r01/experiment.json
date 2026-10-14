@@ -20,7 +20,7 @@
   "replaces_run_id": null,
   "authorization": "2026-10-14用户明确纯CE新CVS SIG_TIME八种子，确认E200、原划分、仅clean。",
   "code": {
-    "commit": "PENDING_GIT_COMMIT",
+    "commit": "6408f29ee8ff9b355d12d88271d460d4ad082d15",
     "checkout": "E:\\type10-7\\code\\worktrees\\standard_ce_baselines_20261010",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/sigtime_purece_e200_20261014_r01"
@@ -499,7 +499,7 @@
     "SIG_TIME includes reference-response/NoExplicitCFO/post-t2 path signature; total196001, feature195041, pool18976 parameters.",
     "13 historical8seed comparator results reused; clean only, split392005; exposed proxy benchmark, not independent blind or deployment validation."
   ],
-  "status": "PREREGISTERED",
+  "status": "RUNNING",
   "comparison_run_ids": [
     "20261010-phase1-standard-ce-baselines-manysig-m56-r01",
     "20261012-phase1-standard-ce-seed-extension-manysig-m52-r01"

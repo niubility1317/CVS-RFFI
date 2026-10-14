@@ -13,3 +13,18 @@
 本地4项聚焦检查 PASS：8seed矩阵/输出冲突/路径越界负例，checkpoint/teacher/query/损失/预算拒绝，私有CPU/CUDA RNG保持与路径数学，真实默认头和所有新增参数CE梯度及数值更新/严格checkpoint roundtrip/逐包一致/零输入有限。唯一独立直接P0/P1审查已完成，PASS。下一步一个Git代码配置提交、ordinary N607单archive传输比对/compile/真实CP noquery smoke，PASS直接启动；启动后独立核对 PID/CWD/argv/GPU/配置和日志增长。
 
 当前：LOCAL_VERIFIED，尚未启动、尚无本次性能结果。only clean 的授权覆盖默认七视图测试；不声称新的独立盲测、Phase2或真实接收机/卫星部署。测试完成前不得标完整实验完成。
+
+## 实际发布与运行核验
+
+VERIFIED。实际执行提交 `6408f29ee8ff9b355d12d88271d460d4ad082d15`，独立远端分支 OID 与本地一致。ordinary N607 单 release archive 比对、一次远端 compile、真实旧 E200 checkpoint synthetic no-query smoke与新网络CE/梯度/checkpoint检查通过；dispatcher PID/CWD/argv及run-root独立读回一致。完整进程与配置证据留 local_artifacts/sigtime_purece_e200_20261014_r01/launch_verification.json，不将原始日志或私有runtime状态提交Git。
+
+- sig_time-s2026092701：TRAINING；GPU 5；epoch 9；日志 9451 字节。
+- sig_time-s2026092702：TRAINING；GPU 6；epoch 8；日志 8582 字节。
+- sig_time-s2026092703：TRAINING；GPU 4；epoch 7；日志 7771 字节。
+- sig_time-s2026092704：TRAINING；GPU 7；epoch 6；日志 6935 字节。
+- sig_time-s2026092705：TRAINING；GPU 0；epoch 5；日志 6113 字节。
+- sig_time-s2026092706：TRAINING；GPU 1；epoch 4；日志 5259 字节。
+- sig_time-s2026092707：TRAINING；GPU 2；epoch 4；日志 5257 字节。
+- sig_time-s2026092708：TRAINING；GPU 3；epoch 3；日志 4423 字节。
+
+本次矩阵8行已发布，训练/评分是否全部完成以各row产物为准，当前尚无新的clean性能结果。训练健康继续，不停止或修改任何旧任务。
