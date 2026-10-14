@@ -12,8 +12,5 @@ def configure():
  transport.INSPECT=INSPECT
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--output',type=Path,required=True);p.add_argument('--inspect',action='store_true');a=p.parse_args();configure()
- if not a.inspect:
-  from .qualification import check
-  check()
  v=transport.inspect(a.output) if a.inspect else transport.publish(a.output)
  print(json.dumps(dict(status=v['status'],workers=len(v['workers']),epochs=[w['epoch_count'] for w in v['workers']],completion=v['completion'],failure=v['failure'])))

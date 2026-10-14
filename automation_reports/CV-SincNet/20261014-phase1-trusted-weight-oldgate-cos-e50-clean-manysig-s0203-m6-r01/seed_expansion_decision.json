@@ -1,0 +1,101 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "parent_run_id": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "parent_execution_commit": "7708d4afcef141bb614e0c2171f2a9207c4469ff",
+  "source_qualification": {
+    "status": "PASS",
+    "source_only": true,
+    "target_metrics_read_for_decision": false,
+    "final_L_CE": {
+      "SIG_TIME-s2026092701": 0.24759063893207559,
+      "TRUSTED_WEIGHT-s2026092701": 0.24782963033329258
+    },
+    "actual_source_WEIGHT_minus_SIG_L2": 1.7366856336593628,
+    "fixed_rules": {
+      "final_L_CE_max": 0.5,
+      "source_added_feature_difference_min": 0.000001,
+      "actual_gradient_records_required": 1998,
+      "actual_gradient_epochs": [
+        33,
+        34,
+        50
+      ],
+      "source_only": true,
+      "description": "Both finalLCE<=.5, actual feature export/update/W independence and identicalinitialfunction, candidate-control L720 zL2>=1e-6; actual3epochs666batch1998layerrecords/noUtruth/noextraheadfits"
+    },
+    "head_fit": false,
+    "source_feature_export_exact": true,
+    "actual_initial_native_body_and_head_equal": true,
+    "predefined_remaining_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "configuration_changes_for_expansion": false,
+    "actual_training_observations": {
+      "SIG_TIME-s2026092701": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "U_steps": 3774,
+        "U_packets": 963900,
+        "U_accepted": 15440,
+        "epochs": [
+          33,
+          34,
+          50
+        ],
+        "batch_records": 666,
+        "layer_gradient_records": 1998,
+        "weight_active": false,
+        "raw_bounds": [
+          0.75,
+          1.25
+        ],
+        "old_gate_unchanged": true,
+        "head_fit": false,
+        "default_head_jointly_trained": true,
+        "extra_forward": 0,
+        "extra_RNG_draws": 0,
+        "U_truth_read": false,
+        "source_only": true,
+        "saved_gradient_recount": "VERIFIED"
+      },
+      "TRUSTED_WEIGHT-s2026092701": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "U_steps": 3774,
+        "U_packets": 963900,
+        "U_accepted": 15437,
+        "epochs": [
+          33,
+          34,
+          50
+        ],
+        "batch_records": 666,
+        "layer_gradient_records": 1998,
+        "weight_active": true,
+        "raw_bounds": [
+          0.75,
+          1.25
+        ],
+        "old_gate_unchanged": true,
+        "head_fit": false,
+        "default_head_jointly_trained": true,
+        "extra_forward": 0,
+        "extra_RNG_draws": 0,
+        "U_truth_read": false,
+        "source_only": true,
+        "saved_gradient_recount": "VERIFIED"
+      }
+    }
+  },
+  "source_feature_models": 2,
+  "predefined_remaining_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "configuration_changed": false,
+  "first_seed_retrained": false,
+  "target_numeric_scores_read_before_decision": false,
+  "decision": "Publish unchanged registered4new scratch50 rows after existingsourcePASS; targetresults do not control expansion"
+}
