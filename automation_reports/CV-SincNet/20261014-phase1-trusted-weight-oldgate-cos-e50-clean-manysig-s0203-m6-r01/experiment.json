@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确要求将并列MEAN_VAR/COV综合到SIG_TIME基础上继续强化特征性能；默认分类头不可单独训练，每模型<=50，基线旧门控+cos；实现及对应实验结果Git上传。",
   "code": {
-    "commit": "1859aa924e08210e7d23193d908f8e02c4fb2024",
+    "commit": "fcc252f3938a21b415f5354b2a2e9db7315934bd",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32/2threads; warm CUDA before native seed; private feature initialization RNG",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_trusted_weight_seeds_20261014_r01",
@@ -212,7 +212,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/trusted-weight-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -250,11 +250,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_gradient_records_required": 1998,
           "actual_gradient_epochs": [
             33,
@@ -353,7 +353,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -391,7 +391,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -585,7 +585,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/trusted-weight-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -623,11 +623,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_gradient_records_required": 1998,
           "actual_gradient_epochs": [
             33,
@@ -827,7 +827,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/trusted-weight-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -865,11 +865,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_gradient_records_required": 1998,
           "actual_gradient_epochs": [
             33,
@@ -1069,7 +1069,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/trusted-weight-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1107,11 +1107,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_gradient_records_required": 1998,
           "actual_gradient_epochs": [
             33,
@@ -1210,7 +1210,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -1248,7 +1248,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -1442,7 +1442,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/trusted-weight-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1480,11 +1480,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_gradient_records_required": 1998,
           "actual_gradient_epochs": [
             33,
@@ -1684,7 +1684,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/trusted-weight-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1722,11 +1722,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_gradient_records_required": 1998,
           "actual_gradient_epochs": [
             33,
