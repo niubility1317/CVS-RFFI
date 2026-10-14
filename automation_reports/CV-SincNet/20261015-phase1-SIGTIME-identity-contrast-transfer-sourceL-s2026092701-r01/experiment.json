@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "Active user goal: improve training/loss and actualfeature generalization, defaulthead only, fixedsource permission and E20+20 budget.",
   "code": {
-    "commit": "release_commit.txt (actual Git HEAD at publication)",
+    "commit": "ed5980ab9b5627c6aed80adf74a82365b8249c76",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account/CVS-RFFI Python/CPU2threads/GPU0/eight namespaceoverlay on immutable ownE20runtime",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_contrast_transfer_sourceL_20261015_r01"
@@ -185,5 +185,98 @@
     "Temporary readout nofit; latentlabel-preserving composition is a testable assumption, reference may carry classdependentRX/noise.",
     "Historicalpositive routes separate; 84%defaultheadcleanthree seedgoalactive."
   ],
-  "registered_at": "2026-10-14T23:33:38+00:00"
+  "registered_at": "2026-10-14T23:33:38+00:00",
+  "result": {
+    "status": "SOURCE_SCREEN_NOT_PASSED",
+    "gate_result": {
+      "passed": false,
+      "stage_signal": null,
+      "qualified_ordinals_by_state": {
+        "INITIAL": [
+          37
+        ],
+        "FINAL20": [
+          19
+        ]
+      },
+      "cell_conditions": [
+        {
+          "state": "INITIAL",
+          "ordinal": 2,
+          "qualified": false,
+          "failed_conditions": [
+            "SAME_RX:no_functional_transfer_CE_gain"
+          ]
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 19,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:transfer_error_harm"
+          ]
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 37,
+          "qualified": true,
+          "failed_conditions": []
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 54,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:transfer_error_harm",
+            "SAME_RX:no_functional_transfer_CE_gain",
+            "SAME_RX:transfer_error_harm"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 2,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:ACTUAL_relative_CE_harm",
+            "ZERO:PRE_W_relative_CE_harm",
+            "SAME_RX:no_functional_transfer_CE_gain"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 19,
+          "qualified": true,
+          "failed_conditions": []
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 37,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:no_functional_transfer_CE_gain"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 54,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:no_functional_transfer_CE_gain",
+            "SAME_RX:no_functional_transfer_CE_gain"
+          ]
+        }
+      ],
+      "controls_not_fallback": true,
+      "interpretation": "Source opportunity and compatible functional identity transfer, not fulltraining or unseenRX/DG"
+    },
+    "decision": "CLOSE_FIXED_ABSOLUTE_PROBABILITY_CONTRAST_TRANSFER",
+    "initial_plain_CE_gradient_amplification": true,
+    "late_distinct_broad_functional_signal_preserved": true,
+    "real_training_launched": false,
+    "actual_optimizer_updates": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "goal84_completed": false,
+    "evidence_ref": "result_evidence.json"
+  }
 }
