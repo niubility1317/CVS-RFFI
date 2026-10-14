@@ -3,7 +3,8 @@ import argparse,copy,json,time
 from pathlib import Path
 import torch
 from torch.nn import functional as F
-from . import design as d
+from . import design as default_design
+d=default_design
 from .predict import own_model,source_proof
 from experiments.cvs_feature_diagnostics.feature_change import measure
 PREFIX='id_backbone.encoder.core.id_backbone.'
@@ -42,7 +43,8 @@ def compare_features(a,b,source):
  if any(not torch.equal(v,m.state_dict()[k]) for m,s in zip((a,b),saved) for k,v in s.items()):raise ValueError('Frozen model state changed')
  return dict(status='VERIFIED',actual_feature='joint160/id_feat_joint',records=records,model_parameters_buffers_unchanged=True,source_only=True,query_read=False,head_fit=False,optimizer_steps=0,interpretation='Same-source frozen feature difference; not newTX transfer or proof that parameter/feature changes cause DG gain')
 
-def run(seed=None):
+def run(seed=None,*,design=None,proof_fn=None,build_fn=None):
+ d=design or default_design;proof=proof_fn or source_proof;builder=build_fn or own_model
  from experiments.cvs_nocfo_foundation import design as nd
  from experiments.cvs_nocfo_foundation.source import load_source
  from experiments.cvs_feature_diagnostics.time_scales import sample_labeled
@@ -59,7 +61,7 @@ def run(seed=None):
     if row['model_seed']!=s:continue
     c=d.config(row);p=Path(c['output_root'])
     if not (p/'source_frozen.json').is_file():missing.append(row['row_id']);continue
-    source_proof(c);final=own_model(c,'cpu');initial=copy.deepcopy(final)
+    proof(c);final=builder(c,'cpu');initial=copy.deepcopy(final)
     initial.load_state_dict(torch.load(p/'initial_smoke.pt',map_location='cpu',weights_only=False)['model'],strict=True);initial.eval().requires_grad_(False)
     rows.append(dict(row_id=row['row_id'],arm=row['arm'],seed=s,source_roles='EXACT_MATCH',epochs=50,feature_boundary=measure(initial,final,source),actual_initial_to_final_parameters=parameter_changes(initial,final)))
     models[row['arm']]=final;initials[row['arm']]=initial

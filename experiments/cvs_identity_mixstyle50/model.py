@@ -2,7 +2,8 @@
 from contextlib import contextmanager
 from pathlib import Path
 import torch
-from . import design as d
+from . import design as default_design
+d=default_design
 from experiments.cvs_phase1_stack.runtime import installed as native_installed
 from experiments.cvs_phase1_overlay.model import Phase1IdentityAdapter
 from experiments.cvs_source_identity_readout.input_policy import apply
@@ -28,7 +29,8 @@ def intervene(value,meta,seed):
    if i!=j and not (y[i]==y[j] and day[i]==day[j] and rx[i]!=rx[j] and meta['ids'][i]!=meta['ids'][j]):raise ValueError('Identity-protected actual donor failed')
  return mixed,detail
 
-def install(model,c):
+def install(model,c,*,design=None):
+ d=design or default_design
  d.validate(c);model._identity_input_policy=apply(model);model._source_mixstyle=dict(c['identity_mixstyle'],head='unchanged cosine6x160',separate_head_fit=False)
  b=model.id_backbone
  if b.mixstyle_on:raise ValueError('Original MixStyle unexpectedly enabled')
@@ -36,12 +38,13 @@ def install(model,c):
  return model
 
 @contextmanager
-def installed(c,training=False):
+def installed(c,training=False,*,design=None):
+ d=design or default_design
  d.validate(c)
  with native_installed(c) as n:
   previous_build=n.build_baseline_model;previous_move=n.move_batch;previous_forward=Phase1IdentityAdapter.forward;context={}
   if n._source_feature_auxiliary_hook is not None:raise ValueError('Unregistered auxiliary hook')
-  def build(args,device):return install(previous_build(args,device),c).to(device)
+  def build(args,device):return install(previous_build(args,device),c,design=d).to(device)
   def move(batch,device):
    x,y,extra=previous_move(batch,device)
    # U remains -1 and no U metadata enters the intervention. V may be fetched
@@ -80,6 +83,7 @@ def installed(c,training=False):
    else:yield n
   finally:n.build_baseline_model=previous_build;n.move_batch=previous_move;Phase1IdentityAdapter.forward=previous_forward
 
-def build(c,device='cpu'):
+def build(c,device='cpu',*,design=None):
+ d=design or default_design
  a=d.make_args(c,str(device));a.num_domains=source_domain_count(a);a.input_len=256
- with installed(c) as n:return n.build_baseline_model(a,torch.device(device))
+ with installed(c,design=d) as n:return n.build_baseline_model(a,torch.device(device))

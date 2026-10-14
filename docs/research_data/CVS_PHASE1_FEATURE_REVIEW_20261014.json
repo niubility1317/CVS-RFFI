@@ -33239,6 +33239,32 @@
         2078.2004206180573
       ],
       "next": "固定另2seeds同机制/同预算匹配scratch控制，第一seed不重训；再完整三seed汇总，不用目标差调参或选择性停止"
+    },
+    {
+      "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "status": "IMPLEMENTED_REVIEWED",
+      "method": "same fixed identity-protected t1/t2 MixStyle predefined seed expansion",
+      "model_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "new_models": 4,
+      "baseline_reuse_models": 2,
+      "epochs_each": 50,
+      "label_epochs": 33,
+      "pseudo_epochs": 17,
+      "new_optimizer_steps": 44400,
+      "head": "default cosine6x160scale30 normal joint training",
+      "head_fit": false,
+      "source_decision_commit": "9e79dc413967aee78fa87e5d0f6c7408c44e4efc",
+      "source_qualification": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "target_results": null,
+      "combined_first_seed_retrained": false,
+      "combined_model_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ]
     }
   ],
   "diagnostics": {
