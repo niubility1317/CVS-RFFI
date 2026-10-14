@@ -1,0 +1,20 @@
+{
+  "status": "FAILED_BEFORE_TRAINING_VERIFIED",
+  "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+  "release": "cvs_temporal_rsc50_20261015_r01",
+  "execution_commit": "524e58a0f72848008314beb668500a0ee9994582",
+  "failed_layer": "dispatcher preregistration actual-config comparison",
+  "error": "PA/default-head preregistration differs",
+  "cause": "Public metadata redaction collapsed source_config and substituted project paths, but native dispatcher compared full config objects without expansion",
+  "preflight": "PASS",
+  "remote_compile": "PASS",
+  "real_checkpoint_no_query_smoke": "PASS",
+  "workers_started": 0,
+  "optimizer_updates": 0,
+  "source_or_query_IQ_loaded_by_training": false,
+  "checkpoint_initialization_for_training": false,
+  "remote_process_after_exit": null,
+  "partial_remote_release_and_run_preserved": true,
+  "fix": "New immutable r02; retain full canonical configs with public PROJECT handle; expand that exact path prefix in new dispatcher reader before unchanged equality comparison. Do not fill or ignore config fields.",
+  "training_formula_or_budget_changed": false
+}

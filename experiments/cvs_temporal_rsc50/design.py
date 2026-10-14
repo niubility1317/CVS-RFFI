@@ -7,8 +7,8 @@ for name in ('PROJECT','SOURCE','CAPSULE','TRUTH','CLASSES','FULL_FP32_POLICY','
              'READOUTS','VIEWS','QUERY_COUNT','EPOCHS','LABEL_EPOCHS','PSEUDO_EPOCHS','STEPS',
              'UPDATES','BASELINE_EVAL_RUN','STYLE_LAYERS','PARAMETERS','RX','DIAGNOSTIC_EPOCHS'):
     globals()[name] = getattr(parent,name)
-RUN='20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r01'
-RELEASE='cvs_temporal_rsc50_20261015_r01'
+RUN='20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02'
+RELEASE='cvs_temporal_rsc50_20261015_r02'
 OWNER='codex/root/temporal-rsc50-20261015'
 BASE=Path(PROJECT)/'runs'/RUN
 SEEDS=(2026092701,)

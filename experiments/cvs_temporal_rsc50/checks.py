@@ -91,6 +91,11 @@ def checks():
         try:d.validate(bad)
         except ValueError:negatives+=1
         else:raise AssertionError('Changed fixed RSC configuration accepted')
+    from .dispatch import restore_project
+    registered=[d.config(r) for r in d.rows()]
+    public=json.loads(json.dumps(registered).replace(d.PROJECT,"PROJECT"))
+    assert restore_project(public,d.PROJECT)==registered
+    assert restore_project({"path":"OTHER_PROJECT/source"},d.PROJECT)!={"path":d.PROJECT+"/source"}
     initial=None;actual=[]
     for row in d.training_rows():
         c=d.config(row);a=d.make_args(c,'cpu')

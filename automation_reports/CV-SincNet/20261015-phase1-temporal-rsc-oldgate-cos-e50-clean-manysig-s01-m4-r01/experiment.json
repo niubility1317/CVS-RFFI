@@ -1168,7 +1168,13 @@
     "One bounded independent P0/P1 review; identified release dependency fixed and targeted confirmation required. No unrelated workflow gates or refits.",
     "Raw IQ, checkpoints, PT vectors, logs and predictions stay off Git; code/config/preregistration and positive or negative aggregate results committed/pushed with remote OID verification."
   ],
-  "results": {},
+  "results": {
+    "status": "FAILED_BEFORE_TRAINING_VERIFIED",
+    "artifact": "failed_launch.json",
+    "workers_started": 0,
+    "optimizer_updates": 0,
+    "recovery_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02"
+  },
   "registered_at": "2026-10-14T22:36:37+00:00",
-  "status": "PLANNED"
+  "status": "FAILED"
 }

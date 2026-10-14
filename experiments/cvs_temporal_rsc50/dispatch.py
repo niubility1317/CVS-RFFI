@@ -1,4 +1,6 @@
 import argparse
+from pathlib import Path
+from types import SimpleNamespace
 from . import design as d
 from .source import train
 from .predict import source_proof, predict
@@ -6,6 +8,22 @@ from .score import score, finish
 from experiments.cvs_signature_stats50.dispatch import worker, dispatch, replace
 
 MODULE = 'experiments.cvs_temporal_rsc50.dispatch'
+
+
+def restore_project(value, project):
+    """Expand the public project handle; preserve every registered config field."""
+    if isinstance(value,str):
+        return project+value[len('PROJECT'):] if value=='PROJECT' or value.startswith('PROJECT/') else value
+    if isinstance(value,list):return [restore_project(v,project) for v in value]
+    if isinstance(value,dict):return {k:restore_project(v,project) for k,v in value.items()}
+    return value
+
+
+def registered_design():
+    def read(path):
+        value=d.read(path)
+        return restore_project(value,d.PROJECT) if Path(path)==d.ROOT/'registration/experiment.json' else value
+    return SimpleNamespace(**dict(vars(d),read=read))
 
 
 def main():
@@ -19,7 +37,7 @@ def main():
     elif args.score:
         score(args.score)
     else:
-        dispatch(design=d, finish_fn=finish, module=MODULE)
+        dispatch(design=registered_design(), finish_fn=finish, module=MODULE)
 
 
 if __name__ == '__main__':
