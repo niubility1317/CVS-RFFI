@@ -23,7 +23,7 @@
   "replaces_run_id": "20261014-phase1-sigtime-urban-paired-e30-manysig-m18-r01",
   "authorization": "Current user goal and steering: fixed SIG_TIME, scratchE30, lowurban>=60%, ordinaryconcat3scene baseline, automaticclean+sixpractical. No administrator use or unrelated workload changes.",
   "code": {
-    "commit": "TO_BE_FIXED_BY_GIT_COMMIT",
+    "commit": "f70d84672046309a0bf3d3a44ab23f5ab286b0de",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; nativeLinuxN607; Windowsnative localvalidation",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_urban_paired_20261014_r02"
@@ -109,7 +109,8 @@
     "summary.json",
     "resources.json",
     "analysis.md",
-    "figures/*.png"
+    "figures/*.png",
+    "source_mechanism/results.json"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -3300,5 +3301,6 @@
     "U TX remains hidden; V is health-only and never backpropagated. All7 fixed predictions precede truth.",
     "support/capsule_id/split_id/K are Phase2 fields, not applicable to thisPhase1 experiment; reuse existing VALIDATED_ONCE Phase1 IQ.",
     "r01 failed before submission at Windows-to-POSIX metadata path boundary; no training or target prediction launched. r02 is same scientific plan and budget."
-  ]
+  ],
+  "registered_at": "2026-10-14T14:29:24+00:00"
 }
