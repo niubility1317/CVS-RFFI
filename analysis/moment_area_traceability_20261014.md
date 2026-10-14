@@ -9,7 +9,7 @@
 | R03 | 五·约束 | 默认cosine联合训练，禁止额外头/探针拟合 | source.py/predict.py | verified | 首seed3实际source closures均零拟合；feature-only导出/W独立PASS | 旧门控EMAcos/scratch50/33+17 |
 | R04 | 五·顺序1 | MixStyle全部种子回收且不按负分改计划 | 已提交三种子MixStyle报告 | verified | f1d1e860e；1512000预测/162指标独立复算 | 历史RX/day探针违规如实披露 |
 | R05 | 二·结构分析 | 区分面积、统计形状和常数时间坐标；不把顺序敏感视为泛化证据 | checks.py/report | verified | float64：cov置乱不变、area反转/内部顺序及时间项恒等式PASS | 性能只由真实冻结测试证明 |
-| R06 | 三·路线三 | 独立比较t2与t2.pool取点 | 后续独立矩阵 | deferred | 当前不改变取点 | 依报告顺序，避免和描述子混杂 |
+| R06 | 三·路线三 | 独立比较t2与t2.pool取点 | experiments/cvs_source_dropout；后续独立训练矩阵 | implemented | 固定L720/8mask源诊断和63统计重算VERIFIED，训练对照未发布 | 未改当前descriptor实验；无性能结论 |
 | R07 | 三·路线二 | 连续4→2→1层级含三个边界增量和统一全局时间 | 后续独立矩阵 | deferred | 当前不加入层级 | 避免同时改变窗口/容量 |
 | R08 | 三·路线四 | 可信门控内有界stopgrad难度权重及真实训练梯度 | 后续训练侧备选 | deferred | 当前保持原U损失 | 报告建议不抢占结构路线 |
 | R09 | 五及目标 | 首seed同路径SIG_TIME与两个描述子、旧基线；源PASS才扩02/03；自动默认头truthlast、Git | design/source/dispatch/score/report | implemented | 待登记、唯一直接P0/P1、preflight及真实运行 | 不使用目标分数控制扩seed |
@@ -26,3 +26,6 @@
 首seed真实执行/独立复算已完成：200epoch记录、33300新增steps、672000固定默认头预测、72分组指标 VERIFIED；R03升级verified。R09源PASS→原样扩02/03已实际执行，完整三seed仍待六模型结束，维持implemented。现为5项verified、1项implemented、3项deferred、0项rejected/blocked。严格按路线一公式实现，无报告近似替换。最高剩余风险是三seed有序面积能否提供稳定性能收益，首seed实际为负；不依据此目标分数改参数或取消健康实验。
 
 实际验证入口：python -m experiments.cvs_moment_area50.checks（既有一次局部PASS）；python -m experiments.cvs_moment_area50.audit（已固定产物复算，无新forward）；python -m experiments.cvs_moment_area_seeds.publish --output <delivery> --inspect（实际PID/CWD/argv/GPU/日志增长VERIFIED）。
+
+
+R06已独立实施源诊断：20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01，执行b9144fee45b26342442e8a39bbe475bd19c03bd5，源feature area扰动比31.9940%，8mask不是模型seed；真实训练取点对照仍待落实，因此标implemented而非性能verified。现5verified／2implemented／2deferred，0rejected/blocked。

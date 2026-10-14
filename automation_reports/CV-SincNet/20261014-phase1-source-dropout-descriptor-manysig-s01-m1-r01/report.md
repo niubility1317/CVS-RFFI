@@ -15,3 +15,5 @@
 Stop：角色／来源／非有限／形状／模型状态变化失败保留输出并停止，无自动重试；不按目标或本诊断结果重采样、换checkpoint、扫Dropout参数。源诊断本身无目标测试或84%结论。预期results／resolved／observed_descriptors／completion、release preflight／submit及日志。独立PID/CWD/cmdline与产物复算核实完成后登记ANALYZED，Git提交推送并核对remoteOID。
 
 实现提交 d34a7b91b91fb8672e622c3e39fb5142a1774dce；唯一新增执行 P0/P1 审查 PASS，无发现。固定来源／全eval／L720／8确定性CPU回放／保存重算及零训练拟合路径已核对，尚未发布实际源诊断。
+
+实际已完成 ANALYZED／VERIFIED，source720／8mask／63stats，0训练拟合、模型状态不变、保存数组重算通过。feature area噪声/clean 31.9940%，time area21.7255%，COV形状12.7249%；见 final_analysis.md/results.json，不是性能结论。

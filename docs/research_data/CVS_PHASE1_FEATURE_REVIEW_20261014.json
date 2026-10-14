@@ -79227,6 +79227,121 @@
       ],
       "saved_gradient_recount": "VERIFIED",
       "target_read": false
+    },
+    "source_dropout": {
+      "run_id": "20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01",
+      "status": "ANALYZED",
+      "source_packets": 720,
+      "mask_count": 8,
+      "mask_samples_are_not_model_seeds": true,
+      "source_execution_commit": "512c10a267b5e654cfd2c983ab1debdeebc7f626",
+      "execution_commit": "b9144fee45b26342442e8a39bbe475bd19c03bd5",
+      "code_commit": "d34a7b91b91fb8672e622c3e39fb5142a1774dce",
+      "source_checkpoint_arm": "SIG_TIME first predefined seed01 final50",
+      "head_fit": false,
+      "optimizer_steps": 0,
+      "query_read": false,
+      "V_forward": false,
+      "U_IQ_read": false,
+      "model_state_unchanged": true,
+      "eval_pre_post_exact": true,
+      "source_descriptor_recount": "VERIFIED",
+      "overall": [
+        {
+          "descriptor": "increment6",
+          "dimension": "overall",
+          "stratum": null,
+          "count": 720,
+          "width": 24,
+          "clean_RMS": 0.5434637866390102,
+          "noise_RMS": 0.1350514451359638,
+          "noise_to_clean_RMS": 0.24850127728136967,
+          "mask_mean_bias_RMS": 0.04843223096715371,
+          "across_mask_RMS": 0.12606828243795706,
+          "mask_count": 8
+        },
+        {
+          "descriptor": "feature_area15",
+          "dimension": "overall",
+          "stratum": null,
+          "count": 720,
+          "width": 60,
+          "clean_RMS": 0.3974837637081269,
+          "noise_RMS": 0.127170951846132,
+          "noise_to_clean_RMS": 0.31993999115776184,
+          "mask_mean_bias_RMS": 0.046461070506837635,
+          "across_mask_RMS": 0.11837998108130397,
+          "mask_count": 8
+        },
+        {
+          "descriptor": "time_area6",
+          "dimension": "overall",
+          "stratum": null,
+          "count": 720,
+          "width": 24,
+          "clean_RMS": 0.31657985767071917,
+          "noise_RMS": 0.06877846406271418,
+          "noise_to_clean_RMS": 0.21725470650205417,
+          "mask_mean_bias_RMS": 0.02459810471318363,
+          "across_mask_RMS": 0.06422935748818696,
+          "mask_count": 8
+        },
+        {
+          "descriptor": "SIG_TIME28",
+          "dimension": "overall",
+          "stratum": null,
+          "count": 720,
+          "width": 112,
+          "clean_RMS": 0.45290153053863297,
+          "noise_RMS": 0.11655822956399428,
+          "noise_to_clean_RMS": 0.25735887760275905,
+          "mask_mean_bias_RMS": 0.04229317430628007,
+          "across_mask_RMS": 0.10861449390477959,
+          "mask_count": 8
+        },
+        {
+          "descriptor": "COV_SHAPE27",
+          "dimension": "overall",
+          "stratum": null,
+          "count": 720,
+          "width": 108,
+          "clean_RMS": 0.2131232413756962,
+          "noise_RMS": 0.027119676176662364,
+          "noise_to_clean_RMS": 0.1272487974638837,
+          "mask_mean_bias_RMS": 0.010511923938931864,
+          "across_mask_RMS": 0.02499952581608578,
+          "mask_count": 8
+        },
+        {
+          "descriptor": "AREA_SHAPE27",
+          "dimension": "overall",
+          "stratum": null,
+          "count": 720,
+          "width": 108,
+          "clean_RMS": 0.36100614160574696,
+          "noise_RMS": 0.09732302571869272,
+          "noise_to_clean_RMS": 0.269588282586557,
+          "mask_mean_bias_RMS": 0.035738058004540205,
+          "across_mask_RMS": 0.0905238230804767,
+          "mask_count": 8
+        },
+        {
+          "descriptor": "added_residual160",
+          "dimension": "overall",
+          "stratum": null,
+          "count": 720,
+          "width": 160,
+          "clean_RMS": 0.10727052310801534,
+          "noise_RMS": 0.027128809727461706,
+          "noise_to_clean_RMS": 0.25290088032986036,
+          "mask_mean_bias_RMS": 0.01036841987089883,
+          "across_mask_RMS": 0.025069267771707475,
+          "mask_count": 8
+        }
+      ],
+      "report": "automation_reports/CV-SincNet/20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01/final_analysis.md",
+      "seconds": 1.6405260562896729,
+      "scope": "Isolated native Dropout replay after frozen t2.pool; does not reproduce whole training stream or prove performance"
     }
   },
   "next_directions": [
@@ -79241,7 +79356,7 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "Finish fixed moment/ordered-area firstseed source/default-head test and unchanged source-rule seed expansion",
-    "Study report Dropout read position separately from descriptor choice using legal source evidence; no target-driven structure changes"
+    "Complete fixed moment/area remaining02/03; all target results retained, no healthy run changes",
+    "Independent report route3: fixed SIG_TIME t2 vs t2.pool firstseed matched scratch50; basis is source Dropout replay, no descriptor/hierarchy/U stacking"
   ]
 }

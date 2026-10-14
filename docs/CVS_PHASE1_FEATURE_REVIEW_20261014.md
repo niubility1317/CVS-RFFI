@@ -189,3 +189,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 同投影 shape 首种子已闭环：SIG_TIME 83.7661%、COV_SHAPE 83.7351%、AREA_SHAPE 82.0667%。AREA−COV −1.6685 个百分点，源模块更新和导出通过不代表性能提高。独立 33300 steps／672000 predictions／72 metrics 复算 VERIFIED，三模型 native 拟合探针均关闭。20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s0203-m8-r01 已在首种子目标分数读取前根据源 PASS 原样发布，六新模型运行。执行提交 8bd34db31787cd80c4ad53ee7327ff6a55daee72；详细正负结果见对应 final_analysis.md，保持 84% 未达。
+
+
+报告路线三源诊断闭环：固定 first SIG_TIME 权重和 L720，8次CPU末端Dropout.1独立回放，63分层统计，0训练/头拟合/目标forward。feature-feature area噪声/clean RMS31.9940%，time area21.7255%，COV shape12.7249%，实际残差160为25.2901%；保存数组重算、eval pre/post一致、状态不变均 VERIFIED。固定分母和绝对RMS完整保留；不是完整训练流或性能因果效果。下一步单独固定SIG_TIME描述子比较t2与t2.pool，不叠加描述子替换/层级/U权重，依据此源证据与用户报告。详见 20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01/final_analysis.md。
