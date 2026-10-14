@@ -1,0 +1,125 @@
+{
+  "status": "VERIFIED",
+  "standalone_source_qualification_exists": false,
+  "preflight_source_qualification": {
+    "status": "PASS",
+    "source_only": true,
+    "first_run": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "first_execution": "704cf37536d3cb6b8764af2131547db4a9939480",
+    "qualification": {
+      "status": "PASS",
+      "source_only": true,
+      "target_metrics_read_for_decision": false,
+      "final_L_CE": {
+        "SIG_TIME": 0.24696808499661652,
+        "CONF_FEATURE_MT": 0.24893324449658394
+      },
+      "last5_U_retained_feature_mean": {
+        "SIG_TIME": 0.33142039750916136,
+        "CONF_FEATURE_MT": 0.27205842775917644
+      },
+      "retained_feature_mean_ratio": 0.8208861910850132,
+      "last5_allU_feature_mean": {
+        "SIG_TIME": 0.33112511174767106,
+        "CONF_FEATURE_MT": 0.2741734399623131
+      },
+      "allU_feature_mean_ratio": 0.8280055792664944,
+      "last5_confidence_gate_retention": {
+        "SIG_TIME": 0.939400352733686,
+        "CONF_FEATURE_MT": 0.9208712522045855
+      },
+      "actual_t1_t2_SIG_gradient_signal": {
+        "SIG_TIME": false,
+        "CONF_FEATURE_MT": true
+      },
+      "actual_candidate_minus_control_L720zL2": 2.4146080017089844,
+      "actual_observations": {
+        "SIG_TIME": {
+          "status": "VERIFIED",
+          "steps": 11100,
+          "U_feature_packets": 963900,
+          "U_feature_steps": 3774,
+          "gradient_epochs": [
+            33,
+            34,
+            50
+          ],
+          "gradient_batches": 666,
+          "layer_gradient_records": 1998,
+          "saved_vectors": 5994,
+          "extra_model_forwards": 0,
+          "head_fit_updates": 0,
+          "auxiliary_classW_dependency": false,
+          "default_head_jointly_trained": true,
+          "U_truth_read": false,
+          "hard_pseudo_loss_returned_unchanged": true,
+          "mode": "ZERO",
+          "saved_gradient_recount": "VERIFIED"
+        },
+        "CONF_FEATURE_MT": {
+          "status": "VERIFIED",
+          "steps": 11100,
+          "U_feature_packets": 963900,
+          "U_feature_steps": 3774,
+          "gradient_epochs": [
+            33,
+            34,
+            50
+          ],
+          "gradient_batches": 666,
+          "layer_gradient_records": 1998,
+          "saved_vectors": 5994,
+          "extra_model_forwards": 0,
+          "head_fit_updates": 0,
+          "auxiliary_classW_dependency": false,
+          "default_head_jointly_trained": true,
+          "U_truth_read": false,
+          "hard_pseudo_loss_returned_unchanged": true,
+          "mode": "FEATURE",
+          "saved_gradient_recount": "VERIFIED"
+        }
+      },
+      "fixed_rules": {
+        "final_L_CE_max": 0.5,
+        "source_feature_difference_min": 0.000001,
+        "actual_feature_gradients_nonzero_at": [
+          34,
+          50
+        ],
+        "last5_retained_feature_mean_ratio_max": 0.95,
+        "last5_allU_feature_mean_ratio_max": 1,
+        "last5_candidate_retention_min": 0.5,
+        "source_only": true,
+        "expansion": "Source health/exact11100 updates/all17x56700 U/featureboundary/nonzero actual t1t2SIG plus retained mean ratio<=.95,allU discrepancy ratio<=1.,coverage>=.5. Freeze decision before any new target summary retrieval; predefined02/03 only and no target ranking, parameter change or selective rerun."
+      },
+      "predefined_remaining_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "configuration_changes_for_expansion": false,
+      "head_fit_updates": 0,
+      "limitation": "Source optimization and exposure qualification only, not DG proof or U correctness"
+    },
+    "remaining_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "configuration_changed": false,
+    "target_metric_read": false,
+    "first_seed_retrained": false
+  },
+  "completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 6,
+    "new_trained_models": 4,
+    "reused_baseline_models": 2,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 1008000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "failure_exists": false
+}

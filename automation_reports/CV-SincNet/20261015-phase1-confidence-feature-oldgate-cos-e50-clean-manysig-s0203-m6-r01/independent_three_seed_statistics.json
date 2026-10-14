@@ -1,0 +1,116 @@
+{
+  "status": "VERIFIED",
+  "models": 9,
+  "metrics": 162,
+  "default_decisions": 1512000,
+  "all_CM_metrics_and_partitions_match": true,
+  "summary": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_accuracy": [
+        0.8066845238095238,
+        0.7808154761904762,
+        0.8283035714285715
+      ],
+      "accuracy_mean": 0.8052678571428572,
+      "accuracy_sample_SD": 0.023775723031465,
+      "macro_f1_mean": 0.8000238637751927,
+      "worst_RX_mean": 0.6797083333333332,
+      "worst_day_mean": 0.7605555555555555
+    },
+    {
+      "arm": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_accuracy": [
+        0.836654761904762,
+        0.8092083333333333,
+        0.8374464285714286
+      ],
+      "accuracy_mean": 0.8277698412698413,
+      "accuracy_sample_SD": 0.016079610277788585,
+      "macro_f1_mean": 0.8223996026576784,
+      "worst_RX_mean": 0.7057777777777777,
+      "worst_day_mean": 0.7867777777777777
+    },
+    {
+      "arm": "CONF_FEATURE_MT",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_accuracy": [
+        0.8352142857142857,
+        0.8050773809523809,
+        0.8359285714285715
+      ],
+      "accuracy_mean": 0.8254067460317461,
+      "accuracy_sample_SD": 0.017609368654724407,
+      "macro_f1_mean": 0.819909117500636,
+      "worst_RX_mean": 0.7020138888888888,
+      "worst_day_mean": 0.7838253968253968
+    }
+  ],
+  "paired": [
+    {
+      "arm": "CONF_FEATURE_MT",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_difference_pp": [
+        -0.14404761904762697,
+        -0.4130952380952402,
+        -0.15178571428571264
+      ],
+      "mean_difference_pp": -0.2363095238095266,
+      "sample_SD_pp": 0.15314979957907515,
+      "positive_seeds": 0
+    },
+    {
+      "arm": "CONF_FEATURE_MT",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_difference_pp": [
+        2.8529761904761863,
+        2.4261904761904707,
+        0.7624999999999993
+      ],
+      "mean_difference_pp": 2.0138888888888857,
+      "sample_SD_pp": 1.1045438537720051,
+      "positive_seeds": 3
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_difference_pp": [
+        2.9970238095238133,
+        2.839285714285711,
+        0.9142857142857119
+      ],
+      "mean_difference_pp": 2.250198412698412,
+      "sample_SD_pp": 1.1596194979421321,
+      "positive_seeds": 3
+    }
+  ]
+}

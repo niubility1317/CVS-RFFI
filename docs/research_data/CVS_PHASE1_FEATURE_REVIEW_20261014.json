@@ -82218,7 +82218,7 @@
     },
     {
       "direction": "无标签自身EMA特征一致性",
-      "status": "ALL_U_FEATURE_MT_FULL3_NEGATIVE_CONFIDENCE_VARIANT_FIXED_EXTENSION_RUNNING",
+      "status": "ALL_U_AND_CONFIDENCE_VARIANTS_COMPLETE3_NEGATIVE_NO_NEW_SSL_TRAINING",
       "source_evidence": "AllU sourcefeatureloss reduced18-21% but paireddefaulthead0/3 positive; confidencefirstsourcePASS/targetnegative, remaining02/03 frozenbeforeown first target, actualfourPIDs live",
       "hypothesis": "同一U包跨扰动直接约束部署特征，补充分类CE以外的表征训练",
       "location": "现有U EMAweak/studentstrong的joint160",
@@ -82252,14 +82252,14 @@
     }
   ],
   "next_actions_max2": [
-    "完成既定CONF_FEATURE_MT02/03四模型scratch50自动clean与独立评分，保留完整3seed/配对差/负结果并上传；不据结果改机制或训练预算",
-    "按已固定源PASS决定扩展RAW方差形状目标的02/03同900L源诊断，默认头不拟合、同源判据不改；明确梯度幅度差异，未源验证前不发布新训练"
+    "执行已在源PASS后冻结的方差形状02/03同900L只读诊断；保持固定checkpoint/公式/样本/判据，不拟合头或访问target",
+    "合并三seed源导数证据，满足原规则后再设计明确梯度幅度/计算成本控制的新训练矩阵，固定SIG_TIME/default联合头/旧门控EMAcos/<=50；不根据当前target负分调系数或重跑"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "完成既定CONF_FEATURE_MT02/03四模型scratch50自动clean与独立评分，保留完整3seed/配对差/负结果并上传；不据结果改机制或训练预算",
-    "按已固定源PASS决定扩展RAW方差形状目标的02/03同900L源诊断，默认头不拟合、同源判据不改；明确梯度幅度差异，未源验证前不发布新训练"
+    "执行已在源PASS后冻结的方差形状02/03同900L只读诊断；保持固定checkpoint/公式/样本/判据，不拟合头或访问target",
+    "合并三seed源导数证据，满足原规则后再设计明确梯度幅度/计算成本控制的新训练矩阵，固定SIG_TIME/default联合头/旧门控EMAcos/<=50；不根据当前target负分调系数或重跑"
   ],
   "current_priority": {
     "at": "2026-10-14T18:08:17.724Z",
@@ -82703,7 +82703,12 @@
       "error_gradient_identified": false,
       "conclusion": "Frozenfinal50 L contains no accepted errors; V featureagreement overlaps and wrong medians exceedcorrect across3 models. No thresholdfit/scan or U inference."
     },
-    "active_ssl_mechanism": null,
+    "active_ssl_mechanism": {
+      "status": "NO_ACTIVE_SSL_TRAINING",
+      "last_completed_run": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "result": "CONF_FEATURE_MT complete3 negative paired -0.236310pp/0positive; firstsourcePASS did not predictDGgain",
+      "no_target_parameter_scan": true
+    },
     "prepared_conditional_seed_extensions": [
       {
         "run_id": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
@@ -82748,7 +82753,7 @@
       },
       {
         "run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-        "status": "RUNNING_VERIFIED",
+        "status": "ANALYZED_VERIFIED",
         "source_parent": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01",
         "source_evidence": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_expansion_decision.json",
         "new_models": 4,
@@ -82767,33 +82772,11 @@
         "report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md",
         "execution_commit": "55ff29d676eb5f02afa8b3869ed4818122f09d9a",
         "release": "cvs_confidence_feature_seeds_20261015_r01",
-        "actual_workers": [
-          {
-            "row": "SIG_TIME-s2026092702",
-            "pid": 2627597,
-            "gpu": 1,
-            "epoch": 23
-          },
-          {
-            "row": "CONF_FEATURE_MT-s2026092702",
-            "pid": 2627675,
-            "gpu": 2,
-            "epoch": 27
-          },
-          {
-            "row": "SIG_TIME-s2026092703",
-            "pid": 2627834,
-            "gpu": 3,
-            "epoch": 27
-          },
-          {
-            "row": "CONF_FEATURE_MT-s2026092703",
-            "pid": 2627914,
-            "gpu": 4,
-            "epoch": 26
-          }
-        ],
-        "failure": null
+        "actual_workers": [],
+        "failure": null,
+        "complete_seed_count": 3,
+        "full_three_seed_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md",
+        "goal84": false
       }
     ],
     "feature_mean_teacher_first_seed": {
@@ -83045,7 +83028,7 @@
       "no_head_or_model_update": true
     },
     "next_confidence_gated_feature_training": {
-      "status": "FIRST_ANALYZED_NEGATIVE_SOURCE_FROZEN_REMAINING_RUNNING_VERIFIED",
+      "status": "FULL_THREE_SEED_ANALYZED_NEGATIVE",
       "source_basis_run": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
       "source_basis": "Fixed all6 V qualification PASS, same-L groups support testable confidence-order mechanism; not target-derived",
       "hypothesis": "Only confidence-ordered ownEMA feature targets reduce unhelpful allU feature imitation; fixed zero gap, fullbatch denominator, same .1 ramp, fixed SIG_TIME/defaulthead/old gateEMAcos",
@@ -83107,7 +83090,7 @@
         "first_target_numeric_results_read": false
       },
       "remaining_run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-      "remaining_state": "RUNNING_VERIFIED",
+      "remaining_state": "ANALYZED_VERIFIED",
       "actual_epoch34_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/actual_pseudo_epoch34.json",
       "source_decision_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_expansion_decision.json",
       "remaining_code_commit": "fe2d8287ef1f9c167c5b68ee395e8bfe01b08360",
@@ -83117,35 +83100,16 @@
       "first_target_paired_difference_pp": -0.14404761904762697,
       "remaining_execution_commit": "55ff29d676eb5f02afa8b3869ed4818122f09d9a",
       "remaining_release": "cvs_confidence_feature_seeds_20261015_r01",
-      "remaining_workers": [
-        {
-          "row": "SIG_TIME-s2026092702",
-          "pid": 2627597,
-          "gpu": 1,
-          "epoch": 23
-        },
-        {
-          "row": "CONF_FEATURE_MT-s2026092702",
-          "pid": 2627675,
-          "gpu": 2,
-          "epoch": 27
-        },
-        {
-          "row": "SIG_TIME-s2026092703",
-          "pid": 2627834,
-          "gpu": 3,
-          "epoch": 27
-        },
-        {
-          "row": "CONF_FEATURE_MT-s2026092703",
-          "pid": 2627914,
-          "gpu": 4,
-          "epoch": 26
-        }
-      ],
+      "remaining_workers": [],
       "first_complete_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/final_analysis.md",
       "goal84": false,
-      "remaining_progress_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/source_progress.json"
+      "remaining_progress_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/source_progress.json",
+      "complete_seed_count": 3,
+      "mean_CONF": 0.8254067460317461,
+      "mean_SIG": 0.8277698412698413,
+      "paired_difference_pp": -0.2363095238095266,
+      "positive_seeds": 0,
+      "full_report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
     },
     "backbone_fishr_source_progress": {
       "status": "SUPERSEDED_BY_FULL_ANALYSIS",
@@ -83282,6 +83246,150 @@
       "remaining_source_run": "20261015-phase1-source-backbone-variance-angle-manysig-s0203-m2-r01",
       "remaining_source_state": "SOURCE_DECISION_FROZEN_NOT_IMPLEMENTED_NOT_LAUNCHED",
       "result_ref": "automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01/final_analysis.md"
+    },
+    "confidence_feature_full_three_seed": {
+      "status": "ANALYZED_VERIFIED",
+      "run_ids": [
+        "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+        "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
+      ],
+      "remaining_execution_commit": "55ff29d676eb5f02afa8b3869ed4818122f09d9a",
+      "source_decision_commit": "3b0b38c708029570cd1d6327cd4db96e2752a6ad",
+      "source_decision_before_first_own_new_target": true,
+      "models": 9,
+      "new_models": 6,
+      "historical_models": 3,
+      "decisions": 1512000,
+      "metrics": 162,
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_accuracy": [
+            0.8066845238095238,
+            0.7808154761904762,
+            0.8283035714285715
+          ],
+          "accuracy_mean": 0.8052678571428572,
+          "accuracy_sample_SD": 0.023775723031465,
+          "macro_f1_mean": 0.8000238637751927,
+          "worst_RX_mean": 0.6797083333333332,
+          "worst_day_mean": 0.7605555555555555
+        },
+        {
+          "arm": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_accuracy": [
+            0.836654761904762,
+            0.8092083333333333,
+            0.8374464285714286
+          ],
+          "accuracy_mean": 0.8277698412698413,
+          "accuracy_sample_SD": 0.016079610277788585,
+          "macro_f1_mean": 0.8223996026576784,
+          "worst_RX_mean": 0.7057777777777777,
+          "worst_day_mean": 0.7867777777777777
+        },
+        {
+          "arm": "CONF_FEATURE_MT",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_accuracy": [
+            0.8352142857142857,
+            0.8050773809523809,
+            0.8359285714285715
+          ],
+          "accuracy_mean": 0.8254067460317461,
+          "accuracy_sample_SD": 0.017609368654724407,
+          "macro_f1_mean": 0.819909117500636,
+          "worst_RX_mean": 0.7020138888888888,
+          "worst_day_mean": 0.7838253968253968
+        }
+      ],
+      "paired": [
+        {
+          "arm": "CONF_FEATURE_MT",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            -0.14404761904762697,
+            -0.4130952380952402,
+            -0.15178571428571264
+          ],
+          "mean_difference_pp": -0.2363095238095266,
+          "sample_SD_pp": 0.15314979957907515,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "CONF_FEATURE_MT",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            2.8529761904761863,
+            2.4261904761904707,
+            0.7624999999999993
+          ],
+          "mean_difference_pp": 2.0138888888888857,
+          "sample_SD_pp": 1.1045438537720051,
+          "positive_seeds": 3
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            2.9970238095238133,
+            2.839285714285711,
+            0.9142857142857119
+          ],
+          "mean_difference_pp": 2.250198412698412,
+          "sample_SD_pp": 1.1596194979421321,
+          "positive_seeds": 3
+        }
+      ],
+      "corrected": 1837,
+      "introduced": 3028,
+      "net_correct": -1191,
+      "source_feature_mean_ratios": [
+        0.8208861910850132,
+        0.7978402236651615,
+        0.8060850622440192
+      ],
+      "source_allU_mean_ratios": [
+        0.8280055792664944,
+        0.8050663044177747,
+        0.814137246160391
+      ],
+      "native_epochs_represented": 450,
+      "new_optimizer_updates": 66600,
+      "total_gradient_layer_records": 23976,
+      "total_saved_vectors": 71928,
+      "head_fit_updates": 0,
+      "goal84": false,
+      "full_report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
     }
   }
 }

@@ -192,3 +192,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 
 
 - 2026-10-15：900L真实源ANGLE检验已ANALYZED/VERIFIED，执行30047816ba3beaa581a18cc0384ee947413fff6d，同批CE全局cos(t1,t2)=(0.646206,0.593616)，各5/5非零；900包/10矩阵/30向量由第二进程复算，W辅助无依赖、全部状态不更新、无query。源PASS不等于DG收益；固定02/03同源诊断，尚未实现/发布，不据目标调权或选父模型。
+
+
+- 2026-10-15：CONF_FEATURE_MT固定3seed全部ANALYZED/VERIFIED，原任务自然结束无failure；执行55ff29d676eb5f02afa8b3869ed4818122f09d9a，source决定3b0b38c708029570cd1d6327cd4db96e2752a6ad在目标数字前已冻结。CONF82.540675% 对SIG82.776984%，配对−0.236310±0.153150pp/0正，162CM/1512000默认头决策/71928保存向量完整复算。实际feature变了且source discrepancy降17-20%，仍无DG收益；当前无新训练，原头不另训。

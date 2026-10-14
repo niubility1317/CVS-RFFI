@@ -1,6 +1,6 @@
 # 固定 SIG_TIME：置信度门控特征一致性 02/03 最小预登记
 
-状态 LOCAL_VERIFIED / NOT_LAUNCHED。实际代码/config fe2d8287ef1f9c167c5b68ee395e8bfe01b08360，原机制复用 325d113dff08206cb2f174e74d33e48f3e0b2ad5；唯一新增适配器独立 P0/P1 PASS。真实 checkpoint 无 query smoke 为发布首步，PASS 立即继续，无另设审批。
+当前状态 ANALYZED / VERIFIED，完整三seed见[final_analysis.md](final_analysis.md)。以下保留预登记与运行历史。原预登记状态 LOCAL_VERIFIED / NOT_LAUNCHED。实际代码/config fe2d8287ef1f9c167c5b68ee395e8bfe01b08360，原机制复用 325d113dff08206cb2f174e74d33e48f3e0b2ad5；唯一新增适配器独立 P0/P1 PASS。真实 checkpoint 无 query smoke 为发布首步，PASS 立即继续，无另设审批。
 
 ## 固定依据与机制
 
@@ -35,3 +35,8 @@ RUNNING / VERIFIED：实际执行 55ff29d676eb5f02afa8b3869ed4818122f09d9a 已�
 
 
 源进度后续只读核实：四原PID仍存活，source epoch分别23/27/27/26，日志跨时点均增长，failure0、完整completion尚无；继续同scratch50计划，feature仍按第34轮启用。此进度没有读回新的目标数值或修改任务。见source_progress.json。
+
+
+## 完整三种子结果
+
+已ANALYZED/VERIFIED：CONF82.540675%±1.760937pp、SIG82.776984%±1.607961pp，配对−0.236310±0.153150pp、0/3正，修正1837/引入3028/净−1191。9模型1512000默认头clean决策/162CM/71928保存向量完整独立复算，无新头拟合或实验重启。源差异降低约17%至20%没有转成性能增益，84%未达成。独立source_qualification.json多列的历史路径缺项已如实记录，实际首源资格在preflight与firstsource原产物。见[完整分析](final_analysis.md)。

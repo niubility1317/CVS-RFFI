@@ -40,3 +40,6 @@ RUNNING / VERIFIED：执行commit 704cf37536d3cb6b8764af2131547db4a9939480，单
 ## 首种子最终结果
 
 三row默认头clean预测和独立truth-last均已完成，完整54条指标及23976保存向量复算VERIFIED。CONF83.521429% 对SIG83.665476%，配对−0.144048个百分点，n=1未达84%。源资格PASS不等于泛化提升；源决定在新目标读回前已推送，02/03按原冻结计划发布，不因负结果取消。详见[完整分析](final_analysis.md)、[聚合结果](results.json)和[全部源曲线](complete_source_curves.json)。
+
+
+完整三seed已结束并独立核实：CONF82.540675% 对匹配SIG82.776984%，配对−0.236310pp、0/3正，未达84%。首seed原结果保持，统一结果见[剩余矩阵完整分析](../20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md)。

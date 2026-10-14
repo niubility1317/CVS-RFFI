@@ -2214,43 +2214,63 @@
     "Default existingcoshead normaljoint only; no Wfit/RXdiagnosticclassifier/newmodules/parameters/projectors/Fishrstack; fθ195041actualjoint160",
     "One immutable run/release, one ordinarypreflight/archiveSHA/remotecompile/realCP noquerysmoke followedbyactual PID-CWD-argv-GPU-loggrowth; no extra approval/seal/futurestageblockers"
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "source_qualification": "PASS",
   "source_decision_ref": "first_source_decision.json",
   "registered_at": "2026-10-14T19:37:00+00:00",
   "source_qualification_ref": "first_source_qualification.json",
   "runtime": {
-    "evidence": "release_launch_evidence.json",
-    "status": "VERIFIED",
-    "first_read_epoch_counts": [
-      {
-        "row_id": "SIG_TIME-s2026092702",
-        "epoch": 5,
-        "pid": 2627597,
-        "gpu": 1
-      },
-      {
-        "row_id": "CONF_FEATURE_MT-s2026092702",
-        "epoch": 6,
-        "pid": 2627675,
-        "gpu": 2
-      },
-      {
-        "row_id": "SIG_TIME-s2026092703",
-        "epoch": 6,
-        "pid": 2627834,
-        "gpu": 3
-      },
-      {
-        "row_id": "CONF_FEATURE_MT-s2026092703",
-        "epoch": 5,
-        "pid": 2627914,
-        "gpu": 4
-      }
+    "status": "VERIFIED_COMPLETE",
+    "evidence": "results.json",
+    "final_readback": "All original6 rows final50/scored; no originalworker ordispatcher alive; failure0",
+    "execution_commit": "55ff29d676eb5f02afa8b3869ed4818122f09d9a",
+    "experiment_restart": false,
+    "original_workers_naturally_ended": true
+  },
+  "completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 6,
+    "new_trained_models": 4,
+    "reused_baseline_models": 2,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
     ],
-    "new_models_live": 4,
-    "historical_baseline_rows_scored": 2,
-    "real_checkpoint_no_query_smoke": "PASS",
-    "failure": null
-  }
+    "prediction_count": 1008000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "combined_three_seed": {
+    "status": "VERIFIED",
+    "models": 9,
+    "new_models": 6,
+    "historical_models": 3,
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "predictions": 1512000,
+    "metrics": 162,
+    "CONF_FEATURE_MT_accuracy": 0.8254067460317461,
+    "matched_SIG_accuracy": 0.8277698412698413,
+    "paired_difference_pp": -0.2363095238095266,
+    "paired_SD_pp": 0.15314979957907515,
+    "positive_seeds": 0,
+    "head_fit_updates": 0,
+    "goal84": false
+  },
+  "artifact_deviations": [
+    {
+      "expected": "source_qualification.json",
+      "exists": false,
+      "status": "NONBLOCKING_METADATA_REFERENCE",
+      "actual_evidence": [
+        "release/preflight.json#source_qualification",
+        "first_source_qualification.json",
+        "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_qualification.json"
+      ],
+      "meaning": "This source-fixed extension has no new qualification selection stage. Inherited expected standalone path is unused byrunner; actual first-sourcePASS retained and readbackverified. No file fabricated ornew gate."
+    }
+  ]
 }

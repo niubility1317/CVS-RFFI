@@ -1,0 +1,125 @@
+{
+  "status": "VERIFIED",
+  "pairs": [
+    {
+      "arm": "CONF_FEATURE_MT",
+      "control": "SIG_TIME",
+      "corrected": 1837,
+      "introduced": 3028,
+      "net_correct": -1191,
+      "decisions": 504000,
+      "per_seed": [
+        {
+          "arm": "CONF_FEATURE_MT",
+          "control": "SIG_TIME",
+          "seed": 2026092701,
+          "corrected_errors": 766,
+          "introduced_errors": 1008,
+          "both_correct": 139550,
+          "both_wrong": 26676,
+          "count": 168000
+        },
+        {
+          "arm": "CONF_FEATURE_MT",
+          "control": "SIG_TIME",
+          "seed": 2026092702,
+          "corrected_errors": 458,
+          "introduced_errors": 1152,
+          "both_correct": 134795,
+          "both_wrong": 31595,
+          "count": 168000
+        },
+        {
+          "arm": "CONF_FEATURE_MT",
+          "control": "SIG_TIME",
+          "seed": 2026092703,
+          "corrected_errors": 613,
+          "introduced_errors": 868,
+          "both_correct": 139823,
+          "both_wrong": 26696,
+          "count": 168000
+        }
+      ]
+    },
+    {
+      "arm": "CONF_FEATURE_MT",
+      "control": "OLD_GATE_COS50",
+      "corrected": 26677,
+      "introduced": 16527,
+      "net_correct": 10150,
+      "decisions": 504000,
+      "per_seed": [
+        {
+          "arm": "CONF_FEATURE_MT",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 10086,
+          "introduced_errors": 5293,
+          "both_correct": 130230,
+          "both_wrong": 22391,
+          "count": 168000
+        },
+        {
+          "arm": "CONF_FEATURE_MT",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092702,
+          "corrected_errors": 9294,
+          "introduced_errors": 5218,
+          "both_correct": 125959,
+          "both_wrong": 27529,
+          "count": 168000
+        },
+        {
+          "arm": "CONF_FEATURE_MT",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092703,
+          "corrected_errors": 7297,
+          "introduced_errors": 6016,
+          "both_correct": 133139,
+          "both_wrong": 21548,
+          "count": 168000
+        }
+      ]
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "corrected": 27904,
+      "introduced": 16563,
+      "net_correct": 11341,
+      "decisions": 504000,
+      "per_seed": [
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 10441,
+          "introduced_errors": 5406,
+          "both_correct": 130117,
+          "both_wrong": 22036,
+          "count": 168000
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092702,
+          "corrected_errors": 10014,
+          "introduced_errors": 5244,
+          "both_correct": 125933,
+          "both_wrong": 26809,
+          "count": 168000
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092703,
+          "corrected_errors": 7449,
+          "introduced_errors": 5913,
+          "both_correct": 133242,
+          "both_wrong": 21396,
+          "count": 168000
+        }
+      ]
+    }
+  ]
+}
