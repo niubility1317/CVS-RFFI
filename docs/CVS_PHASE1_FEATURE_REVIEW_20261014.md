@@ -115,3 +115,11 @@ run 20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02，实际�
 20261014-phase1-source-feature-gradient-manysig-s01-m3-r01 全三组完成，实际代码 d4c1e9280854a3bfc988626f98224e737347260b；75 批/825 参数路径/4125 激活RX记录/56700 包次独立核对 VERIFIED。只有固定首模型 seed2026092701，三组不是三seed结果。默认头未拟合或更新、fθ参数/buffers逐元素不变、.grad未累积，V仅cache materialize后丢弃、无前向/求导，U/target读取0；新训练0，来源累计仍各50轮。所有11路径有源导数，U/L参数范数比中位数1.44%至2.51%，time_middle cosine0.0490/−0.1091/0.0680及负批次11/13/11，不能当原训练冲突或DG因果证据。PAIR joint160的RX3逐样本L导数约RX6的4.19倍，RX8约2.78倍；只是同路径源敏感度差异。
 
 下一轮最多两动作：检查t1/t2源统计和实际身份保护调用，准备独立源L同TX跨RX MixStyle；有源支持后再固定单seed匹配控制、scratch≤50、默认头/旧门控cos和自动clean/truth-last。不叠加PAIRS/Sinc/TIME、不扩大λ追目标分。Fishr尚缺本网络分域逐样本梯度方差与明确fθ对象；不把norm/cosine当作Fishr测量。84%目标未变、未达成。本轮实际 [完整分析](../automation_reports/CV-SincNet/20261014-phase1-source-feature-gradient-manysig-s01-m3-r01/final_analysis.md)、[聚合及逐批证据](../automation_reports/CV-SincNet/20261014-phase1-source-feature-gradient-manysig-s01-m3-r01/results.json)。
+
+
+## 浅中层源风格诊断完成
+
+run：20261014-phase1-source-style-profile-manysig-s01-m1-r01；实际执行提交：d594ac63a95bf5c654d10dbc9e9a82608fe447b3。首种子 2026092701，固定旧门控＋cos final50/11100 来源；没有新训练、目标预测或分类头拟合。
+
+
+同 TX/day 的 RX 统计差占中心平方和 t1 32.66%、t2 28.21%；固定身份保护干预实际进入 joint160（平均 L2 1.482290），默认头修正11、破坏7，无模型或头更新。这是源机制依据，不是训练/迁移收益。下一项只做匹配单seed MixStyle scratch50，不叠加结构，固定 t1/t2 p=.5 alpha=.1 strength=1；完整 [分析](../automation_reports/CV-SincNet/20261014-phase1-source-style-profile-manysig-s01-m1-r01/final_analysis.md)。用户新贴时序2×2推荐已完成，不重复。

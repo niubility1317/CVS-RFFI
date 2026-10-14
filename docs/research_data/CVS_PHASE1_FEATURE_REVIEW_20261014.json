@@ -78095,6 +78095,67 @@
       "new_backbone_updates": 0,
       "source_only": true,
       "target_read": false
+    },
+    "source_style_profile": {
+      "status": "ANALYZED",
+      "run_id": "20261014-phase1-source-style-profile-manysig-s01-m1-r01",
+      "execution_commit": "d594ac63a95bf5c654d10dbc9e9a82608fe447b3",
+      "models": 1,
+      "seed": 2026092701,
+      "source_packets": 6300,
+      "packet_forwards": 12600,
+      "moments": {
+        "t1": {
+          "dimension": 144,
+          "source_packets": 6300,
+          "total_centered_SS": 6929.1142578125,
+          "RX_within_TX_day_SS": 2262.73291015625,
+          "TX_within_RX_day_SS": 4466.65771484375,
+          "RX_within_TX_day_fraction": 0.326554423259083,
+          "TX_within_RX_day_fraction": 0.6446217436532587,
+          "interpretation": "Descriptive conditional mean/std variation; not RX shortcut, causal nuisance decomposition, feature rank or transfer proof"
+        },
+        "t2": {
+          "dimension": 192,
+          "source_packets": 6300,
+          "total_centered_SS": 14558.1796875,
+          "RX_within_TX_day_SS": 4106.77099609375,
+          "TX_within_RX_day_SS": 9744.736328125,
+          "RX_within_TX_day_fraction": 0.28209371530287686,
+          "TX_within_RX_day_fraction": 0.6693650262121756,
+          "interpretation": "Descriptive conditional mean/std variation; not RX shortcut, causal nuisance decomposition, feature rank or transfer proof"
+        }
+      },
+      "source_count_checks": {
+        "clean_correct": 6264,
+        "styled_correct": 6268,
+        "prediction_changes": 19,
+        "correct_to_wrong": 7,
+        "wrong_to_correct": 11
+      },
+      "style": {
+        "t1": {
+          "calls": 50,
+          "enabled_calls": 29,
+          "eligible_packets": 6273,
+          "changed_packets": 3650,
+          "weighted_delta_ratio": 0.04834249269394648
+        },
+        "t2": {
+          "calls": 50,
+          "enabled_calls": 23,
+          "eligible_packets": 6273,
+          "changed_packets": 2801,
+          "weighted_delta_ratio": 0.03890512994120991
+        }
+      },
+      "joint160": {
+        "L2": 1.4822901994462998,
+        "cosine": 0.9795739976565043
+      },
+      "head_fit": false,
+      "query_read": false,
+      "next": "单seed独立身份保护t1/t2 MixStyle scratch50与匹配旧门控cos，正常默认头联合训练"
     }
   },
   "next_directions": [
