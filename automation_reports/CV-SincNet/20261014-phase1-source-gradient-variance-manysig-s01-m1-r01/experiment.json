@@ -1,0 +1,333 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261014-phase1-source-gradient-variance-manysig-s01-m1-r01",
+  "group_id": "phase1_source_feature_gradient_variance",
+  "display_name": "Phase1 浅中层源梯度方差诊断（默认头、无更新）",
+  "description": "固定首seed旧门控cos final50；180个同TX/day/RX平衡L源包，对t1/t2真实权重做逐样本CE梯度方差；无训练/辅助head/target读取。",
+  "kind": "diagnostic",
+  "stage": "phase1_source_diagnostic",
+  "aliases": [
+    "source_gradient_variance_s01"
+  ],
+  "tags": [
+    "phase1",
+    "source_only",
+    "feature_gradient_variance",
+    "Fishr_diagnostic",
+    "default_head",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户持续Phase1可迁移特征84%目标、默认分类头禁止单独训练；当前只读合法源机制诊断，GPU健康训练保持；实现和对应结果Git上传。",
+  "code": {
+    "commit": "GIT_HEAD_AT_RELEASE",
+    "checkout": "codex/phase1-feature-challenge-20261013",
+    "environment": "ordinary N607 existing CVS-RFFI fullFP32 CPU; CUDA_VISIBLE_DEVICES empty; Torch/OMP/MKL/OpenBLAS2threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_gradient_variance_20261014_r01",
+    "entrypoint": "experiments.cvs_source_gradient_variance.probe",
+    "config_paths": [
+      "experiments/cvs_source_gradient_variance/design.py"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "Approved source clean IQ2x256, noeq post_sync; actual fixed NoExplicitCFO identity function with internal compensation; balanced fixed2samples per TX/RX/day from existing L_s",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "roles": {
+      "L_s": "Existing6300 pool; fixed180 subset, 2 per6TXx3dayx5RX; no updates",
+      "U_s": "Existing56700 hiddenTX; no IQ or truth read",
+      "V": "Existing27000 materialized by shared cache then discarded; no forward/gradient/selection"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 clean capsule, unchanged physical IDs",
+    "split_id": "core90_game_source_roles_v1 split_seed392005; unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "labeled_fraction_within_training_pool": 0.1
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Firstseed frozen-source actual t1/t2 parameter derivative variance only; source RX all seen; no Fishr effectiveness, newTX, held-outRX, target, Phase2 or satellite claim"
+  },
+  "checkpoint": {
+    "initialization": "Read-only source diagnostic from fixed verified scratch50 old-gate M12 baseline; no new training/model/optimizer/EMA inheritance for a trained candidate",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "Actual historical source roles/physical IDs EXACT_MATCH, fixedfinal50/11100, own scratch no ancestors; existing source_proof verifies before load; no target selection",
+    "selection_rule": "First predefined model seed2026092701 fixed old baseline final50; no candidate/ranking/target feedback"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/source-gradient-variance-20261014",
+    "gpu_policy": "CPU only, CUDA_VISIBLE_DEVICES empty; no GPU reservation or change to healthy experiments",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-gradient-variance-manysig-s01-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_gradient_variance_20261014_r01/dispatcher.stdout.log",
+    "local_artifact_root": "local_artifacts/source_gradient_variance_delivery_r01",
+    "launch_command": "python -u -m experiments.cvs_source_gradient_variance.probe",
+    "stop_rule": "Role/provenance/shape/nonfinite/state mutation failure preserves outputs and stops; no automatic retry; no target feedback"
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "perrow resolved_config.json",
+    "perrow gradients.pt (remote raw derivative and IDs only, not Git)",
+    "perrow results.json",
+    "perrow completion.json",
+    "completion.json",
+    "failure.json only on failure"
+  ],
+  "metrics_plan": {
+    "primary": "Unbiased per-coordinate actual CE gradient variance within source RX for t1.pw/t2.pw, 36 packets per RX",
+    "secondary": [
+      "raw RX variance trace/coordinate mean/variance vector norm",
+      "same TX/day residual gradient variance",
+      "normalized variance discrepancy across5RX",
+      "source-only subset loss/count/state immutability",
+      "independent saved-gradient recount"
+    ],
+    "source_only_selection": "Fixed180 source samples per seed+97501, 2 per TX/day/RX; no V or target ranking",
+    "test": "Explicit source-only no target predictions or scoring; no head fitting",
+    "readouts": [
+      "UNCHANGED_DEFAULT_HEAD_FOR_SOURCE_DERIVATIVES"
+    ],
+    "new_training_cost": "0 epochs/0 optimizer or head updates; 180 real source forwards, one 2zeroIQ realCP smoke"
+  },
+  "rows": [
+    {
+      "row_id": "SOURCE_GRADVAR-s2026092701",
+      "method": "cvs_source_gradient_variance",
+      "purpose": "source_only_shallow_middle_parameter_gradient_variance",
+      "config_ref": "experiments/cvs_source_gradient_variance/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-gradient-variance-manysig-s01-m1-r01/SOURCE_GRADVAR-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026190202,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "One fixed model seed; source subset shuffle2026190202; no augmentation, support, new model seed or target use",
+      "k": null,
+      "scenario": "source_clean_eval_derivative",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 epochs/0 optimizer or head updates; 180 real source forwards, one 2zeroIQ realCP smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-gradient-variance-manysig-s01-m1-r01/SOURCE_GRADVAR-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_gradient_variance_20261014_r01/dispatcher.stdout.log",
+      "command": "python -u -m experiments.cvs_source_gradient_variance.probe",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "gradients.pt",
+        "results.json",
+        "completion.json"
+      ],
+      "config": {
+        "schema": "source_gradient_variance_v1",
+        "run_id": "20261014-phase1-source-gradient-variance-manysig-s01-m1-r01",
+        "row_id": "SOURCE_GRADVAR-s2026092701",
+        "arm": "SOURCE_GRADVAR",
+        "model_seed": 2026092701,
+        "source_config": {
+          "schema": "feature_multiscale_oldgate50_v1",
+          "run_id": "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01",
+          "stage": "repair",
+          "arm": "OLD_GATE_COS50",
+          "model_seed": 2026092701,
+          "row_id": "OLD_GATE_COS50-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092701/source",
+          "epochs": 50,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "updates": 11100,
+          "legacy_reference_config": {
+            "schema": "legacy_no_sat_v1",
+            "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+            "stage": "repair",
+            "arm": "legacy_cosine_no_sat",
+            "model_seed": 2026092701,
+            "row_id": "legacy_cosine_no_sat-s2026092701",
+            "features": [
+              "ema",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_legacy_no_sat",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06
+          },
+          "source_falsification": {
+            "first_seed": 2026092701,
+            "maximum_final_L_CE": 0.5,
+            "metric": "mean train/loss_tx_labeled over final222updates; no V or target feedback"
+          },
+          "training_recipe": "historical batch_neighbor pseudo gate+EMA+cos; no satellite; allarms identical",
+          "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+          "explicit_CFO_identity_feature": false,
+          "feature_extractor": {
+            "time": false,
+            "PA": false,
+            "time_layers": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "PA_layers": [
+              "pa_b1",
+              "pa_b2",
+              "pa_b3"
+            ],
+            "time_kernel_dilation": [
+              [
+                3,
+                1
+              ],
+              [
+                5,
+                1
+              ],
+              [
+                5,
+                2
+              ]
+            ],
+            "PA_kernels": [
+              3,
+              5,
+              7
+            ],
+            "PA_dilation_by_layer": [
+              1,
+              2,
+              4
+            ],
+            "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+            "output_embedding": 160
+          },
+          "classifier": "unchanged baseline ResidualPhysicalHead/6x160 cosine/scale30/branchLN/gain; no newhead/readout/calibration",
+          "test_views": [
+            "clean"
+          ],
+          "checkpoint_selection": "final_only",
+          "goal": {
+            "primary": "JOINT_MS50",
+            "clean_three_seed_mean": 0.84,
+            "feedback_to_training": false
+          },
+          "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+          "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
+        },
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-gradient-variance-manysig-s01-m1-r01/SOURCE_GRADVAR-s2026092701",
+        "launch_owner": "codex/root/source-gradient-variance-20261014",
+        "source_role": "L_s",
+        "source_pool_count": 6300,
+        "samples_per_TX_RX_day": 2,
+        "source_sample_count": 180,
+        "shuffle_seed": 2026190202,
+        "domains": "5 actual source RX; 36 packets each, balanced6TXx3daysx2",
+        "gradient_parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight"
+        ],
+        "gradient_elements": [
+          3456,
+          6912
+        ],
+        "loss": "per-example default cosine CE label_smoothing .01; no batch-mean scaling",
+        "statistics": "unbiased coordinate gradient variance within RX; raw and TX/day-centered residual; no cross-layer raw-unit ranking",
+        "model_mode": "eval; read-only derivative observer",
+        "training_epochs": 0,
+        "optimizer_updates": 0,
+        "head_fit": false,
+        "query_read": false,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "V_cache_materialized": true,
+        "V_forward": false,
+        "stop_rule": "Role/provenance/shape/nonfinite/state mutation failure preserves outputs and stops; no automatic retry; no target feedback"
+      }
+    }
+  ],
+  "notes": [
+    "Existing full source derivative norm/cosine profiles do not estimate RX gradient variance; this is the missing source-only measurement.",
+    "No Fishr loss enabled and no new classifier or separate classifier optimization.",
+    "Within-layer parameter-coordinate comparison only; balanced sample subset and TX/day centering are descriptive and not causal invariance evidence."
+  ],
+  "status": "LOCAL_VERIFIED",
+  "results": null,
+  "registered_at": "2026-10-14T02:02:04+00:00"
+}

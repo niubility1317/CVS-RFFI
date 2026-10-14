@@ -148,3 +148,10 @@ run 20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01�
 
 
 MixStyle 剩余两种子现已发布并运行：实际代码 `2b8371027c11cab4b80c17a8c2d0797fac00524a`，四个从零训练模型在 GPU 1 至 GPU 4 运行，已完成 12/9/11/11 个 epoch；进程、CWD、命令、配置和日志增长 VERIFIED，无训练失败。两个历史基线行已复用；全部固定 50 轮，默认分类头正常联合训练，未单独拟合头。归档传输、远端编译和真实同种子旧 checkpoint 无查询 smoke 均 PASS。完整三种子指标尚未产生，首种子负结果保持；详见 [发布证据](../automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01/launch_evidence.json)。
+
+
+## 浅中层源梯度方差诊断
+
+固定 source-only run 20261014-phase1-source-gradient-variance-manysig-s01-m1-r01 已实现，本地平衡采样/无偏方差/6协议负例/真实native无查询求导与CPU依赖检查 PASS。一个固定旧基线seed2026092701 final50，取 L_s180（每TX/day/RX2），对实际t1/t2 pointwise权重10368坐标求逐包默认CE导数，按5RX各36包统计 raw 与 TX/day均值去除后的方差。模型eval、参数/buffers不变、无新训练/头拟合/辅助classifier/目标读取；V cache物化后丢弃，无V前向。此为Fishr前的缺失源机制测量，未启用Fishr损失，不宣称有效。唯一新增直接P0/P1审查发现release执行提交读取路径错误，已改为既有release_commit.txt；尚未发布，当前LOCAL_VERIFIED。完整[预登记](../automation_reports/CV-SincNet/20261014-phase1-source-gradient-variance-manysig-s01-m1-r01/report.md)。
+
+源梯度方差新增唯一直接审查现已 PASS，P1完成记录路径修复并针对性确认通过。用户新增明确要求：以SIG_TIME为基础综合MEAN_VAR/COV。将核实原配方，以同参数多SIG_TIME控制区分增容与统计信息；不读取或挑选目标最高权重继续训练，不重复加入SIG，不热改已发布任务。
