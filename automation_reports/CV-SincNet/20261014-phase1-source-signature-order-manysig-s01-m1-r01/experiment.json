@@ -1,0 +1,408 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261014-phase1-source-signature-order-manysig-s01-m1-r01",
+  "group_id": "phase1_deployed_signature_semantic_view",
+  "display_name": "Phase1 实际签名固定时间坐标与动态身份关系源诊断",
+  "description": "冻结首定义SIG_TIME ZERO final50；全L6300，同126000采样关系/视图，比较实际SIG112/只去4常量clock-step的SIG108/t2四格384/joint160，统计clock能量及真实t1/t2/SIGlocalprojection导数。0训练/头拟合/target，不修改六健康任务。",
+  "kind": "diagnostic",
+  "stage": "phase1_source_diagnostic",
+  "aliases": [
+    "source_signature_order_s01"
+  ],
+  "tags": [
+    "phase1",
+    "source_only",
+    "deployed_signature",
+    "constant_time_coordinate",
+    "bounded_identity_order",
+    "default_head",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户持续Phase1可迁移特征84%目标、默认分类头禁止单独训练；当前只读合法源机制诊断，GPU健康训练保持；实现和对应结果Git上传。",
+  "code": {
+    "commit": "Actual Git commit fixed before release",
+    "checkout": "codex/phase1-feature-challenge-20261013",
+    "environment": "ordinary N607 existing CVS-RFFI fullFP32 CPU; CUDA_VISIBLE_DEVICES empty; Torch/OMP/MKL/OpenBLAS2threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_signature_order_20261014_r01",
+    "entrypoint": "experiments.cvs_source_signature_order.probe",
+    "config_paths": [
+      "experiments/cvs_source_signature_order/design.py"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "ApprovedsourcecleanIQ2x256NoExplicitCFO/internalcompensation; actualdescriptor112 vsdrop4input-independent time-step slots fordiagnostic108, unalterednetwork/deployedjoint160",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "roles": {
+      "L_s": "Existing all6300,70perTX/RX/day, eachpacket once in oneof70balancedL90cohorts",
+      "U_s": "Existing56700 hiddenTX; no IQ or truth read",
+      "V": "Existing27000 materialized by shared cache then discarded; no forward/gradient/selection"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 clean capsule, unchanged physical IDs",
+    "split_id": "core90_game_source_roles_v1 split_seed392005; unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "labeled_fraction_within_training_pool": 0.1
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozenfinalsource seenRX/day only, sampledrelationshipcoverage/clockenergy/actualfeaturegradients. Viewcomparison not causalRXinvariance orDG ranking/effectiveness/newTX/Phase2/targetproof."
+  },
+  "checkpoint": {
+    "initialization": "Read-only first predefined SIG_TIME ZERO scratch50 final; no weights for new training, originalsource_proof before load",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01/SIG_TIME-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "Original matchingroles/physicalIDs/fixedfinal50/11100/ownscratch/ownEMA verified via source_proof beforeload",
+    "selection_rule": "Fixedfirstpredefinedseed SIG_TIME ZERO checkpoint, matching deployed ftheta ofcurrentmatrix; never choose besttargetweights"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/source-signature-order-20261014",
+    "gpu_policy": "CPU only, CUDA_VISIBLE_DEVICES empty; no GPU reservation or change to healthy experiments",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-signature-order-manysig-s01-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_signature_order_20261014_r01/dispatcher.stdout.log",
+    "local_artifact_root": "local_artifacts/source_signature_order_delivery_r01",
+    "launch_command": "python -u -m experiments.cvs_source_signature_order.probe",
+    "stop_rule": "Role/provenance/shape/nonfinite/state mutation failure stops, preserves outputs; no automatic retry or target feedback"
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "resolved_config.json",
+    "source_relations_gradients.pt (remote only; physicalIDs/rawgradients not Git)",
+    "results.json",
+    "completion.json",
+    "failure.json only on failure"
+  ],
+  "metrics_plan": {
+    "primary": "AllL actualclock coordinate min/max andenergy fraction; fixedm.1 relation/sample coverage acrossfourunfittedviews",
+    "secondary": [
+      "30orderedTXpairs/20RXpairs/3days for eachview",
+      "840actualfeatureparameter-gradient records plus210samegraphdefaultCE baselines",
+      "t1/t2/SIGlocalprojection objects, auxclassWdependencyabsent",
+      "Saved artifact complete clock/relationship/gradient arithmetic recount, state/RNG/.grad unchanged"
+    ],
+    "source_only_selection": "FullL70balancedL90cohorts fixedshuffle2026210712, firstpredefined sourceCP; no newtraining or methodchoicefromtarget",
+    "test": "Explicitsourceonly, no target prediction/truth scoring andno classifierfitting",
+    "readouts": [
+      "ACTUAL_FROZEN_DEFAULT_HEAD_CE",
+      "UNFITTED_DEPLOYED_SIGNATURE_VIEWS"
+    ],
+    "new_training_cost": "0epochs/0optimizer/headfit,6300sourceforwards+90zeroIQrealCPsmoke,CPU2threads only"
+  },
+  "rows": [
+    {
+      "row_id": "SOURCE_SIGNATURE_ORDER-s2026092701",
+      "method": "cvs_source_signature_order",
+      "purpose": "actual_deployed_signature_constant_coordinate_and_semantic_relationships",
+      "config_ref": "experiments/cvs_source_signature_order/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-signature-order-manysig-s01-m1-r01/SOURCE_SIGNATURE_ORDER-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026210712,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "First predefined modelseed, fixed sourcecohortshuffle; no fitted thresholds/augmentation/queryselection",
+      "k": null,
+      "scenario": "source_clean_eval_identity_relation",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0epochs/0optimizer/headfit,6300sourceforwards+90zeroIQrealCPsmoke,CPU2threads only",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-signature-order-manysig-s01-m1-r01/SOURCE_SIGNATURE_ORDER-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_signature_order_20261014_r01/dispatcher.stdout.log",
+      "command": "python -u -m experiments.cvs_source_signature_order.probe",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "source_relations_gradients.pt",
+        "results.json",
+        "completion.json"
+      ],
+      "config": {
+        "schema": "source_signature_order_v1",
+        "run_id": "20261014-phase1-source-signature-order-manysig-s01-m1-r01",
+        "row_id": "SOURCE_SIGNATURE_ORDER-s2026092701",
+        "arm": "SOURCE_SIGNATURE_ORDER",
+        "model_seed": 2026092701,
+        "source_config": {
+          "schema": "signature_stats_default50_v1",
+          "run_id": "20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+          "stage": "repair",
+          "arm": "SIG_TIME",
+          "model_seed": 2026092701,
+          "row_id": "SIG_TIME-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01/SIG_TIME-s2026092701/source",
+          "epochs": 50,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "launch_owner": "codex/root/local-order50-20261014",
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "updates": 11100,
+          "legacy_reference_config": {
+            "schema": "legacy_no_sat_v1",
+            "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+            "stage": "repair",
+            "arm": "legacy_cosine_no_sat",
+            "model_seed": 2026092701,
+            "row_id": "legacy_cosine_no_sat-s2026092701",
+            "features": [
+              "ema",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_legacy_no_sat",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06
+          },
+          "source_falsification": {
+            "final_L_CE_max": 0.5,
+            "source_added_feature_difference_min": 1e-06,
+            "actual_extra_batches": 2750,
+            "gradient_epoch_batches": 220,
+            "source_only": true,
+            "description": "All3finalLCE<=.5; actualupdate/export/Windependence/identicalinitialeval; ORDER-SIGL720zL2>=1e-6; exactextra/gradientbudget; ORDER t1/t2 effectiveauxnonzero at17/33/50; no target score used for expansion."
+          },
+          "training_recipe": "old batch_neighbor gate+EMA+cos scratch50 label33+pseudo17, no satellite",
+          "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+          "explicit_CFO_identity_feature": false,
+          "feature_extractor": {
+            "time": false,
+            "PA": false,
+            "time_layers": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "PA_layers": [
+              "pa_b1",
+              "pa_b2",
+              "pa_b3"
+            ],
+            "time_kernel_dilation": [
+              [
+                3,
+                1
+              ],
+              [
+                5,
+                1
+              ],
+              [
+                5,
+                2
+              ]
+            ],
+            "PA_kernels": [
+              3,
+              5,
+              7
+            ],
+            "PA_dilation_by_layer": [
+              1,
+              2,
+              4
+            ],
+            "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+            "output_embedding": 160
+          },
+          "classifier": "unchanged default cosine6x160scale30 normal joint training only",
+          "test_views": [
+            "clean"
+          ],
+          "checkpoint_selection": "final_only",
+          "goal": {
+            "primary": "LOCAL_ORDER",
+            "clean_three_seed_mean": 0.84,
+            "first_seed_is_not_goal_completion": true,
+            "feedback_to_training": false
+          },
+          "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+          "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately",
+          "source_config": null,
+          "baseline_reuse": false,
+          "feature_combination": {
+            "modes": [
+              "SIG_TIME"
+            ],
+            "layer": "t2",
+            "local_dimension": 6,
+            "windows": 4,
+            "descriptor_width_each": 28,
+            "descriptor_raw_width": 28,
+            "fixed_lift": "SIG_TIME identity28; COV_SHAPE/AREA_SHAPE same original COV orthonormal27to28 seed2026101307",
+            "shared_single_projection": true,
+            "gain_initial": 0.05,
+            "gain_bound": 0.2,
+            "output_embedding": 160
+          },
+          "readouts": [
+            "ORIGINAL_HEAD"
+          ],
+          "separate_head_training": false,
+          "hypothesis_basis": "Report31957f78 plus fullL6300source layer order; fixedm.1. Direct shallow/middle semantic supervision vs matched source-reference SupCon, no hierarchy/PAIR/weight stacking or target selection.",
+          "source_formula_parent_commit": "990ffabe0",
+          "initialization_policy": "Warm CUDA before native training seed; private pool RNG preserves baseline draws; verify actual initial native body/head equality",
+          "local_order": {
+            "mode": "ZERO",
+            "layers": [
+              "t1",
+              "t2"
+            ],
+            "local_view": "4 ordered adaptive average temporal bins on existing postDropout output; perpacketL2eps1e-4; no fitted projection",
+            "source_role": "L_s",
+            "cohort_seed": 2026210712,
+            "cohort_packets": 90,
+            "cohorts": 70,
+            "cohort_order": "fixed rank within TX/RX/day, cycle70 cohorts independently of modelseed, no target or Utruth",
+            "every_steps": 4,
+            "extra_batches_per_epoch": 55,
+            "extra_batches": 2750,
+            "extra_source_packet_forwards": 247500,
+            "all_arms_same_extra_forward": true,
+            "extra_mode": "eval with parameter gradients; restore module modes and CPU/GPU RNG; classW receives only original joint training",
+            "margin": 0.1,
+            "temperature": 0.2,
+            "coefficient": 0.1,
+            "warmup_epochs": 5,
+            "ramp_epochs": 10,
+            "loss": "mean t1/t2; ORDER all1800legaltriplets incl satisfiedzeros; SUPCON360 anchor/referenceRX groups withsameTXpositive+5otherTXnegative",
+            "diagnostic_epochs": [
+              1,
+              17,
+              33,
+              50
+            ],
+            "diagnostic_batches": "all55 scheduled extra Lcohorts perdeclared epoch; actual mainL128CE versus separateL90aux",
+            "gradient_objects": [
+              "t1.pw.weight",
+              "t2.pw.weight",
+              "t3.pw.weight"
+            ],
+            "no_extra_head": true,
+            "no_U_relations": true
+          }
+        },
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-signature-order-manysig-s01-m1-r01/SOURCE_SIGNATURE_ORDER-s2026092701",
+        "launch_owner": "codex/root/source-signature-order-20261014",
+        "source_role": "L_s",
+        "source_count": 6300,
+        "cohort_count": 70,
+        "cohort_packets": 90,
+        "sampling": "fixed shuffled rank within each TX/RX/day; all70 ranks once, one physical packet per90cell cohort",
+        "shuffle_seed": 2026210712,
+        "margin": 0.1,
+        "temperature": 0.2,
+        "coefficient": 0.1,
+        "levels": [
+          "T2_WINDOW",
+          "SIG_RAW",
+          "SIG_DYNAMIC",
+          "JOINT160"
+        ],
+        "local_view": "actual deployed SIG112 vs remove4constant time-step coordinates only SIG108, four-bin t2control384 and deployedjoint160, all L2eps1e-4; no fitted projection/statistics",
+        "relations": "same-day i/p sameTX crossRX; n differentTX and sameRX/day as p; all1800 triples percohort, satisfied terms stay in denominator",
+        "supcon": "per anchor/referenceRX, six true-TX reference packets including sameTX positive; normalized cosine logsumexp/temperature; all360 reference groups percohort",
+        "gradient_parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "training_epochs": 0,
+        "optimizer_updates": 0,
+        "head_fit": false,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "query_read": false,
+        "V_cache_materialized": true,
+        "V_forward": false,
+        "early_middle": "not available from frozen final checkpoint; real epochs1/17/33/50 to be observed only in subsequent preregistered training",
+        "stop_rule": "Role/provenance/shape/nonfinite/state mutation failure stops, preserves outputs; no automatic retry or target feedback"
+      }
+    }
+  ],
+  "notes": [
+    "Independent prospective source diagnosis while current6 models remain unchanged; code coordinates motivate test, not partialtargetscores.",
+    "Removing4constant slots is only an unfitted auxiliary diagnostic view; productionSIG112 andjoint160 retained.",
+    "Clockinformation-free coordinate can affectcosinenormalization, but anygeometry/gradientimprovement is notperformance proof.",
+    "No early/midactualtrainingclaim, no newhead, no Utruth, no targetIQ/stats/groups used."
+  ],
+  "status": "LOCAL_VERIFIED",
+  "results": null,
+  "registered_at": "2026-10-14T12:31:32+00:00"
+}
