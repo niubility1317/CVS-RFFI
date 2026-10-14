@@ -11,7 +11,7 @@
 | R05 | 二·结构分析 | 区分面积、统计形状和常数时间坐标；不把顺序敏感视为泛化证据 | checks.py/report | verified | float64：cov置乱不变、area反转/内部顺序及时间项恒等式PASS | 性能只由真实冻结测试证明 |
 | R06 | 三·路线三 | 独立比较t2与t2.pool取点 | experiments/cvs_read_position50及seeds | verified | 完整3seed/9row/66600steps/1512000pred/162metrics独立复算VERIFIED | PRE82.5599vsPOST82.6909，无稳定提升 |
 | R07 | 三·路线二 | 连续4→2→1层级含三个边界增量和统一全局时间 | experiments/cvs_hierarchy50及seeds/source_hierarchy | verified | 完整3seed15row/133200新增steps/2520000pred/270metrics/12真实feature witness复算VERIFIED | HIER_ORDER82.8734%，vsSIG+.1784pp、2/3正差，84均值未达 |
-| R08 | 三·路线四 | 可信门控内有界stopgrad难度权重及真实训练梯度 | experiments/cvs_source_weight、cvs_trusted_weight50 | implemented | 源代理15统计/75梯度复算VERIFIED；真实两模型scratch50已发布健康2epoch | 等待真实33/34/50记录与默认头性能，不能用源代理代替 |
+| R08 | 三·路线四 | 可信门控内有界stopgrad难度权重及真实训练梯度 | experiments/cvs_source_weight、cvs_trusted_weight50 | implemented | 源代理15统计/75梯度复算VERIFIED；首seed真实训练/默认评分/3996梯度复算VERIFIED，剩余四新模型健康训练 | 等待真实33/34/50记录与默认头性能，不能用源代理代替 |
 | R09 | 五及目标 | 首seed同路径SIG_TIME与两个描述子、旧基线；源PASS才扩02/03；自动默认头truthlast、Git | design/source/dispatch/score/report | verified | 完整三seed12row／99900steps／2016000默认预测／216组指标复算VERIFIED，Git交付 | 不使用目标分数控制扩seed |
 
 当前最高风险未完成项：新描述子能否在真实source训练中更新并保持合法默认预测路径；局部算子通过不等于识别提升。实施按路线一的公式严格对齐，其他路线按原报告顺序有意后置；无需新增报告审批、签名或数据重验。
@@ -59,3 +59,6 @@ R07完整三seed闭环verified：HIER_ORDER82.8734%±1.9546pp，vsSIG+.1784±.98
 
 
 R08真实训练已实现发布：20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01，实现23ea591bba17dd938d2b9a93f8b9d9dc5f02e97a、执行7708d4afcef141bb614e0c2171f2a9207c4469ff；原SIG_TIME特征/旧gate/defaultjointhead，acceptedCE stopgradraw.75至1.25/scale.1/mean-normalization，lambdaU.16/entropy.01/33＋17保持。native只添10行scoped hook，双真实模型正常backward/optimizer/defaultW/pool更新、初始parameters/z同、无observer RNG/state/.grad变化、33inactive与9配置负例及13compile PASS；一次直接P0/P1 PASS。实际CP无query smoke及两个GPU0/3进程/配置/日志增长VERIFIED，当前2epoch无failure；真实33/34/50共666batch/1998层批参数贡献、固定默认头成绩尚pending。现8verified/1implemented/0deferred、0blocked/rejected，最高未完成项R08完整真实训练和三seed收益；公式严格照报告，源proxy此前范围缩小已明确，未将其冒充真实训练。验证python -m experiments.cvs_trusted_weight50.checks、check_inactive.py、publish --inspect；未新增审批/签名/数据重验/重复审查。
+
+
+R08首seed实际闭环：20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01，执行7708d4afcef141bb614e0c2171f2a9207c4469ff，weight83.5810%vsuniform83.7345%，−.1536pp，0/1。150完整epoch/22200新updates/504000defaultpred/54metrics/3996真实33/34/50层批grad保存复算VERIFIED，2新pool实际更新/export差0/W独立/默认fit0，候选-controlL720zL2=1.736686。源feature geometry额外2160源forward/0optimizer/无headfit，是非阻塞描述性证据，不能选模或作性能门槛。sourcePASS先于新target数值读取冻结fcc252f3938a21b415f5354b2a2e9db7315934bd，剩余02/03四新原样发布a8ff278fc8dd1b54b69279503c4cda9282795261、GPU1/2/4/6真实进程/日志增长VERIFIED，首seed不重训。现8verified/1implemented/0deferred，0blocked/rejected；最高待验证是R08完整三seed性能，梯度放大≠更强泛化。严格实现stopgrad/bounds/acceptedmean/原gate及entropy保持；源代理与真实梯度差异、源几何limitations全部披露。验证cvs_trusted_weight50.audit仅读完整保存产物和已有预测，3996梯度norm/cos及22200实际mask/loss逐步对齐VERIFIED；cvs_trusted_weight_seeds.publish --inspect核实4健康worker，未重复审查或热改健康release。

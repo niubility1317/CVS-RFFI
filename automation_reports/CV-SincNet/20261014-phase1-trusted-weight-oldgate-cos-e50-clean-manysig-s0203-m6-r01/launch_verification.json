@@ -1,0 +1,82 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+  "execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+  "source_decision_commit": "fcc252f3938a21b415f5354b2a2e9db7315934bd",
+  "source_only_decision_before_first_target_numbers": true,
+  "dispatcher_pid": 2290961,
+  "preflight": {
+    "status": "PASS",
+    "real_checkpoint_no_query_smoke": true,
+    "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092702/source/final_ssdg.pth",
+    "source_seed": 2026092702,
+    "query_read": false,
+    "head_fit": false,
+    "training_inherits_checkpoint": false
+  },
+  "completion": null,
+  "failure": null,
+  "first_seed_retrained": false,
+  "workers": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "pid": 2291614,
+      "gpu": 1,
+      "live": true,
+      "epoch": 24,
+      "log_bytes_before": 53171,
+      "log_bytes_after": 130959,
+      "log_growth": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "actual_execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+      "default_probes_disabled": true,
+      "weight_active": false
+    },
+    {
+      "row_id": "TRUSTED_WEIGHT-s2026092702",
+      "pid": 2291696,
+      "gpu": 2,
+      "live": true,
+      "epoch": 23,
+      "log_bytes_before": 48134,
+      "log_bytes_after": 126099,
+      "log_growth": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "actual_execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+      "default_probes_disabled": true,
+      "weight_active": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "pid": 2291936,
+      "gpu": 4,
+      "live": true,
+      "epoch": 20,
+      "log_bytes_before": 42812,
+      "log_bytes_after": 110228,
+      "log_growth": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "actual_execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+      "default_probes_disabled": true,
+      "weight_active": false
+    },
+    {
+      "row_id": "TRUSTED_WEIGHT-s2026092703",
+      "pid": 2292094,
+      "gpu": 6,
+      "live": true,
+      "epoch": 24,
+      "log_bytes_before": 53327,
+      "log_bytes_after": 131300,
+      "log_growth": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "actual_execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+      "default_probes_disabled": true,
+      "weight_active": true
+    }
+  ]
+}

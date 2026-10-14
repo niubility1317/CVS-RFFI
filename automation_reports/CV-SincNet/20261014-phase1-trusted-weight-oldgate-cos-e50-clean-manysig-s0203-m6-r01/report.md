@@ -18,3 +18,6 @@ Stop：复用角色/provenance/初始化/非有限/shape/默认头/门控/损失
 
 
 首固定执行7708d4afcef141bb614e0c2171f2a9207c4469ff的源资格已只读核实PASS，读取target summary/metrics数值前冻结seed_expansion_decision.json。两新finalLCE .247590639/.247829630，candidate−control源L720zL2 1.736685634；每模型真实11100updates/3774Usteps/963900U包及33/34/50共1998层批记录保存复算VERIFIED，额外headfit0，actualexport/W独立及matchedinitial通过。sourcePASS不等于性能PASS，首target数字尚未读取。发布的source qualification检查放入远端preflight，复用既有正确N607 Linux文件读取路径；当前仍未发布剩余训练。
+
+
+实际发布RUNNING/VERIFIED：执行a8ff278fc8dd1b54b69279503c4cda9282795261，dispatcher2290961；4新worker2291614/2291696/2291936/2292094，GPU1/2/4/6，actualPID/CWD/argv/weight开关/defaultfitdisabled及日志增长核实，当前24/23/20/24轮，无failure。archive传输比较/remotecompile/sourcequalification远端预检/真实historical CP2zeroIQ noquery smoke PASS，首seed不重训。sourcePASS决定先于首target数值读取，当前首weight83.5810%低于uniform83.7345%的负结果不改任何已发布配方。完整3seed、剩余实际33/34/50记录及默认头结果尚pending，不冒充ANALYZED。

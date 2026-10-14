@@ -225,3 +225,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 报告路线四真实训练已实施并发布：20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01，实现23ea591bba17dd938d2b9a93f8b9d9dc5f02e97a、执行7708d4afcef141bb614e0c2171f2a9207c4469ff；固定历史oldgatecos＋scratch50 SIG_TIME uniform/weighted两新模型，结构/旧mask/EMA/cos/defaultjointhead相同，仅acceptedCE boundedstopgrad权重，entropy.01保持。局部真实模型update/RNG/state/33inactive/9negative PASS，一次独立直接P0/P1 PASS；真实CPnoquery smoke/归档compile/两实际workerPID-CWD-argv-GPU0/3-日志增长VERIFIED，目前2epoch。33/34/50全部222批/1998层批梯度的真实预算已接线，尚未到声明轮；未有新性能结果，不称有效或84达标。首seed自动默认头predict/truthlast，sourcePASS才原样扩剩余预定义seed，目标不回流。
+
+
+可信权重首seed真实闭环：TRUSTED_WEIGHT83.5810%、SIG_TIME83.7345%，−.1536pp/0of1，修正585引入843净−258，旧gatecos80.6685%；3row/2新100epochs22200steps＋1历史50epochs，150源epoch/504000defaultpred/54metrics/3996真实骨干梯度记录独立复算VERIFIED，额外headfit0。33Uinactive；34/50同批weight放大t1/t2/t3梯度但cos约.9994至.9997，不能证明新增信息或性能。源距离比值4.3584→4.4402，但同TX跨RX距离也升高，旧基线ratio5.0771更高而target更差，因此不是泛化排序。sourcePASS（两LCE≤.5/导出/W独立/初态同/源zL2=1.736686/实际梯度budget）在target数字读取前冻结fcc252f3938a21b415f5354b2a2e9db7315934bd并原样发布4新02/03，执行a8ff278fc8dd1b54b69279503c4cda9282795261，真实GPU1/2/4/6进程与日志增长VERIFIED。完整3seed仍pending，84未达；首负结果与所有记录保留。报告automation_reports/CV-SincNet/20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md。

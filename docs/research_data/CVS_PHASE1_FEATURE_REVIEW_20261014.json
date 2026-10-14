@@ -35152,7 +35152,7 @@
     {
       "route": "report route4 trusted accepted difficulty weighting",
       "run_id": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01",
-      "status": "RUNNING_VERIFIED",
+      "status": "ANALYZED_FIRST_SEED",
       "implementation_commit": "23ea591bba17dd938d2b9a93f8b9d9dc5f02e97a",
       "execution_commit": "7708d4afcef141bb614e0c2171f2a9207c4469ff",
       "model_seeds": [
@@ -35237,7 +35237,330 @@
             "weight_active": true
           }
         ]
-      }
+      },
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 1,
+          "accuracy_mean": 0.8066845238095238,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238
+          },
+          "macro_f1_mean": 0.8017335328586674,
+          "worst_RX_mean": 0.7061666666666667,
+          "worst_day_mean": 0.7545238095238095
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 1,
+          "accuracy_mean": 0.8373452380952381,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8373452380952381
+          },
+          "macro_f1_mean": 0.8331345725845606,
+          "worst_RX_mean": 0.7130833333333333,
+          "worst_day_mean": 0.7933333333333333
+        },
+        {
+          "arm": "TRUSTED_WEIGHT",
+          "seed_count": 1,
+          "accuracy_mean": 0.8358095238095238,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8358095238095238
+          },
+          "macro_f1_mean": 0.8313544454116539,
+          "worst_RX_mean": 0.711625,
+          "worst_day_mean": 0.790047619047619
+        }
+      ],
+      "paired": [
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.030660714285714263
+          ],
+          "mean_difference": 0.030660714285714263,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "TRUSTED_WEIGHT",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.001535714285714307
+          ],
+          "mean_difference": -0.001535714285714307,
+          "sd_difference": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "TRUSTED_WEIGHT",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.029124999999999956
+          ],
+          "mean_difference": 0.029124999999999956,
+          "sd_difference": null,
+          "positive_seeds": 1
+        }
+      ],
+      "audit": {
+        "status": "VERIFIED",
+        "models": 3,
+        "new_models": 2,
+        "reused_models": 1,
+        "new_updates": 22200,
+        "source_epoch_records": 150,
+        "default_predictions": 504000,
+        "group_metrics": 54,
+        "actual_gradient_layer_records": 3996,
+        "actual_native_loss_mask_steps": 22200,
+        "head_fit": false,
+        "truth_last": true,
+        "no_new_target_forwards": true
+      },
+      "feature_source_L2": 1.7366856336593628,
+      "actual_gradient_layer_records": 3996,
+      "source_geometry": {
+        "status": "VERIFIED",
+        "run_id": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+        "rows": [
+          {
+            "row_id": "OLD_GATE_COS50-s2026092701",
+            "arm": "OLD_GATE_COS50",
+            "seed": 2026092701,
+            "records": [
+              {
+                "relation": "within_TX_same_RX_same_day",
+                "pair_count": 2520,
+                "normalized_squared_distance_mean": 0.1663016497625405,
+                "distance_median": 0.08268496789696855
+              },
+              {
+                "relation": "within_TX_cross_RX_same_day",
+                "pair_count": 11520,
+                "normalized_squared_distance_mean": 0.30866334846753724,
+                "distance_median": 0.23232296798619245
+              },
+              {
+                "relation": "between_TX_same_RX_same_day",
+                "pair_count": 14400,
+                "normalized_squared_distance_mean": 1.567101770259928,
+                "distance_median": 1.675605858156838
+              },
+              {
+                "relation": "between_TX_cross_RX_same_day",
+                "pair_count": 57600,
+                "normalized_squared_distance_mean": 1.5837134114830769,
+                "distance_median": 1.6936202436860581
+              }
+            ],
+            "betweenTX_sameRX_over_withinTX_crossRX": 5.077058154265256,
+            "source_packets": 720,
+            "no_classifier_fit": true,
+            "scope": "Source seen RX/day only, same-day unordered pair distances of actual unit-normalized joint160. No predictions or classW/prototype fitting. Pairs overlap; pair count is not independent model seeds or confidence evidence. Geometry is supplementary, no source qualification/parameter/target selection."
+          },
+          {
+            "row_id": "SIG_TIME-s2026092701",
+            "arm": "SIG_TIME",
+            "seed": 2026092701,
+            "records": [
+              {
+                "relation": "within_TX_same_RX_same_day",
+                "pair_count": 2520,
+                "normalized_squared_distance_mean": 0.09324179908097335,
+                "distance_median": 0.06125078539986739
+              },
+              {
+                "relation": "within_TX_cross_RX_same_day",
+                "pair_count": 11520,
+                "normalized_squared_distance_mean": 0.18235314485444293,
+                "distance_median": 0.15631049682598097
+              },
+              {
+                "relation": "between_TX_same_RX_same_day",
+                "pair_count": 14400,
+                "normalized_squared_distance_mean": 0.7947594058389802,
+                "distance_median": 0.7031243987507689
+              },
+              {
+                "relation": "between_TX_cross_RX_same_day",
+                "pair_count": 57600,
+                "normalized_squared_distance_mean": 0.8120170261560732,
+                "distance_median": 0.7236842644929196
+              }
+            ],
+            "betweenTX_sameRX_over_withinTX_crossRX": 4.358353163985021,
+            "source_packets": 720,
+            "no_classifier_fit": true,
+            "scope": "Source seen RX/day only, same-day unordered pair distances of actual unit-normalized joint160. No predictions or classW/prototype fitting. Pairs overlap; pair count is not independent model seeds or confidence evidence. Geometry is supplementary, no source qualification/parameter/target selection."
+          },
+          {
+            "row_id": "TRUSTED_WEIGHT-s2026092701",
+            "arm": "TRUSTED_WEIGHT",
+            "seed": 2026092701,
+            "records": [
+              {
+                "relation": "within_TX_same_RX_same_day",
+                "pair_count": 2520,
+                "normalized_squared_distance_mean": 0.09492417205886212,
+                "distance_median": 0.061854181889898774
+              },
+              {
+                "relation": "within_TX_cross_RX_same_day",
+                "pair_count": 11520,
+                "normalized_squared_distance_mean": 0.1861684169140788,
+                "distance_median": 0.15663894399084044
+              },
+              {
+                "relation": "between_TX_same_RX_same_day",
+                "pair_count": 14400,
+                "normalized_squared_distance_mean": 0.8266172498227972,
+                "distance_median": 0.7255343739301214
+              },
+              {
+                "relation": "between_TX_cross_RX_same_day",
+                "pair_count": 57600,
+                "normalized_squared_distance_mean": 0.8442422824452126,
+                "distance_median": 0.7479014094929353
+              }
+            ],
+            "betweenTX_sameRX_over_withinTX_crossRX": 4.440158344389322,
+            "source_packets": 720,
+            "no_classifier_fit": true,
+            "scope": "Source seen RX/day only, same-day unordered pair distances of actual unit-normalized joint160. No predictions or classW/prototype fitting. Pairs overlap; pair count is not independent model seeds or confidence evidence. Geometry is supplementary, no source qualification/parameter/target selection."
+          }
+        ],
+        "source_only": true,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "query_read": false,
+        "head_fit": false,
+        "optimizer_steps": 0,
+        "extra_source_packet_forwards": 2160,
+        "V_cache_materialized": true,
+        "V_forward": false,
+        "saved_feature_distance_recount": "VERIFIED",
+        "nonblocking": true
+      },
+      "remaining_run": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "remaining_execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+      "source_only_expansion_decision_commit": "fcc252f3938a21b415f5354b2a2e9db7315934bd",
+      "source_only_expansion_before_target_numbers": true
+    },
+    {
+      "route": "report route4 unchangedremainingseeds",
+      "run_id": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "status": "RUNNING_VERIFIED",
+      "implementation_commit": "fcc252f3938a21b415f5354b2a2e9db7315934bd",
+      "execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+      "model_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "new_models": 4,
+      "reused_models": 2,
+      "epochs_each": 50,
+      "updates_each": 11100,
+      "default_head_only": true,
+      "first_seed_retrained": false,
+      "source_only_expansion_before_target_numeric_scores": true,
+      "launch": {
+        "status": "VERIFIED",
+        "run_id": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+        "execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+        "source_decision_commit": "fcc252f3938a21b415f5354b2a2e9db7315934bd",
+        "source_only_decision_before_first_target_numbers": true,
+        "dispatcher_pid": 2290961,
+        "preflight": {
+          "status": "PASS",
+          "real_checkpoint_no_query_smoke": true,
+          "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092702/source/final_ssdg.pth",
+          "source_seed": 2026092702,
+          "query_read": false,
+          "head_fit": false,
+          "training_inherits_checkpoint": false
+        },
+        "completion": null,
+        "failure": null,
+        "first_seed_retrained": false,
+        "workers": [
+          {
+            "row_id": "SIG_TIME-s2026092702",
+            "pid": 2291614,
+            "gpu": 1,
+            "live": true,
+            "epoch": 24,
+            "log_bytes_before": 53171,
+            "log_bytes_after": 130959,
+            "log_growth": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "actual_execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+            "default_probes_disabled": true,
+            "weight_active": false
+          },
+          {
+            "row_id": "TRUSTED_WEIGHT-s2026092702",
+            "pid": 2291696,
+            "gpu": 2,
+            "live": true,
+            "epoch": 23,
+            "log_bytes_before": 48134,
+            "log_bytes_after": 126099,
+            "log_growth": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "actual_execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+            "default_probes_disabled": true,
+            "weight_active": true
+          },
+          {
+            "row_id": "SIG_TIME-s2026092703",
+            "pid": 2291936,
+            "gpu": 4,
+            "live": true,
+            "epoch": 20,
+            "log_bytes_before": 42812,
+            "log_bytes_after": 110228,
+            "log_growth": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "actual_execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+            "default_probes_disabled": true,
+            "weight_active": false
+          },
+          {
+            "row_id": "TRUSTED_WEIGHT-s2026092703",
+            "pid": 2292094,
+            "gpu": 6,
+            "live": true,
+            "epoch": 24,
+            "log_bytes_before": 53327,
+            "log_bytes_after": 131300,
+            "log_growth": true,
+            "cwd_matches": true,
+            "argv_matches": true,
+            "actual_execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
+            "default_probes_disabled": true,
+            "weight_active": true
+          }
+        ]
+      },
+      "report": "automation_reports/CV-SincNet/20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md"
     }
   ],
   "diagnostics": {
@@ -80520,8 +80843,8 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "按固定50轮完成已发布SIG_TIME uniform/weighted首seed，回收真实33/34/50梯度和defaulthead truthlast结果，Git交付",
-    "只依据预登记source资格PASS原样扩2026092702/03；不按目标成绩调weight/bounds/scale/seed或加载高分父权重"
+    "完成已发布4新权重/均匀模型固定50轮、实际33/34/50梯度、默认头truthlast及完整三seed同路径配对；不因首负结果调参",
+    "回收固定源特征和梯度证据，完成完整三seed报告/Git交付；不以梯度放大或源距离比值代替泛化性能"
   ],
   "goal_84": false,
   "Phase2_development": false,
