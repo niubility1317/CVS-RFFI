@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "query_read": false,
+  "real_IQ_read": false,
+  "head_fit": false,
+  "actual_models": [
+    {
+      "arm": "SIG_TIME",
+      "default_head_joint_gradient": true,
+      "feature_gradient_records": 3,
+      "pool_tensors_updated": 5,
+      "observer_parameter_or_rng_mutation": false,
+      "actual_loss": 0.0177357979118824,
+      "lambda_ent": 0.01
+    },
+    {
+      "arm": "TRUSTED_WEIGHT",
+      "default_head_joint_gradient": true,
+      "feature_gradient_records": 3,
+      "pool_tensors_updated": 5,
+      "observer_parameter_or_rng_mutation": false,
+      "actual_loss": 0.01868530549108982,
+      "lambda_ent": 0.01
+    }
+  ],
+  "initial_parameters_and_features_identical": true,
+  "negative_configs": 9,
+  "scope": "Two synthetic actual native models; scoped pre-backward parameter derivatives plus normal joint optimizer update. Not a real source training run.",
+  "inactive_epoch33": {
+    "status": "PASS",
+    "epoch33_U_inactive": true,
+    "actual_feature_derivatives": 3,
+    "default_joint_backward": true,
+    "scoped_hook_restored": true,
+    "query_read": false
+  },
+  "compile_files": 13,
+  "observer_actual_layer_objects": [
+    "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+    "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+    "id_backbone.encoder.core.id_backbone.t3.pw.weight"
+  ]
+}
