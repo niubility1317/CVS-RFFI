@@ -17,6 +17,7 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 # Scoped source-only feature objective; default baseline execution is unchanged.
 _source_feature_auxiliary_hook = None
 _trusted_pseudo_loss_hook = None
+_unlabeled_feature_observer_hook = None
 
 import numpy as np
 
@@ -10805,6 +10806,12 @@ def train(args) -> int:
                     prob_s = out_s["tx_logits"].softmax(dim=1)
                     entropy_per_sample = -(prob_s * prob_s.clamp_min(1e-8).log()).sum(dim=1)
                     loss_ent = entropy_per_sample.mean()
+                    if _unlabeled_feature_observer_hook is not None:
+                        _unlabeled_feature_observer_hook(
+                            model=model, args=args, epoch=epoch, batch_idx=batch_idx,
+                            teacher_features=out_w["id_feat_joint"],
+                            student_features=out_s["id_feat_joint"],
+                        )
                     zero_u = out_s["tx_logits"].sum() * 0.0
                     loss_u_domain = zero_u
                     loss_u_adv = zero_u
