@@ -453,3 +453,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 中层时序自挑战三源模型闭环：实际剩余执行`00c7213ac3ce8d2543e9443f5e6dea9ff5772a7b`，sourcePASS3/3；2700包×模型观察但实际ID并集/交集均900，10800源forward/60层180向量，0更新/头fit/query。t1/t2导数01/03反向、02同向，不能称稳定有益方向；TX/RX选择偏向跨seed仍有变化。完整报告`automation_reports/CV-SincNet/20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01/final_analysis.md`。下一独立RSC首seed训练假设仅据源/固定方法记录，尚未实现或发布；DRO全矩阵已自然完成，独立完整分析待汇总。
+
+
+接收机风险完整3seed已闭环：SIG82.629167%±1.606482pp、等权82.743056%±1.622387pp、DRO81.655556%±1.892010pp。DRO−SIG−.973611±.384968pp/0of3，等权+.113889±.194466pp/2of3且最差RX/day均值略低。三seed源最差RX CE均下降（DRO/等权.8175/.8347/.8358）未转成目标收益。12row/9新450epochs99900steps＋3历史150epochs，2016000defaultheadclean决策/216指标/600源epoch/1872层5616向量独立复算VERIFIED，0headfit；84未达，固定DRO路线结束原样扩展。报告`automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md`。RSC下一独立训练假设已在`84579f608289b6c103b503be816c16807ae4ddb7`记录后才读取本次剩余目标数值，仍按源和固定方法实现，不扫mask/层/父。

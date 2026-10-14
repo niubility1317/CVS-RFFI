@@ -219,3 +219,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 
 
 RSC三源模型完整证据已形成：首源保留、02/03新源父各自自然final50后加载，原样mask/cohort/随机控制；真实ID集合三者相同900，合计10800源forward/60层180向量，0训练/头fit/query。sourcePASS3/3但原CE梯度方向跨seed不一致；下一步是独立最小训练假设验证，不自动宣称DG/SSL或84成功。
+
+
+DRO完整固定3seed闭环：9新模型450epochs99900steps，12row2016000defaultheadclean决策216CM/600源epoch/1872层5616实际梯度向量全量复算VERIFIED；DRO−SIG−.973611pp(0/3)、等权+.113889pp(2/3)但最差RX/day不改进。源worstRXCE三seed下降不等于泛化，0headfit/0选择性重跑；保留负结果并结束固定DRO原样扩展。RSC下一训练hypothesis事先记录来自源证据，不能用新target调率/层/父。

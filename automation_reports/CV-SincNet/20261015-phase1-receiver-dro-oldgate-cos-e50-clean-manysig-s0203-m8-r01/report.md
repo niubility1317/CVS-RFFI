@@ -21,3 +21,6 @@
 
 
 已发布RUNNING / VERIFIED：实际执行`a283291279cb01b939325cf5ccba1d0a671b28c4`，原源决定`a283291279cb01b939325cf5ccba1d0a671b28c4`在第一新目标读取前已推送验证。一次普通预检、单归档传输SHA比较与远端编译通过；首seed SIG真实CP的2样本synthetic no-query smoke通过，不继承到训练。六原worker PID/CWD/argv/GPU和日志增长核实，当前2至3轮；分别GPU1/2/0与4/5/3，所有GPU容量符合原规则。旧基线行各自完成评估；六新scratch训练按50轮固定继续，逐row自动clean和truth-last评分。剩余新目标准确率未回收，不因首seed目标负结果停止或热改。证据见launch_verified.json。
+
+
+状态更新：ANALYZED / VERIFIED，剩余8行1344000默认头clean决策144指标、400源epoch完成；与保留首seed合并12行2016000决策216指标、600源epoch、99900新step、1872层5616保存梯度向量，全量独立重算一致。完整3seed SIG82.629167%±1.606482pp、BALANCED82.743056%±1.622387pp、DRO81.655556%±1.892010pp。DRO−SIG−.973611±.384968pp/0of3，BALANCED−SIG+.113889±.194466pp/2of3但最差RX/day略低。固定DRO配方不再原样扩展，84未达，全部负结果保留；详见final_analysis.md。

@@ -82269,8 +82269,8 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "汇总已完成DRO矩阵完整三seed defaultheadclean/配对差/完整源曲线与独立复算，保留全部正负结果并上传Git",
-    "按三模型源证据和固定RSC方法独立实现/验证/审查/登记首seed3臂训练，保持SIG_TIME、默认头正常联合、原U配方和50轮，不根据DRO剩余目标成绩调mask/层/父"
+    "独立实现已由三模型源证据记录的RSC首seed3臂训练：固定SIG_TIME/defaultjointhead、原U/EMA/cos、33+17/50及同预算控制；mask率/层/父不据新DRO目标调节",
+    "完成该新候选的实际调用/RNG/梯度/联合更新验证、唯一P0/P1和预登记后发布，逐row默认头自动clean/truth-last；不把sourcePASS或大梯度当性能提升"
   ],
   "current_priority": {
     "at": "2026-10-15",
@@ -82628,7 +82628,7 @@
       {
         "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
         "package": "experiments/cvs_receiver_dro_seeds",
-        "status": "EXPERIMENT_COMPLETE_INDEPENDENT_ANALYSIS_PENDING",
+        "status": "ANALYZED_VERIFIED",
         "code_commit": "8522fb75680c7b51c7d3d631f67c1b2b212eba8b",
         "source_qualification_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
         "source_qualification": "PENDING",
@@ -82664,7 +82664,9 @@
           50
         ],
         "source_decision_before_own_new_target": true,
-        "workers_live": 0
+        "workers_live": 0,
+        "full_three_seed_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md",
+        "all_rows_complete": true
       },
       {
         "run_id": "20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01",
@@ -83505,7 +83507,7 @@
       "complete_source_qualification": "PASS",
       "source_risk_ratio": 0.8174760405897794,
       "source_expansion_decision": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/source_expansion_decision.json",
-      "remaining_status": "EXPERIMENT_COMPLETE_INDEPENDENT_ANALYSIS_PENDING",
+      "remaining_status": "ANALYZED_VERIFIED",
       "source_decision_commit": "a283291279cb01b939325cf5ccba1d0a671b28c4",
       "accuracy_SIG": 0.836577380952381,
       "accuracy_BALANCED": 0.835875,
@@ -83518,7 +83520,170 @@
       "goal84": false,
       "remaining_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
       "remaining_execution": "a283291279cb01b939325cf5ccba1d0a671b28c4",
-      "result_ref": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/final_analysis.md"
+      "result_ref": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/final_analysis.md",
+      "full_three_seed_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md",
+      "full_three_seed_summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_accuracy": [
+            0.8066845238095238,
+            0.7808154761904762,
+            0.8283035714285715
+          ],
+          "accuracy_mean": 0.8052678571428572,
+          "accuracy_sample_SD": 0.023775723031465,
+          "macro_f1_mean": 0.8000238637751927,
+          "worst_RX_mean": 0.6797083333333332,
+          "worst_day_mean": 0.7605555555555555
+        },
+        {
+          "arm": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_accuracy": [
+            0.836577380952381,
+            0.8077797619047619,
+            0.8345178571428571
+          ],
+          "accuracy_mean": 0.8262916666666666,
+          "accuracy_sample_SD": 0.016064817864385322,
+          "macro_f1_mean": 0.8207541246511839,
+          "worst_RX_mean": 0.7035,
+          "worst_day_mean": 0.7848888888888889
+        },
+        {
+          "arm": "RX_BALANCED",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_accuracy": [
+            0.835875,
+            0.8087261904761904,
+            0.8376904761904762
+          ],
+          "accuracy_mean": 0.8274305555555556,
+          "accuracy_sample_SD": 0.016223869551256157,
+          "macro_f1_mean": 0.821912302168804,
+          "worst_RX_mean": 0.7027083333333333,
+          "worst_day_mean": 0.7847142857142858
+        },
+        {
+          "arm": "RX_DRO",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_accuracy": [
+            0.8258511904761905,
+            0.7947857142857143,
+            0.8290297619047619
+          ],
+          "accuracy_mean": 0.8165555555555555,
+          "accuracy_sample_SD": 0.018920103614071315,
+          "macro_f1_mean": 0.8096659702970149,
+          "worst_RX_mean": 0.6765694444444444,
+          "worst_day_mean": 0.7691031746031746
+        }
+      ],
+      "full_three_seed_paired": [
+        {
+          "arm": "RX_DRO",
+          "control": "RX_BALANCED",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            -1.0023809523809546,
+            -1.3940476190476114,
+            -0.8660714285714355
+          ],
+          "mean_difference_pp": -1.0875000000000006,
+          "sample_SD_pp": 0.2740869453806837,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "RX_DRO",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            -1.07261904761905,
+            -1.2994047619047544,
+            -0.5488095238095236
+          ],
+          "mean_difference_pp": -0.9736111111111093,
+          "sample_SD_pp": 0.3849678317489389,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "RX_BALANCED",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            -0.07023809523809543,
+            0.09464285714285703,
+            0.31726190476191185
+          ],
+          "mean_difference_pp": 0.11388888888889115,
+          "sample_SD_pp": 0.19446560056595724,
+          "positive_seeds": 2
+        },
+        {
+          "arm": "RX_DRO",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            1.9166666666666665,
+            1.3970238095238119,
+            0.07261904761903804
+          ],
+          "mean_difference_pp": 1.1287698412698388,
+          "sample_SD_pp": 0.9508407063971386,
+          "positive_seeds": 3
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            2.9892857142857165,
+            2.6964285714285663,
+            0.6214285714285617
+          ],
+          "mean_difference_pp": 2.102380952380948,
+          "sample_SD_pp": 1.290874235747627,
+          "positive_seeds": 3
+        }
+      ],
+      "fixed_DRO_route": "NO_FURTHER_UNCHANGED_EXPANSION"
     },
     "ssl_gradient_geometry": {
       "status": "ANALYZED_VERIFIED_SOURCE_ONLY",
@@ -83625,6 +83790,238 @@
       "source_three_model_report": "automation_reports/CV-SincNet/20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01/final_analysis.md",
       "next_training_hypothesis": "automation_reports/CV-SincNet/20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01/next_training_hypothesis.json",
       "no_new_training_yet": true
+    },
+    "receiver_dro_full_three_seed": {
+      "status": "ANALYZED_VERIFIED",
+      "run_ids": [
+        "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+        "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01"
+      ],
+      "source_decision_commit": "a283291279cb01b939325cf5ccba1d0a671b28c4",
+      "source_decision_before_own_first_new_target": true,
+      "models": 12,
+      "new_models": 9,
+      "historical_models": 3,
+      "new_epochs": 450,
+      "new_updates": 99900,
+      "source_epochs_represented": 600,
+      "decisions": 2016000,
+      "metrics": 216,
+      "source_risk_steps_replayed": 99900,
+      "gradient_layer_records": 1872,
+      "saved_vectors": 5616,
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_accuracy": [
+            0.8066845238095238,
+            0.7808154761904762,
+            0.8283035714285715
+          ],
+          "accuracy_mean": 0.8052678571428572,
+          "accuracy_sample_SD": 0.023775723031465,
+          "macro_f1_mean": 0.8000238637751927,
+          "worst_RX_mean": 0.6797083333333332,
+          "worst_day_mean": 0.7605555555555555
+        },
+        {
+          "arm": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_accuracy": [
+            0.836577380952381,
+            0.8077797619047619,
+            0.8345178571428571
+          ],
+          "accuracy_mean": 0.8262916666666666,
+          "accuracy_sample_SD": 0.016064817864385322,
+          "macro_f1_mean": 0.8207541246511839,
+          "worst_RX_mean": 0.7035,
+          "worst_day_mean": 0.7848888888888889
+        },
+        {
+          "arm": "RX_BALANCED",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_accuracy": [
+            0.835875,
+            0.8087261904761904,
+            0.8376904761904762
+          ],
+          "accuracy_mean": 0.8274305555555556,
+          "accuracy_sample_SD": 0.016223869551256157,
+          "macro_f1_mean": 0.821912302168804,
+          "worst_RX_mean": 0.7027083333333333,
+          "worst_day_mean": 0.7847142857142858
+        },
+        {
+          "arm": "RX_DRO",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_accuracy": [
+            0.8258511904761905,
+            0.7947857142857143,
+            0.8290297619047619
+          ],
+          "accuracy_mean": 0.8165555555555555,
+          "accuracy_sample_SD": 0.018920103614071315,
+          "macro_f1_mean": 0.8096659702970149,
+          "worst_RX_mean": 0.6765694444444444,
+          "worst_day_mean": 0.7691031746031746
+        }
+      ],
+      "paired": [
+        {
+          "arm": "RX_DRO",
+          "control": "RX_BALANCED",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            -1.0023809523809546,
+            -1.3940476190476114,
+            -0.8660714285714355
+          ],
+          "mean_difference_pp": -1.0875000000000006,
+          "sample_SD_pp": 0.2740869453806837,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "RX_DRO",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            -1.07261904761905,
+            -1.2994047619047544,
+            -0.5488095238095236
+          ],
+          "mean_difference_pp": -0.9736111111111093,
+          "sample_SD_pp": 0.3849678317489389,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "RX_BALANCED",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            -0.07023809523809543,
+            0.09464285714285703,
+            0.31726190476191185
+          ],
+          "mean_difference_pp": 0.11388888888889115,
+          "sample_SD_pp": 0.19446560056595724,
+          "positive_seeds": 2
+        },
+        {
+          "arm": "RX_DRO",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            1.9166666666666665,
+            1.3970238095238119,
+            0.07261904761903804
+          ],
+          "mean_difference_pp": 1.1287698412698388,
+          "sample_SD_pp": 0.9508407063971386,
+          "positive_seeds": 3
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_difference_pp": [
+            2.9892857142857165,
+            2.6964285714285663,
+            0.6214285714285617
+          ],
+          "mean_difference_pp": 2.102380952380948,
+          "sample_SD_pp": 1.290874235747627,
+          "positive_seeds": 3
+        }
+      ],
+      "error_transitions": [
+        {
+          "arm": "RX_DRO",
+          "control": "RX_BALANCED",
+          "corrected_errors": 7373,
+          "introduced_errors": 12854,
+          "net_correct": -5481,
+          "count": 504000
+        },
+        {
+          "arm": "RX_DRO",
+          "control": "SIG_TIME",
+          "corrected_errors": 7749,
+          "introduced_errors": 12656,
+          "net_correct": -4907,
+          "count": 504000
+        },
+        {
+          "arm": "RX_BALANCED",
+          "control": "SIG_TIME",
+          "corrected_errors": 2868,
+          "introduced_errors": 2294,
+          "net_correct": 574,
+          "count": 504000
+        },
+        {
+          "arm": "RX_DRO",
+          "control": "OLD_GATE_COS50",
+          "corrected_errors": 26981,
+          "introduced_errors": 21292,
+          "net_correct": 5689,
+          "count": 504000
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "corrected_errors": 27328,
+          "introduced_errors": 16732,
+          "net_correct": 10596,
+          "count": 504000
+        }
+      ],
+      "source_risk_ratios": [
+        0.8174760405897794,
+        0.8347032506092138,
+        0.8357964516461232
+      ],
+      "head_fit_updates": 0,
+      "goal84": false,
+      "no_stable_new_DRO_gain": true,
+      "report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
     }
   }
 }
