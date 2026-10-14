@@ -82183,14 +82183,12 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "完成固定 SIG_TIME 签名身份泛化损失的完整三种子结果及 Git 交付",
-    "完成固定 SIG_TIME RANDOM/PAIR 半监督参照的完整三种子结果及 Git 交付"
+    "完成固定 SIG_TIME RANDOM/PAIR 半监督参照剩余种子、独立评分、三种子分析及 Git 交付"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "完成固定 SIG_TIME 签名身份泛化损失的完整三种子结果及 Git 交付",
-    "完成固定 SIG_TIME RANDOM/PAIR 半监督参照的完整三种子结果及 Git 交付"
+    "完成固定 SIG_TIME RANDOM/PAIR 半监督参照剩余种子、独立评分、三种子分析及 Git 交付"
   ],
   "current_priority": {
     "at": "2026-10-14T13:05:43.186Z",
@@ -82209,6 +82207,17 @@
       "paired_difference": 0.0017142857142856682,
       "three_seed_goal_met": false,
       "remaining_run": "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
+    },
+    "latest_signature_full_three_seed": {
+      "run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "status": "ANALYZED",
+      "seeds": 3,
+      "SIG_TIME": 0.8267777777777777,
+      "SIG_RAW_ORDER": 0.826952380952381,
+      "SIG_DYNAMIC_ORDER": 0.8266904761904762,
+      "raw_paired_difference": 0.00017460317460319766,
+      "dynamic_paired_difference": -0.00008730158730156183,
+      "goal84": false
     }
   }
 }

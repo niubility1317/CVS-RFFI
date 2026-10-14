@@ -2421,17 +2421,24 @@
     "Prepared whilefirsthealthytraining; no publish until bothSOURCEPASS andfirst4rowclosure. No additional core scientific hypothesis/review; unchangeduniqueP0P1 reused, 10 sourcequalificationnegative/sixactualnativecontexts checked.",
     "Latestuserpriority: freeze existingSIG_TIME backbone/defaulthead; research training/generalization/SSL mechanisms only."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "results": {
-    "status": "PENDING",
-    "first_source_qualification": "PASS",
-    "source_decision_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e",
-    "source_decision_before_first_new_target_numeric_results": true,
-    "new_models": 6,
-    "first_seed_retrained": false,
-    "launch_verification": "VERIFIED",
-    "head_fit_updates": 0,
-    "goal_84": false
+    "scope": "complete_three_seed_matrix",
+    "first_run": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "accuracies": {
+      "OLD_GATE_COS50": 0.8052678571428572,
+      "SIG_TIME": 0.8267777777777777,
+      "SIG_RAW_ORDER": 0.826952380952381,
+      "SIG_DYNAMIC_ORDER": 0.8266904761904762
+    },
+    "goal84": false,
+    "report": "final_analysis.md",
+    "aggregate": "results.json"
   },
   "registered_at": "2026-10-14T13:05:17.364Z",
   "execution_commit": "d56f9b79c9fea83629c525e362d473ff0fcafb1e"
