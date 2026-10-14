@@ -4,8 +4,9 @@ from . import design as d,model as api
 from .objective import coefficient
 from experiments.cvs_sigtime_pair50.audit import run as shared
 from experiments.cvs_source_layer_order.probe import gradient_stats
-def run():
- base=shared(design=d,build_fn=api.build);values=[]
+def run(*,design=None,build_fn=None):
+ d=design or globals()['d']
+ base=shared(design=d,build_fn=build_fn or api.build);values=[]
  for row in d.training_rows():
   p=d.BASE/row['row_id']/'source';obs=d.read(p/'feature_mean_teacher_training_observation.json');records=d.read(p/'feature_mean_teacher_gradient_records.json')['batch_records']
   with gzip.open(p/'feature_mean_teacher_steps.jsonl.gz','rt',encoding='utf8') as stream:steps=[json.loads(t) for t in stream]
