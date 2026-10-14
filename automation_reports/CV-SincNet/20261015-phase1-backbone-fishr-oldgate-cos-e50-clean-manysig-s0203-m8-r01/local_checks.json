@@ -1,0 +1,82 @@
+{
+  "status": "PASS",
+  "source_qualification_negative_tests": 10,
+  "remaining_native_contexts": [
+    {
+      "seed": 2026092702,
+      "arm": "SIG_TIME",
+      "no_query_forward": true
+    },
+    {
+      "seed": 2026092702,
+      "arm": "BONE_RAW_FISHR",
+      "no_query_forward": true
+    },
+    {
+      "seed": 2026092702,
+      "arm": "BONE_COND_FISHR",
+      "no_query_forward": true
+    },
+    {
+      "seed": 2026092703,
+      "arm": "SIG_TIME",
+      "no_query_forward": true
+    },
+    {
+      "seed": 2026092703,
+      "arm": "BONE_RAW_FISHR",
+      "no_query_forward": true
+    },
+    {
+      "seed": 2026092703,
+      "arm": "BONE_COND_FISHR",
+      "no_query_forward": true
+    }
+  ],
+  "native_argument_differences": [
+    [
+      "candidate_id",
+      "output_dir",
+      "run_id",
+      "seed"
+    ],
+    [
+      "candidate_id",
+      "output_dir",
+      "run_id",
+      "seed"
+    ],
+    [
+      "candidate_id",
+      "output_dir",
+      "run_id",
+      "seed"
+    ],
+    [
+      "candidate_id",
+      "output_dir",
+      "run_id",
+      "seed"
+    ],
+    [
+      "candidate_id",
+      "output_dir",
+      "run_id",
+      "seed"
+    ],
+    [
+      "candidate_id",
+      "output_dir",
+      "run_id",
+      "seed"
+    ]
+  ],
+  "original_mechanism_exact": true,
+  "same_seed_actual_initial_states_equal": true,
+  "only_actual_t1_t2_required_SIG_diagnostic_only": true,
+  "query_read": false,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "unchanged_core_review_reused": true,
+  "remote_compile": "PASS"
+}

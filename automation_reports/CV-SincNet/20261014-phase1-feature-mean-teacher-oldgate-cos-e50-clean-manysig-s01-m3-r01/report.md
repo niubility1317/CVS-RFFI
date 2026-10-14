@@ -37,3 +37,8 @@ FEATURE_MT权重固定.1×clip((epoch−33)/5,0,1)：34开始，38到.1；此前
 ## 实际启动证据
 
 执行提交 6b23a5b033ee063dea97d6783d5634e220a1d93d。一次归档比较/remotecompile/真实checkpoint no-query feature smoke PASS；两新worker实际在GPU7/2启动，各PID/CWD/argv匹配、日志增长与首轮完成已VERIFIED。全部owner每GPU≤3；前33轮没有U特征项，真正半监督阶段及最终性能仍待证据，当前不宣称有效。
+
+
+## 真实U阶段证据
+
+actual_U_phase_source_evidence.json已从运行中源产物回收：两臂完成epoch34全部222梯度批；FEATURE_MT的t1/t2/SIGprojection每项222批effective梯度均非零，ZERO每项均0。逐批实际feature项无classW梯度检查通过，生产端保存PT复算VERIFIED。读取的实际原生配置仍为ownEMA=true、batch_neighbor、λUCE=.16/λentropy=.01/L smoothing=.01、50=33+17。当前已刷新至36轮，每臂观测666个U批/170100包，属于部分计数，未完成963900总预算。终轮数值参数变化、完整独立审计、源资格与目标性能尚待。

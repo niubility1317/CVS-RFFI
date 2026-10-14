@@ -1,5 +1,5 @@
 <!-- CURRENT_TRAINING_PRIORITY_20261014 -->
-固定SIG_TIME和默认联合分类头，两项独立训练机制正在验证：真实t1/t2梯度方差约束已有17轮实际非零effective梯度；同U包joint160教师学生一致性两新模型已启动，仍在前33轮监督阶段。新目标结果均未回收，84%目标仍未达到。三模型源伪标签诊断已完成，但不能据其设置特征可靠度阈值。
+固定SIG_TIME和默认联合分类头，两项独立训练机制正在验证：真实t1/t2梯度方差约束已有17轮实际非零effective梯度；同U包joint160教师学生一致性已进入真实U阶段，34轮222批三对象梯度证据已核实。新目标结果均未回收，84%目标仍未达到。三模型源伪标签诊断已完成，但不能据其设置特征可靠度阈值。
 
 当前只推进这两项训练及源资格/自动独立评分，保持旧门控+cos基线、每模型≤50、默认头原联合训练，无单独头拟合、结构或Phase2开发。已发布健康任务不热改。
 
@@ -368,3 +368,12 @@ BF 20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 RUNNI
 两新scratch50/11100各，源预算100model-epochs22200更新＋历史50/11100，17x56700 U每模型。全部source合法，无query训练；真实semi机制在34轮前尚未启用，不把当前几轮当SSL效果。预登记source最后5轮U feature discrepancy比ZERO≤.95，配合源CE<=.5/梯度/特征边界才原样扩02/03，先冻结/提交源决定再看新目标摘要。不根据目标调权、选父或重跑；每row完成自动clean默认预测及独立truth-last评分。
 
 一次archive/remotecompile/真实checkpoint no-query smoke及两worker PID/CWD/argv/GPU/loggrowth均VERIFIED，GPU7/2实际启动，所有owner每GPU≤3。报告、全矩阵与source规则在automation_reports/CV-SincNet/20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md/experiment.json，阶段交付不宣称性能或84%达标。
+
+
+## 实际U接线与固定种子扩展准备
+
+FEATURE_MT两臂已到36轮，每臂观测U666批/170100包；epoch34候选t1/t2/SIGprojection各222批effective梯度非零，ZERO各0，逐批辅助W梯度None，producer保存复算VERIFIED；实际原生配置保持oldgate/ownEMA/33+17/.16/.01/smoothing.01。当前只证明接入，不宣称参数最终变化、完整预算、DG收益或84%。部分源证据见20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01/actual_U_phase_source_evidence.json。
+
+两个固定02/03执行配置已LOCAL_VERIFIED，均NOT_LAUNCHED：BF 20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01（code b69d6ffbbd229284c4cfde35124db10bf871fe07，6新/8row），FEATURE_MT 20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01（code 68b3143dbdfcde27c80997f970121a23e34e5f2e，4新/6row）。原机制字典/数值设置逐项一致，args仅种子/run/candidate/output差异，同seed初态一致，source资格10/11负例和实际新上下文检查PASS；没有新科学假设、组合或拟合头，复用已完成核心唯一P0/P1，不重复审未变代码。
+
+首seed仍未完成source资格；准备不等于获准扩展或三seed完成。只在原固定SOURCEPASS后发布相应新矩阵，源决定先提交再读新numeric target摘要；首seed不重跑、双BF候选不按目标择优，预算和成本预先记录。原始健康archive与进程保持。

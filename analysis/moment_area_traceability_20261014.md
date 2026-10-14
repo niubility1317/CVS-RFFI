@@ -136,3 +136,8 @@ S01/S02首seed实际训练与默认测试verified：固定SIG_TIME签名内训�
 ### 固定 SIG_TIME：教师学生特征一致性训练
 
 20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01 RUNNING，code 373262b51f037f03e3238471b3aefb88e45fba5b，execution 6b23a5b033ee063dea97d6783d5634e220a1d93d。仅已有同U包joint160的EMAweak stopgrad/strong student单位特征损失，无额外模块/头/forward；原33+17旧门控+ownEMA+cos和UCE对象不变。实际网络t1/t2/SIG与原头数值更新、auxW梯度None/mainW梯度不变、导出/W独立及8负例PASS，一次P0/P1 PASS。两新worker GPU7/2实际PID/CWD/argv/loggrowth VERIFIED，仍前33轮监督阶段，实际U/最终性能待证据。源last5 featureloss5%降低+CE/边界/梯度决定扩固定02/03，目标不反馈。BF epoch17真实非零effective梯度已读回，非性能证明。
+
+
+### 实际U特征梯度及固定02/03执行准备
+
+FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非零、ZERO全0，Waux梯度None检查及producer保存复算VERIFIED；36轮170100U/臂仅部分预算，目标/终轮独立审计待。BF02/03 20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01 code b69d6ffbbd229284c4cfde35124db10bf871fe07 与FEATURE_MT02/03 20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01 code 68b3143dbdfcde27c80997f970121a23e34e5f2e 已LOCAL_VERIFIED_NOT_LAUNCHED：配方未改、10/11 source负例PASS、同seed初态和args配对通过，无新假设/另训头。仅原首SOURCEPASS后发布，未根据目标排名/扫参或扩种子。

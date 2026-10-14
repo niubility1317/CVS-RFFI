@@ -1,0 +1,114 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "actual_native_recipe": {
+        "use_ema_teacher": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "label_smoothing": 0.01,
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17
+      },
+      "arm": "SIG_TIME",
+      "observed_gradient_epochs": [
+        33,
+        34
+      ],
+      "last_stream_record": {
+        "step": 7992,
+        "epoch": 36,
+        "batch": 222,
+        "U_packets": 124,
+        "feature_loss": 0.3343248963356018,
+        "coefficient": 0,
+        "effective_loss": 0
+      },
+      "observed_U_feature_records": 666,
+      "observed_U_feature_packets": 170100,
+      "e34_layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 222,
+          "feature_nonzero": 222,
+          "effective_nonzero": 0
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 222,
+          "feature_nonzero": 222,
+          "effective_nonzero": 0
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 222,
+          "feature_nonzero": 222,
+          "effective_nonzero": 0
+        }
+      ],
+      "producer_saved_gradient_recount": "VERIFIED",
+      "perbatch_feature_W_dependency_checked": true,
+      "source_only": true,
+      "query_read": false,
+      "U_truth_read": false,
+      "head_fit_updates": 0
+    },
+    {
+      "actual_native_recipe": {
+        "use_ema_teacher": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "label_smoothing": 0.01,
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17
+      },
+      "arm": "FEATURE_MT",
+      "observed_gradient_epochs": [
+        33,
+        34
+      ],
+      "last_stream_record": {
+        "step": 7992,
+        "epoch": 36,
+        "batch": 222,
+        "U_packets": 124,
+        "feature_loss": 0.3050695061683655,
+        "coefficient": 0.06,
+        "effective_loss": 0.018304169178009033
+      },
+      "observed_U_feature_records": 666,
+      "observed_U_feature_packets": 170100,
+      "e34_layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 222,
+          "feature_nonzero": 222,
+          "effective_nonzero": 222
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 222,
+          "feature_nonzero": 222,
+          "effective_nonzero": 222
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 222,
+          "feature_nonzero": 222,
+          "effective_nonzero": 222
+        }
+      ],
+      "producer_saved_gradient_recount": "VERIFIED",
+      "perbatch_feature_W_dependency_checked": true,
+      "source_only": true,
+      "query_read": false,
+      "U_truth_read": false,
+      "head_fit_updates": 0
+    }
+  ],
+  "scope": "Read current flushed source stream and saved producer diagnostics, partial live counts not finalbudget or DG result"
+}
