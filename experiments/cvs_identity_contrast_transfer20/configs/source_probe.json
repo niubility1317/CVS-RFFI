@@ -1,0 +1,93 @@
+{
+  "run_id": "20261015-phase1-SIGTIME-identity-contrast-transfer-sourceL-s2026092701-r01",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-identity-contrast-transfer-sourceL-s2026092701-r01/source_diagnostic",
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_center_crossRX_sharpness20_20261015_r01",
+  "source_row": "BASE_CE-s2026092701",
+  "model_seed": 2026092701,
+  "states": [
+    "INITIAL",
+    "FINAL20"
+  ],
+  "modes": [
+    "ZERO",
+    "SAME_RX",
+    "CROSS_RX"
+  ],
+  "LR": 0.0002,
+  "optimizer_state": "INITIAL empty originalmoments; FINAL20 savedm/v/step; both fixedstageLR2e-4",
+  "current_pairs": [
+    [
+      2,
+      3
+    ],
+    [
+      19,
+      20
+    ],
+    [
+      37,
+      38
+    ],
+    [
+      54,
+      55
+    ]
+  ],
+  "held_ordinals": [
+    66,
+    67
+  ],
+  "source_role": "L_s",
+  "source_subset": "reuse ROWconfirmation/meantransfer900; newmechanism sourceprobe, not independentnewdata confirmation",
+  "method": {
+    "view": "a_y-a_c+b_c and b_y-b_c+a_c, every c!=y, same day and opposite sides",
+    "task": "Receiver change measured with another trueTX reference must retain origin trueidentity under original defaultcos",
+    "readout": "original cosine W.detach scale30 eps1e-4, FP64 analytic formula with FP32 comparison",
+    "stop_probability": 0.9,
+    "weight": 0.1,
+    "loss": "weight mean relu(log(.9)-logp_true), 3600 synthetic decisions/control",
+    "reference_classes": "all5 different trueTX; no selection or averaging before defaultreadout",
+    "gradients": "all3 actualjoint endpoints and all3gains; auxiliary W absent",
+    "feature_transform_at_deployment": false,
+    "new_parameters": 0,
+    "head_fit_updates": 0
+  },
+  "source_falsification": {
+    "minimum_qualified_cohorts_per_state": 2,
+    "current_active_decisions_min": 180,
+    "current_active_origin_packets_min": 18,
+    "actual_F_difference_norm_min": 1e-06,
+    "held_feature_RMS_difference_min": 1e-05,
+    "shallow_middle_difference_tensors_min": 1,
+    "held_transfer_CE_difference_max": -0.0001,
+    "held_transfer_errors_increase_tolerance": 0,
+    "held_original_CE_relative_increase_tolerance": 0.01,
+    "held_original_accuracy_difference_min": 0.0,
+    "controls": [
+      "ZERO",
+      "SAME_RX"
+    ],
+    "readouts": [
+      "ACTUAL",
+      "PRE_W"
+    ],
+    "original_CE_guard": "relative1percent of samecontrol CE, not old absolute1e-6 qualification; fixed before this candidate results",
+    "qualification_transfer_readout": "PRE_W before defaultW, afteractualjoint including3gains",
+    "stage_priority": "INITIAL pass prefers scratch20; only FINAL20 pass supports sameparent E20+20",
+    "interpretation": "Source opportunity and compatible functional identity transfer, not fulltraining or unseenRX/DG"
+  },
+  "original_default_head_joint": true,
+  "feature_scope": "actual encoder F71 including3gains; W excluded from auxiliary",
+  "readouts": [
+    "ACTUAL",
+    "PRE_W"
+  ],
+  "PRE_W_gains": "after-step actual gains retained",
+  "main_loss": "original clean CE",
+  "head_fit_updates": 0,
+  "U_IQ_read": false,
+  "V_IQ_read": false,
+  "U_truth_read": false,
+  "target_access": false,
+  "analysis_code_commit": "release_commit.txt"
+}

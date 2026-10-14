@@ -1,0 +1,189 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-identity-contrast-transfer-sourceL-s2026092701-r01",
+  "group_id": "phase1-identity-correspondence-source",
+  "display_name": "异TX参照的RX差分迁移源原型",
+  "description": "当前trueL具体异类参照RX差逐项迁移到originidentity，由原defaultcos停止监督；不先平均、不几何对齐、INITIAL及FINAL分开诊断。",
+  "kind": "diagnostic",
+  "stage": "Phase1 functional contrast transfer source falsification",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "cross_identity_RX_delta",
+    "default_decision",
+    "SIG_TIME",
+    "CENTER25K"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01",
+    "20261015-phase1-SIGTIME-identity-decision-transfer-sourceL-s2026092701-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user goal: improve training/loss and actualfeature generalization, defaulthead only, fixedsource permission and E20+20 budget.",
+  "code": {
+    "commit": "release_commit.txt (actual Git HEAD at publication)",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "N607 ordinary account/CVS-RFFI Python/CPU2threads/GPU0/eight namespaceoverlay on immutable ownE20runtime",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_contrast_transfer_sourceL_20261015_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md",
+    "physical_ids_ref": "Reuse ROWconfirmation current2/3,19/20,37/38,54/55 held66/67 originalL900; currenthelddisjoint, no newdata role or independentnewdata claim",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "roles": {
+      "L_s": 6300,
+      "U_s": "hidden/noIQ",
+      "V": "noIQ"
+    },
+    "train_ratio": {
+      "L": 0.07,
+      "U": 0.63,
+      "V": 0.3
+    },
+    "validation_ref": "VALIDATED_ONCE reused; unchanged data bytes/roles/schema",
+    "protocol_schema": "p2_min_v1 unchanged and unused here"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "claim_scope": "Early/late identity transfer opportunity under syntheticfeature referenceRXchange, not hardwarecounterfactual or unseenRX/DG"
+  },
+  "checkpoint": {
+    "initialization": "strict ownBASECE firstseed untrainedINITIAL andfinal20, originaloptions/fresh vs savedAdamW",
+    "sources": [
+      "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01/BASE_CE-s2026092701/source"
+    ],
+    "provenance_verdict": "source_proof fullactualroles/IDs/scratch ancestry/fixedfinalfreeze before BOTH loads; initial_smoke scratch_only andstrictstate; finalvalidateactualargs; no fallback",
+    "selection_rule": "Fixed ownCE firstseed final20; no target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/identity-contrast-transfer-20261015",
+    "gpu_policy": "CPUonly/GPU0; otherowners unchanged",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-identity-contrast-transfer-sourceL-s2026092701-r01/source_diagnostic",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_contrast_transfer_sourceL_20261015_r01/source_probe.stdout.log",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_SIGTIME_identity_contrast_transfer_sourceL_20261015_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_contrast_transfer_sourceL_20261015_r01/experiments/cvs_identity_contrast_transfer20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_contrast_transfer_sourceL_20261015_r01/resolved_request.json",
+    "stop_rule": "Illegal source/provenance/ID/traversal, nonfinite or technical error: preserve outputs and stop only this owned assay, reconcile before retry. Fixed scientific failure closes contrast-transfer candidate; no stopprobability/coefficient/LR/reference-class/partial-strength scan, no targetfeedback."
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "release_commit.txt",
+    "resolved_request.json",
+    "submit.json",
+    "runtime.json",
+    "24state/mode/cohortscalarrecords",
+    "summary.json",
+    "independent_readback.json",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "matrix": "INITIAL/FINAL20 x fourcurrentL180 x ZERO/SAME_RX/CROSS_RX, reused originalL900",
+    "budget": "900uniqueL/6300metadata/6124packetforwards/48temporaryCPUAdamW/0realtraining/headfit/EMA/U/V/target",
+    "method": {
+      "view": "a_y-a_c+b_c and b_y-b_c+a_c, every c!=y, same day and opposite sides",
+      "task": "Receiver change measured with another trueTX reference must retain origin trueidentity under original defaultcos",
+      "readout": "original cosine W.detach scale30 eps1e-4, FP64 analytic formula with FP32 comparison",
+      "stop_probability": 0.9,
+      "weight": 0.1,
+      "loss": "weight mean relu(log(.9)-logp_true), 3600 synthetic decisions/control",
+      "reference_classes": "all5 different trueTX; no selection or averaging before defaultreadout",
+      "gradients": "all3 actualjoint endpoints and all3gains; auxiliary W absent",
+      "feature_transform_at_deployment": false,
+      "new_parameters": 0,
+      "head_fit_updates": 0
+    },
+    "optimizer": "INITIAL ownuntrainedrandomstate/emptyactualm/v; FINAL20 savedactualm/v/step; bothstageLR2e-4, original188options/globalclip5.",
+    "pairing": "SAME15unique×4, CROSS60unique orderedpair/day. Everyc!=y all5 references,2directions×30views=60views/pair,3600synthetic decisions/control. Originaltarget/source-ref/destination-ref each20 perpacket,60tripleroles; groupendpoints4.",
+    "evaluation": "All3actualjoint endpoints/all3gains/Wdetach; afterall188 actualjoint, sameACTUAL/PRE_W FP64cos30 eps1e-4 nofit. TransferACTUAL usesafterW/PREWbeforeW. Activeviews anddistinctorigin180 coverage separate; targetTX/referenceTX/sourceRX/destinationRX/norm/reconstruction mismatch diagnostics.",
+    "source_falsification": {
+      "minimum_qualified_cohorts_per_state": 2,
+      "current_active_decisions_min": 180,
+      "current_active_origin_packets_min": 18,
+      "actual_F_difference_norm_min": 1e-06,
+      "held_feature_RMS_difference_min": 1e-05,
+      "shallow_middle_difference_tensors_min": 1,
+      "held_transfer_CE_difference_max": -0.0001,
+      "held_transfer_errors_increase_tolerance": 0,
+      "held_original_CE_relative_increase_tolerance": 0.01,
+      "held_original_accuracy_difference_min": 0.0,
+      "controls": [
+        "ZERO",
+        "SAME_RX"
+      ],
+      "readouts": [
+        "ACTUAL",
+        "PRE_W"
+      ],
+      "original_CE_guard": "relative1percent of samecontrol CE, not old absolute1e-6 qualification; fixed before this candidate results",
+      "qualification_transfer_readout": "PRE_W before defaultW, afteractualjoint including3gains",
+      "stage_priority": "INITIAL pass prefers scratch20; only FINAL20 pass supports sameparent E20+20",
+      "interpretation": "Source opportunity and compatible functional identity transfer, not fulltraining or unseenRX/DG"
+    },
+    "stop_rule": "Illegal source/provenance/ID/traversal, nonfinite or technical error: preserve outputs and stop only this owned assay, reconcile before retry. Fixed scientific failure closes contrast-transfer candidate; no stopprobability/coefficient/LR/reference-class/partial-strength scan, no targetfeedback.",
+    "future": ">=2qualified INITIAL prefers separatelyfixed scratch20; onlyFINAL supports E20+20. Main pureCE/oldhiddenU SSL/SAME/CROSS controls withnormaldefaulthead andperrowclean truthlast. No finalteacher loaded into earlystate."
+  },
+  "rows": [
+    {
+      "row_id": "BASE_CE-s2026092701-source-contrast-transfer",
+      "method": "TRUE_L_CROSS_IDENTITY_RX_DELTA_TRANSFER",
+      "purpose": "Can anotherTX receiver delta preserve currentTX defaultdecision beyond withinRX packetnoise?",
+      "config_ref": "experiments/cvs_identity_contrast_transfer20/configs/source_probe.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_contrast_transfer_sourceL_20261015_r01/resolved_request.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "FixedLordinals, noUtrueTX group",
+      "k": null,
+      "scenario": null,
+      "optimizer": "temporaryCPU originalAdamW",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "metrics_plan.budget",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-identity-contrast-transfer-sourceL-s2026092701-r01/source_diagnostic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_contrast_transfer_sourceL_20261015_r01/source_probe.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_contrast_transfer_sourceL_20261015_r01/experiments/cvs_identity_contrast_transfer20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_contrast_transfer_sourceL_20261015_r01/resolved_request.json",
+      "expected_artifacts": [
+        "preflight.json",
+        "release_commit.txt",
+        "resolved_request.json",
+        "submit.json",
+        "runtime.json",
+        "24state/mode/cohortscalarrecords",
+        "summary.json",
+        "independent_readback.json",
+        "report.md"
+      ]
+    }
+  ],
+  "notes": [
+    "OldBI/ROW/latecommonmean qualifications andnegative outcomes stayclosed, notretuned.",
+    "Current/held source900 reused; not independentconfirmation/unseenRX; allL seenbyparentFINAL20.",
+    "New relative1percent originalCE guard fixedpredata forfunctionaltransfer andstagecomparison; no oldcandidate reopening and no promiseone-step predicts20epochDG.",
+    "Closesthistorical RXdrift uses sameTX foldmean/unitjoint/detachedreliability-radius/Wauxtraining,E30; differentfrom individualc!=y/rawjoint/allendpoint/Wstop task.",
+    "Temporary readout nofit; latentlabel-preserving composition is a testable assumption, reference may carry classdependentRX/noise.",
+    "Historicalpositive routes separate; 84%defaultheadcleanthree seedgoalactive."
+  ],
+  "registered_at": "2026-10-14T23:33:38+00:00"
+}
