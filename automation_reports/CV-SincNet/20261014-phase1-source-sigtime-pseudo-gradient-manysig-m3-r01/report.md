@@ -1,6 +1,6 @@
 # 固定 SIG_TIME：源域伪标签错误与特征梯度预登记
 
-状态 REGISTERED。实现提交 d17f140c3528d8964ffedf464976532bc56e0760；不是新的性能结果。固定已有 SIG_TIME112→joint160/default cosine6×160 scale30，三个模型种子 2026092701/02/03 取预定 RANDOM 控制 final50 及其实际自身 EMA，不依据目标结果选权重。原模型 scratch33+17/11100 更新、旧门控+cos 来源由既有 source_proof 核对。没有另训、替换或单独重训分类头。
+状态 ANALYZED，完整三模型源诊断及独立保存产物复算已完成。实现提交 d17f140c3528d8964ffedf464976532bc56e0760；不是新的性能结果。固定已有 SIG_TIME112→joint160/default cosine6×160 scale30，三个模型种子 2026092701/02/03 取预定 RANDOM 控制 final50 及其实际自身 EMA，不依据目标结果选权重。原模型 scratch33+17/11100 更新、旧门控+cos 来源由既有 source_proof 核对。没有另训、替换或单独重训分类头。
 
 ## 问题与边界
 
@@ -31,3 +31,5 @@ Run 20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01，唯一 owner
 停止规则：仅所属 run 的数据/来源/query/非有限/参数变更/输出碰撞/无法运行等系统技术失败，保留产物、写 failure、不自动重试。没有训练因此不新增目标测试；自动收回源结果并同 row 分析、登记、提交推送。BF 训练仍按原冻结方案自动 clean 预测及独立 truth-last 评分。
 
 标准 N607 只读预检已于 2026-10-14 23:32 CST 通过；普通账户、项目路径和现有 GPU 状态已核实。本诊断只用 CPU，不分配 GPU。
+
+完整结果见 [源域诊断分析](source_pseudo_gradient_analysis.md)。L 接受集合均无观察错误，错误梯度不可识别；V 的 joint160 一致性不支持简单可靠度门槛。没有新增目标分数。

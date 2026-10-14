@@ -126,3 +126,8 @@ S01/S02首seed实际训练与默认测试verified：固定SIG_TIME签名内训�
 ### 真实骨干梯度方差矩阵启动
 
 20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 RUNNING，execution 600afeeefe84e0d9f50f07c38ae0767bf1cabf07；三新实际首轮/13L180/2340额外包，预热有效R0、逐包参数梯度矩阵和生产端保存复算已核实。同PID/CWD/argv/GPU/loggrowth VERIFIED；完整独立审计与性能待终轮，无头拟合或Phase2声明。
+
+
+### 固定SIG_TIME源域伪标签错误与实际参数梯度
+
+20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01 ANALYZED，code d17f140c3528d8964ffedf464976532bc56e0760 / execution 3bc96d53291ca3b2f1eeb0c19236e236a8d25866。只读固定3个RANDOM final50/defaulthead+ownEMA，L实际t1/t2/SIGprojection同强图同接受分母的pseudo/true/correct/wrong梯度；V仅无梯度joint160描述。完整199800源包/786batch、1800向量独立保存复算VERIFIED。L接受错误0使错误梯度不可识别；V错误组特征一致性没有稳定更低，当前不支持简单特征阈值。0头/模型/优化器更新，U/query访问0；报告见对应source_pseudo_gradient_analysis.md/results.json。骨干方差训练保持健康继续，不把该诊断当DG收益或84%达成。

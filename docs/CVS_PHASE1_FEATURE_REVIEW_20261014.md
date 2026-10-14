@@ -1,8 +1,7 @@
 <!-- CURRENT_TRAINING_PRIORITY_20261014 -->
-固定 SIG_TIME 和默认联合分类头，继续研发训练/DG/SSL机制。新真实骨干梯度方差首seed矩阵已RUNNING，三新模型首轮与真实二阶产物已核实；处于零权重预热，暂无新性能结论。此前PAIR完整三种子82.7667%、配对+0.1022个百分点，84%目标仍未达到；旧结构路线只保留历史。
+固定 SIG_TIME 和默认联合分类头，继续研发训练、泛化与半监督机制。真实骨干梯度方差首种子矩阵 RUNNING，三新模型已有实际训练与二阶梯度产物，暂无新性能结论；只读源域伪标签错误梯度诊断已完成三模型与保存产物独立复算。PAIR 完整三种子82.7667%、配对+0.1022个百分点，84%目标仍未达到。
 
-
-当前用户要求：固定既有单路 SIG_TIME 网络及默认 cosine 头的联合训练，重心为泛化训练和半监督学习机制，不再新增骨干、分支、层级或签名阶数。当前并行工作为签名身份训练的原样三种子确认，以及独立 SIG_TIME 随机／PAIR 半监督参照；两者不叠加。所有额外头拟合禁止，旧头诊断仅作为历史保留。最近首seed RAW−SIG为+0.0548个百分点、DYNAMIC−SIG为−0.1339个百分点，完整三seed尚待完成，84%未达成。
+当前两项工作：完成实际t1/t2骨干梯度方差训练及自动独立测试；用固定已有SIG_TIME模型检查合法L伪标签错误梯度与L/V joint160视图一致性，为下一半监督机制提供依据。签名RAW/DYNAMIC完整三种子已结束，未显示稳定增益，后续不再改结构。全部默认分类头按原训练方式；禁止新拟合/重训/替换头。
 
 # Phase1 特征提取复盘与完整实验交付
 
@@ -349,3 +348,12 @@ PAIR82.7667%±1.6363%，同路径RANDOM82.6645%±1.6928%；配对+0.1022±0.1220
 
 
 骨干梯度方差矩阵 20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 已启动核实，执行 600afeeefe84e0d9f50f07c38ae0767bf1cabf07；三新GPU4/5/0，同PID/CWD/argv/loggrowth及首轮13L180/保存矩阵重算VERIFIED，无额外头。5轮预热故E1有效R为0，不把启动或局部梯度当性能证据。启动聚合见对应launch_verified.json与epoch1_source_evidence.json；完整固定50轮/自动truth-last仍运行。
+
+
+## 固定 SIG_TIME 源域伪标签错误梯度：三模型完整诊断
+
+20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01 ANALYZED，实现 d17f140c3528d8964ffedf464976532bc56e0760、执行 3bc96d53291ca3b2f1eeb0c19236e236a8d25866。三个预定SIG_TIME RANDOM final50/defaultstudent及actualownEMA；合法L6300/V27000，仅L梯度，U/query不访问，头/模型/优化器更新0。199800源包前向/786batch、75L梯度批、150scope批、450层scope记录/1800向量及L/V特征统计独立复算VERIFIED。
+
+L的CONFIDENCE_STRONG接受6024/6061/6075、FULL_OLD接受848/851/855，均观察0错误；错误梯度全0、pseudo和matchedtrue梯度相等是标签相同的必然结果，未识别错误影响，不能推出U准确率或训练早期无害。V的CONFIDENCE_STRONG错误28/34/40；实际joint160错误/正确cos中位数为.700940/.682370、.713649/.675108、.699859/.680247，分位范围大量重叠，均值方向不一致；当前证据不支持增加简单特征一致性可靠度阈值。V无梯度/拟合，不扫描tau或新头。
+
+完整源分析、成本、局限与图见 automation_reports/CV-SincNet/20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01/source_pseudo_gradient_analysis.md 与 results.json。下一步完成正在运行的真实骨干梯度方差训练，再检验独立SSL表征假设。84%未达成；本次没有新目标性能结果。

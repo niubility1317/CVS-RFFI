@@ -1011,5 +1011,18 @@
     "Three frozen model seeds see same source samples, not independent datasets. Healthy backbone variance jobs remain unchanged."
   ],
   "registered_at": "2026-10-14T15:32:02+00:00",
-  "status": "REGISTERED"
+  "status": "ANALYZED",
+  "execution_commit": "3bc96d53291ca3b2f1eeb0c19236e236a8d25866",
+  "results": {
+    "models": 3,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0,
+    "independent_saved_artifact_recount": "VERIFIED",
+    "summary": "source_summary.json",
+    "analysis": "source_pseudo_gradient_analysis.md",
+    "full": "results.json"
+  }
 }

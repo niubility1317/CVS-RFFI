@@ -82175,6 +82175,32 @@
       ],
       "independent_full_PT_recount": "pending completed matrix audit",
       "scope": "Actual nativeL128 andseparateU256 graphs at epoch34; not samebatchcounterfactual or cumulativeAdamW contribution, no efficacy claim"
+    },
+    "source_sigtime_pseudo_error_gradient": {
+      "run_id": "20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01",
+      "status": "ANALYZED",
+      "cost": {
+        "models": 3,
+        "source_packet_forwards": 199800,
+        "forward_batches": 786,
+        "L_gradient_batches": 75,
+        "scope_gradient_batches": 150,
+        "layer_scope_gradient_records": 450,
+        "saved_vectors": 1800,
+        "model_updates": 0,
+        "optimizer_steps": 0,
+        "head_updates": 0,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "query_read": false,
+        "total_seconds": 122.13224792480469,
+        "independent_saved_artifact_recount": "VERIFIED"
+      },
+      "source_only": true,
+      "L_accepted_wrong_zero_all_three": true,
+      "wrong_gradient_identifiability": "NOT_IDENTIFIED",
+      "V_simple_feature_reliability_gate_supported": false,
+      "source_report": "automation_reports/CV-SincNet/20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01/source_pseudo_gradient_analysis.md"
     }
   },
   "next_directions": [
@@ -82184,20 +82210,56 @@
   ],
   "next_actions_max2": [
     "完成固定SIG_TIME真实骨干梯度方差首种子50轮、自动clean评分与源资格；新目标数字不用于改配方或挑候选",
-    "仅用合法有标签源样本诊断伪标签错误与fθ梯度，为下一独立SSL机制提供依据；当前未新增该训练"
+    "基于已完成源诊断设计一个独立SSL表征学习假设与匹配对照；不把特征一致性阈值、覆盖增加或整体放大U梯度当可靠性证据，不另训头"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
     "完成固定SIG_TIME真实骨干梯度方差首种子50轮、自动clean评分与源资格；新目标数字不用于改配方或挑候选",
-    "仅用合法有标签源样本诊断伪标签错误与fθ梯度，为下一独立SSL机制提供依据；当前未新增该训练"
+    "基于已完成源诊断设计一个独立SSL表征学习假设与匹配对照；不把特征一致性阈值、覆盖增加或整体放大U梯度当可靠性证据，不另训头"
   ],
   "current_priority": {
-    "at": "2026-10-14T15:10:10.019Z",
+    "at": "2026-10-14T15:39:40.166Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
-    "next_semi_supervised_work": "Source-labelled pseudo-error and gradient diagnostics before one new SSL mechanism; no coverage/weight/calendar-only scans",
+    "next_semi_supervised_work": {
+      "run_id": "20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01",
+      "status": "ANALYZED",
+      "implementation_commit": "d17f140c3528d8964ffedf464976532bc56e0760",
+      "execution_commit": "3bc96d53291ca3b2f1eeb0c19236e236a8d25866",
+      "cost": {
+        "models": 3,
+        "source_packet_forwards": 199800,
+        "forward_batches": 786,
+        "L_gradient_batches": 75,
+        "scope_gradient_batches": 150,
+        "layer_scope_gradient_records": 450,
+        "saved_vectors": 1800,
+        "model_updates": 0,
+        "optimizer_steps": 0,
+        "head_updates": 0,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "query_read": false,
+        "total_seconds": 122.13224792480469,
+        "independent_saved_artifact_recount": "VERIFIED"
+      },
+      "results": "automation_reports/CV-SincNet/20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01/source_pseudo_gradient_analysis.md",
+      "L_accepted_errors": [
+        0,
+        0,
+        0
+      ],
+      "V_confidence_strong_errors": [
+        28,
+        34,
+        40
+      ],
+      "V_feature_reliability_gate_supported": false,
+      "error_gradient_identified": false,
+      "conclusion": "Frozenfinal50 L contains no accepted errors; V featureagreement overlaps and wrong medians exceedcorrect across3 models. No thresholdfit/scan or U inference."
+    },
     "structural_exploration": false,
     "fixed_architecture": "SIG_TIME112→joint160; existing default cosine head jointly trained",
     "latest_ssl_first_seed": {
@@ -82245,7 +82307,13 @@
       "target_results": null,
       "execution_commit": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07",
       "first_epoch_actual_extra_batches": 13,
-      "first_epoch_regularizer_zero_by_warmup": true
+      "first_epoch_regularizer_zero_by_warmup": true,
+      "observed_completed_epochs": [
+        11,
+        11,
+        10
+      ],
+      "post_warmup_nonzero_coefficient_observed": true
     }
   }
 }
