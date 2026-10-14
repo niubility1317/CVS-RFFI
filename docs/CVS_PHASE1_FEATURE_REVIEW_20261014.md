@@ -213,3 +213,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 报告路线二已落实并实际发布：20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s01-m5-r01，4新scratch50/11100+1旧门控cos历史对照，默认头联合训练/额外fit关闭。SIG_TIME、LOCAL_GTIME、HIER_STAT、HIER_ORDER分辨clock、粗上下文统计容量与显式连续关系；两hierarchy同196→160/pool32416/fθ208481，3bridge/globaltime及actualjoint160接线。实现588209f4186e3056a310458237f4e478c6c15a64、执行7bdfdbf448b9c97ead5702f958bee293d646a09f，native4模型updates/export/W独立/teacher/连续代数gradient和一次P0/P1 PASS，真实四worker/GPU/日志增长VERIFIED，性能pending。20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s0203-m10-r01 条件式剩余8新模型已准备登记，仅首seed源PASS才发布，不读target决定扩展。
+
+
+连续层级首seed已完整回收：HIER_ORDER82.7732%、HIER_STAT83.9994%、SIG_TIME83.5899%、LOCAL_GTIME83.5946%、OLD80.6685；候选−统计−1.2262pp、候选−SIG−.8167pp；统计控制精确低于84%，不更换primary。4新+1历史/44400steps/840000默认pred/90指标复算VERIFIED，新4模型真实pool更新/精确导出/W独立/零额外拟合，源HIER_ORDER−STAT zL2 2.944889。sourcePASS扩02/03决定 63f59df3933c6fcb778c76d9b1eaed3087f4213c 在target数值读取前提交发布，八新模型正常运行，完整3seedpending。结果见 20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s01-m5-r01/final_analysis.md。

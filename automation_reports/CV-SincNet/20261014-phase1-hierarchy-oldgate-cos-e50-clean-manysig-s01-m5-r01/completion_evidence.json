@@ -1,0 +1,28 @@
+{
+  "status": "VERIFIED",
+  "completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 5,
+    "new_trained_models": 4,
+    "reused_baseline_models": 1,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 840000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "audit": {
+    "status": "VERIFIED",
+    "models": 5,
+    "epoch_records_parsed": 250,
+    "new_step_records_parsed": 44400,
+    "prediction_count": 840000,
+    "metric_records_independently_recounted": 90,
+    "truth_last_recount": true,
+    "head_fit": false,
+    "native_fitted_probes_disabled_for_all4_new_models": true,
+    "recount_new_target_forward": 0
+  }
+}

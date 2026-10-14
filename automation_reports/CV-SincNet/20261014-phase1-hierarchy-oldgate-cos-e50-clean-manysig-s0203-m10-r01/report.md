@@ -13,3 +13,5 @@
 停止规则复用首seed角色/provenance/默认头/初始化/非有限/预算/export状态/physical IDs/预测truthlast系统技术失败；停止新增dispatch、保留健康row及产物，无自动retry或目标早停。预期source/checkpoint/完整epoch与step日志/source witness/fixedprediction/scores/rowcompletion，以及source_features/analysis/combined_three_seed_analysis/completion/launch/queue；原IQ/weights/大日志/predictions不入Git，只上传代码/config/相应聚合结果报告并独立比remoteOID。当前REGISTERED，未发布/未训练，不冒充RUNNING。
 
 首seed固定执行 7bdfdbf448b9c97ead5702f958bee293d646a09f 的实际source-only PASS已核实，并在读取新目标指标前冻结seed_expansion_decision.json；准备按原登记发布8新scratch50。此追加状态为源资格完成，不能冒充远端已启动。
+
+实际已发布RUNNING/VERIFIED：执行 63f59df3933c6fcb778c76d9b1eaed3087f4213c、dispatcher2220472、8新worker2221259/2221353/2221438/2221520/2221684/2221763/2221845/2221927，GPU7/4/4/7/7/4/6/6，实际t2/四方法/112或196描述子/pool18976或32416/default联合头/fitdisabled配置及PID/CWD/argv/loggrowth核实，当前8至9轮无failure。source PASS决定先于新首seedtarget读取，不因首seedprimary82.7732%而改计划。完整3seed未完成，不冒充ANALYZED。

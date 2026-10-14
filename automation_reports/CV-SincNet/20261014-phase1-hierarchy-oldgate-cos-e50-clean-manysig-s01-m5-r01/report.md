@@ -23,3 +23,5 @@ HIER_ORDER一阶increment7＋二阶skewarea21，三个边界增量7→8/15→16/
 实际发布VERIFIED：执行7bdfdbf448b9c97ead5702f958bee293d646a09f、dispatcher2191810；4新worker2192180/2192262/2192348/2192433，GPU5/6/4/7，实际resolved四方法/t2/112或196描述子/defaultjointhead/nativefittedprobesdisabled正确。preflight/remotecompile/单archive比对PASS，PID/CWD/argv与日志增长核实。训练健康中，完整源资格/目标性能尚未完成，不据此宣称提升。
 
 实际source-only资格PASS：四模型finalLCE .247587/.247250/.250361/.249816；HIER_ORDER−HIER_STAT源L720zL2 2.944889；全部新增参数真实更新、精确导出/W独立、额外headfit0。决定在读取新target指标前冻结原样02/03，不以任何目标分数改变方法/seed/预算。完整first5row已训练/默认预测/独立评分完成，数值分析尚未回收。
+
+首seed实际ANALYZED：250epoch记录/44400新增steps/840000固定defaultpred/90指标独立复算VERIFIED。HIER_ORDER82.7732%、HIER_STAT83.9994%、SIG_TIME83.5899%，primary未强化SIG_TIME且84未达；所有新4模型headfit0。source-only扩seed决定63f59df3933c6fcb778c76d9b1eaed3087f4213c已在target值读取前冻结并原样发布8新模型，详见final_analysis.md/results.json，完整3seed仍pending。

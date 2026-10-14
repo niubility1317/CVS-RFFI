@@ -34628,7 +34628,7 @@
       "run_id": "20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s01-m5-r01",
       "implementation_commit": "588209f4186e3056a310458237f4e478c6c15a64",
       "execution_commit": "7bdfdbf448b9c97ead5702f958bee293d646a09f",
-      "status": "RUNNING",
+      "status": "FIRST_SEED_ANALYZED_REMAINING_RUNNING",
       "new_models": 4,
       "reused_baselines": 1,
       "epochs_per_new_model": 50,
@@ -34641,9 +34641,206 @@
       "performance_results": null,
       "source_qualification_pending": true,
       "conditional_remaining_run": "20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s0203-m10-r01",
-      "remaining_status": "REGISTERED",
+      "remaining_status": "RUNNING",
       "remaining_code_commit": "d2b9e5a3ddee095d429b30db204ff826cc7e7d0e",
-      "report": "automation_reports/CV-SincNet/20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s01-m5-r01/report.md"
+      "report": "automation_reports/CV-SincNet/20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s01-m5-r01/final_analysis.md",
+      "first_seed_summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 1,
+          "accuracy_mean": 0.8066845238095238,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238
+          },
+          "macro_f1_mean": 0.8017335328586674,
+          "worst_RX_mean": 0.7061666666666667,
+          "worst_day_mean": 0.7545238095238095
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 1,
+          "accuracy_mean": 0.8358988095238096,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8358988095238096
+          },
+          "macro_f1_mean": 0.8314758809405948,
+          "worst_RX_mean": 0.7097083333333334,
+          "worst_day_mean": 0.7918809523809524
+        },
+        {
+          "arm": "LOCAL_GTIME",
+          "seed_count": 1,
+          "accuracy_mean": 0.8359464285714285,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8359464285714285
+          },
+          "macro_f1_mean": 0.8314886570816965,
+          "worst_RX_mean": 0.716625,
+          "worst_day_mean": 0.7924523809523809
+        },
+        {
+          "arm": "HIER_STAT",
+          "seed_count": 1,
+          "accuracy_mean": 0.8399940476190476,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8399940476190476
+          },
+          "macro_f1_mean": 0.8365709853558093,
+          "worst_RX_mean": 0.6968333333333333,
+          "worst_day_mean": 0.8124285714285714
+        },
+        {
+          "arm": "HIER_ORDER",
+          "seed_count": 1,
+          "accuracy_mean": 0.8277321428571428,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8277321428571428
+          },
+          "macro_f1_mean": 0.8224843249886366,
+          "worst_RX_mean": 0.695,
+          "worst_day_mean": 0.7939761904761905
+        }
+      ],
+      "first_seed_paired": [
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.029214285714285748
+          ],
+          "mean_difference": 0.029214285714285748,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "LOCAL_GTIME",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.00004761904761896307
+          ],
+          "mean_difference": 0.00004761904761896307,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "HIER_STAT",
+          "control": "LOCAL_GTIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.004047619047619078
+          ],
+          "mean_difference": 0.004047619047619078,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "HIER_ORDER",
+          "control": "HIER_STAT",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.012261904761904807
+          ],
+          "mean_difference": -0.012261904761904807,
+          "sd_difference": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "HIER_ORDER",
+          "control": "LOCAL_GTIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.00821428571428573
+          ],
+          "mean_difference": -0.00821428571428573,
+          "sd_difference": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "HIER_ORDER",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.008166666666666766
+          ],
+          "mean_difference": -0.008166666666666766,
+          "sd_difference": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "HIER_ORDER",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.02104761904761898
+          ],
+          "mean_difference": 0.02104761904761898,
+          "sd_difference": null,
+          "positive_seeds": 1
+        }
+      ],
+      "first_seed_audit": {
+        "status": "VERIFIED",
+        "models": 5,
+        "epoch_records_parsed": 250,
+        "new_step_records_parsed": 44400,
+        "prediction_count": 840000,
+        "metric_records_independently_recounted": 90,
+        "truth_last_recount": true,
+        "head_fit": false,
+        "native_fitted_probes_disabled_for_all4_new_models": true,
+        "recount_new_target_forward": 0
+      },
+      "source_qualification": {
+        "status": "PASS",
+        "source_only": true,
+        "target_metrics_read_for_decision": false,
+        "final_L_CE": {
+          "SIG_TIME-s2026092701": 0.2475868490700786,
+          "LOCAL_GTIME-s2026092701": 0.24724984028049418,
+          "HIER_STAT-s2026092701": 0.250360511176221,
+          "HIER_ORDER-s2026092701": 0.24981556393138998
+        },
+        "actual_source_HIER_ORDER_minus_HIER_STAT_L2": 2.9448893070220947,
+        "fixed_rules": {
+          "final_L_CE_max": 0.5,
+          "source_added_feature_difference_min": 0.000001,
+          "source_only": true,
+          "description": "All4 finalLCE<=.5; actual addedfeature numeric updates/exact export/W independence; matchedHIER_STAT/HIER_ORDER initial trainable parameters and nativebody/W equal, final L720 HIER_ORDER-HIER_STAT L2>=1e-6; unchanged02/03 only from sourcePASS, no targetmetric"
+        },
+        "head_fit": false,
+        "source_feature_export_exact": true,
+        "actual_initial_native_body_and_head_equal": true,
+        "predefined_remaining_seeds": [
+          2026092702,
+          2026092703
+        ],
+        "configuration_changes_for_expansion": false
+      },
+      "remaining_execution_commit": "63f59df3933c6fcb778c76d9b1eaed3087f4213c",
+      "source_expansion_before_new_target_read": true,
+      "first_seed_head_fit_updates": 0,
+      "goal84": false
     }
   ],
   "diagnostics": {
@@ -79874,8 +80071,8 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "Complete firstseed hierarchy source qualification/frozen defaulthead truth-last; decide unchanged02/03 using source-only verdict before new targetmetric reads",
-    "Recover full predefined3seed hierarchy and compare ordered/statistical/clock/local/baseline controls; preserve all results and verify Git delivery"
+    "Recover immutable remaining02/03 hierarchy15row complete3seed defaulthead/truthlast and paired results",
+    "Keep source-based report routes; no target-derived primary/parent/parameter switch, preserve all negative results and verify Git delivery"
   ],
   "goal_84": false,
   "Phase2_development": false,
