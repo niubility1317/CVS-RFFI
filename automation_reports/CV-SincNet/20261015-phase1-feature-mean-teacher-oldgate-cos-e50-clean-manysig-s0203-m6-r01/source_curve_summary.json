@@ -1,0 +1,209 @@
+{
+  "status": "VERIFIED",
+  "all_epochs_used": true,
+  "rows": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "sumEpochSeconds": 2334.8399138450623,
+      "finalCE": 0.2884262464940548,
+      "finalV": 97.88518518518518,
+      "last5CE": 0.26565861665719265,
+      "previous5CE": 0.2682841490316498,
+      "last5V": 97.88888888888889,
+      "previous5V": 97.79555555555555,
+      "U_packets": 963900,
+      "U_accepted": 15214
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092701,
+      "sumEpochSeconds": 2394.8282663822174,
+      "finalCE": 0.24766588640642595,
+      "finalV": 98.13703703703703,
+      "last5CE": 0.22823603209611534,
+      "previous5CE": 0.2339799642495744,
+      "last5V": 98.15037037037038,
+      "previous5V": 98.13629629629631,
+      "U_packets": 963900,
+      "U_accepted": 15440
+    },
+    {
+      "arm": "FEATURE_MT",
+      "seed": 2026092701,
+      "sumEpochSeconds": 2360.222954273224,
+      "finalCE": 0.24878544581902995,
+      "finalV": 98.12222222222222,
+      "last5CE": 0.22931855792129366,
+      "previous5CE": 0.23472121023648493,
+      "last5V": 98.1362962962963,
+      "previous5V": 98.12,
+      "U_packets": 963900,
+      "U_accepted": 15348
+    },
+    {
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092702,
+      "sumEpochSeconds": 2274.5685148239136,
+      "finalCE": 0.2791937226177873,
+      "finalV": 97.82222222222222,
+      "last5CE": 0.28448259691531597,
+      "previous5CE": 0.28506677629308663,
+      "last5V": 97.82518518518518,
+      "previous5V": 97.77259259259259,
+      "U_packets": 963900,
+      "U_accepted": 15126
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092702,
+      "sumEpochSeconds": 2361.8389151096344,
+      "finalCE": 0.2392032418970589,
+      "finalV": 98.34814814814816,
+      "last5CE": 0.24352875339823798,
+      "previous5CE": 0.2453567735515199,
+      "last5V": 98.34518518518517,
+      "previous5V": 98.33111111111111,
+      "U_packets": 963900,
+      "U_accepted": 15652
+    },
+    {
+      "arm": "FEATURE_MT",
+      "seed": 2026092702,
+      "sumEpochSeconds": 2096.3183431625366,
+      "finalCE": 0.24055996114337766,
+      "finalV": 98.33703703703704,
+      "last5CE": 0.24500557307724477,
+      "previous5CE": 0.24697133136225174,
+      "last5V": 98.34666666666666,
+      "previous5V": 98.33555555555556,
+      "U_packets": 963900,
+      "U_accepted": 15546
+    },
+    {
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092703,
+      "sumEpochSeconds": 2277.6157171726227,
+      "finalCE": 0.2704701284366148,
+      "finalV": 98.02222222222223,
+      "last5CE": 0.2628572170261864,
+      "previous5CE": 0.2818865301238524,
+      "last5V": 97.99851851851852,
+      "previous5V": 98.00888888888889,
+      "U_packets": 963900,
+      "U_accepted": 15204
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092703,
+      "sumEpochSeconds": 2369.8607444763184,
+      "finalCE": 0.2278392378677119,
+      "finalV": 98.22222222222223,
+      "last5CE": 0.2285100837011595,
+      "previous5CE": 0.24502534140069207,
+      "last5V": 98.22444444444446,
+      "previous5V": 98.2674074074074,
+      "U_packets": 963900,
+      "U_accepted": 15600
+    },
+    {
+      "arm": "FEATURE_MT",
+      "seed": 2026092703,
+      "sumEpochSeconds": 2103.978025197983,
+      "finalCE": 0.228447955403779,
+      "finalV": 98.23703703703704,
+      "last5CE": 0.22894398736524152,
+      "previous5CE": 0.24500864922060622,
+      "last5V": 98.24,
+      "previous5V": 98.26222222222222,
+      "U_packets": 963900,
+      "U_accepted": 15489
+    }
+  ],
+  "feature_last5_paired": [
+    {
+      "seed": 2026092701,
+      "ZERO": 0.3292548832182741,
+      "FEATURE_MT": 0.2704788351958811,
+      "ratio": 0.8214876953444351,
+      "reduction_percent": 17.85123046555649
+    },
+    {
+      "seed": 2026092702,
+      "ZERO": 0.3391835817058671,
+      "FEATURE_MT": 0.2688057838571135,
+      "ratio": 0.7925082414225352,
+      "reduction_percent": 20.749175857746483
+    },
+    {
+      "seed": 2026092703,
+      "ZERO": 0.33266142512965663,
+      "FEATURE_MT": 0.2665054682581513,
+      "ratio": 0.8011312647815397,
+      "reduction_percent": 19.886873521846027
+    }
+  ],
+  "feature_effective_gradient_summary": [
+    {
+      "parameter": "t1.pw.weight",
+      "seed_effective_over_main": [
+        0.012947768031133186,
+        0.012234407285452133,
+        0.02616005610019878
+      ],
+      "mean_effective_over_main": 0.017114077138928034,
+      "seed_cosine": [
+        -0.025624264993232226,
+        -0.006542128115639377,
+        0.01854556952705566
+      ],
+      "mean_cosine": -0.00454027452727198,
+      "nonzero_batches": [
+        222,
+        222,
+        222
+      ]
+    },
+    {
+      "parameter": "t2.pw.weight",
+      "seed_effective_over_main": [
+        0.0162101051381984,
+        0.013123072157916851,
+        0.026009285480367156
+      ],
+      "mean_effective_over_main": 0.0184474875921608,
+      "seed_cosine": [
+        -0.020170115703938615,
+        0.002108405339170526,
+        0.012278353286306333
+      ],
+      "mean_cosine": -0.0019277856928205852,
+      "nonzero_batches": [
+        222,
+        222,
+        222
+      ]
+    },
+    {
+      "parameter": "local_projection.weight",
+      "seed_effective_over_main": [
+        0.009463906587543201,
+        0.00969774756741838,
+        0.00896313421302706
+      ],
+      "mean_effective_over_main": 0.009374929455996212,
+      "seed_cosine": [
+        -0.007834630663733914,
+        -0.011506221764385595,
+        0.0034639259594996777
+      ],
+      "mean_cosine": -0.005292308822873278,
+      "nonzero_batches": [
+        222,
+        222,
+        222
+      ]
+    }
+  ],
+  "limitations": "Native sharedGPU times are not a controlled speed comparison. Separate L128/U256 gradient norms are not cumulative AdamW contributions."
+}

@@ -1,0 +1,2484 @@
+{
+  "status": "VERIFIED",
+  "source_only": true,
+  "query_read": false,
+  "U_truth_read": false,
+  "head_fit_updates": 0,
+  "new_model_forwards": 0,
+  "models": 6,
+  "epoch_records": 300,
+  "step_records": 66600,
+  "rows": [
+    {
+      "run": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "seed": 2026092701,
+      "arm": "SIG_TIME",
+      "curve": [
+        {
+          "epoch": 1,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 2,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 3,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 4,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 5,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 6,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 7,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 8,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 9,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 10,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 11,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 12,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 13,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 14,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 15,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 16,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 17,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 18,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 19,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 20,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 21,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 22,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 23,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 24,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 25,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 26,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 27,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 28,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 29,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 30,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 31,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 32,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.32720417372553856,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 35,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3305118716414854,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 36,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.32908112305181997,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 37,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33140532731168904,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 38,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33124851821591617,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 39,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33043566816277814,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 40,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.32928263394920915,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 41,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.32984431052123847,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 42,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33170132262996893,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 43,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.329079468984032,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 44,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.32851645325016515,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 45,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3283376943203087,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 46,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.32796796217797297,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 47,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3301255575521493,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 48,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3300600926838224,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 49,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3291735306765878,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 50,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.32894727300083826,
+          "packet_weighted_effective_loss": 0
+        }
+      ],
+      "last5_discrepancy": 0.3292548832182741
+    },
+    {
+      "run": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "seed": 2026092701,
+      "arm": "FEATURE_MT",
+      "curve": [
+        {
+          "epoch": 1,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 2,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 3,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 4,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 5,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 6,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 7,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 8,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 9,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 10,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 11,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 12,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 13,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 14,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 15,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 16,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 17,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 18,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 19,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 20,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 21,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 22,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 23,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 24,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 25,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 26,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 27,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 28,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 29,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 30,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 31,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 32,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.020000000000000004,
+          "packet_weighted_feature_discrepancy": 0.32117651654719465,
+          "packet_weighted_effective_loss": 0.0064235301889689405
+        },
+        {
+          "epoch": 35,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.04000000000000001,
+          "packet_weighted_feature_discrepancy": 0.3124148137397026,
+          "packet_weighted_effective_loss": 0.01249659229917501
+        },
+        {
+          "epoch": 36,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.06,
+          "packet_weighted_feature_discrepancy": 0.30317595207291725,
+          "packet_weighted_effective_loss": 0.018190556737270724
+        },
+        {
+          "epoch": 37,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.08000000000000002,
+          "packet_weighted_feature_discrepancy": 0.2965095932500493,
+          "packet_weighted_effective_loss": 0.02372076692470272
+        },
+        {
+          "epoch": 38,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2905135092028865,
+          "packet_weighted_effective_loss": 0.029051351287719223
+        },
+        {
+          "epoch": 39,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.28325441197112755,
+          "packet_weighted_effective_loss": 0.028325441589010666
+        },
+        {
+          "epoch": 40,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.27836682916528543,
+          "packet_weighted_effective_loss": 0.027836683273867326
+        },
+        {
+          "epoch": 41,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.27568816729113327,
+          "packet_weighted_effective_loss": 0.027568817120143977
+        },
+        {
+          "epoch": 42,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2748632598175574,
+          "packet_weighted_effective_loss": 0.02748632632064546
+        },
+        {
+          "epoch": 43,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.27205084517309064,
+          "packet_weighted_effective_loss": 0.027205084959665934
+        },
+        {
+          "epoch": 44,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.27013830659671223,
+          "packet_weighted_effective_loss": 0.027013831025472394
+        },
+        {
+          "epoch": 45,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.26993650211018017,
+          "packet_weighted_effective_loss": 0.02699365061295516
+        },
+        {
+          "epoch": 46,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.26968839672717676,
+          "packet_weighted_effective_loss": 0.026968839982199292
+        },
+        {
+          "epoch": 47,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2714155601172641,
+          "packet_weighted_effective_loss": 0.02714155638094407
+        },
+        {
+          "epoch": 48,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2710329029883867,
+          "packet_weighted_effective_loss": 0.027103290715151364
+        },
+        {
+          "epoch": 49,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.27036200701034047,
+          "packet_weighted_effective_loss": 0.027036201082025466
+        },
+        {
+          "epoch": 50,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2698953091362376,
+          "packet_weighted_effective_loss": 0.026989531365257724
+        }
+      ],
+      "last5_discrepancy": 0.2704788351958811
+    },
+    {
+      "run": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "seed": 2026092702,
+      "arm": "SIG_TIME",
+      "curve": [
+        {
+          "epoch": 1,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 2,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 3,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 4,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 5,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 6,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 7,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 8,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 9,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 10,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 11,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 12,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 13,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 14,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 15,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 16,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 17,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 18,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 19,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 20,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 21,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 22,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 23,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 24,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 25,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 26,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 27,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 28,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 29,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 30,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 31,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 32,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3438320468552739,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 35,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33949041452988116,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 36,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3390518581194432,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 37,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33860557480463904,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 38,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3409495345141732,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 39,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3418832448466535,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 40,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3396684110458986,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 41,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3420014131216355,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 42,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3384670429591359,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 43,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33851988906793073,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 44,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33934188030384205,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 45,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3387683040250546,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 46,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.34011065989575057,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 47,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33898805308594276,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 48,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33892985393761327,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 49,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3387023899605665,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 50,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33918695164946233,
+          "packet_weighted_effective_loss": 0
+        }
+      ],
+      "last5_discrepancy": 0.3391835817058671
+    },
+    {
+      "run": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "seed": 2026092702,
+      "arm": "FEATURE_MT",
+      "curve": [
+        {
+          "epoch": 1,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 2,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 3,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 4,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 5,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 6,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 7,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 8,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 9,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 10,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 11,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 12,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 13,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 14,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 15,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 16,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 17,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 18,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 19,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 20,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 21,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 22,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 23,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 24,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 25,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 26,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 27,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 28,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 29,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 30,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 31,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 32,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.020000000000000004,
+          "packet_weighted_feature_discrepancy": 0.3346079910789638,
+          "packet_weighted_effective_loss": 0.006692159682269187
+        },
+        {
+          "epoch": 35,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.04000000000000001,
+          "packet_weighted_feature_discrepancy": 0.31764549968944866,
+          "packet_weighted_effective_loss": 0.012705819691339182
+        },
+        {
+          "epoch": 36,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.06,
+          "packet_weighted_feature_discrepancy": 0.3052962359570532,
+          "packet_weighted_effective_loss": 0.01831777372806476
+        },
+        {
+          "epoch": 37,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.08000000000000002,
+          "packet_weighted_feature_discrepancy": 0.2946938446968321,
+          "packet_weighted_effective_loss": 0.0235755070777219
+        },
+        {
+          "epoch": 38,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.28975206242036566,
+          "packet_weighted_effective_loss": 0.02897520656833783
+        },
+        {
+          "epoch": 39,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.28385719392455233,
+          "packet_weighted_effective_loss": 0.02838571978006939
+        },
+        {
+          "epoch": 40,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.28074548084689616,
+          "packet_weighted_effective_loss": 0.028074548418586007
+        },
+        {
+          "epoch": 41,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.27740257771767846,
+          "packet_weighted_effective_loss": 0.027740258149395333
+        },
+        {
+          "epoch": 42,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.273125551825478,
+          "packet_weighted_effective_loss": 0.027312555625719367
+        },
+        {
+          "epoch": 43,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.27350123705477103,
+          "packet_weighted_effective_loss": 0.027350124081422622
+        },
+        {
+          "epoch": 44,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.27227230850981654,
+          "packet_weighted_effective_loss": 0.027227231251236834
+        },
+        {
+          "epoch": 45,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.26941315582820347,
+          "packet_weighted_effective_loss": 0.026941315967990397
+        },
+        {
+          "epoch": 46,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2696180793301349,
+          "packet_weighted_effective_loss": 0.026961808312270377
+        },
+        {
+          "epoch": 47,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.26836409150608004,
+          "packet_weighted_effective_loss": 0.02683640951635661
+        },
+        {
+          "epoch": 48,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2687810039646411,
+          "packet_weighted_effective_loss": 0.02687810080089792
+        },
+        {
+          "epoch": 49,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.26832309229033335,
+          "packet_weighted_effective_loss": 0.026832309615070646
+        },
+        {
+          "epoch": 50,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.268942652194378,
+          "packet_weighted_effective_loss": 0.026894265654146987
+        }
+      ],
+      "last5_discrepancy": 0.2688057838571135
+    },
+    {
+      "run": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "seed": 2026092703,
+      "arm": "SIG_TIME",
+      "curve": [
+        {
+          "epoch": 1,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 2,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 3,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 4,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 5,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 6,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 7,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 8,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 9,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 10,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 11,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 12,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 13,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 14,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 15,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 16,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 17,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 18,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 19,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 20,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 21,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 22,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 23,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 24,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 25,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 26,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 27,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 28,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 29,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 30,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 31,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 32,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33702787727695716,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 35,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3386712885891109,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 36,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33911809728259135,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 37,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33686781234001145,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 38,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3358954055431238,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 39,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.338033158768632,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 40,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3348192613885937,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 41,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3338793416376467,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 42,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33481610426196345,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 43,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33141493522300924,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 44,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33413797674776174,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 45,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33356065695037707,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 46,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3341171476113523,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 47,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33250256012566715,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 48,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3315817663026234,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 49,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.33249394403984095,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 50,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": 0.3326117075687994,
+          "packet_weighted_effective_loss": 0
+        }
+      ],
+      "last5_discrepancy": 0.33266142512965663
+    },
+    {
+      "run": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "seed": 2026092703,
+      "arm": "FEATURE_MT",
+      "curve": [
+        {
+          "epoch": 1,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 2,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 3,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 4,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 5,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 6,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 7,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 8,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 9,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 10,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 11,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 12,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 13,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 14,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 15,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 16,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 17,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 18,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 19,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 20,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 21,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 22,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 23,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 24,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 25,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 26,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 27,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 28,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 29,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 30,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 31,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 32,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packets": 0,
+          "coefficient": 0,
+          "packet_weighted_feature_discrepancy": null,
+          "packet_weighted_effective_loss": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.020000000000000004,
+          "packet_weighted_feature_discrepancy": 0.32724171566795,
+          "packet_weighted_effective_loss": 0.006544834165497169
+        },
+        {
+          "epoch": 35,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.04000000000000001,
+          "packet_weighted_feature_discrepancy": 0.31655414750126093,
+          "packet_weighted_effective_loss": 0.012662165602521291
+        },
+        {
+          "epoch": 36,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.06,
+          "packet_weighted_feature_discrepancy": 0.3080690517774545,
+          "packet_weighted_effective_loss": 0.018484142565248926
+        },
+        {
+          "epoch": 37,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.08000000000000002,
+          "packet_weighted_feature_discrepancy": 0.2938322366398268,
+          "packet_weighted_effective_loss": 0.023506578454843063
+        },
+        {
+          "epoch": 38,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2846687620594388,
+          "packet_weighted_effective_loss": 0.028466876612112214
+        },
+        {
+          "epoch": 39,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2805716216648277,
+          "packet_weighted_effective_loss": 0.028057162538959235
+        },
+        {
+          "epoch": 40,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2754813885583659,
+          "packet_weighted_effective_loss": 0.02754813925364766
+        },
+        {
+          "epoch": 41,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2749860749358223,
+          "packet_weighted_effective_loss": 0.027498607869527746
+        },
+        {
+          "epoch": 42,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.27204240267659413,
+          "packet_weighted_effective_loss": 0.027204240597324608
+        },
+        {
+          "epoch": 43,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2679365821195868,
+          "packet_weighted_effective_loss": 0.02679365857108455
+        },
+        {
+          "epoch": 44,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2697971094684836,
+          "packet_weighted_effective_loss": 0.026979711282426717
+        },
+        {
+          "epoch": 45,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.26824741617291903,
+          "packet_weighted_effective_loss": 0.0268247419544471
+        },
+        {
+          "epoch": 46,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.26805092101584876,
+          "packet_weighted_effective_loss": 0.02680509249684672
+        },
+        {
+          "epoch": 47,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.26619351069447855,
+          "packet_weighted_effective_loss": 0.026619351447890044
+        },
+        {
+          "epoch": 48,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2655645387597395,
+          "packet_weighted_effective_loss": 0.026556454232550594
+        },
+        {
+          "epoch": 49,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2663125098466453,
+          "packet_weighted_effective_loss": 0.02663125131009853
+        },
+        {
+          "epoch": 50,
+          "steps": 222,
+          "U_packets": 56700,
+          "coefficient": 0.1,
+          "packet_weighted_feature_discrepancy": 0.2664058609740444,
+          "packet_weighted_effective_loss": 0.026640586458159712
+        }
+      ],
+      "last5_discrepancy": 0.2665054682581513
+    }
+  ],
+  "last5_paired": [
+    {
+      "seed": 2026092701,
+      "ZERO": 0.3292548832182741,
+      "FEATURE_MT": 0.2704788351958811,
+      "ratio": 0.8214876953444351,
+      "reduction_percent": 17.85123046555649
+    },
+    {
+      "seed": 2026092702,
+      "ZERO": 0.3391835817058671,
+      "FEATURE_MT": 0.2688057838571135,
+      "ratio": 0.7925082414225352,
+      "reduction_percent": 20.749175857746483
+    },
+    {
+      "seed": 2026092703,
+      "ZERO": 0.33266142512965663,
+      "FEATURE_MT": 0.2665054682581513,
+      "ratio": 0.8011312647815397,
+      "reduction_percent": 19.886873521846027
+    }
+  ]
+}

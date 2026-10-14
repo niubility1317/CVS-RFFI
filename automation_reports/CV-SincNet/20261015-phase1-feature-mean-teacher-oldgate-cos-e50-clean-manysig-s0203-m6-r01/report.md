@@ -40,3 +40,8 @@ R01 dispatcher import FAILED：score引用发布包没有包含的旧SPSseeds汇
 ## R02 恢复发布已验证
 
 状态 RUNNING / VERIFIED，execution ab2c3127e14b48dea5bc2e064ce42c0be7cfdeeb。一次 archive SHA 对比、remote compile、真实checkpoint无query smoke PASS；4新worker的PID/CWD/argv/GPU及后续loggrowth均独立核实，已各完成4至5轮，2历史row复用；所有owner每GPU进程数最大2≤3，失败0。R01失败包保留，未改变科学配置或重启健康任务。原始运行细节留本地/远端，Git聚合证据见 release_R02_launch_evidence.json。
+
+
+## 完整三seed闭环结论
+
+ANALYZED/VERIFIED：FEATURE_MT82.4359%±1.5874pp，匹配SIG82.6806%±1.7906pp，配对−.2446±.2101个百分点，0/3为正，净−1233/504000；源特征损失三seed都降低但没有DG收益。完整450源epoch/1512000默认决定/162指标、23976实际层批梯度独立复核；头fit0。源决定先提交后读新目标，未择优/扫权重；R01 import失败与R02恢复历史完整保留。详细结果见final_analysis.md/results.json及complete_three_seed_curves_and_results.png。

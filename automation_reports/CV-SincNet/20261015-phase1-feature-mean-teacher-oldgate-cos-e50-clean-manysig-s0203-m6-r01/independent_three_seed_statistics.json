@@ -1,0 +1,126 @@
+{
+  "status": "VERIFIED",
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "models": 9,
+  "metric_records": 162,
+  "default_decisions": 1512000,
+  "summary": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "seed_count": 3,
+      "seed_accuracy": {
+        "2026092701": 0.8066845238095238,
+        "2026092702": 0.7808154761904762,
+        "2026092703": 0.8283035714285715
+      },
+      "accuracy_mean": 0.8052678571428572,
+      "accuracy_sd": 0.023775723031465,
+      "macro_f1_mean": 0.8000238637751927,
+      "worst_RX_mean": 0.6797083333333332,
+      "worst_day_mean": 0.7605555555555555
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed_count": 3,
+      "seed_accuracy": {
+        "2026092701": 0.8366785714285714,
+        "2026092702": 0.8061369047619048,
+        "2026092703": 0.8376011904761905
+      },
+      "accuracy_mean": 0.8268055555555556,
+      "accuracy_sd": 0.01790552011808559,
+      "macro_f1_mean": 0.8212818044118072,
+      "worst_RX_mean": 0.7049444444444445,
+      "worst_day_mean": 0.7850555555555556
+    },
+    {
+      "arm": "FEATURE_MT",
+      "seed_count": 3,
+      "seed_accuracy": {
+        "2026092701": 0.8336190476190476,
+        "2026092702": 0.8060297619047619,
+        "2026092703": 0.8334285714285714
+      },
+      "accuracy_mean": 0.8243591269841269,
+      "accuracy_sd": 0.015873981493446106,
+      "macro_f1_mean": 0.8186884452680397,
+      "worst_RX_mean": 0.6988333333333333,
+      "worst_day_mean": 0.7812619047619048
+    }
+  ],
+  "paired": [
+    {
+      "arm": "FEATURE_MT",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        -0.0030595238095237898,
+        -0.0001071428571428612,
+        -0.004172619047619119
+      ],
+      "mean_difference": -0.0024464285714285903,
+      "sd_difference": 0.0021009375269302024,
+      "positive_seeds": 0,
+      "corrected_errors": 1660,
+      "introduced_errors": 2893,
+      "net_corrected": -1233,
+      "matched_decisions": 504000
+    },
+    {
+      "arm": "FEATURE_MT",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.02693452380952377,
+        0.025214285714285745,
+        0.005124999999999935
+      ],
+      "mean_difference": 0.019091269841269815,
+      "sd_difference": 0.01212568862932949,
+      "positive_seeds": 3,
+      "corrected_errors": 26466,
+      "introduced_errors": 16844,
+      "net_corrected": 9622,
+      "matched_decisions": 504000
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.02999404761904756,
+        0.025321428571428606,
+        0.009297619047619055
+      ],
+      "mean_difference": 0.021537698412698408,
+      "sd_difference": 0.010854630317916123,
+      "positive_seeds": 3,
+      "corrected_errors": 27537,
+      "introduced_errors": 16682,
+      "net_corrected": 10855,
+      "matched_decisions": 504000
+    }
+  ],
+  "head_fit_updates": 0,
+  "scope": "Independent means/sample SD and paired/error counts from the two previously independently recounted frozen audit metric sets; no extra target forward or fit",
+  "dimension_mapping": {
+    "receiver": "rx",
+    "day": "day"
+  }
+}
