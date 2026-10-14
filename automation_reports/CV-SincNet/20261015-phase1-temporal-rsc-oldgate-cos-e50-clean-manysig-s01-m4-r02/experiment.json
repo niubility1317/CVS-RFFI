@@ -36,7 +36,8 @@
     "entrypoint": "experiments.cvs_temporal_rsc50.dispatch",
     "config_paths": [
       "experiments/cvs_temporal_rsc50/design.py"
-    ]
+    ],
+    "execution_commit": "e7a6215aa5d0a05e71c1c842e78cdfc845d57530"
   },
   "data": {
     "dataset": "ManySig",
@@ -107,7 +108,8 @@
     "remote_log_root": "PROJECT/releases/cvs_temporal_rsc50_20261015_r02",
     "local_artifact_root": "LOCAL_ARTIFACTS/temporal_rsc50_delivery_r03",
     "launch_command": "python -u -m experiments.cvs_temporal_rsc50.dispatch",
-    "stop_rule": "Only run-owned systemic technical failures: current data/default-head/hidden-U mismatch, nonfinite loss/gradients, unidentifiable fixed mask, failed RNG replay, missing updates, repeated launch failure or immutable-output collision. Preserve partial outputs; no automatic retry, unrelated stop/restart or target-feedback changes. Scientific source-rule FAIL prevents expansion but all fixed first-seed rows still finish/scored."
+    "stop_rule": "Only run-owned systemic technical failures: current data/default-head/hidden-U mismatch, nonfinite loss/gradients, unidentifiable fixed mask, failed RNG replay, missing updates, repeated launch failure or immutable-output collision. Preserve partial outputs; no automatic retry, unrelated stop/restart or target-feedback changes. Scientific source-rule FAIL prevents expansion but all fixed first-seed rows still finish/scored.",
+    "execution_commit": "e7a6215aa5d0a05e71c1c842e78cdfc845d57530"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -1299,6 +1301,26 @@
     "Raw IQ, checkpoints, PT vectors, logs and predictions stay off Git; code/config/preregistration and positive or negative aggregate results committed/pushed with remote OID verification.",
     "Technical recovery r02: original r01 dispatcher stopped before any worker/update because redacted registration did not match full factory configs. Keep complete canonical config fields with PROJECT prefix handle and restore only that prefix in scoped registration read; preserve old remote outputs. Numerical method and budgets unchanged."
   ],
-  "results": {},
-  "registered_at": "2026-10-14T22:41:30+00:00"
+  "results": {
+    "status": "RUNNING_VERIFIED",
+    "actual_completed_epochs": [
+      2,
+      2,
+      2
+    ],
+    "training_complete": false,
+    "new_model_target_metrics_read": false,
+    "source_steps_independently_recounted": 1332,
+    "actual_gradient_layer_records_recounted": 156,
+    "saved_vectors_recounted": 468,
+    "source_qualification_not_yet_complete": true,
+    "goal_84": false,
+    "head_fit_updates": 0,
+    "evidence": [
+      "launch_verified.json",
+      "source_progress.json"
+    ]
+  },
+  "registered_at": "2026-10-14T22:41:30+00:00",
+  "status": "RUNNING"
 }

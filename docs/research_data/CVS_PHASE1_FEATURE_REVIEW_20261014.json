@@ -82263,28 +82263,42 @@
     }
   ],
   "next_actions_max2": [
-    "执行已在源PASS后冻结的方差形状02/03同900L只读诊断；保持固定checkpoint/公式/样本/判据，不拟合头或访问target",
-    "合并三seed源导数证据，满足原规则后再设计明确梯度幅度/计算成本控制的新训练矩阵，固定SIG_TIME/default联合头/旧门控EMAcos/<=50；不根据当前target负分调系数或重跑"
+    "继续当前首seed三新模型固定50/11100及原U预算，不热改健康任务；逐row自动clean默认头预测与独立truth-last，完成实际源资格和全曲线/梯度/遮挡复核",
+    "在回收本轮新模型目标数值前提交推送源资格扩展决定；仅按预登记PASS原样扩三臂02/03，并保存全部正负结果。源接通和首seed均不能完成三seed84%目标"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "独立实现已由三模型源证据记录的RSC首seed3臂训练：固定SIG_TIME/defaultjointhead、原U/EMA/cos、33+17/50及同预算控制；mask率/层/父不据新DRO目标调节",
-    "完成该新候选的实际调用/RNG/梯度/联合更新验证、唯一P0/P1和预登记后发布，逐row默认头自动clean/truth-last；不把sourcePASS或大梯度当性能提升"
+    "继续当前首seed三新模型固定50/11100及原U预算，不热改健康任务；逐row自动clean默认头预测与独立truth-last，完成实际源资格和全曲线/梯度/遮挡复核",
+    "在回收本轮新模型目标数值前提交推送源资格扩展决定；仅按预登记PASS原样扩三臂02/03，并保存全部正负结果。源接通和首seed均不能完成三seed84%目标"
   ],
   "current_priority": {
-    "at": "2026-10-15",
+    "at": "2026-10-14T22:46:38.755Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": {
       "method": "Temporal_RSC",
-      "status": "SOURCE3_VERIFIED_TRAINING_NOT_IMPLEMENTED",
+      "status": "RUNNING_VERIFIED",
+      "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
+      "release": "cvs_temporal_rsc50_20261015_r02",
+      "code_commit": "82cc7f1c24c2e5d0e20572b2654722fdc3e43a47",
+      "execution_commit": "e7a6215aa5d0a05e71c1c842e78cdfc845d57530",
+      "network": "Fixed SIG_TIME195041/default cosine6x160 normal joint head",
+      "training_arms": [
+        "SIG_TIME",
+        "MATCHED_RANDOM",
+        "TEMPORAL_RSC"
+      ],
+      "model_seed": 2026092701,
+      "epochs_per_model": 50,
+      "original_U_recipe_unchanged": true,
+      "new_model_target_metrics_read": false,
+      "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/report.md",
       "basis_runs": [
         "20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01",
         "20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01"
       ],
-      "network": "FixedSIG_TIME/defaultjointhead",
-      "training_hypothesis": "automation_reports/CV-SincNet/20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01/next_training_hypothesis.json"
+      "goal_84": false
     },
     "next_semi_supervised_work": "All-U and confidence FEATURE_MT complete3 negative; design a distinct training-objective mechanism from legal source evidence, no stronger-feature-consistency scan",
     "structural_exploration": false,
@@ -84022,6 +84036,58 @@
       "goal84": false,
       "no_stable_new_DRO_gain": true,
       "report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
+    },
+    "temporal_rsc_training": {
+      "status": "RUNNING_VERIFIED",
+      "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
+      "new_models": 3,
+      "reused_historical_models": 1,
+      "source_completed_epochs": [
+        2,
+        2,
+        2
+      ],
+      "actual_native_steps_recounted": 1332,
+      "additional_L_forwards_recounted": 2664,
+      "actual_L_packet_observations_recounted": 170496,
+      "unique_physical_sample_count_not_inferred": true,
+      "gradient_layer_records_recounted": 156,
+      "saved_vectors_recounted": 468,
+      "saved_mask_batches_recounted": 39,
+      "first_epoch_delta_nonzero_batches_t1_t2_SIG_W": {
+        "SIG_TIME": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "MATCHED_RANDOM": [
+          13,
+          13,
+          13,
+          13
+        ],
+        "TEMPORAL_RSC": [
+          13,
+          13,
+          13,
+          13
+        ]
+      },
+      "source_qualification_complete": false,
+      "default_head_fit_updates": 0,
+      "actual_L_forwards_planned_per_model": 33300,
+      "additional_L_forwards_planned_per_model": 22200,
+      "oldgate_U_ownEMA_cos_preserved": true,
+      "launch_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/launch_verified.json",
+      "source_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_progress.json",
+      "technical_failure_recovery": {
+        "failed_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+        "failed_before_workers_or_updates": true,
+        "failed_outputs_preserved": true,
+        "new_run_has_separate_immutable_root": true,
+        "training_formula_unchanged": true
+      }
     }
   }
 }

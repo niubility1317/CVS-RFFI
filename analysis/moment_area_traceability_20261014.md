@@ -222,3 +222,6 @@ RSC三源模型完整证据已形成：首源保留、02/03新源父各自自然
 
 
 DRO完整固定3seed闭环：9新模型450epochs99900steps，12row2016000defaultheadclean决策216CM/600源epoch/1872层5616实际梯度向量全量复算VERIFIED；DRO−SIG−.973611pp(0/3)、等权+.113889pp(2/3)但最差RX/day不改进。源worstRXCE三seed下降不等于泛化，0headfit/0选择性重跑；保留负结果并结束固定DRO原样扩展。RSC下一训练hypothesis事先记录来自源证据，不能用新target调率/层/父。
+
+
+2026-10-15：时序自挑战训练 r02 已实际发布并核实运行，固定 SIG_TIME/default 联合头及旧 U/EMA/cos，三新同成本前向对照；源前1332步和E1实际梯度/遮挡已复核，非目标性能证据。r01仅登记不匹配失败、0 worker/0更新，保留后用新不可变目录恢复；路径恢复保留全部配置差异。实现、源证据和扩种子规则见 `automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/report.md`。后续完成50、源决定先推送、逐row默认头自动truth-last；目标84仍ACTIVE。

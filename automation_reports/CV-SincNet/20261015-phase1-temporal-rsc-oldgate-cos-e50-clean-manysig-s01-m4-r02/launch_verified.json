@@ -1,0 +1,70 @@
+{
+  "status": "RUNNING_VERIFIED",
+  "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
+  "release": "cvs_temporal_rsc50_20261015_r02",
+  "code_commit": "82cc7f1c24c2e5d0e20572b2654722fdc3e43a47",
+  "execution_commit": "e7a6215aa5d0a05e71c1c842e78cdfc845d57530",
+  "remote_branch_verified_at_release": true,
+  "archive": {
+    "name": "cvs_temporal_rsc50_20261015_r02.tar.gz",
+    "sha256": "069efe4ac5297cc2754e6fa98dcb4ab26104c29b27f2e12789614acf777de38b",
+    "local_remote_single_comparison": "PASS before extraction; remote preflight and actual execution from the matching archive observed",
+    "member_rehashes": 0
+  },
+  "remote_compile": "PASS",
+  "preflight": "PASS",
+  "real_checkpoint_no_query_smoke": true,
+  "training_inherits_checkpoint": false,
+  "post_launch_independent_process_CWD_argv_GPU_log_growth_checks": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "gpu": 1,
+      "same_pid_as_initial_training_snapshot": true,
+      "actual_process_alive": true,
+      "cwd_matches_release": true,
+      "argv_matches_launch": true,
+      "GPU_occupancy_contains_actual_pid": true,
+      "GPU_total_experiment_processes": 1,
+      "log_growth": true,
+      "log_bytes_before": 6518,
+      "log_bytes_after": 16854,
+      "completed_epochs": 2
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "gpu": 2,
+      "same_pid_as_initial_training_snapshot": true,
+      "actual_process_alive": true,
+      "cwd_matches_release": true,
+      "argv_matches_launch": true,
+      "GPU_occupancy_contains_actual_pid": true,
+      "GPU_total_experiment_processes": 1,
+      "log_growth": true,
+      "log_bytes_before": 6566,
+      "log_bytes_after": 16925,
+      "completed_epochs": 2
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "gpu": 0,
+      "same_pid_as_initial_training_snapshot": true,
+      "actual_process_alive": true,
+      "cwd_matches_release": true,
+      "argv_matches_launch": true,
+      "GPU_occupancy_contains_actual_pid": true,
+      "GPU_total_experiment_processes": 1,
+      "log_growth": true,
+      "log_bytes_before": 6550,
+      "log_bytes_after": 16902,
+      "completed_epochs": 2
+    }
+  ],
+  "historical_reference_row_completed": true,
+  "new_model_target_metrics_read": false,
+  "source_only_prefix_evidence": "source_progress.json",
+  "head_fit_updates": 0,
+  "training_complete": false,
+  "goal_84": false,
+  "previous_failed_release_preserved": "cvs_temporal_rsc50_20261015_r01",
+  "previous_failure_before_any_training": true
+}
