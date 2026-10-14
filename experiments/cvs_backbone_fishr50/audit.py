@@ -5,8 +5,9 @@ from .objective import validate_layout,variance_terms
 from experiments.cvs_source_layer_order.probe import gradient_stats
 from experiments.cvs_signature_stats50.audit import run as shared
 
-def run():
- torch.set_num_threads(2);started=time.time();base=shared(design=d,build_fn=api.build);observations=[]
+def run(*,design=None,build_fn=None):
+ d=design or globals()['d']
+ torch.set_num_threads(2);started=time.time();base=shared(design=d,build_fn=build_fn or api.build);observations=[]
  for row in d.training_rows():
   c=d.config(row);p=d.BASE/row['row_id']/'source';done=d.read(p/'backbone_fishr_training_observation.json');saved=d.read(p/'backbone_fishr_gradient_records.json');batches=saved['batch_records'];count=0;matrix_count=0
   if done['status']!='VERIFIED' or done['steps']!=11100 or done['extra_batches']!=650 or done['extra_source_packet_forwards']!=117000 or done['U_packets']!=963900 or done['gradient_epochs']!=[1,17,33,50] or done['gradient_batches']!=52 or len(batches)!=52 or done['head_fit_updates'] or done['U_truth_read']:raise ValueError('Actual backbone-gradient budget differs')
