@@ -246,3 +246,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 完整浅中层有界排序3seed闭环：ORDER82.7127%±1.4787pp，SIG82.6067%±1.7438pp，SupCon82.5843%±1.7028pp，旧gatecos80.5268%±2.3776pp。ORDER−SIG+.1060±.2932pp/2 of3，修正2168引入1634净+534/504000；−SupCon+.1284pp2/3。12row9新450epochs99900steps＋3历史150epochs33300，600完整源epoch/2016000defaultpred/216metrics/5940实际层cohortgrad保存复算VERIFIED，0头拟合/新增targetforward。9fθ实际更新/export0/W独立；初态同，最终ORDER−SIGsourceL2 1.592485/1.398321/1.142613。更低SupCon源关系率和更强梯度没有均值收益，不据几何调参。实现26bfdf044caa1be3c966370248c3bc3372009943，剩余执行6d65f77a7659cb182bdb39852dc6c6b76001e81d，报告20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md；84未达成。
+
+
+下一独立签名内监督已实施：20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01，源依据20261014-phase1-source-signature-order-manysig-s01-m1-r01全L6300；三同网络ZERO/RAW112/DYNAMIC108，部署SIG112不变、只辅助去4常量，固定旧m.1/coeff.1/5+10/33+17/ownEMAgatecos/scratch50。8negative/actualnative同初态warmup/三参数更新/defaulthead joint/W辅助None/模式RNG与唯一P0/P1 PASS，代码f6dfdb587c505b5720469d4a4a101b8df8b321f4。目前LOCAL_VERIFIED，未发布/无新目标分数，不把实现当收益。

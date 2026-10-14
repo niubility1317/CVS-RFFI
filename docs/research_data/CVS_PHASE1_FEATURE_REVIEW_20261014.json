@@ -35980,6 +35980,32 @@
       "head_fit_updates": 0,
       "goal_84": false,
       "report": "automation_reports/CV-SincNet/20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
+    },
+    {
+      "route": "source-signature internal identity supervision",
+      "run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "status": "LOCAL_VERIFIED",
+      "implementation_commit": "f6dfdb587c505b5720469d4a4a101b8df8b321f4",
+      "model_seeds": [
+        2026092701
+      ],
+      "arms": [
+        "OLD_GATE_COS50",
+        "SIG_TIME",
+        "SIG_RAW_ORDER",
+        "SIG_DYNAMIC_ORDER"
+      ],
+      "new_models": 3,
+      "reused_models": 1,
+      "epochs_each": 50,
+      "updates_each": 11100,
+      "default_head_only": true,
+      "local_checks": "PASS",
+      "unique_P0P1": "PASS",
+      "target_results": null,
+      "goal_84": false,
+      "source_basis": "20261014-phase1-source-signature-order-manysig-s01-m1-r01",
+      "report": "automation_reports/CV-SincNet/20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01/report.md"
     }
   ],
   "diagnostics": {

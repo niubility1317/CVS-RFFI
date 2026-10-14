@@ -75,3 +75,5 @@ R08完整3seed9row已闭环verified：weighted82.7030%±1.6081pp、uniform82.751
 |S01|全L签名四视图诊断|直接SIG112与仅辅助去4常量SIG108身份排序，各自与零损失控制|experiments/cvs_signature_order50/design.py,observer.py|pending|待实际native接线|固定m.1/coeff.1/5warmup+10ramp，单路部署SIG112不变|
 |S02|当前默认头约束|W正常联合训练、无辅助W依赖、真实fθ更新及W独立导出|checks.py,feature_check.py|pending|待native梯度/实际CPsmoke与训练|全L数据角色、旧gateEMAcos33+17、每模型scratch50不变|
 |S03|源资格与自动收尾|首seed三新＋旧历史，源资格固定后仅原样扩预定义02/03；每row自动defaultclean/truthlast|score.py,dispatch.py,publish.py|pending|待一次P0/P1/归档/真实启动|不以目标分数或源几何选父权重、调参、重跑|
+
+S01/S02本地实现与三实际native检查verified：8negative，actualt1/t2/SIGprojection更新、同初态warmup、1800显式公式、W辅助None/defaultjointupdate、mode/RNG保持PASS；唯一直接P0/P1 PASS。实现f6dfdb587c505b5720469d4a4a101b8df8b321f4；S03自动defaultclean/truthlast/源资格已实现，远端真实checkpoint/archive/compile/启动证据待发布，不把实现当训练结果。
