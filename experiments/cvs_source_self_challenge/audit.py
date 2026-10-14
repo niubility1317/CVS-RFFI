@@ -100,8 +100,11 @@ def qualification(summary):
         no_automatic_training_release=True)
 
 
-def recount(root):
-    row=d.rows()[0];p=root/row['row_id'];report=d.read(p/'analysis.json');d.validate(report['config'])
+def recount(root, *, design=d, row=None):
+    context=design;row=row or context.rows()[0]
+    if row not in context.rows():raise ValueError('Unregistered source recount row')
+    p=root/row['row_id'];report=context.read(p/'analysis.json');context.validate(report['config'])
+    if report['config']!=context.config(row):raise ValueError('Saved source model differs from requested row')
     raw=torch.load(p/'actual_source_gradients.pt',map_location='cpu',weights_only=False)
     if len(raw)!=5 or [r['cohort'] for r in raw]!=list(range(5)):
         raise ValueError('Fixed source cohorts incomplete')
