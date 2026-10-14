@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "runs": [
+    "20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s01-m5-r01",
+    "20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s0203-m10-r01"
+  ],
+  "models": 15,
+  "new_models": 12,
+  "reused_models": 3,
+  "new_steps": 133200,
+  "epochs": 750,
+  "predictions": 2520000,
+  "metrics": 270,
+  "errors": 21,
+  "feature_rows": 12,
+  "feature_pairs": 3,
+  "head_fit": false,
+  "truth_last": true,
+  "no_new_target_forwards": true
+}

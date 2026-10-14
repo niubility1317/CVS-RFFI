@@ -10,7 +10,7 @@
 | R04 | 五·顺序1 | MixStyle全部种子回收且不按负分改计划 | 已提交三种子MixStyle报告 | verified | f1d1e860e；1512000预测/162指标独立复算 | 历史RX/day探针违规如实披露 |
 | R05 | 二·结构分析 | 区分面积、统计形状和常数时间坐标；不把顺序敏感视为泛化证据 | checks.py/report | verified | float64：cov置乱不变、area反转/内部顺序及时间项恒等式PASS | 性能只由真实冻结测试证明 |
 | R06 | 三·路线三 | 独立比较t2与t2.pool取点 | experiments/cvs_read_position50及seeds | verified | 完整3seed/9row/66600steps/1512000pred/162metrics独立复算VERIFIED | PRE82.5599vsPOST82.6909，无稳定提升 |
-| R07 | 三·路线二 | 连续4→2→1层级含三个边界增量和统一全局时间 | experiments/cvs_hierarchy50及source_hierarchy | implemented | 源L720/135统计VERIFIED，真实4新模型已发布健康训练 | 等待固定终轮默认头及源资格；保留GT局部和同容量大窗统计控制 |
+| R07 | 三·路线二 | 连续4→2→1层级含三个边界增量和统一全局时间 | experiments/cvs_hierarchy50及seeds/source_hierarchy | verified | 完整3seed15row/133200新增steps/2520000pred/270metrics/12真实feature witness复算VERIFIED | HIER_ORDER82.8734%，vsSIG+.1784pp、2/3正差，84均值未达 |
 | R08 | 三·路线四 | 可信门控内有界stopgrad难度权重及真实训练梯度 | experiments/cvs_source_weight；实际训练待落实 | implemented | 固定L6300/15统计/75参数梯度保存复算VERIFIED，无训练/头拟合 | 只证明源代理接线及梯度变化，真实33/34/50训练贡献和性能未验证 |
 | R09 | 五及目标 | 首seed同路径SIG_TIME与两个描述子、旧基线；源PASS才扩02/03；自动默认头truthlast、Git | design/source/dispatch/score/report | verified | 完整三seed12row／99900steps／2016000默认预测／216组指标复算VERIFIED，Git交付 | 不使用目标分数控制扩seed |
 
@@ -53,3 +53,6 @@ R07首seed真实闭环：20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig
 
 
 R08源代理已实施完成：20261014-phase1-source-trusted-weight-manysig-s01-m1-r01，实现051de1a177819c0f8a9cfe5aba0fd09e7cefef6d、执行c84b17396bc0861b8856e867d17aab54206436c5；L6300/18900包前向/25batch/15分层/75实际t1/t2/t3导数记录保存复算VERIFIED。旧mask接受867包均正确，weighted precision未提高；同层λU/L由.244/.240/.228升至.357/.349/.320，cos .994至.996，不能冒充真实U或训练阶段/性能收益。0训练/optimizer/默认头或额外头拟合，student/EMA state保持。现7verified/2implemented/0deferred、0blocked/rejected。最高未完成项：R07完整三seed层级性能及R08实际33/34/50训练梯度/固定默认头结果。严格落实报告的stopgrad/bounds/accepted加权均值；源代理是明确范围缩小，不能标为完整训练路线已验证。验证 python -m experiments.cvs_source_weight.checks（一次PASS）、preflight真实CP2zeroIQ（PASS）、publish --inspect及source_weight.pt重读复算（VERIFIED）。
+
+
+R07完整三seed闭环verified：HIER_ORDER82.8734%±1.9546pp，vsSIG+.1784±.9861pp（2/3）、vs同容量STAT+.3230±1.5336pp（2/3），距84均值1.1266pp。12新/3历史、600新增epochs133200steps＋150历史epochs；750源epoch/2520000固定defaultpred/270指标/21错误表保存复算VERIFIED，12实际pool5tensors全元素更新、导出差0/W独立/额外fit0；3匹配初态最终L720z差2.944889/3.629342/4.719027。现8verified/1implemented（R08只有源代理，实际训练待实现）/0deferred、0blocked/rejected。最高未完成项R08实际33/34/50骨干L/U梯度及固定默认头三seed性能，84目标仍未达；不是head-free新TX证明。层级公式严格一阶＋二阶skewarea/globaltime/3bridge；STAT rawscale/info/conditioning不完全匹配已披露。验证python -m experiments.cvs_hierarchy_seeds.audit复用固定产物，15行源和预测计数合并检查VERIFIED，无新增targetforward或重复审查。

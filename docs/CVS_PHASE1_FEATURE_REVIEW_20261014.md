@@ -219,3 +219,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 可信门控内难度权重源代理已完成（20261014-phase1-source-trusted-weight-manysig-s01-m1-r01）：接受867/6300全部正确，uniform/weighted precision均100%，不能声称精度改善；t1/t2/t3平均λU/L由.244/.240/.228升至.357/.349/.320，两种U梯度cos .994至.996。0训练/头拟合/目标或隐藏U访问，15统计/75层批梯度保存复算VERIFIED。实现051de1a177819c0f8a9cfe5aba0fd09e7cefef6d、执行c84b17396bc0861b8856e867d17aab54206436c5；完整报告automation_reports/CV-SincNet/20261014-phase1-source-trusted-weight-manysig-s01-m1-r01/report.md。真实权重训练尚未发布，层级八模型保持原配方。
+
+
+连续层级完整三seed已闭环：HIER_ORDER82.8734%±1.9546pp，vsSIG_TIME+.1784±.9861pp（2/3），vs同容量HIER_STAT+.3230±1.5336pp（2/3）；SIG_TIME82.6950%、LOCAL_GTIME82.7385%、HIER_STAT82.5504%、旧门控cos80.5268%。primary距84均值1.1266pp；最高seed84.8762不代替目标。15row/12新600epochs133200steps＋3历史150epochs，750epoch记录/2520000默认预测/270metrics/21错误表/12真实feature witness/3匹配初态完成VERIFIED，额外头拟合0。首seed未重训、source-only扩seed决定先于新target数字读取，不依据结果调参。完整报告automation_reports/CV-SincNet/20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s0203-m10-r01/report.md。下一步只按已完成源权重诊断与原报告路线四落实独立SIG_TIME权重训练，不加载目标高分层级权重或叠加机制。
