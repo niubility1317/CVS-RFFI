@@ -1,0 +1,15 @@
+{
+  "status": "FAILED",
+  "execution_commit": "fc07e820e65fbcda5aae19f9799d98194877b2e1",
+  "failure": {
+    "status": "FAILED",
+    "row_id": "TRUST_PROXY-s2026092701",
+    "error": "TypeError(\"no implementation found for 'numpy.savez_compressed' on types that implement __array_function__: [<class 'numpy.ndarray'>, <class 'numpy.ndarray'>]\")",
+    "no_automatic_retry": true
+  },
+  "failed_layer": "source_decision_artifact_serialization",
+  "model_or_gate_failure": false,
+  "process_exited": true,
+  "scientific_result_available": false,
+  "recovery_run": "20261014-diagnostic-trusted-correction-source-manysig-m3-r02"
+}

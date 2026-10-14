@@ -33,3 +33,8 @@ CE 与逐包 logits 梯度范数只用于判断学习信号，明确区别于在
 已完成固定策略负测试、accepted-mean 复现及私有弱视图 RNG 检查；一次独立 P0/P1 审查 PASS。launcher 首步实测真实 PAIR student/EMA strict-load/no-query smoke，PASS 后立即诊断。错契约、输出冲突、非有限值、原 gate 不一致、参数状态变化或保存统计重算不一致即停止本次诊断并保留产物，不自动重启。
 
 当前状态：LOCAL_VERIFIED，尚未把预定诊断写成已得结论。发布及结果以独立回读证据更新。
+
+
+## 技术失败与有界恢复
+
+R01 独立回读 FAILED，checkpoint smoke PASS，第一模型完整 V 计算后保存 mixed NumPy ndarray 时失败，进程已退出，无完整科学结论。原目录与日志保留。已最小复现 NumPy 与 Torch.numpy() 不同 ndarray 类型混合派发失败；纯 native tensor torch.save/load 往返重算通过。R02 仅改保存格式为 source_decisions.pt，新 immutable root，阈值/样本/模型/标准原样。见 technical_failure.json。

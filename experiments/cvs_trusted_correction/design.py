@@ -2,7 +2,7 @@ from pathlib import Path
 from experiments.cvs_feature_multiscale50 import design as old
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,SEEDS,FULL_FP32_POLICY,read,write=(getattr(old,k) for k in ('PROJECT','SOURCE','SEEDS','FULL_FP32_POLICY','read','write'))
-RUN='20261014-diagnostic-trusted-correction-source-manysig-m3-r01';RELEASE='cvs_trusted_correction_source_20261014_r01';OWNER='codex/root/trusted-correction-source-20261014';BASE=Path(PROJECT)/'runs'/RUN
+RUN='20261014-diagnostic-trusted-correction-source-manysig-m3-r02';RELEASE='cvs_trusted_correction_source_20261014_r02';OWNER='codex/root/trusted-correction-source-20261014';BASE=Path(PROJECT)/'runs'/RUN
 REFERENCE_RUN='20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02'
 def rows():return [dict(row_id=f'TRUST_PROXY-s{s}',model_seed=s) for s in SEEDS]
 def baseline_config(seed):return old.config(next(r for r in old.rows() if r['arm']=='OLD_GATE_COS50' and r['model_seed']==seed))

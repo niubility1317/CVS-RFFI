@@ -1,7 +1,6 @@
 """Complete V fixed-rule proxy; labels enter only downstream counts."""
 import json,time
 from pathlib import Path
-import numpy as np
 import torch
 from . import design as d
 from .provenance import models
@@ -54,11 +53,14 @@ def run(c):
  if any(not torch.equal(v,student.state_dict()[k]) for k,v in saved.items()) or any(not torch.equal(v,teacher.state_dict()[k]) for k,v in saved_t.items()) or any(p.grad is not None for m in (student,teacher) for p in m.parameters()):raise ValueError('Fixed source observer mutated/fit model')
  pred=torch.cat(pred);decisions={k:torch.cat(v) for k,v in decisions.items()};signals={k:torch.cat(v) for k,v in signals.items()};truth=V['y'][indices];rx=V['rx'][indices];day=V['day'][indices]
  rr=records(pred,decisions,signals,truth,rx,day)
- np.savez_compressed(out/'source_decisions.npz',ids=np.asarray([V['ids'][i] for i in indices.tolist()]),pseudo=pred.numpy(),truth=truth.numpy(),rx=rx.numpy(),day=day.numpy(),**{k:v.numpy() for k,v in decisions.items()},**{k:v.numpy() for k,v in signals.items()})
- with np.load(out/'source_decisions.npz',allow_pickle=False) as saved_decisions:
-  pp,yy,rxx,dd=(torch.from_numpy(saved_decisions[k]) for k in ('pseudo','truth','rx','day'))
-  mm={k:torch.from_numpy(saved_decisions[k]) for k in decisions};ss={k:torch.from_numpy(saved_decisions[k]) for k in signals}
-  if records(pp,mm,ss,yy,rxx,dd)!=rr or len(set(saved_decisions['ids'].tolist()))!=27000:raise ValueError('Saved V masks/precision recount differs')
+ # Keep this local artifact in the native tensor format. The remote Torch
+ # NumPy bridge and Python NumPy expose different ndarray classes; mixing
+ # string IDs and Tensor.numpy() arrays fails __array_function__ dispatch.
+ torch.save(dict(ids=[V['ids'][i] for i in indices.tolist()],pseudo=pred,truth=truth,rx=rx,day=day,**decisions,**signals),out/'source_decisions.pt')
+ saved_decisions=torch.load(out/'source_decisions.pt',map_location='cpu',weights_only=False)
+ pp,yy,rxx,dd=(saved_decisions[k] for k in ('pseudo','truth','rx','day'))
+ mm={k:saved_decisions[k] for k in decisions};ss={k:saved_decisions[k] for k in signals}
+ if records(pp,mm,ss,yy,rxx,dd)!=rr or len(set(saved_decisions['ids']))!=27000:raise ValueError('Saved V masks/precision recount differs')
  original=decisions['original'];corrected=decisions['correction_admitted'];candidate=decisions['correction_candidate']
  rejected_combinations={str(code):0 for code in range(64)}
  for a,b,e,f,g,h in zip(decisions['original_confidence'].tolist(),decisions['physical_neighbor'].tolist(),decisions['student_agreement'].tolist(),decisions['teacher_high_conf'].tolist(),decisions['weak_high_conf'].tolist(),decisions['weak_stable'].tolist()):rejected_combinations[str(int(not a)+2*int(not b)+4*int(not e)+8*int(not f)+16*int(not g)+32*int(not h))]+=1
