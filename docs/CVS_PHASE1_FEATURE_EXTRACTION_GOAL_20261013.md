@@ -76,3 +76,11 @@ Sinc坐标9row全部完成，6新scratch50/300模型轮次/66600更新、3历史
 
 
 已落实预定正收益结构组合：`20261014-phase1-relation-temporal-factorial-oldgate-e50-clean-manysig-m12-r01`，执行`0af34c5345cba3488a5e4a5d429b2a26447fd09d`。COMPACT_LINEAR/LONG_SILU×ZERO/原CROSS_RESP，12new scratch50、先4seed01源资格后8row，τ/α/权重/PAIR/旧gate/ownEMA/entropy/strong均沿用。真实四200tensor初值与CPU RNG相同，native安装入口一致、default6×160和auxW/gainNone/浅层gradient负例通过；GPU实际4worker第15至18轮，preflight/archive/compile/PID-CWD-argv-GPU-log增长VERIFIED。原关系三seed未有效的结果独立保留，此组合尚无性能结论；Sinc正收益路线独立、不堆入本矩阵。84%研究目标active。
+
+## 2026-10-14 用户最新报告：有效身份证据的训练机制
+
+最新附件 c718649d 调整下一阶段优先级。关系＋响应完整三种子无稳定增益，不能继续把其关系拟合当成有效身份信号。先用相同 L/U 曝光与实际更新预算比较 U 训练日历：TAIL34 至 50、MID17 至 33、SPREAD17/19/…/49，共17个完整U轮与33标签专用轮，L始终参与全部50轮。原默认架构/分类头联合训练、PAIR/旧gate/ownEMA/cos/strong/entropy保持，不叠加R/E、TIME或Sinc。run `20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r01`，预定主条件MID；首seed3源健康后其余6row，9new scratch50/99900实际更新。当前仅本地实现和验证，不声称性能提升。
+
+每模型在第1/6/12/17个U轮前使用当时ownEMA、原完整V27000做无拟合当前教师accuracy/ECE/coverage/precision代理，V标签只用于下游计数，状态与训练随机流保护，不能用最终教师回填早期阶段，也不冒充U真实精度。在对应首batch用同真实AdamW状态的两个临时分支测量 `.16pseudoCE+.01entropy` 对更新的增量，各自clip5并纳入moments/weightdecay；真实模型只更新一次，总临时分支读回匹配实际更新。模型间L1420800/U963900曝光相等，额外V216000前向/模型和8临时步骤单列，无额外实际更新。三组191初始state及CPU随机状态、native安装入口、日历负例和本地真实模型优化回调已PASS。冻结逐行自动clean预测与独立truth-last，原数据/目标反馈禁令保持。
+
+下一独立创新主机制为同TX、同day、跨RX的PA实际增量证据重组，用detached既有W和辅助增益计算有标签CE，保留PA特征梯度，主CE正常联合训练默认头。原样、同RX重组、跨RX重组三控制先在L进行，不能把不同采集包解释为同波形硬件反事实；不新增U伪类判定链。有停止条件的语义间隔随后，分支更新约束仅在有用辅助信号出现后研究。已发布的时序×关系组合继续原计划，必须报告结构内机制差和交互；COMPACT/LONG_SILU/Sinc既有正收益独立保留。84%固定三seed目标仍active，任何接线、源诊断或发布状态都不是目标完成。

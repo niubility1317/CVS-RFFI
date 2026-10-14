@@ -1,0 +1,162 @@
+{
+  "schema": "source_U_calendar50_v1",
+  "run_id": "20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r01",
+  "stage": "repair",
+  "arm": "MID",
+  "model_seed": 2026092702,
+  "row_id": "MID-s2026092702",
+  "features": [
+    "ema",
+    "pseudo",
+    "twostage"
+  ],
+  "variant": "reference_response",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r01/MID-s2026092702/source",
+  "epochs": 50,
+  "steps_per_epoch": 222,
+  "model_initialization": "scratch",
+  "checkpoint_sources": [],
+  "numerical_policy": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "method": "cvs_legacy_no_sat",
+  "target_access": false,
+  "pseudo_domain_gate": false,
+  "temporal_mode": "batch_neighbor",
+  "temporal_min_streak": 2,
+  "lr_schedule": "cosine",
+  "lr_min": 1e-06,
+  "launch_owner": "codex/root/U-calendar-20261014",
+  "label_epochs": 33,
+  "pseudo_epochs": 17,
+  "updates": 11100,
+  "legacy_reference_config": {
+    "schema": "legacy_no_sat_v1",
+    "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+    "stage": "repair",
+    "arm": "legacy_cosine_no_sat",
+    "model_seed": 2026092702,
+    "row_id": "legacy_cosine_no_sat-s2026092702",
+    "features": [
+      "ema",
+      "pseudo",
+      "twostage"
+    ],
+    "variant": "reference_response",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+    "epochs": 200,
+    "steps_per_epoch": 222,
+    "model_initialization": "scratch",
+    "checkpoint_sources": [],
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "method": "cvs_legacy_no_sat",
+    "target_access": false,
+    "pseudo_domain_gate": false,
+    "temporal_mode": "batch_neighbor",
+    "temporal_min_streak": 2,
+    "lr_schedule": "cosine",
+    "lr_min": 1e-06
+  },
+  "source_falsification": {
+    "final_L_CE_max": 0.5,
+    "V_mean_drop_max": 0.01,
+    "V_worst_RX_drop_max": 0.02
+  },
+  "training_recipe": "historical batch_neighbor pseudo gate+EMA+cos; no satellite; allarms identical",
+  "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+  "explicit_CFO_identity_feature": false,
+  "feature_extractor": {
+    "structural_changes": false,
+    "extra_parameters": 0,
+    "output_embedding": 160,
+    "classifier_changed": false,
+    "training_mechanism": "same17Uepochs moved within original50epochcosine; no additional objective"
+  },
+  "classifier": "unchanged baseline ResidualPhysicalHead/6x160 cosine/scale30/branchLN/gain; no newhead/readout/calibration",
+  "test_views": [
+    "clean"
+  ],
+  "checkpoint_selection": "final_only",
+  "goal": {
+    "primary": "MID",
+    "clean_three_seed_mean": 0.84,
+    "feedback_to_training": false
+  },
+  "budget_authorization": "User currentreport prioritizes equalUbudget timing experiment, same50epoch/backboneupdate/Lexposure/Uexposure/defaulthead/oldgate; Agentchoosefixedmid17..33 andspread17..49odd, no new relationshiploss orSinc.",
+  "cost_claim": "9new scratch50/99900updates; first3seed01 sourcehealth then6pendingrows, equal50L+17Uepochs;216000extraVproxyforward/model and4two-shadow optimizer probes,0extraactual optimizersteps",
+  "baseline_reference": null,
+  "baseline_reuse": false,
+  "calendar": {
+    "unlabeled_epochs": [
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33
+    ],
+    "label_only_epoch_count": 33,
+    "U_epoch_count": 17,
+    "backbone_updates": 11100,
+    "L_packet_observations": 1420800,
+    "U_packet_observations": 963900,
+    "pseudo_and_entropy_weights_unchanged": true,
+    "old_PAIR_gate_unchanged": true,
+    "ownEMA_all11100updates": true,
+    "U_gradient_scope": "Original .16 selected-hard-pseudo CE plus .01 allU entropy; fullbase is actual total loss minus these two U terms.",
+    "optimizer_probe_U_ordinals": [
+      1,
+      6,
+      12,
+      17
+    ],
+    "optimizer_probe_global_steps": [
+      3553,
+      4663,
+      5995,
+      7105
+    ],
+    "source_V_proxy_at_U_ordinals": [
+      1,
+      6,
+      12,
+      17
+    ],
+    "proxy": "CurrentownEMA eval weak/currentstudent identity-only trainDropout strong; completeoriginal27000V,labels downstream counts only; no fitting",
+    "source_V_proxy_forward_packets": 216000,
+    "calendar_basis": "Latestuser explicitly proposes17..33 mid; originalfinalsource curves establish source task learns in labelstage. Cutpointsfixed before thisrun target. No finalcheckpoint teacher used early."
+  },
+  "source_neighbor_sampling": {
+    "mode": "PAIRS",
+    "original_gates": true
+  },
+  "readouts": [
+    "NATIVE_HEAD"
+  ],
+  "separate_head_training": false
+}

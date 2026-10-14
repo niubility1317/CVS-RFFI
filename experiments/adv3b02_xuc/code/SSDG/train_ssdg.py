@@ -4267,6 +4267,26 @@ def _fallback_stage_state(phase: str) -> Dict[str, float]:
     }
 
 
+def _source_epoch_phase(epoch: int, args) -> str:
+    calendar = getattr(args, "source_unlabeled_epochs", None)
+    if calendar is None:
+        return "label" if int(epoch) <= int(args.label_epochs) else "pseudo"
+    # A source experiment may move its existing U traversals, without adding
+    # data or changing the total number of label-only/U-active epochs.
+    if (not isinstance(calendar, (list, tuple))
+            or any(type(value) is not int for value in calendar)
+            or list(calendar) != sorted(set(calendar))
+            or len(calendar) != int(args.pseudo_epochs)
+            or int(args.label_epochs) + len(calendar) != int(args.epochs)
+            or any(value < 1 or value > int(args.epochs) for value in calendar)
+            or not bool(args.use_unlabeled)
+            or bool(getattr(args, "use_muse_ssdg", False))):
+        raise ValueError("Source U calendar differs from the fixed training budget")
+    if not 1 <= int(epoch) <= int(args.epochs):
+        raise ValueError("Source calendar epoch outside the training budget")
+    return "pseudo" if int(epoch) in calendar else "label"
+
+
 def _stage_state_for_epoch(epoch: int, args, phase: str) -> Dict[str, float]:
     if build_stage_state is None:
         return _fallback_stage_state(phase)
@@ -8881,7 +8901,7 @@ def train(args) -> int:
                         device=device, num_classes=int(model.num_classes),
                         num_domains=int(model.num_domains),
                     )
-        phase = "label" if epoch <= int(args.label_epochs) else "pseudo"
+        phase = _source_epoch_phase(epoch, args)
         stage_state = _stage_state_for_epoch(epoch, args, phase)
         cur_w = _loss_weights(args, stage_state)
         tail_rollback_cooldown_active = bool(tail_rollback_cooldown_remaining > 0)
@@ -8924,6 +8944,10 @@ def train(args) -> int:
         if balanced_train_sampler is not None and hasattr(balanced_train_sampler, "set_epoch"):
             balanced_train_sampler.set_epoch(epoch)
         epoch_logs = []
+        source_epoch_probe = getattr(model, "_source_epoch_probe_hook", None)
+        if source_epoch_probe is not None:
+            source_epoch_probe(model=model, teacher=ema_model, epoch=epoch,
+                               context=data_ctx, optimizer=optimizer)
         rc4_nonfinite_batches = 0
         rc4_gradient_metrics = {
             "rc4/g_L": float("nan"),
@@ -11452,6 +11476,15 @@ def train(args) -> int:
             if source_unlabeled_feature_loss is not None:
                 loss = loss + source_unlabeled_feature_loss
                 scaled_closed_loss = scaled_closed_loss + source_unlabeled_feature_loss
+            source_step_probe = getattr(model, "_source_optimizer_update_probe_hook", None)
+            if source_step_probe is not None:
+                source_step_probe(
+                    model=model, optimizer=optimizer, epoch=epoch,
+                    batch_idx=batch_idx, phase=phase,
+                    optimizer_step=r3_optimizer_steps + 1, total_loss=loss,
+                    unlabeled_loss=float(args.lambda_u) * loss_u + float(args.lambda_ent) * loss_ent,
+                    labeled_count=labeled_clean_count, unlabeled_count=pseudo_total,
+                )
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0
