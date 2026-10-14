@@ -85,3 +85,12 @@ S03发布路径verified：20261014-phase1-signature-order-oldgate-cos-e50-clean-
 
 
 用户2026-10-14最新重心已纳入主报告：SIG_TIME网络足够，固定网络/默认头，研发泛化训练与半监督机制。当前signature内监督仅trainingloss改变，不改部署结构；后续不再层级/分支/阶数/位置扩展。半监督先核对现有sourcegate/PAIR实现与同SIG参照，再选独立学习机制，禁止将覆盖率或梯度幅值当作收益。
+
+
+固定SIG_TIME半监督参照整合（用户最新重心＋报告31957f78第六节）：
+|ID|来源|要求|目标文件|状态|验证|说明|
+|U01|SIG_TIME＋PAIR统一起点建议|随机U vs原物理邻近PAIR，仅U顺序改变，网络/默认头/门控/EMA/总曝光固定|experiments/cvs_sigtime_pair50/design.py,observer.py|pending|待合成loader与真实SIG路径|已知方法整合参照，不冒充新算法/84核心机制|
+|U02|当前梯度量不等于增量监督|实际33/34/50全部222批LCE、.16U_CE、.16U_CE+.01entropy真实三参数梯度，原loss不改|observer.py,checks.py|pending|待native图/无grad累积/RNG检查|mainL128 vs U256，不做同包/累计AdamW推断|
+|U03|公平实验与默认收尾|首seed2新scratch50＋1旧历史；source资格冻结后再原样扩种，逐rowdefaultclean/truthlast|score.py,dispatch.py,publish.py|pending|待唯一P0/P1/实CPsmoke/真实发布|不使用Utruth/目标反馈，不叠加签名排序|
+
+U01/U02本地verified：6negative、labelblind56700once/tail124、原random/RNG同、两actualSIG初态同、原Uloss对象identity不变、实际head与t1/t2/SIG投影更新、export差0/W独立，源码/remote模板compile PASS。唯一直接P0/P1 PASS，未重审既有PAIR算法；U03自动source资格/defaultclean/truthlast已实现，实际远端预算和性能待发布证据。
