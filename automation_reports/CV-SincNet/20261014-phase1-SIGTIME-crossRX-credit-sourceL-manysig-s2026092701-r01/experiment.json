@@ -1,0 +1,173 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261014-phase1-SIGTIME-crossRX-credit-sourceL-manysig-s2026092701-r01",
+  "group_id": "phase1-SIGTIME-crossRX-increment-credit",
+  "display_name": "SIG_TIME真实中层停止排序与实际AdamW跨RX增量：固定源诊断",
+  "description": "Fixed own firstseed SIG_TIME final50 source-only pre-gain160/joint160 geometry and actual saved-AdamW auxiliary increment utility on seen other sourceRX with same default W_pre. No new training/head fitting/U/V/target.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "CVS",
+    "SIG_TIME",
+    "source_L_only",
+    "actual_AdamW",
+    "cross_RX_credit",
+    "default_head",
+    "no_target",
+    "CPU"
+  ],
+  "comparison_group_id": "SIGTIME_mid_vs_joint_and_anchor_RX_increment",
+  "parent_run_ids": [
+    "20261013-phase1-localdistribution-pathsignature-oldgate-e50-clean-manysig-m24-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Current goal asks effective training mechanism with innovation and preserving positive routes. Two raw-observation hypotheses scientifically rejected; this fixed source probe uses actual existing SIG_TIME features/default classifier and source-only hypothetical updates, no target-dependent choice or actual training.",
+  "code": {
+    "commit": "release_commit.txt actual source/config Git identity",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_visible_period_sourceL_20261014_r01",
+    "entrypoint": "experiments/cvs_repetition_feasibility/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "Original cached received/equalized normalized IQ256; visible60point calibration and twelve-tone relative residual24; upstream equalization/noise independence unknown",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 hidden TX, native recipe allrows",
+      "V": 27000
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 capsule manifest; reuse unchanged",
+    "split_id": "original registered source/target physical split; reuse unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "original_source_days_metadata": [
+      0,
+      1,
+      2
+    ],
+    "source_days_correction": "Descriptive metadata corrected from [0,1,2] to actual native wisig_train_days/day_i [1,2,3]; same exact physical role IDs, no data or run change",
+    "leo_scope": "Source-only observation diagnostic, no target or satellite"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "L_s": "Original6300IQ once; true labels only downstream completed predictions/relations",
+    "U_s": "No U IQ or TX truth access",
+    "V": "No V IQ or state updates in this first fixed row",
+    "target": "No target observations, statistics, truth or predictions",
+    "separate_head_training": false,
+    "Phase2_in_scope": false,
+    "claim_scope": "Observable cached-source predictability and nonfitted residual24 relationship; not actualjoint160/DG efficacy"
+  },
+  "checkpoint": {
+    "initialization": "Not applicable: no model or checkpoint is consumed",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "No model ancestry. Reuse original source role handles via unchanged native source builder from PA release; samerole IDs checked, no new data validation.",
+    "selection_rule": "No checkpoint/epoch/model selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/visible-period-sourceL-20261014",
+    "gpu_policy": "CPU only,2Torch/OMP/MKL/OpenBLASthreads,0GPU allocation; existingGPU experiments untouched",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-visible-period-sourceL-manysig-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_visible_period_sourceL_20261014_r01",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_visible_period_sourceL_20261014_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_repetition_feasibility/runner.py resolved_request.json",
+    "stop_rule": "Exactsource role/count/physicalID mismatch, outputcollision, nonfinite residual/census or unhandled technical failure: preservepartial outputs, no unmodified retry, no unrelated process stop. Scientificthreshold failure closes fixedpretext feasibility without mask/tone/phase/weightscan."
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "release_commit.txt",
+    "resolved_request.json",
+    "submit.json",
+    "runtime.json",
+    "source_observation.stdout.log",
+    "observation_census.pt",
+    "summary.json",
+    "independent_readback.json",
+    "independent_recount.json"
+  ],
+  "metrics_plan": {
+    "scope": "One source-only fixed current own final50 diagnosis, no main training matrix.",
+    "features": [
+      "actual sequence_pool.output_norm pre-gain160",
+      "actual id_feat_joint160"
+    ],
+    "geometry": "126000 relations each feature, same-day/cellordinal all5referenceRX/5negTX, margin.1.",
+    "gradients": "4balancedL90 cohorts at cellordinal0/17/35/52; maintrueL CE, ordinarySupCon, anchor-only stopped-current-source ORDER. W/gain auxNone, default W mainCE nonzero.",
+    "counterfactual": "Saved native1group AdamW moments/lr/wd, each independentclip5, baseLCE vs baseLCE+oneRXaux; both functional models same pre-stepdefaultW on four other seenL RX. Accept meancredit>1e-6 and everyRX>=-1e-6; not V or unseenRX.0actualupdates.",
+    "budget": "6300sourceIQreads,9540realLnetworkforwards+2realCPzeroIQsmoke,40temporaryAdamWsteps;CPU2threads/0GPU/0actualoptimizer/EMA/head-fit/U/V/target.",
+    "stop_rule": "Exactrun-owned systemictechnicalfailure: provenance/role/optimizergroup/momentmismatch, forbiddenloader/nonfinite/missingdependency. Preserve and reconcile outputs. Never alter healthy otherprocesses.",
+    "claim_boundary": "Final50 eval-mode L-only hypothetical update diagnosis, not historical U-containing trajectory, cumulative learning, DG performance, trained sourceprobe head or novelty proof."
+  },
+  "rows": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "method": "SIG_TIME_MIDDLE_ANCHOR_ORDER_AND_ACTUAL_ADAMW_CREDIT",
+      "purpose": "single fixed falsification",
+      "config_ref": "experiments/cvs_crossrx_credit50/configs/source_probe.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_credit_sourceL_20261014_r01/resolved_request.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Predeclared SIG_TIME firstseed own fixed final50, source-only model provenance, no target-based parent choice. No new model training or head fitting.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "metrics_plan.budget",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-SIGTIME-crossRX-credit-sourceL-manysig-s2026092701-r01/SIG_TIME-s2026092701/source_diagnostic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_credit_sourceL_20261014_r01/source_credit.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_crossrx_credit50/runner_probe.py resolved_request.json",
+      "expected_artifacts": [
+        "runtime.json",
+        "visible_L6300_features.pt",
+        "summary.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No actualnetwork/defaulthead training/evaluation; classifier constraint preserved.",
+    "No checkpoint consumed: firstlauncherstep is a no-data zeroIQprimitive smoke, then immediately sourceobservation. Loading unused checkpoint or futuretraining machinery is not required by G0stage.",
+    "Templates are fixedpublicconstants, no trueTX influences phase/delay/gain/valid/predictions.",
+    "masked holdout120:140 andoutsidevisible windows are zero; no visiblemean inputimputation.",
+    "Source roles andcapsule/split VALIDATED_ONCE reused unchanged.",
+    "No trained identity/RX diagnostichead or prototype classifier; relationlabels only legalL.",
+    "B0/B1/S0/S1 wasnotlaunched aftersource rejection; thisdiagnostic addsno trainingmatrix.",
+    "Originalobservationsourcebuilder code is reused, not model/checkpointfromparent PA."
+  ],
+  "registered_at": "2026-10-14T13:33:05+00:00",
+  "status": "PLANNED",
+  "stop_rule": "Exactrun-owned systemictechnicalfailure: provenance/role/optimizergroup/momentmismatch, forbiddenloader/nonfinite/missingdependency. Preserve and reconcile outputs. Never alter healthy otherprocesses."
+}
