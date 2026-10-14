@@ -17,3 +17,5 @@ LOCAL_VERIFIED：13负例、三初态参数和暖期梯度一致、vectorizedSup
 实际预测readout为ORIGINAL_HEAD，直接使用checkpoint默认头；核心实现commit 26bfdf044caa1be3c966370248c3bc3372009943，执行commit由release记录。
 
 实际发布执行 f34078d1a0775ef6fa66365689481ad5a1932e4c，三个scratch模型均核实PID/CWD/argv/GPU及日志增长，GPU1/2/0，当前三者第3轮，额外拟合头关闭。历史oldgatecos默认头参考row已复用原产物完成truthlast，未重训。singlearchiveSHA比较/remotecompile/realCPnoquerysmokePASS，新目标成绩pending；健康训练保持原冻结配方。
+
+首seed完整ANALYZED：ORDER83.6238%、SIG83.5452%、SupCon83.4583%，ORDER−SIG+.0786pp、修正538/引入406。200epoch记录/33300newsteps/8250auxsteps/672000defaultdecisions/72metrics/1980层cohort梯度复算VERIFIED；0新headfit，W独立精确导出。完整报告final_analysis.md/results.json/results.png；三seed仍pending，84未达。

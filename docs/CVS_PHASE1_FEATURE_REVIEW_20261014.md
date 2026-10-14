@@ -237,3 +237,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 报告31957f78核心路线已发布 20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01，执行f34078d1a0775ef6fa66365689481ad5a1932e4c：单路SIG_TIME ZERO/LOCAL_SUPCON/LOCAL_ORDER三新scratch50＋历史oldgatecos，直接t1/t2四有序格L身份关系，margin.1/tau.2/coeff.1固定；同2750extraL90forward/247500包每模型，原33+17/ownEMA/gate/cos/defaultjointhead不改。13negative/actualinitial/warmupgrad/modeRNG/vectorSupCon/nativejointupdate PASS，唯一直接P0/P1归档依赖fix后PASS。remote实CPsmoke/archive/compile及三actualGPU/PID/CWD/argv/loggrowthVERIFIED，目前3epochs，后续观察actual1/17/33/50梯度并自动defaultclean/truthlast；sourceonly条件才扩02/03，尚无新target分数或84结论。
+
+
+浅中层有界排序首seed闭环：ORDER83.6238%、SIG83.5452%、SupCon83.4583%、旧gatecos80.6685%，ORDER−SIG+.0786pp/修正538引入406净+132；ORDER−SupCon+.1655pp。4row/3新150epochs33300steps＋1历史50epochs11100，200源epoch/8250auxsteps/672000defaultdecisions/72metrics/1980实际层cohort梯度保存复算VERIFIED，额外头拟合0。实际五pooltensor全元素更新/导出差0/W独立、初态函数同、ORDER−SIGL720zL2=1.592485。SupCon源未满足率更低/梯度更强而target首seed更低，不据源几何排序；单seed+.0786不宣称稳定增益或84。SOURCEPASS决定6d65f77a7659cb182bdb39852dc6c6b76001e81d先于新target数字读取并原样发布02/03六新，执行同commit，完整3seedpending。详见20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01/final_analysis.md。

@@ -1255,29 +1255,37 @@
     "SupCon andhinge gradientstrength differ atsamefixedcoeff; comparisonnotpurecausal stoppingcondition attribution.",
     "Firstseedfalsification only; remainingtwo authorized conditional onSOURCEPASS withunchangedrecipe, no target feedback."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "results": {
-    "status": "PARTIAL",
-    "new_training_rows": 3,
-    "source_epochs_at_readback": [
-      {
-        "row_id": "SIG_TIME-s2026092701",
-        "epochs": 3
-      },
-      {
-        "row_id": "LOCAL_SUPCON-s2026092701",
-        "epochs": 3
-      },
-      {
-        "row_id": "LOCAL_ORDER-s2026092701",
-        "epochs": 3
-      }
+    "status": "VERIFIED",
+    "complete_model_seeds": [
+      2026092701
     ],
-    "historical_default_head_reference_scored": true,
-    "new_target_results_available": false,
+    "missing_model_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "models": 4,
+    "new_models": 3,
+    "old_reused": 1,
+    "source_epoch_records": 200,
+    "new_native_steps": 33300,
+    "actual_aux_steps": 8250,
+    "layer_cohort_gradients": 1980,
+    "default_decisions": 672000,
+    "metric_records": 72,
+    "accuracy": {
+      "OLD_GATE_COS50": 0.8066845238095238,
+      "SIG_TIME": 0.835452380952381,
+      "LOCAL_SUPCON": 0.8345833333333333,
+      "LOCAL_ORDER": 0.8362380952380952
+    },
+    "primary_minus_SIG_pp": 0.07857142857142785,
+    "head_fit_updates": 0,
     "goal_84": false,
-    "launch_verification": "VERIFIED",
-    "launch_verification_ref": "launch_verified.json"
+    "result_ref": "results.json",
+    "analysis_ref": "final_analysis.md",
+    "figure_ref": "results.png"
   },
   "registered_at": "2026-10-14T11:15:53+00:00"
 }

@@ -28,7 +28,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确要求将并列MEAN_VAR/COV综合到SIG_TIME基础上继续强化特征性能；默认分类头不可单独训练，每模型<=50，基线旧门控+cos；实现及对应实验结果Git上传。",
   "code": {
-    "commit": "9cd9a031652058936e381cd9ad3e85df539fd6c1",
+    "commit": "6d65f77a7659cb182bdb39852dc6c6b76001e81d",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32/2threads; warm CUDA before native seed; private feature initialization RNG",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_local_order_seeds_20261014_r01",
@@ -2420,14 +2420,18 @@
     "Firstseedfalsification only; remainingtwo authorized conditional onSOURCEPASS withunchangedrecipe, no target feedback.",
     "Prepared whilefirsthealthytraining, do notpublishunlesssourcePASS. CoreuniqueP0/P1reused unchanged; sixnativecontext/eightqualificationnegativechecks only."
   ],
-  "status": "SOURCE_QUALIFIED",
+  "status": "RUNNING",
   "results": {
-    "status": "SOURCE_QUALIFIED",
-    "source_only": true,
-    "target_metric_read_for_decision": false,
+    "status": "PARTIAL",
     "first_source_qualification": "PASS",
-    "decision_ref": "source_expansion_decision.json",
-    "new_target_results_read": false,
+    "new_training_rows": 6,
+    "new_seed_models": [
+      2026092702,
+      2026092703
+    ],
+    "first_seed_retrained": false,
+    "target_results_not_used_for_expansion": true,
+    "launch_verification": "VERIFIED",
     "goal_84": false
   },
   "registered_at": "2026-10-14T11:30:55+00:00"
