@@ -3,7 +3,7 @@
 
 RAW/TX_DAY_CENTERED骨干Fishr完整三seed已ANALYZED/VERIFIED：RAW82.6647%±1.7402pp、匹配SIG82.6504%±1.7118pp，配对+0.0143±0.1918个百分点，1/3正；COND82.5113%±1.7719pp，对SIG−0.1391±0.2340个百分点，1/3正，对RAW0/3正。源penalty均下降但未转成稳定DG收益；12模型/2016000默认头决策/216CM/936梯度矩阵独立复算，头拟合0。两扩展源决定先于新目标数字回收，无目标反馈改参；完整报告20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md。
 
-同L强图CE/feature源诊断 20261015-phase1-source-feature-ce-gradient-manysig-m6-r01 已ANALYZED/VERIFIED：6模型、4950向量独立复算，头/模型/optimizer更新0。教师对学生错18/18对象同向，教师错学生对16/18反向，但每模型该组仅3至8个seen-L样本；整体符号混合，不支持普遍冲突或实际U因果解释。固定零置信差源诊断 20261015-phase1-source-teacher-confidence-manysig-m6-r01 已ANALYZED/VERIFIED：7200向量独立复算，6/6 V有益代理组保留69.04%至76.25% > 有害40.74%至48.44%，资格PASS；L全局方向仍混合（11/18相关对象cosine增加）。固定门控feature-consistency首seed 20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01 已真实训练：34轮候选.02、56700U/222batch、mask覆盖94.0758%、t1/t2/SIG全部批有效梯度，W无辅助梯度。完整固定源规则已PASS（retained均值比0.820886、全U均值比0.828006、覆盖0.920871），在该run新目标数值读回前冻结02/03原配方扩展决定，矩阵代码尚未实现/发布；无另训头、结构或Phase2开发。84%三seed目标仍未达到。
+同L强图CE/feature源诊断 20261015-phase1-source-feature-ce-gradient-manysig-m6-r01 已ANALYZED/VERIFIED：6模型、4950向量独立复算，头/模型/optimizer更新0。教师对学生错18/18对象同向，教师错学生对16/18反向，但每模型该组仅3至8个seen-L样本；整体符号混合，不支持普遍冲突或实际U因果解释。固定零置信差源诊断 20261015-phase1-source-teacher-confidence-manysig-m6-r01 已ANALYZED/VERIFIED：7200向量独立复算，6/6 V有益代理组保留69.04%至76.25% > 有害40.74%至48.44%，资格PASS；L全局方向仍混合（11/18相关对象cosine增加）。固定门控feature-consistency首seed 20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01 已真实训练：34轮候选.02、56700U/222batch、mask覆盖94.0758%、t1/t2/SIG全部批有效梯度，W无辅助梯度。完整固定源规则已PASS（retained均值比0.820886、全U均值比0.828006、覆盖0.920871），在该run新目标数值读回前冻结02/03原配方扩展决定，首种子已完成并独立复算：CONF83.521429%、匹配SIG83.665476%，配对−0.144048pp，n=1无提升；54CM、504000默认头决策、23976保存向量VERIFIED。已冻结02/03扩展代码fe2d8287ef1f9c167c5b68ee395e8bfe01b08360，执行55ff29d676eb5f02afa8b3869ed4818122f09d9a已发布，4个新scratch50训练worker/PID-CWD-argv-GPU-loggrowth真实核实，当前5至6轮、failure0；不因首负结果取消或改参。无另训头、结构或Phase2开发，84%三seed目标仍未达到。
 
 # Phase1 特征提取复盘与完整实验交付
 
@@ -387,3 +387,8 @@ FEATURE_MT首seed三row已完成训练/默认预测/独立truth-last评分，原
 ## 置信度特征一致性固定扩展（2026-10-15）
 
 首源资格与02/03扩展决定已在 3b0b38c708029570cd1d6327cd4db96e2752a6ad 提交/推送核实，早于首种子新目标数值。当前适配器 fe2d8287ef1f9c167c5b68ee395e8bfe01b08360 本地/独立P0P1 PASS，固定四新scratch50模型，保持SIG_TIME及原默认联合头/旧门控EMAcos。首种子负差不改变既定扩展。见[最小预登记](../automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md)。
+
+
+## 置信度特征一致性首种子完整交付与固定扩展启动
+
+首种子已ANALYZED/VERIFIED，CONF83.521429% 对SIG83.665476%，配对−0.144048pp（修正766/引入1008/净−242），n=1；源feature均值降低约17%至18%，未转成DG提升。默认头macroF1、最差RX/day同样未提升。完整报告[final_analysis.md](../automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/final_analysis.md)，保留完整50轮/11100步、54CM和保存向量复算。源决定3b0b38c708029570cd1d6327cd4db96e2752a6ad在新目标数值前已推送，因此02/03按冻结不变配置执行；实际发布55ff29d676eb5f02afa8b3869ed4818122f09d9a、4个worker已完成5至6轮，详见[运行报告](../automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md)。不新增头拟合、目标调权或结构分支。

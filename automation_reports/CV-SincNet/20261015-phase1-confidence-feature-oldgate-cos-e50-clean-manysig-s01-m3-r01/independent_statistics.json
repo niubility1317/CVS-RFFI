@@ -1,0 +1,78 @@
+{
+  "status": "VERIFIED",
+  "basis": "Second independent recomputation from saved aggregate54 confusion matrices and native independently recounted error transitions; no new model/truth/query read",
+  "models": 3,
+  "metrics": 54,
+  "predictions": 504000,
+  "rows": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "accuracy": 0.8066845238095238,
+      "macro_f1": 0.8017335328586674,
+      "worst_RX": 0.7061666666666667,
+      "worst_day": 0.7545238095238095,
+      "count": 168000,
+      "correct": 135523
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092701,
+      "accuracy": 0.836654761904762,
+      "macro_f1": 0.8323100252590755,
+      "worst_RX": 0.7069583333333334,
+      "worst_day": 0.7916190476190477,
+      "count": 168000,
+      "correct": 140558
+    },
+    {
+      "arm": "CONF_FEATURE_MT",
+      "seed": 2026092701,
+      "accuracy": 0.8352142857142857,
+      "macro_f1": 0.830828696710296,
+      "worst_RX": 0.7046666666666667,
+      "worst_day": 0.7900238095238096,
+      "count": 168000,
+      "correct": 140316
+    }
+  ],
+  "paired": [
+    {
+      "arm": "CONF_FEATURE_MT",
+      "control": "SIG_TIME",
+      "seed": 2026092701,
+      "corrected_errors": 766,
+      "introduced_errors": 1008,
+      "both_correct": 139550,
+      "both_wrong": 26676,
+      "count": 168000,
+      "net_correct": -242,
+      "paired_difference_pp": -0.14404761904762697
+    },
+    {
+      "arm": "CONF_FEATURE_MT",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 10086,
+      "introduced_errors": 5293,
+      "both_correct": 130230,
+      "both_wrong": 22391,
+      "count": 168000,
+      "net_correct": 4793,
+      "paired_difference_pp": 2.8529761904761863
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 10441,
+      "introduced_errors": 5406,
+      "both_correct": 130117,
+      "both_wrong": 22036,
+      "count": 168000,
+      "net_correct": 5035,
+      "paired_difference_pp": 2.9970238095238133
+    }
+  ],
+  "all_receiver_day_transmitter_partitions_match_overall": true
+}

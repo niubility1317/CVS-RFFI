@@ -1172,15 +1172,16 @@
     "Before any newnumeric targetresults retrieval, record source qualification andfixed02/03 expansion decision commit+push; no targetfeedback/score-basedchanges/restarts",
     "Actualfeature boundary/export/Windependence/t1t2SIG gradient/numericfθ updates; no extra pretrainedteacher or model ancestor"
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "completion": {
     "status": "VERIFIED",
+    "models": 3,
     "new_models": 2,
     "historical_models": 1,
-    "prediction_count": 504000,
-    "metric_records": 54,
-    "goal_84": false,
-    "seed_count": 1,
+    "source_epoch_records": 150,
+    "new_optimizer_updates": 22200,
+    "predictions": 504000,
+    "metrics": 54,
     "head_fit_updates": 0
   },
   "registered_at": "2026-10-14T18:37:11+00:00",
@@ -1194,5 +1195,18 @@
       2026092703
     ],
     "new_target_numeric_results_read": false
+  },
+  "result": {
+    "seed_count": 1,
+    "primary": "CONF_FEATURE_MT",
+    "accuracy": 0.8352142857142857,
+    "matched_SIG_accuracy": 0.836654761904762,
+    "paired_difference_pp": -0.14404761904762697,
+    "goal84": false,
+    "default_head_only": true,
+    "source_qualification": "PASS",
+    "source_decision_commit": "3b0b38c708029570cd1d6327cd4db96e2752a6ad",
+    "source_decision_before_new_numeric_target": true,
+    "remaining_fixed_run": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
   }
 }

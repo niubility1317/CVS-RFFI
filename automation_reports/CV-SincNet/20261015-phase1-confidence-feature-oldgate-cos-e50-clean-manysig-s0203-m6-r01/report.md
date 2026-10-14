@@ -27,3 +27,8 @@ run 20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r0
 ## 已完成验证
 
 14个源资格负例、四个真实native上下文、native参数仅seed/run/candidate/output变化、同seed初始化相同、实际feature梯度通路、辅助W梯度缺失、原U损失对象保留均PASS；检查不读取query、不拟合头、不更新optimizer。入口依赖闭包/生成脚本compile PASS。一次独立新增适配器 P0/P1 PASS，未重复审查未改核心。见local_checks.json和independent_p0p1.json。预登记模板残留的旧运行completion/三种子数字已移除，当前没有本run运行结果。
+
+
+## 发布后实际状态
+
+RUNNING / VERIFIED：实际执行 55ff29d676eb5f02afa8b3869ed4818122f09d9a 已推送核实，普通账户preflight、单archive传输比较、remotecompile和真实CPnoquery smoke PASS。四个worker实际PID/CWD/argv/GPU及跨时点loggrowth核实：SIG_TIME-s2026092702 PID2627597/GPU1/epoch5；CONF_FEATURE_MT-s2026092702 PID2627675/GPU2/epoch6；SIG_TIME-s2026092703 PID2627834/GPU3/epoch6；CONF_FEATURE_MT-s2026092703 PID2627914/GPU4/epoch5。每GPU当前1个本run实验进程，全owner上限3保持；两历史baseline默认头clean链完成，failure0。阶段仍在原label训练段，feature机制按原计划第34轮启用。详见release_launch_evidence.json；尚无完整3seed结果，未宣称性能提升。

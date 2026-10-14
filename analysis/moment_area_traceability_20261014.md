@@ -180,3 +180,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 
 
 - 2026-10-15：CFM 源资格PASS后固定02/03扩展，source决定 3b0b38c708029570cd1d6327cd4db96e2752a6ad 在首目标数值前已推送核实。新增seed适配器 fe2d8287ef1f9c167c5b68ee395e8bfe01b08360 本地14负例/4native上下文与一次独立P0P1 PASS；默认头正常联合训练、原feature目标/系数/数据/预算不变。当前仅预登记，未运行，不混入旧模板结果。
+
+
+- 2026-10-15 当前状态覆盖前述历史快照：CFM首seed3row已ANALYZED/VERIFIED，CONF−SIG −0.144048pp，54CM/504000决策/23976向量复算，sourcePASS不能替代DG收益。固定02/03扩展执行55ff29d676eb5f02afa8b3869ed4818122f09d9a已真实启动，4个worker完成5至6轮，单archive/CPsmoke/remotecompile/PID-CWD-argv-GPU-loggrowth PASS、failure0。无目标反馈改变机制，所有默认头按原联合训练。

@@ -37,7 +37,8 @@
       "experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
     ],
     "unchanged_mechanism_commit": "325d113dff08206cb2f174e74d33e48f3e0b2ad5",
-    "source_decision_commit": "3b0b38c708029570cd1d6327cd4db96e2752a6ad"
+    "source_decision_commit": "3b0b38c708029570cd1d6327cd4db96e2752a6ad",
+    "execution_commit": "55ff29d676eb5f02afa8b3869ed4818122f09d9a"
   },
   "data": {
     "dataset": "ManySig",
@@ -2213,9 +2214,43 @@
     "Default existingcoshead normaljoint only; no Wfit/RXdiagnosticclassifier/newmodules/parameters/projectors/Fishrstack; fθ195041actualjoint160",
     "One immutable run/release, one ordinarypreflight/archiveSHA/remotecompile/realCP noquerysmoke followedbyactual PID-CWD-argv-GPU-loggrowth; no extra approval/seal/futurestageblockers"
   ],
-  "status": "PLANNED",
+  "status": "RUNNING",
   "source_qualification": "PASS",
   "source_decision_ref": "first_source_decision.json",
   "registered_at": "2026-10-14T19:37:00+00:00",
-  "source_qualification_ref": "first_source_qualification.json"
+  "source_qualification_ref": "first_source_qualification.json",
+  "runtime": {
+    "evidence": "release_launch_evidence.json",
+    "status": "VERIFIED",
+    "first_read_epoch_counts": [
+      {
+        "row_id": "SIG_TIME-s2026092702",
+        "epoch": 5,
+        "pid": 2627597,
+        "gpu": 1
+      },
+      {
+        "row_id": "CONF_FEATURE_MT-s2026092702",
+        "epoch": 6,
+        "pid": 2627675,
+        "gpu": 2
+      },
+      {
+        "row_id": "SIG_TIME-s2026092703",
+        "epoch": 6,
+        "pid": 2627834,
+        "gpu": 3
+      },
+      {
+        "row_id": "CONF_FEATURE_MT-s2026092703",
+        "epoch": 5,
+        "pid": 2627914,
+        "gpu": 4
+      }
+    ],
+    "new_models_live": 4,
+    "historical_baseline_rows_scored": 2,
+    "real_checkpoint_no_query_smoke": "PASS",
+    "failure": null
+  }
 }

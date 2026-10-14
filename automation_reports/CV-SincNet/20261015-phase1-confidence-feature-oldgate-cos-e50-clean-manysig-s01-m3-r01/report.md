@@ -1,6 +1,6 @@
 # 固定 SIG_TIME 置信度门控特征一致性：首种子最小预登记
 
-状态 LOCAL_VERIFIED / NOT_LAUNCHED。实际代码/config 325d113dff08206cb2f174e74d33e48f3e0b2ad5（主体 cadd843d569e85b81b5e9e8bc14c73b0ab4e00ae，修复发布依赖不改科学配方）；唯一独立 P0/P1 修复后 PASS。真实 checkpoint 无 query smoke 为发布首步，PASS 即继续。
+当前状态 ANALYZED / VERIFIED，完整首种子结果见 [final_analysis.md](final_analysis.md)。以下保留最小预登记与运行过程历史。原预登记状态 LOCAL_VERIFIED / NOT_LAUNCHED。实际代码/config 325d113dff08206cb2f174e74d33e48f3e0b2ad5（主体 cadd843d569e85b81b5e9e8bc14c73b0ab4e00ae，修复发布依赖不改科学配方）；唯一独立 P0/P1 修复后 PASS。真实 checkpoint 无 query smoke 为发布首步，PASS 即继续。
 
 源依据：20261015-phase1-source-teacher-confidence-manysig-m6-r01 已完成六模型全 L/V 源证伪、7200向量独立复算，固定 FP32 teacherweak maxprob>=studentstrong maxprob（ties保留，差阈值0）在6/6模型V非空有益代理组保留率严格高于有害代理组。源资格/完整结果先于本候选实现提交b1233fc4b，无新目标成绩反馈。L全局导数仍混合，故只提出单一可检验训练假设，不宣称解决冲突、U准确率或DG增益。
 
@@ -35,3 +35,8 @@ RUNNING / VERIFIED：执行commit 704cf37536d3cb6b8764af2131547db4a9939480，单
 ## 目标数值读取前的纯源决定
 
 源资格PASS：retained feature均值比0.820886、全U均值比0.828006、候选覆盖0.920871、finalLCE0.248933、真实t1/t2/SIG有效信号34/50均满足。默认头/特征边界合法，固定决定扩展02/03，同scratch50/原机制与所有超参数，代码尚未实现/发布；source_expansion_decision.json/md在读取此run新目标数字前commit+push。目标表现好坏都不取消源规则已固定的扩展。
+
+
+## 首种子最终结果
+
+三row默认头clean预测和独立truth-last均已完成，完整54条指标及23976保存向量复算VERIFIED。CONF83.521429% 对SIG83.665476%，配对−0.144048个百分点，n=1未达84%。源资格PASS不等于泛化提升；源决定在新目标读回前已推送，02/03按原冻结计划发布，不因负结果取消。详见[完整分析](final_analysis.md)、[聚合结果](results.json)和[全部源曲线](complete_source_curves.json)。
