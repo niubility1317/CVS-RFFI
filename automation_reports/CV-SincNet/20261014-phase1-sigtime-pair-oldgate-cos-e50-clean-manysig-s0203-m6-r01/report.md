@@ -9,3 +9,5 @@
 复用唯一已审核心，无新科学假设或重复核心审查。8SOURCE负例、四actualnative上下文及same-seed同初态、原SSL配置相同、observer/model design绑定、关键archive依赖/remotecompile PASS。复现入口 python -u -m experiments.cvs_sigtime_pair_seeds.dispatch，普通N607 CVS-RFFI既有环境/CWD/路径/每row命令/seed/预算/stoprule均在experiment.json。每GPU含所有owner最多3进程/free>=12000MiB，不动健康任务；不可变输出，技术失败保留、不盲重试。原始IQ/CP/pred/log/gradPT远端保留，Git只实现/必要聚合。首SOURCE仍pending，不宣称已扩种或得到目标准确率。
 
 包装代码 e1c5f12f68881f8757efae3d9d1bf8f2618f2982；8SOURCE负例/4native/observer与modeldesign绑定/6row4new1008000pred监控计数/源码compile PASS。真实首SOURCE资格仍pending，未启动扩种。
+
+首seed3row闭环后仅读SOURCE资格PASS，尚未回收新target数字：RANDOM/PAIR LCE0.247506658/0.248212648，PAIR整17轮accepted879408/963900=91.2344%，RANDOM15448/963900；PAIR−RANDOM实际L720zL2=1.429918528，精确11100steps/17samplerepochs/666gradientbatches/0headfit/export/W独立均PASS。按原固定02/03四新扩展，不改权重或按目标排行。

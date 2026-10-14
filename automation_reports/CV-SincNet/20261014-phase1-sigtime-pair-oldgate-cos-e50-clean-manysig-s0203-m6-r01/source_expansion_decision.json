@@ -1,0 +1,84 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "first_run": "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "first_execution": "86c22cb76e5eff4a7b106cca769d198879ab22b4",
+  "qualification": {
+    "status": "PASS",
+    "source_only": true,
+    "target_metrics_read_for_decision": false,
+    "final_L_CE": {
+      "SIG_TIME-s2026092701": 0.24750665756496223,
+      "SIG_PAIR-s2026092701": 0.24821264796831585
+    },
+    "actual_SIG_PAIR_minus_RANDOM_L720zL2": 1.4299185276031494,
+    "paired_U_acceptance": 0.91234360410831,
+    "actual_observations": {
+      "SIG_TIME-s2026092701": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "U_steps": 3774,
+        "U_packets": 963900,
+        "U_accepted": 15448,
+        "mode": "RANDOM",
+        "sampler_epochs": 17,
+        "sampler_packets": 963900,
+        "gradient_epochs": [
+          33,
+          34,
+          50
+        ],
+        "gradient_batches": 666,
+        "layer_gradient_records": 1998,
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "loss_returned_unchanged": true,
+        "extra_model_forwards": 0,
+        "saved_gradient_recount": "VERIFIED"
+      },
+      "SIG_PAIR-s2026092701": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "U_steps": 3774,
+        "U_packets": 963900,
+        "U_accepted": 879408,
+        "mode": "PAIRS",
+        "sampler_epochs": 17,
+        "sampler_packets": 963900,
+        "gradient_epochs": [
+          33,
+          34,
+          50
+        ],
+        "gradient_batches": 666,
+        "layer_gradient_records": 1998,
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "loss_returned_unchanged": true,
+        "extra_model_forwards": 0,
+        "saved_gradient_recount": "VERIFIED"
+      }
+    },
+    "fixed_rules": {
+      "final_L_CE_max": 0.5,
+      "minimum_paired_U_acceptance": 0.25,
+      "source_feature_difference_min": 1e-06,
+      "gradient_batches": 666,
+      "source_only": true,
+      "expansion": "Both source finalCE<=.5, sampler17x56700/exact11100updates/actualfeatureboundary &paired-minus-randomL720>=1e-6; pairedUaccepted/963900>=.25. Samefixed02/03, no target ranking."
+    },
+    "predefined_remaining_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "configuration_changes_for_expansion": false,
+    "head_fit_updates": 0
+  },
+  "remaining_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "configuration_changed": false,
+  "target_metric_read": false,
+  "first_seed_retrained": false
+}

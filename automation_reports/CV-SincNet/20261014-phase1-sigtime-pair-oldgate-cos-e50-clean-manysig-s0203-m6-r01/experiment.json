@@ -1982,11 +1982,12 @@
     "Prepared whilefirsthealthy. No publish until actualfirstSOURCEPASS and3rowclosure; unchangeduniqueP0P1 reused,8qualificationnegative/fournativecontextsPASS.",
     "Onlymodel.install andreadonlyaudit optionaldesign injection forreuse; existingremote archive/training untouched."
   ],
-  "status": "PLANNED",
+  "status": "QUEUED",
   "results": {
-    "status": "CONDITIONAL_PENDING_SOURCE",
-    "first_execution": "86c22cb76e5eff4a7b106cca769d198879ab22b4",
+    "status": "SOURCE_QUALIFIED_NOT_LAUNCHED",
+    "source_qualification": "PASS",
     "first_seed_retrained": false,
+    "source_decision_before_new_target_numbers": true,
     "goal_84": false
   },
   "registered_at": "2026-10-14T13:50:28.564Z"

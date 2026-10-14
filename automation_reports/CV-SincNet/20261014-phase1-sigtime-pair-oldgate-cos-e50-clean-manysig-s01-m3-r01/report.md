@@ -19,3 +19,5 @@ L6300/U56700 hidden/V27000原契约、physicalIDs/split392005/RX1/3/4/6/8/day1/2
 远端执行 86c22cb76e5eff4a7b106cca769d198879ab22b4：单归档一次local/remoteSHA比较、compile与真实SIG checkpoint noquery90 smoke PASS。两actualsamePID/CWD/argv/GPU/loggrowth VERIFIED，GPU4/5，初次核实3/3epoch；source_sampling保存记录1至4epoch均U_IQ_fetched=false且sampler未迭代，无failure。固定50继续，尚无新target性能，不宣称半监督收益。
 
 真实第34轮机制回收：RANDOM接受908/56700（1.6014%）且32个空UCE批；PAIR接受51378/56700（90.6138%）且无空批。三实际特征参数的U/主CE范数比均值和批间波动更低，epoch33 U项全0。不同批/轨迹，不能据此声称梯度质量、U准确率、目标收益或累计AdamW贡献；独立全PT审计待完整闭环。见training_mechanism_e34.json及mechanism_e34.md，当前健康训练不改权重/日程。
+
+首seed3row完成训练/defaultpred/truthlast，SOURCE资格在新target数字读回前独立PASS：两LCE0.247506658/0.248212648、PAIR879408/963900接受91.2344%、RANDOM15448；fθPAIR−RANDOML720zL2=1.429918528，精确budget/源export/W独立/0headfit通过。source_expansion_decision.json仅源证据，允许原样02/03四新，不能把资格或覆盖率当性能。完整产物独立audit随后回收。
