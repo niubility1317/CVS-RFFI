@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "original_formula_checks": {
+    "status": "PASS",
+    "forbidden_roles": 3,
+    "invalid_directions": 2,
+    "config_negatives": 6,
+    "differentiable": true,
+    "scale_invariant": true,
+    "auxiliary_W_gradient_absent": true,
+    "query_read": false,
+    "real_IQ_or_checkpoint_read": false,
+    "optimizer_steps": 0
+  },
+  "remaining_config_negatives": 14,
+  "qualification_negatives": 4,
+  "shared_statistics_equivalent": true,
+  "formula_and_threshold_changes": 0,
+  "source_models": [
+    {
+      "model_seed": 2026092702,
+      "scientific_configuration_unchanged": true
+    },
+    {
+      "model_seed": 2026092703,
+      "scientific_configuration_unchanged": true
+    }
+  ],
+  "real_IQ_or_checkpoint_read": false,
+  "query_read": false,
+  "optimizer_steps": 0
+}
