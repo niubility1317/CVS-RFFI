@@ -96,7 +96,12 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-sigtime-urban-paired-e30-manysig-m18-r02/logs",
     "local_artifact_root": "E:/type10-7/local_artifacts/cvs_urban_sigtime_20261014",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_sigtime.dispatch",
-    "stop_rule": "Protocol/role/budget/output collision/nonfinite/unlaunchable failure stops that row. Halt pending dispatch aftertechnicalfailure; preserve all outputs, allow other healthy rows tofinish. No performance-basedstop/restart."
+    "stop_rule": "Protocol/role/budget/output collision/nonfinite/unlaunchable failure stops that row. Halt pending dispatch aftertechnicalfailure; preserve all outputs, allow other healthy rows tofinish. No performance-basedstop/restart.",
+    "status": "ANALYZED",
+    "completed_model_count": 18,
+    "performance_status": "NOT_MET",
+    "source_analysis_commit": "823144daeff5b81fad48a3b89d44d5c9a64ff283",
+    "final_evidence_root": "E:\\type10-7\\local_artifacts\\cvs_urban_sigtime_20261014\\final"
   },
   "expected_artifacts": [
     "source_diagnostic/results.json",
