@@ -82178,24 +82178,26 @@
     }
   },
   "next_directions": [
-    "Sinc coordinates based on actual9model optimizer/ULP/EMA measurements",
-    "TIME projection/basis attribution with source-only fixed branch removals; no dilation/kernel scan",
-    "Oldgate coverage audit on legal labeled source proxies before altering SSL"
+    "固定SIG_TIME：核实既有Fishr梯度对象/五源RX分组，先区分身份构成与域梯度差异，再实施一个浅中层骨干梯度统计消融",
+    "固定SIG_TIME：仅用合法有标签源样本诊断teacher伪标签错误及梯度偏向，再设计独立可靠身份监督机制；不解封U真值或改变默认头",
+    "固定SIG_TIME：源端检查实际骨干对优化扰动的损失敏感性，证实后才考虑特征参数稳定性训练；当前未发布"
   ],
   "next_actions_max2": [
-    "完成固定 SIG_TIME RANDOM/PAIR 半监督参照剩余种子、独立评分、三种子分析及 Git 交付"
+    "核实既有Fishr真实实现和固定SIG_TIME源梯度对象，落实一个源依据明确的最小泛化训练机制",
+    "仅用合法有标签源样本诊断当前伪标签误差与实际特征梯度，确定独立半监督机制"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "完成固定 SIG_TIME RANDOM/PAIR 半监督参照剩余种子、独立评分、三种子分析及 Git 交付"
+    "核实既有Fishr真实实现和固定SIG_TIME源梯度对象，落实一个源依据明确的最小泛化训练机制",
+    "仅用合法有标签源样本诊断当前伪标签误差与实际特征梯度，确定独立半监督机制"
   ],
   "current_priority": {
-    "at": "2026-10-14T13:05:43.186Z",
+    "at": "2026-10-14T14:46:24.450Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
-    "active_generalization_mechanism": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
-    "next_semi_supervised_work": "Independent fixedSIG_TIME RANDOMvsPAIR uniformU reference, then source-evidenced reliable identity supervision; no coverage/weight/calendar-only scans",
+    "active_generalization_mechanism": null,
+    "next_semi_supervised_work": "Source-labelled pseudo-error and gradient diagnostics before one new SSL mechanism; no coverage/weight/calendar-only scans",
     "structural_exploration": false,
     "fixed_architecture": "SIG_TIME112→joint160; existing default cosine head jointly trained",
     "latest_ssl_first_seed": {
@@ -82217,6 +82219,17 @@
       "SIG_DYNAMIC_ORDER": 0.8266904761904762,
       "raw_paired_difference": 0.00017460317460319766,
       "dynamic_paired_difference": -0.00008730158730156183,
+      "goal84": false
+    },
+    "latest_ssl_full_three_seed": {
+      "run_id": "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "status": "ANALYZED",
+      "seeds": 3,
+      "SIG_TIME": 0.8266448412698413,
+      "SIG_PAIR": 0.8276666666666667,
+      "paired_difference": 0.0010218253968254192,
+      "paired_sd": 0.0012200541866830784,
+      "positive_seeds": 2,
       "goal84": false
     }
   }

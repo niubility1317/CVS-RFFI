@@ -1,0 +1,380 @@
+{
+  "status": "VERIFIED",
+  "source_only": true,
+  "run_ids": [
+    "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
+  ],
+  "query_read": false,
+  "U_truth_read": false,
+  "head_fit_updates": 0,
+  "extra_model_forwards": 0,
+  "partial_while_training": false,
+  "full_saved_PT_recount_pending": false,
+  "rows": [
+    {
+      "arm": "SIG_TIME",
+      "observed_epoch": 34,
+      "batches": 222,
+      "U_packets": 56700,
+      "U_accepted": 908,
+      "empty_U_batches": 32,
+      "label_epoch33_U_signal_zero": true,
+      "source_epoch_L_CE": 0.22313659423374915,
+      "source_epoch_U_loss_fields": {
+        "train_loss_daot_unlabeled": 0,
+        "train_loss_unlabeled": 0.011940754999863907
+      },
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 190,
+            "mean_ratio": 0.1276562618077533,
+            "sd_ratio": 0.315485819770228,
+            "mean_cosine": 0.01921975364659746
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.13096701594632779,
+            "sd_ratio": 0.3148939568438252,
+            "mean_cosine": 0.028681372623401834
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 190,
+            "mean_ratio": 0.12280374940972273,
+            "sd_ratio": 0.2997135383934893,
+            "mean_cosine": 0.02193134040093345
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.1261860277852957,
+            "sd_ratio": 0.29909326341798154,
+            "mean_cosine": 0.033267677050242285
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 190,
+            "mean_ratio": 0.11524911325629718,
+            "sd_ratio": 0.3005863324825627,
+            "mean_cosine": 0.01460735739525292
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.11768185872987308,
+            "sd_ratio": 0.3004566480144436,
+            "mean_cosine": 0.022011338245585446
+          }
+        }
+      ],
+      "artifact_saved_recount": "VERIFIED",
+      "seed": 2026092701
+    },
+    {
+      "arm": "SIG_PAIR",
+      "observed_epoch": 34,
+      "batches": 222,
+      "U_packets": 56700,
+      "U_accepted": 51378,
+      "empty_U_batches": 0,
+      "label_epoch33_U_signal_zero": true,
+      "source_epoch_L_CE": 0.2231358940469789,
+      "source_epoch_U_loss_fields": {
+        "train_loss_daot_unlabeled": 0,
+        "train_loss_unlabeled": 0.0141763079613615
+      },
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.04668198990024021,
+            "sd_ratio": 0.03322234871769228,
+            "mean_cosine": 0.05405974197977354
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.05253615797734215,
+            "sd_ratio": 0.03653890284889243,
+            "mean_cosine": 0.05698616227287633
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.04565983158404171,
+            "sd_ratio": 0.0330890527669507,
+            "mean_cosine": 0.05557865107009389
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.05180540493915959,
+            "sd_ratio": 0.03685461272140965,
+            "mean_cosine": 0.059221218376305715
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.041226347780252214,
+            "sd_ratio": 0.028241324540324166,
+            "mean_cosine": 0.046862191769323755
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.04537076904363457,
+            "sd_ratio": 0.029979524521620154,
+            "mean_cosine": 0.04798690751729085
+          }
+        }
+      ],
+      "artifact_saved_recount": "VERIFIED",
+      "seed": 2026092701
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092702,
+      "observed_epoch": 34,
+      "batches": 222,
+      "U_packets": 56700,
+      "U_accepted": 950,
+      "empty_U_batches": 22,
+      "label_epoch33_U_signal_zero": true,
+      "source_epoch_L_CE": 0.23992528142155828,
+      "source_epoch_U_CE": 0.01200052535378737,
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 200,
+            "mean_ratio": 0.12141149683270992,
+            "sd_ratio": 0.2371348255405605,
+            "mean_cosine": 0.056429792286848295
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.12392027459962687,
+            "sd_ratio": 0.23723679364652475,
+            "mean_cosine": 0.0923815951592782
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 200,
+            "mean_ratio": 0.11625428425153762,
+            "sd_ratio": 0.23165363205939402,
+            "mean_cosine": 0.04142939817300277
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.1189189735622839,
+            "sd_ratio": 0.23150745178125007,
+            "mean_cosine": 0.07383121895358435
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 200,
+            "mean_ratio": 0.12111961423797919,
+            "sd_ratio": 0.28802221682802503,
+            "mean_cosine": 0.009905905946996175
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.12305138912787417,
+            "sd_ratio": 0.2877979517815474,
+            "mean_cosine": 0.016001178154208952
+          }
+        }
+      ]
+    },
+    {
+      "arm": "SIG_PAIR",
+      "seed": 2026092702,
+      "observed_epoch": 34,
+      "batches": 222,
+      "U_packets": 56700,
+      "U_accepted": 51690,
+      "empty_U_batches": 0,
+      "label_epoch33_U_signal_zero": true,
+      "source_epoch_L_CE": 0.23978231360649202,
+      "source_epoch_U_CE": 0.015370688896189939,
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.05697070421134698,
+            "sd_ratio": 0.042517935240752015,
+            "mean_cosine": 0.12078430239369671
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.06266340454415911,
+            "sd_ratio": 0.04648317010684819,
+            "mean_cosine": 0.1254928683557553
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.05407092053121252,
+            "sd_ratio": 0.03901815993514554,
+            "mean_cosine": 0.09987976887081033
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.05983652862437862,
+            "sd_ratio": 0.04267340407071222,
+            "mean_cosine": 0.10301442730884541
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.04989064407823863,
+            "sd_ratio": 0.0373285373079673,
+            "mean_cosine": 0.02805650961621605
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.05400865435300736,
+            "sd_ratio": 0.03937137780718764,
+            "mean_cosine": 0.028677442897622463
+          }
+        }
+      ]
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092703,
+      "observed_epoch": 34,
+      "batches": 222,
+      "U_packets": 56700,
+      "U_accepted": 882,
+      "empty_U_batches": 26,
+      "label_epoch33_U_signal_zero": true,
+      "source_epoch_L_CE": 0.2706241529132869,
+      "source_epoch_U_CE": 0.015747521438324922,
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 196,
+            "mean_ratio": 0.17766373772809593,
+            "sd_ratio": 0.5193054378860306,
+            "mean_cosine": 0.005193440819713862
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.18016241397101285,
+            "sd_ratio": 0.5192246759555664,
+            "mean_cosine": 0.02652772174886476
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 196,
+            "mean_ratio": 0.16375894757544648,
+            "sd_ratio": 0.4515238774622819,
+            "mean_cosine": 0.0005618326904332088
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.16623303377231854,
+            "sd_ratio": 0.45145544195773446,
+            "mean_cosine": 0.024500684615179995
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 196,
+            "mean_ratio": 0.19359547406578337,
+            "sd_ratio": 0.6943518984405908,
+            "mean_cosine": 0.007967241240357793
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.19552249304459446,
+            "sd_ratio": 0.694292772385325,
+            "mean_cosine": 0.02565703910890415
+          }
+        }
+      ]
+    },
+    {
+      "arm": "SIG_PAIR",
+      "seed": 2026092703,
+      "observed_epoch": 34,
+      "batches": 222,
+      "U_packets": 56700,
+      "U_accepted": 51732,
+      "empty_U_batches": 0,
+      "label_epoch33_U_signal_zero": true,
+      "source_epoch_L_CE": 0.2702639718783331,
+      "source_epoch_U_CE": 0.015329466763514656,
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.049099308333301055,
+            "sd_ratio": 0.04304162787630369,
+            "mean_cosine": 0.09438759191959181
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.05460646632317384,
+            "sd_ratio": 0.04653128128010185,
+            "mean_cosine": 0.09546352205674159
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.04627504854552133,
+            "sd_ratio": 0.04381082020928214,
+            "mean_cosine": 0.0962578295433311
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.051582339001449255,
+            "sd_ratio": 0.047442670267583247,
+            "mean_cosine": 0.09886030449502156
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "weighted_U_CE": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.04814471752894986,
+            "sd_ratio": 0.04080556711246305,
+            "mean_cosine": 0.0703784912616158
+          },
+          "weighted_U_CE_entropy": {
+            "nonzero_batches": 222,
+            "mean_ratio": 0.0525485770111899,
+            "sd_ratio": 0.04381503341436665,
+            "mean_cosine": 0.0701762192093519
+          }
+        }
+      ]
+    }
+  ],
+  "scope": "Actual epoch34 training telemetry across all3fixedseeds, reconciled with independently recounted saved PT gradients; no Utruth/newhead/newtargetforward or efficacy inference",
+  "full_saved_PT_recount": "VERIFIED by completed first and remaining run audits"
+}

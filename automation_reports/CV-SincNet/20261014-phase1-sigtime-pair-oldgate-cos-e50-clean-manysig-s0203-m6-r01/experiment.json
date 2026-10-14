@@ -1982,13 +1982,24 @@
     "Prepared whilefirsthealthy. No publish until actualfirstSOURCEPASS and3rowclosure; unchangeduniqueP0P1 reused,8qualificationnegative/fournativecontextsPASS.",
     "Onlymodel.install andreadonlyaudit optionaldesign injection forreuse; existingremote archive/training untouched."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "results": {
-    "status": "SOURCE_QUALIFIED_NOT_LAUNCHED",
-    "source_qualification": "PASS",
-    "first_seed_retrained": false,
-    "source_decision_before_new_target_numbers": true,
-    "goal_84": false
+    "scope": "complete_three_seed_matrix",
+    "first_run": "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "accuracies": {
+      "OLD_GATE_COS50": 0.8052678571428572,
+      "SIG_TIME": 0.8266448412698413,
+      "SIG_PAIR": 0.8276666666666667
+    },
+    "paired_difference": 0.0010218253968254192,
+    "goal84": false,
+    "report": "final_analysis.md",
+    "aggregate": "results.json"
   },
   "registered_at": "2026-10-14T13:50:28.564Z"
 }
