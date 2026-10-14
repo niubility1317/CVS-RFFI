@@ -82735,7 +82735,7 @@
       },
       {
         "run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-        "status": "SOURCE_DECISION_FROZEN_NOT_IMPLEMENTED_NOT_LAUNCHED",
+        "status": "PREREGISTERED_LOCAL_CHECKS_AND_P0P1_PASS_NOT_LAUNCHED",
         "source_parent": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01",
         "source_evidence": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_expansion_decision.json",
         "new_models": 4,
@@ -82745,7 +82745,13 @@
         ],
         "epochs_per_model": 50,
         "source_only": true,
-        "new_target_numeric_results_read": false
+        "new_target_numeric_results_read": false,
+        "code_commit": "fe2d8287ef1f9c167c5b68ee395e8bfe01b08360",
+        "source_decision_commit": "3b0b38c708029570cd1d6327cd4db96e2752a6ad",
+        "source_qualification_status": "PASS",
+        "original_mechanism_changed": false,
+        "head_fit_updates": 0,
+        "report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md"
       }
     ],
     "feature_mean_teacher_first_seed": {
@@ -82997,7 +83003,7 @@
       "no_head_or_model_update": true
     },
     "next_confidence_gated_feature_training": {
-      "status": "SOURCE_PASS_EXPANSION_FROZEN_PENDING_TARGET_READBACK",
+      "status": "FIRST_COMPLETE_SOURCE_QUALIFIED_FROZEN_EXPANSION_PREREGISTERED",
       "source_basis_run": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
       "source_basis": "Fixed all6 V qualification PASS, same-L groups support testable confidence-order mechanism; not target-derived",
       "hypothesis": "Only confidence-ordered ownEMA feature targets reduce unhelpful allU feature imitation; fixed zero gap, fullbatch denominator, same .1 ramp, fixed SIG_TIME/defaulthead/old gateEMAcos",
@@ -83046,7 +83052,7 @@
         }
       ],
       "real_checkpoint_noquery_smoke": "PASS",
-      "new_target_numeric_results_read": false,
+      "new_target_numeric_results_read": true,
       "source_only_handoff": "local_artifacts/confidence_feature50_delivery_r01/source_qualification_only.py",
       "first_seed_is_not_goal_completion": true,
       "actual_initial_state_comparison": {
@@ -83070,9 +83076,14 @@
         "first_target_numeric_results_read": false
       },
       "remaining_run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-      "remaining_state": "NOT_IMPLEMENTED_NOT_LAUNCHED",
+      "remaining_state": "PREREGISTERED_LOCAL_CHECKS_AND_P0P1_PASS_NOT_LAUNCHED",
       "actual_epoch34_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/actual_pseudo_epoch34.json",
-      "source_decision_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_expansion_decision.json"
+      "source_decision_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_expansion_decision.json",
+      "remaining_code_commit": "fe2d8287ef1f9c167c5b68ee395e8bfe01b08360",
+      "source_decision_commit": "3b0b38c708029570cd1d6327cd4db96e2752a6ad",
+      "first_target_accuracy_SIG": 0.8366547619047618,
+      "first_target_accuracy_CONF": 0.8352142857142857,
+      "first_target_paired_difference_pp": -0.14404761904761543
     },
     "backbone_fishr_source_progress": {
       "status": "SUPERSEDED_BY_FULL_ANALYSIS",

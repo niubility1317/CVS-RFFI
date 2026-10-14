@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "reviewer": "signature_fix_p0p1",
+  "scope": "New confidence feature remaining-seed adapters only; unchanged source/native/feature mechanism reused",
+  "findings_P0_P1": [],
+  "checked": [
+    "Four scratch original-native contexts",
+    "First source qualification and fixed expansion rules",
+    "Native hook reuse",
+    "Default joint head automatic prediction/truth-last scoring",
+    "Three-seed aggregate correctness",
+    "Dependency closure, entry import and generated-script compile"
+  ],
+  "real_data_or_remote_access": false,
+  "code_commit": "fe2d8287ef1f9c167c5b68ee395e8bfe01b08360"
+}

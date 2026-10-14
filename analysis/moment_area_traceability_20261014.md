@@ -177,3 +177,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 + 20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01 全12行已ANALYZED/VERIFIED：RAW−SIG +0.0143±0.1918pp/1正，COND−SIG −0.1391±0.2340pp/1正，COND−RAW0正；216CM、2016000默认头决策、936参数梯度矩阵独立复算，9新模型450轮/99900更新、头拟合0。源penalty优化并无稳定DG增益，保留完整负结果，不扫权重。
 
 20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01 实际E34门控接线确认；完整预登记source规则PASS（retained比0.820886/allU比0.828006/coverage0.920871），在任何该run新目标数值读回前冻结 20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01 固定02/03同配方scratch50扩展（4新模型/200轮/44400updates），当前尚未实现或发布。该决定先commit/push，再回收首seed目标结果，目标分数不取消已确定扩展。
+
+
+- 2026-10-15：CFM 源资格PASS后固定02/03扩展，source决定 3b0b38c708029570cd1d6327cd4db96e2752a6ad 在首目标数值前已推送核实。新增seed适配器 fe2d8287ef1f9c167c5b68ee395e8bfe01b08360 本地14负例/4native上下文与一次独立P0P1 PASS；默认头正常联合训练、原feature目标/系数/数据/预算不变。当前仅预登记，未运行，不混入旧模板结果。

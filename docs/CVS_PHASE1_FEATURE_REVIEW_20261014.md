@@ -382,3 +382,8 @@ FEATURE_MT两臂已到36轮，每臂观测U666批/170100包；epoch34候选t1/t2
 
 
 FEATURE_MT首seed三row已完成训练/默认预测/独立truth-last评分，原source资格PASS（last5 discrepancy ratio.821487695，终LCE ZERO .247665886/FEATURE .248785446，实际L720z差2.058244944，梯度/精确预算满足）。当前只取源判定，未回收新目标准确率；本次提交先冻结按原配方扩02/03的决定，再发布并回收目标摘要。源资格不是DG收益。
+
+
+## 置信度特征一致性固定扩展（2026-10-15）
+
+首源资格与02/03扩展决定已在 3b0b38c708029570cd1d6327cd4db96e2752a6ad 提交/推送核实，早于首种子新目标数值。当前适配器 fe2d8287ef1f9c167c5b68ee395e8bfe01b08360 本地/独立P0P1 PASS，固定四新scratch50模型，保持SIG_TIME及原默认联合头/旧门控EMAcos。首种子负差不改变既定扩展。见[最小预登记](../automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md)。
