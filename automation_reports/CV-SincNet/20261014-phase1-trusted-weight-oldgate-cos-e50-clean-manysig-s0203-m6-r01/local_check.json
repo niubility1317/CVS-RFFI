@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "actual_models": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "default_head_joint": true,
+      "pool_parameters": 18976,
+      "native_gate_stage_and_weight_unchanged": true
+    },
+    {
+      "row_id": "TRUSTED_WEIGHT-s2026092702",
+      "default_head_joint": true,
+      "pool_parameters": 18976,
+      "native_gate_stage_and_weight_unchanged": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "default_head_joint": true,
+      "pool_parameters": 18976,
+      "native_gate_stage_and_weight_unchanged": true
+    },
+    {
+      "row_id": "TRUSTED_WEIGHT-s2026092703",
+      "default_head_joint": true,
+      "pool_parameters": 18976,
+      "native_gate_stage_and_weight_unchanged": true
+    }
+  ],
+  "same_seed_initial_parameters_and_features_equal": true,
+  "changed_weight_rejected": 2,
+  "query_read": false,
+  "real_IQ_read": false,
+  "source_gate_not_yet_passed": true,
+  "remote_launch": false,
+  "core_direct_P0P1_review_reused": true,
+  "source_gate": {
+    "status": "PASS",
+    "synthetic_source_gate_positive": true,
+    "negative_cases": 10,
+    "real_source_verdict_read": false,
+    "target_metrics_read": false,
+    "remote_launch": false
+  },
+  "observer_binding": {
+    "status": "PASS",
+    "remaining_observer_config_binding": true,
+    "parent_scope_restored": true,
+    "real_IQ_read": false,
+    "query_read": false,
+    "training_steps": 0
+  },
+  "compile_files": 12
+}
