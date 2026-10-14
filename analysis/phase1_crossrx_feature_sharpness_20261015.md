@@ -33,3 +33,6 @@ held bank 仍是模型此前训练过的源 L，只在当前梯度步骤排除�
 先在固定 BASE 首种子/final50 上做 source-only 原型；只是合法既有权重的诊断，不续训该 E50 checkpoint。4 个固定 L90 cohorts、原 L180 bank，固定 ρ=.05、系数=.1、4 个控制。检查跨 RX 正 gap、auxiliary 梯度进入浅中层与实际 kernel、W/gain 不接辅助梯度、CROSS 与 GLOBAL 的梯度差及 live 状态恢复。通过后才预登记实际训练。
 
 后续新训练遵循当前 E20 预算（scratch20 或合规 E20+20），另保留同预算纯 CE 对照；不默认复制旧 E50 日程。研究变体按明确安排使用隐藏真值的 U；默认头保持联合训练，最终固定 clean 预测后独立 truth-last。旧 E50 成本及结果保留，不冒充 E20 同成本。当前默认头 clean 三种子 84% 目标未达成。
+
+
+2026-10-15：跨RX feature sharpness源原型 `20261015-phase1-SIGTIME-crossRX-feature-sharpness-sourceL-manysig-s2026092701-r01` 4/4通过固定信号可用性条件。currentRX造detachedρ=.05特征方向，在otherRX／排除currentID的seenL上优化relu(pertCE-cleanCE)，两项均向17个部署参数传梯度，固定preW/defaulthead。CROSS最大RXgap6.325e−4至4.005e−3，梯度范数.001616至.007193，与GLOBAL相对差.441至3.532；actualAdamW aux增量改变2至3个Sinc核。540L IQ／14762forwards／8tempsteps，0realtrain/headfit/U/V/target。没有证明DG收益或原创性。保留SIG_TIME／固定CENTER既有正路线，已经准备新的E20匹配矩阵接口；BASE_CE／BASE_SSL／CLEAN_CE／GLOBAL_GAP／CROSS_GAP计划先首seed再固定source规则扩展，实际阶段与预算须预登记，不默认E50续训。84%默认头clean三种子仍active／未完成。

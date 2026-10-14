@@ -133,3 +133,6 @@ SIG_TIME 训练机制首 seed 四组已完整 ANALYZED / VERIFIED：BASE 83.3625
 
 
 2026-10-15：固定 CENTER_25K × 排除当前 L 源检查 `20261015-phase1-SIGTIME-center-heldcredit-sourceL-manysig-s2026092701-r01` 已完成。RAW/CENTER × SAME/HELD 四单元各 0/20 accepted，固定可用性条件未通过，不扩完整训练。CENTER 的 actual base Sinc kernel 改变 12 至 13／24，aux 最多再改变 3／24，但 held-L credit 最大仅3.45e−9（固定容差1e−6）。540L IQ／18004forwards／160临时steps，0实际训练／headfit／U/V/target。旧 contribution eval cache 的版本碰撞已复现并补记旧main归因限制，旧结果产物保留。已有固定 CENTER 和 SIG_TIME 正路线保留，不能把历史增益相加；下一轮检验实际早中期持续特征学习信号，末期 CE 微增量筛选不单独作为晋级依据。默认头 clean 三种子84%仍ACTIVE、未达成。
+
+
+2026-10-15：跨RX feature sharpness源原型 `20261015-phase1-SIGTIME-crossRX-feature-sharpness-sourceL-manysig-s2026092701-r01` 4/4通过固定信号可用性条件。currentRX造detachedρ=.05特征方向，在otherRX／排除currentID的seenL上优化relu(pertCE-cleanCE)，两项均向17个部署参数传梯度，固定preW/defaulthead。CROSS最大RXgap6.325e−4至4.005e−3，梯度范数.001616至.007193，与GLOBAL相对差.441至3.532；actualAdamW aux增量改变2至3个Sinc核。540L IQ／14762forwards／8tempsteps，0realtrain/headfit/U/V/target。没有证明DG收益或原创性。保留SIG_TIME／固定CENTER既有正路线，已经准备新的E20匹配矩阵接口；BASE_CE／BASE_SSL／CLEAN_CE／GLOBAL_GAP／CROSS_GAP计划先首seed再固定source规则扩展，实际阶段与预算须预登记，不默认E50续训。84%默认头clean三种子仍active／未完成。
