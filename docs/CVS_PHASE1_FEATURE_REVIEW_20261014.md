@@ -123,3 +123,8 @@ run：20261014-phase1-source-style-profile-manysig-s01-m1-r01；实际执行提�
 
 
 同 TX/day 的 RX 统计差占中心平方和 t1 32.66%、t2 28.21%；固定身份保护干预实际进入 joint160（平均 L2 1.482290），默认头修正11、破坏7，无模型或头更新。这是源机制依据，不是训练/迁移收益。下一项只做匹配单seed MixStyle scratch50，不叠加结构，固定 t1/t2 p=.5 alpha=.1 strength=1；完整 [分析](../automation_reports/CV-SincNet/20261014-phase1-source-style-profile-manysig-s01-m1-r01/final_analysis.md)。用户新贴时序2×2推荐已完成，不重复。
+
+
+## 身份保护 MixStyle 首种子训练已实现
+
+run 20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01，2新骨干各scratch50/11100，33 label+17 pseudo，加1历史首seed旧门控cos对照。仅主L的t1/t2同TX/day跨RX统计混合，p=.5 alpha=.1 strength=1，无新参数/额外训练前向。默认头正常联合训练、无单独拟合；U/teacher/eval不混合。真实adapter梯度、数值更新、同seed初态、W与z边界、本地依赖和登记检查PASS；唯一P0/P1审查PASS，当前IMPLEMENTED_REVIEWED；尚未启动或有新目标结果。完整[预登记](../automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md)。
