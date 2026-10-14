@@ -341,3 +341,6 @@ SINGLE三seed末轮源CE0.248543/0.239481/0.234405，V98.3259%/98.3037%/98.5222%
 PA同TX/day跨RX实际增量重组已正式发布 20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01，执行76ab0b9944210f8aa3f09f051ea9694f55457cd6，3首seed进入实际辅助阶段；0新参数、0额外IQ前向、主CE和原tail33+17的U/teacher/oldgate/cos保持。共同cohort约55%，α=.2/λ=.1的same/cross一对一端点曝光、aux W/gain stop但内部features有梯度；第1112步SAME/CROSS实际aux/Lfeature normratio=.1168/.1038，真实t1/PA数值更新，activeAdamW增量约4.25e−4/3.24e−4，总shadow误差≤1.49e−8。ZERO梯度0、GPU一步差2.44e−8为数值残差，未掩盖为bitwise0。当前是真实接线/学习信号，无性能成功结论；仅CROSS稳定超SAME与ZERO才支持跨RX贡献，冻结后W独立export与必要无拟合source特征变化验证仍须完整记录。
 
 完整结构交互负结果表明关系响应未有效，不能继续以组合高于旧原架构来宣称机制有效。此前COMPACT/LONG_SILU/Sinc正结果按各自配方独立保留；当前最多两个核心假设为等U时序与PA证据重组，语义间隔及分支更新约束后置。默认头联合训练、U真值隐藏、source-only资格、固定三seed/逐rowcleantruthlast以及84%研究目标保持。
+
+
+等 U 时序 9 模型已完整 ANALYZED / VERIFIED：TAIL 80.5853%、MID 80.6206%、SPREAD 80.6403%。MID − TAIL +0.0353 个百分点、1/3 正；SPREAD − TAIL +0.0550 个百分点、2/3 正，未确认稳定收益，不继续按目标扫描日历。450 轮/99,900 更新/1,512,000 决定/162 混淆矩阵、全量源曲线、36 实际优化器点与36 当前 EMA 的 V 代理、0 非有限/0 U 真值/0 另训头已核实，进程自然退出。9 模型同90个合法L包的初始/最终特征见证均证明函数变化与 W 独立，不能证明时序贡献。原 R01 技术失败及成本保留。已固定 PA 重组继续，历史正收益独立保留；84% 仍 active。详见[等 U 时序完整报告](../automation_reports/CV-SincNet/20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r02/report.md)。

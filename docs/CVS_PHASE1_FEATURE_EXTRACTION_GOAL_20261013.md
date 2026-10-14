@@ -97,3 +97,6 @@ PA重组已接入真实native已有L128前向，主LCE独立不变，EMA在bound
 
 
 PA正式训练已发布VERIFIED：20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01，执行76ab0b9944210f8aa3f09f051ea9694f55457cd6，3首seed真实第1112步auxiliary/AdamW/参数更新已核实，cohort约55%、active aux/Lnorm约.1168/.1038、auxW/gainsNone，t1/PA真实更新。CPU ZERO差0但真实GPU出现2.44e−8数值残差，梯度仍0，active增量约3至4e−4；如实保留。source/currentcheckpoint smoke/archive/compile/PID-CWD-argv-GPU-loggrowth PASS，0额外IQ前向/0新params/0头拟合，当前无3seed性能。等U首3 source-only资格及实际相同L/U/update预算已核实，后6运行；原结构交互完整负结果闭合。84%目标active。
+
+
+等 U 时序 9 模型已完整 ANALYZED / VERIFIED：TAIL 80.5853%、MID 80.6206%、SPREAD 80.6403%。MID − TAIL +0.0353 个百分点、1/3 正；SPREAD − TAIL +0.0550 个百分点、2/3 正，未确认稳定收益，不继续按目标扫描日历。450 轮/99,900 更新/1,512,000 决定/162 混淆矩阵、全量源曲线、36 实际优化器点与36 当前 EMA 的 V 代理、0 非有限/0 U 真值/0 另训头已核实，进程自然退出。9 模型同90个合法L包的初始/最终特征见证均证明函数变化与 W 独立，不能证明时序贡献。原 R01 技术失败及成本保留。已固定 PA 重组继续，历史正收益独立保留；84% 仍 active。详见[等 U 时序完整报告](../automation_reports/CV-SincNet/20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r02/report.md)。
