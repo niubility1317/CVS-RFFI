@@ -1,7 +1,7 @@
 <!-- CURRENT_TRAINING_PRIORITY_20261014 -->
 固定 SIG_TIME 和默认联合分类头，研发重点保持训练泛化与半监督机制。均值教师完整三seed已 ANALYZED/VERIFIED：FEATURE_MT82.4359%±1.5874pp，匹配SIG82.6806%±1.7906pp；配对−.2446±.2101个百分点，0/3正，净−1233/504000。三seed源U特征损失均下降约18%至21%，但未形成DG收益；保留完整负结果，不扫权重或换头补结论。完整报告 20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md。
 
-当前RAW/TX_DAY_CENTERED泛化固定02/03扩展仍健康运行，首seed同计算SIG83.5333%、RAW83.7542%（+.2208pp）、条件化83.6548%（+.1214pp），仅n=1，不宣称稳定收益。两条扩展的源决定均先于本路线新目标数值回收提交，科学配方不变。下一项源诊断拟核查同L强图真实CE与feature梯度关系，尚未实现/启动；无单训头、结构或Phase2开发。84%三seed目标仍未达到。
+当前RAW/TX_DAY_CENTERED泛化固定02/03扩展仍健康运行，首seed同计算SIG83.5333%、RAW83.7542%（+.2208pp）、条件化83.6548%（+.1214pp），仅n=1，不宣称稳定收益。两条扩展的源决定均先于本路线新目标数值回收提交，科学配方不变。下一项同L强图真实CE/feature梯度源诊断已实现并通过局部检查及唯一P0/P1审查，run 20261015-phase1-source-feature-ce-gradient-manysig-m6-r01，尚未发布/启动；无单训头、结构或Phase2开发。84%三seed目标仍未达到。
 
 # Phase1 特征提取复盘与完整实验交付
 

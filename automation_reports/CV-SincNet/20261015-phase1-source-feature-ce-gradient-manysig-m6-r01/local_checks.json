@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "no_real_IQ_checkpoint_or_truth_read": true,
+  "negative_checks": 13,
+  "same_graph_common_denominator": true,
+  "original_feature_objective": true,
+  "empty_groups_undefined_cosine": true,
+  "actual_SIG_joint160_three_parameter_gradients": true,
+  "six_native_contexts": true,
+  "parameters_buffers_unchanged": true,
+  "no_accumulated_grad": true,
+  "no_head_fit": true,
+  "generated_remote_entry_compile": "PASS",
+  "CPU_only_environment": true,
+  "independent_P0P1_review": {
+    "status": "PASS",
+    "scope": "Only direct next-run wrong/unauthorized/destructive/unlaunchable/illegal-evidence defects",
+    "reviewer": "signature_fix_p0p1",
+    "real_data_or_remote_access": false
+  },
+  "real_checkpoint_no_query_smoke": "PENDING_RELEASE_FIRST_STEP"
+}

@@ -82395,7 +82395,7 @@
         "net_corrected": -1233,
         "matched_decisions": 504000
       },
-      "next_source_diagnostic": "PLANNED_NOT_IMPLEMENTED_sameLstronggraph_trueCE_vs_feature_gradient_no_fit_no_Utruth"
+      "next_source_diagnostic": "LOCAL_VERIFIED_NOT_LAUNCHED_20261015-phase1-source-feature-ce-gradient-manysig-m6-r01"
     },
     "structural_exploration": false,
     "fixed_architecture": "SIG_TIME112→joint160; existing default cosine head jointly trained",
@@ -82850,6 +82850,18 @@
       "head_fit_updates": 0,
       "goal84": false,
       "full_report_run": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
+    },
+    "next_source_feature_CE_diagnostic": {
+      "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+      "run": "20261015-phase1-source-feature-ce-gradient-manysig-m6-r01",
+      "code_commit": "da1aafdde1931fcef67ecd509e079cfa371ec166",
+      "models": 6,
+      "source_L_packets_per_model": 6300,
+      "head_fit_updates": 0,
+      "extra_training_epochs": 0,
+      "query_read": false,
+      "independent_P0P1": "PASS",
+      "real_checkpoint_smoke": "PENDING_RELEASE_FIRST_STEP"
     }
   }
 }
