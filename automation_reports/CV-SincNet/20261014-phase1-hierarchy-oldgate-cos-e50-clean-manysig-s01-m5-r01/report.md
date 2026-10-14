@@ -21,3 +21,5 @@ HIER_ORDER一阶increment7＋二阶skewarea21，三个边界增量7→8/15→16/
 停止规则：角色/来源/默认头/初始化/非有限/预算/实际导出状态/physical IDs/预测或truthlast技术失败停止新派发，保留现有健康row/产物，不能自动重试或按目标早停。数学容差非有限由实际训练检查处理。预期每rowinitial/resolved/checkpoint/source_frozen/完整epoch与step日志/source_feature_witness/prediction/scores/completion；run source_features/source_qualification/analysis/completion和launch/queue_state；大型私有IQ/权重/日志/预测不上传Git，只提交实现/config/聚合结果和对应报告，独立核对remoteOID。
 
 实际发布VERIFIED：执行7bdfdbf448b9c97ead5702f958bee293d646a09f、dispatcher2191810；4新worker2192180/2192262/2192348/2192433，GPU5/6/4/7，实际resolved四方法/t2/112或196描述子/defaultjointhead/nativefittedprobesdisabled正确。preflight/remotecompile/单archive比对PASS，PID/CWD/argv与日志增长核实。训练健康中，完整源资格/目标性能尚未完成，不据此宣称提升。
+
+实际source-only资格PASS：四模型finalLCE .247587/.247250/.250361/.249816；HIER_ORDER−HIER_STAT源L720zL2 2.944889；全部新增参数真实更新、精确导出/W独立、额外headfit0。决定在读取新target指标前冻结原样02/03，不以任何目标分数改变方法/seed/预算。完整first5row已训练/默认预测/独立评分完成，数值分析尚未回收。

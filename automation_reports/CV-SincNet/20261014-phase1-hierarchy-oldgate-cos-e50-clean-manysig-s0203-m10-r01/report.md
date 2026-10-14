@@ -11,3 +11,5 @@
 入口python -u -m experiments.cvs_hierarchy_seeds.dispatch；普通N607既有CVS-RFFI fullFP32/2threads；CWD /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_hierarchy_seeds_20261014_r01；不可变output /home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s0203-m10-r01；owner codex/root/hierarchy-seeds-20261014。共享capacity lock计入所有owner，每GPU最多3总进程且free≥12000MiB。发布时一个archive单次SHA比较/remotecompile/真实历史CP2zeroIQ无查询smoke，PASS直接继续；SOURCE FAIL/source不完整不进入发布。核对PID/CWD/argv/GPU/log增长，不能热改/停止/重启健康实验。
 
 停止规则复用首seed角色/provenance/默认头/初始化/非有限/预算/export状态/physical IDs/预测truthlast系统技术失败；停止新增dispatch、保留健康row及产物，无自动retry或目标早停。预期source/checkpoint/完整epoch与step日志/source witness/fixedprediction/scores/rowcompletion，以及source_features/analysis/combined_three_seed_analysis/completion/launch/queue；原IQ/weights/大日志/predictions不入Git，只上传代码/config/相应聚合结果报告并独立比remoteOID。当前REGISTERED，未发布/未训练，不冒充RUNNING。
+
+首seed固定执行 7bdfdbf448b9c97ead5702f958bee293d646a09f 的实际source-only PASS已核实，并在读取新目标指标前冻结seed_expansion_decision.json；准备按原登记发布8新scratch50。此追加状态为源资格完成，不能冒充远端已启动。
