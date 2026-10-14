@@ -1304,22 +1304,31 @@
   "results": {
     "status": "RUNNING_VERIFIED",
     "actual_completed_epochs": [
-      2,
-      2,
-      2
+      40,
+      40,
+      40
     ],
     "training_complete": false,
     "new_model_target_metrics_read": false,
-    "source_steps_independently_recounted": 1332,
-    "actual_gradient_layer_records_recounted": 156,
-    "saved_vectors_recounted": 468,
+    "source_steps_independently_recounted": 25974,
+    "actual_gradient_layer_records_recounted": 468,
+    "saved_vectors_recounted": 1404,
     "source_qualification_not_yet_complete": true,
     "goal_84": false,
     "head_fit_updates": 0,
     "evidence": [
       "launch_verified.json",
-      "source_progress.json"
-    ]
+      "semisupervised_entry_verified.json",
+      "source_progress_ssl_entry.json"
+    ],
+    "source_phase": "pseudo",
+    "source_qualification_complete": false,
+    "actual_gradient_epochs": [
+      1,
+      17,
+      33
+    ],
+    "original_U_recipe_and_hidden_truth_verified": true
   },
   "registered_at": "2026-10-14T22:41:30+00:00",
   "status": "RUNNING"

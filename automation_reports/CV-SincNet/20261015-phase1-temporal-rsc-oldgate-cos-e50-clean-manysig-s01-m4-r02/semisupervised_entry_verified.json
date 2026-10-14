@@ -1,0 +1,70 @@
+{
+  "status": "RUNNING_VERIFIED",
+  "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
+  "code_commit": "82cc7f1c24c2e5d0e20572b2654722fdc3e43a47",
+  "execution_commit": "e7a6215aa5d0a05e71c1c842e78cdfc845d57530",
+  "actual_completed_epochs": [
+    40,
+    40,
+    40
+  ],
+  "same_original_PIDs_CWD_argv_and_log_growth": true,
+  "source_curve_snapshot_epochs": [
+    36,
+    36,
+    36
+  ],
+  "curve_scope": "Complete available saved source epochs through36, native partial U counts retained separately",
+  "actual_original_SSL_recipe_verified": true,
+  "U_observations": [
+    {
+      "arm": "SIG_TIME",
+      "native_steps": 8191,
+      "U_packets": 221044,
+      "U_accepted": 3629,
+      "U_acceptance_fraction": 0.01641754582797995,
+      "U_true_labels_available": 0,
+      "own_EMA_updates": 8191
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "native_steps": 8203,
+      "U_packets": 224116,
+      "U_accepted": 3655,
+      "U_acceptance_fraction": 0.016308518802762854,
+      "U_true_labels_available": 0,
+      "own_EMA_updates": 8203
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "native_steps": 8194,
+      "U_packets": 221812,
+      "U_accepted": 3597,
+      "U_acceptance_fraction": 0.016216435540006853,
+      "U_true_labels_available": 0,
+      "own_EMA_updates": 8194
+    }
+  ],
+  "matched_L_native_steps_recounted": 25974,
+  "extra_L_forward_records_recounted": 51948,
+  "actual_gradient_periods": [
+    1,
+    17,
+    33
+  ],
+  "gradient_layer_records": 468,
+  "saved_vectors": 1404,
+  "saved_mask_batches_recounted": 117,
+  "source_qualification": "NOT_YET_AVAILABLE",
+  "first_seed_training_complete": false,
+  "new_model_target_metrics_read": false,
+  "conditional_remaining_seed_extension": "PREPARED_NOT_LAUNCHED",
+  "source_curve_data": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_ssl_entry_progress.json",
+  "source_curve_figure": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_training_ssl_entry_snapshot.png",
+  "source_plot_visual_inspection": "PASS",
+  "source_gradient_geometry": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_gradient_geometry_e1_e17_e33.json",
+  "source_CE_linkage": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/saved_gradient_CE_linkage.json",
+  "head_fit_updates": 0,
+  "actual_feature_update_and_export_witness_pending_final50": true,
+  "goal_84": false
+}

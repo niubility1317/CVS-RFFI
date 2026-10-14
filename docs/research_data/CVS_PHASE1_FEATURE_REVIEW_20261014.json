@@ -84059,17 +84059,17 @@
       "new_models": 3,
       "reused_historical_models": 1,
       "source_completed_epochs": [
-        21,
-        21,
-        21
+        40,
+        40,
+        40
       ],
-      "actual_native_steps_recounted": 13310,
-      "additional_L_forwards_recounted": 26620,
+      "actual_native_steps_recounted": 25974,
+      "additional_L_forwards_recounted": 51948,
       "actual_L_packet_observations_recounted": 1703680,
       "unique_physical_sample_count_not_inferred": true,
-      "gradient_layer_records_recounted": 312,
-      "saved_vectors_recounted": 936,
-      "saved_mask_batches_recounted": 78,
+      "gradient_layer_records_recounted": 468,
+      "saved_vectors_recounted": 1404,
+      "saved_mask_batches_recounted": 117,
       "first_epoch_delta_nonzero_batches_t1_t2_SIG_W": {
         "SIG_TIME": [
           0,
@@ -84096,7 +84096,7 @@
       "additional_L_forwards_planned_per_model": 22200,
       "oldgate_U_ownEMA_cos_preserved": true,
       "launch_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/launch_verified.json",
-      "source_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_progress_e17.json",
+      "source_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_progress_ssl_entry.json",
       "technical_failure_recovery": {
         "failed_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r01",
         "failed_before_workers_or_updates": true,
@@ -84108,15 +84108,16 @@
         "status": "PARTIAL_VERIFIED",
         "epochs": [
           1,
-          17
+          17,
+          33
         ],
         "models": 3,
         "nominal_seed_count": 1,
-        "gradient_batches": 78,
-        "layer_records": 312,
-        "vectors": 936,
+        "gradient_batches": 117,
+        "layer_records": 468,
+        "vectors": 1404,
         "implementation": "analysis/temporal_rsc_gradient_geometry_20261015.py",
-        "result": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_gradient_geometry_e1_e17.json",
+        "result": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_gradient_geometry_e1_e17_e33.json",
         "RSC_E17_selected_cosine_t1_t2_SIG": [
           0.844649730964334,
           0.8521493323985292,
@@ -84133,8 +84134,35 @@
           0
         ],
         "no_new_selection_rule": true,
-        "actual_export_feature_witness_pending_final50": true
-      }
+        "actual_export_feature_witness_pending_final50": true,
+        "RSC_E33_selected_cosine_t1_t2_SIG": [
+          0.87216474045704,
+          0.8703385222085851,
+          0.8066985829560699
+        ],
+        "RSC_E33_delta_over_unmasked_norm_t1_t2_SIG": [
+          0.6023747680691391,
+          0.6069180515161579,
+          0.7951768289063581
+        ]
+      },
+      "source_phase": "pseudo",
+      "semisupervised_entry_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/semisupervised_entry_verified.json",
+      "source_curves": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_ssl_entry_progress.json",
+      "source_plot": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_training_ssl_entry_snapshot.png",
+      "source_plot_visual_inspection": "PASS",
+      "source_curve_unit": "native val_tx_acc percent, U fraction converted topercent only in plot",
+      "actual_U_packet_observations_prefix": [
+        221044,
+        224116,
+        221812
+      ],
+      "actual_U_accepted_observations_prefix": [
+        3629,
+        3655,
+        3597
+      ],
+      "U_truth_available": 0
     },
     "temporal_rsc_conditional_extension": {
       "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
