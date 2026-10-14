@@ -1,0 +1,207 @@
+{
+  "status": "VERIFIED",
+  "decision": "SOURCE_SCREEN_PASSED",
+  "run_id": "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01",
+  "execution_commit": "6693e4480ef990bc23c5021ff1440b547fe5fcaf",
+  "rows": [
+    {
+      "row_id": "BASE_CE-s2026092701",
+      "final_L_CE": 0.1002672834506443,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9815555555555555,
+        "source_val_rx_accuracy": {
+          "1": 0.9948148148148148,
+          "3": 0.9498148148148148,
+          "4": 0.9835185185185186,
+          "6": 0.9962962962962963,
+          "8": 0.9833333333333333
+        },
+        "source_val_worst_rx": 0.9498148148148148
+      },
+      "scheduled": 250,
+      "eligible": 250,
+      "active_gradient_probe_steps": [],
+      "positive_gap_calls": 250,
+      "actual_AdamW_probes": 4,
+      "U_packet_exposures": 0,
+      "source_Sinc_initial_final": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.06185422611930753,
+        "kernel_change_max": 0.007757697254419327,
+        "low_hz_change_max": 2082.125,
+        "band_hz_change_max": 2569.75,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "default_head_joint_training": true,
+      "head_fit_updates": 0,
+      "extra_actual_optimizer_steps": 0,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "BASE_SSL-s2026092701",
+      "final_L_CE": 0.09998924345583529,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9814444444444445,
+        "source_val_rx_accuracy": {
+          "1": 0.9946296296296296,
+          "3": 0.9498148148148148,
+          "4": 0.9835185185185186,
+          "6": 0.9957407407407407,
+          "8": 0.9835185185185186
+        },
+        "source_val_worst_rx": 0.9498148148148148
+      },
+      "scheduled": 250,
+      "eligible": 250,
+      "active_gradient_probe_steps": [],
+      "positive_gap_calls": 250,
+      "actual_AdamW_probes": 4,
+      "U_packet_exposures": 396900,
+      "source_Sinc_initial_final": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.0646245428547219,
+        "kernel_change_max": 0.008504152297973633,
+        "low_hz_change_max": 2270.53125,
+        "band_hz_change_max": 2626.0,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "default_head_joint_training": true,
+      "head_fit_updates": 0,
+      "extra_actual_optimizer_steps": 0,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "CLEAN_CE-s2026092701",
+      "final_L_CE": 0.09991296994927767,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9818888888888889,
+        "source_val_rx_accuracy": {
+          "1": 0.9946296296296296,
+          "3": 0.950925925925926,
+          "4": 0.9835185185185186,
+          "6": 0.9961111111111111,
+          "8": 0.9842592592592593
+        },
+        "source_val_worst_rx": 0.950925925925926
+      },
+      "scheduled": 250,
+      "eligible": 250,
+      "active_gradient_probe_steps": [
+        448,
+        1776,
+        3104,
+        4432
+      ],
+      "positive_gap_calls": 250,
+      "actual_AdamW_probes": 4,
+      "U_packet_exposures": 396900,
+      "source_Sinc_initial_final": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.06393973965175034,
+        "kernel_change_max": 0.00829138234257698,
+        "low_hz_change_max": 2217.625,
+        "band_hz_change_max": 2542.5,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "default_head_joint_training": true,
+      "head_fit_updates": 0,
+      "extra_actual_optimizer_steps": 0,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "GLOBAL_GAP-s2026092701",
+      "final_L_CE": 0.09984678030014038,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9817037037037037,
+        "source_val_rx_accuracy": {
+          "1": 0.995,
+          "3": 0.95,
+          "4": 0.9833333333333333,
+          "6": 0.9962962962962963,
+          "8": 0.9838888888888889
+        },
+        "source_val_worst_rx": 0.95
+      },
+      "scheduled": 250,
+      "eligible": 250,
+      "active_gradient_probe_steps": [
+        448,
+        1776,
+        3104,
+        4432
+      ],
+      "positive_gap_calls": 244,
+      "actual_AdamW_probes": 4,
+      "U_packet_exposures": 396900,
+      "source_Sinc_initial_final": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.06447462933992582,
+        "kernel_change_max": 0.008328523486852646,
+        "low_hz_change_max": 2228.90625,
+        "band_hz_change_max": 2570.5,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "default_head_joint_training": true,
+      "head_fit_updates": 0,
+      "extra_actual_optimizer_steps": 0,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "CROSS_GAP-s2026092701",
+      "final_L_CE": 0.10009039703521642,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9816666666666667,
+        "source_val_rx_accuracy": {
+          "1": 0.995,
+          "3": 0.9503703703703704,
+          "4": 0.9833333333333333,
+          "6": 0.9959259259259259,
+          "8": 0.9837037037037037
+        },
+        "source_val_worst_rx": 0.9503703703703704
+      },
+      "scheduled": 250,
+      "eligible": 250,
+      "active_gradient_probe_steps": [
+        448,
+        1776,
+        3104,
+        4432
+      ],
+      "positive_gap_calls": 250,
+      "actual_AdamW_probes": 4,
+      "U_packet_exposures": 396900,
+      "source_Sinc_initial_final": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.06665832016774718,
+        "kernel_change_max": 0.008700702339410782,
+        "low_hz_change_max": 2319.5625,
+        "band_hz_change_max": 2631.75,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "default_head_joint_training": true,
+      "head_fit_updates": 0,
+      "extra_actual_optimizer_steps": 0,
+      "U_truth_read": false
+    }
+  ],
+  "firstseed_rows_default_predicted_scored": 5,
+  "firstseed_prediction_decisions": 840000,
+  "expansion_uses_target_results": false,
+  "three_seed_goal_verified": false
+}

@@ -1,3 +1,5 @@
+**首seed源条件 VERIFIED／全部通过。** 五行已完成20轮／4440更新、默认头clean预测和独立truth-last，共840000决定。CROSS_GAP为250/250合法辅助调用、四个实际梯度探针活跃，GLOBAL为244/250正gap调用且四点活跃；每SSL模型完整U曝光396900，BASE_CE为0。默认头健康条件通过，后续10行按源规则继续，不使用目标成绩作扩展依据。当前仅首seed完整，尚无三seed泛化收益或84%达成结论。
+
 **发布状态 VERIFIED，训练中。** 执行 commit `6693e4480ef990bc23c5021ff1440b547fe5fcaf`。远端compile和realcheckpoint/noquerysmoke PASS；单archiveSHA比较通过。独立回读确认首seed5行PID/CWD/cmd/GPU与日志增长，实际20轮config吻合，所有GPU总进程数未超过3。尚无冻结target结果；10行等待既定source规则，84%目标仍active。
 
 # E20 跨 RX 特征脆弱性矩阵预登记
