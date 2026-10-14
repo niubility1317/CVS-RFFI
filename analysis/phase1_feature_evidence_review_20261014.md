@@ -321,3 +321,8 @@ SINGLE三seed末轮源CE0.248543/0.239481/0.234405，V98.3259%/98.3037%/98.5222%
 ## 同包源身份方向诊断（固定首种子四模型）
 
 [关系学习信号完整报告](../automation_reports/CV-SincNet/20261014-diagnostic-relation-signal-source-manysig-s01-m4-r01/report.md) 已 ANALYZED/VERIFIED，四个 source-frozen student/ownEMA，seen-L180 anchors 与 disjoint720 probes，9360 次 IQ 前向，无拟合/参数/buffer/EMA/U/target 访问。强视图 R+E 的六批实际参数梯度串接余弦 ZERO/ALL/CROSS/RESP 为 0.0597/0.0590/0.1061/0.0833，辅助/同包CE范数比1.4505/.5708/.5022/.5395。虽然浅层与 PA/ref 非零，实际身份方向相关仍弱；partial joint 反向约68%至70%不是整模型更新结论。教师 branch 增量在约四分之一 source 包降低真实类间隔，保留全部 signed response 可能复制不利分支偏好；只是合法已见L机制证据，不推断 U 精度或新RX。当前 R/E 参数、健康8row和source标准不改，完整三seed结果仍待回收。COMPACT/LONG_SILU/Sinc既有正收益证据保留，当前诊断不能代替新机制独立/组合性能验证，84%未达。
+
+
+## 关系＋响应完整三种子收尾
+
+原run已ANALYZED/VERIFIED：12scratch50/600epoch/133200更新、2016000固定默认头决定和216CM完整复算，无缺项，进程自然终止。ZERO/ALL_REL/CROSS_REL/CROSS_RESP clean均值80.6899/80.1006/80.0782/80.1050%；D−C＋0.0268个百分点/2正，但D−ZERO−0.5849个百分点/1正。D逐seed最差RX均值提高1.0722个百分点而总体均值下降，完整报告取舍；响应稳定收益与84%均未成立。全量600epoch/45288aux/11566800U观察、48实际梯度和48更新、0非有限跳步/0Utruth/0headfit已核实。初始相同但CUDA native轨迹不逐位同的限制保留，不挑分重跑。原源规则放行的已验证结构匹配组合另立COMPACT/LONG×ZERO/RESP运行，τ/α/权重与旧配方保持，Sinc不同时堆叠。完整逐seed/源曲线/配对/限制见[关系矩阵收尾报告](../automation_reports/CV-SincNet/20261014-phase1-evidence-relation-pair-oldgate-e50-clean-manysig-m12-r01/report.md)。

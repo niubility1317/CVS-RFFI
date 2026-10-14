@@ -85,3 +85,33 @@ C中response只观察、不加入更新；其原始梯度可到PA卷积，但只
 D已完成50epoch/11100更新及默认头clean168000预测、freshCPU truth-last评分，四行共672000固定决定、72CM独立重算一致。首seed结果：ZERO81.0488%、ALL_REL79.3310%、CROSS_REL79.5982%、CROSS_RESP79.7000%。D−C为＋0.1018pp，D−ZERO为−1.3488pp。D最差RX69.7542%比C69.7792%稍低，最差day74.1190%比C73.7524%高；不得只写小正增量而省略基线负差。
 
 这是一个固定modelseed，当前不能支持有效机制、稳定响应收益或84%。四行源健康/非零信号/真实gradient标准在读取本target汇总前通过并保存，dispatcher按原规则已启动seed02/03全部8行。后续参数、候选及预算不依据这份target结果改变，不停止健康实验、不选择性重跑。实际PID/CWD/argv/GPU/log独立回读见first_quad_evidence.json；仍缺完整3seed结果。
+
+## 完整三种子结果与执行闭环
+
+**ANALYZED / VERIFIED**：12 个新 scratch50 模型全部训练、冻结、默认头 clean 预测和独立 truth-last 评分完成，自然退出，无缺 row。216 个混淆矩阵、2016000 个固定决定以及均值/SD/配对差由独立读取重新核算。
+
+| 条件 | clean 均值 | SD（百分点） | Macro-F1 | 逐seed最差RX均值 | 逐seed最差day均值 |
+|---|---:|---:|---:|---:|---:|
+| ZERO | 80.6899% | 2.4977 | 0.801647 | 68.1625% | 76.5341% |
+| ALL_REL | 80.1006% | 1.7798 | 0.795593 | 68.9264% | 75.1897% |
+| CROSS_REL | 80.0782% | 1.9138 | 0.795548 | 68.2847% | 75.2667% |
+| CROSS_RESP | 80.1050% | 1.5494 | 0.795832 | 69.2347% | 75.3849% |
+
+| 配对 | 均值差（百分点） | seed01/02/03（百分点） | 正差种子数 |
+|---|---:|---|---:|
+| ALL_REL−ZERO | -0.5893 | -1.7179 / +0.8030 / -0.8530 | 1/3 |
+| CROSS_REL−ALL_REL | -0.0224 | +0.2673 / -0.3851 / +0.0506 | 2/3 |
+| CROSS_RESP−CROSS_REL | +0.0268 | +0.1018 / +0.3482 / -0.3696 | 2/3 |
+| CROSS_RESP−ZERO | -0.5849 | -1.3488 / +0.7661 / -1.1720 | 1/3 |
+
+**原配方＋所有合法 U 的关系目标未确认收益。** ALL_REL 对 ZERO −0.5893个百分点，CROSS_REL 对 ALL_REL −0.0224个百分点；CROSS_RESP 对 CROSS_REL 仅＋0.0268个百分点，第三seed为负，不满足“响应稳定优于关系”的核心解释。CROSS_RESP 对 ZERO −0.5849个百分点，整体默认头识别没有改善。其逐seed最差RX均值比 ZERO 高1.0722个百分点、种子SD较低；这是均值识别下降下的取舍，不能写作整体更优或三个seed均稳。
+
+固定 primary CROSS_RESP 三seed80.1050%，距84%3.8950个百分点。机制实际执行、学习信号非零与身份泛化成功分开；保留全部负结果，不据此修改本run τ/α/权重、重跑特定seed、重排parent或终止其他健康任务。
+
+完整源记录核验600模型轮次/133200更新、45288辅助调用/11566800隐藏TX的U观察、36720额外合法L anchor前向；所有12模型每轮222完整日志，非有限loss/grad跳步0、U truth availability0、headfit0、stdout fatal0。48真实梯度点与48实际AdamW更新点齐全；ZERO auxiliary梯度为0，9个关系训练模型的t1/t2/t3与PA/ref路径实际收到非零辅助梯度，W及两个增益auxiliary梯度始终None。source曲线完整保留为source_epoch_means.csv。
+
+首种子source-only决策在target汇总前通过，后两seed原样扩展，无目标成绩反馈。初始张量匹配与CUDA非确定性限制仍见initial_matching_evidence.json：native first33label-only轨迹未逐位相同，不能将全部paired差异断言为纯auxiliary因果效应。原种子、预算和后验缺陷均保留，不补做挑分重跑。
+
+同包source梯度诊断已独立完成，参见源信号report：strong下同包CE/aux方向相关弱，teacher signed response不自动代表有益身份作用。该seen-L证据不是U真实正确率或目标下降唯一原因，不能强制所有分支对每包只提供正证据。
+
+用户要求的既有结构收益继续做独立匹配组合：COMPACT_LINEAR/LONG_SILU×ZERO/CROSS_RESP已固定新矩阵，损失与配方不变；这是原source-pass后预定后续验证，不是按本次target结果改损失。Sinc居中坐标独立保留，不同时叠全部结构。当前84%研究目标仍active，当前关系矩阵已完整闭合。

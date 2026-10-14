@@ -70,3 +70,6 @@ Sinc坐标9row全部完成，6新scratch50/300模型轮次/66600更新、3历史
 
 
 同包源方向诊断已完整 VERIFIED：四 firstseed frozen models/720 seen-L probes/9360额外前向、0拟合及0 U/target访问。强视图 R+E 与同包默认头CE实际参数余弦仅 .0590 至 .1061，签名教师分支响应不保证改善身份间隔；下一机制须检验有效身份学习方向，不能靠增大关系loss或更多门控。当前8row仍按原固定预算自然完成，positive COMPACT/LONG_SILU/Sinc路线保留。详见主报告和源诊断run。84%目标active。
+
+
+关系12row三seed完整ANALYZED/VERIFIED：ZERO80.6899%、ALL80.1006%、CROSS80.0782%、RESP80.1050%；RESP对CROSS＋.0268pp/2正、对ZERO−.5849pp/1正，没有确认稳定机制收益。600ep/133200更新/2016000决定/216CM和全量source日志已完成。原源决策触发的COMPACT/LONG×ZERO/RESP匹配组合另立run，保持原R/E参数，Sinc独立保留。研究目标84%仍active，本矩阵闭合，不能用接线或小增量缩小目标。
