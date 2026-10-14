@@ -65,3 +65,7 @@ RUNNING/VERIFIED，执行 commit `5d2e22133b85707db84654433d859ae130bd0d43`。�
 ## 首种子源资格与真实等预算
 
 首3行final50来源/数据/默认头/日历/实际L-U曝光与优化步/4当前V代理/4真实AdamW点全部VERIFIED；每行L1420800/U963900/11100步，LCE TAIL/MID/SPREAD=.28820/.28888/.28633，V=.979111/.978667/.978481，worstRX=.944444/.942593/.941667。固定source-only条件通过，后6row已自动放行，无target成绩进入资格。当前只有完整1seed，完整三seed效果尚待返回；R01至少60模型轮次技术损耗独立保留。
+
+## 冻结后源功能诊断
+
+补充只读结果分析：对已冻结模型使用同一合法L90（每TX/RX/day cell首包），比较本run自身scratch initial_smoke与final50的实际joint160，核对full/pure导出及W置零/删除无关性、参数/buffer/gradient不变。不另训任何head，不读Utruth/target，不反馈训练或选模。每模型额外450包次源前向，首3共1350，与实际训练预算分列；原schema/capsule/split/物理角色复用。代码experiments/cvs_frozen_feature_witness.py，普通N607/projectPython，在对应不可变source release CWD运行，输出每row/source_feature_witness，独立新目录不覆盖。资源沿用每GPU总进程≤3/12000MBfree；技术失败保留输出，不干预健康训练。此分析不构成额外发布或训练阻断，也不替代默认头性能比较。
