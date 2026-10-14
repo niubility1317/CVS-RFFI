@@ -231,3 +231,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 可信门控内权重完整三seed已闭环：weighted82.7030%±1.6081pp、uniformSIG_TIME82.7514%±1.6961pp、旧gatecos80.5268%±2.3776pp。增量−.0484±.1039pp（1/3正差），净正确−244/504000，84均值差1.2970pp未达。9row/6新300epochs66600steps＋3历史150epochs；450完整源epoch/1512000defaultpred/162metrics/11988真实33/34/50层批grad保存复算VERIFIED，额外headfit0，全部六新pool全元素更新/export差0/W独立/三初始source函数同，最终candidate-controlL720zL2 1.736686/1.700653/1.804470。实际grad强化约15.7至29.5%但cos .9994至.9997，不能说明新增泛化信息；源ratio三seed略升而同TX跨RX距离亦全升、target两负一正。报告四路线实际实施与矩阵分析完成，本权重不晋级有效机制，不继续扫描其参数；后续仅依据合法source证据设计W无关浅/中层特征目标。完整报告automation_reports/CV-SincNet/20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md。
+
+
+新报告31957f78路线：全L6300浅中层有界排序诊断已闭环，70L90cohort/每视图126000采样关系/1050实际辅助层批梯度+210CE基线，0update/headfit/query。t1/t2/joint未满足率87.8310%/81.3762%/10.7484%，活跃样本100%/100%/88.6508%，不能以关系比例替代样本覆盖。局部平均ORDER实际进入t1/t2且W无依赖；最终eval梯度不冒充真实早中期或target性能。实施1d15b241c7e43b78729c94230fe6ab011c6bacef，run 20261014-phase1-source-layer-order-manysig-s01-m1-r01，下一步独立浅中层有限身份监督三臂，区别另一分支joint160语义原型；停止权重、层级增容/日历扫描。

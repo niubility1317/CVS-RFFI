@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户持续Phase1可迁移特征84%目标、默认分类头禁止单独训练；当前只读合法源机制诊断，GPU健康训练保持；实现和对应结果Git上传。",
   "code": {
-    "commit": "Git commit fixed before release; actual execution commit saved by transport",
+    "commit": "1d15b241c7e43b78729c94230fe6ab011c6bacef",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32 CPU; CUDA_VISIBLE_DEVICES empty; Torch/OMP/MKL/OpenBLAS2threads",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_layer_order_20261014_r01",
@@ -193,7 +193,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/trusted-weight50-20261014",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -231,11 +231,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_added_feature_difference_min": 1e-06,
+            "source_added_feature_difference_min": 0.000001,
             "actual_gradient_records_required": 1998,
             "actual_gradient_epochs": [
               33,
@@ -396,7 +396,22 @@
     "126000sampledrelations/view are not all combinations, nor independentseed observations. Sourcegeometry andgradientstrength do not establishDG performance.",
     "No early/midcheckpoint exists here: do not fabricate; observe actual1/17/33/50 only if later training is preregistered."
   ],
-  "status": "LOCAL_VERIFIED",
-  "results": null,
+  "status": "ANALYZED",
+  "results": {
+    "status": "VERIFIED",
+    "source_packets": 6300,
+    "cohorts": 70,
+    "relations_per_view": 126000,
+    "views": 3,
+    "gradient_records": 1050,
+    "CE_gradient_records": 210,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0,
+    "query_read": false,
+    "source_recount": "VERIFIED",
+    "result_ref": "results.json",
+    "analysis_ref": "final_analysis.md",
+    "goal_84": false
+  },
   "registered_at": "2026-10-14T10:57:51+00:00"
 }
