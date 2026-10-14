@@ -237,3 +237,6 @@ DRO完整固定3seed闭环：9新模型450epochs99900steps，12row2016000default
 
 
 2026-10-15：actual RSC首seed终轮sourcePASS和真实f_theta数值更新／joint160导出／旧W独立性均完成，0另训头；源决定`automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json`在主代理新目标数值前冻结，原样三臂02/03准备发布，不重训01，不按target取消或改序。sourcePASS不等于84或泛化收益。
+
+
+2026-10-15：RSC首seed完整结果81.823810%对同成本SIG83.660714%，配对−1.836905pp；实际骨干梯度／fθ变化／feature-only边界与sourcePASS均通过，不能替代性能证据。完整200源轮次、33300新step、672000默认预测、72指标、624层1872向量独立复核。源决定832485cace509543a7b4e921ac7f5483a2053749先推送后读目标，固定02/03六新已RUNNING_VERIFIED，不据负差改配方。报告`automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/final_analysis.md`，84仍ACTIVE／0另训头。

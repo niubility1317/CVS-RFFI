@@ -1302,34 +1302,158 @@
     "Technical recovery r02: original r01 dispatcher stopped before any worker/update because redacted registration did not match full factory configs. Keep complete canonical config fields with PROJECT prefix handle and restore only that prefix in scoped registration read; preserve old remote outputs. Numerical method and budgets unchanged."
   ],
   "results": {
-    "status": "RUNNING_VERIFIED",
+    "status": "ANALYZED_VERIFIED",
     "actual_completed_epochs": [
-      40,
-      40,
-      40
+      50,
+      50,
+      50
     ],
-    "training_complete": false,
-    "new_model_target_metrics_read": false,
-    "source_steps_independently_recounted": 25974,
-    "actual_gradient_layer_records_recounted": 468,
-    "saved_vectors_recounted": 1404,
-    "source_qualification_not_yet_complete": true,
-    "goal_84": false,
+    "training_complete": true,
+    "source_qualification": "PASS",
+    "source_qualification_complete": true,
+    "model_seed_count": 1,
+    "new_model_target_metrics_read": true,
+    "source_decision_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+    "source_decision_before_target_numeric_retrieval": true,
+    "default_head_only": true,
     "head_fit_updates": 0,
+    "summary": [
+      {
+        "arm": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701
+        ],
+        "seed_accuracy": [
+          0.8066845238095238
+        ],
+        "accuracy_mean": 0.8066845238095238,
+        "accuracy_sample_SD": null,
+        "macro_f1_mean": 0.8017335328586674,
+        "worst_RX_mean": 0.7061666666666667,
+        "worst_day_mean": 0.7545238095238095
+      },
+      {
+        "arm": "SIG_TIME",
+        "seeds": [
+          2026092701
+        ],
+        "seed_accuracy": [
+          0.8366071428571429
+        ],
+        "accuracy_mean": 0.8366071428571429,
+        "accuracy_sample_SD": null,
+        "macro_f1_mean": 0.832355875979482,
+        "worst_RX_mean": 0.7104583333333333,
+        "worst_day_mean": 0.7912857142857143
+      },
+      {
+        "arm": "MATCHED_RANDOM",
+        "seeds": [
+          2026092701
+        ],
+        "seed_accuracy": [
+          0.8238511904761905
+        ],
+        "accuracy_mean": 0.8238511904761905,
+        "accuracy_sample_SD": null,
+        "macro_f1_mean": 0.8189346324994674,
+        "worst_RX_mean": 0.6554166666666666,
+        "worst_day_mean": 0.7802380952380953
+      },
+      {
+        "arm": "TEMPORAL_RSC",
+        "seeds": [
+          2026092701
+        ],
+        "seed_accuracy": [
+          0.8182380952380952
+        ],
+        "accuracy_mean": 0.8182380952380952,
+        "accuracy_sample_SD": null,
+        "macro_f1_mean": 0.8128362081416807,
+        "worst_RX_mean": 0.6442083333333334,
+        "worst_day_mean": 0.7753809523809524
+      }
+    ],
+    "paired": [
+      {
+        "arm": "TEMPORAL_RSC",
+        "control": "MATCHED_RANDOM",
+        "seeds": [
+          2026092701
+        ],
+        "seed_difference_pp": [
+          -0.5613095238095278
+        ],
+        "mean_difference_pp": -0.5613095238095278,
+        "sample_SD_pp": null,
+        "positive_seeds": 0
+      },
+      {
+        "arm": "TEMPORAL_RSC",
+        "control": "SIG_TIME",
+        "seeds": [
+          2026092701
+        ],
+        "seed_difference_pp": [
+          -1.8369047619047674
+        ],
+        "mean_difference_pp": -1.8369047619047674,
+        "sample_SD_pp": null,
+        "positive_seeds": 0
+      },
+      {
+        "arm": "MATCHED_RANDOM",
+        "control": "SIG_TIME",
+        "seeds": [
+          2026092701
+        ],
+        "seed_difference_pp": [
+          -1.2755952380952396
+        ],
+        "mean_difference_pp": -1.2755952380952396,
+        "sample_SD_pp": null,
+        "positive_seeds": 0
+      },
+      {
+        "arm": "TEMPORAL_RSC",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701
+        ],
+        "seed_difference_pp": [
+          1.1553571428571385
+        ],
+        "mean_difference_pp": 1.1553571428571385,
+        "sample_SD_pp": null,
+        "positive_seeds": 1
+      },
+      {
+        "arm": "SIG_TIME",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701
+        ],
+        "seed_difference_pp": [
+          2.992261904761906
+        ],
+        "mean_difference_pp": 2.992261904761906,
+        "sample_SD_pp": null,
+        "positive_seeds": 1
+      }
+    ],
+    "goal_84": false,
+    "remaining_seed_matrix": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+    "remaining_seed_status": "RUNNING_VERIFIED",
     "evidence": [
-      "launch_verified.json",
-      "semisupervised_entry_verified.json",
-      "source_progress_ssl_entry.json"
-    ],
-    "source_phase": "pseudo",
-    "source_qualification_complete": false,
-    "actual_gradient_epochs": [
-      1,
-      17,
-      33
-    ],
-    "original_U_recipe_and_hidden_truth_verified": true
+      "results.json",
+      "independent_statistics.json",
+      "native_recount.json",
+      "source_feature_mechanism.json",
+      "source_gradient_geometry_final.json",
+      "final_analysis.md"
+    ]
   },
   "registered_at": "2026-10-14T22:41:30+00:00",
-  "status": "RUNNING"
+  "status": "ANALYZED"
 }

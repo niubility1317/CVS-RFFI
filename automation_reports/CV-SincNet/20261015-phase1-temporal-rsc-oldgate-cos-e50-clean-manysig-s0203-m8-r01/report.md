@@ -20,3 +20,6 @@
 
 
 原首种子终轮source资格现已PASS；真实部署特征及默认W边界通过，50／11100／963900U／22200额外L前向和17／33／50骨干增量条件完整。主代理尚未读取新目标数值，现冻结原样三臂02/03扩展，先将源决定推送再发布；本文件更新时尚未启动。源决定见 `automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json`。
+
+
+已实际发布并核实RUNNING：执行／源决定 `832485cace509543a7b4e921ac7f5483a2053749`。单归档传输比较、远端编译、真实固定首SIG checkpoint无query smoke均通过；六个新worker核实原PID/CWD/argv/GPU/日志增长，记录快照完成4至5轮。源端独立复核6438个原生匹配步骤、12876个额外L前向记录、E1的78个保存遮挡批／312层936向量，两个变体实际t1/t2/SIG/W差均13/13非零、SIG为0。启动聚合 [launch_verified.json](launch_verified.json)，源前缀 [source_progress.json](source_progress.json)。原首种子源决定已先推送，再读取其新目标数值；首种子负结果不改变02/03健康任务。当前没有本矩阵新模型完整性能结果，84%未达；开头NOT_LAUNCHED为预登记历史状态，当前以本段及登记results状态为准。

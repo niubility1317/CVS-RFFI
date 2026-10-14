@@ -1,0 +1,172 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+  "source_only": true,
+  "rows": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "observed_risk_records": 888,
+      "native_records": 1079,
+      "paired_steps_recounted": 888,
+      "source_packet_observations": 113664,
+      "extra_forward_records": 1776,
+      "epochs_with_saved_actual_gradients": [
+        {
+          "epoch": 1,
+          "gradient_batches": 13,
+          "layer_records": 52,
+          "saved_vectors": 156,
+          "delta_nonzero_batches_t1_t2_SIG_W": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "mask_batches_recounted": 13
+        }
+      ],
+      "last_paired_epoch": 4,
+      "selected_packets": 38184,
+      "applied_zero_positions": 0
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "arm": "MATCHED_RANDOM",
+      "observed_risk_records": 1110,
+      "native_records": 1320,
+      "paired_steps_recounted": 1110,
+      "source_packet_observations": 142080,
+      "extra_forward_records": 2220,
+      "epochs_with_saved_actual_gradients": [
+        {
+          "epoch": 1,
+          "gradient_batches": 13,
+          "layer_records": 52,
+          "saved_vectors": 156,
+          "delta_nonzero_batches_t1_t2_SIG_W": [
+            13,
+            13,
+            13,
+            13
+          ],
+          "mask_batches_recounted": 13
+        }
+      ],
+      "last_paired_epoch": 5,
+      "selected_packets": 47730,
+      "applied_zero_positions": 525030
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "arm": "TEMPORAL_RSC",
+      "observed_risk_records": 1110,
+      "native_records": 1290,
+      "paired_steps_recounted": 1110,
+      "source_packet_observations": 142080,
+      "extra_forward_records": 2220,
+      "epochs_with_saved_actual_gradients": [
+        {
+          "epoch": 1,
+          "gradient_batches": 13,
+          "layer_records": 52,
+          "saved_vectors": 156,
+          "delta_nonzero_batches_t1_t2_SIG_W": [
+            13,
+            13,
+            13,
+            13
+          ],
+          "mask_batches_recounted": 13
+        }
+      ],
+      "last_paired_epoch": 5,
+      "selected_packets": 47730,
+      "applied_zero_positions": 525030
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "observed_risk_records": 1110,
+      "native_records": 1228,
+      "paired_steps_recounted": 1110,
+      "source_packet_observations": 142080,
+      "extra_forward_records": 2220,
+      "epochs_with_saved_actual_gradients": [
+        {
+          "epoch": 1,
+          "gradient_batches": 13,
+          "layer_records": 52,
+          "saved_vectors": 156,
+          "delta_nonzero_batches_t1_t2_SIG_W": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "mask_batches_recounted": 13
+        }
+      ],
+      "last_paired_epoch": 5,
+      "selected_packets": 47730,
+      "applied_zero_positions": 0
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "arm": "MATCHED_RANDOM",
+      "observed_risk_records": 1110,
+      "native_records": 1167,
+      "paired_steps_recounted": 1110,
+      "source_packet_observations": 142080,
+      "extra_forward_records": 2220,
+      "epochs_with_saved_actual_gradients": [
+        {
+          "epoch": 1,
+          "gradient_batches": 13,
+          "layer_records": 52,
+          "saved_vectors": 156,
+          "delta_nonzero_batches_t1_t2_SIG_W": [
+            13,
+            13,
+            13,
+            13
+          ],
+          "mask_batches_recounted": 13
+        }
+      ],
+      "last_paired_epoch": 5,
+      "selected_packets": 47730,
+      "applied_zero_positions": 525030
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "arm": "TEMPORAL_RSC",
+      "observed_risk_records": 1110,
+      "native_records": 1225,
+      "paired_steps_recounted": 1110,
+      "source_packet_observations": 142080,
+      "extra_forward_records": 2220,
+      "epochs_with_saved_actual_gradients": [
+        {
+          "epoch": 1,
+          "gradient_batches": 13,
+          "layer_records": 52,
+          "saved_vectors": 156,
+          "delta_nonzero_batches_t1_t2_SIG_W": [
+            13,
+            13,
+            13,
+            13
+          ],
+          "mask_batches_recounted": 13
+        }
+      ],
+      "last_paired_epoch": 5,
+      "selected_packets": 47730,
+      "applied_zero_positions": 525030
+    }
+  ],
+  "new_target_metrics_read": false,
+  "query_read": false,
+  "head_fit_updates": 0
+}

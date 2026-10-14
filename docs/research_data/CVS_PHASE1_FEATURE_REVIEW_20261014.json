@@ -36688,6 +36688,160 @@
       "target_metric_read_for_decision": false,
       "goal_84": false,
       "report": "automation_reports/CV-SincNet/20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md"
+    },
+    {
+      "route": "fixedSIG_TIME temporal self-challenge training firstseed",
+      "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
+      "status": "ANALYZED_VERIFIED_NEGATIVE",
+      "code_commit": "82cc7f1c24c2e5d0e20572b2654722fdc3e43a47",
+      "execution_commit": "e7a6215aa5d0a05e71c1c842e78cdfc845d57530",
+      "source_decision_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+      "model_seeds": [
+        2026092701
+      ],
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_accuracy": [
+            0.8066845238095238
+          ],
+          "accuracy_mean": 0.8066845238095238,
+          "accuracy_sample_SD": null,
+          "macro_f1_mean": 0.8017335328586674,
+          "worst_RX_mean": 0.7061666666666667,
+          "worst_day_mean": 0.7545238095238095
+        },
+        {
+          "arm": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_accuracy": [
+            0.8366071428571429
+          ],
+          "accuracy_mean": 0.8366071428571429,
+          "accuracy_sample_SD": null,
+          "macro_f1_mean": 0.832355875979482,
+          "worst_RX_mean": 0.7104583333333333,
+          "worst_day_mean": 0.7912857142857143
+        },
+        {
+          "arm": "MATCHED_RANDOM",
+          "seeds": [
+            2026092701
+          ],
+          "seed_accuracy": [
+            0.8238511904761905
+          ],
+          "accuracy_mean": 0.8238511904761905,
+          "accuracy_sample_SD": null,
+          "macro_f1_mean": 0.8189346324994674,
+          "worst_RX_mean": 0.6554166666666666,
+          "worst_day_mean": 0.7802380952380953
+        },
+        {
+          "arm": "TEMPORAL_RSC",
+          "seeds": [
+            2026092701
+          ],
+          "seed_accuracy": [
+            0.8182380952380952
+          ],
+          "accuracy_mean": 0.8182380952380952,
+          "accuracy_sample_SD": null,
+          "macro_f1_mean": 0.8128362081416807,
+          "worst_RX_mean": 0.6442083333333334,
+          "worst_day_mean": 0.7753809523809524
+        }
+      ],
+      "paired": [
+        {
+          "arm": "TEMPORAL_RSC",
+          "control": "MATCHED_RANDOM",
+          "seeds": [
+            2026092701
+          ],
+          "seed_difference_pp": [
+            -0.5613095238095278
+          ],
+          "mean_difference_pp": -0.5613095238095278,
+          "sample_SD_pp": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "TEMPORAL_RSC",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_difference_pp": [
+            -1.8369047619047674
+          ],
+          "mean_difference_pp": -1.8369047619047674,
+          "sample_SD_pp": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "MATCHED_RANDOM",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_difference_pp": [
+            -1.2755952380952396
+          ],
+          "mean_difference_pp": -1.2755952380952396,
+          "sample_SD_pp": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "TEMPORAL_RSC",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_difference_pp": [
+            1.1553571428571385
+          ],
+          "mean_difference_pp": 1.1553571428571385,
+          "sample_SD_pp": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_difference_pp": [
+            2.992261904761906
+          ],
+          "mean_difference_pp": 2.992261904761906,
+          "sample_SD_pp": null,
+          "positive_seeds": 1
+        }
+      ],
+      "new_models": 3,
+      "historical_models_reused": 1,
+      "source_epochs": 200,
+      "new_updates": 33300,
+      "actual_L_network_forwards": 99900,
+      "additional_L_forwards": 66600,
+      "default_decisions": 672000,
+      "metric_records": 72,
+      "actual_gradient_layers": 624,
+      "saved_vectors": 1872,
+      "source_qualification": "PASS",
+      "source_decision_before_target_numeric_retrieval": true,
+      "actual_feature_updates_and_export_verified": true,
+      "default_head_only": true,
+      "head_fit_updates": 0,
+      "goal84": false,
+      "remaining_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/final_analysis.md"
     }
   ],
   "diagnostics": {
@@ -82273,34 +82427,36 @@
     "源决定推送后回收首seed完整默认头clean结果、全部曲线和误差迁移；后续合并预定义三seed独立统计与实际feature witness检验84%，保留全部正负结果"
   ],
   "current_priority": {
-    "at": "2026-10-14T22:46:38.755Z",
+    "at": "2026-10-14T23:43:35.406Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": {
       "method": "Temporal_RSC",
-      "status": "RUNNING_VERIFIED",
-      "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
-      "release": "cvs_temporal_rsc50_20261015_r02",
-      "code_commit": "82cc7f1c24c2e5d0e20572b2654722fdc3e43a47",
-      "execution_commit": "e7a6215aa5d0a05e71c1c842e78cdfc845d57530",
-      "network": "Fixed SIG_TIME195041/default cosine6x160 normal joint head",
+      "status": "FIXED_REMAINING_SEEDS_RUNNING",
+      "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "first_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
+      "code_commit": "2f99d65f8a594ab1f56d84d1d7ee1011740da52c",
+      "execution_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+      "source_decision_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+      "model_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "new_models": 6,
+      "epochs_per_model": 50,
       "training_arms": [
         "SIG_TIME",
         "MATCHED_RANDOM",
         "TEMPORAL_RSC"
       ],
-      "model_seed": 2026092701,
-      "epochs_per_model": 50,
-      "original_U_recipe_unchanged": true,
-      "new_model_target_metrics_read": false,
-      "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/report.md",
-      "basis_runs": [
-        "20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01",
-        "20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01"
-      ],
-      "goal_84": false
+      "architecture_fixed": true,
+      "default_head_only": true,
+      "first_seed_retrained": false,
+      "target_feedback_to_training": false,
+      "goal84": false,
+      "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md"
     },
-    "next_semi_supervised_work": "All-U and confidence FEATURE_MT complete3 negative; design a distinct training-objective mechanism from legal source evidence, no stronger-feature-consistency scan",
+    "next_semi_supervised_work": "Keep fixed SIG_TIME/default joint head; investigate a distinct legal source-based SSL training mechanism without retuning temporal masks or feature-consistency weights using target results",
     "structural_exploration": false,
     "fixed_architecture": "SIG_TIME112→joint160; existing default cosine head jointly trained",
     "latest_ssl_first_seed": {
@@ -82710,7 +82866,7 @@
       },
       {
         "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-        "status": "SOURCE_PASS_READY_NOT_LAUNCHED",
+        "status": "RUNNING_VERIFIED",
         "code_commit": "2f99d65f8a594ab1f56d84d1d7ee1011740da52c",
         "original_source_qualification_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
         "original_source_qualification_complete": true,
@@ -82723,7 +82879,45 @@
         "negative_checks": 12,
         "public_config_roundtrip": "PASS",
         "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md",
-        "source_decision": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json"
+        "source_decision": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json",
+        "execution_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+        "source_decision_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+        "source_qualification": "PASS",
+        "actual_new_workers": 6,
+        "source_steps_independently_recounted": 6438,
+        "gradient_layer_records_recounted": 312,
+        "saved_vectors_recounted": 936,
+        "actual_observed_epochs": [
+          {
+            "row_id": "SIG_TIME-s2026092702",
+            "epoch": 4
+          },
+          {
+            "row_id": "MATCHED_RANDOM-s2026092702",
+            "epoch": 5
+          },
+          {
+            "row_id": "TEMPORAL_RSC-s2026092702",
+            "epoch": 5
+          },
+          {
+            "row_id": "SIG_TIME-s2026092703",
+            "epoch": 4
+          },
+          {
+            "row_id": "MATCHED_RANDOM-s2026092703",
+            "epoch": 4
+          },
+          {
+            "row_id": "TEMPORAL_RSC-s2026092703",
+            "epoch": 4
+          }
+        ],
+        "evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/launch_verified.json",
+        "source_progress": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/source_progress.json",
+        "new_remaining_model_target_metrics_read": false,
+        "training_formula_unchanged": true,
+        "goal84": false
       }
     ],
     "feature_mean_teacher_first_seed": {
@@ -84055,7 +84249,7 @@
       "report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
     },
     "temporal_rsc_training": {
-      "status": "SOURCE_FROZEN_VERIFIED_AWAITING_TARGET_ANALYSIS",
+      "status": "ANALYZED_VERIFIED_NEGATIVE",
       "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
       "new_models": 3,
       "reused_historical_models": 1,
@@ -84066,7 +84260,7 @@
       ],
       "actual_native_steps_recounted": 33300,
       "additional_L_forwards_recounted": 66600,
-      "actual_L_packet_observations_recounted": 1703680,
+      "actual_L_packet_observations_recounted": 4262400,
       "unique_physical_sample_count_not_inferred": true,
       "gradient_layer_records_recounted": 624,
       "saved_vectors_recounted": 1872,
@@ -84097,7 +84291,7 @@
       "additional_L_forwards_planned_per_model": 22200,
       "oldgate_U_ownEMA_cos_preserved": true,
       "launch_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/launch_verified.json",
-      "source_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_progress_ssl_entry.json",
+      "source_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/native_recount.json",
       "technical_failure_recovery": {
         "failed_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r01",
         "failed_before_workers_or_updates": true,
@@ -84106,51 +84300,27 @@
         "training_formula_unchanged": true
       },
       "actual_gradient_geometry": {
-        "status": "PARTIAL_VERIFIED",
+        "status": "VERIFIED",
         "epochs": [
           1,
           17,
-          33
+          33,
+          50
         ],
         "models": 3,
         "nominal_seed_count": 1,
-        "gradient_batches": 117,
-        "layer_records": 468,
-        "vectors": 1404,
+        "gradient_batches": 156,
+        "layer_records": 624,
+        "vectors": 1872,
         "implementation": "analysis/temporal_rsc_gradient_geometry_20261015.py",
-        "result": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_gradient_geometry_e1_e17_e33.json",
-        "RSC_E17_selected_cosine_t1_t2_SIG": [
-          0.844649730964334,
-          0.8521493323985292,
-          0.7494136444528663
-        ],
-        "RSC_E17_delta_over_unmasked_norm_t1_t2_SIG": [
-          0.6127994206203491,
-          0.594948575315775,
-          0.9091374834882165
-        ],
-        "RSC_E17_negative_selected_cosine_counts": [
-          0,
-          0,
-          0
-        ],
+        "result": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_gradient_geometry_final.json",
         "no_new_selection_rule": true,
-        "actual_export_feature_witness_pending_final50": true,
-        "RSC_E33_selected_cosine_t1_t2_SIG": [
-          0.87216474045704,
-          0.8703385222085851,
-          0.8066985829560699
-        ],
-        "RSC_E33_delta_over_unmasked_norm_t1_t2_SIG": [
-          0.6023747680691391,
-          0.6069180515161579,
-          0.7951768289063581
-        ]
+        "actual_export_feature_witness_pending_final50": false
       },
       "source_phase": "pseudo",
       "semisupervised_entry_evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/semisupervised_entry_verified.json",
-      "source_curves": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_ssl_entry_progress.json",
-      "source_plot": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_training_ssl_entry_snapshot.png",
+      "source_curves": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/full_source_curves.json",
+      "source_plot": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_training_final50.png",
       "source_plot_visual_inspection": "PASS",
       "source_curve_unit": "native val_tx_acc percent, U fraction converted topercent only in plot",
       "actual_U_packet_observations_prefix": [
@@ -84167,11 +84337,169 @@
       "source_qualification": "PASS",
       "source_decision": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json",
       "source_feature_witness": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_feature_mechanism.json",
-      "new_model_target_metrics_read": false
+      "new_model_target_metrics_read": true,
+      "route": "fixedSIG_TIME temporal self-challenge training firstseed",
+      "code_commit": "82cc7f1c24c2e5d0e20572b2654722fdc3e43a47",
+      "execution_commit": "e7a6215aa5d0a05e71c1c842e78cdfc845d57530",
+      "source_decision_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+      "model_seeds": [
+        2026092701
+      ],
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_accuracy": [
+            0.8066845238095238
+          ],
+          "accuracy_mean": 0.8066845238095238,
+          "accuracy_sample_SD": null,
+          "macro_f1_mean": 0.8017335328586674,
+          "worst_RX_mean": 0.7061666666666667,
+          "worst_day_mean": 0.7545238095238095
+        },
+        {
+          "arm": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_accuracy": [
+            0.8366071428571429
+          ],
+          "accuracy_mean": 0.8366071428571429,
+          "accuracy_sample_SD": null,
+          "macro_f1_mean": 0.832355875979482,
+          "worst_RX_mean": 0.7104583333333333,
+          "worst_day_mean": 0.7912857142857143
+        },
+        {
+          "arm": "MATCHED_RANDOM",
+          "seeds": [
+            2026092701
+          ],
+          "seed_accuracy": [
+            0.8238511904761905
+          ],
+          "accuracy_mean": 0.8238511904761905,
+          "accuracy_sample_SD": null,
+          "macro_f1_mean": 0.8189346324994674,
+          "worst_RX_mean": 0.6554166666666666,
+          "worst_day_mean": 0.7802380952380953
+        },
+        {
+          "arm": "TEMPORAL_RSC",
+          "seeds": [
+            2026092701
+          ],
+          "seed_accuracy": [
+            0.8182380952380952
+          ],
+          "accuracy_mean": 0.8182380952380952,
+          "accuracy_sample_SD": null,
+          "macro_f1_mean": 0.8128362081416807,
+          "worst_RX_mean": 0.6442083333333334,
+          "worst_day_mean": 0.7753809523809524
+        }
+      ],
+      "paired": [
+        {
+          "arm": "TEMPORAL_RSC",
+          "control": "MATCHED_RANDOM",
+          "seeds": [
+            2026092701
+          ],
+          "seed_difference_pp": [
+            -0.5613095238095278
+          ],
+          "mean_difference_pp": -0.5613095238095278,
+          "sample_SD_pp": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "TEMPORAL_RSC",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_difference_pp": [
+            -1.8369047619047674
+          ],
+          "mean_difference_pp": -1.8369047619047674,
+          "sample_SD_pp": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "MATCHED_RANDOM",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_difference_pp": [
+            -1.2755952380952396
+          ],
+          "mean_difference_pp": -1.2755952380952396,
+          "sample_SD_pp": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "TEMPORAL_RSC",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_difference_pp": [
+            1.1553571428571385
+          ],
+          "mean_difference_pp": 1.1553571428571385,
+          "sample_SD_pp": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_difference_pp": [
+            2.992261904761906
+          ],
+          "mean_difference_pp": 2.992261904761906,
+          "sample_SD_pp": null,
+          "positive_seeds": 1
+        }
+      ],
+      "historical_models_reused": 1,
+      "source_epochs": 200,
+      "new_updates": 33300,
+      "actual_L_network_forwards": 99900,
+      "additional_L_forwards": 66600,
+      "default_decisions": 672000,
+      "metric_records": 72,
+      "actual_gradient_layers": 624,
+      "saved_vectors": 1872,
+      "source_decision_before_target_numeric_retrieval": true,
+      "actual_feature_updates_and_export_verified": true,
+      "default_head_only": true,
+      "head_fit_updates": 0,
+      "goal84": false,
+      "remaining_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/final_analysis.md",
+      "actual_U_packet_observations": [
+        963900,
+        963900,
+        963900
+      ],
+      "actual_U_accepted_observations": [
+        15447,
+        15302,
+        15268
+      ]
     },
     "temporal_rsc_conditional_extension": {
       "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-      "status": "SOURCE_PASS_READY_NOT_LAUNCHED",
+      "status": "RUNNING_VERIFIED",
       "code_commit": "2f99d65f8a594ab1f56d84d1d7ee1011740da52c",
       "original_source_qualification_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
       "original_source_qualification_complete": true,
@@ -84184,7 +84512,45 @@
       "negative_checks": 12,
       "public_config_roundtrip": "PASS",
       "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md",
-      "source_decision": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json"
+      "source_decision": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json",
+      "execution_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+      "source_decision_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+      "source_qualification": "PASS",
+      "actual_new_workers": 6,
+      "source_steps_independently_recounted": 6438,
+      "gradient_layer_records_recounted": 312,
+      "saved_vectors_recounted": 936,
+      "actual_observed_epochs": [
+        {
+          "row_id": "SIG_TIME-s2026092702",
+          "epoch": 4
+        },
+        {
+          "row_id": "MATCHED_RANDOM-s2026092702",
+          "epoch": 5
+        },
+        {
+          "row_id": "TEMPORAL_RSC-s2026092702",
+          "epoch": 5
+        },
+        {
+          "row_id": "SIG_TIME-s2026092703",
+          "epoch": 4
+        },
+        {
+          "row_id": "MATCHED_RANDOM-s2026092703",
+          "epoch": 4
+        },
+        {
+          "row_id": "TEMPORAL_RSC-s2026092703",
+          "epoch": 4
+        }
+      ],
+      "evidence": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/launch_verified.json",
+      "source_progress": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/source_progress.json",
+      "new_remaining_model_target_metrics_read": false,
+      "training_formula_unchanged": true,
+      "goal84": false
     }
   }
 }

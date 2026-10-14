@@ -1,0 +1,6268 @@
+{
+  "schema": "phase1_fixed_SIG_TIME_temporal_RSC_results_v1",
+  "status": "ANALYZED_VERIFIED",
+  "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
+  "code_commit": "82cc7f1c24c2e5d0e20572b2654722fdc3e43a47",
+  "execution_commit": "e7a6215aa5d0a05e71c1c842e78cdfc845d57530",
+  "source_decision_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+  "model_seed_count": 1,
+  "model_seeds": [
+    2026092701
+  ],
+  "models": 4,
+  "newly_trained_models": 3,
+  "historical_baseline_models_reused": 1,
+  "prediction_count": 672000,
+  "metric_records": 72,
+  "summary": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701
+      ],
+      "seed_accuracy": [
+        0.8066845238095238
+      ],
+      "accuracy_mean": 0.8066845238095238,
+      "accuracy_sample_SD": null,
+      "macro_f1_mean": 0.8017335328586674,
+      "worst_RX_mean": 0.7061666666666667,
+      "worst_day_mean": 0.7545238095238095
+    },
+    {
+      "arm": "SIG_TIME",
+      "seeds": [
+        2026092701
+      ],
+      "seed_accuracy": [
+        0.8366071428571429
+      ],
+      "accuracy_mean": 0.8366071428571429,
+      "accuracy_sample_SD": null,
+      "macro_f1_mean": 0.832355875979482,
+      "worst_RX_mean": 0.7104583333333333,
+      "worst_day_mean": 0.7912857142857143
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "seeds": [
+        2026092701
+      ],
+      "seed_accuracy": [
+        0.8238511904761905
+      ],
+      "accuracy_mean": 0.8238511904761905,
+      "accuracy_sample_SD": null,
+      "macro_f1_mean": 0.8189346324994674,
+      "worst_RX_mean": 0.6554166666666666,
+      "worst_day_mean": 0.7802380952380953
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "seeds": [
+        2026092701
+      ],
+      "seed_accuracy": [
+        0.8182380952380952
+      ],
+      "accuracy_mean": 0.8182380952380952,
+      "accuracy_sample_SD": null,
+      "macro_f1_mean": 0.8128362081416807,
+      "worst_RX_mean": 0.6442083333333334,
+      "worst_day_mean": 0.7753809523809524
+    }
+  ],
+  "paired": [
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "MATCHED_RANDOM",
+      "seeds": [
+        2026092701
+      ],
+      "seed_difference_pp": [
+        -0.5613095238095278
+      ],
+      "mean_difference_pp": -0.5613095238095278,
+      "sample_SD_pp": null,
+      "positive_seeds": 0
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701
+      ],
+      "seed_difference_pp": [
+        -1.8369047619047674
+      ],
+      "mean_difference_pp": -1.8369047619047674,
+      "sample_SD_pp": null,
+      "positive_seeds": 0
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701
+      ],
+      "seed_difference_pp": [
+        -1.2755952380952396
+      ],
+      "mean_difference_pp": -1.2755952380952396,
+      "sample_SD_pp": null,
+      "positive_seeds": 0
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701
+      ],
+      "seed_difference_pp": [
+        1.1553571428571385
+      ],
+      "mean_difference_pp": 1.1553571428571385,
+      "sample_SD_pp": null,
+      "positive_seeds": 1
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701
+      ],
+      "seed_difference_pp": [
+        2.992261904761906
+      ],
+      "mean_difference_pp": 2.992261904761906,
+      "sample_SD_pp": null,
+      "positive_seeds": 1
+    }
+  ],
+  "paired_error_transitions": [
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "MATCHED_RANDOM",
+      "seed": 2026092701,
+      "corrected_errors": 1821,
+      "introduced_errors": 2764,
+      "both_correct": 135643,
+      "both_wrong": 27772,
+      "count": 168000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "SIG_TIME",
+      "seed": 2026092701,
+      "corrected_errors": 3376,
+      "introduced_errors": 6462,
+      "both_correct": 134088,
+      "both_wrong": 24074,
+      "count": 168000
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "control": "SIG_TIME",
+      "seed": 2026092701,
+      "corrected_errors": 2782,
+      "introduced_errors": 4925,
+      "both_correct": 135625,
+      "both_wrong": 24668,
+      "count": 168000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 6629,
+      "introduced_errors": 4688,
+      "both_correct": 130835,
+      "both_wrong": 25848,
+      "count": 168000
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 10375,
+      "introduced_errors": 5348,
+      "both_correct": 130175,
+      "both_wrong": 22102,
+      "count": 168000
+    }
+  ],
+  "records": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8066845238095238,
+      "macro_f1": 0.8017335328586674,
+      "macro_accuracy": 0.8066845238095238,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27366,
+          102,
+          194,
+          212,
+          75,
+          51
+        ],
+        [
+          663,
+          13628,
+          33,
+          13530,
+          118,
+          28
+        ],
+        [
+          846,
+          422,
+          22373,
+          264,
+          1013,
+          3082
+        ],
+        [
+          3467,
+          6571,
+          251,
+          17687,
+          10,
+          14
+        ],
+        [
+          6,
+          12,
+          23,
+          6,
+          27949,
+          4
+        ],
+        [
+          10,
+          15,
+          719,
+          4,
+          732,
+          26520
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.830375,
+      "macro_f1": 0.8172884729892399,
+      "macro_accuracy": 0.8303750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3997,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          79,
+          1375,
+          1,
+          2544,
+          1,
+          0
+        ],
+        [
+          377,
+          4,
+          3468,
+          1,
+          0,
+          150
+        ],
+        [
+          233,
+          24,
+          4,
+          3739,
+          0,
+          0
+        ],
+        [
+          1,
+          4,
+          8,
+          2,
+          3985,
+          0
+        ],
+        [
+          3,
+          1,
+          627,
+          2,
+          2,
+          3365
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7061666666666667,
+      "macro_f1": 0.6853753367654388,
+      "macro_accuracy": 0.7061666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          0,
+          0,
+          4,
+          0,
+          0
+        ],
+        [
+          9,
+          2036,
+          0,
+          1953,
+          2,
+          0
+        ],
+        [
+          64,
+          1,
+          2925,
+          2,
+          3,
+          1005
+        ],
+        [
+          54,
+          3651,
+          229,
+          58,
+          1,
+          7
+        ],
+        [
+          0,
+          3,
+          3,
+          1,
+          3992,
+          1
+        ],
+        [
+          0,
+          0,
+          9,
+          2,
+          48,
+          3941
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8699166666666667,
+      "macro_f1": 0.8672982470863246,
+      "macro_accuracy": 0.8699166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3590,
+          90,
+          158,
+          101,
+          61,
+          0
+        ],
+        [
+          8,
+          2063,
+          9,
+          1838,
+          68,
+          14
+        ],
+        [
+          40,
+          4,
+          3920,
+          12,
+          18,
+          6
+        ],
+        [
+          33,
+          639,
+          2,
+          3322,
+          1,
+          3
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          3998,
+          0
+        ],
+        [
+          0,
+          4,
+          9,
+          0,
+          2,
+          3985
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7254166666666667,
+      "macro_f1": 0.7264113050957538,
+      "macro_accuracy": 0.7254166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3971,
+          3,
+          15,
+          6,
+          3,
+          2
+        ],
+        [
+          29,
+          1748,
+          2,
+          2200,
+          9,
+          12
+        ],
+        [
+          136,
+          278,
+          2544,
+          178,
+          801,
+          63
+        ],
+        [
+          32,
+          2066,
+          13,
+          1881,
+          7,
+          1
+        ],
+        [
+          5,
+          5,
+          8,
+          2,
+          3978,
+          2
+        ],
+        [
+          7,
+          3,
+          71,
+          0,
+          631,
+          3288
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.873125,
+      "macro_f1": 0.8618630030139972,
+      "macro_accuracy": 0.8731249999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3832,
+          0,
+          21,
+          89,
+          9,
+          49
+        ],
+        [
+          14,
+          1430,
+          4,
+          2549,
+          3,
+          0
+        ],
+        [
+          8,
+          11,
+          3801,
+          17,
+          154,
+          9
+        ],
+        [
+          8,
+          44,
+          1,
+          3946,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          5,
+          1,
+          0,
+          47,
+          3947
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7914166666666667,
+      "macro_f1": 0.773705120944035,
+      "macro_accuracy": 0.7914166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          4,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          522,
+          2311,
+          16,
+          1118,
+          31,
+          2
+        ],
+        [
+          63,
+          1,
+          3934,
+          1,
+          1,
+          0
+        ],
+        [
+          3104,
+          134,
+          1,
+          758,
+          1,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          0,
+          2,
+          1,
+          0,
+          1,
+          3996
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.850375,
+      "macro_f1": 0.838859708437757,
+      "macro_accuracy": 0.8503750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3984,
+          4,
+          0,
+          11,
+          1,
+          0
+        ],
+        [
+          2,
+          2665,
+          1,
+          1328,
+          4,
+          0
+        ],
+        [
+          158,
+          123,
+          1781,
+          53,
+          36,
+          1849
+        ],
+        [
+          3,
+          13,
+          1,
+          3983,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          1,
+          3998
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9773571428571428,
+      "macro_f1": 0.16475815482426037,
+      "macro_accuracy": 0.9773571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27366,
+          102,
+          194,
+          212,
+          75,
+          51
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4867142857142857,
+      "macro_f1": 0.10912526824893502,
+      "macro_accuracy": 0.4867142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          663,
+          13628,
+          33,
+          13530,
+          118,
+          28
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7990357142857143,
+      "macro_f1": 0.14804888862419682,
+      "macro_accuracy": 0.7990357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          846,
+          422,
+          22373,
+          264,
+          1013,
+          3082
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6316785714285714,
+      "macro_f1": 0.12904473190769075,
+      "macro_accuracy": 0.6316785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3467,
+          6571,
+          251,
+          17687,
+          10,
+          14
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9981785714285715,
+      "macro_f1": 0.16651474259295668,
+      "macro_accuracy": 0.9981785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          12,
+          23,
+          6,
+          27949,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9471428571428572,
+      "macro_f1": 0.16214233308877476,
+      "macro_accuracy": 0.9471428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          15,
+          719,
+          4,
+          732,
+          26520
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.792404761904762,
+      "macro_f1": 0.785626106680838,
+      "macro_accuracy": 0.7924047619047618,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6678,
+          29,
+          83,
+          141,
+          20,
+          49
+        ],
+        [
+          226,
+          2891,
+          21,
+          3776,
+          71,
+          15
+        ],
+        [
+          180,
+          29,
+          5383,
+          234,
+          71,
+          1103
+        ],
+        [
+          881,
+          1464,
+          144,
+          4504,
+          5,
+          2
+        ],
+        [
+          2,
+          3,
+          8,
+          1,
+          6984,
+          2
+        ],
+        [
+          1,
+          4,
+          76,
+          0,
+          78,
+          6841
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8350238095238095,
+      "macro_f1": 0.8315746782363199,
+      "macro_accuracy": 0.8350238095238094,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6822,
+          34,
+          96,
+          5,
+          42,
+          1
+        ],
+        [
+          68,
+          4012,
+          4,
+          2910,
+          5,
+          1
+        ],
+        [
+          197,
+          93,
+          6287,
+          16,
+          54,
+          353
+        ],
+        [
+          971,
+          1969,
+          30,
+          4020,
+          2,
+          8
+        ],
+        [
+          2,
+          4,
+          7,
+          1,
+          6984,
+          2
+        ],
+        [
+          6,
+          1,
+          8,
+          0,
+          39,
+          6946
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7545238095238095,
+      "macro_f1": 0.7475948582531378,
+      "macro_accuracy": 0.7545238095238095,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6925,
+          10,
+          12,
+          44,
+          9,
+          0
+        ],
+        [
+          168,
+          2743,
+          4,
+          4066,
+          13,
+          6
+        ],
+        [
+          455,
+          259,
+          5292,
+          10,
+          112,
+          872
+        ],
+        [
+          1006,
+          2060,
+          6,
+          3926,
+          0,
+          2
+        ],
+        [
+          2,
+          1,
+          4,
+          4,
+          6989,
+          0
+        ],
+        [
+          0,
+          6,
+          583,
+          2,
+          594,
+          5815
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8447857142857143,
+      "macro_f1": 0.8401276562648019,
+      "macro_accuracy": 0.8447857142857144,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6941,
+          29,
+          3,
+          22,
+          4,
+          1
+        ],
+        [
+          201,
+          3982,
+          4,
+          2778,
+          29,
+          6
+        ],
+        [
+          14,
+          41,
+          5411,
+          4,
+          776,
+          754
+        ],
+        [
+          609,
+          1078,
+          71,
+          5237,
+          3,
+          2
+        ],
+        [
+          0,
+          4,
+          4,
+          0,
+          6992,
+          0
+        ],
+        [
+          3,
+          4,
+          52,
+          2,
+          21,
+          6918
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8366071428571429,
+      "macro_f1": 0.832355875979482,
+      "macro_accuracy": 0.8366071428571429,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27442,
+          109,
+          164,
+          189,
+          60,
+          36
+        ],
+        [
+          879,
+          15772,
+          101,
+          11030,
+          152,
+          66
+        ],
+        [
+          1835,
+          48,
+          22580,
+          27,
+          348,
+          3162
+        ],
+        [
+          3044,
+          4739,
+          612,
+          19548,
+          15,
+          42
+        ],
+        [
+          10,
+          15,
+          28,
+          8,
+          27886,
+          53
+        ],
+        [
+          22,
+          24,
+          203,
+          8,
+          421,
+          27322
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.794375,
+      "macro_f1": 0.7717741862059034,
+      "macro_accuracy": 0.794375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3976,
+          10,
+          6,
+          7,
+          1,
+          0
+        ],
+        [
+          190,
+          1368,
+          7,
+          2429,
+          6,
+          0
+        ],
+        [
+          934,
+          2,
+          1965,
+          3,
+          2,
+          1094
+        ],
+        [
+          73,
+          44,
+          1,
+          3882,
+          0,
+          0
+        ],
+        [
+          2,
+          8,
+          3,
+          2,
+          3985,
+          0
+        ],
+        [
+          4,
+          17,
+          85,
+          2,
+          3,
+          3889
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7104583333333333,
+      "macro_f1": 0.6943999107630882,
+      "macro_accuracy": 0.7104583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3995,
+          0,
+          0,
+          5,
+          0,
+          0
+        ],
+        [
+          0,
+          1736,
+          0,
+          2260,
+          4,
+          0
+        ],
+        [
+          96,
+          1,
+          2705,
+          1,
+          3,
+          1194
+        ],
+        [
+          376,
+          2418,
+          498,
+          674,
+          2,
+          32
+        ],
+        [
+          1,
+          1,
+          5,
+          0,
+          3993,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          1,
+          50,
+          3948
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.881875,
+      "macro_f1": 0.8799096511973318,
+      "macro_accuracy": 0.8818750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3676,
+          61,
+          87,
+          117,
+          51,
+          8
+        ],
+        [
+          19,
+          2585,
+          36,
+          1227,
+          114,
+          19
+        ],
+        [
+          734,
+          12,
+          3226,
+          8,
+          8,
+          12
+        ],
+        [
+          33,
+          259,
+          4,
+          3694,
+          5,
+          5
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          3998,
+          0
+        ],
+        [
+          1,
+          3,
+          5,
+          3,
+          2,
+          3986
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.811,
+      "macro_f1": 0.8095283277163313,
+      "macro_accuracy": 0.811,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3980,
+          2,
+          5,
+          3,
+          7,
+          3
+        ],
+        [
+          56,
+          2073,
+          30,
+          1791,
+          7,
+          43
+        ],
+        [
+          24,
+          23,
+          3828,
+          13,
+          37,
+          75
+        ],
+        [
+          41,
+          1789,
+          15,
+          2147,
+          7,
+          1
+        ],
+        [
+          7,
+          6,
+          18,
+          5,
+          3912,
+          52
+        ],
+        [
+          11,
+          4,
+          100,
+          1,
+          360,
+          3524
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.9195416666666667,
+      "macro_f1": 0.9175909910805755,
+      "macro_accuracy": 0.9195416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3910,
+          0,
+          47,
+          20,
+          0,
+          23
+        ],
+        [
+          37,
+          2615,
+          4,
+          1340,
+          4,
+          0
+        ],
+        [
+          8,
+          1,
+          3629,
+          1,
+          297,
+          64
+        ],
+        [
+          14,
+          58,
+          2,
+          3923,
+          1,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          3,
+          0,
+          0,
+          1,
+          3,
+          3993
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.84475,
+      "macro_f1": 0.8328964186670741,
+      "macro_accuracy": 0.84475,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3972,
+          27,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          574,
+          3073,
+          22,
+          311,
+          16,
+          4
+        ],
+        [
+          17,
+          1,
+          3980,
+          1,
+          1,
+          0
+        ],
+        [
+          2502,
+          138,
+          91,
+          1267,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          13,
+          0,
+          3,
+          3983
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.89425,
+      "macro_f1": 0.8909569789886872,
+      "macro_accuracy": 0.89425,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3933,
+          9,
+          19,
+          36,
+          1,
+          2
+        ],
+        [
+          3,
+          2322,
+          2,
+          1672,
+          1,
+          0
+        ],
+        [
+          22,
+          8,
+          3247,
+          0,
+          0,
+          723
+        ],
+        [
+          5,
+          33,
+          1,
+          3961,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9800714285714286,
+      "macro_f1": 0.16498923800247706,
+      "macro_accuracy": 0.9800714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27442,
+          109,
+          164,
+          189,
+          60,
+          36
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5632857142857143,
+      "macro_f1": 0.12010722227299035,
+      "macro_accuracy": 0.5632857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          879,
+          15772,
+          101,
+          11030,
+          152,
+          66
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8064285714285714,
+      "macro_f1": 0.14880717015948333,
+      "macro_accuracy": 0.8064285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1835,
+          48,
+          22580,
+          27,
+          348,
+          3162
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6981428571428572,
+      "macro_f1": 0.13704046437284428,
+      "macro_accuracy": 0.6981428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3044,
+          4739,
+          612,
+          19548,
+          15,
+          42
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9959285714285714,
+      "macro_f1": 0.1663266888546923,
+      "macro_accuracy": 0.9959285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          15,
+          28,
+          8,
+          27886,
+          53
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9757857142857143,
+      "macro_f1": 0.16462407963076775,
+      "macro_accuracy": 0.9757857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          22,
+          24,
+          203,
+          8,
+          421,
+          27322
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7912857142857143,
+      "macro_f1": 0.7813181596932143,
+      "macro_accuracy": 0.7912857142857143,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6776,
+          12,
+          99,
+          77,
+          13,
+          23
+        ],
+        [
+          272,
+          3032,
+          39,
+          3515,
+          91,
+          51
+        ],
+        [
+          744,
+          9,
+          4599,
+          11,
+          56,
+          1581
+        ],
+        [
+          926,
+          780,
+          211,
+          5073,
+          8,
+          2
+        ],
+        [
+          3,
+          2,
+          6,
+          1,
+          6955,
+          33
+        ],
+        [
+          5,
+          2,
+          97,
+          1,
+          96,
+          6799
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.862,
+      "macro_f1": 0.8586344506323305,
+      "macro_accuracy": 0.8620000000000001,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6850,
+          38,
+          50,
+          24,
+          32,
+          6
+        ],
+        [
+          43,
+          4521,
+          10,
+          2417,
+          7,
+          2
+        ],
+        [
+          35,
+          15,
+          6628,
+          4,
+          31,
+          287
+        ],
+        [
+          802,
+          1673,
+          225,
+          4279,
+          1,
+          20
+        ],
+        [
+          3,
+          5,
+          19,
+          3,
+          6951,
+          19
+        ],
+        [
+          4,
+          2,
+          3,
+          1,
+          15,
+          6975
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.8125714285714286,
+      "macro_f1": 0.8088286513743884,
+      "macro_accuracy": 0.8125714285714286,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6934,
+          10,
+          13,
+          32,
+          10,
+          1
+        ],
+        [
+          139,
+          3539,
+          11,
+          3288,
+          18,
+          5
+        ],
+        [
+          1014,
+          12,
+          5701,
+          9,
+          20,
+          244
+        ],
+        [
+          955,
+          1617,
+          39,
+          4384,
+          2,
+          3
+        ],
+        [
+          3,
+          4,
+          1,
+          3,
+          6988,
+          1
+        ],
+        [
+          5,
+          19,
+          90,
+          4,
+          300,
+          6582
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8805714285714286,
+      "macro_f1": 0.8775284808690927,
+      "macro_accuracy": 0.8805714285714284,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6882,
+          49,
+          2,
+          56,
+          5,
+          6
+        ],
+        [
+          425,
+          4680,
+          41,
+          1810,
+          36,
+          8
+        ],
+        [
+          42,
+          12,
+          5652,
+          3,
+          241,
+          1050
+        ],
+        [
+          361,
+          669,
+          137,
+          5812,
+          4,
+          17
+        ],
+        [
+          1,
+          4,
+          2,
+          1,
+          6992,
+          0
+        ],
+        [
+          8,
+          1,
+          13,
+          2,
+          10,
+          6966
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8238511904761905,
+      "macro_f1": 0.8189346324994674,
+      "macro_accuracy": 0.8238511904761904,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27340,
+          115,
+          196,
+          212,
+          64,
+          73
+        ],
+        [
+          909,
+          14579,
+          71,
+          12214,
+          159,
+          68
+        ],
+        [
+          1382,
+          56,
+          22853,
+          30,
+          419,
+          3260
+        ],
+        [
+          2833,
+          5367,
+          839,
+          18878,
+          12,
+          71
+        ],
+        [
+          11,
+          20,
+          33,
+          7,
+          27891,
+          38
+        ],
+        [
+          22,
+          163,
+          162,
+          7,
+          780,
+          26866
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8402083333333333,
+      "macro_f1": 0.8272660227966268,
+      "macro_accuracy": 0.8402083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3986,
+          12,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          198,
+          1480,
+          7,
+          2314,
+          1,
+          0
+        ],
+        [
+          351,
+          3,
+          3078,
+          1,
+          3,
+          564
+        ],
+        [
+          66,
+          45,
+          0,
+          3889,
+          0,
+          0
+        ],
+        [
+          4,
+          6,
+          1,
+          1,
+          3988,
+          0
+        ],
+        [
+          5,
+          153,
+          93,
+          3,
+          2,
+          3744
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6554166666666666,
+      "macro_f1": 0.6354930858807785,
+      "macro_accuracy": 0.6554166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3974,
+          0,
+          0,
+          26,
+          0,
+          0
+        ],
+        [
+          1,
+          1176,
+          0,
+          2821,
+          2,
+          0
+        ],
+        [
+          96,
+          9,
+          2543,
+          1,
+          6,
+          1345
+        ],
+        [
+          323,
+          2707,
+          710,
+          203,
+          1,
+          56
+        ],
+        [
+          0,
+          2,
+          4,
+          0,
+          3994,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          159,
+          3840
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.860125,
+      "macro_f1": 0.8576344722507018,
+      "macro_accuracy": 0.860125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3640,
+          53,
+          149,
+          95,
+          59,
+          4
+        ],
+        [
+          11,
+          2357,
+          14,
+          1498,
+          109,
+          11
+        ],
+        [
+          819,
+          8,
+          3144,
+          8,
+          11,
+          10
+        ],
+        [
+          32,
+          435,
+          4,
+          3521,
+          5,
+          3
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          1,
+          3,
+          6,
+          2,
+          4,
+          3984
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7998333333333333,
+      "macro_f1": 0.7985413993291378,
+      "macro_accuracy": 0.7998333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3983,
+          3,
+          7,
+          1,
+          3,
+          3
+        ],
+        [
+          50,
+          2139,
+          20,
+          1741,
+          8,
+          42
+        ],
+        [
+          21,
+          21,
+          3838,
+          17,
+          43,
+          60
+        ],
+        [
+          26,
+          1946,
+          16,
+          2005,
+          6,
+          1
+        ],
+        [
+          7,
+          11,
+          25,
+          4,
+          3916,
+          37
+        ],
+        [
+          10,
+          3,
+          62,
+          1,
+          609,
+          3315
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8907916666666666,
+      "macro_f1": 0.8848318161464218,
+      "macro_accuracy": 0.8907916666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3879,
+          0,
+          34,
+          21,
+          1,
+          65
+        ],
+        [
+          49,
+          1975,
+          3,
+          1969,
+          4,
+          0
+        ],
+        [
+          9,
+          1,
+          3597,
+          0,
+          354,
+          39
+        ],
+        [
+          9,
+          50,
+          2,
+          3938,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          2,
+          3,
+          0,
+          1,
+          3,
+          3991
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8459166666666667,
+      "macro_f1": 0.8351526624064372,
+      "macro_accuracy": 0.8459166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3956,
+          42,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          600,
+          3034,
+          25,
+          296,
+          30,
+          15
+        ],
+        [
+          35,
+          1,
+          3962,
+          1,
+          1,
+          0
+        ],
+        [
+          2372,
+          155,
+          107,
+          1356,
+          0,
+          10
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          3,
+          3995
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8746666666666667,
+      "macro_f1": 0.870608869038136,
+      "macro_accuracy": 0.8746666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3922,
+          5,
+          5,
+          66,
+          1,
+          1
+        ],
+        [
+          0,
+          2418,
+          2,
+          1575,
+          5,
+          0
+        ],
+        [
+          51,
+          13,
+          2691,
+          2,
+          1,
+          1242
+        ],
+        [
+          5,
+          29,
+          0,
+          3966,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          3998,
+          0
+        ],
+        [
+          3,
+          0,
+          0,
+          0,
+          0,
+          3997
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9764285714285714,
+      "macro_f1": 0.16467895434285026,
+      "macro_accuracy": 0.9764285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27340,
+          115,
+          196,
+          212,
+          64,
+          73
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5206785714285714,
+      "macro_f1": 0.11413294503550264,
+      "macro_accuracy": 0.5206785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          909,
+          14579,
+          71,
+          12214,
+          159,
+          68
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8161785714285714,
+      "macro_f1": 0.14979778315274747,
+      "macro_accuracy": 0.8161785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1382,
+          56,
+          22853,
+          30,
+          419,
+          3260
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6742142857142858,
+      "macro_f1": 0.13423496451782643,
+      "macro_accuracy": 0.6742142857142858,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2833,
+          5367,
+          839,
+          18878,
+          12,
+          71
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9961071428571429,
+      "macro_f1": 0.166341629242633,
+      "macro_accuracy": 0.9961071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          11,
+          20,
+          33,
+          7,
+          27891,
+          38
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9595,
+      "macro_f1": 0.1632219103512801,
+      "macro_accuracy": 0.9595,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          22,
+          163,
+          162,
+          7,
+          780,
+          26866
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7802380952380953,
+      "macro_f1": 0.7698674047863259,
+      "macro_accuracy": 0.7802380952380953,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6752,
+          15,
+          78,
+          83,
+          7,
+          65
+        ],
+        [
+          237,
+          2938,
+          28,
+          3662,
+          85,
+          50
+        ],
+        [
+          829,
+          9,
+          4537,
+          14,
+          105,
+          1506
+        ],
+        [
+          819,
+          980,
+          295,
+          4895,
+          7,
+          4
+        ],
+        [
+          4,
+          5,
+          7,
+          1,
+          6963,
+          20
+        ],
+        [
+          3,
+          4,
+          58,
+          0,
+          250,
+          6685
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8503333333333334,
+      "macro_f1": 0.8467040396317772,
+      "macro_accuracy": 0.8503333333333334,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6777,
+          47,
+          94,
+          40,
+          39,
+          3
+        ],
+        [
+          30,
+          4420,
+          8,
+          2531,
+          8,
+          3
+        ],
+        [
+          81,
+          10,
+          6392,
+          4,
+          28,
+          485
+        ],
+        [
+          736,
+          1599,
+          397,
+          4243,
+          2,
+          23
+        ],
+        [
+          3,
+          6,
+          22,
+          2,
+          6950,
+          17
+        ],
+        [
+          5,
+          7,
+          4,
+          1,
+          51,
+          6932
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7932857142857143,
+      "macro_f1": 0.7880563045490044,
+      "macro_accuracy": 0.7932857142857143,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6904,
+          14,
+          19,
+          52,
+          10,
+          1
+        ],
+        [
+          183,
+          2979,
+          7,
+          3809,
+          19,
+          3
+        ],
+        [
+          455,
+          20,
+          6057,
+          8,
+          21,
+          439
+        ],
+        [
+          930,
+          1916,
+          49,
+          4098,
+          0,
+          7
+        ],
+        [
+          1,
+          6,
+          2,
+          4,
+          6986,
+          1
+        ],
+        [
+          5,
+          150,
+          88,
+          3,
+          460,
+          6294
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "arm": "MATCHED_RANDOM",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.871547619047619,
+      "macro_f1": 0.8676775515064626,
+      "macro_accuracy": 0.871547619047619,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6907,
+          39,
+          5,
+          37,
+          8,
+          4
+        ],
+        [
+          459,
+          4242,
+          28,
+          2212,
+          47,
+          12
+        ],
+        [
+          17,
+          17,
+          5867,
+          4,
+          265,
+          830
+        ],
+        [
+          348,
+          872,
+          98,
+          5642,
+          3,
+          37
+        ],
+        [
+          3,
+          3,
+          2,
+          0,
+          6992,
+          0
+        ],
+        [
+          9,
+          2,
+          12,
+          3,
+          19,
+          6955
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8182380952380952,
+      "macro_f1": 0.8128362081416807,
+      "macro_accuracy": 0.8182380952380952,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27285,
+          137,
+          190,
+          190,
+          70,
+          128
+        ],
+        [
+          965,
+          13647,
+          75,
+          13117,
+          135,
+          61
+        ],
+        [
+          1235,
+          64,
+          22907,
+          28,
+          455,
+          3311
+        ],
+        [
+          2460,
+          5620,
+          950,
+          18861,
+          13,
+          96
+        ],
+        [
+          9,
+          21,
+          31,
+          10,
+          27835,
+          94
+        ],
+        [
+          24,
+          276,
+          178,
+          4,
+          589,
+          26929
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8515833333333334,
+      "macro_f1": 0.8393938491348568,
+      "macro_accuracy": 0.8515833333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3985,
+          5,
+          8,
+          2,
+          0,
+          0
+        ],
+        [
+          235,
+          1458,
+          6,
+          2298,
+          3,
+          0
+        ],
+        [
+          5,
+          2,
+          3529,
+          2,
+          3,
+          459
+        ],
+        [
+          72,
+          49,
+          0,
+          3879,
+          0,
+          0
+        ],
+        [
+          3,
+          6,
+          4,
+          2,
+          3985,
+          0
+        ],
+        [
+          5,
+          266,
+          123,
+          2,
+          2,
+          3602
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6442083333333334,
+      "macro_f1": 0.6240742301882963,
+      "macro_accuracy": 0.6442083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3989,
+          0,
+          0,
+          11,
+          0,
+          0
+        ],
+        [
+          1,
+          1089,
+          0,
+          2908,
+          2,
+          0
+        ],
+        [
+          265,
+          21,
+          2249,
+          1,
+          59,
+          1405
+        ],
+        [
+          48,
+          2860,
+          838,
+          175,
+          1,
+          78
+        ],
+        [
+          0,
+          2,
+          4,
+          0,
+          3993,
+          1
+        ],
+        [
+          1,
+          1,
+          0,
+          0,
+          32,
+          3966
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8540416666666667,
+      "macro_f1": 0.850892441547428,
+      "macro_accuracy": 0.8540416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3611,
+          72,
+          153,
+          97,
+          63,
+          4
+        ],
+        [
+          26,
+          2192,
+          26,
+          1666,
+          76,
+          14
+        ],
+        [
+          773,
+          8,
+          3190,
+          7,
+          14,
+          8
+        ],
+        [
+          41,
+          420,
+          5,
+          3523,
+          5,
+          6
+        ],
+        [
+          1,
+          0,
+          1,
+          2,
+          3996,
+          0
+        ],
+        [
+          3,
+          3,
+          5,
+          1,
+          3,
+          3985
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.791875,
+      "macro_f1": 0.7908598808620334,
+      "macro_accuracy": 0.791875,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3982,
+          2,
+          7,
+          2,
+          5,
+          2
+        ],
+        [
+          38,
+          1992,
+          17,
+          1901,
+          11,
+          41
+        ],
+        [
+          15,
+          24,
+          3818,
+          17,
+          47,
+          79
+        ],
+        [
+          31,
+          1995,
+          16,
+          1951,
+          6,
+          1
+        ],
+        [
+          5,
+          12,
+          21,
+          6,
+          3866,
+          90
+        ],
+        [
+          10,
+          2,
+          42,
+          1,
+          549,
+          3396
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.874875,
+      "macro_f1": 0.865272614592875,
+      "macro_accuracy": 0.874875,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3841,
+          0,
+          21,
+          16,
+          1,
+          121
+        ],
+        [
+          55,
+          1637,
+          2,
+          2303,
+          3,
+          0
+        ],
+        [
+          13,
+          2,
+          3599,
+          0,
+          329,
+          57
+        ],
+        [
+          12,
+          56,
+          0,
+          3929,
+          1,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          2,
+          3,
+          2,
+          0,
+          1,
+          3992
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8425416666666666,
+      "macro_f1": 0.8329146638425438,
+      "macro_accuracy": 0.8425416666666669,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3944,
+          55,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          610,
+          2909,
+          21,
+          416,
+          38,
+          6
+        ],
+        [
+          55,
+          1,
+          3942,
+          1,
+          1,
+          0
+        ],
+        [
+          2251,
+          212,
+          90,
+          1438,
+          0,
+          9
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          1,
+          1,
+          6,
+          0,
+          2,
+          3990
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8685416666666667,
+      "macro_f1": 0.8634992207433108,
+      "macro_accuracy": 0.8685416666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3933,
+          3,
+          1,
+          61,
+          1,
+          1
+        ],
+        [
+          0,
+          2370,
+          3,
+          1625,
+          2,
+          0
+        ],
+        [
+          109,
+          6,
+          2580,
+          0,
+          2,
+          1303
+        ],
+        [
+          5,
+          28,
+          1,
+          3966,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          3998,
+          1
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          0,
+          3998
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9744642857142857,
+      "macro_f1": 0.16451116939495342,
+      "macro_accuracy": 0.9744642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27285,
+          137,
+          190,
+          190,
+          70,
+          128
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4873928571428571,
+      "macro_f1": 0.1092275554061517,
+      "macro_accuracy": 0.4873928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          965,
+          13647,
+          75,
+          13117,
+          135,
+          61
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8181071428571428,
+      "macro_f1": 0.14999246992882445,
+      "macro_accuracy": 0.8181071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1235,
+          64,
+          22907,
+          28,
+          455,
+          3311
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6736071428571428,
+      "macro_f1": 0.13416273660399905,
+      "macro_accuracy": 0.6736071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2460,
+          5620,
+          950,
+          18861,
+          13,
+          96
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9941071428571429,
+      "macro_f1": 0.16617414405540135,
+      "macro_accuracy": 0.9941071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          9,
+          21,
+          31,
+          10,
+          27835,
+          94
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.96175,
+      "macro_f1": 0.16341701711906886,
+      "macro_accuracy": 0.96175,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          24,
+          276,
+          178,
+          4,
+          589,
+          26929
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7753809523809524,
+      "macro_f1": 0.7632430479174334,
+      "macro_accuracy": 0.7753809523809524,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6731,
+          12,
+          62,
+          67,
+          8,
+          120
+        ],
+        [
+          243,
+          2502,
+          30,
+          4118,
+          70,
+          37
+        ],
+        [
+          777,
+          9,
+          4702,
+          13,
+          117,
+          1382
+        ],
+        [
+          535,
+          1170,
+          390,
+          4892,
+          7,
+          6
+        ],
+        [
+          2,
+          7,
+          6,
+          0,
+          6936,
+          49
+        ],
+        [
+          5,
+          4,
+          38,
+          0,
+          150,
+          6803
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8426428571428571,
+      "macro_f1": 0.8389216888445881,
+      "macro_accuracy": 0.8426428571428571,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6743,
+          70,
+          105,
+          28,
+          49,
+          5
+        ],
+        [
+          41,
+          4240,
+          7,
+          2701,
+          6,
+          5
+        ],
+        [
+          149,
+          9,
+          6237,
+          3,
+          23,
+          579
+        ],
+        [
+          685,
+          1573,
+          433,
+          4272,
+          3,
+          34
+        ],
+        [
+          3,
+          6,
+          20,
+          5,
+          6923,
+          43
+        ],
+        [
+          4,
+          2,
+          4,
+          1,
+          13,
+          6976
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7820476190476191,
+      "macro_f1": 0.7760415503276846,
+      "macro_accuracy": 0.782047619047619,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6919,
+          13,
+          17,
+          40,
+          10,
+          1
+        ],
+        [
+          181,
+          2687,
+          8,
+          4101,
+          19,
+          4
+        ],
+        [
+          285,
+          30,
+          5999,
+          8,
+          75,
+          603
+        ],
+        [
+          913,
+          1954,
+          55,
+          4070,
+          1,
+          7
+        ],
+        [
+          2,
+          4,
+          4,
+          5,
+          6983,
+          2
+        ],
+        [
+          4,
+          268,
+          126,
+          1,
+          413,
+          6188
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "arm": "TEMPORAL_RSC",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8728809523809524,
+      "macro_f1": 0.8690962718312777,
+      "macro_accuracy": 0.8728809523809523,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6892,
+          42,
+          6,
+          55,
+          3,
+          2
+        ],
+        [
+          500,
+          4218,
+          30,
+          2197,
+          40,
+          15
+        ],
+        [
+          24,
+          16,
+          5969,
+          4,
+          240,
+          747
+        ],
+        [
+          327,
+          923,
+          72,
+          5627,
+          2,
+          49
+        ],
+        [
+          2,
+          4,
+          1,
+          0,
+          6993,
+          0
+        ],
+        [
+          11,
+          2,
+          10,
+          2,
+          13,
+          6962
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    }
+  ],
+  "source_qualification": {
+    "status": "PASS",
+    "source_only": true,
+    "target_metrics_read_for_decision": false,
+    "actual_observations": {
+      "SIG_TIME": {
+        "status": "VERIFIED",
+        "row_id": "SIG_TIME-s2026092701",
+        "arm": "SIG_TIME",
+        "steps": 11100,
+        "actual_L_packet_observations": 1420800,
+        "curves": [
+          {
+            "epoch": 1,
+            "source_packets": 28416,
+            "unmasked_CE": 1.4169632089030635,
+            "selected_CE": 1.4169632089030635,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.10467389570800839
+          },
+          {
+            "epoch": 2,
+            "source_packets": 28416,
+            "unmasked_CE": 0.5941078061456079,
+            "selected_CE": 0.5941078061456079,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.18689304813407026
+          },
+          {
+            "epoch": 3,
+            "source_packets": 28416,
+            "unmasked_CE": 0.4042396857529073,
+            "selected_CE": 0.4042396857529073,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1851539121823268
+          },
+          {
+            "epoch": 4,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3184036601099882,
+            "selected_CE": 0.3184036601099882,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.18863146433287914
+          },
+          {
+            "epoch": 5,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2991773421028713,
+            "selected_CE": 0.2991773421028713,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1909679008295407
+          },
+          {
+            "epoch": 6,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29850956317675004,
+            "selected_CE": 0.29850956317675004,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.19973079796444188
+          },
+          {
+            "epoch": 7,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26025555061327443,
+            "selected_CE": 0.26025555061327443,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2047599299668192
+          },
+          {
+            "epoch": 8,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2558149292326725,
+            "selected_CE": 0.2558149292326725,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.21784121026326944
+          },
+          {
+            "epoch": 9,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2527082329196436,
+            "selected_CE": 0.2527082329196436,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.21693521456138506
+          },
+          {
+            "epoch": 10,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2610078288561052,
+            "selected_CE": 0.2610078288561052,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2149612275329796
+          },
+          {
+            "epoch": 11,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2868764017549184,
+            "selected_CE": 0.2868764017549184,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2120973968895169
+          },
+          {
+            "epoch": 12,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2699966504498645,
+            "selected_CE": 0.2699966504498645,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.21488011480720193
+          },
+          {
+            "epoch": 13,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2788494610571646,
+            "selected_CE": 0.2788494610571646,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.21628819197953283
+          },
+          {
+            "epoch": 14,
+            "source_packets": 28416,
+            "unmasked_CE": 0.34744516528538755,
+            "selected_CE": 0.34744516528538755,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2205386759193094
+          },
+          {
+            "epoch": 15,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3174056414481219,
+            "selected_CE": 0.3174056414481219,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2234526726979393
+          },
+          {
+            "epoch": 16,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26430795408852464,
+            "selected_CE": 0.26430795408852464,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.22201986563903792
+          },
+          {
+            "epoch": 17,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2822159448185483,
+            "selected_CE": 0.2822159448185483,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2161834208747825
+          },
+          {
+            "epoch": 18,
+            "source_packets": 28416,
+            "unmasked_CE": 0.32754590892576957,
+            "selected_CE": 0.32754590892576957,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2123969530200099
+          },
+          {
+            "epoch": 19,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2907911468263682,
+            "selected_CE": 0.2907911468263682,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.21546301883351696
+          },
+          {
+            "epoch": 20,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2784755506158412,
+            "selected_CE": 0.2784755506158412,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.214960129042198
+          },
+          {
+            "epoch": 21,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30980562526095023,
+            "selected_CE": 0.30980562526095023,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.21143996306099333
+          },
+          {
+            "epoch": 22,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28515295177563893,
+            "selected_CE": 0.28515295177563893,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.21681722105891854
+          },
+          {
+            "epoch": 23,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2857284940577842,
+            "selected_CE": 0.2857284940577842,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2071793443850569
+          },
+          {
+            "epoch": 24,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27375868466254827,
+            "selected_CE": 0.27375868466254827,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.21390952914953232
+          },
+          {
+            "epoch": 25,
+            "source_packets": 28416,
+            "unmasked_CE": 0.229716493135637,
+            "selected_CE": 0.229716493135637,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2096210325489173
+          },
+          {
+            "epoch": 26,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25069972594176326,
+            "selected_CE": 0.25069972594176326,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2080870553314149
+          },
+          {
+            "epoch": 27,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2809705118741001,
+            "selected_CE": 0.2809705118741001,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.21158651651831362
+          },
+          {
+            "epoch": 28,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2547023948785421,
+            "selected_CE": 0.2547023948785421,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.21286549989704615
+          },
+          {
+            "epoch": 29,
+            "source_packets": 28416,
+            "unmasked_CE": 0.21706000933641786,
+            "selected_CE": 0.21706000933641786,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.20499895237856083
+          },
+          {
+            "epoch": 30,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2717889038225015,
+            "selected_CE": 0.2717889038225015,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2012460967441937
+          },
+          {
+            "epoch": 31,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27322558538468034,
+            "selected_CE": 0.27322558538468034,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.20418694024687414
+          },
+          {
+            "epoch": 32,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24427962507884782,
+            "selected_CE": 0.24427962507884782,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.20347400029768814
+          },
+          {
+            "epoch": 33,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2574909047836119,
+            "selected_CE": 0.2574909047836119,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.20120811381855527
+          },
+          {
+            "epoch": 34,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22317181530970712,
+            "selected_CE": 0.22317181530970712,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.20181706634996174
+          },
+          {
+            "epoch": 35,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23012507559211404,
+            "selected_CE": 0.23012507559211404,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.20188767409270947
+          },
+          {
+            "epoch": 36,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22181581779643222,
+            "selected_CE": 0.22181581779643222,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2017957072805714
+          },
+          {
+            "epoch": 37,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25921466731810355,
+            "selected_CE": 0.25921466731810355,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.20363566084756507
+          },
+          {
+            "epoch": 38,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27013710389534634,
+            "selected_CE": 0.27013710389534634,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2021603854792612
+          },
+          {
+            "epoch": 39,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2349598516147953,
+            "selected_CE": 0.2349598516147953,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2004006442253117
+          },
+          {
+            "epoch": 40,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22767566802265407,
+            "selected_CE": 0.22767566802265407,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.2038112087426959
+          },
+          {
+            "epoch": 41,
+            "source_packets": 28416,
+            "unmasked_CE": 0.21850056332108136,
+            "selected_CE": 0.21850056332108136,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.20056125414264095
+          },
+          {
+            "epoch": 42,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2675336430201659,
+            "selected_CE": 0.2675336430201659,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.19955678257319304
+          },
+          {
+            "epoch": 43,
+            "source_packets": 28416,
+            "unmasked_CE": 0.21165383503109486,
+            "selected_CE": 0.21165383503109486,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.19857007103997307
+          },
+          {
+            "epoch": 44,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22659387365654782,
+            "selected_CE": 0.22659387365654782,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1961136040789587
+          },
+          {
+            "epoch": 45,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24513013644127157,
+            "selected_CE": 0.24513013644127157,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.19837992638349533
+          },
+          {
+            "epoch": 46,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24263487108521634,
+            "selected_CE": 0.24263487108521634,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.19921177498123668
+          },
+          {
+            "epoch": 47,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2084767698637537,
+            "selected_CE": 0.2084767698637537,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.19797891103201085
+          },
+          {
+            "epoch": 48,
+            "source_packets": 28416,
+            "unmasked_CE": 0.229514883277384,
+            "selected_CE": 0.229514883277384,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.19532073463674063
+          },
+          {
+            "epoch": 49,
+            "source_packets": 28416,
+            "unmasked_CE": 0.21303183068563272,
+            "selected_CE": 0.21303183068563272,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1953486406856829
+          },
+          {
+            "epoch": 50,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2475073067723094,
+            "selected_CE": 0.2475073067723094,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1995670103409269
+          }
+        ],
+        "last5_unmasked_CE": 0.22823313233685924,
+        "native_U_objective_unchanged": true,
+        "body_signal": false,
+        "gradient_layer_records": 208,
+        "saved_vectors": 624,
+        "mask_batches_recounted": 52,
+        "extra_model_forwards": 22200,
+        "actual_L_network_forwards": 33300,
+        "head_fit_updates": 0,
+        "query_read": false
+      },
+      "MATCHED_RANDOM": {
+        "status": "VERIFIED",
+        "row_id": "MATCHED_RANDOM-s2026092701",
+        "arm": "MATCHED_RANDOM",
+        "steps": 11100,
+        "actual_L_packet_observations": 1420800,
+        "curves": [
+          {
+            "epoch": 1,
+            "source_packets": 28416,
+            "unmasked_CE": 1.4537397480762757,
+            "selected_CE": 1.499934811849852,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.06481111073564436
+          },
+          {
+            "epoch": 2,
+            "source_packets": 28416,
+            "unmasked_CE": 0.6012785567625148,
+            "selected_CE": 0.648923493988879,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.08963807837550973
+          },
+          {
+            "epoch": 3,
+            "source_packets": 28416,
+            "unmasked_CE": 0.41176979867993174,
+            "selected_CE": 0.44967430413843273,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.07325674440745297
+          },
+          {
+            "epoch": 4,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3275065083761473,
+            "selected_CE": 0.35991919242046977,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.06026880755215078
+          },
+          {
+            "epoch": 5,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30866261517947857,
+            "selected_CE": 0.33858561180196367,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.053631679029078096
+          },
+          {
+            "epoch": 6,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30970781846894874,
+            "selected_CE": 0.33825939880298067,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.04556168182039851
+          },
+          {
+            "epoch": 7,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2685578279197216,
+            "selected_CE": 0.29611932439310057,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.041616067898602366
+          },
+          {
+            "epoch": 8,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2619348603325921,
+            "selected_CE": 0.2887202508344844,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.03749902721343411
+          },
+          {
+            "epoch": 9,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2585792041778027,
+            "selected_CE": 0.28631869270592125,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.037892173887608016
+          },
+          {
+            "epoch": 10,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26208018001403893,
+            "selected_CE": 0.2875432700321481,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.03546342331714727
+          },
+          {
+            "epoch": 11,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2891022619027812,
+            "selected_CE": 0.3159140714586855,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.033865792672611306
+          },
+          {
+            "epoch": 12,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27398334383159073,
+            "selected_CE": 0.3018940359286897,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.03036951078920046
+          },
+          {
+            "epoch": 13,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28383439051004145,
+            "selected_CE": 0.3103147902869963,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.03232606775798575
+          },
+          {
+            "epoch": 14,
+            "source_packets": 28416,
+            "unmasked_CE": 0.35128819388715,
+            "selected_CE": 0.37807763931719035,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.028086457707759766
+          },
+          {
+            "epoch": 15,
+            "source_packets": 28416,
+            "unmasked_CE": 0.32407889078866253,
+            "selected_CE": 0.3511027600112799,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.03248400266936703
+          },
+          {
+            "epoch": 16,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26886469246567907,
+            "selected_CE": 0.29203595939251753,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02764437205435054
+          },
+          {
+            "epoch": 17,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28616079238352476,
+            "selected_CE": 0.31042386635064007,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.027569928139381042
+          },
+          {
+            "epoch": 18,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3333369933471486,
+            "selected_CE": 0.3581667906596317,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02584984966738334
+          },
+          {
+            "epoch": 19,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29938939113069224,
+            "selected_CE": 0.3266414058906538,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02613866859879177
+          },
+          {
+            "epoch": 20,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28494234910016664,
+            "selected_CE": 0.3099404861059812,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02464550208124156
+          },
+          {
+            "epoch": 21,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3124690574367304,
+            "selected_CE": 0.3354221464613,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02303112077533041
+          },
+          {
+            "epoch": 22,
+            "source_packets": 28416,
+            "unmasked_CE": 0.289621013006917,
+            "selected_CE": 0.3140926578224779,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.024754452084921098
+          },
+          {
+            "epoch": 23,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2945430296565498,
+            "selected_CE": 0.3194354040598547,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02275000026382439
+          },
+          {
+            "epoch": 24,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27930134944282137,
+            "selected_CE": 0.30240306342104534,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.024908152419385744
+          },
+          {
+            "epoch": 25,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23550332924938416,
+            "selected_CE": 0.25729265701663384,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.021908994028365728
+          },
+          {
+            "epoch": 26,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25496954242656894,
+            "selected_CE": 0.2769462028602222,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02151287617875045
+          },
+          {
+            "epoch": 27,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2835947152327847,
+            "selected_CE": 0.30607530122270454,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.019694365230116254
+          },
+          {
+            "epoch": 28,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26081158747678407,
+            "selected_CE": 0.2831835910543665,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.020945004776942434
+          },
+          {
+            "epoch": 29,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22098252871954763,
+            "selected_CE": 0.24258111266268267,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.019567769027088542
+          },
+          {
+            "epoch": 30,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2759295862738614,
+            "selected_CE": 0.2962421778555926,
+            "selected_packets": 9546,
+            "masked_positions": 105007,
+            "probability_drop_mean": 0.019070415824718842
+          },
+          {
+            "epoch": 31,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2803535819859118,
+            "selected_CE": 0.302255102139604,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.020014325903544017
+          },
+          {
+            "epoch": 32,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24993717902012774,
+            "selected_CE": 0.2700734820451822,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.019282576309198194
+          },
+          {
+            "epoch": 33,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2615171410814599,
+            "selected_CE": 0.28224932217785903,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.018368272299601418
+          },
+          {
+            "epoch": 34,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22700438816268165,
+            "selected_CE": 0.24737416758193626,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01911066219563017
+          },
+          {
+            "epoch": 35,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2365942930316066,
+            "selected_CE": 0.2575640149817273,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.018424408716938314
+          },
+          {
+            "epoch": 36,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22683723928692104,
+            "selected_CE": 0.24631274152580682,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01876778418286326
+          },
+          {
+            "epoch": 37,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26645034816753754,
+            "selected_CE": 0.2884742340056209,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01961833562257255
+          },
+          {
+            "epoch": 38,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27660911825594603,
+            "selected_CE": 0.29800372114321133,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01830454311451061
+          },
+          {
+            "epoch": 39,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24292630333084245,
+            "selected_CE": 0.26208828500396497,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.017248434383791308
+          },
+          {
+            "epoch": 40,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2306588047125318,
+            "selected_CE": 0.25019376399415033,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.019502172343063732
+          },
+          {
+            "epoch": 41,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2198888755462191,
+            "selected_CE": 0.23879131221690694,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.018742476835393825
+          },
+          {
+            "epoch": 42,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2695489024726657,
+            "selected_CE": 0.2907429313001869,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.019123613833332317
+          },
+          {
+            "epoch": 43,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2137496483487052,
+            "selected_CE": 0.2317154565238738,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01783948504053442
+          },
+          {
+            "epoch": 44,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23072581308650542,
+            "selected_CE": 0.24991695488895382,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0175126921595284
+          },
+          {
+            "epoch": 45,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2511102465895919,
+            "selected_CE": 0.27275620877474277,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.018176129467466526
+          },
+          {
+            "epoch": 46,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2503516010201729,
+            "selected_CE": 0.2714805486905682,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01864251249935478
+          },
+          {
+            "epoch": 47,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2145440969112757,
+            "selected_CE": 0.23476524979950072,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0182160631730431
+          },
+          {
+            "epoch": 48,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23434923277110667,
+            "selected_CE": 0.25323026446071834,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.017361649153712164
+          },
+          {
+            "epoch": 49,
+            "source_packets": 28416,
+            "unmasked_CE": 0.21589843724090774,
+            "selected_CE": 0.23618209244565921,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.017992991795721423
+          },
+          {
+            "epoch": 50,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2543302475399262,
+            "selected_CE": 0.2754051863878697,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.019506572261200967
+          }
+        ],
+        "last5_unmasked_CE": 0.23389472309667786,
+        "native_U_objective_unchanged": true,
+        "body_signal": true,
+        "gradient_layer_records": 208,
+        "saved_vectors": 624,
+        "mask_batches_recounted": 52,
+        "extra_model_forwards": 22200,
+        "actual_L_network_forwards": 33300,
+        "head_fit_updates": 0,
+        "query_read": false
+      },
+      "TEMPORAL_RSC": {
+        "status": "VERIFIED",
+        "row_id": "TEMPORAL_RSC-s2026092701",
+        "arm": "TEMPORAL_RSC",
+        "steps": 11100,
+        "actual_L_packet_observations": 1420800,
+        "curves": [
+          {
+            "epoch": 1,
+            "source_packets": 28416,
+            "unmasked_CE": 1.4930618085839726,
+            "selected_CE": 1.5795373100418229,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.03255530818038293
+          },
+          {
+            "epoch": 2,
+            "source_packets": 28416,
+            "unmasked_CE": 0.6030732340909339,
+            "selected_CE": 0.6891694459560755,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.04664825102175913
+          },
+          {
+            "epoch": 3,
+            "source_packets": 28416,
+            "unmasked_CE": 0.4109097950093381,
+            "selected_CE": 0.4727948243553574,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.030905737075954676
+          },
+          {
+            "epoch": 4,
+            "source_packets": 28416,
+            "unmasked_CE": 0.32460836972202267,
+            "selected_CE": 0.37521960572884966,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02303737797040224
+          },
+          {
+            "epoch": 5,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30580675192512907,
+            "selected_CE": 0.3524766207278312,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01772123686434399
+          },
+          {
+            "epoch": 6,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30962069664855263,
+            "selected_CE": 0.35305476611530456,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.014199795859010034
+          },
+          {
+            "epoch": 7,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2700294701902716,
+            "selected_CE": 0.31142408112147907,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.013577855125002496
+          },
+          {
+            "epoch": 8,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2608886161097535,
+            "selected_CE": 0.2993616206688924,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011997115446951005
+          },
+          {
+            "epoch": 9,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25818506836354194,
+            "selected_CE": 0.2980677414316315,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012285093365232922
+          },
+          {
+            "epoch": 10,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2632420223776822,
+            "selected_CE": 0.3038384741222536,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011220554646045842
+          },
+          {
+            "epoch": 11,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28720580417293684,
+            "selected_CE": 0.32857111525965166,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.010442428875018147
+          },
+          {
+            "epoch": 12,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27284569239562695,
+            "selected_CE": 0.31161278301665374,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.009639757185092045
+          },
+          {
+            "epoch": 13,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28217255230154004,
+            "selected_CE": 0.32023050904542477,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.008967157975594336
+          },
+          {
+            "epoch": 14,
+            "source_packets": 28416,
+            "unmasked_CE": 0.35252976860549,
+            "selected_CE": 0.39481150657609776,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.00654173033995772
+          },
+          {
+            "epoch": 15,
+            "source_packets": 28416,
+            "unmasked_CE": 0.32273534729002834,
+            "selected_CE": 0.36291746170939626,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.005718302953388408
+          },
+          {
+            "epoch": 16,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2687160073368399,
+            "selected_CE": 0.30385927198169466,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.00677151002591845
+          },
+          {
+            "epoch": 17,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2871236623608851,
+            "selected_CE": 0.323082357108056,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.004817423382396433
+          },
+          {
+            "epoch": 18,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3326805289666932,
+            "selected_CE": 0.37014773273253226,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0038213429575039257
+          },
+          {
+            "epoch": 19,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2991309330404342,
+            "selected_CE": 0.3356717009399388,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.004465557673897779
+          },
+          {
+            "epoch": 20,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28306602921571816,
+            "selected_CE": 0.3186403971064735,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.004181836738549005
+          },
+          {
+            "epoch": 21,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31481820717453957,
+            "selected_CE": 0.3512129236918849,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.003674760880892643
+          },
+          {
+            "epoch": 22,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29409250690861866,
+            "selected_CE": 0.3292218940080823,
+            "selected_packets": 9547,
+            "masked_positions": 105017,
+            "probability_drop_mean": 0.004598666828855671
+          },
+          {
+            "epoch": 23,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29525063764136117,
+            "selected_CE": 0.32924566421288626,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.002566544091022733
+          },
+          {
+            "epoch": 24,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2796832845286206,
+            "selected_CE": 0.31130261209096993,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0026646535093728285
+          },
+          {
+            "epoch": 25,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23702008424846976,
+            "selected_CE": 0.2658172962968951,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.00417107956637083
+          },
+          {
+            "epoch": 26,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2570992797814511,
+            "selected_CE": 0.28772772808332703,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.003484803463514844
+          },
+          {
+            "epoch": 27,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28578771241344847,
+            "selected_CE": 0.3193469762063778,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0027448317271485285
+          },
+          {
+            "epoch": 28,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26043589198374534,
+            "selected_CE": 0.292340504995606,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0038059695360569603
+          },
+          {
+            "epoch": 29,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22106492475749137,
+            "selected_CE": 0.24794734943960164,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.003577047644858458
+          },
+          {
+            "epoch": 30,
+            "source_packets": 28416,
+            "unmasked_CE": 0.279753458258268,
+            "selected_CE": 0.31096366688877614,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.001815199719842624
+          },
+          {
+            "epoch": 31,
+            "source_packets": 28416,
+            "unmasked_CE": 0.282136981820201,
+            "selected_CE": 0.3122388968193853,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.00011287218112884475
+          },
+          {
+            "epoch": 32,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2523436431210857,
+            "selected_CE": 0.28014870249741786,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0012690659299354396
+          },
+          {
+            "epoch": 33,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2648203765956668,
+            "selected_CE": 0.2936062954097718,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0012748973155163464
+          },
+          {
+            "epoch": 34,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2254805061798375,
+            "selected_CE": 0.25306027167820716,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.002537784148280316
+          },
+          {
+            "epoch": 35,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23926053625774812,
+            "selected_CE": 0.2663704800914537,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0014695759533866737
+          },
+          {
+            "epoch": 36,
+            "source_packets": 28416,
+            "unmasked_CE": 0.227161155728338,
+            "selected_CE": 0.2542823751096253,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0025033910196643693
+          },
+          {
+            "epoch": 37,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2657372582334656,
+            "selected_CE": 0.2969442916413148,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0010328045694853875
+          },
+          {
+            "epoch": 38,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2797943075095211,
+            "selected_CE": 0.3089952931680658,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0008001664568468727
+          },
+          {
+            "epoch": 39,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24480526988302265,
+            "selected_CE": 0.2717271348176239,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0012681646181295651
+          },
+          {
+            "epoch": 40,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2330991258290974,
+            "selected_CE": 0.2607535256727322,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0017255890085613606
+          },
+          {
+            "epoch": 41,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22049788613845636,
+            "selected_CE": 0.24774910737802316,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0030790260475892406
+          },
+          {
+            "epoch": 42,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2712270141587601,
+            "selected_CE": 0.3014692768521674,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0001620607461616699
+          },
+          {
+            "epoch": 43,
+            "source_packets": 28416,
+            "unmasked_CE": 0.21472863349560145,
+            "selected_CE": 0.23953844197430052,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0018090694741060673
+          },
+          {
+            "epoch": 44,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23292229723957208,
+            "selected_CE": 0.25730422770117856,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0005898924155353761
+          },
+          {
+            "epoch": 45,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25180209763683714,
+            "selected_CE": 0.2801204942636662,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0002621534817457736
+          },
+          {
+            "epoch": 46,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2518144655670669,
+            "selected_CE": 0.2788315416053609,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.00013257040739739063
+          },
+          {
+            "epoch": 47,
+            "source_packets": 28416,
+            "unmasked_CE": 0.21706117817141987,
+            "selected_CE": 0.24095864355698363,
+            "selected_packets": 9547,
+            "masked_positions": 105017,
+            "probability_drop_mean": 0.0009645168417288611
+          },
+          {
+            "epoch": 48,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23374899859363968,
+            "selected_CE": 0.25945529573269793,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.000707556706484038
+          },
+          {
+            "epoch": 49,
+            "source_packets": 28416,
+            "unmasked_CE": 0.21804071573523787,
+            "selected_CE": 0.2436567712743003,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0016003664995140924
+          },
+          {
+            "epoch": 50,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2557253294565656,
+            "selected_CE": 0.2838095761835575,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.00010138980494728228
+          }
+        ],
+        "last5_unmasked_CE": 0.235278137504786,
+        "native_U_objective_unchanged": true,
+        "body_signal": true,
+        "gradient_layer_records": 208,
+        "saved_vectors": 624,
+        "mask_batches_recounted": 52,
+        "extra_model_forwards": 22200,
+        "actual_L_network_forwards": 33300,
+        "head_fit_updates": 0,
+        "query_read": false
+      }
+    },
+    "actual_L720_feature_difference": {
+      "TEMPORAL_RSC": 3.638345241546631,
+      "MATCHED_RANDOM": 3.324662685394287
+    },
+    "fixed_rules": {
+      "final5_unmasked_L_CE_max": 0.5,
+      "feature_difference_min": 0.000001,
+      "native_steps": 11100,
+      "additional_L_forwards": 22200,
+      "actual_U_packets": 963900,
+      "required_gradient_epochs": [
+        17,
+        33,
+        50
+      ],
+      "required_gradient_parameters": [
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+      ],
+      "source_only": true,
+      "expansion": "If exact source budgets, default deployment feature, unmasked CE health and nonzero t1/t2/SIG delta gradients pass for BOTH variants, extend all three unchanged arms to02/03; freeze and push decision before reading new target numeric summaries. No target-based expansion/cancellation or masking retuning."
+    },
+    "predefined_remaining_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "expand_all_three_arms_unchanged": true,
+    "head_fit_updates": 0,
+    "limitation": "Source health, actual challenge gradients and deployment-feature changes only; no DG or U correctness proof"
+  },
+  "source_feature_evidence": "source_feature_mechanism.json",
+  "head_fit_updates": 0,
+  "default_head_only": true,
+  "truth_last": true,
+  "independent_full_native_and_metric_recount": "VERIFIED",
+  "source_epoch_records": 200,
+  "new_source_native_steps": 33300,
+  "actual_L_model_forwards": 99900,
+  "additional_L_model_forwards": 66600,
+  "gradient_layer_records_recounted": 624,
+  "saved_vectors_recounted": 1872,
+  "saved_mask_batches_recounted": 156,
+  "goal_84": false,
+  "first_seed_is_not_full_three_seed_goal": true,
+  "target_feedback_to_training": false,
+  "source_decision_pushed_before_new_target_numeric_retrieval": true,
+  "remaining_fixed_seed_matrix_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+  "remaining_fixed_seed_matrix_status": "RUNNING_VERIFIED",
+  "phase2_claim": false,
+  "limitation": "Single predefined model seed; default-head clean only; actual feature changes/interface do not prove new-TX transfer or general DG benefit"
+}

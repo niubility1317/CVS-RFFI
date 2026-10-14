@@ -471,3 +471,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 时序自挑战首seed终轮source资格已PASS，新模型目标数值尚未读取。三臂完整50／11100／原U963900／额外L前向22200；随机与RSC实际L720部署特征相对SIG距离3.324663／3.638345，195041实际f_theta中193912／193847元素改变，默认W正常联合更新960元素，W删除／清零不改z且feature-only导出逐元素一致。原17／33／50骨干增量条件与源CE健康通过，冻结原样全部三臂02/03扩展，先推送决定再读目标数值，不以sourcePASS称DG成功。源决定`automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json`。
+
+
+时序自挑战首种子已完成完整训练／默认预测／独立truth-last与全量复核：SIG83.660714%、随机82.385119%、RSC81.823810%，RSC−SIG−1.836905pp、RSC−随机−.561310pp；n=1，不当作三seed结论。4row／200源epoch／33300新更新／672000默认决策／72指标及624层1872真实梯度向量复核VERIFIED，0headfit；实际fθ数值更新、W独立、feature-only导出差0通过，但sourcePASS未转成目标收益。源决定 `832485cace509543a7b4e921ac7f5483a2053749` 已先推送后取目标；02/03六新原样发布，执行同该提交，原PID/CWD/argv/GPU/loggrowth、4至5轮与6438源step／312层936向量已核实。完整[首种子结果](../automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/final_analysis.md)和[剩余运行](../automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md)。保留负结果，不按目标改mask／取消健康任务；84%仍未完成，网络及默认联合头保持，研发继续聚焦训练、泛化、半监督。

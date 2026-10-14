@@ -35,7 +35,8 @@
     "entrypoint": "experiments.cvs_temporal_rsc_seeds.dispatch",
     "config_paths": [
       "experiments/cvs_temporal_rsc_seeds/design.py"
-    ]
+    ],
+    "execution_commit": "832485cace509543a7b4e921ac7f5483a2053749"
   },
   "data": {
     "dataset": "ManySig",
@@ -106,7 +107,8 @@
     "remote_log_root": "PROJECT/releases/cvs_temporal_rsc_seeds_20261015_r01",
     "local_artifact_root": "LOCAL_ARTIFACTS/temporal_rsc_seeds_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_temporal_rsc_seeds.dispatch",
-    "stop_rule": "Only run-owned systemic technical failures: current data/default-head/hidden-U mismatch, nonfinite loss/gradients, unidentifiable fixed mask, failed RNG replay, missing updates, repeated launch failure or immutable-output collision. Preserve partial outputs; no automatic retry, unrelated stop/restart or target-feedback changes. Scientific source-rule FAIL prevents expansion but all fixed first-seed rows still finish/scored. Conditional launch additionally requires the original first-source PASS; source decision committed/pushed before new numeric target retrieval. No new source/target selection after extension."
+    "stop_rule": "Only run-owned systemic technical failures: current data/default-head/hidden-U mismatch, nonfinite loss/gradients, unidentifiable fixed mask, failed RNG replay, missing updates, repeated launch failure or immutable-output collision. Preserve partial outputs; no automatic retry, unrelated stop/restart or target-feedback changes. Scientific source-rule FAIL prevents expansion but all fixed first-seed rows still finish/scored. Conditional launch additionally requires the original first-source PASS; source decision committed/pushed before new numeric target retrieval. No new source/target selection after extension.",
+    "execution_commit": "832485cace509543a7b4e921ac7f5483a2053749"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -2485,12 +2487,48 @@
     "Source PASS is not DG success; known historical target benchmark is not a new blind test. Full final positive/negative combined3-seed analysis, sampleSD, paired differences, RX/day/MacroF1/errors/costs uploaded to Git after actual evidence."
   ],
   "results": {
-    "status": "SOURCE_PASS_READY_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED",
     "source_qualification_complete": true,
     "original_source_qualification_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
+    "source_decision_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+    "training_formula_unchanged": true,
     "new_model_target_metrics_read": false,
-    "decision": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/source_expansion_decision.json",
-    "training_formula_unchanged": true
+    "first_seed_retrained": false,
+    "actual_new_workers": 6,
+    "observed_completed_epochs": [
+      {
+        "row_id": "SIG_TIME-s2026092702",
+        "epoch": 4
+      },
+      {
+        "row_id": "MATCHED_RANDOM-s2026092702",
+        "epoch": 5
+      },
+      {
+        "row_id": "TEMPORAL_RSC-s2026092702",
+        "epoch": 5
+      },
+      {
+        "row_id": "SIG_TIME-s2026092703",
+        "epoch": 4
+      },
+      {
+        "row_id": "MATCHED_RANDOM-s2026092703",
+        "epoch": 4
+      },
+      {
+        "row_id": "TEMPORAL_RSC-s2026092703",
+        "epoch": 4
+      }
+    ],
+    "source_native_steps_recounted": 6438,
+    "head_fit_updates": 0,
+    "goal_84": false,
+    "evidence": [
+      "launch_verified.json",
+      "source_progress.json"
+    ]
   },
-  "registered_at": "2026-10-14T22:52:13+00:00"
+  "registered_at": "2026-10-14T22:52:13+00:00",
+  "status": "RUNNING"
 }
