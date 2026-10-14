@@ -34307,7 +34307,7 @@
     },
     {
       "run_id": "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01",
-      "status": "ARTIFACTS_COMPLETE",
+      "status": "ANALYZED",
       "method": "Report route3: SIG_TIME descriptor read before native t2 Dropout",
       "model_seeds": [
         2026092701
@@ -34330,8 +34330,8 @@
       "source_diagnostic_run": "20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01",
       "same_initial_trainable_parameters": true,
       "same_initial_eval_function": "local native synthetic PASS; realL720 initial witness in final source closure",
-      "report": "automation_reports/CV-SincNet/20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md",
-      "target_results": "Produced first3row default scores; values not yet read for expansion",
+      "report": "automation_reports/CV-SincNet/20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01/final_analysis.md",
+      "target_results": "PRE83.3595% vsPOST83.7488%, -.3893pp; one seed only",
       "goal84": false,
       "source_qualification": {
         "status": "PASS",
@@ -34369,11 +34369,106 @@
         "prediction_count": 504000,
         "truth_last": true,
         "goal_84": false
+      },
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 1,
+          "accuracy_mean": 0.8066845238095238,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238
+          },
+          "macro_f1_mean": 0.8017335328586674,
+          "worst_RX_mean": 0.7061666666666667,
+          "worst_day_mean": 0.7545238095238095
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 1,
+          "accuracy_mean": 0.8374880952380952,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8374880952380952
+          },
+          "macro_f1_mean": 0.8333316928753601,
+          "worst_RX_mean": 0.71225,
+          "worst_day_mean": 0.7918809523809524
+        },
+        {
+          "arm": "SIG_TIME_PRE",
+          "seed_count": 1,
+          "accuracy_mean": 0.8335952380952381,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8335952380952381
+          },
+          "macro_f1_mean": 0.8287743084412953,
+          "worst_RX_mean": 0.6958333333333333,
+          "worst_day_mean": 0.7904285714285715
+        }
+      ],
+      "paired": [
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.030803571428571375
+          ],
+          "mean_difference": 0.030803571428571375,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_TIME_PRE",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.0038928571428571423
+          ],
+          "mean_difference": -0.0038928571428571423,
+          "sd_difference": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "SIG_TIME_PRE",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.026910714285714232
+          ],
+          "mean_difference": 0.026910714285714232,
+          "sd_difference": null,
+          "positive_seeds": 1
+        }
+      ],
+      "independent_recount": {
+        "status": "VERIFIED",
+        "run_id": "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+        "models": 3,
+        "new_step_records_parsed": 22200,
+        "epoch_records_parsed": 150,
+        "prediction_count": 504000,
+        "metric_records_independently_recounted": 54,
+        "truth_last_recount": true,
+        "head_fit": false,
+        "native_fitted_probes_disabled_for_new_models": true,
+        "optimizer_updates_by_analysis": 0,
+        "scope": "Completed immutable prediction and full source scalar logs only; no new training/target forwards, no feedback to methods/seeds/configuration",
+        "seconds": 8.887190818786621,
+        "analysis_commit": "b4d55dba50c8601017604a2a0eb0d037f8d835e8"
       }
     },
     {
       "run_id": "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-      "status": "READY_TO_LAUNCH",
+      "status": "RUNNING",
       "method": "Unchanged report route3 conditional02/03 expansion",
       "model_seeds": [
         2026092702,
@@ -34389,10 +34484,13 @@
       "core_candidate_review_reused": true,
       "first_fixed_configs_unchanged": true,
       "source_pass_required_before_launch": true,
-      "target_result": "Not launched; no first read-position target metrics read for expansion",
+      "target_result": "remaining4 new models source training; full3seeds pending",
       "goal84": false,
       "source_qualification": "PASS",
-      "source_expansion_decision_before_target_scores": true
+      "source_expansion_decision_before_target_scores": true,
+      "execution_commit": "038ec31397797e4631a969d0da8167de2ba861c3",
+      "launch_evidence": "automation_reports/CV-SincNet/20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01/launch_evidence.json",
+      "fitted_native_probes": "disabled in all4 resolved configs; actual closure pending"
     }
   ],
   "diagnostics": {
@@ -79616,7 +79714,7 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "Finish immutable SIG_TIME pre/post firstseed default-head experiment; source PASS only for unchanged02/03 expansion",
-    "Retain full negative moment/area evidence and deferred hierarchy/U routes; no target-driven descriptor or Dropout scan"
+    "Complete unchanged read-position02/03 and full3seed default-head metrics/Git; no target-driven reconfiguration",
+    "Keep report continuous hierarchy/U weighting deferred until this independent method closes; use only legal source evidence for future designs"
   ]
 }

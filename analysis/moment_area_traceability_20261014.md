@@ -35,3 +35,6 @@ R06独立真实训练已发布：20261014-phase1-read-position-oldgate-cos-e50-c
 
 
 R09完整3seed闭环 verified：9新/3历史，12row／450新增model-epochs／99900steps／2016000默认预测／216指标；所有9新模块数值更新/导出/W独立/零拟合真实证据完成。AREA82.0833%相对COV −0.5355pp、SIG −0.7097pp，均1/3正差；84未达。R09是执行及交付要求已验证，不代表性能目标满足。最新为6verified／1implemented（R06实际取点训练仍pending）／2deferred，0blocked/rejected；最高剩余风险是取点优化完整3seed性能，不能以源Dropout回放证明收益。路线一公式严格对齐，无近似替换。验证命令：python -m experiments.cvs_moment_area_seeds.audit（只读完整固定产物），剩余取点run尚未发布，未宣称远端执行；仅已做4实际模型context/源资格负例/两种子source汇总检查，不冒充远端执行。
+
+
+R06首seed实际训练/默认评分完成：PRE83.3595% vsPOST83.7488%，−.3893pp；源初始function同、最终L2 2.131700、0额外fit、22200steps/504000pred/54metrics复算VERIFIED。02/03在target读取前依据SOURCE PASS原样发布4新模型，执行038ec31397797e4631a969d0da8167de2ba861c3，完整3seed未完成，R06维持implemented。6verified/1implemented/2deferred，0blocked/rejected；最高剩余风险是完整取点效果，不能把source噪声诊断当提升。实际验证python -m experiments.cvs_read_position50.audit、python -m experiments.cvs_read_position_seeds.publish --output <delivery> --inspect 均VERIFIED；源码按报告route3只移取点，主干Dropout不变。

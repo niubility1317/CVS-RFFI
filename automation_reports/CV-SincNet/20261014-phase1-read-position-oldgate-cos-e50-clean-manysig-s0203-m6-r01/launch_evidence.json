@@ -1,0 +1,177 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+  "implementation_commit": "ea3228433751d21751cf0f275326dceb71b3c7d5",
+  "execution_commit": "038ec31397797e4631a969d0da8167de2ba861c3",
+  "source_expansion_decision": "source_expansion_decision.json",
+  "source_only_expansion_before_target_scores": true,
+  "dispatcher": {
+    "pid": 2157622,
+    "start_ticks": 120492683,
+    "state": "S",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_read_position_seeds_20261014_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_read_position_seeds.dispatch"
+    ],
+    "gpu": null
+  },
+  "preflight": {
+    "status": "PASS",
+    "real_checkpoint_no_query_smoke": true,
+    "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092702/source/final_ssdg.pth",
+    "source_seed": 2026092702,
+    "query_read": false,
+    "head_fit": false,
+    "training_inherits_checkpoint": false
+  },
+  "archive_transfer_compare": "PASS from one-archive executed publisher",
+  "remote_compile": "PASS from executed publisher",
+  "workers": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "pid": 2157873,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_read_position_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_read_position_seeds.dispatch",
+        "--worker",
+        "SIG_TIME-s2026092702"
+      ],
+      "process": {
+        "pid": 2157873,
+        "start_ticks": 120493184,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_read_position_seeds_20261014_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_read_position_seeds.dispatch",
+          "--worker",
+          "SIG_TIME-s2026092702"
+        ],
+        "gpu": "3"
+      },
+      "epoch_count": 19,
+      "log_bytes": 104996,
+      "log_growth_bytes": 77747,
+      "read_position": "t2",
+      "native_fitted_probes_disabled": true
+    },
+    {
+      "row_id": "SIG_TIME_PRE-s2026092702",
+      "pid": 2157951,
+      "gpu": 2,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_read_position_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_read_position_seeds.dispatch",
+        "--worker",
+        "SIG_TIME_PRE-s2026092702"
+      ],
+      "process": {
+        "pid": 2157951,
+        "start_ticks": 120493517,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_read_position_seeds_20261014_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_read_position_seeds.dispatch",
+          "--worker",
+          "SIG_TIME_PRE-s2026092702"
+        ],
+        "gpu": "2"
+      },
+      "epoch_count": 22,
+      "log_bytes": 120741,
+      "log_growth_bytes": 93434,
+      "read_position": "t2.pool",
+      "native_fitted_probes_disabled": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "pid": 2158110,
+      "gpu": 3,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_read_position_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_read_position_seeds.dispatch",
+        "--worker",
+        "SIG_TIME-s2026092703"
+      ],
+      "process": {
+        "pid": 2158110,
+        "start_ticks": 120494182,
+        "state": "S",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_read_position_seeds_20261014_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_read_position_seeds.dispatch",
+          "--worker",
+          "SIG_TIME-s2026092703"
+        ],
+        "gpu": "3"
+      },
+      "epoch_count": 17,
+      "log_bytes": 94623,
+      "log_growth_bytes": 72556,
+      "read_position": "t2",
+      "native_fitted_probes_disabled": true
+    },
+    {
+      "row_id": "SIG_TIME_PRE-s2026092703",
+      "pid": 2158185,
+      "gpu": 0,
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_read_position_seeds_20261014_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_read_position_seeds.dispatch",
+        "--worker",
+        "SIG_TIME_PRE-s2026092703"
+      ],
+      "process": {
+        "pid": 2158185,
+        "start_ticks": 120494515,
+        "state": "R",
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_read_position_seeds_20261014_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_read_position_seeds.dispatch",
+          "--worker",
+          "SIG_TIME_PRE-s2026092703"
+        ],
+        "gpu": "0"
+      },
+      "epoch_count": 18,
+      "log_bytes": 99976,
+      "log_growth_bytes": 77859,
+      "read_position": "t2.pool",
+      "native_fitted_probes_disabled": true
+    }
+  ],
+  "historical_baselines_reused": 2,
+  "new_models": 4,
+  "first_seed_retrained": false,
+  "failure": null,
+  "completion": null,
+  "goal84": false,
+  "read_at": 1791957992.024037
+}

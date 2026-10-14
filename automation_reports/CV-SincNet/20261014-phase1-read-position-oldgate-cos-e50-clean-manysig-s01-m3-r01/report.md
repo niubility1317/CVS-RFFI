@@ -21,3 +21,5 @@ Stop：本run角色/来源/预算/非有限/defaulthead/export/物理ID/predicti
 实际发布 VERIFIED：执行 b4d55dba50c8601017604a2a0eb0d037f8d835e8，dispatcher PID 2132655。两新worker PID/CWD/argv/GPU核实，实际resolved读t2/t2.pool且native fits关闭，epoch2日志分别增长10341/10356bytes。真实旧CP no-query smoke、一个archive比较及remotecompile PASS，failure=null；目标结果尚无，详见 launch_evidence.json。
 
 登记文字纠正：复制模板中的4row/3new成本与多描述子representation改为实际3row/2new、100model-epochs/22200新增更新、504000决策/54指标；原文字在 historical_registration_text 保留。实际row configs、3行代码与健康远端release一直为正确3/2预算，未热改/重跑/改变实验。
+
+首seed3row已ANALYZED，504000默认预测/54指标/22200newsteps独立复算VERIFIED；PRE83.3595% vsPOST83.7488%，−.3893pp，无提升证据。真实初始L720eval同、finalL2 2.131700、export/W独立和0额外拟合通过。扩02/03已按源PASS在读target前提交发布，不根据负分改健康任务；详细见final_analysis.md/results.json/results.png。

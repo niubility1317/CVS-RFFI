@@ -17,3 +17,5 @@ Stop：本run角色/来源/预算/非有限/默认头/featureexport/ID/predictio
 预期release资格/preflight/submit；run launch/queue/newrows initial-final-frozen/resolved/args/roles/50epoch/11100steps/sourcewitness/defaultprediction/scores/completion；source_features/analysis/combined_three_seed_analysis/completion。数据/weights/rawlogs/prediction留既定远端，代码/config/报告/必要聚合Git交付并核remoteOID。当前只准备和登记，无完整首seedsource verdict，不宣称启动或性能提升。
 
 原first3row完整SOURCE PASS已核实；两finalLCE .248172/.238117，实际初始L720功能同，finalPRE−POSTL2 2.131700，导出/W独立/实际pool更新/零拟合通过。决定原样发布4新模型02/03，尚未读取该轮target指标；详见 source_expansion_decision.json。
+
+实际发布 VERIFIED：执行 038ec31397797e4631a969d0da8167de2ba861c3，dispatcher PID 2157622；4新worker CWD/argv/PID/GPU/实际readposition及fits-disabled配置核实，日志继续增长，failure=null。首步SOURCE PASS与旧seed02真实checkpoint无查询smoke、一个archive比较和remotecompile PASS。新首seed分数读取前已提交扩seed决定并派发，firstseed不重训，已知其PRE−POST单seed −.3893pp仍保留原方案。详见 launch_evidence.json。

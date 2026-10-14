@@ -1,0 +1,32 @@
+{
+  "completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 3,
+    "new_trained_models": 2,
+    "reused_baseline_models": 1,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 504000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "audit": {
+    "status": "VERIFIED",
+    "run_id": "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "models": 3,
+    "new_step_records_parsed": 22200,
+    "epoch_records_parsed": 150,
+    "prediction_count": 504000,
+    "metric_records_independently_recounted": 54,
+    "truth_last_recount": true,
+    "head_fit": false,
+    "native_fitted_probes_disabled_for_new_models": true,
+    "optimizer_updates_by_analysis": 0,
+    "scope": "Completed immutable prediction and full source scalar logs only; no new training/target forwards, no feedback to methods/seeds/configuration",
+    "seconds": 8.887190818786621,
+    "analysis_commit": "b4d55dba50c8601017604a2a0eb0d037f8d835e8"
+  },
+  "source_expansion_decision": "seed_expansion_decision.json"
+}
