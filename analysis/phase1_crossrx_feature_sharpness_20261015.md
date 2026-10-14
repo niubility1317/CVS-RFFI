@@ -36,3 +36,10 @@ held bank 仍是模型此前训练过的源 L，只在当前梯度步骤排除�
 
 
 2026-10-15：跨RX feature sharpness源原型 `20261015-phase1-SIGTIME-crossRX-feature-sharpness-sourceL-manysig-s2026092701-r01` 4/4通过固定信号可用性条件。currentRX造detachedρ=.05特征方向，在otherRX／排除currentID的seenL上优化relu(pertCE-cleanCE)，两项均向17个部署参数传梯度，固定preW/defaulthead。CROSS最大RXgap6.325e−4至4.005e−3，梯度范数.001616至.007193，与GLOBAL相对差.441至3.532；actualAdamW aux增量改变2至3个Sinc核。540L IQ／14762forwards／8tempsteps，0realtrain/headfit/U/V/target。没有证明DG收益或原创性。保留SIG_TIME／固定CENTER既有正路线，已经准备新的E20匹配矩阵接口；BASE_CE／BASE_SSL／CLEAN_CE／GLOBAL_GAP／CROSS_GAP计划先首seed再固定source规则扩展，实际阶段与预算须预登记，不默认E50续训。84%默认头clean三种子仍active／未完成。
+
+
+2026-10-15 后续训练接口：已实现 Observer 的标准 L callback，只返回一次辅助 scalar，不执行真实 backward/optimizer/EMA、不装永久 forward hook。原 current logits 计算 RX 梯度，不把 labeled_inputs 误称同一增强 view；scheduled 时按全局 base_index 排除当前所有 bank 包，缺 RX／空 bank 整次 skip，维持5分母。inactive 不做额外 bank 前向。独立 default W 按原 classifier 对象查名，aux 不接 W/gain。focused mock检查通过，真实 trainer 接入尚未执行。
+
+已只读核实原 E20 三种子父基线：run `20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01`，commit `83b1903fed01854f5abb75646a02e9a5e190a90e`，label20/pseudo0、4440真实更新、use_unlabeled=False/use_ema_teacher=False、scratch/final-only/no祖先，无星地训练；本地回读尚不能确定历史use_aug实际值，不由parser默认推断。source契约与SIG_TIME完全一致，实际RX1/3/4/6/8、day1/2/3、6TX、L/U/V6300/56700/27000，split_seed392005，角色比例.07/.63/.30。原feature_recipe的source_days0/1/2不作为实际角色依据。
+
+下一轮拟采用同架构SIG_TIME+CENTER25K的scratch20匹配矩阵 BASE_CE、BASE_SSL、CLEAN_CE、GLOBAL_GAP、CROSS_GAP ×固定3seeds，15行／66600真实更新；首seed5行22200，剩余10行44400。BASE_CE保持20L/0U并实际关闭teacher/U执行；SSL四控制计划13L/7U（维持旧33/17的大致阶段比例），显式teacher/U和use_aug=False、无星地训练。warmup2epoch444steps、every16将有250scheduledcalls/model，17selected参数、ρ=.05/系数=.1保持。此为实现准备中的方案，尚无正式run登记/发布；在真实launch前固定commands、source条件、GPU/stop/evaluation及准确成本，不加载旧E50权重续训。固定E20历史基线作为外部参考保留，新家族 matched对照用于机制归因，两者架构差异分别报告。
