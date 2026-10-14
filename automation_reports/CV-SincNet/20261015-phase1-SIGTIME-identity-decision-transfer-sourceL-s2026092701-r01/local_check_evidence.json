@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "checks": {
+    "checks_objective": {
+      "status": "PASS",
+      "source_matrices_per_control": 60,
+      "SAME_unique15_repeat4": true,
+      "synthetic_views_per_control": 120,
+      "true_class_decisions_per_control": 720,
+      "endpoint_and_classification_exposure_per_packet": 4,
+      "RX_day_TX_side_exposure_matched": true,
+      "both_transfer_formulas_and_origin_labels_verified": true,
+      "ZERO_exact_connected_zero": true,
+      "W_gradient_None": true,
+      "joint_both_sides_and_three_gain_gradients": true,
+      "label_W_row_rename_and_packet_permutation_invariance": true,
+      "positive_global_scale_away_from_eps_invariant": true,
+      "common_RX_offset_not_loss_invariant": true,
+      "probability_stop_exact_zero": true,
+      "FP64_analysis_FP32_formula_difference_reported": true,
+      "input_bank_features_weight_RNG_unchanged": true,
+      "focused_negative_checks": 9,
+      "data_reads": 0,
+      "checkpoint_reads": 0,
+      "native_constructors": 0,
+      "actual_updates": 0
+    },
+    "checks_source": {
+      "status": "PASS",
+      "request_and_gate_negatives": 34,
+      "both_controls_required": true,
+      "source_coverage_and_original_default_CE_accuracy_required": true,
+      "head_fit_updates": 0,
+      "data_checkpoint_remote_reads": 0,
+      "actual_optimizer_updates": 0
+    }
+  },
+  "compile": "PASS",
+  "unchanged_bank_and_actual_aftergain_evaluator_reused": true,
+  "data_checkpoint_remote_reads": 0,
+  "actual_optimizer_updates": 0,
+  "head_fit_updates": 0
+}
