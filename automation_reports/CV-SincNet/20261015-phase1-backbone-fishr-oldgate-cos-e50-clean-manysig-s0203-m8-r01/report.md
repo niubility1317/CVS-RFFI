@@ -51,3 +51,6 @@ ANALYZED / VERIFIED：剩余8行自然完成/failure0，完整12行/2016000默�
 仅重读本run及首seed原保存的936个实际L180参数梯度矩阵（9模型、1/17/33/50轮、每轮13相关cohort、t1/t2）。不加载模型/IQ/预测/truth，不新增梯度或模型前向，不改原不可变产物。入口analysis/backbone_variance_decomposition_20261015.py，既有Torch CPU2线程，--project PROJECT；只stdout返回聚合，结果保留本报告目录。当前状态IMPLEMENTED/CHECKED，实际拆分尚未运行。
 
 现有objective本就以平方平均RX方差范数作可微分分母，因此在1e-30 floor不激活时，对整体梯度一致缩放已不敏感；不把源loss下降直接解释成整体梯度缩小。新分析将每对RX方差向量的平方距离精确拆为径向范数差与角向形状差，并用同一分母恢复已保存原损失，另报告归一化形状cos、方差范数CV及floor激活。所有9模型/4期全覆盖，不按目标结果选择cohort或epoch。数学恒等式、纯径向/纯角向、整体尺度不变性和非法输入检查PASS；这只是已完成BF实验的源域后验解释，不是新训练候选、目标因果解释或新的DG收益。
+
+
+追加分析已VERIFIED：9模型936保存矩阵/1872视图/144组完整，原loss逐项恢复，floor激活0，无新前向/数据或truth访问。终轮幅度项在原J中占85.92%至96.54%，候选幅度项12/12下降但加权角向项12/12上升，纯形状cos改善RAW5/6、COND1/6。详见[source_variance_decomposition.md](source_variance_decomposition.md)。不能把原J下降直接解释成全局梯度缩小或全面形状对齐，当前无新训练候选发布。

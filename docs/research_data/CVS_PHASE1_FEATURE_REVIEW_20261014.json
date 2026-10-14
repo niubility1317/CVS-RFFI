@@ -82206,19 +82206,20 @@
   "next_directions": [
     {
       "direction": "实际骨干梯度方差训练",
-      "status": "RUNNING",
-      "source_evidence": "Existing actual L180 t1/t2 gradient variance; epoch17 two candidates all13 actualeffective gradients nonzero, no extra head",
+      "status": "ANALYZED_VERIFIED_NO_STABLE_TARGET_GAIN",
+      "source_evidence": "936 existing actual matrices independently decomposed; loss already scale-normalized/floor0; terminal matched radial contribution85.92-96.54%, radial12/12decrease but weightedangular12/12increase; unweightedcosRAW5/6 improve,COND1/6",
       "hypothesis": "匹配源RX的实际梯度统计改善固定SIG的训练稳定性；需实际独立性能验证",
       "location": "t1/t2真实参数导数，按RAW或TX/day去均值",
       "path_into_z": "原fθ优化，无网络或头结构变化",
       "minimum_control": "同SIG/同额外L180曝光ZERO与RAW/COND；旧门控+cos外部基线",
       "cost": "每新模型50/11100，650extraL180/117000extra源包与真实二阶导数",
-      "failure": "固定源预算/健康/真实梯度资格；性能负结果保留"
+      "failure": "固定源预算/健康/真实梯度资格；性能负结果保留",
+      "new_weight_scan": false
     },
     {
       "direction": "无标签自身EMA特征一致性",
-      "status": "RUNNING",
-      "source_evidence": "FrozenSIG acceptedcorrect weak/strong joint160 cos约.66-.67；V cosine不能稳定分离错误，故不设可靠度阈值",
+      "status": "ALL_U_FEATURE_MT_FULL3_NEGATIVE_CONFIDENCE_VARIANT_FIXED_EXTENSION_RUNNING",
+      "source_evidence": "AllU sourcefeatureloss reduced18-21% but paireddefaulthead0/3 positive; confidencefirstsourcePASS/targetnegative, remaining02/03 frozenbeforeown first target, actualfourPIDs live",
       "hypothesis": "同一U包跨扰动直接约束部署特征，补充分类CE以外的表征训练",
       "location": "现有U EMAweak/studentstrong的joint160",
       "path_into_z": "全U normalize features匹配，无classW梯度或新projector/head",
@@ -82228,25 +82229,37 @@
     },
     {
       "direction": "源身份目标的骨干扰动稳定性",
-      "status": "NOT_IMPLEMENTED",
-      "source_evidence": "后续只在完整合法源优化曲线/实际梯度证据支持时选择；当前未测，不假定有效",
+      "status": "NOT_SELECTED_EXISTING_SAM_ROUTES_FOUND",
+      "source_evidence": "Existing stage2_rx_sam andscratch engineering SAM implementations are recorded; no new weight perturbation or feature sharpness run created in this thread",
       "hypothesis": "固定源身份监督下的小骨干扰动稳定性可能提高特征训练的可重复性",
       "location": "原fθ优化步骤，默认W仍按原流程正常联合学习",
       "path_into_z": "仅优化已有fθ，不加分类器或结构",
       "minimum_control": "原步骤与同数据/更新预算的扰动训练；额外前向/反向单独报告",
       "cost": "额外扰动梯度与前向成本待具体预登记，不超过50/model",
-      "failure": "未实现/未验证；不与当前两机制叠加，不作为已证收益"
+      "failure": "未实现/未验证；不与当前两机制叠加，不作为已证收益",
+      "selection": "Do not duplicate before existing source evidence distinguishes a new hypothesis"
+    },
+    {
+      "direction": "骨干梯度方差形状的源端证伪",
+      "status": "SOURCE_DECOMPOSITION_COMPLETE_NEW_OBJECTIVE_NOT_IMPLEMENTED",
+      "source_evidence": "Actual1872views show radial dominates and amplitude-normalized angular contribution notimproved universally; original normalization alreadyactive",
+      "hypothesis": "If a direct unweighted RX variance-vector angle objective has stable source identity-compatible derivatives, test it separately; no assumption oftargetgain",
+      "location": "Actual t1/t2 backbone derivative statistics, unchanged ftheta/default joint head",
+      "path_into_z": "Existing ftheta gradients only, no new classifier or architecture",
+      "minimum_control": "Before any newtraining, frozenSIG source-only same-L CE versus potential angleloss derivative; later single-seed matched ZERO control only if sourceevidence warrants",
+      "cost": "Reuse936savedmatrices now; newgradientcheck/training cost must be fixed before launch, <=50 permodel",
+      "failure": "No newtraining released; do not scan oldFishrweights, repeat normalization, fithead or selecttargets"
     }
   ],
   "next_actions_max2": [
-    "完成BF首seed源训练/自动评分；先回收并提交固定source资格，再读新目标摘要；两候选均PASS才使用已准备02/03原样扩展，不按目标择优",
-    "完成FEATURE_MT首seed50轮/自动评分；终轮实际参数与梯度/feature边界完整审计，按原源CE/梯度/last5 discrepancy<=.95规则决定固定02/03扩展，保留所有负结果"
+    "继续已固定CONF_FEATURE_MT02/03四模型scratch50，逐row自动默认头clean/独立评分并完整三seed交付；当前原PID实际23至27轮，保持配方",
+    "下一新DG训练前，先以合法源同图默认CE检验纯方差形状目标的真实t1/t2梯度与身份监督兼容性；原目标已有归一化，不重复SAM/feature-sharpness，不扫Fishr系数或据目标分数选父权重"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "按已冻结源PASS决定实现并发布CONF_FEATURE_MT固定02/03扩展（4新scratch50+2历史基线），独立回收首seed完整结果，目标好坏不改既定扩展/权重/预算/默认头",
-    "提出新DG候选前先检验合法源域跨RX身份特征差异与默认头身份导数是否支持新约束；不扫Fishr系数，不自动堆叠，尚未发布第三个训练假设"
+    "继续已固定CONF_FEATURE_MT02/03四模型scratch50，逐row自动默认头clean/独立评分并完整三seed交付；当前原PID实际23至27轮，保持配方",
+    "下一新DG训练前，先以合法源同图默认CE检验纯方差形状目标的真实t1/t2梯度与身份监督兼容性；原目标已有归一化，不重复SAM/feature-sharpness，不扫Fishr系数或据目标分数选父权重"
   ],
   "current_priority": {
     "at": "2026-10-14T18:08:17.724Z",
@@ -82759,25 +82772,25 @@
             "row": "SIG_TIME-s2026092702",
             "pid": 2627597,
             "gpu": 1,
-            "epoch": 5
+            "epoch": 23
           },
           {
             "row": "CONF_FEATURE_MT-s2026092702",
             "pid": 2627675,
             "gpu": 2,
-            "epoch": 6
+            "epoch": 27
           },
           {
             "row": "SIG_TIME-s2026092703",
             "pid": 2627834,
             "gpu": 3,
-            "epoch": 6
+            "epoch": 27
           },
           {
             "row": "CONF_FEATURE_MT-s2026092703",
             "pid": 2627914,
             "gpu": 4,
-            "epoch": 5
+            "epoch": 26
           }
         ],
         "failure": null
@@ -83109,29 +83122,30 @@
           "row": "SIG_TIME-s2026092702",
           "pid": 2627597,
           "gpu": 1,
-          "epoch": 5
+          "epoch": 23
         },
         {
           "row": "CONF_FEATURE_MT-s2026092702",
           "pid": 2627675,
           "gpu": 2,
-          "epoch": 6
+          "epoch": 27
         },
         {
           "row": "SIG_TIME-s2026092703",
           "pid": 2627834,
           "gpu": 3,
-          "epoch": 6
+          "epoch": 27
         },
         {
           "row": "CONF_FEATURE_MT-s2026092703",
           "pid": 2627914,
           "gpu": 4,
-          "epoch": 5
+          "epoch": 26
         }
       ],
       "first_complete_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s01-m3-r01/final_analysis.md",
-      "goal84": false
+      "goal84": false,
+      "remaining_progress_ref": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/source_progress.json"
     },
     "backbone_fishr_source_progress": {
       "status": "SUPERSEDED_BY_FULL_ANALYSIS",
@@ -83190,6 +83204,39 @@
       "default_head_only": true,
       "head_fit_updates": 0,
       "goal84": false
+    },
+    "source_variance_decomposition": {
+      "status": "VERIFIED",
+      "analysis_code_commit": "2c4c5e367f561cde8805dc305d6254854815abaa",
+      "source_only": true,
+      "existing_models": 9,
+      "matrices": 936,
+      "views": 1872,
+      "groups": 144,
+      "gradient_evaluations": 0,
+      "model_forwards": 0,
+      "head_fit": 0,
+      "query_or_truth_read": false,
+      "floor_active": 0,
+      "radial_control_fraction_range": [
+        0.8592153972492526,
+        0.9653615970554141
+      ],
+      "radial_ratio_range": [
+        0.8499125533997209,
+        0.9154873262902258
+      ],
+      "angular_ratio_range": [
+        1.033657483612648,
+        1.5394794290061349
+      ],
+      "all12_radial_components_decreased": true,
+      "all12_angular_components_increased": true,
+      "all12_variance_norm_CV_decreased": true,
+      "shape_cosine_increased_RAW": 5,
+      "shape_cosine_increased_COND": 1,
+      "scope": "Fixedepoch50/13 correlated saved cohorts per layer; no target-derived epoch/row selection",
+      "report": "automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/source_variance_decomposition.md"
     }
   }
 }

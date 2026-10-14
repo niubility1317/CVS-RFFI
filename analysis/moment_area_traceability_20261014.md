@@ -183,3 +183,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 
 
 - 2026-10-15 当前状态覆盖前述历史快照：CFM首seed3row已ANALYZED/VERIFIED，CONF−SIG −0.144048pp，54CM/504000决策/23976向量复算，sourcePASS不能替代DG收益。固定02/03扩展执行55ff29d676eb5f02afa8b3869ed4818122f09d9a已真实启动，4个worker完成5至6轮，单archive/CPsmoke/remotecompile/PID-CWD-argv-GPU-loggrowth PASS、failure0。无目标反馈改变机制，所有默认头按原联合训练。
+
+
+- 2026-10-15 源域方差机制分析VERIFIED：2c4c5e367f561cde8805dc305d6254854815abaa，9模型936原保存矩阵/1872视图，float64径向/角向分解恢复原J（最大差2.665e-15）与同源cohort一致；floor0，原目标本就尺度归一化。终轮径向贡献85.92-96.54%，候选径向12/12下降但加权角向12/12上升，纯cosRAW5/6、COND1/6改善，不能作目标因果解释。当前无新训练发布，CFMS原4PID核实23至27轮健康。

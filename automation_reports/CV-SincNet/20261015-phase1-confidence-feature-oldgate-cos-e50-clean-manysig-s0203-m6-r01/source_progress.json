@@ -1,0 +1,151 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+  "release": "cvs_confidence_feature_seeds_20261015_r01",
+  "execution_commit": "55ff29d676eb5f02afa8b3869ed4818122f09d9a",
+  "read_at": 1792007734.286913,
+  "failure": null,
+  "completion": null,
+  "workers": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "pid": 2627508,
+      "gpu": 0,
+      "live": false,
+      "epoch": 50,
+      "log_bytes": 121,
+      "previous_log_bytes": 121,
+      "log_growth": 0
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "pid": 2627597,
+      "gpu": 1,
+      "live": true,
+      "epoch": 23,
+      "log_bytes": 126010,
+      "cwd": "PROJECT/releases/cvs_confidence_feature_seeds_20261015_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_confidence_feature_seeds.dispatch",
+        "--worker",
+        "SIG_TIME-s2026092702"
+      ],
+      "previous_log_bytes": 53283,
+      "log_growth": 72727
+    },
+    {
+      "row_id": "CONF_FEATURE_MT-s2026092702",
+      "pid": 2627675,
+      "gpu": 2,
+      "live": true,
+      "epoch": 27,
+      "log_bytes": 147206,
+      "cwd": "PROJECT/releases/cvs_confidence_feature_seeds_20261015_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_confidence_feature_seeds.dispatch",
+        "--worker",
+        "CONF_FEATURE_MT-s2026092702"
+      ],
+      "previous_log_bytes": 58661,
+      "log_growth": 88545
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "pid": 2627756,
+      "gpu": 0,
+      "live": false,
+      "epoch": 50,
+      "log_bytes": 121,
+      "previous_log_bytes": 121,
+      "log_growth": 0
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "pid": 2627834,
+      "gpu": 3,
+      "live": true,
+      "epoch": 27,
+      "log_bytes": 146783,
+      "cwd": "PROJECT/releases/cvs_confidence_feature_seeds_20261015_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_confidence_feature_seeds.dispatch",
+        "--worker",
+        "SIG_TIME-s2026092703"
+      ],
+      "previous_log_bytes": 58469,
+      "log_growth": 88314
+    },
+    {
+      "row_id": "CONF_FEATURE_MT-s2026092703",
+      "pid": 2627914,
+      "gpu": 4,
+      "live": true,
+      "epoch": 26,
+      "log_bytes": 142004,
+      "cwd": "PROJECT/releases/cvs_confidence_feature_seeds_20261015_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_confidence_feature_seeds.dispatch",
+        "--worker",
+        "CONF_FEATURE_MT-s2026092703"
+      ],
+      "previous_log_bytes": 58663,
+      "log_growth": 83341
+    }
+  ],
+  "capacity": {
+    "0": {
+      "pids": [],
+      "free_mb": 24124
+    },
+    "1": {
+      "pids": [
+        2627597
+      ],
+      "free_mb": 20769
+    },
+    "2": {
+      "pids": [
+        2627675
+      ],
+      "free_mb": 20769
+    },
+    "3": {
+      "pids": [
+        2627834
+      ],
+      "free_mb": 20769
+    },
+    "4": {
+      "pids": [
+        2627914
+      ],
+      "free_mb": 20769
+    },
+    "5": {
+      "pids": [],
+      "free_mb": 24124
+    },
+    "6": {
+      "pids": [],
+      "free_mb": 24124
+    },
+    "7": {
+      "pids": [],
+      "free_mb": 24124
+    }
+  },
+  "no_target_numeric_results_read_for_this_progress": true,
+  "no_configuration_or_process_changes": true
+}
