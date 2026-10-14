@@ -34,10 +34,14 @@ def run(seed=None,only_row=None,*,design=None,build_fn=None):
     if not added or any(v['changed_elements']==0 for v in added):raise ValueError('Added feature parameter did not update numerically')
     rows.append(dict(row_id=row['row_id'],arm=row['arm'],seed=row['model_seed'],feature_boundary=measure(initial,final,source,export_fn=export),actual_initial_to_final_parameters=change))
     models[c['arm']]=final;initials[c['arm']]=initial
-   if only_row is None and len(models)==3:
+   if only_row is None and len(models)==len(d.training_rows())//len(d.SEEDS):
     first=initials['SIG_TIME'].state_dict();native={k:v for k,v in first.items() if '.sequence_pool.' not in k}
     if any(any(not torch.equal(v,m.state_dict()[k]) for k,v in native.items()) for m in initials.values()):raise ValueError('Actual same-seed initial native body/head differs')
     control=getattr(d,'FEATURE_CONTROL','SIG_TIME_X3');a,b=initials[control],initials[d.PRIMARY];aa,bb=dict(a.named_parameters()),dict(b.named_parameters())
     if set(aa)!=set(bb) or any(not torch.equal(v,bb[k]) for k,v in aa.items()):raise ValueError('Same-capacity actual initial parameters differ')
-    paired.append(dict(seed=model_seed,arm=d.PRIMARY,control=control,actual_initial_native_body_and_head_equal=True,actual_initial_parameters_identical=True,source_features=compare_features(models[control],models[d.PRIMARY],source),actual_final_parameter_difference=parameter_changes(models[control],models[d.PRIMARY],expected_feature_count=getattr(d,'FEATURE_PARAMETER_COUNT',232033))))
+    initial_equal=None
+    if getattr(d,'VERIFY_INITIAL_EVAL_EQUAL',False):
+     initial_equal=compare_features(a,b,source)
+     if any(v['joint160_L2_mean']!=0 or v['changed_feature_elements']!=0 for v in initial_equal['records']):raise ValueError('Actual initial eval function differs')
+    paired.append(dict(seed=model_seed,arm=d.PRIMARY,control=control,actual_initial_native_body_and_head_equal=True,actual_initial_parameters_identical=True,actual_initial_eval_features=initial_equal,source_features=compare_features(models[control],models[d.PRIMARY],source),actual_final_parameter_difference=parameter_changes(models[control],models[d.PRIMARY],expected_feature_count=getattr(d,'FEATURE_PARAMETER_COUNT',232033))))
  return dict(status='VERIFIED' if not missing else 'PARTIAL',run_id=d.RUN,models=len(rows),missing=missing,rows=rows,paired=paired,source_only=True,head_fit=False,head_updates=0,query_read=False,U_IQ_read=False,U_truth_read=False,V_cache_materialized=True,V_forward=False,source_IQ='fixed L720 first8 perTX/RX/day',seconds=time.time()-start)

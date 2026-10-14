@@ -53,7 +53,10 @@ class CompositePool(nn.Module):
 class CompositeReference(ReferenceCVS):
  def features(self,x):
   local={}
-  handle=self.core.id_backbone.t2.register_forward_hook(lambda module,args,out:local.update(h=out))
+  position=getattr(self,'sequence_read_position','t2')
+  if position not in ('t2','t2.pool'):raise ValueError('Unregistered temporal descriptor read position')
+  target=self.core.id_backbone.t2.pool if position=='t2.pool' else self.core.id_backbone.t2
+  handle=target.register_forward_hook(lambda module,args,out:local.update(h=out))
   try:base=super().features(x)
   finally:handle.remove()
   if set(local)!={'h'}:raise ValueError('Actual t2 feature path bypassed')
