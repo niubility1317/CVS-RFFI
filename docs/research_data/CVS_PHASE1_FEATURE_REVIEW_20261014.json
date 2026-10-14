@@ -33290,6 +33290,39 @@
         }
       ],
       "run_failure": null
+    },
+    {
+      "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "status": "IMPLEMENTED_REVIEWED",
+      "method": "SIG_TIME plus independent mean/variance and covariance views with parameter-matched threeSIG_TIME control",
+      "model_seeds": [
+        2026092701
+      ],
+      "new_models": 3,
+      "baseline_reuse_models": 1,
+      "epochs_each": 50,
+      "label_epochs": 33,
+      "pseudo_epochs": 17,
+      "new_optimizer_steps": 33300,
+      "head": "default cosine6x160scale30 normal joint training; separate identity/RX/day/channel fits disabled",
+      "head_fit": false,
+      "arms": [
+        "OLD_GATE_COS50",
+        "SIG_TIME",
+        "SIG_TIME_X3",
+        "SIG_TIME_MV_COV"
+      ],
+      "pool_parameter_counts": [
+        0,
+        18976,
+        55968,
+        55968
+      ],
+      "source_scientific_qualification": "all3 new finalLCE<=.5, real feature export/W-independent, added parameter update, candidate-vsX3 sourceL720 difference>=1e-6",
+      "target_results": null,
+      "source_parent_commit": "990ffabe0",
+      "reported_historical_SIG_TIME_mean": 0.8303928571428572,
+      "user_directed_exposed_benchmark_base": true
     }
   ],
   "diagnostics": {

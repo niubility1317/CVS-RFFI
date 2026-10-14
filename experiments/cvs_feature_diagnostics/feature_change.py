@@ -5,12 +5,13 @@ from torch.nn import functional as F
 from experiments.cvs_transfer_features.model import from_phase1
 
 @torch.no_grad()
-def measure(initial,final,source):
+def measure(initial,final,source,*,export_fn=None):
  if len(source['x'])!=720 or any(m.training or any(p.requires_grad for p in m.parameters()) for m in (initial,final)):
   raise ValueError('Expected frozen models and fixed labeled source diagnostic sample')
+ exporter=export_fn or from_phase1
  original={k:v.clone() for k,v in final.state_dict().items()}
- exported=from_phase1(final).eval().requires_grad_(False)
- initial_exported=from_phase1(initial).eval().requires_grad_(False)
+ exported=exporter(final).eval().requires_grad_(False)
+ initial_exported=exporter(initial).eval().requires_grad_(False)
  values=[];old_values=[];max_difference=0.
  for start in range(0,720,64):
   x=source['x'][start:start+64]

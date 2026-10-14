@@ -11,7 +11,7 @@ PREFIX='id_backbone.encoder.core.id_backbone.'
 CLASS_W=PREFIX+'cls_head.weight'
 
 @torch.no_grad()
-def parameter_changes(a,b):
+def parameter_changes(a,b,*,expected_feature_count=176065):
  pa={k:v for k,v in a.named_parameters() if k.startswith('id_backbone.')};pb={k:v for k,v in b.named_parameters() if k.startswith('id_backbone.')}
  if set(pa)!=set(pb) or CLASS_W not in pa or pa[CLASS_W].numel()!=960:raise ValueError('Actual identity/default-classifier parameter boundary differs')
  records=[]
@@ -21,7 +21,7 @@ def parameter_changes(a,b):
   dx=(y.double()-x.double());norm=float(x.double().norm())
   records.append(dict(parameter=name,elements=x.numel(),changed_elements=int((x!=y).sum()),delta_L2=float(dx.norm()),maximum_abs_change=float(dx.abs().max()),relative_L2=float(dx.norm())/norm if norm else None,scope='class_W' if name==CLASS_W else 'f_theta'))
  theta=[r for r in records if r['scope']=='f_theta'];total=sum(r['elements'] for r in theta)
- if total!=176065:raise ValueError('Feature extractor parameter count differs')
+ if total!=expected_feature_count:raise ValueError('Feature extractor parameter count differs')
  transforms=[r for r in theta if '.cls_head.' in r['parameter']]
  if not transforms:raise ValueError('Feature norms/gain incorrectly removed with class W')
  return dict(status='VERIFIED',feature_parameters=total,class_parameters=960,feature_changed_elements=sum(r['changed_elements'] for r in theta),class_changed_elements=next(r['changed_elements'] for r in records if r['scope']=='class_W'),feature_transform_parameters_preserved=[r['parameter'] for r in transforms],records=records,scope='Only the actual identity subtree; remove class_W alone, keep feature normalization/gain/reference. Per-tensor relative values; mixed Hz/other units are not combined into a causal importance score.',parameter_or_buffer_updates_by_analysis=0)

@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "full_review": "/root/feature_challenge_p0p1",
+  "targeted_review": "/root/signature_fix_p0p1",
+  "scope": "Single complete new-candidate directP0/P1 review; one targeted confirmation of two direct fixes, previous targeted response lost in runtime reset",
+  "issues": [
+    {
+      "priority": "P1",
+      "problem": "CPU fork torch.manual_seed reset global CUDA RNG",
+      "fix": "torch.random.default_generator.manual_seed only in privateCPU fork",
+      "targeted_result": "PASS actualCPU/CUDA synthetic state preserved"
+    },
+    {
+      "priority": "P1",
+      "problem": "Native does not consume labeled_context; final11100 count would remain0",
+      "fix": "Candidate root.forward bound to labeled_forward, actual primary L counts once; U None/eval not counted; original native forward retained",
+      "targeted_result": "PASS actualnative synthetic call, deepcopy binds own forward"
+    }
+  ],
+  "remaining_direct_P0_P1": [],
+  "real_IQ_weights_query_or_remote_access_by_reviewer": false,
+  "training_or_head_fit_by_review": 0
+}

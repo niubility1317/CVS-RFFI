@@ -157,3 +157,10 @@ MixStyle 剩余两种子现已发布并运行：实际代码 `2b8371027c11cab4b8
 源梯度方差新增唯一直接审查现已 PASS，P1完成记录路径修复并针对性确认通过。用户新增明确要求：以SIG_TIME为基础综合MEAN_VAR/COV。将核实原配方，以同参数多SIG_TIME控制区分增容与统计信息；不读取或挑选目标最高权重继续训练，不重复加入SIG，不热改已发布任务。
 
 源梯度方差已完成，执行c0f068f54，源180包/CPU1.8813秒，保存梯度独立重算VERIFIED、所有参数buffers不变。t1/t2归一化RX方差差异raw2.455803/1.938690，去TX/day共同均值后1.714985/1.373195；一模型seed描述统计，不证明Fishr有效或因果RX信息删除，无头拟合/更新或目标读取。当前按用户要求优先SIG_TIME＋MEAN_VAR＋COV组合，不将此诊断自动堆入。完整[源分析](../automation_reports/CV-SincNet/20261014-phase1-source-gradient-variance-manysig-s01-m1-r01/final_analysis.md)。
+
+
+## 用户指定 SIG_TIME 统计组合
+
+当前优先 run 20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s01-m4-r01：单SIG_TIME、三SIG_TIME同参数控制、SIG_TIME＋MEAN_VAR＋COV独立局部投影组合，首seed2026092701三个新scratch50/11100、33+17，以及旧门控cos历史只读对照。后两个pool各55968参数，单pool18976；组合实际进入joint160，默认头正常联合训练，所有另训身份/RX/day/channel探针关闭。原单SIG_TIME初始函数逐元素等价，本地真实网络/梯度/数值更新/EMA/feature-only/W独立/发布依赖均PASS。独立完整审查定位2项P1（私有CPU初始化重置CUDA随机流、未接入的主L计数闭合），已定点修复，实际CPU/CUDA随机流保持与真实主L/U/eval/deepcopy合成检查PASS；正在完成原两项定点确认，不追加全面review。最终自动clean prediction与独立truthlast；单seed不替代完整3seed84%目标。完整[预登记](../automation_reports/CV-SincNet/20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s01-m4-r01/report.md)。
+
+SIG_TIME统计组合独立完整审查及仅两项P1修复定点确认均已 PASS，可以发布。旧MixStyle source入口收尾拟合了RX/day nuisance探针，之前泛称零拟合不准确；默认TX头没有单独重训/替换，源探针未用于目标预测，但不符合本轮禁止另训诊断头要求。历史产物保留并将在该run完整报告中补明；新SIG_TIME入口scoped禁用所有这类拟合，不再承袭该旧闭包行为。
