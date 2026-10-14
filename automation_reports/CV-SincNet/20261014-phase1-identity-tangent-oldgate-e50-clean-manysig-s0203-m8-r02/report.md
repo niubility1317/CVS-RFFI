@@ -26,3 +26,22 @@ R01 独立 FAILED：归档路径遗漏新确认模块，模块入口不能导入
 ## 独立发布回读
 
 执行Gitcommit `882c89f783377947c81739745c8a1e1ea96e8f3e`已push且remoteOID一致；归档运输一次SHA比对、remote compile、真实checkpoint noquery smoke PASS，PID/CWD/argv/GPU/log独立回读VERIFIED，GPU最大总实验进程3含其他owner，未停止其他任务。当前row状态：BASE_REF-s2026092702 epoch50, ZERO-s2026092702 epoch35, RAW_MATCHED-s2026092702 epoch33, IDSAFE-s2026092702 epoch32。此为局部源训练启动证据，headfit0，不代表识别提升或84%。详见launch_evidence.json。
+
+## 完整三种子收尾
+
+当前状态：ANALYZED / VERIFIED。确认run的8行全部默认头预测/独立评分闭合，与原首seed4行合并成固定3modelseed、2016000决定、216个CM记录。各CM/三seed均值与样本SD再次独立重算一致。原健康任务无重启，未用target反馈修改方法。
+
+| 条件 | clean均值 | 样本SD(pp) | Macro-F1 | 每seed最差RX均值 | 每seed最差day均值 |
+|---|---:|---:|---:|---:|---:|
+| BASE_REF | 80.5268% | 2.3776 | 0.800024 | 67.9708% | 76.0556% |
+| ZERO | 80.6038% | 2.3131 | 0.800706 | 68.0653% | 76.2865% |
+| RAW_MATCHED | 80.5579% | 1.6481 | 0.800379 | 67.0653% | 76.9524% |
+| IDSAFE | 80.3077% | 1.7081 | 0.797296 | 66.9042% | 76.4286% |
+
+RAW−ZERO三seed差：＋0.7006、＋0.4310、−1.2690pp，均值−0.0458pp；IDSAFE−ZERO：＋0.2899、＋0.1315、−1.3095pp，均值−0.2960pp。IDSAFE−RAW三seed均负，均值−0.2502pp。首seed RAW小正差未变成稳定3seed提升，不能继续把它列为已确认正收益路线。RAW/IDSAFE最差RX均值比ZERO分别低1.0000/1.1611pp；最差day均值RAW较高，取舍如实保留。均未达84%。
+
+已解析9个新增模型全部50epoch/11100step、每模型2498辅助记录和完整stdout，共450新增modelepoch/99900更新/22482辅助调用；每层1249次、额外L前向4046760。ZERO所有R/辅助梯度0，RAW/IDSAFE实际梯度比始终≤0.2、全期均值约0.1889，sourceL-only/U真值0/0headfit，无nonfinite跳步或fatal标记。各seed源健康标准通过不等于target性能通过。3历史baseline训练150epoch/33300更新另计，不冒充零成本。
+
+实际源LCE和V表明新约束确实执行而非空分支，但没有默认头稳定收益；线性TX均值统计投影不能代表全部身份信息保护。本轮不从已暴露target反调epsilon、cap、层位或选择性重跑。已确认COMPACT_LINEAR/LONG_SILU/Sinc路线的独立证据仍保留，新关系/响应矩阵继续其冻结计划。
+
+完整source曲线/全部训练扫描本地保存于local_artifacts/cvs_identity_tangent_confirm3_20261014_r02/complete_source_analysis.json；compact结果与权限/成本证据见result_evidence.json，源与目标逐row原产物在immutable remote roots。

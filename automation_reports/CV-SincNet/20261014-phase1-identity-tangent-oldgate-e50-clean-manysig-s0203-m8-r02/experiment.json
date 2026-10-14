@@ -1952,7 +1952,7 @@
     "User supplied current goal clean-only scope continues. Run8rows predicts/scorers automatically individually; final analysis merges original completed firstseed without rerun and reports complete3seeds. No target feedback, no gain/layer/threshold adjustment.",
     "R01 no-submit/preflight module-not-found failure; technical recovery R02 adds missing archive path only, no model/recipe/scientific rule change. Preserve old artifact, no duplicate running row."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "local_verification": "Math negatives and real native CPU/CUDA wiring PASS; real checkpoint no-query smoke occurs once in remote launcher first step",
   "independent_review": {
     "status": "PASS",

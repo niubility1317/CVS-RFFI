@@ -1,6 +1,6 @@
 # Phase1 特征证据与完整实验复盘
 
-当前主线为“跨 RX 个体参照关系＋CVS 增量证据响应”，按用户2026-10-14新材料实现并发布。全部合法隐藏U直接学习joint160的连续关系和PA/ref削弱后的有符号响应，无新增门控/类别头，原PAIR/ownEMA/33+17/50epoch配方保持。真实checkpoint与不重叠源L学习信号检查PASS，首seed A/B/C健康运行，D及后续seed由固定源判据推进。新机制实际泛化结果尚未返回；84%仍未达。先前切向平坦化首seed已完整：BASE80.6685%、ZERO80.7399%、RAW81.4405%、IDSAFE81.0298%，身份投影未优于RAW；ZERO/RAW/IDSAFE原样确认seed02/03已健康运行。详见本文末及各run报告。
+当前主线为“跨 RX 个体参照关系＋CVS 增量证据响应”，按用户2026-10-14新材料实现并发布。全部合法隐藏U直接学习joint160的连续关系和PA/ref削弱后的有符号响应，无新增门控/类别头，原PAIR/ownEMA/33+17/50epoch配方保持。真实checkpoint与不重叠源L学习信号检查PASS，首seed A/B/C健康运行，D及后续seed由固定源判据推进。新机制实际泛化结果尚未返回；84%仍未达。先前切向平坦化首seed已完整：BASE80.6685%、ZERO80.7399%、RAW81.4405%、IDSAFE81.0298%，身份投影未优于RAW；ZERO/RAW/IDSAFE原样确认已完整闭合：3seed ZERO80.6038%、RAW80.5579%、IDSAFE80.3077%，没有稳定净增益。详见本文末及各run报告。
 
 当前研究目标仍是固定 ManySig clean 三种子默认头均值84%，尚未达到。本轮保留历史33标签＋17伪标签的batch_neighbor门控＋EMA＋普通cosine，不改成纯CE；分类头随骨干正常联合训练，禁止新增单独头训练、换头、原型替代或RX/day分类器。实际交接特征为joint160/id_feat_joint，W与特征归一化/融合增益边界分别核验。
 
@@ -312,3 +312,5 @@ SINGLE三seed末轮源CE0.248543/0.239481/0.234405，V98.3259%/98.3037%/98.5222%
 关系矩阵实际A/B/C191个初始state tensor全部相同，native args除row身份/输出路径一致。U尚未启用的标签阶段出现从舍入量级开始的GPU轨迹差异，deterministic=false，保留完整可用prefix证据且不宣称bitwise匹配；不热改或重启。此为初始化/执行证据，不是泛化收益。
 
 关系矩阵首seed A/B/C完整默认头结果：ZERO81.0488%、ALL_REL79.3310%、CROSS_REL79.5982%；B/C对匹配ZERO分别−1.7179/−1.4506pp，C对B＋0.2673pp，不称关系有效。实际3774次allU损失、浅中层梯度、4次AdamW、无W/gain辅助梯度与无跳步已核实；源健康判据在target汇总前通过并已自动启动D。保留负结果，不热改、停D或target调参；尚无完整四条件/3seed证据。
+
+切向路线完整3seed合并已VERIFIED/ANALYZED：BASE80.5268%、ZERO80.6038%、RAW80.5579%、IDSAFE80.3077%。RAW相对ZERO平均−0.0458pp，IDSAFE−0.2960pp；IDSAFE三seed都低于RAW，平均−0.2502pp，最差RX也较差。9新模型全源日志/辅助记录扫描与2016000固定决定/216CM重算通过，未出现技术失败。首seedRAW正差不再描述为确认正收益；保留完整负证据，不target反调或选择性重跑，84%仍未达。
