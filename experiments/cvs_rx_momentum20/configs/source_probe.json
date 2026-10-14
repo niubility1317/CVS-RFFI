@@ -1,0 +1,80 @@
+{
+  "run_id": "20261015-phase1-SIGTIME-RX-history-momentum-sourceL-s2026092701-r01",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-RX-history-momentum-sourceL-s2026092701-r01/source_diagnostic",
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_center_crossRX_sharpness20_20261015_r01",
+  "source_row": "BASE_CE-s2026092701",
+  "model_seed": 2026092701,
+  "state": "FINAL20",
+  "regimes": [
+    "KEEP",
+    "M_ZERO_F",
+    "RX_M_FILTER"
+  ],
+  "restart_lr": 0.0002,
+  "current_pairs": [
+    [
+      0,
+      1
+    ],
+    [
+      17,
+      18
+    ],
+    [
+      35,
+      36
+    ],
+    [
+      52,
+      53
+    ]
+  ],
+  "held_ordinals": [
+    68,
+    69
+  ],
+  "source_role": "L_s",
+  "loss": "original clean CE",
+  "source_rx": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "RX_gradient_packets": 36,
+  "rank_rule": {
+    "relative_eigenvalue_cutoff": 1e-10,
+    "absolute_eigenvalue_cutoff": 1e-30,
+    "maximum_rank": 4
+  },
+  "original_default_head_joint": true,
+  "current_gradient_preserved": true,
+  "second_moment_and_step_preserved": true,
+  "feature_scope": "actual encoder including3gains; W excluded from history filtering",
+  "readouts": [
+    "ACTUAL",
+    "PRE_W"
+  ],
+  "PRE_W_gains": "after-step actual gains retained",
+  "head_fit_updates": 0,
+  "U_IQ_read": false,
+  "V_IQ_read": false,
+  "U_truth_read": false,
+  "target_access": false,
+  "source_falsification": {
+    "minimum_qualified_cells": 2,
+    "actual_F_difference_norm_min": 1e-06,
+    "held_feature_RMS_difference_min": 1e-05,
+    "shallow_middle_difference_tensors_min": 1,
+    "raw_identity_margin_gain_from_before_min": 0.0,
+    "raw_identity_margin_gain_vs_each_control_min": 1e-05,
+    "held_CE_increase_tolerance": 1e-06,
+    "readouts": [
+      "PRE_W",
+      "ACTUAL"
+    ],
+    "interpretation": "New historical-momentum filtering source signal against BOTH KEEP and M_ZERO_F; not DG efficacy or a main-training authorization by target score"
+  },
+  "analysis_code_commit": "release_commit.txt"
+}

@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "checks": {
+    "checks_projection": {
+      "status": "PASS",
+      "device": "cpu",
+      "torch_version": "2.10.0+cu128",
+      "rank1": 1,
+      "rank4": 4,
+      "rank1_max_normalized_residual": 9.855002091358344e-17,
+      "rank4_max_normalized_residual": 6.296129884194242e-16,
+      "permutation_scale_common_offset_max_error": 1.0658141036401503e-14,
+      "exact_zero_contrast_noop": true,
+      "fixed_cutoff_and_absolute_floor": true,
+      "negative_checks": 11,
+      "input_versions_and_RNG_unchanged": true,
+      "no_data_model_or_optimizer_state": true
+    },
+    "checks_state": {
+      "status": "PASS",
+      "actual_native_parameter_traversal": 188,
+      "F_tensors": 71,
+      "F_coordinates": 195041,
+      "three_gains_included": true,
+      "current_main_RX_gradients_unchanged": true,
+      "v_step_W_state_preserved": true,
+      "native_prospective_v_matches_actual_after_v": true,
+      "native_foreach_None_CPU": true,
+      "actual_clipping_factor_matches_simulate": true,
+      "actual_W_step_identical_all_modes": true,
+      "projected_history_FP32_mapping_and_rounding_residual": true,
+      "None_skips_but_explicit_zero_advances": true,
+      "absent_unused_state_preserved": true,
+      "live_parameters_gradients_payload_RNG_unchanged": true,
+      "negative_checks": 22,
+      "data_reads": 0,
+      "checkpoint_reads": 0,
+      "actual_optimizer_updates": 0,
+      "synthetic_temporary_steps": 9
+    },
+    "checks_source": {
+      "status": "PASS",
+      "request_and_gate_negatives": 26,
+      "both_controls_required": true,
+      "head_readability_and_raw_geometry_required": true,
+      "data_checkpoint_remote_reads": 0,
+      "actual_optimizer_updates": 0
+    }
+  },
+  "compile": "PASS",
+  "no_data_checkpoint_remote_reads": true,
+  "actual_optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "unchanged_actual_after_gain_evaluator_reused": true,
+  "boundary": "Synthetic/protocol proof only; real source efficacy pending"
+}

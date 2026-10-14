@@ -1,0 +1,170 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-RX-history-momentum-sourceL-s2026092701-r01",
+  "group_id": "phase1-RX-history-momentum-source",
+  "display_name": "源RX对比过滤历史特征动量",
+  "description": "同一final20和CE梯度，KEEP、仅清F一阶矩、源RX对比跨度过滤历史F贡献。原当前g/二阶尺度/step/defaultW正常状态保持，真实after3gain进入joint160。",
+  "kind": "diagnostic",
+  "stage": "Phase1 training-mechanism source prototype",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_only",
+    "RX",
+    "historical_momentum",
+    "AdamW",
+    "SIG_TIME",
+    "CENTER25K",
+    "default_head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active Phase1 goal continuation; user requests an explicit innovative training mechanism grounded in report and prior experiments.",
+  "code": {
+    "commit": "release_commit.txt (actual Git HEAD at publication)",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "N607 ordinary account/CVS-RFFI Python/CPU2threads/GPU0/five-namespace overlay on immutable ownE20runtime",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_history_momentum_sourceL_20261015_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md",
+    "physical_ids_ref": "Unchanged ownE20 roles; native5IDs/current720/held180 globallydisjoint",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "roles": {
+      "L_s": 6300,
+      "U_s": "hidden/noIQ",
+      "V": "noIQ"
+    },
+    "train_ratio": {
+      "L": 0.07,
+      "U": 0.63,
+      "V": 0.3
+    },
+    "validation_ref": "Existing VALIDATED_ONCE handles reused; unchanged bank not revalidated",
+    "protocol_schema": "p2_min_v1 unchanged, unused here"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "claim_scope": "Historical-momentum source feature signal; not unseenRX or multi-epoch DG efficacy"
+  },
+  "checkpoint": {
+    "initialization": "strict own BASE_CE firstseed final20",
+    "sources": [
+      "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01/BASE_CE-s2026092701/source"
+    ],
+    "provenance_verdict": "source_proof before load then validate actual native args/epoch/ancestry/final-onlysourcefreeze; nofallback",
+    "selection_rule": "Fixed pureCE firstseed independent of target ranking"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/RX-history-momentum-source-20261015",
+    "gpu_policy": "CPUonly/GPU0; other owners unchanged",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-RX-history-momentum-sourceL-s2026092701-r01/source_diagnostic",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_history_momentum_sourceL_20261015_r01/source_probe.stdout.log",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_SIGTIME_RX_history_momentum_sourceL_20261015_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_history_momentum_sourceL_20261015_r01/experiments/cvs_rx_momentum20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_history_momentum_sourceL_20261015_r01/resolved_request.json",
+    "stop_rule": "Owned provenance/roles/IDs/state mismatch, unsupported optimizer, nonfinite or technical error: preserve outputs and stop this source assay only; reconcile before retry. Scientific failure closes fixed RX_M_FILTER; no rank/LR/strength/frequency scan, control substitution, target feedback or closed-loss revival."
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "release_commit.txt",
+    "resolved_request.json",
+    "submit.json",
+    "runtime.json",
+    "12regime/ordinalscalarrecords",
+    "summary.json",
+    "independent_readback.json",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "matrix": "FINAL20 x L180pairs0/1,17/18,35/36,52/53 x KEEP/M_ZERO_F/RX_M_FILTER; held180 ord68/69",
+    "budget": "900uniqueL/6300metadata/3062packetnetworkforwards/24temporaryCPUAdamW/0realupdates/headfit/EMA/U/V/target",
+    "state": "AllsameLR2e-4/savedAdamWv/step/W/options; filter onlyF71 historyexp_avg in prospective clipped-main-gradient denominator. KEEP identity, ZERO clearsFfirstm only, FILTER removes centeredRXspan in update coordinates.",
+    "gradient": "Same originalclean CE whole180 gradient g; five balancedRX36 gradients from sameforward. Main g not replaced. Original188 traversal/None semantics/globalclip5/defaultW jointCE preserved.",
+    "rank_rule": {
+      "relative_eigenvalue_cutoff": 1e-10,
+      "absolute_eigenvalue_cutoff": 1e-30,
+      "maximum_rank": 4
+    },
+    "evaluation": "Actualjoint160 with allaftergains, same z ACTUAL afterW/PRE_W beforeW nonfit FP64 defaultcos scale30/eps1e-4. CE/perRX/classmargin/rawidentitygeometry/actualFsteps/Sinc kernels/removed-history/FP32rounding retained.",
+    "source_falsification": {
+      "minimum_qualified_cells": 2,
+      "actual_F_difference_norm_min": 1e-06,
+      "held_feature_RMS_difference_min": 1e-05,
+      "shallow_middle_difference_tensors_min": 1,
+      "raw_identity_margin_gain_from_before_min": 0.0,
+      "raw_identity_margin_gain_vs_each_control_min": 1e-05,
+      "held_CE_increase_tolerance": 1e-06,
+      "readouts": [
+        "PRE_W",
+        "ACTUAL"
+      ],
+      "interpretation": "New historical-momentum filtering source signal against BOTH KEEP and M_ZERO_F; not DG efficacy or a main-training authorization by target score"
+    },
+    "stop_rule": "Owned provenance/roles/IDs/state mismatch, unsupported optimizer, nonfinite or technical error: preserve outputs and stop this source assay only; reconcile before retry. Scientific failure closes fixed RX_M_FILTER; no rank/LR/strength/frequency scan, control substitution, target feedback or closed-loss revival.",
+    "future": "Only fixedsource>=2qualified supports a separately preregistered E20+20 mechanism schedule/commonCE control. No current maintraining or target access."
+  },
+  "rows": [
+    {
+      "row_id": "BASE_CE-s2026092701-source-history",
+      "method": "RX_HISTORY_MOMENTUM",
+      "purpose": "Fixed source falsification versus keep and unstructured firstmoment deletion",
+      "config_ref": "experiments/cvs_rx_momentum20/configs/source_probe.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_history_momentum_sourceL_20261015_r01/resolved_request.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Originalrole IDs/fixedL ordinals/no randomaugmentation",
+      "k": null,
+      "scenario": null,
+      "optimizer": "temporaryCPU originalAdamW",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "metrics_plan.budget",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-RX-history-momentum-sourceL-s2026092701-r01/source_diagnostic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_history_momentum_sourceL_20261015_r01/source_probe.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_history_momentum_sourceL_20261015_r01/experiments/cvs_rx_momentum20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_history_momentum_sourceL_20261015_r01/resolved_request.json",
+      "expected_artifacts": [
+        "preflight.json",
+        "release_commit.txt",
+        "resolved_request.json",
+        "submit.json",
+        "runtime.json",
+        "12regime/ordinalscalarrecords",
+        "summary.json",
+        "independent_readback.json",
+        "report.md"
+      ]
+    }
+  ],
+  "notes": [
+    "SourceheldL was seen by parenttraining; no newpersistent roles or unseenRX claim.",
+    "RX contrasts may contain usefulidentity interactions; no nuisancepurity/invariantunits guarantee.",
+    "PRE_W is nonfit analysis only, actualdefaultW remains normally jointly trained.",
+    "Historicalpositive routes retained separately; goal84active."
+  ],
+  "registered_at": "2026-10-14T22:08:22+00:00"
+}

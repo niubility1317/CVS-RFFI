@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "reviewer": "sigtime_feature_path",
+  "independent_candidate_reviews": 1,
+  "targeted_rereviews": 0,
+  "scope": "Only direct P0/P1 for next fixed source run",
+  "P0_P1_findings": [],
+  "provenance_before_load": true,
+  "same_forward_fiveRX36_and_original_main180": true,
+  "original_188_F71_with_threegains": true,
+  "current_g_second_moment_step_W_preserved": true,
+  "native_prospective_FP32_v_and_clip5": true,
+  "actual_W_after_same": true,
+  "actual_after_gain_joint_ACTUAL_PREW": true,
+  "source_L900_no_U_V_query": true,
+  "forwards3062_tempsteps24": true,
+  "dual_control_gate": true,
+  "five_namespace_release_dependencies": true,
+  "live_payload_grad_RNG_preserved": true,
+  "reviewer_data_checkpoint_remote_reads": 0
+}
