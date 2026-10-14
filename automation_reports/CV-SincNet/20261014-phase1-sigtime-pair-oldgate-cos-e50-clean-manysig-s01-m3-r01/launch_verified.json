@@ -1,0 +1,86 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "implementation_commit": "c98bfcd54c870a03195f220644ab4f7a46ba8d8b",
+  "execution_commit": "86c22cb76e5eff4a7b106cca769d198879ab22b4",
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "real_checkpoint_no_query_smoke": true,
+    "zero_IQ_packets": 90,
+    "source_checkpoint": "fixedfirstSIG_TIMEZERO final50, provenance verified by original own_model",
+    "training_inherits_checkpoint": false,
+    "query_read": false,
+    "head_fit": false,
+    "optimizer_updates": 0,
+    "clock": {
+      "clock_min": 1,
+      "clock_max": 1,
+      "mean_clock_energy_fraction": 0.5152022242546082
+    }
+  },
+  "release_archive_once": "single local/remoteSHA enforced before extraction; successfulremotecompile/preflight/dispatch",
+  "workers": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "pid": 2404128,
+      "gpu": 4,
+      "process_live": true,
+      "same_pid": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "epoch": 3,
+      "log_bytes": 22023,
+      "previous_log_bytes": 11686,
+      "log_growth": true
+    },
+    {
+      "row_id": "SIG_PAIR-s2026092701",
+      "pid": 2404615,
+      "gpu": 5,
+      "process_live": true,
+      "same_pid": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "epoch": 3,
+      "log_bytes": 22024,
+      "previous_log_bytes": 6518,
+      "log_growth": true
+    }
+  ],
+  "all_owner_capacity_within3": true,
+  "current_label_stage": true,
+  "completion": null,
+  "failure": null,
+  "read_at": 1791984126.4479551,
+  "head_fit_updates": 0,
+  "goal_84": false,
+  "label_stage_sampling": {
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "rows": [
+      {
+        "arm": "SIG_TIME",
+        "epochs": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "U_IQ_fetched": false,
+        "U_sampler_iterated": false
+      },
+      {
+        "arm": "SIG_PAIR",
+        "epochs": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "U_IQ_fetched": false,
+        "U_sampler_iterated": false
+      }
+    ]
+  }
+}

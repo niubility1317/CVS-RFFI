@@ -15,3 +15,5 @@ L6300/U56700 hidden/V27000原契约、physicalIDs/split392005/RX1/3/4/6/8/day1/2
 本地6negative、隐藏TX访问陷阱、56700一遍/tail124、原random与RNG一致、两actualnative同初态/正常head及t1/t2/SIG投影更新、原Uloss对象identity不变、导出一致/W独立和remotecompile PASS。一次聚焦P0/P1审查与真实checkpoint无querysmoke后发布。原始IQ/CP/预测/日志/梯度留远端，只上传实现/登记/必要聚合。当前未发布，暂无本轮目标分数。
 
 代码/config提交 c98bfcd54c870a03195f220644ab4f7a46ba8d8b，全部模块编译及唯一直接P0/P1审查PASS；真实SIG checkpoint noquerysmoke为发布首步，PASS后直接继续。
+
+远端执行 86c22cb76e5eff4a7b106cca769d198879ab22b4：单归档一次local/remoteSHA比较、compile与真实SIG checkpoint noquery90 smoke PASS。两actualsamePID/CWD/argv/GPU/loggrowth VERIFIED，GPU4/5，初次核实3/3epoch；source_sampling保存记录1至4epoch均U_IQ_fetched=false且sampler未迭代，无failure。固定50继续，尚无新target性能，不宣称半监督收益。

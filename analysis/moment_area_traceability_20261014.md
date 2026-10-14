@@ -94,3 +94,5 @@ S03发布路径verified：20261014-phase1-signature-order-oldgate-cos-e50-clean-
 |U03|公平实验与默认收尾|首seed2新scratch50＋1旧历史；source资格冻结后再原样扩种，逐rowdefaultclean/truthlast|score.py,dispatch.py,publish.py|pending|待唯一P0/P1/实CPsmoke/真实发布|不使用Utruth/目标反馈，不叠加签名排序|
 
 U01/U02本地verified：6negative、labelblind56700once/tail124、原random/RNG同、两actualSIG初态同、原Uloss对象identity不变、实际head与t1/t2/SIG投影更新、export差0/W独立，源码/remote模板compile PASS。唯一直接P0/P1 PASS，未重审既有PAIR算法；U03自动source资格/defaultclean/truthlast已实现，实际远端预算和性能待发布证据。
+
+U03发布verified：20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01，执行86c22cb76e5eff4a7b106cca769d198879ab22b4；realSIGCP noquery90/单归档一次SHA/compile及2actualsamePID/CWD/argv/GPU/loggrowth PASS，实际labelstage1至4无Ufetch，继续固定50/defaultclean/truthlast。U01/U02实际全程采样预算、U阶段梯度和性能仍implemented待证据，不把接线/覆盖当收益。

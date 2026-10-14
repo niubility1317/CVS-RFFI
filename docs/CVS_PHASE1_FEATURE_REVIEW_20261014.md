@@ -258,3 +258,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 固定SIG_TIME半监督整合参照已实现 20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01，代码c98bfcd54c870a03195f220644ab4f7a46ba8d8b：两新RANDOM/PAIR scratch50＋旧历史，单路网络/默认head/原oldgateownEMAcos33+17及λU.16/entropy.01不变，无新loss/额外forward。Epoch33/34/50各222真实批 t1/t2/SIG投影LCE/UCE/UCE+entropy梯度保存复算。6negative/隐藏TXtrap/56700once/randomRNGexact/两native同初态及正常W+fθ更新/export0/W独立/compile与唯一直接P0/P1 PASS；目前LOCAL_VERIFIED，未发布/无新target数字，已知PAIR整合不冒充新算法。
+
+
+固定SIG_TIME半监督参照已真实发布 20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01，执行86c22cb76e5eff4a7b106cca769d198879ab22b4：realSIGcheckpoint noquery90/单归档SHA/remotecompile与2samePID/CWD/argv/GPU4/5/loggrowth VERIFIED，3/3epoch且实际采样记录1至4轮均无Ufetch/迭代，原50/33+17不改。旧baseline默认预测复用已评分；暂无新target分数。另SIG有界身份机制首seed仍同PID健康42/41/42epoch，未修改或重启。
