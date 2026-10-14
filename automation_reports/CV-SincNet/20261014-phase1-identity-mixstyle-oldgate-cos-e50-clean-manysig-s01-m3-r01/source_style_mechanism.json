@@ -1,0 +1,3975 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "models": 3,
+  "source_packets_per_model": 6300,
+  "source_batches_per_model": 50,
+  "packet_forwards": 25200,
+  "reused_profile_packet_forwards": 12600,
+  "rows": [
+    {
+      "status": "VERIFIED",
+      "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "model_seed": 2026092701,
+      "models": 1,
+      "source_only": true,
+      "source_role": "L_s",
+      "source_packets": 6300,
+      "source_batches": 50,
+      "packet_forwards": 12600,
+      "source_count_checks": {
+        "clean_correct": 6264,
+        "styled_correct": 6268,
+        "prediction_changes": 19,
+        "correct_to_wrong": 7,
+        "wrong_to_correct": 11
+      },
+      "moments": {
+        "t1": {
+          "dimension": 144,
+          "source_packets": 6300,
+          "total_centered_SS": 6929.1142578125,
+          "RX_within_TX_day_SS": 2262.73291015625,
+          "TX_within_RX_day_SS": 4466.65771484375,
+          "RX_within_TX_day_fraction": 0.326554423259083,
+          "TX_within_RX_day_fraction": 0.6446217436532587,
+          "interpretation": "Descriptive conditional mean/std variation; not RX shortcut, causal nuisance decomposition, feature rank or transfer proof"
+        },
+        "t2": {
+          "dimension": 192,
+          "source_packets": 6300,
+          "total_centered_SS": 14558.1796875,
+          "RX_within_TX_day_SS": 4106.77099609375,
+          "TX_within_RX_day_SS": 9744.736328125,
+          "RX_within_TX_day_fraction": 0.28209371530287686,
+          "TX_within_RX_day_fraction": 0.6693650262121756,
+          "interpretation": "Descriptive conditional mean/std variation; not RX shortcut, causal nuisance decomposition, feature rank or transfer proof"
+        }
+      },
+      "batches": [
+        {
+          "batch": 1,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5541498064994812,
+              "delta_ratio": 0.08091209083795547,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5164234638214111,
+              "delta_ratio": 0.07796818763017654,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.2463579177856445,
+          "source_joint160_cosine": 0.9752485752105713
+        },
+        {
+          "batch": 2,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5736265182495117,
+              "delta_ratio": 0.095939502120018,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.6294478178024292,
+          "source_joint160_cosine": 0.9822235107421875
+        },
+        {
+          "batch": 3,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5202117562294006,
+              "delta_ratio": 0.09683249145746231,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.0437421798706055,
+          "source_joint160_cosine": 0.9715540409088135
+        },
+        {
+          "batch": 4,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4961079955101013,
+              "delta_ratio": 0.08972866088151932,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.8406325578689575,
+          "source_joint160_cosine": 0.9716342091560364
+        },
+        {
+          "batch": 5,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.535436749458313,
+              "delta_ratio": 0.09794843941926956,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.9782917499542236,
+          "source_joint160_cosine": 0.9718343019485474
+        },
+        {
+          "batch": 6,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 7,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5388291478157043,
+              "delta_ratio": 0.08638287335634232,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.47298145294189453,
+              "delta_ratio": 0.08048824965953827,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.3534858226776123,
+          "source_joint160_cosine": 0.9712584614753723
+        },
+        {
+          "batch": 8,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5405066013336182,
+              "delta_ratio": 0.08957289904356003,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4585895538330078,
+          "source_joint160_cosine": 0.982994019985199
+        },
+        {
+          "batch": 9,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 10,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 122,
+              "changed_ratio": 0.953125,
+              "movement_mean": 0.5010020136833191,
+              "delta_ratio": 0.07918193936347961,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4191895723342896,
+          "source_joint160_cosine": 0.9834626317024231
+        },
+        {
+          "batch": 11,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 12,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 13,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4657171964645386,
+              "delta_ratio": 0.07611037790775299,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.7180249691009521,
+          "source_joint160_cosine": 0.9744623303413391
+        },
+        {
+          "batch": 14,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5613037347793579,
+              "delta_ratio": 0.09681675583124161,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5227815508842468,
+              "delta_ratio": 0.0933460220694542,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.9120328426361084,
+          "source_joint160_cosine": 0.9510698914527893
+        },
+        {
+          "batch": 15,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.4838308095932007,
+              "delta_ratio": 0.07698909193277359,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5417797565460205,
+              "delta_ratio": 0.09112874418497086,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.5628151893615723,
+          "source_joint160_cosine": 0.9660965800285339
+        },
+        {
+          "batch": 16,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4583543837070465,
+              "delta_ratio": 0.07952842861413956,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4424110651016235,
+          "source_joint160_cosine": 0.9798604249954224
+        },
+        {
+          "batch": 17,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 18,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4549556374549866,
+              "delta_ratio": 0.08026835322380066,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.73939049243927,
+          "source_joint160_cosine": 0.9764787554740906
+        },
+        {
+          "batch": 19,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4898618459701538,
+              "delta_ratio": 0.08932222425937653,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.8614015579223633,
+          "source_joint160_cosine": 0.9743003249168396
+        },
+        {
+          "batch": 20,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 127,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.4384326934814453,
+              "delta_ratio": 0.07826979458332062,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.644054651260376,
+          "source_joint160_cosine": 0.9790477752685547
+        },
+        {
+          "batch": 21,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 22,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.48085111379623413,
+              "delta_ratio": 0.0790400430560112,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4688372611999512,
+          "source_joint160_cosine": 0.9788281321525574
+        },
+        {
+          "batch": 23,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.47641462087631226,
+              "delta_ratio": 0.07349076122045517,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.313886046409607,
+          "source_joint160_cosine": 0.9838511943817139
+        },
+        {
+          "batch": 24,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4782094955444336,
+              "delta_ratio": 0.07832522690296173,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.3181047439575195,
+          "source_joint160_cosine": 0.9834951162338257
+        },
+        {
+          "batch": 25,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 125,
+              "changed_packets": 123,
+              "changed_ratio": 0.9609375,
+              "movement_mean": 0.4252348840236664,
+              "delta_ratio": 0.0631292536854744,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 125,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.0986342430114746,
+          "source_joint160_cosine": 0.9888769388198853
+        },
+        {
+          "batch": 26,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 123,
+              "changed_ratio": 0.9609375,
+              "movement_mean": 0.4441356956958771,
+              "delta_ratio": 0.07372628152370453,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.2846795320510864,
+          "source_joint160_cosine": 0.9848628640174866
+        },
+        {
+          "batch": 27,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.540521502494812,
+              "delta_ratio": 0.09084086120128632,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.4233507812023163,
+              "delta_ratio": 0.07731969654560089,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.4812567234039307,
+          "source_joint160_cosine": 0.9580118060112
+        },
+        {
+          "batch": 28,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5168049931526184,
+              "delta_ratio": 0.09314736723899841,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.3621947765350342,
+          "source_joint160_cosine": 0.9859125018119812
+        },
+        {
+          "batch": 29,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5365208387374878,
+              "delta_ratio": 0.0959070697426796,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.647148847579956,
+          "source_joint160_cosine": 0.9822823405265808
+        },
+        {
+          "batch": 30,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5066083669662476,
+              "delta_ratio": 0.08273492008447647,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.579603672027588,
+          "source_joint160_cosine": 0.9775032997131348
+        },
+        {
+          "batch": 31,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5716886520385742,
+              "delta_ratio": 0.0835687667131424,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4609605669975281,
+              "delta_ratio": 0.0754598006606102,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.5069689750671387,
+          "source_joint160_cosine": 0.9609664678573608
+        },
+        {
+          "batch": 32,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.563930094242096,
+              "delta_ratio": 0.09021247923374176,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.5305521488189697,
+          "source_joint160_cosine": 0.9808773994445801
+        },
+        {
+          "batch": 33,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5019059777259827,
+              "delta_ratio": 0.07383807003498077,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.1170393228530884,
+          "source_joint160_cosine": 0.9882729649543762
+        },
+        {
+          "batch": 34,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 35,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.521537184715271,
+              "delta_ratio": 0.09336525946855545,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5304290056228638,
+              "delta_ratio": 0.08665318787097931,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.802851438522339,
+          "source_joint160_cosine": 0.9588707089424133
+        },
+        {
+          "batch": 36,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.45985162258148193,
+              "delta_ratio": 0.07495120167732239,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4740336239337921,
+              "delta_ratio": 0.07946628332138062,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.549201250076294,
+          "source_joint160_cosine": 0.9638623595237732
+        },
+        {
+          "batch": 37,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 38,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.49570709466934204,
+              "delta_ratio": 0.08091447502374649,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.237074851989746,
+          "source_joint160_cosine": 0.9863902926445007
+        },
+        {
+          "batch": 39,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 40,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 125,
+              "changed_ratio": 0.9765625,
+              "movement_mean": 0.47782519459724426,
+              "delta_ratio": 0.072187140583992,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5078121423721313,
+              "delta_ratio": 0.08069157600402832,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.4056336879730225,
+          "source_joint160_cosine": 0.9690601229667664
+        },
+        {
+          "batch": 41,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.4739845097064972,
+              "delta_ratio": 0.09181846678256989,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.22135066986084,
+          "source_joint160_cosine": 0.9571760892868042
+        },
+        {
+          "batch": 42,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5215275287628174,
+              "delta_ratio": 0.08249673992395401,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.3949227333068848,
+          "source_joint160_cosine": 0.9842942953109741
+        },
+        {
+          "batch": 43,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.45635169744491577,
+              "delta_ratio": 0.06953968107700348,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4930533766746521,
+              "delta_ratio": 0.08493643254041672,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.251286745071411,
+          "source_joint160_cosine": 0.9679597616195679
+        },
+        {
+          "batch": 44,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 125,
+              "changed_ratio": 0.9765625,
+              "movement_mean": 0.47462964057922363,
+              "delta_ratio": 0.07343671470880508,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5237060785293579,
+              "delta_ratio": 0.08542390167713165,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.479344606399536,
+          "source_joint160_cosine": 0.959990382194519
+        },
+        {
+          "batch": 45,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.48385730385780334,
+              "delta_ratio": 0.09117354452610016,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5349530577659607,
+              "delta_ratio": 0.09834561496973038,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.658249855041504,
+          "source_joint160_cosine": 0.9554819464683533
+        },
+        {
+          "batch": 46,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5778340101242065,
+              "delta_ratio": 0.09142443537712097,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.5827202796936035,
+          "source_joint160_cosine": 0.9810585379600525
+        },
+        {
+          "batch": 47,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5297158360481262,
+              "delta_ratio": 0.09378498047590256,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.9883689880371094,
+          "source_joint160_cosine": 0.971345067024231
+        },
+        {
+          "batch": 48,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5137772560119629,
+              "delta_ratio": 0.08249025791883469,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.447205901145935,
+          "source_joint160_cosine": 0.9833041429519653
+        },
+        {
+          "batch": 49,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 50,
+          "count": 28,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 17,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 17,
+              "changed_packets": 17,
+              "changed_ratio": 0.6071428656578064,
+              "movement_mean": 0.3378111720085144,
+              "delta_ratio": 0.06236940994858742,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.7347909212112427,
+          "source_joint160_cosine": 0.9570154547691345
+        }
+      ],
+      "model_parameters_buffers_unchanged": true,
+      "accumulated_gradients": false,
+      "optimizer_steps": 0,
+      "head_fit": false,
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "query_read": false,
+      "V_cache_materialized": true,
+      "V_forward": false,
+      "forced_feature_hook_in_eval": true,
+      "p": 0.5,
+      "alpha": 0.1,
+      "strength": 1.0,
+      "teacher_forward": false,
+      "seconds": 8.523885488510132,
+      "interpretation": "Source descriptive moments and a fixed frozen feature intervention. No new training/target result; augmented source error does not prove training efficacy or disqualify a learnable augmentation automatically.",
+      "original_run_id": "20261014-phase1-source-style-profile-manysig-s01-m1-r01",
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "source_profile_reused": true,
+      "source_observer_execution_commit": "d594ac63a95bf5c654d10dbc9e9a82608fe447b3",
+      "new_packet_forwards": 0
+    },
+    {
+      "status": "VERIFIED",
+      "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "row_id": "MATCHED_CONTROL-s2026092701",
+      "arm": "MATCHED_CONTROL",
+      "model_seed": 2026092701,
+      "models": 1,
+      "source_only": true,
+      "source_role": "L_s",
+      "source_packets": 6300,
+      "source_batches": 50,
+      "packet_forwards": 12600,
+      "source_count_checks": {
+        "clean_correct": 6264,
+        "styled_correct": 6266,
+        "prediction_changes": 19,
+        "correct_to_wrong": 8,
+        "wrong_to_correct": 10
+      },
+      "moments": {
+        "t1": {
+          "dimension": 144,
+          "source_packets": 6300,
+          "total_centered_SS": 6909.0537109375,
+          "RX_within_TX_day_SS": 2258.49853515625,
+          "TX_within_RX_day_SS": 4454.2939453125,
+          "RX_within_TX_day_fraction": 0.3268897058335057,
+          "TX_within_RX_day_fraction": 0.6447039105023964,
+          "interpretation": "Descriptive conditional mean/std variation; not RX shortcut, causal nuisance decomposition, feature rank or transfer proof"
+        },
+        "t2": {
+          "dimension": 192,
+          "source_packets": 6300,
+          "total_centered_SS": 14460.5703125,
+          "RX_within_TX_day_SS": 4080.833984375,
+          "TX_within_RX_day_SS": 9674.8173828125,
+          "RX_within_TX_day_fraction": 0.2822042212849273,
+          "TX_within_RX_day_fraction": 0.6690481200765227,
+          "interpretation": "Descriptive conditional mean/std variation; not RX shortcut, causal nuisance decomposition, feature rank or transfer proof"
+        }
+      },
+      "batches": [
+        {
+          "batch": 1,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5541498064994812,
+              "delta_ratio": 0.08067533373832703,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5164234638214111,
+              "delta_ratio": 0.0778450295329094,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.2464699745178223,
+          "source_joint160_cosine": 0.9753804802894592
+        },
+        {
+          "batch": 2,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5736265182495117,
+              "delta_ratio": 0.09565909206867218,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.6035155057907104,
+          "source_joint160_cosine": 0.982871949672699
+        },
+        {
+          "batch": 3,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5202117562294006,
+              "delta_ratio": 0.0967634990811348,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.0676915645599365,
+          "source_joint160_cosine": 0.9715628623962402
+        },
+        {
+          "batch": 4,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4961079955101013,
+              "delta_ratio": 0.08933444321155548,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.8586161136627197,
+          "source_joint160_cosine": 0.97144615650177
+        },
+        {
+          "batch": 5,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.535436749458313,
+              "delta_ratio": 0.09766757488250732,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.9790352582931519,
+          "source_joint160_cosine": 0.9721889495849609
+        },
+        {
+          "batch": 6,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 7,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5388291478157043,
+              "delta_ratio": 0.08618474751710892,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.47298145294189453,
+              "delta_ratio": 0.0804285854101181,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.3568596839904785,
+          "source_joint160_cosine": 0.9714730381965637
+        },
+        {
+          "batch": 8,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5405066013336182,
+              "delta_ratio": 0.08944936841726303,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.457005500793457,
+          "source_joint160_cosine": 0.9832245111465454
+        },
+        {
+          "batch": 9,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 10,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 122,
+              "changed_ratio": 0.953125,
+              "movement_mean": 0.5010020136833191,
+              "delta_ratio": 0.07914547622203827,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4267692565917969,
+          "source_joint160_cosine": 0.9835874438285828
+        },
+        {
+          "batch": 11,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 12,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 13,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4657171964645386,
+              "delta_ratio": 0.0758402943611145,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.7190654277801514,
+          "source_joint160_cosine": 0.9744724035263062
+        },
+        {
+          "batch": 14,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5613037347793579,
+              "delta_ratio": 0.09669926762580872,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5227815508842468,
+              "delta_ratio": 0.09319566935300827,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.90812611579895,
+          "source_joint160_cosine": 0.9517744779586792
+        },
+        {
+          "batch": 15,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.4838308095932007,
+              "delta_ratio": 0.07683310657739639,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5417797565460205,
+              "delta_ratio": 0.09070658683776855,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.5643301010131836,
+          "source_joint160_cosine": 0.9662554264068604
+        },
+        {
+          "batch": 16,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4583543837070465,
+              "delta_ratio": 0.07940426468849182,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4564050436019897,
+          "source_joint160_cosine": 0.9795091152191162
+        },
+        {
+          "batch": 17,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 18,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4549556374549866,
+              "delta_ratio": 0.08012819290161133,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.7523211240768433,
+          "source_joint160_cosine": 0.9761174917221069
+        },
+        {
+          "batch": 19,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4898618459701538,
+              "delta_ratio": 0.08911748230457306,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.8914222717285156,
+          "source_joint160_cosine": 0.9737753868103027
+        },
+        {
+          "batch": 20,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 127,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.4384326934814453,
+              "delta_ratio": 0.07824762165546417,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.6629973649978638,
+          "source_joint160_cosine": 0.9788545966148376
+        },
+        {
+          "batch": 21,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 22,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.48085111379623413,
+              "delta_ratio": 0.07880350202322006,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4536796808242798,
+          "source_joint160_cosine": 0.9798259735107422
+        },
+        {
+          "batch": 23,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.47641462087631226,
+              "delta_ratio": 0.07345829159021378,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.3058226108551025,
+          "source_joint160_cosine": 0.9842687845230103
+        },
+        {
+          "batch": 24,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4782094955444336,
+              "delta_ratio": 0.07810454815626144,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.307619333267212,
+          "source_joint160_cosine": 0.9839509129524231
+        },
+        {
+          "batch": 25,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 125,
+              "changed_packets": 123,
+              "changed_ratio": 0.9609375,
+              "movement_mean": 0.4252348840236664,
+              "delta_ratio": 0.06304095685482025,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 125,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.107113242149353,
+          "source_joint160_cosine": 0.9887109398841858
+        },
+        {
+          "batch": 26,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 123,
+              "changed_ratio": 0.9609375,
+              "movement_mean": 0.4441356956958771,
+              "delta_ratio": 0.07344716787338257,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.2632219791412354,
+          "source_joint160_cosine": 0.9855926632881165
+        },
+        {
+          "batch": 27,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.540521502494812,
+              "delta_ratio": 0.09072653204202652,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.4233507812023163,
+              "delta_ratio": 0.07712926715612411,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.479604959487915,
+          "source_joint160_cosine": 0.9588675498962402
+        },
+        {
+          "batch": 28,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5168049931526184,
+              "delta_ratio": 0.0928444042801857,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.3805210590362549,
+          "source_joint160_cosine": 0.9854651093482971
+        },
+        {
+          "batch": 29,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5365208387374878,
+              "delta_ratio": 0.09528253972530365,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.6451228857040405,
+          "source_joint160_cosine": 0.9824271202087402
+        },
+        {
+          "batch": 30,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5066083669662476,
+              "delta_ratio": 0.08256947994232178,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.5697792768478394,
+          "source_joint160_cosine": 0.9779759645462036
+        },
+        {
+          "batch": 31,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5716886520385742,
+              "delta_ratio": 0.08334895223379135,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4609605669975281,
+              "delta_ratio": 0.07531694322824478,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.5196404457092285,
+          "source_joint160_cosine": 0.9614158868789673
+        },
+        {
+          "batch": 32,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.563930094242096,
+              "delta_ratio": 0.08990414440631866,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.5160207748413086,
+          "source_joint160_cosine": 0.9816385507583618
+        },
+        {
+          "batch": 33,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5019059777259827,
+              "delta_ratio": 0.07368209958076477,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.1394399404525757,
+          "source_joint160_cosine": 0.9878693222999573
+        },
+        {
+          "batch": 34,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 35,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.521537184715271,
+              "delta_ratio": 0.09304509311914444,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5304290056228638,
+              "delta_ratio": 0.08645302057266235,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.808284282684326,
+          "source_joint160_cosine": 0.9593583345413208
+        },
+        {
+          "batch": 36,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.45985162258148193,
+              "delta_ratio": 0.07480091601610184,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4740336239337921,
+              "delta_ratio": 0.07912472635507584,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.557173013687134,
+          "source_joint160_cosine": 0.9639925360679626
+        },
+        {
+          "batch": 37,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 38,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.49570709466934204,
+              "delta_ratio": 0.0805131196975708,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.2336479425430298,
+          "source_joint160_cosine": 0.9866141676902771
+        },
+        {
+          "batch": 39,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 40,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 125,
+              "changed_ratio": 0.9765625,
+              "movement_mean": 0.47782519459724426,
+              "delta_ratio": 0.07195115089416504,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5078121423721313,
+              "delta_ratio": 0.08038828521966934,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.4342851638793945,
+          "source_joint160_cosine": 0.968203604221344
+        },
+        {
+          "batch": 41,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.4739845097064972,
+              "delta_ratio": 0.0918719694018364,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.2338624000549316,
+          "source_joint160_cosine": 0.9575675129890442
+        },
+        {
+          "batch": 42,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5215275287628174,
+              "delta_ratio": 0.0821719616651535,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4007195234298706,
+          "source_joint160_cosine": 0.9840871691703796
+        },
+        {
+          "batch": 43,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.45635169744491577,
+              "delta_ratio": 0.06934964656829834,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4930533766746521,
+              "delta_ratio": 0.0844920352101326,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.235766649246216,
+          "source_joint160_cosine": 0.9691985845565796
+        },
+        {
+          "batch": 44,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 125,
+              "changed_ratio": 0.9765625,
+              "movement_mean": 0.47462964057922363,
+              "delta_ratio": 0.07328476756811142,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5237060785293579,
+              "delta_ratio": 0.08518090099096298,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.4974312782287598,
+          "source_joint160_cosine": 0.9595474004745483
+        },
+        {
+          "batch": 45,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.48385730385780334,
+              "delta_ratio": 0.09092804789543152,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5349530577659607,
+              "delta_ratio": 0.09815725684165955,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.660130023956299,
+          "source_joint160_cosine": 0.9565174579620361
+        },
+        {
+          "batch": 46,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5778340101242065,
+              "delta_ratio": 0.09126253426074982,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.5931559801101685,
+          "source_joint160_cosine": 0.9808552861213684
+        },
+        {
+          "batch": 47,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5297158360481262,
+              "delta_ratio": 0.09341659396886826,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.9845309257507324,
+          "source_joint160_cosine": 0.9716942310333252
+        },
+        {
+          "batch": 48,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5137772560119629,
+              "delta_ratio": 0.08241438865661621,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4253008365631104,
+          "source_joint160_cosine": 0.984068751335144
+        },
+        {
+          "batch": 49,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 50,
+          "count": 28,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 17,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 17,
+              "changed_packets": 17,
+              "changed_ratio": 0.6071428656578064,
+              "movement_mean": 0.3378111720085144,
+              "delta_ratio": 0.062426064163446426,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.7315337657928467,
+          "source_joint160_cosine": 0.9580085873603821
+        }
+      ],
+      "model_parameters_buffers_unchanged": true,
+      "accumulated_gradients": false,
+      "optimizer_steps": 0,
+      "head_fit": false,
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "query_read": false,
+      "V_cache_materialized": true,
+      "V_forward": false,
+      "forced_feature_hook_in_eval": true,
+      "p": 0.5,
+      "alpha": 0.1,
+      "strength": 1.0,
+      "teacher_forward": false,
+      "seconds": 8.389615297317505,
+      "interpretation": "Source descriptive moments and a fixed frozen feature intervention. No new training/target result; augmented source error does not prove training efficacy or disqualify a learnable augmentation automatically.",
+      "source_profile_reused": false,
+      "new_packet_forwards": 12600
+    },
+    {
+      "status": "VERIFIED",
+      "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "row_id": "IDENTITY_MIXSTYLE-s2026092701",
+      "arm": "IDENTITY_MIXSTYLE",
+      "model_seed": 2026092701,
+      "models": 1,
+      "source_only": true,
+      "source_role": "L_s",
+      "source_packets": 6300,
+      "source_batches": 50,
+      "packet_forwards": 12600,
+      "source_count_checks": {
+        "clean_correct": 6232,
+        "styled_correct": 6250,
+        "prediction_changes": 27,
+        "correct_to_wrong": 4,
+        "wrong_to_correct": 22
+      },
+      "moments": {
+        "t1": {
+          "dimension": 144,
+          "source_packets": 6300,
+          "total_centered_SS": 9502.896484375,
+          "RX_within_TX_day_SS": 2934.35498046875,
+          "TX_within_RX_day_SS": 6609.23095703125,
+          "RX_within_TX_day_fraction": 0.3087853251157182,
+          "TX_within_RX_day_fraction": 0.6954964697235608,
+          "interpretation": "Descriptive conditional mean/std variation; not RX shortcut, causal nuisance decomposition, feature rank or transfer proof"
+        },
+        "t2": {
+          "dimension": 192,
+          "source_packets": 6300,
+          "total_centered_SS": 22327.5703125,
+          "RX_within_TX_day_SS": 5465.15234375,
+          "TX_within_RX_day_SS": 16478.294921875,
+          "RX_within_TX_day_fraction": 0.2447714761283433,
+          "TX_within_RX_day_fraction": 0.7380245450464304,
+          "interpretation": "Descriptive conditional mean/std variation; not RX shortcut, causal nuisance decomposition, feature rank or transfer proof"
+        }
+      },
+      "batches": [
+        {
+          "batch": 1,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5541498064994812,
+              "delta_ratio": 0.08788307011127472,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5164234638214111,
+              "delta_ratio": 0.08275584131479263,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.109318494796753,
+          "source_joint160_cosine": 0.9779412150382996
+        },
+        {
+          "batch": 2,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5736265182495117,
+              "delta_ratio": 0.10729881376028061,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.5824410915374756,
+          "source_joint160_cosine": 0.9828639030456543
+        },
+        {
+          "batch": 3,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5202117562294006,
+              "delta_ratio": 0.1084163635969162,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.8858716487884521,
+          "source_joint160_cosine": 0.9767850637435913
+        },
+        {
+          "batch": 4,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4961079955101013,
+              "delta_ratio": 0.0998561829328537,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.7379634380340576,
+          "source_joint160_cosine": 0.9753246307373047
+        },
+        {
+          "batch": 5,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.535436749458313,
+              "delta_ratio": 0.1093226969242096,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.8892987966537476,
+          "source_joint160_cosine": 0.9738931655883789
+        },
+        {
+          "batch": 6,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 7,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5388291478157043,
+              "delta_ratio": 0.09343750774860382,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.47298145294189453,
+              "delta_ratio": 0.08368633687496185,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.3536629676818848,
+          "source_joint160_cosine": 0.9696326851844788
+        },
+        {
+          "batch": 8,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5405066013336182,
+              "delta_ratio": 0.1006026566028595,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.6088441610336304,
+          "source_joint160_cosine": 0.9797158241271973
+        },
+        {
+          "batch": 9,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 10,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 122,
+              "changed_ratio": 0.953125,
+              "movement_mean": 0.5010020136833191,
+              "delta_ratio": 0.0860101506114006,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.3895071744918823,
+          "source_joint160_cosine": 0.9854548573493958
+        },
+        {
+          "batch": 11,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 12,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 13,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4657171964645386,
+              "delta_ratio": 0.08372469246387482,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.612497091293335,
+          "source_joint160_cosine": 0.9773512482643127
+        },
+        {
+          "batch": 14,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5613037347793579,
+              "delta_ratio": 0.10726096481084824,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5227815508842468,
+              "delta_ratio": 0.10059474408626556,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 3.0013985633850098,
+          "source_joint160_cosine": 0.955040454864502
+        },
+        {
+          "batch": 15,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.4838308095932007,
+              "delta_ratio": 0.08565869182348251,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5417797565460205,
+              "delta_ratio": 0.09971687197685242,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.549546957015991,
+          "source_joint160_cosine": 0.9654332995414734
+        },
+        {
+          "batch": 16,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4583543837070465,
+              "delta_ratio": 0.08767718821763992,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4619426727294922,
+          "source_joint160_cosine": 0.979446291923523
+        },
+        {
+          "batch": 17,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 18,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4549556374549866,
+              "delta_ratio": 0.09188707172870636,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.770185947418213,
+          "source_joint160_cosine": 0.9745873212814331
+        },
+        {
+          "batch": 19,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4898618459701538,
+              "delta_ratio": 0.09910724312067032,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.8145471811294556,
+          "source_joint160_cosine": 0.9747438430786133
+        },
+        {
+          "batch": 20,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 127,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.4384326934814453,
+              "delta_ratio": 0.08591683954000473,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.543504238128662,
+          "source_joint160_cosine": 0.9818371534347534
+        },
+        {
+          "batch": 21,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 22,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.48085111379623413,
+              "delta_ratio": 0.08856769651174545,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4398066997528076,
+          "source_joint160_cosine": 0.9817106127738953
+        },
+        {
+          "batch": 23,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.47641462087631226,
+              "delta_ratio": 0.08205170184373856,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.3435324430465698,
+          "source_joint160_cosine": 0.9846273064613342
+        },
+        {
+          "batch": 24,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4782094955444336,
+              "delta_ratio": 0.08837738633155823,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.2638386487960815,
+          "source_joint160_cosine": 0.9864158630371094
+        },
+        {
+          "batch": 25,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 125,
+              "changed_packets": 123,
+              "changed_ratio": 0.9609375,
+              "movement_mean": 0.4252348840236664,
+              "delta_ratio": 0.06893744319677353,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 125,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.0297536849975586,
+          "source_joint160_cosine": 0.9905970096588135
+        },
+        {
+          "batch": 26,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 123,
+              "changed_ratio": 0.9609375,
+              "movement_mean": 0.4441356956958771,
+              "delta_ratio": 0.0828847885131836,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.2326807975769043,
+          "source_joint160_cosine": 0.9848949909210205
+        },
+        {
+          "batch": 27,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.540521502494812,
+              "delta_ratio": 0.09940111637115479,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.4233507812023163,
+              "delta_ratio": 0.0866449698805809,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.2708091735839844,
+          "source_joint160_cosine": 0.9691755771636963
+        },
+        {
+          "batch": 28,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5168049931526184,
+              "delta_ratio": 0.10251830518245697,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4761275053024292,
+          "source_joint160_cosine": 0.9828495979309082
+        },
+        {
+          "batch": 29,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5365208387374878,
+              "delta_ratio": 0.10525238513946533,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.7073478698730469,
+          "source_joint160_cosine": 0.9803680181503296
+        },
+        {
+          "batch": 30,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5066083669662476,
+              "delta_ratio": 0.09307336807250977,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.607727289199829,
+          "source_joint160_cosine": 0.9782761931419373
+        },
+        {
+          "batch": 31,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5716886520385742,
+              "delta_ratio": 0.08997726440429688,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.4609605669975281,
+              "delta_ratio": 0.08142620325088501,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.3745853900909424,
+          "source_joint160_cosine": 0.9663217663764954
+        },
+        {
+          "batch": 32,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.563930094242096,
+              "delta_ratio": 0.1014457568526268,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.6470117568969727,
+          "source_joint160_cosine": 0.9765942096710205
+        },
+        {
+          "batch": 33,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5019059777259827,
+              "delta_ratio": 0.08034421503543854,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.20533287525177,
+          "source_joint160_cosine": 0.9886658787727356
+        },
+        {
+          "batch": 34,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 127,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 35,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.521537184715271,
+              "delta_ratio": 0.10567198693752289,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.5304290056228638,
+              "delta_ratio": 0.08994103968143463,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.691870927810669,
+          "source_joint160_cosine": 0.9623696804046631
+        },
+        {
+          "batch": 36,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.45985162258148193,
+              "delta_ratio": 0.08207006752490997,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4740336239337921,
+              "delta_ratio": 0.08227008581161499,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.3650522232055664,
+          "source_joint160_cosine": 0.9701641201972961
+        },
+        {
+          "batch": 37,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 38,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.49570709466934204,
+              "delta_ratio": 0.08775898069143295,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.275024175643921,
+          "source_joint160_cosine": 0.9858100414276123
+        },
+        {
+          "batch": 39,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 40,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 125,
+              "changed_ratio": 0.9765625,
+              "movement_mean": 0.47782519459724426,
+              "delta_ratio": 0.08090617507696152,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5078121423721313,
+              "delta_ratio": 0.08825335651636124,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.5053634643554688,
+          "source_joint160_cosine": 0.9657529592514038
+        },
+        {
+          "batch": 41,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 128,
+              "changed_ratio": 1.0,
+              "movement_mean": 0.4739845097064972,
+              "delta_ratio": 0.1030375137925148,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.020148754119873,
+          "source_joint160_cosine": 0.9645836353302002
+        },
+        {
+          "batch": 42,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5215275287628174,
+              "delta_ratio": 0.09026109427213669,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4180173873901367,
+          "source_joint160_cosine": 0.9833472371101379
+        },
+        {
+          "batch": 43,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.45635169744491577,
+              "delta_ratio": 0.07650618255138397,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.4930533766746521,
+              "delta_ratio": 0.09110938757658005,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.161573648452759,
+          "source_joint160_cosine": 0.9697035551071167
+        },
+        {
+          "batch": 44,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 125,
+              "changed_ratio": 0.9765625,
+              "movement_mean": 0.47462964057922363,
+              "delta_ratio": 0.08110564947128296,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5237060785293579,
+              "delta_ratio": 0.09394389390945435,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.4128353595733643,
+          "source_joint160_cosine": 0.9641879796981812
+        },
+        {
+          "batch": 45,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.48385730385780334,
+              "delta_ratio": 0.10284142196178436,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 127,
+              "changed_ratio": 0.9921875,
+              "movement_mean": 0.5349530577659607,
+              "delta_ratio": 0.10485729575157166,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 2.607725143432617,
+          "source_joint160_cosine": 0.9574345350265503
+        },
+        {
+          "batch": 46,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5778340101242065,
+              "delta_ratio": 0.1009254977107048,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.5653307437896729,
+          "source_joint160_cosine": 0.9836754202842712
+        },
+        {
+          "batch": 47,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 126,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 126,
+              "changed_packets": 124,
+              "changed_ratio": 0.96875,
+              "movement_mean": 0.5297158360481262,
+              "delta_ratio": 0.10346858948469162,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.9047791957855225,
+          "source_joint160_cosine": 0.9722188115119934
+        },
+        {
+          "batch": 48,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": true,
+              "eligible_packets": 128,
+              "changed_packets": 126,
+              "changed_ratio": 0.984375,
+              "movement_mean": 0.5137772560119629,
+              "delta_ratio": 0.09014724940061569,
+              "movement_max": 1.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4037301540374756,
+          "source_joint160_cosine": 0.9849627017974854
+        },
+        {
+          "batch": 49,
+          "count": 128,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": false,
+              "eligible_packets": 128,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            }
+          },
+          "source_joint160_L2_mean": 0.0,
+          "source_joint160_cosine": 1.0
+        },
+        {
+          "batch": 50,
+          "count": 28,
+          "layers": {
+            "t1": {
+              "enabled": false,
+              "eligible_packets": 17,
+              "changed_packets": 0,
+              "changed_ratio": 0.0,
+              "movement_mean": 0.0,
+              "delta_ratio": 0.0
+            },
+            "t2": {
+              "enabled": true,
+              "eligible_packets": 17,
+              "changed_packets": 17,
+              "changed_ratio": 0.6071428656578064,
+              "movement_mean": 0.3378111720085144,
+              "delta_ratio": 0.07900970429182053,
+              "movement_max": 1.0
+            }
+          },
+          "source_joint160_L2_mean": 1.4933809041976929,
+          "source_joint160_cosine": 0.9715368151664734
+        }
+      ],
+      "model_parameters_buffers_unchanged": true,
+      "accumulated_gradients": false,
+      "optimizer_steps": 0,
+      "head_fit": false,
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "query_read": false,
+      "V_cache_materialized": true,
+      "V_forward": false,
+      "forced_feature_hook_in_eval": true,
+      "p": 0.5,
+      "alpha": 0.1,
+      "strength": 1.0,
+      "teacher_forward": false,
+      "seconds": 8.330346822738647,
+      "interpretation": "Source descriptive moments and a fixed frozen feature intervention. No new training/target result; augmented source error does not prove training efficacy or disqualify a learnable augmentation automatically.",
+      "source_profile_reused": false,
+      "new_packet_forwards": 12600
+    }
+  ],
+  "comparisons_to_matched_control": {
+    "t1": {
+      "RX_conditional_fraction_difference": -0.01810438071778747,
+      "TX_conditional_fraction_difference": 0.050792559221164435
+    },
+    "t2": {
+      "RX_conditional_fraction_difference": -0.037432745156583985,
+      "TX_conditional_fraction_difference": 0.06897642496990775
+    }
+  },
+  "head_fit": false,
+  "head_updates": 0,
+  "optimizer_steps": 0,
+  "query_read": false,
+  "U_truth_read": false,
+  "U_IQ_read": false,
+  "V_cache_materialized": true,
+  "V_forward": false,
+  "scope": "Post-training same-row source descriptive mechanism; all source RX were seen in backbone, no held-out RX or new TX claim; forced eval intervention is not training efficacy. Does not change any registered threshold, selection or candidate.",
+  "analysis_commit": "1937965e380cb93c98d17ee0333610e8922f66d5"
+}

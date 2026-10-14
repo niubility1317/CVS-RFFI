@@ -1,0 +1,37 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "execution_commit": "b2a4146b7571d8713ddbd98cd096fb98b2b4c00c",
+  "completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 3,
+    "new_trained_models": 2,
+    "reused_baseline_models": 1,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 504000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "all_owned_workers_terminal": true,
+  "failure": null,
+  "full_recount": {
+    "models": 3,
+    "new_steps": 22200,
+    "epoch_records": 150,
+    "default_decisions": 504000,
+    "CM_metric_records": 54
+  },
+  "postprocess": {
+    "pid": 50916,
+    "exit": 0,
+    "error": null,
+    "started": "2026-10-14T01:09:11.883Z",
+    "closed": "2026-10-14T01:09:44.852Z"
+  },
+  "source_only_qualification": "PASS",
+  "head_fit": false,
+  "target_feedback_to_training": false
+}

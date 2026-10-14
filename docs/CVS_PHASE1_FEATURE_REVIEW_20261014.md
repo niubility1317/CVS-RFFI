@@ -131,3 +131,12 @@ run 20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01�
 
 
 身份保护MixStyle 20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01 已发布，实际代码 b2a4146b7571d8713ddbd98cd096fb98b2b4c00c。remotecompile和real checkpoint no-query smoke PASS，GPU1/2两个owned进程/配置及日志增长VERIFIED，旧基线行已复用完成评分；新候选尚无target结果，固定50预算不变。完整[发布证据](../automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01/launch_evidence.json)。
+
+
+## 身份保护 MixStyle 首种子完整结果
+
+20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01 已全部完成，训练代码 b2a4146b7571d8713ddbd98cd096fb98b2b4c00c。全量22200新step/150epoch记录/504000默认决策/54CM及真实fθ重算VERIFIED，无缺项。旧门控cos80.6685%、matched80.8500%、MixStyle80.6095%；候选−matched−0.2405pp、−旧基线−0.0589pp，最差RX66.9833%较control70.9083%下降3.9250pp。负结果保留，一seed不定义SD，不冒充三seed84%。
+
+实际t1/t2各11100主L调用，48.6239%/48.9502%包次改变；θ175127分量不同、固定L720 joint160 L2=6.010110、cos=.883807，导出=W独立且θ/buffers观察不变。新参数/额外训练forward/单独头拟合均0，保留NoExplicitCFO及旧门控EMA。源RX条件比例下降而绝对RX平方和上升，不能把比例当作删除RX/因果不变性证据。
+
+源科学反证条件PASS；剩余预定义seed02/03的同参数同预算scratch验证决定已在读取target指标前提交 9e79dc413967aee78fa87e5d0f6c7408c44e4efc。不会按目标负差改p/alpha/层位/父权重或选择性重跑/停止；首seed不重训，下一动作只有登记并运行剩余4模型再合并真实三seed。完整[分析](../automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01/final_analysis.md)与[全量结果](../automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01/results.json)。

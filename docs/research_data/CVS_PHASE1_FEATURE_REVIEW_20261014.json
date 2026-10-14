@@ -33117,7 +33117,7 @@
     },
     {
       "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "method": "identity protected t1/t2 MixStyle",
       "implementation_path": "experiments/cvs_identity_mixstyle50",
       "model_seeds": [
@@ -33186,7 +33186,59 @@
             }
           }
         }
-      ]
+      ],
+      "full_matrix_rows": 3,
+      "readout": "ORIGINAL_HEAD",
+      "metrics": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "accuracy": 0.8066845238095238,
+          "macro_f1": 0.8017335328586674,
+          "worst_RX": 0.7061666666666667,
+          "worst_day": 0.7545238095238095,
+          "model_seed": 2026092701
+        },
+        {
+          "arm": "MATCHED_CONTROL",
+          "accuracy": 0.8085,
+          "macro_f1": 0.8037335839565589,
+          "worst_RX": 0.7090833333333333,
+          "worst_day": 0.7594285714285715,
+          "model_seed": 2026092701
+        },
+        {
+          "arm": "IDENTITY_MIXSTYLE",
+          "accuracy": 0.8060952380952381,
+          "macro_f1": 0.800385106985264,
+          "worst_RX": 0.6698333333333333,
+          "worst_day": 0.755547619047619,
+          "model_seed": 2026092701
+        }
+      ],
+      "paired_mixstyle_minus_control": -0.002404761904761909,
+      "source_qualification": "PASS",
+      "source_seed_expansion_decision_commit": "9e79dc413967aee78fa87e5d0f6c7408c44e4efc",
+      "decision_before_target_metric_read": true,
+      "full_recount": {
+        "new_steps": 22200,
+        "epochs": 150,
+        "decisions": 504000,
+        "CM_metric_records": 54
+      },
+      "source_feature_pair": {
+        "dimension": "overall",
+        "stratum": null,
+        "count": 720,
+        "joint160_L2_mean": 6.010109901428223,
+        "cosine_mean": 0.8838065266609192,
+        "changed_feature_elements": 115200
+      },
+      "source_parameter_diff": 175127,
+      "new_model_epoch_seconds": [
+        1943.3190438747406,
+        2078.2004206180573
+      ],
+      "next": "固定另2seeds同机制/同预算匹配scratch控制，第一seed不重训；再完整三seed汇总，不用目标差调参或选择性停止"
     }
   ],
   "diagnostics": {
@@ -78229,6 +78281,26 @@
       "head_fit": false,
       "query_read": false,
       "next": "单seed独立身份保护t1/t2 MixStyle scratch50与匹配旧门控cos，正常默认头联合训练"
+    },
+    "mixstyle_source_mechanism": {
+      "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "status": "ANALYZED",
+      "new_packet_forwards": 25200,
+      "reused_baseline_forwards": 12600,
+      "comparison": {
+        "t1": {
+          "RX_conditional_fraction_difference": -0.01810438071778747,
+          "TX_conditional_fraction_difference": 0.050792559221164435
+        },
+        "t2": {
+          "RX_conditional_fraction_difference": -0.037432745156583985,
+          "TX_conditional_fraction_difference": 0.06897642496990775
+        }
+      },
+      "interpretation": "RX fraction decreases while absolute RX SS increases; not receiver deletion or causal invariance proof",
+      "source_only": true,
+      "head_fit": false,
+      "query_read": false
     }
   },
   "next_directions": [
