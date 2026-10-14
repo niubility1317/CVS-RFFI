@@ -17,3 +17,5 @@
 预期：50epoch/11100step、initial/final/source_frozen/resolved/actualargs、2750extra stream、4期实际gradPT与JSON、sourcewitness/sourcequalification、每rowfixeddefaultprediction/independentmetrics、analysis/completion。原始IQ/CP/预测/日志/gradPT留既定远端，只上传实现/登记/必要聚合结果。当前尚未发布，暂无本轮目标准确率。
 
 代码/config提交 f6dfdb587c505b5720469d4a4a101b8df8b321f4；8negative/3实际native检查及唯一P0/P1审查PASS。所有模块本地编译PASS；真实checkpoint无querysmoke为远端发布第一步，PASS后直接继续。
+
+远端单归档SHA比较/compile/真实SIG checkpoint无query smoke PASS，执行 2658815a2fe5ef931f24558a6c6c61146433fd9c；三实际worker同PID/CWD/argv/GPU及loggrowth VERIFIED，目前3/2/2epoch、GPU1/2/0、无failure。历史旧gatecos默认预测复用已完成。新模型继续原固定50，无本轮目标准确率，不宣称84。

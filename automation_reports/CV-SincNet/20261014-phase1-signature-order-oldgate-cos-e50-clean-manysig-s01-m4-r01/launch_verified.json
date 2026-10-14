@@ -1,0 +1,69 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+  "implementation_commit": "f6dfdb587c505b5720469d4a4a101b8df8b321f4",
+  "execution_commit": "2658815a2fe5ef931f24558a6c6c61146433fd9c",
+  "release_archive_once": "single local/remoteSHA comparison enforced before extraction and successful remote compile/preflight/dispatch",
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "real_checkpoint_no_query_smoke": true,
+    "zero_IQ_packets": 90,
+    "source_checkpoint": "fixedfirstSIG_TIMEZERO final50, provenance verified by original own_model",
+    "training_inherits_checkpoint": false,
+    "query_read": false,
+    "head_fit": false,
+    "optimizer_updates": 0,
+    "clock": {
+      "clock_min": 1,
+      "clock_max": 1,
+      "mean_clock_energy_fraction": 0.5152022242546082
+    }
+  },
+  "workers": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "pid": 2391595,
+      "gpu": 1,
+      "process_live": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "same_pid": true,
+      "log_bytes": 22064,
+      "previous_log_bytes": 6542,
+      "log_growth": true,
+      "epochs": 3
+    },
+    {
+      "row_id": "SIG_RAW_ORDER-s2026092701",
+      "pid": 2391673,
+      "gpu": 2,
+      "process_live": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "same_pid": true,
+      "log_bytes": 16950,
+      "previous_log_bytes": 6582,
+      "log_growth": true,
+      "epochs": 2
+    },
+    {
+      "row_id": "SIG_DYNAMIC_ORDER-s2026092701",
+      "pid": 2391756,
+      "gpu": 0,
+      "process_live": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "same_pid": true,
+      "log_bytes": 16997,
+      "previous_log_bytes": 6614,
+      "log_growth": true,
+      "epochs": 2
+    }
+  ],
+  "all_owner_capacity_within3": true,
+  "completion": null,
+  "failure": null,
+  "read_at": 1791982623.217713,
+  "head_fit_updates": 0,
+  "goal_84": false
+}

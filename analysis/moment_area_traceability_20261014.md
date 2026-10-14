@@ -77,3 +77,5 @@ R08完整3seed9row已闭环verified：weighted82.7030%±1.6081pp、uniform82.751
 |S03|源资格与自动收尾|首seed三新＋旧历史，源资格固定后仅原样扩预定义02/03；每row自动defaultclean/truthlast|score.py,dispatch.py,publish.py|pending|待一次P0/P1/归档/真实启动|不以目标分数或源几何选父权重、调参、重跑|
 
 S01/S02本地实现与三实际native检查verified：8negative，actualt1/t2/SIGprojection更新、同初态warmup、1800显式公式、W辅助None/defaultjointupdate、mode/RNG保持PASS；唯一直接P0/P1 PASS。实现f6dfdb587c505b5720469d4a4a101b8df8b321f4；S03自动defaultclean/truthlast/源资格已实现，远端真实checkpoint/archive/compile/启动证据待发布，不把实现当训练结果。
+
+S03发布路径verified：20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01，执行2658815a2fe5ef931f24558a6c6c61146433fd9c，realSIGCP noquery90/单归档一次SHA/remotecompile及3实际samePID/CWD/argv/GPU/loggrowthVERIFIED，首3/2/2epoch，继续固定50及自动defaultclean/truthlast。S01/S02实际训练更新/完整多seed性能仍implemented待证据，不以本地检查或启动替代结果，0deferred/blocked/rejected。

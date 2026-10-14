@@ -249,3 +249,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 下一独立签名内监督已实施：20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01，源依据20261014-phase1-source-signature-order-manysig-s01-m1-r01全L6300；三同网络ZERO/RAW112/DYNAMIC108，部署SIG112不变、只辅助去4常量，固定旧m.1/coeff.1/5+10/33+17/ownEMAgatecos/scratch50。8negative/actualnative同初态warmup/三参数更新/defaulthead joint/W辅助None/模式RNG与唯一P0/P1 PASS，代码f6dfdb587c505b5720469d4a4a101b8df8b321f4。目前LOCAL_VERIFIED，未发布/无新目标分数，不把实现当收益。
+
+
+签名内监督首seed已发布 20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01，执行2658815a2fe5ef931f24558a6c6c61146433fd9c；真实SIG CP noquerysmoke、单归档/compile及三samePID/CWD/argv/GPU/loggrowth均VERIFIED，3/2/2epoch/GPU1/2/0，无failure，旧baseline默认预测复用已评分。固定50训练继续，RAW/DYNAMIC两候选不按target排行，source资格后才可原样扩02/03。暂无新目标数字或84结论。
