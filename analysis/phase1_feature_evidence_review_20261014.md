@@ -314,3 +314,5 @@ SINGLE三seed末轮源CE0.248543/0.239481/0.234405，V98.3259%/98.3037%/98.5222%
 关系矩阵首seed A/B/C完整默认头结果：ZERO81.0488%、ALL_REL79.3310%、CROSS_REL79.5982%；B/C对匹配ZERO分别−1.7179/−1.4506pp，C对B＋0.2673pp，不称关系有效。实际3774次allU损失、浅中层梯度、4次AdamW、无W/gain辅助梯度与无跳步已核实；源健康判据在target汇总前通过并已自动启动D。保留负结果，不热改、停D或target调参；尚无完整四条件/3seed证据。
 
 切向路线完整3seed合并已VERIFIED/ANALYZED：BASE80.5268%、ZERO80.6038%、RAW80.5579%、IDSAFE80.3077%。RAW相对ZERO平均−0.0458pp，IDSAFE−0.2960pp；IDSAFE三seed都低于RAW，平均−0.2502pp，最差RX也较差。9新模型全源日志/辅助记录扫描与2016000固定决定/216CM重算通过，未出现技术失败。首seedRAW正差不再描述为确认正收益；保留完整负证据，不target反调或选择性重跑，84%仍未达。
+
+关系/响应首seed四行完整：A81.0488%、B79.3310%、C79.5982%、D79.7000%。D−C＋0.1018pp但D−A−1.3488pp，当前不支持有效新机制。source-only标准在target汇总前通过，remaining8rows已实际启动，参数/矩阵保持。84%未达；等完整3seed证据，旧COMPACT/LONG/Sinc独立正收益证据保留。

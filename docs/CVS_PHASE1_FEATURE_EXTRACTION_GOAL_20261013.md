@@ -65,3 +65,5 @@ Sinc坐标9row全部完成，6新scratch50/300模型轮次/66600更新、3历史
 当前关系机制及切向固定确认均已发布/独立启动回读VERIFIED。另保留完整3seed的COMPACT_LINEAR、LONG_SILU和Sinc居中坐标正收益路线，待预定CROSS_RESP通过源标准后做逐项匹配组合，不按target择父或混合全部结构。当前结果未达84%，目标继续active。
 
 切向路线完整3seed已收尾：ZERO80.6038%、RAW80.5579%、IDSAFE80.3077%，原首seedRAW正差未确认稳定收益。保留负结果，不将该路线当作已确认正收益继续叠加。COMPACT_LINEAR/LONG_SILU/Sinc的独立既有证据保留；关系/响应矩阵按原源规则推进，目标active、84%未达。
+
+关系首seed完整A/B/C/D＝81.0488/79.3310/79.5982/79.7000%；D对C有小增量但整体低于A，不宣称有效或达84%。原source-only规则已在target汇总前通过，remaining8rows启动；保持冻结参数/预算，不从本结果反调。

@@ -79,3 +79,9 @@ ALL_REL−ZERO＝−1.7179pp；CROSS_REL−ZERO＝−1.4506pp；CROSS_REL−ALL_
 关系teacher熵均值从ZERO0.6836变为B0.6182、C0.6461，bank归一化方差从0.6688变为0.7796/0.7792；目标更锐和特征变化不是收益证明。top ceil(1%)包的关系loss贡献均值约6.34%/8.52%/8.67%，最大约10.91%/20.07%/20.42%，未由极少数包垄断。部分aux-L夹角为负，不能仅凭梯度存在宣称优化有效。
 
 C中response只观察、不加入更新；其原始梯度可到PA卷积，但只有D实际加入后才能检验响应贡献。当前不追加白化/Fishr/MixStyle或根据target反调系数。完整源曲线与所有四点梯度保存在local_artifacts/full_source_prefix_analysis.json，公共紧凑证据见first_ABC_evidence.json；后续D与剩余seed按原冻结计划继续。
+
+## 首种子四条件闭合与扩种子
+
+D已完成50epoch/11100更新及默认头clean168000预测、freshCPU truth-last评分，四行共672000固定决定、72CM独立重算一致。首seed结果：ZERO81.0488%、ALL_REL79.3310%、CROSS_REL79.5982%、CROSS_RESP79.7000%。D−C为＋0.1018pp，D−ZERO为−1.3488pp。D最差RX69.7542%比C69.7792%稍低，最差day74.1190%比C73.7524%高；不得只写小正增量而省略基线负差。
+
+这是一个固定modelseed，当前不能支持有效机制、稳定响应收益或84%。四行源健康/非零信号/真实gradient标准在读取本target汇总前通过并保存，dispatcher按原规则已启动seed02/03全部8行。后续参数、候选及预算不依据这份target结果改变，不停止健康实验、不选择性重跑。实际PID/CWD/argv/GPU/log独立回读见first_quad_evidence.json；仍缺完整3seed结果。

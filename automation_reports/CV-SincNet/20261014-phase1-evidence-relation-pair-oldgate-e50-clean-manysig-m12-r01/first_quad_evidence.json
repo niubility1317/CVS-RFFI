@@ -1,0 +1,960 @@
+{
+  "status": "VERIFIED_FIRST_SEED_COMPLETE",
+  "run_id": "20261014-phase1-evidence-relation-pair-oldgate-e50-clean-manysig-m12-r01",
+  "execution_commit": "4e5bd3275289a91cb407392461eeefe20d171820",
+  "rows": [
+    {
+      "row": "ZERO-s2026092701",
+      "arm": "ZERO",
+      "model_seed": 2026092701,
+      "accuracy": 0.8104880952380953,
+      "macro_f1": 0.8055692257975006,
+      "worst_RX": 0.712,
+      "worst_day": 0.7643571428571428,
+      "epochs": 50,
+      "updates": 11100,
+      "source_L_CE": 0.2858314722575046,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9787777777777777,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9433333333333334,
+          "4": 0.9833333333333333,
+          "6": 0.9974074074074074,
+          "8": 0.9746296296296296
+        },
+        "source_val_worst_rx": 0.9433333333333334
+      },
+      "relation_execution": {
+        "auxiliary_calls": 3774,
+        "U_packet_observations": 963900,
+        "all_U_used": true,
+        "anchor_refresh_calls": 17,
+        "extra_L_forward_packets": 3060,
+        "head_fit_updates": 0,
+        "nonzero_relation_fraction_mean": 1.0,
+        "actual_aux_L_feature_gradient_ratios": [],
+        "U_sampling": [
+          {
+            "iterator": 1,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 2,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 3,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 4,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 5,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 6,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 7,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 8,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 9,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 10,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 11,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 12,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 13,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 14,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 15,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 16,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 17,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          }
+        ],
+        "U_truth_read": false,
+        "target_access": false,
+        "teacher_intervention": false,
+        "default_joint_classifier_unchanged": true
+      }
+    },
+    {
+      "row": "ALL_REL-s2026092701",
+      "arm": "ALL_REL",
+      "model_seed": 2026092701,
+      "accuracy": 0.7933095238095238,
+      "macro_f1": 0.7876081173590456,
+      "worst_RX": 0.691625,
+      "worst_day": 0.735547619047619,
+      "epochs": 50,
+      "updates": 11100,
+      "source_L_CE": 0.3022327495587839,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9773703703703703,
+        "source_val_rx_accuracy": {
+          "1": 0.9944444444444445,
+          "3": 0.9390740740740741,
+          "4": 0.9833333333333333,
+          "6": 0.9972222222222222,
+          "8": 0.9727777777777777
+        },
+        "source_val_worst_rx": 0.9390740740740741
+      },
+      "relation_execution": {
+        "auxiliary_calls": 3774,
+        "U_packet_observations": 963900,
+        "all_U_used": true,
+        "anchor_refresh_calls": 17,
+        "extra_L_forward_packets": 3060,
+        "head_fit_updates": 0,
+        "nonzero_relation_fraction_mean": 1.0,
+        "actual_aux_L_feature_gradient_ratios": [
+          0.939235488668401,
+          0.37308783559101666,
+          0.22532954596962151,
+          0.6160996421496515
+        ],
+        "U_sampling": [
+          {
+            "iterator": 1,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 2,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 3,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 4,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 5,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 6,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 7,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 8,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 9,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 10,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 11,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 12,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 13,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 14,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 15,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 16,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 17,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          }
+        ],
+        "U_truth_read": false,
+        "target_access": false,
+        "teacher_intervention": false,
+        "default_joint_classifier_unchanged": true
+      }
+    },
+    {
+      "row": "CROSS_REL-s2026092701",
+      "arm": "CROSS_REL",
+      "model_seed": 2026092701,
+      "accuracy": 0.7959821428571429,
+      "macro_f1": 0.7904589491933741,
+      "worst_RX": 0.6977916666666667,
+      "worst_day": 0.7375238095238095,
+      "epochs": 50,
+      "updates": 11100,
+      "source_L_CE": 0.30332423763366434,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9764814814814815,
+        "source_val_rx_accuracy": {
+          "1": 0.9948148148148148,
+          "3": 0.935,
+          "4": 0.9835185185185186,
+          "6": 0.9972222222222222,
+          "8": 0.9718518518518519
+        },
+        "source_val_worst_rx": 0.935
+      },
+      "relation_execution": {
+        "auxiliary_calls": 3774,
+        "U_packet_observations": 963900,
+        "all_U_used": true,
+        "anchor_refresh_calls": 17,
+        "extra_L_forward_packets": 3060,
+        "head_fit_updates": 0,
+        "nonzero_relation_fraction_mean": 1.0,
+        "actual_aux_L_feature_gradient_ratios": [
+          0.7471337469975994,
+          0.3489365900808985,
+          0.20403240183479487,
+          0.49498986381030713
+        ],
+        "U_sampling": [
+          {
+            "iterator": 1,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 2,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 3,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 4,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 5,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 6,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 7,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 8,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 9,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 10,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 11,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 12,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 13,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 14,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 15,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 16,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 17,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          }
+        ],
+        "U_truth_read": false,
+        "target_access": false,
+        "teacher_intervention": false,
+        "default_joint_classifier_unchanged": true
+      }
+    },
+    {
+      "row": "CROSS_RESP-s2026092701",
+      "arm": "CROSS_RESP",
+      "model_seed": 2026092701,
+      "accuracy": 0.797,
+      "macro_f1": 0.7915458926121598,
+      "worst_RX": 0.6975416666666666,
+      "worst_day": 0.7411904761904762,
+      "epochs": 50,
+      "updates": 11100,
+      "source_L_CE": 0.30188665394713216,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9765555555555555,
+        "source_val_rx_accuracy": {
+          "1": 0.9944444444444445,
+          "3": 0.9357407407407408,
+          "4": 0.9835185185185186,
+          "6": 0.9972222222222222,
+          "8": 0.9718518518518519
+        },
+        "source_val_worst_rx": 0.9357407407407408
+      },
+      "relation_execution": {
+        "auxiliary_calls": 3774,
+        "U_packet_observations": 963900,
+        "all_U_used": true,
+        "anchor_refresh_calls": 17,
+        "extra_L_forward_packets": 3060,
+        "head_fit_updates": 0,
+        "nonzero_relation_fraction_mean": 1.0,
+        "actual_aux_L_feature_gradient_ratios": [
+          0.9307520994073629,
+          0.37152706089544185,
+          0.25851987894199996,
+          0.6312182197672292
+        ],
+        "U_sampling": [
+          {
+            "iterator": 1,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 2,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 3,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 4,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 5,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 6,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 7,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 8,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 9,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 10,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 11,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 12,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 13,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 14,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 15,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 16,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          },
+          {
+            "iterator": 17,
+            "pool_count": 56700,
+            "generated_count": 56700,
+            "delivered_count": 56700,
+            "physical_packets_once": true,
+            "pair_metadata_verified": true,
+            "U_truth_read": false,
+            "IQ_read_for_order": false
+          }
+        ],
+        "U_truth_read": false,
+        "target_access": false,
+        "teacher_intervention": false,
+        "default_joint_classifier_unchanged": true
+      }
+    }
+  ],
+  "paired": [
+    {
+      "treatment": "ALL_REL",
+      "control": "ZERO",
+      "difference": -0.017178571428571487
+    },
+    {
+      "treatment": "CROSS_REL",
+      "control": "ALL_REL",
+      "difference": 0.0026726190476190625
+    },
+    {
+      "treatment": "CROSS_RESP",
+      "control": "CROSS_REL",
+      "difference": 0.0010178571428571814
+    },
+    {
+      "treatment": "CROSS_RESP",
+      "control": "ZERO",
+      "difference": -0.013488095238095243
+    }
+  ],
+  "source_expansion_before_target_summary": true,
+  "source_selection_only": true,
+  "live_remaining_workers": [
+    {
+      "row_id": "ZERO-s2026092702",
+      "pid": 2148746,
+      "gpu": 0,
+      "epoch": 11,
+      "log_size": 63332,
+      "PID_CWD_argv_verified": true
+    },
+    {
+      "row_id": "ALL_REL-s2026092702",
+      "pid": 2148830,
+      "gpu": 1,
+      "epoch": 14,
+      "log_size": 78946,
+      "PID_CWD_argv_verified": true
+    },
+    {
+      "row_id": "CROSS_REL-s2026092702",
+      "pid": 2148912,
+      "gpu": 4,
+      "epoch": 14,
+      "log_size": 79006,
+      "PID_CWD_argv_verified": true
+    },
+    {
+      "row_id": "CROSS_RESP-s2026092702",
+      "pid": 2149395,
+      "gpu": 5,
+      "epoch": 14,
+      "log_size": 79037,
+      "PID_CWD_argv_verified": true
+    },
+    {
+      "row_id": "ZERO-s2026092703",
+      "pid": 2149475,
+      "gpu": 6,
+      "epoch": 12,
+      "log_size": 68502,
+      "PID_CWD_argv_verified": true
+    },
+    {
+      "row_id": "ALL_REL-s2026092703",
+      "pid": 2149556,
+      "gpu": 7,
+      "epoch": 12,
+      "log_size": 68590,
+      "PID_CWD_argv_verified": true
+    },
+    {
+      "row_id": "CROSS_REL-s2026092703",
+      "pid": 2149637,
+      "gpu": 7,
+      "epoch": 11,
+      "log_size": 63480,
+      "PID_CWD_argv_verified": true
+    },
+    {
+      "row_id": "CROSS_RESP-s2026092703",
+      "pid": 2149715,
+      "gpu": 6,
+      "epoch": 11,
+      "log_size": 63512,
+      "PID_CWD_argv_verified": true
+    }
+  ],
+  "target_feedback": false,
+  "default_head_only": true,
+  "head_fit_updates": 0,
+  "truth_last": true,
+  "CM_recount_records": 72,
+  "goal_84": false,
+  "remaining_seeds_incomplete": true,
+  "claim": "Response incremental benefit overC in onefixedseed only; allnewobjectives belowmatchedZERO; not efficacy/3seed/84claim."
+}
