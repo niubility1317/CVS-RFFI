@@ -1,0 +1,34 @@
+{
+  "run_id": "20261015-phase1-SIGTIME-center-heldcredit-sourceL-manysig-s2026092701-r01",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-center-heldcredit-sourceL-manysig-s2026092701-r01/source_diagnostic",
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_credit50_20261014_r01",
+  "source_role": "L_s",
+  "model_seed": 2026092701,
+  "source_row": "BASE-s2026092701",
+  "coordinate_modes": [
+    "RAW_HZ",
+    "CENTER_25K"
+  ],
+  "evaluation_modes": [
+    "SAME_L",
+    "HELD_L"
+  ],
+  "anchor_ordinals": [
+    0,
+    17,
+    35,
+    52
+  ],
+  "held_ordinals": [
+    68,
+    69
+  ],
+  "scale_hz": 25000.0,
+  "source_falsification": {
+    "minimum_CENTER_held_active_cohorts": 2,
+    "minimum_CENTER_changed_kernel_cohorts": 2,
+    "credit_tolerance": 1e-06,
+    "interpretation": "Source availability only. At least one held accepted group in each of two fixed cohorts; at least two physical Sinc kernel updates. No target selection or training-efficacy claim."
+  },
+  "analysis_code_commit": "release_commit.txt"
+}

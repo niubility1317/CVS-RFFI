@@ -1,0 +1,25 @@
+"""Use the immutable prior source runtime; overlay only this new diagnostic."""
+import json
+import sys
+import types
+from pathlib import Path
+
+def main():
+    request=json.loads(Path(sys.argv[1]).read_text(encoding='utf-8'))
+    here=Path(__file__).resolve().parents[2];previous=Path(request['source_release'])
+    sys.path[:0]=[str(previous),str(previous/'code'),str(previous/'experiments/adv3b02_xuc/code')]
+    package=types.ModuleType('experiments.cvs_sigtime_heldcredit')
+    package.__path__=[str(here/'experiments/cvs_sigtime_heldcredit')]
+    sys.modules[package.__name__]=package
+    from experiments.cvs_sigtime_heldcredit.source_probe import run
+    try:
+        run(request)
+    except Exception as exc:
+        from experiments.cvs_sigtime_heldcredit.design import write
+        output=Path(request['output_root'])
+        if output.is_dir() and not (output/'summary.json').exists():
+            write(output/'failure.json',dict(status='FAILED',exception=type(exc).__name__,reason=str(exc),
+                 preserve_outputs=True,automatic_retry=False))
+        raise
+
+if __name__=='__main__':main()

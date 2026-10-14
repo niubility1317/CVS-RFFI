@@ -1,0 +1,192 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-center-heldcredit-sourceL-manysig-s2026092701-r01",
+  "group_id": "phase1-SIGTIME-center-held-credit-source",
+  "display_name": "固定 CENTER_25K 与排除当前 L 的实际特征贡献检查",
+  "description": "Source-only fixed final BASE50 counterfactual: RAW_HZ/CENTER_25K x SAME_L/HELD_L; exact native moments, fresh parameter caches, default head, no actual training or target access.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "CVS",
+    "SIG_TIME",
+    "CENTER_25K",
+    "source_only",
+    "disjoint_current_L",
+    "default_head_only",
+    "actual_AdamW",
+    "no_target",
+    "no_training"
+  ],
+  "comparison_group_id": "SIGTIME_mid_vs_joint_and_anchor_RX_increment",
+  "parent_run_ids": [
+    "20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Continue the active goal through bounded source falsification. Fixed first-seed BASE control selected by identity, not target score. Reuse known CENTER_25K exactly; no unit/margin/temperature/head scan.",
+  "code": {
+    "commit": "release_commit.txt actual committed code/config",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_center_heldcredit_sourceL_20261015_r01",
+    "entrypoint": "experiments/cvs_sigtime_heldcredit/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "Original cached received/equalized normalized IQ256; visible60point calibration and twelve-tone relative residual24; upstream equalization/noise independence unknown",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 hidden TX, native recipe allrows",
+      "V": 27000
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 capsule manifest; reuse unchanged",
+    "split_id": "original registered source/target physical split; reuse unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "original_source_days_metadata": [
+      0,
+      1,
+      2
+    ],
+    "source_days_correction": "Descriptive metadata corrected from [0,1,2] to actual native wisig_train_days/day_i [1,2,3]; same exact physical role IDs, no data or run change",
+    "leo_scope": "Source-only observation diagnostic, no target or satellite"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "L_s": "Original6300IQ once; true labels only downstream completed predictions/relations",
+    "U_s": "No U IQ or TX truth access",
+    "V": "No V IQ or state updates in this first fixed row",
+    "target": "No target observations, statistics, truth or predictions",
+    "separate_head_training": false,
+    "Phase2_in_scope": false,
+    "claim_scope": "Observable cached-source predictability and nonfitted residual24 relationship; not actualjoint160/DG efficacy"
+  },
+  "checkpoint": {
+    "initialization": "Not applicable: no model or checkpoint is consumed",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "No model ancestry. Reuse original source role handles via unchanged native source builder from PA release; samerole IDs checked, no new data validation.",
+    "selection_rule": "No checkpoint/epoch/model selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/visible-period-sourceL-20261014",
+    "gpu_policy": "CPU only,2Torch/OMP/MKL/OpenBLASthreads,0GPU allocation; existingGPU experiments untouched",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-visible-period-sourceL-manysig-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_visible_period_sourceL_20261014_r01",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_visible_period_sourceL_20261014_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_repetition_feasibility/runner.py resolved_request.json",
+    "stop_rule": "Exactsource role/count/physicalID mismatch, outputcollision, nonfinite residual/census or unhandled technical failure: preservepartial outputs, no unmodified retry, no unrelated process stop. Scientificthreshold failure closes fixedpretext feasibility without mask/tone/phase/weightscan."
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "release_commit.txt",
+    "resolved_request.json",
+    "submit.json",
+    "runtime.json",
+    "source_observation.stdout.log",
+    "observation_census.pt",
+    "summary.json",
+    "independent_readback.json",
+    "independent_recount.json"
+  ],
+  "metrics_plan": {
+    "matrix": "RAW_HZ/CENTER_25K x SAME_L/HELD_L x four fixed ordinal cohorts0/17/35/52 x five anchorRX. One owner/process, not four new training rows.",
+    "budget": "0modelepochs/0realupdates/0headfits/0EMA;540 unique sourceL IQ packets (360 anchor+180 held),6300 metadata only;160 temporary AdamW steps;18004 network packet forwards including4 zero-IQ checkpoint smoke. CPU2threads/GPU0.",
+    "source_falsification": {
+      "minimum_CENTER_held_active_cohorts": 2,
+      "minimum_CENTER_changed_kernel_cohorts": 2,
+      "credit_tolerance": 1e-06,
+      "interpretation": "Source availability only. At least one held accepted group in each of two fixed cohorts; at least two physical Sinc kernel updates. No target selection or training-efficacy claim."
+    },
+    "optimizer": "Saved exact native188-parameter single-group AdamW;11100 step/moments/lr1e-6/wd1e-4. Center origin original constructor; m*25000/v*25000^2. Coordinate switch counterfactual, not full historical centered trajectory.",
+    "evaluation": "HELD_L uses cellordinal68/69 sourceL180, disjoint complete physical IDs/base_index from each currentL90. All packets were in original training L, not never-trained holdout/V/unseenRX. SAME_L uses exact current batch.",
+    "update": "Stopped source anchor ORDER .1margin/.1coefficient, full triplet denominator; each B and B+oneRXaux independentclip5 and fixed preW default6x160. Meancredit>1e-6/everyotherRX>=-1e-6; clear Sinc/normalizedW caches before every temporary model, restore caches/live state.",
+    "claim_boundary": "A source availability check cannot establish efficacy, the three-seed84% goal, originality, or cross-unseenRX generalization. No U/V/target packet reads or truth; no training and therefore no new target test.",
+    "stop_rule": "Only exact run-owned systemic technical failure: source/provenance/role/metadata/state mismatch, nonfinite, unlaunchable dependency, forbidden data/head fit or live-state modification. Preserve outputs, no automatic retry or healthy process mutation."
+  },
+  "rows": [
+    {
+      "row_id": "BASE-s2026092701",
+      "method": "CENTER_25K_HELD_L_ACTUAL_ADAMW_CREDIT",
+      "purpose": "One bounded source availability falsification",
+      "config_ref": "experiments/cvs_sigtime_heldcredit/configs/source_probe.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_center_heldcredit_sourceL_20261015_r01/resolved_request.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed matched BASE firstseed own scratch final50; same full source contract. Hypothetical coordinate switch with transformed saved moments, no head fit or target selection.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "metrics_plan.budget",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-center-heldcredit-sourceL-manysig-s2026092701-r01/source_diagnostic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_center_heldcredit_sourceL_20261015_r01/source_probe.stdout.log",
+      "command": "python -u experiments/cvs_sigtime_heldcredit/runner.py resolved_request.json",
+      "expected_artifacts": [
+        "runtime.json",
+        "RAW_HZ-ordinal0.json",
+        "RAW_HZ-ordinal17.json",
+        "RAW_HZ-ordinal35.json",
+        "RAW_HZ-ordinal52.json",
+        "CENTER_25K-ordinal0.json",
+        "CENTER_25K-ordinal17.json",
+        "CENTER_25K-ordinal35.json",
+        "CENTER_25K-ordinal52.json",
+        "summary.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No actualnetwork/defaulthead training/evaluation; classifier constraint preserved.",
+    "No checkpoint consumed: firstlauncherstep is a no-data zeroIQprimitive smoke, then immediately sourceobservation. Loading unused checkpoint or futuretraining machinery is not required by G0stage.",
+    "Templates are fixedpublicconstants, no trueTX influences phase/delay/gain/valid/predictions.",
+    "masked holdout120:140 andoutsidevisible windows are zero; no visiblemean inputimputation.",
+    "Source roles andcapsule/split VALIDATED_ONCE reused unchanged.",
+    "No trained identity/RX diagnostichead or prototype classifier; relationlabels only legalL.",
+    "B0/B1/S0/S1 wasnotlaunched aftersource rejection; thisdiagnostic addsno trainingmatrix.",
+    "Originalobservationsourcebuilder code is reused, not model/checkpointfromparent PA."
+  ],
+  "registered_at": "2026-10-14T17:03:39+00:00",
+  "status": "PLANNED",
+  "stop_rule": "Only exact run-owned systemic technical failure: source/provenance/role/metadata/state mismatch, nonfinite, unlaunchable dependency, forbidden data/head fit or live-state modification. Preserve outputs, no automatic retry or healthy process mutation.",
+  "source_result": {
+    "decision": "SIGNAL_PRESENT_FINAL_STATE_CREDIT_STOPPED",
+    "accepted_groups": 0,
+    "report_ref": "report.md",
+    "evidence_ref": "source_result_evidence.json",
+    "new_training": false,
+    "target_access": false,
+    "head_fit_updates": 0
+  }
+}
