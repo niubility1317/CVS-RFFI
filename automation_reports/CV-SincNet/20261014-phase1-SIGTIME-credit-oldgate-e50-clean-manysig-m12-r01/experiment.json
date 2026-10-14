@@ -2576,7 +2576,7 @@
     "Prior targetbenchmark exposed; no claim of newblindtest",
     "Scratch50 cost distinct from E20/E20+20 histories"
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "local_verification": "math,actual native/defaulthead gradient/checkpoint/teacher checks,pipeline protocol negatives PASS",
   "independent_review": {
     "status": "PASS",
@@ -2584,7 +2584,17 @@
     "scope": "one P0/P1 review; one targeted re-review of native fitted-probe disable; no other blockers",
     "fixed_issue": "Native train closure separately fitted RX/day/channel ridge diagnostics; disabled/restored candidate-scoped; actual zero fitted steps enforced"
   },
-  "result": null,
+  "result": {
+    "scientific_decision": "SOURCE_SCREEN_NOT_PASSED",
+    "technical_failure": false,
+    "completed_rows": 4,
+    "registered_rows": 12,
+    "seed_count": 1,
+    "withheld_rows": 8,
+    "result_ref": "result_evidence.json",
+    "default_head_only": true,
+    "goal_84_achieved": false
+  },
   "registered_at": "2026-10-14T14:21:26+00:00",
   "stop_rule": "Only preregistered systemictechnicalfailure affecting exactrunownedprocesses: source/CP/role mismatch, missingdependency, nonfinite, callback/shadow/state preservation failure, forbiddentruth or head fit, unable legalpredict/score. Preserve artifacts, reconcile process/cmd/CWD before exactrunstop; no automaticretry/healthy otherprocess changes.",
   "launch_evidence_ref": "launch_evidence.json"

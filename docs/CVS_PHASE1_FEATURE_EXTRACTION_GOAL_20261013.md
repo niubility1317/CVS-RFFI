@@ -127,3 +127,6 @@ SIG_TIME 匹配训练矩阵已发布并 VERIFIED：BASE、SUPCON、无门控 ORD
 
 
 SIG_TIME CREDIT 的实际中期学习信号已 VERIFIED：固定 step 4,448 的辅助梯度范数 .01119972，全参数增量 2.80581e−5；实际时序分支与 t2 增量分别为 2.15263e−5、1.06615e−5，一次实际更新与临时预测最大差 7.45058e−9。CREDIT 第 23 轮的 250 次调用中 57 次选中梯度非零，75/1,250 个 RX 分项通过；四组已保存接受决定和计数独立复算，0 新 IQ/前向/更新/目标访问。当前检查点仍属 L 阶段，尚待 U 阶段固定点、源扩种子条件及 clean truth-last；不能据此宣称泛化收益，84% 仍 active。详见[训练中的源信号证据](../automation_reports/CV-SincNet/20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01/source_signal_progress.json)。
+
+
+SIG_TIME 训练机制首 seed 四组已完整 ANALYZED / VERIFIED：BASE 83.3625%、SupCon 83.3655%、ORDER 83.2613%、CREDIT 83.2726%；相对 BASE 净判对分别 +5、−170、−151，只有一个 seed，不确认稳定收益。CREDIT 60 次非零梯度调用全部属于 L 阶段，U 的 236 次调用全部停止；固定梯度点仅 1/4 非零，源条件失败，剩余 8 行未启动，不降低阈值或按目标重跑。200 轮/44,400 主更新/672,000 决定/72 混淆矩阵、2,496 调用与16实际点已核实，进程自然退出。浅层及中层参数实际增量存在；Sinc 频率在16点有梯度而更新为0，原因未确认，下一只读核查单位/精度，历史 SincCENTER 等正收益保留。84%仍 active。详见[完整首种子报告](../automation_reports/CV-SincNet/20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01/report.md)。

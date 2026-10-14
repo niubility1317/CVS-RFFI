@@ -1,0 +1,6050 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01",
+  "execution_commit": "fdf95db20b707c4bebac70323c0937e3b497a203",
+  "completion_status": "ANALYZED",
+  "scientific_decision": "SOURCE_SCREEN_NOT_PASSED",
+  "source_reason": "Actual auxiliary gradient availability failed: CREDIT",
+  "technical_failure": false,
+  "registered_rows": 12,
+  "completed_rows": 4,
+  "model_seed_count": 1,
+  "withheld_rows": [
+    {
+      "row_id": "BASE-s2026092702",
+      "arm": "BASE",
+      "model_seed": 2026092702
+    },
+    {
+      "row_id": "SUPCON-s2026092702",
+      "arm": "SUPCON",
+      "model_seed": 2026092702
+    },
+    {
+      "row_id": "ORDER-s2026092702",
+      "arm": "ORDER",
+      "model_seed": 2026092702
+    },
+    {
+      "row_id": "CREDIT-s2026092702",
+      "arm": "CREDIT",
+      "model_seed": 2026092702
+    },
+    {
+      "row_id": "BASE-s2026092703",
+      "arm": "BASE",
+      "model_seed": 2026092703
+    },
+    {
+      "row_id": "SUPCON-s2026092703",
+      "arm": "SUPCON",
+      "model_seed": 2026092703
+    },
+    {
+      "row_id": "ORDER-s2026092703",
+      "arm": "ORDER",
+      "model_seed": 2026092703
+    },
+    {
+      "row_id": "CREDIT-s2026092703",
+      "arm": "CREDIT",
+      "model_seed": 2026092703
+    }
+  ],
+  "summary": [
+    {
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "readout": "NATIVE_HEAD",
+      "count": 168000,
+      "correct": 140049,
+      "accuracy": 0.833625,
+      "macro_f1": 0.8289648384697367,
+      "seed_count": 1,
+      "delta_vs_BASE_pp": 0.0,
+      "net_correct_vs_BASE": 0
+    },
+    {
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "readout": "NATIVE_HEAD",
+      "count": 168000,
+      "correct": 140054,
+      "accuracy": 0.833654761904762,
+      "macro_f1": 0.8286767883478819,
+      "seed_count": 1,
+      "delta_vs_BASE_pp": 0.0029761904762004576,
+      "net_correct_vs_BASE": 5
+    },
+    {
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "readout": "NATIVE_HEAD",
+      "count": 168000,
+      "correct": 139879,
+      "accuracy": 0.8326130952380952,
+      "macro_f1": 0.8278388459313138,
+      "seed_count": 1,
+      "delta_vs_BASE_pp": -0.10119047619047139,
+      "net_correct_vs_BASE": -170
+    },
+    {
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "view": "clean",
+      "readout": "NATIVE_HEAD",
+      "count": 168000,
+      "correct": 139898,
+      "accuracy": 0.8327261904761905,
+      "macro_f1": 0.8280970148478639,
+      "seed_count": 1,
+      "delta_vs_BASE_pp": -0.08988095238094962,
+      "net_correct_vs_BASE": -151
+    }
+  ],
+  "source": [
+    {
+      "arm": "BASE",
+      "final_L_CE": 0.2457360313148112,
+      "V_count": 27000,
+      "V_accuracy": 0.9812592592592593,
+      "V_worst_RX": 0.95,
+      "calls": 624,
+      "eligible": 624,
+      "accepted_RX_groups": 78,
+      "eligible_RX_groups": 3120,
+      "active_fixed_probes": 0
+    },
+    {
+      "arm": "SUPCON",
+      "final_L_CE": 0.24583349427258647,
+      "V_count": 27000,
+      "V_accuracy": 0.9811851851851852,
+      "V_worst_RX": 0.9496296296296296,
+      "calls": 624,
+      "eligible": 624,
+      "accepted_RX_groups": 61,
+      "eligible_RX_groups": 3120,
+      "active_fixed_probes": 4
+    },
+    {
+      "arm": "ORDER",
+      "final_L_CE": 0.24599974320547,
+      "V_count": 27000,
+      "V_accuracy": 0.9808148148148148,
+      "V_worst_RX": 0.9485185185185185,
+      "calls": 624,
+      "eligible": 624,
+      "accepted_RX_groups": 79,
+      "eligible_RX_groups": 3120,
+      "active_fixed_probes": 4
+    },
+    {
+      "arm": "CREDIT",
+      "final_L_CE": 0.24585854805804588,
+      "V_count": 27000,
+      "V_accuracy": 0.9813333333333333,
+      "V_worst_RX": 0.95,
+      "calls": 624,
+      "eligible": 624,
+      "accepted_RX_groups": 78,
+      "eligible_RX_groups": 3120,
+      "active_fixed_probes": 1
+    }
+  ],
+  "records": [
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.833625,
+      "macro_f1": 0.8289648384697367,
+      "macro_accuracy": 0.833625,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27514,
+          77,
+          102,
+          175,
+          44,
+          88
+        ],
+        [
+          1026,
+          15572,
+          118,
+          11031,
+          169,
+          84
+        ],
+        [
+          1505,
+          41,
+          22648,
+          23,
+          438,
+          3345
+        ],
+        [
+          3337,
+          4816,
+          601,
+          19188,
+          20,
+          38
+        ],
+        [
+          8,
+          15,
+          23,
+          15,
+          27905,
+          34
+        ],
+        [
+          20,
+          50,
+          308,
+          4,
+          396,
+          27222
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8235416666666666,
+      "macro_f1": 0.8086973332176149,
+      "macro_accuracy": 0.8235416666666665,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3990,
+          5,
+          2,
+          2,
+          1,
+          0
+        ],
+        [
+          307,
+          1521,
+          11,
+          2156,
+          5,
+          0
+        ],
+        [
+          651,
+          2,
+          2650,
+          1,
+          3,
+          693
+        ],
+        [
+          93,
+          43,
+          0,
+          3864,
+          0,
+          0
+        ],
+        [
+          3,
+          5,
+          4,
+          3,
+          3985,
+          0
+        ],
+        [
+          5,
+          43,
+          192,
+          2,
+          3,
+          3755
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6962916666666666,
+      "macro_f1": 0.6798839771229696,
+      "macro_accuracy": 0.6962916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3993,
+          0,
+          0,
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          1428,
+          0,
+          2570,
+          2,
+          0
+        ],
+        [
+          59,
+          1,
+          2741,
+          1,
+          5,
+          1193
+        ],
+        [
+          456,
+          2425,
+          511,
+          577,
+          2,
+          29
+        ],
+        [
+          1,
+          2,
+          3,
+          0,
+          3993,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          19,
+          3979
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.883625,
+      "macro_f1": 0.8812560054760744,
+      "macro_accuracy": 0.883625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3745,
+          42,
+          55,
+          112,
+          35,
+          11
+        ],
+        [
+          15,
+          2524,
+          39,
+          1263,
+          135,
+          24
+        ],
+        [
+          702,
+          6,
+          3259,
+          6,
+          10,
+          17
+        ],
+        [
+          35,
+          255,
+          1,
+          3698,
+          5,
+          6
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          1,
+          3,
+          6,
+          1,
+          5,
+          3984
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.8117083333333334,
+      "macro_f1": 0.81012016791829,
+      "macro_accuracy": 0.8117083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3982,
+          2,
+          5,
+          3,
+          6,
+          2
+        ],
+        [
+          63,
+          2195,
+          32,
+          1651,
+          8,
+          51
+        ],
+        [
+          22,
+          21,
+          3801,
+          14,
+          42,
+          100
+        ],
+        [
+          38,
+          1891,
+          8,
+          2049,
+          13,
+          1
+        ],
+        [
+          4,
+          7,
+          14,
+          10,
+          3933,
+          32
+        ],
+        [
+          11,
+          4,
+          104,
+          0,
+          360,
+          3521
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.9072916666666667,
+      "macro_f1": 0.9049660212075196,
+      "macro_accuracy": 0.9072916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3865,
+          1,
+          36,
+          24,
+          1,
+          73
+        ],
+        [
+          34,
+          2597,
+          4,
+          1362,
+          3,
+          0
+        ],
+        [
+          13,
+          1,
+          3400,
+          0,
+          376,
+          210
+        ],
+        [
+          14,
+          60,
+          4,
+          3921,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          6,
+          3993
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8345,
+      "macro_f1": 0.8210411728456758,
+      "macro_accuracy": 0.8344999999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3974,
+          23,
+          0,
+          3,
+          0,
+          0
+        ],
+        [
+          604,
+          2986,
+          30,
+          357,
+          14,
+          9
+        ],
+        [
+          38,
+          1,
+          3959,
+          1,
+          1,
+          0
+        ],
+        [
+          2696,
+          108,
+          76,
+          1119,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          5,
+          0,
+          3,
+          3991
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8784166666666666,
+      "macro_f1": 0.8742285452326124,
+      "macro_accuracy": 0.8784166666666665,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3965,
+          4,
+          4,
+          24,
+          1,
+          2
+        ],
+        [
+          3,
+          2321,
+          2,
+          1672,
+          2,
+          0
+        ],
+        [
+          20,
+          9,
+          2838,
+          0,
+          1,
+          1132
+        ],
+        [
+          5,
+          34,
+          1,
+          3960,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9826428571428572,
+      "macro_f1": 0.1652075752662992,
+      "macro_accuracy": 0.9826428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27514,
+          77,
+          102,
+          175,
+          44,
+          88
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5561428571428572,
+      "macro_f1": 0.11912849230392607,
+      "macro_accuracy": 0.5561428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1026,
+          15572,
+          118,
+          11031,
+          169,
+          84
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8088571428571428,
+      "macro_f1": 0.14905491496867265,
+      "macro_accuracy": 0.8088571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1505,
+          41,
+          22648,
+          23,
+          438,
+          3345
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6852857142857143,
+      "macro_f1": 0.13554293464440112,
+      "macro_accuracy": 0.6852857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3337,
+          4816,
+          601,
+          19188,
+          20,
+          38
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9966071428571428,
+      "macro_f1": 0.16638344811137942,
+      "macro_accuracy": 0.9966071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          15,
+          23,
+          15,
+          27905,
+          34
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9722142857142857,
+      "macro_f1": 0.1643185686863931,
+      "macro_accuracy": 0.9722142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          20,
+          50,
+          308,
+          4,
+          396,
+          27222
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7952619047619047,
+      "macro_f1": 0.7856777596522279,
+      "macro_accuracy": 0.7952619047619048,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6773,
+          8,
+          62,
+          73,
+          10,
+          74
+        ],
+        [
+          255,
+          3066,
+          51,
+          3485,
+          84,
+          59
+        ],
+        [
+          710,
+          12,
+          4719,
+          11,
+          88,
+          1460
+        ],
+        [
+          996,
+          724,
+          228,
+          5040,
+          8,
+          4
+        ],
+        [
+          3,
+          2,
+          6,
+          2,
+          6968,
+          19
+        ],
+        [
+          3,
+          2,
+          104,
+          1,
+          55,
+          6835
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8593571428571428,
+      "macro_f1": 0.8557349653993945,
+      "macro_accuracy": 0.8593571428571428,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6900,
+          30,
+          29,
+          12,
+          20,
+          9
+        ],
+        [
+          64,
+          4502,
+          13,
+          2407,
+          11,
+          3
+        ],
+        [
+          55,
+          5,
+          6562,
+          3,
+          32,
+          343
+        ],
+        [
+          884,
+          1755,
+          152,
+          4192,
+          4,
+          13
+        ],
+        [
+          1,
+          6,
+          13,
+          7,
+          6959,
+          14
+        ],
+        [
+          7,
+          2,
+          2,
+          0,
+          11,
+          6978
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.8034285714285714,
+      "macro_f1": 0.7988993652048135,
+      "macro_accuracy": 0.8034285714285714,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6930,
+          11,
+          9,
+          38,
+          10,
+          2
+        ],
+        [
+          145,
+          3490,
+          12,
+          3326,
+          18,
+          9
+        ],
+        [
+          711,
+          9,
+          5646,
+          6,
+          21,
+          607
+        ],
+        [
+          991,
+          1774,
+          16,
+          4212,
+          5,
+          2
+        ],
+        [
+          2,
+          4,
+          2,
+          5,
+          6986,
+          1
+        ],
+        [
+          3,
+          43,
+          156,
+          2,
+          316,
+          6480
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "BASE-s2026092701",
+      "arm": "BASE",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.876452380952381,
+      "macro_f1": 0.8726615045967292,
+      "macro_accuracy": 0.8764523809523809,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6911,
+          28,
+          2,
+          52,
+          4,
+          3
+        ],
+        [
+          562,
+          4514,
+          42,
+          1813,
+          56,
+          13
+        ],
+        [
+          29,
+          15,
+          5721,
+          3,
+          297,
+          935
+        ],
+        [
+          466,
+          563,
+          205,
+          5744,
+          3,
+          19
+        ],
+        [
+          2,
+          3,
+          2,
+          1,
+          6992,
+          0
+        ],
+        [
+          7,
+          3,
+          46,
+          1,
+          14,
+          6929
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.833654761904762,
+      "macro_f1": 0.8286767883478819,
+      "macro_accuracy": 0.833654761904762,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27506,
+          74,
+          108,
+          163,
+          47,
+          102
+        ],
+        [
+          1086,
+          14950,
+          147,
+          11596,
+          146,
+          75
+        ],
+        [
+          1236,
+          41,
+          23325,
+          27,
+          397,
+          2974
+        ],
+        [
+          3175,
+          4792,
+          726,
+          19250,
+          22,
+          35
+        ],
+        [
+          8,
+          17,
+          21,
+          13,
+          27911,
+          30
+        ],
+        [
+          19,
+          66,
+          316,
+          2,
+          485,
+          27112
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.82925,
+      "macro_f1": 0.8138529819182695,
+      "macro_accuracy": 0.82925,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3986,
+          5,
+          4,
+          4,
+          1,
+          0
+        ],
+        [
+          305,
+          1424,
+          12,
+          2254,
+          5,
+          0
+        ],
+        [
+          510,
+          2,
+          2873,
+          1,
+          3,
+          611
+        ],
+        [
+          73,
+          42,
+          0,
+          3885,
+          0,
+          0
+        ],
+        [
+          3,
+          6,
+          2,
+          3,
+          3986,
+          0
+        ],
+        [
+          4,
+          59,
+          184,
+          1,
+          4,
+          3748
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6872916666666666,
+      "macro_f1": 0.6701547192727625,
+      "macro_accuracy": 0.6872916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3994,
+          0,
+          0,
+          6,
+          0,
+          0
+        ],
+        [
+          0,
+          1221,
+          0,
+          2776,
+          3,
+          0
+        ],
+        [
+          40,
+          2,
+          2808,
+          0,
+          4,
+          1146
+        ],
+        [
+          412,
+          2372,
+          662,
+          524,
+          3,
+          27
+        ],
+        [
+          1,
+          1,
+          4,
+          0,
+          3994,
+          0
+        ],
+        [
+          0,
+          0,
+          4,
+          1,
+          41,
+          3954
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8842916666666667,
+      "macro_f1": 0.8817525156359952,
+      "macro_accuracy": 0.8842916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3735,
+          48,
+          67,
+          103,
+          37,
+          10
+        ],
+        [
+          16,
+          2470,
+          69,
+          1306,
+          115,
+          24
+        ],
+        [
+          597,
+          6,
+          3367,
+          9,
+          10,
+          11
+        ],
+        [
+          40,
+          280,
+          2,
+          3668,
+          5,
+          5
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          3998,
+          0
+        ],
+        [
+          1,
+          2,
+          7,
+          0,
+          5,
+          3985
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.8074166666666667,
+      "macro_f1": 0.8059325419750561,
+      "macro_accuracy": 0.8074166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3979,
+          3,
+          6,
+          4,
+          6,
+          2
+        ],
+        [
+          63,
+          2137,
+          28,
+          1721,
+          8,
+          43
+        ],
+        [
+          18,
+          20,
+          3832,
+          15,
+          41,
+          74
+        ],
+        [
+          33,
+          1888,
+          9,
+          2055,
+          14,
+          1
+        ],
+        [
+          4,
+          9,
+          13,
+          9,
+          3936,
+          29
+        ],
+        [
+          10,
+          5,
+          119,
+          0,
+          427,
+          3439
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.9049583333333333,
+      "macro_f1": 0.9019913552718298,
+      "macro_accuracy": 0.9049583333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3865,
+          0,
+          28,
+          16,
+          2,
+          89
+        ],
+        [
+          42,
+          2430,
+          5,
+          1520,
+          3,
+          0
+        ],
+        [
+          9,
+          1,
+          3511,
+          1,
+          338,
+          140
+        ],
+        [
+          15,
+          58,
+          5,
+          3921,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          5,
+          3993
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.83775,
+      "macro_f1": 0.8267627999419934,
+      "macro_accuracy": 0.8377499999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3983,
+          14,
+          0,
+          3,
+          0,
+          0
+        ],
+        [
+          657,
+          2941,
+          30,
+          354,
+          10,
+          8
+        ],
+        [
+          48,
+          1,
+          3949,
+          1,
+          1,
+          0
+        ],
+        [
+          2596,
+          116,
+          47,
+          1240,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          2,
+          0,
+          3,
+          3994
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.884625,
+      "macro_f1": 0.8808796635959467,
+      "macro_accuracy": 0.8846249999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3964,
+          4,
+          3,
+          27,
+          1,
+          1
+        ],
+        [
+          3,
+          2327,
+          3,
+          1665,
+          2,
+          0
+        ],
+        [
+          14,
+          9,
+          2985,
+          0,
+          0,
+          992
+        ],
+        [
+          6,
+          36,
+          1,
+          3957,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9823571428571428,
+      "macro_f1": 0.16518334354243985,
+      "macro_accuracy": 0.9823571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27506,
+          74,
+          108,
+          163,
+          47,
+          102
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5339285714285714,
+      "macro_f1": 0.11602638727202173,
+      "macro_accuracy": 0.5339285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1086,
+          14950,
+          147,
+          11596,
+          146,
+          75
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8330357142857143,
+      "macro_f1": 0.1514856307842182,
+      "macro_accuracy": 0.8330357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1236,
+          41,
+          23325,
+          27,
+          397,
+          2974
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6875,
+      "macro_f1": 0.13580246913580246,
+      "macro_accuracy": 0.6875,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3175,
+          4792,
+          726,
+          19250,
+          22,
+          35
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9968214285714285,
+      "macro_f1": 0.1664013640726631,
+      "macro_accuracy": 0.9968214285714285,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          17,
+          21,
+          13,
+          27911,
+          30
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9682857142857143,
+      "macro_f1": 0.1639812261092563,
+      "macro_accuracy": 0.9682857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          19,
+          66,
+          316,
+          2,
+          485,
+          27112
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7971666666666667,
+      "macro_f1": 0.7869644518430469,
+      "macro_accuracy": 0.7971666666666667,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6772,
+          9,
+          58,
+          63,
+          9,
+          89
+        ],
+        [
+          264,
+          2951,
+          84,
+          3576,
+          76,
+          49
+        ],
+        [
+          605,
+          14,
+          4853,
+          9,
+          84,
+          1435
+        ],
+        [
+          879,
+          655,
+          327,
+          5126,
+          10,
+          3
+        ],
+        [
+          3,
+          2,
+          5,
+          2,
+          6971,
+          17
+        ],
+        [
+          3,
+          1,
+          121,
+          0,
+          67,
+          6808
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8585238095238096,
+      "macro_f1": 0.8549068846467301,
+      "macro_accuracy": 0.8585238095238094,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6895,
+          22,
+          37,
+          14,
+          23,
+          9
+        ],
+        [
+          56,
+          4443,
+          12,
+          2477,
+          9,
+          3
+        ],
+        [
+          55,
+          7,
+          6601,
+          6,
+          25,
+          306
+        ],
+        [
+          867,
+          1761,
+          168,
+          4188,
+          5,
+          11
+        ],
+        [
+          1,
+          7,
+          15,
+          6,
+          6959,
+          12
+        ],
+        [
+          7,
+          2,
+          4,
+          0,
+          15,
+          6972
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.8040714285714285,
+      "macro_f1": 0.7991400722322338,
+      "macro_accuracy": 0.8040714285714285,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6932,
+          11,
+          9,
+          36,
+          10,
+          2
+        ],
+        [
+          173,
+          3263,
+          16,
+          3517,
+          19,
+          12
+        ],
+        [
+          557,
+          7,
+          6020,
+          8,
+          20,
+          388
+        ],
+        [
+          987,
+          1817,
+          18,
+          4171,
+          5,
+          2
+        ],
+        [
+          2,
+          4,
+          0,
+          4,
+          6989,
+          1
+        ],
+        [
+          3,
+          57,
+          154,
+          2,
+          388,
+          6396
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "SUPCON-s2026092701",
+      "arm": "SUPCON",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8748571428571429,
+      "macro_f1": 0.8706338121130878,
+      "macro_accuracy": 0.874857142857143,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6907,
+          32,
+          4,
+          50,
+          5,
+          2
+        ],
+        [
+          593,
+          4293,
+          35,
+          2026,
+          42,
+          11
+        ],
+        [
+          19,
+          13,
+          5851,
+          4,
+          268,
+          845
+        ],
+        [
+          442,
+          559,
+          213,
+          5765,
+          2,
+          19
+        ],
+        [
+          2,
+          4,
+          1,
+          1,
+          6992,
+          0
+        ],
+        [
+          6,
+          6,
+          37,
+          0,
+          15,
+          6936
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8326130952380952,
+      "macro_f1": 0.8278388459313138,
+      "macro_accuracy": 0.8326130952380953,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27509,
+          81,
+          108,
+          166,
+          43,
+          93
+        ],
+        [
+          1015,
+          15346,
+          112,
+          11272,
+          170,
+          85
+        ],
+        [
+          1506,
+          45,
+          22734,
+          27,
+          479,
+          3209
+        ],
+        [
+          3231,
+          4829,
+          672,
+          19212,
+          19,
+          37
+        ],
+        [
+          8,
+          14,
+          30,
+          16,
+          27893,
+          39
+        ],
+        [
+          19,
+          61,
+          311,
+          2,
+          422,
+          27185
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8227916666666667,
+      "macro_f1": 0.8077099552230189,
+      "macro_accuracy": 0.8227916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3988,
+          6,
+          3,
+          2,
+          1,
+          0
+        ],
+        [
+          335,
+          1499,
+          9,
+          2153,
+          4,
+          0
+        ],
+        [
+          695,
+          2,
+          2661,
+          1,
+          3,
+          638
+        ],
+        [
+          90,
+          43,
+          0,
+          3867,
+          0,
+          0
+        ],
+        [
+          3,
+          6,
+          3,
+          3,
+          3985,
+          0
+        ],
+        [
+          5,
+          51,
+          192,
+          2,
+          3,
+          3747
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6865833333333333,
+      "macro_f1": 0.6698600235012453,
+      "macro_accuracy": 0.6865833333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3992,
+          0,
+          0,
+          8,
+          0,
+          0
+        ],
+        [
+          0,
+          1278,
+          0,
+          2718,
+          4,
+          0
+        ],
+        [
+          69,
+          2,
+          2722,
+          1,
+          4,
+          1202
+        ],
+        [
+          415,
+          2444,
+          580,
+          529,
+          2,
+          30
+        ],
+        [
+          1,
+          1,
+          4,
+          0,
+          3993,
+          1
+        ],
+        [
+          0,
+          0,
+          3,
+          0,
+          33,
+          3964
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.88525,
+      "macro_f1": 0.8828607693183393,
+      "macro_accuracy": 0.8852500000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3743,
+          45,
+          62,
+          105,
+          34,
+          11
+        ],
+        [
+          16,
+          2516,
+          38,
+          1272,
+          135,
+          23
+        ],
+        [
+          655,
+          7,
+          3303,
+          9,
+          10,
+          16
+        ],
+        [
+          35,
+          252,
+          1,
+          3703,
+          4,
+          5
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          1,
+          3,
+          7,
+          0,
+          5,
+          3984
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.813,
+      "macro_f1": 0.811585464098361,
+      "macro_accuracy": 0.8130000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3981,
+          3,
+          6,
+          3,
+          5,
+          2
+        ],
+        [
+          58,
+          2214,
+          26,
+          1641,
+          8,
+          53
+        ],
+        [
+          20,
+          21,
+          3823,
+          15,
+          41,
+          80
+        ],
+        [
+          35,
+          1878,
+          7,
+          2066,
+          13,
+          1
+        ],
+        [
+          4,
+          7,
+          21,
+          11,
+          3921,
+          36
+        ],
+        [
+          10,
+          7,
+          104,
+          0,
+          372,
+          3507
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.9038333333333334,
+      "macro_f1": 0.901178155046262,
+      "macro_accuracy": 0.9038333333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3866,
+          0,
+          33,
+          21,
+          2,
+          78
+        ],
+        [
+          34,
+          2519,
+          5,
+          1439,
+          3,
+          0
+        ],
+        [
+          12,
+          2,
+          3394,
+          0,
+          419,
+          173
+        ],
+        [
+          15,
+          59,
+          4,
+          3921,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          6,
+          3993
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8380416666666667,
+      "macro_f1": 0.8250672812681635,
+      "macro_accuracy": 0.8380416666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3974,
+          23,
+          0,
+          3,
+          0,
+          0
+        ],
+        [
+          569,
+          3020,
+          32,
+          356,
+          14,
+          9
+        ],
+        [
+          34,
+          1,
+          3963,
+          1,
+          1,
+          0
+        ],
+        [
+          2635,
+          119,
+          79,
+          1167,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          1,
+          0,
+          5,
+          0,
+          3,
+          3991
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8787916666666666,
+      "macro_f1": 0.8745548260497222,
+      "macro_accuracy": 0.8787916666666665,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3965,
+          4,
+          4,
+          24,
+          1,
+          2
+        ],
+        [
+          3,
+          2300,
+          2,
+          1693,
+          2,
+          0
+        ],
+        [
+          21,
+          10,
+          2868,
+          0,
+          1,
+          1100
+        ],
+        [
+          6,
+          34,
+          1,
+          3959,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9824642857142857,
+      "macro_f1": 0.1651924312573937,
+      "macro_accuracy": 0.9824642857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27509,
+          81,
+          108,
+          166,
+          43,
+          93
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5480714285714285,
+      "macro_f1": 0.11801165813070025,
+      "macro_accuracy": 0.5480714285714285,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1015,
+          15346,
+          112,
+          11272,
+          170,
+          85
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8119285714285714,
+      "macro_f1": 0.14936728820909054,
+      "macro_accuracy": 0.8119285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1506,
+          45,
+          22734,
+          27,
+          479,
+          3209
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6861428571428572,
+      "macro_f1": 0.1356434804710667,
+      "macro_accuracy": 0.6861428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3231,
+          4829,
+          672,
+          19212,
+          19,
+          37
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9961785714285715,
+      "macro_f1": 0.1663476046493598,
+      "macro_accuracy": 0.9961785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          14,
+          30,
+          16,
+          27893,
+          39
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9708928571428571,
+      "macro_f1": 0.16420524901090272,
+      "macro_accuracy": 0.9708928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          19,
+          61,
+          311,
+          2,
+          422,
+          27185
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7956190476190477,
+      "macro_f1": 0.7858037297772635,
+      "macro_accuracy": 0.7956190476190477,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6777,
+          9,
+          60,
+          63,
+          11,
+          80
+        ],
+        [
+          261,
+          3003,
+          48,
+          3549,
+          82,
+          57
+        ],
+        [
+          665,
+          13,
+          4782,
+          11,
+          84,
+          1445
+        ],
+        [
+          922,
+          738,
+          250,
+          5077,
+          9,
+          4
+        ],
+        [
+          3,
+          2,
+          6,
+          2,
+          6964,
+          23
+        ],
+        [
+          3,
+          3,
+          105,
+          0,
+          76,
+          6813
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8577380952380952,
+      "macro_f1": 0.8540058892007757,
+      "macro_accuracy": 0.8577380952380952,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6894,
+          30,
+          37,
+          13,
+          18,
+          8
+        ],
+        [
+          60,
+          4483,
+          12,
+          2429,
+          12,
+          4
+        ],
+        [
+          51,
+          6,
+          6539,
+          5,
+          37,
+          362
+        ],
+        [
+          870,
+          1727,
+          201,
+          4186,
+          4,
+          12
+        ],
+        [
+          1,
+          6,
+          21,
+          8,
+          6949,
+          15
+        ],
+        [
+          7,
+          2,
+          4,
+          0,
+          13,
+          6974
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.8011428571428572,
+      "macro_f1": 0.7964862965275951,
+      "macro_accuracy": 0.8011428571428572,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6930,
+          11,
+          9,
+          38,
+          10,
+          2
+        ],
+        [
+          140,
+          3381,
+          13,
+          3435,
+          21,
+          10
+        ],
+        [
+          766,
+          9,
+          5668,
+          8,
+          20,
+          529
+        ],
+        [
+          985,
+          1763,
+          24,
+          4222,
+          4,
+          2
+        ],
+        [
+          2,
+          3,
+          1,
+          5,
+          6988,
+          1
+        ],
+        [
+          3,
+          51,
+          167,
+          1,
+          319,
+          6459
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "ORDER-s2026092701",
+      "arm": "ORDER",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8759523809523809,
+      "macro_f1": 0.8720926487535863,
+      "macro_accuracy": 0.875952380952381,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6908,
+          31,
+          2,
+          52,
+          4,
+          3
+        ],
+        [
+          554,
+          4479,
+          39,
+          1859,
+          55,
+          14
+        ],
+        [
+          24,
+          17,
+          5745,
+          3,
+          338,
+          873
+        ],
+        [
+          454,
+          601,
+          197,
+          5727,
+          2,
+          19
+        ],
+        [
+          2,
+          3,
+          2,
+          1,
+          6992,
+          0
+        ],
+        [
+          6,
+          5,
+          35,
+          1,
+          14,
+          6939
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8327261904761905,
+      "macro_f1": 0.8280970148478639,
+      "macro_accuracy": 0.8327261904761906,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27508,
+          80,
+          115,
+          170,
+          45,
+          82
+        ],
+        [
+          984,
+          15410,
+          110,
+          11269,
+          147,
+          80
+        ],
+        [
+          1603,
+          47,
+          22722,
+          23,
+          434,
+          3171
+        ],
+        [
+          3233,
+          4890,
+          610,
+          19213,
+          18,
+          36
+        ],
+        [
+          8,
+          13,
+          28,
+          14,
+          27898,
+          39
+        ],
+        [
+          19,
+          53,
+          341,
+          3,
+          437,
+          27147
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.82575,
+      "macro_f1": 0.811615482318851,
+      "macro_accuracy": 0.8257499999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3988,
+          6,
+          3,
+          2,
+          1,
+          0
+        ],
+        [
+          298,
+          1541,
+          10,
+          2146,
+          5,
+          0
+        ],
+        [
+          700,
+          2,
+          2704,
+          1,
+          3,
+          590
+        ],
+        [
+          87,
+          44,
+          0,
+          3869,
+          0,
+          0
+        ],
+        [
+          3,
+          5,
+          4,
+          3,
+          3985,
+          0
+        ],
+        [
+          4,
+          45,
+          215,
+          2,
+          3,
+          3731
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.688125,
+      "macro_f1": 0.672575609985303,
+      "macro_accuracy": 0.688125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3992,
+          0,
+          0,
+          8,
+          0,
+          0
+        ],
+        [
+          0,
+          1260,
+          0,
+          2737,
+          3,
+          0
+        ],
+        [
+          71,
+          2,
+          2751,
+          1,
+          4,
+          1171
+        ],
+        [
+          397,
+          2498,
+          519,
+          555,
+          2,
+          29
+        ],
+        [
+          1,
+          1,
+          4,
+          0,
+          3993,
+          1
+        ],
+        [
+          0,
+          0,
+          2,
+          1,
+          33,
+          3964
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8825416666666667,
+      "macro_f1": 0.880368406724615,
+      "macro_accuracy": 0.8825416666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3733,
+          45,
+          63,
+          114,
+          36,
+          9
+        ],
+        [
+          15,
+          2550,
+          37,
+          1260,
+          115,
+          23
+        ],
+        [
+          741,
+          8,
+          3219,
+          6,
+          9,
+          17
+        ],
+        [
+          33,
+          260,
+          1,
+          3698,
+          4,
+          4
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          1,
+          3,
+          7,
+          0,
+          5,
+          3984
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.8109583333333333,
+      "macro_f1": 0.8094371608811267,
+      "macro_accuracy": 0.8109583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3982,
+          2,
+          5,
+          3,
+          6,
+          2
+        ],
+        [
+          61,
+          2195,
+          30,
+          1656,
+          8,
+          50
+        ],
+        [
+          21,
+          23,
+          3810,
+          14,
+          40,
+          92
+        ],
+        [
+          37,
+          1877,
+          8,
+          2065,
+          12,
+          1
+        ],
+        [
+          4,
+          7,
+          18,
+          9,
+          3925,
+          37
+        ],
+        [
+          10,
+          5,
+          111,
+          0,
+          388,
+          3486
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.9072083333333333,
+      "macro_f1": 0.9047684885945136,
+      "macro_accuracy": 0.9072083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3870,
+          1,
+          37,
+          22,
+          1,
+          69
+        ],
+        [
+          32,
+          2551,
+          4,
+          1410,
+          3,
+          0
+        ],
+        [
+          13,
+          1,
+          3438,
+          0,
+          376,
+          172
+        ],
+        [
+          13,
+          60,
+          4,
+          3922,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          5,
+          3993
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.838,
+      "macro_f1": 0.8247256797281245,
+      "macro_accuracy": 0.8380000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3979,
+          20,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          575,
+          3036,
+          27,
+          344,
+          11,
+          7
+        ],
+        [
+          34,
+          1,
+          3963,
+          1,
+          1,
+          0
+        ],
+        [
+          2661,
+          116,
+          77,
+          1145,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          6,
+          0,
+          3,
+          3990
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8765,
+      "macro_f1": 0.8720102567544704,
+      "macro_accuracy": 0.8765,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3964,
+          6,
+          7,
+          20,
+          1,
+          2
+        ],
+        [
+          3,
+          2277,
+          2,
+          1716,
+          2,
+          0
+        ],
+        [
+          23,
+          10,
+          2837,
+          0,
+          1,
+          1129
+        ],
+        [
+          5,
+          35,
+          1,
+          3959,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9824285714285714,
+      "macro_f1": 0.16518940212822175,
+      "macro_accuracy": 0.9824285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27508,
+          80,
+          115,
+          170,
+          45,
+          82
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5503571428571429,
+      "macro_f1": 0.11832911003609,
+      "macro_accuracy": 0.5503571428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          984,
+          15410,
+          110,
+          11269,
+          147,
+          80
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8115,
+      "macro_f1": 0.14932376483577145,
+      "macro_accuracy": 0.8115,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1603,
+          47,
+          22722,
+          23,
+          434,
+          3171
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6861785714285714,
+      "macro_f1": 0.1356476676621552,
+      "macro_accuracy": 0.6861785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3233,
+          4890,
+          610,
+          19213,
+          18,
+          36
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9963571428571428,
+      "macro_f1": 0.16636254129545483,
+      "macro_accuracy": 0.9963571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          13,
+          28,
+          14,
+          27898,
+          39
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9695357142857143,
+      "macro_f1": 0.16408870836128892,
+      "macro_accuracy": 0.9695357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          19,
+          53,
+          341,
+          3,
+          437,
+          27147
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.795047619047619,
+      "macro_f1": 0.7854663465443634,
+      "macro_accuracy": 0.7950476190476191,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6772,
+          10,
+          68,
+          71,
+          9,
+          70
+        ],
+        [
+          250,
+          3024,
+          48,
+          3542,
+          80,
+          56
+        ],
+        [
+          747,
+          13,
+          4767,
+          11,
+          84,
+          1378
+        ],
+        [
+          926,
+          775,
+          233,
+          5055,
+          8,
+          3
+        ],
+        [
+          3,
+          2,
+          6,
+          2,
+          6963,
+          24
+        ],
+        [
+          3,
+          2,
+          112,
+          0,
+          72,
+          6811
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8588333333333333,
+      "macro_f1": 0.8551786642067638,
+      "macro_accuracy": 0.8588333333333334,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6893,
+          29,
+          36,
+          13,
+          21,
+          8
+        ],
+        [
+          60,
+          4490,
+          11,
+          2426,
+          10,
+          3
+        ],
+        [
+          55,
+          7,
+          6578,
+          3,
+          31,
+          326
+        ],
+        [
+          873,
+          1760,
+          170,
+          4179,
+          4,
+          14
+        ],
+        [
+          1,
+          5,
+          18,
+          6,
+          6956,
+          14
+        ],
+        [
+          7,
+          2,
+          3,
+          0,
+          13,
+          6975
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.8007380952380952,
+      "macro_f1": 0.7961229338372254,
+      "macro_accuracy": 0.8007380952380952,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6931,
+          10,
+          9,
+          38,
+          11,
+          1
+        ],
+        [
+          133,
+          3430,
+          12,
+          3396,
+          20,
+          9
+        ],
+        [
+          774,
+          9,
+          5611,
+          6,
+          20,
+          580
+        ],
+        [
+          986,
+          1752,
+          20,
+          4236,
+          4,
+          2
+        ],
+        [
+          2,
+          3,
+          2,
+          5,
+          6987,
+          1
+        ],
+        [
+          3,
+          45,
+          175,
+          2,
+          339,
+          6436
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CREDIT-s2026092701",
+      "arm": "CREDIT",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8762857142857143,
+      "macro_f1": 0.8725221682553599,
+      "macro_accuracy": 0.8762857142857143,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6912,
+          31,
+          2,
+          48,
+          4,
+          3
+        ],
+        [
+          541,
+          4466,
+          39,
+          1905,
+          37,
+          12
+        ],
+        [
+          27,
+          18,
+          5766,
+          3,
+          299,
+          887
+        ],
+        [
+          448,
+          603,
+          187,
+          5743,
+          2,
+          17
+        ],
+        [
+          2,
+          3,
+          2,
+          1,
+          6992,
+          0
+        ],
+        [
+          6,
+          4,
+          51,
+          1,
+          13,
+          6925
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    }
+  ],
+  "source_call_recount": {
+    "status": "VERIFIED",
+    "rows": [
+      {
+        "row": "BASE-s2026092701",
+        "through_epoch": 50,
+        "calls": 624,
+        "eligible": 624,
+        "accepted": 78,
+        "groups": 3120,
+        "accepted_any_calls": 59,
+        "nonzero_selected_gradient_calls": 0,
+        "temporary_AdamW_steps": 6248,
+        "extra_eval_IQ_packets": 638976,
+        "actual_optimizer_steps": 11100,
+        "actual_probes": [
+          {
+            "step": 1120,
+            "gradient": 0.0,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "increment": 0.0,
+            "error": 1.4901161193847656e-08,
+            "sequence_branch_increment": 0.0,
+            "t2_increment": 0.0
+          },
+          {
+            "step": 4448,
+            "gradient": 0.0,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "increment": 0.0,
+            "error": 1.4901161193847656e-08,
+            "sequence_branch_increment": 0.0,
+            "t2_increment": 0.0
+          },
+          {
+            "step": 7776,
+            "gradient": 0.0,
+            "U_packets": 256,
+            "U_loss": 0.0017889234004542232,
+            "increment": 0.0,
+            "error": 7.450580596923828e-09,
+            "sequence_branch_increment": 0.0,
+            "t2_increment": 0.0
+          },
+          {
+            "step": 11088,
+            "gradient": 0.0,
+            "U_packets": 256,
+            "U_loss": 0.001370848622173071,
+            "increment": 0.0,
+            "error": 0.0,
+            "sequence_branch_increment": 0.0,
+            "t2_increment": 0.0
+          }
+        ],
+        "L_packets": 1420800,
+        "U_packets": 963900,
+        "phase_counts": {
+          "L": {
+            "calls": 388,
+            "eligible_calls": 388,
+            "accepted_RX_groups": 78,
+            "any_RX_pass_calls": 59,
+            "nonzero_selected_gradient_calls": 0
+          },
+          "U": {
+            "calls": 236,
+            "eligible_calls": 236,
+            "accepted_RX_groups": 0,
+            "any_RX_pass_calls": 0,
+            "nonzero_selected_gradient_calls": 0
+          }
+        },
+        "min_mean_credit": -8.214446097554173e-06,
+        "max_mean_credit": 8.406426786677912e-06,
+        "all_serialized_acceptance_counts_recomputed": true,
+        "live_preservation_and_W_gain_None_verified": true
+      },
+      {
+        "row": "CREDIT-s2026092701",
+        "through_epoch": 50,
+        "calls": 624,
+        "eligible": 624,
+        "accepted": 78,
+        "groups": 3120,
+        "accepted_any_calls": 60,
+        "nonzero_selected_gradient_calls": 60,
+        "temporary_AdamW_steps": 6248,
+        "extra_eval_IQ_packets": 638976,
+        "actual_optimizer_steps": 11100,
+        "actual_probes": [
+          {
+            "step": 1120,
+            "gradient": 0.0,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "increment": 0.0,
+            "error": 2.9802322387695312e-08,
+            "sequence_branch_increment": 0.0,
+            "t2_increment": 0.0
+          },
+          {
+            "step": 4448,
+            "gradient": 0.011199722069526746,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "increment": 2.8058123535035203e-05,
+            "error": 7.450580596923828e-09,
+            "sequence_branch_increment": 2.152629366076223e-05,
+            "t2_increment": 1.0661455309297943e-05
+          },
+          {
+            "step": 7776,
+            "gradient": 0.0,
+            "U_packets": 256,
+            "U_loss": 0.0017957426607608795,
+            "increment": 0.0,
+            "error": 1.4901161193847656e-08,
+            "sequence_branch_increment": 0.0,
+            "t2_increment": 0.0
+          },
+          {
+            "step": 11088,
+            "gradient": 0.0,
+            "U_packets": 256,
+            "U_loss": 0.0014288064558058977,
+            "increment": 0.0,
+            "error": 3.637978807091713e-12,
+            "sequence_branch_increment": 0.0,
+            "t2_increment": 0.0
+          }
+        ],
+        "L_packets": 1420800,
+        "U_packets": 963900,
+        "phase_counts": {
+          "L": {
+            "calls": 388,
+            "eligible_calls": 388,
+            "accepted_RX_groups": 78,
+            "any_RX_pass_calls": 60,
+            "nonzero_selected_gradient_calls": 60
+          },
+          "U": {
+            "calls": 236,
+            "eligible_calls": 236,
+            "accepted_RX_groups": 0,
+            "any_RX_pass_calls": 0,
+            "nonzero_selected_gradient_calls": 0
+          }
+        },
+        "min_mean_credit": -7.903857294877525e-06,
+        "max_mean_credit": 7.949278369778767e-06,
+        "all_serialized_acceptance_counts_recomputed": true,
+        "live_preservation_and_W_gain_None_verified": true
+      },
+      {
+        "row": "ORDER-s2026092701",
+        "through_epoch": 50,
+        "calls": 624,
+        "eligible": 624,
+        "accepted": 79,
+        "groups": 3120,
+        "accepted_any_calls": 58,
+        "nonzero_selected_gradient_calls": 624,
+        "temporary_AdamW_steps": 6248,
+        "extra_eval_IQ_packets": 638976,
+        "actual_optimizer_steps": 11100,
+        "actual_probes": [
+          {
+            "step": 1120,
+            "gradient": 0.01550734606291792,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "increment": 9.14542404502507e-05,
+            "error": 2.9802322387695312e-08,
+            "sequence_branch_increment": 8.573093005347904e-05,
+            "t2_increment": 2.300420653408939e-05
+          },
+          {
+            "step": 4448,
+            "gradient": 0.015086126596566708,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "increment": 4.9113036698633846e-05,
+            "error": 7.450580596923828e-09,
+            "sequence_branch_increment": 4.2950494841609367e-05,
+            "t2_increment": 1.5910172474417247e-05
+          },
+          {
+            "step": 7776,
+            "gradient": 0.04629992158260714,
+            "U_packets": 256,
+            "U_loss": 0.0018633906729519367,
+            "increment": 4.2163289543622046e-05,
+            "error": 1.4901161193847656e-08,
+            "sequence_branch_increment": 3.4972316515195696e-05,
+            "t2_increment": 1.6839581316664347e-05
+          },
+          {
+            "step": 11088,
+            "gradient": 0.011647565200902718,
+            "U_packets": 256,
+            "U_loss": 0.0013342072488740087,
+            "increment": 6.21967602248738e-07,
+            "error": 0.0,
+            "sequence_branch_increment": 4.1453605838418736e-07,
+            "t2_increment": 2.9756178709760837e-07
+          }
+        ],
+        "L_packets": 1420800,
+        "U_packets": 963900,
+        "phase_counts": {
+          "L": {
+            "calls": 388,
+            "eligible_calls": 388,
+            "accepted_RX_groups": 79,
+            "any_RX_pass_calls": 58,
+            "nonzero_selected_gradient_calls": 388
+          },
+          "U": {
+            "calls": 236,
+            "eligible_calls": 236,
+            "accepted_RX_groups": 0,
+            "any_RX_pass_calls": 0,
+            "nonzero_selected_gradient_calls": 236
+          }
+        },
+        "min_mean_credit": -7.267289220180828e-06,
+        "max_mean_credit": 8.244098353316076e-06,
+        "all_serialized_acceptance_counts_recomputed": true,
+        "live_preservation_and_W_gain_None_verified": true
+      },
+      {
+        "row": "SUPCON-s2026092701",
+        "through_epoch": 50,
+        "calls": 624,
+        "eligible": 624,
+        "accepted": 61,
+        "groups": 3120,
+        "accepted_any_calls": 44,
+        "nonzero_selected_gradient_calls": 624,
+        "temporary_AdamW_steps": 6248,
+        "extra_eval_IQ_packets": 638976,
+        "actual_optimizer_steps": 11100,
+        "actual_probes": [
+          {
+            "step": 1120,
+            "gradient": 0.5465347108998276,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "increment": 0.0033988043248568437,
+            "error": 2.9802322387695312e-08,
+            "sequence_branch_increment": 0.003275445590622539,
+            "t2_increment": 0.000674766204840071
+          },
+          {
+            "step": 4448,
+            "gradient": 0.40821648477192396,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "increment": 0.001455858290442597,
+            "error": 2.9802322387695312e-08,
+            "sequence_branch_increment": 0.0013085653365292362,
+            "t2_increment": 0.00040711470494358845
+          },
+          {
+            "step": 7776,
+            "gradient": 0.3751261633539381,
+            "U_packets": 256,
+            "U_loss": 0.0021375350188463926,
+            "increment": 0.00041074994896238184,
+            "error": 1.4901161193847656e-08,
+            "sequence_branch_increment": 0.00035949589491412966,
+            "t2_increment": 0.00013779472933445026
+          },
+          {
+            "step": 11088,
+            "gradient": 0.31080952141065143,
+            "U_packets": 256,
+            "U_loss": 0.001562269520945847,
+            "increment": 9.627220873009889e-06,
+            "error": 3.725290298461914e-09,
+            "sequence_branch_increment": 8.499167546180662e-06,
+            "t2_increment": 2.8620845688918063e-06
+          }
+        ],
+        "L_packets": 1420800,
+        "U_packets": 963900,
+        "phase_counts": {
+          "L": {
+            "calls": 388,
+            "eligible_calls": 388,
+            "accepted_RX_groups": 61,
+            "any_RX_pass_calls": 44,
+            "nonzero_selected_gradient_calls": 388
+          },
+          "U": {
+            "calls": 236,
+            "eligible_calls": 236,
+            "accepted_RX_groups": 0,
+            "any_RX_pass_calls": 0,
+            "nonzero_selected_gradient_calls": 236
+          }
+        },
+        "min_mean_credit": -7.494641977245919e-06,
+        "max_mean_credit": 7.215055120468605e-06,
+        "all_serialized_acceptance_counts_recomputed": true,
+        "live_preservation_and_W_gain_None_verified": true
+      }
+    ],
+    "role": "source_L_relationships_with_U_training_metadata",
+    "no_model_or_gradient_replay": true,
+    "new_IQ_reads": 0,
+    "new_network_forwards": 0,
+    "new_training_updates": 0,
+    "target_access": false,
+    "U_truth_read": false,
+    "blocking_gate": false
+  },
+  "layer_updates": {
+    "status": "VERIFIED",
+    "rows": [
+      {
+        "row": "BASE-s2026092701",
+        "through_epoch": 50,
+        "probes": [
+          {
+            "step": 1120,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 4.935399594680975e-07,
+                "total_grad_norm": 4.935399594680975e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 2.5184607178038983e-07,
+                "total_grad_norm": 2.5184607178038983e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 1.2374054869628737,
+                "total_grad_norm": 1.2374054869628737,
+                "base_step_norm": 0.0030290333572826514,
+                "total_step_norm": 0.0030290333572826514,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.9537150007374262,
+                "total_grad_norm": 0.9537150007374262,
+                "base_step_norm": 0.002845375716362365,
+                "total_step_norm": 0.002845375716362365,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 1.0815388295059156,
+                "total_grad_norm": 1.0815388295059156,
+                "base_step_norm": 0.003866368731610468,
+                "total_step_norm": 0.003866368731610468,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.9337872828100545,
+                "total_grad_norm": 0.9337872828100545,
+                "base_step_norm": 0.0058732948668062095,
+                "total_step_norm": 0.0058732948668062095,
+                "auxiliary_increment_norm": 0.0
+              }
+            },
+            "actual_shadow_max_abs_error": 1.4901161193847656e-08
+          },
+          {
+            "step": 4448,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 1.5727890780992186e-07,
+                "total_grad_norm": 1.5727890780992186e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 7.707097190683787e-08,
+                "total_grad_norm": 7.707097190683787e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.35305442886051425,
+                "total_grad_norm": 0.35305442886051425,
+                "base_step_norm": 0.002057039379854236,
+                "total_step_norm": 0.002057039379854236,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.20022056330658192,
+                "total_grad_norm": 0.20022056330658192,
+                "base_step_norm": 0.0019040579426747113,
+                "total_step_norm": 0.0019040579426747113,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.14753640798627934,
+                "total_grad_norm": 0.14753640798627934,
+                "base_step_norm": 0.0023350273177541367,
+                "total_step_norm": 0.0023350273177541367,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.2747422774373405,
+                "total_grad_norm": 0.2747422774373405,
+                "base_step_norm": 0.003814425667637969,
+                "total_step_norm": 0.003814425667637969,
+                "auxiliary_increment_norm": 0.0
+              }
+            },
+            "actual_shadow_max_abs_error": 1.4901161193847656e-08
+          },
+          {
+            "step": 7776,
+            "U_packets": 256,
+            "U_loss": 0.0017889234004542232,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 4.493956355252618e-07,
+                "total_grad_norm": 4.493956355252618e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 2.5491910658250095e-07,
+                "total_grad_norm": 2.5491910658250095e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.7995856048537809,
+                "total_grad_norm": 0.7995856048537809,
+                "base_step_norm": 0.0006447683445344974,
+                "total_step_norm": 0.0006447683445344974,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.5592017806654525,
+                "total_grad_norm": 0.5592017806654525,
+                "base_step_norm": 0.0005481992708132315,
+                "total_step_norm": 0.0005481992708132315,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.4982926170300103,
+                "total_grad_norm": 0.4982926170300103,
+                "base_step_norm": 0.000808906780417944,
+                "total_step_norm": 0.000808906780417944,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.9080771007291025,
+                "total_grad_norm": 0.9080771007291025,
+                "base_step_norm": 0.0014417203177908109,
+                "total_step_norm": 0.0014417203177908109,
+                "auxiliary_increment_norm": 0.0
+              }
+            },
+            "actual_shadow_max_abs_error": 7.450580596923828e-09
+          },
+          {
+            "step": 11088,
+            "U_packets": 256,
+            "U_loss": 0.001370848622173071,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 6.859889489569383e-08,
+                "total_grad_norm": 6.859889489569383e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 3.302474447699695e-08,
+                "total_grad_norm": 3.302474447699695e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.3331386520650877,
+                "total_grad_norm": 0.3331386520650877,
+                "base_step_norm": 1.4504387420679014e-05,
+                "total_step_norm": 1.4504387420679014e-05,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.1936663323785446,
+                "total_grad_norm": 0.1936663323785446,
+                "base_step_norm": 1.1968537699549156e-05,
+                "total_step_norm": 1.1968537699549156e-05,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.17177255650013923,
+                "total_grad_norm": 0.17177255650013923,
+                "base_step_norm": 1.6683263816860057e-05,
+                "total_step_norm": 1.6683263816860057e-05,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.3016482221987523,
+                "total_grad_norm": 0.3016482221987523,
+                "base_step_norm": 2.5757221012599167e-05,
+                "total_step_norm": 2.5757221012599167e-05,
+                "auxiliary_increment_norm": 0.0
+              }
+            },
+            "actual_shadow_max_abs_error": 0.0
+          }
+        ]
+      },
+      {
+        "row": "CREDIT-s2026092701",
+        "through_epoch": 50,
+        "probes": [
+          {
+            "step": 1120,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 4.3784181470503997e-07,
+                "total_grad_norm": 4.3784181470503997e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 2.1735311418810356e-07,
+                "total_grad_norm": 2.1735311418810356e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 1.076328223685557,
+                "total_grad_norm": 1.076328223685557,
+                "base_step_norm": 0.002809617231235192,
+                "total_step_norm": 0.002809617231235192,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.8137691623462019,
+                "total_grad_norm": 0.8137691623462019,
+                "base_step_norm": 0.00269811132259918,
+                "total_step_norm": 0.00269811132259918,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.936685917326586,
+                "total_grad_norm": 0.936685917326586,
+                "base_step_norm": 0.003717125517447832,
+                "total_step_norm": 0.003717125517447832,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.8818887699907532,
+                "total_grad_norm": 0.8818887699907532,
+                "base_step_norm": 0.00596201703638575,
+                "total_step_norm": 0.00596201703638575,
+                "auxiliary_increment_norm": 0.0
+              }
+            },
+            "actual_shadow_max_abs_error": 2.9802322387695312e-08
+          },
+          {
+            "step": 4448,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 1.604822252328804e-07,
+                "total_grad_norm": 1.611280434152067e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 8.154536391500716e-08,
+                "total_grad_norm": 8.180167070182721e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.35201554298234017,
+                "total_grad_norm": 0.35746277589701364,
+                "base_step_norm": 0.0022261583432425865,
+                "total_step_norm": 0.0022222657927751166,
+                "auxiliary_increment_norm": 1.1623240147789768e-05
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.1976675641367922,
+                "total_grad_norm": 0.20003407704299814,
+                "base_step_norm": 0.002164985855134271,
+                "total_step_norm": 0.0021625604309254633,
+                "auxiliary_increment_norm": 8.666639296323293e-06
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.14560369366624754,
+                "total_grad_norm": 0.1469501784585237,
+                "base_step_norm": 0.0026393242090428726,
+                "total_step_norm": 0.0026379745095466887,
+                "auxiliary_increment_norm": 1.0661455309297943e-05
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.26493674547330365,
+                "total_grad_norm": 0.26783131895867796,
+                "base_step_norm": 0.004057927608750557,
+                "total_step_norm": 0.004058706743698647,
+                "auxiliary_increment_norm": 2.152629366076223e-05
+              }
+            },
+            "actual_shadow_max_abs_error": 7.450580596923828e-09
+          },
+          {
+            "step": 7776,
+            "U_packets": 256,
+            "U_loss": 0.0017957426607608795,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 5.017600199155781e-07,
+                "total_grad_norm": 5.017600199155781e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 2.9007573073038596e-07,
+                "total_grad_norm": 2.9007573073038596e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.8553853324686673,
+                "total_grad_norm": 0.8553853324686673,
+                "base_step_norm": 0.0006407047424081682,
+                "total_step_norm": 0.0006407047424081682,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.5706332416487481,
+                "total_grad_norm": 0.5706332416487481,
+                "base_step_norm": 0.0005370480566980569,
+                "total_step_norm": 0.0005370480566980569,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.49007665486261587,
+                "total_grad_norm": 0.49007665486261587,
+                "base_step_norm": 0.000807960230829182,
+                "total_step_norm": 0.000807960230829182,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.9265297550753775,
+                "total_grad_norm": 0.9265297550753775,
+                "base_step_norm": 0.0014229195453379353,
+                "total_step_norm": 0.0014229195453379353,
+                "auxiliary_increment_norm": 0.0
+              }
+            },
+            "actual_shadow_max_abs_error": 1.4901161193847656e-08
+          },
+          {
+            "step": 11088,
+            "U_packets": 256,
+            "U_loss": 0.0014288064558058977,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 6.979319820775166e-08,
+                "total_grad_norm": 6.979319820775166e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 3.710070174229661e-08,
+                "total_grad_norm": 3.710070174229661e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.34097793255779013,
+                "total_grad_norm": 0.34097793255779013,
+                "base_step_norm": 1.3848251307384731e-05,
+                "total_step_norm": 1.3848251307384731e-05,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.20832892162465624,
+                "total_grad_norm": 0.20832892162465624,
+                "base_step_norm": 1.1803384335343853e-05,
+                "total_step_norm": 1.1803384335343853e-05,
+                "auxiliary_increment_norm": 0.0
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.1855354525293481,
+                "total_grad_norm": 0.1855354525293481,
+                "base_step_norm": 1.6397324348859832e-05,
+                "total_step_norm": 1.6397324348859832e-05,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.30660659559358727,
+                "total_grad_norm": 0.30660659559358727,
+                "base_step_norm": 2.4948236252098653e-05,
+                "total_step_norm": 2.4948236252098653e-05,
+                "auxiliary_increment_norm": 0.0
+              }
+            },
+            "actual_shadow_max_abs_error": 3.637978807091713e-12
+          }
+        ]
+      },
+      {
+        "row": "ORDER-s2026092701",
+        "through_epoch": 50,
+        "probes": [
+          {
+            "step": 1120,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 4.1057401642982296e-07,
+                "total_grad_norm": 4.0969834105768124e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 1.9937207051049388e-07,
+                "total_grad_norm": 1.9885965924551854e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 1.2387352498494006,
+                "total_grad_norm": 1.2386437350198882,
+                "base_step_norm": 0.003133119237758493,
+                "total_step_norm": 0.003133942376532133,
+                "auxiliary_increment_norm": 1.7193188110328776e-05
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.9883745328704686,
+                "total_grad_norm": 0.9886447845317078,
+                "base_step_norm": 0.003241231318303406,
+                "total_step_norm": 0.0032423582653506302,
+                "auxiliary_increment_norm": 1.3726011173980205e-05
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 1.159046546363687,
+                "total_grad_norm": 1.1587704845735416,
+                "base_step_norm": 0.004371673263311966,
+                "total_step_norm": 0.004371213889554644,
+                "auxiliary_increment_norm": 2.300420653408939e-05
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.9358598693663527,
+                "total_grad_norm": 0.9342297649352688,
+                "base_step_norm": 0.00604548993064509,
+                "total_step_norm": 0.006047887496176473,
+                "auxiliary_increment_norm": 8.573093005347904e-05
+              }
+            },
+            "actual_shadow_max_abs_error": 2.9802322387695312e-08
+          },
+          {
+            "step": 4448,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 1.628777570103575e-07,
+                "total_grad_norm": 1.6512769385152894e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 7.79594613407163e-08,
+                "total_grad_norm": 7.932097534227858e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.3660421815848364,
+                "total_grad_norm": 0.37195529436546054,
+                "base_step_norm": 0.002218561649414097,
+                "total_step_norm": 0.002215922039825298,
+                "auxiliary_increment_norm": 1.3910528291046101e-05
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.19620049770152942,
+                "total_grad_norm": 0.19879300022777974,
+                "base_step_norm": 0.0020841060716706122,
+                "total_step_norm": 0.002083344817956793,
+                "auxiliary_increment_norm": 1.0986763905743293e-05
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.1416008561091342,
+                "total_grad_norm": 0.14336313304885867,
+                "base_step_norm": 0.002521810016451493,
+                "total_step_norm": 0.0025223723521240614,
+                "auxiliary_increment_norm": 1.5910172474417247e-05
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.27271300678701077,
+                "total_grad_norm": 0.2762295056191932,
+                "base_step_norm": 0.0038979013273356005,
+                "total_step_norm": 0.0039028658241848386,
+                "auxiliary_increment_norm": 4.2950494841609367e-05
+              }
+            },
+            "actual_shadow_max_abs_error": 7.450580596923828e-09
+          },
+          {
+            "step": 7776,
+            "U_packets": 256,
+            "U_loss": 0.0018633906729519367,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 4.838160162699515e-07,
+                "total_grad_norm": 4.880123038595471e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 2.768228675098244e-07,
+                "total_grad_norm": 2.78831168167332e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.8049488950679006,
+                "total_grad_norm": 0.8149471285061132,
+                "base_step_norm": 0.0006309310229764177,
+                "total_step_norm": 0.0006342999847037324,
+                "auxiliary_increment_norm": 1.2537302047666162e-05
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.5452652093056666,
+                "total_grad_norm": 0.5494884669260216,
+                "base_step_norm": 0.0005449635485056382,
+                "total_step_norm": 0.0005464584864909572,
+                "auxiliary_increment_norm": 1.0673547730033969e-05
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.47547625351151424,
+                "total_grad_norm": 0.47784048896941195,
+                "base_step_norm": 0.0008088582160081413,
+                "total_step_norm": 0.0008102718485418391,
+                "auxiliary_increment_norm": 1.6839581316664347e-05
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.8758810831718614,
+                "total_grad_norm": 0.8788380516509553,
+                "base_step_norm": 0.001398357158961912,
+                "total_step_norm": 0.0014046459398359046,
+                "auxiliary_increment_norm": 3.4972316515195696e-05
+              }
+            },
+            "actual_shadow_max_abs_error": 1.4901161193847656e-08
+          },
+          {
+            "step": 11088,
+            "U_packets": 256,
+            "U_loss": 0.0013342072488740087,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 7.4063478112856e-08,
+                "total_grad_norm": 7.289460961406102e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 3.919259327834302e-08,
+                "total_grad_norm": 3.8813035275176e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.3599240748655624,
+                "total_grad_norm": 0.36147772042785253,
+                "base_step_norm": 1.5316437342823506e-05,
+                "total_step_norm": 1.5326929225320745e-05,
+                "auxiliary_increment_norm": 2.557334927535574e-07
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.21082137991010994,
+                "total_grad_norm": 0.2117642668695715,
+                "base_step_norm": 1.2713116050992904e-05,
+                "total_step_norm": 1.2731829659380977e-05,
+                "auxiliary_increment_norm": 2.471050749978434e-07
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.1711186644410862,
+                "total_grad_norm": 0.17201878225815326,
+                "base_step_norm": 1.7803875327573725e-05,
+                "total_step_norm": 1.781499835172899e-05,
+                "auxiliary_increment_norm": 2.9756178709760837e-07
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.30705670080152586,
+                "total_grad_norm": 0.30944728113590814,
+                "base_step_norm": 2.6256271722258904e-05,
+                "total_step_norm": 2.6305502471639474e-05,
+                "auxiliary_increment_norm": 4.1453605838418736e-07
+              }
+            },
+            "actual_shadow_max_abs_error": 0.0
+          }
+        ]
+      },
+      {
+        "row": "SUPCON-s2026092701",
+        "through_epoch": 50,
+        "probes": [
+          {
+            "step": 1120,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 4.566438022159092e-07,
+                "total_grad_norm": 4.6507650839799984e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 2.211967009009577e-07,
+                "total_grad_norm": 2.2281709687586373e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 1.20808748404772,
+                "total_grad_norm": 1.2634995130873108,
+                "base_step_norm": 0.0029367065164439747,
+                "total_step_norm": 0.0030180010932462356,
+                "auxiliary_increment_norm": 0.000446134820564287
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.8932924439746202,
+                "total_grad_norm": 0.9181443481273488,
+                "base_step_norm": 0.002791303912040298,
+                "total_step_norm": 0.002852875098478584,
+                "auxiliary_increment_norm": 0.0004047599874726779
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.970843244900617,
+                "total_grad_norm": 0.9872428903412974,
+                "base_step_norm": 0.003975567917044886,
+                "total_step_norm": 0.004073801508896222,
+                "auxiliary_increment_norm": 0.000674766204840071
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.9345899193737688,
+                "total_grad_norm": 1.1192490172479175,
+                "base_step_norm": 0.0059907521971381055,
+                "total_step_norm": 0.007271542699039591,
+                "auxiliary_increment_norm": 0.003275445590622539
+              }
+            },
+            "actual_shadow_max_abs_error": 2.9802322387695312e-08
+          },
+          {
+            "step": 4448,
+            "U_packets": 0,
+            "U_loss": 0.0,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 1.4695464414551882e-07,
+                "total_grad_norm": 1.8496664418129692e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 7.572213306622495e-08,
+                "total_grad_norm": 9.707467857350794e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.3078237800212412,
+                "total_grad_norm": 0.5127317595481071,
+                "base_step_norm": 0.0021779197332212345,
+                "total_step_norm": 0.0021378115836671804,
+                "auxiliary_increment_norm": 0.0003877084840289586
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.18021403529399582,
+                "total_grad_norm": 0.27639308080703456,
+                "base_step_norm": 0.0022693931931549497,
+                "total_step_norm": 0.0022853584608850514,
+                "auxiliary_increment_norm": 0.00030186068030671015
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.1337374526950187,
+                "total_grad_norm": 0.203178805133482,
+                "base_step_norm": 0.0027944497504698873,
+                "total_step_norm": 0.002866915007284251,
+                "auxiliary_increment_norm": 0.00040711470494358845
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.2474020426773882,
+                "total_grad_norm": 0.4226121088248417,
+                "base_step_norm": 0.0039589403876479365,
+                "total_step_norm": 0.0042553849474666625,
+                "auxiliary_increment_norm": 0.0013085653365292362
+              }
+            },
+            "actual_shadow_max_abs_error": 2.9802322387695312e-08
+          },
+          {
+            "step": 7776,
+            "U_packets": 256,
+            "U_loss": 0.0021375350188463926,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 4.5011355588756303e-07,
+                "total_grad_norm": 5.326716149787195e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 2.5105098103858693e-07,
+                "total_grad_norm": 2.9943779702107835e-07,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.8050862081992584,
+                "total_grad_norm": 0.9120704502185084,
+                "base_step_norm": 0.0006460669879151477,
+                "total_step_norm": 0.0006837666027743368,
+                "auxiliary_increment_norm": 0.0001107406764914437
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.5824470475386565,
+                "total_grad_norm": 0.6433017800659823,
+                "base_step_norm": 0.00056289224370716,
+                "total_step_norm": 0.0005861221251146555,
+                "auxiliary_increment_norm": 9.070467049910564e-05
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.49794635936740855,
+                "total_grad_norm": 0.5362946725552833,
+                "base_step_norm": 0.0008305322448281215,
+                "total_step_norm": 0.0008615043845652342,
+                "auxiliary_increment_norm": 0.00013779472933445026
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.9643219703389412,
+                "total_grad_norm": 1.039387655862205,
+                "base_step_norm": 0.0014311342120077496,
+                "total_step_norm": 0.001492347717233221,
+                "auxiliary_increment_norm": 0.00035949589491412966
+              }
+            },
+            "actual_shadow_max_abs_error": 1.4901161193847656e-08
+          },
+          {
+            "step": 11088,
+            "U_packets": 256,
+            "U_loss": 0.001562269520945847,
+            "layers": {
+              "sinc_low": {
+                "named_tensors": 2,
+                "base_grad_norm": 7.38788892941002e-08,
+                "total_grad_norm": 7.479207871305558e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "sinc_band": {
+                "named_tensors": 2,
+                "base_grad_norm": 3.685273690257928e-08,
+                "total_grad_norm": 3.462657398740335e-08,
+                "base_step_norm": 0.0,
+                "total_step_norm": 0.0,
+                "auxiliary_increment_norm": 0.0
+              },
+              "shallow_time_fuse": {
+                "named_tensors": 6,
+                "base_grad_norm": 0.32333363723805036,
+                "total_grad_norm": 0.4397955397166072,
+                "base_step_norm": 1.2798095650696612e-05,
+                "total_step_norm": 1.3286774038609591e-05,
+                "auxiliary_increment_norm": 2.7255413598632987e-06
+              },
+              "t1": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.20002064301623163,
+                "total_grad_norm": 0.25553691228683056,
+                "base_step_norm": 1.025576920929365e-05,
+                "total_step_norm": 1.0843562213485408e-05,
+                "auxiliary_increment_norm": 2.1971410914760543e-06
+              },
+              "t2": {
+                "named_tensors": 8,
+                "base_grad_norm": 0.17187591817449566,
+                "total_grad_norm": 0.21391893120594785,
+                "base_step_norm": 1.4011913570219513e-05,
+                "total_step_norm": 1.4803200446137106e-05,
+                "auxiliary_increment_norm": 2.8620845688918063e-06
+              },
+              "sequence_branch": {
+                "named_tensors": 4,
+                "base_grad_norm": 0.2980348046236899,
+                "total_grad_norm": 0.3981367671901945,
+                "base_step_norm": 2.1669665114514617e-05,
+                "total_step_norm": 2.40655945624311e-05,
+                "auxiliary_increment_norm": 8.499167546180662e-06
+              }
+            },
+            "actual_shadow_max_abs_error": 3.725290298461914e-09
+          }
+        ]
+      }
+    ],
+    "new_IQ_reads": 0,
+    "new_network_forwards": 0,
+    "new_optimizer_steps": 0,
+    "serialized_parameter_update_analysis_only": true,
+    "coordinate_precision_cause_not_inferred": true,
+    "target_access": false,
+    "U_truth_read": false
+  },
+  "confusion_matrices_recounted": 72,
+  "complete_source_epoch_records": 200,
+  "all_active_loss_and_source_accuracy_fields_finite": true,
+  "raw_telemetry_nonfinite_counters_preserved": true,
+  "costs": {
+    "scratch_models": 4,
+    "epochs": 200,
+    "actual_optimizer_steps": 44400,
+    "L_packet_exposures": 5683200,
+    "U_packet_exposures": 3855600,
+    "auxiliary_calls": 2496,
+    "temporary_AdamW_steps": 24992,
+    "extra_source_eval_IQ_packets": 2555904,
+    "prediction_decisions": 672000,
+    "confusion_matrices": 72
+  },
+  "default_head_joint_training": true,
+  "head_fit_updates": 0,
+  "U_truth_read": false,
+  "truth_last": true,
+  "independent_recount": "VERIFIED",
+  "exposed_benchmark": true,
+  "new_blind_test": false,
+  "goal_84_achieved": false,
+  "three_seed_goal_unverified": true,
+  "target_feedback_used": false,
+  "processes_naturally_terminal_verified": true,
+  "runtime_details_omitted": true,
+  "next_source_question": "Sinc gradients are nonzero but represented updates are zero at all 16 fixed points; cause remains unverified. Preserve independent SincCENTER positive route; diagnose units/precision from code and legal frozen state before any further training."
+}
