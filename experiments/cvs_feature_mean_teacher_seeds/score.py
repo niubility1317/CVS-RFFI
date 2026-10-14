@@ -1,7 +1,7 @@
 from . import design as d
 from .predict import preflight
 from experiments.cvs_pa_cross_delay.score import score as shared_score
-from experiments.cvs_sigtime_pair_seeds.score import checked_records,summarize
+from experiments.cvs_signature_stats_seeds.score import checked_records,summarize
 def score(row):return shared_score(row,design=d,preflight_fn=preflight)
 def finish():
  from .feature_check import run

@@ -3,7 +3,7 @@ from pathlib import Path
 from experiments.cvs_feature_mean_teacher50 import design as first
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,CAPSULE,TRUTH,CLASSES,FULL_FP32_POLICY,read,write=(getattr(first,k) for k in ('PROJECT','SOURCE','CAPSULE','TRUTH','CLASSES','FULL_FP32_POLICY','read','write'))
-RUN='20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01';RELEASE='cvs_feature_mean_teacher_seeds_20261015_r01';OWNER='codex/root/feature-mean-teacher-seeds-20261015';BASE=Path(PROJECT)/'runs'/RUN
+RUN='20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01';RELEASE='cvs_feature_mean_teacher_seeds_20261015_r02';OWNER='codex/root/feature-mean-teacher-seeds-20261015';BASE=Path(PROJECT)/'runs'/RUN
 SEEDS=(2026092702,2026092703)
 for name in ('ARMS','BASELINE_ARM','PRIMARY','PAIRS','READOUTS','VIEWS','QUERY_COUNT','EPOCHS','LABEL_EPOCHS','PSEUDO_EPOCHS','STEPS','UPDATES','BASELINE_EVAL_RUN','STYLE_LAYERS','FEATURE_CONTROL','FEATURE_PARAMETER_COUNT','VERIFY_INITIAL_EVAL_EQUAL','PARAMETERS','DIAGNOSTIC_EPOCHS','COEFFICIENT'):globals()[name]=getattr(first,name)
 baseline_config=first.baseline_config
