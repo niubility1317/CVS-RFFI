@@ -18,7 +18,7 @@
 
 在同批 L_s 的其他 RX 上，以**同一 pre-step 默认分类权重 W**比较两临时模型 CE。平均 CE 改善超过固定1e−6、且每个其他RX下降不低于−1e−6，才接受这一辅助分项。该数值容差不是调参候选。评价时固定 W 是排除临时头拟合解释的计算对照；原真实默认头正常训练，不冻结骨干、不另训或替换头。
 
-这些其他 RX 仍是主 CE 已见的源训练数据，因此称“同批跨 RX 增量贡献”，不能称真正留出 RX 或泛化验证。最终目标仍必须由冻结后的默认头、独立 truth-last clean 比较证明。评价 mode、buffers和RNG须恢复；辅助 gain 不在损失图中。当前代码只有纯目标、临时更新评价与源诊断，尚未接入新训练入口。
+这些其他 RX 仍是主 CE 已见的源训练数据，因此称“同批跨 RX 增量贡献”，不能称真正留出 RX 或泛化验证。最终目标仍必须由冻结后的默认头、独立 truth-last clean 比较证明。评价 mode、buffers和RNG须恢复；辅助 gain 不在损失图中。该机制已接入实际训练入口：评价使用完整 L/U 主损失，辅助项在统一 backward 前只加入一次；四组保持相同的临时评价预算。
 
 ## 与已有工作的关系
 
@@ -34,3 +34,6 @@
 
 
 SIG_TIME首seedownfinal50真实源诊断已ANALYZED/VERIFIED：pre-gain160固定126000关系未满足6.5397%，joint160未满足11.1143%；辅助anchorORDER真实梯度非零且W/gainNone，原native188参数/72moment/LR1e−6严格重建。四L90×五RX40临时步的sameW跨RX贡献全部低于固定1e−6容差，0/20接受；不降容差、不称早中期无用。6300IQ读取/9540真实L前向＋2zero smoke，0新训练/另训头/U/V/target；252000关系和20决定独立复算。下一最多一个正式SIG_TIME训练矩阵，比较BASE/SupCon/停止ORDER/实际增量CREDIT，同预算default头joint与原U配方保持；源/性能结论分开，84%active。详见[中层增量源报告](../automation_reports/CV-SincNet/20261014-phase1-SIGTIME-crossRX-credit-sourceL-manysig-s2026092701-r01/report.md)。
+
+
+SIG_TIME 匹配训练矩阵已发布并 VERIFIED：BASE、SUPCON、无门控 ORDER、实际增量 CREDIT 首种子均从零训练，原默认头与 33L+17U 配方保持；固定 50 轮，每 16 步执行一次中层辅助评价，前 5 轮预热。首种子源域健康、机制调用及实际梯度条件通过才扩展其余 8 行，每行冻结后自动 clean 预测和独立 truth-last 评分。四组的进程、CWD、命令、GPU 与日志增长已经独立核实；当前没有新的性能结果，84% 仍 active。详见[匹配训练报告](../automation_reports/CV-SincNet/20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01/report.md)。

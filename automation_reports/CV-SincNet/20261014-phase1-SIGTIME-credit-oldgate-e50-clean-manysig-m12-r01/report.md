@@ -11,3 +11,10 @@ Lhook只返回0；完整nativebase（含当时U/entropy）组装后，按同actu
 普通N607项目Python，CWD `releases/cvs_SIGTIME_credit50_20261014_r01`；发布 `python -X utf8 E:/type10-7/.codex_tmp/native_polyphase_runner.py experiments.cvs_crossrx_credit50.publish --output <local_artifacts/cvs_SIGTIME_credit50_20261014_r01>`。每rowcommand见experiment.json，输出唯一 `\home\szu2070436088\2510044040\CV-SincNet\runs\20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01`；已有root不覆盖。GPU共享lock，所有owner总进程每GPU<=3、free>=12000MB，GPU按实际容量分配并记录。一次realcheckpoint无querysmoke＋聚焦negative/actualcallbackchecks后直接启动，单archiveSHA/compile、独立PID-CWD-argv-GPU-loggrowth。仅预定确切runowned系统技术失败停止，不影响健康旧任务，保留partial，不自动重启。
 
 预期checkpoint/完整step和epoch/source机制/4actualupdates/默认头prediction/独立metrics与rowcompletion/fullanalysis。native源码已兼容旧callback，只optin传Linputs并消费新late辅助字段；所有旧返回保持。首次sourceprobe已证明末期变化低于容差而停止，不能把该证据当早期收益；这轮检验完整训练作用，84%仍active。方法与原负结果见[机制记录](../../../analysis/phase1_crossrx_increment_credit_20261014.md)。唯一独立P0/P1review PASS，未发现直接使下一实际训练或合法预测错误/越权/破坏/不可启动的缺陷；聚焦nativeAST与actualSIG/FakeNative更新checks VERIFED，shadow误差<=2.98e−8。其他非阻塞文档不延迟实验。
+
+
+## 实际发布与训练启动
+
+VERIFIED：执行提交 `fdf95db20b707c4bebac70323c0937e3b497a203` 已推送，远端发布档案比对、编译、真实 checkpoint 无查询 smoke 和一次独立 P0/P1 检查通过。首种子 BASE、SUPCON、ORDER、CREDIT 均从零启动；两次独立读回确认进程、CWD、命令、GPU 与日志增长，四组已完成前 2 轮。每 GPU 总实验进程数未超过 3。
+
+训练中只检查源域机制和健康状态。固定第 50 轮默认头冻结后逐行自动生成 clean 预测并独立 truth-last 评分；首种子源条件通过才扩展其余 8 行。当前尚无正式性能结论，84% 目标仍在进行。公开启动证据见 `launch_evidence.json`。
