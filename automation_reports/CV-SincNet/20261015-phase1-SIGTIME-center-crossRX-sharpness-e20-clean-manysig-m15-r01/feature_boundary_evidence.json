@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "joint_shape": [
+    3,
+    160
+  ],
+  "raw_joint_no_additional_normalization": true,
+  "independent_feature_forward_equal": true,
+  "W_zero_features_equal": true,
+  "W_deleted_features_equal": true,
+  "default_logits_restored_equal": true,
+  "parameter_buffer_state_unchanged": true,
+  "normalization_gain_reference_response_retained": true,
+  "synthetic_inputs": 3,
+  "packet_network_forwards": 15,
+  "actual_source_IQ_reads": 0,
+  "U_V_query_IQ_reads": 0,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "claim": "One actual frozen checkpoint interface and W-independent features on three synthetic inputs; no identity-transfer efficacy or new-TX claim",
+  "run_id": "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01",
+  "row_id": "CROSS_GAP-s2026092701",
+  "training_execution_commit": "6693e4480ef990bc23c5021ff1440b547fe5fcaf",
+  "audit_code_commit": "1facacabb92a520b86dddd59fcd2cb00dc95eb12",
+  "query_access": false,
+  "checkpoint_proof_before_load": true,
+  "existing_outputs_changed": false,
+  "live_processes_changed": false
+}

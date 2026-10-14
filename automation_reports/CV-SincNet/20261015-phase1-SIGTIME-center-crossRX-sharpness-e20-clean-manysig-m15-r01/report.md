@@ -20,3 +20,6 @@
 
 
 数值证据限定：实际probe的shadow容差为1e−6×所有optimizer参数的最大绝对值，包含未参与梯度的大Hz参数，因此首seed为8.3271195。该容差过宽，不能凭PASS证明微小feature辅助增量精确落地；另seed已观察到最大shadow差约2.4e−5。一次真实AdamW计数、辅助17张量/默认W-gain梯度None、实际初末Sinc/特征变化与独立默认头测试需分别解读。保留原probe数值及判据，不热改或重跑健康任务，不新增发布阻塞。冻结后的feature-only/默认W不影响z核对作为源端结果证据，无头拟合/query。详见shadow_tolerance_limit.json。
+
+
+真实冻结权重的接口核验 PASS：CROSS_GAP首seed final20，经原source proof后strict加载。在3个预定synthetic输入上，独立encoder.features的raw joint160与默认forward id_feat_joint严格相同；类别W清零或删除后z不变，恢复W后原logits严格恢复，全部feature参数/buffers不变。保留norm/gain/reference/NoExplicitCFO内部路径，没有另做feature归一化。15个synthetic网络前向，0source/U/V/queryIQ读取、0头拟合/optimizer更新；原训练产物和健康进程不变。auditcode commit `1facacabb92a520b86dddd59fcd2cb00dc95eb12`，training execution仍为 `6693e4480ef990bc23c5021ff1440b547fe5fcaf`。仅证明此真实CP的接口与W无关性，不证明新TX迁移或识别增益。见feature_boundary_evidence.json。
