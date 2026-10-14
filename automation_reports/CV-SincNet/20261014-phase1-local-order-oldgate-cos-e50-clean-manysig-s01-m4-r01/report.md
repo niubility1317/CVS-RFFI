@@ -13,3 +13,5 @@
 matrix、合法源角色/physicalIDs/seed/GPUowner/CWD/命令/不可变root/stoprule/产物在experiment.json。每GPU最多3总进程且free>=12000MiB，计入其他owner；不得热改或停止健康任务。仅一次直接P0/P1，单次archiveSHA、remotecompile、realCPnoquerysmoke、postlaunchPID/CWD/argv/GPU/loggrowth。
 
 LOCAL_VERIFIED：13负例、三初态参数和暖期梯度一致、vectorizedSupCon等价、真实nativeaux进t1/t2且t3/W为None、defaultheadjointupdate、mode/RNG/buffer恢复及REMOTEcompilePASS。尚无新训练性能结果，84目标未达。
+
+实际预测readout为ORIGINAL_HEAD，直接使用checkpoint默认头；核心实现commit 26bfdf044caa1be3c966370248c3bc3372009943，执行commit由release记录。

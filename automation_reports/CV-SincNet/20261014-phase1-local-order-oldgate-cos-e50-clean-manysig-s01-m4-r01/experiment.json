@@ -21,7 +21,7 @@
     "clean_only",
     "scratch50"
   ],
-  "comparison_group_id": "old_trusted_mask_bounded_difficulty",
+  "comparison_group_id": "phase1_shallow_middle_bounded_identity_order_s01",
   "parent_run_ids": [
     "20261014-phase1-source-layer-order-manysig-s01-m1-r01",
     "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01"
@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确要求将并列MEAN_VAR/COV综合到SIG_TIME基础上继续强化特征性能；默认分类头不可单独训练，每模型<=50，基线旧门控+cos；实现及对应实验结果Git上传。",
   "code": {
-    "commit": "Actual Git commit fixed before release",
+    "commit": "26bfdf044caa1be3c966370248c3bc3372009943",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32/2threads; warm CUDA before native seed; private feature initialization RNG",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_local_order50_20261014_r01",
@@ -142,7 +142,7 @@
     "source_only_selection": "Fixedfinal50, no candidate ranking. All3LCE<=.5 plusactualfθupdate/export/initialevalsame/L720order-SIGzL2>=1e-6/exactextra2750gradient220 andnonzeroORDERt1t2 at17/33/50; writeSOURCEqualification before readingtargetsummary; onlyPASSoriginalseed02/03expansion.",
     "test": "Every fixedrow automaticclean defaulthead predict→freezeall168000→independenttruthlast scorer→analysis; no new classifiers/Phase2/satellite",
     "readouts": [
-      "FINAL"
+      "ORIGINAL_HEAD"
     ],
     "new_training_cost": "3new scratch50=150newmodel-epochs33300updates; historical50/11100 separately. Eachnew extra2750L90evalforward=247500sourcepackets,742500total, no extraoptimizerupdates. CP/feature/Vvalidationforward separately disclosed."
   },
@@ -220,7 +220,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order50-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -258,11 +258,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
@@ -357,7 +357,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -395,7 +395,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -593,7 +593,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order50-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -631,11 +631,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
@@ -835,7 +835,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order50-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -873,11 +873,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
@@ -1077,7 +1077,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/local-order50-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1115,11 +1115,11 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
-          "source_added_feature_difference_min": 1e-06,
+          "source_added_feature_difference_min": 0.000001,
           "actual_extra_batches": 2750,
           "gradient_epoch_batches": 220,
           "source_only": true,
