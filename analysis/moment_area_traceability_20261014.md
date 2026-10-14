@@ -240,3 +240,6 @@ DRO完整固定3seed闭环：9新模型450epochs99900steps，12row2016000default
 
 
 2026-10-15：RSC首seed完整结果81.823810%对同成本SIG83.660714%，配对−1.836905pp；实际骨干梯度／fθ变化／feature-only边界与sourcePASS均通过，不能替代性能证据。完整200源轮次、33300新step、672000默认预测、72指标、624层1872向量独立复核。源决定832485cace509543a7b4e921ac7f5483a2053749先推送后读目标，固定02/03六新已RUNNING_VERIFIED，不据负差改配方。报告`automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/final_analysis.md`，84仍ACTIVE／0另训头。
+
+
+2026-10-15：新增source-only软身份关系诊断`20261015-phase1-source-soft-relation-manysig-s2026092701-r01`，代码`5ab6d390d5306a787c0efbf4a1532df861f0b877`，固定SIG_TIME/defaultjointhead和先定父ownEMA。纯关系函数不接受TX真值，实际部署feature梯度进入t1/t2/SIG而W辅助依赖None，13负例/真实网络/唯一P0P1 PASS；900L／1800sourceforward／0更新，无U或query。源规则见`automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/report.md`，尚未发布，不构成DG或84完成。

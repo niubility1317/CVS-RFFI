@@ -82417,8 +82417,8 @@
     }
   ],
   "next_actions_max2": [
-    "按已固定源PASS决定发布全部三臂02/03，复用已验证适配器和本轮N607预检，核对实际PID/CWD/argv/GPU/loggrowth；不重训01或据目标改变矩阵",
-    "源决定推送后回收首seed完整默认头clean结果、全部曲线和误差迁移；后续合并预定义三seed独立统计与实际feature witness检验84%，保留全部正负结果"
+    "完成当前固定RSC02/03六个健康50轮模型及逐row自动默认头clean/truth-last，保留三seed全结果并独立统计",
+    "执行固定900L软身份关系source诊断；先看真实teacher边质量和t1/t2/SIG梯度兼容性，不增加网络或头，不依目标扫参数或自动训练"
   ],
   "goal_84": false,
   "Phase2_development": false,
@@ -82427,7 +82427,7 @@
     "源决定推送后回收首seed完整默认头clean结果、全部曲线和误差迁移；后续合并预定义三seed独立统计与实际feature witness检验84%，保留全部正负结果"
   ],
   "current_priority": {
-    "at": "2026-10-14T23:43:35.406Z",
+    "at": "2026-10-14T23:53:41.614Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": {
@@ -84551,6 +84551,34 @@
       "new_remaining_model_target_metrics_read": false,
       "training_formula_unchanged": true,
       "goal84": false
+    },
+    "next_source_ssl_mechanism": {
+      "method": "Detached teacher semantic soft-relation KL on deployed joint160",
+      "run_id": "20261015-phase1-source-soft-relation-manysig-s2026092701-r01",
+      "status": "LOCAL_VERIFIED_PREREGISTERED_NOT_LAUNCHED",
+      "implementation_commit": "5ab6d390d5306a787c0efbf4a1532df861f0b877",
+      "models": 1,
+      "source_packets": 900,
+      "source_forward_packets": 1800,
+      "model_updates": 0,
+      "head_fit_updates": 0,
+      "source_only": true,
+      "U_IQ_read": false,
+      "query_read": false,
+      "default_head_only": true,
+      "architecture_fixed": true,
+      "source_qualification": {
+        "source_only": true,
+        "teacher_soft_edge_true_identity_mass_min": 0.9,
+        "XR_actual_t1_t2_SIG_nonzero_each_cohort": true,
+        "XR_global_gradient_cosine_with_matched_strong_CE_min": 0,
+        "model_state_and_default_head_unchanged": true,
+        "no_automatic_training_release": true,
+        "on_pass": "Only separately registered unchanged02/03 source diagnostic, not training",
+        "on_fail": "Retain result; do not scan temperatures, weights or parent checkpoints"
+      },
+      "no_automatic_training_release": true,
+      "report": "automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/report.md"
     }
   }
 }

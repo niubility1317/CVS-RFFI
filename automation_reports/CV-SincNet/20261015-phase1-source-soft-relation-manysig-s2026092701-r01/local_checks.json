@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "invalid_or_unregistered_cases": 13,
+  "semantic_graph_without_truth_argument": true,
+  "teacher_target_detached": true,
+  "no_diagonal_or_sameRX_edge_for_XR": true,
+  "zero_for_undefined_rows": true,
+  "permutation_invariant": true,
+  "actual_t1_t2_SIG_parameter_gradients": true,
+  "auxiliary_default_W_gradient_none": true,
+  "actual_CE_W_gradient_nonzero": true,
+  "state_and_RNG_unchanged": true,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "real_IQ_or_checkpoint_read": false
+}

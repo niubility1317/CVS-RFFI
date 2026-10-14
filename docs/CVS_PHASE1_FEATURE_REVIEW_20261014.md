@@ -474,3 +474,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 时序自挑战首种子已完成完整训练／默认预测／独立truth-last与全量复核：SIG83.660714%、随机82.385119%、RSC81.823810%，RSC−SIG−1.836905pp、RSC−随机−.561310pp；n=1，不当作三seed结论。4row／200源epoch／33300新更新／672000默认决策／72指标及624层1872真实梯度向量复核VERIFIED，0headfit；实际fθ数值更新、W独立、feature-only导出差0通过，但sourcePASS未转成目标收益。源决定 `832485cace509543a7b4e921ac7f5483a2053749` 已先推送后取目标；02/03六新原样发布，执行同该提交，原PID/CWD/argv/GPU/loggrowth、4至5轮与6438源step／312层936向量已核实。完整[首种子结果](../automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/final_analysis.md)和[剩余运行](../automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md)。保留负结果，不按目标改mask／取消健康任务；84%仍未完成，网络及默认联合头保持，研发继续聚焦训练、泛化、半监督。
+
+
+独立SSL下一源诊断已LOCAL_VERIFIED／PREREGISTERED：`20261015-phase1-source-soft-relation-manysig-s2026092701-r01`，代码`5ab6d390d5306a787c0efbf4a1532df861f0b877`。EMA类别概率定义软身份关系，直接约束原部署joint160的批内关系；ALL与跨源RX对照，无投影／新头／网络改动。固定原DRO首SIG final50及自身EMA、900L／1800前向／20层60向量／0优化或headfit；13负例和真实网络导数／W独立性／RNG及唯一P0/P1 PASS。XR源身份质量>=.90、真实三骨干层5/5非零和同strongCE全局余弦>=0才源PASS，且仅允许另登记02/03源复核，不自动训练；当前未发布、无新性能结果。完整[最小预登记](../automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/report.md)。RSC健康六新固定50轮继续，不据目标改变。
