@@ -136,3 +136,7 @@ SIG_TIME 训练机制首 seed 四组已完整 ANALYZED / VERIFIED：BASE 83.3625
 
 
 2026-10-15：跨RX feature sharpness源原型 `20261015-phase1-SIGTIME-crossRX-feature-sharpness-sourceL-manysig-s2026092701-r01` 4/4通过固定信号可用性条件。currentRX造detachedρ=.05特征方向，在otherRX／排除currentID的seenL上优化relu(pertCE-cleanCE)，两项均向17个部署参数传梯度，固定preW/defaulthead。CROSS最大RXgap6.325e−4至4.005e−3，梯度范数.001616至.007193，与GLOBAL相对差.441至3.532；actualAdamW aux增量改变2至3个Sinc核。540L IQ／14762forwards／8tempsteps，0realtrain/headfit/U/V/target。没有证明DG收益或原创性。保留SIG_TIME／固定CENTER既有正路线，已经准备新的E20匹配矩阵接口；BASE_CE／BASE_SSL／CLEAN_CE／GLOBAL_GAP／CROSS_GAP计划先首seed再固定source规则扩展，实际阶段与预算须预登记，不默认E50续训。84%默认头clean三种子仍active／未完成。
+
+## 2026-10-15：源可用性通过后发布 E20 跨 RX 脆弱性矩阵
+
+跨RX源原型4/4满足既定lossgap/实际梯度/滤波器条件，只证明信号可用，不证明识别收益。新增固定 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01`：SIG_TIME＋CENTER25K、原默认头、scratch20/4440更新，BASE_CE、BASE_SSL、CLEAN_CE、GLOBAL_GAP、CROSS_GAP各三seed；先首seed5行源证据，满足固定健康与信号条件再扩其余10。BASE_CE20L/0U、U/EMA实际关闭；其余13L＋7U/原oldgateownEMA，全部普通L增强与星地训练关闭，U专用Gaussian保留。250scheduledauxcalls/四实际探针，默认头clean逐row自动预测＋独立truth-last。训练和规则不接受target反馈；原E20与历史正负结果保留，0E50训练权重继承。84%默认头三seed目标仍active。实际codecommit/命令/环境/GPU/停止条件/产物见新run预登记；源原型不是新盲测或原创性证明。
