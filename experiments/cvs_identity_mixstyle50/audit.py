@@ -4,10 +4,12 @@ from pathlib import Path
 import numpy as np
 import torch
 from . import design as d
+default_design=d
 from .predict import source_proof,preflight,baseline
 
 def pseudo_count(step):return 0 if step<=33*222 else 124 if step%222==0 else 256
-def style_budget(data,enabled):
+def style_budget(data,enabled,*,design=None):
+ d=design or default_design
  records=data['records']
  if [r['epoch'] for r in records]!=list(range(1,51)) or data['U_truth_read'] or data['head_fit'] or data['query_read'] or data['extra_V_passes']!=2:raise ValueError('Fixed source style epoch budget differs')
  totals={n:dict(calls=0,enabled_calls=0,packet_calls=0,eligible_packets=0,changed_packets=0) for n in d.STYLE_LAYERS}
@@ -24,7 +26,8 @@ def style_budget(data,enabled):
 def metrics(y,pred,mask):
  cm=np.bincount(y[mask]*6+pred[mask],minlength=36).reshape(6,6);n=int(cm.sum());den=cm.sum(0)+cm.sum(1)
  return cm,n,float(np.trace(cm)/n),float(np.divide(2*np.diag(cm),den,out=np.zeros(6),where=den>0).mean())
-def saved_numerical(c,source):
+def saved_numerical(c,source,*,design=None):
+ d=design or default_design
  from types import SimpleNamespace
  from .model import installed
  from experiments.cvs_phase1_overlay.model import native_modules
@@ -32,12 +35,13 @@ def saved_numerical(c,source):
  from experiments.cvs_feature_diagnostics.sinc_optimizer import inspect_state
  native_modules();initial=torch.load(source/'initial_smoke.pt',map_location='cpu',weights_only=False)['model'];ck=torch.load(source/'final_ssdg.pth',map_location='cpu',weights_only=False)
  if ck['epoch']!=50 or ck['a1_ema_successful_updates']!=11100 or ck['run_id']!=d.RUN or ck['candidate_id']!=c['row_id'] or ck['checkpoint_selection']!='final_only':raise ValueError('Own fixedfinal checkpoint differs')
- with installed(c) as native:
+ with installed(c,design=d) as native:
   model=native.build_baseline_model(SimpleNamespace(**ck['baseline_args']),torch.device('cpu'));model.load_state_dict(ck['model'],strict=True)
   optimizer=inspect_state(model,ck,native);Sinc=type(model.id_backbone.encoder.core.id_backbone.sinc)
  return dict(status='VERIFIED',all_saved_optimizer_shapes_and_order_match=optimizer['all_saved_moment_shapes_match'],optimizer=optimizer,student_Sinc=compare(initial,ck['model'],Sinc),EMA_Sinc=compare(initial,ck['ema_model'],Sinc),student_EMA_Sinc=compare(ck['model'],ck['ema_model'],Sinc),optimizer_updates_by_analysis=0,IQ_read=False,query_read=False,head_fit=False)
 
-def run(completed_only=False):
+def run(completed_only=False,*,design=None):
+ d=design or default_design
  from experiments.cvs_report_ssl.evaluate import truth_arrays
  torch.set_num_threads(2);start=time.time();available=[];missing=[]
  # Require scored immutable artifacts before any truth connection, per row.
@@ -49,7 +53,7 @@ def run(completed_only=False):
  if not available:raise ValueError('No scored row available; no truth read')
  rows=[];all_metrics=[];decisions={};truth=None;common_ids=None;steps_total=0;initials={};proofs={}
  for r in available:
-  c=d.config(r);source=source_proof(c);preflight(r['row_id']);proofs[r['row_id']]=source
+  c=d.config(r);source=source_proof(c,design=d);preflight(r['row_id'],design=d);proofs[r['row_id']]=source
   epochs=[json.loads(line) for line in (source/'epoch_metrics.jsonl').read_text().splitlines()]
   assert [e['epoch'] for e in epochs]==list(range(1,51)) and all(e['test_tx_total']==0 and e['test_tx_acc'] is None and e['val_tx_total']==27000 for e in epochs)
   accepted=sum(int(e.get('train_pseudo_selected',0)) for e in epochs);total=sum(int(e.get('train_pseudo_total',0)) for e in epochs)
@@ -69,16 +73,16 @@ def run(completed_only=False):
    assert all(sum(v['count'] for v in group.values())==56700 for group in U['epochs'].values())
    assert sum(v['accepted'] for group in U['epochs'].values() for v in group.values())==accepted
    assert all(sum(v['predicted_class_counts'])==v['count'] and sum(v['accepted_predicted_class_counts'])==v['accepted'] for group in U['epochs'].values() for v in group.values())
-   sampling=d.read(source/'source_style_epoch_diagnostic.json');style_budget(sampling,c['identity_mixstyle']['enabled'])
+   sampling=d.read(source/'source_style_epoch_diagnostic.json');style_budget(sampling,c['identity_mixstyle']['enabled'],design=d)
    assert all(q['source_V_RX_health']['source_val_count']==27000 for q in sampling['records'] if q['epoch'] in (33,34))
-   numerical=saved_numerical(c,source);initials[c['arm'],c['model_seed']]=torch.load(source/'initial_smoke.pt',map_location='cpu',weights_only=False)['model']
+   numerical=saved_numerical(c,source,design=d);initials[c['arm'],c['model_seed']]=torch.load(source/'initial_smoke.pt',map_location='cpu',weights_only=False)['model']
   saved_metrics=d.read(d.BASE/r['row_id']/'scores'/'metrics.json')['records'];assert len(saved_metrics)==18
   with np.load(d.BASE/r['row_id']/'prediction'/'predictions.npz',allow_pickle=False) as f:
    ids=f['ids'];pred=f['ORIGINAL_HEAD'];assert set(f.files)=={'ids','ORIGINAL_HEAD'} and len(ids)==168000 and len(np.unique(ids))==168000
    if common_ids is None:common_ids=ids.copy();truth=truth_arrays(d.read(d.TRUTH),ids)
    else:assert np.array_equal(common_ids,ids)
    y,rx,day=truth;decisions[c['arm'],c['model_seed']]=pred.copy()
-   if c['source_config'] is not None:assert np.array_equal(pred,baseline(c,ids))
+   if c['source_config'] is not None:assert np.array_equal(pred,baseline(c,ids,design=d))
    for v in saved_metrics:
     assert v['readout']=='ORIGINAL_HEAD' and v['view']=='clean'
     mask=np.ones(len(y),dtype=bool) if v['dimension']=='overall' else rx==v['stratum'] if v['dimension']=='receiver' else day==v['stratum'] if v['dimension']=='day' else y==list(d.CLASSES).index(v['stratum'])

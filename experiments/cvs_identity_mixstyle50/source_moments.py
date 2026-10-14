@@ -2,6 +2,7 @@ import json,time
 from pathlib import Path
 import torch
 from . import design as d
+default_design=d
 from .predict import source_proof,own_model
 from experiments.cvs_e20_budget_fishr.multilevel import weak_mixstyle_u
 from experiments.cvs_equivariant_identity.precision import numerical_context
@@ -39,13 +40,14 @@ def moments(values,L):
  return dict(dimension=values.shape[1],source_packets=len(values),total_centered_SS=float(total),RX_within_TX_day_SS=float(rx_ss),TX_within_RX_day_SS=float(tx_ss),RX_within_TX_day_fraction=float(rx_ss/total),TX_within_RX_day_fraction=float(tx_ss/total),interpretation='Descriptive conditional mean/std variation; not RX shortcut, causal nuisance decomposition, feature rank or transfer proof')
 
 @torch.no_grad()
-def run(c):
+def run(c,*,design=None):
+ d=design or default_design
  from experiments.cvs_nocfo_foundation.source import load_source
  from experiments.cvs_nocfo_foundation import design as nd
- d.validate(c);source_proof(c);torch.set_num_threads(2);start=time.time()
+ d.validate(c);source_proof(c,design=d);torch.set_num_threads(2);start=time.time()
  L,U,V,contract=load_source(nd.config(nd.rows()[0]));assert U is None;del V
  if len(L['ids'])!=6300:raise ValueError('Only complete approved L6300')
- model=own_model(c,'cpu').eval().requires_grad_(False);saved={k:v.clone() for k,v in model.state_dict().items()};b=model.id_backbone.encoder.core.id_backbone
+ model=own_model(c,'cpu',design=d).eval().requires_grad_(False);saved={k:v.clone() for k,v in model.state_dict().items()};b=model.id_backbone.encoder.core.id_backbone
  order=torch.randperm(6300,generator=torch.Generator().manual_seed(c['model_seed']+95001));packed={n:[] for n in LAYERS};labels=[];receivers=[];days=[];batches=[];clean_ok=styled_ok=changed=correct_to_wrong=wrong_to_correct=0
  with numerical_context(d.FULL_FP32_POLICY):
   for start_index in range(0,6300,128):
