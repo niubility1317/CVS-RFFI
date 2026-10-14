@@ -1,0 +1,12 @@
+{
+  "status": "PASS",
+  "scope": "Only direct P0/P1 source legality,actual t2 mask/objective/recount/launch dependencies",
+  "reviewer": "independent signature_fix_p0p1 agent",
+  "reviewed_code_commit": "50d265cb0e8e48cdc2580c9f7b13e342f26b50c8",
+  "findings": [],
+  "actual_t2_deployment_path_checked": true,
+  "matched_packet_and_zero_counts_checked": true,
+  "four_forwards_and_gradient_budget_checked": true,
+  "independent_recount_and_release_dependencies_checked": true,
+  "real_IQ_or_checkpoint_or_remote_read": false
+}

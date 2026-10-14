@@ -210,3 +210,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 
 
 2026-10-15训练机制补充：固定SIG_TIME/defaulthead，首seed接收机风险训练完成，源规则PASS决定先推送再读新目标；目标DRO−SIG−1.072619pp，无性能晋级，固定02/03扩展健康运行。实际33300steps/624层1872向量/672000默认决策独立重算。SSL只读源梯度几何覆盖12旧模型7992批，F弱且近正交，0新增CE方向反转；不据目标负结果扫描梯度投影/裁剪。详见两个现有run的final_analysis.md、source_gradient_geometry.md。
+
+
+训练自挑战源假设独立登记：cvs_source_self_challenge只作用actual t2时间位置、保留SIG_TIME/defaulthead；L900源readonly定向vs匹配随机，0优化/头fit/query；不重做已有localORDER或SIG结构。代码与预登记一致，唯一P0/P1PASS，真实源结果待发布。
