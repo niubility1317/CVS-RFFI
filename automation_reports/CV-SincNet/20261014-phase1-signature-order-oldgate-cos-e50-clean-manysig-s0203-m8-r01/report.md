@@ -11,3 +11,5 @@
 完整data/角色/physicalIDs/seed/CWD/GPU/owner/命令/output/log/stoprule见experiment.json。发布入口实验首步强制复核首seedsource资格、既定执行commit与原矩阵，然后真实SIGcheckpoint无query smoke，PASS后自动继续；没有额外审批、seal或数据重验。每GPU总进程≤3且free>=12000MiB，其他健康任务保持。技术失败保留产物，不自动重试；暂无新目标准确率或84结论。
 
 包装代码提交 5eda4e0862e8e13cc3a2c79c3c31ef634a2fe72d，本地六native/10source负例PASS；首SOURCE资格尚待完成，当前未发布扩种。
+
+首定义seed四row闭环完成，已独立只读SOURCE资格PASS且尚未读取新target数字：三finalLCE0.247153857/0.248473601/0.248924990；RAW/DYNAMIC−ZERO L720zL2=1.310938478/1.795316935；t1/t2/SIG投影17/33/50有效非零、11100steps/2750extra/220gradientbatches/0headfit均PASS。按原固定02/03六新scratch50扩展，不改参数或按目标排行。

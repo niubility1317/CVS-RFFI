@@ -2421,11 +2421,12 @@
     "Prepared whilefirsthealthytraining; no publish until bothSOURCEPASS andfirst4rowclosure. No additional core scientific hypothesis/review; unchangeduniqueP0P1 reused, 10 sourcequalificationnegative/sixactualnativecontexts checked.",
     "Latestuserpriority: freeze existingSIG_TIME backbone/defaulthead; research training/generalization/SSL mechanisms only."
   ],
-  "status": "PLANNED",
+  "status": "QUEUED",
   "results": {
-    "status": "CONDITIONAL_PENDING_SOURCE",
-    "first_execution": "2658815a2fe5ef931f24558a6c6c61146433fd9c",
-    "no_target_numbers_for_decision": true,
+    "status": "SOURCE_QUALIFIED_NOT_LAUNCHED",
+    "source_qualification": "PASS",
+    "source_only_decision_before_new_target_numbers": true,
+    "new_models": 6,
     "first_seed_retrained": false,
     "goal_84": false
   },

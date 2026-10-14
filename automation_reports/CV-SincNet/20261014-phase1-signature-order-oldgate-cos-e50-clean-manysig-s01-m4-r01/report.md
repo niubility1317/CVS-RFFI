@@ -21,3 +21,5 @@
 远端单归档SHA比较/compile/真实SIG checkpoint无query smoke PASS，执行 2658815a2fe5ef931f24558a6c6c61146433fd9c；三实际worker同PID/CWD/argv/GPU及loggrowth VERIFIED，目前3/2/2epoch、GPU1/2/0、无failure。历史旧gatecos默认预测复用已完成。新模型继续原固定50，无本轮目标准确率，不宣称84。
 
 用户最新重心：固定现有SIG_TIME，只研发泛化与半监督训练机制，分类头默认联合训练。当前两个候选均仅trainingloss变化。真实第17轮55extra调用，RAW/DYNAMIC在t1/t2/SIG投影均55/55非零，ZERO均0；辅助/mainCE范数比RAW1.8586%/1.7759%/2.8269%，DYNAMIC2.0883%/1.9840%/3.1007%。这是读取保存训练artifact报告的复算状态，独立全PT重算随完整矩阵audit完成；不同L批梯度不作累计贡献解释。当前进程21/20/22epoch仍健康，未有目标性能。后续半监督先固定SIG_RANDOM/PAIR统一训练参照，不追加结构。见training_mechanism_e17.json。
+
+首seed四row训练/默认预测/独立评分已闭环。新target数字读取前SOURCE资格独立PASS，三LCE0.247153857/0.248473601/0.248924990，RAW/DYNAMIC−ZERO源zL2=1.310938478/1.795316935，实际3参数17/33/50有效非零且精确预算/默认headfit0。source_expansion_decision.json仅source证据，允许两候选一起原样扩02/03；不以source几何作性能排序。完整产物独立audit随后回收。
