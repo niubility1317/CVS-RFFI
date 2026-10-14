@@ -37,6 +37,18 @@ V 每模型完整 27000 条、训练每模型完整 30 轮。L panel 为 720 条
 
 不解封 U TX；接受率不是伪标签精度。源 L 的高置信代理覆盖率不能证明 U 覆盖。
 
+| C4 / seed | clean EMA 置信度均值 | domain 通过率 | batch-neighbor 通过率 | strong 一致率 |
+|---|---:|---:|---:|---:|
+| 2026092701 | 97.5651% | 100.0000% | 1.5985% | 97.9349% |
+| 2026092702 | 97.2771% | 100.0000% | 1.6261% | 97.7394% |
+| 2026092703 | 97.4369% | 100.0000% | 1.6309% | 97.9531% |
+
+这里是 native 原日志的十个半监督 epoch 的批次均值；不是逐样本精度，也不是置信阈值通过率。domain 通过率为 100%，strong 一致率很高，而 temporal 仅约 1.6%；代码明确 base_mask=conf_mask & domain_mask & temporal_mask，C4 复用该 base_mask。因此 batch-neighbor 给 C4 接受率施加了很低的上界。没有充分证据把低接受率单独归因于 teacher 低置信。
+batch-neighbor 只在当前 batch 的同 RX/day/eq 样本间寻找预测相同、sig_i 与 base_index 均相距不超过 2 的邻居。随机 U batch 中缺少这样邻居也会被拒绝；这是该门控的采样依赖，不等于样本身份不可恢复。原训练配方不在本次分析中修改。
+
+三个 C4 实际 actual_native_args 独立读回一致：pseudo_temporal_window=2、min_conf=0.8、mode=batch_neighbor、temporal_gate=true、domain_gate=false、strong_agreement=true；置信阈值采用 rx_day_quantile，tau_min=0.92、tau_max=0.97、pseudo_quantile=0.86。这些是实际值，不是仅引用默认值。
+[实际旧门控配置读回](E:/type10-7/local_artifacts/cvs_urban_sigtime_20261014/final/source_gate_actual_config.json)。
+
 ## 下一步的可检验问题
 
 源证据支持先区分三个问题：L 上的课程健康条件能否保护独立 V；尺度统一后的单侧间隔是否获得足够且健康的梯度；旧弱门控在 U 上的低接受率来自置信、邻近批次稳定性还是其他原条件。以上都尚未证明新的训练配方有效。
