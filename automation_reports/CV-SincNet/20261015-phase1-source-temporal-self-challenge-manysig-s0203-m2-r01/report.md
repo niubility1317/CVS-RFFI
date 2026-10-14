@@ -1,6 +1,6 @@
 # 固定 SIG_TIME：时序自挑战剩余两个模型源复核
 
-状态：PLANNED / 等待原父模型自然final50；实现、本地检查及唯一适配器P0/P1已通过，尚未创建远端输出或启动本矩阵。代码`1f5c259e9945913d7bb33fb88b1e270d861275dc`。本轮不是训练，0轮/0优化器步/0头拟合，不读取新目标准确率。
+状态：ANALYZED / VERIFIED；预定义父模型自然final50后发布，两个源模型诊断及独立复算已完整完成。代码`1f5c259e9945913d7bb33fb88b1e270d861275dc`。本轮不是训练，0轮/0优化器步/0头拟合，不读取新目标准确率。
 
 沿用首模型源PASS决定`737b65502bc5d9f204a605108b80f430bfe59541`，仅原样检查预定义seed2026092702/03。首模型不重跑；actual t2梯度定位、1/3时间与批分位、同包同零数随机对照、label_smoothing.01、900源cohort和maskseed全部保持。既有900个物理包在每模型各观测一次，新增2模型1800包×模型观测但仅900唯一物理包；与首模型合计2700包×模型观测，仍不能写成2700独立物理样本或多个seed的目标性能。
 
@@ -17,3 +17,6 @@
 输入ready后仅一次普通预检、单归档local/remote SHA比较、远端compile、真实seed02默认CP2个synthetic IQ无query smoke，通过即诊断两个模型。仅run-owned角色/query/父来源/未定义mask/非有限数值/状态或梯度累计变动/预算或关键产物缺失/独立复算不一致/输出冲突停止，保留现场不自动重启；科学FAIL保留，不扫mask或换层/父。必须有完整分析与completion和独立recount才称本source矩阵完成。
 
 本地13个新配置/来源资格负例及两个真实native model seed上下文检查PASS；入口、生成远端/inspect脚本compilePASS。唯一新适配器直接P0/P1 PASS，旧数学审查复用，不做重复全审查。首源资格及后续source权限不变，没有额外hash/seal/审批或数据重验。原始IQ/CP/PT/logits/masks/日志留运行根，Git仅实现、预登记和必要聚合结果。
+
+
+真实闭环：剩余实际执行`00c7213ac3ce8d2543e9443f5e6dea9ff5772a7b`；sourcePASS2/2，与保留首源合计3/3。新增7200源forward、40层120向量及第二进程recount一致；三模型实际ID集合交并集均900。RSC−随机CE差02/03=.027502/.029858；t1/t2与原CE方向02同向、03反向，不能当普遍有益方向。无训练/头fit/query更新，完整三模型分析见final_analysis.md、three_model_summary.json和coverage。下一独立训练假设仅据源与固定RSC方法，不是自动训练授权器或新盲测。

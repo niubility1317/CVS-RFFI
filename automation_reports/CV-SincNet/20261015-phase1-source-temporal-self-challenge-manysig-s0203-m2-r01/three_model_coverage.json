@@ -1,0 +1,493 @@
+{
+  "status": "VERIFIED",
+  "models": 3,
+  "source_packet_model_observations": 2700,
+  "physical_unique_union": 900,
+  "physical_intersection": 900,
+  "same_source_id_sets": true,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "physical_packets": 900,
+      "selected_packets": 300,
+      "groups": [
+        {
+          "dimension": "TX",
+          "stratum": 0,
+          "packets": 150,
+          "selected": 30
+        },
+        {
+          "dimension": "TX",
+          "stratum": 1,
+          "packets": 150,
+          "selected": 120
+        },
+        {
+          "dimension": "TX",
+          "stratum": 2,
+          "packets": 150,
+          "selected": 34
+        },
+        {
+          "dimension": "TX",
+          "stratum": 3,
+          "packets": 150,
+          "selected": 81
+        },
+        {
+          "dimension": "TX",
+          "stratum": 4,
+          "packets": 150,
+          "selected": 12
+        },
+        {
+          "dimension": "TX",
+          "stratum": 5,
+          "packets": 150,
+          "selected": 23
+        },
+        {
+          "dimension": "RX",
+          "stratum": 1,
+          "packets": 180,
+          "selected": 45
+        },
+        {
+          "dimension": "RX",
+          "stratum": 3,
+          "packets": 180,
+          "selected": 87
+        },
+        {
+          "dimension": "RX",
+          "stratum": 4,
+          "packets": 180,
+          "selected": 37
+        },
+        {
+          "dimension": "RX",
+          "stratum": 6,
+          "packets": 180,
+          "selected": 41
+        },
+        {
+          "dimension": "RX",
+          "stratum": 8,
+          "packets": 180,
+          "selected": 90
+        },
+        {
+          "dimension": "day",
+          "stratum": 1,
+          "packets": 300,
+          "selected": 101
+        },
+        {
+          "dimension": "day",
+          "stratum": 2,
+          "packets": 300,
+          "selected": 105
+        },
+        {
+          "dimension": "day",
+          "stratum": 3,
+          "packets": 300,
+          "selected": 94
+        }
+      ],
+      "time_mask_counts": [
+        67,
+        126,
+        49,
+        93,
+        181,
+        80,
+        86,
+        176,
+        79,
+        40,
+        162,
+        120,
+        155,
+        65,
+        38,
+        218,
+        159,
+        77,
+        77,
+        39,
+        39,
+        86,
+        101,
+        216,
+        24,
+        70,
+        190,
+        187,
+        16,
+        62,
+        162,
+        60
+      ],
+      "random_time_mask_counts": [
+        96,
+        105,
+        113,
+        96,
+        98,
+        107,
+        105,
+        104,
+        102,
+        104,
+        90,
+        102,
+        118,
+        100,
+        104,
+        101,
+        94,
+        103,
+        107,
+        97,
+        94,
+        109,
+        119,
+        96,
+        93,
+        96,
+        100,
+        109,
+        96,
+        109,
+        117,
+        116
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "physical_packets": 900,
+      "selected_packets": 300,
+      "groups": [
+        {
+          "dimension": "TX",
+          "stratum": 0,
+          "packets": 150,
+          "selected": 53
+        },
+        {
+          "dimension": "TX",
+          "stratum": 1,
+          "packets": 150,
+          "selected": 95
+        },
+        {
+          "dimension": "TX",
+          "stratum": 2,
+          "packets": 150,
+          "selected": 26
+        },
+        {
+          "dimension": "TX",
+          "stratum": 3,
+          "packets": 150,
+          "selected": 60
+        },
+        {
+          "dimension": "TX",
+          "stratum": 4,
+          "packets": 150,
+          "selected": 22
+        },
+        {
+          "dimension": "TX",
+          "stratum": 5,
+          "packets": 150,
+          "selected": 44
+        },
+        {
+          "dimension": "RX",
+          "stratum": 1,
+          "packets": 180,
+          "selected": 32
+        },
+        {
+          "dimension": "RX",
+          "stratum": 3,
+          "packets": 180,
+          "selected": 116
+        },
+        {
+          "dimension": "RX",
+          "stratum": 4,
+          "packets": 180,
+          "selected": 42
+        },
+        {
+          "dimension": "RX",
+          "stratum": 6,
+          "packets": 180,
+          "selected": 24
+        },
+        {
+          "dimension": "RX",
+          "stratum": 8,
+          "packets": 180,
+          "selected": 86
+        },
+        {
+          "dimension": "day",
+          "stratum": 1,
+          "packets": 300,
+          "selected": 97
+        },
+        {
+          "dimension": "day",
+          "stratum": 2,
+          "packets": 300,
+          "selected": 101
+        },
+        {
+          "dimension": "day",
+          "stratum": 3,
+          "packets": 300,
+          "selected": 102
+        }
+      ],
+      "time_mask_counts": [
+        115,
+        97,
+        78,
+        109,
+        82,
+        129,
+        124,
+        167,
+        141,
+        163,
+        67,
+        51,
+        85,
+        40,
+        60,
+        107,
+        158,
+        142,
+        54,
+        88,
+        81,
+        63,
+        79,
+        118,
+        141,
+        63,
+        138,
+        89,
+        57,
+        78,
+        180,
+        156
+      ],
+      "random_time_mask_counts": [
+        96,
+        117,
+        103,
+        93,
+        101,
+        92,
+        104,
+        117,
+        100,
+        106,
+        115,
+        111,
+        99,
+        103,
+        109,
+        106,
+        97,
+        105,
+        102,
+        93,
+        110,
+        118,
+        95,
+        104,
+        119,
+        93,
+        98,
+        90,
+        91,
+        109,
+        101,
+        103
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "physical_packets": 900,
+      "selected_packets": 300,
+      "groups": [
+        {
+          "dimension": "TX",
+          "stratum": 0,
+          "packets": 150,
+          "selected": 56
+        },
+        {
+          "dimension": "TX",
+          "stratum": 1,
+          "packets": 150,
+          "selected": 98
+        },
+        {
+          "dimension": "TX",
+          "stratum": 2,
+          "packets": 150,
+          "selected": 39
+        },
+        {
+          "dimension": "TX",
+          "stratum": 3,
+          "packets": 150,
+          "selected": 64
+        },
+        {
+          "dimension": "TX",
+          "stratum": 4,
+          "packets": 150,
+          "selected": 14
+        },
+        {
+          "dimension": "TX",
+          "stratum": 5,
+          "packets": 150,
+          "selected": 29
+        },
+        {
+          "dimension": "RX",
+          "stratum": 1,
+          "packets": 180,
+          "selected": 31
+        },
+        {
+          "dimension": "RX",
+          "stratum": 3,
+          "packets": 180,
+          "selected": 99
+        },
+        {
+          "dimension": "RX",
+          "stratum": 4,
+          "packets": 180,
+          "selected": 50
+        },
+        {
+          "dimension": "RX",
+          "stratum": 6,
+          "packets": 180,
+          "selected": 32
+        },
+        {
+          "dimension": "RX",
+          "stratum": 8,
+          "packets": 180,
+          "selected": 88
+        },
+        {
+          "dimension": "day",
+          "stratum": 1,
+          "packets": 300,
+          "selected": 106
+        },
+        {
+          "dimension": "day",
+          "stratum": 2,
+          "packets": 300,
+          "selected": 104
+        },
+        {
+          "dimension": "day",
+          "stratum": 3,
+          "packets": 300,
+          "selected": 90
+        }
+      ],
+      "time_mask_counts": [
+        104,
+        134,
+        91,
+        141,
+        112,
+        93,
+        171,
+        89,
+        110,
+        131,
+        41,
+        39,
+        95,
+        66,
+        93,
+        193,
+        118,
+        45,
+        100,
+        75,
+        69,
+        113,
+        47,
+        156,
+        54,
+        127,
+        166,
+        171,
+        82,
+        84,
+        91,
+        99
+      ],
+      "random_time_mask_counts": [
+        92,
+        99,
+        114,
+        109,
+        104,
+        98,
+        116,
+        103,
+        108,
+        113,
+        124,
+        99,
+        96,
+        112,
+        98,
+        99,
+        103,
+        106,
+        107,
+        109,
+        74,
+        91,
+        109,
+        106,
+        106,
+        92,
+        96,
+        112,
+        91,
+        89,
+        123,
+        102
+      ]
+    }
+  ],
+  "source_L_labels_read": true,
+  "new_model_forwards": 0,
+  "new_gradients": 0,
+  "new_updates": 0,
+  "head_fit_updates": 0,
+  "IQ_or_checkpoint_or_query_or_U_or_target_truth_read": false
+}

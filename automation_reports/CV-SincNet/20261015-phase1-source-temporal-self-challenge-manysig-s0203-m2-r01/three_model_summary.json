@@ -1,0 +1,476 @@
+{
+  "status": "VERIFIED_SOURCE_ONLY",
+  "first_run": "20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01",
+  "remaining_run": "20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01",
+  "first_execution": "2266f50a7be42eaa2a283bd7a6dd561adef548ab",
+  "remaining_execution": "00c7213ac3ce8d2543e9443f5e6dea9ff5772a7b",
+  "first_source_extension_decision": "737b65502bc5d9f204a605108b80f430bfe59541",
+  "first_seed_retrained": false,
+  "models": 3,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "source_model_packet_observations": 2700,
+  "unique_physical_packets": 900,
+  "source_forward_packets": 10800,
+  "locating_gradient_tensors": 15,
+  "parameter_layer_records": 60,
+  "saved_parameter_vectors": 180,
+  "source_qualified_models": 3,
+  "rows": [
+    {
+      "model_seed": 2026092701,
+      "source_qualification": "PASS",
+      "source_packets": 900,
+      "source_forwards": 3600,
+      "mean_CE": {
+        "ORIGINAL": 0.09843086302280427,
+        "RSC_SELECTED": 0.2838607430458069,
+        "MATCHED_RANDOM": 0.14078717827796935
+      },
+      "RSC_CE_minus_random": 0.14307356476783753,
+      "RSC_probability_drop_minus_random": 0.07276678755879402,
+      "selected_packets": 300,
+      "time_positions_masked": 3300,
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.05119571245293074,
+              "other_norm": 0.7243247877089205,
+              "ratio": 14.148153292619252,
+              "cosine": -0.5564058965410233
+            },
+            "delta": {
+              "reference_norm": 0.05119571245293074,
+              "other_norm": 0.7540113036480258,
+              "ratio": 14.728016615478547,
+              "cosine": -0.6023971963648802
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.05119571245293074,
+              "other_norm": 0.1197497588061656,
+              "ratio": 2.3390583521278927,
+              "cosine": -0.35759086391902534
+            },
+            "delta": {
+              "reference_norm": 0.05119571245293074,
+              "other_norm": 0.14610117004269838,
+              "ratio": 2.8537774560130122,
+              "cosine": -0.6435070446803791
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.04560501677005317,
+              "other_norm": 0.7183687990514693,
+              "ratio": 15.751968751016683,
+              "cosine": -0.6203891438049205
+            },
+            "delta": {
+              "reference_norm": 0.04560501677005317,
+              "other_norm": 0.7475178665799478,
+              "ratio": 16.39113236925307,
+              "cosine": -0.6572059918747387
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.04560501677005317,
+              "other_norm": 0.11638420897623404,
+              "ratio": 2.5520045209731945,
+              "cosine": -0.4920806323281541
+            },
+            "delta": {
+              "reference_norm": 0.04560501677005317,
+              "other_norm": 0.14439092125181013,
+              "ratio": 3.1661192447280353,
+              "cosine": -0.7124785341363746
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.046638849475039455,
+              "other_norm": 1.1736678024707856,
+              "ratio": 25.165024774012025,
+              "cosine": 0.016416534759690914
+            },
+            "delta": {
+              "reference_norm": 0.046638849475039455,
+              "other_norm": 1.1738288032488489,
+              "ratio": 25.16847684840656,
+              "cosine": -0.02331795839707734
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.046638849475039455,
+              "other_norm": 0.1707127641199748,
+              "ratio": 3.660312508595183,
+              "cosine": 0.06584947418826256
+            },
+            "delta": {
+              "reference_norm": 0.046638849475039455,
+              "other_norm": 0.17398121521806081,
+              "ratio": 3.7303925198921006,
+              "cosine": -0.203455894224836
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.04942498729891261,
+              "other_norm": 1.213863765796274,
+              "ratio": 24.55971831525347,
+              "cosine": -0.3288312822433114
+            },
+            "delta": {
+              "reference_norm": 0.04942498729891261,
+              "other_norm": 1.2310014903180888,
+              "ratio": 24.90646042806716,
+              "cosine": -0.3644035928490089
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.04942498729891261,
+              "other_norm": 0.20550604945134915,
+              "ratio": 4.1579383360988835,
+              "cosine": 0.17790190528857713
+            },
+            "delta": {
+              "reference_norm": 0.04942498729891261,
+              "other_norm": 0.20263666694390403,
+              "ratio": 4.0998830352428275,
+              "cosine": -0.06348835947222949
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "source_qualification": "PASS",
+      "source_packets": 900,
+      "source_forwards": 3600,
+      "mean_CE": {
+        "ORIGINAL": 0.0991327166557312,
+        "RSC_SELECTED": 0.1521440178155899,
+        "MATCHED_RANDOM": 0.12464209944009781
+      },
+      "RSC_CE_minus_random": 0.027501918375492096,
+      "RSC_probability_drop_minus_random": 0.018939768336713313,
+      "selected_packets": 300,
+      "time_positions_masked": 3300,
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.03461180620562816,
+              "other_norm": 0.17119230333660623,
+              "ratio": 4.946066735713115,
+              "cosine": 0.15047374082253404
+            },
+            "delta": {
+              "reference_norm": 0.03461180620562816,
+              "other_norm": 0.16947443852473296,
+              "ratio": 4.896434399230371,
+              "cosine": -0.05223123911545633
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.03461180620562816,
+              "other_norm": 0.10482765830538124,
+              "ratio": 3.0286676656688147,
+              "cosine": 0.4582628046899974
+            },
+            "delta": {
+              "reference_norm": 0.03461180620562816,
+              "other_norm": 0.09413505452862715,
+              "ratio": 2.7197382872587568,
+              "cosine": 0.14263348086123834
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.03150185356242948,
+              "other_norm": 0.1645475031811809,
+              "ratio": 5.223422896531638,
+              "cosine": 0.11583369467888914
+            },
+            "delta": {
+              "reference_norm": 0.03150185356242948,
+              "other_norm": 0.16391274438658052,
+              "ratio": 5.203273009372064,
+              "cosine": -0.07590445981078685
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.03150185356242948,
+              "other_norm": 0.06963641929428926,
+              "ratio": 2.210549901652161,
+              "cosine": 0.35253877728592387
+            },
+            "delta": {
+              "reference_norm": 0.03150185356242948,
+              "other_norm": 0.06553537793210122,
+              "ratio": 2.0803657728338134,
+              "cosine": -0.1060849219036138
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.033970240016657716,
+              "other_norm": 0.4871400883965204,
+              "ratio": 14.340201545754326,
+              "cosine": 0.1626073106334086
+            },
+            "delta": {
+              "reference_norm": 0.033970240016657716,
+              "other_norm": 0.4827812185240037,
+              "ratio": 14.211887177931805,
+              "cosine": 0.09371180552039637
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.033970240016657716,
+              "other_norm": 0.1281402331496259,
+              "ratio": 3.77213210995244,
+              "cosine": 0.23801748848678683
+            },
+            "delta": {
+              "reference_norm": 0.033970240016657716,
+              "other_norm": 0.12450597565874383,
+              "ratio": 3.665148541714478,
+              "cosine": -0.02787515643253161
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.0433576501207275,
+              "other_norm": 0.1284025597134769,
+              "ratio": 2.9614741425318374,
+              "cosine": 0.250465235764894
+            },
+            "delta": {
+              "reference_norm": 0.0433576501207275,
+              "other_norm": 0.12481308578665207,
+              "ratio": 2.878686585622501,
+              "cosine": -0.08971232991078824
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.0433576501207275,
+              "other_norm": 0.07478799966636163,
+              "ratio": 1.7249089712684538,
+              "cosine": 0.4529383381244943
+            },
+            "delta": {
+              "reference_norm": 0.0433576501207275,
+              "other_norm": 0.06734765095825943,
+              "ratio": 1.5533049132213763,
+              "cosine": -0.14081111523946072
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "source_qualification": "PASS",
+      "source_packets": 900,
+      "source_forwards": 3600,
+      "mean_CE": {
+        "ORIGINAL": 0.09700656533241273,
+        "RSC_SELECTED": 0.1559678018093109,
+        "MATCHED_RANDOM": 0.126109579205513
+      },
+      "RSC_CE_minus_random": 0.02985822260379791,
+      "RSC_probability_drop_minus_random": 0.021325793117284775,
+      "selected_packets": 300,
+      "time_positions_masked": 3300,
+      "gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.04547423817531872,
+              "other_norm": 0.3358832621735613,
+              "ratio": 7.386231757827731,
+              "cosine": -0.5208956572498031
+            },
+            "delta": {
+              "reference_norm": 0.04547423817531872,
+              "other_norm": 0.3616598258431291,
+              "ratio": 7.9530705813873555,
+              "cosine": -0.6095074847490467
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.04547423817531872,
+              "other_norm": 0.10570285534533305,
+              "ratio": 2.3244557707115936,
+              "cosine": -0.31916214962033745
+            },
+            "delta": {
+              "reference_norm": 0.04547423817531872,
+              "other_norm": 0.12770775091744263,
+              "ratio": 2.8083538293722623,
+              "cosine": -0.6202488740056891
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.043095897050602724,
+              "other_norm": 0.2840379573430331,
+              "ratio": 6.590835248411674,
+              "cosine": -0.47067105336701964
+            },
+            "delta": {
+              "reference_norm": 0.043095897050602724,
+              "other_norm": 0.3066882202547898,
+              "ratio": 7.116413423177615,
+              "cosine": -0.5764301657318176
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.043095897050602724,
+              "other_norm": 0.08997595530439534,
+              "ratio": 2.0878079228458004,
+              "cosine": -0.2533521592630533
+            },
+            "delta": {
+              "reference_norm": 0.043095897050602724,
+              "other_norm": 0.1091683230504045,
+              "ratio": 2.5331488731333347,
+              "cosine": -0.6035770978940862
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.024550904798986178,
+              "other_norm": 0.3901159624001,
+              "ratio": 15.890084931460844,
+              "cosine": 0.14361567394654298
+            },
+            "delta": {
+              "reference_norm": 0.024550904798986178,
+              "other_norm": 0.3873528048267927,
+              "ratio": 15.777536836149041,
+              "cosine": 0.08125889800251486
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.024550904798986178,
+              "other_norm": 0.12089638365872754,
+              "ratio": 4.924314792003915,
+              "cosine": 0.06393611220205782
+            },
+            "delta": {
+              "reference_norm": 0.024550904798986178,
+              "other_norm": 0.12181602096363053,
+              "ratio": 4.961773179482203,
+              "cosine": -0.13808741999199692
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+          "RSC": {
+            "selected": {
+              "reference_norm": 0.038549753601657244,
+              "other_norm": 0.2519376874784007,
+              "ratio": 6.5353903446887385,
+              "cosine": 0.149694518127541
+            },
+            "delta": {
+              "reference_norm": 0.038549753601657244,
+              "other_norm": 0.24910033100134182,
+              "ratio": 6.461787890406466,
+              "cosine": -0.003356329849302957
+            },
+            "nonzero_delta_cohorts": 5
+          },
+          "random": {
+            "selected": {
+              "reference_norm": 0.038549753601657244,
+              "other_norm": 0.09417765892277097,
+              "ratio": 2.4430158463768312,
+              "cosine": 0.38505199807752616
+            },
+            "delta": {
+              "reference_norm": 0.038549753601657244,
+              "other_norm": 0.08694614834257615,
+              "ratio": 2.2554268242803595,
+              "cosine": -0.026297402504498215
+            },
+            "nonzero_delta_cohorts": 5
+          }
+        }
+      ]
+    }
+  ],
+  "new_training_epochs": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "query_read": false,
+  "interpretation": "Distinct targeted temporal challenge replicated acrossthree frozen models; no trainability,DG,SSL or84 benefit proven"
+}

@@ -1,0 +1,845 @@
+{
+  "completion": {
+    "status": "ANALYZED",
+    "models": 2,
+    "source_packets": 1800,
+    "forward_packets": 7200,
+    "gradient_batches": 10,
+    "layer_records": 40,
+    "saved_vectors": 120,
+    "physical_unique_packets": 900,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0
+  },
+  "qualification": {
+    "status": "PASS",
+    "source_only": true,
+    "fixed_rules": {
+      "source_only": true,
+      "physical_packets": 900,
+      "cohorts": 5,
+      "three_actual_body_delta_gradients_nonzero_each_cohort": true,
+      "mean_selected_RSC_CE_minus_matched_random_min_exclusive": 0,
+      "mean_selected_RSC_true_probability_drop_minus_matched_random_min_exclusive": 0,
+      "model_state_and_default_head_unchanged": true,
+      "no_automatic_training_release": true,
+      "on_pass": "Only a separately registered unchanged02/03 source diagnostic may follow",
+      "on_fail": "Stop this fixed source self-challenge route; no mask-rate or layer scan"
+    },
+    "target_metrics_used": false,
+    "first_source_qualification": {
+      "status": "PASS",
+      "fixed_rules": {
+        "source_only": true,
+        "physical_packets": 900,
+        "cohorts": 5,
+        "three_actual_body_delta_gradients_nonzero_each_cohort": true,
+        "mean_selected_RSC_CE_minus_matched_random_min_exclusive": 0,
+        "mean_selected_RSC_true_probability_drop_minus_matched_random_min_exclusive": 0,
+        "model_state_and_default_head_unchanged": true,
+        "no_automatic_training_release": true,
+        "on_pass": "Only a separately registered unchanged02/03 source diagnostic may follow",
+        "on_fail": "Stop this fixed source self-challenge route; no mask-rate or layer scan"
+      },
+      "source_only": true,
+      "target_metrics_used": false,
+      "mean_RSC_CE_minus_random": 0.14307356476783753,
+      "mean_RSC_probability_drop_minus_random": 0.07276678755879402,
+      "no_automatic_training_release": true
+    },
+    "first_seed_retrained": false,
+    "models": 2,
+    "passed_models": 2,
+    "no_automatic_training_release": true
+  },
+  "analysis": {
+    "status": "ANALYZED",
+    "run_id": "20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01",
+    "models": 2,
+    "reports": [
+      {
+        "status": "ANALYZED",
+        "config": {
+          "schema": "source_temporal_self_challenge_v1",
+          "run_id": "20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01",
+          "row_id": "SIG_TIME-s2026092702",
+          "arm": "SIG_TIME",
+          "model_seed": 2026092702,
+          "source_config_ref": {
+            "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+            "row_id": "SIG_TIME-s2026092702"
+          },
+          "role": "L_s",
+          "source_only": true,
+          "source_pool_count": 6300,
+          "source_packets": 900,
+          "cohorts": 5,
+          "cohort_packets": 180,
+          "cohort_definition": "First five existing deterministic L180 cohorts;2 per TX/RX/day",
+          "parent_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+          "parent_execution": "a283291279cb01b939325cf5ccba1d0a671b28c4",
+          "checkpoint_epoch": 50,
+          "parent_rule": "Predefined own nominalseed SIG_TIME control final50 only; never target-best",
+          "layer": "id_backbone.encoder.core.id_backbone.t2",
+          "activation_shape": [
+            180,
+            96,
+            32
+          ],
+          "gradient": "Gradient of sum true-class default-head logits with respect to actual t2 output; signed, mean over96 channels",
+          "feature_drop_fraction": 0.3333333333333333,
+          "batch_drop_fraction": 0.3333333333333333,
+          "spatial_rule": "Keep signed gradient mean strictly below linear two-thirds quantile per packet",
+          "packet_rule": "Apply spatial mask only to probability-drop values at or above linear two-thirds batch quantile",
+          "random_control": "Same selected physical packets and exact per-packet zero count; independently shuffle spatial mask per packet",
+          "mask_seed": 2026307402,
+          "label_smoothing": 0.01,
+          "observations": [
+            "ORIGINAL",
+            "SPATIAL_ALL",
+            "RSC_SELECTED",
+            "MATCHED_RANDOM"
+          ],
+          "model_forward_packets": 3600,
+          "parameters": [
+            "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+            "id_backbone.encoder.core.id_backbone.cls_head.weight"
+          ],
+          "masked_parameter_gradients": [
+            "ORIGINAL",
+            "RSC_SELECTED",
+            "MATCHED_RANDOM"
+          ],
+          "classifier": "Unchanged existing default ResidualPhysicalHead cosine6x160 scale30; never fitted",
+          "model_mode": "eval; diagnostic derivatives only; no training/update; masks removed after each row",
+          "query_read": false,
+          "U_IQ_read": false,
+          "U_truth_read": false,
+          "V_forward": false,
+          "V_gradient": false,
+          "V_builder": "Reuse existing VALIDATED_ONCE loader; V returned and discarded without forward",
+          "optimizer_steps": 0,
+          "head_fit_updates": 0,
+          "training_epochs": 0,
+          "qualification": {
+            "source_only": true,
+            "physical_packets": 900,
+            "cohorts": 5,
+            "three_actual_body_delta_gradients_nonzero_each_cohort": true,
+            "mean_selected_RSC_CE_minus_matched_random_min_exclusive": 0,
+            "mean_selected_RSC_true_probability_drop_minus_matched_random_min_exclusive": 0,
+            "model_state_and_default_head_unchanged": true,
+            "no_automatic_training_release": true,
+            "on_pass": "Only a separately registered unchanged02/03 source diagnostic may follow",
+            "on_fail": "Stop this fixed source self-challenge route; no mask-rate or layer scan"
+          },
+          "output_root": "PROJECT/runs/20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01/SIG_TIME-s2026092702",
+          "launch_owner": "codex/root/source-self-challenge-seeds-20261015",
+          "target_metrics_for_design": false,
+          "limitation": "Source compatibility of temporal RSC, not a PACS reproduction or proof of new evidence, DG, SSL or84",
+          "source_expansion_authority": "20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01",
+          "source_expansion_decision_commit": "737b65502bc5d9f204a605108b80f430bfe59541",
+          "first_seed_retrained": false,
+          "cohort_and_mask_seed_unchanged": true,
+          "physical_unique_packets_all_models": 900
+        },
+        "summary": {
+          "gradient_summary": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "cohorts": 5,
+              "RSC_SELECTED": {
+                "selected": {
+                  "reference_norm": 0.03461180620562816,
+                  "other_norm": 0.17119230333660623,
+                  "ratio": 4.946066735713115,
+                  "cosine": 0.15047374082253404
+                },
+                "delta": {
+                  "reference_norm": 0.03461180620562816,
+                  "other_norm": 0.16947443852473296,
+                  "ratio": 4.896434399230371,
+                  "cosine": -0.05223123911545633
+                },
+                "nonzero_delta_cohorts": 5
+              },
+              "MATCHED_RANDOM": {
+                "selected": {
+                  "reference_norm": 0.03461180620562816,
+                  "other_norm": 0.10482765830538124,
+                  "ratio": 3.0286676656688147,
+                  "cosine": 0.4582628046899974
+                },
+                "delta": {
+                  "reference_norm": 0.03461180620562816,
+                  "other_norm": 0.09413505452862715,
+                  "ratio": 2.7197382872587568,
+                  "cosine": 0.14263348086123834
+                },
+                "nonzero_delta_cohorts": 5
+              }
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "cohorts": 5,
+              "RSC_SELECTED": {
+                "selected": {
+                  "reference_norm": 0.03150185356242948,
+                  "other_norm": 0.1645475031811809,
+                  "ratio": 5.223422896531638,
+                  "cosine": 0.11583369467888914
+                },
+                "delta": {
+                  "reference_norm": 0.03150185356242948,
+                  "other_norm": 0.16391274438658052,
+                  "ratio": 5.203273009372064,
+                  "cosine": -0.07590445981078685
+                },
+                "nonzero_delta_cohorts": 5
+              },
+              "MATCHED_RANDOM": {
+                "selected": {
+                  "reference_norm": 0.03150185356242948,
+                  "other_norm": 0.06963641929428926,
+                  "ratio": 2.210549901652161,
+                  "cosine": 0.35253877728592387
+                },
+                "delta": {
+                  "reference_norm": 0.03150185356242948,
+                  "other_norm": 0.06553537793210122,
+                  "ratio": 2.0803657728338134,
+                  "cosine": -0.1060849219036138
+                },
+                "nonzero_delta_cohorts": 5
+              }
+            },
+            {
+              "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+              "cohorts": 5,
+              "RSC_SELECTED": {
+                "selected": {
+                  "reference_norm": 0.033970240016657716,
+                  "other_norm": 0.4871400883965204,
+                  "ratio": 14.340201545754326,
+                  "cosine": 0.1626073106334086
+                },
+                "delta": {
+                  "reference_norm": 0.033970240016657716,
+                  "other_norm": 0.4827812185240037,
+                  "ratio": 14.211887177931805,
+                  "cosine": 0.09371180552039637
+                },
+                "nonzero_delta_cohorts": 5
+              },
+              "MATCHED_RANDOM": {
+                "selected": {
+                  "reference_norm": 0.033970240016657716,
+                  "other_norm": 0.1281402331496259,
+                  "ratio": 3.77213210995244,
+                  "cosine": 0.23801748848678683
+                },
+                "delta": {
+                  "reference_norm": 0.033970240016657716,
+                  "other_norm": 0.12450597565874383,
+                  "ratio": 3.665148541714478,
+                  "cosine": -0.02787515643253161
+                },
+                "nonzero_delta_cohorts": 5
+              }
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+              "cohorts": 5,
+              "RSC_SELECTED": {
+                "selected": {
+                  "reference_norm": 0.0433576501207275,
+                  "other_norm": 0.1284025597134769,
+                  "ratio": 2.9614741425318374,
+                  "cosine": 0.250465235764894
+                },
+                "delta": {
+                  "reference_norm": 0.0433576501207275,
+                  "other_norm": 0.12481308578665207,
+                  "ratio": 2.878686585622501,
+                  "cosine": -0.08971232991078824
+                },
+                "nonzero_delta_cohorts": 5
+              },
+              "MATCHED_RANDOM": {
+                "selected": {
+                  "reference_norm": 0.0433576501207275,
+                  "other_norm": 0.07478799966636163,
+                  "ratio": 1.7249089712684538,
+                  "cosine": 0.4529383381244943
+                },
+                "delta": {
+                  "reference_norm": 0.0433576501207275,
+                  "other_norm": 0.06734765095825943,
+                  "ratio": 1.5533049132213763,
+                  "cosine": -0.14081111523946072
+                },
+                "nonzero_delta_cohorts": 5
+              }
+            }
+          ],
+          "cohort_summary": [
+            {
+              "cohort": 0,
+              "packets": 180,
+              "selected_packets": 60,
+              "masked_time_positions": 660,
+              "random_masked_time_positions": 660,
+              "losses": {
+                "ORIGINAL": 0.09930765628814697,
+                "RSC_SELECTED": 0.13933663070201874,
+                "MATCHED_RANDOM": 0.1339740753173828
+              },
+              "RSC_CE_minus_random": 0.005362555384635925,
+              "RSC_true_probability_drop": 0.03379205986857414,
+              "random_true_probability_drop": 0.024456201121211052,
+              "activation_nonnegative": true
+            },
+            {
+              "cohort": 1,
+              "packets": 180,
+              "selected_packets": 60,
+              "masked_time_positions": 660,
+              "random_masked_time_positions": 660,
+              "losses": {
+                "ORIGINAL": 0.10000436753034592,
+                "RSC_SELECTED": 0.13577616214752197,
+                "MATCHED_RANDOM": 0.1286737024784088
+              },
+              "RSC_CE_minus_random": 0.007102459669113159,
+              "RSC_true_probability_drop": 0.03442125767469406,
+              "random_true_probability_drop": 0.02042434923350811,
+              "activation_nonnegative": true
+            },
+            {
+              "cohort": 2,
+              "packets": 180,
+              "selected_packets": 60,
+              "masked_time_positions": 660,
+              "random_masked_time_positions": 660,
+              "losses": {
+                "ORIGINAL": 0.09877343475818634,
+                "RSC_SELECTED": 0.163479745388031,
+                "MATCHED_RANDOM": 0.11112584918737411
+              },
+              "RSC_CE_minus_random": 0.05235389620065689,
+              "RSC_true_probability_drop": 0.04697112366557121,
+              "random_true_probability_drop": 0.014474580995738506,
+              "activation_nonnegative": true
+            },
+            {
+              "cohort": 3,
+              "packets": 180,
+              "selected_packets": 60,
+              "masked_time_positions": 660,
+              "random_masked_time_positions": 660,
+              "losses": {
+                "ORIGINAL": 0.10030942410230637,
+                "RSC_SELECTED": 0.18062222003936768,
+                "MATCHED_RANDOM": 0.12636178731918335
+              },
+              "RSC_CE_minus_random": 0.054260432720184326,
+              "RSC_true_probability_drop": 0.052147362381219864,
+              "random_true_probability_drop": 0.024769339710474014,
+              "activation_nonnegative": true
+            },
+            {
+              "cohort": 4,
+              "packets": 180,
+              "selected_packets": 60,
+              "masked_time_positions": 660,
+              "random_masked_time_positions": 660,
+              "losses": {
+                "ORIGINAL": 0.09726870059967041,
+                "RSC_SELECTED": 0.14150533080101013,
+                "MATCHED_RANDOM": 0.12307508289813995
+              },
+              "RSC_CE_minus_random": 0.018430247902870178,
+              "RSC_true_probability_drop": 0.035687945783138275,
+              "random_true_probability_drop": 0.024196436628699303,
+              "activation_nonnegative": true
+            }
+          ]
+        },
+        "qualification": {
+          "status": "PASS",
+          "fixed_rules": {
+            "source_only": true,
+            "physical_packets": 900,
+            "cohorts": 5,
+            "three_actual_body_delta_gradients_nonzero_each_cohort": true,
+            "mean_selected_RSC_CE_minus_matched_random_min_exclusive": 0,
+            "mean_selected_RSC_true_probability_drop_minus_matched_random_min_exclusive": 0,
+            "model_state_and_default_head_unchanged": true,
+            "no_automatic_training_release": true,
+            "on_pass": "Only a separately registered unchanged02/03 source diagnostic may follow",
+            "on_fail": "Stop this fixed source self-challenge route; no mask-rate or layer scan"
+          },
+          "source_only": true,
+          "target_metrics_used": false,
+          "mean_RSC_CE_minus_random": 0.027501918375492096,
+          "mean_RSC_probability_drop_minus_random": 0.018939768336713313,
+          "no_automatic_training_release": true
+        },
+        "model_parameters_buffers_unchanged": true,
+        "source_packets": 900,
+        "forward_packets": 3600,
+        "head_fit_updates": 0,
+        "optimizer_steps": 0,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "V_forward": false,
+        "V_gradient": false,
+        "query_read": false,
+        "first_seed_retrained": false,
+        "seconds": 3.5533556938171387,
+        "limitation": "Remaining2 predefined frozen source models, same900 physical packets; no training or target result"
+      },
+      {
+        "status": "ANALYZED",
+        "config": {
+          "schema": "source_temporal_self_challenge_v1",
+          "run_id": "20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01",
+          "row_id": "SIG_TIME-s2026092703",
+          "arm": "SIG_TIME",
+          "model_seed": 2026092703,
+          "source_config_ref": {
+            "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+            "row_id": "SIG_TIME-s2026092703"
+          },
+          "role": "L_s",
+          "source_only": true,
+          "source_pool_count": 6300,
+          "source_packets": 900,
+          "cohorts": 5,
+          "cohort_packets": 180,
+          "cohort_definition": "First five existing deterministic L180 cohorts;2 per TX/RX/day",
+          "parent_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+          "parent_execution": "a283291279cb01b939325cf5ccba1d0a671b28c4",
+          "checkpoint_epoch": 50,
+          "parent_rule": "Predefined own nominalseed SIG_TIME control final50 only; never target-best",
+          "layer": "id_backbone.encoder.core.id_backbone.t2",
+          "activation_shape": [
+            180,
+            96,
+            32
+          ],
+          "gradient": "Gradient of sum true-class default-head logits with respect to actual t2 output; signed, mean over96 channels",
+          "feature_drop_fraction": 0.3333333333333333,
+          "batch_drop_fraction": 0.3333333333333333,
+          "spatial_rule": "Keep signed gradient mean strictly below linear two-thirds quantile per packet",
+          "packet_rule": "Apply spatial mask only to probability-drop values at or above linear two-thirds batch quantile",
+          "random_control": "Same selected physical packets and exact per-packet zero count; independently shuffle spatial mask per packet",
+          "mask_seed": 2026307402,
+          "label_smoothing": 0.01,
+          "observations": [
+            "ORIGINAL",
+            "SPATIAL_ALL",
+            "RSC_SELECTED",
+            "MATCHED_RANDOM"
+          ],
+          "model_forward_packets": 3600,
+          "parameters": [
+            "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+            "id_backbone.encoder.core.id_backbone.cls_head.weight"
+          ],
+          "masked_parameter_gradients": [
+            "ORIGINAL",
+            "RSC_SELECTED",
+            "MATCHED_RANDOM"
+          ],
+          "classifier": "Unchanged existing default ResidualPhysicalHead cosine6x160 scale30; never fitted",
+          "model_mode": "eval; diagnostic derivatives only; no training/update; masks removed after each row",
+          "query_read": false,
+          "U_IQ_read": false,
+          "U_truth_read": false,
+          "V_forward": false,
+          "V_gradient": false,
+          "V_builder": "Reuse existing VALIDATED_ONCE loader; V returned and discarded without forward",
+          "optimizer_steps": 0,
+          "head_fit_updates": 0,
+          "training_epochs": 0,
+          "qualification": {
+            "source_only": true,
+            "physical_packets": 900,
+            "cohorts": 5,
+            "three_actual_body_delta_gradients_nonzero_each_cohort": true,
+            "mean_selected_RSC_CE_minus_matched_random_min_exclusive": 0,
+            "mean_selected_RSC_true_probability_drop_minus_matched_random_min_exclusive": 0,
+            "model_state_and_default_head_unchanged": true,
+            "no_automatic_training_release": true,
+            "on_pass": "Only a separately registered unchanged02/03 source diagnostic may follow",
+            "on_fail": "Stop this fixed source self-challenge route; no mask-rate or layer scan"
+          },
+          "output_root": "PROJECT/runs/20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01/SIG_TIME-s2026092703",
+          "launch_owner": "codex/root/source-self-challenge-seeds-20261015",
+          "target_metrics_for_design": false,
+          "limitation": "Source compatibility of temporal RSC, not a PACS reproduction or proof of new evidence, DG, SSL or84",
+          "source_expansion_authority": "20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01",
+          "source_expansion_decision_commit": "737b65502bc5d9f204a605108b80f430bfe59541",
+          "first_seed_retrained": false,
+          "cohort_and_mask_seed_unchanged": true,
+          "physical_unique_packets_all_models": 900
+        },
+        "summary": {
+          "gradient_summary": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "cohorts": 5,
+              "RSC_SELECTED": {
+                "selected": {
+                  "reference_norm": 0.04547423817531872,
+                  "other_norm": 0.3358832621735613,
+                  "ratio": 7.386231757827731,
+                  "cosine": -0.5208956572498031
+                },
+                "delta": {
+                  "reference_norm": 0.04547423817531872,
+                  "other_norm": 0.3616598258431291,
+                  "ratio": 7.9530705813873555,
+                  "cosine": -0.6095074847490467
+                },
+                "nonzero_delta_cohorts": 5
+              },
+              "MATCHED_RANDOM": {
+                "selected": {
+                  "reference_norm": 0.04547423817531872,
+                  "other_norm": 0.10570285534533305,
+                  "ratio": 2.3244557707115936,
+                  "cosine": -0.31916214962033745
+                },
+                "delta": {
+                  "reference_norm": 0.04547423817531872,
+                  "other_norm": 0.12770775091744263,
+                  "ratio": 2.8083538293722623,
+                  "cosine": -0.6202488740056891
+                },
+                "nonzero_delta_cohorts": 5
+              }
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "cohorts": 5,
+              "RSC_SELECTED": {
+                "selected": {
+                  "reference_norm": 0.043095897050602724,
+                  "other_norm": 0.2840379573430331,
+                  "ratio": 6.590835248411674,
+                  "cosine": -0.47067105336701964
+                },
+                "delta": {
+                  "reference_norm": 0.043095897050602724,
+                  "other_norm": 0.3066882202547898,
+                  "ratio": 7.116413423177615,
+                  "cosine": -0.5764301657318176
+                },
+                "nonzero_delta_cohorts": 5
+              },
+              "MATCHED_RANDOM": {
+                "selected": {
+                  "reference_norm": 0.043095897050602724,
+                  "other_norm": 0.08997595530439534,
+                  "ratio": 2.0878079228458004,
+                  "cosine": -0.2533521592630533
+                },
+                "delta": {
+                  "reference_norm": 0.043095897050602724,
+                  "other_norm": 0.1091683230504045,
+                  "ratio": 2.5331488731333347,
+                  "cosine": -0.6035770978940862
+                },
+                "nonzero_delta_cohorts": 5
+              }
+            },
+            {
+              "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+              "cohorts": 5,
+              "RSC_SELECTED": {
+                "selected": {
+                  "reference_norm": 0.024550904798986178,
+                  "other_norm": 0.3901159624001,
+                  "ratio": 15.890084931460844,
+                  "cosine": 0.14361567394654298
+                },
+                "delta": {
+                  "reference_norm": 0.024550904798986178,
+                  "other_norm": 0.3873528048267927,
+                  "ratio": 15.777536836149041,
+                  "cosine": 0.08125889800251486
+                },
+                "nonzero_delta_cohorts": 5
+              },
+              "MATCHED_RANDOM": {
+                "selected": {
+                  "reference_norm": 0.024550904798986178,
+                  "other_norm": 0.12089638365872754,
+                  "ratio": 4.924314792003915,
+                  "cosine": 0.06393611220205782
+                },
+                "delta": {
+                  "reference_norm": 0.024550904798986178,
+                  "other_norm": 0.12181602096363053,
+                  "ratio": 4.961773179482203,
+                  "cosine": -0.13808741999199692
+                },
+                "nonzero_delta_cohorts": 5
+              }
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+              "cohorts": 5,
+              "RSC_SELECTED": {
+                "selected": {
+                  "reference_norm": 0.038549753601657244,
+                  "other_norm": 0.2519376874784007,
+                  "ratio": 6.5353903446887385,
+                  "cosine": 0.149694518127541
+                },
+                "delta": {
+                  "reference_norm": 0.038549753601657244,
+                  "other_norm": 0.24910033100134182,
+                  "ratio": 6.461787890406466,
+                  "cosine": -0.003356329849302957
+                },
+                "nonzero_delta_cohorts": 5
+              },
+              "MATCHED_RANDOM": {
+                "selected": {
+                  "reference_norm": 0.038549753601657244,
+                  "other_norm": 0.09417765892277097,
+                  "ratio": 2.4430158463768312,
+                  "cosine": 0.38505199807752616
+                },
+                "delta": {
+                  "reference_norm": 0.038549753601657244,
+                  "other_norm": 0.08694614834257615,
+                  "ratio": 2.2554268242803595,
+                  "cosine": -0.026297402504498215
+                },
+                "nonzero_delta_cohorts": 5
+              }
+            }
+          ],
+          "cohort_summary": [
+            {
+              "cohort": 0,
+              "packets": 180,
+              "selected_packets": 60,
+              "masked_time_positions": 660,
+              "random_masked_time_positions": 660,
+              "losses": {
+                "ORIGINAL": 0.10161778330802917,
+                "RSC_SELECTED": 0.17493128776550293,
+                "MATCHED_RANDOM": 0.12931442260742188
+              },
+              "RSC_CE_minus_random": 0.045616865158081055,
+              "RSC_true_probability_drop": 0.048477351665496826,
+              "random_true_probability_drop": 0.019613688811659813,
+              "activation_nonnegative": true
+            },
+            {
+              "cohort": 1,
+              "packets": 180,
+              "selected_packets": 60,
+              "masked_time_positions": 660,
+              "random_masked_time_positions": 660,
+              "losses": {
+                "ORIGINAL": 0.09557431191205978,
+                "RSC_SELECTED": 0.15073010325431824,
+                "MATCHED_RANDOM": 0.12336833775043488
+              },
+              "RSC_CE_minus_random": 0.027361765503883362,
+              "RSC_true_probability_drop": 0.0439448319375515,
+              "random_true_probability_drop": 0.024998662993311882,
+              "activation_nonnegative": true
+            },
+            {
+              "cohort": 2,
+              "packets": 180,
+              "selected_packets": 60,
+              "masked_time_positions": 660,
+              "random_masked_time_positions": 660,
+              "losses": {
+                "ORIGINAL": 0.09521966427564621,
+                "RSC_SELECTED": 0.16175901889801025,
+                "MATCHED_RANDOM": 0.1184251606464386
+              },
+              "RSC_CE_minus_random": 0.043333858251571655,
+              "RSC_true_probability_drop": 0.051119688898324966,
+              "random_true_probability_drop": 0.02149077318608761,
+              "activation_nonnegative": true
+            },
+            {
+              "cohort": 3,
+              "packets": 180,
+              "selected_packets": 60,
+              "masked_time_positions": 660,
+              "random_masked_time_positions": 660,
+              "losses": {
+                "ORIGINAL": 0.0970049798488617,
+                "RSC_SELECTED": 0.15671998262405396,
+                "MATCHED_RANDOM": 0.12793312966823578
+              },
+              "RSC_CE_minus_random": 0.028786852955818176,
+              "RSC_true_probability_drop": 0.047285959124565125,
+              "random_true_probability_drop": 0.0264515932649374,
+              "activation_nonnegative": true
+            },
+            {
+              "cohort": 4,
+              "packets": 180,
+              "selected_packets": 60,
+              "masked_time_positions": 660,
+              "random_masked_time_positions": 660,
+              "losses": {
+                "ORIGINAL": 0.09561608731746674,
+                "RSC_SELECTED": 0.1356986165046692,
+                "MATCHED_RANDOM": 0.13150684535503387
+              },
+              "RSC_CE_minus_random": 0.004191771149635315,
+              "RSC_true_probability_drop": 0.03758596256375313,
+              "random_true_probability_drop": 0.029230110347270966,
+              "activation_nonnegative": true
+            }
+          ]
+        },
+        "qualification": {
+          "status": "PASS",
+          "fixed_rules": {
+            "source_only": true,
+            "physical_packets": 900,
+            "cohorts": 5,
+            "three_actual_body_delta_gradients_nonzero_each_cohort": true,
+            "mean_selected_RSC_CE_minus_matched_random_min_exclusive": 0,
+            "mean_selected_RSC_true_probability_drop_minus_matched_random_min_exclusive": 0,
+            "model_state_and_default_head_unchanged": true,
+            "no_automatic_training_release": true,
+            "on_pass": "Only a separately registered unchanged02/03 source diagnostic may follow",
+            "on_fail": "Stop this fixed source self-challenge route; no mask-rate or layer scan"
+          },
+          "source_only": true,
+          "target_metrics_used": false,
+          "mean_RSC_CE_minus_random": 0.02985822260379791,
+          "mean_RSC_probability_drop_minus_random": 0.021325793117284775,
+          "no_automatic_training_release": true
+        },
+        "model_parameters_buffers_unchanged": true,
+        "source_packets": 900,
+        "forward_packets": 3600,
+        "head_fit_updates": 0,
+        "optimizer_steps": 0,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "V_forward": false,
+        "V_gradient": false,
+        "query_read": false,
+        "first_seed_retrained": false,
+        "seconds": 3.2504336833953857,
+        "limitation": "Remaining2 predefined frozen source models, same900 physical packets; no training or target result"
+      }
+    ],
+    "qualification": {
+      "status": "PASS",
+      "source_only": true,
+      "fixed_rules": {
+        "source_only": true,
+        "physical_packets": 900,
+        "cohorts": 5,
+        "three_actual_body_delta_gradients_nonzero_each_cohort": true,
+        "mean_selected_RSC_CE_minus_matched_random_min_exclusive": 0,
+        "mean_selected_RSC_true_probability_drop_minus_matched_random_min_exclusive": 0,
+        "model_state_and_default_head_unchanged": true,
+        "no_automatic_training_release": true,
+        "on_pass": "Only a separately registered unchanged02/03 source diagnostic may follow",
+        "on_fail": "Stop this fixed source self-challenge route; no mask-rate or layer scan"
+      },
+      "target_metrics_used": false,
+      "first_source_qualification": {
+        "status": "PASS",
+        "fixed_rules": {
+          "source_only": true,
+          "physical_packets": 900,
+          "cohorts": 5,
+          "three_actual_body_delta_gradients_nonzero_each_cohort": true,
+          "mean_selected_RSC_CE_minus_matched_random_min_exclusive": 0,
+          "mean_selected_RSC_true_probability_drop_minus_matched_random_min_exclusive": 0,
+          "model_state_and_default_head_unchanged": true,
+          "no_automatic_training_release": true,
+          "on_pass": "Only a separately registered unchanged02/03 source diagnostic may follow",
+          "on_fail": "Stop this fixed source self-challenge route; no mask-rate or layer scan"
+        },
+        "source_only": true,
+        "target_metrics_used": false,
+        "mean_RSC_CE_minus_random": 0.14307356476783753,
+        "mean_RSC_probability_drop_minus_random": 0.07276678755879402,
+        "no_automatic_training_release": true
+      },
+      "first_seed_retrained": false,
+      "models": 2,
+      "passed_models": 2,
+      "no_automatic_training_release": true
+    },
+    "first_seed_retrained": false,
+    "source_packet_model_observations": 1800,
+    "physical_unique_packets": 900,
+    "source_forward_packets": 7200,
+    "head_fit_updates": 0,
+    "optimizer_steps": 0,
+    "query_read": false
+  },
+  "independent_recount": {
+    "status": "VERIFIED",
+    "models": 2,
+    "rows": [
+      {
+        "row_id": "SIG_TIME-s2026092702",
+        "status": "VERIFIED",
+        "source_packets": 900,
+        "forward_packets_recounted": 3600,
+        "cohorts": 5,
+        "locating_gradient_tensors": 5,
+        "parameter_layer_records": 20,
+        "saved_parameter_vectors": 60,
+        "head_fit_updates": 0,
+        "model_forward_by_recount": 0,
+        "optimizer_steps": 0,
+        "query_read": false
+      },
+      {
+        "row_id": "SIG_TIME-s2026092703",
+        "status": "VERIFIED",
+        "source_packets": 900,
+        "forward_packets_recounted": 3600,
+        "cohorts": 5,
+        "locating_gradient_tensors": 5,
+        "parameter_layer_records": 20,
+        "saved_parameter_vectors": 60,
+        "head_fit_updates": 0,
+        "model_forward_by_recount": 0,
+        "optimizer_steps": 0,
+        "query_read": false
+      }
+    ],
+    "source_packet_model_observations": 1800,
+    "physical_unique_packets": 900,
+    "source_forward_packets": 7200,
+    "locating_gradient_tensors": 10,
+    "parameter_layer_records": 40,
+    "saved_parameter_vectors": 120,
+    "model_forward_by_recount": 0,
+    "head_fit_updates": 0,
+    "optimizer_steps": 0,
+    "query_read": false
+  }
+}

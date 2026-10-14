@@ -1,0 +1,39 @@
+{
+  "status": "SOURCE_RESEARCH_DECISION",
+  "source_only_basis": true,
+  "basis_runs": [
+    "20261015-phase1-source-temporal-self-challenge-manysig-s2026092701-r01",
+    "20261015-phase1-source-temporal-self-challenge-manysig-s0203-m2-r01"
+  ],
+  "all_three_source_qualification": "PASS",
+  "hypothesis": "Training actualt2 temporal self-challenge may teach alternative identity evidence; compare with same-rule random spatial masks, not auxiliary feature regression",
+  "fixed_network": "SIG_TIME joint160/default ResidualPhysicalHead, normal joint optimizer only",
+  "prospective_pilot": {
+    "model_seed": 2026092701,
+    "from_scratch": true,
+    "epochs": 50,
+    "label_epochs": 33,
+    "pseudo_epochs": 17,
+    "baseline": "Historicaloldgate+ownEMA+cos plus samepathSIG_TIMEcontrol",
+    "arms": [
+      "SIG_TIME",
+      "MATCHED_RANDOM",
+      "TEMPORAL_RSC"
+    ],
+    "mask_layer": "actual t2 post-ReLU/dropout96x32",
+    "mask_fraction": 0.3333333333333333,
+    "batch_fraction": 0.3333333333333333,
+    "mask_rules": "Same signedgradient temporal quantile andtrueprobabilitydrop batchquantile as completedsourceprobe; randomcontrol follows owncurrentmodel selectedpackets andzero counts",
+    "loss": "Replace onlynormalLidentityCE withchosen masked default-head CE for two variants; do not add auxiliaryheadloss orfit/replacethehead",
+    "original_U": "Oldbatch_neighbor/ownEMA.999/UCE.16/entropy.01 unchanged",
+    "extra_L_forwards_per_native_step": 2,
+    "extra_optimizer_steps": 0,
+    "final_readout": "Frozenfinal50 existingdefaulthead clean/independenttruthlast"
+  },
+  "next_step": "Separately implement,validate,review andpreregister single-seed pilot; sourcePASS doesnotautomaticallylaunchtraining",
+  "no_target_score_based_mask_rate_layer_parent_or_head_choice": true,
+  "remaining_DRO_target_values_seen_by_planning_agent": false,
+  "target_basis_not_blind": true,
+  "no_claimed_DG_benefit": true,
+  "head_fit_updates": 0
+}
