@@ -156,3 +156,8 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 ### 固定 SIG_TIME 均值教师：完整三seed负结果
 
 20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01 ANALYZED/VERIFIED：FEATURE_MT82.4359%±1.5874pp vs匹配SIG82.6806%±1.7906pp，配对−.2446±.2101pp、0/3正，纠正1660/引入2893净−1233。完整450源epoch/66600新step＋33300历史/1512000默认决定/162指标、23976层记录/71928向量均独立复核；6新真实feature导出0差/W独立、SIG五tensor均更新、单训头0。源Udiscrepancy各下降17.85/20.75/19.89%，不能替代DG收益。源决定 ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9 先于目标数字，R01失败/R02技术恢复产物保留，未按目标调参或筛seed。该冻结配方结论为负，84%未达。现只继续既定BF三seed，并计划同合法L强图CE/feature梯度源诊断（未实现/启动），不扫系数或另训分类器。
+
+
+### 固定SIG_TIME同L强图CE/feature：六模型完整源诊断
+
+20261015-phase1-source-feature-ce-gradient-manysig-m6-r01 ANALYZED/VERIFIED，code da1aafdde1931fcef67ecd509e079cfa371ec166 / execution 2fb6cf1ee4cdbf830f3921a19ef2346c4f1de185。两臂×三固定seed/各L6300，同强图trueCE(.01)与原feature(.1诊断权重)，四组共全批分母；CPU2threads122.91秒模型计时，头/optimizer/model更新0，V缓存物化但forward0，U/query0。独立150批/450层记录/4950向量复算，实际参数buffer不变。教师对学生错组18/18对象余弦正；教师错学生对16/18负但仅3至8个seen-L样本/模型，整体符号混合，不能解释实际U或目标下降因果。源诊断不是84%或新类能力。仅后续源证伪一个固定零置信差teacher>=student规则，尚未实现/启动，不按目标调阈值或另训头；BF6新仍健康24至27轮。

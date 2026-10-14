@@ -198,7 +198,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher50-20261014",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -236,11 +236,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -511,7 +511,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher50-20261014",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -549,11 +549,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -824,7 +824,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -862,11 +862,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -1144,7 +1144,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -1182,11 +1182,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -1464,7 +1464,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -1502,11 +1502,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -1784,7 +1784,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -1822,11 +1822,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "source_feature_difference_min": 1e-06,
+            "source_feature_difference_min": 0.000001,
             "actual_feature_gradients_nonzero_at": [
               34,
               50
@@ -2039,6 +2039,22 @@
     "Observed cross L/U gradient cosines in prior training are insufficient to identify same-packet identity conflict. This diagnostic does not alter training or select a coefficient.",
     "Groups with no source packets retain zero vectors and undefined cosine, cannot justify wrong-teacher attribution. No automatic expansion or threshold search."
   ],
-  "status": "PLANNED",
-  "registered_at": "2026-10-14T17:52:55+00:00"
+  "status": "ANALYZED",
+  "registered_at": "2026-10-14T17:52:55+00:00",
+  "execution_commit": "2fb6cf1ee4cdbf830f3921a19ef2346c4f1de185",
+  "results": {
+    "status": "VERIFIED",
+    "models": 6,
+    "source_packet_observations": 37800,
+    "unique_source_L_physical_samples": 6300,
+    "forward_packet_observations": 75600,
+    "gradient_batches": 150,
+    "layer_records": 450,
+    "saved_vectors": 4950,
+    "head_fit_updates": 0,
+    "optimizer_steps": 0,
+    "new_target_forwards": 0,
+    "model_parameters_buffers_unchanged": true,
+    "model_seconds_sum": 122.91361403465271
+  }
 }

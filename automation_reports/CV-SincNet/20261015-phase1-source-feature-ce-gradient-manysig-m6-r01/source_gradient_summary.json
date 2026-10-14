@@ -1,0 +1,982 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092701,
+      "seconds": 21.99329710006714,
+      "groups": {
+        "WEAK_RIGHT_STRONG_RIGHT": 6259,
+        "WEAK_RIGHT_STRONG_WRONG": 25,
+        "WEAK_WRONG_STRONG_RIGHT": 8,
+        "WEAK_WRONG_STRONG_WRONG": 8
+      },
+      "mean_true_CE": 0.10105306506629974,
+      "mean_feature": 0.32892239438162907,
+      "global": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "ratio": 0.17036697974159587,
+          "cosine": -0.0780306791983081,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6259,
+              "ratio": 0.2066225377846221,
+              "cosine": -0.06637514435164388
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 25,
+              "ratio": 0.002289784837273238,
+              "cosine": 0.07480316885205932
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 8,
+              "ratio": 0.0017699935182012934,
+              "cosine": -0.23303416555319917
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 8,
+              "ratio": 0.0007089563190556095,
+              "cosine": -0.2002251985782689
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "ratio": 0.21618280971256498,
+          "cosine": 0.022286123203320615,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6259,
+              "ratio": 0.25843920913567825,
+              "cosine": 0.06846202551350455
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 25,
+              "ratio": 0.0025973770329960058,
+              "cosine": 0.14287808248312595
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 8,
+              "ratio": 0.001868925510352488,
+              "cosine": -0.3851137510400048
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 8,
+              "ratio": 0.0008108722909477899,
+              "cosine": -0.14375798050261088
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "ratio": 0.09753728714601144,
+          "cosine": -0.3106989686636801,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6259,
+              "ratio": 0.12145713852529925,
+              "cosine": -0.20573434171297084
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 25,
+              "ratio": 0.0015877678052482378,
+              "cosine": 0.11305671749305424
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 8,
+              "ratio": 0.0010899801362536036,
+              "cosine": -0.11958351101614023
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 8,
+              "ratio": 0.0006094306463938082,
+              "cosine": -0.06407420178708342
+            }
+          }
+        }
+      ]
+    },
+    {
+      "arm": "FEATURE_MT",
+      "seed": 2026092701,
+      "seconds": 20.323987007141113,
+      "groups": {
+        "WEAK_RIGHT_STRONG_RIGHT": 6259,
+        "WEAK_RIGHT_STRONG_WRONG": 23,
+        "WEAK_WRONG_STRONG_RIGHT": 7,
+        "WEAK_WRONG_STRONG_WRONG": 11
+      },
+      "mean_true_CE": 0.10056142103577417,
+      "mean_feature": 0.27011065554997277,
+      "global": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "ratio": 0.10229355045529392,
+          "cosine": -0.08637642473392831,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6259,
+              "ratio": 0.11991671687840152,
+              "cosine": -0.024748021692813257
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 23,
+              "ratio": 0.00177245384021407,
+              "cosine": 0.2560705624521269
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 7,
+              "ratio": 0.0018961150919660553,
+              "cosine": -0.17322775545403432
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 11,
+              "ratio": 0.001285582957423307,
+              "cosine": -0.024941925002887253
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "ratio": 0.14019083628516749,
+          "cosine": 0.06870006329496105,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6259,
+              "ratio": 0.16043300734819044,
+              "cosine": 0.14807082643523267
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 23,
+              "ratio": 0.0018798260142228569,
+              "cosine": 0.272374760541757
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 7,
+              "ratio": 0.002127220211784082,
+              "cosine": -0.201844855325214
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 11,
+              "ratio": 0.0013599571234714026,
+              "cosine": 0.09116842889842079
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "ratio": 0.06864812101232504,
+          "cosine": -0.34064500481409365,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6259,
+              "ratio": 0.08426154627707001,
+              "cosine": -0.2554267308904
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 23,
+              "ratio": 0.0010278107447119229,
+              "cosine": 0.12846795390111526
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 7,
+              "ratio": 0.0012798908794345327,
+              "cosine": -0.1941065939960281
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 11,
+              "ratio": 0.0006375499421901651,
+              "cosine": -0.04388858690810026
+            }
+          }
+        }
+      ]
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092702,
+      "seconds": 20.51802134513855,
+      "groups": {
+        "WEAK_RIGHT_STRONG_RIGHT": 6248,
+        "WEAK_RIGHT_STRONG_WRONG": 33,
+        "WEAK_WRONG_STRONG_RIGHT": 3,
+        "WEAK_WRONG_STRONG_WRONG": 16
+      },
+      "mean_true_CE": 0.10369618278647226,
+      "mean_feature": 0.3385887982731774,
+      "global": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "ratio": 0.1221342899119183,
+          "cosine": -0.2322865291463534,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6248,
+              "ratio": 0.2158061223048703,
+              "cosine": -0.13525143097088196
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 33,
+              "ratio": 0.002462667108521757,
+              "cosine": 0.6586840485403841
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 3,
+              "ratio": 0.00230653812844936,
+              "cosine": -0.3721600955634006
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 16,
+              "ratio": 0.0010128985068213524,
+              "cosine": 0.028600582896948716
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "ratio": 0.1489579062868888,
+          "cosine": -0.1394419964349473,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6248,
+              "ratio": 0.2478455866734698,
+              "cosine": 0.05163236769947311
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 33,
+              "ratio": 0.0031075620623600008,
+              "cosine": 0.5378768113230225
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 3,
+              "ratio": 0.003399877805176549,
+              "cosine": -0.5930208624991261
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 16,
+              "ratio": 0.0010225654285571746,
+              "cosine": 0.09648956077435654
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "ratio": 0.09273203691678947,
+          "cosine": 0.0822393018790844,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6248,
+              "ratio": 0.13875415018446857,
+              "cosine": 0.03499301867356191
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 33,
+              "ratio": 0.0017871769287997302,
+              "cosine": 0.247698577218368
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 3,
+              "ratio": 0.0016238060136064087,
+              "cosine": -0.03474071497123001
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 16,
+              "ratio": 0.0008576292323443006,
+              "cosine": -0.08301604552919295
+            }
+          }
+        }
+      ]
+    },
+    {
+      "arm": "FEATURE_MT",
+      "seed": 2026092702,
+      "seconds": 20.16026496887207,
+      "groups": {
+        "WEAK_RIGHT_STRONG_RIGHT": 6250,
+        "WEAK_RIGHT_STRONG_WRONG": 32,
+        "WEAK_WRONG_STRONG_RIGHT": 3,
+        "WEAK_WRONG_STRONG_WRONG": 15
+      },
+      "mean_true_CE": 0.10326167881961852,
+      "mean_feature": 0.26859175912917604,
+      "global": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "ratio": 0.07161070028875609,
+          "cosine": 0.19809294310923442,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6250,
+              "ratio": 0.11397854798221528,
+              "cosine": 0.23891045115666237
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 32,
+              "ratio": 0.002668674129553361,
+              "cosine": 0.7924617826715563
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 3,
+              "ratio": 0.0021226996166951685,
+              "cosine": -0.3471803903744339
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 15,
+              "ratio": 0.0012861783271528226,
+              "cosine": 0.0030233227702494815
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "ratio": 0.08346226922183257,
+          "cosine": 0.13692307835555637,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6250,
+              "ratio": 0.13079417834136892,
+              "cosine": 0.2588361979944157
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 32,
+              "ratio": 0.0028786698735460076,
+              "cosine": 0.7263167342223223
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 3,
+              "ratio": 0.0032697463798589716,
+              "cosine": -0.5622503400629979
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 15,
+              "ratio": 0.0012129561640818048,
+              "cosine": 0.10342811214145653
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "ratio": 0.06951857890211889,
+          "cosine": -0.05198633115464474,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6250,
+              "ratio": 0.08880690694754155,
+              "cosine": -0.04412680769734413
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 32,
+              "ratio": 0.0014076805122781681,
+              "cosine": 0.21635004426869467
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 3,
+              "ratio": 0.001489251750355179,
+              "cosine": -0.05081501287766052
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 15,
+              "ratio": 0.0008460455174340001,
+              "cosine": -0.09923343255169913
+            }
+          }
+        }
+      ]
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092703,
+      "seconds": 19.790370225906372,
+      "groups": {
+        "WEAK_RIGHT_STRONG_RIGHT": 6257,
+        "WEAK_RIGHT_STRONG_WRONG": 32,
+        "WEAK_WRONG_STRONG_RIGHT": 3,
+        "WEAK_WRONG_STRONG_WRONG": 8
+      },
+      "mean_true_CE": 0.10134243992585984,
+      "mean_feature": 0.33012206259227933,
+      "global": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "ratio": 0.38330517454468654,
+          "cosine": -0.036496182845312954,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6257,
+              "ratio": 0.5142845887679884,
+              "cosine": 0.2731649726827444
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 32,
+              "ratio": 0.006563766586034938,
+              "cosine": 0.08919900393226432
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 3,
+              "ratio": 0.0084101465102168,
+              "cosine": -0.24199721618675116
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 8,
+              "ratio": 0.0024003257338954193,
+              "cosine": 0.8024045456238005
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "ratio": 0.37890680574162533,
+          "cosine": -0.08281373259481258,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6257,
+              "ratio": 0.5594992587852173,
+              "cosine": 0.378792260195893
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 32,
+              "ratio": 0.007374793517043112,
+              "cosine": 0.04111527304292219
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 3,
+              "ratio": 0.008043079959329973,
+              "cosine": -0.08903791296391428
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 8,
+              "ratio": 0.002390204721204439,
+              "cosine": 0.8299690661515378
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "ratio": 0.09497694451419199,
+          "cosine": 0.10071063658046875,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6257,
+              "ratio": 0.13231802049450667,
+              "cosine": -0.020329335338353037
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 32,
+              "ratio": 0.001690203133567393,
+              "cosine": 0.3896998064816582
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 3,
+              "ratio": 0.001223606967572518,
+              "cosine": 0.020165532321812868
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 8,
+              "ratio": 0.0007200957176947359,
+              "cosine": 0.15876562728739851
+            }
+          }
+        }
+      ]
+    },
+    {
+      "arm": "FEATURE_MT",
+      "seed": 2026092703,
+      "seconds": 20.127673387527466,
+      "groups": {
+        "WEAK_RIGHT_STRONG_RIGHT": 6255,
+        "WEAK_RIGHT_STRONG_WRONG": 33,
+        "WEAK_WRONG_STRONG_RIGHT": 4,
+        "WEAK_WRONG_STRONG_WRONG": 8
+      },
+      "mean_true_CE": 0.10076335755605546,
+      "mean_feature": 0.2647788734095437,
+      "global": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "ratio": 0.23744629646981255,
+          "cosine": 0.03857628162821612,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6255,
+              "ratio": 0.31307027277311766,
+              "cosine": 0.16656880572192717
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 33,
+              "ratio": 0.004646263075711076,
+              "cosine": 0.3246407825364608
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 4,
+              "ratio": 0.007937247622481271,
+              "cosine": -0.20553728261361326
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 8,
+              "ratio": 0.0029777597062733492,
+              "cosine": 0.7992560489288119
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "ratio": 0.2202469596097162,
+          "cosine": -0.004426465405665025,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6255,
+              "ratio": 0.31698726689283563,
+              "cosine": 0.22528568112734793
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 33,
+              "ratio": 0.005453982996171239,
+              "cosine": 0.3216118095273755
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 4,
+              "ratio": 0.007403133124761871,
+              "cosine": 0.040718953856409536
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 8,
+              "ratio": 0.002922646997234002,
+              "cosine": 0.8566197424190604
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "ratio": 0.06194648961847288,
+          "cosine": 0.13800334180607568,
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "count": 6255,
+              "ratio": 0.08592400287515498,
+              "cosine": -0.040679443513392914
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "count": 33,
+              "ratio": 0.0013033613838144946,
+              "cosine": 0.49956043534506206
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "count": 4,
+              "ratio": 0.001060722956139112,
+              "cosine": -0.031131581809475516
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "count": 8,
+              "ratio": 0.0006963950142681744,
+              "cosine": 0.16374256420702038
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "groups": [
+    {
+      "arm": "SIG_TIME",
+      "groups": [
+        {
+          "seed": 2026092701,
+          "WEAK_RIGHT_STRONG_RIGHT": 6259,
+          "WEAK_RIGHT_STRONG_WRONG": 25,
+          "WEAK_WRONG_STRONG_RIGHT": 8,
+          "WEAK_WRONG_STRONG_WRONG": 8
+        },
+        {
+          "seed": 2026092702,
+          "WEAK_RIGHT_STRONG_RIGHT": 6248,
+          "WEAK_RIGHT_STRONG_WRONG": 33,
+          "WEAK_WRONG_STRONG_RIGHT": 3,
+          "WEAK_WRONG_STRONG_WRONG": 16
+        },
+        {
+          "seed": 2026092703,
+          "WEAK_RIGHT_STRONG_RIGHT": 6257,
+          "WEAK_RIGHT_STRONG_WRONG": 32,
+          "WEAK_WRONG_STRONG_RIGHT": 3,
+          "WEAK_WRONG_STRONG_WRONG": 8
+        }
+      ],
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "cosines": [
+                -0.06637514435164388,
+                -0.13525143097088196,
+                0.2731649726827444
+              ],
+              "negative_seeds": 2,
+              "ratios": [
+                0.2066225377846221,
+                0.2158061223048703,
+                0.5142845887679884
+              ]
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "cosines": [
+                0.07480316885205932,
+                0.6586840485403841,
+                0.08919900393226432
+              ],
+              "negative_seeds": 0,
+              "ratios": [
+                0.002289784837273238,
+                0.002462667108521757,
+                0.006563766586034938
+              ]
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "cosines": [
+                -0.23303416555319917,
+                -0.3721600955634006,
+                -0.24199721618675116
+              ],
+              "negative_seeds": 3,
+              "ratios": [
+                0.0017699935182012934,
+                0.00230653812844936,
+                0.0084101465102168
+              ]
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "cosines": [
+                -0.2002251985782689,
+                0.028600582896948716,
+                0.8024045456238005
+              ],
+              "negative_seeds": 1,
+              "ratios": [
+                0.0007089563190556095,
+                0.0010128985068213524,
+                0.0024003257338954193
+              ]
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "cosines": [
+                0.06846202551350455,
+                0.05163236769947311,
+                0.378792260195893
+              ],
+              "negative_seeds": 0,
+              "ratios": [
+                0.25843920913567825,
+                0.2478455866734698,
+                0.5594992587852173
+              ]
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "cosines": [
+                0.14287808248312595,
+                0.5378768113230225,
+                0.04111527304292219
+              ],
+              "negative_seeds": 0,
+              "ratios": [
+                0.0025973770329960058,
+                0.0031075620623600008,
+                0.007374793517043112
+              ]
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "cosines": [
+                -0.3851137510400048,
+                -0.5930208624991261,
+                -0.08903791296391428
+              ],
+              "negative_seeds": 3,
+              "ratios": [
+                0.001868925510352488,
+                0.003399877805176549,
+                0.008043079959329973
+              ]
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "cosines": [
+                -0.14375798050261088,
+                0.09648956077435654,
+                0.8299690661515378
+              ],
+              "negative_seeds": 1,
+              "ratios": [
+                0.0008108722909477899,
+                0.0010225654285571746,
+                0.002390204721204439
+              ]
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "cosines": [
+                -0.20573434171297084,
+                0.03499301867356191,
+                -0.020329335338353037
+              ],
+              "negative_seeds": 2,
+              "ratios": [
+                0.12145713852529925,
+                0.13875415018446857,
+                0.13231802049450667
+              ]
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "cosines": [
+                0.11305671749305424,
+                0.247698577218368,
+                0.3896998064816582
+              ],
+              "negative_seeds": 0,
+              "ratios": [
+                0.0015877678052482378,
+                0.0017871769287997302,
+                0.001690203133567393
+              ]
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "cosines": [
+                -0.11958351101614023,
+                -0.03474071497123001,
+                0.020165532321812868
+              ],
+              "negative_seeds": 2,
+              "ratios": [
+                0.0010899801362536036,
+                0.0016238060136064087,
+                0.001223606967572518
+              ]
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "cosines": [
+                -0.06407420178708342,
+                -0.08301604552919295,
+                0.15876562728739851
+              ],
+              "negative_seeds": 2,
+              "ratios": [
+                0.0006094306463938082,
+                0.0008576292323443006,
+                0.0007200957176947359
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "arm": "FEATURE_MT",
+      "groups": [
+        {
+          "seed": 2026092701,
+          "WEAK_RIGHT_STRONG_RIGHT": 6259,
+          "WEAK_RIGHT_STRONG_WRONG": 23,
+          "WEAK_WRONG_STRONG_RIGHT": 7,
+          "WEAK_WRONG_STRONG_WRONG": 11
+        },
+        {
+          "seed": 2026092702,
+          "WEAK_RIGHT_STRONG_RIGHT": 6250,
+          "WEAK_RIGHT_STRONG_WRONG": 32,
+          "WEAK_WRONG_STRONG_RIGHT": 3,
+          "WEAK_WRONG_STRONG_WRONG": 15
+        },
+        {
+          "seed": 2026092703,
+          "WEAK_RIGHT_STRONG_RIGHT": 6255,
+          "WEAK_RIGHT_STRONG_WRONG": 33,
+          "WEAK_WRONG_STRONG_RIGHT": 4,
+          "WEAK_WRONG_STRONG_WRONG": 8
+        }
+      ],
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "cosines": [
+                -0.024748021692813257,
+                0.23891045115666237,
+                0.16656880572192717
+              ],
+              "negative_seeds": 1,
+              "ratios": [
+                0.11991671687840152,
+                0.11397854798221528,
+                0.31307027277311766
+              ]
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "cosines": [
+                0.2560705624521269,
+                0.7924617826715563,
+                0.3246407825364608
+              ],
+              "negative_seeds": 0,
+              "ratios": [
+                0.00177245384021407,
+                0.002668674129553361,
+                0.004646263075711076
+              ]
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "cosines": [
+                -0.17322775545403432,
+                -0.3471803903744339,
+                -0.20553728261361326
+              ],
+              "negative_seeds": 3,
+              "ratios": [
+                0.0018961150919660553,
+                0.0021226996166951685,
+                0.007937247622481271
+              ]
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "cosines": [
+                -0.024941925002887253,
+                0.0030233227702494815,
+                0.7992560489288119
+              ],
+              "negative_seeds": 1,
+              "ratios": [
+                0.001285582957423307,
+                0.0012861783271528226,
+                0.0029777597062733492
+              ]
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "cosines": [
+                0.14807082643523267,
+                0.2588361979944157,
+                0.22528568112734793
+              ],
+              "negative_seeds": 0,
+              "ratios": [
+                0.16043300734819044,
+                0.13079417834136892,
+                0.31698726689283563
+              ]
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "cosines": [
+                0.272374760541757,
+                0.7263167342223223,
+                0.3216118095273755
+              ],
+              "negative_seeds": 0,
+              "ratios": [
+                0.0018798260142228569,
+                0.0028786698735460076,
+                0.005453982996171239
+              ]
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "cosines": [
+                -0.201844855325214,
+                -0.5622503400629979,
+                0.040718953856409536
+              ],
+              "negative_seeds": 2,
+              "ratios": [
+                0.002127220211784082,
+                0.0032697463798589716,
+                0.007403133124761871
+              ]
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "cosines": [
+                0.09116842889842079,
+                0.10342811214145653,
+                0.8566197424190604
+              ],
+              "negative_seeds": 0,
+              "ratios": [
+                0.0013599571234714026,
+                0.0012129561640818048,
+                0.002922646997234002
+              ]
+            }
+          }
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "groups": {
+            "WEAK_RIGHT_STRONG_RIGHT": {
+              "cosines": [
+                -0.2554267308904,
+                -0.04412680769734413,
+                -0.040679443513392914
+              ],
+              "negative_seeds": 3,
+              "ratios": [
+                0.08426154627707001,
+                0.08880690694754155,
+                0.08592400287515498
+              ]
+            },
+            "WEAK_RIGHT_STRONG_WRONG": {
+              "cosines": [
+                0.12846795390111526,
+                0.21635004426869467,
+                0.49956043534506206
+              ],
+              "negative_seeds": 0,
+              "ratios": [
+                0.0010278107447119229,
+                0.0014076805122781681,
+                0.0013033613838144946
+              ]
+            },
+            "WEAK_WRONG_STRONG_RIGHT": {
+              "cosines": [
+                -0.1941065939960281,
+                -0.05081501287766052,
+                -0.031131581809475516
+              ],
+              "negative_seeds": 3,
+              "ratios": [
+                0.0012798908794345327,
+                0.001489251750355179,
+                0.001060722956139112
+              ]
+            },
+            "WEAK_WRONG_STRONG_WRONG": {
+              "cosines": [
+                -0.04388858690810026,
+                -0.09923343255169913,
+                0.16374256420702038
+              ],
+              "negative_seeds": 2,
+              "ratios": [
+                0.0006375499421901651,
+                0.0008460455174340001,
+                0.0006963950142681744
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "scope": "Fixed .1 diagnostic direction for both frozen arms; ZERO actual training feature coefficient remains0. SameL strong graph, not actualU or optimizer trajectory."
+}

@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-source-feature-ce-gradient-manysig-m6-r01",
+  "release": "cvs_source_feature_ce_gradient_20261015_r01",
+  "code_commit": "da1aafdde1931fcef67ecd509e079cfa371ec166",
+  "execution_commit": "2fb6cf1ee4cdbf830f3921a19ef2346c4f1de185",
+  "actual_CWD_matches": true,
+  "actual_argv_matches": true,
+  "CUDA_VISIBLE_DEVICES_empty": true,
+  "source_models": 6,
+  "completed_rows_at_observation": 4,
+  "log_growth": true,
+  "log_bytes": 353,
+  "real_checkpoint_no_query_smoke": true,
+  "preflight_status": "PASS",
+  "optimizer_steps": 0,
+  "head_updates": 0,
+  "query_read": false,
+  "uses_GPU": false
+}

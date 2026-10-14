@@ -19,3 +19,8 @@
 局部13协议负例、samegraph统一分母/空组、实际SIG_TIME合成joint160/三个梯度对象、六上下文、无参数buffer变化、生成CPU入口compile均PASS；唯一独立P0/P1 PASS（真实数据/远端访问0）。发布只做一次普通账户preflight、一次archive本地/远端SHA比较、remotecompile、首步真实checkpoint无query smoke PASS即继续，无签名、receipt、重复审查或审批。
 
 停止规则：任何本run source/provenance/role/query/defaulthead/非有限/状态变化/输出冲突，保存partial并写failure，不自动重试；核对实际owner进程，不停止/热改其他任务。后续核对PID/CWD/argv/CPU环境/loggrowth，源诊断不做目标测试或truth评分。预期artifact为各row resolved_config、L_source_gradient_vectors.pt、analysis、source_gradient_recount、completion，以及全run analysis/completion；原始PT留远端，Git交聚合source_feature_ce_gradient_analysis.md、数据/图与登记。完毕另进程重开保存向量复算，报告完整实际计数和不可识别项。
+
+
+## 完整结果
+
+ANALYZED/VERIFIED，6模型/37800源观察/75600forward包次/150梯度batch/450层记录/4950向量已独立复算，头/optimizer/model更新0。教师对学生错组18/18对象同向，教师错学生对组16/18反向，但后者每模型仅3至8个seen-L样本；整体梯度符号混合，不构成实际U或目标下降的因果解释。完整数据/图与限制见source_feature_ce_gradient_analysis.md、results.json和same_graph_source_gradient_relations.png。
