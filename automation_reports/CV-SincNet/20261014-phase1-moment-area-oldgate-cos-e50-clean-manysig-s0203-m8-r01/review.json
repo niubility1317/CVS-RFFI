@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "scope": "One independent direct P0/P1 review of new execution differences only; no mechanism/old-core re-review",
+  "reviewer": "/root/signature_fix_p0p1",
+  "findings": [],
+  "real_context": {
+    "status": "PASS",
+    "first_fixed_configs_unchanged": true,
+    "rows": 8,
+    "new_models": 6,
+    "real_model_contexts": [
+      {
+        "seed": 2026092702,
+        "arm": "SIG_TIME",
+        "pool": 18976
+      },
+      {
+        "seed": 2026092702,
+        "arm": "COV_SHAPE",
+        "pool": 18976
+      },
+      {
+        "seed": 2026092702,
+        "arm": "AREA_SHAPE",
+        "pool": 18976
+      },
+      {
+        "seed": 2026092703,
+        "arm": "SIG_TIME",
+        "pool": 18976
+      },
+      {
+        "seed": 2026092703,
+        "arm": "COV_SHAPE",
+        "pool": 18976
+      },
+      {
+        "seed": 2026092703,
+        "arm": "AREA_SHAPE",
+        "pool": 18976
+      }
+    ],
+    "same_seed_initial_native_body_head_equal": true,
+    "foreign_context_rejected": true,
+    "three_seed_summary": true,
+    "release_dependency_and_compile": true,
+    "COV_AREA_initial_parameters_equal": true
+  },
+  "two_seed_controls": {
+    "status": "PASS",
+    "source_feature_matrix_correct_control": true,
+    "paired_final_parameter_comparison_uses_COV_SHAPE": true,
+    "feature_count195041": true,
+    "callback_context": true,
+    "no_source_or_query_IQ_read": true,
+    "scope": "Targeted new-control dispatch regression; actual network math/updates/export tested separately"
+  },
+  "negative_source_gate": {
+    "status": "PASS",
+    "source_only_qualification_rejected_on_FAIL_target_read_head_fit_query_read_partial_first_wrong_execution": true,
+    "no_target_metrics_opened": true
+  },
+  "source_or_target_data_read": false,
+  "remote_actions": false
+}
