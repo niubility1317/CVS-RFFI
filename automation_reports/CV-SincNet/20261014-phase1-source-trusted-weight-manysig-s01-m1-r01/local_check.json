@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "synthetic_only": true,
+  "source_or_target_IQ_read": false,
+  "stopgrad_exact": true,
+  "acceptmask_unchanged": true,
+  "normalized_weighted_CE_gradient_exact": true,
+  "empty_accept_loss_zero": true,
+  "bounds_fixed": true,
+  "protocol_negatives": 11,
+  "native_model_no_data_smoke": {
+    "status": "PASS",
+    "zero_IQ_packet_forwards": 2,
+    "query_read": false,
+    "head_fit": false,
+    "optimizer_steps": 0,
+    "default_head_unchanged": true,
+    "feature_gradient_objects": [
+      "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+      "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+      "id_backbone.encoder.core.id_backbone.t3.pw.weight"
+    ]
+  },
+  "gradient_recount_math": true,
+  "source_precision_records": 15
+}
