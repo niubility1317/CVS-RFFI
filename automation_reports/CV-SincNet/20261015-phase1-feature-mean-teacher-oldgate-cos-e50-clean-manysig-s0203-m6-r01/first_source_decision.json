@@ -1,0 +1,106 @@
+{
+  "status": "PASS",
+  "run_id": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "first_execution": "6b23a5b033ee063dea97d6783d5634e220a1d93d",
+  "source_only": true,
+  "new_target_accuracy_read": false,
+  "first_completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 3,
+    "new_trained_models": 2,
+    "reused_baseline_models": 1,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 504000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "qualification": {
+    "status": "PASS",
+    "source_only": true,
+    "target_metrics_read_for_decision": false,
+    "final_L_CE": {
+      "SIG_TIME": 0.24766588640642595,
+      "FEATURE_MT": 0.24878544581902995
+    },
+    "last5_U_feature_discrepancy": {
+      "SIG_TIME": 0.3292548832182741,
+      "FEATURE_MT": 0.2704788351958811
+    },
+    "feature_discrepancy_ratio": 0.8214876953444351,
+    "actual_t1_t2_SIG_gradient_signal": {
+      "SIG_TIME": false,
+      "FEATURE_MT": true
+    },
+    "actual_candidate_minus_control_L720zL2": 2.0582449436187744,
+    "actual_observations": {
+      "SIG_TIME": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "U_feature_packets": 963900,
+        "U_feature_steps": 3774,
+        "gradient_epochs": [
+          33,
+          34,
+          50
+        ],
+        "gradient_batches": 666,
+        "layer_gradient_records": 1998,
+        "saved_vectors": 5994,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "auxiliary_classW_dependency": false,
+        "default_head_jointly_trained": true,
+        "U_truth_read": false,
+        "hard_pseudo_loss_returned_unchanged": true,
+        "mode": "ZERO",
+        "saved_gradient_recount": "VERIFIED"
+      },
+      "FEATURE_MT": {
+        "status": "VERIFIED",
+        "steps": 11100,
+        "U_feature_packets": 963900,
+        "U_feature_steps": 3774,
+        "gradient_epochs": [
+          33,
+          34,
+          50
+        ],
+        "gradient_batches": 666,
+        "layer_gradient_records": 1998,
+        "saved_vectors": 5994,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "auxiliary_classW_dependency": false,
+        "default_head_jointly_trained": true,
+        "U_truth_read": false,
+        "hard_pseudo_loss_returned_unchanged": true,
+        "mode": "FEATURE",
+        "saved_gradient_recount": "VERIFIED"
+      }
+    },
+    "fixed_rules": {
+      "final_L_CE_max": 0.5,
+      "source_feature_difference_min": 0.000001,
+      "actual_feature_gradients_nonzero_at": [
+        34,
+        50
+      ],
+      "last5_U_feature_discrepancy_ratio_max": 0.95,
+      "source_only": true,
+      "expansion": "Firstseed source健康/exact11100updates/17x56700/featureboundary and actual t1/t2/SIGgradients; featureMT/control mean U discrepancy epoch46..50 <=.95. Then same fixed02/03 unchanged, before new target summary retrieval; no target ranking or rerun."
+    },
+    "predefined_remaining_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "configuration_changes_for_expansion": false,
+    "head_fit_updates": 0,
+    "limitation": "Source optimization and exposure qualification only, not DG proof or U correctness"
+  },
+  "decision": "Expand only unchanged predefined02/03 FEATURE_MT and matchedSIG_TIME; retainfirst01, no targetranking/parameterchange/rerun",
+  "remaining_run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+  "remaining_code_commit": "68b3143dbdfcde27c80997f970121a23e34e5f2e"
+}

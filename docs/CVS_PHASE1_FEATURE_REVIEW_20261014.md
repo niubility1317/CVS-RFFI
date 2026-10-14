@@ -377,3 +377,6 @@ FEATURE_MT两臂已到36轮，每臂观测U666批/170100包；epoch34候选t1/t2
 两个固定02/03执行配置已LOCAL_VERIFIED，均NOT_LAUNCHED：BF 20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01（code b69d6ffbbd229284c4cfde35124db10bf871fe07，6新/8row），FEATURE_MT 20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01（code 68b3143dbdfcde27c80997f970121a23e34e5f2e，4新/6row）。原机制字典/数值设置逐项一致，args仅种子/run/candidate/output差异，同seed初态一致，source资格10/11负例和实际新上下文检查PASS；没有新科学假设、组合或拟合头，复用已完成核心唯一P0/P1，不重复审未变代码。
 
 首seed仍未完成source资格；准备不等于获准扩展或三seed完成。只在原固定SOURCEPASS后发布相应新矩阵，源决定先提交再读新numeric target摘要；首seed不重跑、双BF候选不按目标择优，预算和成本预先记录。原始健康archive与进程保持。
+
+
+FEATURE_MT首seed三row已完成训练/默认预测/独立truth-last评分，原source资格PASS（last5 discrepancy ratio.821487695，终LCE ZERO .247665886/FEATURE .248785446，实际L720z差2.058244944，梯度/精确预算满足）。当前只取源判定，未回收新目标准确率；本次提交先冻结按原配方扩02/03的决定，再发布并回收目标摘要。源资格不是DG收益。

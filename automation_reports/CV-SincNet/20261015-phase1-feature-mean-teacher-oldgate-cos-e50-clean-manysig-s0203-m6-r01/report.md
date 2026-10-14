@@ -23,3 +23,8 @@
 sourcePASS才做标准普通账户preflight、一次archive本地/远端SHA比较、remotecompile和真实源checkpoint无query smoke，PASS自动运行。所有owner共享锁每GPU≤3、分配前空闲≥12000MiB，不改健康他人任务。每row final50自动clean168000默认头预测→prediction固定→独立truth-last评分→报告登记/Git；保留首seed产物合并固定三seed配对、SD、正差数、MacroF1、最差RX/day、纠错/引入错误、完整源曲线和fθ梯度/导出边界。
 
 停止规则为原所属run系统技术失败：数据/query/来源/头权限、非有限或跳过更新、预算/路径冲突、无法执行/合法预测/scorer错误；核对所属PID/CWD/argv后保留partial、无自动重试，不按分数停止、选父、变更或选择性重跑，不触碰其他owner。不声明Phase2/newTX/卫星部署、未验证收敛或84%达成。
+
+
+## 首seed源决定已回收
+
+原source资格PASS：LCE ZERO=0.247665886、FEATURE_MT=0.248785446；最后5轮U特征discrepancy比=0.821487695≤.95；实际L720 z差=2.058244944，实际t1/t2/SIG梯度与精确预算满足。first三row已TRAINED_PREDICTED_SCORED。当前只读source及计量状态，未回收新目标准确率。决定使用当前已准备的固定02/03原配方，无参数/候选重排；本决定随本次提交冻结后发布，source资格不代表DG收益。详情first_source_decision.json。

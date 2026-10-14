@@ -42,3 +42,8 @@ FEATURE_MT权重固定.1×clip((epoch−33)/5,0,1)：34开始，38到.1；此前
 ## 真实U阶段证据
 
 actual_U_phase_source_evidence.json已从运行中源产物回收：两臂完成epoch34全部222梯度批；FEATURE_MT的t1/t2/SIGprojection每项222批effective梯度均非零，ZERO每项均0。逐批实际feature项无classW梯度检查通过，生产端保存PT复算VERIFIED。读取的实际原生配置仍为ownEMA=true、batch_neighbor、λUCE=.16/λentropy=.01/L smoothing=.01、50=33+17。当前已刷新至36轮，每臂观测666个U批/170100包，属于部分计数，未完成963900总预算。终轮数值参数变化、完整独立审计、源资格与目标性能尚待。
+
+
+## 首seed源资格决定
+
+训练/预测/评分三row已完整关闭。源规则PASS，feature discrepancy比.821487695≤.95，终LCE .247665886/.248785446，实际L720z差2.058244944。依据source_qualification.json记录决定：原样扩固定02/03，两臂不重排、不重跑或改权重；新目标准确率尚未读取，本次先提交源决定。完整独立审计与性能报告随后回收。
