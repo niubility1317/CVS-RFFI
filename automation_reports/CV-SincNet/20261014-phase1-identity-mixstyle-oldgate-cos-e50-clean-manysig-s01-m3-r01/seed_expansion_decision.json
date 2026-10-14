@@ -1,0 +1,114 @@
+{
+  "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "status": "SOURCE_QUALIFIED",
+  "qualification_commit": "6aafb3914ba4bfb85e90b95af8f04c047d6facf4",
+  "training_execution_commit": "b2a4146b7571d8713ddbd98cd096fb98b2b4c00c",
+  "source_evidence": {
+    "status": "PASS",
+    "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "seed": 2026092701,
+    "checks": {
+      "final_L_CE": true,
+      "actual_layers": true,
+      "actual_source_z": true
+    },
+    "rows": [
+      {
+        "row_id": "MATCHED_CONTROL-s2026092701",
+        "arm": "MATCHED_CONTROL",
+        "model_seed": 2026092701,
+        "final_L_CE": 0.28784335881203144,
+        "layers": {
+          "t1": {
+            "calls": 0,
+            "packet_calls": 0,
+            "eligible_packets": 0,
+            "changed_packets": 0,
+            "changed_ratio": 0
+          },
+          "t2": {
+            "calls": 0,
+            "packet_calls": 0,
+            "eligible_packets": 0,
+            "changed_packets": 0,
+            "changed_ratio": 0
+          }
+        }
+      },
+      {
+        "row_id": "IDENTITY_MIXSTYLE-s2026092701",
+        "arm": "IDENTITY_MIXSTYLE",
+        "model_seed": 2026092701,
+        "final_L_CE": 0.2892466148881762,
+        "layers": {
+          "t1": {
+            "calls": 11100,
+            "packet_calls": 1420800,
+            "eligible_packets": 1416445,
+            "changed_packets": 690849,
+            "changed_ratio": 0.48623944256756757
+          },
+          "t2": {
+            "calls": 11100,
+            "packet_calls": 1420800,
+            "eligible_packets": 1416445,
+            "changed_packets": 695484,
+            "changed_ratio": 0.4895016891891892
+          }
+        }
+      }
+    ],
+    "joint160_source_pair": {
+      "dimension": "overall",
+      "stratum": null,
+      "count": 720,
+      "joint160_L2_mean": 6.010109901428223,
+      "cosine_mean": 0.8838065266609192,
+      "changed_feature_elements": 115200
+    },
+    "thresholds": {
+      "final_L_CE_max": 0.5,
+      "minimum_layer_changed_ratio": 0.25,
+      "minimum_actual_source_z_L2": 0.000001,
+      "decision": "both new controls final LCE<=.5 and both layers changed>=25% over fixed mainL packet calls and actual source z differs; later seed expansion depends only on these source facts, not target",
+      "additional_seed_launch": false
+    },
+    "target_results_read": false,
+    "target_IQ_read": false,
+    "target_truth_read": false,
+    "U_truth_read": false,
+    "head_fit": false,
+    "source_only": true,
+    "additional_seed_launch": false,
+    "decision_basis": "Only the criteria frozen in the first-seed registration; no target selection, parameter tuning, stopping or rerun."
+  },
+  "decision": "Register remaining two predefined model seeds with identical feature mechanism and matched scratch control",
+  "next_model_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "new_models": 4,
+  "epochs_per_model": 50,
+  "new_model_epochs": 200,
+  "new_optimizer_updates": 44400,
+  "initialization": "scratch only; never continue best target model",
+  "reuse_first_seed": "completed original matched control/candidate results in final combined three-seed statistics; no retraining",
+  "method": {
+    "layers": [
+      "t1",
+      "t2"
+    ],
+    "p": 0.5,
+    "alpha": 0.1,
+    "strength": 1,
+    "label_epochs": 33,
+    "pseudo_epochs": 17,
+    "old_gate_EMA_cos": true,
+    "default_head_joint_training": true,
+    "separate_head_fit": false
+  },
+  "target_metrics_read_for_decision": false,
+  "target_IQ_read_for_decision": false,
+  "no_hyperparameter_or_parent_selection_from_target": true,
+  "not_launched_yet": true
+}

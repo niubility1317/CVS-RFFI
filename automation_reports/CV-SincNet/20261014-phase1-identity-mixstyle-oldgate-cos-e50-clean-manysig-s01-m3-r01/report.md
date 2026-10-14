@@ -25,3 +25,5 @@ local negatives/实际adapter梯度及数值更新/teacher U eval隔离PASS，�
 发布 VERIFIED：实际代码 b2a4146b7571d8713ddbd98cd096fb98b2b4c00c；remote compile、real-checkpoint no-query smoke PASS。2新模型 PID1981402/GPU1 与 PID1981480/GPU2，CWD/argv/commit 与固定配置匹配，日志6614→22188、6630→17020增长；首轮222个主L调用闭合。源首轮证据与单archive传输登记见 launch_evidence.json，尚无新候选target结果。
 
 冻结后源机制补充：source_moments.py 对两新 final50 模型使用完整 L6300，对照实际 t1/t2 mean/std 条件变化与固定 eval 身份保护干预进入 joint160 的效应。历史旧基线6300/12600包次直接复用已完成同checkpoint/同shuffle的源诊断，不重复前向。新成本25200源包次，Vcache materialize后丢弃，不前向/求导；无U/target/头拟合/参数更新。此分析不改变已冻结候选、任何源阈值或运行配方，不是新的训练结果或留RX泛化证明。
+
+完整首seed源条件PASS：final LCE0.287843/0.289247；t1/t2实际L包调用修改48.6239%/48.9502%，各11100调用/1420800包次；固定L720 paired joint160 L2=6.010110、cos=0.883807。依据原阈值固定继续另外两个预定义modelseed的相同机制和scratch对照，决定时未读取target指标；见source_qualification.json和seed_expansion_decision.json。此PASS是源反证条件，不是识别提升/84%或新TX证明。当前3row已预测评分闭合，完整全量重算进行中。

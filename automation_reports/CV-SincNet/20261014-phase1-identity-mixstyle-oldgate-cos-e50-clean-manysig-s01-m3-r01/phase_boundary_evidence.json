@@ -1,0 +1,200 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "b2a4146b7571d8713ddbd98cd096fb98b2b4c00c",
+  "rows": [
+    {
+      "arm": "MATCHED_CONTROL",
+      "source_epochs": 37,
+      "boundary": [
+        {
+          "epoch": 33,
+          "main_L_calls": 0,
+          "layers": {
+            "t1": {
+              "calls": 0,
+              "enabled_calls": 0,
+              "packet_calls": 0,
+              "eligible_packets": 0,
+              "changed_packets": 0
+            },
+            "t2": {
+              "calls": 0,
+              "enabled_calls": 0,
+              "packet_calls": 0,
+              "eligible_packets": 0,
+              "changed_packets": 0
+            }
+          },
+          "teacher_style_calls": 0,
+          "U_style_calls": 0,
+          "eval_style_calls": 0,
+          "source_V_RX_health": {
+            "source_val_count": 27000,
+            "source_val_accuracy": 0.9781481481481481,
+            "source_val_rx_accuracy": {
+              "1": 0.9948148148148148,
+              "3": 0.9416666666666667,
+              "4": 0.9837037037037037,
+              "6": 0.9974074074074074,
+              "8": 0.9731481481481481
+            },
+            "source_val_worst_rx": 0.9416666666666667
+          }
+        },
+        {
+          "epoch": 34,
+          "main_L_calls": 0,
+          "layers": {
+            "t1": {
+              "calls": 0,
+              "enabled_calls": 0,
+              "packet_calls": 0,
+              "eligible_packets": 0,
+              "changed_packets": 0
+            },
+            "t2": {
+              "calls": 0,
+              "enabled_calls": 0,
+              "packet_calls": 0,
+              "eligible_packets": 0,
+              "changed_packets": 0
+            }
+          },
+          "teacher_style_calls": 0,
+          "U_style_calls": 0,
+          "eval_style_calls": 0,
+          "source_V_RX_health": {
+            "source_val_count": 27000,
+            "source_val_accuracy": 0.978037037037037,
+            "source_val_rx_accuracy": {
+              "1": 0.9948148148148148,
+              "3": 0.9388888888888889,
+              "4": 0.9837037037037037,
+              "6": 0.997037037037037,
+              "8": 0.9757407407407407
+            },
+            "source_val_worst_rx": 0.9388888888888889
+          }
+        }
+      ],
+      "layers_total": {
+        "t1": {
+          "calls": 0,
+          "enabled_calls": 0,
+          "packet_calls": 0,
+          "eligible_packets": 0,
+          "changed_packets": 0
+        },
+        "t2": {
+          "calls": 0,
+          "enabled_calls": 0,
+          "packet_calls": 0,
+          "eligible_packets": 0,
+          "changed_packets": 0
+        }
+      },
+      "U_live_diagnostic_saved": false,
+      "head_fit": false,
+      "query_read": false,
+      "U_truth_read": false
+    },
+    {
+      "arm": "IDENTITY_MIXSTYLE",
+      "source_epochs": 35,
+      "boundary": [
+        {
+          "epoch": 33,
+          "main_L_calls": 222,
+          "layers": {
+            "t1": {
+              "calls": 222,
+              "enabled_calls": 116,
+              "packet_calls": 28416,
+              "eligible_packets": 28315,
+              "changed_packets": 14599
+            },
+            "t2": {
+              "calls": 222,
+              "enabled_calls": 116,
+              "packet_calls": 28416,
+              "eligible_packets": 28315,
+              "changed_packets": 14606
+            }
+          },
+          "teacher_style_calls": 0,
+          "U_style_calls": 0,
+          "eval_style_calls": 0,
+          "source_V_RX_health": {
+            "source_val_count": 27000,
+            "source_val_accuracy": 0.9735555555555555,
+            "source_val_rx_accuracy": {
+              "1": 0.9951851851851852,
+              "3": 0.9268518518518518,
+              "4": 0.9833333333333333,
+              "6": 0.9962962962962963,
+              "8": 0.9661111111111111
+            },
+            "source_val_worst_rx": 0.9268518518518518
+          }
+        },
+        {
+          "epoch": 34,
+          "main_L_calls": 222,
+          "layers": {
+            "t1": {
+              "calls": 222,
+              "enabled_calls": 103,
+              "packet_calls": 28416,
+              "eligible_packets": 28323,
+              "changed_packets": 12965
+            },
+            "t2": {
+              "calls": 222,
+              "enabled_calls": 123,
+              "packet_calls": 28416,
+              "eligible_packets": 28323,
+              "changed_packets": 15499
+            }
+          },
+          "teacher_style_calls": 0,
+          "U_style_calls": 0,
+          "eval_style_calls": 0,
+          "source_V_RX_health": {
+            "source_val_count": 27000,
+            "source_val_accuracy": 0.9746296296296296,
+            "source_val_rx_accuracy": {
+              "1": 0.9953703703703703,
+              "3": 0.9296296296296296,
+              "4": 0.9829629629629629,
+              "6": 0.9959259259259259,
+              "8": 0.9692592592592593
+            },
+            "source_val_worst_rx": 0.9296296296296296
+          }
+        }
+      ],
+      "layers_total": {
+        "t1": {
+          "calls": 7770,
+          "enabled_calls": 3814,
+          "packet_calls": 994560,
+          "eligible_packets": 991540,
+          "changed_packets": 480752
+        },
+        "t2": {
+          "calls": 7770,
+          "enabled_calls": 3839,
+          "packet_calls": 994560,
+          "eligible_packets": 991540,
+          "changed_packets": 483767
+        }
+      },
+      "U_live_diagnostic_saved": false,
+      "head_fit": false,
+      "query_read": false,
+      "U_truth_read": false
+    }
+  ],
+  "target_results_read": false,
+  "decision_or_threshold_changed": false
+}
