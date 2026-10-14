@@ -1,0 +1,155 @@
+{
+  "status": "VERIFIED",
+  "all_epochs_used": true,
+  "rows": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "epochs": 50,
+      "sumEpochSeconds": 2334.8399138450623,
+      "finalCE": 0.2884262464940548,
+      "finalV": 97.88518518518518,
+      "last5CE": 0.26565861665719265,
+      "prior5CE": 0.2682841490316498,
+      "last5V": 97.88888888888889,
+      "prior5V": 97.79555555555555
+    },
+    {
+      "arm": "SIG_TIME",
+      "epochs": 50,
+      "sumEpochSeconds": 6635.8991577625275,
+      "finalCE": 0.24721003219753773,
+      "finalV": 98.16296296296296,
+      "last5CE": 0.22823606107954508,
+      "prior5CE": 0.23391086183958226,
+      "last5V": 98.1637037037037,
+      "prior5V": 98.15259259259258
+    },
+    {
+      "arm": "BONE_RAW_FISHR",
+      "epochs": 50,
+      "sumEpochSeconds": 6743.115332603455,
+      "finalCE": 0.2489144201012882,
+      "finalV": 98.12592592592593,
+      "last5CE": 0.22874128699034185,
+      "prior5CE": 0.23426975411874756,
+      "last5V": 98.14444444444445,
+      "prior5V": 98.13703703703703
+    },
+    {
+      "arm": "BONE_COND_FISHR",
+      "epochs": 50,
+      "sumEpochSeconds": 6993.480679512024,
+      "finalCE": 0.24821629559805802,
+      "finalV": 98.12592592592593,
+      "last5CE": 0.22803997208137772,
+      "prior5CE": 0.23367051922523224,
+      "last5V": 98.13777777777777,
+      "prior5V": 98.12148148148148
+    }
+  ],
+  "auxiliary": [
+    {
+      "arm": "SIG_TIME",
+      "auxiliarySeconds": 2276.279471581569,
+      "last5Objectives": {
+        "RAW": 3.0409905284875585,
+        "TX_DAY_CENTERED": 2.4618894580745474
+      },
+      "gradientE50": [
+        {
+          "p": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "effective": {
+            "nonzero_batches": 0,
+            "mean_ratio": 0,
+            "mean_cosine": null
+          }
+        },
+        {
+          "p": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "effective": {
+            "nonzero_batches": 0,
+            "mean_ratio": 0,
+            "mean_cosine": null
+          }
+        },
+        {
+          "p": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "effective": {
+            "nonzero_batches": 0,
+            "mean_ratio": 0,
+            "mean_cosine": null
+          }
+        }
+      ]
+    },
+    {
+      "arm": "BONE_RAW_FISHR",
+      "auxiliarySeconds": 2316.3575398812536,
+      "last5Objectives": {
+        "RAW": 2.5721720973980657,
+        "TX_DAY_CENTERED": 2.094459566405899
+      },
+      "gradientE50": [
+        {
+          "p": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.7447233438893649,
+            "mean_cosine": -0.06453179909882518
+          }
+        },
+        {
+          "p": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.7318119065595138,
+            "mean_cosine": -0.031165441062541373
+          }
+        },
+        {
+          "p": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.614704070116633,
+            "mean_cosine": 0.01935407971434388
+          }
+        }
+      ]
+    },
+    {
+      "arm": "BONE_COND_FISHR",
+      "auxiliarySeconds": 2389.5200606903527,
+      "last5Objectives": {
+        "RAW": 2.6233926095007183,
+        "TX_DAY_CENTERED": 2.139685848301081
+      },
+      "gradientE50": [
+        {
+          "p": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.5985728204491054,
+            "mean_cosine": -0.05909805754253501
+          }
+        },
+        {
+          "p": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.5823614783398838,
+            "mean_cosine": -0.019333805699261315
+          }
+        },
+        {
+          "p": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "effective": {
+            "nonzero_batches": 13,
+            "mean_ratio": 0.4724626218674753,
+            "mean_cosine": -0.008639414893724016
+          }
+        }
+      ]
+    }
+  ],
+  "limitation": "SharedGPU native epoch/auxiliary timers are not controlled speed measurements or proof of convergence"
+}

@@ -54,3 +54,8 @@ local_checks.json：实际网络一/二阶导数、主头正常更新、auxW常�
 
 
 源资格 PASS，完整首seed已闭环；固定02/03双候选原样扩展决定在回收新目标数值前提交。源证据与决定见 source_qualification.json；完整独立审计与目标分析随后执行。
+
+
+## 首seed独立完整结果
+
+ANALYZED/VERIFIED：SIG_TIME83.5333%，RAW83.7542%（+.2208个百分点），TX_DAY_CENTERED83.6548%（+.1214个百分点），n=1。完整200epoch/33300新step/672000默认决定/72指标及468层cohort、312实际逐包梯度矩阵独立重计。源决定先提交后目标读回；全部候选02/03原样扩展，未凭n1优劣调参或重排。完整结论、曲线与边界见final_analysis.md/results.json。

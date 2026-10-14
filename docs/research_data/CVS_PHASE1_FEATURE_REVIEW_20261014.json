@@ -82245,17 +82245,17 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "完成BF首seed源训练/自动评分；先回收并提交固定source资格，再读新目标摘要；两候选均PASS才使用已准备02/03原样扩展，不按目标择优",
-    "完成FEATURE_MT首seed50轮/自动评分；终轮实际参数与梯度/feature边界完整审计，按原源CE/梯度/last5 discrepancy<=.95规则决定固定02/03扩展，保留所有负结果"
+    "完成固定SIG_TIME真实骨干方差RAW/TX_DAY_CENTERED两候选02/03的既定训练、默认头clean独立评分、完整三seed配对和机制/成本分析；不按首seed分数改候选或参数",
+    "完成固定SIG_TIME FEATURE_MT与ZERO02/03的既定训练与默认头独立评分；保留首seed负结果，合并固定三seed，不扫特征一致性权重"
   ],
   "current_priority": {
-    "at": "2026-10-14T16:48:57.722Z",
+    "at": "2026-10-14T17:14:34.902Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
-    "active_generalization_mechanism": "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+    "active_generalization_mechanism": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
     "next_semi_supervised_work": {
       "run_id": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
-      "status": "FIRST_SOURCE_PASS_COMPLETE_ROWS_AWAITING_FULL_AUDIT",
+      "status": "FIRST_SEED_ANALYZED_NEGATIVE_REMAINING_RUNNING",
       "implementation_commit": "373262b51f037f03e3238471b3aefb88e45fba5b",
       "execution_commit": "6b23a5b033ee063dea97d6783d5634e220a1d93d",
       "architecture_changes": false,
@@ -82270,7 +82270,44 @@
         50
       ],
       "actual_SSL_stage_verified": true,
-      "target_results": null,
+      "target_results": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 1,
+          "accuracy_mean": 0.8066845238095238,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238
+          },
+          "macro_f1_mean": 0.8017335328586674,
+          "worst_RX_mean": 0.7061666666666667,
+          "worst_day_mean": 0.7545238095238095
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 1,
+          "accuracy_mean": 0.8366785714285714,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8366785714285714
+          },
+          "macro_f1_mean": 0.8324484292442377,
+          "worst_RX_mean": 0.7124583333333333,
+          "worst_day_mean": 0.7919285714285714
+        },
+        {
+          "arm": "FEATURE_MT",
+          "seed_count": 1,
+          "accuracy_mean": 0.8336190476190476,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8336190476190476
+          },
+          "macro_f1_mean": 0.8291484408853428,
+          "worst_RX_mean": 0.7048333333333333,
+          "worst_day_mean": 0.7871428571428571
+        }
+      ],
       "epoch34_actual_effective_gradient_nonzero_batches": {
         "FEATURE_MT": [
           222,
@@ -82283,15 +82320,16 @@
           0
         ]
       },
-      "observed_U_feature_packets_each": 170100,
-      "final_independent_audit": "PENDING",
+      "observed_U_feature_packets_each": 963900,
+      "final_independent_audit": "VERIFIED",
       "source_qualification": {
         "status": "PASS",
         "new_target_accuracy_read": false,
         "feature_discrepancy_ratio": 0.8214876953444351,
         "remaining_run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
         "configuration_changes": false
-      }
+      },
+      "remaining_run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
     },
     "structural_exploration": false,
     "fixed_architecture": "SIG_TIME112→joint160; existing default cosine head jointly trained",
@@ -82328,7 +82366,7 @@
       "goal84": false
     },
     "new_backbone_gradient_variance": {
-      "status": "RUNNING",
+      "status": "FIRST_SEED_ANALYZED_REMAINING_RUNNING",
       "implementation_commit": "9c981766a0727cf072755ddd46cd5b639bae89ce",
       "objects": [
         "actualt1PW3456",
@@ -82337,14 +82375,63 @@
       "new_heads": 0,
       "architecture_changes": false,
       "source_basis": "Previous actual source180 variance diagnostic plus general Fishr theory; not target feedback",
-      "target_results": null,
+      "target_results": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 1,
+          "accuracy_mean": 0.8066845238095238,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238
+          },
+          "macro_f1_mean": 0.8017335328586674,
+          "worst_RX_mean": 0.7061666666666667,
+          "worst_day_mean": 0.7545238095238095
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 1,
+          "accuracy_mean": 0.8353333333333334,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8353333333333334
+          },
+          "macro_f1_mean": 0.8308524758159268,
+          "worst_RX_mean": 0.7077083333333334,
+          "worst_day_mean": 0.789952380952381
+        },
+        {
+          "arm": "BONE_RAW_FISHR",
+          "seed_count": 1,
+          "accuracy_mean": 0.8375416666666666,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8375416666666666
+          },
+          "macro_f1_mean": 0.8334049563605883,
+          "worst_RX_mean": 0.713375,
+          "worst_day_mean": 0.7930238095238096
+        },
+        {
+          "arm": "BONE_COND_FISHR",
+          "seed_count": 1,
+          "accuracy_mean": 0.8365476190476191,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8365476190476191
+          },
+          "macro_f1_mean": 0.8322229756457412,
+          "worst_RX_mean": 0.7093333333333334,
+          "worst_day_mean": 0.7918333333333333
+        }
+      ],
       "execution_commit": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07",
       "first_epoch_actual_extra_batches": 13,
       "first_epoch_regularizer_zero_by_warmup": true,
       "observed_completed_epochs": [
-        31,
-        30,
-        28
+        50,
+        50,
+        50
       ],
       "post_warmup_nonzero_coefficient_observed": true,
       "observed_epoch17_actual_gradient_evidence": {
@@ -82362,9 +82449,80 @@
         "both_candidates_effective_nonzero_each13_batches": true,
         "ZERO_effective_zero": true,
         "producer_saved_matrix_recount": "VERIFIED",
-        "final_independent_full_audit": "PENDING",
+        "final_independent_full_audit": "VERIFIED",
         "target_results": null
-      }
+      },
+      "paired_first_seed": [
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "BONE_RAW_FISHR",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.0009940476190475334
+          ],
+          "mean_difference": -0.0009940476190475334,
+          "sd_difference": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.0012142857142857233
+          ],
+          "mean_difference": 0.0012142857142857233,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "BONE_COND_FISHR",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.029863095238095272
+          ],
+          "mean_difference": 0.029863095238095272,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "BONE_RAW_FISHR",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.0022083333333332567
+          ],
+          "mean_difference": 0.0022083333333332567,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.02864880952380955
+          ],
+          "mean_difference": 0.02864880952380955,
+          "sd_difference": null,
+          "positive_seeds": 1
+        }
+      ],
+      "source_decision_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6",
+      "full_audit": "VERIFIED",
+      "remaining_run_id": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+      "goal_84_achieved": false
     },
     "latest_source_pseudo_error_diagnostic": {
       "run_id": "20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01",
@@ -82403,11 +82561,11 @@
       "error_gradient_identified": false,
       "conclusion": "Frozenfinal50 L contains no accepted errors; V featureagreement overlaps and wrong medians exceedcorrect across3 models. No thresholdfit/scan or U inference."
     },
-    "active_ssl_mechanism": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "active_ssl_mechanism": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
     "prepared_conditional_seed_extensions": [
       {
         "run_id": "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
-        "status": "SOURCE_QUALIFIED_NOT_LAUNCHED",
+        "status": "RUNNING_VERIFIED",
         "code_commit": "729c01e878a0df790c1056d00d1b547f709a57be",
         "remaining_seeds": [
           2026092702,
@@ -82418,7 +82576,10 @@
         "original_mechanism_changed": false,
         "local_negative_tests": 10,
         "head_fit_updates": 0,
-        "source_decision_before_new_target_retrieval": true
+        "source_decision_before_new_target_retrieval": true,
+        "execution_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6",
+        "source_decision_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6",
+        "scientific_rows_unchanged": true
       },
       {
         "run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",

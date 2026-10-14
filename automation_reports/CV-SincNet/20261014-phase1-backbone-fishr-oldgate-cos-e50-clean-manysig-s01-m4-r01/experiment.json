@@ -1327,8 +1327,19 @@
     "Earlier actual source180 parameter-gradient measurement used historical baseline, not currentSIG; motivates a falsifiable mechanism, does not establish currentSIG or DG efficacy.",
     "W is a constant only insideauxiliary graph; regularizer values still use currentdefaultW, so no claim of W-free training objective. Deployed z remains W-independent."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "results": {},
   "registered_at": "2026-10-14T15:07:17+00:00",
-  "execution_commit": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07"
+  "execution_commit": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07",
+  "completion": {
+    "status": "VERIFIED",
+    "models": 4,
+    "new_models": 3,
+    "historical_models": 1,
+    "seed_count": 1,
+    "decisions": 672000,
+    "metric_records": 72,
+    "goal_84": false,
+    "head_fit_updates": 0
+  }
 }

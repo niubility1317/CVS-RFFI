@@ -146,3 +146,8 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 ### 固定 SIG_TIME 均值教师首种子闭环与扩展技术恢复
 
 20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01 ANALYZED/VERIFIED：FEATURE_MT 83.3619% vs SIG_TIME 83.6679%，−0.3060 个百分点，纠正544/引入1058，n=1。原baseline80.6685%架构不同，不能归因SSL。完整150源epoch、22200新step、504000默认决定/54指标、原生＋feature共7992层记录/23976向量独立重计；真实可部署joint160导出一致、W独立、193460 feature元素/默认960W元素更新，另训头0。源U discrepancy比.8214877且实际梯度生效，但未形成首seed泛化收益。源PASS扩展决定 ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9 先于目标数字读回提交，固定02/03原样继续。扩展R01缺失import在workers0/runroot不存在时FAILED，保留release；技术修复 729c01e878a0df790c1056d00d1b547f709a57be、针对P1复审PASS，R02 execution ab2c3127e14b48dea5bc2e064ce42c0be7cfdeeb 四新PID/CWD/argv/GPU/loggrowth VERIFIED，科学配方未变。完整三seed/84%仍待证据。
+
+
+### 真实骨干梯度方差：首seed闭环与固定扩展
+
+20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01 ANALYZED/VERIFIED：同计算SIG83.5333%、RAW83.7542%（+.2208pp）、TX_DAY_CENTERED83.6548%（+.1214pp），n=1、84%未达成。完整200epoch/33300新step/672000默认决定/72指标、1950L180/312真实参数梯度矩阵/468层cohort/1872向量独立重计；feature导出0差、W独立、实际SIG五tensor数值更新、头fit0。源PASS双候选原样02/03决定 3c052b2d36903e28694674a39e232a73acd8b6a6 已提交推送后才回收新目标数字，未凭RAW首seed优劣挑选。固定扩展 20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01 已发布6新模型，原候选/系数/预算不变，完整三seed待证据；本轮无新增科学假设。

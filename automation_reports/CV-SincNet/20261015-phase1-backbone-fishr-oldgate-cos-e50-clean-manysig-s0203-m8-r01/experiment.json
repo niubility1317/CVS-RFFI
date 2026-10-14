@@ -2543,7 +2543,8 @@
     "Local6 context initialstates withinseed identical, args differ onlyseed/run/candidate/output;10negative sourcequalification testsPASS. Originalcore independentP0/P1 review reused; no duplicate unchangedreview.",
     "New run6models300epochs66600updates/3900extraL180/702000extra sourcepackets,936layercohorts/624matrices/3744vectors. Whole3seed9new450epochs99900updates plus3historical150epochs33300updates;2016000decisions/216metrics expected, not yet obtained."
   ],
-  "status": "PLANNED",
+  "status": "RUNNING",
   "registered_at": "2026-10-14T16:12:23+00:00",
-  "source_decision": "first_source_decision.json"
+  "source_decision": "first_source_decision.json",
+  "execution_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6"
 }

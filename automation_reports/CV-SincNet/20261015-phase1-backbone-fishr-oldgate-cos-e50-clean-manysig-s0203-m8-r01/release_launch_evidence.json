@@ -1,0 +1,87 @@
+{
+  "status": "VERIFIED",
+  "release": "cvs_backbone_fishr_seeds_20261015_r01",
+  "code_commit": "729c01e878a0df790c1056d00d1b547f709a57be",
+  "execution_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6",
+  "source_decision_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6",
+  "scientific_rows_unchanged": true,
+  "original_core_review_reused": true,
+  "targeted_dependency_fix_review": "PASS",
+  "real_checkpoint_no_query_smoke": "PASS",
+  "new_live_worker_count": 6,
+  "historical_rows_reused": 2,
+  "workers": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "epoch_count": 1,
+      "live": true,
+      "cwd_matches_release": true,
+      "argv_matches_worker": true,
+      "log_bytes": 11728,
+      "log_growth_since_previous_read": true,
+      "gpu": 2
+    },
+    {
+      "row_id": "BONE_RAW_FISHR-s2026092702",
+      "epoch_count": 1,
+      "live": true,
+      "cwd_matches_release": true,
+      "argv_matches_worker": true,
+      "log_bytes": 11786,
+      "log_growth_since_previous_read": true,
+      "gpu": 4
+    },
+    {
+      "row_id": "BONE_COND_FISHR-s2026092702",
+      "epoch_count": 1,
+      "live": true,
+      "cwd_matches_release": true,
+      "argv_matches_worker": true,
+      "log_bytes": 11798,
+      "log_growth_since_previous_read": true,
+      "gpu": 0
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "epoch_count": 1,
+      "live": true,
+      "cwd_matches_release": true,
+      "argv_matches_worker": true,
+      "log_bytes": 11727,
+      "log_growth_since_previous_read": true,
+      "gpu": 5
+    },
+    {
+      "row_id": "BONE_RAW_FISHR-s2026092703",
+      "epoch_count": 1,
+      "live": true,
+      "cwd_matches_release": true,
+      "argv_matches_worker": true,
+      "log_bytes": 11789,
+      "log_growth_since_previous_read": true,
+      "gpu": 0
+    },
+    {
+      "row_id": "BONE_COND_FISHR-s2026092703",
+      "epoch_count": 1,
+      "live": true,
+      "cwd_matches_release": true,
+      "argv_matches_worker": true,
+      "log_bytes": 11797,
+      "log_growth_since_previous_read": true,
+      "gpu": 5
+    }
+  ],
+  "per_gpu_all_owner_process_counts": {
+    "0": 2,
+    "1": 1,
+    "2": 1,
+    "3": 0,
+    "4": 1,
+    "5": 2,
+    "6": 1,
+    "7": 2
+  },
+  "failure": null,
+  "head_fit_updates": 0
+}
