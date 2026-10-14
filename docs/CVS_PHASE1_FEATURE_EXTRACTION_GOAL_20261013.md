@@ -88,3 +88,6 @@ Sinc坐标9row全部完成，6新scratch50/300模型轮次/66600更新、3历史
 等U时序R01发生确定技术失败：原不可变archive缺少既有source_label_gate，MID/SPREAD第17轮当前V代理导入时同异常。两行各完整16轮，按预登记系统技术故障仅停止绑定的本run TAIL/dispatcher（TAIL完整28轮），至少60模型轮次与可能partial成本保留；无target预测/评分，不当作机制负结果。原archive隔离复现、实际publish PATHS修复后隔离导入/原gate负例PASS，只有一次对应P1定向复审。替代run `20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r02` 新根、新scratch，日历/矩阵/seed/预算/源规则保持；无R01权重继承，不影响其他健康run。
 
 PA证据重组原型已实现并验证，见 experiments/cvs_pa_recomposition/README.md。共同TX/day样本集合内各RX cell均衡选包，SAME cell内、CROSS cell间一对一循环配对，每包各作一次anchor/donor，两向端点曝光匹配；只重组真实PA增量。α=.2/λ=.1为固定原型，已有W与辅助增益stopgrad、内部features有梯度、主CE默认头正常joint训练；实际normalize eps1e−4与极小norm负例匹配。数学FP64与真实CVS FP32接线PASS，ZERO精确0，SAME/CROSS真实t1/PA/ref梯度有限非零，auxW/gainsNone，主CE头梯度非零，0新参数/0数据读取/0实际更新/0换头。只完成原型，尚无训练入口/发布/性能证据；不称混合特征新发明，不将不同包当硬件反事实，不扩展U或堆入新日历。本轮主线仍先完成等U时序和既有结构交互闭环，再正式验证该创新机制。84%研究目标保持active。
+
+
+结构×关系12row已完整ANALYZED/VERIFIED：COMPACT_ZERO81.4137%、COMPACT_RESP80.6952%、LONG_ZERO81.4754%、LONG_RESP81.0359%。关系在COMPACT内−.7185pp/0正，在LONG内−.4395pp/1正；交互＋.2790pp只表示损害较小，不支持关系收益。600ep/133200更新/2016000决定/216CM、全量source日志和48梯度/48实际更新、0非有限/0Utruth/0headfit已核实，进程自然退出。旧COMPACT/LONG/Sinc正结果独立保留，不将结构组合高于旧模型当作机制成功。已固定的等U时序和PA真实身份重组继续，84%仍active。详见[结构交互完整报告](../automation_reports/CV-SincNet/20261014-phase1-relation-temporal-factorial-oldgate-e50-clean-manysig-m12-r01/report.md)。

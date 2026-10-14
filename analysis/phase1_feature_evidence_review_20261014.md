@@ -329,3 +329,6 @@ SINGLE三seed末轮源CE0.248543/0.239481/0.234405，V98.3259%/98.3037%/98.5222%
 
 
 已落实预定正收益结构组合：`20261014-phase1-relation-temporal-factorial-oldgate-e50-clean-manysig-m12-r01`，执行`0af34c5345cba3488a5e4a5d429b2a26447fd09d`。COMPACT_LINEAR/LONG_SILU×ZERO/原CROSS_RESP，12new scratch50、先4seed01源资格后8row，τ/α/权重/PAIR/旧gate/ownEMA/entropy/strong均沿用。真实四200tensor初值与CPU RNG相同，native安装入口一致、default6×160和auxW/gainNone/浅层gradient负例通过；GPU实际4worker第15至18轮，preflight/archive/compile/PID-CWD-argv-GPU-log增长VERIFIED。原关系三seed未有效的结果独立保留，此组合尚无性能结论；Sinc正收益路线独立、不堆入本矩阵。84%研究目标active。
+
+
+结构×关系12row已完整ANALYZED/VERIFIED：COMPACT_ZERO81.4137%、COMPACT_RESP80.6952%、LONG_ZERO81.4754%、LONG_RESP81.0359%。关系在COMPACT内−.7185pp/0正，在LONG内−.4395pp/1正；交互＋.2790pp只表示损害较小，不支持关系收益。600ep/133200更新/2016000决定/216CM、全量source日志和48梯度/48实际更新、0非有限/0Utruth/0headfit已核实，进程自然退出。旧COMPACT/LONG/Sinc正结果独立保留，不将结构组合高于旧模型当作机制成功。已固定的等U时序和PA真实身份重组继续，84%仍active。详见[结构交互完整报告](../automation_reports/CV-SincNet/20261014-phase1-relation-temporal-factorial-oldgate-e50-clean-manysig-m12-r01/report.md)。

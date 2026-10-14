@@ -49,3 +49,33 @@ PA、frequency、reference 原结构与真实 joint160 保持。所有模型9054
 ## 真实发布读回
 
 状态RUNNING/VERIFIED，执行commit `0af34c5345cba3488a5e4a5d429b2a26447fd09d`。首步真实历史temporal student/ownEMA strict no-query smoke与source L180probe梯度PASS，archive单次local/remote比较和remotecompile PASS。4个首seed worker PID/CWD/argv/GPU/log增长已独立核实，当前第15至18轮，真实各905426参数/default6×160/机制参数0。后8row仅按固定source规则扩展；无新target成绩，无性能成功结论。原关系12row已完整闭合，低分及CUDA非确定性限制保留，不热改任何健康任务。
+
+## 完整三种子与结构内机制结果
+
+ANALYZED / VERIFIED：全部12模型独立scratch50冻结、默认头clean预测与freshCPU truth-last评分完成，2016000固定决定、216CM及配对/交互独立复算，全部进程自然退出，无缺row。
+
+| 条件 | clean均值 | SD（百分点） | MacroF1 | 逐seed最差RX均值 | 逐seed最差day均值 |
+|---|---:|---:|---:|---:|---:|
+| COMPACT_ZERO | 81.4137% | 0.5624 | 0.808958 | 72.1583% | 77.9746% |
+| COMPACT_RESP | 80.6952% | 0.3494 | 0.800758 | 70.7250% | 77.4413% |
+| LONG_ZERO | 81.4754% | 0.6113 | 0.810046 | 71.4361% | 77.2754% |
+| LONG_RESP | 81.0359% | 0.9905 | 0.804747 | 70.5417% | 77.5738% |
+
+| 配对 | 均值差（百分点） | seed01/02/03（百分点） | 正差数 |
+|---|---:|---|---:|
+| COMPACT_RESP−COMPACT_ZERO | -0.7185 | -0.9327 / -0.2786 / -0.9440 | 0/3 |
+| LONG_RESP−LONG_ZERO | -0.4395 | -0.4143 / -0.9440 / +0.0399 | 1/3 |
+| LONG_ZERO−COMPACT_ZERO | +0.0617 | +0.7375 / -0.0685 / -0.4839 | 1/3 |
+| LONG_RESP−COMPACT_RESP | +0.3407 | +1.2560 / -0.7339 / +0.5000 | 2/3 |
+
+固定交互均值+0.2790个百分点，SD=0.8504个百分点，逐seed=+0.5185 / -0.6655 / +0.9839，正差2/3。
+
+**关系响应在两个匹配结构内均未确认收益。** COMPACT内−0.7185个百分点、0/3正；LONG内−0.4395个百分点、1/3正。正交互只说明LONG条件下损害较小，不能解释为关系机制有效或两者协同提升。LONG_ZERO对COMPACT_ZERO仅＋0.0617个百分点、1/3正，本轮PAIR/关系诊断上下文不确认以前长覆盖＋SiLU的稳定额外收益；历史独立正结果保留，不把配方不同的结果相加。
+
+预定主条件LONG_RESP三seed81.0359%，距84%2.9641个百分点。COMPACT_ZERO81.4137%、LONG_ZERO81.4754%；不能以高于旧原架构的组合均值来证明关系目标贡献。PA重组α/λ与默认tail配方已在本结果前固定，不按本矩阵target调整或选择parent。
+
+全量600模型轮次/133200更新/45288辅助调用/11566800隐藏U观察、36720额外合法L anchor前向已核实；每模型50×222完整source records，0非有限跳步/0U truth/0headfit/0stdout fatal。48真实梯度点及48AdamW更新齐全，ZEROaux梯度0，6active模型的t1/t2/t3/PA/ref实际收到非零aux梯度，W/两个增益aux梯度None。实际训练L/U对照方向是不同批次的参数梯度，不冒充此前同包有标签CE方向诊断。
+
+完整默认head、strict source/final预算、W无关纯特征export和featureparameter/buffer保持的no-fit诊断均已完成。source_epoch_means.csv保留600轮曲线，final_seed_metrics.csv保留全部12结果。统计复算发现跨Python stdev末位5e−19差异，使用1e−12比例容差，所有整数CM计数精确一致；不是数据或性能差异。
+
+原source-only资格先于target汇总，完整firstseed后按原规则扩展，未热改训练或挑分重跑。四结构初始200state匹配、同结构初始函数相同，但原CUDA非确定性不承诺逐位共同前缀，全部限制保留。Sinc、COMPACT/LONG历史正收益独立记录，关系＋响应不再作为有证实收益的主线。下一动作是既已固定的等U时序与PA身份标签重组；语义间隔后置、不叠加当前两项。84%研究目标active，当前组合矩阵完整闭合。
