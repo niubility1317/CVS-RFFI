@@ -40,3 +40,8 @@ SIG_TIME 匹配训练矩阵已发布并 VERIFIED：BASE、SUPCON、无门控 ORD
 
 
 SIG_TIME 训练机制首 seed 四组已完整 ANALYZED / VERIFIED：BASE 83.3625%、SupCon 83.3655%、ORDER 83.2613%、CREDIT 83.2726%；相对 BASE 净判对分别 +5、−170、−151，只有一个 seed，不确认稳定收益。CREDIT 60 次非零梯度调用全部属于 L 阶段，U 的 236 次调用全部停止；固定梯度点仅 1/4 非零，源条件失败，剩余 8 行未启动，不降低阈值或按目标重跑。200 轮/44,400 主更新/672,000 决定/72 混淆矩阵、2,496 调用与16实际点已核实，进程自然退出。浅层及中层参数实际增量存在；Sinc 频率在16点有梯度而更新为0，原因未确认，下一只读核查单位/精度，历史 SincCENTER 等正收益保留。84%仍 active。详见[完整首种子报告](../automation_reports/CV-SincNet/20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01/report.md)。
+
+
+2026-10-15 实现归因补记：native Sinc／CosFace 的 eval 参数缓存以 tensor._version 为键；旧 `credit.assess` 的 functional_call 使用不同但可能同版本的临时张量，且未逐分支清空缓存。实际 native CosFace 聚焦检查复现了不同 W 产生相同陈旧输出，因此旧贡献链未能保证每次读取当前更新前默认 W。它是贡献选择器的实现限制，不能把旧 CREDIT 的负分数完全归因为抽象跨 RX 训练机制无效，也不代表修正后已有效。旧训练、default-head clean prediction、truth-last score 和 4/12／8 未启动状态保持，不重跑或覆盖。新 `20261015-phase1-SIGTIME-center-heldcredit-sourceL-manysig-s2026092701-r01` 逐次清空恢复缓存，独立 source-only 检查仍为 4 个单元各 0/20 accepted，源条件未通过。
+
+固定 BASE/final50 只读参数分析另核实：primary identity Sinc 的低频名义末轮 moment 位移最大约 3.09e−7 Hz，48 个低频／带宽坐标应用名义位移均无 FP32 可表示变化，25 个坐标 sqrt(v) 不高于 AdamW eps；仅该保存状态的公式分析，不是全部历史步骤回放。BASE 低频参数最大构造差 8.58e−5 Hz，带宽与构造值完全相同；无额外 NN 前向／数据／优化／头拟合。源 CENTER 假设步骤能改变 12 至 13 个核，但并未产生超过预定容差的跨样本 CE 贡献。

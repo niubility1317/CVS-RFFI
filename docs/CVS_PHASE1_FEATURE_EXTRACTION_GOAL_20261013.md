@@ -130,3 +130,6 @@ SIG_TIME CREDIT 的实际中期学习信号已 VERIFIED：固定 step 4,448 的�
 
 
 SIG_TIME 训练机制首 seed 四组已完整 ANALYZED / VERIFIED：BASE 83.3625%、SupCon 83.3655%、ORDER 83.2613%、CREDIT 83.2726%；相对 BASE 净判对分别 +5、−170、−151，只有一个 seed，不确认稳定收益。CREDIT 60 次非零梯度调用全部属于 L 阶段，U 的 236 次调用全部停止；固定梯度点仅 1/4 非零，源条件失败，剩余 8 行未启动，不降低阈值或按目标重跑。200 轮/44,400 主更新/672,000 决定/72 混淆矩阵、2,496 调用与16实际点已核实，进程自然退出。浅层及中层参数实际增量存在；Sinc 频率在16点有梯度而更新为0，原因未确认，下一只读核查单位/精度，历史 SincCENTER 等正收益保留。84%仍 active。详见[完整首种子报告](../automation_reports/CV-SincNet/20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01/report.md)。
+
+
+2026-10-15：固定 CENTER_25K × 排除当前 L 源检查 `20261015-phase1-SIGTIME-center-heldcredit-sourceL-manysig-s2026092701-r01` 已完成。RAW/CENTER × SAME/HELD 四单元各 0/20 accepted，固定可用性条件未通过，不扩完整训练。CENTER 的 actual base Sinc kernel 改变 12 至 13／24，aux 最多再改变 3／24，但 held-L credit 最大仅3.45e−9（固定容差1e−6）。540L IQ／18004forwards／160临时steps，0实际训练／headfit／U/V/target。旧 contribution eval cache 的版本碰撞已复现并补记旧main归因限制，旧结果产物保留。已有固定 CENTER 和 SIG_TIME 正路线保留，不能把历史增益相加；下一轮检验实际早中期持续特征学习信号，末期 CE 微增量筛选不单独作为晋级依据。默认头 clean 三种子84%仍ACTIVE、未达成。

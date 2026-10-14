@@ -1,3 +1,26 @@
+# 固定 CENTER_25K 与跨样本贡献：源检查结果
+
+**执行完成并独立核实；预登记源可用性条件未通过，不扩为完整训练。** 固定 BASE 首种子 2026092701/final50，actual code commit `cc43ab0012fdee8bd4c42f347ae9ce699debb7df`。4 个固定 L90 梯度批次与分离 L180 评价，RAW_HZ／CENTER_25K × SAME_L／HELD_L 共 80 次贡献比较。所有 4 个矩阵单元都是 0/20 accepted；CENTER_25K 的 HELD_L active 与 accepted auxiliary kernel-change cohorts 均 0/4。
+
+| 坐标 | 评价样本 | 接受组 | 平均 CE 贡献范围 | base 改变滤波核数／24 | auxiliary 再改变核数／24 |
+|---|---|---:|---:|---:|---:|
+| RAW_HZ | SAME_L | 0/20 | -2.03e-08 至 1.15e-08 | 0 至 0 | 0 至 0 |
+| RAW_HZ | HELD_L | 0/20 | -5.74e-09 至 5.16e-09 | 0 至 0 | 0 至 0 |
+| CENTER_25K | SAME_L | 0/20 | -1.26e-08 至 1.6e-09 | 12 至 13 | 0 至 3 |
+| CENTER_25K | HELD_L | 0/20 | -5.65e-09 至 3.45e-09 | 12 至 13 | 0 至 3 |
+
+CENTER_25K 恢复了部分实际滤波变化：base 更新改变 12 至 13 个核，auxiliary 相对 base 最多再改变 3 个核，最大核差 `1.1920928955078125e−7`。RAW 两类更新均未改变核。中心坐标的 HELD_L 最大平均 CE 贡献只有 `3.453654473517531e−9`，低于固定 `1e−6` 容差；这些微小正负量不能解释为可用收益或确定伤害。辅助梯度非零（约 .00124 至 .00555），但“有梯度／有实际核变化”仍不等于其他样本获得可分辨学习收益。
+
+两个坐标的当前批次 CE 完全相同；4 个数值为 .0113936、.00189436、.00753934、.00366156。此为接近源拟合饱和的 final50、eval-mode、L-only 假设步骤，不能据此否定所有早中期训练信号，也不允许由此改容差／尺度扫参或直接扩训练。模型读出仍为原默认头；没有新训练、头拟合、U/V/目标 IQ 或 truth 访问。
+
+完整成本：540 unique L IQ、6300 source metadata，18,004 packet network forwards、160 临时 AdamW、240 kernel 合成；实际 optimizer／EMA／head-fit 更新均 0。真实 checkpoint no-query smoke PASS；唯一 P0/P1 审查 PASS；archive SHA 与 remote compile VERIFIED；独立 PID/CWD/argv/log-growth/GPU 检查确认 CPU-only，并在 summary 完成后核实自然退出。所有模型／buffer／moment／gradient 保持。矩阵与 320 个逐 RX 贡献见 CSV，完整 8 cohorts/80 groups 保存在 result_evidence.json。
+
+本轮保留固定 CENTER_25K 和 SIG_TIME 各自已有正路线，但未证明二者组合收益，更不能相加旧增益。下一轮优先在实际早中期训练检验持续的特征学习信号；末期微小 CE 增量筛选不再单独承担机制晋级依据。84% 默认头三种子目标仍未完成。
+
+以下保留原预登记，不追溯改写阈值、矩阵或预算。
+
+---
+
 # 固定 CENTER_25K 与跨样本特征贡献：源检查预登记
 
 运行 `20261015-phase1-SIGTIME-center-heldcredit-sourceL-manysig-s2026092701-r01`。只检查固定匹配 BASE 首种子 2026092701 的 scratch50/final-only checkpoint。父运行 `20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01`；完整源数据角色和祖先来源核对后才加载。默认 6×160 分类头结构和权重保持，0 实际训练／头拟合／EMA 更新，不访问 U/V/目标 IQ。84% 三种子目标仍未达到。
