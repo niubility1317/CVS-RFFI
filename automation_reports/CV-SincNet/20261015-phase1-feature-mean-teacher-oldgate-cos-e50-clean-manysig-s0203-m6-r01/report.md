@@ -28,3 +28,10 @@ sourcePASS才做标准普通账户preflight、一次archive本地/远端SHA比�
 ## 首seed源决定已回收
 
 原source资格PASS：LCE ZERO=0.247665886、FEATURE_MT=0.248785446；最后5轮U特征discrepancy比=0.821487695≤.95；实际L720 z差=2.058244944，实际t1/t2/SIG梯度与精确预算满足。first三row已TRAINED_PREDICTED_SCORED。当前只读source及计量状态，未回收新目标准确率。决定使用当前已准备的固定02/03原配方，无参数/候选重排；本决定随本次提交冻结后发布，source资格不代表DG收益。详情first_source_decision.json。
+
+
+## 技术恢复：发布依赖，未启动训练
+
+R01 dispatcher import FAILED：score引用发布包没有包含的旧SPSseeds汇总包。独立post-state确认PID已退出、workers0、run根目录未创建，因此没有新模型训练/更新或健康任务重启。保留R01 release/archive/log。修复提交 729c01e878a0df790c1056d00d1b547f709a57be 改用已发布的相同AST helper，并在实际release preflight导入dispatcher消费依赖链；针对该P1窄复审PASS。
+
+同一run/rows/科学配置/源决定保持，恢复使用不可变 cvs_feature_mean_teacher_seeds_20261015_r02 和本地local_artifacts/feature_mean_teacher_seeds_delivery_r02。本机等价函数AST、dispatcher import与archivepaths检查PASS；真实release仍按原compile/no-query smoke后发布。技术修复发生在目标读回后，但只修启动依赖，不调整方法、系数、种子或预算；原source决定 ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9 保持。

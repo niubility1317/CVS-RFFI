@@ -29,10 +29,10 @@
   "replaces_run_id": null,
   "authorization": "User fixedSIG/defaultheadjoint/oldgate+cos<=50 and fixed3seed84 objective. Conditional unchanged02/03 expansion already declared by firstsource rules; no new mechanism, parameter scan or target ranking.",
   "code": {
-    "commit": "68b3143dbdfcde27c80997f970121a23e34e5f2e",
+    "commit": "729c01e878a0df790c1056d00d1b547f709a57be",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI/fullFP32/2CPUthreads perworker",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_mean_teacher_seeds_20261015_r01",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_feature_mean_teacher_seeds_20261015_r02",
     "entrypoint": "experiments.cvs_feature_mean_teacher_seeds.dispatch",
     "config_paths": [
       "experiments/cvs_feature_mean_teacher_seeds/design.py",
@@ -107,7 +107,7 @@
     "gpu_policy": "Sharedallowner lock<=3 experiments/GPU/free>=12000MiB beforeallocation; protect healthy jobs",
     "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/logs",
-    "local_artifact_root": "local_artifacts/feature_mean_teacher_seeds_delivery_r01",
+    "local_artifact_root": "local_artifacts/feature_mean_teacher_seeds_delivery_r02",
     "launch_command": "python -u -m experiments.cvs_feature_mean_teacher_seeds.dispatch",
     "stop_rule": "Originalrun-owned systemictechnical failures only, preservepartial/noautomaticretry/no unrelatedprocesschanges. Publish only after first frozenSOURCEPASS, not target results."
   },
@@ -2119,5 +2119,6 @@
   "status": "PLANNED",
   "registered_at": "2026-10-14T16:18:14+00:00",
   "source_qualification": "PASS",
-  "source_decision_ref": "first_source_decision.json"
+  "source_decision_ref": "first_source_decision.json",
+  "technical_recovery": "technical_recovery.json"
 }

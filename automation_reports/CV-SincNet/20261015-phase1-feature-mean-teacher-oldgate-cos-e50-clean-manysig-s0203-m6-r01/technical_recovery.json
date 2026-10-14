@@ -1,0 +1,20 @@
+{
+  "status": "FAILED",
+  "layer": "dispatcher Python import before run output creation",
+  "failed_release": "cvs_feature_mean_teacher_seeds_20261015_r01",
+  "failed_execution_commit": "ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9",
+  "missing_dependency": "experiments.cvs_sigtime_pair_seeds",
+  "dispatcher_PID_missing": true,
+  "launched_workers": 0,
+  "run_root_created": false,
+  "model_epochs": 0,
+  "optimizer_updates": 0,
+  "failed_release_preserved": true,
+  "recovery_release": "cvs_feature_mean_teacher_seeds_20261015_r02",
+  "run_id_unchanged": true,
+  "scientific_rows_unchanged": true,
+  "source_decision_commit": "ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9",
+  "fix_commit": "729c01e878a0df790c1056d00d1b547f709a57be",
+  "targeted_checks": "PASS",
+  "targeted_independent_P0P1_review": "PASS"
+}

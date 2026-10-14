@@ -82249,7 +82249,7 @@
     "完成FEATURE_MT首seed50轮/自动评分；终轮实际参数与梯度/feature边界完整审计，按原源CE/梯度/last5 discrepancy<=.95规则决定固定02/03扩展，保留所有负结果"
   ],
   "current_priority": {
-    "at": "2026-10-14T16:36:37.162Z",
+    "at": "2026-10-14T16:48:57.722Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
@@ -82433,6 +82433,16 @@
         "local_negative_tests": 11,
         "head_fit_updates": 0
       }
-    ]
+    ],
+    "feature_mean_teacher_first_seed": {
+      "status": "VERIFIED_NEGATIVE",
+      "run": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "FEATURE_MT_accuracy": 0.8336190476190476,
+      "SIG_TIME_accuracy": 0.8366785714285714,
+      "paired_difference_pp": -0.305952380952379,
+      "n": 1,
+      "goal84_achieved": false,
+      "source_decision_commit": "ec8ea03f7810cb3eb1bcb8108cdb60b4053a59c9"
+    }
   }
 }

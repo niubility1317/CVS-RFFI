@@ -27,3 +27,6 @@
 各row final50冻结后自动clean168000原默认头预测→prediction固定→独立truth-last评分→同row报告与登记/Git，首seed产物直接复用，合并固定三seed配对均值/样本SD/正差数、MacroF1、最差RX/day、纠错/引入错误、完整源曲线和实际梯度/feature边界。84%只认预定义三种子原头口径，不以最高secondary或其他读出替代。
 
 停止规则沿用所属run系统技术失败：数据/query/来源/defaulthead权限、非有限/跳过更新、错误预算/路径冲突/无法执行或合法预测/scorer故障；先核对run所属PID/CWD/argv，保留partial，无自动重试，不按分数停止、重启或选择性重跑，不触碰健康任务。当前未发布，本轮只提交可复用执行配置和局部证据。
+
+
+技术预防修复 729c01e878a0df790c1056d00d1b547f709a57be：同一汇总依赖改用发布包已有且AST相同的signature_stats_seeds helper，preflight导入dispatcher确认真实链可用。科学配置未变，仍未发布，原source条件待。
