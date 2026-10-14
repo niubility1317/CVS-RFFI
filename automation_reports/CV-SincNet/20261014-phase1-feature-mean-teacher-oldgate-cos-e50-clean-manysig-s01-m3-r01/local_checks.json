@@ -1,0 +1,34 @@
+{
+  "status": "PASS",
+  "protocol_negative_tests": 8,
+  "matched_initial_models": true,
+  "native_RANDOM_order_RNG_preserved": true,
+  "actual_checks": [
+    {
+      "arm": "SIG_TIME",
+      "original_U_loss_object_preserved": true,
+      "no_extra_forward_in_observer": true,
+      "auxiliary_W_gradient_absent": true,
+      "main_head_gradient_unchanged": true,
+      "default_head_t1_t2_SIGprojection_actual_updates": true
+    },
+    {
+      "arm": "FEATURE_MT",
+      "original_U_loss_object_preserved": true,
+      "no_extra_forward_in_observer": true,
+      "auxiliary_W_gradient_absent": true,
+      "main_head_gradient_unchanged": true,
+      "default_head_t1_t2_SIGprojection_actual_updates": true
+    }
+  ],
+  "feature_parameters": 195041,
+  "feature_export_exact": true,
+  "W_independent": true,
+  "zero_pre_pseudo_gradient_unchanged": true,
+  "teacher_stopgradient": true,
+  "hook_restore": true,
+  "no_extra_head_or_modules": true,
+  "synthetic_IQ_only": true,
+  "query_read": false,
+  "remote_compile": "PASS"
+}
