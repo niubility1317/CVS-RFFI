@@ -33242,7 +33242,7 @@
     },
     {
       "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-      "status": "IMPLEMENTED_REVIEWED",
+      "status": "RUNNING",
       "method": "same fixed identity-protected t1/t2 MixStyle predefined seed expansion",
       "model_seeds": [
         2026092702,
@@ -33264,7 +33264,32 @@
         2026092701,
         2026092702,
         2026092703
-      ]
+      ],
+      "execution_commit": "2b8371027c11cab4b80c17a8c2d0797fac00524a",
+      "launch_evidence": "automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01/launch_evidence.json",
+      "running_epochs": [
+        {
+          "row": "MATCHED_CONTROL-s2026092702",
+          "epoch": 12,
+          "gpu": 1
+        },
+        {
+          "row": "IDENTITY_MIXSTYLE-s2026092702",
+          "epoch": 9,
+          "gpu": 2
+        },
+        {
+          "row": "MATCHED_CONTROL-s2026092703",
+          "epoch": 11,
+          "gpu": 3
+        },
+        {
+          "row": "IDENTITY_MIXSTYLE-s2026092703",
+          "epoch": 11,
+          "gpu": 4
+        }
+      ],
+      "run_failure": null
     }
   ],
   "diagnostics": {

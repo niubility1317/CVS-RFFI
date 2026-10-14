@@ -144,4 +144,7 @@ run 20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01�
 
 ## MixStyle 固定剩余两种子已实现
 
-20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01 按source-only PASS及9e79dc413决定实施：seed02/03四个scratch50/11100，33+17，原p=.5/alpha=.1/strength=1、t1/t2、旧门控EMAcos和defaulthead正常联合训练均保持。two歴史baseline只按同seed固定final50复用；首seed不重训。只给已审core引入明确矩阵参数、复用源训练和默认预测pipeline，不修改算子。新增直接执行差异唯一P0/P1审查及真实native构建/paired初态/拒绝foreignseed/三seed统计/登记依赖PASS，当前IMPLEMENTED_REVIEWED，尚未发布。最终严格合并原3row+新6row、01/02/03均值/SD及配对差，保留首seed负结果，不按target调参。完整[预登记](../automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md)。
+20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01 按source-only PASS及9e79dc413决定实施：seed02/03四个scratch50/11100，33+17，原p=.5/alpha=.1/strength=1、t1/t2、旧门控EMAcos和defaulthead正常联合训练均保持。2 个历史基线只按同seed固定final50复用；首seed不重训。只给已审core引入明确矩阵参数、复用源训练和默认预测pipeline，不修改算子。新增直接执行差异唯一P0/P1审查及真实native构建/paired初态/拒绝foreignseed/三seed统计/登记依赖PASS，当前IMPLEMENTED_REVIEWED，尚未发布。最终严格合并原3row+新6row、01/02/03均值/SD及配对差，保留首seed负结果，不按target调参。完整[预登记](../automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md)。
+
+
+MixStyle 剩余两种子现已发布并运行：实际代码 `2b8371027c11cab4b80c17a8c2d0797fac00524a`，四个从零训练模型在 GPU 1 至 GPU 4 运行，已完成 12/9/11/11 个 epoch；进程、CWD、命令、配置和日志增长 VERIFIED，无训练失败。两个历史基线行已复用；全部固定 50 轮，默认分类头正常联合训练，未单独拟合头。归档传输、远端编译和真实同种子旧 checkpoint 无查询 smoke 均 PASS。完整三种子指标尚未产生，首种子负结果保持；详见 [发布证据](../automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01/launch_evidence.json)。

@@ -16,6 +16,8 @@ Stop：Owned role/provenance/nonfinite/update budget/mainL hook/prediction/scori
 
 每行固定final50/11100并生成真实sourceL720 fθ与W独立证据后自动clean168000逐包prediction；prediction固定后独立truthlast评分。每行18组CM/F1/accuracy，各RX/day/旧6TX保留。所有6行完成后与旧firstseed3行按对应模型seed合并，最终9row/1512000决策/162metric，3seed平均/样本SD/配对差/最差RX/day。只有完整合并均值≥84%才设置goal_84，不使用单seed或两seed平均替代。
 
-输出 launch.json；queue_state.json；analysis.json；completion.json；source_features.json；pernewrow initial_smoke.pt/final_ssdg.pth/source_frozen.json/resolved_native_args.json/resolved_config.json/source_contract.json/50epoch/11100step；pernewrow source_style_epoch_diagnostic.json/source_U_epoch_diagnostic.json/source_feature_witness.json；perrow prediction/predictions.npz/complete.json；perrow scores/metrics.json；combined_three_seed_analysis.json。原IQ、checkpoint、日志和大型prediction留既定目录；代码、预登记、实际结果/聚合报告Git上传并独立核对remoteOID。当前尚未发布。
+输出 launch.json；queue_state.json；analysis.json；completion.json；source_features.json；pernewrow initial_smoke.pt/final_ssdg.pth/source_frozen.json/resolved_native_args.json/resolved_config.json/source_contract.json/50epoch/11100step；pernewrow source_style_epoch_diagnostic.json/source_U_epoch_diagnostic.json/source_feature_witness.json；perrow prediction/predictions.npz/complete.json；perrow scores/metrics.json；combined_three_seed_analysis.json。原IQ、checkpoint、日志和大型prediction留既定目录；代码、预登记、实际结果/聚合报告Git上传并独立核对remoteOID。当前已发布，四个新模型正在运行。
 
 新增执行差异唯一直接P0/P1审查PASS，原干预core不重审。本地新context/三seed统计/登记/依赖与scriptcompile均PASS。
+
+实际发布代码 2b8371027c11cab4b80c17a8c2d0797fac00524a，dispatcher PID2013525；独立进程/CWD/命令/GPU/配置/日志增长 VERIFIED。GPU1/2/3/4 的 MATCHED_CONTROL02/MIXSTYLE02/MATCHED_CONTROL03/MIXSTYLE03 已完成12/9/11/11轮，无失败；单归档传输比对、远端compile及真实旧seed02 checkpoint无查询smoke PASS。全部保持scratch50固定预算，两个历史baseline已只读复用；新目标结果尚未完成，三seed结果未产生。详见[发布证据](launch_evidence.json)。

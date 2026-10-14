@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "用户持续Phase1特征84%目标；每模型≤50，旧门控cos，对话走不同路线，默认分类头联合训练、禁止单独头拟合；每探索实现和结果Git上传。",
   "code": {
-    "commit": "GIT_HEAD_AT_RELEASE",
+    "commit": "2b8371027c11cab4b80c17a8c2d0797fac00524a",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32; Torch/OMP/MKL/OpenBLAS2threads; local native verified Python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_identity_mixstyle_seeds_20261014_r01",
@@ -37,7 +37,7 @@
   "data": {
     "dataset": "ManySig",
     "version": "existing source contract",
-    "representation": "raw/post_sync/noeq IQ2x256; original time/frequency/PA/reference/default head, NoExplicitCFO with internal compensation; only hidden-U ordering differs",
+    "representation": "raw/post_sync/noeq IQ2x256; unchanged time/frequency/PA/reference/default head; NoExplicitCFO with internal compensation; main L_s only identity-protected t1/t2 statistics mixing in candidate",
     "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
     "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
@@ -89,15 +89,14 @@
     "claim_scope": "Phase1 six old source TX clean/default-head DG research and fθ interface evidence only; exposed benchmark, no newTX/Phase2 or satellite claims; target fixed predictions then independent truth-last."
   },
   "checkpoint": {
-    "initialization": "All6 new models scratch, no ancestor/checkpoint/teacher loading. Historical baseline3 reused only comparison and zeroIQ smoke; actual new EMA from own scratch model.",
+    "initialization": "4 new models scratch, no ancestor/checkpoint/teacher loading; 2 historical same-seed baselines comparison and zeroIQ smoke only; own scratch EMA",
     "sources": [
-      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092701/source/final_ssdg.pth",
       "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092702/source/final_ssdg.pth",
       "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092703/source/final_ssdg.pth"
     ],
     "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
-    "provenance_verdict": "New students/EMA own scratch no ancestors. Historical baseline all3 source roles EXACT_MATCH oldgate33+17 final50 independently verified; no baseline weight inheritance.",
-    "selection_rule": "Fixed final50 for every new row. Both first-seed final222 labeled CE<=.5 and PAIRED17epochs accepted U/963900>=.25 release remaining4 models. No V/target ranking, no inherited checkpoint."
+    "provenance_verdict": "New students/EMA own scratch no ancestors. Historical baseline seeds02/03 unchanged source roles and oldgate33+17 final50 independently verified; no inherited training weights.",
+    "selection_rule": "Fixed final50 for every new row. Firstseed qualification uses final L_CE<=0.5, actual t1/t2 changed packet ratio>=0.25, and source joint160 L2>=1e-6; source-only PASS fixed expansion in commit9e79dc413 before target metric reading. No V/target ranking."
   },
   "execution": {
     "host": "N607 ordinary account",
@@ -204,7 +203,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/identity-mixstyle-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -242,12 +241,12 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
           "minimum_layer_changed_ratio": 0.25,
-          "minimum_actual_source_z_L2": 1e-06,
+          "minimum_actual_source_z_L2": 0.000001,
           "decision": "both new controls final LCE<=.5 and both layers changed>=25% over fixed mainL packet calls and actual source z differs; later seed expansion depends only on these source facts, not target",
           "additional_seed_launch": false
         },
@@ -300,7 +299,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -338,7 +337,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -414,7 +413,7 @@
           "p": 0.5,
           "alpha": 0.1,
           "strength": 1,
-          "eps": 1e-06,
+          "eps": 0.000001,
           "pool": "L_s only in normal main supervised forward",
           "pairing": "same TX/day; different RX and actual physical ID",
           "fallback": "identity",
@@ -499,7 +498,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/identity-mixstyle-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -537,12 +536,12 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
           "minimum_layer_changed_ratio": 0.25,
-          "minimum_actual_source_z_L2": 1e-06,
+          "minimum_actual_source_z_L2": 0.000001,
           "decision": "both new controls final LCE<=.5 and both layers changed>=25% over fixed mainL packet calls and actual source z differs; later seed expansion depends only on these source facts, not target",
           "additional_seed_launch": false
         },
@@ -576,7 +575,7 @@
           "p": 0.5,
           "alpha": 0.1,
           "strength": 1,
-          "eps": 1e-06,
+          "eps": 0.000001,
           "pool": "L_s only in normal main supervised forward",
           "pairing": "same TX/day; different RX and actual physical ID",
           "fallback": "identity",
@@ -661,7 +660,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/identity-mixstyle-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -699,12 +698,12 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
           "minimum_layer_changed_ratio": 0.25,
-          "minimum_actual_source_z_L2": 1e-06,
+          "minimum_actual_source_z_L2": 0.000001,
           "decision": "both new controls final LCE<=.5 and both layers changed>=25% over fixed mainL packet calls and actual source z differs; later seed expansion depends only on these source facts, not target",
           "additional_seed_launch": false
         },
@@ -738,7 +737,7 @@
           "p": 0.5,
           "alpha": 0.1,
           "strength": 1,
-          "eps": 1e-06,
+          "eps": 0.000001,
           "pool": "L_s only in normal main supervised forward",
           "pairing": "same TX/day; different RX and actual physical ID",
           "fallback": "identity",
@@ -823,7 +822,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/identity-mixstyle-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -861,12 +860,12 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
           "minimum_layer_changed_ratio": 0.25,
-          "minimum_actual_source_z_L2": 1e-06,
+          "minimum_actual_source_z_L2": 0.000001,
           "decision": "both new controls final LCE<=.5 and both layers changed>=25% over fixed mainL packet calls and actual source z differs; later seed expansion depends only on these source facts, not target",
           "additional_seed_launch": false
         },
@@ -919,7 +918,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -957,7 +956,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -1033,7 +1032,7 @@
           "p": 0.5,
           "alpha": 0.1,
           "strength": 1,
-          "eps": 1e-06,
+          "eps": 0.000001,
           "pool": "L_s only in normal main supervised forward",
           "pairing": "same TX/day; different RX and actual physical ID",
           "fallback": "identity",
@@ -1118,7 +1117,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/identity-mixstyle-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1156,12 +1155,12 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
           "minimum_layer_changed_ratio": 0.25,
-          "minimum_actual_source_z_L2": 1e-06,
+          "minimum_actual_source_z_L2": 0.000001,
           "decision": "both new controls final LCE<=.5 and both layers changed>=25% over fixed mainL packet calls and actual source z differs; later seed expansion depends only on these source facts, not target",
           "additional_seed_launch": false
         },
@@ -1195,7 +1194,7 @@
           "p": 0.5,
           "alpha": 0.1,
           "strength": 1,
-          "eps": 1e-06,
+          "eps": 0.000001,
           "pool": "L_s only in normal main supervised forward",
           "pairing": "same TX/day; different RX and actual physical ID",
           "fallback": "identity",
@@ -1280,7 +1279,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/identity-mixstyle-seeds-20261014",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1318,12 +1317,12 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final_L_CE_max": 0.5,
           "minimum_layer_changed_ratio": 0.25,
-          "minimum_actual_source_z_L2": 1e-06,
+          "minimum_actual_source_z_L2": 0.000001,
           "decision": "both new controls final LCE<=.5 and both layers changed>=25% over fixed mainL packet calls and actual source z differs; later seed expansion depends only on these source facts, not target",
           "additional_seed_launch": false
         },
@@ -1357,7 +1356,7 @@
           "p": 0.5,
           "alpha": 0.1,
           "strength": 1,
-          "eps": 1e-06,
+          "eps": 0.000001,
           "pool": "L_s only in normal main supervised forward",
           "pairing": "same TX/day; different RX and actual physical ID",
           "fallback": "identity",
