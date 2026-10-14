@@ -1,0 +1,1686 @@
+{
+  "status": "VERIFIED_PARTIAL_MATRIX",
+  "run_id": "20261014-phase1-evidence-relation-pair-oldgate-e50-clean-manysig-m12-r01",
+  "execution_commit": "4e5bd3275289a91cb407392461eeefe20d171820",
+  "fixed_first_seed": 2026092701,
+  "completed_conditions": 3,
+  "planned_conditions": 4,
+  "planned_model_seeds": 3,
+  "source_BC_pass_before_target_summary": true,
+  "rows": [
+    {
+      "row_id": "ZERO-s2026092701",
+      "arm": "ZERO",
+      "model_seed": 2026092701,
+      "epochs": 50,
+      "logged_steps": 11100,
+      "optimizer_steps": 11100,
+      "accuracy": 0.8104880952380953,
+      "macro_f1": 0.8055692257975006,
+      "worst_RX": 0.712,
+      "worst_day": 0.7643571428571428,
+      "source_L_CE": 0.2858314722575046,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9787777777777777,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9433333333333334,
+          "4": 0.9833333333333333,
+          "6": 0.9974074074074074,
+          "8": 0.9746296296296296
+        },
+        "source_val_worst_rx": 0.9433333333333334
+      },
+      "relation_statistics": {
+        "nonzero_relation_fraction": {
+          "count": 3774,
+          "min": 1.0,
+          "max": 1.0,
+          "mean": 1.0
+        },
+        "relation_loss": {
+          "count": 3774,
+          "min": 0.10528865456581116,
+          "max": 0.18030673265457153,
+          "mean": 0.13522607576107942
+        },
+        "response_loss": {
+          "count": 3774,
+          "min": 0.005106140859425068,
+          "max": 0.008656224235892296,
+          "mean": 0.00689655292935168
+        },
+        "weighted_loss": {
+          "count": 3774,
+          "min": 0.0,
+          "max": 0.0,
+          "mean": 0.0
+        },
+        "teacher_entropy_normalized": {
+          "count": 3774,
+          "min": 0.6568156480789185,
+          "max": 0.7118260264396667,
+          "mean": 0.6836155950391362
+        },
+        "teacher_U_relation_dispersion": {
+          "count": 3774,
+          "min": 0.08969481289386749,
+          "max": 0.11964600533246994,
+          "mean": 0.10761629559877504
+        },
+        "bank_normalized_variance": {
+          "count": 3774,
+          "min": 0.6470035314559937,
+          "max": 0.6811578869819641,
+          "mean": 0.6688151008942548
+        },
+        "teacher_response_L2": {
+          "count": 3774,
+          "min": 0.016803773120045662,
+          "max": 0.021836290135979652,
+          "mean": 0.019376128699746975
+        },
+        "student_PA_increment_norm": {
+          "count": 3774,
+          "min": 3.6191539764404297,
+          "max": 3.770387649536133,
+          "mean": 3.6930675907114794
+        },
+        "student_ref_increment_norm": {
+          "count": 3774,
+          "min": 1.5751302242279053,
+          "max": 1.7343580722808838,
+          "mean": 1.664716771404517
+        },
+        "relation_top_one_percent_mass": {
+          "count": 3774,
+          "min": 0.037485286593437195,
+          "max": 0.10909975320100784,
+          "mean": 0.06342671338170688
+        },
+        "bank_age_updates": {
+          "count": 3774,
+          "min": 0,
+          "max": 221,
+          "mean": 110.5
+        }
+      },
+      "aux_L_gradient_ratios": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "aux_L_cosines": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "actual_gradient_groups": [
+        {
+          "step": 7327,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.0,
+              "nonzero_values": 0
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.020751923636159495,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.024179966066103134,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.01808976247892751,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.01716904135323087,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.008411677234178102,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.016106610543769755,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.027325121897912016,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.017576831264146966,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.0062026389016095205,
+              "nonzero_values": 9295
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.030794250124512652,
+              "nonzero_values": 12576
+            }
+          }
+        },
+        {
+          "step": 7548,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.0,
+              "nonzero_values": 0
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.03942493851092173,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.04052107405642248,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.028174876119222727,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.024083854026246767,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.010936406708468523,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.025231601635862543,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.036778975145416434,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.023579673854882528,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.010307430887175938,
+              "nonzero_values": 9165
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.03007790104436414,
+              "nonzero_values": 12576
+            }
+          }
+        },
+        {
+          "step": 8880,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.0,
+              "nonzero_values": 0
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.019956377187209415,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.025500269597354075,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.019249779906092338,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.019198999214053884,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.010086002346397333,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.016539661652490385,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.023807441049567765,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.01465584921276409,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.006263303236089087,
+              "nonzero_values": 9295
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.03106791565179687,
+              "nonzero_values": 12576
+            }
+          }
+        },
+        {
+          "step": 11100,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.0,
+              "nonzero_values": 0
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.0,
+              "nonzero_values": 0
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.026458579999946705,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.03097774828117466,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.025574357581837764,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.023843338803077003,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.011156431709778826,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.021437302401526137,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.038860240990035294,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.024704835977370665,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.00617426902867438,
+              "nonzero_values": 9295
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.02480290648143903,
+              "nonzero_values": 12576
+            }
+          }
+        }
+      ],
+      "actual_AdamW_update_count": 4,
+      "U_packet_observations": 963900,
+      "extra_L_forward_packets": 3060,
+      "head_fit_updates": 0,
+      "U_truth_available": 0,
+      "default_head_only": true,
+      "truth_last": true,
+      "independent_CM_recount": true,
+      "nonfinite_skips": 0
+    },
+    {
+      "row_id": "ALL_REL-s2026092701",
+      "arm": "ALL_REL",
+      "model_seed": 2026092701,
+      "epochs": 50,
+      "logged_steps": 11100,
+      "optimizer_steps": 11100,
+      "accuracy": 0.7933095238095238,
+      "macro_f1": 0.7876081173590456,
+      "worst_RX": 0.691625,
+      "worst_day": 0.735547619047619,
+      "source_L_CE": 0.3022327495587839,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9773703703703703,
+        "source_val_rx_accuracy": {
+          "1": 0.9944444444444445,
+          "3": 0.9390740740740741,
+          "4": 0.9833333333333333,
+          "6": 0.9972222222222222,
+          "8": 0.9727777777777777
+        },
+        "source_val_worst_rx": 0.9390740740740741
+      },
+      "relation_statistics": {
+        "nonzero_relation_fraction": {
+          "count": 3774,
+          "min": 1.0,
+          "max": 1.0,
+          "mean": 1.0
+        },
+        "relation_loss": {
+          "count": 3774,
+          "min": 0.06756843626499176,
+          "max": 0.14505541324615479,
+          "mean": 0.08964060994174093
+        },
+        "response_loss": {
+          "count": 3774,
+          "min": 0.0036004013381898403,
+          "max": 0.009623076766729355,
+          "mean": 0.006051816862008905
+        },
+        "weighted_loss": {
+          "count": 3774,
+          "min": 0.06756843626499176,
+          "max": 0.14505541324615479,
+          "mean": 0.08964060994174093
+        },
+        "teacher_entropy_normalized": {
+          "count": 3774,
+          "min": 0.5642721056938171,
+          "max": 0.7088343501091003,
+          "mean": 0.6181726894115859
+        },
+        "teacher_U_relation_dispersion": {
+          "count": 3774,
+          "min": 0.09337875992059708,
+          "max": 0.15520977973937988,
+          "mean": 0.13174621277366863
+        },
+        "bank_normalized_variance": {
+          "count": 3774,
+          "min": 0.6450684666633606,
+          "max": 0.838708758354187,
+          "mean": 0.779597306952757
+        },
+        "teacher_response_L2": {
+          "count": 3774,
+          "min": 0.016267526894807816,
+          "max": 0.02233196422457695,
+          "mean": 0.01906670860908669
+        },
+        "student_PA_increment_norm": {
+          "count": 3774,
+          "min": 3.6168603897094727,
+          "max": 3.7931885719299316,
+          "mean": 3.703994498786057
+        },
+        "student_ref_increment_norm": {
+          "count": 3774,
+          "min": 1.5828189849853516,
+          "max": 1.7886989116668701,
+          "mean": 1.713674761501013
+        },
+        "relation_top_one_percent_mass": {
+          "count": 3774,
+          "min": 0.038468919694423676,
+          "max": 0.20066773891448975,
+          "mean": 0.08517555297743756
+        },
+        "bank_age_updates": {
+          "count": 3774,
+          "min": 0,
+          "max": 221,
+          "mean": 110.5
+        }
+      },
+      "aux_L_gradient_ratios": [
+        0.939235488668401,
+        0.37308783559101666,
+        0.22532954596962151,
+        0.6160996421496515
+      ],
+      "aux_L_cosines": [
+        0.3495322050244213,
+        -0.16676056970162134,
+        0.11810851682893891,
+        -0.07291978342438014
+      ],
+      "actual_gradient_groups": [
+        {
+          "step": 7327,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.4763377052059768,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.5926216669835678,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.4338193206449989,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.4187699363363029,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.20220983723507652,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.09919891535986243,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.14760991948941335,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.0750921277065972,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.02612105530345515,
+              "nonzero_values": 9230
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.3748878913450125,
+              "nonzero_values": 12576
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.022075917830380643,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.026935046038019085,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.02051183399211432,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.01953493294886581,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.009515967467759592,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.01728017832891467,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.030564479479689856,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.018399696767103218,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.005642503579375002,
+              "nonzero_values": 9230
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.03248955310435432,
+              "nonzero_values": 12576
+            }
+          }
+        },
+        {
+          "step": 7548,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.2778141694822173,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.2887754968762733,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.19847194415850491,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.17266467312604514,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.07487697146084434,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.018180641895163774,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.031195870788627914,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.029237577178829122,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.015553682117326861,
+              "nonzero_values": 9165
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.1485646510518807,
+              "nonzero_values": 12576
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.026640655028106277,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.028161066344917624,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.01750347591603939,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.013804949397177187,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.00571473571243824,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.014193367993885068,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.023878621997586027,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.017187556592872084,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.007127811280732636,
+              "nonzero_values": 9165
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.016370148694203782,
+              "nonzero_values": 12576
+            }
+          }
+        },
+        {
+          "step": 8880,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.12199759853233008,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.15116902946641553,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.1284039969700177,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.1200056798255622,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.05922581852915593,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.018736018884289395,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.02489677302450173,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.016804012477508554,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.010120256009050829,
+              "nonzero_values": 9165
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.09612972028002935,
+              "nonzero_values": 12576
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.010226949069328754,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.011709557053914266,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.007805526562868959,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.007602647431055186,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.003867178383427654,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.007867879328875825,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.01099255117121767,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.007656826031785879,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.0034304642419008755,
+              "nonzero_values": 9165
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.022506798466885334,
+              "nonzero_values": 12576
+            }
+          }
+        },
+        {
+          "step": 11100,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.19204075723584707,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.19303070378947493,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.16170992802605633,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.16149064462011598,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.07564443899600716,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.026776199426463716,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.04727726034435922,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.032430677187879106,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.012139550568133546,
+              "nonzero_values": 9100
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.1372803144250214,
+              "nonzero_values": 12576
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.028961367432241723,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.029441196969599136,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.01798715527345927,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.018335409020862666,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.01017865993089846,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.02265734839879067,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.04188438739828827,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.027827155185938333,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.00589863256739295,
+              "nonzero_values": 9100
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.028441321002606986,
+              "nonzero_values": 12576
+            }
+          }
+        }
+      ],
+      "actual_AdamW_update_count": 4,
+      "U_packet_observations": 963900,
+      "extra_L_forward_packets": 3060,
+      "head_fit_updates": 0,
+      "U_truth_available": 0,
+      "default_head_only": true,
+      "truth_last": true,
+      "independent_CM_recount": true,
+      "nonfinite_skips": 0
+    },
+    {
+      "row_id": "CROSS_REL-s2026092701",
+      "arm": "CROSS_REL",
+      "model_seed": 2026092701,
+      "epochs": 50,
+      "logged_steps": 11100,
+      "optimizer_steps": 11100,
+      "accuracy": 0.7959821428571429,
+      "macro_f1": 0.7904589491933741,
+      "worst_RX": 0.6977916666666667,
+      "worst_day": 0.7375238095238095,
+      "source_L_CE": 0.30332423763366434,
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9764814814814815,
+        "source_val_rx_accuracy": {
+          "1": 0.9948148148148148,
+          "3": 0.935,
+          "4": 0.9835185185185186,
+          "6": 0.9972222222222222,
+          "8": 0.9718518518518519
+        },
+        "source_val_worst_rx": 0.935
+      },
+      "relation_statistics": {
+        "nonzero_relation_fraction": {
+          "count": 3774,
+          "min": 1.0,
+          "max": 1.0,
+          "mean": 1.0
+        },
+        "relation_loss": {
+          "count": 3774,
+          "min": 0.06681646406650543,
+          "max": 0.14290066063404083,
+          "mean": 0.08977460593111501
+        },
+        "response_loss": {
+          "count": 3774,
+          "min": 0.0030574090778827667,
+          "max": 0.007905397564172745,
+          "mean": 0.005088103245637785
+        },
+        "weighted_loss": {
+          "count": 3774,
+          "min": 0.06681646406650543,
+          "max": 0.14290066063404083,
+          "mean": 0.08977460593111501
+        },
+        "teacher_entropy_normalized": {
+          "count": 3774,
+          "min": 0.5964272618293762,
+          "max": 0.7274845838546753,
+          "mean": 0.6460913390189678
+        },
+        "teacher_U_relation_dispersion": {
+          "count": 3774,
+          "min": 0.07425641268491745,
+          "max": 0.1229746863245964,
+          "mean": 0.10417963916393393
+        },
+        "bank_normalized_variance": {
+          "count": 3774,
+          "min": 0.6530264616012573,
+          "max": 0.8360321521759033,
+          "mean": 0.7792443843448863
+        },
+        "teacher_response_L2": {
+          "count": 3774,
+          "min": 0.014838652685284615,
+          "max": 0.020366579294204712,
+          "mean": 0.0172495285997184
+        },
+        "student_PA_increment_norm": {
+          "count": 3774,
+          "min": 3.6149730682373047,
+          "max": 3.7990498542785645,
+          "mean": 3.7074428750019446
+        },
+        "student_ref_increment_norm": {
+          "count": 3774,
+          "min": 1.5936245918273926,
+          "max": 1.7846980094909668,
+          "mean": 1.7119038362129062
+        },
+        "relation_top_one_percent_mass": {
+          "count": 3774,
+          "min": 0.03920920938253403,
+          "max": 0.2042260468006134,
+          "mean": 0.08670895698588395
+        },
+        "bank_age_updates": {
+          "count": 3774,
+          "min": 0,
+          "max": 221,
+          "mean": 110.5
+        }
+      },
+      "aux_L_gradient_ratios": [
+        0.7471337469975994,
+        0.3489365900808985,
+        0.20403240183479487,
+        0.49498986381030713
+      ],
+      "aux_L_cosines": [
+        0.34828747040501934,
+        -0.18556760328116104,
+        0.058696125003039785,
+        -0.10259479064994256
+      ],
+      "actual_gradient_groups": [
+        {
+          "step": 7327,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.48075082605286446,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.5858365436695601,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.4322631465752783,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.41463177194417944,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.20233624631327046,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.10540094475832493,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.156863377876868,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.08083703985141687,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.02764811251137367,
+              "nonzero_values": 9230
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.3642996717422027,
+              "nonzero_values": 12576
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.017698846228468394,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.020904193668981892,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.01588105125282303,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.014928410755089957,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.007147529832102875,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.012885761738276312,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.02192544882591145,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.013722985016637304,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.004783406041985916,
+              "nonzero_values": 9230
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.029557946283377847,
+              "nonzero_values": 12576
+            }
+          }
+        },
+        {
+          "step": 7548,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.29163338499710284,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.30094619041434356,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.199869425256693,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.17113930609092506,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.07634735023261219,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.015250867878463116,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.02643371460378444,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.02676118999072669,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.014875349762063212,
+              "nonzero_values": 9165
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.14540558003690338,
+              "nonzero_values": 12576
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.021867664832615343,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.022775121528558085,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.013995532113679295,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.011064241280389771,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.004616685164884339,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.010219977208534377,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.019185033616432264,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.013856329803313548,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.005926956023152661,
+              "nonzero_values": 9165
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.0115724711123365,
+              "nonzero_values": 12576
+            }
+          }
+        },
+        {
+          "step": 8880,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.10254920974849141,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.1234942207921297,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.10929832201287909,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.10661604583508931,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.05350287044685623,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.017419070846021786,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.023381789755954157,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.015789393673195602,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.009529732705068088,
+              "nonzero_values": 9230
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.08908355146459901,
+              "nonzero_values": 12576
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.006552815960374602,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.00784829362566095,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.005442703178804783,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.005962376607768642,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.0029111049710729957,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.006183408646226118,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.00888165101308521,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.006365868694142812,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.0029723106601126964,
+              "nonzero_values": 9230
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.020212951991433036,
+              "nonzero_values": 12576
+            }
+          }
+        },
+        {
+          "step": 11100,
+          "aux": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.16612701120875636,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.1653481934356883,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.14131154713411584,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.14565439157340224,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.07049776027224322,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.024747960018642774,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.042495154267662,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.029479332194782343,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.011484510769836002,
+              "nonzero_values": 9100
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.1288863474592362,
+              "nonzero_values": 12576
+            }
+          },
+          "response_observed_only": {
+            "t1": {
+              "parameters": 3840,
+              "norm": 0.02214990776203491,
+              "nonzero_values": 3840
+            },
+            "t2": {
+              "parameters": 7464,
+              "norm": 0.022513510832024866,
+              "nonzero_values": 7464
+            },
+            "t3": {
+              "parameters": 9696,
+              "norm": 0.013270624186620882,
+              "nonzero_values": 9696
+            },
+            "t_proj": {
+              "parameters": 15520,
+              "norm": 0.015236726861658844,
+              "nonzero_values": 15520
+            },
+            "f_proj": {
+              "parameters": 5280,
+              "norm": 0.008631605051263305,
+              "nonzero_values": 5280
+            },
+            "pa_b1": {
+              "parameters": 8160,
+              "norm": 0.01802607395003027,
+              "nonzero_values": 8160
+            },
+            "pa_b2": {
+              "parameters": 21632,
+              "norm": 0.03309753598742569,
+              "nonzero_values": 21632
+            },
+            "pa_b3": {
+              "parameters": 20608,
+              "norm": 0.0218610553561139,
+              "nonzero_values": 20608
+            },
+            "pa_proj": {
+              "parameters": 10400,
+              "norm": 0.004783309229887193,
+              "nonzero_values": 9100
+            },
+            "response_projection": {
+              "parameters": 12640,
+              "norm": 0.0198423811799059,
+              "nonzero_values": 12576
+            }
+          }
+        }
+      ],
+      "actual_AdamW_update_count": 4,
+      "U_packet_observations": 963900,
+      "extra_L_forward_packets": 3060,
+      "head_fit_updates": 0,
+      "U_truth_available": 0,
+      "default_head_only": true,
+      "truth_last": true,
+      "independent_CM_recount": true,
+      "nonfinite_skips": 0
+    }
+  ],
+  "paired": [
+    {
+      "treatment": "ALL_REL",
+      "control": "ZERO",
+      "difference": -0.017178571428571487,
+      "model_seed": 2026092701
+    },
+    {
+      "treatment": "CROSS_REL",
+      "control": "ZERO",
+      "difference": -0.014505952380952425,
+      "model_seed": 2026092701
+    },
+    {
+      "treatment": "CROSS_REL",
+      "control": "ALL_REL",
+      "difference": 0.0026726190476190625,
+      "model_seed": 2026092701
+    }
+  ],
+  "source_only_choice": true,
+  "target_feedback": false,
+  "goal_84": false,
+  "limitation": "CompleteABC singlemodelseed, D/remainingseeds incomplete; no3seedmeanorresponseperformanceclaim."
+}
