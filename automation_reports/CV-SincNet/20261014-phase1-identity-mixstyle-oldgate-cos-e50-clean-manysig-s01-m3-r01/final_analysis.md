@@ -50,3 +50,6 @@ RX比例下降时绝对RX变化反而增加，因此不能解释为删除RX信�
 源科学条件PASS：两LCE≤.5、t1/t2实际修改≥25%、实际source_z差≥1e−6。这些是接线与健康反证条件，不是性能已经提升。继续预定义seed02/03、同机制/同预算/匹配scratch控制的决定已在读取target指标前写入并推送 9e79dc413967aee78fa87e5d0f6c7408c44e4efc，本轮target负差不回流调整p/alpha/层位/父权重/seed/停轮，也不选择性重跑。另注册4个新模型、共200model-epochs；首seed不重训，最终合并真实三seed统计。当前新矩阵尚未启动，84%保持active。
 
 产物：results.json包含完整audit、逐seed/分组CM、50epoch曲线、U RX/day计数、错误迁移和optimizer证据；source_features.json为真实fθ；source_style_mechanism.json为完整源机制；source_qualification.json与seed_expansion_decision.json为不读target的固定源决策。Checkpoint、IQ、原日志、大型prediction留既定远端run，未上传。
+
+
+**更正（2026-10-14）：** 此前“零拟合”的表述只适用于默认 TX 身份头和只读观察器。原 native 训练收尾为六个新模型各拟合 RX/day ridge 探针，共 12 次；channel 探针尝试因 invalid_input 失败。默认身份头未单独训练或替换，目标预测未使用探针，但这些源诊断仍违反用户当前禁止另训诊断分类头的要求。历史产物保留，不能标为完整满足当前零探针约束。新 SIG_TIME 组合入口已关闭这些拟合。详见剩余两种子报告中的 native_nuisance_probe_evidence.json。

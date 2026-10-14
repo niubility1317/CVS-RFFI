@@ -23374,5 +23374,15 @@
     "scope": "Actual complete artifacts only; partial rows never imply full three-seed goal achievement; no result feedback to training",
     "seconds": 9.117506742477417,
     "analysis_commit": "de288981307917bb1404e8fa31b8ccc107eb4c8c"
+  },
+  "native_fit_correction": {
+    "identity_classifier_separate_fit": false,
+    "default_identity_head_replaced": false,
+    "native_RX_day_diagnostic_fit": true,
+    "native_completed_nuisance_fits": 12,
+    "native_channel_probe_attempt": "failed invalid_input; no completed channel fit",
+    "strict_current_default_head_constraint_met": false,
+    "observer_head_fit": false,
+    "explanation": "Six historical new MixStyle models each fitted RX/day ridge diagnostics at native train closure. Default TX head and f_theta were not refitted by those diagnostics, and predictions use the checkpoint default TX head. Historical fits are preserved and disclosed; future SIG_TIME statistics entry disables native fitted probes."
   }
 }

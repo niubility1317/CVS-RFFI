@@ -166,3 +166,8 @@ MixStyle 剩余两种子现已发布并运行：实际代码 `2b8371027c11cab4b8
 SIG_TIME统计组合独立完整审查及仅两项P1修复定点确认均已 PASS，可以发布。旧MixStyle source入口收尾拟合了RX/day nuisance探针，之前泛称零拟合不准确；默认TX头没有单独重训/替换，源探针未用于目标预测，但不符合本轮禁止另训诊断头要求。历史产物保留并将在该run完整报告中补明；新SIG_TIME入口scoped禁用所有这类拟合，不再承袭该旧闭包行为。
 
 SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery smoke/remotecompile/单archive比对PASS，GPU4/5/3三个owned模型首快照2/2/2 epoch，原生独立拟合probe禁用配置与日志增长VERIFIED，无failure。固定scratch50/11100、默认头联合训练。当前没有新target性能结果，84%仍未达；详见[发布证据](../automation_reports/CV-SincNet/20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s01-m4-r01/launch_evidence.json)。
+
+
+## MixStyle 三种子结果已完整回收（2026-10-14）
+
+默认头均值：旧门控+cos 80.5268%，同路径对照 80.7337%，身份保护 MixStyle 80.7246%。候选相对同路径对照 −0.0091 ± 1.3001 个百分点，正差 1/3；最差 RX 均值降低 1.0056 个百分点。全 9 行 1512000 次默认预测与 162 组指标独立复算，6 个新模型 300 model-epochs / 66600 更新，完整结果见 [三种子报告](../automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md)。历史 RX/day 探针拟合事实已补充到首 seed 及三种子报告；不能再表述为所有拟合均为零。当前 SIG_TIME 统计组合参数及源资格规则已在读取这些新目标均值前冻结并启动。

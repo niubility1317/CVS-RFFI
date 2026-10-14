@@ -33238,11 +33238,21 @@
         1943.3190438747406,
         2078.2004206180573
       ],
-      "next": "固定另2seeds同机制/同预算匹配scratch控制，第一seed不重训；再完整三seed汇总，不用目标差调参或选择性停止"
+      "next": "固定另2seeds同机制/同预算匹配scratch控制，第一seed不重训；再完整三seed汇总，不用目标差调参或选择性停止",
+      "native_fit_correction": {
+        "identity_classifier_separate_fit": false,
+        "default_identity_head_replaced": false,
+        "native_RX_day_diagnostic_fit": true,
+        "native_completed_nuisance_fits": 12,
+        "native_channel_probe_attempt": "failed invalid_input; no completed channel fit",
+        "strict_current_default_head_constraint_met": false,
+        "observer_head_fit": false,
+        "explanation": "Six historical new MixStyle models each fitted RX/day ridge diagnostics at native train closure. Default TX head and f_theta were not refitted by those diagnostics, and predictions use the checkpoint default TX head. Historical fits are preserved and disclosed; future SIG_TIME statistics entry disables native fitted probes."
+      }
     },
     {
       "run_id": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "method": "same fixed identity-protected t1/t2 MixStyle predefined seed expansion",
       "model_seeds": [
         2026092702,
@@ -33258,7 +33268,7 @@
       "head_fit": false,
       "source_decision_commit": "9e79dc413967aee78fa87e5d0f6c7408c44e4efc",
       "source_qualification": "20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s01-m3-r01",
-      "target_results": null,
+      "target_results": "complete; clean default head only",
       "combined_first_seed_retrained": false,
       "combined_model_seeds": [
         2026092701,
@@ -33267,29 +33277,125 @@
       ],
       "execution_commit": "2b8371027c11cab4b80c17a8c2d0797fac00524a",
       "launch_evidence": "automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01/launch_evidence.json",
-      "running_epochs": [
+      "run_failure": null,
+      "native_fit_correction": {
+        "identity_classifier_separate_fit": false,
+        "default_identity_head_replaced": false,
+        "native_RX_day_diagnostic_fit": true,
+        "native_completed_nuisance_fits": 12,
+        "native_channel_probe_attempt": "failed invalid_input; no completed channel fit",
+        "strict_current_default_head_constraint_met": false,
+        "observer_head_fit": false,
+        "explanation": "Six historical new MixStyle models each fitted RX/day ridge diagnostics at native train closure. Default TX head and f_theta were not refitted by those diagnostics, and predictions use the checkpoint default TX head. Historical fits are preserved and disclosed; future SIG_TIME statistics entry disables native fitted probes."
+      },
+      "combined_summary": [
         {
-          "row": "MATCHED_CONTROL-s2026092702",
-          "epoch": 12,
-          "gpu": 1
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 3,
+          "accuracy_mean": 0.8052678571428572,
+          "accuracy_sd": 0.023775723031464996,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238,
+            "2026092702": 0.7808154761904762,
+            "2026092703": 0.8283035714285715
+          },
+          "macro_f1_mean": 0.8000238637751929,
+          "worst_RX_mean": 0.6797083333333334,
+          "worst_day_mean": 0.7605555555555555
         },
         {
-          "row": "IDENTITY_MIXSTYLE-s2026092702",
-          "epoch": 9,
-          "gpu": 2
+          "arm": "MATCHED_CONTROL",
+          "seed_count": 3,
+          "accuracy_mean": 0.8073373015873015,
+          "accuracy_sd": 0.023497774787701608,
+          "seed_accuracy": {
+            "2026092701": 0.8085,
+            "2026092702": 0.7832797619047619,
+            "2026092703": 0.8302321428571429
+          },
+          "macro_f1_mean": 0.8022401094800653,
+          "worst_RX_mean": 0.6848472222222222,
+          "worst_day_mean": 0.7645714285714286
         },
         {
-          "row": "MATCHED_CONTROL-s2026092703",
-          "epoch": 11,
-          "gpu": 3
-        },
-        {
-          "row": "IDENTITY_MIXSTYLE-s2026092703",
-          "epoch": 11,
-          "gpu": 4
+          "arm": "IDENTITY_MIXSTYLE",
+          "seed_count": 3,
+          "accuracy_mean": 0.8072460317460317,
+          "accuracy_sd": 0.01067756493991522,
+          "seed_accuracy": {
+            "2026092701": 0.8060952380952381,
+            "2026092702": 0.7971904761904762,
+            "2026092703": 0.8184523809523809
+          },
+          "macro_f1_mean": 0.801617346879955,
+          "worst_RX_mean": 0.6747916666666667,
+          "worst_day_mean": 0.763968253968254
         }
       ],
-      "run_failure": null
+      "combined_paired": [
+        {
+          "arm": "MATCHED_CONTROL",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.001815476190476173,
+            0.0024642857142856966,
+            0.0019285714285713906
+          ],
+          "mean_difference": 0.00206944444444442,
+          "sd_difference": 0.00034658672002452337,
+          "positive_seeds": 3
+        },
+        {
+          "arm": "IDENTITY_MIXSTYLE",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            -0.0005892857142857366,
+            0.01637500000000003,
+            -0.009851190476190541
+          ],
+          "mean_difference": 0.0019781746031745837,
+          "sd_difference": 0.013300269023018193,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "IDENTITY_MIXSTYLE",
+          "control": "MATCHED_CONTROL",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            -0.0024047619047619095,
+            0.013910714285714332,
+            -0.011779761904761932
+          ],
+          "mean_difference": -0.0000912698412698365,
+          "sd_difference": 0.013000550983294423,
+          "positive_seeds": 1
+        }
+      ],
+      "full_recount": {
+        "models": 9,
+        "new_models": 6,
+        "new_step_records": 66600,
+        "epoch_records": 450,
+        "predictions": 1512000,
+        "metric_records": 162
+      },
+      "goal_84": false,
+      "final_report": "automation_reports/CV-SincNet/20261014-phase1-identity-mixstyle-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md",
+      "next": "No stable paired improvement; finish frozen SIG_TIME statistics first."
     },
     {
       "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s01-m4-r01",
