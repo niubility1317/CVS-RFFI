@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "torch": "2.10.0+cu128",
+  "device": "cpu",
+  "commands": [
+    "experiments.cvs_evidence_recomposition20.checks_objective",
+    "experiments.cvs_evidence_recomposition20.checks_capture",
+    ".codex_tmp/check_PA_assay_20261015.py"
+  ],
+  "protocol_negatives": true,
+  "synthetic_four_term_reconstruction_exact": true,
+  "PA_swap_changed_packets": 30,
+  "W_and_three_gains_auxiliary_gradients_None": true,
+  "feature_branch_gradients_nonzero": true,
+  "actual_constructor_synthetic_capture": true,
+  "state_RNG_caches_hooks_preserved": true,
+  "new_scope_compile": true,
+  "V_gradient_negative": true,
+  "actual_data_or_checkpoint_reads": 0,
+  "actual_updates": 0
+}

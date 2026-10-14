@@ -1,0 +1,161 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-PA-evidence-recomposition-sourceLV-s2026092701-r01",
+  "group_id": "phase1-PA-evidence-recomposition-source",
+  "display_name": "同身份跨RX PA证据重组：初始/E20源域机制诊断",
+  "description": "以现有默认头读取真实四项部署特征，只将PA证据在同TX/eq/day、不同RX之间作固定双射交换。辅助CE只给特征梯度，默认W与三个融合gain脱离辅助图；主CE仍正常联合训练。比较ZERO/SELF/SWAP_PA，不新增投影、分类头或参数。",
+  "kind": "diagnostic",
+  "stage": "Phase1 source mechanism",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "evidence_relation",
+    "cross_RX",
+    "PA",
+    "source_only",
+    "default_head",
+    "CENTER25K",
+    "SIG_TIME"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Current user: 结合报告和之前实验优化探索；training-mechanism goal. Source-only assay precedes any separately preregistered E20 training.",
+  "code": {
+    "commit": "release_commit.txt (resolved once from actual Git HEAD at launch)",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "N607 ordinary account; CVS-RFFI Python; CPU 2 threads; immutable E20 runtime plus this committed overlay",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_PA_evidence_recomposition_sourceLV_20261015_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md",
+    "physical_ids_ref": "same validated source role_ids handle consumed by parent design.SOURCE",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "roles": {
+      "L_s": 6300,
+      "U_s": "hidden; no IQ read",
+      "V": 27000
+    },
+    "train_ratio": {
+      "L": 0.07,
+      "U": 0.63,
+      "V": 0.3
+    },
+    "validation_ref": "VALIDATED_ONCE unchanged handles; no new hash/validation",
+    "protocol_schema": "p2_min_v1 (unchanged capsule/split handles, unused by source assay)"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "claim_scope": "Known-source relation and hypothetical-step mechanism only; V no gradients/parameter fit; no target/U truth"
+  },
+  "checkpoint": {
+    "initialization": "strict own source BASE_CE firstseed initial and final20",
+    "sources": [
+      "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01/BASE_CE-s2026092701/source"
+    ],
+    "provenance_verdict": "source_proof and checkpoint metadata BEFORE either torch.load",
+    "selection_rule": "Fixed preregistered pureCE control, not best target score; own scratch ancestry only"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/PA-evidence-source-20261015",
+    "gpu_policy": "CPU only/GPU allocations0",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-PA-evidence-recomposition-sourceLV-s2026092701-r01/source_diagnostic",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_PA_evidence_recomposition_sourceLV_20261015_r01/source_probe.stdout.log",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_SIGTIME_PA_evidence_recomposition_sourceLV_20261015_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_PA_evidence_recomposition_sourceLV_20261015_r01/experiments/cvs_evidence_recomposition20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_PA_evidence_recomposition_sourceLV_20261015_r01/resolved_request.json",
+    "stop_rule": "Exact run-owned provenance/role/physical-ID/state mismatch, nonfinite value or unhandled technical failure: preserve outputs and stop this assay; no unchanged retry or unrelated process changes. Scientific gate failure closes this fixed PA recomposition variant without coefficient/pairing/threshold scans."
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "release_commit.txt",
+    "resolved_request.json",
+    "submit.json",
+    "runtime.json",
+    "eight state/ordinal scalar records",
+    "summary.json",
+    "independent_readback.json",
+    "report.md"
+  ],
+  "metrics_plan": {
+    "matrix": "2 fixed states INITIAL/FINAL20 x 4 L90 ordinals0/17/35/52 x ZERO/SELF/SWAP_PA",
+    "budget": "360uniqueL+180uniqueV;6300L/27000V metadata;5404 packet network forwards;48 temporary CPU AdamW steps;0 actual steps/epochs/headfit/EMA/U/target",
+    "gradient": "L only; coefficient .1; actual scale30/eps1e-4; reference and SIG_TIME stay anchor; sameTX/eq/day fixed source RX1->3->4->6->8->1 cycle; incomplete cohort entirely skipped",
+    "optimizer": "INITIAL fresh AdamW native recipe/lr2e-4/empty moments explicitly hypothetical; FINAL20 actual saved moments/lr1e-6. Clip5 separately for base and total using unchanged real PyTorch CPU AdamW. Not contemporaneous CUDA training.",
+    "V_observation": "Fixed90cells x ordinals0/1=180 disjointV; no-grad/eval. After virtual proposals restore pre-step W and all gains; double precision geometry/pre-W CE from raw joint160.",
+    "source_falsification": {
+      "minimum_qualified_cells": 2,
+      "auxiliary_gradient_min": 1e-08,
+      "SWAP_SELF_gradient_relative_difference_min": 0.05,
+      "SWAP_SELF_V_identity_margin_gain_min": 1e-05,
+      "SWAP_SELF_V_preW_CE_reduction_min": 1e-06,
+      "SWAP_SELF_V_feature_RMS_min": 1e-07,
+      "minimum_auxiliary_changed_Sinc_kernels": 1,
+      "interpretation": "Source signal and single virtual-step direction only; not training efficacy, target selection or novelty proof"
+    },
+    "stop_rule": "Exact run-owned provenance/role/physical-ID/state mismatch, nonfinite value or unhandled technical failure: preserve outputs and stop this assay; no unchanged retry or unrelated process changes. Scientific gate failure closes this fixed PA recomposition variant without coefficient/pairing/threshold scans.",
+    "literature": "MixStyle (arxiv2104.02008) mixes instance feature statistics; FSDCL (arxiv2108.08596) low-frequency stylization and domain-aware contrast. Evidence-branch reassembly in general is prior art; this fixed actual CVS PA/default-readout/gain-shielded gradient hypothesis is not a proved first method.",
+    "future_training": "Only if fixed source signal gate passes, separate scratch20 or verified E20+20 matched pureCE/SSL controls and default-head clean truth-last pipeline. Historical E50 not continued."
+  },
+  "rows": [
+    {
+      "row_id": "BASE_CE-s2026092701-source-assay",
+      "method": "PA_EVIDENCE_RECOMPOSITION",
+      "purpose": "bounded source mechanism falsification",
+      "config_ref": "experiments/cvs_evidence_recomposition20/configs/source_probe.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_PA_evidence_recomposition_sourceLV_20261015_r01/resolved_request.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Parent original physical split unchanged; no stochastic augmentation/support/query sampling; fixed source packet ordinals, no other seeds implied.",
+      "k": null,
+      "scenario": null,
+      "optimizer": "temporary CPU AdamW copies only",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "metrics_plan.budget",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-PA-evidence-recomposition-sourceLV-s2026092701-r01/source_diagnostic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_PA_evidence_recomposition_sourceLV_20261015_r01/source_probe.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_PA_evidence_recomposition_sourceLV_20261015_r01/experiments/cvs_evidence_recomposition20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_PA_evidence_recomposition_sourceLV_20261015_r01/resolved_request.json",
+      "expected_artifacts": [
+        "preflight.json",
+        "release_commit.txt",
+        "resolved_request.json",
+        "submit.json",
+        "runtime.json",
+        "eight state/ordinal scalar records",
+        "summary.json",
+        "independent_readback.json",
+        "report.md"
+      ]
+    }
+  ],
+  "notes": [
+    "No trained/retained diagnostic head; actual default classifier unchanged.",
+    "Four real branch outputs captured call-locally; no joint subtraction or fake normalization.",
+    "All original healthy tasks/historical outputs preserved. Current source assay requires no target prediction or truth-side scoring."
+  ],
+  "registered_at": "2026-10-14T20:05:20+00:00"
+}
