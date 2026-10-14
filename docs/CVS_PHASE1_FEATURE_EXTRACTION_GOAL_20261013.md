@@ -124,3 +124,6 @@ SIG_TIME首seedownfinal50真实源诊断已ANALYZED/VERIFIED：pre-gain160固定
 
 
 SIG_TIME 匹配训练矩阵已发布并 VERIFIED：BASE、SUPCON、无门控 ORDER、实际增量 CREDIT 首种子均从零训练，原默认头与 33L+17U 配方保持；固定 50 轮，每 16 步执行一次中层辅助评价，前 5 轮预热。首种子源域健康、机制调用及实际梯度条件通过才扩展其余 8 行，每行冻结后自动 clean 预测和独立 truth-last 评分。四组的进程、CWD、命令、GPU 与日志增长已经独立核实；当前没有新的性能结果，84% 仍 active。详见[匹配训练报告](../automation_reports/CV-SincNet/20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01/report.md)。
+
+
+SIG_TIME CREDIT 的实际中期学习信号已 VERIFIED：固定 step 4,448 的辅助梯度范数 .01119972，全参数增量 2.80581e−5；实际时序分支与 t2 增量分别为 2.15263e−5、1.06615e−5，一次实际更新与临时预测最大差 7.45058e−9。CREDIT 第 23 轮的 250 次调用中 57 次选中梯度非零，75/1,250 个 RX 分项通过；四组已保存接受决定和计数独立复算，0 新 IQ/前向/更新/目标访问。当前检查点仍属 L 阶段，尚待 U 阶段固定点、源扩种子条件及 clean truth-last；不能据此宣称泛化收益，84% 仍 active。详见[训练中的源信号证据](../automation_reports/CV-SincNet/20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01/source_signal_progress.json)。
