@@ -10,7 +10,7 @@
 | R04 | 五·顺序1 | MixStyle全部种子回收且不按负分改计划 | 已提交三种子MixStyle报告 | verified | f1d1e860e；1512000预测/162指标独立复算 | 历史RX/day探针违规如实披露 |
 | R05 | 二·结构分析 | 区分面积、统计形状和常数时间坐标；不把顺序敏感视为泛化证据 | checks.py/report | verified | float64：cov置乱不变、area反转/内部顺序及时间项恒等式PASS | 性能只由真实冻结测试证明 |
 | R06 | 三·路线三 | 独立比较t2与t2.pool取点 | experiments/cvs_read_position50及seeds | verified | 完整3seed/9row/66600steps/1512000pred/162metrics独立复算VERIFIED | PRE82.5599vsPOST82.6909，无稳定提升 |
-| R07 | 三·路线二 | 连续4→2→1层级含三个边界增量和统一全局时间 | experiments/cvs_source_hierarchy；后续真实训练 | implemented | 固定L720连续组合/135统计/保存数组复算VERIFIED | 真实层级训练对照尚未实现发布 |
+| R07 | 三·路线二 | 连续4→2→1层级含三个边界增量和统一全局时间 | experiments/cvs_hierarchy50及source_hierarchy | implemented | 源L720/135统计VERIFIED，真实4新模型已发布健康训练 | 等待固定终轮默认头及源资格；保留GT局部和同容量大窗统计控制 |
 | R08 | 三·路线四 | 可信门控内有界stopgrad难度权重及真实训练梯度 | 后续训练侧备选 | deferred | 当前保持原U损失 | 报告建议不抢占结构路线 |
 | R09 | 五及目标 | 首seed同路径SIG_TIME与两个描述子、旧基线；源PASS才扩02/03；自动默认头truthlast、Git | design/source/dispatch/score/report | verified | 完整三seed12row／99900steps／2016000默认预测／216组指标复算VERIFIED，Git交付 | 不使用目标分数控制扩seed |
 
@@ -44,3 +44,6 @@ R07源几何已完成：20261014-phase1-source-hierarchy-geometry-manysig-s01-m1
 
 
 R06完整3seed已闭环verified：PRE82.5599%±1.5656pp、POST82.6909%±1.6836pp，配对−.1310±.2239pp、1/3正差，净正确−660/504000。所有6新模型pool实际更新、初态L720function完全同、最终源z差异、精确导出/W独立和native零额外拟合核实。450epoch记录/66600新增steps/1512000固定pred/162指标复算VERIFIED。现7verified/1implemented（R07网络尚未训练）/1deferred（R08），0blocked/rejected；最高剩余风险是层级实际训练是否有收益，源几何非性能。验证：experiments.cvs_read_position_seeds.audit固定保存产物重算，未新增forward。
+
+
+R07连续层级网络已实现并发布：20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s01-m5-r01，实现588209f4186e3056a310458237f4e478c6c15a64、执行7bdfdbf448b9c97ead5702f958bee293d646a09f；4新scratch50/11100+1历史oldgatecos，singleprojection/global32/3bridges/4→2→1，LOCAL_GTIME和同容量HIER_STAT控制。native4模型grad/update/defaulthead/teacher/export/W独立及连续direct梯度检查PASS，一次P0/P1 PASS；实际PID/CWD/argv/GPU5/6/4/7/日志增长VERIFIED、nativefittedprobes关闭。公式按报告一阶+二阶skewarea严格实现，统计/签名原始量级信息非完全匹配已披露。剩余02/03 20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s0203-m10-r01 已实现登记/8实际modelcontext及sourcegate negatives PASS，但源资格未完成、未发布。当前7verified/1implemented/1deferred、0blocked/rejected，最高剩余风险是HIER_ORDER完整3seed能否稳定强化SIG_TIME，不把RUNNING或源几何当性能。验证命令python -m experiments.cvs_hierarchy50.checks，native check_control_context.py，hierarchy50.publish --inspect；remaining check_context/source_negative只局部PASS。

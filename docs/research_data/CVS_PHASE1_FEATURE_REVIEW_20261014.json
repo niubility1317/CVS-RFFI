@@ -34622,6 +34622,28 @@
       "extra_head_fit_updates": 0,
       "goal84": false,
       "report": "automation_reports/CV-SincNet/20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
+    },
+    {
+      "route": "Continuous temporal hierarchy",
+      "run_id": "20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s01-m5-r01",
+      "implementation_commit": "588209f4186e3056a310458237f4e478c6c15a64",
+      "execution_commit": "7bdfdbf448b9c97ead5702f958bee293d646a09f",
+      "status": "RUNNING",
+      "new_models": 4,
+      "reused_baselines": 1,
+      "epochs_per_new_model": 50,
+      "updates_per_new_model": 11100,
+      "primary": "HIER_ORDER",
+      "control": "HIER_STAT",
+      "clock_control": "LOCAL_GTIME",
+      "default_head_only": true,
+      "extra_head_fit_updates": 0,
+      "performance_results": null,
+      "source_qualification_pending": true,
+      "conditional_remaining_run": "20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s0203-m10-r01",
+      "remaining_status": "REGISTERED",
+      "remaining_code_commit": "d2b9e5a3ddee095d429b30db204ff826cc7e7d0e",
+      "report": "automation_reports/CV-SincNet/20261014-phase1-hierarchy-oldgate-cos-e50-clean-manysig-s01-m5-r01/report.md"
     }
   ],
   "diagnostics": {
@@ -79852,8 +79874,8 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "Implement fixed route2 hierarchy with local-global-time and matched-capacity large-window statistics controls; one core hypothesis, default jointly trained head, scratch50",
-    "Only unchanged predefined remaining seeds after preregistered source-only qualification; complete fixed predictions/truth-last and Git delivery"
+    "Complete firstseed hierarchy source qualification/frozen defaulthead truth-last; decide unchanged02/03 using source-only verdict before new targetmetric reads",
+    "Recover full predefined3seed hierarchy and compare ordered/statistical/clock/local/baseline controls; preserve all results and verify Git delivery"
   ],
   "goal_84": false,
   "Phase2_development": false,

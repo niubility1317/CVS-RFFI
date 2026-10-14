@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "first_fixed_configs_unchanged": true,
+  "rows": 10,
+  "new_models": 8,
+  "real_model_contexts": [
+    {
+      "seed": 2026092702,
+      "arm": "SIG_TIME",
+      "pool": 18976
+    },
+    {
+      "seed": 2026092702,
+      "arm": "LOCAL_GTIME",
+      "pool": 18976
+    },
+    {
+      "seed": 2026092702,
+      "arm": "HIER_STAT",
+      "pool": 32416
+    },
+    {
+      "seed": 2026092702,
+      "arm": "HIER_ORDER",
+      "pool": 32416
+    },
+    {
+      "seed": 2026092703,
+      "arm": "SIG_TIME",
+      "pool": 18976
+    },
+    {
+      "seed": 2026092703,
+      "arm": "LOCAL_GTIME",
+      "pool": 18976
+    },
+    {
+      "seed": 2026092703,
+      "arm": "HIER_STAT",
+      "pool": 32416
+    },
+    {
+      "seed": 2026092703,
+      "arm": "HIER_ORDER",
+      "pool": 32416
+    }
+  ],
+  "same_seed_initial_native_body_head_equal": true,
+  "matched_hierarchy_initial_parameters_equal": true,
+  "foreign_context_rejected": true,
+  "three_seed_summary": true,
+  "release_dependency_and_compile": true
+}
