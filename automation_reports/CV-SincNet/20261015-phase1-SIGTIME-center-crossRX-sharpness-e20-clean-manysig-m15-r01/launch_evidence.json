@@ -1,0 +1,105 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01",
+  "execution_commit": "6693e4480ef990bc23c5021ff1440b547fe5fcaf",
+  "release": "cvs_SIGTIME_center_crossRX_sharpness20_20261015_r01",
+  "archive_transfer_comparison": "VERIFIED_ONCE",
+  "remote_compile": "PASS",
+  "preflight": {
+    "status": "PASS",
+    "real_checkpoint_noquery": true,
+    "strict_student_ownEMA": true,
+    "same_source_contract": true,
+    "query_access": false,
+    "no_inherited_training": true,
+    "head_fit_updates": 0,
+    "checks": {
+      "source": {
+        "status": "PASS",
+        "torch": "2.1.0+cu121",
+        "device": "cpu",
+        "default50_budget_compatible": true,
+        "scratch20_budget": 4440,
+        "scheduled_calls": 250,
+        "bank_mock_IQ_reads": 180,
+        "bank_original_ordinals": [
+          68,
+          69
+        ],
+        "BASE_CE_U_length_only_no_iteration": true,
+        "BASE_CE_EMA_args_disabled": true,
+        "callbacks_installed_after_teacher_deepcopy": true,
+        "auxiliary_loss_single_consumption": true,
+        "actual_mock_AdamW_updates": 4,
+        "temporary_mock_AdamW_steps": 8,
+        "probe_steps": [
+          448,
+          1776,
+          3104,
+          4432
+        ],
+        "full_pseudo_base_includes_U": true,
+        "protected_auxiliary_gradients_None": true,
+        "actual_shadow_matches": true,
+        "live_L_counter_unchanged_by_auxiliary": true,
+        "native_scope_restored": true,
+        "source_IQ_reads": 0,
+        "training_launches": 0,
+        "boundary": "Synthetic source/native integration only; no efficacy evidence"
+      },
+      "provenance": {
+        "status": "PASS",
+        "source_metadata_negatives": 150,
+        "all_five_E20_recipes": true,
+        "old_E50_and_wrong_CP_rejected": true,
+        "U_EMA_head_data_and_ancestry_mismatch_rejected": true,
+        "paired_error_census": true,
+        "proof_precedes_checkpoint_load": true,
+        "actual_data_or_checkpoint_reads": 0,
+        "actual_optimizer_updates": 0
+      }
+    },
+    "initialization": "Old legal source checkpoint is used only by this smoke process; every worker builds fresh scratch20 and its own EMA"
+  },
+  "post_launch": {
+    "PID_CWD_argv_GPU_log_growth": "VERIFIED",
+    "firstseed_rows": 5,
+    "TOTAL_processes_per_GPU_max": 2,
+    "rows": [
+      {
+        "row_id": "BASE_CE-s2026092701",
+        "GPU": 1,
+        "epochs_completed": 1,
+        "log_growth_observed": true
+      },
+      {
+        "row_id": "BASE_SSL-s2026092701",
+        "GPU": 3,
+        "epochs_completed": 1,
+        "log_growth_observed": true
+      },
+      {
+        "row_id": "CLEAN_CE-s2026092701",
+        "GPU": 6,
+        "epochs_completed": 1,
+        "log_growth_observed": true
+      },
+      {
+        "row_id": "GLOBAL_GAP-s2026092701",
+        "GPU": 7,
+        "epochs_completed": 1,
+        "log_growth_observed": true
+      },
+      {
+        "row_id": "CROSS_GAP-s2026092701",
+        "GPU": 7,
+        "epochs_completed": 0,
+        "log_growth_observed": true
+      }
+    ]
+  },
+  "source_train_complete": false,
+  "target_results_available": false,
+  "head_fit_updates": 0,
+  "goal_84_complete": false
+}

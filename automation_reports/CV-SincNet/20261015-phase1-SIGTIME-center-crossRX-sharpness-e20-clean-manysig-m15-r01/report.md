@@ -1,3 +1,5 @@
+**发布状态 VERIFIED，训练中。** 执行 commit `6693e4480ef990bc23c5021ff1440b547fe5fcaf`。远端compile和realcheckpoint/noquerysmoke PASS；单archiveSHA比较通过。独立回读确认首seed5行PID/CWD/cmd/GPU与日志增长，实际20轮config吻合，所有GPU总进程数未超过3。尚无冻结target结果；10行等待既定source规则，84%目标仍active。
+
 # E20 跨 RX 特征脆弱性矩阵预登记
 
 运行 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-clean-manysig-m15-r01`。固定 BASE_CE、BASE_SSL、CLEAN_CE、GLOBAL_GAP、CROSS_GAP × modelseed2026092701/02/03，15 行全部从零训练20轮/4440实际更新。全部相同 SIG_TIME、固定 CENTER_25K、原6×160默认分类头联合训练，0新参数/分类头/额外真实优化步骤。BASE_CE为20L且U/EMA前向和迭代实际关闭；其余4行为13L＋7U，保留原batch_neighbor/ownEMA/entropy/cos，U TX真值隐藏。关闭普通L随机增强和星地训练，保留原U专用strongGaussian。13＋7预先固定为E20内原33＋17时序的压缩近似，不照搬超出预算的E50。历史原E20纯CE、CENTER和SIG_TIME结果保留，新匹配基线用于本矩阵的机制比较。

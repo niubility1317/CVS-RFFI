@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "Continue active goal. Current AGENTS scratch20 overrides historical E50; source prototype passed4/4 before target access. Retain old positive CENTER/SIG_TIME and negative results, no new parameter scan or target-ranked initialization.",
   "code": {
-    "commit": "release_commit.txt actual committed code/config",
+    "commit": "6693e4480ef990bc23c5021ff1440b547fe5fcaf",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_center_crossRX_sharpness20_20261015_r01",
@@ -3372,7 +3372,7 @@
     "Prior targetbenchmark exposed; no claim of newblindtest",
     "Scratch50 cost distinct from E20/E20+20 histories"
   ],
-  "status": "PLANNED",
+  "status": "RUNNING",
   "local_verification": "math,actual native/defaulthead gradient/checkpoint/teacher checks,pipeline protocol negatives PASS",
   "independent_review": {
     "status": "PASS",
@@ -3382,5 +3382,13 @@
   },
   "registered_at": "2026-10-14T18:23:04+00:00",
   "stop_rule": "Only exactrunowned systemictechnicalfailure: source/metadata/checkpoint/role mismatch, nonfinite, unavailabledependency, live state/callback/actualupdate inconsistency, forbidden truth/head fit, unable legal predictions or scoring. Preserve partial; no automatic retry, healthyotherowners untouched.",
-  "launch_evidence_ref": "launch_evidence.json"
+  "launch_evidence_ref": "launch_evidence.json",
+  "result": {
+    "status": "RUNNING",
+    "launch_status": "VERIFIED",
+    "training_rows_launched": 5,
+    "pending_source_rule_rows": 10,
+    "test_rows_completed": 0,
+    "goal_84": null
+  }
 }
