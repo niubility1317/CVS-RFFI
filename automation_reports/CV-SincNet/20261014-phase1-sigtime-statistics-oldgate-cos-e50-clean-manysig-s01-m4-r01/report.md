@@ -21,3 +21,5 @@
 唯一独立审查发现2项直接P1：private CPU fork调用torch.manual_seed会重置已初始化CUDA RNG；未被当前native消费的labeled_context导致主L计数0。均已定点修复：CPU default_generator独立seed；实际root.forward计数，仅训练且合法y_tx主L进入，U None/eval不计，仍执行原forward，deepcopy绑定自身。真实CPU/CUDA RNG与native主L/U/eval/teacher合成定点检查PASS。正在完成该两处一次定点确认；旧框架不重审。
 
 唯一完整P0/P1审查与原两项P1的一次定点确认均 PASS。环境重置后仅恢复未完成的该两项定点确认；未重复全面审查。实际CPU/CUDA RNG与主L/U/eval/teacher绑定合成检查通过，其余新执行路径无直接缺陷。接下来提交代码/config Git HEAD并发布，启动后记录实际GPU/ownedPID/CWD/argv/配置/log-growth，不再增加门槛。
+
+实际发布 VERIFIED，执行代码 eda57144de34d479288f42d14c037eb7802c1ecd，dispatcher PID2051754，三个新模型 GPU4/5/3（SIG_TIME/X3/MV_COV），epoch2/2/2，配置与owned进程/CWD/argv/log-growth独立核实。原生另训probe禁用=true；newpool18976/55968/55968与设计一致。旧baseline行已复用评分，三个新模型固定50，不热改。单archiveSHA与remotecompile、真实同契约CP no-query smoke PASS。新性能结果尚未产生；详见[启动证据](launch_evidence.json)。

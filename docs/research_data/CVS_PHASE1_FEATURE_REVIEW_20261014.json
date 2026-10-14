@@ -33293,7 +33293,7 @@
     },
     {
       "run_id": "20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s01-m4-r01",
-      "status": "IMPLEMENTED_REVIEWED",
+      "status": "RUNNING",
       "method": "SIG_TIME plus independent mean/variance and covariance views with parameter-matched threeSIG_TIME control",
       "model_seeds": [
         2026092701
@@ -33322,7 +33322,26 @@
       "target_results": null,
       "source_parent_commit": "990ffabe0",
       "reported_historical_SIG_TIME_mean": 0.8303928571428572,
-      "user_directed_exposed_benchmark_base": true
+      "user_directed_exposed_benchmark_base": true,
+      "execution_commit": "eda57144de34d479288f42d14c037eb7802c1ecd",
+      "running_snapshot": [
+        {
+          "row": "SIG_TIME-s2026092701",
+          "epoch": 2,
+          "gpu": 4
+        },
+        {
+          "row": "SIG_TIME_X3-s2026092701",
+          "epoch": 2,
+          "gpu": 5
+        },
+        {
+          "row": "SIG_TIME_MV_COV-s2026092701",
+          "epoch": 2,
+          "gpu": 3
+        }
+      ],
+      "native_nuisance_fitted_probes_disabled": true
     }
   ],
   "diagnostics": {
