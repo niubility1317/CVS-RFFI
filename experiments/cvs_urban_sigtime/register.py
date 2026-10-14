@@ -12,7 +12,7 @@ def make():
         description='从头 E30，普通拼接基线 low suburban/mid urban/low urban；独立检验 paired CE、源域状态课程、单侧默认头间隔和有条件 U→urban 软监督。',
         aliases=[],tags=['phase1','sigtime','practical','urban','paired_CE','source_only','default_head','old_gate_cos','scratch30'],
         authorization='Current user goal and steering: fixed SIG_TIME, scratchE30, lowurban>=60%, ordinaryconcat3scene baseline, automaticclean+sixpractical. No administrator use or unrelated workload changes.',
-        parent_run_ids=[],notes=['18 registered rows are a maximum conditional matrix, not18 completed models.',
+        parent_run_ids=[],replaces_run_id='20261014-phase1-sigtime-urban-paired-e30-manysig-m18-r01',notes=['18 registered rows are a maximum conditional matrix, not18 completed models.',
             'FirstseedC0/B0/C1/C2/C3; remaining fixedseeds andC4 only from preregistered source-only qualification.',
             'E50 reference is frozen diagnostic-only; no training inheritance. Own EMA is initialized from own scratch network.',
             'B0 ordinaryconcat andC1 separate equalweightCE are algebraically equivalent at fixedlogits. Main comparisons isolate sourcecurriculum andmargin.',
@@ -24,14 +24,14 @@ def make():
         source_receivers=[1,3,4,6,8],target_receivers=['1-1','14-7','2-1','20-1','7-14','7-7','8-8'],
         source_days=[1,2,3],target_days=['2021_03_01','2021_03_08','2021_03_15','2021_03_23'],
         tx_sets_ref=d.CAPSULE+'/manifest.json#/classes',roles=dict(L_s=6300,U_s=56700,V=27000),train_ratio=.7,
-        validation_ref=str(d.FORMAL_VIEWS/'manifest.json'),leo_config_ref='experiments/cvs_urban_sigtime/design.py and preserved formal manifest',
+        validation_ref=(d.FORMAL_VIEWS/'manifest.json').as_posix(),leo_config_ref='experiments/cvs_urban_sigtime/design.py and preserved formal manifest',
         support_query_ref=None,capsule_id=None,split_id=None)
     spec['checkpoint'].update(initialization='scratch matched per modelseed; no parentloaded',sources=[],
         contract_check_ref='each source/source_contract.json and native exact role-ID comparison',provenance_verdict='SCRATCH_ONLY_EXACT_SOURCE_CONTRACT',selection_rule='fixed final30; no epoch or target selection')
     spec['permissions'].update(claim_scope='Phase1 fixed practicalproxy DG on exposedbenchmark; not Phase2/realinorbit validation')
     command='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_sigtime.dispatch'
     spec['execution'].update(host='N607 ordinaryaccount',launch_owner=d.OWNER,gpu_policy='max3 total experiment processes/GPU including otherowners; capacity checked before launch',
-        remote_run_root=str(d.BASE),remote_log_root=str(d.BASE/'logs'),local_artifact_root='E:/type10-7/local_artifacts/cvs_urban_sigtime_20261014',
+        remote_run_root=d.BASE.as_posix(),remote_log_root=(d.BASE/'logs').as_posix(),local_artifact_root='E:/type10-7/local_artifacts/cvs_urban_sigtime_20261014',
         launch_command=command,stop_rule='Protocol/role/budget/output collision/nonfinite/unlaunchable failure stops that row. Halt pending dispatch aftertechnicalfailure; preserve all outputs, allow other healthy rows tofinish. No performance-basedstop/restart.')
     spec['expected_artifacts']=['source_diagnostic/results.json','source_diagnostic/sample_diagnostics.jsonl.gz','eachrow/source/final_ssdg.pth','eachrow/source/step_metrics.jsonl.gz','eachrow/source/training_coverage.json','eachrow/prediction/predictions.npz','eachrow/scoring/scores.json','summary.json','resources.json','analysis.md','figures/*.png']
     spec['metrics_plan'].update(metric_names=['urban meanaccuracy','low urbanaccuracy>=.60','midurbanaccuracy','worsturbanRX','macroF1','clean','suburban','fixedreferenceclean-correctsatelliteretention','states/quality/CFO/kernel/AGC/boundary','classifiermargin','gates/gradients','effectivecoverage'],
@@ -44,7 +44,7 @@ def make():
             seeds={k:c['seeds'][k] for k in ('model','split','data','augmentation','support','evaluation')},
             seed_notes='support is not applicable; receiver-trainingseed2026092701 and formalreceiverseed2027 recorded separately; validation2026101402,diagnostic2026101403 streams independent.',
             k=None,scenario=','.join(d.TRAIN_SCENES),optimizer='AdamW',lr=.0002,epochs=30,fl_rounds=None,budget_ref='scratch30=6660updates;label20+pseudo10; parent0,total30',
-            output_root=c['output_root'],log_path=str(d.BASE/'logs'/(r['row_id']+'.log')),
+            output_root=c['output_root'],log_path=(d.BASE/'logs'/(r['row_id']+'.log')).as_posix(),
             command=command+' --mode worker --row '+r['row_id'],expected_artifacts=spec['expected_artifacts'],config=c)
         spec['rows'].append(row)
         d.write(d.ROOT/report/'configs'/(r['row_id']+'.json'),c)

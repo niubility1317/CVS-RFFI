@@ -1,0 +1,2 @@
+{"at": "2026-10-14T14:21:59+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-14T14:28:44+00:00", "status": "FAILED", "note": "Release compile passed; preflight rejected Windows-separated remote manifest path before subprocess submission. Independent readback has no submit, process, worker or output. Preserve r01; replace by r02 with POSIX metadata paths.", "evidence": ["E:/type10-7/local_artifacts/cvs_urban_sigtime_20261014/delivery_r01/readback.json"], "row_id": null}

@@ -4,8 +4,8 @@ from experiments.cvs_moment_area50 import design as reference
 ROOT = Path(__file__).resolve().parents[2]
 PROJECT, SOURCE, CAPSULE, TRUTH, CLASSES, FULL_FP32_POLICY = (
     getattr(reference, k) for k in ('PROJECT', 'SOURCE', 'CAPSULE', 'TRUTH', 'CLASSES', 'FULL_FP32_POLICY'))
-RUN = '20261014-phase1-sigtime-urban-paired-e30-manysig-m18-r01'
-RELEASE = 'cvs_sigtime_urban_paired_20261014_r01'
+RUN = '20261014-phase1-sigtime-urban-paired-e30-manysig-m18-r02'
+RELEASE = 'cvs_sigtime_urban_paired_20261014_r02'
 OWNER = 'codex/root/urban-sigtime-20261014'
 BASE = Path(PROJECT) / 'runs' / RUN
 FORMAL_VIEWS = Path(PROJECT)/'runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views'

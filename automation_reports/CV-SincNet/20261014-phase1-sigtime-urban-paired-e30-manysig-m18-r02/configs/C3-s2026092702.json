@@ -1,0 +1,135 @@
+{
+  "schema": "sigtime_practical_paired_v1",
+  "run_id": "20261014-phase1-sigtime-urban-paired-e30-manysig-m18-r02",
+  "arm": "C3",
+  "model_seed": 2026092702,
+  "row_id": "C3-s2026092702",
+  "variant": "reference_response",
+  "method": "cvs_urban_sigtime",
+  "launch_owner": "codex/root/urban-sigtime-20261014",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-sigtime-urban-paired-e30-manysig-m18-r02/C3-s2026092702/source",
+  "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+  "initialization": "scratch",
+  "baseline_reuse": false,
+  "parent_checkpoint": null,
+  "checkpoint_sources": [],
+  "parent_training_epochs": 0,
+  "incremental_epochs": 30,
+  "total_epochs": 30,
+  "epochs": 30,
+  "label_epochs": 20,
+  "pseudo_epochs": 10,
+  "steps_per_epoch": 222,
+  "updates": 6660,
+  "batch_size": 128,
+  "unlabeled_batch_size": 256,
+  "source_roles": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "target_access": false,
+  "network": "single SIG_TIME/t2 postDropout/four windows/112 descriptor/joint160",
+  "feature_parameters": 195041,
+  "default_head": "ResidualPhysicalHead cosine6x160 scale30",
+  "classifier_changed": false,
+  "separate_head_fit": false,
+  "baseline_recipe": "old batch_neighbor gates+own EMA+cos; 20 label epochs+10 pseudo epochs",
+  "optimizer": {
+    "name": "AdamW",
+    "peak_lr": 0.0002,
+    "min_lr": 1e-06,
+    "weight_decay": 0.0001
+  },
+  "label_smoothing": 0.01,
+  "checkpoint_selection": "final_only",
+  "paired": true,
+  "ordinary_concat": false,
+  "train_scenes": [
+    "practical_low_suburban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "curriculum": true,
+  "margin": true,
+  "urban_ssl": false,
+  "channel": {
+    "fs_hz": 25000000.0,
+    "processing_route": "residual",
+    "mode": "post_sync",
+    "receiver_location": "satellite",
+    "equalization_enabled": false,
+    "reference_snr_db": 30.0,
+    "boundary": "reflect",
+    "quality_adaptation_enabled": true,
+    "phase_tracking_enabled": true,
+    "iq_compensation_enabled": true,
+    "normalization": "source native RMS then simulator unit RMS; no output RMS normalization"
+  },
+  "seeds": {
+    "model": 2026092702,
+    "split": 392005,
+    "data": 392005,
+    "augmentation": 2026101401,
+    "support": null,
+    "evaluation": 392005,
+    "receiver": 2026092701
+  },
+  "curriculum_plan": {
+    "eta_max": 0.5,
+    "increment": 0.05,
+    "warmup_epochs": 3,
+    "quality_db": [
+      3.0,
+      18.0
+    ],
+    "hard_scenes": [
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "maximum_proposals": 8,
+    "nominal_floor": 0.5,
+    "selection": "channel metadata only; no TX or loss ranking",
+    "advancement": "fixed source panel: clean >= initial minus .005; hard margin progress >=.002; finite gradients"
+  },
+  "margin_plan": {
+    "rho": 0.5,
+    "m_max": 1.0,
+    "coefficient": 0.5,
+    "logit_scale": 30.0,
+    "quality_weight": "sigmoid((signal_to_added_noise_db-5)/5)",
+    "clean_correct_only": true,
+    "stop_gradient_reference": true,
+    "extra_consistency_losses": []
+  },
+  "ssl_plan": {
+    "coefficient": 0.16,
+    "provider": "existing own EMA clean probability",
+    "acceptance": "existing weak confidence and batch-neighbor gate; no urban student gate",
+    "source_launch_precision": 0.95,
+    "source_launch_coverage": 0.1
+  },
+  "test_views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "formal_test_IQ": "reuse existing VALIDATED_ONCE arrays, no regeneration",
+  "scientific_targets": {
+    "low_urban_accuracy": 0.6,
+    "urban_gain_pp": 3.0,
+    "low_gain_pp": 5.0,
+    "clean_drop_max_pp": 0.5
+  },
+  "comparison_baseline": "B0 ordinary concatenation on the same three training scenes",
+  "expansion": "fixed source-only rules before reading target scores; no target-based row or seed selection",
+  "concurrency": {
+    "max_processes_per_gpu": 3,
+    "includes_other_owners": true
+  },
+  "benchmark_context": "user-selected SIG_TIME architecture on exposed benchmark; scratch training source-only, not a new blind confirmation"
+}
