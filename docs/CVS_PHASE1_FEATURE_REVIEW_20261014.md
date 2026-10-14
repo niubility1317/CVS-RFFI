@@ -176,3 +176,8 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 ## SIG_TIME 组合剩余种子已准备（2026-10-14）
 
 固定02/03 × 单 SIG_TIME、三路 SIG_TIME 与统计组合，六个新 scratch50，加两个历史 baseline。实现 a722e2593947ca804e2534ac75e4c081029d022c；真实模型上下文、初态、源资格拒绝及逐 seed 分组检查和唯一新增执行差异审查 PASS。当前仅登记准备，必须等待首 seed 既定源资格 PASS 和原四行闭环，不读目标分数决定发布。完整配置见 [条件式预登记](../automation_reports/CV-SincNet/20261014-phase1-sigtime-statistics-oldgate-cos-e50-clean-manysig-s0203-m8-r01/report.md)。首种子远端不可变运行保持。
+
+
+## 用户报告路线一已实现（2026-10-14）
+
+下一核心假设仅比较同6D路径的 μ/variance/offdiagCov 与 μ/variance/skewArea，27→28同lift、同初始化/容量和默认头，t2取点不变。三真实模型梯度/更新/export/W独立及算子检查 PASS，唯一直接P0/P1和定向修复确认PASS。当前只是已登记，尚无新训练成绩。参见 [落实记录](../analysis/moment_area_traceability_20261014.md) 与 [预登记](../automation_reports/CV-SincNet/20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s01-m4-r01/report.md)。其他活动分支最新 de7f179f3 为 receiver tangent；本路线不同。

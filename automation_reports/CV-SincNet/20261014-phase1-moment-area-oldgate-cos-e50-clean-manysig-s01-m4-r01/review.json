@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "scope": "One independent direct P0/P1 new-candidate review; one targeted issue confirmation only",
+  "reviewer": "/root/signature_fix_p0p1",
+  "fixed_P1": "Paired final parameter comparison must use FEATURE_CONTROL=COV_SHAPE, not hardcoded SIG_TIME_X3",
+  "targeted_fix_confirmation": "TARGETED_FIXED_PASS",
+  "target_or_source_data_read_by_review": false,
+  "checks": {
+    "core": {
+      "status": "PASS",
+      "synthetic_only": true,
+      "strict_report_route1_formula": true,
+      "same_mean_variance_27slots": true,
+      "only15_relations_differ": true,
+      "covariance_permutation_invariant": true,
+      "area_reversal_antisymmetric": true,
+      "area_internal_order_sensitive": true,
+      "SIG_TIME_time_area_identity_checked": true,
+      "same_parameter_initialization": true,
+      "same_fixed_fullrank_lift": true,
+      "actual_network_rows": [
+        {
+          "arm": "SIG_TIME",
+          "pool_parameters": 18976,
+          "actual_feature_export_exact": true,
+          "W_independent": true,
+          "default_head_joint_gradient": true,
+          "new_parameters_numerically_updated": true,
+          "teacher_deepcopy_exact": true
+        },
+        {
+          "arm": "COV_SHAPE",
+          "pool_parameters": 18976,
+          "actual_feature_export_exact": true,
+          "W_independent": true,
+          "default_head_joint_gradient": true,
+          "new_parameters_numerically_updated": true,
+          "teacher_deepcopy_exact": true
+        },
+        {
+          "arm": "AREA_SHAPE",
+          "pool_parameters": 18976,
+          "actual_feature_export_exact": true,
+          "W_independent": true,
+          "default_head_joint_gradient": true,
+          "new_parameters_numerically_updated": true,
+          "teacher_deepcopy_exact": true
+        }
+      ],
+      "negative_configs_rejected": true,
+      "source_or_query_IQ_read": false
+    },
+    "package": {
+      "status": "PASS",
+      "rows": 4,
+      "new_models": 3,
+      "imports": true,
+      "release_dependencies": true,
+      "remote_scripts_compile": true,
+      "own_arm_summary": true
+    },
+    "targeted_control": {
+      "status": "PASS",
+      "source_feature_matrix_correct_control": true,
+      "paired_final_parameter_comparison_uses_COV_SHAPE": true,
+      "feature_count195041": true,
+      "callback_context": true,
+      "no_source_or_query_IQ_read": true,
+      "scope": "Targeted new-control dispatch regression; actual network math/updates/export tested separately"
+    }
+  }
+}
