@@ -4,7 +4,7 @@ from . import design as d
 from experiments.cvs_feature_sequence50 import publish as parent
 from experiments.cvs_report_ssl import publish as transport
 def configure():
- parent.configure();transport.d=d;transport.PATHS=list(dict.fromkeys([*transport.PATHS,'experiments/cvs_time_factorial50','experiments/cvs_identity_tangent50']))
+ parent.configure();transport.d=d;transport.PATHS=list(dict.fromkeys([*transport.PATHS,'experiments/cvs_time_factorial50','experiments/cvs_identity_tangent_confirm3']))
  transport.REMOTE=transport.REMOTE.replace('experiments.cvs_feature_sequence50.preflight','experiments.cvs_identity_tangent_confirm3.preflight').replace('experiments.cvs_feature_sequence50.dispatch','experiments.cvs_identity_tangent_confirm3.dispatch')
  transport.INSPECT=parent.INSPECT.replace('from experiments.cvs_feature_sequence50 import design as d','from experiments.cvs_identity_tangent_confirm3 import design as d').replace("done['rows']!=24 or done['readouts']!=24 or done['prediction_count']!=4032000 or len(result['workers'])!=24","done['rows']!=8 or done['readouts']!=8 or done['prediction_count']!=1344000 or len(result['workers'])!=8")
 if __name__=='__main__':

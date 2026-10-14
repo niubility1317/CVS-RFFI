@@ -3,8 +3,8 @@ from experiments.cvs_feature_multiscale50 import design as old
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,CAPSULE,TRUTH,CLASSES,FULL_FP32_POLICY,read,write=(getattr(old,k) for k in ('PROJECT','SOURCE','CAPSULE','TRUTH','CLASSES','FULL_FP32_POLICY','read','write'))
 SEEDS=(2026092702,2026092703)
-RUN='20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s0203-m8-r01'
-RELEASE='cvs_identity_tangent_confirm3_20261014_r01';OWNER='codex/root/identity-tangent-confirm-20261014';BASE=Path(PROJECT)/'runs'/RUN
+RUN='20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s0203-m8-r02'
+RELEASE='cvs_identity_tangent_confirm3_20261014_r02';OWNER='codex/root/identity-tangent-confirm-20261014';BASE=Path(PROJECT)/'runs'/RUN
 ARMS=('BASE_REF','ZERO','RAW_MATCHED','IDSAFE');VIEWS=('clean',);READOUTS=('NATIVE_HEAD',);PRIMARY=('IDSAFE',)
 TITLE='接收机切向平坦化：原方案固定剩余种子确认'
 PAIRS=[('ZERO','BASE_REF'),('RAW_MATCHED','ZERO'),('IDSAFE','ZERO'),('IDSAFE','RAW_MATCHED')]

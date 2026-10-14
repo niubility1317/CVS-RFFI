@@ -18,3 +18,6 @@
 唯一owner `codex/root/identity-tangent-confirm-20261014`，普通N607账户，max3总进程/GPU含otherowners，至少12000MB空闲，不停其他健康任务。命令 `python -u -m experiments.cvs_identity_tangent_confirm3.dispatch`；环境/CWD/绝对输入输出/逐row命令详见experiment.json，执行Gitcommit以release_commit.txt记录。真实同契约checkpoint无query smoke是launcher首步，通过后继续。既有机制一次审查/数学负测及真实训练证据复用，不重复审查未变候选。新增种子接线只核对同seed初始权重与完整统计，不作为新方法效果证明。
 
 当前：LOCAL_VERIFIED，发布后独立PID/CWD/argv/GPU/日志回读。新主线“跨RX关系＋证据响应”另行消融，本次确认不叠加该机制。
+
+
+R01 独立 FAILED：归档路径遗漏新确认模块，模块入口不能导入；尚未提交或启动训练，未创建run根。旧归档/失败preflight保留。R02 仅补正确归档路径，新输出根；模型机制/预算/种子未变。
