@@ -1,0 +1,192 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-crossRX-feature-sharpness-sourceL-manysig-s2026092701-r01",
+  "group_id": "phase1-crossRX-feature-sharpness-source",
+  "display_name": "跨 RX 脆弱方向：部署特征 loss gap 原型",
+  "description": "Fixed CENTER_25K+SIG_TIME source-only ZERO/CLEAN_CE/GLOBAL_GAP/CROSS_GAP; RX gradient-induced feature perturbation evaluated on otherRX/current-packet-disjoint seenL. No actual training or target.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "CVS",
+    "SIG_TIME",
+    "CENTER_25K",
+    "feature_sharpness",
+    "cross_RX",
+    "source_only",
+    "default_head_only",
+    "no_target",
+    "no_training"
+  ],
+  "comparison_group_id": "SIGTIME_mid_vs_joint_and_anchor_RX_increment",
+  "parent_run_ids": [
+    "20261014-phase1-SIGTIME-credit-oldgate-e50-clean-manysig-m12-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Continue active goal with one bounded source prototype. Existing positive fixed CENTER and SIG_TIME retained; no pseudo gate/temperature/unit scan. Future actual training needs separately fixed current E20 budget.",
+  "code": {
+    "commit": "release_commit.txt actual committed code/config",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_crossRX_feature_sharpness_sourceL_20261015_r01",
+    "entrypoint": "experiments/cvs_crossrx_sharpness50/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "Original cached received/equalized normalized IQ256; visible60point calibration and twelve-tone relative residual24; upstream equalization/noise independence unknown",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 hidden TX, native recipe allrows",
+      "V": 27000
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 capsule manifest; reuse unchanged",
+    "split_id": "original registered source/target physical split; reuse unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "original_source_days_metadata": [
+      0,
+      1,
+      2
+    ],
+    "source_days_correction": "Descriptive metadata corrected from [0,1,2] to actual native wisig_train_days/day_i [1,2,3]; same exact physical role IDs, no data or run change",
+    "leo_scope": "Source-only observation diagnostic, no target or satellite"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "L_s": "Original6300IQ once; true labels only downstream completed predictions/relations",
+    "U_s": "No U IQ or TX truth access",
+    "V": "No V IQ or state updates in this first fixed row",
+    "target": "No target observations, statistics, truth or predictions",
+    "separate_head_training": false,
+    "Phase2_in_scope": false,
+    "claim_scope": "Observable cached-source predictability and nonfitted residual24 relationship; not actualjoint160/DG efficacy"
+  },
+  "checkpoint": {
+    "initialization": "Not applicable: no model or checkpoint is consumed",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "No model ancestry. Reuse original source role handles via unchanged native source builder from PA release; samerole IDs checked, no new data validation.",
+    "selection_rule": "No checkpoint/epoch/model selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/visible-period-sourceL-20261014",
+    "gpu_policy": "CPU only,2Torch/OMP/MKL/OpenBLASthreads,0GPU allocation; existingGPU experiments untouched",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-visible-period-sourceL-manysig-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_visible_period_sourceL_20261014_r01",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_visible_period_sourceL_20261014_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_repetition_feasibility/runner.py resolved_request.json",
+    "stop_rule": "Exactsource role/count/physicalID mismatch, outputcollision, nonfinite residual/census or unhandled technical failure: preservepartial outputs, no unmodified retry, no unrelated process stop. Scientificthreshold failure closes fixedpretext feasibility without mask/tone/phase/weightscan."
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "release_commit.txt",
+    "resolved_request.json",
+    "submit.json",
+    "runtime.json",
+    "source_observation.stdout.log",
+    "observation_census.pt",
+    "summary.json",
+    "independent_readback.json",
+    "independent_recount.json"
+  ],
+  "metrics_plan": {
+    "matrix": "4 fixed L90 cohorts x ZERO/CLEAN_CE/GLOBAL_GAP/CROSS_GAP. One owner/process, fixed BASE firstseed final50, CENTER_25K only.",
+    "budget": "540uniqueL IQ/6300metadata;14762 packet networkforwards;8 temporaryAdamW/12kernel syntheses;CPU2threads/GPU0.0actualepoch/update/headfit/EMA/U/V/target.",
+    "objective": "ρ=.05/coefficient=.1/eps1e-12. PerRX detached normalized current-L CE gradient over17 deployed feature tensors; outer(otherRX disjointL)relu(pertCE-cleanCE), both terms attached to features, W/gain/otherparams detached. No second-order or extra real optimizer.",
+    "source_falsification": {
+      "minimum_active_cross_cohorts": 2,
+      "cross_positive_gap_min": 0.0001,
+      "auxiliary_gradient_min": 1e-08,
+      "minimum_distinct_cross_global_cohorts": 2,
+      "cross_global_gradient_relative_difference_min": 0.05,
+      "minimum_auxiliary_Sinc_kernel_change_cohorts": 2,
+      "interpretation": "Source availability and distinct signal only; no efficacy/novelty claim or target selection"
+    },
+    "comparisons": "Matched six functional calls/900packet forwards per mode/cohort. GLOBAL same all-currentL δ acrossfive masks; CLEAN_CE same masks/sourcebank; ZERO0. All original seenL, not newRX/never-trained holdout.",
+    "checkpoint": "Proof beforetorchload: exact source contract/ancestry/fixedBASE-final50/11100state. Constructor-origin CENTER25K with savedm/v mapping; hypotheticalchart, noE50续训.",
+    "future_budget": "Any later training follows current E20 scratch or E20+20 authorization, with matched pureCE control and hiddenU truth. No default reuse ofoldE50 schedule.",
+    "stop_rule": "Exactrunowned source/provenance/role/metadata/state mismatch,nonfinite,unlaunchabledependency,forbidden data/headfit orlive mutation. Preserveoutputs,noauto retry/healthyotherprocesschanges.",
+    "claim_boundary": "Source signal availability only; not training efficacy, new blind test, unseenRX/never-trainedsamples or proved original method. See primary literature comparison."
+  },
+  "rows": [
+    {
+      "row_id": "BASE-s2026092701",
+      "method": "CROSS_RX_FEATURE_SHARPNESS_GAP",
+      "purpose": "One bounded source availability falsification",
+      "config_ref": "experiments/cvs_crossrx_sharpness50/configs/source_probe.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_crossRX_feature_sharpness_sourceL_20261015_r01/resolved_request.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixed matched BASE firstseed own scratch final50; same full source contract. Hypothetical coordinate switch with transformed saved moments, no head fit or target selection.",
+      "k": null,
+      "scenario": null,
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "metrics_plan.budget",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-crossRX-feature-sharpness-sourceL-manysig-s2026092701-r01/source_diagnostic",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_crossRX_feature_sharpness_sourceL_20261015_r01/source_probe.stdout.log",
+      "command": "python -u experiments/cvs_crossrx_sharpness50/runner.py resolved_request.json",
+      "expected_artifacts": [
+        "runtime.json",
+        "ordinal0.json",
+        "ordinal17.json",
+        "ordinal35.json",
+        "ordinal52.json",
+        "summary.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No actualnetwork/defaulthead training/evaluation; classifier constraint preserved.",
+    "No checkpoint consumed: firstlauncherstep is a no-data zeroIQprimitive smoke, then immediately sourceobservation. Loading unused checkpoint or futuretraining machinery is not required by G0stage.",
+    "Templates are fixedpublicconstants, no trueTX influences phase/delay/gain/valid/predictions.",
+    "masked holdout120:140 andoutsidevisible windows are zero; no visiblemean inputimputation.",
+    "Source roles andcapsule/split VALIDATED_ONCE reused unchanged.",
+    "No trained identity/RX diagnostichead or prototype classifier; relationlabels only legalL.",
+    "B0/B1/S0/S1 wasnotlaunched aftersource rejection; thisdiagnostic addsno trainingmatrix.",
+    "Originalobservationsourcebuilder code is reused, not model/checkpointfromparent PA."
+  ],
+  "registered_at": "2026-10-14T17:41:45+00:00",
+  "status": "PLANNED",
+  "stop_rule": "Exactrunowned source/provenance/role/metadata/state mismatch,nonfinite,unlaunchabledependency,forbidden data/headfit orlive mutation. Preserveoutputs,noauto retry/healthyotherprocesschanges.",
+  "source_result": {
+    "decision": "SIGNAL_PRESENT_FINAL_STATE_CREDIT_STOPPED",
+    "accepted_groups": 0,
+    "report_ref": "report.md",
+    "evidence_ref": "source_result_evidence.json",
+    "new_training": false,
+    "target_access": false,
+    "head_fit_updates": 0
+  }
+}

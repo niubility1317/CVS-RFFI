@@ -1,0 +1,39 @@
+{
+  "run_id": "20261015-phase1-SIGTIME-crossRX-feature-sharpness-sourceL-manysig-s2026092701-r01",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-crossRX-feature-sharpness-sourceL-manysig-s2026092701-r01/source_diagnostic",
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_credit50_20261014_r01",
+  "source_role": "L_s",
+  "model_seed": 2026092701,
+  "source_row": "BASE-s2026092701",
+  "coordinate": "CENTER_25K",
+  "scale_hz": 25000.0,
+  "modes": [
+    "ZERO",
+    "CLEAN_CE",
+    "GLOBAL_GAP",
+    "CROSS_GAP"
+  ],
+  "anchor_ordinals": [
+    0,
+    17,
+    35,
+    52
+  ],
+  "held_ordinals": [
+    68,
+    69
+  ],
+  "rho": 0.05,
+  "coefficient": 0.1,
+  "normalize_eps": 1e-12,
+  "source_falsification": {
+    "minimum_active_cross_cohorts": 2,
+    "cross_positive_gap_min": 0.0001,
+    "auxiliary_gradient_min": 1e-08,
+    "minimum_distinct_cross_global_cohorts": 2,
+    "cross_global_gradient_relative_difference_min": 0.05,
+    "minimum_auxiliary_Sinc_kernel_change_cohorts": 2,
+    "interpretation": "Source availability and distinct signal only; no efficacy/novelty claim or target selection"
+  },
+  "analysis_code_commit": "release_commit.txt"
+}
