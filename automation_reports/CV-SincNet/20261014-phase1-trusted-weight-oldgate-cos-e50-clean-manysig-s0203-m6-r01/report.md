@@ -1,23 +1,47 @@
-# SIG_TIME可信加权：剩余两个种子条件式预登记
+# SIG_TIME可信加权：完整三种子结果
 
-首种子 20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01 健康训练中，源资格尚未完成。本登记只准备2026092702/03；发布入口必须读取固定实际执行7708d4afcef141bb614e0c2171f2a9207c4469ff的首run source_qualification/source_features/completion/experiment，原源阈值、默认头特征边界和实际梯度预算全部PASS且3row收尾完整才继续。入口不读取target analysis/metrics决定扩展；source FAIL保留首结果，不改weight/scale/seed或重跑。首seed不重训。
+预登记主方法TRUSTED_WEIGHT均值 **82.7030% ± 1.6081个百分点**，同路径SIG_TIME uniform **82.7514% ± 1.6961个百分点**；配对 **−.0484 ± .1039个百分点，1/3正差**。权重没有稳定强化性能，距84%均值目标1.2970个百分点，未达标。三个seed差分别−.1536/+.0542/−.0458pp，全部保留，无选择性重跑或按目标结果改配方。
 
-固定每seed历史OLD_GATE_COS50＋新SIG_TIME uniform＋新TRUSTED_WEIGHT，共6row/4新。与首seed结构、门控、数据、损失、50轮及33＋17安排完全一致，只改预定义modelseed/run/output owner。raw stopgrad(.75+.5×clip((1−p_student,strong(teacher伪类别))/.1,0,1))，raw[.75,1.25]/effective理论[.6,1.6667]，只在原已接受集合中按权重和归一化CE；lambdaU.16/全Uentropy.01保持，ownEMA.999/cos不变。SIG_TIME t2完整postDropout特征保持，不叠加层级/PRE/Sinc/新卷积/SiLU。默认cos6×160scale30随骨干原流程联合，无冻结、重训或另训头/身份/RX/day/channel诊断分类器。
+| 方法 | seed01（%） | seed02（%） | seed03（%） | 均值 ± 样本SD（% / pp） | Macro-F1均值（%） | 各seed最差RX均值（%） | 各seed最差day均值（%） |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| OLD_GATE_COS50 | 80.6685 | 78.0815 | 82.8304 | 80.5268 ± 2.3776 | 80.0024 | 67.9708 | 76.0556 |
+| SIG_TIME | 83.7345 | 80.7929 | 83.7268 | 82.7514 ± 1.6961 | 82.2124 | 70.6792 | 78.6262 |
+| TRUSTED_WEIGHT | 83.5810 | 80.8470 | 83.6810 | 82.7030 ± 1.6081 | 82.1642 | 70.4528 | 78.5302 |
 
-复用合法roles/split392005/VALIDATED_ONCE、L6300/U56700隐藏TX/V27000health-only、sourceRX1/3/4/6/8/day1/2/3/旧6TX及physicalIDs，NoExplicitCFO及内部补偿不变；无新信道增强/源或目标权重继承、target调参。每新模型真实33/34/50轮全部222个原训练批记录t1/t2/t3的L/UniformU/WeightedU/Entropy参数梯度，666batch/1998层批，0额外IQforward/RNG抽样，正常backward/optimizer/EMA/默认头联合训练随后执行；保存三轮私有vectors后复算。33轮U inactive为0。源V仅健康，终轮固定。
+| 配对 | seed01 / 02 / 03差（pp） | 均值 ± 样本SD（pp） | 正差seed |
+|---|---:|---:|---:|
+| SIG_TIME − OLD_GATE_COS50 | 3.0661 / 2.7113 / 0.8964 | 2.2246 ± 1.1638 | 3/3 |
+| TRUSTED_WEIGHT − SIG_TIME | -0.1536 / 0.0542 / -0.0458 | -0.0484 ± 0.1039 | 1/3 |
+| TRUSTED_WEIGHT − OLD_GATE_COS50 | 2.9125 / 2.7655 / 0.8506 | 2.1762 ± 1.1504 | 3/3 |
 
-源条件严格复用首登记：两新finalLCE≤.5、pool真实更新/导出差0/W独立、初始全部参数与源z相同、最终candidate−controlL720zL2≥1e−6、实际1998梯度记录及预算/默认头/无Utruth核实。源PASS不是性能PASS；当前首source尚pending，不把REGISTERED当RUNNING。完整3seed目标只取预登记TRUSTED_WEIGHT均值≥84%，剩余2seed或最高单seed不得替代。
+| 配对 | 修正错误 | 引入错误 | 净正确 | 共同决定数 |
+|---|---:|---:|---:|---:|
+| SIG_TIME − OLD_GATE_COS50 | 27608 | 16396 | 11212 | 504000 |
+| TRUSTED_WEIGHT − SIG_TIME | 1771 | 2015 | -244 | 504000 |
+| TRUSTED_WEIGHT − OLD_GATE_COS50 | 27460 | 16492 | 10968 | 504000 |
 
-成本：4×50=200新增model-epochs/44400updates＋2历史100epochs/22200updates单列复用；加首seed6新300epochs/66600updates＋3历史150epochs/33300updates，0额外头fit。每row clean168000固定预测→独立truthlast，剩余1008000决定/108metrics；合并9row1512000决定/162metrics、6新真实11988层批梯度记录。完整逐seed/paired均值sampleSD/正差seed/CM/MacroF1/最差RXday/错误修正引入/源曲线及负结果保存。已暴露clean旧TX基准，不称新TX、Phase2、盲测或卫星部署。
+SIG_TIME相对旧门控＋cos +2.2246pp、3/3正差；TRUSTED_WEIGHT相对旧基线+2.1762pp、3/3正差。相对旧基线的收益主要已存在于SIG_TIME，新增权重不能据此宣称有效。它净引入244个错误/504000配对决定。不同run中的SIG_TIME复训结果分别保留，不能拼成更多独立seed或按target选择最高run。
 
-实现 1859aa924e08210e7d23193d908f8e02c4fb2024，核心候选 23ea591bba17dd938d2b9a93f8b9d9dc5f02e97a 及其一次独立直接P0/P1 PASS复用，无重复审查。已完成4实际native上下文、同seed初态全部参数/z完全相同、权重配置反例、10源资格反例及剩余observer配置绑定/scope恢复、12py compile PASS；本地不读真实IQ或目标。封装只绑定原observer设计命名空间，不改核心公式/训练实现，不热改当前远端release。局部检查不冒充真实训练。
+首run 20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s01-m3-r01，实际执行7708d4afcef141bb614e0c2171f2a9207c4469ff；剩余run 20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01，实际执行a8ff278fc8dd1b54b69279503c4cda9282795261；核心实现23ea591bba17dd938d2b9a93f8b9d9dc5f02e97a，源扩展与远端预检实现fcc252f3938a21b415f5354b2a2e9db7315934bd。首sourcePASS决定在读取首target summary数值前冻结并提交fcc252f3938a21b415f5354b2a2e9db7315934bd，原样发布02/03四新模型；首seed未重训，没有target反馈到参数、weight/scale、seed、选模或扩种子。固定方案与实际发布历史见preregistration.md；首完整结果仍在首run报告。
 
-入口python -u -m experiments.cvs_trusted_weight_seeds.dispatch；普通N607既有CVS-RFFI fullFP32/2threads；CWD /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_trusted_weight_seeds_20261014_r01；immutable output /home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01；owner codex/root/trusted-weight-seeds-20261014。现有capacity锁计入所有owner，GPU0至7自动分配、每GPU≤3总实验进程/free≥12000MiB；保护健康任务。sourcePASS后才一个releasearchive单次SHA比较/remotecompile/一个真实同seedhistorical CP2zeroIQ noquery smoke PASS直接继续，核对实际PID/CWD/argv/GPU/loggrowth。
+单因素训练侧：SIG_TIME四局部8点、single6Dprojection、28×4→112→160、t2完整postDropout、pool18976/fθ195041/classW960保持，默认cos6×160scale30正常联合训练。raw w=stopgrad(.75+.5×clip((1−p_studentstrong(teacher伪类别))/.1,0,1))；只在原门控已接受集合中按权重和归一化CE，空accept0，raw[.75,1.25]/effective理论[.6,1.6667]不混称。原teacherconfidence、batch_neighbor窗口2、strong一致门控、ownEMA.999、lambdaU.16、全Uentropy.01/cos/33label＋17pseudo不变。均匀对照返回native原CE tensor；门控算法不变，实际两模型接受集合可随训练不同。没有层级/PRE/Sinc/新kernel/SiLU叠加，也没有冻结、重训、更换默认头或另训身份/RX/day/channel诊断分类器。
 
-Stop：复用角色/provenance/初始化/非有限/shape/默认头/门控/损失对齐/预算/保存梯度复算/export/预测truthlast系统技术失败规则，停止新增dispatch、保留健康row和产物，无自动retry/hotedit/目标早停。预期source checkpoints/full50epoch/fullstep/trustedweightsteps/三轮rawgrad+records/source witness/freeze、fixedpred/scores/rowcompletion、sourcefeatures/analysis/combined3seed/launch/queue/completion及独立固定产物复算。Git仅实现/config/聚合结果与报告；原IQ/weights/gradarrays/predictions/大日志/私密状态不入Git。当前REGISTERED，未发布。
+六新模型真正训练33/34/50每轮全部222原批记录t1/t2/t3.pw.weight（3456/6912/9216元素）LCE、lambdaU UniformCE/WeightedCE及lambdaEnt梯度；每模型666批/1998层批，合计3996批/11988层批。autograd.grad保留原graph，不增加IQforward/RNG抽样、不累积.grad，随后原backward/optimizer/EMA/defaulthead学习执行。33轮U为0；34/50候选同批加权使CE梯度/L比提高15.7%至29.5%，cos .9994至.9997，主要是已有方向的幅度变化，不能解释为新增可迁移信息。完整54层阶段聚合/有效批分母及每模型17轮权重/接受/hardness均值保存在combined_three_seed_results.json；全部逐批统计与rawvectors在immutable source目录，重读独立复算11988记录。并逐步核对66600个trusted/native原日志的实际loss、mask接受数与stage/budget。U真值隐藏，未报告其精度；空accept批梯度0，cos未定义的批不参与cos均值，比例均值包含这些0。不同层参数量不同，不以跨层norm排重要性。
 
+六新pool5个trainable tensors全元素真实更新，实际feature-only导出差0、置零/移除classW不改变z；base_norm/pa_norm/gain/reference保留。三seed初始全部参数/nativebody/W与源z函数相同，最终candidate−control源L720zL2分别1.736686/1.700653/1.804470。完整逐tensor与分层witness保留。这证明方法改变了真实部署特征且接口不依赖旧W，不证明新TX或丢弃W后的识别性能；按最新用户约束未做换头实验。
 
-首固定执行7708d4afcef141bb614e0c2171f2a9207c4469ff的源资格已只读核实PASS，读取target summary/metrics数值前冻结seed_expansion_decision.json。两新finalLCE .247590639/.247829630，candidate−control源L720zL2 1.736685634；每模型真实11100updates/3774Usteps/963900U包及33/34/50共1998层批记录保存复算VERIFIED，额外headfit0，actualexport/W独立及matchedinitial通过。sourcePASS不等于性能PASS，首target数字尚未读取。发布的source qualification检查放入远端preflight，复用既有正确N607 Linux文件读取路径；当前仍未发布剩余训练。
+源几何为非阻塞补充：每模型固定L720（每TX/RX/day cell首8），unitnormalized joint160计算同日无序pair distances，没有classifier/prototype拟合或替代预测。四关系paircounts2520/11520/14400/57600，保存features后复算VERIFIED，9模型6480额外源包forward/0optimizer，无U IQ/Utruth/query/V forward。三个seed的weighted ratio均略升，但同TX跨RX距离也全部升高；旧基线ratio更高而target更低，因此该源比值不能排序泛化能力。RX均为已见source，样本对重叠，不当独立seed或置信证据；它未进入选模、源资格或扩展条件。
 
+| seed | SIG同TX跨RX距离 | Weighted同TX跨RX距离 | SIG异TX同RX／前者 | Weighted异TX同RX／前者 |
+|---|---:|---:|---:|---:|
+| 2026092701 | 0.182353 | 0.186168 | 4.358353 | 4.440158 |
+| 2026092702 | 0.223638 | 0.224618 | 4.063948 | 4.068596 |
+| 2026092703 | 0.247199 | 0.251766 | 3.926812 | 3.936464 |
 
-实际发布RUNNING/VERIFIED：执行a8ff278fc8dd1b54b69279503c4cda9282795261，dispatcher2290961；4新worker2291614/2291696/2291936/2292094，GPU1/2/4/6，actualPID/CWD/argv/weight开关/defaultfitdisabled及日志增长核实，当前24/23/20/24轮，无failure。archive传输比较/remotecompile/sourcequalification远端预检/真实historical CP2zeroIQ noquery smoke PASS，首seed不重训。sourcePASS决定先于首target数值读取，当前首weight83.5810%低于uniform83.7345%的负结果不改任何已发布配方。完整3seed、剩余实际33/34/50记录及默认头结果尚pending，不冒充ANALYZED。
+成本：9row=6新＋3历史，300新增model-epochs/66600updates＋150历史epochs/33300updates单列复用，额外头fit0。450完整source epoch记录/1512000固定默认预测/162分组指标/9逐seed错误表独立复算VERIFIED，无新增targetforward或模型更新。每新11100updates/3774Usteps/963900U包，完整源CE/Vhealth/门控接受与权重曲线保留，终轮固定，不以末轮低loss宣称收敛。L6300/U56700隐藏/V27000health-only、split392005/sourceRX1/3/4/6/8/day1/2/3/旧6TX/physicalIDs/训练池10%标注、native train_ratio.07分母含V、NoExplicitCFO及内部补偿保持，无新信道/星地训练增强。
+
+![完整三seed训练与机制记录](results.png)
+
+一次独立直接P0/P1 PASS复用，无重复候选审查；剩余实际contexts/sourcegate negatives/observer绑定、每release一次archive比较/remotecompile/真实CPnoquery smoke、实际PID/CWD/argv/GPU/loggrowth与逐row自动truthlast收尾全部完成。分析只读取完整已存日志、梯度和固定预测；补充geometry只使用合法冻结源模型。所有checkpoints/rawIQ/gradvectors/predictions/大日志留在两个既定N607 run及release；Git交付实现/config/报告和可核查聚合数据。
+
+当前报告四条路线都已完成实际矩阵闭环，本权重路线不晋级为有效优化。84%仍未达；不是Phase2、新TX、卫星部署或独立盲测。下一步先整理合法源梯度方差/域分组证据，明确浅中层特征的独立机制和最小对照；不再扫描本权重的界、scale、lambda或按target挑父权重。后续新方案继续默认头联合训练、≤50轮、旧gatecos基线、预登记及逐row自动测试/Git交付。

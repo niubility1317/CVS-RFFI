@@ -35459,12 +35459,13 @@
       "remaining_run": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
       "remaining_execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
       "source_only_expansion_decision_commit": "fcc252f3938a21b415f5354b2a2e9db7315934bd",
-      "source_only_expansion_before_target_numbers": true
+      "source_only_expansion_before_target_numbers": true,
+      "full_three_seed_run": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
     },
     {
       "route": "report route4 unchangedremainingseeds",
       "run_id": "20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-      "status": "RUNNING_VERIFIED",
+      "status": "ANALYZED_FULL_THREE_SEEDS",
       "implementation_commit": "fcc252f3938a21b415f5354b2a2e9db7315934bd",
       "execution_commit": "a8ff278fc8dd1b54b69279503c4cda9282795261",
       "model_seeds": [
@@ -35560,7 +35561,193 @@
           }
         ]
       },
-      "report": "automation_reports/CV-SincNet/20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md"
+      "report": "automation_reports/CV-SincNet/20261014-phase1-trusted-weight-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md",
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 3,
+          "accuracy_mean": 0.8052678571428572,
+          "accuracy_sd": 0.023775723031464996,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238,
+            "2026092702": 0.7808154761904762,
+            "2026092703": 0.8283035714285715
+          },
+          "macro_f1_mean": 0.8000238637751929,
+          "worst_RX_mean": 0.6797083333333334,
+          "worst_day_mean": 0.7605555555555555
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 3,
+          "accuracy_mean": 0.8275138888888889,
+          "accuracy_sd": 0.01696142659003096,
+          "seed_accuracy": {
+            "2026092701": 0.8373452380952381,
+            "2026092702": 0.8079285714285714,
+            "2026092703": 0.8372678571428571
+          },
+          "macro_f1_mean": 0.8221244490530148,
+          "worst_RX_mean": 0.7067916666666666,
+          "worst_day_mean": 0.7862619047619047
+        },
+        {
+          "arm": "TRUSTED_WEIGHT",
+          "seed_count": 3,
+          "accuracy_mean": 0.8270297619047619,
+          "accuracy_sd": 0.01608079422874412,
+          "seed_accuracy": {
+            "2026092701": 0.8358095238095238,
+            "2026092702": 0.8084702380952381,
+            "2026092703": 0.8368095238095238
+          },
+          "macro_f1_mean": 0.8216423453005103,
+          "worst_RX_mean": 0.7045277777777778,
+          "worst_day_mean": 0.7853015873015873
+        }
+      ],
+      "paired": [
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.030660714285714263,
+            0.02711309523809524,
+            0.008964285714285647
+          ],
+          "mean_difference": 0.02224603174603172,
+          "sd_difference": 0.011638298134418502,
+          "positive_seeds": 3
+        },
+        {
+          "arm": "TRUSTED_WEIGHT",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            -0.001535714285714307,
+            0.0005416666666666625,
+            -0.00045833333333333837
+          ],
+          "mean_difference": -0.00048412698412699423,
+          "sd_difference": 0.0010389306471775509,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "TRUSTED_WEIGHT",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ],
+          "seed_differences": [
+            0.029124999999999956,
+            0.027654761904761904,
+            0.008505952380952309
+          ],
+          "mean_difference": 0.021761904761904722,
+          "sd_difference": 0.011503504038280285,
+          "positive_seeds": 3
+        }
+      ],
+      "audit": {
+        "status": "VERIFIED",
+        "models": 9,
+        "new_models": 6,
+        "reused_models": 3,
+        "new_updates": 66600,
+        "source_epochs": 450,
+        "default_predictions": 1512000,
+        "group_metrics": 162,
+        "gradient_layer_records": 11988,
+        "error_transitions": 9,
+        "source_feature_models": 6,
+        "matched_feature_pairs": 3,
+        "geometry_models": 9,
+        "head_fit": false,
+        "truth_last": true,
+        "new_target_forwards_by_analysis": 0
+      },
+      "cost": {
+        "new_model_epochs": 300,
+        "new_updates": 66600,
+        "historical_reused_model_epochs": 150,
+        "historical_reused_updates": 33300,
+        "extra_head_fit_updates": 0,
+        "extra_training_forward_RNG_by_gradient_observer": 0,
+        "actual_gradient_batches": 3996,
+        "actual_gradient_layer_records": 11988,
+        "extra_source_geometry_forwards": 6480
+      },
+      "goal84": {
+        "passed": false,
+        "primary": "TRUSTED_WEIGHT",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "accuracy_mean": 0.8270297619047619,
+        "threshold": 0.84,
+        "gap_pp": 1.2970238095238118
+      },
+      "source_feature_witness": {
+        "models": 6,
+        "pairs": 3,
+        "initial_source_functions_equal": true,
+        "final_source_L2": [
+          1.7366856336593628,
+          1.7006534337997437,
+          1.8044695854187012
+        ],
+        "all_export_exact": true,
+        "W_independent": true,
+        "pool_tensors_updated": 5,
+        "extra_head_fit_updates": 0
+      },
+      "error_aggregates": [
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "corrected": 27608,
+          "introduced": 16396,
+          "net": 11212,
+          "count": 504000
+        },
+        {
+          "arm": "TRUSTED_WEIGHT",
+          "control": "SIG_TIME",
+          "corrected": 1771,
+          "introduced": 2015,
+          "net": -244,
+          "count": 504000
+        },
+        {
+          "arm": "TRUSTED_WEIGHT",
+          "control": "OLD_GATE_COS50",
+          "corrected": 27460,
+          "introduced": 16492,
+          "net": 10968,
+          "count": 504000
+        }
+      ],
+      "source_geometry": {
+        "status": "VERIFIED",
+        "models": 9,
+        "source_only": true,
+        "head_fit": false,
+        "ratio_not_DG_selector": true,
+        "withinTX_crossRX_distance_increased_3_of_3": true
+      }
     }
   ],
   "diagnostics": {
@@ -80843,8 +81030,8 @@
     "Oldgate coverage audit on legal labeled source proxies before altering SSL"
   ],
   "next_actions_max2": [
-    "完成已发布4新权重/均匀模型固定50轮、实际33/34/50梯度、默认头truthlast及完整三seed同路径配对；不因首负结果调参",
-    "回收固定源特征和梯度证据，完成完整三seed报告/Git交付；不以梯度放大或源距离比值代替泛化性能"
+    "依据已有合法源梯度方差和RX/day特征差异，设计一项直接作用浅/中层且不依赖分类W的特征训练目标；不扫描本权重参数或按target选择父权重",
+    "先小矩阵source机制检验、默认头正常联合/≤50轮/原旧gatecos对照，再按固定source条件扩种子、逐row测试并Git交付"
   ],
   "goal_84": false,
   "Phase2_development": false,
