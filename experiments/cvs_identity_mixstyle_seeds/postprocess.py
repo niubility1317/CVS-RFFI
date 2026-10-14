@@ -17,7 +17,7 @@ def fetch(kind,commit):
   'from pathlib import Path',
   'torch.set_num_threads(2)',
   'sys.path[:0]='+repr([RELEASE,RELEASE+'/code']),
-  'base=Path('+repr(str(d.BASE))+')',
+  'base=Path('+repr(d.BASE.as_posix())+')',
   'done=json.loads((base/"completion.json").read_text())',
   'assert done["status"]=="EXPERIMENT_COMPLETE" and done["models"]==6 and done["new_trained_models"]==4 and done["prediction_count"]==1008000 and done["truth_last"]',
   'p=base/'+repr('source_style_mechanism.json' if kind=='source_moments' else 'frozen_artifact_recount.json'),
