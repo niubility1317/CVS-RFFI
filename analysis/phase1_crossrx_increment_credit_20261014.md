@@ -31,3 +31,6 @@
 读取完整 L6300，保存同一次 forward 的 pre-gain160 与 actualjoint160，分别分析126,000固定同ordinal关系。四个事先固定 cell ordinal0/17/35/52 各90包，用真实默认 CE、ORDER/SupCon 参数梯度与每RX临时贡献诊断。此处基本梯度只有 L CE，模型/optimizer为 final50状态、eval模式，因此是一步假设试验，不冒充历史 U 联合训练轨迹或新的实际训练。
 
 预计6,300真实IQ读取、9,540真实L网络前向＋2零IQ checkpoint smoke、40临时AdamW步，0真实更新/EMA/另训头/U/V/target读取，CPU2线程。固定 margin/coefficient/temperature=.1，默认norm eps1e−4、数值容差1e−6；不扫描。若来源或参数组无法核实，保留技术失败并停止该run。源诊断之后最多推进一个正式训练消融矩阵，保留BASE、普通SupCon、ungatedORDER与增量贡献版本；具体日程与扩种子条件须在任何新target访问前固定。
+
+
+SIG_TIME首seedownfinal50真实源诊断已ANALYZED/VERIFIED：pre-gain160固定126000关系未满足6.5397%，joint160未满足11.1143%；辅助anchorORDER真实梯度非零且W/gainNone，原native188参数/72moment/LR1e−6严格重建。四L90×五RX40临时步的sameW跨RX贡献全部低于固定1e−6容差，0/20接受；不降容差、不称早中期无用。6300IQ读取/9540真实L前向＋2zero smoke，0新训练/另训头/U/V/target；252000关系和20决定独立复算。下一最多一个正式SIG_TIME训练矩阵，比较BASE/SupCon/停止ORDER/实际增量CREDIT，同预算default头joint与原U配方保持；源/性能结论分开，84%active。详见[中层增量源报告](../automation_reports/CV-SincNet/20261014-phase1-SIGTIME-crossRX-credit-sourceL-manysig-s2026092701-r01/report.md)。
