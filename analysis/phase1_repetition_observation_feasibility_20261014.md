@@ -54,3 +54,6 @@
 
 
 完整 L6300 可见周期残差诊断已 ANALYZED / VERIFIED：均值预测相对参考 pooled MSE 下降35.5360%，但RX1/4/6分别反向7.1700%/.5490%/19.8136%，固定所有RX不反向条件失败，24维统一预测版本关闭。126,000固定关系gap .02650916，但同RX异TX cosine .31964857高于跨RX同TX .12242586；前1%包占59.0209%均值预测误差。6,300源IQ读取、0网络前向/更新/头拟合/U/V/target；135项及全部关系独立复算。下一独立假设为公共周期线性参考正交补观测＋可见重复波动停止预算，先源验证，不能冒充已有效训练。SIG_TIME等正路线按各自配方保留，84%目标active。详见[可见周期源报告](../automation_reports/CV-SincNet/20261014-phase1-visible-period-sourceL-manysig-m1-r01/report.md)。
+
+
+周期参考正交补14维＋停止预算的完整L6300已ANALYZED/VERIFIED，但科学失败：mean相对zero误差增加89.9480%，所有5RX反向；固定跨RX身份gap−.00129858、3/5RX正，126000关系完整复算。zero在92.3016%包已满足预算，非零active统计不足以成为有效身份监督。6,300源IQ读取/0网络前向、更新、头拟合或U/V/target，6,300budget及24tail独立核实。关闭两条原始观测pretext，不扫参数；下一主线为SIG_TIME实际中层停止排序与实际AdamW跨RX增量credit，先源接线和更新诊断。历史正收益独立保留，84%仍active。详见[正交补源报告](../automation_reports/CV-SincNet/20261014-phase1-null-budget-sourceL-manysig-m1-r01/report.md)。
