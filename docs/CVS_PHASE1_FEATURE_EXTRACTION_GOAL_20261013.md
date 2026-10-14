@@ -86,3 +86,5 @@ Sinc坐标9row全部完成，6新scratch50/300模型轮次/66600更新、3历史
 下一独立创新主机制为同TX、同day、跨RX的PA实际增量证据重组，用detached既有W和辅助增益计算有标签CE，保留PA特征梯度，主CE正常联合训练默认头。原样、同RX重组、跨RX重组三控制先在L进行，不能把不同采集包解释为同波形硬件反事实；不新增U伪类判定链。有停止条件的语义间隔随后，分支更新约束仅在有用辅助信号出现后研究。已发布的时序×关系组合继续原计划，必须报告结构内机制差和交互；COMPACT/LONG_SILU/Sinc既有正收益独立保留。84%固定三seed目标仍active，任何接线、源诊断或发布状态都不是目标完成。
 
 等U时序R01发生确定技术失败：原不可变archive缺少既有source_label_gate，MID/SPREAD第17轮当前V代理导入时同异常。两行各完整16轮，按预登记系统技术故障仅停止绑定的本run TAIL/dispatcher（TAIL完整28轮），至少60模型轮次与可能partial成本保留；无target预测/评分，不当作机制负结果。原archive隔离复现、实际publish PATHS修复后隔离导入/原gate负例PASS，只有一次对应P1定向复审。替代run `20261014-phase1-U-calendar-pair-oldgate-e50-clean-manysig-m9-r02` 新根、新scratch，日历/矩阵/seed/预算/源规则保持；无R01权重继承，不影响其他健康run。
+
+PA证据重组原型已实现并验证，见 experiments/cvs_pa_recomposition/README.md。共同TX/day样本集合内各RX cell均衡选包，SAME cell内、CROSS cell间一对一循环配对，每包各作一次anchor/donor，两向端点曝光匹配；只重组真实PA增量。α=.2/λ=.1为固定原型，已有W与辅助增益stopgrad、内部features有梯度、主CE默认头正常joint训练；实际normalize eps1e−4与极小norm负例匹配。数学FP64与真实CVS FP32接线PASS，ZERO精确0，SAME/CROSS真实t1/PA/ref梯度有限非零，auxW/gainsNone，主CE头梯度非零，0新参数/0数据读取/0实际更新/0换头。只完成原型，尚无训练入口/发布/性能证据；不称混合特征新发明，不将不同包当硬件反事实，不扩展U或堆入新日历。本轮主线仍先完成等U时序和既有结构交互闭环，再正式验证该创新机制。84%研究目标保持active。
