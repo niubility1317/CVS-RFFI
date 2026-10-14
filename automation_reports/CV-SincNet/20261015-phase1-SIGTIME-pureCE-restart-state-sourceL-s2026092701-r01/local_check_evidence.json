@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "torch": "2.10.0+cu128",
+  "device": "cpu",
+  "commands": [
+    "experiments.cvs_restart_state20.checks_optimizer",
+    "experiments.cvs_restart_state20.checks_evaluate",
+    "experiments.cvs_restart_state20.checks_source",
+    "python compileall experiments/cvs_restart_state20"
+  ],
+  "optimizer_negatives": 35,
+  "synthetic_prior_updates": 7,
+  "END_lr": 1e-06,
+  "restart_lr": 0.0002,
+  "synthetic_KEEP_END_displacement_ratio": 200,
+  "synthetic_sameLR_KEEP_RESET_directions_differ": true,
+  "synthetic_steps": [
+    8,
+    8,
+    1
+  ],
+  "None_unused_displacement": 0.0,
+  "zero_tensor_saved_momentum_displacement": 0.00015233201783582118,
+  "saved_payload_live_state_grad_flags_RNG_unchanged": true,
+  "evaluation_negatives": 17,
+  "actual_SIG_TIME_CENTER_constructor": true,
+  "actual_joint_native_path_exact": true,
+  "shared_FP64_default_head_formula": true,
+  "W_only_joint_PREW_unchanged": true,
+  "each_gain_only_joint_PREW_changes": true,
+  "genuine_feature_parameter_change_visible": true,
+  "warm_caches_existing_hooks_state_grad_flags_RNG_preserved": true,
+  "request_negatives": 18,
+  "RESET_not_KEEP_or_END_substitution": true,
+  "after_gains_required": true,
+  "head_only_not_feature_signal": true,
+  "data_checkpoint_remote_reads": 0,
+  "actual_optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "boundary": "Synthetic implementation/protocol evidence only, not real source stage efficacy"
+}
