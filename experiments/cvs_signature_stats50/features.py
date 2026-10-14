@@ -9,7 +9,10 @@ from .descriptors import distribution_descriptor,moment_descriptor,path_signatur
 MODES={'SIG_TIME':('SIG_TIME',),'SIG_TIME_X3':('SIG_TIME','SIG_TIME','SIG_TIME'),'SIG_TIME_MV_COV':('SIG_TIME','MEAN_VAR','COV')}
 
 def labeled_forward(model,x,y_tx=None,*args,**kwargs):
- if model.training and y_tx is not None and torch.is_tensor(y_tx) and bool((y_tx>=0).all()):model._feature_l_steps+=1
+ if model.training and y_tx is not None and torch.is_tensor(y_tx) and bool((y_tx>=0).all()):
+  # Count replay observations separately from native optimizer-step contexts.
+  if getattr(model,"_feature_extra_l_forward",False):model._feature_extra_l_steps=getattr(model,"_feature_extra_l_steps",0)+1
+  else:model._feature_l_steps+=1
  return model._signature_native_forward(x,y_tx,*args,**kwargs)
 
 class DescriptorView(nn.Module):
