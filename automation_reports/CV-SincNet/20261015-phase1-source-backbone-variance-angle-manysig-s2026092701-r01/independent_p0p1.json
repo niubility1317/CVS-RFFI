@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "reviewer": "signature_fix_p0p1",
+  "scope": "New source_variance_angle package and direct interfaces only",
+  "findings_P0_P1": [],
+  "checked": [
+    "900source packets/five fixed cohorts",
+    "Actual same-packet CE reference gradient",
+    "Auxiliary W constant/no fitting",
+    "Two-layer source rule and independent artifact recount",
+    "11synthetic negatives and sourcequalification boundaries",
+    "Entry/dependency andgeneratedremotecompile"
+  ],
+  "real_IQ_or_checkpoint_or_remote_access": false,
+  "code_commit": "6907495c3c35147a08a5daa5c30f85fce9060ba8"
+}

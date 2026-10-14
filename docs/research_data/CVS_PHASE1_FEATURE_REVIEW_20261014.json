@@ -82241,7 +82241,7 @@
     },
     {
       "direction": "骨干梯度方差形状的源端证伪",
-      "status": "SOURCE_DECOMPOSITION_COMPLETE_NEW_OBJECTIVE_NOT_IMPLEMENTED",
+      "status": "SOURCE_ANGLE_PROBE_IMPLEMENTED_CHECKED_P0P1_PASS_NOT_LAUNCHED",
       "source_evidence": "Actual1872views show radial dominates and amplitude-normalized angular contribution notimproved universally; original normalization alreadyactive",
       "hypothesis": "If a direct unweighted RX variance-vector angle objective has stable source identity-compatible derivatives, test it separately; no assumption oftargetgain",
       "location": "Actual t1/t2 backbone derivative statistics, unchanged ftheta/default joint head",
@@ -83237,6 +83237,33 @@
       "shape_cosine_increased_COND": 1,
       "scope": "Fixedepoch50/13 correlated saved cohorts per layer; no target-derived epoch/row selection",
       "report": "automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/source_variance_decomposition.md"
+    },
+    "source_variance_angle": {
+      "status": "PREREGISTERED_CHECKS_P0P1_PASS_NOT_LAUNCHED",
+      "run_id": "20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01",
+      "release": "cvs_source_variance_angle_20261015_r01",
+      "code_commit": "6907495c3c35147a08a5daa5c30f85fce9060ba8",
+      "source_model_parent": "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "seed": 2026092701,
+      "source_packets": 900,
+      "cohorts": 5,
+      "head_fit_updates": 0,
+      "new_training_epochs": 0,
+      "no_target_access": true,
+      "source_rules": {
+        "source_only": true,
+        "sample_count": 900,
+        "cohorts": 5,
+        "all_layer_cohort_gradients_nonzero": true,
+        "nonzero_floor": 1e-12,
+        "aggregate_angle_CE_cosine_min": 0,
+        "both_t1_t2_required": true,
+        "no_parameter_update": true,
+        "no_automatic_training_release": true,
+        "on_fail": "Do not expand this fixed RAW-angle formula or train it",
+        "on_pass": "Only a separately registered remaining-seed source diagnostic may follow"
+      },
+      "report": "automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01/report.md"
     }
   }
 }

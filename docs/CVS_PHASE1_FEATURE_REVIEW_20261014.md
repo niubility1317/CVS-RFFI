@@ -399,3 +399,8 @@ FEATURE_MT首seed三row已完成训练/默认预测/独立truth-last评分，原
 已完成9模型936保存梯度矩阵/1872方差视图的源域再分析，CPU25.93s，无新前向/梯度/模型或头更新，无IQ/预测/truth读取。原损失已尺度归一化，分母floor0；不能靠整体梯度缩小解释。固定终轮幅度项贡献85.92%至96.54%，候选幅度项12/12降低、加权角向项12/12升高；无幅度权重的形状cos改善RAW5/6、COND1/6。完整[源机制报告](../automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/source_variance_decomposition.md)。下一DG方向需先证伪直接形状约束的真实身份梯度兼容性，当前无新训练候选发布。
 
 CONF_FEATURE_MT02/03四个原worker仍live，最近完成23/27/27/26轮且loggrowth均正，failure0；按原50轮和自动clean链继续，当前没有完整三seed结果。
+
+
+## 直接形状目标的最小源端证伪
+
+新增20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01，固定原BF SIG seed01终轮模型/前5个平衡L180，共900源样本。只比较同批默认CE与原RAW/纯角度目标的真实t1/t2导数，不训练/换头/访问query；两层汇总cos>=0且各5/5非零才源PASS，无自动训练发布。代码6907495c3c35147a08a5daa5c30f85fce9060ba8，本地11负例/实际可微公式和一次独立P0P1 PASS，当前未发布。见[最小预登记](../automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01/report.md)。
