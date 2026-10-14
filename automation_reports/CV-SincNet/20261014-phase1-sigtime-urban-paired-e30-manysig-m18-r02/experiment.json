@@ -3310,7 +3310,7 @@
   "registered_at": "2026-10-14T14:29:24+00:00",
   "source_analyses": {
     "ema_vcal": {
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "source_role": "V",
       "U_opened": false,
       "query_read": false,
@@ -3331,7 +3331,12 @@
       "output": "source_ema_vcal",
       "release": "cvs_sigtime_urban_paired_20261014_r02_ema_vcal",
       "command": "python -u -m experiments.cvs_urban_sigtime.ema_source",
-      "plan_ref": "ema_source_plan.md"
+      "plan_ref": "ema_source_plan.md",
+      "code_commit": "3c390341f0b0bc65b03413cada2e941138fa1188",
+      "result_ref": "E:\\type10-7\\local_artifacts\\cvs_urban_sigtime_20261014\\final\\ema_source_vcal.json",
+      "report_ref": "ema_source_result.md",
+      "forward_packets": 162768,
+      "seconds": 254.3270148190204
     }
   }
 }
