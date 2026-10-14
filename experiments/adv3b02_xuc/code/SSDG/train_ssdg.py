@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 # Scoped source-only feature objective; default baseline execution is unchanged.
 _source_feature_auxiliary_hook = None
+_trusted_pseudo_loss_hook = None
 
 import numpy as np
 
@@ -11302,6 +11303,15 @@ def train(args) -> int:
                     pseudo_selected = 0
                     pseudo_correct = 0
                     pseudo_truth_available = 0.0
+                if _trusted_pseudo_loss_hook is not None:
+                    loss_u = _trusted_pseudo_loss_hook(
+                        model=model, args=args, epoch=epoch, batch_idx=batch_idx,
+                        loss_l=loss_tx_l, loss_u=loss_u, loss_ent=loss_ent,
+                        active=legacy_unlabeled_active,
+                        logits=out_s["tx_logits"] if legacy_unlabeled_active else None,
+                        pseudo=pseudo if legacy_unlabeled_active else None,
+                        mask=mask if legacy_unlabeled_active else None,
+                    )
                 loss_closed = _compose_unlabeled_closed_loss(
                     loss_closed_l,
                     args=args,
