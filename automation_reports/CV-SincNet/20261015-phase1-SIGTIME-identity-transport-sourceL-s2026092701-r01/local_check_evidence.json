@@ -1,0 +1,79 @@
+{
+  "status": "PASS",
+  "checks": {
+    "checks_matching": {
+      "status": "PASS",
+      "device": "cpu",
+      "torch_version": "2.10.0+cu128",
+      "shift_scale_loss_error": {
+        "ROW": 3.9968028886505635e-15,
+        "BI": 4.218847493575595e-15
+      },
+      "invariance_derivatives": {
+        "ROW": {
+          "translation_max": 2.688821387764051e-17,
+          "radial_abs": 1.2212453270876722e-15
+        },
+        "BI": {
+          "translation_max": 2.168404344971009e-17,
+          "radial_abs": 2.7755575615628914e-15
+        }
+      },
+      "BI_marginal_residual_max": 0.0025909967003132917,
+      "BI_approximate_plan": true,
+      "ROW_loss": 1.5258510748549292,
+      "BI_loss": 1.4249290283207596,
+      "finite_difference_abs_error": 9.831783304159458e-11,
+      "default_head_correct_but_BI_match_errors": {
+        "row": 6,
+        "column": 6
+      },
+      "collapse_finite_positive_loss_zero_gradient": true,
+      "stopped_exact_zero": true,
+      "FP32_loss_and_gradient_finite": true,
+      "negative_checks": 13,
+      "inputs_grad_and_RNG_unchanged": true,
+      "no_data_model_head_or_state": true
+    },
+    "checks_relationship": {
+      "status": "PASS",
+      "matrices_per_control": 60,
+      "SAME_unique_matrices": 15,
+      "SAME_repeat_count": 4,
+      "CROSS_unique_matrices": 60,
+      "actual_matching_calls": 180,
+      "source_groups": 30,
+      "packets_per_RX": 36,
+      "per_packet_endpoint_exposure": 4,
+      "same_cross_endpoint_RX_day_class_side_balanced": true,
+      "class_rename_and_sample_permutation_loss_gradient_invariant": true,
+      "ZERO_exact_connected_zero": true,
+      "active_control_feature_gradients_finite_nonzero": true,
+      "native_FP32_and_FP64_inputs_supported": true,
+      "W_independent_no_new_head": true,
+      "input_bank_joint_RNG_unchanged": true,
+      "illegal_roles_rejected_before_TX": true,
+      "negative_checks": 28,
+      "data_reads": 0,
+      "checkpoint_reads": 0,
+      "model_constructors": 0,
+      "actual_updates": 0
+    },
+    "checks_source": {
+      "status": "PASS",
+      "request_and_control_negatives": 36,
+      "all_three_controls_required": true,
+      "no_control_substitution": true,
+      "budget_and_class_head_fixed": true,
+      "method_specific_matching_signal_not_rawcos_proxy": true,
+      "data_checkpoint_remote_reads": 0,
+      "actual_optimizer_updates": 0
+    }
+  },
+  "compile": "PASS",
+  "data_checkpoint_remote_reads": 0,
+  "actual_optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "unchanged_actual_after_gain_evaluator_reused": true,
+  "boundary": "Synthetic geometry/gradient/protocol only; actual source learning pending"
+}

@@ -1,0 +1,89 @@
+{
+  "run_id": "20261015-phase1-SIGTIME-identity-transport-sourceL-s2026092701-r01",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-identity-transport-sourceL-s2026092701-r01/source_diagnostic",
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_center_crossRX_sharpness20_20261015_r01",
+  "source_row": "BASE_CE-s2026092701",
+  "model_seed": 2026092701,
+  "states": [
+    "INITIAL",
+    "FINAL20"
+  ],
+  "modes": [
+    "ZERO",
+    "SAME_BI",
+    "CROSS_ROW",
+    "CROSS_BI"
+  ],
+  "LR": 0.0002,
+  "optimizer_state": "INITIAL fresh original options; FINAL20 saved m/v/step; both fixedstageLR2e-4",
+  "current_pairs": [
+    [
+      0,
+      1
+    ],
+    [
+      17,
+      18
+    ],
+    [
+      35,
+      36
+    ],
+    [
+      52,
+      53
+    ]
+  ],
+  "held_ordinals": [
+    68,
+    69
+  ],
+  "source_role": "L_s",
+  "method": {
+    "cost": "squared rawjoint distance/160, double center cost, divide by differentiable centered-cost RMS",
+    "RMS_floor": 1e-08,
+    "temperature": 0.1,
+    "stop_probability": 0.9,
+    "weight": 0.1,
+    "Sinkhorn_iterations": 80,
+    "BI_probability": "conditional row and column quality from finite log-plan; exact-uniform limit equals6P",
+    "gradients": "both actualjoint endpoints, W absent, all three gains included"
+  },
+  "source_falsification": {
+    "minimum_qualified_cohorts_per_state": 2,
+    "actual_F_difference_norm_min": 1e-06,
+    "held_feature_RMS_difference_min": 1e-05,
+    "shallow_middle_difference_tensors_min": 1,
+    "held_correct_matching_mass_gain_vs_each_control_min": 0.0001,
+    "held_matching_errors_increase_tolerance": 0,
+    "held_CE_increase_tolerance": {
+      "INITIAL": 0.0001,
+      "FINAL20": 1e-06
+    },
+    "controls": [
+      "ZERO",
+      "SAME_BI",
+      "CROSS_ROW"
+    ],
+    "readouts": [
+      "ACTUAL",
+      "PRE_W"
+    ],
+    "raw_cosine_margin": "reported, not a qualification proxy: matching permits common receiver offsets",
+    "interpretation": "True-label source identity correspondence signal at specified stage; not unseenRX/DG/novelty proof"
+  },
+  "original_default_head_joint": true,
+  "feature_scope": "actual encoder F71 including3gains; W excluded from auxiliary",
+  "readouts": [
+    "ACTUAL",
+    "PRE_W"
+  ],
+  "PRE_W_gains": "after-step actual gains retained",
+  "main_loss": "original clean CE",
+  "head_fit_updates": 0,
+  "U_IQ_read": false,
+  "V_IQ_read": false,
+  "U_truth_read": false,
+  "target_access": false,
+  "analysis_code_commit": "release_commit.txt"
+}
