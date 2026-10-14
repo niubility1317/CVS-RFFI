@@ -19,3 +19,6 @@ Stop：本run自身的角色/来源/非有限数/默认头/预算/export/物理I
 每行完成冻结后自动clean168000逐包defaulthead预测；全部声明prediction固定后独立truth-last评分；四行共672000默认decisions/72组CM、accuracy、MacroF1。记录同seed配对差、最差RX/day、修正/引入错误、完整50epoch曲线/U接受率、实际模型时间及源特征变化。只有完整3预定义seed候选均值≥84%才达主目标。不得把source/V、单seed或另训读出替代目标。
 
 预期产物：release preflight；run launch/queue、各新行initial/final/frozen/resolved/actual_args/initialization/source_contract/50epoch/11100step/source_feature_witness；各行default prediction/complete与scores/metrics/completion；source_features、source_qualification、analysis、completion，失败时failure。IQ、weights、rawlogs、predictions留既定产物；实现、配置、报告、曲线及必要聚合Git上传并核对remoteOID。本轮仅暴露ManySig clean旧六TX，未验证卫星部署、Phase2或未见TX迁移。
+
+
+实际发布代码 512c10a267b5e654cfd2c983ab1debdeebc7f626，dispatcher PID2087690。三新模型PID/CWD/命令/GPU/日志增长及关闭fitted probes配置均 VERIFIED；单归档核对、remotecompile和真实旧seed01 CP无查询smoke PASS。当前 source训练进行中，尚无候选目标结果。发布证据见 launch_evidence.json。

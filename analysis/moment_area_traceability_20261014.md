@@ -18,3 +18,6 @@
 
 
 已执行：verified Python -m experiments.cvs_moment_area50.checks、package_check.py、check_control_context.py，均 PASS。本地不读源或目标 IQ。实际训练/预测/评分尚未发布，不将这些局部检查当作性能结果。审查发现的 FEATURE_CONTROL 参数比较硬编码已修复，COV→AREA 定向回归 PASS。
+
+
+实际发布 VERIFIED：run 20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s01-m4-r01，执行提交 512c10a267b5e654cfd2c983ab1debdeebc7f626；真实checkpoint无查询smoke、归档传输比较、remotecompile和三worker进程/CWD/命令/GPU/日志增长均PASS。R03/R09仍是implemented：完整训练收尾零拟合及预测/独立评分须等真实产物，不用RUNNING冒充verified。
