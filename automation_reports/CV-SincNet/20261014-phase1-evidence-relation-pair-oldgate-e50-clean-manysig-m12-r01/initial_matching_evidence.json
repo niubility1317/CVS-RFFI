@@ -1,0 +1,95 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-evidence-relation-pair-oldgate-e50-clean-manysig-m12-r01",
+  "execution_commit": "4e5bd3275289a91cb407392461eeefe20d171820",
+  "model_seed": 2026092701,
+  "actual_initial_states_equal": true,
+  "actual_initial_tensor_count": 191,
+  "actual_native_args_match_excluding_row_identity": true,
+  "complete_available_label_prefix_comparison": [
+    {
+      "arm": "ALL_REL",
+      "first_divergent_steps_by_tolerance": {
+        "0.0": 2,
+        "1e-07": 2,
+        "1e-06": 35,
+        "0.0001": 56,
+        "0.01": 145
+      },
+      "first10_absolute_CE_differences": [
+        0.0,
+        4.76837158203125e-07,
+        0.0,
+        2.384185791015625e-07,
+        0.0,
+        0.0,
+        0.0,
+        2.384185791015625e-07,
+        0.0,
+        0.0
+      ],
+      "first100_max": 0.002210378646850586,
+      "first1000_max": 0.06294536590576172,
+      "full_available_max": 0.1211540699005127,
+      "compared_count": 4873,
+      "native_argument_differences": {},
+      "backend": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "hardware": "NVIDIA GeForce RTX 3090"
+    },
+    {
+      "arm": "CROSS_REL",
+      "first_divergent_steps_by_tolerance": {
+        "0.0": 4,
+        "1e-07": 4,
+        "1e-06": 35,
+        "0.0001": 70,
+        "0.01": 162
+      },
+      "first10_absolute_CE_differences": [
+        0.0,
+        0.0,
+        0.0,
+        2.384185791015625e-07,
+        0.0,
+        0.0,
+        0.0,
+        4.76837158203125e-07,
+        0.0,
+        0.0
+      ],
+      "first100_max": 0.0011998414993286133,
+      "first1000_max": 0.06500720977783203,
+      "full_available_max": 0.10213816165924072,
+      "compared_count": 4873,
+      "native_argument_differences": {},
+      "backend": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "hardware": "NVIDIA GeForce RTX 3090"
+    }
+  ],
+  "control_backend": {
+    "cudnn_allow_tf32": false,
+    "cuda_matmul_allow_tf32": false,
+    "cudnn_benchmark": false,
+    "cudnn_deterministic": false,
+    "matmul_precision": "highest"
+  },
+  "comparison_before_U_update7327": true,
+  "EMA_maintained_during_L_phase": true,
+  "U_teacher_forward_and_relation_not_yet_active": true,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "scope": "Same actual initialization/native arguments. No bitwise GPU trajectory claim; no complete convergence or performance diagnosis.",
+  "interpretation": "First CE differences are rounding scale under cudnn_deterministic=false; later divergence accumulates. Compatible with numerical nondeterminism, not proof of sole cause or identity of randomstreams."
+}

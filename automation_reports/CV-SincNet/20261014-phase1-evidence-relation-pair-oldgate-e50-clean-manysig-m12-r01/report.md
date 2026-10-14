@@ -51,3 +51,11 @@
 执行Gitcommit `4e5bd3275289a91cb407392461eeefe20d171820`已push且remoteOID一致；归档运输一次SHA比对、remote compile、真实checkpoint noquery smoke PASS，PID/CWD/argv/GPU/log独立回读VERIFIED，GPU最大总实验进程3含其他owner，未停止其他任务。当前row状态：ZERO-s2026092701 epoch4, ALL_REL-s2026092701 epoch3, CROSS_REL-s2026092701 epoch4。此为局部源训练启动证据，headfit0，不代表识别提升或84%。详见launch_evidence.json。
 
 固定真实源L诊断：180参照＋720不重叠探针，新增关系非零比例100.00%；实际t1辅助梯度范数0.11520934104919434，W/PAgain/refgain辅助梯度均None。各源RX同TX关系质量：1=0.7474, 3=0.6566, 4=0.7057, 6=0.7178, 8=0.7226（基准chance1/6；骨干已见源RX，不是未知RX泛化证据）。这些只是固定源学习信号诊断，没有阈值/模型拟合。
+
+## 实际初始化与标签阶段匹配
+
+已直接读取本次firstseed A/B/C各自initial_smoke.pt：全部191个state tensor逐项相同，原生native args除row身份/输出路径外一致，不只依赖本地构造测试。完整可用step prefix比较至4873步，仍在U启用7327前；新增关系/响应尚未执行，ownEMA按原流程维护。
+
+不宣称GPU训练轨迹逐位相同：B/C最早CE差异分别step2/4，初始差为2.3842e-7至4.7684e-7；首100步最大差0.0022104/0.0011998，后续可用prefix最大差0.1211541/0.1021382。硬件同为RTX3090，实际backend tf32均关闭、benchmark=false、deterministic=false、precision=highest。该现象与浮点非确定性及轨迹累积相符，但这些观察不能证明唯一原因或随机流逐位相同。保持冻结运行，不热改determinism或重复训练。最终用固定3modelseed与matchedcontrols报告实际差和SD。
+
+证据只覆盖当前完整可用源日志prefix，不能替代全部50轮/11100步分析；当前无新机制默认头识别结果。详见initial_matching_evidence.json。
