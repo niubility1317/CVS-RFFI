@@ -8970,6 +8970,7 @@ def train(args) -> int:
                 set_training_context(extra_l[1], epoch, "L")
             r3_x_l = x_l
             r3_l_logs, r3_u_logs = {}, {}
+            source_unlabeled_feature_loss = None
             ecrs_cross_rx_logs = {}
             ecrs_cross_rx_valid_anchors = 0
             if muse_state is not None:
@@ -10815,6 +10816,18 @@ def train(args) -> int:
                     prob_s = out_s["tx_logits"].softmax(dim=1)
                     entropy_per_sample = -(prob_s * prob_s.clamp_min(1e-8).log()).sum(dim=1)
                     loss_ent = entropy_per_sample.mean() if float(args.lambda_ent) > 0 else out_s["tx_logits"].sum() * 0.0
+                    feature_hook = getattr(model, "_source_unlabeled_feature_hook", None)
+                    if feature_hook is not None:
+                        if not bool((y_u == -1).all()):
+                            raise ValueError("Source relation learning requires hidden U_s labels")
+                        source_unlabeled_feature_loss, feature_metrics = feature_hook(
+                            model=model, teacher=pseudo_source, student_output=out_s,
+                            teacher_output=out_w, extra=extra_u, domains=d_u,
+                            optimizer_step=r3_optimizer_steps + 1,
+                            identity_loss=loss_tx_l, pseudo_loss=loss_u,
+                            entropy_loss=loss_ent,
+                        )
+                        r3_u_logs.update(feature_metrics)
                     zero_u = out_s["tx_logits"].sum() * 0.0
                     loss_u_domain = zero_u
                     loss_u_adv = zero_u
@@ -11436,6 +11449,9 @@ def train(args) -> int:
                 auxiliary_loss, feature_auxiliary_metrics = auxiliary_hook(model, r3_optimizer_steps + 1, loss_tx_l)
                 loss = loss + auxiliary_loss
                 scaled_closed_loss = scaled_closed_loss + auxiliary_loss
+            if source_unlabeled_feature_loss is not None:
+                loss = loss + source_unlabeled_feature_loss
+                scaled_closed_loss = scaled_closed_loss + source_unlabeled_feature_loss
             loss_is_finite = bool(torch.isfinite(loss.detach()).item())
             skipped_nonfinite_loss = 0
             skipped_nonfinite_grad = 0

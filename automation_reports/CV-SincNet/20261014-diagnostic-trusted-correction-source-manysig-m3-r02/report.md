@@ -38,3 +38,8 @@ CE 与逐包 logits 梯度范数只用于判断学习信号，明确区别于在
 ## R02 技术修复与新主线
 
 仅将保存完整源决策由 mixed NumPy NPZ 改为 native tensor source_decisions.pt，加载后重算全部记录。已实测最小失败与修复后的相同 tensor 往返，一次定向 P0/P1 复核 PASS；不变代码不重审。R01 保留，R02 独立输出。最新用户明确主攻“跨 RX 关系自蒸馏＋增量证据响应”，本诊断仅收尾，后续不自动继续完善伪标签接受链。关联来源是实验方案而非已验证效果；仍不宣称达到84%。
+
+
+## 完整源结果
+
+独立回读 VERIFIED/ANALYZED。seed01/02/03 candidate39/34/25，新admitted15/15/11，全部41/41正确；原accepted24414/24057/24413，correct24411/24057/24413。源决策完整保存并重算，3×27000模型观察、243000前向、27000唯一物理V复用。固定pool>=100、each>=20条件不通过，故source criterion=false；不是技术失败，也不证明隐藏U精度。无U/target读取、无拟合与阈值调节。详见result_evidence.json及remote各row analysis/source_decisions.pt。新主线继续关系学习，不自动启动gateB/D或搜索阈值。

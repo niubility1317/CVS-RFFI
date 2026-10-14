@@ -1,0 +1,46 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-diagnostic-trusted-correction-source-manysig-m3-r02",
+  "source_criterion_pass": false,
+  "models": 3,
+  "source_model_packet_observations": 81000,
+  "unique_physical_V": 27000,
+  "source_forward_packets": 243000,
+  "U_truth_read": false,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "threshold_fit": false,
+  "rows": [
+    {
+      "seed": 2026092701,
+      "candidate": 39,
+      "admitted": 15,
+      "correct": 15,
+      "original": 24414,
+      "original_correct": 24411,
+      "source_recount": "VERIFIED"
+    },
+    {
+      "seed": 2026092702,
+      "candidate": 34,
+      "admitted": 15,
+      "correct": 15,
+      "original": 24057,
+      "original_correct": 24057,
+      "source_recount": "VERIFIED"
+    },
+    {
+      "seed": 2026092703,
+      "candidate": 25,
+      "admitted": 11,
+      "correct": 11,
+      "original": 24413,
+      "original_correct": 24413,
+      "source_recount": "VERIFIED"
+    }
+  ],
+  "pooled_admitted": 41,
+  "pooled_correct": 41,
+  "limitation": "Insufficient fixednewsubsetcount;100%observedsourceprecision does not establish hiddenUquality or earlieronline reliability."
+}

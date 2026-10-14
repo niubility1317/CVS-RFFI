@@ -50,3 +50,13 @@ Sinc坐标9row全部完成，6新scratch50/300模型轮次/66600更新、3历史
 
 
 2026-10-14 用户再次明确，本聊天主线为训练机制和损失创新。独立候选为身份保护接收机切向平坦化；未叠加 TIME/Sinc/MixStyle，保留默认头、旧门控EMA和同源scratch50/33+17。首种子 BASE_REF/ZERO/RAW_MATCHED/IDSAFE 四行已发布，执行 840be47b7d6b43dbb00ac2cf3864a4025fd41ca8。数学负例、真实CPU/CUDA模型接线、唯一P0/P1审查、真实checkpoint noquery与发布后PID/CWD/argv/GPU/log增长VERIFIED。每新模型2498辅助调用/449640额外L前向包次，0新参数/0换头；只固定首seed，不将单seed当84%三seed目标完成。训练后自动clean预测/独立评分；源健康决策与目标汇总分离，未按目标反馈改参数。机制、公式、同能量控制、预算和风险在本run report.md。另一owner现有任务不重复派发或干预。
+
+## 2026-10-14 最新训练机制主线
+
+按用户最新材料推进“跨 RX 个体参照关系＋CVS 增量证据响应”。所有合法 U 学习连续个体关系，不新增六类投票/置信判定链。真实 joint160 辅助目标不经 W，只对辅助重组的 PA/ref 融合增益 stopgrad，原默认头与增益保持 CE 联合训练。固定 PAIR/ownEMA/33L+17U/50epoch、物理 L/U/V、NoExplicitCFO与原entropy，不叠加新结构/提前U/梯度重加权。
+
+候选run `20261014-phase1-evidence-relation-pair-oldgate-e50-clean-manysig-m12-r01`：ZERO/全源关系/跨RX关系/跨RX＋响应，各3预定义seed。先seed01 A/B/C源健康与真实学习信号标准，再D，完整firstseed源条件通过后才扩02/03；每row固定final50后自动clean预测、独立truth-last评分。方法温度0.2、削弱0.5、R/E系数1固定，不用目标反馈修改。关系蒸馏已有先例；只有D稳定优于C才支持CVS证据响应的贡献。
+
+此前切向机制firstseed源健康条件已在target汇总前通过，用户要求收益路线不落下，原样保留ZERO/RAW/IDSAFE剩余seed02/03确认。有效运行 `20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s0203-m8-r02`；R01归档遗漏模块导致未提交preflight失败，原目录保留。不是按target选RAW或改投影。firstseed结果BASE80.6685%、ZERO80.7399%、RAW81.4405%、IDSAFE81.0298%，完整三seed证据尚未返回。
+
+可信纠错源代理R02完整三seed共41新包全正确，但固定数量门槛不通过；不放开B/D或从V反调阈值。U真实精度仍未知。84%固定3seed目标未达成，本目标保持active；新方法实际结果尚无，不能用接线PASS或源代理代替泛化成功。
