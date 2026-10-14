@@ -17,3 +17,6 @@
 跨RX源原型4/4通过，只证明信号可用与GLOBAL不同；仍未证明识别或泛化收益。SAM/SAGM/DISAM/DGSAM已有相关思想，当前候选的feature-only/fixedreadout/off-diagonalRX/current-packet-disjoint区别需要此消融检验。完整结果与方法依据见[机制分析](../../../analysis/phase1_crossrx_feature_sharpness_20261015.md)。不把历史CENTER与SIG_TIME增益相加。
 
 独立 P0/P1 审查：PASS（sigtime_feature_path）。只读核对下一真实scratch20默认头训练/动态预算/完整U损失/辅助边界/唯一AdamW/源规则/15行发布/独立truth-last，未发现直接缺陷；0数据或权重字节/target指标访问，未追加重复测试或阻塞条件。本地结构核验PASS：参数总量、默认头初始权重、初始物理滤波器均保持，13＋7/U专用Gaussian=.015、BASE_CE实际U/EMA关闭、scheduled250与语法/发布入口一致。聚焦source mock更新/shadow检查和150项metadata负例PASS；真实checkpoint烟测由远端launcher首步执行。
+
+
+数值证据限定：实际probe的shadow容差为1e−6×所有optimizer参数的最大绝对值，包含未参与梯度的大Hz参数，因此首seed为8.3271195。该容差过宽，不能凭PASS证明微小feature辅助增量精确落地；另seed已观察到最大shadow差约2.4e−5。一次真实AdamW计数、辅助17张量/默认W-gain梯度None、实际初末Sinc/特征变化与独立默认头测试需分别解读。保留原probe数值及判据，不热改或重跑健康任务，不新增发布阻塞。冻结后的feature-only/默认W不影响z核对作为源端结果证据，无头拟合/query。详见shadow_tolerance_limit.json。

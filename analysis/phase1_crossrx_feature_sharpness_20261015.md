@@ -43,3 +43,6 @@ held bank 仍是模型此前训练过的源 L，只在当前梯度步骤排除�
 已只读核实原 E20 三种子父基线：run `20261011-phase1-ce-epoch10-20-30-40-manysig-m12-r01`，commit `83b1903fed01854f5abb75646a02e9a5e190a90e`，label20/pseudo0、4440真实更新、use_unlabeled=False/use_ema_teacher=False、scratch/final-only/no祖先，无星地训练；本地回读尚不能确定历史use_aug实际值，不由parser默认推断。source契约与SIG_TIME完全一致，实际RX1/3/4/6/8、day1/2/3、6TX、L/U/V6300/56700/27000，split_seed392005，角色比例.07/.63/.30。原feature_recipe的source_days0/1/2不作为实际角色依据。
 
 下一轮拟采用同架构SIG_TIME+CENTER25K的scratch20匹配矩阵 BASE_CE、BASE_SSL、CLEAN_CE、GLOBAL_GAP、CROSS_GAP ×固定3seeds，15行／66600真实更新；首seed5行22200，剩余10行44400。BASE_CE保持20L/0U并实际关闭teacher/U执行；SSL四控制计划13L/7U（维持旧33/17的大致阶段比例），显式teacher/U和use_aug=False、无星地训练。warmup2epoch444steps、every16将有250scheduledcalls/model，17selected参数、ρ=.05/系数=.1保持。此为实现准备中的方案，尚无正式run登记/发布；在真实launch前固定commands、source条件、GPU/stop/evaluation及准确成本，不加载旧E50权重续训。固定E20历史基线作为外部参考保留，新家族 matched对照用于机制归因，两者架构差异分别报告。
+
+
+数值证据限定：实际probe的shadow容差为1e−6×所有optimizer参数的最大绝对值，包含未参与梯度的大Hz参数，因此首seed为8.3271195。该容差过宽，不能凭PASS证明微小feature辅助增量精确落地；另seed已观察到最大shadow差约2.4e−5。一次真实AdamW计数、辅助17张量/默认W-gain梯度None、实际初末Sinc/特征变化与独立默认头测试需分别解读。保留原probe数值及判据，不热改或重跑健康任务，不新增发布阻塞。冻结后的feature-only/默认W不影响z核对作为源端结果证据，无头拟合/query。详见shadow_tolerance_limit.json。
