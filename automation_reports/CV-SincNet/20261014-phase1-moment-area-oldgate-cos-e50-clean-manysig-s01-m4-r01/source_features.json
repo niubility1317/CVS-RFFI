@@ -1,0 +1,3060 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+  "models": 3,
+  "missing": [],
+  "rows": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "seed": 2026092701,
+      "feature_boundary": {
+        "status": "VERIFIED",
+        "source_packets": 720,
+        "records": [
+          {
+            "dimension": "overall",
+            "stratum": null,
+            "count": 720,
+            "initial_to_final_raw_joint160_L2_mean": 12.924592971801758,
+            "initial_to_final_cosine_mean": 0.36689257621765137,
+            "changed_feature_elements": 115200
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 1,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 13.309503555297852,
+            "initial_to_final_cosine_mean": 0.34816816449165344,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 3,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 12.40628433227539,
+            "initial_to_final_cosine_mean": 0.39196541905403137,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 4,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 13.101313591003418,
+            "initial_to_final_cosine_mean": 0.3616662323474884,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 6,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 13.102554321289062,
+            "initial_to_final_cosine_mean": 0.3632778823375702,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 8,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 12.703311920166016,
+            "initial_to_final_cosine_mean": 0.36938509345054626,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "day",
+            "stratum": 1,
+            "count": 240,
+            "initial_to_final_raw_joint160_L2_mean": 12.94052791595459,
+            "initial_to_final_cosine_mean": 0.3662518858909607,
+            "changed_feature_elements": 38400
+          },
+          {
+            "dimension": "day",
+            "stratum": 2,
+            "count": 240,
+            "initial_to_final_raw_joint160_L2_mean": 12.915796279907227,
+            "initial_to_final_cosine_mean": 0.36623960733413696,
+            "changed_feature_elements": 38400
+          },
+          {
+            "dimension": "day",
+            "stratum": 3,
+            "count": 240,
+            "initial_to_final_raw_joint160_L2_mean": 12.917454719543457,
+            "initial_to_final_cosine_mean": 0.36818626523017883,
+            "changed_feature_elements": 38400
+          }
+        ],
+        "actual_feature": "joint160/id_feat_joint",
+        "export_exact": true,
+        "maximum_export_difference": 0,
+        "class_W_zeroing_leaves_features_identical": true,
+        "old_class_W_removed_from_export": true,
+        "feature_parameters_buffers_unchanged": true,
+        "head_fit": false,
+        "head_updates": 0,
+        "feature_updates_by_diagnostic": 0,
+        "query_read": false,
+        "feature_parameters": 195041,
+        "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+      },
+      "actual_initial_to_final_parameters": {
+        "status": "VERIFIED",
+        "feature_parameters": 195041,
+        "class_parameters": 960,
+        "feature_changed_elements": 193460,
+        "class_changed_elements": 960,
+        "feature_transform_parameters_preserved": [
+          "id_backbone.encoder.core.id_backbone.cls_head.gain",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias"
+        ],
+        "records": [
+          {
+            "parameter": "id_backbone.encoder.response_gain",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 1.1085088681532185,
+            "maximum_abs_change": 0.2879735231399536,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "elements": 24,
+            "changed_elements": 1,
+            "delta_L2": 0.0000820159912109375,
+            "maximum_abs_change": 0.0000820159912109375,
+            "relative_L2": 7.345794898607992e-12,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+            "elements": 24,
+            "changed_elements": 0,
+            "delta_L2": 0,
+            "maximum_abs_change": 0,
+            "relative_L2": 0,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.0.weight",
+            "elements": 4800,
+            "changed_elements": 4800,
+            "delta_L2": 2.5659694159216526,
+            "maximum_abs_change": 0.19719909131526947,
+            "relative_L2": 0.260185609258016,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.1.weight",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.2566030561192401,
+            "maximum_abs_change": 0.13291144371032715,
+            "relative_L2": 0.03703746088133098,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.1.bias",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.2546682121032103,
+            "maximum_abs_change": 0.0918566957116127,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.dw.weight",
+            "elements": 240,
+            "changed_elements": 240,
+            "delta_L2": 0.5371223833862827,
+            "maximum_abs_change": 0.10503602772951126,
+            "relative_L2": 0.05579804455087056,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "elements": 3456,
+            "changed_elements": 3456,
+            "delta_L2": 2.65258323246118,
+            "maximum_abs_change": 0.18270070850849152,
+            "relative_L2": 0.22258969563081693,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.norm.weight",
+            "elements": 72,
+            "changed_elements": 72,
+            "delta_L2": 0.4145857565928422,
+            "maximum_abs_change": 0.17502665519714355,
+            "relative_L2": 0.048859399978359024,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.norm.bias",
+            "elements": 72,
+            "changed_elements": 72,
+            "delta_L2": 0.4941876482213808,
+            "maximum_abs_change": 0.16935840249061584,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+            "elements": 360,
+            "changed_elements": 360,
+            "delta_L2": 0.784713915538887,
+            "maximum_abs_change": 0.16007530689239502,
+            "relative_L2": 0.06457541655977046,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "elements": 6912,
+            "changed_elements": 6912,
+            "delta_L2": 3.590359562568147,
+            "maximum_abs_change": 0.24395568668842316,
+            "relative_L2": 0.26405821494669746,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.norm.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.27881566043004624,
+            "maximum_abs_change": 0.07002663612365723,
+            "relative_L2": 0.028456504181279832,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.norm.bias",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.5482372223715679,
+            "maximum_abs_change": 0.2213628590106964,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.dw.weight",
+            "elements": 288,
+            "changed_elements": 288,
+            "delta_L2": 0.3270266482992875,
+            "maximum_abs_change": 0.06806769222021103,
+            "relative_L2": 0.022980227546092396,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+            "elements": 9216,
+            "changed_elements": 9216,
+            "delta_L2": 2.529579912609713,
+            "maximum_abs_change": 0.14053498301655054,
+            "relative_L2": 0.1820161470887089,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.norm.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.21202512771379997,
+            "maximum_abs_change": 0.06535112857818604,
+            "relative_L2": 0.021639723981135266,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.norm.bias",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.10082390436432957,
+            "maximum_abs_change": 0.03239805996417999,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t_proj.weight",
+            "elements": 15360,
+            "changed_elements": 15360,
+            "delta_L2": 1.914863445638022,
+            "maximum_abs_change": 0.10178890824317932,
+            "relative_L2": 0.15334701699979456,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t_proj.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.06882936534282214,
+            "maximum_abs_change": 0.025786064565181732,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.dw.weight",
+            "elements": 20,
+            "changed_elements": 20,
+            "delta_L2": 0.2981035842866045,
+            "maximum_abs_change": 0.1462915539741516,
+            "relative_L2": 0.09915519720628058,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.pw.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.6688179290627789,
+            "maximum_abs_change": 0.24235856533050537,
+            "relative_L2": 0.11362907081657861,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.norm.weight",
+            "elements": 16,
+            "changed_elements": 16,
+            "delta_L2": 0.1847339498550361,
+            "maximum_abs_change": 0.1047523021697998,
+            "relative_L2": 0.046183487463759026,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.norm.bias",
+            "elements": 16,
+            "changed_elements": 16,
+            "delta_L2": 0.19903783142923212,
+            "maximum_abs_change": 0.10334548354148865,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.dw.weight",
+            "elements": 80,
+            "changed_elements": 80,
+            "delta_L2": 0.4205293175734738,
+            "maximum_abs_change": 0.138201542198658,
+            "relative_L2": 0.08320400664445676,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.pw.weight",
+            "elements": 512,
+            "changed_elements": 512,
+            "delta_L2": 1.2961459132381097,
+            "maximum_abs_change": 0.30932162469252944,
+            "relative_L2": 0.15822493698070003,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.norm.weight",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.24471223842769751,
+            "maximum_abs_change": 0.13618314266204834,
+            "relative_L2": 0.04325942080789104,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.norm.bias",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.2737995823204551,
+            "maximum_abs_change": 0.12237689644098282,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.dw.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.40482980229044585,
+            "maximum_abs_change": 0.10573101788759232,
+            "relative_L2": 0.05411190576540059,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+            "elements": 1024,
+            "changed_elements": 1024,
+            "delta_L2": 1.4060946664216636,
+            "maximum_abs_change": 0.2068631947040558,
+            "relative_L2": 0.17602025772890526,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.norm.weight",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.15619463242787,
+            "maximum_abs_change": 0.0796123743057251,
+            "relative_L2": 0.027611570943671768,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.norm.bias",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.11808111611715699,
+            "maximum_abs_change": 0.03873999044299126,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f_proj.weight",
+            "elements": 5120,
+            "changed_elements": 5120,
+            "delta_L2": 1.3178239511176932,
+            "maximum_abs_change": 0.10575349628925323,
+            "relative_L2": 0.10363924546080537,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f_proj.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.09375096214087544,
+            "maximum_abs_change": 0.023958047851920128,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight",
+            "elements": 20,
+            "changed_elements": 20,
+            "delta_L2": 0.2601241535123625,
+            "maximum_abs_change": 0.1852911114692688,
+            "relative_L2": 0.17664639539517932,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias",
+            "elements": 1,
+            "changed_elements": 1,
+            "delta_L2": 0.03289308771491051,
+            "maximum_abs_change": 0.03289308771491051,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight",
+            "elements": 480,
+            "changed_elements": 390,
+            "delta_L2": 0.47391758382132665,
+            "maximum_abs_change": 0.07012426853179932,
+            "relative_L2": 0.03784070790976322,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 130,
+            "delta_L2": 0.23914284162102545,
+            "maximum_abs_change": 0.07019636034965515,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight",
+            "elements": 480,
+            "changed_elements": 387,
+            "delta_L2": 0.8639036446994784,
+            "maximum_abs_change": 0.2841171622276306,
+            "relative_L2": 0.06611852398387222,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 129,
+            "delta_L2": 0.49655900351131577,
+            "maximum_abs_change": 0.20924919843673706,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_gate.net.weight",
+            "elements": 120,
+            "changed_elements": 120,
+            "delta_L2": 0.6048416781821638,
+            "maximum_abs_change": 0.18636161088943481,
+            "relative_L2": 0.08075192119158503,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_gate.net.bias",
+            "elements": 24,
+            "changed_elements": 24,
+            "delta_L2": 0.24205536598803606,
+            "maximum_abs_change": 0.12826891243457794,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight",
+            "elements": 8064,
+            "changed_elements": 8064,
+            "delta_L2": 3.004394278975306,
+            "maximum_abs_change": 0.1638150569051504,
+            "relative_L2": 0.30681451662086634,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.09598848464664517,
+            "maximum_abs_change": 0.03147619962692261,
+            "relative_L2": 0.013854744362461213,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.21235297721658647,
+            "maximum_abs_change": 0.07060525566339493,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight",
+            "elements": 21504,
+            "changed_elements": 21504,
+            "delta_L2": 3.3180447293464033,
+            "maximum_abs_change": 0.12792966328561306,
+            "relative_L2": 0.29714007743996795,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.23848136299047792,
+            "maximum_abs_change": 0.07282698154449463,
+            "relative_L2": 0.02981017037380974,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.16304261687023278,
+            "maximum_abs_change": 0.06186831742525101,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight",
+            "elements": 20480,
+            "changed_elements": 20480,
+            "delta_L2": 4.418808871853222,
+            "maximum_abs_change": 0.21958310529589653,
+            "relative_L2": 0.38945147529096896,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.6866029958326969,
+            "maximum_abs_change": 0.16503489017486572,
+            "relative_L2": 0.08582537447908711,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.15698571663174074,
+            "maximum_abs_change": 0.04713473096489906,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_proj.0.weight",
+            "elements": 10240,
+            "changed_elements": 9984,
+            "delta_L2": 4.960233465072318,
+            "maximum_abs_change": 0.238716010004282,
+            "relative_L2": 0.3909274941693376,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 156,
+            "delta_L2": 0.25166722755991905,
+            "maximum_abs_change": 0.06328985840082169,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.fuse.0.weight",
+            "elements": 51360,
+            "changed_elements": 50397,
+            "delta_L2": 3.2635002958056676,
+            "maximum_abs_change": 0.16103572398424149,
+            "relative_L2": 0.2581006635572229,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.fuse.0.bias",
+            "elements": 160,
+            "changed_elements": 157,
+            "delta_L2": 0.08029355755756215,
+            "maximum_abs_change": 0.019872387871146202,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.gain",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.8537241326423518,
+            "maximum_abs_change": 0.2197493016719818,
+            "relative_L2": 0.2642499292221641,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+            "elements": 960,
+            "changed_elements": 960,
+            "delta_L2": 0.9371950562620213,
+            "maximum_abs_change": 0.10256196931004524,
+            "relative_L2": 0.27275037036631994,
+            "scope": "class_W"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.6654864380719909,
+            "maximum_abs_change": 0.2600964307785034,
+            "relative_L2": 0.05261132240650211,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.39219776121836314,
+            "maximum_abs_change": 0.1890723556280136,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.8753387438104595,
+            "maximum_abs_change": 0.2356487512588501,
+            "relative_L2": 0.0692016038657917,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.4087281677820445,
+            "maximum_abs_change": 0.1989859640598297,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.0.weight",
+            "elements": 1856,
+            "changed_elements": 1792,
+            "delta_L2": 2.517331448993259,
+            "maximum_abs_change": 0.32352688908576965,
+            "relative_L2": 0.5453437395830217,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.0.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.1144858670819726,
+            "maximum_abs_change": 0.036631084978580475,
+            "relative_L2": 0.13394951624992382,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.2.weight",
+            "elements": 10240,
+            "changed_elements": 10240,
+            "delta_L2": 3.39270289833021,
+            "maximum_abs_change": 0.19160982966423035,
+            "relative_L2": 0.4688049438127062,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.2.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.22283542170365322,
+            "maximum_abs_change": 0.04417412728071213,
+            "relative_L2": 0.239087181349051,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.3.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 1.6917733641932609,
+            "maximum_abs_change": 0.4104827642440796,
+            "relative_L2": 0.1337464278914063,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.3.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.6524607687595684,
+            "maximum_abs_change": 0.3460376560688019,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 2.5774956831548983,
+            "maximum_abs_change": 0.31899070739746094,
+            "relative_L2": 0.7978022710170335,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+            "elements": 576,
+            "changed_elements": 576,
+            "delta_L2": 0.9833373026758186,
+            "maximum_abs_change": 0.153957050293684,
+            "relative_L2": 0.6715972974311017,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+            "elements": 17920,
+            "changed_elements": 17920,
+            "delta_L2": 5.6149274172942,
+            "maximum_abs_change": 0.1961284726858139,
+            "relative_L2": 0.7662331628295209,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 2.8028644071400413,
+            "maximum_abs_change": 0.35573339462280273,
+            "relative_L2": 0.22158588747950103,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.4340497747355331,
+            "maximum_abs_change": 0.21587355434894562,
+            "relative_L2": null,
+            "scope": "f_theta"
+          }
+        ],
+        "scope": "Only the actual identity subtree; remove class_W alone, keep feature normalization/gain/reference. Per-tensor relative values; mixed Hz/other units are not combined into a causal importance score.",
+        "parameter_or_buffer_updates_by_analysis": 0
+      }
+    },
+    {
+      "row_id": "COV_SHAPE-s2026092701",
+      "arm": "COV_SHAPE",
+      "seed": 2026092701,
+      "feature_boundary": {
+        "status": "VERIFIED",
+        "source_packets": 720,
+        "records": [
+          {
+            "dimension": "overall",
+            "stratum": null,
+            "count": 720,
+            "initial_to_final_raw_joint160_L2_mean": 13.321869850158691,
+            "initial_to_final_cosine_mean": 0.3346255421638489,
+            "changed_feature_elements": 115200
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 1,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 13.731471061706543,
+            "initial_to_final_cosine_mean": 0.31693676114082336,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 3,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 12.794045448303223,
+            "initial_to_final_cosine_mean": 0.35971853137016296,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 4,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 13.449264526367188,
+            "initial_to_final_cosine_mean": 0.3332115411758423,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 6,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 13.439444541931152,
+            "initial_to_final_cosine_mean": 0.33660978078842163,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 8,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 13.19511890411377,
+            "initial_to_final_cosine_mean": 0.3266512155532837,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "day",
+            "stratum": 1,
+            "count": 240,
+            "initial_to_final_raw_joint160_L2_mean": 13.34546947479248,
+            "initial_to_final_cosine_mean": 0.3336404860019684,
+            "changed_feature_elements": 38400
+          },
+          {
+            "dimension": "day",
+            "stratum": 2,
+            "count": 240,
+            "initial_to_final_raw_joint160_L2_mean": 13.320948600769043,
+            "initial_to_final_cosine_mean": 0.3342447280883789,
+            "changed_feature_elements": 38400
+          },
+          {
+            "dimension": "day",
+            "stratum": 3,
+            "count": 240,
+            "initial_to_final_raw_joint160_L2_mean": 13.299187660217285,
+            "initial_to_final_cosine_mean": 0.3359914720058441,
+            "changed_feature_elements": 38400
+          }
+        ],
+        "actual_feature": "joint160/id_feat_joint",
+        "export_exact": true,
+        "maximum_export_difference": 0,
+        "class_W_zeroing_leaves_features_identical": true,
+        "old_class_W_removed_from_export": true,
+        "feature_parameters_buffers_unchanged": true,
+        "head_fit": false,
+        "head_updates": 0,
+        "feature_updates_by_diagnostic": 0,
+        "query_read": false,
+        "feature_parameters": 195041,
+        "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+      },
+      "actual_initial_to_final_parameters": {
+        "status": "VERIFIED",
+        "feature_parameters": 195041,
+        "class_parameters": 960,
+        "feature_changed_elements": 193717,
+        "class_changed_elements": 960,
+        "feature_transform_parameters_preserved": [
+          "id_backbone.encoder.core.id_backbone.cls_head.gain",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias"
+        ],
+        "records": [
+          {
+            "parameter": "id_backbone.encoder.response_gain",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 1.138933382966597,
+            "maximum_abs_change": 0.2871411442756653,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "elements": 24,
+            "changed_elements": 1,
+            "delta_L2": 0.0001659393310546875,
+            "maximum_abs_change": 0.0001659393310546875,
+            "relative_L2": 1.4862422236718496e-11,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+            "elements": 24,
+            "changed_elements": 0,
+            "delta_L2": 0,
+            "maximum_abs_change": 0,
+            "relative_L2": 0,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.0.weight",
+            "elements": 4800,
+            "changed_elements": 4800,
+            "delta_L2": 2.4860681804359226,
+            "maximum_abs_change": 0.1824563778936863,
+            "relative_L2": 0.2520837388669163,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.1.weight",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.2281378735384631,
+            "maximum_abs_change": 0.11605560779571533,
+            "relative_L2": 0.03292886567494512,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.1.bias",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.2358830263747512,
+            "maximum_abs_change": 0.0847589373588562,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.dw.weight",
+            "elements": 240,
+            "changed_elements": 240,
+            "delta_L2": 0.4516401277389685,
+            "maximum_abs_change": 0.1110740453004837,
+            "relative_L2": 0.046917865924079864,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "elements": 3456,
+            "changed_elements": 3456,
+            "delta_L2": 2.581400900062415,
+            "maximum_abs_change": 0.2231346182525158,
+            "relative_L2": 0.21661647921708294,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.norm.weight",
+            "elements": 72,
+            "changed_elements": 72,
+            "delta_L2": 0.3830511426987675,
+            "maximum_abs_change": 0.13406431674957275,
+            "relative_L2": 0.0451430100905924,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.norm.bias",
+            "elements": 72,
+            "changed_elements": 72,
+            "delta_L2": 0.3914609004894921,
+            "maximum_abs_change": 0.12148991972208023,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+            "elements": 360,
+            "changed_elements": 360,
+            "delta_L2": 0.7183500015901575,
+            "maximum_abs_change": 0.15245318412780762,
+            "relative_L2": 0.059114219424209274,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "elements": 6912,
+            "changed_elements": 6912,
+            "delta_L2": 3.5360491420294484,
+            "maximum_abs_change": 0.21976027265191078,
+            "relative_L2": 0.26006387609273734,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.norm.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.2831351680671439,
+            "maximum_abs_change": 0.10255002975463867,
+            "relative_L2": 0.02889736208340251,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.norm.bias",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.32005888320487585,
+            "maximum_abs_change": 0.08326821774244308,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.dw.weight",
+            "elements": 288,
+            "changed_elements": 288,
+            "delta_L2": 0.3682020243053015,
+            "maximum_abs_change": 0.06992387771606445,
+            "relative_L2": 0.025873629398311348,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+            "elements": 9216,
+            "changed_elements": 9216,
+            "delta_L2": 2.648426188209094,
+            "maximum_abs_change": 0.1625364050269127,
+            "relative_L2": 0.19056774139597268,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.norm.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.21517013590371753,
+            "maximum_abs_change": 0.07117640972137451,
+            "relative_L2": 0.02196071003539244,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.norm.bias",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.09769243470170134,
+            "maximum_abs_change": 0.029068078845739365,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t_proj.weight",
+            "elements": 15360,
+            "changed_elements": 15360,
+            "delta_L2": 2.010129368121297,
+            "maximum_abs_change": 0.10701210051774979,
+            "relative_L2": 0.16097614850148048,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t_proj.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.073382364987403,
+            "maximum_abs_change": 0.027096910402178764,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.dw.weight",
+            "elements": 20,
+            "changed_elements": 20,
+            "delta_L2": 0.29610466577759553,
+            "maximum_abs_change": 0.1547829508781433,
+            "relative_L2": 0.09849031704580083,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.pw.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.6717501788499088,
+            "maximum_abs_change": 0.24252855777740479,
+            "relative_L2": 0.11412724648477665,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.norm.weight",
+            "elements": 16,
+            "changed_elements": 16,
+            "delta_L2": 0.2015163074480289,
+            "maximum_abs_change": 0.10687875747680664,
+            "relative_L2": 0.050379076862007224,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.norm.bias",
+            "elements": 16,
+            "changed_elements": 16,
+            "delta_L2": 0.21157881331540307,
+            "maximum_abs_change": 0.10924754291772842,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.dw.weight",
+            "elements": 80,
+            "changed_elements": 80,
+            "delta_L2": 0.44615267167920564,
+            "maximum_abs_change": 0.13527852296829224,
+            "relative_L2": 0.08827372624823704,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.pw.weight",
+            "elements": 512,
+            "changed_elements": 512,
+            "delta_L2": 1.3381047091495875,
+            "maximum_abs_change": 0.3324002153240144,
+            "relative_L2": 0.16334698980752557,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.norm.weight",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.23618229845449676,
+            "maximum_abs_change": 0.11616194248199463,
+            "relative_L2": 0.041751526208349925,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.norm.bias",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.24913217070588212,
+            "maximum_abs_change": 0.11695596575737,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.dw.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.39910527826571635,
+            "maximum_abs_change": 0.09687457978725433,
+            "relative_L2": 0.053346732591821606,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+            "elements": 1024,
+            "changed_elements": 1024,
+            "delta_L2": 1.4545291173874413,
+            "maximum_abs_change": 0.20737218111753464,
+            "relative_L2": 0.18208346580838003,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.norm.weight",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.15612390222805117,
+            "maximum_abs_change": 0.08227980136871338,
+            "relative_L2": 0.027599067492690126,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.norm.bias",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.12604083057360538,
+            "maximum_abs_change": 0.038717206567525864,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f_proj.weight",
+            "elements": 5120,
+            "changed_elements": 5120,
+            "delta_L2": 1.2984514568355565,
+            "maximum_abs_change": 0.11539765447378159,
+            "relative_L2": 0.10211571063022988,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f_proj.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.09895600058154326,
+            "maximum_abs_change": 0.02499222941696644,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight",
+            "elements": 20,
+            "changed_elements": 20,
+            "delta_L2": 0.28417533650462024,
+            "maximum_abs_change": 0.20319628715515137,
+            "relative_L2": 0.1929791915742556,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias",
+            "elements": 1,
+            "changed_elements": 1,
+            "delta_L2": 0.038604795932769775,
+            "maximum_abs_change": 0.038604795932769775,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight",
+            "elements": 480,
+            "changed_elements": 390,
+            "delta_L2": 0.5211269833231252,
+            "maximum_abs_change": 0.07899264991283417,
+            "relative_L2": 0.04161021796410294,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 130,
+            "delta_L2": 0.2657049803378939,
+            "maximum_abs_change": 0.06891602277755737,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight",
+            "elements": 480,
+            "changed_elements": 387,
+            "delta_L2": 0.9228260915930067,
+            "maximum_abs_change": 0.3033769130706787,
+            "relative_L2": 0.07062813016741068,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 129,
+            "delta_L2": 0.5563657843203248,
+            "maximum_abs_change": 0.22494742274284363,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_gate.net.weight",
+            "elements": 120,
+            "changed_elements": 120,
+            "delta_L2": 0.5912615271043755,
+            "maximum_abs_change": 0.18935710191726685,
+            "relative_L2": 0.07893884625121508,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_gate.net.bias",
+            "elements": 24,
+            "changed_elements": 24,
+            "delta_L2": 0.23925666316685412,
+            "maximum_abs_change": 0.1275266408920288,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight",
+            "elements": 8064,
+            "changed_elements": 8064,
+            "delta_L2": 3.0547233466686268,
+            "maximum_abs_change": 0.16615868173539639,
+            "relative_L2": 0.3119542177194757,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.09653960323393206,
+            "maximum_abs_change": 0.03616952896118164,
+            "relative_L2": 0.013934291478642585,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.20632656947108516,
+            "maximum_abs_change": 0.07420402020215988,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight",
+            "elements": 21504,
+            "changed_elements": 21504,
+            "delta_L2": 3.380227176650287,
+            "maximum_abs_change": 0.11679010093212128,
+            "relative_L2": 0.30270868748427027,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.24106349641013064,
+            "maximum_abs_change": 0.0730515718460083,
+            "relative_L2": 0.03013293705126633,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.1620397695197657,
+            "maximum_abs_change": 0.06507439911365509,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight",
+            "elements": 20480,
+            "changed_elements": 20480,
+            "delta_L2": 4.430325693346105,
+            "maximum_abs_change": 0.2199767492711544,
+            "relative_L2": 0.3904665097156611,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.7092603686217651,
+            "maximum_abs_change": 0.17262756824493408,
+            "relative_L2": 0.08865754607772064,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.15773265827278357,
+            "maximum_abs_change": 0.04534866288304329,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_proj.0.weight",
+            "elements": 10240,
+            "changed_elements": 9920,
+            "delta_L2": 5.174384713177687,
+            "maximum_abs_change": 0.24452263303101063,
+            "relative_L2": 0.40780525030411807,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 155,
+            "delta_L2": 0.2521048173431499,
+            "maximum_abs_change": 0.06462842226028442,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.fuse.0.weight",
+            "elements": 51360,
+            "changed_elements": 50718,
+            "delta_L2": 3.5019530729005917,
+            "maximum_abs_change": 0.1530444510281086,
+            "relative_L2": 0.2769591940970734,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.fuse.0.bias",
+            "elements": 160,
+            "changed_elements": 158,
+            "delta_L2": 0.08342491513212268,
+            "maximum_abs_change": 0.018090838566422462,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.gain",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.8792544507073127,
+            "maximum_abs_change": 0.2159564197063446,
+            "relative_L2": 0.27215222984098886,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+            "elements": 960,
+            "changed_elements": 960,
+            "delta_L2": 0.93576185576113,
+            "maximum_abs_change": 0.1145213395357132,
+            "relative_L2": 0.2723332683288995,
+            "scope": "class_W"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.6450552040697127,
+            "maximum_abs_change": 0.2433885931968689,
+            "relative_L2": 0.05099609153512519,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.383890422288951,
+            "maximum_abs_change": 0.18225784599781036,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.905748842015884,
+            "maximum_abs_change": 0.231550931930542,
+            "relative_L2": 0.07160573322075521,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.3964368099349382,
+            "maximum_abs_change": 0.1850028932094574,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.0.weight",
+            "elements": 1856,
+            "changed_elements": 1792,
+            "delta_L2": 2.500762219973553,
+            "maximum_abs_change": 0.32825031876564026,
+            "relative_L2": 0.5417542538523177,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.0.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.11232686559705453,
+            "maximum_abs_change": 0.0343119278550148,
+            "relative_L2": 0.1314234646781558,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.2.weight",
+            "elements": 10240,
+            "changed_elements": 10240,
+            "delta_L2": 3.388018516926209,
+            "maximum_abs_change": 0.19218507409095764,
+            "relative_L2": 0.4681576542542893,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.2.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.22011760644501394,
+            "maximum_abs_change": 0.04440750181674957,
+            "relative_L2": 0.23617115128234253,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.3.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 1.7455730261906317,
+            "maximum_abs_change": 0.4037882089614868,
+            "relative_L2": 0.1379996646228787,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.3.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.5981016688798994,
+            "maximum_abs_change": 0.31617799401283264,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 2.436811277370621,
+            "maximum_abs_change": 0.31757962703704834,
+            "relative_L2": 0.7542567709547419,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+            "elements": 576,
+            "changed_elements": 576,
+            "delta_L2": 0.8250819310508087,
+            "maximum_abs_change": 0.14329761266708374,
+            "relative_L2": 0.5635124321482574,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+            "elements": 17920,
+            "changed_elements": 17920,
+            "delta_L2": 4.745333192317929,
+            "maximum_abs_change": 0.17551426589488983,
+            "relative_L2": 0.6475652115164573,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 2.6261336712598395,
+            "maximum_abs_change": 0.352186918258667,
+            "relative_L2": 0.20761409603102401,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.41873537104028175,
+            "maximum_abs_change": 0.20510147511959076,
+            "relative_L2": null,
+            "scope": "f_theta"
+          }
+        ],
+        "scope": "Only the actual identity subtree; remove class_W alone, keep feature normalization/gain/reference. Per-tensor relative values; mixed Hz/other units are not combined into a causal importance score.",
+        "parameter_or_buffer_updates_by_analysis": 0
+      }
+    },
+    {
+      "row_id": "AREA_SHAPE-s2026092701",
+      "arm": "AREA_SHAPE",
+      "seed": 2026092701,
+      "feature_boundary": {
+        "status": "VERIFIED",
+        "source_packets": 720,
+        "records": [
+          {
+            "dimension": "overall",
+            "stratum": null,
+            "count": 720,
+            "initial_to_final_raw_joint160_L2_mean": 13.2119140625,
+            "initial_to_final_cosine_mean": 0.33660489320755005,
+            "changed_feature_elements": 115200
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 1,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 13.489277839660645,
+            "initial_to_final_cosine_mean": 0.3263024091720581,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 3,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 12.739432334899902,
+            "initial_to_final_cosine_mean": 0.3572036623954773,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 4,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 13.39041805267334,
+            "initial_to_final_cosine_mean": 0.3314228653907776,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 6,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 13.355539321899414,
+            "initial_to_final_cosine_mean": 0.33745405077934265,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 8,
+            "count": 144,
+            "initial_to_final_raw_joint160_L2_mean": 13.0849027633667,
+            "initial_to_final_cosine_mean": 0.33064138889312744,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "day",
+            "stratum": 1,
+            "count": 240,
+            "initial_to_final_raw_joint160_L2_mean": 13.216930389404297,
+            "initial_to_final_cosine_mean": 0.33680424094200134,
+            "changed_feature_elements": 38400
+          },
+          {
+            "dimension": "day",
+            "stratum": 2,
+            "count": 240,
+            "initial_to_final_raw_joint160_L2_mean": 13.207077026367188,
+            "initial_to_final_cosine_mean": 0.3357697129249573,
+            "changed_feature_elements": 38400
+          },
+          {
+            "dimension": "day",
+            "stratum": 3,
+            "count": 240,
+            "initial_to_final_raw_joint160_L2_mean": 13.211732864379883,
+            "initial_to_final_cosine_mean": 0.3372407555580139,
+            "changed_feature_elements": 38400
+          }
+        ],
+        "actual_feature": "joint160/id_feat_joint",
+        "export_exact": true,
+        "maximum_export_difference": 0,
+        "class_W_zeroing_leaves_features_identical": true,
+        "old_class_W_removed_from_export": true,
+        "feature_parameters_buffers_unchanged": true,
+        "head_fit": false,
+        "head_updates": 0,
+        "feature_updates_by_diagnostic": 0,
+        "query_read": false,
+        "feature_parameters": 195041,
+        "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+      },
+      "actual_initial_to_final_parameters": {
+        "status": "VERIFIED",
+        "feature_parameters": 195041,
+        "class_parameters": 960,
+        "feature_changed_elements": 193782,
+        "class_changed_elements": 960,
+        "feature_transform_parameters_preserved": [
+          "id_backbone.encoder.core.id_backbone.cls_head.gain",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias"
+        ],
+        "records": [
+          {
+            "parameter": "id_backbone.encoder.response_gain",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 1.1285454340533996,
+            "maximum_abs_change": 0.28860512375831604,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "elements": 24,
+            "changed_elements": 1,
+            "delta_L2": 0.000041961669921875,
+            "maximum_abs_change": 0.000041961669921875,
+            "relative_L2": 3.758313669055252e-12,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+            "elements": 24,
+            "changed_elements": 0,
+            "delta_L2": 0,
+            "maximum_abs_change": 0,
+            "relative_L2": 0,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.0.weight",
+            "elements": 4800,
+            "changed_elements": 4800,
+            "delta_L2": 2.496253913817157,
+            "maximum_abs_change": 0.2173955738544464,
+            "relative_L2": 0.25311655758606866,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.1.weight",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.24555054732046822,
+            "maximum_abs_change": 0.0992732048034668,
+            "relative_L2": 0.035442168648783065,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.1.bias",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.23868244472439987,
+            "maximum_abs_change": 0.09076789021492004,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.dw.weight",
+            "elements": 240,
+            "changed_elements": 240,
+            "delta_L2": 0.5224094225406389,
+            "maximum_abs_change": 0.12412063777446747,
+            "relative_L2": 0.05426961365665843,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "elements": 3456,
+            "changed_elements": 3456,
+            "delta_L2": 2.5702619185457483,
+            "maximum_abs_change": 0.20339170843362808,
+            "relative_L2": 0.21568175925237454,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.norm.weight",
+            "elements": 72,
+            "changed_elements": 72,
+            "delta_L2": 0.4096143564336614,
+            "maximum_abs_change": 0.1702364683151245,
+            "relative_L2": 0.04827351485093425,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.norm.bias",
+            "elements": 72,
+            "changed_elements": 72,
+            "delta_L2": 0.41195310944721986,
+            "maximum_abs_change": 0.1394018679857254,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+            "elements": 360,
+            "changed_elements": 360,
+            "delta_L2": 0.7318649541150967,
+            "maximum_abs_change": 0.13902992010116577,
+            "relative_L2": 0.06022638740262996,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "elements": 6912,
+            "changed_elements": 6912,
+            "delta_L2": 3.600800123033046,
+            "maximum_abs_change": 0.2447761595249176,
+            "relative_L2": 0.2648260811482186,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.norm.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.28530917720356175,
+            "maximum_abs_change": 0.07237458229064941,
+            "relative_L2": 0.029119245961751365,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.norm.bias",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.4272143911132715,
+            "maximum_abs_change": 0.1402970254421234,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.dw.weight",
+            "elements": 288,
+            "changed_elements": 288,
+            "delta_L2": 0.349732834963976,
+            "maximum_abs_change": 0.0704924464225769,
+            "relative_L2": 0.024575795794038527,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+            "elements": 9216,
+            "changed_elements": 9216,
+            "delta_L2": 2.60092709355642,
+            "maximum_abs_change": 0.15777979884296656,
+            "relative_L2": 0.18714993982513317,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.norm.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.2098851218770327,
+            "maximum_abs_change": 0.07452738285064697,
+            "relative_L2": 0.021421310550024535,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.norm.bias",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.09604112892171537,
+            "maximum_abs_change": 0.026744522154331207,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t_proj.weight",
+            "elements": 15360,
+            "changed_elements": 15360,
+            "delta_L2": 1.926180696641872,
+            "maximum_abs_change": 0.09100532159209251,
+            "relative_L2": 0.15425333054712956,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t_proj.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.06985048702213377,
+            "maximum_abs_change": 0.025889795273542404,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.dw.weight",
+            "elements": 20,
+            "changed_elements": 20,
+            "delta_L2": 0.2831192381679412,
+            "maximum_abs_change": 0.13868504762649536,
+            "relative_L2": 0.09417110485476173,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.pw.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.7090898248294005,
+            "maximum_abs_change": 0.26050424575805664,
+            "relative_L2": 0.12047107952647637,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.norm.weight",
+            "elements": 16,
+            "changed_elements": 16,
+            "delta_L2": 0.19966553862109143,
+            "maximum_abs_change": 0.09940099716186523,
+            "relative_L2": 0.04991638465527286,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.norm.bias",
+            "elements": 16,
+            "changed_elements": 16,
+            "delta_L2": 0.21006303118878253,
+            "maximum_abs_change": 0.12053550034761429,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.dw.weight",
+            "elements": 80,
+            "changed_elements": 80,
+            "delta_L2": 0.43462969986291067,
+            "maximum_abs_change": 0.12769386172294617,
+            "relative_L2": 0.0859938437679879,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.pw.weight",
+            "elements": 512,
+            "changed_elements": 512,
+            "delta_L2": 1.3474798561833226,
+            "maximum_abs_change": 0.3198730773292482,
+            "relative_L2": 0.16449144587026285,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.norm.weight",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.2443938666121674,
+            "maximum_abs_change": 0.12600886821746826,
+            "relative_L2": 0.04320314009046603,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.norm.bias",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.27086896088190493,
+            "maximum_abs_change": 0.12397944927215576,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.dw.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.4168876531757093,
+            "maximum_abs_change": 0.10536351054906845,
+            "relative_L2": 0.0557236282402408,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+            "elements": 1024,
+            "changed_elements": 1024,
+            "delta_L2": 1.4862227572777258,
+            "maximum_abs_change": 0.20478500425815582,
+            "relative_L2": 0.18605099573013995,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.norm.weight",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.1604276416611716,
+            "maximum_abs_change": 0.08887374401092529,
+            "relative_L2": 0.02835986832709498,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.norm.bias",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.12063428894272996,
+            "maximum_abs_change": 0.03716791421175003,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f_proj.weight",
+            "elements": 5120,
+            "changed_elements": 5120,
+            "delta_L2": 1.3127834356367363,
+            "maximum_abs_change": 0.1136351153254509,
+            "relative_L2": 0.10324283801902469,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f_proj.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.09775920120334917,
+            "maximum_abs_change": 0.023380620405077934,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight",
+            "elements": 20,
+            "changed_elements": 20,
+            "delta_L2": 0.27428772598879125,
+            "maximum_abs_change": 0.1973019242286682,
+            "relative_L2": 0.18626466417221005,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias",
+            "elements": 1,
+            "changed_elements": 1,
+            "delta_L2": 0.03953723609447479,
+            "maximum_abs_change": 0.03953723609447479,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight",
+            "elements": 480,
+            "changed_elements": 390,
+            "delta_L2": 0.5405801072419587,
+            "maximum_abs_change": 0.11296558193862438,
+            "relative_L2": 0.043163483775026164,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 130,
+            "delta_L2": 0.28141032378107367,
+            "maximum_abs_change": 0.0888693556189537,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight",
+            "elements": 480,
+            "changed_elements": 387,
+            "delta_L2": 0.9164030314804212,
+            "maximum_abs_change": 0.29688912630081177,
+            "relative_L2": 0.07013654380044776,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 129,
+            "delta_L2": 0.5309720390323576,
+            "maximum_abs_change": 0.22481544315814972,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_gate.net.weight",
+            "elements": 120,
+            "changed_elements": 120,
+            "delta_L2": 0.5929688421906625,
+            "maximum_abs_change": 0.17872238159179688,
+            "relative_L2": 0.07916678850167543,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_gate.net.bias",
+            "elements": 24,
+            "changed_elements": 24,
+            "delta_L2": 0.23956542093567845,
+            "maximum_abs_change": 0.12365453690290451,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight",
+            "elements": 8064,
+            "changed_elements": 8064,
+            "delta_L2": 3.017977578442298,
+            "maximum_abs_change": 0.16143181920051575,
+            "relative_L2": 0.3082016692623309,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.10047189824182894,
+            "maximum_abs_change": 0.034029364585876465,
+            "relative_L2": 0.014501869373978156,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.2130642976779793,
+            "maximum_abs_change": 0.07606831192970276,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight",
+            "elements": 21504,
+            "changed_elements": 21504,
+            "delta_L2": 3.3405881122224392,
+            "maximum_abs_change": 0.11713667586445808,
+            "relative_L2": 0.2991588996922116,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.23541300115876673,
+            "maximum_abs_change": 0.06980514526367188,
+            "relative_L2": 0.02942662514484584,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.16290140673492223,
+            "maximum_abs_change": 0.06366465985774994,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight",
+            "elements": 20480,
+            "changed_elements": 20480,
+            "delta_L2": 4.380647005506313,
+            "maximum_abs_change": 0.2099265418946743,
+            "relative_L2": 0.3860880813131644,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.695097654805275,
+            "maximum_abs_change": 0.16911280155181885,
+            "relative_L2": 0.08688720685065937,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.15823816098266552,
+            "maximum_abs_change": 0.04388381168246269,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_proj.0.weight",
+            "elements": 10240,
+            "changed_elements": 9984,
+            "delta_L2": 5.148847780181965,
+            "maximum_abs_change": 0.27783805318176746,
+            "relative_L2": 0.4057926254357356,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 156,
+            "delta_L2": 0.25335487257321493,
+            "maximum_abs_change": 0.0641167014837265,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.fuse.0.weight",
+            "elements": 51360,
+            "changed_elements": 50718,
+            "delta_L2": 3.4974130495813474,
+            "maximum_abs_change": 0.14441511780023575,
+            "relative_L2": 0.27660013697280467,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.fuse.0.bias",
+            "elements": 160,
+            "changed_elements": 158,
+            "delta_L2": 0.0834837487997735,
+            "maximum_abs_change": 0.019358081743121147,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.gain",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.869089929305499,
+            "maximum_abs_change": 0.2198086977005005,
+            "relative_L2": 0.2690060448401114,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+            "elements": 960,
+            "changed_elements": 960,
+            "delta_L2": 0.9166160661388756,
+            "maximum_abs_change": 0.10044005513191223,
+            "relative_L2": 0.2667612999584586,
+            "scope": "class_W"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.6466446650096198,
+            "maximum_abs_change": 0.2444353699684143,
+            "relative_L2": 0.051121749455674645,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.3852839569631093,
+            "maximum_abs_change": 0.18381808698177338,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.8947437620370458,
+            "maximum_abs_change": 0.23578393459320068,
+            "relative_L2": 0.07073570525661906,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.39949536754522996,
+            "maximum_abs_change": 0.19038796424865723,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.0.weight",
+            "elements": 1856,
+            "changed_elements": 1792,
+            "delta_L2": 2.4609946779942784,
+            "maximum_abs_change": 0.3157306909561157,
+            "relative_L2": 0.5331391864698816,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.0.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.11313727063112505,
+            "maximum_abs_change": 0.03557710349559784,
+            "relative_L2": 0.13237164601308446,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.2.weight",
+            "elements": 10240,
+            "changed_elements": 10240,
+            "delta_L2": 3.3492612823304753,
+            "maximum_abs_change": 0.18699990212917328,
+            "relative_L2": 0.4628021652145825,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.2.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.2218249223645345,
+            "maximum_abs_change": 0.04452517628669739,
+            "relative_L2": 0.238002984604665,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.3.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 1.7176597940043674,
+            "maximum_abs_change": 0.40639030933380127,
+            "relative_L2": 0.13579292985873578,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.3.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.5954219252329338,
+            "maximum_abs_change": 0.3202020823955536,
+            "relative_L2": null,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 2.5055087055913936,
+            "maximum_abs_change": 0.3055133819580078,
+            "relative_L2": 0.7755204202425953,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+            "elements": 576,
+            "changed_elements": 576,
+            "delta_L2": 0.9868541418724383,
+            "maximum_abs_change": 0.14738278463482857,
+            "relative_L2": 0.6739992196337096,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+            "elements": 17920,
+            "changed_elements": 17920,
+            "delta_L2": 5.297111291341679,
+            "maximum_abs_change": 0.1775406375527382,
+            "relative_L2": 0.7228628327631392,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 2.699783397377567,
+            "maximum_abs_change": 0.3364851474761963,
+            "relative_L2": 0.21343661812051423,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.4182542567435276,
+            "maximum_abs_change": 0.20581340789794922,
+            "relative_L2": null,
+            "scope": "f_theta"
+          }
+        ],
+        "scope": "Only the actual identity subtree; remove class_W alone, keep feature normalization/gain/reference. Per-tensor relative values; mixed Hz/other units are not combined into a causal importance score.",
+        "parameter_or_buffer_updates_by_analysis": 0
+      }
+    }
+  ],
+  "paired": [
+    {
+      "seed": 2026092701,
+      "arm": "AREA_SHAPE",
+      "control": "COV_SHAPE",
+      "actual_initial_native_body_and_head_equal": true,
+      "actual_initial_parameters_identical": true,
+      "source_features": {
+        "status": "VERIFIED",
+        "actual_feature": "joint160/id_feat_joint",
+        "records": [
+          {
+            "dimension": "overall",
+            "stratum": null,
+            "count": 720,
+            "joint160_L2_mean": 3.0693509578704834,
+            "cosine_mean": 0.9492829442024231,
+            "changed_feature_elements": 115200
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 1,
+            "count": 144,
+            "joint160_L2_mean": 3.3872411251068115,
+            "cosine_mean": 0.9433270692825317,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 3,
+            "count": 144,
+            "joint160_L2_mean": 2.8226194381713867,
+            "cosine_mean": 0.9507986903190613,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 4,
+            "count": 144,
+            "joint160_L2_mean": 3.1226203441619873,
+            "cosine_mean": 0.9511712193489075,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 6,
+            "count": 144,
+            "joint160_L2_mean": 2.9942803382873535,
+            "cosine_mean": 0.9554251432418823,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "receiver",
+            "stratum": 8,
+            "count": 144,
+            "joint160_L2_mean": 3.019991874694824,
+            "cosine_mean": 0.9456930160522461,
+            "changed_feature_elements": 23040
+          },
+          {
+            "dimension": "day",
+            "stratum": 1,
+            "count": 240,
+            "joint160_L2_mean": 3.0813140869140625,
+            "cosine_mean": 0.9494295120239258,
+            "changed_feature_elements": 38400
+          },
+          {
+            "dimension": "day",
+            "stratum": 2,
+            "count": 240,
+            "joint160_L2_mean": 3.094101667404175,
+            "cosine_mean": 0.9487060308456421,
+            "changed_feature_elements": 38400
+          },
+          {
+            "dimension": "day",
+            "stratum": 3,
+            "count": 240,
+            "joint160_L2_mean": 3.0326364040374756,
+            "cosine_mean": 0.9497134685516357,
+            "changed_feature_elements": 38400
+          }
+        ],
+        "model_parameters_buffers_unchanged": true,
+        "source_only": true,
+        "query_read": false,
+        "head_fit": false,
+        "optimizer_steps": 0,
+        "interpretation": "Same-source frozen feature difference; not newTX transfer or proof that parameter/feature changes cause DG gain"
+      },
+      "actual_final_parameter_difference": {
+        "status": "VERIFIED",
+        "feature_parameters": 195041,
+        "class_parameters": 960,
+        "feature_changed_elements": 193782,
+        "class_changed_elements": 960,
+        "feature_transform_parameters_preserved": [
+          "id_backbone.encoder.core.id_backbone.cls_head.gain",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias"
+        ],
+        "records": [
+          {
+            "parameter": "id_backbone.encoder.response_gain",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.10877368987490428,
+            "maximum_abs_change": 0.048407682217657566,
+            "relative_L2": 0.0955048745621801,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+            "elements": 24,
+            "changed_elements": 1,
+            "delta_L2": 0.0002079010009765625,
+            "maximum_abs_change": 0.0002079010009765625,
+            "relative_L2": 1.862073590577375e-11,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+            "elements": 24,
+            "changed_elements": 0,
+            "delta_L2": 0,
+            "maximum_abs_change": 0,
+            "relative_L2": 0,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.0.weight",
+            "elements": 4800,
+            "changed_elements": 4800,
+            "delta_L2": 2.077714878430261,
+            "maximum_abs_change": 0.1935934778302908,
+            "relative_L2": 0.2086530900297305,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.1.weight",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.16958202553521226,
+            "maximum_abs_change": 0.07175987958908081,
+            "relative_L2": 0.02436364552678001,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.time_fuse.1.bias",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.17501833040390302,
+            "maximum_abs_change": 0.07326145842671394,
+            "relative_L2": 0.7419708534934962,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.dw.weight",
+            "elements": 240,
+            "changed_elements": 240,
+            "delta_L2": 0.3766695851225424,
+            "maximum_abs_change": 0.06427779793739319,
+            "relative_L2": 0.03910302363893957,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "elements": 3456,
+            "changed_elements": 3456,
+            "delta_L2": 2.48784403651209,
+            "maximum_abs_change": 0.24942371249198914,
+            "relative_L2": 0.20839978484588603,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.norm.weight",
+            "elements": 72,
+            "changed_elements": 72,
+            "delta_L2": 0.24514941865389298,
+            "maximum_abs_change": 0.08226215839385986,
+            "relative_L2": 0.028611820409546223,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.norm.bias",
+            "elements": 72,
+            "changed_elements": 72,
+            "delta_L2": 0.16259323213820562,
+            "maximum_abs_change": 0.06362274791899836,
+            "relative_L2": 0.41534986491599835,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.dw.weight",
+            "elements": 360,
+            "changed_elements": 360,
+            "delta_L2": 0.6119153871195065,
+            "maximum_abs_change": 0.12282088957726955,
+            "relative_L2": 0.04997489997844111,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "elements": 6912,
+            "changed_elements": 6912,
+            "delta_L2": 3.80089350909313,
+            "maximum_abs_change": 0.23859857115894556,
+            "relative_L2": 0.27596476483144966,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.norm.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.22427376536664664,
+            "maximum_abs_change": 0.08943837881088257,
+            "relative_L2": 0.022826113646974355,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.norm.bias",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.2424950912489548,
+            "maximum_abs_change": 0.09401346556842327,
+            "relative_L2": 0.7576577435400504,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.dw.weight",
+            "elements": 288,
+            "changed_elements": 288,
+            "delta_L2": 0.19117987333303604,
+            "maximum_abs_change": 0.06714475154876709,
+            "relative_L2": 0.01341923718705919,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.pw.weight",
+            "elements": 9216,
+            "changed_elements": 9216,
+            "delta_L2": 1.767908464848557,
+            "maximum_abs_change": 0.12841972708702087,
+            "relative_L2": 0.12704922523580556,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.norm.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.07150925576783707,
+            "maximum_abs_change": 0.026070356369018555,
+            "relative_L2": 0.007217569247562728,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t3.norm.bias",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.04226202767225773,
+            "maximum_abs_change": 0.016695579513907433,
+            "relative_L2": 0.4326028704403016,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t_proj.weight",
+            "elements": 15360,
+            "changed_elements": 15360,
+            "delta_L2": 0.9481688424070374,
+            "maximum_abs_change": 0.05995423533022404,
+            "relative_L2": 0.07467253905369547,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t_proj.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.015963817872355075,
+            "maximum_abs_change": 0.0040849491488188505,
+            "relative_L2": 0.21754297337099268,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.dw.weight",
+            "elements": 20,
+            "changed_elements": 20,
+            "delta_L2": 0.07848304444256793,
+            "maximum_abs_change": 0.04323345422744751,
+            "relative_L2": 0.02604359429233597,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.pw.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.1643878122513887,
+            "maximum_abs_change": 0.07010775804519653,
+            "relative_L2": 0.028016487920984698,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.norm.weight",
+            "elements": 16,
+            "changed_elements": 16,
+            "delta_L2": 0.041748865237715316,
+            "maximum_abs_change": 0.018761157989501953,
+            "relative_L2": 0.01039463905556415,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f1.norm.bias",
+            "elements": 16,
+            "changed_elements": 16,
+            "delta_L2": 0.04900910627444943,
+            "maximum_abs_change": 0.02611166425049305,
+            "relative_L2": 0.23163522616695545,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.dw.weight",
+            "elements": 80,
+            "changed_elements": 80,
+            "delta_L2": 0.11451537518662278,
+            "maximum_abs_change": 0.03347575664520264,
+            "relative_L2": 0.022733812679407012,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.pw.weight",
+            "elements": 512,
+            "changed_elements": 512,
+            "delta_L2": 0.33592641183155725,
+            "maximum_abs_change": 0.05195699632167816,
+            "relative_L2": 0.04089536972447015,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.norm.weight",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.054529064007750254,
+            "maximum_abs_change": 0.026437103748321533,
+            "relative_L2": 0.009540807641260182,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f2.norm.bias",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.044577357019382244,
+            "maximum_abs_change": 0.020978325977921486,
+            "relative_L2": 0.17893055277878553,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.dw.weight",
+            "elements": 96,
+            "changed_elements": 96,
+            "delta_L2": 0.0861617516577886,
+            "maximum_abs_change": 0.0236128568649292,
+            "relative_L2": 0.011499130553552596,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.pw.weight",
+            "elements": 1024,
+            "changed_elements": 1024,
+            "delta_L2": 0.36212240038188936,
+            "maximum_abs_change": 0.04456028342247009,
+            "relative_L2": 0.04502992834885654,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.norm.weight",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.030655827259153865,
+            "maximum_abs_change": 0.01309514045715332,
+            "relative_L2": 0.005390979665069014,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f3.norm.bias",
+            "elements": 32,
+            "changed_elements": 32,
+            "delta_L2": 0.01940311385400446,
+            "maximum_abs_change": 0.012425462482497096,
+            "relative_L2": 0.15394308150542868,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f_proj.weight",
+            "elements": 5120,
+            "changed_elements": 5120,
+            "delta_L2": 0.4281146019596779,
+            "maximum_abs_change": 0.0467403382062912,
+            "relative_L2": 0.0334463446674389,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.f_proj.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.017906580656876725,
+            "maximum_abs_change": 0.004128948086872697,
+            "relative_L2": 0.1809549754602407,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_gate.conv.weight",
+            "elements": 20,
+            "changed_elements": 20,
+            "delta_L2": 0.02490204476654685,
+            "maximum_abs_change": 0.01422642171382904,
+            "relative_L2": 0.016849319229924106,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_gate.conv.bias",
+            "elements": 1,
+            "changed_elements": 1,
+            "delta_L2": 0.0009324401617050171,
+            "maximum_abs_change": 0.0009324401617050171,
+            "relative_L2": 0.02415347987666768,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.weight",
+            "elements": 480,
+            "changed_elements": 390,
+            "delta_L2": 0.213001036791563,
+            "maximum_abs_change": 0.064136803150177,
+            "relative_L2": 0.017190727751126365,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.freq_stats_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 130,
+            "delta_L2": 0.09827268480239996,
+            "maximum_abs_change": 0.04998531751334667,
+            "relative_L2": 0.36985638988560826,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.weight",
+            "elements": 480,
+            "changed_elements": 387,
+            "delta_L2": 0.21099311283443192,
+            "maximum_abs_change": 0.10149484872817993,
+            "relative_L2": 0.016350754293279195,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_stats_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 129,
+            "delta_L2": 0.14336388316964782,
+            "maximum_abs_change": 0.09315179288387299,
+            "relative_L2": 0.2576791873439629,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_gate.net.weight",
+            "elements": 120,
+            "changed_elements": 120,
+            "delta_L2": 0.0899429358200639,
+            "maximum_abs_change": 0.02474537491798401,
+            "relative_L2": 0.012075917615951242,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_gate.net.bias",
+            "elements": 24,
+            "changed_elements": 24,
+            "delta_L2": 0.043787022258592635,
+            "maximum_abs_change": 0.023080937564373016,
+            "relative_L2": 0.183012759933278,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.conv.weight",
+            "elements": 8064,
+            "changed_elements": 8064,
+            "delta_L2": 0.7014230794989357,
+            "maximum_abs_change": 0.04380577802658081,
+            "relative_L2": 0.0702961691457749,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.norm.weight",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.020057883462571355,
+            "maximum_abs_change": 0.008669137954711914,
+            "relative_L2": 0.0028938607427235947,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b1.norm.bias",
+            "elements": 48,
+            "changed_elements": 48,
+            "delta_L2": 0.02005229393843038,
+            "maximum_abs_change": 0.007799332961440086,
+            "relative_L2": 0.097187163000064,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.conv.weight",
+            "elements": 21504,
+            "changed_elements": 21504,
+            "delta_L2": 0.8366850022270951,
+            "maximum_abs_change": 0.04192494601011276,
+            "relative_L2": 0.07333434516509378,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.norm.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.03043162770871487,
+            "maximum_abs_change": 0.011657893657684326,
+            "relative_L2": 0.0037853385575271066,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b2.norm.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.013960594281495068,
+            "maximum_abs_change": 0.004143780097365379,
+            "relative_L2": 0.08615535755740597,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.conv.weight",
+            "elements": 20480,
+            "changed_elements": 20480,
+            "delta_L2": 1.0376865400017055,
+            "maximum_abs_change": 0.053260721266269684,
+            "relative_L2": 0.08909543459412377,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.norm.weight",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.035492150864124654,
+            "maximum_abs_change": 0.01273345947265625,
+            "relative_L2": 0.0040968264357708895,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_b3.norm.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.016432087717311136,
+            "maximum_abs_change": 0.005686938762664795,
+            "relative_L2": 0.10417682613890529,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_proj.0.weight",
+            "elements": 10240,
+            "changed_elements": 9984,
+            "delta_L2": 1.4437151284066618,
+            "maximum_abs_change": 0.18037571012973785,
+            "relative_L2": 0.10203504133290774,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.pa_proj.0.bias",
+            "elements": 160,
+            "changed_elements": 156,
+            "delta_L2": 0.07004871162842677,
+            "maximum_abs_change": 0.032212862744927406,
+            "relative_L2": 0.27785550616068033,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.fuse.0.weight",
+            "elements": 51360,
+            "changed_elements": 50718,
+            "delta_L2": 2.0968253819428697,
+            "maximum_abs_change": 0.13170895725488663,
+            "relative_L2": 0.16148967399917669,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.fuse.0.bias",
+            "elements": 160,
+            "changed_elements": 158,
+            "delta_L2": 0.03580214033991677,
+            "maximum_abs_change": 0.010127119137905538,
+            "relative_L2": 0.42915405167887544,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.gain",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.10014639057553676,
+            "maximum_abs_change": 0.04023805260658264,
+            "relative_L2": 0.026864508102925632,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+            "elements": 960,
+            "changed_elements": 960,
+            "delta_L2": 0.4005702482924123,
+            "maximum_abs_change": 0.06260991655290127,
+            "relative_L2": 0.11039509193143068,
+            "scope": "class_W"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.14192547544252948,
+            "maximum_abs_change": 0.059377193450927734,
+            "relative_L2": 0.011419851635369372,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.05645046185512337,
+            "maximum_abs_change": 0.021449483931064606,
+            "relative_L2": 0.1470483726021005,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.10218072034875776,
+            "maximum_abs_change": 0.041502952575683594,
+            "relative_L2": 0.007792196872653513,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.05796164937864367,
+            "maximum_abs_change": 0.023651123046875,
+            "relative_L2": 0.14620652756275618,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.0.weight",
+            "elements": 1856,
+            "changed_elements": 1792,
+            "delta_L2": 0.30465968141122685,
+            "maximum_abs_change": 0.05295528471469879,
+            "relative_L2": 0.057865818517633866,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.0.bias",
+            "elements": 64,
+            "changed_elements": 64,
+            "delta_L2": 0.0048017953341354305,
+            "maximum_abs_change": 0.0019383728504180908,
+            "relative_L2": 0.005770490405819538,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.2.weight",
+            "elements": 10240,
+            "changed_elements": 10240,
+            "delta_L2": 0.46621014844622277,
+            "maximum_abs_change": 0.06266103684902191,
+            "relative_L2": 0.06068348648062738,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.2.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.005162880222613073,
+            "maximum_abs_change": 0.0014772787690162659,
+            "relative_L2": 0.006700105516575893,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.3.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.1757293290371772,
+            "maximum_abs_change": 0.07207775115966797,
+            "relative_L2": 0.012432133824542148,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.response_projection.3.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.07112628302564576,
+            "maximum_abs_change": 0.023375730961561203,
+            "relative_L2": 0.11892005444299829,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.gain_raw",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.6530641148656635,
+            "maximum_abs_change": 0.15539968013763428,
+            "relative_L2": 0.11635484086361066,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+            "elements": 576,
+            "changed_elements": 576,
+            "delta_L2": 1.0692173563864105,
+            "maximum_abs_change": 0.16630025207996368,
+            "relative_L2": 0.6793406581425699,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_projection.weight",
+            "elements": 17920,
+            "changed_elements": 17920,
+            "delta_L2": 5.7643415169178995,
+            "maximum_abs_change": 0.24891498684883118,
+            "relative_L2": 0.7471598623650025,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_norm.weight",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.7301504551421721,
+            "maximum_abs_change": 0.16902625560760498,
+            "relative_L2": 0.04808927218286559,
+            "scope": "f_theta"
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.output_norm.bias",
+            "elements": 160,
+            "changed_elements": 160,
+            "delta_L2": 0.05959136870241138,
+            "maximum_abs_change": 0.022917859256267548,
+            "relative_L2": 0.1423127178254993,
+            "scope": "f_theta"
+          }
+        ],
+        "scope": "Only the actual identity subtree; remove class_W alone, keep feature normalization/gain/reference. Per-tensor relative values; mixed Hz/other units are not combined into a causal importance score.",
+        "parameter_or_buffer_updates_by_analysis": 0
+      }
+    }
+  ],
+  "source_only": true,
+  "head_fit": false,
+  "head_updates": 0,
+  "query_read": false,
+  "U_IQ_read": false,
+  "U_truth_read": false,
+  "V_cache_materialized": true,
+  "V_forward": false,
+  "source_IQ": "fixed L720 first8 perTX/RX/day",
+  "seconds": 8.361613512039185
+}

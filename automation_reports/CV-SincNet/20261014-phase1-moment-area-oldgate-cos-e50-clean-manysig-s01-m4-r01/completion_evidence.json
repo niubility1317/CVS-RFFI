@@ -1,0 +1,62 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "512c10a267b5e654cfd2c983ab1debdeebc7f626",
+  "run_id": "20261014-phase1-moment-area-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+  "dispatcher_terminal": true,
+  "completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 4,
+    "new_trained_models": 3,
+    "reused_baseline_models": 1,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 672000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "rows": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_status": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "native_fitted_probes_disabled": null,
+      "head_fit_updates": null,
+      "optimizer_steps": 11100
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_status": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "native_fitted_probes_disabled": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 11100
+    },
+    {
+      "row_id": "COV_SHAPE-s2026092701",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_status": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "native_fitted_probes_disabled": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 11100
+    },
+    {
+      "row_id": "AREA_SHAPE-s2026092701",
+      "worker_terminal": true,
+      "source_status": "SOURCE_TRAINED",
+      "row_status": "TRAINED_PREDICTED_SCORED",
+      "epoch_count": 50,
+      "native_fitted_probes_disabled": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 11100
+    }
+  ],
+  "target_scores_not_read_for_expansion": true
+}

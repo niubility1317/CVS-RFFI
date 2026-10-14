@@ -19,3 +19,6 @@ Stop：本run自身角色/来源/非有限数/预算/default head/export/物理I
 逐row冻结后自动clean168000默认头逐包prediction，prediction固定后独立truth-last。剩余八行1344000决策/144指标；合并原firstseed为12行/2016000/216指标，三seed平均、样本SD、各seed配对差/正差数、MacroF1、最差RX/day、修正/引入错误及完整训练曲线/U接受/时间。只有完整预定义三seed候选均值≥84%才达目标，不用两seed/最高seed/source或另训头替代。
 
 输出release preflight/source_expansion_evidence；run launch/queue、每新行initial/final/frozen/resolved/actual_args/initialization/roles/50epoch/11100step/source_feature_witness、逐行default prediction/complete、scores/metrics/completion、source_features/analysis/combined_three_seed_analysis/completion。IQ、weights、rawlogs和大型prediction留产物目录；代码、报告、必要聚合Git上传并核对remoteOID。当前仅已登记未启动，不声称性能提高、Phase2、新TX或卫星部署。
+
+
+首seed source PASS已核实：LCE 0.248262/0.259459/0.250530，AREA−COV L720 L2=3.069351；真实导出/W独立和新增参数实际更新通过。四行已完成默认头预测和truthlast，扩seed决定未读取新的target指标，详见 source_expansion_decision.json。现在准备发布，尚未启动。

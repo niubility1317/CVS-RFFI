@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "target_metrics_read_for_decision": false,
+  "final_L_CE": {
+    "SIG_TIME-s2026092701": 0.24826190664290307,
+    "COV_SHAPE-s2026092701": 0.25945887029976455,
+    "AREA_SHAPE-s2026092701": 0.2505295401825024
+  },
+  "actual_source_candidate_minus_COV_L2": 3.0693509578704834,
+  "fixed_rules": {
+    "final_L_CE_max": 0.5,
+    "source_added_feature_difference_min": 0.000001,
+    "source_only": true,
+    "description": "All3 finalLCE<=.5, real joint160 W-independent export, actual new parameter updates and AREA vs COV sourceL720 difference>=1e-6; predefined02/03 only from source verdict"
+  },
+  "head_fit": false,
+  "source_feature_export_exact": true,
+  "actual_initial_native_body_and_head_equal": true,
+  "predefined_remaining_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "configuration_changes_for_expansion": false
+}
