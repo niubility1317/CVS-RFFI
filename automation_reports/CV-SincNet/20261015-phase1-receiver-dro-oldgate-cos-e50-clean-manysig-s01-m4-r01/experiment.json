@@ -35,7 +35,8 @@
     "entrypoint": "experiments.cvs_receiver_dro50.dispatch",
     "config_paths": [
       "experiments/cvs_receiver_dro50/design.py"
-    ]
+    ],
+    "execution_commit": "977d4fb609436bac23621ef8e32c2017495acef7"
   },
   "data": {
     "dataset": "ManySig",
@@ -1322,5 +1323,19 @@
     "goal_84": false,
     "head_fit_updates": 0
   },
-  "registered_at": "2026-10-14T20:52:44+00:00"
+  "registered_at": "2026-10-14T20:52:44+00:00",
+  "status": "RUNNING",
+  "result": {
+    "status": "RUNNING_VERIFIED",
+    "epochs_observed": [
+      3,
+      3,
+      3
+    ],
+    "first_source_replayed_steps_per_model": 444,
+    "source_qualification": null,
+    "training_complete": false,
+    "new_target_summary_read": false,
+    "goal_84": false
+  }
 }

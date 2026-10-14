@@ -424,3 +424,6 @@ CONF_FEATURE_MT02/03四个原worker仍live，最近完成23/27/27/26轮且loggro
 ## 固定 SIG_TIME：源接收机风险训练对照
 
 20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01，实现 341d0dc0bdab44fce88e0af3d8fc29eb50b39912，LOCAL_VERIFIED/PREREGISTERED，尚未发布。首seed三新scratch50：原CE、源RX等权CE、GroupDRO式动态RX风险加权；旧门控/EMA/cos/默认联合头和WD不变，不增加训练前向或模块，不另训分类头。9负例、真实native接入、三实际网络同初态/骨干及默认W非零联合梯度与一次独立P0P1 PASS。源规则提前固定，PASS才原样扩三臂02/03，源决定先推送再回收新目标数值；每行自动clean默认头预测/独立truth-last。完整[预登记](../automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/report.md)。没有新性能结果，84%仍未完成。
+
+
+源接收机群风险矩阵已RUNNING/VERIFIED：执行 977d4fb609436bac23621ef8e32c2017495acef7，三新GPU1/2/0完成3轮，单归档/remotecompile/真实CP无query smoke和同PID-CWD-argv-loggrowth核实。每臂444原生源步骤的权重/CE消费独立重算通过，候选首轮真实t1/t2/SIG及默认W增量梯度13/13非零，ERM均0；无另训头。50轮完整训练/自动truth-last仍待完成，未回收新目标数值；源PASS决定先推送的要求保持。

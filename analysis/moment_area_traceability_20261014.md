@@ -201,3 +201,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 
 
 - 2026-10-15：独立源监督群风险机制 20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01 已实现/预登记，code 341d0dc0bdab44fce88e0af3d8fc29eb50b39912，未发布。SIG_TIME/default头/原U/oldgatecos不变，ERM/源RX等权/DRO三新各50/11100；实际原生L CE hook默认None，9负例/三模型同初态/骨干及W联合梯度/唯一P0P1 PASS；0新头或额外训练前向。按原source判据决定扩三臂，非目标反馈。
+
+
+- 2026-10-15：20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01 实际执行 977d4fb609436bac23621ef8e32c2017495acef7 已RUNNING/VERIFIED，GPU1/2/0三新完成3轮；preflight/单archive/compile/CPsmoke和实际进程日志核实。每臂444源步重算/原生消费一致，首轮候选三fθ对象+W各13/13增量非零、ERM0；不是性能结果或完整source资格，无新numeric target读回。

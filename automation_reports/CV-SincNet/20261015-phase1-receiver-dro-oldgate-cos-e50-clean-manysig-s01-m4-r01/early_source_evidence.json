@@ -1,0 +1,149 @@
+{
+  "status": "VERIFIED",
+  "scope": "Partial source-only wiring evidence; not finalsourcequalification or performance",
+  "rows": [
+    {
+      "arm": "SIG_TIME",
+      "source_steps_replayed": 444,
+      "paired_native_losses_verified": 444,
+      "native_steps_visible": 535,
+      "diagnostic_epochs": [
+        1
+      ],
+      "last_group_weights": [
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224
+      ],
+      "original_CE_at_last_source_step": 0.40712201595306396,
+      "selected_CE_at_last_source_step": 0.40712201595306396,
+      "native_fitted_probes_disabled": true,
+      "gradient_summary": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 0
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 0
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 0
+        },
+        {
+          "parameter": "existing_default_W",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 0
+        }
+      ]
+    },
+    {
+      "arm": "RX_BALANCED",
+      "source_steps_replayed": 444,
+      "paired_native_losses_verified": 444,
+      "native_steps_visible": 650,
+      "diagnostic_epochs": [
+        1
+      ],
+      "last_group_weights": [
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224
+      ],
+      "original_CE_at_last_source_step": 0.3972855806350708,
+      "selected_CE_at_last_source_step": 0.4002060294151306,
+      "native_fitted_probes_disabled": true,
+      "gradient_summary": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 13
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 13
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 13
+        },
+        {
+          "parameter": "existing_default_W",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 13
+        }
+      ]
+    },
+    {
+      "arm": "RX_DRO",
+      "source_steps_replayed": 444,
+      "paired_native_losses_verified": 444,
+      "native_steps_visible": 645,
+      "diagnostic_epochs": [
+        1
+      ],
+      "last_group_weights": [
+        0.12605227530002594,
+        0.33973270654678345,
+        0.13332684338092804,
+        0.13863353431224823,
+        0.26225462555885315
+      ],
+      "original_CE_at_last_source_step": 0.4369340240955353,
+      "selected_CE_at_last_source_step": 0.48210328817367554,
+      "native_fitted_probes_disabled": true,
+      "gradient_summary": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 13
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 13
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 13
+        },
+        {
+          "parameter": "existing_default_W",
+          "batches": 13,
+          "selected_nonzero": 13,
+          "delta_nonzero": 13
+        }
+      ]
+    }
+  ],
+  "paired_source_steps": 1332,
+  "gradient_batches": 39,
+  "gradient_layer_records": 156,
+  "new_heads": 0,
+  "head_fit_updates": 0,
+  "U_truth_read": false,
+  "query_read": false,
+  "training_complete": false
+}

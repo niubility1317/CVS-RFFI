@@ -82252,7 +82252,7 @@
     },
     {
       "direction": "源接收机群风险分配训练",
-      "status": "LOCAL_VERIFIED_PREREGISTERED_NOT_LAUNCHED",
+      "status": "RUNNING_VERIFIED",
       "source_evidence": "Prior sourcevariance training loss decreased without stableDG gain; pureangle terminalsourcecompatibilityfails2/3. No GroupDRO implementation in checked risk-action packages; direct identityrisk reweighting distinct.",
       "hypothesis": "Adaptive weights on five legal sourceRX identity risks may reduce reliance on easier source receivers; original GroupDRO warns naive weighting canfail; notassumed to improve target.",
       "location": "Original L_s CE, actual t1/t2/SIG and defaultW receive normaljoint weightedCE gradients",
@@ -82276,7 +82276,7 @@
     "at": "2026-10-15",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
-    "active_generalization_mechanism": "Receiver-group supervised-risk optimization, firstseed ERM/RX_BALANCED/RX_DRO matched scratch50; LOCAL_VERIFIED_NOT_LAUNCHED; fixed SIG/defaulthead/oldgateEMAcos",
+    "active_generalization_mechanism": "RX_DRO firstseed50 triple active onGPU1/2/0; actualnativeL reweighting confirmed, no newtargetsummary orcompletequalification",
     "next_semi_supervised_work": "All-U and confidence FEATURE_MT complete3 negative; design a distinct training-objective mechanism from legal source evidence, no stronger-feature-consistency scan",
     "structural_exploration": false,
     "fixed_architecture": "SIG_TIME112→joint160; existing default cosine head jointly trained",
@@ -83350,7 +83350,7 @@
       "full_report": "automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
     },
     "receiver_dro_training": {
-      "status": "LOCAL_VERIFIED_PREREGISTERED_NOT_LAUNCHED",
+      "status": "RUNNING_VERIFIED",
       "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
       "release": "cvs_receiver_dro50_20261015_r01",
       "code_commit": "341d0dc0bdab44fce88e0af3d8fc29eb50b39912",
@@ -83387,7 +83387,20 @@
         "source_only": true,
         "expansion": "If exact source budget/defaultfeature/body-gradient health and fixed risk thresholds pass, extend all three unchanged arms to02/03 before reading new target summaries; otherwise no expansion. Source V health only, no epoch or candidate selection."
       },
-      "report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/report.md"
+      "report": "automation_reports/CV-SincNet/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/report.md",
+      "execution_commit": "977d4fb609436bac23621ef8e32c2017495acef7",
+      "actual_GPUs": {
+        "SIG_TIME": 1,
+        "RX_BALANCED": 2,
+        "RX_DRO": 0
+      },
+      "epochs_observed": [
+        3,
+        3,
+        3
+      ],
+      "source_steps_replayed_per_model": 444,
+      "new_target_summary_read": false
     }
   }
 }
