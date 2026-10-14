@@ -1,0 +1,56 @@
+{
+  "status": "SOURCE_PASS_LAUNCH_UNCHANGED",
+  "first_run_id": "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "remaining_run_id": "20261014-phase1-read-position-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+  "first_execution_commit": "b4d55dba50c8601017604a2a0eb0d037f8d835e8",
+  "remaining_implementation_commit": "ea3228433751d21751cf0f275326dceb71b3c7d5",
+  "decided_at_UTC": "2026-10-14T05:53:44.362Z",
+  "source_qualification": {
+    "status": "PASS",
+    "source_only": true,
+    "target_metrics_read_for_decision": false,
+    "final_L_CE": {
+      "SIG_TIME-s2026092701": 0.24817184781706011,
+      "SIG_TIME_PRE-s2026092701": 0.23811668016620585
+    },
+    "actual_source_candidate_minus_SIG_TIME_L2": 2.131700277328491,
+    "fixed_rules": {
+      "final_L_CE_max": 0.5,
+      "source_added_feature_difference_min": 0.000001,
+      "source_only": true,
+      "description": "Both2 finalLCE<=.5; actual newfeature updates/exact export/W independence, same initial full parameters and initial evalfunction; PRE-POST finalL720L2>=1e-6. Only unchanged predefined02/03 from source PASS."
+    },
+    "head_fit": false,
+    "source_feature_export_exact": true,
+    "actual_initial_native_body_and_head_equal": true,
+    "predefined_remaining_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "configuration_changes_for_expansion": false
+  },
+  "actual_initial_eval_features_equal": true,
+  "first_row_closure": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 3,
+    "new_trained_models": 2,
+    "reused_baseline_models": 1,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 504000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "configuration_changed": false,
+  "first_seed_retrained": false,
+  "remaining_model_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "target_metrics_read_for_decision": false,
+  "source_only": true,
+  "head_fit": false,
+  "goal84": false
+}

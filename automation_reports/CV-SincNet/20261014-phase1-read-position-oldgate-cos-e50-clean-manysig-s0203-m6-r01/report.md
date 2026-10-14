@@ -15,3 +15,5 @@ L6300/U56700/V27000、trainingpool标注10%、split392005和原RX/day/TX/physica
 Stop：本run角色/来源/预算/非有限/默认头/featureexport/ID/prediction/truthlast系统技术失败停止新增派发，产物及健康进程保留，无自动重试；不以目标停止/调参/换seed。每row final50即自动clean168000默认头预测、固定prediction后独立truthlast；本run6row1008000决策/108指标，合并首seed9row1512000/162。报告完整3预定义seed均值/样本SD/配对正差数、MacroF1、最差RX/day、错误修正/引入、全部源50epoch曲线/U接受/实测时间及实际零fit/更新/初态一致证据。只有SIG_TIME_PRE完整3seed均值≥84才达目标。
 
 预期release资格/preflight/submit；run launch/queue/newrows initial-final-frozen/resolved/args/roles/50epoch/11100steps/sourcewitness/defaultprediction/scores/completion；source_features/analysis/combined_three_seed_analysis/completion。数据/weights/rawlogs/prediction留既定远端，代码/config/报告/必要聚合Git交付并核remoteOID。当前只准备和登记，无完整首seedsource verdict，不宣称启动或性能提升。
+
+原first3row完整SOURCE PASS已核实；两finalLCE .248172/.238117，实际初始L720功能同，finalPRE−POSTL2 2.131700，导出/W独立/实际pool更新/零拟合通过。决定原样发布4新模型02/03，尚未读取该轮target指标；详见 source_expansion_decision.json。

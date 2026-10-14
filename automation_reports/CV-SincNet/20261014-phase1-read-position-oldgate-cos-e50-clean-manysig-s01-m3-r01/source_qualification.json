@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "source_only": true,
+  "target_metrics_read_for_decision": false,
+  "final_L_CE": {
+    "SIG_TIME-s2026092701": 0.24817184781706011,
+    "SIG_TIME_PRE-s2026092701": 0.23811668016620585
+  },
+  "actual_source_candidate_minus_SIG_TIME_L2": 2.131700277328491,
+  "fixed_rules": {
+    "final_L_CE_max": 0.5,
+    "source_added_feature_difference_min": 0.000001,
+    "source_only": true,
+    "description": "Both2 finalLCE<=.5; actual newfeature updates/exact export/W independence, same initial full parameters and initial evalfunction; PRE-POST finalL720L2>=1e-6. Only unchanged predefined02/03 from source PASS."
+  },
+  "head_fit": false,
+  "source_feature_export_exact": true,
+  "actual_initial_native_body_and_head_equal": true,
+  "predefined_remaining_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "configuration_changes_for_expansion": false
+}
