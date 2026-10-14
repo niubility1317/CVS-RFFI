@@ -13,6 +13,11 @@ EXTENSION_RELEASE='standard_ce_seed_extension_20261012_r01'
 EXTENSION_OWNER='codex/root/standard-ce-seed-extension-20261012'
 EXTENSION_SEEDS=(2026092705,2026092706,2026092707,2026092708)
 EXTENSION_CONFIG='experiments/standard_ce_baselines/configs/seed_extension_20261012'
+SIG_RUN='20261014-phase1-sigtime-purece-e200-clean-manysig-m8-r01'
+SIG_RELEASE='sigtime_purece_e200_20261014_r01'
+SIG_OWNER='codex/root/sigtime-purece-eight-20261014'
+SIG_SEEDS=tuple(range(2026092701,2026092709))
+SIG_CONFIG='experiments/standard_ce_baselines/configs/sigtime_20261014'
 
 def read(path):return json.loads(Path(path).read_text(encoding='utf-8'))
 

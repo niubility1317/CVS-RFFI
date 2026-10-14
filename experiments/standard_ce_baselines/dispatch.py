@@ -7,12 +7,27 @@ import statistics
 import subprocess
 import sys
 import time
+from contextlib import contextmanager
 from experiments.standard_ce_baselines.common import ROOT,read,write,SEEDS,OWNER,RUN,EXTENSION_RUN,EXTENSION_OWNER,EXTENSION_SEEDS,EXTENSION_CONFIG
 from experiments.standard_ce_baselines.model import VARIANTS
+from experiments.standard_ce_baselines.common import SIG_RUN,SIG_SEEDS,SIG_OWNER,SIG_CONFIG,PROJECT
 from experiments.cvs_clean_design.dispatch import choose_gpu
 
 
+@contextmanager
+def launch_guard(spec):
+    if spec['run_id']!=SIG_RUN:
+        yield
+        return
+    import fcntl
+    with (Path(PROJECT)/'runs/receiver_residual_capacity4.lock').open('a+') as handle:
+        fcntl.flock(handle,fcntl.LOCK_EX)
+        try:yield
+        finally:fcntl.flock(handle,fcntl.LOCK_UN)
+
+
 def matrix(spec):
+    if spec['run_id']==SIG_RUN:return ('sig_time',),SIG_SEEDS,SIG_OWNER
     if spec['run_id']==EXTENSION_RUN:return tuple(v for v in VARIANTS if v!='native'),EXTENSION_SEEDS,EXTENSION_OWNER
     if spec['run_id']==RUN:return VARIANTS,SEEDS,OWNER
     raise ValueError('Unregistered run')
@@ -38,7 +53,7 @@ def summary(spec,state):
         groups[row['variant']].append(item)
     result={}
     for variant,rows in groups.items():
-        result[variant]=dict(actual_seed_count=len(rows),expected_seed_count=4,rows=rows,
+        result[variant]=dict(actual_seed_count=len(rows),expected_seed_count=len(seeds),rows=rows,
             **{metric:dict(mean=statistics.mean(r[metric] for r in rows) if rows else None,
                 sample_sd=statistics.stdev(r[metric] for r in rows) if len(rows)>1 else None) for metric in ('accuracy','macro_f1','worst_receiver_accuracy')})
         paired[variant]={}
@@ -46,10 +61,10 @@ def summary(spec,state):
             reference={r['seed']:r for r in groups[control]}
             diffs=[r['accuracy']-reference[r['seed']]['accuracy'] for r in rows if r['seed'] in reference]
             paired[variant][control]=dict(actual_pairs=len(diffs),mean_accuracy_difference=statistics.mean(diffs) if diffs else None,per_seed_differences=diffs)
-    write(Path(spec['runtime_root'])/'summary.json',dict(groups=result,paired=paired,full_matrix=all(len(r)==4 for r in groups.values()),target_feedback_forbidden=True))
+    write(Path(spec['runtime_root'])/'summary.json',dict(groups=result,paired=paired,full_matrix=all(len(r)==len(seeds) for r in groups.values()),target_feedback_forbidden=True))
     lines=['# Fixed full-width CE comparison','', 'State: '+state['status'], '', '|Architecture|Completed seeds|Clean accuracy mean|Sample SD|','|---|---:|---:|---:|']
     for variant,value in result.items():
-        m=value['accuracy'];lines.append('|'+variant+'|'+str(value['actual_seed_count'])+'/4|'+str(m['mean'])+'|'+str(m['sample_sd'])+'|')
+        m=value['accuracy'];lines.append('|'+variant+'|'+str(value['actual_seed_count'])+'/'+str(len(seeds))+'|'+str(m['mean'])+'|'+str(m['sample_sd'])+'|')
     (Path(spec['runtime_root'])/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf-8')
 
 
@@ -66,6 +81,9 @@ def finish(spec,state,metadata):
             state['status']='FAILED_COMBINE';state['combine_error']=str(error)
     write(run/'pipeline_state.json',state)
     metadata['status']=state['status'];write(run/'experiment.json',metadata);summary(spec,state)
+    if state['status']=='ANALYZED' and spec['run_id']==SIG_RUN:
+        from experiments.standard_ce_baselines.compare_sigtime import compare
+        compare(spec)
     return 0 if state['status']=='ANALYZED' else 1
 
 
@@ -78,7 +96,8 @@ def dispatch(spec_path):
     _,_,owner=matrix(spec)
     state=dict(status='RUNNING',pid=os.getpid(),cwd=str(ROOT),argv=sys.argv,run_id=spec['run_id'],launch_owner=owner,
         commit=(ROOT/'release_commit.txt').read_text().strip(),rows={r['row_id']:dict(status='QUEUED',variant=r['variant'],model_seed=r['model_seed']) for r in spec['rows']})
-    metadata=read(ROOT/(EXTENSION_CONFIG+'/experiment_spec.json' if spec['run_id']==EXTENSION_RUN else 'experiments/standard_ce_baselines/configs/experiment_spec.json'));write(run/'experiment.json',metadata)
+    folder=SIG_CONFIG if spec['run_id']==SIG_RUN else EXTENSION_CONFIG if spec['run_id']==EXTENSION_RUN else 'experiments/standard_ce_baselines/configs'
+    metadata=read(ROOT/(folder+'/experiment_spec.json'));metadata['code']['commit']=state['commit'];write(run/'experiment.json',metadata)
     pending=[(r,'source') for r in spec['rows']];active={};technical_failures=0;write(run/'pipeline_state.json',state)
     def event(row,status):
         state['rows'][row['row_id']]['status']=status
@@ -94,7 +113,7 @@ def dispatch(spec_path):
             job['log'].close();del active[rid];row=job['row'];stage=job['stage']
             if code:
                 state['rows'][rid]['exit_code']=code;event(row,'FAILED_'+stage.upper());technical_failures+=1
-                if spec['run_id']==EXTENSION_RUN and technical_failures>=2:
+                if spec['run_id'] in (EXTENSION_RUN,SIG_RUN) and technical_failures>=2:
                     for queued,queued_stage in pending:
                         if queued_stage=='source':event(queued,'NOT_STARTED_SYSTEMIC_TECHNICAL_FAILURE')
                     pending=[job for job in pending if job[1]!='source']
@@ -116,27 +135,28 @@ def dispatch(spec_path):
             except Exception as error:
                 state['rows'][rid]['error']=str(error);event(row,'FAILED_'+stage.upper())
                 technical_failures+=1
-                if spec['run_id']==EXTENSION_RUN and technical_failures>=2:
+                if spec['run_id'] in (EXTENSION_RUN,SIG_RUN) and technical_failures>=2:
                     for queued,queued_stage in pending:
                         if queued_stage=='source':event(queued,'NOT_STARTED_SYSTEMIC_TECHNICAL_FAILURE')
                     pending=[job for job in pending if job[1]!='source']
                     state['systemic_technical_stop']=True
-        if pending:
-            gpu=choose_gpu(active)
-            if gpu is not None:
-                row,stage=pending.pop(0);rid=row['row_id']
-                if stage=='source':config=row['source_config']
-                else:
-                    config=str(run/(rid+'.predict.json'))
-                    write(config,dict(variant=row['variant'],model_seed=row['model_seed'],source_output=row['source_output'],
-                        source_contract=row['source_contract'],output_root=row['prediction_output'],capsule=spec['capsule']))
-                command=[sys.executable,'-u','-m','experiments.standard_ce_baselines.'+stage,'--config',config]
-                logpath=logs/(rid+'.'+stage+'.log');log=logpath.open('x')
-                env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(gpu),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
-                child=subprocess.Popen(command,cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT)
-                active[rid]=dict(process=child,gpu=gpu,log=log,row=row,stage=stage)
-                state['rows'][rid].update(pid=child.pid,gpu=gpu,argv=command,log=str(logpath),source_output=row['source_output'],started=time.time())
-                event(row,'TRAINING' if stage=='source' else 'PREDICTING_CLEAN');print('LAUNCHED '+json.dumps(state['rows'][rid]),flush=True)
+        with launch_guard(spec):
+            if pending:
+                gpu=choose_gpu(active)
+                if gpu is not None:
+                    row,stage=pending.pop(0);rid=row['row_id']
+                    if stage=='source':config=row['source_config']
+                    else:
+                        config=str(run/(rid+'.predict.json'))
+                        write(config,dict(variant=row['variant'],model_seed=row['model_seed'],source_output=row['source_output'],
+                            source_contract=row['source_contract'],output_root=row['prediction_output'],capsule=spec['capsule']))
+                    command=[sys.executable,'-u','-m','experiments.standard_ce_baselines.'+stage,'--config',config]
+                    logpath=logs/(rid+'.'+stage+'.log');log=logpath.open('x')
+                    env=dict(os.environ,CUDA_VISIBLE_DEVICES=str(gpu),OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
+                    child=subprocess.Popen(command,cwd=ROOT,env=env,stdin=subprocess.DEVNULL,stdout=log,stderr=subprocess.STDOUT)
+                    active[rid]=dict(process=child,gpu=gpu,log=log,row=row,stage=stage)
+                    state['rows'][rid].update(pid=child.pid,gpu=gpu,argv=command,log=str(logpath),source_output=row['source_output'],started=time.time())
+                    event(row,'TRAINING' if stage=='source' else 'PREDICTING_CLEAN');print('LAUNCHED '+json.dumps(state['rows'][rid]),flush=True)
         if pending or active:time.sleep(5)
     return finish(spec,state,metadata)
 

@@ -7,6 +7,7 @@ import subprocess
 import tarfile
 from pathlib import Path
 from experiments.standard_ce_baselines.common import ROOT,RUN,RELEASE,PROJECT,read,write,EXTENSION_RUN,EXTENSION_RELEASE,EXTENSION_CONFIG
+from experiments.standard_ce_baselines.common import SIG_RUN,SIG_RELEASE,SIG_CONFIG
 
 CONNECTION=['-F','E:/type10-7/tools/n607_ssh_config','-o','BatchMode=yes','-o','ConnectTimeout=10']
 
@@ -76,7 +77,7 @@ if not (Path(d['capsule'])/'manifest.json').is_file() or not Path(d['truth']).is
 if not (Path(d['capsule'])/'clean.npy').is_file():raise FileNotFoundError('Clean IQ')
 # CPU synthetic real-checkpoint smoke, no source/target samples, one pass for all architectures.
 with (release/'smoke.log').open('x') as log:
-    subprocess.run([python,'-m','experiments.standard_ce_baselines.smoke','--output',str(release/'smoke.json')],cwd=release,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
+    subprocess.run([python,'-m','experiments.standard_ce_baselines.smoke','--output',str(release/'smoke.json')]+(['--sigtime'] if c.get('sigtime') else []),cwd=release,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
 command=[python,'-u','-m','experiments.standard_ce_baselines.dispatch','--spec',str(spec)]
 logpath=release/'dispatcher.stdout.log'
 with logpath.open('x') as log:
@@ -108,12 +109,14 @@ def publish(output):
         blob=(commit+'\n').encode();member=tarfile.TarInfo('release_commit.txt');member.size=len(blob);tar.addfile(member,io.BytesIO(blob))
     extended=RUN==EXTENSION_RUN
     config=dict(project=PROJECT,release=RELEASE,run=RUN,archive=archive.name,sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),commit=commit,
-        spec_relative=EXTENSION_CONFIG+'/launch_spec.json' if extended else 'experiments/standard_ce_baselines/configs/launch_spec.json',row_count=52 if extended else 56)
+        spec_relative=SIG_CONFIG+'/launch_spec.json' if RUN==SIG_RUN else EXTENSION_CONFIG+'/launch_spec.json' if extended else 'experiments/standard_ce_baselines/configs/launch_spec.json',row_count=8 if RUN==SIG_RUN else 52 if extended else 56,sigtime=RUN==SIG_RUN)
     write(output/'package.json',dict(config,files=len(selected)))
     subprocess.run(['scp',*CONNECTION,str(archive),'N607:'+PROJECT+'/releases/'+archive.name],check=True,timeout=60)
     receipt=json.loads(ssh(REMOTE.replace('CONFIG',repr(config))));write(output/'submit.json',receipt);print(receipt)
 
 if __name__=='__main__':
-    p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--inspect',action='store_true');p.add_argument('--seed-extension',action='store_true');a=p.parse_args()
+    p=argparse.ArgumentParser();p.add_argument('--output',required=True);p.add_argument('--inspect',action='store_true');p.add_argument('--seed-extension',action='store_true');p.add_argument('--sigtime',action='store_true');a=p.parse_args()
+    if a.seed_extension and a.sigtime:raise ValueError('Choose exactly one release')
     if a.seed_extension:RUN,RELEASE=EXTENSION_RUN,EXTENSION_RELEASE
+    if a.sigtime:RUN,RELEASE=SIG_RUN,SIG_RELEASE
     inspect(a.output) if a.inspect else publish(a.output)

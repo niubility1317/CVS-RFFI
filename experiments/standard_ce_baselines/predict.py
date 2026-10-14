@@ -9,11 +9,11 @@ sys.path[:0]=[str(ROOT),str(ROOT/'code')]
 import numpy as np
 import torch
 from experiments.standard_ce_baselines.common import read,write,VIEWS
-from experiments.standard_ce_baselines.model import build,VARIANTS
+from experiments.standard_ce_baselines.model import build,SUPPORTED
 
 
 def check(c,done,initial,contract,expected,resolved,payload,freeze):
-    if c['variant'] not in VARIANTS or any(c.get(k) for k in ('truth','p1_truth','target_truth')):raise ValueError('Invalid inference config')
+    if c['variant'] not in SUPPORTED or any(c.get(k) for k in ('truth','p1_truth','target_truth')):raise ValueError('Invalid inference config')
     if done.get('status')!='SOURCE_TRAINED' or done.get('epoch')!=200 or done.get('steps')!=10000 or done.get('target_access') is not False:raise ValueError('Source incomplete')
     if initial.get('scratch_only') is not True or initial.get('checkpoint') is not None or initial.get('ancestors')!=[] or initial.get('checkpoint_sources')!=[] or initial.get('target_access') is not False or initial.get('model_seed')!=c['model_seed']:raise ValueError('CHECKPOINT_PROVENANCE_UNVERIFIED')
     if any(contract.get(k)!=v for k,v in expected.items()) or contract.get('out_len')!=256 or contract.get('equalized')!=1 or contract.get('normalize') is not True:raise ValueError('CHECKPOINT_DATA_CONTRACT_MISMATCH')
@@ -31,7 +31,7 @@ def predict(c):
     done,initial,contract,resolved,freeze=[read(source/f) for f in ('completion.json','initialization.json','source_contract.json','resolved_config.json','freeze.json')]
     payload=torch.load(source/'last.pt',map_location='cpu',weights_only=False)
     check(c,done,initial,contract,read(c['source_contract']),resolved,payload,freeze)
-    model=build(c['variant']);model.load_state_dict(payload['model'],strict=True);del payload
+    model=build(c['variant'],c['model_seed']);model.load_state_dict(payload['model'],strict=True);del payload
     model.to(device).eval()
     with torch.no_grad():scores=model(torch.zeros(2,2,256,device=device))
     if scores.shape!=(2,6) or not torch.isfinite(scores).all():raise ValueError('Frozen checkpoint no-query smoke failed')

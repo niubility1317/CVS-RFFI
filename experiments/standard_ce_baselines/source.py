@@ -12,7 +12,7 @@ sys.path[:0] = [str(ROOT), str(ROOT / 'code')]
 import numpy as np
 import torch
 import torch.nn.functional as F
-from experiments.standard_ce_baselines.model import build, VARIANTS
+from experiments.standard_ce_baselines.model import build, SUPPORTED
 from experiments.cvs_identity_ce.source import source_args, checkpoint_smoke, write
 from baselines.common.practical_source import build_contract_split
 from baselines.common.cvs_data import make_cvs_loader
@@ -25,7 +25,8 @@ def validate_config(c):
         lr_min=1e-6, weight_decay=.0001, drop_last=False, augmentation=False,
         domain_backbone=False, extra_losses=[], selection='fixed_last_epoch', split_seed=392005)
     if any(c.get(k)!=v for k,v in required.items()): raise ValueError('Clean matched training contract mismatch')
-    if c['variant'] not in VARIANTS: raise ValueError('Unknown variant')
+    if c['variant'] not in SUPPORTED: raise ValueError('Unknown variant')
+    if c['variant']=='sig_time' and c['model_seed'] not in range(2026092701,2026092709):raise ValueError('Unregistered SIG_TIME seed')
     return c
 
 
@@ -48,7 +49,7 @@ def train(c):
     validate_config(c);torch.backends.cudnn.allow_tf32=False;torch.backends.cuda.matmul.allow_tf32=False;out=Path(c['output_root']);out.mkdir(parents=True,exist_ok=False)
     seed=c['model_seed'];random.seed(seed);np.random.seed(seed);torch.manual_seed(seed);torch.cuda.manual_seed_all(seed)
     torch.set_num_threads(2);device=torch.device(c.get('device','cuda:0'))
-    model=build(c['variant']).to(device);checkpoint_smoke(model,out/'initial_smoke.pt',device)
+    model=build(c['variant'],seed).to(device);checkpoint_smoke(model,out/'initial_smoke.pt',device)
     split=build_contract_split(source_args(c))
     if split.test or split.named_tests or split.split_info['counts']!={'L_s':6300,'U_s':56700,'V':27000}:
         raise ValueError('Source roles changed or target constructed')
@@ -64,7 +65,8 @@ def train(c):
         source_counts=split.split_info['counts'],steps_per_epoch=len(train_loader),
         total_parameters=sum(p.numel() for p in model.parameters()),trainable_parameters=sum(p.numel() for p in model.parameters() if p.requires_grad),
         U_s_use='unused',augmentation=False,target_access=False,precision='float32',gradient_clipping=None,
-        optimizer='AdamW+CosineAnnealingLR',loader_seed=seed)
+        optimizer='AdamW+CosineAnnealingLR',loader_seed=seed,
+        architecture=getattr(model,'_architecture',None),default_head_joint_training=True,separate_head_training=False)
     write(out/'resolved_config.json',resolved);print('RESOLVED_CONFIG '+json.dumps(resolved),flush=True)
     optimizer=torch.optim.AdamW(model.parameters(),lr=.0002,weight_decay=.0001)
     scheduler=torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,T_max=200,eta_min=1e-6)
