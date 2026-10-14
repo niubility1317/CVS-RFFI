@@ -3,7 +3,7 @@
 
 当前RAW/TX_DAY_CENTERED泛化固定02/03扩展仍健康运行（24至27轮），首seed同计算SIG83.5333%、RAW83.7542%（+.2208pp）、条件化83.6548%（+.1214pp），仅n=1。两条扩展的源决定均先于本路线新目标数字读回提交，科学配方不变。
 
-同L强图CE/feature源诊断 20261015-phase1-source-feature-ce-gradient-manysig-m6-r01 已ANALYZED/VERIFIED：6模型、4950向量独立复算，头/模型/optimizer更新0。教师对学生错18/18对象同向，教师错学生对16/18反向，但每模型该组仅3至8个seen-L样本；整体符号混合，不支持普遍冲突或实际U因果解释。下一源问题仅检验固定零置信差可观察规则，尚未实现/启动；无另训头、结构或Phase2开发。84%三seed目标仍未达到。
+同L强图CE/feature源诊断 20261015-phase1-source-feature-ce-gradient-manysig-m6-r01 已ANALYZED/VERIFIED：6模型、4950向量独立复算，头/模型/optimizer更新0。教师对学生错18/18对象同向，教师错学生对16/18反向，但每模型该组仅3至8个seen-L样本；整体符号混合，不支持普遍冲突或实际U因果解释。下一源问题为固定零置信差规则，已实现/本地检查与唯一P0/P1 PASS，已预登记但尚未启动；无另训头、结构或Phase2开发。84%三seed目标仍未达到。
 
 # Phase1 特征提取复盘与完整实验交付
 

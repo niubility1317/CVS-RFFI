@@ -1,0 +1,2211 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
+  "group_id": "phase1_source_teacher_confidence_20261015",
+  "display_name": "固定 SIG_TIME 教师置信度次序源域证伪：六模型，无模型更新",
+  "description": "One fixed truth-free FP32 confidence-order rule, full-batch-denominator feature derivative on L and no-gradient V qualification; no threshold scan, training or query access.",
+  "kind": "diagnostic",
+  "stage": "phase1_source_diagnostic",
+  "aliases": [
+    "SIG_TIME source confidence order",
+    "teacher confidence source falsification"
+  ],
+  "tags": [
+    "phase1",
+    "SIG_TIME",
+    "SSL",
+    "source-only",
+    "default-head",
+    "confidence-order"
+  ],
+  "comparison_group_id": "fixed_sigtime_source_confidence_order_m6",
+  "parent_run_ids": [
+    "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User requests training-mechanism DG/SSL research with fixed SIG_TIME/default joint head. This fixed all-six-model source-only falsification has no training, fitted head or new target access.",
+  "code": {
+    "commit": "e2eee613b9657d336657012eb33d060072a402d7",
+    "checkout": "codex/phase1-feature-challenge-20261013",
+    "environment": "native verified Python / ordinary N607 CVS-RFFI fullFP32 CPU2threads",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_teacher_confidence_20261015_r01",
+    "entrypoint": "experiments.cvs_source_teacher_confidence.audit",
+    "config_paths": [
+      "experiments/cvs_source_teacher_confidence/design.py",
+      "experiments/cvs_source_teacher_confidence/metrics.py"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "existing normalized raw/post_sync/noeq source IQ2x256, immutable L/V source cache, physical IDs unchanged; existing NoExplicitCFO actual identity path",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "roles": {
+      "L_s": "6300 approved sourceL, readonly gradients on same strong graph, 0 parameter updates",
+      "V": "27000 approved source validation, no_grad forward for fixed confidence-policy falsification; 0 fitting/gradients/model updates",
+      "U_s": "0 IQ/labels/IDs accessed"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 clean capsule, unchanged physical IDs",
+    "split_id": "core90_game_source_roles_v1 split_seed392005; unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Fixed confidence-order source proxy only; V is never fitted/backpropagated; no real U accuracy, training efficacy, target DG, newTX or Phase2 claim"
+  },
+  "checkpoint": {
+    "initialization": "All predetermined fixedSIG ZERO and FEATURE_MT final50 students plus their actual ownEMA; readonly, no training initialization",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01/SIG_TIME-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01/FEATURE_MT-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/SIG_TIME-s2026092702/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/FEATURE_MT-s2026092702/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/SIG_TIME-s2026092703/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/FEATURE_MT-s2026092703/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "Existing source_proof checks actual full role contract and same fixed scratch33+17/11100 final50; ownEMA epoch50/11100 required before loading; no target-selected parent",
+    "selection_rule": "All6 arms x predefined seeds, no ranking by target scores"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/source-teacher-confidence-20261015",
+    "gpu_policy": "CPU only CUDA_VISIBLE_DEVICES empty; one serial process2 OMP/MKL/OpenBLAS/Torch threads; no GPU allocation",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_teacher_confidence_20261015_r01/dispatcher.stdout.log",
+    "local_artifact_root": "local_artifacts/source_teacher_confidence_delivery_r01",
+    "launch_command": "python -u -m experiments.cvs_source_teacher_confidence.audit",
+    "stop_rule": "Any run-owned source/provenance/role/query/default-head/nonfinite/state mutation/output conflict stops only this diagnostic and preserves partial artifacts with failure.json; no automatic retry. Scientific qualification FAIL is reported, never repaired by threshold scans or selective reruns."
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "analysis.json",
+    "completion.json",
+    "all six row resolved_config.json/source_policy_observations.pt/L_source_gradient_vectors.pt/analysis.json/source_gradient_recount.json/completion.json"
+  ],
+  "metrics_plan": {
+    "primary": "V helpful retention > harmful retention for ALL six fixed models; both groups nonempty in every model",
+    "rule": "FP32 max softmax(ownEMA weak) >= max softmax(student strong), ties kept; detached, gap threshold 0 only",
+    "denominator": "All L original/gated/group feature derivatives use full batch N, never retained count",
+    "coefficient": 0.1,
+    "qualification": {
+      "source_only": true,
+      "all_six_models_required": true,
+      "role": "V",
+      "groups_must_be_nonempty": true,
+      "helpful_retention_strictly_greater_than_harmful_retention": true,
+      "no_automatic_training_release": true
+    },
+    "metrics": [
+      "All L6300 and V27000 policy/group/retention/ties per model",
+      "L trueCE/feature/.1 effective and gated feature gradients; batch and count-weighted global vectors",
+      "V gradients/model/head/optimizer updates =0",
+      "Original versus gated feature against full-group trueCE, explicit denominator and empty group semantics"
+    ],
+    "target_feedback": false,
+    "query_read": false,
+    "head_fit": false
+  },
+  "rows": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "method": "frozen-SIG_TIME-confidence-order-SIG_TIME",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments/cvs_source_teacher_confidence/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/SIG_TIME-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026101502,
+        "support": null,
+        "evaluation": 2026101501
+      },
+      "seed_notes": "All predefined 3 seeds x2 arms, same L/V physical data and views across models; L shuffle/noise2026101501/02, V2026101503/04; no threshold/model/seed selection",
+      "k": null,
+      "scenario": "L gradients and V no_grad fixed confidence-order probe, ownEMA weak/student original strong .015+dropout",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 extra model epochs/optimizer/head updates; per model L6300+V27000=33300 source observations,66600 forward packet observations/262 forward batches,25 L derivative batches/75 layer records/1200 vectors; V gradient0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/SIG_TIME-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_teacher_confidence_20261015_r01/dispatcher.stdout.log",
+      "command": "python -u -m experiments.cvs_source_teacher_confidence.audit",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "source_policy_observations.pt",
+        "L_source_gradient_vectors.pt",
+        "analysis.json",
+        "source_gradient_recount.json",
+        "completion.json"
+      ],
+      "config": {
+        "schema": "source_teacher_confidence_v1",
+        "run_id": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
+        "row_id": "SIG_TIME-s2026092701",
+        "model_seed": 2026092701,
+        "arm": "SIG_TIME",
+        "source_config": {
+          "schema": "signature_stats_default50_v1",
+          "run_id": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+          "stage": "repair",
+          "arm": "SIG_TIME",
+          "model_seed": 2026092701,
+          "row_id": "SIG_TIME-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01/SIG_TIME-s2026092701/source",
+          "epochs": 50,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "launch_owner": "codex/root/feature-mean-teacher50-20261014",
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "updates": 11100,
+          "legacy_reference_config": {
+            "schema": "legacy_no_sat_v1",
+            "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+            "stage": "repair",
+            "arm": "legacy_cosine_no_sat",
+            "model_seed": 2026092701,
+            "row_id": "legacy_cosine_no_sat-s2026092701",
+            "features": [
+              "ema",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_legacy_no_sat",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06
+          },
+          "source_falsification": {
+            "final_L_CE_max": 0.5,
+            "source_feature_difference_min": 1e-06,
+            "actual_feature_gradients_nonzero_at": [
+              34,
+              50
+            ],
+            "last5_U_feature_discrepancy_ratio_max": 0.95,
+            "source_only": true,
+            "expansion": "Firstseed source健康/exact11100updates/17x56700/featureboundary and actual t1/t2/SIGgradients; featureMT/control mean U discrepancy epoch46..50 <=.95. Then same fixed02/03 unchanged, before new target summary retrieval; no target ranking or rerun."
+          },
+          "training_recipe": "old batch_neighbor gate+EMA+cos scratch50 label33+pseudo17, no satellite",
+          "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+          "explicit_CFO_identity_feature": false,
+          "feature_extractor": {
+            "time": false,
+            "PA": false,
+            "time_layers": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "PA_layers": [
+              "pa_b1",
+              "pa_b2",
+              "pa_b3"
+            ],
+            "time_kernel_dilation": [
+              [
+                3,
+                1
+              ],
+              [
+                5,
+                1
+              ],
+              [
+                5,
+                2
+              ]
+            ],
+            "PA_kernels": [
+              3,
+              5,
+              7
+            ],
+            "PA_dilation_by_layer": [
+              1,
+              2,
+              4
+            ],
+            "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+            "output_embedding": 160
+          },
+          "classifier": "unchanged default cosine6x160scale30 normal joint training only",
+          "test_views": [
+            "clean"
+          ],
+          "checkpoint_selection": "final_only",
+          "goal": {
+            "primary": "FEATURE_MT",
+            "clean_three_seed_mean": 0.84,
+            "first_seed_is_not_goal_completion": true,
+            "feedback_to_training": false
+          },
+          "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+          "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately",
+          "source_config": null,
+          "baseline_reuse": false,
+          "feature_combination": {
+            "modes": [
+              "SIG_TIME"
+            ],
+            "layer": "t2",
+            "local_dimension": 6,
+            "windows": 4,
+            "descriptor_width_each": 28,
+            "descriptor_raw_width": 28,
+            "fixed_lift": "SIG_TIME identity28; COV_SHAPE/AREA_SHAPE same original COV orthonormal27to28 seed2026101307",
+            "shared_single_projection": true,
+            "gain_initial": 0.05,
+            "gain_bound": 0.2,
+            "output_embedding": 160
+          },
+          "readouts": [
+            "ORIGINAL_HEAD"
+          ],
+          "separate_head_training": false,
+          "hypothesis_basis": "Source frozen SIG_TIME has substantial weak/strong joint160 displacement despite accepted identity agreement; V feature cosine does not reliably separate errors. Test learning representation consistency, not a reliability gate, using existing ownEMA/allU views. MeanTeacher general consistency theory; feature-level project variant, not literal original reproduction.",
+          "source_formula_parent_commit": "990ffabe0",
+          "initialization_policy": "Warm CUDA before native training seed; private pool RNG preserves baseline draws; verify actual initial native body/head equality",
+          "source_neighbor_sampling": {
+            "enabled": true,
+            "mode": "RANDOM",
+            "pool": "original hidden U_s56700 only",
+            "allowed_fields": [
+              "base_index",
+              "day_i",
+              "eq_i",
+              "rx_i",
+              "sig_i"
+            ],
+            "batch": 256,
+            "drop_last": false,
+            "all_packets_once": true,
+            "original_gates": true,
+            "extra_parameters": 0,
+            "seed_policy": "same one global Torch seed draw per native sampler iterator, private order generator"
+          },
+          "sampling_observation": {
+            "actual_gradient_epochs": [
+              33,
+              34,
+              50
+            ],
+            "batches_per_epoch": 222,
+            "gradient_parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ],
+            "vectors": [
+              "main_L_CE",
+              "weighted_U_CE",
+              "weighted_U_CE_entropy"
+            ],
+            "loss_weights": {
+              "U_CE": 0.16,
+              "U_entropy": 0.01
+            },
+            "extra_model_forwards": 0,
+            "extra_optimizer_updates": 0,
+            "head_fit_updates": 0,
+            "optimizer": "unchangednativeAdamW",
+            "scope": "Actual separateL128/U256 graphs. No cumulative AdamW contribution claim; original losses returned unchanged"
+          },
+          "feature_mean_teacher": {
+            "mode": "ZERO",
+            "feature": "actual deployed id_feat_joint160",
+            "teacher": "actual own EMA weak view, stopgradient; unchanged .999 updates",
+            "student": "existing strong Gaussian.015 and original trainmode dropout",
+            "loss": "all actual U samples mean half squared L2 difference of unit joint160, eps1e-8; no pseudo/confidence/RX/day/TX labels in objective",
+            "coefficient": 0.1,
+            "pseudo_start_epoch": 34,
+            "ramp_epochs": 5,
+            "extra_model_forwards": 0,
+            "new_modules": 0,
+            "new_parameters": 0,
+            "new_heads": 0,
+            "hard_pseudo_gate": "original batch_neighbor and all original losses unchanged",
+            "diagnostic_epochs": [
+              33,
+              34,
+              50
+            ],
+            "parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ]
+          }
+        },
+        "roles": [
+          "L_s",
+          "V"
+        ],
+        "count": 6300,
+        "batch": 256,
+        "shuffle_seed": 2026101501,
+        "strong_dropout_seed": 2026101502,
+        "strong_noise_std": 0.015,
+        "feature_coefficient": 0.1,
+        "label_smoothing": 0.01,
+        "groups": [
+          "WEAK_RIGHT_STRONG_RIGHT",
+          "WEAK_RIGHT_STRONG_WRONG",
+          "WEAK_WRONG_STRONG_RIGHT",
+          "WEAK_WRONG_STRONG_WRONG"
+        ],
+        "parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "feature": "actual joint160 ownEMAweak/studentstrong",
+        "gradient_definition": "Same physical L strong graph: trueCE smoothing.01 vs original feature consistency; four teacher/student correctness groups share full batch denominator; no training or fitted head",
+        "student_mode": "train_no_BN_state_update",
+        "teacher_mode": "eval_stopgrad",
+        "source_only": true,
+        "query_read": false,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "V_forward": true,
+        "head_updates": 0,
+        "optimizer_steps": 0,
+        "model_state_updates": 0,
+        "extra_training_epochs": 0,
+        "checkpoint_epoch": 50,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/SIG_TIME-s2026092701",
+        "launch_owner": "codex/root/source-teacher-confidence-20261015",
+        "counts": {
+          "L_s": 6300,
+          "V": 27000
+        },
+        "shuffle_seeds": {
+          "L_s": 2026101501,
+          "V": 2026101503
+        },
+        "strong_dropout_seeds": {
+          "L_s": 2026101502,
+          "V": 2026101504
+        },
+        "V_gradient": false,
+        "rule": "FP32 maxsoftmax(EMAweak) >= maxsoftmax(studentstrong), detached, ties retained",
+        "gap_threshold": 0,
+        "loss_denominator": "full batch count, not selected count",
+        "coefficient_interpretation": "Fixed .1 diagnostic derivative in both frozen arms; ZERO original training coefficient remains0",
+        "source_qualification": {
+          "source_only": true,
+          "all_six_models_required": true,
+          "role": "V",
+          "groups_must_be_nonempty": true,
+          "helpful_retention_strictly_greater_than_harmful_retention": true,
+          "no_automatic_training_release": true
+        }
+      }
+    },
+    {
+      "row_id": "FEATURE_MT-s2026092701",
+      "method": "frozen-SIG_TIME-confidence-order-FEATURE_MT",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments/cvs_source_teacher_confidence/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/FEATURE_MT-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026101502,
+        "support": null,
+        "evaluation": 2026101501
+      },
+      "seed_notes": "All predefined 3 seeds x2 arms, same L/V physical data and views across models; L shuffle/noise2026101501/02, V2026101503/04; no threshold/model/seed selection",
+      "k": null,
+      "scenario": "L gradients and V no_grad fixed confidence-order probe, ownEMA weak/student original strong .015+dropout",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 extra model epochs/optimizer/head updates; per model L6300+V27000=33300 source observations,66600 forward packet observations/262 forward batches,25 L derivative batches/75 layer records/1200 vectors; V gradient0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/FEATURE_MT-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_teacher_confidence_20261015_r01/dispatcher.stdout.log",
+      "command": "python -u -m experiments.cvs_source_teacher_confidence.audit",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "source_policy_observations.pt",
+        "L_source_gradient_vectors.pt",
+        "analysis.json",
+        "source_gradient_recount.json",
+        "completion.json"
+      ],
+      "config": {
+        "schema": "source_teacher_confidence_v1",
+        "run_id": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
+        "row_id": "FEATURE_MT-s2026092701",
+        "model_seed": 2026092701,
+        "arm": "FEATURE_MT",
+        "source_config": {
+          "schema": "signature_stats_default50_v1",
+          "run_id": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+          "stage": "repair",
+          "arm": "FEATURE_MT",
+          "model_seed": 2026092701,
+          "row_id": "FEATURE_MT-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01/FEATURE_MT-s2026092701/source",
+          "epochs": 50,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "launch_owner": "codex/root/feature-mean-teacher50-20261014",
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "updates": 11100,
+          "legacy_reference_config": {
+            "schema": "legacy_no_sat_v1",
+            "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+            "stage": "repair",
+            "arm": "legacy_cosine_no_sat",
+            "model_seed": 2026092701,
+            "row_id": "legacy_cosine_no_sat-s2026092701",
+            "features": [
+              "ema",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_legacy_no_sat",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06
+          },
+          "source_falsification": {
+            "final_L_CE_max": 0.5,
+            "source_feature_difference_min": 1e-06,
+            "actual_feature_gradients_nonzero_at": [
+              34,
+              50
+            ],
+            "last5_U_feature_discrepancy_ratio_max": 0.95,
+            "source_only": true,
+            "expansion": "Firstseed source健康/exact11100updates/17x56700/featureboundary and actual t1/t2/SIGgradients; featureMT/control mean U discrepancy epoch46..50 <=.95. Then same fixed02/03 unchanged, before new target summary retrieval; no target ranking or rerun."
+          },
+          "training_recipe": "old batch_neighbor gate+EMA+cos scratch50 label33+pseudo17, no satellite",
+          "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+          "explicit_CFO_identity_feature": false,
+          "feature_extractor": {
+            "time": false,
+            "PA": false,
+            "time_layers": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "PA_layers": [
+              "pa_b1",
+              "pa_b2",
+              "pa_b3"
+            ],
+            "time_kernel_dilation": [
+              [
+                3,
+                1
+              ],
+              [
+                5,
+                1
+              ],
+              [
+                5,
+                2
+              ]
+            ],
+            "PA_kernels": [
+              3,
+              5,
+              7
+            ],
+            "PA_dilation_by_layer": [
+              1,
+              2,
+              4
+            ],
+            "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+            "output_embedding": 160
+          },
+          "classifier": "unchanged default cosine6x160scale30 normal joint training only",
+          "test_views": [
+            "clean"
+          ],
+          "checkpoint_selection": "final_only",
+          "goal": {
+            "primary": "FEATURE_MT",
+            "clean_three_seed_mean": 0.84,
+            "first_seed_is_not_goal_completion": true,
+            "feedback_to_training": false
+          },
+          "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+          "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately",
+          "source_config": null,
+          "baseline_reuse": false,
+          "feature_combination": {
+            "modes": [
+              "SIG_TIME"
+            ],
+            "layer": "t2",
+            "local_dimension": 6,
+            "windows": 4,
+            "descriptor_width_each": 28,
+            "descriptor_raw_width": 28,
+            "fixed_lift": "SIG_TIME identity28; COV_SHAPE/AREA_SHAPE same original COV orthonormal27to28 seed2026101307",
+            "shared_single_projection": true,
+            "gain_initial": 0.05,
+            "gain_bound": 0.2,
+            "output_embedding": 160
+          },
+          "readouts": [
+            "ORIGINAL_HEAD"
+          ],
+          "separate_head_training": false,
+          "hypothesis_basis": "Source frozen SIG_TIME has substantial weak/strong joint160 displacement despite accepted identity agreement; V feature cosine does not reliably separate errors. Test learning representation consistency, not a reliability gate, using existing ownEMA/allU views. MeanTeacher general consistency theory; feature-level project variant, not literal original reproduction.",
+          "source_formula_parent_commit": "990ffabe0",
+          "initialization_policy": "Warm CUDA before native training seed; private pool RNG preserves baseline draws; verify actual initial native body/head equality",
+          "source_neighbor_sampling": {
+            "enabled": true,
+            "mode": "RANDOM",
+            "pool": "original hidden U_s56700 only",
+            "allowed_fields": [
+              "base_index",
+              "day_i",
+              "eq_i",
+              "rx_i",
+              "sig_i"
+            ],
+            "batch": 256,
+            "drop_last": false,
+            "all_packets_once": true,
+            "original_gates": true,
+            "extra_parameters": 0,
+            "seed_policy": "same one global Torch seed draw per native sampler iterator, private order generator"
+          },
+          "sampling_observation": {
+            "actual_gradient_epochs": [
+              33,
+              34,
+              50
+            ],
+            "batches_per_epoch": 222,
+            "gradient_parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ],
+            "vectors": [
+              "main_L_CE",
+              "weighted_U_CE",
+              "weighted_U_CE_entropy"
+            ],
+            "loss_weights": {
+              "U_CE": 0.16,
+              "U_entropy": 0.01
+            },
+            "extra_model_forwards": 0,
+            "extra_optimizer_updates": 0,
+            "head_fit_updates": 0,
+            "optimizer": "unchangednativeAdamW",
+            "scope": "Actual separateL128/U256 graphs. No cumulative AdamW contribution claim; original losses returned unchanged"
+          },
+          "feature_mean_teacher": {
+            "mode": "FEATURE",
+            "feature": "actual deployed id_feat_joint160",
+            "teacher": "actual own EMA weak view, stopgradient; unchanged .999 updates",
+            "student": "existing strong Gaussian.015 and original trainmode dropout",
+            "loss": "all actual U samples mean half squared L2 difference of unit joint160, eps1e-8; no pseudo/confidence/RX/day/TX labels in objective",
+            "coefficient": 0.1,
+            "pseudo_start_epoch": 34,
+            "ramp_epochs": 5,
+            "extra_model_forwards": 0,
+            "new_modules": 0,
+            "new_parameters": 0,
+            "new_heads": 0,
+            "hard_pseudo_gate": "original batch_neighbor and all original losses unchanged",
+            "diagnostic_epochs": [
+              33,
+              34,
+              50
+            ],
+            "parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ]
+          }
+        },
+        "roles": [
+          "L_s",
+          "V"
+        ],
+        "count": 6300,
+        "batch": 256,
+        "shuffle_seed": 2026101501,
+        "strong_dropout_seed": 2026101502,
+        "strong_noise_std": 0.015,
+        "feature_coefficient": 0.1,
+        "label_smoothing": 0.01,
+        "groups": [
+          "WEAK_RIGHT_STRONG_RIGHT",
+          "WEAK_RIGHT_STRONG_WRONG",
+          "WEAK_WRONG_STRONG_RIGHT",
+          "WEAK_WRONG_STRONG_WRONG"
+        ],
+        "parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "feature": "actual joint160 ownEMAweak/studentstrong",
+        "gradient_definition": "Same physical L strong graph: trueCE smoothing.01 vs original feature consistency; four teacher/student correctness groups share full batch denominator; no training or fitted head",
+        "student_mode": "train_no_BN_state_update",
+        "teacher_mode": "eval_stopgrad",
+        "source_only": true,
+        "query_read": false,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "V_forward": true,
+        "head_updates": 0,
+        "optimizer_steps": 0,
+        "model_state_updates": 0,
+        "extra_training_epochs": 0,
+        "checkpoint_epoch": 50,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/FEATURE_MT-s2026092701",
+        "launch_owner": "codex/root/source-teacher-confidence-20261015",
+        "counts": {
+          "L_s": 6300,
+          "V": 27000
+        },
+        "shuffle_seeds": {
+          "L_s": 2026101501,
+          "V": 2026101503
+        },
+        "strong_dropout_seeds": {
+          "L_s": 2026101502,
+          "V": 2026101504
+        },
+        "V_gradient": false,
+        "rule": "FP32 maxsoftmax(EMAweak) >= maxsoftmax(studentstrong), detached, ties retained",
+        "gap_threshold": 0,
+        "loss_denominator": "full batch count, not selected count",
+        "coefficient_interpretation": "Fixed .1 diagnostic derivative in both frozen arms; ZERO original training coefficient remains0",
+        "source_qualification": {
+          "source_only": true,
+          "all_six_models_required": true,
+          "role": "V",
+          "groups_must_be_nonempty": true,
+          "helpful_retention_strictly_greater_than_harmful_retention": true,
+          "no_automatic_training_release": true
+        }
+      }
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "method": "frozen-SIG_TIME-confidence-order-SIG_TIME",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments/cvs_source_teacher_confidence/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/SIG_TIME-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026101502,
+        "support": null,
+        "evaluation": 2026101501
+      },
+      "seed_notes": "All predefined 3 seeds x2 arms, same L/V physical data and views across models; L shuffle/noise2026101501/02, V2026101503/04; no threshold/model/seed selection",
+      "k": null,
+      "scenario": "L gradients and V no_grad fixed confidence-order probe, ownEMA weak/student original strong .015+dropout",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 extra model epochs/optimizer/head updates; per model L6300+V27000=33300 source observations,66600 forward packet observations/262 forward batches,25 L derivative batches/75 layer records/1200 vectors; V gradient0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/SIG_TIME-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_teacher_confidence_20261015_r01/dispatcher.stdout.log",
+      "command": "python -u -m experiments.cvs_source_teacher_confidence.audit",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "source_policy_observations.pt",
+        "L_source_gradient_vectors.pt",
+        "analysis.json",
+        "source_gradient_recount.json",
+        "completion.json"
+      ],
+      "config": {
+        "schema": "source_teacher_confidence_v1",
+        "run_id": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
+        "row_id": "SIG_TIME-s2026092702",
+        "model_seed": 2026092702,
+        "arm": "SIG_TIME",
+        "source_config": {
+          "schema": "signature_stats_default50_v1",
+          "run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+          "stage": "repair",
+          "arm": "SIG_TIME",
+          "model_seed": 2026092702,
+          "row_id": "SIG_TIME-s2026092702",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/SIG_TIME-s2026092702/source",
+          "epochs": 50,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "updates": 11100,
+          "legacy_reference_config": {
+            "schema": "legacy_no_sat_v1",
+            "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+            "stage": "repair",
+            "arm": "legacy_cosine_no_sat",
+            "model_seed": 2026092702,
+            "row_id": "legacy_cosine_no_sat-s2026092702",
+            "features": [
+              "ema",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_legacy_no_sat",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06
+          },
+          "source_falsification": {
+            "final_L_CE_max": 0.5,
+            "source_feature_difference_min": 1e-06,
+            "actual_feature_gradients_nonzero_at": [
+              34,
+              50
+            ],
+            "last5_U_feature_discrepancy_ratio_max": 0.95,
+            "source_only": true,
+            "expansion": "Firstseed source健康/exact11100updates/17x56700/featureboundary and actual t1/t2/SIGgradients; featureMT/control mean U discrepancy epoch46..50 <=.95. Then same fixed02/03 unchanged, before new target summary retrieval; no target ranking or rerun."
+          },
+          "training_recipe": "old batch_neighbor gate+EMA+cos scratch50 label33+pseudo17, no satellite",
+          "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+          "explicit_CFO_identity_feature": false,
+          "feature_extractor": {
+            "time": false,
+            "PA": false,
+            "time_layers": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "PA_layers": [
+              "pa_b1",
+              "pa_b2",
+              "pa_b3"
+            ],
+            "time_kernel_dilation": [
+              [
+                3,
+                1
+              ],
+              [
+                5,
+                1
+              ],
+              [
+                5,
+                2
+              ]
+            ],
+            "PA_kernels": [
+              3,
+              5,
+              7
+            ],
+            "PA_dilation_by_layer": [
+              1,
+              2,
+              4
+            ],
+            "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+            "output_embedding": 160
+          },
+          "classifier": "unchanged default cosine6x160scale30 normal joint training only",
+          "test_views": [
+            "clean"
+          ],
+          "checkpoint_selection": "final_only",
+          "goal": {
+            "primary": "FEATURE_MT",
+            "clean_three_seed_mean": 0.84,
+            "first_seed_is_not_goal_completion": true,
+            "feedback_to_training": false
+          },
+          "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+          "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately",
+          "source_config": null,
+          "baseline_reuse": false,
+          "feature_combination": {
+            "modes": [
+              "SIG_TIME"
+            ],
+            "layer": "t2",
+            "local_dimension": 6,
+            "windows": 4,
+            "descriptor_width_each": 28,
+            "descriptor_raw_width": 28,
+            "fixed_lift": "SIG_TIME identity28; COV_SHAPE/AREA_SHAPE same original COV orthonormal27to28 seed2026101307",
+            "shared_single_projection": true,
+            "gain_initial": 0.05,
+            "gain_bound": 0.2,
+            "output_embedding": 160
+          },
+          "readouts": [
+            "ORIGINAL_HEAD"
+          ],
+          "separate_head_training": false,
+          "hypothesis_basis": "Source frozen SIG_TIME has substantial weak/strong joint160 displacement despite accepted identity agreement; V feature cosine does not reliably separate errors. Test learning representation consistency, not a reliability gate, using existing ownEMA/allU views. MeanTeacher general consistency theory; feature-level project variant, not literal original reproduction.",
+          "source_formula_parent_commit": "990ffabe0",
+          "initialization_policy": "Warm CUDA before native training seed; private pool RNG preserves baseline draws; verify actual initial native body/head equality",
+          "source_neighbor_sampling": {
+            "enabled": true,
+            "mode": "RANDOM",
+            "pool": "original hidden U_s56700 only",
+            "allowed_fields": [
+              "base_index",
+              "day_i",
+              "eq_i",
+              "rx_i",
+              "sig_i"
+            ],
+            "batch": 256,
+            "drop_last": false,
+            "all_packets_once": true,
+            "original_gates": true,
+            "extra_parameters": 0,
+            "seed_policy": "same one global Torch seed draw per native sampler iterator, private order generator"
+          },
+          "sampling_observation": {
+            "actual_gradient_epochs": [
+              33,
+              34,
+              50
+            ],
+            "batches_per_epoch": 222,
+            "gradient_parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ],
+            "vectors": [
+              "main_L_CE",
+              "weighted_U_CE",
+              "weighted_U_CE_entropy"
+            ],
+            "loss_weights": {
+              "U_CE": 0.16,
+              "U_entropy": 0.01
+            },
+            "extra_model_forwards": 0,
+            "extra_optimizer_updates": 0,
+            "head_fit_updates": 0,
+            "optimizer": "unchangednativeAdamW",
+            "scope": "Actual separateL128/U256 graphs. No cumulative AdamW contribution claim; original losses returned unchanged"
+          },
+          "feature_mean_teacher": {
+            "mode": "ZERO",
+            "feature": "actual deployed id_feat_joint160",
+            "teacher": "actual own EMA weak view, stopgradient; unchanged .999 updates",
+            "student": "existing strong Gaussian.015 and original trainmode dropout",
+            "loss": "all actual U samples mean half squared L2 difference of unit joint160, eps1e-8; no pseudo/confidence/RX/day/TX labels in objective",
+            "coefficient": 0.1,
+            "pseudo_start_epoch": 34,
+            "ramp_epochs": 5,
+            "extra_model_forwards": 0,
+            "new_modules": 0,
+            "new_parameters": 0,
+            "new_heads": 0,
+            "hard_pseudo_gate": "original batch_neighbor and all original losses unchanged",
+            "diagnostic_epochs": [
+              33,
+              34,
+              50
+            ],
+            "parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ]
+          },
+          "source_qualification_run": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+          "first_seed_retrained": false,
+          "combined_model_seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ]
+        },
+        "roles": [
+          "L_s",
+          "V"
+        ],
+        "count": 6300,
+        "batch": 256,
+        "shuffle_seed": 2026101501,
+        "strong_dropout_seed": 2026101502,
+        "strong_noise_std": 0.015,
+        "feature_coefficient": 0.1,
+        "label_smoothing": 0.01,
+        "groups": [
+          "WEAK_RIGHT_STRONG_RIGHT",
+          "WEAK_RIGHT_STRONG_WRONG",
+          "WEAK_WRONG_STRONG_RIGHT",
+          "WEAK_WRONG_STRONG_WRONG"
+        ],
+        "parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "feature": "actual joint160 ownEMAweak/studentstrong",
+        "gradient_definition": "Same physical L strong graph: trueCE smoothing.01 vs original feature consistency; four teacher/student correctness groups share full batch denominator; no training or fitted head",
+        "student_mode": "train_no_BN_state_update",
+        "teacher_mode": "eval_stopgrad",
+        "source_only": true,
+        "query_read": false,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "V_forward": true,
+        "head_updates": 0,
+        "optimizer_steps": 0,
+        "model_state_updates": 0,
+        "extra_training_epochs": 0,
+        "checkpoint_epoch": 50,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/SIG_TIME-s2026092702",
+        "launch_owner": "codex/root/source-teacher-confidence-20261015",
+        "counts": {
+          "L_s": 6300,
+          "V": 27000
+        },
+        "shuffle_seeds": {
+          "L_s": 2026101501,
+          "V": 2026101503
+        },
+        "strong_dropout_seeds": {
+          "L_s": 2026101502,
+          "V": 2026101504
+        },
+        "V_gradient": false,
+        "rule": "FP32 maxsoftmax(EMAweak) >= maxsoftmax(studentstrong), detached, ties retained",
+        "gap_threshold": 0,
+        "loss_denominator": "full batch count, not selected count",
+        "coefficient_interpretation": "Fixed .1 diagnostic derivative in both frozen arms; ZERO original training coefficient remains0",
+        "source_qualification": {
+          "source_only": true,
+          "all_six_models_required": true,
+          "role": "V",
+          "groups_must_be_nonempty": true,
+          "helpful_retention_strictly_greater_than_harmful_retention": true,
+          "no_automatic_training_release": true
+        }
+      }
+    },
+    {
+      "row_id": "FEATURE_MT-s2026092702",
+      "method": "frozen-SIG_TIME-confidence-order-FEATURE_MT",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments/cvs_source_teacher_confidence/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/FEATURE_MT-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026101502,
+        "support": null,
+        "evaluation": 2026101501
+      },
+      "seed_notes": "All predefined 3 seeds x2 arms, same L/V physical data and views across models; L shuffle/noise2026101501/02, V2026101503/04; no threshold/model/seed selection",
+      "k": null,
+      "scenario": "L gradients and V no_grad fixed confidence-order probe, ownEMA weak/student original strong .015+dropout",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 extra model epochs/optimizer/head updates; per model L6300+V27000=33300 source observations,66600 forward packet observations/262 forward batches,25 L derivative batches/75 layer records/1200 vectors; V gradient0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/FEATURE_MT-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_teacher_confidence_20261015_r01/dispatcher.stdout.log",
+      "command": "python -u -m experiments.cvs_source_teacher_confidence.audit",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "source_policy_observations.pt",
+        "L_source_gradient_vectors.pt",
+        "analysis.json",
+        "source_gradient_recount.json",
+        "completion.json"
+      ],
+      "config": {
+        "schema": "source_teacher_confidence_v1",
+        "run_id": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
+        "row_id": "FEATURE_MT-s2026092702",
+        "model_seed": 2026092702,
+        "arm": "FEATURE_MT",
+        "source_config": {
+          "schema": "signature_stats_default50_v1",
+          "run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+          "stage": "repair",
+          "arm": "FEATURE_MT",
+          "model_seed": 2026092702,
+          "row_id": "FEATURE_MT-s2026092702",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/FEATURE_MT-s2026092702/source",
+          "epochs": 50,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "updates": 11100,
+          "legacy_reference_config": {
+            "schema": "legacy_no_sat_v1",
+            "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+            "stage": "repair",
+            "arm": "legacy_cosine_no_sat",
+            "model_seed": 2026092702,
+            "row_id": "legacy_cosine_no_sat-s2026092702",
+            "features": [
+              "ema",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_legacy_no_sat",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06
+          },
+          "source_falsification": {
+            "final_L_CE_max": 0.5,
+            "source_feature_difference_min": 1e-06,
+            "actual_feature_gradients_nonzero_at": [
+              34,
+              50
+            ],
+            "last5_U_feature_discrepancy_ratio_max": 0.95,
+            "source_only": true,
+            "expansion": "Firstseed source健康/exact11100updates/17x56700/featureboundary and actual t1/t2/SIGgradients; featureMT/control mean U discrepancy epoch46..50 <=.95. Then same fixed02/03 unchanged, before new target summary retrieval; no target ranking or rerun."
+          },
+          "training_recipe": "old batch_neighbor gate+EMA+cos scratch50 label33+pseudo17, no satellite",
+          "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+          "explicit_CFO_identity_feature": false,
+          "feature_extractor": {
+            "time": false,
+            "PA": false,
+            "time_layers": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "PA_layers": [
+              "pa_b1",
+              "pa_b2",
+              "pa_b3"
+            ],
+            "time_kernel_dilation": [
+              [
+                3,
+                1
+              ],
+              [
+                5,
+                1
+              ],
+              [
+                5,
+                2
+              ]
+            ],
+            "PA_kernels": [
+              3,
+              5,
+              7
+            ],
+            "PA_dilation_by_layer": [
+              1,
+              2,
+              4
+            ],
+            "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+            "output_embedding": 160
+          },
+          "classifier": "unchanged default cosine6x160scale30 normal joint training only",
+          "test_views": [
+            "clean"
+          ],
+          "checkpoint_selection": "final_only",
+          "goal": {
+            "primary": "FEATURE_MT",
+            "clean_three_seed_mean": 0.84,
+            "first_seed_is_not_goal_completion": true,
+            "feedback_to_training": false
+          },
+          "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+          "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately",
+          "source_config": null,
+          "baseline_reuse": false,
+          "feature_combination": {
+            "modes": [
+              "SIG_TIME"
+            ],
+            "layer": "t2",
+            "local_dimension": 6,
+            "windows": 4,
+            "descriptor_width_each": 28,
+            "descriptor_raw_width": 28,
+            "fixed_lift": "SIG_TIME identity28; COV_SHAPE/AREA_SHAPE same original COV orthonormal27to28 seed2026101307",
+            "shared_single_projection": true,
+            "gain_initial": 0.05,
+            "gain_bound": 0.2,
+            "output_embedding": 160
+          },
+          "readouts": [
+            "ORIGINAL_HEAD"
+          ],
+          "separate_head_training": false,
+          "hypothesis_basis": "Source frozen SIG_TIME has substantial weak/strong joint160 displacement despite accepted identity agreement; V feature cosine does not reliably separate errors. Test learning representation consistency, not a reliability gate, using existing ownEMA/allU views. MeanTeacher general consistency theory; feature-level project variant, not literal original reproduction.",
+          "source_formula_parent_commit": "990ffabe0",
+          "initialization_policy": "Warm CUDA before native training seed; private pool RNG preserves baseline draws; verify actual initial native body/head equality",
+          "source_neighbor_sampling": {
+            "enabled": true,
+            "mode": "RANDOM",
+            "pool": "original hidden U_s56700 only",
+            "allowed_fields": [
+              "base_index",
+              "day_i",
+              "eq_i",
+              "rx_i",
+              "sig_i"
+            ],
+            "batch": 256,
+            "drop_last": false,
+            "all_packets_once": true,
+            "original_gates": true,
+            "extra_parameters": 0,
+            "seed_policy": "same one global Torch seed draw per native sampler iterator, private order generator"
+          },
+          "sampling_observation": {
+            "actual_gradient_epochs": [
+              33,
+              34,
+              50
+            ],
+            "batches_per_epoch": 222,
+            "gradient_parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ],
+            "vectors": [
+              "main_L_CE",
+              "weighted_U_CE",
+              "weighted_U_CE_entropy"
+            ],
+            "loss_weights": {
+              "U_CE": 0.16,
+              "U_entropy": 0.01
+            },
+            "extra_model_forwards": 0,
+            "extra_optimizer_updates": 0,
+            "head_fit_updates": 0,
+            "optimizer": "unchangednativeAdamW",
+            "scope": "Actual separateL128/U256 graphs. No cumulative AdamW contribution claim; original losses returned unchanged"
+          },
+          "feature_mean_teacher": {
+            "mode": "FEATURE",
+            "feature": "actual deployed id_feat_joint160",
+            "teacher": "actual own EMA weak view, stopgradient; unchanged .999 updates",
+            "student": "existing strong Gaussian.015 and original trainmode dropout",
+            "loss": "all actual U samples mean half squared L2 difference of unit joint160, eps1e-8; no pseudo/confidence/RX/day/TX labels in objective",
+            "coefficient": 0.1,
+            "pseudo_start_epoch": 34,
+            "ramp_epochs": 5,
+            "extra_model_forwards": 0,
+            "new_modules": 0,
+            "new_parameters": 0,
+            "new_heads": 0,
+            "hard_pseudo_gate": "original batch_neighbor and all original losses unchanged",
+            "diagnostic_epochs": [
+              33,
+              34,
+              50
+            ],
+            "parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ]
+          },
+          "source_qualification_run": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+          "first_seed_retrained": false,
+          "combined_model_seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ]
+        },
+        "roles": [
+          "L_s",
+          "V"
+        ],
+        "count": 6300,
+        "batch": 256,
+        "shuffle_seed": 2026101501,
+        "strong_dropout_seed": 2026101502,
+        "strong_noise_std": 0.015,
+        "feature_coefficient": 0.1,
+        "label_smoothing": 0.01,
+        "groups": [
+          "WEAK_RIGHT_STRONG_RIGHT",
+          "WEAK_RIGHT_STRONG_WRONG",
+          "WEAK_WRONG_STRONG_RIGHT",
+          "WEAK_WRONG_STRONG_WRONG"
+        ],
+        "parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "feature": "actual joint160 ownEMAweak/studentstrong",
+        "gradient_definition": "Same physical L strong graph: trueCE smoothing.01 vs original feature consistency; four teacher/student correctness groups share full batch denominator; no training or fitted head",
+        "student_mode": "train_no_BN_state_update",
+        "teacher_mode": "eval_stopgrad",
+        "source_only": true,
+        "query_read": false,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "V_forward": true,
+        "head_updates": 0,
+        "optimizer_steps": 0,
+        "model_state_updates": 0,
+        "extra_training_epochs": 0,
+        "checkpoint_epoch": 50,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/FEATURE_MT-s2026092702",
+        "launch_owner": "codex/root/source-teacher-confidence-20261015",
+        "counts": {
+          "L_s": 6300,
+          "V": 27000
+        },
+        "shuffle_seeds": {
+          "L_s": 2026101501,
+          "V": 2026101503
+        },
+        "strong_dropout_seeds": {
+          "L_s": 2026101502,
+          "V": 2026101504
+        },
+        "V_gradient": false,
+        "rule": "FP32 maxsoftmax(EMAweak) >= maxsoftmax(studentstrong), detached, ties retained",
+        "gap_threshold": 0,
+        "loss_denominator": "full batch count, not selected count",
+        "coefficient_interpretation": "Fixed .1 diagnostic derivative in both frozen arms; ZERO original training coefficient remains0",
+        "source_qualification": {
+          "source_only": true,
+          "all_six_models_required": true,
+          "role": "V",
+          "groups_must_be_nonempty": true,
+          "helpful_retention_strictly_greater_than_harmful_retention": true,
+          "no_automatic_training_release": true
+        }
+      }
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "method": "frozen-SIG_TIME-confidence-order-SIG_TIME",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments/cvs_source_teacher_confidence/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/SIG_TIME-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026101502,
+        "support": null,
+        "evaluation": 2026101501
+      },
+      "seed_notes": "All predefined 3 seeds x2 arms, same L/V physical data and views across models; L shuffle/noise2026101501/02, V2026101503/04; no threshold/model/seed selection",
+      "k": null,
+      "scenario": "L gradients and V no_grad fixed confidence-order probe, ownEMA weak/student original strong .015+dropout",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 extra model epochs/optimizer/head updates; per model L6300+V27000=33300 source observations,66600 forward packet observations/262 forward batches,25 L derivative batches/75 layer records/1200 vectors; V gradient0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/SIG_TIME-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_teacher_confidence_20261015_r01/dispatcher.stdout.log",
+      "command": "python -u -m experiments.cvs_source_teacher_confidence.audit",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "source_policy_observations.pt",
+        "L_source_gradient_vectors.pt",
+        "analysis.json",
+        "source_gradient_recount.json",
+        "completion.json"
+      ],
+      "config": {
+        "schema": "source_teacher_confidence_v1",
+        "run_id": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
+        "row_id": "SIG_TIME-s2026092703",
+        "model_seed": 2026092703,
+        "arm": "SIG_TIME",
+        "source_config": {
+          "schema": "signature_stats_default50_v1",
+          "run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+          "stage": "repair",
+          "arm": "SIG_TIME",
+          "model_seed": 2026092703,
+          "row_id": "SIG_TIME-s2026092703",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/SIG_TIME-s2026092703/source",
+          "epochs": 50,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "updates": 11100,
+          "legacy_reference_config": {
+            "schema": "legacy_no_sat_v1",
+            "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+            "stage": "repair",
+            "arm": "legacy_cosine_no_sat",
+            "model_seed": 2026092703,
+            "row_id": "legacy_cosine_no_sat-s2026092703",
+            "features": [
+              "ema",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_legacy_no_sat",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06
+          },
+          "source_falsification": {
+            "final_L_CE_max": 0.5,
+            "source_feature_difference_min": 1e-06,
+            "actual_feature_gradients_nonzero_at": [
+              34,
+              50
+            ],
+            "last5_U_feature_discrepancy_ratio_max": 0.95,
+            "source_only": true,
+            "expansion": "Firstseed source健康/exact11100updates/17x56700/featureboundary and actual t1/t2/SIGgradients; featureMT/control mean U discrepancy epoch46..50 <=.95. Then same fixed02/03 unchanged, before new target summary retrieval; no target ranking or rerun."
+          },
+          "training_recipe": "old batch_neighbor gate+EMA+cos scratch50 label33+pseudo17, no satellite",
+          "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+          "explicit_CFO_identity_feature": false,
+          "feature_extractor": {
+            "time": false,
+            "PA": false,
+            "time_layers": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "PA_layers": [
+              "pa_b1",
+              "pa_b2",
+              "pa_b3"
+            ],
+            "time_kernel_dilation": [
+              [
+                3,
+                1
+              ],
+              [
+                5,
+                1
+              ],
+              [
+                5,
+                2
+              ]
+            ],
+            "PA_kernels": [
+              3,
+              5,
+              7
+            ],
+            "PA_dilation_by_layer": [
+              1,
+              2,
+              4
+            ],
+            "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+            "output_embedding": 160
+          },
+          "classifier": "unchanged default cosine6x160scale30 normal joint training only",
+          "test_views": [
+            "clean"
+          ],
+          "checkpoint_selection": "final_only",
+          "goal": {
+            "primary": "FEATURE_MT",
+            "clean_three_seed_mean": 0.84,
+            "first_seed_is_not_goal_completion": true,
+            "feedback_to_training": false
+          },
+          "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+          "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately",
+          "source_config": null,
+          "baseline_reuse": false,
+          "feature_combination": {
+            "modes": [
+              "SIG_TIME"
+            ],
+            "layer": "t2",
+            "local_dimension": 6,
+            "windows": 4,
+            "descriptor_width_each": 28,
+            "descriptor_raw_width": 28,
+            "fixed_lift": "SIG_TIME identity28; COV_SHAPE/AREA_SHAPE same original COV orthonormal27to28 seed2026101307",
+            "shared_single_projection": true,
+            "gain_initial": 0.05,
+            "gain_bound": 0.2,
+            "output_embedding": 160
+          },
+          "readouts": [
+            "ORIGINAL_HEAD"
+          ],
+          "separate_head_training": false,
+          "hypothesis_basis": "Source frozen SIG_TIME has substantial weak/strong joint160 displacement despite accepted identity agreement; V feature cosine does not reliably separate errors. Test learning representation consistency, not a reliability gate, using existing ownEMA/allU views. MeanTeacher general consistency theory; feature-level project variant, not literal original reproduction.",
+          "source_formula_parent_commit": "990ffabe0",
+          "initialization_policy": "Warm CUDA before native training seed; private pool RNG preserves baseline draws; verify actual initial native body/head equality",
+          "source_neighbor_sampling": {
+            "enabled": true,
+            "mode": "RANDOM",
+            "pool": "original hidden U_s56700 only",
+            "allowed_fields": [
+              "base_index",
+              "day_i",
+              "eq_i",
+              "rx_i",
+              "sig_i"
+            ],
+            "batch": 256,
+            "drop_last": false,
+            "all_packets_once": true,
+            "original_gates": true,
+            "extra_parameters": 0,
+            "seed_policy": "same one global Torch seed draw per native sampler iterator, private order generator"
+          },
+          "sampling_observation": {
+            "actual_gradient_epochs": [
+              33,
+              34,
+              50
+            ],
+            "batches_per_epoch": 222,
+            "gradient_parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ],
+            "vectors": [
+              "main_L_CE",
+              "weighted_U_CE",
+              "weighted_U_CE_entropy"
+            ],
+            "loss_weights": {
+              "U_CE": 0.16,
+              "U_entropy": 0.01
+            },
+            "extra_model_forwards": 0,
+            "extra_optimizer_updates": 0,
+            "head_fit_updates": 0,
+            "optimizer": "unchangednativeAdamW",
+            "scope": "Actual separateL128/U256 graphs. No cumulative AdamW contribution claim; original losses returned unchanged"
+          },
+          "feature_mean_teacher": {
+            "mode": "ZERO",
+            "feature": "actual deployed id_feat_joint160",
+            "teacher": "actual own EMA weak view, stopgradient; unchanged .999 updates",
+            "student": "existing strong Gaussian.015 and original trainmode dropout",
+            "loss": "all actual U samples mean half squared L2 difference of unit joint160, eps1e-8; no pseudo/confidence/RX/day/TX labels in objective",
+            "coefficient": 0.1,
+            "pseudo_start_epoch": 34,
+            "ramp_epochs": 5,
+            "extra_model_forwards": 0,
+            "new_modules": 0,
+            "new_parameters": 0,
+            "new_heads": 0,
+            "hard_pseudo_gate": "original batch_neighbor and all original losses unchanged",
+            "diagnostic_epochs": [
+              33,
+              34,
+              50
+            ],
+            "parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ]
+          },
+          "source_qualification_run": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+          "first_seed_retrained": false,
+          "combined_model_seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ]
+        },
+        "roles": [
+          "L_s",
+          "V"
+        ],
+        "count": 6300,
+        "batch": 256,
+        "shuffle_seed": 2026101501,
+        "strong_dropout_seed": 2026101502,
+        "strong_noise_std": 0.015,
+        "feature_coefficient": 0.1,
+        "label_smoothing": 0.01,
+        "groups": [
+          "WEAK_RIGHT_STRONG_RIGHT",
+          "WEAK_RIGHT_STRONG_WRONG",
+          "WEAK_WRONG_STRONG_RIGHT",
+          "WEAK_WRONG_STRONG_WRONG"
+        ],
+        "parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "feature": "actual joint160 ownEMAweak/studentstrong",
+        "gradient_definition": "Same physical L strong graph: trueCE smoothing.01 vs original feature consistency; four teacher/student correctness groups share full batch denominator; no training or fitted head",
+        "student_mode": "train_no_BN_state_update",
+        "teacher_mode": "eval_stopgrad",
+        "source_only": true,
+        "query_read": false,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "V_forward": true,
+        "head_updates": 0,
+        "optimizer_steps": 0,
+        "model_state_updates": 0,
+        "extra_training_epochs": 0,
+        "checkpoint_epoch": 50,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/SIG_TIME-s2026092703",
+        "launch_owner": "codex/root/source-teacher-confidence-20261015",
+        "counts": {
+          "L_s": 6300,
+          "V": 27000
+        },
+        "shuffle_seeds": {
+          "L_s": 2026101501,
+          "V": 2026101503
+        },
+        "strong_dropout_seeds": {
+          "L_s": 2026101502,
+          "V": 2026101504
+        },
+        "V_gradient": false,
+        "rule": "FP32 maxsoftmax(EMAweak) >= maxsoftmax(studentstrong), detached, ties retained",
+        "gap_threshold": 0,
+        "loss_denominator": "full batch count, not selected count",
+        "coefficient_interpretation": "Fixed .1 diagnostic derivative in both frozen arms; ZERO original training coefficient remains0",
+        "source_qualification": {
+          "source_only": true,
+          "all_six_models_required": true,
+          "role": "V",
+          "groups_must_be_nonempty": true,
+          "helpful_retention_strictly_greater_than_harmful_retention": true,
+          "no_automatic_training_release": true
+        }
+      }
+    },
+    {
+      "row_id": "FEATURE_MT-s2026092703",
+      "method": "frozen-SIG_TIME-confidence-order-FEATURE_MT",
+      "purpose": "source_diagnostic",
+      "config_ref": "experiments/cvs_source_teacher_confidence/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/FEATURE_MT-s2026092703/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092703,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026101502,
+        "support": null,
+        "evaluation": 2026101501
+      },
+      "seed_notes": "All predefined 3 seeds x2 arms, same L/V physical data and views across models; L shuffle/noise2026101501/02, V2026101503/04; no threshold/model/seed selection",
+      "k": null,
+      "scenario": "L gradients and V no_grad fixed confidence-order probe, ownEMA weak/student original strong .015+dropout",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 extra model epochs/optimizer/head updates; per model L6300+V27000=33300 source observations,66600 forward packet observations/262 forward batches,25 L derivative batches/75 layer records/1200 vectors; V gradient0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/FEATURE_MT-s2026092703",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_teacher_confidence_20261015_r01/dispatcher.stdout.log",
+      "command": "python -u -m experiments.cvs_source_teacher_confidence.audit",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "source_policy_observations.pt",
+        "L_source_gradient_vectors.pt",
+        "analysis.json",
+        "source_gradient_recount.json",
+        "completion.json"
+      ],
+      "config": {
+        "schema": "source_teacher_confidence_v1",
+        "run_id": "20261015-phase1-source-teacher-confidence-manysig-m6-r01",
+        "row_id": "FEATURE_MT-s2026092703",
+        "model_seed": 2026092703,
+        "arm": "FEATURE_MT",
+        "source_config": {
+          "schema": "signature_stats_default50_v1",
+          "run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+          "stage": "repair",
+          "arm": "FEATURE_MT",
+          "model_seed": 2026092703,
+          "row_id": "FEATURE_MT-s2026092703",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/FEATURE_MT-s2026092703/source",
+          "epochs": 50,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "launch_owner": "codex/root/feature-mean-teacher-seeds-20261015",
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "updates": 11100,
+          "legacy_reference_config": {
+            "schema": "legacy_no_sat_v1",
+            "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+            "stage": "repair",
+            "arm": "legacy_cosine_no_sat",
+            "model_seed": 2026092703,
+            "row_id": "legacy_cosine_no_sat-s2026092703",
+            "features": [
+              "ema",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_legacy_no_sat",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06
+          },
+          "source_falsification": {
+            "final_L_CE_max": 0.5,
+            "source_feature_difference_min": 1e-06,
+            "actual_feature_gradients_nonzero_at": [
+              34,
+              50
+            ],
+            "last5_U_feature_discrepancy_ratio_max": 0.95,
+            "source_only": true,
+            "expansion": "Firstseed source健康/exact11100updates/17x56700/featureboundary and actual t1/t2/SIGgradients; featureMT/control mean U discrepancy epoch46..50 <=.95. Then same fixed02/03 unchanged, before new target summary retrieval; no target ranking or rerun."
+          },
+          "training_recipe": "old batch_neighbor gate+EMA+cos scratch50 label33+pseudo17, no satellite",
+          "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+          "explicit_CFO_identity_feature": false,
+          "feature_extractor": {
+            "time": false,
+            "PA": false,
+            "time_layers": [
+              "t1",
+              "t2",
+              "t3"
+            ],
+            "PA_layers": [
+              "pa_b1",
+              "pa_b2",
+              "pa_b3"
+            ],
+            "time_kernel_dilation": [
+              [
+                3,
+                1
+              ],
+              [
+                5,
+                1
+              ],
+              [
+                5,
+                2
+              ]
+            ],
+            "PA_kernels": [
+              3,
+              5,
+              7
+            ],
+            "PA_dilation_by_layer": [
+              1,
+              2,
+              4
+            ],
+            "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+            "output_embedding": 160
+          },
+          "classifier": "unchanged default cosine6x160scale30 normal joint training only",
+          "test_views": [
+            "clean"
+          ],
+          "checkpoint_selection": "final_only",
+          "goal": {
+            "primary": "FEATURE_MT",
+            "clean_three_seed_mean": 0.84,
+            "first_seed_is_not_goal_completion": true,
+            "feedback_to_training": false
+          },
+          "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+          "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately",
+          "source_config": null,
+          "baseline_reuse": false,
+          "feature_combination": {
+            "modes": [
+              "SIG_TIME"
+            ],
+            "layer": "t2",
+            "local_dimension": 6,
+            "windows": 4,
+            "descriptor_width_each": 28,
+            "descriptor_raw_width": 28,
+            "fixed_lift": "SIG_TIME identity28; COV_SHAPE/AREA_SHAPE same original COV orthonormal27to28 seed2026101307",
+            "shared_single_projection": true,
+            "gain_initial": 0.05,
+            "gain_bound": 0.2,
+            "output_embedding": 160
+          },
+          "readouts": [
+            "ORIGINAL_HEAD"
+          ],
+          "separate_head_training": false,
+          "hypothesis_basis": "Source frozen SIG_TIME has substantial weak/strong joint160 displacement despite accepted identity agreement; V feature cosine does not reliably separate errors. Test learning representation consistency, not a reliability gate, using existing ownEMA/allU views. MeanTeacher general consistency theory; feature-level project variant, not literal original reproduction.",
+          "source_formula_parent_commit": "990ffabe0",
+          "initialization_policy": "Warm CUDA before native training seed; private pool RNG preserves baseline draws; verify actual initial native body/head equality",
+          "source_neighbor_sampling": {
+            "enabled": true,
+            "mode": "RANDOM",
+            "pool": "original hidden U_s56700 only",
+            "allowed_fields": [
+              "base_index",
+              "day_i",
+              "eq_i",
+              "rx_i",
+              "sig_i"
+            ],
+            "batch": 256,
+            "drop_last": false,
+            "all_packets_once": true,
+            "original_gates": true,
+            "extra_parameters": 0,
+            "seed_policy": "same one global Torch seed draw per native sampler iterator, private order generator"
+          },
+          "sampling_observation": {
+            "actual_gradient_epochs": [
+              33,
+              34,
+              50
+            ],
+            "batches_per_epoch": 222,
+            "gradient_parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ],
+            "vectors": [
+              "main_L_CE",
+              "weighted_U_CE",
+              "weighted_U_CE_entropy"
+            ],
+            "loss_weights": {
+              "U_CE": 0.16,
+              "U_entropy": 0.01
+            },
+            "extra_model_forwards": 0,
+            "extra_optimizer_updates": 0,
+            "head_fit_updates": 0,
+            "optimizer": "unchangednativeAdamW",
+            "scope": "Actual separateL128/U256 graphs. No cumulative AdamW contribution claim; original losses returned unchanged"
+          },
+          "feature_mean_teacher": {
+            "mode": "FEATURE",
+            "feature": "actual deployed id_feat_joint160",
+            "teacher": "actual own EMA weak view, stopgradient; unchanged .999 updates",
+            "student": "existing strong Gaussian.015 and original trainmode dropout",
+            "loss": "all actual U samples mean half squared L2 difference of unit joint160, eps1e-8; no pseudo/confidence/RX/day/TX labels in objective",
+            "coefficient": 0.1,
+            "pseudo_start_epoch": 34,
+            "ramp_epochs": 5,
+            "extra_model_forwards": 0,
+            "new_modules": 0,
+            "new_parameters": 0,
+            "new_heads": 0,
+            "hard_pseudo_gate": "original batch_neighbor and all original losses unchanged",
+            "diagnostic_epochs": [
+              33,
+              34,
+              50
+            ],
+            "parameters": [
+              "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+            ]
+          },
+          "source_qualification_run": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+          "first_seed_retrained": false,
+          "combined_model_seeds": [
+            2026092701,
+            2026092702,
+            2026092703
+          ]
+        },
+        "roles": [
+          "L_s",
+          "V"
+        ],
+        "count": 6300,
+        "batch": 256,
+        "shuffle_seed": 2026101501,
+        "strong_dropout_seed": 2026101502,
+        "strong_noise_std": 0.015,
+        "feature_coefficient": 0.1,
+        "label_smoothing": 0.01,
+        "groups": [
+          "WEAK_RIGHT_STRONG_RIGHT",
+          "WEAK_RIGHT_STRONG_WRONG",
+          "WEAK_WRONG_STRONG_RIGHT",
+          "WEAK_WRONG_STRONG_WRONG"
+        ],
+        "parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "feature": "actual joint160 ownEMAweak/studentstrong",
+        "gradient_definition": "Same physical L strong graph: trueCE smoothing.01 vs original feature consistency; four teacher/student correctness groups share full batch denominator; no training or fitted head",
+        "student_mode": "train_no_BN_state_update",
+        "teacher_mode": "eval_stopgrad",
+        "source_only": true,
+        "query_read": false,
+        "U_IQ_read": false,
+        "U_truth_read": false,
+        "V_forward": true,
+        "head_updates": 0,
+        "optimizer_steps": 0,
+        "model_state_updates": 0,
+        "extra_training_epochs": 0,
+        "checkpoint_epoch": 50,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-source-teacher-confidence-manysig-m6-r01/FEATURE_MT-s2026092703",
+        "launch_owner": "codex/root/source-teacher-confidence-20261015",
+        "counts": {
+          "L_s": 6300,
+          "V": 27000
+        },
+        "shuffle_seeds": {
+          "L_s": 2026101501,
+          "V": 2026101503
+        },
+        "strong_dropout_seeds": {
+          "L_s": 2026101502,
+          "V": 2026101504
+        },
+        "V_gradient": false,
+        "rule": "FP32 maxsoftmax(EMAweak) >= maxsoftmax(studentstrong), detached, ties retained",
+        "gap_threshold": 0,
+        "loss_denominator": "full batch count, not selected count",
+        "coefficient_interpretation": "Fixed .1 diagnostic derivative in both frozen arms; ZERO original training coefficient remains0",
+        "source_qualification": {
+          "source_only": true,
+          "all_six_models_required": true,
+          "role": "V",
+          "groups_must_be_nonempty": true,
+          "helpful_retention_strictly_greater_than_harmful_retention": true,
+          "no_automatic_training_release": true
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Source hypothesis follows complete FCG diagnostic, no target ranking or coefficient scan",
+    "6 existing final50 students+actual ownEMA, no new training/checkpoint",
+    "Totals199800 source observations on shared physical L6300/V27000,399600 forward packet observations/1572 forward batches,150 L derivative batches/450 layer records/7200 vectors",
+    "Qualification failure blocks this cue promotion only; no automatic training release even on PASS",
+    "PT/raw logs/checkpoints never committed; aggregate report/results only"
+  ],
+  "status": "PLANNED",
+  "registered_at": "2026-10-14T18:23:03+00:00"
+}

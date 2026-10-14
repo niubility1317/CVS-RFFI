@@ -1,0 +1,9 @@
+{
+  "status": "PASS",
+  "code_commit": "e2eee613b9657d336657012eb33d060072a402d7",
+  "scope": "Direct next-run P0/P1 only; new teacher-confidence package and needed interfaces",
+  "finding": "No direct P0/P1; FP32 ties/full batch denominator/V no_grad/all6 qualification/CPU closure7200 vectors verified",
+  "real_data_read": false,
+  "remote_access": false,
+  "reviewer": "/root/signature_fix_p0p1"
+}
