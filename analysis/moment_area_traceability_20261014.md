@@ -68,3 +68,10 @@ R08完整3seed9row已闭环verified：weighted82.7030%±1.6081pp、uniform82.751
 
 
 新报告31957f78独立浅中层有限身份监督已完整实现验证：完整浅中层有界排序3seed闭环：ORDER82.7127%±1.4787pp，SIG82.6067%±1.7438pp，SupCon82.5843%±1.7028pp，旧gatecos80.5268%±2.3776pp。ORDER−SIG+.1060±.2932pp/2 of3，修正2168引入1634净+534/504000；−SupCon+.1284pp2/3。12row9新450epochs99900steps＋3历史150epochs33300，600完整源epoch/2016000defaultpred/216metrics/5940实际层cohortgrad保存复算VERIFIED，0头拟合/新增targetforward。9fθ实际更新/export0/W独立；初态同，最终ORDER−SIGsourceL2 1.592485/1.398321/1.142613。更低SupCon源关系率和更强梯度没有均值收益，不据几何调参。实现26bfdf044caa1be3c966370248c3bc3372009943，剩余执行6d65f77a7659cb182bdb39852dc6c6b76001e81d，报告20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md；84未达成。 后续源签名诊断20261014-phase1-source-signature-order-manysig-s01-m1-r01全L6300/4视图126000关系各/840辅助＋210CE梯度，实际投影/浅中层有梯度、WNone/0fit；常量坐标平方范数均值17.6511%，去常量改变关系率不证明DG。未新增门槛、hash、头拟合、重跑或重复审查。
+
+
+后续签名内监督最小消融（源诊断依据，目标未用于调参）：
+|ID|来源|要求|目标文件|状态|验证|说明|
+|S01|全L签名四视图诊断|直接SIG112与仅辅助去4常量SIG108身份排序，各自与零损失控制|experiments/cvs_signature_order50/design.py,observer.py|pending|待实际native接线|固定m.1/coeff.1/5warmup+10ramp，单路部署SIG112不变|
+|S02|当前默认头约束|W正常联合训练、无辅助W依赖、真实fθ更新及W独立导出|checks.py,feature_check.py|pending|待native梯度/实际CPsmoke与训练|全L数据角色、旧gateEMAcos33+17、每模型scratch50不变|
+|S03|源资格与自动收尾|首seed三新＋旧历史，源资格固定后仅原样扩预定义02/03；每row自动defaultclean/truthlast|score.py,dispatch.py,publish.py|pending|待一次P0/P1/归档/真实启动|不以目标分数或源几何选父权重、调参、重跑|
