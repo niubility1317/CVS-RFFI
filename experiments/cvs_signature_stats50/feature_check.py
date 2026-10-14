@@ -28,7 +28,7 @@ def run(seed=None,only_row=None,*,design=None,build_fn=None):
     if not (p/'source_frozen.json').exists():missing.append(row['row_id']);continue
     source_proof(c,design=d);final=own_model(c,'cpu',design=d,build_fn=build_fn);initial=copy.deepcopy(final)
     initial.load_state_dict(torch.load(p/'initial_smoke.pt',map_location='cpu',weights_only=False)['model'],strict=True);initial.eval().requires_grad_(False)
-    expected=getattr(d,'FEATURE_PARAMETER_COUNT',195041 if c['arm']=='SIG_TIME' else 232033)
+    expected=getattr(d,'FEATURE_PARAMETER_COUNTS',{}).get(c['arm'],getattr(d,'FEATURE_PARAMETER_COUNT',195041 if c['arm']=='SIG_TIME' else 232033))
     change=parameter_changes(initial,final,expected_feature_count=expected)
     added=[v for v in change['records'] if '.sequence_pool.' in v['parameter']]
     if not added or any(v['changed_elements']==0 for v in added):raise ValueError('Added feature parameter did not update numerically')
@@ -43,5 +43,5 @@ def run(seed=None,only_row=None,*,design=None,build_fn=None):
     if getattr(d,'VERIFY_INITIAL_EVAL_EQUAL',False):
      initial_equal=compare_features(a,b,source)
      if any(v['joint160_L2_mean']!=0 or v['changed_feature_elements']!=0 for v in initial_equal['records']):raise ValueError('Actual initial eval function differs')
-    paired.append(dict(seed=model_seed,arm=d.PRIMARY,control=control,actual_initial_native_body_and_head_equal=True,actual_initial_parameters_identical=True,actual_initial_eval_features=initial_equal,source_features=compare_features(models[control],models[d.PRIMARY],source),actual_final_parameter_difference=parameter_changes(models[control],models[d.PRIMARY],expected_feature_count=getattr(d,'FEATURE_PARAMETER_COUNT',232033))))
+    paired.append(dict(seed=model_seed,arm=d.PRIMARY,control=control,actual_initial_native_body_and_head_equal=True,actual_initial_parameters_identical=True,actual_initial_eval_features=initial_equal,source_features=compare_features(models[control],models[d.PRIMARY],source),actual_final_parameter_difference=parameter_changes(models[control],models[d.PRIMARY],expected_feature_count=getattr(d,'FEATURE_PARAMETER_COUNTS',{}).get(d.PRIMARY,getattr(d,'FEATURE_PARAMETER_COUNT',232033)))))
  return dict(status='VERIFIED' if not missing else 'PARTIAL',run_id=d.RUN,models=len(rows),missing=missing,rows=rows,paired=paired,source_only=True,head_fit=False,head_updates=0,query_read=False,U_IQ_read=False,U_truth_read=False,V_cache_materialized=True,V_forward=False,source_IQ='fixed L720 first8 perTX/RX/day',seconds=time.time()-start)
