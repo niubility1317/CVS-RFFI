@@ -182,7 +182,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "SCORED"
     },
     {
       "row_id": "sig_time-s2026092702",
@@ -226,7 +227,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "SCORED"
     },
     {
       "row_id": "sig_time-s2026092703",
@@ -270,7 +272,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "SCORED"
     },
     {
       "row_id": "sig_time-s2026092704",
@@ -314,7 +317,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "SCORED"
     },
     {
       "row_id": "sig_time-s2026092705",
@@ -358,7 +362,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "SCORED"
     },
     {
       "row_id": "sig_time-s2026092706",
@@ -402,7 +407,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "SCORED"
     },
     {
       "row_id": "sig_time-s2026092707",
@@ -446,7 +452,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "SCORED"
     },
     {
       "row_id": "sig_time-s2026092708",
@@ -490,7 +497,8 @@
         "each prediction/complete.json",
         "each scores/scores.json",
         "each scores/report.md"
-      ]
+      ],
+      "status": "SCORED"
     }
   ],
   "notes": [
@@ -499,10 +507,27 @@
     "SIG_TIME includes reference-response/NoExplicitCFO/post-t2 path signature; total196001, feature195041, pool18976 parameters.",
     "13 historical8seed comparator results reused; clean only, split392005; exposed proxy benchmark, not independent blind or deployment validation."
   ],
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "comparison_run_ids": [
     "20261010-phase1-standard-ce-baselines-manysig-m56-r01",
     "20261012-phase1-standard-ce-seed-extension-manysig-m52-r01"
   ],
-  "comparison_scope": "Same physical split/model seeds/training budget; SIG_TIME architecture includes reference-response/NoExplicitCFO and t2 signature; not an isolated signature ablation against residual CVS."
+  "comparison_scope": "Same physical split/model seeds/training budget; SIG_TIME architecture includes reference-response/NoExplicitCFO and t2 signature; not an isolated signature ablation against residual CVS.",
+  "analysis_completion": {
+    "status": "VERIFIED",
+    "actual_seed_count": 8,
+    "predictions": 1344000,
+    "confusion_matrices_independently_recomputed": 112,
+    "accuracy_mean": 0.8159650297619048,
+    "accuracy_sample_sd": 0.0039974993670373465,
+    "macro_f1_mean": 0.8117984951891513,
+    "macro_f1_sample_sd": 0.004679813236366727,
+    "paired_cvs_accuracy_mean_pp": 2.635714285714287,
+    "paired_cvs_accuracy_sd_pp": 1.1082622714821035,
+    "positive_pairs": 8,
+    "result_root": "E:\\type10-7\\exports\\results\\20261014-sigtime-purece-e200-eight-seed-clean-r01",
+    "missing": [],
+    "report": "final_analysis.md",
+    "deployment_cost_measured": false
+  }
 }
