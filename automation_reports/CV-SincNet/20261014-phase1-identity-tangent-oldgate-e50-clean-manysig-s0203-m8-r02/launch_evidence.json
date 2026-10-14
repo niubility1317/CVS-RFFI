@@ -1,0 +1,138 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s0203-m8-r02",
+  "execution_commit": "882c89f783377947c81739745c8a1e1ea96e8f3e",
+  "dispatcher_PID_CWD_argv": "VERIFIED",
+  "workers": [
+    {
+      "row_id": "BASE_REF-s2026092702",
+      "pid": 2083846,
+      "gpu": 6,
+      "epoch": 50,
+      "log_size": 70,
+      "live": false,
+      "PID_CWD_argv_verified": false,
+      "source_status": "SOURCE_TRAINED"
+    },
+    {
+      "row_id": "ZERO-s2026092702",
+      "pid": 2083884,
+      "gpu": 7,
+      "epoch": 35,
+      "log_size": 187581,
+      "live": true,
+      "PID_CWD_argv_verified": true,
+      "source_status": null
+    },
+    {
+      "row_id": "RAW_MATCHED-s2026092702",
+      "pid": 2084026,
+      "gpu": 6,
+      "epoch": 33,
+      "log_size": 177770,
+      "live": true,
+      "PID_CWD_argv_verified": true,
+      "source_status": null
+    },
+    {
+      "row_id": "IDSAFE-s2026092702",
+      "pid": 2084107,
+      "gpu": 6,
+      "epoch": 32,
+      "log_size": 172220,
+      "live": true,
+      "PID_CWD_argv_verified": true,
+      "source_status": null
+    }
+  ],
+  "capacity_total_processes_per_GPU": {
+    "0": 1,
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 2,
+    "7": 1
+  },
+  "queue": {
+    "active": [
+      "ZERO-s2026092702",
+      "RAW_MATCHED-s2026092702",
+      "IDSAFE-s2026092702"
+    ],
+    "pending": [
+      {
+        "row_id": "BASE_REF-s2026092703",
+        "arm": "BASE_REF",
+        "model_seed": 2026092703
+      },
+      {
+        "row_id": "ZERO-s2026092703",
+        "arm": "ZERO",
+        "model_seed": 2026092703
+      },
+      {
+        "row_id": "RAW_MATCHED-s2026092703",
+        "arm": "RAW_MATCHED",
+        "model_seed": 2026092703
+      },
+      {
+        "row_id": "IDSAFE-s2026092703",
+        "arm": "IDSAFE",
+        "model_seed": 2026092703
+      }
+    ],
+    "completed": [
+      "BASE_REF-s2026092702"
+    ],
+    "failures": [],
+    "source_screen_not_passed": null,
+    "max_total_processes_per_GPU": 3,
+    "updated_at": 1791951491.1909513
+  },
+  "preflight": {
+    "status": "PASS",
+    "real_checkpoint_noquery": true,
+    "no_inherited_initialization": true,
+    "checks": {
+      "status": "PASS",
+      "identity_projection": true,
+      "equal_perturbation_energy": true,
+      "detached_direction": true,
+      "class_permutation": true,
+      "zero_control_exact": true,
+      "feature_update": true,
+      "protocol_negatives": 4,
+      "query_read": false
+    },
+    "actual_wiring": {
+      "status": "PASS",
+      "device": "cpu",
+      "all_three_initial_states_equal": true,
+      "actual_joint160": true,
+      "regularizer_classW_gradient": null,
+      "feature_changed_values": 175648,
+      "defaultW_updated_by_CE": true,
+      "budget": {
+        "CE_feature_gradient_norm": 12.320990599639256,
+        "raw_feature_gradient_norm": 0.01876322507564448,
+        "detached_coefficient": 131.33126687240784,
+        "actual_norm_ratio": 0.19999999998932466,
+        "maximum_ratio": 0.2,
+        "class_W_in_budget": false
+      },
+      "feature_export_W_independent": true,
+      "teacher_callback_absent": true,
+      "head_fit_updates": 0,
+      "synthetic_evidence": true
+    },
+    "query_access": false,
+    "head_fit_updates": 0
+  },
+  "read_at": 1791951494.1227067,
+  "source_only_observation": true,
+  "target_score_feedback": false,
+  "head_fit_updates": 0,
+  "limitation": "Startup partial source training, no complete3seed/defaulthead result."
+}

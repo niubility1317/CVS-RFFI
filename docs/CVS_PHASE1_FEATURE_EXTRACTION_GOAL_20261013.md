@@ -60,3 +60,6 @@ Sinc坐标9row全部完成，6新scratch50/300模型轮次/66600更新、3历史
 此前切向机制firstseed源健康条件已在target汇总前通过，用户要求收益路线不落下，原样保留ZERO/RAW/IDSAFE剩余seed02/03确认。有效运行 `20261014-phase1-identity-tangent-oldgate-e50-clean-manysig-s0203-m8-r02`；R01归档遗漏模块导致未提交preflight失败，原目录保留。不是按target选RAW或改投影。firstseed结果BASE80.6685%、ZERO80.7399%、RAW81.4405%、IDSAFE81.0298%，完整三seed证据尚未返回。
 
 可信纠错源代理R02完整三seed共41新包全正确，但固定数量门槛不通过；不放开B/D或从V反调阈值。U真实精度仍未知。84%固定3seed目标未达成，本目标保持active；新方法实际结果尚无，不能用接线PASS或源代理代替泛化成功。
+
+
+当前关系机制及切向固定确认均已发布/独立启动回读VERIFIED。另保留完整3seed的COMPACT_LINEAR、LONG_SILU和Sinc居中坐标正收益路线，待预定CROSS_RESP通过源标准后做逐项匹配组合，不按target择父或混合全部结构。当前结果未达84%，目标继续active。

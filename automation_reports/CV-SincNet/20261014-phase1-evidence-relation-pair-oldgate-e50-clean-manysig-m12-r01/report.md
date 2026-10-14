@@ -43,4 +43,11 @@
 
 用户最新材料是35f4dc861分支的未执行研究建议。这里按本工作树真实ResidualPhysicalHead/ReferenceCVS与默认头实现，不把材料的预期效果写成已验证事实。此前切向路线独立原样确认剩余种子；可信纠错完整源诊断41/41正确但量不足固定门槛，保留结果，不继续搜索接受规则。
 
-当前状态：LOCAL_VERIFIED；尚无本机制实际训练/泛化结果。
+当前状态：RUNNING / VERIFIED；真实checkpoint/sourceL smoke已通过，首seed A/B/C训练健康运行，尚无本机制完整泛化结果。
+
+
+## 独立发布回读
+
+执行Gitcommit `4e5bd3275289a91cb407392461eeefe20d171820`已push且remoteOID一致；归档运输一次SHA比对、remote compile、真实checkpoint noquery smoke PASS，PID/CWD/argv/GPU/log独立回读VERIFIED，GPU最大总实验进程3含其他owner，未停止其他任务。当前row状态：ZERO-s2026092701 epoch4, ALL_REL-s2026092701 epoch3, CROSS_REL-s2026092701 epoch4。此为局部源训练启动证据，headfit0，不代表识别提升或84%。详见launch_evidence.json。
+
+固定真实源L诊断：180参照＋720不重叠探针，新增关系非零比例100.00%；实际t1辅助梯度范数0.11520934104919434，W/PAgain/refgain辅助梯度均None。各源RX同TX关系质量：1=0.7474, 3=0.6566, 4=0.7057, 6=0.7178, 8=0.7226（基准chance1/6；骨干已见源RX，不是未知RX泛化证据）。这些只是固定源学习信号诊断，没有阈值/模型拟合。

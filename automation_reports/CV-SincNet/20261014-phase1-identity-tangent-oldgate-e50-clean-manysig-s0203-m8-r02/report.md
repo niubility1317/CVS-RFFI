@@ -21,3 +21,8 @@
 
 
 R01 独立 FAILED：归档路径遗漏新确认模块，模块入口不能导入；尚未提交或启动训练，未创建run根。旧归档/失败preflight保留。R02 仅补正确归档路径，新输出根；模型机制/预算/种子未变。
+
+
+## 独立发布回读
+
+执行Gitcommit `882c89f783377947c81739745c8a1e1ea96e8f3e`已push且remoteOID一致；归档运输一次SHA比对、remote compile、真实checkpoint noquery smoke PASS，PID/CWD/argv/GPU/log独立回读VERIFIED，GPU最大总实验进程3含其他owner，未停止其他任务。当前row状态：BASE_REF-s2026092702 epoch50, ZERO-s2026092702 epoch35, RAW_MATCHED-s2026092702 epoch33, IDSAFE-s2026092702 epoch32。此为局部源训练启动证据，headfit0，不代表识别提升或84%。详见launch_evidence.json。

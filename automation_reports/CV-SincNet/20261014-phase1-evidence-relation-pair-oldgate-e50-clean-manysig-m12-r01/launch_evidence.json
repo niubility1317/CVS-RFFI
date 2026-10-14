@@ -1,0 +1,206 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261014-phase1-evidence-relation-pair-oldgate-e50-clean-manysig-m12-r01",
+  "execution_commit": "4e5bd3275289a91cb407392461eeefe20d171820",
+  "dispatcher_PID_CWD_argv": "VERIFIED",
+  "workers": [
+    {
+      "row_id": "ZERO-s2026092701",
+      "pid": 2097360,
+      "gpu": 2,
+      "epoch": 4,
+      "log_size": 27160,
+      "live": true,
+      "PID_CWD_argv_verified": true,
+      "source_status": null
+    },
+    {
+      "row_id": "ALL_REL-s2026092701",
+      "pid": 2097457,
+      "gpu": 3,
+      "epoch": 3,
+      "log_size": 22035,
+      "live": true,
+      "PID_CWD_argv_verified": true,
+      "source_status": null
+    },
+    {
+      "row_id": "CROSS_REL-s2026092701",
+      "pid": 2097542,
+      "gpu": 5,
+      "epoch": 4,
+      "log_size": 27238,
+      "live": true,
+      "PID_CWD_argv_verified": true,
+      "source_status": null
+    }
+  ],
+  "capacity_total_processes_per_GPU": {
+    "0": 1,
+    "1": 1,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 2,
+    "7": 1
+  },
+  "queue": {
+    "active": [
+      "ZERO-s2026092701",
+      "ALL_REL-s2026092701",
+      "CROSS_REL-s2026092701"
+    ],
+    "pending": [
+      {
+        "row_id": "CROSS_RESP-s2026092701",
+        "arm": "CROSS_RESP",
+        "model_seed": 2026092701
+      },
+      {
+        "row_id": "ZERO-s2026092702",
+        "arm": "ZERO",
+        "model_seed": 2026092702
+      },
+      {
+        "row_id": "ALL_REL-s2026092702",
+        "arm": "ALL_REL",
+        "model_seed": 2026092702
+      },
+      {
+        "row_id": "CROSS_REL-s2026092702",
+        "arm": "CROSS_REL",
+        "model_seed": 2026092702
+      },
+      {
+        "row_id": "CROSS_RESP-s2026092702",
+        "arm": "CROSS_RESP",
+        "model_seed": 2026092702
+      },
+      {
+        "row_id": "ZERO-s2026092703",
+        "arm": "ZERO",
+        "model_seed": 2026092703
+      },
+      {
+        "row_id": "ALL_REL-s2026092703",
+        "arm": "ALL_REL",
+        "model_seed": 2026092703
+      },
+      {
+        "row_id": "CROSS_REL-s2026092703",
+        "arm": "CROSS_REL",
+        "model_seed": 2026092703
+      },
+      {
+        "row_id": "CROSS_RESP-s2026092703",
+        "arm": "CROSS_RESP",
+        "model_seed": 2026092703
+      }
+    ],
+    "completed": [],
+    "failures": [],
+    "source_screen_not_passed": null,
+    "max_total_processes_per_GPU": 3,
+    "updated_at": 1791951492.343048
+  },
+  "preflight": {
+    "status": "PASS",
+    "real_checkpoint_noquery": true,
+    "no_inherited_initialization": true,
+    "strict_student_and_ownEMA": true,
+    "query_access": false,
+    "head_fit_updates": 0,
+    "checks": {
+      "status": "PASS",
+      "count_TX_day_matched": true,
+      "exclude_same_RX": true,
+      "equal_parts_zero_loss": true,
+      "branch_cancellation_detected": true,
+      "actual_increment_gradient": true,
+      "zero_control_exact": true,
+      "query_role_negative": true,
+      "no_U_TX_argument": true
+    },
+    "source_L_diagnostic": {
+      "anchors": 180,
+      "disjoint_probe_packets": 720,
+      "forward_packets": 1620,
+      "V_fit": false,
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "relation": 0.13533170521259308,
+      "response": 0.005957372952252626,
+      "actual_t1_aux_gradient": 0.11520934104919434,
+      "ref_projection_aux_gradient": 0.1779468059539795,
+      "class_W_aux_gradient": null,
+      "PA_gain_aux_gradient": null,
+      "ref_gain_aux_gradient": null,
+      "facts": {
+        "U_count": 720,
+        "all_U_used": true,
+        "class_W_used": false,
+        "anchors_per_query": 120,
+        "anchors_per_TX": 20,
+        "anchor_day_counts_per_TX": [
+          7,
+          7,
+          6
+        ],
+        "groups_per_query": 4,
+        "teacher_entropy_normalized": 0.7023510336875916,
+        "teacher_response_L2": 0.017829615622758865,
+        "teacher_U_relation_dispersion": 0.09028532356023788,
+        "bank_normalized_variance": 0.6859903335571289,
+        "teacher_PA_increment_norm": 3.752192258834839,
+        "teacher_ref_increment_norm": 1.6650571823120117,
+        "student_PA_increment_norm": 3.6990132331848145,
+        "student_ref_increment_norm": 1.6733620166778564,
+        "nonzero_relation_fraction": 1.0,
+        "relation_top_one_percent_mass": 0.055438779294490814,
+        "relation_median": 0.09984999150037766,
+        "relation_max": 0.904278039932251,
+        "response_median": 0.0042360201478004456,
+        "response_max": 0.03762159124016762
+      },
+      "semantic": [
+        {
+          "RX": 1,
+          "same_TX_relation_mass": 0.7473796606063843,
+          "chance": 0.16666666666666666,
+          "source_RX_seen": true
+        },
+        {
+          "RX": 3,
+          "same_TX_relation_mass": 0.6566412448883057,
+          "chance": 0.16666666666666666,
+          "source_RX_seen": true
+        },
+        {
+          "RX": 4,
+          "same_TX_relation_mass": 0.7057411670684814,
+          "chance": 0.16666666666666666,
+          "source_RX_seen": true
+        },
+        {
+          "RX": 6,
+          "same_TX_relation_mass": 0.7177672982215881,
+          "chance": 0.16666666666666666,
+          "source_RX_seen": true
+        },
+        {
+          "RX": 8,
+          "same_TX_relation_mass": 0.722648561000824,
+          "chance": 0.16666666666666666,
+          "source_RX_seen": true
+        }
+      ],
+      "limitation": "Legal source L seen during historical source training. Not unseen RX evidence or actual online hidden U correctness; sampling labels do not enter loss."
+    }
+  },
+  "read_at": 1791951494.0854652,
+  "source_only_observation": true,
+  "target_score_feedback": false,
+  "head_fit_updates": 0,
+  "limitation": "Startup partial source training, no complete3seed/defaulthead result."
+}
