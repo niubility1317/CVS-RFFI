@@ -1,0 +1,138 @@
+{
+  "status": "VERIFIED",
+  "per_model": [
+    {
+      "model_seed": 2026092701,
+      "status": "PASS",
+      "layers": [
+        {
+          "layer": "t1",
+          "RAW": {
+            "CE_norm": 0.044355681880036434,
+            "auxiliary_norm": 7.877177249890184,
+            "auxiliary_over_CE": 177.5911656863861,
+            "cosine": 0.5905876061237691
+          },
+          "ANGLE": {
+            "CE_norm": 0.044355681880036434,
+            "auxiliary_norm": 1.1078301040132672,
+            "auxiliary_over_CE": 24.97605846776258,
+            "cosine": 0.6462064392913733
+          },
+          "nonzero_cohorts": 5
+        },
+        {
+          "layer": "t2",
+          "RAW": {
+            "CE_norm": 0.0374142159134536,
+            "auxiliary_norm": 6.084594709718247,
+            "auxiliary_over_CE": 162.6278825084322,
+            "cosine": 0.5899775838102156
+          },
+          "ANGLE": {
+            "CE_norm": 0.0374142159134536,
+            "auxiliary_norm": 0.8049108547010474,
+            "auxiliary_over_CE": 21.51350322462894,
+            "cosine": 0.5936163800507323
+          },
+          "nonzero_cohorts": 5
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "status": "FAIL",
+      "layers": [
+        {
+          "layer": "t1",
+          "RAW": {
+            "CE_norm": 0.037698628773989024,
+            "auxiliary_norm": 17.885499177726135,
+            "auxiliary_over_CE": 474.43367993444417,
+            "cosine": 0.1913512009123354
+          },
+          "ANGLE": {
+            "CE_norm": 0.037698628773989024,
+            "auxiliary_norm": 0.7507410095382101,
+            "auxiliary_over_CE": 19.91427895266578,
+            "cosine": -0.11168157036435239
+          },
+          "nonzero_cohorts": 5
+        },
+        {
+          "layer": "t2",
+          "RAW": {
+            "CE_norm": 0.03397217992516938,
+            "auxiliary_norm": 12.021011609597211,
+            "auxiliary_over_CE": 353.8486972598146,
+            "cosine": 0.23191674532742004
+          },
+          "ANGLE": {
+            "CE_norm": 0.03397217992516938,
+            "auxiliary_norm": 0.5599992544329494,
+            "auxiliary_over_CE": 16.484054178049846,
+            "cosine": -0.02472477949139308
+          },
+          "nonzero_cohorts": 5
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "status": "FAIL",
+      "layers": [
+        {
+          "layer": "t1",
+          "RAW": {
+            "CE_norm": 0.044480585054427466,
+            "auxiliary_norm": 23.47280741464245,
+            "auxiliary_over_CE": 527.709052970427,
+            "cosine": 0.3228222325255074
+          },
+          "ANGLE": {
+            "CE_norm": 0.044480585054427466,
+            "auxiliary_norm": 1.2744935205596124,
+            "auxiliary_over_CE": 28.652804791126574,
+            "cosine": -0.009818881938952025
+          },
+          "nonzero_cohorts": 5
+        },
+        {
+          "layer": "t2",
+          "RAW": {
+            "CE_norm": 0.0407254508179389,
+            "auxiliary_norm": 22.482756787619508,
+            "auxiliary_over_CE": 552.0566706094318,
+            "cosine": 0.2577422656435481
+          },
+          "ANGLE": {
+            "CE_norm": 0.0407254508179389,
+            "auxiliary_norm": 1.1488741428876688,
+            "auxiliary_over_CE": 28.210225296796672,
+            "cosine": 0.08768042826830849
+          },
+          "nonzero_cohorts": 5
+        }
+      ]
+    }
+  ],
+  "source_rule_recount": "PASS",
+  "all_model_qualification": "FAIL",
+  "passed_models": 1,
+  "total_models": 3,
+  "positive_ANGLE_layer_cosines": 3,
+  "total_layer_cosines": 6,
+  "source_physical_ids_unique": 900,
+  "model_source_observations": 2700,
+  "first_model_remeasured": false,
+  "new_models": 2,
+  "new_gradient_batches": 10,
+  "new_matrices": 20,
+  "new_layer_records": 20,
+  "new_vectors": 60,
+  "training_epochs": 0,
+  "optimizer_steps": 0,
+  "head_fit_updates": 0,
+  "target_read": false,
+  "on_fail": "Do not train or expand this fixed RAW-angle formula"
+}

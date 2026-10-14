@@ -195,3 +195,6 @@ FEATURE_MT原run34轮222批实际t1/t2/SIGprojection effective梯度候选全非
 
 
 - 2026-10-15：CONF_FEATURE_MT固定3seed全部ANALYZED/VERIFIED，原任务自然结束无failure；执行55ff29d676eb5f02afa8b3869ed4818122f09d9a，source决定3b0b38c708029570cd1d6327cd4db96e2752a6ad在目标数字前已冻结。CONF82.540675% 对SIG82.776984%，配对−0.236310±0.153150pp/0正，162CM/1512000默认头决策/71928保存向量完整复算。实际feature变了且source discrepancy降17-20%，仍无DG收益；当前无新训练，原头不另训。
+
+
+- 2026-10-15：方差方向源固定02/03扩展 20261015-phase1-source-backbone-variance-angle-manysig-s0203-m2-r01 ANALYZED/VERIFIED，code 5cc440c08feba25ce127cbcf73f489bf04b93e5d、exec e493b3e28c6ffb2824a52f7d6d71028c00015077；新增1800模型样本次/20矩阵/60向量第二进程复算通过。三模型仅01 PASS，02两层cos负、03浅层cos负，六层均非零；按原规则不训练/扫权或改标准。源状态不更新、头拟合0、query/Utruth/Vforward0。完整负结果已保存，84%仍未达成。

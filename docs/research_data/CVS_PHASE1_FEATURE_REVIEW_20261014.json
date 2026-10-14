@@ -82241,14 +82241,14 @@
     },
     {
       "direction": "骨干梯度方差形状的源端证伪",
-      "status": "FIRST_SOURCE_PASS_REMAINING_SOURCE_FIXED_NOT_IMPLEMENTED",
-      "source_evidence": "ActualfrozenSIG01 fiveL180/900 uniqueL, unweightedANGLEsamepacketCEcos .646206/.593616,5/5 nonzeroeach,30vectors secondprocessrecount; no model/headupdates. Magnitudes RAW178/163 vsANGLE25/22 timesCE differ, no causaltrainingclaim",
+      "status": "ANALYZED_VERIFIED_SOURCE_FAIL_NO_TRAINING",
+      "source_evidence": "Fixed same900L threefrozenSIGmodels: ANGLE-CEcos01(.646206,.593616),02(-.111682,-.024725),03(-.009819,.087680);1/3 modelPASS,3/6 layers nonnegative,all5/5nonzero; actual30matrices/90vectors including retainedfirst;no model/headupdates orquery",
       "hypothesis": "If a direct unweighted RX variance-vector angle objective has stable source identity-compatible derivatives, test it separately; no assumption oftargetgain",
       "location": "Actual t1/t2 backbone derivative statistics, unchanged ftheta/default joint head",
       "path_into_z": "Existing ftheta gradients only, no new classifier or architecture",
       "minimum_control": "Before any newtraining, frozenSIG source-only same-L CE versus potential angleloss derivative; later single-seed matched ZERO control only if sourceevidence warrants",
       "cost": "Reuse936savedmatrices now; newgradientcheck/training cost must be fixed before launch, <=50 permodel",
-      "failure": "Source01PASS only; fixed02/03 same900L sourceextension next, no new training release; rejectfixedformula if remainingseedsourceFAIL"
+      "failure": "Original criteria FAIL for both remainingseeds. No training/weightscan of this fixedformula."
     }
   ],
   "next_actions_max2": [
@@ -82258,188 +82258,15 @@
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "执行已在源PASS后冻结的方差形状02/03同900L只读诊断；保持固定checkpoint/公式/样本/判据，不拟合头或访问target",
-    "合并三seed源导数证据，满足原规则后再设计明确梯度幅度/计算成本控制的新训练矩阵，固定SIG_TIME/default联合头/旧门控EMAcos/<=50；不根据当前target负分调系数或重跑"
+    "三模型方差方向源检验已FAIL，归档并停止该固定公式，不调判据/系数/父权重或重跑",
+    "核实未重复的源RX风险优化或监督/SSL梯度耦合训练机制，选定一个最小固定对照后实现；保持SIG_TIME、默认联合头、旧门控EMAcos、单模型<=50及独立评分"
   ],
   "current_priority": {
-    "at": "2026-10-14T18:08:17.724Z",
+    "at": "2026-10-15",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
-    "active_generalization_mechanism": {
-      "status": "ANALYZED_VERIFIED",
-      "run_ids": [
-        "20261014-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s01-m4-r01",
-        "20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01"
-      ],
-      "source_expansion_decision_commit": "3c052b2d36903e28694674a39e232a73acd8b6a6",
-      "models": 12,
-      "new_models": 9,
-      "model_seeds": [
-        2026092701,
-        2026092702,
-        2026092703
-      ],
-      "new_epochs": 450,
-      "new_updates": 99900,
-      "default_decisions": 2016000,
-      "metric_records": 216,
-      "RAW_mean": 0.8266468253968254,
-      "SIG_mean": 0.8265039682539682,
-      "COND_mean": 0.8251130952380953,
-      "RAW_minus_SIG": 0.00014285714285714826,
-      "COND_minus_SIG": -0.0013908730158729659,
-      "positive_seeds_RAW": 1,
-      "positive_seeds_COND": 1,
-      "COND_vs_RAW_positive_seeds": 0,
-      "no_stable_new_gain": true,
-      "goal84": false,
-      "head_fit_updates": 0,
-      "report": "automation_reports/CV-SincNet/20261015-phase1-backbone-fishr-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
-    },
-    "next_semi_supervised_work": {
-      "run_id": "20261014-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s01-m3-r01",
-      "status": "COMPLETE_THREE_SEED_NEGATIVE",
-      "implementation_commit": "373262b51f037f03e3238471b3aefb88e45fba5b",
-      "execution_commit": "6b23a5b033ee063dea97d6783d5634e220a1d93d",
-      "architecture_changes": false,
-      "feature": "actual joint160 ownEMAweak/studentstrong",
-      "coefficient": 0.1,
-      "ramp_epochs": 5,
-      "pseudo_start_epoch": 34,
-      "extra_training_model_forwards": 0,
-      "new_heads": 0,
-      "observed_completed_epochs": [
-        50,
-        50
-      ],
-      "actual_SSL_stage_verified": true,
-      "target_results": [
-        {
-          "arm": "OLD_GATE_COS50",
-          "seed_count": 1,
-          "accuracy_mean": 0.8066845238095238,
-          "accuracy_sd": null,
-          "seed_accuracy": {
-            "2026092701": 0.8066845238095238
-          },
-          "macro_f1_mean": 0.8017335328586674,
-          "worst_RX_mean": 0.7061666666666667,
-          "worst_day_mean": 0.7545238095238095
-        },
-        {
-          "arm": "SIG_TIME",
-          "seed_count": 1,
-          "accuracy_mean": 0.8366785714285714,
-          "accuracy_sd": null,
-          "seed_accuracy": {
-            "2026092701": 0.8366785714285714
-          },
-          "macro_f1_mean": 0.8324484292442377,
-          "worst_RX_mean": 0.7124583333333333,
-          "worst_day_mean": 0.7919285714285714
-        },
-        {
-          "arm": "FEATURE_MT",
-          "seed_count": 1,
-          "accuracy_mean": 0.8336190476190476,
-          "accuracy_sd": null,
-          "seed_accuracy": {
-            "2026092701": 0.8336190476190476
-          },
-          "macro_f1_mean": 0.8291484408853428,
-          "worst_RX_mean": 0.7048333333333333,
-          "worst_day_mean": 0.7871428571428571
-        }
-      ],
-      "epoch34_actual_effective_gradient_nonzero_batches": {
-        "FEATURE_MT": [
-          222,
-          222,
-          222
-        ],
-        "ZERO": [
-          0,
-          0,
-          0
-        ]
-      },
-      "observed_U_feature_packets_each": 963900,
-      "final_independent_audit": "VERIFIED",
-      "source_qualification": {
-        "status": "PASS",
-        "new_target_accuracy_read": false,
-        "feature_discrepancy_ratio": 0.8214876953444351,
-        "remaining_run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-        "configuration_changes": false
-      },
-      "remaining_run_id": "20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-      "full_three_seed_target_results": [
-        {
-          "arm": "OLD_GATE_COS50",
-          "seed_count": 3,
-          "seed_accuracy": {
-            "2026092701": 0.8066845238095238,
-            "2026092702": 0.7808154761904762,
-            "2026092703": 0.8283035714285715
-          },
-          "accuracy_mean": 0.8052678571428572,
-          "accuracy_sd": 0.023775723031465,
-          "macro_f1_mean": 0.8000238637751927,
-          "worst_RX_mean": 0.6797083333333332,
-          "worst_day_mean": 0.7605555555555555
-        },
-        {
-          "arm": "SIG_TIME",
-          "seed_count": 3,
-          "seed_accuracy": {
-            "2026092701": 0.8366785714285714,
-            "2026092702": 0.8061369047619048,
-            "2026092703": 0.8376011904761905
-          },
-          "accuracy_mean": 0.8268055555555556,
-          "accuracy_sd": 0.01790552011808559,
-          "macro_f1_mean": 0.8212818044118072,
-          "worst_RX_mean": 0.7049444444444445,
-          "worst_day_mean": 0.7850555555555556
-        },
-        {
-          "arm": "FEATURE_MT",
-          "seed_count": 3,
-          "seed_accuracy": {
-            "2026092701": 0.8336190476190476,
-            "2026092702": 0.8060297619047619,
-            "2026092703": 0.8334285714285714
-          },
-          "accuracy_mean": 0.8243591269841269,
-          "accuracy_sd": 0.015873981493446106,
-          "macro_f1_mean": 0.8186884452680397,
-          "worst_RX_mean": 0.6988333333333333,
-          "worst_day_mean": 0.7812619047619048
-        }
-      ],
-      "paired_feature_minus_SIG": {
-        "arm": "FEATURE_MT",
-        "control": "SIG_TIME",
-        "seeds": [
-          2026092701,
-          2026092702,
-          2026092703
-        ],
-        "seed_differences": [
-          -0.0030595238095237898,
-          -0.0001071428571428612,
-          -0.004172619047619119
-        ],
-        "mean_difference": -0.0024464285714285903,
-        "sd_difference": 0.0021009375269302024,
-        "positive_seeds": 0,
-        "corrected_errors": 1660,
-        "introduced_errors": 2893,
-        "net_corrected": -1233,
-        "matched_decisions": 504000
-      },
-      "next_source_diagnostic": "ANALYZED_VERIFIED_20261015-phase1-source-feature-ce-gradient-manysig-m6-r01"
-    },
+    "active_generalization_mechanism": "No active DG training; direct RAW-angle source extension completed FAIL (1/3 modelPASS), fixedformula not trained",
+    "next_semi_supervised_work": "All-U and confidence FEATURE_MT complete3 negative; design a distinct training-objective mechanism from legal source evidence, no stronger-feature-consistency scan",
     "structural_exploration": false,
     "fixed_architecture": "SIG_TIME112→joint160; existing default cosine head jointly trained",
     "latest_ssl_first_seed": {
@@ -83244,8 +83071,128 @@
       ],
       "source_model_state_unchanged": true,
       "remaining_source_run": "20261015-phase1-source-backbone-variance-angle-manysig-s0203-m2-r01",
-      "remaining_source_state": "SOURCE_DECISION_FROZEN_NOT_IMPLEMENTED_NOT_LAUNCHED",
-      "result_ref": "automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01/final_analysis.md"
+      "remaining_source_state": "ANALYZED_VERIFIED_SOURCE_FAIL_STOP_FIXED_FORMULA",
+      "result_ref": "automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s2026092701-r01/final_analysis.md",
+      "remaining_source_result_ref": "automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s0203-m2-r01/final_analysis.md",
+      "remaining_source_execution": "e493b3e28c6ffb2824a52f7d6d71028c00015077",
+      "three_model_source_qualification": "FAIL",
+      "three_model_passed": 1,
+      "three_model_layers": [
+        {
+          "model_seed": 2026092701,
+          "status": "PASS",
+          "layers": [
+            {
+              "layer": "t1",
+              "RAW": {
+                "CE_norm": 0.044355681880036434,
+                "auxiliary_norm": 7.877177249890184,
+                "auxiliary_over_CE": 177.5911656863861,
+                "cosine": 0.5905876061237691
+              },
+              "ANGLE": {
+                "CE_norm": 0.044355681880036434,
+                "auxiliary_norm": 1.1078301040132672,
+                "auxiliary_over_CE": 24.97605846776258,
+                "cosine": 0.6462064392913733
+              },
+              "nonzero_cohorts": 5
+            },
+            {
+              "layer": "t2",
+              "RAW": {
+                "CE_norm": 0.0374142159134536,
+                "auxiliary_norm": 6.084594709718247,
+                "auxiliary_over_CE": 162.6278825084322,
+                "cosine": 0.5899775838102156
+              },
+              "ANGLE": {
+                "CE_norm": 0.0374142159134536,
+                "auxiliary_norm": 0.8049108547010474,
+                "auxiliary_over_CE": 21.51350322462894,
+                "cosine": 0.5936163800507323
+              },
+              "nonzero_cohorts": 5
+            }
+          ]
+        },
+        {
+          "model_seed": 2026092702,
+          "status": "FAIL",
+          "layers": [
+            {
+              "layer": "t1",
+              "RAW": {
+                "CE_norm": 0.037698628773989024,
+                "auxiliary_norm": 17.885499177726135,
+                "auxiliary_over_CE": 474.43367993444417,
+                "cosine": 0.1913512009123354
+              },
+              "ANGLE": {
+                "CE_norm": 0.037698628773989024,
+                "auxiliary_norm": 0.7507410095382101,
+                "auxiliary_over_CE": 19.91427895266578,
+                "cosine": -0.11168157036435239
+              },
+              "nonzero_cohorts": 5
+            },
+            {
+              "layer": "t2",
+              "RAW": {
+                "CE_norm": 0.03397217992516938,
+                "auxiliary_norm": 12.021011609597211,
+                "auxiliary_over_CE": 353.8486972598146,
+                "cosine": 0.23191674532742004
+              },
+              "ANGLE": {
+                "CE_norm": 0.03397217992516938,
+                "auxiliary_norm": 0.5599992544329494,
+                "auxiliary_over_CE": 16.484054178049846,
+                "cosine": -0.02472477949139308
+              },
+              "nonzero_cohorts": 5
+            }
+          ]
+        },
+        {
+          "model_seed": 2026092703,
+          "status": "FAIL",
+          "layers": [
+            {
+              "layer": "t1",
+              "RAW": {
+                "CE_norm": 0.044480585054427466,
+                "auxiliary_norm": 23.47280741464245,
+                "auxiliary_over_CE": 527.709052970427,
+                "cosine": 0.3228222325255074
+              },
+              "ANGLE": {
+                "CE_norm": 0.044480585054427466,
+                "auxiliary_norm": 1.2744935205596124,
+                "auxiliary_over_CE": 28.652804791126574,
+                "cosine": -0.009818881938952025
+              },
+              "nonzero_cohorts": 5
+            },
+            {
+              "layer": "t2",
+              "RAW": {
+                "CE_norm": 0.0407254508179389,
+                "auxiliary_norm": 22.482756787619508,
+                "auxiliary_over_CE": 552.0566706094318,
+                "cosine": 0.2577422656435481
+              },
+              "ANGLE": {
+                "CE_norm": 0.0407254508179389,
+                "auxiliary_norm": 1.1488741428876688,
+                "auxiliary_over_CE": 28.210225296796672,
+                "cosine": 0.08768042826830849
+              },
+              "nonzero_cohorts": 5
+            }
+          ]
+        }
+      ]
     },
     "confidence_feature_full_three_seed": {
       "status": "ANALYZED_VERIFIED",

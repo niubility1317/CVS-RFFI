@@ -1,0 +1,117 @@
+{
+  "status": "VERIFIED",
+  "run": "20261015-phase1-source-backbone-variance-angle-manysig-s0203-m2-r01",
+  "code_commit": "5cc440c08feba25ce127cbcf73f489bf04b93e5d",
+  "execution_commit": "e493b3e28c6ffb2824a52f7d6d71028c00015077",
+  "source_decision_commit": "cc2409be311c416c7cf4ed3d0ea6409b79f3f973",
+  "ordinary_preflight": true,
+  "archive_comparison": "Single release archive comparison passed in publisher before extraction/launch",
+  "remote_compile": true,
+  "real_checkpoint_no_query_smoke": true,
+  "initial_process_cwd_verified": true,
+  "initial_process_argv_verified": true,
+  "log_bytes_initial": 0,
+  "log_bytes_final": 1139,
+  "final_process_live": false,
+  "completion": {
+    "status": "ANALYZED",
+    "models": 2,
+    "source_packets": 1800,
+    "forward_packets": 1800,
+    "gradient_batches": 10,
+    "layer_records": 20,
+    "saved_vectors": 60,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0
+  },
+  "failure": null,
+  "independent_recount": {
+    "status": "VERIFIED",
+    "models": 2,
+    "source_packets": 1800,
+    "actual_matrices": 20,
+    "gradient_batches": 10,
+    "layer_records": 20,
+    "saved_vectors": 60,
+    "model_forward": 0,
+    "query_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0,
+    "rows": [
+      {
+        "status": "VERIFIED",
+        "source_packets": 900,
+        "actual_matrices": 10,
+        "gradient_batches": 5,
+        "layer_records": 10,
+        "saved_vectors": 30,
+        "model_forward": 0,
+        "query_read": false,
+        "head_updates": 0,
+        "optimizer_steps": 0
+      },
+      {
+        "status": "VERIFIED",
+        "source_packets": 900,
+        "actual_matrices": 10,
+        "gradient_batches": 5,
+        "layer_records": 10,
+        "saved_vectors": 30,
+        "model_forward": 0,
+        "query_read": false,
+        "head_updates": 0,
+        "optimizer_steps": 0
+      }
+    ]
+  },
+  "source_qualification": "FAIL",
+  "actual_row_execution_and_source_roles": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "completion": {
+        "status": "ANALYZED",
+        "source_packets": 900,
+        "source_only": true
+      },
+      "independent_recount": {
+        "status": "VERIFIED",
+        "source_packets": 900,
+        "actual_matrices": 10,
+        "gradient_batches": 5,
+        "layer_records": 10,
+        "saved_vectors": 30,
+        "model_forward": 0,
+        "query_read": false,
+        "head_updates": 0,
+        "optimizer_steps": 0
+      },
+      "execution_commit": "e493b3e28c6ffb2824a52f7d6d71028c00015077",
+      "source_roles": "EXACT_MATCH"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "completion": {
+        "status": "ANALYZED",
+        "source_packets": 900,
+        "source_only": true
+      },
+      "independent_recount": {
+        "status": "VERIFIED",
+        "source_packets": 900,
+        "actual_matrices": 10,
+        "gradient_batches": 5,
+        "layer_records": 10,
+        "saved_vectors": 30,
+        "model_forward": 0,
+        "query_read": false,
+        "head_updates": 0,
+        "optimizer_steps": 0
+      },
+      "execution_commit": "e493b3e28c6ffb2824a52f7d6d71028c00015077",
+      "source_roles": "EXACT_MATCH"
+    }
+  ]
+}

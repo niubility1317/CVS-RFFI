@@ -17,3 +17,6 @@
 发布前窄检查与一次独立 P0/P1 审查均 PASS。发布器先执行真实父 checkpoint 的两样本 synthetic IQ 无 query smoke，PASS 后直接进入源诊断；单次归档 SHA 本地/远端比较与远端编译。发布后核实实际 PID/CWD/argv/log增长或终态产物。每行保存原始矩阵/向量到运行根，由第二进程复算；原始矩阵、模型、日志和物理 ID 不入 Git。
 
 预期产物：登记内全部文件，另含逐行 independent_artifact_recount.json、合并三模型 source analysis；汇总报告与必要聚合数据提交并推送 Git。全程不训练、不读 U 真值、不对 V 前向，不接触目标。
+
+
+完成状态：ANALYZED/VERIFIED，固定科学资格FAIL（仅1/3模型通过）；不进入该公式训练。完整负结果见 [final_analysis.md](final_analysis.md)。

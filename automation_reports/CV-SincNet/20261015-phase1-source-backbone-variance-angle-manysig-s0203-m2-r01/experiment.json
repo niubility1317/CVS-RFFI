@@ -34,7 +34,8 @@
     "config_paths": [
       "experiments/cvs_source_variance_angle_seeds/design.py"
     ],
-    "reused_parent_execution": "3c052b2d36903e28694674a39e232a73acd8b6a6"
+    "reused_parent_execution": "3c052b2d36903e28694674a39e232a73acd8b6a6",
+    "execution_commit": "e493b3e28c6ffb2824a52f7d6d71028c00015077"
   },
   "data": {
     "dataset": "ManySig",
@@ -229,7 +230,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/backbone-fishr-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -267,11 +268,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "feature_difference_min": 1e-06,
+            "feature_difference_min": 0.000001,
             "actual_extra_batches": 650,
             "gradient_batches": 52,
             "all_candidate_gradient_parameters_nonzero_at": [
@@ -554,7 +555,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/backbone-fishr-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -592,11 +593,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final_L_CE_max": 0.5,
-            "feature_difference_min": 1e-06,
+            "feature_difference_min": 0.000001,
             "actual_extra_batches": 650,
             "gradient_batches": 52,
             "all_candidate_gradient_parameters_nonzero_at": [
@@ -816,5 +817,22 @@
     "One ordinary preflight/archiveSHA comparison/remote compile/realCP synthetic noquery smoke, actual launch state/log growth or terminal artifact readback; independent perrow saved-artifact recount.",
     "No model/head/optimizer updates, no U truth, no V forward or target access; no new architecture."
   ],
-  "registered_at": "2026-10-14T20:38:44+00:00"
+  "registered_at": "2026-10-14T20:38:44+00:00",
+  "status": "ANALYZED",
+  "result": {
+    "status": "VERIFIED",
+    "source_qualification": "FAIL",
+    "models_new": 2,
+    "models_total": 3,
+    "models_source_pass": 1,
+    "source_packets_new": 1800,
+    "source_physical_ids_unique": 900,
+    "gradient_batches_new": 10,
+    "actual_matrices_new": 20,
+    "saved_vectors_new": 60,
+    "head_fit_updates": 0,
+    "new_training_epochs": 0,
+    "query_read": false,
+    "training_this_formula": "STOPPED_BY_FROZEN_SOURCE_RULE"
+  }
 }

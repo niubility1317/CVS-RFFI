@@ -414,3 +414,8 @@ CONF_FEATURE_MT02/03四个原worker仍live，最近完成23/27/27/26轮且loggro
 ## 置信度门控SSL完整三种子交付
 
 20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01已ANALYZED/VERIFIED，与保留首seed合并：9模型1512000默认头clean决策/162CM，CONF82.540675%±1.760937pp，匹配SIG82.776984%±1.607961pp；配对−0.236310±0.153150pp，0/3正，修正1837/引入3028/净−1191。源差异降低17%至20%未带来目标提升，完整450源epoch、23976层记录/71928向量独立核实；不调强正则/挑seed/换头补结论。完整[结果报告](../automation_reports/CV-SincNet/20261015-phase1-confidence-feature-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md)。源资格独立文件的历史路径缺项已说明，实际firstsource/preflight证据完整；结果读取器的父子进程收尾间隙已独立核实，未重启原实验。下一项为已冻结的02/03方差形状源诊断，不是新训练。
+
+
+## 方差方向源检验：三模型未通过，停止固定公式
+
+20261015-phase1-source-backbone-variance-angle-manysig-s0203-m2-r01 已ANALYZED/VERIFIED，执行 e493b3e28c6ffb2824a52f7d6d71028c00015077。相同900个源物理样本、固定五个L180，保留原01结果，本次只新增02/03。ANGLE相对同批CE的t1/t2聚合余弦分别为01(.646206,.593616)、02(−.111682,−.024725)、03(−.009819,.087680)；只有1/3模型满足原两层非负判据，虽然六层均5/5批非零。独立逐行矩阵/向量复算通过，0训练/头拟合/optimizer更新，无U/V前向或query。按原规则停止该固定公式，不以调整标准/幅度或挑seed延续。完整[负结果](../automation_reports/CV-SincNet/20261015-phase1-source-backbone-variance-angle-manysig-s0203-m2-r01/final_analysis.md)。下一训练机制另行依据合法源证据设计，固定SIG_TIME/default联合头/旧门控cos/<=50，84%目标未完成。
