@@ -28,7 +28,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确要求将并列MEAN_VAR/COV综合到SIG_TIME基础上继续强化特征性能；默认分类头不可单独训练，每模型<=50，基线旧门控+cos；实现及对应实验结果Git上传。",
   "code": {
-    "commit": null,
+    "commit": "e1c5f12f68881f8757efae3d9d1bf8f2618f2982",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32/2threads; warm CUDA before native seed; private feature initialization RNG",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_pair_seeds_20261014_r01",
@@ -92,9 +92,10 @@
     "claim_scope": "Exposed old6TX ManySigclean defaulthead research benchmark, no newTX/Phase2/satellite claim, no separately fitted classifiers"
   },
   "checkpoint": {
-    "initialization": "Three new scratch models, no inheritedcheckpoint/optimizer/teacher, ownEMAonly; old baseline historical fixedfinal50 reference with matching sourcecontract",
+    "initialization": "Four new scratch models with ownEMA only; two matching seed historical final50 default predictions reused. No inherited training states.",
     "sources": [
-      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092701/source/final_ssdg.pth"
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092702/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092703/source/final_ssdg.pth"
     ],
     "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "provenance_verdict": "New own scratch EMA; reused baseline fixedfinal50/11100 exact original roles/physicalIDs/33+17 and provenance verified by existing historical.source_proof",

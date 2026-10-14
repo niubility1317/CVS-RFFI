@@ -36666,6 +36666,28 @@
       "goal_84": false,
       "full_three_seed_pending": true,
       "report": "automation_reports/CV-SincNet/20261014-phase1-signature-order-oldgate-cos-e50-clean-manysig-s01-m4-r01/final_analysis.md"
+    },
+    {
+      "route": "fixedSIG_TIME semi-supervised remaining seeds conditional packaging",
+      "run_id": "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "parent_run_id": "20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "status": "CONDITIONAL_REGISTERED_NOT_LAUNCHED",
+      "implementation_commit": "e1c5f12f68881f8757efae3d9d1bf8f2618f2982",
+      "model_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "new_models": 4,
+      "reused_models": 2,
+      "epochs_each": 50,
+      "source_qualification_negative_tests": 8,
+      "native_contexts": 4,
+      "default_head_only": true,
+      "architecture_fixed": true,
+      "first_seed_retrained": false,
+      "target_metric_read_for_decision": false,
+      "goal_84": false,
+      "report": "automation_reports/CV-SincNet/20261014-phase1-sigtime-pair-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md"
     }
   ],
   "diagnostics": {
