@@ -1,0 +1,17 @@
+{
+  "status": "FAIL",
+  "fixed_rules": {
+    "source_only": true,
+    "teacher_soft_edge_true_identity_mass_min": 0.9,
+    "XR_actual_t1_t2_SIG_nonzero_each_cohort": true,
+    "XR_global_gradient_cosine_with_matched_strong_CE_min": 0,
+    "model_state_and_default_head_unchanged": true,
+    "no_automatic_training_release": true,
+    "on_pass": "Only separately registered unchanged02/03 source diagnostic, not training",
+    "on_fail": "Retain result; do not scan temperatures, weights or parent checkpoints"
+  },
+  "source_only": true,
+  "XR_mean_true_identity_mass": 0.986974499689208,
+  "no_automatic_training_release": true,
+  "target_metrics_used": false
+}

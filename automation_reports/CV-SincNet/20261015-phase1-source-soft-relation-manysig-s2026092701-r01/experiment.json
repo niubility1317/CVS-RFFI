@@ -34,7 +34,8 @@
     "config_paths": [
       "experiments/cvs_source_soft_relation/design.py"
     ],
-    "reused_parent_execution": "977d4fb609436bac23621ef8e32c2017495acef7"
+    "reused_parent_execution": "977d4fb609436bac23621ef8e32c2017495acef7",
+    "execution_commit": "e2242a9201afe4bf896305cc3d364f069f677a65"
   },
   "data": {
     "dataset": "ManySig",
@@ -101,7 +102,8 @@
     "remote_log_root": "PROJECT/releases/cvs_source_soft_relation_20261015_r01",
     "local_artifact_root": "LOCAL_ARTIFACTS/source_soft_relation_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_source_soft_relation.audit",
-    "stop_rule": "Run-owned input/provenance/hidden-role/default-feature-head mismatch, nonfinite loss/gradient, missingfixedcohort, graph/recount failure or immutableoutputcollision only; preserve artifacts, no automaticretry or unrelatedstop; scientificFAIL no parameter/parent scan"
+    "stop_rule": "Run-owned input/provenance/hidden-role/default-feature-head mismatch, nonfinite loss/gradient, missingfixedcohort, graph/recount failure or immutableoutputcollision only; preserve artifacts, no automaticretry or unrelatedstop; scientificFAIL no parameter/parent scan",
+    "execution_commit": "e2242a9201afe4bf896305cc3d364f069f677a65"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -456,16 +458,29 @@
     "REJECTED_EXTRA_GATE: separate generic design approval/spec/plan is not a permitted blockinggate under user minimalworkflow"
   ],
   "registered_at": "2026-10-14T23:53:04+00:00",
-  "status": "PLANNED",
+  "status": "ANALYZED",
   "results": {
-    "status": "LOCAL_VERIFIED_PREREGISTERED_NOT_LAUNCHED",
-    "local_checks": "PASS",
-    "independent_P0P1": "PASS",
-    "full_registered_config_roundtrip": "PASS",
-    "source_only": true,
-    "new_target_metrics_read": false,
-    "head_fit_updates": 0,
+    "status": "ANALYZED_VERIFIED_SOURCE_FAIL",
+    "source_qualification": "FAIL",
+    "teacher_true_identity_edge_mass": 0.986974499689208,
+    "source_packets": 900,
+    "source_forward_packets": 1800,
+    "parameter_layer_records": 20,
+    "saved_vectors": 60,
     "optimizer_updates": 0,
-    "goal84": false
+    "head_fit_updates": 0,
+    "U_IQ_read": false,
+    "U_truth_read": false,
+    "query_read": false,
+    "source_only": true,
+    "not_expanded_or_trained": true,
+    "goal84": false,
+    "evidence": [
+      "results.json",
+      "source_qualification.json",
+      "independent_artifact_recount.json",
+      "launch_verified.json",
+      "final_analysis.md"
+    ]
   }
 }

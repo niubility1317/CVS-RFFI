@@ -29,3 +29,6 @@ Run：`20261015-phase1-source-soft-relation-manysig-s2026092701-r01`；代码提
 预期：preflight.json、submit.json、resolved_config.json、actual_source_gradients.pt、逐cohort图和真实参数向量、analysis.json、source_qualification.json、独立artifact_recount及completion.json／failure.json。原IQ、权重、PT、日志和私密运行信息不入Git；实现／预登记／正负聚合结果提交推送。
 
 REJECTED_EXTRA_GATE：通用brainstorming的单独设计审批／固定spec/plan文件不是本项目许可的阻断条件。用户已授权连续训练机制研发，按最小实验流程继续，不新增审批、签名、SHA链、数据重验或报告审查门槛。
+
+
+已自然完成ANALYZED／独立复算VERIFIED，source资格FAIL：XR边身份质量98.697450%，t1/t2余弦−.262721/−.330844、有效梯度范数比3.394885/3.936461。按固定规则不扩种子、不训练或扫参数。0优化／headfit／U/query，完整[结果和限制](final_analysis.md)。

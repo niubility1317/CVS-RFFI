@@ -1,0 +1,25 @@
+{
+  "status": "VERIFIED_SOURCE_ANALYZED",
+  "run_id": "20261015-phase1-source-soft-relation-manysig-s2026092701-r01",
+  "code_commit": "5ab6d390d5306a787c0efbf4a1532df861f0b877",
+  "execution_commit": "e2242a9201afe4bf896305cc3d364f069f677a65",
+  "ordinary_account_preflight": "PASS",
+  "archive_transfer_comparison": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_checkpoint_no_query_smoke": true,
+  "initial_process": {
+    "pid_matches_submit": true,
+    "cwd_matches_submit": true,
+    "argv_matches_submit": true
+  },
+  "initial_log_bytes": 0,
+  "final_log_bytes": 938,
+  "log_growth": true,
+  "natural_completion": "ANALYZED",
+  "technical_failure": null,
+  "source_qualification": "FAIL",
+  "GPU_allocation": false,
+  "new_training": false,
+  "head_fit_updates": 0,
+  "query_read": false
+}

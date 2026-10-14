@@ -477,3 +477,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 独立SSL下一源诊断已LOCAL_VERIFIED／PREREGISTERED：`20261015-phase1-source-soft-relation-manysig-s2026092701-r01`，代码`5ab6d390d5306a787c0efbf4a1532df861f0b877`。EMA类别概率定义软身份关系，直接约束原部署joint160的批内关系；ALL与跨源RX对照，无投影／新头／网络改动。固定原DRO首SIG final50及自身EMA、900L／1800前向／20层60向量／0优化或headfit；13负例和真实网络导数／W独立性／RNG及唯一P0/P1 PASS。XR源身份质量>=.90、真实三骨干层5/5非零和同strongCE全局余弦>=0才源PASS，且仅允许另登记02/03源复核，不自动训练；当前未发布、无新性能结果。完整[最小预登记](../automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/report.md)。RSC健康六新固定50轮继续，不据目标改变。
+
+
+软关系源诊断已完整ANALYZED／VERIFIED，sourceFAIL。900唯一L／1800源前向／20层60向量、0更新或headfit/U/query；teacher软边身份质量98.697450%，XR t1/t2/SIG真实有效梯度范数比3.394885/3.936461/.511427，对同strongCE余弦−.262721/−.330844/.003583。只证明late训练L下梯度兼容性不满足，不能外推所有关系学习／U／DG；按预定规则不扩02/03、不训练或扫参数。实现`5ab6d390d5306a787c0efbf4a1532df861f0b877`、执行`e2242a9201afe4bf896305cc3d364f069f677a65`，完整[源结果](../automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/final_analysis.md)。RSC六新最新29至33轮，原PID/CWD/argv及日志增长仍核实、failure0，继续原50轮。

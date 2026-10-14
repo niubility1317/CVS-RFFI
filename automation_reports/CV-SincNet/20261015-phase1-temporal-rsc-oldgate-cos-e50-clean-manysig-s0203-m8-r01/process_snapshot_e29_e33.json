@@ -1,0 +1,78 @@
+{
+  "status": "RUNNING_VERIFIED",
+  "run_id": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
+  "execution_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+  "read_at": "2026-10-14T23:53:35.949Z",
+  "failure": null,
+  "new_model_target_numeric_metrics_read": false,
+  "workers": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "completed_epochs": 31,
+      "phase": "label",
+      "gpu": 1,
+      "alive": true,
+      "same_original_PID": true,
+      "CWD_matches": true,
+      "argv_matches": true,
+      "log_growth": true
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "completed_epochs": 33,
+      "phase": "label",
+      "gpu": 2,
+      "alive": true,
+      "same_original_PID": true,
+      "CWD_matches": true,
+      "argv_matches": true,
+      "log_growth": true
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "completed_epochs": 33,
+      "phase": "label",
+      "gpu": 0,
+      "alive": true,
+      "same_original_PID": true,
+      "CWD_matches": true,
+      "argv_matches": true,
+      "log_growth": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "completed_epochs": 33,
+      "phase": "label",
+      "gpu": 4,
+      "alive": true,
+      "same_original_PID": true,
+      "CWD_matches": true,
+      "argv_matches": true,
+      "log_growth": true
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "completed_epochs": 32,
+      "phase": "label",
+      "gpu": 5,
+      "alive": true,
+      "same_original_PID": true,
+      "CWD_matches": true,
+      "argv_matches": true,
+      "log_growth": true
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "completed_epochs": 29,
+      "phase": "label",
+      "gpu": 3,
+      "alive": true,
+      "same_original_PID": true,
+      "CWD_matches": true,
+      "argv_matches": true,
+      "log_growth": true
+    }
+  ],
+  "head_fit_updates": 0,
+  "training_formula_unchanged": true
+}

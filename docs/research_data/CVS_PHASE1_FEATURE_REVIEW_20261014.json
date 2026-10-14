@@ -36842,6 +36842,28 @@
       "goal84": false,
       "remaining_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01",
       "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02/final_analysis.md"
+    },
+    {
+      "route": "fixedSIG_TIME source semantic soft relation KL",
+      "run_id": "20261015-phase1-source-soft-relation-manysig-s2026092701-r01",
+      "status": "ANALYZED_VERIFIED_SOURCE_FAIL",
+      "code_commit": "5ab6d390d5306a787c0efbf4a1532df861f0b877",
+      "execution_commit": "e2242a9201afe4bf896305cc3d364f069f677a65",
+      "source_only": true,
+      "new_training_models": 0,
+      "source_packets": 900,
+      "forward_packets": 1800,
+      "parameter_layer_records": 20,
+      "saved_vectors": 60,
+      "source_qualification": "FAIL",
+      "teacher_true_identity_edge_mass": 0.986974499689208,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0,
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "query_read": false,
+      "no_parameter_scan": true,
+      "report": "automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/final_analysis.md"
     }
   ],
   "diagnostics": {
@@ -82417,8 +82439,8 @@
     }
   ],
   "next_actions_max2": [
-    "完成当前固定RSC02/03六个健康50轮模型及逐row自动默认头clean/truth-last，保留三seed全结果并独立统计",
-    "执行固定900L软身份关系source诊断；先看真实teacher边质量和t1/t2/SIG梯度兼容性，不增加网络或头，不依目标扫参数或自动训练"
+    "等待当前固定RSC02/03六健康模型自然完成50轮，逐row自动clean默认头预测与独立truth-last后完整合并预定三seed；保留全部结果",
+    "软关系源诊断已按原规则FAIL停止，不扫描温度/系数/父；根据合法源证据再设计独立SSL训练目标，固定SIG_TIME及默认联合头"
   ],
   "goal_84": false,
   "Phase2_development": false,
@@ -82427,7 +82449,7 @@
     "源决定推送后回收首seed完整默认头clean结果、全部曲线和误差迁移；后续合并预定义三seed独立统计与实际feature witness检验84%，保留全部正负结果"
   ],
   "current_priority": {
-    "at": "2026-10-14T23:53:41.614Z",
+    "at": "2026-10-14T23:56:49.574Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": {
@@ -84555,7 +84577,7 @@
     "next_source_ssl_mechanism": {
       "method": "Detached teacher semantic soft-relation KL on deployed joint160",
       "run_id": "20261015-phase1-source-soft-relation-manysig-s2026092701-r01",
-      "status": "LOCAL_VERIFIED_PREREGISTERED_NOT_LAUNCHED",
+      "status": "ANALYZED_VERIFIED_SOURCE_FAIL",
       "implementation_commit": "5ab6d390d5306a787c0efbf4a1532df861f0b877",
       "models": 1,
       "source_packets": 900,
@@ -84567,18 +84589,47 @@
       "query_read": false,
       "default_head_only": true,
       "architecture_fixed": true,
-      "source_qualification": {
-        "source_only": true,
-        "teacher_soft_edge_true_identity_mass_min": 0.9,
-        "XR_actual_t1_t2_SIG_nonzero_each_cohort": true,
-        "XR_global_gradient_cosine_with_matched_strong_CE_min": 0,
-        "model_state_and_default_head_unchanged": true,
-        "no_automatic_training_release": true,
-        "on_pass": "Only separately registered unchanged02/03 source diagnostic, not training",
-        "on_fail": "Retain result; do not scan temperatures, weights or parent checkpoints"
-      },
+      "source_qualification": "FAIL",
       "no_automatic_training_release": true,
-      "report": "automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/report.md"
+      "report": "automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/final_analysis.md",
+      "execution_commit": "e2242a9201afe4bf896305cc3d364f069f677a65",
+      "teacher_true_identity_edge_mass": 0.986974499689208,
+      "actual_XR_gradients": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "reference_norm": 0.04135756875517459,
+          "other_norm": 0.1404042012122668,
+          "ratio": 3.3948852758589605,
+          "cosine": -0.26272143739184456,
+          "nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "reference_norm": 0.035700004360497896,
+          "other_norm": 0.1405316654145456,
+          "ratio": 3.9364607352833847,
+          "cosine": -0.3308438189046307,
+          "nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "reference_norm": 0.05277598285025429,
+          "other_norm": 0.02699106971689834,
+          "ratio": 0.5114271352081184,
+          "cosine": 0.0035827917352579384,
+          "nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+          "reference_norm": 0.06259465217603638,
+          "other_norm": 0,
+          "ratio": 0,
+          "cosine": null,
+          "nonzero_cohorts": 0
+        }
+      ],
+      "not_expanded_or_trained": true,
+      "results": "automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/results.json"
     }
   }
 }

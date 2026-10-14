@@ -243,3 +243,6 @@ DRO完整固定3seed闭环：9新模型450epochs99900steps，12row2016000default
 
 
 2026-10-15：新增source-only软身份关系诊断`20261015-phase1-source-soft-relation-manysig-s2026092701-r01`，代码`5ab6d390d5306a787c0efbf4a1532df861f0b877`，固定SIG_TIME/defaultjointhead和先定父ownEMA。纯关系函数不接受TX真值，实际部署feature梯度进入t1/t2/SIG而W辅助依赖None，13负例/真实网络/唯一P0P1 PASS；900L／1800sourceforward／0更新，无U或query。源规则见`automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/report.md`，尚未发布，不构成DG或84完成。
+
+
+2026-10-15：source软身份关系实际900L已闭环、20层60真实参数向量独立复算VERIFIED；teacher软边质量98.697450%而XR的t1/t2对同strongCE余弦−.262721/−.330844，固定资格FAIL。0新训练／头fit／U／query，不扫描温度或权重、不扩源种子或训练；结果`automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/final_analysis.md`，执行`e2242a9201afe4bf896305cc3d364f069f677a65`。实际已学习fθ/默认W边界保持，未宣称84或目标收益。
