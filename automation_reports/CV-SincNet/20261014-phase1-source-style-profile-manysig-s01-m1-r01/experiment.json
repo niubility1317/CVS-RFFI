@@ -1,0 +1,459 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261014-phase1-source-style-profile-manysig-s01-m1-r01",
+  "group_id": "source-style-firstseed-20261014",
+  "display_name": "源L浅中层统计与身份保护MixStyle固定扰动诊断",
+  "description": "First predefined OLD final50/own source role, frozen eval t1/t2 statistics and same TX/day cross RX real-PID MixStyle intervention; no training or head fitting.",
+  "kind": "diagnostic",
+  "stage": "phase1_source_diagnostic",
+  "aliases": [],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "source_only",
+    "MixStyle",
+    "t1_t2",
+    "identity_protected",
+    "zero_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Persistent feature-extractor goal: actual shallow/middle source statistics and identity-protected feature mechanism diagnosis, ordinary N607; no new target test.",
+  "code": {
+    "commit": "GIT_HEAD_AT_RELEASE",
+    "checkout": "codex/phase1-feature-challenge-20261013",
+    "environment": "ordinary N607 existing CVS-RFFI fullFP32/CPU; Torch/OMP/MKL/OpenBLAS2",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_style_profile_20261014_r01",
+    "entrypoint": "experiments.cvs_source_style_profile.profile",
+    "config_paths": [
+      "experiments/cvs_source_style_profile/design.py"
+    ]
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "original raw/post_sync/noeq IQ2x256, NoExplicitCFO with internal compensation, unchanged default identity network",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "roles": {
+      "L_s": "6300 full legal source derivative samples",
+      "U_s": "56700 TX hidden; not enumerated or forwarded",
+      "V": "27000 cache materialized and discarded; no forward/gradient"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 clean capsule, unchanged physical IDs",
+    "split_id": "core90_game_source_roles_v1 split_seed392005; unchanged",
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "labeled_fraction_within_training_pool": 0.1
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only diagnostic feature derivatives in eval on old6TX; no DG/newTX/Phase2/satellite or U accuracy claim."
+  },
+  "checkpoint": {
+    "initialization": "Read-only actual fixedfinal50 students and their own EMA; no initial training or inherited new model state.",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "All3 source_proof checks must EXACT_MATCH original source role/ID/scratch ancestry/fixedfinal50/11100; no target-based selection. First predefined model seed fixed.",
+    "selection_rule": "Only predefined first model seed OLD final50/11100; no source or target ranking."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/source-style-profile-20261014",
+    "gpu_policy": "CPU only; CUDA_VISIBLE_DEVICES empty; no GPU training process",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-style-profile-manysig-s01-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_style_profile_20261014_r01/dispatcher.stdout.log",
+    "local_artifact_root": "local_artifacts/source_style_profile_delivery_r01",
+    "launch_command": "python -u -m experiments.cvs_source_style_profile.profile",
+    "stop_rule": "Any provenance/role/shape/nonfinite/donor/state/count failure preserves outputs and stops; no retries or other-owner mutation."
+  },
+  "expected_artifacts": [
+    "preflight.json",
+    "submit.json",
+    "perrow resolved_config/results/completion.json",
+    "completion.json",
+    "failure.json only on technical failure"
+  ],
+  "metrics_plan": {
+    "models": 1,
+    "model_seeds": [
+      2026092701
+    ],
+    "source_roles": [
+      "L_s"
+    ],
+    "source_packets": 6300,
+    "source_batches": 50,
+    "packet_forwards": 12600,
+    "layers": [
+      "t1",
+      "t2"
+    ],
+    "p": 0.5,
+    "alpha": 0.1,
+    "strength": 1,
+    "donors": "same true L TX/day, different source RX/real PID, fallback self",
+    "statistics": "Per-packet channel mean/std; RX conditional on TX/day and TX conditional on RX/day, SS fractions descriptive only.",
+    "head_fit": false,
+    "optimizer_steps": 0,
+    "source_only": true,
+    "U_IQ_read": false,
+    "U_truth_read": false,
+    "target_access": false,
+    "V_cache_materialized": true,
+    "V_forward": false,
+    "V_gradients": false,
+    "frozen_eval_feature_intervention": true
+  },
+  "rows": [
+    {
+      "row_id": "SOURCE_STYLE-s2026092701",
+      "method": "cvs_source_style_profile",
+      "purpose": "source_only_style_moments_and_protected_intervention",
+      "config_ref": "experiments/cvs_source_style_profile/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-style-profile-manysig-s01-m1-r01/SOURCE_STYLE-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "One predefined model seed; private NumPy style seed=modelseed+batch701+layer1709, source shuffle=modelseed+95001; not extra model seeds.",
+      "k": null,
+      "scenario": "source_eval_clean_and_fixed_protected_feature_intervention",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Source model already50/11100, new updates0; fullL6300, clean+styled12600 forwards, batch128 tail28.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-style-profile-manysig-s01-m1-r01/SOURCE_STYLE-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_style_profile_20261014_r01/dispatcher.stdout.log",
+      "command": "python -u -m experiments.cvs_source_style_profile.profile",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "results.json",
+        "completion.json"
+      ],
+      "config": {
+        "schema": "source_style_profile_v1",
+        "run_id": "20261014-phase1-source-style-profile-manysig-s01-m1-r01",
+        "row_id": "SOURCE_STYLE-s2026092701",
+        "model_seed": 2026092701,
+        "source_config": {
+          "schema": "neighbor_pair_default_v1",
+          "run_id": "20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02",
+          "stage": "evaluation_reuse",
+          "arm": "OLD_GATE_COS50",
+          "model_seed": 2026092701,
+          "row_id": "OLD_GATE_COS50-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-neighbor-pair-oldgate-cos-e50-clean-manysig-m9-r02/OLD_GATE_COS50-s2026092701/source",
+          "epochs": 50,
+          "steps_per_epoch": 222,
+          "model_initialization": "historical comparison only",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_neighbor_pair50",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06,
+          "launch_owner": "codex/root/neighbor-pair50-20261014",
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "updates": 11100,
+          "legacy_reference_config": {
+            "schema": "legacy_no_sat_v1",
+            "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+            "stage": "repair",
+            "arm": "legacy_cosine_no_sat",
+            "model_seed": 2026092701,
+            "row_id": "legacy_cosine_no_sat-s2026092701",
+            "features": [
+              "ema",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+            "epochs": 200,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_legacy_no_sat",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06
+          },
+          "source_falsification": {
+            "first_seed": 2026092701,
+            "maximum_final_L_CE": 0.5,
+            "minimum_paired_U_acceptance": 0.25,
+            "metric": "fixedfinal source LCE<=.5 both new controls and paired accepted U / total U>=.25 over fixed17pseudoepochs; no U truth, V/target ranking"
+          },
+          "training_recipe": "historical batch_neighbor pseudo gate+EMA+cos; no satellite; allarms identical",
+          "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+          "explicit_CFO_identity_feature": false,
+          "classifier": "unchanged ResidualPhysicalHead cosine6x160scale30 normal joint training",
+          "test_views": [
+            "clean"
+          ],
+          "checkpoint_selection": "final_only",
+          "goal": {
+            "primary": "PAIRED_ORDER",
+            "readout": "ORIGINAL_HEAD",
+            "clean_three_seed_mean": 0.84,
+            "feedback_to_training": false
+          },
+          "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+          "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately",
+          "source_config": {
+            "schema": "feature_multiscale_oldgate50_v1",
+            "run_id": "20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01",
+            "stage": "repair",
+            "arm": "OLD_GATE_COS50",
+            "model_seed": 2026092701,
+            "row_id": "OLD_GATE_COS50-s2026092701",
+            "features": [
+              "ema",
+              "pseudo",
+              "twostage"
+            ],
+            "variant": "reference_response",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092701/source",
+            "epochs": 50,
+            "steps_per_epoch": 222,
+            "model_initialization": "scratch",
+            "checkpoint_sources": [],
+            "numerical_policy": {
+              "cudnn_allow_tf32": false,
+              "cuda_matmul_allow_tf32": false,
+              "cudnn_benchmark": false,
+              "cudnn_deterministic": false,
+              "matmul_precision": "highest"
+            },
+            "method": "cvs_legacy_no_sat",
+            "target_access": false,
+            "pseudo_domain_gate": false,
+            "temporal_mode": "batch_neighbor",
+            "temporal_min_streak": 2,
+            "lr_schedule": "cosine",
+            "lr_min": 1e-06,
+            "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
+            "label_epochs": 33,
+            "pseudo_epochs": 17,
+            "updates": 11100,
+            "legacy_reference_config": {
+              "schema": "legacy_no_sat_v1",
+              "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+              "stage": "repair",
+              "arm": "legacy_cosine_no_sat",
+              "model_seed": 2026092701,
+              "row_id": "legacy_cosine_no_sat-s2026092701",
+              "features": [
+                "ema",
+                "pseudo",
+                "twostage"
+              ],
+              "variant": "reference_response",
+              "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+              "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+              "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+              "epochs": 200,
+              "steps_per_epoch": 222,
+              "model_initialization": "scratch",
+              "checkpoint_sources": [],
+              "numerical_policy": {
+                "cudnn_allow_tf32": false,
+                "cuda_matmul_allow_tf32": false,
+                "cudnn_benchmark": false,
+                "cudnn_deterministic": false,
+                "matmul_precision": "highest"
+              },
+              "method": "cvs_legacy_no_sat",
+              "target_access": false,
+              "pseudo_domain_gate": false,
+              "temporal_mode": "batch_neighbor",
+              "temporal_min_streak": 2,
+              "lr_schedule": "cosine",
+              "lr_min": 1e-06
+            },
+            "source_falsification": {
+              "first_seed": 2026092701,
+              "maximum_final_L_CE": 0.5,
+              "metric": "mean train/loss_tx_labeled over final222updates; no V or target feedback"
+            },
+            "training_recipe": "historical batch_neighbor pseudo gate+EMA+cos; no satellite; allarms identical",
+            "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+            "explicit_CFO_identity_feature": false,
+            "feature_extractor": {
+              "time": false,
+              "PA": false,
+              "time_layers": [
+                "t1",
+                "t2",
+                "t3"
+              ],
+              "PA_layers": [
+                "pa_b1",
+                "pa_b2",
+                "pa_b3"
+              ],
+              "time_kernel_dilation": [
+                [
+                  3,
+                  1
+                ],
+                [
+                  5,
+                  1
+                ],
+                [
+                  5,
+                  2
+                ]
+              ],
+              "PA_kernels": [
+                3,
+                5,
+                7
+              ],
+              "PA_dilation_by_layer": [
+                1,
+                2,
+                4
+              ],
+              "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+              "output_embedding": 160
+            },
+            "classifier": "unchanged baseline ResidualPhysicalHead/6x160 cosine/scale30/branchLN/gain; no newhead/readout/calibration",
+            "test_views": [
+              "clean"
+            ],
+            "checkpoint_selection": "final_only",
+            "goal": {
+              "primary": "JOINT_MS50",
+              "clean_three_seed_mean": 0.84,
+              "feedback_to_training": false
+            },
+            "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+            "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately"
+          },
+          "source_neighbor_sampling": {
+            "enabled": false,
+            "mode": "RANDOM",
+            "pool": "original hidden U_s56700 only",
+            "allowed_fields": [
+              "base_index",
+              "day_i",
+              "eq_i",
+              "rx_i",
+              "sig_i"
+            ],
+            "batch": 256,
+            "drop_last": false,
+            "all_packets_once": true,
+            "original_gates": true,
+            "extra_parameters": 0,
+            "seed_policy": "same one global Torch seed draw per native sampler iterator, private order generator"
+          },
+          "readouts": [
+            "ORIGINAL_HEAD"
+          ],
+          "classifier_training": "default jointly trained only; no separate head fit",
+          "hypothesis_basis": "Complete frozen-source neighbor-pair diagnostic: all3 source criteria pass, RANDOM reproduced360counts, V old-gate coverage3.410to89.962% with99.9959% precision; no target design feedback",
+          "source_qualification_run": "20261014-phase1-source-neighbor-pair-gate-manysig-m3-r01",
+          "no_TIME_or_Sinc_variant_inheritance": true,
+          "sampling_scope": "Uniform random disjoint physical-neighbor pairs vs original uniform packet order; only U loader ordering, all gates/loss weights/model/EMA/input identical"
+        },
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-source-style-profile-manysig-s01-m1-r01/SOURCE_STYLE-s2026092701",
+        "source_role": "L_s",
+        "source_count": 6300,
+        "layers": [
+          "t1",
+          "t2"
+        ],
+        "batch": 128,
+        "shuffle_seed": 2026187702,
+        "p": 0.5,
+        "alpha": 0.1,
+        "strength": 1,
+        "donor_rule": "same true L TX/day, different source RX/real PID, fallback self",
+        "source_only": true,
+        "optimizer_steps": 0,
+        "head_fit": false,
+        "query_read": false,
+        "U_truth_read": false,
+        "V_forward": false,
+        "V_gradients": false,
+        "V_cache_materialized": true
+      }
+    }
+  ],
+  "notes": [
+    "Actual current identity adapter native MixStyle supports time_down/t1 and composite RX/day crossdomain; this profile explicitly studies t1/t2 and sameTX/day crossRX real-PID pairs using existing pure operator, without classifier/teacher/optimizer changes.",
+    "Forced feature hooks in frozen eval are source interventions, not new training or predicted MixStyle DG gains; source class errors do not automatically reject a learnable augmentation. No source variance removal or RX shortcut conclusion.",
+    "Existing loader materializes V cache and discards it, U is None; forwards and all labels are legal L_s only; params/buffers must be exactly unchanged.",
+    "One code/config Git identity, one candidate directP0/P1 review, one archive comparison/remotecompile, focused6negatives and realCPzeroIQnoquery smoke, then PID/CWD/argv/CPU/log/terminal artifact checks; no extra blockers."
+  ],
+  "status": "LOCAL_VERIFIED",
+  "results": null,
+  "registered_at": "2026-10-14T00:11:41+00:00"
+}
