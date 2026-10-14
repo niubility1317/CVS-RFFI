@@ -15,3 +15,5 @@ matrix、合法源角色/physicalIDs/seed/GPUowner/CWD/命令/不可变root/stop
 LOCAL_VERIFIED：13负例、三初态参数和暖期梯度一致、vectorizedSupCon等价、真实nativeaux进t1/t2且t3/W为None、defaultheadjointupdate、mode/RNG/buffer恢复及REMOTEcompilePASS。尚无新训练性能结果，84目标未达。
 
 实际预测readout为ORIGINAL_HEAD，直接使用checkpoint默认头；核心实现commit 26bfdf044caa1be3c966370248c3bc3372009943，执行commit由release记录。
+
+实际发布执行 f34078d1a0775ef6fa66365689481ad5a1932e4c，三个scratch模型均核实PID/CWD/argv/GPU及日志增长，GPU1/2/0，当前三者第3轮，额外拟合头关闭。历史oldgatecos默认头参考row已复用原产物完成truthlast，未重训。singlearchiveSHA比较/remotecompile/realCPnoquerysmokePASS，新目标成绩pending；健康训练保持原冻结配方。

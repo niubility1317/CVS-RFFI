@@ -234,3 +234,6 @@ SIG_TIME综合首seed矩阵已实际运行，代码eda57144d；真实CP noquery 
 
 
 新报告31957f78路线：全L6300浅中层有界排序诊断已闭环，70L90cohort/每视图126000采样关系/1050实际辅助层批梯度+210CE基线，0update/headfit/query。t1/t2/joint未满足率87.8310%/81.3762%/10.7484%，活跃样本100%/100%/88.6508%，不能以关系比例替代样本覆盖。局部平均ORDER实际进入t1/t2且W无依赖；最终eval梯度不冒充真实早中期或target性能。实施1d15b241c7e43b78729c94230fe6ab011c6bacef，run 20261014-phase1-source-layer-order-manysig-s01-m1-r01，下一步独立浅中层有限身份监督三臂，区别另一分支joint160语义原型；停止权重、层级增容/日历扫描。
+
+
+报告31957f78核心路线已发布 20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01，执行f34078d1a0775ef6fa66365689481ad5a1932e4c：单路SIG_TIME ZERO/LOCAL_SUPCON/LOCAL_ORDER三新scratch50＋历史oldgatecos，直接t1/t2四有序格L身份关系，margin.1/tau.2/coeff.1固定；同2750extraL90forward/247500包每模型，原33+17/ownEMA/gate/cos/defaultjointhead不改。13negative/actualinitial/warmupgrad/modeRNG/vectorSupCon/nativejointupdate PASS，唯一直接P0/P1归档依赖fix后PASS。remote实CPsmoke/archive/compile及三actualGPU/PID/CWD/argv/loggrowthVERIFIED，目前3epochs，后续观察actual1/17/33/50梯度并自动defaultclean/truthlast；sourceonly条件才扩02/03，尚无新target分数或84结论。

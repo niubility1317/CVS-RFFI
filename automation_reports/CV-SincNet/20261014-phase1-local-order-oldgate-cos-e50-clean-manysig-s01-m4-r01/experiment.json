@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "用户明确要求将并列MEAN_VAR/COV综合到SIG_TIME基础上继续强化特征性能；默认分类头不可单独训练，每模型<=50，基线旧门控+cos；实现及对应实验结果Git上传。",
   "code": {
-    "commit": "26bfdf044caa1be3c966370248c3bc3372009943",
+    "commit": "f34078d1a0775ef6fa66365689481ad5a1932e4c",
     "checkout": "codex/phase1-feature-challenge-20261013",
     "environment": "ordinary N607 existing CVS-RFFI fullFP32/2threads; warm CUDA before native seed; private feature initialization RNG",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_local_order50_20261014_r01",
@@ -109,7 +109,8 @@
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01/logs",
     "local_artifact_root": "local_artifacts/local_order50_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_local_order50.dispatch",
-    "stop_rule": "Scoped systemictechnicalfailure only: source roles/provenance, nonfinite skipped updates, actual11100native/2750aux budget/modeRNG/defaulthead violation or illegalprediction/scoring. Preserve own outputs, no automatic retry; no stop by target score; never touch healthy otherowner."
+    "stop_rule": "Scoped systemictechnicalfailure only: source roles/provenance, nonfinite skipped updates, actual11100native/2750aux budget/modeRNG/defaulthead violation or illegalprediction/scoring. Preserve own outputs, no automatic retry; no stop by target score; never touch healthy otherowner.",
+    "execution_commit": "f34078d1a0775ef6fa66365689481ad5a1932e4c"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -1254,7 +1255,29 @@
     "SupCon andhinge gradientstrength differ atsamefixedcoeff; comparisonnotpurecausal stoppingcondition attribution.",
     "Firstseedfalsification only; remainingtwo authorized conditional onSOURCEPASS withunchangedrecipe, no target feedback."
   ],
-  "status": "LOCAL_VERIFIED",
-  "results": null,
+  "status": "RUNNING",
+  "results": {
+    "status": "PARTIAL",
+    "new_training_rows": 3,
+    "source_epochs_at_readback": [
+      {
+        "row_id": "SIG_TIME-s2026092701",
+        "epochs": 3
+      },
+      {
+        "row_id": "LOCAL_SUPCON-s2026092701",
+        "epochs": 3
+      },
+      {
+        "row_id": "LOCAL_ORDER-s2026092701",
+        "epochs": 3
+      }
+    ],
+    "historical_default_head_reference_scored": true,
+    "new_target_results_available": false,
+    "goal_84": false,
+    "launch_verification": "VERIFIED",
+    "launch_verification_ref": "launch_verified.json"
+  },
   "registered_at": "2026-10-14T11:15:53+00:00"
 }

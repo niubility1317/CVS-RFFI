@@ -1,0 +1,270 @@
+{
+  "status": "VERIFIED",
+  "read_at": "2026-10-14T11:20:24.203Z",
+  "execution_commit": "f34078d1a0775ef6fa66365689481ad5a1932e4c",
+  "release": "cvs_local_order50_20261014_r01",
+  "run_id": "20261014-phase1-local-order-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+  "preflight": {
+    "status": "PASS",
+    "real_checkpoint_no_query_smoke": true,
+    "source_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261013-phase1-feature-multiscale-oldgate-cos-e50-clean-manysig-m12-r01/OLD_GATE_COS50-s2026092701/source/final_ssdg.pth",
+    "source_seed": 2026092701,
+    "query_read": false,
+    "head_fit": false,
+    "training_inherits_checkpoint": false
+  },
+  "rows": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "mode": "HISTORICAL_REUSE",
+      "gpu": 0,
+      "process_valid": true,
+      "log_growth": false,
+      "log_bytes": 121,
+      "epochs": 50,
+      "source_complete": "SOURCE_TRAINED",
+      "completion": "TRAINED_PREDICTED_SCORED",
+      "actual_feature_extractor": {
+        "changed_layers": [],
+        "classifier_type": "ResidualPhysicalHead",
+        "classifier_weight_shape": [
+          6,
+          160
+        ],
+        "classifier_scale": 30,
+        "output_embedding": 160,
+        "structural_classifier_changes": false,
+        "multiscale": {}
+      }
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "mode": "NEW_TRAINING",
+      "gpu": 1,
+      "process_valid": true,
+      "log_growth": true,
+      "log_bytes": 22007,
+      "epochs": 3,
+      "source_complete": null,
+      "completion": null,
+      "actual_extra_config": {
+        "mode": "ZERO",
+        "layers": [
+          "t1",
+          "t2"
+        ],
+        "local_view": "4 ordered adaptive average temporal bins on existing postDropout output; perpacketL2eps1e-4; no fitted projection",
+        "source_role": "L_s",
+        "cohort_seed": 2026210712,
+        "cohort_packets": 90,
+        "cohorts": 70,
+        "cohort_order": "fixed rank within TX/RX/day, cycle70 cohorts independently of modelseed, no target or Utruth",
+        "every_steps": 4,
+        "extra_batches_per_epoch": 55,
+        "extra_batches": 2750,
+        "extra_source_packet_forwards": 247500,
+        "all_arms_same_extra_forward": true,
+        "extra_mode": "eval with parameter gradients; restore module modes and CPU/GPU RNG; classW receives only original joint training",
+        "margin": 0.1,
+        "temperature": 0.2,
+        "coefficient": 0.1,
+        "warmup_epochs": 5,
+        "ramp_epochs": 10,
+        "loss": "mean t1/t2; ORDER all1800legaltriplets incl satisfiedzeros; SUPCON360 anchor/referenceRX groups withsameTXpositive+5otherTXnegative",
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "diagnostic_batches": "all55 scheduled extra Lcohorts perdeclared epoch; actual mainL128CE versus separateL90aux",
+        "gradient_objects": [
+          "t1.pw.weight",
+          "t2.pw.weight",
+          "t3.pw.weight"
+        ],
+        "no_extra_head": true,
+        "no_U_relations": true
+      },
+      "extra_feature_fit": true,
+      "native_fitted_probes_disabled": true,
+      "actual_feature_extractor": {
+        "arm": "SIG_TIME",
+        "modes": [
+          "SIG_TIME"
+        ],
+        "layer": "t2",
+        "windows": 4,
+        "local_dimension_each": 6,
+        "independent_local_projections": true,
+        "descriptor_width_each": 28,
+        "output_embedding": 160,
+        "extra_parameters": 18976,
+        "classifier_changed": false,
+        "default_head_only": true,
+        "separate_head_training": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "per_packet": true,
+        "teacher_and_U_features_identical_policy": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "shared_single_local_projection": true,
+        "descriptor_order": "increment7,area21",
+        "parameter_matched": true
+      }
+    },
+    {
+      "row_id": "LOCAL_SUPCON-s2026092701",
+      "mode": "NEW_TRAINING",
+      "gpu": 2,
+      "process_valid": true,
+      "log_growth": true,
+      "log_bytes": 22064,
+      "epochs": 3,
+      "source_complete": null,
+      "completion": null,
+      "actual_extra_config": {
+        "mode": "SUPCON",
+        "layers": [
+          "t1",
+          "t2"
+        ],
+        "local_view": "4 ordered adaptive average temporal bins on existing postDropout output; perpacketL2eps1e-4; no fitted projection",
+        "source_role": "L_s",
+        "cohort_seed": 2026210712,
+        "cohort_packets": 90,
+        "cohorts": 70,
+        "cohort_order": "fixed rank within TX/RX/day, cycle70 cohorts independently of modelseed, no target or Utruth",
+        "every_steps": 4,
+        "extra_batches_per_epoch": 55,
+        "extra_batches": 2750,
+        "extra_source_packet_forwards": 247500,
+        "all_arms_same_extra_forward": true,
+        "extra_mode": "eval with parameter gradients; restore module modes and CPU/GPU RNG; classW receives only original joint training",
+        "margin": 0.1,
+        "temperature": 0.2,
+        "coefficient": 0.1,
+        "warmup_epochs": 5,
+        "ramp_epochs": 10,
+        "loss": "mean t1/t2; ORDER all1800legaltriplets incl satisfiedzeros; SUPCON360 anchor/referenceRX groups withsameTXpositive+5otherTXnegative",
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "diagnostic_batches": "all55 scheduled extra Lcohorts perdeclared epoch; actual mainL128CE versus separateL90aux",
+        "gradient_objects": [
+          "t1.pw.weight",
+          "t2.pw.weight",
+          "t3.pw.weight"
+        ],
+        "no_extra_head": true,
+        "no_U_relations": true
+      },
+      "extra_feature_fit": true,
+      "native_fitted_probes_disabled": true,
+      "actual_feature_extractor": {
+        "arm": "SIG_TIME",
+        "modes": [
+          "SIG_TIME"
+        ],
+        "layer": "t2",
+        "windows": 4,
+        "local_dimension_each": 6,
+        "independent_local_projections": true,
+        "descriptor_width_each": 28,
+        "output_embedding": 160,
+        "extra_parameters": 18976,
+        "classifier_changed": false,
+        "default_head_only": true,
+        "separate_head_training": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "per_packet": true,
+        "teacher_and_U_features_identical_policy": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "shared_single_local_projection": true,
+        "descriptor_order": "increment7,area21",
+        "parameter_matched": true
+      }
+    },
+    {
+      "row_id": "LOCAL_ORDER-s2026092701",
+      "mode": "NEW_TRAINING",
+      "gpu": 0,
+      "process_valid": true,
+      "log_growth": true,
+      "log_bytes": 22049,
+      "epochs": 3,
+      "source_complete": null,
+      "completion": null,
+      "actual_extra_config": {
+        "mode": "ORDER",
+        "layers": [
+          "t1",
+          "t2"
+        ],
+        "local_view": "4 ordered adaptive average temporal bins on existing postDropout output; perpacketL2eps1e-4; no fitted projection",
+        "source_role": "L_s",
+        "cohort_seed": 2026210712,
+        "cohort_packets": 90,
+        "cohorts": 70,
+        "cohort_order": "fixed rank within TX/RX/day, cycle70 cohorts independently of modelseed, no target or Utruth",
+        "every_steps": 4,
+        "extra_batches_per_epoch": 55,
+        "extra_batches": 2750,
+        "extra_source_packet_forwards": 247500,
+        "all_arms_same_extra_forward": true,
+        "extra_mode": "eval with parameter gradients; restore module modes and CPU/GPU RNG; classW receives only original joint training",
+        "margin": 0.1,
+        "temperature": 0.2,
+        "coefficient": 0.1,
+        "warmup_epochs": 5,
+        "ramp_epochs": 10,
+        "loss": "mean t1/t2; ORDER all1800legaltriplets incl satisfiedzeros; SUPCON360 anchor/referenceRX groups withsameTXpositive+5otherTXnegative",
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "diagnostic_batches": "all55 scheduled extra Lcohorts perdeclared epoch; actual mainL128CE versus separateL90aux",
+        "gradient_objects": [
+          "t1.pw.weight",
+          "t2.pw.weight",
+          "t3.pw.weight"
+        ],
+        "no_extra_head": true,
+        "no_U_relations": true
+      },
+      "extra_feature_fit": true,
+      "native_fitted_probes_disabled": true,
+      "actual_feature_extractor": {
+        "arm": "SIG_TIME",
+        "modes": [
+          "SIG_TIME"
+        ],
+        "layer": "t2",
+        "windows": 4,
+        "local_dimension_each": 6,
+        "independent_local_projections": true,
+        "descriptor_width_each": 28,
+        "output_embedding": 160,
+        "extra_parameters": 18976,
+        "classifier_changed": false,
+        "default_head_only": true,
+        "separate_head_training": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "per_packet": true,
+        "teacher_and_U_features_identical_policy": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "shared_single_local_projection": true,
+        "descriptor_order": "increment7,area21",
+        "parameter_matched": true
+      }
+    }
+  ],
+  "queue_failure": null
+}
