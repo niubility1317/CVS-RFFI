@@ -332,3 +332,12 @@ SINGLE三seed末轮源CE0.248543/0.239481/0.234405，V98.3259%/98.3037%/98.5222%
 
 
 结构×关系12row已完整ANALYZED/VERIFIED：COMPACT_ZERO81.4137%、COMPACT_RESP80.6952%、LONG_ZERO81.4754%、LONG_RESP81.0359%。关系在COMPACT内−.7185pp/0正，在LONG内−.4395pp/1正；交互＋.2790pp只表示损害较小，不支持关系收益。600ep/133200更新/2016000决定/216CM、全量source日志和48梯度/48实际更新、0非有限/0Utruth/0headfit已核实，进程自然退出。旧COMPACT/LONG/Sinc正结果独立保留，不将结构组合高于旧模型当作机制成功。已固定的等U时序和PA真实身份重组继续，84%仍active。详见[结构交互完整报告](../automation_reports/CV-SincNet/20261014-phase1-relation-temporal-factorial-oldgate-e50-clean-manysig-m12-r01/report.md)。
+
+
+## 当前训练机制：等U时序与PA真实身份重组
+
+等U时序R02首3行完整source资格VERIFIED，每行50轮/11100步、L1420800/U963900、4个当时ownEMA完整V27000代理与4个真实AdamW两临时分支点完成；后6row按预定source条件自动运行，当前不报告完整3seed性能。MID/SPREAD首次源Vteacher约96.8%准确、83.4%接受覆盖，接受源Vprecision约99.9956%，不是隐藏U真实精度；所测一步U增量/总步范数约1.8%至1.9%，不等于累计训练贡献。R01丢失发布依赖的60已完成模型轮次与可能partial成本保留，源-only技术失败不算机制负结果。
+
+PA同TX/day跨RX实际增量重组已正式发布 20261014-phase1-PA-recomposition-pair-oldgate-e50-clean-manysig-m9-r01，执行76ab0b9944210f8aa3f09f051ea9694f55457cd6，3首seed进入实际辅助阶段；0新参数、0额外IQ前向、主CE和原tail33+17的U/teacher/oldgate/cos保持。共同cohort约55%，α=.2/λ=.1的same/cross一对一端点曝光、aux W/gain stop但内部features有梯度；第1112步SAME/CROSS实际aux/Lfeature normratio=.1168/.1038，真实t1/PA数值更新，activeAdamW增量约4.25e−4/3.24e−4，总shadow误差≤1.49e−8。ZERO梯度0、GPU一步差2.44e−8为数值残差，未掩盖为bitwise0。当前是真实接线/学习信号，无性能成功结论；仅CROSS稳定超SAME与ZERO才支持跨RX贡献，冻结后W独立export与必要无拟合source特征变化验证仍须完整记录。
+
+完整结构交互负结果表明关系响应未有效，不能继续以组合高于旧原架构来宣称机制有效。此前COMPACT/LONG_SILU/Sinc正结果按各自配方独立保留；当前最多两个核心假设为等U时序与PA证据重组，语义间隔及分支更新约束后置。默认头联合训练、U真值隐藏、source-only资格、固定三seed/逐rowcleantruthlast以及84%研究目标保持。

@@ -61,3 +61,7 @@ R01在首个当前V代理因archive遗漏source_label_gate失败：MID/SPREAD各
 ## 发布后真实状态
 
 RUNNING/VERIFIED，执行 commit `5d2e22133b85707db84654433d859ae130bd0d43`。一次 archive 传输比较、remote compile、真实同契约历史 student/ownEMA strict no-query smoke PASS。首种子三组 PID/CWD/argv/GPU/实际844754参数与日志增长独立核实，当前完成轮数 [5, 4, 4]。后续6行仅按预定源条件放行；4次当前教师/真实AdamW状态测量尚待对应训练阶段，不用合成 smoke 替代。当前无本轮性能结论，84%目标保持active。
+
+## 首种子源资格与真实等预算
+
+首3行final50来源/数据/默认头/日历/实际L-U曝光与优化步/4当前V代理/4真实AdamW点全部VERIFIED；每行L1420800/U963900/11100步，LCE TAIL/MID/SPREAD=.28820/.28888/.28633，V=.979111/.978667/.978481，worstRX=.944444/.942593/.941667。固定source-only条件通过，后6row已自动放行，无target成绩进入资格。当前只有完整1seed，完整三seed效果尚待返回；R01至少60模型轮次技术损耗独立保留。
