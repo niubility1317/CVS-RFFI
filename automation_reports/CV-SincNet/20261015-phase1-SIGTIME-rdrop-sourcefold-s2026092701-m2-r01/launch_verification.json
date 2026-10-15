@@ -1,0 +1,40 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01",
+  "execution_commit": "fb47a598bf983eb8f482cd1ae636e1610deccdeb",
+  "shared_lock": "PROJECT/runs/receiver_residual_capacity4.lock",
+  "ready_rows": 2,
+  "rows": [
+    {
+      "arm": "TWO_CE",
+      "gpu": 0,
+      "CPU_threads": 2,
+      "completed_epochs": 5,
+      "actual_steps": 1110,
+      "log_bytes": 32205,
+      "smoke_PASS": true
+    },
+    {
+      "arm": "RDROP",
+      "gpu": 1,
+      "CPU_threads": 2,
+      "completed_epochs": 4,
+      "actual_steps": 888,
+      "log_bytes": 27036,
+      "smoke_PASS": true
+    }
+  ],
+  "all_eight_GPUs_considered": true,
+  "source_contract_counts": {
+    "L_s": 5040,
+    "U_s": 45360,
+    "V": 21600
+  },
+  "observed_GPU_memory_per_row_MiB": 2950,
+  "per_GPU_process_cap": 3,
+  "independent_PID_CWD_argv_GPU_and_log_growth": true,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "training_complete": false,
+  "goal_completed": false
+}

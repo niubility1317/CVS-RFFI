@@ -1,6 +1,6 @@
 # R-Drop 真正 RX1 留出训练证伪
 
-状态 **PLANNED / 已登记，尚未发布训练**。三个原 BASE_SSL E20/LS0/clean L 源梯度父均通过后，用固定 seed2026092701 检验真实训练收益。TWO_CE 和 RDROP 均从零 E20，使用原 SIG_TIME/CENTER25K、默认 cosine6×160 scale30，默认头正常联合训练。不会继承全源或四 RX 权重，不组合 NONE/CLEAN_SIG、权重平均或交叉拟合教师。
+状态 **RUNNING / 两行启动 VERIFIED**。三个原 BASE_SSL E20/LS0/clean L 源梯度父均通过后，用固定 seed2026092701 检验真实训练收益。TWO_CE 和 RDROP 均从零 E20，使用原 SIG_TIME/CENTER25K、默认 cosine6×160 scale30，默认头正常联合训练。不会继承全源或四 RX 权重，不组合 NONE/CLEAN_SIG、权重平均或交叉拟合教师。
 
 两组都对同一 clean L128 做两次原生随机 dropout 前向。目标为 mean(CE1,CE2)，RDROP 独立加 alpha1 对称 KL，两个概率均可微、LS0；原 native 已有 CE1，hook 加 .5*(CE2−CE1)+alphaKL，避免双计数。原日志 CE1 与真实 pairedCE/KL 分开记录。固定 alpha1、全部4440步启用，不扫描系数或按暴露 target 调整。R-Drop 是[已有方法](https://proceedings.neurips.cc/paper/2021/hash/5a66b9200f29ac3fa0ae244cc2a51b39-Abstract.html)，本轮检验 CVS 中的训练效力，不宣称其全球创新。
 
@@ -22,3 +22,6 @@ REJECTED_EXTRA_GATE：通用独立设计审批/spec链、report-only重复审查
 
 <!-- IMPLEMENTATION_READY -->
 本地聚焦数学/导数等价、11负例、实际默认模型骨干和W导数检查通过；两次检查各256合成L前向，共512，0真实IQ/CP/更新。八卡选择fixture通过。最终9个Python文件与2段remote脚本编译通过，登记/运行矩阵一致；唯一独立下一运行P0/P1审查PASS。尚未发布或消费实际训练预算。
+
+<!-- LAUNCH_VERIFIED -->
+代码 `fb47a598bf983eb8f482cd1ae636e1610deccdeb` 已提交推送，远端 OID 独立匹配；一次发布 archive 比较和 remote compile VERIFIED。两组通过实际初始化 checkpoint 无查询 smoke，并从零继续训练。共享锁临界区容量记录显示启动时八卡均空，第二行计入第一行 pre-CUDA 预约，实际分散到 GPU0/1；独立 /proc 核对 PID/CWD/argv/启动时间/GPU，后续日志增长、无fatal，实测每行约2950MiB。有效源角色均L5040/U45360/V21600。此时 TWO_CE 完成5轮、RDROP完成4轮，仅进度证据，不是最终收益。其余卡未保留，已向另外两个授权对话同步使用情况，不新增候选填卡。
