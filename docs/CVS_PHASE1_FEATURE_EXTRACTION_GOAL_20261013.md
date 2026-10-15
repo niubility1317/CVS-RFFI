@@ -237,3 +237,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 
 2026-10-15：正式SIG_TIME噪声位置 `20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01` ANALYZED/VERIFIED，source6/6、clean已评分6/6。固定CLEAN_SIG均值81.309524%±0.940673pp，vsBASE_SSL+0.134722pp、2/3正；vsNONE-0.136111pp、1/3正。NONE81.445635%±0.853798pp，vsBASE_SSL+0.270833pp、3/3正，正收益保留而不切换主指标。完整日志、初始200state公平性、F71与默认W更新、既有truth-side CM与paired正确性独立复算，无新真实IQ/truth/推理/训练；另有48个固定合成packet特征前向，0头拟合/CP改写。SOURCE_FALSIFIED=False，84%数值检查=False；全目标仍未完成。结果及实际预算见[同row报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01/report.md)。
+
+
+<!-- RDROP_E20_SOURCE_COMPLETE_20261015 -->
+2026-10-15：`20261015-phase1-SIGTIME-rdrop-source-e20-clean-manysig-m3-r01` ANALYZED/VERIFIED，固定原 BASE_SSL final20 三父 source 3/3 PASS；t1/t2/SIG 的 KL 导数各 5/5 非零且跨批平均与 paired CE 同向，准确数值见[同 row 报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-source-e20-clean-manysig-m3-r01/report.md)。900 个不同 L 跨三个父复用，8100 次源前向、120 导数向量，另 6 合成 smoke packet；0 新训练/头拟合/target，三份独立产物复算通过。源端兼容性允许另行登记单 seed 真正 held-RX 的 matched two-CE/RDrop 训练证伪，不等于训练增益或 84% 完成，不以 NONE 的 target 高分选父。全目标保持 active。

@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Active Phase1 feature-training goal; pre-existing third-priority RDrop source route; new E20/LS0/cleanL diagnostic after specified E50 seed02/03 parents found absent; no training/query expansion",
   "code": {
-    "commit": "Actual Git HEAD in release_commit.txt; resolved execution_commit records it",
+    "commit": "37edd17d35279fa7731b4666f7b33644a58f2d3d",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "ordinary N607 CVS-RFFI Python; CPU2, CUDA_VISIBLE_DEVICES empty; immutable original R02 code dependency",
     "cwd": "PROJECT/releases/cvs_SIGTIME_rdrop_source20_20261015_r01",
@@ -550,5 +550,14 @@
     "RDrop is established, https://proceedings.neurips.cc/paper/2021/hash/5a66b9200f29ac3fa0ae244cc2a51b39-Abstract.html ; this is a CVS source learning-signal test, not a global novelty claim.",
     "REJECTED_EXTRA_GATE: generic separate design approval/spec/planning chain, report-only reviews and extra hashes. Current Exclusive Minimal Workflow plus existing authorization apply."
   ],
-  "registered_at": "2026-10-15T06:55:04+00:00"
+  "registered_at": "2026-10-15T06:55:04+00:00",
+  "result": {
+    "status": "ANALYZED",
+    "evidence_ref": "results_analysis.json",
+    "actual_model_seeds": 3,
+    "all_three_source_confirmed": true,
+    "training_efficacy_proven": false,
+    "query_read": false,
+    "goal_completed": false
+  }
 }
