@@ -1,8 +1,8 @@
-# HQ 桥接教学：实现与验证追踪（本地验证与登记完成，待发布）
+# HQ 桥接教学：实现与验证追踪（已发布，两行训练中）
 
 本候选由用户17f04499及31cc8a22附件中的同信道bridge／SIG局部教学要求驱动。依据是已完成源HQ零更新诊断，不依据语义家族的正式目标排名选父权重。语义D3/D4源条件FAIL保持；本候选是两条从零E50独立小试，不加载或扩种子失败语义权重。
 
-当前核心、发布/逐row评估/报告管线、本地检查、正式登记及一次独立P0/P1审查已完成；尚无远端发布、真实第5轮校准或训练结果。正式run_id为`20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01`。
+当前核心、发布/逐row评估/报告管线、本地检查、正式登记及一次独立P0/P1审查已完成；远端一次发布及真实CP烟测/独立运行读回已验证，真实第5轮校准或训练结果仍待运行。正式run_id为`20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01`。
 
 ## 方法和成本边界
 
@@ -35,7 +35,7 @@ HQ沿用full的传播、RX/day/eq session、接收质量与lock、残余补偿/�
 |B07|梯度进入t2/local_projection且不只末端，features/objective.py|verified|真实梯度两处非0，末端输出投影/W/gain无local梯度；CE继续更新原头|
 |B08|E50/更新/U/EMA/覆盖真实成本，observer.finish|pending|计数与守卫已实现，本地步图通过；无完整训练证据|
 |B09|own epoch5正校准、冻结尺度系数，calibrate.py|pending|拒绝错误L步和超界、失败路径state/EMA/grad/RNG保持已通过；成功路径待实际第5轮，不复用final50统计|
-|B10|唯一owner、运行保护与一次P0/P1|pending|dispatcher/发布器已接通，一次独立限定审查PASS；一次archive/compile/preflight及实际PID/GPU/log读回待发布|
+|B10|唯一owner、运行保护与一次P0/P1|verified|一次独立限定审查PASS；archive比较VERIFIED、compile PASS、真实CP smoke PASS；PID3151548/3151567/3151644及GPU1/CWD/argv/训练流增长独立读回VERIFIED|
 |B11|完整矩阵登记和最小预登记|verified|registration.json与实际两行config匹配；canonical实验登记已建立、launch-ready结构VALID，最小report完成；未冒充已发布|
 |B12|逐row原头七视图和独立truth-last|pending|evaluate/queue已接线；完整性/非法logits/输出冲突负测PASS，真实七视图运行待完成|
 |B13|源推进代码与目标隔离|pending|规则已实现于report.decide，规则正/负测试PASS；真实final50判定待完成|
@@ -43,7 +43,7 @@ HQ沿用full的传播、RX/day/eq session、接收质量与lock、残余补偿/�
 |B15|新机制归因：身份margin/修复破坏/S使用量|pending|待冻结后的合法源诊断；不沿用旧HQ诊断数字作为训练收益|
 |B16|跨seed重现与组合扩展|deferred|先单seed两行；失败语义家族不扩种子|
 
-计数：verified8/pending7/deferred1/rejected0/blocked0。严格实现了同H物理配对、真实IQ和默认头、direct身份锚点及现有SIG坐标。近似为新增噪声HQ、源RMS、物理q和一次eval全局梯度比，不把HQ当理想无噪声或无误teacher。
+计数：verified9/pending6/deferred1/rejected0/blocked0。严格实现了同H物理配对、真实IQ和默认头、direct身份锚点及现有SIG坐标。近似为新增噪声HQ、源RMS、物理q和一次eval全局梯度比，不把HQ当理想无噪声或无误teacher。
 
 ## 实际检查
 

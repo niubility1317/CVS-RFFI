@@ -2,7 +2,7 @@
 
 本轮是独立两行从零E50小试，检验同信道较清晰视图是否能提供额外训练信息，以及局部SIG教学是否超过同成本HQ监督。依据为已有合法源L_dev720的冻结HQ诊断；own EMA low64.8611%→70.9722%是0更新源域受控结果，不是正式测试提升或训练可达保证。语义D3/D4源条件FAIL保持，不扩种子、不加载其权重；控制由预定义角色确定。
 
-实际矩阵、配置、种子、命令、环境/CWD、路径、资源和stop rule唯一维护于[experiment.json](experiment.json)；对应运行配置为experiments/cvs_urban_bridge50/registration.json。当前尚未发布/训练，无新性能结果。代码身份在发布时由实际Git HEAD写入release_commit/preflight/run experiment；不增加报告或成员SHA。
+实际矩阵、配置、种子、命令、环境/CWD、路径、资源和stop rule唯一维护于[experiment.json](experiment.json)；对应运行配置为experiments/cvs_urban_bridge50/registration.json。当前已发布并开始两行训练，无新准确率结果。代码身份在发布时由实际Git HEAD写入release_commit/preflight/run experiment；不增加报告或成员SHA。
 
 ## 固定边界
 
@@ -55,4 +55,10 @@ N607普通账号现有SSH路线；CPU2/loader0、单GPU worker、所有owner含p
 
 4项pipeline检查PASS.112s：源双增益不能互相补偿、原7视图预测完整/非法logits时truth关闭、输出不覆盖、未验证机制不加载query模型。另物理L索引拒绝＋修改后的真实native两行图定向PASS6.642s。`python -m compileall -q experiments/cvs_urban_bridge50`通过。检查日志在local_artifacts/cvs_coupled_bridge_20261015的bridge50_*文件；新登记辅助脚本最初缺少工作树import路径，修正后生成成功，未触及远端或实验输出。
 
-一次独立P0/P1审查PASS：未发现直接使下一实跑错误、越权、破坏、无法启动或无法产生合法预测的问题。已核对训练/校准接线、默认头梯度、同折角色、预算、七视图truth-last、共享容量、输出保护及登记/入口。发布、archive/preflight/真实CP烟测、独立PID/CWD/argv/GPU/log增长以及真实epoch5、E50、七视图结果和图均未发生。不能把登记结构VALID当许可或科学有效证明。最高风险仍是HQ teacher误判、局部相似增强却无TX区分改善；保留负结果。追踪表analysis/cvs_bridge_teaching_e50_traceability_20261015.md继续区分已验证、运行待证和延期。
+一次独立P0/P1审查PASS：未发现直接使下一实跑错误、越权、破坏、无法启动或无法产生合法预测的问题。已核对训练/校准接线、默认头梯度、同折角色、预算、七视图truth-last、共享容量、输出保护及登记/入口。发布、单archive传输比较、远端compile、真实CP无query烟测和独立PID/CWD/argv/GPU/训练日志增长均已VERIFIED；真实epoch5正校准、E50、七视图结果和图仍待运行。不能把登记结构VALID当许可或科学有效证明。最高风险仍是HQ teacher误判、局部相似增强却无TX区分改善；保留负结果。追踪表analysis/cvs_bridge_teaching_e50_traceability_20261015.md继续区分已验证、运行待证和延期。
+
+## 实际发布读回
+
+代码commit `12bd0be93bbf295ee1c8e75156ed5f1c3855cff7` 已push，独立remote branch OID与local HEAD相同。一次不可覆盖release/run已发布，archive传输比较VERIFIED、远端compile PASS、普通账号preflight VERIFIED。dispatcher PID3151548；BRIDGE_CE PID3151567、BRIDGE_SIG PID3151644，实际均GPU1。两worker工作目录/argv与提交记录一致，resolved_config和实际channel_execution已落盘。当前GPU1两个owned进程，不停止或迁移其他健康任务。
+
+首步实际A0 checkpoint/default头CPU两包smoke PASS、query_read=false，仅作来源及可执行核验，两行仍从零。两次独立读回之间训练step_metrics和channel_training流已持续写入；早期worker文本日志只在epoch结束打印，尚无完整epoch，不将暂时不增长的文本日志当训练停滞。证据为local_artifacts/cvs_bridge_teaching_e50_20261015/readback_initial.json、readback_training.json与delivery_r01/submission.json。source/calibration/正式测试成绩仍未产生。

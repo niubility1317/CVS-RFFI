@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "User active Phase1 practical-residual goal and attached17f04499/31cc8a22 HQ/Bridge-CE-S instructions; latest scratch E50/old gates/cos budget. No semantic-family seed expansion, pretrained/target-selected initialization or test-channel changes.",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "12bd0be93bbf295ee1c8e75156ed5f1c3855cff7",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; nativeLinuxN607; Windowsnative localvalidation",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_bridge_teaching_e50_20261015_r01"
@@ -1205,5 +1205,26 @@
     "Do not change fixed formal IQ/SNR/equalizer/sample counts, do not consume U truth, do not stop or restart healthy foreign jobs. Complete each row seven predictions before independent truth-last scoring.",
     "Native V27000 remains full health-only telemetry; L_dev720 never updates model/EMA/normalization. No Phase2 support/query method is run; p2 handles/support/K null are not new data or permission changes."
   ],
-  "registered_at": "2026-10-15T10:27:06+00:00"
+  "registered_at": "2026-10-15T10:27:06+00:00",
+  "runtime_readback": {
+    "evidence": "E:\\type10-7\\local_artifacts\\cvs_bridge_teaching_e50_20261015\\readback_training.json",
+    "read_at": 1792060664.455802,
+    "status": "VERIFIED",
+    "dispatcher_pid": 3151548,
+    "workers": [
+      {
+        "row_id": "BRIDGE_CE-s2026092701",
+        "pid": 3151567,
+        "gpu": 1
+      },
+      {
+        "row_id": "BRIDGE_SIG-s2026092701",
+        "pid": 3151644,
+        "gpu": 1
+      }
+    ],
+    "source_smoke": "PASS; real A0 checkpoint, 2 packets, no query or initialization",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS"
+  }
 }
