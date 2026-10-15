@@ -1,0 +1,45 @@
+{
+  "status": "FROZEN_SOURCE_PASS_EXPAND_UNCHANGED",
+  "source_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+  "source_execution_commit": "b7987055f7ad9e95f5fe65f2d368ce528dbac017",
+  "analysis_release_commit": "0416c8c4f7865b7bb879f9e1dba69a95dde9878d",
+  "source_qualification_ref": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_qualification.json",
+  "new_target_metrics_read_or_used": false,
+  "remaining_model_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "new_training_arms": [
+    "RX_BALANCED",
+    "RX_VREX"
+  ],
+  "historical_reference_arm": "OLD_GATE_COS50",
+  "new_models": 4,
+  "epochs_per_model": 50,
+  "label_epochs": 33,
+  "pseudo_epochs": 17,
+  "steps_per_epoch": 222,
+  "new_optimizer_updates": 44400,
+  "initialization": "Own-seed scratch;ownEMA only;no checkpoint inheritance",
+  "data_roles": {
+    "L_s": 6300,
+    "U_s_hidden_TX": 56700,
+    "V_health_only": 27000
+  },
+  "protocol_or_physical_ID_changes": false,
+  "network": "Unchanged SIG_TIME actualjoint160",
+  "head": "Existing default6x160 cosine/scale30 normaljoint;noheadfit/refit/replacement",
+  "baseline": "Historicalbatch_neighbor+ownEMA+cos preserved;balancedRXCE samepath matchedcontrol",
+  "penalty": "Population variance of presentRX CE means;alpha1candidate/0control;all11100Lsteps",
+  "changed_hyperparameters_or_thresholds": false,
+  "selection": "All predefined remaining seeds and both arms;no target-based cancellation/reorder/stop/rerun",
+  "new_training_started": false,
+  "reason": {
+    "variance_ratio": 0.812076404196595,
+    "worst_source_RX_CE_ratio": 0.9555749364110999,
+    "L720_feature_L2": 2.696216344833374,
+    "all_preregistered_rules_pass": true
+  },
+  "goal": "Threefixedseed RX_VREX clean/defaulthead mean>=.84;n1notgoal",
+  "claim_scope": "Sourceoptimization and actualfeaturechanges only;DG and threeseedmean not established"
+}

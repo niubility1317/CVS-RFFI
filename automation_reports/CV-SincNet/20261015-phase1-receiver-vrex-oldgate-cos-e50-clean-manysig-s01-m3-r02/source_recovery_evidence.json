@@ -1,0 +1,21 @@
+{
+  "status": "VERIFIED",
+  "source_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+  "training_execution_commit": "b7987055f7ad9e95f5fe65f2d368ce528dbac017",
+  "analysis_release_commit": "0416c8c4f7865b7bb879f9e1dba69a95dde9878d",
+  "original_aggregation_status": "FAILED_BITWISE_GRADIENT_RECOUNT_ONLY",
+  "old_training_prediction_scoring_rows": 3,
+  "original_artifacts_preserved": true,
+  "recovery_status": "SOURCE_ANALYSIS_COMPLETE",
+  "recovery_terminal": true,
+  "source_only": true,
+  "new_training_updates": 0,
+  "new_target_forward_or_scoring": 0,
+  "target_metrics_read": false,
+  "source_recount": {
+    "L_steps": 22200,
+    "parameter_layers": 416,
+    "saved_vectors": 1248
+  },
+  "source_qualification": "PASS"
+}

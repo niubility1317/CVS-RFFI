@@ -1247,42 +1247,22 @@
   ],
   "execution_commit": "b7987055f7ad9e95f5fe65f2d368ce528dbac017",
   "completion": null,
-  "status": "RUNNING",
+  "status": "PREDICTIONS_COMPLETE",
   "result": {
-    "status": "RUNNING_VERIFIED",
+    "status": "SOURCE_PASS_TARGET_SUMMARY_PENDING",
+    "training_complete": true,
     "epochs_observed": [
-      23,
-      27
+      50,
+      50
     ],
-    "training_complete": false,
-    "source_qualification": null,
+    "source_qualification": "PASS",
+    "source_analysis_commit": "0416c8c4f7865b7bb879f9e1dba69a95dde9878d",
+    "all_rows_trained_predicted_independently_scored": true,
+    "default_decisions": 504000,
+    "scored_rows": 3,
     "new_target_summary_read": false,
     "goal_84": false,
-    "all_fixed_rows_launched": true,
-    "offline_analysis_fix": {
-      "code_commit": "0ba4dd317a31b8d34ce8a19b70273cad7a767dfa",
-      "release_commit": "0416c8c4f7865b7bb879f9e1dba69a95dde9878d",
-      "remote_deployment": "VERIFIED",
-      "training_release_unchanged": true,
-      "formal_source_qualification": null
-    },
-    "native_SSL_prefix": {
-      "observed_at": "2026-10-15T08:55:17.755Z",
-      "steps": [
-        6770,
-        7730
-      ],
-      "source_stream_prefix_complete_epochs": [
-        30,
-        34
-      ],
-      "candidate_U_packets": 103292,
-      "candidate_U_accepted": 1649,
-      "hidden_U_truth_available": false,
-      "EMA_trajectory_replayed": true,
-      "formal_source_qualification": null,
-      "new_target_summary_read": false
-    }
+    "seed_expansion_decision": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json"
   },
   "registered_at": "2026-10-15T08:29:00+00:00"
 }

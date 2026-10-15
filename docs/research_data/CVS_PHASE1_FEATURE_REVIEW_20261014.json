@@ -85708,7 +85708,7 @@
           ]
         }
       ],
-      "training_status": "RUNNING_VERIFIED",
+      "training_status": "SOURCE_PASS_TARGET_SUMMARY_PENDING",
       "training_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02",
       "training_implementation_commit": "1bcaa4919b835601c01cc4095ab8ed869c2e4b9b",
       "training_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md",
@@ -85719,10 +85719,10 @@
       "recovery_changes_scientific_recipe": false,
       "training_execution_commit": "b7987055f7ad9e95f5fe65f2d368ce528dbac017",
       "training_epochs_observed": [
-        23,
-        27
+        50,
+        50
       ],
-      "training_source_qualification": null,
+      "training_source_qualification": "PASS",
       "training_target_summary_read": false,
       "training_source_prefix_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_prefix_e4.json",
       "training_analysis_bitwise_defect": "Offlinefixverifiedanddeployedseparately;runningreleaseunchanged",
@@ -85734,7 +85734,9 @@
         7730
       ],
       "training_candidate_U_observations": 103292,
-      "training_hidden_U_truth_read": false
+      "training_hidden_U_truth_read": false,
+      "training_source_qualification_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_qualification.json",
+      "training_expansion_decision": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json"
     }
   },
   "latest_complete_sinc_optimizer": {
