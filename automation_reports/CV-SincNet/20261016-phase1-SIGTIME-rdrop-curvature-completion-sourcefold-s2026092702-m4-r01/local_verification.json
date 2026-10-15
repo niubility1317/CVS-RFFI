@@ -1,0 +1,218 @@
+{
+  "status": "PASS",
+  "checks": {
+    "cpu": {
+      "status": "PASS",
+      "device": "cpu",
+      "negative_cases": 53,
+      "qualification_negative_cases": 7,
+      "actual_initial_state_tensors": 198,
+      "source_only": true,
+      "exact_Fisher_trace": true,
+      "equal_added_metric_trace": true,
+      "class_permutation_and_view_swap": true,
+      "classifier_reconstruction": true,
+      "auxiliary_default_W_gradient_none": true,
+      "aux_actual_t1_t2_SIG_gradients_nonzero": true,
+      "actual_CE_logits_RNG_equal": true,
+      "FULL_native_gradient_close": true,
+      "actual_parameter_gradient_norms": {
+        "FULL": [
+          0.42483827471733093,
+          0.8623729944229126,
+          0.20071300864219666,
+          4.37695837020874
+        ],
+        "SPAN": [
+          0.5245741605758667,
+          0.9786284565925598,
+          0.27213969826698303,
+          4.37695837020874
+        ],
+        "ISOTROPIC": [
+          0.4329155385494232,
+          0.7797887921333313,
+          0.2086770087480545,
+          4.37695837020874
+        ],
+        "NULL": [
+          0.4312569499015808,
+          0.7750442028045654,
+          0.20724903047084808,
+          4.37695837020874
+        ]
+      },
+      "geometry_audits": {
+        "FULL": {
+          "calls": 1,
+          "packets": 128,
+          "min_rank": 5,
+          "max_rank": 5,
+          "max_projector_error": 9.992007221626409e-16,
+          "max_trace_relative_error": 0.0,
+          "aux_positive_calls": 0,
+          "auxiliary_loss_sum": 0.0,
+          "native_KL_sum": 1.402413249015808,
+          "Fisher_trace_sum": 66980.8828125,
+          "null_difference_energy_sum": 137.40988159179688,
+          "total_difference_energy_sum": 141.98367309570312
+        },
+        "SPAN": {
+          "calls": 1,
+          "packets": 128,
+          "min_rank": 5,
+          "max_rank": 5,
+          "max_projector_error": 9.992007221626409e-16,
+          "max_trace_relative_error": 5.412532422255367e-09,
+          "aux_positive_calls": 1,
+          "auxiliary_loss_sum": 1.9124282598495483,
+          "native_KL_sum": 1.402413249015808,
+          "Fisher_trace_sum": 66980.8828125,
+          "null_difference_energy_sum": 137.40988159179688,
+          "total_difference_energy_sum": 141.98367309570312
+        },
+        "ISOTROPIC": {
+          "calls": 1,
+          "packets": 128,
+          "min_rank": 5,
+          "max_rank": 5,
+          "max_projector_error": 9.992007221626409e-16,
+          "max_trace_relative_error": 0.0,
+          "aux_positive_calls": 1,
+          "auxiliary_loss_sum": 1.8151413202285767,
+          "native_KL_sum": 1.402413249015808,
+          "Fisher_trace_sum": 66980.8828125,
+          "null_difference_energy_sum": 137.40988159179688,
+          "total_difference_energy_sum": 141.98367309570312
+        },
+        "NULL": {
+          "calls": 1,
+          "packets": 128,
+          "min_rank": 5,
+          "max_rank": 5,
+          "max_projector_error": 9.992007221626409e-16,
+          "max_trace_relative_error": 1.745978917000457e-10,
+          "aux_positive_calls": 1,
+          "auxiliary_loss_sum": 1.8120028972625732,
+          "native_KL_sum": 1.402413249015808,
+          "Fisher_trace_sum": 66980.8828125,
+          "null_difference_energy_sum": 137.40988159179688,
+          "total_difference_energy_sum": 141.98367309570312
+        }
+      },
+      "synthetic_identity_forwards": 1280,
+      "real_IQ_reads": 0,
+      "checkpoint_loads": 0,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "target_access": false
+    },
+    "cuda": {
+      "status": "PASS",
+      "device": "cuda:0",
+      "negative_cases": 53,
+      "qualification_negative_cases": 7,
+      "actual_initial_state_tensors": 198,
+      "source_only": true,
+      "exact_Fisher_trace": true,
+      "equal_added_metric_trace": true,
+      "class_permutation_and_view_swap": true,
+      "classifier_reconstruction": true,
+      "auxiliary_default_W_gradient_none": true,
+      "aux_actual_t1_t2_SIG_gradients_nonzero": true,
+      "actual_CE_logits_RNG_equal": true,
+      "FULL_native_gradient_close": true,
+      "actual_parameter_gradient_norms": {
+        "FULL": [
+          0.46426182985305786,
+          0.8872935771942139,
+          0.20858260989189148,
+          4.723296165466309
+        ],
+        "SPAN": [
+          0.6062913537025452,
+          1.0493565797805786,
+          0.30041632056236267,
+          4.723296165466309
+        ],
+        "ISOTROPIC": [
+          0.4314099848270416,
+          0.8229857683181763,
+          0.21785466372966766,
+          4.723296165466309
+        ],
+        "NULL": [
+          0.4272996485233307,
+          0.8173598647117615,
+          0.21574783325195312,
+          4.723296165466309
+        ]
+      },
+      "geometry_audits": {
+        "FULL": {
+          "calls": 1,
+          "packets": 128,
+          "min_rank": 5,
+          "max_rank": 5,
+          "max_projector_error": 2.1094237467877974e-15,
+          "max_trace_relative_error": 0.0,
+          "aux_positive_calls": 0,
+          "auxiliary_loss_sum": 0.0,
+          "native_KL_sum": 1.5123528242111206,
+          "Fisher_trace_sum": 69012.453125,
+          "null_difference_energy_sum": 132.5425262451172,
+          "total_difference_energy_sum": 137.0621337890625
+        },
+        "SPAN": {
+          "calls": 1,
+          "packets": 128,
+          "min_rank": 5,
+          "max_rank": 5,
+          "max_projector_error": 2.1094237467877974e-15,
+          "max_trace_relative_error": 5.412532311233065e-09,
+          "aux_positive_calls": 1,
+          "auxiliary_loss_sum": 1.9560739994049072,
+          "native_KL_sum": 1.5123528242111206,
+          "Fisher_trace_sum": 69012.453125,
+          "null_difference_energy_sum": 132.5425262451172,
+          "total_difference_energy_sum": 137.0621337890625
+        },
+        "ISOTROPIC": {
+          "calls": 1,
+          "packets": 128,
+          "min_rank": 5,
+          "max_rank": 5,
+          "max_projector_error": 2.1094237467877974e-15,
+          "max_trace_relative_error": 0.0,
+          "aux_positive_calls": 1,
+          "auxiliary_loss_sum": 1.810622215270996,
+          "native_KL_sum": 1.5123528242111206,
+          "Fisher_trace_sum": 69012.453125,
+          "null_difference_energy_sum": 132.5425262451172,
+          "total_difference_energy_sum": 137.0621337890625
+        },
+        "NULL": {
+          "calls": 1,
+          "packets": 128,
+          "min_rank": 5,
+          "max_rank": 5,
+          "max_projector_error": 2.1094237467877974e-15,
+          "max_trace_relative_error": 1.745978917000457e-10,
+          "aux_positive_calls": 1,
+          "auxiliary_loss_sum": 1.8059301376342773,
+          "native_KL_sum": 1.5123528242111206,
+          "Fisher_trace_sum": 69012.453125,
+          "null_difference_energy_sum": 132.5425262451172,
+          "total_difference_energy_sum": 137.0621337890625
+        }
+      },
+      "synthetic_identity_forwards": 1280,
+      "real_IQ_reads": 0,
+      "checkpoint_loads": 0,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "target_access": false
+    }
+  },
+  "real_checkpoint_smoke": "Worker first step own scratch CP2synthetic,no query;continues immediately onPASS"
+}

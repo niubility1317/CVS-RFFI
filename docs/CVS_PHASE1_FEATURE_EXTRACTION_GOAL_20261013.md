@@ -360,3 +360,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- RDROP_OPERATOR_PROBE_RESULT_20261016 -->
 20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01 固定原版 FULL 源 final20 诊断 ANALYZED/VERIFIED；144fitL、两上下文各4dropout抽样、2304真实身份前向包次、240记录、0更新/头拟合/U/V/RX1/target IQ。NATIVE_AUG中 MEAN 的 t1/t2/SIG 范数约为 FULL 的18.05%/18.50%/19.74%，包络约42.06%/38.95%/48.46%；同loss系数不等于同特征梯度，方向也改变，不能归因于单因素。全部state/buffer/gradslots/counter保持，独立核对终态/摘要数学，未重算梯度向量或捕获live过程。下一独立机制研究 FULL 未覆盖的特征变化，不扫参数救援包络。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01/report.md)。goalactive。
+
+
+<!-- RDROP_CURVATURE_COMPLETION_PREREG_20261016 -->
+仅SIG_TIME＋RDrop，原fullKL保持，按默认头centered normalized-W rank5的可见/余空间增加等迹特征稳定性；FULL/SPAN/ISOTROPIC/NULL，固定seed02各scratchE20，RX1全路径排除、默认头联合。CPU/CUDA53协议负例/7科学否决、198初态及实际梯度/RNG检查PASS。NULL须同时少错且CE不升，FAIL关闭，PASS仅另行固定RX3源确认。20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01 PLANNED，尚无真实训练结果。[固定方案](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/report.md)。goalactive。
