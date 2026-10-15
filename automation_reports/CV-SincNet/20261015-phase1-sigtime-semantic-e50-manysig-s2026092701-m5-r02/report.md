@@ -75,3 +75,13 @@ D3/D4在epoch6后存在非零额外特征梯度，原W/gain额外为0；静态�
 冻结源分析已实现并登记为 `20261015-phase1-sigtime-semantic-source-manysig-s2026092701-m5-r01`，代码提交4ed88cf189c1486c1ff069a57d2831bbf8c90e01已push且独立OID匹配。5项检查PASS0.831s、compile PASS、一次P0/P1及原信道类修复定向复核PASS。分析将只在五个实际final50冻结后单独CPU运行，预算36722前向/0更新；尚未发布、尚无分析图或结果。D4 clean anchor在同次配对图中保留，假设性D0 satellite CE梯度明确区别于实际训练。
 
 当前正式提升/clean代价/跨seed结论仍缺失；最近进度为28/14/13，不宣称预算已结束或已收敛。证据：local artifact monitor_03.json；独立源分析预登记报告见对应run。
+
+## 匹配D0完成及收尾工具
+
+VERIFIED：匹配D0 PID3070268自然结束，E50／11100更新，source耗时2620.404159s；原七视图prediction完成且truth_read=False，独立scorer为SCORED_COMPLETE。主前向4,769,400，L_dev前向70,560，U truth/head-fit更新0。仅查看完成/成本元数据，不消费目标分数改动其他行。D3/D4最近核验34/33轮、PID3070345/3070426仍活跃且无错误。证据：correct_D0_terminal.json、monitor_05.json。
+
+完整日志reader和图工具已补齐，不改动训练：`F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_urban_semantic50.audit_checks` 实际3检查PASS（0.066s），两CLI help和compile通过。源分析仍是5项检查/0.831s及已通过的有界审查；没有额外报告审查或科学门槛。
+
+矩阵完成后只读执行 `F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_urban_semantic50.full_log_audit --output E:/type10-7/local_artifacts/cvs_semantic_augmentation_recovery_20261015/final --legacy-audit E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/final/training_audit.json`。读取新三行全部33,300步，复用原A0/A-J已验证22,200步，分开统计，不把历史步数称为新读取/新训练。只在原矩阵complete后收取summary等结果，不重新预测或评分。
+
+随后以真实source/正式artifact调用 `experiments.cvs_urban_semantic_mechanism.figures` 生成完整CE/梯度训练曲线、源学习曲线、五条件单seed正式图、源原头保持/间隔/修复破坏、身份与状态/质量/gain图。当前只有代码/CLI检查，尚未执行真实出图，不给出不存在的图路径或性能改善。

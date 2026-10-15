@@ -36,3 +36,7 @@
 r02实际发布63f6bd461：archive/compile/真实CP smoke/源校准原样复用通过；三row独立活跃、D0/D3/D4 epoch4/2/2，日志增长。actual use_aug=True匹配确认。原r01 D0仍独立诊断。当前verified12/pending4/deferred2，缺项为完整预算、七视图、双增益及机制/跨seed；保持目标active。
 
 S15冻结源机制实现计划：`experiments/cvs_urban_semantic_mechanism/`，严格加载五条件final50/默认头，固定D1/A0 clean正确集合和一份共同source practical视图，记录错误修复/破坏、原头间隔、状态/RX/质量、实际分支/门控及同RX/day参照相对身份差。mid/low的零更新配对梯度使用同一次clean+urban实际joint图，D4 clean anchor不被无意detach；全部eval、autograd.grad不累积.grad。预算36722前向、L_dev720、U不开/V前向0；新增机制诊断须登记后在模型冻结时独立CPU发布，不热改训练或读取target。当前pending，不能由实现替代实际结果。
+
+S11/S15完整日志与出图：新增 `experiments/cvs_urban_semantic50/_audit_worker.py`、`full_log_audit.py` 和 `experiments/cvs_urban_semantic_mechanism/figures.py`。新三行逐条读取全11100步及50轮native/更新记录；旧D1/D2复用已验证八位置完整审计，不重复分析未变化日志。图只从完整真实artifact生成，当前无数据图；五条件全列，不按目标排序或挑最佳。
+
+完整日志reader的3项聚焦检查PASS0.066s（全步平均/clip计数、缺步/非有限/隐藏标签负例、矩阵未完成不读行或目标分数）；两CLI --help与compile通过。本地测试文件初次写偏目录已移回本工作树，未影响实验。图函数尚无真实结果可渲染，不声称图验证完成。实际正确D0已自然E50/11100并完成七视图评分，2620.404159s；D3/D4最新34/33，S11/S13/S15仍等待完整矩阵证据。
