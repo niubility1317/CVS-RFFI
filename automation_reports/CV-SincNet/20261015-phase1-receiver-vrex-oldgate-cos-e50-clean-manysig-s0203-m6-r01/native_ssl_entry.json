@@ -1,0 +1,60 @@
+{
+  "status": "OBSERVED",
+  "run_id": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+  "execution_commit": "f7aded2fc5c607064972991d07ab6fca227cd626",
+  "read_at": 1792058548.4811704,
+  "source_only": true,
+  "rows": [
+    {
+      "row_id": "RX_BALANCED-s2026092702",
+      "model_seed": 2026092702,
+      "epoch": 35,
+      "phase": "pseudo",
+      "epoch_time_s": 55.1275737285614,
+      "U_packet_observations_this_epoch": 56700,
+      "U_accepted_this_epoch": 895,
+      "U_truth_available": 0,
+      "default_fitted_probes_disabled": true,
+      "checkpoint_selection": "final_only"
+    },
+    {
+      "row_id": "RX_VREX-s2026092702",
+      "model_seed": 2026092702,
+      "epoch": 35,
+      "phase": "pseudo",
+      "epoch_time_s": 54.16596436500549,
+      "U_packet_observations_this_epoch": 56700,
+      "U_accepted_this_epoch": 890,
+      "U_truth_available": 0,
+      "default_fitted_probes_disabled": true,
+      "checkpoint_selection": "final_only"
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092703",
+      "model_seed": 2026092703,
+      "epoch": 34,
+      "phase": "pseudo",
+      "epoch_time_s": 54.96329736709595,
+      "U_packet_observations_this_epoch": 56700,
+      "U_accepted_this_epoch": 883,
+      "U_truth_available": 0,
+      "default_fitted_probes_disabled": true,
+      "checkpoint_selection": "final_only"
+    },
+    {
+      "row_id": "RX_VREX-s2026092703",
+      "model_seed": 2026092703,
+      "epoch": 34,
+      "phase": "pseudo",
+      "epoch_time_s": 55.967024087905884,
+      "U_packet_observations_this_epoch": 56700,
+      "U_accepted_this_epoch": 879,
+      "U_truth_available": 0,
+      "default_fitted_probes_disabled": true,
+      "checkpoint_selection": "final_only"
+    }
+  ],
+  "head_fit_updates": 0,
+  "target_metrics_read_for_running_observation": false,
+  "recipe_changed": false
+}

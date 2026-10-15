@@ -2321,36 +2321,149 @@
     "GradientrecountkeepsFP32allclosetolerance;noGPUbitwiseequalityrequirement;independentreviewlimitedtonewseedadapterexecutionP1s."
   ],
   "execution_commit": "f7aded2fc5c607064972991d07ab6fca227cd626",
-  "completion": null,
-  "status": "RUNNING",
+  "completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 6,
+    "new_trained_models": 4,
+    "reused_baseline_models": 2,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 1008000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "status": "ANALYZED",
   "result": {
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "training_started": true,
     "new_models": 4,
     "historical_models_reused": 2,
+    "own_prediction_count": 1008000,
+    "own_metric_records": 108,
     "first_seed_retrained": false,
-    "source_decision_commit": "4056e9fb618fa92af5486c6d3670fc73bcc4194d",
-    "first_new_epoch_counts": [
+    "combined_models": 9,
+    "combined_new_models": 6,
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "combined_prediction_count": 1512000,
+    "combined_metric_records": 162,
+    "summary": [
       {
-        "row_id": "RX_BALANCED-s2026092702",
-        "epoch": 1
+        "arm": "OLD_GATE_COS50",
+        "seed_count": 3,
+        "accuracy_mean": 0.8052678571428572,
+        "accuracy_sd": 0.023775723031464996,
+        "seed_accuracy": {
+          "2026092701": 0.8066845238095238,
+          "2026092702": 0.7808154761904762,
+          "2026092703": 0.8283035714285715
+        },
+        "macro_f1_mean": 0.8000238637751929,
+        "worst_RX_mean": 0.6797083333333334,
+        "worst_day_mean": 0.7605555555555555
       },
       {
-        "row_id": "RX_VREX-s2026092702",
-        "epoch": 1
+        "arm": "RX_BALANCED",
+        "seed_count": 3,
+        "accuracy_mean": 0.8275317460317461,
+        "accuracy_sd": 0.016896113370073077,
+        "seed_accuracy": {
+          "2026092701": 0.8364047619047619,
+          "2026092702": 0.808047619047619,
+          "2026092703": 0.8381428571428572
+        },
+        "macro_f1_mean": 0.8220510180181115,
+        "worst_RX_mean": 0.7023194444444444,
+        "worst_day_mean": 0.7852460317460317
       },
       {
-        "row_id": "RX_BALANCED-s2026092703",
-        "epoch": 1
-      },
-      {
-        "row_id": "RX_VREX-s2026092703",
-        "epoch": 1
+        "arm": "RX_VREX",
+        "seed_count": 3,
+        "accuracy_mean": 0.8247777777777777,
+        "accuracy_sd": 0.01889754901433135,
+        "seed_accuracy": {
+          "2026092701": 0.8328511904761905,
+          "2026092702": 0.8031845238095238,
+          "2026092703": 0.838297619047619
+        },
+        "macro_f1_mean": 0.8191700227536953,
+        "worst_RX_mean": 0.6921527777777777,
+        "worst_day_mean": 0.7810476190476191
       }
     ],
-    "completed_new_models": 0,
+    "paired": [
+      {
+        "arm": "RX_VREX",
+        "control": "RX_BALANCED",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          -0.003553571428571378,
+          -0.00486309523809525,
+          0.00015476190476182428
+        ],
+        "mean_difference": -0.0027539682539682677,
+        "sd_difference": 0.0026027382703908146,
+        "positive_seeds": 1
+      },
+      {
+        "arm": "RX_VREX",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.02616666666666667,
+          0.022369047619047566,
+          0.009994047619047541
+        ],
+        "mean_difference": 0.019509920634920592,
+        "sd_difference": 0.00845691179145056,
+        "positive_seeds": 3
+      },
+      {
+        "arm": "RX_BALANCED",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.02972023809523805,
+          0.027232142857142816,
+          0.009839285714285717
+        ],
+        "mean_difference": 0.02226388888888886,
+        "sd_difference": 0.010831700121090268,
+        "positive_seeds": 3
+      }
+    ],
+    "source_decision_commit": "4056e9fb618fa92af5486c6d3670fc73bcc4194d",
+    "all_new_models_epoch50": true,
+    "truth_last": true,
+    "head_fit_updates": 0,
+    "target_feedback_to_training": false,
     "goal_84_achieved": false,
-    "evidence": "launch_evidence.json"
+    "primary_mean_accuracy": 0.8247777777777777,
+    "missing": [],
+    "evidence": [
+      "completion_evidence.json",
+      "results.json",
+      "final_analysis.md",
+      "three_seed_clean_results.png",
+      "three_seed_source_curves.png"
+    ]
   },
   "registered_at": "2026-10-15T09:38:29+00:00"
 }
