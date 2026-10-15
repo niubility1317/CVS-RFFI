@@ -2,6 +2,8 @@
 
 2026-10-16 源问题更新：发现并复用已有 18 折跨 TX/day 频谱统计，不重复读取 IQ；也确认旧 33 抽头 PHYS/ROT 未建立实测方向的性能优势。实际完成当前 H(w)=1+a*cos(w)、|a|≤.06 的理想幅度方向覆盖计算：放松幅度后的加权方向覆盖 9.3023%，较粗网格 9.2692%；对应被排除单元的相对 MSE 为 1.033042，完整已有交叉拟合为 0.614141。0 模型前向、0 更新，不能当作身份识别成绩。支持的是当前受限形状族的缺口，下一步只验证更丰富源方向的有限 IQ 身份安全；见[已完成诊断](E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-current-response-coverage-manysig-m1-r01/report.md)与[下一步设计](../docs/CVS_SOURCE_RESPONSE_E20_DESIGN_20261016.md)。
 
+同日有限 IQ 验证也已完成：固定原 E20_RDROP seed01 默认头，完整 V27000、189002 前向、120.415114 秒、0 更新。EMP E1/E20 相对 RAW 为 +0.007407/−0.051852 pp，最差源 RX 下降≤0.203704 pp，必要安全 PASS；EMP−ROT 在两 session 下为 +0.188889/−0.088889 pp，未建立实测方向一致优势。该结果不替代训练与正式测试。完整源决定及分层图见[有限 IQ 报告](E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-source-response-finiteIQ-s2026092701-r01/report.md)；尚未启动新 E20 训练。
+
 当前方向更新：用户已指定增强前底座为SIG_TIME＋RDrop、每模型scratch总E20，并转向有依据的IQ泛化增强与practical混合训练。文末曾拟议的HQ头间隔E50候选保持未实现历史状态，不再推进。最新完整RDrop结果、普通增强实际路径审计和可证伪的新设计见[当前混合增强方案](../docs/CVS_MIXED_IQ_E20_GOAL_20261015.md)。新五组E20与全部原七视图已完成：混合B11的clean80.2732%、low urban51.5262%，相对仅practical的B01分别仅+0.0131/+0.0393pp；相对原参照clean−2.7280pp。当前轻度响应候选源规则FAIL，未达双突破，不扩seed，整体goal仍active。
 
 新E20正式结果为seed2026092701一组，执行代码1fe3f00bdddfdb0af494f74c6570db65490ddf72。仅practical相对前向匹配B00的low+20.1708pp／urban+24.0486pp伴随clean−2.8488pp；混合交互项clean−0.1958pp／urban−0.1879pp，未保留A_g单独的clean增量。源必要条件失败在读取目标分数前已写入[source决定](cvs_mixedIQ_e20_source_decision_20261015.md)。完整逐row七视图、630项独立评分、全部训练日志检查、六图、成本和未完成项见[本轮报告](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-e20-manysig-s2026092701-m5-r01/report.md)。

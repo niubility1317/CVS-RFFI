@@ -35,3 +35,11 @@ session 按 epoch/RX/day/eq/view 稳定采样，所有 TX 共用；跨 epoch/vie
 已实现有界响应、旋转控制、NumPy/PyTorch 执行、source probe、原默认头/来源复用及不可覆盖发布。已通过核能量/频响界、内部相位、session/RNG、RMS/边界、Torch/NumPy 一致性检查，另有 9 个算子负例、3 个协议负例和 3 个安全判定例；均为合成检查，真实源成绩以 run 产物为准。
 
 本阶段 run：`20261016-phase1-source-response-finiteIQ-s2026092701-r01`；登记及精确命令见 [源 probe 报告](E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-source-response-finiteIQ-s2026092701-r01/report.md)。当前未获得该候选的训练或正式目标成绩，未证明跨 seed 复现。整体联合性能目标保持 active。
+
+### 实际源验证已完成
+
+该源 run 已 ANALYZED／VERIFIED，执行代码 `4657eec3f23ef2b9c16cb8c058338526224a4cc7`。真实默认头 smoke 后共 189002 个前向、120.415114 秒，参数/buffer/RNG 均未改变，0 优化、EMA、头拟合或新模型。全量 189000 条决定独立重数通过，540 个条件×RX×day×TX 单元各 300 条；进程自然退出，无技术缺项。
+
+RAW 26425/27000；EMP E1/E20 reflect 为 26427/26411，净变化 +2/−14 条，即 +0.007407/−0.051852 pp。最差源 RX 损失为 0.055556/0.203704 pp，必要安全 PASS。ROT E1/E20 为 26376/26435，因此 EMP−ROT 分别 +0.188889/−0.088889 pp，没有跨 session 一致的方向优势。不能把源输入的微小正差当成训练或跨 RX 泛化提升。
+
+下一最小阶段先做当前 E20 下 EMP/ROT 两个独立 A_g 训练行，并保留相同数据、初始化、前向和 loss 的 raw 控制。EMP 是预定候选，ROT 不因某个源输入条件较高就替换为候选。源 clean 相对匹配 raw 至少 +0.5 pp 才支持独立价值；若没有该增益，结束本方向，不追加联合训练。若 EMP 未超过 ROT，不能宣称源物理关联方向有特殊价值。完整训练预算、控制复用条件与停止规则须在启动前固定，冻结后自动原七视图评分；当前尚未登记或启动这两行训练。

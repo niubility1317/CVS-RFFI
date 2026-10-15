@@ -21,4 +21,4 @@
 |HQ 教学：三个固定模型的源域冻结归因预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01/report.md)|
 |SIG_TIME＋RDrop：轻度响应增强的冻结源域验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01/report.md)|
 |SIG_TIME＋RDrop：固定 E20 混合 IQ 五组结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-e20-manysig-s2026092701-m5-r01/report.md)|
-|SIG_TIME＋RDrop：源谱方向与等能量旋转方向的有限IQ验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-source-response-finiteIQ-s2026092701-r01/report.md)|
+|源谱方向：当前 E20 默认头的有限 IQ 验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-source-response-finiteIQ-s2026092701-r01/report.md)|
