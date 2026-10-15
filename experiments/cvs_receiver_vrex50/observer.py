@@ -5,7 +5,7 @@ from experiments.cvs_receiver_dro50.observer import Observer as Base
 from experiments.cvs_local_order50.observer import derivative
 from experiments.cvs_source_layer_order.probe import gradient_stats
 class Observer(Base):
- def __init__(self):super().__init__(design=d)
+ def __init__(self,*,design=None):super().__init__(design=design or d)
  def initialize(self,model,c,out):
   super().initialize(model,c,out);del self.logq
  def labeled(self,*,model,args,epoch,batch_idx,logits,labels,receivers,clean_count,original_loss,role):

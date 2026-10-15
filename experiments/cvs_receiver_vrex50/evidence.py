@@ -5,7 +5,8 @@ from experiments.cvs_source_layer_order.probe import gradient_stats
 def loss_close(a,b):return math.isfinite(a) and math.isfinite(b) and math.isclose(a,b,rel_tol=1e-6,abs_tol=3e-6)
 def gradient_close(selected,balanced,variance,alpha):
  return torch.allclose(selected,balanced+alpha*variance,atol=1e-6,rtol=1e-5)
-def recount(row):
+def recount(row,*,design=None):
+ d=design or globals()['d']
  c=d.config(row);p=d.BASE/row['row_id']/'source';observed=d.read(p/'receiver_risk_training_observation.json');alpha=c['receiver_risk']['coefficient']
  if observed['status']!='VERIFIED' or observed['steps']!=11100 or observed['U_packets']!=963900 or observed['coefficient']!=alpha or not observed['U_loss_returned_unchanged']:raise ValueError('VREXcompletedexposure differs')
  grouped={};packets=steps=0

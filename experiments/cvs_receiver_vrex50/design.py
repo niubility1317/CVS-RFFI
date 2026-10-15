@@ -37,9 +37,9 @@ def require_source():
  return q
 
 # Public registration uses a portable project handle; resolve only its configs.
-def read(path):
+def read(path,*,root=None):
  value=parent.read(path)
- if Path(path)==ROOT/'registration/experiment.json':
+ if Path(path)==(Path(root) if root is not None else ROOT)/'registration/experiment.json':
   def resolve(v):
    if isinstance(v,str):return PROJECT+v[len('PROJECT'):] if v=='PROJECT' or v.startswith('PROJECT/') else v
    if isinstance(v,list):return [resolve(x) for x in v]
