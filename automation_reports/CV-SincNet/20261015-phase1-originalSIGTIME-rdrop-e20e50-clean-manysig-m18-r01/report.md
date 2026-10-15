@@ -1,6 +1,6 @@
 # 旧 SIG_TIME 叠加 RDrop：E20/E50 三种子匹配验证
 
-状态 **PLANNED，已登记，尚未发布或训练**。用户要求旧 SIG_TIME 与 RDrop 有机结合；本次原样保留旧 SIG_TIME 的 RAW_HZ、标签平滑 0.01、普通训练增强、NoExplicitCFO、默认 cosine 头联合训练、旧门控和 ownEMA。18 个独立 scratch 模型：E20/E50 × ORIGINAL/TWO_CE/RDROP × 2026092701/02/03；E50 原 33L+17U，E20 固定 13L+7U，不继承旧权重，不使用 CENTER25K/cleanL/LS0 替代旧配方。
+状态 **RUNNING，首6行已启动，另12行按固定源规则待放行；独立启动核验 VERIFIED**。用户要求旧 SIG_TIME 与 RDrop 有机结合；本次原样保留旧 SIG_TIME 的 RAW_HZ、标签平滑 0.01、普通训练增强、NoExplicitCFO、默认 cosine 头联合训练、旧门控和 ownEMA。18 个独立 scratch 模型：E20/E50 × ORIGINAL/TWO_CE/RDROP × 2026092701/02/03；E50 原 33L+17U，E20 固定 13L+7U，不继承旧权重，不使用 CENTER25K/cleanL/LS0 替代旧配方。
 
 | 条件 | L 前向/更新 | 原平滑 CE | 一致性 |
 |---|---:|---|---|
@@ -18,6 +18,10 @@
 
 ordinary N607 CVS-RFFI；CWD `PROJECT/releases/cvs_originalSIGTIME_rdrop20_50_20261015_r01`；命令 `CVS-RFFI/bin/python -u experiments/cvs_sigtime_rdrop_legacy/runner.py experiments/cvs_sigtime_rdrop_legacy/configs/matrix.json`；owner `codex/root/original-SIGTIME-RDrop-20261015`；唯一run root `PROJECT/runs/20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01`。首6row就绪，其他12由源规则独立放行；现有shared receiver_residual_capacity4.lock内查all8 GPU/all-owner含preCUDA，空闲优先、cap3/GPU、free≥12000MiB，CPU2/worker、loader0，初始估计4.5GiB/worker、启动后实测。不停止/迁移/重启任何健康任务。技术故障或错误数据/来源/预算/预测/scorer/输出碰撞保留产物、停止pending，已启动健康行完成，无自动重试；源科学失败只关闭该预算未启动的6row，无阈值/seed/轮次救援。
 
-本地当前39项数学/配置/context负例与22项来源/预测权限负例、8个源资格否决边界通过；CPU/CUDA实际模型初始198state与旧构建器相同、增强后输入复用、两个paired条件RNG一致、时域/t2/SIG/W梯度有限非零。原先“0×CE辅助项逐位梯度相等”的CUDA检查观察到最大5.96e-8舍入差，现 ORIGINAL 完全不安装辅助hook；不是修改旧训练或根据target调参。尚需唯一下一运行P0/P1、actualGit提交、一次普通N607 preflight/archiveSHA/remotecompile和独立启动读回；本地PASS不称实验涨点或已达84%。
+本地当前39项数学/配置/context负例与22项来源/预测权限负例、8个源资格否决边界通过；CPU/CUDA实际模型初始198state与旧构建器相同、增强后输入复用、两个paired条件RNG一致、时域/t2/SIG/W梯度有限非零。原先“0×CE辅助项逐位梯度相等”的CUDA检查观察到最大5.96e-8舍入差，现 ORIGINAL 完全不安装辅助hook；不是修改旧训练或根据target调参。唯一独立P0/P1审查已通过，代码已提交推送，普通N607 preflight、release archive SHA比较、remotecompile和独立启动读回均已通过；这些证据不代表实验涨点或已达84%。
 
 RDrop为已有方法，[原论文](https://arxiv.org/abs/2106.14448)。本次研究它与旧SIG_TIME的实际训练匹配，不改名声称全球创新。完整18row矩阵、命令、seed、数据角色、停止规则和期望产物唯一维护在experiment.json；已有正负结果及未发布的残差交换原型保留，后者不叠加本试。REJECTED_EXTRA_GATE：额外设计审批/重复报告审查/哈希seal链不进入发布流程。
+
+
+<!-- ORIGINAL_SIGTIME_RDROP_VERIFIED_LAUNCH_20261015 -->
+执行 commit `b3ac442e2d33a5b315fb3251c30e0ad7083566bc` 已推送并独立核实远程 OID。首 seed 的六行覆盖 E20/E50 和三个条件，GPU0至5各1进程，实测每进程 3346 至 3348 MiB；快照内所有 owner 均未超过每GPU3进程。CPU2、loader0、dispatcher/scorer CUDA为空。六行 own初始CP无query smoke均通过，真实L/U/V为6300/56700/27000，原标签平滑0.01/use_aug=True/RAW_HZ与默认头联合训练已核实，paired机制实际复用增强后IQ，CWD/argv/PID-start/GPU及两次读回日志增长均 VERIFIED。没有技术失败；逐row自动clean预测和独立CPU truth-last尚待训练冻结后执行。其余12行只由两个预算各自的源资格判定放行，测试成绩不进入判定。详见 [启动证据](launch_verification.json)。

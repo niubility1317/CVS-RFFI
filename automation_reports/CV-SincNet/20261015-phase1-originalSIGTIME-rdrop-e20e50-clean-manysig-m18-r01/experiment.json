@@ -29,7 +29,7 @@
   "replaces_run_id": null,
   "authorization": "Current user explicitly: 旧 SIG_TIME叠加RDrop机制，让两者有机结合，发布实验验证. Prior user full E50 three seeds plus E20 budget comparison remains in scope. All18 scratch, no checkpoint inheritance or score-based selection.",
   "code": {
-    "commit": "Actual Git code/config HEAD recorded in release_commit.txt and each resolved config",
+    "commit": "b3ac442e2d33a5b315fb3251c30e0ad7083566bc",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "ordinary N607 CVS-RFFI Python, CPU2/worker,loader0,CPUdispatcher/scorersCUDAempty",
     "cwd": "PROJECT/releases/cvs_originalSIGTIME_rdrop20_50_20261015_r01",
@@ -3690,5 +3690,13 @@
     "RDrop is published; effective combination is a new CVS experiment, not global novelty. RAW_HZ numerical under-updating and historicalCUDA initial-flow limitation retained;no Sinc repair insidethiscomparison.",
     "REJECTED_EXTRA_GATE: separate design/spec permission, repeated unchanged/report-only review, exact report/config/source SHA orreceipt/seal chains, new schedulingplatform; use exclusive minimal actualcodecommit/negative+ownCPsmoke/oneP0P1/prereg/archive/preflight/compile/poststate/truthlast workflow only."
   ],
-  "registered_at": "2026-10-15T10:12:01+00:00"
+  "registered_at": "2026-10-15T10:12:01+00:00",
+  "result": {
+    "status": "RUNNING",
+    "evidence_ref": "launch_verification.json",
+    "actual_rows_started": 6,
+    "all_expected_rows": 18,
+    "source_gated_pending_rows": 12,
+    "goal_completed": false
+  }
 }

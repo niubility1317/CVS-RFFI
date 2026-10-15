@@ -269,3 +269,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- ORIGINAL_SIGTIME_RDROP_USER_REQUEST_20261015 -->
 用户最新明确要求旧 SIG_TIME叠加RDrop并发布验证。固定 `20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01`：旧RAW_HZ/use_aug=True/LS.01/defaultheadjoint/oldgateownEMA，E20/E50×ORIGINAL/TWO_CE/RDROP×固定3seed，共18scratch，主条件E50_RDROP；保留E20预算比较。近期LS0/cleanL/CENTER25K的82.1030%只证明其内KL增量，未超过历史83.0393%，新ORIGINAL为匹配对照。两次paired复用L context捕获的真实增强IQ，不使用native增强前x_l，不重抽增强。每预算首seed3源判据后放行其余6，逐row自动clean truthlast，不看target扩种子。当前PLANNED/CPU-CUDA198state及实际接线PASS，未发布/无新结果；残差交换原型未登记或发布，暂不叠加。[本试报告](../automation_reports/CV-SincNet/20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)。84%目标仍active。
+
+
+<!-- ORIGINAL_SIGTIME_RDROP_LAUNCHED_20261015 -->
+2026-10-15：旧SIG_TIME叠加RDrop的 `20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01` 已发布并独立启动核实。执行 `b3ac442e2d33a5b315fb3251c30e0ad7083566bc`，18行预登记，首seed6行在GPU0至5运行，另12行按每预算固定source-only规则放行。原RAW_HZ、LS.01、普通增强及默认头联合训练保留，两次paired前向实际复用增强后同IQ。尚无最终测试收益；全目标保持active，旧正负结果与未发布残差交换原型保留。
