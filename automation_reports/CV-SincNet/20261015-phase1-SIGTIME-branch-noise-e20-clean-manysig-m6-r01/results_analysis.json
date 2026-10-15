@@ -5428,6 +5428,701 @@
       "readout": "NATIVE_HEAD"
     }
   ],
+  "baseline_complete_trace_count": 3,
+  "baseline_complete_step_records": 13320,
+  "baseline_source_traces": {
+    "2026092701": {
+      "row_id": "BASE_SSL-s2026092701",
+      "arm": "BASE_SSL",
+      "model_seed": 2026092701,
+      "final_training_L_CE": 0.029256178649259848,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9814444444444445,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9492592592592592,
+          "4": 0.9842592592592593,
+          "6": 0.9959259259259259,
+          "8": 0.9825925925925926
+        },
+        "source_val_worst_rx": 0.9492592592592592
+      },
+      "elapsed_training_seconds": 869.5459525585175,
+      "complete_step_records": 4440,
+      "complete_epochs": 20,
+      "invalid_loss_or_U_truth_steps": [],
+      "complete_log_numeric_summaries": {
+        "train/loss": {
+          "count": 4440,
+          "sum": 631.9797390024178,
+          "minimum": 0.004203703720122576,
+          "maximum": 3.4590632915496826,
+          "first": 3.4590632915496826,
+          "last": 0.02751035802066326,
+          "mean": 0.1423377790545986
+        },
+        "train/loss_tx_labeled": {
+          "count": 4440,
+          "sum": 628.73118665535,
+          "minimum": 0.004203703720122576,
+          "maximum": 3.4590632915496826,
+          "first": 3.4590632915496826,
+          "last": 0.026872262358665466,
+          "mean": 0.14160612312057433
+        },
+        "train/loss_unlabeled": {
+          "count": 4440,
+          "sum": 13.554087690139113,
+          "minimum": 0.0,
+          "maximum": 0.2588576674461365,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0030527224527340346
+        },
+        "train/reliable_ratio": {
+          "count": 4440,
+          "sum": 25.064264111220837,
+          "minimum": 0.0,
+          "maximum": 0.0625,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.005645104529554242
+        },
+        "train/pseudo_total": {
+          "count": 4440,
+          "sum": 396900.0,
+          "minimum": 0,
+          "maximum": 256,
+          "first": 0,
+          "last": 124,
+          "mean": 89.39189189189189
+        },
+        "train/pseudo_selected": {
+          "count": 4440,
+          "sum": 6409.0,
+          "minimum": 0,
+          "maximum": 16,
+          "first": 0,
+          "last": 0,
+          "mean": 1.4434684684684684
+        },
+        "train/pseudo_truth_available": {
+          "count": 4440,
+          "sum": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0
+        }
+      },
+      "complete_log_phase_summaries": {
+        "label": {
+          "train/loss": {
+            "count": 2886,
+            "sum": 579.9377027959563,
+            "minimum": 0.004203703720122576,
+            "maximum": 3.4590632915496826,
+            "first": 3.4590632915496826,
+            "last": 0.04409634694457054,
+            "mean": 0.2009486149674138
+          },
+          "train/loss_tx_labeled": {
+            "count": 2886,
+            "sum": 579.9377027959563,
+            "minimum": 0.004203703720122576,
+            "maximum": 3.4590632915496826,
+            "first": 3.4590632915496826,
+            "last": 0.04409634694457054,
+            "mean": 0.2009486149674138
+          },
+          "train/loss_unlabeled": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": -0.0,
+            "mean": 0.0
+          },
+          "train/reliable_ratio": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": -0.0,
+            "mean": 0.0
+          },
+          "train/pseudo_total": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_selected": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_truth_available": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        },
+        "pseudo": {
+          "train/loss": {
+            "count": 1554,
+            "sum": 52.04203620646149,
+            "minimum": 0.005519168451428413,
+            "maximum": 0.13154898583889008,
+            "first": 0.053443264216184616,
+            "last": 0.02751035802066326,
+            "mean": 0.033489083787941756
+          },
+          "train/loss_tx_labeled": {
+            "count": 1554,
+            "sum": 48.793483859393746,
+            "minimum": 0.0046491362154483795,
+            "maximum": 0.1302650272846222,
+            "first": 0.052790939807891846,
+            "last": 0.026872262358665466,
+            "mean": 0.031398638262158135
+          },
+          "train/loss_unlabeled": {
+            "count": 1554,
+            "sum": 13.554087690139113,
+            "minimum": 0.0,
+            "maximum": 0.2588576674461365,
+            "first": 0.0006155762821435928,
+            "last": 0.0,
+            "mean": 0.00872206415066867
+          },
+          "train/reliable_ratio": {
+            "count": 1554,
+            "sum": 25.064264111220837,
+            "minimum": 0.0,
+            "maximum": 0.0625,
+            "first": 0.0234375,
+            "last": 0.0,
+            "mean": 0.016128870084440694
+          },
+          "train/pseudo_total": {
+            "count": 1554,
+            "sum": 396900.0,
+            "minimum": 124,
+            "maximum": 256,
+            "first": 256,
+            "last": 124,
+            "mean": 255.40540540540542
+          },
+          "train/pseudo_selected": {
+            "count": 1554,
+            "sum": 6409.0,
+            "minimum": 0,
+            "maximum": 16,
+            "first": 6,
+            "last": 0,
+            "mean": 4.124195624195624
+          },
+          "train/pseudo_truth_available": {
+            "count": 1554,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        }
+      }
+    },
+    "2026092702": {
+      "row_id": "BASE_SSL-s2026092702",
+      "arm": "BASE_SSL",
+      "model_seed": 2026092702,
+      "final_training_L_CE": 0.0305139944649528,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9811851851851852,
+        "source_val_rx_accuracy": {
+          "1": 0.9953703703703703,
+          "3": 0.9496296296296296,
+          "4": 0.9838888888888889,
+          "6": 0.9955555555555555,
+          "8": 0.9814814814814815
+        },
+        "source_val_worst_rx": 0.9496296296296296
+      },
+      "elapsed_training_seconds": 911.603940486908,
+      "complete_step_records": 4440,
+      "complete_epochs": 20,
+      "invalid_loss_or_U_truth_steps": [],
+      "complete_log_numeric_summaries": {
+        "train/loss": {
+          "count": 4440,
+          "sum": 665.9194751027972,
+          "minimum": 0.005313582718372345,
+          "maximum": 3.7248599529266357,
+          "first": 3.7248599529266357,
+          "last": 0.04707593470811844,
+          "mean": 0.14998186376189124
+        },
+        "train/loss_tx_labeled": {
+          "count": 4440,
+          "sum": 662.3844682746567,
+          "minimum": 0.004633607808500528,
+          "maximum": 3.7248599529266357,
+          "first": 3.7248599529266357,
+          "last": 0.04666656628251076,
+          "mean": 0.1491856910528506
+        },
+        "train/loss_unlabeled": {
+          "count": 4440,
+          "sum": 15.242281418085895,
+          "minimum": 0.0,
+          "maximum": 0.7841011881828308,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.003432946265334661
+        },
+        "train/reliable_ratio": {
+          "count": 4440,
+          "sum": 25.728074595332146,
+          "minimum": 0.0,
+          "maximum": 0.0625,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.005794611395345078
+        },
+        "train/pseudo_total": {
+          "count": 4440,
+          "sum": 396900.0,
+          "minimum": 0,
+          "maximum": 256,
+          "first": 0,
+          "last": 124,
+          "mean": 89.39189189189189
+        },
+        "train/pseudo_selected": {
+          "count": 4440,
+          "sum": 6580.0,
+          "minimum": 0,
+          "maximum": 16,
+          "first": 0,
+          "last": 0,
+          "mean": 1.481981981981982
+        },
+        "train/pseudo_truth_available": {
+          "count": 4440,
+          "sum": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0
+        }
+      },
+      "complete_log_phase_summaries": {
+        "label": {
+          "train/loss": {
+            "count": 2886,
+            "sum": 610.5971035077237,
+            "minimum": 0.006716909818351269,
+            "maximum": 3.7248599529266357,
+            "first": 3.7248599529266357,
+            "last": 0.04075658321380615,
+            "mean": 0.2115721079375342
+          },
+          "train/loss_tx_labeled": {
+            "count": 2886,
+            "sum": 610.5971035077237,
+            "minimum": 0.006716909818351269,
+            "maximum": 3.7248599529266357,
+            "first": 3.7248599529266357,
+            "last": 0.04075658321380615,
+            "mean": 0.2115721079375342
+          },
+          "train/loss_unlabeled": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/reliable_ratio": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/pseudo_total": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_selected": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_truth_available": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        },
+        "pseudo": {
+          "train/loss": {
+            "count": 1554,
+            "sum": 55.32237159507349,
+            "minimum": 0.005313582718372345,
+            "maximum": 0.1713949590921402,
+            "first": 0.011542107909917831,
+            "last": 0.04707593470811844,
+            "mean": 0.03559998172141151
+          },
+          "train/loss_tx_labeled": {
+            "count": 1554,
+            "sum": 51.787364766933024,
+            "minimum": 0.004633607808500528,
+            "maximum": 0.1273559033870697,
+            "first": 0.010512569919228554,
+            "last": 0.04666656628251076,
+            "mean": 0.033325202552723955
+          },
+          "train/loss_unlabeled": {
+            "count": 1554,
+            "sum": 15.242281418085895,
+            "minimum": 0.0,
+            "maximum": 0.7841011881828308,
+            "first": 0.0026169968768954277,
+            "last": 0.0,
+            "mean": 0.009808417900956174
+          },
+          "train/reliable_ratio": {
+            "count": 1554,
+            "sum": 25.728074595332146,
+            "minimum": 0.0,
+            "maximum": 0.0625,
+            "first": 0.01171875,
+            "last": 0.0,
+            "mean": 0.016556032558128795
+          },
+          "train/pseudo_total": {
+            "count": 1554,
+            "sum": 396900.0,
+            "minimum": 124,
+            "maximum": 256,
+            "first": 256,
+            "last": 124,
+            "mean": 255.40540540540542
+          },
+          "train/pseudo_selected": {
+            "count": 1554,
+            "sum": 6580.0,
+            "minimum": 0,
+            "maximum": 16,
+            "first": 3,
+            "last": 0,
+            "mean": 4.2342342342342345
+          },
+          "train/pseudo_truth_available": {
+            "count": 1554,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        }
+      }
+    },
+    "2026092703": {
+      "row_id": "BASE_SSL-s2026092703",
+      "arm": "BASE_SSL",
+      "model_seed": 2026092703,
+      "final_training_L_CE": 0.03137675601452052,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9821111111111112,
+        "source_val_rx_accuracy": {
+          "1": 0.9938888888888889,
+          "3": 0.9505555555555556,
+          "4": 0.9835185185185186,
+          "6": 0.9964814814814815,
+          "8": 0.9861111111111112
+        },
+        "source_val_worst_rx": 0.9505555555555556
+      },
+      "elapsed_training_seconds": 952.8879518508911,
+      "complete_step_records": 4440,
+      "complete_epochs": 20,
+      "invalid_loss_or_U_truth_steps": [],
+      "complete_log_numeric_summaries": {
+        "train/loss": {
+          "count": 4440,
+          "sum": 629.7421267256141,
+          "minimum": 0.005747040268033743,
+          "maximum": 2.976736545562744,
+          "first": 2.881645917892456,
+          "last": 0.012785658240318298,
+          "mean": 0.14183381232558875
+        },
+        "train/loss_tx_labeled": {
+          "count": 4440,
+          "sum": 626.5857831477188,
+          "minimum": 0.004888719413429499,
+          "maximum": 2.976736545562744,
+          "first": 2.881645917892456,
+          "last": 0.012180639430880547,
+          "mean": 0.1411229241323691
+        },
+        "train/loss_unlabeled": {
+          "count": 4440,
+          "sum": 13.014159533103339,
+          "minimum": 0.0,
+          "maximum": 0.29706043004989624,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0029311170119602115
+        },
+        "train/reliable_ratio": {
+          "count": 4440,
+          "sum": 25.32724294066429,
+          "minimum": 0.0,
+          "maximum": 0.06451612710952759,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.00570433399564511
+        },
+        "train/pseudo_total": {
+          "count": 4440,
+          "sum": 396900.0,
+          "minimum": 0,
+          "maximum": 256,
+          "first": 0,
+          "last": 124,
+          "mean": 89.39189189189189
+        },
+        "train/pseudo_selected": {
+          "count": 4440,
+          "sum": 6471.0,
+          "minimum": 0,
+          "maximum": 16,
+          "first": 0,
+          "last": 0,
+          "mean": 1.4574324324324324
+        },
+        "train/pseudo_truth_available": {
+          "count": 4440,
+          "sum": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0
+        }
+      },
+      "complete_log_phase_summaries": {
+        "label": {
+          "train/loss": {
+            "count": 2886,
+            "sum": 574.6787949670106,
+            "minimum": 0.00852384977042675,
+            "maximum": 2.976736545562744,
+            "first": 2.881645917892456,
+            "last": 0.03405868262052536,
+            "mean": 0.19912640158247077
+          },
+          "train/loss_tx_labeled": {
+            "count": 2886,
+            "sum": 574.6787949670106,
+            "minimum": 0.00852384977042675,
+            "maximum": 2.976736545562744,
+            "first": 2.881645917892456,
+            "last": 0.03405868262052536,
+            "mean": 0.19912640158247077
+          },
+          "train/loss_unlabeled": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/reliable_ratio": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/pseudo_total": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_selected": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_truth_available": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        },
+        "pseudo": {
+          "train/loss": {
+            "count": 1554,
+            "sum": 55.063331758603454,
+            "minimum": 0.005747040268033743,
+            "maximum": 0.13182564079761505,
+            "first": 0.019796982407569885,
+            "last": 0.012785658240318298,
+            "mean": 0.03543328941995074
+          },
+          "train/loss_tx_labeled": {
+            "count": 1554,
+            "sum": 51.90698818070814,
+            "minimum": 0.004888719413429499,
+            "maximum": 0.1301315724849701,
+            "first": 0.018786730244755745,
+            "last": 0.012180639430880547,
+            "mean": 0.03340218029646599
+          },
+          "train/loss_unlabeled": {
+            "count": 1554,
+            "sum": 13.014159533103339,
+            "minimum": 0.0,
+            "maximum": 0.29706043004989624,
+            "first": 0.001148453215137124,
+            "last": 0.0,
+            "mean": 0.008374620034172033
+          },
+          "train/reliable_ratio": {
+            "count": 1554,
+            "sum": 25.32724294066429,
+            "minimum": 0.0,
+            "maximum": 0.06451612710952759,
+            "first": 0.01953125,
+            "last": 0.0,
+            "mean": 0.0162980971304146
+          },
+          "train/pseudo_total": {
+            "count": 1554,
+            "sum": 396900.0,
+            "minimum": 124,
+            "maximum": 256,
+            "first": 256,
+            "last": 124,
+            "mean": 255.40540540540542
+          },
+          "train/pseudo_selected": {
+            "count": 1554,
+            "sum": 6471.0,
+            "minimum": 0,
+            "maximum": 16,
+            "first": 5,
+            "last": 0,
+            "mean": 4.164092664092664
+          },
+          "train/pseudo_truth_available": {
+            "count": 1554,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        }
+      }
+    }
+  },
+  "matched_source_training_comparisons": [
+    {
+      "row_id": "NONE-s2026092701",
+      "arm": "NONE",
+      "model_seed": 2026092701,
+      "baseline_final_training_L_CE": 0.029256178649259848,
+      "final_training_L_CE": 0.021314562779750575,
+      "training_L_CE_difference": -0.007941615869509273,
+      "baseline_pseudo_selected_observations": 6409.0,
+      "pseudo_selected_observations": 6477.0,
+      "pseudo_selected_observations_difference": 68.0,
+      "pseudo_total_observations": 396900,
+      "baseline_epoch13_L_CE": 0.037218772453834884,
+      "epoch13_L_CE": 0.02805618985413431,
+      "source_V_accuracy_difference_pp": 0.159259259259259,
+      "source_V_worst_RX_difference_pp": 0.35185185185184764
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092701",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092701,
+      "baseline_final_training_L_CE": 0.029256178649259848,
+      "final_training_L_CE": 0.021447557575270736,
+      "training_L_CE_difference": -0.007808621073989112,
+      "baseline_pseudo_selected_observations": 6409.0,
+      "pseudo_selected_observations": 6472.0,
+      "pseudo_selected_observations_difference": 63.0,
+      "pseudo_total_observations": 396900,
+      "baseline_epoch13_L_CE": 0.037218772453834884,
+      "epoch13_L_CE": 0.029411893602259254,
+      "source_V_accuracy_difference_pp": 0.08148148148148238,
+      "source_V_worst_RX_difference_pp": 0.462962962962965
+    }
+  ],
   "baseline_target_metrics": {
     "2026092701": {
       "accuracy": 0.8193809523809524,
