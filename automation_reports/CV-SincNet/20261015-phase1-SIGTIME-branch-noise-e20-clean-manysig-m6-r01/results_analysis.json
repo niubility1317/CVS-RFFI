@@ -1,15 +1,16 @@
 {
   "status": "RUNNING",
+  "analysis_format_revision": 2,
   "run_id": "20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01",
   "execution_commit": "0fe97397defa9c72cb238556f0facc8d56c55513",
-  "source_rows_complete": 2,
-  "scored_rows_complete": 2,
+  "source_rows_complete": 3,
+  "scored_rows_complete": 3,
   "planned_rows": 6,
-  "completed_row_backbone_epochs": 40,
-  "completed_row_optimizer_steps": 8880,
+  "completed_row_backbone_epochs": 60,
+  "completed_row_optimizer_steps": 13320,
   "running_row_consumed_budget_excluded": true,
-  "actual_new_clean_decisions": 336000,
-  "actual_new_metric_records": 36,
+  "actual_new_clean_decisions": 504000,
+  "actual_new_metric_records": 54,
   "source_fixed_primary": "CLEAN_SIG",
   "rows": {
     "NONE-s2026092701": {
@@ -3057,24 +3058,1548 @@
         "checkpoint_mutations": 0,
         "limitation": "Fixed synthetic input verifies changed computation and feature/head boundary, not source/target accuracy or newTX transfer"
       }
+    },
+    "NONE-s2026092702": {
+      "status": "SCORED_VERIFIED",
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "complete_step_records": 4440,
+      "complete_epochs": 20,
+      "invalid_loss_or_U_truth_steps": [],
+      "actual_initial_state_matches_original_baseline": {
+        "status": "VERIFIED",
+        "tensors": 200,
+        "bitwise_equal_count": 200,
+        "all_equal": true,
+        "differing_names": [],
+        "limitation": null
+      },
+      "feature_parameter_tensors": 71,
+      "feature_delta_initial_to_FINAL": 10.446084960294069,
+      "default_W_delta_initial_to_FINAL": 0.6175959526403432,
+      "actual_noise_placement": {
+        "mode": "NONE",
+        "main_t2_dropout_p": 0.0,
+        "signature_tap": "original t2 output",
+        "signature_gradient_detached": false,
+        "extra_IQ_forwards": 0,
+        "extra_rng_draws": 0,
+        "extra_parameters": 0,
+        "inference_same_weight_equivalence": true,
+        "head_structure_changed": false
+      },
+      "final_training_L_CE": 0.024029529082949634,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.983037037037037,
+        "source_val_rx_accuracy": {
+          "1": 0.9966666666666667,
+          "3": 0.9548148148148148,
+          "4": 0.9840740740740741,
+          "6": 0.9959259259259259,
+          "8": 0.9837037037037037
+        },
+        "source_val_worst_rx": 0.9548148148148148
+      },
+      "source_health": {
+        "qualified": true,
+        "rule": {
+          "final_training_L_CE_max": 0.5,
+          "first_seed_source_V_drop_max": 0.01,
+          "first_seed_worst_source_RX_drop_max": 0.02,
+          "first_seed_only": true,
+          "stop_before_target_if_failed": true,
+          "later_seed_health_report_only": true
+        },
+        "source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.983037037037037,
+          "source_val_rx_accuracy": {
+            "1": 0.9966666666666667,
+            "3": 0.9548148148148148,
+            "4": 0.9840740740740741,
+            "6": 0.9959259259259259,
+            "8": 0.9837037037037037
+          },
+          "source_val_worst_rx": 0.9548148148148148
+        },
+        "baseline_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9811851851851852,
+          "source_val_rx_accuracy": {
+            "1": 0.9953703703703703,
+            "3": 0.9496296296296296,
+            "4": 0.9838888888888889,
+            "6": 0.9955555555555555,
+            "8": 0.9814814814814815
+          },
+          "source_val_worst_rx": 0.9496296296296296
+        },
+        "final_training_L_CE": 0.024029529082949634,
+        "target_access": false
+      },
+      "elapsed_training_seconds": 840.6209814548492,
+      "default_head_joint_training": true,
+      "head_fit_updates": 0,
+      "target": {
+        "accuracy": 0.8048571428571428,
+        "macro_f1": 0.8000562483290925,
+        "errors": 32784,
+        "worst_RX_accuracy": 0.6664166666666667,
+        "worst_day_accuracy": 0.7730238095238096,
+        "confusion": [
+          [
+            27037,
+            70,
+            176,
+            680,
+            33,
+            4
+          ],
+          [
+            634,
+            13308,
+            111,
+            13869,
+            57,
+            21
+          ],
+          [
+            2794,
+            2295,
+            19234,
+            507,
+            106,
+            3064
+          ],
+          [
+            2422,
+            4713,
+            583,
+            20208,
+            24,
+            50
+          ],
+          [
+            10,
+            10,
+            13,
+            10,
+            27951,
+            6
+          ],
+          [
+            31,
+            64,
+            114,
+            17,
+            296,
+            27478
+          ]
+        ],
+        "records": [
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "overall",
+            "stratum": "ALL",
+            "accuracy": 0.8048571428571428,
+            "macro_f1": 0.8000562483290925,
+            "macro_accuracy": 0.8048571428571428,
+            "query_count": 168000,
+            "confusion": [
+              [
+                27037,
+                70,
+                176,
+                680,
+                33,
+                4
+              ],
+              [
+                634,
+                13308,
+                111,
+                13869,
+                57,
+                21
+              ],
+              [
+                2794,
+                2295,
+                19234,
+                507,
+                106,
+                3064
+              ],
+              [
+                2422,
+                4713,
+                583,
+                20208,
+                24,
+                50
+              ],
+              [
+                10,
+                10,
+                13,
+                10,
+                27951,
+                6
+              ],
+              [
+                31,
+                64,
+                114,
+                17,
+                296,
+                27478
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "1-1",
+            "accuracy": 0.7727916666666667,
+            "macro_f1": 0.7426758504097677,
+            "macro_accuracy": 0.7727916666666667,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3996,
+                1,
+                1,
+                2,
+                0,
+                0
+              ],
+              [
+                47,
+                891,
+                7,
+                3054,
+                1,
+                0
+              ],
+              [
+                1512,
+                0,
+                1946,
+                1,
+                0,
+                541
+              ],
+              [
+                205,
+                29,
+                2,
+                3764,
+                0,
+                0
+              ],
+              [
+                2,
+                3,
+                6,
+                2,
+                3986,
+                1
+              ],
+              [
+                3,
+                21,
+                7,
+                2,
+                3,
+                3964
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "14-7",
+            "accuracy": 0.6664166666666667,
+            "macro_f1": 0.6576882427015817,
+            "macro_accuracy": 0.6664166666666667,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3833,
+                4,
+                0,
+                163,
+                0,
+                0
+              ],
+              [
+                15,
+                1036,
+                0,
+                2947,
+                2,
+                0
+              ],
+              [
+                260,
+                124,
+                2305,
+                2,
+                2,
+                1307
+              ],
+              [
+                13,
+                2546,
+                561,
+                837,
+                1,
+                42
+              ],
+              [
+                2,
+                2,
+                1,
+                0,
+                3994,
+                1
+              ],
+              [
+                1,
+                3,
+                0,
+                0,
+                7,
+                3989
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "2-1",
+            "accuracy": 0.9004583333333334,
+            "macro_f1": 0.8995614452259194,
+            "macro_accuracy": 0.9004583333333334,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3556,
+                51,
+                109,
+                253,
+                31,
+                0
+              ],
+              [
+                10,
+                2538,
+                59,
+                1341,
+                37,
+                15
+              ],
+              [
+                13,
+                83,
+                3786,
+                32,
+                7,
+                79
+              ],
+              [
+                46,
+                198,
+                2,
+                3749,
+                2,
+                3
+              ],
+              [
+                0,
+                0,
+                1,
+                3,
+                3996,
+                0
+              ],
+              [
+                3,
+                7,
+                4,
+                0,
+                0,
+                3986
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "20-1",
+            "accuracy": 0.7502916666666667,
+            "macro_f1": 0.7529206273763419,
+            "macro_accuracy": 0.7502916666666666,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3987,
+                3,
+                5,
+                0,
+                1,
+                4
+              ],
+              [
+                24,
+                1363,
+                12,
+                2592,
+                6,
+                3
+              ],
+              [
+                229,
+                432,
+                2869,
+                331,
+                43,
+                96
+              ],
+              [
+                42,
+                1689,
+                4,
+                2249,
+                12,
+                4
+              ],
+              [
+                6,
+                4,
+                4,
+                5,
+                3979,
+                2
+              ],
+              [
+                22,
+                33,
+                93,
+                14,
+                278,
+                3560
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "7-14",
+            "accuracy": 0.9306666666666666,
+            "macro_f1": 0.9305071136934826,
+            "macro_accuracy": 0.9306666666666666,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3810,
+                0,
+                60,
+                130,
+                0,
+                0
+              ],
+              [
+                10,
+                3093,
+                1,
+                894,
+                2,
+                0
+              ],
+              [
+                108,
+                241,
+                3533,
+                12,
+                53,
+                53
+              ],
+              [
+                4,
+                80,
+                1,
+                3914,
+                1,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                3999,
+                1
+              ],
+              [
+                0,
+                0,
+                10,
+                1,
+                2,
+                3987
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "7-7",
+            "accuracy": 0.8309583333333334,
+            "macro_f1": 0.8299645757535891,
+            "macro_accuracy": 0.8309583333333334,
+            "query_count": 24000,
+            "confusion": [
+              [
+                4000,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                523,
+                2900,
+                31,
+                535,
+                8,
+                3
+              ],
+              [
+                669,
+                0,
+                3329,
+                1,
+                1,
+                0
+              ],
+              [
+                2111,
+                155,
+                13,
+                1720,
+                0,
+                1
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                4000,
+                0
+              ],
+              [
+                2,
+                0,
+                0,
+                0,
+                4,
+                3994
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "8-8",
+            "accuracy": 0.7824166666666666,
+            "macro_f1": 0.7622816031621523,
+            "macro_accuracy": 0.7824166666666668,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3855,
+                11,
+                1,
+                132,
+                1,
+                0
+              ],
+              [
+                5,
+                1487,
+                1,
+                2506,
+                1,
+                0
+              ],
+              [
+                3,
+                1415,
+                1466,
+                128,
+                0,
+                988
+              ],
+              [
+                1,
+                16,
+                0,
+                3975,
+                8,
+                0
+              ],
+              [
+                0,
+                1,
+                1,
+                0,
+                3997,
+                1
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                2,
+                3998
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "14-10",
+            "accuracy": 0.9656071428571429,
+            "macro_f1": 0.1637504466692104,
+            "macro_accuracy": 0.9656071428571429,
+            "query_count": 28000,
+            "confusion": [
+              [
+                27037,
+                70,
+                176,
+                680,
+                33,
+                4
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "14-7",
+            "accuracy": 0.4752857142857143,
+            "macro_f1": 0.1073883993415319,
+            "macro_accuracy": 0.4752857142857143,
+            "query_count": 28000,
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                634,
+                13308,
+                111,
+                13869,
+                57,
+                21
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "20-15",
+            "accuracy": 0.6869285714285714,
+            "macro_f1": 0.13573555771972168,
+            "macro_accuracy": 0.6869285714285714,
+            "query_count": 28000,
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                2794,
+                2295,
+                19234,
+                507,
+                106,
+                3064
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "20-19",
+            "accuracy": 0.7217142857142858,
+            "macro_f1": 0.1397278460006638,
+            "macro_accuracy": 0.7217142857142858,
+            "query_count": 28000,
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                2422,
+                4713,
+                583,
+                20208,
+                24,
+                50
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "6-15",
+            "accuracy": 0.99825,
+            "macro_f1": 0.16652070561741525,
+            "macro_accuracy": 0.99825,
+            "query_count": 28000,
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                10,
+                10,
+                13,
+                10,
+                27951,
+                6
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "8-20",
+            "accuracy": 0.9813571428571428,
+            "macro_f1": 0.16509847747455447,
+            "macro_accuracy": 0.9813571428571428,
+            "query_count": 28000,
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                31,
+                64,
+                114,
+                17,
+                296,
+                27478
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "day",
+            "stratum": "2021_03_01",
+            "accuracy": 0.7884523809523809,
+            "macro_f1": 0.780922472070173,
+            "macro_accuracy": 0.788452380952381,
+            "query_count": 42000,
+            "confusion": [
+              [
+                6584,
+                16,
+                141,
+                251,
+                4,
+                4
+              ],
+              [
+                138,
+                2956,
+                75,
+                3817,
+                9,
+                5
+              ],
+              [
+                429,
+                309,
+                4557,
+                288,
+                21,
+                1396
+              ],
+              [
+                705,
+                849,
+                272,
+                5166,
+                4,
+                4
+              ],
+              [
+                0,
+                2,
+                5,
+                0,
+                6991,
+                2
+              ],
+              [
+                8,
+                6,
+                91,
+                2,
+                32,
+                6861
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "day",
+            "stratum": "2021_03_08",
+            "accuracy": 0.8078095238095238,
+            "macro_f1": 0.8055219803391759,
+            "macro_accuracy": 0.8078095238095239,
+            "query_count": 42000,
+            "confusion": [
+              [
+                6800,
+                15,
+                27,
+                139,
+                19,
+                0
+              ],
+              [
+                157,
+                3625,
+                4,
+                3207,
+                6,
+                1
+              ],
+              [
+                735,
+                482,
+                5020,
+                185,
+                12,
+                566
+              ],
+              [
+                577,
+                1791,
+                67,
+                4551,
+                3,
+                11
+              ],
+              [
+                5,
+                2,
+                1,
+                5,
+                6984,
+                3
+              ],
+              [
+                9,
+                18,
+                3,
+                8,
+                14,
+                6948
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "day",
+            "stratum": "2021_03_15",
+            "accuracy": 0.7730238095238096,
+            "macro_f1": 0.7695166972549731,
+            "macro_accuracy": 0.7730238095238094,
+            "query_count": 42000,
+            "confusion": [
+              [
+                6871,
+                11,
+                7,
+                101,
+                10,
+                0
+              ],
+              [
+                166,
+                2964,
+                9,
+                3838,
+                14,
+                9
+              ],
+              [
+                1368,
+                1271,
+                4285,
+                21,
+                14,
+                41
+              ],
+              [
+                820,
+                1554,
+                6,
+                4611,
+                8,
+                1
+              ],
+              [
+                3,
+                5,
+                5,
+                4,
+                6982,
+                1
+              ],
+              [
+                3,
+                25,
+                10,
+                2,
+                206,
+                6754
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "NONE-s2026092702",
+            "arm": "NONE",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "day",
+            "stratum": "2021_03_23",
+            "accuracy": 0.8501428571428571,
+            "macro_f1": 0.8457123914536823,
+            "macro_accuracy": 0.8501428571428571,
+            "query_count": 42000,
+            "confusion": [
+              [
+                6782,
+                28,
+                1,
+                189,
+                0,
+                0
+              ],
+              [
+                173,
+                3763,
+                23,
+                3007,
+                28,
+                6
+              ],
+              [
+                262,
+                233,
+                5372,
+                13,
+                59,
+                1061
+              ],
+              [
+                320,
+                519,
+                238,
+                5880,
+                9,
+                34
+              ],
+              [
+                2,
+                1,
+                2,
+                1,
+                6994,
+                0
+              ],
+              [
+                11,
+                15,
+                10,
+                5,
+                44,
+                6915
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          }
+        ]
+      },
+      "paired_vs_original_baseline": {
+        "corrected_errors": 4108,
+        "introduced_errors": 3195,
+        "net_correct_change": 913,
+        "accuracy_difference_pp": 0.5434523809523809,
+        "prediction_changes": 8198
+      },
+      "complete_log_numeric_summaries": {
+        "train/loss": {
+          "count": 4440,
+          "sum": 590.2296631142963,
+          "minimum": 0.0036633408162742853,
+          "maximum": 3.6194674968719482,
+          "first": 3.6194674968719482,
+          "last": 0.043730296194553375,
+          "mean": 0.13293460880952618
+        },
+        "train/loss_tx_labeled": {
+          "count": 4440,
+          "sum": 587.1498003734741,
+          "minimum": 0.0029956474900245667,
+          "maximum": 3.6194674968719482,
+          "first": 3.6194674968719482,
+          "last": 0.0432819202542305,
+          "mean": 0.13224094603006173
+        },
+        "train/loss_unlabeled": {
+          "count": 4440,
+          "sum": 13.259419027947843,
+          "minimum": 0.0,
+          "maximum": 0.26398909091949463,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0029863556369251897
+        },
+        "train/reliable_ratio": {
+          "count": 4440,
+          "sum": 25.880418345332146,
+          "minimum": 0.0,
+          "maximum": 0.0625,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.005828923050750483
+        },
+        "train/pseudo_total": {
+          "count": 4440,
+          "sum": 396900.0,
+          "minimum": 0,
+          "maximum": 256,
+          "first": 0,
+          "last": 124,
+          "mean": 89.39189189189189
+        },
+        "train/pseudo_selected": {
+          "count": 4440,
+          "sum": 6619.0,
+          "minimum": 0,
+          "maximum": 16,
+          "first": 0,
+          "last": 0,
+          "mean": 1.4907657657657658
+        },
+        "train/pseudo_truth_available": {
+          "count": 4440,
+          "sum": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0
+        }
+      },
+      "complete_log_phase_summaries": {
+        "label": {
+          "train/loss": {
+            "count": 2886,
+            "sum": 547.2946368511766,
+            "minimum": 0.0058958386071026325,
+            "maximum": 3.6194674968719482,
+            "first": 3.6194674968719482,
+            "last": 0.03121563419699669,
+            "mean": 0.189637781306714
+          },
+          "train/loss_tx_labeled": {
+            "count": 2886,
+            "sum": 547.2946368511766,
+            "minimum": 0.0058958386071026325,
+            "maximum": 3.6194674968719482,
+            "first": 3.6194674968719482,
+            "last": 0.03121563419699669,
+            "mean": 0.189637781306714
+          },
+          "train/loss_unlabeled": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/reliable_ratio": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/pseudo_total": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_selected": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_truth_available": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        },
+        "pseudo": {
+          "train/loss": {
+            "count": 1554,
+            "sum": 42.93502626311965,
+            "minimum": 0.0036633408162742853,
+            "maximum": 0.12779760360717773,
+            "first": 0.018078846856951714,
+            "last": 0.043730296194553375,
+            "mean": 0.027628717029034525
+          },
+          "train/loss_tx_labeled": {
+            "count": 1554,
+            "sum": 39.85516352229752,
+            "minimum": 0.0029956474900245667,
+            "maximum": 0.12700189650058746,
+            "first": 0.016129115596413612,
+            "last": 0.0432819202542305,
+            "mean": 0.025646823373421824
+          },
+          "train/loss_unlabeled": {
+            "count": 1554,
+            "sum": 13.259419027947843,
+            "minimum": 0.0,
+            "maximum": 0.26398909091949463,
+            "first": 0.008862036280333996,
+            "last": 0.0,
+            "mean": 0.008532444676929114
+          },
+          "train/reliable_ratio": {
+            "count": 1554,
+            "sum": 25.880418345332146,
+            "minimum": 0.0,
+            "maximum": 0.0625,
+            "first": 0.015625,
+            "last": 0.0,
+            "mean": 0.016654065859287095
+          },
+          "train/pseudo_total": {
+            "count": 1554,
+            "sum": 396900.0,
+            "minimum": 124,
+            "maximum": 256,
+            "first": 256,
+            "last": 124,
+            "mean": 255.40540540540542
+          },
+          "train/pseudo_selected": {
+            "count": 1554,
+            "sum": 6619.0,
+            "minimum": 0,
+            "maximum": 16,
+            "first": 4,
+            "last": 0,
+            "mean": 4.259330759330759
+          },
+          "train/pseudo_truth_available": {
+            "count": 1554,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        }
+      },
+      "fixed_synthetic_feature_boundary": {
+        "status": "PASS",
+        "model_seed": 2026092702,
+        "arm": "NONE",
+        "checkpoint_epoch": 20,
+        "feature_initial_to_trained_L2": 20.50404335587337,
+        "feature_initial_to_trained_max_abs": 4.900112628936768,
+        "all_features_finite": true,
+        "trained_feature_only_equals_deployed_joint160_bitwise": true,
+        "perturbing_trained_default_W_leaves_joint160_bitwise_unchanged": true,
+        "synthetic_seed": 2026101541,
+        "synthetic_IQ_shape": [
+          2,
+          2,
+          256
+        ],
+        "synthetic_feature_forward_packets": 8,
+        "actual_IQ_reads": 0,
+        "new_target_truth_reads": 0,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "checkpoint_mutations": 0,
+        "limitation": "Fixed synthetic input verifies changed computation and feature/head boundary, not source/target accuracy or newTX transfer"
+      }
     }
   },
   "summary": {
     "NONE": {
-      "actual_seed_count": 1,
+      "actual_seed_count": 2,
       "actual_seeds": [
-        2026092701
+        2026092701,
+        2026092702
       ],
       "complete_three_seeds": false,
-      "accuracy_mean": 0.821202380952381,
-      "accuracy_sample_SD": null,
-      "macro_f1_mean": 0.8177067998442036,
-      "worst_RX_accuracy_mean": 0.7409166666666667,
-      "worst_day_accuracy_mean": 0.7828571428571428,
-      "paired_accuracy_difference_mean_pp": 0.18214285714285716,
-      "positive_seeds": 1,
-      "total_corrected_errors": 3506,
-      "total_introduced_errors": 3200
+      "accuracy_mean": 0.813029761904762,
+      "accuracy_sample_SD": 0.011557828697251573,
+      "macro_f1_mean": 0.808881524086648,
+      "worst_RX_accuracy_mean": 0.7036666666666667,
+      "worst_day_accuracy_mean": 0.7779404761904762,
+      "paired_accuracy_difference_mean_pp": 0.36279761904761904,
+      "positive_seeds": 2,
+      "total_corrected_errors": 7614,
+      "total_introduced_errors": 6395
     },
     "CLEAN_SIG": {
       "actual_seed_count": 1,
@@ -3111,6 +4636,15 @@
       "net_correct_change": 416,
       "accuracy_difference_pp": 0.2476190476190476,
       "prediction_changes": 5214
+    },
+    {
+      "comparison": "NONE minus BASE_SSL",
+      "model_seed": 2026092702,
+      "corrected_errors": 4108,
+      "introduced_errors": 3195,
+      "net_correct_change": 913,
+      "accuracy_difference_pp": 0.5434523809523809,
+      "prediction_changes": 8198
     },
     {
       "model_seed": 2026092701,
@@ -5426,6 +6960,1158 @@
         ]
       ],
       "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8048571428571428,
+      "macro_f1": 0.8000562483290925,
+      "macro_accuracy": 0.8048571428571428,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27037,
+          70,
+          176,
+          680,
+          33,
+          4
+        ],
+        [
+          634,
+          13308,
+          111,
+          13869,
+          57,
+          21
+        ],
+        [
+          2794,
+          2295,
+          19234,
+          507,
+          106,
+          3064
+        ],
+        [
+          2422,
+          4713,
+          583,
+          20208,
+          24,
+          50
+        ],
+        [
+          10,
+          10,
+          13,
+          10,
+          27951,
+          6
+        ],
+        [
+          31,
+          64,
+          114,
+          17,
+          296,
+          27478
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7727916666666667,
+      "macro_f1": 0.7426758504097677,
+      "macro_accuracy": 0.7727916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          1,
+          1,
+          2,
+          0,
+          0
+        ],
+        [
+          47,
+          891,
+          7,
+          3054,
+          1,
+          0
+        ],
+        [
+          1512,
+          0,
+          1946,
+          1,
+          0,
+          541
+        ],
+        [
+          205,
+          29,
+          2,
+          3764,
+          0,
+          0
+        ],
+        [
+          2,
+          3,
+          6,
+          2,
+          3986,
+          1
+        ],
+        [
+          3,
+          21,
+          7,
+          2,
+          3,
+          3964
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6664166666666667,
+      "macro_f1": 0.6576882427015817,
+      "macro_accuracy": 0.6664166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3833,
+          4,
+          0,
+          163,
+          0,
+          0
+        ],
+        [
+          15,
+          1036,
+          0,
+          2947,
+          2,
+          0
+        ],
+        [
+          260,
+          124,
+          2305,
+          2,
+          2,
+          1307
+        ],
+        [
+          13,
+          2546,
+          561,
+          837,
+          1,
+          42
+        ],
+        [
+          2,
+          2,
+          1,
+          0,
+          3994,
+          1
+        ],
+        [
+          1,
+          3,
+          0,
+          0,
+          7,
+          3989
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.9004583333333334,
+      "macro_f1": 0.8995614452259194,
+      "macro_accuracy": 0.9004583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3556,
+          51,
+          109,
+          253,
+          31,
+          0
+        ],
+        [
+          10,
+          2538,
+          59,
+          1341,
+          37,
+          15
+        ],
+        [
+          13,
+          83,
+          3786,
+          32,
+          7,
+          79
+        ],
+        [
+          46,
+          198,
+          2,
+          3749,
+          2,
+          3
+        ],
+        [
+          0,
+          0,
+          1,
+          3,
+          3996,
+          0
+        ],
+        [
+          3,
+          7,
+          4,
+          0,
+          0,
+          3986
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7502916666666667,
+      "macro_f1": 0.7529206273763419,
+      "macro_accuracy": 0.7502916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3987,
+          3,
+          5,
+          0,
+          1,
+          4
+        ],
+        [
+          24,
+          1363,
+          12,
+          2592,
+          6,
+          3
+        ],
+        [
+          229,
+          432,
+          2869,
+          331,
+          43,
+          96
+        ],
+        [
+          42,
+          1689,
+          4,
+          2249,
+          12,
+          4
+        ],
+        [
+          6,
+          4,
+          4,
+          5,
+          3979,
+          2
+        ],
+        [
+          22,
+          33,
+          93,
+          14,
+          278,
+          3560
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.9306666666666666,
+      "macro_f1": 0.9305071136934826,
+      "macro_accuracy": 0.9306666666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3810,
+          0,
+          60,
+          130,
+          0,
+          0
+        ],
+        [
+          10,
+          3093,
+          1,
+          894,
+          2,
+          0
+        ],
+        [
+          108,
+          241,
+          3533,
+          12,
+          53,
+          53
+        ],
+        [
+          4,
+          80,
+          1,
+          3914,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          0,
+          10,
+          1,
+          2,
+          3987
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8309583333333334,
+      "macro_f1": 0.8299645757535891,
+      "macro_accuracy": 0.8309583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          523,
+          2900,
+          31,
+          535,
+          8,
+          3
+        ],
+        [
+          669,
+          0,
+          3329,
+          1,
+          1,
+          0
+        ],
+        [
+          2111,
+          155,
+          13,
+          1720,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          4,
+          3994
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7824166666666666,
+      "macro_f1": 0.7622816031621523,
+      "macro_accuracy": 0.7824166666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3855,
+          11,
+          1,
+          132,
+          1,
+          0
+        ],
+        [
+          5,
+          1487,
+          1,
+          2506,
+          1,
+          0
+        ],
+        [
+          3,
+          1415,
+          1466,
+          128,
+          0,
+          988
+        ],
+        [
+          1,
+          16,
+          0,
+          3975,
+          8,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          3997,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          2,
+          3998
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9656071428571429,
+      "macro_f1": 0.1637504466692104,
+      "macro_accuracy": 0.9656071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27037,
+          70,
+          176,
+          680,
+          33,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4752857142857143,
+      "macro_f1": 0.1073883993415319,
+      "macro_accuracy": 0.4752857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          634,
+          13308,
+          111,
+          13869,
+          57,
+          21
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6869285714285714,
+      "macro_f1": 0.13573555771972168,
+      "macro_accuracy": 0.6869285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2794,
+          2295,
+          19234,
+          507,
+          106,
+          3064
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.7217142857142858,
+      "macro_f1": 0.1397278460006638,
+      "macro_accuracy": 0.7217142857142858,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2422,
+          4713,
+          583,
+          20208,
+          24,
+          50
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.99825,
+      "macro_f1": 0.16652070561741525,
+      "macro_accuracy": 0.99825,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          10,
+          13,
+          10,
+          27951,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9813571428571428,
+      "macro_f1": 0.16509847747455447,
+      "macro_accuracy": 0.9813571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          31,
+          64,
+          114,
+          17,
+          296,
+          27478
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7884523809523809,
+      "macro_f1": 0.780922472070173,
+      "macro_accuracy": 0.788452380952381,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6584,
+          16,
+          141,
+          251,
+          4,
+          4
+        ],
+        [
+          138,
+          2956,
+          75,
+          3817,
+          9,
+          5
+        ],
+        [
+          429,
+          309,
+          4557,
+          288,
+          21,
+          1396
+        ],
+        [
+          705,
+          849,
+          272,
+          5166,
+          4,
+          4
+        ],
+        [
+          0,
+          2,
+          5,
+          0,
+          6991,
+          2
+        ],
+        [
+          8,
+          6,
+          91,
+          2,
+          32,
+          6861
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8078095238095238,
+      "macro_f1": 0.8055219803391759,
+      "macro_accuracy": 0.8078095238095239,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6800,
+          15,
+          27,
+          139,
+          19,
+          0
+        ],
+        [
+          157,
+          3625,
+          4,
+          3207,
+          6,
+          1
+        ],
+        [
+          735,
+          482,
+          5020,
+          185,
+          12,
+          566
+        ],
+        [
+          577,
+          1791,
+          67,
+          4551,
+          3,
+          11
+        ],
+        [
+          5,
+          2,
+          1,
+          5,
+          6984,
+          3
+        ],
+        [
+          9,
+          18,
+          3,
+          8,
+          14,
+          6948
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7730238095238096,
+      "macro_f1": 0.7695166972549731,
+      "macro_accuracy": 0.7730238095238094,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6871,
+          11,
+          7,
+          101,
+          10,
+          0
+        ],
+        [
+          166,
+          2964,
+          9,
+          3838,
+          14,
+          9
+        ],
+        [
+          1368,
+          1271,
+          4285,
+          21,
+          14,
+          41
+        ],
+        [
+          820,
+          1554,
+          6,
+          4611,
+          8,
+          1
+        ],
+        [
+          3,
+          5,
+          5,
+          4,
+          6982,
+          1
+        ],
+        [
+          3,
+          25,
+          10,
+          2,
+          206,
+          6754
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8501428571428571,
+      "macro_f1": 0.8457123914536823,
+      "macro_accuracy": 0.8501428571428571,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6782,
+          28,
+          1,
+          189,
+          0,
+          0
+        ],
+        [
+          173,
+          3763,
+          23,
+          3007,
+          28,
+          6
+        ],
+        [
+          262,
+          233,
+          5372,
+          13,
+          59,
+          1061
+        ],
+        [
+          320,
+          519,
+          238,
+          5880,
+          9,
+          34
+        ],
+        [
+          2,
+          1,
+          2,
+          1,
+          6994,
+          0
+        ],
+        [
+          11,
+          15,
+          10,
+          5,
+          44,
+          6915
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
     }
   ],
   "baseline_complete_trace_count": 3,
@@ -6121,6 +8807,22 @@
       "epoch13_L_CE": 0.029411893602259254,
       "source_V_accuracy_difference_pp": 0.08148148148148238,
       "source_V_worst_RX_difference_pp": 0.462962962962965
+    },
+    {
+      "row_id": "NONE-s2026092702",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "baseline_final_training_L_CE": 0.0305139944649528,
+      "final_training_L_CE": 0.024029529082949634,
+      "training_L_CE_difference": -0.006484465382003167,
+      "baseline_pseudo_selected_observations": 6580.0,
+      "pseudo_selected_observations": 6619.0,
+      "pseudo_selected_observations_difference": 39.0,
+      "pseudo_total_observations": 396900,
+      "baseline_epoch13_L_CE": 0.040621294612736183,
+      "epoch13_L_CE": 0.03308883412564929,
+      "source_V_accuracy_difference_pp": 0.18518518518518823,
+      "source_V_worst_RX_difference_pp": 0.5185185185185182
     }
   ],
   "baseline_target_metrics": {
@@ -7334,6 +10036,1217 @@
           "readout": "NATIVE_HEAD"
         }
       ]
+    },
+    "2026092702": {
+      "accuracy": 0.799422619047619,
+      "macro_f1": 0.7945193186316716,
+      "errors": 33697,
+      "worst_RX_accuracy": 0.6660416666666666,
+      "worst_day_accuracy": 0.7634761904761905,
+      "confusion": [
+        [
+          27296,
+          52,
+          173,
+          441,
+          34,
+          4
+        ],
+        [
+          897,
+          13075,
+          120,
+          13819,
+          59,
+          30
+        ],
+        [
+          2915,
+          2253,
+          19434,
+          484,
+          121,
+          2793
+        ],
+        [
+          2666,
+          5403,
+          351,
+          19484,
+          30,
+          66
+        ],
+        [
+          9,
+          8,
+          12,
+          15,
+          27947,
+          9
+        ],
+        [
+          26,
+          98,
+          88,
+          30,
+          691,
+          27067
+        ]
+      ],
+      "records": [
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "overall",
+          "stratum": "ALL",
+          "accuracy": 0.799422619047619,
+          "macro_f1": 0.7945193186316716,
+          "macro_accuracy": 0.7994226190476189,
+          "query_count": 168000,
+          "confusion": [
+            [
+              27296,
+              52,
+              173,
+              441,
+              34,
+              4
+            ],
+            [
+              897,
+              13075,
+              120,
+              13819,
+              59,
+              30
+            ],
+            [
+              2915,
+              2253,
+              19434,
+              484,
+              121,
+              2793
+            ],
+            [
+              2666,
+              5403,
+              351,
+              19484,
+              30,
+              66
+            ],
+            [
+              9,
+              8,
+              12,
+              15,
+              27947,
+              9
+            ],
+            [
+              26,
+              98,
+              88,
+              30,
+              691,
+              27067
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "1-1",
+          "accuracy": 0.7946666666666666,
+          "macro_f1": 0.7715763725597761,
+          "macro_accuracy": 0.7946666666666666,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3998,
+              0,
+              0,
+              2,
+              0,
+              0
+            ],
+            [
+              81,
+              960,
+              2,
+              2956,
+              1,
+              0
+            ],
+            [
+              1124,
+              1,
+              2504,
+              1,
+              0,
+              370
+            ],
+            [
+              271,
+              24,
+              2,
+              3703,
+              0,
+              0
+            ],
+            [
+              1,
+              3,
+              6,
+              5,
+              3984,
+              1
+            ],
+            [
+              3,
+              62,
+              7,
+              2,
+              3,
+              3923
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "14-7",
+          "accuracy": 0.6660416666666666,
+          "macro_f1": 0.6611079018249693,
+          "macro_accuracy": 0.6660416666666666,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3923,
+              0,
+              0,
+              77,
+              0,
+              0
+            ],
+            [
+              19,
+              917,
+              0,
+              3061,
+              3,
+              0
+            ],
+            [
+              47,
+              211,
+              2541,
+              3,
+              2,
+              1196
+            ],
+            [
+              16,
+              2949,
+              326,
+              644,
+              3,
+              62
+            ],
+            [
+              2,
+              1,
+              0,
+              2,
+              3991,
+              4
+            ],
+            [
+              1,
+              1,
+              0,
+              2,
+              27,
+              3969
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "2-1",
+          "accuracy": 0.8782083333333334,
+          "macro_f1": 0.877891394574315,
+          "macro_accuracy": 0.8782083333333333,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3586,
+              43,
+              115,
+              225,
+              31,
+              0
+            ],
+            [
+              16,
+              2441,
+              81,
+              1410,
+              34,
+              18
+            ],
+            [
+              25,
+              293,
+              3481,
+              103,
+              41,
+              57
+            ],
+            [
+              55,
+              354,
+              1,
+              3584,
+              4,
+              2
+            ],
+            [
+              0,
+              0,
+              1,
+              3,
+              3996,
+              0
+            ],
+            [
+              3,
+              4,
+              4,
+              0,
+              0,
+              3989
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "20-1",
+          "accuracy": 0.736375,
+          "macro_f1": 0.7406033211920597,
+          "macro_accuracy": 0.7363750000000001,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3984,
+              3,
+              7,
+              1,
+              1,
+              4
+            ],
+            [
+              31,
+              1495,
+              14,
+              2447,
+              5,
+              8
+            ],
+            [
+              222,
+              528,
+              2896,
+              280,
+              43,
+              31
+            ],
+            [
+              44,
+              1845,
+              4,
+              2093,
+              13,
+              1
+            ],
+            [
+              6,
+              3,
+              4,
+              5,
+              3980,
+              2
+            ],
+            [
+              19,
+              31,
+              64,
+              26,
+              635,
+              3225
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "7-14",
+          "accuracy": 0.921875,
+          "macro_f1": 0.9208515537379748,
+          "macro_accuracy": 0.921875,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3862,
+              0,
+              51,
+              86,
+              1,
+              0
+            ],
+            [
+              12,
+              2649,
+              1,
+              1336,
+              2,
+              0
+            ],
+            [
+              36,
+              200,
+              3708,
+              10,
+              34,
+              12
+            ],
+            [
+              12,
+              50,
+              1,
+              3936,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              3999,
+              1
+            ],
+            [
+              0,
+              0,
+              12,
+              0,
+              17,
+              3971
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "7-7",
+          "accuracy": 0.786875,
+          "macro_f1": 0.7888121700935532,
+          "macro_accuracy": 0.7868750000000001,
+          "query_count": 24000,
+          "confusion": [
+            [
+              4000,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              733,
+              2799,
+              21,
+              432,
+              11,
+              4
+            ],
+            [
+              1454,
+              0,
+              2544,
+              0,
+              1,
+              1
+            ],
+            [
+              2267,
+              168,
+              17,
+              1547,
+              0,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              4000,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              4,
+              3995
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "receiver",
+          "stratum": "8-8",
+          "accuracy": 0.8119166666666666,
+          "macro_f1": 0.796269871572663,
+          "macro_accuracy": 0.8119166666666667,
+          "query_count": 24000,
+          "confusion": [
+            [
+              3943,
+              6,
+              0,
+              50,
+              1,
+              0
+            ],
+            [
+              5,
+              1814,
+              1,
+              2177,
+              3,
+              0
+            ],
+            [
+              7,
+              1020,
+              1760,
+              87,
+              0,
+              1126
+            ],
+            [
+              1,
+              13,
+              0,
+              3977,
+              9,
+              0
+            ],
+            [
+              0,
+              1,
+              1,
+              0,
+              3997,
+              1
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              5,
+              3995
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "14-10",
+          "accuracy": 0.9748571428571429,
+          "macro_f1": 0.16454475308641975,
+          "macro_accuracy": 0.9748571428571429,
+          "query_count": 28000,
+          "confusion": [
+            [
+              27296,
+              52,
+              173,
+              441,
+              34,
+              4
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "14-7",
+          "accuracy": 0.4669642857142857,
+          "macro_f1": 0.1061067153580848,
+          "macro_accuracy": 0.4669642857142857,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              897,
+              13075,
+              120,
+              13819,
+              59,
+              30
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "20-15",
+          "accuracy": 0.6940714285714286,
+          "macro_f1": 0.1365687059914829,
+          "macro_accuracy": 0.6940714285714286,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              2915,
+              2253,
+              19434,
+              484,
+              121,
+              2793
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "20-19",
+          "accuracy": 0.6958571428571428,
+          "macro_f1": 0.1367758964423104,
+          "macro_accuracy": 0.6958571428571428,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              2666,
+              5403,
+              351,
+              19484,
+              30,
+              66
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "6-15",
+          "accuracy": 0.9981071428571429,
+          "macro_f1": 0.1665087791421643,
+          "macro_accuracy": 0.9981071428571429,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              9,
+              8,
+              12,
+              15,
+              27947,
+              9
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "transmitter",
+          "stratum": "8-20",
+          "accuracy": 0.9666785714285714,
+          "macro_f1": 0.16384283388115084,
+          "macro_accuracy": 0.9666785714285714,
+          "query_count": 28000,
+          "confusion": [
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              26,
+              98,
+              88,
+              30,
+              691,
+              27067
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "day",
+          "stratum": "2021_03_01",
+          "accuracy": 0.7729047619047619,
+          "macro_f1": 0.7642489832107616,
+          "macro_accuracy": 0.7729047619047619,
+          "query_count": 42000,
+          "confusion": [
+            [
+              6640,
+              12,
+              133,
+              208,
+              3,
+              4
+            ],
+            [
+              236,
+              2751,
+              96,
+              3891,
+              15,
+              11
+            ],
+            [
+              676,
+              310,
+              4442,
+              333,
+              22,
+              1217
+            ],
+            [
+              778,
+              1147,
+              235,
+              4832,
+              7,
+              1
+            ],
+            [
+              0,
+              2,
+              5,
+              0,
+              6991,
+              2
+            ],
+            [
+              4,
+              5,
+              65,
+              24,
+              96,
+              6806
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "day",
+          "stratum": "2021_03_08",
+          "accuracy": 0.8195714285714286,
+          "macro_f1": 0.8170698370083994,
+          "macro_accuracy": 0.8195714285714285,
+          "query_count": 42000,
+          "confusion": [
+            [
+              6868,
+              10,
+              33,
+              67,
+              22,
+              0
+            ],
+            [
+              194,
+              3733,
+              2,
+              3067,
+              3,
+              1
+            ],
+            [
+              598,
+              386,
+              5443,
+              90,
+              14,
+              469
+            ],
+            [
+              654,
+              1825,
+              44,
+              4452,
+              3,
+              22
+            ],
+            [
+              5,
+              1,
+              1,
+              5,
+              6982,
+              6
+            ],
+            [
+              9,
+              5,
+              4,
+              1,
+              37,
+              6944
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "day",
+          "stratum": "2021_03_15",
+          "accuracy": 0.7634761904761905,
+          "macro_f1": 0.7597375402076252,
+          "macro_accuracy": 0.7634761904761905,
+          "query_count": 42000,
+          "confusion": [
+            [
+              6940,
+              2,
+              5,
+              44,
+              9,
+              0
+            ],
+            [
+              245,
+              2857,
+              5,
+              3870,
+              13,
+              10
+            ],
+            [
+              1311,
+              1208,
+              4349,
+              30,
+              12,
+              90
+            ],
+            [
+              869,
+              1737,
+              3,
+              4379,
+              11,
+              1
+            ],
+            [
+              2,
+              3,
+              4,
+              9,
+              6981,
+              1
+            ],
+            [
+              3,
+              64,
+              10,
+              4,
+              359,
+              6560
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        },
+        {
+          "row_id": "BASE_SSL-s2026092702",
+          "arm": "BASE_SSL",
+          "model_seed": 2026092702,
+          "stage": "repair",
+          "view": "clean",
+          "dimension": "day",
+          "stratum": "2021_03_23",
+          "accuracy": 0.8417380952380953,
+          "macro_f1": 0.8370549734590664,
+          "macro_accuracy": 0.8417380952380951,
+          "query_count": 42000,
+          "confusion": [
+            [
+              6848,
+              28,
+              2,
+              122,
+              0,
+              0
+            ],
+            [
+              222,
+              3734,
+              17,
+              2991,
+              28,
+              8
+            ],
+            [
+              330,
+              349,
+              5200,
+              31,
+              73,
+              1017
+            ],
+            [
+              365,
+              694,
+              69,
+              5821,
+              9,
+              42
+            ],
+            [
+              2,
+              2,
+              2,
+              1,
+              6993,
+              0
+            ],
+            [
+              10,
+              24,
+              9,
+              1,
+              199,
+              6757
+            ]
+          ],
+          "readout": "NATIVE_HEAD"
+        }
+      ]
     }
   },
   "matched_initial_200states_between_modes": {
@@ -7481,12 +11394,36 @@
         "head_fit_updates": 0,
         "checkpoint_mutations": 0,
         "limitation": "Fixed synthetic input verifies changed computation and feature/head boundary, not source/target accuracy or newTX transfer"
+      },
+      "NONE-s2026092702": {
+        "status": "PASS",
+        "model_seed": 2026092702,
+        "arm": "NONE",
+        "checkpoint_epoch": 20,
+        "feature_initial_to_trained_L2": 20.50404335587337,
+        "feature_initial_to_trained_max_abs": 4.900112628936768,
+        "all_features_finite": true,
+        "trained_feature_only_equals_deployed_joint160_bitwise": true,
+        "perturbing_trained_default_W_leaves_joint160_bitwise_unchanged": true,
+        "synthetic_seed": 2026101541,
+        "synthetic_IQ_shape": [
+          2,
+          2,
+          256
+        ],
+        "synthetic_feature_forward_packets": 8,
+        "actual_IQ_reads": 0,
+        "new_target_truth_reads": 0,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "checkpoint_mutations": 0,
+        "limitation": "Fixed synthetic input verifies changed computation and feature/head boundary, not source/target accuracy or newTX transfer"
       }
     },
     "status": "PASS",
     "actual_IQ_reads": 0,
     "new_target_truth_reads": 0,
-    "synthetic_feature_forward_packets": 16,
+    "synthetic_feature_forward_packets": 24,
     "optimizer_steps": 0,
     "head_fit_updates": 0,
     "checkpoint_mutations": 0
