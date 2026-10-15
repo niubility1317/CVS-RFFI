@@ -32,3 +32,5 @@ GPU 由实时容量选择，每 GPU 含其他 owner 最多 3 个实验进程，�
 发布 commit：`7a366c506a736c34e5bba335821f4867f2d3706b`，已 push 并核对远端 OID。归档传输、远端编译、普通账户预检和 no-query smoke 均通过。四行实际 resolved 为 scratch E50/33+17/11100 更新，parent 与 teacher checkpoint 均为空。B0/C3/SSL_CONF/SSL_WEAK 分别运行在 GPU 3/4/5/6；PID 为 2826320, 2826397, 2826552, 2826633。独立证据：`E:/type10-7/local_artifacts/cvs_urban_sigtime_e50_20261015/monitor/latest.json`。本次仅确认运行，尚无 E50 目标成绩。
 
 逐行正式结果已返回：[B0-s2026092701](rows/B0-s2026092701.md)。该行完成不代表整个 E50 矩阵完成；其他行继续原计划。
+
+逐行正式结果已返回：[C3-s2026092701](rows/C3-s2026092701.md)。该行完成不代表整个 E50 矩阵完成；其他行继续原计划。

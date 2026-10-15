@@ -145,3 +145,9 @@
 |Phase1 DualGuard16完整结果分析|legacy_evidence_group|[打开](../../analysis/phase1_dgleo_dualguard16_final_analysis_20260712.md)|
 |Phase1 center-lowrank export traceability|legacy_evidence_group|[打开](../../analysis/phase1_center_lowrank_export_traceability_20260717.md)|
 |D21 KNN原型生命周期、Phase1压缩几何与新类注册设计|legacy_evidence_group|[打开](../../analysis/d21_knn_prototype_lifecycle_and_phase1_geometry_design_20260717.md)|
+
+本轮固定 SIG_TIME：
+
+- [joint160 方向蒸馏：零训练源梯度校准](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-joint160-calibration-manysig-s2026092701-r01/report.md)：ANALYZED
+- [固定 SIG_TIME：输出 KL 与 joint160 方向蒸馏 E50](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-joint160-kl-dir-e50-manysig-s2026092701-m2-r01/report.md)：LOCAL_VERIFIED
+- [固定 SIG_TIME 的 E50 星地增强与可信源 EMA 监督](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-urban-ssl-e50-manysig-s2026092701-m4-r01/report.md)：RUNNING

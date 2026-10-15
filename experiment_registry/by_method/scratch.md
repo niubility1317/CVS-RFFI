@@ -25,3 +25,7 @@
 |完整冻结预测独立评分：R2四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-score-manysig-m16-r06/report.md)|
 |冻结E200独立测试：R1随机混杂诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r03/report.md)|
 |冻结E200独立测试：R2修复后四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r04/report.md)|
+
+本轮固定 SIG_TIME：
+
+- [固定 SIG_TIME：输出 KL 与 joint160 方向蒸馏 E50](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-joint160-kl-dir-e50-manysig-s2026092701-m2-r01/report.md)：LOCAL_VERIFIED

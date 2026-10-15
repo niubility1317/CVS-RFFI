@@ -21,3 +21,7 @@ CPU-only，普通N607账户，CUDA_VISIBLE_DEVICES为空；torch/OMP/MKL/OpenBLA
 本地7项新检查PASS：实际joint160 train/eval相同、W/gain辅助零梯度与五组正梯度、CE头/gain正梯度、方向缩放不变/零输入有限、错误教师只取消aux、teacher/reliability stopgrad与隐藏标签拒绝、静态系数/截断/零梯度拒绝。旧E50 10项兼容检查PASS。一次独立P0/P1已完成，未发现阻断问题；只核查此零训练阶段；未来B/C训练接线不在本次发布范围。
 
 预期 results.json 包含原始80×2种梯度记录、静态系数、共同eta日程、来源和2250前向/墙钟/状态不变证据；不生成目标prediction或score。此诊断是明确source-only，不能称为Phase1正式性能完成。设计追踪见 analysis/cvs_joint160_distill_traceability_20261015.md。
+
+实际结果：ANALYZED / VERIFIED，commit 5b2d53e6db5cd8c6207af1709a0dbe4771d7e1b2。2250 前向、0 更新，墙钟 6.497879472095519 s；模型/EMA状态不变，无 U/query。源校准静态系数 KL=0.04998551146175206，direction=0.44114306609656917，各加权梯度中位比为0.1，无截断。独立远端readback确认结果、首batch真实checkpoint smoke PASS、普通账户CPU-only预检、archive一致与远端编译PASS。校准过程在第二次查看时已退出，按结果而不是PID退出判定完成。
+
+一次独立 P0/P1：指定零训练校准范围未发现 P0/P1。未来训练接线须作其对应检查。后续两条 scratch E50 训练按 source_recipe.json 固定系数和共同 eta 日程；本次未读取任何目标分数。

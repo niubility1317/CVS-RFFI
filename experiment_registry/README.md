@@ -472,3 +472,11 @@
 - [源域伪目标健康：三种子冻结模型与浅中层RX探针](../automation_reports/CV-SincNet/20261013-source-pseudotarget-health-manysig-m3-r01/report.md)：ANALYZED，model seeds=[2026092701, 2026092702, 2026092703]
 - [冻结 RX 对抗模型：九行源域独立线性探针](../automation_reports/CV-SincNet/20261013-source-conditional-rx-probe-health-manysig-m9-r01/report.md)：REPLACED，model seeds=[2026092701, 2026092702, 2026092703]
 - [六方向源机制诊断：冻结 CE30 三主种子](../automation_reports/CV-SincNet/20261013-source-six-direction-mechanisms-manysig-m3-r01/report.md)：LOCAL_VERIFIED，model seeds=[2026092701, 2026092702, 2026092703]
+
+## 本轮固定 SIG_TIME 记录
+
+|名称|状态|报告|
+|---|---|---|
+|joint160 方向蒸馏：零训练源梯度校准|ANALYZED|[打开](../automation_reports/CV-SincNet/20261015-phase1-sigtime-joint160-calibration-manysig-s2026092701-r01/report.md)|
+|固定 SIG_TIME：输出 KL 与 joint160 方向蒸馏 E50|LOCAL_VERIFIED|[打开](../automation_reports/CV-SincNet/20261015-phase1-sigtime-joint160-kl-dir-e50-manysig-s2026092701-m2-r01/report.md)|
+|固定 SIG_TIME 的 E50 星地增强与可信源 EMA 监督|RUNNING|[打开](../automation_reports/CV-SincNet/20261015-phase1-sigtime-urban-ssl-e50-manysig-s2026092701-m4-r01/report.md)|

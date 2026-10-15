@@ -11,8 +11,8 @@
 | J03 | 三.2 | 只约束归一化方向，eps 与原 cosine 头一致，不匹配原范数 | objective.py | verified | 缩放不变、零向量有限 | cosine eps=1e-4，scale30不变 |
 | J04 | 七.1 | 辅助损失对 W 梯度为零，原 CE 继续训练 W | objective.py/checks.py | verified | 实际默认头 aux 无梯度、CE 非零 | B/C 同一 W 边界 |
 | J05 | 七.2 | 辅助 gain 停止梯度，branch 本身不得 detach | features.py/checks.py | verified | forward 相同；aux gain0；t1/t2/PA/ref/SIG 梯度非零 | 仅改变辅助梯度，不改部署/CE |
-| J06 | 七.4 | 合法源校准五组梯度比，目标中位数0.1，冻结系数，不在线均衡 | calibrate.py | pending | 无 optimizer/状态变化；source-only 数值记录 | source frozen C3/own EMA，只读 |
-| J07 | 七.3 | 主 Dropout 保持；诊断 eval；清楚区分信道与随机删除 | observer.py/calibrate.py | pending | train/eval 前向等值、模式恢复 | 不移动 t2 读点 |
+| J06 | 七.4 | 合法源校准五组梯度比，目标中位数0.1，冻结系数，不在线均衡 | calibrate.py | verified | 无 optimizer/状态变化；source-only 数值记录 | source frozen C3/own EMA，只读 |
+| J07 | 七.3 | 主 Dropout 保持；诊断 eval；清楚区分信道与随机删除 | observer.py/calibrate.py | verified | train/eval 前向等值、模式恢复 | 不移动 t2 读点 |
 | J08 | 八第一轮 | A/B/C 除目标外匹配网络、数据、EMA、预算与增强 | design.py/observer.py | pending | 原结构 state_dict 相同；同源固定 eta 日程和命名 RNG | A 的 source 日程复用于 B/C，不读取目标分数 |
 | J09 | 八/验收 | 自动逐行 clean＋六 practical、独立 truth-last、默认头、无目标反馈 | dispatch.py/evaluate.py | pending | protocol-negative+真实checkpoint smoke；真实进程/产物 | 正式 IQ 不生成/调弱 |
 | J10 | 七/八 | 实际骨干梯度、更新、裁剪与覆盖、完整成本 | observer.py/report.py | pending | 全量日志及 actual 参数更新 | 预算耗尽不代表收敛 |
@@ -29,3 +29,7 @@
 训练发布仍使用既有最小流程：合法数据/来源、代码配置 commit、定点负例与真实 checkpoint smoke、一次 P0/P1、最小登记、不可变输出与传输/编译、启动后回读、独立评分。此文件本身不是额外发布门槛。
 
 本地证据：`E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_urban_identity50.checks`，7项PASS；旧 `experiments.cvs_urban_sigtime50.checks` 10项PASS。原始 stderr 位于 local_artifacts/cvs_urban_sigtime_e50_20261015/identity_checks_stderr.txt 与 identity_native_compat_stderr.txt。J02这里只证明损失/资格边界，实际 native 训练接线仍由 J09/J10 验证，不能以unit结果冒充真实训练。
+
+2026-10-15 源校准真实完成：2250前向、0更新、6.498s，模型/EMA状态不变、无query/U；静态KL lambda0.04998551146175206，direction lambda0.44114306609656917；两者源面板中位梯度比0.1。source_recipe.json在新训练及读取旧C3目标成绩前固定。实际新训练hook/同流物理增强/无query评分负例扩展后10项PASS。J08的B/C为匹配比较；A具有既有学生margin/质量权重且前向较少，报告已披露，不宣称严格只改公式。J09/J10仍待真实训练/预测产物，J11待冻结后源诊断。
+
+新训练发布前：11项定点检查PASS，package compile PASS，登记VALID；独立P0/P1审查指定新训练/预测/发布接线未发现P0/P1。正式运行尚未发布，J09/J10/J11仍保留pending。

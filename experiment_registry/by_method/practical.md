@@ -14,3 +14,7 @@
 |DAOT＋FastTrust-RC4 residual环境比例六组|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/report.md)|
 |旧Practical四组checkpoint统一六环境测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-practical4-sixscene-eval-s392005-r01/report.md)|
 |CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
+
+本轮固定 SIG_TIME：
+
+- [固定 SIG_TIME：输出 KL 与 joint160 方向蒸馏 E50](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-joint160-kl-dir-e50-manysig-s2026092701-m2-r01/report.md)：LOCAL_VERIFIED

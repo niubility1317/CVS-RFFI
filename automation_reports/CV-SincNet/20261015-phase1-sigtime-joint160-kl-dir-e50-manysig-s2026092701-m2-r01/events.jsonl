@@ -1,0 +1,2 @@
+{"at": "2026-10-15T03:34:29+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-15T03:37:38+00:00", "status": "LOCAL_VERIFIED", "note": "11 focused checks PASS, compile PASS; one independent P0/P1 review found no P0/P1 in actual new training/eval/publish wiring. Source-only static coefficients/common eta frozen; two scratch E50 rows, no new head or target feedback.", "evidence": ["E:/type10-7/local_artifacts/cvs_joint160_identity_20261015/training_checks_stderr.txt"], "row_id": null}

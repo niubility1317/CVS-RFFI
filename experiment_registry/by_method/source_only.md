@@ -27,3 +27,7 @@
 |冻结源域伪目标健康与浅中层 RX 探针|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-pseudotarget-health-manysig-m3-r01/report.md)|
 |九行冻结 RX 对抗模型的源域独立探针|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-conditional-rx-probe-health-manysig-m9-r01/report.md)|
 |六方向源机制诊断：冻结 CE30 三主种子|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-six-direction-mechanisms-manysig-m3-r01/report.md)|
+
+本轮固定 SIG_TIME：
+
+- [joint160 方向蒸馏：零训练源梯度校准](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-joint160-calibration-manysig-s2026092701-r01/report.md)：ANALYZED

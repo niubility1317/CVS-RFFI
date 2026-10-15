@@ -1,4 +1,6 @@
-import copy,unittest
+import copy,tempfile,unittest
+from pathlib import Path
+from unittest.mock import patch
 import torch
 from torch.nn import functional as F
 from experiments.cvs_urban_sigtime50 import design as base
@@ -70,6 +72,63 @@ class IdentityChecks(unittest.TestCase):
         self.assertAlmostEqual(c['weighted_median_gradient_ratio'],.1)
         self.assertTrue(coefficient([1e-5])['clipped'])
         with self.assertRaises(ValueError):coefficient([0.,0.])
+
+    def test_new_native_hook_label_phase_has_teacher_and_no_U_metadata(self):
+        from . import design as d,model as model_api
+        from .observer import Observer
+        for row in d.rows():
+            c=d.config(row);m=model_api.build(c,'cpu').train()
+            teacher=copy.deepcopy(m).eval().requires_grad_(False)
+            x=torch.randn(4,2,256);y=f.frozen_teacher(teacher,x)['tx_logits'].argmax(1)
+            meta=dict(rx_i=torch.tensor([1,3,4,6]),day_i=torch.ones(4,dtype=torch.long),
+                eq_i=torch.ones(4,dtype=torch.long),base_index=torch.arange(4))
+            clean=m(x,y_tx=y,grl_lambda=1.,return_aux=True,domain_labels=torch.zeros(4,dtype=torch.long))
+            ce=F.cross_entropy(clean['tx_logits'],y,label_smoothing=.01)
+            with tempfile.TemporaryDirectory() as td:
+                obs=Observer(c);obs.initialize(m,c,Path(td))
+                kw=dict(model=m,args=d.make_args(c,'cpu'),epoch=1,batch_idx=1,clean_iq=x,labels=y,
+                    clean_meta=meta,clean_output=clean,clean_ce=ce,unlabeled_iq=None,unlabeled_meta=None,
+                    teacher_prob=None,weak_mask=None,teacher_model=teacher)
+                adj,metrics=obs.observe(**kw);loss=ce+adj;loss.backward()
+                self.assertTrue(torch.isfinite(loss));self.assertEqual(obs.counts['satellite_L_packets'],4)
+                self.assertEqual(obs.counts['teacher_L_clean_packets'],4)
+                self.assertTrue(all(p.grad is None for p in teacher.parameters()))
+                self.assertGreater(float(f.boundary_parameters(m)['default_head'].grad.norm()),0.)
+                self.assertTrue(all(v==0 for v in obs.epoch_records[0]['auxiliary_boundary_norms'].values()))
+                obs.trace.close()
+
+    def test_frozen_scratch_budget_and_matching_physics(self):
+        from . import design as d
+        from .channel import PairedChannel
+        from experiments.cvs_urban_sigtime50.channel import PairedChannel as OldChannel
+        old=base.config(next(r for r in base.rows() if r['arm']=='C3'))
+        x=torch.randn(3,2,256);meta=dict(rx_i=torch.tensor([1,3,8]),day_i=torch.ones(3,dtype=torch.long),
+            eq_i=torch.ones(3,dtype=torch.long),base_index=torch.arange(3))
+        expected,em=OldChannel(old).apply(x,meta,4,7,eta=.05)
+        for row in d.rows():
+            c=d.config(row);a=d.make_args(c,'cpu')
+            self.assertEqual((a.epochs,a.label_epochs,a.pseudo_epochs),(50,33,17))
+            self.assertTrue(a.from_scratch);self.assertFalse(a.baseline_ckpt or a.teacher_ckpt)
+            self.assertFalse(c['margin'] or c['urban_ssl']);self.assertEqual(len(c['frozen_eta']),50)
+            actual,am=PairedChannel(c).apply(x,meta,4,7,eta=c['frozen_eta'][3])
+            self.assertTrue(torch.equal(expected,actual));self.assertEqual(em,am)
+            invalid=copy.deepcopy(c);invalid['auxiliary']['coefficient']*=2
+            with self.assertRaises(ValueError):d.validate(invalid)
+
+    def test_incomplete_predictions_never_open_truth(self):
+        from . import design as d,evaluate
+        row=d.rows()[0]['row_id']
+        with tempfile.TemporaryDirectory() as td,patch.object(d,'BASE',Path(td)),patch.object(d,'TRUTH',Path(td)/'forbidden_truth'):
+            with self.assertRaises(FileNotFoundError):evaluate.score(row)
+            self.assertFalse((Path(td)/row/'scoring').exists())
+
+    def test_registered_matrix_and_publisher_call_actual_new_module(self):
+        from . import design as d,publish
+        spec=d.read(d.ROOT/'experiments/cvs_urban_identity50/registration.json')
+        self.assertEqual([r['config'] for r in spec['rows']],[d.config(r) for r in d.rows()])
+        self.assertIn('experiments.cvs_urban_identity50.dispatch',publish.REMOTE)
+        self.assertIn('experiments/cvs_urban_identity50/registration.json',publish.REMOTE)
+        self.assertNotIn('experiments.cvs_urban_sigtime50.dispatch',publish.REMOTE)
 
 
 if __name__=='__main__':unittest.main()
