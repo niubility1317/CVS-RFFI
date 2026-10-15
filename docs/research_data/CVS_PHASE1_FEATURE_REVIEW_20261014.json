@@ -82439,14 +82439,14 @@
     }
   ],
   "next_actions_max2": [
-    "实现风险方差首seed01两臂scratch50公平比较，原旧门控/ownEMA/U损失/cos不变，固定SIG_TIME和默认联合头；历史旧门控+cos仅外部参考，单seed不当三seed目标。",
-    "源规则固定后自动clean预测/独立truth-last；先按源资格决定是否原样扩02/03并上传决定，再读取候选新目标汇总；完整保留正负结果和实际特征证据。"
+    "发布已验证的风险方差E50首seed两新模型，原SIG_TIME/默认联合头/旧门控ownEMA/U损失/cos保持，同均衡CE vs系数1方差；沿用共享锁实时空卡并行。",
+    "训练冻结后自动clean预测/独立truth-last；先据固定源资格上传不变02/03决定，再读新目标汇总，完整保留曲线/实际特征/成本与正负结果。"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "实现风险方差首seed01两臂scratch50公平比较，原旧门控/ownEMA/U损失/cos不变，固定SIG_TIME和默认联合头；历史旧门控+cos仅外部参考，单seed不当三seed目标。",
-    "源规则固定后自动clean预测/独立truth-last；先按源资格决定是否原样扩02/03并上传决定，再读取候选新目标汇总；完整保留正负结果和实际特征证据。"
+    "发布已验证的风险方差E50首seed两新模型，原SIG_TIME/默认联合头/旧门控ownEMA/U损失/cos保持，同均衡CE vs系数1方差；沿用共享锁实时空卡并行。",
+    "训练冻结后自动clean预测/独立truth-last；先据固定源资格上传不变02/03决定，再读新目标汇总，完整保留曲线/实际特征/成本与正负结果。"
   ],
   "current_priority": {
     "at": "2026-10-15T02:02:55.462Z",
@@ -85707,7 +85707,14 @@
             }
           ]
         }
-      ]
+      ],
+      "training_status": "LOCAL_VERIFIED_PREREGISTERED_PENDING_RELEASE",
+      "training_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "training_implementation_commit": "dcf5d36f1af3a1f29796b282c28fb3c6158ff34b",
+      "training_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md",
+      "training_rows": 2,
+      "training_epochs_per_model": 50,
+      "training_new_updates": 22200
     }
   },
   "latest_complete_sinc_optimizer": {

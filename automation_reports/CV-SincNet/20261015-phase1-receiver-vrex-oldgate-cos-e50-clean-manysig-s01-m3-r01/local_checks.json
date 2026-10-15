@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "focused_negatives": 16,
+  "exact_native_hook": true,
+  "formula_and_zero_penalty_and_missingRX": true,
+  "two_actual_initial_states_identical": true,
+  "original_U_loss_unchanged": true,
+  "native50_33_17_budget": true,
+  "actual_joint_optimizer_updates": [
+    [
+      3456,
+      6912,
+      570
+    ],
+    [
+      3456,
+      6912,
+      570
+    ]
+  ],
+  "existing_W_joint_update": true,
+  "W_zeroing_does_not_change_joint160": true,
+  "actual_updated_feature_difference": true,
+  "real_IQ_or_checkpoint_read": false,
+  "head_fit_updates": 0,
+  "synthetic_optimizer_steps_per_arm": 1,
+  "scalar_recount_regression": {
+    "status": "PASS",
+    "FP32_population_variance": 180.93373107910156,
+    "double_recount": 180.93372641227415,
+    "valid_variance_accepted": true,
+    "corrupt_variance_rejected": true,
+    "nonfinite_rejected": true,
+    "training_formula_unchanged": true
+  },
+  "build_design_keyword_callback_PASS": true
+}

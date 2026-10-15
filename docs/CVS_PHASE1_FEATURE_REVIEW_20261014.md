@@ -527,3 +527,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 2026-10-15 风险方差三模型源复核完成，原规则3/3PASS。02/03 t1/t2/SIG的均衡CE导数余弦分别(.906626,.881356,.753361)、(.830733,.866633,.713499)，首模型(.553474,.586210,.585349)保留不重测；范数比全体3.69%至8.65%。新增1800前向/40层80向量，合并2700前向/60层120向量独立复算，同900唯一物理L，0模型/头/optimizer更新或U/query。代码`c514c20a11c88f35b0154eb2a15ede7a4bc992fe`、执行`e06ce7bc4957efafe4b92f4d5d7dddf180c0ae0d`，[三模型源结果](../automation_reports/CV-SincNet/20261015-phase1-source-risk-variance-manysig-s0203-m2-r01/final_analysis.md)。只支持另行实现单seed公平训练，不证明早期或DG；下一步固定SIG_TIME/默认联合头、旧门控ownEMA/U/cos，均衡RX CE对照vs系数1方差，从零50轮。
+
+
+2026-10-15 新训练路线已完成最小实现及预登记：`20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01`，代码`dcf5d36f1af3a1f29796b282c28fb3c6158ff34b`（核心`6553ed11ac2513a5d4a3622481138139c3195ddf`）。三冻结模型源PASS基础上，两新模型scratch50/33L+17U，同接收机均衡CE对照vs系数1风险方差，原SIG_TIME/默认联合头/旧门控ownEMA/U/cos保持，不重复另一对话R-Drop。16负例、实际native hook、两初始state及各1次合成joint更新/zeroW不改zPASS；唯一P0/P1的build接口/FP32复算容差已定点修复。新100轮/22200更新、无新增训练模型前向或参数，自动cleantruth-last；当前尚未发布、无新性能。[最小报告](../automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md)。
