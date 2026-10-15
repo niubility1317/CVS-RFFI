@@ -534,3 +534,5 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 2026-10-15 发布恢复：r01 已通过远端编译/真实 checkpoint no-query smoke，但公开 PROJECT 路径未解析，调度在启动任何 worker 前退出。原产物保留，0训练/预测；旧模板错误继承的 DRO completion/result 已更正。恢复代码 `1bcaa4919b835601c01cc4095ab8ed869c2e4b9b` 仅对登记 config 解析 PROJECT，科学差异仍严格比较，定向复现及独立定点审查 PASS。独立 r02 `20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02` 保持原矩阵、预算、源资格和科学配方，当前待发布。
 
 2026-10-15 r02 实际启动 VERIFIED：执行 `b7987055f7ad9e95f5fe65f2d368ce528dbac017`，两个新模型在 GPU7/1 均完成首轮，日志增长且无失败；真实 checkpoint no-query smoke PASS、全owner每卡≤3，历史参考已评分关闭。首轮各约49.8秒，后续预算不变；源训练资格/新目标性能待完成，84% 未达成。
+
+2026-10-15 V-REx在训15/17轮，前4轮1776步L风险公式/native消费及首轮104层312向量已独立复算，方差项确实进入t1/t2/SIG。早期源损失/最差RX/方差变化不作为晋级或DG证据。控制39个body梯度重复GPU反传存在约2.6e-7相对L2舍入差，原bitwise复算会误拒绝；仅离线修复保留原allclose，已通过真实向量/260负例及定点P0/P1。健康训练不热改，冻结后单独analysis_recovery_r01收尾；84%仍未完成。

@@ -25,5 +25,11 @@
     "status": "PASS",
     "scope": "OnlyregistrationPROJECTpathresolution; three configs exact; changedalpha/extra field still differ; nonregistrationunchanged; CPUscoreremptyCUDAconfirmed",
     "full_repeat_review": false
+  },
+  "GPU_repeated_backward_fix": {
+    "status": "PASS",
+    "scope": "Actualsourceprefix control39bodyvectorsbitwisedifferent,all104layers312vectors existingallclosePASS;removealpha0bitwiseonly;separateimmutableanalysisoutput;defaultpathunchanged",
+    "targeted_issue_review": true,
+    "real_remote_access_by_reviewer": false
   }
 }

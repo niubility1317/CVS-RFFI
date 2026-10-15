@@ -85719,11 +85719,13 @@
       "recovery_changes_scientific_recipe": false,
       "training_execution_commit": "b7987055f7ad9e95f5fe65f2d368ce528dbac017",
       "training_epochs_observed": [
-        1,
-        1
+        15,
+        17
       ],
       "training_source_qualification": null,
-      "training_target_summary_read": false
+      "training_target_summary_read": false,
+      "training_source_prefix_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_prefix_e4.json",
+      "training_analysis_bitwise_defect": "Identified;offlinefixlocalverified;runningreleaseunchanged"
     }
   },
   "latest_complete_sinc_optimizer": {

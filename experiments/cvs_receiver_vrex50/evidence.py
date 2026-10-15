@@ -3,6 +3,8 @@ import torch
 from . import design as d
 from experiments.cvs_source_layer_order.probe import gradient_stats
 def loss_close(a,b):return math.isfinite(a) and math.isfinite(b) and math.isclose(a,b,rel_tol=1e-6,abs_tol=3e-6)
+def gradient_close(selected,balanced,variance,alpha):
+ return torch.allclose(selected,balanced+alpha*variance,atol=1e-6,rtol=1e-5)
 def recount(row):
  c=d.config(row);p=d.BASE/row['row_id']/'source';observed=d.read(p/'receiver_risk_training_observation.json');alpha=c['receiver_risk']['coefficient']
  if observed['status']!='VERIFIED' or observed['steps']!=11100 or observed['U_packets']!=963900 or observed['coefficient']!=alpha or not observed['U_loss_returned_unchanged']:raise ValueError('VREXcompletedexposure differs')
@@ -34,7 +36,7 @@ def recount(row):
     for key in ('selected','variance'):
      if gradient_stats(a['vectors']['balanced'][k],a['vectors'][key][k])!=b['layers'][k][key]:raise ValueError('SavedVREXderivativerecountdiffers')
     bal,aux,sel=(a['vectors'][key][k] for key in ('balanced','variance','selected'))
-    if not torch.allclose(sel,bal+alpha*aux,atol=1e-6,rtol=1e-5) or alpha==0 and not torch.equal(sel,bal):raise ValueError('Actualpenaltygradientnotconsumed')
+    if not gradient_close(sel,bal,aux,alpha):raise ValueError('Actualpenaltygradientnotconsumed')
     layers+=1
  if layers!=208 or len(records)!=52:raise ValueError('VREXgradientbudgetdiffers')
  last=curves[-5:]
