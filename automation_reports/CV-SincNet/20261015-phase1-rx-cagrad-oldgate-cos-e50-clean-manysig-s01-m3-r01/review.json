@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "reviewer": "cagrad_p0p1",
+  "scope": "One direct P0/P1 readonly review",
+  "findings": [],
+  "covered": [
+    "full195041f_theta/classWboundary",
+    "same-normcontrol",
+    "originalWandU",
+    "nativehooks/budget/EMA",
+    "QP/fallback/savedrecount",
+    "PROJECTexpansion",
+    "releaseclosure/entry",
+    "truth-last"
+  ],
+  "real_data_weights_or_remote_read": false,
+  "checks_rerun": false
+}
