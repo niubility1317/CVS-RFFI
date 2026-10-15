@@ -1,0 +1,18 @@
+{
+  "status": "FAILED",
+  "phase": "first_source_preflight",
+  "new_models_started": 0,
+  "new_training_steps": 0,
+  "new_target_predictions": 0,
+  "dispatcher_independently_observed_dead": true,
+  "workers": [],
+  "preflight_complete": false,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "cause": "Expected original A run_id/output_dir did not account for already verified A02/03 technical recovery roots; all scientific RECIPE_FIELDS exactly matched",
+  "fix": "Match expected run_id/output_dir to the separately verified actual config and physical root; no scientific comparator exemptions",
+  "replacement_run": "20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02",
+  "old_outputs_preserved": true,
+  "healthy_tasks_untouched": true,
+  "target_feedback": false
+}

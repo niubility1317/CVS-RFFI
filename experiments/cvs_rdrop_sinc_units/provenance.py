@@ -47,7 +47,7 @@ def reference_proof(c):
  initial=d.read(p/'initialization.json');freeze=d.read(p/'source_frozen.json');resolved=d.read(p/'resolved_config.json');args=d.read(p/'actual_native_args.json');mechanism=d.read(p/'source_training_mechanism.json')
  if not initial['scratch_only'] or initial['checkpoint_sources'] or initial['ancestors'] or initial['target_contact'] or initial['seed']!=c['model_seed'] or initial['teacher_origin']!='own scratch student only':raise ValueError('Reference source ancestry differs')
  if freeze['config']!=actual or freeze['selection']!='final_only' or freeze['epoch']!=50 or freeze['target_access'] or resolved['config']!=actual or resolved['commit']!=d.MODEL_CODE_COMMIT:raise ValueError('Reference code/selection/source identity differs')
- expected=d.parent.make_args(ref,'cpu')
+ expected=d.parent.make_args(ref,'cpu');expected.run_id=actual['run_id'];expected.output_dir=actual['output_root']
  if any(args.get(k)!=getattr(expected,k) for k in RECIPE_FIELDS) or args.get('seed')!=c['model_seed'] or args.get('source_fold_held_rx') is not None:raise ValueError('Reference actual original native recipe differs')
  if mechanism['objective_calls']!=11100 or mechanism['extra_L_identity_forwards']!=1420800 or mechanism['config']!=actual or not mechanism['actual_augmented_input_reused'] or mechanism['head_fit_updates'] or mechanism['U_truth_read']:raise ValueError('Reference actual original RDrop objective differs')
  from experiments.cvs_phase1_stack.recover import verify_contract

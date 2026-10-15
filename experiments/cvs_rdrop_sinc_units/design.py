@@ -4,8 +4,8 @@ from pathlib import Path
 from experiments.cvs_sigtime_rdrop_legacy import design as parent
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,CAPSULE,TRUTH,CLASSES,SEEDS,FULL_FP32_POLICY,read,write=(getattr(parent,k) for k in ('PROJECT','SOURCE','CAPSULE','TRUTH','CLASSES','SEEDS','FULL_FP32_POLICY','read','write'))
-RUN='20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r01'
-RELEASE='cvs_SIGTIME_RDrop_AF50_20261015_r01'
+RUN='20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02'
+RELEASE='cvs_SIGTIME_RDrop_AF50_20261015_r02'
 OWNER='codex/root/SIGTIME-RDrop-AF-20261015'
 DEPENDENCY_RELEASE,DEPENDENCY_COMMIT,FOLD_RELEASE=(getattr(parent,k) for k in ('DEPENDENCY_RELEASE','DEPENDENCY_COMMIT','FOLD_RELEASE'))
 BASE=Path(PROJECT)/'runs'/RUN
