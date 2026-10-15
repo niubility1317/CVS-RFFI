@@ -1,0 +1,483 @@
+{
+  "status": "ANALYZED_VERIFIED_SOURCE_PASS_ONE_MODEL",
+  "run_id": "20261015-phase1-source-risk-variance-manysig-s2026092701-r01",
+  "implementation_commit": "a9b04efa1441fce2f0a2810e4e51c88b41532dde",
+  "execution_commit": "3c340073b43ec07d0dbf11fe66b8737ae2d0dc49",
+  "analysis": {
+    "status": "ANALYZED",
+    "config": {
+      "schema": "source_risk_variance_v1",
+      "run_id": "20261015-phase1-source-risk-variance-manysig-s2026092701-r01",
+      "row_id": "SOURCE_VREX-s2026092701",
+      "arm": "SOURCE_VREX",
+      "model_seed": 2026092701,
+      "source_config": {
+        "schema": "signature_stats_default50_v1",
+        "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+        "stage": "repair",
+        "arm": "SIG_TIME",
+        "model_seed": 2026092701,
+        "row_id": "SIG_TIME-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+        "output_root": "PROJECT/runs/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/SIG_TIME-s2026092701/source",
+        "epochs": 50,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 0.000001,
+        "launch_owner": "codex/root/receiver-dro50-20261015",
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "updates": 11100,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+          "output_root": "PROJECT/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 0.000001
+        },
+        "source_falsification": {
+          "final5_unweighted_L_CE_max": 0.5,
+          "feature_difference_min": 0.000001,
+          "native_steps": 11100,
+          "actual_U_packets": 963900,
+          "required_gradient_epochs": [
+            17,
+            33,
+            50
+          ],
+          "required_gradient_parameters": [
+            "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+          ],
+          "DRO_final5_training_worst_RX_CE_max_relative_to_BALANCED": 1,
+          "DRO_final5_mean_max_group_weight_min": 0.2001,
+          "source_only": true,
+          "expansion": "If exact source budget/defaultfeature/body-gradient health and fixed risk thresholds pass, extend all three unchanged arms to02/03 before reading new target summaries; otherwise no expansion. Source V health only, no epoch or candidate selection."
+        },
+        "training_recipe": "old batch_neighbor gate+EMA+cos scratch50 label33+pseudo17, no satellite",
+        "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "time": false,
+          "PA": false,
+          "time_layers": [
+            "t1",
+            "t2",
+            "t3"
+          ],
+          "PA_layers": [
+            "pa_b1",
+            "pa_b2",
+            "pa_b3"
+          ],
+          "time_kernel_dilation": [
+            [
+              3,
+              1
+            ],
+            [
+              5,
+              1
+            ],
+            [
+              5,
+              2
+            ]
+          ],
+          "PA_kernels": [
+            3,
+            5,
+            7
+          ],
+          "PA_dilation_by_layer": [
+            1,
+            2,
+            4
+          ],
+          "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+          "output_embedding": 160
+        },
+        "classifier": "unchanged default cosine6x160scale30 normal joint training only",
+        "test_views": [
+          "clean"
+        ],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "primary": "RX_DRO",
+          "clean_three_seed_mean": 0.84,
+          "first_seed_is_not_goal_completion": true,
+          "feedback_to_training": false
+        },
+        "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+        "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately",
+        "source_config": null,
+        "baseline_reuse": false,
+        "feature_combination": {
+          "modes": [
+            "SIG_TIME"
+          ],
+          "layer": "t2",
+          "local_dimension": 6,
+          "windows": 4,
+          "descriptor_width_each": 28,
+          "descriptor_raw_width": 28,
+          "fixed_lift": "SIG_TIME identity28; COV_SHAPE/AREA_SHAPE same original COV orthonormal27to28 seed2026101307",
+          "shared_single_projection": true,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "output_embedding": 160
+        },
+        "readouts": [
+          "ORIGINAL_HEAD"
+        ],
+        "separate_head_training": false,
+        "hypothesis_basis": "Prior source covariance penalties optimized their source objective without stable DG gain; test source identity-risk allocation instead of additional feature invariance. Receiver groups are legal L metadata; original default head remains jointly trained. Original GroupDRO warns that risk weighting alone can fail; preserve WD to isolate objective and do not claim expected target gain.",
+        "source_formula_parent_commit": "990ffabe0",
+        "initialization_policy": "Warm CUDA before native training seed; private pool RNG preserves baseline draws; verify actual initial native body/head equality",
+        "receiver_risk": {
+          "mode": "ERM",
+          "role": "L_s",
+          "groups": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "step_size": 0.01,
+          "initial_group_weights": "uniform1/5",
+          "weight_update": "logq += .01 * detached current within-RX mean CE; softmax after update",
+          "risk": "sum q_RX * within-RX mean original default CE smoothing.01",
+          "absent_RX": "zero risk and no logq increment; renormalize applied q over present RX",
+          "balanced_control": "equal mean over present RX; no adversarial weight update",
+          "ERM_control": "original scalar CE returned unchanged, same group calculations for observation",
+          "enable": "all11100 native L steps from epoch1; no extra warmup, reset or clipping",
+          "original_U": "same old batch_neighbor/ownEMA/.16UCE/.01entropy; no reweighting or label access",
+          "optimizer": "original AdamW lr.0002 WD.0001 cosine; no new optimizer/head/forward",
+          "parameters": [
+            "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+          ],
+          "diagnostic_epochs": [
+            1,
+            17,
+            33,
+            50
+          ],
+          "reference": "https://github.com/kohpangwei/group_DRO/blob/master/loss.py",
+          "scope": "GroupDRO-style receiver grouping adaptation; not a reproduction of original datasets or regularization study"
+        }
+      },
+      "parent_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "parent_rule": "Original predefined lowest seed SIG_TIME final50 control, never target-best",
+      "checkpoint_epoch": 50,
+      "role": "L_s",
+      "source_pool_count": 6300,
+      "source_packets": 900,
+      "cohorts": 5,
+      "cohort_packets": 180,
+      "source_cohorts": "Existing fixed firstfive L180 cohorts,2per6TXx5RXx3day,900unique physical samples",
+      "receiver_groups": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "stochastic": "One original student train-mode strong IQ noise.015 forward per source packet; dropout active, no BatchNorm",
+      "objective": "Mean five receiver CE risks vs population variance of those same five differentiable risks; smoothing.01",
+      "coefficient": 1,
+      "label_smoothing": 0.01,
+      "parameters": [
+        "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+        "id_backbone.encoder.core.id_backbone.cls_head.weight"
+      ],
+      "source_only": true,
+      "query_read": false,
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "V_forward": false,
+      "V_gradient": false,
+      "training_epochs": 0,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "model_forward_packets": 900,
+      "strong_rng_seed": 2026101529,
+      "qualification": {
+        "source_only": true,
+        "positive_risk_variance_each_of5": true,
+        "actual_t1_t2_SIG_nonzero_each_of5": true,
+        "global_gradient_cosine_with_balanced_CE_min": 0,
+        "model_state_and_default_head_unchanged": true,
+        "no_automatic_training_release": true,
+        "on_pass": "Only separately registered unchanged02/03 source check",
+        "on_fail": "Retain negative; no coefficient, grouping, parent or threshold scans"
+      },
+      "output_root": "PROJECT/runs/20261015-phase1-source-risk-variance-manysig-s2026092701-r01/SOURCE_VREX-s2026092701",
+      "launch_owner": "codex/root/source-risk-variance-20261015",
+      "basis": "GroupDRO risk weighting did not establish stable gain; V-REx instead penalizes variance of legal receiver risks. Unlike Fishr, no variance of parameter gradients or higher-order derivative objective. Source derivative compatibility not assumed.",
+      "limitation": "Frozen late-stage L proxy; does not prove early training, U correctness, DG or84; existing W derivative measured but never fitted or updated"
+    },
+    "summary": {
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.04263003718433227,
+          "other_norm": 0.0035982189014015084,
+          "ratio": 0.08440571810535401,
+          "cosine": 0.5534735101654498,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.03612600151435592,
+          "other_norm": 0.002807515062020125,
+          "ratio": 0.07771452539258909,
+          "cosine": 0.5862103973618055,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "cohorts": 5,
+          "reference_norm": 0.06505989357530384,
+          "other_norm": 0.00562506549017229,
+          "ratio": 0.0864598015928436,
+          "cosine": 0.5853487465869578,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+          "cohorts": 5,
+          "reference_norm": 0.05514571289371953,
+          "other_norm": 0.005266828390843812,
+          "ratio": 0.09550748579485031,
+          "cosine": 0.5640415363848439,
+          "variance_nonzero_cohorts": 5
+        }
+      ],
+      "cohorts": [
+        {
+          "cohort": 0,
+          "packets": 180,
+          "losses": {
+            "BALANCED_CE": 0.09704585373401642,
+            "RISK_VARIANCE": 0.00045935073285363615
+          },
+          "receiver_order": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "receiver_risks": [
+            0.12420842051506042,
+            0.12231700867414474,
+            0.07840092480182648,
+            0.07919179648160934,
+            0.08111108839511871
+          ],
+          "correct": 179
+        },
+        {
+          "cohort": 1,
+          "packets": 180,
+          "losses": {
+            "BALANCED_CE": 0.08318402618169785,
+            "RISK_VARIANCE": 0.000006368775302689755
+          },
+          "receiver_order": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "receiver_risks": [
+            0.08194237947463989,
+            0.08613654971122742,
+            0.08278791606426239,
+            0.08573317527770996,
+            0.07932012528181076
+          ],
+          "correct": 180
+        },
+        {
+          "cohort": 2,
+          "packets": 180,
+          "losses": {
+            "BALANCED_CE": 0.11483021080493927,
+            "RISK_VARIANCE": 0.0016204917337745428
+          },
+          "receiver_order": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "receiver_risks": [
+            0.08116816729307175,
+            0.19024010002613068,
+            0.12211232632398605,
+            0.08659526705741882,
+            0.09403518587350845
+          ],
+          "correct": 178
+        },
+        {
+          "cohort": 3,
+          "packets": 180,
+          "losses": {
+            "BALANCED_CE": 0.09079234302043915,
+            "RISK_VARIANCE": 0.00009895694529404864
+          },
+          "receiver_order": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "receiver_risks": [
+            0.09055658429861069,
+            0.09029989689588547,
+            0.07992644608020782,
+            0.08415541052818298,
+            0.10902336239814758
+          ],
+          "correct": 180
+        },
+        {
+          "cohort": 4,
+          "packets": 180,
+          "losses": {
+            "BALANCED_CE": 0.09883228689432144,
+            "RISK_VARIANCE": 0.000288905983325094
+          },
+          "receiver_order": [
+            1,
+            3,
+            4,
+            6,
+            8
+          ],
+          "receiver_risks": [
+            0.08055582642555237,
+            0.09612662345170975,
+            0.12544387578964233,
+            0.08224877715110779,
+            0.10978632420301437
+          ],
+          "correct": 179
+        }
+      ]
+    },
+    "qualification": {
+      "status": "PASS",
+      "fixed_rules": {
+        "source_only": true,
+        "positive_risk_variance_each_of5": true,
+        "actual_t1_t2_SIG_nonzero_each_of5": true,
+        "global_gradient_cosine_with_balanced_CE_min": 0,
+        "model_state_and_default_head_unchanged": true,
+        "no_automatic_training_release": true,
+        "on_pass": "Only separately registered unchanged02/03 source check",
+        "on_fail": "Retain negative; no coefficient, grouping, parent or threshold scans"
+      },
+      "source_only": true,
+      "no_automatic_training_release": true,
+      "target_metrics_used": false
+    },
+    "source_packets": 900,
+    "model_forward_packets": 900,
+    "model_parameters_buffers_unchanged": true,
+    "head_fit_updates": 0,
+    "optimizer_steps": 0,
+    "U_IQ_read": false,
+    "U_truth_read": false,
+    "V_cache_materialized_then_discarded": true,
+    "V_forward": false,
+    "V_gradient": false,
+    "query_read": false,
+    "seconds": 1.7593493461608887,
+    "limitation": "Frozen late-stage L proxy; does not prove early training, U correctness, DG or84; existing W derivative measured but never fitted or updated"
+  },
+  "aggregates": {
+    "source_packets": 900,
+    "default_correct": 896,
+    "mean_balanced_CE": 0.09693694412708283,
+    "mean_population_risk_variance": 0.0004948148341100023,
+    "mean_CE_by_RX": [
+      0.09168627560138702,
+      0.1170240357518196,
+      0.09773429781198502,
+      0.08358488529920578,
+      0.09465521723031997
+    ],
+    "RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ]
+  },
+  "goal84": false,
+  "no_training_or_DG_result": true
+}

@@ -1,6 +1,6 @@
 # 固定 SIG_TIME：接收机 CE 风险方差源端证伪
 
-状态 PLANNED，代码 `a9b04efa1441fce2f0a2810e4e51c88b41532dde`。网络和现有默认分类头不变，0模型/头/optimizer更新。完整配置与唯一row `SOURCE_VREX-s2026092701` 见 experiment.json。
+状态 ANALYZED / VERIFIED，首源规则PASS。完整结果见[同轮分析](final_analysis.md)。以下保留原预登记：PLANNED，代码 `a9b04efa1441fce2f0a2810e4e51c88b41532dde`。网络和现有默认分类头不变，0模型/头/optimizer更新。完整配置与唯一row `SOURCE_VREX-s2026092701` 见 experiment.json。
 
 ## 机制与边界
 

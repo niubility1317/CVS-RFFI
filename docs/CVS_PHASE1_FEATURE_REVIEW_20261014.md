@@ -521,3 +521,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 后续路线去重：只读核实另一对话已推进固定E20的R-Drop；其cleanL/LS0/排除RX1契约与本轮不同，不能合并，但本对话仍避免重复训练机制。三模型源PASS保留、不再发布自有R-Drop训练；已有VAT历史矩阵也复用不重跑。改为固定原SIG_TIME和默认头的V-REx源检验：五源RX的CE风险population variance，对比同前向均衡CE，不是GroupDRO权重或Fishr梯度方差。L900/900前向/0更新；本地14负例及实际骨干导数PASS，唯一P0/P1审查中，实际源资格未知。
+
+
+2026-10-15 风险方差首源检验实际完成：`20261015-phase1-source-risk-variance-manysig-s2026092701-r01`，代码`a9b04efa1441fce2f0a2810e4e51c88b41532dde`、执行`3c340073b43ec07d0dbf11fe66b8737ae2d0dc49`。900唯一L/900前向/20参数层40向量，独立复算VERIFIED，0模型/头/optimizer更新或U/query。固定五RX风险population variance对t1/t2/SIG的CE方向余弦.553474/.586210/.585349，范数比.084406/.077715/.086460，均5/5非零，原规则PASS。均衡CE.096936944、方差.000494815，默认正确896/900；末轮L局部证据不证明早期/SSL/DG。下一步仅原样02/03零更新源复核，未发布正式训练。[完整源结果](../automation_reports/CV-SincNet/20261015-phase1-source-risk-variance-manysig-s2026092701-r01/final_analysis.md)。

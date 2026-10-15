@@ -34,7 +34,8 @@
     "config_paths": [
       "experiments/cvs_source_risk_variance/design.py"
     ],
-    "reused_parent_execution": "977d4fb609436bac23621ef8e32c2017495acef7"
+    "reused_parent_execution": "977d4fb609436bac23621ef8e32c2017495acef7",
+    "execution_commit": "3c340073b43ec07d0dbf11fe66b8737ae2d0dc49"
   },
   "data": {
     "dataset": "ManySig",
@@ -101,7 +102,8 @@
     "remote_log_root": "PROJECT/releases/cvs_source_risk_variance_20261015_r01",
     "local_artifact_root": "LOCAL_ARTIFACTS/source_risk_variance_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_source_risk_variance.audit",
-    "stop_rule": "Run-owned input/provenance mismatch, missing fixedcohorts, nonfinite risks/gradients, model orbuffer mutation, independentrecountfailure or immutableoutputcollision. Preserve artifacts,no automaticretry or unrelatedstop. ScientificFAIL: no coefficient, grouping,parent or threshold scan"
+    "stop_rule": "Run-owned input/provenance mismatch, missing fixedcohorts, nonfinite risks/gradients, model orbuffer mutation, independentrecountfailure or immutableoutputcollision. Preserve artifacts,no automaticretry or unrelatedstop. ScientificFAIL: no coefficient, grouping,parent or threshold scan",
+    "execution_commit": "3c340073b43ec07d0dbf11fe66b8737ae2d0dc49"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -216,7 +218,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/receiver-dro50-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -254,11 +256,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final5_unweighted_L_CE_max": 0.5,
-            "feature_difference_min": 1e-06,
+            "feature_difference_min": 0.000001,
             "native_steps": 11100,
             "actual_U_packets": 963900,
             "required_gradient_epochs": [
@@ -453,5 +455,51 @@
     "14focused negatives,actualnativebackbone derivatives/RNG/state checksPASS;oneindependentP0/P1PASS"
   ],
   "preparation_status": "LOCAL_VERIFIED_P0P1_PASS_PREREGISTERED",
-  "registered_at": "2026-10-15T07:19:35+00:00"
+  "registered_at": "2026-10-15T07:19:35+00:00",
+  "results": {
+    "status": "ANALYZED_VERIFIED_SOURCE_PASS",
+    "source_qualified_models": 1,
+    "source_packets": 900,
+    "source_forward_packets": 900,
+    "gradient_layer_records": 20,
+    "saved_vectors": 40,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "source_qualification": "PASS",
+    "aggregates": {
+      "source_packets": 900,
+      "default_correct": 896,
+      "mean_balanced_CE": 0.09693694412708283,
+      "mean_population_risk_variance": 0.0004948148341100023,
+      "mean_CE_by_RX": [
+        0.09168627560138702,
+        0.1170240357518196,
+        0.09773429781198502,
+        0.08358488529920578,
+        0.09465521723031997
+      ],
+      "RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ]
+    },
+    "remaining_source_only_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "remaining_source_diagnostic_not_launched": true,
+    "no_training_release": true,
+    "goal84": false,
+    "evidence": [
+      "results.json",
+      "final_analysis.md",
+      "source_qualification.json",
+      "source_extension_decision.json",
+      "independent_artifact_recount.json",
+      "completion_evidence.json"
+    ]
+  }
 }
