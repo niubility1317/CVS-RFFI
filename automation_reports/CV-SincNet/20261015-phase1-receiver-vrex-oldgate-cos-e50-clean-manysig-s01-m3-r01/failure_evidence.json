@@ -1,0 +1,52 @@
+{
+  "status": "FAILED",
+  "run_id": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "execution_commit": "84a48f15d7aaba8b64092fc7bae2319d0f52e8c3",
+  "layer": "dispatcher_registration_comparison",
+  "reason": "PublicPROJECTpaths compared directly to runtime absolute paths",
+  "preflight": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "focused_negatives": 16,
+      "exact_native_hook": true,
+      "formula_and_zero_penalty_and_missingRX": true,
+      "two_actual_initial_states_identical": true,
+      "original_U_loss_unchanged": true,
+      "native50_33_17_budget": true,
+      "actual_joint_optimizer_updates": [
+        [
+          3456,
+          6912,
+          570
+        ],
+        [
+          3456,
+          6912,
+          570
+        ]
+      ],
+      "existing_W_joint_update": true,
+      "W_zeroing_does_not_change_joint160": true,
+      "actual_updated_feature_difference": true,
+      "real_IQ_or_checkpoint_read": false,
+      "head_fit_updates": 0,
+      "synthetic_optimizer_steps_per_arm": 1
+    },
+    "real_checkpoint_no_query_smoke": true,
+    "synthetic_IQ_packets": 10,
+    "allthree_frozen_source_models_PASS": true,
+    "source_checkpoint": "OriginalfixedDRO SIG_TIME01final50;actualsource_proofchecked",
+    "training_inherits_checkpoint": false,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0
+  },
+  "dispatcher_exited": true,
+  "workers_started": 0,
+  "queue_created": false,
+  "training_started": false,
+  "target_prediction_started": false,
+  "root_preserved": true,
+  "recovery": "Separate immutable r02; only registration path resolution; no scientific change"
+}

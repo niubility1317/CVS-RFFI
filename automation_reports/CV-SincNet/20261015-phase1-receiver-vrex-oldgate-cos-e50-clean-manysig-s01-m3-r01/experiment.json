@@ -137,7 +137,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -175,7 +175,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -307,7 +307,7 @@
       "final5_unweighted_L_CE_max": 0.5,
       "native_steps": 11100,
       "actual_U_packets": 963900,
-      "feature_difference_min": 1e-06,
+      "feature_difference_min": 0.000001,
       "required_gradient_epochs": [
         17,
         33,
@@ -409,7 +409,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -447,13 +447,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -554,7 +554,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -592,7 +592,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -800,7 +800,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -838,13 +838,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -1060,7 +1060,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1098,13 +1098,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -1242,40 +1242,18 @@
     "Defaulthead jointtrainingonly;noheadrefit/diagnosticclassifier/newhead. Featureboundary uses actualjoint160 andkeeps feature-normalizations/gains.",
     "16focusednegative/actualnativehook/twoequalinitialstates/nativeUunchanged/actualjointsyntheticupdatesPASS;independentreviewfoundandfixedbuildinterfaceandFP32recounttolerance,eachtargetedPASS. CPUscoreenvclearedbeforenativeexec.",
     "All2newmodels50/100newepochs/22200newupdates,1readonly50epochhistoricalreference;504000fixeddefaultdecisions/54metrics afterprediction completion.",
-    "LatestreadpeerchatisRDropE50three-seedroute;thiscandidateVREX only. Read-onlycoordination neverchanges scientificbudget or foreignhealthyjobs."
+    "LatestreadpeerchatisRDropE50three-seedroute;thiscandidateVREX only. Read-onlycoordination neverchanges scientificbudget or foreignhealthyjobs.",
+    "Corrected inherited template status/completion/result from unrelated DRO run; no VREX training or target prediction occurred in r01. Failure is registration PROJECT path comparison; preserve all release artifacts."
   ],
-  "execution_commit": "600afeeefe84e0d9f50f07c38ae0767bf1cabf07",
-  "completion": {
-    "status": "VERIFIED",
-    "models": 4,
-    "new_models": 3,
-    "historical_models": 1,
-    "seed_count": 1,
-    "decisions": 672000,
-    "metric_records": 72,
-    "goal_84": false,
-    "head_fit_updates": 0
-  },
-  "status": "RUNNING",
+  "execution_commit": "84a48f15d7aaba8b64092fc7bae2319d0f52e8c3",
+  "completion": null,
+  "status": "FAILED",
   "result": {
-    "status": "RUNNING_VERIFIED",
-    "epochs_observed": [
-      34,
-      37,
-      37
-    ],
-    "first_source_replayed_steps_per_model": 444,
-    "source_qualification": null,
+    "status": "FAILED_BEFORE_TRAINING",
     "training_complete": false,
+    "workers_started": 0,
     "new_target_summary_read": false,
-    "goal_84": false,
-    "all_three_in_pseudo_stage": true,
-    "actual_U_packet_observations_prefix": [
-      93820,
-      282608,
-      269296
-    ],
-    "supervised_risk_steps_replayed": 25086
+    "goal_84": false
   },
   "registered_at": "2026-10-15T08:17:34+00:00"
 }

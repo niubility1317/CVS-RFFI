@@ -4,8 +4,8 @@ from experiments.cvs_receiver_dro50 import design as parent
 ROOT=Path(__file__).resolve().parents[2]
 for name in ('PROJECT','SOURCE','CAPSULE','TRUTH','CLASSES','FULL_FP32_POLICY','read','write','READOUTS','VIEWS','QUERY_COUNT','EPOCHS','LABEL_EPOCHS','PSEUDO_EPOCHS','STEPS','UPDATES','BASELINE_EVAL_RUN','STYLE_LAYERS','PARAMETERS'):
  globals()[name]=getattr(parent,name)
-RUN='20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01'
-RELEASE='cvs_receiver_vrex50_20261015_r01';OWNER='codex/root/receiver-vrex50-20261015';BASE=Path(PROJECT)/'runs'/RUN
+RUN='20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02'
+RELEASE='cvs_receiver_vrex50_20261015_r02';OWNER='codex/root/receiver-vrex50-20261015';BASE=Path(PROJECT)/'runs'/RUN
 SEEDS=(2026092701,);ARMS=('OLD_GATE_COS50','RX_BALANCED','RX_VREX');BASELINE_ARM=ARMS[0];FEATURE_CONTROL=INITIAL_CONTROL='RX_BALANCED';PRIMARY='RX_VREX'
 FEATURE_PARAMETER_COUNT=195041;VERIFY_INITIAL_EVAL_EQUAL=True;RX=(1,3,4,6,8);DIAGNOSTIC_EPOCHS=(1,17,33,50)
 PAIRS=[(PRIMARY,FEATURE_CONTROL),(PRIMARY,BASELINE_ARM),(FEATURE_CONTROL,BASELINE_ARM)]
@@ -35,3 +35,15 @@ def require_source():
  b=Path(PROJECT)/'runs'/SOURCE_RUN;q=read(b/'source_qualification.json');v=read(b/'combined_three_seed_source_analysis.json')
  if q.get('status')!='PASS' or q.get('target_metrics_used') is not False or q.get('no_automatic_training_release') is not True or v.get('model_seeds')!=[2026092701,2026092702,2026092703] or v.get('models')!=3 or v.get('unique_source_physical_ids')!=900 or v.get('total_source_forward_packets')!=2700 or v.get('source_only') is not True or v.get('query_read') is not False or any(r['qualification']['status']!='PASS' for r in v['rows']):raise ValueError('Fixed allthree sourcequalification missingorchanged')
  return q
+
+# Public registration uses a portable project handle; resolve only its configs.
+def read(path):
+ value=parent.read(path)
+ if Path(path)==ROOT/'registration/experiment.json':
+  def resolve(v):
+   if isinstance(v,str):return PROJECT+v[len('PROJECT'):] if v=='PROJECT' or v.startswith('PROJECT/') else v
+   if isinstance(v,list):return [resolve(x) for x in v]
+   if isinstance(v,dict):return {k:resolve(x) for k,x in v.items()}
+   return v
+  for row in value['rows']:row['config']=resolve(row['config'])
+ return value

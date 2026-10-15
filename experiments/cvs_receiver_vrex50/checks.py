@@ -7,7 +7,25 @@ from . import design as d
 from .objective import objective,risks
 from .observer import Observer
 
+def registration_check():
+ actual=[d.config(r) for r in d.rows()]
+ def portable(v):
+  if isinstance(v,str):return v.replace(d.PROJECT,'PROJECT')
+  if isinstance(v,list):return [portable(x) for x in v]
+  if isinstance(v,dict):return {k:portable(x) for k,x in v.items()}
+  return v
+ spec=dict(run_id=d.RUN,rows=[dict(config=c) for c in portable(actual)]);root=d.ROOT
+ try:
+  with tempfile.TemporaryDirectory() as tmp:
+   d.ROOT=Path(tmp);p=d.ROOT/'registration/experiment.json';p.parent.mkdir();p.write_text(json.dumps(spec),encoding='utf8')
+   assert [r['config'] for r in d.read(p)['rows']]==actual
+   changed=copy.deepcopy(spec);changed['rows'][1]['config']['receiver_risk']['coefficient']=2.;p.write_text(json.dumps(changed),encoding='utf8')
+   assert [r['config'] for r in d.read(p)['rows']]!=actual
+   q=d.ROOT/'other.json';q.write_text(json.dumps(spec),encoding='utf8');assert d.read(q)==spec
+ finally:d.ROOT=root
+
 def checks():
+ registration_check()
  torch.set_num_threads(2);g=torch.Generator().manual_seed(31547);a=torch.randn(11,6,generator=g,dtype=torch.float64,requires_grad=True);y=torch.arange(11)%6;rx=torch.tensor([1]*3+[3]*2+[4]*2+[6]*2+[8]*2)
  chosen,balanced,var,counts,means=objective(a,y,rx,1.)
  manual=torch.stack([F.cross_entropy(a[rx==r],y[rx==r],label_smoothing=.01) for r in d.RX]);assert torch.allclose(means,manual,atol=1e-14) and torch.allclose(var,manual.var(unbiased=False),atol=1e-14) and torch.equal(chosen,balanced+var)
@@ -52,5 +70,5 @@ def checks():
  from .publish import configure,transport
  configure();compile(transport.REMOTE,'<actualVREXremote>','exec');compile(transport.INSPECT,'<actualVREXinspect>','exec')
  assert 'experiments.cvs_receiver_vrex50.preflight' in transport.REMOTE and 'experiments.cvs_receiver_vrex50.dispatch' in transport.REMOTE and "done['models']==3" in transport.INSPECT and "done['prediction_count']==504000" in transport.INSPECT
- return dict(status='PASS',focused_negatives=len(neg),exact_native_hook=True,formula_and_zero_penalty_and_missingRX=True,two_actual_initial_states_identical=True,original_U_loss_unchanged=True,native50_33_17_budget=True,actual_joint_optimizer_updates=body_updates,existing_W_joint_update=True,W_zeroing_does_not_change_joint160=True,actual_updated_feature_difference=True,real_IQ_or_checkpoint_read=False,head_fit_updates=0,synthetic_optimizer_steps_per_arm=1)
+ return dict(status='PASS',portable_registration_resolves_exactly=True,registration_scientific_mismatch_rejected=True,nonregistration_reads_unchanged=True,focused_negatives=len(neg),exact_native_hook=True,formula_and_zero_penalty_and_missingRX=True,two_actual_initial_states_identical=True,original_U_loss_unchanged=True,native50_33_17_budget=True,actual_joint_optimizer_updates=body_updates,existing_W_joint_update=True,W_zeroing_does_not_change_joint160=True,actual_updated_feature_difference=True,real_IQ_or_checkpoint_read=False,head_fit_updates=0,synthetic_optimizer_steps_per_arm=1)
 if __name__=='__main__':print(json.dumps(checks()))
