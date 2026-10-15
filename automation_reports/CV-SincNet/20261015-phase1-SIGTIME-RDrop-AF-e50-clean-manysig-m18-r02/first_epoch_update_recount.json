@@ -1,0 +1,74 @@
+{
+  "status": "RECOUNTED",
+  "rows": [
+    {
+      "arm": "B",
+      "mode": "STANDARD",
+      "batches": 13,
+      "tensors": 26,
+      "alpha": 0.0002,
+      "maximum_leaf_formula_error": 0.16654611844569445,
+      "maximum_physical_formula_error_Hz": 0.16654611844569445,
+      "changed_physical_elements_across_26snapshots": 1,
+      "source_only": true,
+      "optimizer_updates_by_analysis": 0,
+      "model_forwards": 0
+    },
+    {
+      "arm": "C",
+      "mode": "NORMALIZED_UNITS",
+      "batches": 13,
+      "tensors": 26,
+      "alpha": 0.0002,
+      "maximum_leaf_formula_error": 0.3973947577178478,
+      "maximum_physical_formula_error_Hz": 0.3973947577178478,
+      "changed_physical_elements_across_26snapshots": 621,
+      "source_only": true,
+      "optimizer_updates_by_analysis": 0,
+      "model_forwards": 0
+    },
+    {
+      "arm": "D",
+      "mode": "STANDARD",
+      "batches": 13,
+      "tensors": 26,
+      "alpha": 0.0002,
+      "maximum_leaf_formula_error": 2.259583145591826e-09,
+      "maximum_physical_formula_error_Hz": 0.3838587123900652,
+      "changed_physical_elements_across_26snapshots": 609,
+      "source_only": true,
+      "optimizer_updates_by_analysis": 0,
+      "model_forwards": 0
+    },
+    {
+      "arm": "E",
+      "mode": "CENTER_UNITS",
+      "batches": 13,
+      "tensors": 26,
+      "alpha": 0.0002,
+      "maximum_leaf_formula_error": 1.6028764449060873e-06,
+      "maximum_physical_formula_error_Hz": 0.39615779742598534,
+      "changed_physical_elements_across_26snapshots": 621,
+      "source_only": true,
+      "optimizer_updates_by_analysis": 0,
+      "model_forwards": 0
+    },
+    {
+      "arm": "F",
+      "mode": "CENTER_UNITS",
+      "batches": 13,
+      "tensors": 26,
+      "alpha": 0.0002,
+      "maximum_leaf_formula_error": 1.4935081509293013e-06,
+      "maximum_physical_formula_error_Hz": 0.5479064546525478,
+      "changed_physical_elements_across_26snapshots": 617,
+      "source_only": true,
+      "optimizer_updates_by_analysis": 0,
+      "model_forwards": 0
+    }
+  ],
+  "source_only": true,
+  "query_read": false,
+  "head_fit_updates": 0,
+  "limitation": "Float64 reconstruction from saved actual post-step moments, actual clipped leaf gradients and actual source alpha; float32 rounding and origin recovered from physical_before are explicit numerical error, not new performance evidence."
+}
