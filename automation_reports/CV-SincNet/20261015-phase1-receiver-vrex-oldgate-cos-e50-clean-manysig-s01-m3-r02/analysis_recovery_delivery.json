@@ -1,0 +1,30 @@
+{
+  "status": "VERIFIED",
+  "analysis_release": "cvs_receiver_vrex50_analysis_20261015_r01",
+  "analysis_release_commit": "0416c8c4f7865b7bb879f9e1dba69a95dde9878d",
+  "analysis_implementation_commit": "0ba4dd317a31b8d34ce8a19b70273cad7a767dfa",
+  "remote_compile": true,
+  "one_release_archive_transport_comparison": true,
+  "independent_poststate": true,
+  "original_training_run_unchanged": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+  "training_started_by_analysis": 0,
+  "source_or_target_forward_started_by_analysis": 0,
+  "source_analysis_not_started": true,
+  "formal_source_qualification": null,
+  "new_target_summary_read": false,
+  "actual_training_progress": [
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "epochs_observed": 23,
+      "live": true,
+      "log_bytes": 125799
+    },
+    {
+      "row_id": "RX_VREX-s2026092701",
+      "epochs_observed": 27,
+      "live": true,
+      "log_bytes": 146308
+    }
+  ],
+  "new_source_evidence": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_prefix_e4.json"
+}

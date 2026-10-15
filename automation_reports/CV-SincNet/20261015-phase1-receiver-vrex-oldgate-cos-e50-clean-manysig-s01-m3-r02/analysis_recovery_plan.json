@@ -1,5 +1,5 @@
 {
-  "status": "READY_TO_DEPLOY_ANALYSIS_CODE_ONLY",
+  "status": "ANALYSIS_CODE_DEPLOYED_VERIFIED",
   "source_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02",
   "original_training_execution_commit": "b7987055f7ad9e95f5fe65f2d368ce528dbac017",
   "analysis_implementation_commit": "0ba4dd317a31b8d34ce8a19b70273cad7a767dfa",
@@ -36,5 +36,6 @@
     "synthetic_output_preservation_check": "PASS",
     "targeted_independent_P0P1": "PASS"
   },
-  "running_release_unchanged": true
+  "running_release_unchanged": true,
+  "analysis_release_commit": "0416c8c4f7865b7bb879f9e1dba69a95dde9878d"
 }
