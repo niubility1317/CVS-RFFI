@@ -542,3 +542,7 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 2026-10-15 V-REx首seed完整结果：83.2851%，匹配均衡对照83.6405%，差−0.3554个百分点；修正1127/引入1724，净−597。源风险降低/实际f_theta改变未转换为该seedDG增益。三row504000决策/54指标及完整源记录复算通过。读分前4056e9fb6已冻结原样02/03，因此继续既定4模型，不以此负分取消或调参；84%三seed均值尚未完成。[首种子完整分析](../automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/final_analysis.md)。
 
 2026-10-15 原样02/03适配已本地验证/登记：20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01，代码8ce0a02e4b0c56d1aaeda0171b7c08813d4a7811。4新模型/6rows，原生上下文只变seed/runID/candidate/output，同seed两臂相同、跨seed不同；原核心16＋适配11负例、PROJECT展开及定向P0/P1 PASS。仍执行读分前4056e9fb6决定，尚待发布，不因首seed负差改变矩阵。
+
+### V-REx 剩余种子已发布（2026-10-15）
+
+实现和预登记已上传，执行提交 `f7aded2fc5c607064972991d07ab6fca227cd626`。4 个新模型已通过真实 checkpoint 无查询检查并分别在空闲显卡启动，已独立核实实际种子、运行目录、命令、首轮增长；2 个历史对照复用。固定 50 epoch、33+17 阶段、默认头联合训练及旧门控均不改变。源域扩种子决定已先于目标结果冻结，首种子负结果不触发调参或选择性撤销。完整三种子结果尚未产生。

@@ -136,7 +136,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -174,7 +174,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -273,7 +273,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -311,7 +311,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -535,7 +535,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -573,13 +573,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -680,7 +680,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -718,7 +718,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -933,7 +933,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -971,13 +971,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -1200,7 +1200,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1238,13 +1238,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -1467,7 +1467,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1505,13 +1505,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -1612,7 +1612,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -1650,7 +1650,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -1865,7 +1865,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1903,13 +1903,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -2132,7 +2132,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -2170,13 +2170,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -2320,13 +2320,37 @@
     "Extra44,400newupdates/200epochs;full6newmodels66,600updates/300epochs;historical3x50epochcostseparate. Firstseed anditsoriginalpredictions/scoringreused.",
     "GradientrecountkeepsFP32allclosetolerance;noGPUbitwiseequalityrequirement;independentreviewlimitedtonewseedadapterexecutionP1s."
   ],
-  "execution_commit": null,
+  "execution_commit": "f7aded2fc5c607064972991d07ab6fca227cd626",
   "completion": null,
-  "status": "PLANNED",
+  "status": "RUNNING",
   "result": {
-    "status": "PREREGISTERED",
-    "training_started": false,
-    "goal_84": false
+    "status": "RUNNING",
+    "training_started": true,
+    "new_models": 4,
+    "historical_models_reused": 2,
+    "first_seed_retrained": false,
+    "source_decision_commit": "4056e9fb618fa92af5486c6d3670fc73bcc4194d",
+    "first_new_epoch_counts": [
+      {
+        "row_id": "RX_BALANCED-s2026092702",
+        "epoch": 1
+      },
+      {
+        "row_id": "RX_VREX-s2026092702",
+        "epoch": 1
+      },
+      {
+        "row_id": "RX_BALANCED-s2026092703",
+        "epoch": 1
+      },
+      {
+        "row_id": "RX_VREX-s2026092703",
+        "epoch": 1
+      }
+    ],
+    "completed_new_models": 0,
+    "goal_84_achieved": false,
+    "evidence": "launch_evidence.json"
   },
   "registered_at": "2026-10-15T09:38:29+00:00"
 }

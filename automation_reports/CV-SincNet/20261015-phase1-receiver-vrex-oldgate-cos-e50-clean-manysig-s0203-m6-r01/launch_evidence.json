@@ -1,0 +1,383 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+  "execution_commit": "f7aded2fc5c607064972991d07ab6fca227cd626",
+  "read_at": 1792057379.6464071,
+  "release": "cvs_receiver_vrex_seeds_20261015_r01",
+  "archive": "cvs_receiver_vrex_seeds_20261015_r01.tar.gz",
+  "archive_transport": {
+    "status": "VERIFIED",
+    "sha256": "aaf2c9a1e8f42ade973df449797fddfc3a536d204c25ad18da59a29db9577e47",
+    "comparisons": 1,
+    "evidence": "Remote publisher compared archive SHA and compiled release before successful preflight and dispatcher submission; independent readback confirms actual release process and artifacts"
+  },
+  "remote_compile": "PASS",
+  "preflight": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "unchanged_core_checks": {
+        "status": "PASS",
+        "portable_registration_resolves_exactly": true,
+        "registration_scientific_mismatch_rejected": true,
+        "nonregistration_reads_unchanged": true,
+        "focused_negatives": 16,
+        "exact_native_hook": true,
+        "formula_and_zero_penalty_and_missingRX": true,
+        "two_actual_initial_states_identical": true,
+        "original_U_loss_unchanged": true,
+        "native50_33_17_budget": true,
+        "actual_joint_optimizer_updates": [
+          [
+            3456,
+            6912,
+            570
+          ],
+          [
+            3456,
+            6912,
+            570
+          ]
+        ],
+        "existing_W_joint_update": true,
+        "W_zeroing_does_not_change_joint160": true,
+        "actual_updated_feature_difference": true,
+        "real_IQ_or_checkpoint_read": false,
+        "head_fit_updates": 0,
+        "synthetic_optimizer_steps_per_arm": 1
+      },
+      "negatives": 11,
+      "portable_registration_resolves": true,
+      "different_seeds_distinct_initial_states": true,
+      "native_contexts": [
+        {
+          "row_id": "RX_BALANCED-s2026092702",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        },
+        {
+          "row_id": "RX_VREX-s2026092702",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        },
+        {
+          "row_id": "RX_BALANCED-s2026092703",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        },
+        {
+          "row_id": "RX_VREX-s2026092703",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        }
+      ],
+      "real_IQ_checkpoint_or_first_qualification_read": false,
+      "first_seed_retrained": false,
+      "new_scientific_hypothesis": false,
+      "new_models": 4,
+      "historical_baselines_reused": 2,
+      "head_fit_updates": 0
+    },
+    "source_qualification": "PASS",
+    "source_qualification_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+    "real_checkpoint_no_query_smoke": true,
+    "synthetic_IQ_packets": 2,
+    "source_checkpoint": "Predetermined first RX_BALANCED final50, same source contract",
+    "training_inherits_checkpoint": false,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0
+  },
+  "dispatcher": {
+    "pid": 3120963,
+    "start_ticks": 130500945,
+    "state": "S",
+    "cwd": "PROJECT/releases/cvs_receiver_vrex_seeds_20261015_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "-m",
+      "experiments.cvs_receiver_vrex_seeds.dispatch"
+    ],
+    "gpu": null
+  },
+  "queue": {
+    "active": [
+      "RX_BALANCED-s2026092702",
+      "RX_VREX-s2026092702",
+      "RX_BALANCED-s2026092703",
+      "RX_VREX-s2026092703"
+    ],
+    "pending": [],
+    "completed": [
+      "OLD_GATE_COS50-s2026092702",
+      "OLD_GATE_COS50-s2026092703"
+    ],
+    "failures": [],
+    "max_total_processes_per_GPU": 3,
+    "updated_at": 1792057377.4150217
+  },
+  "capacity": {
+    "0": {
+      "pids": [],
+      "free_mb": 24124
+    },
+    "1": {
+      "pids": [
+        3121202
+      ],
+      "free_mb": 20769
+    },
+    "2": {
+      "pids": [
+        3121280
+      ],
+      "free_mb": 20769
+    },
+    "3": {
+      "pids": [
+        3121440
+      ],
+      "free_mb": 20769
+    },
+    "4": {
+      "pids": [
+        3121519
+      ],
+      "free_mb": 20771
+    },
+    "5": {
+      "pids": [],
+      "free_mb": 24124
+    },
+    "6": {
+      "pids": [],
+      "free_mb": 24124
+    },
+    "7": {
+      "pids": [],
+      "free_mb": 24124
+    }
+  },
+  "workers": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "pid": 3121112,
+      "gpu": 0,
+      "cwd": "PROJECT/releases/cvs_receiver_vrex_seeds_20261015_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_vrex_seeds.dispatch",
+        "--worker",
+        "OLD_GATE_COS50-s2026092702"
+      ],
+      "process": null,
+      "epoch_count": 50,
+      "log_bytes": 121,
+      "log_growth": 0,
+      "resolved_model_seed": 2026092702,
+      "execution_commit": "5fa536f9ca2d90e7d30d547d58503a41b612d57f",
+      "historical_reuse": true,
+      "last_epoch_seconds": 59.73889875411987
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092702",
+      "pid": 3121202,
+      "gpu": 1,
+      "cwd": "PROJECT/releases/cvs_receiver_vrex_seeds_20261015_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_vrex_seeds.dispatch",
+        "--worker",
+        "RX_BALANCED-s2026092702"
+      ],
+      "process": {
+        "pid": 3121202,
+        "start_ticks": 130501439,
+        "state": "R",
+        "cwd": "PROJECT/releases/cvs_receiver_vrex_seeds_20261015_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_receiver_vrex_seeds.dispatch",
+          "--worker",
+          "RX_BALANCED-s2026092702"
+        ],
+        "gpu": "1"
+      },
+      "epoch_count": 1,
+      "log_bytes": 11747,
+      "log_growth": 5181,
+      "resolved_model_seed": 2026092702,
+      "execution_commit": "f7aded2fc5c607064972991d07ab6fca227cd626",
+      "historical_reuse": false,
+      "last_epoch_seconds": 34.7558069229126
+    },
+    {
+      "row_id": "RX_VREX-s2026092702",
+      "pid": 3121280,
+      "gpu": 2,
+      "cwd": "PROJECT/releases/cvs_receiver_vrex_seeds_20261015_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_vrex_seeds.dispatch",
+        "--worker",
+        "RX_VREX-s2026092702"
+      ],
+      "process": {
+        "pid": 3121280,
+        "start_ticks": 130501773,
+        "state": "R",
+        "cwd": "PROJECT/releases/cvs_receiver_vrex_seeds_20261015_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_receiver_vrex_seeds.dispatch",
+          "--worker",
+          "RX_VREX-s2026092702"
+        ],
+        "gpu": "2"
+      },
+      "epoch_count": 1,
+      "log_bytes": 11706,
+      "log_growth": 5172,
+      "resolved_model_seed": 2026092702,
+      "execution_commit": "f7aded2fc5c607064972991d07ab6fca227cd626",
+      "historical_reuse": false,
+      "last_epoch_seconds": 34.21786546707153
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "pid": 3121361,
+      "gpu": 0,
+      "cwd": "PROJECT/releases/cvs_receiver_vrex_seeds_20261015_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_vrex_seeds.dispatch",
+        "--worker",
+        "OLD_GATE_COS50-s2026092703"
+      ],
+      "process": null,
+      "epoch_count": 50,
+      "log_bytes": 121,
+      "log_growth": 0,
+      "resolved_model_seed": 2026092703,
+      "execution_commit": "5fa536f9ca2d90e7d30d547d58503a41b612d57f",
+      "historical_reuse": true,
+      "last_epoch_seconds": 56.31672024726868
+    },
+    {
+      "row_id": "RX_BALANCED-s2026092703",
+      "pid": 3121440,
+      "gpu": 3,
+      "cwd": "PROJECT/releases/cvs_receiver_vrex_seeds_20261015_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_vrex_seeds.dispatch",
+        "--worker",
+        "RX_BALANCED-s2026092703"
+      ],
+      "process": {
+        "pid": 3121440,
+        "start_ticks": 130502442,
+        "state": "R",
+        "cwd": "PROJECT/releases/cvs_receiver_vrex_seeds_20261015_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_receiver_vrex_seeds.dispatch",
+          "--worker",
+          "RX_BALANCED-s2026092703"
+        ],
+        "gpu": "3"
+      },
+      "epoch_count": 1,
+      "log_bytes": 11745,
+      "log_growth": 5179,
+      "resolved_model_seed": 2026092703,
+      "execution_commit": "f7aded2fc5c607064972991d07ab6fca227cd626",
+      "historical_reuse": false,
+      "last_epoch_seconds": 40.39711117744446
+    },
+    {
+      "row_id": "RX_VREX-s2026092703",
+      "pid": 3121519,
+      "gpu": 4,
+      "cwd": "PROJECT/releases/cvs_receiver_vrex_seeds_20261015_r01",
+      "argv": [
+        "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+        "-u",
+        "-m",
+        "experiments.cvs_receiver_vrex_seeds.dispatch",
+        "--worker",
+        "RX_VREX-s2026092703"
+      ],
+      "process": {
+        "pid": 3121519,
+        "start_ticks": 130502777,
+        "state": "S",
+        "cwd": "PROJECT/releases/cvs_receiver_vrex_seeds_20261015_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "-m",
+          "experiments.cvs_receiver_vrex_seeds.dispatch",
+          "--worker",
+          "RX_VREX-s2026092703"
+        ],
+        "gpu": "4"
+      },
+      "epoch_count": 1,
+      "log_bytes": 11706,
+      "log_growth": 11706,
+      "resolved_model_seed": 2026092703,
+      "execution_commit": "f7aded2fc5c607064972991d07ab6fca227cd626",
+      "historical_reuse": false,
+      "last_epoch_seconds": 35.587928771972656
+    }
+  ],
+  "failure": null,
+  "trained_models_finished": 0,
+  "goal_achieved": false
+}

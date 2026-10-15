@@ -85758,5 +85758,20 @@
     ],
     "goal_met": false,
     "report": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
+  },
+  "receiver_vrex_remaining_seeds": {
+    "status": "RUNNING",
+    "run_id": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+    "execution_commit": "f7aded2fc5c607064972991d07ab6fca227cd626",
+    "source_decision_commit": "4056e9fb618fa92af5486c6d3670fc73bcc4194d",
+    "new_models": 4,
+    "seeds": [
+      2026092702,
+      2026092703
+    ],
+    "historical_reused": 2,
+    "actual_first_epoch_completed": 4,
+    "launch_evidence": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01/launch_evidence.json",
+    "goal_achieved": false
   }
 }

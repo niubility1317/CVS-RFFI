@@ -13,3 +13,7 @@
 预期每新model完整原生/分组损失日志、E1/17/33/50共208梯度层624向量、实际特征/初始化与W独立性、默认prediction/scoring/rowcompletion；整批6row1008000决策108指标，自动合并01为9row1512000决策162指标，输出source_features/source_observations/analysis/combined_three_seed_analysis/completion。三seed均值/样本SD、配对差/正差种子数、MacroF1/最差RXday、错误修正/引入、源全曲线/门控/成本均如实报告。n2不替代三seed；84%只按完整预定义RX_VREX默认头clean均值判定，source指标不冒充DG。
 
 本地原核心16负例/真实nativehook/数值更新及本次11负例、四实际上下文PASS；原生参数只变seed/runID/candidateID/output，两个同seed臂初始state相同，跨seed不同，PROJECT解析/隐藏U不变/首seed重训拒绝均PASS。数据VALIDATED_ONCE复用，无新数据重验或额外审批。
+
+## 发布与实际启动
+
+VERIFIED：执行提交 `f7aded2fc5c607064972991d07ab6fca227cd626`；归档单次传输比对、远端编译和真实 checkpoint 无查询检查通过。4 个新模型已在 4 张空闲显卡上并行训练，首轮日志增长且各完成 1/50 epoch；2 行历史对照只复用既有权重和结果。默认头正常联合训练，未改配方、预算或种子。完整进程、显卡、运行目录、日志增长和资源证据见 `launch_evidence.json`。训练、逐行预测及独立评分将按冻结矩阵自动串联。
