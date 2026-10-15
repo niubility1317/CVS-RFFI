@@ -1,0 +1,22 @@
+{
+  "status": "VERIFIED",
+  "source_only": true,
+  "qualified": false,
+  "actual_rows": 4,
+  "actual_epochs": 80,
+  "actual_optimizer_steps": 17760,
+  "execution_commit": "7827a9a6b04764e690ecaf90457666435017c824",
+  "all_initial_state_tensors_equal": 198,
+  "actual_default_head_joint": true,
+  "actual_t1_t2_SIG_updates": true,
+  "default_head_fit_updates": 0,
+  "source_predictions": 5040,
+  "target_predictions": 0,
+  "target_truth_reads": 0,
+  "analysis_actual_IQ_reads": 0,
+  "complete_step_and_epoch_logs_parsed": true,
+  "full_stdout_scanned": true,
+  "max_objective_reconstruction_error": 2.384185791015625e-07,
+  "CE_transition_contributions_reconciled": true,
+  "goal_completed": false
+}

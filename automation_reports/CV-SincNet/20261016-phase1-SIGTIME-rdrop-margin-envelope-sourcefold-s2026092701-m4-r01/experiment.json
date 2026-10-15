@@ -1043,11 +1043,14 @@
   ],
   "registered_at": "2026-10-15T16:20:58+00:00",
   "result": {
-    "status": "RUNNING",
-    "evidence_ref": "launch_verification.json",
-    "source_rows_running": 4,
+    "status": "ANALYZED",
+    "evidence_ref": "completion_verification.json",
+    "source_rows_complete": 4,
     "source_only": true,
+    "source_qualified": false,
     "target_access": false,
-    "goal_completed": false
+    "goal_completed": false,
+    "fixed_recipe_closed": true,
+    "next_action": "Same-weight/same-L/same-dropout source gradient diagnostic of existing operators;not yet executed;no alpha rescue,no target"
   }
 }

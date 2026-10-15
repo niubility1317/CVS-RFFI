@@ -345,3 +345,10 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- SIGTIME_RDROP_MARGIN_ENVELOPE_PREREG_20261016 -->
 仅 SIG_TIME＋RDrop：固定同包身份间隔包络、停梯度共享软目标；FULL/MEAN/同真类置信度/包络四臂 scratch E20、seed01、RX1 真排除、原 U/默认头联合训练不变。CPU/CUDA56负例与5资格否决通过，一次P0/P1 PASS。PASS仅固定RX3源确认，FAIL关闭，不据目标调参。20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01 已发布，四行启动 VERIFIED，见[预登记](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01/report.md)，goal active。
+
+
+<!-- SIGTIME_RDROP_MARGIN_ENVELOPE_RESULT_20261016 -->
+20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01 四臂 source-only E20 已完成独立核验，80 model-epoch/17760步，默认头联合，RX1全路径排除。FULL/MEAN/CONFIDENCE/ENVELOPE 错误依次 195/264/270/286（各1260），固定资格 FAIL，关闭本配方。逐包CE转移与全日志、实际浅中层/SIG/W更新和导出边界均核验，0target/另训头。保留原版RDrop正收益及全部负结果，goalactive。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01/report.md)。
+
+
+包络闭合后的源证据：FULL/MEAN/CONFIDENCE/ENVELOPE 固定final20原生KL分别 0.035320/0.058906/0.068049/0.068834。后三者LCE/V略好、U接受观察更多，但heldRX1更差；不能仅靠更好V/更大置信度/接受量判定泛化。下一动作先做原版FULL同权重同L同mask的现有算子梯度诊断（尚未执行），不拟合头或救跑包络；仍仅SIG_TIME＋RDrop，goalactive。
