@@ -1,16 +1,16 @@
 {
   "status": "RUNNING",
-  "analysis_format_revision": 2,
+  "analysis_format_revision": 3,
   "run_id": "20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01",
   "execution_commit": "0fe97397defa9c72cb238556f0facc8d56c55513",
-  "source_rows_complete": 3,
-  "scored_rows_complete": 3,
+  "source_rows_complete": 4,
+  "scored_rows_complete": 4,
   "planned_rows": 6,
-  "completed_row_backbone_epochs": 60,
-  "completed_row_optimizer_steps": 13320,
+  "completed_row_backbone_epochs": 80,
+  "completed_row_optimizer_steps": 17760,
   "running_row_consumed_budget_excluded": true,
-  "actual_new_clean_decisions": 504000,
-  "actual_new_metric_records": 54,
+  "actual_new_clean_decisions": 672000,
+  "actual_new_metric_records": 72,
   "source_fixed_primary": "CLEAN_SIG",
   "rows": {
     "NONE-s2026092701": {
@@ -4581,6 +4581,1529 @@
         "checkpoint_mutations": 0,
         "limitation": "Fixed synthetic input verifies changed computation and feature/head boundary, not source/target accuracy or newTX transfer"
       }
+    },
+    "CLEAN_SIG-s2026092702": {
+      "status": "SCORED_VERIFIED",
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "complete_step_records": 4440,
+      "complete_epochs": 20,
+      "invalid_loss_or_U_truth_steps": [],
+      "actual_initial_state_matches_original_baseline": {
+        "status": "VERIFIED",
+        "tensors": 200,
+        "bitwise_equal_count": 200,
+        "all_equal": true,
+        "differing_names": [],
+        "limitation": null
+      },
+      "feature_parameter_tensors": 71,
+      "feature_delta_initial_to_FINAL": 10.768182091776323,
+      "default_W_delta_initial_to_FINAL": 0.662175266332606,
+      "actual_noise_placement": {
+        "mode": "CLEAN_SIG",
+        "main_t2_dropout_p": 0.1,
+        "signature_tap": "t2.drop input after original pool",
+        "signature_gradient_detached": false,
+        "extra_IQ_forwards": 0,
+        "extra_rng_draws": 0,
+        "extra_parameters": 0,
+        "inference_same_weight_equivalence": true,
+        "head_structure_changed": false
+      },
+      "final_training_L_CE": 0.022433692455157504,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9824074074074074,
+        "source_val_rx_accuracy": {
+          "1": 0.9961111111111111,
+          "3": 0.9531481481481482,
+          "4": 0.9838888888888889,
+          "6": 0.9962962962962963,
+          "8": 0.9825925925925926
+        },
+        "source_val_worst_rx": 0.9531481481481482
+      },
+      "source_health": {
+        "qualified": true,
+        "rule": {
+          "final_training_L_CE_max": 0.5,
+          "first_seed_source_V_drop_max": 0.01,
+          "first_seed_worst_source_RX_drop_max": 0.02,
+          "first_seed_only": true,
+          "stop_before_target_if_failed": true,
+          "later_seed_health_report_only": true
+        },
+        "source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9824074074074074,
+          "source_val_rx_accuracy": {
+            "1": 0.9961111111111111,
+            "3": 0.9531481481481482,
+            "4": 0.9838888888888889,
+            "6": 0.9962962962962963,
+            "8": 0.9825925925925926
+          },
+          "source_val_worst_rx": 0.9531481481481482
+        },
+        "baseline_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9811851851851852,
+          "source_val_rx_accuracy": {
+            "1": 0.9953703703703703,
+            "3": 0.9496296296296296,
+            "4": 0.9838888888888889,
+            "6": 0.9955555555555555,
+            "8": 0.9814814814814815
+          },
+          "source_val_worst_rx": 0.9496296296296296
+        },
+        "final_training_L_CE": 0.022433692455157504,
+        "target_access": false
+      },
+      "elapsed_training_seconds": 835.4236268997192,
+      "default_head_joint_training": true,
+      "head_fit_updates": 0,
+      "target": {
+        "accuracy": 0.8031547619047619,
+        "macro_f1": 0.7975746325758281,
+        "errors": 33070,
+        "worst_RX_accuracy": 0.6751666666666667,
+        "worst_day_accuracy": 0.762547619047619,
+        "confusion": [
+          [
+            27388,
+            45,
+            120,
+            411,
+            33,
+            3
+          ],
+          [
+            866,
+            12786,
+            169,
+            14110,
+            50,
+            19
+          ],
+          [
+            2985,
+            2233,
+            19753,
+            330,
+            94,
+            2605
+          ],
+          [
+            2662,
+            4632,
+            752,
+            19868,
+            26,
+            60
+          ],
+          [
+            12,
+            11,
+            10,
+            13,
+            27946,
+            8
+          ],
+          [
+            29,
+            117,
+            104,
+            32,
+            529,
+            27189
+          ]
+        ],
+        "records": [
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "overall",
+            "stratum": "ALL",
+            "accuracy": 0.8031547619047619,
+            "macro_f1": 0.7975746325758281,
+            "macro_accuracy": 0.803154761904762,
+            "query_count": 168000,
+            "confusion": [
+              [
+                27388,
+                45,
+                120,
+                411,
+                33,
+                3
+              ],
+              [
+                866,
+                12786,
+                169,
+                14110,
+                50,
+                19
+              ],
+              [
+                2985,
+                2233,
+                19753,
+                330,
+                94,
+                2605
+              ],
+              [
+                2662,
+                4632,
+                752,
+                19868,
+                26,
+                60
+              ],
+              [
+                12,
+                11,
+                10,
+                13,
+                27946,
+                8
+              ],
+              [
+                29,
+                117,
+                104,
+                32,
+                529,
+                27189
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "1-1",
+            "accuracy": 0.785875,
+            "macro_f1": 0.7583759579707662,
+            "macro_accuracy": 0.785875,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3998,
+                0,
+                0,
+                2,
+                0,
+                0
+              ],
+              [
+                77,
+                811,
+                4,
+                3107,
+                1,
+                0
+              ],
+              [
+                1232,
+                1,
+                2397,
+                1,
+                0,
+                369
+              ],
+              [
+                209,
+                25,
+                0,
+                3766,
+                0,
+                0
+              ],
+              [
+                4,
+                3,
+                5,
+                5,
+                3983,
+                0
+              ],
+              [
+                3,
+                75,
+                12,
+                2,
+                2,
+                3906
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "14-7",
+            "accuracy": 0.6751666666666667,
+            "macro_f1": 0.665301431625177,
+            "macro_accuracy": 0.6751666666666667,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3890,
+                1,
+                0,
+                109,
+                0,
+                0
+              ],
+              [
+                19,
+                948,
+                0,
+                3030,
+                3,
+                0
+              ],
+              [
+                186,
+                157,
+                2505,
+                4,
+                2,
+                1146
+              ],
+              [
+                14,
+                2337,
+                715,
+                877,
+                3,
+                54
+              ],
+              [
+                2,
+                1,
+                0,
+                0,
+                3993,
+                4
+              ],
+              [
+                1,
+                1,
+                1,
+                1,
+                5,
+                3991
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "2-1",
+            "accuracy": 0.9029583333333333,
+            "macro_f1": 0.9011955537005041,
+            "macro_accuracy": 0.9029583333333333,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3697,
+                38,
+                56,
+                178,
+                31,
+                0
+              ],
+              [
+                18,
+                2437,
+                118,
+                1383,
+                31,
+                13
+              ],
+              [
+                22,
+                81,
+                3847,
+                34,
+                6,
+                10
+              ],
+              [
+                57,
+                230,
+                1,
+                3707,
+                3,
+                2
+              ],
+              [
+                0,
+                0,
+                1,
+                3,
+                3996,
+                0
+              ],
+              [
+                3,
+                6,
+                4,
+                0,
+                0,
+                3987
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "20-1",
+            "accuracy": 0.744625,
+            "macro_f1": 0.7457830866392787,
+            "macro_accuracy": 0.744625,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3987,
+                3,
+                6,
+                0,
+                1,
+                3
+              ],
+              [
+                30,
+                1221,
+                16,
+                2724,
+                5,
+                4
+              ],
+              [
+                214,
+                274,
+                3235,
+                204,
+                40,
+                33
+              ],
+              [
+                45,
+                1815,
+                3,
+                2122,
+                12,
+                3
+              ],
+              [
+                6,
+                6,
+                3,
+                5,
+                3978,
+                2
+              ],
+              [
+                22,
+                33,
+                76,
+                29,
+                512,
+                3328
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "7-14",
+            "accuracy": 0.9292083333333333,
+            "macro_f1": 0.9286768906796206,
+            "macro_accuracy": 0.9292083333333333,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3878,
+                0,
+                58,
+                63,
+                1,
+                0
+              ],
+              [
+                14,
+                3067,
+                1,
+                916,
+                2,
+                0
+              ],
+              [
+                130,
+                279,
+                3456,
+                22,
+                45,
+                68
+              ],
+              [
+                10,
+                73,
+                1,
+                3916,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                3999,
+                1
+              ],
+              [
+                0,
+                2,
+                11,
+                0,
+                2,
+                3985
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "7-7",
+            "accuracy": 0.7954166666666667,
+            "macro_f1": 0.7961618323105188,
+            "macro_accuracy": 0.7954166666666667,
+            "query_count": 24000,
+            "confusion": [
+              [
+                4000,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                703,
+                2789,
+                29,
+                470,
+                7,
+                2
+              ],
+              [
+                1196,
+                0,
+                2802,
+                0,
+                1,
+                1
+              ],
+              [
+                2326,
+                138,
+                32,
+                1503,
+                0,
+                1
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                4000,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                4,
+                3996
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "receiver",
+            "stratum": "8-8",
+            "accuracy": 0.7888333333333334,
+            "macro_f1": 0.7688663296241051,
+            "macro_accuracy": 0.7888333333333333,
+            "query_count": 24000,
+            "confusion": [
+              [
+                3938,
+                3,
+                0,
+                59,
+                0,
+                0
+              ],
+              [
+                5,
+                1513,
+                1,
+                2480,
+                1,
+                0
+              ],
+              [
+                5,
+                1441,
+                1511,
+                65,
+                0,
+                978
+              ],
+              [
+                1,
+                14,
+                0,
+                3977,
+                8,
+                0
+              ],
+              [
+                0,
+                1,
+                1,
+                0,
+                3997,
+                1
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                4,
+                3996
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "14-10",
+            "accuracy": 0.9781428571428571,
+            "macro_f1": 0.1648251125394189,
+            "macro_accuracy": 0.9781428571428571,
+            "query_count": 28000,
+            "confusion": [
+              [
+                27388,
+                45,
+                120,
+                411,
+                33,
+                3
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "14-7",
+            "accuracy": 0.45664285714285713,
+            "macro_f1": 0.10449664100426616,
+            "macro_accuracy": 0.45664285714285713,
+            "query_count": 28000,
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                866,
+                12786,
+                169,
+                14110,
+                50,
+                19
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "20-15",
+            "accuracy": 0.7054642857142858,
+            "macro_f1": 0.13788313474197084,
+            "macro_accuracy": 0.7054642857142858,
+            "query_count": 28000,
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                2985,
+                2233,
+                19753,
+                330,
+                94,
+                2605
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "20-19",
+            "accuracy": 0.7095714285714285,
+            "macro_f1": 0.13835269212556753,
+            "macro_accuracy": 0.7095714285714285,
+            "query_count": 28000,
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                2662,
+                4632,
+                752,
+                19868,
+                26,
+                60
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "6-15",
+            "accuracy": 0.9980714285714286,
+            "macro_f1": 0.16650579725687867,
+            "macro_accuracy": 0.9980714285714286,
+            "query_count": 28000,
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                12,
+                11,
+                10,
+                13,
+                27946,
+                8
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "transmitter",
+            "stratum": "8-20",
+            "accuracy": 0.9710357142857143,
+            "macro_f1": 0.16421750711192448,
+            "macro_accuracy": 0.9710357142857143,
+            "query_count": 28000,
+            "confusion": [
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0
+              ],
+              [
+                29,
+                117,
+                104,
+                32,
+                529,
+                27189
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "day",
+            "stratum": "2021_03_01",
+            "accuracy": 0.7837380952380952,
+            "macro_f1": 0.7742673835552313,
+            "macro_accuracy": 0.7837380952380952,
+            "query_count": 42000,
+            "confusion": [
+              [
+                6699,
+                11,
+                99,
+                184,
+                4,
+                3
+              ],
+              [
+                226,
+                2738,
+                131,
+                3885,
+                14,
+                6
+              ],
+              [
+                553,
+                323,
+                4689,
+                206,
+                22,
+                1207
+              ],
+              [
+                724,
+                831,
+                459,
+                4977,
+                6,
+                3
+              ],
+              [
+                0,
+                3,
+                5,
+                0,
+                6990,
+                2
+              ],
+              [
+                5,
+                10,
+                74,
+                18,
+                69,
+                6824
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "day",
+            "stratum": "2021_03_08",
+            "accuracy": 0.814047619047619,
+            "macro_f1": 0.8116146102869091,
+            "macro_accuracy": 0.814047619047619,
+            "query_count": 42000,
+            "confusion": [
+              [
+                6875,
+                9,
+                15,
+                82,
+                19,
+                0
+              ],
+              [
+                197,
+                3555,
+                2,
+                3243,
+                2,
+                1
+              ],
+              [
+                623,
+                521,
+                5364,
+                80,
+                9,
+                403
+              ],
+              [
+                684,
+                1791,
+                43,
+                4458,
+                2,
+                22
+              ],
+              [
+                6,
+                2,
+                1,
+                4,
+                6982,
+                5
+              ],
+              [
+                10,
+                5,
+                1,
+                5,
+                23,
+                6956
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "day",
+            "stratum": "2021_03_15",
+            "accuracy": 0.762547619047619,
+            "macro_f1": 0.7584573883148749,
+            "macro_accuracy": 0.762547619047619,
+            "query_count": 42000,
+            "confusion": [
+              [
+                6917,
+                3,
+                4,
+                66,
+                10,
+                0
+              ],
+              [
+                216,
+                2866,
+                5,
+                3895,
+                10,
+                8
+              ],
+              [
+                1459,
+                1241,
+                4206,
+                21,
+                27,
+                46
+              ],
+              [
+                899,
+                1575,
+                3,
+                4512,
+                10,
+                1
+              ],
+              [
+                1,
+                6,
+                3,
+                7,
+                6982,
+                1
+              ],
+              [
+                4,
+                81,
+                15,
+                3,
+                353,
+                6544
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          },
+          {
+            "row_id": "CLEAN_SIG-s2026092702",
+            "arm": "CLEAN_SIG",
+            "model_seed": 2026092702,
+            "stage": "repair",
+            "view": "clean",
+            "dimension": "day",
+            "stratum": "2021_03_23",
+            "accuracy": 0.8522857142857143,
+            "macro_f1": 0.8468195406066917,
+            "macro_accuracy": 0.8522857142857143,
+            "query_count": 42000,
+            "confusion": [
+              [
+                6897,
+                22,
+                2,
+                79,
+                0,
+                0
+              ],
+              [
+                227,
+                3627,
+                31,
+                3087,
+                24,
+                4
+              ],
+              [
+                350,
+                148,
+                5494,
+                23,
+                36,
+                949
+              ],
+              [
+                355,
+                435,
+                247,
+                5921,
+                8,
+                34
+              ],
+              [
+                5,
+                0,
+                1,
+                2,
+                6992,
+                0
+              ],
+              [
+                10,
+                21,
+                14,
+                6,
+                84,
+                6865
+              ]
+            ],
+            "readout": "NATIVE_HEAD"
+          }
+        ]
+      },
+      "paired_vs_original_baseline": {
+        "corrected_errors": 3207,
+        "introduced_errors": 2580,
+        "net_correct_change": 627,
+        "accuracy_difference_pp": 0.3732142857142857,
+        "prediction_changes": 6649
+      },
+      "complete_log_numeric_summaries": {
+        "train/loss": {
+          "count": 4440,
+          "sum": 606.7988521817606,
+          "minimum": 0.0033154499251395464,
+          "maximum": 3.7254014015197754,
+          "first": 3.7254014015197754,
+          "last": 0.03957562521100044,
+          "mean": 0.13666640814904518
+        },
+        "train/loss_tx_labeled": {
+          "count": 4440,
+          "sum": 603.5668988623656,
+          "minimum": 0.0027109573129564524,
+          "maximum": 3.7254014015197754,
+          "first": 3.7254014015197754,
+          "last": 0.03930217772722244,
+          "mean": 0.13593849073476705
+        },
+        "train/loss_unlabeled": {
+          "count": 4440,
+          "sum": 14.024333361429854,
+          "minimum": 0.0,
+          "maximum": 0.3883536458015442,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.003158633639961679
+        },
+        "train/reliable_ratio": {
+          "count": 4440,
+          "sum": 26.009324595332146,
+          "minimum": 0.0,
+          "maximum": 0.0625,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0058579559899396725
+        },
+        "train/pseudo_total": {
+          "count": 4440,
+          "sum": 396900.0,
+          "minimum": 0,
+          "maximum": 256,
+          "first": 0,
+          "last": 124,
+          "mean": 89.39189189189189
+        },
+        "train/pseudo_selected": {
+          "count": 4440,
+          "sum": 6652.0,
+          "minimum": 0,
+          "maximum": 16,
+          "first": 0,
+          "last": 0,
+          "mean": 1.4981981981981982
+        },
+        "train/pseudo_truth_available": {
+          "count": 4440,
+          "sum": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0
+        }
+      },
+      "complete_log_phase_summaries": {
+        "label": {
+          "train/loss": {
+            "count": 2886,
+            "sum": 564.7425728631206,
+            "minimum": 0.006315132603049278,
+            "maximum": 3.7254014015197754,
+            "first": 3.7254014015197754,
+            "last": 0.03179365023970604,
+            "mean": 0.19568349718056846
+          },
+          "train/loss_tx_labeled": {
+            "count": 2886,
+            "sum": 564.7425728631206,
+            "minimum": 0.006315132603049278,
+            "maximum": 3.7254014015197754,
+            "first": 3.7254014015197754,
+            "last": 0.03179365023970604,
+            "mean": 0.19568349718056846
+          },
+          "train/loss_unlabeled": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/reliable_ratio": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/pseudo_total": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_selected": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_truth_available": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        },
+        "pseudo": {
+          "train/loss": {
+            "count": 1554,
+            "sum": 42.05627931864001,
+            "minimum": 0.0033154499251395464,
+            "maximum": 0.12073963135480881,
+            "first": 0.009948805905878544,
+            "last": 0.03957562521100044,
+            "mean": 0.02706324280478765
+          },
+          "train/loss_tx_labeled": {
+            "count": 1554,
+            "sum": 38.82432599924505,
+            "minimum": 0.0027109573129564524,
+            "maximum": 0.11848229914903641,
+            "first": 0.009022838436067104,
+            "last": 0.03930217772722244,
+            "mean": 0.024983478763992952
+          },
+          "train/loss_unlabeled": {
+            "count": 1554,
+            "sum": 14.024333361429854,
+            "minimum": 0.0,
+            "maximum": 0.3883536458015442,
+            "first": 0.0024141527246683836,
+            "last": 0.0,
+            "mean": 0.009024667542747654
+          },
+          "train/reliable_ratio": {
+            "count": 1554,
+            "sum": 26.009324595332146,
+            "minimum": 0.0,
+            "maximum": 0.0625,
+            "first": 0.01171875,
+            "last": 0.0,
+            "mean": 0.01673701711411335
+          },
+          "train/pseudo_total": {
+            "count": 1554,
+            "sum": 396900.0,
+            "minimum": 124,
+            "maximum": 256,
+            "first": 256,
+            "last": 124,
+            "mean": 255.40540540540542
+          },
+          "train/pseudo_selected": {
+            "count": 1554,
+            "sum": 6652.0,
+            "minimum": 0,
+            "maximum": 16,
+            "first": 3,
+            "last": 0,
+            "mean": 4.280566280566281
+          },
+          "train/pseudo_truth_available": {
+            "count": 1554,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        }
+      },
+      "fixed_synthetic_feature_boundary": {
+        "status": "PASS",
+        "model_seed": 2026092702,
+        "arm": "CLEAN_SIG",
+        "checkpoint_epoch": 20,
+        "feature_initial_to_trained_L2": 20.514025331302545,
+        "feature_initial_to_trained_max_abs": 4.51383638381958,
+        "all_features_finite": true,
+        "trained_feature_only_equals_deployed_joint160_bitwise": true,
+        "perturbing_trained_default_W_leaves_joint160_bitwise_unchanged": true,
+        "synthetic_seed": 2026101541,
+        "synthetic_IQ_shape": [
+          2,
+          2,
+          256
+        ],
+        "synthetic_feature_forward_packets": 8,
+        "actual_IQ_reads": 0,
+        "new_target_truth_reads": 0,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "checkpoint_mutations": 0,
+        "limitation": "Fixed synthetic input verifies changed computation and feature/head boundary, not source/target accuracy or newTX transfer"
+      }
     }
   },
   "summary": {
@@ -4602,20 +6125,21 @@
       "total_introduced_errors": 6395
     },
     "CLEAN_SIG": {
-      "actual_seed_count": 1,
+      "actual_seed_count": 2,
       "actual_seeds": [
-        2026092701
+        2026092701,
+        2026092702
       ],
       "complete_three_seeds": false,
-      "accuracy_mean": 0.8218571428571428,
-      "accuracy_sample_SD": null,
-      "macro_f1_mean": 0.8187082082205994,
-      "worst_RX_accuracy_mean": 0.7312083333333333,
-      "worst_day_accuracy_mean": 0.7862619047619047,
-      "paired_accuracy_difference_mean_pp": 0.2476190476190476,
-      "positive_seeds": 1,
-      "total_corrected_errors": 2469,
-      "total_introduced_errors": 2053
+      "accuracy_mean": 0.8125059523809524,
+      "accuracy_sample_SD": 0.013224580395762705,
+      "macro_f1_mean": 0.8081414203982138,
+      "worst_RX_accuracy_mean": 0.7031875000000001,
+      "worst_day_accuracy_mean": 0.7744047619047618,
+      "paired_accuracy_difference_mean_pp": 0.3104166666666667,
+      "positive_seeds": 2,
+      "total_corrected_errors": 5676,
+      "total_introduced_errors": 4633
     }
   },
   "paired_errors": [
@@ -4647,6 +6171,15 @@
       "prediction_changes": 8198
     },
     {
+      "comparison": "CLEAN_SIG minus BASE_SSL",
+      "model_seed": 2026092702,
+      "corrected_errors": 3207,
+      "introduced_errors": 2580,
+      "net_correct_change": 627,
+      "accuracy_difference_pp": 0.3732142857142857,
+      "prediction_changes": 6649
+    },
+    {
       "model_seed": 2026092701,
       "comparison": "CLEAN_SIG minus NONE",
       "corrected_errors": 2876,
@@ -4654,6 +6187,59 @@
       "net_correct_change": 110,
       "accuracy_difference_pp": 0.06547619047619048,
       "prediction_changes": 6352
+    },
+    {
+      "model_seed": 2026092702,
+      "comparison": "CLEAN_SIG minus NONE",
+      "corrected_errors": 2747,
+      "introduced_errors": 3033,
+      "net_correct_change": -286,
+      "accuracy_difference_pp": -0.17023809523809524,
+      "prediction_changes": 6505
+    }
+  ],
+  "paired_summaries": [
+    {
+      "comparison": "NONE minus BASE_SSL",
+      "actual_seed_count": 2,
+      "actual_model_seeds": [
+        2026092701,
+        2026092702
+      ],
+      "complete_three_seeds": false,
+      "paired_accuracy_difference_mean_pp": 0.36279761904761904,
+      "paired_accuracy_difference_sample_SD_pp": 0.25548441439299663,
+      "positive_seeds": 2,
+      "total_corrected_errors": 7614,
+      "total_introduced_errors": 6395
+    },
+    {
+      "comparison": "CLEAN_SIG minus BASE_SSL",
+      "actual_seed_count": 2,
+      "actual_model_seeds": [
+        2026092701,
+        2026092702
+      ],
+      "complete_three_seeds": false,
+      "paired_accuracy_difference_mean_pp": 0.3104166666666667,
+      "paired_accuracy_difference_sample_SD_pp": 0.08880924454188188,
+      "positive_seeds": 2,
+      "total_corrected_errors": 5676,
+      "total_introduced_errors": 4633
+    },
+    {
+      "comparison": "CLEAN_SIG minus NONE",
+      "actual_seed_count": 2,
+      "actual_model_seeds": [
+        2026092701,
+        2026092702
+      ],
+      "complete_three_seeds": false,
+      "paired_accuracy_difference_mean_pp": -0.05238095238095238,
+      "paired_accuracy_difference_sample_SD_pp": 0.16667516985111477,
+      "positive_seeds": 1,
+      "total_corrected_errors": 5623,
+      "total_introduced_errors": 5799
     }
   ],
   "group_records": [
@@ -8112,6 +9698,1158 @@
         ]
       ],
       "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8031547619047619,
+      "macro_f1": 0.7975746325758281,
+      "macro_accuracy": 0.803154761904762,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27388,
+          45,
+          120,
+          411,
+          33,
+          3
+        ],
+        [
+          866,
+          12786,
+          169,
+          14110,
+          50,
+          19
+        ],
+        [
+          2985,
+          2233,
+          19753,
+          330,
+          94,
+          2605
+        ],
+        [
+          2662,
+          4632,
+          752,
+          19868,
+          26,
+          60
+        ],
+        [
+          12,
+          11,
+          10,
+          13,
+          27946,
+          8
+        ],
+        [
+          29,
+          117,
+          104,
+          32,
+          529,
+          27189
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.785875,
+      "macro_f1": 0.7583759579707662,
+      "macro_accuracy": 0.785875,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3998,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          77,
+          811,
+          4,
+          3107,
+          1,
+          0
+        ],
+        [
+          1232,
+          1,
+          2397,
+          1,
+          0,
+          369
+        ],
+        [
+          209,
+          25,
+          0,
+          3766,
+          0,
+          0
+        ],
+        [
+          4,
+          3,
+          5,
+          5,
+          3983,
+          0
+        ],
+        [
+          3,
+          75,
+          12,
+          2,
+          2,
+          3906
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6751666666666667,
+      "macro_f1": 0.665301431625177,
+      "macro_accuracy": 0.6751666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3890,
+          1,
+          0,
+          109,
+          0,
+          0
+        ],
+        [
+          19,
+          948,
+          0,
+          3030,
+          3,
+          0
+        ],
+        [
+          186,
+          157,
+          2505,
+          4,
+          2,
+          1146
+        ],
+        [
+          14,
+          2337,
+          715,
+          877,
+          3,
+          54
+        ],
+        [
+          2,
+          1,
+          0,
+          0,
+          3993,
+          4
+        ],
+        [
+          1,
+          1,
+          1,
+          1,
+          5,
+          3991
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.9029583333333333,
+      "macro_f1": 0.9011955537005041,
+      "macro_accuracy": 0.9029583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3697,
+          38,
+          56,
+          178,
+          31,
+          0
+        ],
+        [
+          18,
+          2437,
+          118,
+          1383,
+          31,
+          13
+        ],
+        [
+          22,
+          81,
+          3847,
+          34,
+          6,
+          10
+        ],
+        [
+          57,
+          230,
+          1,
+          3707,
+          3,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          3,
+          3996,
+          0
+        ],
+        [
+          3,
+          6,
+          4,
+          0,
+          0,
+          3987
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.744625,
+      "macro_f1": 0.7457830866392787,
+      "macro_accuracy": 0.744625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3987,
+          3,
+          6,
+          0,
+          1,
+          3
+        ],
+        [
+          30,
+          1221,
+          16,
+          2724,
+          5,
+          4
+        ],
+        [
+          214,
+          274,
+          3235,
+          204,
+          40,
+          33
+        ],
+        [
+          45,
+          1815,
+          3,
+          2122,
+          12,
+          3
+        ],
+        [
+          6,
+          6,
+          3,
+          5,
+          3978,
+          2
+        ],
+        [
+          22,
+          33,
+          76,
+          29,
+          512,
+          3328
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.9292083333333333,
+      "macro_f1": 0.9286768906796206,
+      "macro_accuracy": 0.9292083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3878,
+          0,
+          58,
+          63,
+          1,
+          0
+        ],
+        [
+          14,
+          3067,
+          1,
+          916,
+          2,
+          0
+        ],
+        [
+          130,
+          279,
+          3456,
+          22,
+          45,
+          68
+        ],
+        [
+          10,
+          73,
+          1,
+          3916,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          2,
+          11,
+          0,
+          2,
+          3985
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7954166666666667,
+      "macro_f1": 0.7961618323105188,
+      "macro_accuracy": 0.7954166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          703,
+          2789,
+          29,
+          470,
+          7,
+          2
+        ],
+        [
+          1196,
+          0,
+          2802,
+          0,
+          1,
+          1
+        ],
+        [
+          2326,
+          138,
+          32,
+          1503,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4,
+          3996
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.7888333333333334,
+      "macro_f1": 0.7688663296241051,
+      "macro_accuracy": 0.7888333333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3938,
+          3,
+          0,
+          59,
+          0,
+          0
+        ],
+        [
+          5,
+          1513,
+          1,
+          2480,
+          1,
+          0
+        ],
+        [
+          5,
+          1441,
+          1511,
+          65,
+          0,
+          978
+        ],
+        [
+          1,
+          14,
+          0,
+          3977,
+          8,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          3997,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4,
+          3996
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9781428571428571,
+      "macro_f1": 0.1648251125394189,
+      "macro_accuracy": 0.9781428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27388,
+          45,
+          120,
+          411,
+          33,
+          3
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.45664285714285713,
+      "macro_f1": 0.10449664100426616,
+      "macro_accuracy": 0.45664285714285713,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          866,
+          12786,
+          169,
+          14110,
+          50,
+          19
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7054642857142858,
+      "macro_f1": 0.13788313474197084,
+      "macro_accuracy": 0.7054642857142858,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2985,
+          2233,
+          19753,
+          330,
+          94,
+          2605
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.7095714285714285,
+      "macro_f1": 0.13835269212556753,
+      "macro_accuracy": 0.7095714285714285,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2662,
+          4632,
+          752,
+          19868,
+          26,
+          60
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9980714285714286,
+      "macro_f1": 0.16650579725687867,
+      "macro_accuracy": 0.9980714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          12,
+          11,
+          10,
+          13,
+          27946,
+          8
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9710357142857143,
+      "macro_f1": 0.16421750711192448,
+      "macro_accuracy": 0.9710357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          29,
+          117,
+          104,
+          32,
+          529,
+          27189
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7837380952380952,
+      "macro_f1": 0.7742673835552313,
+      "macro_accuracy": 0.7837380952380952,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6699,
+          11,
+          99,
+          184,
+          4,
+          3
+        ],
+        [
+          226,
+          2738,
+          131,
+          3885,
+          14,
+          6
+        ],
+        [
+          553,
+          323,
+          4689,
+          206,
+          22,
+          1207
+        ],
+        [
+          724,
+          831,
+          459,
+          4977,
+          6,
+          3
+        ],
+        [
+          0,
+          3,
+          5,
+          0,
+          6990,
+          2
+        ],
+        [
+          5,
+          10,
+          74,
+          18,
+          69,
+          6824
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.814047619047619,
+      "macro_f1": 0.8116146102869091,
+      "macro_accuracy": 0.814047619047619,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6875,
+          9,
+          15,
+          82,
+          19,
+          0
+        ],
+        [
+          197,
+          3555,
+          2,
+          3243,
+          2,
+          1
+        ],
+        [
+          623,
+          521,
+          5364,
+          80,
+          9,
+          403
+        ],
+        [
+          684,
+          1791,
+          43,
+          4458,
+          2,
+          22
+        ],
+        [
+          6,
+          2,
+          1,
+          4,
+          6982,
+          5
+        ],
+        [
+          10,
+          5,
+          1,
+          5,
+          23,
+          6956
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.762547619047619,
+      "macro_f1": 0.7584573883148749,
+      "macro_accuracy": 0.762547619047619,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6917,
+          3,
+          4,
+          66,
+          10,
+          0
+        ],
+        [
+          216,
+          2866,
+          5,
+          3895,
+          10,
+          8
+        ],
+        [
+          1459,
+          1241,
+          4206,
+          21,
+          27,
+          46
+        ],
+        [
+          899,
+          1575,
+          3,
+          4512,
+          10,
+          1
+        ],
+        [
+          1,
+          6,
+          3,
+          7,
+          6982,
+          1
+        ],
+        [
+          4,
+          81,
+          15,
+          3,
+          353,
+          6544
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8522857142857143,
+      "macro_f1": 0.8468195406066917,
+      "macro_accuracy": 0.8522857142857143,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6897,
+          22,
+          2,
+          79,
+          0,
+          0
+        ],
+        [
+          227,
+          3627,
+          31,
+          3087,
+          24,
+          4
+        ],
+        [
+          350,
+          148,
+          5494,
+          23,
+          36,
+          949
+        ],
+        [
+          355,
+          435,
+          247,
+          5921,
+          8,
+          34
+        ],
+        [
+          5,
+          0,
+          1,
+          2,
+          6992,
+          0
+        ],
+        [
+          10,
+          21,
+          14,
+          6,
+          84,
+          6865
+        ]
+      ],
+      "readout": "NATIVE_HEAD"
     }
   ],
   "baseline_complete_trace_count": 3,
@@ -8823,6 +11561,22 @@
       "epoch13_L_CE": 0.03308883412564929,
       "source_V_accuracy_difference_pp": 0.18518518518518823,
       "source_V_worst_RX_difference_pp": 0.5185185185185182
+    },
+    {
+      "row_id": "CLEAN_SIG-s2026092702",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "baseline_final_training_L_CE": 0.0305139944649528,
+      "final_training_L_CE": 0.022433692455157504,
+      "training_L_CE_difference": -0.008080302009795298,
+      "baseline_pseudo_selected_observations": 6580.0,
+      "pseudo_selected_observations": 6652.0,
+      "pseudo_selected_observations_difference": 72.0,
+      "pseudo_total_observations": 396900,
+      "baseline_epoch13_L_CE": 0.040621294612736183,
+      "epoch13_L_CE": 0.03197356258510604,
+      "source_V_accuracy_difference_pp": 0.12222222222222356,
+      "source_V_worst_RX_difference_pp": 0.35185185185185874
     }
   ],
   "baseline_target_metrics": {
@@ -11250,7 +14004,8 @@
     }
   },
   "matched_initial_200states_between_modes": {
-    "2026092701": true
+    "2026092701": true,
+    "2026092702": true
   },
   "first_seed_source_qualification": {
     "qualified": true,
@@ -11418,12 +14173,36 @@
         "head_fit_updates": 0,
         "checkpoint_mutations": 0,
         "limitation": "Fixed synthetic input verifies changed computation and feature/head boundary, not source/target accuracy or newTX transfer"
+      },
+      "CLEAN_SIG-s2026092702": {
+        "status": "PASS",
+        "model_seed": 2026092702,
+        "arm": "CLEAN_SIG",
+        "checkpoint_epoch": 20,
+        "feature_initial_to_trained_L2": 20.514025331302545,
+        "feature_initial_to_trained_max_abs": 4.51383638381958,
+        "all_features_finite": true,
+        "trained_feature_only_equals_deployed_joint160_bitwise": true,
+        "perturbing_trained_default_W_leaves_joint160_bitwise_unchanged": true,
+        "synthetic_seed": 2026101541,
+        "synthetic_IQ_shape": [
+          2,
+          2,
+          256
+        ],
+        "synthetic_feature_forward_packets": 8,
+        "actual_IQ_reads": 0,
+        "new_target_truth_reads": 0,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "checkpoint_mutations": 0,
+        "limitation": "Fixed synthetic input verifies changed computation and feature/head boundary, not source/target accuracy or newTX transfer"
       }
     },
     "status": "PASS",
     "actual_IQ_reads": 0,
     "new_target_truth_reads": 0,
-    "synthetic_feature_forward_packets": 24,
+    "synthetic_feature_forward_packets": 32,
     "optimizer_steps": 0,
     "head_fit_updates": 0,
     "checkpoint_mutations": 0
