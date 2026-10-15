@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "synthetic_IQ_per_check": 6336,
+  "network_forwards": 0,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "gauge_rank": 10,
+  "TX_day_exclusion": true,
+  "availability_negatives": true,
+  "protocol_negatives": 4,
+  "independent_P0P1_review": "PASS; one review, no direct P0/P1; reviewer executed same synthetic checks only",
+  "checkpoint_smoke": "NOT_APPLICABLE: no model/checkpoint consumed",
+  "registration": "VALID"
+}
