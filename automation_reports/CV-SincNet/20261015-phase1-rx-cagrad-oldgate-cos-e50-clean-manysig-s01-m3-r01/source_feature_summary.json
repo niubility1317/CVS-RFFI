@@ -1,0 +1,137 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "models": 2,
+  "missing": [],
+  "rows": [
+    {
+      "row_id": "NORM_CONTROL-s2026092701",
+      "arm": "NORM_CONTROL",
+      "seed": 2026092701,
+      "feature_boundary": {
+        "status": "VERIFIED",
+        "source_packets": 720,
+        "actual_feature": "joint160/id_feat_joint",
+        "export_exact": true,
+        "maximum_export_difference": 0,
+        "class_W_zeroing_leaves_features_identical": true,
+        "old_class_W_removed_from_export": true,
+        "feature_parameters_buffers_unchanged": true,
+        "head_fit": false,
+        "head_updates": 0,
+        "feature_updates_by_diagnostic": 0,
+        "query_read": false,
+        "feature_parameters": 195041,
+        "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+      },
+      "actual_initial_to_final_parameters": {
+        "status": "VERIFIED",
+        "feature_parameters": 195041,
+        "class_parameters": 960,
+        "feature_changed_elements": 193460,
+        "class_changed_elements": 960,
+        "feature_transform_parameters_preserved": [
+          "id_backbone.encoder.core.id_backbone.cls_head.gain",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias"
+        ],
+        "scope": "Only the actual identity subtree; remove class_W alone, keep feature normalization/gain/reference. Per-tensor relative values; mixed Hz/other units are not combined into a causal importance score.",
+        "parameter_or_buffer_updates_by_analysis": 0
+      }
+    },
+    {
+      "row_id": "RX_CAGRAD-s2026092701",
+      "arm": "RX_CAGRAD",
+      "seed": 2026092701,
+      "feature_boundary": {
+        "status": "VERIFIED",
+        "source_packets": 720,
+        "actual_feature": "joint160/id_feat_joint",
+        "export_exact": true,
+        "maximum_export_difference": 0,
+        "class_W_zeroing_leaves_features_identical": true,
+        "old_class_W_removed_from_export": true,
+        "feature_parameters_buffers_unchanged": true,
+        "head_fit": false,
+        "head_updates": 0,
+        "feature_updates_by_diagnostic": 0,
+        "query_read": false,
+        "feature_parameters": 195041,
+        "limitation": "Real feature change and interface independence; not evidence of new-TX transfer or head-free classification benefit"
+      },
+      "actual_initial_to_final_parameters": {
+        "status": "VERIFIED",
+        "feature_parameters": 195041,
+        "class_parameters": 960,
+        "feature_changed_elements": 193782,
+        "class_changed_elements": 960,
+        "feature_transform_parameters_preserved": [
+          "id_backbone.encoder.core.id_backbone.cls_head.gain",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias"
+        ],
+        "scope": "Only the actual identity subtree; remove class_W alone, keep feature normalization/gain/reference. Per-tensor relative values; mixed Hz/other units are not combined into a causal importance score.",
+        "parameter_or_buffer_updates_by_analysis": 0
+      }
+    }
+  ],
+  "paired": [
+    {
+      "seed": 2026092701,
+      "arm": "RX_CAGRAD",
+      "control": "NORM_CONTROL",
+      "actual_initial_native_body_and_head_equal": true,
+      "actual_initial_parameters_identical": true,
+      "actual_initial_eval_features": {
+        "status": "VERIFIED",
+        "actual_feature": "joint160/id_feat_joint",
+        "model_parameters_buffers_unchanged": true,
+        "source_only": true,
+        "query_read": false,
+        "head_fit": false,
+        "optimizer_steps": 0,
+        "interpretation": "Same-source frozen feature difference; not newTX transfer or proof that parameter/feature changes cause DG gain"
+      },
+      "source_features": {
+        "status": "VERIFIED",
+        "actual_feature": "joint160/id_feat_joint",
+        "model_parameters_buffers_unchanged": true,
+        "source_only": true,
+        "query_read": false,
+        "head_fit": false,
+        "optimizer_steps": 0,
+        "interpretation": "Same-source frozen feature difference; not newTX transfer or proof that parameter/feature changes cause DG gain"
+      },
+      "actual_final_parameter_difference": {
+        "status": "VERIFIED",
+        "feature_parameters": 195041,
+        "class_parameters": 960,
+        "feature_changed_elements": 193847,
+        "class_changed_elements": 960,
+        "feature_transform_parameters_preserved": [
+          "id_backbone.encoder.core.id_backbone.cls_head.gain",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.base_norm.bias",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.pa_norm.bias"
+        ],
+        "scope": "Only the actual identity subtree; remove class_W alone, keep feature normalization/gain/reference. Per-tensor relative values; mixed Hz/other units are not combined into a causal importance score.",
+        "parameter_or_buffer_updates_by_analysis": 0
+      }
+    }
+  ],
+  "source_only": true,
+  "head_fit": false,
+  "head_updates": 0,
+  "query_read": false,
+  "U_IQ_read": false,
+  "U_truth_read": false,
+  "V_cache_materialized": true,
+  "V_forward": false,
+  "source_IQ": "fixed L720 first8 perTX/RX/day",
+  "seconds": 7.920202732086182
+}
