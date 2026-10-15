@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "scope": "One independent direct P0/P1 review only",
+  "reviewer": "signature_fix_p0p1",
+  "findings": [],
+  "verified_boundaries": [
+    "fullf_theta excludeclassWalone",
+    "perparametereligibilityandmatchedrandomcounts",
+    "01FAILskip02/03;01PASSrunsboth",
+    "parentandcohorts",
+    "savedartifactrecount",
+    "CPUclosureandentrycompile"
+  ],
+  "no_real_data_or_weights_read": true
+}
