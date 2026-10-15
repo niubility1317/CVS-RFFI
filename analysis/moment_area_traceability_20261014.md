@@ -246,3 +246,6 @@ DRO完整固定3seed闭环：9新模型450epochs99900steps，12row2016000default
 
 
 2026-10-15：source软身份关系实际900L已闭环、20层60真实参数向量独立复算VERIFIED；teacher软边质量98.697450%而XR的t1/t2对同strongCE余弦−.262721/−.330844，固定资格FAIL。0新训练／头fit／U／query，不扫描温度或权重、不扩源种子或训练；结果`automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/final_analysis.md`，执行`e2242a9201afe4bf896305cc3d364f069f677a65`。实际已学习fθ/默认W边界保持，未宣称84或目标收益。
+
+
+2026-10-15：基于真实Sinc近静止及savedAdamW状态，准备optimizer-only采样单位策略；Fs来自原网络25000000，lr×Fs／eps÷Fs／wd÷Fs，仅原48参数，不改网络/头/前向或全局clip。组件本地native路径、STANDARD更新/矩、非Sinc含W首步一致及feature差检查PASS，尚未真实训练/发布或完成新候选P0P1。合成检查不代替真实训练结论；报告`analysis/sinc_unit_optimizer_preparation_20261015.md`。

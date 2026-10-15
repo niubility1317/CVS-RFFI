@@ -480,3 +480,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 软关系源诊断已完整ANALYZED／VERIFIED，sourceFAIL。900唯一L／1800源前向／20层60向量、0更新或headfit/U/query；teacher软边身份质量98.697450%，XR t1/t2/SIG真实有效梯度范数比3.394885/3.936461/.511427，对同strongCE余弦−.262721/−.330844/.003583。只证明late训练L下梯度兼容性不满足，不能外推所有关系学习／U／DG；按预定规则不扩02/03、不训练或扫参数。实现`5ab6d390d5306a787c0efbf4a1532df861f0b877`、执行`e2242a9201afe4bf896305cc3d364f069f677a65`，完整[源结果](../automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/final_analysis.md)。RSC六新最新29至33轮，原PID/CWD/argv及日志增长仍核实、failure0，继续原50轮。
+
+
+固定网络下一训练假设：原48个Sinc参数的Hz优化单位。真实9历史模型和当前3个SIG_TIME模型均几乎不更新；已有优化器矩非零且末轮步长低于半ULP。仅优化器组按Fs换算lr／eps／wd、保留原全局clip／cos／EMA和全部非Sinc参数（含默认W）选项，不改网络或参数化。组件本地7负例／真实native前向和同梯度检查PASS，STANDARD与原生更新/矩逐元素一致，unit首步仅Sinc不同并传到joint160；这只是合成机械证据，没有新真实训练或目标结果，完整训练接线与唯一审查尚待完成。[准备报告](../analysis/sinc_unit_optimizer_preparation_20261015.md)。依据在读取RSC剩余目标数值前固定，不扫倍率。

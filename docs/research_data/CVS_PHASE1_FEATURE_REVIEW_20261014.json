@@ -82439,8 +82439,8 @@
     }
   ],
   "next_actions_max2": [
-    "等待当前固定RSC02/03六健康模型自然完成50轮，逐row自动clean默认头预测与独立truth-last后完整合并预定三seed；保留全部结果",
-    "软关系源诊断已按原规则FAIL停止，不扫描温度/系数/父；根据合法源证据再设计独立SSL训练目标，固定SIG_TIME及默认联合头"
+    "完成RSC固定02/03六健康模型及逐row自动defaulthead clean/truth-last，完整三seed独立合并不改配方",
+    "按真实Sinc近静止及优化器单位证据，完成仅改优化器的固定Fs策略最小同路径训练准备；网络/默认头不变，不扫描倍率"
   ],
   "goal_84": false,
   "Phase2_development": false,
@@ -82449,7 +82449,7 @@
     "源决定推送后回收首seed完整默认头clean结果、全部曲线和误差迁移；后续合并预定义三seed独立统计与实际feature witness检验84%，保留全部正负结果"
   ],
   "current_priority": {
-    "at": "2026-10-14T23:56:49.574Z",
+    "at": "2026-10-15T00:07:38.675Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": {
@@ -84630,6 +84630,29 @@
       ],
       "not_expanded_or_trained": true,
       "results": "automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/results.json"
+    },
+    "next_optimizer_mechanism": {
+      "method": "Optimizer-only fixed Sinc normalized sampling units",
+      "status": "LOCAL_COMPONENT_VERIFIED_NOT_LAUNCHED",
+      "network_architecture_unchanged": true,
+      "parameterization_unchanged": true,
+      "default_head_jointly_trained": true,
+      "source_basis": "Actual9historical optimizer/student/EMA states plus3currentSIG_TIME final50 parameter-change records; same48Sinc params nearlystatic, nonzero moments and subULP terms",
+      "sample_rate": 25000000,
+      "policy": {
+        "sinc_lr_multiplier": 25000000,
+        "sinc_epsilon_divisor": 25000000,
+        "sinc_weight_decay_divisor": 25000000,
+        "nonsinc_options": "original",
+        "native_global_gradient_clipping": "unchanged Hz-space"
+      },
+      "native_control_update_and_moments_exact": true,
+      "head_fit_updates": 0,
+      "real_new_training": false,
+      "no_new_target_metrics_read_for_design": true,
+      "no_parameter_scan": true,
+      "preparation_report": "analysis/sinc_unit_optimizer_preparation_20261015.md",
+      "local_checks": "analysis/research_data/sinc_unit_optimizer_local_checks_20261015.json"
     }
   }
 }
