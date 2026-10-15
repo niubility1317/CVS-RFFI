@@ -1,0 +1,210 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-phase1-current-response-coverage-manysig-m1-r01",
+  "group_id": "phase1-source-response-capacity",
+  "display_name": "当前三tap增强与可迁移源谱形方向的覆盖诊断",
+  "description": "复用已有L-only18折跨TX/day频谱统计；比较当前abs(a)<=.06三tap族的有界容量及只放松幅度的形状覆盖。非新训练或泛化成绩。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-derived-statistics",
+  "aliases": [],
+  "tags": [
+    "source_only",
+    "RX_spectral",
+    "response_capacity",
+    "no_model",
+    "local"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261011-phase1-rx-spectral-crossfit-manysig-m1-r01",
+    "20261015-phase1-sigtime-rdrop-mixedIQ-e20-manysig-s2026092701-m5-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active goal and source-only question frozen in e7745dbdf before target analysis. Diagnose current A_g; no new IQ/model/truth access or training, no budget extension.",
+  "code": {
+    "commit": "CURRENT_GIT_COMMIT_AT_EXECUTION",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "F:/App/miniconda3/python.exe; NumPy; local CPU2, no torch import",
+    "cwd": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014"
+  },
+  "data": {
+    "dataset": "Existing saved L-derived contrast arrays only; no raw dataset open",
+    "version": "existing_N607_ManySig_6tx_12rx_4day",
+    "representation": "fixed rectangular/centered logPSD32 -> orthonormal DCT1to8; existing18fold predicted and observed RX contrasts",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261011-phase1-rx-spectral-crossfit-manysig-m1-r01\\evidence\\remote_results.json#/row/provenance.json/L_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#class_txs",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/manifest.json; all six registered class names",
+    "roles": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000,
+      "L_s_fraction": 0.07,
+      "U_s_fraction": 0.63,
+      "V_fraction": 0.3,
+      "U_use": "IQ/RX/day/opaque UID;15domain round-robin, within-domain private permutation before reuse; no TX grouping or same-sig cross-RX pairing"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": "inherited deterministic physical source roles (historical protocol label 392005)",
+    "validation_ref": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261011-phase1-rx-spectral-crossfit-manysig-m1-r01\\evidence\\remote_results.json",
+    "support_query_ref": "N/A: no query/support",
+    "leo_config_ref": "N/A: no channel simulation",
+    "train_ratio_definition": "rho_label=L_s/(L_s+U_s)=0.1 unchanged; U_s TX truth never visible",
+    "diagnostic_access": "Saved source L6300 aggregate plus source-role metadata only. No new IQ, U, V, model, target or truth read.",
+    "consumed_roles": {
+      "L_s_derived": 6300,
+      "U_s": 0,
+      "V": 0,
+      "target": 0
+    }
+  },
+  "permissions": {
+    "regime": "source_derived_statistics_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Ideal magnitude-response capacity and held-out source contrast arithmetic, not finite-IQ identity or unseen-RX recognition",
+    "target_feedback_to_training": false
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "Saved source-only completion and exact L physical-role metadata, no checkpoint consumed",
+    "provenance_verdict": "No model loaded; reuse unchanged source statistics originally computed without a model",
+    "selection_rule": "fixed primary rectangular/DCT1to8; no window/seed/target selection"
+  },
+  "execution": {
+    "host": "local Windows ordinary user",
+    "launch_owner": "codex/root/source-response-coverage-20261016",
+    "gpu_policy": "No CUDA/model; two local numerical threads",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_response_coverage_20261016",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_response_coverage.run",
+    "stop_rule": "Unexpected source-role/primary/config/numerical mismatch or output collision: preserve outputs, stop, no automatic retry; no foreign process mutation"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "results.json",
+    "complete.json",
+    "failure.json on technical failure",
+    "local analysis plots/report after results"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source crossfit MSE recount",
+      "energy-weighted relaxed direction coverage",
+      "bounded mismatch to predicted contrast",
+      "held-out MSE after bounded and relaxed projection",
+      "grid resolution difference",
+      "within-bin proxy spread"
+    ],
+    "dimensions": [
+      "excluded TX",
+      "excluded day",
+      "source RX",
+      "grid"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "deterministic source aggregate arithmetic; no truth/scorer process",
+    "selection_rule": "fine grid17radii/2048angles primary;9/1024 resolution control; difference>.01 inconclusive; direction<.5 gap,>=.8 substantial,otherwise mixed; no automatic training or chosen amplitude"
+  },
+  "rows": [
+    {
+      "row_id": "CURRENT_Ag_SOURCE_CAPACITY",
+      "method": "ideal_current_response_family",
+      "purpose": "source_falsification",
+      "config_ref": "experiments/cvs_response_coverage/registration.json#rows/0/config",
+      "resolved_config_ref": "E:\\type10-7\\local_artifacts\\cvs_response_coverage_20261016\\run\\resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Deterministic saved-source geometry;392005 labels original physical split only. No stochastic augmentation/model/support/evaluation seed, no seed replication.",
+      "k": null,
+      "scenario": "source aggregate only; no satellite simulation",
+      "optimizer": "none",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 new model,0 epochs,0 optimizer,0 model forward; reuse6300-derived18x5x8 source arrays; fixed two grids",
+      "output_root": "E:\\type10-7\\local_artifacts\\cvs_response_coverage_20261016\\run",
+      "log_path": "E:\\type10-7\\local_artifacts\\cvs_response_coverage_20261016\\run.log",
+      "command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_response_coverage.run",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "results.json",
+        "complete.json",
+        "failure.json on technical failure",
+        "local analysis plots/report after results"
+      ],
+      "config": {
+        "run_id": "20261016-phase1-current-response-coverage-manysig-m1-r01",
+        "owner": "codex/root/source-response-coverage-20261016",
+        "output": "E:\\type10-7\\local_artifacts\\cvs_response_coverage_20261016\\run",
+        "source_evidence": "E:\\type10-7\\automation_reports\\CV-SincNet\\20261011-phase1-rx-spectral-crossfit-manysig-m1-r01\\evidence\\remote_results.json",
+        "source_role": "L_s-derived fixed aggregate only",
+        "source_count": 6300,
+        "primary": "rectangular/DCT1to8",
+        "folds": 18,
+        "RX": 5,
+        "coordinates": 8,
+        "response": "H(w)=1+a*cos(w), abs(a)<=0.06",
+        "radius": 0.06,
+        "FFT_bins": 256,
+        "pooled_bins": 32,
+        "primary_grid": {
+          "radii": 17,
+          "angles": 2048
+        },
+        "resolution_control": {
+          "radii": 9,
+          "angles": 1024
+        },
+        "direction_gap_upper": 0.5,
+        "substantial_direction_lower": 0.8,
+        "resolution_tolerance": 0.01,
+        "scope": "Ideal power-response proxy, not finite-IQ or identity-performance evidence",
+        "no_new_IQ_reads": true,
+        "no_checkpoint": true,
+        "U_used": false,
+        "V_used": false,
+        "target_access": false,
+        "model_forwards": 0,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "device": "CPU",
+        "threads": 2,
+        "automatic_training": false,
+        "training_parameters_selected": false
+      }
+    }
+  ],
+  "notes": [
+    "Existing source spectral diagnosis already found primary MSE .614141 on18folds; do not repeat raw-IQ statistics.",
+    "Old33tap PHYS/ROT training exists and is not declared a proven winner. New analysis only asks current three-tap magnitude coverage.",
+    "Dictionary is an ideal flat-within-bin/infinite-signal power proxy; does not model finite boundaries, window convolution, unknown within-bin spectrum, log-floor or phase effects.",
+    "Projection choices depend on source crossfit predictions, never held-out observed contrast. Relaxed scalar is diagnostic, not a deployed action, TX-defined session or chosen training amplitude.",
+    "Local-only arithmetic: no N607 mutation/release/transfer/GPU or model checkpoint is consumed; corresponding remote preflight/archive/real-checkpoint smoke are not applicable to this stage. Focused math/protocol negatives and one limited P0/P1 review apply.",
+    "All source-only results reported. Directional gap can motivate a separate finite-IQ/default-head experiment only; no identity gain or next training candidate is established."
+  ]
+}

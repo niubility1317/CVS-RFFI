@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_response_coverage.checks",
+  "observed_result": {
+    "closed_form_cases": 5,
+    "source_negative_cases": 9,
+    "configuration_negative_cases": 1,
+    "decision_cases": 4,
+    "raw_IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "model_forwards": 0,
+    "optimizer_updates": 0
+  }
+}
