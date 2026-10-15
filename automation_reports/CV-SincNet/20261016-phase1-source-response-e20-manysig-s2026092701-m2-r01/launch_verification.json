@@ -1,0 +1,36 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "b393dfe66146d6ab42236da705d743044d45f9d3",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "real_checkpoint_no_query_smoke": "PASS",
+  "same_recipe_B00_source_reuse": true,
+  "PID_CWD_cmdline_GPU_match": true,
+  "all_owner_GPU_limit": 3,
+  "independent_log_and_epoch_growth": true,
+  "actual_source_roles": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "NoExplicitCFO": true,
+  "actual_parameters": 863730,
+  "rows": [
+    {
+      "row_id": "EMP-s2026092701",
+      "epoch": 1,
+      "optimizer_steps": 222,
+      "L_forward_packets": 170496,
+      "gpu": 0
+    },
+    {
+      "row_id": "ROT-s2026092701",
+      "epoch": 1,
+      "optimizer_steps": 222,
+      "L_forward_packets": 170496,
+      "gpu": 1
+    }
+  ],
+  "evidence_ref": "E:\\type10-7\\local_artifacts\\cvs_source_response_train_20261016\\postlaunch2.json",
+  "performance_claim": false
+}
