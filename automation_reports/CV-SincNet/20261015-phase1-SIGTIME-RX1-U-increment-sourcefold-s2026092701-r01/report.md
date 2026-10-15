@@ -1,6 +1,6 @@
 # 真实 RX1 留出：源身份风险约束 U 的特征位移
 
-状态 **RUNNING / 启动 VERIFIED**。下文保留预登记。目标仍为实际 joint160、原默认 cosine 头联合训练后的固定 clean 三种子均值84%；本轮是有真实训练的 source-only 机制证伪，不读取 target，不宣称候选完整训练已改善。
+状态 **FAILED / 技术故障终态 VERIFIED**。下文保留预登记。目标仍为实际 joint160、原默认 cosine 头联合训练后的固定 clean 三种子均值84%；本轮是有真实训练的 source-only 机制证伪，不读取 target，不宣称候选完整训练已改善。
 
 依据：上一轮冷初值 RX-blocked80条件中 ROUTED 对同辅助梯度范数 JOINT_NORM 的身份 CE 20/20 改善，但 AdamW 位移未匹配。完整责任路由 M12 默认头81.120635%，相对匹配SSL−0.054167个百分点；最差RX+0.245833个百分点、3/3正保留。source优化方向存在不能推出持续训练泛化增益。历史CENTER25K等正路线与全部负结果保留，不重跑当前已负配方。
 
@@ -26,3 +26,12 @@
 
 
 真实启动已独立读回：执行 `779e77620ea724154bfb2c899498578643234f00`，GPU 0 上所属进程/命令/CWD与GPU成员关系一致，总实验进程 1/3；log已增长，own scratch真实CP no-query smoke PASS。有效角色L5040/U45360/V21600，五个training/calibration/probe loader全部排除RX1，实际参数13L+7U/LS0/ownEMA/无L与星地增强，初始化来源为空。仍是运行状态，未宣称训练完成、机制资格或新target分数。
+
+
+## 技术失败与恢复边界
+
+所属进程自然退出，13 个完整 epoch 和全部 2895 条成功更新日志已解析；无非有限 loss 或 U 真值暴露。第一个预定探针 step2896 的临时投影在 `geometry.py:22` 跨库矩阵乘法处抛 TypeError，尚未执行该步实际 optimizer.step。0 个完整 probe、无终轮 checkpoint/预测/资格结果；不能把此故障记成科学0/4或机制负结果。全部旧产物保留，2895次部分更新为技术失败成本，不继承权重。
+
+N607零IQ/checkpoint算术独立复现：PyTorch 2.1.0+cu121 / NumPy 2.2.5，纯NumPy矩阵乘法PASS、Torch转NumPy后的矩阵乘法FAIL、原发布投影FAIL、纯Torch小矩阵SVD求解PASS。故障属于跨库数组兼容层，不是risk投影数学或目标性能。拟仅用Torch CPU FP64 SVD保持同一active-set/KKT问题、rcond1e-12和原容差，并将无数据算术smoke放到runner开始，PASS直接继续原native真实CP smoke/训练。
+
+替代run `20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r02` 将从零完整重训同一seed/源折/20轮/13L+7U/四probe/三控制/原资格，不扩seed、不调阈值或依据分数重排；旧run不重启、不覆盖、不继承部分模型。通过修复前失败回归、修复后聚焦验证及唯一直接问题定向复核后再发布。当前仅故障关闭，替代尚未启动，84%整体goal active。

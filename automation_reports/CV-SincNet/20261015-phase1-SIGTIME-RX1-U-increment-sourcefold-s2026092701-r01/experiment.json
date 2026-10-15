@@ -223,10 +223,11 @@
   ],
   "registered_at": "2026-10-15T02:23:55+00:00",
   "result": {
-    "status": "RUNNING",
-    "evidence_ref": "launch_evidence.json",
-    "target_access": false,
-    "U_truth_read": false,
+    "status": "FAILED",
+    "category": "TECHNICAL_NOT_SCIENTIFIC",
+    "evidence_ref": "technical_failure_evidence.json",
+    "source_gate_outcome": "NOT_EVALUATED",
+    "replacement_run_id": "20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r02",
     "goal84_completed": false
   }
 }
