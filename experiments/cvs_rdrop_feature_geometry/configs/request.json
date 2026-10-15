@@ -1,0 +1,130 @@
+{
+  "run_id": "20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01",
+  "launch_owner": "codex/root/SIGTIME-RDrop-feature-geometry-20261016",
+  "source_only": true,
+  "target_access": false,
+  "parent_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_rdrop_curvature_completion_source20_20261016_r01",
+  "parent_commit": "78ad998e9dcb5653573fa801538e914189833d20",
+  "parent_rows": [
+    {
+      "row_id": "FULL-RX1-s2026092702",
+      "arm": "FULL",
+      "model_seed": 2026092702
+    },
+    {
+      "row_id": "SPAN-RX1-s2026092702",
+      "arm": "SPAN",
+      "model_seed": 2026092702
+    },
+    {
+      "row_id": "ISOTROPIC-RX1-s2026092702",
+      "arm": "ISOTROPIC",
+      "model_seed": 2026092702
+    },
+    {
+      "row_id": "NULL-RX1-s2026092702",
+      "arm": "NULL",
+      "model_seed": 2026092702
+    }
+  ],
+  "rows": [
+    {
+      "row_id": "FULL",
+      "parent_row": {
+        "row_id": "FULL-RX1-s2026092702",
+        "arm": "FULL",
+        "model_seed": 2026092702
+      },
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/FULL-RX1-s2026092702/source/final_ssdg.pth",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01/FULL",
+      "model_seed": 2026092702,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "target_access": false
+    },
+    {
+      "row_id": "SPAN",
+      "parent_row": {
+        "row_id": "SPAN-RX1-s2026092702",
+        "arm": "SPAN",
+        "model_seed": 2026092702
+      },
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/SPAN-RX1-s2026092702/source/final_ssdg.pth",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01/SPAN",
+      "model_seed": 2026092702,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "target_access": false
+    },
+    {
+      "row_id": "ISOTROPIC",
+      "parent_row": {
+        "row_id": "ISOTROPIC-RX1-s2026092702",
+        "arm": "ISOTROPIC",
+        "model_seed": 2026092702
+      },
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/ISOTROPIC-RX1-s2026092702/source/final_ssdg.pth",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01/ISOTROPIC",
+      "model_seed": 2026092702,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "target_access": false
+    },
+    {
+      "row_id": "NULL",
+      "parent_row": {
+        "row_id": "NULL-RX1-s2026092702",
+        "arm": "NULL",
+        "model_seed": 2026092702
+      },
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/NULL-RX1-s2026092702/source/final_ssdg.pth",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01/NULL",
+      "model_seed": 2026092702,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "target_access": false
+    }
+  ],
+  "model_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_originalSIGTIME_rdrop20_50_20261015_r01",
+  "dependency_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02",
+  "fold_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01",
+  "checkpoints": {
+    "FULL": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/FULL-RX1-s2026092702/source/final_ssdg.pth",
+    "SPAN": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/SPAN-RX1-s2026092702/source/final_ssdg.pth",
+    "ISOTROPIC": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/ISOTROPIC-RX1-s2026092702/source/final_ssdg.pth",
+    "NULL": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/NULL-RX1-s2026092702/source/final_ssdg.pth"
+  },
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01",
+  "selection": "First2 native L per TX/fitRX/day cell=144;all70 L per TX/RX1/day cell=1260;single shared materialization",
+  "feature": "Actual eval id_feat_joint160,FP64 cosine distances after normalization eps1e-4;all raw norms must exceed1e-4",
+  "relationship": "For each fit anchor,compare70sameTX/sameDay heldRX1 distances against350otherTX/sameDay heldRX1 distances;difference<-1e-12 wins,abs difference<=1e-12 ties half",
+  "per_model_counts": {
+    "fit_L": 144,
+    "held_L": 1260,
+    "same_identity_pairs": 10080,
+    "different_identity_pairs": 50400,
+    "triplets": 3528000,
+    "anchor_records": 144,
+    "aggregate_groups": 86
+  },
+  "aggregate_groups": [
+    "overall",
+    "fit_RX",
+    "day",
+    "TX",
+    "TX_fitRX_day_cell"
+  ],
+  "actual_L_materializations": 1404,
+  "actual_identity_forward_packets": 5616,
+  "synthetic_CP_smoke_packets": 8,
+  "model_seeds": 1,
+  "model_conditions": 4,
+  "synthetic_seed": 2026101625,
+  "optimizer_steps": 0,
+  "head_fit_updates": 0,
+  "U_IQ_reads": 0,
+  "V_IQ_reads": 0,
+  "target_IQ_reads": 0,
+  "target_truth_reads": 0,
+  "interpretation": "Descriptive known-identity source feature geometry,not a trained readout,classification accuracy,causal attribution,newTX or target generalization. No promotion threshold;failed NULL recipe remains closed."
+}

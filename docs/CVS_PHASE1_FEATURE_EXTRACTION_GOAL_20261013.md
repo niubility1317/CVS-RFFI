@@ -371,3 +371,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 
 同批全空间ISOTROPIC对照相对FULL修正45/新增27，净少错18，held RX1准确率+1.428571pp、CE−0.050462。保留为单seed源对照的未确认正迹象，不替换主NULL、不触发RX3或主目标矩阵。下一仅可做本批冻结joint160无拟合参数的源跨RX几何诊断；没有新训练或换头授权需求，原关闭规则不变。详见20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/report.md。
+
+
+<!-- RDROP_FEATURE_GEOMETRY_PREREG_20261016 -->
+20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01 PLANNED：父curvature4源模型固定final20，只读actual joint160跨RX特征关系，144fitL+1260heldRX1L共同物化1404、4模型5616前向、8ownCPsynthetic smoke、0训练/拟合头/U/V/targetIQ。每模型3528000同day三元比较是相关组合而非独立样本，1modelseed/4conditions。CPU14负例及实际模型边界PASS。无晋级阈值，父NULL FAIL不变，不扩训练/目标。[固定方案](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01/report.md)。goalactive。
