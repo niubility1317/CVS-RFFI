@@ -356,3 +356,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- RDROP_OPERATOR_PROBE_PREREG_20261016 -->
 原版 FULL 固定源 final20 同权重同输入梯度诊断 20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01 已登记未发布：144fitL，CLEAN/NATIVE_AUG×4固定dropout draws，复用同一paired图比较4旧算子和CE，实际logits/joint160/t1/t2/SIG/defaultW梯度；0更新/头拟合/U/V/RX1/target IQ，父训练20轮单列。不是新训练候选，不救跑包络，不设科学晋级阈值；CPU9负例与真实梯度接线PASS。见[诊断方案](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01/report.md)，goalactive。
+
+
+<!-- RDROP_OPERATOR_PROBE_RESULT_20261016 -->
+20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01 固定原版 FULL 源 final20 诊断 ANALYZED/VERIFIED；144fitL、两上下文各4dropout抽样、2304真实身份前向包次、240记录、0更新/头拟合/U/V/RX1/target IQ。NATIVE_AUG中 MEAN 的 t1/t2/SIG 范数约为 FULL 的18.05%/18.50%/19.74%，包络约42.06%/38.95%/48.46%；同loss系数不等于同特征梯度，方向也改变，不能归因于单因素。全部state/buffer/gradslots/counter保持，独立核对终态/摘要数学，未重算梯度向量或捕获live过程。下一独立机制研究 FULL 未覆盖的特征变化，不扫参数救援包络。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01/report.md)。goalactive。

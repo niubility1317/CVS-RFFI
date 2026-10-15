@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "Continue active goal,latest only SIG_TIME+RDrop. Source-only same-weight/same-L/same-dropout diagnostic preregistered as next action in closed source run;no new training or rescue of failed envelope.",
   "code": {
-    "commit": "Actual Git HEAD in release_commit.txt",
+    "commit": "e09aad8224c64827bd29be62d4bfb989f2571601",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "ordinary N607 CVS-RFFI;CPU-only2threads,loader0",
     "cwd": "PROJECT/releases/cvs_SIGTIME_rdrop_operator_probe_20261016_r01",
@@ -228,5 +228,18 @@
     "Snapshot equality includes persistentstate,nonpersistent buffers,empty gradslots andfeature-step counters;train mode only enablesdropout,0 optimizer/EMA changes.",
     "CPU actual model9negative cases,30gradient records,288synthetic packets PASS;0realIQ/CP/updates/headfit. One independent new diagnostic P0/P1 PASS;no additional review."
   ],
-  "registered_at": "2026-10-15T16:53:05+00:00"
+  "registered_at": "2026-10-15T16:53:05+00:00",
+  "result": {
+    "status": "ANALYZED",
+    "evidence_ref": "completion_verification.json",
+    "source_only": true,
+    "source_model_seeds": 1,
+    "actual_gradient_records": 240,
+    "actual_identity_forward_packets": 2304,
+    "optimizer_steps": 0,
+    "head_fit_updates": 0,
+    "target_access": false,
+    "qualification": null,
+    "goal_completed": false
+  }
 }
