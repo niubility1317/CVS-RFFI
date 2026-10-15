@@ -273,3 +273,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- ORIGINAL_SIGTIME_RDROP_LAUNCHED_20261015 -->
 2026-10-15：旧SIG_TIME叠加RDrop的 `20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01` 已发布并独立启动核实。执行 `b3ac442e2d33a5b315fb3251c30e0ad7083566bc`，18行预登记，首seed6行在GPU0至5运行，另12行按每预算固定source-only规则放行。原RAW_HZ、LS.01、普通增强及默认头联合训练保留，两次paired前向实际复用增强后同IQ。尚无最终测试收益；全目标保持active，旧正负结果与未发布残差交换原型保留。
+
+
+<!-- ORIGINAL_SIGTIME_E20_SOURCE_EXPANDED_20261015 -->
+2026-10-15 `20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01` E20首seed3行source资格PASS（源健康、KL和固定V容差，未读target指标），其余6行已自动启动并完成ownCP smoke/首epoch。首seed3行已完成504000固定clean决定和独立CPU truth-last评分；E50首seed3行仍在训练、后6行按其自身源资格待放行。当前12/18已启动、3/18已评分、9活跃；不解读部分target成绩，不改配方/预算/主条件，goal active。

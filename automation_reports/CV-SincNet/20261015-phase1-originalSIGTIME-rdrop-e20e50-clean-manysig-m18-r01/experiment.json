@@ -3693,10 +3693,12 @@
   "registered_at": "2026-10-15T10:12:01+00:00",
   "result": {
     "status": "RUNNING",
-    "evidence_ref": "launch_verification.json",
-    "actual_rows_started": 6,
+    "evidence_ref": "E20_expansion_verification.json",
+    "actual_rows_started": 12,
+    "actual_active_rows": 9,
+    "actual_rows_scored": 3,
     "all_expected_rows": 18,
-    "source_gated_pending_rows": 12,
+    "source_gated_pending_rows": 6,
     "goal_completed": false
   }
 }

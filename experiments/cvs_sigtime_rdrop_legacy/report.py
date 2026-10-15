@@ -63,6 +63,7 @@ def main():
  for name,s in x['paired_summary'].items():lines.append(f"| {name} | {number(s['mean_pp'],suffix=' pp',signed=True)} | {number(s['sample_SD_pp'],suffix=' pp')} | {s['positive_seeds']}/{s['seed_count']} |")
  lines+=['',f"预登记主条件 E50_RDROP 的完整三种子 84% 检查为 {x['E50_RDROP_goal84_check']}；E20_RDROP 为 {x['E20_RDROP_goal84_check']}。种子不足三时不作完整目标达成判断。该研究沿用已暴露的固定 ManySig clean 基准，不声明新的独立盲测、未见 TX、星地或 Phase2 能力。",'',
  '本次直接保留旧 SIG_TIME 的 RAW_HZ、普通训练增强、0.01 标签平滑、NoExplicitCFO、默认 6×160 cosine 头联合训练以及原 U/ownEMA 配方。E20 为13L+7U，E50 为33L+17U，分别从零训练并固定 final。ORIGINAL 保留原单 CE 路径，无辅助 hook；TWO_CE 与 RDROP 都在同一增强后 IQ 上做两次随机前向，CE 取均值，只有 RDROP 添加固定 alpha=1 的对称 KL。没有第二次增强重抽、另训头、新参数或新 U 一致性。','',
+ '兼容旧配置时继承的描述字段 `updates=11100` 和 `cost_claim=21 new scratch50...` 仍出现在不可变 config 中，前者对 E20、后者对本矩阵已过时，均不控制执行。实际 native args、训练器预算、计数、完整日志和 completion 共同核实 E20 为4440更新、E50为11100更新，18行全部从零训练；本报告成本采用这些实际证据。没有热改正在运行的配置或覆盖旧产物。','',
  '两类比较分别回答不同问题：RDROP−ORIGINAL 是整个组合的净效果，RDROP−TWO_CE 隔离一致性项，TWO_CE−ORIGINAL 反映增加随机前向与平均 CE 的影响。E50−E20 同时改变总轮次、cosine 日程终点与 U 阶段轮次，不能解释为同一 E20 轨迹的单纯续训。三条件每 seed 的初始 state 相同，ORIGINAL 的后续随机数消耗因单前向而不同，不声称训练轨迹逐位相同。','',
  '历史 SIG_TIME 83.0393% ±1.4557 pp 是保留的非配对背景。本次的新 ORIGINAL 才是同配方对照；此前 RDrop E50 82.1030% 属于 CENTER25K/cleanL/LS0 配方，不能据此判断对旧 SIG_TIME 的因果增益。没有继承任何历史高分权重，也没有按测试成绩选择父模型、轮次、主条件、种子或重跑。','',
  '| 预算源资格 | 判定 | L 健康 | KL 正值调用比例 |','|---|---|---|---:|']

@@ -1,6 +1,6 @@
 # 旧 SIG_TIME 叠加 RDrop：E20/E50 三种子匹配验证
 
-状态 **RUNNING，首6行已启动，另12行按固定源规则待放行；独立启动核验 VERIFIED**。用户要求旧 SIG_TIME 与 RDrop 有机结合；本次原样保留旧 SIG_TIME 的 RAW_HZ、标签平滑 0.01、普通训练增强、NoExplicitCFO、默认 cosine 头联合训练、旧门控和 ownEMA。18 个独立 scratch 模型：E20/E50 × ORIGINAL/TWO_CE/RDROP × 2026092701/02/03；E50 原 33L+17U，E20 固定 13L+7U，不继承旧权重，不使用 CENTER25K/cleanL/LS0 替代旧配方。
+状态 **RUNNING，已启动12/18行；E20首seed3行已评分，其余6行已扩展运行；E50首seed3行继续训练，其余6行待源资格。独立核验 VERIFIED**。用户要求旧 SIG_TIME 与 RDrop 有机结合；本次原样保留旧 SIG_TIME 的 RAW_HZ、标签平滑 0.01、普通训练增强、NoExplicitCFO、默认 cosine 头联合训练、旧门控和 ownEMA。18 个独立 scratch 模型：E20/E50 × ORIGINAL/TWO_CE/RDROP × 2026092701/02/03；E50 原 33L+17U，E20 固定 13L+7U，不继承旧权重，不使用 CENTER25K/cleanL/LS0 替代旧配方。
 
 | 条件 | L 前向/更新 | 原平滑 CE | 一致性 |
 |---|---:|---|---|
@@ -25,3 +25,9 @@ RDrop为已有方法，[原论文](https://arxiv.org/abs/2106.14448)。本次研
 
 <!-- ORIGINAL_SIGTIME_RDROP_VERIFIED_LAUNCH_20261015 -->
 执行 commit `b3ac442e2d33a5b315fb3251c30e0ad7083566bc` 已推送并独立核实远程 OID。首 seed 的六行覆盖 E20/E50 和三个条件，GPU0至5各1进程，实测每进程 3346 至 3348 MiB；快照内所有 owner 均未超过每GPU3进程。CPU2、loader0、dispatcher/scorer CUDA为空。六行 own初始CP无query smoke均通过，真实L/U/V为6300/56700/27000，原标签平滑0.01/use_aug=True/RAW_HZ与默认头联合训练已核实，paired机制实际复用增强后IQ，CWD/argv/PID-start/GPU及两次读回日志增长均 VERIFIED。没有技术失败；逐row自动clean预测和独立CPU truth-last尚待训练冻结后执行。其余12行只由两个预算各自的源资格判定放行，测试成绩不进入判定。详见 [启动证据](launch_verification.json)。
+
+
+<!-- ORIGINAL_SIGTIME_E20_SOURCE_EXPANSION_20261015 -->
+E20源资格已按预登记规则PASS：3条件末轮LCE均≤0.5；RDrop全部4440次KL调用为正；源V均值/最差RX相对ORIGINAL为+0.077778/+0.222222个百分点，相对TWO_CE为−0.096296/−0.166667个百分点，均在固定1/2个百分点容差内。独立重算判定与远程source_gates一致，仅读取源完成证据，不读取目标指标。E20首seed三个模型已各自动固定168000个clean决定并完成fresh CPU CUDAempty评分，共504000决定/54分层记录；本次核实闭环产物而不解读部分测试成绩。其余两seed的6个E20模型已启动、ownCP smoke和首epoch通过；另3个首seedE50仍在训练，共9个活跃GPU进程，all-owner计数≤3/GPU。E50六个后续模型仍只等待其自己的源资格。详见[E20扩展证据](E20_expansion_verification.json)。
+
+兼容旧配置时继承的非执行描述字段updates=11100和cost_claim=21 new scratch50...仍保留在不可变config中；前者对E20、后者对本矩阵已过时。实际native epochs、训练器UPDATES=epochs×222、进度和completion核实E20为4440更新、E50为11100更新，本18行均从零。此说明不改变执行、冻结配置或历史产物。

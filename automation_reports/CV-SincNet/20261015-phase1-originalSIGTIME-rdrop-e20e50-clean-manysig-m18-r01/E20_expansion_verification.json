@@ -1,0 +1,131 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01",
+  "registered_rows": 18,
+  "started_rows": 12,
+  "active_rows": 9,
+  "completed_scored_rows": 3,
+  "remaining_source_gated_rows": 6,
+  "source_only_E20_qualification_recount": {
+    "status": "PASS",
+    "epochs": 20,
+    "source_only": true,
+    "first_model_seed": 2026092701,
+    "all_final_L_healthy": true,
+    "positive_KL_call_fraction": 1.0,
+    "source_V_comparisons": {
+      "ORIGINAL": {
+        "V_mean_difference": 0.0007777777777777661,
+        "V_worst_RX_difference": 0.0022222222222222365
+      },
+      "TWO_CE": {
+        "V_mean_difference": -0.0009629629629629433,
+        "V_worst_RX_difference": -0.0016666666666665941
+      }
+    },
+    "qualified": true,
+    "target_metrics_read": false,
+    "remaining_seed_rows": 6,
+    "no_parameter_scan": true
+  },
+  "target_metrics_read_for_expansion": false,
+  "clean_decisions_fixed_and_scored": 504000,
+  "metric_records": 54,
+  "fresh_CPU_scorer_with_CUDA_empty": "VERIFIED",
+  "own_processes_per_GPU": {
+    "0": 2,
+    "2": 2,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 1,
+    "7": 1
+  },
+  "all_owner_actual_processes_per_GPU": {
+    "0": 2,
+    "1": 2,
+    "2": 2,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 1,
+    "7": 1
+  },
+  "no_healthy_process_intervention": true,
+  "live_rows": [
+    {
+      "row_id": "E50_ORIGINAL-s2026092701",
+      "GPU": 3,
+      "completed_epochs": 30,
+      "own_no_query_checkpoint_smoke": "PASS",
+      "process_identity_and_log_growth": "VERIFIED",
+      "actual_original_recipe": "VERIFIED"
+    },
+    {
+      "row_id": "E50_TWO_CE-s2026092701",
+      "GPU": 4,
+      "completed_epochs": 25,
+      "own_no_query_checkpoint_smoke": "PASS",
+      "process_identity_and_log_growth": "VERIFIED",
+      "actual_original_recipe": "VERIFIED"
+    },
+    {
+      "row_id": "E50_RDROP-s2026092701",
+      "GPU": 5,
+      "completed_epochs": 25,
+      "own_no_query_checkpoint_smoke": "PASS",
+      "process_identity_and_log_growth": "VERIFIED",
+      "actual_original_recipe": "VERIFIED"
+    },
+    {
+      "row_id": "E20_ORIGINAL-s2026092702",
+      "GPU": 0,
+      "completed_epochs": 1,
+      "own_no_query_checkpoint_smoke": "PASS",
+      "process_identity_and_log_growth": "VERIFIED",
+      "actual_original_recipe": "VERIFIED"
+    },
+    {
+      "row_id": "E20_TWO_CE-s2026092702",
+      "GPU": 2,
+      "completed_epochs": 1,
+      "own_no_query_checkpoint_smoke": "PASS",
+      "process_identity_and_log_growth": "VERIFIED",
+      "actual_original_recipe": "VERIFIED"
+    },
+    {
+      "row_id": "E20_RDROP-s2026092702",
+      "GPU": 6,
+      "completed_epochs": 1,
+      "own_no_query_checkpoint_smoke": "PASS",
+      "process_identity_and_log_growth": "VERIFIED",
+      "actual_original_recipe": "VERIFIED"
+    },
+    {
+      "row_id": "E20_ORIGINAL-s2026092703",
+      "GPU": 7,
+      "completed_epochs": 2,
+      "own_no_query_checkpoint_smoke": "PASS",
+      "process_identity_and_log_growth": "VERIFIED",
+      "actual_original_recipe": "VERIFIED"
+    },
+    {
+      "row_id": "E20_TWO_CE-s2026092703",
+      "GPU": 0,
+      "completed_epochs": 1,
+      "own_no_query_checkpoint_smoke": "PASS",
+      "process_identity_and_log_growth": "VERIFIED",
+      "actual_original_recipe": "VERIFIED"
+    },
+    {
+      "row_id": "E20_RDROP-s2026092703",
+      "GPU": 2,
+      "completed_epochs": 1,
+      "own_no_query_checkpoint_smoke": "PASS",
+      "process_identity_and_log_growth": "VERIFIED",
+      "actual_original_recipe": "VERIFIED"
+    }
+  ],
+  "execution_commit": "b3ac442e2d33a5b315fb3251c30e0ad7083566bc",
+  "read_at": 1792060587.8693628
+}
