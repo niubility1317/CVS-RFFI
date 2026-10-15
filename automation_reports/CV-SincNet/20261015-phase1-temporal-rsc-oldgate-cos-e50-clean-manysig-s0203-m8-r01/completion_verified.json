@@ -1,0 +1,4286 @@
+{
+  "status": "VERIFIED",
+  "completion": {
+    "status": "EXPERIMENT_COMPLETE",
+    "models": 8,
+    "new_trained_models": 6,
+    "reused_baseline_models": 2,
+    "views": 1,
+    "readouts": [
+      "ORIGINAL_HEAD"
+    ],
+    "prediction_count": 1344000,
+    "truth_last": true,
+    "goal_84": false
+  },
+  "source_observations": {
+    "status": "VERIFIED",
+    "first_source_qualification_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
+    "first_source_qualification": {
+      "status": "PASS",
+      "source_only": true,
+      "target_metrics_read_for_decision": false,
+      "actual_observations": {
+        "SIG_TIME": {
+          "status": "VERIFIED",
+          "row_id": "SIG_TIME-s2026092701",
+          "arm": "SIG_TIME",
+          "steps": 11100,
+          "actual_L_packet_observations": 1420800,
+          "curves": [
+            {
+              "epoch": 1,
+              "source_packets": 28416,
+              "unmasked_CE": 1.4169632089030635,
+              "selected_CE": 1.4169632089030635,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.10467389570800839
+            },
+            {
+              "epoch": 2,
+              "source_packets": 28416,
+              "unmasked_CE": 0.5941078061456079,
+              "selected_CE": 0.5941078061456079,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.18689304813407026
+            },
+            {
+              "epoch": 3,
+              "source_packets": 28416,
+              "unmasked_CE": 0.4042396857529073,
+              "selected_CE": 0.4042396857529073,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.1851539121823268
+            },
+            {
+              "epoch": 4,
+              "source_packets": 28416,
+              "unmasked_CE": 0.3184036601099882,
+              "selected_CE": 0.3184036601099882,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.18863146433287914
+            },
+            {
+              "epoch": 5,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2991773421028713,
+              "selected_CE": 0.2991773421028713,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.1909679008295407
+            },
+            {
+              "epoch": 6,
+              "source_packets": 28416,
+              "unmasked_CE": 0.29850956317675004,
+              "selected_CE": 0.29850956317675004,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.19973079796444188
+            },
+            {
+              "epoch": 7,
+              "source_packets": 28416,
+              "unmasked_CE": 0.26025555061327443,
+              "selected_CE": 0.26025555061327443,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2047599299668192
+            },
+            {
+              "epoch": 8,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2558149292326725,
+              "selected_CE": 0.2558149292326725,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.21784121026326944
+            },
+            {
+              "epoch": 9,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2527082329196436,
+              "selected_CE": 0.2527082329196436,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.21693521456138506
+            },
+            {
+              "epoch": 10,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2610078288561052,
+              "selected_CE": 0.2610078288561052,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2149612275329796
+            },
+            {
+              "epoch": 11,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2868764017549184,
+              "selected_CE": 0.2868764017549184,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2120973968895169
+            },
+            {
+              "epoch": 12,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2699966504498645,
+              "selected_CE": 0.2699966504498645,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.21488011480720193
+            },
+            {
+              "epoch": 13,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2788494610571646,
+              "selected_CE": 0.2788494610571646,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.21628819197953283
+            },
+            {
+              "epoch": 14,
+              "source_packets": 28416,
+              "unmasked_CE": 0.34744516528538755,
+              "selected_CE": 0.34744516528538755,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2205386759193094
+            },
+            {
+              "epoch": 15,
+              "source_packets": 28416,
+              "unmasked_CE": 0.3174056414481219,
+              "selected_CE": 0.3174056414481219,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2234526726979393
+            },
+            {
+              "epoch": 16,
+              "source_packets": 28416,
+              "unmasked_CE": 0.26430795408852464,
+              "selected_CE": 0.26430795408852464,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.22201986563903792
+            },
+            {
+              "epoch": 17,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2822159448185483,
+              "selected_CE": 0.2822159448185483,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2161834208747825
+            },
+            {
+              "epoch": 18,
+              "source_packets": 28416,
+              "unmasked_CE": 0.32754590892576957,
+              "selected_CE": 0.32754590892576957,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2123969530200099
+            },
+            {
+              "epoch": 19,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2907911468263682,
+              "selected_CE": 0.2907911468263682,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.21546301883351696
+            },
+            {
+              "epoch": 20,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2784755506158412,
+              "selected_CE": 0.2784755506158412,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.214960129042198
+            },
+            {
+              "epoch": 21,
+              "source_packets": 28416,
+              "unmasked_CE": 0.30980562526095023,
+              "selected_CE": 0.30980562526095023,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.21143996306099333
+            },
+            {
+              "epoch": 22,
+              "source_packets": 28416,
+              "unmasked_CE": 0.28515295177563893,
+              "selected_CE": 0.28515295177563893,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.21681722105891854
+            },
+            {
+              "epoch": 23,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2857284940577842,
+              "selected_CE": 0.2857284940577842,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2071793443850569
+            },
+            {
+              "epoch": 24,
+              "source_packets": 28416,
+              "unmasked_CE": 0.27375868466254827,
+              "selected_CE": 0.27375868466254827,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.21390952914953232
+            },
+            {
+              "epoch": 25,
+              "source_packets": 28416,
+              "unmasked_CE": 0.229716493135637,
+              "selected_CE": 0.229716493135637,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2096210325489173
+            },
+            {
+              "epoch": 26,
+              "source_packets": 28416,
+              "unmasked_CE": 0.25069972594176326,
+              "selected_CE": 0.25069972594176326,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2080870553314149
+            },
+            {
+              "epoch": 27,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2809705118741001,
+              "selected_CE": 0.2809705118741001,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.21158651651831362
+            },
+            {
+              "epoch": 28,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2547023948785421,
+              "selected_CE": 0.2547023948785421,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.21286549989704615
+            },
+            {
+              "epoch": 29,
+              "source_packets": 28416,
+              "unmasked_CE": 0.21706000933641786,
+              "selected_CE": 0.21706000933641786,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.20499895237856083
+            },
+            {
+              "epoch": 30,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2717889038225015,
+              "selected_CE": 0.2717889038225015,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2012460967441937
+            },
+            {
+              "epoch": 31,
+              "source_packets": 28416,
+              "unmasked_CE": 0.27322558538468034,
+              "selected_CE": 0.27322558538468034,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.20418694024687414
+            },
+            {
+              "epoch": 32,
+              "source_packets": 28416,
+              "unmasked_CE": 0.24427962507884782,
+              "selected_CE": 0.24427962507884782,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.20347400029768814
+            },
+            {
+              "epoch": 33,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2574909047836119,
+              "selected_CE": 0.2574909047836119,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.20120811381855527
+            },
+            {
+              "epoch": 34,
+              "source_packets": 28416,
+              "unmasked_CE": 0.22317181530970712,
+              "selected_CE": 0.22317181530970712,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.20181706634996174
+            },
+            {
+              "epoch": 35,
+              "source_packets": 28416,
+              "unmasked_CE": 0.23012507559211404,
+              "selected_CE": 0.23012507559211404,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.20188767409270947
+            },
+            {
+              "epoch": 36,
+              "source_packets": 28416,
+              "unmasked_CE": 0.22181581779643222,
+              "selected_CE": 0.22181581779643222,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2017957072805714
+            },
+            {
+              "epoch": 37,
+              "source_packets": 28416,
+              "unmasked_CE": 0.25921466731810355,
+              "selected_CE": 0.25921466731810355,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.20363566084756507
+            },
+            {
+              "epoch": 38,
+              "source_packets": 28416,
+              "unmasked_CE": 0.27013710389534634,
+              "selected_CE": 0.27013710389534634,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2021603854792612
+            },
+            {
+              "epoch": 39,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2349598516147953,
+              "selected_CE": 0.2349598516147953,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2004006442253117
+            },
+            {
+              "epoch": 40,
+              "source_packets": 28416,
+              "unmasked_CE": 0.22767566802265407,
+              "selected_CE": 0.22767566802265407,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.2038112087426959
+            },
+            {
+              "epoch": 41,
+              "source_packets": 28416,
+              "unmasked_CE": 0.21850056332108136,
+              "selected_CE": 0.21850056332108136,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.20056125414264095
+            },
+            {
+              "epoch": 42,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2675336430201659,
+              "selected_CE": 0.2675336430201659,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.19955678257319304
+            },
+            {
+              "epoch": 43,
+              "source_packets": 28416,
+              "unmasked_CE": 0.21165383503109486,
+              "selected_CE": 0.21165383503109486,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.19857007103997307
+            },
+            {
+              "epoch": 44,
+              "source_packets": 28416,
+              "unmasked_CE": 0.22659387365654782,
+              "selected_CE": 0.22659387365654782,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.1961136040789587
+            },
+            {
+              "epoch": 45,
+              "source_packets": 28416,
+              "unmasked_CE": 0.24513013644127157,
+              "selected_CE": 0.24513013644127157,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.19837992638349533
+            },
+            {
+              "epoch": 46,
+              "source_packets": 28416,
+              "unmasked_CE": 0.24263487108521634,
+              "selected_CE": 0.24263487108521634,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.19921177498123668
+            },
+            {
+              "epoch": 47,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2084767698637537,
+              "selected_CE": 0.2084767698637537,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.19797891103201085
+            },
+            {
+              "epoch": 48,
+              "source_packets": 28416,
+              "unmasked_CE": 0.229514883277384,
+              "selected_CE": 0.229514883277384,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.19532073463674063
+            },
+            {
+              "epoch": 49,
+              "source_packets": 28416,
+              "unmasked_CE": 0.21303183068563272,
+              "selected_CE": 0.21303183068563272,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.1953486406856829
+            },
+            {
+              "epoch": 50,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2475073067723094,
+              "selected_CE": 0.2475073067723094,
+              "selected_packets": 9546,
+              "masked_positions": 0,
+              "probability_drop_mean": 0.1995670103409269
+            }
+          ],
+          "last5_unmasked_CE": 0.22823313233685924,
+          "native_U_objective_unchanged": true,
+          "body_signal": false,
+          "gradient_layer_records": 208,
+          "saved_vectors": 624,
+          "mask_batches_recounted": 52,
+          "extra_model_forwards": 22200,
+          "actual_L_network_forwards": 33300,
+          "head_fit_updates": 0,
+          "query_read": false
+        },
+        "MATCHED_RANDOM": {
+          "status": "VERIFIED",
+          "row_id": "MATCHED_RANDOM-s2026092701",
+          "arm": "MATCHED_RANDOM",
+          "steps": 11100,
+          "actual_L_packet_observations": 1420800,
+          "curves": [
+            {
+              "epoch": 1,
+              "source_packets": 28416,
+              "unmasked_CE": 1.4537397480762757,
+              "selected_CE": 1.499934811849852,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.06481111073564436
+            },
+            {
+              "epoch": 2,
+              "source_packets": 28416,
+              "unmasked_CE": 0.6012785567625148,
+              "selected_CE": 0.648923493988879,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.08963807837550973
+            },
+            {
+              "epoch": 3,
+              "source_packets": 28416,
+              "unmasked_CE": 0.41176979867993174,
+              "selected_CE": 0.44967430413843273,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.07325674440745297
+            },
+            {
+              "epoch": 4,
+              "source_packets": 28416,
+              "unmasked_CE": 0.3275065083761473,
+              "selected_CE": 0.35991919242046977,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.06026880755215078
+            },
+            {
+              "epoch": 5,
+              "source_packets": 28416,
+              "unmasked_CE": 0.30866261517947857,
+              "selected_CE": 0.33858561180196367,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.053631679029078096
+            },
+            {
+              "epoch": 6,
+              "source_packets": 28416,
+              "unmasked_CE": 0.30970781846894874,
+              "selected_CE": 0.33825939880298067,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.04556168182039851
+            },
+            {
+              "epoch": 7,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2685578279197216,
+              "selected_CE": 0.29611932439310057,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.041616067898602366
+            },
+            {
+              "epoch": 8,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2619348603325921,
+              "selected_CE": 0.2887202508344844,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.03749902721343411
+            },
+            {
+              "epoch": 9,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2585792041778027,
+              "selected_CE": 0.28631869270592125,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.037892173887608016
+            },
+            {
+              "epoch": 10,
+              "source_packets": 28416,
+              "unmasked_CE": 0.26208018001403893,
+              "selected_CE": 0.2875432700321481,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.03546342331714727
+            },
+            {
+              "epoch": 11,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2891022619027812,
+              "selected_CE": 0.3159140714586855,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.033865792672611306
+            },
+            {
+              "epoch": 12,
+              "source_packets": 28416,
+              "unmasked_CE": 0.27398334383159073,
+              "selected_CE": 0.3018940359286897,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.03036951078920046
+            },
+            {
+              "epoch": 13,
+              "source_packets": 28416,
+              "unmasked_CE": 0.28383439051004145,
+              "selected_CE": 0.3103147902869963,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.03232606775798575
+            },
+            {
+              "epoch": 14,
+              "source_packets": 28416,
+              "unmasked_CE": 0.35128819388715,
+              "selected_CE": 0.37807763931719035,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.028086457707759766
+            },
+            {
+              "epoch": 15,
+              "source_packets": 28416,
+              "unmasked_CE": 0.32407889078866253,
+              "selected_CE": 0.3511027600112799,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.03248400266936703
+            },
+            {
+              "epoch": 16,
+              "source_packets": 28416,
+              "unmasked_CE": 0.26886469246567907,
+              "selected_CE": 0.29203595939251753,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.02764437205435054
+            },
+            {
+              "epoch": 17,
+              "source_packets": 28416,
+              "unmasked_CE": 0.28616079238352476,
+              "selected_CE": 0.31042386635064007,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.027569928139381042
+            },
+            {
+              "epoch": 18,
+              "source_packets": 28416,
+              "unmasked_CE": 0.3333369933471486,
+              "selected_CE": 0.3581667906596317,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.02584984966738334
+            },
+            {
+              "epoch": 19,
+              "source_packets": 28416,
+              "unmasked_CE": 0.29938939113069224,
+              "selected_CE": 0.3266414058906538,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.02613866859879177
+            },
+            {
+              "epoch": 20,
+              "source_packets": 28416,
+              "unmasked_CE": 0.28494234910016664,
+              "selected_CE": 0.3099404861059812,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.02464550208124156
+            },
+            {
+              "epoch": 21,
+              "source_packets": 28416,
+              "unmasked_CE": 0.3124690574367304,
+              "selected_CE": 0.3354221464613,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.02303112077533041
+            },
+            {
+              "epoch": 22,
+              "source_packets": 28416,
+              "unmasked_CE": 0.289621013006917,
+              "selected_CE": 0.3140926578224779,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.024754452084921098
+            },
+            {
+              "epoch": 23,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2945430296565498,
+              "selected_CE": 0.3194354040598547,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.02275000026382439
+            },
+            {
+              "epoch": 24,
+              "source_packets": 28416,
+              "unmasked_CE": 0.27930134944282137,
+              "selected_CE": 0.30240306342104534,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.024908152419385744
+            },
+            {
+              "epoch": 25,
+              "source_packets": 28416,
+              "unmasked_CE": 0.23550332924938416,
+              "selected_CE": 0.25729265701663384,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.021908994028365728
+            },
+            {
+              "epoch": 26,
+              "source_packets": 28416,
+              "unmasked_CE": 0.25496954242656894,
+              "selected_CE": 0.2769462028602222,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.02151287617875045
+            },
+            {
+              "epoch": 27,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2835947152327847,
+              "selected_CE": 0.30607530122270454,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.019694365230116254
+            },
+            {
+              "epoch": 28,
+              "source_packets": 28416,
+              "unmasked_CE": 0.26081158747678407,
+              "selected_CE": 0.2831835910543665,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.020945004776942434
+            },
+            {
+              "epoch": 29,
+              "source_packets": 28416,
+              "unmasked_CE": 0.22098252871954763,
+              "selected_CE": 0.24258111266268267,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.019567769027088542
+            },
+            {
+              "epoch": 30,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2759295862738614,
+              "selected_CE": 0.2962421778555926,
+              "selected_packets": 9546,
+              "masked_positions": 105007,
+              "probability_drop_mean": 0.019070415824718842
+            },
+            {
+              "epoch": 31,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2803535819859118,
+              "selected_CE": 0.302255102139604,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.020014325903544017
+            },
+            {
+              "epoch": 32,
+              "source_packets": 28416,
+              "unmasked_CE": 0.24993717902012774,
+              "selected_CE": 0.2700734820451822,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.019282576309198194
+            },
+            {
+              "epoch": 33,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2615171410814599,
+              "selected_CE": 0.28224932217785903,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.018368272299601418
+            },
+            {
+              "epoch": 34,
+              "source_packets": 28416,
+              "unmasked_CE": 0.22700438816268165,
+              "selected_CE": 0.24737416758193626,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.01911066219563017
+            },
+            {
+              "epoch": 35,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2365942930316066,
+              "selected_CE": 0.2575640149817273,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.018424408716938314
+            },
+            {
+              "epoch": 36,
+              "source_packets": 28416,
+              "unmasked_CE": 0.22683723928692104,
+              "selected_CE": 0.24631274152580682,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.01876778418286326
+            },
+            {
+              "epoch": 37,
+              "source_packets": 28416,
+              "unmasked_CE": 0.26645034816753754,
+              "selected_CE": 0.2884742340056209,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.01961833562257255
+            },
+            {
+              "epoch": 38,
+              "source_packets": 28416,
+              "unmasked_CE": 0.27660911825594603,
+              "selected_CE": 0.29800372114321133,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.01830454311451061
+            },
+            {
+              "epoch": 39,
+              "source_packets": 28416,
+              "unmasked_CE": 0.24292630333084245,
+              "selected_CE": 0.26208828500396497,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.017248434383791308
+            },
+            {
+              "epoch": 40,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2306588047125318,
+              "selected_CE": 0.25019376399415033,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.019502172343063732
+            },
+            {
+              "epoch": 41,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2198888755462191,
+              "selected_CE": 0.23879131221690694,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.018742476835393825
+            },
+            {
+              "epoch": 42,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2695489024726657,
+              "selected_CE": 0.2907429313001869,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.019123613833332317
+            },
+            {
+              "epoch": 43,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2137496483487052,
+              "selected_CE": 0.2317154565238738,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.01783948504053442
+            },
+            {
+              "epoch": 44,
+              "source_packets": 28416,
+              "unmasked_CE": 0.23072581308650542,
+              "selected_CE": 0.24991695488895382,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0175126921595284
+            },
+            {
+              "epoch": 45,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2511102465895919,
+              "selected_CE": 0.27275620877474277,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.018176129467466526
+            },
+            {
+              "epoch": 46,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2503516010201729,
+              "selected_CE": 0.2714805486905682,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.01864251249935478
+            },
+            {
+              "epoch": 47,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2145440969112757,
+              "selected_CE": 0.23476524979950072,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0182160631730431
+            },
+            {
+              "epoch": 48,
+              "source_packets": 28416,
+              "unmasked_CE": 0.23434923277110667,
+              "selected_CE": 0.25323026446071834,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.017361649153712164
+            },
+            {
+              "epoch": 49,
+              "source_packets": 28416,
+              "unmasked_CE": 0.21589843724090774,
+              "selected_CE": 0.23618209244565921,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.017992991795721423
+            },
+            {
+              "epoch": 50,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2543302475399262,
+              "selected_CE": 0.2754051863878697,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.019506572261200967
+            }
+          ],
+          "last5_unmasked_CE": 0.23389472309667786,
+          "native_U_objective_unchanged": true,
+          "body_signal": true,
+          "gradient_layer_records": 208,
+          "saved_vectors": 624,
+          "mask_batches_recounted": 52,
+          "extra_model_forwards": 22200,
+          "actual_L_network_forwards": 33300,
+          "head_fit_updates": 0,
+          "query_read": false
+        },
+        "TEMPORAL_RSC": {
+          "status": "VERIFIED",
+          "row_id": "TEMPORAL_RSC-s2026092701",
+          "arm": "TEMPORAL_RSC",
+          "steps": 11100,
+          "actual_L_packet_observations": 1420800,
+          "curves": [
+            {
+              "epoch": 1,
+              "source_packets": 28416,
+              "unmasked_CE": 1.4930618085839726,
+              "selected_CE": 1.5795373100418229,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.03255530818038293
+            },
+            {
+              "epoch": 2,
+              "source_packets": 28416,
+              "unmasked_CE": 0.6030732340909339,
+              "selected_CE": 0.6891694459560755,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.04664825102175913
+            },
+            {
+              "epoch": 3,
+              "source_packets": 28416,
+              "unmasked_CE": 0.4109097950093381,
+              "selected_CE": 0.4727948243553574,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.030905737075954676
+            },
+            {
+              "epoch": 4,
+              "source_packets": 28416,
+              "unmasked_CE": 0.32460836972202267,
+              "selected_CE": 0.37521960572884966,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.02303737797040224
+            },
+            {
+              "epoch": 5,
+              "source_packets": 28416,
+              "unmasked_CE": 0.30580675192512907,
+              "selected_CE": 0.3524766207278312,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.01772123686434399
+            },
+            {
+              "epoch": 6,
+              "source_packets": 28416,
+              "unmasked_CE": 0.30962069664855263,
+              "selected_CE": 0.35305476611530456,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.014199795859010034
+            },
+            {
+              "epoch": 7,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2700294701902716,
+              "selected_CE": 0.31142408112147907,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.013577855125002496
+            },
+            {
+              "epoch": 8,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2608886161097535,
+              "selected_CE": 0.2993616206688924,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.011997115446951005
+            },
+            {
+              "epoch": 9,
+              "source_packets": 28416,
+              "unmasked_CE": 0.25818506836354194,
+              "selected_CE": 0.2980677414316315,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.012285093365232922
+            },
+            {
+              "epoch": 10,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2632420223776822,
+              "selected_CE": 0.3038384741222536,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.011220554646045842
+            },
+            {
+              "epoch": 11,
+              "source_packets": 28416,
+              "unmasked_CE": 0.28720580417293684,
+              "selected_CE": 0.32857111525965166,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.010442428875018147
+            },
+            {
+              "epoch": 12,
+              "source_packets": 28416,
+              "unmasked_CE": 0.27284569239562695,
+              "selected_CE": 0.31161278301665374,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.009639757185092045
+            },
+            {
+              "epoch": 13,
+              "source_packets": 28416,
+              "unmasked_CE": 0.28217255230154004,
+              "selected_CE": 0.32023050904542477,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.008967157975594336
+            },
+            {
+              "epoch": 14,
+              "source_packets": 28416,
+              "unmasked_CE": 0.35252976860549,
+              "selected_CE": 0.39481150657609776,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.00654173033995772
+            },
+            {
+              "epoch": 15,
+              "source_packets": 28416,
+              "unmasked_CE": 0.32273534729002834,
+              "selected_CE": 0.36291746170939626,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.005718302953388408
+            },
+            {
+              "epoch": 16,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2687160073368399,
+              "selected_CE": 0.30385927198169466,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.00677151002591845
+            },
+            {
+              "epoch": 17,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2871236623608851,
+              "selected_CE": 0.323082357108056,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.004817423382396433
+            },
+            {
+              "epoch": 18,
+              "source_packets": 28416,
+              "unmasked_CE": 0.3326805289666932,
+              "selected_CE": 0.37014773273253226,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0038213429575039257
+            },
+            {
+              "epoch": 19,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2991309330404342,
+              "selected_CE": 0.3356717009399388,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.004465557673897779
+            },
+            {
+              "epoch": 20,
+              "source_packets": 28416,
+              "unmasked_CE": 0.28306602921571816,
+              "selected_CE": 0.3186403971064735,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.004181836738549005
+            },
+            {
+              "epoch": 21,
+              "source_packets": 28416,
+              "unmasked_CE": 0.31481820717453957,
+              "selected_CE": 0.3512129236918849,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.003674760880892643
+            },
+            {
+              "epoch": 22,
+              "source_packets": 28416,
+              "unmasked_CE": 0.29409250690861866,
+              "selected_CE": 0.3292218940080823,
+              "selected_packets": 9547,
+              "masked_positions": 105017,
+              "probability_drop_mean": 0.004598666828855671
+            },
+            {
+              "epoch": 23,
+              "source_packets": 28416,
+              "unmasked_CE": 0.29525063764136117,
+              "selected_CE": 0.32924566421288626,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.002566544091022733
+            },
+            {
+              "epoch": 24,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2796832845286206,
+              "selected_CE": 0.31130261209096993,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0026646535093728285
+            },
+            {
+              "epoch": 25,
+              "source_packets": 28416,
+              "unmasked_CE": 0.23702008424846976,
+              "selected_CE": 0.2658172962968951,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.00417107956637083
+            },
+            {
+              "epoch": 26,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2570992797814511,
+              "selected_CE": 0.28772772808332703,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.003484803463514844
+            },
+            {
+              "epoch": 27,
+              "source_packets": 28416,
+              "unmasked_CE": 0.28578771241344847,
+              "selected_CE": 0.3193469762063778,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0027448317271485285
+            },
+            {
+              "epoch": 28,
+              "source_packets": 28416,
+              "unmasked_CE": 0.26043589198374534,
+              "selected_CE": 0.292340504995606,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0038059695360569603
+            },
+            {
+              "epoch": 29,
+              "source_packets": 28416,
+              "unmasked_CE": 0.22106492475749137,
+              "selected_CE": 0.24794734943960164,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.003577047644858458
+            },
+            {
+              "epoch": 30,
+              "source_packets": 28416,
+              "unmasked_CE": 0.279753458258268,
+              "selected_CE": 0.31096366688877614,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.001815199719842624
+            },
+            {
+              "epoch": 31,
+              "source_packets": 28416,
+              "unmasked_CE": 0.282136981820201,
+              "selected_CE": 0.3122388968193853,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.00011287218112884475
+            },
+            {
+              "epoch": 32,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2523436431210857,
+              "selected_CE": 0.28014870249741786,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0012690659299354396
+            },
+            {
+              "epoch": 33,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2648203765956668,
+              "selected_CE": 0.2936062954097718,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0012748973155163464
+            },
+            {
+              "epoch": 34,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2254805061798375,
+              "selected_CE": 0.25306027167820716,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.002537784148280316
+            },
+            {
+              "epoch": 35,
+              "source_packets": 28416,
+              "unmasked_CE": 0.23926053625774812,
+              "selected_CE": 0.2663704800914537,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0014695759533866737
+            },
+            {
+              "epoch": 36,
+              "source_packets": 28416,
+              "unmasked_CE": 0.227161155728338,
+              "selected_CE": 0.2542823751096253,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0025033910196643693
+            },
+            {
+              "epoch": 37,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2657372582334656,
+              "selected_CE": 0.2969442916413148,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0010328045694853875
+            },
+            {
+              "epoch": 38,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2797943075095211,
+              "selected_CE": 0.3089952931680658,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": -0.0008001664568468727
+            },
+            {
+              "epoch": 39,
+              "source_packets": 28416,
+              "unmasked_CE": 0.24480526988302265,
+              "selected_CE": 0.2717271348176239,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0012681646181295651
+            },
+            {
+              "epoch": 40,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2330991258290974,
+              "selected_CE": 0.2607535256727322,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0017255890085613606
+            },
+            {
+              "epoch": 41,
+              "source_packets": 28416,
+              "unmasked_CE": 0.22049788613845636,
+              "selected_CE": 0.24774910737802316,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0030790260475892406
+            },
+            {
+              "epoch": 42,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2712270141587601,
+              "selected_CE": 0.3014692768521674,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0001620607461616699
+            },
+            {
+              "epoch": 43,
+              "source_packets": 28416,
+              "unmasked_CE": 0.21472863349560145,
+              "selected_CE": 0.23953844197430052,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0018090694741060673
+            },
+            {
+              "epoch": 44,
+              "source_packets": 28416,
+              "unmasked_CE": 0.23292229723957208,
+              "selected_CE": 0.25730422770117856,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0005898924155353761
+            },
+            {
+              "epoch": 45,
+              "source_packets": 28416,
+              "unmasked_CE": 0.25180209763683714,
+              "selected_CE": 0.2801204942636662,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0002621534817457736
+            },
+            {
+              "epoch": 46,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2518144655670669,
+              "selected_CE": 0.2788315416053609,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.00013257040739739063
+            },
+            {
+              "epoch": 47,
+              "source_packets": 28416,
+              "unmasked_CE": 0.21706117817141987,
+              "selected_CE": 0.24095864355698363,
+              "selected_packets": 9547,
+              "masked_positions": 105017,
+              "probability_drop_mean": 0.0009645168417288611
+            },
+            {
+              "epoch": 48,
+              "source_packets": 28416,
+              "unmasked_CE": 0.23374899859363968,
+              "selected_CE": 0.25945529573269793,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.000707556706484038
+            },
+            {
+              "epoch": 49,
+              "source_packets": 28416,
+              "unmasked_CE": 0.21804071573523787,
+              "selected_CE": 0.2436567712743003,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.0016003664995140924
+            },
+            {
+              "epoch": 50,
+              "source_packets": 28416,
+              "unmasked_CE": 0.2557253294565656,
+              "selected_CE": 0.2838095761835575,
+              "selected_packets": 9546,
+              "masked_positions": 105006,
+              "probability_drop_mean": 0.00010138980494728228
+            }
+          ],
+          "last5_unmasked_CE": 0.235278137504786,
+          "native_U_objective_unchanged": true,
+          "body_signal": true,
+          "gradient_layer_records": 208,
+          "saved_vectors": 624,
+          "mask_batches_recounted": 52,
+          "extra_model_forwards": 22200,
+          "actual_L_network_forwards": 33300,
+          "head_fit_updates": 0,
+          "query_read": false
+        }
+      },
+      "actual_L720_feature_difference": {
+        "TEMPORAL_RSC": 3.638345241546631,
+        "MATCHED_RANDOM": 3.324662685394287
+      },
+      "fixed_rules": {
+        "final5_unmasked_L_CE_max": 0.5,
+        "feature_difference_min": 0.000001,
+        "native_steps": 11100,
+        "additional_L_forwards": 22200,
+        "actual_U_packets": 963900,
+        "required_gradient_epochs": [
+          17,
+          33,
+          50
+        ],
+        "required_gradient_parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "source_only": true,
+        "expansion": "If exact source budgets, default deployment feature, unmasked CE health and nonzero t1/t2/SIG delta gradients pass for BOTH variants, extend all three unchanged arms to02/03; freeze and push decision before reading new target numeric summaries. No target-based expansion/cancellation or masking retuning."
+      },
+      "predefined_remaining_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "expand_all_three_arms_unchanged": true,
+      "head_fit_updates": 0,
+      "limitation": "Source health, actual challenge gradients and deployment-feature changes only; no DG or U correctness proof"
+    },
+    "new_selection_or_expansion_gate": false,
+    "observations": [
+      {
+        "status": "VERIFIED",
+        "row_id": "SIG_TIME-s2026092702",
+        "arm": "SIG_TIME",
+        "steps": 11100,
+        "actual_L_packet_observations": 1420800,
+        "curves": [
+          {
+            "epoch": 1,
+            "source_packets": 28416,
+            "unmasked_CE": 1.4810923327196825,
+            "selected_CE": 1.4810923327196825,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.07437074708811066
+          },
+          {
+            "epoch": 2,
+            "source_packets": 28416,
+            "unmasked_CE": 0.6061126757580955,
+            "selected_CE": 0.6061126757580955,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.129089412220695
+          },
+          {
+            "epoch": 3,
+            "source_packets": 28416,
+            "unmasked_CE": 0.41375440291993254,
+            "selected_CE": 0.41375440291993254,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.12004650195406096
+          },
+          {
+            "epoch": 4,
+            "source_packets": 28416,
+            "unmasked_CE": 0.33625554132300456,
+            "selected_CE": 0.33625554132300456,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.11730025540869515
+          },
+          {
+            "epoch": 5,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29293338920887524,
+            "selected_CE": 0.29293338920887524,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.120629390542236
+          },
+          {
+            "epoch": 6,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2689378355537449,
+            "selected_CE": 0.2689378355537449,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1255588559182109
+          },
+          {
+            "epoch": 7,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3047078790159913,
+            "selected_CE": 0.3047078790159913,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1295017216623098
+          },
+          {
+            "epoch": 8,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25034739466400835,
+            "selected_CE": 0.25034739466400835,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.12832959402386132
+          },
+          {
+            "epoch": 9,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24378356844321028,
+            "selected_CE": 0.24378356844321028,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.13394240743002375
+          },
+          {
+            "epoch": 10,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2733956462963744,
+            "selected_CE": 0.2733956462963744,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14262013684387678
+          },
+          {
+            "epoch": 11,
+            "source_packets": 28416,
+            "unmasked_CE": 0.276943830219475,
+            "selected_CE": 0.276943830219475,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14358788372965547
+          },
+          {
+            "epoch": 12,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31086565782357983,
+            "selected_CE": 0.31086565782357983,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14899701896954226
+          },
+          {
+            "epoch": 13,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31412272356651927,
+            "selected_CE": 0.31412272356651927,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14931421213456103
+          },
+          {
+            "epoch": 14,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30178136432224567,
+            "selected_CE": 0.30178136432224567,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15965548399332408
+          },
+          {
+            "epoch": 15,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28629915980068416,
+            "selected_CE": 0.28629915980068416,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16111591602633665
+          },
+          {
+            "epoch": 16,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3307750383811491,
+            "selected_CE": 0.3307750383811491,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16280466120119566
+          },
+          {
+            "epoch": 17,
+            "source_packets": 28416,
+            "unmasked_CE": 0.33064203917443213,
+            "selected_CE": 0.33064203917443213,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16305088228336326
+          },
+          {
+            "epoch": 18,
+            "source_packets": 28416,
+            "unmasked_CE": 0.33158857613667714,
+            "selected_CE": 0.33158857613667714,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16028181970253721
+          },
+          {
+            "epoch": 19,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30892082649442526,
+            "selected_CE": 0.30892082649442526,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15401709881854486
+          },
+          {
+            "epoch": 20,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3075189692144458,
+            "selected_CE": 0.3075189692144458,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1586995116762213
+          },
+          {
+            "epoch": 21,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2821663202936048,
+            "selected_CE": 0.2821663202936048,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15613841483587618
+          },
+          {
+            "epoch": 22,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28984736936452155,
+            "selected_CE": 0.28984736936452155,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15095350062390706
+          },
+          {
+            "epoch": 23,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2700643931758833,
+            "selected_CE": 0.2700643931758833,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.152616516259071
+          },
+          {
+            "epoch": 24,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3095768790457163,
+            "selected_CE": 0.3095768790457163,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15758777913209554
+          },
+          {
+            "epoch": 25,
+            "source_packets": 28416,
+            "unmasked_CE": 0.265861206864183,
+            "selected_CE": 0.265861206864183,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15284621715545654
+          },
+          {
+            "epoch": 26,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26117199827153403,
+            "selected_CE": 0.26117199827153403,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15285762124233418
+          },
+          {
+            "epoch": 27,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24744377154353503,
+            "selected_CE": 0.24744377154353503,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15610031843990893
+          },
+          {
+            "epoch": 28,
+            "source_packets": 28416,
+            "unmasked_CE": 0.257382441949737,
+            "selected_CE": 0.257382441949737,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15361453599489486
+          },
+          {
+            "epoch": 29,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23125468483110806,
+            "selected_CE": 0.23125468483110806,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14962095448428447
+          },
+          {
+            "epoch": 30,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27148383057063763,
+            "selected_CE": 0.27148383057063763,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15243070129607175
+          },
+          {
+            "epoch": 31,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24062767118081316,
+            "selected_CE": 0.24062767118081316,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15067208356953957
+          },
+          {
+            "epoch": 32,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24534889357584017,
+            "selected_CE": 0.24534889357584017,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15373190613211812
+          },
+          {
+            "epoch": 33,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2503146466102686,
+            "selected_CE": 0.2503146466102686,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15568035498664184
+          },
+          {
+            "epoch": 34,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24027033878473547,
+            "selected_CE": 0.24027033878473547,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14609424165777257
+          },
+          {
+            "epoch": 35,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22388553364319844,
+            "selected_CE": 0.22388553364319844,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14526749607007783
+          },
+          {
+            "epoch": 36,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23891115420170733,
+            "selected_CE": 0.23891115420170733,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1440651859114836
+          },
+          {
+            "epoch": 37,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23238121902754716,
+            "selected_CE": 0.23238121902754716,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14461450020337965
+          },
+          {
+            "epoch": 38,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24434731444260022,
+            "selected_CE": 0.24434731444260022,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1441972068435437
+          },
+          {
+            "epoch": 39,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26010759916525705,
+            "selected_CE": 0.26010759916525705,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1460872303929415
+          },
+          {
+            "epoch": 40,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25352602680255704,
+            "selected_CE": 0.25352602680255704,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1443619489468433
+          },
+          {
+            "epoch": 41,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23890071217943956,
+            "selected_CE": 0.23890071217943956,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14158135179329562
+          },
+          {
+            "epoch": 42,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24192279110754933,
+            "selected_CE": 0.24192279110754933,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1413667752399101
+          },
+          {
+            "epoch": 43,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2411954807335729,
+            "selected_CE": 0.2411954807335729,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14857098862931534
+          },
+          {
+            "epoch": 44,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25276518378171836,
+            "selected_CE": 0.25276518378171836,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14133117848017193
+          },
+          {
+            "epoch": 45,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25496303702931145,
+            "selected_CE": 0.25496303702931145,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15001375704735248
+          },
+          {
+            "epoch": 46,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24885785814609612,
+            "selected_CE": 0.24885785814609612,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1459094592714095
+          },
+          {
+            "epoch": 47,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23091762194091137,
+            "selected_CE": 0.23091762194091137,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1432694064134413
+          },
+          {
+            "epoch": 48,
+            "source_packets": 28416,
+            "unmasked_CE": 0.229936481528991,
+            "selected_CE": 0.229936481528991,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14330422294300957
+          },
+          {
+            "epoch": 49,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2712639510832928,
+            "selected_CE": 0.2712639510832928,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14909192584119402
+          },
+          {
+            "epoch": 50,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24046424450772302,
+            "selected_CE": 0.24046424450772302,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14139521957651988
+          }
+        ],
+        "last5_unmasked_CE": 0.24428803144140288,
+        "native_U_objective_unchanged": true,
+        "body_signal": false,
+        "gradient_layer_records": 208,
+        "saved_vectors": 624,
+        "mask_batches_recounted": 52,
+        "extra_model_forwards": 22200,
+        "actual_L_network_forwards": 33300,
+        "head_fit_updates": 0,
+        "query_read": false
+      },
+      {
+        "status": "VERIFIED",
+        "row_id": "MATCHED_RANDOM-s2026092702",
+        "arm": "MATCHED_RANDOM",
+        "steps": 11100,
+        "actual_L_packet_observations": 1420800,
+        "curves": [
+          {
+            "epoch": 1,
+            "source_packets": 28416,
+            "unmasked_CE": 1.502913641231554,
+            "selected_CE": 1.5448825238524257,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.04862884800516169
+          },
+          {
+            "epoch": 2,
+            "source_packets": 28416,
+            "unmasked_CE": 0.6119141918313395,
+            "selected_CE": 0.6553781933344163,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.06550690078864561
+          },
+          {
+            "epoch": 3,
+            "source_packets": 28416,
+            "unmasked_CE": 0.4155819877847895,
+            "selected_CE": 0.4501869861741324,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.052473068601233665
+          },
+          {
+            "epoch": 4,
+            "source_packets": 28416,
+            "unmasked_CE": 0.33852668522714496,
+            "selected_CE": 0.3707489630392006,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.04266564181884163
+          },
+          {
+            "epoch": 5,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29828443572864877,
+            "selected_CE": 0.32868401686082016,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.03526807845117071
+          },
+          {
+            "epoch": 6,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2739564159230606,
+            "selected_CE": 0.3010789957400915,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0314464780778901
+          },
+          {
+            "epoch": 7,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3121278393375981,
+            "selected_CE": 0.34003660458702223,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.03189273599560398
+          },
+          {
+            "epoch": 8,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2573704160414301,
+            "selected_CE": 0.2832007054407317,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.028731442402695883
+          },
+          {
+            "epoch": 9,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2508088121073203,
+            "selected_CE": 0.27546313827907715,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.026558480456236516
+          },
+          {
+            "epoch": 10,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27502053569968754,
+            "selected_CE": 0.3001517327250661,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.026409733892619813
+          },
+          {
+            "epoch": 11,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27963142895752247,
+            "selected_CE": 0.30607330809171135,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.026613239300655418
+          },
+          {
+            "epoch": 12,
+            "source_packets": 28416,
+            "unmasked_CE": 0.32087677636662043,
+            "selected_CE": 0.346559475738186,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.024690673685515183
+          },
+          {
+            "epoch": 13,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31730001070746433,
+            "selected_CE": 0.3443596005641125,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0230267162399098
+          },
+          {
+            "epoch": 14,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30664952059049866,
+            "selected_CE": 0.333360847790499,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.022811174858885876
+          },
+          {
+            "epoch": 15,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29221824351865966,
+            "selected_CE": 0.31817279376827917,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02342629914648143
+          },
+          {
+            "epoch": 16,
+            "source_packets": 28416,
+            "unmasked_CE": 0.33881414070859683,
+            "selected_CE": 0.36413236106703945,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.021563320788806555
+          },
+          {
+            "epoch": 17,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3368253163523502,
+            "selected_CE": 0.36117520911602286,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.019575543936576928
+          },
+          {
+            "epoch": 18,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3365005097343578,
+            "selected_CE": 0.3624768317886838,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.020850809138406673
+          },
+          {
+            "epoch": 19,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31602052830763766,
+            "selected_CE": 0.3379965199342182,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.019782606811212324
+          },
+          {
+            "epoch": 20,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31599674175854203,
+            "selected_CE": 0.338619164149235,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.018523233811589174
+          },
+          {
+            "epoch": 21,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2873205529139923,
+            "selected_CE": 0.30996330223373464,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.017435571137366834
+          },
+          {
+            "epoch": 22,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29884148419306084,
+            "selected_CE": 0.32042198420107904,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.017887613665824337
+          },
+          {
+            "epoch": 23,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2766104953044707,
+            "selected_CE": 0.2969913733367984,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01790200110927627
+          },
+          {
+            "epoch": 24,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3173317621285851,
+            "selected_CE": 0.3403939650066801,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.016005609206528076
+          },
+          {
+            "epoch": 25,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2706345610723302,
+            "selected_CE": 0.2916423929435713,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.016684831765077606
+          },
+          {
+            "epoch": 26,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26758785515620903,
+            "selected_CE": 0.2898539141961583,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01630082353058078
+          },
+          {
+            "epoch": 27,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2533195685628835,
+            "selected_CE": 0.273385673224389,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.015443577790351768
+          },
+          {
+            "epoch": 28,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2660269066355787,
+            "selected_CE": 0.2851915569254407,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01514557929004769
+          },
+          {
+            "epoch": 29,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2388383933082894,
+            "selected_CE": 0.25785159806276226,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.015033206520161617
+          },
+          {
+            "epoch": 30,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2790188320182465,
+            "selected_CE": 0.299292518480404,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.014430702603128445
+          },
+          {
+            "epoch": 31,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2436415050346572,
+            "selected_CE": 0.2626118870066093,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.013499827598754384
+          },
+          {
+            "epoch": 32,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2546101222234266,
+            "selected_CE": 0.273649699214074,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012897463215972288
+          },
+          {
+            "epoch": 33,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2581832237071819,
+            "selected_CE": 0.27742078853351576,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012704470526292786
+          },
+          {
+            "epoch": 34,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2457733925868262,
+            "selected_CE": 0.2651503364647831,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012947189713396166
+          },
+          {
+            "epoch": 35,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22838804830570478,
+            "selected_CE": 0.24753091329926843,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.014842890448153002
+          },
+          {
+            "epoch": 36,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24377412590626124,
+            "selected_CE": 0.2622819471399526,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.013050631113950297
+          },
+          {
+            "epoch": 37,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2398176825865432,
+            "selected_CE": 0.2563742439153495,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012071290659101529
+          },
+          {
+            "epoch": 38,
+            "source_packets": 28416,
+            "unmasked_CE": 0.252652419848485,
+            "selected_CE": 0.27127961753993424,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012265284022506167
+          },
+          {
+            "epoch": 39,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2661199013929109,
+            "selected_CE": 0.2845740876756273,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.013397087904662397
+          },
+          {
+            "epoch": 40,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26036325113864633,
+            "selected_CE": 0.27942199414377816,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.013507751437524954
+          },
+          {
+            "epoch": 41,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24065978083390374,
+            "selected_CE": 0.2599785768233978,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.014476291904527996
+          },
+          {
+            "epoch": 42,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24638424249919685,
+            "selected_CE": 0.26401865401783503,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012869940489648027
+          },
+          {
+            "epoch": 43,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24548977193934424,
+            "selected_CE": 0.2648781021167566,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.015663033431009936
+          },
+          {
+            "epoch": 44,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25842307504635675,
+            "selected_CE": 0.2774288294551609,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012332103334195274
+          },
+          {
+            "epoch": 45,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2574318135912354,
+            "selected_CE": 0.2766880183942146,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.014546181278739561
+          },
+          {
+            "epoch": 46,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25508683413132893,
+            "selected_CE": 0.27266184445302766,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.013995868916862417
+          },
+          {
+            "epoch": 47,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23532342444266285,
+            "selected_CE": 0.25338565675659225,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.013105147185227792
+          },
+          {
+            "epoch": 48,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23356888983566482,
+            "selected_CE": 0.25222153320640056,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.014259995295884306
+          },
+          {
+            "epoch": 49,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27802208388173905,
+            "selected_CE": 0.3006427277651456,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.015171600077280288
+          },
+          {
+            "epoch": 50,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2435247231241282,
+            "selected_CE": 0.26047827370531923,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.013480956241150747
+          }
+        ],
+        "last5_unmasked_CE": 0.24910519108310478,
+        "native_U_objective_unchanged": true,
+        "body_signal": true,
+        "gradient_layer_records": 208,
+        "saved_vectors": 624,
+        "mask_batches_recounted": 52,
+        "extra_model_forwards": 22200,
+        "actual_L_network_forwards": 33300,
+        "head_fit_updates": 0,
+        "query_read": false
+      },
+      {
+        "status": "VERIFIED",
+        "row_id": "TEMPORAL_RSC-s2026092702",
+        "arm": "TEMPORAL_RSC",
+        "steps": 11100,
+        "actual_L_packet_observations": 1420800,
+        "curves": [
+          {
+            "epoch": 1,
+            "source_packets": 28416,
+            "unmasked_CE": 1.5326594957360276,
+            "selected_CE": 1.620388789756878,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.03181874501489539
+          },
+          {
+            "epoch": 2,
+            "source_packets": 28416,
+            "unmasked_CE": 0.6174173565866711,
+            "selected_CE": 0.69615151189469,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.035498776301103936
+          },
+          {
+            "epoch": 3,
+            "source_packets": 28416,
+            "unmasked_CE": 0.416777953102782,
+            "selected_CE": 0.4740701766164453,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02288189944433602
+          },
+          {
+            "epoch": 4,
+            "source_packets": 28416,
+            "unmasked_CE": 0.34355085108194267,
+            "selected_CE": 0.3893106622738881,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.014085391441964218
+          },
+          {
+            "epoch": 5,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3063941693923495,
+            "selected_CE": 0.3476461449990401,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.010909520737776483
+          },
+          {
+            "epoch": 6,
+            "source_packets": 28416,
+            "unmasked_CE": 0.280969365021667,
+            "selected_CE": 0.31789512690660116,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.008550155324219549
+          },
+          {
+            "epoch": 7,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3155644390362877,
+            "selected_CE": 0.3540450611093023,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.007507800459410777
+          },
+          {
+            "epoch": 8,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2609865680873931,
+            "selected_CE": 0.29565668622921176,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.006741180666722357
+          },
+          {
+            "epoch": 9,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2539755900029664,
+            "selected_CE": 0.28639097941351366,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.005185140705843632
+          },
+          {
+            "epoch": 10,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2807742198845288,
+            "selected_CE": 0.31480544624296397,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.003540627052168454
+          },
+          {
+            "epoch": 11,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2830279705089492,
+            "selected_CE": 0.3207461060704412,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.004898455017036549
+          },
+          {
+            "epoch": 12,
+            "source_packets": 28416,
+            "unmasked_CE": 0.32062292870906023,
+            "selected_CE": 0.3560477011241354,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.00008457884095978361
+          },
+          {
+            "epoch": 13,
+            "source_packets": 28416,
+            "unmasked_CE": 0.32053294254315867,
+            "selected_CE": 0.3552166489330498,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0008102322525873378
+          },
+          {
+            "epoch": 14,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3101199202172391,
+            "selected_CE": 0.34297355512777966,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0005961152219406522
+          },
+          {
+            "epoch": 15,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29581140558998864,
+            "selected_CE": 0.32742737465210864,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0018913885819734082
+          },
+          {
+            "epoch": 16,
+            "source_packets": 28416,
+            "unmasked_CE": 0.34067958207415033,
+            "selected_CE": 0.37524874652693935,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0035599455628586045
+          },
+          {
+            "epoch": 17,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3374117297699323,
+            "selected_CE": 0.36955734352405006,
+            "selected_packets": 9547,
+            "masked_positions": 105017,
+            "probability_drop_mean": -0.003820814925396966
+          },
+          {
+            "epoch": 18,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3379563060631086,
+            "selected_CE": 0.3709542684189908,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.004832767781293909
+          },
+          {
+            "epoch": 19,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3194205810290736,
+            "selected_CE": 0.3506654611041954,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.002729587100114808
+          },
+          {
+            "epoch": 20,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3148424737491049,
+            "selected_CE": 0.34745307911086726,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0026690580526593367
+          },
+          {
+            "epoch": 21,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2894254830573593,
+            "selected_CE": 0.32128698600305095,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.001037421404239344
+          },
+          {
+            "epoch": 22,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30038681616251534,
+            "selected_CE": 0.33187417880640374,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0011340275423618051
+          },
+          {
+            "epoch": 23,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2802228568507744,
+            "selected_CE": 0.31268067896231877,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.001704050456635184
+          },
+          {
+            "epoch": 24,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3192327992134803,
+            "selected_CE": 0.35275636516041586,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0014857943801666602
+          },
+          {
+            "epoch": 25,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2716276788295389,
+            "selected_CE": 0.3017516170401831,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0006754681890670982
+          },
+          {
+            "epoch": 26,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27135609754839457,
+            "selected_CE": 0.29999922692507236,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0011426270588066193
+          },
+          {
+            "epoch": 27,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2557771046486524,
+            "selected_CE": 0.28293662293403,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0010402395257826996
+          },
+          {
+            "epoch": 28,
+            "source_packets": 28416,
+            "unmasked_CE": 0.268963858317416,
+            "selected_CE": 0.29514613368355475,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.002126358261201866
+          },
+          {
+            "epoch": 29,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24056907256578539,
+            "selected_CE": 0.26667672654127217,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0005634101490523699
+          },
+          {
+            "epoch": 30,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28355681835799607,
+            "selected_CE": 0.3107999527306707,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.002497978092366326
+          },
+          {
+            "epoch": 31,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24822351849965146,
+            "selected_CE": 0.27430338392386566,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0001553543554912615
+          },
+          {
+            "epoch": 32,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25719382882386715,
+            "selected_CE": 0.2823003816107909,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0024867240779483605
+          },
+          {
+            "epoch": 33,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26208985046491967,
+            "selected_CE": 0.29055206856883325,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0009005143438772139
+          },
+          {
+            "epoch": 34,
+            "source_packets": 28416,
+            "unmasked_CE": 0.248708382349562,
+            "selected_CE": 0.2738320334470487,
+            "selected_packets": 9547,
+            "masked_positions": 105017,
+            "probability_drop_mean": -0.0010321009434814154
+          },
+          {
+            "epoch": 35,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23163037210165918,
+            "selected_CE": 0.2560138975916145,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.00017519422249893683
+          },
+          {
+            "epoch": 36,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24566460075276392,
+            "selected_CE": 0.27158075718729346,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.000691661448637443
+          },
+          {
+            "epoch": 37,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24301682899261381,
+            "selected_CE": 0.26866198670085484,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.00006876055671422332
+          },
+          {
+            "epoch": 38,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25433319588904985,
+            "selected_CE": 0.2786591467153919,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0017631286671301266
+          },
+          {
+            "epoch": 39,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26894365032916673,
+            "selected_CE": 0.2944345069495407,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.003290388817575903
+          },
+          {
+            "epoch": 40,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26624141254269323,
+            "selected_CE": 0.29060552611544327,
+            "selected_packets": 9547,
+            "masked_positions": 105017,
+            "probability_drop_mean": -0.0032309438448046915
+          },
+          {
+            "epoch": 41,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24304183830951784,
+            "selected_CE": 0.2676589242644138,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0012479640927841166
+          },
+          {
+            "epoch": 42,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25041838440003694,
+            "selected_CE": 0.27525608604018753,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0016231327160337085
+          },
+          {
+            "epoch": 43,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2495319635884182,
+            "selected_CE": 0.2760259877252686,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0014250882757567542
+          },
+          {
+            "epoch": 44,
+            "source_packets": 28416,
+            "unmasked_CE": 0.263977732576497,
+            "selected_CE": 0.28925696780552734,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.002184775348035367
+          },
+          {
+            "epoch": 45,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2607272743239059,
+            "selected_CE": 0.28800951743179615,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0014758441035598014
+          },
+          {
+            "epoch": 46,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25937639002327445,
+            "selected_CE": 0.2858407930009537,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0017759263765083644
+          },
+          {
+            "epoch": 47,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23927904504376488,
+            "selected_CE": 0.263416864347082,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.001751921672703329
+          },
+          {
+            "epoch": 48,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23773928708187095,
+            "selected_CE": 0.2625671967796914,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0007383956396658612
+          },
+          {
+            "epoch": 49,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2838392117069111,
+            "selected_CE": 0.3112396628402912,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.002816174822221804
+          },
+          {
+            "epoch": 50,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24617510486964708,
+            "selected_CE": 0.2703482053905457,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.002133899914239206
+          }
+        ],
+        "last5_unmasked_CE": 0.2532818077450937,
+        "native_U_objective_unchanged": true,
+        "body_signal": true,
+        "gradient_layer_records": 208,
+        "saved_vectors": 624,
+        "mask_batches_recounted": 52,
+        "extra_model_forwards": 22200,
+        "actual_L_network_forwards": 33300,
+        "head_fit_updates": 0,
+        "query_read": false
+      },
+      {
+        "status": "VERIFIED",
+        "row_id": "SIG_TIME-s2026092703",
+        "arm": "SIG_TIME",
+        "steps": 11100,
+        "actual_L_packet_observations": 1420800,
+        "curves": [
+          {
+            "epoch": 1,
+            "source_packets": 28416,
+            "unmasked_CE": 1.4382820419363074,
+            "selected_CE": 1.4382820419363074,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.08023933396855083
+          },
+          {
+            "epoch": 2,
+            "source_packets": 28416,
+            "unmasked_CE": 0.587712023440782,
+            "selected_CE": 0.587712023440782,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.17849914664150895
+          },
+          {
+            "epoch": 3,
+            "source_packets": 28416,
+            "unmasked_CE": 0.4681901932433919,
+            "selected_CE": 0.4681901932433919,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.18288897819447894
+          },
+          {
+            "epoch": 4,
+            "source_packets": 28416,
+            "unmasked_CE": 0.33635665644128043,
+            "selected_CE": 0.33635665644128043,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16960412921669246
+          },
+          {
+            "epoch": 5,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3176345980919159,
+            "selected_CE": 0.3176345980919159,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15797889445748953
+          },
+          {
+            "epoch": 6,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26239956099842043,
+            "selected_CE": 0.26239956099842043,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1557034179064873
+          },
+          {
+            "epoch": 7,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30788688643558604,
+            "selected_CE": 0.30788688643558604,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1564036829413863
+          },
+          {
+            "epoch": 8,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25797640119452736,
+            "selected_CE": 0.25797640119452736,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.14959153642055686
+          },
+          {
+            "epoch": 9,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28647326483382834,
+            "selected_CE": 0.28647326483382834,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15277067920914641
+          },
+          {
+            "epoch": 10,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2744962915375426,
+            "selected_CE": 0.2744962915375426,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15124014718038542
+          },
+          {
+            "epoch": 11,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3025782355988348,
+            "selected_CE": 0.3025782355988348,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15267972013837583
+          },
+          {
+            "epoch": 12,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2580809052194561,
+            "selected_CE": 0.2580809052194561,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15159076519377596
+          },
+          {
+            "epoch": 13,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2724913098253645,
+            "selected_CE": 0.2724913098253645,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16418022293228288
+          },
+          {
+            "epoch": 14,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29477280227316394,
+            "selected_CE": 0.29477280227316394,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1633908537862537
+          },
+          {
+            "epoch": 15,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27122833975800525,
+            "selected_CE": 0.27122833975800525,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.160344942498046
+          },
+          {
+            "epoch": 16,
+            "source_packets": 28416,
+            "unmasked_CE": 0.32649102578829,
+            "selected_CE": 0.32649102578829,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1643513004119332
+          },
+          {
+            "epoch": 17,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3005193254096551,
+            "selected_CE": 0.3005193254096551,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.17366515143631814
+          },
+          {
+            "epoch": 18,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31334287820904105,
+            "selected_CE": 0.31334287820904105,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1682141833678559
+          },
+          {
+            "epoch": 19,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29503545772519196,
+            "selected_CE": 0.29503545772519196,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16525731950595574
+          },
+          {
+            "epoch": 20,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31252748972258054,
+            "selected_CE": 0.31252748972258054,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15676938383294656
+          },
+          {
+            "epoch": 21,
+            "source_packets": 28416,
+            "unmasked_CE": 0.32855870531083226,
+            "selected_CE": 0.32855870531083226,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16453893039677595
+          },
+          {
+            "epoch": 22,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2927501854730082,
+            "selected_CE": 0.2927501854730082,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1579421379410469
+          },
+          {
+            "epoch": 23,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3145192684354009,
+            "selected_CE": 0.3145192684354009,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1655192445325959
+          },
+          {
+            "epoch": 24,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2584972327558307,
+            "selected_CE": 0.2584972327558307,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1589229958350057
+          },
+          {
+            "epoch": 25,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2762222628335695,
+            "selected_CE": 0.2762222628335695,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16492253810435803
+          },
+          {
+            "epoch": 26,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28067390335438486,
+            "selected_CE": 0.28067390335438486,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1570307045570902
+          },
+          {
+            "epoch": 27,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2935896983689016,
+            "selected_CE": 0.2935896983689016,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1608030959493942
+          },
+          {
+            "epoch": 28,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2768278598181299,
+            "selected_CE": 0.2768278598181299,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.167081069201231
+          },
+          {
+            "epoch": 29,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2694650574981629,
+            "selected_CE": 0.2694650574981629,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16540634984502922
+          },
+          {
+            "epoch": 30,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24035123618202167,
+            "selected_CE": 0.24035123618202167,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15760817509647962
+          },
+          {
+            "epoch": 31,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2504202198270742,
+            "selected_CE": 0.2504202198270742,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15979955083615072
+          },
+          {
+            "epoch": 32,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27872258599277017,
+            "selected_CE": 0.27872258599277017,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16328496865189826
+          },
+          {
+            "epoch": 33,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2468837645274025,
+            "selected_CE": 0.2468837645274025,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16283620242868457
+          },
+          {
+            "epoch": 34,
+            "source_packets": 28416,
+            "unmasked_CE": 0.269970112589297,
+            "selected_CE": 0.269970112589297,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16260072397621902
+          },
+          {
+            "epoch": 35,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24045563720770785,
+            "selected_CE": 0.24045563720770785,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16070468042482128
+          },
+          {
+            "epoch": 36,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2577353518556904,
+            "selected_CE": 0.2577353518556904,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16026448327544573
+          },
+          {
+            "epoch": 37,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23630391745953946,
+            "selected_CE": 0.23630391745953946,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.160309746895019
+          },
+          {
+            "epoch": 38,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25265831100913855,
+            "selected_CE": 0.25265831100913855,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16202885506523623
+          },
+          {
+            "epoch": 39,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23642657391794092,
+            "selected_CE": 0.23642657391794092,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16286970148081178
+          },
+          {
+            "epoch": 40,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23926452510394491,
+            "selected_CE": 0.23926452510394491,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16613700049551758
+          },
+          {
+            "epoch": 41,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22864594018539866,
+            "selected_CE": 0.22864594018539866,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16248957822854454
+          },
+          {
+            "epoch": 42,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26705449363132855,
+            "selected_CE": 0.26705449363132855,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16166037213694942
+          },
+          {
+            "epoch": 43,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2634671201241446,
+            "selected_CE": 0.2634671201241446,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16740969675886738
+          },
+          {
+            "epoch": 44,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2428166837104269,
+            "selected_CE": 0.2428166837104269,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.16672317968966724
+          },
+          {
+            "epoch": 45,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2185161317455339,
+            "selected_CE": 0.2185161317455339,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1640336659846005
+          },
+          {
+            "epoch": 46,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23241776083638002,
+            "selected_CE": 0.23241776083638002,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1582286088047801
+          },
+          {
+            "epoch": 47,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2288468525417753,
+            "selected_CE": 0.2288468525417753,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15886383295596182
+          },
+          {
+            "epoch": 48,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23310000241339743,
+            "selected_CE": 0.23310000241339743,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15993919693403416
+          },
+          {
+            "epoch": 49,
+            "source_packets": 28416,
+            "unmasked_CE": 0.21618243984810942,
+            "selected_CE": 0.21618243984810942,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.15812266742189726
+          },
+          {
+            "epoch": 50,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2269571091610569,
+            "selected_CE": 0.2269571091610569,
+            "selected_packets": 9546,
+            "masked_positions": 0,
+            "probability_drop_mean": 0.1592549734690168
+          }
+        ],
+        "last5_unmasked_CE": 0.2275008329601438,
+        "native_U_objective_unchanged": true,
+        "body_signal": false,
+        "gradient_layer_records": 208,
+        "saved_vectors": 624,
+        "mask_batches_recounted": 52,
+        "extra_model_forwards": 22200,
+        "actual_L_network_forwards": 33300,
+        "head_fit_updates": 0,
+        "query_read": false
+      },
+      {
+        "status": "VERIFIED",
+        "row_id": "MATCHED_RANDOM-s2026092703",
+        "arm": "MATCHED_RANDOM",
+        "steps": 11100,
+        "actual_L_packet_observations": 1420800,
+        "curves": [
+          {
+            "epoch": 1,
+            "source_packets": 28416,
+            "unmasked_CE": 1.4680358289598345,
+            "selected_CE": 1.516869894556097,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.050254280764928404
+          },
+          {
+            "epoch": 2,
+            "source_packets": 28416,
+            "unmasked_CE": 0.597140448050456,
+            "selected_CE": 0.6450634840372447,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0745227989921061
+          },
+          {
+            "epoch": 3,
+            "source_packets": 28416,
+            "unmasked_CE": 0.46318201492498584,
+            "selected_CE": 0.4997186949392697,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0515125275941918
+          },
+          {
+            "epoch": 4,
+            "source_packets": 28416,
+            "unmasked_CE": 0.34296186993250977,
+            "selected_CE": 0.3757458865508303,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.041178002227768976
+          },
+          {
+            "epoch": 5,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31899246096879513,
+            "selected_CE": 0.3471464073067313,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.035253619609467754
+          },
+          {
+            "epoch": 6,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26955930066404044,
+            "selected_CE": 0.29700540422319294,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.03264806410381654
+          },
+          {
+            "epoch": 7,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31222138130987015,
+            "selected_CE": 0.3394505520527427,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.028094420788457263
+          },
+          {
+            "epoch": 8,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26268253941927944,
+            "selected_CE": 0.28859811933996443,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0256721685757978
+          },
+          {
+            "epoch": 9,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2894016533150329,
+            "selected_CE": 0.31477969696929864,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.023288828273605858
+          },
+          {
+            "epoch": 10,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27670597439413674,
+            "selected_CE": 0.3014576044101436,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02177340708419194
+          },
+          {
+            "epoch": 11,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30381369872673136,
+            "selected_CE": 0.3285618920449738,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.022177620551775436
+          },
+          {
+            "epoch": 12,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25785839175050324,
+            "selected_CE": 0.2809600562931181,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.018023475690488913
+          },
+          {
+            "epoch": 13,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2717273586035312,
+            "selected_CE": 0.2963885820663727,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.023636830630838067
+          },
+          {
+            "epoch": 14,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2970016430895608,
+            "selected_CE": 0.320583484160739,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01789986962863655
+          },
+          {
+            "epoch": 15,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27330331729204804,
+            "selected_CE": 0.29646105171592385,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.017729325777418946
+          },
+          {
+            "epoch": 16,
+            "source_packets": 28416,
+            "unmasked_CE": 0.32727051522951944,
+            "selected_CE": 0.3518935766507376,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01786552932793023
+          },
+          {
+            "epoch": 17,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30402536952012293,
+            "selected_CE": 0.32759438861195034,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01620850516671969
+          },
+          {
+            "epoch": 18,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31621532679141107,
+            "selected_CE": 0.3391141556874589,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.014262020501920634
+          },
+          {
+            "epoch": 19,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30081349936825735,
+            "selected_CE": 0.32204159859332954,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011974542224486065
+          },
+          {
+            "epoch": 20,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31640243973280935,
+            "selected_CE": 0.3400300449549078,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.014205158301125708
+          },
+          {
+            "epoch": 21,
+            "source_packets": 28416,
+            "unmasked_CE": 0.33267046605144535,
+            "selected_CE": 0.35461826364065074,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.013926233956275659
+          },
+          {
+            "epoch": 22,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2960790270553516,
+            "selected_CE": 0.31493158178689246,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.010927182703534863
+          },
+          {
+            "epoch": 23,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31797439178770726,
+            "selected_CE": 0.33942929312989517,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011511754160663029
+          },
+          {
+            "epoch": 24,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2646829875538478,
+            "selected_CE": 0.28228770746841086,
+            "selected_packets": 9547,
+            "masked_positions": 105017,
+            "probability_drop_mean": 0.012573965682505487
+          },
+          {
+            "epoch": 25,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2839462375184437,
+            "selected_CE": 0.3066409405757178,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012831881726244549
+          },
+          {
+            "epoch": 26,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28459047529477255,
+            "selected_CE": 0.3051456566732209,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.013517624798214046
+          },
+          {
+            "epoch": 27,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29894076240760786,
+            "selected_CE": 0.3182374538333566,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.014768638357578835
+          },
+          {
+            "epoch": 28,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2847577363319762,
+            "selected_CE": 0.30298100287715596,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01125298324486803
+          },
+          {
+            "epoch": 29,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27526999872412766,
+            "selected_CE": 0.2933326395111041,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01006137235048185
+          },
+          {
+            "epoch": 30,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24273797967009716,
+            "selected_CE": 0.2613769533733527,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.014733301391741177
+          },
+          {
+            "epoch": 31,
+            "source_packets": 28416,
+            "unmasked_CE": 0.25715455490055383,
+            "selected_CE": 0.2757253231698865,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012516309903632547
+          },
+          {
+            "epoch": 32,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2877428307458087,
+            "selected_CE": 0.3076852275108969,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012427666834408737
+          },
+          {
+            "epoch": 33,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2528430294950266,
+            "selected_CE": 0.2715256854153431,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.010211736689581795
+          },
+          {
+            "epoch": 34,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27845746349241285,
+            "selected_CE": 0.29698244442005417,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011557405223012776
+          },
+          {
+            "epoch": 35,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24310023904786454,
+            "selected_CE": 0.26053681983067106,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011557042710420146
+          },
+          {
+            "epoch": 36,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2638998570608663,
+            "selected_CE": 0.2828483148603826,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011036189805259005
+          },
+          {
+            "epoch": 37,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24321686805368545,
+            "selected_CE": 0.2608715492795717,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.010057135761467958
+          },
+          {
+            "epoch": 38,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2563430091685003,
+            "selected_CE": 0.2747692008343366,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011034549735192847
+          },
+          {
+            "epoch": 39,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24166365759866731,
+            "selected_CE": 0.26051983153363606,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.010463496263197682
+          },
+          {
+            "epoch": 40,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2460504546425901,
+            "selected_CE": 0.2642835904550445,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011634621675323427
+          },
+          {
+            "epoch": 41,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2332384954500306,
+            "selected_CE": 0.2502670599869243,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01173182916963842
+          },
+          {
+            "epoch": 42,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2737672837065147,
+            "selected_CE": 0.2916831534926419,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.010945293557335128
+          },
+          {
+            "epoch": 43,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2694112624603886,
+            "selected_CE": 0.28892406153383554,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011503893328276841
+          },
+          {
+            "epoch": 44,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24830917993912827,
+            "selected_CE": 0.26762442881459586,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011808755525454946
+          },
+          {
+            "epoch": 45,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22300026233534556,
+            "selected_CE": 0.24046650357745789,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.012187400475135996
+          },
+          {
+            "epoch": 46,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23607025376042803,
+            "selected_CE": 0.2535072585886663,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011458603088924376
+          },
+          {
+            "epoch": 47,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2325223418842028,
+            "selected_CE": 0.25005953077663173,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.011403087944501324
+          },
+          {
+            "epoch": 48,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2379499582221379,
+            "selected_CE": 0.2535126688176984,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.010140412906604307
+          },
+          {
+            "epoch": 49,
+            "source_packets": 28416,
+            "unmasked_CE": 0.21748968482286007,
+            "selected_CE": 0.23481196181865427,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.010661619609465135
+          },
+          {
+            "epoch": 50,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2355060806279784,
+            "selected_CE": 0.2528423873019648,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.010798379700727391
+          }
+        ],
+        "last5_unmasked_CE": 0.23190766386352143,
+        "native_U_objective_unchanged": true,
+        "body_signal": true,
+        "gradient_layer_records": 208,
+        "saved_vectors": 624,
+        "mask_batches_recounted": 52,
+        "extra_model_forwards": 22200,
+        "actual_L_network_forwards": 33300,
+        "head_fit_updates": 0,
+        "query_read": false
+      },
+      {
+        "status": "VERIFIED",
+        "row_id": "TEMPORAL_RSC-s2026092703",
+        "arm": "TEMPORAL_RSC",
+        "steps": 11100,
+        "actual_L_packet_observations": 1420800,
+        "curves": [
+          {
+            "epoch": 1,
+            "source_packets": 28416,
+            "unmasked_CE": 1.5029489591314986,
+            "selected_CE": 1.589276843242817,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.02153849179032133
+          },
+          {
+            "epoch": 2,
+            "source_packets": 28416,
+            "unmasked_CE": 0.6106589086152412,
+            "selected_CE": 0.6928006334079279,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.031831484227671986
+          },
+          {
+            "epoch": 3,
+            "source_packets": 28416,
+            "unmasked_CE": 0.45653549111909697,
+            "selected_CE": 0.5188448986894375,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.022646111687110435
+          },
+          {
+            "epoch": 4,
+            "source_packets": 28416,
+            "unmasked_CE": 0.34136120431326533,
+            "selected_CE": 0.39337279486495097,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.019417945942673664
+          },
+          {
+            "epoch": 5,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31863697121540707,
+            "selected_CE": 0.36308102477509696,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.01465506136190851
+          },
+          {
+            "epoch": 6,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26917556344388843,
+            "selected_CE": 0.30992060409741357,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.013677915074728295
+          },
+          {
+            "epoch": 7,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31423023443769765,
+            "selected_CE": 0.3548491464944573,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.00973602609975297
+          },
+          {
+            "epoch": 8,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2627060840594339,
+            "selected_CE": 0.29932841853247033,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.009080699928155219
+          },
+          {
+            "epoch": 9,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28888600114900786,
+            "selected_CE": 0.32668804353824604,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.005957813397561712
+          },
+          {
+            "epoch": 10,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2780613909970533,
+            "selected_CE": 0.31253174450751897,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.006385448853105625
+          },
+          {
+            "epoch": 11,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3053769625320628,
+            "selected_CE": 0.3414840714351551,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.004263478551513037
+          },
+          {
+            "epoch": 12,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2582827071483071,
+            "selected_CE": 0.29149060169453017,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0055814998422073926
+          },
+          {
+            "epoch": 13,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27054244622185425,
+            "selected_CE": 0.30594215085646054,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0057725293413937295
+          },
+          {
+            "epoch": 14,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2974267011290198,
+            "selected_CE": 0.33410316423789876,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.005491092303444774
+          },
+          {
+            "epoch": 15,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2684324997233915,
+            "selected_CE": 0.302273159662077,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.005262879020773579
+          },
+          {
+            "epoch": 16,
+            "source_packets": 28416,
+            "unmasked_CE": 0.3265176281198725,
+            "selected_CE": 0.3624868969189691,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0021752526187589646
+          },
+          {
+            "epoch": 17,
+            "source_packets": 28416,
+            "unmasked_CE": 0.30333482427103026,
+            "selected_CE": 0.33753263430149705,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0028072783344861556
+          },
+          {
+            "epoch": 18,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31460425663773006,
+            "selected_CE": 0.3484084839085201,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0012672062848405156
+          },
+          {
+            "epoch": 19,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29839374437122734,
+            "selected_CE": 0.3320654598106672,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0017420865510389008
+          },
+          {
+            "epoch": 20,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31658519727286993,
+            "selected_CE": 0.34991467911917884,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0006140877297651526
+          },
+          {
+            "epoch": 21,
+            "source_packets": 28416,
+            "unmasked_CE": 0.32936306787772224,
+            "selected_CE": 0.3612265646927529,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0015982182949219267
+          },
+          {
+            "epoch": 22,
+            "source_packets": 28416,
+            "unmasked_CE": 0.297209340374212,
+            "selected_CE": 0.32746273467132636,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0010771881689334306
+          },
+          {
+            "epoch": 23,
+            "source_packets": 28416,
+            "unmasked_CE": 0.31768205107466596,
+            "selected_CE": 0.3504197647174199,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0004080599561954538
+          },
+          {
+            "epoch": 24,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26286208975288244,
+            "selected_CE": 0.29113144051652773,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": 0.0009229404643085693
+          },
+          {
+            "epoch": 25,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2825629272842192,
+            "selected_CE": 0.3126065095064339,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0000018315848072168527
+          },
+          {
+            "epoch": 26,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28402096187477716,
+            "selected_CE": 0.3116719497887938,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.001080235335524907
+          },
+          {
+            "epoch": 27,
+            "source_packets": 28416,
+            "unmasked_CE": 0.29720605094287844,
+            "selected_CE": 0.3255427909662595,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0016516199768604794
+          },
+          {
+            "epoch": 28,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28334276686917553,
+            "selected_CE": 0.30954048738957524,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0022068406145302325
+          },
+          {
+            "epoch": 29,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27217092250918484,
+            "selected_CE": 0.2975230407271836,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.002321249136264931
+          },
+          {
+            "epoch": 30,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2411212473436519,
+            "selected_CE": 0.2647145005228283,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.001373306909724986
+          },
+          {
+            "epoch": 31,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2549793838716305,
+            "selected_CE": 0.2781546520623001,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0029097008049542602
+          },
+          {
+            "epoch": 32,
+            "source_packets": 28416,
+            "unmasked_CE": 0.28810938531616787,
+            "selected_CE": 0.31438896412382256,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0040613275458134274
+          },
+          {
+            "epoch": 33,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24956237652280308,
+            "selected_CE": 0.27145531894387426,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.003853591942429744
+          },
+          {
+            "epoch": 34,
+            "source_packets": 28416,
+            "unmasked_CE": 0.277452008614132,
+            "selected_CE": 0.3009788887994783,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.003931467354230516
+          },
+          {
+            "epoch": 35,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24252843444009084,
+            "selected_CE": 0.2661150379089622,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0025067870237189135
+          },
+          {
+            "epoch": 36,
+            "source_packets": 28416,
+            "unmasked_CE": 0.26434505063000024,
+            "selected_CE": 0.28793489620894996,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0031360909088435037
+          },
+          {
+            "epoch": 37,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24481462969167814,
+            "selected_CE": 0.26706223790575795,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0023818847768927445
+          },
+          {
+            "epoch": 38,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2570138164200224,
+            "selected_CE": 0.2799945041067428,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0022366637820776486
+          },
+          {
+            "epoch": 39,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24155394209397807,
+            "selected_CE": 0.26307085324246604,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0028894662496273043
+          },
+          {
+            "epoch": 40,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24489683714938593,
+            "selected_CE": 0.26770469442278416,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.002682750850605468
+          },
+          {
+            "epoch": 41,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23431234575203946,
+            "selected_CE": 0.2554955861052951,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.003377316565240255
+          },
+          {
+            "epoch": 42,
+            "source_packets": 28416,
+            "unmasked_CE": 0.27536183625862404,
+            "selected_CE": 0.3002779510308493,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0029029389318951347
+          },
+          {
+            "epoch": 43,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2692185741354216,
+            "selected_CE": 0.2936157225085808,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.003523845810271162
+          },
+          {
+            "epoch": 44,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24783449163576504,
+            "selected_CE": 0.2713174805850596,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.002382692335035048
+          },
+          {
+            "epoch": 45,
+            "source_packets": 28416,
+            "unmasked_CE": 0.22301317070115795,
+            "selected_CE": 0.2446928690816905,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0021753210478948916
+          },
+          {
+            "epoch": 46,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2378547477896686,
+            "selected_CE": 0.25902741956146985,
+            "selected_packets": 9546,
+            "masked_positions": 105007,
+            "probability_drop_mean": -0.0027579082173991715
+          },
+          {
+            "epoch": 47,
+            "source_packets": 28416,
+            "unmasked_CE": 0.2336256375519542,
+            "selected_CE": 0.2553642234756603,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0013983242086822855
+          },
+          {
+            "epoch": 48,
+            "source_packets": 28416,
+            "unmasked_CE": 0.24000996418364412,
+            "selected_CE": 0.26047630342948547,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0030319541060839787
+          },
+          {
+            "epoch": 49,
+            "source_packets": 28416,
+            "unmasked_CE": 0.21787190826626512,
+            "selected_CE": 0.23844114580267184,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.0017735051501936673
+          },
+          {
+            "epoch": 50,
+            "source_packets": 28416,
+            "unmasked_CE": 0.23407297974099983,
+            "selected_CE": 0.25476324601887584,
+            "selected_packets": 9546,
+            "masked_positions": 105006,
+            "probability_drop_mean": -0.002673059828298351
+          }
+        ],
+        "last5_unmasked_CE": 0.23268704750650637,
+        "native_U_objective_unchanged": true,
+        "body_signal": true,
+        "gradient_layer_records": 208,
+        "saved_vectors": 624,
+        "mask_batches_recounted": 52,
+        "extra_model_forwards": 22200,
+        "actual_L_network_forwards": 33300,
+        "head_fit_updates": 0,
+        "query_read": false
+      }
+    ]
+  },
+  "worker_processes_live": 0,
+  "all8_rows_complete": true,
+  "all_required_clean_scores_complete": true,
+  "source_decision_commit": "832485cace509543a7b4e921ac7f5483a2053749",
+  "target_feedback_to_training": false
+}

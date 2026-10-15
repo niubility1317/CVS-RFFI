@@ -483,3 +483,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 固定网络下一训练假设：原48个Sinc参数的Hz优化单位。真实9历史模型和当前3个SIG_TIME模型均几乎不更新；已有优化器矩非零且末轮步长低于半ULP。仅优化器组按Fs换算lr／eps／wd、保留原全局clip／cos／EMA和全部非Sinc参数（含默认W）选项，不改网络或参数化。组件本地7负例／真实native前向和同梯度检查PASS，STANDARD与原生更新/矩逐元素一致，unit首步仅Sinc不同并传到joint160；这只是合成机械证据，没有新真实训练或目标结果，完整训练接线与唯一审查尚待完成。[准备报告](../analysis/sinc_unit_optimizer_preparation_20261015.md)。依据在读取RSC剩余目标数值前固定，不扫倍率。
+
+
+2026-10-15 更新：时序自挑战完整三种子结果已独立复核并全量保留。SIG_TIME 82.669048%，随机 82.002579%，RSC 81.588095%；RSC 相对 SIG 配对 −1.080952±0.766891 个百分点，0/3 为正。本固定机制不再扩展。完整矩阵、RX/day/F1、错误转移、实际梯度、部署特征和成本见 [完整结果](../automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md)。84% 目标仍未达成。下一项网络不变的 Sinc 优化器机制代码已固定于 00132f7d54aff45b6e52fc41f89d7705a043bc71，尚未发布或得到性能结论。

@@ -2487,48 +2487,189 @@
     "Source PASS is not DG success; known historical target benchmark is not a new blind test. Full final positive/negative combined3-seed analysis, sampleSD, paired differences, RX/day/MacroF1/errors/costs uploaded to Git after actual evidence."
   ],
   "results": {
-    "status": "RUNNING_VERIFIED",
-    "source_qualification_complete": true,
-    "original_source_qualification_run": "20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s01-m4-r02",
-    "source_decision_commit": "832485cace509543a7b4e921ac7f5483a2053749",
-    "training_formula_unchanged": true,
-    "new_model_target_metrics_read": false,
-    "first_seed_retrained": false,
-    "actual_new_workers": 6,
-    "observed_completed_epochs": [
+    "status": "ANALYZED_VERIFIED",
+    "source_qualification": "PASS",
+    "combined_seed_count": 3,
+    "models": 12,
+    "newly_trained_models": 9,
+    "historical_baseline_models_reused": 3,
+    "all_rows_complete": true,
+    "default_head_only": true,
+    "head_fit_updates": 0,
+    "truth_last": true,
+    "goal_84": false,
+    "summary": [
       {
-        "row_id": "SIG_TIME-s2026092702",
-        "epoch": 4
+        "arm": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_accuracy": [
+          0.8066845238095238,
+          0.7808154761904762,
+          0.8283035714285715
+        ],
+        "accuracy_mean": 0.8052678571428572,
+        "accuracy_sample_SD": 0.023775723031465,
+        "macro_f1_mean": 0.8000238637751927,
+        "worst_RX_mean": 0.6797083333333332,
+        "worst_day_mean": 0.7605555555555555
       },
       {
-        "row_id": "MATCHED_RANDOM-s2026092702",
-        "epoch": 5
+        "arm": "SIG_TIME",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_accuracy": [
+          0.8366071428571429,
+          0.8077619047619048,
+          0.8357023809523809
+        ],
+        "accuracy_mean": 0.8266904761904762,
+        "accuracy_sample_SD": 0.01639886461835009,
+        "macro_f1_mean": 0.8212780014260804,
+        "worst_RX_mean": 0.703375,
+        "worst_day_mean": 0.7847936507936507
       },
       {
-        "row_id": "TEMPORAL_RSC-s2026092702",
-        "epoch": 5
+        "arm": "MATCHED_RANDOM",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_accuracy": [
+          0.8238511904761905,
+          0.8044761904761905,
+          0.83175
+        ],
+        "accuracy_mean": 0.8200257936507936,
+        "accuracy_sample_SD": 0.014033546135566666,
+        "macro_f1_mean": 0.8149517351114036,
+        "worst_RX_mean": 0.6777777777777777,
+        "worst_day_mean": 0.7762460317460317
       },
       {
-        "row_id": "SIG_TIME-s2026092703",
-        "epoch": 4
-      },
-      {
-        "row_id": "MATCHED_RANDOM-s2026092703",
-        "epoch": 4
-      },
-      {
-        "row_id": "TEMPORAL_RSC-s2026092703",
-        "epoch": 4
+        "arm": "TEMPORAL_RSC",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_accuracy": [
+          0.8182380952380952,
+          0.8047261904761904,
+          0.8246785714285715
+        ],
+        "accuracy_mean": 0.8158809523809524,
+        "accuracy_sample_SD": 0.01018290077796937,
+        "macro_f1_mean": 0.8105652905624763,
+        "worst_RX_mean": 0.6670694444444445,
+        "worst_day_mean": 0.7668968253968252
       }
     ],
-    "source_native_steps_recounted": 6438,
-    "head_fit_updates": 0,
-    "goal_84": false,
+    "paired": [
+      {
+        "arm": "TEMPORAL_RSC",
+        "control": "MATCHED_RANDOM",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_difference_pp": [
+          -0.5613095238095278,
+          0.024999999999997247,
+          -0.7071428571428506
+        ],
+        "mean_difference_pp": -0.41448412698412707,
+        "sample_SD_pp": 0.3875262103148966,
+        "positive_seeds": 1
+      },
+      {
+        "arm": "TEMPORAL_RSC",
+        "control": "SIG_TIME",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_difference_pp": [
+          -1.8369047619047674,
+          -0.3035714285714364,
+          -1.1023809523809436
+        ],
+        "mean_difference_pp": -1.0809523809523824,
+        "sample_SD_pp": 0.7668912344869235,
+        "positive_seeds": 0
+      },
+      {
+        "arm": "MATCHED_RANDOM",
+        "control": "SIG_TIME",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_difference_pp": [
+          -1.2755952380952396,
+          -0.3285714285714336,
+          -0.39523809523809295
+        ],
+        "mean_difference_pp": -0.6664682539682554,
+        "sample_SD_pp": 0.5285715402902783,
+        "positive_seeds": 0
+      },
+      {
+        "arm": "TEMPORAL_RSC",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_difference_pp": [
+          1.1553571428571385,
+          2.391071428571423,
+          -0.36249999999999893
+        ],
+        "mean_difference_pp": 1.061309523809521,
+        "sample_SD_pp": 1.379192741805006,
+        "positive_seeds": 2
+      },
+      {
+        "arm": "SIG_TIME",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_difference_pp": [
+          2.992261904761906,
+          2.6946428571428593,
+          0.7398809523809446
+        ],
+        "mean_difference_pp": 2.1422619047619036,
+        "sample_SD_pp": 1.2235802082728824,
+        "positive_seeds": 3
+      }
+    ],
     "evidence": [
-      "launch_verified.json",
-      "source_progress.json"
-    ]
+      "final_analysis.md",
+      "results.json",
+      "independent_statistics.json",
+      "native_recount.json",
+      "source_feature_mechanism.json",
+      "full_source_curves.json",
+      "completion_verified.json"
+    ],
+    "remaining_target_numeric_read_at": "2026-10-15T00:20:27.595Z"
   },
   "registered_at": "2026-10-14T22:52:13+00:00",
-  "status": "RUNNING"
+  "status": "ANALYZED"
 }

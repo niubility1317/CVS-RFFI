@@ -1,0 +1,2444 @@
+{
+  "status": "VERIFIED",
+  "summary": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_accuracy": [
+        0.8066845238095238,
+        0.7808154761904762,
+        0.8283035714285715
+      ],
+      "accuracy_mean": 0.8052678571428572,
+      "accuracy_sample_SD": 0.023775723031465,
+      "macro_f1_mean": 0.8000238637751927,
+      "worst_RX_mean": 0.6797083333333332,
+      "worst_day_mean": 0.7605555555555555
+    },
+    {
+      "arm": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_accuracy": [
+        0.8366071428571429,
+        0.8077619047619048,
+        0.8357023809523809
+      ],
+      "accuracy_mean": 0.8266904761904762,
+      "accuracy_sample_SD": 0.01639886461835009,
+      "macro_f1_mean": 0.8212780014260804,
+      "worst_RX_mean": 0.703375,
+      "worst_day_mean": 0.7847936507936507
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_accuracy": [
+        0.8238511904761905,
+        0.8044761904761905,
+        0.83175
+      ],
+      "accuracy_mean": 0.8200257936507936,
+      "accuracy_sample_SD": 0.014033546135566666,
+      "macro_f1_mean": 0.8149517351114036,
+      "worst_RX_mean": 0.6777777777777777,
+      "worst_day_mean": 0.7762460317460317
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_accuracy": [
+        0.8182380952380952,
+        0.8047261904761904,
+        0.8246785714285715
+      ],
+      "accuracy_mean": 0.8158809523809524,
+      "accuracy_sample_SD": 0.01018290077796937,
+      "macro_f1_mean": 0.8105652905624763,
+      "worst_RX_mean": 0.6670694444444445,
+      "worst_day_mean": 0.7668968253968252
+    }
+  ],
+  "paired": [
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "MATCHED_RANDOM",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_difference_pp": [
+        -0.5613095238095278,
+        0.024999999999997247,
+        -0.7071428571428506
+      ],
+      "mean_difference_pp": -0.41448412698412707,
+      "sample_SD_pp": 0.3875262103148966,
+      "positive_seeds": 1
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_difference_pp": [
+        -1.8369047619047674,
+        -0.3035714285714364,
+        -1.1023809523809436
+      ],
+      "mean_difference_pp": -1.0809523809523824,
+      "sample_SD_pp": 0.7668912344869235,
+      "positive_seeds": 0
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_difference_pp": [
+        -1.2755952380952396,
+        -0.3285714285714336,
+        -0.39523809523809295
+      ],
+      "mean_difference_pp": -0.6664682539682554,
+      "sample_SD_pp": 0.5285715402902783,
+      "positive_seeds": 0
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_difference_pp": [
+        1.1553571428571385,
+        2.391071428571423,
+        -0.36249999999999893
+      ],
+      "mean_difference_pp": 1.061309523809521,
+      "sample_SD_pp": 1.379192741805006,
+      "positive_seeds": 2
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_difference_pp": [
+        2.992261904761906,
+        2.6946428571428593,
+        0.7398809523809446
+      ],
+      "mean_difference_pp": 2.1422619047619036,
+      "sample_SD_pp": 1.2235802082728824,
+      "positive_seeds": 3
+    }
+  ],
+  "rows": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "accuracy": 0.8066845238095238,
+      "macro_f1": 0.8017335328586674,
+      "worst_RX": 0.7061666666666667,
+      "worst_day": 0.7545238095238095,
+      "correct": 135523
+    },
+    {
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092702,
+      "accuracy": 0.7808154761904762,
+      "macro_f1": 0.7751657485675612,
+      "worst_RX": 0.5867083333333334,
+      "worst_day": 0.7418571428571429,
+      "correct": 131177
+    },
+    {
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092703,
+      "accuracy": 0.8283035714285715,
+      "macro_f1": 0.8231723098993499,
+      "worst_RX": 0.74625,
+      "worst_day": 0.7852857142857143,
+      "correct": 139155
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092701,
+      "accuracy": 0.8366071428571429,
+      "macro_f1": 0.832355875979482,
+      "worst_RX": 0.7104583333333333,
+      "worst_day": 0.7912857142857143,
+      "correct": 140550
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092702,
+      "accuracy": 0.8077619047619048,
+      "macro_f1": 0.8003245585100992,
+      "worst_RX": 0.6567083333333333,
+      "worst_day": 0.7613095238095238,
+      "correct": 135704
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed": 2026092703,
+      "accuracy": 0.8357023809523809,
+      "macro_f1": 0.83115356978866,
+      "worst_RX": 0.7429583333333334,
+      "worst_day": 0.8017857142857143,
+      "correct": 140398
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "seed": 2026092701,
+      "accuracy": 0.8238511904761905,
+      "macro_f1": 0.8189346324994674,
+      "worst_RX": 0.6554166666666666,
+      "worst_day": 0.7802380952380953,
+      "correct": 138407
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "seed": 2026092702,
+      "accuracy": 0.8044761904761905,
+      "macro_f1": 0.7990567629121633,
+      "worst_RX": 0.65525,
+      "worst_day": 0.7598809523809524,
+      "correct": 135152
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "seed": 2026092703,
+      "accuracy": 0.83175,
+      "macro_f1": 0.8268638099225804,
+      "worst_RX": 0.7226666666666667,
+      "worst_day": 0.7886190476190477,
+      "correct": 139734
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "seed": 2026092701,
+      "accuracy": 0.8182380952380952,
+      "macro_f1": 0.8128362081416807,
+      "worst_RX": 0.6442083333333334,
+      "worst_day": 0.7753809523809524,
+      "correct": 137464
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "seed": 2026092702,
+      "accuracy": 0.8047261904761904,
+      "macro_f1": 0.7995683561785593,
+      "worst_RX": 0.6594583333333334,
+      "worst_day": 0.7550238095238095,
+      "correct": 135194
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "seed": 2026092703,
+      "accuracy": 0.8246785714285715,
+      "macro_f1": 0.8192913073671888,
+      "worst_RX": 0.6975416666666666,
+      "worst_day": 0.7702857142857142,
+      "correct": 138546
+    }
+  ],
+  "independent_metrics": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 135523,
+      "accuracy": 0.8066845238095238,
+      "macro_f1": 0.8017335328586674
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 19929,
+      "accuracy": 0.830375,
+      "macro_f1": 0.8172884729892399
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 16948,
+      "accuracy": 0.7061666666666667,
+      "macro_f1": 0.6853753367654388
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 20878,
+      "accuracy": 0.8699166666666667,
+      "macro_f1": 0.8672982470863246
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 17410,
+      "accuracy": 0.7254166666666667,
+      "macro_f1": 0.7264113050957538
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 20955,
+      "accuracy": 0.873125,
+      "macro_f1": 0.8618630030139972
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 18994,
+      "accuracy": 0.7914166666666667,
+      "macro_f1": 0.773705120944035
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 20409,
+      "accuracy": 0.850375,
+      "macro_f1": 0.838859708437757
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27366,
+      "accuracy": 0.9773571428571428,
+      "macro_f1": 0.16475815482426037
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 13628,
+      "accuracy": 0.4867142857142857,
+      "macro_f1": 0.10912526824893502
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 22373,
+      "accuracy": 0.7990357142857143,
+      "macro_f1": 0.14804888862419682
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 17687,
+      "accuracy": 0.6316785714285714,
+      "macro_f1": 0.12904473190769075
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27949,
+      "accuracy": 0.9981785714285715,
+      "macro_f1": 0.16651474259295668
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 26520,
+      "accuracy": 0.9471428571428572,
+      "macro_f1": 0.16214233308877476
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 33281,
+      "accuracy": 0.792404761904762,
+      "macro_f1": 0.785626106680838
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 35071,
+      "accuracy": 0.8350238095238095,
+      "macro_f1": 0.8315746782363199
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 31690,
+      "accuracy": 0.7545238095238095,
+      "macro_f1": 0.7475948582531378
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 35481,
+      "accuracy": 0.8447857142857143,
+      "macro_f1": 0.8401276562648019
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 140550,
+      "accuracy": 0.8366071428571429,
+      "macro_f1": 0.832355875979482
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 19065,
+      "accuracy": 0.794375,
+      "macro_f1": 0.7717741862059034
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 17051,
+      "accuracy": 0.7104583333333333,
+      "macro_f1": 0.6943999107630882
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 21165,
+      "accuracy": 0.881875,
+      "macro_f1": 0.8799096511973318
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 19464,
+      "accuracy": 0.811,
+      "macro_f1": 0.8095283277163313
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 22069,
+      "accuracy": 0.9195416666666667,
+      "macro_f1": 0.9175909910805755
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 20274,
+      "accuracy": 0.84475,
+      "macro_f1": 0.8328964186670741
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 21462,
+      "accuracy": 0.89425,
+      "macro_f1": 0.8909569789886872
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27442,
+      "accuracy": 0.9800714285714286,
+      "macro_f1": 0.16498923800247706
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 15772,
+      "accuracy": 0.5632857142857143,
+      "macro_f1": 0.12010722227299035
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 22580,
+      "accuracy": 0.8064285714285714,
+      "macro_f1": 0.14880717015948333
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 19548,
+      "accuracy": 0.6981428571428572,
+      "macro_f1": 0.13704046437284428
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27886,
+      "accuracy": 0.9959285714285714,
+      "macro_f1": 0.1663266888546923
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 27322,
+      "accuracy": 0.9757857142857143,
+      "macro_f1": 0.16462407963076775
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 33234,
+      "accuracy": 0.7912857142857143,
+      "macro_f1": 0.7813181596932143
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 36204,
+      "accuracy": 0.862,
+      "macro_f1": 0.8586344506323305
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 34128,
+      "accuracy": 0.8125714285714286,
+      "macro_f1": 0.8088286513743884
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 36984,
+      "accuracy": 0.8805714285714286,
+      "macro_f1": 0.8775284808690927
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 138407,
+      "accuracy": 0.8238511904761905,
+      "macro_f1": 0.8189346324994674
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 20165,
+      "accuracy": 0.8402083333333333,
+      "macro_f1": 0.8272660227966268
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 15730,
+      "accuracy": 0.6554166666666666,
+      "macro_f1": 0.6354930858807785
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 20643,
+      "accuracy": 0.860125,
+      "macro_f1": 0.8576344722507018
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 19196,
+      "accuracy": 0.7998333333333333,
+      "macro_f1": 0.7985413993291378
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 21379,
+      "accuracy": 0.8907916666666666,
+      "macro_f1": 0.8848318161464218
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 20302,
+      "accuracy": 0.8459166666666667,
+      "macro_f1": 0.8351526624064372
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 20992,
+      "accuracy": 0.8746666666666667,
+      "macro_f1": 0.870608869038136
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27340,
+      "accuracy": 0.9764285714285714,
+      "macro_f1": 0.16467895434285026
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 14579,
+      "accuracy": 0.5206785714285714,
+      "macro_f1": 0.11413294503550264
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 22853,
+      "accuracy": 0.8161785714285714,
+      "macro_f1": 0.14979778315274747
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 18878,
+      "accuracy": 0.6742142857142858,
+      "macro_f1": 0.13423496451782643
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27891,
+      "accuracy": 0.9961071428571429,
+      "macro_f1": 0.166341629242633
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 26866,
+      "accuracy": 0.9595,
+      "macro_f1": 0.1632219103512801
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 32770,
+      "accuracy": 0.7802380952380953,
+      "macro_f1": 0.7698674047863259
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 35714,
+      "accuracy": 0.8503333333333334,
+      "macro_f1": 0.8467040396317772
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 33318,
+      "accuracy": 0.7932857142857143,
+      "macro_f1": 0.7880563045490044
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 36605,
+      "accuracy": 0.871547619047619,
+      "macro_f1": 0.8676775515064626
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 137464,
+      "accuracy": 0.8182380952380952,
+      "macro_f1": 0.8128362081416807
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 20438,
+      "accuracy": 0.8515833333333334,
+      "macro_f1": 0.8393938491348568
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 15461,
+      "accuracy": 0.6442083333333334,
+      "macro_f1": 0.6240742301882963
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 20497,
+      "accuracy": 0.8540416666666667,
+      "macro_f1": 0.850892441547428
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 19005,
+      "accuracy": 0.791875,
+      "macro_f1": 0.7908598808620334
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 20997,
+      "accuracy": 0.874875,
+      "macro_f1": 0.865272614592875
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 20221,
+      "accuracy": 0.8425416666666666,
+      "macro_f1": 0.8329146638425438
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 20845,
+      "accuracy": 0.8685416666666667,
+      "macro_f1": 0.8634992207433108
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27285,
+      "accuracy": 0.9744642857142857,
+      "macro_f1": 0.16451116939495342
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 13647,
+      "accuracy": 0.4873928571428571,
+      "macro_f1": 0.1092275554061517
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 22907,
+      "accuracy": 0.8181071428571428,
+      "macro_f1": 0.14999246992882445
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 18861,
+      "accuracy": 0.6736071428571428,
+      "macro_f1": 0.13416273660399905
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27835,
+      "accuracy": 0.9941071428571429,
+      "macro_f1": 0.16617414405540135
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 26929,
+      "accuracy": 0.96175,
+      "macro_f1": 0.16341701711906886
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 32566,
+      "accuracy": 0.7753809523809524,
+      "macro_f1": 0.7632430479174334
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 35391,
+      "accuracy": 0.8426428571428571,
+      "macro_f1": 0.8389216888445881
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 32846,
+      "accuracy": 0.7820476190476191,
+      "macro_f1": 0.7760415503276846
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092701",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 36661,
+      "accuracy": 0.8728809523809524,
+      "macro_f1": 0.8690962718312777
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 131177,
+      "accuracy": 0.7808154761904762,
+      "macro_f1": 0.7751657485675612
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 20251,
+      "accuracy": 0.8437916666666667,
+      "macro_f1": 0.8277693524658352
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 14081,
+      "accuracy": 0.5867083333333334,
+      "macro_f1": 0.5747258603313432
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 20429,
+      "accuracy": 0.8512083333333333,
+      "macro_f1": 0.8515045496088126
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 17075,
+      "accuracy": 0.7114583333333333,
+      "macro_f1": 0.7164235807707228
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 20494,
+      "accuracy": 0.8539166666666667,
+      "macro_f1": 0.8434756561671194
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 19040,
+      "accuracy": 0.7933333333333333,
+      "macro_f1": 0.7856655393711797
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 19807,
+      "accuracy": 0.8252916666666666,
+      "macro_f1": 0.8108907260490796
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27528,
+      "accuracy": 0.9831428571428571,
+      "macro_f1": 0.16524996398213512
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 12343,
+      "accuracy": 0.4408214285714286,
+      "macro_f1": 0.1019838220591759
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 19046,
+      "accuracy": 0.6802142857142857,
+      "macro_f1": 0.13494593943516275
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 17777,
+      "accuracy": 0.6348928571428571,
+      "macro_f1": 0.12944637408888016
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27956,
+      "accuracy": 0.9984285714285714,
+      "macro_f1": 0.16653561131365122
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 26527,
+      "accuracy": 0.9473928571428571,
+      "macro_f1": 0.16216431003600662
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 31655,
+      "accuracy": 0.7536904761904762,
+      "macro_f1": 0.7458424763847958
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 34454,
+      "accuracy": 0.8203333333333334,
+      "macro_f1": 0.8169550079299883
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 31158,
+      "accuracy": 0.7418571428571429,
+      "macro_f1": 0.7327977324162555
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 33910,
+      "accuracy": 0.8073809523809524,
+      "macro_f1": 0.80243494502055
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 135704,
+      "accuracy": 0.8077619047619048,
+      "macro_f1": 0.8003245585100992
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 18759,
+      "accuracy": 0.781625,
+      "macro_f1": 0.7507185148626271
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 15761,
+      "accuracy": 0.6567083333333333,
+      "macro_f1": 0.6361596056489186
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 21561,
+      "accuracy": 0.898375,
+      "macro_f1": 0.8960592954552595
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 18288,
+      "accuracy": 0.762,
+      "macro_f1": 0.7588272612104192
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 21336,
+      "accuracy": 0.889,
+      "macro_f1": 0.8861356165289207
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 20364,
+      "accuracy": 0.8485,
+      "macro_f1": 0.8408475121919405
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 19635,
+      "accuracy": 0.818125,
+      "macro_f1": 0.8031694581232802
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27473,
+      "accuracy": 0.9811785714285715,
+      "macro_f1": 0.1650833138043132
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 12555,
+      "accuracy": 0.44839285714285715,
+      "macro_f1": 0.10319319442732093
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 21074,
+      "accuracy": 0.7526428571428572,
+      "macro_f1": 0.1431443670103653
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 19605,
+      "accuracy": 0.7001785714285714,
+      "macro_f1": 0.13727549627140007
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27947,
+      "accuracy": 0.9981071428571429,
+      "macro_f1": 0.1665087791421643
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 27050,
+      "accuracy": 0.9660714285714286,
+      "macro_f1": 0.16379049349076596
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 32966,
+      "accuracy": 0.7849047619047619,
+      "macro_f1": 0.7719041093817652
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 35001,
+      "accuracy": 0.8333571428571429,
+      "macro_f1": 0.8293362459238409
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 31975,
+      "accuracy": 0.7613095238095238,
+      "macro_f1": 0.7538259102421375
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 35762,
+      "accuracy": 0.8514761904761905,
+      "macro_f1": 0.8457329847599558
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 135152,
+      "accuracy": 0.8044761904761905,
+      "macro_f1": 0.7990567629121633
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 19403,
+      "accuracy": 0.8084583333333333,
+      "macro_f1": 0.7904971019329188
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 15726,
+      "accuracy": 0.65525,
+      "macro_f1": 0.6372076578085599
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 21235,
+      "accuracy": 0.8847916666666666,
+      "macro_f1": 0.8841199572886874
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 17704,
+      "accuracy": 0.7376666666666667,
+      "macro_f1": 0.7362949657548968
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 21430,
+      "accuracy": 0.8929166666666667,
+      "macro_f1": 0.8881962181224868
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 19894,
+      "accuracy": 0.8289166666666666,
+      "macro_f1": 0.8247292592626717
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 19760,
+      "accuracy": 0.8233333333333334,
+      "macro_f1": 0.8094028451723791
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27435,
+      "accuracy": 0.9798214285714286,
+      "macro_f1": 0.16496798051772346
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 13794,
+      "accuracy": 0.49264285714285716,
+      "macro_f1": 0.11001579174044122
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 20483,
+      "accuracy": 0.7315357142857143,
+      "macro_f1": 0.14082599399102091
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 18511,
+      "accuracy": 0.6611071428571429,
+      "macro_f1": 0.13266395763009467
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27946,
+      "accuracy": 0.9980714285714286,
+      "macro_f1": 0.16650579725687867
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 26983,
+      "accuracy": 0.9636785714285714,
+      "macro_f1": 0.16358389562834572
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 32594,
+      "accuracy": 0.7760476190476191,
+      "macro_f1": 0.7671288665611545
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 35179,
+      "accuracy": 0.8375952380952381,
+      "macro_f1": 0.834484841509182
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 31915,
+      "accuracy": 0.7598809523809524,
+      "macro_f1": 0.7530614979856337
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 35464,
+      "accuracy": 0.8443809523809523,
+      "macro_f1": 0.8396471180339473
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 135194,
+      "accuracy": 0.8047261904761904,
+      "macro_f1": 0.7995683561785593
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 19754,
+      "accuracy": 0.8230833333333333,
+      "macro_f1": 0.8076894480405891
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 15827,
+      "accuracy": 0.6594583333333334,
+      "macro_f1": 0.6444394608364651
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 20931,
+      "accuracy": 0.872125,
+      "macro_f1": 0.8710250925441185
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 17668,
+      "accuracy": 0.7361666666666666,
+      "macro_f1": 0.7355855963270185
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 21339,
+      "accuracy": 0.889125,
+      "macro_f1": 0.8814750193592872
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 19672,
+      "accuracy": 0.8196666666666667,
+      "macro_f1": 0.8172888162878414
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 20003,
+      "accuracy": 0.8334583333333333,
+      "macro_f1": 0.8222810514934901
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27504,
+      "accuracy": 0.9822857142857143,
+      "macro_f1": 0.16517728452003458
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 13367,
+      "accuracy": 0.4773928571428571,
+      "macro_f1": 0.10771065503098283
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 21109,
+      "accuracy": 0.7538928571428571,
+      "macro_f1": 0.1432799147474665
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 18373,
+      "accuracy": 0.6561785714285714,
+      "macro_f1": 0.13206679173944608
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27909,
+      "accuracy": 0.99675,
+      "macro_f1": 0.16639539251283336
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 26932,
+      "accuracy": 0.9618571428571429,
+      "macro_f1": 0.1634262967547756
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 32664,
+      "accuracy": 0.7777142857142857,
+      "macro_f1": 0.768796003032438
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 35301,
+      "accuracy": 0.8405,
+      "macro_f1": 0.8377958911610895
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 31711,
+      "accuracy": 0.7550238095238095,
+      "macro_f1": 0.7476679258360889
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092702",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 35518,
+      "accuracy": 0.8456666666666667,
+      "macro_f1": 0.8416690672788326
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 139155,
+      "accuracy": 0.8283035714285715,
+      "macro_f1": 0.8231723098993499
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 20390,
+      "accuracy": 0.8495833333333334,
+      "macro_f1": 0.8334797767240975
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 17910,
+      "accuracy": 0.74625,
+      "macro_f1": 0.7191424844448665
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 20820,
+      "accuracy": 0.8675,
+      "macro_f1": 0.8621010751761338
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 18802,
+      "accuracy": 0.7834166666666667,
+      "macro_f1": 0.783533706865719
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 20865,
+      "accuracy": 0.869375,
+      "macro_f1": 0.8568979134659217
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 19191,
+      "accuracy": 0.799625,
+      "macro_f1": 0.7839110954630734
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 21177,
+      "accuracy": 0.882375,
+      "macro_f1": 0.8792796578501373
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 26983,
+      "accuracy": 0.9636785714285714,
+      "macro_f1": 0.16358389562834572
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 13497,
+      "accuracy": 0.4820357142857143,
+      "macro_f1": 0.10841747596211775
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 25718,
+      "accuracy": 0.9185,
+      "macro_f1": 0.15958648249500476
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 18206,
+      "accuracy": 0.6502142857142857,
+      "macro_f1": 0.13133936429612317
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27954,
+      "accuracy": 0.9983571428571428,
+      "macro_f1": 0.1665296493548272
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 26797,
+      "accuracy": 0.9570357142857143,
+      "macro_f1": 0.16300770723458097
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 34613,
+      "accuracy": 0.8241190476190476,
+      "macro_f1": 0.816814167597376
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 35496,
+      "accuracy": 0.8451428571428572,
+      "macro_f1": 0.8402629877538511
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 32982,
+      "accuracy": 0.7852857142857143,
+      "macro_f1": 0.7769848191530375
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 36064,
+      "accuracy": 0.8586666666666667,
+      "macro_f1": 0.856326647998093
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 140398,
+      "accuracy": 0.8357023809523809,
+      "macro_f1": 0.83115356978866
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 19027,
+      "accuracy": 0.7927916666666667,
+      "macro_f1": 0.7680487129190584
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 17831,
+      "accuracy": 0.7429583333333334,
+      "macro_f1": 0.7263512569853403
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 21328,
+      "accuracy": 0.8886666666666667,
+      "macro_f1": 0.8839495789338736
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 19768,
+      "accuracy": 0.8236666666666667,
+      "macro_f1": 0.8227633390675083
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 21993,
+      "accuracy": 0.916375,
+      "macro_f1": 0.9144416093196002
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 20309,
+      "accuracy": 0.8462083333333333,
+      "macro_f1": 0.8334835082414486
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 20142,
+      "accuracy": 0.83925,
+      "macro_f1": 0.831324200220628
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27129,
+      "accuracy": 0.9688928571428571,
+      "macro_f1": 0.16403344882004026
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 15521,
+      "accuracy": 0.5543214285714285,
+      "macro_f1": 0.11887747677366482
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 22759,
+      "accuracy": 0.8128214285714286,
+      "macro_f1": 0.14945789580829671
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 20005,
+      "accuracy": 0.7144642857142857,
+      "macro_f1": 0.13890914140888103
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27960,
+      "accuracy": 0.9985714285714286,
+      "macro_f1": 0.16654753395282343
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 27024,
+      "accuracy": 0.9651428571428572,
+      "macro_f1": 0.1637103809246874
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 33675,
+      "accuracy": 0.8017857142857143,
+      "macro_f1": 0.7931759651631832
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 36015,
+      "accuracy": 0.8575,
+      "macro_f1": 0.8534922460568312
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 33816,
+      "accuracy": 0.8051428571428572,
+      "macro_f1": 0.7991048937908724
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 36892,
+      "accuracy": 0.8783809523809524,
+      "macro_f1": 0.876168836084716
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 139734,
+      "accuracy": 0.83175,
+      "macro_f1": 0.8268638099225804
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 19520,
+      "accuracy": 0.8133333333333334,
+      "macro_f1": 0.7945962152216479
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 17344,
+      "accuracy": 0.7226666666666667,
+      "macro_f1": 0.7028816854481658
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 21220,
+      "accuracy": 0.8841666666666667,
+      "macro_f1": 0.8793602040867996
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 19480,
+      "accuracy": 0.8116666666666666,
+      "macro_f1": 0.810477346493796
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 21003,
+      "accuracy": 0.875125,
+      "macro_f1": 0.8681947716302411
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 20270,
+      "accuracy": 0.8445833333333334,
+      "macro_f1": 0.832705165397757
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 20897,
+      "accuracy": 0.8707083333333333,
+      "macro_f1": 0.8669211234767031
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27060,
+      "accuracy": 0.9664285714285714,
+      "macro_f1": 0.16382128586996006
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 14395,
+      "accuracy": 0.5141071428571429,
+      "macro_f1": 0.11318158587883792
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 23767,
+      "accuracy": 0.8488214285714286,
+      "macro_f1": 0.15303829337866467
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 19532,
+      "accuracy": 0.6975714285714286,
+      "macro_f1": 0.1369743891834273
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27940,
+      "accuracy": 0.9978571428571429,
+      "macro_f1": 0.16648790370635205
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 27040,
+      "accuracy": 0.9657142857142857,
+      "macro_f1": 0.1637596899224806
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 33826,
+      "accuracy": 0.8053809523809524,
+      "macro_f1": 0.7976651483550202
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 36020,
+      "accuracy": 0.8576190476190476,
+      "macro_f1": 0.8530727379265706
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 33122,
+      "accuracy": 0.7886190476190477,
+      "macro_f1": 0.7814979682597386
+    },
+    {
+      "row_id": "MATCHED_RANDOM-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 36766,
+      "accuracy": 0.8753809523809524,
+      "macro_f1": 0.8729062892786091
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "count": 168000,
+      "correct": 138546,
+      "accuracy": 0.8246785714285715,
+      "macro_f1": 0.8192913073671888
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "count": 24000,
+      "correct": 19417,
+      "accuracy": 0.8090416666666667,
+      "macro_f1": 0.7894032071404368
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "count": 24000,
+      "correct": 16741,
+      "accuracy": 0.6975416666666666,
+      "macro_f1": 0.6746175675819645
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "count": 24000,
+      "correct": 21222,
+      "accuracy": 0.88425,
+      "macro_f1": 0.8792224922915923
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "count": 24000,
+      "correct": 19432,
+      "accuracy": 0.8096666666666666,
+      "macro_f1": 0.8081219707308102
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "count": 24000,
+      "correct": 20985,
+      "accuracy": 0.874375,
+      "macro_f1": 0.8664745954946808
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "count": 24000,
+      "correct": 20284,
+      "accuracy": 0.8451666666666666,
+      "macro_f1": 0.8311012580249791
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "count": 24000,
+      "correct": 20465,
+      "accuracy": 0.8527083333333333,
+      "macro_f1": 0.8480415284328222
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "count": 28000,
+      "correct": 27001,
+      "accuracy": 0.9643214285714286,
+      "macro_f1": 0.16363944897971552
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "count": 28000,
+      "correct": 13983,
+      "accuracy": 0.49939285714285714,
+      "macro_f1": 0.11102112759926637
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "count": 28000,
+      "correct": 23440,
+      "accuracy": 0.8371428571428572,
+      "macro_f1": 0.1518921721099015
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "count": 28000,
+      "correct": 19248,
+      "accuracy": 0.6874285714285714,
+      "macro_f1": 0.13579410768709788
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "count": 28000,
+      "correct": 27940,
+      "accuracy": 0.9978571428571429,
+      "macro_f1": 0.16648790370635205
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "count": 28000,
+      "correct": 26934,
+      "accuracy": 0.9619285714285715,
+      "macro_f1": 0.16343248261550222
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "count": 42000,
+      "correct": 33672,
+      "accuracy": 0.8017142857142857,
+      "macro_f1": 0.7933766860766017
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "count": 42000,
+      "correct": 35824,
+      "accuracy": 0.8529523809523809,
+      "macro_f1": 0.8483007269444752
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "count": 42000,
+      "correct": 32352,
+      "accuracy": 0.7702857142857142,
+      "macro_f1": 0.7611603668342907
+    },
+    {
+      "row_id": "TEMPORAL_RSC-s2026092703",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "count": 42000,
+      "correct": 36698,
+      "accuracy": 0.8737619047619047,
+      "macro_f1": 0.8712717530296709
+    }
+  ],
+  "error_transitions_by_seed": [
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "MATCHED_RANDOM",
+      "seed": 2026092701,
+      "corrected_errors": 1821,
+      "introduced_errors": 2764,
+      "both_correct": 135643,
+      "both_wrong": 27772,
+      "count": 168000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "SIG_TIME",
+      "seed": 2026092701,
+      "corrected_errors": 3376,
+      "introduced_errors": 6462,
+      "both_correct": 134088,
+      "both_wrong": 24074,
+      "count": 168000
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "control": "SIG_TIME",
+      "seed": 2026092701,
+      "corrected_errors": 2782,
+      "introduced_errors": 4925,
+      "both_correct": 135625,
+      "both_wrong": 24668,
+      "count": 168000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 6629,
+      "introduced_errors": 4688,
+      "both_correct": 130835,
+      "both_wrong": 25848,
+      "count": 168000
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 10375,
+      "introduced_errors": 5348,
+      "both_correct": 130175,
+      "both_wrong": 22102,
+      "count": 168000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "MATCHED_RANDOM",
+      "seed": 2026092702,
+      "corrected_errors": 2582,
+      "introduced_errors": 2540,
+      "both_correct": 132612,
+      "both_wrong": 30266,
+      "count": 168000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "MATCHED_RANDOM",
+      "seed": 2026092703,
+      "corrected_errors": 1230,
+      "introduced_errors": 2418,
+      "both_correct": 137316,
+      "both_wrong": 27036,
+      "count": 168000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "SIG_TIME",
+      "seed": 2026092702,
+      "corrected_errors": 4996,
+      "introduced_errors": 5506,
+      "both_correct": 130198,
+      "both_wrong": 27300,
+      "count": 168000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "SIG_TIME",
+      "seed": 2026092703,
+      "corrected_errors": 2857,
+      "introduced_errors": 4709,
+      "both_correct": 135689,
+      "both_wrong": 24745,
+      "count": 168000
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "control": "SIG_TIME",
+      "seed": 2026092702,
+      "corrected_errors": 3653,
+      "introduced_errors": 4205,
+      "both_correct": 131499,
+      "both_wrong": 28643,
+      "count": 168000
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "control": "SIG_TIME",
+      "seed": 2026092703,
+      "corrected_errors": 3061,
+      "introduced_errors": 3725,
+      "both_correct": 136673,
+      "both_wrong": 24541,
+      "count": 168000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092702,
+      "corrected_errors": 6806,
+      "introduced_errors": 2789,
+      "both_correct": 128388,
+      "both_wrong": 30017,
+      "count": 168000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092703,
+      "corrected_errors": 4601,
+      "introduced_errors": 5210,
+      "both_correct": 133945,
+      "both_wrong": 24244,
+      "count": 168000
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092702,
+      "corrected_errors": 9801,
+      "introduced_errors": 5274,
+      "both_correct": 125903,
+      "both_wrong": 27022,
+      "count": 168000
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092703,
+      "corrected_errors": 7150,
+      "introduced_errors": 5907,
+      "both_correct": 133248,
+      "both_wrong": 21695,
+      "count": 168000
+    }
+  ],
+  "error_transition_totals": [
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "MATCHED_RANDOM",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "corrected_errors": 5633,
+      "introduced_errors": 7722,
+      "both_correct": 405571,
+      "both_wrong": 85074,
+      "count": 504000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "corrected_errors": 11229,
+      "introduced_errors": 16677,
+      "both_correct": 399975,
+      "both_wrong": 76119,
+      "count": 504000
+    },
+    {
+      "arm": "MATCHED_RANDOM",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "corrected_errors": 9496,
+      "introduced_errors": 12855,
+      "both_correct": 403797,
+      "both_wrong": 77852,
+      "count": 504000
+    },
+    {
+      "arm": "TEMPORAL_RSC",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "corrected_errors": 18036,
+      "introduced_errors": 12687,
+      "both_correct": 393168,
+      "both_wrong": 80109,
+      "count": 504000
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "corrected_errors": 27326,
+      "introduced_errors": 16529,
+      "both_correct": 389326,
+      "both_wrong": 70819,
+      "count": 504000
+    }
+  ]
+}
