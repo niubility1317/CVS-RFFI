@@ -21,8 +21,8 @@
 | B09 | 四 | 一次同预热checkpoint全特征参数全局梯度校准，W排除、未接收梯度按0 | calibrate.py | pending | median范数的比，非先前五组比值中位数 |
 | B10 | 四 | 小梯度/非有限拒绝，不无限放大；记录每层梯度和实际更新/裁剪 | calibrate.py/observer.py | pending | 有界静态lambda，不在线均衡 |
 | B11 | 四.3 | ALL先按同规则分支定标再校准组合总强度，omega和为1 | objective.py/calibrate.py | pending | 不直接相加五个单项系数 |
-| B12 | 五 | 同一冻结模型clean替换单分支，真实融合/后处理/default头重算 | replace.py | pending | 操作性诊断，不是训练上界/可得clean输入 |
-| B13 | 五 | T只换fuse输入T；S仍urban；F换完整F，rho/其他分支保留 | replace.py/checks.py | pending | 用实际其他张量/最终输出断言 |
+| B12 | 五 | 同一冻结模型clean替换单分支，真实融合/后处理/default头重算 | replace.py | verified | 操作性诊断，不是训练上界/可得clean输入 |
+| B13 | 五 | T只换fuse输入T；S仍urban；F换完整F，rho/其他分支保留 | replace.py/checks.py | verified | 用实际其他张量/最终输出断言 |
 | B14 | 六 | 完整8配置统一E50/预热/EMA/数据/启用/教师前向；无对齐A0 | design.py/source.py | pending | 当前8组×3seed要求不缩成T/S/J三组 |
 | B15 | 六 | 3预定义seed逐row自动clean+6实测、独立truth-last、保留负差 | dispatch.py/evaluate.py/report.py | pending | 先单seed小试不声明稳定/最优 |
 | B16 | 七 | L内部开发折明确、V只健康；源选择规则/阈值先固定 | protocol/inner_source.py/design | pending | 不改外层目标/不解封U标签 |
@@ -36,3 +36,5 @@
 实施顺序：先真实分支捕获/替换负例与源冻结诊断；明确内部源开发折/匹配预热和预算；再实现/登记/审查/发布完整八组小试；按预登记source-only条件扩三seed，保留所有有效负对照；最后稀疏组合与中间视图等独立研究。此记录不是额外审批或签名层。
 
 本地证据：实际core路径experiments/adv3b02_xuc/code/model.py；freq_stats_proj=true；实际joint祖先参数195041/71 tensors，含三gain、不含默认W。`experiments.cvs_urban_branch50.checks` 5项PASS，包含实际六位置反传、F统计/P完整输入、T替换保留urban S和rho等。B06/B08这里只证明真实单次forward/梯度边界，完整native训练接线仍在B14/B20。B12/B13有本地替换验证，远端真实冻结checkpoint诊断尚未发布。
+
+2026-10-15进展：真实B0源替换run已ANALYZED，26640前向/0更新/20.838秒，模型state逐值不变、其余分支/rho保持；本地11项与compile PASS，8配置单seed小试已登记/一次P0-P1 PASS，尚未发布。L内部分折科学边界已先更新PROJECT_PROTOCOL，实际ID/全局定标和完整E50训练证据须待新run，不把本地接线当真实八组结果。当前verified9/pending12/deferred1，完整三seed/组合未完成。

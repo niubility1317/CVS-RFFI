@@ -1,6 +1,6 @@
 # 冻结 B0 五路径源替换诊断
 
-状态：LOCAL_VERIFIED，尚未发布。该阶段落实用户2026-10-15最新同分支对齐附件中的训练前操作性诊断；它不替代完整8配置×3seed要求，不训练任何新模型/分类头，不按结果筛掉F/P/R等分支。
+状态：ANALYZED，真实冻结checkpoint源诊断已完成并独立回读VERIFIED。该阶段落实用户2026-10-15最新同分支对齐附件中的训练前操作性诊断；它不替代完整8配置×3seed要求，不训练任何新模型/分类头，不按结果筛掉F/P/R等分支。
 
 固定来源：原普通clean/satellite拼接B0-s2026092701，从零E50=33+17、11100更新、source-only final50、原默认cosine6×160/scale30。own_model核实实际L/U/V和物理ID、scratch/无祖先/无目标选择、最终冻结；该模型仅诊断，不作为后续内部开发折的初始化或匹配基线。父训练成本已在原B0报告记账，本次新增epoch、optimizer/head-fit更新均0。
 
@@ -21,3 +21,24 @@
 本地5项检查PASS：完整F统计/完整P；六种对齐位置真实学生梯度、S到local_projection和t2、aux W/gain零而主CE W非零；单项替换/其余分支rho保持/模型state与hook不变；训练态替换拒绝和真实joint祖先参数195041（71个张量，含三组gain，不含W）；ALL分支权重和=1。命令 `E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_urban_branch50.checks`；stderr在local_artifacts/cvs_joint160_identity_20261015/branch_checks_stderr.txt。实际总参数863730，未增减网络模块。
 
 一次独立限定该诊断代码/发布路径的P0/P1审查完成，指定范围未发现P0/P1；真实融合/default头重算、其他分支/rho逐值保持、冻结和数据边界、独立发布路径一致。预计产物experiment.json、progress.json、results.json、sample_replacements.jsonl.gz及release诊断日志。物理级原始输出仅保存在远端/local_artifacts，不提交Git。追踪记录analysis/cvs_branch_alignment_traceability_20261015.md；新的内部L开发折、统一预热/全局梯度校准、8配置训练和三seed尚未实施，不把此诊断叫完整设计落地。
+
+
+# 冻结 B0 的实际五分支替换源诊断
+
+真实同模型重算、原默认头、L720；无训练或目标访问。T只替换fuse中的T，S保持urban；F包含完整统计增量；其余分支/rho逐值不变。
+
+| 源场景 | 完整urban准确率(%) | T差(pp) | F差(pp) | P差(pp) | R差(pp) | S差(pp) |
+|---|---:|---:|---:|---:|---:|---:|
+| practical_high | 97.5000 | +0.5556 | +0.4167 | +0.8333 | -0.1389 | +1.3889 |
+| practical_mid | 95.9722 | +1.3889 | +0.1389 | +1.3889 | +0.6944 | +2.9167 |
+| practical_low_suburban | 92.2222 | +2.5000 | +1.1111 | +1.9444 | +0.4167 | +5.6944 |
+| practical_high_urban | 93.8889 | +2.9167 | +0.6944 | +2.6389 | +0.8333 | +4.4444 |
+| practical_mid_urban | 78.0556 | +9.3056 | +2.9167 | +10.5556 | +2.0833 | +17.7778 |
+| practical_low_urban | 63.0556 | +15.5556 | +4.1667 | +19.5833 | +8.1944 | +29.8611 |
+
+实际26640前向、0更新、20.838秒，模型参数/buffer逐值不变。该L面板曾参与B0训练，不能作为未见域性能。
+替换是操作性证据，不是可训练上界，不作为过滤完整五分支训练矩阵的门槛。
+
+![源分支替换](E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/figures/same_model_branch_replacement.png)
+
+发布/实际分析 commit `89bf9577d43c0fa3763ddb2f2c67a96d27d7b89e`，普通N607 CPU进程2926954正常退出；唯一release/archive传输与远端编译PASS。独立进程/CWD/argv/首个真实checkpoint smoke及最终results回读均VERIFIED。实际原始结果保存在remote run/results.json和sample_replacements.jsonl.gz，本地local_artifacts/cvs_branch_alignment_20261015/replacement_results.json；原始物理数据不入Git。

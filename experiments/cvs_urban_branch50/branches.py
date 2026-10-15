@@ -35,13 +35,35 @@ def capture(model):
 
 def forward(model,x):
     with capture(model) as values:out=model.forward_identity_only(x)
+    complete(model,out,values,len(x))
+    return out,values
+
+
+def complete(model,out,values,count):
     if set(values)!={*BRANCHES,'_base','_rho'}:raise ValueError('An actual fusion branch was bypassed')
-    if any(values[k].shape!=(len(x),160) for k in BRANCHES):raise ValueError('Fixed 160-wide branch inputs required')
-    if out['tx_logits'].shape!=(len(x),6) or not torch.isfinite(out['tx_logits']).all():
+    if any(values[k].shape!=(count,160) for k in BRANCHES):raise ValueError('Fixed 160-wide branch inputs required')
+    if out['tx_logits'].shape!=(count,6) or not torch.isfinite(out['tx_logits']).all():
         raise ValueError('Finite default cosine6 outputs required')
     values['J']=joint.auxiliary_joint(model,out,dict(base=values['_base'],PA=values['P'],
         reference=values['R'],signature=values['S']))
-    return out,values
+
+
+class NativeCapture:
+    """Arm only after concat creation; remove hooks before any native U/EMA forward."""
+    def __init__(self,model,x):
+        self.model=model;self.x=x;self.done=False;self.handles=[]
+        self.scope=capture(model);self.values=self.scope.__enter__();self.closed=False
+        def before(module,args):
+            if not args or args[0] is not x:raise ValueError('Next native forward is not the registered labeled concat')
+        def after(module,args,out):
+            self.close()
+            complete(model,out,self.values,len(x));self.done=True
+        self.handles=[model.register_forward_pre_hook(before),model.register_forward_hook(after)]
+
+    def close(self):
+        if self.closed:return
+        for handle in self.handles:handle.remove()
+        self.scope.__exit__(None,None,None);self.closed=True
 
 
 def frozen_teacher(model,x):

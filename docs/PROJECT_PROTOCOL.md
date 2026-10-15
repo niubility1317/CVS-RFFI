@@ -58,6 +58,12 @@ rho_label ≤ 0.1
 
 当前统一划分语义为相对source全池`L_s/U_s/V=0.07/0.63/0.30`：有TX标签训练集、无TX标签训练集和单一source validation。三个角色均不得包含`R_t`，物理样本ID两两不交。`V`可用于source侧校准、阈值冻结和checkpoint选择，但不得反向传播、更新EMA、prototype、normalization或其他持久状态；不得再把`V`拆成`V_cal/V_select`等方法角色。Phase1可使用source clean与卫星增强训练，但这不授予Phase2访问这些样本或派生状态的权限。
 
+### Phase1 有标签源内部开发折（2026-10-15）
+
+当预登记要求 V 只作健康诊断时，可在原 L_s 内固定物理样本互斥的训练/开发子集；不得把 U_s 或 V 移入训练，也不增加可见 TX 标签。划分算法、seed、实际物理 ID 和用途必须在首次训练前固定。L_dev 仅用于无更新的源强度校准、候选及组合选择，不参与 CE、伪标签、EMA、归一化或其他持久模型状态更新；训练仅使用 L_train，仍称外层 L_s 的内部开发协议，不改变外层 source/target 或固定测试 IQ。V 不再拆分。
+
+该内部分折是实际训练数据契约的一部分。所有匹配消融使用相同 L_train/L_dev；完整 L_s 上训练的历史权重曾见过开发物理样本，不能作为该折的初始化、教师或严格匹配基线。新模型从零训练或从已核实相同内部分折来源继续；历史完整 L_s 模型可作明确标注的冻结操作诊断，不得把 L_dev 宣称为全历史未见盲测。正式 target 指标不参与内部折、强度、候选、组合或扩种子的选择。
+
 ### 4.3.2 Phase1最终测试默认更新（2026-10-10）
 
 用户明确要求后续每次训练完成自动测试，星地环境只测六种practical。对后续新发布Phase1实验，最终测试默认采用clean对照加`practical_high`、`practical_mid`、`practical_low_suburban`、`practical_high_urban`、`practical_mid_urban`、`practical_low_urban`，覆盖4.3及4.3.1中默认必须追加三种LEO弱场景的最终测试要求。训练增强配置不因此改变，Phase2固定received IQ、support/query及单物理样本单观测规则保持。

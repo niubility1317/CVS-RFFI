@@ -60,7 +60,7 @@ def native_default_head_only(native):
         evidence['active']=False
 
 
-def train(c,design=None,model_api=None,observer=None):
+def train(c,design=None,model_api=None,observer=None,data_adapter=None):
     if design is not None:
         validate,make_args,read,write,SOURCE,FULL_FP32_POLICY,ROOT=(getattr(design,k) for k in ("validate","make_args","read","write","SOURCE","FULL_FP32_POLICY","ROOT"))
     else:
@@ -83,6 +83,9 @@ def train(c,design=None,model_api=None,observer=None):
             if len(ctx['unlabeled_loader'])!=222:raise ValueError('Unexpected U-based step count')
             source_domain_count=model_api.source_domain_count
             if ctx['num_domains']!=source_domain_count(a):raise ValueError('Historical RX/day source model dimensions differ')
+            if data_adapter is not None:
+                inner=data_adapter(ctx,a,n,device)
+                write(out/'inner_source_contract.json',inner)
             state['ctx']=ctx
             write(out/'source_contract.json',dict(expected,native_role_comparison='EXACT_MATCH'))
             write(out/'resolved_native_args.json',clean(resolved_config(a)));write(out/'actual_native_args.json',clean(resolved_config(a)))
