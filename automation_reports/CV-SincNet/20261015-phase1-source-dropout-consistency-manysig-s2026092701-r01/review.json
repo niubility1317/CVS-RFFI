@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "scope": "One independent P0/P1 review of this source-only candidate; one targeted fix rereview",
+  "reviewer": "signature_fix_p0p1",
+  "initial_direct_issue": {
+    "priority": "P1",
+    "file": "experiments/cvs_source_rdrop/publish.py",
+    "issue": "Inherited inspector expected60saved vectors but actual pairedCE/KL produces40",
+    "resolution": "Only adapt expected saved_vectors to40; forward_packets2700 unchanged",
+    "fixed_commit": "eb21026149b1d1d02ddf4b213408b37f782bf2f5"
+  },
+  "final": "Actual inspector and completion counts agree; generated script compiles; no remaining direct P0/P1 in source parent, data roles, gradients, saved recount or release dependency closure",
+  "source_IQ_read_by_reviewer": false,
+  "checkpoint_read_by_reviewer": false,
+  "remote_access_by_reviewer": false,
+  "review_rounds": 1,
+  "targeted_issue_rereviews": 1
+}

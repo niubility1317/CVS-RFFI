@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "negative_cases": 10,
+  "symmetric_KL": true,
+  "zero_for_identical_logits": true,
+  "logit_common_shift_invariance": true,
+  "both_predictions_differentiable": true,
+  "actual_native_dropout_pair_and_joint160": true,
+  "actual_t1_t2_SIG_and_existing_W_derivatives": true,
+  "model_state_and_RNG_unchanged": true,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "real_IQ_or_checkpoint_read": false
+}
