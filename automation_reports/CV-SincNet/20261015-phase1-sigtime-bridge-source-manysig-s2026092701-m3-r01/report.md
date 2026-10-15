@@ -20,7 +20,7 @@
 
 本地5个唯一检查分批执行：首4项中实际组/统计/真实冻结模型3项PASS，源资格fixture因Windows路径字符串比较出现StopIteration；改为Path比较后定向PASS.010s，并补入真实calibration status检查。发布接线定向PASS.006s，证明无需本地读取远端checkpoint且临时运输模块恢复。已知torch/NumPy ABI警告保持原环境，检查exit0。compileall通过。未用合成模型结果冒充源或目标准确率。
 
-独立源候选一次有界P0/P1审查PASS：已核对三模型严格加载、同H/full状态、L_dev边界、默认头/ownEMA、统计/56882预算及发布/输出保护；三个final50实际冻结后，已完成一次源发布、真实56882预算/状态保护、分层结果、三图及独立终态读回。追踪表为analysis/cvs_bridge_teaching_mechanism_traceability_20261015.md，当前verified5/pending1/deferred0/rejected0/blocked0；剩余项为原主训练全日志审计。最高风险：局部误差下降但默认头间隔不增、正确证据没有恢复；HQ仍可能错，单seed源代理不足以证明正式跨RX收益。
+独立源候选一次有界P0/P1审查PASS：已核对三模型严格加载、同H/full状态、L_dev边界、默认头/ownEMA、统计/56882预算及发布/输出保护；三个final50实际冻结后，已完成一次源发布、真实56882预算/状态保护、分层结果、三图及独立终态读回。追踪表为analysis/cvs_bridge_teaching_mechanism_traceability_20261015.md，当前verified6/pending0/deferred0/rejected0/blocked0；原主训练全日志审计已完成。最高风险：局部误差下降但默认头间隔不增、正确证据没有恢复；HQ仍可能错，单seed源代理不足以证明正式跨RX收益。
 
 ## 实际发布、完成与证据边界
 
@@ -79,3 +79,5 @@ SIG相对CE增加的4条正确均来自BLOCKED（172/402→176/402，增加0.995
 ![source_state_quality_strata.png](E:/type10-7/local_artifacts/cvs_bridge_teaching_mechanism_20261015/figures/source_state_quality_strata.png)
 
 后续候选依据仅来自这里的源机制：关闭联合/原始特征对齐，独立比较无额外约束、clean参考和同H HQ参考的单侧默认头间隔。该候选尚未实现或发布，见analysis/cvs_hq_head_relation_source_design_20261015.md；不改本已冻结方案或判定，不预称优于KL。
+
+完整原训练审计现已完成：[新22200步＋复用33300步](E:/type10-7/local_artifacts/cvs_bridge_teaching_e50_20261015/final/training_audit.json)，M05 verified。此前待完成表述为当时状态，最终计数verified6/pending0。没有新增训练或前向，也没有改变源分析结论。

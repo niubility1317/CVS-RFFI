@@ -1,8 +1,8 @@
-# HQ 桥接教学：实现与验证追踪（已发布，两行训练中）
+# HQ 桥接教学：实现与验证追踪（已完成，科学条件未通过）
 
 本候选由用户17f04499及31cc8a22附件中的同信道bridge／SIG局部教学要求驱动。依据是已完成源HQ零更新诊断，不依据语义家族的正式目标排名选父权重。语义D3/D4源条件FAIL保持；本候选是两条从零E50独立小试，不加载或扩种子失败语义权重。
 
-当前核心、发布/逐row评估/报告管线、本地检查、正式登记及一次独立P0/P1审查已完成；远端一次发布及真实CP烟测/独立运行读回已验证，真实第5轮源校准两行已PASS，完整训练及正式结果仍待运行。正式run_id为`20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01`。
+当前核心、发布/逐row评估/报告管线、本地检查、正式登记及一次独立P0/P1审查已完成；远端一次发布及真实CP烟测/独立运行读回已验证，真实第5轮源校准两行已PASS，完整训练、正式七视图和源冻结结果均已完成，源科学条件FAIL。正式run_id为`20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01`。
 
 ## 方法和成本边界
 
@@ -20,7 +20,7 @@ HQ沿用full的传播、RX/day/eq session、接收质量与lock、残余补偿/�
 
 训练/源cal随机流分离；训练源流2026101401沿epoch/step/view/physical ID刷新，cal2026101508；同seed首5轮是相同机制/样本预算，但CUDA非确定性不保证逐bit轨迹相同，因此分别使用相同校准规则，不谎称共用同一数值系数。新CE权重在访问新目标结果之前固定，不扫描比例。
 
-科学推进只按final50 L_dev：候选clean相对匹配D0≥+.5pp、low相对普通A0≥+1pp、urban≥0、worst urban RX≥−1pp；局部教学效果另外看SIG−CE的low≥+1pp且clean≥−.5pp。源判定代码/登记已接通并通过规则负测，真实final50判定尚未发生。任何未来扩seed仍需源条件实际通过，不能按正式分数选择/重跑。
+科学推进只按final50 L_dev：候选clean相对匹配D0≥+.5pp、low相对普通A0≥+1pp、urban≥0、worst urban RX≥−1pp；局部教学效果另外看SIG−CE的low≥+1pp且clean≥−.5pp。源判定代码/登记已接通并通过规则负测，真实final50判定已完成，两行及局部增量均FAIL。任何未来扩seed仍需源条件实际通过，不能按正式分数选择/重跑。
 
 ## 追踪表
 
@@ -33,17 +33,17 @@ HQ沿用full的传播、RX/day/eq session、接收质量与lock、残余补偿/�
 |B05|native 1:1 CE与五视图捕获，features/observer.py|verified|两行真实128包native图；HQ附加前向不增加native L步，hook在U/EMA前已移除；CE加权等价|
 |B06|实际raw112三组与有界损失，objective.py|verified|6/15/6、dt扰动不影响、组等权、有界及非法尺度负例|
 |B07|梯度进入t2/local_projection且不只末端，features/objective.py|verified|真实梯度两处非0，末端输出投影/W/gain无local梯度；CE继续更新原头|
-|B08|E50/更新/U/EMA/覆盖真实成本，observer.finish|pending|计数与守卫已实现，本地步图通过；无完整训练证据|
+|B08|E50/更新/U/EMA/覆盖真实成本，observer.finish|verified|两行各50/11100、5×1420800 L与963900 U弱包，主9031800/行；nativeV缓存证据完整，5580物理L及90状态/day单元全覆盖|
 |B09|own epoch5正校准、冻结尺度系数，calibrate.py|verified|真实两行SOURCE_BRIDGE_CALIBRATED，各5760前向、0更新、state/grad保持；joint .569532/.609200、local .787842/.809337，无触界；CE不使用local系数|
 |B10|唯一owner、运行保护与一次P0/P1|verified|一次独立限定审查PASS；archive比较VERIFIED、compile PASS、真实CP smoke PASS；PID3151548/3151567/3151644及GPU1/CWD/argv/训练流增长独立读回VERIFIED|
-|B11|完整矩阵登记和最小预登记|verified|registration.json与实际两行config匹配；canonical实验登记已建立、launch-ready结构VALID，最小report完成；未冒充已发布|
-|B12|逐row原头七视图和独立truth-last|pending|evaluate/queue已接线；完整性/非法logits/输出冲突负测PASS，真实七视图运行待完成|
-|B13|源推进代码与目标隔离|pending|规则已实现于report.decide，规则正/负测试PASS；真实final50判定待完成|
-|B14|全量曲线、逐seed/RX结果、全部成本|pending|完整日志/报告/曲线工具已接通；当前无新性能或图，不预写结果|
-|B15|新机制归因：身份margin/修复破坏/S使用量|pending|待冻结后的合法源诊断；不沿用旧HQ诊断数字作为训练收益|
-|B16|跨seed重现与组合扩展|deferred|先单seed两行；失败语义家族不扩种子|
+|B11|完整矩阵登记和最小预登记|verified|registration.json与实际两行config匹配；canonical登记、一次实际发布及最终逐行结果均已核实|
+|B12|逐row原头七视图和独立truth-last|verified|各7×168000 prediction完成后独立truth-last，默认student头，无重测；新2352000预测及三个旧对照原产物已取回|
+|B13|源推进代码与目标隔离|verified|固定final50源规则先于目标汇总；两候选FAIL、局部low增量0，family_expandable=false，不扩seed|
+|B14|全量曲线、逐seed/RX结果、全部成本|verified|完整新22200步+复用33300步；逐row/seed/RX及七视图全部完成；5图已生成并检查，成本/曲线实际保存|
+|B15|新机制归因：身份margin/修复破坏/S使用量|verified|源56882/0更新完成；fixed703上修复11/新错7，BLOCKED净+4，默认头margin未增；不把raw接近当身份恢复|
+|B16|跨seed重现与组合扩展|deferred|本HQ源条件FAIL，跨seed未运行；原失败语义家族也不扩种子|
 
-计数：verified10/pending5/deferred1/rejected0/blocked0。严格实现了同H物理配对、真实IQ和默认头、direct身份锚点及现有SIG坐标。近似为新增噪声HQ、源RMS、物理q和一次eval全局梯度比，不把HQ当理想无噪声或无误teacher。
+计数：verified15/pending0/deferred1/rejected0/blocked0。严格实现了同H物理配对、真实IQ和默认头、direct身份锚点及现有SIG坐标。近似为新增噪声HQ、源RMS、物理q和一次eval全局梯度比，不把HQ当理想无噪声或无误teacher。
 
 ## 实际检查
 
@@ -53,4 +53,4 @@ HQ沿用full的传播、RX/day/eq session、接收质量与lock、残余补偿/�
 
 新增pipeline四项测试PASS.112s；物理L拒绝及更新后的真实native两行图定向PASS6.642s。实际5580独立L_train包及90个clean TX×RX×day单元由observer计数，L_dev/未登记样本在HQ CE前拒绝。上述检查分批执行，不声称完整11项单次重跑。
 
-最高风险：HQ teacher仍会误判、局部描述更接近未必提高真实TX分离；旧joint锚点也可能继续压缩差异。必须由匹配CE控制、真实头margin、错误修复/破坏与正式固定IQ结果判断。当前所有新性能、clean代价和跨seed结论均缺失，目标active。
+最高风险：HQ teacher仍会误判、局部描述更接近未必提高真实TX分离；旧joint锚点也可能继续压缩差异。必须由匹配CE控制、真实头margin、错误修复/破坏与正式固定IQ结果判断。正式low54.4202%、相对NOMINAL+1.1488pp但clean−0.6173pp；源条件FAIL，跨seed未运行，low60目标active。

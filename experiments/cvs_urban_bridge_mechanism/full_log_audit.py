@@ -3,7 +3,7 @@ import argparse,copy,importlib.util,json,subprocess
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
-read=lambda p:json.loads(p.read_text(encoding='utf-8-sig'))
+read=lambda p:json.loads(Path(p).read_text(encoding='utf-8-sig'))
 
 
 def run(output,legacy):

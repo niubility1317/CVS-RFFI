@@ -1226,5 +1226,41 @@
     "source_smoke": "PASS; real A0 checkpoint, 2 packets, no query or initialization",
     "archive_transfer": "VERIFIED",
     "remote_compile": "PASS"
+  },
+  "result": {
+    "status": "ANALYZED",
+    "evidence": "E:\\type10-7\\local_artifacts\\cvs_bridge_teaching_e50_20261015\\final",
+    "training_commit": "12bd0be93bbf295ee1c8e75156ed5f1c3855cff7",
+    "new_models": 2,
+    "reused_models": 3,
+    "seed_count": 1,
+    "updates": 22200,
+    "source_family_expandable": false,
+    "cross_seed_confirmation": "NOT_RUN",
+    "low_urban_60_met": false,
+    "formal_metrics": {
+      "BRIDGE_CE": {
+        "clean": 0.7916428571428571,
+        "low_urban": 0.5411904761904762,
+        "mid_urban": 0.6429404761904762,
+        "urban_mean": 0.6499603174603176,
+        "urban_macro_f1": 0.6448198633677188,
+        "worst_urban_RX": 0.5885972222222223,
+        "suburban_mean": 0.7753234126984127
+      },
+      "BRIDGE_SIG": {
+        "clean": 0.7918869047619047,
+        "low_urban": 0.5442023809523809,
+        "mid_urban": 0.6454761904761904,
+        "urban_mean": 0.6524107142857143,
+        "urban_macro_f1": 0.6474664602441186,
+        "worst_urban_RX": 0.5944444444444444,
+        "suburban_mean": 0.7772539682539682
+      }
+    },
+    "source_mechanism_run": "20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01",
+    "source_mechanism_status": "ANALYZED",
+    "full_new_steps_read": 22200,
+    "reused_verified_steps": 33300
   }
 }

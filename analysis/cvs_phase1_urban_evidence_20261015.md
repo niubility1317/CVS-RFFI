@@ -1,6 +1,6 @@
 # Phase1 urban：已完成证据与当前验证边界（2026-10-15）
 
-固定 SIG_TIME、原内部门控、参考响应及默认 cosine 分类头。本文只汇总已完成实验，训练期间的源域曲线和输入干预结果均不替代正式测试。新的 E50 HQ 教学尚未完成，不补写其性能结果；RX1 教师源域小试已完成，负结果见下。
+固定 SIG_TIME、原内部门控、参考响应及默认 cosine 分类头。本文只汇总已完成实验，训练期间的源域曲线和输入干预结果均不替代正式测试。HQ E50、冻结机制分析和 RX1 教师源域小试均已完成；HQ 正式 low urban 为54.4202%、clean为79.1887%，低于目标，结果与限制见下。
 
 ## 已确认的结论
 
@@ -142,13 +142,13 @@ D3 相对 D1 的 low urban 仅增加 0.2054 个百分点、clean 增加 0.8071 �
 
 ## 当前验证与未完成项
 
-1. HQ E50：BRIDGE_CE 与 BRIDGE_SIG 都从头训练，保持同一默认头、5580/720 划分、33L＋17U、11,100 次更新及 9,031,800 个主训练前向样本。二者共享 clean/full/HQ CE 和 clean→full/HQ 联合锚定；SIG 单独加入时序证据分组教学。两者已经完成各自真实 E5 校准，参数边界、模型状态和默认头联合训练检查通过。最终性能仍须等固定 E50 完成，逐 row 自动测试原 clean＋六种 practical，再独立 truth-last 评分。
+1. HQ E50 已完成：BRIDGE_CE 与 BRIDGE_SIG 都从头训练，保持同一默认头、5580/720 划分、33L＋17U、11,100 次更新及 9,031,800 个主训练前向样本。二者共享 clean/full/HQ CE 和 clean→full/HQ 联合锚定；SIG 单独加入时序证据分组教学。各自真实 E5 校准、完整预算、逐 row 原七视图预测和独立 truth-last 评分均完成；正式结果见末节。源规则 FAIL，不扩本家族种子。
 
-2. 冻结后 HQ 机制分析：固定 A0、BRIDGE_CE、BRIDGE_SIG 和同一 L_dev720，分别记录完整/独立 HQ 下的默认头间隔、固定 clean 正确集合保持率、分支与门控、状态/质量分层。计划 56,882 个前向样本，0 次更新；完整新权重未产生前不运行或填结果。
+2. 冻结后 HQ 机制分析已完成：固定 A0、BRIDGE_CE、BRIDGE_SIG 和同一 L_dev720，完整/独立 HQ 下的默认头间隔、固定 clean 正确集合保持率、分支与门控、状态/质量分层均已记录。实际56,882个前向、50.256831 s、0次更新，三图已生成并检查；SIG相对CE源low净增4条，均来自BLOCKED，但平均默认头间隔未增。原训练完整新22,200步与复用33,300步证据也已核对。
 
 3. RX1 交叉拟合教师已完成：两个独立 scratch E50 默认头，SAMPLE 与 EXCLUDE_RX1 各用 4,464 条合法 clean L_train，50L＋0U，U、EMA、增强均关闭；TX/day 数量匹配，EXCLUDE 的训练及可学习统计不包含 RX1。已在同一 L_dev720 上完成七视图源评估及旧门控拒绝区域回放。固定 RX1 clean144 条中，SAMPLE 为 144/144，EXCLUDE 为 102/144，纠正 0、新错 42；拒绝区136条净修复 −41，高置信度错误从 0 增至 6.25%。RX1 low urban 为 56/144 对 32/144，纠正 9、新错 33、净修复 −24。预登记源规则 FAIL，不扩教师库、学生或 seed；回放不是历史 U 的真实接纳记录，结果不是正式目标分数。
 
-4. low urban ≥60%、clean 代价约束及新机制跨 seed 复现尚未达成。未完成预算、正式分数、成本、分层图和全量曲线均保持缺项，后续只依据真实产物补充。
+4. low urban ≥60%、clean 代价约束及新机制跨 seed 复现尚未达成。当前两项实验的预算、正式分数、成本、分层图和全量曲线已完成；后续同H HQ默认头间隔候选仍待实现、验证和实验，不将设计当作已有效结果。
 
 当前方案记录：[HQ E50](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01/report.md)、[冻结 HQ 机制](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01/report.md)、[RX1 教师](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-crossfit-RX1-teachers-e50-manysig-s2026092701-m2-r01/report.md)。
 
@@ -172,3 +172,25 @@ D3 相对 D1 的 low urban 仅增加 0.2054 个百分点、clean 增加 0.8071 �
 两位教师均实际完成 50 轮、11,100 次更新、1,420,800 个训练前向样本和 2,754,000 个 eval 模式前向样本。训练墙钟为 1720.6747/1717.2011 s；完整 step 解析共 22,200 步。源预测各 5,042 个前向、9.1465/9.3416 s，另有共享参考 smoke2 和源门控回放 1,440 个前向；U、EMA、头拟合及学生训练均 0。完整源结果及成本保存在上述教师报告及其原产物中。
 
 clean 对照已完全正确，本面板没有可纠正的对照 clean 错误，不能据此宣称跨 RX 教师普遍无效。六种 practical 均有对照错误，但排除教师的新增错误仍全部多于纠正；本等预算 E50/RX1 小试没有支持互补教师机制。未改变原判定阈值或挑选有利子集。
+
+## HQ E50 的正式最终结果
+
+单模型seed2026092701，原固定七视图每视图168,000条、checkpoint内默认student头。三个旧控制只读复用原预测及评分；只有BRIDGE_SIG−BRIDGE_CE匹配新五视图及CE预算。两条新行均已完成E50/11,100更新、七视图预测后独立truth-last，源家族及局部增量条件均FAIL，不扩seed或选择性重跑。
+
+|方法|clean %|low urban %|mid urban %|urban均值 %|urban宏F1 %|最差urban RX %|suburban均值 %|
+|---|---:|---:|---:|---:|---:|---:|---:|
+|CLEAN|81.9798|36.7976|44.9696|45.9857|45.0757|35.3681|56.3798|
+|NOMINAL|79.8060|53.2714|63.4143|64.1504|63.6986|58.2903|76.8667|
+|POSITIVE_J|80.5048|53.5726|63.7738|64.5524|64.1112|58.7611|77.3234|
+|BRIDGE_CE|79.1643|54.1190|64.2940|64.9960|64.4820|58.8597|77.5323|
+|BRIDGE_SIG|79.1887|54.4202|64.5476|65.2411|64.7466|59.4444|77.7254|
+
+SIG相对普通增强NOMINAL：low +1.1488、mid +1.1333、urban +1.0907、最差RX +1.1542、宏F1 +1.0480、suburban +0.8587个百分点；clean −0.6173个百分点。low没有到60%，clean下降超过0.5个百分点。相对匹配CE，局部教学的low增量仅+0.3012、urban +0.2450、clean +0.0244个百分点。单seed不构成复现，与旧控制的差还包含HQ CE/校准/额外前向，不能唯一归因为SIG。
+
+新两行训练墙钟7082.839002/7157.628982 s，均主训练前向9,031,800；源panel70,560、own-cal5,760、native V1,404,000、正式预测1,176,000及初始/最终smoke各2，行内总前向11,688,124。native V由50轮实际缓存记录（每轮106 hits/0 misses）及末尾两次27,000前向核算；teacher支线永久forward hook禁用cache的2,754,000不套用于本组。完整新日志22,200步＋旧完整审计33,300步合并保留，E50用尽不等于收敛。
+
+独立源冻结流中，SIG对CE在固定703集合上修复11条、又新增7条错误；low全720条470→474，额外4条全为BLOCKED（172/402→176/402）。默认头间隔/30从0.082212降至0.081173，raw分组误差虽降低，最近错误TX身份gap没有一致增强。只能称小幅源域BLOCKED纠错，不能宣称正式目标的BLOCKED因果恢复。预定训练源panel的SIG−CE low差为0，另一个更有利的源流不替换原晋级判定。
+
+完整[主报告](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01/report.md)、[55,500步证据](E:/type10-7/local_artifacts/cvs_bridge_teaching_e50_20261015/final/training_audit.json)、[派生配对差与成本](E:/type10-7/local_artifacts/cvs_bridge_teaching_e50_20261015/final/derived_results.json)、[完整训练曲线](E:/type10-7/local_artifacts/cvs_bridge_teaching_e50_20261015/final/figures/complete_training_curves.png)、[正式七视图与RX分层图](E:/type10-7/local_artifacts/cvs_bridge_teaching_e50_20261015/final/figures/formal_views_and_receiver_strata.png)均已实际产生和检查。
+
+后续候选机制选择已在读取本次正式分数前按源证据记录，见[同信道HQ参考的单侧默认头间隔](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/analysis/cvs_hq_head_relation_source_design_20261015.md)。当前尚未实现或训练；不改变已完成HQ家族的负判定。整体研发目标继续active。
