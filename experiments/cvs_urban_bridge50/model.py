@@ -18,4 +18,9 @@ def build(c,device='cpu'):
 
 
 def own_model(c,device='cpu'):
-    d.validate(c);return load_source(c,device,lambda:build(c,device))
+    from pathlib import Path
+    d.validate(c);mechanism=d.read(Path(c['output_root'])/'training_mechanism_complete.json')
+    if (mechanism['status']!='VERIFIED' or mechanism['updates']!=11100 or mechanism['main_forward_packets']!=9031800
+            or mechanism['head_fit_updates'] or mechanism['U_truth_read']):
+        raise ValueError('Complete own E50 five-view/default-head source mechanism required')
+    return load_source(c,device,lambda:build(c,device))

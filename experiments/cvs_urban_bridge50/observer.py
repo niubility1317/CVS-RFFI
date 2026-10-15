@@ -14,15 +14,24 @@ class Observer:
     def __init__(self,c):
         d.validate(c);self.c=c;self.channel=PairedChannel(c);self.steps=0;self.armed=None;self.recipe=None
         self.counts=Counter();self.coverage=Counter();self.panels=[];self.gradients=[];self.updates=[]
+        self.clean_seen=set();self.clean_coverage=Counter()
 
     def initialize(self,model,c,out):
         self.model=model;self.out=out;self.boundary=joint_features.boundary_parameters(model)
+        self.allowed=set(d.read(out/'native_train_indices.json')['base_indices'])
         self.update_groups=dict(joint_features.parameter_groups(model),**{k:[p] for k,p in self.boundary.items()})
         if any(not p.requires_grad for p in model.parameters()):raise ValueError('All original parameters remain jointly trainable')
         self.previous=self.snapshot();self.trace=gzip.open(out/'channel_training.jsonl.gz','xt',encoding='utf-8',compresslevel=3)
         d.write(out/'channel_execution.json',audit())
 
     def snapshot(self):return {key:torch.cat([p.detach().flatten() for p in params]).clone() for key,params in self.update_groups.items()}
+
+    def track_clean(self,meta,y):
+        base=meta['base_index'].detach().cpu().tolist()
+        if len(base)!=len(y) or not set(base)<=self.allowed:
+            raise ValueError('L_dev or unregistered physical sample reached labeled CE/HQ')
+        self.clean_seen.update(base)
+        self.clean_coverage.update(zip(y.detach().cpu().tolist(),meta['rx_i'].detach().cpu().tolist(),meta['day_i'].detach().cpu().tolist()))
 
     @contextmanager
     def native_scope(self,n):
@@ -58,6 +67,7 @@ class Observer:
         batch=len(labels)//2;y=labels[:batch]
         if len(labels)!=2*batch or not torch.equal(y,labels[batch:]) or len(self.records)!=batch or len(self.hq)!=batch:
             raise ValueError('Original true-label 1:1 clean/satellite pair differs')
+        self.track_clean(clean_meta,y)
         # Additional HQ uses the existing identity-only network/default head.
         # It does not call the native labeled wrapper or increment L step count.
         hq_output,hq_values=f.forward(model,self.hq)
@@ -127,6 +137,8 @@ class Observer:
                     role='L_dev720 only; V health-only',selection='final50 only'))
         d.write(out/'training_coverage.json',dict(records=[dict(TX=k[0],RX=k[1],scene=k[2],state=k[3],lock=k[4],count=n) for k,n in sorted(self.coverage.items())],
             counts=dict(self.counts),all_labeled_satellite_supervised=True,all_labeled_HQ_supervised=True))
+        d.write(out/'clean_training_coverage.json',dict(unique_samples=len(self.clean_seen),source_only=True,
+            records=[dict(TX=k[0],RX=k[1],day=k[2],count=n) for k,n in sorted(self.clean_coverage.items())]))
 
     def finish(self):
         self.trace.close()
@@ -137,6 +149,8 @@ class Observer:
         cells={(k[0],k[1],k[3]) for k in self.coverage}
         if cells!={(tx,rx,state) for tx in range(6) for rx in (1,3,4,6,8) for state in ('LOS','PARTIAL','BLOCKED')}:
             raise ValueError('Missing true TX/source RX/visibility support')
+        if len(self.clean_seen)!=5580 or set(self.clean_coverage)!={(tx,rx,day) for tx in range(6) for rx in (1,3,4,6,8) for day in (1,2,3)}:
+            raise ValueError('Incomplete legal clean L physical/cell coverage')
         result=dict(status='VERIFIED',epochs=50,updates=11100,counts=dict(self.counts),main_forward_packets=9031800,
             head_fit_updates=0,U_truth_read=False,extra_U_feature_objective=False,source_dev_forward_packets=70560,
             source_calibration_forward_packets=5760,coefficients=self.recipe['coefficients'],scales=self.recipe['scales'],

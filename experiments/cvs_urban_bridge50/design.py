@@ -19,6 +19,13 @@ read,write=parent.read,parent.write
 def rows():return [dict(arm=a,model_seed=2026092701,row_id=f'{a}-s2026092701') for a in ARMS]
 
 
+def references():
+    from experiments.cvs_urban_semantic50 import design as semantic
+    return dict(CLEAN=semantic.config(next(r for r in semantic.rows() if r['arm']=='D0')),
+        NOMINAL=parent.config(parent.rows()[0]),
+        POSITIVE_J=parent.config(next(r for r in parent.rows() if r['arm']=='A-J')))
+
+
 def config(row):
     if row not in rows():raise ValueError('Unregistered two-row bridge pilot')
     c=deepcopy(parent.config(parent.rows()[0]))

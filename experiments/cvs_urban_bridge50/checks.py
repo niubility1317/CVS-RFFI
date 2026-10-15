@@ -81,6 +81,7 @@ class Checks(unittest.TestCase):
         for row in d.rows():
             c=d.config(row);model=build(c,'cpu').train();teacher=copy.deepcopy(model).eval().requires_grad_(False);observer=Observer(c)
             with tempfile.TemporaryDirectory() as temp:
+                d.write(Path(temp)/'native_train_indices.json',dict(base_indices=list(range(128))))
                 observer.initialize(model,c,Path(temp))
                 try:
                     x=torch.randn(128,2,256);y=torch.arange(128)%6
