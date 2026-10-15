@@ -38,3 +38,6 @@ CPU/CUDA各144协议负例、4资格否决、198相同初始张量、真实t1/t2
 
 <!-- E20_COMPLETE_BUDGET -->
 E20六个新模型已完成同row独立分析，和六个历史控制形成完整三seed次要预算比较，见[E20汇总](E20_summary.md)。E50主矩阵仍在进行，不据E20分数改变任何训练。
+
+<!-- E20_SOURCE_DIAGNOSTICS -->
+完整E20源训练损失、KL和U接受量对照见[源机制统计](source_diagnostics_E20.md)，只作描述性源证据，不调整任何当前训练。
