@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "focused_tests": 11,
+  "command": "native_polyphase_runner.py experiments.cvs_sigtime_ema_export20.checks",
+  "compile": "PASS",
+  "signature_regression": {
+    "before_fix": "FAIL: missing required device",
+    "after_fix": "PASS: real interface bound to cuda:0; zero IQ/checkpoint access"
+  },
+  "protocol_negatives": [
+    "Bad provenance before checkpoint load",
+    "Incomplete EMA before model build",
+    "Frozen export required",
+    "Incomplete prediction before truth",
+    "GPU scoring and aggregation rejected",
+    "Invalid source qualification rejected"
+  ],
+  "new_optimizer_steps": 0,
+  "real_checkpoint_no_query_smoke": "First launch stage before source V; PASS continues immediately",
+  "review": "One full next-run P0/P1 plus one targeted recheck of fixed device argument"
+}

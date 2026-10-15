@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "candidate": "20261015-phase1-SIGTIME-ownEMA-export-clean-manysig-m3-r01",
+  "review_type": "single independent next-run P0/P1 review",
+  "initial_review": {
+    "status": "FAIL",
+    "findings": [
+    {
+      "priority": "P1",
+      "file": "experiments/cvs_sigtime_ema_export20/evaluate.py",
+      "line": 20,
+      "title": "Source builder call omits its required device argument",
+      "detail": "source_compare calls native._build_ssdg_wisig_data(args), but the consumed native function is defined as _build_ssdg_wisig_data(args, device: torch.device) in experiments/adv3b02_xuc/code/SSDG/train_ssdg.py:2757. installed(old) returns that function without adapting its signature. The first real source comparison therefore raises TypeError before the EMA checkpoint smoke or source qualification can run.",
+      "minimal_fix": "Pass the intended torch.device('cuda:0') as the builder's second argument.",
+      "no_data_reproduction": {
+        "actual_installed_builder_signature": "(args, device: 'torch.device')",
+        "one_argument_signature_bind": "FAIL",
+        "error": "missing a required argument: 'device'",
+        "builder_called": false
+      }
+    }
+    ]
+  },
+  "findings": [],
+  "targeted_direct_fix_re_review": {
+    "status": "PASS",
+    "scope": "Only evaluate.py:20 missing-device P1 and its no-data regression check",
+    "fix": "Pass torch.device('cuda:0') as the second source-builder argument",
+    "focused_test": "ExportProtocol.test_source_builder_receives_required_device_without_data_access",
+    "focused_test_status": "PASS",
+    "focused_tests_run": 1,
+    "evidence": "The regression obtains the actual installed builder signature, binds the source_compare call with the required CUDA device, stops before executing the builder, and asserts torch.load was never called.",
+    "full_review_repeated": false,
+    "real_data_or_checkpoint_access": false
+  },
+  "scope": [
+    "experiments/cvs_sigtime_ema_export20/design.py",
+    "experiments/cvs_sigtime_ema_export20/protocol.py",
+    "experiments/cvs_sigtime_ema_export20/evaluate.py",
+    "experiments/cvs_sigtime_ema_export20/runner.py",
+    "experiments/cvs_sigtime_ema_export20/publish.py",
+    "experiments/cvs_sigtime_ema_export20/checks.py",
+    "experiments/cvs_sigtime_ema_export20/configs/matrix.json",
+    "Direct parent-provenance, native source-builder and shared prediction/scoring interfaces consumed by this candidate"
+  ],
+  "verification": {
+    "focused_checks": {"status": "PASS", "tests": 9},
+    "matrix_matches_design": true,
+    "fixed_seeds": [2026092701, 2026092702, 2026092703],
+    "all_checkpoint_state_keys": "ema_model",
+    "source_screen_only": true,
+    "new_optimizer_steps": [0, 0, 0],
+    "actual_builder_signature_binding": "PASS: explicit CUDA device supplied"
+  },
+  "other_reviewed_boundaries": [
+    "The first-seed source gate precedes target access; failure returns SOURCE_FALSIFIED, and success freezes all three fixed export configurations before prediction.",
+    "Parent source provenance is checked before checkpoint deserialization. The loaded checkpoint is validated before full strict state loading, including the own EMA head, gains and feature state.",
+    "The source comparison changes output_dir to its new run root and iterates only the original V loader; target construction is disabled by the inherited source-screen-only argument.",
+    "The prediction path consumes the frozen own EMA through the shared default-head predictor. Row scoring and final aggregation run in fresh CPU subprocesses after prediction preflight; original student correctness is paired by exact physical IDs."
+  ],
+  "review_boundary": "No production edits, real checkpoint or IQ access, remote action, launch, commit, historical full review, report-completeness gate or added gate. Only this review evidence was written."
+}
