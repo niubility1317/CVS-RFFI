@@ -1698,13 +1698,13 @@
   "registered_at": "2026-10-15T04:59:15+00:00",
   "result": {
     "status": "RUNNING",
-    "evidence_ref": "launch_evidence.json",
+    "evidence_ref": "results_analysis.json",
+    "source_rows_complete": 1,
+    "scored_rows_complete": 0,
     "source_fixed_primary": "CLEAN_SIG",
-    "arms": [
-      "NONE",
-      "CLEAN_SIG"
-    ],
-    "rows_complete": 0,
-    "goal84_completed": false
+    "matrix_complete": false,
+    "source_falsified": false,
+    "goal84_numerical_check": null,
+    "goal_completed": false
   }
 }

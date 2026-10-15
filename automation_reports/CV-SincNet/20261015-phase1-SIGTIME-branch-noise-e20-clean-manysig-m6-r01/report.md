@@ -13,3 +13,21 @@
 owner codex/root/SIGTIME-branch-noise-train20-20261015，actual Git commit以release_commit.txt固定。CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_branch_noise_train20_20261015_r01`，命令 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_noise_train20/runner.py experiments/cvs_sigtime_noise_train20/configs/matrix.json`，不可覆盖root `/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01`。普通N607/CVS-RFFI Python，一GPU顺序pipeline，所有owner每GPU≤3，最少进程/最多空闲且>3072MiB，不停止或热改健康旧任务。一preflight/一archive SHA比较/remotecompile，每row初始真实scratch checkpoint no-query smoke PASS后直接继续；12聚焦检查、实际模型边界检查及本代码唯一独立P0/P1审查PASS，实际固定arm配置也须与生成函数逐项吻合。启动后独立PID/CWD/argv/GPU/log核验。技术停止、矩阵和路径以experiment.json为准，无额外审批或hash链。
 
 启动独立核实：commit `0fe97397defa9c72cb238556f0facc8d56c55513`，ordinary GPU0所属PID/CWD/argv/GPU一致，所有owner进程1/3，日志增长、真实own scratch checkpoint no-query smoke PASS。首row NONE是必要对照，实际seed2026092701/LS0/13L+7U/t2p0；原完整5RX L6300/U56700hidden/V27000，无fold mask/旧权重。源资格固定主arm CLEAN_SIG，NONE独立确认失败的事实明确保留。首seed两arm健康通过前不访问target，后续自动逐row预测/新CPU评分；尚无正式结果或84%结论。
+
+<!-- RESULTS_START -->
+
+
+完整源训练1/6行，clean已预测评分0/6行；独立解析4440条连续step和20条epoch。其余健康任务按冻结计划继续。
+
+
+| 源训练完成row | final训练LCE | V准确率 | 最差源RX | 与原baseline初始200state相等数 |
+|---|---|---|---|---|
+| NONE-s2026092701 | 0.02131456 | 98.303704% | 95.277778% | 200 |
+
+尚无完成的本轮target预测/评分；源健康和权重更新不替代正式识别性能。
+
+NONE-s2026092701：U总396900重复观察、被选观察6477.0，所有loss有限/Utruth0；F71初末参数位移10.63857，默认W位移0.60803516，正常联合训练。全部20epoch与两阶段数值保存在CSV/JSON；多次U观察不冒充不同U包覆盖。
+
+NONE-s2026092701 单独的固定合成IQ检查：PASS，训练前后实际joint160输出L2变化20.102078；feature-only与部署joint160逐位相等=True，扰动默认W后joint160逐位不变=True。本检查仅作8个合成packet特征前向，实际IQ读取0、truth读取0、优化/拟合头/改写checkpoint均0；证明计算路径已学习及特征/头边界，不代表识别率或未见TX泛化。
+
+完整产物分析读取全部训练日志、合法同契约checkpoint和已经冻结的truth-side混淆矩阵/正确性；重算18分层CM指标、分层合计和逐包配对，不新增IQ、truth读取、推理或训练。固定合成IQ特征检查另列实际前向量；不参与源健康门槛或训练选择。部分进度中的训练成本只统计已完成row，未含正在运行row的已消耗量。完整分组指标保存在results_analysis.json；默认头联合学习的变化不能直接称未见TX或丢弃W后的迁移提升。

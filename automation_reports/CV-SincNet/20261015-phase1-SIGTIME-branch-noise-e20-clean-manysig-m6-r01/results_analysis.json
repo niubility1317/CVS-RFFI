@@ -1,0 +1,381 @@
+{
+  "status": "RUNNING",
+  "run_id": "20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01",
+  "execution_commit": "0fe97397defa9c72cb238556f0facc8d56c55513",
+  "source_rows_complete": 1,
+  "scored_rows_complete": 0,
+  "planned_rows": 6,
+  "completed_row_backbone_epochs": 20,
+  "completed_row_optimizer_steps": 4440,
+  "running_row_consumed_budget_excluded": true,
+  "actual_new_clean_decisions": 0,
+  "actual_new_metric_records": 0,
+  "source_fixed_primary": "CLEAN_SIG",
+  "rows": {
+    "NONE-s2026092701": {
+      "status": "SOURCE_VERIFIED",
+      "row_id": "NONE-s2026092701",
+      "arm": "NONE",
+      "model_seed": 2026092701,
+      "complete_step_records": 4440,
+      "complete_epochs": 20,
+      "invalid_loss_or_U_truth_steps": [],
+      "actual_initial_state_matches_original_baseline": {
+        "status": "VERIFIED",
+        "tensors": 200,
+        "bitwise_equal_count": 200,
+        "all_equal": true,
+        "differing_names": [],
+        "limitation": null
+      },
+      "feature_parameter_tensors": 71,
+      "feature_delta_initial_to_FINAL": 10.638569785303758,
+      "default_W_delta_initial_to_FINAL": 0.6080351574052975,
+      "actual_noise_placement": {
+        "mode": "NONE",
+        "main_t2_dropout_p": 0.0,
+        "signature_tap": "original t2 output",
+        "signature_gradient_detached": false,
+        "extra_IQ_forwards": 0,
+        "extra_rng_draws": 0,
+        "extra_parameters": 0,
+        "inference_same_weight_equivalence": true,
+        "head_structure_changed": false
+      },
+      "final_training_L_CE": 0.021314562779750575,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.983037037037037,
+        "source_val_rx_accuracy": {
+          "1": 0.9966666666666667,
+          "3": 0.9527777777777777,
+          "4": 0.9844444444444445,
+          "6": 0.9962962962962963,
+          "8": 0.985
+        },
+        "source_val_worst_rx": 0.9527777777777777
+      },
+      "source_health": {
+        "qualified": true,
+        "rule": {
+          "final_training_L_CE_max": 0.5,
+          "first_seed_source_V_drop_max": 0.01,
+          "first_seed_worst_source_RX_drop_max": 0.02,
+          "first_seed_only": true,
+          "stop_before_target_if_failed": true,
+          "later_seed_health_report_only": true
+        },
+        "source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.983037037037037,
+          "source_val_rx_accuracy": {
+            "1": 0.9966666666666667,
+            "3": 0.9527777777777777,
+            "4": 0.9844444444444445,
+            "6": 0.9962962962962963,
+            "8": 0.985
+          },
+          "source_val_worst_rx": 0.9527777777777777
+        },
+        "baseline_source_metrics": {
+          "source_val_count": 27000,
+          "source_val_accuracy": 0.9814444444444445,
+          "source_val_rx_accuracy": {
+            "1": 0.9951851851851852,
+            "3": 0.9492592592592592,
+            "4": 0.9842592592592593,
+            "6": 0.9959259259259259,
+            "8": 0.9825925925925926
+          },
+          "source_val_worst_rx": 0.9492592592592592
+        },
+        "final_training_L_CE": 0.021314562779750575,
+        "target_access": false
+      },
+      "elapsed_training_seconds": 839.1837759017944,
+      "default_head_joint_training": true,
+      "head_fit_updates": 0,
+      "complete_log_numeric_summaries": {
+        "train/loss": {
+          "count": 4440,
+          "sum": 559.4343354417942,
+          "minimum": 0.004265972413122654,
+          "maximum": 3.2464325428009033,
+          "first": 3.2464325428009033,
+          "last": 0.02145039476454258,
+          "mean": 0.1259987241986023
+        },
+        "train/loss_tx_labeled": {
+          "count": 4440,
+          "sum": 556.7031091151293,
+          "minimum": 0.0030928540509194136,
+          "maximum": 3.2464325428009033,
+          "first": 3.2464325428009033,
+          "last": 0.020842645317316055,
+          "mean": 0.12538358313403813
+        },
+        "train/loss_unlabeled": {
+          "count": 4440,
+          "sum": 11.198732886752623,
+          "minimum": 0.0,
+          "maximum": 0.38177570700645447,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.002522237136655996
+        },
+        "train/reliable_ratio": {
+          "count": 4440,
+          "sum": 25.334047377109528,
+          "minimum": 0.0,
+          "maximum": 0.06640625,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.00570586652637602
+        },
+        "train/pseudo_total": {
+          "count": 4440,
+          "sum": 396900.0,
+          "minimum": 0,
+          "maximum": 256,
+          "first": 0,
+          "last": 124,
+          "mean": 89.39189189189189
+        },
+        "train/pseudo_selected": {
+          "count": 4440,
+          "sum": 6477.0,
+          "minimum": 0,
+          "maximum": 17,
+          "first": 0,
+          "last": 0,
+          "mean": 1.4587837837837838
+        },
+        "train/pseudo_truth_available": {
+          "count": 4440,
+          "sum": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0
+        }
+      },
+      "complete_log_phase_summaries": {
+        "label": {
+          "train/loss": {
+            "count": 2886,
+            "sum": 520.8247455754317,
+            "minimum": 0.004622975829988718,
+            "maximum": 3.2464325428009033,
+            "first": 3.2464325428009033,
+            "last": 0.03411802649497986,
+            "mean": 0.18046595480784192
+          },
+          "train/loss_tx_labeled": {
+            "count": 2886,
+            "sum": 520.8247455754317,
+            "minimum": 0.004622975829988718,
+            "maximum": 3.2464325428009033,
+            "first": 3.2464325428009033,
+            "last": 0.03411802649497986,
+            "mean": 0.18046595480784192
+          },
+          "train/loss_unlabeled": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/reliable_ratio": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/pseudo_total": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_selected": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_truth_available": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        },
+        "pseudo": {
+          "train/loss": {
+            "count": 1554,
+            "sum": 38.60958986636251,
+            "minimum": 0.004265972413122654,
+            "maximum": 0.1113128736615181,
+            "first": 0.06279236078262329,
+            "last": 0.02145039476454258,
+            "mean": 0.024845295924300202
+          },
+          "train/loss_tx_labeled": {
+            "count": 1554,
+            "sum": 35.8783635396976,
+            "minimum": 0.0030928540509194136,
+            "maximum": 0.10535653680562973,
+            "first": 0.062237173318862915,
+            "last": 0.020842645317316055,
+            "mean": 0.02308775002554543
+          },
+          "train/loss_unlabeled": {
+            "count": 1554,
+            "sum": 11.198732886752623,
+            "minimum": 0.0,
+            "maximum": 0.38177570700645447,
+            "first": 0.0005781509098596871,
+            "last": 0.0,
+            "mean": 0.007206391819017132
+          },
+          "train/reliable_ratio": {
+            "count": 1554,
+            "sum": 25.334047377109528,
+            "minimum": 0.0,
+            "maximum": 0.06640625,
+            "first": 0.0234375,
+            "last": 0.0,
+            "mean": 0.01630247578964577
+          },
+          "train/pseudo_total": {
+            "count": 1554,
+            "sum": 396900.0,
+            "minimum": 124,
+            "maximum": 256,
+            "first": 256,
+            "last": 124,
+            "mean": 255.40540540540542
+          },
+          "train/pseudo_selected": {
+            "count": 1554,
+            "sum": 6477.0,
+            "minimum": 0,
+            "maximum": 17,
+            "first": 6,
+            "last": 0,
+            "mean": 4.167953667953668
+          },
+          "train/pseudo_truth_available": {
+            "count": 1554,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        }
+      },
+      "fixed_synthetic_feature_boundary": {
+        "status": "PASS",
+        "model_seed": 2026092701,
+        "arm": "NONE",
+        "checkpoint_epoch": 20,
+        "feature_initial_to_trained_L2": 20.102077751494612,
+        "feature_initial_to_trained_max_abs": 4.972681999206543,
+        "all_features_finite": true,
+        "trained_feature_only_equals_deployed_joint160_bitwise": true,
+        "perturbing_trained_default_W_leaves_joint160_bitwise_unchanged": true,
+        "synthetic_seed": 2026101541,
+        "synthetic_IQ_shape": [
+          2,
+          2,
+          256
+        ],
+        "synthetic_feature_forward_packets": 8,
+        "actual_IQ_reads": 0,
+        "new_target_truth_reads": 0,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "checkpoint_mutations": 0,
+        "limitation": "Fixed synthetic input verifies changed computation and feature/head boundary, not source/target accuracy or newTX transfer"
+      }
+    }
+  },
+  "summary": {},
+  "paired_errors": [],
+  "group_records": [],
+  "baseline_target_metrics": {},
+  "matched_initial_200states_between_modes": {},
+  "first_seed_source_qualification": null,
+  "matrix_complete": false,
+  "source_falsified": false,
+  "terminal_process_verified": false,
+  "result": null,
+  "U_truth_reads": 0,
+  "head_fit_updates": 0,
+  "independent_analysis_source_IQ_reads": 0,
+  "independent_analysis_target_IQ_reads": 0,
+  "independent_analysis_new_target_truth_reads": 0,
+  "independent_analysis_inference_forwards": 0,
+  "independent_analysis_training_mutations": 0,
+  "separate_synthetic_feature_check": {
+    "rows": {
+      "NONE-s2026092701": {
+        "status": "PASS",
+        "model_seed": 2026092701,
+        "arm": "NONE",
+        "checkpoint_epoch": 20,
+        "feature_initial_to_trained_L2": 20.102077751494612,
+        "feature_initial_to_trained_max_abs": 4.972681999206543,
+        "all_features_finite": true,
+        "trained_feature_only_equals_deployed_joint160_bitwise": true,
+        "perturbing_trained_default_W_leaves_joint160_bitwise_unchanged": true,
+        "synthetic_seed": 2026101541,
+        "synthetic_IQ_shape": [
+          2,
+          2,
+          256
+        ],
+        "synthetic_feature_forward_packets": 8,
+        "actual_IQ_reads": 0,
+        "new_target_truth_reads": 0,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "checkpoint_mutations": 0,
+        "limitation": "Fixed synthetic input verifies changed computation and feature/head boundary, not source/target accuracy or newTX transfer"
+      }
+    },
+    "status": "PASS",
+    "actual_IQ_reads": 0,
+    "new_target_truth_reads": 0,
+    "synthetic_feature_forward_packets": 8,
+    "optimizer_steps": 0,
+    "head_fit_updates": 0,
+    "checkpoint_mutations": 0
+  },
+  "goal84_numerical_check": null,
+  "goal_completed": false,
+  "limitations": [
+    "Default jointly trained head on the exposed fixed clean benchmark; no fitted/replaced head, newTX/satellite or Phase2 claim.",
+    "Actual initial checkpoints and feature/defaultW changes are mechanism/fairness evidence; performance conclusions require completed registered seeds.",
+    "The completed-artifact analysis reads existing frozen score CMs/correctness with no new IQ/truth/model inference. The separately disclosed feature boundary diagnostic uses fixed synthetic IQ only.",
+    "Partial seed means carry their actual seed count and never stand for the complete three-seed primary; results do not alter healthy training or fixed candidates."
+  ]
+}
