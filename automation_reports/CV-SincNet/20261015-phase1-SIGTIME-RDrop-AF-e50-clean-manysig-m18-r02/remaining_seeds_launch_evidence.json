@@ -1,0 +1,178 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02",
+  "execution_commit": "09554c3a06c976c53efc4dbc61f5c501a1e7b06e",
+  "source_decision_commit": "4173ae34aff975353bb725febf52b7f558d1238c",
+  "source_decision_remote_OID": "4173ae34aff975353bb725febf52b7f558d1238c",
+  "source_decision_before_first_new_target_summary": true,
+  "readout_summary_collected_after_upload": true,
+  "original_first_seed_workers_completed_preserved": true,
+  "remaining_model_count": 10,
+  "maximum_observed_allowner_GPU_apps": 3,
+  "per_GPU_process_limit": 3,
+  "rows": [
+    {
+      "row_id": "B-s2026092702",
+      "epochs": 28,
+      "original_PID_CWD_argv_GPU_matched": true,
+      "GPU_app_observed": true,
+      "log_growth_bytes": 133671,
+      "source_seed": 2026092702,
+      "source_stages": [
+        33,
+        17
+      ],
+      "scratch_no_parent": true,
+      "actual_SIG_TIME": "SIG_TIME_X3",
+      "actual_Sinc_optimizer": "STANDARD",
+      "policy_matches": true
+    },
+    {
+      "row_id": "C-s2026092702",
+      "epochs": 28,
+      "original_PID_CWD_argv_GPU_matched": true,
+      "GPU_app_observed": true,
+      "log_growth_bytes": 133678,
+      "source_seed": 2026092702,
+      "source_stages": [
+        33,
+        17
+      ],
+      "scratch_no_parent": true,
+      "actual_SIG_TIME": "SIG_TIME",
+      "actual_Sinc_optimizer": "NORMALIZED_UNITS",
+      "policy_matches": true
+    },
+    {
+      "row_id": "D-s2026092702",
+      "epochs": 29,
+      "original_PID_CWD_argv_GPU_matched": true,
+      "GPU_app_observed": true,
+      "log_growth_bytes": 138823,
+      "source_seed": 2026092702,
+      "source_stages": [
+        33,
+        17
+      ],
+      "scratch_no_parent": true,
+      "actual_SIG_TIME": "SIG_TIME",
+      "actual_Sinc_optimizer": "STANDARD",
+      "policy_matches": true
+    },
+    {
+      "row_id": "E-s2026092702",
+      "epochs": 26,
+      "original_PID_CWD_argv_GPU_matched": true,
+      "GPU_app_observed": true,
+      "log_growth_bytes": 123403,
+      "source_seed": 2026092702,
+      "source_stages": [
+        33,
+        17
+      ],
+      "scratch_no_parent": true,
+      "actual_SIG_TIME": "SIG_TIME",
+      "actual_Sinc_optimizer": "CENTER_UNITS",
+      "policy_matches": true
+    },
+    {
+      "row_id": "F-s2026092702",
+      "epochs": 28,
+      "original_PID_CWD_argv_GPU_matched": true,
+      "GPU_app_observed": true,
+      "log_growth_bytes": 133679,
+      "source_seed": 2026092702,
+      "source_stages": [
+        33,
+        17
+      ],
+      "scratch_no_parent": true,
+      "actual_SIG_TIME": "SIG_TIME_X3",
+      "actual_Sinc_optimizer": "CENTER_UNITS",
+      "policy_matches": true
+    },
+    {
+      "row_id": "B-s2026092703",
+      "epochs": 26,
+      "original_PID_CWD_argv_GPU_matched": true,
+      "GPU_app_observed": true,
+      "log_growth_bytes": 123401,
+      "source_seed": 2026092703,
+      "source_stages": [
+        33,
+        17
+      ],
+      "scratch_no_parent": true,
+      "actual_SIG_TIME": "SIG_TIME_X3",
+      "actual_Sinc_optimizer": "STANDARD",
+      "policy_matches": true
+    },
+    {
+      "row_id": "C-s2026092703",
+      "epochs": 26,
+      "original_PID_CWD_argv_GPU_matched": true,
+      "GPU_app_observed": true,
+      "log_growth_bytes": 123403,
+      "source_seed": 2026092703,
+      "source_stages": [
+        33,
+        17
+      ],
+      "scratch_no_parent": true,
+      "actual_SIG_TIME": "SIG_TIME",
+      "actual_Sinc_optimizer": "NORMALIZED_UNITS",
+      "policy_matches": true
+    },
+    {
+      "row_id": "D-s2026092703",
+      "epochs": 28,
+      "original_PID_CWD_argv_GPU_matched": true,
+      "GPU_app_observed": true,
+      "log_growth_bytes": 133688,
+      "source_seed": 2026092703,
+      "source_stages": [
+        33,
+        17
+      ],
+      "scratch_no_parent": true,
+      "actual_SIG_TIME": "SIG_TIME",
+      "actual_Sinc_optimizer": "STANDARD",
+      "policy_matches": true
+    },
+    {
+      "row_id": "E-s2026092703",
+      "epochs": 26,
+      "original_PID_CWD_argv_GPU_matched": true,
+      "GPU_app_observed": true,
+      "log_growth_bytes": 123413,
+      "source_seed": 2026092703,
+      "source_stages": [
+        33,
+        17
+      ],
+      "scratch_no_parent": true,
+      "actual_SIG_TIME": "SIG_TIME",
+      "actual_Sinc_optimizer": "CENTER_UNITS",
+      "policy_matches": true
+    },
+    {
+      "row_id": "F-s2026092703",
+      "epochs": 25,
+      "original_PID_CWD_argv_GPU_matched": true,
+      "GPU_app_observed": true,
+      "log_growth_bytes": 118262,
+      "source_seed": 2026092703,
+      "source_stages": [
+        33,
+        17
+      ],
+      "scratch_no_parent": true,
+      "actual_SIG_TIME": "SIG_TIME_X3",
+      "actual_Sinc_optimizer": "CENTER_UNITS",
+      "policy_matches": true
+    }
+  ],
+  "failure": null,
+  "target_feedback": false,
+  "scope": "Original dispatcher launched allten after source-only decision upload. No hotchanges/restarts or headrefits; PIDs/runtime paths retained privately."
+}
