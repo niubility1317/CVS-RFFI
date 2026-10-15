@@ -82529,6 +82529,21 @@
       "source_qualification": null,
       "new_target_metrics_read": false,
       "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/mid_training_evidence.json"
+    },
+    "source_curve_prefix": {
+      "source_epochs": {
+        "historical": 50,
+        "norm_control": 29,
+        "cagrad": 28
+      },
+      "new_L_steps": 12654,
+      "full_stdout_available": true,
+      "traceback_OOM_numeric_nonfinite": 0,
+      "skipped_nonfinite_updates": 0,
+      "source_qualification": null,
+      "target_metrics_read": false,
+      "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_curve_prefix_e29_28.json",
+      "figure": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_curve_prefix_e29_28.png"
     }
   },
   "latest_complete_sinc_optimizer": {
