@@ -19,3 +19,7 @@ N0关闭ordinaryL，N1保留原完整ordinaryL系数及schedule。两行都是13
 原ordinary含PA等未经逐操作认证部分；首折输入峰值204.893/累计MSE.181549并不支持将整个配方称轻度有界，正负类别效果将完整报告。本轮保持原配方作确认，不新增或放大PA/TXIQ/量化/剪裁，也不把数字操作等同真实RX替换。预算耗尽不是收敛；当前没有新增source成绩或正式urban结果。
 
 唯一独立P0/P1增量审查PASS，未发现直接缺陷；再执行1024合成前向/128增强包/14负例。本轮本地已知总2048合成前向/256增强包，0真实IQ/CP/更新。登记字段、common+new本地编译、内嵌remote发布编译通过；普通账户N607只读preflight通过。尚未发布。
+
+## 实际启动已核实
+
+状态RUNNING，训练代码2cbaee17215772bc50ec63d77b771675894991ec已提交push并独立读回同OID。单归档传输对照/远端编译VERIFIED。8行在GPU4/5/6/7每卡2行，不干预GPU0..3其他owner；全部实际L5040/U45360/seenV21600、对应heldRX排除、E20=13+7、LS.01、ordinary开关、NoExplicitCFO/defaulthead、ownEMA/scratchCP noquery smoke、PID/CWD/argv/GPU与日志增长通过。逐行进度/参数/实际导入路径见launch_execution.json；当前不是最终source资格或target性能。原release与健康任务未热改/重启。
