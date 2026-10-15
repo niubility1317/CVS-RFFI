@@ -1,4 +1,4 @@
 comparison,actual_seed_count,actual_model_seeds,complete_three_seeds,paired_accuracy_difference_mean_pp,paired_accuracy_difference_sample_SD_pp,positive_seeds,total_corrected_errors,total_introduced_errors
-NONE minus BASE_SSL,2,"[2026092701, 2026092702]",False,0.36279761904761904,0.25548441439299663,2,7614,6395
+NONE minus BASE_SSL,3,"[2026092701, 2026092702, 2026092703]",True,0.2708333333333333,0.24084939804716665,3,10927,9562
 CLEAN_SIG minus BASE_SSL,2,"[2026092701, 2026092702]",False,0.3104166666666667,0.08880924454188188,2,5676,4633
 CLEAN_SIG minus NONE,2,"[2026092701, 2026092702]",False,-0.05238095238095238,0.16667516985111477,1,5623,5799

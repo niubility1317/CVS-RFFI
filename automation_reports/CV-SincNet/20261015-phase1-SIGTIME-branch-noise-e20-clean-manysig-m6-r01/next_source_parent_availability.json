@@ -1,0 +1,33 @@
+{
+  "parent_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+  "base_exists": true,
+  "existing_row_directory_names": [
+    "OLD_GATE_COS50-s2026092701",
+    "RX_BALANCED-s2026092701",
+    "RX_DRO-s2026092701",
+    "SIG_TIME-s2026092701",
+    "logs"
+  ],
+  "rows": {
+    "2026092701": {
+      "source_directory_exists": true,
+      "final_checkpoint_exists": true,
+      "source_completion_exists": true
+    },
+    "2026092702": {
+      "source_directory_exists": false,
+      "final_checkpoint_exists": false,
+      "source_completion_exists": false
+    },
+    "2026092703": {
+      "source_directory_exists": false,
+      "final_checkpoint_exists": false,
+      "source_completion_exists": false
+    }
+  },
+  "IQ_reads": 0,
+  "checkpoint_deserializations": 0,
+  "training_mutations": 0,
+  "limitation": "Path availability only; any present checkpoint still requires its own source provenance before use",
+  "readback_saved_at_utc": "2026-10-15T06:11:24.802438+00:00"
+}

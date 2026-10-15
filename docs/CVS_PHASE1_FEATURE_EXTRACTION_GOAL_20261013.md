@@ -228,3 +228,9 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 
 2026-10-15：源资格通过后正式矩阵 `20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01` RUNNING/VERIFIED，执行 `0fe97397defa9c72cb238556f0facc8d56c55513`，ordinary GPU0所属PID/CWD/argv/GPU/log及真实scratch checkpoint no-query smoke核实。source02 CLEAN_SIG68.253968%，相对ELEMENT65.555556%净修正34（46修正/12新增）、CE-.08224494，通过同时胜ELEMENT/NONE；NONE63.015873%独立确认失败，保留source01+11.349206pp但不冒充稳定正收益。正式固定CLEAN_SIG主arm及NONE必要控制，各三seed从零20/13L+7U/4440步，总6模型120epoch/26640更新，全5RX L6300/U56700hidden/V27000，不继承四RX权重；原BASE_SSL三seed预测/评分复用且成本单列。首seed两arm源健康通过后逐row自动clean168000预测与独立新CPU truth-last，最终另新CPU聚合，0拟合头/新loss/参数/额外训练IQ前向。12聚焦协议/两矩阵阶段顺序、所有3seed/两mode200state同初值及feature-only=z/扰动W不改z实际检查、唯一独立P0/P1 PASS；不增加新source诊断。总新预测1008000，目标主arm3seed clean84%仍active，未给出未完成性能。见[正式预登记和启动报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01/report.md)。
+
+
+<!-- RDROP_PARENT_AVAILABILITY_20261015 -->
+2026-10-15：回收既有 R-Drop 第三优先路线的来源条件。首模型 `20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01` 的阳性仅为 final50、label smoothing .01 的源梯度兼容，尚无训练泛化收益。Git 中原 DRO 设计固定单 seed；ordinary 只读核对其指定 run `20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01`，仅 seed01 的 SIG_TIME source/checkpoint/completion 存在，seed02/03 对应路径均不存在。可用性核对未读取 IQ、未反序列化 checkpoint、未训练；不代表已验证任何新父来源。证据见[指定父目录回读](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01/next_source_parent_availability.json)。旧报告的原样02/03复核当前缺指定父，不能静默换父或补新 E50 训练。
+
+当前最多两个优先动作：先完成已冻结六行噪声位置矩阵及完整默认头三seed分析；随后如推进 R-Drop，以已核实的固定 E20 BASE_SSL 父另登记零更新 source-only 诊断，明确 E20/LS0 与旧 E50/LS.01/strong-L 的差异。沿用同一 R-Drop 公式不等于复现旧源结果；新源诊断只回答兼容性，后续训练矩阵另按源证据固定。既有兼容性阳性、源留一负结果和当前正收益全部保留，不按目标微差切换主方案。

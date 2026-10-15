@@ -17,7 +17,7 @@ owner codex/root/SIGTIME-branch-noise-train20-20261015，actual Git commit以rel
 <!-- RESULTS_START -->
 
 
-完整源训练4/6行，clean已预测评分4/6行；独立解析17760条连续step和80条epoch。其余健康任务按冻结计划继续。
+完整源训练5/6行，clean已预测评分5/6行；独立解析22200条连续step和100条epoch。其余健康任务按冻结计划继续。
 
 
 | 源训练完成row | final训练LCE | V准确率 | 最差源RX | 与原baseline初始200state相等数 |
@@ -26,6 +26,7 @@ owner codex/root/SIGTIME-branch-noise-train20-20261015，actual Git commit以rel
 | CLEAN_SIG-s2026092701 | 0.02144756 | 98.225926% | 95.388889% | 200 |
 | NONE-s2026092702 | 0.02402953 | 98.303704% | 95.481481% | 200 |
 | CLEAN_SIG-s2026092702 | 0.02243369 | 98.240741% | 95.314815% | 200 |
+| NONE-s2026092703 | 0.02585703 | 98.200000% | 95.259259% | 200 |
 
 
 | 已完成clean row | accuracy | Macro-F1 | 错误数 | 最差RX | 最差day |
@@ -34,6 +35,7 @@ owner codex/root/SIGTIME-branch-noise-train20-20261015，actual Git commit以rel
 | CLEAN_SIG-s2026092701 | 82.185714% | 81.870821% | 29928 | 73.120833% | 78.626190% |
 | NONE-s2026092702 | 80.485714% | 80.005625% | 32784 | 66.641667% | 77.302381% |
 | CLEAN_SIG-s2026092702 | 80.315476% | 79.757463% | 33070 | 67.516667% | 76.254762% |
+| NONE-s2026092703 | 81.730952% | 81.353634% | 30692 | 74.145833% | 78.188095% |
 
 
 | 配对差 | seed | Δaccuracy | 修正错误 | 新增错误 |
@@ -42,17 +44,18 @@ owner codex/root/SIGTIME-branch-noise-train20-20261015，actual Git commit以rel
 | CLEAN_SIG minus BASE_SSL | 2026092701 | +0.247619pp | 2469 | 2053 |
 | NONE minus BASE_SSL | 2026092702 | +0.543452pp | 4108 | 3195 |
 | CLEAN_SIG minus BASE_SSL | 2026092702 | +0.373214pp | 3207 | 2580 |
+| NONE minus BASE_SSL | 2026092703 | +0.086905pp | 3313 | 3167 |
 | CLEAN_SIG minus NONE | 2026092701 | +0.065476pp | 2876 | 2766 |
 | CLEAN_SIG minus NONE | 2026092702 | -0.170238pp | 2747 | 3033 |
 
 
 | 配对统计 | 实际seed数 | 配对均差 | 配对差sampleSD | 正差seed |
 |---|---|---|---|---|
-| NONE minus BASE_SSL | 2/3 | +0.362798pp | 0.255484pp | 2/2 |
+| NONE minus BASE_SSL | 3/3 | +0.270833pp | 0.240849pp | 3/3 |
 | CLEAN_SIG minus BASE_SSL | 2/3 | +0.310417pp | 0.088809pp | 2/2 |
 | CLEAN_SIG minus NONE | 2/3 | -0.052381pp | 0.166675pp | 1/2 |
 
-NONE实际2/3seed：mean=81.302976%，sampleSD=1.155783pp，相对同seed原BASE_SSL配对均差+0.362798pp，正差2/2。这是部分seed，不能当完整三seed结论。
+NONE实际3/3seed：mean=81.445635%，sampleSD=0.853798pp，相对同seed原BASE_SSL配对均差+0.270833pp，正差3/3。完整三seed。
 
 CLEAN_SIG实际2/3seed：mean=81.250595%，sampleSD=1.322458pp，相对同seed原BASE_SSL配对均差+0.310417pp，正差2/2。这是部分seed，不能当完整三seed结论。
 
@@ -72,6 +75,10 @@ CLEAN_SIG-s2026092702：U总396900重复观察、被选观察6652.0，所有loss
 
 CLEAN_SIG-s2026092702 单独的固定合成IQ检查：PASS，训练前后实际joint160输出L2变化20.514025；feature-only与部署joint160逐位相等=True，扰动默认W后joint160逐位不变=True。本检查仅作8个合成packet特征前向，实际IQ读取0、truth读取0、优化/拟合头/改写checkpoint均0；证明计算路径已学习及特征/头边界，不代表识别率或未见TX泛化。
 
+NONE-s2026092703：U总396900重复观察、被选观察6531.0，所有loss有限/Utruth0；F71初末参数位移10.399551，默认W位移0.71442551，正常联合训练。全部20epoch与两阶段数值保存在CSV/JSON；多次U观察不冒充不同U包覆盖。
+
+NONE-s2026092703 单独的固定合成IQ检查：PASS，训练前后实际joint160输出L2变化19.374318；feature-only与部署joint160逐位相等=True，扰动默认W后joint160逐位不变=True。本检查仅作8个合成packet特征前向，实际IQ读取0、truth读取0、优化/拟合头/改写checkpoint均0；证明计算路径已学习及特征/头边界，不代表识别率或未见TX泛化。
+
 
 已复用的原BASE_SSL三seed源训练记录也完整解析：60epoch/13320连续step，所有数值loss有限、Utruth0，固定13L+7U、每row396900次U观察。此处是既有产物分析，不新增骨干训练；逐epoch对照见baseline_source_complete_curves.csv。
 
@@ -82,6 +89,7 @@ CLEAN_SIG-s2026092702 单独的固定合成IQ检查：PASS，训练前后实际j
 | CLEAN_SIG-s2026092701 | 0.02925618 | 0.02144756 | 6409 | 6472 | +0.081481pp | +0.462963pp |
 | NONE-s2026092702 | 0.03051399 | 0.02402953 | 6580 | 6619 | +0.185185pp | +0.518519pp |
 | CLEAN_SIG-s2026092702 | 0.03051399 | 0.02243369 | 6580 | 6652 | +0.122222pp | +0.351852pp |
+| NONE-s2026092703 | 0.03137676 | 0.02585703 | 6471 | 6531 | -0.011111pp | +0.203704pp |
 
 NONE-s2026092701：启用U之前第13轮LCE为0.02805619，同seed基线为0.03721877；后续7轮选中U重复观察差为+68。这表明训练损失差异已出现在半监督阶段之前，不能只归因于接受更多伪标签；不据此断言特征迁移因果或改动后续计划。
 
@@ -91,10 +99,14 @@ NONE-s2026092702：启用U之前第13轮LCE为0.03308883，同seed基线为0.040
 
 CLEAN_SIG-s2026092702：启用U之前第13轮LCE为0.03197356，同seed基线为0.04062129；后续7轮选中U重复观察差为+72。这表明训练损失差异已出现在半监督阶段之前，不能只归因于接受更多伪标签；不据此断言特征迁移因果或改动后续计划。
 
+NONE-s2026092703：启用U之前第13轮LCE为0.03300501，同seed基线为0.04027314；后续7轮选中U重复观察差为+60。这表明训练损失差异已出现在半监督阶段之前，不能只归因于接受更多伪标签；不据此断言特征迁移因果或改动后续计划。
+
 选中U数是重复观察量，不能解释为独立U覆盖或伪标签正确率。源训练曲线与V仅解释已固定机制的训练行为，不回流目标选模，也不单独证明泛化提升。
 
 完整源曲线（按seed分行，虚线后启用U；准确率轴为百分比）：
 
 ![逐seed源训练曲线](source_training_curves.png)
+
+后续第三优先R-Drop的来源核对：既有阳性只来自原DRO的SIG_TIME final50/label smoothing .01首seed源梯度兼容性，未证明实际泛化训练收益。原报告指定父run `20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01` 的ordinary只读回读显示seed01目录/checkpoint/completion存在，seed02/03三者均不存在。原样02/03复核目前缺少指定父输入；若推进，须以已核实的固定E20父另行登记source-only诊断并披露配方差异。该核对0 IQ读取、0 checkpoint反序列化、0训练改动，仅证明指定路径可用性；不改变本矩阵候选、预算或主指标。事实见next_source_parent_availability.json。
 
 完整产物分析读取全部训练日志、合法同契约checkpoint和已经冻结的truth-side混淆矩阵/正确性；重算18分层CM指标、分层合计和逐包配对，不新增IQ、truth读取、推理或训练。固定合成IQ特征检查另列实际前向量；不参与源健康门槛或训练选择。部分进度中的训练成本只统计已完成row，未含正在运行row的已消耗量。完整分组指标保存在results_analysis.json；默认头联合学习的变化不能直接称未见TX或丢弃W后的迁移提升。
