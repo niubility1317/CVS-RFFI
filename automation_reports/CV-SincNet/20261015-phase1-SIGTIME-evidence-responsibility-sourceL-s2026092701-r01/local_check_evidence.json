@@ -1,0 +1,36 @@
+{
+  "status": "PASS",
+  "checks": {
+    "checks_objective": {
+      "status": "PASS",
+      "focused_negative_checks": 10,
+      "full_denominator720": true,
+      "equal_loss_masks_with_different_gradients": true,
+      "isolated_responsible_component_only": true,
+      "W_and_all_three_gains_None": true,
+      "ablation_threshold_and_ReLU_stop_verified": true,
+      "exact_fourterm_and_routed_nativevalue_verified": true,
+      "labels_Wrename_and_packet_permutation": true,
+      "readout_FP64_FP32_compared": true,
+      "data_checkpoint_remote_reads": 0,
+      "actual_updates": 0
+    },
+    "checks_source": {
+      "status": "PASS",
+      "request_and_gate_negatives": 40,
+      "both_controls_required": true,
+      "distinct_origin_coverage_required": true,
+      "actual_identity_and_burden_improvements_both_required": true,
+      "distinct_direction_against_main_and_JOINT_required": true,
+      "late_stage_priority_fixed": true,
+      "head_fit_updates": 0,
+      "data_checkpoint_remote_reads": 0,
+      "actual_optimizer_updates": 0
+    }
+  },
+  "compile": "PASS",
+  "same_evaluator_exactafterstate_extended_only_return_components": true,
+  "data_checkpoint_remote_reads": 0,
+  "actual_updates": 0,
+  "head_fit_updates": 0
+}

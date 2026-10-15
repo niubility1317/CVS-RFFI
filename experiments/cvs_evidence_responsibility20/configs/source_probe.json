@@ -1,0 +1,105 @@
+{
+  "run_id": "20261015-phase1-SIGTIME-evidence-responsibility-sourceL-s2026092701-r01",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-evidence-responsibility-sourceL-s2026092701-r01/source_diagnostic",
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_center_crossRX_sharpness20_20261015_r01",
+  "source_row": "BASE_CE-s2026092701",
+  "model_seed": 2026092701,
+  "states": [
+    "INITIAL",
+    "FINAL20"
+  ],
+  "modes": [
+    "ZERO",
+    "JOINT_GAP",
+    "ROUTED_GAP"
+  ],
+  "LR": 0.0002,
+  "optimizer_state": "INITIAL empty originalmoments; FINAL20 savedm/v/step; both fixedstageLR2e-4",
+  "current_pairs": [
+    [
+      2,
+      3
+    ],
+    [
+      19,
+      20
+    ],
+    [
+      37,
+      38
+    ],
+    [
+      54,
+      55
+    ]
+  ],
+  "held_ordinals": [
+    66,
+    67
+  ],
+  "source_role": "L_s",
+  "source_subset": "reuse prior900L; different responsibility loss, not independent newdata confirmation",
+  "method": {
+    "task": "Repair source trueclass CE increases caused by an actual evidence component",
+    "feature": "same-call real identity/PA/reference/SIG fourterm joint160",
+    "views": "unchangedfull; samepacket eachbranchzeroed, nativeadditionorder",
+    "readout": "original defaultcos W.detach30 eps1e-4, FP64 and FP32 comparison",
+    "loss": ".1 mean_b,packet relu(CE_full-CE_without_b.detach()-1e-6), fixed720 denominator",
+    "gradients": "ROUTED eachterm only component b edge attached; othercomponents,3gains,W stopped; mainCE fully joint",
+    "control": "JOINT_GAP equal scalar/mask/denominator; all4component edges attached",
+    "tolerance": 1e-06,
+    "weight": 0.1,
+    "branches": [
+      "identity",
+      "physical",
+      "reference_raw",
+      "sequence_raw"
+    ],
+    "formula_decisions_per_call": 1620,
+    "FP32_comparison_decisions_per_call": 900,
+    "new_parameters": 0,
+    "head_fit_updates": 0,
+    "feature_transform_at_deployment": false
+  },
+  "source_falsification": {
+    "minimum_qualified_cohorts_per_state": 2,
+    "current_active_decisions_min": 36,
+    "current_active_origin_packets_min": 18,
+    "absolute_auxiliary_F_cosine_main_max": 0.95,
+    "absolute_auxiliary_F_cosine_JOINT_max": 0.95,
+    "actual_F_difference_norm_min": 1e-06,
+    "held_feature_RMS_difference_min": 1e-05,
+    "shallow_middle_difference_tensors_min": 1,
+    "held_positive_burden_difference_max": -1e-05,
+    "held_full_CE_difference_max": -1e-05,
+    "held_transfer_errors_increase_tolerance": 0,
+    "held_original_CE_difference_max": -1e-05,
+    "held_original_accuracy_difference_min": 0.0,
+    "controls": [
+      "ZERO",
+      "JOINT_GAP"
+    ],
+    "readouts": [
+      "ACTUAL",
+      "PRE_W"
+    ],
+    "qualification_transfer_readout": "PRE_W before defaultW, same afteractualjoint including3gains",
+    "original_CE_guard": "actual fullidentity CE improves at least1e-5, not only selfdefinedburden",
+    "stage_priority": "FINAL20 pass prefers sameparent E20+20; only INITIAL pass supports scratch20",
+    "interpretation": "Actual component responsibility, distinct gradient and source identity benefit, not20epoch/unseenRX/DG"
+  },
+  "original_default_head_joint": true,
+  "feature_scope": "actual F71 includes3gains in mainCE; W/3gains excluded from auxiliary",
+  "readouts": [
+    "ACTUAL",
+    "PRE_W"
+  ],
+  "PRE_W_gains": "after-step actual gains retained",
+  "main_loss": "original clean CE",
+  "head_fit_updates": 0,
+  "U_IQ_read": false,
+  "V_IQ_read": false,
+  "U_truth_read": false,
+  "target_access": false,
+  "analysis_code_commit": "release_commit.txt"
+}

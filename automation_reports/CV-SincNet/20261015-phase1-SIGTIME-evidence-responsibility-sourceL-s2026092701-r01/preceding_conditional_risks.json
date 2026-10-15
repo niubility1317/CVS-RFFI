@@ -1,0 +1,851 @@
+{
+  "status": "READ_ONLY_COMPLETE",
+  "source_run": "20261015-phase1-SIGTIME-identity-excess-transfer-sourceL-s2026092701-r01",
+  "execution_commit": "6d4f66c830cfb6ab471bf58e2cf45741ed08cc0c",
+  "parent_fixed_same": true,
+  "data_checkpoint_training_target_access": 0,
+  "by_state": {
+    "INITIAL": {
+      "before": {
+        "CROSS": {
+          "mean_CE": 3.3525266209113287,
+          "errors_total": 2877,
+          "active_decisions": 1770,
+          "active_origin_packet_count": 178,
+          "mean_factual_CE": 3.353994019964022,
+          "mean_positive_excess_risk": 0.17736101233317422,
+          "to_actual_destination_identity_RMS": 0.23745071032257392
+        },
+        "SAME": {
+          "mean_CE": 3.3572799345605895,
+          "errors_total": 2884,
+          "active_decisions": 1804,
+          "active_origin_packet_count": 143,
+          "mean_factual_CE": 3.353994019964022,
+          "mean_positive_excess_risk": 0.15568170649076032,
+          "to_actual_destination_identity_RMS": 0.18602958671940983
+        }
+      },
+      "conditionals": {
+        "by_reference_TX": {
+          "0": {
+            "held_before_cross_CE": 3.4297711609101627,
+            "held_before_same_CE": 3.438161851557669,
+            "held_cross_minus_same_CE": -0.008390690647506194,
+            "held_cross_errors": 447,
+            "held_same_errors": 468,
+            "held_cross_active": 295,
+            "held_cross_distinct": 120,
+            "held_cross_positive_excess": 0.16489443415428956,
+            "held_factual_CE": 3.4385492796273707,
+            "current_cohort_cross_CE": [
+              3.4495275839806574,
+              3.416917837008562,
+              3.4197956342200744,
+              3.404579308025261
+            ],
+            "current_cohort_same_CE": [
+              3.447062480798815,
+              3.427875146747473,
+              3.428526417102027,
+              3.4066987923667567
+            ]
+          },
+          "1": {
+            "held_before_cross_CE": 3.83797182763366,
+            "held_before_same_CE": 3.8505950257829227,
+            "held_cross_minus_same_CE": -0.012623198149262826,
+            "held_cross_errors": 491,
+            "held_same_errors": 492,
+            "held_cross_active": 295,
+            "held_cross_distinct": 121,
+            "held_cross_positive_excess": 0.17055010043048366,
+            "held_factual_CE": 3.851558627980409,
+            "current_cohort_cross_CE": [
+              3.8543897799485967,
+              3.822274401705791,
+              3.8470239122477916,
+              3.8069801847745635
+            ],
+            "current_cohort_same_CE": [
+              3.8642816922245964,
+              3.8245586280405504,
+              3.851388360353223,
+              3.818944157388079
+            ]
+          },
+          "2": {
+            "held_before_cross_CE": 3.2415491678239308,
+            "held_before_same_CE": 3.2327360923153825,
+            "held_cross_minus_same_CE": 0.008813075508548263,
+            "held_cross_errors": 464,
+            "held_same_errors": 456,
+            "held_cross_active": 292,
+            "held_cross_distinct": 119,
+            "held_cross_positive_excess": 0.19317703951706178,
+            "held_factual_CE": 3.226748264034925,
+            "current_cohort_cross_CE": [
+              3.2549071040568656,
+              3.21289495183552,
+              3.2557953394113412,
+              3.2016354069623665
+            ],
+            "current_cohort_same_CE": [
+              3.246206567032061,
+              3.2072841158936853,
+              3.25184488132994,
+              3.2093457486923413
+            ]
+          },
+          "3": {
+            "held_before_cross_CE": 2.766885890238825,
+            "held_before_same_CE": 2.7648373834674764,
+            "held_cross_minus_same_CE": 0.0020485067713487126,
+            "held_cross_errors": 459,
+            "held_same_errors": 464,
+            "held_cross_active": 296,
+            "held_cross_distinct": 121,
+            "held_cross_positive_excess": 0.16041989750440658,
+            "held_factual_CE": 2.7506854859478755,
+            "current_cohort_cross_CE": [
+              2.77218174976376,
+              2.7396114502112425,
+              2.762757867607303,
+              2.7623092871787374
+            ],
+            "current_cohort_same_CE": [
+              2.7772295783787144,
+              2.741964269919669,
+              2.761051384437292,
+              2.7643535243700113
+            ]
+          },
+          "4": {
+            "held_before_cross_CE": 2.947745298456311,
+            "held_before_same_CE": 2.940173658730502,
+            "held_cross_minus_same_CE": 0.007571639725809209,
+            "held_cross_errors": 454,
+            "held_same_errors": 448,
+            "held_cross_active": 299,
+            "held_cross_distinct": 123,
+            "held_cross_positive_excess": 0.17505348577969837,
+            "held_factual_CE": 2.9398233098657633,
+            "current_cohort_cross_CE": [
+              2.9510192037809473,
+              2.936314468744282,
+              2.9660012728838696,
+              2.93767419292307
+            ],
+            "current_cohort_same_CE": [
+              2.951042490587798,
+              2.9238016180258466,
+              2.962042746053624,
+              2.926159650124134
+            ]
+          },
+          "5": {
+            "held_before_cross_CE": 3.891236380405082,
+            "held_before_same_CE": 3.9171755955095864,
+            "held_cross_minus_same_CE": -0.025939215104504587,
+            "held_cross_errors": 562,
+            "held_same_errors": 556,
+            "held_cross_active": 293,
+            "held_cross_distinct": 119,
+            "held_cross_positive_excess": 0.20007111661310548,
+            "held_factual_CE": 3.916599152327787,
+            "current_cohort_cross_CE": [
+              3.9184685752231205,
+              3.894194373870238,
+              3.90772569634703,
+              3.871747688143241
+            ],
+            "current_cohort_same_CE": [
+              3.9360279983597306,
+              3.8982295986765165,
+              3.9292136546535024,
+              3.8901752250307733
+            ]
+          }
+        },
+        "by_target_TX": {
+          "0": {
+            "held_before_cross_CE": 2.938799193910588,
+            "held_before_same_CE": 2.9373323244015785,
+            "held_cross_minus_same_CE": 0.0014668695090094275,
+            "held_cross_errors": 600,
+            "held_same_errors": 600,
+            "held_cross_active": 299,
+            "held_cross_distinct": 30,
+            "held_cross_positive_excess": 0.1971818687287096,
+            "held_factual_CE": 2.931217721647277,
+            "current_cohort_cross_CE": [
+              2.95164728759034,
+              2.9259498499534806,
+              3.016348766346113,
+              2.971388016256184
+            ],
+            "current_cohort_same_CE": [
+              2.948002689456132,
+              2.923277301652323,
+              3.0160160519819015,
+              2.971216119225318
+            ]
+          },
+          "1": {
+            "held_before_cross_CE": 0.9051905835190621,
+            "held_before_same_CE": 0.8961862485358044,
+            "held_cross_minus_same_CE": 0.0090043349832577,
+            "held_cross_errors": 381,
+            "held_same_errors": 416,
+            "held_cross_active": 302,
+            "held_cross_distinct": 30,
+            "held_cross_positive_excess": 0.14953945840800717,
+            "held_factual_CE": 0.8661709798820838,
+            "current_cohort_cross_CE": [
+              0.9016684434241953,
+              0.9151164504250744,
+              0.9340839849589254,
+              0.9338688880065752
+            ],
+            "current_cohort_same_CE": [
+              0.8915593249520198,
+              0.9042422627695693,
+              0.9238411756012257,
+              0.9222269785968473
+            ]
+          },
+          "2": {
+            "held_before_cross_CE": 3.974647167270109,
+            "held_before_same_CE": 3.98625632783063,
+            "held_cross_minus_same_CE": -0.011609160560521303,
+            "held_cross_errors": 600,
+            "held_same_errors": 600,
+            "held_cross_active": 297,
+            "held_cross_distinct": 30,
+            "held_cross_positive_excess": 0.2001777675742201,
+            "held_factual_CE": 3.9902227996095054,
+            "current_cohort_cross_CE": [
+              4.014498279948159,
+              3.992463489484045,
+              3.9462011492620097,
+              3.9671815586470385
+            ],
+            "current_cohort_same_CE": [
+              4.028912506575923,
+              3.997392042299366,
+              3.9582326968111983,
+              3.9763701355525813
+            ]
+          },
+          "3": {
+            "held_before_cross_CE": 6.3237747933946675,
+            "held_before_same_CE": 6.346717572929497,
+            "held_cross_minus_same_CE": -0.02294277953482915,
+            "held_cross_errors": 600,
+            "held_same_errors": 600,
+            "held_cross_active": 279,
+            "held_cross_distinct": 29,
+            "held_cross_positive_excess": 0.22009220953646666,
+            "held_factual_CE": 6.370536690044752,
+            "current_cohort_cross_CE": [
+              6.322005375008349,
+              6.28675261145183,
+              6.351244007730017,
+              6.180828743018498
+            ],
+            "current_cohort_same_CE": [
+              6.340864952419675,
+              6.2977159493149,
+              6.369782866590498,
+              6.2053963543665684
+            ]
+          },
+          "4": {
+            "held_before_cross_CE": 5.392278139034982,
+            "held_before_same_CE": 5.40995471713074,
+            "held_cross_minus_same_CE": -0.017676578095757733,
+            "held_cross_errors": 600,
+            "held_same_errors": 600,
+            "held_cross_active": 287,
+            "held_cross_distinct": 29,
+            "held_cross_positive_excess": 0.16838404848083333,
+            "held_factual_CE": 5.424847570455315,
+            "current_cohort_cross_CE": [
+              5.4531411320228385,
+              5.369541308711181,
+              5.335938503097652,
+              5.369361613166843
+            ],
+            "current_cohort_same_CE": [
+              5.470707667705487,
+              5.383094430869776,
+              5.358264346636957,
+              5.394613225788506
+            ]
+          },
+          "5": {
+            "held_before_cross_CE": 0.5804698483385625,
+            "held_before_same_CE": 0.56723241653529,
+            "held_cross_minus_same_CE": 0.013237431803272526,
+            "held_cross_errors": 96,
+            "held_same_errors": 68,
+            "held_cross_active": 306,
+            "held_cross_distinct": 30,
+            "held_cross_positive_excess": 0.12879072127080854,
+            "held_factual_CE": 0.540968358145199,
+            "current_cohort_cross_CE": [
+              0.5575334787600665,
+              0.5323837733500253,
+              0.5752833113226912,
+              0.5622972489121009
+            ],
+            "current_cohort_same_CE": [
+              0.5418036662724789,
+              0.5179913903978074,
+              0.5579303063078301,
+              0.5458542844422749
+            ]
+          }
+        },
+        "by_anchor_RX": {
+          "1": {
+            "held_before_cross_CE": 3.3760055946774785,
+            "held_before_same_CE": 3.3687968483684334,
+            "held_cross_minus_same_CE": 0.007208746309045111,
+            "held_cross_errors": 571,
+            "held_same_errors": 584,
+            "held_cross_active": 355,
+            "held_cross_distinct": 116,
+            "held_cross_positive_excess": 0.162275029980023,
+            "held_factual_CE": 3.3705596522103205,
+            "current_cohort_cross_CE": [
+              3.3885410975873143,
+              3.3606368035603316,
+              3.3841581610167077,
+              3.3742376894462742
+            ],
+            "current_cohort_same_CE": [
+              3.3729339460724104,
+              3.324969353261618,
+              3.342282081250033,
+              3.3225816827715384
+            ]
+          },
+          "3": {
+            "held_before_cross_CE": 3.318568573248767,
+            "held_before_same_CE": 3.323927585278472,
+            "held_cross_minus_same_CE": -0.005359012029705124,
+            "held_cross_errors": 575,
+            "held_same_errors": 580,
+            "held_cross_active": 331,
+            "held_cross_distinct": 117,
+            "held_cross_positive_excess": 0.18017946181193203,
+            "held_factual_CE": 3.324276782694599,
+            "current_cohort_cross_CE": [
+              3.348130913892127,
+              3.2974834331305973,
+              3.323964288735343,
+              3.3015357242587546
+            ],
+            "current_cohort_same_CE": [
+              3.390498833765307,
+              3.330358224555467,
+              3.3496814985469023,
+              3.329913315126398
+            ]
+          },
+          "4": {
+            "held_before_cross_CE": 3.37645926267098,
+            "held_before_same_CE": 3.3481376931535447,
+            "held_cross_minus_same_CE": 0.028321569517435474,
+            "held_cross_errors": 577,
+            "held_same_errors": 572,
+            "held_cross_active": 372,
+            "held_cross_distinct": 126,
+            "held_cross_positive_excess": 0.18199452351463583,
+            "held_factual_CE": 3.346473251369404,
+            "current_cohort_cross_CE": [
+              3.3958971033515057,
+              3.398513252215124,
+              3.3614277097086105,
+              3.343191309874943
+            ],
+            "current_cohort_same_CE": [
+              3.3572830271634553,
+              3.314830919804663,
+              3.365006100123973,
+              3.338427917549829
+            ]
+          },
+          "6": {
+            "held_before_cross_CE": 3.339613453382014,
+            "held_before_same_CE": 3.3077452742354194,
+            "held_cross_minus_same_CE": 0.03186817914659468,
+            "held_cross_errors": 574,
+            "held_same_errors": 572,
+            "held_cross_active": 393,
+            "held_cross_distinct": 126,
+            "held_cross_positive_excess": 0.18937910363158908,
+            "held_factual_CE": 3.305569688196317,
+            "current_cohort_cross_CE": [
+              3.341984575437365,
+              3.3129216828289425,
+              3.376242766573866,
+              3.3199334515118286
+            ],
+            "current_cohort_same_CE": [
+              3.286299826520361,
+              3.3024625143751716,
+              3.3140708077385157,
+              3.317903742746565
+            ]
+          },
+          "8": {
+            "held_before_cross_CE": 3.351986220577403,
+            "held_before_same_CE": 3.4377922717670795,
+            "held_cross_minus_same_CE": -0.08580605118967632,
+            "held_cross_errors": 580,
+            "held_same_errors": 576,
+            "held_cross_active": 319,
+            "held_cross_distinct": 113,
+            "held_cross_positive_excess": 0.17297694272769126,
+            "held_factual_CE": 3.4230907253494673,
+            "current_cohort_cross_CE": [
+              3.3591913070266446,
+              3.315617731078037,
+              3.353456842896647,
+              3.315206881580899
+            ],
+            "current_cohort_same_CE": [
+              3.444526705963229,
+              3.413806802422866,
+              3.4490157156152503,
+              3.370904256782415
+            ]
+          }
+        }
+      }
+    },
+    "FINAL20": {
+      "before": {
+        "CROSS": {
+          "mean_CE": 0.09809041103461517,
+          "errors_total": 112,
+          "active_decisions": 2324,
+          "active_origin_packet_count": 180,
+          "mean_factual_CE": 0.010514239031366352,
+          "mean_positive_excess_risk": 0.09628525999379499,
+          "to_actual_destination_identity_RMS": 0.37444978874006335
+        },
+        "SAME": {
+          "mean_CE": 0.06454984944623496,
+          "errors_total": 72,
+          "active_decisions": 2204,
+          "active_origin_packet_count": 163,
+          "mean_factual_CE": 0.010514239031366352,
+          "mean_positive_excess_risk": 0.061548364375465466,
+          "to_actual_destination_identity_RMS": 0.27889241180437385
+        }
+      },
+      "conditionals": {
+        "by_reference_TX": {
+          "0": {
+            "held_before_cross_CE": 0.09980374346050319,
+            "held_before_same_CE": 0.0901344044607148,
+            "held_cross_minus_same_CE": 0.00966933899978839,
+            "held_cross_errors": 20,
+            "held_same_errors": 20,
+            "held_cross_active": 376,
+            "held_cross_distinct": 136,
+            "held_cross_positive_excess": 0.09756112428785291,
+            "held_factual_CE": 0.012495001720374094,
+            "current_cohort_cross_CE": [
+              0.16268244296727108,
+              0.11761975606353937,
+              0.2213376239358981,
+              0.05836577572354668
+            ],
+            "current_cohort_same_CE": [
+              0.11185898605995954,
+              0.06968679190762093,
+              0.10943205209081636,
+              0.0817064537246199
+            ]
+          },
+          "1": {
+            "held_before_cross_CE": 0.07012789056207559,
+            "held_before_same_CE": 0.024883305277579506,
+            "held_cross_minus_same_CE": 0.04524458528449608,
+            "held_cross_errors": 17,
+            "held_same_errors": 0,
+            "held_cross_active": 395,
+            "held_cross_distinct": 139,
+            "held_cross_positive_excess": 0.06919805694542455,
+            "held_factual_CE": 0.008217680972837187,
+            "current_cohort_cross_CE": [
+              0.17720417255030863,
+              0.07626461828791431,
+              0.1054085203662747,
+              0.10263476614791296
+            ],
+            "current_cohort_same_CE": [
+              0.1512294952535406,
+              0.035328461589933705,
+              0.04436507937854394,
+              0.09242457360029457
+            ]
+          },
+          "2": {
+            "held_before_cross_CE": 0.03560794121002598,
+            "held_before_same_CE": 0.014941488230181198,
+            "held_cross_minus_same_CE": 0.020666452979844784,
+            "held_cross_errors": 5,
+            "held_same_errors": 4,
+            "held_cross_active": 376,
+            "held_cross_distinct": 137,
+            "held_cross_positive_excess": 0.033602533006198115,
+            "held_factual_CE": 0.012435682201950123,
+            "current_cohort_cross_CE": [
+              0.10004984561684417,
+              0.138108664932583,
+              0.0593495152922951,
+              0.052433701335346916
+            ],
+            "current_cohort_same_CE": [
+              0.06122029102236135,
+              0.039480447481910486,
+              0.055037745762142536,
+              0.039376737411192075
+            ]
+          },
+          "3": {
+            "held_before_cross_CE": 0.10921487401966923,
+            "held_before_same_CE": 0.08646218267163633,
+            "held_cross_minus_same_CE": 0.0227526913480329,
+            "held_cross_errors": 21,
+            "held_same_errors": 12,
+            "held_cross_active": 379,
+            "held_cross_distinct": 136,
+            "held_cross_positive_excess": 0.1063645401376483,
+            "held_factual_CE": 0.011068693706630852,
+            "current_cohort_cross_CE": [
+              0.11686407459897968,
+              0.08341772628128379,
+              0.10521286526152322,
+              0.07182552259330321
+            ],
+            "current_cohort_same_CE": [
+              0.07529470880696486,
+              0.03060805269272808,
+              0.12299425138682575,
+              0.021388255417484528
+            ]
+          },
+          "4": {
+            "held_before_cross_CE": 0.18384370842652875,
+            "held_before_same_CE": 0.11354841460977279,
+            "held_cross_minus_same_CE": 0.07029529381675596,
+            "held_cross_errors": 32,
+            "held_same_errors": 24,
+            "held_cross_active": 397,
+            "held_cross_distinct": 140,
+            "held_cross_positive_excess": 0.18207966078645127,
+            "held_factual_CE": 0.011394956577766872,
+            "current_cohort_cross_CE": [
+              0.24957184653221845,
+              0.11265040591541974,
+              0.13839515084959736,
+              0.06758096577942553
+            ],
+            "current_cohort_same_CE": [
+              0.22537648213148467,
+              0.0743908132704292,
+              0.07596824766121403,
+              0.043309192770119624
+            ]
+          },
+          "5": {
+            "held_before_cross_CE": 0.08994430852888824,
+            "held_before_same_CE": 0.05732930142752507,
+            "held_cross_minus_same_CE": 0.03261500710136317,
+            "held_cross_errors": 17,
+            "held_same_errors": 12,
+            "held_cross_active": 401,
+            "held_cross_distinct": 141,
+            "held_cross_positive_excess": 0.08890564479919467,
+            "held_factual_CE": 0.007473419008638997,
+            "current_cohort_cross_CE": [
+              0.12012603193220116,
+              0.09841228924063666,
+              0.0976791670151723,
+              0.0479584853155094
+            ],
+            "current_cohort_same_CE": [
+              0.06166228518202575,
+              0.03563659355939359,
+              0.03489216085924205,
+              0.021934871253961916
+            ]
+          }
+        },
+        "by_target_TX": {
+          "0": {
+            "held_before_cross_CE": 0.03329669288346101,
+            "held_before_same_CE": 0.010327425382290504,
+            "held_cross_minus_same_CE": 0.022969267501170502,
+            "held_cross_errors": 7,
+            "held_same_errors": 0,
+            "held_cross_active": 410,
+            "held_cross_distinct": 30,
+            "held_cross_positive_excess": 0.03286183267106216,
+            "held_factual_CE": 0.0006104255863276568,
+            "current_cohort_cross_CE": [
+              0.06917662854407873,
+              0.029072968552633256,
+              0.07909247011653582,
+              0.02605498776430404
+            ],
+            "current_cohort_same_CE": [
+              0.06526808105353976,
+              0.013753850997499886,
+              0.027637339528292018,
+              0.011114701240296392
+            ]
+          },
+          "1": {
+            "held_before_cross_CE": 0.10901416517570242,
+            "held_before_same_CE": 0.05624878605992059,
+            "held_cross_minus_same_CE": 0.05276537911578183,
+            "held_cross_errors": 23,
+            "held_same_errors": 20,
+            "held_cross_active": 354,
+            "held_cross_distinct": 30,
+            "held_cross_positive_excess": 0.1041389198819213,
+            "held_factual_CE": 0.02199702932401219,
+            "current_cohort_cross_CE": [
+              0.2871012224095678,
+              0.10416124546862797,
+              0.17963712479874094,
+              0.11076036739928836
+            ],
+            "current_cohort_same_CE": [
+              0.23844818187059105,
+              0.03742407397373812,
+              0.14742058671890743,
+              0.061176808667468864
+            ]
+          },
+          "2": {
+            "held_before_cross_CE": 0.04959495562588479,
+            "held_before_same_CE": 0.030221172908823698,
+            "held_cross_minus_same_CE": 0.019373782717061094,
+            "held_cross_errors": 9,
+            "held_same_errors": 4,
+            "held_cross_active": 433,
+            "held_cross_distinct": 30,
+            "held_cross_positive_excess": 0.04903812640910452,
+            "held_factual_CE": 0.0009070231784475094,
+            "current_cohort_cross_CE": [
+              0.16796881417855053,
+              0.079191168260186,
+              0.03608115018420038,
+              0.0432864449098867
+            ],
+            "current_cohort_same_CE": [
+              0.11811192539527207,
+              0.034715172886478476,
+              0.017305168547408354,
+              0.05212768817834216
+            ]
+          },
+          "3": {
+            "held_before_cross_CE": 0.24174711720166017,
+            "held_before_same_CE": 0.11084903105177522,
+            "held_cross_minus_same_CE": 0.13089808614988496,
+            "held_cross_errors": 45,
+            "held_same_errors": 16,
+            "held_cross_active": 336,
+            "held_cross_distinct": 30,
+            "held_cross_positive_excess": 0.23985845197270583,
+            "held_factual_CE": 0.007741965655043863,
+            "current_cohort_cross_CE": [
+              0.21436796422290305,
+              0.27658586590893913,
+              0.2283052316377917,
+              0.15287863241597072
+            ],
+            "current_cohort_same_CE": [
+              0.1313084133846857,
+              0.13951404312728735,
+              0.16075008201779004,
+              0.11024202834353626
+            ]
+          },
+          "4": {
+            "held_before_cross_CE": 0.07492820439032875,
+            "held_before_same_CE": 0.06978615064203998,
+            "held_cross_minus_same_CE": 0.005142053748288772,
+            "held_cross_errors": 11,
+            "held_same_errors": 12,
+            "held_cross_active": 416,
+            "held_cross_distinct": 30,
+            "held_cross_positive_excess": 0.0743703623570007,
+            "held_factual_CE": 0.006110651299363769,
+            "current_cohort_cross_CE": [
+              0.0860185528037186,
+              0.050203420074993496,
+              0.08778776247868114,
+              0.023502270194754225
+            ],
+            "current_cohort_same_CE": [
+              0.04615392334649741,
+              0.04034713930524119,
+              0.06110402938090784,
+              0.01535695656709931
+            ]
+          },
+          "5": {
+            "held_before_cross_CE": 0.07996133093065384,
+            "held_before_same_CE": 0.10986653063255968,
+            "held_cross_minus_same_CE": -0.029905199701905832,
+            "held_cross_errors": 17,
+            "held_same_errors": 20,
+            "held_cross_active": 375,
+            "held_cross_distinct": 30,
+            "held_cross_positive_excess": 0.07744386667097537,
+            "held_factual_CE": 0.02571833914500314,
+            "current_cohort_cross_CE": [
+              0.10186523203900433,
+              0.08725879245599699,
+              0.11647910350481079,
+              0.04431651421084066
+            ],
+            "current_cohort_same_CE": [
+              0.08735172340575083,
+              0.019376880211770985,
+              0.028472330945478984,
+              0.050121901180929636
+            ]
+          }
+        },
+        "by_anchor_RX": {
+          "1": {
+            "held_before_cross_CE": 0.08959218604900908,
+            "held_before_same_CE": 0.031260920173738,
+            "held_cross_minus_same_CE": 0.05833126587527108,
+            "held_cross_errors": 20,
+            "held_same_errors": 12,
+            "held_cross_active": 475,
+            "held_cross_distinct": 135,
+            "held_cross_positive_excess": 0.08595037547811397,
+            "held_factual_CE": 0.017003780003151444,
+            "current_cohort_cross_CE": [
+              0.15887416335110796,
+              0.09089942331988025,
+              0.11656944274734835,
+              0.07125520836993035
+            ],
+            "current_cohort_same_CE": [
+              0.002701621820545619,
+              0.001093632784188706,
+              0.03816405127320849,
+              0.007296962989184171
+            ]
+          },
+          "3": {
+            "held_before_cross_CE": 0.06593265212912001,
+            "held_before_same_CE": 0.13955689835682958,
+            "held_cross_minus_same_CE": -0.07362424622770956,
+            "held_cross_errors": 16,
+            "held_same_errors": 32,
+            "held_cross_active": 396,
+            "held_cross_distinct": 120,
+            "held_cross_positive_excess": 0.06338395039142286,
+            "held_factual_CE": 0.02309064230718553,
+            "current_cohort_cross_CE": [
+              0.1705215162968431,
+              0.08127121187381288,
+              0.11094607323725086,
+              0.04200806874311377
+            ],
+            "current_cohort_same_CE": [
+              0.24249468370283395,
+              0.07230786065160665,
+              0.15443083956786577,
+              0.13717631820611578
+            ]
+          },
+          "4": {
+            "held_before_cross_CE": 0.10057748659306365,
+            "held_before_same_CE": 0.010130772904737215,
+            "held_cross_minus_same_CE": 0.09044671368832644,
+            "held_cross_errors": 24,
+            "held_same_errors": 0,
+            "held_cross_active": 493,
+            "held_cross_distinct": 132,
+            "held_cross_positive_excess": 0.09983842967225505,
+            "held_factual_CE": 0.0016593719217077294,
+            "current_cohort_cross_CE": [
+              0.17092453742887043,
+              0.0844124512965266,
+              0.10434881221965092,
+              0.07029391442141687
+            ],
+            "current_cohort_same_CE": [
+              0.02620026971975757,
+              0.05860096018040679,
+              0.12391159637605903,
+              0.002953606397209063
+            ]
+          },
+          "6": {
+            "held_before_cross_CE": 0.18805935591301948,
+            "held_before_same_CE": 0.012447111858462416,
+            "held_cross_minus_same_CE": 0.17561224405455705,
+            "held_cross_errors": 40,
+            "held_same_errors": 0,
+            "held_cross_active": 572,
+            "held_cross_distinct": 143,
+            "held_cross_positive_excess": 0.18753858672936197,
+            "held_factual_CE": 0.0007628975646810661,
+            "current_cohort_cross_CE": [
+              0.1842354837334202,
+              0.18150225095998734,
+              0.14406803439043134,
+              0.09094176166038173
+            ],
+            "current_cohort_same_CE": [
+              0.025569898665178264,
+              0.01263633978146504,
+              0.00956715682461723,
+              0.002086392909197383
+            ]
+          },
+          "8": {
+            "held_before_cross_CE": 0.04629037448886361,
+            "held_before_same_CE": 0.12935354393740753,
+            "held_cross_minus_same_CE": -0.08306316944854392,
+            "held_cross_errors": 12,
+            "held_same_errors": 28,
+            "held_cross_active": 388,
+            "held_cross_distinct": 121,
+            "held_cross_positive_excess": 0.04471495769782104,
+            "held_factual_CE": 0.010054503360106009,
+            "current_cohort_cross_CE": [
+              0.08752631102127763,
+              0.08397587981760701,
+              0.13022000633928582,
+              0.05950039421769454
+            ],
+            "current_cohort_same_CE": [
+              0.2752353998052986,
+              0.09297050702067947,
+              0.04283430357390339,
+              0.10060345631302078
+            ]
+          }
+        }
+      }
+    }
+  }
+}
