@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Continue active Phase1 training-mechanism goal; source-only matched-gradient attribution, no trained candidate or target access.",
   "code": {
-    "commit": "release_commit.txt (actual Git HEAD at publication)",
+    "commit": "3e5ee1ffc2d610c6fce3c8d153ed5b08492839d8",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account/CVS-RFFI Python/CPU2/noGPU; single new-package overlay on immutable R02 runtime",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX_blocked_norm_attribution_sourceL_20261015_r01",
@@ -261,5 +261,46 @@
     "No target output or score is consumed; no new full matrix is launched from this descriptive audit.",
     "Generic design-approval/signature/extra review blockers are REJECTED_EXTRA_GATE under current CVS whitelist."
   ],
-  "registered_at": "2026-10-15T01:46:01+00:00"
+  "registered_at": "2026-10-15T01:46:01+00:00",
+  "result": {
+    "status": "SOURCE_ATTRIBUTION_COMPLETE",
+    "decision": "ATTRIBUTION_ONLY_NO_MAIN_PROMOTION",
+    "main_run_qualification": false,
+    "cells": 80,
+    "paired_cohorts": 20,
+    "unique_evaluation_packets": 180,
+    "all5RX_CE_improvement": true,
+    "ROUTED_vs_JOINT_NORM": {
+      "pairs": 20,
+      "distinct_RX": 5,
+      "ACTUAL": {
+        "mean_CE_difference": -0.001145396807649779,
+        "CE_improved": 20,
+        "CE_worse": 0,
+        "min_CE_difference": -0.0020354210930970673,
+        "max_CE_difference": -0.00048270035576525316,
+        "summed_error_difference": -2,
+        "error_improved": 2,
+        "error_worse": 0,
+        "error_tied": 18
+      },
+      "PRE_W": {
+        "mean_CE_difference": -0.0011985547134481856,
+        "CE_improved": 20,
+        "CE_worse": 0,
+        "min_CE_difference": -0.002138052520453737,
+        "max_CE_difference": -0.0004934927144062407,
+        "summed_error_difference": -2,
+        "error_improved": 2,
+        "error_worse": 0,
+        "error_tied": 18
+      }
+    },
+    "actual_increment_norm_matched": false,
+    "actual_optimizer_updates": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "goal84_completed": false,
+    "evidence_ref": "result_evidence.json"
+  }
 }
