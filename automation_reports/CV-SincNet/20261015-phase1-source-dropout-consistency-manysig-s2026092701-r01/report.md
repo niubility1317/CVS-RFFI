@@ -1,6 +1,6 @@
 # 固定 SIG_TIME：随机失活一致性源端检验
 
-状态：LOCAL_VERIFIED / PREREGISTERED，尚未发布或运行真实源数据。代码提交 `eb21026149b1d1d02ddf4b213408b37f782bf2f5`（初始实现 `e21bab7a0125edd9eaffa0f04f2c21c724dc6d7d`）。本实验只有一个 source-only 诊断 row；完整配置与逐行矩阵以同目录 `experiment.json` 为准。
+当前状态：ANALYZED / VERIFIED，首模型源资格PASS；完整结果见 [同轮分析](final_analysis.md)。以下保留预登记时的设计与预算。代码提交 `eb21026149b1d1d02ddf4b213408b37f782bf2f5`（初始实现 `e21bab7a0125edd9eaffa0f04f2c21c724dc6d7d`）。本实验只有一个 source-only 诊断 row；完整配置与逐行矩阵以同目录 `experiment.json` 为准。
 
 ## 问题和最小比较
 
@@ -23,3 +23,6 @@
 ## 已有验证与未完成项
 
 局部10负例、对称/零值/平移不变性和实际原生网络的两个随机joint160及四层导数检查PASS；状态、RNG及.grad不变，未读真实IQ或checkpoint。一次独立P0/P1审查发现继承检查器仍要求旧60向量，已定点修为40并复核PASS，未重复全面审查。真实父checkpoint无查询smoke、N607实际运行和源科学资格仍待发布后核实。
+
+
+实际执行已ANALYZED/VERIFIED，首源资格PASS；900L/2700前向/20层40向量独立复算，0模型/头/optimizer更新。执行`842af6233e30dbfd9927670d1f0723905f592c9c`，全部源数值及局限见[同轮分析](final_analysis.md)。PASS只允许另登记02/03源复核，没有自动训练发布。

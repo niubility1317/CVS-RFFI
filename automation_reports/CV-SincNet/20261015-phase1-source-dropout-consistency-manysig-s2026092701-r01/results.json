@@ -1,0 +1,416 @@
+{
+  "status": "ANALYZED",
+  "config": {
+    "schema": "source_rdrop_v1",
+    "run_id": "20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01",
+    "row_id": "SOURCE_RDROP-s2026092701",
+    "arm": "SOURCE_RDROP",
+    "model_seed": 2026092701,
+    "source_config": {
+      "schema": "signature_stats_default50_v1",
+      "run_id": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+      "stage": "repair",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "row_id": "SIG_TIME-s2026092701",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+      "output_root": "PROJECT/runs/20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/SIG_TIME-s2026092701/source",
+      "epochs": 50,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_legacy_no_sat",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 0.000001,
+      "launch_owner": "codex/root/receiver-dro50-20261015",
+      "label_epochs": 33,
+      "pseudo_epochs": 17,
+      "updates": 11100,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092701,
+        "row_id": "legacy_cosine_no_sat-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+        "output_root": "PROJECT/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 0.000001
+      },
+      "source_falsification": {
+        "final5_unweighted_L_CE_max": 0.5,
+        "feature_difference_min": 0.000001,
+        "native_steps": 11100,
+        "actual_U_packets": 963900,
+        "required_gradient_epochs": [
+          17,
+          33,
+          50
+        ],
+        "required_gradient_parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "DRO_final5_training_worst_RX_CE_max_relative_to_BALANCED": 1,
+        "DRO_final5_mean_max_group_weight_min": 0.2001,
+        "source_only": true,
+        "expansion": "If exact source budget/defaultfeature/body-gradient health and fixed risk thresholds pass, extend all three unchanged arms to02/03 before reading new target summaries; otherwise no expansion. Source V health only, no epoch or candidate selection."
+      },
+      "training_recipe": "old batch_neighbor gate+EMA+cos scratch50 label33+pseudo17, no satellite",
+      "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "time": false,
+        "PA": false,
+        "time_layers": [
+          "t1",
+          "t2",
+          "t3"
+        ],
+        "PA_layers": [
+          "pa_b1",
+          "pa_b2",
+          "pa_b3"
+        ],
+        "time_kernel_dilation": [
+          [
+            3,
+            1
+          ],
+          [
+            5,
+            1
+          ],
+          [
+            5,
+            2
+          ]
+        ],
+        "PA_kernels": [
+          3,
+          5,
+          7
+        ],
+        "PA_dilation_by_layer": [
+          1,
+          2,
+          4
+        ],
+        "residual": "learned1x1 shortcut before original norm/activation/pool/dropout",
+        "output_embedding": 160
+      },
+      "classifier": "unchanged default cosine6x160scale30 normal joint training only",
+      "test_views": [
+        "clean"
+      ],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "primary": "RX_DRO",
+        "clean_three_seed_mean": 0.84,
+        "first_seed_is_not_goal_completion": true,
+        "feedback_to_training": false
+      },
+      "budget_authorization": "user: feature extraction, historicaloldgate+EMA+cos; Agentchooseepochs normally<=50/model; fixedscratch50 33label+17pseudo allcontrols",
+      "cost_claim": "same50epochs/11100 updates andnative L128/U256 recipe; extractor parameters/actualforward time measured separately",
+      "source_config": null,
+      "baseline_reuse": false,
+      "feature_combination": {
+        "modes": [
+          "SIG_TIME"
+        ],
+        "layer": "t2",
+        "local_dimension": 6,
+        "windows": 4,
+        "descriptor_width_each": 28,
+        "descriptor_raw_width": 28,
+        "fixed_lift": "SIG_TIME identity28; COV_SHAPE/AREA_SHAPE same original COV orthonormal27to28 seed2026101307",
+        "shared_single_projection": true,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "output_embedding": 160
+      },
+      "readouts": [
+        "ORIGINAL_HEAD"
+      ],
+      "separate_head_training": false,
+      "hypothesis_basis": "Prior source covariance penalties optimized their source objective without stable DG gain; test source identity-risk allocation instead of additional feature invariance. Receiver groups are legal L metadata; original default head remains jointly trained. Original GroupDRO warns that risk weighting alone can fail; preserve WD to isolate objective and do not claim expected target gain.",
+      "source_formula_parent_commit": "990ffabe0",
+      "initialization_policy": "Warm CUDA before native training seed; private pool RNG preserves baseline draws; verify actual initial native body/head equality",
+      "receiver_risk": {
+        "mode": "ERM",
+        "role": "L_s",
+        "groups": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "step_size": 0.01,
+        "initial_group_weights": "uniform1/5",
+        "weight_update": "logq += .01 * detached current within-RX mean CE; softmax after update",
+        "risk": "sum q_RX * within-RX mean original default CE smoothing.01",
+        "absent_RX": "zero risk and no logq increment; renormalize applied q over present RX",
+        "balanced_control": "equal mean over present RX; no adversarial weight update",
+        "ERM_control": "original scalar CE returned unchanged, same group calculations for observation",
+        "enable": "all11100 native L steps from epoch1; no extra warmup, reset or clipping",
+        "original_U": "same old batch_neighbor/ownEMA/.16UCE/.01entropy; no reweighting or label access",
+        "optimizer": "original AdamW lr.0002 WD.0001 cosine; no new optimizer/head/forward",
+        "parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.views.0.local_projection.weight"
+        ],
+        "diagnostic_epochs": [
+          1,
+          17,
+          33,
+          50
+        ],
+        "reference": "https://github.com/kohpangwei/group_DRO/blob/master/loss.py",
+        "scope": "GroupDRO-style receiver grouping adaptation; not a reproduction of original datasets or regularization study"
+      }
+    },
+    "parent_run": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01",
+    "parent_rule": "Predefined lowest-seed SIG_TIME final50 control; not target-best",
+    "checkpoint_epoch": 50,
+    "role": "L_s",
+    "source_pool_count": 6300,
+    "source_packets": 900,
+    "cohorts": 5,
+    "cohort_packets": 180,
+    "source_cohorts": "Fixed first five L180 cohorts,2 per6TXx5RXx3day;900unique physical samples",
+    "stochastic": "Same strong IQ input .015 for two student train-mode forwards; all native dropout active; no BatchNorm",
+    "eval_reference": "Same strong IQ with dropout inactive; no gradient or classifier fitting",
+    "objective": "Mean two default CE with smoothing.01; auxiliary symmetric KL between two differentiable predictions",
+    "coefficient": 1,
+    "label_smoothing": 0.01,
+    "parameters": [
+      "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+      "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+      "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+      "id_backbone.encoder.core.id_backbone.cls_head.weight"
+    ],
+    "source_only": true,
+    "query_read": false,
+    "U_IQ_read": false,
+    "U_truth_read": false,
+    "V_forward": false,
+    "V_gradient": false,
+    "training_epochs": 0,
+    "optimizer_steps": 0,
+    "head_fit_updates": 0,
+    "model_forward_packets": 2700,
+    "strong_rng_seed": 2026101519,
+    "qualification": {
+      "source_only": true,
+      "KL_positive": true,
+      "KL_actual_t1_t2_SIG_nonzero_each_of5": true,
+      "global_gradient_cosine_with_paired_CE_min": 0,
+      "model_state_and_default_head_unchanged": true,
+      "no_automatic_training_release": true,
+      "on_pass": "Only separately registered unchanged02/03 source check",
+      "on_fail": "Preserve negative evidence; no coefficient, parent or dropout scans"
+    },
+    "output_root": "PROJECT/runs/20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01/SOURCE_RDROP-s2026092701",
+    "launch_owner": "codex/root/source-rdrop-20261015",
+    "basis": "Existing source-only isolated dropout descriptor perturbation plus R-Drop general theory; actual two stochastic default predictions and identity-gradient compatibility not yet measured",
+    "limitation": "Frozen final50 L source proxy; gradients and KL do not prove early training, U correctness, DG or84. Default classW derivative is measured but never fitted or updated."
+  },
+  "summary": {
+    "layers": [
+      {
+        "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+        "cohorts": 5,
+        "reference_norm": 0.04216824801387093,
+        "other_norm": 0.06213233304326105,
+        "ratio": 1.473438806915172,
+        "cosine": 0.20042733589845438,
+        "KL_nonzero_cohorts": 5
+      },
+      {
+        "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+        "cohorts": 5,
+        "reference_norm": 0.035615777681671436,
+        "other_norm": 0.05325128217536985,
+        "ratio": 1.4951598881631043,
+        "cosine": 0.18999563393892366,
+        "KL_nonzero_cohorts": 5
+      },
+      {
+        "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+        "cohorts": 5,
+        "reference_norm": 0.06199205466027964,
+        "other_norm": 0.07937755523597254,
+        "ratio": 1.2804472391013095,
+        "cosine": 0.4885796524158448,
+        "KL_nonzero_cohorts": 5
+      },
+      {
+        "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+        "cohorts": 5,
+        "reference_norm": 0.06162376105194013,
+        "other_norm": 0.08582692418011582,
+        "ratio": 1.3927569936501578,
+        "cosine": 0.41020147165579696,
+        "KL_nonzero_cohorts": 5
+      }
+    ],
+    "cohorts": [
+      {
+        "cohort": 0,
+        "packets": 180,
+        "losses": {
+          "PAIRED_CE": 0.11216410249471664,
+          "SYMMETRIC_KL": 0.04599189758300781
+        },
+        "stochastic1_correct": 176,
+        "stochastic2_correct": 179,
+        "eval_correct": 179,
+        "stochastic_disagreements": 4,
+        "joint160_pair_cosine_mean": 0.4903502555163198,
+        "joint160_pair_L2_mean": 9.90715497341397
+      },
+      {
+        "cohort": 1,
+        "packets": 180,
+        "losses": {
+          "PAIRED_CE": 0.08790680766105652,
+          "SYMMETRIC_KL": 0.017592638731002808
+        },
+        "stochastic1_correct": 180,
+        "stochastic2_correct": 180,
+        "eval_correct": 179,
+        "stochastic_disagreements": 0,
+        "joint160_pair_cosine_mean": 0.4304248340250091,
+        "joint160_pair_L2_mean": 10.500794061530005
+      },
+      {
+        "cohort": 2,
+        "packets": 180,
+        "losses": {
+          "PAIRED_CE": 0.11259780824184418,
+          "SYMMETRIC_KL": 0.03691373020410538
+        },
+        "stochastic1_correct": 177,
+        "stochastic2_correct": 178,
+        "eval_correct": 180,
+        "stochastic_disagreements": 4,
+        "joint160_pair_cosine_mean": 0.49107782650517384,
+        "joint160_pair_L2_mean": 9.851390302413044
+      },
+      {
+        "cohort": 3,
+        "packets": 180,
+        "losses": {
+          "PAIRED_CE": 0.09557859599590302,
+          "SYMMETRIC_KL": 0.027756772935390472
+        },
+        "stochastic1_correct": 180,
+        "stochastic2_correct": 178,
+        "eval_correct": 179,
+        "stochastic_disagreements": 2,
+        "joint160_pair_cosine_mean": 0.4642795990627349,
+        "joint160_pair_L2_mean": 10.152002437642528
+      },
+      {
+        "cohort": 4,
+        "packets": 180,
+        "losses": {
+          "PAIRED_CE": 0.09319039434194565,
+          "SYMMETRIC_KL": 0.020488064736127853
+        },
+        "stochastic1_correct": 180,
+        "stochastic2_correct": 180,
+        "eval_correct": 180,
+        "stochastic_disagreements": 0,
+        "joint160_pair_cosine_mean": 0.440275185231341,
+        "joint160_pair_L2_mean": 10.396743461959623
+      }
+    ]
+  },
+  "qualification": {
+    "status": "PASS",
+    "fixed_rules": {
+      "source_only": true,
+      "KL_positive": true,
+      "KL_actual_t1_t2_SIG_nonzero_each_of5": true,
+      "global_gradient_cosine_with_paired_CE_min": 0,
+      "model_state_and_default_head_unchanged": true,
+      "no_automatic_training_release": true,
+      "on_pass": "Only separately registered unchanged02/03 source check",
+      "on_fail": "Preserve negative evidence; no coefficient, parent or dropout scans"
+    },
+    "source_only": true,
+    "no_automatic_training_release": true,
+    "target_metrics_used": false
+  },
+  "source_packets": 900,
+  "model_forward_packets": 2700,
+  "model_parameters_buffers_unchanged": true,
+  "head_fit_updates": 0,
+  "optimizer_steps": 0,
+  "U_IQ_read": false,
+  "U_truth_read": false,
+  "V_cache_materialized_then_discarded": true,
+  "V_forward": false,
+  "V_gradient": false,
+  "query_read": false,
+  "seconds": 2.897151231765747,
+  "limitation": "Frozen final50 L source proxy; gradients and KL do not prove early training, U correctness, DG or84. Default classW derivative is measured but never fitted or updated.",
+  "aggregates": {
+    "source_packets": 900,
+    "stochastic_packet_observations": 1800,
+    "eval_packet_observations": 900,
+    "stochastic_disagreements": 10,
+    "stochastic_correct": 1788,
+    "eval_correct": 897,
+    "mean_symmetric_KL": 0.029748620837926863,
+    "mean_paired_CE": 0.1002875417470932,
+    "mean_pair_joint160_cosine": 0.4632815400681157,
+    "mean_pair_joint160_L2": 10.161617047391834
+  }
+}

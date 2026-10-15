@@ -1,0 +1,10729 @@
+{
+  "status": "VERIFIED",
+  "run_ids": [
+    "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+    "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
+  ],
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "model_seed_count": 3,
+  "models": 9,
+  "newly_trained_models": 6,
+  "baseline_reused_models": 3,
+  "default_decision_count": 1512000,
+  "metric_records": 162,
+  "summary": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "seed_count": 3,
+      "accuracy_mean": 0.8052678571428572,
+      "accuracy_sd": 0.023775723031464996,
+      "seed_accuracy": {
+        "2026092701": 0.8066845238095238,
+        "2026092702": 0.7808154761904762,
+        "2026092703": 0.8283035714285715
+      },
+      "macro_f1_mean": 0.8000238637751929,
+      "worst_RX_mean": 0.6797083333333334,
+      "worst_day_mean": 0.7605555555555555
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed_count": 3,
+      "accuracy_mean": 0.8269623015873016,
+      "accuracy_sd": 0.016241440198581918,
+      "seed_accuracy": {
+        "2026092701": 0.8363690476190476,
+        "2026092702": 0.8082083333333333,
+        "2026092703": 0.8363095238095238
+      },
+      "macro_f1_mean": 0.8214679611805926,
+      "worst_RX_mean": 0.7036805555555555,
+      "worst_day_mean": 0.7847857142857143
+    },
+    {
+      "arm": "SINC_UNITS",
+      "seed_count": 3,
+      "accuracy_mean": 0.8322321428571429,
+      "accuracy_sd": 0.004922338334830321,
+      "seed_accuracy": {
+        "2026092701": 0.8335476190476191,
+        "2026092702": 0.8267857142857142,
+        "2026092703": 0.8363630952380953
+      },
+      "macro_f1_mean": 0.827548962704833,
+      "worst_RX_mean": 0.7070277777777778,
+      "worst_day_mean": 0.793484126984127
+    }
+  ],
+  "paired": [
+    {
+      "arm": "SINC_UNITS",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        -0.0028214285714285303,
+        0.01857738095238093,
+        0.0000535714285714306
+      ],
+      "mean_difference": 0.005269841269841276,
+      "sd_difference": 0.01161397285823312,
+      "positive_seeds": 2,
+      "same_ID_errors": {
+        "decisions": 504000,
+        "corrected_errors": 13473,
+        "introduced_errors": 10817,
+        "net_correct": 2656
+      }
+    },
+    {
+      "arm": "SINC_UNITS",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.02686309523809527,
+        0.045970238095238036,
+        0.008059523809523794
+      ],
+      "mean_difference": 0.0269642857142857,
+      "sd_difference": 0.018955559713382725,
+      "positive_seeds": 3,
+      "same_ID_errors": {
+        "decisions": 504000,
+        "corrected_errors": 30648,
+        "introduced_errors": 17058,
+        "net_correct": 13590
+      }
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.0296845238095238,
+        0.027392857142857108,
+        0.008005952380952364
+      ],
+      "mean_difference": 0.021694444444444422,
+      "sd_difference": 0.011909829774475857,
+      "positive_seeds": 3,
+      "same_ID_errors": {
+        "decisions": 504000,
+        "corrected_errors": 27628,
+        "introduced_errors": 16694,
+        "net_correct": 10934
+      }
+    }
+  ],
+  "records": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8066845238095238,
+      "macro_f1": 0.8017335328586674,
+      "macro_accuracy": 0.8066845238095238,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27366,
+          102,
+          194,
+          212,
+          75,
+          51
+        ],
+        [
+          663,
+          13628,
+          33,
+          13530,
+          118,
+          28
+        ],
+        [
+          846,
+          422,
+          22373,
+          264,
+          1013,
+          3082
+        ],
+        [
+          3467,
+          6571,
+          251,
+          17687,
+          10,
+          14
+        ],
+        [
+          6,
+          12,
+          23,
+          6,
+          27949,
+          4
+        ],
+        [
+          10,
+          15,
+          719,
+          4,
+          732,
+          26520
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.830375,
+      "macro_f1": 0.8172884729892399,
+      "macro_accuracy": 0.8303750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3997,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          79,
+          1375,
+          1,
+          2544,
+          1,
+          0
+        ],
+        [
+          377,
+          4,
+          3468,
+          1,
+          0,
+          150
+        ],
+        [
+          233,
+          24,
+          4,
+          3739,
+          0,
+          0
+        ],
+        [
+          1,
+          4,
+          8,
+          2,
+          3985,
+          0
+        ],
+        [
+          3,
+          1,
+          627,
+          2,
+          2,
+          3365
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7061666666666667,
+      "macro_f1": 0.6853753367654388,
+      "macro_accuracy": 0.7061666666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          0,
+          0,
+          4,
+          0,
+          0
+        ],
+        [
+          9,
+          2036,
+          0,
+          1953,
+          2,
+          0
+        ],
+        [
+          64,
+          1,
+          2925,
+          2,
+          3,
+          1005
+        ],
+        [
+          54,
+          3651,
+          229,
+          58,
+          1,
+          7
+        ],
+        [
+          0,
+          3,
+          3,
+          1,
+          3992,
+          1
+        ],
+        [
+          0,
+          0,
+          9,
+          2,
+          48,
+          3941
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8699166666666667,
+      "macro_f1": 0.8672982470863246,
+      "macro_accuracy": 0.8699166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3590,
+          90,
+          158,
+          101,
+          61,
+          0
+        ],
+        [
+          8,
+          2063,
+          9,
+          1838,
+          68,
+          14
+        ],
+        [
+          40,
+          4,
+          3920,
+          12,
+          18,
+          6
+        ],
+        [
+          33,
+          639,
+          2,
+          3322,
+          1,
+          3
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          3998,
+          0
+        ],
+        [
+          0,
+          4,
+          9,
+          0,
+          2,
+          3985
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7254166666666667,
+      "macro_f1": 0.7264113050957538,
+      "macro_accuracy": 0.7254166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3971,
+          3,
+          15,
+          6,
+          3,
+          2
+        ],
+        [
+          29,
+          1748,
+          2,
+          2200,
+          9,
+          12
+        ],
+        [
+          136,
+          278,
+          2544,
+          178,
+          801,
+          63
+        ],
+        [
+          32,
+          2066,
+          13,
+          1881,
+          7,
+          1
+        ],
+        [
+          5,
+          5,
+          8,
+          2,
+          3978,
+          2
+        ],
+        [
+          7,
+          3,
+          71,
+          0,
+          631,
+          3288
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.873125,
+      "macro_f1": 0.8618630030139972,
+      "macro_accuracy": 0.8731249999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3832,
+          0,
+          21,
+          89,
+          9,
+          49
+        ],
+        [
+          14,
+          1430,
+          4,
+          2549,
+          3,
+          0
+        ],
+        [
+          8,
+          11,
+          3801,
+          17,
+          154,
+          9
+        ],
+        [
+          8,
+          44,
+          1,
+          3946,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          5,
+          1,
+          0,
+          47,
+          3947
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7914166666666667,
+      "macro_f1": 0.773705120944035,
+      "macro_accuracy": 0.7914166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3996,
+          4,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          522,
+          2311,
+          16,
+          1118,
+          31,
+          2
+        ],
+        [
+          63,
+          1,
+          3934,
+          1,
+          1,
+          0
+        ],
+        [
+          3104,
+          134,
+          1,
+          758,
+          1,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          0,
+          2,
+          1,
+          0,
+          1,
+          3996
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.850375,
+      "macro_f1": 0.838859708437757,
+      "macro_accuracy": 0.8503750000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3984,
+          4,
+          0,
+          11,
+          1,
+          0
+        ],
+        [
+          2,
+          2665,
+          1,
+          1328,
+          4,
+          0
+        ],
+        [
+          158,
+          123,
+          1781,
+          53,
+          36,
+          1849
+        ],
+        [
+          3,
+          13,
+          1,
+          3983,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          1,
+          3998
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9773571428571428,
+      "macro_f1": 0.16475815482426037,
+      "macro_accuracy": 0.9773571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27366,
+          102,
+          194,
+          212,
+          75,
+          51
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4867142857142857,
+      "macro_f1": 0.10912526824893502,
+      "macro_accuracy": 0.4867142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          663,
+          13628,
+          33,
+          13530,
+          118,
+          28
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7990357142857143,
+      "macro_f1": 0.14804888862419682,
+      "macro_accuracy": 0.7990357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          846,
+          422,
+          22373,
+          264,
+          1013,
+          3082
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6316785714285714,
+      "macro_f1": 0.12904473190769075,
+      "macro_accuracy": 0.6316785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3467,
+          6571,
+          251,
+          17687,
+          10,
+          14
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9981785714285715,
+      "macro_f1": 0.16651474259295668,
+      "macro_accuracy": 0.9981785714285715,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          12,
+          23,
+          6,
+          27949,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9471428571428572,
+      "macro_f1": 0.16214233308877476,
+      "macro_accuracy": 0.9471428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          15,
+          719,
+          4,
+          732,
+          26520
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.792404761904762,
+      "macro_f1": 0.785626106680838,
+      "macro_accuracy": 0.7924047619047618,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6678,
+          29,
+          83,
+          141,
+          20,
+          49
+        ],
+        [
+          226,
+          2891,
+          21,
+          3776,
+          71,
+          15
+        ],
+        [
+          180,
+          29,
+          5383,
+          234,
+          71,
+          1103
+        ],
+        [
+          881,
+          1464,
+          144,
+          4504,
+          5,
+          2
+        ],
+        [
+          2,
+          3,
+          8,
+          1,
+          6984,
+          2
+        ],
+        [
+          1,
+          4,
+          76,
+          0,
+          78,
+          6841
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8350238095238095,
+      "macro_f1": 0.8315746782363199,
+      "macro_accuracy": 0.8350238095238094,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6822,
+          34,
+          96,
+          5,
+          42,
+          1
+        ],
+        [
+          68,
+          4012,
+          4,
+          2910,
+          5,
+          1
+        ],
+        [
+          197,
+          93,
+          6287,
+          16,
+          54,
+          353
+        ],
+        [
+          971,
+          1969,
+          30,
+          4020,
+          2,
+          8
+        ],
+        [
+          2,
+          4,
+          7,
+          1,
+          6984,
+          2
+        ],
+        [
+          6,
+          1,
+          8,
+          0,
+          39,
+          6946
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7545238095238095,
+      "macro_f1": 0.7475948582531378,
+      "macro_accuracy": 0.7545238095238095,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6925,
+          10,
+          12,
+          44,
+          9,
+          0
+        ],
+        [
+          168,
+          2743,
+          4,
+          4066,
+          13,
+          6
+        ],
+        [
+          455,
+          259,
+          5292,
+          10,
+          112,
+          872
+        ],
+        [
+          1006,
+          2060,
+          6,
+          3926,
+          0,
+          2
+        ],
+        [
+          2,
+          1,
+          4,
+          4,
+          6989,
+          0
+        ],
+        [
+          0,
+          6,
+          583,
+          2,
+          594,
+          5815
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8447857142857143,
+      "macro_f1": 0.8401276562648019,
+      "macro_accuracy": 0.8447857142857144,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6941,
+          29,
+          3,
+          22,
+          4,
+          1
+        ],
+        [
+          201,
+          3982,
+          4,
+          2778,
+          29,
+          6
+        ],
+        [
+          14,
+          41,
+          5411,
+          4,
+          776,
+          754
+        ],
+        [
+          609,
+          1078,
+          71,
+          5237,
+          3,
+          2
+        ],
+        [
+          0,
+          4,
+          4,
+          0,
+          6992,
+          0
+        ],
+        [
+          3,
+          4,
+          52,
+          2,
+          21,
+          6918
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8363690476190476,
+      "macro_f1": 0.832033225769151,
+      "macro_accuracy": 0.8363690476190476,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27414,
+          104,
+          185,
+          216,
+          50,
+          31
+        ],
+        [
+          861,
+          15468,
+          98,
+          11368,
+          143,
+          62
+        ],
+        [
+          1858,
+          54,
+          22690,
+          29,
+          358,
+          3011
+        ],
+        [
+          2902,
+          4556,
+          680,
+          19799,
+          12,
+          51
+        ],
+        [
+          11,
+          18,
+          27,
+          8,
+          27886,
+          50
+        ],
+        [
+          22,
+          23,
+          199,
+          8,
+          495,
+          27253
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7969583333333333,
+      "macro_f1": 0.7746670070094565,
+      "macro_accuracy": 0.7969583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3975,
+          9,
+          8,
+          7,
+          1,
+          0
+        ],
+        [
+          162,
+          1370,
+          7,
+          2458,
+          3,
+          0
+        ],
+        [
+          904,
+          1,
+          1991,
+          3,
+          2,
+          1099
+        ],
+        [
+          59,
+          44,
+          0,
+          3897,
+          0,
+          0
+        ],
+        [
+          2,
+          9,
+          3,
+          2,
+          3984,
+          0
+        ],
+        [
+          4,
+          14,
+          67,
+          2,
+          3,
+          3910
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7092083333333333,
+      "macro_f1": 0.693748996308435,
+      "macro_accuracy": 0.7092083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3992,
+          0,
+          0,
+          8,
+          0,
+          0
+        ],
+        [
+          0,
+          1641,
+          0,
+          2355,
+          4,
+          0
+        ],
+        [
+          121,
+          1,
+          2746,
+          2,
+          3,
+          1127
+        ],
+        [
+          364,
+          2317,
+          557,
+          724,
+          2,
+          36
+        ],
+        [
+          1,
+          1,
+          5,
+          0,
+          3993,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          1,
+          72,
+          3925
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8797083333333333,
+      "macro_f1": 0.8776828749442744,
+      "macro_accuracy": 0.8797083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3659,
+          61,
+          98,
+          133,
+          42,
+          7
+        ],
+        [
+          19,
+          2548,
+          27,
+          1280,
+          112,
+          14
+        ],
+        [
+          760,
+          11,
+          3199,
+          8,
+          9,
+          13
+        ],
+        [
+          34,
+          231,
+          4,
+          3723,
+          4,
+          4
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          3998,
+          0
+        ],
+        [
+          1,
+          3,
+          5,
+          3,
+          2,
+          3986
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.8072916666666666,
+      "macro_f1": 0.8057000742614925,
+      "macro_accuracy": 0.8072916666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3979,
+          2,
+          8,
+          2,
+          6,
+          3
+        ],
+        [
+          60,
+          2019,
+          35,
+          1836,
+          7,
+          43
+        ],
+        [
+          23,
+          30,
+          3820,
+          15,
+          40,
+          72
+        ],
+        [
+          37,
+          1751,
+          17,
+          2184,
+          6,
+          5
+        ],
+        [
+          8,
+          7,
+          17,
+          5,
+          3914,
+          49
+        ],
+        [
+          11,
+          5,
+          112,
+          1,
+          412,
+          3459
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.9187083333333333,
+      "macro_f1": 0.9166159806808197,
+      "macro_accuracy": 0.9187083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3912,
+          0,
+          48,
+          21,
+          0,
+          19
+        ],
+        [
+          35,
+          2569,
+          4,
+          1389,
+          3,
+          0
+        ],
+        [
+          9,
+          2,
+          3647,
+          0,
+          302,
+          40
+        ],
+        [
+          13,
+          54,
+          2,
+          3929,
+          0,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          3,
+          0,
+          0,
+          1,
+          3,
+          3993
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8480833333333333,
+      "macro_f1": 0.8379117870242161,
+      "macro_accuracy": 0.8480833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3975,
+          23,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          581,
+          3039,
+          22,
+          340,
+          13,
+          5
+        ],
+        [
+          16,
+          1,
+          3981,
+          1,
+          1,
+          0
+        ],
+        [
+          2391,
+          126,
+          100,
+          1379,
+          0,
+          4
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          15,
+          0,
+          3,
+          3981
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.894625,
+      "macro_f1": 0.8911850481841154,
+      "macro_accuracy": 0.894625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3922,
+          9,
+          23,
+          43,
+          1,
+          2
+        ],
+        [
+          4,
+          2282,
+          3,
+          1710,
+          1,
+          0
+        ],
+        [
+          25,
+          8,
+          3306,
+          0,
+          1,
+          660
+        ],
+        [
+          4,
+          33,
+          0,
+          3963,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9790714285714286,
+      "macro_f1": 0.16490417584004044,
+      "macro_accuracy": 0.9790714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27414,
+          104,
+          185,
+          216,
+          50,
+          31
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5524285714285714,
+      "macro_f1": 0.11861599337443636,
+      "macro_accuracy": 0.5524285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          861,
+          15468,
+          98,
+          11368,
+          143,
+          62
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8103571428571429,
+      "macro_f1": 0.1492076017623463,
+      "macro_accuracy": 0.8103571428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1858,
+          54,
+          22690,
+          29,
+          358,
+          3011
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.7071071428571428,
+      "macro_f1": 0.13807122882626555,
+      "macro_accuracy": 0.7071071428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2902,
+          4556,
+          680,
+          19799,
+          12,
+          51
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9959285714285714,
+      "macro_f1": 0.1663266888546923,
+      "macro_accuracy": 0.9959285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          11,
+          18,
+          27,
+          8,
+          27886,
+          50
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9733214285714286,
+      "macro_f1": 0.164413395351082,
+      "macro_accuracy": 0.9733214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          22,
+          23,
+          199,
+          8,
+          495,
+          27253
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7892142857142858,
+      "macro_f1": 0.778643293113479,
+      "macro_accuracy": 0.7892142857142858,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6767,
+          12,
+          109,
+          82,
+          11,
+          19
+        ],
+        [
+          276,
+          2957,
+          29,
+          3605,
+          86,
+          47
+        ],
+        [
+          768,
+          9,
+          4526,
+          12,
+          60,
+          1625
+        ],
+        [
+          846,
+          727,
+          232,
+          5186,
+          7,
+          2
+        ],
+        [
+          3,
+          1,
+          6,
+          1,
+          6959,
+          30
+        ],
+        [
+          5,
+          4,
+          109,
+          1,
+          129,
+          6752
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8624285714285714,
+      "macro_f1": 0.859048462258344,
+      "macro_accuracy": 0.8624285714285715,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6847,
+          34,
+          60,
+          27,
+          26,
+          6
+        ],
+        [
+          48,
+          4437,
+          10,
+          2498,
+          5,
+          2
+        ],
+        [
+          40,
+          14,
+          6697,
+          6,
+          29,
+          214
+        ],
+        [
+          784,
+          1612,
+          253,
+          4323,
+          1,
+          27
+        ],
+        [
+          4,
+          7,
+          18,
+          3,
+          6949,
+          19
+        ],
+        [
+          4,
+          2,
+          3,
+          1,
+          21,
+          6969
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.8122619047619047,
+      "macro_f1": 0.8084893922605518,
+      "macro_accuracy": 0.8122619047619049,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6927,
+          10,
+          14,
+          40,
+          8,
+          1
+        ],
+        [
+          134,
+          3445,
+          12,
+          3389,
+          16,
+          4
+        ],
+        [
+          1015,
+          13,
+          5772,
+          8,
+          22,
+          170
+        ],
+        [
+          943,
+          1591,
+          42,
+          4418,
+          2,
+          4
+        ],
+        [
+          3,
+          5,
+          1,
+          3,
+          6987,
+          1
+        ],
+        [
+          5,
+          16,
+          74,
+          4,
+          335,
+          6566
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8815714285714286,
+      "macro_f1": 0.878514035756817,
+      "macro_accuracy": 0.8815714285714286,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6873,
+          48,
+          2,
+          67,
+          5,
+          5
+        ],
+        [
+          403,
+          4629,
+          47,
+          1876,
+          36,
+          9
+        ],
+        [
+          35,
+          18,
+          5695,
+          3,
+          247,
+          1002
+        ],
+        [
+          329,
+          626,
+          153,
+          5872,
+          2,
+          18
+        ],
+        [
+          1,
+          5,
+          2,
+          1,
+          6991,
+          0
+        ],
+        [
+          8,
+          1,
+          13,
+          2,
+          10,
+          6966
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8335476190476191,
+      "macro_f1": 0.828672233606321,
+      "macro_accuracy": 0.8335476190476191,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27132,
+          109,
+          207,
+          420,
+          74,
+          58
+        ],
+        [
+          802,
+          14805,
+          134,
+          11888,
+          318,
+          53
+        ],
+        [
+          676,
+          233,
+          23206,
+          50,
+          552,
+          3283
+        ],
+        [
+          3148,
+          4010,
+          865,
+          19897,
+          15,
+          65
+        ],
+        [
+          4,
+          17,
+          32,
+          7,
+          27912,
+          28
+        ],
+        [
+          17,
+          29,
+          149,
+          8,
+          713,
+          27084
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8717083333333333,
+      "macro_f1": 0.8583033221375569,
+      "macro_accuracy": 0.8717083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3992,
+          3,
+          2,
+          3,
+          0,
+          0
+        ],
+        [
+          217,
+          1444,
+          10,
+          2327,
+          2,
+          0
+        ],
+        [
+          9,
+          2,
+          3688,
+          2,
+          3,
+          296
+        ],
+        [
+          48,
+          43,
+          2,
+          3907,
+          0,
+          0
+        ],
+        [
+          1,
+          7,
+          4,
+          3,
+          3985,
+          0
+        ],
+        [
+          4,
+          20,
+          68,
+          1,
+          2,
+          3905
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6715,
+      "macro_f1": 0.6495617264137306,
+      "macro_accuracy": 0.6715,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3997,
+          0,
+          0,
+          3,
+          0,
+          0
+        ],
+        [
+          0,
+          687,
+          0,
+          3309,
+          4,
+          0
+        ],
+        [
+          14,
+          14,
+          2886,
+          2,
+          6,
+          1078
+        ],
+        [
+          710,
+          1712,
+          750,
+          778,
+          2,
+          48
+        ],
+        [
+          0,
+          2,
+          4,
+          0,
+          3993,
+          1
+        ],
+        [
+          0,
+          0,
+          5,
+          2,
+          218,
+          3775
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8790833333333333,
+      "macro_f1": 0.8763564378169374,
+      "macro_accuracy": 0.8790833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3535,
+          67,
+          151,
+          178,
+          63,
+          6
+        ],
+        [
+          24,
+          2550,
+          66,
+          1087,
+          258,
+          15
+        ],
+        [
+          561,
+          91,
+          3299,
+          17,
+          10,
+          22
+        ],
+        [
+          27,
+          227,
+          5,
+          3731,
+          5,
+          5
+        ],
+        [
+          0,
+          0,
+          1,
+          2,
+          3997,
+          0
+        ],
+        [
+          0,
+          4,
+          5,
+          1,
+          4,
+          3986
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.8019166666666667,
+      "macro_f1": 0.8014799808244907,
+      "macro_accuracy": 0.8019166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3974,
+          1,
+          9,
+          3,
+          8,
+          5
+        ],
+        [
+          43,
+          2106,
+          27,
+          1791,
+          9,
+          24
+        ],
+        [
+          16,
+          89,
+          3668,
+          24,
+          86,
+          117
+        ],
+        [
+          27,
+          1817,
+          17,
+          2126,
+          7,
+          6
+        ],
+        [
+          3,
+          6,
+          22,
+          2,
+          3942,
+          25
+        ],
+        [
+          11,
+          5,
+          70,
+          2,
+          482,
+          3430
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.9212083333333333,
+      "macro_f1": 0.9199549912686121,
+      "macro_accuracy": 0.9212083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3903,
+          1,
+          21,
+          32,
+          1,
+          42
+        ],
+        [
+          17,
+          2825,
+          4,
+          1150,
+          4,
+          0
+        ],
+        [
+          2,
+          6,
+          3460,
+          1,
+          438,
+          93
+        ],
+        [
+          9,
+          59,
+          3,
+          3927,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          2,
+          3,
+          3995
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8558333333333333,
+      "macro_f1": 0.8462894391175211,
+      "macro_accuracy": 0.8558333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3972,
+          28,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          501,
+          3134,
+          24,
+          288,
+          39,
+          14
+        ],
+        [
+          16,
+          1,
+          3981,
+          1,
+          1,
+          0
+        ],
+        [
+          2323,
+          123,
+          88,
+          1461,
+          0,
+          5
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          3997,
+          1
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          3,
+          3995
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8335833333333333,
+      "macro_f1": 0.8256641619334552,
+      "macro_accuracy": 0.8335833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3759,
+          9,
+          24,
+          201,
+          2,
+          5
+        ],
+        [
+          0,
+          2059,
+          3,
+          1936,
+          2,
+          0
+        ],
+        [
+          58,
+          30,
+          2224,
+          3,
+          8,
+          1677
+        ],
+        [
+          4,
+          29,
+          0,
+          3967,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          1,
+          3998
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.969,
+      "macro_f1": 0.16404266124936515,
+      "macro_accuracy": 0.969,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27132,
+          109,
+          207,
+          420,
+          74,
+          58
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.52875,
+      "macro_f1": 0.11529026982829109,
+      "macro_accuracy": 0.52875,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          802,
+          14805,
+          134,
+          11888,
+          318,
+          53
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8287857142857142,
+      "macro_f1": 0.15106302646825243,
+      "macro_accuracy": 0.8287857142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          676,
+          233,
+          23206,
+          50,
+          552,
+          3283
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.7106071428571429,
+      "macro_f1": 0.13847074625411473,
+      "macro_accuracy": 0.7106071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3148,
+          4010,
+          865,
+          19897,
+          15,
+          65
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9968571428571429,
+      "macro_f1": 0.16640434969237375,
+      "macro_accuracy": 0.9968571428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          4,
+          17,
+          32,
+          7,
+          27912,
+          28
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9672857142857143,
+      "macro_f1": 0.1638951419649989,
+      "macro_accuracy": 0.9672857142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          17,
+          29,
+          149,
+          8,
+          713,
+          27084
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7883333333333333,
+      "macro_f1": 0.7774013923496282,
+      "macro_accuracy": 0.7883333333333334,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6740,
+          9,
+          99,
+          103,
+          10,
+          39
+        ],
+        [
+          206,
+          2743,
+          86,
+          3793,
+          141,
+          31
+        ],
+        [
+          572,
+          93,
+          4961,
+          14,
+          151,
+          1209
+        ],
+        [
+          1060,
+          617,
+          179,
+          5135,
+          6,
+          3
+        ],
+        [
+          2,
+          2,
+          6,
+          1,
+          6972,
+          17
+        ],
+        [
+          5,
+          4,
+          67,
+          2,
+          363,
+          6559
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.852452380952381,
+      "macro_f1": 0.8489857353848231,
+      "macro_accuracy": 0.8524523809523809,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6716,
+          47,
+          86,
+          102,
+          38,
+          11
+        ],
+        [
+          32,
+          4576,
+          7,
+          2374,
+          8,
+          3
+        ],
+        [
+          76,
+          44,
+          6318,
+          8,
+          50,
+          504
+        ],
+        [
+          839,
+          1411,
+          424,
+          4295,
+          1,
+          30
+        ],
+        [
+          1,
+          5,
+          21,
+          0,
+          6964,
+          9
+        ],
+        [
+          5,
+          3,
+          6,
+          0,
+          52,
+          6934
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.821595238095238,
+      "macro_f1": 0.8173431199995321,
+      "macro_accuracy": 0.8215952380952382,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6836,
+          20,
+          19,
+          106,
+          16,
+          3
+        ],
+        [
+          128,
+          3479,
+          7,
+          3349,
+          31,
+          6
+        ],
+        [
+          19,
+          31,
+          6073,
+          22,
+          21,
+          834
+        ],
+        [
+          931,
+          1530,
+          32,
+          4498,
+          3,
+          6
+        ],
+        [
+          1,
+          5,
+          3,
+          5,
+          6984,
+          2
+        ],
+        [
+          2,
+          19,
+          57,
+          5,
+          280,
+          6637
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092701,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8718095238095238,
+      "macro_f1": 0.8669025347852553,
+      "macro_accuracy": 0.8718095238095239,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6840,
+          33,
+          3,
+          109,
+          10,
+          5
+        ],
+        [
+          436,
+          4007,
+          34,
+          2372,
+          138,
+          13
+        ],
+        [
+          9,
+          65,
+          5854,
+          6,
+          330,
+          736
+        ],
+        [
+          318,
+          452,
+          230,
+          5969,
+          5,
+          26
+        ],
+        [
+          0,
+          5,
+          2,
+          1,
+          6992,
+          0
+        ],
+        [
+          5,
+          3,
+          19,
+          1,
+          18,
+          6954
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.7808154761904762,
+      "macro_f1": 0.7751657485675612,
+      "macro_accuracy": 0.7808154761904761,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27528,
+          124,
+          83,
+          208,
+          48,
+          9
+        ],
+        [
+          730,
+          12343,
+          36,
+          14775,
+          81,
+          35
+        ],
+        [
+          1772,
+          1790,
+          19046,
+          410,
+          806,
+          4176
+        ],
+        [
+          3016,
+          7040,
+          100,
+          17777,
+          14,
+          53
+        ],
+        [
+          6,
+          10,
+          20,
+          7,
+          27956,
+          1
+        ],
+        [
+          39,
+          250,
+          355,
+          27,
+          802,
+          26527
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8437916666666667,
+      "macro_f1": 0.8277693524658352,
+      "macro_accuracy": 0.8437916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3995,
+          1,
+          1,
+          1,
+          2,
+          0
+        ],
+        [
+          175,
+          1240,
+          6,
+          2577,
+          2,
+          0
+        ],
+        [
+          40,
+          2,
+          3402,
+          2,
+          3,
+          551
+        ],
+        [
+          255,
+          25,
+          1,
+          3719,
+          0,
+          0
+        ],
+        [
+          1,
+          5,
+          7,
+          2,
+          3985,
+          0
+        ],
+        [
+          3,
+          73,
+          7,
+          2,
+          5,
+          3910
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.5867083333333334,
+      "macro_f1": 0.5747258603313432,
+      "macro_accuracy": 0.5867083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          4000,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          19,
+          797,
+          0,
+          3181,
+          3,
+          0
+        ],
+        [
+          272,
+          639,
+          1440,
+          1,
+          70,
+          1578
+        ],
+        [
+          22,
+          3852,
+          55,
+          26,
+          2,
+          43
+        ],
+        [
+          0,
+          1,
+          2,
+          0,
+          3997,
+          0
+        ],
+        [
+          0,
+          1,
+          175,
+          1,
+          2,
+          3821
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8512083333333333,
+      "macro_f1": 0.8515045496088126,
+      "macro_accuracy": 0.8512083333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3705,
+          110,
+          64,
+          77,
+          40,
+          4
+        ],
+        [
+          21,
+          2187,
+          3,
+          1732,
+          34,
+          23
+        ],
+        [
+          224,
+          397,
+          3341,
+          21,
+          10,
+          7
+        ],
+        [
+          22,
+          738,
+          4,
+          3233,
+          1,
+          2
+        ],
+        [
+          0,
+          1,
+          1,
+          2,
+          3996,
+          0
+        ],
+        [
+          0,
+          1,
+          6,
+          0,
+          26,
+          3967
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7114583333333333,
+      "macro_f1": 0.7164235807707228,
+      "macro_accuracy": 0.7114583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3982,
+          1,
+          9,
+          2,
+          4,
+          2
+        ],
+        [
+          26,
+          1695,
+          11,
+          2254,
+          11,
+          3
+        ],
+        [
+          299,
+          568,
+          2751,
+          241,
+          74,
+          67
+        ],
+        [
+          22,
+          2165,
+          18,
+          1787,
+          6,
+          2
+        ],
+        [
+          5,
+          3,
+          7,
+          3,
+          3982,
+          0
+        ],
+        [
+          23,
+          167,
+          166,
+          24,
+          742,
+          2878
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8539166666666667,
+      "macro_f1": 0.8434756561671194,
+      "macro_accuracy": 0.8539166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3873,
+          0,
+          8,
+          115,
+          1,
+          3
+        ],
+        [
+          9,
+          1509,
+          2,
+          2473,
+          7,
+          0
+        ],
+        [
+          11,
+          62,
+          3192,
+          11,
+          645,
+          79
+        ],
+        [
+          4,
+          41,
+          1,
+          3952,
+          2,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          1,
+          7,
+          1,
+          0,
+          22,
+          3969
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.7933333333333333,
+      "macro_f1": 0.7856655393711797,
+      "macro_accuracy": 0.7933333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3994,
+          6,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          479,
+          2771,
+          12,
+          705,
+          24,
+          9
+        ],
+        [
+          763,
+          29,
+          3202,
+          4,
+          1,
+          1
+        ],
+        [
+          2690,
+          192,
+          20,
+          1089,
+          3,
+          6
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          12,
+          0,
+          0,
+          0,
+          3,
+          3985
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8252916666666666,
+      "macro_f1": 0.8108907260490796,
+      "macro_accuracy": 0.8252916666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3979,
+          6,
+          1,
+          13,
+          1,
+          0
+        ],
+        [
+          1,
+          2144,
+          2,
+          1853,
+          0,
+          0
+        ],
+        [
+          163,
+          93,
+          1718,
+          130,
+          3,
+          1893
+        ],
+        [
+          1,
+          27,
+          1,
+          3971,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          0,
+          2,
+          3997
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9831428571428571,
+      "macro_f1": 0.16524996398213512,
+      "macro_accuracy": 0.9831428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27528,
+          124,
+          83,
+          208,
+          48,
+          9
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4408214285714286,
+      "macro_f1": 0.1019838220591759,
+      "macro_accuracy": 0.4408214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          730,
+          12343,
+          36,
+          14775,
+          81,
+          35
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.6802142857142857,
+      "macro_f1": 0.13494593943516275,
+      "macro_accuracy": 0.6802142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1772,
+          1790,
+          19046,
+          410,
+          806,
+          4176
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6348928571428571,
+      "macro_f1": 0.12944637408888016,
+      "macro_accuracy": 0.6348928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          3016,
+          7040,
+          100,
+          17777,
+          14,
+          53
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9984285714285714,
+      "macro_f1": 0.16653561131365122,
+      "macro_accuracy": 0.9984285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          6,
+          10,
+          20,
+          7,
+          27956,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9473928571428571,
+      "macro_f1": 0.16216431003600662,
+      "macro_accuracy": 0.9473928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          39,
+          250,
+          355,
+          27,
+          802,
+          26527
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7536904761904762,
+      "macro_f1": 0.7458424763847958,
+      "macro_accuracy": 0.7536904761904762,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6747,
+          22,
+          42,
+          161,
+          23,
+          5
+        ],
+        [
+          199,
+          2893,
+          12,
+          3847,
+          38,
+          11
+        ],
+        [
+          629,
+          453,
+          4008,
+          352,
+          64,
+          1494
+        ],
+        [
+          833,
+          1696,
+          27,
+          4436,
+          5,
+          3
+        ],
+        [
+          1,
+          3,
+          8,
+          0,
+          6987,
+          1
+        ],
+        [
+          27,
+          3,
+          318,
+          9,
+          59,
+          6584
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8203333333333334,
+      "macro_f1": 0.8169550079299883,
+      "macro_accuracy": 0.8203333333333332,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6924,
+          22,
+          34,
+          6,
+          12,
+          2
+        ],
+        [
+          98,
+          3558,
+          2,
+          3329,
+          9,
+          4
+        ],
+        [
+          156,
+          215,
+          5746,
+          13,
+          78,
+          792
+        ],
+        [
+          633,
+          2008,
+          36,
+          4296,
+          3,
+          24
+        ],
+        [
+          3,
+          3,
+          3,
+          3,
+          6988,
+          0
+        ],
+        [
+          3,
+          2,
+          20,
+          0,
+          33,
+          6942
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7418571428571429,
+      "macro_f1": 0.7327977324162555,
+      "macro_accuracy": 0.7418571428571429,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6970,
+          11,
+          5,
+          6,
+          8,
+          0
+        ],
+        [
+          250,
+          2358,
+          10,
+          4360,
+          12,
+          10
+        ],
+        [
+          753,
+          264,
+          4730,
+          40,
+          236,
+          977
+        ],
+        [
+          955,
+          2153,
+          10,
+          3876,
+          4,
+          2
+        ],
+        [
+          1,
+          1,
+          7,
+          3,
+          6988,
+          0
+        ],
+        [
+          1,
+          81,
+          7,
+          2,
+          673,
+          6236
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8073809523809524,
+      "macro_f1": 0.80243494502055,
+      "macro_accuracy": 0.8073809523809524,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6887,
+          69,
+          2,
+          35,
+          5,
+          2
+        ],
+        [
+          183,
+          3534,
+          12,
+          3239,
+          22,
+          10
+        ],
+        [
+          234,
+          858,
+          4562,
+          5,
+          428,
+          913
+        ],
+        [
+          595,
+          1183,
+          27,
+          5169,
+          2,
+          24
+        ],
+        [
+          1,
+          3,
+          2,
+          1,
+          6993,
+          0
+        ],
+        [
+          8,
+          164,
+          10,
+          16,
+          37,
+          6765
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8082083333333333,
+      "macro_f1": 0.8005951035100134,
+      "macro_accuracy": 0.8082083333333333,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27477,
+          74,
+          62,
+          262,
+          69,
+          56
+        ],
+        [
+          1400,
+          12380,
+          59,
+          14005,
+          101,
+          55
+        ],
+        [
+          1510,
+          534,
+          21066,
+          233,
+          653,
+          4004
+        ],
+        [
+          2872,
+          4387,
+          781,
+          19869,
+          20,
+          71
+        ],
+        [
+          13,
+          7,
+          24,
+          7,
+          27945,
+          4
+        ],
+        [
+          19,
+          44,
+          181,
+          6,
+          708,
+          27042
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7802083333333333,
+      "macro_f1": 0.7483144097363282,
+      "macro_accuracy": 0.7802083333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3991,
+          0,
+          0,
+          1,
+          8,
+          0
+        ],
+        [
+          719,
+          918,
+          7,
+          2352,
+          4,
+          0
+        ],
+        [
+          1120,
+          1,
+          2034,
+          4,
+          1,
+          840
+        ],
+        [
+          99,
+          40,
+          0,
+          3861,
+          0,
+          0
+        ],
+        [
+          2,
+          3,
+          6,
+          4,
+          3985,
+          0
+        ],
+        [
+          3,
+          38,
+          18,
+          3,
+          2,
+          3936
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.6587083333333333,
+      "macro_f1": 0.6386274423862333,
+      "macro_accuracy": 0.6587083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3998,
+          0,
+          0,
+          2,
+          0,
+          0
+        ],
+        [
+          7,
+          896,
+          0,
+          3082,
+          15,
+          0
+        ],
+        [
+          108,
+          3,
+          2157,
+          3,
+          4,
+          1725
+        ],
+        [
+          426,
+          2000,
+          711,
+          796,
+          1,
+          66
+        ],
+        [
+          0,
+          1,
+          6,
+          0,
+          3993,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          31,
+          3969
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.9000833333333333,
+      "macro_f1": 0.897620817657501,
+      "macro_accuracy": 0.9000833333333332,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3752,
+          47,
+          48,
+          105,
+          46,
+          2
+        ],
+        [
+          107,
+          2326,
+          14,
+          1519,
+          25,
+          9
+        ],
+        [
+          11,
+          12,
+          3927,
+          17,
+          11,
+          22
+        ],
+        [
+          25,
+          358,
+          5,
+          3611,
+          1,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          2,
+          3996,
+          0
+        ],
+        [
+          1,
+          1,
+          4,
+          0,
+          4,
+          3990
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7629166666666667,
+      "macro_f1": 0.7597145444789994,
+      "macro_accuracy": 0.7629166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3982,
+          2,
+          6,
+          3,
+          6,
+          1
+        ],
+        [
+          45,
+          1355,
+          27,
+          2545,
+          11,
+          17
+        ],
+        [
+          32,
+          15,
+          3702,
+          62,
+          50,
+          139
+        ],
+        [
+          31,
+          1813,
+          10,
+          2136,
+          8,
+          2
+        ],
+        [
+          11,
+          2,
+          8,
+          1,
+          3976,
+          2
+        ],
+        [
+          9,
+          5,
+          159,
+          3,
+          665,
+          3159
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.8875,
+      "macro_f1": 0.8843909154986154,
+      "macro_accuracy": 0.8875000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3803,
+          0,
+          5,
+          139,
+          0,
+          53
+        ],
+        [
+          13,
+          2295,
+          3,
+          1682,
+          7,
+          0
+        ],
+        [
+          70,
+          33,
+          3269,
+          2,
+          585,
+          41
+        ],
+        [
+          9,
+          46,
+          0,
+          3938,
+          6,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          2,
+          0,
+          0,
+          0,
+          2,
+          3996
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8504166666666667,
+      "macro_f1": 0.8434678344945433,
+      "macro_accuracy": 0.8504166666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3986,
+          12,
+          1,
+          0,
+          1,
+          0
+        ],
+        [
+          508,
+          3024,
+          7,
+          400,
+          32,
+          29
+        ],
+        [
+          132,
+          2,
+          3861,
+          1,
+          0,
+          4
+        ],
+        [
+          2281,
+          112,
+          54,
+          1547,
+          4,
+          2
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          3,
+          0,
+          0,
+          0,
+          3,
+          3994
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.817625,
+      "macro_f1": 0.802624499028484,
+      "macro_accuracy": 0.817625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3965,
+          13,
+          2,
+          12,
+          8,
+          0
+        ],
+        [
+          1,
+          1566,
+          1,
+          2425,
+          7,
+          0
+        ],
+        [
+          37,
+          468,
+          2116,
+          144,
+          2,
+          1233
+        ],
+        [
+          1,
+          18,
+          1,
+          3980,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          3998,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          1,
+          3998
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9813214285714286,
+      "macro_f1": 0.16509544495917228,
+      "macro_accuracy": 0.9813214285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27477,
+          74,
+          62,
+          262,
+          69,
+          56
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4421428571428571,
+      "macro_f1": 0.10219580650487041,
+      "macro_accuracy": 0.4421428571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1400,
+          12380,
+          59,
+          14005,
+          101,
+          55
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7523571428571428,
+      "macro_f1": 0.14311335751844453,
+      "macro_accuracy": 0.7523571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1510,
+          534,
+          21066,
+          233,
+          653,
+          4004
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.7096071428571429,
+      "macro_f1": 0.13835676533873698,
+      "macro_accuracy": 0.7096071428571429,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2872,
+          4387,
+          781,
+          19869,
+          20,
+          71
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9980357142857142,
+      "macro_f1": 0.16650281526499242,
+      "macro_accuracy": 0.9980357142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          13,
+          7,
+          24,
+          7,
+          27945,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9657857142857142,
+      "macro_f1": 0.16376585153155773,
+      "macro_accuracy": 0.9657857142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          19,
+          44,
+          181,
+          6,
+          708,
+          27042
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.7863571428571429,
+      "macro_f1": 0.7733340684745195,
+      "macro_accuracy": 0.7863571428571428,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6713,
+          5,
+          36,
+          183,
+          9,
+          54
+        ],
+        [
+          314,
+          2299,
+          36,
+          4271,
+          36,
+          44
+        ],
+        [
+          64,
+          45,
+          5044,
+          71,
+          44,
+          1732
+        ],
+        [
+          613,
+          699,
+          446,
+          5234,
+          6,
+          2
+        ],
+        [
+          2,
+          0,
+          11,
+          1,
+          6983,
+          3
+        ],
+        [
+          5,
+          2,
+          156,
+          0,
+          83,
+          6754
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.832952380952381,
+      "macro_f1": 0.8288597713127389,
+      "macro_accuracy": 0.8329523809523809,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6919,
+          25,
+          13,
+          17,
+          25,
+          1
+        ],
+        [
+          180,
+          3687,
+          2,
+          3121,
+          9,
+          1
+        ],
+        [
+          42,
+          10,
+          5865,
+          13,
+          21,
+          1049
+        ],
+        [
+          633,
+          1696,
+          89,
+          4548,
+          1,
+          33
+        ],
+        [
+          7,
+          3,
+          8,
+          0,
+          6981,
+          1
+        ],
+        [
+          6,
+          1,
+          3,
+          1,
+          5,
+          6984
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7620238095238095,
+      "macro_f1": 0.754238969450654,
+      "macro_accuracy": 0.7620238095238094,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6938,
+          15,
+          10,
+          21,
+          16,
+          0
+        ],
+        [
+          663,
+          2667,
+          5,
+          3638,
+          22,
+          5
+        ],
+        [
+          1193,
+          466,
+          4682,
+          144,
+          44,
+          471
+        ],
+        [
+          930,
+          1658,
+          15,
+          4382,
+          8,
+          7
+        ],
+        [
+          3,
+          1,
+          3,
+          5,
+          6988,
+          0
+        ],
+        [
+          2,
+          38,
+          9,
+          3,
+          600,
+          6348
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8515,
+      "macro_f1": 0.8455856328137209,
+      "macro_accuracy": 0.8515,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6907,
+          29,
+          3,
+          41,
+          19,
+          1
+        ],
+        [
+          243,
+          3727,
+          16,
+          2975,
+          34,
+          5
+        ],
+        [
+          211,
+          13,
+          5475,
+          5,
+          544,
+          752
+        ],
+        [
+          696,
+          334,
+          231,
+          5705,
+          5,
+          29
+        ],
+        [
+          1,
+          3,
+          2,
+          1,
+          6993,
+          0
+        ],
+        [
+          6,
+          3,
+          13,
+          2,
+          20,
+          6956
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8267857142857142,
+      "macro_f1": 0.8222368352700714,
+      "macro_accuracy": 0.8267857142857143,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27384,
+          97,
+          81,
+          290,
+          78,
+          70
+        ],
+        [
+          1159,
+          15863,
+          24,
+          10765,
+          143,
+          46
+        ],
+        [
+          1184,
+          213,
+          20542,
+          116,
+          512,
+          5433
+        ],
+        [
+          2343,
+          5194,
+          325,
+          20042,
+          24,
+          72
+        ],
+        [
+          13,
+          10,
+          30,
+          18,
+          27923,
+          6
+        ],
+        [
+          22,
+          33,
+          173,
+          6,
+          620,
+          27146
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7958333333333333,
+      "macro_f1": 0.7699943330999628,
+      "macro_accuracy": 0.7958333333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3990,
+          1,
+          5,
+          3,
+          1,
+          0
+        ],
+        [
+          578,
+          1115,
+          3,
+          2299,
+          5,
+          0
+        ],
+        [
+          1049,
+          0,
+          2185,
+          5,
+          1,
+          760
+        ],
+        [
+          95,
+          27,
+          0,
+          3878,
+          0,
+          0
+        ],
+        [
+          4,
+          4,
+          5,
+          4,
+          3983,
+          0
+        ],
+        [
+          7,
+          25,
+          16,
+          2,
+          1,
+          3949
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.711875,
+      "macro_f1": 0.7011919889777042,
+      "macro_accuracy": 0.711875,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3993,
+          0,
+          0,
+          7,
+          0,
+          0
+        ],
+        [
+          3,
+          1987,
+          0,
+          1987,
+          23,
+          0
+        ],
+        [
+          3,
+          8,
+          2111,
+          2,
+          3,
+          1873
+        ],
+        [
+          87,
+          2515,
+          222,
+          1110,
+          1,
+          65
+        ],
+        [
+          1,
+          1,
+          5,
+          0,
+          3993,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          108,
+          3891
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.9045833333333333,
+      "macro_f1": 0.9043239995730318,
+      "macro_accuracy": 0.9045833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3639,
+          70,
+          60,
+          157,
+          68,
+          6
+        ],
+        [
+          23,
+          2709,
+          7,
+          1174,
+          80,
+          7
+        ],
+        [
+          12,
+          158,
+          3772,
+          22,
+          12,
+          24
+        ],
+        [
+          29,
+          355,
+          8,
+          3604,
+          4,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          2,
+          3996,
+          0
+        ],
+        [
+          1,
+          1,
+          3,
+          1,
+          4,
+          3990
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7665833333333333,
+      "macro_f1": 0.7651972524878624,
+      "macro_accuracy": 0.7665833333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3979,
+          2,
+          9,
+          1,
+          8,
+          1
+        ],
+        [
+          79,
+          1805,
+          5,
+          2076,
+          8,
+          27
+        ],
+        [
+          30,
+          18,
+          3433,
+          65,
+          72,
+          382
+        ],
+        [
+          39,
+          2045,
+          11,
+          1895,
+          8,
+          2
+        ],
+        [
+          8,
+          4,
+          16,
+          12,
+          3955,
+          5
+        ],
+        [
+          10,
+          4,
+          152,
+          3,
+          500,
+          3331
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.9285833333333333,
+      "macro_f1": 0.9281412380724388,
+      "macro_accuracy": 0.9285833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3844,
+          0,
+          4,
+          89,
+          0,
+          63
+        ],
+        [
+          11,
+          3027,
+          3,
+          954,
+          5,
+          0
+        ],
+        [
+          35,
+          5,
+          3520,
+          2,
+          417,
+          21
+        ],
+        [
+          9,
+          77,
+          0,
+          3907,
+          7,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          2,
+          3,
+          1,
+          0,
+          4,
+          3990
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8675416666666667,
+      "macro_f1": 0.8603822362893861,
+      "macro_accuracy": 0.8675416666666665,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3993,
+          7,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          464,
+          3222,
+          5,
+          278,
+          19,
+          12
+        ],
+        [
+          46,
+          1,
+          3943,
+          1,
+          1,
+          8
+        ],
+        [
+          2082,
+          158,
+          84,
+          1668,
+          3,
+          5
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          3,
+          3996
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8125,
+      "macro_f1": 0.7967882838780328,
+      "macro_accuracy": 0.8125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3946,
+          17,
+          3,
+          33,
+          1,
+          0
+        ],
+        [
+          1,
+          1998,
+          1,
+          1997,
+          3,
+          0
+        ],
+        [
+          9,
+          23,
+          1578,
+          19,
+          6,
+          2365
+        ],
+        [
+          2,
+          17,
+          0,
+          3980,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.978,
+      "macro_f1": 0.16481294236602628,
+      "macro_accuracy": 0.978,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27384,
+          97,
+          81,
+          290,
+          78,
+          70
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.5665357142857143,
+      "macro_f1": 0.12054959001132314,
+      "macro_accuracy": 0.5665357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1159,
+          15863,
+          24,
+          10765,
+          143,
+          46
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.7336428571428572,
+      "macro_f1": 0.14105997555381594,
+      "macro_accuracy": 0.7336428571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1184,
+          213,
+          20542,
+          116,
+          512,
+          5433
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.7157857142857142,
+      "macro_f1": 0.1390588790363987,
+      "macro_accuracy": 0.7157857142857142,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2343,
+          5194,
+          325,
+          20042,
+          24,
+          72
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.99725,
+      "macro_f1": 0.16643718446196853,
+      "macro_accuracy": 0.99725,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          13,
+          10,
+          30,
+          18,
+          27923,
+          6
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9695,
+      "macro_f1": 0.16408563933316409,
+      "macro_accuracy": 0.9695,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          22,
+          33,
+          173,
+          6,
+          620,
+          27146
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8136904761904762,
+      "macro_f1": 0.8074494221841467,
+      "macro_accuracy": 0.8136904761904762,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6704,
+          10,
+          57,
+          136,
+          30,
+          63
+        ],
+        [
+          178,
+          3282,
+          4,
+          3420,
+          80,
+          36
+        ],
+        [
+          52,
+          162,
+          5009,
+          97,
+          57,
+          1623
+        ],
+        [
+          500,
+          857,
+          171,
+          5464,
+          6,
+          2
+        ],
+        [
+          3,
+          3,
+          15,
+          4,
+          6970,
+          5
+        ],
+        [
+          3,
+          2,
+          145,
+          3,
+          101,
+          6746
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8486190476190476,
+      "macro_f1": 0.8457050413027445,
+      "macro_accuracy": 0.8486190476190477,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6902,
+          24,
+          19,
+          15,
+          33,
+          7
+        ],
+        [
+          125,
+          4619,
+          4,
+          2245,
+          5,
+          2
+        ],
+        [
+          44,
+          20,
+          5665,
+          6,
+          19,
+          1246
+        ],
+        [
+          623,
+          1758,
+          90,
+          4501,
+          2,
+          26
+        ],
+        [
+          6,
+          2,
+          10,
+          6,
+          6975,
+          1
+        ],
+        [
+          6,
+          1,
+          2,
+          1,
+          10,
+          6980
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7862380952380953,
+      "macro_f1": 0.7794491127975545,
+      "macro_accuracy": 0.7862380952380953,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6930,
+          21,
+          2,
+          37,
+          10,
+          0
+        ],
+        [
+          589,
+          3592,
+          7,
+          2782,
+          27,
+          3
+        ],
+        [
+          952,
+          13,
+          4725,
+          10,
+          20,
+          1280
+        ],
+        [
+          854,
+          1800,
+          26,
+          4305,
+          7,
+          8
+        ],
+        [
+          2,
+          2,
+          4,
+          7,
+          6985,
+          0
+        ],
+        [
+          4,
+          26,
+          11,
+          2,
+          472,
+          6485
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092702,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8585952380952381,
+      "macro_f1": 0.8546619212453129,
+      "macro_accuracy": 0.8585952380952381,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6848,
+          42,
+          3,
+          102,
+          5,
+          0
+        ],
+        [
+          267,
+          4370,
+          9,
+          2318,
+          31,
+          5
+        ],
+        [
+          136,
+          18,
+          5143,
+          3,
+          416,
+          1284
+        ],
+        [
+          366,
+          779,
+          38,
+          5772,
+          9,
+          36
+        ],
+        [
+          2,
+          3,
+          1,
+          1,
+          6993,
+          0
+        ],
+        [
+          9,
+          4,
+          15,
+          0,
+          37,
+          6935
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8283035714285715,
+      "macro_f1": 0.8231723098993499,
+      "macro_accuracy": 0.8283035714285715,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26983,
+          94,
+          417,
+          420,
+          54,
+          32
+        ],
+        [
+          489,
+          13497,
+          247,
+          13521,
+          215,
+          31
+        ],
+        [
+          414,
+          94,
+          25718,
+          38,
+          388,
+          1348
+        ],
+        [
+          2759,
+          5891,
+          1067,
+          18206,
+          14,
+          63
+        ],
+        [
+          8,
+          7,
+          21,
+          5,
+          27954,
+          5
+        ],
+        [
+          10,
+          22,
+          413,
+          7,
+          751,
+          26797
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.8495833333333334,
+      "macro_f1": 0.8334797767240975,
+      "macro_accuracy": 0.8495833333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3989,
+          3,
+          6,
+          2,
+          0,
+          0
+        ],
+        [
+          82,
+          1207,
+          2,
+          2706,
+          2,
+          1
+        ],
+        [
+          370,
+          0,
+          3589,
+          2,
+          0,
+          39
+        ],
+        [
+          127,
+          22,
+          1,
+          3850,
+          0,
+          0
+        ],
+        [
+          2,
+          3,
+          6,
+          0,
+          3987,
+          2
+        ],
+        [
+          2,
+          18,
+          195,
+          3,
+          14,
+          3768
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.74625,
+      "macro_f1": 0.7191424844448665,
+      "macro_accuracy": 0.74625,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3881,
+          0,
+          0,
+          119,
+          0,
+          0
+        ],
+        [
+          14,
+          2144,
+          0,
+          1836,
+          6,
+          0
+        ],
+        [
+          3,
+          6,
+          3880,
+          1,
+          1,
+          109
+        ],
+        [
+          3,
+          2947,
+          971,
+          32,
+          4,
+          43
+        ],
+        [
+          1,
+          2,
+          3,
+          0,
+          3994,
+          0
+        ],
+        [
+          0,
+          1,
+          0,
+          1,
+          19,
+          3979
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8675,
+      "macro_f1": 0.8621010751761338,
+      "macro_accuracy": 0.8675,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3570,
+          82,
+          231,
+          64,
+          46,
+          7
+        ],
+        [
+          11,
+          1955,
+          195,
+          1679,
+          142,
+          18
+        ],
+        [
+          8,
+          6,
+          3950,
+          10,
+          18,
+          8
+        ],
+        [
+          21,
+          603,
+          8,
+          3362,
+          1,
+          5
+        ],
+        [
+          0,
+          1,
+          2,
+          1,
+          3996,
+          0
+        ],
+        [
+          1,
+          1,
+          6,
+          1,
+          4,
+          3987
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.7834166666666667,
+      "macro_f1": 0.783533706865719,
+      "macro_accuracy": 0.7834166666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3890,
+          2,
+          11,
+          87,
+          7,
+          3
+        ],
+        [
+          16,
+          2205,
+          1,
+          1753,
+          15,
+          10
+        ],
+        [
+          22,
+          65,
+          3650,
+          20,
+          180,
+          63
+        ],
+        [
+          23,
+          1962,
+          21,
+          1989,
+          4,
+          1
+        ],
+        [
+          5,
+          1,
+          9,
+          4,
+          3980,
+          1
+        ],
+        [
+          6,
+          1,
+          209,
+          2,
+          694,
+          3088
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.869375,
+      "macro_f1": 0.8568979134659217,
+      "macro_accuracy": 0.8693749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3749,
+          1,
+          168,
+          60,
+          0,
+          22
+        ],
+        [
+          18,
+          1389,
+          8,
+          2580,
+          5,
+          0
+        ],
+        [
+          3,
+          3,
+          3799,
+          2,
+          185,
+          8
+        ],
+        [
+          3,
+          41,
+          2,
+          3949,
+          3,
+          2
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          0,
+          2,
+          0,
+          18,
+          3980
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.799625,
+      "macro_f1": 0.7839110954630734,
+      "macro_accuracy": 0.7996250000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3994,
+          5,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          348,
+          2155,
+          39,
+          1419,
+          37,
+          2
+        ],
+        [
+          4,
+          1,
+          3993,
+          1,
+          1,
+          0
+        ],
+        [
+          2582,
+          288,
+          64,
+          1053,
+          1,
+          12
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          2,
+          3997
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.882375,
+      "macro_f1": 0.8792796578501373,
+      "macro_accuracy": 0.882375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3910,
+          1,
+          1,
+          87,
+          1,
+          0
+        ],
+        [
+          0,
+          2442,
+          2,
+          1548,
+          8,
+          0
+        ],
+        [
+          4,
+          13,
+          2857,
+          2,
+          3,
+          1121
+        ],
+        [
+          0,
+          28,
+          0,
+          3971,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          0,
+          3998
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9636785714285714,
+      "macro_f1": 0.16358389562834572,
+      "macro_accuracy": 0.9636785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26983,
+          94,
+          417,
+          420,
+          54,
+          32
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.4820357142857143,
+      "macro_f1": 0.10841747596211775,
+      "macro_accuracy": 0.4820357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          489,
+          13497,
+          247,
+          13521,
+          215,
+          31
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.9185,
+      "macro_f1": 0.15958648249500476,
+      "macro_accuracy": 0.9185,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          414,
+          94,
+          25718,
+          38,
+          388,
+          1348
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.6502142857142857,
+      "macro_f1": 0.13133936429612317,
+      "macro_accuracy": 0.6502142857142857,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2759,
+          5891,
+          1067,
+          18206,
+          14,
+          63
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9983571428571428,
+      "macro_f1": 0.1665296493548272,
+      "macro_accuracy": 0.9983571428571428,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          8,
+          7,
+          21,
+          5,
+          27954,
+          5
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9570357142857143,
+      "macro_f1": 0.16300770723458097,
+      "macro_accuracy": 0.9570357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          22,
+          413,
+          7,
+          751,
+          26797
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8241190476190476,
+      "macro_f1": 0.816814167597376,
+      "macro_accuracy": 0.8241190476190475,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6559,
+          24,
+          278,
+          103,
+          12,
+          24
+        ],
+        [
+          159,
+          3100,
+          213,
+          3387,
+          129,
+          12
+        ],
+        [
+          26,
+          17,
+          6696,
+          26,
+          67,
+          168
+        ],
+        [
+          722,
+          1271,
+          340,
+          4657,
+          7,
+          3
+        ],
+        [
+          1,
+          1,
+          6,
+          1,
+          6988,
+          3
+        ],
+        [
+          2,
+          2,
+          192,
+          2,
+          189,
+          6613
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8451428571428572,
+      "macro_f1": 0.8402629877538511,
+      "macro_accuracy": 0.8451428571428572,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6768,
+          16,
+          120,
+          57,
+          36,
+          3
+        ],
+        [
+          58,
+          3791,
+          5,
+          3111,
+          33,
+          2
+        ],
+        [
+          10,
+          29,
+          6911,
+          6,
+          13,
+          31
+        ],
+        [
+          811,
+          1670,
+          425,
+          4067,
+          2,
+          25
+        ],
+        [
+          3,
+          3,
+          7,
+          3,
+          6984,
+          0
+        ],
+        [
+          4,
+          0,
+          8,
+          1,
+          12,
+          6975
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.7852857142857143,
+      "macro_f1": 0.7769848191530375,
+      "macro_accuracy": 0.7852857142857143,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6935,
+          8,
+          14,
+          37,
+          5,
+          1
+        ],
+        [
+          158,
+          2432,
+          11,
+          4370,
+          19,
+          10
+        ],
+        [
+          316,
+          43,
+          6256,
+          4,
+          35,
+          346
+        ],
+        [
+          908,
+          1936,
+          140,
+          4002,
+          3,
+          11
+        ],
+        [
+          2,
+          3,
+          5,
+          1,
+          6987,
+          2
+        ],
+        [
+          1,
+          20,
+          121,
+          3,
+          485,
+          6370
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8586666666666667,
+      "macro_f1": 0.856326647998093,
+      "macro_accuracy": 0.8586666666666667,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6721,
+          46,
+          5,
+          223,
+          1,
+          4
+        ],
+        [
+          114,
+          4174,
+          18,
+          2653,
+          34,
+          7
+        ],
+        [
+          62,
+          5,
+          5855,
+          2,
+          273,
+          803
+        ],
+        [
+          318,
+          1014,
+          162,
+          5480,
+          2,
+          24
+        ],
+        [
+          2,
+          0,
+          3,
+          0,
+          6995,
+          0
+        ],
+        [
+          3,
+          0,
+          92,
+          1,
+          65,
+          6839
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8363095238095238,
+      "macro_f1": 0.8317755542626135,
+      "macro_accuracy": 0.8363095238095238,
+      "query_count": 168000,
+      "confusion": [
+        [
+          27119,
+          160,
+          157,
+          399,
+          77,
+          88
+        ],
+        [
+          912,
+          15547,
+          143,
+          11058,
+          299,
+          41
+        ],
+        [
+          1244,
+          60,
+          22696,
+          53,
+          221,
+          3726
+        ],
+        [
+          2491,
+          4011,
+          1330,
+          20060,
+          25,
+          83
+        ],
+        [
+          5,
+          11,
+          12,
+          10,
+          27955,
+          7
+        ],
+        [
+          14,
+          15,
+          432,
+          10,
+          406,
+          27123
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.7924583333333334,
+      "macro_f1": 0.7669730531023472,
+      "macro_accuracy": 0.7924583333333334,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3993,
+          4,
+          1,
+          1,
+          1,
+          0
+        ],
+        [
+          357,
+          1161,
+          7,
+          2474,
+          1,
+          0
+        ],
+        [
+          1117,
+          0,
+          2099,
+          5,
+          2,
+          777
+        ],
+        [
+          41,
+          11,
+          0,
+          3948,
+          0,
+          0
+        ],
+        [
+          1,
+          5,
+          2,
+          5,
+          3986,
+          1
+        ],
+        [
+          3,
+          11,
+          148,
+          3,
+          3,
+          3832
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.743125,
+      "macro_f1": 0.7250470327386918,
+      "macro_accuracy": 0.743125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3951,
+          0,
+          0,
+          49,
+          0,
+          0
+        ],
+        [
+          1,
+          2295,
+          0,
+          1695,
+          9,
+          0
+        ],
+        [
+          84,
+          17,
+          2912,
+          3,
+          1,
+          983
+        ],
+        [
+          167,
+          1804,
+          1124,
+          830,
+          3,
+          72
+        ],
+        [
+          0,
+          2,
+          1,
+          0,
+          3995,
+          2
+        ],
+        [
+          0,
+          1,
+          0,
+          1,
+          146,
+          3852
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8890416666666666,
+      "macro_f1": 0.8843434755716402,
+      "macro_accuracy": 0.8890416666666668,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3599,
+          106,
+          100,
+          127,
+          67,
+          1
+        ],
+        [
+          15,
+          2140,
+          83,
+          1507,
+          244,
+          11
+        ],
+        [
+          13,
+          9,
+          3942,
+          14,
+          13,
+          9
+        ],
+        [
+          25,
+          291,
+          9,
+          3669,
+          4,
+          2
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          1,
+          3,
+          2,
+          5,
+          3989
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.8247083333333334,
+      "macro_f1": 0.8238692927087817,
+      "macro_accuracy": 0.8247083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3962,
+          4,
+          8,
+          14,
+          7,
+          5
+        ],
+        [
+          16,
+          2252,
+          6,
+          1686,
+          11,
+          29
+        ],
+        [
+          18,
+          16,
+          3862,
+          9,
+          21,
+          74
+        ],
+        [
+          22,
+          1670,
+          23,
+          2278,
+          7,
+          0
+        ],
+        [
+          4,
+          3,
+          8,
+          5,
+          3977,
+          3
+        ],
+        [
+          9,
+          2,
+          277,
+          4,
+          246,
+          3462
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.9159583333333333,
+      "macro_f1": 0.9140389805187078,
+      "macro_accuracy": 0.9159583333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3772,
+          2,
+          47,
+          96,
+          1,
+          82
+        ],
+        [
+          10,
+          2491,
+          7,
+          1475,
+          17,
+          0
+        ],
+        [
+          4,
+          7,
+          3795,
+          2,
+          180,
+          12
+        ],
+        [
+          4,
+          54,
+          2,
+          3932,
+          7,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3999,
+          1
+        ],
+        [
+          0,
+          0,
+          3,
+          0,
+          3,
+          3994
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8505,
+      "macro_f1": 0.8396340948187455,
+      "macro_accuracy": 0.8505000000000001,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3971,
+          28,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          513,
+          3024,
+          37,
+          411,
+          14,
+          1
+        ],
+        [
+          4,
+          0,
+          3995,
+          0,
+          1,
+          0
+        ],
+        [
+          2231,
+          161,
+          172,
+          1427,
+          1,
+          8
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          0,
+          1,
+          0,
+          3,
+          3995
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.838375,
+      "macro_f1": 0.8301583422039891,
+      "macro_accuracy": 0.838375,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3871,
+          16,
+          1,
+          111,
+          1,
+          0
+        ],
+        [
+          0,
+          2184,
+          3,
+          1810,
+          3,
+          0
+        ],
+        [
+          4,
+          11,
+          2091,
+          20,
+          3,
+          1871
+        ],
+        [
+          1,
+          20,
+          0,
+          3976,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.9685357142857143,
+      "macro_f1": 0.16400273347968336,
+      "macro_accuracy": 0.9685357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          27119,
+          160,
+          157,
+          399,
+          77,
+          88
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.55525,
+      "macro_f1": 0.11900551894122059,
+      "macro_accuracy": 0.55525,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          912,
+          15547,
+          143,
+          11058,
+          299,
+          41
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8105714285714286,
+      "macro_f1": 0.1492293935090211,
+      "macro_accuracy": 0.8105714285714286,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1244,
+          60,
+          22696,
+          53,
+          221,
+          3726
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.7164285714285714,
+      "macro_f1": 0.13913164100430017,
+      "macro_accuracy": 0.7164285714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2491,
+          4011,
+          1330,
+          20060,
+          25,
+          83
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.9983928571428572,
+      "macro_f1": 0.16653263038751379,
+      "macro_accuracy": 0.9983928571428572,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          5,
+          11,
+          12,
+          10,
+          27955,
+          7
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.9686785714285714,
+      "macro_f1": 0.16401502095314116,
+      "macro_accuracy": 0.9686785714285714,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          14,
+          15,
+          432,
+          10,
+          406,
+          27123
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8031190476190476,
+      "macro_f1": 0.794647771028622,
+      "macro_accuracy": 0.8031190476190475,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6635,
+          31,
+          90,
+          153,
+          8,
+          83
+        ],
+        [
+          265,
+          3082,
+          92,
+          3341,
+          192,
+          28
+        ],
+        [
+          67,
+          31,
+          5143,
+          36,
+          18,
+          1705
+        ],
+        [
+          534,
+          591,
+          588,
+          5278,
+          9,
+          0
+        ],
+        [
+          2,
+          1,
+          4,
+          1,
+          6989,
+          3
+        ],
+        [
+          5,
+          2,
+          258,
+          3,
+          128,
+          6604
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8576904761904762,
+      "macro_f1": 0.8537111114770578,
+      "macro_accuracy": 0.8576904761904762,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6791,
+          49,
+          60,
+          49,
+          49,
+          2
+        ],
+        [
+          106,
+          4288,
+          6,
+          2573,
+          23,
+          4
+        ],
+        [
+          14,
+          11,
+          6690,
+          5,
+          14,
+          266
+        ],
+        [
+          667,
+          1515,
+          456,
+          4322,
+          4,
+          36
+        ],
+        [
+          1,
+          5,
+          5,
+          3,
+          6984,
+          2
+        ],
+        [
+          4,
+          1,
+          5,
+          1,
+          41,
+          6948
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.8045714285714286,
+      "macro_f1": 0.7985592289170579,
+      "macro_accuracy": 0.8045714285714286,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6941,
+          12,
+          5,
+          32,
+          10,
+          0
+        ],
+        [
+          391,
+          3491,
+          11,
+          3081,
+          22,
+          4
+        ],
+        [
+          988,
+          11,
+          5038,
+          8,
+          14,
+          941
+        ],
+        [
+          929,
+          1350,
+          40,
+          4671,
+          3,
+          7
+        ],
+        [
+          1,
+          3,
+          2,
+          4,
+          6988,
+          2
+        ],
+        [
+          2,
+          11,
+          90,
+          5,
+          229,
+          6663
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8798571428571429,
+      "macro_f1": 0.8777298219195001,
+      "macro_accuracy": 0.8798571428571429,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6752,
+          68,
+          2,
+          165,
+          10,
+          3
+        ],
+        [
+          150,
+          4686,
+          34,
+          2063,
+          62,
+          5
+        ],
+        [
+          175,
+          7,
+          5825,
+          4,
+          175,
+          814
+        ],
+        [
+          361,
+          555,
+          246,
+          5789,
+          9,
+          40
+        ],
+        [
+          1,
+          2,
+          1,
+          2,
+          6994,
+          0
+        ],
+        [
+          3,
+          1,
+          79,
+          1,
+          8,
+          6908
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "overall",
+      "stratum": "ALL",
+      "accuracy": 0.8363630952380953,
+      "macro_f1": 0.8317378192381067,
+      "macro_accuracy": 0.8363630952380952,
+      "query_count": 168000,
+      "confusion": [
+        [
+          26992,
+          100,
+          303,
+          379,
+          118,
+          108
+        ],
+        [
+          622,
+          15036,
+          166,
+          11807,
+          294,
+          75
+        ],
+        [
+          772,
+          37,
+          23405,
+          24,
+          357,
+          3405
+        ],
+        [
+          2194,
+          3787,
+          1434,
+          20483,
+          20,
+          82
+        ],
+        [
+          7,
+          4,
+          17,
+          9,
+          27944,
+          19
+        ],
+        [
+          10,
+          7,
+          312,
+          10,
+          1012,
+          26649
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "1-1",
+      "accuracy": 0.816125,
+      "macro_f1": 0.7944590600089209,
+      "macro_accuracy": 0.816125,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3993,
+          3,
+          2,
+          1,
+          1,
+          0
+        ],
+        [
+          147,
+          1102,
+          4,
+          2745,
+          2,
+          0
+        ],
+        [
+          731,
+          0,
+          2708,
+          5,
+          1,
+          555
+        ],
+        [
+          32,
+          15,
+          0,
+          3953,
+          0,
+          0
+        ],
+        [
+          0,
+          2,
+          6,
+          4,
+          3984,
+          4
+        ],
+        [
+          3,
+          4,
+          139,
+          4,
+          3,
+          3847
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "14-7",
+      "accuracy": 0.7377083333333333,
+      "macro_f1": 0.7255408933289019,
+      "macro_accuracy": 0.7377083333333333,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3938,
+          0,
+          0,
+          62,
+          0,
+          0
+        ],
+        [
+          10,
+          2252,
+          0,
+          1734,
+          4,
+          0
+        ],
+        [
+          0,
+          0,
+          2957,
+          1,
+          4,
+          1038
+        ],
+        [
+          24,
+          1534,
+          1191,
+          1175,
+          2,
+          74
+        ],
+        [
+          1,
+          0,
+          3,
+          0,
+          3995,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          612,
+          3388
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "2-1",
+      "accuracy": 0.8852916666666667,
+      "macro_f1": 0.8801447718829986,
+      "macro_accuracy": 0.8852916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3538,
+          61,
+          183,
+          116,
+          95,
+          7
+        ],
+        [
+          13,
+          2118,
+          100,
+          1523,
+          233,
+          13
+        ],
+        [
+          9,
+          8,
+          3953,
+          8,
+          13,
+          9
+        ],
+        [
+          32,
+          305,
+          7,
+          3652,
+          2,
+          2
+        ],
+        [
+          0,
+          1,
+          1,
+          0,
+          3998,
+          0
+        ],
+        [
+          0,
+          2,
+          6,
+          2,
+          2,
+          3988
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "20-1",
+      "accuracy": 0.8123333333333334,
+      "macro_f1": 0.8110609891296608,
+      "macro_accuracy": 0.8123333333333335,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3948,
+          3,
+          6,
+          31,
+          8,
+          4
+        ],
+        [
+          13,
+          2015,
+          21,
+          1881,
+          17,
+          53
+        ],
+        [
+          21,
+          11,
+          3878,
+          7,
+          27,
+          56
+        ],
+        [
+          26,
+          1702,
+          15,
+          2248,
+          7,
+          2
+        ],
+        [
+          6,
+          1,
+          6,
+          4,
+          3970,
+          13
+        ],
+        [
+          6,
+          1,
+          162,
+          4,
+          390,
+          3437
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-14",
+      "accuracy": 0.909375,
+      "macro_f1": 0.9073392734679433,
+      "macro_accuracy": 0.9093749999999999,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3736,
+          1,
+          107,
+          47,
+          12,
+          97
+        ],
+        [
+          12,
+          2533,
+          4,
+          1439,
+          12,
+          0
+        ],
+        [
+          2,
+          4,
+          3644,
+          2,
+          309,
+          39
+        ],
+        [
+          6,
+          65,
+          2,
+          3921,
+          6,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          3998,
+          1
+        ],
+        [
+          0,
+          0,
+          5,
+          0,
+          2,
+          3993
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "7-7",
+      "accuracy": 0.8492916666666667,
+      "macro_f1": 0.8395894814827379,
+      "macro_accuracy": 0.8492916666666667,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3963,
+          30,
+          0,
+          7,
+          0,
+          0
+        ],
+        [
+          427,
+          2875,
+          35,
+          634,
+          20,
+          9
+        ],
+        [
+          5,
+          1,
+          3992,
+          0,
+          1,
+          1
+        ],
+        [
+          2072,
+          147,
+          219,
+          1556,
+          2,
+          4
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          4000,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          3,
+          3997
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "receiver",
+      "stratum": "8-8",
+      "accuracy": 0.8444166666666667,
+      "macro_f1": 0.8371927367998175,
+      "macro_accuracy": 0.8444166666666666,
+      "query_count": 24000,
+      "confusion": [
+        [
+          3876,
+          2,
+          5,
+          115,
+          2,
+          0
+        ],
+        [
+          0,
+          2141,
+          2,
+          1851,
+          6,
+          0
+        ],
+        [
+          4,
+          13,
+          2273,
+          1,
+          2,
+          1707
+        ],
+        [
+          2,
+          19,
+          0,
+          3978,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1,
+          3999,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          3999
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-10",
+      "accuracy": 0.964,
+      "macro_f1": 0.16361167684996605,
+      "macro_accuracy": 0.964,
+      "query_count": 28000,
+      "confusion": [
+        [
+          26992,
+          100,
+          303,
+          379,
+          118,
+          108
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "14-7",
+      "accuracy": 0.537,
+      "macro_f1": 0.11646063760572545,
+      "macro_accuracy": 0.537,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          622,
+          15036,
+          166,
+          11807,
+          294,
+          75
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-15",
+      "accuracy": 0.8358928571428571,
+      "macro_f1": 0.15176863469831078,
+      "macro_accuracy": 0.8358928571428571,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          772,
+          37,
+          23405,
+          24,
+          357,
+          3405
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "20-19",
+      "accuracy": 0.7315357142857143,
+      "macro_f1": 0.14082599399102091,
+      "macro_accuracy": 0.7315357142857143,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          2194,
+          3787,
+          1434,
+          20483,
+          20,
+          82
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "6-15",
+      "accuracy": 0.998,
+      "macro_f1": 0.16649983316649983,
+      "macro_accuracy": 0.998,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          7,
+          4,
+          17,
+          9,
+          27944,
+          19
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "transmitter",
+      "stratum": "8-20",
+      "accuracy": 0.95175,
+      "macro_f1": 0.16254643268861277,
+      "macro_accuracy": 0.95175,
+      "query_count": 28000,
+      "confusion": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          10,
+          7,
+          312,
+          10,
+          1012,
+          26649
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_01",
+      "accuracy": 0.8058809523809524,
+      "macro_f1": 0.794729456097015,
+      "macro_accuracy": 0.8058809523809524,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6610,
+          21,
+          139,
+          104,
+          26,
+          100
+        ],
+        [
+          272,
+          2725,
+          114,
+          3643,
+          185,
+          61
+        ],
+        [
+          22,
+          18,
+          5408,
+          11,
+          42,
+          1499
+        ],
+        [
+          344,
+          339,
+          510,
+          5799,
+          7,
+          1
+        ],
+        [
+          2,
+          0,
+          5,
+          3,
+          6975,
+          15
+        ],
+        [
+          1,
+          1,
+          151,
+          4,
+          513,
+          6330
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_08",
+      "accuracy": 0.8537380952380952,
+      "macro_f1": 0.8503887006927152,
+      "macro_accuracy": 0.8537380952380952,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6685,
+          33,
+          153,
+          53,
+          71,
+          5
+        ],
+        [
+          63,
+          4174,
+          4,
+          2742,
+          15,
+          2
+        ],
+        [
+          15,
+          2,
+          6817,
+          5,
+          13,
+          148
+        ],
+        [
+          628,
+          1707,
+          275,
+          4344,
+          3,
+          43
+        ],
+        [
+          2,
+          1,
+          6,
+          2,
+          6988,
+          1
+        ],
+        [
+          3,
+          0,
+          5,
+          1,
+          142,
+          6849
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_15",
+      "accuracy": 0.8118571428571428,
+      "macro_f1": 0.8070864277271337,
+      "macro_accuracy": 0.8118571428571428,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6932,
+          5,
+          8,
+          38,
+          16,
+          1
+        ],
+        [
+          167,
+          3579,
+          10,
+          3211,
+          25,
+          8
+        ],
+        [
+          664,
+          8,
+          5508,
+          7,
+          15,
+          798
+        ],
+        [
+          916,
+          1514,
+          32,
+          4529,
+          5,
+          4
+        ],
+        [
+          2,
+          2,
+          4,
+          2,
+          6989,
+          1
+        ],
+        [
+          2,
+          5,
+          82,
+          4,
+          346,
+          6561
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "model_seed": 2026092703,
+      "stage": "repair",
+      "view": "clean",
+      "dimension": "day",
+      "stratum": "2021_03_23",
+      "accuracy": 0.8739761904761905,
+      "macro_f1": 0.871444225157362,
+      "macro_accuracy": 0.8739761904761904,
+      "query_count": 42000,
+      "confusion": [
+        [
+          6765,
+          41,
+          3,
+          184,
+          5,
+          2
+        ],
+        [
+          120,
+          4558,
+          38,
+          2211,
+          69,
+          4
+        ],
+        [
+          71,
+          9,
+          5672,
+          1,
+          287,
+          960
+        ],
+        [
+          306,
+          227,
+          617,
+          5811,
+          5,
+          34
+        ],
+        [
+          1,
+          1,
+          2,
+          2,
+          6992,
+          2
+        ],
+        [
+          4,
+          1,
+          74,
+          1,
+          11,
+          6909
+        ]
+      ],
+      "readout": "ORIGINAL_HEAD"
+    }
+  ],
+  "paired_error_transitions": [
+    {
+      "arm": "SINC_UNITS",
+      "control": "SIG_TIME",
+      "seed": 2026092701,
+      "corrected_errors": 4258,
+      "introduced_errors": 4732,
+      "both_correct": 135778,
+      "both_wrong": 23232,
+      "count": 168000
+    },
+    {
+      "arm": "SINC_UNITS",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 10597,
+      "introduced_errors": 6084,
+      "both_correct": 129439,
+      "both_wrong": 21880,
+      "count": 168000
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 10467,
+      "introduced_errors": 5480,
+      "both_correct": 130043,
+      "both_wrong": 22010,
+      "count": 168000
+    },
+    {
+      "arm": "SINC_UNITS",
+      "control": "SIG_TIME",
+      "seed": 2026092702,
+      "corrected_errors": 6133,
+      "introduced_errors": 3012,
+      "both_correct": 132767,
+      "both_wrong": 26088,
+      "count": 168000
+    },
+    {
+      "arm": "SINC_UNITS",
+      "control": "SIG_TIME",
+      "seed": 2026092703,
+      "corrected_errors": 3082,
+      "introduced_errors": 3073,
+      "both_correct": 137427,
+      "both_wrong": 24418,
+      "count": 168000
+    },
+    {
+      "arm": "SINC_UNITS",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092702,
+      "corrected_errors": 12727,
+      "introduced_errors": 5004,
+      "both_correct": 126173,
+      "both_wrong": 24096,
+      "count": 168000
+    },
+    {
+      "arm": "SINC_UNITS",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092703,
+      "corrected_errors": 7324,
+      "introduced_errors": 5970,
+      "both_correct": 133185,
+      "both_wrong": 21521,
+      "count": 168000
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092702,
+      "corrected_errors": 9927,
+      "introduced_errors": 5325,
+      "both_correct": 125852,
+      "both_wrong": 26896,
+      "count": 168000
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092703,
+      "corrected_errors": 7234,
+      "introduced_errors": 5889,
+      "both_correct": 133266,
+      "both_wrong": 21611,
+      "count": 168000
+    }
+  ],
+  "training_costs": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "historical_reuse": true,
+      "epochs": 50,
+      "updates": 11100,
+      "U_packets": 963900,
+      "U_accepted": 15214,
+      "epoch_seconds": 2334.8399138450623
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "arm": "SIG_TIME",
+      "seed": 2026092701,
+      "historical_reuse": false,
+      "epochs": 50,
+      "updates": 11100,
+      "U_packets": 963900,
+      "U_accepted": 15422,
+      "epoch_seconds": 2030.5226221084595
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "arm": "SINC_UNITS",
+      "seed": 2026092701,
+      "historical_reuse": false,
+      "epochs": 50,
+      "updates": 11100,
+      "U_packets": 963900,
+      "U_accepted": 15426,
+      "epoch_seconds": 2013.3787722587585
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092702,
+      "historical_reuse": true,
+      "epochs": 50,
+      "updates": 11100,
+      "U_packets": 963900,
+      "U_accepted": 15126,
+      "epoch_seconds": 2274.5685148239136
+    },
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "arm": "SIG_TIME",
+      "seed": 2026092702,
+      "historical_reuse": false,
+      "epochs": 50,
+      "updates": 11100,
+      "U_packets": 963900,
+      "U_accepted": 15657,
+      "epoch_seconds": 2342.3456933498383
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "arm": "SINC_UNITS",
+      "seed": 2026092702,
+      "historical_reuse": false,
+      "epochs": 50,
+      "updates": 11100,
+      "U_packets": 963900,
+      "U_accepted": 15729,
+      "epoch_seconds": 2084.680473089218
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "arm": "OLD_GATE_COS50",
+      "seed": 2026092703,
+      "historical_reuse": true,
+      "epochs": 50,
+      "updates": 11100,
+      "U_packets": 963900,
+      "U_accepted": 15204,
+      "epoch_seconds": 2277.6157171726227
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "arm": "SIG_TIME",
+      "seed": 2026092703,
+      "historical_reuse": false,
+      "epochs": 50,
+      "updates": 11100,
+      "U_packets": 963900,
+      "U_accepted": 15610,
+      "epoch_seconds": 2349.272097826004
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "arm": "SINC_UNITS",
+      "seed": 2026092703,
+      "historical_reuse": false,
+      "epochs": 50,
+      "updates": 11100,
+      "U_packets": 963900,
+      "U_accepted": 15555,
+      "epoch_seconds": 2061.9514322280884
+    }
+  ],
+  "audit_counts": {
+    "source_epoch_records": 450,
+    "new_epochs": 300,
+    "historical_epochs_reused": 150,
+    "new_optimizer_updates": 66600,
+    "actual_U_packets": 5783400,
+    "L_U_gradient_layer_records": 11988,
+    "saved_L_U_gradient_input_vectors": 35964,
+    "Sinc_snapshot_batches": 312,
+    "Sinc_parameter_records": 624,
+    "head_fit_updates": 0,
+    "extra_training_model_forwards": 0
+  },
+  "goal_84": false,
+  "independent_confusion_and_paired_statistics": true,
+  "truth_last": true,
+  "target_feedback_to_training": false,
+  "head_fit": false,
+  "first_seed_retrained": false,
+  "Phase2_claim": false,
+  "first_remaining_numeric_result_read_at": "2026-10-15T01:55:29.169Z",
+  "collection_started_at": "2026-10-15T01:54:41.860Z",
+  "source_decision_before_first_new_target": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+  "first_numeric_target_read_at": "2026-10-15T01:14:15.557Z",
+  "code_commits": {
+    "first_mechanism": "00132f7d54aff45b6e52fc41f89d7705a043bc71",
+    "first_recovery": "7221e39e0301e0de68231c3526e6c755295270d8",
+    "extension": "03fd8a8c7b64663bc52edb83359d3e610cfeb361",
+    "execution": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+    "collector_and_independent_statistics": "e5b55d5c32f8c3af78ca270c0be571420684cf51"
+  },
+  "full_native_recount": "VERIFIED",
+  "feature_interface_verified": true
+}

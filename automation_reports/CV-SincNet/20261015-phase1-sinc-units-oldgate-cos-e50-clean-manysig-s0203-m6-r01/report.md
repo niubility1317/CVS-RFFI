@@ -1,3 +1,5 @@
+当前状态：ANALYZED / VERIFIED，完整预定义三种子结果已回收；见 [完整分析](final_analysis.md)。以下保留原预登记与运行记录。
+
 # 固定 SIG_TIME：Sinc 优化器单位原样扩展 02/03（条件准备）
 
 当前状态为 **CONDITIONAL_PREPARATION_NOT_LAUNCHED**。首种子运行20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02仍在按既定50轮训练，原源资格尚未完成。本报告只提前固定其余两个种子的执行入口、矩阵与自动评分，不代表源资格PASS、训练完成或目标提升。未经原首种子的真实源资格PASS，不发布本运行。
@@ -51,3 +53,6 @@
 RUNNING_VERIFIED：执行/源决定提交1a3be6d2568939ff56c38c8bc8dc9a879b7abe76；普通N607预检、单归档比较、remote compile、真实CP无query smoke通过（真实CP optimizer更新0）。4个新PID/CWD/argv与实际GPU PID核对，GPU分配2/1/2/0，观察epoch15/16/14/16；日志持续增长，无failure，所有GPU总实验进程均≤3。预检时计入其他owner，此后部分其他任务自然退出；未停止或干预任何外部进程。详见 [启动证据](launch_verified.json)。
 
 原首种子新目标数值在源决定推送后才读取：单位臂83.354762% vsSIG_TIME83.636905%。这是首种子负结果，不改变本矩阵的两臂、预算、超参数或自动评分；不重训01、没有新源/目标选择。原样完成预定02/03后合并完整三seed，不把当前部分轮次当作矩阵完成。
+
+
+完整三种子已ANALYZED/VERIFIED：SINC_UNITS83.223214%±0.492234pp，匹配SIG82.696230%±1.624144pp，配对+0.526984±1.161397pp、2/3正，未达84%。所有6个新模型已50轮，完整162指标/1512000默认决策、450源epoch、66600新步骤与11988层L/U导数独立核实。首01未重训、未改参数或按目标择优；全部正负结果、成本及图见[完整分析](final_analysis.md)。

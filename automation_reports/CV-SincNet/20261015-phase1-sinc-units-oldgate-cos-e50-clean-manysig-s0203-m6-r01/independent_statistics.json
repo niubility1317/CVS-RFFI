@@ -1,0 +1,125 @@
+{
+  "status": "VERIFIED",
+  "scope": "All162 score/CM records, each complete model seed and same-ID error transitions; independent local arithmetic matches remote saved analysis and raw truth-last recount",
+  "summary": [
+    {
+      "arm": "OLD_GATE_COS50",
+      "seed_count": 3,
+      "accuracy_mean": 0.8052678571428572,
+      "accuracy_sd": 0.023775723031464996,
+      "seed_accuracy": {
+        "2026092701": 0.8066845238095238,
+        "2026092702": 0.7808154761904762,
+        "2026092703": 0.8283035714285715
+      },
+      "macro_f1_mean": 0.8000238637751929,
+      "worst_RX_mean": 0.6797083333333334,
+      "worst_day_mean": 0.7605555555555555
+    },
+    {
+      "arm": "SIG_TIME",
+      "seed_count": 3,
+      "accuracy_mean": 0.8269623015873016,
+      "accuracy_sd": 0.016241440198581918,
+      "seed_accuracy": {
+        "2026092701": 0.8363690476190476,
+        "2026092702": 0.8082083333333333,
+        "2026092703": 0.8363095238095238
+      },
+      "macro_f1_mean": 0.8214679611805926,
+      "worst_RX_mean": 0.7036805555555555,
+      "worst_day_mean": 0.7847857142857143
+    },
+    {
+      "arm": "SINC_UNITS",
+      "seed_count": 3,
+      "accuracy_mean": 0.8322321428571429,
+      "accuracy_sd": 0.004922338334830321,
+      "seed_accuracy": {
+        "2026092701": 0.8335476190476191,
+        "2026092702": 0.8267857142857142,
+        "2026092703": 0.8363630952380953
+      },
+      "macro_f1_mean": 0.827548962704833,
+      "worst_RX_mean": 0.7070277777777778,
+      "worst_day_mean": 0.793484126984127
+    }
+  ],
+  "paired": [
+    {
+      "arm": "SINC_UNITS",
+      "control": "SIG_TIME",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        -0.0028214285714285303,
+        0.01857738095238093,
+        0.0000535714285714306
+      ],
+      "mean_difference": 0.005269841269841276,
+      "sd_difference": 0.01161397285823312,
+      "positive_seeds": 2,
+      "same_ID_errors": {
+        "decisions": 504000,
+        "corrected_errors": 13473,
+        "introduced_errors": 10817,
+        "net_correct": 2656
+      }
+    },
+    {
+      "arm": "SINC_UNITS",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.02686309523809527,
+        0.045970238095238036,
+        0.008059523809523794
+      ],
+      "mean_difference": 0.0269642857142857,
+      "sd_difference": 0.018955559713382725,
+      "positive_seeds": 3,
+      "same_ID_errors": {
+        "decisions": 504000,
+        "corrected_errors": 30648,
+        "introduced_errors": 17058,
+        "net_correct": 13590
+      }
+    },
+    {
+      "arm": "SIG_TIME",
+      "control": "OLD_GATE_COS50",
+      "seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "seed_differences": [
+        0.0296845238095238,
+        0.027392857142857108,
+        0.008005952380952364
+      ],
+      "mean_difference": 0.021694444444444422,
+      "sd_difference": 0.011909829774475857,
+      "positive_seeds": 3,
+      "same_ID_errors": {
+        "decisions": 504000,
+        "corrected_errors": 27628,
+        "introduced_errors": 16694,
+        "net_correct": 10934
+      }
+    }
+  ],
+  "metric_records": 162,
+  "decisions": 1512000,
+  "model_seed_count": 3,
+  "sample_SD": true,
+  "head_fit": false,
+  "target_feedback": false
+}

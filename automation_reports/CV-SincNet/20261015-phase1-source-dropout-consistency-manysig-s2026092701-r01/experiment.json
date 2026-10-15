@@ -35,7 +35,8 @@
       "experiments/cvs_source_rdrop/design.py"
     ],
     "reused_parent_execution": "977d4fb609436bac23621ef8e32c2017495acef7",
-    "initial_implementation_commit": "e21bab7a0125edd9eaffa0f04f2c21c724dc6d7d"
+    "initial_implementation_commit": "e21bab7a0125edd9eaffa0f04f2c21c724dc6d7d",
+    "execution_commit": "842af6233e30dbfd9927670d1f0723905f592c9c"
   },
   "data": {
     "dataset": "ManySig",
@@ -102,7 +103,8 @@
     "remote_log_root": "PROJECT/releases/cvs_source_rdrop_20261015_r01",
     "local_artifact_root": "LOCAL_ARTIFACTS/source_rdrop_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_source_rdrop.audit",
-    "stop_rule": "Run-owned source contract/provenance mismatch, nonfinite loss/gradient, missing fixed cohort, model/buffer mutation, recount failure or immutable output collision. Preserve artifacts; no automatic retry or unrelated stop. Scientific FAIL: no coefficient, parent or dropout scan."
+    "stop_rule": "Run-owned source contract/provenance mismatch, nonfinite loss/gradient, missing fixed cohort, model/buffer mutation, recount failure or immutable output collision. Preserve artifacts; no automatic retry or unrelated stop. Scientific FAIL: no coefficient, parent or dropout scan.",
+    "execution_commit": "842af6233e30dbfd9927670d1f0723905f592c9c"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -448,5 +450,43 @@
     "Local10negative/actual native dropout and gradients PASS; one independent P0/P1 PASS after one targeted saved-vector count fix"
   ],
   "registered_at": "2026-10-15T01:50:19+00:00",
-  "preparation_status": "LOCAL_VERIFIED_P0P1_PASS_PREREGISTERED"
+  "preparation_status": "LOCAL_VERIFIED_P0P1_PASS_PREREGISTERED",
+  "results": {
+    "status": "ANALYZED_VERIFIED_SOURCE_PASS",
+    "source_qualified_models": 1,
+    "source_packets": 900,
+    "forward_packets": 2700,
+    "gradient_layer_records": 20,
+    "saved_vectors": 40,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "source_qualification": "PASS",
+    "aggregates": {
+      "source_packets": 900,
+      "stochastic_packet_observations": 1800,
+      "eval_packet_observations": 900,
+      "stochastic_disagreements": 10,
+      "stochastic_correct": 1788,
+      "eval_correct": 897,
+      "mean_symmetric_KL": 0.029748620837926863,
+      "mean_paired_CE": 0.1002875417470932,
+      "mean_pair_joint160_cosine": 0.4632815400681157,
+      "mean_pair_joint160_L2": 10.161617047391834
+    },
+    "remaining_source_only_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "remaining_source_diagnostic_not_launched": true,
+    "no_training_release": true,
+    "goal84": false,
+    "evidence": [
+      "results.json",
+      "final_analysis.md",
+      "source_qualification.json",
+      "source_extension_decision.json",
+      "independent_artifact_recount.json",
+      "completion_evidence.json"
+    ]
+  }
 }

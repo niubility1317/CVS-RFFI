@@ -1,0 +1,53 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01",
+  "execution_commit": "842af6233e30dbfd9927670d1f0723905f592c9c",
+  "code_commit": "eb21026149b1d1d02ddf4b213408b37f782bf2f5",
+  "one_archive_local_remote_SHA_compared": true,
+  "remote_compile": true,
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "negative_cases": 10,
+      "symmetric_KL": true,
+      "zero_for_identical_logits": true,
+      "logit_common_shift_invariance": true,
+      "both_predictions_differentiable": true,
+      "actual_native_dropout_pair_and_joint160": true,
+      "actual_t1_t2_SIG_and_existing_W_derivatives": true,
+      "model_state_and_RNG_unchanged": true,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0,
+      "real_IQ_or_checkpoint_read": false
+    },
+    "real_checkpoint_no_query_smoke": true,
+    "synthetic_IQ_packets": 2,
+    "source_only": true,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0
+  },
+  "post_launch_process_identity": "PID/CWD/argv verified in publisher live readback; process naturally exited before completed readback",
+  "log_bytes_initial": 0,
+  "log_bytes_final": 939,
+  "completion": {
+    "status": "ANALYZED",
+    "models": 1,
+    "source_packets": 900,
+    "forward_packets": 2700,
+    "gradient_batches": 5,
+    "layer_records": 20,
+    "saved_vectors": 40,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0
+  },
+  "failure": null,
+  "source_only": true,
+  "source_updates": 0,
+  "head_fit_updates": 0,
+  "GPU_allocation": false
+}

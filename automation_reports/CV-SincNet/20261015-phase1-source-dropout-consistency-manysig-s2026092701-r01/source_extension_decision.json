@@ -1,0 +1,34 @@
+{
+  "status": "SOURCE_PASS_SEPARATE_DIAGNOSTIC_ONLY",
+  "source_run": "20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01",
+  "fixed_rules": {
+    "source_only": true,
+    "KL_positive": true,
+    "KL_actual_t1_t2_SIG_nonzero_each_of5": true,
+    "global_gradient_cosine_with_paired_CE_min": 0,
+    "model_state_and_default_head_unchanged": true,
+    "no_automatic_training_release": true,
+    "on_pass": "Only separately registered unchanged02/03 source check",
+    "on_fail": "Preserve negative evidence; no coefficient, parent or dropout scans"
+  },
+  "source_qualified_model_seed": 2026092701,
+  "source_qualification": "PASS",
+  "predefined_remaining_seeds": [
+    2026092702,
+    2026092703
+  ],
+  "parent_runs": [
+    "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s0203-m8-r01"
+  ],
+  "parent_rows": [
+    "SIG_TIME-s2026092702",
+    "SIG_TIME-s2026092703"
+  ],
+  "formula_coefficient_dropout_source_cohorts_unchanged": true,
+  "no_automatic_training_release": true,
+  "head_fit_updates": 0,
+  "source_only": true,
+  "target_results_not_used": true,
+  "separate_Sinc_target_results_already_observed_but_not_inputs_to_this_fixed_rule": true,
+  "not_launched": true
+}

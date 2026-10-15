@@ -1,0 +1,29 @@
+{
+  "status": "VERIFIED",
+  "all_six_rows_complete": true,
+  "new_training_workers_naturally_exited": 4,
+  "dispatcher_naturally_exited": true,
+  "final_epochs": [
+    50,
+    50,
+    50,
+    50
+  ],
+  "all_registered_predictions_fixed": true,
+  "failure": null,
+  "remaining_predictions": 1008000,
+  "combined_predictions": 1512000,
+  "source_qualification_before_expansion": true,
+  "source_decision_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+  "collector_state": {
+    "pid": 49300,
+    "exit": 0,
+    "started": "2026-10-15T01:54:41.860Z",
+    "completion_verified_before_collect": true,
+    "signal": null,
+    "ended": "2026-10-15T01:55:04.789Z"
+  },
+  "full_native_recount": "VERIFIED",
+  "new_target_forwards_by_collection": false,
+  "read_at": 1792029196.4780207
+}
