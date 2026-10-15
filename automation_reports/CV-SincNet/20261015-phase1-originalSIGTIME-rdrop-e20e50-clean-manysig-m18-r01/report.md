@@ -31,3 +31,7 @@ RDrop为已有方法，[原论文](https://arxiv.org/abs/2106.14448)。本次研
 E20源资格已按预登记规则PASS：3条件末轮LCE均≤0.5；RDrop全部4440次KL调用为正；源V均值/最差RX相对ORIGINAL为+0.077778/+0.222222个百分点，相对TWO_CE为−0.096296/−0.166667个百分点，均在固定1/2个百分点容差内。独立重算判定与远程source_gates一致，仅读取源完成证据，不读取目标指标。E20首seed三个模型已各自动固定168000个clean决定并完成fresh CPU CUDAempty评分，共504000决定/54分层记录；本次核实闭环产物而不解读部分测试成绩。其余两seed的6个E20模型已启动、ownCP smoke和首epoch通过；另3个首seedE50仍在训练，共9个活跃GPU进程，all-owner计数≤3/GPU。E50六个后续模型仍只等待其自己的源资格。详见[E20扩展证据](E20_expansion_verification.json)。
 
 兼容旧配置时继承的非执行描述字段updates=11100和cost_claim=21 new scratch50...仍保留在不可变config中；前者对E20、后者对本矩阵已过时。实际native epochs、训练器UPDATES=epochs×222、进度和completion核实E20为4440更新、E50为11100更新，本18行均从零。此说明不改变执行、冻结配置或历史产物。
+
+
+<!-- ORIGINAL_SIGTIME_FIRST_E20_SOURCE_LOGS_20261015 -->
+E20首seed三个已完成轨迹的源日志分析 VERIFIED：完整13320次step/60轮epoch及三份stdout，实际损失重构最大误差2.38419e−7，全部有关损失有限，ORIGINAL无额外hook，两个paired条件均实际复用增强后同IQ且4440次KL调用为正。ORIGINAL/TWO_CE/RDROP末轮CE1依次0.275006/0.270163/0.273353；源V依次97.792593%/97.966667%/97.870370%。每条件7轮U共396900次重复观察，接受次数依次6143/6203/5611。RDrop没有通过增加接受观察次数改变训练；这不证明其U标签更准，也不用于推断目标收益。该分析只读取已冻结源日志/元数据，未读目标指标、真值或IQ，未加载checkpoint、更新参数或拟合头；其他健康行不变。完整逐epoch源曲线和损失统计见[first_E20_source_analysis.json](first_E20_source_analysis.json)。
