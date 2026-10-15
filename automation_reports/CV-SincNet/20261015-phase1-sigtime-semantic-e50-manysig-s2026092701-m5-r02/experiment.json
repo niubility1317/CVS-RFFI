@@ -1684,5 +1684,13 @@
     "Native generic augmentation is preserved in all matched rows. D0 captures the actual post-augmentor L input using one shape/device-checked first L forward; D3/D4 retain strict concat capture. Original r01 no-generic D0 remains independent diagnostic and is excluded from source qualification and target comparisons.",
     "Original r01 dispatcher may finish FAILED due the two old failed rows even if its diagnostic D0 completes. No process is stopped or hot modified; diagnostic cost is reported separately."
   ],
-  "registered_at": "2026-10-15T08:03:02+00:00"
+  "registered_at": "2026-10-15T08:03:02+00:00",
+  "observed_result": {
+    "status": "ANALYZED",
+    "model_seed": 2026092701,
+    "cross_seed_confirmation": "NOT_RUN",
+    "source_only": false,
+    "source_family_expandable": false,
+    "forward_packets": null
+  }
 }

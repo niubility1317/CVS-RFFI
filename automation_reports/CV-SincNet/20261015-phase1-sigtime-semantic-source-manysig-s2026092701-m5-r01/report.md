@@ -1,6 +1,6 @@
 # 五条件冻结默认头：源域身份与退化归因预登记
 
-本次只读取预定 D0/D1/D2/D3/D4 的 source final50，比较同一 L_dev720、固定 D1/A0 clean 正确集合和一份共同的六 practical 源视图。D0/D3/D4来自修正后的 r02，D1/D2保留原 A0/A-J 身份；原r01无通用增强D0诊断不进入比较。当前三条训练尚未全部冻结，本分析尚未发布。输入、逐模型来源、种子、命令、CPU及输出根唯一记录在 [experiment.json](experiment.json)。
+本次只读取预定 D0/D1/D2/D3/D4 的 source final50，比较同一 L_dev720、固定 D1/A0 clean 正确集合和一份共同的六 practical 源视图。D0/D3/D4来自修正后的 r02，D1/D2保留原 A0/A-J 身份；原r01无通用增强D0诊断不进入比较。五个实际final50现已核实，本分析已自然完成。输入、逐模型来源、种子、命令、CPU及输出根唯一记录在 [experiment.json](experiment.json)。
 
 固定网络 SIG_TIME、内部门控／参考响应与原 cosine6×160、scale30。严格 own_model 读取实际 checkpoint、source_contract、inner_source_contract、initialization、source_frozen/completion，检查同一5580/720物理折、从零继承、final50/11100、无target训练或选模、无拟合头。源 RX1/3/4/6/8、day1/2/3、6TX；U不开并检查None，V容器可能由现有cache物化但丢弃，V前向0。任何模型未冻结或实际折不同都在创建输出根前拒绝，不用历史full-L权重替代。
 
@@ -24,4 +24,20 @@ mid/low urban 使用同一次真实 clean+urban 前向，D4 clean anchor保留�
 
 N607普通账号、CPU2线程、CUDA_VISIBLE_DEVICES为空；不可覆盖run/output、唯一owner与精确Python/CWD见登记。冻结后按既有最小流程一次Git身份、一次archive传输比较/remote compile、首步真实CP smoke及独立PID/CWD/argv/日志读回。源/来源/冻结/非有限/预算/输出/技术错误只退出本owned诊断，保留产物，不自动重试，不修改健康训练。正式七视图仍由各训练行队列负责，本分析不重复测试、评分或改source-family决定。
 
-本地5项针对性测试PASS（0.831s）：匹配RX/day关系与显式triplet平均一致、U/target RX拒绝、真实配对图D4 clean梯度与W/gain边界/状态不变、未冻结来源拒绝、固定集合修复/破坏分开计数、正确原A0配置实际构造信道。一次独立P0/P1审查发现并修复错误信道类/配置组合，原问题定向复核PASS。当前只有实现/本地证据，无实际五模型冻结分析、图或性能结论；待所有合法source final50后发布。
+本地5项针对性测试PASS（0.831s）：匹配RX/day关系与显式triplet平均一致、U/target RX拒绝、真实配对图D4 clean梯度与W/gain边界/状态不变、未冻结来源拒绝、固定集合修复/破坏分开计数、正确原A0配置实际构造信道。一次独立P0/P1审查发现并修复错误信道类/配置组合，原问题定向复核PASS。五个实际final50的本次源分析现已完成，结果见下；正式测试仍由原行队列执行。
+
+## 实际完成与源域结果
+
+VERIFIED：发布commit f172f98d67b19c65d7246b025a7ba2af770d197a，PID3116403自然结束，archive/compile/真实CP smoke通过；独立PID/CWD/argv匹配，日志81→218字节。CPU2、CUDA空；36722前向、83.073758秒，optimizer/EMA/head-fit0，U truth/query读取0、V前向0；五student/ownEMA状态完全未变。实际模块__file__为adv3b02_xuc/code/leo_practical。
+
+|条件|源clean %|源low %|固定703保持 %|修复|新增错|原头margin/30|匹配参照身份差|
+|---|---|---|---|---|---|---|---|
+|D0|98.1944|48.7500|49.5021|32|164|-0.004115|0.082066|
+|D1|97.6389|66.9444|68.2788|0|0|0.095764|0.178083|
+|D2|97.9167|67.2222|68.2788|12|12|0.081752|0.117052|
+|D3|97.6389|67.6389|68.8478|14|10|0.089000|0.258420|
+|D4|97.6389|68.1944|69.2745|14|7|0.088870|0.259873|
+
+D3/D4平均参照身份差提高，但原头margin下降，源low只净增5/9包；固定703集净增4/7包。BLOCKED D1/D3/D4为167/169/174正确（386包），<3dB组72/70/75（206包）。这是小量源错误恢复，不是足够正式增益；正式主报告保留两候选源条件FAIL及不扩种子。全局u→c/c→u聚合近似相同符合平衡集合对称性，不能用于区分两方向训练。
+
+完整源几何/真实分支/gain/梯度明细、sample_identity.jsonl.gz、源resolved config在 E:/type10-7/local_artifacts/cvs_semantic_mechanism_20261015；9图共用实际artifact，已生成查看。图与正式全量表见[同轮主报告](../20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/report.md)。0更新源评价不能证明唯一物理原因、可训练上界或跨seed收益。

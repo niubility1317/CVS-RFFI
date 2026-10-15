@@ -175,7 +175,7 @@ def training_figures(root,out):
     save(fig,out,'formal_per_seed_accuracy.png')
 
     metric_rows={a:read(root/'formal_rows'/rows[a]['row_id']/'scoring/scores.json')['results'] for a in ARMS}
-    receiver_ids=sorted(results['D1']['urban_by_RX'],key=int)
+    receiver_ids=sorted(results['D1']['urban_by_RX'])
     fig,axes=plt.subplots(1,3,figsize=(16,5.5),constrained_layout=True)
     for ax,scene in zip(axes,('practical_mid_urban','practical_low_urban','urban_mean')):
         values=[]

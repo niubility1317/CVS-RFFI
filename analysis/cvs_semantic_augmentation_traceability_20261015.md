@@ -1,42 +1,38 @@
-# 最新双增益主线：真实标签跨视图身份排序
+# 真实标签跨视图身份排序：完成证据与未完成需求
 
-来源为用户31cc8a22附件。当前修复后的r02三条训练已发布并保持运行；原r01失败记录和不匹配D0诊断保留。HQ源反事实不是此方案训练结果；旧八位置族失败不改写。配置与矩阵见 experiments/cvs_urban_semantic50/registration.json 和对应自动化报告。
+源设计为用户31cc8a22附件。固定SIG_TIME、默认头、原U机制；r02三条新训练全部完成，原A0/A-J控制复用。预登记源条件FAIL，未扩seed。HQ70.97%只属不同源随机流的冻结诊断，不作为训练或正式测试结果。
 
-|ID|需求与实现位置|状态|证据／未完成|
+|ID|需求及主要实现位置|状态|实际证据／边界|
 |---|---|---|---|
-|S01|固定SIG_TIME／默认头，原联合训练|verified|实际模型和CE梯度测试，863730/195041，W正常CE更新|
-|S02|实际物理5580/720折及两个旧控制来源|verified|真实A0/A-J默认头CP及原fold/provenance smoke PASS，无query|
-|S03|D0保留旧U/EMA和原通用增强，仅关闭training satellite|verified|r02 actual post-augmentor L capture／CE／EMA测试；r01 no-generic D0仅独立诊断|
-|S04|三场景真实residual及正式IQ保持|verified|无改动原引擎／config/seed；新channel薄封装，既有物理检查复用|
-|S05|只真实L标签，同TX不作负样本|verified|objective mask/隐藏U负例通过|
-|S06|正负参照同RX/day、anchor跨RX|verified|逐triplet条件测试|
-|S07|margin满足停止、有界与每anchor归一化|verified|.1 hinge、最大2.1、无参考／满足即0测试|
-|S08|两端anchor梯度，D4为两个方向半和|verified|单向clean无梯度、双向两端非0测试|
-|S09|额外W/gain为0，CE仍联合训练|verified|真实joint/native D0/D3/D4图测试|
-|S10|相同source epoch5、全局0.1强度规则|verified|实际720L_dev/2160前向/0更新，D3 .6863719838，D4 1.1577435581；状态和grad未变|
-|S11|E50/11100、旧U和额外EMA前向匹配|pending|配置／早期管线测试通过，待完整真实训练计数|
-|S12|3新模型＋2精确旧控制，禁止重复训练测试|verified|五条件配置及直接predict/preflight拒绝复用row测试|
-|S13|逐row原头七视图＋CPUtruth-last|pending|沿原实现自动接线，待冻结预测和独立评分|
-|S14|clean对D0、low对D1分别报告及跨seed|pending|报告／源条件预定；目前无新性能或多seed证据|
-|S15|实际梯度、clip、更新、分支信息与使用量归因|pending|r02实际非零关系梯度/W-gain额外0已读回；独立冻结源probe已实现/5检查及定向P1复核PASS，完整冻结机制与图待实际产物|
-|S16|Bridge-CE/S同成本局部教学|deferred|HQ物理源诊断已完成；按最新顺序留待语义证据后|
-|S17|独立跨RX教师库／学生KD|deferred|两教师core草稿独立保留，未发布；不并入语义损失|
-|S18|三方共享GPU锁、所有owner、不可覆盖与读回|verified|r02真实发布63f6bd461、实际GPU1/2/3；独立PID/CWD/argv/日志增长，无健康任务修改|
+|S01|固定SIG_TIME／默认头，原联合训练|verified|863730总参数／195041身份梯度；完整参数写回含原头和gain，未另训头|
+|S02|实际5580/720物理折及控制来源|verified|实际A0/A-J same-fold scratch final50原头与真实CP smoke；五source契约相同|
+|S03|D0保留原generic增强/U/EMA，仅关闭satellite|verified|r02完整resolved native args use_aug=True；原r01 no-generic D0排除主比较、保留自然E50诊断|
+|S04|三场景真实residual，正式IQ不变|verified|adv3b02_xuc实际模块__file__、EQfalse G1/post_sync/refSNR30/reflect；共同源与原正式六practical|
+|S05|仅真实L关系，同TX非负样本|verified|objective mask／隐藏U负例；实际全步U truth0|
+|S06|正负参照同RX/day，anchor跨RX|verified|显式triplet单测及冻结源精确分组均值对照|
+|S07|有界margin满足即停及归一化|verified|.1 hinge、最大2.1、逐anchor/fullbatch；满足/无参照负测|
+|S08|两端anchor梯度、D4半和|verified|真实配对图两端梯度非0；冻结eval未detach D4 clean|
+|S09|额外W/gain0，CE仍联合更新|verified|全50轮边界通过，参数更新组均非0；原头无独立拟合|
+|S10|同source epoch5全局.1强度规则|verified|旧2160前向/0更新；D3 .6863719838，D4 1.1577435581；r02原样复用、新校准0|
+|S11|E50/11100及旧U/EMA计数|verified|新33300全步，原控制22200已验证步复用；D0主4769400，其余6190200；50 native epochs和实际clip写回|
+|S12|3新模型＋2精确旧控制，不重训练/测试旧控制|verified|注册矩阵、原scores/CP/fold；新/复用成本分开，原标识保留|
+|S13|逐row原头七视图，独立truth-last|verified|全5条件35视图、5880000预测／630指标（新3528000／378），7视图固定后独立recount VERIFIED|
+|S14|clean对D0、low对D1双增益及跨seed|pending|正式D3/D4 low53.4768/53.3542，clean80.6131/80.6107；两者clean低于D0 81.9798。源条件均FAIL；按规则未扩seed，跨seedNOT_RUN|
+|S15|真实梯度/clip/更新/分支信息与使用量归因|verified|完整native日志＋冻结36722前向/83.073758s/0更新，五student/ownEMA不变；9真实图逐张查看|
+|S16|Bridge-CE/S同成本局部教学|deferred|HQ物理源诊断完成；新训练未实现/发布，不默认堆叠到失败语义候选|
+|S17|独立跨RX教师／学生KD|deferred|E50两教师core草稿未发布；另对话E20研究为不同数据折和预算，不直接复用权重|
+|S18|共享容量锁、全owner和独立读回|verified|训练发布63f6bd461，原GPU1/2/3进程自然结束；源发布f172f98d6，PID3116403自然结束；无健康任务修改|
 
-计数：verified12、pending4、deferred2、rejected0、blocked0。6项相关测试PASS（6.793s），compile PASS；一次独立P0/P1审查及原问题定向复核 PASS。D0 显式关闭 labeled generic augmentor，回归实际 native post-concat 路径，原 U 强视图保持。该计数是实现阶段覆盖，不是训练完成或用户批准。最高风险仍是相对身份目标能否改善固定默认头的clean与low，不能从正负关系正确或局部梯度非0推导双增益。
+计数：verified15、pending1、deferred2、rejected0、blocked0。这是需求证据覆盖，不是性能目标达成。
 
-历史对照核查：local-order是full-L clean的t1/t2额外cohort，soft-relation是EMA软图且源梯度条件FAIL。本轮是相同内部折的真实标签clean/practical双向joint160排序，不重复其已完成训练，也不声称身份排序是新提出的通用方法。
+训练代码/配置commit为63f6bd461834b4def6e3d7cfe4d8e8f00389b13e；源机制发布f172f98d67b19c65d7246b025a7ba2af770d197a。实现位置为experiments/cvs_urban_semantic50/{objective,source,observer,model,dispatch,evaluate,report,_audit_worker,full_log_audit}.py和experiments/cvs_urban_semantic_mechanism/{probe,checks,figures}.py。
 
-实际r01 e8f51edab：archive/compile/真实CP smoke PASS。D3/D4首步CUDA标签与CPU元数据mask技术失败；本地修复前复现、后7测试PASS6.435s，设备问题定向P1复核PASS。D0仍健康，不热改；修复尚未发布，新run仅恢复失败两行，旧D0和D1/D2复用。不得把r01标为完整训练或正式性能完成。
+匹配恢复8检查PASS6.717s；冻结源5检查PASS.831s；全量日志3负测PASS.066s；compile、一次archive传输比较、真实CP无query smoke通过。一次独立P0/P1及对应直接问题定向复核已通过，无额外报告/未变代码复审。实际检查命令见本轮report；其中`-m experiments.cvs_urban_semantic50.audit_checks`验证完整步数、非有限/隐藏truth负例和未完成矩阵不读取行分数。实际`full_log_audit`和`figures`命令已在完整真实artifact上执行。
 
-恢复版 r02：新scratch匹配D0/D3/D4，D1/D2复用。原r01 D0关闭通用增强与concat控制不匹配，保留健康诊断但排除主比较，额外E50成本另列。新版保留native generic前后位置，仅捕获实际L输入并在U/EMA前移除hook。8检查PASS6.717s；源calibration从原r01原样复制，新前向0。r02尚未发布。
+严格对应附件：真实L、同条件正负参照、同次前向stopgrad keys、双向半和、原头和gain额外梯度边界、不改U或formal IQ。预定近似：一次源全局梯度比例校准、物理q和eval梯度观测；eval不是Dropout/clip/AdamW的实际写回。全体双向参照均值近似相同源于平衡集合对称性，不冒充两个方向的独立训练效果。
 
-恢复差异独立P0/P1审查PASS；D0新增匹配问题的定向复核PASS。无额外全量或报告审查。当前最高风险仍是原头的实际双增益，须等待新E50冻结证据。
+最高风险已由实际结果暴露：几何差改善未转为足够的默认头间隔/正式低urban收益，clean仍有约1.37pp代价。源low BLOCKED仅多7/386正确、<3dB仅多3/206；不据此宣称恢复全部损伤、唯一因果或可训练上界。当前只有一个模型seed，复现性未证实，low≥60%未达成，目标保持active。
 
-r02实际发布63f6bd461：archive/compile/真实CP smoke/源校准原样复用通过；三row独立活跃、D0/D3/D4 epoch4/2/2，日志增长。actual use_aug=True匹配确认。原r01 D0仍独立诊断。当前verified12/pending4/deferred2，缺项为完整预算、七视图、双增益及机制/跨seed；保持目标active。
+原r01 D3/D4首步CPU元数据/CUDA标签错误：0完整epoch、保留失败产物；原r01 D0 generic关闭与控制不匹配，在读目标分数前排除，健康自然完成E50/11100、2327.915211s，额外成本单列。r02重新从零训练正确三行，没有停止/重启健康行。出图物理RX字符串排序错误已用实际数据修复，不影响训练/评分。
 
-S15冻结源机制实现计划：`experiments/cvs_urban_semantic_mechanism/`，严格加载五条件final50/默认头，固定D1/A0 clean正确集合和一份共同source practical视图，记录错误修复/破坏、原头间隔、状态/RX/质量、实际分支/门控及同RX/day参照相对身份差。mid/low的零更新配对梯度使用同一次clean+urban实际joint图，D4 clean anchor不被无意detach；全部eval、autograd.grad不累积.grad。预算36722前向、L_dev720、U不开/V前向0；新增机制诊断须登记后在模型冻结时独立CPU发布，不热改训练或读取target。当前pending，不能由实现替代实际结果。
-
-S11/S15完整日志与出图：新增 `experiments/cvs_urban_semantic50/_audit_worker.py`、`full_log_audit.py` 和 `experiments/cvs_urban_semantic_mechanism/figures.py`。新三行逐条读取全11100步及50轮native/更新记录；旧D1/D2复用已验证八位置完整审计，不重复分析未变化日志。图只从完整真实artifact生成，当前无数据图；五条件全列，不按目标排序或挑最佳。
-
-完整日志reader的3项聚焦检查PASS0.066s（全步平均/clip计数、缺步/非有限/隐藏标签负例、矩阵未完成不读行或目标分数）；两CLI --help与compile通过。本地测试文件初次写偏目录已移回本工作树，未影响实验。图函数尚无真实结果可渲染，不声称图验证完成。实际正确D0已自然E50/11100并完成七视图评分，2620.404159s；D3/D4最新34/33，S11/S13/S15仍等待完整矩阵证据。
+主报告：automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/report.md；源报告为同根20261015-phase1-sigtime-semantic-source-manysig-s2026092701-m5-r01/report.md。实际artifact分别在local_artifacts/cvs_semantic_augmentation_recovery_20261015及cvs_semantic_mechanism_20261015，原始IQ/CP/日志/图不入Git。
