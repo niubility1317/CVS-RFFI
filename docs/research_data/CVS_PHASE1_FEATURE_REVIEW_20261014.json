@@ -82521,6 +82521,14 @@
       "source_decision": "PENDING",
       "head_fit_updates": 0,
       "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/remaining_seed_preparation_checks.json"
+    },
+    "mid_training_evidence": {
+      "gradient_epoch": 17,
+      "status": "VERIFIED",
+      "complete_source_prefix_steps": 8257,
+      "source_qualification": null,
+      "new_target_metrics_read": false,
+      "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/mid_training_evidence.json"
     }
   },
   "latest_complete_sinc_optimizer": {

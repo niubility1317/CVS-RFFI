@@ -1,0 +1,98 @@
+{
+  "status": "VERIFIED_MID_TRAINING_PREFIX",
+  "run_id": "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "execution_commit": "22de3258841f6068688885ba99d8ceeb866be17c",
+  "observed_gradient_epoch": 17,
+  "gradient_recounts": [
+    {
+      "arm": "NORM_CONTROL",
+      "status": "VERIFIED",
+      "epoch": 17,
+      "gradient_batches": 13,
+      "layer_records": 52,
+      "saved_vectors": 208,
+      "actual_selected_matches_target": true,
+      "actual_selected_equals_original_plus_correction": true,
+      "maximum_relative_selected_target_L2": 6.514442249035346e-7,
+      "defaultW_correction_exactly_zero": true,
+      "body_correction_nonzero_all39": true,
+      "new_model_forwards": 0,
+      "head_fit_updates": 0,
+      "query_read": false
+    },
+    {
+      "arm": "RX_CAGRAD",
+      "status": "VERIFIED",
+      "epoch": 17,
+      "gradient_batches": 13,
+      "layer_records": 52,
+      "saved_vectors": 208,
+      "actual_selected_matches_target": true,
+      "actual_selected_equals_original_plus_correction": true,
+      "maximum_relative_selected_target_L2": 8.663610316913274e-7,
+      "defaultW_correction_exactly_zero": true,
+      "body_correction_nonzero_all39": true,
+      "new_model_forwards": 0,
+      "head_fit_updates": 0,
+      "query_read": false
+    }
+  ],
+  "source_prefix": [
+    {
+      "arm": "NORM_CONTROL",
+      "complete_logged_prefix_steps": 4173,
+      "last_step": 4173,
+      "source_epoch": 19,
+      "all_saved_Gram_norm_reference_checks": true,
+      "solver_fallbacks": 0,
+      "mean_norm_ratio": 1.2424326201167128,
+      "minimum_relative_worst_local_gain_vs_norm_control": 0.028197077151956886,
+      "source_CE_mean": 0.37066159391828846,
+      "source_gradient_epochs": [
+        1,
+        17
+      ],
+      "sampled_layer_records": 104,
+      "head_fit_updates": 0,
+      "target_read": false,
+      "limitation": "All complete loggedsourceprefix only;notcomplete50epochs,noDGclaim",
+      "mean_solver_proposed_direction_change": 0.4602992049557269,
+      "applied_direction": "Original direction at own-state candidate norm"
+    },
+    {
+      "arm": "RX_CAGRAD",
+      "complete_logged_prefix_steps": 4084,
+      "last_step": 4084,
+      "source_epoch": 19,
+      "all_saved_Gram_norm_reference_checks": true,
+      "solver_fallbacks": 0,
+      "mean_norm_ratio": 1.2315116141126063,
+      "minimum_relative_worst_local_gain_vs_norm_control": 0.024643229384191865,
+      "source_CE_mean": 0.3707545677584894,
+      "source_gradient_epochs": [
+        1,
+        17
+      ],
+      "sampled_layer_records": 104,
+      "head_fit_updates": 0,
+      "target_read": false,
+      "limitation": "All complete loggedsourceprefix only;notcomplete50epochs,noDGclaim",
+      "mean_solver_proposed_direction_change": 0.46508829427946996,
+      "applied_direction": "Coordinated direction"
+    }
+  ],
+  "total_prefix_steps": 8257,
+  "sampled_gradient_epochs": [
+    1,
+    17
+  ],
+  "combined_sampled_layer_records": 208,
+  "combined_saved_vectors": 832,
+  "optimizer_or_model_updates_by_analysis": 0,
+  "new_model_forwards": 0,
+  "head_fit_updates": 0,
+  "target_metrics_read": false,
+  "source_qualification": null,
+  "training_complete": false,
+  "limitation": "Full complete logged source prefix and sampled true derivatives only; no DG/84 claim. Control Gram proposals are observations, actualcontrol uses original direction."
+}
