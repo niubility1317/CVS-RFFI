@@ -317,3 +317,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- SIGTIME_RDROP_RX_EVIDENCE_PREREG_20261015 -->
 固定20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01四条件FULL/LOCAL/SAME_RX/CROSS_RX，下一源seed03各scratch20，RX1全路径先排除，默认头联合训练与旧配方不变。独立RDrop一致性对象假设：保留自包binary KL，在同身份跨RX间传输conditional混淆关系，停止关系质量权重梯度；同RX和跨RX有效配对质量匹配。无差分投影、父模型或target。CPU/CUDA57负例/5资格/198初态及原logits/CE/RNG、零真类raw logit直接关系梯度PASS。新四行尚未发布，科学资格见[同run报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01/report.md)。goal仍active。
+
+
+<!-- SIGTIME_RDROP_RX_EVIDENCE_RESULT_20261015 -->
+20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01四组source-only E20已ANALYZED/VERIFIED，17760步/80epoch，默认头联合，RX1全路径留出。FULL/LOCAL/SAME_RX/CROSS_RX错误依次为335/335/355/364（各1260），固定资格FAIL；逐包CE转移分解、实际梯度/更新/特征导出和完整日志已核验，0target/另训头。关闭固定配方，不扩种子或用目标救跑。 仅继续SIG_TIME＋RDrop机制研究；既有E50三seed84.340079%里程碑保留，goalactive。[同run报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01/report.md)。

@@ -1055,10 +1055,11 @@
   ],
   "registered_at": "2026-10-15T13:40:59+00:00",
   "result": {
-    "status": "RUNNING",
-    "evidence_ref": "launch_verification.json",
-    "source_rows_running": 4,
+    "status": "ANALYZED",
+    "evidence_ref": "completion_verification.json",
+    "source_rows_complete": 4,
     "source_only": true,
+    "source_qualified": false,
     "target_access": false,
     "goal_completed": false
   }

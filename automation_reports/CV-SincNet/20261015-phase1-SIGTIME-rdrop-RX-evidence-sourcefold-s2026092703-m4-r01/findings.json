@@ -1,0 +1,61 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01",
+  "primary_qualified": false,
+  "source_only": true,
+  "main_comparison": {
+    "accuracy_difference_pp": -2.3015873015873045,
+    "extra_errors": 29,
+    "corrected": 19,
+    "introduced": 48,
+    "CE_difference": -0.025792202770574812
+  },
+  "positive_evidence_retained": {
+    "LOCAL_minus_FULL_CE": -0.02974670458715012,
+    "LOCAL_minus_FULL_errors": 0,
+    "previous_difference_source_accuracy_gain_pp": 2.936507936507937,
+    "previous_full_E50_RDrop_three_seed_clean_mean_percent": 84.340079
+  },
+  "same_RX_control": {
+    "CROSS_minus_SAME_RX_errors": 9,
+    "CROSS_minus_SAME_RX_CE": 0.00794343235657391
+  },
+  "CE_explanation": {
+    "both_correct": {
+      "count": 877,
+      "control_mean_CE": 0.11982861489317184,
+      "candidate_mean_CE": 0.18641363031072142,
+      "contribution_to_overall_CE_difference": 0.04634528454062776
+    },
+    "both_wrong": {
+      "count": 316,
+      "control_mean_CE": 3.248886635902438,
+      "candidate_mean_CE": 2.9182114263730465,
+      "contribution_to_overall_CE_difference": -0.08293124302483151
+    },
+    "introduced": {
+      "count": 48,
+      "control_mean_CE": 0.6199630987984291,
+      "candidate_mean_CE": 1.0266208819016633,
+      "contribution_to_overall_CE_difference": 0.015491725070599394
+    },
+    "repaired": {
+      "count": 19,
+      "control_mean_CE": 1.1083136217929213,
+      "candidate_mean_CE": 0.7967640749623266,
+      "contribution_to_overall_CE_difference": -0.004697969356969284
+    }
+  },
+  "selection": "Close fixed evidence recipe, no target/seed/coefficient rescue",
+  "limits": [
+    "single seed03 and one held source RX",
+    "same anchors and one peer matched; effective KL/gradient norm not matched",
+    "conditional relation loss alone is not established stable identity evidence across RX",
+    "no global novelty/newTX/Phase2/space claim"
+  ],
+  "next_priorities": [
+    "Keep same-packet RDrop target and investigate coupling between the two sampled subnetworks, preserving per-pass dropout marginals; inspect actual sites and theory before a separately registered experiment",
+    "Any new positive mechanism must earn source qualification and then a separately frozen E20/E50 main comparison; preserve all positive and negative evidence"
+  ],
+  "goal_completed": false
+}
