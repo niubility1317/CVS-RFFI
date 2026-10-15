@@ -261,3 +261,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- RDROP_E20_E50_COMPLETE_20261015 -->
 2026-10-15 `20261015-phase1-SIGTIME-rdrop-budget-e20e50-clean-manysig-m12-r01` 全12行完整ANALYZED，93240更新/420epoch/2016000决定/216CM及完整source日志独立核验，默认头joint/headfit0。E20_TWO_CE/E20_RDROP/E50_TWO_CE/E50_RDROP均值依次80.974603%/82.495437%/81.150397%/82.102976%；配对E20_RDROP minus E20_TWO_CE: +1.520833pp/3正; E50_RDROP minus E50_TWO_CE: +0.952579pp/3正; E50_TWO_CE minus E20_TWO_CE: +0.175794pp/2正; E50_RDROP minus E20_RDROP: -0.392460pp/1正。预登记主条件E50_RDROP的84%检查=False；E20比较检查=False。预算含日程与U轮次变化，既有RDrop不是全球新方法；不以目标结果挑主条件、重跑或自动完成全研究目标。[完整报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-budget-e20e50-clean-manysig-m12-r01/report.md)。goal仍active，下一机制按合法源证据推进。
+
+
+<!-- RX_TEACHER20_SOURCE_COMPLETE_20261015 -->
+2026-10-15 `20261015-phase1-RX-teacher-exposure-source-e20-s2026092701-m2-r01` source-only 两行 E20 完整 ANALYZED / VERIFIED，8,880 更新和 40 epoch；无 U/EMA/换头/target。固定 RX1 排除教师 60.685185% 对等量 SAMPLE_80 的 99.444444%，纠正3/引入2096，CE升高；固定 A0 拒绝区纠正3/引入1787，科学资格 FAIL，关闭此配方，不扩库/学生/选择性救跑。原已见 RX 拟合 V 反而 +0.222222pp，不能用作跨域互补替代证据。固定源 V A0拒绝不代表预测错（拒绝区 EMA 99.423248%），不是实际 U 精度。RDrop 两预算三seed正收益独立保留，84%目标仍 active。[完整报告](../automation_reports/CV-SincNet/20261015-phase1-RX-teacher-exposure-source-e20-s2026092701-m2-r01/report.md)。

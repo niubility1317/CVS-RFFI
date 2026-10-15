@@ -1,23 +1,33 @@
-# 两教师 E20 源域互补性小试
+# 跨 RX 教师：等样本 E20 源域证伪结果
 
-状态 **RUNNING / 两行实际训练已启动，独立发布后证据 VERIFIED**。两份own初始checkpoint无query smoke通过；实际source roles5040/0/21600、L计数/TX/day匹配、RX排除和fitV过滤、scratch空继承/无EMA、actualnative纯CE配方、CWD/argv/GPU/start身份及日志增长均已读回。两组都已实际覆盖全部5040合法L，U迭代与另训头为0，heldV IQ尚未读取。尚无教师互补性/源资格结果，不能把检查当收益。
+状态 **ANALYZED / 完整训练、冻结源 V 预测和独立产物分析 VERIFIED；预登记科学资格 FAIL**。固定 RX1 排除教师没有产生预期错误互补，因此关闭这一固定配方，不扩展五教师库、U 蒸馏或学生目标测试。完整研究目标仍 active。
 
-执行commit `73397488a1768ca783a4f2b4af1f0d911c4414fc` 已推送且remote OID一致；一次ordinary N607 preflight/archiveSHA比较/remotecompile通过。本任务GPU分配为[0, 1]，各2926至2926MiB，CPU2/worker、loader0；首epoch含fitV诊断为[29.34, 29.28]s。全owner实际GPU计数{0: 1, 1: 1, 2: 1, 3: 1}，均≤3；其余容量未保留，没有停止/迁移/重启任何健康任务。原RDrop12行已自然完成并释放GPU，本source试验不是重跑旧行。
+| 教师 | 唯一训练 L | 训练 RX1 的 L | 末轮训练 CE | 拟合 RX 的 V 准确率 | 留出 RX1 V 准确率 | 留出错误 | 留出 CE |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| SAMPLE_80 | 5040 | 1008 | 0.025326 | 97.768519% | 99.444444% | 30 | 0.023061 |
+| EXCLUDE_RX1 | 5040 | 0 | 0.022362 | 97.990741% | 60.685185% | 2123 | 1.726076 |
 
-冻结后自动保存两份5400 held-sourceV默认概率，再由fresh CUDA空CPU比较器验证来源、回放固定A0 sourcegate并计数。无U/target访问；科学条件与预算不因同时返回的RDrop目标分数变化，方案登记/代码冻结先于读取该分数。报告完成后仍需保留正负结果和独立分析；84%整体goal active。
+两教师均从相同 seed 的完全一致 200 个初始 state 从零训练，L 总量均为 5,040，每个 TX×day 均为 280。SAMPLE_80 在 5 个源 RX 的每个 TX×RX×day 使用 56 个 L；EXCLUDE_RX1 在其余 4 个源 RX 使用原有 70 个 L。前者共使用 1,008 个 RX1 L，后者全部训练、校准、缓存和祖先均排除 RX1。两者共同的拟合 V 只含 RX3/4/6/8 共 21,600 个样本；原源 V_RX1 的 5,400 个包在固定 final20 冻结后才首次前向。L 与 V 物理角色分离，没有扩大有标签权限。
 
-发布前固定方案：
+EXCLUDE_RX1 比 SAMPLE_80 净下降 -38.759259 个百分点，纠正 3 个、引入 2096 个错误；平均 CE 也明显升高。拟合 V 的准确率反而增加 0.222222 个百分点，两者末轮训练 CE 均低于 0.5。这排除了本次简单训练失败的解释，并说明较好的已见 RX 拟合表现不能代替跨 RX 证据。只对这两个固定 E20、单 seed 教师作此判断，不推广为所有交叉拟合方法无效。
 
-状态 **PLANNED，已登记，尚未发布/训练**。固定seed2026092701，SAMPLE_80 / EXCLUDE_RX1 两个原SIG_TIME/CENTER25K/defaulthead从零纯CE E20模型，各5040合法L、每TX/day280、4440更新/568320主L前向；普通组各TX/RX/day56个L，排除组4RX各70。默认头正常joint，原AdamW lr.0002/wd.0001/cos，LS0/native dropout，无U迭代/EMA/增强/辅助损失/新参数/换头。实际每批L base_index/TX/RX/day与固定来源核对。原source载体6300/56700/27000 VALIDATED_ONCE复用，先筛L/V及弃U，再构造模型；有效roles5040/0/21600独立保存，不冒充full-source父来源。
+| 固定 A0 门控区域 | 数量 | SAMPLE_80 准确率 | EXCLUDE_RX1 准确率 | 原 A0 EMA 准确率 | 纠正 / 引入 |
+|---|---:|---:|---:|---:|---:|
+| accepted | 892 | 100.000000% | 65.358744% | 100.000000% | 0 / 309 |
+| rejected | 4508 | 99.334516% | 59.760426% | 99.423248% | 3 / 1787 |
 
-两组fit/calibrationV均RX3/4/6/8=21600；RX1源V5400仅未materialize的dataset引用，fixedfinal20冻结后才做默认头预测（六TX×三day×300）。比较同ID错误/meanCE/真类概率、修正−破坏与day/TX/类别对。独立CPU仅在两个来源证明和源预测完整后，加载原全源BASE_SSL seed01 E20/LS0的固定student+ownEMA作源V原门控回放，不进入教师训练。weak为原clean U输入，strong为native std.015且student dropout激活，teacher eval；固定sourceV shuffle2026101502/view2026101503/batch256；gate只获物理metadata，不获TX标签。全部model参数/buffer/grad不变；不拟合阈值/分类头、不读取U IQ/TX或target。它是final A0的sourceV proxy，不能推断实际U精度或早期teacher行为。
+原完整 BASE_SSL final20 的 ownEMA/强视图 student 在这批源 V 上重放原门控，固定拒绝 4508 个、接受 892 个。拒绝区原 EMA 准确率仍为 99.423248%；排除 RX1 教师在此区仅纠正 3 个、引入 1787 个错误。‘门控拒绝’在该源代理上主要不等于‘教师预测错误’，因此不能把拒绝数量当作等待跨 RX 教师补全的错误标签数量。该结论只适用于固定 A0 末态源 V 代理，不是实际 U 的正确率，也不代表训练早期状态。A0 权重只用于冻结重放，不是两个教师的祖先。
 
-唯一科学条件：两组final训练LCE≤.5，EXCLUDE全5400错误严格更少且meanCE不高于SAMPLE，并且固定A0拒绝区域非空、纠正严格多于破坏。任一不通过即收束固定配方，不扫描阈值/样本/epoch/seed救援。通过也不自动扩五教师库、学生或target；下一步另登记。全/接受/拒绝/day/TX/类别对风险完整保留。RDrop12固定E20/E50矩阵继续原计划，本项参数在未读取其target分数时固定。另一owner只有E50/4464L/720dev草稿，本项不是其已完成结果或对照，也不干预其独立科学范围。
+3 个源 day 均下降，6 个 TX 中 5 个下降、TX4 持平。TX5 从 99.888889% 降至 13.666667%，主要新增 TX5→TX4 共 567 个和 TX5→TX2 共 189 个错误；TX2→TX0 新增 436 个错误。完整 30 个真类/错类对以及 gate、day、TX 配对见 CSV，不选择局部正项挽救资格。
 
-ordinary N607 CVS-RFFI，CWD `PROJECT/releases/cvs_RX_teacher_exposure_source20_20261015_r01`；命令 `CVS-RFFI/bin/python -u experiments/cvs_rx_teacher20/runner.py experiments/cvs_rx_teacher20/configs/matrix.json`；owner `codex/root/RX-teacher-exposure-source20-20261015`；唯一root `PROJECT/runs/20261015-phase1-RX-teacher-exposure-source-e20-s2026092701-m2-r01`。2个已固定就绪worker按all8 idlefirst，共同 `receiver_residual_capacity4.lock` 内读全部actual/preCUDA owner、cap3/GPU/free≥12000MiB、选卡/Popen/记录。CPU2/worker、loader0，计划3.3GiB/worker，实际显存/时间另测。CPUdispatcher与freshcompare CUDA为空。预期40modelepoch/8880更新/1136640Ltrain、10800teacherheldV前向、10800A0proxy前向，合成smoke另计；native训练每轮fitV诊断及固定A0历史训练成本分别披露。
+资格判定保持发布前条件：两者 L 健康，EXCLUDE_RX1 错误更少且 CE 不升，固定拒绝区非空且纠正大于引入。实际三个效果条件均未通过。没有阈值扫描、替换 RX、换 seed、延长轮次、换头、叠加 RDrop 或重新预测来挽救本次结果。已确认的 RDrop、CENTER25K、NONE 等正收益证据仍独立保留；本次负结果没有回写或停改任何旧训练。
 
-技术停止：非法角色/来源或U迭代、非有限/预算/预测错误、已有输出碰撞、worker或CPUcompare失败保留所有产物，停止未启动行，已启动健康行正常结束，无自动retry/kill其他owner。每launcher第一步保存/重载own初始CP，2个合成无query前向PASS即继续。源码/配置actualGitcommit、一次聚焦负例及actualmodel检查、一次独立下一运行P0/P1、一次N607 preflight/archiveSHA比较/remotecompile与独立PID/CWD/argv/GPU/log增长按最小流程执行。预期初末CP、实际源subset/role/args、完整step/epoch、teacher heldV默认概率、A0gateproxy、matrix资格与报告均在experiment.json。source-only明确不测试target/satellite。
+独立 CPU 分析完整解析全部 8,880 条 step、40 条 epoch、两份训练 stdout 和比较 stdout，核对每步纯 CE、0 个非有限跳步、原生计数及实际角色、曝光、固定 final20 及空祖先。日志的 `a1_ema_successful_updates` 是原生成功更新计数名；实际 EMA 开关关闭、checkpoint 的 ema_model=None，不能由该计数名推断存在教师更新。主干和既有默认 W 均发生实际更新；16 个合成包前向确认部署 joint160 改变、feature-only 与 joint160 逐位相同、扰动 W 不改变 joint160。完整源 V 决定重算为 10,800 个教师预测和 5,400 个既有 A0 门控决定；本次分析新增真实 IQ 读取、优化、拟合头、checkpoint 改写和 target 访问均为 0。
 
-当前44个异常负例及4个资格否决边界PASS，2真实模型200state初值一致、native222 dummy pairs从不迭代U、128合成L的t1/t2/SIG/W梯度有限非零，审计hook与原CE梯度逐位一致。首次新增fixture因Windows路径表示差异失败已修正，未涉及真实IQ/CP/训练；一次未归档的无用__init__引用已移除。此前prototype的21项结果保留为实现历史。本地检查不等同实际教师互补或泛化收益。
+两行实际成本为 40 model-epoch、8,880 次原生更新、1,136,640 次 L 训练前向；原始实验另有 10,800 次教师留出 V 前向和 10,800 次 A0 门控前向，拟合 V 的每轮前向已计入实测 epoch 时间。两行训练耗时分别 588.97 s 和 587.73 s，矩阵从首次准入至源比较完成 607.07 s。首轮各约 29.3 s，GPU0/1 每行约 2,928 MiB；全部原进程自然结束，资源已释放，未干预其他 owner。
 
-背景：[用户路线落实说明](../../../analysis/cvs_rx_teacher_exposure_source20_20261015.md)。互补域教师有[DomED先例](https://proceedings.mlr.press/v306/song26af.html)，不宣称全球首创。84%与完整训练机制研究目标仍active。REJECTED_EXTRA_GATE：额外设计/spec审批、report-only重复review、额外哈希/receipt链和新调度平台不进入本流程。
+本次是预登记的 source-only 证伪实验，未进行目标、卫星或 Phase2 测试。没有用源域结果宣称完整泛化目标完成。没有删除旧产物或重新登记同一行。后续新机制需要独立源证据，不能将本次已被否定的教师直接用于学生训练。
+
+![完整源训练曲线](training_curves.png)
+
+执行代码和固定配置提交：`73397488a1768ca783a4f2b4af1f0d911c4414fc`。完整预登记、命令、路径、一次 P0/P1 检查和启动证据见 experiment.json、review_evidence.json、launch_verification.json；独立完整复算见 results_analysis.json。

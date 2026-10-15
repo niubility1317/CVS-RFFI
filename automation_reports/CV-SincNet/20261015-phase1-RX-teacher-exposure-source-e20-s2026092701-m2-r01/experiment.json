@@ -689,9 +689,15 @@
   ],
   "registered_at": "2026-10-15T09:09:25+00:00",
   "result": {
-    "status": "RUNNING",
-    "evidence_ref": "launch_verification.json",
-    "actual_rows_started": 2,
+    "status": "ANALYZED",
+    "scientific_qualification": "FAIL",
+    "evidence_ref": "results_analysis.json",
+    "actual_rows": 2,
+    "actual_epochs": 40,
+    "actual_optimizer_steps": 8880,
+    "source_only": true,
+    "target_access": false,
+    "teacher_bank_or_student_launched": false,
     "goal_completed": false
   }
 }
