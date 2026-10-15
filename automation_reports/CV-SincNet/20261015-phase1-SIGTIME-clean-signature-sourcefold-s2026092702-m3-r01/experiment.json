@@ -1,0 +1,374 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01",
+  "group_id": "phase1-SIGTIME-path-noise-placement",
+  "display_name": "SIG_TIME 签名分支失活前取点与无失活独立确认",
+  "description": "New seed2026092702, genuine RX1 holdout, ELEMENT/NONE/CLEAN_SIG scratch20; main t2 dropout unchanged for CLEAN_SIG and signature alone reads pre-drop after-pool features with gradients.",
+  "kind": "diagnostic",
+  "stage": "Phase1 source fold complete training",
+  "aliases": [],
+  "tags": [
+    "CVS",
+    "SIG_TIME",
+    "CENTER_25K",
+    "branch_noise_placement",
+    "default_head",
+    "source_only",
+    "scratch20",
+    "independent_confirmation"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Continue user training/loss mechanism goal and preserve strong positive routes; source-only second-seed confirmation and one exact branch-specific candidate, not a loss/parameter scan",
+  "code": {
+    "commit": "release_commit.txt (actual Git HEAD at launch)",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "N607 ordinary account/CVS-RFFI Python; new narrow package with immutable original R02 runtime and prior source-fold helper release",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_clean_signature_sourcefold_20261015_r01",
+    "entrypoint": "experiments.cvs_sigtime_cleanpath20.runner"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated fixed source physical roles, receiver-mask fold only",
+    "representation": "clean IQ[2,256], NoExplicitCFO with existing internal packet compensation",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md; current source_contract.json effective4RX and original carrier contract reference",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "label_map_ref": "Original six source TX labels unchanged; U returns -1 and strips TX metadata",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Unchanged original six source TX; no target data constructed",
+    "roles": {
+      "L_s": 5040,
+      "U_s": 45360,
+      "V": 21600
+    },
+    "train_ratio": {
+      "L": 0.07,
+      "U": 0.63,
+      "V": 0.3
+    },
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "VALIDATED_ONCE original data reused; native exact carrier roles checked then all active fold roles and physical subset checked",
+    "support_query_ref": "Not applicable: source-only, no Phase2 capsule/support/query",
+    "leo_config_ref": "None; no satellite augmentation/evaluation"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "One new model seed/one genuinely held sourceRX1; no target/newTX/satellite/Phase2 claim and no global novelty assertion"
+  },
+  "checkpoint": {
+    "initialization": "scratch; three independent same-seed identical original initial200states; own EMA created only after RX1 loader filtering",
+    "sources": [],
+    "contract_check_ref": "Existing original VALIDATED_ONCE source handles checked before fold masking; effective four-RX roles recorded before student/teacher creation",
+    "provenance_verdict": "No parent checkpoint loaded; parent_run_ids is discovery context and code reuse only",
+    "selection_rule": "Fixed final20, default jointly trained head; no tail/EMA readout selection or head fitting"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/SIGTIME-clean-signature-20261015",
+    "gpu_policy": "One sequential pipeline worker on one GPU, choose fewest total existing processes then most free memory; at most3 including all owners and >3072MiB free; no intervention in healthy workloads",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_clean_signature_sourcefold_20261015_r01",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_SIGTIME_clean_signature_sourcefold_20261015_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_cleanpath20/runner.py experiments/cvs_sigtime_cleanpath20/configs/matrix.json",
+    "stop_rule": "Protocol/source roles/checkpoint provenance mismatch, nonfinite loss/gradient/output, output collision or technical failure: preserve artifacts and stop own pipeline; never stop unrelated process; no automatic retry or scientific early stopping"
+  },
+  "expected_artifacts": [
+    "each_row/source/source_contract.json",
+    "each_row/source/source_fold.json",
+    "each_row/source/actual_native_args.json",
+    "each_row/source/resolved_config.json",
+    "each_row/source/initial_smoke.pt",
+    "each_row/source/final_ssdg.pth",
+    "each_row/source/source_frozen.json",
+    "each_row/source/source_readouts/FINAL.json",
+    "each_row/source/path_progress.json",
+    "each_row/source/path_result.json",
+    "each_row/source/step_metrics.jsonl.gz",
+    "each_row/source/epoch_metrics.jsonl",
+    "each_row/source/completion.json",
+    "matrix_result.json",
+    "source_matrix.stdout.log",
+    "release_commit.txt"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "held source accuracy",
+      "source meanCE",
+      "Macro-F1",
+      "per-class/day",
+      "corrected/new errors",
+      "trainingLCE",
+      "seen four-RX source health"
+    ],
+    "dimensions": [
+      "ELEMENT/NONE/CLEAN_SIG",
+      "fixed modelseed2026092702",
+      "genuine heldRX1",
+      "FINAL default head only"
+    ],
+    "source_gate": {
+      "primary": "CLEAN_SIG_FINAL strictly fewer errors than both ELEMENT_FINAL and NONE_FINAL; CE no higher than either",
+      "independent_positive_route_confirmation": "NONE_FINAL strictly fewer errors than ELEMENT_FINAL, CE no higher",
+      "all_final_training_L_CE_max": 0.5,
+      "readout": "FINAL only; own EMA teacher unchanged; no export window selection",
+      "qualification": "Separate all-five-RX three-seed scratch20 preregistration only; never reuse four-RX weights",
+      "no_fallback_into_failed_primary": true,
+      "no_target_feedback": true
+    },
+    "epochs_per_row": 20,
+    "label_epochs": 13,
+    "pseudo_epochs": 7,
+    "updates_per_row": 4440,
+    "total_epochs": 60,
+    "total_updates": 13320,
+    "U_observations_per_row": 396368,
+    "held_L_packets": 1260,
+    "additional_L_IQ_reads_per_row": 1404,
+    "held_L_readout_forwards_per_row": 1260,
+    "real_checkpoint_no_query_smoke_packets_per_row": 2,
+    "extra_training_IQ_forwards": 0,
+    "new_parameters": 0,
+    "head_fit_updates": 0,
+    "new_target_predictions": 0,
+    "CLEAN_SIG_PRIMARY_and_NONE_confirmation_separate": true,
+    "tail_average": false,
+    "EMA_export_comparison": false,
+    "report_all_rows_and_negative_results": true,
+    "goal_numerical_mean": 0.84,
+    "goal_not_completed_by_source_proxy": true
+  },
+  "rows": [
+    {
+      "row_id": "ELEMENT-RX1-s2026092702",
+      "method": "matched_ELEMENT",
+      "purpose": "matched_control",
+      "config_ref": "experiments/cvs_sigtime_cleanpath20/configs/matrix.json#ELEMENT-RX1-s2026092702",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/ELEMENT-RX1-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "New predeclared modelseed02 controls original initialization/sampler/dropout/U RNG; physical split unchanged. Evaluation deterministic final20, no support seed.",
+      "k": null,
+      "scenario": "source clean RX1 held-out; no target/LEO",
+      "optimizer": "AdamW original jointly trained full student, weight_decay1e-4, clip5",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "experiment.json#metrics_plan",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/ELEMENT-RX1-s2026092702/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_clean_signature_sourcefold_20261015_r01/source_matrix.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_cleanpath20/runner.py experiments/cvs_sigtime_cleanpath20/configs/matrix.json",
+      "expected_artifacts": [
+        "each_row/source/source_contract.json",
+        "each_row/source/source_fold.json",
+        "each_row/source/actual_native_args.json",
+        "each_row/source/resolved_config.json",
+        "each_row/source/initial_smoke.pt",
+        "each_row/source/final_ssdg.pth",
+        "each_row/source/source_frozen.json",
+        "each_row/source/source_readouts/FINAL.json",
+        "each_row/source/path_progress.json",
+        "each_row/source/path_result.json",
+        "each_row/source/step_metrics.jsonl.gz",
+        "each_row/source/epoch_metrics.jsonl",
+        "each_row/source/completion.json",
+        "matrix_result.json",
+        "source_matrix.stdout.log",
+        "release_commit.txt"
+      ],
+      "checkpoint_initialization": "scratch matching three original200state initializations; zero inherited checkpoints"
+    },
+    {
+      "row_id": "NONE-RX1-s2026092702",
+      "method": "matched_NONE",
+      "purpose": "independent_positive_route_confirmation",
+      "config_ref": "experiments/cvs_sigtime_cleanpath20/configs/matrix.json#NONE-RX1-s2026092702",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/NONE-RX1-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "New predeclared modelseed02 controls original initialization/sampler/dropout/U RNG; physical split unchanged. Evaluation deterministic final20, no support seed.",
+      "k": null,
+      "scenario": "source clean RX1 held-out; no target/LEO",
+      "optimizer": "AdamW original jointly trained full student, weight_decay1e-4, clip5",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "experiment.json#metrics_plan",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/NONE-RX1-s2026092702/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_clean_signature_sourcefold_20261015_r01/source_matrix.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_cleanpath20/runner.py experiments/cvs_sigtime_cleanpath20/configs/matrix.json",
+      "expected_artifacts": [
+        "each_row/source/source_contract.json",
+        "each_row/source/source_fold.json",
+        "each_row/source/actual_native_args.json",
+        "each_row/source/resolved_config.json",
+        "each_row/source/initial_smoke.pt",
+        "each_row/source/final_ssdg.pth",
+        "each_row/source/source_frozen.json",
+        "each_row/source/source_readouts/FINAL.json",
+        "each_row/source/path_progress.json",
+        "each_row/source/path_result.json",
+        "each_row/source/step_metrics.jsonl.gz",
+        "each_row/source/epoch_metrics.jsonl",
+        "each_row/source/completion.json",
+        "matrix_result.json",
+        "source_matrix.stdout.log",
+        "release_commit.txt"
+      ],
+      "checkpoint_initialization": "scratch matching three original200state initializations; zero inherited checkpoints"
+    },
+    {
+      "row_id": "CLEAN_SIG-RX1-s2026092702",
+      "method": "branch_specific_signature_pre_dropout",
+      "purpose": "fixed_mechanism",
+      "config_ref": "experiments/cvs_sigtime_cleanpath20/configs/matrix.json#CLEAN_SIG-RX1-s2026092702",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/CLEAN_SIG-RX1-s2026092702/source/resolved_config.json",
+      "data_overrides": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      },
+      "seeds": {
+        "model": 2026092702,
+        "split": null,
+        "data": null,
+        "augmentation": 2026092702,
+        "support": null,
+        "evaluation": 2026092702
+      },
+      "seed_notes": "New predeclared modelseed02 controls original initialization/sampler/dropout/U RNG; physical split unchanged. Evaluation deterministic final20, no support seed.",
+      "k": null,
+      "scenario": "source clean RX1 held-out; no target/LEO",
+      "optimizer": "AdamW original jointly trained full student, weight_decay1e-4, clip5",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "experiment.json#metrics_plan",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/CLEAN_SIG-RX1-s2026092702/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_clean_signature_sourcefold_20261015_r01/source_matrix.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_cleanpath20/runner.py experiments/cvs_sigtime_cleanpath20/configs/matrix.json",
+      "expected_artifacts": [
+        "each_row/source/source_contract.json",
+        "each_row/source/source_fold.json",
+        "each_row/source/actual_native_args.json",
+        "each_row/source/resolved_config.json",
+        "each_row/source/initial_smoke.pt",
+        "each_row/source/final_ssdg.pth",
+        "each_row/source/source_frozen.json",
+        "each_row/source/source_readouts/FINAL.json",
+        "each_row/source/path_progress.json",
+        "each_row/source/path_result.json",
+        "each_row/source/step_metrics.jsonl.gz",
+        "each_row/source/epoch_metrics.jsonl",
+        "each_row/source/completion.json",
+        "matrix_result.json",
+        "source_matrix.stdout.log",
+        "release_commit.txt"
+      ],
+      "checkpoint_initialization": "scratch matching three original200state initializations; zero inherited checkpoints"
+    }
+  ],
+  "notes": [
+    "Discovery source01: ELEMENT59.126984/NONE70.476190/LOCKED67.222222%; NONE repaired163/broke20. LOCKED failed its fixed primary; this new candidate never rewrites that gate.",
+    "New fixed seed2026092702 independently confirms NONE vs ELEMENT while CLEAN_SIG isolates signature-only t2 noise bypass; one candidate plus two required controls, no new coefficient or scan.",
+    "CLEAN_SIG still executes original t2 Dropout(.1) for the main path with exactly the original RNG draws; only SIG_TIME reads its input after original pooling, no detach and no second IQ forward. Upstream dropout remains, so the entire path is not claimed deterministic.",
+    "NONE removes a stochastic operation and can change subsequent GPU random realization. CLEAN_SIG keeps the ELEMENT RNG draw schedule, addressing this limitation without dummy optimization or extra noise.",
+    "At eval t2.dropout is identity; the same weights give the same deployed joint160 and default head logits. Training gradients differ in the signature route; defaultW/gains/norm remain jointly learned as usual.",
+    "Current signature pooling contains first path increments plus antisymmetric second-order terms with time; not the whole infinite signature and not assumed invariant to arbitrary receiver channels.",
+    "The fixed CLEAN_SIG primary must beat both controls in errors with CE no higher. Independently, NONE confirmation must beat ELEMENT in errors with CE no higher. All rows require final trainingLCE<=.5; controls never rescue a failed primary.",
+    "Source-only actual20-epoch training, not an availability-only gradient probe. After success use separate formal all-five-RX three-seed preregistration; no source-fold weight reuse and no repeated source scans.",
+    "Original source carrier L6300/U56700hidden/V27000 checked once, then all training/probe/U/V/calibration loaders exclude RX1 before model/EMA. Effective L5040/U45360hidden/V21600; held original visibleL1260 only eval.",
+    "Old discarded144 training anchor reads retained by the unchanged fold helper and disclosed; no forward or loss uses them. U tensor TX remains hidden and metadata stripped. No ordinaryL/satellite augmentation, original U Gaussian kept.",
+    "No ownEMA export comparison/tail window averaging in this candidate; own EMA teacher training remains original. No R-Drop/extra loss/head-fitting/parameter addition. Each row full steps/epochs/predictions analyzed after terminal artifacts.",
+    "Global path-signature learning is established by Deep Signature Transforms (NeurIPS2019), https://papers.neurips.cc/paper_files/paper/2019/hash/d2cdf047a6674cef251d56544a3cf029-Abstract.html . This is a CVS noise-placement hypothesis, not a claimed first signature architecture; search alone cannot certify novelty.",
+    "REJECTED_EXTRA_GATE: separate design approval, per-member hashes, extra report-only review and generic planning gates; current exclusive workflow and existing data handles apply."
+  ],
+  "registered_at": "2026-10-15T04:15:30+00:00"
+}

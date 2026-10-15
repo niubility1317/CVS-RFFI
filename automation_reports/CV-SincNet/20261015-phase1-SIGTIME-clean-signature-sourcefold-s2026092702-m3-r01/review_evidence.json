@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "candidate": "20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01",
+  "review_type": "single independent next-run P0/P1 review",
+  "findings": [],
+  "scope": [
+    "experiments/cvs_sigtime_cleanpath20/design.py",
+    "experiments/cvs_sigtime_cleanpath20/mechanism.py",
+    "experiments/cvs_sigtime_cleanpath20/model.py",
+    "experiments/cvs_sigtime_cleanpath20/source.py",
+    "experiments/cvs_sigtime_cleanpath20/runner.py",
+    "experiments/cvs_sigtime_cleanpath20/publish.py",
+    "experiments/cvs_sigtime_cleanpath20/checks.py",
+    "experiments/cvs_sigtime_cleanpath20/configs/matrix.json",
+    "Direct consumed fold, shared source and held-L reader interfaces"
+  ],
+  "confirmed": [
+    "ELEMENT retains the original t2 dropout and original signature tap. NONE replaces only that dropout with Identity. CLEAN_SIG retains the original non-inplace Dropout(0.1) and captures its input after the existing pool using a call-local pre-hook.",
+    "CLEAN_SIG calls the original ReferenceCVS feature path once, then feeds the attached captured tensor to the existing sequence pool. It adds no IQ forward or RNG draw, does not detach the signature input, and removes its hook in finally. The actual main t2 dropout call remains present.",
+    "The model consumer installs the new placement on the fixed BASE_SSL seed2026092702 structure. No old model state or optimizer state is loaded, no head is replaced or fitted, and the ordinary joint default-head gradient path remains present.",
+    "The consumed fold interface excludes RX1 from all five training/calibration/probe loaders before student and own-EMA construction. The reused held-L reader loads only a separate eval/no-grad model, uses fresh parameter caches and preserves RNG.",
+    "The source path retains 20 epochs, 13 labeled plus 7 pseudo epochs, 4440 updates per row and the original hidden-U mechanism. It performs one final held-L1260 readout per row, checks the final live/checkpoint state, and contains no target path or tail averaging.",
+    "CLEAN_SIG primary qualification and NONE confirmation are separate fields using their fixed comparisons. The runner executes only the three new rows sequentially, rejects an existing run root and writes the fixed source-only result.",
+    "The immutable launcher supplies the fixed original runtime and prior fold-code release explicitly, overlays only the new package, checks both dependencies and output-root absence, and retains the single-GPU process-cap and archive/compile/smoke path."
+  ],
+  "verification": {
+    "focused_checks": {
+      "status": "PASS",
+      "tests": 7,
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/.codex_tmp/native_polyphase_runner.py experiments.cvs_sigtime_cleanpath20.checks"
+    },
+    "matrix_matches_design": true,
+    "fixed_seed_all_rows": 2026092702,
+    "all_rows_scratch_without_checkpoint_sources": true,
+    "source_screen_only": true,
+    "epochs_per_row": 20,
+    "label_epochs": 13,
+    "pseudo_epochs": 7,
+    "total_actual_optimizer_steps": 13320
+  },
+  "review_boundary": "Read-only review of this candidate and direct consumers, plus this evidence file. No real data or checkpoint access, remote operation, launch, production edit, commit, historical full review or added gate."
+}

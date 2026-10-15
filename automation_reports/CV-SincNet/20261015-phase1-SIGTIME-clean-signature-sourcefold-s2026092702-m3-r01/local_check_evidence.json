@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "focused_tests": 7,
+  "command": "native_polyphase_runner.py experiments.cvs_sigtime_cleanpath20.checks",
+  "compile": "PASS",
+  "actual_models": {
+    "status": "PASS",
+    "devices": {
+      "cpu": {
+        "status": "PASS",
+        "matched_initial_state_tensors": 200,
+        "parameters": 863730,
+        "same_weight_eval_joint160_and_default_logits_bitwise_equal": true,
+        "original_main_mask_and_rng_unchanged": true,
+        "only_CLEAN_SIG_reads_pre_drop": true,
+        "finite_nonzero_signature_t2_defaultW_joint_gradients": true,
+        "remaining_hooks": 0
+      },
+      "cuda:0": {
+        "status": "PASS",
+        "matched_initial_state_tensors": 200,
+        "parameters": 863730,
+        "same_weight_eval_joint160_and_default_logits_bitwise_equal": true,
+        "original_main_mask_and_rng_unchanged": true,
+        "only_CLEAN_SIG_reads_pre_drop": true,
+        "finite_nonzero_signature_t2_defaultW_joint_gradients": true,
+        "remaining_hooks": 0
+      }
+    },
+    "IQ_reads": 0,
+    "external_checkpoint_reads": 0,
+    "synthetic_forward_only": true
+  },
+  "focused_negatives": [
+    "Fixed original site/mode",
+    "Fixed seed/data/head recipe",
+    "Hook cleanup on failure",
+    "Complete finite source qualification"
+  ],
+  "source_RX_filter": "Unchanged already tested exclusion of all five training/calibration/probe loaders before student/teacher; original source roles compared then effective IDs recorded",
+  "real_checkpoint_no_query_smoke": "First per-row stage with own fresh initial checkpoint; immediately continues on PASS",
+  "single_independent_review": "PASS, next real run P0/P1 scope"
+}
