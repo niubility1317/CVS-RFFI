@@ -1,3 +1,6 @@
+<!-- SIGTIME_RDROP_AF_CURRENT_20261015 -->
+当前执行：用户固定的 SIG_TIME＋RDrop A–F 匹配矩阵已发布（20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02，执行 09554c3a06c976c53efc4dbc61f5c501a1e7b06e）。B/C/D/E/F 首种子从零50轮健康运行；A 原 RDrop 三seed真实配方经元数据核实并通过源checkpoint无query检查，历史 clean 均值84.340079%是可复用 A 对照。新目标汇总未读取，源决定上传后才放固定02/03，最终必须回答 B/E/F 增量。此前 RX_CAGRAD 三seed已完整交付：82.2885%±1.2216pp，对同范数控制−0.293254±0.502655pp、1/3正，保留负结果；不据此修改 A–F 配方。
+
 <!-- CURRENT_TRAINING_PRIORITY_20261014 -->
 固定 SIG_TIME 和默认联合分类头，研发重点保持训练泛化与半监督机制。均值教师完整三seed已 ANALYZED/VERIFIED：FEATURE_MT82.4359%±1.5874pp，匹配SIG82.6806%±1.7906pp；配对−.2446±.2101个百分点，0/3正，净−1233/504000。三seed源U特征损失均下降约18%至21%，但未形成DG收益；保留完整负结果，不扫权重或换头补结论。完整报告 20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md。
 
@@ -7,7 +10,7 @@ RAW/TX_DAY_CENTERED骨干Fishr完整三seed已ANALYZED/VERIFIED：RAW82.6647%±1
 
 # Phase1 特征提取复盘与完整实验交付
 
-当前主任务只做Phase1：实际joint160/id_feat_joint增强，默认ResidualPhysicalHead6×160/scale30按原损失与骨干正常联合训练，禁止单独头训练/重训/替换或RX诊断分类头。原頭clean三固定seed均值84%是研究目标；当前仍未达到。历史换头结果仅保留为档案，不能用于本轮主指标或新增fit。Phase2/newTX/未知拒识不在本轮开发范围。
+当前主任务只做Phase1：实际joint160/id_feat_joint增强，默认ResidualPhysicalHead6×160/scale30按原损失与骨干正常联合训练，禁止单独头训练/重训/替换或RX诊断分类头。原頭clean三固定seed均值84%为研究目标；此句原先对应本路线旧实验，最新 RDrop 达标对照与后续固定组合见文首。历史换头结果仅保留为档案，不能用于本轮主指标或新增fit。Phase2/newTX/未知拒识不在本轮开发范围。
 
 ## 近期完整实验与配方边界
 
@@ -578,3 +581,5 @@ CAGrad第33/34轮完整阶段切换已核实：33轮U曝光0，34轮两臂各567
 CAGrad首seed完整50轮及独立评分完成：旧门控+cos80.668452%，同范数控制83.657738%，RX_CAGRAD82.825000%。候选−控制为−0.832738个百分点，纠正1490/引入2889、净−1399；候选−旧基线+2.156548个百分点。n1不能宣称84%三seed目标达成。全部150epoch/22200新步骤、416层1664向量、504000预测/54指标独立审计VERIFIED；完整source曲线及stdout无实际非有限/跳过更新。源资格PASS后，先在dda55abb4cd793d65f5e63341d3747c762b6d14e冻结并上传不变02/03扩种子，再读取目标汇总。剩余4个scratch50模型已按执行fd7cf6f1532082c38927bd632cc3ce19a486a2e9真实发布，原33L+17U、默认头/数据/系数不变，首seed不重训；不根据首seed负差撤销或调参。首轮完整报告：[CAGrad首种子](../automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md)；当前运行：[固定02/03](../automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md)。
 
 CAGrad 剩余02/03四个模型首轮实际梯度已独立复算VERIFIED：208层记录/832保存向量，selected等于原CE加校正且与保存目标一致；最大相对L2误差4.68e-7，默认W校正严格0，浅/中/SIG共156个采样均有非零校正。分析无模型前向/参数更新/头拟合/query读取；这是源接线证据，不是泛化结论。四个原PID继续运行，最新完整轮次13/14/14/14，未改变配方、预算或健康任务。
+
+RX_CAGRAD 完整三seed：旧门控＋cos80.5268%，NORM_CONTROL82.5817%，RX_CAGRAD82.2885%；相对同范数控制仅1/3正。独立核实9行/1512000预测/162分层指标/66600原生步/1248层4992向量，完整450源epoch与负结果见 20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md。当前固定 A–F 训练不消费这些目标数字。

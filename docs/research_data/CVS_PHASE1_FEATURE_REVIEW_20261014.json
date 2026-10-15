@@ -82495,190 +82495,27 @@
     "Automatically freeze/defaulthead cleanpredict/independenttruthlastscore eachrow; full9rowaudit/threepairedseeds andGitdelivery."
   ],
   "current_priority": {
-    "status": "FIRST_SEED_ANALYZED_REMAINING_SEEDS_RUNNING",
-    "run_id": "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01",
-    "execution_commit": "22de3258841f6068688885ba99d8ceeb866be17c",
-    "actual_epoch_counts": {
-      "OLD_GATE_COS50": 50,
-      "NORM_CONTROL": 50,
-      "RX_CAGRAD": 50
-    },
-    "first_epoch_gradient_recount": "104layerrecords416vectors VERIFIED;defaultWcorrectionexactzero",
-    "source_qualification": "PASS",
-    "new_target_result": {
-      "seed_count": 1,
-      "summary": [
-        {
-          "arm": "OLD_GATE_COS50",
-          "seed_count": 1,
-          "accuracy_mean": 0.8066845238095238,
-          "accuracy_sd": null,
-          "seed_accuracy": {
-            "2026092701": 0.8066845238095238
-          },
-          "macro_f1_mean": 0.8017335328586674,
-          "worst_RX_mean": 0.7061666666666667,
-          "worst_day_mean": 0.7545238095238095
-        },
-        {
-          "arm": "NORM_CONTROL",
-          "seed_count": 1,
-          "accuracy_mean": 0.836577380952381,
-          "accuracy_sd": null,
-          "seed_accuracy": {
-            "2026092701": 0.836577380952381
-          },
-          "macro_f1_mean": 0.8324012696316436,
-          "worst_RX_mean": 0.706875,
-          "worst_day_mean": 0.7953571428571429
-        },
-        {
-          "arm": "RX_CAGRAD",
-          "seed_count": 1,
-          "accuracy_mean": 0.82825,
-          "accuracy_sd": null,
-          "seed_accuracy": {
-            "2026092701": 0.82825
-          },
-          "macro_f1_mean": 0.8234931861715302,
-          "worst_RX_mean": 0.6828333333333333,
-          "worst_day_mean": 0.7887142857142857
-        }
-      ],
-      "paired": [
-        {
-          "arm": "RX_CAGRAD",
-          "control": "NORM_CONTROL",
-          "seeds": [
-            2026092701
-          ],
-          "seed_differences": [
-            -0.008327380952380947
-          ],
-          "mean_difference": -0.008327380952380947,
-          "sd_difference": null,
-          "positive_seeds": 0
-        },
-        {
-          "arm": "RX_CAGRAD",
-          "control": "OLD_GATE_COS50",
-          "seeds": [
-            2026092701
-          ],
-          "seed_differences": [
-            0.021565476190476218
-          ],
-          "mean_difference": 0.021565476190476218,
-          "sd_difference": null,
-          "positive_seeds": 1
-        },
-        {
-          "arm": "NORM_CONTROL",
-          "control": "OLD_GATE_COS50",
-          "seeds": [
-            2026092701
-          ],
-          "seed_differences": [
-            0.029892857142857165
-          ],
-          "mean_difference": 0.029892857142857165,
-          "sd_difference": null,
-          "positive_seeds": 1
-        }
-      ],
-      "metrics": 54,
-      "predictions": 504000,
-      "results_ref": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/results.json"
-    },
-    "goal84": false,
-    "remaining_seed_adapter": {
-      "status": "RUNNING",
-      "run_id": "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-      "execution_commit": "fd7cf6f1532082c38927bd632cc3ce19a486a2e9",
-      "new_models": 4,
-      "model_seeds": [
-        2026092702,
-        2026092703
-      ],
-      "fixed_epochs": 50,
-      "recipe_unchanged": true,
-      "source_decision_before_target_read": true,
-      "no_first_seed_retraining": true,
-      "actual_epoch_counts": {
-        "NORM_CONTROL-s2026092702": 13,
-        "RX_CAGRAD-s2026092702": 14,
-        "NORM_CONTROL-s2026092703": 14,
-        "RX_CAGRAD-s2026092703": 14
-      },
-      "postlaunch_verified": true,
-      "first_epoch_gradient_recount": {
-        "status": "VERIFIED",
-        "rows": 4,
-        "layer_records": 208,
-        "saved_vectors": 832,
-        "defaultW_correction_exactly_zero": true,
-        "actual_selected_matches_saved_target": true,
-        "maximum_relative_selected_target_L2": 4.6712326778164847e-7,
-        "new_model_forwards": 0,
-        "head_fit_updates": 0,
-        "query_read": false,
-        "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01/first_epoch_gradient_recount.json"
-      }
-    },
-    "mid_training_evidence": {
-      "gradient_epoch": 17,
-      "status": "VERIFIED",
-      "complete_source_prefix_steps": 8257,
-      "source_qualification": null,
-      "new_target_metrics_read": false,
-      "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/mid_training_evidence.json"
-    },
-    "source_curve_prefix": {
-      "source_epochs": {
-        "historical": 50,
-        "norm_control": 29,
-        "cagrad": 28
-      },
-      "new_L_steps": 12654,
-      "full_stdout_available": true,
-      "traceback_OOM_numeric_nonfinite": 0,
-      "skipped_nonfinite_updates": 0,
-      "source_qualification": null,
-      "target_metrics_read": false,
-      "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_curve_prefix_e29_28.json",
-      "figure": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_curve_prefix_e29_28.png"
-    },
-    "semisupervised_transition": {
-      "status": "VERIFIED",
-      "full_epochs": [
-        33,
-        34
-      ],
-      "U_packets_e34_each": 56700,
-      "U_accepted_e34": {
-        "NORM_CONTROL": 909,
-        "RX_CAGRAD": 910
-      },
-      "U_truth_available": false,
-      "original_recipe_preserved": true,
-      "gradient_epochs": [
-        1,
-        17,
-        33
-      ],
-      "layer_records": 312,
-      "saved_vectors": 1248,
-      "defaultW_correction": 0,
-      "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/semisupervised_transition_e33_e34.json"
-    },
-    "source_decision_commit": "dda55abb4cd793d65f5e63341d3747c762b6d14e",
-    "full_audit": {
-      "status": "VERIFIED",
-      "source_epochs": 150,
-      "new_native_steps": 22200,
-      "gradient_layers": 416,
-      "saved_vectors": 1664
-    }
+    "status": "FIXED_SIGTIME_RDROP_AF_FIRST_SEED_RUNNING",
+    "run_id": "20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02",
+    "execution_commit": "09554c3a06c976c53efc4dbc61f5c501a1e7b06e",
+    "failed_preflight_run_preserved": "20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r01",
+    "first_new_rows": "BCDEF",
+    "fixed_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "epochs_each": 50,
+    "label_pseudo_epochs": [
+      33,
+      17
+    ],
+    "A_original_RDrop_reuse": "Allthree matching metadata/actualrecipe and sourceCP noquery preflight PASS",
+    "A_historical_clean_mean": 0.8434007936507936,
+    "new_target_summary_read": false,
+    "source_expansion_decision": "Await allfive firstseed source evidence; upload and verifyremoteOID before any newtargetaggregate; then unchanged02/03",
+    "remaining_user_requirement": "Actual B/E/F efficacy, paired six comparisons including interaction; not stopafterC",
+    "report_ref": "automation_reports/CV-SincNet/20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02/report.md"
   },
   "latest_complete_sinc_optimizer": {
     "accuracy_mean": 0.8322321428571429,
@@ -86151,5 +85988,304 @@
       "Execute frozen seed2026092702/03 RX_BALANCED/RX_VREX scratch50 comparison unchanged",
       "Complete fixedthree-seed defaulthead/feature boundary analysis;no target-driven tuning"
     ]
+  },
+  "previous_priority_before_SIGTIME_RDrop_AF": {
+    "status": "FIRST_SEED_ANALYZED_REMAINING_SEEDS_RUNNING",
+    "run_id": "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "execution_commit": "22de3258841f6068688885ba99d8ceeb866be17c",
+    "actual_epoch_counts": {
+      "OLD_GATE_COS50": 50,
+      "NORM_CONTROL": 50,
+      "RX_CAGRAD": 50
+    },
+    "first_epoch_gradient_recount": "104layerrecords416vectors VERIFIED;defaultWcorrectionexactzero",
+    "source_qualification": "PASS",
+    "new_target_result": {
+      "seed_count": 1,
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 1,
+          "accuracy_mean": 0.8066845238095238,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238
+          },
+          "macro_f1_mean": 0.8017335328586674,
+          "worst_RX_mean": 0.7061666666666667,
+          "worst_day_mean": 0.7545238095238095
+        },
+        {
+          "arm": "NORM_CONTROL",
+          "seed_count": 1,
+          "accuracy_mean": 0.836577380952381,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.836577380952381
+          },
+          "macro_f1_mean": 0.8324012696316436,
+          "worst_RX_mean": 0.706875,
+          "worst_day_mean": 0.7953571428571429
+        },
+        {
+          "arm": "RX_CAGRAD",
+          "seed_count": 1,
+          "accuracy_mean": 0.82825,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.82825
+          },
+          "macro_f1_mean": 0.8234931861715302,
+          "worst_RX_mean": 0.6828333333333333,
+          "worst_day_mean": 0.7887142857142857
+        }
+      ],
+      "paired": [
+        {
+          "arm": "RX_CAGRAD",
+          "control": "NORM_CONTROL",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.008327380952380947
+          ],
+          "mean_difference": -0.008327380952380947,
+          "sd_difference": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "RX_CAGRAD",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.021565476190476218
+          ],
+          "mean_difference": 0.021565476190476218,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "NORM_CONTROL",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.029892857142857165
+          ],
+          "mean_difference": 0.029892857142857165,
+          "sd_difference": null,
+          "positive_seeds": 1
+        }
+      ],
+      "metrics": 54,
+      "predictions": 504000,
+      "results_ref": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/results.json"
+    },
+    "goal84": false,
+    "remaining_seed_adapter": {
+      "status": "RUNNING",
+      "run_id": "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "execution_commit": "fd7cf6f1532082c38927bd632cc3ce19a486a2e9",
+      "new_models": 4,
+      "model_seeds": [
+        2026092702,
+        2026092703
+      ],
+      "fixed_epochs": 50,
+      "recipe_unchanged": true,
+      "source_decision_before_target_read": true,
+      "no_first_seed_retraining": true,
+      "actual_epoch_counts": {
+        "NORM_CONTROL-s2026092702": 13,
+        "RX_CAGRAD-s2026092702": 14,
+        "NORM_CONTROL-s2026092703": 14,
+        "RX_CAGRAD-s2026092703": 14
+      },
+      "postlaunch_verified": true,
+      "first_epoch_gradient_recount": {
+        "status": "VERIFIED",
+        "rows": 4,
+        "layer_records": 208,
+        "saved_vectors": 832,
+        "defaultW_correction_exactly_zero": true,
+        "actual_selected_matches_saved_target": true,
+        "maximum_relative_selected_target_L2": 4.6712326778164847e-7,
+        "new_model_forwards": 0,
+        "head_fit_updates": 0,
+        "query_read": false,
+        "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01/first_epoch_gradient_recount.json"
+      }
+    },
+    "mid_training_evidence": {
+      "gradient_epoch": 17,
+      "status": "VERIFIED",
+      "complete_source_prefix_steps": 8257,
+      "source_qualification": null,
+      "new_target_metrics_read": false,
+      "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/mid_training_evidence.json"
+    },
+    "source_curve_prefix": {
+      "source_epochs": {
+        "historical": 50,
+        "norm_control": 29,
+        "cagrad": 28
+      },
+      "new_L_steps": 12654,
+      "full_stdout_available": true,
+      "traceback_OOM_numeric_nonfinite": 0,
+      "skipped_nonfinite_updates": 0,
+      "source_qualification": null,
+      "target_metrics_read": false,
+      "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_curve_prefix_e29_28.json",
+      "figure": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/source_curve_prefix_e29_28.png"
+    },
+    "semisupervised_transition": {
+      "status": "VERIFIED",
+      "full_epochs": [
+        33,
+        34
+      ],
+      "U_packets_e34_each": 56700,
+      "U_accepted_e34": {
+        "NORM_CONTROL": 909,
+        "RX_CAGRAD": 910
+      },
+      "U_truth_available": false,
+      "original_recipe_preserved": true,
+      "gradient_epochs": [
+        1,
+        17,
+        33
+      ],
+      "layer_records": 312,
+      "saved_vectors": 1248,
+      "defaultW_correction": 0,
+      "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/semisupervised_transition_e33_e34.json"
+    },
+    "source_decision_commit": "dda55abb4cd793d65f5e63341d3747c762b6d14e",
+    "full_audit": {
+      "status": "VERIFIED",
+      "source_epochs": 150,
+      "new_native_steps": 22200,
+      "gradient_layers": 416,
+      "saved_vectors": 1664
+    }
+  },
+  "completed_rx_cagrad": {
+    "status": "ANALYZED_VERIFIED",
+    "first_run": "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "remaining_run": "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+    "summary": [
+      {
+        "arm": "OLD_GATE_COS50",
+        "seed_count": 3,
+        "accuracy_mean": 0.8052678571428572,
+        "accuracy_sd": 0.023775723031464996,
+        "seed_accuracy": {
+          "2026092701": 0.8066845238095238,
+          "2026092702": 0.7808154761904762,
+          "2026092703": 0.8283035714285715
+        },
+        "macro_f1_mean": 0.8000238637751929,
+        "worst_RX_mean": 0.6797083333333334,
+        "worst_day_mean": 0.7605555555555555
+      },
+      {
+        "arm": "NORM_CONTROL",
+        "seed_count": 3,
+        "accuracy_mean": 0.8258174603174603,
+        "accuracy_sd": 0.016118355577627436,
+        "seed_accuracy": {
+          "2026092701": 0.836577380952381,
+          "2026092702": 0.8072857142857143,
+          "2026092703": 0.8335892857142857
+        },
+        "macro_f1_mean": 0.8201621392478755,
+        "worst_RX_mean": 0.7029166666666666,
+        "worst_day_mean": 0.7854444444444444
+      },
+      {
+        "arm": "RX_CAGRAD",
+        "seed_count": 3,
+        "accuracy_mean": 0.8228849206349207,
+        "accuracy_sd": 0.012215737947022498,
+        "seed_accuracy": {
+          "2026092701": 0.82825,
+          "2026092702": 0.8089047619047619,
+          "2026092703": 0.8315
+        },
+        "macro_f1_mean": 0.8174938087831604,
+        "worst_RX_mean": 0.6850416666666667,
+        "worst_day_mean": 0.7811904761904762
+      }
+    ],
+    "paired": [
+      {
+        "arm": "RX_CAGRAD",
+        "control": "NORM_CONTROL",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          -0.008327380952380947,
+          0.001619047619047631,
+          -0.0020892857142856824
+        ],
+        "mean_difference": -0.0029325396825396663,
+        "sd_difference": 0.0050265463563827556,
+        "positive_seeds": 1
+      },
+      {
+        "arm": "RX_CAGRAD",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.021565476190476218,
+          0.028089285714285706,
+          0.0031964285714285445
+        ],
+        "mean_difference": 0.01761706349206349,
+        "sd_difference": 0.012907596844936468,
+        "positive_seeds": 3
+      },
+      {
+        "arm": "NORM_CONTROL",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.029892857142857165,
+          0.026470238095238074,
+          0.005285714285714227
+        ],
+        "mean_difference": 0.020549603174603154,
+        "sd_difference": 0.013329227595608886,
+        "positive_seeds": 3
+      }
+    ],
+    "models": 9,
+    "new_models": 6,
+    "predictions": 1512000,
+    "metrics": 162,
+    "native_steps": 66600,
+    "gradient_layers": 1248,
+    "saved_vectors": 4992,
+    "source_epochs": 450,
+    "head_fit_updates_new": 0,
+    "goal84": false,
+    "results_ref": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
   }
 }

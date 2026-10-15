@@ -1,0 +1,271 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "row_id": "NORM_CONTROL-s2026092702",
+      "seed": 2026092702,
+      "arm": "NORM_CONTROL",
+      "complete_source_epochs": 36,
+      "settings": {
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "ema_decay": 0.999,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_domain_gate": false
+      },
+      "settings_match_original_recipe": true,
+      "initialization_scratch_only": true,
+      "checkpoint_sources": [],
+      "teacher_origin": "own scratch student only",
+      "observed_transition": [
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packet_observations": 0,
+          "U_selected_observations": 0,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.24997067461545402,
+          "mean_native_U_CE": 0,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packet_observations": 56700,
+          "U_selected_observations": 948,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.2398529726978358,
+          "mean_native_U_CE": 0.01195697155324868,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0.001034004966946537,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        }
+      ],
+      "transition_complete": true,
+      "source_only": true,
+      "target_metrics_read": false,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "RX_CAGRAD-s2026092702",
+      "seed": 2026092702,
+      "arm": "RX_CAGRAD",
+      "complete_source_epochs": 36,
+      "settings": {
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "ema_decay": 0.999,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_domain_gate": false
+      },
+      "settings_match_original_recipe": true,
+      "initialization_scratch_only": true,
+      "checkpoint_sources": [],
+      "teacher_origin": "own scratch student only",
+      "observed_transition": [
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packet_observations": 0,
+          "U_selected_observations": 0,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.2468769866805356,
+          "mean_native_U_CE": 0,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packet_observations": 56700,
+          "U_selected_observations": 947,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.2370892725213691,
+          "mean_native_U_CE": 0.012549465840739021,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0.0011086689338910285,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        }
+      ],
+      "transition_complete": true,
+      "source_only": true,
+      "target_metrics_read": false,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "NORM_CONTROL-s2026092703",
+      "seed": 2026092703,
+      "arm": "NORM_CONTROL",
+      "complete_source_epochs": 36,
+      "settings": {
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "ema_decay": 0.999,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_domain_gate": false
+      },
+      "settings_match_original_recipe": true,
+      "initialization_scratch_only": true,
+      "checkpoint_sources": [],
+      "teacher_origin": "own scratch student only",
+      "observed_transition": [
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packet_observations": 0,
+          "U_selected_observations": 0,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.24776339634984462,
+          "mean_native_U_CE": 0,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packet_observations": 56700,
+          "U_selected_observations": 885,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.27141543246201566,
+          "mean_native_U_CE": 0.01460695737668183,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0.001026688875517229,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        }
+      ],
+      "transition_complete": true,
+      "source_only": true,
+      "target_metrics_read": false,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "RX_CAGRAD-s2026092703",
+      "seed": 2026092703,
+      "arm": "RX_CAGRAD",
+      "complete_source_epochs": 36,
+      "settings": {
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "ema_decay": 0.999,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_domain_gate": false
+      },
+      "settings_match_original_recipe": true,
+      "initialization_scratch_only": true,
+      "checkpoint_sources": [],
+      "teacher_origin": "own scratch student only",
+      "observed_transition": [
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packet_observations": 0,
+          "U_selected_observations": 0,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.24773555557738552,
+          "mean_native_U_CE": 0,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packet_observations": 56700,
+          "U_selected_observations": 873,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.27264321437692857,
+          "mean_native_U_CE": 0.013125218690670858,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0.001101682402847989,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        }
+      ],
+      "transition_complete": true,
+      "source_only": true,
+      "target_metrics_read": false,
+      "head_fit_updates": 0
+    }
+  ],
+  "source_only": true,
+  "target_metrics_read": false
+}

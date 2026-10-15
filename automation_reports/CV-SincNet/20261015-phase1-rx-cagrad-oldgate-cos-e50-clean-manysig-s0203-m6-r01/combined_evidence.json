@@ -1,0 +1,183 @@
+{
+  "status": "VERIFIED",
+  "physical_runs": [
+    "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
+  ],
+  "models": 9,
+  "new_models": 6,
+  "reused_models": 3,
+  "predictions": 1512000,
+  "metric_records": 162,
+  "native_steps_recounted": 66600,
+  "gradient_layer_records": 1248,
+  "saved_vectors": 4992,
+  "source_epochs": 450,
+  "head_fit_updates": 0,
+  "extra_model_forwards": 0,
+  "U_truth_read": false,
+  "truth_last": true,
+  "paired_errors": [
+    {
+      "arm": "RX_CAGRAD",
+      "control": "NORM_CONTROL",
+      "seed": 2026092701,
+      "corrected_errors": 1490,
+      "introduced_errors": 2889,
+      "both_correct": 137656,
+      "both_wrong": 25965,
+      "count": 168000
+    },
+    {
+      "arm": "RX_CAGRAD",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 9693,
+      "introduced_errors": 6070,
+      "both_correct": 129453,
+      "both_wrong": 22784,
+      "count": 168000
+    },
+    {
+      "arm": "NORM_CONTROL",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092701,
+      "corrected_errors": 10303,
+      "introduced_errors": 5281,
+      "both_correct": 130242,
+      "both_wrong": 22174,
+      "count": 168000
+    },
+    {
+      "arm": "RX_CAGRAD",
+      "control": "NORM_CONTROL",
+      "seed": 2026092702,
+      "corrected_errors": 2105,
+      "introduced_errors": 1833,
+      "both_correct": 133791,
+      "both_wrong": 30271,
+      "count": 168000
+    },
+    {
+      "arm": "RX_CAGRAD",
+      "control": "NORM_CONTROL",
+      "seed": 2026092703,
+      "corrected_errors": 1886,
+      "introduced_errors": 2237,
+      "both_correct": 137806,
+      "both_wrong": 26071,
+      "count": 168000
+    },
+    {
+      "arm": "RX_CAGRAD",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092702,
+      "corrected_errors": 9564,
+      "introduced_errors": 4845,
+      "both_correct": 126332,
+      "both_wrong": 27259,
+      "count": 168000
+    },
+    {
+      "arm": "RX_CAGRAD",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092703,
+      "corrected_errors": 6603,
+      "introduced_errors": 6066,
+      "both_correct": 133089,
+      "both_wrong": 22242,
+      "count": 168000
+    },
+    {
+      "arm": "NORM_CONTROL",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092702,
+      "corrected_errors": 9844,
+      "introduced_errors": 5397,
+      "both_correct": 125780,
+      "both_wrong": 26979,
+      "count": 168000
+    },
+    {
+      "arm": "NORM_CONTROL",
+      "control": "OLD_GATE_COS50",
+      "seed": 2026092703,
+      "corrected_errors": 6944,
+      "introduced_errors": 6056,
+      "both_correct": 133099,
+      "both_wrong": 21901,
+      "count": 168000
+    }
+  ],
+  "RX_CAGRAD_vs_NORM_error_totals": {
+    "corrected": 5481,
+    "introduced": 6959,
+    "net": -1478,
+    "count": 504000
+  },
+  "costs": [
+    {
+      "row_id": "OLD_GATE_COS50-s2026092701",
+      "reused": true,
+      "epoch_wall_seconds_sum": 2334.8399138450623,
+      "new_epochs": 0,
+      "new_updates": 0
+    },
+    {
+      "row_id": "NORM_CONTROL-s2026092701",
+      "reused": false,
+      "epoch_wall_seconds_sum": 3207.3443372249603,
+      "new_epochs": 50,
+      "new_updates": 11100
+    },
+    {
+      "row_id": "RX_CAGRAD-s2026092701",
+      "reused": false,
+      "epoch_wall_seconds_sum": 3238.142357110977,
+      "new_epochs": 50,
+      "new_updates": 11100
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092702",
+      "reused": true,
+      "epoch_wall_seconds_sum": 2274.5685148239136,
+      "new_epochs": 0,
+      "new_updates": 0
+    },
+    {
+      "row_id": "NORM_CONTROL-s2026092702",
+      "reused": false,
+      "epoch_wall_seconds_sum": 3198.646812438965,
+      "new_epochs": 50,
+      "new_updates": 11100
+    },
+    {
+      "row_id": "RX_CAGRAD-s2026092702",
+      "reused": false,
+      "epoch_wall_seconds_sum": 3244.478585243225,
+      "new_epochs": 50,
+      "new_updates": 11100
+    },
+    {
+      "row_id": "OLD_GATE_COS50-s2026092703",
+      "reused": true,
+      "epoch_wall_seconds_sum": 2277.6157171726227,
+      "new_epochs": 0,
+      "new_updates": 0
+    },
+    {
+      "row_id": "NORM_CONTROL-s2026092703",
+      "reused": false,
+      "epoch_wall_seconds_sum": 3182.94336104393,
+      "new_epochs": 50,
+      "new_updates": 11100
+    },
+    {
+      "row_id": "RX_CAGRAD-s2026092703",
+      "reused": false,
+      "epoch_wall_seconds_sum": 3200.529084920883,
+      "new_epochs": 50,
+      "new_updates": 11100
+    }
+  ]
+}
