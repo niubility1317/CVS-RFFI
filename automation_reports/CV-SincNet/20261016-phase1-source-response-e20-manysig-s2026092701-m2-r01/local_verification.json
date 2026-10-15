@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "actual_graph_rows": [
+    "EMP",
+    "ROT"
+  ],
+  "initial_state_tensors": 198,
+  "synthetic_network_forwards": 1536,
+  "operator_packets": 10,
+  "native_label_sequence_negatives": 10,
+  "protocol_negatives": 13,
+  "same_IQ_pairs": true,
+  "default_head_SIG_gradients": true,
+  "EMA_binding_and_state": true,
+  "raw_control_recipe_match": true,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "optimizer_steps": 0
+}
