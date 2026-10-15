@@ -1,6 +1,5 @@
 """Project a displacement onto visible-source identity-risk halfspaces."""
 import itertools
-import numpy as np
 import torch
 
 def project(increment,risk_gradients):
@@ -11,21 +10,22 @@ def project(increment,risk_gradients):
     if bool((norms<=0).any()):raise ValueError('Each source RX risk must have a nonzero gradient')
     rows=gradients/norms[:,None];u=increment.double();length=float(u.norm())
     if not length:return dict(projected=u.clone(),retained_norm_ratio=0.,cosine_raw=None,active=[],normalized_max_violation=0.)
-    v=u/length;gram=(rows@rows.T).cpu().numpy();b=(rows@v).cpu().numpy();candidates=[];tol=1e-8
+    v=u/length;gram=(rows@rows.T).cpu();b=(rows@v).cpu();candidates=[];tol=1e-8
     for size in range(len(b)+1):
         for subset in itertools.combinations(range(len(b)),size):
-            coefficients=np.zeros(len(b),dtype=np.float64)
+            coefficients=torch.zeros(len(b),dtype=torch.float64)
             if subset:
-                active=list(subset);solution=np.linalg.lstsq(gram[np.ix_(active,active)],b[active],rcond=1e-12)[0]
-                if np.any(solution < -tol):continue
-                coefficients[active]=np.maximum(solution,0.)
+                active=list(subset)
+                solution=torch.linalg.lstsq(gram[active][:,active],b[active],rcond=1e-12,driver='gelsd').solution
+                if bool((solution < -tol).any()):continue
+                coefficients[active]=solution.clamp_min(0.)
             residual=b-gram@coefficients
-            if np.max(residual)>tol or np.max(np.abs(coefficients*residual))>tol:continue
+            if float(residual.max())>tol or float((coefficients*residual).abs().max())>tol:continue
             objective=float(coefficients@gram@coefficients)
             candidates.append((objective,tuple(subset),coefficients))
     if not candidates:raise ValueError('Source-risk projection has no numerically valid KKT solution')
     _,active,coefficients=min(candidates,key=lambda item:item[0])
-    p=(v-rows.T@torch.as_tensor(coefficients,device=u.device))*length
+    p=(v-rows.T@coefficients.to(device=u.device))*length
     violation=float((rows@p).max())/length
     if violation>1e-7 or float(p.norm())>length*(1+1e-7):raise ValueError('Projection violated its source-risk cone/norm')
     retained=float(p.norm())/length

@@ -3,8 +3,8 @@ from pathlib import Path
 from experiments.cvs_evidence_responsibility_train20 import design as parent
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,FULL_FP32_POLICY,read,write=(getattr(parent,k) for k in ('PROJECT','SOURCE','FULL_FP32_POLICY','read','write'))
-RUN='20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r01'
-RELEASE='cvs_SIGTIME_RX1_U_increment_sourcefold_20261015_r01'
+RUN='20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r02'
+RELEASE='cvs_SIGTIME_RX1_U_increment_sourcefold_20261015_r02'
 DEPENDENCY_RELEASE=PROJECT+'/releases/'+parent.RELEASE
 SEED=2026092701;HELD=1;RX=(1,3,4,6,8);FIT=(3,4,6,8)
 EPOCHS=20;STEPS=222;UPDATES=4440;PROBES=(2896,3344,3792,4432)

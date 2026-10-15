@@ -1,0 +1,78 @@
+{
+  "status": "PASS",
+  "geometry_analytic_tests": 9,
+  "source_role_backward_norm_tests": 8,
+  "actual_original_model_CPU": {
+    "parameters": 188,
+    "feature_scope": 71,
+    "RAW_actual_gradient_oracle_error": 0.0,
+    "W_joint": true,
+    "norm_matched": true,
+    "live_state_RNG_preserved": true
+  },
+  "actual_original_model_CUDA": {
+    "parameters": 188,
+    "feature_scope": 71,
+    "RAW_actual_gradient_oracle_error": 0.0,
+    "W_joint": true,
+    "norm_matched": true,
+    "live_state_RNG_preserved": true
+  },
+  "native_fold_loader_integration": {
+    "status": "PASS",
+    "actual_native_subset_classes_and_loader": true,
+    "source_carrier": "synthetic metadata/IQ only",
+    "all5_active_loaders_exclude_RX1": true,
+    "hidden_U_labels_minus1_TX_metadata_absent": true,
+    "effective_role_counts": {
+      "L_s": 5040,
+      "U_s": 45360,
+      "V": 21600
+    },
+    "U_observations_per_pseudo_epoch": 56624,
+    "anchors": 144,
+    "held_visible_L": 1260,
+    "real_source_IQ_checkpoint_reads": 0
+  },
+  "synthetic_optimizer_updates": 6,
+  "source_IQ_checkpoint_reads": 0,
+  "actual_candidate_corrections": 0,
+  "compile": "PASS",
+  "real_checkpoint_no_query_smoke": "Own scratch fold snapshot: launcher first step, not claimed locally",
+  "limitation": "Synthetic constructor/optimizer checks do not establish source performance or qualification",
+  "unchanged_source_role_backward_norm_tests_reused": 8,
+  "direct_fix_regression": "Old bridge-dependent code failed when Tensor.numpy raises; pure-Torch code passes the same regression",
+  "same_science_config_check": {
+    "status": "PASS",
+    "reference_commit": "779e77620ea724154bfb2c899498578643234f00",
+    "only_changed_config_fields": [
+      "run_id",
+      "output_root"
+    ],
+    "same_data_seed_optimizer_epochs_probes_controls_thresholds": true,
+    "failed_run_id": "20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r01",
+    "failed_partial_steps": 2895,
+    "recovery_initialization": "scratch",
+    "inherited_failed_state": false,
+    "target_reads": 0
+  },
+  "solver_equivalence": {
+    "status": "PASS",
+    "cases": 32,
+    "original_numpy_reference_vs_pure_torch": true,
+    "max_absolute_projection_difference": 4.440892098500626e-16,
+    "SVD_relative_cutoff": 1e-12,
+    "KKT_tolerance": 1e-08,
+    "source_IQ_checkpoint_reads": 0,
+    "actual_optimizer_updates": 0
+  },
+  "remote_zero_IQ_backend_reproduction": {
+    "torch_version": "2.1.0+cu121",
+    "numpy_version": "2.2.5",
+    "original_bridge": "FAIL TypeError",
+    "pure_torch_FP64_SVD": "PASS",
+    "source_IQ_checkpoint_reads": 0
+  },
+  "actual_CPU_and_CUDA_paths_rerun_after_fix": true,
+  "targeted_review": "One direct-fix P0/P1 re-review, original full review reused; no full repeated review"
+}

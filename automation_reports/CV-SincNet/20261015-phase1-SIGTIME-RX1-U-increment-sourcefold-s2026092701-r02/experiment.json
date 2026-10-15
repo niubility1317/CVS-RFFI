@@ -1,0 +1,228 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r02",
+  "group_id": "phase1-source-RX-U-optimizer-increment",
+  "display_name": "真实 RX1 留出：源身份风险约束 U 特征位移",
+  "description": "One scratch20 RAW SSL fold with four temporary L-only/RAW/norm-matched/CONE diagnostics; all RX1 training/teacher/calibration/cache inputs excluded.",
+  "kind": "diagnostic",
+  "stage": "Phase1 source-only true receiver fold",
+  "aliases": [],
+  "tags": [
+    "CVS",
+    "SIG_TIME",
+    "CENTER_25K",
+    "source_only",
+    "held_RX1",
+    "actual_AdamW",
+    "hidden_U",
+    "default_head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": "20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r01",
+  "authorization": "Continue active Phase1 training-mechanism goal; source-only falsification under existing source permissions; no target, no pretrained inheritance.",
+  "code": {
+    "commit": "release_commit.txt (actual Git HEAD at launch)",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "N607 ordinary account/CVS-RFFI Python; current new-package/shared-source overlay on immutable R02 runtime",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX1_U_increment_sourcefold_20261015_r02",
+    "entrypoint": "experiments.cvs_rx_u_increment20.runner"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated fixed source physical roles, receiver-mask fold only",
+    "representation": "clean IQ[2,256], NoExplicitCFO with existing internal packet compensation",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md; current source_contract.json effective4RX and original carrier contract reference",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "label_map_ref": "Original six source TX labels unchanged; U returns -1 and strips TX metadata",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Unchanged original six source TX; no target data constructed",
+    "roles": {
+      "L_s": 5040,
+      "U_s": 45360,
+      "V": 21600
+    },
+    "train_ratio": {
+      "L": 0.07,
+      "U": 0.63,
+      "V": 0.3
+    },
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "VALIDATED_ONCE original data reused; native exact carrier roles checked then all active fold roles and physical subset checked",
+    "support_query_ref": "Not applicable: source-only, no Phase2 capsule/support/query",
+    "leo_config_ref": "None; no satellite augmentation/evaluation"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Trained RX1-held-out source fold local update falsification; not full candidate DG or 84% completion"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "source/source_contract.json and initialization.json",
+    "provenance_verdict": "Own fresh model; no pretrained source; own scratch smoke before training",
+    "selection_rule": "fixed final20 only; four steps fixed before data; no target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/RX1-U-increment-20261015",
+    "gpu_policy": "One GPU chosen by preregistered lowest existing process count then most free memory; at most3 total processes/GPU including other owners; >3072MiB free",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX1_U_increment_sourcefold_20261015_r02",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_SIGTIME_RX1_U_increment_sourcefold_20261015_r02",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_rx_u_increment20/runner.py experiments/cvs_rx_u_increment20/configs/source_fold.json",
+    "stop_rule": "Protocol/role/held-RX or U-truth leakage, nonfinite loss/gradient, undeclared task, wrong budget/actual-gradient oracle or output collision: preserve outputs, no automatic retry. No performance stop or unrelated-process intervention."
+  },
+  "expected_artifacts": [
+    "source/completion.json",
+    "source/source_frozen.json",
+    "source/source_contract.json",
+    "source/initialization.json",
+    "source/source_fold.json",
+    "source/source_U_increment_mechanism.json",
+    "source/U_increment_step{2896,3344,3792,4432}.json",
+    "source/step_metrics.jsonl.gz",
+    "source/epoch_metrics.jsonl",
+    "source/final_ssdg.pth",
+    "source_fold.stdout.log",
+    "release_commit.txt"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "default-head CE",
+      "errors",
+      "margin",
+      "actual U feature increment",
+      "source-risk cone residual",
+      "stored FP32 norm control",
+      "actual gradient oracle"
+    ],
+    "dimensions": [
+      "step",
+      "four modes",
+      "ACTUAL/PRE_W"
+    ],
+    "prediction_ref": "source-only default-head temporary readouts; no target predictions",
+    "scorer_ref": "Visible source L labels only; no truth-side target access",
+    "source_gate": {
+      "minimum_qualified_probes": 2,
+      "final_training_L_CE_max": 0.5,
+      "U_loss_min": 1e-08,
+      "raw_U_F_to_full_F_step_min": 0.01,
+      "retained_U_F_norm_min": 0.1,
+      "CONE_RAW_cosine_max": 0.95,
+      "ACTUAL_and_PRE_W_CE_improvement_min": 1e-05,
+      "errors_must_not_increase": true,
+      "actual_stored_norm_relative_tolerance": 0.001,
+      "rounded_cone_violation_relative_max": 0.001,
+      "identity_controls": [
+        "RAW",
+        "SHRINK",
+        "L_ONLY_F"
+      ],
+      "promotion": "Only a full controlled source-fold training matrix, never direct target/main qualification"
+    },
+    "nominal_backbone_epochs": 20,
+    "actual_optimizer_updates": 4440,
+    "U_packet_observations": 396368,
+    "temporary_AdamW_steps": 8,
+    "extra_L_backward_evaluations": 4,
+    "anchor_L_forward_packets": 576,
+    "held_L_readout_forward_packets": 21420,
+    "smoke_forward_packets": 2,
+    "diagnostic_packet_forwards": 21998,
+    "additional_L_IQ_reads": 1404,
+    "held_L_unique_packets": 1260,
+    "main_run_qualification": false,
+    "next_stage_if_pass": "Separately preregistered complete source-fold controls; not automatic target/main"
+  },
+  "rows": [
+    {
+      "row_id": "RAW_SSL-RX1-s2026092701",
+      "method": "cvs_source_RX_U_optimizer_increment",
+      "purpose": "source_falsification",
+      "config_ref": "experiments/cvs_rx_u_increment20/configs/source_fold.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX1_U_increment_sourcefold_20261015_r02/source/resolved_config.json",
+      "data_overrides": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only fixed model seed2026092701; original deterministic physical split unchanged. Other seeds not separately exposed: null; original model-seeded U Gaussian/sampler RNG retained and counterfactual RNG restored. No support, stochastic evaluation or new seed scan.",
+      "k": null,
+      "scenario": "source clean RX1 held-out; no target/LEO",
+      "optimizer": "Original188 AdamW lr2e-4/wd1e-4/clip5; cosine min1e-6",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "experiment.json#metrics_plan",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r02/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX1_U_increment_sourcefold_20261015_r02/source_fold.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_rx_u_increment20/runner.py experiments/cvs_rx_u_increment20/configs/source_fold.json",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/source_frozen.json",
+        "source/source_contract.json",
+        "source/initialization.json",
+        "source/source_fold.json",
+        "source/source_U_increment_mechanism.json",
+        "source/U_increment_step{2896,3344,3792,4432}.json",
+        "source/step_metrics.jsonl.gz",
+        "source/epoch_metrics.jsonl",
+        "source/final_ssdg.pth",
+        "source_fold.stdout.log",
+        "release_commit.txt"
+      ]
+    }
+  ],
+  "notes": [
+    "Current default head jointly trained; no separate identity/RX heads or fitted readouts.",
+    "p2_min_v1 unchanged and unused: capsule_id/split_id null because this is Phase1 source-only, no Phase2 data opened.",
+    "Source fold model is incompatible with full5RX training contract; never reused to initialize formal all-source training.",
+    "Original full raw data carrier and static15 domain-ID map retained; every active L/U/V/calibration/probe loader filters RX1 before student/EMA creation; no held model-statistics/cache fitting.",
+    "REJECTED_EXTRA_GATE: blanket design approvals/extra report reviews/old two-process cap; current authorized research and exclusive AGENTS whitelist with max3 take precedence.",
+    "Technical replacement only: failed r01 preserved after 13 complete epochs/2895 successful updates; failure occurred in Torch2.1/NumPy2 array bridge before actual update2896. No completed mechanism probe, scientific qualification NOT_EVALUATED.",
+    "Only the at-most4x4 CPU FP64 solver backend and startup arithmetic smoke changed. Objective, active-set/KKT tolerances, rcond1e-12, seed, optimizer, probes, controls, data and source thresholds unchanged.",
+    "Fresh scratch20/4440 updates in a new immutable root, no failed-partial weights/state/RNG inheritance. Failed2895 updates are extra technical cost; cumulative actual steps7335 if replacement completes. No target-score feedback."
+  ],
+  "registered_at": "2026-10-15T02:55:30+00:00"
+}

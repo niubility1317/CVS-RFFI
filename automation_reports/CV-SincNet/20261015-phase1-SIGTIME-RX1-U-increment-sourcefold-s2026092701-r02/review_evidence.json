@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "candidate": "20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r02",
+  "review_type": "targeted direct-fix re-review",
+  "original_full_review": "automation_reports/CV-SincNet/20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r01/review_evidence.json",
+  "original_full_review_status": "PASS",
+  "findings": [],
+  "scope": [
+    "experiments/cvs_rx_u_increment20/geometry.py: NumPy bridge replacement",
+    "experiments/cvs_rx_u_increment20/geometry_checks.py: bridge regression check",
+    "experiments/cvs_rx_u_increment20/runner.py: zero-IQ arithmetic startup smoke",
+    "experiments/cvs_rx_u_increment20/design.py: r02 run/release IDs",
+    "experiments/cvs_rx_u_increment20/configs/source_fold.json: r02 run/output IDs"
+  ],
+  "confirmed": [
+    "Projection retains the active-set enumeration, normalized FP64 Gram system, rcond=1e-12, multiplier feasibility, complementarity, minimum-distance selection and final cone/norm checks. The least-squares solve is now pure Torch CPU FP64 with driver=gelsd and no Tensor-to-NumPy or NumPy-to-Tensor bridge.",
+    "The runner executes the arithmetic projection smoke before train(config), without IQ, checkpoint, optimizer update or query access.",
+    "Configuration comparison against the committed r01 configuration changes only run_id and output_root. The dependency release and all scientific fields remain unchanged; model_initialization remains scratch.",
+    "Design changes only RUN and RELEASE to distinct r02 roots; the targeted diff adds no r01 checkpoint, optimizer-state or output reuse."
+  ],
+  "verification": {
+    "geometry_checks": {
+      "status": "PASS",
+      "tests": 9,
+      "includes_disabled_tensor_numpy_bridge": true,
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/.codex_tmp/native_polyphase_runner.py experiments.cvs_rx_u_increment20.geometry_checks"
+    },
+    "config_changed_fields": ["output_root", "run_id"],
+    "dependency_release_unchanged": true,
+    "model_initialization": "scratch"
+  },
+  "review_boundary": "Only the direct technical-fix diff was reviewed. No repeated full-candidate, report, data or shared-hook review; no production edit, real IQ/checkpoint access, remote operation, launch, commit or additional gate."
+}
