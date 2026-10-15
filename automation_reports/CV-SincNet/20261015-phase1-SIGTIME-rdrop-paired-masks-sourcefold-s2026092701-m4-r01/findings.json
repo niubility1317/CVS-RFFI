@@ -1,0 +1,107 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-SIGTIME-rdrop-paired-masks-sourcefold-s2026092701-m4-r01",
+  "source_qualification": true,
+  "fixed_recipe_closed": false,
+  "factorial_error_interaction": -40,
+  "factorial_contrasts": {
+    "mask_effect_without_RDrop": {
+      "candidate": "ANTI_CE",
+      "control": "INDEP_CE",
+      "error_difference": 35,
+      "accuracy_difference_pp": -2.777777777777779,
+      "CE_difference": 0.05521701732098716
+    },
+    "mask_effect_with_RDrop": {
+      "candidate": "ANTI_RDROP",
+      "control": "INDEP_RDROP",
+      "error_difference": -5,
+      "accuracy_difference_pp": 0.3968253968253954,
+      "CE_difference": -0.02963761151515998
+    },
+    "RDrop_effect_independent": {
+      "candidate": "INDEP_RDROP",
+      "control": "INDEP_CE",
+      "error_difference": -92,
+      "accuracy_difference_pp": 7.301587301587298,
+      "CE_difference": -0.15936000548250484
+    },
+    "RDrop_effect_antithetic": {
+      "candidate": "ANTI_RDROP",
+      "control": "ANTI_CE",
+      "error_difference": -132,
+      "accuracy_difference_pp": 10.476190476190473,
+      "CE_difference": -0.24421463431865198
+    }
+  },
+  "primary_error_strata": [
+    {
+      "group": "day",
+      "value": 1,
+      "count": 420,
+      "ANTI_RDROP_minus_INDEP_RDROP_errors": -9
+    },
+    {
+      "group": "day",
+      "value": 2,
+      "count": 420,
+      "ANTI_RDROP_minus_INDEP_RDROP_errors": -2
+    },
+    {
+      "group": "day",
+      "value": 3,
+      "count": 420,
+      "ANTI_RDROP_minus_INDEP_RDROP_errors": 6
+    },
+    {
+      "group": "TX",
+      "value": 0,
+      "count": 210,
+      "ANTI_RDROP_minus_INDEP_RDROP_errors": 7
+    },
+    {
+      "group": "TX",
+      "value": 1,
+      "count": 210,
+      "ANTI_RDROP_minus_INDEP_RDROP_errors": -5
+    },
+    {
+      "group": "TX",
+      "value": 2,
+      "count": 210,
+      "ANTI_RDROP_minus_INDEP_RDROP_errors": -2
+    },
+    {
+      "group": "TX",
+      "value": 3,
+      "count": 210,
+      "ANTI_RDROP_minus_INDEP_RDROP_errors": -3
+    },
+    {
+      "group": "TX",
+      "value": 4,
+      "count": 210,
+      "ANTI_RDROP_minus_INDEP_RDROP_errors": 0
+    },
+    {
+      "group": "TX",
+      "value": 5,
+      "count": 210,
+      "ANTI_RDROP_minus_INDEP_RDROP_errors": -2
+    }
+  ],
+  "full_training_mean_unweighted_KL": {
+    "INDEP_CE": 0.11936093971116452,
+    "ANTI_CE": 0.15869838181371287,
+    "INDEP_RDROP": 0.05593264653234164,
+    "ANTI_RDROP": 0.059215031800841963
+  },
+  "mechanism_verified": "13 fixed-p feature dropout sites, anti double drop0, native U/teacher/eval and default head joint",
+  "interpretation_boundary": "Single source seed/fold; no statistical/global novelty/target or nonlinear gradient variance claim. KL and optimizer displacement not matched by this2x2 experiment.",
+  "historical_positive": "Original SIG_TIME+standard RDrop E50 clean3seed mean84.340079%, no new target data read",
+  "next_action": "Separately preregister main E20/E50 three-seed validation with same joint default head; never initialize full-source training from fold checkpoints",
+  "target_access": false,
+  "head_fit_updates": 0,
+  "goal_completed": false,
+  "primary_effect_limit": "Only5 net source errors fewer:21 repairs/16 introduced. Negative40 interaction includes CE control35 worse,not40 primary repairs. Day3+6 and TX0+7 errors; no significance/target claim."
+}
