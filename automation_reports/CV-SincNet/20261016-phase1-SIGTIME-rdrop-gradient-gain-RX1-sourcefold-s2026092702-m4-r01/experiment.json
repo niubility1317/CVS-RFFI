@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "Continue active feature-learning goal,latest only SIG_TIME+RDrop. Prior exploratory NORM_MATCH positive retained but never posthoc promoted. Separate fixed RX1 confirmation with one fixed large-weight control;no closed CENTER/NULL rescue,target feedback or trained inheritance.",
   "code": {
-    "commit": "Actual Git HEAD in release_commit.txt",
+    "commit": "9e3034698962f6a5c61b37f92f63a80a1a82ae03",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "ordinary N607 CVS-RFFI;CPU2/worker,loader0;CPU-only dispatcher",
     "cwd": "PROJECT/releases/cvs_SIGTIME_rdrop_gradient_gain_RX1_source20_20261016_r01",
@@ -1120,5 +1120,13 @@
     "REJECTED_EXTRA_GATE:extra brainstorming/spec approvals are NONBLOCKING under user Exclusive Minimal Experiment Workflow;one concrete prereg report and one independent next-run P0/P1 review only."
   ],
   "status": "PLANNED",
-  "registered_at": "2026-10-15T18:43:53+00:00"
+  "registered_at": "2026-10-15T18:43:53+00:00",
+  "result": {
+    "status": "RUNNING",
+    "evidence_ref": "launch_verification.json",
+    "source_only": true,
+    "source_rows_started": 4,
+    "target_access": false,
+    "goal_completed": false
+  }
 }

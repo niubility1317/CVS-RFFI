@@ -44,3 +44,8 @@ CPU/CUDA各59协议负例、固定科学资格、198同初态、实际CE/logits/
 [R-Drop](https://arxiv.org/abs/2106.14448)和[LR-Drop](https://aclanthology.org/2024.lrec-main.891/)已有预测/隐藏状态一致性；[GradNorm](https://proceedings.mlr.press/v80/chen18a.html)已用梯度量级动态平衡多任务损失。因此“按梯度调权”本身不是全球新颖。本候选待证的是：以同包特征的可微共同中心作为**仅力度参考**，保留未经中心化的方向与有效fullKL，优于一个训练统计固定的大权重。只有固定源折及后续完整验证通过才增加有效性证据；不继承GradNorm或VICReg的任务/防坍塌保证。
 
 REJECTED_EXTRA_GATE：通用brainstorming/spec额外审批不在用户最小流程白名单，作为NONBLOCKING不执行。方案、矩阵、来源、停止规则在本报告，无额外签名/数据重验/审查。goal ACTIVE。
+
+
+## 启动独立核实
+
+VERIFIED / RUNNING。实际代码提交 `9e3034698962f6a5c61b37f92f63a80a1a82ae03` 已push并独立核对远端OID；一次release archive SHA比较和remote compile均VERIFIED。四行均已通过自己的真实初始checkpoint noquery smoke并完成首轮，独立PID/CWD/argv/GPU及实际compute app匹配，日志均增长，无技术异常。实际RX1全部五loader排除，fit3/4/6/8、L5040/U45360hidden/V21600；旧13L＋7U/LS.01/普通增强等实际args一致。新增信号与梯度数值审计在真实训练通过。全部owner当前GPU compute app数量≤3，preCUDA容量在每次launch前计入。详见launch_verification.json；原始进程/命令/日志与私有运行细节只留local_artifacts。尚无final20结果或目标预测，不能宣称机制有效。

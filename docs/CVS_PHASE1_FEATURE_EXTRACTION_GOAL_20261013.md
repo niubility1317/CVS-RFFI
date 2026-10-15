@@ -399,3 +399,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- RDROP_GAIN_RX1_PREREG_20261016 -->
 20261016-phase1-SIGTIME-rdrop-gradient-gain-RX1-sourcefold-s2026092702-m4-r01 PLANNED：上一RX3控制NORM_MATCH的探索性+24错保留，独立RX1源折确认固定DYNAMIC算子；FULL/POINT/FIXED11/DYNAMIC，各seed02 scratchE20。固定11来自上一全部4440训练图r均值10.555876按最近整数，不扫权重。DYNAMIC须同时少错且CE不高于全部3对照；FAIL关闭，不以副对照替代。旧CENTER/NULL不重训。CPU/CUDA59负例、198初态及原DYNAMIC算子逐位/实际骨干梯度/RNG检查PASS，0target/拟合头。[最小预登记](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-gradient-gain-RX1-sourcefold-s2026092702-m4-r01/report.md)。goalACTIVE。
+
+
+<!-- RDROP_BATCH_CENTER_RX1_LAUNCHED_20261016 -->
+20261016-phase1-SIGTIME-rdrop-gradient-gain-RX1-sourcefold-s2026092702-m4-r01 VERIFIED/RUNNING，四臂真实scratchE20启动，首轮完成、自己CP noquery smoke及PID/CWD/argv/GPU/log增长通过，实际RX1全路径排除/默认头联合/新辅助数值审计一致。代码9e3034698962f6a5c61b37f92f63a80a1a82ae03，0target/头拟合，未有final结果。[启动证据](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-gradient-gain-RX1-sourcefold-s2026092702-m4-r01/launch_verification.json)。goalACTIVE。
