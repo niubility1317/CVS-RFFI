@@ -1,6 +1,6 @@
 # 旧 SIG_TIME 叠加 RDrop：E20/E50 三种子匹配验证
 
-状态 **RUNNING，已启动12/18行；E20首seed3行已评分，其余6行已扩展运行；E50首seed3行继续训练，其余6行待源资格。独立核验 VERIFIED**。用户要求旧 SIG_TIME 与 RDrop 有机结合；本次原样保留旧 SIG_TIME 的 RAW_HZ、标签平滑 0.01、普通训练增强、NoExplicitCFO、默认 cosine 头联合训练、旧门控和 ownEMA。18 个独立 scratch 模型：E20/E50 × ORIGINAL/TWO_CE/RDROP × 2026092701/02/03；E50 原 33L+17U，E20 固定 13L+7U，不继承旧权重，不使用 CENTER25K/cleanL/LS0 替代旧配方。
+状态 **PARTIAL，E20完整九行已评分；E50调度器因启动观测失败退出，已启动健康任务继续，四个未启动行待技术恢复**。独立核验 VERIFIED**。用户要求旧 SIG_TIME 与 RDrop 有机结合；本次原样保留旧 SIG_TIME 的 RAW_HZ、标签平滑 0.01、普通训练增强、NoExplicitCFO、默认 cosine 头联合训练、旧门控和 ownEMA。18 个独立 scratch 模型：E20/E50 × ORIGINAL/TWO_CE/RDROP × 2026092701/02/03；E50 原 33L+17U，E20 固定 13L+7U，不继承旧权重，不使用 CENTER25K/cleanL/LS0 替代旧配方。
 
 | 条件 | L 前向/更新 | 原平滑 CE | 一致性 |
 |---|---:|---|---|
@@ -35,3 +35,12 @@ E20源资格已按预登记规则PASS：3条件末轮LCE均≤0.5；RDrop全部4
 
 <!-- ORIGINAL_SIGTIME_FIRST_E20_SOURCE_LOGS_20261015 -->
 E20首seed三个已完成轨迹的源日志分析 VERIFIED：完整13320次step/60轮epoch及三份stdout，实际损失重构最大误差2.38419e−7，全部有关损失有限，ORIGINAL无额外hook，两个paired条件均实际复用增强后同IQ且4440次KL调用为正。ORIGINAL/TWO_CE/RDROP末轮CE1依次0.275006/0.270163/0.273353；源V依次97.792593%/97.966667%/97.870370%。每条件7轮U共396900次重复观察，接受次数依次6143/6203/5611。RDrop没有通过增加接受观察次数改变训练；这不证明其U标签更准，也不用于推断目标收益。该分析只读取已冻结源日志/元数据，未读目标指标、真值或IQ，未加载checkpoint、更新参数或拟合头；其他健康行不变。完整逐epoch源曲线和损失统计见[first_E20_source_analysis.json](first_E20_source_analysis.json)。
+
+
+<!-- ORIGINAL_SIGTIME_FULL_E20_SCORED_SUMMARY_20261015 -->
+完整E20三seed既有独立评分产物汇总：ORIGINAL 83.115675%±1.559519pp；TWO_CE 82.486111%±1.428440pp；RDROP 83.942857%±0.928437pp。RDrop−ORIGINAL +0.827183pp、2/3正；RDrop−TWO_CE +1.456746pp、2/3正；TWO_CE−ORIGINAL −0.629563pp、0/3正。RDrop均值仍未达84%，不按四舍五入宣称完成。全部9行/180epoch/39960更新、1512000clean决定/162分层评分已齐，来源/预测完成性、CM算术和分组总和/配对正确性已复核，无新增IQ/truth/CP读取或训练。全18行最终完整独立分析仍待E50结束，不把该预算分组当作全矩阵完成。详见[完整E20报告](E20_scored_summary.md)。E50预算、参数、主条件和源资格不依据这些分数改变。
+
+
+<!-- ORIGINAL_SIGTIME_TECHNICAL_FAILURE_20261015 -->
+独立全run进程扫描和产物核对确认：两个预算的源资格均PASS，原18行中14行已实际启动，12行训练/clean预测完成、11行已评分；两个seed02的E50健康worker为ORIGINAL和TWO_CE，后者已通过ownCP smoke并持续训练，却未写入launch.json。调度器在Popen之后仅即时读取一次/proc，观测失败便退出，留下健康子进程。当前无法从旧日志区分第一次读取None还是临时GPU字段缺失，但已证明该错误不代表模型未启动或训练失败。四个真正未启动行是E50_RDROP seed02及E50三个条件seed03，未读取其目标指标选择恢复。所有旧输出、failure.json和健康进程保留；不热改原release或原地重启。技术修复将使用新release/run/output root补这四行，并补全原已固定prediction的缺失CPU评分，不重复模型训练。已有E20结果保持不变，研究目标active。详见[技术核对](technical_failure_reconciliation.json)。
+CPU-only最小复现使用原release的process函数，固定128个顺序短子进程，2次即时读取GPU字段为None，稍后同一PID/argv恢复预期字段且进程存活。该复现不使用数值GPU、不读取IQ/truth/checkpoint、不写远程文件、不停止实验进程；它复现了单次启动观测的瞬时缺字段问题，证据见[startup_observation_reproduction.json](startup_observation_reproduction.json)。拟修复先记录已启动PID，再有界轮询同一PID的CWD/argv/GPU，超时保留归属证据且不重试模型启动。

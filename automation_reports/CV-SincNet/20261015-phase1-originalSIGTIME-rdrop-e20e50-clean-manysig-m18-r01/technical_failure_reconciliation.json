@@ -1,0 +1,285 @@
+{
+  "status": "VERIFIED_TECHNICAL_FAILURE",
+  "read_at": 1792062468.12669,
+  "run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01",
+  "failure": {
+    "status": "FAILED",
+    "error": "RuntimeError('Original SIG_TIME worker not observable')",
+    "traceback": "Traceback (most recent call last):\n  File \"PROJECT/releases/cvs_originalSIGTIME_rdrop20_50_20261015_r01/experiments/cvs_sigtime_rdrop_legacy/dispatch.py\", line 51, in run\n    if actual is None or actual['gpu']!=str(gpu):raise RuntimeError('Original SIG_TIME worker not observable')\nRuntimeError: Original SIG_TIME worker not observable\n",
+    "outputs_preserved": true,
+    "no_automatic_retry": true
+  },
+  "source_gates": {
+    "20": {
+      "status": "PASS",
+      "epochs": 20,
+      "source_only": true,
+      "first_model_seed": 2026092701,
+      "all_final_L_healthy": true,
+      "positive_KL_call_fraction": 1.0,
+      "source_V_comparisons": {
+        "ORIGINAL": {
+          "V_mean_difference": 0.0007777777777777661,
+          "V_worst_RX_difference": 0.0022222222222222365
+        },
+        "TWO_CE": {
+          "V_mean_difference": -0.0009629629629629433,
+          "V_worst_RX_difference": -0.0016666666666665941
+        }
+      },
+      "qualified": true,
+      "target_metrics_read": false,
+      "remaining_seed_rows": 6,
+      "no_parameter_scan": true
+    },
+    "50": {
+      "status": "PASS",
+      "epochs": 50,
+      "source_only": true,
+      "first_model_seed": 2026092701,
+      "all_final_L_healthy": true,
+      "positive_KL_call_fraction": 1.0,
+      "source_V_comparisons": {
+        "ORIGINAL": {
+          "V_mean_difference": 0.0008518518518518814,
+          "V_worst_RX_difference": 0.0012962962962962399
+        },
+        "TWO_CE": {
+          "V_mean_difference": -0.000592592592592589,
+          "V_worst_RX_difference": -0.0024074074074074137
+        }
+      },
+      "qualified": true,
+      "target_metrics_read": false,
+      "remaining_seed_rows": 6,
+      "no_parameter_scan": true
+    }
+  },
+  "started_rows": 14,
+  "source_complete_rows": 12,
+  "scored_rows": 11,
+  "healthy_live_rows": [
+    {
+      "row_id": "E50_ORIGINAL-s2026092702",
+      "pid": 3163693,
+      "GPU": "0",
+      "start_ticks": 130961095
+    },
+    {
+      "row_id": "E50_TWO_CE-s2026092702",
+      "pid": 3163698,
+      "GPU": "2",
+      "start_ticks": 130961127
+    }
+  ],
+  "unreceipted_but_healthy": "E50_TWO_CE-s2026092702",
+  "unstarted_rows": [
+    "E50_RDROP-s2026092702",
+    "E50_ORIGINAL-s2026092703",
+    "E50_TWO_CE-s2026092703",
+    "E50_RDROP-s2026092703"
+  ],
+  "rows": [
+    {
+      "row_id": "E20_ORIGINAL-s2026092701",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 20,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": "MODEL_PREDICTED_SCORED"
+    },
+    {
+      "row_id": "E20_TWO_CE-s2026092701",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 20,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": "MODEL_PREDICTED_SCORED"
+    },
+    {
+      "row_id": "E20_RDROP-s2026092701",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 20,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": "MODEL_PREDICTED_SCORED"
+    },
+    {
+      "row_id": "E50_ORIGINAL-s2026092701",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 50,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": "MODEL_PREDICTED_SCORED"
+    },
+    {
+      "row_id": "E50_TWO_CE-s2026092701",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 50,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": "MODEL_PREDICTED_SCORED"
+    },
+    {
+      "row_id": "E50_RDROP-s2026092701",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 50,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": null
+    },
+    {
+      "row_id": "E20_ORIGINAL-s2026092702",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 20,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": "MODEL_PREDICTED_SCORED"
+    },
+    {
+      "row_id": "E20_TWO_CE-s2026092702",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 20,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": "MODEL_PREDICTED_SCORED"
+    },
+    {
+      "row_id": "E20_RDROP-s2026092702",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 20,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": "MODEL_PREDICTED_SCORED"
+    },
+    {
+      "row_id": "E50_ORIGINAL-s2026092702",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 16,
+      "source_done": null,
+      "prediction_done": null,
+      "scored": null
+    },
+    {
+      "row_id": "E50_TWO_CE-s2026092702",
+      "receipt_present": false,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 14,
+      "source_done": null,
+      "prediction_done": null,
+      "scored": null
+    },
+    {
+      "row_id": "E50_RDROP-s2026092702",
+      "receipt_present": false,
+      "output_exists": false,
+      "own_smoke_PASS": 0,
+      "fatal_count": 0,
+      "epoch": null,
+      "source_done": null,
+      "prediction_done": null,
+      "scored": null
+    },
+    {
+      "row_id": "E20_ORIGINAL-s2026092703",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 20,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": "MODEL_PREDICTED_SCORED"
+    },
+    {
+      "row_id": "E20_TWO_CE-s2026092703",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 20,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": "MODEL_PREDICTED_SCORED"
+    },
+    {
+      "row_id": "E20_RDROP-s2026092703",
+      "receipt_present": true,
+      "output_exists": true,
+      "own_smoke_PASS": 1,
+      "fatal_count": 0,
+      "epoch": 20,
+      "source_done": "SOURCE_TRAINED",
+      "prediction_done": "PREDICTIONS_COMPLETE",
+      "scored": "MODEL_PREDICTED_SCORED"
+    },
+    {
+      "row_id": "E50_ORIGINAL-s2026092703",
+      "receipt_present": false,
+      "output_exists": false,
+      "own_smoke_PASS": 0,
+      "fatal_count": 0,
+      "epoch": null,
+      "source_done": null,
+      "prediction_done": null,
+      "scored": null
+    },
+    {
+      "row_id": "E50_TWO_CE-s2026092703",
+      "receipt_present": false,
+      "output_exists": false,
+      "own_smoke_PASS": 0,
+      "fatal_count": 0,
+      "epoch": null,
+      "source_done": null,
+      "prediction_done": null,
+      "scored": null
+    },
+    {
+      "row_id": "E50_RDROP-s2026092703",
+      "receipt_present": false,
+      "output_exists": false,
+      "own_smoke_PASS": 0,
+      "fatal_count": 0,
+      "epoch": null,
+      "source_done": null,
+      "prediction_done": null,
+      "scored": null
+    }
+  ],
+  "no_healthy_process_intervention": true,
+  "no_training_restart": true,
+  "prediction_complete_missing_score": "E50_RDROP-s2026092701"
+}

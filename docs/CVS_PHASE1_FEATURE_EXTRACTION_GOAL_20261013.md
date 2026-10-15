@@ -281,3 +281,11 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- ORIGINAL_SIGTIME_FIRST_E20_SOURCE_LOGS_20261015 -->
 2026-10-15旧SIG_TIME×RDrop首seed E20三行全13320step/60epoch源日志核对PASS，真实损失重构max2.38419e−7；每条件396900次U重复观察，ORIGINAL/TWO_CE/RDROP接受6143/6203/5611，RDrop未增加接受量。该计数不代表U正确率，源V97.792593/97.966667/97.870370%不替代目标泛化。分析0目标指标/真值/IQ/CP读取、0参数或头更新；固定18行继续，研究目标仍active。
+
+
+<!-- ORIGINAL_SIGTIME_E20_SCORED_SUMMARY_20261015 -->
+2026-10-15 `20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01` E20全9行、3条件各3seed均已完成独立truth-last评分。既有产物汇总核对162CM/1512000决定及配对：ORIGINAL83.115675%±1.559519pp、TWO_CE82.486111%±1.428440pp、RDROP83.942857%±0.928437pp；RD−ORIGINAL+0.827183pp/2正，RD−TWOCE+1.456746pp/2正，TWOCE−ORIGINAL−0.629563pp/0正。84%检查False，不能四舍五入达标；本次汇总0新truth/IQ/CP读取或预测/训练，最终18行fresh独立复算尚待E50全部结束。E50_RDROP主条件和源资格固定不变，global goal active。[完整E20报告](../automation_reports/CV-SincNet/20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/E20_scored_summary.md)。
+
+
+<!-- ORIGINAL_SIGTIME_TECHNICAL_FAILURE_20261015 -->
+2026-10-15旧SIG_TIME×RDrop原调度器Popen后即时/proc观测失败退出；独立核对14模型已启动、2E50健康（其中TWOCE seed02未被记录）、4行未启动，原12行预测完成/11评分。E50源资格也已PASS。保留所有产物和健康任务；不原地重启或重复训练。待本地复现修复、新不可变技术run只补四个未启动行，原预测缺评分另按原自动truth-last闭合，最终逻辑矩阵仍精确18。E20完整三seed汇总83.115675/82.486111/83.942857%，全目标active。

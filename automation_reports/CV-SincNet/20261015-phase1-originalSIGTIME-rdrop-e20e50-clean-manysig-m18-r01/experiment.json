@@ -3692,14 +3692,21 @@
   ],
   "registered_at": "2026-10-15T10:12:01+00:00",
   "result": {
-    "status": "RUNNING",
-    "evidence_ref": "E20_expansion_verification.json",
-    "actual_rows_started": 12,
-    "actual_active_rows": 9,
-    "actual_rows_scored": 3,
+    "status": "PARTIAL",
+    "evidence_ref": "E20_scored_summary.json",
+    "complete_E20_rows": 9,
+    "expected_E20_rows": 9,
+    "expected_E50_rows": 9,
     "all_expected_rows": 18,
-    "source_gated_pending_rows": 6,
+    "E50_status": "Dispatcher failed one-shot observation;14 models started,2 healthy,4 unstarted; new immutable technical recovery pending",
+    "E20_accuracy_mean": {
+      "E20_ORIGINAL": 0.831156746031746,
+      "E20_TWO_CE": 0.8248611111111112,
+      "E20_RDROP": 0.8394285714285714
+    },
+    "E20_RDROP_goal84_check": false,
+    "full_matrix_independent_analysis": "pending",
     "goal_completed": false,
-    "first_seed_source_log_analysis": "first_E20_source_analysis.json"
+    "technical_failure_ref": "technical_failure_reconciliation.json"
   }
 }
