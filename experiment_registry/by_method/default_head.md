@@ -4,4 +4,4 @@
 |同信道 HQ 桥接：源域零更新预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-coupled-bridge-source-manysig-s2026092701-r01/report.md)|
 |五条件冻结默认头：源域身份与退化归因预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-source-manysig-s2026092701-m5-r01/report.md)|
 |SIG_TIME＋RDrop：固定 E20 混合 IQ 五组结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-e20-manysig-s2026092701-m5-r01/report.md)|
-|源响应方向的独立 Ag：当前 E20 训练证伪|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-source-response-e20-manysig-s2026092701-m2-r01/report.md)|
+|源响应方向的独立 Ag：E20 完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-source-response-e20-manysig-s2026092701-m2-r01/report.md)|

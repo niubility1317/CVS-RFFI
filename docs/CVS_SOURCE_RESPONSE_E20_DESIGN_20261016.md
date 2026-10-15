@@ -1,5 +1,7 @@
 # 混合增强下一步：先验证源响应方向
 
+最新状态：两个独立 Ag E20 及全部原七视图已完成，EMP/ROT 源资格均 FAIL。EMP 相对匹配 B00 的正式 clean +0.103571 pp、low urban −0.052381 pp、urban 均值 −0.048016 pp，未建立独立泛化价值。本固定谱形候选结束，不扩联合或 seed；下文保留原设计与执行过程。
+
 当前没有 clean 与 urban 的双突破。固定 SIG_TIME＋RDrop、默认 joint160 cosine 头和原 practical 测试，最近五组 E20 说明：直接 practical 训练贡献主要星地收益，当前三抽头 A_g 没有保留独立 clean 增量。后续仍限每个新模型从头总 E20=13L＋7U，不加载 E50/E200，不改旧 U 门控和数据角色。
 
 ## 已经失败的假设
@@ -53,3 +55,19 @@ run `20261016-phase1-source-response-e20-manysig-s2026092701-m2-r01` 已预登�
 每行源训练后先冻结 clean 增益≥0.5 pp、最差源 RX 损失≤1 pp 的决定，再自动原七视图预测和独立 CPU truth-last。源科学 FAIL 仍报告已登记行的全部正式结果；不释放联合或新 seed。当前总新训练预算为 40 model-epoch/8880 更新/6819840 个 L 前向，其他前向和墙钟按产物实数报告。详见[本轮预登记](E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-source-response-e20-manysig-s2026092701-m2-r01/report.md)。
 
 实际代码 `b393dfe66146d6ab42236da705d743044d45f9d3` 已发布运行。归档传输和远端编译 PASS，首步真实默认头无 query smoke 通过，B00 来源与实际 native 参数/角色/预算复用检查通过。两行都已完成 E1/20，各 222 更新、170496 个 L 前向，As 训练数为 0；独立核实 PID/CWD/argv/GPU、日志和 epoch 增长。未修改其他健康任务。最终冻结、正式评分、独立 A_g 收益和跨 seed 复现仍待完成。
+
+### 完整 E20 结果：固定候选结束
+
+两行已自然完成，各 E20/4440 更新、3409920 个 L 前向，随后完成原七视图及独立 CPU truth-last。全部 40 epoch/8880 步完整解析，关键 loss/梯度有限、无跳过更新或 U 真值；每行300个session/1800个session×TX单元均覆盖，配对计数和参数一致。原所有PID已自然终止，无技术缺项。
+
+|行|源 fullV %|源相对 B00 pp|正式 clean %|正式 low urban %|正式 urban 均值 %|
+|---|---:|---:|---:|---:|---:|
+|B00（复用）|98.233333|0|83.108929|31.316071|39.213294|
+|EMP|98.214815|−0.018519|83.212500|31.263690|39.165278|
+|ROT|98.225926|−0.007407|83.020238|31.519048|39.605159|
+
+源 FAIL 已在读取新正式 accuracy/F1 前以提交 `68fff981616966ec8eea965ec20c5f4ed9cfa17f` 固定，正式小正差不改变停止规则。EMP 未证明缓解任何 urban 退化；本轮没有 As 或联合行，不能从该表推断联合效果。源数据上的 BLOCKED/unlocked 和低新增噪声质量区间仍弱，详细分层不外推成正式目标因果结果。
+
+新增40 model-epoch/8880更新、11958250个网络前向（含共享722），矩阵墙钟1410.908880秒；父参考、旧控制和此前安全probe成本分别保留，不重复计算。五张实际图已逐图查看，完整七视图/逐RX/day/TX、全量曲线、间隔/原门控、覆盖、成本和命令见[最终报告](E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-source-response-e20-manysig-s2026092701-m2-r01/report.md)。这是单模型seed，不声称跨seed复现，整体联合目标仍未完成。
+
+下一步只检验[源相位关联问题](../analysis/cvs_source_response_next_source_question_20261016.md)，不通过调幅或新增对齐项挽救本候选，不按 ROT 的正式分数换候选。

@@ -252,7 +252,7 @@ def write_report(output,result,panels):
     lines+=['','## 实测成本','', '|行|source秒|row墙钟秒|L前向|studentU前向|EMA前向|source eval前向|panel前向|formal前向|',
         '|---|---:|---:|---:|---:|---:|---:|---:|---:|']
     for v in result['costs']:lines.append(f"|{v['arm']}|{v['source_seconds']:.6f}|{v['row_wall_seconds']:.6f}|"+'|'.join(str(v[k]) for k in ('L_forward_packets','student_U_forward_packets','EMA_forward_packets','student_source_eval_forward_packets','source_panel_forward_packets','formal_forward_packets'))+'|')
-    lines+=['',f"两新模型共{totals['epochs']}model-epoch/{totals['updates']}更新；全部新前向{totals['all_new_forward_packets']}（含共享source smoke2+父clean panel720）。矩阵墙钟{totals['matrix_wall_seconds']:.6f}秒。完成E20表示预算用尽，不等于收敛。",'',
+    lines+=['',f"两新模型共{totals['epochs']}model-epoch/{totals['updates']}更新；本轮源/测试真实数据新增前向{totals['all_new_forward_packets']}（含共享source smoke2+父clean panel720）。矩阵墙钟{totals['matrix_wall_seconds']:.6f}秒。完成E20表示预算用尽，不等于收敛。",'',
         'B00/R_LEGACY的既有训练、父只读E20参考的20epoch/4440更新/923.560061秒、先前有限IQ安全probe的189002前向/120.415114秒分别保留，不混作本轮增量训练或继承成本。源panel构造还包含4320次物理信道处理，属于IQ生成而非网络前向。',
         '', '## 判定与交付','',
         '源规则FAIL：结束本固定候选，不开展其联合训练或种子扩展。' if not q['passed'] else '源规则PASS：仅支持另行预登记的联合验证；不自动扩seed，不按正式分数改候选。',

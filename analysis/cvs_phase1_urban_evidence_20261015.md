@@ -1,5 +1,7 @@
 # Phase1 urban：已完成证据与当前验证边界（2026-10-15）
 
+2026-10-16 独立 Ag E20 已完成：源关联 EMP/旋转 ROT 两个新 scratch 模型及原七视图评分均闭合，源 fullV 相对匹配 B00 为 −0.018519/−0.007407 pp，资格均 FAIL。EMP 正式 clean83.212500%、low31.263690%、urban39.165278%；相对 B00 分别+0.103571/−0.052381/−0.048016 pp。当前没有联合行，不把独立G的小clean变化当作双增强成功。完整8880步/40epoch、252条新评分、11958250前向、1410.908880秒、五图和负结果见[最终报告](E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-source-response-e20-manysig-s2026092701-m2-r01/report.md)。源停止决定提交68fff981616966ec8eea965ec20c5f4ed9cfa17f早于读取新正式分数，本候选不扩联合或seed，整体goal仍active。
+
 2026-10-16 源问题更新：发现并复用已有 18 折跨 TX/day 频谱统计，不重复读取 IQ；也确认旧 33 抽头 PHYS/ROT 未建立实测方向的性能优势。实际完成当前 H(w)=1+a*cos(w)、|a|≤.06 的理想幅度方向覆盖计算：放松幅度后的加权方向覆盖 9.3023%，较粗网格 9.2692%；对应被排除单元的相对 MSE 为 1.033042，完整已有交叉拟合为 0.614141。0 模型前向、0 更新，不能当作身份识别成绩。支持的是当前受限形状族的缺口，下一步只验证更丰富源方向的有限 IQ 身份安全；见[已完成诊断](E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-current-response-coverage-manysig-m1-r01/report.md)与[下一步设计](../docs/CVS_SOURCE_RESPONSE_E20_DESIGN_20261016.md)。
 
 同日有限 IQ 验证也已完成：固定原 E20_RDROP seed01 默认头，完整 V27000、189002 前向、120.415114 秒、0 更新。EMP E1/E20 相对 RAW 为 +0.007407/−0.051852 pp，最差源 RX 下降≤0.203704 pp，必要安全 PASS；EMP−ROT 在两 session 下为 +0.188889/−0.088889 pp，未建立实测方向一致优势。该结果不替代训练与正式测试。完整源决定及分层图见[有限 IQ 报告](E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-source-response-finiteIQ-s2026092701-r01/report.md)；尚未启动新 E20 训练。
