@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "candidate": "20261015-phase1-SIGTIME-rdrop-source-e20-clean-manysig-m3-r01",
+  "review_type": "single independent next-run P0/P1 review",
+  "findings": [],
+  "scope": [
+    "experiments/cvs_rdrop_source20/design.py",
+    "experiments/cvs_rdrop_source20/objective.py",
+    "experiments/cvs_rdrop_source20/audit.py",
+    "experiments/cvs_rdrop_source20/runner.py",
+    "experiments/cvs_rdrop_source20/publish.py",
+    "experiments/cvs_rdrop_source20/checks.py",
+    "experiments/cvs_rdrop_source20/configs/matrix.json",
+    "automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-source-e20-clean-manysig-m3-r01/experiment.json: directly consumed matrix and permissions",
+    "Direct consumed original R02 provenance/model and existing source-cache interfaces"
+  ],
+  "confirmed": [
+    "The three parents are the fixed original full-five-RX BASE_SSL final20 students, with actual LS0 and the original single SIG_TIME/CENTER25K structure. The existing own_model checks source provenance before checkpoint deserialization and validates the checkpoint before strict state loading.",
+    "The CPU-only run uses two threads and requires an empty CUDA_VISIBLE_DEVICES value. It does not construct an optimizer, update a head, update an EMA teacher or execute any target path.",
+    "The existing source loader configuration is checked for unlabeled=False before loading. Its L/V cache checks the original physical source contract, U remains None, V is discarded, and only balanced L cohorts are forwarded.",
+    "Five disjoint balanced L180 cohorts use 900 unique L packets per parent. Each cohort has two stochastic forwards on the same clean IQ and one eval reference, giving 2700 source packet-forwards plus the two synthetic checkpoint-smoke packets.",
+    "The paired CE uses the mean of two LS0 default-head cross-entropies. Symmetric KL is differentiable through both predictions. The exact four fixed parameter tensors are measured with autograd.grad, leaving parameter .grad fields empty and model parameters/buffers unchanged.",
+    "First-seed scientific failure breaks before loading either remaining parent. Otherwise both other fixed parents run; complete-three-parent confirmation is reported only when all three pass, without coefficient, layer, parent or cohort selection.",
+    "Native tensor artifacts include both stochastic/eval logits and joint160 features, labels, RX/day/physical IDs, losses and all 40 derivative vectors. A fresh subprocess recomputes CE/KL, physical coverage, vector dimensions, gradient summaries and qualification from those saved artifacts without new forwards or gradients.",
+    "An existing run root is rejected before creation or failure handling. Failures are written only inside this run's newly created root. The archive contains the new package and committed registration, and the fixed dependency supplies the directly imported cache/model/provenance modules."
+  ],
+  "verification": {
+    "focused_checks": {
+      "status": "PASS",
+      "permission_negative_cases": 8,
+      "qualification_negative_cases": 2,
+      "math_and_differentiability": true,
+      "balanced_source_fixture": true,
+      "actual_model_synthetic_forward_packets": 18,
+      "actual_model_three_body_KL_gradients_nonzero": true,
+      "weights_buffers_global_rng_unchanged": true,
+      "real_IQ_reads": 0,
+      "checkpoint_loads": 0,
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/.codex_tmp/native_polyphase_runner.py experiments.cvs_rdrop_source20.checks"
+    },
+    "request_matches_design": true,
+    "registration_matrix_matches_design": true,
+    "fixed_parent_seeds": [2026092701, 2026092702, 2026092703],
+    "source_loader_unlabeled": false,
+    "required_direct_dependencies_in_R02_publication_paths": true
+  },
+  "review_boundary": "Only this evidence file was written. No real IQ or checkpoint access, remote operation, experiment launch, production-code edit, commit, report-only review, existing-M6 re-review or added gate. Synthetic checks construct a fresh model without loading any checkpoint."
+}

@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "core_checks": {
+    "status": "PASS",
+    "math_and_differentiability": true,
+    "permission_negative_cases": 8,
+    "balanced_source_fixture": true,
+    "duplicate_or_wrong_RX_rejected": true,
+    "BatchNorm_rejected": true,
+    "qualification_negative_cases": 2,
+    "actual_model_synthetic_forward_packets": 18,
+    "actual_model_three_body_KL_gradients_nonzero": true,
+    "weights_buffers_global_rng_unchanged": true,
+    "head_fit_updates": 0,
+    "optimizer_steps": 0,
+    "real_IQ_reads": 0,
+    "checkpoint_loads": 0,
+    "query_reads": 0
+  },
+  "core_evidence": "Executed experiments.cvs_rdrop_source20.checks in this turn; passed exact output recorded, not rerun here",
+  "Python_files_compiled": 7,
+  "embedded_remote_Python_programs_compiled": 2,
+  "exact_runtime_registration_matrix": true,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "no_real_IQ_or_CP_read_by_local_verification": true
+}
