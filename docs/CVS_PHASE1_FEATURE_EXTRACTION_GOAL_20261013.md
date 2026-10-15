@@ -305,3 +305,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- ORIGINAL_SIGTIME_RDROP_84_MILESTONE_20261015 -->
 预登记E50_RDROP完整3seed clean均值84.340079%±0.838539pp，匹配ORIGINAL82.922024%±1.363415pp；净+1.418056pp/3正，vsTWO_CE+2.353968pp/3正。固定全18行/630epoch/139860更新/3024000决定/324CM独立复算VERIFIED，三个seed内各198初值张量在六条件相等，所有部署joint160和默认W真实更新，headfit0。clean三seed均值84%性能里程碑已达，不能说每seed均84%或全球新机制。E50较E20_RDROP overall+.397222pp/2正，但worstRX−2.951389pp如实保留；不按target改主条件/日程/重跑。RDrop已知方法、机制创新要求仍需独立源域研究，因此总goal保持active。原14+新4、缺一个原launch receipt、故障和全部负结果保留。[最终报告](../automation_reports/CV-SincNet/20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)。
+
+
+<!-- SIGTIME_RDROP_DIFFERENCE_SOURCE_PREREG_20261015 -->
+用户范围已收敛SIG_TIME＋RDrop。本试 20261015-phase1-SIGTIME-rdrop-difference-gradient-sourcefold-s2026092702-m4-r01 PLANNED：FULL_KL/FEATURE_KL/SHRINK/DIFFERENCE固定seed02各scratch20，旧RAW_HZ/原增强/LS.01/defaultheadjoint/oldU保持；仅KL梯度对象/共同分量改变。CPU/CUDA各51negative与5gatecases、198初值/原logits/前向目标/RNG逐位相同PASS。真RX1先全路径排除，最终1260源L和固定四控制资格，无target、无旧CP继承。diff投影不保证encoder中心或AdamW步长不变；文献先例与代价记录。本试尚未发布或真实训练。全goal active。[报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-difference-gradient-sourcefold-s2026092702-m4-r01/report.md)。

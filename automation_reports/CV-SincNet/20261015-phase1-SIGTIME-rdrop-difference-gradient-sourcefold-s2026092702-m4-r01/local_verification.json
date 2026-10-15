@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "CPU": true,
+  "CUDA": true,
+  "negative_cases_each": 51,
+  "gate_negative_cases_each": 5,
+  "same_initial_state_tensors": 198,
+  "forward_objectives_bitwise_equal": true,
+  "native_logits_bitwise_equal": true,
+  "same_RNG": true,
+  "actual_post_augmentation_input_reused": true,
+  "CE_defaultW_joint_and_equal_across_feature_routes": true,
+  "FP64_gradient_projection_and_norm_control": true,
+  "synthetic_identity_packets_each": 1024,
+  "CPU_norm_relative_error": 4.801104422474277e-08,
+  "CUDA_norm_relative_error": 1.5177707371738168e-08,
+  "actual_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "optimizer_steps": 0,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "real_checkpoint_smoke": "PENDING; launcher first step"
+}
