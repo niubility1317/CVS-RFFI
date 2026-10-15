@@ -1138,15 +1138,15 @@
     "Recovery7221e39e0301e0de68231c3526e6c755295270d8 onlyadds2runtimepackages and run/releaseIDs. Isolated release -I imports preflight/dispatch/publishPASS, no checkoutfallback; independent targetedP0/P1PASS. R01 verified0workers/updates and preserved."
   ],
   "results": {
-    "status": "RUNNING_VERIFIED",
+    "status": "SOURCE_QUALIFIED_DEFAULT_HEAD_SCORED_NOT_YET_NUMERICALLY_RETRIEVED",
     "actual_new_training_workers": 2,
     "completed_source_epochs": [
-      20,
-      21
+      50,
+      50
     ],
     "real_checkpoint_noquery_smoke": "PASS",
     "actual_Sinc_source_updates_e1_verified": true,
-    "source_qualification": "PENDING",
+    "source_qualification": "PASS",
     "new_target_numeric_results_read": false,
     "head_fit_updates": 0,
     "goal_84": false,
@@ -1154,10 +1154,17 @@
       "launch_verified.json",
       "source_progress_e1.json",
       "source_progress_e17.json",
-      "source_training_mid.png"
+      "source_training_mid.png",
+      "source_qualification.json",
+      "source_expansion_decision.json",
+      "source_feature_mechanism.json"
     ],
     "actual_Sinc_source_updates_e17_verified": true,
-    "prepared_conditional_extension_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
+    "prepared_conditional_extension_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+    "all_rows_predictions_and_scores_complete": true,
+    "models": 3,
+    "prediction_count": 504000,
+    "source_expansion_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
   },
   "status": "RUNNING",
   "registered_at": "2026-10-15T00:32:26+00:00"

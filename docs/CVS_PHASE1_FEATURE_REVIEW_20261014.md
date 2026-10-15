@@ -495,3 +495,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 2026-10-15 原生U诊断：Sinc单位首种子两臂已观察到E35、原pseudo阶段，U曝光与门控实际执行。对E33/E34全部888批、2664层记录、7992输入向量作源端只读分解，熵梯度/L范数均值0.584%至0.803%，0个总L+U方向被熵反转；仅三参数张量/单seed/两个预定epoch，不作fθ全局或AdamW因果推断，不开启熵扫描。另确认现有PAIR是同RX邻近sig，而非跨RX同次发射配对，未据索引构造跨RX伪监督。详见 [本运行主报告](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md)。
+
+
+2026-10-15 Sinc单位首源资格PASS：两臂50/11100、各U963900完成；候选48参数全改变，student/EMA滤波核相对L2=0.307170421/0.306414366，真实L720 joint160差3.697698355；W独立feature-only边界最大差0。按原规则决定两臂原样扩02/03，源决定先提交推送，再读取本候选新目标数值；当前性能数值尚未回收，84目标不作已达成声明。[源决定](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json)。

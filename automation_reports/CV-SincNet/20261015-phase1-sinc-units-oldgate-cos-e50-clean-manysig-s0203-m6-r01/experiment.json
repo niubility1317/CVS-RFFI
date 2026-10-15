@@ -156,9 +156,9 @@
         "extra_model_forwards": 0,
         "unit_final_changed_cutoff_parameters_min": 12,
         "unit_final_changed_bandwidth_parameters_min": 12,
-        "unit_student_kernel_relative_L2_min": 1e-06,
-        "unit_ownEMA_kernel_relative_L2_min": 1e-06,
-        "actual_candidate_minus_control_L720zL2_min": 1e-06,
+        "unit_student_kernel_relative_L2_min": 0.000001,
+        "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+        "actual_candidate_minus_control_L720zL2_min": 0.000001,
         "source_only": true,
         "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
       },
@@ -232,7 +232,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/sinc-units-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -270,7 +270,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_L_CE_max": 0.5,
@@ -279,9 +279,9 @@
           "extra_model_forwards": 0,
           "unit_final_changed_cutoff_parameters_min": 12,
           "unit_final_changed_bandwidth_parameters_min": 12,
-          "unit_student_kernel_relative_L2_min": 1e-06,
-          "unit_ownEMA_kernel_relative_L2_min": 1e-06,
-          "actual_candidate_minus_control_L720zL2_min": 1e-06,
+          "unit_student_kernel_relative_L2_min": 0.000001,
+          "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+          "actual_candidate_minus_control_L720zL2_min": 0.000001,
           "source_only": true,
           "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
         },
@@ -374,7 +374,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -412,7 +412,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -652,7 +652,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/sinc-units-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -690,7 +690,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_L_CE_max": 0.5,
@@ -699,9 +699,9 @@
           "extra_model_forwards": 0,
           "unit_final_changed_cutoff_parameters_min": 12,
           "unit_final_changed_bandwidth_parameters_min": 12,
-          "unit_student_kernel_relative_L2_min": 1e-06,
-          "unit_ownEMA_kernel_relative_L2_min": 1e-06,
-          "actual_candidate_minus_control_L720zL2_min": 1e-06,
+          "unit_student_kernel_relative_L2_min": 0.000001,
+          "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+          "actual_candidate_minus_control_L720zL2_min": 0.000001,
           "source_only": true,
           "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
         },
@@ -941,7 +941,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/sinc-units-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -979,7 +979,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_L_CE_max": 0.5,
@@ -988,9 +988,9 @@
           "extra_model_forwards": 0,
           "unit_final_changed_cutoff_parameters_min": 12,
           "unit_final_changed_bandwidth_parameters_min": 12,
-          "unit_student_kernel_relative_L2_min": 1e-06,
-          "unit_ownEMA_kernel_relative_L2_min": 1e-06,
-          "actual_candidate_minus_control_L720zL2_min": 1e-06,
+          "unit_student_kernel_relative_L2_min": 0.000001,
+          "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+          "actual_candidate_minus_control_L720zL2_min": 0.000001,
           "source_only": true,
           "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
         },
@@ -1216,7 +1216,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/sinc-units-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1254,7 +1254,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_L_CE_max": 0.5,
@@ -1263,9 +1263,9 @@
           "extra_model_forwards": 0,
           "unit_final_changed_cutoff_parameters_min": 12,
           "unit_final_changed_bandwidth_parameters_min": 12,
-          "unit_student_kernel_relative_L2_min": 1e-06,
-          "unit_ownEMA_kernel_relative_L2_min": 1e-06,
-          "actual_candidate_minus_control_L720zL2_min": 1e-06,
+          "unit_student_kernel_relative_L2_min": 0.000001,
+          "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+          "actual_candidate_minus_control_L720zL2_min": 0.000001,
           "source_only": true,
           "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
         },
@@ -1358,7 +1358,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -1396,7 +1396,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -1636,7 +1636,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/sinc-units-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1674,7 +1674,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_L_CE_max": 0.5,
@@ -1683,9 +1683,9 @@
           "extra_model_forwards": 0,
           "unit_final_changed_cutoff_parameters_min": 12,
           "unit_final_changed_bandwidth_parameters_min": 12,
-          "unit_student_kernel_relative_L2_min": 1e-06,
-          "unit_ownEMA_kernel_relative_L2_min": 1e-06,
-          "actual_candidate_minus_control_L720zL2_min": 1e-06,
+          "unit_student_kernel_relative_L2_min": 0.000001,
+          "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+          "actual_candidate_minus_control_L720zL2_min": 0.000001,
           "source_only": true,
           "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
         },
@@ -1925,7 +1925,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/sinc-units-seeds-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1963,7 +1963,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_L_CE_max": 0.5,
@@ -1972,9 +1972,9 @@
           "extra_model_forwards": 0,
           "unit_final_changed_cutoff_parameters_min": 12,
           "unit_final_changed_bandwidth_parameters_min": 12,
-          "unit_student_kernel_relative_L2_min": 1e-06,
-          "unit_ownEMA_kernel_relative_L2_min": 1e-06,
-          "actual_candidate_minus_control_L720zL2_min": 1e-06,
+          "unit_student_kernel_relative_L2_min": 0.000001,
+          "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+          "actual_candidate_minus_control_L720zL2_min": 0.000001,
           "source_only": true,
           "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
         },
@@ -2149,10 +2149,14 @@
     "Known exposedcleanbenchmark,source numericallearningqualification doesnotproveDG/84/newTX/Phase2/satellitedeployment. Allpositive/negative results committed,pushed,remoteOIDverified."
   ],
   "results": {
-    "status": "CONDITIONAL_PREPARATION_NOT_LAUNCHED",
-    "first_source_qualification": "PENDING",
+    "status": "SOURCE_QUALIFIED_NOT_LAUNCHED",
+    "first_source_qualification": "PASS",
+    "source_qualification_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+    "source_decision": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json",
     "real_new_training": false,
     "first_seed_retrained": false,
+    "all_scientific_settings_unchanged": true,
+    "new_own_target_numeric_scores_read": false,
     "head_fit_updates": 0,
     "goal_84": false
   },
