@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Explicit side-conversation user request on2026-10-15: check for an existing target HQ experiment and launch one if absent. Side conversation forbids subagents and disruption of the main thread; use this independent checkout/run, CPU2 only, no model or formal array mutation.",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "28521bbc44dcad606c2dc62dc4443702c8534de0",
     "checkout": "E:\\type10-7\\code\\worktrees\\target_hq_diagnostic_20261015",
     "environment": "N607 existing CVS-RFFI Python; CPU2; CUDA_VISIBLE_DEVICES empty",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_frozen_ema_target_hq_20261015_r01"
@@ -226,5 +226,17 @@
     "Side-conversation user forbids all subagents. No independent agent review is claimed; inherited coupled physics were previously reviewed, and focused protocol-negative tests plus manual next-run correctness audit are used here under the explicit side constraint. No extra review/approval task is started.",
     "First single-model pilot4200, approximately25 samples per original TX/RX/day cell in total size but sampled without labels or cell counts; do not call it an exactly balanced Target25.",
     "The main thread checkout and active training are untouched. Ordinary account, CPU2/CUDAempty, new immutable release and output root. No target feedback messaging into the main thread."
-  ]
+  ],
+  "observed_result": {
+    "status": "ANALYZED",
+    "physical_sample_count": 4200,
+    "forward_packets": 16802,
+    "models_trained": 0,
+    "prediction_seconds": 33.89039653399959,
+    "full_accuracy": 0.5285714285714286,
+    "HQ_independent_accuracy": 0.5780952380952381,
+    "difference": 0.049523809523809526,
+    "independent_metric_recount": "VERIFIED",
+    "cross_seed_confirmation": "NOT_RUN"
+  }
 }
