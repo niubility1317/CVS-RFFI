@@ -1,0 +1,39 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "779e77620ea724154bfb2c899498578643234f00",
+  "remote_oid_at_publication": "779e77620ea724154bfb2c899498578643234f00",
+  "archive_SHA_comparison": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "owned_PID_CWD_command_verified": true,
+  "GPU_index": 0,
+  "owned_GPU_membership_verified": true,
+  "total_processes_on_owned_GPU": 1,
+  "total_process_limit": 3,
+  "log_growth_verified": true,
+  "real_own_scratch_checkpoint_no_query_smoke": true,
+  "source_role_counts": {
+    "L_s": 5040,
+    "U_s": 45360,
+    "V": 21600
+  },
+  "all_training_calibration_probe_loaders_RX1_excluded": true,
+  "actual_native_flags": {
+    "use_unlabeled": true,
+    "use_ema_teacher": true,
+    "label_smoothing": 0.0,
+    "epochs": 20,
+    "label_epochs": 13,
+    "pseudo_epochs": 7,
+    "use_aug": false,
+    "use_concat_sat_channel_aug": false,
+    "baseline_ckpt": "",
+    "teacher_ckpt": "",
+    "checkpoint_selection": "final_only",
+    "source_fold_held_rx": 1,
+    "source_fold_training_receivers": "3,4,6,8"
+  },
+  "external_state": "RUNNING",
+  "independent_read_at": 1792031611.2174244,
+  "target_access": false,
+  "U_truth_read": false
+}

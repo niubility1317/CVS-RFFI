@@ -1,6 +1,6 @@
 # 真实 RX1 留出：源身份风险约束 U 的特征位移
 
-状态 PLANNED。目标仍为实际 joint160、原默认 cosine 头联合训练后的固定 clean 三种子均值84%；本轮是有真实训练的 source-only 机制证伪，不读取 target，不宣称候选完整训练已改善。
+状态 **RUNNING / 启动 VERIFIED**。下文保留预登记。目标仍为实际 joint160、原默认 cosine 头联合训练后的固定 clean 三种子均值84%；本轮是有真实训练的 source-only 机制证伪，不读取 target，不宣称候选完整训练已改善。
 
 依据：上一轮冷初值 RX-blocked80条件中 ROUTED 对同辅助梯度范数 JOINT_NORM 的身份 CE 20/20 改善，但 AdamW 位移未匹配。完整责任路由 M12 默认头81.120635%，相对匹配SSL−0.054167个百分点；最差RX+0.245833个百分点、3/3正保留。source优化方向存在不能推出持续训练泛化增益。历史CENTER25K等正路线与全部负结果保留，不重跑当前已负配方。
 
@@ -23,3 +23,6 @@
 最小流程：聚焦数学/角色负例及实际CPU/CUDA构造检查、唯一独立下一run P0/P1审查、Git提交推送/remoteOID、一次N607 preflight/单archive比较/remotecompile。原生launcher先构建本折合法数据和own-scratch真实checkpoint no-query smoke，PASS直接继续；启动后独立PID/CWD/cmd/GPU/log-growth。训练和诊断冻结后报告完整source同row结果；无target预测/评分，不降低84%目标或改变整体goal active。
 
 本地解析/角色/反向传播/实际存储范数测试共16项 PASS，包含必须优于L-only特征控制的负例；实际188参数模型 CPU 与 CUDA 合成路径各2warm+1RAW步通过，RAW实际梯度oracle逐位0差，W联合更新、source/RNG状态保持。无真实sourceIQ/checkpoint读取，不将合成结果用于科学资格。唯一直接下一run P0/P1审查 PASS，编译 PASS。
+
+
+真实启动已独立读回：执行 `779e77620ea724154bfb2c899498578643234f00`，GPU 0 上所属进程/命令/CWD与GPU成员关系一致，总实验进程 1/3；log已增长，own scratch真实CP no-query smoke PASS。有效角色L5040/U45360/V21600，五个training/calibration/probe loader全部排除RX1，实际参数13L+7U/LS0/ownEMA/无L与星地增强，初始化来源为空。仍是运行状态，未宣称训练完成、机制资格或新target分数。
