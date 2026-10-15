@@ -225,3 +225,6 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 
 2026-10-15：新seed02签名噪声位置 `20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01` ANALYZED/VERIFIED，3×20epoch/13320更新完整、所有Utruth0/默认头joint、200state同初值及1260 heldRX1各默认头读出/paired独立复算。CLEAN_SIG主资格True，NONE独立确认False。完整曲线/F71及W变化/发现与确认seed对照见[同row报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/report.md)。四RX权重不转正式全5RX；正式三seed须新固定配置，未读target，84%goalactive。
+
+
+2026-10-15：源资格通过后正式矩阵 `20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01` RUNNING/VERIFIED，执行 `0fe97397defa9c72cb238556f0facc8d56c55513`，ordinary GPU0所属PID/CWD/argv/GPU/log及真实scratch checkpoint no-query smoke核实。source02 CLEAN_SIG68.253968%，相对ELEMENT65.555556%净修正34（46修正/12新增）、CE-.08224494，通过同时胜ELEMENT/NONE；NONE63.015873%独立确认失败，保留source01+11.349206pp但不冒充稳定正收益。正式固定CLEAN_SIG主arm及NONE必要控制，各三seed从零20/13L+7U/4440步，总6模型120epoch/26640更新，全5RX L6300/U56700hidden/V27000，不继承四RX权重；原BASE_SSL三seed预测/评分复用且成本单列。首seed两arm源健康通过后逐row自动clean168000预测与独立新CPU truth-last，最终另新CPU聚合，0拟合头/新loss/参数/额外训练IQ前向。12聚焦协议/两矩阵阶段顺序、所有3seed/两mode200state同初值及feature-only=z/扰动W不改z实际检查、唯一独立P0/P1 PASS；不增加新source诊断。总新预测1008000，目标主arm3seed clean84%仍active，未给出未完成性能。见[正式预登记和启动报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01/report.md)。

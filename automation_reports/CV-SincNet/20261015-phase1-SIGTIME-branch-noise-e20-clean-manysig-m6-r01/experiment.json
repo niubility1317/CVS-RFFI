@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "Active Phase1 training-mechanism goal; fixed source qualification precedes this matrix. Preserve NONE positive route and use it as matched control when CLEAN_SIG qualifies.",
   "code": {
-    "commit": "release_commit.txt (actual code/config Git HEAD at launch)",
+    "commit": "0fe97397defa9c72cb238556f0facc8d56c55513",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "Ordinary N607/CVS-RFFI Python, immutable original R02 runtime plus source-fold/placement code releases; one pipeline process",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_branch_noise_train20_20261015_r01",
@@ -1695,5 +1695,16 @@
     "diagnostic_temporary_steps_per_model_before": 8,
     "diagnostic_temporary_steps_per_model_after": 12
   },
-  "registered_at": "2026-10-15T04:59:15+00:00"
+  "registered_at": "2026-10-15T04:59:15+00:00",
+  "result": {
+    "status": "RUNNING",
+    "evidence_ref": "launch_evidence.json",
+    "source_fixed_primary": "CLEAN_SIG",
+    "arms": [
+      "NONE",
+      "CLEAN_SIG"
+    ],
+    "rows_complete": 0,
+    "goal84_completed": false
+  }
 }

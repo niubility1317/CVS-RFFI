@@ -1,6 +1,6 @@
 # SIG_TIME 训练噪声位置：正式默认头三种子验证
 
-状态 PLANNED。完整源seed02三条件已ANALYZED/VERIFIED，固定资格{'CLEAN_SIG_primary_qualified': True, 'NONE_independent_confirmation_passed': False, 'all_source_healthy': True, 'main_run_launched': False, 'target_access': False}。本次固定arm NONE / CLEAN_SIG，主指标arm为CLEAN_SIG，每arm三个原定seed2026092701/02/03，所有row scratch20/13L+7U/4440真实更新；总6模型/120epoch/26640更新。CLEAN_SIG通过时必须保留NONE正式匹配控制，既保留正路线，也检验签名取点的独立增量；不在目标结果出来后决定要不要补控制。源资格证据见source_selection_evidence.json。本轮不继承四RX或旧全5RXcheckpoint，所有model从零。
+状态 **RUNNING / 启动 VERIFIED**。下文保留预登记。完整源seed02三条件已ANALYZED/VERIFIED，固定资格{'CLEAN_SIG_primary_qualified': True, 'NONE_independent_confirmation_passed': False, 'all_source_healthy': True, 'main_run_launched': False, 'target_access': False}。本次固定arm NONE / CLEAN_SIG，主指标arm为CLEAN_SIG，每arm三个原定seed2026092701/02/03，所有row scratch20/13L+7U/4440真实更新；总6模型/120epoch/26640更新。CLEAN_SIG通过时必须保留NONE正式匹配控制，既保留正路线，也检验签名取点的独立增量；不在目标结果出来后决定要不要补控制。源资格证据见source_selection_evidence.json。本轮不继承四RX或旧全5RXcheckpoint，所有model从零。
 
 实际L6300/U56700隐藏TX/V27000，RX1/3/4/6/8、day1/2/3、原六TX与物理角色/NoExplicitCFO及内部补偿不变。所有train/U/V/calibration都是原完整五RX，不调用fold helper。每row原U7轮396900重复观察，0额外训练IQ前向/新loss/参数/头拟合。原oldgate/ownEMA/Gaussian U/AdamW2e-4/wd1e-4/clip5/cosmin1e-6/LS0保持，无普通L或星地增强。默认头随骨干正常联合训练，不另训任何诊断头。固定FINAL学生，不用EMA或尾平均选读出。
 
@@ -11,3 +11,5 @@
 真实feature-only和主前向joint160相同；对原W做扰动也不改z，所有3seed/两支持mode的200初始state与原BASE_SSL逐位匹配。只证明导出边界/初始化，不替代性能证据。CLEAN_SIG只让签名读取t2.drop前、原pool后输入，不detach；主干mask/RNG保留，上游随机性仍在。签名池化和关闭失活有既有先例，当前是CVS训练噪声位置的待验机制；不宣称全球首创、未见TX或卫星/Phase2能力。最终正式目标仍是固定主arm三seed clean均值84%，尚未完成。
 
 owner codex/root/SIGTIME-branch-noise-train20-20261015，actual Git commit以release_commit.txt固定。CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_branch_noise_train20_20261015_r01`，命令 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_noise_train20/runner.py experiments/cvs_sigtime_noise_train20/configs/matrix.json`，不可覆盖root `/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01`。普通N607/CVS-RFFI Python，一GPU顺序pipeline，所有owner每GPU≤3，最少进程/最多空闲且>3072MiB，不停止或热改健康旧任务。一preflight/一archive SHA比较/remotecompile，每row初始真实scratch checkpoint no-query smoke PASS后直接继续；12聚焦检查、实际模型边界检查及本代码唯一独立P0/P1审查PASS，实际固定arm配置也须与生成函数逐项吻合。启动后独立PID/CWD/argv/GPU/log核验。技术停止、矩阵和路径以experiment.json为准，无额外审批或hash链。
+
+启动独立核实：commit `0fe97397defa9c72cb238556f0facc8d56c55513`，ordinary GPU0所属PID/CWD/argv/GPU一致，所有owner进程1/3，日志增长、真实own scratch checkpoint no-query smoke PASS。首row NONE是必要对照，实际seed2026092701/LS0/13L+7U/t2p0；原完整5RX L6300/U56700hidden/V27000，无fold mask/旧权重。源资格固定主arm CLEAN_SIG，NONE独立确认失败的事实明确保留。首seed两arm健康通过前不访问target，后续自动逐row预测/新CPU评分；尚无正式结果或84%结论。
