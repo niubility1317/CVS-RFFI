@@ -19,3 +19,23 @@ owner codex/root/SIGTIME-clean-signature-20261015。代码/config以实际Git co
 本地7项聚焦机制/负例检查及compile PASS；实际CPU/CUDA三模型200state同初值、863730参数、同权重eval joint160/默认logits逐位相等，CLEAN_SIG与ELEMENT主干t2掩码及CPU/CUDA RNG状态一致，签名只读失活前输入且signature/t2/defaultW梯度有限非零。仅合成IQ、无数据/外部checkpoint访问，不作性能证据。唯一独立下一run P0/P1审查PASS；提交后直接按预登记发布。
 
 启动独立核实：commit `f695b43bb8ff2c8584871cf439315557ced718cf`，ordinary GPU0所属PID/CWD/argv/GPU一致，总所有owner进程1/3，日志增长、真实own scratch checkpoint no-query smoke PASS。首row ELEMENT实际seed2026092702/LS0/13L+7U/原p.1，四RX角色及所有loader排除RX1一致。剩余两条件按固定顺序继续，未读target、未给出性能结果。
+
+<!-- SOURCE_RESULTS_START -->
+
+
+完整结束1/3条件，独立解析4440条连续step及20条epoch记录。其他健康条件继续；尚不作完整资格结论。
+
+
+| 新seed02条件 | heldRX1 accuracy | Macro-F1 | 错误数 | meanCE | 最差day |
+
+|---|---|---|---|---|---|
+
+| ELEMENT | 65.555556% | 62.901100% | 434 | 1.67542983 | 57.857143% |
+
+ELEMENT：final训练LCE=0.02413216；真实4440更新，U观察396368、被选观察8051.0（重复观察，不是不同U包覆盖）；F71初末位移10.805039、默认W位移0.67861619，均为联合训练。完整源V/最差RX和分阶段数值见JSON，全部epoch见CSV。
+
+原ELEMENT在发现seed01为59.126984%，新seed02为65.555556%，跨seed变化+6.428571个百分点。只以各seed内匹配差判断机制，不把单seed变化当机制收益。
+
+CLEAN_SIG与两个控制尚未齐全，固定资格仍待定；不以已出现部分结果改变后续健康训练。
+
+全部held数据来自原可见source L，默认头联合训练，无另训头、无target或U真值；本独立reader只读取已完成产物，不追加IQ/模型前向或训练。84%正式三seed目标仍active。

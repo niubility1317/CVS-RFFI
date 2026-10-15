@@ -1,0 +1,353 @@
+{
+  "status": "RUNNING",
+  "run_id": "20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01",
+  "execution_commit": "f695b43bb8ff2c8584871cf439315557ced718cf",
+  "complete_rows": 1,
+  "planned_rows": 3,
+  "complete_step_records": 4440,
+  "complete_epoch_records": 20,
+  "rows": {
+    "ELEMENT": {
+      "status": "PASS",
+      "row_id": "ELEMENT-RX1-s2026092702",
+      "complete_step_records": 4440,
+      "complete_epochs": 20,
+      "invalid_loss_or_U_truth_steps": [],
+      "default_head_no_refit": true,
+      "source_health": true,
+      "final_training_L_CE": 0.024132156872551318,
+      "final_source_metrics": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.9793981481481482,
+        "source_val_rx_accuracy": {
+          "3": 0.9538888888888889,
+          "4": 0.9853703703703703,
+          "6": 0.9948148148148148,
+          "8": 0.9835185185185186
+        },
+        "source_val_worst_rx": 0.9538888888888889,
+        "held_RX_excluded": true
+      },
+      "exports": {
+        "FINAL": {
+          "count": 1260,
+          "correct": 826,
+          "errors": 434,
+          "accuracy": 0.6555555555555556,
+          "macro_F1": 0.6290110011272944,
+          "per_class_accuracy": [
+            0.8142857142857143,
+            0.719047619047619,
+            0.14285714285714285,
+            0.6142857142857143,
+            1.0,
+            0.6428571428571429
+          ],
+          "worst_class_accuracy": 0.14285714285714285,
+          "day_accuracy": {
+            "1": 0.5785714285714286,
+            "2": 0.7285714285714285,
+            "3": 0.6595238095238095
+          },
+          "worst_day_accuracy": 0.5785714285714286,
+          "confusion_matrix": [
+            [
+              171,
+              39,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              151,
+              1,
+              58,
+              0,
+              0
+            ],
+            [
+              58,
+              19,
+              30,
+              100,
+              0,
+              3
+            ],
+            [
+              2,
+              77,
+              1,
+              129,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              210,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              75,
+              135
+            ]
+          ],
+          "mean_CE": 1.675429827203917,
+          "mean_margin": 3.7881513479742264
+        }
+      },
+      "actual_noise_placement": {
+        "mode": "ELEMENT",
+        "main_t2_dropout_p": 0.1,
+        "signature_tap": "original t2 output",
+        "signature_gradient_detached": false,
+        "extra_IQ_forwards": 0,
+        "extra_rng_draws": 0,
+        "extra_parameters": 0,
+        "inference_same_weight_equivalence": true,
+        "head_structure_changed": false
+      },
+      "feature_parameter_tensors": 71,
+      "feature_delta_initial_to_FINAL": 10.805038926565123,
+      "default_W_delta_initial_to_FINAL": 0.6786161858404204,
+      "elapsed_training_seconds": 756.0641992092133,
+      "training_mutations_by_reader": 0,
+      "complete_log_numeric_summaries": {
+        "train/loss": {
+          "count": 4440,
+          "sum": 604.3467832927126,
+          "minimum": 0.0036062367726117373,
+          "maximum": 3.593411922454834,
+          "first": 3.593411922454834,
+          "last": 0.011203755624592304,
+          "mean": 0.1361141403812416
+        },
+        "train/loss_tx_labeled": {
+          "count": 4440,
+          "sum": 600.9830571822822,
+          "minimum": 0.0032423604279756546,
+          "maximum": 3.593411922454834,
+          "first": 3.593411922454834,
+          "last": 0.009059875272214413,
+          "mean": 0.1353565444104239
+        },
+        "train/loss_unlabeled": {
+          "count": 4440,
+          "sum": 14.580331911701705,
+          "minimum": 0.0,
+          "maximum": 0.29603713750839233,
+          "first": 0.0,
+          "last": 0.00830973032861948,
+          "mean": 0.0032838585386715555
+        },
+        "train/reliable_ratio": {
+          "count": 4440,
+          "sum": 31.500000001862645,
+          "minimum": 0.0,
+          "maximum": 0.07421875,
+          "first": 0.0,
+          "last": 0.015625,
+          "mean": 0.007094594595014109
+        },
+        "train/pseudo_total": {
+          "count": 4440,
+          "sum": 396368.0,
+          "minimum": 0,
+          "maximum": 256,
+          "first": 0,
+          "last": 256,
+          "mean": 89.27207207207208
+        },
+        "train/pseudo_selected": {
+          "count": 4440,
+          "sum": 8051.0,
+          "minimum": 0,
+          "maximum": 19,
+          "first": 0,
+          "last": 4,
+          "mean": 1.8132882882882884
+        },
+        "train/pseudo_truth_available": {
+          "count": 4440,
+          "sum": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0
+        }
+      },
+      "complete_log_phase_summaries": {
+        "label": {
+          "train/loss": {
+            "count": 2886,
+            "sum": 561.3599294528831,
+            "minimum": 0.0036062367726117373,
+            "maximum": 3.593411922454834,
+            "first": 3.593411922454834,
+            "last": 0.02365487813949585,
+            "mean": 0.19451141006683406
+          },
+          "train/loss_tx_labeled": {
+            "count": 2886,
+            "sum": 561.3599294528831,
+            "minimum": 0.0036062367726117373,
+            "maximum": 3.593411922454834,
+            "first": 3.593411922454834,
+            "last": 0.02365487813949585,
+            "mean": 0.19451141006683406
+          },
+          "train/loss_unlabeled": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/reliable_ratio": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/pseudo_total": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_selected": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_truth_available": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        },
+        "pseudo": {
+          "train/loss": {
+            "count": 1554,
+            "sum": 42.986853839829564,
+            "minimum": 0.004628198221325874,
+            "maximum": 0.09262460470199585,
+            "first": 0.02079128473997116,
+            "last": 0.011203755624592304,
+            "mean": 0.02766206810799843
+          },
+          "train/loss_tx_labeled": {
+            "count": 1554,
+            "sum": 39.62312772939913,
+            "minimum": 0.0032423604279756546,
+            "maximum": 0.08888263255357742,
+            "first": 0.0198211632668972,
+            "last": 0.009059875272214413,
+            "mean": 0.02549750819137653
+          },
+          "train/loss_unlabeled": {
+            "count": 1554,
+            "sum": 14.580331911701705,
+            "minimum": 0.0,
+            "maximum": 0.29603713750839233,
+            "first": 0.0006783383432775736,
+            "last": 0.00830973032861948,
+            "mean": 0.009382452967633015
+          },
+          "train/reliable_ratio": {
+            "count": 1554,
+            "sum": 31.500000001862645,
+            "minimum": 0.0,
+            "maximum": 0.07421875,
+            "first": 0.015625,
+            "last": 0.015625,
+            "mean": 0.020270270271468882
+          },
+          "train/pseudo_total": {
+            "count": 1554,
+            "sum": 396368.0,
+            "minimum": 48,
+            "maximum": 256,
+            "first": 256,
+            "last": 256,
+            "mean": 255.06306306306305
+          },
+          "train/pseudo_selected": {
+            "count": 1554,
+            "sum": 8051.0,
+            "minimum": 0,
+            "maximum": 19,
+            "first": 4,
+            "last": 4,
+            "mean": 5.180823680823681
+          },
+          "train/pseudo_truth_available": {
+            "count": 1554,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        }
+      }
+    }
+  },
+  "paired_comparisons": {},
+  "matched_initial_200_state_tensors": {
+    "ELEMENT": true
+  },
+  "qualification": null,
+  "qualification_pending": true,
+  "source_rule": {
+    "primary": "CLEAN_SIG_FINAL strictly fewer errors than both ELEMENT_FINAL and NONE_FINAL; CE no higher than either",
+    "independent_positive_route_confirmation": "NONE_FINAL strictly fewer errors than ELEMENT_FINAL, CE no higher",
+    "all_final_training_L_CE_max": 0.5,
+    "readout": "FINAL only; own EMA teacher unchanged; no export window selection",
+    "qualification": "Separate all-five-RX three-seed scratch20 preregistration only; never reuse four-RX weights",
+    "no_fallback_into_failed_primary": true,
+    "no_target_feedback": true
+  },
+  "NONE_discovery_and_confirmation": null,
+  "terminal_process_verified": false,
+  "target_predictions": 0,
+  "target_truth_reads": 0,
+  "U_truth_reads": 0,
+  "head_fit_updates": 0,
+  "independent_analysis_IQ_reads": 0,
+  "independent_analysis_inference_forwards": 0,
+  "independent_analysis_training_mutations": 0,
+  "goal84_completed": false,
+  "limitations": [
+    "One predeclared new model seed and one genuinely held sourceRX1; formal all-five-RX three-seed performance remains unmeasured.",
+    "Feature and default W jointly learned; actual F71 and W changes prove updates, not representation transfer or newTX/satellite ability.",
+    "CE/margin aggregates from native default-head inference; all1260 physical IDs, labels and predictions independently recompute errors, confusion matrices, F1/day and paired repairs/breaks.",
+    "CLEAN_SIG preserves original t2 main-path dropout/RNG, only signature bypasses that mask; upstream dropout remains; NONE can change later stochastic realizations."
+  ]
+}
