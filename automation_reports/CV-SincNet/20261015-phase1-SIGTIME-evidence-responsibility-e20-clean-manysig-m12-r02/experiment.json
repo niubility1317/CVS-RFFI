@@ -3081,14 +3081,44 @@
     "diagnostic_temporary_steps_per_model_after": 12
   },
   "result": {
-    "status": "RUNNING",
-    "completed_training_rows": 0,
-    "completed_prediction_rows": 0,
-    "completed_score_rows": 0,
-    "launched_rows": 4,
-    "pending_rows": 8,
-    "source_gate_pending": true,
-    "evidence_ref": "launch_evidence.json",
-    "goal84_completed": false
+    "status": "ANALYZED",
+    "external_post_state": "VERIFIED",
+    "rows": 12,
+    "model_updates": 53280,
+    "prediction_decisions": 2016000,
+    "metric_records": 216,
+    "completed_training_rows": 12,
+    "completed_prediction_rows": 12,
+    "completed_score_rows": 12,
+    "primary_arm": "ROUTED_GAP",
+    "primary_accuracy_mean": 0.8112063492063492,
+    "paired_vs_BASE_SSL": {
+      "readout": "NATIVE_HEAD",
+      "treatment": "ROUTED_GAP",
+      "control": "BASE_SSL",
+      "seed_differences": [
+        -0.00014285714285722229,
+        -0.0016547619047618811,
+        0.00017261904761900482
+      ],
+      "mean_difference": -0.0005416666666666995,
+      "positive_seeds": 1
+    },
+    "paired_vs_JOINT_GAP": {
+      "readout": "NATIVE_HEAD",
+      "treatment": "ROUTED_GAP",
+      "control": "JOINT_GAP",
+      "seed_differences": [
+        -0.001630952380952455,
+        0.0014821428571428763,
+        0.0009345238095237463
+      ],
+      "mean_difference": 0.0002619047619047225,
+      "positive_seeds": 2
+    },
+    "goal84_completed": false,
+    "evidence_ref": "result_evidence.json",
+    "scientific_decision": "CURRENT_RECIPE_NOT_PROMOTED: overall paired mean below matchedSSL and only1of3 positive; preserve all results and source-executed evidence.",
+    "secondary_group_evidence_ref": "worst_group_evidence.json"
   }
 }

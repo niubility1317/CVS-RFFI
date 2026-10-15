@@ -1,0 +1,92 @@
+{
+  "status": "RUNNING",
+  "external_post_state": "VERIFIED",
+  "rows": [
+    {
+      "row_id": "BASE_CE-s2026092702",
+      "gpu": 0,
+      "CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_epochs": 9,
+      "actual_steps": 1998,
+      "actual_label_smoothing": 0.0,
+      "probes_passed": 3
+    },
+    {
+      "row_id": "BASE_SSL-s2026092702",
+      "gpu": 4,
+      "CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_epochs": 8,
+      "actual_steps": 1776,
+      "actual_label_smoothing": 0.0,
+      "probes_passed": 3
+    },
+    {
+      "row_id": "JOINT_GAP-s2026092702",
+      "gpu": 3,
+      "CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_epochs": 7,
+      "actual_steps": 1554,
+      "actual_label_smoothing": 0.0,
+      "probes_passed": 3
+    },
+    {
+      "row_id": "ROUTED_GAP-s2026092702",
+      "gpu": 5,
+      "CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_epochs": 8,
+      "actual_steps": 1776,
+      "actual_label_smoothing": 0.0,
+      "probes_passed": 3
+    },
+    {
+      "row_id": "BASE_CE-s2026092703",
+      "gpu": 6,
+      "CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_epochs": 7,
+      "actual_steps": 1554,
+      "actual_label_smoothing": 0.0,
+      "probes_passed": 2
+    },
+    {
+      "row_id": "BASE_SSL-s2026092703",
+      "gpu": 7,
+      "CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_epochs": 7,
+      "actual_steps": 1554,
+      "actual_label_smoothing": 0.0,
+      "probes_passed": 2
+    },
+    {
+      "row_id": "JOINT_GAP-s2026092703",
+      "gpu": 7,
+      "CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_epochs": 6,
+      "actual_steps": 1332,
+      "actual_label_smoothing": 0.0,
+      "probes_passed": 2
+    },
+    {
+      "row_id": "ROUTED_GAP-s2026092703",
+      "gpu": 6,
+      "CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_epochs": 6,
+      "actual_steps": 1332,
+      "actual_label_smoothing": 0.0,
+      "probes_passed": 2
+    }
+  ],
+  "all8_expanded_after_fixed_firstseed_source_health": true,
+  "all_GPU_total_processes_at_most3": true,
+  "initialization_ref": "remaining_initial_state_evidence.json",
+  "target_metrics_read_for_expansion": false,
+  "healthy_other_processes_modified": false,
+  "goal84_completed": false
+}

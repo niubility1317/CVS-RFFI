@@ -1,0 +1,183 @@
+{
+  "status": "SOURCE_GATE_PASSED",
+  "rows": [
+    {
+      "row_id": "BASE_CE-s2026092701",
+      "final_training_L_CE": 0.02953971422336123,
+      "source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9816296296296296,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9496296296296296,
+          "4": 0.9842592592592593,
+          "6": 0.9955555555555555,
+          "8": 0.9835185185185186
+        },
+        "source_val_worst_rx": 0.9496296296296296
+      },
+      "parsed_epochs": 20,
+      "parsed_training_steps": 4440,
+      "parsed_callback_records": 4440,
+      "stdout_markers": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "scheduled": 0,
+      "eligible": 0,
+      "positive_gap": 0,
+      "active_probe_steps": [],
+      "auxiliary_IQ_forwards": 0,
+      "U_packet_observations": 0,
+      "actual_gradient_oracle_errors": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "all_step_numeric_nonfinite_count": 0
+    },
+    {
+      "row_id": "BASE_SSL-s2026092701",
+      "final_training_L_CE": 0.029256178649259848,
+      "source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9814444444444445,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9492592592592592,
+          "4": 0.9842592592592593,
+          "6": 0.9959259259259259,
+          "8": 0.9825925925925926
+        },
+        "source_val_worst_rx": 0.9492592592592592
+      },
+      "parsed_epochs": 20,
+      "parsed_training_steps": 4440,
+      "parsed_callback_records": 4440,
+      "stdout_markers": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "scheduled": 0,
+      "eligible": 0,
+      "positive_gap": 0,
+      "active_probe_steps": [],
+      "auxiliary_IQ_forwards": 0,
+      "U_packet_observations": 396900,
+      "actual_gradient_oracle_errors": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "all_step_numeric_nonfinite_count": 0
+    },
+    {
+      "row_id": "JOINT_GAP-s2026092701",
+      "final_training_L_CE": 0.028919019012686772,
+      "source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9812962962962963,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9483333333333334,
+          "4": 0.9838888888888889,
+          "6": 0.9955555555555555,
+          "8": 0.9835185185185186
+        },
+        "source_val_worst_rx": 0.9483333333333334
+      },
+      "parsed_epochs": 20,
+      "parsed_training_steps": 4440,
+      "parsed_callback_records": 4440,
+      "stdout_markers": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "scheduled": 180,
+      "eligible": 180,
+      "positive_gap": 180,
+      "active_probe_steps": [
+        16,
+        896,
+        1776,
+        2880
+      ],
+      "auxiliary_IQ_forwards": 32400,
+      "U_packet_observations": 396900,
+      "actual_gradient_oracle_errors": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "all_step_numeric_nonfinite_count": 0
+    },
+    {
+      "row_id": "ROUTED_GAP-s2026092701",
+      "final_training_L_CE": 0.02923831432168414,
+      "source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9814814814814815,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9496296296296296,
+          "4": 0.9837037037037037,
+          "6": 0.9957407407407407,
+          "8": 0.9831481481481481
+        },
+        "source_val_worst_rx": 0.9496296296296296
+      },
+      "parsed_epochs": 20,
+      "parsed_training_steps": 4440,
+      "parsed_callback_records": 4440,
+      "stdout_markers": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "scheduled": 180,
+      "eligible": 180,
+      "positive_gap": 180,
+      "active_probe_steps": [
+        16,
+        896,
+        1776,
+        2880
+      ],
+      "auxiliary_IQ_forwards": 32400,
+      "U_packet_observations": 396900,
+      "actual_gradient_oracle_errors": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "all_step_numeric_nonfinite_count": 0
+    }
+  ],
+  "logs_scope": "All complete epoch/step/callback/probe records and all stdout for four firstseed rows",
+  "scientific_gate": {
+    "final_L_CE_max": 0.5,
+    "V_mean_drop_max": 0.01,
+    "V_worst_RX_drop_max": 0.02,
+    "eligible_fraction_min": 0.95,
+    "minimum_active_gradient_probes": 2,
+    "minimum_positive_gap_call_fraction": 0.01,
+    "selection": "All firstseed final20 source health; active JOINT/ROUTED actual signal; no target feedback"
+  },
+  "target_metrics_read": false,
+  "other8_scientific_recipe_unchanged": true
+}

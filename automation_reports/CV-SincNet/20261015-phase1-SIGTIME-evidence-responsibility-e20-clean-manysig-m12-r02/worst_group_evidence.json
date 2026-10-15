@@ -1,0 +1,151 @@
+{
+  "status": "DESCRIPTIVE_PREDECLARED_GROUP_METRICS",
+  "summary": [
+    {
+      "arm": "BASE_CE",
+      "worst_receiver_mean": 0.7098333333333333,
+      "worst_day_mean": 0.7706190476190476
+    },
+    {
+      "arm": "BASE_SSL",
+      "worst_receiver_mean": 0.7114166666666667,
+      "worst_day_mean": 0.7703253968253968
+    },
+    {
+      "arm": "JOINT_GAP",
+      "worst_receiver_mean": 0.7123194444444444,
+      "worst_day_mean": 0.7678015873015873
+    },
+    {
+      "arm": "ROUTED_GAP",
+      "worst_receiver_mean": 0.713875,
+      "worst_day_mean": 0.7685238095238096
+    }
+  ],
+  "rows": [
+    {
+      "arm": "BASE_CE",
+      "model_seed": 2026092701,
+      "worst_receiver": "14-7",
+      "worst_receiver_accuracy": 0.72,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.7811190476190476
+    },
+    {
+      "arm": "BASE_CE",
+      "model_seed": 2026092702,
+      "worst_receiver": "14-7",
+      "worst_receiver_accuracy": 0.664875,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.7655714285714286
+    },
+    {
+      "arm": "BASE_CE",
+      "model_seed": 2026092703,
+      "worst_receiver": "20-1",
+      "worst_receiver_accuracy": 0.744625,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.7651666666666667
+    },
+    {
+      "arm": "BASE_SSL",
+      "model_seed": 2026092701,
+      "worst_receiver": "14-7",
+      "worst_receiver_accuracy": 0.7165833333333333,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.7808571428571428
+    },
+    {
+      "arm": "BASE_SSL",
+      "model_seed": 2026092702,
+      "worst_receiver": "14-7",
+      "worst_receiver_accuracy": 0.6660416666666666,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.7634761904761905
+    },
+    {
+      "arm": "BASE_SSL",
+      "model_seed": 2026092703,
+      "worst_receiver": "20-1",
+      "worst_receiver_accuracy": 0.751625,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.7666428571428572
+    },
+    {
+      "arm": "JOINT_GAP",
+      "model_seed": 2026092701,
+      "worst_receiver": "14-7",
+      "worst_receiver_accuracy": 0.7234583333333333,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.7782142857142857
+    },
+    {
+      "arm": "JOINT_GAP",
+      "model_seed": 2026092702,
+      "worst_receiver": "14-7",
+      "worst_receiver_accuracy": 0.6617083333333333,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.7578571428571429
+    },
+    {
+      "arm": "JOINT_GAP",
+      "model_seed": 2026092703,
+      "worst_receiver": "20-1",
+      "worst_receiver_accuracy": 0.7517916666666666,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.7673333333333333
+    },
+    {
+      "arm": "ROUTED_GAP",
+      "model_seed": 2026092701,
+      "worst_receiver": "14-7",
+      "worst_receiver_accuracy": 0.7214166666666667,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.7786428571428572
+    },
+    {
+      "arm": "ROUTED_GAP",
+      "model_seed": 2026092702,
+      "worst_receiver": "14-7",
+      "worst_receiver_accuracy": 0.6662916666666666,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.7604761904761905
+    },
+    {
+      "arm": "ROUTED_GAP",
+      "model_seed": 2026092703,
+      "worst_receiver": "20-1",
+      "worst_receiver_accuracy": 0.7539166666666667,
+      "worst_day": "2021_03_15",
+      "worst_day_accuracy": 0.766452380952381
+    }
+  ],
+  "paired": [
+    {
+      "metric": "worst_receiver",
+      "treatment": "ROUTED_GAP",
+      "control": "BASE_SSL",
+      "seed_differences": [
+        0.004833333333333356,
+        0.00024999999999997247,
+        0.002291666666666692
+      ],
+      "mean_difference": 0.00245833333333334,
+      "positive_seeds": 3
+    },
+    {
+      "metric": "worst_day",
+      "treatment": "ROUTED_GAP",
+      "control": "BASE_SSL",
+      "seed_differences": [
+        -0.002214285714285613,
+        -0.0030000000000000027,
+        -0.00019047619047618536
+      ],
+      "mean_difference": -0.001801587301587267,
+      "positive_seeds": 0
+    }
+  ],
+  "primary_goal_unchanged": "Overall ROUTED three-seed clean mean84%",
+  "subgroup_used_for_candidate_promotion": false
+}

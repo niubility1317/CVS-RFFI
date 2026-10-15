@@ -190,3 +190,8 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 
 2026-10-15：责任路由主训练 R01 在已启动三行 step16 的 actual-versus-autograd-shadow 诊断失败，0完整epoch/预测/评分；自然退出 VERIFIED，失败记录已Git交付e29570508197a6d33034fa5e279be2222388a3b0。CPU不复现，本地CUDA实际构造器L128×16仅Sinc坐标两张量proxy误差最大8.5309148e-7，重复autograd与backward rawgrad差4.5474906e-8，actualrawgrad/postclipgrad oracle188张量全部逐位0差。修复只将真实更新核对切至实际postclipgrad oracle，原两proxy保留近似诊断，原容差2e-7/2e-6不变；12temp/model取代8temp，4440真实步和全部科学日程不变。新不可变R02 `20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02` 正式登记，同12scratch20/LS0/前13epoch180auxcall/后7oldU、源首seed4规则和自动clean truthlast。focused negatives、direct-fix regression与唯一targeted P0/P1 PASS；未宣称主训练或84%完成。见[R02报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02/report.md)。
+
+
+2026-10-15：真实证据责任路由 main `20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02` ANALYZED/VERIFIED，执行 `3a5cff49091deef46cad5d787e5daea7b4c0dfb9`，12freshscratch20/53280实际更新/216指标/2016000默认头clean决定完整。ROUTED均值81.120635%±1.171185%，vs匹配实际LS0 BASE_SSL -0.054167pp（1/3正），vsJOINT +0.026190pp（2/3正）；84%目标False。三个seed内各200初值张量相同；全240epoch/53280step/callback/48probe日志完整解析，actualgradient oracle全0差、proxy近似边界明确。源180/180有效辅助和24Sinc学习不能替代DG证据；历史CENTER25K正路线及所有负结果保留。R01技术失败另计48partialupdates不继承；本main无追加/重排/target反馈。文献OGM/模态估值/CGGM已有先例，具体创新候选及范数匹配/零消融因果限制写入[完整报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02/report.md)。
+
+2026-10-15 补充：责任路由总体vsSSL净新增273错误，不支持当前配方晋级；次要最差RX均值+0.245833pp、3/3正须保留，最差day-0.180159pp、0/3正。局部收益不替代overall84%目标、不用于候选重排。下轮首先按源证据核对RX留一与梯度范数归因缺口，避免重新扫描本配方或把已关闭set/观测路线直接当新机制。

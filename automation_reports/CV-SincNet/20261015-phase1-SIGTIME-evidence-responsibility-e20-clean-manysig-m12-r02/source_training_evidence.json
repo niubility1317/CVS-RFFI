@@ -1,0 +1,949 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "row_id": "BASE_CE-s2026092701",
+      "arm": "BASE_CE",
+      "model_seed": 2026092701,
+      "final_training_L_CE": 0.02953971422336123,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9816296296296296,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9496296296296296,
+          "4": 0.9842592592592593,
+          "6": 0.9955555555555555,
+          "8": 0.9835185185185186
+        },
+        "source_val_worst_rx": 0.9496296296296296
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 1,
+      "auxiliary_calls": 0,
+      "eligible_calls": 0,
+      "positive_gap_calls": 0,
+      "active_gradient_probe_steps": [],
+      "auxiliary_gradient_norms": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "auxiliary_IQ_forwards": 0,
+      "U_packet_observations": 0,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.06734193826953387,
+        "kernel_change_max": 0.009005960077047348,
+        "low_hz_change_max": 2391.78125,
+        "band_hz_change_max": 2595.25,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": null,
+      "auxiliary_loss_summary": null,
+      "auxiliary_active_decision_summary": null,
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    },
+    {
+      "row_id": "BASE_SSL-s2026092701",
+      "arm": "BASE_SSL",
+      "model_seed": 2026092701,
+      "final_training_L_CE": 0.029256178649259848,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9814444444444445,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9492592592592592,
+          "4": 0.9842592592592593,
+          "6": 0.9959259259259259,
+          "8": 0.9825925925925926
+        },
+        "source_val_worst_rx": 0.9492592592592592
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 1,
+      "auxiliary_calls": 0,
+      "eligible_calls": 0,
+      "positive_gap_calls": 0,
+      "active_gradient_probe_steps": [],
+      "auxiliary_gradient_norms": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "auxiliary_IQ_forwards": 0,
+      "U_packet_observations": 396900,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.0689778594110883,
+        "kernel_change_max": 0.009337600320577621,
+        "low_hz_change_max": 2475.0625,
+        "band_hz_change_max": 2697.25,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": null,
+      "auxiliary_loss_summary": null,
+      "auxiliary_active_decision_summary": null,
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    },
+    {
+      "row_id": "JOINT_GAP-s2026092701",
+      "arm": "JOINT_GAP",
+      "model_seed": 2026092701,
+      "final_training_L_CE": 0.028919019012686772,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9812962962962963,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9483333333333334,
+          "4": 0.9838888888888889,
+          "6": 0.9955555555555555,
+          "8": 0.9835185185185186
+        },
+        "source_val_worst_rx": 0.9483333333333334
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 1,
+      "auxiliary_calls": 180,
+      "eligible_calls": 180,
+      "positive_gap_calls": 180,
+      "active_gradient_probe_steps": [
+        16,
+        896,
+        1776,
+        2880
+      ],
+      "auxiliary_gradient_norms": [
+        0.3831510105924282,
+        0.03901578294100415,
+        0.0363457644765979,
+        0.008508684315390777
+      ],
+      "auxiliary_IQ_forwards": 32400,
+      "U_packet_observations": 396900,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.0651183603271673,
+        "kernel_change_max": 0.008432343602180481,
+        "low_hz_change_max": 2245.6875,
+        "band_hz_change_max": 2610.25,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.10855210913181156,
+        "last": 0.0012381251917647322,
+        "minimum": 0.0012137740556136334,
+        "maximum": 0.1244718199025115,
+        "mean": 0.019315369536739815
+      },
+      "auxiliary_loss_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.010855210945010185,
+        "last": 0.000123812525998801,
+        "minimum": 0.00012137740850448608,
+        "maximum": 0.012447182089090347,
+        "mean": 0.0019315369598593357
+      },
+      "auxiliary_active_decision_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 281,
+        "last": 80,
+        "minimum": 79,
+        "maximum": 287,
+        "mean": 138.71666666666667
+      },
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    },
+    {
+      "row_id": "ROUTED_GAP-s2026092701",
+      "arm": "ROUTED_GAP",
+      "model_seed": 2026092701,
+      "final_training_L_CE": 0.02923831432168414,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9814814814814815,
+        "source_val_rx_accuracy": {
+          "1": 0.9951851851851852,
+          "3": 0.9496296296296296,
+          "4": 0.9837037037037037,
+          "6": 0.9957407407407407,
+          "8": 0.9831481481481481
+        },
+        "source_val_worst_rx": 0.9496296296296296
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 2,
+      "auxiliary_calls": 180,
+      "eligible_calls": 180,
+      "positive_gap_calls": 180,
+      "active_gradient_probe_steps": [
+        16,
+        896,
+        1776,
+        2880
+      ],
+      "auxiliary_gradient_norms": [
+        0.21832726594090063,
+        0.014598899542472829,
+        0.013032581713939489,
+        0.0020593202168140575
+      ],
+      "auxiliary_IQ_forwards": 32400,
+      "U_packet_observations": 396900,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.0673683395150775,
+        "kernel_change_max": 0.008652564138174057,
+        "low_hz_change_max": 2301.0,
+        "band_hz_change_max": 2590.25,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.10855221476096916,
+        "last": 0.0012479518684287972,
+        "minimum": 0.0011951052332128363,
+        "maximum": 0.12471750501894337,
+        "mean": 0.019310717623592964
+      },
+      "auxiliary_loss_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.010855221189558506,
+        "last": 0.00012479518773034215,
+        "minimum": 0.00011951052147196606,
+        "maximum": 0.012471750378608704,
+        "mean": 0.0019310717641120492
+      },
+      "auxiliary_active_decision_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 281,
+        "last": 78,
+        "minimum": 78,
+        "maximum": 286,
+        "mean": 141.86666666666667
+      },
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    },
+    {
+      "row_id": "BASE_CE-s2026092702",
+      "arm": "BASE_CE",
+      "model_seed": 2026092702,
+      "final_training_L_CE": 0.03134315682843596,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9818518518518519,
+        "source_val_rx_accuracy": {
+          "1": 0.9962962962962963,
+          "3": 0.950925925925926,
+          "4": 0.9838888888888889,
+          "6": 0.9959259259259259,
+          "8": 0.9822222222222222
+        },
+        "source_val_worst_rx": 0.950925925925926
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 4,
+      "auxiliary_calls": 0,
+      "eligible_calls": 0,
+      "positive_gap_calls": 0,
+      "active_gradient_probe_steps": [],
+      "auxiliary_gradient_norms": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "auxiliary_IQ_forwards": 0,
+      "U_packet_observations": 0,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.055600065546454025,
+        "kernel_change_max": 0.006357498466968536,
+        "low_hz_change_max": 2398.601318359375,
+        "band_hz_change_max": 2401.179443359375,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": null,
+      "auxiliary_loss_summary": null,
+      "auxiliary_active_decision_summary": null,
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    },
+    {
+      "row_id": "BASE_SSL-s2026092702",
+      "arm": "BASE_SSL",
+      "model_seed": 2026092702,
+      "final_training_L_CE": 0.0305139944649528,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9811851851851852,
+        "source_val_rx_accuracy": {
+          "1": 0.9953703703703703,
+          "3": 0.9496296296296296,
+          "4": 0.9838888888888889,
+          "6": 0.9955555555555555,
+          "8": 0.9814814814814815
+        },
+        "source_val_worst_rx": 0.9496296296296296
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 4,
+      "auxiliary_calls": 0,
+      "eligible_calls": 0,
+      "positive_gap_calls": 0,
+      "active_gradient_probe_steps": [],
+      "auxiliary_gradient_norms": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "auxiliary_IQ_forwards": 0,
+      "U_packet_observations": 396900,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.05537724555572347,
+        "kernel_change_max": 0.00628933310508728,
+        "low_hz_change_max": 2466.775146484375,
+        "band_hz_change_max": 2470.221435546875,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": null,
+      "auxiliary_loss_summary": null,
+      "auxiliary_active_decision_summary": null,
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    },
+    {
+      "row_id": "JOINT_GAP-s2026092702",
+      "arm": "JOINT_GAP",
+      "model_seed": 2026092702,
+      "final_training_L_CE": 0.030555183210552814,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9814444444444445,
+        "source_val_rx_accuracy": {
+          "1": 0.9953703703703703,
+          "3": 0.9518518518518518,
+          "4": 0.9835185185185186,
+          "6": 0.9957407407407407,
+          "8": 0.9807407407407407
+        },
+        "source_val_worst_rx": 0.9518518518518518
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 4,
+      "auxiliary_calls": 180,
+      "eligible_calls": 180,
+      "positive_gap_calls": 180,
+      "active_gradient_probe_steps": [
+        16,
+        896,
+        1776,
+        2880
+      ],
+      "auxiliary_gradient_norms": [
+        0.4628912975570081,
+        0.0640445879879109,
+        0.10643720366847786,
+        0.007186726315550568
+      ],
+      "auxiliary_IQ_forwards": 32400,
+      "U_packet_observations": 396900,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.054974455602344374,
+        "kernel_change_max": 0.006508074700832367,
+        "low_hz_change_max": 2314.1875,
+        "band_hz_change_max": 2314.9619140625,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.14360837428374526,
+        "last": 0.0010996471174700517,
+        "minimum": 0.0003253052819908729,
+        "maximum": 0.14360837428374526,
+        "mean": 0.021567590978363416
+      },
+      "auxiliary_loss_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.014360837638378143,
+        "last": 0.00010996471246471629,
+        "minimum": 3.253053000662476e-05,
+        "maximum": 0.014360837638378143,
+        "mean": 0.002156759091081363
+      },
+      "auxiliary_active_decision_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 251,
+        "last": 105,
+        "minimum": 89,
+        "maximum": 251,
+        "mean": 162.5388888888889
+      },
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    },
+    {
+      "row_id": "ROUTED_GAP-s2026092702",
+      "arm": "ROUTED_GAP",
+      "model_seed": 2026092702,
+      "final_training_L_CE": 0.03060178548257026,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9813333333333333,
+        "source_val_rx_accuracy": {
+          "1": 0.9955555555555555,
+          "3": 0.9507407407407408,
+          "4": 0.9833333333333333,
+          "6": 0.9955555555555555,
+          "8": 0.9814814814814815
+        },
+        "source_val_worst_rx": 0.9507407407407408
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 4,
+      "auxiliary_calls": 180,
+      "eligible_calls": 180,
+      "positive_gap_calls": 180,
+      "active_gradient_probe_steps": [
+        16,
+        896,
+        1776,
+        2880
+      ],
+      "auxiliary_gradient_norms": [
+        0.29179437568458755,
+        0.03513284938851988,
+        0.055113230521828066,
+        0.0044203941500391775
+      ],
+      "auxiliary_IQ_forwards": 32400,
+      "U_packet_observations": 396900,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.05695384400834995,
+        "kernel_change_max": 0.0063805654644966125,
+        "low_hz_change_max": 2427.302001953125,
+        "band_hz_change_max": 2430.996337890625,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.14360890982685898,
+        "last": 0.001263378608485991,
+        "minimum": 0.0005824774240917769,
+        "maximum": 0.14360890982685898,
+        "mean": 0.021784890173498557
+      },
+      "auxiliary_loss_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.014360890723764896,
+        "last": 0.00012633786536753178,
+        "minimum": 5.8247744163963944e-05,
+        "maximum": 0.014360890723764896,
+        "mean": 0.002178489011647697
+      },
+      "auxiliary_active_decision_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 251,
+        "last": 113,
+        "minimum": 93,
+        "maximum": 251,
+        "mean": 162.85555555555555
+      },
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    },
+    {
+      "row_id": "BASE_CE-s2026092703",
+      "arm": "BASE_CE",
+      "model_seed": 2026092703,
+      "final_training_L_CE": 0.0322560496315746,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9818518518518519,
+        "source_val_rx_accuracy": {
+          "1": 0.9931481481481481,
+          "3": 0.9501851851851851,
+          "4": 0.9833333333333333,
+          "6": 0.9966666666666667,
+          "8": 0.9859259259259259
+        },
+        "source_val_worst_rx": 0.9501851851851851
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 3,
+      "auxiliary_calls": 0,
+      "eligible_calls": 0,
+      "positive_gap_calls": 0,
+      "active_gradient_probe_steps": [],
+      "auxiliary_gradient_norms": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "auxiliary_IQ_forwards": 0,
+      "U_packet_observations": 0,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.06501379109081767,
+        "kernel_change_max": 0.007260158658027649,
+        "low_hz_change_max": 2777.48828125,
+        "band_hz_change_max": 2780.4765625,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": null,
+      "auxiliary_loss_summary": null,
+      "auxiliary_active_decision_summary": null,
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    },
+    {
+      "row_id": "BASE_SSL-s2026092703",
+      "arm": "BASE_SSL",
+      "model_seed": 2026092703,
+      "final_training_L_CE": 0.03137675601452052,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9821111111111112,
+        "source_val_rx_accuracy": {
+          "1": 0.9938888888888889,
+          "3": 0.9505555555555556,
+          "4": 0.9835185185185186,
+          "6": 0.9964814814814815,
+          "8": 0.9861111111111112
+        },
+        "source_val_worst_rx": 0.9505555555555556
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 1,
+      "auxiliary_calls": 0,
+      "eligible_calls": 0,
+      "positive_gap_calls": 0,
+      "active_gradient_probe_steps": [],
+      "auxiliary_gradient_norms": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "auxiliary_IQ_forwards": 0,
+      "U_packet_observations": 396900,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.06368990266236238,
+        "kernel_change_max": 0.006975993514060974,
+        "low_hz_change_max": 2705.9296875,
+        "band_hz_change_max": 2702.576171875,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": null,
+      "auxiliary_loss_summary": null,
+      "auxiliary_active_decision_summary": null,
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    },
+    {
+      "row_id": "JOINT_GAP-s2026092703",
+      "arm": "JOINT_GAP",
+      "model_seed": 2026092703,
+      "final_training_L_CE": 0.031584781772868185,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.982037037037037,
+        "source_val_rx_accuracy": {
+          "1": 0.9937037037037038,
+          "3": 0.9505555555555556,
+          "4": 0.9837037037037037,
+          "6": 0.9964814814814815,
+          "8": 0.9857407407407407
+        },
+        "source_val_worst_rx": 0.9505555555555556
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 3,
+      "auxiliary_calls": 180,
+      "eligible_calls": 180,
+      "positive_gap_calls": 180,
+      "active_gradient_probe_steps": [
+        16,
+        896,
+        1776,
+        2880
+      ],
+      "auxiliary_gradient_norms": [
+        0.6354764677296285,
+        0.06446597922623168,
+        0.06798824953641755,
+        0.010398120325242222
+      ],
+      "auxiliary_IQ_forwards": 32400,
+      "U_packet_observations": 396900,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.0644524817958588,
+        "kernel_change_max": 0.0071152448654174805,
+        "low_hz_change_max": 2778.8203125,
+        "band_hz_change_max": 2775.03515625,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.15044034503848205,
+        "last": 0.0022058286294428923,
+        "minimum": 0.0018516013247167314,
+        "maximum": 0.15044034503848205,
+        "mean": 0.019199073362715233
+      },
+      "auxiliary_loss_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.015044034458696842,
+        "last": 0.00022058286413084716,
+        "minimum": 0.00018516012642066926,
+        "maximum": 0.015044034458696842,
+        "mean": 0.0019199073409254196
+      },
+      "auxiliary_active_decision_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 320,
+        "last": 83,
+        "minimum": 78,
+        "maximum": 320,
+        "mean": 149.79444444444445
+      },
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    },
+    {
+      "row_id": "ROUTED_GAP-s2026092703",
+      "arm": "ROUTED_GAP",
+      "model_seed": 2026092703,
+      "final_training_L_CE": 0.031667338528980814,
+      "final_source_metrics": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9818518518518519,
+        "source_val_rx_accuracy": {
+          "1": 0.9931481481481481,
+          "3": 0.950925925925926,
+          "4": 0.9831481481481481,
+          "6": 0.9964814814814815,
+          "8": 0.9855555555555555
+        },
+        "source_val_worst_rx": 0.950925925925926
+      },
+      "parsed_epochs": 20,
+      "parsed_steps": 4440,
+      "parsed_callback_records": 4440,
+      "parsed_probes": 4,
+      "full_stdout_scan": {
+        "Traceback": 0,
+        "fatal_exceptions": 0,
+        "CUDA_OOM": 0,
+        "Killed": 0,
+        "warnings": 0
+      },
+      "nonfinite_step_values": 0,
+      "actual_steps": 4440,
+      "temporary_AdamW_steps": 12,
+      "actual_gradient_oracle_max_error": 0.0,
+      "autograd_proxy_mismatch_count": 3,
+      "auxiliary_calls": 180,
+      "eligible_calls": 180,
+      "positive_gap_calls": 180,
+      "active_gradient_probe_steps": [
+        16,
+        896,
+        1776,
+        2880
+      ],
+      "auxiliary_gradient_norms": [
+        0.3095015665838063,
+        0.024574079299856458,
+        0.023668508503577386,
+        0.0068983254419765425
+      ],
+      "auxiliary_IQ_forwards": 32400,
+      "U_packet_observations": 396900,
+      "source_Sinc_changes": {
+        "kernel_count": 24,
+        "changed_kernels": 24,
+        "kernel_change_norm": 0.0620483784882012,
+        "kernel_change_max": 0.007000446319580078,
+        "low_hz_change_max": 2706.8046875,
+        "band_hz_change_max": 2703.17578125,
+        "initial_artifact": "source_sinc_initial.pt",
+        "final_artifact": "source_sinc_final.pt"
+      },
+      "auxiliary_burden_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.15043995839735583,
+        "last": 0.0024231965715175675,
+        "minimum": 0.002110699362878872,
+        "maximum": 0.15043995839735583,
+        "mean": 0.019468981707283704
+      },
+      "auxiliary_loss_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 0.015043996274471283,
+        "last": 0.00024231965653598309,
+        "minimum": 0.0002110699424520135,
+        "maximum": 0.015043996274471283,
+        "mean": 0.001946898168373284
+      },
+      "auxiliary_active_decision_summary": {
+        "count": 180,
+        "nonfinite_count": 0,
+        "first": 320,
+        "last": 86,
+        "minimum": 77,
+        "maximum": 320,
+        "mean": 150.72222222222223
+      },
+      "default_W_three_gain_aux_grad_None": true,
+      "main_default_head_joint": true,
+      "head_fit_updates": 0,
+      "target_access_in_training": false
+    }
+  ],
+  "complete_epochs_parsed": 240,
+  "complete_training_steps_parsed": 53280,
+  "complete_callback_records_parsed": 53280,
+  "complete_optimizer_probes_parsed": 48,
+  "temporary_AdamW_steps": 144,
+  "auxiliary_L_packet_forwards": 194400,
+  "active_bank_load_packet_reads": 5400,
+  "active_unique_packets_per_model": 720,
+  "U_packet_observations": 3572100,
+  "all_stdout_scanned": true,
+  "all_step_metrics_finite": true,
+  "input_role": "Source-only diagnostic summaries, no extra IQ/checkpoint/target reads",
+  "no_parameter_fit": true,
+  "raw_training_logs_committed": false
+}
