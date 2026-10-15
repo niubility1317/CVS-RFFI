@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "User active goal and fab17893 attached cross-receiver teacher design explicitly request first a fixed-source-RX two-equal-budget-teacher falsification before bank/student expansion. Latest per-model scratch E50 respected. This run is explicitly source-only, no formal target testing or new U objective.",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "f4018c9b2acdfc6f9b013b956a4735af74c435ee",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; nativeLinuxN607; Windowsnative localvalidation",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_crossfit_RX1_teachers_e50_20261015_r01"
@@ -628,5 +628,27 @@
     "Both training costs, normalization, optimizer/joint default-head updates and complete logs recorded. No formal test or cross-seed improvement from this source-only pilot. Negative complementarity stops expansion, not healthy training.",
     "Other chat E20/RX1 teacher evidence has different budget/fold and is not reused as this E50 initializer or matched comparator. Healthy experiments untouched."
   ],
-  "registered_at": "2026-10-15T11:17:50+00:00"
+  "registered_at": "2026-10-15T11:17:50+00:00",
+  "runtime_readback": {
+    "status": "VERIFIED",
+    "evidence": "E:\\type10-7\\local_artifacts\\cvs_crossfit_teacher50_20261015\\readback_launch_verified.json",
+    "read_at": 1792063508.4667776,
+    "dispatcher_pid": 3176235,
+    "workers": [
+      {
+        "row_id": "SAMPLE-s2026092701",
+        "pid": 3176260,
+        "gpu": 3,
+        "epochs": 4
+      },
+      {
+        "row_id": "EXCLUDE_RX1-s2026092701",
+        "pid": 3176337,
+        "gpu": 6,
+        "epochs": 4
+      }
+    ],
+    "source_only": true,
+    "actual_U_EMA_augmentation": false
+  }
 }

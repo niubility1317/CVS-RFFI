@@ -1,6 +1,6 @@
 # 固定 RX1：两位等规模教师的源域互补小试
 
-按用户fab17893附件先检验一个预定源RX，不直接训练十位教师或蒸馏学生。两位教师从零E50、原SIG_TIME/默认cosine头端到端CE：SAMPLE在五个源RX分层取4464个L，EXCLUDE_RX1用另四个源RX的4464个L。两者每TX744、每TX/day248，原外层角色/标签总权限不变。当前尚未发布或训练，无教师性能或图。
+按用户fab17893附件先检验一个预定源RX，不直接训练十位教师或蒸馏学生。两位教师从零E50、原SIG_TIME/默认cosine头端到端CE：SAMPLE在五个源RX分层取4464个L，EXCLUDE_RX1用另四个源RX的4464个L。两者每TX744、每TX/day248，原外层角色/标签总权限不变。当前已发布，两行训练中，无最终教师性能或图。
 
 矩阵、配置、seed、数据/模型来源、精确命令、环境/CWD、资源、stop与预期产物唯一维护于experiment.json和experiments/cvs_crossfit_teacher50/registration.json。代码身份是实际发布Git HEAD，发布时写入preflight；没有额外报告/成员SHA或审批。
 
@@ -20,4 +20,10 @@
 
 已有4项核心检查PASS1.468s：4464配额与RX物理排除、真实args关闭U/EMA/增强、222步ForbiddenU不被迭代、原头/t2/SIG真实CE梯度。新增4项评价检查PASS.700s，包含真实模型functional train强视图与克隆模型结果一致且原状态不变、native门控/无TX、错误修复/破坏和输出不覆盖。新增pipeline原3项中2项PASS；mock把str当Path导致1项fixture失败，改为Path后该定向PASS.004s，验证U暴露机制在加载CP前拒绝。合计11个唯一检查分批执行，不声称完整11项单次重跑。compileall通过；Torch/NumPy既有ABI警告未改环境。
 
-一次独立P0/P1审查PASS：核对两行4464/TX-day/RX排除、E50/11100纯L、关闭U/EMA/增强、默认头、强视图克隆buffer、源比较、发布和容量。当前尚无archive/真实数据训练/源比较。后续只需按既定最小流程发布并核实运行，不增加报告审批或数据重验。最高风险是排除RX1损坏更多判断或提高高置信错误；若发生，保留负结果，不因概念合理而扩库。追踪见analysis/cvs_crossfit_teacher_traceability_20261015.md；当前仍verified4/pending6/deferred1/rejected0/blocked0，代码检查不冒充真实训练/源互补通过。
+一次独立P0/P1审查PASS：核对两行4464/TX-day/RX排除、E50/11100纯L、关闭U/EMA/增强、默认头、强视图克隆buffer、源比较、发布和容量。一次archive/compile/preflight/真实CP smoke及独立PID/GPU/日志增长现已VERIFIED；源比较待冻结。后续只需按既定最小流程发布并核实运行，不增加报告审批或数据重验。最高风险是排除RX1损坏更多判断或提高高置信错误；若发生，保留负结果，不因概念合理而扩库。追踪见analysis/cvs_crossfit_teacher_traceability_20261015.md；当前verified5/pending5/deferred1/rejected0/blocked0；发布及初期读回已验证，全E50和源互补仍待完成。
+
+## 实际启动与初期源暴露
+
+VERIFIED：训练commit `f4018c9b2acdfc6f9b013b956a4735af74c435ee` 已push且独立remote OID一致。一次不可覆盖release/run，archive传输比较VERIFIED，远端compile PASS，普通账号preflight VERIFIED；真实原A0默认头无query烟测PASS后两行从零继续。dispatcher PID3176235，SAMPLE PID3176260/GPU3，EXCLUDE_RX1 PID3176337/GPU6。独立/proc cwd/argv/CUDA mask及nvidia PID→UUID→index匹配，日志与teacher_batches流较初次读回增长。
+
+两行已实际完成4轮，各自覆盖4464不同训练样本。SAMPLE实际训练覆盖RX1/3/4/6/8，EXCLUDE只覆盖3/4/6/8；实际args为epochs=label_epochs=50、pseudo_epochs=0、U/EMA/use_aug/concat均false、sat_training_mode=disabled，源coverage的U前向/EMA更新均0。初始化scratch_only，ancestors/checkpoint_sources空、target_contact=false。全程11100预算、最终源预测与互补判定尚未完成，不把初期覆盖或V健康数当最终收益。证据readback_initial.json、readback_launch_verified.json、delivery_r01/submission.json。HQ两行仍按原发布运行，未热改/停止/迁移。
