@@ -36,7 +36,7 @@ def config(row):
     for key in ('feature_combination', 'receiver_gradient', 'hypothesis_basis', 'source_falsification', 'goal'):
         c[key] = deepcopy(template[key])
     c.update(run_id=RUN, **row, output_root=(BASE / row['row_id'] / 'source').as_posix(),
-             launch_owner=OWNER, source_qualification_run=first.RUN, source_decision_commit='PENDING_SOURCE_ONLY_DECISION', first_seed_retrained=False,
+             launch_owner=OWNER, source_qualification_run=first.RUN, source_decision_commit='dda55abb4cd793d65f5e63341d3747c762b6d14e', first_seed_retrained=False,
              source_expansion_rule='Only original first-source PASS permits both unchanged arms at fixed02/03',
              combined_model_seeds=[2026092701, *SEEDS])
     return c
