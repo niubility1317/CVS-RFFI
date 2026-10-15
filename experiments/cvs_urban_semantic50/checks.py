@@ -76,12 +76,35 @@ class Checks(unittest.TestCase):
                 a=d.make_args(c,'cpu');self.assertTrue(a.use_unlabeled and a.use_ema_teacher)
                 self.assertEqual((a.epochs,a.label_epochs,a.pseudo_epochs),(50,33,17))
                 self.assertEqual(a.use_concat_sat_channel_aug,c['arm']!='D0')
-                if c['arm']=='D0':self.assertFalse(a.use_aug)
+                self.assertTrue(a.use_aug)
         from . import evaluate
         for arm in ('D1','D2'):
             row=next(v for v in d.rows() if v['arm']==arm)
             with self.assertRaisesRegex(ValueError,'Reuse archived'):evaluate.predict(row['row_id'])
             with self.assertRaisesRegex(ValueError,'Reuse archived'):evaluate.preflight(row['row_id'])
+
+    def test_recovery_rejects_unmatched_original_D0_and_reuses_calibration_without_forward(self):
+        import json
+        from .calibrate import reuse_original
+        original=d.read(Path(d.__file__).with_name('archived_D0_r01.json'))
+        self.assertEqual(original['run_id'],d.ORIGINAL_RUN)
+        self.assertEqual(original['output_root'],(d.ORIGINAL_BASE/'D0-s2026092701/source').as_posix())
+        self.assertFalse(original['reused']);self.assertFalse(original['ordinary_concat'])
+        with self.assertRaises(ValueError):d.validate(original)
+        with self.assertRaises(ValueError):d.reference_config('D0')
+        matched=d.config(next(r for r in d.rows() if r['arm']=='D0'))
+        self.assertFalse(matched['reused']);self.assertTrue(d.make_args(matched,'cpu').use_aug)
+        expected=(d.parent.BASE/'A0-s2026092701/source/warmup_epoch5.pth').as_posix()
+        r=dict(status='SOURCE_SEMANTIC_CALIBRATED',source_only=True,query_read=False,U_truth_read=False,
+            V_forward_packets=0,optimizer_updates=0,head_fit_updates=0,source_count=720,warmup_epoch=5,
+            feature_parameters=195041,calibration_seed=d.CALIBRATION_SEED,forward_packets=2160,margin=.1,
+            model_state_unchanged=True,training_gradients_unchanged=True,source_checkpoint=expected,
+            coefficients={arm:dict(coefficient=.2,target_gradient_ratio=.1) for arm in ('D3','D4')})
+        copied=reuse_original(r,'original.json')
+        self.assertEqual(copied['coefficients'],r['coefficients']);self.assertEqual(copied['new_forward_packets'],0)
+        self.assertNotIn('reused_from',r)
+        for change in (dict(query_read=True),dict(source_count=6300),dict(warmup_epoch=50),dict(model_state_unchanged=False)):
+            with self.assertRaises(ValueError):reuse_original(dict(r,**change),'original.json')
 
     def test_actual_native_D0_D3_D4_cache_CE_teacher_and_gradient_boundaries(self):
         torch.set_num_threads(2)
@@ -103,14 +126,16 @@ class Checks(unittest.TestCase):
                     args=d.make_args(c,'cpu')
                     with observer.native_scope(native):
                         native.move_batch((x,y,meta),'cpu')
-                        xx,yy,_,_,_=native._prepare_concat_sat_batch_for_training(None,x,y,None,args=args,epoch=6,batch_idx=1)
-                        # Exercise the native post-concat branch that previously
-                        # changed D0's tensor identity when use_aug was inherited.
                         augmentor=(lambda z,**kw:z+.01) if args.use_aug else None
                         concat_active=bool(args.use_concat_sat_channel_aug)
+                        # Match both actual native placements of generic IQ aug.
+                        prepared=torch.nan_to_num(augmentor(x,labels=y)) if augmentor is not None and concat_active else x
+                        xx,yy,_,_,_=native._prepare_concat_sat_batch_for_training(None,prepared,y,None,args=args,epoch=6,batch_idx=1)
                         x_l_main=torch.nan_to_num(augmentor(xx,labels=yy)) if augmentor is not None and not concat_active else xx
                         result=model(x_l_main,y_tx=yy,grl_lambda=1.,return_aux=True,domain_labels=None)
                         self.assertTrue(observer.armed.done)
+                        self.assertIs(observer.armed.x,x_l_main)
+                        self.assertTrue(torch.allclose(x_l_main[:128],x+.01))
                         self.assertFalse(any(m._forward_hooks or m._forward_pre_hooks for m in model.modules()))
                         ce=torch.nn.functional.cross_entropy(result['tx_logits'],yy,label_smoothing=.01)
                         extra,metrics=observer.observe(model=model,args=args,epoch=6,batch_idx=1,clean_iq=xx,labels=yy,clean_meta=meta,

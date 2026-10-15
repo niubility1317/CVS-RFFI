@@ -22,9 +22,33 @@ def fixed(x,panel,start,scene):
     return tensor_iq(np.stack(arrays),x.device),records
 
 
+def reuse_original(result,original_path):
+    expected=(d.parent.BASE/'A0-s2026092701/source/warmup_epoch5.pth').as_posix()
+    if (result.get('status')!='SOURCE_SEMANTIC_CALIBRATED' or not result.get('source_only') or result.get('query_read')
+            or result.get('U_truth_read') or result.get('V_forward_packets') or result.get('optimizer_updates')
+            or result.get('head_fit_updates') or result.get('source_count')!=720 or result.get('warmup_epoch')!=5
+            or result.get('feature_parameters')!=195041 or result.get('calibration_seed')!=d.CALIBRATION_SEED
+            or result.get('forward_packets')!=2160 or result.get('margin')!=.1 or not result.get('model_state_unchanged')
+            or not result.get('training_gradients_unchanged') or result.get('source_checkpoint')!=expected):
+        raise ValueError('Original fixed source calibration differs; do not rerun or retune')
+    if set(result['coefficients'])!={'D3','D4'}:
+        raise ValueError('Both predefined semantic strengths required')
+    for v in result['coefficients'].values():
+        if not 1e-4<=v['coefficient']<=10 or v['target_gradient_ratio']!=.1:
+            raise ValueError('Original source coefficient is invalid')
+    return dict(result,reused_from=str(original_path),new_forward_packets=0,new_optimizer_updates=0,
+        reuse_reason='Only CPU/GPU metadata placement fixed; unchanged source relation math and scientific matrix')
+
+
 def run():
     path=d.BASE/'semantic_calibration.json'
     if path.exists():raise FileExistsError('Reuse completed source estimate; do not recalculate/overwrite')
+    if d.ORIGINAL_RUN:
+        original=d.ORIGINAL_BASE/'semantic_calibration.json'
+        result=reuse_original(d.read(original),original)
+        d.write(path,result)
+        print('SOURCE calibration reused unchanged; new forwards/updates=0',flush=True)
+        return result
     started=time.perf_counter();torch.set_num_threads(2);reference=d.parent.config(d.parent.rows()[0]);source=Path(reference['output_root'])
     inner=d.read(source/'inner_source_contract.json');init=d.read(source/'initialization.json')
     if not init['scratch_only'] or init['checkpoint_sources'] or init['ancestors'] or init['target_contact']:

@@ -10,6 +10,26 @@ from experiments.cvs_urban_branch50.observer import Observer as Original
 from experiments.cvs_urban_branch50 import branches as b,gradient as g
 
 
+class CleanNativeCapture:
+    """Capture the next actual L forward after the native generic augmentor."""
+    def __init__(self,model,expected):
+        self.model=model;self.x=None;self.done=False;self.closed=False;self.handles=[]
+        self.scope=b.capture(model);self.values=self.scope.__enter__()
+        def before(module,args):
+            if (not args or args[0].shape!=expected.shape or args[0].device!=expected.device
+                    or args[0].dtype!=expected.dtype or self.x is not None):
+                raise ValueError('Expected exactly one actual native labeled clean forward')
+            self.x=args[0]
+        def after(module,args,out):
+            self.close();b.complete(model,out,self.values,len(expected));self.done=True
+        self.handles=[model.register_forward_pre_hook(before),model.register_forward_hook(after)]
+
+    def close(self):
+        if self.closed:return
+        for handle in self.handles:handle.remove()
+        self.scope.__exit__(None,None,None);self.closed=True
+
+
 class Observer(Original):
     def __init__(self,c):
         d.validate(c)
@@ -37,7 +57,7 @@ class Observer(Original):
                 satellite,self.concat_records=self.channel.apply(x,self.meta,epoch,batch_idx)
                 xx=torch.cat((x,satellite));yy=torch.cat((y,y));dd=None if domain is None else torch.cat((domain,domain))
                 self.counts['satellite_L_packets']+=len(x)
-            self.armed=b.NativeCapture(self.model,xx)
+            self.armed=CleanNativeCapture(self.model,xx) if self.c['arm']=='D0' else b.NativeCapture(self.model,xx)
             active=float(self.c['arm']!='D0')
             return xx,yy,dd,None,dict(active=active,expanded=active,applied=active,clean_batch_size=float(len(x)),
                 total_batch_size=float(len(xx)),view_prob=active,stage_start_epoch=1.,stage_index=0.,scenario='nominal3' if active else 'clean_only',scenario_code=0.)
@@ -53,7 +73,7 @@ class Observer(Original):
         if step!=self.steps+1 or model is not self.model or self.armed is None or not self.armed.done:raise ValueError('Native identity cache/steps differ')
         if teacher_model is None or any(k in (unlabeled_meta or {}) for k in ('tx','tx_i','y_tx','true_tx_i')):
             raise ValueError('Keep own EMA and original hidden U truth contract')
-        values=self.armed.values;self.armed=None;self.steps=step;self.teacher=teacher_model
+        values=self.armed.values;actual_labeled_iq=self.armed.x;self.armed=None;self.steps=step;self.teacher=teacher_model
         batch=128;y=labels[:batch];augmented=self.c['arm']!='D0'
         if len(labels)!=(256 if augmented else 128) or (augmented and not torch.equal(y,labels[batch:])):
             raise ValueError('Real labeled clean/satellite batch contract differs')
@@ -63,7 +83,7 @@ class Observer(Original):
         self.clean_coverage.update(zip(y.detach().cpu().tolist(),rx.detach().cpu().tolist(),day.detach().cpu().tolist()))
         # Preserve the archived controls' extra L EMA forward budget. The
         # semantic keys themselves are current-view detached copies, not EMA.
-        b.frozen_teacher(teacher_model,clean_iq[:batch]);self.counts.update(clean_L_packets=batch,teacher_L_clean_packets=batch)
+        b.frozen_teacher(teacher_model,actual_labeled_iq[:batch]);self.counts.update(clean_L_packets=batch,teacher_L_clean_packets=batch)
         if teacher_prob is not None:self.counts['native_U_packets']+=len(teacher_prob)
         logits=clean_output['tx_logits'];ce_clean=F.cross_entropy(logits[:batch],y,label_smoothing=args.label_smoothing)
         ce_sat=F.cross_entropy(logits[batch:],y,label_smoothing=args.label_smoothing) if augmented else ce_clean*0.

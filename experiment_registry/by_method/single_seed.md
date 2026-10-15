@@ -6,6 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|固定 SIG_TIME：语义身份关系 E50 技术恢复|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/report.md)|
 |固定 SIG_TIME：双向身份排序 E50 预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/report.md)|
 |修复后首批5个E200模型：立即执行clean及六星地场景独立测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-evaluation-reference-repair-completed5-manysig-m5-r01/report.md)|
 

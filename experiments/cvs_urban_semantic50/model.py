@@ -22,6 +22,10 @@ def own_model(c,device='cpu'):
     if c['reused']:
         from experiments.cvs_urban_branch50.model import own_model as original
         return original(c['reuse_source_config'],device)
+    return load_source(c,device,lambda:build(c,device))
+
+
+def load_source(c,device,builder):
     from experiments.cvs_phase1_stack.recover import verify_contract
     source=Path(c['output_root']);done=d.read(source/'completion.json');frozen=d.read(source/'source_frozen.json')
     init=d.read(source/'initialization.json');inner=d.read(source/'inner_source_contract.json')
@@ -35,7 +39,7 @@ def own_model(c,device='cpu'):
             or inner['L_dev_updates'] or inner['V_role']!='health_only'):
         raise ValueError('Actual source fold differs from archived controls')
     cp=torch.load(source/'final_ssdg.pth',map_location='cpu',weights_only=False)
-    if (cp['epoch']!=50 or cp['a1_ema_successful_updates']!=11100 or cp['run_id']!=d.RUN or cp['candidate_id']!=c['row_id']
+    if (cp['epoch']!=50 or cp['a1_ema_successful_updates']!=11100 or cp['run_id']!=c['run_id'] or cp['candidate_id']!=c['row_id']
             or cp['split_info']['inner_source_contract']!=inner or not cp['args']['from_scratch'] or cp['args']['baseline_ckpt'] or cp['args']['teacher_ckpt']):
         raise ValueError('Actual checkpoint lineage/budget differs')
-    model=build(c,device);model.load_state_dict(cp['model'],strict=True);return model.eval().requires_grad_(False)
+    model=builder();model.load_state_dict(cp['model'],strict=True);return model.eval().requires_grad_(False)

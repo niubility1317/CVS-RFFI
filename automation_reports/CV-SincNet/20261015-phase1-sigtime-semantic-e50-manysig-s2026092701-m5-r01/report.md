@@ -63,3 +63,7 @@ D0／D3／D4 都保留与原 A0/A-J 相同的128个额外 clean L EMA 前向；�
 本地已复现设备错误，mask 在比较前仅把 RX/day 移至 labels.device 并统一 long；修复后7项检查PASS（6.435s），原设备问题定向P1复核PASS。本地修复尚未发布；后续用新不可覆盖run/release仅恢复失败D3/D4，原D0及已完成控制均复用，避免重复预算。原r01发布代码身份不改写为修复commit。源HQ的64.86%→70.97%仍只是冻结源域降噪受控效应，与此训练失败无关。
 
 证据：local artifact `independent_launch_evidence.json`、`independent_initial/readback.json`、`independent_growth/readback.json`、`source_initial.json`、`mixed_device_before.log`、`mixed_device_after.log`；没有正式新性能或跨seed结论。
+
+## D0 匹配性更正
+
+后续按真实 native 前向核查发现，原普通 concat A0/A-J 在拼接前仍执行 generic IQ augmentor（train_ssdg.py8986），因此此前“关闭 D0 通用增强可匹配 concat clean 分量”的表述不准确。r01 D0 的 use_aug=False 使它成为无通用增强诊断，不能作为仅去掉 practical 的严格对照。该健康行继续原自动测试，不停止、重训或改写产物；在 r02 单独补齐 use_aug=True 的匹配 D0，保留同一实际前向后的 capture。r01 D0 的完整 E50／11100 及首步失败两行成本作为技术开销报告，不纳入新五条件源推进或正式配对。

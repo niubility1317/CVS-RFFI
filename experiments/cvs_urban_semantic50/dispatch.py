@@ -1,4 +1,4 @@
-"""Three new E50 rows; two archived controls; per-row automatic truth-last."""
+"""Three corrected E50 rows; preserve the unmatched original D0 as a diagnostic."""
 import argparse,os,subprocess,sys,time
 from pathlib import Path
 from . import design as d
@@ -42,8 +42,8 @@ def smoke_and_references():
         records.append(dict(logical_arm=arm,original_config=c['reuse_source_config'],source=str(source),original_predictions=str(root/'prediction'),original_scores=str(root/'scoring'),head_fit_updates=0,query_IQ_read=False))
         del model
     d.write(d.BASE/'source_smoke.json',dict(status='PASS',source_only=True,query_read=False,forward_packets=4,
-        checkpoint_initialization_used=False,scope='Two read-only exact default-head controls; all fresh rows scratch',references=records))
-    print('SMOKE PASS real fixed controls/default heads; query_read=false; three new rows scratch',flush=True)
+        checkpoint_initialization_used=False,scope='Two read-only exact default-head controls; three corrected rows scratch',references=records))
+    print('SMOKE PASS real fixed controls/default heads; query_read=false; three corrected rows scratch',flush=True)
 
 
 def dispatch():

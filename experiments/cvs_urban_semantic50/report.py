@@ -44,7 +44,7 @@ def collect():
             main_forward_packets=main,counts={k:counts.get(k,0) for k in native_keys},source_dev_forward_packets=mechanism['source_dev_forward_packets'],
             native_V='preserved complete native validation telemetry and actual args; health-only',
             prediction=d.read(root/'prediction/complete.json'))
-        if c['reused']:
+        if c['arm'] in ('D1','D2'):
             original=c['reuse_source_config']['row_id'];curves[row['row_id']]=old_curves[original]
             cost['original_resource_record']=next(v for v in old_resources if v['row_id']==original)
         else:
@@ -68,10 +68,18 @@ def collect():
     summary=dict(rows=records,pairs=pairs,dual_gain=dual,source_family_decision=d.read(d.BASE/'source_family_decision.json'),
         seed_count=1,cross_seed_confirmation='NOT_RUN',target_feedback_forbidden=True,no_weighted_dual_gain_score=True)
     d.write(d.BASE/'summary.json',summary);d.write(d.BASE/'training_curves.json',curves)
+    diagnostic_source=d.ORIGINAL_BASE/'D0-s2026092701/source'
+    diagnostic_done=diagnostic_source/'completion.json'
+    diagnostic=d.read(diagnostic_done) if diagnostic_done.is_file() else None
     d.write(d.BASE/'resources.json',dict(rows=costs,new_models=3,reused_models=2,source_calibration=d.read(d.BASE/'semantic_calibration.json'),
-        operational_smoke=d.read(d.BASE/'source_smoke.json')))
+        operational_smoke=d.read(d.BASE/'source_smoke.json'),
+        failed_original_rows='Original r01 D3/D4 first-step failures retained and reported separately; no completed training budget',
+        original_D0=dict(source=str(diagnostic_source),role='Unmatched no-generic-augmentation diagnostic, excluded from five-row comparison',
+            epochs=50 if diagnostic else None,updates=diagnostic.get('optimizer_steps') if diagnostic else None,
+            seconds=diagnostic.get('elapsed_seconds') if diagnostic else None,complete=diagnostic is not None,
+            preserved_untouched=True)))
     lines=['# Fixed SIG_TIME relative identity pilot','',
-        'All source decisions frozen before this report reads target scores. D1/D2 reuse exact original A0/A-J artifacts; no repeated prediction/scoring.','',
+        'All source decisions frozen before this report reads target scores. D0 preserves native generic augmentation; original r01 no-generic D0 is a separate diagnostic. D1/D2 reuse exact A0/A-J artifacts.','',
         '|arm|reused|clean %|urban %|low urban %|mid urban %|urban Macro-F1 %|worst RX %|','|---|---|---:|---:|---:|---:|---:|---:|']
     for r in records:lines.append('|'+r['arm']+'|'+str(r['reused'])+'|'+'|'.join(f"{100*r[k]:.4f}" for k in ('clean','urban_mean','low_urban','mid_urban','urban_macro_f1','worst_urban_RX'))+'|')
     lines+=['','Separate clean-vs-D0 and low-vs-D1 differences are in summary.json; no single-seed superiority or cross-seed claim.']

@@ -6,7 +6,7 @@
 |---|---|---|---|
 |S01|固定SIG_TIME／默认头，原联合训练|verified|实际模型和CE梯度测试，863730/195041，W正常CE更新|
 |S02|实际物理5580/720折及两个旧控制来源|verified|真实A0/A-J默认头CP及原fold/provenance smoke PASS，无query|
-|S03|D0保留旧U/EMA并关闭training satellite|verified|实际args及native D0管线测试|
+|S03|D0保留旧U/EMA和原通用增强，仅关闭training satellite|verified|r02 actual post-augmentor L capture／CE／EMA测试；r01 no-generic D0仅独立诊断|
 |S04|三场景真实residual及正式IQ保持|verified|无改动原引擎／config/seed；新channel薄封装，既有物理检查复用|
 |S05|只真实L标签，同TX不作负样本|verified|objective mask/隐藏U负例通过|
 |S06|正负参照同RX/day、anchor跨RX|verified|逐triplet条件测试|
@@ -28,3 +28,7 @@
 历史对照核查：local-order是full-L clean的t1/t2额外cohort，soft-relation是EMA软图且源梯度条件FAIL。本轮是相同内部折的真实标签clean/practical双向joint160排序，不重复其已完成训练，也不声称身份排序是新提出的通用方法。
 
 实际r01 e8f51edab：archive/compile/真实CP smoke PASS。D3/D4首步CUDA标签与CPU元数据mask技术失败；本地修复前复现、后7测试PASS6.435s，设备问题定向P1复核PASS。D0仍健康，不热改；修复尚未发布，新run仅恢复失败两行，旧D0和D1/D2复用。不得把r01标为完整训练或正式性能完成。
+
+恢复版 r02：新scratch匹配D0/D3/D4，D1/D2复用。原r01 D0关闭通用增强与concat控制不匹配，保留健康诊断但排除主比较，额外E50成本另列。新版保留native generic前后位置，仅捕获实际L输入并在U/EMA前移除hook。8检查PASS6.717s；源calibration从原r01原样复制，新前向0。r02尚未发布。
+
+恢复差异独立P0/P1审查PASS；D0新增匹配问题的定向复核PASS。无额外全量或报告审查。当前最高风险仍是原头的实际双增益，须等待新E50冻结证据。

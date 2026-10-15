@@ -1,9 +1,9 @@
 {
   "schema": "experiment_record_v1",
-  "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01",
+  "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02",
   "group_id": "phase1-sigtime-bidirectional-semantic-augmentation",
-  "display_name": "固定 SIG_TIME：clean／practical 双向身份排序 E50 对照",
-  "description": "补齐相同 L 内部折的无增强对照；复用精确匹配的普通增强和旧正配对控制，比较单向／双向跨视图真实 TX 排序，分别评价 clean 相对无增强与 low urban 相对普通增强。",
+  "display_name": "固定 SIG_TIME：双向身份排序 E50 设备修复恢复",
+  "description": "修复D3/D4首步设备错误并补齐保留通用增强的严格D0；原r01关闭通用增强D0保留为独立诊断，D1/D2完整复用。五条件、数据、强度、每行E50和正式测试不变。",
   "kind": "cvs",
   "stage": "Phase1",
   "aliases": [],
@@ -21,15 +21,16 @@
   ],
   "comparison_group_id": null,
   "parent_run_ids": [
+    "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01",
     "20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01"
   ],
-  "replaces_run_id": null,
-  "authorization": "User latest attachment31cc8a22 explicitly prioritizes D0/D1/D2/D3/D4 then Bridge-CE/S. Scratch E50 follows user latest budget. Single-seed pilot; no target-driven choice of parent/branch or new gate. Crossfit teacher route remains separate, unlaunched core.",
+  "replaces_run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01",
+  "authorization": "Original E50 semantic study authorization includes technical recovery and correcting an unmatched baseline. Preserve healthy original D0 as a diagnostic, exclude it from the matched matrix. Each new corrected row remains scratch E50; technical overhead is reported separately.",
   "code": {
     "commit": "CURRENT_RELEASE_COMMIT",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; nativeLinuxN607; Windowsnative localvalidation",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_semantic_e50_20261015_r01"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_semantic_e50_20261015_r02"
   },
   "data": {
     "dataset": "ManySig.pkl",
@@ -87,25 +88,26 @@
     "claim_scope": "Phase1 fixed practicalproxy DG on exposedbenchmark; not Phase2/realinorbit validation"
   },
   "checkpoint": {
-    "initialization": "Three fresh scratch students; D1/A0 and D2/A-J exact original artifacts reused read-only",
+    "initialization": "Three scratch corrected students; exact A0/A-J controls reused read-only. Original no-generic D0 excluded from matched comparison.",
     "sources": [],
     "contract_check_ref": "Actual source_contract and unchanged inner_source_contract; all fresh checkpoints require scratch lineage, final50/default head; archived own_model checks original source provenance",
-    "provenance_verdict": "No parent weights/optimizer/teacher initialization for new rows. Source coefficients only from predefined A0 epoch5 strict same-fold checkpoint; original control artifacts from code152d8921. No target-selected branch.",
+    "provenance_verdict": "All three corrected rows scratch. D0 preserves native generic IQ augmentation, unlike original r01 diagnostic. Original epoch5 source calibration is copied unchanged with zero new forwards; no target choice.",
     "selection_rule": "Fixed final50 only. Source global coefficient once at A0 epoch5; expansion on final50 L_dev only before target report.",
     "calibration_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source/warmup_epoch5.pth",
     "archived_controls": {
       "D1": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source",
       "D2": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A-J-s2026092701/source"
-    }
+    },
+    "calibration_reuse": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/semantic_calibration.json"
   },
   "execution": {
     "host": "N607",
-    "gpu": "3 fresh independent rows; spread one/card over all8 cards under shared lock; max3 total processes/card including foreign/preCUDA owners, free>=12000MB",
-    "launch_owner": "codex/root/semantic-e50-20261015",
-    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01",
-    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/logs",
-    "local_report_root": "automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01",
-    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_semantic_augmentation_20261015",
+    "gpu": "3 fresh corrected rows; idle-card spread under shared lock; max3 total/card including all owners/preCUDA, free>=12000MB; original D0 diagnostic GPU0 left untouched",
+    "launch_owner": "codex/root/semantic-e50-recovery-20261015",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/logs",
+    "local_report_root": "automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_semantic_augmentation_recovery_20261015",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_semantic50.dispatch",
     "stop_rule": "Only owned contract/checkpoint/default graph/nonfinite/budget/output/launch systemic technical failure stops unlaunched rows; healthy active rows finish, all outputs preserved, no automatic repeat. Source qualification never consumes target. No unrelated process mutation.",
     "resource_coordination": "Before release read other two chats and live capacity. Shared receiver_residual_capacity4.lock covers scan/choice/Popen/logged occupation. CPU source calibration/scoring CUDA empty,2 threads; no fixed reserved GPU split."
@@ -166,7 +168,7 @@
       "receiver/day/TX",
       "source LOS/PARTIAL/BLOCKED and lock"
     ],
-    "prediction_ref": "Fresh row seven original fixed IQ predictions; D1/D2 retain old original predictions, no repeat",
+    "prediction_ref": "Three corrected fresh rows predict seven original fixed IQ arrays. Original unmatched D0 diagnostic retains its own existing queue; A0/A-J prediction/scoring artifacts reused. No repeats of healthy rows.",
     "scorer_ref": "Separate exec after seven predictions fixed; CUDA_VISIBLE_DEVICES empty; independent metrics recount; original controls use original scores",
     "selection_rule": "Pilot only. Any D3/D4: clean vs D0>=.005, low vs D1>=.01, urban vs D1>=0, worst urban RX vs D1>=-.01. Final50 L_dev only; no target feedback.",
     "dual_objectives": "Report clean-vs-D0 and low-vs-D1 separately; no aggregate selection score",
@@ -178,7 +180,7 @@
       "method": "D0",
       "purpose": "baseline",
       "config_ref": "experiments/cvs_urban_semantic50/registration.json#D0-s2026092701",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/D0-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/D0-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -197,8 +199,8 @@
       "epochs": 50,
       "fl_rounds": null,
       "budget_ref": "scratch50=33L+17nativeU,222steps/epoch,11100updates; no parent training",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/D0-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/logs/D0-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/D0-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/logs/D0-s2026092701.log",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_semantic50.dispatch --mode worker --row D0-s2026092701",
       "expected_artifacts": [
         "source_smoke.json",
@@ -235,14 +237,14 @@
       ],
       "config": {
         "schema": "sigtime_semantic_e50_v1",
-        "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01",
+        "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02",
         "arm": "D0",
         "model_seed": 2026092701,
         "row_id": "D0-s2026092701",
         "variant": "reference_response",
         "method": "cvs_urban_semantic50",
-        "launch_owner": "codex/root/semantic-e50-20261015",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/D0-s2026092701/source",
+        "launch_owner": "codex/root/semantic-e50-recovery-20261015",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/D0-s2026092701/source",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "initialization": "scratch",
         "baseline_reuse": false,
@@ -399,7 +401,7 @@
           "CE_updates_all": true,
           "extra_U_objectives": []
         },
-        "labeled_generic_augmentation": "disabled in D0 to match the unmodified clean component of concat controls; native U strong view unchanged",
+        "labeled_generic_augmentation": "native generic IQ augmentor preserved in all rows; before concat for D3/D4 and after preparation for D0; native U strong view unchanged",
         "source_expansion_rule": "Pilot only. Any D3/D4: clean vs D0>=.005, low vs D1>=.01, urban vs D1>=0, worst urban RX vs D1>=-.01. Final50 L_dev only; no target feedback.",
         "reused": false,
         "reuse_source_config": null
@@ -428,7 +430,7 @@
       "lr": 0.0002,
       "epochs": 50,
       "fl_rounds": null,
-      "budget_ref": "reused original50/11100; zero new training/prediction/scoring; original costs disclosed",
+      "budget_ref": "Read-only original E50/11100; zero new training/prediction/scoring; exact original A0/A-J controls.",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/logs/A0-s2026092701.log",
       "command": "READ_ONLY_REUSE_ORIGINAL_ARTIFACTS",
@@ -439,13 +441,13 @@
       ],
       "config": {
         "schema": "sigtime_semantic_e50_v1",
-        "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01",
+        "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02",
         "arm": "D1",
         "model_seed": 2026092701,
         "row_id": "D1-s2026092701",
         "variant": "reference_response",
         "method": "cvs_urban_semantic50",
-        "launch_owner": "codex/root/semantic-e50-20261015",
+        "launch_owner": "codex/root/semantic-e50-recovery-20261015",
         "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "initialization": "scratch",
@@ -607,7 +609,7 @@
           "CE_updates_all": true,
           "extra_U_objectives": []
         },
-        "labeled_generic_augmentation": "native concat path bypasses generic labeled augmentor as in archived controls",
+        "labeled_generic_augmentation": "native generic IQ augmentor preserved in all rows; before concat for D3/D4 and after preparation for D0; native U strong view unchanged",
         "source_expansion_rule": "Pilot only. Any D3/D4: clean vs D0>=.005, low vs D1>=.01, urban vs D1>=0, worst urban RX vs D1>=-.01. Final50 L_dev only; no target feedback.",
         "reused": true,
         "reuse_source_config": {
@@ -812,7 +814,7 @@
       "lr": 0.0002,
       "epochs": 50,
       "fl_rounds": null,
-      "budget_ref": "reused original50/11100; zero new training/prediction/scoring; original costs disclosed",
+      "budget_ref": "Read-only original E50/11100; zero new training/prediction/scoring; exact original A0/A-J controls.",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A-J-s2026092701",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/logs/A-J-s2026092701.log",
       "command": "READ_ONLY_REUSE_ORIGINAL_ARTIFACTS",
@@ -823,13 +825,13 @@
       ],
       "config": {
         "schema": "sigtime_semantic_e50_v1",
-        "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01",
+        "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02",
         "arm": "D2",
         "model_seed": 2026092701,
         "row_id": "D2-s2026092701",
         "variant": "reference_response",
         "method": "cvs_urban_semantic50",
-        "launch_owner": "codex/root/semantic-e50-20261015",
+        "launch_owner": "codex/root/semantic-e50-recovery-20261015",
         "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A-J-s2026092701/source",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "initialization": "scratch",
@@ -991,7 +993,7 @@
           "CE_updates_all": true,
           "extra_U_objectives": []
         },
-        "labeled_generic_augmentation": "native concat path bypasses generic labeled augmentor as in archived controls",
+        "labeled_generic_augmentation": "native generic IQ augmentor preserved in all rows; before concat for D3/D4 and after preparation for D0; native U strong view unchanged",
         "source_expansion_rule": "Pilot only. Any D3/D4: clean vs D0>=.005, low vs D1>=.01, urban vs D1>=0, worst urban RX vs D1>=-.01. Final50 L_dev only; no target feedback.",
         "reused": true,
         "reuse_source_config": {
@@ -1178,7 +1180,7 @@
       "method": "D3",
       "purpose": "ablation",
       "config_ref": "experiments/cvs_urban_semantic50/registration.json#D3-s2026092701",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/D3-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/D3-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -1197,8 +1199,8 @@
       "epochs": 50,
       "fl_rounds": null,
       "budget_ref": "scratch50=33L+17nativeU,222steps/epoch,11100updates; no parent training",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/D3-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/logs/D3-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/D3-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/logs/D3-s2026092701.log",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_semantic50.dispatch --mode worker --row D3-s2026092701",
       "expected_artifacts": [
         "source_smoke.json",
@@ -1235,14 +1237,14 @@
       ],
       "config": {
         "schema": "sigtime_semantic_e50_v1",
-        "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01",
+        "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02",
         "arm": "D3",
         "model_seed": 2026092701,
         "row_id": "D3-s2026092701",
         "variant": "reference_response",
         "method": "cvs_urban_semantic50",
-        "launch_owner": "codex/root/semantic-e50-20261015",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/D3-s2026092701/source",
+        "launch_owner": "codex/root/semantic-e50-recovery-20261015",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/D3-s2026092701/source",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "initialization": "scratch",
         "baseline_reuse": false,
@@ -1403,7 +1405,7 @@
           "CE_updates_all": true,
           "extra_U_objectives": []
         },
-        "labeled_generic_augmentation": "native concat path bypasses generic labeled augmentor as in archived controls",
+        "labeled_generic_augmentation": "native generic IQ augmentor preserved in all rows; before concat for D3/D4 and after preparation for D0; native U strong view unchanged",
         "source_expansion_rule": "Pilot only. Any D3/D4: clean vs D0>=.005, low vs D1>=.01, urban vs D1>=0, worst urban RX vs D1>=-.01. Final50 L_dev only; no target feedback.",
         "reused": false,
         "reuse_source_config": null
@@ -1414,7 +1416,7 @@
       "method": "D4",
       "purpose": "ablation",
       "config_ref": "experiments/cvs_urban_semantic50/registration.json#D4-s2026092701",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/D4-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/D4-s2026092701/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -1433,8 +1435,8 @@
       "epochs": 50,
       "fl_rounds": null,
       "budget_ref": "scratch50=33L+17nativeU,222steps/epoch,11100updates; no parent training",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/D4-s2026092701",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/logs/D4-s2026092701.log",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/D4-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/logs/D4-s2026092701.log",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_semantic50.dispatch --mode worker --row D4-s2026092701",
       "expected_artifacts": [
         "source_smoke.json",
@@ -1471,14 +1473,14 @@
       ],
       "config": {
         "schema": "sigtime_semantic_e50_v1",
-        "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01",
+        "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02",
         "arm": "D4",
         "model_seed": 2026092701,
         "row_id": "D4-s2026092701",
         "variant": "reference_response",
         "method": "cvs_urban_semantic50",
-        "launch_owner": "codex/root/semantic-e50-20261015",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/D4-s2026092701/source",
+        "launch_owner": "codex/root/semantic-e50-recovery-20261015",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/D4-s2026092701/source",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "initialization": "scratch",
         "baseline_reuse": false,
@@ -1639,7 +1641,7 @@
           "CE_updates_all": true,
           "extra_U_objectives": []
         },
-        "labeled_generic_augmentation": "native concat path bypasses generic labeled augmentor as in archived controls",
+        "labeled_generic_augmentation": "native generic IQ augmentor preserved in all rows; before concat for D3/D4 and after preparation for D0; native U strong view unchanged",
         "source_expansion_rule": "Pilot only. Any D3/D4: clean vs D0>=.005, low vs D1>=.01, urban vs D1>=0, worst urban RX vs D1>=-.01. Final50 L_dev only; no target feedback.",
         "reused": false,
         "reuse_source_config": null
@@ -1647,7 +1649,7 @@
     }
   ],
   "notes": [
-    "Three fresh models only; two exact archived controls remain their actual original identity. New cost150epochs33300updates; archived costs100epochs22200updates separately, no claim five new runs.",
+    "Three corrected fresh rows150epochs33300updates; exact archived A0/A-J100epochs22200updates separately. Original no-generic D0 diagnostic50epochs11100updates and r01 D3/D4 first-step failures are technical overhead, not matched performance controls.",
     "Architecture/defaulthead863730 total/195041 featureparams/6x160 cosine scale30 unchanged; all native parameters remain jointly trainable, no separate fitted head.",
     "D0 retains native old-gated U/ownEMA and unused extra labeled EMA forward; training satellite generator disabled. D3/D4 use original1:1 concat mean CE and same3physical scenes, no curriculum.",
     "Semantic margin.1, same reference RX/day positive and negative, cross-RX anchor, only true L labels; no same-TX negatives. Per-anchor mean includes zero satisfied/missing groups; D4=.5*(two directions).",
@@ -1657,6 +1659,9 @@
     "Prior local-order work is clean/full-L and t1/t2 with extra cohorts; prior soft-relation source probe used EMA soft graph and failed gradient criterion. Neither equals current true-label cross-view joint160 same-fold study; no novelty claim.",
     "Baseline practical EQfalseG1/post_sync/referenceSNR30/fs25MHz/IQ256/native RMS then input RMS/no output RMS, reflect delay24; canonical imported module path audited by channel_execution. Formal test arrays unchanged.",
     "Source pilot decision recorded before report reads target scores. Clean gain vs no augmentation and low gain vs nominal are distinct, neither can compensate the other. No single-seed/cross-seed superiority claim.",
-    "Crossfit teacher core4checks and semantic6checks exist locally; required bounded review/real-checkpoint smoke/preflight/postlaunch evidence recorded at release, no additional approval or signature gate."
+    "Crossfit teacher remains an independent unlaunched draft. Semantic8checks PASS6.717s locally; required bounded review/real-checkpoint smoke/preflight/postlaunch evidence recorded at release, no additional approval or signature gate.",
+    "Technical defect only: original labels CUDA with RX/day CPU failed triplet-mask device matching. Move metadata to labels.device/long; relation math unchanged. Local before-fix reproduction and after-fix tests retained. No remote hot patch or original output reuse.",
+    "Native generic augmentation is preserved in all matched rows. D0 captures the actual post-augmentor L input using one shape/device-checked first L forward; D3/D4 retain strict concat capture. Original r01 no-generic D0 remains independent diagnostic and is excluded from source qualification and target comparisons.",
+    "Original r01 dispatcher may finish FAILED due the two old failed rows even if its diagnostic D0 completes. No process is stopped or hot modified; diagnostic cost is reported separately."
   ]
 }
