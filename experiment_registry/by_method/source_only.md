@@ -6,6 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|同信道 HQ 桥接：源域零更新预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-coupled-bridge-source-manysig-s2026092701-r01/report.md)|
 |CVS：DAOT＋FastTrust-RC4原始residual_noeq五种子实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/report.md)|
 |CVS 加性坐标实际使用：完整冻结源域消融报告|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-additive-usage-source-manysig-m40-r01/report.md)|
 |CVS 相对频偏坐标：完整源域身份信息诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-diagnostic-cvs-cfo-information-source-manysig-m1-r01/report.md)|

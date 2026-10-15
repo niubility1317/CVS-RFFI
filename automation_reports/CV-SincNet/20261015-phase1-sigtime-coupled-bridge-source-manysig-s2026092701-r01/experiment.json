@@ -1,0 +1,392 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-sigtime-coupled-bridge-source-manysig-s2026092701-r01",
+  "group_id": "phase1-sigtime-coupled-HQ-teaching",
+  "display_name": "固定 A0 默认头：同信道 HQ 桥接源域零更新诊断",
+  "description": "仅改变模拟器新增噪声，比较共享噪声／独立噪声 HQ 与完整 practical；冻结传播、接收状态、补偿、AGC 和 FIR 边界，记录默认头、真实 SIG112 组及身份关系。不是训练性能结果或新的审批门槛。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "sigtime",
+    "coupled_bridge",
+    "source_only",
+    "zero_update",
+    "default_head",
+    "practical"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorized hierarchical identity transfer and same-channel HQ/grouped SIG study in attachment17f04499. This is its legal source-only zero-update measurement. Existing eight-position expansion failure remains unchanged; no target-based choice of parent or source settings.",
+  "code": {
+    "commit": "CURRENT_RELEASE_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; nativeLinuxN607; Windowsnative localvalidation",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_coupled_bridge_source_20261015_r01"
+  },
+  "data": {
+    "dataset": "ManySig.pkl",
+    "version": "existing outer split392005; L-only inner fold2026101503 (8 per TX/RX/day cell); V health-only",
+    "representation": "equalized=1 center256 native RMS; added residualpost_syncnoEQ25MHz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source/inner_source_contract.json#/role_ids/L_dev",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/manifest.json#/classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/manifest.json#/classes",
+    "roles": {
+      "L_s": 6300,
+      "L_train": 5580,
+      "L_dev": 720,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": 0.7,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source/inner_source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/cvs_urban_sigtime/channel.py configurations; experiments/cvs_urban_bridge/views.py; formal target not accessed"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen simulator-added-noise controlled source diagnostic on 720 held-out L_dev; no trained-method, cross-seed or real-orbit claim"
+  },
+  "checkpoint": {
+    "initialization": "frozen_read_only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source/final_ssdg.pth"
+    ],
+    "parent_checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source/final_ssdg.pth",
+    "contract_check_ref": "experiments/cvs_urban_branch50/model.py own_model + actual source_contract/inner_source_contract/initialization/source_frozen/completion and checkpoint split_info",
+    "provenance_verdict": "Fixed A0 scratch E50 matched fold, source-only final50/default head; own EMA from same checkpoint. No full-L or target-selected model is loaded; no new training inherits weights.",
+    "selection_rule": "Fixed A0 final50 by design, never target-best position; this diagnostic fits and selects no checkpoint."
+  },
+  "execution": {
+    "host": "N607",
+    "gpu": "none; CUDA_VISIBLE_DEVICES empty; two CPU threads",
+    "gpu_policy": "no GPU process for this diagnostic",
+    "launch_owner": "codex/root/coupled-bridge-source-20261015",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-coupled-bridge-source-manysig-s2026092701-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_coupled_bridge_source_20261015_r01",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_coupled_bridge_20261015",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_bridge.probe",
+    "stop_rule": "Source-contract/checkpoint/frozen-operator/nonfinite/forward-budget/output collision or technical failure exits this owned diagnostic, preserves all outputs and does not automatically rerun or alter unrelated processes."
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "sample_bridge.jsonl.gz",
+    "progress.json",
+    "results.json",
+    "complete.json",
+    "release/preflight.json",
+    "release/submit.json",
+    "release/dispatcher.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "default-head accuracy",
+      "fixed-parent retention",
+      "repairs",
+      "new errors",
+      "scale30-normalized margin",
+      "EMA entropy",
+      "same/wrong-TX joint cosine",
+      "three SIG group losses",
+      "frozen physical operator checks",
+      "forward packets",
+      "wall seconds"
+    ],
+    "dimensions": [
+      "model_seed",
+      "six source scenes",
+      "full/shared-HQ/independent-HQ/no-added-noise",
+      "source RX",
+      "LOS/PARTIAL/BLOCKED",
+      "lock",
+      "full added-noise SNR bin"
+    ],
+    "prediction_ref": "sample_bridge.jsonl.gz (source L_dev only)",
+    "scorer_ref": "Source labels in frozen probe; no query scorer or target truth access",
+    "selection_rule": "Diagnostic only; do not promote or select a branch, checkpoint or target rerun. D/E retains clean-to-urban anchor, matched HQ CE/anchor/forwards; E alone adds grouped urban-to-HQ SIG."
+  },
+  "rows": [
+    {
+      "row_id": "A0-coupled-HQ-s2026092701",
+      "method": "frozen-A0-ownEMA-coupled-HQ",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/cvs_urban_bridge/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-coupled-bridge-source-manysig-s2026092701-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026101504,
+        "support": null,
+        "evaluation": 2026101504,
+        "receiver": 2026092701
+      },
+      "seed_notes": "No support/Phase2. Source diagnostic stream2026101504 is separate from training2026101401, validation2026101402, prior diagnostic2026101403 and formal target392005/receiver2027. Parent model seed01 only.",
+      "k": null,
+      "scenario": "practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban",
+      "optimizer": "none; frozen zero-update",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 added epochs/updates,36000 forward packets; read-only parent E50=11100 updates and actual recorded training seconds reported separately",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-coupled-bridge-source-manysig-s2026092701-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_coupled_bridge_source_20261015_r01/dispatcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_bridge.probe",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "sample_bridge.jsonl.gz",
+        "progress.json",
+        "results.json",
+        "complete.json",
+        "release/preflight.json",
+        "release/submit.json",
+        "release/dispatcher.log"
+      ],
+      "config": {
+        "schema": "sigtime_coupled_bridge_source_v1",
+        "run_id": "20261015-phase1-sigtime-coupled-bridge-source-manysig-s2026092701-r01",
+        "source_only": true,
+        "query_read": false,
+        "source_role": "L_dev",
+        "source_count": 720,
+        "parent": {
+          "schema": "sigtime_branch_alignment_e50_v1",
+          "run_id": "20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01",
+          "arm": "A0",
+          "model_seed": 2026092701,
+          "row_id": "A0-s2026092701",
+          "variant": "reference_response",
+          "method": "cvs_urban_branch50",
+          "launch_owner": "codex/root/branch-align-e50-20261015",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "initialization": "scratch",
+          "baseline_reuse": false,
+          "parent_checkpoint": null,
+          "checkpoint_sources": [],
+          "parent_training_epochs": 0,
+          "incremental_epochs": 50,
+          "total_epochs": 50,
+          "epochs": 50,
+          "label_epochs": 33,
+          "pseudo_epochs": 17,
+          "steps_per_epoch": 222,
+          "updates": 11100,
+          "batch_size": 128,
+          "unlabeled_batch_size": 256,
+          "source_roles": {
+            "L_s": 6300,
+            "L_train": 5580,
+            "L_dev": 720,
+            "U_s": 56700,
+            "V": 27000
+          },
+          "target_access": false,
+          "network": "single SIG_TIME/t2 postDropout/four windows/112 descriptor/joint160",
+          "feature_parameters": 195041,
+          "default_head": "ResidualPhysicalHead cosine6x160 scale30",
+          "classifier_changed": false,
+          "separate_head_fit": false,
+          "baseline_recipe": "old gates+own EMA+cos; label33+pseudo17; L CE throughout",
+          "optimizer": {
+            "name": "AdamW",
+            "peak_lr": 0.0002,
+            "min_lr": 1e-06,
+            "weight_decay": 0.0001
+          },
+          "label_smoothing": 0.01,
+          "checkpoint_selection": "final_only",
+          "paired": false,
+          "ordinary_concat": true,
+          "train_scenes": [
+            "practical_low_suburban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "curriculum": false,
+          "margin": false,
+          "urban_ssl": false,
+          "channel": {
+            "fs_hz": 25000000.0,
+            "processing_route": "residual",
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "equalization_enabled": false,
+            "reference_snr_db": 30.0,
+            "boundary": "reflect",
+            "quality_adaptation_enabled": true,
+            "phase_tracking_enabled": true,
+            "iq_compensation_enabled": true,
+            "normalization": "source native RMS then simulator unit RMS; no output RMS normalization"
+          },
+          "seeds": {
+            "model": 2026092701,
+            "split": 392005,
+            "data": 392005,
+            "augmentation": 2026101401,
+            "support": null,
+            "evaluation": 392005,
+            "receiver": 2026092701
+          },
+          "curriculum_plan": {
+            "eta_max": 0.5,
+            "increment": 0.05,
+            "warmup_epochs": 3,
+            "quality_db": [
+              3.0,
+              18.0
+            ],
+            "hard_scenes": [
+              "practical_mid_urban",
+              "practical_low_urban"
+            ],
+            "maximum_proposals": 8,
+            "nominal_floor": 0.5,
+            "selection": "channel metadata only; no TX or loss ranking",
+            "advancement": "disabled: eta=0 nominal three-scene sampling throughout"
+          },
+          "margin_plan": {
+            "rho": 0.5,
+            "m_max": 1.0,
+            "coefficient": 0.0,
+            "logit_scale": 30.0,
+            "quality_weight": "sigmoid((signal_to_added_noise_db-5)/5)",
+            "clean_correct_only": true,
+            "stop_gradient_reference": true,
+            "extra_consistency_losses": []
+          },
+          "ssl_plan": {
+            "coefficient": 0.16,
+            "provider": "existing own EMA clean probability",
+            "acceptance": "disabled",
+            "source_launch_precision": 0.95,
+            "source_launch_coverage": 0.1,
+            "confidence_threshold": 0.95,
+            "weak_std": 0.01,
+            "weak_seed": 2026101501,
+            "source_calibration": "Own EMA on full legal V at first pseudo step; precision>=.95 and coverage>=.1",
+            "native_old_gates_unchanged": true,
+            "urban_student_confidence_gate": false
+          },
+          "test_views": [
+            "clean",
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "formal_test_IQ": "reuse existing VALIDATED_ONCE arrays, no regeneration",
+          "scientific_targets": {
+            "low_urban_accuracy": 0.6,
+            "urban_gain_pp": 3.0,
+            "low_gain_pp": 5.0,
+            "clean_drop_max_pp": 0.5
+          },
+          "comparison_baseline": "A0 ordinary concatenation; same internal source fold, native old U gates, extra EMA forward and warmup",
+          "expansion": "Single-seed eight-row pilot. All eight configs remain in the formal three-seed family; source-only family rules govern expansion, never target scores.",
+          "concurrency": {
+            "max_processes_per_gpu": 3,
+            "includes_other_owners": true
+          },
+          "benchmark_context": "user-selected SIG_TIME architecture on exposed benchmark; scratch training source-only, not a new blind confirmation",
+          "source_evidence": "User requested complete same-loss position comparison; no branch filtering by frozen replacement or target results",
+          "internal_source": {
+            "fold_seed": 2026101503,
+            "holdout_per_TX_RX_day": 8,
+            "L_dev": "read-only calibration and source development; never trained",
+            "V": "health_only",
+            "old_full_L_checkpoint_initialization": false,
+            "historical_full_L_dev_exposure": true
+          },
+          "auxiliary": {
+            "position": "none",
+            "kind": "unit direction; eps=1e-4",
+            "warmup_epochs": 5,
+            "start_epoch": 6,
+            "teacher": "own scratch EMA clean eval stop-gradient",
+            "role": "L_train only",
+            "reliability": "common clean EMA default-head correct * urban scene; no urban student gate",
+            "teacher_forward_in_A0": true,
+            "head_aux_gradient": false,
+            "gain_aux_gradient": false,
+            "CE_updates_all": true,
+            "coefficients": "once frozen source calibration from common A0 epoch5; identical for all positions and later seeds",
+            "calibration_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source/branch_calibration.json",
+            "ALL_weights": {
+              "T": 0.2,
+              "F": 0.2,
+              "P": 0.2,
+              "R": 0.2,
+              "S": 0.2
+            },
+            "other_consistency_losses": []
+          }
+        },
+        "parent_selection": "fixed matched A0 final50, no target ranking",
+        "views": [
+          "full",
+          "bridge_shared",
+          "bridge_independent",
+          "no_added_noise"
+        ],
+        "scenes": [
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "noise_improvement_db": 6.0,
+        "diagnostic_seed": 2026101504,
+        "receiver_seed": 2026092701,
+        "receiver_state": "full-view frozen",
+        "AGC_gain": "full-view frozen",
+        "expected_forward_packets": 36000,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "training_epochs_added": 0,
+        "V_forward_packets": 0,
+        "U_sample_reads": 0,
+        "scope": "Coupled physics/default-head/actual SIG112 source measurements; not a new training performance result",
+        "subsequent_design": "D/E must retain direct clean-to-urban joint anchor; both get intermediate CE+clean anchor and matched extra forwards; E alone adds grouped urban-to-HQ SIG. Not implemented by this source run."
+      }
+    }
+  ],
+  "notes": [
+    "Added-noise SNR is not total SNR. Original recording noise remains; no inverse unknown TX hardware.",
+    "Input native RMS then simulator RMS; no output RMS. EQ disabled G=1 in declared six source scenes; EQ-on noise coloration tested separately.",
+    "Freeze full-view AGC gain and gain-limit decision. Actual engine has no sample hard clipping. HQ does not refit state/quality/compensation or shorten boundary/delay.",
+    "Actual four-window SIG112 contains increment7 then area21. Groups6/15/6 exclude dt coordinate6 each window; source scales use fixed RMS floor1e-3, group means first.",
+    "Source cache loads legal L and V containers; only L_dev720 is forwarded, no U container or truth opened, no V forward. No target loader invoked.",
+    "No new model/head/module, no optimizer, all eval/student+ownEMA states unchanged. No new tests of existing parent formal views.",
+    "This is authorized source diagnosis, not a feasibility certificate, approval flow or extra release gate. Actual D/E E50 training remains pending."
+  ],
+  "registered_at": "2026-10-15T06:52:55+00:00"
+}
