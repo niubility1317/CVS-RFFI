@@ -1,6 +1,6 @@
 # SIG_TIME＋配对RDrop：E20/E50三种子主验证
 
-状态 PLANNED，12个新模型已登记，尚未发布。上一轮四条件源域门槛PASS，只决定固定反相关配对可进入本次验证。相对原RDrop只净少错5/1260（修正21、引入16），mean CE下降.0296376；交互项−40包含双CE对照恶化35个，并非主路线少错40个。收益在day3/TX0上不均匀，不能据单个源折宣称统计显著、目标提升或全球首创。
+状态 RUNNING，12行已启动且独立核验VERIFIED。上一轮四条件源域门槛PASS，只决定固定反相关配对可进入本次验证。相对原RDrop只净少错5/1260（修正21、引入16），mean CE下降.0296376；交互项−40包含双CE对照恶化35个，并非主路线少错40个。收益在day3/TX0上不均匀，不能据单个源折宣称统计显著、目标提升或全球首创。
 
 本试不新增假设，固定使用13处原生p的“不重复丢弃”配对：第一视图已丢弃位置第二视图必保留，其他位置以p/(1−p)丢弃，每次边际失活率保持p；只作用成对L。U、teacher、domain与eval保持原生，真实增强后L128复用，不重抽增强。原双CE均值和对称KL不变，CE对照alpha0、RDrop alpha1。具体数学与实际13处位置见[源域结果](../20261015-phase1-SIGTIME-rdrop-paired-masks-sourcefold-s2026092701-m4-r01/report.md)，直接复用其代码提交`c803f2b13e74bd6d721c3795e64cb1c12ec377cc`。
 
@@ -29,3 +29,6 @@ CPU/CUDA各144协议负例、4资格否决、198相同初始张量、真实t1/t2
 
 <!-- MAIN_REVIEW -->
 一次主验证新增接线next-run P0/P1检查PASS：全源域预算/seed、3个历史恢复row定位、source/默认头、逐row自动预测与独立CPU truthlast、24行汇总及launch_once/shared cap3/不可变输出。未复审不变mask算法或重跑全套检查。
+
+<!-- MAIN_LAUNCH_VERIFIED -->
+执行提交`0e11057172191b61470599bf5a52010bf385ab89`已推送且远端OID匹配。单archive传输比较与remote compile VERIFIED；12行进程身份、实际GPU、首轮日志增长、own初始CP无query smoke、完整源角色、原配方和13处mask审计已核实。全部owner当前GPU进程计数≤3。模型仍在训练，尚无本轮目标结果。见launch_verification.json。

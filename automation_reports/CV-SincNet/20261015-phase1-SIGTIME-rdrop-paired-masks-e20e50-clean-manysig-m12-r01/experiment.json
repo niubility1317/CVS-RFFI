@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "Latest user only SIG_TIME+RDrop, focus RDrop; previous fullE50 three-seed andE20 comparison retained. Candidate passed fixed source-only4arm screen before main. No historical weights inherited, all new models scratch.",
   "code": {
-    "commit": "Actual Git HEAD in release_commit.txt",
+    "commit": "0e11057172191b61470599bf5a52010bf385ab89",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "ordinary N607 CVS-RFFI Python, CPU2/worker,loader0,CPUdispatcher/scorersCUDAempty",
     "cwd": "PROJECT/releases/cvs_SIGTIME_rdrop_paired_masks_main20_50_20261015_r01",
@@ -2895,5 +2895,14 @@
     "Main-specific single P0/P1 review limited to newly added full-source/epoch/reuse/train-predict-score/aggregation wiring;do not rereview unchanged source mask algorithm. No extra gates.",
     "All12 fixed training rows launch underall-owner/preCUDA cap3;each completed row auto predicts then independent CPU scores.No target influence on remaining rows or later rescues. E50 primary verdict only after complete3seed comparison;missingrows remainmissing."
   ],
-  "registered_at": "2026-10-15T15:12:02+00:00"
+  "registered_at": "2026-10-15T15:12:02+00:00",
+  "result": {
+    "status": "RUNNING",
+    "source_rows_started": 12,
+    "reused_controls": 12,
+    "evidence_ref": "launch_verification.json",
+    "training_complete": false,
+    "target_feedback": false,
+    "goal_completed": false
+  }
 }
