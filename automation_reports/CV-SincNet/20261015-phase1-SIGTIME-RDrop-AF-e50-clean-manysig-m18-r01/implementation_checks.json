@@ -1,0 +1,225 @@
+{
+  "CPU": {
+    "status": "PASS",
+    "device": "cpu",
+    "negative_cases": 21,
+    "original_single_SIGTIME_initial_state_exact": true,
+    "physical_ordinary_update_maximum_difference": 0,
+    "same_actual_augmented_IQ": true,
+    "network_checks": [
+      {
+        "arm": "A",
+        "feature_parameters": 195041,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 0,
+        "Sinc_lr": 0.0002,
+        "Sinc_eps": 1e-8,
+        "Sinc_AdamW_decay": 0.0001,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      },
+      {
+        "arm": "B",
+        "feature_parameters": 232033,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 0,
+        "Sinc_lr": 0.0002,
+        "Sinc_eps": 1e-8,
+        "Sinc_AdamW_decay": 0.0001,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      },
+      {
+        "arm": "C",
+        "feature_parameters": 195041,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 0,
+        "Sinc_lr": 5000,
+        "Sinc_eps": 4e-16,
+        "Sinc_AdamW_decay": 4e-12,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      },
+      {
+        "arm": "D",
+        "feature_parameters": 195041,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 0,
+        "Sinc_lr": 0.0002,
+        "Sinc_eps": 1e-8,
+        "Sinc_AdamW_decay": 0.0001,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      },
+      {
+        "arm": "E",
+        "feature_parameters": 195041,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 1,
+        "Sinc_lr": 0.2,
+        "Sinc_eps": 1.0000000000000001e-11,
+        "Sinc_AdamW_decay": 0,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      },
+      {
+        "arm": "F",
+        "feature_parameters": 232033,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 1,
+        "Sinc_lr": 0.2,
+        "Sinc_eps": 1.0000000000000001e-11,
+        "Sinc_AdamW_decay": 0,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      }
+    ],
+    "scalar_equivalence": {
+      "origins_Hz": [
+        25000,
+        1000000,
+        19000000
+      ],
+      "steps_each": 100,
+      "dtype": "float64",
+      "maximum_physical_update_error_Hz": 2.2351741790771484e-8,
+      "missing_origin_counterexample_error_Hz": [
+        8.316134922733976,
+        332.645396909359,
+        6320.262541277822
+      ],
+      "physical_global_clip_norm_equal": true,
+      "cosine_lr_mapping": true
+    },
+    "scratch_initialization": true,
+    "actual_IQ_reads": 0,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "default_head_joint_training": true,
+    "limitation": "Synthetic implementation checks; no network performance claim"
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "negative_cases": 21,
+    "original_single_SIGTIME_initial_state_exact": true,
+    "physical_ordinary_update_maximum_difference": 3.5762786865234375e-7,
+    "same_actual_augmented_IQ": true,
+    "network_checks": [
+      {
+        "arm": "A",
+        "feature_parameters": 195041,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 0,
+        "Sinc_lr": 0.0002,
+        "Sinc_eps": 1e-8,
+        "Sinc_AdamW_decay": 0.0001,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      },
+      {
+        "arm": "B",
+        "feature_parameters": 232033,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 0,
+        "Sinc_lr": 0.0002,
+        "Sinc_eps": 1e-8,
+        "Sinc_AdamW_decay": 0.0001,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      },
+      {
+        "arm": "C",
+        "feature_parameters": 195041,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 0,
+        "Sinc_lr": 5000,
+        "Sinc_eps": 4e-16,
+        "Sinc_AdamW_decay": 4e-12,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      },
+      {
+        "arm": "D",
+        "feature_parameters": 195041,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 0,
+        "Sinc_lr": 0.0002,
+        "Sinc_eps": 1e-8,
+        "Sinc_AdamW_decay": 0.0001,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      },
+      {
+        "arm": "E",
+        "feature_parameters": 195041,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 1,
+        "Sinc_lr": 0.2,
+        "Sinc_eps": 1.0000000000000001e-11,
+        "Sinc_AdamW_decay": 0,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      },
+      {
+        "arm": "F",
+        "feature_parameters": 232033,
+        "actual_ownEMA_and_export_equal": true,
+        "leaf_version_cache_fresh": true,
+        "physical_clip_calls": 1,
+        "Sinc_lr": 0.2,
+        "Sinc_eps": 1.0000000000000001e-11,
+        "Sinc_AdamW_decay": 0,
+        "same_actual_augmented_IQ": true,
+        "defaultW_changed": true
+      }
+    ],
+    "scalar_equivalence": {
+      "origins_Hz": [
+        25000,
+        1000000,
+        19000000
+      ],
+      "steps_each": 100,
+      "dtype": "float64",
+      "maximum_physical_update_error_Hz": 2.2351741790771484e-8,
+      "missing_origin_counterexample_error_Hz": [
+        8.316134922733976,
+        332.645396909359,
+        6320.262541277822
+      ],
+      "physical_global_clip_norm_equal": true,
+      "cosine_lr_mapping": true
+    },
+    "scratch_initialization": true,
+    "actual_IQ_reads": 0,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "default_head_joint_training": true,
+    "limitation": "Synthetic implementation checks; no network performance claim"
+  },
+  "review": {
+    "status": "PASS",
+    "scope": "One independent P0/P1; centered diagnostic restore and FAIL upload ordering fixed and targeted rereview PASS"
+  },
+  "restore": {
+    "status": "PASS",
+    "arms": "BCDEF",
+    "synthetic_states": true
+  },
+  "source_decision_ordering": {
+    "status": "PASS",
+    "cases": 8
+  }
+}
