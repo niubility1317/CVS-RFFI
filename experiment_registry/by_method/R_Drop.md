@@ -6,4 +6,5 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|固定 SIG_TIME：R-Drop 源检验剩余两模型|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-source-dropout-consistency-manysig-s0203-m2-r01/report.md)|
 |固定 SIG_TIME：随机失活一致性源端检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01/report.md)|
