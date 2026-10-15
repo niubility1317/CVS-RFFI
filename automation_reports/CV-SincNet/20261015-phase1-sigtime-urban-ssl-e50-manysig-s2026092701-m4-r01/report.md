@@ -1,6 +1,6 @@
 # 固定 SIG_TIME 的 E50 urban 增强首轮
 
-状态：LOCAL_VERIFIED，尚未启动。run_id：`20261015-phase1-sigtime-urban-ssl-e50-manysig-s2026092701-m4-r01`。
+状态：RUNNING，已独立核实启动与日志增长。run_id：`20261015-phase1-sigtime-urban-ssl-e50-manysig-s2026092701-m4-r01`。
 
 本轮按用户“拉长到 E50”执行，从头训练四行、一个模型 seed 2026092701，不继承 E30 权重，不自动扩种子。代码与配置以实际发布 Git commit 标识；dispatcher 从 release_commit.txt 记录该值。此前 E30 的全部权重、结果和负结果保留。
 
@@ -28,3 +28,5 @@ GPU 由实时容量选择，每 GPU 含其他 owner 最多 3 个实验进程，�
 验证：E50 10 项检查 PASS（含错误预算/头/测试 SNR 拒绝、教师冻结与 U 标签拒绝、真实结构参数逐项相同、默认头/骨干联合梯度、发布入口）；旧 E30 9 项兼容检查 PASS。独立 P0/P1 检查已完成；发布器导入和远端 E50 路径的 P1 已修复并定点核实，未发现剩余 P0/P1。来源为 reviewer `/root/urban_p0p1_review`；不增加重复审查。
 
 本轮只有一个模型 seed，不能回答 E50 收益是否跨 seed 重现。无实际结果前不声称达到 60% 或性能改善。后续状态和结果在本报告续写。
+
+发布 commit：`7a366c506a736c34e5bba335821f4867f2d3706b`，已 push 并核对远端 OID。归档传输、远端编译、普通账户预检和 no-query smoke 均通过。四行实际 resolved 为 scratch E50/33+17/11100 更新，parent 与 teacher checkpoint 均为空。B0/C3/SSL_CONF/SSL_WEAK 分别运行在 GPU 3/4/5/6；PID 为 2826320, 2826397, 2826552, 2826633。独立证据：`E:/type10-7/local_artifacts/cvs_urban_sigtime_e50_20261015/monitor/latest.json`。本次仅确认运行，尚无 E50 目标成绩。
