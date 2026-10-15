@@ -1,0 +1,57 @@
+{
+  "status": "PASS",
+  "candidate": "20261015-phase1-SIGTIME-rdrop-budget-e20e50-clean-manysig-m12-r01",
+  "review_type": "single independent next-run P0/P1 review",
+  "findings": [],
+  "scope": [
+    "experiments/cvs_rdrop_budget/*.py",
+    "experiments/cvs_rdrop_budget/configs/matrix.json",
+    "Registered experiment matrix and direct runtime permissions",
+    "Consumed cvs_rdrop_fold20 __init__/design/model/resources shared files and shared source/predict/provenance interfaces"
+  ],
+  "confirmed": [
+    "The fixed matrix contains E20/E50 x TWO_CE/RDROP x the three fixed seeds, all full-five-source-RX scratch models. Native arguments set the actual row's epochs and stages to20/13+7 or50/33+17, retain LS0/clean L/own EMA, and contain no inherited model/teacher checkpoint or held-RX filter.",
+    "The source adapter supplies UPDATES=epochs*222 per row to the shared trainer, rather than inheriting a fixed E20 completion budget. The mechanism counters, completion, checkpoint validation, prediction provenance and score completion all use the actual row's epoch-derived update count.",
+    "The shared paired hook retains the original default head and contributes0.5*(CE2-CE1)+alphaKL exactly once. Under the fixed native coefficient/scale path this yields the mean two clean-L CE plus optional symmetric KL, with original U objectives and one actual optimizer step unchanged.",
+    "The four archived shared files match bd71d5976. The runner explicitly maps the new budget/shared package paths and loads the immutable fold release's shared-source module before importing the new source consumer. That shared API supports both per-row update budgets; the observer has no data-filter callback, so the original full-source roles remain exact.",
+    "Own source metadata validates complete roles, scratch ancestry, actual native recipe, NoExplicitCFO, disabled fitted heads, final-only selection, paired-forward counters and full-five-RX V before checkpoint deserialization. Strict model loading uses the row's own complete final student state, including its original W/gains.",
+    "Each GPU worker trains, freezes and clean-predicts its own row. Once that worker exits with complete predictions, the CPU dispatcher starts a fresh CUDA-hidden scorer for that row. Final aggregation is another CPU subprocess and requires all twelve rows,216 metric strata and three actual seeds per arm.",
+    "Paired comparisons cover RDROP-minus-TWO_CE within each budget and E50-minus-E20 within each mode, with exact physical-ID equality. No target scores affect pending training, checkpoint choice or matrix membership.",
+    "Capacity admission reuses the cross-owner lock, actual/pre-CUDA PID union and all-GPU selection, with cap3 and12000MiB minimum free memory. The lock spans selection/Popen/child observation, and CPU scorers use empty CUDA_VISIBLE_DEVICES. Existing roots and row logs are protected; failures preserve artifacts and stop pending launches without retrying or terminating unrelated work."
+  ],
+  "verification": {
+    "focused_checks": {
+      "status": "PASS",
+      "negative_cases": 34,
+      "actual_budget_mode_models": 4,
+      "matched_initial_state_tensors": 200,
+      "synthetic_L_forward_packets": 1024,
+      "body_and_defaultW_gradients_nonzero": true,
+      "checkpoint_loads": 0,
+      "real_IQ_reads": 0,
+      "query_reads": 0,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/.codex_tmp/native_polyphase_runner.py experiments.cvs_rdrop_budget.checks"
+    },
+    "per_row_shared_source_adapter": {
+      "status": "PASS",
+      "observed_epoch_label_pseudo_update_budgets": [[20, 13, 7, 4440], [50, 33, 17, 11100]],
+      "actual_training_calls": 0,
+      "IQ_or_checkpoint_reads": 0
+    },
+    "matrix_matches_design": true,
+    "registration_rows_match_design": true,
+    "shared_files_match_bd71d5976": true,
+    "totals": {
+      "models": 12,
+      "epochs": 420,
+      "optimizer_steps": 93240,
+      "extra_L_identity_forwards": 11934720,
+      "U_observations": 8164800,
+      "clean_decisions": 2016000,
+      "metric_records": 216
+    }
+  },
+  "review_boundary": "Only this evidence file was written. No production edit, real IQ/checkpoint/target access, remote action, launch, commit, repeat old-candidate review, report-completeness gate or additional gate."
+}

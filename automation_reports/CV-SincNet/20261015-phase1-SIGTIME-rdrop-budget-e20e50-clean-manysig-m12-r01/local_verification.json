@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "focused_checks": "experiments.cvs_rdrop_budget.checks executed PASS before registration",
+  "negative_cases": 34,
+  "actual_budget_mode_models": 4,
+  "matched_initial_state_tensors": 200,
+  "synthetic_L_forward_packets": 1024,
+  "body_and_defaultW_gradients_nonzero": true,
+  "checkpoint_loads": 0,
+  "real_IQ_reads": 0,
+  "query_reads": 0,
+  "optimizer_steps": 0,
+  "head_fit_updates": 0,
+  "Python_files_compiled": 10,
+  "remote_embedded_strings_compiled": 2,
+  "request_matches_design": true,
+  "cost": {
+    "models": 12,
+    "epochs": 420,
+    "optimizer_steps": 93240,
+    "extra_L_identity_forwards": 11934720,
+    "U_observations": 8164800,
+    "clean_decisions": 2016000,
+    "metric_records": 216
+  },
+  "capacity_fixtures": "all8, idlefirst, allowners/preCUDA cap3/GPU7 PASS"
+}
