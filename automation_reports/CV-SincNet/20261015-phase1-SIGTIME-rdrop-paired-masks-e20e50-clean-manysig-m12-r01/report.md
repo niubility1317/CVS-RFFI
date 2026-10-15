@@ -55,3 +55,6 @@ E20六个新模型已完成同row独立分析，和六个历史控制形成完�
 | [Paired masks RDrop full-source E20 E20](E20_summary.md)；fixed exposed clean target168000,three model seeds | clean均值83.592262%，相对INDEP_RDROP same budget/seed -0.350595个百分点，0/3正 | NEGATIVE_VS_STANDARD_RDROP |
 
 本候选的源筛选成本为80 model-epoch，此前其他已关闭假设的成本另见各run报告，没有并入本候选成本或充作父权重。E50主验证仍PENDING。
+
+<!-- ROW_REPORTS E50_ANTI_CE-s2026092703,E50_ANTI_RDROP-s2026092701 -->
+同row分析新增：[E50_ANTI_CE-s2026092703](row_reports/E50_ANTI_CE-s2026092703.md)、[E50_ANTI_RDROP-s2026092701](row_reports/E50_ANTI_RDROP-s2026092701.md)。这些完整单row结果不构成整批三seed结论，其他健康训练保持冻结方案。
