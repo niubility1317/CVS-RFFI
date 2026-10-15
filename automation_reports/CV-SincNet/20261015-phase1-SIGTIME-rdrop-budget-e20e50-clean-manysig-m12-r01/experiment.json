@@ -2726,10 +2726,16 @@
   ],
   "registered_at": "2026-10-15T08:14:45+00:00",
   "result": {
-    "status": "RUNNING",
-    "evidence_ref": "launch_verification.json",
-    "actual_rows_started": 12,
-    "all_expected_rows": 12,
+    "status": "ANALYZED",
+    "evidence_ref": "results_analysis.json",
+    "actual_rows": 12,
+    "actual_optimizer_steps": 93240,
+    "actual_model_epochs": 420,
+    "clean_decisions": 2016000,
+    "metric_records": 216,
+    "primary": "E50_RDROP",
+    "E50_RDROP_goal84_check": false,
+    "E20_RDROP_goal84_check": false,
     "goal_completed": false
   }
 }

@@ -1,38 +1,37 @@
 # RDrop 全源 E20 / E50 三种子预算比较
 
-状态 **RUNNING / 全12行已实际启动，发布后独立证据 VERIFIED**。E20与E50各6个从零模型，所有12个own初始checkpoint无query smoke通过、首epoch完成、原全五RX6300/56700/27000角色一致、实际预算/默认头配方一致、CWD/argv/GPU身份及日志持续增长均已独立核实。没有技术失败，训练和测试尚未完成，不预报收益。
+状态 **ANALYZED / 全12行训练、clean预测、独立truth-last评分与完整产物分析 VERIFIED**。E20/E50各TWO_CE和RDROP三种子，均使用从零训练后固定final默认头。目标仍active；本轮结果按以下预登记4组和4个配对完整报告，不按最高target分数换主条件。
 
-执行commit `5530a17b60bc1005eef8de151ae540b92a97da8a` 已推送且独立remote OID一致。一次ordinary N607 preflight、release archive SHA比较和remotecompile通过。前两次本地发布尝试在任何远程preflight/写入前因Git工作区旧stat状态退出；对应共享文件无内容差异，刷新index元数据后恢复，未改变/重训实验或生产代码。
+| 条件 | seed01 | seed02 | seed03 | 均值±样本SD | 最差RX均值 | MacroF1均值 |
+|---|---:|---:|---:|---:|---:|---:|
+| E20_TWO_CE | 81.140476% | 80.668452% | 81.114881% | 80.974603% ± 0.265443pp | 71.119444% | 0.805352 |
+| E20_RDROP | 83.493452% | 81.843452% | 82.149405% | 82.495437% ± 0.877741pp | 73.695833% | 0.821111 |
+| E50_TWO_CE | 80.487500% | 80.838095% | 82.125595% | 81.150397% ± 0.862548pp | 72.723611% | 0.807393 |
+| E50_RDROP | 82.282143% | 81.658333% | 82.368452% | 82.102976% ± 0.387483pp | 73.887500% | 0.817155 |
 
-本任务GPU0至7的进程数依次为[1, 1, 1, 1, 2, 2, 2, 2]；该快照计入其他owner后各卡均2个实际GPU进程，总16个，≤3上限。自己12个worker实测每个3348至3348MiB（高于前次源fold计划约3GiB，但仍有充分准入余量）。CPU2/worker、loader0、CPUdispatcher/scorerCUDA为空。首epoch含源V诊断实测40.04至47.84s；它不是纯训练step计时或最终每epoch稳定耗时。所有8卡均使用共享实时准入，其他科学任务正常保留，不独占剩余容量、不停止/迁移/重启任何健康任务。
+| 预登记配对 | 平均差 | 配对样本SD | 正收益种子 |
+|---|---:|---:|---:|
+| E20_RDROP minus E20_TWO_CE | +1.520833pp | 0.724072pp | 3/3 |
+| E50_RDROP minus E50_TWO_CE | +0.952579pp | 0.784312pp | 3/3 |
+| E50_TWO_CE minus E20_TWO_CE | +0.175794pp | 0.831862pp | 2/3 |
+| E50_RDROP minus E20_RDROP | -0.392460pp | 0.737376pp | 1/3 |
 
-12行按固定20/50轮预算继续，逐行冻结后立即自动clean168000预测，随后独立CPUtruth-last评分；不等待其他行、不读当前分数调训练。完整12行/216strata完成后比较4组的三seed均值、样本SD及预登记机制/预算配对差。当前goal active，84%尚未证明。
+主条件E50_RDROP clean三seed均值为82.102976%，84%检查=False；E20_RDROP预算条件为82.495437%，84%检查=False。这两项属于已暴露benchmark上的默认头验证，不证明未见TX、卫星或Phase2能力；完整研究目标未据此自动完成。
 
-发布前冻结方案：
+独立CPU分析完整解析12份step压缩日志的全部93240条更新、420条epoch、全部12份stdout、24份初末checkpoint、2016000个既有默认头决定和216个分层混淆矩阵。每行实际更新等于epochs×222，13L+7U/33L+17U，原始物理角色6300/56700/27000、scratch空祖先、ownEMA、固定final、headfit0均核实。全部四条件的每seed初始200state一致：{'2026092701': 200, '2026092702': 200, '2026092703': 200}。源V与L健康仅诊断，未回流择轮/配方或选择性重跑。
 
-状态 **PLANNED，已登记，尚未远程发布**。本轮按用户最新要求，同时运行 E20 和 E50；每档 TWO_CE / RDROP × seeds2026092701/02/03，共12个独立从零模型。E50_RDROP 为预登记主结果，E20_RDROP 为预算比较，两个同预算 TWO_CE 提供机制对照。两档都报告是否达到 clean 三种子均值84%，不以 target 最高分挑选主结果。当前目标未完成。
+真实目标逐步核验：native已含CE1，实际额外项为.5(CE2−CE1)+alphaKL；最大绝对重构误差2.38e-07，全部相关损失有限。原生熵没有独立日志标量，表中`derived/original_weighted_U_entropy`是closedloss扣除CE1与weightedU后的派生量，不能当作独立观测。U真值读取0，接受数只反映覆盖量，不能推断真实U正确率。
 
-全五源 RX1/3/4/6/8；原 L6300/U56700 hiddenTX/V27000，源日1/2/3、六TX、物理划分与 VALIDATED_ONCE 载体保持。L 为 train pool 的10%及全部90000源数据的7%，不扩大标签。U原门控、Gaussian weak/strong、ownEMA0.999及权重lambda_u0.16/lambda_ent0.01保持，V只作默认头健康诊断。SIG_TIME/CENTER25K、原生dropout、NoExplicitCFO与原补偿、实际joint160、默认cosine6×160 scale30按原流程联合训练；不另训/替换/重拟合任何分类头。无父模型/优化器/EMA权重继承，无星地训练或测试。
+全部模型实际特征参数和默认W均更新；96个合成packet前向进一步确认初始化至末态joint160改变、feature-only等于部署joint160逐位一致，临时扰动W不改变joint160。该分析新增真实IQ读取0、优化/头拟合0、checkpoint改写0、新target预测0；truth只在全row完整预测验证后独立读取复算。特征路径检查不等于迁移泛化证明。
 
-| 预算 | 机制 | 种子数 | L/U轮次 | 每模型更新 | 每模型额外L前向 |
-|---|---|---|---|---|---|
-| E20 | TWO_CE / RDROP | 各3 | 13 / 7 | 4440 | 568320 |
-| E50 | TWO_CE / RDROP | 各3 | 33 / 17 | 11100 | 1420800 |
+总训练成本420modelepoch/93240更新/11934720额外L前向，主L前向同量、8164800次U重复观察。矩阵从首次worker准入至12行评分汇总完成墙钟2936.84s，实测吞吐14.710模型/小时；受共享GPU上其他owner负载影响，不冒称单模型独占成本。各stage/row训练与预测耗时见training_stage_cost/summary。初期12worker分散8卡、各3348MiB；所有进程自然结束，原路径完整保留，没有干预其他任务。
 
-两机制均对同一个 clean L128 做两次原生随机dropout前向，用 mean(CE1,CE2)，LS0。RDROP 固定加 alpha1 对称KL：0.5 mean sum((p−q)(logp−logq))，两侧均可微；TWO_CE alpha0。native 原有 CE1，hook只加 .5(CE2−CE1)+alphaKL，避免双计数，单次原优化器更新。全部步骤启用，不扫描系数。原日志CE1与实际pairedCE/KL分开。所有变体同seed200个初始state完全相同，两个机制均承担第二次L前向成本。RDrop 是[已有方法](https://proceedings.neurips.cc/paper/2021/hash/5a66b9200f29ac3fa0ae244cc2a51b39-Abstract.html)，本轮验证其CVS训练机制收益，不宣称全球新方法。
+E20与E50差异同时包括cosine学习率终点和13+7/33+17阶段分配，因此预算效果不能解释为同一20轮轨迹继续训练。两次L前向在TWO_CE和RDROP中匹配；KL的隔离效应只读同预算配对，跨预算主条件直接比较不能替代该消融。固定alpha1/0，LS0、原生dropout、SIG_TIME/CENTER25K/默认头/旧U配方不变，没有额外候选、换头或测试反馈调参。
 
-E20与E50使用原AdamW lr0.0002/weightdecay0.0001，原cosine日程终点分别为20/50。预算对比同时改变总更新、L/U阶段轮次和学习率日程；不把它解释为同一20轮轨迹继续训练。总成本12模型/420modelepoch/93240实际更新/11934720额外L packet前向，主L前向同量，8164800次U重复观察；2016000次新clean决策/216个分层指标。训练启动initialcheckpoint合成smoke和预测前合成smoke另计，不混入真实训练量。
+此前源RX1留出单seed的+5.873016pp是开展依据，不等同本轮目标泛化结论。NONE默认头E20三seed小幅正收益、CENTER25K等历史正证据和全部负结果继续独立保留；本轮没有把它们或交叉拟合教师/权重平均叠加。RDrop为已有方法，不宣称全新训练理论；创新机制仍需实际源因果/互补证据和后续完整验证。
 
-开展依据是固定单seed真实RX1留出源训练：RDROP75.158730% vs TWO_CE69.285714%，+5.873016个百分点，纠正104/引入30、meanCE也下降；fitV微降、TX1新增5错，收益不均匀。它属于来源合法的科学证据，四RX权重不继承，也不能充当这次全五RX的E20对照。原计划尚未发布的seed02源复核adapter已撤回，未登记/未启动；用户当前完整E50+E20要求覆盖其等待条件。已有NONE小幅正收益、CENTER25K等路线和所有负结果保留；本轮不混合其他机制或跨拟合教师。
+完整训练曲线，阴影为三seed样本SD：
 
-各row固定final20/50 student默认头，不按V择轮/挑EMA/权重平均/重训头。每row冻结后立即预测原clean168000物理样本，再由CUDA为空的独立CPU进程读取truth评分；不等整批训练完成。保留overall/RX7/TX6/day4共18strata。四个预登记配对：E20 RD−TWOCE、E50 RD−TWOCE、TWOCE E50−E20、RD E50−E20；逐seed正确/新增错误及三seed均值/样本SD、MacroF1、最差RX/day，完整source训练/健康与成本一并报告。既有benchmark已暴露，不声称新独立盲测。任何分数均不回流其他训练或选择性重跑。
+![完整训练曲线](training_curves.png)
 
-ordinary N607/CVS-RFFI；CWD `PROJECT/releases/cvs_SIGTIME_rdrop_budget20_50_20261015_r01`；命令 `CVS-RFFI/bin/python -u experiments/cvs_rdrop_budget/runner.py experiments/cvs_rdrop_budget/configs/matrix.json`；owner `codex/root/SIGTIME-rdrop-budget20-50-20261015`；唯一不可覆盖root `PROJECT/runs/20261015-phase1-SIGTIME-rdrop-budget-e20e50-clean-manysig-m12-r01`。CPU dispatcher和scorer不使用CUDA，每训练worker CPU2、loaderworkers0。12行均已固定就绪；按空闲优先考虑全部8卡，在既有shared `receiver_residual_capacity4.lock` 内读实际与pre-CUDA全部owner、选卡/Popen/记录，每GPU总进程≤3且准入空余≥12000MiB。每row计划约3GiB（前次源fold实测2.95至2.98GiB），实际全源占用和耗时另测。协调只分配资源，不干预其他对话科学路线；不停止/迁移/重启任何健康任务。
-
-技术停止条件：权限/物理角色/继承来源不匹配、非有限损失/输出、实际预算不足、预测不全、输出碰撞或worker/scorer失败即停止待启动行，保留产物；已启动健康行继续，不自动重跑。源健康报告，不因分数改变固定12行。每launcher首步自己的scratch checkpoint保存/重载、2个合成无query前向smoke PASS即继续。发布前唯一聚焦负例/模型检查和独立P0/P1、actualGitcommit；一次N607 preflight、单archiveSHA比较、remotecompile；之后独立PID/CWD/argv/GPU/log增长证据。预期产物和每行配置/命令/seed见experiment.json。
-
-REJECTED_EXTRA_GATE：单独设计审批/spec链、report-only重复审查、额外config/source/report哈希或新调度平台不加入最小流程。84%及可部署泛化目标仍待完整证据。
-
-
-<!-- COMPLETE_BUDGET_ANALYSIS_TOOL -->
-完整产物分析工具已版本化为 `experiments/cvs_rdrop_budget/analyze.py` 和 `report.py`：前者只在已核实12行终态后以独立CUDA空CPU进程解析全部93240step/420epoch、初末checkpoint及216个已有预测混淆矩阵；后者生成完整四组/四配对及source/成本CSV和曲线。工具不进入远端健康训练archive，不生成新的目标预测，不拟合头、不改变模型或候选；训练未结束时直接返回NOT_TERMINAL且不连接truth。完整分析实际执行仍待终态，编译通过不当作结果完成。
+配置、数据权限、停止条件、逐行命令和预登记主条件见experiment.json；发布前检查/独立P0P1及启动证据保持原文件。完整统计见results_analysis.json和CSV。
