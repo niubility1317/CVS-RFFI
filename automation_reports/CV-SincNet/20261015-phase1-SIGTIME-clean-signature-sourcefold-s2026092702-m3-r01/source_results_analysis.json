@@ -1,11 +1,11 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "run_id": "20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01",
   "execution_commit": "f695b43bb8ff2c8584871cf439315557ced718cf",
-  "complete_rows": 2,
+  "complete_rows": 3,
   "planned_rows": 3,
-  "complete_step_records": 8880,
-  "complete_epoch_records": 40,
+  "complete_step_records": 13320,
+  "complete_epoch_records": 60,
   "rows": {
     "ELEMENT": {
       "status": "PASS",
@@ -628,6 +628,317 @@
           }
         }
       }
+    },
+    "CLEAN_SIG": {
+      "status": "PASS",
+      "row_id": "CLEAN_SIG-RX1-s2026092702",
+      "complete_step_records": 4440,
+      "complete_epochs": 20,
+      "invalid_loss_or_U_truth_steps": [],
+      "default_head_no_refit": true,
+      "source_health": true,
+      "final_training_L_CE": 0.01708070142719022,
+      "final_source_metrics": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.9800462962962962,
+        "source_val_rx_accuracy": {
+          "3": 0.9557407407407408,
+          "4": 0.9855555555555555,
+          "6": 0.995,
+          "8": 0.9838888888888889
+        },
+        "source_val_worst_rx": 0.9557407407407408,
+        "held_RX_excluded": true
+      },
+      "exports": {
+        "FINAL": {
+          "count": 1260,
+          "correct": 860,
+          "errors": 400,
+          "accuracy": 0.6825396825396826,
+          "macro_F1": 0.6543277323350453,
+          "per_class_accuracy": [
+            0.8428571428571429,
+            0.7761904761904762,
+            0.17142857142857143,
+            0.6,
+            1.0,
+            0.7047619047619048
+          ],
+          "worst_class_accuracy": 0.17142857142857143,
+          "day_accuracy": {
+            "1": 0.6095238095238096,
+            "2": 0.7642857142857142,
+            "3": 0.6738095238095239
+          },
+          "worst_day_accuracy": 0.6095238095238096,
+          "confusion_matrix": [
+            [
+              177,
+              33,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              1,
+              163,
+              1,
+              44,
+              1,
+              0
+            ],
+            [
+              85,
+              24,
+              36,
+              51,
+              0,
+              14
+            ],
+            [
+              3,
+              79,
+              1,
+              126,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              210,
+              0
+            ],
+            [
+              0,
+              0,
+              5,
+              0,
+              57,
+              148
+            ]
+          ],
+          "mean_CE": 1.5931848891975362,
+          "mean_margin": 4.07075163142253
+        }
+      },
+      "actual_noise_placement": {
+        "mode": "CLEAN_SIG",
+        "main_t2_dropout_p": 0.1,
+        "signature_tap": "t2.drop input after original pool",
+        "signature_gradient_detached": false,
+        "extra_IQ_forwards": 0,
+        "extra_rng_draws": 0,
+        "extra_parameters": 0,
+        "inference_same_weight_equivalence": true,
+        "head_structure_changed": false
+      },
+      "feature_parameter_tensors": 71,
+      "feature_delta_initial_to_FINAL": 10.745412910880026,
+      "default_W_delta_initial_to_FINAL": 0.6767793661848581,
+      "elapsed_training_seconds": 756.4265418052673,
+      "training_mutations_by_reader": 0,
+      "complete_log_numeric_summaries": {
+        "train/loss": {
+          "count": 4440,
+          "sum": 549.7853536081966,
+          "minimum": 0.002764860400930047,
+          "maximum": 3.5933096408843994,
+          "first": 3.5933096408843994,
+          "last": 0.01348547637462616,
+          "mean": 0.12382553009193617
+        },
+        "train/loss_tx_labeled": {
+          "count": 4440,
+          "sum": 546.8149717184715,
+          "minimum": 0.0021729262080043554,
+          "maximum": 3.5933096408843994,
+          "first": 3.5933096408843994,
+          "last": 0.01182902604341507,
+          "mean": 0.12315652516181791
+        },
+        "train/loss_unlabeled": {
+          "count": 4440,
+          "sum": 12.76319467602957,
+          "minimum": 0.0,
+          "maximum": 0.3621561527252197,
+          "first": 0.0,
+          "last": 0.0061347526498138905,
+          "mean": 0.0028745933955021557
+        },
+        "train/reliable_ratio": {
+          "count": 4440,
+          "sum": 31.894531251862645,
+          "minimum": 0.0,
+          "maximum": 0.07421875,
+          "first": 0.0,
+          "last": 0.015625,
+          "mean": 0.007183452984653749
+        },
+        "train/pseudo_total": {
+          "count": 4440,
+          "sum": 396368.0,
+          "minimum": 0,
+          "maximum": 256,
+          "first": 0,
+          "last": 256,
+          "mean": 89.27207207207208
+        },
+        "train/pseudo_selected": {
+          "count": 4440,
+          "sum": 8152.0,
+          "minimum": 0,
+          "maximum": 19,
+          "first": 0,
+          "last": 4,
+          "mean": 1.836036036036036
+        },
+        "train/pseudo_truth_available": {
+          "count": 4440,
+          "sum": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0
+        }
+      },
+      "complete_log_phase_summaries": {
+        "label": {
+          "train/loss": {
+            "count": 2886,
+            "sum": 518.4040808589198,
+            "minimum": 0.003962480463087559,
+            "maximum": 3.5933096408843994,
+            "first": 3.5933096408843994,
+            "last": 0.015262865461409092,
+            "mean": 0.17962719364480934
+          },
+          "train/loss_tx_labeled": {
+            "count": 2886,
+            "sum": 518.4040808589198,
+            "minimum": 0.003962480463087559,
+            "maximum": 3.5933096408843994,
+            "first": 3.5933096408843994,
+            "last": 0.015262865461409092,
+            "mean": 0.17962719364480934
+          },
+          "train/loss_unlabeled": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/reliable_ratio": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/pseudo_total": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_selected": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_truth_available": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        },
+        "pseudo": {
+          "train/loss": {
+            "count": 1554,
+            "sum": 31.38127274927683,
+            "minimum": 0.002764860400930047,
+            "maximum": 0.08669770509004593,
+            "first": 0.01808474026620388,
+            "last": 0.01348547637462616,
+            "mean": 0.02019386920802885
+          },
+          "train/loss_tx_labeled": {
+            "count": 1554,
+            "sum": 28.410890859551728,
+            "minimum": 0.0021729262080043554,
+            "maximum": 0.08584899455308914,
+            "first": 0.017171600833535194,
+            "last": 0.01182902604341507,
+            "mean": 0.018282426550548087
+          },
+          "train/loss_unlabeled": {
+            "count": 1554,
+            "sum": 12.76319467602957,
+            "minimum": 0.0,
+            "maximum": 0.3621561527252197,
+            "first": 0.0006280128145590425,
+            "last": 0.0061347526498138905,
+            "mean": 0.008213123987149016
+          },
+          "train/reliable_ratio": {
+            "count": 1554,
+            "sum": 31.894531251862645,
+            "minimum": 0.0,
+            "maximum": 0.07421875,
+            "first": 0.015625,
+            "last": 0.015625,
+            "mean": 0.020524151384724996
+          },
+          "train/pseudo_total": {
+            "count": 1554,
+            "sum": 396368.0,
+            "minimum": 48,
+            "maximum": 256,
+            "first": 256,
+            "last": 256,
+            "mean": 255.06306306306305
+          },
+          "train/pseudo_selected": {
+            "count": 1554,
+            "sum": 8152.0,
+            "minimum": 0,
+            "maximum": 19,
+            "first": 4,
+            "last": 4,
+            "mean": 5.245817245817245
+          },
+          "train/pseudo_truth_available": {
+            "count": 1554,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        }
+      }
     }
   },
   "paired_comparisons": {
@@ -638,14 +949,37 @@
       "repaired": 38,
       "broken": 70,
       "prediction_changes": 167
+    },
+    "CLEAN_SIG_minus_ELEMENT": {
+      "CE_difference": -0.08224493800638077,
+      "error_difference": -34,
+      "accuracy_difference_pp": 2.6984126984126986,
+      "repaired": 46,
+      "broken": 12,
+      "prediction_changes": 113
+    },
+    "CLEAN_SIG_minus_NONE": {
+      "CE_difference": -0.21872204348430913,
+      "error_difference": -66,
+      "accuracy_difference_pp": 5.238095238095238,
+      "repaired": 85,
+      "broken": 19,
+      "prediction_changes": 153
     }
   },
   "matched_initial_200_state_tensors": {
     "ELEMENT": true,
-    "NONE": true
+    "NONE": true,
+    "CLEAN_SIG": true
   },
-  "qualification": null,
-  "qualification_pending": true,
+  "qualification": {
+    "CLEAN_SIG_primary_qualified": true,
+    "NONE_independent_confirmation_passed": false,
+    "all_source_healthy": true,
+    "main_run_launched": false,
+    "target_access": false
+  },
+  "qualification_pending": false,
   "source_rule": {
     "primary": "CLEAN_SIG_FINAL strictly fewer errors than both ELEMENT_FINAL and NONE_FINAL; CE no higher than either",
     "independent_positive_route_confirmation": "NONE_FINAL strictly fewer errors than ELEMENT_FINAL, CE no higher",
@@ -674,7 +1008,7 @@
     },
     "limitation": "One discovery seed plus one independent confirmation seed on the same heldRX1 and1260 physicalL; not two confirmation trials or multiple receivers"
   },
-  "terminal_process_verified": false,
+  "terminal_process_verified": true,
   "target_predictions": 0,
   "target_truth_reads": 0,
   "U_truth_reads": 0,

@@ -372,10 +372,16 @@
   ],
   "registered_at": "2026-10-15T04:15:30+00:00",
   "result": {
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "evidence_ref": "source_results_analysis.json",
-    "rows_complete": 2,
-    "qualification": null,
+    "rows_complete": 3,
+    "qualification": {
+      "CLEAN_SIG_primary_qualified": true,
+      "NONE_independent_confirmation_passed": false,
+      "all_source_healthy": true,
+      "main_run_launched": false,
+      "target_access": false
+    },
     "target_access": false,
     "U_truth_read": false,
     "goal84_completed": false

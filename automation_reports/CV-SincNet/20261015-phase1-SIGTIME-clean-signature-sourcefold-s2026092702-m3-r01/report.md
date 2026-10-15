@@ -1,6 +1,6 @@
 # SIG_TIME 签名分支的训练噪声位置
 
-状态 **RUNNING / 启动 VERIFIED**。下文保留预登记。发现轮source01完整结果是ELEMENT59.126984%、NONE70.476190%、LOCKED67.222222%，原LOCKED主假设未通过。NONE相对ELEMENT修正163、新增20，CE下降.56340205；5/6类、3/3day提升，但只有一个seed/一个heldRX，不能当稳定泛化。固定17至20尾平均也无稳定错误收益，ownEMA全源V资格失败；这些负结果保留，不通过改窗口/decay救援。
+状态 **ANALYZED / 完整源结果 VERIFIED**。下文保留预登记。发现轮source01完整结果是ELEMENT59.126984%、NONE70.476190%、LOCKED67.222222%，原LOCKED主假设未通过。NONE相对ELEMENT修正163、新增20，CE下降.56340205；5/6类、3/3day提升，但只有一个seed/一个heldRX，不能当稳定泛化。固定17至20尾平均也无稳定错误收益，ownEMA全源V资格失败；这些负结果保留，不通过改窗口/decay救援。
 
 既有R-Drop首源检验 `20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01` 已ANALYZED：t1/t2/SIG的KL对pairedCE聚合导数cosine为.200427/.189996/.488580，5/5批非零，0训练更新。它使用旧final50/LS.01父，仅为局部兼容性；本轮不重跑或组合，保留为第三候选，不把导数同向写成已验证的泛化正收益。当前主线只执行本报告的三条件。
 
@@ -23,7 +23,7 @@ owner codex/root/SIGTIME-clean-signature-20261015。代码/config以实际Git co
 <!-- SOURCE_RESULTS_START -->
 
 
-完整结束2/3条件，独立解析8880条连续step及40条epoch记录。其他健康条件继续；尚不作完整资格结论。
+完整结束3/3条件，独立解析13320条连续step及60条epoch记录。所属进程自然结束，3次真实checkpoint no-query smoke和完整矩阵均核实。
 
 
 | 新seed02条件 | heldRX1 accuracy | Macro-F1 | 错误数 | meanCE | 最差day |
@@ -34,6 +34,8 @@ owner codex/root/SIGTIME-clean-signature-20261015。代码/config以实际Git co
 
 | NONE | 63.015873% | 61.049254% | 466 | 1.81190693 | 56.904762% |
 
+| CLEAN_SIG | 68.253968% | 65.432773% | 400 | 1.59318489 | 60.952381% |
+
 
 | 同seed配对差 | ΔCE | Δ错误 | 修正错误 | 新增错误 |
 
@@ -41,14 +43,22 @@ owner codex/root/SIGTIME-clean-signature-20261015。代码/config以实际Git co
 
 | NONE_minus_ELEMENT | +0.13647711 | +32 | 38 | 70 |
 
+| CLEAN_SIG_minus_ELEMENT | -0.08224494 | -34 | 46 | 12 |
+
+| CLEAN_SIG_minus_NONE | -0.21872204 | -66 | 85 | 19 |
+
 ELEMENT：final训练LCE=0.02413216；真实4440更新，U观察396368、被选观察8051.0（重复观察，不是不同U包覆盖）；F71初末位移10.805039、默认W位移0.67861619，均为联合训练。完整源V/最差RX和分阶段数值见JSON，全部epoch见CSV。
 
 NONE：final训练LCE=0.01727930；真实4440更新，U观察396368、被选观察8180.0（重复观察，不是不同U包覆盖）；F71初末位移10.52964、默认W位移0.66330804，均为联合训练。完整源V/最差RX和分阶段数值见JSON，全部epoch见CSV。
+
+CLEAN_SIG：final训练LCE=0.01708070；真实4440更新，U观察396368、被选观察8152.0（重复观察，不是不同U包覆盖）；F71初末位移10.745413、默认W位移0.67677937，均为联合训练。完整源V/最差RX和分阶段数值见JSON，全部epoch见CSV。
 
 原ELEMENT在发现seed01为59.126984%，新seed02为65.555556%，跨seed变化+6.428571个百分点。只以各seed内匹配差判断机制，不把单seed变化当机制收益。
 
 NONE相对ELEMENT：发现seed01 +11.349206个百分点、修正163/新增20；独立确认seed02 -2.539683个百分点、修正38/新增70。两个seed共用同一heldRX1及1260物理包，不能当多个RX或两个独立确认试验。
 
-CLEAN_SIG与两个控制尚未齐全，固定资格仍待定；不以已出现部分结果改变后续健康训练。
+固定资格：CLEAN_SIG主机制=True；NONE独立确认=False；三条件源健康=True。两结论不相互救援。
+
+若CLEAN_SIG通过，正式固定NONE+CLEAN_SIG各三seed比较，保留正路线及必要控制；否则只在NONE独立确认通过时正式验证NONE。均未通过则关闭，不扫seed/参数/留出RX。正式全5RX须从零，不继承四RX权重；新矩阵须先固定代码/config和预登记再预测。
 
 全部held数据来自原可见source L，默认头联合训练，无另训头、无target或U真值；本独立reader只读取已完成产物，不追加IQ/模型前向或训练。84%正式三seed目标仍active。

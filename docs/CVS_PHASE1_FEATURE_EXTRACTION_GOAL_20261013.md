@@ -222,3 +222,6 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 
 2026-10-15：下一明确训练机制候选 `20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01` RUNNING/VERIFIED，执行 `f695b43bb8ff2c8584871cf439315557ced718cf`、ordinary GPU0，PID/CWD/argv/GPU/log及真实scratch checkpoint no-query smoke独立核实。seed02真实RX1留出，ELEMENT/NONE/CLEAN_SIG各20/13L+7U/4440步，总13320；CLEAN_SIG主干保留t2.drop及原RNG，仅签名读取pool后drop前输入、梯度不断、0新loss/参数/IQ前向。实际CPU/CUDA200state同初值/863730params/eval joint160默认logits逐位相等/主干mask及RNG相等/三处联合梯度有限非零，7聚焦检查及唯一独立P0/P1 PASS。CLEAN_SIG须同时胜两个控制的错误且CE不升；NONE正路线另以胜ELEMENT独立确认，不救援失败主假设。无tail/EMA窗口扩展或R-Drop组合；原R-Drop局部兼容性正迹象保留第三优先。旧LOCKED/source01及EMA失败均已交付，84%goalactive。见[本轮预登记及启动](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/report.md)。
+
+
+2026-10-15：新seed02签名噪声位置 `20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01` ANALYZED/VERIFIED，3×20epoch/13320更新完整、所有Utruth0/默认头joint、200state同初值及1260 heldRX1各默认头读出/paired独立复算。CLEAN_SIG主资格True，NONE独立确认False。完整曲线/F71及W变化/发现与确认seed对照见[同row报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/report.md)。四RX权重不转正式全5RX；正式三seed须新固定配置，未读target，84%goalactive。
