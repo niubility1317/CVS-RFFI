@@ -1,6 +1,6 @@
 # SIG_TIME＋RDrop：特征余空间曲率补全源域预登记
 
-状态 PLANNED。只优化 SIG_TIME＋RDrop，固定原 SIG_TIME 与默认头联合训练。原版 RDrop E20/E50 三种子 clean 均值83.942857%/84.340079%的正收益保留；差分梯度、跨 RX 证据、互补掩码和包络的失败配方保持关闭。本轮新增的是原版预测一致性之外的特征学习信号，不救跑既有失败算子。
+状态 RUNNING，四行启动 VERIFIED。只优化 SIG_TIME＋RDrop，固定原 SIG_TIME 与默认头联合训练。原版 RDrop E20/E50 三种子 clean 均值83.942857%/84.340079%的正收益保留；差分梯度、跨 RX 证据、互补掩码和包络的失败配方保持关闭。本轮新增的是原版预测一致性之外的特征学习信号，不救跑既有失败算子。
 
 最新[同图梯度诊断](../20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01/report.md)证实，MEAN/CONFIDENCE/ENVELOPE同时改变强度和方向，不能把损失系数相同当作同样优化力度。本候选完整保留原双向 KL，不把它替换成教师目标。其假设是：默认六类头只观测160维归一化特征中的至多5个类间对比方向，双向 KL 对其余方向的同包 dropout 差异没有直接的类间约束。补充这些方向的稳定性可能减少部署特征中的随机依赖，也可能损害有用变化，须用公平源训练证伪。
 
@@ -34,3 +34,6 @@ CPU/CUDA各53协议负例、7科学否决、实际198同初态、CE/logits/nativ
 文献：[R-Drop](https://arxiv.org/abs/2106.14448)已有同包双向KL；[Fraternal Dropout](https://arxiv.org/abs/1711.00066)已有两mask预测差异正则；[LR-Drop](https://aclanthology.org/2024.lrec-main.891/)已对hidden states、attention及output做分层一致性。因此“额外加特征一致性”不能单独声称创新。本候选待证点是保留有效KL，按当前默认头的可见/余空间与解析等迹预算补充信号，并通过方向对照检验独立作用。有限检索不能证明全球新颖，更不能证明泛化收益。
 
 REJECTED_EXTRA_GATE：通用brainstorming技能中的额外设计审批/书面spec审批不在用户Exclusive Minimal Experiment Workflow白名单内，作为NONBLOCKING不执行；意图、固定方案及停止规则均在本最小报告，不增加审批/签名/重复审查。goal ACTIVE。
+
+<!-- LAUNCH_VERIFIED -->
+执行提交 `78ad998e9dcb5653573fa801538e914189833d20` 已推送且远端OID匹配。单次archive SHA比较、remote compile均VERIFIED。四行own初始CP smoke、独立PID/CWD/argv/GPU/CPU与日志增长、实际源角色/RX1排除及初轮rank5/Fisher/等迹审计已核实。训练和最终源评价尚未完成，未访问target。见launch_verification.json。

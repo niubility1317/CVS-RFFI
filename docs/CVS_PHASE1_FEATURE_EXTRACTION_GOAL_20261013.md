@@ -363,4 +363,4 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 
 <!-- RDROP_CURVATURE_COMPLETION_PREREG_20261016 -->
-仅SIG_TIME＋RDrop，原fullKL保持，按默认头centered normalized-W rank5的可见/余空间增加等迹特征稳定性；FULL/SPAN/ISOTROPIC/NULL，固定seed02各scratchE20，RX1全路径排除、默认头联合。CPU/CUDA53协议负例/7科学否决、198初态及实际梯度/RNG检查PASS。NULL须同时少错且CE不升，FAIL关闭，PASS仅另行固定RX3源确认。20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01 PLANNED，尚无真实训练结果。[固定方案](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/report.md)。goalactive。
+仅SIG_TIME＋RDrop，原fullKL保持，按默认头centered normalized-W rank5的可见/余空间增加等迹特征稳定性；FULL/SPAN/ISOTROPIC/NULL，固定seed02各scratchE20，RX1全路径排除、默认头联合。CPU/CUDA53协议负例/7科学否决、198初态及实际梯度/RNG检查PASS。NULL须同时少错且CE不升，FAIL关闭，PASS仅另行固定RX3源确认。20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01 RUNNING，四行启动VERIFIED，首轮真实几何/等迹信号通过，尚无最终源评价。[固定方案](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/report.md)。goalactive。
