@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "actual_rows": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "mode": "STANDARD",
+      "actual_native_L_contexts": 16,
+      "synthetic_joint_optimizer_steps": 16,
+      "actual_optimizer_group_count": 1,
+      "original_U_loss_object_unchanged": true,
+      "selected_Sinc_snapshot_recount": true,
+      "default_W_gradient_nonzero": true,
+      "source_or_target_IQ_read": false,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "mode": "NORMALIZED_UNITS",
+      "actual_native_L_contexts": 16,
+      "synthetic_joint_optimizer_steps": 16,
+      "actual_optimizer_group_count": 2,
+      "original_U_loss_object_unchanged": true,
+      "selected_Sinc_snapshot_recount": true,
+      "default_W_gradient_nonzero": true,
+      "source_or_target_IQ_read": false,
+      "head_fit_updates": 0
+    }
+  ],
+  "same_seed_initial_state_equal": true,
+  "actual_native_arg_differences": [
+    "output_dir",
+    "candidate_id"
+  ],
+  "global_optimizer_class_restored": true,
+  "no_new_feature_loss_or_forward": true,
+  "real_IQ_or_checkpoint_read": false,
+  "formal_training_started": false
+}
