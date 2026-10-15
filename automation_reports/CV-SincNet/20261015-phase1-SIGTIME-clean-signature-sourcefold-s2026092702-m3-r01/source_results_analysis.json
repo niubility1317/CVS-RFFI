@@ -2,10 +2,10 @@
   "status": "RUNNING",
   "run_id": "20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01",
   "execution_commit": "f695b43bb8ff2c8584871cf439315557ced718cf",
-  "complete_rows": 1,
+  "complete_rows": 2,
   "planned_rows": 3,
-  "complete_step_records": 4440,
-  "complete_epoch_records": 20,
+  "complete_step_records": 8880,
+  "complete_epoch_records": 40,
   "rows": {
     "ELEMENT": {
       "status": "PASS",
@@ -317,11 +317,332 @@
           }
         }
       }
+    },
+    "NONE": {
+      "status": "PASS",
+      "row_id": "NONE-RX1-s2026092702",
+      "complete_step_records": 4440,
+      "complete_epochs": 20,
+      "invalid_loss_or_U_truth_steps": [],
+      "default_head_no_refit": true,
+      "source_health": true,
+      "final_training_L_CE": 0.017279295673434465,
+      "final_source_metrics": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.9802314814814815,
+        "source_val_rx_accuracy": {
+          "3": 0.9562962962962963,
+          "4": 0.9844444444444445,
+          "6": 0.995,
+          "8": 0.9851851851851852
+        },
+        "source_val_worst_rx": 0.9562962962962963,
+        "held_RX_excluded": true
+      },
+      "exports": {
+        "FINAL": {
+          "count": 1260,
+          "correct": 794,
+          "errors": 466,
+          "accuracy": 0.6301587301587301,
+          "macro_F1": 0.610492540580422,
+          "per_class_accuracy": [
+            0.6285714285714286,
+            0.8047619047619048,
+            0.20952380952380953,
+            0.6047619047619047,
+            1.0,
+            0.5333333333333333
+          ],
+          "worst_class_accuracy": 0.20952380952380953,
+          "day_accuracy": {
+            "1": 0.569047619047619,
+            "2": 0.7309523809523809,
+            "3": 0.5904761904761905
+          },
+          "worst_day_accuracy": 0.569047619047619,
+          "confusion_matrix": [
+            [
+              132,
+              78,
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              169,
+              1,
+              39,
+              1,
+              0
+            ],
+            [
+              57,
+              57,
+              44,
+              42,
+              0,
+              10
+            ],
+            [
+              2,
+              80,
+              1,
+              127,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              210,
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              0,
+              97,
+              112
+            ]
+          ],
+          "mean_CE": 1.8119069326818453,
+          "mean_margin": 3.536424934991177
+        }
+      },
+      "actual_noise_placement": {
+        "mode": "NONE",
+        "main_t2_dropout_p": 0.0,
+        "signature_tap": "original t2 output",
+        "signature_gradient_detached": false,
+        "extra_IQ_forwards": 0,
+        "extra_rng_draws": 0,
+        "extra_parameters": 0,
+        "inference_same_weight_equivalence": true,
+        "head_structure_changed": false
+      },
+      "feature_parameter_tensors": 71,
+      "feature_delta_initial_to_FINAL": 10.529639634521947,
+      "default_W_delta_initial_to_FINAL": 0.6633080438980236,
+      "elapsed_training_seconds": 747.6769051551819,
+      "training_mutations_by_reader": 0,
+      "complete_log_numeric_summaries": {
+        "train/loss": {
+          "count": 4440,
+          "sum": 529.1062605211046,
+          "minimum": 0.002826347481459379,
+          "maximum": 3.642913341522217,
+          "first": 3.642913341522217,
+          "last": 0.00904120597988367,
+          "mean": 0.11916807669394247
+        },
+        "train/loss_tx_labeled": {
+          "count": 4440,
+          "sum": 526.3036407823674,
+          "minimum": 0.002366339322179556,
+          "maximum": 3.642913341522217,
+          "first": 3.642913341522217,
+          "last": 0.006547818426042795,
+          "mean": 0.11853685603206474
+        },
+        "train/loss_unlabeled": {
+          "count": 4440,
+          "sum": 11.867626688153905,
+          "minimum": 0.0,
+          "maximum": 0.17856451869010925,
+          "first": 0.0,
+          "last": 0.011784662492573261,
+          "mean": 0.002672888893728357
+        },
+        "train/reliable_ratio": {
+          "count": 4440,
+          "sum": 32.02083333581686,
+          "minimum": 0.0,
+          "maximum": 0.07421875,
+          "first": 0.0,
+          "last": 0.015625,
+          "mean": 0.007211899399958753
+        },
+        "train/pseudo_total": {
+          "count": 4440,
+          "sum": 396368.0,
+          "minimum": 0,
+          "maximum": 256,
+          "first": 0,
+          "last": 256,
+          "mean": 89.27207207207208
+        },
+        "train/pseudo_selected": {
+          "count": 4440,
+          "sum": 8180.0,
+          "minimum": 0,
+          "maximum": 19,
+          "first": 0,
+          "last": 4,
+          "mean": 1.8423423423423424
+        },
+        "train/pseudo_truth_available": {
+          "count": 4440,
+          "sum": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "mean": 0.0
+        }
+      },
+      "complete_log_phase_summaries": {
+        "label": {
+          "train/loss": {
+            "count": 2886,
+            "sum": 498.47846206557006,
+            "minimum": 0.0029732738621532917,
+            "maximum": 3.642913341522217,
+            "first": 3.642913341522217,
+            "last": 0.011192027479410172,
+            "mean": 0.17272295982867986
+          },
+          "train/loss_tx_labeled": {
+            "count": 2886,
+            "sum": 498.47846206557006,
+            "minimum": 0.0029732738621532917,
+            "maximum": 3.642913341522217,
+            "first": 3.642913341522217,
+            "last": 0.011192027479410172,
+            "mean": 0.17272295982867986
+          },
+          "train/loss_unlabeled": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/reliable_ratio": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          },
+          "train/pseudo_total": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_selected": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0,
+            "maximum": 0,
+            "first": 0,
+            "last": 0,
+            "mean": 0.0
+          },
+          "train/pseudo_truth_available": {
+            "count": 2886,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        },
+        "pseudo": {
+          "train/loss": {
+            "count": 1554,
+            "sum": 30.627798455534503,
+            "minimum": 0.002826347481459379,
+            "maximum": 0.0918244868516922,
+            "first": 0.020976310595870018,
+            "last": 0.00904120597988367,
+            "mean": 0.01970900801514447
+          },
+          "train/loss_tx_labeled": {
+            "count": 1554,
+            "sum": 27.82517871679738,
+            "minimum": 0.002366339322179556,
+            "maximum": 0.08560599386692047,
+            "first": 0.019789373502135277,
+            "last": 0.006547818426042795,
+            "mean": 0.017905520409779524
+          },
+          "train/loss_unlabeled": {
+            "count": 1554,
+            "sum": 11.867626688153905,
+            "minimum": 0.0,
+            "maximum": 0.17856451869010925,
+            "first": 0.0022663483396172523,
+            "last": 0.011784662492573261,
+            "mean": 0.0076368254106524485
+          },
+          "train/reliable_ratio": {
+            "count": 1554,
+            "sum": 32.02083333581686,
+            "minimum": 0.0,
+            "maximum": 0.07421875,
+            "first": 0.015625,
+            "last": 0.015625,
+            "mean": 0.020605426857025006
+          },
+          "train/pseudo_total": {
+            "count": 1554,
+            "sum": 396368.0,
+            "minimum": 48,
+            "maximum": 256,
+            "first": 256,
+            "last": 256,
+            "mean": 255.06306306306305
+          },
+          "train/pseudo_selected": {
+            "count": 1554,
+            "sum": 8180.0,
+            "minimum": 0,
+            "maximum": 19,
+            "first": 4,
+            "last": 4,
+            "mean": 5.263835263835264
+          },
+          "train/pseudo_truth_available": {
+            "count": 1554,
+            "sum": 0.0,
+            "minimum": 0.0,
+            "maximum": 0.0,
+            "first": 0.0,
+            "last": 0.0,
+            "mean": 0.0
+          }
+        }
+      }
     }
   },
-  "paired_comparisons": {},
+  "paired_comparisons": {
+    "NONE_minus_ELEMENT": {
+      "CE_difference": 0.13647710547792835,
+      "error_difference": 32,
+      "accuracy_difference_pp": -2.5396825396825395,
+      "repaired": 38,
+      "broken": 70,
+      "prediction_changes": 167
+    }
+  },
   "matched_initial_200_state_tensors": {
-    "ELEMENT": true
+    "ELEMENT": true,
+    "NONE": true
   },
   "qualification": null,
   "qualification_pending": true,
@@ -334,7 +655,25 @@
     "no_fallback_into_failed_primary": true,
     "no_target_feedback": true
   },
-  "NONE_discovery_and_confirmation": null,
+  "NONE_discovery_and_confirmation": {
+    "discovery_seed2026092701": {
+      "CE_difference": -0.5634020537142788,
+      "error_difference": -143,
+      "accuracy_difference_pp": 11.34920634920635,
+      "repaired": 163,
+      "broken": 20,
+      "prediction_changes": 211
+    },
+    "confirmation_seed2026092702": {
+      "CE_difference": 0.13647710547792835,
+      "error_difference": 32,
+      "accuracy_difference_pp": -2.5396825396825395,
+      "repaired": 38,
+      "broken": 70,
+      "prediction_changes": 167
+    },
+    "limitation": "One discovery seed plus one independent confirmation seed on the same heldRX1 and1260 physicalL; not two confirmation trials or multiple receivers"
+  },
   "terminal_process_verified": false,
   "target_predictions": 0,
   "target_truth_reads": 0,
