@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "arm": "N0",
+      "use_aug": false,
+      "label_smoothing": 0.01,
+      "L_forwards": 256
+    },
+    {
+      "arm": "N1",
+      "use_aug": true,
+      "label_smoothing": 0.01,
+      "L_forwards": 256
+    }
+  ],
+  "initial_state_tensors": 198,
+  "synthetic_network_forwards": 512,
+  "synthetic_augmentation_packets": 128,
+  "protocol_negatives": 5,
+  "private_RNG_preserved": true,
+  "same_sampler_seed_and_permutation": true,
+  "same_IQ_RDrop_pairs": true,
+  "default_head_and_SIG_gradients": true,
+  "U_TX_and_IQ_not_read_by_filter": true,
+  "checkpoint_loads": 0,
+  "real_IQ_packets": 0,
+  "optimizer_steps": 0,
+  "independent_P0P1_review": "PASS one review, no direct defects;512 synthetic network forwards/128 augment packets/5 negatives",
+  "total_local_synthetic_network_forwards": 1536,
+  "total_local_synthetic_augmentation_packets": 384,
+  "real_checkpoint_smoke": "First worker model step: own fresh fourRX checkpoint save/reload, zeros2;PASS continues immediately"
+}

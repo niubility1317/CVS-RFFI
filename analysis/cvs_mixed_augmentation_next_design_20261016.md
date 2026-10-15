@@ -17,3 +17,7 @@
 原测试IQ、信道参数、CVS/SIG_TIME/defaultcos联合训练及low urban>60%目标不变。首轮留出实验明确source-only，故不访问正式target；源规则失败就不扩展组合或seed。已有目标结果仅作历史报告，不能输入新配置或晋级。
 
 已完成证据：[混合IQ完整负结果](../automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-e20-manysig-s2026092701-m5-r01/report.md)、[源响应独立E20](../automation_reports/CV-SincNet/20261016-phase1-source-response-e20-manysig-s2026092701-m2-r01/report.md)、[源相位筛查](../automation_reports/CV-SincNet/20261016-diagnostic-source-phase-crossfit-manysig-m1-r01/report.md)。
+
+## 已落实最小两行实现
+
+20261016已实现并登记 `20261016-phase1-ordinary-augmentation-RX1-e20-s2026092701-m2-r01`，尚未发布。实际原native/fold轨迹保持222更新/epoch、4440/row，而不是178×20；四RX U45360通过原循环形成每pseudo epoch56624观察。两行当前RAW_HZ/LS.01、两次RDrop，同初态；旧CENTER25K/LS0源折只复用代码逻辑，不载权重。HeldRX1 V5400仅FINAL，未用L1260。单一源V按RX作评价分层，不生成校准/选模新角色。普通增强与loader私有随机流、实际L/U全序列比较、计数和默认头梯度已接入。一次限定P0/P1 PASS，本地实际图检查PASS；正式数据/测试信道未访问或修改。
