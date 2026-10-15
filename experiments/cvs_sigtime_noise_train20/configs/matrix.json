@@ -1,0 +1,1019 @@
+{
+  "dependency_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02",
+  "mechanism_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_clean_signature_sourcefold_20261015_r01",
+  "fold_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01",
+  "arms": [
+    "NONE",
+    "CLEAN_SIG"
+  ],
+  "rows": [
+    {
+      "schema": "phase1_SIGTIME_source_selected_noise_scratch20_v1",
+      "run_id": "20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01",
+      "stage": "repair",
+      "arm": "NONE",
+      "model_seed": 2026092701,
+      "row_id": "NONE-s2026092701",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01/NONE-s2026092701/source",
+      "epochs": 20,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_legacy_no_sat",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "launch_owner": "codex/root/SIGTIME-branch-noise-train20-20261015",
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "updates": 4440,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092701,
+        "row_id": "legacy_cosine_no_sat-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "source_falsification": {
+        "final_training_L_CE_max": 0.5,
+        "first_seed_source_V_drop_max": 0.01,
+        "first_seed_worst_source_RX_drop_max": 0.02,
+        "first_seed_only": true,
+        "stop_before_target_if_failed": true,
+        "later_seed_health_report_only": true
+      },
+      "training_recipe": "SIG_TIME+CENTER25K/defaultcos; full five source RX; scratch20 actualLS0;13L+7U oldgate/ownEMA; original L/U sampler and Gaussian U",
+      "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "arm": "SIG_TIME",
+        "layer": "t2",
+        "local_dimension": 6,
+        "local_projection": "learned 1x1 then tanh; shared across controls",
+        "windows": 4,
+        "random_directions": 14,
+        "random_direction_seed": 2026101307,
+        "random_direction_scales": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "descriptor_width": 28,
+        "output_embedding": 160,
+        "parameter_matched": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "classifier_changed": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "time_coordinate": true,
+        "per_packet": true,
+        "sinc_coordinates": "CENTER_25K",
+        "sinc_scale_hz": 25000.0,
+        "extra_mechanism_parameters": 0,
+        "additional_classifier_parameters": 0
+      },
+      "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+      "test_views": [
+        "clean"
+      ],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "clean_three_seed_mean": 0.84,
+        "goal_completed": false,
+        "readout": "NATIVE_HEAD",
+        "target_feedback": false
+      },
+      "budget_authorization": "Active Phase1 goal: source-qualified route plus required positive NONE control if CLEAN_SIG qualifies, all3 fixedseeds scratch20, automatic clean default-head truth-last; existing matched baseline reused",
+      "cost_claim": "6 new scratch20 backbones/120epochs/26640steps and1008000 default-head clean decisions; original3x20/4440 baseline cost separate, no head fit or extra training IQ forward",
+      "baseline_reference": {
+        "run_id": "20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02",
+        "row_id": "BASE_SSL-s2026092701",
+        "reuse": "Original actualLS0 BASE_SSL E20 FINAL predictions and scores only; no weight inheritance"
+      },
+      "baseline_reuse": false,
+      "readouts": [
+        "NATIVE_HEAD"
+      ],
+      "separate_head_training": false,
+      "training_mechanism": {
+        "mode": "NONE",
+        "signature_tap": "original t2 output",
+        "main_t2_dropout_p": 0.0,
+        "new_parameters": 0,
+        "extra_IQ_forwards": 0,
+        "extra_losses": false,
+        "signature_gradient_detached": false,
+        "default_head_joint_training": true,
+        "head_fit_updates": 0,
+        "unchanged_own_EMA_teacher": true,
+        "tail_average": false,
+        "EMA_export": false
+      },
+      "execution_overrides": {
+        "use_aug": false,
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "label_smoothing": 0,
+        "source_only": true
+      },
+      "source_selection": {
+        "reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/matrix_result.json",
+        "rule": "CLEAN_SIG primary passes: evaluate both NONE and CLEAN_SIG to isolate its increment; otherwise only independently confirmed NONE; neither closes without training",
+        "modes": [
+          "NONE",
+          "CLEAN_SIG"
+        ],
+        "no_target_selection": true,
+        "no_source_fold_weight_inheritance": true
+      }
+    },
+    {
+      "schema": "phase1_SIGTIME_source_selected_noise_scratch20_v1",
+      "run_id": "20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01",
+      "stage": "repair",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092701,
+      "row_id": "CLEAN_SIG-s2026092701",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01/CLEAN_SIG-s2026092701/source",
+      "epochs": 20,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_legacy_no_sat",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "launch_owner": "codex/root/SIGTIME-branch-noise-train20-20261015",
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "updates": 4440,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092701,
+        "row_id": "legacy_cosine_no_sat-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "source_falsification": {
+        "final_training_L_CE_max": 0.5,
+        "first_seed_source_V_drop_max": 0.01,
+        "first_seed_worst_source_RX_drop_max": 0.02,
+        "first_seed_only": true,
+        "stop_before_target_if_failed": true,
+        "later_seed_health_report_only": true
+      },
+      "training_recipe": "SIG_TIME+CENTER25K/defaultcos; full five source RX; scratch20 actualLS0;13L+7U oldgate/ownEMA; original L/U sampler and Gaussian U",
+      "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "arm": "SIG_TIME",
+        "layer": "t2",
+        "local_dimension": 6,
+        "local_projection": "learned 1x1 then tanh; shared across controls",
+        "windows": 4,
+        "random_directions": 14,
+        "random_direction_seed": 2026101307,
+        "random_direction_scales": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "descriptor_width": 28,
+        "output_embedding": 160,
+        "parameter_matched": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "classifier_changed": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "time_coordinate": true,
+        "per_packet": true,
+        "sinc_coordinates": "CENTER_25K",
+        "sinc_scale_hz": 25000.0,
+        "extra_mechanism_parameters": 0,
+        "additional_classifier_parameters": 0
+      },
+      "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+      "test_views": [
+        "clean"
+      ],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "clean_three_seed_mean": 0.84,
+        "goal_completed": false,
+        "readout": "NATIVE_HEAD",
+        "target_feedback": false
+      },
+      "budget_authorization": "Active Phase1 goal: source-qualified route plus required positive NONE control if CLEAN_SIG qualifies, all3 fixedseeds scratch20, automatic clean default-head truth-last; existing matched baseline reused",
+      "cost_claim": "6 new scratch20 backbones/120epochs/26640steps and1008000 default-head clean decisions; original3x20/4440 baseline cost separate, no head fit or extra training IQ forward",
+      "baseline_reference": {
+        "run_id": "20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02",
+        "row_id": "BASE_SSL-s2026092701",
+        "reuse": "Original actualLS0 BASE_SSL E20 FINAL predictions and scores only; no weight inheritance"
+      },
+      "baseline_reuse": false,
+      "readouts": [
+        "NATIVE_HEAD"
+      ],
+      "separate_head_training": false,
+      "training_mechanism": {
+        "mode": "CLEAN_SIG",
+        "signature_tap": "t2.drop input after pool",
+        "main_t2_dropout_p": 0.1,
+        "new_parameters": 0,
+        "extra_IQ_forwards": 0,
+        "extra_losses": false,
+        "signature_gradient_detached": false,
+        "default_head_joint_training": true,
+        "head_fit_updates": 0,
+        "unchanged_own_EMA_teacher": true,
+        "tail_average": false,
+        "EMA_export": false
+      },
+      "execution_overrides": {
+        "use_aug": false,
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "label_smoothing": 0,
+        "source_only": true
+      },
+      "source_selection": {
+        "reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/matrix_result.json",
+        "rule": "CLEAN_SIG primary passes: evaluate both NONE and CLEAN_SIG to isolate its increment; otherwise only independently confirmed NONE; neither closes without training",
+        "modes": [
+          "NONE",
+          "CLEAN_SIG"
+        ],
+        "no_target_selection": true,
+        "no_source_fold_weight_inheritance": true
+      }
+    },
+    {
+      "schema": "phase1_SIGTIME_source_selected_noise_scratch20_v1",
+      "run_id": "20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01",
+      "stage": "repair",
+      "arm": "NONE",
+      "model_seed": 2026092702,
+      "row_id": "NONE-s2026092702",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01/NONE-s2026092702/source",
+      "epochs": 20,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_legacy_no_sat",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "launch_owner": "codex/root/SIGTIME-branch-noise-train20-20261015",
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "updates": 4440,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092702,
+        "row_id": "legacy_cosine_no_sat-s2026092702",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "source_falsification": {
+        "final_training_L_CE_max": 0.5,
+        "first_seed_source_V_drop_max": 0.01,
+        "first_seed_worst_source_RX_drop_max": 0.02,
+        "first_seed_only": true,
+        "stop_before_target_if_failed": true,
+        "later_seed_health_report_only": true
+      },
+      "training_recipe": "SIG_TIME+CENTER25K/defaultcos; full five source RX; scratch20 actualLS0;13L+7U oldgate/ownEMA; original L/U sampler and Gaussian U",
+      "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "arm": "SIG_TIME",
+        "layer": "t2",
+        "local_dimension": 6,
+        "local_projection": "learned 1x1 then tanh; shared across controls",
+        "windows": 4,
+        "random_directions": 14,
+        "random_direction_seed": 2026101307,
+        "random_direction_scales": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "descriptor_width": 28,
+        "output_embedding": 160,
+        "parameter_matched": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "classifier_changed": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "time_coordinate": true,
+        "per_packet": true,
+        "sinc_coordinates": "CENTER_25K",
+        "sinc_scale_hz": 25000.0,
+        "extra_mechanism_parameters": 0,
+        "additional_classifier_parameters": 0
+      },
+      "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+      "test_views": [
+        "clean"
+      ],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "clean_three_seed_mean": 0.84,
+        "goal_completed": false,
+        "readout": "NATIVE_HEAD",
+        "target_feedback": false
+      },
+      "budget_authorization": "Active Phase1 goal: source-qualified route plus required positive NONE control if CLEAN_SIG qualifies, all3 fixedseeds scratch20, automatic clean default-head truth-last; existing matched baseline reused",
+      "cost_claim": "6 new scratch20 backbones/120epochs/26640steps and1008000 default-head clean decisions; original3x20/4440 baseline cost separate, no head fit or extra training IQ forward",
+      "baseline_reference": {
+        "run_id": "20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02",
+        "row_id": "BASE_SSL-s2026092702",
+        "reuse": "Original actualLS0 BASE_SSL E20 FINAL predictions and scores only; no weight inheritance"
+      },
+      "baseline_reuse": false,
+      "readouts": [
+        "NATIVE_HEAD"
+      ],
+      "separate_head_training": false,
+      "training_mechanism": {
+        "mode": "NONE",
+        "signature_tap": "original t2 output",
+        "main_t2_dropout_p": 0.0,
+        "new_parameters": 0,
+        "extra_IQ_forwards": 0,
+        "extra_losses": false,
+        "signature_gradient_detached": false,
+        "default_head_joint_training": true,
+        "head_fit_updates": 0,
+        "unchanged_own_EMA_teacher": true,
+        "tail_average": false,
+        "EMA_export": false
+      },
+      "execution_overrides": {
+        "use_aug": false,
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "label_smoothing": 0,
+        "source_only": true
+      },
+      "source_selection": {
+        "reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/matrix_result.json",
+        "rule": "CLEAN_SIG primary passes: evaluate both NONE and CLEAN_SIG to isolate its increment; otherwise only independently confirmed NONE; neither closes without training",
+        "modes": [
+          "NONE",
+          "CLEAN_SIG"
+        ],
+        "no_target_selection": true,
+        "no_source_fold_weight_inheritance": true
+      }
+    },
+    {
+      "schema": "phase1_SIGTIME_source_selected_noise_scratch20_v1",
+      "run_id": "20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01",
+      "stage": "repair",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092702,
+      "row_id": "CLEAN_SIG-s2026092702",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01/CLEAN_SIG-s2026092702/source",
+      "epochs": 20,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_legacy_no_sat",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "launch_owner": "codex/root/SIGTIME-branch-noise-train20-20261015",
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "updates": 4440,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092702,
+        "row_id": "legacy_cosine_no_sat-s2026092702",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092702/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "source_falsification": {
+        "final_training_L_CE_max": 0.5,
+        "first_seed_source_V_drop_max": 0.01,
+        "first_seed_worst_source_RX_drop_max": 0.02,
+        "first_seed_only": true,
+        "stop_before_target_if_failed": true,
+        "later_seed_health_report_only": true
+      },
+      "training_recipe": "SIG_TIME+CENTER25K/defaultcos; full five source RX; scratch20 actualLS0;13L+7U oldgate/ownEMA; original L/U sampler and Gaussian U",
+      "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "arm": "SIG_TIME",
+        "layer": "t2",
+        "local_dimension": 6,
+        "local_projection": "learned 1x1 then tanh; shared across controls",
+        "windows": 4,
+        "random_directions": 14,
+        "random_direction_seed": 2026101307,
+        "random_direction_scales": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "descriptor_width": 28,
+        "output_embedding": 160,
+        "parameter_matched": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "classifier_changed": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "time_coordinate": true,
+        "per_packet": true,
+        "sinc_coordinates": "CENTER_25K",
+        "sinc_scale_hz": 25000.0,
+        "extra_mechanism_parameters": 0,
+        "additional_classifier_parameters": 0
+      },
+      "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+      "test_views": [
+        "clean"
+      ],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "clean_three_seed_mean": 0.84,
+        "goal_completed": false,
+        "readout": "NATIVE_HEAD",
+        "target_feedback": false
+      },
+      "budget_authorization": "Active Phase1 goal: source-qualified route plus required positive NONE control if CLEAN_SIG qualifies, all3 fixedseeds scratch20, automatic clean default-head truth-last; existing matched baseline reused",
+      "cost_claim": "6 new scratch20 backbones/120epochs/26640steps and1008000 default-head clean decisions; original3x20/4440 baseline cost separate, no head fit or extra training IQ forward",
+      "baseline_reference": {
+        "run_id": "20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02",
+        "row_id": "BASE_SSL-s2026092702",
+        "reuse": "Original actualLS0 BASE_SSL E20 FINAL predictions and scores only; no weight inheritance"
+      },
+      "baseline_reuse": false,
+      "readouts": [
+        "NATIVE_HEAD"
+      ],
+      "separate_head_training": false,
+      "training_mechanism": {
+        "mode": "CLEAN_SIG",
+        "signature_tap": "t2.drop input after pool",
+        "main_t2_dropout_p": 0.1,
+        "new_parameters": 0,
+        "extra_IQ_forwards": 0,
+        "extra_losses": false,
+        "signature_gradient_detached": false,
+        "default_head_joint_training": true,
+        "head_fit_updates": 0,
+        "unchanged_own_EMA_teacher": true,
+        "tail_average": false,
+        "EMA_export": false
+      },
+      "execution_overrides": {
+        "use_aug": false,
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "label_smoothing": 0,
+        "source_only": true
+      },
+      "source_selection": {
+        "reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/matrix_result.json",
+        "rule": "CLEAN_SIG primary passes: evaluate both NONE and CLEAN_SIG to isolate its increment; otherwise only independently confirmed NONE; neither closes without training",
+        "modes": [
+          "NONE",
+          "CLEAN_SIG"
+        ],
+        "no_target_selection": true,
+        "no_source_fold_weight_inheritance": true
+      }
+    },
+    {
+      "schema": "phase1_SIGTIME_source_selected_noise_scratch20_v1",
+      "run_id": "20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01",
+      "stage": "repair",
+      "arm": "NONE",
+      "model_seed": 2026092703,
+      "row_id": "NONE-s2026092703",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01/NONE-s2026092703/source",
+      "epochs": 20,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_legacy_no_sat",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "launch_owner": "codex/root/SIGTIME-branch-noise-train20-20261015",
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "updates": 4440,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092703,
+        "row_id": "legacy_cosine_no_sat-s2026092703",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "source_falsification": {
+        "final_training_L_CE_max": 0.5,
+        "first_seed_source_V_drop_max": 0.01,
+        "first_seed_worst_source_RX_drop_max": 0.02,
+        "first_seed_only": true,
+        "stop_before_target_if_failed": true,
+        "later_seed_health_report_only": true
+      },
+      "training_recipe": "SIG_TIME+CENTER25K/defaultcos; full five source RX; scratch20 actualLS0;13L+7U oldgate/ownEMA; original L/U sampler and Gaussian U",
+      "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "arm": "SIG_TIME",
+        "layer": "t2",
+        "local_dimension": 6,
+        "local_projection": "learned 1x1 then tanh; shared across controls",
+        "windows": 4,
+        "random_directions": 14,
+        "random_direction_seed": 2026101307,
+        "random_direction_scales": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "descriptor_width": 28,
+        "output_embedding": 160,
+        "parameter_matched": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "classifier_changed": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "time_coordinate": true,
+        "per_packet": true,
+        "sinc_coordinates": "CENTER_25K",
+        "sinc_scale_hz": 25000.0,
+        "extra_mechanism_parameters": 0,
+        "additional_classifier_parameters": 0
+      },
+      "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+      "test_views": [
+        "clean"
+      ],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "clean_three_seed_mean": 0.84,
+        "goal_completed": false,
+        "readout": "NATIVE_HEAD",
+        "target_feedback": false
+      },
+      "budget_authorization": "Active Phase1 goal: source-qualified route plus required positive NONE control if CLEAN_SIG qualifies, all3 fixedseeds scratch20, automatic clean default-head truth-last; existing matched baseline reused",
+      "cost_claim": "6 new scratch20 backbones/120epochs/26640steps and1008000 default-head clean decisions; original3x20/4440 baseline cost separate, no head fit or extra training IQ forward",
+      "baseline_reference": {
+        "run_id": "20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02",
+        "row_id": "BASE_SSL-s2026092703",
+        "reuse": "Original actualLS0 BASE_SSL E20 FINAL predictions and scores only; no weight inheritance"
+      },
+      "baseline_reuse": false,
+      "readouts": [
+        "NATIVE_HEAD"
+      ],
+      "separate_head_training": false,
+      "training_mechanism": {
+        "mode": "NONE",
+        "signature_tap": "original t2 output",
+        "main_t2_dropout_p": 0.0,
+        "new_parameters": 0,
+        "extra_IQ_forwards": 0,
+        "extra_losses": false,
+        "signature_gradient_detached": false,
+        "default_head_joint_training": true,
+        "head_fit_updates": 0,
+        "unchanged_own_EMA_teacher": true,
+        "tail_average": false,
+        "EMA_export": false
+      },
+      "execution_overrides": {
+        "use_aug": false,
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "label_smoothing": 0,
+        "source_only": true
+      },
+      "source_selection": {
+        "reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/matrix_result.json",
+        "rule": "CLEAN_SIG primary passes: evaluate both NONE and CLEAN_SIG to isolate its increment; otherwise only independently confirmed NONE; neither closes without training",
+        "modes": [
+          "NONE",
+          "CLEAN_SIG"
+        ],
+        "no_target_selection": true,
+        "no_source_fold_weight_inheritance": true
+      }
+    },
+    {
+      "schema": "phase1_SIGTIME_source_selected_noise_scratch20_v1",
+      "run_id": "20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01",
+      "stage": "repair",
+      "arm": "CLEAN_SIG",
+      "model_seed": 2026092703,
+      "row_id": "CLEAN_SIG-s2026092703",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-branch-noise-e20-clean-manysig-m6-r01/CLEAN_SIG-s2026092703/source",
+      "epochs": 20,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_legacy_no_sat",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "launch_owner": "codex/root/SIGTIME-branch-noise-train20-20261015",
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "updates": 4440,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092703,
+        "row_id": "legacy_cosine_no_sat-s2026092703",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092703/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "source_falsification": {
+        "final_training_L_CE_max": 0.5,
+        "first_seed_source_V_drop_max": 0.01,
+        "first_seed_worst_source_RX_drop_max": 0.02,
+        "first_seed_only": true,
+        "stop_before_target_if_failed": true,
+        "later_seed_health_report_only": true
+      },
+      "training_recipe": "SIG_TIME+CENTER25K/defaultcos; full five source RX; scratch20 actualLS0;13L+7U oldgate/ownEMA; original L/U sampler and Gaussian U",
+      "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "arm": "SIG_TIME",
+        "layer": "t2",
+        "local_dimension": 6,
+        "local_projection": "learned 1x1 then tanh; shared across controls",
+        "windows": 4,
+        "random_directions": 14,
+        "random_direction_seed": 2026101307,
+        "random_direction_scales": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "descriptor_width": 28,
+        "output_embedding": 160,
+        "parameter_matched": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "classifier_changed": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "time_coordinate": true,
+        "per_packet": true,
+        "sinc_coordinates": "CENTER_25K",
+        "sinc_scale_hz": 25000.0,
+        "extra_mechanism_parameters": 0,
+        "additional_classifier_parameters": 0
+      },
+      "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+      "test_views": [
+        "clean"
+      ],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "clean_three_seed_mean": 0.84,
+        "goal_completed": false,
+        "readout": "NATIVE_HEAD",
+        "target_feedback": false
+      },
+      "budget_authorization": "Active Phase1 goal: source-qualified route plus required positive NONE control if CLEAN_SIG qualifies, all3 fixedseeds scratch20, automatic clean default-head truth-last; existing matched baseline reused",
+      "cost_claim": "6 new scratch20 backbones/120epochs/26640steps and1008000 default-head clean decisions; original3x20/4440 baseline cost separate, no head fit or extra training IQ forward",
+      "baseline_reference": {
+        "run_id": "20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02",
+        "row_id": "BASE_SSL-s2026092703",
+        "reuse": "Original actualLS0 BASE_SSL E20 FINAL predictions and scores only; no weight inheritance"
+      },
+      "baseline_reuse": false,
+      "readouts": [
+        "NATIVE_HEAD"
+      ],
+      "separate_head_training": false,
+      "training_mechanism": {
+        "mode": "CLEAN_SIG",
+        "signature_tap": "t2.drop input after pool",
+        "main_t2_dropout_p": 0.1,
+        "new_parameters": 0,
+        "extra_IQ_forwards": 0,
+        "extra_losses": false,
+        "signature_gradient_detached": false,
+        "default_head_joint_training": true,
+        "head_fit_updates": 0,
+        "unchanged_own_EMA_teacher": true,
+        "tail_average": false,
+        "EMA_export": false
+      },
+      "execution_overrides": {
+        "use_aug": false,
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "label_smoothing": 0,
+        "source_only": true
+      },
+      "source_selection": {
+        "reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/matrix_result.json",
+        "rule": "CLEAN_SIG primary passes: evaluate both NONE and CLEAN_SIG to isolate its increment; otherwise only independently confirmed NONE; neither closes without training",
+        "modes": [
+          "NONE",
+          "CLEAN_SIG"
+        ],
+        "no_target_selection": true,
+        "no_source_fold_weight_inheritance": true
+      }
+    }
+  ]
+}

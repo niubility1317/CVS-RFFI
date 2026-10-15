@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "candidate": "cvs_sigtime_noise_train20 formal validation common code",
+  "review_type": "single independent next-run P0/P1 review",
+  "findings": [],
+  "scope": [
+    "experiments/cvs_sigtime_noise_train20/design.py",
+    "experiments/cvs_sigtime_noise_train20/model.py",
+    "experiments/cvs_sigtime_noise_train20/source.py",
+    "experiments/cvs_sigtime_noise_train20/provenance.py",
+    "experiments/cvs_sigtime_noise_train20/evaluate.py",
+    "experiments/cvs_sigtime_noise_train20/runner.py",
+    "experiments/cvs_sigtime_noise_train20/publish.py",
+    "experiments/cvs_sigtime_noise_train20/checks.py",
+    "Direct consumed shared source, default-head prediction and parent-provenance interfaces"
+  ],
+  "supported_matrices_reviewed": [
+    {"arms": ["NONE"], "rows": 3, "epochs": 60, "actual_optimizer_steps": 13320},
+    {"arms": ["NONE", "CLEAN_SIG"], "rows": 6, "epochs": 120, "actual_optimizer_steps": 26640}
+  ],
+  "confirmed": [
+    "Both matrix paths expand all three fixed model seeds. Native arguments retain all five source RX, scratch initialization, empty baseline/teacher checkpoint paths, 20 epochs and 13L+7U; no source-fold-held-RX argument is present.",
+    "The formal source entry passes no observer to shared_train, so the prior RX1 fold preparation, held-source reader, auxiliary losses and temporary-update machinery are not installed. The fixed prior releases supply code only, without four-RX model-state inheritance.",
+    "Noise placement is installed on the original SIG_TIME/CENTER25K model. The native default head is retained and jointly trained, fitted native probes remain disabled, and prediction strict-loads the complete own final20 student state after source and checkpoint validation.",
+    "The source decision must be complete and recompute to the configured arm set before any formal run root or training is created. CLEAN_SIG qualification selects NONE plus CLEAN_SIG; otherwise an independently confirmed NONE selects only NONE; no qualified route stops before training.",
+    "Every required arm of the first model seed is trained and source-health checked before the first target prediction. A failed required first-seed arm closes SOURCE_FALSIFIED with zero target access; later-seed source health is recorded according to the fixed report-only rule.",
+    "Every frozen row is followed by shared clean default-head prediction and a fresh CPU truth-last scorer. Final aggregation also runs in a fresh CPU subprocess, requires complete three-seed metrics and pairs exact physical IDs with the original BASE_SSL correctness.",
+    "The two-arm path separately aggregates each complete three-seed arm and paired CLEAN_SIG-minus-NONE corrections/errors. The primary arm is fixed by source selection rather than target results.",
+    "The runner rejects an existing run root. The launcher uses ordinary-account dependency/root checks, one sequential GPU owner, archive transfer verification, compile and the existing scratch checkpoint smoke; it does not intervene in unrelated processes."
+  ],
+  "verification": {
+    "focused_checks": {
+      "status": "PASS",
+      "tests": 12,
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/.codex_tmp/native_polyphase_runner.py experiments.cvs_sigtime_noise_train20.checks"
+    },
+    "both_config_expansions_validated": true,
+    "all_rows_full_five_source_RX": true,
+    "all_rows_scratch_without_checkpoint_sources": true,
+    "source_screen_only": true,
+    "epochs_per_row": 20,
+    "label_epochs": 13,
+    "pseudo_epochs": 7,
+    "first_seed_cross_arm_gate_before_any_prediction": true
+  },
+  "matrix_identity_note": "This review covers the prepared common code and both supported config expansions. The exact ARMS and m3/m6 run identity are to be fixed solely from the completed registered source matrix, as already specified; no formal result or launch is claimed here.",
+  "review_boundary": "Only this evidence file was written. No production edit, real data or checkpoint access, remote action, launch, commit, report-completeness review, historical full review or added gate."
+}

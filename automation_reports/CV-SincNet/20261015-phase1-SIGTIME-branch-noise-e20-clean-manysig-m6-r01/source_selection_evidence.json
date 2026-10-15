@@ -1,0 +1,51 @@
+{
+  "status": "VERIFIED",
+  "selection": {
+    "modes": [
+      "NONE",
+      "CLEAN_SIG"
+    ],
+    "primary": "CLEAN_SIG",
+    "source_run": "20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01",
+    "qualification": {
+      "CLEAN_SIG_primary_qualified": true,
+      "NONE_independent_confirmation_passed": false,
+      "all_source_healthy": true,
+      "main_run_launched": false,
+      "target_access": false
+    },
+    "source_fold_checkpoint_inherited": false
+  },
+  "source_run": "20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01",
+  "source_execution_commit": "f695b43bb8ff2c8584871cf439315557ced718cf",
+  "complete_source_rows": 3,
+  "source_analysis_ref": "../20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/source_results_analysis.json",
+  "source_paired_comparisons": {
+    "NONE_minus_ELEMENT": {
+      "CE_difference": 0.13647710547792835,
+      "error_difference": 32,
+      "accuracy_difference_pp": -2.5396825396825395,
+      "repaired": 38,
+      "broken": 70,
+      "prediction_changes": 167
+    },
+    "CLEAN_SIG_minus_ELEMENT": {
+      "CE_difference": -0.08224493800638077,
+      "error_difference": -34,
+      "accuracy_difference_pp": 2.6984126984126986,
+      "repaired": 46,
+      "broken": 12,
+      "prediction_changes": 113
+    },
+    "CLEAN_SIG_minus_NONE": {
+      "CE_difference": -0.21872204348430913,
+      "error_difference": -66,
+      "accuracy_difference_pp": 5.238095238095238,
+      "repaired": 85,
+      "broken": 19,
+      "prediction_changes": 153
+    }
+  },
+  "new_formal_checkpoint_inheritance": false,
+  "target_read_for_selection": false
+}

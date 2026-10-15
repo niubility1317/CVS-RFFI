@@ -1,0 +1,69 @@
+{
+  "status": "PASS",
+  "focused_tests": 12,
+  "compile": "PASS",
+  "matrix_rows": 6,
+  "arms": [
+    "NONE",
+    "CLEAN_SIG"
+  ],
+  "actual_models": {
+    "status": "PASS",
+    "device": "cpu",
+    "modes": {
+      "NONE": [
+        {
+          "seed": 2026092701,
+          "same_initial_200states": true,
+          "parameters": 863730,
+          "feature_only_matches_deployed_joint160": true,
+          "W_perturbation_leaves_joint160_bitwise_unchanged": true
+        },
+        {
+          "seed": 2026092702,
+          "same_initial_200states": true,
+          "parameters": 863730,
+          "feature_only_matches_deployed_joint160": true,
+          "W_perturbation_leaves_joint160_bitwise_unchanged": true
+        },
+        {
+          "seed": 2026092703,
+          "same_initial_200states": true,
+          "parameters": 863730,
+          "feature_only_matches_deployed_joint160": true,
+          "W_perturbation_leaves_joint160_bitwise_unchanged": true
+        }
+      ],
+      "CLEAN_SIG": [
+        {
+          "seed": 2026092701,
+          "same_initial_200states": true,
+          "parameters": 863730,
+          "feature_only_matches_deployed_joint160": true,
+          "W_perturbation_leaves_joint160_bitwise_unchanged": true
+        },
+        {
+          "seed": 2026092702,
+          "same_initial_200states": true,
+          "parameters": 863730,
+          "feature_only_matches_deployed_joint160": true,
+          "W_perturbation_leaves_joint160_bitwise_unchanged": true
+        },
+        {
+          "seed": 2026092703,
+          "same_initial_200states": true,
+          "parameters": 863730,
+          "feature_only_matches_deployed_joint160": true,
+          "W_perturbation_leaves_joint160_bitwise_unchanged": true
+        }
+      ]
+    },
+    "IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "underlying_mechanism_CPU_CUDA_validation_ref": "20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/local_check_evidence.json",
+    "synthetic_inputs_only": true
+  },
+  "real_checkpoint_no_query_smoke": "Per-row first stage on own fresh scratch checkpoint, PASS immediately continues into training",
+  "source_selection": "Complete seed02 source-fold scientific qualification only; no target reads or old weight inheritance",
+  "review": "One independent next-real-run P0/P1 review covered common code and supported three/six-row expansions; no unchanged/full/report-only repeat review"
+}
