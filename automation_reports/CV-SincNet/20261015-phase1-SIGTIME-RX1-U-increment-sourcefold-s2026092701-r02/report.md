@@ -1,6 +1,6 @@
 # 真实 RX1 留出：源身份风险约束 U 的特征位移
 
-状态 PLANNED。目标仍为实际 joint160、原默认 cosine 头联合训练后的固定 clean 三种子均值84%；本轮是有真实训练的 source-only 机制证伪，不读取 target，不宣称候选完整训练已改善。
+状态 **RUNNING / 启动 VERIFIED**。下文保留预登记。目标仍为实际 joint160、原默认 cosine 头联合训练后的固定 clean 三种子均值84%；本轮是有真实训练的 source-only 机制证伪，不读取 target，不宣称候选完整训练已改善。
 
 依据：上一轮冷初值 RX-blocked80条件中 ROUTED 对同辅助梯度范数 JOINT_NORM 的身份 CE 20/20 改善，但 AdamW 位移未匹配。完整责任路由 M12 默认头81.120635%，相对匹配SSL−0.054167个百分点；最差RX+0.245833个百分点、3/3正保留。source优化方向存在不能推出持续训练泛化增益。历史CENTER25K等正路线与全部负结果保留，不重跑当前已负配方。
 
@@ -29,3 +29,6 @@
 本次只以torch.linalg.lstsq(driver=gelsd,rcond=1e-12)替换同一小矩阵的NumPy求解/矩阵运算，并在任何数据加载/训练前执行零IQ几何算术smoke。投影目标、KKT阈值、原种子/数据/20epoch预算、四探针/三控制和科学资格均保持。启动使用新不可覆盖目录；从零重训，不继承失败r01的权重、优化器或RNG。失败2895步单独计技术成本，恢复完成时两次累计实际更新7335步；不冒充一次20epoch成本。该修复只有一次聚焦直接P0/P1复审，不重复全候选审查。
 
 恢复验证：9项几何测试PASS（新增禁用Tensor.numpy桥接的修复前失败/修复后通过回归）；32组四风险数值对照的最大投影差4.440892098500626e-16。修复后CPU和CUDA实际188参数模型各2warm+1RAW合成步PASS，真实postclip更新oracle逐位0差，默认W联合更新、实际FP32范数及live状态/RNG保持通过。原8项角色/反向传播/范数测试与native五loader过滤检查因未改行为而复用；本地编译PASS。原唯一全审复用，直接故障修复的唯一聚焦P0/P1复审PASS。合成数值不用作科学资格，真实checkpoint smoke由launcher首步执行。
+
+
+真实启动已独立读回：执行 `56bd5feec7edefb8aba6fea595c0b701be0b2809`，GPU 0 上所属进程/命令/CWD与GPU成员关系一致，总实验进程 1/3；log已增长，own scratch真实CP no-query smoke PASS。有效角色L5040/U45360/V21600，五个training/calibration/probe loader全部排除RX1，实际参数13L+7U/LS0/ownEMA/无L与星地增强，初始化来源为空。仍是运行状态，未宣称训练完成、机制资格或新target分数。

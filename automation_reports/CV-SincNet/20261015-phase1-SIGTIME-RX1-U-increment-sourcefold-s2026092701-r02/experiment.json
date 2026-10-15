@@ -22,7 +22,7 @@
   "replaces_run_id": "20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r01",
   "authorization": "Continue active Phase1 training-mechanism goal; source-only falsification under existing source permissions; no target, no pretrained inheritance.",
   "code": {
-    "commit": "release_commit.txt (actual Git HEAD at launch)",
+    "commit": "56bd5feec7edefb8aba6fea595c0b701be0b2809",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account/CVS-RFFI Python; current new-package/shared-source overlay on immutable R02 runtime",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_RX1_U_increment_sourcefold_20261015_r02",
@@ -224,5 +224,12 @@
     "Only the at-most4x4 CPU FP64 solver backend and startup arithmetic smoke changed. Objective, active-set/KKT tolerances, rcond1e-12, seed, optimizer, probes, controls, data and source thresholds unchanged.",
     "Fresh scratch20/4440 updates in a new immutable root, no failed-partial weights/state/RNG inheritance. Failed2895 updates are extra technical cost; cumulative actual steps7335 if replacement completes. No target-score feedback."
   ],
-  "registered_at": "2026-10-15T02:55:30+00:00"
+  "registered_at": "2026-10-15T02:55:30+00:00",
+  "result": {
+    "status": "RUNNING",
+    "evidence_ref": "launch_evidence.json",
+    "target_access": false,
+    "U_truth_read": false,
+    "goal84_completed": false
+  }
 }
