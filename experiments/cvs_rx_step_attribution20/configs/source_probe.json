@@ -1,0 +1,57 @@
+{
+  "run_id": "20261015-phase1-SIGTIME-RX-blocked-norm-attribution-sourceL-s2026092701-r01",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-RX-blocked-norm-attribution-sourceL-s2026092701-r01/source_diagnostic",
+  "source_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02",
+  "source_run": "20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02",
+  "source_row": "BASE_CE-s2026092701",
+  "model_seed": 2026092701,
+  "checkpoint": "own initial_smoke.pt only; no trained final weights or optimizer moments",
+  "receivers": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "current_ordinals": [
+    2,
+    19,
+    37,
+    54
+  ],
+  "held_ordinals": [
+    66,
+    67
+  ],
+  "modes": [
+    "ZERO",
+    "JOINT_GAP",
+    "JOINT_NORM",
+    "ROUTED_GAP"
+  ],
+  "source_role": "L_s",
+  "training_packets_per_cell": 144,
+  "held_packets_per_cell": 36,
+  "cells": 80,
+  "temporary_AdamW_steps": 160,
+  "network_IQ_forwards": 5942,
+  "source_IQ_reads": 900,
+  "actual_optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "original_default_head_joint": true,
+  "LR": 0.0002,
+  "weight_decay": 0.0001,
+  "max_grad_norm": 5.0,
+  "auxiliary_weight": 0.1,
+  "auxiliary_tolerance": 1e-06,
+  "loss_denominator": 576,
+  "norm_control": "Same numeric loss; detached factor norm(ROUTED_F)/norm(JOINT_F) applied only to JOINT backward",
+  "pairing": "Each current bank excludes the held RX; norm factor and all training gradients use only its four RX",
+  "interpretation": "Cold snapshot one-step RX-blocked attribution; not full E20 leave-RX DG and no main-run qualification",
+  "analysis": "All20 cohorts and all5 held RX; report per-cell and per-RX ACTUAL/PRE_W identity CE, errors, F-gradient and actual-update norms",
+  "U_IQ_reads": 0,
+  "V_IQ_reads": 0,
+  "U_truth_read": false,
+  "target_access": false,
+  "analysis_code_commit": "release_commit.txt"
+}

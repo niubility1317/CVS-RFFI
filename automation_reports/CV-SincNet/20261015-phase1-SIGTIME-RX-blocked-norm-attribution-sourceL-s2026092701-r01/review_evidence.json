@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "findings": [],
+  "initial_review": {
+    "status": "FAIL",
+    "findings": [
+      {
+        "priority": "P1",
+        "file": "experiments/cvs_rx_step_attribution20/runner.py",
+        "line": 15,
+        "title": "Rejecting an existing run root can overwrite its prior failure evidence",
+        "body": "source_probe.run rejects an existing output_root before creating any new artifacts (source_probe.py:40), but runner.main catches that FileExistsError and writes output_root/failure.json whenever summary.json is absent. Reinvoking the normal fixed command on a partial or failed immutable run therefore replaces its original failure.json with the output-collision error, despite the preservation refusal.",
+        "required_fix": "Write failure.json only for an output root newly created and owned by this invocation; leave a pre-existing root and all its artifacts unchanged when rejecting it."
+      }
+    ]
+  },
+  "targeted_fix_review": {
+    "status": "PASS",
+    "scope": "Only the previously reported output-ownership P1; no full re-review",
+    "resolved_finding": "Pre-existing output roots are rejected without writing or replacing their failure artifacts.",
+    "code_evidence": [
+      {
+        "file": "experiments/cvs_rx_step_attribution20/runner.py",
+        "line": 11,
+        "observation": "Calls run(request) directly; no exception handler writes into a rejected existing root."
+      },
+      {
+        "file": "experiments/cvs_rx_step_attribution20/source_probe.py",
+        "line": 40,
+        "observation": "mkdir(exist_ok=False) executes before the owned-run try/except. An existing root exits before the failure writer."
+      },
+      {
+        "file": "experiments/cvs_rx_step_attribution20/source_probe.py",
+        "line": 45,
+        "observation": "Only the successfully created output root reaches the failure writer, which uses exclusive mode x."
+      }
+    ],
+    "focused_regression": {
+      "status": "PASS",
+      "evidence_source": "Root-reported three passing output_checks; test source inspected in this targeted review, not rerun",
+      "cases": [
+        "existing partial output bytes unchanged",
+        "existing completed output unchanged",
+        "new owned failure and partial artifacts retained"
+      ]
+    }
+  }
+}

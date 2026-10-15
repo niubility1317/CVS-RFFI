@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "focused_negatives": 32,
+  "all5_RX_exclusions": true,
+  "training144_held36": true,
+  "same_numeric_loss_3arms": true,
+  "matched_F_auxiliary_gradient_norm": true,
+  "norm_control_keeps_JOINT_direction": true,
+  "default_W_three_gains_auxiliary_None": true,
+  "U_V_target_rejected_before_labels": true,
+  "source_IQ_checkpoint_reads": 0,
+  "actual_optimizer_updates": 0,
+  "compile": "PASS",
+  "output_ownership_regression": {
+    "before_fix": "FAIL: existing partial failure overwritten",
+    "after_fix": "PASS",
+    "cases": 3,
+    "existing_partial_unchanged": true,
+    "existing_completed_unchanged": true,
+    "new_owned_failure_recorded": true
+  },
+  "real_checkpoint_smoke": "Launcher first step; not claimed locally"
+}
