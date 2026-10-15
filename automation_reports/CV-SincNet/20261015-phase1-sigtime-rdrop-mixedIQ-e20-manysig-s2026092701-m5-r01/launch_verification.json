@@ -1,0 +1,69 @@
+{
+  "status": "VERIFIED",
+  "state": "RUNNING_NOT_COMPLETE",
+  "code_commit": "1fe3f00bdddfdb0af494f74c6570db65490ddf72",
+  "models_launched": 5,
+  "seed_count": 1,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "source_checkpoint_no_query_smoke": "PASS",
+  "all_rows_scratch": true,
+  "all_owner_GPU_limit_observed": 3,
+  "actual_import": "original audited adv3b02_xuc/code/leo_practical/channel.py",
+  "actual_channel": "residual/post_sync/noEQ(G1)/25MHz/referenceSNR30/reflect/quality+phase+IQ compensation",
+  "observed_after_launch_seconds": 241.76608324050903,
+  "rows": [
+    {
+      "row_id": "R_LEGACY-s2026092701",
+      "epoch": 4,
+      "optimizer_steps": 888,
+      "L_forward_packets": 227328,
+      "satellite_packets": 0,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "log_growth": "VERIFIED"
+    },
+    {
+      "row_id": "B00-s2026092701",
+      "epoch": 3,
+      "optimizer_steps": 666,
+      "L_forward_packets": 511488,
+      "satellite_packets": 0,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "log_growth": "VERIFIED"
+    },
+    {
+      "row_id": "B10-s2026092701",
+      "epoch": 3,
+      "optimizer_steps": 666,
+      "L_forward_packets": 511488,
+      "satellite_packets": 0,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "log_growth": "VERIFIED"
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "epoch": 1,
+      "optimizer_steps": 222,
+      "L_forward_packets": 170496,
+      "satellite_packets": 28416,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "log_growth": "VERIFIED"
+    },
+    {
+      "row_id": "B11-s2026092701",
+      "epoch": 1,
+      "optimizer_steps": 222,
+      "L_forward_packets": 170496,
+      "satellite_packets": 28416,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "log_growth": "VERIFIED"
+    }
+  ],
+  "target_results_available": false,
+  "goal_complete": false,
+  "local_evidence": [
+    "E:\\type10-7\\local_artifacts\\cvs_mixedIQ_train_20261015\\monitor_1792075344.json",
+    "E:\\type10-7\\local_artifacts\\cvs_mixedIQ_train_20261015\\monitor_1792075558.json",
+    "E:\\type10-7\\local_artifacts\\cvs_mixedIQ_train_20261015\\initial_execution.json"
+  ]
+}

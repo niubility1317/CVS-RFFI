@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active goal explicitly authorizes IQ generalization+satellite training; latest user fixes SIG_TIME+RDrop and totalE20. One seed/five fixed rows first. No E50 parent/continuation, no new deployment head or new U augmentation.",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "1fe3f00bdddfdb0af494f74c6570db65490ddf72",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "ordinary N607 CVS-RFFI Python; GPU workers CPU2/loader0; dispatcher/scorers CUDA hidden",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_rdrop_mixedIQ_e20_20261015_r01"

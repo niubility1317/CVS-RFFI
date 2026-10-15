@@ -1,6 +1,6 @@
 # SIG_TIME＋RDrop：E20 泛化与星地IQ混合增强
 
-状态：LOCAL_VERIFIED，五个真实scratch模型尚未启动。固定seed2026092701，fullL6300/U56700/V27000、源RX1/3/4/6/8和day1/2/3。原SIG_TIME RAW_HZ/joint160/NoExplicitCFO、默认cosine6×160/scale30和正常联合训练保持。
+状态：RUNNING，五个真实scratch模型已启动并各自完成至少首轮。固定seed2026092701，fullL6300/U56700/V27000、源RX1/3/4/6/8和day1/2/3。原SIG_TIME RAW_HZ/joint160/NoExplicitCFO、默认cosine6×160/scale30和正常联合训练保持。
 
 先前冻结源算子安全PASS（135002前向/0更新）只支持进入训练，不是泛化收益。当前唯一假设：轻度接收响应变化与完整practical分别监督，可保留clean泛化和星地适应的共同收益。若G不提高clean或B11吃掉clean增量、未超过B01urban，则保留负结果，不堆对齐损失救场。
 
@@ -22,4 +22,6 @@ A_g固定|a|≤0.06的received-IQ三tap线性响应并恢复输入RMS，虚拟RX
 
 冻结配置、逐row命令、环境/CWD、数据/seed、输出路径、科学阈值与预期产物以experiment.json为准。实际Git code/config commit在release与resolved_config中保存；报告和注册不是性能结果。
 
-审查发现的源panel发布竞态已修复：同目录临时JSON完整关闭后原子发布最终文件。两项针对性检查PASS。没有额外审查或报告批准。真实训练与首步CP smoke尚未启动。
+审查发现的源panel发布竞态已修复：同目录临时JSON完整关闭后原子发布最终文件。两项针对性检查PASS。没有额外审查或报告批准。真实训练已启动；首步CP smoke为PASS。
+
+实际发布代码 `1fe3f00bdddfdb0af494f74c6570db65490ddf72`，远端单归档传输比对与编译通过。运行后独立检查五个PID/CWD/argv/GPU和日志增长均VERIFIED。R_LEGACY为E4、B00/B10为E3、B01/B11为E1时完成首轮执行核验；星地组每轮222更新、28416物理L星地包、170496个L前向符合登记。此为执行证据，训练和正式评分尚未完成。

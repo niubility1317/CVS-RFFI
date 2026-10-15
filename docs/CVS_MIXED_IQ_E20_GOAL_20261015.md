@@ -128,7 +128,7 @@ A_s调用原完整 practical residual/post_sync。25 MHz、IQ256、reference_snr
 
 ## 本轮已经交付与未完成项
 
-已实现 `experiments/cvs_mixed_iq20/augmentation.py`、`objective.py`、`design.py` 和聚焦合成检查。设计可输出机器可读五行训练矩阵，明确是训练未发布状态；另一个独立冻结源验证run已实际完成，不与新训练混为一谈。
+已实现 `experiments/cvs_mixed_iq20/augmentation.py`、`objective.py`、`design.py` 和 `train_*.py` 完整管线。代码中的设计状态记录提交时的阶段；实际训练状态以登记run和运行产物为准。另一个独立冻结源验证run已实际完成，不与新训练混为一谈。
 
 本地检查覆盖零扰动／零IQ、RMS保留但波形变化、人工边界有效区、频响界、无TX／全局RNG依赖、非法输入拒绝、三视图RDrop归一化与梯度，以及E20/数据角色/前向预算。它们不替代真实checkpoint smoke或源IQ实验。
 
@@ -152,4 +152,12 @@ A_s调用原完整 practical residual/post_sync。25 MHz、IQ256、reference_snr
 
 第一次本地取回遇到Windows Path到Linux路径的描述转换问题，已用POSIX路径直接取回原完成产物；未重启、重测或修改远端release。原实测结果与冻结策略未变。
 
-下一步是native L-only训练集成，再对五模型训练候选按现有最小流程完成一次限定P0/P1审查、登记、不可变release、真实checkpoint无query smoke及逐行自动七视图评分。源验证的安全PASS不替代这些实际训练工作，也不要求额外设计批准或扩展E20。旧健康任务未改。
+### 五组E20已启动，正式结果待完成
+
+训练run `20261015-phase1-sigtime-rdrop-mixedIQ-e20-manysig-s2026092701-m5-r01`，实际代码 `1fe3f00bdddfdb0af494f74c6570db65490ddf72`。本地五个真实native网络检查验证198个同初始state张量、同IQ RDrop对、默认头／融合／SIG有限非零梯度及2／6次前向，共3328个合成前向、10个非法输入／顺序负例；另13项协议负测和774个observer／EMA合成前向检查PASS，均无真实IQ或优化更新。首次本地导入路径问题修正后，完整检查通过。
+
+一次限定P0/P1审查发现最终source panel JSON可能被并行dispatcher提前读取，已改为同目录临时文件完整关闭后原子发布；两项针对性检查与唯一问题定向复核PASS。没有全量重复审查或额外批准。
+
+单归档传输比对、远端编译与真实checkpoint无query smoke通过后，五个scratch模型已各自完成至少首轮。独立PID／CWD／argv／GPU及日志增长核验VERIFIED；星地组每轮222更新、28416物理L星地包、170496个L前向，与登记一致。实际导入仍为原adv3b02_xuc practical，residual/post_sync/noEQ(G1)、25MHz、referenceSNR30、reflect和质量／相位／IQ补偿开启。原测试IQ未改。
+
+训练和正式评分尚未完成，源资格尚未判定，不宣称clean／urban收益或跨seed复现。管线会逐row冻结E20后自动原clean＋六practical预测，七视图预测固定后独立CPU truth-last评分。具体命令、矩阵、来源、预算与停止规则见[训练登记报告](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-e20-manysig-s2026092701-m5-r01/report.md)。旧健康任务未改。

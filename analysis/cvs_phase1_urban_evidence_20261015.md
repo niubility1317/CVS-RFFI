@@ -1,6 +1,6 @@
 # Phase1 urban：已完成证据与当前验证边界（2026-10-15）
 
-当前方向更新：用户已指定增强前底座为SIG_TIME＋RDrop、每模型scratch总E20，并转向有依据的IQ泛化增强与practical混合训练。文末曾拟议的HQ头间隔E50候选保持未实现历史状态，不再推进。最新完整RDrop结果、普通增强实际路径审计和可证伪的新设计见[当前混合增强方案](../docs/CVS_MIXED_IQ_E20_GOAL_20261015.md)；尚无新混合增强训练或正式成绩。
+当前方向更新：用户已指定增强前底座为SIG_TIME＋RDrop、每模型scratch总E20，并转向有依据的IQ泛化增强与practical混合训练。文末曾拟议的HQ头间隔E50候选保持未实现历史状态，不再推进。最新完整RDrop结果、普通增强实际路径审计和可证伪的新设计见[当前混合增强方案](../docs/CVS_MIXED_IQ_E20_GOAL_20261015.md)。新五组E20训练已启动并通过首轮执行核验，尚无新正式成绩，不能称为双突破。
 
 新源验证已实际完成：固定E20 RDrop默认头、V27000、135002前向、74.915770秒、0更新。轻度线性响应的两个reflect条件相对RAW准确率下降0.059259/0.122222pp，通过预定1pp安全条件；这只支持进入训练检验，不证明clean或urban提升。完整报告见[冻结源响应验证](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01/report.md)。
 
