@@ -1,0 +1,32 @@
+{
+  "status": "VERIFIED",
+  "predeclared_primary": "E50_RDROP",
+  "accuracy_mean": 0.8434007936507937,
+  "accuracy_sample_SD": 0.008385386605416456,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "matched_ORIGINAL_difference_pp": 1.4180555555555556,
+  "matched_ORIGINAL_positive_seeds": 3,
+  "TWO_CE_difference_pp": 2.353968253968254,
+  "TWO_CE_positive_seeds": 3,
+  "E50_minus_E20_accuracy_pp": 0.39722222222222225,
+  "E50_minus_E20_worst_RX_pp": -2.951388888888884,
+  "clean_three_seed_mean84_milestone": true,
+  "each_seed_above84": false,
+  "global_method_innovation_proven": false,
+  "goal_completed": false,
+  "complete_steps": 139860,
+  "complete_epochs": 630,
+  "existing_decisions_recounted": 3024000,
+  "confusion_matrices_recounted": 324,
+  "maximum_objective_reconstruction_error": 2.384185791015625e-07,
+  "deployed_feature_and_default_head_updated_all18": true,
+  "head_fit_updates": 0,
+  "new_predictions_during_analysis": 0,
+  "actual_IQ_reads_during_analysis": 0,
+  "training_curves_visual_inspection": "PASS; six panels readable, mean/sampleSD and budgets explicit",
+  "limitation": "Exposed fixed ManySig clean benchmark; no new blindtest or global method novelty claim. Fixed original18 retained across14+4 roots, no model restarts."
+}

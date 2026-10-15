@@ -3692,25 +3692,162 @@
   ],
   "registered_at": "2026-10-15T10:12:01+00:00",
   "result": {
-    "status": "PARTIAL",
-    "evidence_ref": "E20_scored_summary.json",
-    "complete_E20_rows": 9,
-    "expected_E20_rows": 9,
-    "expected_E50_rows": 9,
-    "all_expected_rows": 18,
-    "E50_status": "Dispatcher failed one-shot observation;14 models started,2 healthy,4 unstarted; new immutable technical recovery pending",
-    "E20_accuracy_mean": {
-      "E20_ORIGINAL": 0.831156746031746,
-      "E20_TWO_CE": 0.8248611111111112,
-      "E20_RDROP": 0.8394285714285714
+    "status": "ANALYZED",
+    "terminal_status": "ARTIFACTS_COMPLETE",
+    "evidence_ref": "results_analysis.json",
+    "actual_totals": {
+      "models": 18,
+      "epochs": 630,
+      "optimizer_steps": 139860,
+      "extra_L_identity_forwards": 11934720,
+      "U_observations": 12247200,
+      "clean_decisions": 3024000,
+      "metric_records": 324
     },
+    "source_skipped": [],
+    "primary": "E50_RDROP",
+    "E50_RDROP_goal84_check": true,
     "E20_RDROP_goal84_check": false,
-    "full_matrix_independent_analysis": "pending",
     "goal_completed": false,
-    "technical_failure_ref": "technical_failure_reconciliation.json",
-    "technical_recovery_run": "20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02",
-    "technical_recovery_status": "RUNNING",
-    "actual_started_rows": 14,
-    "actual_scored_rows": 14
+    "physical_execution": {
+      "original_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01",
+      "original_rows": 14,
+      "original_physical_status": "PARTIAL",
+      "original_failure": {
+        "status": "FAILED",
+        "error": "RuntimeError('Original SIG_TIME worker not observable')",
+        "traceback": "Traceback (most recent call last):\n  File \"PROJECT/releases/cvs_originalSIGTIME_rdrop20_50_20261015_r01/experiments/cvs_sigtime_rdrop_legacy/dispatch.py\", line 51, in run\n    if actual is None or actual['gpu']!=str(gpu):raise RuntimeError('Original SIG_TIME worker not observable')\nRuntimeError: Original SIG_TIME worker not observable\n",
+        "outputs_preserved": true,
+        "no_automatic_retry": true
+      },
+      "recovery_run_id": "20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02",
+      "recovery_rows": 4,
+      "recovery_physical_status": "ARTIFACTS_COMPLETE",
+      "recovery_orchestration_commit": "33f6171a0fec6ac432df672d0c6f542b8d71434c",
+      "model_code_commit": "b3ac442e2d33a5b315fb3251c30e0ad7083566bc",
+      "model_restarts": 0,
+      "metadata_only_changes": [
+        "run_id",
+        "output_root",
+        "launch_owner"
+      ],
+      "missing_original_launch_receipt": [
+        "E50_TWO_CE-s2026092702"
+      ],
+      "source_gate_expansion_evidence": [
+        {
+          "row_id": "E20_ORIGINAL-s2026092702",
+          "source_gate_epoch": 20,
+          "source_gate_frozen_at": 1792060506.6638272,
+          "observation_time": 1792060507.8969858,
+          "observation_kind": "launch_receipt",
+          "launch_receipt_present": true,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01"
+        },
+        {
+          "row_id": "E20_TWO_CE-s2026092702",
+          "source_gate_epoch": 20,
+          "source_gate_frozen_at": 1792060506.6638272,
+          "observation_time": 1792060508.1411948,
+          "observation_kind": "launch_receipt",
+          "launch_receipt_present": true,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01"
+        },
+        {
+          "row_id": "E20_RDROP-s2026092702",
+          "source_gate_epoch": 20,
+          "source_gate_frozen_at": 1792060506.6638272,
+          "observation_time": 1792060508.4138246,
+          "observation_kind": "launch_receipt",
+          "launch_receipt_present": true,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01"
+        },
+        {
+          "row_id": "E20_ORIGINAL-s2026092703",
+          "source_gate_epoch": 20,
+          "source_gate_frozen_at": 1792060506.6638272,
+          "observation_time": 1792060508.6687465,
+          "observation_kind": "launch_receipt",
+          "launch_receipt_present": true,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01"
+        },
+        {
+          "row_id": "E20_TWO_CE-s2026092703",
+          "source_gate_epoch": 20,
+          "source_gate_frozen_at": 1792060506.6638272,
+          "observation_time": 1792060508.963848,
+          "observation_kind": "launch_receipt",
+          "launch_receipt_present": true,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01"
+        },
+        {
+          "row_id": "E20_RDROP-s2026092703",
+          "source_gate_epoch": 20,
+          "source_gate_frozen_at": 1792060506.6638272,
+          "observation_time": 1792060509.2150981,
+          "observation_kind": "launch_receipt",
+          "launch_receipt_present": true,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01"
+        },
+        {
+          "row_id": "E50_ORIGINAL-s2026092702",
+          "source_gate_epoch": 50,
+          "source_gate_frozen_at": 1792061904.5427084,
+          "observation_time": 1792061906.5318964,
+          "observation_kind": "launch_receipt",
+          "launch_receipt_present": true,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01"
+        },
+        {
+          "row_id": "E50_TWO_CE-s2026092702",
+          "source_gate_epoch": 50,
+          "source_gate_frozen_at": 1792061904.5427084,
+          "observation_time": 1792061911.1007078,
+          "observation_kind": "own_initial_checkpoint_mtime",
+          "launch_receipt_present": false,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01"
+        },
+        {
+          "row_id": "E50_RDROP-s2026092702",
+          "source_gate_epoch": 50,
+          "source_gate_frozen_at": 1792061904.5427084,
+          "observation_time": 1792064371.9546523,
+          "observation_kind": "launch_receipt",
+          "launch_receipt_present": true,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02"
+        },
+        {
+          "row_id": "E50_ORIGINAL-s2026092703",
+          "source_gate_epoch": 50,
+          "source_gate_frozen_at": 1792061904.5427084,
+          "observation_time": 1792064372.2644482,
+          "observation_kind": "launch_receipt",
+          "launch_receipt_present": true,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02"
+        },
+        {
+          "row_id": "E50_TWO_CE-s2026092703",
+          "source_gate_epoch": 50,
+          "source_gate_frozen_at": 1792061904.5427084,
+          "observation_time": 1792064372.5802414,
+          "observation_kind": "launch_receipt",
+          "launch_receipt_present": true,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02"
+        },
+        {
+          "row_id": "E50_RDROP-s2026092703",
+          "source_gate_epoch": 50,
+          "source_gate_frozen_at": 1792061904.5427084,
+          "observation_time": 1792064372.8445017,
+          "observation_kind": "launch_receipt",
+          "launch_receipt_present": true,
+          "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02"
+        }
+      ],
+      "recovery_launch_delay_seconds": 2465.1099441051483
+    },
+    "logical_group_status": "ANALYZED",
+    "physical_run_status": "PARTIAL",
+    "technical_recovery_status": "ANALYZED"
   }
 }

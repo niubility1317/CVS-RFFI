@@ -297,3 +297,11 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- ORIGINAL_SIGTIME_TECHNICAL_RECOVERY_LIVE_20261015 -->
 20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02 四行全部 RUNNING/启动核验 VERIFIED，模型代码 b3ac442e2d33a5b315fb3251c30e0ad7083566bc，调度代码 33f6171a0fec6ac432df672d0c6f542b8d71434c。原14行已全部 clean/独立评分，未停止、重训或覆盖。逻辑18行固定矩阵保留，尚待新4行终点；全目标 active。
+
+
+<!-- ORIGINAL_SIGTIME_RDROP_COMPLETE_20261015 -->
+2026-10-15 `20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01` 实际18/18行已ANALYZED/VERIFIED，139860更新/630epoch，保留旧RAW_HZ/LS.01/普通增强/默认头joint配方。E20_ORIGINAL 83.115675% n=3；E20_TWO_CE 82.486111% n=3；E20_RDROP 83.942857% n=3；E50_ORIGINAL 82.922024% n=3；E50_TWO_CE 81.986111% n=3；E50_RDROP 84.340079% n=3。E20_RDROP minus E20_ORIGINAL +0.827183pp 正2/3；E20_RDROP minus E20_TWO_CE +1.456746pp 正2/3；E20_TWO_CE minus E20_ORIGINAL -0.629563pp 正0/3；E50_RDROP minus E50_ORIGINAL +1.418056pp 正3/3；E50_RDROP minus E50_TWO_CE +2.353968pp 正3/3；E50_TWO_CE minus E50_ORIGINAL -0.935913pp 正0/3；E50_ORIGINAL minus E20_ORIGINAL -0.193651pp 正1/3；E50_TWO_CE minus E20_TWO_CE -0.500000pp 正0/3；E50_RDROP minus E20_RDROP +0.397222pp 正2/3。E50_RDROP/E20_RDROP完整三seed84%检查分别True/False；不足三seed不冒充完整矩阵。固定源资格及缺项保留，无target反馈或选择性救跑。既有正负证据和未发布原型保留，RDrop不作为全球新方法；goal保持active。[完整报告](../automation_reports/CV-SincNet/20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)。
+
+
+<!-- ORIGINAL_SIGTIME_RDROP_84_MILESTONE_20261015 -->
+预登记E50_RDROP完整3seed clean均值84.340079%±0.838539pp，匹配ORIGINAL82.922024%±1.363415pp；净+1.418056pp/3正，vsTWO_CE+2.353968pp/3正。固定全18行/630epoch/139860更新/3024000决定/324CM独立复算VERIFIED，三个seed内各198初值张量在六条件相等，所有部署joint160和默认W真实更新，headfit0。clean三seed均值84%性能里程碑已达，不能说每seed均84%或全球新机制。E50较E20_RDROP overall+.397222pp/2正，但worstRX−2.951389pp如实保留；不按target改主条件/日程/重跑。RDrop已知方法、机制创新要求仍需独立源域研究，因此总goal保持active。原14+新4、缺一个原launch receipt、故障和全部负结果保留。[最终报告](../automation_reports/CV-SincNet/20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)。

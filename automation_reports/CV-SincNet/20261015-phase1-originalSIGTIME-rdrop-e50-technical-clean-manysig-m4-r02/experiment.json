@@ -957,12 +957,13 @@
   ],
   "registered_at": "2026-10-15T11:31:56+00:00",
   "result": {
-    "status": "RUNNING",
-    "evidence_ref": "launch_verification.json",
-    "actual_rows_started": 4,
-    "registered_rows": 4,
+    "status": "ANALYZED",
+    "physical_rows": 4,
+    "metric_records": 72,
+    "logical_group_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01",
     "logical_group_rows": 18,
-    "original_scored_rows": 14,
+    "evidence_ref": "../20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/results_analysis.json",
+    "model_restarts": 0,
     "goal_completed": false
   }
 }

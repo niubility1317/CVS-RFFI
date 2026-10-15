@@ -21,3 +21,6 @@ E20已有ORIGINAL83.115675%、TWO_CE82.486111%、RDROP83.942857%，只是报告�
 
 
 只读合并分析工具已完成三个边界检查：14旧+4新逐行路径、全18行终点条件、保留完整原始审计并通过编译。训练与预测代码不变。全部终点到齐后才检查36份初末checkpoint、139860条step、630条epoch、3024000既有决定与324个混淆矩阵，并独立truth-last复算；当前未触发该完整分析。原缺失的一个launch receipt如实保留，不能伪造，源freeze时序使用其own初始checkpoint创建时间另行核对。检查中真实IQ/truth/CP读取、优化和新预测均为0。
+
+
+最终状态 ANALYZED / 四行50轮、44400更新、672000固定clean决定与72个分层混淆矩阵完整核验 VERIFIED。原14+新4的完整三seed E20/E50组报告见 [合并报告](../20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)。本run自身只有4行，不冒充独立完整三seed矩阵。本次合并分析的模型重训、另训头和新增真实IQ读取均为0，原failure保留。
