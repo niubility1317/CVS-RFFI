@@ -42,3 +42,10 @@
 
 
 R02恢复：原始完整机制提交00132f7d54aff45b6e52fc41f89d7705a043bc71保持。实际release修复提交7221e39e0301e0de68231c3526e6c755295270d8只增加缺失间接运行时包与新run/release编号。R01在preflight导入阶段失败，独立远端证据确认0工作进程/0更新；原目录和归档保留。隔离包用python -I导入实际preflight/dispatch/publish三入口PASS，无checkout回退；唯一问题定向复核PASS。新的全部canonical配置与R01仅输出ID变化，源资格、参数组公式和预算完全一致。
+
+
+## R02 启动与首轮实测
+
+RUNNING_VERIFIED。执行提交9fc348bc4be71f498a7684484fd86de81e3e4870；普通N607预检、单归档传输比较、远端compile与真实checkpoint无query smoke均通过，smoke对真实checkpoint的optimizer更新为0。独立核对dispatcher和两个真实worker的PID/CWD/argv，GPU1/2各1个实验进程；两行实际epoch记录均为2，日志从6502/6518增长至16829/16854字节，无failure。真实运行继续原固定50轮，未读取本候选新目标数值。
+
+E1每行13个真实Sinc pre/poststep诊断批：控制的low/band梯度均非零（均值范数1.182845e−7/6.805956e−8），但每批0/24参数发生数值更新；单位修正臂两组均13/13批24/24更新，最大单次绝对更新5577.609375/5528.984375Hz。实际数据重现了旧Hz优化步长问题并验证本方案产生学习更新。这些是52个真实参数组观测，不能代替全部11100步、最终特征证据或泛化结论。源资格仍PENDING；最后5轮源健康、完整预算、初末student/EMA滤波器和L720部署特征尚待训练完成后核实。见 [启动证据](launch_verified.json)、[真实首轮更新](source_progress_e1.json)。

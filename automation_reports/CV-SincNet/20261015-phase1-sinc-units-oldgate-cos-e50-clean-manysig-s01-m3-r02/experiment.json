@@ -32,7 +32,8 @@
     "config_paths": [
       "experiments/cvs_sinc_units50/design.py",
       "experiments/cvs_sinc_units50/optimizer.py"
-    ]
+    ],
+    "execution_commit": "9fc348bc4be71f498a7684484fd86de81e3e4870"
   },
   "data": {
     "dataset": "ManySig",
@@ -103,7 +104,8 @@
     "remote_log_root": "PROJECT/releases/cvs_sinc_units50_20261015_r02",
     "local_artifact_root": "LOCAL_ARTIFACTS/sinc_units50_delivery_r02",
     "launch_command": "python -u -m experiments.cvs_sinc_units50.dispatch",
-    "stop_rule": "Run-owned systemic technical failure only: data/hiddenU/defaulthead mismatch, missing optimizer steps or original losses, nonfinite loss/gradient/parameter, failed expected unit mapping or immutable-output collision. Preserve all partial outputs; no automatic relaunch, no unrelated stop/restart, no targetfeedback. Scientific source qualification FAIL prevents seed expansion; all fixed firstseed models finish and automatically score regardless of target result."
+    "stop_rule": "Run-owned systemic technical failure only: data/hiddenU/defaulthead mismatch, missing optimizer steps or original losses, nonfinite loss/gradient/parameter, failed expected unit mapping or immutable-output collision. Preserve all partial outputs; no automatic relaunch, no unrelated stop/restart, no targetfeedback. Scientific source qualification FAIL prevents seed expansion; all fixed firstseed models finish and automatically score regardless of target result.",
+    "execution_commit": "9fc348bc4be71f498a7684484fd86de81e3e4870"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -151,9 +153,9 @@
       "extra_model_forwards": 0,
       "unit_final_changed_cutoff_parameters_min": 12,
       "unit_final_changed_bandwidth_parameters_min": 12,
-      "unit_student_kernel_relative_L2_min": 1e-06,
-      "unit_ownEMA_kernel_relative_L2_min": 1e-06,
-      "actual_candidate_minus_control_L720zL2_min": 1e-06,
+      "unit_student_kernel_relative_L2_min": 0.000001,
+      "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+      "actual_candidate_minus_control_L720zL2_min": 0.000001,
       "source_only": true,
       "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
     },
@@ -224,7 +226,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/sinc-units50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -262,7 +264,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_L_CE_max": 0.5,
@@ -271,9 +273,9 @@
           "extra_model_forwards": 0,
           "unit_final_changed_cutoff_parameters_min": 12,
           "unit_final_changed_bandwidth_parameters_min": 12,
-          "unit_student_kernel_relative_L2_min": 1e-06,
-          "unit_ownEMA_kernel_relative_L2_min": 1e-06,
-          "actual_candidate_minus_control_L720zL2_min": 1e-06,
+          "unit_student_kernel_relative_L2_min": 0.000001,
+          "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+          "actual_candidate_minus_control_L720zL2_min": 0.000001,
           "source_only": true,
           "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
         },
@@ -366,7 +368,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -404,7 +406,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -637,7 +639,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/sinc-units50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -675,7 +677,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_L_CE_max": 0.5,
@@ -684,9 +686,9 @@
           "extra_model_forwards": 0,
           "unit_final_changed_cutoff_parameters_min": 12,
           "unit_final_changed_bandwidth_parameters_min": 12,
-          "unit_student_kernel_relative_L2_min": 1e-06,
-          "unit_ownEMA_kernel_relative_L2_min": 1e-06,
-          "actual_candidate_minus_control_L720zL2_min": 1e-06,
+          "unit_student_kernel_relative_L2_min": 0.000001,
+          "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+          "actual_candidate_minus_control_L720zL2_min": 0.000001,
           "source_only": true,
           "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
         },
@@ -919,7 +921,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/sinc-units50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -957,7 +959,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_L_CE_max": 0.5,
@@ -966,9 +968,9 @@
           "extra_model_forwards": 0,
           "unit_final_changed_cutoff_parameters_min": 12,
           "unit_final_changed_bandwidth_parameters_min": 12,
-          "unit_student_kernel_relative_L2_min": 1e-06,
-          "unit_ownEMA_kernel_relative_L2_min": 1e-06,
-          "actual_candidate_minus_control_L720zL2_min": 1e-06,
+          "unit_student_kernel_relative_L2_min": 0.000001,
+          "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+          "actual_candidate_minus_control_L720zL2_min": 0.000001,
           "source_only": true,
           "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
         },
@@ -1136,12 +1138,23 @@
     "Recovery7221e39e0301e0de68231c3526e6c755295270d8 onlyadds2runtimepackages and run/releaseIDs. Isolated release -I imports preflight/dispatch/publishPASS, no checkoutfallback; independent targetedP0/P1PASS. R01 verified0workers/updates and preserved."
   ],
   "results": {
-    "status": "PLANNED_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED",
+    "actual_new_training_workers": 2,
+    "completed_source_epochs": [
+      2,
+      2
+    ],
+    "real_checkpoint_noquery_smoke": "PASS",
+    "actual_Sinc_source_updates_e1_verified": true,
     "source_qualification": "PENDING",
-    "real_training_started": false,
+    "new_target_numeric_results_read": false,
+    "head_fit_updates": 0,
     "goal_84": false,
-    "head_fit_updates": 0
+    "evidence": [
+      "launch_verified.json",
+      "source_progress_e1.json"
+    ]
   },
-  "status": "PLANNED",
+  "status": "RUNNING",
   "registered_at": "2026-10-15T00:32:26+00:00"
 }

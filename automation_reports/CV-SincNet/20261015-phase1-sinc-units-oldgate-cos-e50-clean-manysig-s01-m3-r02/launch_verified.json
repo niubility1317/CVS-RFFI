@@ -1,0 +1,78 @@
+{
+  "status": "VERIFIED",
+  "dispatcher_PID_CWD_argv": true,
+  "rows": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "gpu": 1,
+      "PID_CWD_argv": true,
+      "completed_epochs": 2,
+      "log_bytes_before": 6502,
+      "log_bytes_after": 16829,
+      "log_growth": true
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "gpu": 2,
+      "PID_CWD_argv": true,
+      "completed_epochs": 2,
+      "log_bytes_before": 6518,
+      "log_bytes_after": 16854,
+      "log_growth": true
+    }
+  ],
+  "remote_preflight": "PASS",
+  "real_checkpoint_noquery_smoke": true,
+  "real_checkpoint_optimizer_updates": 0,
+  "failure": null,
+  "capacity": {
+    "0": {
+      "all_owner_process_count": 0,
+      "free_mb": 24124
+    },
+    "1": {
+      "all_owner_process_count": 1,
+      "free_mb": 20769
+    },
+    "2": {
+      "all_owner_process_count": 1,
+      "free_mb": 20769
+    },
+    "3": {
+      "all_owner_process_count": 0,
+      "free_mb": 24124
+    },
+    "4": {
+      "all_owner_process_count": 0,
+      "free_mb": 24124
+    },
+    "5": {
+      "all_owner_process_count": 0,
+      "free_mb": 24124
+    },
+    "6": {
+      "all_owner_process_count": 0,
+      "free_mb": 24124
+    },
+    "7": {
+      "all_owner_process_count": 0,
+      "free_mb": 24124
+    }
+  },
+  "new_target_numeric_results_read": false,
+  "run_id": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+  "release": "cvs_sinc_units50_20261015_r02",
+  "code_commit": "7221e39e0301e0de68231c3526e6c755295270d8",
+  "original_mechanism_commit": "00132f7d54aff45b6e52fc41f89d7705a043bc71",
+  "execution_commit": "9fc348bc4be71f498a7684484fd86de81e3e4870",
+  "previous_release_failed_before_training": true,
+  "previous_release_preserved": true,
+  "ordinary_N607_preflight": "PASS",
+  "remote_compile": "PASS",
+  "single_archive_local_remote_comparison": "PASS before remote compile/preflight, confirmed by resulting independent preflight/submit/process artifacts",
+  "only_original_head": true,
+  "default_head_joint_training": true,
+  "head_fit_updates": 0,
+  "source_qualification": "PENDING",
+  "goal_84": false
+}

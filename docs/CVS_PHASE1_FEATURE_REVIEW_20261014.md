@@ -486,3 +486,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 2026-10-15 更新：时序自挑战完整三种子结果已独立复核并全量保留。SIG_TIME 82.669048%，随机 82.002579%，RSC 81.588095%；RSC 相对 SIG 配对 −1.080952±0.766891 个百分点，0/3 为正。本固定机制不再扩展。完整矩阵、RX/day/F1、错误转移、实际梯度、部署特征和成本见 [完整结果](../automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md)。84% 目标仍未达成。下一项网络不变的 Sinc 优化器机制代码已固定于 00132f7d54aff45b6e52fc41f89d7705a043bc71，尚未发布或得到性能结论。
+
+
+2026-10-15 训练机制更新：网络与默认头保持的Sinc优化器单位实验已在新R02发布，两个新模型均观察到E2，真实checkpoint无query smoke及PID/CWD/argv/GPU/日志增长已核实。E1实际13批对照有非零梯度但Sinc数值更新为0；单位臂48参数均真实更新。源资格和目标提升仍未知。R01因间接发布依赖在训练前失败，0更新且保留产物；修复只补依赖和输出ID。详见 [R02报告](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md)。

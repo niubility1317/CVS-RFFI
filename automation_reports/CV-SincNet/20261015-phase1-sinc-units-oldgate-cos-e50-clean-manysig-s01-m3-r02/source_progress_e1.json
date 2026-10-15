@@ -1,0 +1,702 @@
+{
+  "schema": "sinc_unit_actual_source_e1_v1",
+  "status": "VERIFIED",
+  "source_only": true,
+  "rows": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "epoch1_gradient_artifact_exists": true,
+      "status": "VERIFIED",
+      "diagnostic_batches": 13,
+      "Sinc_tensor_records": 26,
+      "actual_source_Sinc_updates": [
+        {
+          "step": 16,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 9.236402616076472e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 16,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 5.217481601374239e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 16,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 32,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 9.875300472523613e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 32,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 5.923261637980929e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 32,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 48,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 8.178921238615016e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 48,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 5.1531713561677684e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 48,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 64,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 6.919958087389088e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 64,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 4.342498714020611e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 64,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 80,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 5.54986115166657e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 80,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 4.7924977785438376e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 80,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 96,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 1.0323914887700061e-7,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 96,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 5.889969464381778e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 96,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 112,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 1.0996290955074783e-7,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 112,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 5.497113091970943e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 112,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 128,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 2.1129603182459337e-7,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 128,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 1.1686563603573167e-7,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 128,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 144,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 9.703609765153215e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 144,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 4.8734206787787345e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 144,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 160,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 1.2214209341028328e-7,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 160,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 6.440451680336073e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 160,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 176,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 2.626844192229655e-7,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 176,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 1.4658734404024062e-7,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 176,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 192,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 1.0067651094958744e-7,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 192,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 6.429637554611992e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 192,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 208,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 1.330563408415757e-7,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 208,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 7.572620042805982e-8,
+              "changed_elements": 0,
+              "delta_norm_Hz": 0,
+              "maximum_abs_delta_Hz": 0,
+              "optimizer_step": 208,
+              "finite": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "epoch1_gradient_artifact_exists": true,
+      "status": "VERIFIED",
+      "diagnostic_batches": 13,
+      "Sinc_tensor_records": 26,
+      "actual_source_Sinc_updates": [
+        {
+          "step": 16,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 5.709953612778906e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 10775.6063993707,
+              "maximum_abs_delta_Hz": 4473.984375,
+              "optimizer_step": 16,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 3.868566722958378e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 10537.935954674254,
+              "maximum_abs_delta_Hz": 4471.54296875,
+              "optimizer_step": 16,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 32,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 8.208650757790112e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 11418.322176907708,
+              "maximum_abs_delta_Hz": 5155.5859375,
+              "optimizer_step": 32,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 4.782339367259274e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 10984.434471872599,
+              "maximum_abs_delta_Hz": 5158.5390625,
+              "optimizer_step": 32,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 48,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 1.0427177060860841e-7,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7397.984505841109,
+              "maximum_abs_delta_Hz": 4996.8515625,
+              "optimizer_step": 48,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 5.8810004290089246e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7946.646163825639,
+              "maximum_abs_delta_Hz": 5177.5,
+              "optimizer_step": 48,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 64,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 8.015944128034065e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 6137.995860471495,
+              "maximum_abs_delta_Hz": 3279.5,
+              "optimizer_step": 64,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 4.8196870262745395e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7567.630221661352,
+              "maximum_abs_delta_Hz": 3614.25,
+              "optimizer_step": 64,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 80,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 6.295237827146776e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7925.949788837199,
+              "maximum_abs_delta_Hz": 3941.5,
+              "optimizer_step": 80,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 4.35151111791532e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7354.040478885286,
+              "maximum_abs_delta_Hz": 3513.703125,
+              "optimizer_step": 80,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 96,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 6.26136595078611e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7006.866261400034,
+              "maximum_abs_delta_Hz": 3792.6640625,
+              "optimizer_step": 96,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 3.985817097826748e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 6678.9186249985905,
+              "maximum_abs_delta_Hz": 3904,
+              "optimizer_step": 96,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 112,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 9.35974109415291e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 5682.307558976962,
+              "maximum_abs_delta_Hz": 2519,
+              "optimizer_step": 112,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 5.586928711575812e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 6219.386798146559,
+              "maximum_abs_delta_Hz": 4334.5,
+              "optimizer_step": 112,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 128,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 1.7644489009717664e-7,
+              "changed_elements": 24,
+              "delta_norm_Hz": 6350.253203449864,
+              "maximum_abs_delta_Hz": 4825.2802734375,
+              "optimizer_step": 128,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 9.458668970026949e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7347.485233353279,
+              "maximum_abs_delta_Hz": 4816.30078125,
+              "optimizer_step": 128,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 144,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 1.1374879328094321e-7,
+              "changed_elements": 24,
+              "delta_norm_Hz": 9045.978496930482,
+              "maximum_abs_delta_Hz": 5577.609375,
+              "optimizer_step": 144,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 6.402563424325582e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 9571.445392525247,
+              "maximum_abs_delta_Hz": 5528.984375,
+              "optimizer_step": 144,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 160,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 2.430025617496394e-7,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7547.587629915749,
+              "maximum_abs_delta_Hz": 3537.9375,
+              "optimizer_step": 160,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 1.3560168681463732e-7,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7584.481238393124,
+              "maximum_abs_delta_Hz": 3655.5625,
+              "optimizer_step": 160,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 176,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 1.3419993167401282e-7,
+              "changed_elements": 24,
+              "delta_norm_Hz": 5682.579697917471,
+              "maximum_abs_delta_Hz": 2629.8828125,
+              "optimizer_step": 176,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 7.043350766646317e-8,
+              "changed_elements": 24,
+              "delta_norm_Hz": 6283.739374619649,
+              "maximum_abs_delta_Hz": 2381.41064453125,
+              "optimizer_step": 176,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 192,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 1.5762266586069218e-7,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7455.672022389556,
+              "maximum_abs_delta_Hz": 3072.419921875,
+              "optimizer_step": 192,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 1.1258501892046419e-7,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7167.279091189149,
+              "maximum_abs_delta_Hz": 3042.47265625,
+              "optimizer_step": 192,
+              "finite": true
+            }
+          ]
+        },
+        {
+          "step": 208,
+          "epoch": 1,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "actual_gradient_norm": 2.897958996687032e-7,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7954.94115461542,
+              "maximum_abs_delta_Hz": 3538.03125,
+              "optimizer_step": 208,
+              "finite": true
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "actual_gradient_norm": 1.5527160721444033e-7,
+              "changed_elements": 24,
+              "delta_norm_Hz": 7574.757409607797,
+              "maximum_abs_delta_Hz": 3493.9453125,
+              "optimizer_step": 208,
+              "finite": true
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "summary": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "diagnostic_batches": 13,
+      "parameters": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+          "nonzero_grad_batches": 13,
+          "mean_gradient_norm": 1.1828446061469183e-7,
+          "changed_elements_min": 0,
+          "changed_elements_max": 0,
+          "maximum_abs_delta_Hz": 0
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+          "nonzero_grad_batches": 13,
+          "mean_gradient_norm": 6.805955508351547e-8,
+          "changed_elements_min": 0,
+          "changed_elements_max": 0,
+          "maximum_abs_delta_Hz": 0
+        }
+      ]
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "diagnostic_batches": 13,
+      "parameters": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+          "nonzero_grad_batches": 13,
+          "mean_gradient_norm": 1.2750734204974344e-7,
+          "changed_elements_min": 24,
+          "changed_elements_max": 24,
+          "maximum_abs_delta_Hz": 5577.609375
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+          "nonzero_grad_batches": 13,
+          "mean_gradient_norm": 7.425097302213234e-8,
+          "changed_elements_min": 24,
+          "changed_elements_max": 24,
+          "maximum_abs_delta_Hz": 5528.984375
+        }
+      ]
+    }
+  ],
+  "query_read": false,
+  "U_truth_read": false,
+  "extra_model_forwards": 0,
+  "head_fit_updates": 0,
+  "source_qualification": "PENDING",
+  "native_optimizer_updates_observed_at_least_each": 444,
+  "scope": "13 actual saved source pre/poststep batches each model atE1; actual clippedtotal native gradients, not allsteps/cumulative optimizer attribution or DGproof"
+}

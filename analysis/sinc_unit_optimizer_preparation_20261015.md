@@ -30,3 +30,6 @@ float64给定梯度的4步坐标等价误差最大1.862645e-9Hz，原cosine覆�
 
 
 完整训练入口已固定于 00132f7d54aff45b6e52fc41f89d7705a043bc71，唯一独立 P0/P1 缺失release依赖已修复并确认PASS；两行原生入口/合成16step验证和3行完整canonical恢复均PASS。预登记 [Sinc单位实验](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md)；当前未启动真实训练，源资格与目标性能均未知。网络和默认头保持，只有原48个Sinc参数的优化器单位设置变化。
+
+
+实际发布更新：R01因缺失间接依赖在训练前失败（0更新），产物保留。修复7221e39e0301e0de68231c3526e6c755295270d8仅补依赖与新ID。R02执行9fc348bc4be71f498a7684484fd86de81e3e4870已VERIFIED启动；两模型E2、首轮真实13批Sinc更新证据已回收。源资格与目标收益均未知。当前报告为 [R02](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md)。
