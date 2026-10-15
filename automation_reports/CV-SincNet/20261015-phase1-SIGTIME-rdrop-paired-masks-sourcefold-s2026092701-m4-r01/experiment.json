@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Latest user: only SIG_TIME+RDrop, focus RDrop mechanism. New joint-mask-sampling hypothesis with2x2 controls, first predefined seed01 fixed before results. Prior failed operators remain closed; no target-selected parent or trained checkpoint inheritance.",
   "code": {
-    "commit": "Actual Git HEAD in release_commit.txt",
+    "commit": "c803f2b13e74bd6d721c3795e64cb1c12ec377cc",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "ordinary N607 CVS-RFFI;CPU2/worker,loader0;CPU-only dispatcher",
     "cwd": "PROJECT/releases/cvs_SIGTIME_rdrop_paired_masks_source20_20261015_r01",
@@ -1097,5 +1097,13 @@
     "CPU/CUDA checks PASS58 protocol negatives/5 qualification falsecases/198 identical initial tensors. Native independent output,loss,RNG exact; CPU gradients exact. CUDA gradients tolerance1e-7abs/1e-5rel and relativeNorm<1e-6; native repeat itself varies at~4.5e-8. Each final check1552synthetic packets,0realIQ/CP/optimizer/headfit. Failed diagnostic attempts are not performance results.",
     "One independent next-run P0/P1 review pending. ARM/DisARM antithetic Bernoulli precedent exists; no global first claim. Hypothesis is use of disjoint dropped sets as fixed-rate RDrop paired training and source generalization."
   ],
-  "registered_at": "2026-10-15T14:33:27+00:00"
+  "registered_at": "2026-10-15T14:33:27+00:00",
+  "result": {
+    "status": "RUNNING",
+    "evidence_ref": "launch_verification.json",
+    "source_rows_running": 4,
+    "source_only": true,
+    "target_access": false,
+    "goal_completed": false
+  }
 }

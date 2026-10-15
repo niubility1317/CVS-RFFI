@@ -1,0 +1,549 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-SIGTIME-rdrop-paired-masks-sourcefold-s2026092701-m4-r01",
+  "execution_commit": "c803f2b13e74bd6d721c3795e64cb1c12ec377cc",
+  "ready_rows": 4,
+  "rows": [
+    {
+      "row_id": "INDEP_CE-RX1-s2026092701",
+      "gpu": "1",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11753,
+      "log_growth": 5181,
+      "smoke_PASS": true,
+      "mask_audit": {
+        "calls": 222,
+        "sites": {
+          "id_backbone.encoder.core.id_backbone.t1.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 130940928,
+            "first_drop": 13086919,
+            "second_drop": 13087859,
+            "both_drop": 1307461,
+            "different": 23559856
+          },
+          "id_backbone.encoder.core.id_backbone.t2.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 87293952,
+            "first_drop": 8724376,
+            "second_drop": 8730856,
+            "both_drop": 872650,
+            "different": 15709932
+          },
+          "id_backbone.encoder.core.id_backbone.t3.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 87293952,
+            "first_drop": 8725139,
+            "second_drop": 8730284,
+            "both_drop": 873778,
+            "different": 15707867
+          },
+          "id_backbone.encoder.core.id_backbone.f1.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363036,
+            "second_drop": 363495,
+            "both_drop": 18283,
+            "different": 689965
+          },
+          "id_backbone.encoder.core.id_backbone.f2.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363156,
+            "second_drop": 363309,
+            "both_drop": 18024,
+            "different": 690417
+          },
+          "id_backbone.encoder.core.id_backbone.f3.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363591,
+            "second_drop": 364782,
+            "both_drop": 18366,
+            "different": 691641
+          },
+          "id_backbone.encoder.core.id_backbone.freq_stats_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 510052,
+            "second_drop": 511131,
+            "both_drop": 57237,
+            "different": 906709
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b1.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 174587904,
+            "first_drop": 13968404,
+            "second_drop": 13964562,
+            "both_drop": 1117172,
+            "different": 25698622
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b2.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 116391936,
+            "first_drop": 9313177,
+            "second_drop": 9311037,
+            "both_drop": 745600,
+            "different": 17133014
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b3.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 116391936,
+            "first_drop": 9308978,
+            "second_drop": 9311710,
+            "both_drop": 744162,
+            "different": 17132364
+          },
+          "id_backbone.encoder.core.id_backbone.pa_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 511723,
+            "second_drop": 512427,
+            "both_drop": 57941,
+            "different": 908268
+          },
+          "id_backbone.encoder.core.id_backbone.pa_stats_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 511572,
+            "second_drop": 511189,
+            "both_drop": 57140,
+            "different": 908481
+          },
+          "id_backbone.encoder.core.id_backbone.fuse.2": {
+            "p": 0.45,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 2044972,
+            "second_drop": 2044216,
+            "both_drop": 919050,
+            "different": 2251088
+          }
+        }
+      }
+    },
+    {
+      "row_id": "ANTI_CE-RX1-s2026092701",
+      "gpu": "2",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11744,
+      "log_growth": 5180,
+      "smoke_PASS": true,
+      "mask_audit": {
+        "calls": 222,
+        "sites": {
+          "id_backbone.encoder.core.id_backbone.t1.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 130940928,
+            "first_drop": 13086919,
+            "second_drop": 13090917,
+            "both_drop": 0,
+            "different": 26177836
+          },
+          "id_backbone.encoder.core.id_backbone.t2.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 87293952,
+            "first_drop": 8724376,
+            "second_drop": 8730224,
+            "both_drop": 0,
+            "different": 17454600
+          },
+          "id_backbone.encoder.core.id_backbone.t3.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 87293952,
+            "first_drop": 8725139,
+            "second_drop": 8729356,
+            "both_drop": 0,
+            "different": 17454495
+          },
+          "id_backbone.encoder.core.id_backbone.f1.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363036,
+            "second_drop": 363374,
+            "both_drop": 0,
+            "different": 726410
+          },
+          "id_backbone.encoder.core.id_backbone.f2.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363156,
+            "second_drop": 363595,
+            "both_drop": 0,
+            "different": 726751
+          },
+          "id_backbone.encoder.core.id_backbone.f3.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363591,
+            "second_drop": 364362,
+            "both_drop": 0,
+            "different": 727953
+          },
+          "id_backbone.encoder.core.id_backbone.freq_stats_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 510052,
+            "second_drop": 511056,
+            "both_drop": 0,
+            "different": 1021108
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b1.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 174587904,
+            "first_drop": 13968404,
+            "second_drop": 13964874,
+            "both_drop": 0,
+            "different": 27933278
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b2.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 116391936,
+            "first_drop": 9313177,
+            "second_drop": 9309438,
+            "both_drop": 0,
+            "different": 18622615
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b3.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 116391936,
+            "first_drop": 9308978,
+            "second_drop": 9311635,
+            "both_drop": 0,
+            "different": 18620613
+          },
+          "id_backbone.encoder.core.id_backbone.pa_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 511723,
+            "second_drop": 512199,
+            "both_drop": 0,
+            "different": 1023922
+          },
+          "id_backbone.encoder.core.id_backbone.pa_stats_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 511572,
+            "second_drop": 511784,
+            "both_drop": 0,
+            "different": 1023356
+          },
+          "id_backbone.encoder.core.id_backbone.fuse.2": {
+            "p": 0.45,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 2044972,
+            "second_drop": 2046519,
+            "both_drop": 0,
+            "different": 4091491
+          }
+        }
+      }
+    },
+    {
+      "row_id": "INDEP_RDROP-RX1-s2026092701",
+      "gpu": "6",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11783,
+      "log_growth": 5187,
+      "smoke_PASS": true,
+      "mask_audit": {
+        "calls": 222,
+        "sites": {
+          "id_backbone.encoder.core.id_backbone.t1.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 130940928,
+            "first_drop": 13086919,
+            "second_drop": 13087859,
+            "both_drop": 1307461,
+            "different": 23559856
+          },
+          "id_backbone.encoder.core.id_backbone.t2.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 87293952,
+            "first_drop": 8724376,
+            "second_drop": 8730856,
+            "both_drop": 872650,
+            "different": 15709932
+          },
+          "id_backbone.encoder.core.id_backbone.t3.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 87293952,
+            "first_drop": 8725139,
+            "second_drop": 8730284,
+            "both_drop": 873778,
+            "different": 15707867
+          },
+          "id_backbone.encoder.core.id_backbone.f1.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363036,
+            "second_drop": 363495,
+            "both_drop": 18283,
+            "different": 689965
+          },
+          "id_backbone.encoder.core.id_backbone.f2.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363156,
+            "second_drop": 363309,
+            "both_drop": 18024,
+            "different": 690417
+          },
+          "id_backbone.encoder.core.id_backbone.f3.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363591,
+            "second_drop": 364782,
+            "both_drop": 18366,
+            "different": 691641
+          },
+          "id_backbone.encoder.core.id_backbone.freq_stats_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 510052,
+            "second_drop": 511131,
+            "both_drop": 57237,
+            "different": 906709
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b1.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 174587904,
+            "first_drop": 13968404,
+            "second_drop": 13964562,
+            "both_drop": 1117172,
+            "different": 25698622
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b2.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 116391936,
+            "first_drop": 9313177,
+            "second_drop": 9311037,
+            "both_drop": 745600,
+            "different": 17133014
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b3.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 116391936,
+            "first_drop": 9308978,
+            "second_drop": 9311710,
+            "both_drop": 744162,
+            "different": 17132364
+          },
+          "id_backbone.encoder.core.id_backbone.pa_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 511723,
+            "second_drop": 512427,
+            "both_drop": 57941,
+            "different": 908268
+          },
+          "id_backbone.encoder.core.id_backbone.pa_stats_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 511572,
+            "second_drop": 511189,
+            "both_drop": 57140,
+            "different": 908481
+          },
+          "id_backbone.encoder.core.id_backbone.fuse.2": {
+            "p": 0.45,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 2044972,
+            "second_drop": 2044216,
+            "both_drop": 919050,
+            "different": 2251088
+          }
+        }
+      }
+    },
+    {
+      "row_id": "ANTI_RDROP-RX1-s2026092701",
+      "gpu": "7",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11773,
+      "log_growth": 5185,
+      "smoke_PASS": true,
+      "mask_audit": {
+        "calls": 222,
+        "sites": {
+          "id_backbone.encoder.core.id_backbone.t1.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 130940928,
+            "first_drop": 13086919,
+            "second_drop": 13090917,
+            "both_drop": 0,
+            "different": 26177836
+          },
+          "id_backbone.encoder.core.id_backbone.t2.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 87293952,
+            "first_drop": 8724376,
+            "second_drop": 8730224,
+            "both_drop": 0,
+            "different": 17454600
+          },
+          "id_backbone.encoder.core.id_backbone.t3.drop": {
+            "p": 0.1,
+            "calls": 222,
+            "elements": 87293952,
+            "first_drop": 8725139,
+            "second_drop": 8729356,
+            "both_drop": 0,
+            "different": 17454495
+          },
+          "id_backbone.encoder.core.id_backbone.f1.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363036,
+            "second_drop": 363374,
+            "both_drop": 0,
+            "different": 726410
+          },
+          "id_backbone.encoder.core.id_backbone.f2.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363156,
+            "second_drop": 363595,
+            "both_drop": 0,
+            "different": 726751
+          },
+          "id_backbone.encoder.core.id_backbone.f3.drop": {
+            "p": 0.05,
+            "calls": 222,
+            "elements": 7274496,
+            "first_drop": 363591,
+            "second_drop": 364362,
+            "both_drop": 0,
+            "different": 727953
+          },
+          "id_backbone.encoder.core.id_backbone.freq_stats_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 510052,
+            "second_drop": 511056,
+            "both_drop": 0,
+            "different": 1021108
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b1.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 174587904,
+            "first_drop": 13968404,
+            "second_drop": 13964874,
+            "both_drop": 0,
+            "different": 27933278
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b2.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 116391936,
+            "first_drop": 9313177,
+            "second_drop": 9309438,
+            "both_drop": 0,
+            "different": 18622615
+          },
+          "id_backbone.encoder.core.id_backbone.pa_b3.drop": {
+            "p": 0.08,
+            "calls": 222,
+            "elements": 116391936,
+            "first_drop": 9308978,
+            "second_drop": 9311635,
+            "both_drop": 0,
+            "different": 18620613
+          },
+          "id_backbone.encoder.core.id_backbone.pa_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 511723,
+            "second_drop": 512199,
+            "both_drop": 0,
+            "different": 1023922
+          },
+          "id_backbone.encoder.core.id_backbone.pa_stats_proj.2": {
+            "p": 0.1125,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 511572,
+            "second_drop": 511784,
+            "both_drop": 0,
+            "different": 1023356
+          },
+          "id_backbone.encoder.core.id_backbone.fuse.2": {
+            "p": 0.45,
+            "calls": 222,
+            "elements": 4546560,
+            "first_drop": 2044972,
+            "second_drop": 2046519,
+            "both_drop": 0,
+            "different": 4091491
+          }
+        }
+      }
+    }
+  ],
+  "all_eight_GPUs_considered": true,
+  "source_contract_counts": {
+    "L_s": 5040,
+    "U_s": 45360,
+    "V": 21600
+  },
+  "per_GPU_process_cap": 3,
+  "independent_PID_CWD_argv_GPU_and_log_growth": true,
+  "source_only": true,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "training_complete": false,
+  "goal_completed": false
+}
