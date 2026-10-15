@@ -379,3 +379,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- RDROP_FEATURE_GEOMETRY_RESULT_20261016 -->
 20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01 ANALYZED/VERIFIED：1404shared源L、四冻结模型5616前向、8syntheticCPsmoke、0训练/拟合头/U/V/targetIQ。直接欧氏距离独立重算4份features、576anchor/344groups，计数全对齐。FULL/SPAN/ISOTROPIC/NULL关系满足率92.475709%/92.257795%/93.103373%/92.906293%；ISO相对FULL+0.627664pp，day3/3、fitRX2/4、TX4/6正，72cell31正30负11平。raw范数10.077678→19.100467，总体均值能量占比84.5333%→90.4530%，事后矩统计不改变既定关系或资格。支持同源折特征层正迹象而非仅W，但不等于独立训练/新TX/目标证明；NULL FAIL保持，原RDrop三seed正收益保留。下一独立训练假设需区分方向一致性与范数/公共分量变化并另固定公平源对照。[完整诊断](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01/report.md)。goalactive。
+
+
+<!-- RDROP_BATCH_CENTER_RX3_PREREG_20261016 -->
+仅SIG_TIME＋RDrop。新固定FULL/POINT/NORM_MATCH/CENTER，RX3全路径排除、fit1/4/6/8、seed02各scratchE20。主CENTER保留fullKL，特征减当前可微共同均值后方向一致；NORM_MATCH在当前joint160图匹配辅助梯度L2。独立预登记POINTvsFULL确认旧whole-feature正路线，不替代主判据。CPU/CUDA59协议负例及实际原版/梯度/RNG/198初态PASS。尚无真实结果，0target。20261016-phase1-SIGTIME-rdrop-batch-center-RX3-sourcefold-s2026092702-m4-r01 PLANNED。[固定方案](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-batch-center-RX3-sourcefold-s2026092702-m4-r01/report.md)。goalACTIVE。
