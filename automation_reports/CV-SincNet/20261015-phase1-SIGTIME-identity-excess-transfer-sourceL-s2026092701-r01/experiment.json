@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "Active user goal: improve training/loss and actualfeature generalization, defaulthead only, fixedsource permission and E20+20 budget.",
   "code": {
-    "commit": "release_commit.txt (actual Git HEAD at publication)",
+    "commit": "6d4f66c830cfb6ab471bf58e2cf45741ed08cc0c",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account/CVS-RFFI Python/CPU2threads/GPU0/nine namespaceoverlay on immutable ownE20runtime",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_identity_excess_transfer_sourceL_20261015_r01"
@@ -192,5 +192,111 @@
     "No noveltheory claim; relativesharpness idea and crossclassdelta precedents acknowledged.",
     "Historicalpositives keptseparate,84%defaultheadclean3seed goalactive."
   ],
-  "registered_at": "2026-10-14T23:59:46+00:00"
+  "registered_at": "2026-10-14T23:59:46+00:00",
+  "result": {
+    "status": "SOURCE_SCREEN_NOT_PASSED",
+    "gate_result": {
+      "passed": false,
+      "stage_signal": null,
+      "qualified_ordinals_by_state": {
+        "INITIAL": [],
+        "FINAL20": [
+          19
+        ]
+      },
+      "cell_conditions": [
+        {
+          "state": "INITIAL",
+          "ordinal": 2,
+          "qualified": false,
+          "failed_conditions": [
+            "near_plain_CE_gradient_amplification",
+            "ZERO:no_held_transfer_CE_difference_gain",
+            "ZERO:transfer_error_harm",
+            "SAME_RX:no_held_positive_excess_risk_difference_gain",
+            "SAME_RX:no_held_transfer_CE_difference_gain"
+          ]
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 19,
+          "qualified": false,
+          "failed_conditions": [
+            "near_plain_CE_gradient_amplification",
+            "ZERO:no_held_transfer_CE_difference_gain",
+            "SAME_RX:no_held_transfer_CE_difference_gain"
+          ]
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 37,
+          "qualified": false,
+          "failed_conditions": [
+            "near_plain_CE_gradient_amplification",
+            "ZERO:no_held_transfer_CE_difference_gain",
+            "ZERO:transfer_error_harm"
+          ]
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 54,
+          "qualified": false,
+          "failed_conditions": [
+            "near_plain_CE_gradient_amplification",
+            "ZERO:no_held_transfer_CE_difference_gain",
+            "SAME_RX:no_held_positive_excess_risk_difference_gain",
+            "SAME_RX:no_held_transfer_CE_difference_gain"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 2,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:ACTUAL_relative_CE_harm",
+            "ZERO:PRE_W_relative_CE_harm",
+            "SAME_RX:no_held_positive_excess_risk_difference_gain",
+            "SAME_RX:no_held_transfer_CE_difference_gain"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 19,
+          "qualified": true,
+          "failed_conditions": []
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 37,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:no_held_positive_excess_risk_difference_gain",
+            "ZERO:no_held_transfer_CE_difference_gain"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 54,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:no_held_positive_excess_risk_difference_gain",
+            "ZERO:no_held_transfer_CE_difference_gain",
+            "ZERO:ACTUAL_relative_CE_harm",
+            "ZERO:PRE_W_relative_CE_harm"
+          ]
+        }
+      ],
+      "controls_not_fallback": true,
+      "interpretation": "Local source excess-risk and identity gain with distinct gradient, not fulltraining or unseenRX/DG"
+    },
+    "decision": "CLOSE_FIXED_RELATIVE_EXCESS_TRANSFER",
+    "initial_primary_risk_improvement_does_not_imply_virtual_CE_gain": true,
+    "late_broad_distinct_signal_preserved": true,
+    "real_training_launched": false,
+    "actual_optimizer_updates": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "goal84_completed": false,
+    "evidence_ref": "result_evidence.json"
+  }
 }
