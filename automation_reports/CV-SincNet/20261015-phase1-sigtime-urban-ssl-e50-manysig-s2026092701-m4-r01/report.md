@@ -66,7 +66,7 @@ C3对B0：low+0.9655pp、urban+0.3538pp、clean−0.8768pp；SSL_CONF对C3只增
 | SSL_CONF | 0/50/50 | 11100 | 5733300 | 9553.112 |
 | SSL_WEAK | 0/50/50 | 11100 | 6697200 | 9492.168 |
 
-主前向含L clean/satellite和原U教师/强视图，新SSL额外urban/weak均计入；另列每组源面板144000、SSL首步源教师健康检查27256/54256、原生V健康前向、smoke、每组1176000正式预测，原生V总前向细账仍待单独核验，不把主前向误称全部计算。四组后分析267120前向、0更新、602.628秒；其中720为固定父模型clean集合建立，模型未用于续训。并发资源负载不同，墙钟不作孤立方法速度结论。
+主前向含L clean/satellite和原U教师/强视图，新SSL额外urban/weak均计入；另列每组源面板144000、SSL首步源教师健康检查27256/54256、原生V健康前向、smoke、每组1176000正式预测，原生V完整账已VERIFIED：每组50×27000验证前向＋27000最终geometry＋27000最终健康，共1404000；每epoch第二次geometry均实际106个cache命中/0 miss，没有重复模型前向。四组后分析267120前向、0更新、602.628秒；其中720为固定父模型clean集合建立，模型未用于续训。并发资源负载不同，墙钟不作孤立方法速度结论。
 
 完整50轮曲线/技术审计：local_artifacts/cvs_urban_sigtime_e50_20261015/final/training_audit.json。图已实际生成并目检；原先source_controlled_attribution.png是启动前父模型图，训练后应使用以下新图：
 
@@ -77,3 +77,5 @@ C3对B0：low+0.9655pp、urban+0.3538pp、clean−0.8768pp；SSL_CONF对C3只增
 ![训练后固定与总效应](E:/type10-7/local_artifacts/cvs_urban_sigtime_e50_20261015/final/figures/trained_controlled_attribution.png)
 
 正式训练代码commit仍为7a366c506a736c34e5bba335821f4867f2d3706b；本次独立源后分析release为cvs_sigtime_urban_ssl_e50_source_20261015_r01，commit89bf9577d43c0fa3763ddb2f2c67a96d27d7b89e。正常退出与完成产物独立回读VERIFIED，不覆盖或重跑旧训练/预测。后续八组位置小试预登记由用户附件驱动，保持源选择隔离；旧目标分数不用于其系数、课程或分支排序。
+
+全前向账补全：B0/C3各7493404、SSL_CONF8484560、SSL_WEAK9475460（训练/健康/初末smoke/1176000正式预测），另共享dispatcher冻结smoke2，总32946830；后分析267120和独立替换26640另计。依据每行50轮完整epoch/execution日志、真实resolved args与immutable代码调用、最终completion，不访问truth；详见local_artifacts/cvs_urban_sigtime_e50_20261015/final/complete_forward_accounting.json。该样本前向数不是FLOPs或等价硬件墙钟。

@@ -1,6 +1,6 @@
 # SIG_TIME 同分支位置对齐 E50 八组小试
 
-状态：LOCAL_VERIFIED，尚未发布。落实用户最新附件：A0、A-T、A-F、A-P、A-R、A-S、A-J、A-ALL，单 seed 2026092701 先检验实现/学习信号，正式三 seed 为 2026092701/02/03。首 seed 不能宣布最佳分支，F/P/R 不按替换诊断或目标成绩剔除。旧四行 E50 和两行 KL/DIR 的 immutable release 不变。
+状态：RUNNING，A0已执行，其他七组等待共同源定标后自动从零起跑。落实用户最新附件：A0、A-T、A-F、A-P、A-R、A-S、A-J、A-ALL，单 seed 2026092701 先检验实现/学习信号，正式三 seed 为 2026092701/02/03。首 seed 不能宣布最佳分支，F/P/R 不按替换诊断或目标成绩剔除。旧四行 E50 和两行 KL/DIR 的 immutable release 不变。
 
 八组均从零 E50=33 labelled+17 native old-gated pseudo，222 更新/轮、11100 更新，128 原 L 样本+128真实 practical residual 普通拼接；各半 CE 均值等价于拼接 CE 均值。原 AdamW lr .0002/wd .0001、cosine/minlr1e-6、smoothing .01、own EMA 与原 U 训练不变。无 margin、KL、课程或新 U urban 目标。所有原网络与默认 cosine6×160/scale30 联合训练；不增加部署模块/拟合分类头。33/17 是 E50 原基线配方，额外方向损失仅 epoch6至50 启用，前5轮所有位置规则一致。A0 全程使用相同 clean EMA L 前向和实际分支捕获，只不加对齐。
 
@@ -21,3 +21,5 @@
 最小发布：一次实际代码/config commit、11项有针对性的本地检查、首步真实冻结B0默认头无query smoke（仅操作检查，绝不作内部折初始化）、一次P0/P1审查、一次archive传输SHA比较、远端编译/预检、一次PID/CWD/argv/GPU与日志增长独立回读。输入/内部角色/来源、非有限、近零或越界校准、aux泄漏、预算、输出冲突或启动失败停止待发组，活动健康行自行完成，产物保留、不自动重训。后续真实产物以experiment.json列出的路径为准，代码/config身份以Git commit与release_commit.txt为准。
 
 本地：`experiments.cvs_urban_branch50.checks`5项PASS，`training_checks`6项PASS，compileall/diff-check PASS；完整F/P、单项替换保留urban其他分支/rho、native实际concat学生图、teacher/U前hook移除、S梯度与主CE W、aux W/gain边界、全局中位数比与退化拒绝、L开发折互斥/均衡/顺序稳定、完整8配置和源家族规则均已检验。一次独立P0/P1审查PASS；发现的recipe部分写入竞态已按同目录临时完整写入后rename修复，并完成一次定点核实，其余指定范围未发现P0/P1。完整正式三seed与三种组合、同信道中间视图和局部SIG_TIME分组教学仍待后续证据，不把此小试等同全部目标完成。
+
+发布代码commit `152d8921c903fc6d5f782c199b075d0837840ece` 已push并独立核对远端OID。一次归档传输/远端编译/普通账户预检VERIFIED；dispatcher2937430，A0 worker2937455，GPU3，实际CWD/argv/默认checkpoint首步smoke核实，epoch1日志增长5152字节。实际inner_source_contract为L_train5580/L_dev720/U56700/V27000，物理ID数互斥，真实总参数863730，默认头未改，max_grad_norm=5.0，A0新增aux梯度全0。独立回读`local_artifacts/cvs_branch_alignment_20261015/pilot_delivery_r01/readback.json`及`monitor/latest.json`；唯一release不变，健康旧KL/DIR继续原E50。尚无八组target结果或正式三seed结论。

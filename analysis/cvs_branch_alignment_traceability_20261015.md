@@ -38,3 +38,5 @@
 本地证据：实际core路径experiments/adv3b02_xuc/code/model.py；freq_stats_proj=true；实际joint祖先参数195041/71 tensors，含三gain、不含默认W。`experiments.cvs_urban_branch50.checks` 5项PASS，包含实际六位置反传、F统计/P完整输入、T替换保留urban S和rho等。B06/B08这里只证明真实单次forward/梯度边界，完整native训练接线仍在B14/B20。B12/B13有本地替换验证，远端真实冻结checkpoint诊断尚未发布。
 
 2026-10-15进展：真实B0源替换run已ANALYZED，26640前向/0更新/20.838秒，模型state逐值不变、其余分支/rho保持；本地11项与compile PASS，8配置单seed小试已登记/一次P0-P1 PASS，尚未发布。L内部分折科学边界已先更新PROJECT_PROTOCOL，实际ID/全局定标和完整E50训练证据须待新run，不把本地接线当真实八组结果。当前verified9/pending12/deferred1，完整三seed/组合未完成。
+
+八组小试已以commit152d8921c903fc6d5f782c199b075d0837840ece发布并RUNNING；A0首epoch/实际inner物理ID5580/720、默认模型参数863730和aux零边界已VERIFIED。其余位置仍待一次源定标，B09/B11和完整B14/B15仍pending，不提前标已完成。
