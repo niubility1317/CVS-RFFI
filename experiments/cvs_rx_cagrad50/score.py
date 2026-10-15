@@ -1,0 +1,25 @@
+from . import design as d
+from .predict import preflight
+from .evidence import recount
+from experiments.cvs_pa_cross_delay.score import score as shared_score,validate_records,row_completion
+def score(row):return shared_score(row,design=d,preflight_fn=preflight)
+def source_evidence(output=None):
+ from pathlib import Path
+ output=Path(output) if output is not None else d.BASE
+ from .feature_check import run
+ features=run()
+ if features['status']!='VERIFIED' or features['models']!=2 or len(features['paired'])!=1:raise ValueError('Actualtwoarmfeaturecomparison incomplete')
+ d.write(output/'source_features.json',features);obs={r['arm']:recount(r) for r in d.training_rows()};a=obs[d.PRIMARY];delta=features['paired'][0]['source_features']['records'][0]['joint160_L2_mean'];passed=all(v['last5_unweighted_CE']<=.5 and v['native_U_objective_unchanged'] and v['solver_fallback_fraction']<=.01 for v in obs.values()) and a['body_signal'] and a['direction_changed_steps']>=1 and a['min_relative_worst_local_gain_vs_norm_control']>=-1e-4 and delta>=1e-6
+ q=dict(status='PASS' if passed else 'FAIL',source_only=True,target_metrics_read_for_decision=False,actual_observations=obs,actual_L720_feature_difference=delta,fixed_rules=d.config(d.training_rows()[0])['source_falsification'],predefined_remaining_seeds=[2026092702,2026092703],expand_both_arms_unchanged=True,head_fit_updates=0,limitation='Actualgradientdirection/deploymentfeaturechange only; notDG or AdamW common descent guarantee')
+ d.write(output/'source_qualification.json',q);return q
+def finish(output=None,qualification=None):
+ from pathlib import Path
+ output=Path(output) if output is not None else d.BASE
+ q=source_evidence(output) if qualification is None else qualification;records=[]
+ for row in d.rows():
+  c=d.config(row);p=d.BASE/row['row_id'];v=d.read(p/'scores/metrics.json');n=validate_records(c,v['records'],design=d)
+  if d.read(p/'completion.json')!=row_completion(c,n,design=d) or not v['truth_last'] or v['independent_recount']!='VERIFIED':raise ValueError('ScoredVREXrowincomplete')
+  records.extend(v['records'])
+ from experiments.cvs_signature_stats_seeds.score import summarize
+ summary,paired=summarize(records,d.SEEDS,design=d);result=dict(status='VERIFIED',run_id=d.RUN,models=3,newly_trained_models=2,baseline_reused_models=1,prediction_count=504000,metric_records=54,summary=summary,paired=paired,records=records,source_qualification=q,goal_84=False,first_seed_is_not_goal_completion=True,goal_requires_three_predefined_seeds=True,head_fit_updates=0,truth_last=True,target_feedback_to_training=False,Phase2_claim=False)
+ d.write(output/'analysis.json',result);return result

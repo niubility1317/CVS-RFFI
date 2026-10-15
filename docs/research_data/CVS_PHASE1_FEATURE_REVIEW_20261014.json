@@ -82401,6 +82401,19 @@
   },
   "next_directions": [
     {
+      "direction": "完整骨干源RX梯度协调",
+      "status": "LOCAL_VERIFIED_P0P1_PASS",
+      "source_evidence": "RX coordinate-sign consensus probe sourceFAIL: retainednorm.77510, aggregateworstRXcos-.02688 vsrandom+.01731; vectorcoord majority alone insufficient",
+      "hypothesis": "CAGrad-inspired maxmin gradient trustregion c.5 using fullRX Gram and originalCE reference cancoordinate actual f_theta updates; same-normoriginaldirection control isolatesdirection",
+      "location": "All195041f_theta excludesclassWalone, originalW/U unchanged",
+      "path_into_z": "Every originalLstep gradient correction before original globalclip/AdamW/EMA; fixednetwork/noextraFF",
+      "minimum_control": "NORM_CONTROL same perRX VJPs/QP andnorm, originaldirection; historicaloldgatecos50 baseline",
+      "cost": "Firstseed2scratch50/22200updates;5orless extraVJPs eachLstep;0newmodelFF/params/headfit",
+      "failure": "Source nativebudget/defaultfeature/CEhealth/fallback<=1%/actualdirection evidence; no targetfeedback; no coefficient scan",
+      "report": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md",
+      "reference": "https://proceedings.neurips.cc/paper/2021/file/9d27fdf2477ffbff837d73ef7ae23db9-Paper.pdf"
+    },
+    {
       "direction": "源 RX 梯度共识过滤",
       "status": "ANALYZED_VERIFIED_SOURCE_FAIL",
       "source_evidence": "Existing source backbone-gradient variance changes were dominated by radial scale (85.92–96.54% in the recorded decomposition). RX risk variation is present, but scalar risk matching does not identify coordinate-level common directions. Source RX gradient agreement has not yet been measured for this candidate.",
@@ -82472,20 +82485,20 @@
     }
   ],
   "next_actions_max2": [
-    "保留梯度共识负结果，不扩种子或投入该机制训练",
-    "根据完整源证据选择不同机制，默认头和 SIG_TIME 保持"
+    "发布梯度方向协调和同范数对照的首种子50轮矩阵，逐行自动clean评分",
+    "按事先固定源规则决定是否原样扩02/03；目标成绩不调参"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "保留梯度共识负结果，不扩种子或投入该机制训练",
-    "根据完整源证据选择不同机制，默认头和 SIG_TIME 保持"
+    "发布梯度方向协调和同范数对照的首种子50轮矩阵，逐行自动clean评分",
+    "按事先固定源规则决定是否原样扩02/03；目标成绩不调参"
   ],
   "current_priority": {
-    "status": "SOURCE_RX_CONSENSUS_REJECTED_BY_FIXED_SOURCE_RULE",
-    "latest_source_run": "20261015-phase1-source-rx-consensus-manysig-m3-r01",
-    "source_qualification": "FAIL",
-    "next_scope": "Develop a different mechanism from fixed source evidence; no sign threshold or mask scan",
+    "status": "RX_CAGRAD_LOCAL_VERIFIED_P0P1_PASS_NOT_LAUNCHED",
+    "default_head": "OriginalnormaljointCE/U, no headfit",
+    "network": "FixedSIG_TIME joint160",
+    "first_seed": "Two scratch50 models plus historicaloldgatecos50 reference",
     "goal84": false
   },
   "latest_complete_sinc_optimizer": {
