@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active goal authorizes real identity-preserving IQ augmentation source checks and subsequent E20 training; latest user fixes SIG_TIME+RDrop and E20. This run is zero-update source-only and does not expand training budget.",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "7025e13daf9f743438ba2ca7e9871c37201a9fcf",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "ordinary N607 CVS-RFFI Python, CPU2, CUDA hidden",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_rdrop_mixedIQ_source_20261015_r01"
@@ -83,7 +83,7 @@
     "host": "N607",
     "launch_owner": "codex/root/mixed-IQ-source-20261015",
     "gpu_policy": "CPU2,CUDA_VISIBLE_DEVICES empty; no GPU process",
-    "remote_run_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01",
     "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_rdrop_mixedIQ_source_20261015_r01",
     "local_artifact_root": "E:/type10-7/local_artifacts/cvs_mixedIQ_source_20261015",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_rdrop_mixedIQ_source_20261015_r01/experiments/cvs_mixed_iq20/probe_runner.py",
@@ -121,7 +121,7 @@
       "TX",
       "fixed modelseed2026092701"
     ],
-    "prediction_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01\\sample_decisions.jsonl.gz",
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01/sample_decisions.jsonl.gz",
     "scorer_ref": "source labels only, internal frozen default-head diagnostics; no query truth reader",
     "selection_rule": "Both reflect conditions must lose at most1pp relative toRAW. Edge controls are not promotion candidates. This authorizes no target-based adjustment, seed extension or method efficacy claim."
   },
@@ -131,7 +131,7 @@
       "method": "frozen-mixedIQ-response-safety",
       "purpose": "diagnostic",
       "config_ref": "experiments/cvs_mixed_iq20/probe_registration.json#rows/0/config",
-      "resolved_config_ref": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01\\resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092701,
@@ -150,7 +150,7 @@
       "epochs": 0,
       "fl_rounds": null,
       "budget_ref": "135002 source forwards =27000*5 +2 real checkpoint smoke. Parent20epochs/4440updates reported separately; no new optimization/EMA/head-fit.",
-      "output_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01",
       "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_rdrop_mixedIQ_source_20261015_r01/source_probe.log",
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_rdrop_mixedIQ_source_20261015_r01/experiments/cvs_mixed_iq20/probe_runner.py",
       "expected_artifacts": [
@@ -225,7 +225,8 @@
   ],
   "notes": [
     "Phase1 source-only, no Phase2 capsule/K/support/query input. Reuse unchanged source handles; capsule_id and split_id are not Phase2 inputs here.",
-    "Historical parent formal scores are not consumed. V is one unchanged source diagnostic role, not split into calibration/select roles. No source-trained gain is claimed by frozen input interventions."
+    "Historical parent formal scores are not consumed. V is one unchanged source diagnostic role, not split into calibration/select roles. No source-trained gain is claimed by frozen input interventions.",
+    "Descriptive remote output paths serialized by Windows Path used backslashes at preregistration; canonical metadata corrected to POSIX after terminal evidence. Runtime Linux d.BASE, source inputs, smoke,135002 forwards and original immutable release were unaffected. No rerun or remote mutation."
   ],
   "registered_at": "2026-10-15T13:53:03+00:00"
 }

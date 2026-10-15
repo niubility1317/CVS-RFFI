@@ -36,8 +36,9 @@ def plan():
                          RDrop_forwards_per_IQ_view=2,
                          objective='original smoothed RDrop on one old-augmented IQ' if legacy
                          else '.25 RDrop(raw) + .25 RDrop(g) + .5 RDrop(s); inactive slot=raw'))
-    return dict(status='DESIGN_AND_PRIMITIVES_ONLY', training_launcher_implemented=False,
-                experiments_launched=0, source_identity_preservation_test='PENDING',
+    return dict(status='SOURCE_SAFETY_VERIFIED_TRAINING_PENDING', training_launcher_implemented=False,
+                training_models_launched=0, source_identity_preservation_test='PASS_ZERO_UPDATE_SOURCE_V_ONLY',
+                source_safety_run='20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01',
                 rows=rows, first_seed_only=True, training_scenes=list(SCENES),
                 satellite_sampler='.8 legacy-three uniform + .2 all-six uniform; native state priors, no curriculum',
                 training_scene_probabilities=dict(zip(SCENES, [1/30, 1/30, .3, 1/30, .3, .3])),
@@ -78,7 +79,7 @@ def main():
         a.output.parent.mkdir(parents=True, exist_ok=True)
         a.output.write_text(text, encoding='utf-8')
         print(json.dumps(dict(status=plan()['status'], path=str(a.output),
-                              rows=len(ARMS), models_launched=0)))
+                              rows=len(ARMS), training_models_launched=0)))
     else:
         print(text, end='')
 

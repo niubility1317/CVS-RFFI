@@ -80,7 +80,8 @@ class Checks(unittest.TestCase):
 
     def test_plan_is_e20_scratch_and_unlaunched(self):
         p = plan()
-        self.assertEqual(p['experiments_launched'], 0)
+        self.assertEqual(p['training_models_launched'], 0)
+        self.assertEqual(p['source_identity_preservation_test'], 'PASS_ZERO_UPDATE_SOURCE_V_ONLY')
         for row in p['rows']:
             self.assertEqual(row['total_epochs'], 20)
             self.assertEqual(row['optimizer_steps'], 4440)

@@ -1,6 +1,6 @@
 # SIG_TIME＋RDrop：IQ 混合增强的下一轮设计
 
-状态：已完成历史证据与实际增强路径审计、候选算子和损失原型；尚未进行新候选的真实 IQ 源验证、训练、发布或正式评分。本文是当前研发方向，不是实验已启动的声明，也不是额外设计审批。
+状态：已完成历史证据与实际增强路径审计、候选算子和损失原型，以及真实源IQ的冻结默认头验证。独立源run已ANALYZED/安全PASS；五模型混合增强训练尚未接入、发布或正式评分。本文是当前研发方向，不是额外设计审批。
 
 用户最新预算覆盖旧安排：增强前底座为 SIG_TIME＋RDrop，每个新模型从头总计 E20，不加载 E50/E200 父权重，不追加 E20。旧的 HQ 默认头间隔 E50 设计停止推进，历史记录保留。当前工作树起点为 `482e428b85b6b1452bec748adfe92ba0acc32859`。
 
@@ -128,10 +128,28 @@ A_s调用原完整 practical residual/post_sync。25 MHz、IQ256、reference_snr
 
 ## 本轮已经交付与未完成项
 
-已实现 `experiments/cvs_mixed_iq20/augmentation.py`、`objective.py`、`design.py` 和聚焦合成检查。设计可输出机器可读五行矩阵，明确是未发布状态；没有伪造run、GPU、命令、训练曲线或新成绩。
+已实现 `experiments/cvs_mixed_iq20/augmentation.py`、`objective.py`、`design.py` 和聚焦合成检查。设计可输出机器可读五行训练矩阵，明确是训练未发布状态；另一个独立冻结源验证run已实际完成，不与新训练混为一谈。
 
 本地检查覆盖零扰动／零IQ、RMS保留但波形变化、人工边界有效区、频响界、无TX／全局RNG依赖、非法输入拒绝、三视图RDrop归一化与梯度，以及E20/数据角色/前向预算。它们不替代真实checkpoint smoke或源IQ实验。
 
 实际执行：`E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_mixed_iq20.checks`，8项PASS；`F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_mixed_iq20.design --output E:/type10-7/local_artifacts/cvs_mixed_augmentation_design_20261015/plan.json`，成功生成五行未发布设计。Torch环境保留既有NumPy ABI警告，本检查没有使用Torch/NumPy桥接，不改环境。
 
-下一步是源IQ固定默认头验证及native L-only集成，再按现有最小流程完成一次P0/P1审查、登记、不可变release、真实checkpoint无query smoke及逐行自动七视图评分。不需要额外设计批准，也不扩展E20。训练／发布／正式结果均仍未完成，旧健康任务未改。
+### 已完成的真实源IQ验证
+
+独立run `20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01` 已ANALYZED。实际代码为 `7025e13daf9f743438ba2ca7e9871c37201a9fcf`，冻结原E20_RDROP seed01默认头，完整V27000，原父模型fullL6300/U56700/V27000。一次限定P0/P1审查PASS，真实checkpoint无query smoke2后立即继续；单归档比较、远端编译、运行中PID/CWD/argv及终点产物均独立核实，CPU2、CUDA隐藏。
+
+|源输入|正确/27000|准确率 %|相对RAW pp|修复／新增错误|默认头间隔/30|
+|---|---:|---:|---:|---:|---:|
+|RAW|26425|97.870370|0|0／0|0.216999769|
+|G_E1_REFLECT|26409|97.811111|−0.059259|25／41|0.215260550|
+|G_E20_REFLECT|26392|97.748148|−0.122222|36／69|0.212779462|
+|G_E1_EDGE|26411|97.818519|−0.051852|26／40|0.215271831|
+|G_E20_EDGE|26391|97.744444|−0.125926|35／69|0.212773472|
+
+两reflect输入通过预定1pp安全条件，但它们让冻结模型多错16/33条，平均间隔略降；没有产生训练增益。源RX3下降较大，为0.240741/0.388889pp。这里的全部RX已在原训练源集合中，不能称为未见RX泛化验证。
+
+实际135002个前向、74.915770秒、0参数/EMA/头拟合更新，模型state与Torch随机状态保持不变。功率相对误差最大4.768372e-7，恢复RMS后仍有非零波形变化；边界未缩放内部区最大差4.768372e-7。完整135000条源决定在本地独立核对了相同物理ID、混淆矩阵、纠错与间隔。两张实际源分层/响应图已检查，见[完整源验证报告](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01/report.md)。
+
+第一次本地取回遇到Windows Path到Linux路径的描述转换问题，已用POSIX路径直接取回原完成产物；未重启、重测或修改远端release。原实测结果与冻结策略未变。
+
+下一步是native L-only训练集成，再对五模型训练候选按现有最小流程完成一次限定P0/P1审查、登记、不可变release、真实checkpoint无query smoke及逐行自动七视图评分。源验证的安全PASS不替代这些实际训练工作，也不要求额外设计批准或扩展E20。旧健康任务未改。
