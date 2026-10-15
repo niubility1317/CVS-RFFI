@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "CPU": true,
+  "CUDA": true,
+  "protocol_negative_cases_each": 144,
+  "qualification_negative_cases_each": 4,
+  "actual_initial_tensors_equal": 198,
+  "all12_seed_epoch_stage_args_verified": true,
+  "original_default_head_joint": true,
+  "actual_shallow_middle_SIG_defaultW_finite_nonzero_gradients": true,
+  "source_mask_algorithm_unchanged_commit": "c803f2b13e74bd6d721c3795e64cb1c12ec377cc",
+  "source_operator_previous_complete_rows": 4,
+  "synthetic_identity_packets_per_device": 1024,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "optimizer_steps": 0,
+  "head_fit_updates": 0,
+  "target_reads": 0,
+  "real_checkpoint_smoke": "Own initial checkpoint first worker step;PASS immediately continues"
+}

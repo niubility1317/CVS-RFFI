@@ -329,3 +329,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- SIGTIME_RDROP_PAIRED_MASKS_RESULT_20261015 -->
 20261015-phase1-SIGTIME-rdrop-paired-masks-sourcefold-s2026092701-m4-r01四组source-only E20已ANALYZED/VERIFIED，17760步/80epoch，13处原边际p的成对失活实审通过，默认头联合、RX1全路径留出。INDEP_CE/ANTI_CE/INDEP_RDROP/ANTI_RDROP错误依次为284/319/192/187（各1260），错误交互项-40，固定资格PASS；0target/另训头。仅允许另行登记主实验。 历史E50三seed84.340079%保留，仅继续SIG_TIME＋RDrop机制研究，goalactive。[同run报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-paired-masks-sourcefold-s2026092701-m4-r01/report.md)。
+
+
+<!-- SIGTIME_RDROP_PAIRED_MASKS_MAIN_PREREG_20261015 -->
+源域固定条件PASS后登记20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01：ANTI_CE/ANTI_RDROP×E20/E50×3固定seed，12次从零、420epoch/93240更新；复用已实际匹配12个独立采样历史控制，不继承其或源折CP。完整5RX L6300/U56700hidden/V27000，默认头联合，逐row自动clean预测/独立truthlast。主判据E50均值≥84%、相对原RDrop均值正且至少2/3正、平均错误交互负；无目标反馈。尚未发布，goalactive，见[预登记](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01/report.md)。

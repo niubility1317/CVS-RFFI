@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "reviewer": "review_identity_tangent",
+  "independent": true,
+  "scope": "One main-specific next-run P0/P1 review of newly added pipeline only",
+  "P0": [],
+  "P1": [],
+  "checked": [
+    "full-source E20/E50 budgets and3seeds",
+    "3historical technical recovery row locations",
+    "source/defaulthead proofs",
+    "row train-predict-independent CPU truthlast",
+    "24row paired aggregation",
+    "launch_once/shared all-owner cap3/immutable outputs"
+  ],
+  "unchanged_mask_algorithm_rereviewed": false,
+  "complete_checks_repeated": false,
+  "extra_blockers": []
+}
