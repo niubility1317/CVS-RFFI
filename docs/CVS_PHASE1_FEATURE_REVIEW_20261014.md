@@ -489,3 +489,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 2026-10-15 训练机制更新：网络与默认头保持的Sinc优化器单位实验已在新R02发布，两个新模型均观察到E2，真实checkpoint无query smoke及PID/CWD/argv/GPU/日志增长已核实。E1实际13批对照有非零梯度但Sinc数值更新为0；单位臂48参数均真实更新。源资格和目标提升仍未知。R01因间接发布依赖在训练前失败，0更新且保留产物；修复只补依赖和输出ID。详见 [R02报告](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md)。
+
+
+2026-10-15 中期更新：Sinc单位两臂分别回收到20/21轮完整源前缀，E17真实13批重复观察到标准组非零梯度但0数值更新、单位组48参数持续更新。原U在E34启用；当前源资格与目标收益均未知。原样02/03条件扩展已完成最小适配、4原生上下文/15负例/隔离包/一次P0P1验证，代码03fd8a8c7b64663bc52edb83359d3e610cfeb361；仍未启动。详见 [首种子源证据](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md)与 [条件扩展](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md)。

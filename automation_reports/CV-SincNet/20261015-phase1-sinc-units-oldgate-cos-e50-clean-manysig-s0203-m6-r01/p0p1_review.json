@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "reviewer": "independent signature_fix_p0p1",
+  "scope": "Only direct P0/P1 affecting next realrun legality/correctness/preservation/launch/legalpredictions; newseedadapter andsharedoptionaldesign/proofinterfaces",
+  "reviewed_four_actual_model_contexts": true,
+  "verified_source_thresholds": true,
+  "verified_three_seed_combination": true,
+  "verified_full_config_restoration": true,
+  "verified_release_dependency_closure": true,
+  "verified_auto_scoring_counts": true,
+  "local_checks": {
+    "status": "PASS",
+    "rows": 4,
+    "negatives": 15,
+    "not_repeated_by_reviewer": true
+  },
+  "local_publisher_path_boundary_fix": "Removed Windows read of remote Linuxsource qualification. Realremote preflight/dispatcher/worker retain source qualification.",
+  "remaining_direct_P0_P1": [],
+  "readonly": true,
+  "real_IQ_checkpoint_target_or_remote_access": false,
+  "unchanged_candidate_review_repeated": false
+}

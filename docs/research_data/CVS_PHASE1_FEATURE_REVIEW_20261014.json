@@ -82439,8 +82439,8 @@
     }
   ],
   "next_actions_max2": [
-    "完成RSC固定02/03六健康模型及逐row自动defaulthead clean/truth-last，完整三seed独立合并不改配方",
-    "按真实Sinc近静止及优化器单位证据，完成仅改优化器的固定Fs策略最小同路径训练准备；网络/默认头不变，不扫描倍率"
+    "按原50轮完成Sinc单位首种子；完整核实原生预算、student/ownEMA滤波核、L720部署特征和默认头源资格，源决定先提交推送再回收本候选新目标数值。",
+    "仅原源资格PASS才原样发布已准备02/03；FAIL保留首矩阵评分与负结果，不扫倍率/epsilon/父模型，继续依据合法源证据研究不同训练机制。"
   ],
   "goal_84": false,
   "Phase2_development": false,
@@ -82449,7 +82449,7 @@
     "源决定推送后回收首seed完整默认头clean结果、全部曲线和误差迁移；后续合并预定义三seed独立统计与实际feature witness检验84%，保留全部正负结果"
   ],
   "current_priority": {
-    "at": "2026-10-15T00:35:28.244Z",
+    "at": "2026-10-15T00:46:24.118Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": {
@@ -82925,6 +82925,31 @@
         "workers_live": 0,
         "complete_seed_count": 3,
         "full_three_seed_ref": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md"
+      },
+      {
+        "run_id": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+        "status": "CONDITIONAL_PREPARATION_NOT_LAUNCHED",
+        "code_commit": "03fd8a8c7b64663bc52edb83359d3e610cfeb361",
+        "original_first_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+        "first_source_qualification": "PENDING",
+        "planned_new_models": 4,
+        "reused_historical_models": 2,
+        "model_seeds": [
+          2026092702,
+          2026092703
+        ],
+        "epochs_per_model": 50,
+        "unchanged_scientific_dictionary": true,
+        "local_native_contexts": 4,
+        "negative_checks": 15,
+        "isolated_release_imports": "PASS",
+        "full_canonical_roundtrip": "PASS",
+        "independent_P0P1": "PASS",
+        "first_seed_retrained": false,
+        "real_new_training_started": false,
+        "head_fit_updates": 0,
+        "new_target_numeric_scores_read": false,
+        "report": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md"
       }
     ],
     "feature_mean_teacher_first_seed": {
@@ -84635,8 +84660,8 @@
       "execution_commit": "9fc348bc4be71f498a7684484fd86de81e3e4870",
       "actual_new_training_workers": 2,
       "observed_source_epochs": [
-        2,
-        2
+        20,
+        21
       ],
       "new_target_numeric_results_read": false,
       "actual_e1_Sinc_updates": [
@@ -84684,7 +84709,58 @@
             }
           ]
         }
-      ]
+      ],
+      "actual_e17_Sinc_updates": [
+        {
+          "row_id": "SIG_TIME-s2026092701",
+          "completed_epochs": 20,
+          "diagnostic_epoch": 17,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "nonzero_gradient_batches": 13,
+              "mean_gradient_norm": 1.806702409982418e-7,
+              "changed_elements_min": 0,
+              "changed_elements_max": 0,
+              "maximum_abs_delta_Hz": 0
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "nonzero_gradient_batches": 13,
+              "mean_gradient_norm": 9.364123815521029e-8,
+              "changed_elements_min": 0,
+              "changed_elements_max": 0,
+              "maximum_abs_delta_Hz": 0
+            }
+          ]
+        },
+        {
+          "row_id": "SINC_UNITS-s2026092701",
+          "completed_epochs": 21,
+          "diagnostic_epoch": 17,
+          "parameters": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.low_hz_",
+              "nonzero_gradient_batches": 13,
+              "mean_gradient_norm": 1.5779567283360239e-7,
+              "changed_elements_min": 24,
+              "changed_elements_max": 24,
+              "maximum_abs_delta_Hz": 3300
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.sinc.band_hz_",
+              "nonzero_gradient_batches": 13,
+              "mean_gradient_norm": 8.349993666399384e-8,
+              "changed_elements_min": 24,
+              "changed_elements_max": 24,
+              "maximum_abs_delta_Hz": 3259.6953125
+            }
+          ]
+        }
+      ],
+      "prepared_extension_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "prepared_extension_code_commit": "03fd8a8c7b64663bc52edb83359d3e610cfeb361",
+      "extension_training_started": false
     },
     "temporal_rsc_full_three_seed": {
       "status": "ANALYZED_VERIFIED_NO_GAIN",

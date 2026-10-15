@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "entry_modules": [
+    "experiments.cvs_sinc_units_seeds.preflight",
+    "experiments.cvs_sinc_units_seeds.dispatch",
+    "experiments.cvs_sinc_units_seeds.publish"
+  ],
+  "checkout_import_fallback": false,
+  "real_IQ_or_checkpoint_read": false,
+  "packaged_files": 2163
+}
