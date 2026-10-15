@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "rows": [
+    {
+      "arm": "BASE_CE",
+      "parameters": 863730,
+      "state_tensors": 200,
+      "same_seed_initial_CPU_state_equal": true,
+      "actual_fourterms_exact": true,
+      "actual_default_joint160_class6": true,
+      "selected68_protected4": true
+    },
+    {
+      "arm": "BASE_SSL",
+      "parameters": 863730,
+      "state_tensors": 200,
+      "same_seed_initial_CPU_state_equal": true,
+      "actual_fourterms_exact": true,
+      "actual_default_joint160_class6": true,
+      "selected68_protected4": true
+    },
+    {
+      "arm": "JOINT_GAP",
+      "parameters": 863730,
+      "state_tensors": 200,
+      "same_seed_initial_CPU_state_equal": true,
+      "actual_fourterms_exact": true,
+      "actual_default_joint160_class6": true,
+      "selected68_protected4": true
+    },
+    {
+      "arm": "ROUTED_GAP",
+      "parameters": 863730,
+      "state_tensors": 200,
+      "same_seed_initial_CPU_state_equal": true,
+      "actual_fourterms_exact": true,
+      "actual_default_joint160_class6": true,
+      "selected68_protected4": true
+    }
+  ],
+  "no_dataset_CP_reads": true,
+  "real_updates": 0,
+  "limitation": "Actual local model construction/CPUinitialstates, not observed real worker CUDAinitialstates or efficacy"
+}

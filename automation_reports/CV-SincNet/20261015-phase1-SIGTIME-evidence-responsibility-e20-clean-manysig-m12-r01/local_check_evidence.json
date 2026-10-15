@@ -1,0 +1,121 @@
+{
+  "status": "PASS",
+  "checks": {
+    "checks_matrix": {
+      "status": "PASS",
+      "rows": 12,
+      "new_epochs": 240,
+      "real_updates": 53280,
+      "prediction_count": 2016000,
+      "schedule180_onlyepochs1to13": true,
+      "baseline_bank_forward_really_disabled_by_contract": true,
+      "CE_U_EMA_really_disabled_by_args": true,
+      "focused_negatives": 48,
+      "data_checkpoint_reads": 0,
+      "actual_updates": 0
+    },
+    "checks_provenance": {
+      "status": "PASS",
+      "source_metadata_negatives": 144,
+      "all_four_E20_recipes": true,
+      "old_E50_and_wrong_CP_rejected": true,
+      "U_EMA_head_data_and_ancestry_mismatch_rejected": true,
+      "paired_error_census": true,
+      "proof_precedes_checkpoint_load": true,
+      "complete12_rows12_readouts2016000_decisions216_metrics53280_updates": true,
+      "complete_matrix_negatives": 14,
+      "baseline0_and_auxiliary180_calls": true,
+      "actual_data_or_checkpoint_reads": 0,
+      "actual_optimizer_updates": 0
+    },
+    "checks_observer": {
+      "status": "PASS",
+      "evidence_source": "completed functions exec session97550 stdout",
+      "device": "cpu",
+      "actual_callback_scope_tensors": 68,
+      "original_parameter_traversal188": true,
+      "four_arms_full_L_callback_and_late_calls": 4440,
+      "scheduled_by_arm": {
+        "BASE_CE": 0,
+        "BASE_SSL": 0,
+        "JOINT_GAP": 180,
+        "ROUTED_GAP": 180
+      },
+      "capture_calls_by_arm": {
+        "BASE_CE": 0,
+        "BASE_SSL": 0,
+        "JOINT_GAP": 180,
+        "ROUTED_GAP": 180
+      },
+      "active_bank_builder_synthetic_IQ_reads": 900,
+      "active_auxiliary_IQ_packets": 32400,
+      "held_bank_not_in_main_graph": true,
+      "baseline_bank_reads_and_extra_capture_zero": true,
+      "BASE_CE_U_length_only_no_iteration": true,
+      "callbacks_bound_after_teacher_deepcopy": true,
+      "W_three_gain_auxiliary_gradients_None": true,
+      "nonL_role_rejected_before_model_or_labels": true,
+      "duplicate_step_and_wrong_L_count_rejected": true,
+      "actual_reviewed_objective_at_four_probes": true,
+      "synthetic_actual_AdamW_steps": 16,
+      "temporary_AdamW_steps": 32,
+      "once_only_update_per_element_shadow_pass": true,
+      "full_U_exposure_count_preserved": true,
+      "native_L_counter_flags_RNG_caches_hooks_restored": true,
+      "true_IQ_reads": 0,
+      "checkpoint_reads": 0,
+      "native_constructors": 0,
+      "training_launches": 0,
+      "limitation": "Synthetic full callback schedule; only four real mock optimizer updates per arm, not full native training"
+    }
+  },
+  "observer_check_pending_readback": false,
+  "compile": "PASS",
+  "data_checkpoint_reads": 0,
+  "actual_updates": 0,
+  "actual_local_model": {
+    "status": "PASS",
+    "device": "cpu",
+    "rows": [
+      {
+        "arm": "BASE_CE",
+        "parameters": 863730,
+        "state_tensors": 200,
+        "same_seed_initial_CPU_state_equal": true,
+        "actual_fourterms_exact": true,
+        "actual_default_joint160_class6": true,
+        "selected68_protected4": true
+      },
+      {
+        "arm": "BASE_SSL",
+        "parameters": 863730,
+        "state_tensors": 200,
+        "same_seed_initial_CPU_state_equal": true,
+        "actual_fourterms_exact": true,
+        "actual_default_joint160_class6": true,
+        "selected68_protected4": true
+      },
+      {
+        "arm": "JOINT_GAP",
+        "parameters": 863730,
+        "state_tensors": 200,
+        "same_seed_initial_CPU_state_equal": true,
+        "actual_fourterms_exact": true,
+        "actual_default_joint160_class6": true,
+        "selected68_protected4": true
+      },
+      {
+        "arm": "ROUTED_GAP",
+        "parameters": 863730,
+        "state_tensors": 200,
+        "same_seed_initial_CPU_state_equal": true,
+        "actual_fourterms_exact": true,
+        "actual_default_joint160_class6": true,
+        "selected68_protected4": true
+      }
+    ],
+    "no_dataset_CP_reads": true,
+    "real_updates": 0,
+    "limitation": "Actual local model construction/CPUinitialstates, not observed real worker CUDAinitialstates or efficacy"
+  }
+}
