@@ -7,8 +7,8 @@ from experiments.cvs_feature_mean_teacher50.publish import INSPECT as base_inspe
 INSPECT=base_inspect.replace('experiments.cvs_feature_mean_teacher50','experiments.cvs_sinc_units50')
 def configure():
  previous();transport.d=d
- transport.PATHS=list(dict.fromkeys([*transport.PATHS,'experiments/cvs_sinc_units50','experiments/cvs_feature_mean_teacher50','experiments/cvs_sigtime_pair50']))
- assert 'experiments/cvs_sigtime_pair50' in transport.PATHS
+ transport.PATHS=list(dict.fromkeys([*transport.PATHS,'experiments/cvs_sinc_units50','experiments/cvs_feature_mean_teacher50','experiments/cvs_sigtime_pair50','experiments/cvs_source_neighbor_pairs','experiments/cvs_source_gate_audit']))
+ assert all(p in transport.PATHS for p in ('experiments/cvs_sigtime_pair50','experiments/cvs_source_neighbor_pairs','experiments/cvs_source_gate_audit'))
  transport.REMOTE=transport.REMOTE.replace('experiments.cvs_temporal_rsc50.preflight','experiments.cvs_sinc_units50.preflight').replace('experiments.cvs_temporal_rsc50.dispatch','experiments.cvs_sinc_units50.dispatch')
  transport.INSPECT=INSPECT
 if __name__=='__main__':

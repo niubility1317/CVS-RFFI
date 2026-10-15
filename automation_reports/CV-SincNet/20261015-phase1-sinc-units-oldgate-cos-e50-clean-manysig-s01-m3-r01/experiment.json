@@ -1135,12 +1135,18 @@
     "Complete positive/negative results, costs, actualsourcegradients/features and defaulthead metrics willbecommitted/pushed; knownexposedbenchmarknotnewblindtest; no84/newTX/Phase2/satellite claim."
   ],
   "results": {
-    "status": "PLANNED_NOT_LAUNCHED",
-    "source_qualification": "PENDING",
-    "real_training_started": false,
+    "status": "FAILED_VERIFIED_BEFORE_TRAINING",
+    "failed_layer": "Release module import during first preflight, before dispatcher",
+    "training_workers": 0,
+    "training_optimizer_updates": 0,
+    "predictions": 0,
+    "recovery_run_id": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+    "head_fit_updates": 0,
     "goal_84": false,
-    "head_fit_updates": 0
+    "evidence": [
+      "technical_failure_verified.json"
+    ]
   },
-  "status": "PLANNED",
+  "status": "FAILED",
   "registered_at": "2026-10-15T00:26:56+00:00"
 }

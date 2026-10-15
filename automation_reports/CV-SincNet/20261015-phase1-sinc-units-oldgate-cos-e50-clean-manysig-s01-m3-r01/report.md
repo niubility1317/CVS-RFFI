@@ -39,3 +39,8 @@
 聚焦本地组件7负例、实际原生参数和L路径、STANDARD与原AdamW精确一致、候选第一步全部非Sinc/W精确一致、原EMA和cos覆盖处理已PASS。两个真实新行原生上下文各16个合成联合step和原U loss对象保留检查PASS，见 [组件检查](local_checks.json)、[入口检查](pipeline_checks.json)。这些是合成机械验证，不是训练性能。唯一独立P0/P1审查发现缺少release依赖，已直接补齐并定向确认PASS；无第二轮全审，见 [审查](p0p1_review.json)。完整canonical配置仅恢复PROJECT前缀，3行全等工厂配置且嵌套source_config保留，见 [配置核对](canonical_roundtrip.json)。
 
 预期真实产物以 [experiment.json](experiment.json) 为准，包括初末checkpoint、resolved/native config、冻结记录、Sinc真实step/梯度/矩和初末滤波器证据、实际部署特征、全部prediction、独立scores及same-row报告。代码/配置与本预登记提交推送后才发布；训练完成、评分完成、源资格与84%目标分别报告，不互相替代。所有成功与负结果均上传Git；不提交IQ、权重、原预测、私有机器状态或原始日志。
+
+
+## R01 实际发布状态
+
+FAILED_VERIFIED_BEFORE_TRAINING：归档完成传输和远端编译后，preflight入口导入因缺失间接运行时依赖失败。独立远端读取确认run根目录不存在、submit不存在、0相关进程，未启动训练或产生更新/预测；详见 [失败证据](technical_failure_verified.json)。保留R01归档与远端日志，不向原目录重新提交。恢复采用新run/release r02，只补齐依赖并改变输出编号，科学公式、参数组、预算和源资格规则不变。
