@@ -41,3 +41,21 @@
 本地8项检查PASS（6.717s）：关系合法性、单双向梯度、margin/U负例、默认头与gain边界、两个复用行禁止重训／重测、D0/D3/D4真实native前后两种通用增强位置／输入／CE／EMA图、CPU元数据跨设备mask、禁止旧D0作为匹配来源和源校准复用负例。修复前混合设备错误已用meta设备复现，修复后回归通过。一次有界恢复差异审查已通过；新增发现的 D0 通用增强差异已修复，原问题定向复核PASS，尚未发布r02。原D0已独立读回运行至11/50；不把该历史快照当实时完成。
 
 当前没有D3/D4新训练收益、正式clean代价或跨seed重现证据。HQ的64.86%→70.97%是冻结源域降低新增噪声的受控效应，不是本次训练或目标成绩。Bridge-CE/S仍按最新附件留待语义源证据后独立比较；跨RX教师仍是独立未发布草稿。
+
+## 实际发布与独立启动读回
+
+VERIFIED：实际训练代码/config commit `63f6bd461834b4def6e3d7cfe4d8e8f00389b13e`，本地HEAD与远端branch OID独立匹配。一次archive传输比较VERIFIED、remote compile PASS，真实A0/A-J默认头无query smoke PASS（4前向）。原720L_dev强度统计直接复用，新增校准前向/optimizer更新均0；原统计commit e8f51edab保持。
+
+dispatcher PID3070243；三row实际CWD/argv/PID、GPU及日志增长独立匹配：
+
+|row|PID|GPU|已完成epoch快照|日志字节增长|
+|---|---:|---:|---:|---:|
+|D0-s2026092701|3070268|1|4|6444→27026|
+|D3-s2026092701|3070345|2|2|6459→16746|
+|D4-s2026092701|3070426|3|2|6459→16745|
+
+实际resolved确认：三row均use_aug=True、原U/EMA=True、label33/pseudo17、strong_noise_std=.015、batch_neighbor、label_smoothing=.01、clip5；D0 sat disabled，D3/D4 concat_full。模型各863730参数。原r01诊断D0实际use_aug=False，保持运行，未纳入主比较。各worker约3.3至3.6GiB，CPU2线程、loader0；历史同类A0 E50为4593.410037s，仅作为资源估计，不承诺本轮耗时。其他owner随后使用剩余容量，独立快照所有卡总进程数仍在≤3内，没有停止/迁移任何健康行。
+
+实际leo_practical导入来自本release的 `experiments/adv3b02_xuc/code/leo_practical/channel.py` 与 `residual.py`；EQ_off_G_equals_one=True、formal_test_changed=False。D3/D4首步同为14670合法triplet、128个anchor有参考；两方向开关与原定一致。预热期额外梯度为0符合计划，非零关系梯度和完整更新仍待epoch6及训练产物，不能将首步通过当作有效学习结论。
+
+证据位于本地artifact `delivery_r02/`、`independent_initial/readback.json`、`independent_growth/readback.json`、`execution_evidence.json`、`launch_summary.json`、`independent_launch_evidence.json`。当前状态RUNNING，无新的固定七视图成绩、clean代价或跨seed结果；最终训练/预测/评分/机制/曲线仍待完成。

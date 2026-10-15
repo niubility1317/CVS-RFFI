@@ -27,7 +27,7 @@
   "replaces_run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01",
   "authorization": "Original E50 semantic study authorization includes technical recovery and correcting an unmatched baseline. Preserve healthy original D0 as a diagnostic, exclude it from the matched matrix. Each new corrected row remains scratch E50; technical overhead is reported separately.",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "63f6bd461834b4def6e3d7cfe4d8e8f00389b13e",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; nativeLinuxN607; Windowsnative localvalidation",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_semantic_e50_20261015_r02"
@@ -110,7 +110,27 @@
     "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_semantic_augmentation_recovery_20261015",
     "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_semantic50.dispatch",
     "stop_rule": "Only owned contract/checkpoint/default graph/nonfinite/budget/output/launch systemic technical failure stops unlaunched rows; healthy active rows finish, all outputs preserved, no automatic repeat. Source qualification never consumes target. No unrelated process mutation.",
-    "resource_coordination": "Before release read other two chats and live capacity. Shared receiver_residual_capacity4.lock covers scan/choice/Popen/logged occupation. CPU source calibration/scoring CUDA empty,2 threads; no fixed reserved GPU split."
+    "resource_coordination": "Before release read other two chats and live capacity. Shared receiver_residual_capacity4.lock covers scan/choice/Popen/logged occupation. CPU source calibration/scoring CUDA empty,2 threads; no fixed reserved GPU split.",
+    "resource_request": {
+      "run_id": "20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02",
+      "owner": "codex/root/semantic-e50-recovery-20261015",
+      "fresh_rows": 3,
+      "pending_rows": 0,
+      "epochs_per_row": 50,
+      "updates_per_row": 11100,
+      "CPU_threads": 2,
+      "loader_workers": 0,
+      "measured_peak_MB_first_snapshot": 3582,
+      "planned_headroom_MB": 12000,
+      "previous_E50_A0_seconds": 4593.410037,
+      "scientific_budget_expanded": false,
+      "technical_overhead": "Original r01 no-generic D0 diagnostic E50 preserved separately; original failed D3/D4 first-step overhead separately"
+    },
+    "actual_initial_GPU_distribution": {
+      "D0-s2026092701": 1,
+      "D3-s2026092701": 2,
+      "D4-s2026092701": 3
+    }
   },
   "expected_artifacts": [
     "source_smoke.json",

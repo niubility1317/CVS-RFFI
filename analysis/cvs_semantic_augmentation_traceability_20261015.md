@@ -21,9 +21,9 @@
 |S15|实际梯度、clip、更新、分支信息与使用量归因|pending|训练记录已接；完整冻结机制与图待产物|
 |S16|Bridge-CE/S同成本局部教学|deferred|HQ物理源诊断已完成；按最新顺序留待语义证据后|
 |S17|独立跨RX教师库／学生KD|deferred|两教师core草稿独立保留，未发布；不并入语义损失|
-|S18|三方共享GPU锁、所有owner、不可覆盖与读回|pending|接线已写，待真实发布前后容量／PID／GPU／日志证据|
+|S18|三方共享GPU锁、所有owner、不可覆盖与读回|verified|r02真实发布63f6bd461、实际GPU1/2/3；独立PID/CWD/argv/日志增长，无健康任务修改|
 
-计数：verified11、pending5、deferred2、rejected0、blocked0。6项相关测试PASS（6.793s），compile PASS；一次独立P0/P1审查及原问题定向复核 PASS。D0 显式关闭 labeled generic augmentor，回归实际 native post-concat 路径，原 U 强视图保持。该计数是实现阶段覆盖，不是训练完成或用户批准。最高风险仍是相对身份目标能否改善固定默认头的clean与low，不能从正负关系正确或局部梯度非0推导双增益。
+计数：verified12、pending4、deferred2、rejected0、blocked0。6项相关测试PASS（6.793s），compile PASS；一次独立P0/P1审查及原问题定向复核 PASS。D0 显式关闭 labeled generic augmentor，回归实际 native post-concat 路径，原 U 强视图保持。该计数是实现阶段覆盖，不是训练完成或用户批准。最高风险仍是相对身份目标能否改善固定默认头的clean与low，不能从正负关系正确或局部梯度非0推导双增益。
 
 历史对照核查：local-order是full-L clean的t1/t2额外cohort，soft-relation是EMA软图且源梯度条件FAIL。本轮是相同内部折的真实标签clean/practical双向joint160排序，不重复其已完成训练，也不声称身份排序是新提出的通用方法。
 
@@ -32,3 +32,5 @@
 恢复版 r02：新scratch匹配D0/D3/D4，D1/D2复用。原r01 D0关闭通用增强与concat控制不匹配，保留健康诊断但排除主比较，额外E50成本另列。新版保留native generic前后位置，仅捕获实际L输入并在U/EMA前移除hook。8检查PASS6.717s；源calibration从原r01原样复制，新前向0。r02尚未发布。
 
 恢复差异独立P0/P1审查PASS；D0新增匹配问题的定向复核PASS。无额外全量或报告审查。当前最高风险仍是原头的实际双增益，须等待新E50冻结证据。
+
+r02实际发布63f6bd461：archive/compile/真实CP smoke/源校准原样复用通过；三row独立活跃、D0/D3/D4 epoch4/2/2，日志增长。actual use_aug=True匹配确认。原r01 D0仍独立诊断。当前verified12/pending4/deferred2，缺项为完整预算、七视图、双增益及机制/跨seed；保持目标active。
