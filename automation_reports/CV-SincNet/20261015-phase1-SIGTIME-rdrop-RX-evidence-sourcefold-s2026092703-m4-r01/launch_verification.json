@@ -1,0 +1,101 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01",
+  "execution_commit": "e1d244ca8048ad4d184c00a5367a785ead742a9d",
+  "ready_rows": 4,
+  "rows": [
+    {
+      "row_id": "FULL-RX1-s2026092703",
+      "gpu": "5",
+      "CPU_threads": 2,
+      "completed_epochs": 2,
+      "actual_steps": 444,
+      "log_bytes": 16873,
+      "log_growth": 10341,
+      "smoke_PASS": true,
+      "evidence_audit": {
+        "calls": 444,
+        "packets": 56832,
+        "selected_anchors": 20738,
+        "transported_anchors": 0,
+        "max_chain_error": 2.384185791015625e-07,
+        "max_mass_error": 0.0,
+        "invalid_identity_edges": 0,
+        "invalid_RX_edges": 0
+      }
+    },
+    {
+      "row_id": "LOCAL-RX1-s2026092703",
+      "gpu": "6",
+      "CPU_threads": 2,
+      "completed_epochs": 2,
+      "actual_steps": 444,
+      "log_bytes": 16887,
+      "log_growth": 10347,
+      "smoke_PASS": true,
+      "evidence_audit": {
+        "calls": 444,
+        "packets": 56832,
+        "selected_anchors": 20738,
+        "transported_anchors": 0,
+        "max_chain_error": 1.1920928955078125e-07,
+        "max_mass_error": 0.0,
+        "invalid_identity_edges": 0,
+        "invalid_RX_edges": 0
+      }
+    },
+    {
+      "row_id": "SAME_RX-RX1-s2026092703",
+      "gpu": "7",
+      "CPU_threads": 2,
+      "completed_epochs": 2,
+      "actual_steps": 444,
+      "log_bytes": 16910,
+      "log_growth": 10354,
+      "smoke_PASS": true,
+      "evidence_audit": {
+        "calls": 444,
+        "packets": 56832,
+        "selected_anchors": 20738,
+        "transported_anchors": 20738,
+        "max_chain_error": 1.1920928955078125e-07,
+        "max_mass_error": 0.0,
+        "invalid_identity_edges": 0,
+        "invalid_RX_edges": 0
+      }
+    },
+    {
+      "row_id": "CROSS_RX-RX1-s2026092703",
+      "gpu": "5",
+      "CPU_threads": 2,
+      "completed_epochs": 2,
+      "actual_steps": 444,
+      "log_bytes": 16924,
+      "log_growth": 10360,
+      "smoke_PASS": true,
+      "evidence_audit": {
+        "calls": 444,
+        "packets": 56832,
+        "selected_anchors": 20738,
+        "transported_anchors": 20738,
+        "max_chain_error": 2.384185791015625e-07,
+        "max_mass_error": 0.0,
+        "invalid_identity_edges": 0,
+        "invalid_RX_edges": 0
+      }
+    }
+  ],
+  "all_eight_GPUs_considered": true,
+  "source_contract_counts": {
+    "L_s": 5040,
+    "U_s": 45360,
+    "V": 21600
+  },
+  "per_GPU_process_cap": 3,
+  "independent_PID_CWD_argv_GPU_and_log_growth": true,
+  "source_only": true,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "training_complete": false,
+  "goal_completed": false
+}

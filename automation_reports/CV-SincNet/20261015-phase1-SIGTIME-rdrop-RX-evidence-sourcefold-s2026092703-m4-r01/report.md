@@ -25,3 +25,6 @@ CPU/CUDA各57负例、5资格否决、198相同初态、实际原CE/logits/RNG/�
 发布前修正一个直接对照混杂：原草稿 CROSS 多peer平均、SAME单peer，现统一为单peer置换；发生在任何真实IQ或训练前，不改变预算/科学门槛。唯一初审PASS后仅请求该项定向复核，不重做未变全审。
 
 独立next-run P0/P1初审PASS；单peer修复后只做一次该项定向检查PASS，覆盖2/3/4个有效RX的对称置换、身份/RX合法性、质量与RNG，无P0/P1。当前代码具备发布条件。
+
+<!-- LAUNCH_VERIFIED -->
+执行提交 `e1d244ca8048ad4d184c00a5367a785ead742a9d` 已推送，远端 OID 独立匹配。单次发布 archive 比较及 remote compile VERIFIED。四行各通过 own checkpoint 无 query smoke，独立进程身份、实际 GPU、配置、角色和后续日志增长均已核实；证据配对审计计数等于实际更新数。源域训练尚未完成，未访问 target。完整启动证据见 launch_verification.json。
