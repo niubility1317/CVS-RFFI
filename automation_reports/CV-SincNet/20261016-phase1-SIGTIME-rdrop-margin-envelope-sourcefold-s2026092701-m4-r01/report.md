@@ -1,6 +1,6 @@
 # SIG_TIME＋身份间隔包络 RDrop：源域预登记
 
-状态 PLANNED。本轮只改变 RDrop 的一致性训练目标，4 个模型均从零训练 E20，暂不访问目标测试集。上一版互补掩码完整 E50 主条件失败，已关闭；原版 SIG_TIME＋RDrop E20/E50 三种子正收益及所有负结果保留，见[完整结果](../20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01/report.md)。
+状态 RUNNING，四行启动 VERIFIED。本轮只改变 RDrop 的一致性训练目标，4 个模型均从零训练 E20，暂不访问目标测试集。上一版互补掩码完整 E50 主条件失败，已关闭；原版 SIG_TIME＋RDrop E20/E50 三种子正收益及所有负结果保留，见[完整结果](../20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01/report.md)。
 
 待验证假设：随机子模型可能分别保留对不同竞争身份有用的证据。直接对齐两个输出会让较弱的证据影响较强的一侧。把每个竞争身份对应的较强间隔组合为共同软目标，可能让两个视图学习对方保留的判别证据。它也可能只增加自信或放大噪声，以下对照专门检验这些解释。
 
@@ -28,3 +28,6 @@ CPU/CUDA 各 56 个协议负例、5 个科学否决用例通过。包络数学�
 执行环境 ordinary N607 CVS-RFFI，CWD PROJECT/releases/cvs_SIGTIME_rdrop_margin_envelope_source20_20261016_r01；命令 `CVS-RFFI/bin/python -u experiments/cvs_sigtime_rdrop_envelope20/runner.py experiments/cvs_sigtime_rdrop_envelope20/configs/matrix.json`；唯一 owner `codex/root/SIGTIME-RDrop-margin-envelope-20261016`；不可覆盖 root `PROJECT/runs/20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01`。实际 Git 身份写 release_commit.txt，模型代码依赖 b3ac442e2d33a5b315fb3251c30e0ad7083566bc，共用训练器显式指向 FOLD release 的 default-head-only 版本。预期产物见 experiment.json。发布仅一次 ordinary preflight、单 archive 本地/远端 SHA 比较、remote compile，随后验证 PID/CWD/argv/GPU/日志增长；所有 owner 和 preCUDA 进程计入每 GPU≤3，CPU2、loader0。协议、输入、非有限损失、输出碰撞或 worker 技术错误保留产物并停止 pending，不自动重发或停止健康/无关进程；低分不会触发技术重跑。
 
 文献边界：[R-Drop](https://arxiv.org/abs/2106.14448) 已有同样本双随机子模型一致性；[CA-MKD](https://arxiv.org/abs/2201.00007) 已用真值评估教师可靠性；[最大 LLR 共蒸馏](https://www.nature.com/articles/s41592-026-03050-9) 已逐项选择较强证据并蒸馏回模型。最大相对证据合成本身不能宣称首创。本项目的待证点是将它用于同包随机子模型的身份一致性训练，并通过真类置信度匹配对照检验竞争类关系的独立作用。有限检索不能证明不存在相同方法，也不能从蛋白任务的证据推出 RFFI 收益。
+
+<!-- LAUNCH_VERIFIED -->
+执行提交 `7827a9a6b04764e690ecaf90457666435017c824` 已推送，远端 OID 独立匹配。单次发布 archive 比较和 remote compile VERIFIED。四行均通过 own checkpoint 无 query smoke；独立 PID/CWD/argv/GPU、实际角色和后续日志增长已核实。首轮实际包络／置信度匹配／归一化审计通过。训练与最终源评分尚未完成，未访问 target。见 launch_verification.json。

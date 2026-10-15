@@ -1,0 +1,101 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01",
+  "execution_commit": "7827a9a6b04764e690ecaf90457666435017c824",
+  "ready_rows": 4,
+  "rows": [
+    {
+      "row_id": "FULL-RX1-s2026092701",
+      "gpu": "0",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11743,
+      "log_growth": 5179,
+      "smoke_PASS": true,
+      "teacher_audit": {
+        "calls": 222,
+        "packets": 28416,
+        "mixed_envelope_packets": 18950,
+        "teacher_true_probability_violations": 0,
+        "max_confidence_control_error": 0.0,
+        "max_teacher_mass_error": 3.5762786865234375e-07,
+        "teacher_true_probability_sum": 12373.601356506348,
+        "mean_teacher_true_probability_sum": 9832.740453720093
+      }
+    },
+    {
+      "row_id": "MEAN-RX1-s2026092701",
+      "gpu": "1",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11743,
+      "log_growth": 5179,
+      "smoke_PASS": true,
+      "teacher_audit": {
+        "calls": 222,
+        "packets": 28416,
+        "mixed_envelope_packets": 18784,
+        "teacher_true_probability_violations": 0,
+        "max_confidence_control_error": 0.0,
+        "max_teacher_mass_error": 2.980232238769531e-07,
+        "teacher_true_probability_sum": 14029.583995819092,
+        "mean_teacher_true_probability_sum": 10911.341695785522
+      }
+    },
+    {
+      "row_id": "CONFIDENCE-RX1-s2026092701",
+      "gpu": "2",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11803,
+      "log_growth": 5191,
+      "smoke_PASS": true,
+      "teacher_audit": {
+        "calls": 222,
+        "packets": 28416,
+        "mixed_envelope_packets": 18860,
+        "teacher_true_probability_violations": 0,
+        "max_confidence_control_error": 0.0,
+        "max_teacher_mass_error": 3.5762786865234375e-07,
+        "teacher_true_probability_sum": 14770.51753616333,
+        "mean_teacher_true_probability_sum": 11584.50365638733
+      }
+    },
+    {
+      "row_id": "ENVELOPE-RX1-s2026092701",
+      "gpu": "3",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11783,
+      "log_growth": 5187,
+      "smoke_PASS": true,
+      "teacher_audit": {
+        "calls": 222,
+        "packets": 28416,
+        "mixed_envelope_packets": 18850,
+        "teacher_true_probability_violations": 0,
+        "max_confidence_control_error": 0.0,
+        "max_teacher_mass_error": 3.5762786865234375e-07,
+        "teacher_true_probability_sum": 14864.629531860352,
+        "mean_teacher_true_probability_sum": 11667.72303390503
+      }
+    }
+  ],
+  "all_eight_GPUs_considered": true,
+  "source_contract_counts": {
+    "L_s": 5040,
+    "U_s": 45360,
+    "V": 21600
+  },
+  "per_GPU_process_cap": 3,
+  "independent_PID_CWD_argv_GPU_and_log_growth": true,
+  "source_only": true,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "training_complete": false,
+  "goal_completed": false
+}

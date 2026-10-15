@@ -344,4 +344,4 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 
 <!-- SIGTIME_RDROP_MARGIN_ENVELOPE_PREREG_20261016 -->
-仅 SIG_TIME＋RDrop：固定同包身份间隔包络、停梯度共享软目标；FULL/MEAN/同真类置信度/包络四臂 scratch E20、seed01、RX1 真排除、原 U/默认头联合训练不变。CPU/CUDA56负例与5资格否决通过，一次P0/P1 PASS。PASS仅固定RX3源确认，FAIL关闭，不据目标调参。20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01 已登记未发布，见[预登记](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01/report.md)，goal active。
+仅 SIG_TIME＋RDrop：固定同包身份间隔包络、停梯度共享软目标；FULL/MEAN/同真类置信度/包络四臂 scratch E20、seed01、RX1 真排除、原 U/默认头联合训练不变。CPU/CUDA56负例与5资格否决通过，一次P0/P1 PASS。PASS仅固定RX3源确认，FAIL关闭，不据目标调参。20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01 已发布，四行启动 VERIFIED，见[预登记](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01/report.md)，goal active。
