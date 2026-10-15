@@ -85708,13 +85708,15 @@
           ]
         }
       ],
-      "training_status": "LOCAL_VERIFIED_PREREGISTERED_PENDING_RELEASE",
-      "training_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01",
-      "training_implementation_commit": "dcf5d36f1af3a1f29796b282c28fb3c6158ff34b",
-      "training_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md",
+      "training_status": "PREREGISTERED_TECHNICAL_RECOVERY_PENDING_RELEASE",
+      "training_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+      "training_implementation_commit": "1bcaa4919b835601c01cc4095ab8ed869c2e4b9b",
+      "training_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md",
       "training_rows": 2,
       "training_epochs_per_model": 50,
-      "training_new_updates": 22200
+      "training_new_updates": 22200,
+      "failed_before_training_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "recovery_changes_scientific_recipe": false
     }
   },
   "latest_complete_sinc_optimizer": {

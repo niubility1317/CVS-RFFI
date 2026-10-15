@@ -530,3 +530,5 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 2026-10-15 新训练路线已完成最小实现及预登记：`20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01`，代码`dcf5d36f1af3a1f29796b282c28fb3c6158ff34b`（核心`6553ed11ac2513a5d4a3622481138139c3195ddf`）。三冻结模型源PASS基础上，两新模型scratch50/33L+17U，同接收机均衡CE对照vs系数1风险方差，原SIG_TIME/默认联合头/旧门控ownEMA/U/cos保持，不重复另一对话R-Drop。16负例、实际native hook、两初始state及各1次合成joint更新/zeroW不改zPASS；唯一P0/P1的build接口/FP32复算容差已定点修复。新100轮/22200更新、无新增训练模型前向或参数，自动cleantruth-last；当前尚未发布、无新性能。[最小报告](../automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md)。
+
+2026-10-15 发布恢复：r01 已通过远端编译/真实 checkpoint no-query smoke，但公开 PROJECT 路径未解析，调度在启动任何 worker 前退出。原产物保留，0训练/预测；旧模板错误继承的 DRO completion/result 已更正。恢复代码 `1bcaa4919b835601c01cc4095ab8ed869c2e4b9b` 仅对登记 config 解析 PROJECT，科学差异仍严格比较，定向复现及独立定点审查 PASS。独立 r02 `20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02` 保持原矩阵、预算、源资格和科学配方，当前待发布。

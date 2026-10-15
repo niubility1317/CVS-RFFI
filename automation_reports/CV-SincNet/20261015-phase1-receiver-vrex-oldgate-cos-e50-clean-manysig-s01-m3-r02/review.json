@@ -1,0 +1,29 @@
+{
+  "status": "PASS",
+  "scope": "OneindependentP0/P1ofnewtraining+sharedoptionalinitialcontrol;targetedfixesonly",
+  "reviewer": "signature_fix_p0p1",
+  "issues": [
+    {
+      "priority": "P1",
+      "issue": "Modelbuilddidnotacceptshareddesignkeyword",
+      "fix": "Optionaldesign forwarded tosharedbuilder",
+      "targeted_review": "PASS"
+    },
+    {
+      "priority": "P1",
+      "issue": "Absolute3e-6wouldrejectvalidlargeFP32riskvariance",
+      "fix": "Finite-onlymath.iscloseabs3e-6rel1e-6;formulaunchanged",
+      "targeted_review": "PASS"
+    }
+  ],
+  "remaining": "Lselectedconsumedbyoriginaltotal,originalU/scratch/EMA/defaulthead/sourceproof/auto-clean-truthlast/sourceq-before-targetsummary/capacityand3-2-504000closurePASS",
+  "source_IQ_read": false,
+  "checkpoint_read": false,
+  "remote_access": false,
+  "review_rounds": 1,
+  "portable_registration_recovery": {
+    "status": "PASS",
+    "scope": "OnlyregistrationPROJECTpathresolution; three configs exact; changedalpha/extra field still differ; nonregistrationunchanged; CPUscoreremptyCUDAconfirmed",
+    "full_repeat_review": false
+  }
+}
