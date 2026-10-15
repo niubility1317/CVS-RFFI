@@ -1,0 +1,33 @@
+# SIG_TIME＋RDrop：E20 泛化与星地IQ混合增强
+
+状态：RUNNING，五个真实scratch模型已启动并各自完成至少首轮。固定seed2026092701，fullL6300/U56700/V27000、源RX1/3/4/6/8和day1/2/3。原SIG_TIME RAW_HZ/joint160/NoExplicitCFO、默认cosine6×160/scale30和正常联合训练保持。
+
+先前冻结源算子安全PASS（135002前向/0更新）只支持进入训练，不是泛化收益。当前唯一假设：轻度接收响应变化与完整practical分别监督，可保留clean泛化和星地适应的共同收益。若G不提高clean或B11吃掉clean增量、未超过B01urban，则保留负结果，不堆对齐损失救场。
+
+R_LEGACY保留原普通L增强与原RDrop两次前向。B00/B10/B01/B11关闭旧普通L增强，每个真实物理样本三槽raw、G/raw、S/raw，每槽同一已生成IQ做两次RDrop。权重0.25/0.25/0.50，总L尺度1；在native中替换原CE，不是再完整叠加。所有合法有标签satellite参与监督，不需要urban学生先高置信。不新增跨view一致性、诊断头、部署分支或U增强。
+
+全部scratch总E20=13L+7U、4440更新，原AdamW/cosine/旧batch_neighbor门控与ownEMA。初始198个state张量匹配，四因子组6次L前向成本相同，原参照2次。五行预计L前向14776320，U/EMA/源V/正式预测实测计数，不拿同epoch冒称同计算量。没有加载E50、E200或追加训练。
+
+A_g固定|a|≤0.06的received-IQ三tap线性响应并恢复输入RMS，虚拟RX/day/eq/epoch session与TX无关。A_s从原IQ调用原practical residual/post_sync、25MHz、referenceSNR30、EQfalse(G1)、reflect，保留几何/状态/补偿依赖，不先叠普通AWGN/多径。场景分布固定为80%原三场景均匀＋20%全部六场景均匀。正式IQ/信道/SNR不改。
+
+共用同一V角色中的固定分层720条作源机制观察，V不拆角色、不更新任何学习状态；全V27000继续原健康评价。source规则在experiment.json固定，仅从源记录判断后续seed资格。原E20默认头只用于首步无query smoke及固定源clean正确集合，不初始化、教学或参与新优化；原20轮/4440/923.560061秒作为参考成本另列。
+
+每row训练冻结及源结果保存后立即自动原clean＋六practical预测；全部七视图logits/decisions固定后fresh CUDA隐藏CPU scorer连接truth。sourceFAIL不删除固定对照或选择性漏测；目标成绩不回流参数、轮次、采样、source规则、候选或重跑。首轮一个seed不声明跨seed复现。
+
+启动和停止按同目录experiment.json：唯一owner、不可覆盖root、all-owner/preCUDA每GPU≤3且空闲≥12000MiB。技术失败保留产物、停止pending并让已启动健康行自然完成，不操作他人任务。真实CP smoke是launcher第一步，PASS立即继续；没有额外设计批准。
+
+已执行真实网络五条件合成检查：同初始state、真实native L scope/标签/损失hook、同IQ RDrop对、默认W/fusion/SIG有限非零梯度、EMA深拷贝归属/未更新状态、2/6前向计数、无持久forward hooks；3328个合成前向、10个输入/顺序负例，0真实IQ/CP/优化更新。另13项固定预算/数据/配置及GPU评分拒绝检查PASS。限定独立P0/P1审查与唯一问题的定向复核均PASS。另已验证observer/EMA前向计数与作用域恢复。
+
+本地首次检查暴露共享source导入code/SSDG旧实现；根据实际导入路径定位后，在加载共享source前显式缓存已审计的adv3b02_xuc native。修复后的完整五条件检查PASS，不是删除参数绕过解析。真实发布还会记录actual __file__与resolved args。
+
+冻结配置、逐row命令、环境/CWD、数据/seed、输出路径、科学阈值与预期产物以experiment.json为准。实际Git code/config commit在release与resolved_config中保存；报告和注册不是性能结果。
+
+审查发现的源panel发布竞态已修复：同目录临时JSON完整关闭后原子发布最终文件。两项针对性检查PASS。没有额外审查或报告批准。真实训练已启动；首步CP smoke为PASS。
+
+实际发布代码 `1fe3f00bdddfdb0af494f74c6570db65490ddf72`，远端单归档传输比对与编译通过。运行后独立检查五个PID/CWD/argv/GPU和日志增长均VERIFIED。R_LEGACY为E4、B00/B10为E3、B01/B11为E1时完成首轮执行核验；星地组每轮222更新、28416物理L星地包、170496个L前向符合登记。此为执行证据，训练和正式评分尚未完成。
+
+运行中完整记录解析：截至本次源日志快照，R_LEGACY/B00/B10/B01/B11分别完成15/12/11/7/7轮；完整逐步记录分别到3464/2885/2657/1590/1703步，全部从1连续。当前损失和关键梯度无非有限值、stdout无技术错误，有标签总损失与混合L损失最大差2.981e-8，符合替换原CE。两星地组均覆盖全部180个TX×RX×场景单元及全部三种传播/锁定状态，15个RX/day/eq session均覆盖6个TX。R_LEGACY在E14的实际student-U和EMA前向均为56700；已解析U记录的TX truth可用标记保持0。以上均为运行中源证据，不证明最终性能。
+
+[当前源训练曲线](E:/type10-7/local_artifacts/cvs_mixedIQ_train_20261015/figures/live_source_curves_1792076179.png)已生成并检查，只绘制完整epoch统计；各row进度不同，未提供正式成绩。当前相同epoch下B10与B00、B11与B01曲线接近，尚不能确认新A_g独立收益。保持固定E20和源资格规则，训练冻结后自动七视图与独立评分，不依据早期曲线改矩阵。
+
+首三个row已完成原七视图与独立评分。正式数值读取前，源域必要条件已失败：B10 fullV为98.248148%，B00为98.233333%，差+0.014815pp（净4/27000），未达固定+0.5pp；最差源RX差−0.055556pp。本固定候选不扩seed，B01/B11继续健康训练及全部测试，目标成绩不能覆盖此决定。详见同目录source_decision.md。三个已完成行的全部4440条源日志均已解析，无非有限更新或U真值访问。

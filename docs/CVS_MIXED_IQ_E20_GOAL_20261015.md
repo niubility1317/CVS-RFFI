@@ -152,7 +152,7 @@ A_s调用原完整 practical residual/post_sync。25 MHz、IQ256、reference_snr
 
 第一次本地取回遇到Windows Path到Linux路径的描述转换问题，已用POSIX路径直接取回原完成产物；未重启、重测或修改远端release。原实测结果与冻结策略未变。
 
-### 五组E20已启动，正式结果待完成
+### 五组E20及原七视图已完成，候选未通过
 
 训练run `20261015-phase1-sigtime-rdrop-mixedIQ-e20-manysig-s2026092701-m5-r01`，实际代码 `1fe3f00bdddfdb0af494f74c6570db65490ddf72`。本地五个真实native网络检查验证198个同初始state张量、同IQ RDrop对、默认头／融合／SIG有限非零梯度及2／6次前向，共3328个合成前向、10个非法输入／顺序负例；另13项协议负测和774个observer／EMA合成前向检查PASS，均无真实IQ或优化更新。首次本地导入路径问题修正后，完整检查通过。
 
@@ -160,4 +160,18 @@ A_s调用原完整 practical residual/post_sync。25 MHz、IQ256、reference_snr
 
 单归档传输比对、远端编译与真实checkpoint无query smoke通过后，五个scratch模型已各自完成至少首轮。独立PID／CWD／argv／GPU及日志增长核验VERIFIED；星地组每轮222更新、28416物理L星地包、170496个L前向，与登记一致。实际导入仍为原adv3b02_xuc practical，residual/post_sync/noEQ(G1)、25MHz、referenceSNR30、reflect和质量／相位／IQ补偿开启。原测试IQ未改。
 
-训练和正式评分尚未完成，源资格尚未判定，不宣称clean／urban收益或跨seed复现。管线会逐row冻结E20后自动原clean＋六practical预测，七视图预测固定后独立CPU truth-last评分。具体命令、矩阵、来源、预算与停止规则见[训练登记报告](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-e20-manysig-s2026092701-m5-r01/report.md)。旧健康任务未改。
+五组已自然完成scratch E20与原clean＋六practical；七视图prediction固定后独立CPU truth-last评分，630个分层评分记录齐备，无技术缺失。全部100个epoch／22200个step与stdout已解析，损失和关键梯度有限、无跳过更新、U真值标记为0。两个星地组各568320条实际信道记录完整重数，与observer覆盖一致，568320对除correct外元数据完全相同；15个session各覆盖6TX。六张实际图已检查，原测试IQ与旧健康任务未改。
+
+|方法|clean %|low urban %|mid urban %|urban均值 %|
+|---|---:|---:|---:|---:|
+|R_LEGACY|83.0012|36.2411|44.5857|45.6530|
+|B00|83.1089|31.3161|38.2595|39.2133|
+|B10|83.3179|31.4732|38.5327|39.4512|
+|B01|80.2601|51.4869|62.1821|63.2619|
+|B11|80.2732|51.5262|62.2244|63.3119|
+
+收益主要来自A_s；B11−B01只有clean+0.0131pp、low+0.0393pp、urban+0.0500pp，clean相对原参照仍−2.7280pp。B11 suburban三场景距本模型clean为0.6637/3.1024/5.3280pp，仅high满足2pp目标。clean／low／urban交互项分别−0.1958／−0.1179／−0.1879pp，当前混合没有保留独立clean增量。
+
+源资格FAIL：B10相对B00的fullV只+0.014815pp、B11 clean未达到两对照、B11源low反而净少对2/720。必要条件失败已在读取目标分数前冻结，见[source决定](../analysis/cvs_mixedIQ_e20_source_decision_20261015.md)；本候选不扩seed。下一步只检验该决定中预先写明的源RX/day响应可重复性问题，不用本轮正式成绩挑幅度或训练预算，不追加对齐损失。
+
+执行代码仍为1fe3f00bdddfdb0af494f74c6570db65490ddf72；离线分析不加载IQ、权重或truth。新模型累计100 model-epoch／22200更新；实际前向27620540，另计共同源准备722。矩阵墙钟2358.224秒，E20结束不等于收敛。跨seed未验证，整体goal未完成。完整七视图逐row／seed、宏F1／最差RX、源状态／质量／保持率、门控、六图、成本、命令和检查见[最终报告](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-e20-manysig-s2026092701-m5-r01/report.md)。

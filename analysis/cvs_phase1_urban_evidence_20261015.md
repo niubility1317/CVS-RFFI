@@ -1,6 +1,8 @@
 # Phase1 urban：已完成证据与当前验证边界（2026-10-15）
 
-当前方向更新：用户已指定增强前底座为SIG_TIME＋RDrop、每模型scratch总E20，并转向有依据的IQ泛化增强与practical混合训练。文末曾拟议的HQ头间隔E50候选保持未实现历史状态，不再推进。最新完整RDrop结果、普通增强实际路径审计和可证伪的新设计见[当前混合增强方案](../docs/CVS_MIXED_IQ_E20_GOAL_20261015.md)。新五组E20训练已启动并通过首轮执行核验，尚无新正式成绩，不能称为双突破。
+当前方向更新：用户已指定增强前底座为SIG_TIME＋RDrop、每模型scratch总E20，并转向有依据的IQ泛化增强与practical混合训练。文末曾拟议的HQ头间隔E50候选保持未实现历史状态，不再推进。最新完整RDrop结果、普通增强实际路径审计和可证伪的新设计见[当前混合增强方案](../docs/CVS_MIXED_IQ_E20_GOAL_20261015.md)。新五组E20与全部原七视图已完成：混合B11的clean80.2732%、low urban51.5262%，相对仅practical的B01分别仅+0.0131/+0.0393pp；相对原参照clean−2.7280pp。当前轻度响应候选源规则FAIL，未达双突破，不扩seed，整体goal仍active。
+
+新E20正式结果为seed2026092701一组，执行代码1fe3f00bdddfdb0af494f74c6570db65490ddf72。仅practical相对前向匹配B00的low+20.1708pp／urban+24.0486pp伴随clean−2.8488pp；混合交互项clean−0.1958pp／urban−0.1879pp，未保留A_g单独的clean增量。源必要条件失败在读取目标分数前已写入[source决定](cvs_mixedIQ_e20_source_decision_20261015.md)。完整逐row七视图、630项独立评分、全部训练日志检查、六图、成本和未完成项见[本轮报告](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-e20-manysig-s2026092701-m5-r01/report.md)。
 
 新源验证已实际完成：固定E20 RDrop默认头、V27000、135002前向、74.915770秒、0更新。轻度线性响应的两个reflect条件相对RAW准确率下降0.059259/0.122222pp，通过预定1pp安全条件；这只支持进入训练检验，不证明clean或urban提升。完整报告见[冻结源响应验证](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01/report.md)。
 
