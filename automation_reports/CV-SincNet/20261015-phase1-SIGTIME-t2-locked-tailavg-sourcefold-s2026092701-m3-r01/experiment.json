@@ -1,0 +1,369 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01",
+  "group_id": "phase1-SIGTIME-t2-dropout-controlled-training",
+  "display_name": "SIG_TIME 时间共享失活与同轨迹尾段平均：真实 RX1 留出三条件训练",
+  "description": "Fresh matched ELEMENT/NONE/LOCKED scratch20 source fold; final/ownEMA/fixed epochs17-20 tail average evaluated independently. No target.",
+  "kind": "diagnostic",
+  "stage": "Phase1 source-only three-condition complete training",
+  "aliases": [],
+  "tags": [
+    "CVS",
+    "SIG_TIME",
+    "CENTER_25K",
+    "default_head",
+    "hidden_U",
+    "source_only",
+    "held_RX1",
+    "locked_dropout",
+    "tail_average"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User supplied 2026-10-15 report prioritizes temporal shared dropout and same-trajectory averaging; active Phase1 training-mechanism goal; no new loss or target-driven selection.",
+  "code": {
+    "commit": "release_commit.txt (actual Git HEAD at launch)",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "N607 ordinary account/CVS-RFFI Python; current new-package/shared-source overlay on immutable R02 runtime",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01",
+    "entrypoint": "experiments.cvs_sigtime_locked20.runner"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated fixed source physical roles, receiver-mask fold only",
+    "representation": "clean IQ[2,256], NoExplicitCFO with existing internal packet compensation",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md; current source_contract.json effective4RX and original carrier contract reference",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "label_map_ref": "Original six source TX labels unchanged; U returns -1 and strips TX metadata",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Unchanged original six source TX; no target data constructed",
+    "roles": {
+      "L_s": 5040,
+      "U_s": 45360,
+      "V": 21600
+    },
+    "train_ratio": {
+      "L": 0.07,
+      "U": 0.63,
+      "V": 0.3
+    },
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "VALIDATED_ONCE original data reused; native exact carrier roles checked then all active fold roles and physical subset checked",
+    "support_query_ref": "Not applicable: source-only, no Phase2 capsule/support/query",
+    "leo_config_ref": "None; no satellite augmentation/evaluation"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "One genuine RX1-held-out controlled full-training comparison, not formal target/generalization or three-seed84% completion"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "source/source_contract.json and initialization.json",
+    "provenance_verdict": "Own fresh model; no pretrained source; own scratch smoke before training",
+    "selection_rule": "fixed final20 only; four steps fixed before data; no target selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/SIGTIME-t2-locked-20261015",
+    "gpu_policy": "One GPU chosen by preregistered lowest existing process count then most free memory; at most3 total processes/GPU including other owners; >3072MiB free",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01",
+    "local_artifact_root": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011\\local_artifacts\\cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_locked20/runner.py experiments/cvs_sigtime_locked20/configs/matrix.json",
+    "stop_rule": "Protocol/role/held-RX or U-truth leakage, nonfinite loss/gradient, undeclared task, wrong budget/actual-gradient oracle or output collision: preserve outputs, no automatic retry. No performance stop or unrelated-process intervention."
+  },
+  "expected_artifacts": [
+    "matrix_result.json",
+    "each_row/source/completion.json",
+    "each_row/source/source_frozen.json",
+    "each_row/source/source_contract.json",
+    "each_row/source/initial_smoke.pt",
+    "each_row/source/final_ssdg.pth",
+    "each_row/source/ema.pth",
+    "each_row/source/tail_avg.pth",
+    "each_row/source/tail_states/epoch{17,18,19,20}.pth",
+    "each_row/source/source_readouts/{epoch17,epoch18,epoch19,epoch20,FINAL,EMA,TAIL_AVG}.json",
+    "each_row/source/dropout_result.json",
+    "each_row/source/step_metrics.jsonl.gz",
+    "each_row/source/epoch_metrics.jsonl",
+    "source_matrix.stdout.log",
+    "release_commit.txt"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "default-head accuracy",
+      "mean CE",
+      "mean trueclass margin",
+      "repaired errors",
+      "broken correct decisions",
+      "tail prediction changes"
+    ],
+    "dimensions": [
+      "ELEMENT/NONE/LOCKED",
+      "FINAL/EMA/TAIL_AVG",
+      "epoch17/18/19/20"
+    ],
+    "source_gate": {
+      "primary": "LOCKED_FINAL vs ELEMENT_FINAL and NONE_FINAL",
+      "held_RX": 1,
+      "errors_strictly_fewer_than_both_controls": true,
+      "mean_CE_not_higher_than_either_control": true,
+      "final_training_L_CE_max": 0.5,
+      "qualification": "Only separately preregistered formal three-seed training, never reuse source-fold weights",
+      "secondary_exports": [
+        "EMA",
+        "TAIL_AVG"
+      ],
+      "secondary_exports_do_not_rescue_failed_primary": true
+    },
+    "prediction_ref": "Own held visible sourceL1260, default head only; source_readouts files; no target",
+    "scorer_ref": "Visible sourceL labels only; no target truth",
+    "seed": 2026092701,
+    "source_fold_held_RX": 1,
+    "rows": 3,
+    "epochs_per_row": 20,
+    "actual_optimizer_updates_per_row": 4440,
+    "actual_optimizer_updates_total": 13320,
+    "U_packet_observations_per_row": 396368,
+    "U_packet_observations_total": 1189104,
+    "extra_training_IQ_forwards": 0,
+    "temporary_optimizer_steps": 0,
+    "diagnostic_readout_forwards_per_row": 7560,
+    "smoke_forward_packets_per_row": 2,
+    "additional_L_IQ_reads_per_row": 1404,
+    "average_epochs": [
+      17,
+      18,
+      19,
+      20
+    ],
+    "average_accumulator_dtype": "float64",
+    "average_scope": "All188 model parameters, including default W/fusion gains/norm parameters;12 unchanged buffers copied, no BN/statistics recalibration",
+    "averaging_feedback_to_student_teacher": false,
+    "main_run_qualification": false
+  },
+  "rows": [
+    {
+      "row_id": "ELEMENT-RX1-s2026092701",
+      "method": "cvs_sigtime_t2_dropout",
+      "purpose": "source_falsification",
+      "config_ref": "experiments/cvs_sigtime_locked20/configs/matrix.json#ELEMENT",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01/ELEMENT-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only fixed model seed2026092701; original deterministic physical split unchanged. Other seeds not separately exposed: null; original model-seeded U Gaussian/sampler RNG retained and counterfactual RNG restored. No support, stochastic evaluation or new seed scan.",
+      "k": null,
+      "scenario": "source clean RX1 held-out; no target/LEO",
+      "optimizer": "Original188 AdamW lr2e-4/wd1e-4/clip5; cosine min1e-6",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "experiment.json#metrics_plan",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01/ELEMENT-RX1-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01/source_matrix.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_locked20/runner.py experiments/cvs_sigtime_locked20/configs/matrix.json",
+      "expected_artifacts": [
+        "matrix_result.json",
+        "each_row/source/completion.json",
+        "each_row/source/source_frozen.json",
+        "each_row/source/source_contract.json",
+        "each_row/source/initial_smoke.pt",
+        "each_row/source/final_ssdg.pth",
+        "each_row/source/ema.pth",
+        "each_row/source/tail_avg.pth",
+        "each_row/source/tail_states/epoch{17,18,19,20}.pth",
+        "each_row/source/source_readouts/{epoch17,epoch18,epoch19,epoch20,FINAL,EMA,TAIL_AVG}.json",
+        "each_row/source/dropout_result.json",
+        "each_row/source/step_metrics.jsonl.gz",
+        "each_row/source/epoch_metrics.jsonl",
+        "source_matrix.stdout.log",
+        "release_commit.txt"
+      ]
+    },
+    {
+      "row_id": "NONE-RX1-s2026092701",
+      "method": "cvs_sigtime_t2_dropout",
+      "purpose": "source_falsification",
+      "config_ref": "experiments/cvs_sigtime_locked20/configs/matrix.json#NONE",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01/NONE-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only fixed model seed2026092701; original deterministic physical split unchanged. Other seeds not separately exposed: null; original model-seeded U Gaussian/sampler RNG retained and counterfactual RNG restored. No support, stochastic evaluation or new seed scan.",
+      "k": null,
+      "scenario": "source clean RX1 held-out; no target/LEO",
+      "optimizer": "Original188 AdamW lr2e-4/wd1e-4/clip5; cosine min1e-6",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "experiment.json#metrics_plan",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01/NONE-RX1-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01/source_matrix.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_locked20/runner.py experiments/cvs_sigtime_locked20/configs/matrix.json",
+      "expected_artifacts": [
+        "matrix_result.json",
+        "each_row/source/completion.json",
+        "each_row/source/source_frozen.json",
+        "each_row/source/source_contract.json",
+        "each_row/source/initial_smoke.pt",
+        "each_row/source/final_ssdg.pth",
+        "each_row/source/ema.pth",
+        "each_row/source/tail_avg.pth",
+        "each_row/source/tail_states/epoch{17,18,19,20}.pth",
+        "each_row/source/source_readouts/{epoch17,epoch18,epoch19,epoch20,FINAL,EMA,TAIL_AVG}.json",
+        "each_row/source/dropout_result.json",
+        "each_row/source/step_metrics.jsonl.gz",
+        "each_row/source/epoch_metrics.jsonl",
+        "source_matrix.stdout.log",
+        "release_commit.txt"
+      ]
+    },
+    {
+      "row_id": "LOCKED-RX1-s2026092701",
+      "method": "cvs_sigtime_t2_dropout",
+      "purpose": "source_falsification",
+      "config_ref": "experiments/cvs_sigtime_locked20/configs/matrix.json#LOCKED",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01/LOCKED-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only fixed model seed2026092701; original deterministic physical split unchanged. Other seeds not separately exposed: null; original model-seeded U Gaussian/sampler RNG retained and counterfactual RNG restored. No support, stochastic evaluation or new seed scan.",
+      "k": null,
+      "scenario": "source clean RX1 held-out; no target/LEO",
+      "optimizer": "Original188 AdamW lr2e-4/wd1e-4/clip5; cosine min1e-6",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "experiment.json#metrics_plan",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01/LOCKED-RX1-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01/source_matrix.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_locked20/runner.py experiments/cvs_sigtime_locked20/configs/matrix.json",
+      "expected_artifacts": [
+        "matrix_result.json",
+        "each_row/source/completion.json",
+        "each_row/source/source_frozen.json",
+        "each_row/source/source_contract.json",
+        "each_row/source/initial_smoke.pt",
+        "each_row/source/final_ssdg.pth",
+        "each_row/source/ema.pth",
+        "each_row/source/tail_avg.pth",
+        "each_row/source/tail_states/epoch{17,18,19,20}.pth",
+        "each_row/source/source_readouts/{epoch17,epoch18,epoch19,epoch20,FINAL,EMA,TAIL_AVG}.json",
+        "each_row/source/dropout_result.json",
+        "each_row/source/step_metrics.jsonl.gz",
+        "each_row/source/epoch_metrics.jsonl",
+        "source_matrix.stdout.log",
+        "release_commit.txt"
+      ]
+    }
+  ],
+  "notes": [
+    "Default cosine head stays jointly trained. No fitted identity/RX classifiers, no posthoc head replacement, no added inference parameters.",
+    "Only original t2.drop changes: ELEMENT nn.Dropout(.1), NONE Identity, LOCKED nn.Dropout1d(.1). t1/t3/PA/signature tap/projections/dimensions unchanged. No additional training IQ forwards.",
+    "Fixed three-condition same-seed scratch20 training,13L+7U,LS0/CENTER25K/original U organization, no ordinaryL/satellite augmentation; no lambda/p/window scan.",
+    "All training/teacher/calibration/probe loaders exclude heldRX1 before model creation. Effective L5040/U45360hidden/V21600. Source-fold weights may never initialize formal full-five-RX training.",
+    "Tail average is independent export, fixed epochs17-20 with full default head/gains; no cyclic LR change, no teacher feedback, no averaging across seeds or Sinc coordinates.",
+    "Existing current BASE_SSL three-seed inventory has final/smoke/Sinc slices only, no whole-model tail states. No averaging-only baseline rerun; new dropout control trajectories collect the average online.",
+    "Historical native177025-parameter SWA30 five-RX source fold did not qualify; preserved as a separate old architecture/recipe negative, not a current SIG_TIME result.",
+    "p2_min_v1 unchanged/unused: source-only, capsule_id/split_id null; no support/query constructed. Original VALIDATED_ONCE source data reused.",
+    "The previous projected-U source candidate remains closed at0/4; this independent report-driven dropout hypothesis is not a relaxation or retry of its thresholds.",
+    "REJECTED_EXTRA_GATE: generic design approval rituals/report-only duplicate reviews; current user authorization and exclusive CVS workflow take precedence."
+  ],
+  "registered_at": "2026-10-15T03:17:26+00:00"
+}

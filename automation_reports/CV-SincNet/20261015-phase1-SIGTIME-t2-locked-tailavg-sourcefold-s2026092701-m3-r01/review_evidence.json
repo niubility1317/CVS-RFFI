@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "candidate": "20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01",
+  "review_type": "single independent next-run P0/P1 review",
+  "findings": [],
+  "scope": [
+    "experiments/cvs_sigtime_locked20/design.py",
+    "experiments/cvs_sigtime_locked20/mechanism.py",
+    "experiments/cvs_sigtime_locked20/model.py",
+    "experiments/cvs_sigtime_locked20/source.py",
+    "experiments/cvs_sigtime_locked20/runner.py",
+    "experiments/cvs_sigtime_locked20/publish.py",
+    "experiments/cvs_sigtime_locked20/configs/matrix.json",
+    "experiments/cvs_sigtime_locked20/checks.py",
+    "Direct integration with shared_train and the existing four-RX fold preparation interface"
+  ],
+  "confirmed": [
+    "The only model operation changed is the actual native t2.drop site: ELEMENT retains Dropout(0.1), NONE uses Identity and LOCKED uses Dropout1d(0.1) on the native batch/channel/time tensor. The t2 module output tap, deployed SIG_TIME path, default head and parameter/state coordinates are retained.",
+    "The existing fold preparation filters train, unlabeled, probe, validation and calibration loaders before model and own-EMA construction. Hidden-U filtering reads RX metadata without TX inspection. The held RX1 L1260 bank is evaluated only by a separate eval/no-grad reader.",
+    "Each row starts scratch with no checkpoint sources and preserves the original 13L+7U, 4440-update SSL path. The three-mode matrix uses fresh ELEMENT, NONE and LOCKED trajectories with the fixed seed and no added training loss, optimizer step or training IQ forward.",
+    "TailAverage consumes only the fixed epochs 17,18,19,20 of one trajectory, averages all named parameter tensors in FP64 including W and gains, requires constant buffers, and never loads the average into the live student or its own EMA.",
+    "FINAL reuses the epoch20 held-L readout after an exact full-state comparison with the final native checkpoint. Four tail readouts plus EMA and TAIL_AVG give six L1260 readouts per row, totaling 7560 packets. Reader forwards reject nonfinite/non-six-class logits, preserve RNG and use fresh parameter caches; no head is fitted.",
+    "The primary qualification consumes only the three new FINAL results and fixed source-health condition. EMA and TAIL_AVG exports do not rescue a failed primary qualification; no target or historical projection result is used.",
+    "The runner checks the exact fixed matrix and rejects an existing run root, then executes the three rows sequentially in one GPU worker. The release overlays the new package, consumed fold package and shared source interface on the fixed R02 code dependency; archive transfer, compile and the existing first-step scratch checkpoint smoke lead directly to training."
+  ],
+  "verification": {
+    "focused_checks": {
+      "status": "PASS",
+      "tests": 9,
+      "execution": "Seven original focused checks, then only the two checks added during this same initial review; no unchanged check rerun.",
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/.codex_tmp/native_polyphase_runner.py experiments.cvs_sigtime_locked20.checks",
+      "added_checks_command_suffix": "Mechanism.test_fixed_source_recipe_rejects_changes Mechanism.test_average_ignores_earlier_epochs"
+    },
+    "matrix_matches_design": true,
+    "matrix_rows": 3,
+    "all_rows_scratch_without_checkpoint_sources": true,
+    "total_epochs": 60,
+    "total_actual_optimizer_steps": 13320
+  },
+  "review_boundary": "Read-only review of this new candidate and its direct interfaces, plus this evidence file. No real checkpoint or IQ access, remote action, training launch, production-code edit, commit, historical full review or added gate."
+}

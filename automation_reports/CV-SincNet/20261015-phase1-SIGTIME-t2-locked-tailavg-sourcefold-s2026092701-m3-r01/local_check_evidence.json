@@ -1,0 +1,122 @@
+{
+  "status": "PASS",
+  "operator_tests": 9,
+  "CPU": {
+    "status": "PASS",
+    "device": "cpu",
+    "results": [
+      {
+        "mode": "ELEMENT",
+        "actual_layer": "id_backbone.encoder.core.id_backbone.t2.drop",
+        "type": "Dropout",
+        "probability": 0.1,
+        "state_and_parameter_count_unchanged": true,
+        "eval_bitwise_equal": true,
+        "time_mask_transition_fraction": 0.18013115227222443,
+        "default_head_t2_and_signature_gradients": true,
+        "full_tail_average_cold_noop_bitwise": true,
+        "averaged_parameter_tensors": 188,
+        "constant_state_buffers": 12
+      },
+      {
+        "mode": "NONE",
+        "actual_layer": "id_backbone.encoder.core.id_backbone.t2.drop",
+        "type": "Identity",
+        "probability": 0.0,
+        "state_and_parameter_count_unchanged": true,
+        "eval_bitwise_equal": true,
+        "time_mask_transition_fraction": 0.0,
+        "default_head_t2_and_signature_gradients": true,
+        "full_tail_average_cold_noop_bitwise": true,
+        "averaged_parameter_tensors": 188,
+        "constant_state_buffers": 12
+      },
+      {
+        "mode": "LOCKED",
+        "actual_layer": "id_backbone.encoder.core.id_backbone.t2.drop",
+        "type": "Dropout1d",
+        "probability": 0.1,
+        "state_and_parameter_count_unchanged": true,
+        "eval_bitwise_equal": true,
+        "time_mask_transition_fraction": 0.0,
+        "default_head_t2_and_signature_gradients": true,
+        "full_tail_average_cold_noop_bitwise": true,
+        "averaged_parameter_tensors": 188,
+        "constant_state_buffers": 12
+      }
+    ],
+    "real_source_IQ_checkpoint_reads": 0,
+    "actual_optimizer_updates": 0,
+    "source_performance_claim": false,
+    "limitation": "Original constructor with synthetic tensors only; mask/eval/gradient/state checks do not establish generalization"
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "results": [
+      {
+        "mode": "ELEMENT",
+        "actual_layer": "id_backbone.encoder.core.id_backbone.t2.drop",
+        "type": "Dropout",
+        "probability": 0.1,
+        "state_and_parameter_count_unchanged": true,
+        "eval_bitwise_equal": true,
+        "time_mask_transition_fraction": 0.17946699261665344,
+        "default_head_t2_and_signature_gradients": true,
+        "full_tail_average_cold_noop_bitwise": true,
+        "averaged_parameter_tensors": 188,
+        "constant_state_buffers": 12
+      },
+      {
+        "mode": "NONE",
+        "actual_layer": "id_backbone.encoder.core.id_backbone.t2.drop",
+        "type": "Identity",
+        "probability": 0.0,
+        "state_and_parameter_count_unchanged": true,
+        "eval_bitwise_equal": true,
+        "time_mask_transition_fraction": 0.0,
+        "default_head_t2_and_signature_gradients": true,
+        "full_tail_average_cold_noop_bitwise": true,
+        "averaged_parameter_tensors": 188,
+        "constant_state_buffers": 12
+      },
+      {
+        "mode": "LOCKED",
+        "actual_layer": "id_backbone.encoder.core.id_backbone.t2.drop",
+        "type": "Dropout1d",
+        "probability": 0.1,
+        "state_and_parameter_count_unchanged": true,
+        "eval_bitwise_equal": true,
+        "time_mask_transition_fraction": 0.0,
+        "default_head_t2_and_signature_gradients": true,
+        "full_tail_average_cold_noop_bitwise": true,
+        "averaged_parameter_tensors": 188,
+        "constant_state_buffers": 12
+      }
+    ],
+    "real_source_IQ_checkpoint_reads": 0,
+    "actual_optimizer_updates": 0,
+    "source_performance_claim": false,
+    "limitation": "Original constructor with synthetic tensors only; mask/eval/gradient/state checks do not establish generalization"
+  },
+  "historical_tail_states_available": false,
+  "historical_inventory_reference": "private metadata-only inventory; no checkpoint contents or sourceIQ read",
+  "compile": "PASS",
+  "source_performance_claim": false,
+  "synthetic_export_integration": {
+    "status": "PASS",
+    "real_constructor": true,
+    "CUDA": true,
+    "original_default_head": true,
+    "tail_callbacks": 4,
+    "tail_exports_match_independent_FP64_stack": true,
+    "averaged_parameters": 188,
+    "constant_buffers": 12,
+    "final_tail_checkpoint_identity_checked": true,
+    "own_mock_EMA_FINAL_predictions_identical": true,
+    "actual_synthetic_optimizer_steps": 4,
+    "real_native_optimizer_steps": 0,
+    "real_source_IQ_checkpoint_reads": 0,
+    "note": "Entire export callback tested on synthetic IQ and own synthetic checkpoints; budget counters and L health are fixture values, never scientific evidence"
+  }
+}

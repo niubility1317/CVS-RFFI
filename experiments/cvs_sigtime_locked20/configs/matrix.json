@@ -1,0 +1,560 @@
+{
+  "dependency_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02",
+  "rows": [
+    {
+      "schema": "phase1_SIGTIME_t2_dropout_tail_export_sourcefold_v1",
+      "run_id": "20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01",
+      "stage": "source_RX_fold_full_training",
+      "arm": "ELEMENT",
+      "model_seed": 2026092701,
+      "row_id": "ELEMENT-RX1-s2026092701",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01/ELEMENT-RX1-s2026092701/source",
+      "epochs": 20,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_sigtime_t2_dropout",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "launch_owner": "codex/root/SIGTIME-t2-locked-20261015",
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "updates": 4440,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092701,
+        "row_id": "legacy_cosine_no_sat-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "source_falsification": {
+        "primary": "LOCKED_FINAL vs ELEMENT_FINAL and NONE_FINAL",
+        "held_RX": 1,
+        "errors_strictly_fewer_than_both_controls": true,
+        "mean_CE_not_higher_than_either_control": true,
+        "final_training_L_CE_max": 0.5,
+        "qualification": "Only separately preregistered formal three-seed training, never reuse source-fold weights",
+        "secondary_exports": [
+          "EMA",
+          "TAIL_AVG"
+        ],
+        "secondary_exports_do_not_rescue_failed_primary": true
+      },
+      "training_recipe": "SIG_TIME+CENTER25K/default cosine; scratch20 LS0;13L+7U; same four-RX222-step sampler and original Gaussian-U",
+      "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "arm": "SIG_TIME",
+        "layer": "t2",
+        "local_dimension": 6,
+        "local_projection": "learned 1x1 then tanh; shared across controls",
+        "windows": 4,
+        "random_directions": 14,
+        "random_direction_seed": 2026101307,
+        "random_direction_scales": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "descriptor_width": 28,
+        "output_embedding": 160,
+        "parameter_matched": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "classifier_changed": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "time_coordinate": true,
+        "per_packet": true,
+        "sinc_coordinates": "CENTER_25K",
+        "sinc_scale_hz": 25000.0,
+        "extra_mechanism_parameters": 0,
+        "additional_classifier_parameters": 0
+      },
+      "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+      "test_views": [],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "clean_three_seed_mean": 0.84,
+        "goal_completed": false,
+        "source_diagnostic_only": true
+      },
+      "budget_authorization": "User supplied report: actual ELEMENT/NONE/LOCKED controlled training; one fixed source RX1/seed first; tail averaging accompanies those trajectories, no averaging-only rerun",
+      "cost_claim": "Per row20 epochs/4440 actual steps,396368 U observations; total3 rows60 epochs/13320 steps; six1260-packet eval readouts per row; no extra training forwards",
+      "baseline_reference": "Fresh matched ELEMENT trajectory within this three-condition matrix",
+      "baseline_reuse": false,
+      "readouts": [
+        "FINAL",
+        "EMA",
+        "TAIL_AVG"
+      ],
+      "separate_head_training": false,
+      "training_mechanism": {
+        "t2_mode": "ELEMENT",
+        "p": 0.1,
+        "other_layers_unchanged": true,
+        "loss": "Original L CE plus original oldgate U; no new loss",
+        "extra_training_IQ_forwards": 0,
+        "teacher": "Own original EMA, eval dropout behavior unchanged; average never fed back",
+        "tail_epochs": [
+          17,
+          18,
+          19,
+          20
+        ],
+        "average": "FP64 all188 parameters including default W/gains/norm;12 constant buffers copied; same trajectory only",
+        "retained_tail_snapshots": true,
+        "head_fit_updates": 0,
+        "extra_optimizer_steps": 0,
+        "held_L_readout_forwards": 7560,
+        "additional_L_IQ_reads": 1404
+      },
+      "execution_overrides": {
+        "use_aug": false,
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "label_smoothing": 0,
+        "source_only": true
+      },
+      "fold": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      }
+    },
+    {
+      "schema": "phase1_SIGTIME_t2_dropout_tail_export_sourcefold_v1",
+      "run_id": "20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01",
+      "stage": "source_RX_fold_full_training",
+      "arm": "NONE",
+      "model_seed": 2026092701,
+      "row_id": "NONE-RX1-s2026092701",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01/NONE-RX1-s2026092701/source",
+      "epochs": 20,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_sigtime_t2_dropout",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "launch_owner": "codex/root/SIGTIME-t2-locked-20261015",
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "updates": 4440,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092701,
+        "row_id": "legacy_cosine_no_sat-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "source_falsification": {
+        "primary": "LOCKED_FINAL vs ELEMENT_FINAL and NONE_FINAL",
+        "held_RX": 1,
+        "errors_strictly_fewer_than_both_controls": true,
+        "mean_CE_not_higher_than_either_control": true,
+        "final_training_L_CE_max": 0.5,
+        "qualification": "Only separately preregistered formal three-seed training, never reuse source-fold weights",
+        "secondary_exports": [
+          "EMA",
+          "TAIL_AVG"
+        ],
+        "secondary_exports_do_not_rescue_failed_primary": true
+      },
+      "training_recipe": "SIG_TIME+CENTER25K/default cosine; scratch20 LS0;13L+7U; same four-RX222-step sampler and original Gaussian-U",
+      "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "arm": "SIG_TIME",
+        "layer": "t2",
+        "local_dimension": 6,
+        "local_projection": "learned 1x1 then tanh; shared across controls",
+        "windows": 4,
+        "random_directions": 14,
+        "random_direction_seed": 2026101307,
+        "random_direction_scales": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "descriptor_width": 28,
+        "output_embedding": 160,
+        "parameter_matched": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "classifier_changed": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "time_coordinate": true,
+        "per_packet": true,
+        "sinc_coordinates": "CENTER_25K",
+        "sinc_scale_hz": 25000.0,
+        "extra_mechanism_parameters": 0,
+        "additional_classifier_parameters": 0
+      },
+      "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+      "test_views": [],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "clean_three_seed_mean": 0.84,
+        "goal_completed": false,
+        "source_diagnostic_only": true
+      },
+      "budget_authorization": "User supplied report: actual ELEMENT/NONE/LOCKED controlled training; one fixed source RX1/seed first; tail averaging accompanies those trajectories, no averaging-only rerun",
+      "cost_claim": "Per row20 epochs/4440 actual steps,396368 U observations; total3 rows60 epochs/13320 steps; six1260-packet eval readouts per row; no extra training forwards",
+      "baseline_reference": "Fresh matched ELEMENT trajectory within this three-condition matrix",
+      "baseline_reuse": false,
+      "readouts": [
+        "FINAL",
+        "EMA",
+        "TAIL_AVG"
+      ],
+      "separate_head_training": false,
+      "training_mechanism": {
+        "t2_mode": "NONE",
+        "p": 0.0,
+        "other_layers_unchanged": true,
+        "loss": "Original L CE plus original oldgate U; no new loss",
+        "extra_training_IQ_forwards": 0,
+        "teacher": "Own original EMA, eval dropout behavior unchanged; average never fed back",
+        "tail_epochs": [
+          17,
+          18,
+          19,
+          20
+        ],
+        "average": "FP64 all188 parameters including default W/gains/norm;12 constant buffers copied; same trajectory only",
+        "retained_tail_snapshots": true,
+        "head_fit_updates": 0,
+        "extra_optimizer_steps": 0,
+        "held_L_readout_forwards": 7560,
+        "additional_L_IQ_reads": 1404
+      },
+      "execution_overrides": {
+        "use_aug": false,
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "label_smoothing": 0,
+        "source_only": true
+      },
+      "fold": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      }
+    },
+    {
+      "schema": "phase1_SIGTIME_t2_dropout_tail_export_sourcefold_v1",
+      "run_id": "20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01",
+      "stage": "source_RX_fold_full_training",
+      "arm": "LOCKED",
+      "model_seed": 2026092701,
+      "row_id": "LOCKED-RX1-s2026092701",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01/LOCKED-RX1-s2026092701/source",
+      "epochs": 20,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_sigtime_t2_dropout",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "launch_owner": "codex/root/SIGTIME-t2-locked-20261015",
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "updates": 4440,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092701,
+        "row_id": "legacy_cosine_no_sat-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "source_falsification": {
+        "primary": "LOCKED_FINAL vs ELEMENT_FINAL and NONE_FINAL",
+        "held_RX": 1,
+        "errors_strictly_fewer_than_both_controls": true,
+        "mean_CE_not_higher_than_either_control": true,
+        "final_training_L_CE_max": 0.5,
+        "qualification": "Only separately preregistered formal three-seed training, never reuse source-fold weights",
+        "secondary_exports": [
+          "EMA",
+          "TAIL_AVG"
+        ],
+        "secondary_exports_do_not_rescue_failed_primary": true
+      },
+      "training_recipe": "SIG_TIME+CENTER25K/default cosine; scratch20 LS0;13L+7U; same four-RX222-step sampler and original Gaussian-U",
+      "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "arm": "SIG_TIME",
+        "layer": "t2",
+        "local_dimension": 6,
+        "local_projection": "learned 1x1 then tanh; shared across controls",
+        "windows": 4,
+        "random_directions": 14,
+        "random_direction_seed": 2026101307,
+        "random_direction_scales": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "descriptor_width": 28,
+        "output_embedding": 160,
+        "parameter_matched": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "classifier_changed": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "time_coordinate": true,
+        "per_packet": true,
+        "sinc_coordinates": "CENTER_25K",
+        "sinc_scale_hz": 25000.0,
+        "extra_mechanism_parameters": 0,
+        "additional_classifier_parameters": 0
+      },
+      "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+      "test_views": [],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "clean_three_seed_mean": 0.84,
+        "goal_completed": false,
+        "source_diagnostic_only": true
+      },
+      "budget_authorization": "User supplied report: actual ELEMENT/NONE/LOCKED controlled training; one fixed source RX1/seed first; tail averaging accompanies those trajectories, no averaging-only rerun",
+      "cost_claim": "Per row20 epochs/4440 actual steps,396368 U observations; total3 rows60 epochs/13320 steps; six1260-packet eval readouts per row; no extra training forwards",
+      "baseline_reference": "Fresh matched ELEMENT trajectory within this three-condition matrix",
+      "baseline_reuse": false,
+      "readouts": [
+        "FINAL",
+        "EMA",
+        "TAIL_AVG"
+      ],
+      "separate_head_training": false,
+      "training_mechanism": {
+        "t2_mode": "LOCKED",
+        "p": 0.1,
+        "other_layers_unchanged": true,
+        "loss": "Original L CE plus original oldgate U; no new loss",
+        "extra_training_IQ_forwards": 0,
+        "teacher": "Own original EMA, eval dropout behavior unchanged; average never fed back",
+        "tail_epochs": [
+          17,
+          18,
+          19,
+          20
+        ],
+        "average": "FP64 all188 parameters including default W/gains/norm;12 constant buffers copied; same trajectory only",
+        "retained_tail_snapshots": true,
+        "head_fit_updates": 0,
+        "extra_optimizer_steps": 0,
+        "held_L_readout_forwards": 7560,
+        "additional_L_IQ_reads": 1404
+      },
+      "execution_overrides": {
+        "use_aug": false,
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "label_smoothing": 0,
+        "source_only": true
+      },
+      "fold": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      }
+    }
+  ]
+}
