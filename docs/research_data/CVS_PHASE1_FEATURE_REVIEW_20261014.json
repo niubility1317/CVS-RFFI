@@ -82439,14 +82439,14 @@
     }
   ],
   "next_actions_max2": [
-    "按R-Drop首源PASS固定规则另登记并原样完成02/03零更新源复核：同900物理L包/原DRO对应SIG final50/同alpha1，无U/V/query或头拟合。",
-    "仅在原三源规则满足后，设计同两次L前向/平均两次CE的训练对照，默认头原方式联合、旧U/EMA/门控/cos与≤50/model保持；不根据Sinc目标分数选父、系数或组合。"
+    "落实R-Drop正式训练最小比较：两次L随机前向平均CE对照vs同路径加alpha1双向KL；不改网络、默认联合头、原门控/EMA/U损失/cos，首seed scratch50；按既有源阈值冻结扩展，不看目标决定。",
+    "发布前核对另一训练路线及实时全owner容量；首源规则通过才原样扩02/03，冻结后自动clean预测/独立truth-last评分、保留全部正负结果及Git交付。"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "按R-Drop首源PASS固定规则另登记并原样完成02/03零更新源复核：同900物理L包/原DRO对应SIG final50/同alpha1，无U/V/query或头拟合。",
-    "仅在原三源规则满足后，设计同两次L前向/平均两次CE的训练对照，默认头原方式联合、旧U/EMA/门控/cos与≤50/model保持；不根据Sinc目标分数选父、系数或组合。"
+    "落实R-Drop正式训练最小比较：两次L随机前向平均CE对照vs同路径加alpha1双向KL；不改网络、默认联合头、原门控/EMA/U损失/cos，首seed scratch50；按既有源阈值冻结扩展，不看目标决定。",
+    "发布前核对另一训练路线及实时全owner容量；首源规则通过才原样扩02/03，冻结后自动clean预测/独立truth-last评分、保留全部正负结果及Git交付。"
   ],
   "current_priority": {
     "at": "2026-10-15T02:02:55.462Z",
@@ -85232,7 +85232,7 @@
       "goal84": false
     },
     "next_dropout_consistency": {
-      "status": "ANALYZED_VERIFIED_SOURCE_PASS_ONE_MODEL",
+      "status": "ANALYZED_VERIFIED_SOURCE_PASS_THREE_MODELS",
       "fixed_at": "2026-10-15T01:43:16.529Z",
       "before_remaining_Sinc_target_numeric_read": true,
       "hypothesis": "Two stochastic dropout realizations of the same source input should not produce excessive default-head distribution inconsistency; whether regularizing it improves DG remains unproven",
@@ -85249,7 +85249,7 @@
       "external_source": "https://proceedings.neurips.cc/paper/2021/hash/5a66b9200f29ac3fa0ae244cc2a51b39-Abstract.html",
       "proposed_location": "Training objective only; fixed SIG_TIME and normal jointly-trained default head; no inference branch",
       "minimum_training_control_if_later_warranted": "Same two stochastic L forwards: averaged two CE control vs averaged CE plus symmetric KL; native oldgate/ownEMA/U loss/cos unchanged, <=50 epochs. Extra L forwards/backwards measured.",
-      "first_next_action": "按R-Drop首源PASS固定规则另登记并原样完成02/03零更新源复核：同900物理L包/原DRO对应SIG final50/同alpha1，无U/V/query或头拟合。",
+      "first_next_action": "以三模型源PASS为依据，实现并独立预登记同双L前向的平均CE对照与alpha1 R-Drop，固定SIG_TIME/默认联合头/旧门控ownEMA/U损失/cos/from-scratch50；正式训练与目标收益仍未知。",
       "predefined_source_parent": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/SIG_TIME-s2026092701/source/final_ssdg.pth",
       "parent_rule": "Predefined lowest seed fixed final50 source lineage, not a best-target parent. Matching remaining SIG parents only if original source-only follow-up rule is later registered.",
       "feature_claim_boundary": "KL reduction and nonzero backbone gradients do not prove export or DG gain; an eventual trained variant still requires actual parameter/export witnesses and matched three-seed independent clean scoring",
@@ -85257,7 +85257,7 @@
       "source_run": "20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01",
       "implementation_commit": "eb21026149b1d1d02ddf4b213408b37f782bf2f5",
       "execution_commit": "842af6233e30dbfd9927670d1f0723905f592c9c",
-      "source_qualified_models": 1,
+      "source_qualified_models": 3,
       "source_packets": 900,
       "source_forward_packets": 2700,
       "saved_parameter_layers": 20,
@@ -85277,14 +85277,69 @@
       "U_IQ_read": false,
       "U_truth_read": false,
       "query_read": false,
-      "report": "automation_reports/CV-SincNet/20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01/final_analysis.md",
-      "remaining_source_seeds": [
-        2026092702,
-        2026092703
-      ],
-      "remaining_source_diagnostic_not_launched": true,
+      "report": "automation_reports/CV-SincNet/20261015-phase1-source-dropout-consistency-manysig-s0203-m2-r01/final_analysis.md",
+      "remaining_source_seeds": [],
+      "remaining_source_diagnostic_not_launched": false,
       "new_training_not_implemented_or_launched": true,
-      "goal84": false
+      "goal84": false,
+      "source_run_remaining": "20261015-phase1-source-dropout-consistency-manysig-s0203-m2-r01",
+      "remaining_implementation_commit": "b0903780256454eaebcbd1f7da66af359a39712e",
+      "remaining_execution_commit": "9bf37c2edf97375167b8d891c698838a1061fecc",
+      "total_source_forward_packets": 8100,
+      "total_saved_parameter_layers": 60,
+      "total_saved_vectors": 120,
+      "physical_unique_packets": 900,
+      "first_model_remeasured": false,
+      "per_model_summary": [
+        {
+          "model_seed": 2026092701,
+          "CE": 0.1002875417470932,
+          "KL": 0.029748620837926863,
+          "stochastic_disagreements": 10,
+          "backbone_cosines": [
+            0.20042733589845438,
+            0.18999563393892366,
+            0.4885796524158448
+          ],
+          "backbone_norm_ratios": [
+            1.473438806915172,
+            1.4951598881631043,
+            1.2804472391013095
+          ]
+        },
+        {
+          "model_seed": 2026092702,
+          "CE": 0.10039879679679871,
+          "KL": 0.03742196038365364,
+          "stochastic_disagreements": 7,
+          "backbone_cosines": [
+            0.8526917981291653,
+            0.8193119875614954,
+            0.5088739047337465
+          ],
+          "backbone_norm_ratios": [
+            1.9072417306447735,
+            1.937000246513386,
+            1.946899183810993
+          ]
+        },
+        {
+          "model_seed": 2026092703,
+          "CE": 0.10133503526449203,
+          "KL": 0.030888667702674864,
+          "stochastic_disagreements": 8,
+          "backbone_cosines": [
+            0.4524795050140845,
+            0.5132066048424282,
+            0.39046972867774415
+          ],
+          "backbone_norm_ratios": [
+            1.6580821667065884,
+            1.8983735895358678,
+            1.5997291867731018
+          ]
+        }
+      ]
     },
     "meta_route_duplication_check": {
       "status": "CODE_DUPLICATION_FOUND_NO_NEW_LAUNCH",

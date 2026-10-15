@@ -36,7 +36,8 @@
       "experiments/cvs_source_rdrop_seeds/design.py"
     ],
     "reused_parent_execution": "a283291279cb01b939325cf5ccba1d0a671b28c4",
-    "first_source_decision_commit": "7e83b126a242daeda24bed94a8a319df1d2a8e9e"
+    "first_source_decision_commit": "7e83b126a242daeda24bed94a8a319df1d2a8e9e",
+    "execution_commit": "9bf37c2edf97375167b8d891c698838a1061fecc"
   },
   "data": {
     "dataset": "ManySig",
@@ -112,7 +113,8 @@
     "remote_log_root": "PROJECT/releases/cvs_source_rdrop_seeds_20261015_r01",
     "local_artifact_root": "LOCAL_ARTIFACTS/source_rdrop_seeds_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_source_rdrop_seeds.audit",
-    "stop_rule": "Run-owned source contract/provenance mismatch, nonfinite loss/gradient, missing fixed cohort, model/buffer mutation, recount failure or immutable output collision. Preserve artifacts; no automatic retry or unrelated stop. Scientific FAIL: no coefficient, parent or dropout scan."
+    "stop_rule": "Run-owned source contract/provenance mismatch, nonfinite loss/gradient, missing fixed cohort, model/buffer mutation, recount failure or immutable output collision. Preserve artifacts; no automatic retry or unrelated stop. Scientific FAIL: no coefficient, parent or dropout scan.",
+    "execution_commit": "9bf37c2edf97375167b8d891c698838a1061fecc"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -231,7 +233,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/receiver-dro-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -269,11 +271,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final5_unweighted_L_CE_max": 0.5,
-            "feature_difference_min": 1e-06,
+            "feature_difference_min": 0.000001,
             "native_steps": 11100,
             "actual_U_packets": 963900,
             "required_gradient_epochs": [
@@ -548,7 +550,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/receiver-dro-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -586,11 +588,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final5_unweighted_L_CE_max": 0.5,
-            "feature_difference_min": 1e-06,
+            "feature_difference_min": 0.000001,
             "native_steps": 11100,
             "actual_U_packets": 963900,
             "required_gradient_epochs": [
@@ -797,5 +799,31 @@
     "Local13negative cases, original default recount interface and2actual native gradient contexts PASS; one independent adapter-only P0/P1 PASS; no extra unchanged review"
   ],
   "preparation_status": "LOCAL_VERIFIED_P0P1_PASS_PREREGISTERED",
-  "registered_at": "2026-10-15T02:55:47+00:00"
+  "registered_at": "2026-10-15T02:55:47+00:00",
+  "results": {
+    "status": "ANALYZED_VERIFIED_SOURCE_PASS",
+    "source_qualified_models": 3,
+    "new_models": 2,
+    "physical_unique_packets": 900,
+    "new_source_forward_packets": 5400,
+    "total_source_forward_packets": 8100,
+    "new_parameter_layers": 40,
+    "new_saved_vectors": 80,
+    "total_parameter_layers": 60,
+    "total_saved_vectors": 120,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "source_qualification": "PASS",
+    "first_model_remeasured": false,
+    "no_training_release": true,
+    "goal84": false,
+    "evidence": [
+      "final_analysis.md",
+      "results.json",
+      "source_qualification.json",
+      "next_training_decision.json",
+      "completion_evidence.json",
+      "independent_artifact_recount.json"
+    ]
+  }
 }

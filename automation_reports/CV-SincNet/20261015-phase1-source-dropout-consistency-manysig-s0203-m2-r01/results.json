@@ -1,0 +1,605 @@
+{
+  "status": "ANALYZED_VERIFIED_SOURCE_PASS",
+  "run_id": "20261015-phase1-source-dropout-consistency-manysig-s0203-m2-r01",
+  "implementation_commit": "b0903780256454eaebcbd1f7da66af359a39712e",
+  "execution_commit": "9bf37c2edf97375167b8d891c698838a1061fecc",
+  "combined": {
+    "status": "ANALYZED",
+    "source_only": true,
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "models": 3,
+    "model_source_observations": 2700,
+    "unique_source_physical_ids": 900,
+    "identical_ordered_cohorts_across_models": true,
+    "first_seed_remeasured": false,
+    "total_source_forward_packets": 8100,
+    "new_source_forward_packets": 5400,
+    "total_gradient_batches": 15,
+    "total_parameter_layer_records": 60,
+    "total_saved_vectors": 120,
+    "rows": [
+      {
+        "model_seed": 2026092701,
+        "summary": {
+          "layers": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.04216824801387093,
+              "other_norm": 0.06213233304326105,
+              "ratio": 1.473438806915172,
+              "cosine": 0.20042733589845438,
+              "KL_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.035615777681671436,
+              "other_norm": 0.05325128217536985,
+              "ratio": 1.4951598881631043,
+              "cosine": 0.18999563393892366,
+              "KL_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+              "cohorts": 5,
+              "reference_norm": 0.06199205466027964,
+              "other_norm": 0.07937755523597254,
+              "ratio": 1.2804472391013095,
+              "cosine": 0.4885796524158448,
+              "KL_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+              "cohorts": 5,
+              "reference_norm": 0.06162376105194013,
+              "other_norm": 0.08582692418011582,
+              "ratio": 1.3927569936501578,
+              "cosine": 0.41020147165579696,
+              "KL_nonzero_cohorts": 5
+            }
+          ],
+          "cohorts": [
+            {
+              "cohort": 0,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.11216410249471664,
+                "SYMMETRIC_KL": 0.04599189758300781
+              },
+              "stochastic1_correct": 176,
+              "stochastic2_correct": 179,
+              "eval_correct": 179,
+              "stochastic_disagreements": 4,
+              "joint160_pair_cosine_mean": 0.4903502555163198,
+              "joint160_pair_L2_mean": 9.90715497341397
+            },
+            {
+              "cohort": 1,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.08790680766105652,
+                "SYMMETRIC_KL": 0.017592638731002808
+              },
+              "stochastic1_correct": 180,
+              "stochastic2_correct": 180,
+              "eval_correct": 179,
+              "stochastic_disagreements": 0,
+              "joint160_pair_cosine_mean": 0.4304248340250091,
+              "joint160_pair_L2_mean": 10.500794061530005
+            },
+            {
+              "cohort": 2,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.11259780824184418,
+                "SYMMETRIC_KL": 0.03691373020410538
+              },
+              "stochastic1_correct": 177,
+              "stochastic2_correct": 178,
+              "eval_correct": 180,
+              "stochastic_disagreements": 4,
+              "joint160_pair_cosine_mean": 0.49107782650517384,
+              "joint160_pair_L2_mean": 9.851390302413044
+            },
+            {
+              "cohort": 3,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.09557859599590302,
+                "SYMMETRIC_KL": 0.027756772935390472
+              },
+              "stochastic1_correct": 180,
+              "stochastic2_correct": 178,
+              "eval_correct": 179,
+              "stochastic_disagreements": 2,
+              "joint160_pair_cosine_mean": 0.4642795990627349,
+              "joint160_pair_L2_mean": 10.152002437642528
+            },
+            {
+              "cohort": 4,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.09319039434194565,
+                "SYMMETRIC_KL": 0.020488064736127853
+              },
+              "stochastic1_correct": 180,
+              "stochastic2_correct": 180,
+              "eval_correct": 180,
+              "stochastic_disagreements": 0,
+              "joint160_pair_cosine_mean": 0.440275185231341,
+              "joint160_pair_L2_mean": 10.396743461959623
+            }
+          ]
+        },
+        "qualification": {
+          "status": "PASS",
+          "fixed_rules": {
+            "source_only": true,
+            "KL_positive": true,
+            "KL_actual_t1_t2_SIG_nonzero_each_of5": true,
+            "global_gradient_cosine_with_paired_CE_min": 0,
+            "model_state_and_default_head_unchanged": true,
+            "no_automatic_training_release": true,
+            "on_pass": "Only separately registered unchanged02/03 source check",
+            "on_fail": "Preserve negative evidence; no coefficient, parent or dropout scans"
+          },
+          "source_only": true,
+          "no_automatic_training_release": true,
+          "target_metrics_used": false
+        },
+        "model_parameters_buffers_unchanged": true,
+        "seconds": 2.897151231765747
+      },
+      {
+        "model_seed": 2026092702,
+        "summary": {
+          "layers": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.06107171784710319,
+              "other_norm": 0.1164785288401584,
+              "ratio": 1.9072417306447735,
+              "cosine": 0.8526917981291653,
+              "KL_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.04173314124552881,
+              "other_norm": 0.08083710488036726,
+              "ratio": 1.937000246513386,
+              "cosine": 0.8193119875614954,
+              "KL_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+              "cohorts": 5,
+              "reference_norm": 0.052894628298630654,
+              "other_norm": 0.10298050866258987,
+              "ratio": 1.946899183810993,
+              "cosine": 0.5088739047337465,
+              "KL_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+              "cohorts": 5,
+              "reference_norm": 0.05720358589628072,
+              "other_norm": 0.10330426178151235,
+              "ratio": 1.805905349514619,
+              "cosine": 0.7291526582441547,
+              "KL_nonzero_cohorts": 5
+            }
+          ],
+          "cohorts": [
+            {
+              "cohort": 0,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.1114935576915741,
+                "SYMMETRIC_KL": 0.0632503479719162
+              },
+              "stochastic1_correct": 179,
+              "stochastic2_correct": 179,
+              "eval_correct": 180,
+              "stochastic_disagreements": 2,
+              "joint160_pair_cosine_mean": 0.4705500495958442,
+              "joint160_pair_L2_mean": 10.161039622387337
+            },
+            {
+              "cohort": 1,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.0968732014298439,
+                "SYMMETRIC_KL": 0.02834058180451393
+              },
+              "stochastic1_correct": 178,
+              "stochastic2_correct": 178,
+              "eval_correct": 180,
+              "stochastic_disagreements": 2,
+              "joint160_pair_cosine_mean": 0.43887755553490976,
+              "joint160_pair_L2_mean": 10.254607113815641
+            },
+            {
+              "cohort": 2,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.09887472540140152,
+                "SYMMETRIC_KL": 0.032114721834659576
+              },
+              "stochastic1_correct": 180,
+              "stochastic2_correct": 179,
+              "eval_correct": 180,
+              "stochastic_disagreements": 1,
+              "joint160_pair_cosine_mean": 0.4612920438896388,
+              "joint160_pair_L2_mean": 10.258150051797147
+            },
+            {
+              "cohort": 3,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.09737271070480347,
+                "SYMMETRIC_KL": 0.02852395921945572
+              },
+              "stochastic1_correct": 180,
+              "stochastic2_correct": 180,
+              "eval_correct": 180,
+              "stochastic_disagreements": 0,
+              "joint160_pair_cosine_mean": 0.44980065019298726,
+              "joint160_pair_L2_mean": 10.340299655917907
+            },
+            {
+              "cohort": 4,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.09737978875637054,
+                "SYMMETRIC_KL": 0.03488019108772278
+              },
+              "stochastic1_correct": 179,
+              "stochastic2_correct": 179,
+              "eval_correct": 180,
+              "stochastic_disagreements": 2,
+              "joint160_pair_cosine_mean": 0.4570865525251228,
+              "joint160_pair_L2_mean": 10.217106158663002
+            }
+          ]
+        },
+        "qualification": {
+          "status": "PASS",
+          "fixed_rules": {
+            "source_only": true,
+            "KL_positive": true,
+            "KL_actual_t1_t2_SIG_nonzero_each_of5": true,
+            "global_gradient_cosine_with_paired_CE_min": 0,
+            "model_state_and_default_head_unchanged": true,
+            "no_automatic_training_release": true,
+            "on_pass": "Only separately registered unchanged02/03 source check",
+            "on_fail": "Preserve negative evidence; no coefficient, parent or dropout scans"
+          },
+          "source_only": true,
+          "no_automatic_training_release": true,
+          "target_metrics_used": false
+        },
+        "model_parameters_buffers_unchanged": true,
+        "seconds": 2.6870832443237305
+      },
+      {
+        "model_seed": 2026092703,
+        "summary": {
+          "layers": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.05196786572156187,
+              "other_norm": 0.08616699139472435,
+              "ratio": 1.6580821667065884,
+              "cosine": 0.4524795050140845,
+              "KL_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.04050149010558025,
+              "other_norm": 0.07688695915328181,
+              "ratio": 1.8983735895358678,
+              "cosine": 0.5132066048424282,
+              "KL_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+              "cohorts": 5,
+              "reference_norm": 0.0545195379863462,
+              "other_norm": 0.08721649616614284,
+              "ratio": 1.5997291867731018,
+              "cosine": 0.39046972867774415,
+              "KL_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+              "cohorts": 5,
+              "reference_norm": 0.047222953817907816,
+              "other_norm": 0.07355925329874649,
+              "ratio": 1.5577012311087466,
+              "cosine": 0.15147726609354542,
+              "KL_nonzero_cohorts": 5
+            }
+          ],
+          "cohorts": [
+            {
+              "cohort": 0,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.104423388838768,
+                "SYMMETRIC_KL": 0.02682020142674446
+              },
+              "stochastic1_correct": 178,
+              "stochastic2_correct": 180,
+              "eval_correct": 179,
+              "stochastic_disagreements": 2,
+              "joint160_pair_cosine_mean": 0.4666110629684127,
+              "joint160_pair_L2_mean": 10.1779394795897
+            },
+            {
+              "cohort": 1,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.08968780934810638,
+                "SYMMETRIC_KL": 0.026368141174316406
+              },
+              "stochastic1_correct": 179,
+              "stochastic2_correct": 179,
+              "eval_correct": 180,
+              "stochastic_disagreements": 2,
+              "joint160_pair_cosine_mean": 0.4757669342482681,
+              "joint160_pair_L2_mean": 10.037267895437918
+            },
+            {
+              "cohort": 2,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.11075116693973541,
+                "SYMMETRIC_KL": 0.033847875893116
+              },
+              "stochastic1_correct": 178,
+              "stochastic2_correct": 178,
+              "eval_correct": 179,
+              "stochastic_disagreements": 2,
+              "joint160_pair_cosine_mean": 0.4337496659096767,
+              "joint160_pair_L2_mean": 10.402823122006804
+            },
+            {
+              "cohort": 3,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.09845946729183197,
+                "SYMMETRIC_KL": 0.026802528649568558
+              },
+              "stochastic1_correct": 180,
+              "stochastic2_correct": 180,
+              "eval_correct": 180,
+              "stochastic_disagreements": 0,
+              "joint160_pair_cosine_mean": 0.46780836695061334,
+              "joint160_pair_L2_mean": 10.078542320227426
+            },
+            {
+              "cohort": 4,
+              "packets": 180,
+              "losses": {
+                "PAIRED_CE": 0.1033533439040184,
+                "SYMMETRIC_KL": 0.040604591369628906
+              },
+              "stochastic1_correct": 178,
+              "stochastic2_correct": 178,
+              "eval_correct": 180,
+              "stochastic_disagreements": 2,
+              "joint160_pair_cosine_mean": 0.4461172331924743,
+              "joint160_pair_L2_mean": 10.352195979706188
+            }
+          ]
+        },
+        "qualification": {
+          "status": "PASS",
+          "fixed_rules": {
+            "source_only": true,
+            "KL_positive": true,
+            "KL_actual_t1_t2_SIG_nonzero_each_of5": true,
+            "global_gradient_cosine_with_paired_CE_min": 0,
+            "model_state_and_default_head_unchanged": true,
+            "no_automatic_training_release": true,
+            "on_pass": "Only separately registered unchanged02/03 source check",
+            "on_fail": "Preserve negative evidence; no coefficient, parent or dropout scans"
+          },
+          "source_only": true,
+          "no_automatic_training_release": true,
+          "target_metrics_used": false
+        },
+        "model_parameters_buffers_unchanged": true,
+        "seconds": 2.3439137935638428
+      }
+    ],
+    "qualification": {
+      "status": "PASS",
+      "fixed_per_model_rules": {
+        "source_only": true,
+        "KL_positive": true,
+        "KL_actual_t1_t2_SIG_nonzero_each_of5": true,
+        "global_gradient_cosine_with_paired_CE_min": 0,
+        "model_state_and_default_head_unchanged": true,
+        "no_automatic_training_release": true,
+        "on_pass": "Only separately registered unchanged02/03 source check",
+        "on_fail": "Preserve negative evidence; no coefficient, parent or dropout scans"
+      },
+      "no_automatic_training_release": true,
+      "target_metrics_used": false
+    },
+    "training_epochs": 0,
+    "head_updates": 0,
+    "optimizer_steps": 0,
+    "U_IQ_read": false,
+    "U_truth_read": false,
+    "query_read": false,
+    "limitation": "Three frozen final50 source models, same900L samples; not training, U correctness, DG or84 evidence"
+  },
+  "per_model": [
+    {
+      "model_seed": 2026092701,
+      "qualification": "PASS",
+      "mean_paired_CE": 0.1002875417470932,
+      "mean_symmetric_KL": 0.029748620837926863,
+      "stochastic_disagreements": 10,
+      "stochastic_packet_observations": 1800,
+      "stochastic_correct": 1788,
+      "eval_correct": 897,
+      "physical_packets": 900,
+      "joint160_pair_cosine": 0.4632815400681157,
+      "joint160_pair_L2": 10.161617047391834,
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.04216824801387093,
+          "other_norm": 0.06213233304326105,
+          "ratio": 1.473438806915172,
+          "cosine": 0.20042733589845438,
+          "KL_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.035615777681671436,
+          "other_norm": 0.05325128217536985,
+          "ratio": 1.4951598881631043,
+          "cosine": 0.18999563393892366,
+          "KL_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "cohorts": 5,
+          "reference_norm": 0.06199205466027964,
+          "other_norm": 0.07937755523597254,
+          "ratio": 1.2804472391013095,
+          "cosine": 0.4885796524158448,
+          "KL_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+          "cohorts": 5,
+          "reference_norm": 0.06162376105194013,
+          "other_norm": 0.08582692418011582,
+          "ratio": 1.3927569936501578,
+          "cosine": 0.41020147165579696,
+          "KL_nonzero_cohorts": 5
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "qualification": "PASS",
+      "mean_paired_CE": 0.10039879679679871,
+      "mean_symmetric_KL": 0.03742196038365364,
+      "stochastic_disagreements": 7,
+      "stochastic_packet_observations": 1800,
+      "stochastic_correct": 1791,
+      "eval_correct": 900,
+      "physical_packets": 900,
+      "joint160_pair_cosine": 0.45552137034770057,
+      "joint160_pair_L2": 10.246240520516206,
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.06107171784710319,
+          "other_norm": 0.1164785288401584,
+          "ratio": 1.9072417306447735,
+          "cosine": 0.8526917981291653,
+          "KL_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.04173314124552881,
+          "other_norm": 0.08083710488036726,
+          "ratio": 1.937000246513386,
+          "cosine": 0.8193119875614954,
+          "KL_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "cohorts": 5,
+          "reference_norm": 0.052894628298630654,
+          "other_norm": 0.10298050866258987,
+          "ratio": 1.946899183810993,
+          "cosine": 0.5088739047337465,
+          "KL_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+          "cohorts": 5,
+          "reference_norm": 0.05720358589628072,
+          "other_norm": 0.10330426178151235,
+          "ratio": 1.805905349514619,
+          "cosine": 0.7291526582441547,
+          "KL_nonzero_cohorts": 5
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "qualification": "PASS",
+      "mean_paired_CE": 0.10133503526449203,
+      "mean_symmetric_KL": 0.030888667702674864,
+      "stochastic_disagreements": 8,
+      "stochastic_packet_observations": 1800,
+      "stochastic_correct": 1788,
+      "eval_correct": 898,
+      "physical_packets": 900,
+      "joint160_pair_cosine": 0.45801065265388907,
+      "joint160_pair_L2": 10.209753759393607,
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.05196786572156187,
+          "other_norm": 0.08616699139472435,
+          "ratio": 1.6580821667065884,
+          "cosine": 0.4524795050140845,
+          "KL_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.04050149010558025,
+          "other_norm": 0.07688695915328181,
+          "ratio": 1.8983735895358678,
+          "cosine": 0.5132066048424282,
+          "KL_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "cohorts": 5,
+          "reference_norm": 0.0545195379863462,
+          "other_norm": 0.08721649616614284,
+          "ratio": 1.5997291867731018,
+          "cosine": 0.39046972867774415,
+          "KL_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+          "cohorts": 5,
+          "reference_norm": 0.047222953817907816,
+          "other_norm": 0.07355925329874649,
+          "ratio": 1.5577012311087466,
+          "cosine": 0.15147726609354542,
+          "KL_nonzero_cohorts": 5
+        }
+      ]
+    }
+  ],
+  "goal84": false,
+  "no_training_or_DG_result": true
+}

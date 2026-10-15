@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "fixed_per_model_rules": {
+    "source_only": true,
+    "KL_positive": true,
+    "KL_actual_t1_t2_SIG_nonzero_each_of5": true,
+    "global_gradient_cosine_with_paired_CE_min": 0,
+    "model_state_and_default_head_unchanged": true,
+    "no_automatic_training_release": true,
+    "on_pass": "Only separately registered unchanged02/03 source check",
+    "on_fail": "Preserve negative evidence; no coefficient, parent or dropout scans"
+  },
+  "no_automatic_training_release": true,
+  "target_metrics_used": false
+}

@@ -1,6 +1,6 @@
 # 固定 SIG_TIME：R-Drop 源检验剩余两模型
 
-状态：PLANNED，实际实现 `b0903780256454eaebcbd1f7da66af359a39712e`。保持 SIG_TIME 和既有默认分类头，首模型源检验 PASS 及不变扩展规则已在 `7e83b126a242daeda24bed94a8a319df1d2a8e9e` 上传。此处仅增加模型种子 2026092702/03 的源端零更新检查；首模型复用原结果，不重复前向。
+状态：ANALYZED / VERIFIED，三模型源规则 PASS；正式训练未发布，完整结果见 [同轮分析](final_analysis.md)。原预登记状态：PLANNED，实际实现 `b0903780256454eaebcbd1f7da66af359a39712e`。保持 SIG_TIME 和既有默认分类头，首模型源检验 PASS 及不变扩展规则已在 `7e83b126a242daeda24bed94a8a319df1d2a8e9e` 上传。此处仅增加模型种子 2026092702/03 的源端零更新检查；首模型复用原结果，不重复前向。
 
 沿用 [R-Drop 原文](https://proceedings.neurips.cc/paper/2021/hash/5a66b9200f29ac3fa0ae244cc2a51b39-Abstract.html) 的同输入两个随机失活预测双向 KL，alpha=1。paired CE 为两次默认 CE 均值，smoothing=.01；同一 strong IQ 使用原 .015 噪声，两个预测均可微。另作相同输入的 eval 参考。检查 t1、t2、SIG 投影及现有类别 W 导数，模型、buffers、W、optimizer 均无更新。W 导数测量不构成单独训练分类头。
 

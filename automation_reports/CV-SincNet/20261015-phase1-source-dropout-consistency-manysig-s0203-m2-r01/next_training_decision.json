@@ -1,0 +1,22 @@
+{
+  "status": "SOURCE_QUALIFIED_FOR_SEPARATE_TRAINING_DESIGN",
+  "source_rule_fixed": true,
+  "all_three_models_PASS": true,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "first_remeasured": false,
+  "target_metrics_used": false,
+  "source_run_ids": [
+    "20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01",
+    "20261015-phase1-source-dropout-consistency-manysig-s0203-m2-r01"
+  ],
+  "next_comparison": "Scratch50 fixed SIG_TIME with two stochastic L forwards: average two CE control vs same plus alpha1 symmetric KL; original oldgate/ownEMA/U losses/cos/default joint head unchanged",
+  "target_based_Sinc_parent_or_combo": false,
+  "no_automatic_training_release": true,
+  "formal_training_not_yet_implemented_or_launched": true,
+  "failures_to_retain": "Health or numerical failure retained; no alpha/dropout/parent/threshold scan",
+  "claim_boundary": "Frozen late-stage source derivative compatibility only, not early training, SSL correctness, DG or84"
+}
