@@ -8,7 +8,7 @@
 |M02|同传播/接收状态的 full 与独立 HQ，源随机流单列|probe.py|verified|复用已验证coupled并检查实际证明字段，固定新增噪声−6dB/独立源流；本次实际720×6算子核对待运行|
 |M03|固定 A0 clean 正确集合及 CE 对照的修复/破坏、默认头间隔、分层|probe.py|verified|固定集合/修复破坏/缺失CE比较null负测PASS，只用原头；真实源指标待运行|
 |M04|实际 raw112 三组、共同源尺度及各自尺度，身份几何/方差/融合贡献|probe.py|verified|组误差与实际bounded objective一致、dt排除/非法标签检查PASS；实际SIG捕获及冻结state/grad检查PASS|
-|M05|三模型/两视图/六源场景、真实前向数/状态/墙钟|design.py、probe.py|pending|预计56882前向、0 optimizer/EMA/head-fit；实际运行待完成|
+|M05|三模型/两视图/六源场景、真实前向数/状态/墙钟；原训练完整日志核算|design.py、probe.py、full_log_audit.py|pending|预计56882源前向、0 optimizer/EMA/head-fit；训练审计复用旧控制完整证据，只新读两个11100步日志，实际运行待完成|
 |M06|源报告/图/登记/唯一发布及独立完成读回|figures.py、publish.py、registration.json|pending|冻结前不发布，不以主实验训练启动冒充本分析已运行|
 
 计数：verified4/pending2/deferred0/rejected0/blocked0。最高风险是训练局部相似改善却未增加默认头间隔；共同尺度及匹配 CE 控制可区分一部分原因，单 seed 与源代理仍限制结论。物理与网络路径保持严格一致，HQ 只是减少模拟新增噪声的可操作近似。

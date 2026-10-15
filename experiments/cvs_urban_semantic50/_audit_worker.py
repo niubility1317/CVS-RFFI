@@ -33,6 +33,19 @@ def parse_steps(path,epochs=50,steps_per_epoch=222):
             limits=sorted({c for a,b,c in clipping})))
 
 
+def main_forward_packets(counts,augmented,HQ=False):
+    if HQ and not augmented:raise ValueError('HQ profile requires full satellite views')
+    expected=dict(clean_L_packets=1420800,teacher_L_clean_packets=1420800,native_U_packets=963900,
+        satellite_L_packets=1420800 if augmented else 0,HQ_L_packets=1420800 if HQ else 0,
+        teacher_HQ_packets=1420800 if HQ else 0)
+    if any(counts.get(key,0)!=value for key,value in expected.items()):
+        raise ValueError('Main view/teacher/native U sample budget differs')
+    main=sum(counts.get(k,0) for k in ('clean_L_packets','satellite_L_packets','HQ_L_packets','teacher_L_clean_packets','teacher_HQ_packets'))+2*counts['native_U_packets']
+    if main!=(9031800 if HQ else 6190200 if augmented else 4769400):
+        raise ValueError('Declared actual main forwards differ')
+    return main
+
+
 def audit_row(row):
     source=Path(row['source']);root=source.parent
     if not (root/'complete.json').is_file():return None
@@ -72,11 +85,7 @@ def audit_row(row):
             or mechanism['source_dev_forward_packets']!=70560):
         raise ValueError('Actual source fold/update/forward budget differs')
     counts=mechanism['counts'];augmented=row['arm']!='D0'
-    if (counts['clean_L_packets']!=1420800 or counts['teacher_L_clean_packets']!=1420800 or counts['native_U_packets']!=963900
-            or counts.get('satellite_L_packets',0)!=(1420800 if augmented else 0)):
-        raise ValueError('Main view/teacher/native U sample budget differs')
-    main=sum(counts.get(k,0) for k in ('clean_L_packets','satellite_L_packets','teacher_L_clean_packets'))+2*counts['native_U_packets']
-    if main!=(6190200 if augmented else 4769400):raise ValueError('Declared actual main forwards differ')
+    main=main_forward_packets(counts,augmented,HQ=row.get('HQ_profile',False))
     gradients=read(source/'gradient_gate_history.json')['records'];updates=read(source/'parameter_update_history.json')['records']
     if (not all(all(v<=1e-8 for v in r['auxiliary_boundary_norms'].values()) for r in gradients)
             or len(updates)!=50 or not all(sum(v['groups'][key]['update_norm'] for v in updates)>0 for key in updates[0]['groups'])):
