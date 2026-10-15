@@ -1,6 +1,6 @@
 # SIG_TIME 签名分支的训练噪声位置
 
-状态 PLANNED。发现轮source01完整结果是ELEMENT59.126984%、NONE70.476190%、LOCKED67.222222%，原LOCKED主假设未通过。NONE相对ELEMENT修正163、新增20，CE下降.56340205；5/6类、3/3day提升，但只有一个seed/一个heldRX，不能当稳定泛化。固定17至20尾平均也无稳定错误收益，ownEMA全源V资格失败；这些负结果保留，不通过改窗口/decay救援。
+状态 **RUNNING / 启动 VERIFIED**。下文保留预登记。发现轮source01完整结果是ELEMENT59.126984%、NONE70.476190%、LOCKED67.222222%，原LOCKED主假设未通过。NONE相对ELEMENT修正163、新增20，CE下降.56340205；5/6类、3/3day提升，但只有一个seed/一个heldRX，不能当稳定泛化。固定17至20尾平均也无稳定错误收益，ownEMA全源V资格失败；这些负结果保留，不通过改窗口/decay救援。
 
 既有R-Drop首源检验 `20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01` 已ANALYZED：t1/t2/SIG的KL对pairedCE聚合导数cosine为.200427/.189996/.488580，5/5批非零，0训练更新。它使用旧final50/LS.01父，仅为局部兼容性；本轮不重跑或组合，保留为第三候选，不把导数同向写成已验证的泛化正收益。当前主线只执行本报告的三条件。
 
@@ -17,3 +17,5 @@
 owner codex/root/SIGTIME-clean-signature-20261015。代码/config以实际Git commit固定；CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_clean_signature_sourcefold_20261015_r01`；命令 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_cleanpath20/runner.py experiments/cvs_sigtime_cleanpath20/configs/matrix.json`；不可覆盖root `/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01`。只读复用原R02/先前source-fold代码，不加载其checkpoint。普通N607/CVS-RFFI Python，一GPU顺序worker，所有owner每GPU≤3，最少进程后最大空闲且>3072MiB，不干预健康旧任务。一次preflight、单archive SHA比较/remotecompile、每row真实scratch checkpoint no-query smoke后直接训练；唯一独立P0/P1审查、启动后PID/CWD/argv/GPU/log核验；非有限/协议或技术错误仅停止所属pipeline并保留产物，无科学earlystop或自动重跑。期望产物/完整矩阵见experiment.json。84%正式目标仍active。
 
 本地7项聚焦机制/负例检查及compile PASS；实际CPU/CUDA三模型200state同初值、863730参数、同权重eval joint160/默认logits逐位相等，CLEAN_SIG与ELEMENT主干t2掩码及CPU/CUDA RNG状态一致，签名只读失活前输入且signature/t2/defaultW梯度有限非零。仅合成IQ、无数据/外部checkpoint访问，不作性能证据。唯一独立下一run P0/P1审查PASS；提交后直接按预登记发布。
+
+启动独立核实：commit `f695b43bb8ff2c8584871cf439315557ced718cf`，ordinary GPU0所属PID/CWD/argv/GPU一致，总所有owner进程1/3，日志增长、真实own scratch checkpoint no-query smoke PASS。首row ELEMENT实际seed2026092702/LS0/13L+7U/原p.1，四RX角色及所有loader排除RX1一致。剩余两条件按固定顺序继续，未读target、未给出性能结果。

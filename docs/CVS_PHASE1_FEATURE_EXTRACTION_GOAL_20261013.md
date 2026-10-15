@@ -219,3 +219,6 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 
 2026-10-15：既有全5源RX固定BASE_SSL ownEMA导出 `20261015-phase1-SIGTIME-ownEMA-export-clean-manysig-m3-r01` ANALYZED/SOURCE_FALSIFIED，真实EMA no-query smoke及终态VERIFIED；首seed V27000错误501→504，CE0.07992632806→0.07925969537，固定资格失败，0新增训练/头拟合/target/评分，其他seed按规则未触发。原父、heldRX1两条件EMA小正和三条件tail平均负结果全部保留，不扫描decay/窗口救援。短run未捕获独立live GPU成员，已如实披露。84%goalactive。见[同row报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-ownEMA-export-clean-manysig-m3-r01/report.md)。
+
+
+2026-10-15：下一明确训练机制候选 `20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01` RUNNING/VERIFIED，执行 `f695b43bb8ff2c8584871cf439315557ced718cf`、ordinary GPU0，PID/CWD/argv/GPU/log及真实scratch checkpoint no-query smoke独立核实。seed02真实RX1留出，ELEMENT/NONE/CLEAN_SIG各20/13L+7U/4440步，总13320；CLEAN_SIG主干保留t2.drop及原RNG，仅签名读取pool后drop前输入、梯度不断、0新loss/参数/IQ前向。实际CPU/CUDA200state同初值/863730params/eval joint160默认logits逐位相等/主干mask及RNG相等/三处联合梯度有限非零，7聚焦检查及唯一独立P0/P1 PASS。CLEAN_SIG须同时胜两个控制的错误且CE不升；NONE正路线另以胜ELEMENT独立确认，不救援失败主假设。无tail/EMA窗口扩展或R-Drop组合；原R-Drop局部兼容性正迹象保留第三优先。旧LOCKED/source01及EMA失败均已交付，84%goalactive。见[本轮预登记及启动](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-clean-signature-sourcefold-s2026092702-m3-r01/report.md)。
