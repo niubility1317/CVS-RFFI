@@ -241,3 +241,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- RDROP_E20_SOURCE_COMPLETE_20261015 -->
 2026-10-15：`20261015-phase1-SIGTIME-rdrop-source-e20-clean-manysig-m3-r01` ANALYZED/VERIFIED，固定原 BASE_SSL final20 三父 source 3/3 PASS；t1/t2/SIG 的 KL 导数各 5/5 非零且跨批平均与 paired CE 同向，准确数值见[同 row 报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-source-e20-clean-manysig-m3-r01/report.md)。900 个不同 L 跨三个父复用，8100 次源前向、120 导数向量，另 6 合成 smoke packet；0 新训练/头拟合/target，三份独立产物复算通过。源端兼容性允许另行登记单 seed 真正 held-RX 的 matched two-CE/RDrop 训练证伪，不等于训练增益或 84% 完成，不以 NONE 的 target 高分选父。全目标保持 active。
+
+
+<!-- CROSSFIT_TEACHER_ROUTE_20261015 -->
+2026-10-15：用户追加跨RX交叉拟合教师报告，作为独立监督来源路线。已核实 DomED 存在互补域蒸馏先例；研究价值需先以匹配 SAMPLE 与 EXCLUDE_RX1 的纠正−破坏证明。urban 对话已实现 E50/11100、Lteacher4464/Ldev720（RX1=144）的两教师方案但当时未发布，保留其唯一 owner，本侧不重复教师训练。只共享机制证据，不把该 E50/不同 L 契约当成本侧 E20 对照或直接继承权重。外层 heldRX 必须在全部教师及继承来源排除；不对齐独立教师 joint160，不叠加新旧冲突U标签。RDrop 与跨拟合教师保持独立；尚未扩五教师库或学生蒸馏。

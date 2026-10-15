@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "focused_checks": "Actual run of experiments.cvs_rdrop_fold20.checks PASS before registration",
+  "objective_and_gradient_equivalence": true,
+  "negative_cases": 11,
+  "actual_model_synthetic_L_packets": 256,
+  "body_and_defaultW_gradients_nonzero": true,
+  "head_fit_updates": 0,
+  "optimizer_steps": 0,
+  "checkpoint_loads": 0,
+  "real_IQ_reads": 0,
+  "query_reads": 0,
+  "Python_files_compiled": 9,
+  "remote_embedded_strings_compiled": 2,
+  "request_matches_design": true,
+  "focused_checks_runs": 2,
+  "actual_model_synthetic_L_packets_each_run": 256,
+  "total_local_synthetic_L_packets": 512,
+  "shared_capacity_fixtures": "PASS: all8 considered, idle first, cap3,free12000MiB,GPU7"
+}

@@ -1,0 +1,56 @@
+{
+  "status": "PASS",
+  "candidate": "20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01",
+  "review_type": "single independent next-run P0/P1 review",
+  "findings": [],
+  "scope": [
+    "experiments/cvs_rdrop_fold20/__init__.py",
+    "experiments/cvs_rdrop_fold20/design.py",
+    "experiments/cvs_rdrop_fold20/model.py",
+    "experiments/cvs_rdrop_fold20/source.py",
+    "experiments/cvs_rdrop_fold20/runner.py",
+    "experiments/cvs_rdrop_fold20/resources.py",
+    "experiments/cvs_rdrop_fold20/dispatch.py",
+    "experiments/cvs_rdrop_fold20/publish.py",
+    "experiments/cvs_rdrop_fold20/checks.py",
+    "experiments/cvs_rdrop_fold20/configs/matrix.json",
+    "Registered experiment matrix/permissions and direct consumed native loss, immutable shared source/fold and default-head reader interfaces"
+  ],
+  "confirmed": [
+    "The fixed native recipe includes CE1 with coefficient one. Tail rollback is disabled, its effective closed scale remains one, OS gradient surgery is disabled, and satellite-concat CE replacement is inactive. The labeled-hook correction is added once after the original objective assembly, so CE1+0.5*(CE2-CE1)+alpha*KL equals the stated mean two-CE objective plus alpha*KL while preserving the original U terms.",
+    "The second clean L128 identity forward is outside the explicit native labeled-feature context, so it advances dropout RNG but does not increment the original L counter. Both arms execute it on every step; the native counter, paired-hook counter and extra-L packet counter must close at 4440,4440 and568320.",
+    "The bound method has no external model/observer closure. Own EMA and the evaluation reader are independent deep copies, and their ordinary forwards do not invoke the explicitly consumed labeled-loss hook. The default W remains the original jointly trained head, with finite nonzero synthetic gradients through t1, t2, signature and W.",
+    "The existing fold callback filters all train/U/probe/V/calibration loaders before student and own-EMA construction. U masking remains active. Training is scratch20 with no model/optimizer/EMA inheritance; the held RX1 L1260 bank is evaluated only through the separate eval/no-grad reader with fresh caches and preserved RNG.",
+    "The two fixed rows retain 13L+7U,222 updates per epoch and4440 actual updates each. The qualification uses only their fixed FINAL20 default-head source readouts and source health. No target or fitted-head path is present.",
+    "The bootstrap explicitly supplies the original R02 runtime and immutable fold package/shared-source override. The request and registered two-row configurations match. The archive includes all new package files and the committed registration, and its run-root string uses POSIX paths for remote existence checks.",
+    "Capacity admission holds the existing cross-owner lock across capacity reading, selection, Popen, child observation and launch recording. It unions nvidia-smi PIDs with pre-CUDA process reservations, deduplicates PIDs, handles numeric/UUID/multi-device visibility, considers all GPUs and enforces cap3 plus12000MiB free memory.",
+    "The CPU dispatcher owns one immutable new root, each row has its own output and exclusive log, and existing roots are rejected before failure handling. Worker failure stops pending launches while preserving already active work and all artifacts; no automatic retry or unrelated-process intervention is implemented."
+  ],
+  "verification": {
+    "focused_checks": {
+      "status": "PASS",
+      "objective_and_gradient_equivalence": true,
+      "negative_cases": 11,
+      "reviewer_actual_model_synthetic_L_packets": 256,
+      "body_and_defaultW_gradients_nonzero": true,
+      "checkpoint_loads": 0,
+      "real_IQ_reads": 0,
+      "query_reads": 0,
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/.codex_tmp/native_polyphase_runner.py experiments.cvs_rdrop_fold20.checks"
+    },
+    "request_matches_design": true,
+    "registration_matrix_matches_design": true,
+    "embedded_remote_python_strings_compiled": 2,
+    "native_CE1_coefficient_and_active_scale": 1,
+    "capacity_synthetic_fixture": {
+      "status": "PASS",
+      "all_eight_GPUs": true,
+      "actual_and_pre_CUDA_PIDs_deduplicated": true,
+      "numeric_UUID_and_multidevice_reservations": true,
+      "cap3_exclusion": true,
+      "free_memory_12000MiB_boundary": true,
+      "GPU7_eligible": true
+    }
+  },
+  "review_boundary": "Only this review evidence was written. No production edits, real IQ/checkpoint access, remote operation, experiment launch, commit, repeat source20/M6 review, added approval/hash/platform gate or unused future-stage review."
+}

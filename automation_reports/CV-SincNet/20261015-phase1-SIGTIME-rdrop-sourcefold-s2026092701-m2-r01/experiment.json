@@ -1,0 +1,607 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01",
+  "group_id": "phase1-SIGTIME-rdrop-genuine-sourcefold",
+  "display_name": "R-Drop 真正 RX1 留出训练证伪：匹配双 CE",
+  "description": "One fixed seed scratch20 on four RX, matched same-clean-L double CE vs double CE+symmetricKL; no target and no head fitting",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "RDrop matched twoCE RX1 source fold"
+  ],
+  "tags": [
+    "source_only",
+    "SIG_TIME",
+    "E20",
+    "RDrop",
+    "scratch",
+    "RX1_held_out",
+    "default_head",
+    "truth_hidden"
+  ],
+  "comparison_group_id": "phase1-feature-training-efficacy-E20",
+  "parent_run_ids": [
+    "20261015-phase1-SIGTIME-rdrop-source-e20-clean-manysig-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Continue user Phase1 training/loss mechanism goal; all three fixed E20 frozen source parents passed. Single-seed genuine heldRX two-arm scratch20 falsification. Cross-fitted teacher route stays separate and another authorized owner provides its initial evidence.",
+  "code": {
+    "commit": "Actual Git HEAD in release_commit.txt; resolved config records execution commit",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "ordinary N607 CVS-RFFI Python; CPU2 per worker; two ready rows dispersed across idle GPUs",
+    "cwd": "PROJECT/releases/cvs_SIGTIME_rdrop_sourcefold_train20_20261015_r01",
+    "entrypoint": "experiments.cvs_rdrop_fold20.runner"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "Existing raw post_sync/noeq clean IQ,256 samples; no explicit CFO identity coordinate; original internal compensation retained",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "roles": {
+      "L_s": "5040 fit RX3/4/6/8;1260 RX1 L used only for fixed FINAL readout",
+      "U_s": "45360 fit RX3/4/6/8 with hidden TX; never RX1 U",
+      "V": "21600 fit RX3/4/6/8; no V training"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 capsule manifest; reuse unchanged",
+    "split_id": "original registered source/target physical split; reuse unchanged",
+    "validation_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "original_source_days_metadata": [
+      0,
+      1,
+      2
+    ],
+    "source_days_correction": "Descriptive metadata corrected from [0,1,2] to actual native wisig_train_days/day_i [1,2,3]; same exact physical role IDs, no data or run change",
+    "training_pool_labeled_fraction": 0.1,
+    "source_role_ratios": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    }
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "forbidden",
+    "external_method_exception": null,
+    "claim_scope": "Genuine held-source RX1 training falsification; no target/general-three-seed/newTX/satellite/Phase2/84 claim"
+  },
+  "checkpoint": {
+    "initialization": "scratch, both arms; original native own EMA only",
+    "sources": [],
+    "contract_check_ref": "Original carrier VALIDATED_ONCE roles checked then RX1 removed before model/teacher creation; exact effective roles saved per row",
+    "provenance_verdict": "No inherited model/optimizer/EMA. Four-RX training provenance; never reuse these weights as full-five-RX parent.",
+    "selection_rule": "Fixed final20 student; no EMA/window/V-best/head refit selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/SIGTIME-rdrop-sourcefold-20261015",
+    "gpu_policy": "CPU-only dispatcher; two ready rows max, choose among all8 GPUs under shared receiver_residual_capacity4.lock, include actual and pre-CUDA all-owner PIDs; cap3/GPU,free>=12000MiB,CPU2/workers0; choose idle first",
+    "remote_run_root": "PROJECT/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_SIGTIME_rdrop_sourcefold_train20_20261015_r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_rdrop_fold20/runner.py experiments/cvs_rdrop_fold20/configs/matrix.json",
+    "stop_rule": "Any wrong data/role/query, nonfinite, incomplete update budget, malformed source prediction, duplicate/existing output or worker failure preserves artifacts; no pending new launch/retry; allow already healthy own/other workers to finish. Scientific failure closes recipe without coefficient/parent/layer/epoch scan; no target."
+  },
+  "expected_artifacts": [
+    "Per-row source/initial_smoke.pt",
+    "Per-row source/initialization.json",
+    "Per-row source/source_fold.json",
+    "Per-row source/source_contract.json",
+    "Per-row source/resolved_config.json",
+    "Per-row source/actual_native_args.json",
+    "Per-row source/step_metrics.jsonl.gz",
+    "Per-row source/epoch_metrics.jsonl",
+    "Per-row source/final_ssdg.pth",
+    "Per-row source/source_frozen.json",
+    "Per-row source/completion.json",
+    "Per-row source/rdrop_progress.json",
+    "Per-row source/source_readouts/FINAL.json",
+    "Per-row source/rdrop_result.json",
+    "launch.json",
+    "queue_state.json",
+    "matrix_result.json",
+    "root completion.json",
+    "failure.json if technical failure"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "held_RX1 errors/CE/default-head accuracy/margin",
+      "paired repair/break and perTX/day",
+      "complete4440 step and20epoch pairedCE/KL/alpha",
+      "source V health",
+      "actual feature/defaultW updates",
+      "per-row and matrix wall time"
+    ],
+    "dimensions": [
+      "arm",
+      "fixed seed2026092701",
+      "source RX1",
+      "day",
+      "TX"
+    ],
+    "prediction_ref": "Frozen1260 held-source L default-head predictions, no target",
+    "scorer_ref": "Independent complete saved source/log/checkpoint artifact recount on CPU; no fitting/new IQ/target"
+  },
+  "rows": [
+    {
+      "row_id": "TWO_CE-RX1-s2026092701",
+      "method": "TWO_CE mean twoCE",
+      "purpose": "Fixed single-seed genuine heldRX training falsification",
+      "config": {
+        "schema": "phase1_rdrop_genuine_RX1_training_v1",
+        "run_id": "20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01",
+        "stage": "source_RX_fold_full_training",
+        "arm": "TWO_CE",
+        "model_seed": 2026092701,
+        "row_id": "TWO_CE-RX1-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+        "output_root": "PROJECT/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/TWO_CE-RX1-s2026092701/source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_matched_twoCE_rdrop_sourcefold",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/SIGTIME-rdrop-sourcefold-20261015",
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "updates": 4440,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+          "output_root": "PROJECT/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": {
+          "primary": "RDROP FINAL vs matched TWO_CE FINAL",
+          "held_RX": 1,
+          "errors_strictly_fewer": true,
+          "mean_CE_not_higher": true,
+          "final_training_L_CE_max": 0.5,
+          "readout": "Fixed final20 original jointly trained default head only",
+          "on_pass": "Only separately registered independent source-seed confirmation; no automatic formal target release",
+          "on_fail": "Close this fixed recipe; no coefficient/epoch/layer/parent rescue or selective rerun",
+          "target_access": false
+        },
+        "training_recipe": "Original SIG_TIME+CENTER25K/default cosine; scratch20 LS0;13L+7U; RX1 excluded from all training/calibration/cache;222 steps/epoch; mean two clean L CE both arms",
+        "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1.0,
+            2.0
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true,
+          "sinc_coordinates": "CENTER_25K",
+          "sinc_scale_hz": 25000.0,
+          "extra_mechanism_parameters": 0,
+          "additional_classifier_parameters": 0
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "clean_three_seed_mean": 0.84,
+          "source_diagnostic_only": true,
+          "goal_completed": false,
+          "novelty": "R-Drop is a published mechanism; current experiment tests training efficacy in CVS, not a global novelty claim"
+        },
+        "budget_authorization": "User continuing training/loss mechanism goal; all three fixed E20 source derivative parents passed. One fixed seed genuine RX1-held-out matched two-arm E20 falsification.",
+        "cost_claim": "2x20 epochs/8880 optimizer steps; each row extra568320 L identity packet-forwards,396368 U repeated observations;1260 heldL final readout,144 unused source anchors separately disclosed",
+        "baseline_reference": "Fresh matched TWO_CE; no reuse of one-forward ELEMENT or any full-five-RX weights",
+        "baseline_reuse": false,
+        "readouts": [
+          "FINAL"
+        ],
+        "separate_head_training": false,
+        "training_mechanism": {
+          "two_same_clean_L_stochastic_forwards": true,
+          "paired_CE": "mean CE1 CE2, LS0",
+          "KL": "0.5 mean sum (p-q)*(logp-logq), differentiable both",
+          "alpha": 0.0,
+          "active_steps": [
+            1,
+            4440
+          ],
+          "original_native_dropout": true,
+          "extra_parameters": 0,
+          "extra_optimizer_steps": 0,
+          "extra_L_identity_forwards": 568320,
+          "original_L_forward_packets": 568320,
+          "U_recipe": "Unchanged oldgate/own EMA Gaussian weak/strong; hidden TX; no new U consistency",
+          "main_default_head_joint": true,
+          "teacher": "Own scratch only, original EMA0.999 unchanged; never new loss on teacher",
+          "primary_class_loss_logged": "CE1 remains native train/loss_tx_labeled; pairedCE and KL explicitly logged separately"
+        },
+        "execution_overrides": {
+          "use_aug": false,
+          "use_concat_sat_channel_aug": false,
+          "use_sat_consistency": false,
+          "use_unlabeled": true,
+          "use_ema_teacher": true,
+          "label_smoothing": 0,
+          "source_only": true
+        },
+        "head_fit_updates": 0,
+        "fold": {
+          "held_RX": 1,
+          "training_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+          "effective_roles": {
+            "L_s": 5040,
+            "U_s": 45360,
+            "V": 21600
+          },
+          "held_L_evaluation": 1260,
+          "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+          "raw_source_carrier_and_static_domain_ID_map_retained": true,
+          "trained_checkpoint_reuse_allowed_for_all5RX": false,
+          "steps_per_epoch": 222,
+          "U_observations_per_pseudo_epoch": 56624
+        }
+      },
+      "config_ref": "experiments/cvs_rdrop_fold20/configs/matrix.json#TWO_CE-RX1-s2026092701",
+      "resolved_config_ref": "PROJECT/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/TWO_CE-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Both arms same fixed model/RNG seed; original physical split reused. Native dropout/U augmentation stream follows extra L forward identically in both arms; no new IQ augmentation or support/query seed.",
+      "k": null,
+      "scenario": "source clean RX1 holdout",
+      "optimizer": "original AdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "20epoch4440steps,13L+7U;568320 extra L identity forwards/row,396368 U observations,1260 held L final forwards; no inherited training",
+      "output_root": "PROJECT/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/TWO_CE-RX1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/logs/TWO_CE.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_rdrop_fold20/runner.py experiments/cvs_rdrop_fold20/configs/matrix.json --row TWO_CE-RX1-s2026092701",
+      "expected_artifacts": [
+        "initial_smoke.pt",
+        "initialization.json",
+        "source_fold.json",
+        "source_contract.json",
+        "resolved_config.json",
+        "actual_native_args.json",
+        "step_metrics.jsonl.gz",
+        "epoch_metrics.jsonl",
+        "final_ssdg.pth",
+        "source_frozen.json",
+        "completion.json",
+        "rdrop_progress.json",
+        "source_readouts/FINAL.json",
+        "rdrop_result.json"
+      ]
+    },
+    {
+      "row_id": "RDROP-RX1-s2026092701",
+      "method": "RDROP mean twoCE plus symmetricKL alpha1",
+      "purpose": "Fixed single-seed genuine heldRX training falsification",
+      "config": {
+        "schema": "phase1_rdrop_genuine_RX1_training_v1",
+        "run_id": "20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01",
+        "stage": "source_RX_fold_full_training",
+        "arm": "RDROP",
+        "model_seed": 2026092701,
+        "row_id": "RDROP-RX1-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+        "output_root": "PROJECT/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/RDROP-RX1-s2026092701/source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_matched_twoCE_rdrop_sourcefold",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/SIGTIME-rdrop-sourcefold-20261015",
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "updates": 4440,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
+          "output_root": "PROJECT/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": {
+          "primary": "RDROP FINAL vs matched TWO_CE FINAL",
+          "held_RX": 1,
+          "errors_strictly_fewer": true,
+          "mean_CE_not_higher": true,
+          "final_training_L_CE_max": 0.5,
+          "readout": "Fixed final20 original jointly trained default head only",
+          "on_pass": "Only separately registered independent source-seed confirmation; no automatic formal target release",
+          "on_fail": "Close this fixed recipe; no coefficient/epoch/layer/parent rescue or selective rerun",
+          "target_access": false
+        },
+        "training_recipe": "Original SIG_TIME+CENTER25K/default cosine; scratch20 LS0;13L+7U; RX1 excluded from all training/calibration/cache;222 steps/epoch; mean two clean L CE both arms",
+        "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1.0,
+            2.0
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true,
+          "sinc_coordinates": "CENTER_25K",
+          "sinc_scale_hz": 25000.0,
+          "extra_mechanism_parameters": 0,
+          "additional_classifier_parameters": 0
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "clean_three_seed_mean": 0.84,
+          "source_diagnostic_only": true,
+          "goal_completed": false,
+          "novelty": "R-Drop is a published mechanism; current experiment tests training efficacy in CVS, not a global novelty claim"
+        },
+        "budget_authorization": "User continuing training/loss mechanism goal; all three fixed E20 source derivative parents passed. One fixed seed genuine RX1-held-out matched two-arm E20 falsification.",
+        "cost_claim": "2x20 epochs/8880 optimizer steps; each row extra568320 L identity packet-forwards,396368 U repeated observations;1260 heldL final readout,144 unused source anchors separately disclosed",
+        "baseline_reference": "Fresh matched TWO_CE; no reuse of one-forward ELEMENT or any full-five-RX weights",
+        "baseline_reuse": false,
+        "readouts": [
+          "FINAL"
+        ],
+        "separate_head_training": false,
+        "training_mechanism": {
+          "two_same_clean_L_stochastic_forwards": true,
+          "paired_CE": "mean CE1 CE2, LS0",
+          "KL": "0.5 mean sum (p-q)*(logp-logq), differentiable both",
+          "alpha": 1.0,
+          "active_steps": [
+            1,
+            4440
+          ],
+          "original_native_dropout": true,
+          "extra_parameters": 0,
+          "extra_optimizer_steps": 0,
+          "extra_L_identity_forwards": 568320,
+          "original_L_forward_packets": 568320,
+          "U_recipe": "Unchanged oldgate/own EMA Gaussian weak/strong; hidden TX; no new U consistency",
+          "main_default_head_joint": true,
+          "teacher": "Own scratch only, original EMA0.999 unchanged; never new loss on teacher",
+          "primary_class_loss_logged": "CE1 remains native train/loss_tx_labeled; pairedCE and KL explicitly logged separately"
+        },
+        "execution_overrides": {
+          "use_aug": false,
+          "use_concat_sat_channel_aug": false,
+          "use_sat_consistency": false,
+          "use_unlabeled": true,
+          "use_ema_teacher": true,
+          "label_smoothing": 0,
+          "source_only": true
+        },
+        "head_fit_updates": 0,
+        "fold": {
+          "held_RX": 1,
+          "training_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+          "effective_roles": {
+            "L_s": 5040,
+            "U_s": 45360,
+            "V": 21600
+          },
+          "held_L_evaluation": 1260,
+          "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+          "raw_source_carrier_and_static_domain_ID_map_retained": true,
+          "trained_checkpoint_reuse_allowed_for_all5RX": false,
+          "steps_per_epoch": 222,
+          "U_observations_per_pseudo_epoch": 56624
+        }
+      },
+      "config_ref": "experiments/cvs_rdrop_fold20/configs/matrix.json#RDROP-RX1-s2026092701",
+      "resolved_config_ref": "PROJECT/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/RDROP-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Both arms same fixed model/RNG seed; original physical split reused. Native dropout/U augmentation stream follows extra L forward identically in both arms; no new IQ augmentation or support/query seed.",
+      "k": null,
+      "scenario": "source clean RX1 holdout",
+      "optimizer": "original AdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "20epoch4440steps,13L+7U;568320 extra L identity forwards/row,396368 U observations,1260 held L final forwards; no inherited training",
+      "output_root": "PROJECT/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/RDROP-RX1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/logs/RDROP.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_rdrop_fold20/runner.py experiments/cvs_rdrop_fold20/configs/matrix.json --row RDROP-RX1-s2026092701",
+      "expected_artifacts": [
+        "initial_smoke.pt",
+        "initialization.json",
+        "source_fold.json",
+        "source_contract.json",
+        "resolved_config.json",
+        "actual_native_args.json",
+        "step_metrics.jsonl.gz",
+        "epoch_metrics.jsonl",
+        "final_ssdg.pth",
+        "source_frozen.json",
+        "completion.json",
+        "rdrop_progress.json",
+        "source_readouts/FINAL.json",
+        "rdrop_result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "First single-seed falsification only. PASS means fewer RX1 errors and no higher CE, both source healthy; allows separately registered independent source-seed confirmation, no automatic target run.",
+    "RDrop is established: https://proceedings.neurips.cc/paper/2021/hash/5a66b9200f29ac3fa0ae244cc2a51b39-Abstract.html ; alpha1 relative to mean twoCE fixed before training; no global novelty claim.",
+    "Original native logs train/loss_tx_labeled=CE1. rdrop/paired_CE and symmetric_KL show actual new objective; correction .5*(CE2-CE1)+alphaKL is added once unscaled.",
+    "Native source masks retain static full-carrier domain map but actual training/calibration/probe/cache inputs exclude RX1. 144 legal fit-L anchors are materialized by reused fold helper then unused;1260 heldL only evaluated after final20.",
+    "Two ready rows can run independently on two idle GPUs; no additional candidate or seed to fill idle cards. Memory planning estimate 3GiB/row, not a measured guarantee; admission requires >=12GiB free. All8 cards considered, shared all-owner lock, max3 total/GPU.",
+    "2026-10-15 coordination read of other two authorized chats: urban owner preparing independent cross-fitted teacher pair; new-route owner also RDrop but source ancestry differs pending factual comparison. A owns only this run; no duplicate launch, crossfit/RDrop combination, healthy-job intervention or administrator use.",
+    "Cross-fitted RX teacher report received at b51663d4. Initial teacher evidence is reused from the urban owner instead of duplicate teacher training. Any future student outer holdout must be excluded from every teacher and its ancestry.",
+    "REJECTED_EXTRA_GATE: separate design approval/spec chain, report-only repeat review, extra hashes or generalized scheduling platform. Existing minimal workflow applies.",
+    "Peer crossfit implementation is E50/11100, Lteacher4464 and Ldev720/RX1=144. Only mechanism evidence is shared, never an E20 matched comparison or inherited student teacher; actual peer execution is not yet claimed."
+  ],
+  "registered_at": "2026-10-15T07:20:17+00:00"
+}

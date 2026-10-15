@@ -1,0 +1,373 @@
+{
+  "run_id": "20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01",
+  "dependency_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02",
+  "fold_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01",
+  "signal_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_rdrop_source20_20261015_r01",
+  "rows": [
+    {
+      "schema": "phase1_rdrop_genuine_RX1_training_v1",
+      "run_id": "20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01",
+      "stage": "source_RX_fold_full_training",
+      "arm": "TWO_CE",
+      "model_seed": 2026092701,
+      "row_id": "TWO_CE-RX1-s2026092701",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/TWO_CE-RX1-s2026092701/source",
+      "epochs": 20,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_matched_twoCE_rdrop_sourcefold",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "launch_owner": "codex/root/SIGTIME-rdrop-sourcefold-20261015",
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "updates": 4440,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092701,
+        "row_id": "legacy_cosine_no_sat-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "source_falsification": {
+        "primary": "RDROP FINAL vs matched TWO_CE FINAL",
+        "held_RX": 1,
+        "errors_strictly_fewer": true,
+        "mean_CE_not_higher": true,
+        "final_training_L_CE_max": 0.5,
+        "readout": "Fixed final20 original jointly trained default head only",
+        "on_pass": "Only separately registered independent source-seed confirmation; no automatic formal target release",
+        "on_fail": "Close this fixed recipe; no coefficient/epoch/layer/parent rescue or selective rerun",
+        "target_access": false
+      },
+      "training_recipe": "Original SIG_TIME+CENTER25K/default cosine; scratch20 LS0;13L+7U; RX1 excluded from all training/calibration/cache;222 steps/epoch; mean two clean L CE both arms",
+      "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "arm": "SIG_TIME",
+        "layer": "t2",
+        "local_dimension": 6,
+        "local_projection": "learned 1x1 then tanh; shared across controls",
+        "windows": 4,
+        "random_directions": 14,
+        "random_direction_seed": 2026101307,
+        "random_direction_scales": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "descriptor_width": 28,
+        "output_embedding": 160,
+        "parameter_matched": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "classifier_changed": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "time_coordinate": true,
+        "per_packet": true,
+        "sinc_coordinates": "CENTER_25K",
+        "sinc_scale_hz": 25000.0,
+        "extra_mechanism_parameters": 0,
+        "additional_classifier_parameters": 0
+      },
+      "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+      "test_views": [],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "clean_three_seed_mean": 0.84,
+        "source_diagnostic_only": true,
+        "goal_completed": false,
+        "novelty": "R-Drop is a published mechanism; current experiment tests training efficacy in CVS, not a global novelty claim"
+      },
+      "budget_authorization": "User continuing training/loss mechanism goal; all three fixed E20 source derivative parents passed. One fixed seed genuine RX1-held-out matched two-arm E20 falsification.",
+      "cost_claim": "2x20 epochs/8880 optimizer steps; each row extra568320 L identity packet-forwards,396368 U repeated observations;1260 heldL final readout,144 unused source anchors separately disclosed",
+      "baseline_reference": "Fresh matched TWO_CE; no reuse of one-forward ELEMENT or any full-five-RX weights",
+      "baseline_reuse": false,
+      "readouts": [
+        "FINAL"
+      ],
+      "separate_head_training": false,
+      "training_mechanism": {
+        "two_same_clean_L_stochastic_forwards": true,
+        "paired_CE": "mean CE1 CE2, LS0",
+        "KL": "0.5 mean sum (p-q)*(logp-logq), differentiable both",
+        "alpha": 0.0,
+        "active_steps": [
+          1,
+          4440
+        ],
+        "original_native_dropout": true,
+        "extra_parameters": 0,
+        "extra_optimizer_steps": 0,
+        "extra_L_identity_forwards": 568320,
+        "original_L_forward_packets": 568320,
+        "U_recipe": "Unchanged oldgate/own EMA Gaussian weak/strong; hidden TX; no new U consistency",
+        "main_default_head_joint": true,
+        "teacher": "Own scratch only, original EMA0.999 unchanged; never new loss on teacher",
+        "primary_class_loss_logged": "CE1 remains native train/loss_tx_labeled; pairedCE and KL explicitly logged separately"
+      },
+      "execution_overrides": {
+        "use_aug": false,
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "label_smoothing": 0,
+        "source_only": true
+      },
+      "head_fit_updates": 0,
+      "fold": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      }
+    },
+    {
+      "schema": "phase1_rdrop_genuine_RX1_training_v1",
+      "run_id": "20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01",
+      "stage": "source_RX_fold_full_training",
+      "arm": "RDROP",
+      "model_seed": 2026092701,
+      "row_id": "RDROP-RX1-s2026092701",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/RDROP-RX1-s2026092701/source",
+      "epochs": 20,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_matched_twoCE_rdrop_sourcefold",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06,
+      "launch_owner": "codex/root/SIGTIME-rdrop-sourcefold-20261015",
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "updates": 4440,
+      "legacy_reference_config": {
+        "schema": "legacy_no_sat_v1",
+        "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+        "stage": "repair",
+        "arm": "legacy_cosine_no_sat",
+        "model_seed": 2026092701,
+        "row_id": "legacy_cosine_no_sat-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+        "epochs": 200,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "cvs_legacy_no_sat",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06
+      },
+      "source_falsification": {
+        "primary": "RDROP FINAL vs matched TWO_CE FINAL",
+        "held_RX": 1,
+        "errors_strictly_fewer": true,
+        "mean_CE_not_higher": true,
+        "final_training_L_CE_max": 0.5,
+        "readout": "Fixed final20 original jointly trained default head only",
+        "on_pass": "Only separately registered independent source-seed confirmation; no automatic formal target release",
+        "on_fail": "Close this fixed recipe; no coefficient/epoch/layer/parent rescue or selective rerun",
+        "target_access": false
+      },
+      "training_recipe": "Original SIG_TIME+CENTER25K/default cosine; scratch20 LS0;13L+7U; RX1 excluded from all training/calibration/cache;222 steps/epoch; mean two clean L CE both arms",
+      "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+      "explicit_CFO_identity_feature": false,
+      "feature_extractor": {
+        "arm": "SIG_TIME",
+        "layer": "t2",
+        "local_dimension": 6,
+        "local_projection": "learned 1x1 then tanh; shared across controls",
+        "windows": 4,
+        "random_directions": 14,
+        "random_direction_seed": 2026101307,
+        "random_direction_scales": [
+          0.5,
+          1.0,
+          2.0
+        ],
+        "descriptor_width": 28,
+        "output_embedding": 160,
+        "parameter_matched": true,
+        "intrinsic_descriptor_rank_matched": false,
+        "classifier_changed": false,
+        "gain_initial": 0.05,
+        "gain_bound": 0.2,
+        "time_coordinate": true,
+        "per_packet": true,
+        "sinc_coordinates": "CENTER_25K",
+        "sinc_scale_hz": 25000.0,
+        "extra_mechanism_parameters": 0,
+        "additional_classifier_parameters": 0
+      },
+      "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+      "test_views": [],
+      "checkpoint_selection": "final_only",
+      "goal": {
+        "clean_three_seed_mean": 0.84,
+        "source_diagnostic_only": true,
+        "goal_completed": false,
+        "novelty": "R-Drop is a published mechanism; current experiment tests training efficacy in CVS, not a global novelty claim"
+      },
+      "budget_authorization": "User continuing training/loss mechanism goal; all three fixed E20 source derivative parents passed. One fixed seed genuine RX1-held-out matched two-arm E20 falsification.",
+      "cost_claim": "2x20 epochs/8880 optimizer steps; each row extra568320 L identity packet-forwards,396368 U repeated observations;1260 heldL final readout,144 unused source anchors separately disclosed",
+      "baseline_reference": "Fresh matched TWO_CE; no reuse of one-forward ELEMENT or any full-five-RX weights",
+      "baseline_reuse": false,
+      "readouts": [
+        "FINAL"
+      ],
+      "separate_head_training": false,
+      "training_mechanism": {
+        "two_same_clean_L_stochastic_forwards": true,
+        "paired_CE": "mean CE1 CE2, LS0",
+        "KL": "0.5 mean sum (p-q)*(logp-logq), differentiable both",
+        "alpha": 1.0,
+        "active_steps": [
+          1,
+          4440
+        ],
+        "original_native_dropout": true,
+        "extra_parameters": 0,
+        "extra_optimizer_steps": 0,
+        "extra_L_identity_forwards": 568320,
+        "original_L_forward_packets": 568320,
+        "U_recipe": "Unchanged oldgate/own EMA Gaussian weak/strong; hidden TX; no new U consistency",
+        "main_default_head_joint": true,
+        "teacher": "Own scratch only, original EMA0.999 unchanged; never new loss on teacher",
+        "primary_class_loss_logged": "CE1 remains native train/loss_tx_labeled; pairedCE and KL explicitly logged separately"
+      },
+      "execution_overrides": {
+        "use_aug": false,
+        "use_concat_sat_channel_aug": false,
+        "use_sat_consistency": false,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "label_smoothing": 0,
+        "source_only": true
+      },
+      "head_fit_updates": 0,
+      "fold": {
+        "held_RX": 1,
+        "training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+        "effective_roles": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_L_evaluation": 1260,
+        "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+        "raw_source_carrier_and_static_domain_ID_map_retained": true,
+        "trained_checkpoint_reuse_allowed_for_all5RX": false,
+        "steps_per_epoch": 222,
+        "U_observations_per_pseudo_epoch": 56624
+      }
+    }
+  ],
+  "source_only": true
+}
