@@ -51,8 +51,11 @@ def qualification(summary):
  return dict(status='PASS' if passed else 'FAIL',fixed_rules=d.QUALIFICATION,source_only=True,
   no_automatic_training_release=True,target_metrics_used=False)
 
-def recount(root):
- p=root/d.rows()[0]['row_id'];report=d.read(p/'analysis.json');d.validate(report['config'])
+def recount(root,*,design=None,row=None):
+ active=design or d;row=row or active.rows()[0]
+ if row not in active.rows():raise ValueError('Unregistered exact source row')
+ p=root/row['row_id'];report=active.read(p/'analysis.json');active.validate(report['config'])
+ if report['config']!=active.config(row):raise ValueError('Source row attribution differs')
  raw=torch.load(p/'actual_source_gradients.pt',map_location='cpu',weights_only=False)
  if len(raw)!=5 or [r['cohort'] for r in raw]!=list(range(5)):raise ValueError('Fixed source cohorts missing')
  ids=[]
