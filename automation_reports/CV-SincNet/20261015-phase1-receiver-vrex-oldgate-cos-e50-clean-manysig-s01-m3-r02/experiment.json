@@ -1246,23 +1246,28 @@
     "Technical r02 recovery only: r01 dispatcher exited before workers because public PROJECT handle was not expanded. Original artifacts preserved, zero r01 training or target prediction. Portable config loader now resolves registration only; all scientific fields remain strict. Independent targeted review PASS, alpha or extra fields still rejected."
   ],
   "execution_commit": "b7987055f7ad9e95f5fe65f2d368ce528dbac017",
-  "completion": null,
-  "status": "PREDICTIONS_COMPLETE",
-  "result": {
-    "status": "SOURCE_PASS_TARGET_SUMMARY_PENDING",
-    "training_complete": true,
-    "epochs_observed": [
-      50,
-      50
-    ],
-    "source_qualification": "PASS",
-    "source_analysis_commit": "0416c8c4f7865b7bb879f9e1dba69a95dde9878d",
-    "all_rows_trained_predicted_independently_scored": true,
-    "default_decisions": 504000,
-    "scored_rows": 3,
-    "new_target_summary_read": false,
+  "completion": {
+    "status": "VERIFIED",
+    "models": 3,
+    "new_models": 2,
+    "historical_models": 1,
+    "seed_count": 1,
+    "decisions": 504000,
+    "metric_records": 54,
     "goal_84": false,
-    "seed_expansion_decision": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json"
+    "head_fit_updates": 0
+  },
+  "status": "ANALYZED",
+  "result": {
+    "status": "ANALYZED",
+    "source_qualification": "PASS",
+    "new_target_summary_read": true,
+    "RX_VREX_accuracy": 0.8328511904761905,
+    "RX_BALANCED_accuracy": 0.8364047619047619,
+    "paired_difference": -0.003553571428571378,
+    "source_decision_commit_before_target_read": "4056e9fb618fa92af5486c6d3670fc73bcc4194d",
+    "remaining_seed_expansion_fixed": true,
+    "goal_84": false
   },
   "registered_at": "2026-10-15T08:29:00+00:00"
 }

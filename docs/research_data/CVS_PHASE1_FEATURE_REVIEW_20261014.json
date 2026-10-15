@@ -82439,8 +82439,8 @@
     }
   ],
   "next_actions_max2": [
-    "发布已验证的风险方差E50首seed两新模型，原SIG_TIME/默认联合头/旧门控ownEMA/U损失/cos保持，同均衡CE vs系数1方差；沿用共享锁实时空卡并行。",
-    "训练冻结后自动clean预测/独立truth-last；先据固定源资格上传不变02/03决定，再读新目标汇总，完整保留曲线/实际特征/成本与正负结果。"
+    "Execute frozen seed2026092702/03 RX_BALANCED/RX_VREX scratch50 comparison unchanged",
+    "Complete fixedthree-seed defaulthead/feature boundary analysis;no target-driven tuning"
   ],
   "goal_84": false,
   "Phase2_development": false,
@@ -85708,7 +85708,7 @@
           ]
         }
       ],
-      "training_status": "SOURCE_PASS_TARGET_SUMMARY_PENDING",
+      "training_status": "FIRST_SEED_ANALYZED_REMAINING_FIXED",
       "training_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02",
       "training_implementation_commit": "1bcaa4919b835601c01cc4095ab8ed869c2e4b9b",
       "training_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md",
@@ -85723,7 +85723,7 @@
         50
       ],
       "training_source_qualification": "PASS",
-      "training_target_summary_read": false,
+      "training_target_summary_read": true,
       "training_source_prefix_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_prefix_e4.json",
       "training_analysis_bitwise_defect": "Offlinefixverifiedanddeployedseparately;runningreleaseunchanged",
       "training_analysis_release": "cvs_receiver_vrex50_analysis_20261015_r01",
@@ -85736,7 +85736,12 @@
       "training_candidate_U_observations": 103292,
       "training_hidden_U_truth_read": false,
       "training_source_qualification_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_qualification.json",
-      "training_expansion_decision": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json"
+      "training_expansion_decision": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json",
+      "first_seed_default_head_accuracy": 0.8328511904761905,
+      "first_seed_matched_control_accuracy": 0.8364047619047619,
+      "first_seed_paired_difference": -0.003553571428571378,
+      "source_decision_commit_before_target_read": "4056e9fb618fa92af5486c6d3670fc73bcc4194d",
+      "first_seed_analysis_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/final_analysis.md"
     }
   },
   "latest_complete_sinc_optimizer": {
