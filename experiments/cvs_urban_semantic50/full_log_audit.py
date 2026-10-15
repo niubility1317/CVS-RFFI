@@ -44,6 +44,14 @@ def run(output,legacy):
     (out/'training_audit.json').write_text(json.dumps(combined,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     for name in ('summary.json','resources.json','training_curves.json','analysis.md','complete.json','source_family_decision.json'):
         subprocess.run(['scp',*ops.SSH,'N607:'+base+'/'+name,str(out/name)],check=True,timeout=60)
+    # Preserve every existing per-row metric, including receiver/day strata.
+    # Logical D1/D2 folders contain the unchanged original A0/A-J scores; their
+    # original identifiers remain inside each file and the audit provenance.
+    for row in rows:
+        remote_root=row['config']['output_root'].rsplit('/',1)[0]
+        destination=out/'formal_rows'/row['row_id'];(destination/'scoring').mkdir(parents=True,exist_ok=True)
+        for name in ('report.md','scoring/scores.json','scoring/complete.json'):
+            subprocess.run(['scp',*ops.SSH,'N607:'+remote_root+'/'+name,str(destination/name)],check=True,timeout=60)
     print(json.dumps(dict(status=combined['status'],new_steps=combined['new_full_log_steps_read'],reused_steps=combined['reused_verified_steps'],
         rows=[r['row_id'] for r in records],output=str(out))))
     return combined

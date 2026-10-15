@@ -174,6 +174,22 @@ def training_figures(root,out):
     fig.suptitle('Fixed formal IQ/default heads; one model seed only; clean-vs-D0 and low-vs-D1 are separate objectives')
     save(fig,out,'formal_per_seed_accuracy.png')
 
+    metric_rows={a:read(root/'formal_rows'/rows[a]['row_id']/'scoring/scores.json')['results'] for a in ARMS}
+    receiver_ids=sorted(results['D1']['urban_by_RX'],key=int)
+    fig,axes=plt.subplots(1,3,figsize=(16,5.5),constrained_layout=True)
+    for ax,scene in zip(axes,('practical_mid_urban','practical_low_urban','urban_mean')):
+        values=[]
+        for arm in ARMS:
+            if scene=='urban_mean':values.append([100*results[arm]['urban_by_RX'][rx] for rx in receiver_ids])
+            else:
+                measured={r['stratum']:r['accuracy'] for r in metric_rows[arm] if r['dimension']=='receiver' and r['view']==scene}
+                if set(measured)!=set(receiver_ids):raise ValueError('All registered formal receivers required')
+                values.append([100*measured[rx] for rx in receiver_ids])
+        obj=heatmap(ax,values,[f'RX{rx}' for rx in receiver_ids],scene.replace('practical_','')+' accuracy (%)')
+        fig.colorbar(obj,ax=ax,shrink=.8)
+    fig.suptitle('Every fixed formal receiver; original truth-last scores reused; no selective reruns or receiver exclusion')
+    save(fig,out,'formal_receiver_strata.png')
+
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--source-root',type=Path)
