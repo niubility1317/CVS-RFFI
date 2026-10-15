@@ -337,3 +337,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- SIGTIME_RDROP_PAIRED_MASKS_MAIN_E20_RESULT_20261015 -->
 20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01的6个新E20模型和6个历史控制完整三seed对比已VERIFIED。新ANTIRDROP均值83.592262%，原INDEPRDROP均值83.942857%，配对均值-0.350595pp，0/3正；原RDrop正收益保留。E50六行仍健康按固定50轮执行，主判据PENDING，不据E20结果改预算/参数/seed或重跑。完整日志、默认头/实际joint160和truthlast逐row审计齐备；goalactive。[E20结果](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01/E20_summary.md)。
+
+
+<!-- SIGTIME_RDROP_PAIRED_MASKS_MAIN_RESULT_20261015 -->
+20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r0112新+12旧控制完整ANALYZED/VERIFIED，新增420epoch/93240更新、24行4032000决定与432指标，默认头联合、无U真值/拟合头。E50新RDrop clean3seed均值84.295040%，相对旧RDrop-0.045040pp、2/3正；E20对应-0.350595pp、0/3正。预登记主条件FAIL。关闭此固定配方，不用目标反馈救跑或选预算，继续仅RDrop新假设。[完整报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01/report.md)。

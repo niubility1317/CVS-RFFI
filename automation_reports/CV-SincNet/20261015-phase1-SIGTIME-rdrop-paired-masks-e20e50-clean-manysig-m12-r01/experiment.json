@@ -510,7 +510,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E20_ANTI_CE-s2026092701.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -733,7 +732,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E20_ANTI_RDROP-s2026092701.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -956,7 +954,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E50_ANTI_CE-s2026092701.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -1179,7 +1176,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E50_ANTI_RDROP-s2026092701.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -1402,7 +1398,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E20_ANTI_CE-s2026092702.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -1625,7 +1620,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E20_ANTI_RDROP-s2026092702.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -1848,7 +1842,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E50_ANTI_CE-s2026092702.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -2071,7 +2064,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E50_ANTI_RDROP-s2026092702.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -2294,7 +2286,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E20_ANTI_CE-s2026092703.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -2517,7 +2508,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E20_ANTI_RDROP-s2026092703.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -2740,7 +2730,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E50_ANTI_CE-s2026092703.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -2963,7 +2952,6 @@
       "result": {
         "status": "ANALYZED",
         "evidence_ref": "row_reports/E50_ANTI_RDROP-s2026092703.json",
-        "clean_predictions": 168000,
         "truth_last": true,
         "head_fit_updates": 0
       }
@@ -2981,29 +2969,14 @@
   ],
   "registered_at": "2026-10-15T15:12:02+00:00",
   "result": {
-    "status": "RUNNING",
-    "source_rows_started": 12,
+    "status": "ANALYZED",
+    "new_rows": 12,
     "reused_controls": 12,
-    "evidence_ref": "launch_verification.json",
-    "training_complete": false,
+    "compared_rows": 24,
+    "evidence_ref": "completion_verification.json",
+    "training_complete": true,
+    "primary_qualified": false,
     "target_feedback": false,
-    "goal_completed": false,
-    "independently_analyzed_rows": [
-      "E20_ANTI_CE-s2026092701",
-      "E20_ANTI_CE-s2026092702",
-      "E20_ANTI_CE-s2026092703",
-      "E20_ANTI_RDROP-s2026092701",
-      "E20_ANTI_RDROP-s2026092702",
-      "E20_ANTI_RDROP-s2026092703",
-      "E50_ANTI_CE-s2026092701",
-      "E50_ANTI_CE-s2026092702",
-      "E50_ANTI_CE-s2026092703",
-      "E50_ANTI_RDROP-s2026092701",
-      "E50_ANTI_RDROP-s2026092702",
-      "E50_ANTI_RDROP-s2026092703"
-    ],
-    "E20_summary_ref": "E20_summary.json",
-    "source_diagnostics_E20_ref": "source_diagnostics_E20.json",
-    "prior_routes_ledger_ref": "prior_routes_ledger.json"
+    "goal_completed": false
   }
 }

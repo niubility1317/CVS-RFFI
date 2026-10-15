@@ -85,12 +85,27 @@
       "reference": "INDEP_RDROP same budget/seed",
       "verdict": "NEGATIVE_VS_STANDARD_RDROP",
       "head_fit_updates": 0
+    },
+    {
+      "route": "Paired masks RDrop full-source E50",
+      "scope": "fixed exposed clean target168000,three model seeds",
+      "budget": 50,
+      "seed_count": 3,
+      "run_id": "20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01",
+      "readout": "joint default head",
+      "accuracy_percent": 84.29503968253968,
+      "accuracy_difference_pp": -0.045039682539682525,
+      "positive_seeds": 2,
+      "reference": "INDEP_RDROP same budget/seed",
+      "verdict": "MAIN_PRIMARY_FAIL_FIXED_RECIPE_CLOSED",
+      "head_fit_updates": 0
     }
   ],
-  "main_E50_status": "PENDING",
+  "main_E50_status": "VERIFIED",
   "historical_artifacts_preserved": true,
   "model_restarts": 0,
   "new_training_or_hyperparameter_selection": false,
   "head_fit_updates": 0,
-  "markdown": "| 路线与范围 | 已核实观察 | 当前结论 |\n|---|---|---|\n| [Original SIG_TIME + standard RDrop E20](../20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)；full-source/fixed exposed clean target168000,three model seeds | clean均值83.942857%，相对ORIGINAL same budget/seed +0.827183个百分点，2/3正 | POSITIVE_MATCHED_TARGET_EVIDENCE |\n| [Original SIG_TIME + standard RDrop E50](../20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)；full-source/fixed exposed clean target168000,three model seeds | clean均值84.340079%，相对ORIGINAL same budget/seed +1.418056个百分点，3/3正 | POSITIVE_MATCHED_TARGET_EVIDENCE |\n| [Difference-gradient RDrop E20](../20261015-phase1-SIGTIME-rdrop-difference-gradient-sourcefold-s2026092702-m4-r01/report.md)；true held source RX1,1260 legalL;not target | 相对FULL_KL +2.936508个百分点，错误-37，CE +0.042982 | SOURCE_FAIL_FIXED_RECIPE_CLOSED |\n| [Cross-RX conditional-evidence RDrop E20](../20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01/report.md)；true held source RX1,1260 legalL;not target | 相对FULL -2.301587个百分点，错误+29，CE -0.025792 | SOURCE_FAIL_FIXED_RECIPE_CLOSED |\n| [Paired masks RDrop source screen E20](../20261015-phase1-SIGTIME-rdrop-paired-masks-sourcefold-s2026092701-m4-r01/report.md)；true held source RX1,1260 legalL;not target | 相对INDEP_RDROP +0.396825个百分点，错误-5，CE -0.029638 | SOURCE_PASS |\n| [Paired masks RDrop full-source E20 E20](E20_summary.md)；fixed exposed clean target168000,three model seeds | clean均值83.592262%，相对INDEP_RDROP same budget/seed -0.350595个百分点，0/3正 | NEGATIVE_VS_STANDARD_RDROP |"
+  "markdown": "| 路线与范围 | 已核实观察 | 当前结论 |\n|---|---|---|\n| [Original SIG_TIME + standard RDrop E20](../20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)；full-source/fixed exposed clean target168000,three model seeds | clean均值83.942857%，相对ORIGINAL same budget/seed +0.827183个百分点，2/3正 | POSITIVE_MATCHED_TARGET_EVIDENCE |\n| [Original SIG_TIME + standard RDrop E50](../20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)；full-source/fixed exposed clean target168000,three model seeds | clean均值84.340079%，相对ORIGINAL same budget/seed +1.418056个百分点，3/3正 | POSITIVE_MATCHED_TARGET_EVIDENCE |\n| [Difference-gradient RDrop E20](../20261015-phase1-SIGTIME-rdrop-difference-gradient-sourcefold-s2026092702-m4-r01/report.md)；true held source RX1,1260 legalL;not target | 相对FULL_KL +2.936508个百分点，错误-37，CE +0.042982 | SOURCE_FAIL_FIXED_RECIPE_CLOSED |\n| [Cross-RX conditional-evidence RDrop E20](../20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01/report.md)；true held source RX1,1260 legalL;not target | 相对FULL -2.301587个百分点，错误+29，CE -0.025792 | SOURCE_FAIL_FIXED_RECIPE_CLOSED |\n| [Paired masks RDrop source screen E20](../20261015-phase1-SIGTIME-rdrop-paired-masks-sourcefold-s2026092701-m4-r01/report.md)；true held source RX1,1260 legalL;not target | 相对INDEP_RDROP +0.396825个百分点，错误-5，CE -0.029638 | SOURCE_PASS |\n| [Paired masks RDrop full-source E20 E20](E20_summary.md)；fixed exposed clean target168000,three model seeds | clean均值83.592262%，相对INDEP_RDROP same budget/seed -0.350595个百分点，0/3正 | NEGATIVE_VS_STANDARD_RDROP |\n| 配对RDrop E50完整主验证；目标clean，3种子，每行168000 | clean均值84.295040%，相对原RDrop -0.045040个百分点，2/3正 | 主条件FAIL，关闭固定配方 |",
+  "main_E50_primary_qualified": false
 }
