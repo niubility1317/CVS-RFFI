@@ -21,3 +21,5 @@
 ## 已落实最小两行实现
 
 20261016已实现并登记 `20261016-phase1-ordinary-augmentation-RX1-e20-s2026092701-m2-r01`，尚未发布。实际原native/fold轨迹保持222更新/epoch、4440/row，而不是178×20；四RX U45360通过原循环形成每pseudo epoch56624观察。两行当前RAW_HZ/LS.01、两次RDrop，同初态；旧CENTER25K/LS0源折只复用代码逻辑，不载权重。HeldRX1 V5400仅FINAL，未用L1260。单一源V按RX作评价分层，不生成校准/选模新角色。普通增强与loader私有随机流、实际L/U全序列比较、计数和默认头梯度已接入。一次限定P0/P1 PASS，本地实际图检查PASS；正式数据/测试信道未访问或修改。
+
+20261016两行已实际发布并启动VERIFIED：训练代码96365a0aa，GPU0/1，own fresh CP noquery smokePASS，首个增长快照E2/E2。实际defaulthead/SIG_TIME与源角色核实，尚无最终heldV资格或target结果。后续严格按本规则处理，原release不热改。

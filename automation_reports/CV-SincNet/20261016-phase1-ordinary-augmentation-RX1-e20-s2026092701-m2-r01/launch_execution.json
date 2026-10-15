@@ -1,0 +1,81 @@
+{
+  "status": "VERIFIED",
+  "actual_training_code": "96365a0aafb0ca7570b98f7e3737e3803e90d4d2",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "default_head_only": true,
+  "source_only": true,
+  "target_access": false,
+  "rows": [
+    {
+      "row": "N0-RX1-s2026092701",
+      "pid": 3390882,
+      "GPU": "0",
+      "epochs": 2,
+      "actual_roles": {
+        "L_s": 5040,
+        "U_s": 45360,
+        "V": 21600
+      },
+      "log_bytes": 16765,
+      "all_checks": {
+        "correct_roles": true,
+        "actual_E20": true,
+        "LS01": true,
+        "ordinary_switch": true,
+        "no_satellite": true,
+        "own_teacher": true,
+        "scratch": true,
+        "NoExplicitCFO": true,
+        "default_head_only": true,
+        "noquery_smoke": true,
+        "live_CWD": true,
+        "live_GPU": true,
+        "log_growth": true
+      },
+      "module_files": {
+        "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      },
+      "parameters": 863730
+    },
+    {
+      "row": "N1-RX1-s2026092701",
+      "pid": 3390959,
+      "GPU": "1",
+      "epochs": 2,
+      "actual_roles": {
+        "L_s": 5040,
+        "U_s": 45360,
+        "V": 21600
+      },
+      "log_bytes": 16766,
+      "all_checks": {
+        "correct_roles": true,
+        "actual_E20": true,
+        "LS01": true,
+        "ordinary_switch": true,
+        "no_satellite": true,
+        "own_teacher": true,
+        "scratch": true,
+        "NoExplicitCFO": true,
+        "default_head_only": true,
+        "noquery_smoke": true,
+        "live_CWD": true,
+        "live_GPU": true,
+        "log_growth": true
+      },
+      "module_files": {
+        "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      },
+      "parameters": 863730
+    }
+  ],
+  "observed_read_at": 1792087445.4721026,
+  "failure": null
+}

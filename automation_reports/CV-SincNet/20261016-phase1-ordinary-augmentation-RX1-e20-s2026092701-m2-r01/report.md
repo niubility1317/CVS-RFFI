@@ -19,3 +19,7 @@ N1包含原配方中已开启的PA/AWGN/multipath等，作为原有整体配方�
 真实scratch checkpoint无query smoke是各worker首个模型步骤，PASS直接继续；无额外许可。目标仍为clean和星地双收益、lowurban>60和suburban保持，本源折不构成达标。
 
 唯一独立下一运行P0/P1审查PASS，未发现直接缺陷；独立检查再执行512合成网络前向/128增强包/5负例。本轮本地已知总1536合成网络前向/384增强包，0真实IQ/CP/更新；只读N607普通账户/主机/路径/GPU preflight PASS。当前尚未发布运行。
+
+## 实际启动已核实
+
+状态RUNNING，训练代码96365a0aafb0ca7570b98f7e3737e3803e90d4d2已提交推送并独立对比远端OID。单归档传输对照/远端compile VERIFIED。N0/N1分别GPU0/1，PID3390882/3390959，两行实际角色5040/45360/21600、模型863730参数、当前RAW_HZ/LS.01/NoExplicitCFO、默认头联合训练、无As/继承CP、ownEMA及真实scratch-CP noquery smoke均已读回通过。两份日志6460字节增长到16765/16766字节，当前完成E2/E2，无失败；这是进度，不是资格或性能结果。实际导入均为原adv3b02_xuc/code实现，含leo_practical/channel.py及residual.py，完整路径在launch_execution.json。远端release与健康训练保持原状，未作热改/重启。
