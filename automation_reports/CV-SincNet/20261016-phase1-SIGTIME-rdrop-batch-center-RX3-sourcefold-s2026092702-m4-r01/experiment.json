@@ -1116,10 +1116,12 @@
   "status": "PLANNED",
   "registered_at": "2026-10-15T18:10:12+00:00",
   "result": {
-    "status": "RUNNING",
-    "evidence_ref": "launch_verification.json",
+    "status": "ANALYZED",
+    "evidence_ref": "completion_verification.json",
+    "source_rows_complete": 4,
     "source_only": true,
-    "source_rows_started": 4,
+    "CENTER_qualified": false,
+    "separate_POINT_qualified": false,
     "target_access": false,
     "goal_completed": false
   }

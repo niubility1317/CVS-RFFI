@@ -387,3 +387,11 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- RDROP_BATCH_CENTER_RX3_LAUNCHED_20261016 -->
 20261016-phase1-SIGTIME-rdrop-batch-center-RX3-sourcefold-s2026092702-m4-r01 VERIFIED/RUNNING，四臂真实scratchE20启动，首轮完成、自己CP noquery smoke及PID/CWD/argv/GPU/log增长通过，实际RX3全路径排除/默认头联合/新辅助数值审计一致。代码5c60deca3f42c02ebf82f5402a205bd9db81c89f，0target/头拟合，未有final结果。[启动证据](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-batch-center-RX3-sourcefold-s2026092702-m4-r01/launch_verification.json)。goalACTIVE。
+
+
+<!-- RDROP_BATCH_CENTER_RX3_RESULT_20261016 -->
+20261016-phase1-SIGTIME-rdrop-batch-center-RX3-sourcefold-s2026092702-m4-r01 source-only4×E20已ANALYZED/VERIFIED，80model-epoch/17760步、RX3全路径排除/默认头联合。FULL/POINT/NORM_MATCH/CENTER错误依次643/644/619/650（各1260），主CENTER资格False、独立POINTvsFULL确认False；按预登记分别处理，禁止替换主候选或救跑。完整logs/CP/默认头决定与norm/translation/目标重构已核验，0target/头拟合。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-batch-center-RX3-sourcefold-s2026092702-m4-r01/report.md)。goalACTIVE。
+
+
+<!-- RDROP_NORM_MATCH_EXPLORATORY_RX3_20261016 -->
+同批NORM_MATCH仅作为探索性控制正迹象保留：RX3对FULL修正118/新增94、净少24错（+1.904762个百分点）、CE−.233749；对POINT净少25错、CE−.084705。仅2/6TX与2/3day改善，单seed，未被预登记为合格主候选，不直接晋级target。下一RDrop研究应独立源折确认固定自调梯度强度公式，并加入预先固定强度对照，区分动态校准与单纯更强正则；不重启CENTER或NULL失败配方、不按类别设规则。详见同run norm_route_exploratory.json。goalACTIVE。

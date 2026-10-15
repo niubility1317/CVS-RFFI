@@ -1,0 +1,95 @@
+{
+  "status": "VERIFIED",
+  "role": "Exploratory positive control only;not preregistered primary qualification,no target promotion",
+  "run_id": "20261016-phase1-SIGTIME-rdrop-batch-center-RX3-sourcefold-s2026092702-m4-r01",
+  "candidate": "NORM_MATCH",
+  "model_seed": 2026092702,
+  "held_source_RX": 3,
+  "count": 1260,
+  "contrasts": {
+    "FULL": {
+      "repaired": 118,
+      "introduced": 94,
+      "error_difference": -24,
+      "accuracy_difference_pp": 1.904761904761898,
+      "CE_difference": -0.23374913922094195
+    },
+    "POINT": {
+      "repaired": 105,
+      "introduced": 80,
+      "error_difference": -25,
+      "accuracy_difference_pp": 1.984126984126977,
+      "CE_difference": -0.08470526607330596
+    }
+  },
+  "new_IQ_reads": 0,
+  "model_forwards": 0,
+  "checkpoint_loads": 0,
+  "optimizer_steps": 0,
+  "target_access": false,
+  "exploratory_strata": {
+    "day": [
+      {
+        "value": 1,
+        "errors_FULL": 220,
+        "errors_NORM_MATCH": 214,
+        "accuracy_difference_pp": 1.4285714285714346
+      },
+      {
+        "value": 2,
+        "errors_FULL": 198,
+        "errors_NORM_MATCH": 201,
+        "accuracy_difference_pp": -0.7142857142857229
+      },
+      {
+        "value": 3,
+        "errors_FULL": 225,
+        "errors_NORM_MATCH": 204,
+        "accuracy_difference_pp": 4.999999999999993
+      }
+    ],
+    "TX": [
+      {
+        "value": 0,
+        "errors_FULL": 31,
+        "errors_NORM_MATCH": 32,
+        "accuracy_difference_pp": -0.4761904761904745
+      },
+      {
+        "value": 1,
+        "errors_FULL": 75,
+        "errors_NORM_MATCH": 97,
+        "accuracy_difference_pp": -10.476190476190473
+      },
+      {
+        "value": 2,
+        "errors_FULL": 159,
+        "errors_NORM_MATCH": 162,
+        "accuracy_difference_pp": -1.4285714285714346
+      },
+      {
+        "value": 3,
+        "errors_FULL": 115,
+        "errors_NORM_MATCH": 82,
+        "accuracy_difference_pp": 15.714285714285726
+      },
+      {
+        "value": 4,
+        "errors_FULL": 82,
+        "errors_NORM_MATCH": 94,
+        "accuracy_difference_pp": -5.714285714285716
+      },
+      {
+        "value": 5,
+        "errors_FULL": 181,
+        "errors_NORM_MATCH": 152,
+        "accuracy_difference_pp": 13.809523809523816
+      }
+    ]
+  },
+  "positive_day_groups": 2,
+  "positive_TX_groups": 2,
+  "scope_notes": "Only2/6TX and2/3days improve;no class-specific rule/weights;not preregistered qualified candidate,not causal or target evidence",
+  "final_epoch_mean_norm_ratio": 18.00045156478882,
+  "next_research": "Separately preregister unchanged NORM_MATCH formula on another source fold,with native/full-space and one fixed-strength control;distinguish dynamic calibration from simply larger auxiliary weight,no direct target escalation"
+}
