@@ -375,3 +375,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- RDROP_FEATURE_GEOMETRY_PREREG_20261016 -->
 20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01 PLANNED：父curvature4源模型固定final20，只读actual joint160跨RX特征关系，144fitL+1260heldRX1L共同物化1404、4模型5616前向、8ownCPsynthetic smoke、0训练/拟合头/U/V/targetIQ。每模型3528000同day三元比较是相关组合而非独立样本，1modelseed/4conditions。CPU14负例及实际模型边界PASS。无晋级阈值，父NULL FAIL不变，不扩训练/目标。[固定方案](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01/report.md)。goalactive。
+
+
+<!-- RDROP_FEATURE_GEOMETRY_RESULT_20261016 -->
+20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01 ANALYZED/VERIFIED：1404shared源L、四冻结模型5616前向、8syntheticCPsmoke、0训练/拟合头/U/V/targetIQ。直接欧氏距离独立重算4份features、576anchor/344groups，计数全对齐。FULL/SPAN/ISOTROPIC/NULL关系满足率92.475709%/92.257795%/93.103373%/92.906293%；ISO相对FULL+0.627664pp，day3/3、fitRX2/4、TX4/6正，72cell31正30负11平。raw范数10.077678→19.100467，总体均值能量占比84.5333%→90.4530%，事后矩统计不改变既定关系或资格。支持同源折特征层正迹象而非仅W，但不等于独立训练/新TX/目标证明；NULL FAIL保持，原RDrop三seed正收益保留。下一独立训练假设需区分方向一致性与范数/公共分量变化并另固定公平源对照。[完整诊断](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-feature-geometry-source-s2026092702-m4-r01/report.md)。goalactive。
