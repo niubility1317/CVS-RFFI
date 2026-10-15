@@ -1,0 +1,38 @@
+{
+  "status": "PASS",
+  "CPU": true,
+  "CUDA": true,
+  "protocol_negative_cases_each": 58,
+  "qualification_negative_cases_each": 5,
+  "initial_state_tensors": 198,
+  "native_output_loss_RNG_bitwise": true,
+  "CPU_gradients_bitwise": true,
+  "CUDA_gradient_checks": {
+    "INDEP_CE": {
+      "bitwise": false,
+      "max_abs": 4.470348358154297e-08,
+      "max_relative_norm": 1.7000455443394458e-07
+    },
+    "INDEP_RDROP": {
+      "bitwise": false,
+      "max_abs": 4.470348358154297e-08,
+      "max_relative_norm": 2.75198829058354e-07
+    }
+  },
+  "native_repeat_roundoff_max_abs": 4.470348358154297e-08,
+  "actual_augmented_input_reused": true,
+  "mask_sites": 13,
+  "marginal_rates_checked": true,
+  "anti_simultaneous_drop_zero": true,
+  "U_eval_native": true,
+  "teacher_controller_isolated": true,
+  "cache_empty_after_pair": true,
+  "synthetic_identity_forwards_per_device": 1552,
+  "synthetic_mask_elements_per_rate": 262144,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "optimizer_steps": 0,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "real_checkpoint_smoke": "Own first worker step;PASS continues immediately"
+}
