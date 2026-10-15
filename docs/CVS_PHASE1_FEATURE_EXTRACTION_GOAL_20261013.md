@@ -341,3 +341,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- SIGTIME_RDROP_PAIRED_MASKS_MAIN_RESULT_20261015 -->
 20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r0112新+12旧控制完整ANALYZED/VERIFIED，新增420epoch/93240更新、24行4032000决定与432指标，默认头联合、无U真值/拟合头。E50新RDrop clean3seed均值84.295040%，相对旧RDrop-0.045040pp、2/3正；E20对应-0.350595pp、0/3正。预登记主条件FAIL。关闭此固定配方，不用目标反馈救跑或选预算，继续仅RDrop新假设。[完整报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01/report.md)。
+
+
+<!-- SIGTIME_RDROP_MARGIN_ENVELOPE_PREREG_20261016 -->
+仅 SIG_TIME＋RDrop：固定同包身份间隔包络、停梯度共享软目标；FULL/MEAN/同真类置信度/包络四臂 scratch E20、seed01、RX1 真排除、原 U/默认头联合训练不变。CPU/CUDA56负例与5资格否决通过，一次P0/P1 PASS。PASS仅固定RX3源确认，FAIL关闭，不据目标调参。20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01 已登记未发布，见[预登记](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01/report.md)，goal active。

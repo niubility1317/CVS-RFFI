@@ -1,0 +1,116 @@
+{
+  "status": "PASS",
+  "checks": {
+    "cpu": {
+      "status": "PASS",
+      "device": "cpu",
+      "negative_cases": 56,
+      "qualification_negative_cases": 5,
+      "actual_initial_state_tensors": 198,
+      "actual_CE_logits_native_RNG_equal": true,
+      "FULL_actual_native_gradient_close": true,
+      "envelope_margin_identity": true,
+      "detached_teacher_gradient": true,
+      "confidence_control_same_true_mass": true,
+      "class_permutation_and_logit_shift_invariance": true,
+      "post_augmentation_input_reused": true,
+      "synthetic_identity_forwards": 1280,
+      "real_IQ_reads": 0,
+      "checkpoint_loads": 0,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "target_access": false,
+      "evidence": "Successful CPU tool invocation of actual checks.py before this capture"
+    },
+    "cuda": {
+      "status": "PASS",
+      "device": "cuda:0",
+      "negative_cases": 56,
+      "qualification_negative_cases": 5,
+      "FP64_native_KL_and_gradient_exact": true,
+      "envelope_margin_identity": true,
+      "detached_teacher_gradient": true,
+      "class_permutation_and_logit_shift_invariance": true,
+      "confidence_control_same_true_mass": true,
+      "actual_initial_state_tensors": 198,
+      "actual_CE_logits_native_RNG_equal": true,
+      "FULL_actual_native_gradient_close": true,
+      "post_augmentation_input_reused": true,
+      "actual_parameter_gradient_norms": {
+        "FULL": [
+          0.7510724067687988,
+          1.0282561779022217,
+          0.18295253813266754,
+          4.3232855796813965
+        ],
+        "MEAN": [
+          0.8217406272888184,
+          1.142704963684082,
+          0.1990923136472702,
+          5.821256160736084
+        ],
+        "CONFIDENCE": [
+          0.8356437683105469,
+          1.1748124361038208,
+          0.21529316902160645,
+          6.002780914306641
+        ],
+        "ENVELOPE": [
+          0.7566293478012085,
+          1.0624628067016602,
+          0.19622254371643066,
+          5.270382881164551
+        ]
+      },
+      "envelope_audits": {
+        "FULL": {
+          "calls": 1,
+          "packets": 128,
+          "mixed_envelope_packets": 91,
+          "teacher_true_probability_violations": 0,
+          "max_confidence_control_error": 0.0,
+          "max_teacher_mass_error": 2.384185791015625e-07,
+          "teacher_true_probability_sum": 34.704383850097656,
+          "mean_teacher_true_probability_sum": 19.212751388549805
+        },
+        "MEAN": {
+          "calls": 1,
+          "packets": 128,
+          "mixed_envelope_packets": 91,
+          "teacher_true_probability_violations": 0,
+          "max_confidence_control_error": 0.0,
+          "max_teacher_mass_error": 2.384185791015625e-07,
+          "teacher_true_probability_sum": 34.704383850097656,
+          "mean_teacher_true_probability_sum": 19.212751388549805
+        },
+        "CONFIDENCE": {
+          "calls": 1,
+          "packets": 128,
+          "mixed_envelope_packets": 91,
+          "teacher_true_probability_violations": 0,
+          "max_confidence_control_error": 0.0,
+          "max_teacher_mass_error": 2.384185791015625e-07,
+          "teacher_true_probability_sum": 34.704383850097656,
+          "mean_teacher_true_probability_sum": 19.212751388549805
+        },
+        "ENVELOPE": {
+          "calls": 1,
+          "packets": 128,
+          "mixed_envelope_packets": 91,
+          "teacher_true_probability_violations": 0,
+          "max_confidence_control_error": 0.0,
+          "max_teacher_mass_error": 2.384185791015625e-07,
+          "teacher_true_probability_sum": 34.704383850097656,
+          "mean_teacher_true_probability_sum": 19.212751388549805
+        }
+      },
+      "synthetic_identity_forwards": 1280,
+      "real_IQ_reads": 0,
+      "checkpoint_loads": 0,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "target_access": false
+    }
+  },
+  "real_checkpoint_smoke": "Worker first step uses own random initial CP;PASS continues immediately;no source or target ancestor"
+}
