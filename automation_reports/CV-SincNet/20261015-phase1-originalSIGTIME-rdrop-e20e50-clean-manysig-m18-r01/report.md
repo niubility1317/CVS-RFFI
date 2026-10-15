@@ -1,0 +1,23 @@
+# 旧 SIG_TIME 叠加 RDrop：E20/E50 三种子匹配验证
+
+状态 **PLANNED，已登记，尚未发布或训练**。用户要求旧 SIG_TIME 与 RDrop 有机结合；本次原样保留旧 SIG_TIME 的 RAW_HZ、标签平滑 0.01、普通训练增强、NoExplicitCFO、默认 cosine 头联合训练、旧门控和 ownEMA。18 个独立 scratch 模型：E20/E50 × ORIGINAL/TWO_CE/RDROP × 2026092701/02/03；E50 原 33L+17U，E20 固定 13L+7U，不继承旧权重，不使用 CENTER25K/cleanL/LS0 替代旧配方。
+
+| 条件 | L 前向/更新 | 原平滑 CE | 一致性 |
+|---|---:|---|---|
+| ORIGINAL | 1 | 原生 CE，原路径无辅助 hook | 无 |
+| TWO_CE | 2 | 同一增强 IQ 两次随机前向 CE 均值 | 无 |
+| RDROP | 2 | 同 TWO_CE | 原两 logits 的对称 KL，alpha=1 |
+
+旧版先增强成 x_l_main，而通用 native hook 提供的是增强前 x_l。为保证两次仅更换 dropout，本实现只在真实 L 前向 context 内临时注册 root prehook，捕获已经增强的实际 IQ；第一次前向后移除，callback 消费并清空，再做第二次 identity-only 前向。增强不重抽，教师/U 不进入此 context。两次 CE 都显式使用原 0.01 标签平滑；native 已含 CE1，仅补 .5(CE2−identity_loss)+alphaKL，避免双计 CE。所有特征和默认 W 正常联合学习，无新参数或另训头，实际部署仍为原 joint160。
+
+每预算先运行首 seed 三行。完整来源、更新、默认头冻结后，仅依据源域 finalLCE≤0.5、RDrop 源 V 均值/最差 RX 相对两个控制不低于1/2个百分点、至少1%调用KL为正，放行该预算其余6行；两个预算独立，任何target指标不进入此判定。固定对照每row训练冻结后立即自动 clean168000预测，全部决定固定后 fresh CPU CUDAempty truth-last评分，保留18分层 CM/accuracy/F1和配对纠错/引错。主条件固定 E50_RDROP，预算差包括cosine终点和13+7/33+17分配，不等价于同轨迹续训。
+
+此前历史 SIG_TIME 83.0393% 与近期 RDrop E50 82.1030% 的配方不同；近期实际是 LS0/cleanL/CENTER25K。本次重新训练的 ORIGINAL 才是匹配控制，旧83.0393%只作完整保留的非配对背景，不把其高分当父权重选择，也不保证逐位复现旧 CUDA 随机轨迹。仍用原full5RX的6300 L、56700隐藏U、27000 V和固定合法数据句柄；V不更新参数/EMA/归一化，不读取U真值，测试分数不回流选模或重跑。普通训练增强在用户本次明确指定的旧配方范围内，星地训练及测试不加入本clean目标。
+
+全计划630model-epoch、139860更新、11934720额外L前向、12247200 U重复观察和3024000 clean决定/324CM；主L前向17902080次，另36个合成CPsmoke包。实际普通增强、每轮V、预测和评分耗时分别记录，不宣称独占GPU加速倍数。每launcher先保存/重载own初始CP并对2合成包无query预测，PASS立即继续。
+
+ordinary N607 CVS-RFFI；CWD `PROJECT/releases/cvs_originalSIGTIME_rdrop20_50_20261015_r01`；命令 `CVS-RFFI/bin/python -u experiments/cvs_sigtime_rdrop_legacy/runner.py experiments/cvs_sigtime_rdrop_legacy/configs/matrix.json`；owner `codex/root/original-SIGTIME-RDrop-20261015`；唯一run root `PROJECT/runs/20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01`。首6row就绪，其他12由源规则独立放行；现有shared receiver_residual_capacity4.lock内查all8 GPU/all-owner含preCUDA，空闲优先、cap3/GPU、free≥12000MiB，CPU2/worker、loader0，初始估计4.5GiB/worker、启动后实测。不停止/迁移/重启任何健康任务。技术故障或错误数据/来源/预算/预测/scorer/输出碰撞保留产物、停止pending，已启动健康行完成，无自动重试；源科学失败只关闭该预算未启动的6row，无阈值/seed/轮次救援。
+
+本地当前39项数学/配置/context负例与22项来源/预测权限负例、8个源资格否决边界通过；CPU/CUDA实际模型初始198state与旧构建器相同、增强后输入复用、两个paired条件RNG一致、时域/t2/SIG/W梯度有限非零。原先“0×CE辅助项逐位梯度相等”的CUDA检查观察到最大5.96e-8舍入差，现 ORIGINAL 完全不安装辅助hook；不是修改旧训练或根据target调参。尚需唯一下一运行P0/P1、actualGit提交、一次普通N607 preflight/archiveSHA/remotecompile和独立启动读回；本地PASS不称实验涨点或已达84%。
+
+RDrop为已有方法，[原论文](https://arxiv.org/abs/2106.14448)。本次研究它与旧SIG_TIME的实际训练匹配，不改名声称全球创新。完整18row矩阵、命令、seed、数据角色、停止规则和期望产物唯一维护在experiment.json；已有正负结果及未发布的残差交换原型保留，后者不叠加本试。REJECTED_EXTRA_GATE：额外设计审批/重复报告审查/哈希seal链不进入发布流程。

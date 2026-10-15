@@ -265,3 +265,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- RX_TEACHER20_SOURCE_COMPLETE_20261015 -->
 2026-10-15 `20261015-phase1-RX-teacher-exposure-source-e20-s2026092701-m2-r01` source-only 两行 E20 完整 ANALYZED / VERIFIED，8,880 更新和 40 epoch；无 U/EMA/换头/target。固定 RX1 排除教师 60.685185% 对等量 SAMPLE_80 的 99.444444%，纠正3/引入2096，CE升高；固定 A0 拒绝区纠正3/引入1787，科学资格 FAIL，关闭此配方，不扩库/学生/选择性救跑。原已见 RX 拟合 V 反而 +0.222222pp，不能用作跨域互补替代证据。固定源 V A0拒绝不代表预测错（拒绝区 EMA 99.423248%），不是实际 U 精度。RDrop 两预算三seed正收益独立保留，84%目标仍 active。[完整报告](../automation_reports/CV-SincNet/20261015-phase1-RX-teacher-exposure-source-e20-s2026092701-m2-r01/report.md)。
+
+
+<!-- ORIGINAL_SIGTIME_RDROP_USER_REQUEST_20261015 -->
+用户最新明确要求旧 SIG_TIME叠加RDrop并发布验证。固定 `20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01`：旧RAW_HZ/use_aug=True/LS.01/defaultheadjoint/oldgateownEMA，E20/E50×ORIGINAL/TWO_CE/RDROP×固定3seed，共18scratch，主条件E50_RDROP；保留E20预算比较。近期LS0/cleanL/CENTER25K的82.1030%只证明其内KL增量，未超过历史83.0393%，新ORIGINAL为匹配对照。两次paired复用L context捕获的真实增强IQ，不使用native增强前x_l，不重抽增强。每预算首seed3源判据后放行其余6，逐row自动clean truthlast，不看target扩种子。当前PLANNED/CPU-CUDA198state及实际接线PASS，未发布/无新结果；残差交换原型未登记或发布，暂不叠加。[本试报告](../automation_reports/CV-SincNet/20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)。84%目标仍active。

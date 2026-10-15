@@ -35,3 +35,7 @@ E20与E50差异同时包括cosine学习率终点和13+7/33+17阶段分配，因�
 ![完整训练曲线](training_curves.png)
 
 配置、数据权限、停止条件、逐行命令和预登记主条件见experiment.json；发布前检查/独立P0P1及启动证据保持原文件。完整统计见results_analysis.json和CSV。
+
+
+<!-- ORIGINAL_SIGTIME_RECIPE_CLARIFICATION_20261015 -->
+用户追问后已只读核实历史 SIG_TIME 三行与本次 E50 两条件六行的 actual_native_args、actual_feature_extractor、完整源角色数量。两者均有 SIG_TIME，但旧版实际为标签平滑0.01、普通增强开启、RAW_HZ；本次为标签平滑0、clean L、CENTER25K。旧83.0393%高于本次E50_RDROP82.1030%，本次未超过旧结果；+0.952579pp只表示当前配方内相对双CE的KL增量，不能称为胜过旧SIG_TIME，也不能把跨配方差距单独归因于RDrop。默认头结构、E50的33+17和源角色一致不能消除这些混因。新授权的[旧配方完整匹配验证](../20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)从零训练ORIGINAL/TWO_CE/RDROP，保留E20/E50和三个seed；历史结果保留，不当作新配对控制或加载其权重。只读证据见historical_SIGTIME_recipe_comparison.json，0新IQ/预测/训练/头拟合/目标truth读取。

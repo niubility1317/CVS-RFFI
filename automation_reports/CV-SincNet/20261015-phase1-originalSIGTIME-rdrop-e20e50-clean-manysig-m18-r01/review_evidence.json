@@ -1,0 +1,62 @@
+{
+  "status": "PASS",
+  "candidate": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01",
+  "review_type": "single independent next-run P0/P1 review",
+  "findings": [],
+  "scope": [
+    "experiments/cvs_sigtime_rdrop_legacy/*.py",
+    "experiments/cvs_sigtime_rdrop_legacy/configs/matrix.json",
+    "Registered18-row matrix and direct runtime permissions",
+    "Consumed historical SIG_TIME constructor, native augmentation/labeled-loss entry, immutable shared trainer, default-head prediction and shared capacity APIs"
+  ],
+  "confirmed": [
+    "All18 registered rows are independent full-five-RX scratch trajectories: E20/E50 x ORIGINAL/TWO_CE/RDROP x three fixed seeds. The native recipe retains historical RAW_HZ SIG_TIME,LS.01,use_aug=True,the original default head,oldgate and own EMA; stages are13+7 or33+17 with dynamic4440/11100 update closure.",
+    "Native augmentation produces x_l_main before the L-only context invokes the root model. The temporary root forward pre-hook therefore captures the actual augmented L128 input. The paired hook clears that saved input before its second identity forward, reuses the identical clone and does not invoke the augmentor again.",
+    "Both CE terms use label_smoothing=.01. Under the fixed native CE1 coefficient and inactive rollback/OS scaling path, the once-added correction0.5*(CE2-identity_loss)+alphaKL produces the stated paired objective. ORIGINAL installs no auxiliary loss hook and retains the original CE computation without a connected dummy zero.",
+    "The original labeled context increments only the real native L counter. The second forward is outside that context. Temporary capture hooks are removed in finally, saved L input must be None at epoch boundaries, and deepcopy rebinds the original labeled scope to the copied model. Own EMA is created before any L capture, and no captured L input is carried into it.",
+    "The shared trainer checks original source roles6300/56700hidden/27000 and fitted-head disablement. Source/checkpoint proof validates scratch ancestry,actual recipe,budget,RAW_HZ feature report,input reuse counters and final-only selection before strict own-state loading for prediction.",
+    "Per-budget expansion waits for that budget's three fixed first-seed source freezes and consumes only source metadata and metrics. A failed budget omits its six later-seed rows while the other budget proceeds independently; no target metric is read by qualification or used for reordering/selection.",
+    "Each completed row freezes then clean-predicts168000 packets through the original jointly trained default head. Its fresh CUDA-hidden CPU scorer runs only after prediction preflight. Final CPU aggregation requires every registered row to complete or have an explicit source-failure skip and preserves incomplete seed counts rather than claiming a complete matrix.",
+    "Paired statistics compare RDROP/ORIGINAL/TWO_CE within each budget and E50 versusE20 within each mode using equal physical IDs. Historical83.0393% is only unpaired context; the new scratch ORIGINAL rows are the matched controls.",
+    "The bootstrap loads the specified immutable shared source and required historical modules. The ordinary-account archive path and immutable output roots are protected. Shared-lock admission accounts all actual/pre-CUDA GPU owners across all GPUs with cap3 and12000MiB minimum free memory; CPU2/loader0 and independent CPU scoring remain explicit, with no unrelated-process intervention."
+  ],
+  "verification": {
+    "actual_model_CPU_checks": {
+      "status": "PASS",
+      "negative_cases": 39,
+      "matched_initial_state_tensors": 198,
+      "matches_historical_SIGTIME_constructor": true,
+      "post_augmentation_capture_verified_modes": 2,
+      "paired_native_RNG_identical": true,
+      "ORIGINAL_without_auxiliary_hook": true,
+      "body_SIG_defaultW_gradients_finite_nonzero": true,
+      "synthetic_L_forward_packets": 640,
+      "real_IQ_reads": 0,
+      "checkpoint_loads": 0,
+      "optimizer_steps": 0,
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/.codex_tmp/native_polyphase_runner.py experiments.cvs_sigtime_rdrop_legacy.checks"
+    },
+    "protocol_checks": {
+      "status": "PASS",
+      "negative_cases": 22,
+      "source_gate_boolean_failures": 8,
+      "real_data_or_checkpoint_reads": 0,
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/.codex_tmp/native_polyphase_runner.py experiments.cvs_sigtime_rdrop_legacy.checks_protocol"
+    },
+    "configured_shared_budget_checks": [[20, 13, 7, 4440], [50, 33, 17, 11100]],
+    "configure_preserves_use_aug_and_LS01": true,
+    "matrix_matches_design": true,
+    "registration_rows_match_design": true,
+    "totals": {
+      "models": 18,
+      "epochs": 630,
+      "optimizer_steps": 139860,
+      "extra_L_identity_forwards": 11934720,
+      "U_observations": 12247200,
+      "clean_decisions": 3024000,
+      "metric_records": 324
+    }
+  },
+  "initial_review_updates": "During this same initial review the pending historical-percentage text was synchronized by the owner, and publisher metadata was clarified without changing execution. Final config/registration equality was read back; unchanged successful checks were not rerun.",
+  "review_boundary": "Only this evidence file was written. No production edit, real IQ/checkpoint/target access, remote action, launch, commit, historical-candidate re-review, report-format gate or added gate."
+}

@@ -1,0 +1,72 @@
+{
+  "status": "PASS",
+  "CPU": {
+    "status": "PASS",
+    "device": "cpu",
+    "negative_cases": 39,
+    "matched_initial_tensors": 198,
+    "original_SIGTIME_constructor_initial_state_equal": true,
+    "RAW_HZ_original_retained": true,
+    "original_label_smoothing": 0.01,
+    "original_augmentation_enabled": true,
+    "post_augmentation_capture_verified": 2,
+    "paired_native_RNG_identical": true,
+    "ORIGINAL_native_CE_without_auxiliary_hook": true,
+    "actual_body_SIG_defaultW_gradient_norms": {
+      "ORIGINAL": [
+        0.8800493478775024,
+        1.126413106918335,
+        0.1957826167345047,
+        5.521510601043701
+      ],
+      "TWO_CE": [
+        0.8930136561393738,
+        1.0442546606063843,
+        0.1762913167476654,
+        5.198188781738281
+      ],
+      "RDROP": [
+        0.7020432353019714,
+        0.9280139803886414,
+        0.1747990995645523,
+        4.341588497161865
+      ]
+    },
+    "actual_model_synthetic_L_forward_packets": 640,
+    "optimizer_steps": 0,
+    "head_fit_updates": 0,
+    "actual_IQ_reads": 0,
+    "checkpoint_loads": 0,
+    "target_access": false
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "negative_cases": 39,
+    "matched_initial_tensors": 198,
+    "original_SIGTIME_constructor_initial_state_equal": true,
+    "post_augmentation_capture_verified": 2,
+    "paired_native_RNG_identical": true,
+    "ORIGINAL_native_CE_without_auxiliary_hook": true,
+    "actual_model_synthetic_L_forward_packets": 640,
+    "actual_IQ_reads": 0,
+    "optimizer_steps": 0,
+    "head_fit_updates": 0,
+    "checkpoint_loads": 0,
+    "evidence": "Observed checks --cuda exit0 in this task before registration; captured input equals augmented IQ and differs from raw IQ; all t1/t2/SIG/defaultW gradients finite nonzero"
+  },
+  "protocol": {
+    "status": "PASS",
+    "protocol_negative_cases": 22,
+    "source_gate_boolean_failures": 8,
+    "source_candidate_or_target_data_reads": 0,
+    "checkpoint_deserializations": 0,
+    "optimizer_steps": 0,
+    "head_fit_updates": 0,
+    "evidence": "Observed checks_protocol exit0 in this task before registration; expected/actual fixture deep copies corrected before this PASS"
+  },
+  "compiled_Python_files": 12,
+  "embedded_remote_scripts_compiled": 2,
+  "request_matches_design": true,
+  "actual_remote_training_launched": false
+}
