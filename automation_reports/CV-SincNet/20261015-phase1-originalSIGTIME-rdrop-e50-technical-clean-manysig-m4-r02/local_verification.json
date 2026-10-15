@@ -1,0 +1,57 @@
+{
+  "status": "PASS",
+  "startup_regressions": 8,
+  "contract_negative_cases": 8,
+  "scientific_recipe_fields_unchanged": true,
+  "metadata_only_changes": [
+    "run_id",
+    "output_root",
+    "launch_owner"
+  ],
+  "pre_fix_regression": "Expected failure on first unreadable snapshot",
+  "CPU_actual_reproduction": {
+    "status": "COMPLETE",
+    "trials": 128,
+    "one_shot_rejections": 2,
+    "examples": [
+      {
+        "trial": 2,
+        "pid": 3171099,
+        "first_state": {
+          "gpu": null,
+          "argv_matches": true
+        },
+        "later_state": {
+          "gpu": "__CVS_STARTUP_CPU_ONLY__",
+          "argv_matches": true
+        },
+        "child_returncode": null
+      },
+      {
+        "trial": 4,
+        "pid": 3171101,
+        "first_state": {
+          "gpu": null,
+          "argv_matches": true
+        },
+        "later_state": {
+          "gpu": "__CVS_STARTUP_CPU_ONLY__",
+          "argv_matches": true
+        },
+        "child_returncode": null
+      }
+    ],
+    "CPU_only": true,
+    "numeric_GPU_reservations": 0,
+    "IQ_reads": 0,
+    "truth_reads": 0,
+    "checkpoint_reads": 0,
+    "experiment_processes_stopped": 0,
+    "remote_files_written": 0
+  },
+  "local_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "optimizer_steps": 0,
+  "head_fit_updates": 0,
+  "experiment_processes_stopped": 0
+}

@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/review_identity_tangent",
+  "scope": "One focused P0/P1 review of reproduced startup-observation fix and four-row technical continuation, not a repeated scientific/model/report review",
+  "P0": [],
+  "P1": [],
+  "findings": "Same PID persisted before bounded observation; no repeated Popen;exact four rows/recipe unchanged;original fixedprediction then CPU scoring without overwrite;sharedcap3 and end closure correct",
+  "verified_checks": {
+    "startup_regressions": 8,
+    "config_negative_cases": 8
+  },
+  "at": "2026-10-15T11:36:39.702824+00:00"
+}

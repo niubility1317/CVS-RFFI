@@ -289,3 +289,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- ORIGINAL_SIGTIME_TECHNICAL_FAILURE_20261015 -->
 2026-10-15旧SIG_TIME×RDrop原调度器Popen后即时/proc观测失败退出；独立核对14模型已启动、2E50健康（其中TWOCE seed02未被记录）、4行未启动，原12行预测完成/11评分。E50源资格也已PASS。保留所有产物和健康任务；不原地重启或重复训练。待本地复现修复、新不可变技术run只补四个未启动行，原预测缺评分另按原自动truth-last闭合，最终逻辑矩阵仍精确18。E20完整三seed汇总83.115675/82.486111/83.942857%，全目标active。
+
+
+<!-- ORIGINAL_SIGTIME_TECHNICAL_RECOVERY_PREREG_20261015 -->
+20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02已登记四个原未启动E50行；配方不变、新不可变root。先留PID再有限观测，启动回归8/8与配置负例8/8PASS，待一次聚焦P1审查后发布。原14不重训，缺评分仅固定prediction后闭合。全目标active。

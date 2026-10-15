@@ -44,3 +44,6 @@ E20首seed三个已完成轨迹的源日志分析 VERIFIED：完整13320次step/
 <!-- ORIGINAL_SIGTIME_TECHNICAL_FAILURE_20261015 -->
 独立全run进程扫描和产物核对确认：两个预算的源资格均PASS，原18行中14行已实际启动，12行训练/clean预测完成、11行已评分；两个seed02的E50健康worker为ORIGINAL和TWO_CE，后者已通过ownCP smoke并持续训练，却未写入launch.json。调度器在Popen之后仅即时读取一次/proc，观测失败便退出，留下健康子进程。当前无法从旧日志区分第一次读取None还是临时GPU字段缺失，但已证明该错误不代表模型未启动或训练失败。四个真正未启动行是E50_RDROP seed02及E50三个条件seed03，未读取其目标指标选择恢复。所有旧输出、failure.json和健康进程保留；不热改原release或原地重启。技术修复将使用新release/run/output root补这四行，并补全原已固定prediction的缺失CPU评分，不重复模型训练。已有E20结果保持不变，研究目标active。详见[技术核对](technical_failure_reconciliation.json)。
 CPU-only最小复现使用原release的process函数，固定128个顺序短子进程，2次即时读取GPU字段为None，稍后同一PID/argv恢复预期字段且进程存活。该复现不使用数值GPU、不读取IQ/truth/checkpoint、不写远程文件、不停止实验进程；它复现了单次启动观测的瞬时缺字段问题，证据见[startup_observation_reproduction.json](startup_observation_reproduction.json)。拟修复先记录已启动PID，再有界轮询同一PID的CWD/argv/GPU，超时保留归属证据且不重试模型启动。
+
+
+技术恢复已登记20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02，只补四个未启动E50行，原14行不重训；当前PLANNED未发布。[恢复报告](../20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02/report.md)。
