@@ -2349,16 +2349,29 @@
     "execution_commit": "fd7cf6f1532082c38927bd632cc3ce19a486a2e9",
     "postlaunch_state": "VERIFIED",
     "actual_epoch_counts": {
-      "NORM_CONTROL-s2026092702": 3,
-      "RX_CAGRAD-s2026092702": 3,
-      "NORM_CONTROL-s2026092703": 3,
-      "RX_CAGRAD-s2026092703": 3
+      "NORM_CONTROL-s2026092702": 13,
+      "RX_CAGRAD-s2026092702": 14,
+      "NORM_CONTROL-s2026092703": 14,
+      "RX_CAGRAD-s2026092703": 14
     },
     "new_models": 4,
     "model_seeds": [
       2026092702,
       2026092703
     ],
-    "goal_84": false
+    "goal_84": false,
+    "first_epoch_gradient_recount": {
+      "status": "VERIFIED",
+      "rows": 4,
+      "layer_records": 208,
+      "saved_vectors": 832,
+      "defaultW_correction_exactly_zero": true,
+      "actual_selected_matches_saved_target": true,
+      "maximum_relative_selected_target_L2": 4.6712326778164847e-7,
+      "new_model_forwards": 0,
+      "head_fit_updates": 0,
+      "query_read": false,
+      "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01/first_epoch_gradient_recount.json"
+    }
   }
 }
