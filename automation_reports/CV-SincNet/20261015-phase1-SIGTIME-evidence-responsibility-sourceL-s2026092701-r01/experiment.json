@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "Active user goal: improve training/loss and actualfeature generalization, defaulthead only, fixedsource permission and E20+20 budget.",
   "code": {
-    "commit": "release_commit.txt (actual Git HEAD at publication)",
+    "commit": "34b8309871822c2756169f39183133d1a4af839a",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account/CVS-RFFI Python/CPU2/GPU0/nine namespaceoverlay on immutable ownE20runtime",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_sourceL_20261015_r01"
@@ -198,5 +198,118 @@
     "No fitted heads, newparameters or inferencevariant; historicalpositive structuralroutes retainedseparate.",
     "REJECTED_EXTRA_GATE: brainstorming design/user approval/writtenplan rituals superseded by explicit CVS minimal whitelist; existinguser scoped researchauthorization sufficient."
   ],
-  "registered_at": "2026-10-15T00:17:39+00:00"
+  "registered_at": "2026-10-15T00:17:39+00:00",
+  "result": {
+    "status": "SOURCE_SCREEN_PASSED",
+    "gate_result": {
+      "passed": true,
+      "stage_signal": "SCRATCH20_SIGNAL",
+      "qualified_ordinals_by_state": {
+        "INITIAL": [
+          2,
+          19,
+          54
+        ],
+        "FINAL20": []
+      },
+      "cell_conditions": [
+        {
+          "state": "INITIAL",
+          "ordinal": 2,
+          "qualified": true,
+          "failed_conditions": []
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 19,
+          "qualified": true,
+          "failed_conditions": []
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 37,
+          "qualified": false,
+          "failed_conditions": [
+            "near_JOINT_gradient_rescaling"
+          ]
+        },
+        {
+          "state": "INITIAL",
+          "ordinal": 54,
+          "qualified": true,
+          "failed_conditions": []
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 2,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:no_held_positive_burden_difference_gain",
+            "ZERO:no_held_full_CE_difference_gain",
+            "ZERO:ACTUAL_no_original_identity_CE_gain",
+            "ZERO:PRE_W_no_original_identity_CE_gain",
+            "JOINT_GAP:no_held_positive_burden_difference_gain",
+            "JOINT_GAP:no_held_full_CE_difference_gain",
+            "JOINT_GAP:ACTUAL_no_original_identity_CE_gain",
+            "JOINT_GAP:PRE_W_no_original_identity_CE_gain"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 19,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:no_held_positive_burden_difference_gain",
+            "ZERO:no_held_full_CE_difference_gain",
+            "ZERO:ACTUAL_no_original_identity_CE_gain",
+            "ZERO:PRE_W_no_original_identity_CE_gain",
+            "JOINT_GAP:no_held_positive_burden_difference_gain",
+            "JOINT_GAP:no_held_full_CE_difference_gain",
+            "JOINT_GAP:ACTUAL_no_original_identity_CE_gain",
+            "JOINT_GAP:PRE_W_no_original_identity_CE_gain"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 37,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:no_held_positive_burden_difference_gain",
+            "ZERO:no_held_full_CE_difference_gain",
+            "ZERO:ACTUAL_no_original_identity_CE_gain",
+            "ZERO:PRE_W_no_original_identity_CE_gain",
+            "JOINT_GAP:no_held_positive_burden_difference_gain",
+            "JOINT_GAP:no_held_full_CE_difference_gain",
+            "JOINT_GAP:ACTUAL_no_original_identity_CE_gain",
+            "JOINT_GAP:PRE_W_no_original_identity_CE_gain"
+          ]
+        },
+        {
+          "state": "FINAL20",
+          "ordinal": 54,
+          "qualified": false,
+          "failed_conditions": [
+            "ZERO:no_held_positive_burden_difference_gain",
+            "ZERO:no_held_full_CE_difference_gain",
+            "ZERO:ACTUAL_no_original_identity_CE_gain",
+            "ZERO:PRE_W_no_original_identity_CE_gain",
+            "JOINT_GAP:no_held_positive_burden_difference_gain",
+            "JOINT_GAP:no_held_full_CE_difference_gain",
+            "JOINT_GAP:ACTUAL_no_original_identity_CE_gain",
+            "JOINT_GAP:PRE_W_no_original_identity_CE_gain"
+          ]
+        }
+      ],
+      "controls_not_fallback": true,
+      "interpretation": "Actual component responsibility, distinct gradient and source identity benefit, not20epoch/unseenRX/DG"
+    },
+    "decision": "PROCEED_FIXED_SCRATCH20_MAIN_MATRIX",
+    "main_run": "20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r01",
+    "main_training_launched": false,
+    "actual_optimizer_updates": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "goal84_completed": false,
+    "evidence_ref": "result_evidence.json"
+  }
 }

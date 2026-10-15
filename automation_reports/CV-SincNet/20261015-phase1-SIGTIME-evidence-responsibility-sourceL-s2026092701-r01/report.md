@@ -1,6 +1,6 @@
 # 真实证据责任：等损失值的梯度路由源原型
 
-状态 **PLANNED**。目标仍为提升实际 joint160 身份特征及默认头三种子 clean 均值至84%，当前未达成；原默认 cosine 头随主 CE 正常联合训练，U真值隔离、无星地训练增强。上一轮代码/结果执行与推送已核实，两个实际源候选关闭，是取得新证据的 progress，不是等待或技术阻塞。
+状态 **ANALYZED / VERIFIED，源资格 INITIAL3/4、FINAL20 0/4，支持从零 E20 验证**。下文保留原预登记。目标仍为提升实际 joint160 身份特征及默认头三种子 clean 均值至84%，当前未达成；原默认 cosine 头随主 CE 正常联合训练，U真值隔离、无星地训练增强。上一轮代码/结果执行与推送已核实，两个实际源候选关闭，是取得新证据的 progress，不是等待或技术阻塞。
 
 ## 源证据与方向选择
 
@@ -29,3 +29,31 @@ INITIAL空原moments、FINAL保留savedm/v/step，两状态固定stageLR2e-4/原
 run `20261015-phase1-SIGTIME-evidence-responsibility-sourceL-s2026092701-r01`，一个owner codex/root/evidence-responsibility-20261015，actualcode/config Gitcommit写release_commit.txt。普通N607/CVS-RFFI Python/CPU2/GPU0，CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_sourceL_20261015_r01`，命令 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_sourceL_20261015_r01/experiments/cvs_evidence_responsibility20/runner.py /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_sourceL_20261015_r01/resolved_request.json`，唯一输出 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-evidence-responsibility-sourceL-s2026092701-r01/source_diagnostic`、日志 `/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_sourceL_20261015_r01/source_probe.stdout.log`。权限/来源/非有限技术失败保存且只停止ownedassay，先核对再恢复；健康任务不触碰。一个focusednegativecheck/唯一P0P1review、一个preflight/归档SHA比较/remotecompile、PID/CWD/cmd/GPU/loggrowth和独立终态。REJECTED_EXTRA_GATE：brainstorming额外设计审批/固定plan/specreview由用户CVS最小白名单覆盖，已有明确研究授权直接推进，不新增审批。
 
 历史SIG_TIME/CENTER25K/COMPACT_LINEAR/LONG_SILU正收益按各自同row与预算保留，SIG_TIME CUDA初始化混杂继续披露；不能相加、择target最高父或以source资格冒充84%三seed结果。Phase1/defaulthead/hiddenU/cleanonly测试范围保持。
+
+
+## 真实源结果
+
+执行 `34b8309871822c2756169f39183133d1a4af839a`，wall 17.14 s，24cells/16paired/120RX/96branch，所有CPsmoke、oncearchive/compile、PID/CWD/argv/GPU/loggrowth、live不变与独立自然终态均 VERIFIED，无技术失败。资格由完整24文件及summary逐项一致复算。
+
+| state | ordinal | active/720 | distinct/180 | auxF/main cos | auxF/JOINT cos | ROUTED−ZERO CE | ROUTED−JOINT CE |
+|---|---|---:|---:|---:|---:|---:|---:|
+| INITIAL | 2 | 261 | 179 | 0.933353 | 0.948977 | -0.00176465 | -0.00125773 |
+| INITIAL | 19 | 257 | 178 | 0.932302 | 0.949846 | -0.00261569 | -0.00202279 |
+| INITIAL | 37 | 250 | 177 | 0.932412 | 0.951916 | -0.00116669 | -0.000695456 |
+| INITIAL | 54 | 259 | 180 | 0.932854 | 0.948726 | -0.00189188 | -0.00147235 |
+| FINAL20 | 2 | 130 | 117 | 0.407263 | 0.407877 | -7.97402e-07 | +1.05745e-06 |
+| FINAL20 | 19 | 125 | 119 | 0.501953 | 0.672260 | -9.57696e-07 | +3.03901e-06 |
+| FINAL20 | 37 | 131 | 120 | 0.676765 | 0.672858 | +5.01574e-07 | +5.59748e-06 |
+| FINAL20 | 54 | 130 | 121 | 0.351874 | 0.521627 | -1.98932e-08 | -4.18356e-06 |
+
+资格：{"passed": true, "stage_signal": "SCRATCH20_SIGNAL", "qualified_ordinals_by_state": {"INITIAL": [2, 19, 54], "FINAL20": []}, "cell_conditions": [{"state": "INITIAL", "ordinal": 2, "qualified": true, "failed_conditions": []}, {"state": "INITIAL", "ordinal": 19, "qualified": true, "failed_conditions": []}, {"state": "INITIAL", "ordinal": 37, "qualified": false, "failed_conditions": ["near_JOINT_gradient_rescaling"]}, {"state": "INITIAL", "ordinal": 54, "qualified": true, "failed_conditions": []}, {"state": "FINAL20", "ordinal": 2, "qualified": false, "failed_conditions": ["ZERO:no_held_positive_burden_difference_gain", "ZERO:no_held_full_CE_difference_gain", "ZERO:ACTUAL_no_original_identity_CE_gain", "ZERO:PRE_W_no_original_identity_CE_gain", "JOINT_GAP:no_held_positive_burden_difference_gain", "JOINT_GAP:no_held_full_CE_difference_gain", "JOINT_GAP:ACTUAL_no_original_identity_CE_gain", "JOINT_GAP:PRE_W_no_original_identity_CE_gain"]}, {"state": "FINAL20", "ordinal": 19, "qualified": false, "failed_conditions": ["ZERO:no_held_positive_burden_difference_gain", "ZERO:no_held_full_CE_difference_gain", "ZERO:ACTUAL_no_original_identity_CE_gain", "ZERO:PRE_W_no_original_identity_CE_gain", "JOINT_GAP:no_held_positive_burden_difference_gain", "JOINT_GAP:no_held_full_CE_difference_gain", "JOINT_GAP:ACTUAL_no_original_identity_CE_gain", "JOINT_GAP:PRE_W_no_original_identity_CE_gain"]}, {"state": "FINAL20", "ordinal": 37, "qualified": false, "failed_conditions": ["ZERO:no_held_positive_burden_difference_gain", "ZERO:no_held_full_CE_difference_gain", "ZERO:ACTUAL_no_original_identity_CE_gain", "ZERO:PRE_W_no_original_identity_CE_gain", "JOINT_GAP:no_held_positive_burden_difference_gain", "JOINT_GAP:no_held_full_CE_difference_gain", "JOINT_GAP:ACTUAL_no_original_identity_CE_gain", "JOINT_GAP:PRE_W_no_original_identity_CE_gain"]}, {"state": "FINAL20", "ordinal": 54, "qualified": false, "failed_conditions": ["ZERO:no_held_positive_burden_difference_gain", "ZERO:no_held_full_CE_difference_gain", "ZERO:ACTUAL_no_original_identity_CE_gain", "ZERO:PRE_W_no_original_identity_CE_gain", "JOINT_GAP:no_held_positive_burden_difference_gain", "JOINT_GAP:no_held_full_CE_difference_gain", "JOINT_GAP:ACTUAL_no_original_identity_CE_gain", "JOINT_GAP:PRE_W_no_original_identity_CE_gain"]}], "controls_not_fallback": true, "interpretation": "Actual component responsibility, distinct gradient and source identity benefit, not20epoch/unseenRX/DG"}
+
+INITIAL250至261/720active，177至180/180不同origin。ROUTED与JOINT loss同为.03036至.03148，但auxnorm约.533至.547对JOINT1.125至1.183，F/main cos .93230至.93335对JOINT .97434至.97639。ROUTED/JOINT cos .94873至.95192；ordinal37超过固定.95，即使该组原accuracy多对1包也不例外。其余2/19/54全部条件通过，符合至少2/4的预登记scratch20资格。
+
+INITIAL heldPRE_W CE相对ZERO四降.001167至.002616、相对JOINT四降.000695至.002023；ACTUAL CE也四组均优于两控制，positiveburden四降。三组accuracy维持共同主CE后的23.8889%，ordinal37到24.4444%；不能把共同从19.4444%的提升归给辅助。F区别约.00778至.00871，14至17浅中层tensor及实际joint改变；source rawgeometry margin只有微小混合变化，不能据此宣称泛化表征已经提升。等scalar/mask下的路由产生了真实方向和实际默认判别优势，仍可能部分与较小gradient强度相关，尚无完整训练效力证明。
+
+FINAL20 current125至131/720active、117至121不同origin；ROUTED/main cos .35187至.67676，ROUTED/JOINT .40788至.67286，新的方向存在。held原accuracy皆100%，相对ZERO原CE三微降一微升，幅度最多约9.58e-7；相对JOINT三升一降，不能通过任何一组1e-5的实际identity与burden资格。固定FINAL0/4，故不从final20续训，也不通过提高λ或放宽门槛挽救晚期。该结果支持把机制放到特征形成阶段检验，而非已训练特征后期修整。
+
+继续执行原授权的完整scratch20实验。新run `20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r01`，BASE_CE/BASE_SSL/JOINT_GAP/ROUTED_GAP四条件三seed，先首seed源健康/实际信号，再另两seed；所有4条件重新从零构造，不继承sourceassay权重。纯CE20L/0U真实关闭U/EMA，其余13L+7U保留原oldgate/ownEMA，默认头联合训练。新辅助日程在main真实结果前固定为epoch1至13、每16step、180calls/32400额外L180packet前向/model；进入pseudo后辅助实际关闭，原U任务继续。两baseline零额外bank/IQ，JOINT和ROUTED成本/标量相同；成本差明确披露。source当前证据给出scratch资格与晚期0/4，不据target或主训练结果改日程。每rowfinal20后自动clean预测、独立truth-last评分；测试分数不能影响扩seed或停止健康任务。
+
+本source-only原型完整分析，并不等于完整main训练完成、clean新准确率或84%目标达成。完整[24单元](source_cells.csv)、[120RX](source_RX_metrics.csv)、[96branch](source_branch_metrics.csv)、[16paired](paired_regimes.csv)、[证据](result_evidence.json)保留；历史正结构/CENTER25K路线及全部相关负结果继续保留。0actualtrain/headfit/EMA/U/V/target。
