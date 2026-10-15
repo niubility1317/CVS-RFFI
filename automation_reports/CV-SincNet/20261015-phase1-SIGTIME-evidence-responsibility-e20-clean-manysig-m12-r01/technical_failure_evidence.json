@@ -46,11 +46,13 @@
   "failure_step": 16,
   "fingerprint": "Once-only actual AdamW differs from shadow per element",
   "failure_is_scientific_falsification": false,
-  "root_cause": "UNRESOLVED_PENDING_CUDA_REPRODUCTION",
+  "root_cause": "Local CUDA synthetic actual-constructor reproduction verifies repeated autograd proxy versus real backward numerical mismatch; exact R01 input replay not performed.",
   "real_checkpoint_no_query_preflight": "PASS",
   "automatic_retry": false,
   "partial_outputs_preserved": true,
   "healthy_unrelated_processes_modified": false,
   "prediction_or_truth_scoring_started": false,
-  "goal84_completed": false
+  "goal84_completed": false,
+  "recovery_run": "20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02",
+  "recovery_evidence_ref": "../20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02/cuda_shadow_regression_evidence.json"
 }

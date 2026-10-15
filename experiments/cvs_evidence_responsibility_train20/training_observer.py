@@ -1,6 +1,7 @@
 """Late student-only responsibility callbacks and once-only native AdamW probes."""
 from contextlib import contextmanager
 from pathlib import Path
+import copy
 import json
 
 import torch
@@ -9,7 +10,76 @@ from . import design as d, model as model_api
 from .callback import Callback, BASELINES, selected_names
 from experiments.cvs_identity_correspondence20.bank import banks
 from experiments.cvs_crossrx_sharpness20.training_observer import _sinc_snapshot, _norm, _auxiliary_names
-from experiments.cvs_u_schedule50.counterfactual import simulate, _preserve_rng
+from experiments.cvs_u_schedule50.counterfactual import (
+    simulate, _preserve_rng, _rng_snapshot, _equal, _live_snapshot, _live_readback,
+)
+
+
+SHADOW_ATOL=2e-7
+SHADOW_RTOL=2e-6
+
+
+@torch.no_grad()
+def actual_postclip_oracle(optimizer,original_step):
+    """One temporary original AdamW step using the real already-clipped grads.
+
+    This runs immediately before the actual step. Parameter deepcopy does not
+    retain .grad, so every dense gradient/None is explicitly copied in native
+    traversal order. No second clipping or recomputed autograd gradient occurs.
+    """
+    parameters=tuple(p for group in optimizer.param_groups for p in group['params'])
+    if len(parameters)!=188 or len({id(p) for p in parameters})!=188:
+        raise ValueError('Actual-gradient oracle requires the original188 unique parameters')
+    before=_live_snapshot(optimizer); rng=_rng_snapshot()
+    temporary=copy.deepcopy(optimizer)
+    copies=tuple(p for group in temporary.param_groups for p in group['params'])
+    if len(copies)!=188 or any(p is q for p,q in zip(parameters,copies)):
+        raise ValueError('Actual-gradient oracle must own188 independent same-order parameters')
+    for parameter,cloned in zip(parameters,copies):
+        if parameter.grad is not None and (parameter.grad.layout!=torch.strided or not bool(torch.isfinite(parameter.grad).all())):
+            raise ValueError('Actual-gradient oracle requires finite dense already-clipped gradients')
+        cloned.grad=None if parameter.grad is None else parameter.grad.detach().clone()
+    original_step(temporary)
+    after=tuple(p.detach().clone() for p in copies)
+    if any(not bool(torch.isfinite(value).all()) for value in after):
+        raise ValueError('Actual-gradient oracle produced nonfinite parameters')
+    preservation=_live_readback(optimizer,before)
+    rng_unchanged=_equal(rng,_rng_snapshot())
+    if not all(preservation.values()) or not rng_unchanged:
+        raise RuntimeError('Actual-gradient oracle changed live parameters/gradients/state/RNG')
+    return dict(after=after,summary=dict(preservation,parameter_count=188,
+        parameter_traversal_preserved=True,actual_shadow_reference=d.ACTUAL_SHADOW_REFERENCE,
+        actual_postclip_gradients_copied=True,active_gradient_count=sum(p.grad is not None for p in parameters),
+        second_gradient_clip=False,temporary_AdamW_steps=1,rng_unchanged=rng_unchanged))
+
+
+def _step_comparison(parameters,reference,names):
+    """Only scalar errors/counts are public; never serialize parameter values."""
+    if len(parameters)!=len(reference) or len(parameters)!=len(names):
+        raise ValueError('Actual/reference/name traversal lengths differ')
+    first=None; maximum=0.; maximum_tolerance=0.; matched=True; all_finite=True
+    for name,parameter,expected in zip(names,parameters,reference):
+        actual=parameter.detach()
+        if actual.shape!=expected.shape or actual.dtype!=expected.dtype or actual.device!=expected.device:
+            raise ValueError('Actual/reference shape/dtype/device differs: '+name)
+        difference=(actual-expected).abs(); tolerance=SHADOW_ATOL+SHADOW_RTOL*expected.abs()
+        finite=bool(torch.isfinite(difference).all()) and bool(torch.isfinite(tolerance).all())
+        all_finite=all_finite and finite
+        local_error=float(difference.max()) if finite else None
+        local_tolerance=float(tolerance.max()) if finite else None
+        agrees=torch.allclose(actual,expected,atol=SHADOW_ATOL,rtol=SHADOW_RTOL)
+        if finite:
+            maximum=max(maximum,local_error); maximum_tolerance=max(maximum_tolerance,local_tolerance)
+        if not agrees:
+            matched=False
+            if first is None:
+                first=dict(parameter=name,max_abs_error=local_error,max_allowed_tolerance=local_tolerance,
+                    max_error_to_allowed_tolerance_ratio=float((difference/tolerance).max()) if finite else None,
+                    mismatched_coordinate_count=int((difference>tolerance).sum()) if finite else None,
+                    actual_nonfinite_count=int((~torch.isfinite(actual)).sum()),
+                    reference_nonfinite_count=int((~torch.isfinite(expected)).sum()))
+    return dict(per_element_allclose=matched,max_abs_error=maximum if all_finite else None,
+        max_allowed_tolerance=maximum_tolerance,first_mismatch=first)
 
 
 class LengthOnlyUnlabeled:
@@ -110,8 +180,12 @@ class TrainingObserver:
                 selected_W_gain_gradients_None=True,protected_parameter_names=[name for name in names if name not in self.callback.selected_names],
                 main_base_includes_actual_U=True,actual_unlabeled_loss=float(unlabeled_loss.detach()),
                 auxiliary_added_once_via_standard_Lhook=True,callback=pending['callback_record'],
-                temporary_AdamW_steps=2,actual_AdamW_increment=_auxiliary_names(shadow['summary']))
-            self.actual_probes.append(record); self.pending_update=dict(optimizer=optimizer,params=params,shadow=shadow,record=record)
+                temporary_AdamW_steps=d.TEMPORARY_STEPS_PER_PROBE,
+                temporary_steps_breakdown=dict(autograd_gradient_proxies=2,actual_postclip_oracle=1),
+                actual_AdamW_increment=_auxiliary_names(shadow['summary']),
+                actual_AdamW_increment_reference='autograd gradient proxy; approximate counterfactual increment',
+                autograd_proxy_is_approximate=True,not_exact_actual_auxiliary_increment=True)
+            self.actual_probes.append(record); self.pending_update=dict(optimizer=optimizer,params=params,names=names,shadow=shadow,record=record)
         finally: self.pending_aux=None
 
     def _write_report(self,epoch):
@@ -121,7 +195,7 @@ class TrainingObserver:
             U_packet_observations=self.U_packets,auxiliary_calls=summary['scheduled_calls'],
             eligible_calls=summary['eligible_calls'],positive_gap_calls=self.positive_gap_calls,
             optimizer_probe_steps=self.probe_steps,active_gradient_probe_steps=self.active_gradient_probe_steps,
-            actual_probes=self.actual_probes,extra_temporary_AdamW_steps=2*len(self.probe_steps),
+            actual_probes=self.actual_probes,extra_temporary_AdamW_steps=d.TEMPORARY_STEPS_PER_PROBE*len(self.probe_steps),
             label_epochs=self.c['label_epochs'],pseudo_epochs=self.c['pseudo_epochs'],baseline_recipe=self.c['training_recipe'],
             default_head_joint_training=True,original_L_loader_unchanged=True,original_U_sampler_unchanged=True,
             BASE_CE_U_length_only=self.c['arm']=='BASE_CE',own_EMA_enabled=self.c['execution_overrides']['use_ema_teacher'],
@@ -162,23 +236,42 @@ class TrainingObserver:
             result=core(*args,**kwargs)
             self._bind()  # Native own EMA deepcopy precedes the first real L core loss.
             return result
+        def write_record(record):
+            with (self.out/'actual_responsibility_optimizer_increment.jsonl').open('a',encoding='utf-8') as stream:
+                stream.write(json.dumps(record,allow_nan=False)+'\n')
         def actual_step(optimizer,*args,**kwargs):
+            pending=self.pending_update
+            observes=pending is not None and optimizer is pending['optimizer']
+            if observes:
+                try:
+                    oracle=actual_postclip_oracle(optimizer,step)
+                except Exception as error:
+                    pending['record']['actual_update']=dict(actual_optimizer_steps=0,
+                        actual_shadow_reference=d.ACTUAL_SHADOW_REFERENCE,
+                        oracle_technical_failure=type(error).__name__,failure_reason='Actual postclip oracle could not produce the reference')
+                    write_record(pending['record'])
+                    raise
             result=step(optimizer,*args,**kwargs)
             if optimizer is self.optimizer: self.actual_steps+=1
-            pending=self.pending_update
-            if pending is not None and optimizer is pending['optimizer']:
-                expected=pending['shadow']['total_after']; atol,rtol=2e-7,2e-6
-                per_element=all(torch.allclose(p.detach(),q,atol=atol,rtol=rtol) for p,q in zip(pending['params'],expected))
-                error=max(float((p.detach()-q).abs().max()) for p,q in zip(pending['params'],expected))
-                legacy_tolerance=max(float((atol+rtol*q.abs()).max()) for q in expected)
-                if not per_element: raise ValueError('Once-only actual AdamW differs from shadow per element')
-                pending['record']['actual_update']=dict(actual_optimizer_steps=1,actual_shadow_max_abs_error=error,
-                    actual_shadow_FP32_tolerance=legacy_tolerance,actual_shadow_per_element_allclose=True,
-                    actual_shadow_per_element_atol=atol,actual_shadow_per_element_rtol=rtol,
-                    bitwise_equality_claimed=False,main_base_includes_actual_U=True)
+            if observes:
+                actual=_step_comparison(pending['params'],oracle['after'],pending['names'])
+                proxy=_step_comparison(pending['params'],pending['shadow']['total_after'],pending['names'])
+                pending['record']['actual_update']=dict(actual_optimizer_steps=1,
+                    actual_shadow_reference=d.ACTUAL_SHADOW_REFERENCE,
+                    actual_shadow_max_abs_error=actual['max_abs_error'],actual_shadow_FP32_tolerance=actual['max_allowed_tolerance'],
+                    actual_shadow_per_element_allclose=actual['per_element_allclose'],
+                    actual_shadow_per_element_atol=SHADOW_ATOL,actual_shadow_per_element_rtol=SHADOW_RTOL,
+                    first_bad_parameter=actual['first_mismatch'],actual_gradient_oracle=oracle['summary'],
+                    autograd_proxy_max_abs_error=proxy['max_abs_error'],
+                    autograd_proxy_per_element_allclose=proxy['per_element_allclose'],
+                    autograd_proxy_first_mismatch=proxy['first_mismatch'],autograd_proxy_is_approximate=True,
+                    not_exact_actual_auxiliary_increment=True,bitwise_equality_claimed=False,main_base_includes_actual_U=True)
+                # Persist the scalar-only first mismatch before raising, so a
+                # technical failure is diagnosable without exporting weights.
+                write_record(pending['record'])
+                if not actual['per_element_allclose']:
+                    raise ValueError('Once-only actual AdamW differs from actual-gradient oracle: '+actual['first_mismatch']['parameter'])
                 self.probe_steps.append(pending['record']['step'])
-                with (self.out/'actual_responsibility_optimizer_increment.jsonl').open('a',encoding='utf-8') as stream:
-                    stream.write(json.dumps(pending['record'],allow_nan=False)+'\n')
                 self.pending_update=None
             return result
         native.compute_core_losses,torch.optim.AdamW.step=losses_wrapper,actual_step

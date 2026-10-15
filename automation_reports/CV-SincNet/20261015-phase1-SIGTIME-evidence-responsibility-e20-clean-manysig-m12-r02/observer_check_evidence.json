@@ -1,0 +1,57 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "actual_callback_scope_tensors": 68,
+  "original_parameter_traversal188": true,
+  "four_arms_full_L_callback_and_late_calls": 4440,
+  "scheduled_by_arm": {
+    "BASE_CE": 0,
+    "BASE_SSL": 0,
+    "JOINT_GAP": 180,
+    "ROUTED_GAP": 180
+  },
+  "capture_calls_by_arm": {
+    "BASE_CE": 0,
+    "BASE_SSL": 0,
+    "JOINT_GAP": 180,
+    "ROUTED_GAP": 180
+  },
+  "active_bank_builder_synthetic_IQ_reads": 900,
+  "active_auxiliary_IQ_packets": 32400,
+  "held_bank_not_in_main_graph": true,
+  "baseline_bank_reads_and_extra_capture_zero": true,
+  "BASE_CE_U_length_only_no_iteration": true,
+  "callbacks_bound_after_teacher_deepcopy": true,
+  "W_three_gain_auxiliary_gradients_None": true,
+  "nonL_role_rejected_before_model_or_labels": true,
+  "duplicate_step_and_wrong_L_count_rejected": true,
+  "actual_reviewed_objective_at_four_probes": true,
+  "synthetic_actual_AdamW_steps": 16,
+  "temporary_AdamW_steps": 48,
+  "temporary_steps_per_probe": 3,
+  "actual_shadow_reference": "actual_postclip_gradients",
+  "once_only_update_per_element_shadow_pass": true,
+  "exact_input_oracle_regression": {
+    "parameters": 188,
+    "initialized_moments": true,
+    "None_and_zero_preserved": true,
+    "live_parameters_gradients_state_RNG_unchanged": true,
+    "no_second_clip": true,
+    "following_actual_step_bitwise_match": true
+  },
+  "approximate_proxy_disagreement_nonblocking": true,
+  "deliberately_damaged_actual_step": {
+    "rejected": true,
+    "scalar_failure_saved_before_raise": true,
+    "first_bad_parameter": "id_backbone.encoder.response_gain",
+    "max_abs_error": 0.0010000020265579224,
+    "max_error_to_allowed_tolerance_ratio": 1666.6700439453125
+  },
+  "full_U_exposure_count_preserved": true,
+  "native_L_counter_flags_RNG_caches_hooks_restored": true,
+  "true_IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "native_constructors": 0,
+  "training_launches": 0,
+  "limitation": "Synthetic full callback schedule; only four real mock optimizer updates per arm, not full native training"
+}

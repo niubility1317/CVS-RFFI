@@ -99,6 +99,67 @@ def _fake_capture(model,x):
         return dict(raw,joint=joint)
 
 
+def _oracle_regression():
+    model=Model(); parameters=tuple(model.parameters())
+    optimizer=torch.optim.AdamW(parameters,lr=.002,weight_decay=.01)
+    step=torch.optim.AdamW.step
+    for p in parameters: p.grad=torch.ones_like(p)*.2
+    step(optimizer)  # Existing moments, not an empty-state-only oracle check.
+    for index,p in enumerate(parameters):
+        p.grad=None if index==0 else torch.zeros_like(p) if index==1 else torch.ones_like(p)*.3
+    torch.nn.utils.clip_grad_norm_(parameters,5.)
+    before=api._live_snapshot(optimizer); rng=_rng_snapshot()
+    oracle=api.actual_postclip_oracle(optimizer,step)
+    assert all(api._live_readback(optimizer,before).values()) and _equal(rng,_rng_snapshot())
+    assert oracle['summary']['parameter_count']==188 and not oracle['summary']['second_gradient_clip']
+    assert oracle['summary']['actual_postclip_gradients_copied'] and oracle['summary']['temporary_AdamW_steps']==1
+    step(optimizer)
+    assert all(torch.equal(p,q) for p,q in zip(parameters,oracle['after']))
+    return dict(parameters=188,initialized_moments=True,None_and_zero_preserved=True,
+        live_parameters_gradients_state_RNG_unchanged=True,no_second_clip=True,following_actual_step_bitwise_match=True)
+
+
+def _damaged_actual_step_must_fail(out):
+    c=d.config(next(row for row in d.rows() if row['arm']=='BASE_CE'))
+    model=Model().train(); native=Native(); observer=TrainingObserver(c)
+    optimizer=torch.optim.AdamW(model.parameters(),lr=.002,weight_decay=.01)
+    original=torch.optim.AdamW.step; first_parameter=next(model.parameters())
+    def corrupt_actual(used_optimizer,*args,**kwargs):
+        result=original(used_optimizer,*args,**kwargs)
+        if used_optimizer is optimizer:
+            with torch.no_grad(): first_parameter.add_(.001)
+        return result
+    ctx=dict(train_loader=SimpleNamespace(dataset=ForbiddenDataset()),unlabeled_loader=ULoader())
+    with patch.object(api.model_api,'classifier',lambda m:m.get_submodule(HEAD_PATH)), \
+         patch.object(torch.optim.AdamW,'step',corrupt_actual):
+        with observer.native_scope(native):
+            observer.data(native,ctx,out); observer.initialize(model,c,out)
+            model._feature_l_steps=16; native.compute_core_losses()
+            base=(model.other[0]+model.get_submodule(HEAD_PATH).weight.square().mean()).square()
+            auxiliary,_=model._source_labeled_feature_hook(model=model,labeled_output={},labels=None,extra=None,
+                domains=None,optimizer_step=16,identity_loss=base,labeled_count=128)
+            total=base+auxiliary
+            model._source_optimizer_update_probe_hook(model=model,optimizer=optimizer,epoch=1,batch_idx=16,
+                phase='label',optimizer_step=16,total_loss=total,unlabeled_loss=base*0,
+                labeled_count=128,unlabeled_count=0)
+            total.backward(); torch.nn.utils.clip_grad_norm_(model.parameters(),5.)
+            _raises(lambda:optimizer.step())
+            # The failing scalar record must exist before the exception escapes.
+            path=out/'actual_responsibility_optimizer_increment.jsonl'
+            record=json.loads(path.read_text(encoding='utf-8').splitlines()[-1]); update=record['actual_update']
+            first=update['first_bad_parameter']
+            assert update['actual_optimizer_steps']==1 and not update['actual_shadow_per_element_allclose']
+            assert update['actual_shadow_reference']==d.ACTUAL_SHADOW_REFERENCE
+            assert first['parameter']==next(iter(dict(model.named_parameters())))
+            assert first['max_abs_error']>first['max_allowed_tolerance'] and first['mismatched_coordinate_count']>0
+            assert observer.probe_steps==[] and observer.actual_steps==1
+            assert set(first)=={'parameter','max_abs_error','max_allowed_tolerance','max_error_to_allowed_tolerance_ratio',
+                'mismatched_coordinate_count','actual_nonfinite_count','reference_nonfinite_count'}
+            return dict(rejected=True,scalar_failure_saved_before_raise=True,
+                first_bad_parameter=first['parameter'],max_abs_error=first['max_abs_error'],
+                max_error_to_allowed_tolerance_ratio=first['max_error_to_allowed_tolerance_ratio'])
+
+
 def check():
     torch.set_num_threads(2)
     assert sum(d.active(step) for step in range(1,d.UPDATES+1))==180 and all(d.active(step) for step in d.PROBE_STEPS)
@@ -117,8 +178,10 @@ def check():
         _raises(lambda role=role:authority(model=object(),labeled_output=None,labels=object(),extra=None,
             domains=None,optimizer_step=1,identity_loss=None,labeled_count=128,role=role))
     assert authority.counts['calls']==0 and authority.model is None
+    oracle_regression=_oracle_regression()
     capture_counts={}; schedule_counts={}; total_actual_steps=0
     original_objective=callback_api.losses
+    original_simulate=api.simulate
     with TemporaryDirectory(prefix='responsibility20_observer_') as temp:
         for arm in d.ARMS:
             c=d.config(next(row for row in d.rows() if row['arm']==arm)); out=Path(temp)/arm; out.mkdir()
@@ -143,9 +206,16 @@ def check():
                 modes=('ZERO','JOINT_GAP','ROUTED_GAP')
                 return {mode:loss*0 if mode=='ZERO' else loss for mode in modes}, {
                     mode:dict(by_RX={str(rx):dict(mean_positive_burden=.01) for rx in (1,3,4,6,8)}) for mode in modes}
+            def proxy_disagreement(*args,**kwargs):
+                result=original_simulate(*args,**kwargs)
+                if arm=='BASE_CE':
+                    values=list(result['total_after']); values[0]=values[0].clone()+.001
+                    result['total_after']=tuple(values)
+                return result
             before_rng=_rng_snapshot(); before_flags=[module.training for module in model.modules()]
             with patch.object(api.model_api,'classifier',lambda m:m.get_submodule(HEAD_PATH)), \
-                 patch.object(callback_api,'capture',fake_capture), patch.object(callback_api,'losses',focused_objective):
+                 patch.object(callback_api,'capture',fake_capture), patch.object(callback_api,'losses',focused_objective), \
+                 patch.object(api,'simulate',proxy_disagreement):
                 with observer.native_scope(native):
                     observer.data(native,ctx,out); observer.initialize(model,c,out)
                     assert observer.bank is None if arm in callback_api.BASELINES else observer.bank is not None
@@ -179,11 +249,27 @@ def check():
                     assert report['extra_IQ_forwards']==expected*180 and report['extra_model_forward_calls']==expected
                     assert report['U_packet_observations']==(0 if arm=='BASE_CE' else 7*56700)
                     assert report['optimizer_probe_steps']==list(d.PROBE_STEPS) and len(report['actual_probes'])==4
+                    assert report['extra_temporary_AdamW_steps']==12
                     assert report['head_fit_updates']==report['extra_actual_optimizer_steps']==0
                     assert all(p['selected_W_gain_gradients_None'] and p['actual_update']['actual_optimizer_steps']==1
                         and p['actual_update']['actual_shadow_per_element_allclose']
+                        and p['actual_update']['actual_shadow_reference']==d.ACTUAL_SHADOW_REFERENCE
+                        and p['actual_update']['actual_shadow_per_element_atol']==2e-7
+                        and p['actual_update']['actual_shadow_per_element_rtol']==2e-6
+                        and p['actual_update']['actual_gradient_oracle']['parameter_count']==188
+                        and p['actual_update']['actual_gradient_oracle']['live_parameters_unchanged']
+                        and p['actual_update']['actual_gradient_oracle']['live_gradients_unchanged']
+                        and p['actual_update']['actual_gradient_oracle']['live_optimizer_state_unchanged']
+                        and p['actual_update']['actual_gradient_oracle']['rng_unchanged']
+                        and not p['actual_update']['actual_gradient_oracle']['second_gradient_clip']
+                        and p['temporary_AdamW_steps']==3 and p['autograd_proxy_is_approximate']
+                        and p['not_exact_actual_auxiliary_increment']
                         and p['actual_update']['actual_shadow_max_abs_error']<=p['actual_update']['actual_shadow_FP32_tolerance']
                         for p in report['actual_probes'])
+                    if arm=='BASE_CE':
+                        assert all(not p['actual_update']['autograd_proxy_per_element_allclose']
+                            and p['actual_update']['autograd_proxy_max_abs_error']>2e-7
+                            for p in report['actual_probes'])
                     if arm in callback_api.BASELINES:
                         assert not captured and not actual_objective_steps and report['bank_source_IQ_reads']==0
                         assert all(p['selected_auxiliary_gradient_norm']==0 for p in report['actual_probes'])
@@ -207,6 +293,8 @@ def check():
             assert all(not module._forward_hooks and not module._forward_pre_hooks for module in model.modules())
             assert model.get_submodule(PREFIX)._filter_cache_key==('original',)
             assert torch.equal(model.get_submodule(PREFIX)._filter_cache,torch.tensor([7.]))
+        damaged=Path(temp)/'damaged_actual_step'; damaged.mkdir()
+        actual_failure=_damaged_actual_step_must_fail(damaged)
     return dict(status='PASS',device='cpu',actual_callback_scope_tensors=68,original_parameter_traversal188=True,
         four_arms_full_L_callback_and_late_calls=4440,scheduled_by_arm=schedule_counts,capture_calls_by_arm=capture_counts,
         active_bank_builder_synthetic_IQ_reads=900,active_auxiliary_IQ_packets=32400,held_bank_not_in_main_graph=True,
@@ -214,7 +302,10 @@ def check():
         callbacks_bound_after_teacher_deepcopy=True,W_three_gain_auxiliary_gradients_None=True,
         nonL_role_rejected_before_model_or_labels=True,duplicate_step_and_wrong_L_count_rejected=True,
         actual_reviewed_objective_at_four_probes=True,synthetic_actual_AdamW_steps=total_actual_steps,
-        temporary_AdamW_steps=total_actual_steps*2,once_only_update_per_element_shadow_pass=True,
+        temporary_AdamW_steps=total_actual_steps*3,temporary_steps_per_probe=3,
+        actual_shadow_reference=d.ACTUAL_SHADOW_REFERENCE,once_only_update_per_element_shadow_pass=True,
+        exact_input_oracle_regression=oracle_regression,approximate_proxy_disagreement_nonblocking=True,
+        deliberately_damaged_actual_step=actual_failure,
         full_U_exposure_count_preserved=True,native_L_counter_flags_RNG_caches_hooks_restored=True,
         true_IQ_reads=0,checkpoint_reads=0,native_constructors=0,training_launches=0,
         limitation='Synthetic full callback schedule; only four real mock optimizer updates per arm, not full native training')

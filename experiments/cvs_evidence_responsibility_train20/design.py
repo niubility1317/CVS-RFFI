@@ -3,14 +3,16 @@ from pathlib import Path
 from experiments.cvs_crossrx_sharpness20 import design as parent
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,CAPSULE,TRUTH,CLASSES,SEEDS,FULL_FP32_POLICY,read,write=(getattr(parent,k) for k in ('PROJECT','SOURCE','CAPSULE','TRUTH','CLASSES','SEEDS','FULL_FP32_POLICY','read','write'))
-RUN='20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r01'
-RELEASE='cvs_SIGTIME_evidence_responsibility_train20_20261015_r01'
+RUN='20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02'
+RELEASE='cvs_SIGTIME_evidence_responsibility_train20_20261015_r02'
 OWNER='codex/root/evidence-responsibility-train20-20261015'
 BASE=Path(PROJECT)/'runs'/RUN
 ARMS=('BASE_CE','BASE_SSL','JOINT_GAP','ROUTED_GAP');PRIMARY=('ROUTED_GAP',)
 VIEWS=('clean',);READOUTS=('NATIVE_HEAD',)
 EPOCHS=20;STEPS=222;UPDATES=4440;FREQUENCY=16;AUX_EPOCHS=13;SCHEDULED_CALLS=180
 PROBE_STEPS=(16,896,1776,2880)
+TEMPORARY_STEPS_PER_PROBE=3
+ACTUAL_SHADOW_REFERENCE='actual_postclip_gradients'
 TITLE='E20真实证据责任：等损失梯度路由与原默认头匹配矩阵'
 PAIRS=[('ROUTED_GAP','BASE_SSL'),('ROUTED_GAP','JOINT_GAP'),('JOINT_GAP','BASE_SSL'),('BASE_SSL','BASE_CE')]
 SOURCE_GATE=dict(final_L_CE_max=.5,V_mean_drop_max=.01,V_worst_RX_drop_max=.02,
@@ -45,7 +47,7 @@ def config(row):
         baseline_definition='Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.',
         source_falsification=dict(SOURCE_GATE),goal=dict(primary='ROUTED_GAP',clean_three_seed_mean=.84,feedback_to_training=False),
         budget_authorization='Source INITIAL3/4 qualifies scratch20 only. Fourfirstseed then8 after fixedsource health/signal. 0weightinheritance.',
-        cost_claim='12scratch20/240modelepoch/53280realupdates; firstseed4=80epoch/17760updates. JOINT/ROUTED180calls32400extraL/model; baseline0extraIQ. 8temporaryAdamW probes/model countedseparate; no newparameters/heads.')
+        cost_claim='12scratch20/240modelepoch/53280realupdates; firstseed4=80epoch/17760updates. JOINT/ROUTED180calls32400extraL/model; baseline0extraIQ. 12temporaryAdamW probes/model countedseparate:8 approximate autograd counterfactual steps+4 actual-postclip-gradient oracle steps; no newparameters/heads.')
 def validate(c):
     row=next((r for r in rows() if r['row_id']==c.get('row_id')),None)
     if row is None or c!=config(row):raise ValueError('Fixed responsibility E20 configuration differs')

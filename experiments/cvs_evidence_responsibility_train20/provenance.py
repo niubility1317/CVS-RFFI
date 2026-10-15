@@ -117,8 +117,12 @@ def validate_evidence(c, done, initial, freeze, resolved, actual_args,
         if (probe.get('epoch') != epoch or probe.get('phase') != phase
                 or probe.get('selected_W_gain_gradients_None') is not True
                 or probe.get('main_base_includes_actual_U') is not True
-                or probe.get('temporary_AdamW_steps') != 2
+                or probe.get('temporary_AdamW_steps') != d.TEMPORARY_STEPS_PER_PROBE
                 or update.get('actual_optimizer_steps') != 1
+                or update.get('actual_shadow_reference') != d.ACTUAL_SHADOW_REFERENCE
+                or update.get('actual_shadow_per_element_allclose') is not True
+                or update.get('actual_shadow_per_element_atol') != 2e-7
+                or update.get('actual_shadow_per_element_rtol') != 2e-6
                 or not isinstance(error, (int, float)) or not math.isfinite(error)
                 or not isinstance(tolerance, (int, float)) or not math.isfinite(tolerance)
                 or error < 0 or tolerance <= 0 or error > tolerance):

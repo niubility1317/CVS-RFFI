@@ -1,0 +1,60 @@
+{
+  "status": "VERIFIED_SYNTHETIC_REGRESSION_REPRODUCED",
+  "parameter_tensors": 188,
+  "synthetic_steps": 16,
+  "synthetic_batch": 128,
+  "label_smoothing": 0.0,
+  "AMP": false,
+  "os_gradient_surgery": false,
+  "max_grad_norm": 5.0,
+  "CPU": {
+    "torch_version": "2.10.0+cu128",
+    "precision": "FP32 CPU; TF32 not applicable",
+    "direct_proxy_raw_gradient_max_abs_difference": 0.0,
+    "direct_proxy_shadow_max_abs_error": 0.0,
+    "actual_backward_raw_gradient_shadow_max_abs_error": 0.0,
+    "failed_tensor_count": 0,
+    "initial_unassigned_gradient_postclip_oracle_excluded": true
+  },
+  "CUDA": {
+    "torch_version": "2.10.0+cu128",
+    "cuda_build_version": "12.8",
+    "precision": "FULL_FP32_POLICY",
+    "precision_flags": {
+      "matmul_allow_tf32": false,
+      "cudnn_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false
+    },
+    "failed_tensor_count": 2,
+    "only_sinc_coordinate_tensors_failed": true,
+    "failed_tensor_names": [
+      "low_coordinate",
+      "band_coordinate"
+    ],
+    "raw_gradient_max_abs_difference": 4.5474905618902994e-08,
+    "equivalent_total_base_proxy_grad_max_abs_difference": 9.09490722733608e-08,
+    "direct_proxy_shadow_max_abs_error": 8.530914783477783e-07,
+    "actual_backward_raw_gradient_shadow_max_abs_error": 0.0,
+    "postclip_actual_gradient_AdamW_oracle_max_abs_error": 0.0,
+    "None_gradient_mismatch_count": 0,
+    "all_gradient_strides_match": true,
+    "direct_clip_factor": 1.0,
+    "actual_raw_clip_factor": 1.0,
+    "sinc_low_parameter_max_abs_error": 4.939502105116844e-07,
+    "sinc_band_parameter_max_abs_error": 8.530914783477783e-07
+  },
+  "conclusion": "Repeated differentiation proxy is not numerically identical to actual backward; actual-gradient AdamW reproduction is exact in this CUDA fixture.",
+  "limitations": [
+    "Synthetic actual constructor plus native core CE and baseline auxiliary zero; not the full native training loop or JOINT auxiliary.",
+    "No actual source IQ/checkpoint or remote R01 state was accessed.",
+    "The specific GPU reduction/kernel producing the gradient difference was not isolated.",
+    "No tolerance adjustment, production modification, or efficacy claim."
+  ],
+  "model_weights_saved": false,
+  "IQ_saved": false,
+  "runtime_paths_saved": false,
+  "real_data_reads": 0,
+  "checkpoint_reads": 0,
+  "remote_actions": 0
+}

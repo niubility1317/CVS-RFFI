@@ -46,7 +46,11 @@ def fixture(c):
         step=step, epoch=(step - 1) // d.STEPS + 1,
         phase='label' if (step - 1) // d.STEPS + 1 <= c['label_epochs'] else 'pseudo',
         selected_W_gain_gradients_None=True, main_base_includes_actual_U=True,
-        temporary_AdamW_steps=2, actual_update=dict(actual_optimizer_steps=1,
+        temporary_AdamW_steps=d.TEMPORARY_STEPS_PER_PROBE,
+        actual_update=dict(actual_optimizer_steps=1,
+            actual_shadow_reference=d.ACTUAL_SHADOW_REFERENCE,
+            actual_shadow_per_element_allclose=True,
+            actual_shadow_per_element_atol=2e-7, actual_shadow_per_element_rtol=2e-6,
             actual_shadow_max_abs_error=0., actual_shadow_FP32_tolerance=1e-6))
         for step in d.PROBE_STEPS]
     source = dict(protocol_schema='p2_min_v1', phase2_data_status='VALIDATED_ONCE',
@@ -137,6 +141,15 @@ def check():
         altered['mechanism']['actual_probes'][0]['actual_update']['actual_optimizer_steps'] = 2
         rejects(lambda: validate_evidence(c, **altered))
         negatives += 1
+        for field, value in (
+                ('actual_shadow_reference', 'autograd_proxy'),
+                ('actual_shadow_per_element_allclose', False),
+                ('actual_shadow_per_element_atol', 1e-3),
+                ('actual_shadow_per_element_rtol', 1e-3)):
+            altered = copy.deepcopy(evidence)
+            altered['mechanism']['actual_probes'][0]['actual_update'][field] = value
+            rejects(lambda: validate_evidence(c, **altered))
+            negatives += 1
     # Paired error arithmetic is truth-side only; this fixture contains no labels.
     import numpy as np
     from .score import COMPLETE_MATRIX, paired_errors, validate_complete_matrix

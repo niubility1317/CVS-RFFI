@@ -1,6 +1,6 @@
 {
   "schema": "phase1_evidence_responsibility_train20_v1",
-  "run_id": "20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r01",
+  "run_id": "20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02",
   "stage": "repair",
   "arm": "JOINT_GAP",
   "model_seed": 2026092703,
@@ -13,7 +13,7 @@
   "variant": "reference_response",
   "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
   "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r01/JOINT_GAP-s2026092703/source",
+  "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02/JOINT_GAP-s2026092703/source",
   "epochs": 20,
   "steps_per_epoch": 222,
   "model_initialization": "scratch",
@@ -121,7 +121,7 @@
     "feedback_to_training": false
   },
   "budget_authorization": "Source INITIAL3/4 qualifies scratch20 only. Fourfirstseed then8 after fixedsource health/signal. 0weightinheritance.",
-  "cost_claim": "12scratch20/240modelepoch/53280realupdates; firstseed4=80epoch/17760updates. JOINT/ROUTED180calls32400extraL/model; baseline0extraIQ. 8temporaryAdamW probes/model countedseparate; no newparameters/heads.",
+  "cost_claim": "12scratch20/240modelepoch/53280realupdates; firstseed4=80epoch/17760updates. JOINT/ROUTED180calls32400extraL/model; baseline0extraIQ. 12temporaryAdamW probes/model countedseparate:8 approximate autograd counterfactual steps+4 actual-postclip-gradient oracle steps; no newparameters/heads.",
   "baseline_reference": null,
   "baseline_reuse": false,
   "readouts": [

@@ -47,3 +47,5 @@ run `20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r01`�
 **FAILED，退出后状态 VERIFIED。** 已启动的 BASE_CE、BASE_SSL、JOINT_GAP 首 seed 三行均在 step16 的诊断比较处退出；ROUTED_GAP 及其余种子尚未启动。调度器和三个 worker 已独立确认自然退出，无训练完整轮次、冻结模型、预测或 truth-last 评分。实际参数 label_smoothing=0，真实 no-query checkpoint preflight 已 PASS。失败不能作为责任路由机制的科学负结果。
 
 故障指纹为 `Once-only actual AdamW differs from shadow per element`，发生在实际更新与 autograd 推演结果的逐元素对照。当前 CPU 真实构造器合成输入未复现，CUDA 根因仍待核实；不得把推测写成结论，也不直接放宽容差。原不可变输出和部分产物保留，不在 R01 自动重试。修复仅限已定位的诊断问题，新 R02 保持四臂、三 seed、20 epoch、LS0、前 13 轮辅助及源规则不变，另行登记技术恢复。没有终止、重启或修改其他健康任务。见[独立终态证据](technical_failure_evidence.json)。84% 目标未完成。
+
+2026-10-15 后续定位：本地 CUDA 实际构造器合成输入复现相同类型的 Sinc autograd 影子误差；实际 backward/postclip 梯度 oracle 对全部 188 张量逐位一致。只修复诊断参照，新恢复轮次 [`20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02`](../20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02/report.md) 保持科学矩阵与原容差。远端 R01 输入未重放，原失败状态与产物保留。
