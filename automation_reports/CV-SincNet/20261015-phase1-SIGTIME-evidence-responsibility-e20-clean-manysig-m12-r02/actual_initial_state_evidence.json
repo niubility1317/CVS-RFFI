@@ -1,0 +1,35 @@
+{
+  "status": "VERIFIED",
+  "seed": 2026092701,
+  "records": [
+    {
+      "row_id": "BASE_CE-s2026092701",
+      "state_tensors": 200,
+      "all_state_tensors_equal_to_BASE_CE": true
+    },
+    {
+      "row_id": "BASE_SSL-s2026092701",
+      "state_tensors": 200,
+      "all_state_tensors_equal_to_BASE_CE": true
+    },
+    {
+      "row_id": "JOINT_GAP-s2026092701",
+      "state_tensors": 200,
+      "all_state_tensors_equal_to_BASE_CE": true
+    },
+    {
+      "row_id": "ROUTED_GAP-s2026092701",
+      "state_tensors": 200,
+      "all_state_tensors_equal_to_BASE_CE": true
+    }
+  ],
+  "actual_worker_initial_states_equal": true,
+  "checkpoint_reads": 4,
+  "checkpoint_scope": "Own new scratch initial snapshots only; metadata checked before deserialization",
+  "source_IQ_reads": 0,
+  "U_IQ_reads": 0,
+  "V_IQ_reads": 0,
+  "target_access": false,
+  "weights_serialized": false,
+  "healthy_process_mutations": 0
+}

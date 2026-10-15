@@ -1,0 +1,144 @@
+{
+  "status": "RUNNING",
+  "external_post_state": "VERIFIED",
+  "execution_commit": "3a5cff49091deef46cad5d787e5daea7b4c0dfb9",
+  "code_remote_oid_at_publication": "3a5cff49091deef46cad5d787e5daea7b4c0dfb9",
+  "immutable_R02_release_root": true,
+  "single_archive_transfer_comparison": "PASS",
+  "remote_compile": "PASS",
+  "real_checkpoint_noquery_preflight": "PASS",
+  "dispatcher_CWD_cmdline_verified": true,
+  "rows": [
+    {
+      "row_id": "BASE_CE-s2026092701",
+      "gpu": 0,
+      "process_CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_source_epochs": 3,
+      "actual_steps": 666,
+      "actual_label_smoothing": 0.0,
+      "actual_U": false,
+      "actual_EMA": false,
+      "scheduled_calls": 0,
+      "extra_IQ_forwards": 0,
+      "U_packet_observations": 0,
+      "actual_probes": [
+        {
+          "step": 16,
+          "temporary_steps": 3,
+          "auxiliary_gradient_norm": 0.0,
+          "W_three_gains_auxiliary_None": true,
+          "actual_gradient_reference": "actual_postclip_gradients",
+          "actual_error": 0.0,
+          "actual_per_element_pass": true,
+          "autograd_proxy_error": 1.260777935385704e-06,
+          "autograd_proxy_matches": false
+        }
+      ],
+      "own_scratch_initialization_verified": true,
+      "source_complete": false,
+      "prediction_complete": false,
+      "score_complete": false
+    },
+    {
+      "row_id": "BASE_SSL-s2026092701",
+      "gpu": 3,
+      "process_CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_source_epochs": 3,
+      "actual_steps": 666,
+      "actual_label_smoothing": 0.0,
+      "actual_U": true,
+      "actual_EMA": true,
+      "scheduled_calls": 0,
+      "extra_IQ_forwards": 0,
+      "U_packet_observations": 0,
+      "actual_probes": [
+        {
+          "step": 16,
+          "temporary_steps": 3,
+          "auxiliary_gradient_norm": 0.0,
+          "W_three_gains_auxiliary_None": true,
+          "actual_gradient_reference": "actual_postclip_gradients",
+          "actual_error": 0.0,
+          "actual_per_element_pass": true,
+          "autograd_proxy_error": 4.766625352203846e-06,
+          "autograd_proxy_matches": false
+        }
+      ],
+      "own_scratch_initialization_verified": true,
+      "source_complete": false,
+      "prediction_complete": false,
+      "score_complete": false
+    },
+    {
+      "row_id": "JOINT_GAP-s2026092701",
+      "gpu": 4,
+      "process_CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_source_epochs": 3,
+      "actual_steps": 666,
+      "actual_label_smoothing": 0.0,
+      "actual_U": true,
+      "actual_EMA": true,
+      "scheduled_calls": 41,
+      "extra_IQ_forwards": 7380,
+      "U_packet_observations": 0,
+      "actual_probes": [
+        {
+          "step": 16,
+          "temporary_steps": 3,
+          "auxiliary_gradient_norm": 0.3831510105924282,
+          "W_three_gains_auxiliary_None": true,
+          "actual_gradient_reference": "actual_postclip_gradients",
+          "actual_error": 0.0,
+          "actual_per_element_pass": true,
+          "autograd_proxy_error": 3.68291512131691e-06,
+          "autograd_proxy_matches": false
+        }
+      ],
+      "own_scratch_initialization_verified": true,
+      "source_complete": false,
+      "prediction_complete": false,
+      "score_complete": false
+    },
+    {
+      "row_id": "ROUTED_GAP-s2026092701",
+      "gpu": 5,
+      "process_CWD_cmdline_GPU_verified": true,
+      "log_growth_verified": true,
+      "completed_source_epochs": 3,
+      "actual_steps": 666,
+      "actual_label_smoothing": 0.0,
+      "actual_U": true,
+      "actual_EMA": true,
+      "scheduled_calls": 41,
+      "extra_IQ_forwards": 7380,
+      "U_packet_observations": 0,
+      "actual_probes": [
+        {
+          "step": 16,
+          "temporary_steps": 3,
+          "auxiliary_gradient_norm": 0.21832726594090063,
+          "W_three_gains_auxiliary_None": true,
+          "actual_gradient_reference": "actual_postclip_gradients",
+          "actual_error": 0.0,
+          "actual_per_element_pass": true,
+          "autograd_proxy_error": 7.705646567046642e-06,
+          "autograd_proxy_matches": false
+        }
+      ],
+      "own_scratch_initialization_verified": true,
+      "source_complete": false,
+      "prediction_complete": false,
+      "score_complete": false
+    }
+  ],
+  "pending_rows": 8,
+  "source_gate_pending": true,
+  "actual_initial_state_ref": "actual_initial_state_evidence.json",
+  "all_GPUs_total_process_count_at_most3": true,
+  "unrelated_healthy_workloads_modified": false,
+  "target_prediction_or_scoring_started": false,
+  "goal84_completed": false
+}
