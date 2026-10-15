@@ -1,0 +1,75 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-RX-teacher-exposure-source-e20-s2026092701-m2-r01",
+  "execution_commit": "73397488a1768ca783a4f2b4af1f0d911c4414fc",
+  "rows_started": 2,
+  "own_GPU_rows": [
+    {
+      "row_id": "SAMPLE_80-s2026092701",
+      "gpu": 0,
+      "completed_epochs": 5,
+      "actual_verified_L_steps": 1110,
+      "source_role_counts": {
+        "L_s": 5040,
+        "U_s": 0,
+        "V": 21600
+      },
+      "train_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "train_L_unique_seen": 5040,
+      "U_iterator_calls": 0,
+      "EMA": false,
+      "held_V_read_before_freeze": false,
+      "head_fit_updates": 0,
+      "checkpoint_smoke": "PASS",
+      "CWD_argv_start_identity": "VERIFIED",
+      "log_growth": "VERIFIED",
+      "first_epoch_seconds": 29.33779764175415
+    },
+    {
+      "row_id": "EXCLUDE_RX1-s2026092701",
+      "gpu": 1,
+      "completed_epochs": 5,
+      "actual_verified_L_steps": 1110,
+      "source_role_counts": {
+        "L_s": 5040,
+        "U_s": 0,
+        "V": 21600
+      },
+      "train_RX": [
+        3,
+        4,
+        6,
+        8
+      ],
+      "train_L_unique_seen": 5040,
+      "U_iterator_calls": 0,
+      "EMA": false,
+      "held_V_read_before_freeze": false,
+      "head_fit_updates": 0,
+      "checkpoint_smoke": "PASS",
+      "CWD_argv_start_identity": "VERIFIED",
+      "log_growth": "VERIFIED",
+      "first_epoch_seconds": 29.27970838546753
+    }
+  ],
+  "all_owner_processes_per_GPU": {
+    "0": 1,
+    "1": 1,
+    "2": 1,
+    "3": 1
+  },
+  "own_memory_MiB_min": 2926,
+  "own_memory_MiB_max": 2926,
+  "ordinary_account": true,
+  "archive_SHA_comparison": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "independent_poststate": true,
+  "target_access": false,
+  "healthy_other_tasks_unchanged": true
+}

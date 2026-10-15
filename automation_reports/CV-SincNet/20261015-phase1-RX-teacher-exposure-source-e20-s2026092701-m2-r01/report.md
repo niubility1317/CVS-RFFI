@@ -1,5 +1,13 @@
 # 两教师 E20 源域互补性小试
 
+状态 **RUNNING / 两行实际训练已启动，独立发布后证据 VERIFIED**。两份own初始checkpoint无query smoke通过；实际source roles5040/0/21600、L计数/TX/day匹配、RX排除和fitV过滤、scratch空继承/无EMA、actualnative纯CE配方、CWD/argv/GPU/start身份及日志增长均已读回。两组都已实际覆盖全部5040合法L，U迭代与另训头为0，heldV IQ尚未读取。尚无教师互补性/源资格结果，不能把检查当收益。
+
+执行commit `73397488a1768ca783a4f2b4af1f0d911c4414fc` 已推送且remote OID一致；一次ordinary N607 preflight/archiveSHA比较/remotecompile通过。本任务GPU分配为[0, 1]，各2926至2926MiB，CPU2/worker、loader0；首epoch含fitV诊断为[29.34, 29.28]s。全owner实际GPU计数{0: 1, 1: 1, 2: 1, 3: 1}，均≤3；其余容量未保留，没有停止/迁移/重启任何健康任务。原RDrop12行已自然完成并释放GPU，本source试验不是重跑旧行。
+
+冻结后自动保存两份5400 held-sourceV默认概率，再由fresh CUDA空CPU比较器验证来源、回放固定A0 sourcegate并计数。无U/target访问；科学条件与预算不因同时返回的RDrop目标分数变化，方案登记/代码冻结先于读取该分数。报告完成后仍需保留正负结果和独立分析；84%整体goal active。
+
+发布前固定方案：
+
 状态 **PLANNED，已登记，尚未发布/训练**。固定seed2026092701，SAMPLE_80 / EXCLUDE_RX1 两个原SIG_TIME/CENTER25K/defaulthead从零纯CE E20模型，各5040合法L、每TX/day280、4440更新/568320主L前向；普通组各TX/RX/day56个L，排除组4RX各70。默认头正常joint，原AdamW lr.0002/wd.0001/cos，LS0/native dropout，无U迭代/EMA/增强/辅助损失/新参数/换头。实际每批L base_index/TX/RX/day与固定来源核对。原source载体6300/56700/27000 VALIDATED_ONCE复用，先筛L/V及弃U，再构造模型；有效roles5040/0/21600独立保存，不冒充full-source父来源。
 
 两组fit/calibrationV均RX3/4/6/8=21600；RX1源V5400仅未materialize的dataset引用，fixedfinal20冻结后才做默认头预测（六TX×三day×300）。比较同ID错误/meanCE/真类概率、修正−破坏与day/TX/类别对。独立CPU仅在两个来源证明和源预测完整后，加载原全源BASE_SSL seed01 E20/LS0的固定student+ownEMA作源V原门控回放，不进入教师训练。weak为原clean U输入，strong为native std.015且student dropout激活，teacher eval；固定sourceV shuffle2026101502/view2026101503/batch256；gate只获物理metadata，不获TX标签。全部model参数/buffer/grad不变；不拟合阈值/分类头、不读取U IQ/TX或target。它是final A0的sourceV proxy，不能推断实际U精度或早期teacher行为。
