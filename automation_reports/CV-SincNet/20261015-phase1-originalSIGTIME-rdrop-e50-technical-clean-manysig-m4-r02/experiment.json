@@ -24,7 +24,7 @@
   "replaces_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01",
   "authorization": "Active goal and explicit originalSIGTIME/RDrop publication plus full E50 three seeds/E20 comparison. Technical recovery preserves healthy workers/outputs; four rows selected by absent output/process, never target score.",
   "code": {
-    "commit": "Actual recovery Git HEAD in release_commit.txt",
+    "commit": "33f6171a0fec6ac432df672d0c6f542b8d71434c",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "ordinary N607 CVS-RFFI;CPU2/worker;loader0;dispatcher/scorers CUDAempty",
     "cwd": "PROJECT/releases/cvs_originalSIGTIME_rdrop_e50_technical_20261015_r02",
@@ -955,5 +955,14 @@
     "New budget200epochs/44400updates/4262400extraLforwards/3855600U observations/672000clean decisions;8ownCPsmoke synthetic packets separate.",
     "One focusedP0/P1 technical-fix review pending. REJECTED_EXTRA_GATE: fullsuite blanket,unchangedmodel reviews,report seals/hash chains/accessledgers."
   ],
-  "registered_at": "2026-10-15T11:31:56+00:00"
+  "registered_at": "2026-10-15T11:31:56+00:00",
+  "result": {
+    "status": "RUNNING",
+    "evidence_ref": "launch_verification.json",
+    "actual_rows_started": 4,
+    "registered_rows": 4,
+    "logical_group_rows": 18,
+    "original_scored_rows": 14,
+    "goal_completed": false
+  }
 }

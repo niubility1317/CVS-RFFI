@@ -1,0 +1,96 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02",
+  "recovery_orchestration_commit": "33f6171a0fec6ac432df672d0c6f542b8d71434c",
+  "model_code_commit": "b3ac442e2d33a5b315fb3251c30e0ad7083566bc",
+  "rows_started": 4,
+  "registered_rows": 4,
+  "logical_group_rows": 18,
+  "original_scored_rows": 14,
+  "original_live_workers": 0,
+  "old_failure_preserved": true,
+  "no_original_model_retraining": true,
+  "own_processes_per_GPU": {
+    "0": 2,
+    "2": 1,
+    "7": 1
+  },
+  "all_owner_actual_processes_per_GPU": {
+    "0": 2,
+    "1": 2,
+    "2": 1,
+    "3": 1,
+    "4": 1,
+    "5": 1,
+    "6": 1,
+    "7": 1
+  },
+  "own_memory_MiB_min": 3346,
+  "own_memory_MiB_max": 3350,
+  "ordinary_account": true,
+  "archive_SHA_comparison": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "independent_poststate": true,
+  "no_query_checkpoint_smokes": 4,
+  "source_roles_per_row": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "head_fit_updates": 0,
+  "no_healthy_process_intervention": true,
+  "rows": [
+    {
+      "row_id": "E50_RDROP-s2026092702",
+      "epochs": 50,
+      "mode": "RDROP",
+      "gpu": 0,
+      "first_epoch_seconds": 47.249550104141235,
+      "completed_epochs": 1,
+      "checkpoint_no_query_smoke": "PASS",
+      "actual_original_recipe": "VERIFIED",
+      "process_identity": "VERIFIED",
+      "log_growth": "VERIFIED",
+      "same_augmented_L_input_reuse": true
+    },
+    {
+      "row_id": "E50_ORIGINAL-s2026092703",
+      "epochs": 50,
+      "mode": "ORIGINAL",
+      "gpu": 2,
+      "first_epoch_seconds": 41.37744140625,
+      "completed_epochs": 2,
+      "checkpoint_no_query_smoke": "PASS",
+      "actual_original_recipe": "VERIFIED",
+      "process_identity": "VERIFIED",
+      "log_growth": "VERIFIED",
+      "same_augmented_L_input_reuse": false
+    },
+    {
+      "row_id": "E50_TWO_CE-s2026092703",
+      "epochs": 50,
+      "mode": "TWO_CE",
+      "gpu": 7,
+      "first_epoch_seconds": 37.44699573516846,
+      "completed_epochs": 2,
+      "checkpoint_no_query_smoke": "PASS",
+      "actual_original_recipe": "VERIFIED",
+      "process_identity": "VERIFIED",
+      "log_growth": "VERIFIED",
+      "same_augmented_L_input_reuse": true
+    },
+    {
+      "row_id": "E50_RDROP-s2026092703",
+      "epochs": 50,
+      "mode": "RDROP",
+      "gpu": 0,
+      "first_epoch_seconds": 46.81753373146057,
+      "completed_epochs": 1,
+      "checkpoint_no_query_smoke": "PASS",
+      "actual_original_recipe": "VERIFIED",
+      "process_identity": "VERIFIED",
+      "log_growth": "VERIFIED",
+      "same_augmented_L_input_reuse": true
+    }
+  ]
+}

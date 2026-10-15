@@ -47,3 +47,6 @@ CPU-only最小复现使用原release的process函数，固定128个顺序短子�
 
 
 技术恢复已登记20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02，只补四个未启动E50行，原14行不重训；当前PLANNED未发布。[恢复报告](../20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02/report.md)。
+
+
+技术恢复 20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02 四行均已独立启动核验 VERIFIED。原14行现均已完成预测与评分，原调度 failure 保留。逻辑18行统计仍待恢复4行完成，未重训旧行。[恢复报告](../20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02/report.md)。

@@ -293,3 +293,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- ORIGINAL_SIGTIME_TECHNICAL_RECOVERY_PREREG_20261015 -->
 20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02已登记四个原未启动E50行；配方不变、新不可变root。先留PID再有限观测，启动回归8/8与配置负例8/8PASS，待一次聚焦P1审查后发布。原14不重训，缺评分仅固定prediction后闭合。全目标active。
+
+
+<!-- ORIGINAL_SIGTIME_TECHNICAL_RECOVERY_LIVE_20261015 -->
+20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02 四行全部 RUNNING/启动核验 VERIFIED，模型代码 b3ac442e2d33a5b315fb3251c30e0ad7083566bc，调度代码 33f6171a0fec6ac432df672d0c6f542b8d71434c。原14行已全部 clean/独立评分，未停止、重训或覆盖。逻辑18行固定矩阵保留，尚待新4行终点；全目标 active。

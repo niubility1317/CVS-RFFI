@@ -1,6 +1,6 @@
 # 旧 SIG_TIME 叠加 RDrop：四个未启动 E50 行的技术恢复
 
-状态 PLANNED，已登记，尚未发布。原E20/E50×三条件×三seed为18行，原run已实际启动14行。Popen后瞬时/proc读取导致原调度器退出；一个未记录worker实际仍健康。CPU-only128次复现2次GPU字段暂缺后同PID恢复。保留failure、所有输出和健康任务，不原地重启或重训已有14行。
+状态 RUNNING，四行均已启动；真实 checkpoint 无查询冒烟、进程身份和日志增长独立核验 VERIFIED。原E20/E50×三条件×三seed为18行，原run已实际启动14行。Popen后瞬时/proc读取导致原调度器退出；一个未记录worker实际仍健康。CPU-only128次复现2次GPU字段暂缺后同PID恢复。保留failure、所有输出和健康任务，不原地重启或重训已有14行。
 
 新run仅训练RDROP seed02，以及ORIGINAL/TWO_CE/RDROP seed03，共四个未启动行。每行仍50轮/11100更新/33L+17U，RAW_HZ、普通增强、LS.01、默认头joint、原U/ownEMA、固定final全部保持。metadata仅run_id/output_root/owner变化；实际模型/训练/预测/评分继续原不可变release，模型代码commit为b3ac442e2d33a5b315fb3251c30e0ad7083566bc。新调度代码commit记录在发行包release_commit.txt。八个配置负例、逐字段相等和八个启动回归PASS；修复前同回归按原错误失败。无新参数、换头、另训头、旧CP继承。
 
@@ -15,3 +15,6 @@ ordinary N607 CVS-RFFI；CWD为PROJECT/releases/cvs_originalSIGTIME_rdrop_e50_te
 一次聚焦P0/P1技术修复审查已PASS（review_identity_tangent，未发现P0/P1），尚需Git提交推送与OID读回、一次preflight/archiveSHA/remotecompile及启动后独立PID/CWD/argv/GPU/log核验。每新worker首先保存/严格重载own scratch CP并对2个合成包无query smoke，PASS立即训练。未发布或未评分不宣称收益。
 
 E20已有ORIGINAL83.115675%、TWO_CE82.486111%、RDROP83.942857%，只是报告事实，不决定本恢复；固定主条件仍E50_RDROP，84%与创新训练目标未声明完成。资源协调chat回写返回no rollout，不阻止实时共享锁/all-owner容量核对。额外设计审批、无关全套测试、重复科学审查与seal/hash链均REJECTED_EXTRA_GATE。
+
+
+恢复代码 33f6171a0fec6ac432df672d0c6f542b8d71434c 已提交推送，远程 OID 独立读回一致；实际模型代码仍为 b3ac442e2d33a5b315fb3251c30e0ad7083566bc。一次 N607 preflight、单发行包 SHA 比较与远程编译 VERIFIED。四行在 GPU0/2/7 运行，快照 all-owner 均不超过3进程/GPU，实测 3346 至 3350 MiB/worker，CPU2/loader0。全部默认头联合训练、真实源角色和原配方均已核实。原14行已全部自然完成 clean 预测与独立评分，无旧模型重训或停止；原 failure 保留。新4行冻结后自动逐行预测和独立 CPU truth-last，完整18行统计待齐。详见启动证据 launch_verification.json。
