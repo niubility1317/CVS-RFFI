@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "scope": "Targeted remaining-seed execution adapter only;not unchangedcore fullreview",
+  "findings_P0P1": 0,
+  "verified": [
+    "Actualmodelseeds702/703",
+    "same-seedarmsinitialequal/crossseeddistinct",
+    "nativeargsdifferonlyseed/runID/candidate/output",
+    "actualobserver/Ucontext",
+    "PROJECTportableconfigs",
+    "CPUscoreemptyCUDA",
+    "releaseclosure/actual6rowINSPECT",
+    "synthetic6rows1008000decisions and combined3seed9rows1512000/162"
+  ],
+  "real_data_weights_or_remote_read": false,
+  "reviewer": "independent signature_fix_p0p1"
+}
