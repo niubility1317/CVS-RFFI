@@ -1,0 +1,45 @@
+{
+  "status": "PASS",
+  "checks": {
+    "checks_objective": {
+      "status": "PASS",
+      "matrices60_virtual3600_factual3600_per_control": true,
+      "all5_references_both_direction_origin_labels_sameTX_destination_verified": true,
+      "hand_excess_default_cos_formula_and_full_denominator_verified": true,
+      "physical_origin_coverage_deduplicated180": true,
+      "group_endpoint4_each_triple_role20": true,
+      "isolated_factual_gradient_None": true,
+      "W_gradient_None_virtual_three_endpoints_gains_attached": true,
+      "positive_negative_equal_gap_and_exact_boundary_ReLU_verified": true,
+      "low_confidence_equal_factual_risk_loss_gradient_exact_zero": true,
+      "ZERO_exact_connected_zero": true,
+      "label_Wrow_rename_packetperm_loss_gradient_invariant": true,
+      "actual_FP32_joint_loss_gradient_dtype_preserved": true,
+      "virtual_factual_FP64_FP32_comparison_recorded": true,
+      "input_bank_features_weight_RNG_unchanged": true,
+      "focused_negative_checks": 8,
+      "data_reads": 0,
+      "checkpoint_reads": 0,
+      "native_constructors": 0,
+      "actual_updates": 0
+    },
+    "checks_source": {
+      "status": "PASS",
+      "request_and_gate_negatives": 39,
+      "both_controls_required": true,
+      "distinct_origin_coverage_required": true,
+      "relative_original_CE_guard_fixed_before_data": true,
+      "late_stage_priority_and_early_fallback_prespecified": true,
+      "distinct_direction_required": true,
+      "excess_and_rawvirtual_CE_required": true,
+      "head_fit_updates": 0,
+      "data_checkpoint_remote_reads": 0,
+      "actual_optimizer_updates": 0
+    }
+  },
+  "compile": "PASS",
+  "unchanged_bank_defaultcos_actualaftergain_evaluator_reused": true,
+  "data_checkpoint_remote_reads": 0,
+  "actual_optimizer_updates": 0,
+  "head_fit_updates": 0
+}
