@@ -84603,7 +84603,7 @@
     },
     "next_optimizer_mechanism": {
       "method": "Optimizer-only fixed Sinc normalized sampling units",
-      "status": "FULL_PIPELINE_VERIFIED_NOT_LAUNCHED",
+      "status": "PREREGISTERED_NOT_LAUNCHED",
       "network_architecture_unchanged": true,
       "parameterization_unchanged": true,
       "default_head_jointly_trained": true,
@@ -84625,7 +84625,22 @@
       "local_checks": "analysis/research_data/sinc_unit_optimizer_local_checks_20261015.json",
       "implementation_commit": "00132f7d54aff45b6e52fc41f89d7705a043bc71",
       "independent_P0P1": "PASS_AFTER_ONE_DIRECT_DEPENDENCY_FIX",
-      "local_pipeline_actual_native_contexts": 2
+      "local_pipeline_actual_native_contexts": 2,
+      "run_id": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+      "report": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md",
+      "source_qualification": {
+        "final5_L_CE_max": 0.5,
+        "actual_updates": 11100,
+        "actual_U_packets": 963900,
+        "extra_model_forwards": 0,
+        "unit_final_changed_cutoff_parameters_min": 12,
+        "unit_final_changed_bandwidth_parameters_min": 12,
+        "unit_student_kernel_relative_L2_min": 0.000001,
+        "unit_ownEMA_kernel_relative_L2_min": 0.000001,
+        "actual_candidate_minus_control_L720zL2_min": 0.000001,
+        "source_only": true,
+        "expansion": "After exact original budgets/defaultfeature/head and fixed unit numerical adaptation/sourcehealth PASS, push source decision before own new target summaries; extend both unchanged arms02/03. No target-based cancellation/retuning."
+      }
     },
     "temporal_rsc_full_three_seed": {
       "status": "ANALYZED_VERIFIED_NO_GAIN",

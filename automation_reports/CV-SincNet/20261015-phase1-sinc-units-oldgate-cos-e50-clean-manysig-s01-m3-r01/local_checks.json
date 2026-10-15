@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "negative_cases": 7,
+  "actual_native_L_forward": true,
+  "actual_native_parameter_collection": true,
+  "same_initial_logits_and_clipped_gradients": true,
+  "STANDARD_native_AdamW_and_moments_exact": true,
+  "nonsinc_including_default_W_first_update_exact": true,
+  "actual_joint160_feature_difference_max": 0.014617204666137695,
+  "synthetic_first_step_Sinc": {
+    "id_backbone.encoder.core.id_backbone.sinc.low_hz_": {
+      "changed_elements": 24,
+      "maximum_abs_Hz": 5000
+    },
+    "id_backbone.encoder.core.id_backbone.sinc.band_hz_": {
+      "changed_elements": 23,
+      "maximum_abs_Hz": 5000
+    }
+  },
+  "original_ownEMA_path_tracks_Sinc": true,
+  "normalized_coordinates": {
+    "maximum_absolute_coordinate_error_Hz": 1.862645149230957e-9,
+    "steps": 4,
+    "preclip_gradients_supplied": true,
+    "global_clip_equivalence_claim": false
+  },
+  "native_cosine_schedule_overwrite_handled": true,
+  "model_architecture_or_parameterization_changed": false,
+  "real_IQ_or_checkpoint_read": false,
+  "formal_training_started": false,
+  "head_fit_updates": 0,
+  "scope": "Synthetic local one-step mechanics; not evidence of real trainedfilter adaptation, source/target accuracy or DG gain"
+}

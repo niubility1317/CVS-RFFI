@@ -27,3 +27,6 @@ float64给定梯度的4步坐标等价误差最大1.862645e-9Hz，原cosine覆�
 保持原旧batch_neighbor＋ownEMA＋cos、33label＋17pseudo、默认头正常联合训练、L6300/U56700隐藏TX/V27000及NoExplicitCFO。只准备首seed两个新scratch50臂：同路径STANDARD SIG_TIME与NORMALIZED_UNITS，另复用旧门控+cos历史结果；不加载本轮目标最高权重续训。完整训练接线、实际每步LR／Sinc前后值／EMA和feature-only witness、自动默认头clean truth-last、源资格与逐row预算将固定在发布预登记后再运行。每新模型50轮／11100次更新，机制不增加模型前向。仍需完整launcher检查、唯一P0/P1、真实checkpoint no-query smoke和既定最小发布步骤。
 
 当前RSC02/03六模型继续冻结方案，与本优化单位准备独立；不得按它们的后续目标数值决定倍率、重排或选择性重跑。本方向依据上述真实源参数/优化器证据，在读取其剩余目标数值前记录。
+
+
+完整训练入口已固定于 00132f7d54aff45b6e52fc41f89d7705a043bc71，唯一独立 P0/P1 缺失release依赖已修复并确认PASS；两行原生入口/合成16step验证和3行完整canonical恢复均PASS。预登记 [Sinc单位实验](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md)；当前未启动真实训练，源资格与目标性能均未知。网络和默认头保持，只有原48个Sinc参数的优化器单位设置变化。

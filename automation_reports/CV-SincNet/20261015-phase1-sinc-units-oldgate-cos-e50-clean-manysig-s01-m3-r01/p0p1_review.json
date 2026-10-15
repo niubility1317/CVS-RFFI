@@ -1,0 +1,16 @@
+{
+  "status": "PASS_AFTER_TARGETED_P1_FIX",
+  "reviewer": "independent signature_fix_p0p1",
+  "scope": "Only direct defects affecting next run correctness, legality, preservation, launch or legal prediction",
+  "finding": {
+    "priority": "P1",
+    "problem": "Release closure omitted experiments/cvs_sigtime_pair50 required by design/model/observer",
+    "fix": "Explicitly include cvs_sigtime_pair50 in release and assert presence",
+    "targeted_confirmation": "PASS"
+  },
+  "other_direct_P0_P1": [],
+  "code_commit": "00132f7d54aff45b6e52fc41f89d7705a043bc71",
+  "real_IQ_checkpoint_or_target_read": false,
+  "formal_training_launched_by_reviewer": false,
+  "extra_whole_reviews": 0
+}
