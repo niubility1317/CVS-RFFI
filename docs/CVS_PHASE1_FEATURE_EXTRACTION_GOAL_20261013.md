@@ -249,3 +249,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- RDROP_TRAINED_SOURCE_COMPLETE_20261015 -->
 2026-10-15：`20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01` 完整source两组scratch20/8880更新已独立复算；TWO_CE RX1=69.285714%/CE1.492366164，RDROP=75.158730%/CE1.157227747，配对Δ+5.873016pp，修正104/新增30，固定资格=True。0 target/另训头，16合成packet特征边界通过；不把冻结源梯度相容等同训练效力。仅允许单独登记独立source seed确认。[同row报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/report.md)。全目标仍active。
+
+
+<!-- RDROP_E20_E50_USER_BUDGET_20261015 -->
+2026-10-15 用户新预算：明确要求完整E50三seed，再要求E20预算比较，覆盖本轮旧E20限制及尚未发布的source-seed02等待条件。`20261015-phase1-SIGTIME-rdrop-budget-e20e50-clean-manysig-m12-r01` 已登记并实际启动12个全五源RX从零模型：E20/E50 × TWO_CE/RDROP × 2026092701/02/03；13+7/33+17，420modelepoch/93240更新，默认头联合训练，逐行clean预测后独立CPU truth-last。主结果预登记E50_RDROP，E20_RDROP预算比较，均检查84%但不挑target-best；当前RUNNING而非完成。此前四RX源fold是科学依据，不是全源E20预算对照。[当前矩阵报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-budget-e20e50-clean-manysig-m12-r01/report.md)。原有正负路线保留，其他健康任务不动，全目标active。

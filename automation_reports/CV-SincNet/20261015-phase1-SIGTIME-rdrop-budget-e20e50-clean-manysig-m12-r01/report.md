@@ -1,5 +1,15 @@
 # RDrop 全源 E20 / E50 三种子预算比较
 
+状态 **RUNNING / 全12行已实际启动，发布后独立证据 VERIFIED**。E20与E50各6个从零模型，所有12个own初始checkpoint无query smoke通过、首epoch完成、原全五RX6300/56700/27000角色一致、实际预算/默认头配方一致、CWD/argv/GPU身份及日志持续增长均已独立核实。没有技术失败，训练和测试尚未完成，不预报收益。
+
+执行commit `5530a17b60bc1005eef8de151ae540b92a97da8a` 已推送且独立remote OID一致。一次ordinary N607 preflight、release archive SHA比较和remotecompile通过。前两次本地发布尝试在任何远程preflight/写入前因Git工作区旧stat状态退出；对应共享文件无内容差异，刷新index元数据后恢复，未改变/重训实验或生产代码。
+
+本任务GPU0至7的进程数依次为[1, 1, 1, 1, 2, 2, 2, 2]；该快照计入其他owner后各卡均2个实际GPU进程，总16个，≤3上限。自己12个worker实测每个3348至3348MiB（高于前次源fold计划约3GiB，但仍有充分准入余量）。CPU2/worker、loader0、CPUdispatcher/scorerCUDA为空。首epoch含源V诊断实测40.04至47.84s；它不是纯训练step计时或最终每epoch稳定耗时。所有8卡均使用共享实时准入，其他科学任务正常保留，不独占剩余容量、不停止/迁移/重启任何健康任务。
+
+12行按固定20/50轮预算继续，逐行冻结后立即自动clean168000预测，随后独立CPUtruth-last评分；不等待其他行、不读当前分数调训练。完整12行/216strata完成后比较4组的三seed均值、样本SD及预登记机制/预算配对差。当前goal active，84%尚未证明。
+
+发布前冻结方案：
+
 状态 **PLANNED，已登记，尚未远程发布**。本轮按用户最新要求，同时运行 E20 和 E50；每档 TWO_CE / RDROP × seeds2026092701/02/03，共12个独立从零模型。E50_RDROP 为预登记主结果，E20_RDROP 为预算比较，两个同预算 TWO_CE 提供机制对照。两档都报告是否达到 clean 三种子均值84%，不以 target 最高分挑选主结果。当前目标未完成。
 
 全五源 RX1/3/4/6/8；原 L6300/U56700 hiddenTX/V27000，源日1/2/3、六TX、物理划分与 VALIDATED_ONCE 载体保持。L 为 train pool 的10%及全部90000源数据的7%，不扩大标签。U原门控、Gaussian weak/strong、ownEMA0.999及权重lambda_u0.16/lambda_ent0.01保持，V只作默认头健康诊断。SIG_TIME/CENTER25K、原生dropout、NoExplicitCFO与原补偿、实际joint160、默认cosine6×160 scale30按原流程联合训练；不另训/替换/重拟合任何分类头。无父模型/优化器/EMA权重继承，无星地训练或测试。

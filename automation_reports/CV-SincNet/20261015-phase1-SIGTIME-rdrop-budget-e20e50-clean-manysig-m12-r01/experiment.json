@@ -30,7 +30,7 @@
   "replaces_run_id": null,
   "authorization": "Current user explicitly asks why not complete E50 three seeds, then also requests E20 budget comparison. Supersedes old E20-only budget and unlaunched second source-fold confirmation for this fixed full-source 12-row comparison; original healthy/completed jobs preserved.",
   "code": {
-    "commit": "Actual Git commit in release_commit.txt and resolved execution config",
+    "commit": "5530a17b60bc1005eef8de151ae540b92a97da8a",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "ordinary N607 CVS-RFFI Python; CPU2/worker; loader workers0; CPU dispatcher/scorers without CUDA",
     "cwd": "PROJECT/releases/cvs_SIGTIME_rdrop_budget20_50_20261015_r01",
@@ -2724,5 +2724,12 @@
     "Fixed clean-only current goal; no satellite training/testing. Scores truth-last after perrow prediction, cannot affect other training, source/model/seed selection or selective retry. Previously exposed benchmark, not a fresh blind trial.",
     "REJECTED_EXTRA_GATE: separate design/spec approval, report-only repeat review, extra source/config/report hashes, or new scheduling platform. One actual code/config commit, focused tests/CP smoke, one independent P0/P1, one minimal preregistration/archive/preflight/compile, independent launch/scoring evidence only."
   ],
-  "registered_at": "2026-10-15T08:14:45+00:00"
+  "registered_at": "2026-10-15T08:14:45+00:00",
+  "result": {
+    "status": "RUNNING",
+    "evidence_ref": "launch_verification.json",
+    "actual_rows_started": 12,
+    "all_expected_rows": 12,
+    "goal_completed": false
+  }
 }
