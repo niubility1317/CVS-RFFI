@@ -67,3 +67,9 @@ D0／D3／D4 都保留与原 A0/A-J 相同的128个额外 clean L EMA 前向；�
 ## D0 匹配性更正
 
 后续按真实 native 前向核查发现，原普通 concat A0/A-J 在拼接前仍执行 generic IQ augmentor（train_ssdg.py8986），因此此前“关闭 D0 通用增强可匹配 concat clean 分量”的表述不准确。r01 D0 的 use_aug=False 使它成为无通用增强诊断，不能作为仅去掉 practical 的严格对照。该健康行继续原自动测试，不停止、重训或改写产物；在 r02 单独补齐 use_aug=True 的匹配 D0，保留同一实际前向后的 capture。r01 D0 的完整 E50／11100 及首步失败两行成本作为技术开销报告，不纳入新五条件源推进或正式配对。
+
+## 原诊断D0自然结束
+
+VERIFIED：PID3059123已自然退出，原D0 row为TRAINED_AND_SCORED。E50／11100更新，训练耗时2327.915211s；head_fit_updates0、source训练target_access=False。原七视图prediction完成且truth_read=False，独立scorer为SCORED_COMPLETE。实际主前向4,769,400、L_dev前向70,560，U TX未读取；其他native V与正式推理成本保留在原产物。本次只读取完成元数据及成本，未读取目标分数作研究反馈。
+
+原r01矩阵最终FAILED的原因仍是D3/D4首步设备错误，没有停止/重启D0或选择性重测。D0 use_aug=False的配方不匹配已在其目标评分前确定；该E50和2327.92s作为独立诊断/技术开销，排除r02五条件配对与源推进。r02正确D0/D3/D4保持原配置运行。证据：local artifact original_D0_terminal.json。

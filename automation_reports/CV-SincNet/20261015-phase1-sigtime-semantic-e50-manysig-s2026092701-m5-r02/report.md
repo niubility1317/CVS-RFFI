@@ -59,3 +59,19 @@ dispatcher PID3070243；三row实际CWD/argv/PID、GPU及日志增长独立匹�
 实际leo_practical导入来自本release的 `experiments/adv3b02_xuc/code/leo_practical/channel.py` 与 `residual.py`；EQ_off_G_equals_one=True、formal_test_changed=False。D3/D4首步同为14670合法triplet、128个anchor有参考；两方向开关与原定一致。预热期额外梯度为0符合计划，非零关系梯度和完整更新仍待epoch6及训练产物，不能将首步通过当作有效学习结论。
 
 证据位于本地artifact `delivery_r02/`、`independent_initial/readback.json`、`independent_growth/readback.json`、`execution_evidence.json`、`launch_summary.json`、`independent_launch_evidence.json`。当前状态RUNNING，无新的固定七视图成绩、clean代价或跨seed结果；最终训练/预测/评分/机制/曲线仍待完成。
+
+## 预热后接线与待冻结分析
+
+独立只读核验三PID仍活跃、CWD/argv不变、日志继续增长，无traceback。以下是单次训练梯度快照，不能作为全程均值、因果收益或目标成绩：
+
+|row|完成epoch|satellite CE范数|额外梯度范数|比值|两者余弦|W/gain额外梯度|
+|---|---:|---:|---:|---:|---:|---|
+|D0-s2026092701|28|0.000000|0.000000|0.000000|N/A|all0|
+|D3-s2026092701|14|0.948449|0.087072|0.091804|0.370065|all0|
+|D4-s2026092701|13|0.914069|0.077629|0.084927|0.202973|all0|
+
+D3/D4在epoch6后存在非零额外特征梯度，原W/gain额外为0；静态源强度只将校准中位比定为.1，不要求每个训练批次恒定。原CE/U联合更新继续，完整clip/AdamW及参数更新归因仍待全日志。
+
+冻结源分析已实现并登记为 `20261015-phase1-sigtime-semantic-source-manysig-s2026092701-m5-r01`，代码提交4ed88cf189c1486c1ff069a57d2831bbf8c90e01已push且独立OID匹配。5项检查PASS0.831s、compile PASS、一次P0/P1及原信道类修复定向复核PASS。分析将只在五个实际final50冻结后单独CPU运行，预算36722前向/0更新；尚未发布、尚无分析图或结果。D4 clean anchor在同次配对图中保留，假设性D0 satellite CE梯度明确区别于实际训练。
+
+当前正式提升/clean代价/跨seed结论仍缺失；最近进度为28/14/13，不宣称预算已结束或已收敛。证据：local artifact monitor_03.json；独立源分析预登记报告见对应run。
