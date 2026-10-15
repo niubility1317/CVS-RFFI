@@ -6,7 +6,8 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|当前三tap增强与可迁移源谱形方向的覆盖诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-current-response-coverage-manysig-m1-r01/report.md)|
+|SIG_TIME＋RDrop：源谱方向与等能量旋转方向的有限IQ验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-source-response-finiteIQ-s2026092701-r01/report.md)|
+|当前三抽头增强的源谱形方向覆盖诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-current-response-coverage-manysig-m1-r01/report.md)|
 |SIG_TIME＋RDrop：轻度响应增强的冻结源域验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01/report.md)|
 |HQ 教学：三个固定模型的源域冻结归因预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01/report.md)|
 |固定 RX1：两位等规模教师的源域互补小试|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-crossfit-RX1-teachers-e50-manysig-s2026092701-m2-r01/report.md)|

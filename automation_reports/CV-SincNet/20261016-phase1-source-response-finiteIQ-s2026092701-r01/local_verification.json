@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "kernel_bound_and_pair_L2": true,
+  "zero_phase_interior": true,
+  "RMS_and_boundary": true,
+  "torch_numpy_parity": true,
+  "session_RNG": true,
+  "operator_negatives": 9,
+  "protocol_negatives": 3,
+  "gate_cases": 3,
+  "real_IQ_reads": 0,
+  "model_forwards": 0,
+  "optimizer_updates": 0,
+  "environment": "verified ssr-gpu Python; existing NumPy ABI warning, no array bridge used"
+}
