@@ -8,7 +8,7 @@
 | R02 | §1 | lr_q=alpha Fs/s，eps_q=epsilon s/Fs，跟随 cosine，不叠乘历史倍率 | optimizer.py | verified | CPU/CUDA 实际 step，3 origin×100步 float64误差2.2352e−8 Hz | E/F |
 | R03 | §1 | 全局 clip5 前恢复 g_p=g_q/s，裁剪后恢复坐标梯度 | optimizer.py/observer.py | verified | 全局物理norm相同，CUDA普通参数首步最大差3.5763e−7 | 含所有普通参数 |
 | R04 | §1 | 物理衰减含 origin，无双重衰减 | optimizer.py | verified | 含origin实际更新等价，无origin反例8.32/332.65/6320.26 Hz | E/F |
-| R05 | §1 | student/EMA/推理/导出统一坐标，真实叶版本缓存失效 | coordinate.py/model.py/feature_check.py | implemented | CPU/CUDA student/EMA/导出/缓存通过，待运行checkpoint | 默认头不变 |
+| R05 | §1 | student/EMA/推理/导出统一坐标，真实叶版本缓存失效 | coordinate.py/model.py/feature_check.py | verified | 五个真实final50 student/EMA/checkpoint核与joint160导出/去W检查通过 | 默认头不变 |
 | R06 | §2 | A–F 固定矩阵，A/C 仅核实匹配后复用，健康任务不重训 | design.py/provenance.py/dispatch.py | verified | 18行登记；A三实际配方/祖先核实且CP smoke PASS；C无匹配旧任务，BCDEF首种子健康启动 | C 当前未启动 |
 | R07 | §2 | B/F 复用 SIG_TIME_X3 独立三路，共同 joint160，无统计分支/投票 | model.py | verified | CPU/CUDA三独立投影非零梯度，实际joint160，复用原CompositePool | 禁止替换单路基座 |
 | R08 | §3 | RAW_HZ/普通增强/LS.01/RDrop1/旧门控 ownEMA cos，同次增强IQ两前向 | design.py/checks.py | verified | CPU/CUDA及实际source_mechanism复用增强IQ，A三seed远端实际配方一致 | 默认头联合训练 |
