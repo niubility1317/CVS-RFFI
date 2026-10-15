@@ -12,12 +12,12 @@ def summarize_snapshots(rows):
  return result
 
 class Observer(Parent):
- def __init__(self,c):
-  d.validate(c);self.c=c;self.steps=0;self.U_steps=0;self.U_packets=0;self.U_accepted=0;self.records=[];self.raw=[];self.saved=[];self.sampling=[];self.sinc_raw=[];self.sinc_saved=[];self.sinc_records=[];self.pending_sinc=None;self.optimizer=None
+ def __init__(self,c,*,design=None):
+  self.design=design or d;self.design.validate(c);self.c=c;self.steps=0;self.U_steps=0;self.U_packets=0;self.U_accepted=0;self.records=[];self.raw=[];self.saved=[];self.sampling=[];self.sinc_raw=[];self.sinc_saved=[];self.sinc_records=[];self.pending_sinc=None;self.optimizer=None
  def initialize(self,model,c,out):
-  d.validate(c)
+  self.design.validate(c)
   if c!=self.c or model._source_neighbor_sampling['mode']!='RANDOM':raise ValueError('Fixed native random U context differs')
-  self.model=model;self.out=out;self.params=[dict(model.named_parameters())[n] for n in d.PARAMETERS]
+  self.model=model;self.out=out;self.params=[dict(model.named_parameters())[n] for n in self.design.PARAMETERS]
   if not all(p.requires_grad for p in self.params) or not model.id_backbone.encoder.core.id_backbone.cls_head.weight.requires_grad:raise ValueError('Original joint body/head disabled')
  @contextmanager
  def native_scope(self,n):
@@ -25,7 +25,7 @@ class Observer(Parent):
  def optimizer_created(self,opt):
   def pre(opt,args,kwargs):
    step=opt._sinc_unit_steps+1;epoch=(step-1)//222+1;batch=(step-1)%222+1
-   if epoch in d.SINC_DIAGNOSTIC_EPOCHS and batch%16==0:
+   if epoch in self.design.SINC_DIAGNOSTIC_EPOCHS and batch%16==0:
     if self.pending_sinc is not None:raise ValueError('Overlapping Sinc step observation')
     named=dict(self.model.named_parameters());p={}
     for name in NAMES:
@@ -46,16 +46,16 @@ class Observer(Parent):
  def epoch(self,model,ctx,rows,out,device):
   super().epoch(model,ctx,rows,out,device);epoch=int(rows[-1]['epoch'])
   if self.optimizer._sinc_unit_steps!=epoch*222 or len(self.optimizer._sinc_unit_lr_records)!=epoch*222:raise ValueError('Actual unit optimizer update count differs')
-  if epoch in d.SINC_DIAGNOSTIC_EPOCHS:
+  if epoch in self.design.SINC_DIAGNOSTIC_EPOCHS:
    if len(self.sinc_raw)!=13 or any(r['epoch']!=epoch for r in self.sinc_raw):raise ValueError('Fixed Sinc diagnostic exposure differs')
    path=out/f'sinc_optimizer_gradients_updates_e{epoch}.pt';torch.save(self.sinc_raw,path);saved=torch.load(path,map_location='cpu',weights_only=False);summary=summarize_snapshots(saved)
    if summary!=summarize_snapshots(self.sinc_raw):raise ValueError('Saved Sinc update recount differs')
    self.sinc_records.extend(summary);self.sinc_saved.append(epoch);self.sinc_raw=[]
-   d.write(out/'sinc_optimizer_update_records.json',dict(status='VERIFIED',epochs=self.sinc_saved,records=self.sinc_records,gradient_definition='Actual total native L+oldU/entropy gradients after unchangedglobalclip, beforeAdamW; not perobjective attribution',extra_model_forwards=0,head_fit_updates=0))
+   self.design.write(out/'sinc_optimizer_update_records.json',dict(status='VERIFIED',epochs=self.sinc_saved,records=self.sinc_records,gradient_definition='Actual total native L+oldU/entropy gradients after unchangedglobalclip, beforeAdamW; not perobjective attribution',extra_model_forwards=0,head_fit_updates=0))
  def finish(self):
   parent=super().finish()
-  if self.pending_sinc is not None or self.sinc_saved!=list(d.SINC_DIAGNOSTIC_EPOCHS) or len(self.sinc_records)!=52 or self.optimizer._sinc_unit_steps!=11100:raise ValueError('Complete actual Sinc learning witness differs')
+  if self.pending_sinc is not None or self.sinc_saved!=list(self.design.SINC_DIAGNOSTIC_EPOCHS) or len(self.sinc_records)!=52 or self.optimizer._sinc_unit_steps!=11100:raise ValueError('Complete actual Sinc learning witness differs')
   with gzip.open(self.out/'sinc_optimizer_steps.jsonl.gz','xt',encoding='utf8',compresslevel=3) as stream:
    for r in self.optimizer._sinc_unit_lr_records:stream.write(json.dumps(r,allow_nan=False)+chr(10))
   value=dict(status='VERIFIED',steps=11100,mode=self.c['sinc_optimizer_units']['mode'],sample_rate_Hz=25000000.,Sinc_parameters=48,diagnostic_epochs=self.sinc_saved,diagnostic_batches=52,Sinc_tensor_records=104,extra_model_forwards=0,extra_optimizer_updates=0,original_U_observation=parent,default_head_jointly_trained=True,head_fit_updates=0,U_truth_read=False,scope='Actual original total clipped gradients and numerical Sinc updates, not an independent head fit or optimizer contribution decomposition')
-  d.write(self.out/'sinc_optimizer_observation.json',value);return value
+  self.design.write(self.out/'sinc_optimizer_observation.json',value);return value

@@ -8,10 +8,11 @@ from .predict import source_proof
 from experiments.cvs_feature_diagnostics.sinc_change import compare
 from experiments.cvs_phase1_overlay.model import native_modules
 
-def recount(row):
+def recount(row,*,design=None,proof_fn=None):
+ d=design or globals()['d'];proof_fn=proof_fn or source_proof
  c=d.config(row);d.validate(c)
  if c['baseline_reuse']:raise ValueError('No new baseline training witness')
- p=source_proof(c);obs=d.read(p/'sinc_optimizer_observation.json')
+ p=proof_fn(c);obs=d.read(p/'sinc_optimizer_observation.json')
  if obs['steps']!=11100 or obs['original_U_observation']['U_packets']!=963900 or obs['extra_model_forwards'] or obs['head_fit_updates'] or obs['U_truth_read']:raise ValueError('Original unit-run data budget differs')
  with gzip.open(p/'sinc_optimizer_steps.jsonl.gz','rt',encoding='utf8') as stream:records=[json.loads(line) for line in stream]
  if len(records)!=11100 or [r['step'] for r in records]!=list(range(1,11101)):raise ValueError('Actual effective optimizer records incomplete')
