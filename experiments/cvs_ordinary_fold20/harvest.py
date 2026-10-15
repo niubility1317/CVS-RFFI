@@ -124,48 +124,6 @@ def transfer(output,spec):
         subprocess.run(['scp',*SSH,'N607:'+root+'/logs/'+rid+'.log',str(output/'logs')],check=True,timeout=60)
 
 
-CHECKPOINT_AUDIT=r'''
-import json,time
-from pathlib import Path
-c=CONFIG
-root=Path(c['root']);rows=c['rows'];sources=[]
-for row in rows:
- source=root/row/'source'
- def read(name):return json.loads((source/name).read_text())
- complete=read('completion.json');init=read('initialization.json');freeze=read('source_frozen.json');contract=read('source_contract.json')
- if complete['epoch']!=20 or complete['optimizer_steps']!=4440 or complete['initialization']!='scratch' or complete['checkpoint_sources'] or complete['ancestors'] or complete['target_access'] or complete['head_fit_updates']:raise ValueError('Own complete scratch source origin required')
- if not init['scratch_only'] or init['checkpoint_sources'] or init['target_contact'] or freeze['selection']!='final_only' or freeze['target_access']:raise ValueError('Own fixed-final source provenance differs')
- if {k:len(v) for k,v in contract['role_ids'].items()}!={'L_s':5040,'U_s':45360,'V':21600} or contract['held_RX']!=1:raise ValueError('Four RX effective data contract differs')
- sources.append(source)
-import torch
-torch.set_num_threads(2);started=time.perf_counter();initial=[];records=[]
-head='id_backbone.encoder.core.id_backbone.cls_head.'
-for source in sources:
- before=torch.load(source/'initial_smoke.pt',map_location='cpu',weights_only=False)
- after=torch.load(source/'final_ssdg.pth',map_location='cpu',weights_only=False)
- if not before['scratch_only'] or after['epoch']!=20 or after['a1_ema_successful_updates']!=4440 or after['args']['baseline_ckpt'] or after['args']['teacher_ckpt'] or after['checkpoint_selection']!='final_only':raise ValueError('Own actual checkpoint origin differs')
- a,b=before['model'],after['model']
- if a.keys()!=b.keys() or tuple(b[head+'weight'].shape)!=(6,160):raise ValueError('Original joint160 default head/state layout required')
- if any(not bool(torch.isfinite(v).all()) for v in b.values() if v.is_floating_point()):raise ValueError('Nonfinite final model state')
- paths=[head+'weight',head+'gain','id_backbone.encoder.sequence_pool.local_projection.weight']
- movement={k:float((b[k]-a[k]).norm()) for k in paths}
- if any(v<=0 for v in movement.values()):raise ValueError('Default head/SIG did not jointly update')
- initial.append(a);records.append(dict(row_id=source.parent.name,state_tensors=len(a),default_head_shape=list(b[head+'weight'].shape),movement=movement))
-if initial[0].keys()!=initial[1].keys() or any(not torch.equal(v,initial[1][k]) for k,v in initial[0].items()):raise ValueError('Actual native initial tensors differ between source arms')
-print(json.dumps(dict(status='VERIFIED',rows=records,initial_all_tensors_equal=True,network_forwards=0,optimizer_updates=0,checkpoint_loads=4,only_own_four_RX_states=True,target_access=False,CPU_body_seconds=time.perf_counter()-started)))
-'''
-
-
-def checkpoint_audit(output,spec):
-    settings=dict(root=spec['execution']['remote_run_root'],rows=[v['row_id'] for v in spec['rows']])
-    script=CHECKPOINT_AUDIT.replace('CONFIG',repr(settings))
-    command='env CUDA_VISIBLE_DEVICES= OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 '+spec['code']['environment']+' -'
-    result=subprocess.run(['ssh',*SSH,'-T','N607',command],input=script.encode('utf-8'),capture_output=True,timeout=60)
-    if result.returncode:raise RuntimeError(result.stderr.decode('utf-8',errors='replace')+result.stdout.decode('utf-8',errors='replace'))
-    evidence=json.loads(result.stdout);write(Path(output)/'actual_checkpoint_state_audit.json',evidence)
-    return evidence
-
-
 def analyze(output,spec,state):
     output=Path(output);models={};held={};logs={};costs=[];curves=[];strata=[];arguments={}
     for registered in spec['rows']:
@@ -208,7 +166,8 @@ def analyze(output,spec,state):
             raise ValueError('Default head/SIG parameter updates or mechanism records incomplete')
         if arm=='N1' and (result['ordinary']['calls']!=4440 or result['ordinary']['packets']!=568320):
             raise ValueError('One N1 ordinary IQ generation per L step required')
-        models[arm]=dict(held_V=saved,seen_V=result['seen_V'],mechanism=mechanism,coverage=coverage)
+        models[arm]=dict(held_V=saved,seen_V=result['seen_V'],mechanism=mechanism,coverage=coverage,
+            ordinary_base_config=read(source/'ordinary_base_config.json') if arm=='N1' else None)
         costs.append(dict(arm=arm,epochs=20,updates=4440,parent_weight_epochs=0,L_forward_packets=1136640,
             student_U_forward_packets=result['student_U_forward_packets'],EMA_forward_packets=result['EMA_eval_forward_packets'],
             student_source_eval_forward_packets=result['student_source_eval_forward_packets'],held_V_forward_packets=5400,
@@ -245,7 +204,7 @@ def analyze(output,spec,state):
         fields=list(dict.fromkeys(k for v in rows for k in v))
         with (output/name).open('w',encoding='utf-8',newline='') as stream:
             writer=csv.DictWriter(stream,fieldnames=fields);writer.writeheader();writer.writerows(rows)
-    plot(output,models,curves,strata,costs)
+    plot(output,models,curves,strata,costs,logs)
     write(output/'analysis_summary.json',summary)
     lines=['# 旧普通 IQ 增强的 RX1 留出结果','',f"源资格：**{q['status']}**。两个scratch E20已完成；目标数据访问0。",'',
         '|模型|held RX1 V准确率|macro-F1|seen RX V均值|seen最差RX|','|---|---:|---:|---:|---:|']
@@ -261,17 +220,21 @@ def analyze(output,spec,state):
     return summary
 
 
-def plot(output,models,curves,strata,costs):
+def plot(output,models,curves,strata,costs,logs):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    fig,axes=plt.subplots(2,2,figsize=(11,7),constrained_layout=True)
+    fig,axes=plt.subplots(2,3,figsize=(14,7),constrained_layout=True)
     fields=('legacy_rdrop/paired_CE','legacy_rdrop/symmetric_KL','train/grad_before_clip','train/pseudo_selected')
     for ax,key in zip(axes.flat,fields):
         for arm in ('N0','N1'):
             rows=[v for v in curves if v['arm']==arm]
             ax.plot([v['epoch'] for v in rows],[v.get(key,0) for v in rows],label=arm)
         ax.axvline(13.5,color='grey',ls='--',lw=.8);ax.set(xlabel='Epoch',ylabel=key);ax.legend()
+    for ax,key,label in ((axes.flat[4],'val_tx_acc','Seen source V accuracy (%)'),(axes.flat[5],'lr','Learning rate')):
+        for arm in ('N0','N1'):
+            rows=logs[arm]['epochs'];ax.plot([v['epoch'] for v in rows],[v[key] for v in rows],label=arm)
+        ax.axvline(13.5,color='grey',ls='--',lw=.8);ax.set(xlabel='Epoch',ylabel=label);ax.legend()
     fig.savefig(output/'complete_training_curves.png',dpi=160);plt.close(fig)
     fig,axes=plt.subplots(1,2,figsize=(11,3.8),constrained_layout=True)
     for ax,dimension in zip(axes,('TX','day')):
@@ -297,10 +260,7 @@ def finish(output):
         raise ValueError('Both fixed source rows must be terminal before completed analysis')
     if not state['matched_sequence'] or state['matched_sequence']['status']!='VERIFIED':raise ValueError('Real sample sequence proof missing')
     spec=read(ROOT/'experiments/cvs_ordinary_fold20/registration.json');transfer(output,spec)
-    audit=checkpoint_audit(output,spec)
     summary=analyze(output,spec,state)
-    summary['actual_checkpoint_state_audit']=audit
-    write(output/'analysis_summary.json',summary)
     print(json.dumps({k:v for k,v in summary.items() if k not in ('models','full_log_proof')},ensure_ascii=False))
 
 

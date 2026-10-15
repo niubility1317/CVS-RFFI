@@ -208,3 +208,5 @@ SIG相对普通增强NOMINAL：low +1.1488、mid +1.1333、urban +1.0907、最�
 后续候选机制选择已在读取本次正式分数前按源证据记录，见[同信道HQ参考的单侧默认头间隔](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/analysis/cvs_hq_head_relation_source_design_20261015.md)。当前尚未实现或训练；不改变已完成HQ家族的负判定。整体研发目标继续active。
 
 20261016 源相位可重复性诊断实际完成：L6300、0网络/更新/目标；主80:160圆周riskgain.00054227，仅6/18折正，部分cell坐标可用0，固定规则FAIL。可用频点的周期一致性仍高，不将缺测占位误认为相位噪声。相位增强不启动，不改窗口/阈值挽救；见[同run报告](../automation_reports/CV-SincNet/20261016-diagnostic-source-phase-crossfit-manysig-m1-r01/report.md)。
+
+20261016旧普通增强匹配源RX1独立E20完成：N0/N1 heldV76.2222/82.6296%，macroF1+7.3596pp，seenV-.3241pp；三day均正、TX0-11.8889pp/TX1-1.3333pp，保留类别代价。源规则PASS只支持其余源RX确认，不是正式clean/urban或跨seed证据；[完整报告](../automation_reports/CV-SincNet/20261016-phase1-ordinary-augmentation-RX1-e20-s2026092701-m2-r01/report.md)。

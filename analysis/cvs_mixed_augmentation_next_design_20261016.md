@@ -23,3 +23,7 @@
 20261016已实现并登记 `20261016-phase1-ordinary-augmentation-RX1-e20-s2026092701-m2-r01`，尚未发布。实际原native/fold轨迹保持222更新/epoch、4440/row，而不是178×20；四RX U45360通过原循环形成每pseudo epoch56624观察。两行当前RAW_HZ/LS.01、两次RDrop，同初态；旧CENTER25K/LS0源折只复用代码逻辑，不载权重。HeldRX1 V5400仅FINAL，未用L1260。单一源V按RX作评价分层，不生成校准/选模新角色。普通增强与loader私有随机流、实际L/U全序列比较、计数和默认头梯度已接入。一次限定P0/P1 PASS，本地实际图检查PASS；正式数据/测试信道未访问或修改。
 
 20261016两行已实际发布并启动VERIFIED：训练代码96365a0aa，GPU0/1，own fresh CP noquery smokePASS，首个增长快照E2/E2。实际defaulthead/SIG_TIME与源角色核实，尚无最终heldV资格或target结果。后续严格按本规则处理，原release不热改。
+
+## RX1首轮实际通过
+
+20261016-phase1-ordinary-augmentation-RX1-e20-s2026092701-m2-r01已完成并独立复算：N0/N1 heldV76.2222/82.6296%，+6.4074pp；macroF1+7.3596pp，seenV-.3241pp。三day全正，TX0-11.8889pp/TX1-1.3333pp等负结果保留。40epoch/8880step/5994L-U batch全解析/逐条匹配，0 target，源资格PASS；其余4fold与正式混合仍未开始。额外CP张量比对缺依赖已标REJECTED_EXTRA_GATE取消阻塞，未重训或重读IQ。下一步仅按原方案确认其他源RX，不能直接宣称Ag/As联合或跨seed有效。

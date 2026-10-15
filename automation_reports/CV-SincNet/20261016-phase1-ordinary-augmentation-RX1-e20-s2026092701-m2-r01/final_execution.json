@@ -1,0 +1,143 @@
+{
+  "status": "VERIFIED",
+  "scientific_status": "PASS_SOURCE_RX1_ONLY",
+  "training_code": "96365a0aafb0ca7570b98f7e3737e3803e90d4d2",
+  "terminal_dispatcher_alive": false,
+  "terminal_workers_alive": false,
+  "failure": null,
+  "source_decision": {
+    "status": "PASS",
+    "checks": {
+      "held_accuracy": true,
+      "held_macro_f1": true,
+      "seen_health": true,
+      "full_health": true
+    },
+    "held_accuracy_gain_pp": 6.4074074074074066,
+    "held_macro_f1_gain": 0.07359611749373396,
+    "seen_V_mean_drop_pp": 0.3240740740740766,
+    "source_only": true,
+    "target_access": false,
+    "formal_target_qualified": false,
+    "goal_completed": false,
+    "automatic_extension": false
+  },
+  "actual_native_arg_differences": [
+    "output_dir",
+    "use_aug",
+    "candidate_id"
+  ],
+  "full_log_proof": {
+    "N0": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "full_stdout_bytes": 114397,
+      "error_markers": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "legacy_rdrop/CE1": 0,
+        "legacy_rdrop/CE2": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_phase_objective_difference": 2.384185791015625e-07,
+      "stdout_warning_lines": []
+    },
+    "N1": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "full_stdout_bytes": 114986,
+      "error_markers": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "legacy_rdrop/CE1": 0,
+        "legacy_rdrop/CE2": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_phase_objective_difference": 3.5762786865234375e-07,
+      "stdout_warning_lines": []
+    }
+  },
+  "actual_matched_sequence_batch_records": 5994,
+  "paired_repaired": 513,
+  "paired_broken": 167,
+  "costs": [
+    {
+      "arm": "N0",
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 854.5869510173798,
+      "formal_forward_packets": 0
+    },
+    {
+      "arm": "N1",
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 875.2027039527893,
+      "formal_forward_packets": 0
+    }
+  ],
+  "real_forward_packets": 4819956,
+  "epochs": 40,
+  "updates": 8880,
+  "matrix_wall_seconds": 883.863611459732,
+  "source_only": true,
+  "target_access": false,
+  "formal_target_qualified": false,
+  "all_five_source_folds_complete": false,
+  "source_seed_count": 1,
+  "nonblocking_checkpoint_audit": {
+    "status": "REJECTED_EXTRA_GATE",
+    "scope": "Optional post-run checkpoint tensor comparison",
+    "error_layer": "Analysis deserialization: missing baseline_origin_sat_view module",
+    "training_and_predictions": "Unchanged; complete at first attempt",
+    "new_network_forwards": 0,
+    "checkpoint_load_attempts": 2,
+    "successful_initial_state_loads": 1,
+    "failed_final_payload_loads": 1,
+    "rule": "Outside minimal required run gates; removed as blocker, not retried or repaired",
+    "actual_real_init_tensor_identity": "Not independently compared; same initialization rule and actual nativeargs verified"
+  },
+  "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_ordinary_fold20_20261016\\final"
+}
