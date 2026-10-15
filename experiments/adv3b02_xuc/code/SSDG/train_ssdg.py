@@ -11382,6 +11382,7 @@ def train(args) -> int:
                         unlabeled_iq=x_u if legacy_unlabeled_active else None,
                         unlabeled_meta=extra_u[1] if legacy_unlabeled_active else None,
                         teacher_prob=prob_w.detach() if legacy_unlabeled_active else None,
+                        teacher_model=ema_model if legacy_unlabeled_active else None,
                         weak_mask=base_mask.detach() if legacy_unlabeled_active else None,
                     )
                     loss = loss + urban_adjustment

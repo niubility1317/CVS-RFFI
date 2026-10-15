@@ -52,7 +52,7 @@ class Observer:
             n.move_batch=move;n._prepare_concat_sat_batch_for_training=prep;n._urban_practical_training_hook=None
 
     def observe(self,*,model,args,epoch,batch_idx,clean_iq,labels,clean_meta,clean_output,clean_ce,
-                unlabeled_iq,unlabeled_meta,teacher_prob,weak_mask):
+                unlabeled_iq,unlabeled_meta,teacher_prob,weak_mask,teacher_model=None):
         step=(epoch-1)*222+batch_idx
         if model is not self.model or step!=self.steps+1:raise ValueError('Native urban hook update sequence differs')
         self.steps=step;zero=clean_ce*0;adjustment=zero;extra=zero;ssl=zero
