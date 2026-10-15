@@ -1,0 +1,276 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01",
+  "budget": 20,
+  "new_rows": 6,
+  "reused_rows": 6,
+  "summary": {
+    "E20_INDEP_CE": {
+      "seed_count": 3,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "accuracy": 0.8304940476190477,
+          "macro_F1": 0.8258392567565475,
+          "worst_RX": 0.7280416666666667,
+          "worst_day": 0.7924761904761904
+        },
+        {
+          "model_seed": 2026092702,
+          "accuracy": 0.8086190476190476,
+          "macro_F1": 0.8025260703396574,
+          "worst_RX": 0.6687916666666667,
+          "worst_day": 0.7628095238095238
+        },
+        {
+          "model_seed": 2026092703,
+          "accuracy": 0.8354702380952381,
+          "macro_F1": 0.8309117693218194,
+          "worst_RX": 0.754125,
+          "worst_day": 0.7967380952380952
+        }
+      ],
+      "accuracy_mean": 0.8248611111111112,
+      "accuracy_sample_SD": 0.014284400154504207,
+      "macro_F1_mean": 0.8197590321393414,
+      "worst_RX_mean": 0.7169861111111111,
+      "worst_day_mean": 0.7840079365079365
+    },
+    "E20_ANTI_CE": {
+      "seed_count": 3,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "accuracy": 0.8247559523809523,
+          "macro_F1": 0.8196963129026261,
+          "worst_RX": 0.7184583333333333,
+          "worst_day": 0.7844047619047619
+        },
+        {
+          "model_seed": 2026092702,
+          "accuracy": 0.8073511904761905,
+          "macro_F1": 0.8012761281114273,
+          "worst_RX": 0.673375,
+          "worst_day": 0.7599761904761905
+        },
+        {
+          "model_seed": 2026092703,
+          "accuracy": 0.8293988095238095,
+          "macro_F1": 0.8239266695020241,
+          "worst_RX": 0.7328333333333333,
+          "worst_day": 0.7973809523809524
+        }
+      ],
+      "accuracy_mean": 0.8205019841269842,
+      "accuracy_sample_SD": 0.011623104613078205,
+      "macro_F1_mean": 0.8149663701720259,
+      "worst_RX_mean": 0.7082222222222222,
+      "worst_day_mean": 0.7805873015873016
+    },
+    "E20_INDEP_RDROP": {
+      "seed_count": 3,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "accuracy": 0.8292678571428571,
+          "macro_F1": 0.8260693925820352,
+          "worst_RX": 0.7430833333333333,
+          "worst_day": 0.8022380952380952
+        },
+        {
+          "model_seed": 2026092702,
+          "accuracy": 0.8415476190476191,
+          "macro_F1": 0.838271319792497,
+          "worst_RX": 0.737625,
+          "worst_day": 0.8075
+        },
+        {
+          "model_seed": 2026092703,
+          "accuracy": 0.8474702380952381,
+          "macro_F1": 0.8448143254388216,
+          "worst_RX": 0.7524166666666666,
+          "worst_day": 0.8065
+        }
+      ],
+      "accuracy_mean": 0.8394285714285714,
+      "accuracy_sample_SD": 0.009284365362949937,
+      "macro_F1_mean": 0.8363850126044513,
+      "worst_RX_mean": 0.744375,
+      "worst_day_mean": 0.8054126984126984
+    },
+    "E20_ANTI_RDROP": {
+      "seed_count": 3,
+      "per_seed": [
+        {
+          "model_seed": 2026092701,
+          "accuracy": 0.8261607142857142,
+          "macro_F1": 0.8227133516503041,
+          "worst_RX": 0.733125,
+          "worst_day": 0.7996904761904762
+        },
+        {
+          "model_seed": 2026092702,
+          "accuracy": 0.8360952380952381,
+          "macro_F1": 0.8328800149993546,
+          "worst_RX": 0.7205833333333334,
+          "worst_day": 0.798047619047619
+        },
+        {
+          "model_seed": 2026092703,
+          "accuracy": 0.8455119047619047,
+          "macro_F1": 0.8428893652435022,
+          "worst_RX": 0.7475,
+          "worst_day": 0.8122380952380952
+        }
+      ],
+      "accuracy_mean": 0.835922619047619,
+      "accuracy_sample_SD": 0.00967675003361935,
+      "macro_F1_mean": 0.8328275772977203,
+      "worst_RX_mean": 0.7337361111111111,
+      "worst_day_mean": 0.8033253968253968
+    }
+  },
+  "paired_errors": [
+    {
+      "comparison": "E20_ANTI_RDROP minus E20_INDEP_RDROP",
+      "model_seed": 2026092701,
+      "corrected_errors": 1341,
+      "introduced_errors": 1863,
+      "accuracy_difference_pp": -0.3107142857142857
+    },
+    {
+      "comparison": "E20_ANTI_RDROP minus E20_INDEP_RDROP",
+      "model_seed": 2026092702,
+      "corrected_errors": 1793,
+      "introduced_errors": 2709,
+      "accuracy_difference_pp": -0.5452380952380952
+    },
+    {
+      "comparison": "E20_ANTI_RDROP minus E20_INDEP_RDROP",
+      "model_seed": 2026092703,
+      "corrected_errors": 1434,
+      "introduced_errors": 1763,
+      "accuracy_difference_pp": -0.19583333333333333
+    },
+    {
+      "comparison": "E20_ANTI_CE minus E20_INDEP_CE",
+      "model_seed": 2026092701,
+      "corrected_errors": 872,
+      "introduced_errors": 1836,
+      "accuracy_difference_pp": -0.5738095238095238
+    },
+    {
+      "comparison": "E20_ANTI_CE minus E20_INDEP_CE",
+      "model_seed": 2026092702,
+      "corrected_errors": 1130,
+      "introduced_errors": 1343,
+      "accuracy_difference_pp": -0.12678571428571428
+    },
+    {
+      "comparison": "E20_ANTI_CE minus E20_INDEP_CE",
+      "model_seed": 2026092703,
+      "corrected_errors": 943,
+      "introduced_errors": 1963,
+      "accuracy_difference_pp": -0.6071428571428571
+    },
+    {
+      "comparison": "E20_INDEP_RDROP minus E20_INDEP_CE",
+      "model_seed": 2026092701,
+      "corrected_errors": 4440,
+      "introduced_errors": 4646,
+      "accuracy_difference_pp": -0.12261904761904761
+    },
+    {
+      "comparison": "E20_INDEP_RDROP minus E20_INDEP_CE",
+      "model_seed": 2026092702,
+      "corrected_errors": 8138,
+      "introduced_errors": 2606,
+      "accuracy_difference_pp": 3.2928571428571427
+    },
+    {
+      "comparison": "E20_INDEP_RDROP minus E20_INDEP_CE",
+      "model_seed": 2026092703,
+      "corrected_errors": 5307,
+      "introduced_errors": 3291,
+      "accuracy_difference_pp": 1.2
+    },
+    {
+      "comparison": "E20_ANTI_RDROP minus E20_ANTI_CE",
+      "model_seed": 2026092701,
+      "corrected_errors": 5293,
+      "introduced_errors": 5057,
+      "accuracy_difference_pp": 0.14047619047619048
+    },
+    {
+      "comparison": "E20_ANTI_RDROP minus E20_ANTI_CE",
+      "model_seed": 2026092702,
+      "corrected_errors": 8645,
+      "introduced_errors": 3816,
+      "accuracy_difference_pp": 2.8744047619047617
+    },
+    {
+      "comparison": "E20_ANTI_RDROP minus E20_ANTI_CE",
+      "model_seed": 2026092703,
+      "corrected_errors": 6450,
+      "introduced_errors": 3743,
+      "accuracy_difference_pp": 1.6113095238095239
+    },
+    {
+      "comparison": "E20_ANTI_RDROP minus E20_INDEP_CE",
+      "model_seed": 2026092701,
+      "corrected_errors": 4542,
+      "introduced_errors": 5270,
+      "accuracy_difference_pp": -0.43333333333333335
+    },
+    {
+      "comparison": "E20_ANTI_RDROP minus E20_INDEP_CE",
+      "model_seed": 2026092702,
+      "corrected_errors": 8307,
+      "introduced_errors": 3691,
+      "accuracy_difference_pp": 2.7476190476190476
+    },
+    {
+      "comparison": "E20_ANTI_RDROP minus E20_INDEP_CE",
+      "model_seed": 2026092703,
+      "corrected_errors": 5502,
+      "introduced_errors": 3815,
+      "accuracy_difference_pp": 1.0041666666666667
+    }
+  ],
+  "paired_summary": {
+    "E20_ANTI_RDROP minus E20_INDEP_RDROP": {
+      "seed_count": 3,
+      "mean_pp": -0.35059523809523807,
+      "sample_SD_pp": 0.1780836592238032,
+      "positive_seeds": 0
+    },
+    "E20_ANTI_CE minus E20_INDEP_CE": {
+      "seed_count": 3,
+      "mean_pp": -0.43591269841269836,
+      "sample_SD_pp": 0.26823011951375125,
+      "positive_seeds": 0
+    },
+    "E20_INDEP_RDROP minus E20_INDEP_CE": {
+      "seed_count": 3,
+      "mean_pp": 1.4567460317460317,
+      "sample_SD_pp": 1.7221522277488823,
+      "positive_seeds": 2
+    },
+    "E20_ANTI_RDROP minus E20_ANTI_CE": {
+      "seed_count": 3,
+      "mean_pp": 1.542063492063492,
+      "sample_SD_pp": 1.368279071718484,
+      "positive_seeds": 3
+    },
+    "E20_ANTI_RDROP minus E20_INDEP_CE": {
+      "seed_count": 3,
+      "mean_pp": 1.1061507936507937,
+      "sample_SD_pp": 1.5929265783736524,
+      "positive_seeds": 2
+    }
+  },
+  "main_E50_verdict": "PENDING",
+  "target_feedback": false,
+  "head_fit_updates": 0,
+  "goal_completed": false
+}

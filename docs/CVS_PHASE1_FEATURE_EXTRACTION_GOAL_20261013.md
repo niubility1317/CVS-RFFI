@@ -333,3 +333,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- SIGTIME_RDROP_PAIRED_MASKS_MAIN_PREREG_20261015 -->
 源域固定条件PASS后登记20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01：ANTI_CE/ANTI_RDROP×E20/E50×3固定seed，12次从零、420epoch/93240更新；复用已实际匹配12个独立采样历史控制，不继承其或源折CP。完整5RX L6300/U56700hidden/V27000，默认头联合，逐row自动clean预测/独立truthlast。主判据E50均值≥84%、相对原RDrop均值正且至少2/3正、平均错误交互负；无目标反馈。尚未发布，goalactive，见[预登记](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01/report.md)。
+
+
+<!-- SIGTIME_RDROP_PAIRED_MASKS_MAIN_E20_RESULT_20261015 -->
+20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01的6个新E20模型和6个历史控制完整三seed对比已VERIFIED。新ANTIRDROP均值83.592262%，原INDEPRDROP均值83.942857%，配对均值-0.350595pp，0/3正；原RDrop正收益保留。E50六行仍健康按固定50轮执行，主判据PENDING，不据E20结果改预算/参数/seed或重跑。完整日志、默认头/实际joint160和truthlast逐row审计齐备；goalactive。[E20结果](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01/E20_summary.md)。
