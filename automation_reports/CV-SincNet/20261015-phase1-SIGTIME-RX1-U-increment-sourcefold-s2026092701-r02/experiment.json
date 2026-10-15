@@ -226,8 +226,13 @@
   ],
   "registered_at": "2026-10-15T02:55:30+00:00",
   "result": {
-    "status": "RUNNING",
-    "evidence_ref": "launch_evidence.json",
+    "status": "ANALYZED",
+    "evidence_ref": "source_mechanism_analysis.json",
+    "scientific_outcome": "NOT_QUALIFIED_FIXED_SOURCE_FALSIFICATION",
+    "source_qualified_probes": 0,
+    "source_probes": 4,
+    "full_source_training_qualification": false,
+    "main_run_qualification": false,
     "target_access": false,
     "U_truth_read": false,
     "goal84_completed": false

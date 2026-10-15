@@ -1,0 +1,638 @@
+{
+  "status": "ANALYZED",
+  "scientific_outcome": "NOT_QUALIFIED_FIXED_SOURCE_FALSIFICATION",
+  "run_id": "20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r02",
+  "execution_commit": "56bd5feec7edefb8aba6fea595c0b701be0b2809",
+  "complete_log_records": 4440,
+  "complete_epoch_records": 20,
+  "all_step_losses_finite": true,
+  "U_truth_steps": 0,
+  "source_role_counts": {
+    "L_s": 5040,
+    "U_s": 45360,
+    "V": 21600
+  },
+  "RX1_excluded_from_all_training_calibration_probe_loaders": true,
+  "initialization": "scratch",
+  "checkpoint_sources": [],
+  "default_head_fit_updates": 0,
+  "actual_candidate_corrections": 0,
+  "actual_RAW_oracle_max_error": 0.0,
+  "U_packet_observations": 396368,
+  "temporary_AdamW_steps": 8,
+  "diagnostic_packet_forwards": 21998,
+  "additional_L_IQ_reads": 1404,
+  "unique_held_RX_L_packets": 1260,
+  "final_training_L_CE": 0.02320658580634978,
+  "final_source_metrics": {
+    "source_val_count": 21600,
+    "source_val_accuracy": 0.9799074074074074,
+    "source_val_rx_accuracy": {
+      "3": 0.9535185185185185,
+      "4": 0.9861111111111112,
+      "6": 0.9944444444444445,
+      "8": 0.9855555555555555
+    },
+    "source_val_worst_rx": 0.9535185185185185,
+    "held_RX_excluded": true
+  },
+  "final_held_RX_L": {
+    "ACTUAL": {
+      "count": 1260,
+      "mean_CE": 1.796926212462201,
+      "errors": 510,
+      "accuracy": 0.5952380952380952,
+      "mean_margin": 3.564219543562522
+    },
+    "PRE_W": {
+      "count": 1260,
+      "mean_CE": 1.7969262029313182,
+      "errors": 510,
+      "accuracy": 0.5952380952380952,
+      "mean_margin": 3.564219617586381
+    }
+  },
+  "source_health_pass": true,
+  "fixed_gate": {
+    "minimum_qualified_probes": 2,
+    "final_training_L_CE_max": 0.5,
+    "U_loss_min": 1e-08,
+    "raw_U_F_to_full_F_step_min": 0.01,
+    "retained_U_F_norm_min": 0.1,
+    "CONE_RAW_cosine_max": 0.95,
+    "ACTUAL_and_PRE_W_CE_improvement_min": 1e-05,
+    "errors_must_not_increase": true,
+    "actual_stored_norm_relative_tolerance": 0.001,
+    "rounded_cone_violation_relative_max": 0.001,
+    "identity_controls": [
+      "RAW",
+      "SHRINK",
+      "L_ONLY_F"
+    ],
+    "promotion": "Only a full controlled source-fold training matrix, never direct target/main qualification"
+  },
+  "gate": {
+    "qualified_steps": [],
+    "qualified_count": 0,
+    "total_probes": 4,
+    "full_source_training_qualification": false,
+    "main_run_qualification": false
+  },
+  "probe_summaries": [
+    {
+      "step": 2896,
+      "epoch": 14,
+      "U_loss": 0.0008283184142783284,
+      "held_RX": 1,
+      "training_RX": [
+        3,
+        4,
+        6,
+        8
+      ],
+      "held_L_packets": 1260,
+      "geometry": {
+        "raw_U_F_increment_norm": 2.2470031245398955e-05,
+        "full_F_step_norm": 0.003309397978818226,
+        "raw_U_F_to_full_F_step": 0.006789763996115971,
+        "CONE_U_F_increment_norm": 2.2470031245398955e-05,
+        "retained_U_F_norm_ratio": 1.0,
+        "CONE_RAW_cosine": 0.9999999999999998,
+        "projection_active_RX": [],
+        "continuous_cone_violation_relative": -0.003776793404481889,
+        "rounded_cone_violation_relative": -0.0037767934044818895,
+        "stored_norm_control": {
+          "scale": 0.9999995231628418,
+          "relative_norm_error": 0.0,
+          "norm_matched": true
+        }
+      },
+      "held_results": {
+        "RAW": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.4611896926356143,
+            "errors": 476,
+            "accuracy": 0.6222222222222222,
+            "mean_margin": 3.791571223330758
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.4611770868417646,
+            "errors": 476,
+            "accuracy": 0.6222222222222222,
+            "mean_margin": 3.7915298729618847
+          }
+        },
+        "L_ONLY_F": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.4611166627419145,
+            "errors": 476,
+            "accuracy": 0.6222222222222222,
+            "mean_margin": 3.7916287326564393
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.4611040575133565,
+            "errors": 475,
+            "accuracy": 0.623015873015873,
+            "mean_margin": 3.7915874195706727
+          }
+        },
+        "SHRINK": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.4611896926356143,
+            "errors": 476,
+            "accuracy": 0.6222222222222222,
+            "mean_margin": 3.791571223330758
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.4611770868417646,
+            "errors": 476,
+            "accuracy": 0.6222222222222222,
+            "mean_margin": 3.7915298729618847
+          }
+        },
+        "CONE": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.4611896926356143,
+            "errors": 476,
+            "accuracy": 0.6222222222222222,
+            "mean_margin": 3.791571223330758
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.4611770868417646,
+            "errors": 476,
+            "accuracy": 0.6222222222222222,
+            "mean_margin": 3.7915298729618847
+          }
+        }
+      },
+      "paired": {
+        "RAW": {
+          "ACTUAL_CE_difference": 0.0,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": 0.0,
+          "PRE_W_error_difference": 0
+        },
+        "SHRINK": {
+          "ACTUAL_CE_difference": 0.0,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": 0.0,
+          "PRE_W_error_difference": 0
+        },
+        "L_ONLY_F": {
+          "ACTUAL_CE_difference": 7.302989369972757e-05,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": 7.302932840813625e-05,
+          "PRE_W_error_difference": 1
+        }
+      },
+      "default_W_same_RAW_all_modes": true,
+      "feature_gains_in_F": true,
+      "head_fit_updates": 0,
+      "actual_candidate_corrections": 0,
+      "temporary_AdamW_steps": 2,
+      "L_counterfactual_uses_actual_backward": true,
+      "default_W_actual_step_norm": 0.0002025498781946277,
+      "RAW_reference": "actual postclip gradient oracle, no second clip",
+      "live_state_preserved": true,
+      "actual_RAW_oracle_max_error": 0.0,
+      "actual_RAW_oracle_bitwise_equal": true,
+      "qualification_failures": [
+        "U_increment_fraction",
+        "direction_change",
+        "RAW/ACTUAL/CE",
+        "RAW/PRE_W/CE",
+        "SHRINK/ACTUAL/CE",
+        "SHRINK/PRE_W/CE",
+        "L_ONLY_F/ACTUAL/CE",
+        "L_ONLY_F/PRE_W/CE",
+        "L_ONLY_F/PRE_W/errors"
+      ]
+    },
+    {
+      "step": 3344,
+      "epoch": 16,
+      "U_loss": 0.0009853861993178725,
+      "held_RX": 1,
+      "training_RX": [
+        3,
+        4,
+        6,
+        8
+      ],
+      "held_L_packets": 1260,
+      "geometry": {
+        "raw_U_F_increment_norm": 1.78367118667406e-05,
+        "full_F_step_norm": 0.0011512196159514114,
+        "raw_U_F_to_full_F_step": 0.015493752555631766,
+        "CONE_U_F_increment_norm": 1.782371949743172e-05,
+        "retained_U_F_norm_ratio": 0.9992715939234793,
+        "CONE_RAW_cosine": 0.9990143589801986,
+        "projection_active_RX": [
+          4
+        ],
+        "continuous_cone_violation_relative": 8.904033366504289e-18,
+        "rounded_cone_violation_relative": 0.0081945478165693,
+        "stored_norm_control": {
+          "scale": 0.9950494766235352,
+          "relative_norm_error": 6.375475329619677e-07,
+          "norm_matched": true
+        }
+      },
+      "held_results": {
+        "RAW": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.7449624336093421,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5126992036248486
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.744934959180567,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5127005785779675
+          }
+        },
+        "L_ONLY_F": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.745065576518089,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5125631158402753
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.7450381153196415,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.512564511737311
+          }
+        },
+        "SHRINK": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.7449624744945407,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5126991138778747
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.7449350076845858,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.51270048360619
+          }
+        },
+        "CONE": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.7449578332385596,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5127105669428906
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.7449303748981553,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5127119643457574
+          }
+        }
+      },
+      "paired": {
+        "RAW": {
+          "ACTUAL_CE_difference": -4.6003707825370554e-06,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": -4.584282411679297e-06,
+          "PRE_W_error_difference": 0
+        },
+        "SHRINK": {
+          "ACTUAL_CE_difference": -4.641255981097103e-06,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": -4.6327864304807065e-06,
+          "PRE_W_error_difference": 0
+        },
+        "L_ONLY_F": {
+          "ACTUAL_CE_difference": -0.0001077432795293376,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": -0.00010774042148620211,
+          "PRE_W_error_difference": 0
+        }
+      },
+      "default_W_same_RAW_all_modes": true,
+      "feature_gains_in_F": true,
+      "head_fit_updates": 0,
+      "actual_candidate_corrections": 0,
+      "temporary_AdamW_steps": 2,
+      "L_counterfactual_uses_actual_backward": true,
+      "default_W_actual_step_norm": 6.788980491780751e-05,
+      "RAW_reference": "actual postclip gradient oracle, no second clip",
+      "live_state_preserved": true,
+      "actual_RAW_oracle_max_error": 0.0,
+      "actual_RAW_oracle_bitwise_equal": true,
+      "qualification_failures": [
+        "direction_change",
+        "rounded_cone_residual",
+        "RAW/ACTUAL/CE",
+        "RAW/PRE_W/CE",
+        "SHRINK/ACTUAL/CE",
+        "SHRINK/PRE_W/CE"
+      ]
+    },
+    {
+      "step": 3792,
+      "epoch": 18,
+      "U_loss": 0.0009208956034854054,
+      "held_RX": 1,
+      "training_RX": [
+        3,
+        4,
+        6,
+        8
+      ],
+      "held_L_packets": 1260,
+      "geometry": {
+        "raw_U_F_increment_norm": 2.9411697477521262e-06,
+        "full_F_step_norm": 0.0005787024353000814,
+        "raw_U_F_to_full_F_step": 0.005082352463623221,
+        "CONE_U_F_increment_norm": 2.9411697477521262e-06,
+        "retained_U_F_norm_ratio": 1.0,
+        "CONE_RAW_cosine": 0.9999999999999998,
+        "projection_active_RX": [],
+        "continuous_cone_violation_relative": -0.06340979724437044,
+        "rounded_cone_violation_relative": -0.06340979724437044,
+        "stored_norm_control": {
+          "scale": 0.9999961853027344,
+          "relative_norm_error": 0.0,
+          "norm_matched": true
+        }
+      },
+      "held_results": {
+        "RAW": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.7885011168076725,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.588565390089911
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.7885209418635084,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5885619158481514
+          }
+        },
+        "L_ONLY_F": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.7885214522615174,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5885306103184584
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.7885412680564998,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.588527127835814
+          }
+        },
+        "SHRINK": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.7885011168076725,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.588565390089911
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.7885209418635084,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5885619158481514
+          }
+        },
+        "CONE": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.7885011168076725,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.588565390089911
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.7885209418635084,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5885619158481514
+          }
+        }
+      },
+      "paired": {
+        "RAW": {
+          "ACTUAL_CE_difference": 0.0,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": 0.0,
+          "PRE_W_error_difference": 0
+        },
+        "SHRINK": {
+          "ACTUAL_CE_difference": 0.0,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": 0.0,
+          "PRE_W_error_difference": 0
+        },
+        "L_ONLY_F": {
+          "ACTUAL_CE_difference": -2.033545384483304e-05,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": -2.032619299141558e-05,
+          "PRE_W_error_difference": 0
+        }
+      },
+      "default_W_same_RAW_all_modes": true,
+      "feature_gains_in_F": true,
+      "head_fit_updates": 0,
+      "actual_candidate_corrections": 0,
+      "temporary_AdamW_steps": 2,
+      "L_counterfactual_uses_actual_backward": true,
+      "default_W_actual_step_norm": 2.648864925224309e-05,
+      "RAW_reference": "actual postclip gradient oracle, no second clip",
+      "live_state_preserved": true,
+      "actual_RAW_oracle_max_error": 0.0,
+      "actual_RAW_oracle_bitwise_equal": true,
+      "qualification_failures": [
+        "U_increment_fraction",
+        "direction_change",
+        "RAW/ACTUAL/CE",
+        "RAW/PRE_W/CE",
+        "SHRINK/ACTUAL/CE",
+        "SHRINK/PRE_W/CE"
+      ]
+    },
+    {
+      "step": 4432,
+      "epoch": 20,
+      "U_loss": 0.0006978343008086085,
+      "held_RX": 1,
+      "training_RX": [
+        3,
+        4,
+        6,
+        8
+      ],
+      "held_L_packets": 1260,
+      "geometry": {
+        "raw_U_F_increment_norm": 8.588088011939529e-07,
+        "full_F_step_norm": 9.786998199141996e-05,
+        "raw_U_F_to_full_F_step": 0.008774997028907624,
+        "CONE_U_F_increment_norm": 8.588079178203356e-07,
+        "retained_U_F_norm_ratio": 0.9999989713966414,
+        "CONE_RAW_cosine": 0.9999874133494105,
+        "projection_active_RX": [
+          8
+        ],
+        "continuous_cone_violation_relative": -9.631720254881478e-19,
+        "rounded_cone_violation_relative": 0.016855653217419553,
+        "stored_norm_control": {
+          "scale": 0.9967460632324219,
+          "relative_norm_error": 6.157156707278991e-11,
+          "norm_matched": true
+        }
+      },
+      "held_results": {
+        "RAW": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.8000190776446852,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5613948108598827
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.8000217116535053,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.561391533876308
+          }
+        },
+        "L_ONLY_F": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.8000203885117503,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5613919350629053
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.8000230158367903,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.561388658523456
+          }
+        },
+        "SHRINK": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.8000190796172726,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5613948088760177
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.800021713072414,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5613915311340394
+          }
+        },
+        "CONE": {
+          "ACTUAL": {
+            "count": 1260,
+            "mean_CE": 1.800019089425992,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.561394785681651
+          },
+          "PRE_W": {
+            "count": 1260,
+            "mean_CE": 1.8000217220963708,
+            "errors": 512,
+            "accuracy": 0.5936507936507937,
+            "mean_margin": 3.5613914891348406
+          }
+        }
+      },
+      "paired": {
+        "RAW": {
+          "ACTUAL_CE_difference": 1.1781306819003134e-08,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": 1.0442865461257611e-08,
+          "PRE_W_error_difference": 0
+        },
+        "SHRINK": {
+          "ACTUAL_CE_difference": 9.808719392268017e-09,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": 9.02395669299949e-09,
+          "PRE_W_error_difference": 0
+        },
+        "L_ONLY_F": {
+          "ACTUAL_CE_difference": -1.299085758299512e-06,
+          "ACTUAL_error_difference": 0,
+          "PRE_W_CE_difference": -1.2937404194612867e-06,
+          "PRE_W_error_difference": 0
+        }
+      },
+      "default_W_same_RAW_all_modes": true,
+      "feature_gains_in_F": true,
+      "head_fit_updates": 0,
+      "actual_candidate_corrections": 0,
+      "temporary_AdamW_steps": 2,
+      "L_counterfactual_uses_actual_backward": true,
+      "default_W_actual_step_norm": 5.6396195626426776e-06,
+      "RAW_reference": "actual postclip gradient oracle, no second clip",
+      "live_state_preserved": true,
+      "actual_RAW_oracle_max_error": 0.0,
+      "actual_RAW_oracle_bitwise_equal": true,
+      "qualification_failures": [
+        "U_increment_fraction",
+        "direction_change",
+        "rounded_cone_residual",
+        "RAW/ACTUAL/CE",
+        "RAW/PRE_W/CE",
+        "SHRINK/ACTUAL/CE",
+        "SHRINK/PRE_W/CE",
+        "L_ONLY_F/ACTUAL/CE",
+        "L_ONLY_F/PRE_W/CE"
+      ]
+    }
+  ],
+  "partial_failed_run_updates": 2895,
+  "recovery_updates": 4440,
+  "cumulative_actual_updates": 7335,
+  "target_predictions": 0,
+  "target_truth_reads": 0,
+  "clean_three_seed_goal": 0.84,
+  "goal84_completed": false,
+  "interpretation": "Four paired local update probes along one unchanged RAW SSL fold; no full CONE trajectory, no independent-seed evidence, no target claim. Four readouts reuse the same1260 source-L packets.",
+  "next_action": "Close this fixed projected-U-increment candidate without lambda/threshold/RX scans; retain historical worst-RX and CENTER25K positive routes separately"
+}
