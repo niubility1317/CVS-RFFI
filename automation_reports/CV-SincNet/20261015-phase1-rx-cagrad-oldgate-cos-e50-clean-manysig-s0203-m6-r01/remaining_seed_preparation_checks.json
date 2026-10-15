@@ -1,0 +1,74 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "checks": {
+    "status": "PASS",
+    "unchanged_core_checks": "Previouslyverifiedfirstrelease; unchangedcorechecksnotrerun",
+    "negatives": 11,
+    "portable_registration_resolves": true,
+    "different_seeds_distinct_initial_states": true,
+    "native_contexts": [
+      {
+        "row_id": "NORM_CONTROL-s2026092702",
+        "native_difference_keys": [
+          "candidate_id",
+          "output_dir",
+          "run_id",
+          "seed"
+        ],
+        "scientific_dictionary_identical": true,
+        "actual_same_seed_initial_state": true,
+        "actual_observer_context_joint_gradients_and_U_path": true
+      },
+      {
+        "row_id": "RX_CAGRAD-s2026092702",
+        "native_difference_keys": [
+          "candidate_id",
+          "output_dir",
+          "run_id",
+          "seed"
+        ],
+        "scientific_dictionary_identical": true,
+        "actual_same_seed_initial_state": true,
+        "actual_observer_context_joint_gradients_and_U_path": true
+      },
+      {
+        "row_id": "NORM_CONTROL-s2026092703",
+        "native_difference_keys": [
+          "candidate_id",
+          "output_dir",
+          "run_id",
+          "seed"
+        ],
+        "scientific_dictionary_identical": true,
+        "actual_same_seed_initial_state": true,
+        "actual_observer_context_joint_gradients_and_U_path": true
+      },
+      {
+        "row_id": "RX_CAGRAD-s2026092703",
+        "native_difference_keys": [
+          "candidate_id",
+          "output_dir",
+          "run_id",
+          "seed"
+        ],
+        "scientific_dictionary_identical": true,
+        "actual_same_seed_initial_state": true,
+        "actual_observer_context_joint_gradients_and_U_path": true
+      }
+    ],
+    "real_IQ_checkpoint_or_first_qualification_read": false,
+    "first_seed_retrained": false,
+    "new_scientific_hypothesis": false,
+    "new_models": 4,
+    "historical_baselines_reused": 2,
+    "head_fit_updates": 0
+  },
+  "first_source_qualification_read": false,
+  "first_target_summary_read": false,
+  "scientific_recipe_unchanged": true,
+  "source_decision_commit": "PENDING_SOURCE_ONLY_DECISION",
+  "preregistered": false,
+  "remote_launched": false,
+  "independent_adapter_review": "PASS",
+  "next": "Only after first complete sourcePASS, freeze decision and finish publication; first training remains immutable"
+}
