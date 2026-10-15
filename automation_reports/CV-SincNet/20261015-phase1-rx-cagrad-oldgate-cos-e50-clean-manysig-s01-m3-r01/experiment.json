@@ -1261,18 +1261,100 @@
   },
   "preparation_status": "LOCAL_VERIFIED_P0P1_PASS_PREREGISTERED",
   "results": {
-    "status": "RUNNING_VERIFIED",
-    "new_models_started": 2,
-    "historical_reference_scored": 1,
-    "preflight": "PASS",
-    "default_head_only": true,
-    "head_fit_updates": 0,
-    "source_qualification": null,
-    "new_target_performance": null,
-    "goal84": false,
-    "evidence": [
-      "launch_evidence.json"
-    ]
+    "status": "ANALYZED_FIRST_SEED",
+    "execution_commit": "22de3258841f6068688885ba99d8ceeb866be17c",
+    "source_qualification": "PASS",
+    "source_decision_commit": "dda55abb4cd793d65f5e63341d3747c762b6d14e",
+    "trained": true,
+    "predicted": true,
+    "scored": true,
+    "models": 3,
+    "new_models": 2,
+    "seed_count": 1,
+    "prediction_count": 504000,
+    "metric_records": 54,
+    "full_audit": "VERIFIED",
+    "summary": [
+      {
+        "arm": "OLD_GATE_COS50",
+        "seed_count": 1,
+        "accuracy_mean": 0.8066845238095238,
+        "accuracy_sd": null,
+        "seed_accuracy": {
+          "2026092701": 0.8066845238095238
+        },
+        "macro_f1_mean": 0.8017335328586674,
+        "worst_RX_mean": 0.7061666666666667,
+        "worst_day_mean": 0.7545238095238095
+      },
+      {
+        "arm": "NORM_CONTROL",
+        "seed_count": 1,
+        "accuracy_mean": 0.836577380952381,
+        "accuracy_sd": null,
+        "seed_accuracy": {
+          "2026092701": 0.836577380952381
+        },
+        "macro_f1_mean": 0.8324012696316436,
+        "worst_RX_mean": 0.706875,
+        "worst_day_mean": 0.7953571428571429
+      },
+      {
+        "arm": "RX_CAGRAD",
+        "seed_count": 1,
+        "accuracy_mean": 0.82825,
+        "accuracy_sd": null,
+        "seed_accuracy": {
+          "2026092701": 0.82825
+        },
+        "macro_f1_mean": 0.8234931861715302,
+        "worst_RX_mean": 0.6828333333333333,
+        "worst_day_mean": 0.7887142857142857
+      }
+    ],
+    "paired": [
+      {
+        "arm": "RX_CAGRAD",
+        "control": "NORM_CONTROL",
+        "seeds": [
+          2026092701
+        ],
+        "seed_differences": [
+          -0.008327380952380947
+        ],
+        "mean_difference": -0.008327380952380947,
+        "sd_difference": null,
+        "positive_seeds": 0
+      },
+      {
+        "arm": "RX_CAGRAD",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701
+        ],
+        "seed_differences": [
+          0.021565476190476218
+        ],
+        "mean_difference": 0.021565476190476218,
+        "sd_difference": null,
+        "positive_seeds": 1
+      },
+      {
+        "arm": "NORM_CONTROL",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701
+        ],
+        "seed_differences": [
+          0.029892857142857165
+        ],
+        "mean_difference": 0.029892857142857165,
+        "sd_difference": null,
+        "positive_seeds": 1
+      }
+    ],
+    "goal_84": false,
+    "results_ref": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/results.json"
   },
   "registered_at": "2026-10-15T11:12:41+00:00"
 }

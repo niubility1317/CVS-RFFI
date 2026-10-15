@@ -2337,14 +2337,28 @@
   ],
   "registered_at": "2026-10-15T12:13:41+00:00",
   "results": {
-    "status": "PREREGISTERED",
+    "status": "RUNNING",
     "source_expansion_decision_commit": "dda55abb4cd793d65f5e63341d3747c762b6d14e",
     "first_seed_source_qualification": "PASS",
     "local_adapter_checks": "PASS",
     "independent_adapter_P0P1_review": "PASS",
-    "launched": false,
+    "launched": true,
     "trained": false,
     "predicted": false,
-    "scored": false
+    "scored": false,
+    "execution_commit": "fd7cf6f1532082c38927bd632cc3ce19a486a2e9",
+    "postlaunch_state": "VERIFIED",
+    "actual_epoch_counts": {
+      "NORM_CONTROL-s2026092702": 3,
+      "RX_CAGRAD-s2026092702": 3,
+      "NORM_CONTROL-s2026092703": 3,
+      "RX_CAGRAD-s2026092703": 3
+    },
+    "new_models": 4,
+    "model_seeds": [
+      2026092702,
+      2026092703
+    ],
+    "goal_84": false
   }
 }

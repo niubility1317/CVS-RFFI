@@ -15,3 +15,5 @@
 停止规则：仅本run数据/来源不符、非有限/原生跳过更新、非法U真值/目标/头操作、梯度公式/默认W校正/独立复算失败、输出冲突，保留产物、不自动重试、不停止无关任务。QP失败明确回退原CE；不以目标分数停止健康训练。
 
 预期工件：preflight/launch/queue；每行resolved/初始化/50轮曲线/11100步日志/e1/17/33/50真实梯度私有向量/最终checkpoint/feature-only证明/固定prediction/独立scores/completion；全局source_features/source_qualification/analysis/completion及合并三seed分析。数据、权重、原始日志及预测不进Git，只上传实现、配置与聚合结果。源PASS及特征变化不证明目标泛化或新TX迁移。
+
+实际发布：执行提交fd7cf6f1532082c38927bd632cc3ce19a486a2e9已独立核实远端，一次归档发布与远端编译完成，真实checkpoint无query检查PASS。四个原worker的PID/CWD/argv/GPU与日志增长已独立核实，当前各到第3轮，failure为空。历史两对照只读复用；保留原矩阵与所有健康任务，完成后自动逐行预测/独立评分。详见launch_evidence.json。

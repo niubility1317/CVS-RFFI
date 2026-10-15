@@ -1,0 +1,140 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+  "execution_commit": "fd7cf6f1532082c38927bd632cc3ce19a486a2e9",
+  "source_decision_commit": "dda55abb4cd793d65f5e63341d3747c762b6d14e",
+  "one_release_only": true,
+  "preflight": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "unchanged_core_checks": "Previouslyverifiedfirstrelease; unchangedcorechecksnotrerun",
+      "negatives": 11,
+      "portable_registration_resolves": true,
+      "different_seeds_distinct_initial_states": true,
+      "native_contexts": [
+        {
+          "row_id": "NORM_CONTROL-s2026092702",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        },
+        {
+          "row_id": "RX_CAGRAD-s2026092702",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        },
+        {
+          "row_id": "NORM_CONTROL-s2026092703",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        },
+        {
+          "row_id": "RX_CAGRAD-s2026092703",
+          "native_difference_keys": [
+            "candidate_id",
+            "output_dir",
+            "run_id",
+            "seed"
+          ],
+          "scientific_dictionary_identical": true,
+          "actual_same_seed_initial_state": true,
+          "actual_observer_context_joint_gradients_and_U_path": true
+        }
+      ],
+      "real_IQ_checkpoint_or_first_qualification_read": false,
+      "first_seed_retrained": false,
+      "new_scientific_hypothesis": false,
+      "new_models": 4,
+      "historical_baselines_reused": 2,
+      "head_fit_updates": 0
+    },
+    "real_checkpoint_no_query_smoke": true,
+    "training_inherits_checkpoint": false,
+    "source_first_model_qualified": true,
+    "full195041_gradient_formula": true,
+    "original_defaultW_gradient": true,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0,
+    "query_read": false
+  },
+  "workers": [
+    {
+      "row_id": "NORM_CONTROL-s2026092702",
+      "pid": 3206721,
+      "gpu": 4,
+      "process_live": true,
+      "cwd_matches_release": true,
+      "command_matches": true,
+      "gpu_matches_reservation": true,
+      "epoch_count": 3,
+      "log_bytes": 22063,
+      "log_grew": true,
+      "resolved_config_present": true
+    },
+    {
+      "row_id": "RX_CAGRAD-s2026092702",
+      "pid": 3206864,
+      "gpu": 5,
+      "process_live": true,
+      "cwd_matches_release": true,
+      "command_matches": true,
+      "gpu_matches_reservation": true,
+      "epoch_count": 3,
+      "log_bytes": 22022,
+      "log_grew": true,
+      "resolved_config_present": true
+    },
+    {
+      "row_id": "NORM_CONTROL-s2026092703",
+      "pid": 3207037,
+      "gpu": 6,
+      "process_live": true,
+      "cwd_matches_release": true,
+      "command_matches": true,
+      "gpu_matches_reservation": true,
+      "epoch_count": 3,
+      "log_bytes": 22062,
+      "log_grew": true,
+      "resolved_config_present": true
+    },
+    {
+      "row_id": "RX_CAGRAD-s2026092703",
+      "pid": 3207180,
+      "gpu": 3,
+      "process_live": true,
+      "cwd_matches_release": true,
+      "command_matches": true,
+      "gpu_matches_reservation": true,
+      "epoch_count": 3,
+      "log_bytes": 22021,
+      "log_grew": true,
+      "resolved_config_present": true
+    }
+  ],
+  "healthy_prior_jobs_unchanged": true,
+  "baseline_rows_reused": 2,
+  "completion": null,
+  "failure": null,
+  "goal_84": false
+}

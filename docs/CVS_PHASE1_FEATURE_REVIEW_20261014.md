@@ -574,3 +574,5 @@ CAGrad第17轮真实梯度复算通过，连同首轮共208层/832向量；默�
 CAGrad完整已记录源曲线快照107个epoch（历史50＋新29/28）、12654个新L步骤已回收并绘图，完整stdout未发现实际数值非有限/OOM/异常退出，跳过更新0。新U尚未启用符合34轮计划。源V平台和L CE起伏只作健康诊断，源资格/新目标性能未知。图与可复现聚合表在本行source_curve_prefix_e29_28.*。
 
 CAGrad第33/34轮完整阶段切换已核实：33轮U曝光0，34轮两臂各56700U、接受909/910，U真值始终隐藏；原33+17/ownEMA/.16UCE/.01entropy保持。第33轮104层416向量复算PASS，1/17/33累计312层1248向量，默认W附加梯度严格0。熵不单独记录，日志残差只作推算。剩余种子新适配的唯一P0/P1 PASS，未重复核心；源资格未知、扩展未发布。
+
+CAGrad首seed完整50轮及独立评分完成：旧门控+cos80.668452%，同范数控制83.657738%，RX_CAGRAD82.825000%。候选−控制为−0.832738个百分点，纠正1490/引入2889、净−1399；候选−旧基线+2.156548个百分点。n1不能宣称84%三seed目标达成。全部150epoch/22200新步骤、416层1664向量、504000预测/54指标独立审计VERIFIED；完整source曲线及stdout无实际非有限/跳过更新。源资格PASS后，先在dda55abb4cd793d65f5e63341d3747c762b6d14e冻结并上传不变02/03扩种子，再读取目标汇总。剩余4个scratch50模型已按执行fd7cf6f1532082c38927bd632cc3ce19a486a2e9真实发布，原33L+17U、默认头/数据/系数不变，首seed不重训；不根据首seed负差撤销或调参。首轮完整报告：[CAGrad首种子](../automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/report.md)；当前运行：[固定02/03](../automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md)。
