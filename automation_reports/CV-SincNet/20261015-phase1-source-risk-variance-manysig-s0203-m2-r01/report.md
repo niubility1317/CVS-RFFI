@@ -1,6 +1,6 @@
 # 固定 SIG_TIME：风险方差剩余两模型源复核
 
-状态 PLANNED，实现 `c514c20a11c88f35b0154eb2a15ede7a4bc992fe`。首源PASS及不变扩展已在 `f989c97284bbd428b7ad07029050faf7ff5b24f6` 上传。这里只增加seed2026092702/03源端零更新检查，首模型复用原产物，不重新前向。完整两行配置以 experiment.json 为准。
+状态 ANALYZED / VERIFIED，三模型源规则PASS，详见[完整结果](final_analysis.md)。原预登记：PLANNED，实现 `c514c20a11c88f35b0154eb2a15ede7a4bc992fe`。首源PASS及不变扩展已在 `f989c97284bbd428b7ad07029050faf7ff5b24f6` 上传。这里只增加seed2026092702/03源端零更新检查，首模型复用原产物，不重新前向。完整两行配置以 experiment.json 为准。
 
 沿用固定V-REx源公式：同一次原native train-mode strong IQ（噪声.015、原dropout）默认前向，五源RX各计算身份CE均值R_e（smoothing.01），CE参考为mean(R_e)，方差为mean((R_e−mean(R))²)，系数1。测原t1/t2/SIG投影及现有W的真实导数；0模型/buffer/头/optimizer更新，无新分类器。首源一般依据和机制局限继续适用，不把风险变齐等同泛化提升。
 

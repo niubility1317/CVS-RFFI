@@ -1,0 +1,725 @@
+{
+  "status": "ANALYZED_VERIFIED_SOURCE_PASS_THREE_MODELS",
+  "run_id": "20261015-phase1-source-risk-variance-manysig-s0203-m2-r01",
+  "implementation_commit": "c514c20a11c88f35b0154eb2a15ede7a4bc992fe",
+  "execution_commit": "e06ce7bc4957efafe4b92f4d5d7dddf180c0ae0d",
+  "combined": {
+    "status": "ANALYZED",
+    "source_only": true,
+    "model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "models": 3,
+    "model_source_observations": 2700,
+    "unique_source_physical_ids": 900,
+    "identical_ordered_cohorts_across_models": true,
+    "first_seed_remeasured": false,
+    "total_source_forward_packets": 2700,
+    "new_source_forward_packets": 1800,
+    "total_gradient_batches": 15,
+    "total_parameter_layer_records": 60,
+    "total_saved_vectors": 120,
+    "rows": [
+      {
+        "model_seed": 2026092701,
+        "summary": {
+          "layers": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.04263003718433227,
+              "other_norm": 0.0035982189014015084,
+              "ratio": 0.08440571810535401,
+              "cosine": 0.5534735101654498,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.03612600151435592,
+              "other_norm": 0.002807515062020125,
+              "ratio": 0.07771452539258909,
+              "cosine": 0.5862103973618055,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+              "cohorts": 5,
+              "reference_norm": 0.06505989357530384,
+              "other_norm": 0.00562506549017229,
+              "ratio": 0.0864598015928436,
+              "cosine": 0.5853487465869578,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+              "cohorts": 5,
+              "reference_norm": 0.05514571289371953,
+              "other_norm": 0.005266828390843812,
+              "ratio": 0.09550748579485031,
+              "cosine": 0.5640415363848439,
+              "variance_nonzero_cohorts": 5
+            }
+          ],
+          "cohorts": [
+            {
+              "cohort": 0,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.09704585373401642,
+                "RISK_VARIANCE": 0.00045935073285363615
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.12420842051506042,
+                0.12231700867414474,
+                0.07840092480182648,
+                0.07919179648160934,
+                0.08111108839511871
+              ],
+              "correct": 179
+            },
+            {
+              "cohort": 1,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.08318402618169785,
+                "RISK_VARIANCE": 0.000006368775302689755
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.08194237947463989,
+                0.08613654971122742,
+                0.08278791606426239,
+                0.08573317527770996,
+                0.07932012528181076
+              ],
+              "correct": 180
+            },
+            {
+              "cohort": 2,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.11483021080493927,
+                "RISK_VARIANCE": 0.0016204917337745428
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.08116816729307175,
+                0.19024010002613068,
+                0.12211232632398605,
+                0.08659526705741882,
+                0.09403518587350845
+              ],
+              "correct": 178
+            },
+            {
+              "cohort": 3,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.09079234302043915,
+                "RISK_VARIANCE": 0.00009895694529404864
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.09055658429861069,
+                0.09029989689588547,
+                0.07992644608020782,
+                0.08415541052818298,
+                0.10902336239814758
+              ],
+              "correct": 180
+            },
+            {
+              "cohort": 4,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.09883228689432144,
+                "RISK_VARIANCE": 0.000288905983325094
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.08055582642555237,
+                0.09612662345170975,
+                0.12544387578964233,
+                0.08224877715110779,
+                0.10978632420301437
+              ],
+              "correct": 179
+            }
+          ]
+        },
+        "qualification": {
+          "status": "PASS",
+          "fixed_rules": {
+            "source_only": true,
+            "positive_risk_variance_each_of5": true,
+            "actual_t1_t2_SIG_nonzero_each_of5": true,
+            "global_gradient_cosine_with_balanced_CE_min": 0,
+            "model_state_and_default_head_unchanged": true,
+            "no_automatic_training_release": true,
+            "on_pass": "Only separately registered unchanged02/03 source check",
+            "on_fail": "Retain negative; no coefficient, grouping, parent or threshold scans"
+          },
+          "source_only": true,
+          "no_automatic_training_release": true,
+          "target_metrics_used": false
+        },
+        "model_parameters_buffers_unchanged": true,
+        "seconds": 1.7593493461608887
+      },
+      {
+        "model_seed": 2026092702,
+        "summary": {
+          "layers": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.07414910413042672,
+              "other_norm": 0.004478018604435741,
+              "ratio": 0.060392079674475914,
+              "cosine": 0.9066264017930247,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.05596569474713887,
+              "other_norm": 0.0031610896269036485,
+              "ratio": 0.056482629960834224,
+              "cosine": 0.8813562570673936,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+              "cohorts": 5,
+              "reference_norm": 0.06835758953291174,
+              "other_norm": 0.003566406598088539,
+              "ratio": 0.052172796356013136,
+              "cosine": 0.7533614496732793,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+              "cohorts": 5,
+              "reference_norm": 0.06865608578550182,
+              "other_norm": 0.004677309742076972,
+              "ratio": 0.06812665896348966,
+              "cosine": 0.7841125977569514,
+              "variance_nonzero_cohorts": 5
+            }
+          ],
+          "cohorts": [
+            {
+              "cohort": 0,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.10436496883630753,
+                "RISK_VARIANCE": 0.000702597841154784
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.1139983981847763,
+                0.15152618288993835,
+                0.08470521122217178,
+                0.07805156707763672,
+                0.09354346245527267
+              ],
+              "correct": 178
+            },
+            {
+              "cohort": 1,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.09989424794912338,
+                "RISK_VARIANCE": 0.00009470358781982213
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.08490712940692902,
+                0.11017590761184692,
+                0.10958222299814224,
+                0.09310635924339294,
+                0.10169962793588638
+              ],
+              "correct": 180
+            },
+            {
+              "cohort": 2,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.11278323829174042,
+                "RISK_VARIANCE": 0.0009201098000630736
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.08739176392555237,
+                0.15280459821224213,
+                0.14676433801651,
+                0.08548738062381744,
+                0.09146812558174133
+              ],
+              "correct": 178
+            },
+            {
+              "cohort": 3,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.10197125375270844,
+                "RISK_VARIANCE": 0.0007372669642791152
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.08516642451286316,
+                0.08489648997783661,
+                0.08268602192401886,
+                0.10279308259487152,
+                0.15431424975395203
+              ],
+              "correct": 178
+            },
+            {
+              "cohort": 4,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.09352420270442963,
+                "RISK_VARIANCE": 0.00008280145993921906
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.08739758282899857,
+                0.0859626978635788,
+                0.09719626605510712,
+                0.0872262567281723,
+                0.10983822494745255
+              ],
+              "correct": 180
+            }
+          ]
+        },
+        "qualification": {
+          "status": "PASS",
+          "fixed_rules": {
+            "source_only": true,
+            "positive_risk_variance_each_of5": true,
+            "actual_t1_t2_SIG_nonzero_each_of5": true,
+            "global_gradient_cosine_with_balanced_CE_min": 0,
+            "model_state_and_default_head_unchanged": true,
+            "no_automatic_training_release": true,
+            "on_pass": "Only separately registered unchanged02/03 source check",
+            "on_fail": "Retain negative; no coefficient, grouping, parent or threshold scans"
+          },
+          "source_only": true,
+          "no_automatic_training_release": true,
+          "target_metrics_used": false
+        },
+        "model_parameters_buffers_unchanged": true,
+        "seconds": 1.5627024173736572
+      },
+      {
+        "model_seed": 2026092703,
+        "summary": {
+          "layers": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.07467746352869183,
+              "other_norm": 0.0027638890919423078,
+              "ratio": 0.037011019942855904,
+              "cosine": 0.8307325139417648,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.07189681131198639,
+              "other_norm": 0.002650708779067565,
+              "ratio": 0.0368682383918972,
+              "cosine": 0.8666330349990955,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+              "cohorts": 5,
+              "reference_norm": 0.05976887604224516,
+              "other_norm": 0.0024140163515286015,
+              "ratio": 0.04038918767390496,
+              "cosine": 0.7134992949098165,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+              "cohorts": 5,
+              "reference_norm": 0.053539441478320196,
+              "other_norm": 0.0029331344389020015,
+              "ratio": 0.05478455430077133,
+              "cosine": 0.7091398594290792,
+              "variance_nonzero_cohorts": 5
+            }
+          ],
+          "cohorts": [
+            {
+              "cohort": 0,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.09932980686426163,
+                "RISK_VARIANCE": 0.0003596872847992927
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.09658150374889374,
+                0.13661926984786987,
+                0.08760478347539902,
+                0.08906510472297668,
+                0.08677835762500763
+              ],
+              "correct": 179
+            },
+            {
+              "cohort": 1,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.08835293352603912,
+                "RISK_VARIANCE": 0.000036581688618753105
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.08064895868301392,
+                0.09562607109546661,
+                0.09272538125514984,
+                0.08170387893915176,
+                0.09106041491031647
+              ],
+              "correct": 180
+            },
+            {
+              "cohort": 2,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.10423274338245392,
+                "RISK_VARIANCE": 0.0005435154307633638
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.1232064962387085,
+                0.14026135206222534,
+                0.0896950289607048,
+                0.08016148209571838,
+                0.08783937245607376
+              ],
+              "correct": 179
+            },
+            {
+              "cohort": 3,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.09552422165870667,
+                "RISK_VARIANCE": 0.00023535324726253748
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.08613140136003494,
+                0.09292308986186981,
+                0.08324948698282242,
+                0.08981729298830032,
+                0.12549982964992523
+              ],
+              "correct": 179
+            },
+            {
+              "cohort": 4,
+              "packets": 180,
+              "losses": {
+                "BALANCED_CE": 0.08349476754665375,
+                "RISK_VARIANCE": 0.00001623305433895439
+              },
+              "receiver_order": [
+                1,
+                3,
+                4,
+                6,
+                8
+              ],
+              "receiver_risks": [
+                0.07955221831798553,
+                0.08498244732618332,
+                0.08322957158088684,
+                0.07939408719539642,
+                0.09031550586223602
+              ],
+              "correct": 180
+            }
+          ]
+        },
+        "qualification": {
+          "status": "PASS",
+          "fixed_rules": {
+            "source_only": true,
+            "positive_risk_variance_each_of5": true,
+            "actual_t1_t2_SIG_nonzero_each_of5": true,
+            "global_gradient_cosine_with_balanced_CE_min": 0,
+            "model_state_and_default_head_unchanged": true,
+            "no_automatic_training_release": true,
+            "on_pass": "Only separately registered unchanged02/03 source check",
+            "on_fail": "Retain negative; no coefficient, grouping, parent or threshold scans"
+          },
+          "source_only": true,
+          "no_automatic_training_release": true,
+          "target_metrics_used": false
+        },
+        "model_parameters_buffers_unchanged": true,
+        "seconds": 1.261561393737793
+      }
+    ],
+    "qualification": {
+      "status": "PASS",
+      "fixed_per_model_rules": {
+        "source_only": true,
+        "positive_risk_variance_each_of5": true,
+        "actual_t1_t2_SIG_nonzero_each_of5": true,
+        "global_gradient_cosine_with_balanced_CE_min": 0,
+        "model_state_and_default_head_unchanged": true,
+        "no_automatic_training_release": true,
+        "on_pass": "Only separately registered unchanged02/03 source check",
+        "on_fail": "Retain negative; no coefficient, grouping, parent or threshold scans"
+      },
+      "no_automatic_training_release": true,
+      "target_metrics_used": false
+    },
+    "training_epochs": 0,
+    "head_updates": 0,
+    "optimizer_steps": 0,
+    "U_IQ_read": false,
+    "U_truth_read": false,
+    "query_read": false,
+    "limitation": "Three frozen final50 source models, same900L samples; not training, U correctness, DG or84 evidence"
+  },
+  "per_model": [
+    {
+      "model_seed": 2026092701,
+      "qualification": "PASS",
+      "mean_balanced_CE": 0.09693694412708283,
+      "mean_population_risk_variance": 0.0004948148341100023,
+      "default_correct": 896,
+      "packets": 900,
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.04263003718433227,
+          "other_norm": 0.0035982189014015084,
+          "ratio": 0.08440571810535401,
+          "cosine": 0.5534735101654498,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.03612600151435592,
+          "other_norm": 0.002807515062020125,
+          "ratio": 0.07771452539258909,
+          "cosine": 0.5862103973618055,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "cohorts": 5,
+          "reference_norm": 0.06505989357530384,
+          "other_norm": 0.00562506549017229,
+          "ratio": 0.0864598015928436,
+          "cosine": 0.5853487465869578,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+          "cohorts": 5,
+          "reference_norm": 0.05514571289371953,
+          "other_norm": 0.005266828390843812,
+          "ratio": 0.09550748579485031,
+          "cosine": 0.5640415363848439,
+          "variance_nonzero_cohorts": 5
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092702,
+      "qualification": "PASS",
+      "mean_balanced_CE": 0.10250758230686188,
+      "mean_population_risk_variance": 0.0005074959306512028,
+      "default_correct": 894,
+      "packets": 900,
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.07414910413042672,
+          "other_norm": 0.004478018604435741,
+          "ratio": 0.060392079674475914,
+          "cosine": 0.9066264017930247,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.05596569474713887,
+          "other_norm": 0.0031610896269036485,
+          "ratio": 0.056482629960834224,
+          "cosine": 0.8813562570673936,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "cohorts": 5,
+          "reference_norm": 0.06835758953291174,
+          "other_norm": 0.003566406598088539,
+          "ratio": 0.052172796356013136,
+          "cosine": 0.7533614496732793,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+          "cohorts": 5,
+          "reference_norm": 0.06865608578550182,
+          "other_norm": 0.004677309742076972,
+          "ratio": 0.06812665896348966,
+          "cosine": 0.7841125977569514,
+          "variance_nonzero_cohorts": 5
+        }
+      ]
+    },
+    {
+      "model_seed": 2026092703,
+      "qualification": "PASS",
+      "mean_balanced_CE": 0.09418689459562302,
+      "mean_population_risk_variance": 0.0002382741411565803,
+      "default_correct": 897,
+      "packets": 900,
+      "layers": [
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.07467746352869183,
+          "other_norm": 0.0027638890919423078,
+          "ratio": 0.037011019942855904,
+          "cosine": 0.8307325139417648,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "cohorts": 5,
+          "reference_norm": 0.07189681131198639,
+          "other_norm": 0.002650708779067565,
+          "ratio": 0.0368682383918972,
+          "cosine": 0.8666330349990955,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "cohorts": 5,
+          "reference_norm": 0.05976887604224516,
+          "other_norm": 0.0024140163515286015,
+          "ratio": 0.04038918767390496,
+          "cosine": 0.7134992949098165,
+          "variance_nonzero_cohorts": 5
+        },
+        {
+          "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+          "cohorts": 5,
+          "reference_norm": 0.053539441478320196,
+          "other_norm": 0.0029331344389020015,
+          "ratio": 0.05478455430077133,
+          "cosine": 0.7091398594290792,
+          "variance_nonzero_cohorts": 5
+        }
+      ]
+    }
+  ],
+  "no_training_or_DG_result": true,
+  "goal84": false
+}

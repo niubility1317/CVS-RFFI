@@ -1,0 +1,47 @@
+{
+  "status": "VERIFIED",
+  "models": 2,
+  "source_packets": 1800,
+  "model_forward_packets": 1800,
+  "parameter_layer_records": 40,
+  "saved_vectors": 80,
+  "new_forwards": 0,
+  "new_gradient_calls": 0,
+  "optimizer_steps": 0,
+  "head_fit_updates": 0,
+  "U_IQ_read": false,
+  "U_truth_read": false,
+  "query_read": false,
+  "rows": [
+    {
+      "status": "VERIFIED",
+      "source_packets": 900,
+      "model_forward_packets": 900,
+      "gradient_batches": 5,
+      "parameter_layer_records": 20,
+      "saved_vectors": 40,
+      "new_forwards": 0,
+      "new_gradient_calls": 0,
+      "head_fit_updates": 0,
+      "optimizer_steps": 0,
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "query_read": false
+    },
+    {
+      "status": "VERIFIED",
+      "source_packets": 900,
+      "model_forward_packets": 900,
+      "gradient_batches": 5,
+      "parameter_layer_records": 20,
+      "saved_vectors": 40,
+      "new_forwards": 0,
+      "new_gradient_calls": 0,
+      "head_fit_updates": 0,
+      "optimizer_steps": 0,
+      "U_IQ_read": false,
+      "U_truth_read": false,
+      "query_read": false
+    }
+  ]
+}

@@ -524,3 +524,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 2026-10-15 风险方差首源检验实际完成：`20261015-phase1-source-risk-variance-manysig-s2026092701-r01`，代码`a9b04efa1441fce2f0a2810e4e51c88b41532dde`、执行`3c340073b43ec07d0dbf11fe66b8737ae2d0dc49`。900唯一L/900前向/20参数层40向量，独立复算VERIFIED，0模型/头/optimizer更新或U/query。固定五RX风险population variance对t1/t2/SIG的CE方向余弦.553474/.586210/.585349，范数比.084406/.077715/.086460，均5/5非零，原规则PASS。均衡CE.096936944、方差.000494815，默认正确896/900；末轮L局部证据不证明早期/SSL/DG。下一步仅原样02/03零更新源复核，未发布正式训练。[完整源结果](../automation_reports/CV-SincNet/20261015-phase1-source-risk-variance-manysig-s2026092701-r01/final_analysis.md)。
+
+
+2026-10-15 风险方差三模型源复核完成，原规则3/3PASS。02/03 t1/t2/SIG的均衡CE导数余弦分别(.906626,.881356,.753361)、(.830733,.866633,.713499)，首模型(.553474,.586210,.585349)保留不重测；范数比全体3.69%至8.65%。新增1800前向/40层80向量，合并2700前向/60层120向量独立复算，同900唯一物理L，0模型/头/optimizer更新或U/query。代码`c514c20a11c88f35b0154eb2a15ede7a4bc992fe`、执行`e06ce7bc4957efafe4b92f4d5d7dddf180c0ae0d`，[三模型源结果](../automation_reports/CV-SincNet/20261015-phase1-source-risk-variance-manysig-s0203-m2-r01/final_analysis.md)。只支持另行实现单seed公平训练，不证明早期或DG；下一步固定SIG_TIME/默认联合头、旧门控ownEMA/U/cos，均衡RX CE对照vs系数1方差，从零50轮。

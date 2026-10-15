@@ -82439,14 +82439,14 @@
     }
   ],
   "next_actions_max2": [
-    "按风险方差首源PASS原规则，另登记并执行原样02/03源复核；L900/RNG2026101529/系数1/5RX保持，0头拟合/U/query，不用Sinc权重。",
-    "三源结果支持后再独立登记训练比较，固定SIG_TIME、默认联合头、旧门控/ownEMA/U损失/cos和<=50轮；不重复另一对话R-Drop/交叉拟合教师，也不据目标变更或选择性扩种子。"
+    "实现风险方差首seed01两臂scratch50公平比较，原旧门控/ownEMA/U损失/cos不变，固定SIG_TIME和默认联合头；历史旧门控+cos仅外部参考，单seed不当三seed目标。",
+    "源规则固定后自动clean预测/独立truth-last；先按源资格决定是否原样扩02/03并上传决定，再读取候选新目标汇总；完整保留正负结果和实际特征证据。"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "按风险方差首源PASS原规则，另登记并执行原样02/03源复核；L900/RNG2026101529/系数1/5RX保持，0头拟合/U/query，不用Sinc权重。",
-    "三源结果支持后再独立登记训练比较，固定SIG_TIME、默认联合头、旧门控/ownEMA/U损失/cos和<=50轮；不重复另一对话R-Drop/交叉拟合教师，也不据目标变更或选择性扩种子。"
+    "实现风险方差首seed01两臂scratch50公平比较，原旧门控/ownEMA/U损失/cos不变，固定SIG_TIME和默认联合头；历史旧门控+cos仅外部参考，单seed不当三seed目标。",
+    "源规则固定后自动clean预测/独立truth-last；先按源资格决定是否原样扩02/03并上传决定，再读取候选新目标汇总；完整保留正负结果和实际特征证据。"
   ],
   "current_priority": {
     "at": "2026-10-15T02:02:55.462Z",
@@ -85522,7 +85522,7 @@
       "report": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
     },
     "next_receiver_risk_variance": {
-      "status": "ANALYZED_VERIFIED_SOURCE_PASS_ONE_MODEL",
+      "status": "ANALYZED_VERIFIED_SOURCE_PASS_THREE_MODELS",
       "hypothesis": "Variance across legal source receiver CE risks may discourage sourceRX-specific reliance; compatible backbone direction unknown",
       "mechanism": "Population variance of5same-forward RX CE means; no GroupDRO q state/no gradient-statistical penalty/no newhead",
       "network": "fixed SIG_TIME original default jointlytrained head",
@@ -85540,9 +85540,9 @@
       "first_source_qualification_unknown": false,
       "external_source": "https://proceedings.mlr.press/v139/krueger21a.html",
       "implementation_commit": "a9b04efa1441fce2f0a2810e4e51c88b41532dde",
-      "report": "automation_reports/CV-SincNet/20261015-phase1-source-risk-variance-manysig-s2026092701-r01/final_analysis.md",
+      "report": "automation_reports/CV-SincNet/20261015-phase1-source-risk-variance-manysig-s0203-m2-r01/final_analysis.md",
       "execution_commit": "3c340073b43ec07d0dbf11fe66b8737ae2d0dc49",
-      "source_qualified_models": 1,
+      "source_qualified_models": 3,
       "source_qualification": "PASS",
       "mean_balanced_CE": 0.09693694412708283,
       "mean_risk_variance": 0.0004948148341100023,
@@ -85557,12 +85557,157 @@
         0.0864598015928436
       ],
       "model_state_and_head_unchanged": true,
-      "remaining_source_only_seeds": [
-        2026092702,
-        2026092703
-      ],
-      "remaining_source_not_launched": true,
-      "first_next_action": "另登记相同900有序物理L/相同RNG2026101529/系数1/5RX分组，原DRO各自SIG final50，完成02/03零更新源复核；没有自动正式训练发布。"
+      "remaining_source_only_seeds": [],
+      "remaining_source_not_launched": false,
+      "first_next_action": "落实并独立预登记首seed01 scratch50同前向均衡RX CE对照vs系数1风险方差，原SIG_TIME/默认联合头/旧门控ownEMA/U损失/cos保持；源PASS不等于性能提升。",
+      "remaining_implementation_commit": "c514c20a11c88f35b0154eb2a15ede7a4bc992fe",
+      "remaining_execution_commit": "e06ce7bc4957efafe4b92f4d5d7dddf180c0ae0d",
+      "source_remaining_run": "20261015-phase1-source-risk-variance-manysig-s0203-m2-r01",
+      "total_source_forward_packets": 2700,
+      "total_parameter_layers": 60,
+      "total_saved_vectors": 120,
+      "physical_unique_packets": 900,
+      "first_model_remeasured": false,
+      "per_model": [
+        {
+          "model_seed": 2026092701,
+          "qualification": "PASS",
+          "mean_balanced_CE": 0.09693694412708283,
+          "mean_population_risk_variance": 0.0004948148341100023,
+          "default_correct": 896,
+          "packets": 900,
+          "layers": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.04263003718433227,
+              "other_norm": 0.0035982189014015084,
+              "ratio": 0.08440571810535401,
+              "cosine": 0.5534735101654498,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.03612600151435592,
+              "other_norm": 0.002807515062020125,
+              "ratio": 0.07771452539258909,
+              "cosine": 0.5862103973618055,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+              "cohorts": 5,
+              "reference_norm": 0.06505989357530384,
+              "other_norm": 0.00562506549017229,
+              "ratio": 0.0864598015928436,
+              "cosine": 0.5853487465869578,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+              "cohorts": 5,
+              "reference_norm": 0.05514571289371953,
+              "other_norm": 0.005266828390843812,
+              "ratio": 0.09550748579485031,
+              "cosine": 0.5640415363848439,
+              "variance_nonzero_cohorts": 5
+            }
+          ]
+        },
+        {
+          "model_seed": 2026092702,
+          "qualification": "PASS",
+          "mean_balanced_CE": 0.10250758230686188,
+          "mean_population_risk_variance": 0.0005074959306512028,
+          "default_correct": 894,
+          "packets": 900,
+          "layers": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.07414910413042672,
+              "other_norm": 0.004478018604435741,
+              "ratio": 0.060392079674475914,
+              "cosine": 0.9066264017930247,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.05596569474713887,
+              "other_norm": 0.0031610896269036485,
+              "ratio": 0.056482629960834224,
+              "cosine": 0.8813562570673936,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+              "cohorts": 5,
+              "reference_norm": 0.06835758953291174,
+              "other_norm": 0.003566406598088539,
+              "ratio": 0.052172796356013136,
+              "cosine": 0.7533614496732793,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+              "cohorts": 5,
+              "reference_norm": 0.06865608578550182,
+              "other_norm": 0.004677309742076972,
+              "ratio": 0.06812665896348966,
+              "cosine": 0.7841125977569514,
+              "variance_nonzero_cohorts": 5
+            }
+          ]
+        },
+        {
+          "model_seed": 2026092703,
+          "qualification": "PASS",
+          "mean_balanced_CE": 0.09418689459562302,
+          "mean_population_risk_variance": 0.0002382741411565803,
+          "default_correct": 897,
+          "packets": 900,
+          "layers": [
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.07467746352869183,
+              "other_norm": 0.0027638890919423078,
+              "ratio": 0.037011019942855904,
+              "cosine": 0.8307325139417648,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+              "cohorts": 5,
+              "reference_norm": 0.07189681131198639,
+              "other_norm": 0.002650708779067565,
+              "ratio": 0.0368682383918972,
+              "cosine": 0.8666330349990955,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+              "cohorts": 5,
+              "reference_norm": 0.05976887604224516,
+              "other_norm": 0.0024140163515286015,
+              "ratio": 0.04038918767390496,
+              "cosine": 0.7134992949098165,
+              "variance_nonzero_cohorts": 5
+            },
+            {
+              "parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+              "cohorts": 5,
+              "reference_norm": 0.053539441478320196,
+              "other_norm": 0.0029331344389020015,
+              "ratio": 0.05478455430077133,
+              "cosine": 0.7091398594290792,
+              "variance_nonzero_cohorts": 5
+            }
+          ]
+        }
+      ]
     }
   },
   "latest_complete_sinc_optimizer": {

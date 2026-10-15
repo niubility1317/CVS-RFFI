@@ -36,7 +36,8 @@
       "experiments/cvs_source_risk_variance_seeds/design.py"
     ],
     "reused_parent_execution": "a283291279cb01b939325cf5ccba1d0a671b28c4",
-    "first_source_decision_commit": "f989c97284bbd428b7ad07029050faf7ff5b24f6"
+    "first_source_decision_commit": "f989c97284bbd428b7ad07029050faf7ff5b24f6",
+    "execution_commit": "e06ce7bc4957efafe4b92f4d5d7dddf180c0ae0d"
   },
   "data": {
     "dataset": "ManySig",
@@ -112,7 +113,8 @@
     "remote_log_root": "PROJECT/releases/cvs_source_risk_variance_seeds_20261015_r01",
     "local_artifact_root": "LOCAL_ARTIFACTS/source_risk_variance_seeds_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_source_risk_variance_seeds.audit",
-    "stop_rule": "Run-owned input/provenance mismatch, missing fixedcohorts, nonfinite risks/gradients, model orbuffer mutation, independentrecountfailure or immutableoutputcollision. Preserve artifacts,no automaticretry or unrelatedstop. ScientificFAIL: no coefficient, grouping,parent or threshold scan"
+    "stop_rule": "Run-owned input/provenance mismatch, missing fixedcohorts, nonfinite risks/gradients, model orbuffer mutation, independentrecountfailure or immutableoutputcollision. Preserve artifacts,no automaticretry or unrelatedstop. ScientificFAIL: no coefficient, grouping,parent or threshold scan",
+    "execution_commit": "e06ce7bc4957efafe4b92f4d5d7dddf180c0ae0d"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -230,7 +232,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/receiver-dro-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -268,11 +270,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final5_unweighted_L_CE_max": 0.5,
-            "feature_difference_min": 1e-06,
+            "feature_difference_min": 0.000001,
             "native_steps": 11100,
             "actual_U_packets": 963900,
             "required_gradient_epochs": [
@@ -553,7 +555,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/receiver-dro-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -591,11 +593,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final5_unweighted_L_CE_max": 0.5,
-            "feature_difference_min": 1e-06,
+            "feature_difference_min": 0.000001,
             "native_steps": 11100,
             "actual_U_packets": 963900,
             "required_gradient_epochs": [
@@ -808,5 +810,31 @@
     "13focusedadapternegatives,originaldefaultinterface and2actualnativegradientcontextsPASS;oneindependentadapter-onlyP0/P1PASS;unchangedfirstformulanotrereviewed"
   ],
   "preparation_status": "LOCAL_VERIFIED_P0P1_PASS_PREREGISTERED",
-  "registered_at": "2026-10-15T07:49:42+00:00"
+  "registered_at": "2026-10-15T07:49:42+00:00",
+  "results": {
+    "status": "ANALYZED_VERIFIED_SOURCE_PASS",
+    "source_qualified_models": 3,
+    "new_models": 2,
+    "physical_unique_packets": 900,
+    "new_source_forward_packets": 1800,
+    "total_source_forward_packets": 2700,
+    "new_parameter_layers": 40,
+    "new_saved_vectors": 80,
+    "total_parameter_layers": 60,
+    "total_saved_vectors": 120,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "source_qualification": "PASS",
+    "first_model_remeasured": false,
+    "no_training_release": true,
+    "goal84": false,
+    "evidence": [
+      "final_analysis.md",
+      "results.json",
+      "source_qualification.json",
+      "next_training_decision.json",
+      "completion_evidence.json",
+      "independent_artifact_recount.json"
+    ]
+  }
 }

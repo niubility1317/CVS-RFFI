@@ -1,0 +1,21 @@
+{
+  "status": "ALL_THREE_SOURCE_PASS_ALLOWS_SEPARATE_TRAINING_DESIGN",
+  "source_run_ids": [
+    "20261015-phase1-source-risk-variance-manysig-s2026092701-r01",
+    "20261015-phase1-source-risk-variance-manysig-s0203-m2-r01"
+  ],
+  "source_rule_fixed": true,
+  "model_seeds": [
+    2026092701,
+    2026092702,
+    2026092703
+  ],
+  "same900physicalL": true,
+  "first_remeasured": false,
+  "target_metrics_used": false,
+  "coefficient": 1,
+  "planned_training": "Single seed01 scratch50 balancedRX-CE control vs same plus populationRXriskvariance, original oldgate/ownEMA/Uloss/cos/defaultjointhead/fixedSIG unchanged;historicaloldgatecos externalbaseline",
+  "formal_training_not_implemented_or_launched": true,
+  "no_automatic_training_release": true,
+  "limitation": "Late-stage frozen L derivative compatibility only, not early training/U correctness/DG or84"
+}
