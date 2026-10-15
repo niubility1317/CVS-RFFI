@@ -1,0 +1,32 @@
+{
+  "status": "VERIFIED",
+  "scientific_result": "FAIL",
+  "commit": "1a96162bda2026419cbadd52dc4bb475d38ba646",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "post_launch_PID_CWD_argv": "VERIFIED",
+  "initial_log_bytes": 0,
+  "terminal_log_bytes": 476,
+  "terminal_live": null,
+  "failure": null,
+  "cost": {
+    "status": "SOURCE_DIAGNOSTIC_COMPLETE",
+    "source_decision": "FAIL",
+    "L_packets": 6300,
+    "window_observations": 18900,
+    "cycle_observations": 75600,
+    "network_forwards": 0,
+    "identity_updates": 0,
+    "checkpoint_loads": 0,
+    "target_access": false,
+    "automatic_training": false,
+    "seconds": 0.7393057360313833
+  },
+  "primary_risk_gain": 0.0005422720958105558,
+  "positive_folds": 6,
+  "target_access": false,
+  "network_forwards": 0,
+  "checkpoint_loads": 0,
+  "automatic_training": false,
+  "local_artifacts": "E:\\type10-7\\local_artifacts\\cvs_source_phase_20261016\\final"
+}

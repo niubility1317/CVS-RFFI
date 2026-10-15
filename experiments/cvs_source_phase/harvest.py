@@ -42,7 +42,7 @@ def finish(output):
     if (c['L_packets'], c['network_forwards'], c['identity_updates'], c['checkpoint_loads'], c['target_access']) != (6300, 0, 0, 0, False):
         raise ValueError('Observed source-only cost/access differs')
     windows = e['results']['windows']; p = windows[d.config()['primary']]
-    rows = []
+    rows = []; conditional_split = {}
     for name, r in windows.items():
         if len(r['cells']) != 90 or sum(v['packets'] for v in r['cells']) != 6300 or len(r['folds']) != 18:
             raise ValueError('Incomplete source cells or folds')
@@ -53,6 +53,13 @@ def finish(output):
             rows.append(dict(window=name, TX=cell['TX'], RX=cell['RX'], day=cell['day'], packets=70,
                 min_eligible=min(cell['eligible']), mean_eligible=np.mean(cell['eligible']),
                 mean_split_cosine=np.mean(cell['split_cosine'])))
+        # The frozen screen averages cell coordinates, with empty cells set
+        # to zero and separately FAILs coverage. Do not present those zeros
+        # as observed phase inconsistency. Plot a count-weighted descriptive
+        # conditional mean; it does not replace the preregistered decision.
+        n = np.array([v['eligible'] for v in r['cells']]).reshape(6, 3, 5, 10)
+        s = np.array([v['split_cosine'] for v in r['cells']]).reshape(6, 3, 5, 10)
+        conditional_split[name] = ((n * s).sum((0, 1, 3)) / np.maximum(n.sum((0, 1, 3)), 1)).tolist()
     with (output / 'source_cells.csv').open('w', encoding='utf-8', newline='') as stream:
         writer = csv.DictWriter(stream, fieldnames=list(rows[0])); writer.writeheader(); writer.writerows(rows)
     import matplotlib
@@ -62,7 +69,7 @@ def finish(output):
     for name, r in windows.items():
         ax[0, 0].plot(np.arange(18) + 1, [v['gain'] for v in r['folds']], marker='.', label=name)
         ax[0, 1].plot(list(d.RX), list(r['per_RX_risk_gain'].values()), marker='o', label=name)
-        ax[1, 0].plot(list(d.RX), list(r['per_RX_split_cosine'].values()), marker='o', label=name)
+        ax[1, 0].plot(list(d.RX), conditional_split[name], marker='o', label=name)
     ax[0, 0].axhline(.02, color='black', ls='--', lw=1)
     ax[0, 0].axhline(0, color='grey', lw=.7)
     ax[0, 0].set(xlabel='Held TX/day fold', ylabel='Circular risk gain', title='Source association, not accuracy')
@@ -70,7 +77,7 @@ def finish(output):
     ax[0, 1].axhline(0, color='grey', lw=.7)
     ax[0, 1].set(xlabel='Source RX', ylabel='Mean circular risk gain', title='All five RX are retained')
     ax[1, 0].axhline(.8, color='black', ls='--', lw=1)
-    ax[1, 0].set(xlabel='Source RX', ylabel='Odd/even cycle cosine', title='Cycle consistency on eligible tones')
+    ax[1, 0].set(xlabel='Source RX', ylabel='Count-weighted odd/even cosine', title='Descriptive eligible-only consistency')
     availability = np.array([v['eligible'] for v in p['cells']]).reshape(6, 3, 5, 10).mean(3).reshape(18, 5)
     im = ax[1, 1].imshow(availability, vmin=0, vmax=70, aspect='auto', cmap='viridis')
     ax[1, 1].set(xticks=np.arange(5), xticklabels=d.RX, xlabel='Source RX', ylabel='TX/day cell',
@@ -82,6 +89,7 @@ def finish(output):
         per_RX_risk_gain=p['per_RX_risk_gain'], minimum_fit_resultant=p['minimum_fit_resultant'],
         minimum_eligible=p['minimum_cell_coordinate_eligible'], eligible_fraction=p['eligible_fraction'],
         per_RX_split_cosine=p['per_RX_split_cosine'], cost=c, commit=e['resolved']['commit'],
+        descriptive_eligible_only_split_cosine=conditional_split,
         association_not_accuracy=True, automatic_training=False,
         next_action='Abandon this phase augmentation hypothesis' if p['status']=='FAIL' else 'Separate finite-IQ/default-head source safety design only')
     d.write(output / 'analysis_summary.json', summary)
@@ -90,8 +98,9 @@ def finish(output):
     for name, r in windows.items():
         lines.append(f"|{name}|{r['mean_risk_gain']:.8f}|{r['positive_folds']}|{r['minimum_cell_coordinate_eligible']}|{r['minimum_fit_resultant']:.6f}|{r['status']}|")
     lines += ['', '主窗口规则逐项：', ''] + [f'- {key}：{value}' for key, value in p['checks'].items()]
-    lines += ['', f"全量6300源L、18900窗口、75600周期；0模型/前向/更新/checkpoint/目标预测。墙钟 {c['seconds']:.3f} 秒。", '',
+    lines += ['', f"全量6300源L、18900窗口、75600周期；0模型/前向/更新/checkpoint/目标预测。诊断主体计时 {c['seconds']:.3f} 秒（含缓存读取，不含Python/Torch导入，完整进程墙钟未单独计时）。", '',
         '这里的risk gain是源RX相位统计的留出误差差，不是准确率或百分点。周期重复比不是总SNR；RX关联不能区分硬件、传播、均衡或采集条件。相位共轭、CFO混叠和模板时移规范仍未唯一识别。', '',
+        '冻结规则对空cell坐标以0占位，并独立判coverage失败；因此最低resultant=0和未加权cycle均值含不可估计项，不能把它们直接解释为实测相位混乱。图中的周期一致性另按可用数加权，只作描述，不改主决定。可用性不足也不证明不存在任何RX相位因素。', '',
         '失败后不换窗口、降阈值或调幅启动训练。通过也仅支持另做有限IQ/defaulthead源安全验证，不能跳过身份保持和同预算训练对照。当前没有任何新clean/urban性能或跨seed结果。', '',
         f"图：{figure.as_posix()}；逐cell表：{(output/'source_cells.csv').as_posix()}。"]
     (output / 'report.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')

@@ -1,21 +1,40 @@
-# 源相位重复性：进入新增强前的最小证伪
+# 源相位重复性结果
 
-状态：REGISTERED_NOT_RUN。实际代码 commit 在发布时读入 release_commit.txt；科学规则和配置在读取新源相位前冻结。只分析合法 L6300，没有模型、checkpoint、训练或目标预测。
+源规则：**FAIL**；真实运行与产物：VERIFIED。实际代码 `1a96162bda2026419cbadd52dc4bb475d38ba646`。
 
-最近独立 EMP 幅度响应 E20 已按源规则 FAIL，不再调幅、改用 ROT、联训 As 或扩种子。本轮问题来自已有源已知激励统计：整体相位/CFO/时移不能解释的 RX 关联，是否还包含跨 TX/day 可重复的相位曲率。它可能来自接收机、传播、均衡及采集条件，不能直接命名为 RX 硬件。
+|窗口|risk gain|正收益折/18|最低cell坐标可用数/70|最小拟合resultant|结论|
+|---|---:|---:|---:|---:|---|
+|w0_80|-0.01994330|3|0|0.000000|FAIL|
+|w80_160|0.00054227|6|0|0.000000|FAIL|
+|w160_240|-0.05280389|2|0|0.000000|FAIL|
 
-保持已有 fullL6300 物理 ID，RX1/3/4/6/8、day1/2/3、6TX、equalized1/nativeRMS、IQ256、25MHz。复用已验证源缓存，仅取 labeled 的 x/y/rx/day/ids。旧容器连同 V/旧特征会被反序列化，但它们不进入统计；U真值与所有目标数据不访问。没有继承模型，真实checkpoint smoke不适用；已有合法源句柄检查继续执行。
+主窗口规则逐项：
 
-主窗口80:160，0:80和160:240固定为报告用敏感性分析。沿用 lag20 包内 CFO 估计，保留1.25MHz混叠与共轭/时移规范歧义。在12个已知L-STF频点上除去公共激励系数，计算10个整数闭合相位；其矩阵秩10，恰好消去整体复相位与频率线性相位，不反演未知TX硬件。
+- coverage：False
+- risk_gain：False
+- fold_repeatability：False
+- all_RX_nonnegative：False
+- wrong_RX_separation：True
+- fitted_direction_concentration：False
+- cycle_repeatability：False
 
-每包用4个20点周期。可用性固定：lag20 coherence>=.9、占用频点功率比例>=.95、闭合式涉及各频点的周期重复功率比>=10。这个功率比不是总SNR。记录奇偶周期闭合相位余弦、每cell/坐标可用数、CFO靠近混叠边界数；零/弱信号不因能计算angle就获得资格。
+全量6300源L、18900窗口、75600周期；0模型/前向/更新/checkpoint/目标预测。诊断主体计时 0.739 秒（含缓存读取，不含Python/Torch导入，完整进程墙钟未单独计时）。
 
-18个折分别留出1TX和1day，拟合均值时同时排除二者；各TX/day cell等权。比较RX循环均值与所有RX合并均值，另有4个循环错配RX控制。主规则全部满足才通过：每90cell×10坐标至少20/70包可用；圆周riskgain>=.02；至少14/18折正收益；5RX均非负；超过最好的错配RX控制至少.01；所有拟合均值resultant>=.5；每RX奇偶周期平均cos>=.8。
+这里的risk gain是源RX相位统计的留出误差差，不是准确率或百分点。周期重复比不是总SNR；RX关联不能区分硬件、传播、均衡或采集条件。相位共轭、CFO混叠和模板时移规范仍未唯一识别。
 
-任一主规则失败就放弃本轮相位增强假设，不更换窗口或放宽阈值。通过也只支持另做有限IQ/defaulthead源安全验证，不能据此宣称clean泛化或urban识别有效，不自动开始E20。后续模型仍须固定SIG_TIME+RDrop/defaulthead，scratch总E20，原七正式视图。
+冻结规则对空cell坐标以0占位，并独立判coverage失败；因此最低resultant=0和未加权cycle均值含不可估计项，不能把它们直接解释为实测相位混乱。图中的周期一致性另按可用数加权，只作描述，不改主决定。可用性不足也不证明不存在任何RX相位因素。
 
-CPU仅2线程，CUDA隐藏，不干预其他任务。单run/root/owner、单release传输SHA对照、远端compile、启动PID/CWD/argv/log独立读回。技术异常只结束本run并保留产物，不自动重发；来源/输出碰撞/非有限值是技术失败，科学低收益不导致选择性重跑。命令、路径、环境和矩阵见experiment.json。
+失败后不换窗口、降阈值或调幅启动训练。通过也仅支持另做有限IQ/defaulthead源安全验证，不能跳过身份保持和同预算训练对照。当前没有任何新clean/urban性能或跨seed结果。
 
-成本预登记：6300原包、18900窗口观察、75600周期；0网络前向/优化更新/新模型/target预测。墙钟时间按真实completion报告。统计资格不是身份性能；单数据划分也不能证明跨model seed复现。
+图：E:/type10-7/local_artifacts/cvs_source_phase_20261016/final/phase_source_repeatability.png；逐cell表：E:/type10-7/local_artifacts/cvs_source_phase_20261016/final/source_cells.csv。
 
-本地针对性检查 PASS，4 个协议负例和6336合成包覆盖相位规范、TX/day排除、稀疏/噪声拒绝。一次独立P0/P1审查 PASS，无直接缺陷；未读取真实IQ。发布前N607普通账户/主机/路径只读preflight PASS。
+
+实际发布与执行：VERIFIED。单归档传输对照、普通账户/主机、远端compile与独立PID/CWD/argv读回通过；启动快照log0字节，终端日志及完整三窗口结果随后落地。实际统计代码commit1a96162bda2026419cbadd52dc4bb475d38ba646；发布后没有修改远端实现或规则。后续本地harvest只修正图中可用样本加权描述，不改变固定空cell占位、阈值或FAIL决定。
+
+主结果仅0.00054227圆周risk改善，6/18折正向，RX1/3为负；部分cell坐标可用数0，未建立跨TX/day稳定RX相位方向。可用频点自身的奇偶周期一致性很高（各RX约.987至.999），因此不能将失败统一归因为相位噪声。覆盖不足、可用频点几乎共用相位形态、RX关联不能跨折稳定重现共同限制该候选；不证明真实RX不存在相位效应。
+
+该相位增强假设按预定规则结束。不通过换主窗口、提高扰动、删除RX或另训诊断头挽救。统计没有训练任何识别网络，不能据此报告新的默认头准确率、clean代价或跨seed提升。整体clean正收益＋low urban>60%＋suburban保持目标仍未完成。
+
+复现命令（在本run immutable release CWD，使用预登记普通N607 Python）：`python -u -m experiments.cvs_source_phase.run`。不可向已经完成的run根重发。离线采集命令：`F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_source_phase.harvest --output E:/type10-7/local_artifacts/cvs_source_phase_20261016/final`。
+
+本地实际验证：同一6336包合成检查执行2次，独立审查另执行1次，总19008个合成IQ检查包，网络前向0；包含4协议负例。原模型/正式测试IQ/其他任务均未修改。

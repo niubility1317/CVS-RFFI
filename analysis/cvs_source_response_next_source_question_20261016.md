@@ -15,3 +15,7 @@
 当前只固定研究问题，未实现、登记、启动新的相位实验，也没有相位收益或跨seed结果。整体目标保持原clean/low urban/suburban要求，不缩减成统计诊断。
 
 证据：[已知激励全量源诊断](E:/type10-7/automation_reports/CV-SincNet/20261002-diagnostic-rff-known-excitation-source-manysig-m1-r01/report.md)、[真实有限操作留出结果](E:/type10-7/automation_reports/CV-SincNet/20261012-phase1-finite-margin-source-manysig-s2026092701-r01/final_analysis.md)、[当前独立G源停止决定](cvs_source_response_source_decision_20261016.md)。
+
+## 真实源统计已完成
+
+上述尚未实现状态为预登记历史；20261016本问题已实际完成，代码1a96162bd，source-only run `20261016-diagnostic-source-phase-crossfit-manysig-m1-r01`。主窗口riskgain.00054227、6/18正折、部分cell坐标无可用观察，主规则FAIL；可用频点本身周期一致性高。按原规则结束相位增强，不用其他窗口救援，不开始finiteIQ/模型训练；这不证明所有真实RX相位影响不存在。报告和分层图已落地，整体识别目标仍active。

@@ -206,3 +206,5 @@ SIG相对普通增强NOMINAL：low +1.1488、mid +1.1333、urban +1.0907、最�
 完整[主报告](E:/type10-7/automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01/report.md)、[55,500步证据](E:/type10-7/local_artifacts/cvs_bridge_teaching_e50_20261015/final/training_audit.json)、[派生配对差与成本](E:/type10-7/local_artifacts/cvs_bridge_teaching_e50_20261015/final/derived_results.json)、[完整训练曲线](E:/type10-7/local_artifacts/cvs_bridge_teaching_e50_20261015/final/figures/complete_training_curves.png)、[正式七视图与RX分层图](E:/type10-7/local_artifacts/cvs_bridge_teaching_e50_20261015/final/figures/formal_views_and_receiver_strata.png)均已实际产生和检查。
 
 后续候选机制选择已在读取本次正式分数前按源证据记录，见[同信道HQ参考的单侧默认头间隔](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/analysis/cvs_hq_head_relation_source_design_20261015.md)。当前尚未实现或训练；不改变已完成HQ家族的负判定。整体研发目标继续active。
+
+20261016 源相位可重复性诊断实际完成：L6300、0网络/更新/目标；主80:160圆周riskgain.00054227，仅6/18折正，部分cell坐标可用0，固定规则FAIL。可用频点的周期一致性仍高，不将缺测占位误认为相位噪声。相位增强不启动，不改窗口/阈值挽救；见[同run报告](../automation_reports/CV-SincNet/20261016-diagnostic-source-phase-crossfit-manysig-m1-r01/report.md)。
