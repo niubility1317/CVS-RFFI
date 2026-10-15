@@ -506,7 +506,14 @@
         "scores/correctness.npz",
         "scores/metrics.json",
         "completion.json"
-      ]
+      ],
+      "result": {
+        "status": "ANALYZED",
+        "evidence_ref": "row_reports/E20_ANTI_CE-s2026092701.json",
+        "clean_predictions": 168000,
+        "truth_last": true,
+        "head_fit_updates": 0
+      }
     },
     {
       "row_id": "E20_ANTI_RDROP-s2026092701",
@@ -722,7 +729,14 @@
         "scores/correctness.npz",
         "scores/metrics.json",
         "completion.json"
-      ]
+      ],
+      "result": {
+        "status": "ANALYZED",
+        "evidence_ref": "row_reports/E20_ANTI_RDROP-s2026092701.json",
+        "clean_predictions": 168000,
+        "truth_last": true,
+        "head_fit_updates": 0
+      }
     },
     {
       "row_id": "E50_ANTI_CE-s2026092701",
@@ -1370,7 +1384,14 @@
         "scores/correctness.npz",
         "scores/metrics.json",
         "completion.json"
-      ]
+      ],
+      "result": {
+        "status": "ANALYZED",
+        "evidence_ref": "row_reports/E20_ANTI_CE-s2026092702.json",
+        "clean_predictions": 168000,
+        "truth_last": true,
+        "head_fit_updates": 0
+      }
     },
     {
       "row_id": "E20_ANTI_RDROP-s2026092702",
@@ -1586,7 +1607,14 @@
         "scores/correctness.npz",
         "scores/metrics.json",
         "completion.json"
-      ]
+      ],
+      "result": {
+        "status": "ANALYZED",
+        "evidence_ref": "row_reports/E20_ANTI_RDROP-s2026092702.json",
+        "clean_predictions": 168000,
+        "truth_last": true,
+        "head_fit_updates": 0
+      }
     },
     {
       "row_id": "E50_ANTI_CE-s2026092702",
@@ -2234,7 +2262,14 @@
         "scores/correctness.npz",
         "scores/metrics.json",
         "completion.json"
-      ]
+      ],
+      "result": {
+        "status": "ANALYZED",
+        "evidence_ref": "row_reports/E20_ANTI_CE-s2026092703.json",
+        "clean_predictions": 168000,
+        "truth_last": true,
+        "head_fit_updates": 0
+      }
     },
     {
       "row_id": "E20_ANTI_RDROP-s2026092703",
@@ -2450,7 +2485,14 @@
         "scores/correctness.npz",
         "scores/metrics.json",
         "completion.json"
-      ]
+      ],
+      "result": {
+        "status": "ANALYZED",
+        "evidence_ref": "row_reports/E20_ANTI_RDROP-s2026092703.json",
+        "clean_predictions": 168000,
+        "truth_last": true,
+        "head_fit_updates": 0
+      }
     },
     {
       "row_id": "E50_ANTI_CE-s2026092703",
@@ -2903,6 +2945,14 @@
     "evidence_ref": "launch_verification.json",
     "training_complete": false,
     "target_feedback": false,
-    "goal_completed": false
+    "goal_completed": false,
+    "independently_analyzed_rows": [
+      "E20_ANTI_CE-s2026092701",
+      "E20_ANTI_CE-s2026092702",
+      "E20_ANTI_CE-s2026092703",
+      "E20_ANTI_RDROP-s2026092701",
+      "E20_ANTI_RDROP-s2026092702",
+      "E20_ANTI_RDROP-s2026092703"
+    ]
   }
 }

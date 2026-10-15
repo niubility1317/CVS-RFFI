@@ -32,3 +32,6 @@ CPU/CUDA各144协议负例、4资格否决、198相同初始张量、真实t1/t2
 
 <!-- MAIN_LAUNCH_VERIFIED -->
 执行提交`0e11057172191b61470599bf5a52010bf385ab89`已推送且远端OID匹配。单archive传输比较与remote compile VERIFIED；12行进程身份、实际GPU、首轮日志增长、own初始CP无query smoke、完整源角色、原配方和13处mask审计已核实。全部owner当前GPU进程计数≤3。模型仍在训练，尚无本轮目标结果。见launch_verification.json。
+
+<!-- ROW_REPORTS E20_ANTI_CE-s2026092701,E20_ANTI_CE-s2026092702,E20_ANTI_CE-s2026092703,E20_ANTI_RDROP-s2026092701,E20_ANTI_RDROP-s2026092702,E20_ANTI_RDROP-s2026092703 -->
+同row分析新增：[E20_ANTI_CE-s2026092701](row_reports/E20_ANTI_CE-s2026092701.md)、[E20_ANTI_CE-s2026092702](row_reports/E20_ANTI_CE-s2026092702.md)、[E20_ANTI_CE-s2026092703](row_reports/E20_ANTI_CE-s2026092703.md)、[E20_ANTI_RDROP-s2026092701](row_reports/E20_ANTI_RDROP-s2026092701.md)、[E20_ANTI_RDROP-s2026092702](row_reports/E20_ANTI_RDROP-s2026092702.md)、[E20_ANTI_RDROP-s2026092703](row_reports/E20_ANTI_RDROP-s2026092703.md)。这些完整单row结果不构成整批三seed结论，其他健康训练保持冻结方案。
