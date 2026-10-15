@@ -48,3 +48,8 @@ CPU/CUDA各59协议负例、主资格与POINT独立判定、198同初态、实�
 文献边界：[R-Drop](https://arxiv.org/abs/2106.14448)已有同包双向KL；[LR-Drop](https://aclanthology.org/2024.lrec-main.891/)已有隐藏状态一致性；[Barlow Twins](https://arxiv.org/abs/2103.03230)和[VICReg](https://arxiv.org/abs/2105.04906)已有表征一致性及中心化/方差/协方差学习背景。仅“加feature consistency”或“减均值”不能声称全球创新，本候选也不继承VICReg防坍塌保证。待证点是当前SIG_TIME上保留有效KL，使用可微共同中心约束方向，并以边界梯度范数对照区分作用；有效性尚待本批及独立后续验证。
 
 REJECTED_EXTRA_GATE：通用brainstorming中的额外设计/spec审批不在用户最小流程白名单，NONBLOCKING不执行。固定方案/矩阵/判据在此，0额外审批/签名/重复审查。goal ACTIVE。
+
+
+## 启动独立核实
+
+VERIFIED / RUNNING。实际代码提交 `5c60deca3f42c02ebf82f5402a205bd9db81c89f` 已push并独立核对远端OID；一次release archive SHA比较和remote compile均VERIFIED。四行均已通过自己的真实初始checkpoint noquery smoke并完成首轮，独立PID/CWD/argv/GPU及实际compute app匹配，日志均增长，无技术异常。实际RX3全部五loader排除，fit1/4/6/8、L5040/U45360hidden/V21600；旧13L＋7U/LS.01/普通增强等实际args一致。新增信号与梯度数值审计在真实训练通过。全部owner当前GPU compute app数量≤3，preCUDA容量在每次launch前计入。详见launch_verification.json；原始进程/命令/日志与私有运行细节只留local_artifacts。尚无final20结果或目标预测，不能宣称机制有效。

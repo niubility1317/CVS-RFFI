@@ -383,3 +383,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- RDROP_BATCH_CENTER_RX3_PREREG_20261016 -->
 仅SIG_TIME＋RDrop。新固定FULL/POINT/NORM_MATCH/CENTER，RX3全路径排除、fit1/4/6/8、seed02各scratchE20。主CENTER保留fullKL，特征减当前可微共同均值后方向一致；NORM_MATCH在当前joint160图匹配辅助梯度L2。独立预登记POINTvsFULL确认旧whole-feature正路线，不替代主判据。CPU/CUDA59协议负例及实际原版/梯度/RNG/198初态PASS。尚无真实结果，0target。20261016-phase1-SIGTIME-rdrop-batch-center-RX3-sourcefold-s2026092702-m4-r01 PLANNED。[固定方案](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-batch-center-RX3-sourcefold-s2026092702-m4-r01/report.md)。goalACTIVE。
+
+
+<!-- RDROP_BATCH_CENTER_RX3_LAUNCHED_20261016 -->
+20261016-phase1-SIGTIME-rdrop-batch-center-RX3-sourcefold-s2026092702-m4-r01 VERIFIED/RUNNING，四臂真实scratchE20启动，首轮完成、自己CP noquery smoke及PID/CWD/argv/GPU/log增长通过，实际RX3全路径排除/默认头联合/新辅助数值审计一致。代码5c60deca3f42c02ebf82f5402a205bd9db81c89f，0target/头拟合，未有final结果。[启动证据](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-batch-center-RX3-sourcefold-s2026092702-m4-r01/launch_verification.json)。goalACTIVE。
