@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "candidate": "20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r01",
+  "review_type": "single independent next-run P0/P1 review",
+  "findings": [],
+  "scope": [
+    "experiments/cvs_rx_u_increment20/",
+    "experiments/cvs_feature_sequence50/source.py: optional source_contract and source_validation hooks"
+  ],
+  "confirmed": [
+    "RX1 is excluded from all training, unlabeled, validation, calibration and probe loaders before model and own-EMA construction; held RX1 labeled IQ is used only by the separate evaluation reader.",
+    "Hidden-U filtering reads receiver metadata without inspecting hidden TX labels; effective role IDs are checked against the original source-role carriers.",
+    "The live run remains scratch RAW SSL with its jointly trained default head and one actual optimizer update per step. Temporary alternatives preserve RAW W and include all 71 feature tensors, including the three feature gains.",
+    "The RAW reference uses actual post-clip gradients without a second clip. The labeled counterfactual uses backward gradients, preserves None semantics, and restores live parameter, gradient, optimizer and RNG state.",
+    "The fixed 4440-update training budget, filtered-U iterator restart counts, four probes, eight temporary optimizer steps and 16 temporary readouts are internally consistent.",
+    "The source qualification compares CONE with RAW, SHRINK and L_ONLY_F and includes the fixed final labeled-CE health condition; no target prediction or truth is consumed.",
+    "The launcher overlays the new package and the two-hook shared source file on the fixed R02 code release. Existing output roots are rejected before writes."
+  ],
+  "review_boundary": "Read-only source inspection; no real checkpoint or IQ access, remote operation, training launch, production edit, repeated historical review or additional gate."
+}

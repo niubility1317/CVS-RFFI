@@ -95,7 +95,9 @@ def train(c,design=None,model_api=None,observer=None):
             if ctx['num_domains']!=source_domain_count(a):raise ValueError('Historical RX/day source model dimensions differ')
             if observer is not None and callable(getattr(observer,'data',None)):observer.data(n,ctx,out)
             state['ctx']=ctx
-            write(out/'source_contract.json',dict(expected,native_role_comparison='EXACT_MATCH'))
+            contract_hook=getattr(observer,'source_contract',None)
+            contract=contract_hook(expected,ctx) if callable(contract_hook) else dict(expected,native_role_comparison='EXACT_MATCH')
+            write(out/'source_contract.json',contract)
             write(out/'resolved_native_args.json',clean(resolved_config(a)));write(out/'actual_native_args.json',clean(resolved_config(a)))
             return ctx
         def checked_model(args,dev):
@@ -158,7 +160,7 @@ def train(c,design=None,model_api=None,observer=None):
         m=state['model'];m.load_state_dict(payload['model'],strict=True)
         write(out/'resolved_native_args.json',clean(resolved_config(SimpleNamespace(**payload['args']))));write(out/'actual_native_args.json',clean(resolved_config(SimpleNamespace(**payload['args']))))
         if m._feature_l_steps!=updates:raise ValueError('Real L context did not match optimizer budget')
-        metrics=source_validation(m,state['ctx']['val_loader'],device)
+        metrics=getattr(design,'source_validation',source_validation)(m,state['ctx']['val_loader'],device)
         write(out/'completion.json',dict(status='SOURCE_TRAINED',epoch=epochs,checkpoint=str(out/'final_ssdg.pth'),
             elapsed_seconds=time.time()-started,final_source_metrics=metrics,target_access=False,target_evaluated=False,native_fitted_probes_disabled=True,native_disabled_probe_calls=diagnostic_guard['disabled_calls'],head_fit_updates=0,
             checkpoint_sources=[],config=c,logged_steps=state.get('steps',0),optimizer_steps=payload['a1_ema_successful_updates'],feature_extractor=m._feature_learning_report,L_context_steps=m._feature_l_steps,mask_counts=m._feature_mask_counts,identity_input_policy=m._identity_input_policy,baseline_recipe=recipe,label_epochs=label_epochs,pseudo_epochs=pseudo_epochs,final_training_L_CE=state['final_L_CE_sum']/222,ancestors=[],initialization='scratch'))

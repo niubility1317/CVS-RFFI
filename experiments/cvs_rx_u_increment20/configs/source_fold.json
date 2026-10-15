@@ -1,0 +1,199 @@
+{
+  "dependency_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02",
+  "config": {
+    "schema": "phase1_RX_U_optimizer_increment_sourcefold_v1",
+    "run_id": "20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r01",
+    "stage": "source_RX_fold_diagnostic",
+    "arm": "RAW_SSL_SOURCE_FOLD",
+    "model_seed": 2026092701,
+    "row_id": "RAW_SSL-RX1-s2026092701",
+    "features": [
+      "ema",
+      "pseudo",
+      "twostage"
+    ],
+    "variant": "reference_response",
+    "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-RX1-U-increment-sourcefold-s2026092701-r01/source",
+    "epochs": 20,
+    "steps_per_epoch": 222,
+    "model_initialization": "scratch",
+    "checkpoint_sources": [],
+    "numerical_policy": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "method": "cvs_source_RX_U_optimizer_increment",
+    "target_access": false,
+    "pseudo_domain_gate": false,
+    "temporal_mode": "batch_neighbor",
+    "temporal_min_streak": 2,
+    "lr_schedule": "cosine",
+    "lr_min": 1e-06,
+    "launch_owner": "codex/root/RX1-U-increment-20261015",
+    "label_epochs": 13,
+    "pseudo_epochs": 7,
+    "updates": 4440,
+    "legacy_reference_config": {
+      "schema": "legacy_no_sat_v1",
+      "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+      "stage": "repair",
+      "arm": "legacy_cosine_no_sat",
+      "model_seed": 2026092701,
+      "row_id": "legacy_cosine_no_sat-s2026092701",
+      "features": [
+        "ema",
+        "pseudo",
+        "twostage"
+      ],
+      "variant": "reference_response",
+      "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+      "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+      "epochs": 200,
+      "steps_per_epoch": 222,
+      "model_initialization": "scratch",
+      "checkpoint_sources": [],
+      "numerical_policy": {
+        "cudnn_allow_tf32": false,
+        "cuda_matmul_allow_tf32": false,
+        "cudnn_benchmark": false,
+        "cudnn_deterministic": false,
+        "matmul_precision": "highest"
+      },
+      "method": "cvs_legacy_no_sat",
+      "target_access": false,
+      "pseudo_domain_gate": false,
+      "temporal_mode": "batch_neighbor",
+      "temporal_min_streak": 2,
+      "lr_schedule": "cosine",
+      "lr_min": 1e-06
+    },
+    "source_falsification": {
+      "minimum_qualified_probes": 2,
+      "final_training_L_CE_max": 0.5,
+      "U_loss_min": 1e-08,
+      "raw_U_F_to_full_F_step_min": 0.01,
+      "retained_U_F_norm_min": 0.1,
+      "CONE_RAW_cosine_max": 0.95,
+      "ACTUAL_and_PRE_W_CE_improvement_min": 1e-05,
+      "errors_must_not_increase": true,
+      "actual_stored_norm_relative_tolerance": 0.001,
+      "rounded_cone_violation_relative_max": 0.001,
+      "identity_controls": [
+        "RAW",
+        "SHRINK",
+        "L_ONLY_F"
+      ],
+      "promotion": "Only a full controlled source-fold training matrix, never direct target/main qualification"
+    },
+    "training_recipe": "SIG_TIME+CENTER25K/default cosine; scratch20 LS0; 13L+7U original oldgate/ownEMA; four-RX filtered loaders with original222 step budget",
+    "baseline_definition": "Fresh matched SIG_TIME+CENTER25K scratch20 actualLS0; historical sharpness20 actualLS.01 is separate context, no result reuse.",
+    "explicit_CFO_identity_feature": false,
+    "feature_extractor": {
+      "arm": "SIG_TIME",
+      "layer": "t2",
+      "local_dimension": 6,
+      "local_projection": "learned 1x1 then tanh; shared across controls",
+      "windows": 4,
+      "random_directions": 14,
+      "random_direction_seed": 2026101307,
+      "random_direction_scales": [
+        0.5,
+        1.0,
+        2.0
+      ],
+      "descriptor_width": 28,
+      "output_embedding": 160,
+      "parameter_matched": true,
+      "intrinsic_descriptor_rank_matched": false,
+      "classifier_changed": false,
+      "gain_initial": 0.05,
+      "gain_bound": 0.2,
+      "time_coordinate": true,
+      "per_packet": true,
+      "sinc_coordinates": "CENTER_25K",
+      "sinc_scale_hz": 25000.0,
+      "extra_mechanism_parameters": 0,
+      "additional_classifier_parameters": 0
+    },
+    "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+    "test_views": [],
+    "checkpoint_selection": "final_only",
+    "goal": {
+      "clean_three_seed_mean": 0.84,
+      "goal_completed": false,
+      "source_diagnostic_only": true
+    },
+    "budget_authorization": "Active Phase1 source-falsification research: one genuine source-RX1 held-out scratch20 fold and four temporary update probes; no target or full candidate trajectory",
+    "cost_claim": "One source-only20-epoch baseline/4440 actual steps, no target; 8 temporary AdamW updates/4risk probes/21998 diagnostic forwards; no full candidate training yet",
+    "baseline_reference": "Own unchanged RAW SSL fold trajectory; not reused as a full-five-RX performance control",
+    "baseline_reuse": false,
+    "readouts": [
+      "ACTUAL",
+      "PRE_W"
+    ],
+    "separate_head_training": false,
+    "training_mechanism": {
+      "actual": "Unchanged raw L+U student AdamW; diagnostic never corrects it",
+      "probes": [
+        2896,
+        3344,
+        3792,
+        4432
+      ],
+      "modes": [
+        "RAW",
+        "L_ONLY_F",
+        "SHRINK",
+        "CONE"
+      ],
+      "feature_scope": "71 encoder tensors including three feature gains; excludes default class W",
+      "L_counterfactual": "Separate real backward of current identity_loss, same pre-state optimizer, clip5 once",
+      "RAW_reference": "Actual already-clipped gradients copied into temporary original AdamW; no second clip",
+      "source_risk": "Current default-head CE of fixed144 training-L anchors, one normalized gradient per training RX",
+      "projection": "min ||p-u||^2 with g_RX dot p<=0; u=RAW_after_F-L_only_after_F",
+      "norm_control": "SHRINK follows raw U displacement and matches rounded CONE FP32 displacement norm",
+      "evaluation": "1260 original visible L packets of RX1, never trained in this fold",
+      "head_fit_updates": 0,
+      "actual_candidate_corrections": 0,
+      "temporary_AdamW_steps": 8,
+      "additional_source_L_IQ_reads": 1404,
+      "diagnostic_packet_forwards_including_initial_smoke": 21998
+    },
+    "execution_overrides": {
+      "use_aug": false,
+      "use_concat_sat_channel_aug": false,
+      "use_sat_consistency": false,
+      "use_unlabeled": true,
+      "use_ema_teacher": true,
+      "label_smoothing": 0,
+      "source_only": true
+    },
+    "fold": {
+      "held_RX": 1,
+      "training_RX": [
+        3,
+        4,
+        6,
+        8
+      ],
+      "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+      "effective_roles": {
+        "L_s": 5040,
+        "U_s": 45360,
+        "V": 21600
+      },
+      "held_L_evaluation": 1260,
+      "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+      "raw_source_carrier_and_static_domain_ID_map_retained": true,
+      "trained_checkpoint_reuse_allowed_for_all5RX": false,
+      "steps_per_epoch": 222,
+      "U_observations_per_pseudo_epoch": 56624
+    }
+  }
+}

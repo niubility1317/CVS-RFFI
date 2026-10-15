@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "geometry_analytic_tests": 8,
+  "source_role_backward_norm_tests": 8,
+  "actual_original_model_CPU": {
+    "parameters": 188,
+    "feature_scope": 71,
+    "RAW_actual_gradient_oracle_error": 0.0,
+    "W_joint": true,
+    "norm_matched": true,
+    "live_state_RNG_preserved": true
+  },
+  "actual_original_model_CUDA": {
+    "parameters": 188,
+    "feature_scope": 71,
+    "RAW_actual_gradient_oracle_error": 0.0,
+    "W_joint": true,
+    "norm_matched": true,
+    "live_state_RNG_preserved": true
+  },
+  "native_fold_loader_integration": {
+    "status": "PASS",
+    "actual_native_subset_classes_and_loader": true,
+    "source_carrier": "synthetic metadata/IQ only",
+    "all5_active_loaders_exclude_RX1": true,
+    "hidden_U_labels_minus1_TX_metadata_absent": true,
+    "effective_role_counts": {
+      "L_s": 5040,
+      "U_s": 45360,
+      "V": 21600
+    },
+    "U_observations_per_pseudo_epoch": 56624,
+    "anchors": 144,
+    "held_visible_L": 1260,
+    "real_source_IQ_checkpoint_reads": 0
+  },
+  "synthetic_optimizer_updates": 6,
+  "source_IQ_checkpoint_reads": 0,
+  "actual_candidate_corrections": 0,
+  "compile": "PASS",
+  "real_checkpoint_no_query_smoke": "Own scratch fold snapshot: launcher first step, not claimed locally",
+  "limitation": "Synthetic constructor/optimizer checks do not establish source performance or qualification"
+}
