@@ -16,7 +16,7 @@
 | R10 | §3 | 必要首种子矩阵完成后，读取新target汇总前冻结并上传源域扩种子决定 | gate.py/dispatch.py | verified | 源决定4173ae34已push/远端OID核实后放行十行，再回收首n1新target；两条顺序8例通过 | 参数不根据target修改 |
 | R11 | §3 | 逐行冻结后自动 clean 预测，独立 truth-last 评分 | evaluate.py/dispatch.py | verified | 全部 18 行 clean 自动预测/独立 truth-last 完成，3024000 决策，324 CM 独立复算 | 每行单owner |
 | R12 | §3 | 配对 B−A/E−C/E−D/F−E/F−B 与交互，均值样本SD/正差数/F1/最差RX/day/成本 | evaluate.py/report | verified | 全部六比较与逐 seed/均值/样本 SD/正差数/F1/worstRX/day/成本均在 final_analysis、CSV、final_target_recount | 负结果保留 |
-| R13 | §3 | 实现配置结果 Git提交推送并核对远端OID | prereg/report/catalog | implemented | 09554c3a 执行代码及首轮结果已推送核对远端 OID；完整结果已本地生成，等待本次交付推送 | 私有产物不入Git |
+| R13 | §3 | 实现配置结果 Git提交推送并核对远端OID | prereg/report/catalog | verified | 完整结果 4dd4846a782a7cd3dbefb898870f72c1f2a0ef81 已提交推送，独立远端 OID 相同；根目录镜像与两目录条目读回 VERIFIED，证据 delivery_state.json | 私有产物不入Git |
 | R14 | §3 | 最终实际回答 B/E/F 有效性，D差异不单归因LR | final report | verified | B−A −.271230 pp；E−C/E−D −.054365/−.145437 pp；F−E/F−B +.046230/+.201389 pp，F−A −.069841 pp；未证实总体提升 | D 差异多因素，未在 C 收尾 |
 
 实现严格遵循用户公式和矩阵；任何不可达项会记录具体证据，不能用近似替代而不披露。
