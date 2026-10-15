@@ -37,7 +37,8 @@
     "config_paths": [
       "experiments/cvs_rx_cagrad50/design.py",
       "experiments/cvs_rx_cagrad50/objective.py"
-    ]
+    ],
+    "execution_commit": "22de3258841f6068688885ba99d8ceeb866be17c"
   },
   "data": {
     "dataset": "ManySig",
@@ -138,7 +139,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -176,7 +177,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -254,7 +255,8 @@
     "remote_log_root": "PROJECT/runs/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/logs",
     "local_artifact_root": "LOCAL_ARTIFACTS/rx_cagrad50_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_rx_cagrad50.dispatch",
-    "stop_rule": "Run-owned contract/provenance mismatch,nonfinite/native skippedupdate,outputcollision,illegalhead/query/orUtruth,gradientformula/defaultWcorrection orindependentrecountfailure: preserve artifacts,noautomaticretry/unrelatedstop. Fixed50notargetearlystop. FailedQP uses originalCE direction explicitlylogged; fallback>1% blocks sourceexpansion,nothealthytraining."
+    "stop_rule": "Run-owned contract/provenance mismatch,nonfinite/native skippedupdate,outputcollision,illegalhead/query/orUtruth,gradientformula/defaultWcorrection orindependentrecountfailure: preserve artifacts,noautomaticretry/unrelatedstop. Fixed50notargetearlystop. FailedQP uses originalCE direction explicitlylogged; fallback>1% blocks sourceexpansion,nothealthytraining.",
+    "execution_commit": "22de3258841f6068688885ba99d8ceeb866be17c"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -300,11 +302,11 @@
       "final5_original_L_CE_max": 0.5,
       "native_steps": 11100,
       "actual_U_packets": 963900,
-      "feature_difference_min": 1e-06,
+      "feature_difference_min": 0.000001,
       "solver_fallback_fraction_max": 0.01,
       "minimum_direction_change_steps": 1,
       "minimum_relative_worst_local_gain_vs_norm_control": -0.0001,
-      "actual_selected_gradient_formula_rtol": 1e-05,
+      "actual_selected_gradient_formula_rtol": 0.00001,
       "default_W_gradient_correction_zero": true,
       "required_gradient_epochs": [
         1,
@@ -401,7 +403,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/rx-cagrad50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -439,17 +441,17 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_original_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "solver_fallback_fraction_max": 0.01,
           "minimum_direction_change_steps": 1,
           "minimum_relative_worst_local_gain_vs_norm_control": -0.0001,
-          "actual_selected_gradient_formula_rtol": 1e-05,
+          "actual_selected_gradient_formula_rtol": 0.00001,
           "default_W_gradient_correction_zero": true,
           "required_gradient_epochs": [
             1,
@@ -549,7 +551,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -587,7 +589,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -790,7 +792,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/rx-cagrad50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -828,17 +830,17 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_original_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "solver_fallback_fraction_max": 0.01,
           "minimum_direction_change_steps": 1,
           "minimum_relative_worst_local_gain_vs_norm_control": -0.0001,
-          "actual_selected_gradient_formula_rtol": 1e-05,
+          "actual_selected_gradient_formula_rtol": 0.00001,
           "default_W_gradient_correction_zero": true,
           "required_gradient_epochs": [
             1,
@@ -1048,7 +1050,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/rx-cagrad50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1086,17 +1088,17 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_original_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "solver_fallback_fraction_max": 0.01,
           "minimum_direction_change_steps": 1,
           "minimum_relative_worst_local_gain_vs_norm_control": -0.0001,
-          "actual_selected_gradient_formula_rtol": 1e-05,
+          "actual_selected_gradient_formula_rtol": 0.00001,
           "default_W_gradient_correction_zero": true,
           "required_gradient_epochs": [
             1,
@@ -1259,10 +1261,18 @@
   },
   "preparation_status": "LOCAL_VERIFIED_P0P1_PASS_PREREGISTERED",
   "results": {
-    "status": "PREREGISTERED",
-    "training_started": false,
-    "tested": false,
-    "goal84": false
+    "status": "RUNNING_VERIFIED",
+    "new_models_started": 2,
+    "historical_reference_scored": 1,
+    "preflight": "PASS",
+    "default_head_only": true,
+    "head_fit_updates": 0,
+    "source_qualification": null,
+    "new_target_performance": null,
+    "goal84": false,
+    "evidence": [
+      "launch_evidence.json"
+    ]
   },
   "registered_at": "2026-10-15T11:12:41+00:00"
 }

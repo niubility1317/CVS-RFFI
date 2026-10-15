@@ -82402,7 +82402,7 @@
   "next_directions": [
     {
       "direction": "完整骨干源RX梯度协调",
-      "status": "LOCAL_VERIFIED_P0P1_PASS",
+      "status": "RUNNING_VERIFIED",
       "source_evidence": "RX coordinate-sign consensus probe sourceFAIL: retainednorm.77510, aggregateworstRXcos-.02688 vsrandom+.01731; vectorcoord majority alone insufficient",
       "hypothesis": "CAGrad-inspired maxmin gradient trustregion c.5 using fullRX Gram and originalCE reference cancoordinate actual f_theta updates; same-normoriginaldirection control isolatesdirection",
       "location": "All195041f_theta excludesclassWalone, originalW/U unchanged",
@@ -82495,10 +82495,17 @@
     "按事先固定源规则决定是否原样扩02/03；目标成绩不调参"
   ],
   "current_priority": {
-    "status": "RX_CAGRAD_LOCAL_VERIFIED_P0P1_PASS_NOT_LAUNCHED",
-    "default_head": "OriginalnormaljointCE/U, no headfit",
-    "network": "FixedSIG_TIME joint160",
-    "first_seed": "Two scratch50 models plus historicaloldgatecos50 reference",
+    "status": "RX_CAGRAD_TRAINING_RUNNING_VERIFIED",
+    "run_id": "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+    "execution_commit": "22de3258841f6068688885ba99d8ceeb866be17c",
+    "actual_epoch_counts": {
+      "OLD_GATE_COS50-s2026092701": 50,
+      "NORM_CONTROL-s2026092701": 4,
+      "RX_CAGRAD-s2026092701": 3
+    },
+    "first_epoch_gradient_recount": "104layerrecords416vectors VERIFIED;defaultWcorrectionexactzero",
+    "source_qualification": null,
+    "new_target_result": null,
     "goal84": false
   },
   "latest_complete_sinc_optimizer": {

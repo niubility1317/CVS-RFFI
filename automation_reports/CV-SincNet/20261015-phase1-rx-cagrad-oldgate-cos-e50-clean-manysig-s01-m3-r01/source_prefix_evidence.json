@@ -1,0 +1,49 @@
+{
+  "status": "VERIFIED_PREFIX_ONLY",
+  "run_id": "20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01",
+  "rows": [
+    {
+      "arm": "NORM_CONTROL",
+      "complete_logged_prefix_steps": 444,
+      "last_step": 444,
+      "source_epoch": 2,
+      "all_saved_Gram_norm_reference_checks": true,
+      "solver_fallbacks": 0,
+      "mean_norm_ratio": 1.3003071738967404,
+      "minimum_relative_worst_local_gain_vs_norm_control": 0.07752866394103873,
+      "source_CE_mean": 0.9942502042463234,
+      "source_gradient_epochs": [
+        1
+      ],
+      "sampled_layer_records": 52,
+      "head_fit_updates": 0,
+      "target_read": false,
+      "limitation": "All complete loggedsourceprefix only;notcomplete50epochs,noDGclaim",
+      "mean_solver_proposed_direction_change": 0.42785409634877636,
+      "applied_direction_note": "OriginalCEdirectionradiallyscaled; Gramproposedgradientstatisticsdonotdescribetheappliedcontrol direction"
+    },
+    {
+      "arm": "RX_CAGRAD",
+      "complete_logged_prefix_steps": 399,
+      "last_step": 399,
+      "source_epoch": 2,
+      "all_saved_Gram_norm_reference_checks": true,
+      "solver_fallbacks": 0,
+      "mean_norm_ratio": 1.2929535592696486,
+      "minimum_relative_worst_local_gain_vs_norm_control": 0.04706267782806732,
+      "source_CE_mean": 1.0341088828586398,
+      "source_gradient_epochs": [
+        1
+      ],
+      "sampled_layer_records": 52,
+      "head_fit_updates": 0,
+      "target_read": false,
+      "limitation": "All complete loggedsourceprefix only;notcomplete50epochs,noDGclaim",
+      "mean_solver_proposed_direction_change": 0.4312128601461805,
+      "applied_direction_note": "Actualcoordinateddirection"
+    }
+  ],
+  "not_full_training_analysis": true,
+  "target_metrics_read": false,
+  "mechanism_caveat": "Gram coefficients/direction_change describe solverproposeddirection also incontrol; actualcontrolusesoriginalCEdirectionatmatchednorm"
+}

@@ -1,0 +1,42 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "arm": "NORM_CONTROL",
+      "status": "VERIFIED",
+      "epoch": 1,
+      "gradient_batches": 13,
+      "layer_records": 52,
+      "saved_vectors": 208,
+      "actual_selected_matches_target": true,
+      "actual_selected_equals_original_plus_correction": true,
+      "maximum_relative_selected_target_L2": 4.2625856143284874e-7,
+      "defaultW_correction_exactly_zero": true,
+      "body_correction_nonzero_all39": true,
+      "new_model_forwards": 0,
+      "head_fit_updates": 0,
+      "query_read": false
+    },
+    {
+      "arm": "RX_CAGRAD",
+      "status": "VERIFIED",
+      "epoch": 1,
+      "gradient_batches": 13,
+      "layer_records": 52,
+      "saved_vectors": 208,
+      "actual_selected_matches_target": true,
+      "actual_selected_equals_original_plus_correction": true,
+      "maximum_relative_selected_target_L2": 5.131712209463703e-7,
+      "defaultW_correction_exactly_zero": true,
+      "body_correction_nonzero_all39": true,
+      "new_model_forwards": 0,
+      "head_fit_updates": 0,
+      "query_read": false
+    }
+  ],
+  "total_layer_records": 104,
+  "total_saved_vectors": 416,
+  "head_fit_updates": 0,
+  "new_model_forwards": 0,
+  "query_read": false
+}
