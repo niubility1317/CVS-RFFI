@@ -2023,5 +2023,37 @@
     "Formal received IQ clean+six practical fixed at168000 each; seven predictions complete before independent truth-last scoring per row.",
     "Current old E50 and all other healthy experiments unchanged."
   ],
-  "registered_at": "2026-10-15T04:36:18+00:00"
+  "registered_at": "2026-10-15T04:36:18+00:00",
+  "source_analyses": [
+    {
+      "id": "postfreeze_internal_L_branch_mechanism",
+      "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+      "release": "cvs_sigtime_branch_align_source_20261015_r01",
+      "launch_owner": "codex/root/branch-align-source-20261015",
+      "source_only": true,
+      "query_read": false,
+      "U_truth_read": false,
+      "V_forward_packets": 0,
+      "training_updates": 0,
+      "head_fit_updates": 0,
+      "epochs": 0,
+      "forward_packets_expected": 46800,
+      "checkpoint_sources": "Each of the same eight source-frozen final50 checkpoints and its own EMA; no initialization/weight updates",
+      "physical_ids_ref": "A0-s2026092701/source/inner_source_contract.json#/role_ids/L_dev; all eight exact same internal fold",
+      "selection": "Fixed A0 final50 clean-correct set, not per-treatment replacement; no checkpoint ranking",
+      "environment": "ordinary N607 account; CPU-only CUDA_VISIBLE_DEVICES empty; torch/OMP/MKL/OpenBLAS 2 threads",
+      "cwd": "PROJECT/releases/cvs_sigtime_branch_align_source_20261015_r01",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_branch50.mechanism",
+      "output_root": "PROJECT/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/source_branch_mechanism",
+      "local_publish": "E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_urban_branch50.source_publish --output E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/source_delivery_r01",
+      "readiness": "Parent eight rows trained and scored; each own source config/inner physical fold/epoch50/11100/provenance/default head verified; no target metric values used",
+      "stop_rule": "Owned source-role/checkpoint/nonfinite/gradient leakage/state change/output/launch error: preserve outputs and stop this analysis, no auto retry or mutation of healthy training",
+      "expected_artifacts": [
+        "source_branch_mechanism/progress.json",
+        "source_branch_mechanism/results.json",
+        "source_branch_mechanism/sample_branch_identity.jsonl.gz"
+      ],
+      "code_commit": "SEPARATE_ANALYSIS_RELEASE_COMMIT"
+    }
+  ]
 }

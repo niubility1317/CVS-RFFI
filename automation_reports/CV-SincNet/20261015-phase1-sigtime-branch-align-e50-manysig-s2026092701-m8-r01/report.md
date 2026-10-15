@@ -55,3 +55,23 @@ A0固定epoch5源定标已SOURCE_BRANCH_CALIBRATED，6.332468秒、3600前向、
 | A-ALL-s2026092701 | 2942835 | 4 | 0 |
 
 源系数完整原始记录在local_artifacts/cvs_branch_alignment_20261015/branch_calibration.json；不将物理/训练原始数据入Git。训练完成及真实aux梯度/全部七视图评分仍待执行，本状态不等于八组完成。
+
+
+## 真实辅助梯度与默认头联合更新
+
+八组活跃进程已独立回读。七种aux在epoch6以后真实进入梯度，W及三组融合gain的aux梯度均0；实际t1/t2、SIG_local、PA/reference投影、默认W与gain的最近完整epoch总AdamW更新norm均大于0（这是总训练更新，不是aux单独贡献）。native裁剪阈值5.0且optimizer_step_applied均1。一次静态eval源定标不使后续每层或全局比例恒定，不依据变化在线追调lambda。
+
+| row | 读取时完成epoch | 最近记录aux/CE全局norm比 | 默认W完整epoch更新norm |
+|---|---:|---:|---:|
+| A0-s2026092701 | 15 | 0.000000 | 0.046746 |
+| A-T-s2026092701 | 10 | 0.057482 | 0.055764 |
+| A-F-s2026092701 | 10 | 0.033741 | 0.055992 |
+| A-P-s2026092701 | 9 | 0.166300 | 0.063811 |
+| A-R-s2026092701 | 10 | 0.024329 | 0.057763 |
+| A-S-s2026092701 | 9 | 0.083100 | 0.064017 |
+| A-J-s2026092701 | 9 | 0.119800 | 0.063969 |
+| A-ALL-s2026092701 | 10 | 0.111629 | 0.055641 |
+
+各文件可能正在完成相邻epoch，表是读取时观测，完整逐步时间对应以最终step/epoch日志为准。原始局部记录local_artifacts/cvs_branch_alignment_20261015/active_gradient_evidence.json，最终全部50轮还需完整审计。前5轮无aux时源准确率已有小差异；FULL_FP32_POLICY.cudnn_deterministic=false，不能把相同初始化规则/seed宣称为bitwise同轨迹，也不能据首seed早期小差宣布分支最优。
+
+冻结后源分支解释工具已具备，[预登记](source_branch_mechanism_plan.md)对应同row零更新分析；4项实际模型检查、compile/--help和一次独立P0/P1 PASS。全部八组完成训练/评分后才独立发布CPU release；当前没有该阶段结果或三seed结论。训练release继续使用152d8921c，不受后分析代码提交影响。

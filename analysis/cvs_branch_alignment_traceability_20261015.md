@@ -10,7 +10,7 @@
 
 | ID | 来源 | 验收要求 | 目标 | 状态 | 证据/限制 |
 |---|---|---|---|---|---|
-| B01 | 一/二 | 只对齐同分支跨视图，全部网络与默认头照常CE联合训练 | branches.py/training | pending | 不冻结未选分支，不要求不同分支相等 |
+| B01 | 一/二 | 只对齐同分支跨视图，全部网络与默认头照常CE联合训练 | branches.py/training | verified | 不冻结未选分支，不要求不同分支相等 |
 | B02 | 二T | 捕获进入实际fuse前的t_emb，保持计算图 | branches.py | verified | 不能假定t_proj后无drop/mask |
 | B03 | 二F | 捕获完整f_emb，含启用的freq_stats_proj增量 | branches.py | verified | 以实际fuse输入验证 |
 | B04 | 二P | 捕获pa_norm实际输出，含pa_local/pa_delta处理 | branches.py | verified | 不用pa_proj近似 |
@@ -19,7 +19,7 @@
 | B07 | 三 | 同一方向损失、eps、ownEMA clean eval/stopgrad和共用L资格 | objective.py | verified | 无urban学生置信要求，不改原U监督 |
 | B08 | 三.4/八 | 各分支gain前；J用原数值/stopgrad gain；aux W=0/CE W正常 | objective.py/checks.py | verified | 分支本身不能detach |
 | B09 | 四 | 一次同预热checkpoint全特征参数全局梯度校准，W排除、未接收梯度按0 | calibrate.py | verified | median范数的比，非先前五组比值中位数 |
-| B10 | 四 | 小梯度/非有限拒绝，不无限放大；记录每层梯度和实际更新/裁剪 | calibrate.py/observer.py | pending | 有界静态lambda，不在线均衡 |
+| B10 | 四 | 小梯度/非有限拒绝，不无限放大；记录每层梯度和实际更新/裁剪 | calibrate.py/observer.py | verified | 有界静态lambda，不在线均衡 |
 | B11 | 四.3 | ALL先按同规则分支定标再校准组合总强度，omega和为1 | objective.py/calibrate.py | verified | 不直接相加五个单项系数 |
 | B12 | 五 | 同一冻结模型clean替换单分支，真实融合/后处理/default头重算 | replace.py | verified | 操作性诊断，不是训练上界/可得clean输入 |
 | B13 | 五 | T只换fuse输入T；S仍urban；F换完整F，rho/其他分支保留 | replace.py/checks.py | verified | 用实际其他张量/最终输出断言 |
@@ -41,4 +41,8 @@
 
 八组小试已以commit152d8921c903fc6d5f782c199b075d0837840ece发布并RUNNING；A0首epoch/实际inner物理ID5580/720、默认模型参数863730和aux零边界已VERIFIED。其余位置仍待一次源定标，B09/B11和完整B14/B15仍pending，不提前标已完成。
 
+下一组落实B20/B21：独立冻结后L_dev机制分析，全部八组训练/评分完成才可发布。使用固定A0 final50 clean正确集合；真实T/F/P/R/S/J同样本/ownEMA方向、全720开发样本的最近错误TX方向（不拟合头）、默认头修复/新错与margin、branch variance/norm和P/R/S的实际gain贡献幅度。梯度分析仅使用eval源mid/low、autograd.grad，不更新参数/EMA/optimizer、不累积.grad；T/S夹角另限定两者均有非零梯度的共享参数，并记录范围，不能用包含独立投影的全局夹角冒充共享层结论。预计46800前向=720固定A0集合+8×(720student clean+720ownEMA clean+6×720urban)。不读取U/V/query或目标成绩，不用分析结果改正在运行的release。当前只有计划和待实施接口，不作为B20已verified。
+
 一次真实源epoch5全局校准已通过：3600前向/6.332秒/0更新，actual theta195041/71、W排除、student/EMA/state/已有grad不变，ALL总强度另定标，全部lambda有界无裁切。八组进程CWD/argv/GPU均独立VERIFIED，网络和source实际内部ID保持。B07/B09/B11/B16/B22现有真实源/结构证据；B01/B10/B14/B15/B18/B20/B21仍待各aux实际启用、完整训练/自动测试与多seed。当前verified14/pending7/deferred1，非完整设计parity。
+
+B01/B10补充真实源执行证据：所有七种aux在epoch6后有实际梯度，W/三gain aux边界为0，原默认W及五组特征和gain完整epoch更新非零，native clip5/step_applied1。静态校准后的实际比例随学习变化（不是全程强度相等），完整50轮审计仍归B21。B20零更新源机制工具4项PASS/一次P0-P1 PASS，已登记但等待八组冻结，保留pending。当前verified16/pending5/deferred1；未完成B14/B15/B18/B20/B21与正式三seed/稀疏组合，不能称strict full design parity。
