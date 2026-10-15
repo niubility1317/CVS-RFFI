@@ -39,3 +39,5 @@
 ![全部已记录源轮次，目标性能未知](source_curve_prefix_e29_28.png)
 
 聚合数据为source_curve_prefix_e29_28.json；plot_source_curves.py可从该文件独立重绘，不读取数据集、权重或目标指标。
+
+L/U阶段切换实证：两臂完整epoch33各222步均U曝光0；epoch34各222步读取56700个U，接受909/910个，U真值标记全为0。实际33+17、λU=.16、λentropy=.01、自身EMA=.999与原设置一致，从零初始化且checkpoint_sources为空。熵没有独立日志，total−L−.16U只记录为推算残差，不冒充直接熵测量。第33轮另104层/416向量复算VERIFIED，连同1/17轮总312层/1248向量；默认W校正严格0，向量公式最大相对L2误差2.14e-6，满足原atol1e-6/rtol1e-5。新适配的唯一直接P0/P1检查PASS，未重复核心审查/检查；source决定仍PENDING，未发布02/03。

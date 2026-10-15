@@ -1,0 +1,180 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "arm": "NORM_CONTROL",
+      "complete_source_epochs": 35,
+      "settings": {
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "ema_decay": 0.999,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_domain_gate": false
+      },
+      "settings_match_original_recipe": true,
+      "initialization_scratch_only": true,
+      "checkpoint_sources": [],
+      "teacher_origin": "own scratch student only",
+      "observed_transition": [
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packet_observations": 0,
+          "U_selected_observations": 0,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.25709642859192583,
+          "mean_native_U_CE": 0,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packet_observations": 56700,
+          "U_selected_observations": 909,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.2226797288266925,
+          "mean_native_U_CE": 0.012061411496524507,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0.001038662169950905,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        }
+      ],
+      "transition_complete": true,
+      "source_only": true,
+      "target_metrics_read": false,
+      "head_fit_updates": 0
+    },
+    {
+      "arm": "RX_CAGRAD",
+      "complete_source_epochs": 35,
+      "settings": {
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "ema_decay": 0.999,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "pseudo_domain_gate": false
+      },
+      "settings_match_original_recipe": true,
+      "initialization_scratch_only": true,
+      "checkpoint_sources": [],
+      "teacher_origin": "own scratch student only",
+      "observed_transition": [
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packet_observations": 0,
+          "U_selected_observations": 0,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.25371668387103724,
+          "mean_native_U_CE": 0,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packet_observations": 56700,
+          "U_selected_observations": 910,
+          "U_truth_available_any": false,
+          "mean_L_CE": 0.22058793026450518,
+          "mean_native_U_CE": 0.013323018114582787,
+          "entropy_separate_metric_available": false,
+          "native_total_minus_L_and_weighted_U_mean": 0.001090850678864061,
+          "entropy_from_residual_is_inferred_not_measured": true,
+          "actual_U_metric_keys": [
+            "train/loss_unlabeled",
+            "train/pseudo_selected",
+            "train/pseudo_total",
+            "train/pseudo_truth_available"
+          ],
+          "skipped_nonfinite_loss_steps": 0,
+          "skipped_nonfinite_grad_steps": 0
+        }
+      ],
+      "transition_complete": true,
+      "source_only": true,
+      "target_metrics_read": false,
+      "head_fit_updates": 0
+    }
+  ],
+  "source_only": true,
+  "target_metrics_read": false,
+  "scope": "Only full222step sourceepochs33and34 perarm; no targetIQ/truth or new forwards",
+  "entropy_note": "Original entropy is not separately logged. Total-L-.16U is an inferred residual, not an independent entropy measurement.",
+  "gradient_epoch33_recount": [
+    {
+      "arm": "NORM_CONTROL",
+      "status": "VERIFIED",
+      "epoch": 33,
+      "gradient_batches": 13,
+      "layer_records": 52,
+      "saved_vectors": 208,
+      "actual_selected_matches_target": true,
+      "actual_selected_equals_original_plus_correction": true,
+      "maximum_relative_selected_target_L2": 0.0000016842616302062445,
+      "defaultW_correction_exactly_zero": true,
+      "body_correction_nonzero_all39": true,
+      "new_model_forwards": 0,
+      "head_fit_updates": 0,
+      "query_read": false
+    },
+    {
+      "arm": "RX_CAGRAD",
+      "status": "VERIFIED",
+      "epoch": 33,
+      "gradient_batches": 13,
+      "layer_records": 52,
+      "saved_vectors": 208,
+      "actual_selected_matches_target": true,
+      "actual_selected_equals_original_plus_correction": true,
+      "maximum_relative_selected_target_L2": 0.000002133238662920816,
+      "defaultW_correction_exactly_zero": true,
+      "body_correction_nonzero_all39": true,
+      "new_model_forwards": 0,
+      "head_fit_updates": 0,
+      "query_read": false
+    }
+  ],
+  "all_completed_sampled_gradient_epochs": [
+    1,
+    17,
+    33
+  ],
+  "combined_sampled_layer_records": 312,
+  "combined_saved_vectors": 1248,
+  "source_qualification": null,
+  "goal84_tested": false
+}
