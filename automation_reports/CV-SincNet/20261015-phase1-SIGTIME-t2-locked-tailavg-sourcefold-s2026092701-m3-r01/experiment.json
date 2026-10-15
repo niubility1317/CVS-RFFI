@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "User supplied 2026-10-15 report prioritizes temporal shared dropout and same-trajectory averaging; active Phase1 training-mechanism goal; no new loss or target-driven selection.",
   "code": {
-    "commit": "release_commit.txt (actual Git HEAD at launch)",
+    "commit": "a4a6dd6fc79a8073113ac9a5385e75d858d325fc",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account/CVS-RFFI Python; current new-package/shared-source overlay on immutable R02 runtime",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01",
@@ -365,5 +365,18 @@
     "The previous projected-U source candidate remains closed at0/4; this independent report-driven dropout hypothesis is not a relaxation or retry of its thresholds.",
     "REJECTED_EXTRA_GATE: generic design approval rituals/report-only duplicate reviews; current user authorization and exclusive CVS workflow take precedence."
   ],
-  "registered_at": "2026-10-15T03:17:26+00:00"
+  "registered_at": "2026-10-15T03:17:26+00:00",
+  "result": {
+    "status": "RUNNING",
+    "evidence_ref": "launch_evidence.json",
+    "ordered_modes": [
+      "ELEMENT",
+      "NONE",
+      "LOCKED"
+    ],
+    "rows_complete": 0,
+    "target_access": false,
+    "U_truth_read": false,
+    "goal84_completed": false
+  }
 }

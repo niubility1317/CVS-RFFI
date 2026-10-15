@@ -1,6 +1,6 @@
 # SIG_TIME 时间共享随机失活与同轨迹平均
 
-状态 PLANNED。用户2026-10-15新增报告指定下一批优先研究同轨迹平均和t2时间共享失活，R-Drop第三。本轮只实施前两项，保持现有SIG_TIME+CENTER25K、默认cosine头联合训练和原hidden-U任务。84%仍是正式clean三seed目标；该真实源留出训练不替代正式结果。
+状态 **RUNNING / 启动 VERIFIED**。下文保留预登记。用户2026-10-15新增报告指定下一批优先研究同轨迹平均和t2时间共享失活，R-Drop第三。本轮只实施前两项，保持现有SIG_TIME+CENTER25K、默认cosine头联合训练和原hidden-U任务。84%仍是正式clean三seed目标；该真实源留出训练不替代正式结果。
 
 当前代码确认真实位置为`id_backbone.encoder.core.id_backbone.t2.drop`，原为逐元素`Dropout(0.10)`，t2输出同时进入原主路径和签名。签名取点/6维1×1投影/tanh/四窗口/112→160路径全部保持。局部算子假设：时间共享掩码不向恒定通道制造随机时间跳变；投影/tanh/其他dropout存在，不能推出最终签名无偏或DG必然提高。新意候选在CVS时序签名与训练噪声的匹配关系，通道dropout本身已有[PyTorch2.1实现](https://docs.pytorch.org/docs/2.1/generated/torch.nn.Dropout1d.html)，时间掩码在[Gal与Ghahramani](https://arxiv.org/abs/1512.05287)已有先例，不称全局首创。
 
@@ -19,3 +19,5 @@
 已完成工程检查：9项掩码/完整头增益平均/跨轨迹和buffer负例PASS；原188参数模型CPU/CUDA的实际t2类型、mask行为、推理逐位同值、原头/t2/签名梯度及200state/平均完整性PASS，零真实IQ/CP读取。它们不证明训练收益。本候选唯一独立下一run P0/P1审查PASS；当前真实代码提交后按预登记直接发布，不增加独立设计审批。
 
 四tail callback/四次真实合成优化步的CUDA完整导出集成PASS；独立FP64 stack与所有188平均参数逐张量相等，12buffer保持，epoch20/native final权重一致检查和默认头FINAL/EMA/AVG接续读出通过。fixture使用合成IQ与自建合成checkpoint，非真实source训练，预算counter/健康值为显式fixture，不作科学结果。
+
+启动独立确认：执行 `a4a6dd6fc79a8073113ac9a5385e75d858d325fc`，ordinary GPU0所属PID/CWD/命令/GPU成员一致，所有owner总进程1/3，真实own-scratch checkpoint no-query smoke PASS、日志增长。首row ELEMENT的真实t2元件p=.1，LS0/13L+7U/ownEMA/无L或星地增强/四RX角色及loader排除条件一致。该进程顺序完成三row，尚未产出完整机制收益或84%结果。
