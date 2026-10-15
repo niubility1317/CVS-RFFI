@@ -1,0 +1,252 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "arm": "B",
+      "row_id": "B-s2026092701",
+      "settings": {
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "ema_decay": 0.999,
+        "a1_ema_versioned_updates": true,
+        "pseudo_temporal_gate": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "pseudo_temporal_min_streak": null,
+        "pseudo_strong_agreement": true,
+        "pseudo_domain_gate": false,
+        "lr_schedule": null,
+        "use_concat_sat_channel_aug": false
+      },
+      "epochs": [
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packets": 0,
+          "U_accepted": 0,
+          "U_truth_available": 0,
+          "skipped_nonfinite": 0,
+          "L_CE_mean": 0.23042207959670205
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packets": 56700,
+          "U_accepted": 896,
+          "U_truth_available": 0,
+          "skipped_nonfinite": 0,
+          "L_CE_mean": 0.2186284444152235
+        }
+      ],
+      "fixed_configuration": {
+        "lr_schedule": "cosine",
+        "temporal_min_streak": 2,
+        "declared_source": "unchanged registered configuration; native args absent fields remain null",
+        "extra_target_feedback": false
+      }
+    },
+    {
+      "arm": "C",
+      "row_id": "C-s2026092701",
+      "settings": {
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "ema_decay": 0.999,
+        "a1_ema_versioned_updates": true,
+        "pseudo_temporal_gate": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "pseudo_temporal_min_streak": null,
+        "pseudo_strong_agreement": true,
+        "pseudo_domain_gate": false,
+        "lr_schedule": null,
+        "use_concat_sat_channel_aug": false
+      },
+      "epochs": [
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packets": 0,
+          "U_accepted": 0,
+          "U_truth_available": 0,
+          "skipped_nonfinite": 0,
+          "L_CE_mean": 0.25614762312925615
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packets": 56700,
+          "U_accepted": 879,
+          "U_truth_available": 0,
+          "skipped_nonfinite": 0,
+          "L_CE_mean": 0.24128124671610626
+        }
+      ],
+      "fixed_configuration": {
+        "lr_schedule": "cosine",
+        "temporal_min_streak": 2,
+        "declared_source": "unchanged registered configuration; native args absent fields remain null",
+        "extra_target_feedback": false
+      }
+    },
+    {
+      "arm": "D",
+      "row_id": "D-s2026092701",
+      "settings": {
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "ema_decay": 0.999,
+        "a1_ema_versioned_updates": true,
+        "pseudo_temporal_gate": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "pseudo_temporal_min_streak": null,
+        "pseudo_strong_agreement": true,
+        "pseudo_domain_gate": false,
+        "lr_schedule": null,
+        "use_concat_sat_channel_aug": false
+      },
+      "epochs": [
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packets": 0,
+          "U_accepted": 0,
+          "U_truth_available": 0,
+          "skipped_nonfinite": 0,
+          "L_CE_mean": 0.25422438542853604
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packets": 56700,
+          "U_accepted": 878,
+          "U_truth_available": 0,
+          "skipped_nonfinite": 0,
+          "L_CE_mean": 0.23953200520964357
+        }
+      ],
+      "fixed_configuration": {
+        "lr_schedule": "cosine",
+        "temporal_min_streak": 2,
+        "declared_source": "unchanged registered configuration; native args absent fields remain null",
+        "extra_target_feedback": false
+      }
+    },
+    {
+      "arm": "E",
+      "row_id": "E-s2026092701",
+      "settings": {
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "ema_decay": 0.999,
+        "a1_ema_versioned_updates": true,
+        "pseudo_temporal_gate": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "pseudo_temporal_min_streak": null,
+        "pseudo_strong_agreement": true,
+        "pseudo_domain_gate": false,
+        "lr_schedule": null,
+        "use_concat_sat_channel_aug": false
+      },
+      "epochs": [
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packets": 0,
+          "U_accepted": 0,
+          "U_truth_available": 0,
+          "skipped_nonfinite": 0,
+          "L_CE_mean": 0.25496664062679353
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packets": 56700,
+          "U_accepted": 876,
+          "U_truth_available": 0,
+          "skipped_nonfinite": 0,
+          "L_CE_mean": 0.24040469466834455
+        }
+      ],
+      "fixed_configuration": {
+        "lr_schedule": "cosine",
+        "temporal_min_streak": 2,
+        "declared_source": "unchanged registered configuration; native args absent fields remain null",
+        "extra_target_feedback": false
+      }
+    },
+    {
+      "arm": "F",
+      "row_id": "F-s2026092701",
+      "settings": {
+        "epochs": 50,
+        "label_epochs": 33,
+        "pseudo_epochs": 17,
+        "lambda_u": 0.16,
+        "lambda_ent": 0.01,
+        "use_unlabeled": true,
+        "use_ema_teacher": true,
+        "ema_decay": 0.999,
+        "a1_ema_versioned_updates": true,
+        "pseudo_temporal_gate": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "pseudo_temporal_min_streak": null,
+        "pseudo_strong_agreement": true,
+        "pseudo_domain_gate": false,
+        "lr_schedule": null,
+        "use_concat_sat_channel_aug": false
+      },
+      "epochs": [
+        {
+          "epoch": 33,
+          "steps": 222,
+          "U_packets": 0,
+          "U_accepted": 0,
+          "U_truth_available": 0,
+          "skipped_nonfinite": 0,
+          "L_CE_mean": 0.2277274124727056
+        },
+        {
+          "epoch": 34,
+          "steps": 222,
+          "U_packets": 56700,
+          "U_accepted": 896,
+          "U_truth_available": 0,
+          "skipped_nonfinite": 0,
+          "L_CE_mean": 0.21622845976873561
+        }
+      ],
+      "fixed_configuration": {
+        "lr_schedule": "cosine",
+        "temporal_min_streak": 2,
+        "declared_source": "unchanged registered configuration; native args absent fields remain null",
+        "extra_target_feedback": false
+      }
+    }
+  ],
+  "native_step_records_parsed": 2220,
+  "source_only": true,
+  "head_fit_updates": 0,
+  "query_read": false,
+  "U_truth_read": false,
+  "extra_model_forwards": 0,
+  "limitation": "Actual source step scalars and settings; entropy coefficient only, no separately observed entropy loss. Not target performance evidence."
+}
