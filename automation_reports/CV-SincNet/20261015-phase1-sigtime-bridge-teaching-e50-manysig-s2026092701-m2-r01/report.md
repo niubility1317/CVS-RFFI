@@ -29,7 +29,7 @@ full与独立HQ使用相同源IQ、传播实现、RX/day/eq硬件session、接�
 
 SIG局部项使用实际同H、同时间对应的urban学生raw112与HQ ownEMA raw112。每窗increment6／feature-area15／time-area6，排除常量dt；坐标差先按源RMS缩放，smooth-L1/(1+smooth-L1)有界，组内均值后3组等权。权重是full物理q=sigmoid((added-noise SNR−5)/5)×clean EMA正确性×urban指示，仅作用额外项。梯度须进入原t2和local_projection；local项对末端输出投影、W和gain无梯度，原CE/U仍联合更新它们。
 
-各模型自己的实际epoch5/1110个L步时一次源校准，绝不抄final50 HQ统计：同一L_dev720，mid/low各一次，teacher clean/HQ2880＋student full/HQ2880=5760前向。HQ EMA组RMS下限1e-3；joint/local各按全局195041特征参数梯度对0.5 satellite CE的范数中位数比目标.1确定系数，界1e-4至10，超界拒绝而非静默放大。两行都计算两项校准以匹配成本，local系数只在SIG行使用。校准0 optimizer/EMA/head-fit更新，保持模式、state_dict、pending .grad和RNG。成功真实校准尚待实际第5轮，不由合成单测保证。
+各模型自己的实际epoch5/1110个L步时一次源校准，绝不抄final50 HQ统计：同一L_dev720，mid/low各一次，teacher clean/HQ2880＋student full/HQ2880=5760前向。HQ EMA组RMS下限1e-3；joint/local各按全局195041特征参数梯度对0.5 satellite CE的范数中位数比目标.1确定系数，界1e-4至10，超界拒绝而非静默放大。两行都计算两项校准以匹配成本，local系数只在SIG行使用。校准0 optimizer/EMA/head-fit更新，保持模式、state_dict、pending .grad和RNG。真实第5轮校准现已两行通过，实际系数及状态证据见末节；合成负测本身不证明正路径。
 
 前5轮transfer关闭，两行仍保留全部五个有标签视图前向以匹配已固定预算，不声称预热额外teacher前向增加监督。native labeled wrapper只调用原clean/full一次，额外HQ identity-only前向不增加L step counter；own EMA没有被额外前向更新。两行同规则分别校准；FP32/TF32关闭，CUDA非确定性仍可能使同seed前5轮数值略异，不宣称逐bit同轨迹。
 
@@ -55,10 +55,21 @@ N607普通账号现有SSH路线；CPU2/loader0、单GPU worker、所有owner含p
 
 4项pipeline检查PASS.112s：源双增益不能互相补偿、原7视图预测完整/非法logits时truth关闭、输出不覆盖、未验证机制不加载query模型。另物理L索引拒绝＋修改后的真实native两行图定向PASS6.642s。`python -m compileall -q experiments/cvs_urban_bridge50`通过。检查日志在local_artifacts/cvs_coupled_bridge_20261015的bridge50_*文件；新登记辅助脚本最初缺少工作树import路径，修正后生成成功，未触及远端或实验输出。
 
-一次独立P0/P1审查PASS：未发现直接使下一实跑错误、越权、破坏、无法启动或无法产生合法预测的问题。已核对训练/校准接线、默认头梯度、同折角色、预算、七视图truth-last、共享容量、输出保护及登记/入口。发布、单archive传输比较、远端compile、真实CP无query烟测和独立PID/CWD/argv/GPU/训练日志增长均已VERIFIED；真实epoch5正校准、E50、七视图结果和图仍待运行。不能把登记结构VALID当许可或科学有效证明。最高风险仍是HQ teacher误判、局部相似增强却无TX区分改善；保留负结果。追踪表analysis/cvs_bridge_teaching_e50_traceability_20261015.md继续区分已验证、运行待证和延期。
+一次独立P0/P1审查PASS：未发现直接使下一实跑错误、越权、破坏、无法启动或无法产生合法预测的问题。已核对训练/校准接线、默认头梯度、同折角色、预算、七视图truth-last、共享容量、输出保护及登记/入口。发布、单archive传输比较、远端compile、真实CP无query烟测和独立PID/CWD/argv/GPU/训练日志增长均已VERIFIED；真实epoch5正校准现已两行通过；E50、七视图结果和图仍待运行。不能把登记结构VALID当许可或科学有效证明。最高风险仍是HQ teacher误判、局部相似增强却无TX区分改善；保留负结果。追踪表analysis/cvs_bridge_teaching_e50_traceability_20261015.md继续区分已验证、运行待证和延期。
 
 ## 实际发布读回
 
 代码commit `12bd0be93bbf295ee1c8e75156ed5f1c3855cff7` 已push，独立remote branch OID与local HEAD相同。一次不可覆盖release/run已发布，archive传输比较VERIFIED、远端compile PASS、普通账号preflight VERIFIED。dispatcher PID3151548；BRIDGE_CE PID3151567、BRIDGE_SIG PID3151644，实际均GPU1。两worker工作目录/argv与提交记录一致，resolved_config和实际channel_execution已落盘。当前GPU1两个owned进程，不停止或迁移其他健康任务。
 
-首步实际A0 checkpoint/default头CPU两包smoke PASS、query_read=false，仅作来源及可执行核验，两行仍从零。两次独立读回之间训练step_metrics和channel_training流已持续写入；早期worker文本日志只在epoch结束打印，尚无完整epoch，不将暂时不增长的文本日志当训练停滞。证据为local_artifacts/cvs_bridge_teaching_e50_20261015/readback_initial.json、readback_training.json与delivery_r01/submission.json。source/calibration/正式测试成绩仍未产生。
+首步实际A0 checkpoint/default头CPU两包smoke PASS、query_read=false，仅作来源及可执行核验，两行仍从零。两次独立读回之间训练step_metrics和channel_training流已持续写入；早期worker文本日志只在epoch结束打印，尚无完整epoch，不将暂时不增长的文本日志当训练停滞。证据为local_artifacts/cvs_bridge_teaching_e50_20261015/readback_initial.json、readback_training.json与delivery_r01/submission.json。该初次读回时source/calibration/正式测试成绩尚未产生；随后epoch5校准通过见下。
+
+## 实际 epoch5 源校准
+
+两行均完成自己的实际1110个L步/epoch5校准，状态SOURCE_BRIDGE_CALIBRATED；每行5760个L_dev前向，optimizer/EMA/head-fit更新0，学生/EMA状态及pending gradients保持。以下系数由各自源预热得到，均未触界限或裁剪：
+
+|行|joint系数|local系数|校准秒数|
+|---|---:|---:|---:|
+|BRIDGE_CE-s2026092701|0.5695317033643775|0.7878418514991354|8.148001594934613|
+|BRIDGE_SIG-s2026092701|0.609200294207905|0.809337364466222|6.805786910932511|
+
+BRIDGE_CE计算local系数只用于匹配校准成本，训练不使用local项。两行采用同一校准规则、目标梯度比0.1和界1e-4至10；CUDA非确定性导致实际预热轨迹/系数不同，不宣称数值系数相同或逐bit匹配。第6轮起各自既定任务已可执行，真实完整预算及性能仍待E50冻结/七视图结果。证据readback_calibration_live.json；没有调参、重新校准或增加训练预算。

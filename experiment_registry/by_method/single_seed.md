@@ -7,6 +7,7 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |固定 SIG_TIME：HQ 监督与局部 SIG 教学 E50 预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01/report.md)|
+|HQ 教学：三个固定模型的源域冻结归因预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01/report.md)|
 |固定 SIG_TIME：语义身份排序 E50 单种子完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/report.md)|
 |固定 SIG_TIME：双向身份排序 E50 预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/report.md)|
 |修复后首批5个E200模型：立即执行clean及六星地场景独立测试|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-evaluation-reference-repair-completed5-manysig-m5-r01/report.md)|

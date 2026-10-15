@@ -1,0 +1,783 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01",
+  "group_id": "phase1-sigtime-HQ-teaching-frozen-mechanism",
+  "display_name": "固定 SIG_TIME：HQ 教学三模型源域冻结归因",
+  "description": "在同一L_dev720、同传播/接收状态下，对预定普通拼接、HQ监督、HQ+SIG教学三个final50默认头作零更新分析。固定普通拼接clean正确集合，分别看错误修复/新增、分类间隔、真实局部组与融合贡献。没有目标访问或另训诊断头。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "sigtime",
+    "coupled_bridge",
+    "hq_teaching",
+    "source_only",
+    "frozen_mechanism",
+    "single_seed",
+    "inner_source_dev"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01",
+    "20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active Phase1 goal explicitly requests frozen source mechanism/error/margin/branch/gate attribution and actual figures. Source-only follow-up to already authorized scratch E50 HQ comparison; no target access, new training or teacher bank.",
+  "code": {
+    "commit": "CURRENT_RELEASE_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; nativeLinuxN607; Windowsnative localvalidation",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_bridge_teaching_source_20261015_r01"
+  },
+  "data": {
+    "dataset": "ManySig.pkl",
+    "version": "existing outer split392005; L-only inner fold2026101503 (8 per TX/RX/day cell); V health-only",
+    "representation": "equalized=1 center256 native RMS; added residualpost_syncnoEQ25MHz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source/inner_source_contract.json#/role_ids/L_dev",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/manifest.json#/classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/manifest.json#/classes",
+    "roles": {
+      "L_s": 6300,
+      "L_train": 5580,
+      "L_dev": 720,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "train_ratio": 0.7,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source/inner_source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": "Original adv3b02_xuc leo_practical residual/post_sync EQfalse G1; coupled full/HQ frozen actions; six source scenes only; source stream2026101509; formal IQ never opened."
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen held-out source attribution, not formal target improvement, unique-cause proof or cross-seed replication."
+  },
+  "checkpoint": {
+    "initialization": "frozen_read_only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01/BRIDGE_CE-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01/BRIDGE_SIG-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "design.eligible_rows + original branch/bridge own_model strict source contract, actual inner physical fold, scratch lineage and fixed final50; new rows must have VERIFIED five-view training and own epoch5 calibration.",
+    "provenance_verdict": "Nominal A0 already source-frozen; two new rows still training at preregistration. No loading or launching until real final50/11100 freezes and matching fold exist. Their own EMAs are loaded strictly from their own checkpoints. Zero new training.",
+    "selection_rule": "All three predetermined roles included; no target-based ranking, checkpoint selection or selective rerun."
+  },
+  "execution": {
+    "host": "N607",
+    "gpu": "none; CUDA_VISIBLE_DEVICES empty; CPU2",
+    "gpu_policy": "no GPU allocation",
+    "launch_owner": "codex/root/bridge-teaching-source-20261015",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_bridge_teaching_source_20261015_r01",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_bridge_teaching_mechanism_20261015",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_bridge_mechanism.probe",
+    "stop_rule": "Only owned source diagnostic exits on final50/role/physical-fold/frozen-operator/nonfinite/state/budget/output or technical failure. Preserve artifacts, no automatic retry, never stop or modify healthy training/foreign tasks."
+  },
+  "expected_artifacts": [
+    "source_smoke.json",
+    "resolved_config.json",
+    "sample_identity.jsonl.gz",
+    "progress.json",
+    "results.json",
+    "complete.json",
+    "release/preflight.json",
+    "release/submit.json",
+    "release/dispatcher.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "default-head accuracy",
+      "fixed NOMINAL clean-correct retention",
+      "repairs",
+      "new errors",
+      "margin/30",
+      "EMA head accuracy/margin",
+      "bounded raw112 group error using common scales",
+      "own-scale group error",
+      "paired/wrong-TX raw-group geometry",
+      "existing branch variance/identity",
+      "actual gain contribution",
+      "physical frozen-operator checks",
+      "forward packets",
+      "wall seconds"
+    ],
+    "dimensions": [
+      "model seed2026092701",
+      "NOMINAL/BRIDGE_CE/BRIDGE_SIG",
+      "six source practical scenes",
+      "full/independent HQ",
+      "source RX/day/TX",
+      "LOS/PARTIAL/BLOCKED",
+      "lock",
+      "full added-noise SNR bin"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01/sample_identity.jsonl.gz (source only)",
+    "scorer_ref": "Frozen source labels/default heads within probe; no query scorer or truth file",
+    "selection_rule": "No model selection or expansion from this descriptive post-freeze analysis; target scores cannot steer parameters or reruns."
+  },
+  "rows": [
+    {
+      "row_id": "source-bridge-three-model-s2026092701",
+      "method": "frozen-HQ-teaching-attribution",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/cvs_urban_bridge_mechanism/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 2026101509,
+        "support": null,
+        "evaluation": 2026101509,
+        "receiver": 2026092701
+      },
+      "seed_notes": "One frozen model seed, exact inner fold2026101503. New source-only diagnostic stream2026101509 is distinct from train2026101401, validation2026101402, own-cal2026101508, prior HQ1504 and formal fixed arrays. No support/K/Phase2.",
+      "k": null,
+      "scenario": "practical_high,practical_mid,practical_low_suburban,practical_high_urban,practical_mid_urban,practical_low_urban",
+      "optimizer": "none; frozen zero-update",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "56882 forwards=2 real-CP smoke +720 fixed NOMINAL clean set +3*(1440 clean student/EMA +6*2880 full/HQ student/EMA). 0 optimizer/EMA/head-fit updates or added epochs; each original E50/11100 and measured seconds separately retained.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_bridge_teaching_source_20261015_r01/dispatcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_bridge_mechanism.probe",
+      "expected_artifacts": [
+        "source_smoke.json",
+        "resolved_config.json",
+        "sample_identity.jsonl.gz",
+        "progress.json",
+        "results.json",
+        "complete.json",
+        "release/preflight.json",
+        "release/submit.json",
+        "release/dispatcher.log"
+      ],
+      "config": {
+        "run_id": "20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01",
+        "owner": "codex/root/bridge-teaching-source-20261015",
+        "source_only": true,
+        "query_read": false,
+        "source_role": "L_dev720",
+        "configs": {
+          "NOMINAL": {
+            "schema": "sigtime_branch_alignment_e50_v1",
+            "run_id": "20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01",
+            "arm": "A0",
+            "model_seed": 2026092701,
+            "row_id": "A0-s2026092701",
+            "variant": "reference_response",
+            "method": "cvs_urban_branch50",
+            "launch_owner": "codex/root/branch-align-e50-20261015",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "initialization": "scratch",
+            "baseline_reuse": false,
+            "parent_checkpoint": null,
+            "checkpoint_sources": [],
+            "parent_training_epochs": 0,
+            "incremental_epochs": 50,
+            "total_epochs": 50,
+            "epochs": 50,
+            "label_epochs": 33,
+            "pseudo_epochs": 17,
+            "steps_per_epoch": 222,
+            "updates": 11100,
+            "batch_size": 128,
+            "unlabeled_batch_size": 256,
+            "source_roles": {
+              "L_s": 6300,
+              "L_train": 5580,
+              "L_dev": 720,
+              "U_s": 56700,
+              "V": 27000
+            },
+            "target_access": false,
+            "network": "single SIG_TIME/t2 postDropout/four windows/112 descriptor/joint160",
+            "feature_parameters": 195041,
+            "default_head": "ResidualPhysicalHead cosine6x160 scale30",
+            "classifier_changed": false,
+            "separate_head_fit": false,
+            "baseline_recipe": "old gates+own EMA+cos; label33+pseudo17; L CE throughout",
+            "optimizer": {
+              "name": "AdamW",
+              "peak_lr": 0.0002,
+              "min_lr": 1e-06,
+              "weight_decay": 0.0001
+            },
+            "label_smoothing": 0.01,
+            "checkpoint_selection": "final_only",
+            "paired": false,
+            "ordinary_concat": true,
+            "train_scenes": [
+              "practical_low_suburban",
+              "practical_mid_urban",
+              "practical_low_urban"
+            ],
+            "curriculum": false,
+            "margin": false,
+            "urban_ssl": false,
+            "channel": {
+              "fs_hz": 25000000.0,
+              "processing_route": "residual",
+              "mode": "post_sync",
+              "receiver_location": "satellite",
+              "equalization_enabled": false,
+              "reference_snr_db": 30.0,
+              "boundary": "reflect",
+              "quality_adaptation_enabled": true,
+              "phase_tracking_enabled": true,
+              "iq_compensation_enabled": true,
+              "normalization": "source native RMS then simulator unit RMS; no output RMS normalization"
+            },
+            "seeds": {
+              "model": 2026092701,
+              "split": 392005,
+              "data": 392005,
+              "augmentation": 2026101401,
+              "support": null,
+              "evaluation": 392005,
+              "receiver": 2026092701
+            },
+            "curriculum_plan": {
+              "eta_max": 0.5,
+              "increment": 0.05,
+              "warmup_epochs": 3,
+              "quality_db": [
+                3.0,
+                18.0
+              ],
+              "hard_scenes": [
+                "practical_mid_urban",
+                "practical_low_urban"
+              ],
+              "maximum_proposals": 8,
+              "nominal_floor": 0.5,
+              "selection": "channel metadata only; no TX or loss ranking",
+              "advancement": "disabled: eta=0 nominal three-scene sampling throughout"
+            },
+            "margin_plan": {
+              "rho": 0.5,
+              "m_max": 1.0,
+              "coefficient": 0.0,
+              "logit_scale": 30.0,
+              "quality_weight": "sigmoid((signal_to_added_noise_db-5)/5)",
+              "clean_correct_only": true,
+              "stop_gradient_reference": true,
+              "extra_consistency_losses": []
+            },
+            "ssl_plan": {
+              "coefficient": 0.16,
+              "provider": "existing own EMA clean probability",
+              "acceptance": "disabled",
+              "source_launch_precision": 0.95,
+              "source_launch_coverage": 0.1,
+              "confidence_threshold": 0.95,
+              "weak_std": 0.01,
+              "weak_seed": 2026101501,
+              "source_calibration": "Own EMA on full legal V at first pseudo step; precision>=.95 and coverage>=.1",
+              "native_old_gates_unchanged": true,
+              "urban_student_confidence_gate": false
+            },
+            "test_views": [
+              "clean",
+              "practical_high",
+              "practical_mid",
+              "practical_low_suburban",
+              "practical_high_urban",
+              "practical_mid_urban",
+              "practical_low_urban"
+            ],
+            "formal_test_IQ": "reuse existing VALIDATED_ONCE arrays, no regeneration",
+            "scientific_targets": {
+              "low_urban_accuracy": 0.6,
+              "urban_gain_pp": 3.0,
+              "low_gain_pp": 5.0,
+              "clean_drop_max_pp": 0.5
+            },
+            "comparison_baseline": "A0 ordinary concatenation; same internal source fold, native old U gates, extra EMA forward and warmup",
+            "expansion": "Single-seed eight-row pilot. All eight configs remain in the formal three-seed family; source-only family rules govern expansion, never target scores.",
+            "concurrency": {
+              "max_processes_per_gpu": 3,
+              "includes_other_owners": true
+            },
+            "benchmark_context": "user-selected SIG_TIME architecture on exposed benchmark; scratch training source-only, not a new blind confirmation",
+            "source_evidence": "User requested complete same-loss position comparison; no branch filtering by frozen replacement or target results",
+            "internal_source": {
+              "fold_seed": 2026101503,
+              "holdout_per_TX_RX_day": 8,
+              "L_dev": "read-only calibration and source development; never trained",
+              "V": "health_only",
+              "old_full_L_checkpoint_initialization": false,
+              "historical_full_L_dev_exposure": true
+            },
+            "auxiliary": {
+              "position": "none",
+              "kind": "unit direction; eps=1e-4",
+              "warmup_epochs": 5,
+              "start_epoch": 6,
+              "teacher": "own scratch EMA clean eval stop-gradient",
+              "role": "L_train only",
+              "reliability": "common clean EMA default-head correct * urban scene; no urban student gate",
+              "teacher_forward_in_A0": true,
+              "head_aux_gradient": false,
+              "gain_aux_gradient": false,
+              "CE_updates_all": true,
+              "coefficients": "once frozen source calibration from common A0 epoch5; identical for all positions and later seeds",
+              "calibration_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01/A0-s2026092701/source/branch_calibration.json",
+              "ALL_weights": {
+                "T": 0.2,
+                "F": 0.2,
+                "P": 0.2,
+                "R": 0.2,
+                "S": 0.2
+              },
+              "other_consistency_losses": []
+            }
+          },
+          "BRIDGE_CE": {
+            "schema": "sigtime_bridge_teaching_e50_v1",
+            "run_id": "20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01",
+            "arm": "BRIDGE_CE",
+            "model_seed": 2026092701,
+            "row_id": "BRIDGE_CE-s2026092701",
+            "variant": "reference_response",
+            "method": "cvs_urban_bridge50",
+            "launch_owner": "codex/root/bridge-teaching-e50-20261015",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01/BRIDGE_CE-s2026092701/source",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "initialization": "scratch",
+            "baseline_reuse": false,
+            "parent_checkpoint": null,
+            "checkpoint_sources": [],
+            "parent_training_epochs": 0,
+            "incremental_epochs": 50,
+            "total_epochs": 50,
+            "epochs": 50,
+            "label_epochs": 33,
+            "pseudo_epochs": 17,
+            "steps_per_epoch": 222,
+            "updates": 11100,
+            "batch_size": 128,
+            "unlabeled_batch_size": 256,
+            "source_roles": {
+              "L_s": 6300,
+              "L_train": 5580,
+              "L_dev": 720,
+              "U_s": 56700,
+              "V": 27000
+            },
+            "target_access": false,
+            "network": "single SIG_TIME/t2 postDropout/four windows/112 descriptor/joint160",
+            "feature_parameters": 195041,
+            "default_head": "ResidualPhysicalHead cosine6x160 scale30",
+            "classifier_changed": false,
+            "separate_head_fit": false,
+            "baseline_recipe": "native generic+old gates+own EMA+cos; L33+U17; same L5580/dev720; original default head",
+            "optimizer": {
+              "name": "AdamW",
+              "peak_lr": 0.0002,
+              "min_lr": 1e-06,
+              "weight_decay": 0.0001
+            },
+            "label_smoothing": 0.01,
+            "checkpoint_selection": "final_only",
+            "paired": false,
+            "ordinary_concat": true,
+            "train_scenes": [
+              "practical_low_suburban",
+              "practical_mid_urban",
+              "practical_low_urban"
+            ],
+            "curriculum": false,
+            "margin": false,
+            "urban_ssl": false,
+            "channel": {
+              "fs_hz": 25000000.0,
+              "processing_route": "residual",
+              "mode": "post_sync",
+              "receiver_location": "satellite",
+              "equalization_enabled": false,
+              "reference_snr_db": 30.0,
+              "boundary": "reflect",
+              "quality_adaptation_enabled": true,
+              "phase_tracking_enabled": true,
+              "iq_compensation_enabled": true,
+              "normalization": "source native RMS then simulator unit RMS; no output RMS normalization"
+            },
+            "seeds": {
+              "model": 2026092701,
+              "split": 392005,
+              "data": 392005,
+              "augmentation": 2026101401,
+              "support": null,
+              "evaluation": 392005,
+              "receiver": 2026092701
+            },
+            "curriculum_plan": {
+              "eta_max": 0.5,
+              "increment": 0.05,
+              "warmup_epochs": 3,
+              "quality_db": [
+                3.0,
+                18.0
+              ],
+              "hard_scenes": [
+                "practical_mid_urban",
+                "practical_low_urban"
+              ],
+              "maximum_proposals": 8,
+              "nominal_floor": 0.5,
+              "selection": "channel metadata only; no TX or loss ranking",
+              "advancement": "disabled: eta=0 nominal three-scene sampling throughout"
+            },
+            "margin_plan": {
+              "rho": 0.5,
+              "m_max": 1.0,
+              "coefficient": 0.0,
+              "logit_scale": 30.0,
+              "quality_weight": "sigmoid((signal_to_added_noise_db-5)/5)",
+              "clean_correct_only": true,
+              "stop_gradient_reference": true,
+              "extra_consistency_losses": []
+            },
+            "ssl_plan": {
+              "coefficient": 0.16,
+              "provider": "existing own EMA clean probability",
+              "acceptance": "disabled",
+              "source_launch_precision": 0.95,
+              "source_launch_coverage": 0.1,
+              "confidence_threshold": 0.95,
+              "weak_std": 0.01,
+              "weak_seed": 2026101501,
+              "source_calibration": "Own EMA on full legal V at first pseudo step; precision>=.95 and coverage>=.1",
+              "native_old_gates_unchanged": true,
+              "urban_student_confidence_gate": false
+            },
+            "test_views": [
+              "clean",
+              "practical_high",
+              "practical_mid",
+              "practical_low_suburban",
+              "practical_high_urban",
+              "practical_mid_urban",
+              "practical_low_urban"
+            ],
+            "formal_test_IQ": "reuse existing VALIDATED_ONCE arrays, no regeneration",
+            "scientific_targets": {
+              "low_urban_accuracy": 0.6,
+              "urban_gain_pp": 3.0,
+              "low_gain_pp": 5.0,
+              "clean_drop_max_pp": 0.5
+            },
+            "comparison_baseline": "Two matched HQ rows; unchanged A0/A-J and matched clean-only final50 are read-only descriptive controls",
+            "expansion": "Two-row single-model-seed pilot only; no semantic-family expansion or target-selected parents",
+            "concurrency": {
+              "max_processes_per_gpu": 3,
+              "includes_other_owners": true
+            },
+            "benchmark_context": "user-selected SIG_TIME architecture on exposed benchmark; scratch training source-only, not a new blind confirmation",
+            "source_evidence": "User requested complete same-loss position comparison; no branch filtering by frozen replacement or target results",
+            "internal_source": {
+              "fold_seed": 2026101503,
+              "holdout_per_TX_RX_day": 8,
+              "L_dev": "read-only calibration and source development; never trained",
+              "V": "health_only",
+              "old_full_L_checkpoint_initialization": false,
+              "historical_full_L_dev_exposure": true
+            },
+            "auxiliary": {
+              "kind": "clean_joint_anchor",
+              "local_SIG": false,
+              "start_epoch": 6,
+              "warmup_epochs": 5,
+              "joint": "half mean of clean-ownEMA to urban and clean-ownEMA to HQ direction losses",
+              "joint_reliability": "own clean EMA correct on true L labels and urban scene only",
+              "SIG": "full urban raw112 to independent same-H HQ ownEMA raw112; groups 6/15/6 per window; constant dt excluded",
+              "SIG_weight": "full-view sigmoid((added-noise SNR-5)/5) times clean-ownEMA L correctness; no U truth",
+              "local_bound": "coordinate smooth-L1/(1+smooth-L1); mean within each group then equal three-group mean",
+              "scales": "own epoch5 HQ EMA per-group RMS on source dev720, floor1e-3; frozen thereafter",
+              "coefficient": "own epoch5 once-only full feature norm ratio .1 to half satellite CE, bounded1e-4..10",
+              "calibration_matched_in_both_rows": true,
+              "head_aux_gradient": false,
+              "gain_aux_gradient": false,
+              "CE_updates_all": true,
+              "extra_U_objectives": []
+            },
+            "reused": false,
+            "bridge": {
+              "noise_improvement_db": 6.0,
+              "independent_noise": true,
+              "full_receiver_state": true,
+              "full_AGC": true,
+              "CE_coefficient": 0.25,
+              "base_CE_weights": [
+                0.5,
+                0.5
+              ],
+              "student_HQ_forward": true,
+              "teacher_clean_HQ_forward": true,
+              "original_recording_noise_removed": false,
+              "formal_IQ_changed": false,
+              "frozen": "propagation/RX/day session/quality/lock/compensation/kernels/FIR delay/boundary/full AGC",
+              "train_stream": 2026101401,
+              "calibration_stream": 2026101508
+            },
+            "source_expansion_rule": "Final50 L_dev only: candidate clean vs matched D0>=.005; low vs A0>=.01; urban vs A0>=0; worst urban RX vs A0>=-.01. No target feedback. Local-S claim additionally needs SIG-CE low>=.01 with clean>=-.005.",
+            "parent_training_cost": 0
+          },
+          "BRIDGE_SIG": {
+            "schema": "sigtime_bridge_teaching_e50_v1",
+            "run_id": "20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01",
+            "arm": "BRIDGE_SIG",
+            "model_seed": 2026092701,
+            "row_id": "BRIDGE_SIG-s2026092701",
+            "variant": "reference_response",
+            "method": "cvs_urban_bridge50",
+            "launch_owner": "codex/root/bridge-teaching-e50-20261015",
+            "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01/BRIDGE_SIG-s2026092701/source",
+            "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+            "initialization": "scratch",
+            "baseline_reuse": false,
+            "parent_checkpoint": null,
+            "checkpoint_sources": [],
+            "parent_training_epochs": 0,
+            "incremental_epochs": 50,
+            "total_epochs": 50,
+            "epochs": 50,
+            "label_epochs": 33,
+            "pseudo_epochs": 17,
+            "steps_per_epoch": 222,
+            "updates": 11100,
+            "batch_size": 128,
+            "unlabeled_batch_size": 256,
+            "source_roles": {
+              "L_s": 6300,
+              "L_train": 5580,
+              "L_dev": 720,
+              "U_s": 56700,
+              "V": 27000
+            },
+            "target_access": false,
+            "network": "single SIG_TIME/t2 postDropout/four windows/112 descriptor/joint160",
+            "feature_parameters": 195041,
+            "default_head": "ResidualPhysicalHead cosine6x160 scale30",
+            "classifier_changed": false,
+            "separate_head_fit": false,
+            "baseline_recipe": "native generic+old gates+own EMA+cos; L33+U17; same L5580/dev720; original default head",
+            "optimizer": {
+              "name": "AdamW",
+              "peak_lr": 0.0002,
+              "min_lr": 1e-06,
+              "weight_decay": 0.0001
+            },
+            "label_smoothing": 0.01,
+            "checkpoint_selection": "final_only",
+            "paired": false,
+            "ordinary_concat": true,
+            "train_scenes": [
+              "practical_low_suburban",
+              "practical_mid_urban",
+              "practical_low_urban"
+            ],
+            "curriculum": false,
+            "margin": false,
+            "urban_ssl": false,
+            "channel": {
+              "fs_hz": 25000000.0,
+              "processing_route": "residual",
+              "mode": "post_sync",
+              "receiver_location": "satellite",
+              "equalization_enabled": false,
+              "reference_snr_db": 30.0,
+              "boundary": "reflect",
+              "quality_adaptation_enabled": true,
+              "phase_tracking_enabled": true,
+              "iq_compensation_enabled": true,
+              "normalization": "source native RMS then simulator unit RMS; no output RMS normalization"
+            },
+            "seeds": {
+              "model": 2026092701,
+              "split": 392005,
+              "data": 392005,
+              "augmentation": 2026101401,
+              "support": null,
+              "evaluation": 392005,
+              "receiver": 2026092701
+            },
+            "curriculum_plan": {
+              "eta_max": 0.5,
+              "increment": 0.05,
+              "warmup_epochs": 3,
+              "quality_db": [
+                3.0,
+                18.0
+              ],
+              "hard_scenes": [
+                "practical_mid_urban",
+                "practical_low_urban"
+              ],
+              "maximum_proposals": 8,
+              "nominal_floor": 0.5,
+              "selection": "channel metadata only; no TX or loss ranking",
+              "advancement": "disabled: eta=0 nominal three-scene sampling throughout"
+            },
+            "margin_plan": {
+              "rho": 0.5,
+              "m_max": 1.0,
+              "coefficient": 0.0,
+              "logit_scale": 30.0,
+              "quality_weight": "sigmoid((signal_to_added_noise_db-5)/5)",
+              "clean_correct_only": true,
+              "stop_gradient_reference": true,
+              "extra_consistency_losses": []
+            },
+            "ssl_plan": {
+              "coefficient": 0.16,
+              "provider": "existing own EMA clean probability",
+              "acceptance": "disabled",
+              "source_launch_precision": 0.95,
+              "source_launch_coverage": 0.1,
+              "confidence_threshold": 0.95,
+              "weak_std": 0.01,
+              "weak_seed": 2026101501,
+              "source_calibration": "Own EMA on full legal V at first pseudo step; precision>=.95 and coverage>=.1",
+              "native_old_gates_unchanged": true,
+              "urban_student_confidence_gate": false
+            },
+            "test_views": [
+              "clean",
+              "practical_high",
+              "practical_mid",
+              "practical_low_suburban",
+              "practical_high_urban",
+              "practical_mid_urban",
+              "practical_low_urban"
+            ],
+            "formal_test_IQ": "reuse existing VALIDATED_ONCE arrays, no regeneration",
+            "scientific_targets": {
+              "low_urban_accuracy": 0.6,
+              "urban_gain_pp": 3.0,
+              "low_gain_pp": 5.0,
+              "clean_drop_max_pp": 0.5
+            },
+            "comparison_baseline": "Two matched HQ rows; unchanged A0/A-J and matched clean-only final50 are read-only descriptive controls",
+            "expansion": "Two-row single-model-seed pilot only; no semantic-family expansion or target-selected parents",
+            "concurrency": {
+              "max_processes_per_gpu": 3,
+              "includes_other_owners": true
+            },
+            "benchmark_context": "user-selected SIG_TIME architecture on exposed benchmark; scratch training source-only, not a new blind confirmation",
+            "source_evidence": "User requested complete same-loss position comparison; no branch filtering by frozen replacement or target results",
+            "internal_source": {
+              "fold_seed": 2026101503,
+              "holdout_per_TX_RX_day": 8,
+              "L_dev": "read-only calibration and source development; never trained",
+              "V": "health_only",
+              "old_full_L_checkpoint_initialization": false,
+              "historical_full_L_dev_exposure": true
+            },
+            "auxiliary": {
+              "kind": "clean_joint_anchor_plus_local_SIG",
+              "local_SIG": true,
+              "start_epoch": 6,
+              "warmup_epochs": 5,
+              "joint": "half mean of clean-ownEMA to urban and clean-ownEMA to HQ direction losses",
+              "joint_reliability": "own clean EMA correct on true L labels and urban scene only",
+              "SIG": "full urban raw112 to independent same-H HQ ownEMA raw112; groups 6/15/6 per window; constant dt excluded",
+              "SIG_weight": "full-view sigmoid((added-noise SNR-5)/5) times clean-ownEMA L correctness; no U truth",
+              "local_bound": "coordinate smooth-L1/(1+smooth-L1); mean within each group then equal three-group mean",
+              "scales": "own epoch5 HQ EMA per-group RMS on source dev720, floor1e-3; frozen thereafter",
+              "coefficient": "own epoch5 once-only full feature norm ratio .1 to half satellite CE, bounded1e-4..10",
+              "calibration_matched_in_both_rows": true,
+              "head_aux_gradient": false,
+              "gain_aux_gradient": false,
+              "CE_updates_all": true,
+              "extra_U_objectives": []
+            },
+            "reused": false,
+            "bridge": {
+              "noise_improvement_db": 6.0,
+              "independent_noise": true,
+              "full_receiver_state": true,
+              "full_AGC": true,
+              "CE_coefficient": 0.25,
+              "base_CE_weights": [
+                0.5,
+                0.5
+              ],
+              "student_HQ_forward": true,
+              "teacher_clean_HQ_forward": true,
+              "original_recording_noise_removed": false,
+              "formal_IQ_changed": false,
+              "frozen": "propagation/RX/day session/quality/lock/compensation/kernels/FIR delay/boundary/full AGC",
+              "train_stream": 2026101401,
+              "calibration_stream": 2026101508
+            },
+            "source_expansion_rule": "Final50 L_dev only: candidate clean vs matched D0>=.005; low vs A0>=.01; urban vs A0>=0; worst urban RX vs A0>=-.01. No target feedback. Local-S claim additionally needs SIG-CE low>=.01 with clean>=-.005.",
+            "parent_training_cost": 0
+          }
+        },
+        "views": [
+          "full",
+          "HQ_independent"
+        ],
+        "scenes": [
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "source_stream": 2026101509,
+        "receiver_seed": 2026092701,
+        "noise_improvement_db": 6.0,
+        "receiver_actions": "full frozen",
+        "forward_packets": 56882,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "head_fit_updates": 0,
+        "V_forward_packets": 0,
+        "U_opened": false,
+        "formal_test_IQ_changed": false,
+        "common_descriptor_scales": "BRIDGE_CE own source epoch5 HQ RMS; frozen diagnostic comparator only",
+        "method_scales": "Each new model own source epoch5 HQ RMS; no recalibration or training",
+        "fixed_correct_set": "NOMINAL student clean default head; same physical L_dev720",
+        "claim": "Source mechanism association and repair evidence; not formal target performance or cross-seed proof"
+      }
+    }
+  ],
+  "notes": [
+    "Three frozen models, zero trained models. New HQ training is not complete at preregistration; no runtime results or figure claims.",
+    "All six source scenes and matched720 physical records retained, sourceRX1/3/4/6/8/day1/2/3/sixTX. Source cache may materialize V container; V forwarded0, U unopened, target absent.",
+    "HQ reduces only independent simulator-added noise by6dB, freezing full receiver quality/lock/compensation/AGC/operators/FIR/boundary. Original recording noise remains and total SNR is unknown.",
+    "Common BRIDGE_CE epoch5 RMS scales compare raw groups across models. Own scales are separately reported. No fitting or recalibration; geometric similarity is distinct from head margin/identity evidence.",
+    "Primary trained local increment is SIG-vs-CE on the common fixed NOMINAL clean-correct set; ordinary A0 is descriptive and has different forward/CE budget.",
+    "NOMINAL row has no CE comparator at its first pass and explicitly records null/count0 rather than inventing self-comparison. CE and SIG rows have the actual matched CE full prediction comparator.",
+    "Actual training gradients/gates/full curves are read from original main training artifacts, not replayed optimizer updates. Scientific figures rendered from actual complete artifacts only."
+  ],
+  "registered_at": "2026-10-15T10:48:51+00:00"
+}

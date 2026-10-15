@@ -7,4 +7,5 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |固定 SIG_TIME：HQ 监督与局部 SIG 教学 E50 预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01/report.md)|
+|HQ 教学：三个固定模型的源域冻结归因预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01/report.md)|
 |同信道 HQ 桥接：源域零更新预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-coupled-bridge-source-manysig-s2026092701-r01/report.md)|

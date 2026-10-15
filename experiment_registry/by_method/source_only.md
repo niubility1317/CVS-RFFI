@@ -6,6 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|HQ 教学：三个固定模型的源域冻结归因预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-source-manysig-s2026092701-m3-r01/report.md)|
 |五条件冻结默认头：源域身份与退化归因预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-source-manysig-s2026092701-m5-r01/report.md)|
 |同信道 HQ 桥接：源域零更新预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-coupled-bridge-source-manysig-s2026092701-r01/report.md)|
 |CVS：DAOT＋FastTrust-RC4原始residual_noeq五种子实验|managed_run|[打开](../../automation_reports/CV-SincNet/20260927-phase1-cvs-daot-rc4-practical-manysig-m5-r01/report.md)|
