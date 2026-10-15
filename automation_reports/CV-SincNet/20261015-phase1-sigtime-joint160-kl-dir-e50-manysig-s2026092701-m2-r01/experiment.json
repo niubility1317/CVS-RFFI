@@ -708,7 +708,7 @@
   "source_analyses": [
     {
       "name": "frozen_source_identity_geometry",
-      "status": "PLANNED",
+      "status": "ANALYZED",
       "plan_ref": "source_identity_plan.md",
       "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-joint160-kl-dir-e50-manysig-s2026092701-m2-r01/source_identity_mechanism",
       "source_role": "L_s",
@@ -717,7 +717,24 @@
       "training_updates": 0,
       "query_read": false,
       "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_identity50.mechanism",
-      "release": "cvs_sigtime_joint160_identity_source_20261015_r01"
+      "release": "cvs_sigtime_joint160_identity_source_20261015_r01",
+      "actual_forward_packets": 23040,
+      "seconds": 43.332553305896,
+      "code_commit": "3db2906e49750819a6cb2a8f376325fbcb4f3b7f",
+      "independent_post_state": "VERIFIED"
     }
-  ]
+  ],
+  "observed_results": {
+    "status": "ANALYZED",
+    "seed_count": 1,
+    "cross_seed_confirmation": "NOT_RUN",
+    "complete_models": 2,
+    "total_updates": 22200,
+    "total_predictions": 2352000,
+    "metric_records": 252,
+    "summary_ref": "E:\\type10-7\\local_artifacts\\cvs_joint160_identity_20261015\\final\\summary.json",
+    "training_audit_ref": "E:\\type10-7\\local_artifacts\\cvs_joint160_identity_20261015\\final\\training_audit.json",
+    "source_analysis_ref": "E:\\type10-7\\local_artifacts\\cvs_joint160_identity_20261015\\source_identity_results.json",
+    "target_feedback_forbidden": true
+  }
 }

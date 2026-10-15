@@ -1,33 +1,76 @@
-# 固定 SIG_TIME：KL 与实际 joint160 方向迁移
+# SIG_TIME：输出 KL 与 joint160 方向迁移 E50 结果
 
-状态：LOCAL_VERIFIED，尚未发布。用户 2026-10-15 附件的第一步：实际 joint160 非对称方向蒸馏。复用已经固定的 E50 C3 为 A；B=OUTPUT_KL、C=JOINT_DIR 各从零训练 E50，model seed2026092701，33 轮 label＋17 轮旧门控/ownEMA，222 steps/epoch、11100 次更新。唯一矩阵保存在 experiment.json；本轮不扩 seed。
+状态：ANALYZED / VERIFIED。两条新行均从零完成 E50（33 轮 label＋17 轮旧门控半监督），每行 11100 次成功更新、七种正式视图独立 truth-last 评分；冻结后源身份机制分析也已完成。仅 model seed 2026092701，尚无本轮跨 seed 复现证据。
 
-SIG_TIME、旧内部门控、参考响应结构和默认 cosine6×160/scale30 保持，全部仍由原 CE 联合训练。无新分支、分类头、预测MLP、独立拟合诊断头、冻结骨干再训头或新部署模块。CE clean:satellite=1:1，各自均值，无学生正确/置信门控。L6300/U56700/V27000、源RX1/3/4/6/8/day1/2/3、split/data392005；U 真值隐藏，原 U 旧门控/EMA监督保持。
+方向迁移没有优于原间隔配方：low urban54.8024%、clean80.4940%，相对普通拼接B0的low提高0.8327个百分点、clean下降0.7988个百分点；相对C3的low低0.1327个百分点。方向对KL仅low+0.0446、urban+0.0413个百分点，urban Macro-F1反而−0.0590个百分点，单seed不足以判断优越性。60%及clean下降不超过0.5个百分点的目标未达。
 
-两条新候选均用同一样本 ownEMA clean eval 的 stop-gradient 目标。仅 L_s clean 教师正确且属于 urban 场景时参与额外项，全部合法有标签 satellite 始终参与 CE。首轮不新增 urban U 特征目标，避免把额外监督量和一致性对象混在一起。B 用默认头 W.detach 的输出 KL；C 直接对实际部署 joint160 的 eps1e-4 单位方向计算1-cos。两者每次 satellite 前向都验证辅助重组特征与原 joint160 逐值相同；只 detach 融合 gain，不 detach 分支。辅助 W/gain 梯度为0，原 CE 照常更新它们。
+固定原 SIG_TIME、内部门控、参考响应、默认 cosine6×160/scale30，原 CE 继续联合训练全部参数。无新增部署模块、替换头或独立拟合诊断分类器。B=OUTPUT_KL、C=JOINT_DIR 具有相同网络、数据、原 U 训练、课程、教师前向和 E50 预算，仅额外目标不同。A 为既有 C3，使用学生 clean 间隔／接收质量权重，且少一条 L clean EMA 前向；A 对 B/C 是整套配方比较，不是严格只改一个公式。
 
-系数只由独立 source-only 零更新校准取得：run 20261015-phase1-sigtime-joint160-calibration-manysig-s2026092701-r01，code5b2d53e6db5cd8c6207af1709a0dbe4771d7e1b2。合法 L720，mid/low urban、2250 前向、0 更新、6.498 s；源 C3 与自有 EMA 状态不变，U/query 未读取。KL lambda0.04998551146175206，方向lambda0.44114306609656917，分别使五组/源batch的加权梯度比中位数为0.1，无截断。source_recipe.json 在新训练和读取 C3 目标成绩前已固定。共同 eta 是 A 已实现的 source-only 50 轮日程，两条新训练均只重放、不按自身结果推进；物理增强与 A 在相同命名随机流逐值一致。A 权重只供校准和 smoke，不用于初始化、resume、teacher或EMA继承。
+| 方法 | urban 均值 (%) | low urban (%) | mid urban (%) | clean (%) | suburban 均值 (%) | urban Macro-F1 (%) | 最差 urban RX (%) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| B0 | 65.0927 | 53.9696 | 64.2851 | 81.2929 | 78.0657 | 64.7060 | 59.1569 |
+| C3 | 65.4464 | 54.9351 | 64.8137 | 80.4161 | 77.4732 | 65.1370 | 59.6972 |
+| OUTPUT_KL | 65.2615 | 54.7577 | 64.6179 | 80.3286 | 77.2722 | 65.0166 | 59.2792 |
+| JOINT_DIR | 65.3028 | 54.8024 | 64.6708 | 80.4940 | 77.3151 | 64.9576 | 59.5708 |
 
-两条新行网络/数据/增强/EMA/预算/额外前向匹配，只改变辅助目标，因此 B 对 C 是匹配比较。A 的既有间隔使用学生 clean 参考和接收质量权重，而 B/C 改用 clean EMA 正确资格；A 也少一条 L clean 教师前向。A 对 B/C 是完整迁移配方比较，不宣称单独归因于某一个公式。所有差别如实报告，不把旧A补训或选择性重跑。
+| 差值（百分点） | urban | low urban | mid urban | clean | suburban | urban F1 | 最差 RX |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| OUTPUT_KL − C3 | -0.1849 | -0.1774 | -0.1958 | -0.0875 | -0.2010 | -0.1204 | -0.4181 |
+| JOINT_DIR − C3 | -0.1437 | -0.1327 | -0.1429 | +0.0780 | -0.1581 | -0.1794 | -0.1264 |
+| JOINT_DIR − OUTPUT_KL | +0.0413 | +0.0446 | +0.0530 | +0.1655 | +0.0429 | -0.0590 | +0.2917 |
+| JOINT_DIR − B0 | +0.2101 | +0.8327 | +0.3857 | -0.7988 | -0.7506 | +0.2516 | +0.4139 |
 
-训练只用 practical_low_suburban、practical_mid_urban、practical_low_urban。实际导入 experiments/adv3b02_xuc/code/leo_practical/{channel,residual}.py，25MHz、IQ256、原 native RMS 后模拟器输入 RMS；residual/post_sync/EQfalse（G=1）、reference_snr_db30、quality adaptation/phase tracking/IQcomp true、reflect；输出不再 RMS。几何/传播/遮挡/噪声/接收状态/补偿依赖、RX/day session稳定与跨epoch/view刷新保持。正式 IQ 和信道完全不改。
+60% 是探索目标，不是已达成结果；实际状态为 NOT_MET_SINGLE_SEED。全部负差保留，目标分数不用于改参、选模、晋级、扩 seed 或选择性重跑。预算耗尽不等于收敛。
 
-额外 L clean EMA 前向每行1420800，L clean和satellite各1420800，原 U clean教师/strong学生各963900；每行主训练总前向预期6190200，另列50×720×4源面板、原 V 验证及 smoke。实际墙钟、前向、更新、裁剪率由全量日志核实，不预先承诺速度或收敛。t1/t2/SIG local/PA投影/ref投影记录加权辅助/.5satCE梯度比和夹角、辅助W/gain零梯度；每epoch记录实际联合参数更新、gain、分支方差和TX×RX×状态覆盖。主训练 Dropout 完全沿原路径，不能把教师eval/学生train差异全归为信道损伤。
+完整逐视图／RX／day／TX 表保存在每行 scoring/scores.json，每行126条指标、1176000条预测；两行共252条指标、2352000条预测。原 clean 与六 practical 的每视图168000物理记录保持不变。
 
-正式评价每行固定final50后即启动：clean＋practical_high、practical_mid、practical_low_suburban、practical_high_urban、practical_mid_urban、practical_low_urban，各168000条固定received IQ。同row七种prediction全部完成后，独立exec scorer才连接truth，自动保存RX/day/TX/overall及Macro-F1，并独立复算。报告 low/mid urban、urban均值、最差RX、clean/suburban及负差。目标60%、相对普通拼接urban+3pp/low+5pp/clean降<=.5pp均为验收探索目标，不回流调参、选模、晋级、重跑或自动扩种子。一个seed不构成跨seed证据；历史benchmark已暴露，不声称新独立盲测。
+| 新行 | 主训练前向样本 | 源面板 | 原 V 验证 | 训练墙钟 (s) | 实际裁剪步数／11100 | 含测试总前向样本 |
+|---|---:|---:|---:|---:|---:|---:|
+| OUTPUT_KL-s2026092701 | 6190200 | 144000 | 1404000 | 6939.267 | 120 | 8914204 |
+| JOINT_DIR-s2026092701 | 6190200 | 144000 | 1404000 | 6613.118 | 133 | 8914204 |
 
-本地命令：E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_urban_identity50.publish --output E:/type10-7/local_artifacts/cvs_joint160_identity_20261015/training_delivery_r01。远端命令：/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_identity50.dispatch。CWD PROJECT/releases/cvs_sigtime_joint160_kl_dir_e50_20261015_r01；run/output PROJECT/runs/20261015-phase1-sigtime-joint160-kl-dir-e50-manysig-s2026092701-m2-r01。普通账户，owner codex/root/joint160-kl-dir-e50-20261015；torch/OMP/MKL/OpenBLAS2线程、FP32原精度设置，GPU共享锁动态分配，总进程<=3/GPU且计入其他owner、空闲>=12000MB。实际代码/config以release_commit.txt的Git commit标识。已有健康E50/其他任务保持。
+两条新行各父训练0、新增50、累计50 epoch，合计22200更新。每行L clean/satellite/ownEMA clean各1420800前向，原U教师／strong学生各963900。另有共享dispatcher smoke2、一次源校准2250前向／6.498秒／0更新、冻结后源分析23040前向／43.333秒／0更新。计入上述新增训练、验证、测试、smoke、校准和后分析共17853700个前向样本；这不是FLOPs或等硬件成本。
+校准依赖既有C3 E50源权重，但两条新行没有加载、恢复或继承其权重／EMA／优化器。既有A的50轮／11100更新／6457.786秒及4769400主训练前向是历史依赖成本，不冒充新行父训练或遗漏该依赖。
 
-最小发布：一次代码配置commit、11项定点检查、一次限定P0/P1审查、登记、一份archive传输比较、一次远端编译预检。launcher首步读取真实合规C3 checkpoint、验证实际joint160及source_recipe后立即继续从零训练；不接触query。每行训练最初也保存并重载自身scratch checkpoint smoke。随后独立核实PID/CWD/argv/GPU/日志增长。角色/来源/配置/预算/覆盖/非有限/输出冲突等系统技术失败保留产物并停止pending行，允许健康active行完成；不自动重训，不杀其他任务。性能不达标不是技术重启理由。
+全量step日志逐条核实各11100步连续、每epoch222步、更新均实际应用，未见非有限跳步或U真值暴露；完整stdout未见技术错误。原V每epoch27000条、50次；源geometry全部5300次cache hit、0miss，另外final geometry和wrapper健康验证各27000条，合计1404000前向／行。无额外fitted head或目标训练。原clip阈值5.0，报告实际裁剪，不在线追调lambda。
 
-本地实际验证：`E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_urban_identity50.checks`，11项PASS，含两种实际新Observer/label阶段无U metadata调用、同流增强逐值相同、无额外参数、teacher停止梯度、CE继续更新原头/gain、辅助W/gain边界、错教师/隐藏标签拒绝、预测未完成禁止评分；stderr保存在local_artifacts/cvs_joint160_identity_20261015/training_checks_stderr.txt。源校准已独立完成并验证。新的训练接线唯一一次独立P0/P1审查完成，指定范围未发现P0/P1；默认头联合CE、ownEMA教学、辅助梯度边界、E50预算/源配方和七视图独立评分接线一致。不重复审查上一阶段未改的校准实现。
+冻结后源分析使用原合法L_s的固定720条（曾参与这组训练），以固定C3 final50 clean正确集合为参考；不是新的内部L_dev或未见源测试。模型与ownEMA状态不变，0更新、0拟合头、无U／query读取。最近错误TX方向是720条合法源clean向量中的最大异类cosine，不是训练出的诊断分类器。
 
-设计对应记录：analysis/cvs_joint160_distill_traceability_20261015.md。本轮是第一阶段实现：容差目标、同信道高质量中间视图、分组SIG_TIME局部教学、PA/ref局部目标及额外U特征目标均未运行；不以当前实现冒充完整多阶段设计。冻结后的正确/错误TX特征距离、固定clean正确集合修复与新错、塌缩/gain诊断另行按同一合法源面板执行，不额外拟合头。
+| 方法（source low urban） | 准确率 (%) | 固定C3集合保持率 (%) | 修复C3错误 | 新增C3错误 | clean配对cosine | 最近错TX cosine | 正确−错误cosine | 默认头归一化margin |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| B0 | 63.0556 | 63.3194 | 17 | 32 | 0.721944 | 0.888234 | -0.166290 | 0.086505 |
+| C3 | 65.1389 | 65.4114 | 0 | 0 | 0.728871 | 0.899138 | -0.170267 | 0.086563 |
+| OUTPUT_KL | 64.8611 | 65.1325 | 7 | 9 | 0.720042 | 0.905261 | -0.185219 | 0.086480 |
+| JOINT_DIR | 65.1389 | 65.4114 | 14 | 14 | 0.820010 | 0.936687 | -0.116677 | 0.073509 |
 
-实际发布状态：RUNNING / VERIFIED。code/config commit `704a3e917de3bd8f8a739fddb2a21212b2840148` 已push，独立远端branch OID一致。普通账户N607预检、一次archive传输比对、远端编译PASS；launcher真实合规C3 source checkpoint/no-query smoke通过后自动启动两条scratch训练。
+固定C3 clean正确集合为717/720。状态／锁定／新增噪声SNR分层按实际交叉单元样本数加权汇总；新增噪声SNR不是总接收SNR。这里只比较相同完整信道抽样的关联，不是去除单项损伤的因果实验；原四行的受控损伤分析另行保留。方向相似度提高本身不代表身份判别或默认头准确率提高。
 
-OUTPUT_KL-s2026092701：GPU1、PID2898654，CWD/argv正确，日志增长5170字节，实际完成2轮。首轮所有五个特征组、默认头与三组gain均有实际联合参数更新；新增aux的W/gain梯度全部为0。L/satellite/ownEMA前向计数见launch_verified.json，未读U真值/目标成绩。
+方向迁移相对B0的源low改善集中在BLOCKED（n417，41.0072%→44.6043%）、degraded（n146，63.0137%→65.7534%）、unlocked（n320，35.9375%→39.0625%）和新增噪声SNR<3dB（n239，33.4728%→37.6569%），LOS/PARTIAL准确率均未变。这些是固定训练见过的源面板关联，不能据此断言独立解决多径、Doppler或噪声，更不能代替目标分层因果证据。
+相对C3，方向在固定717集合上修复14个错误、同时新增14个，保持率均65.4114%。clean/satellite配对cosine从.728871升至.820010，最近错误TX cosine也从.899138升至.936687；默认头margin从.086563降至.073509。方向更接近并未带来默认头收益。各坐标方差仍非零，不能仅凭平均方差降低宣称完整塌缩。
 
-JOINT_DIR-s2026092701：GPU2、PID2898731，CWD/argv正确，日志增长5171字节，实际完成2轮。首轮所有五个特征组、默认头与三组gain均有实际联合参数更新；新增aux的W/gain梯度全部为0。L/satellite/ownEMA前向计数见launch_verified.json，未读U真值/目标成绩。
+| 源机制 | clean joint均方差 | low joint均方差 | PA gain绝对均值 | ref gain绝对均值 | SIG gain绝对均值 |
+|---|---:|---:|---:|---:|---:|
+| B0 | 0.229717 | 0.150899 | 0.270388 | 0.073101 | 0.084074 |
+| C3 | 0.238501 | 0.146318 | 0.271072 | 0.074729 | 0.083401 |
+| OUTPUT_KL | 0.238401 | 0.146199 | 0.272888 | 0.078085 | 0.084260 |
+| JOINT_DIR | 0.242960 | 0.119463 | 0.276800 | 0.066435 | 0.085549 |
 
-核实证据：E:/type10-7/local_artifacts/cvs_joint160_identity_20261015/launch_verified.json；monitor/latest.json持续只读观察。初始reference gain=0时投影梯度为0是原初始化行为；CE先更新gain，其后真实投影梯度已记录，不改变原结构/初始化。源校准0.1是校准面板的中位比，训练过程不强迫达到0.1、不在线调lambda。
+表中gain为实际tanh后的逐坐标向量绝对均值，SIG含原0.2系数；它不是样本动态门控贡献比例。完整逐分支方差／norm／逐坐标gain在源原始JSON中保留。训练辅助项对W／三gain的梯度始终为0，原联合CE／U训练仍使五组特征、W和gain产生非零总更新。
+
+实际数据：L6300／U56700／V27000，源RX1/3/4/6/8、day1/2/3、split/data392005；U标签隐藏。25MHz、IQ256、原native RMS后模拟器输入RMS，输出不再RMS；实际导入experiments/adv3b02_xuc/code/leo_practical/{channel,residual}.py，residual/post_sync、EQfalse（G=1）、reference_snr_db30、质量适配／phase tracking／IQcomp true、reflect。训练仅low suburban／mid urban／low urban，完整依赖和RX/day稳定session、跨epoch/view命名随机流保持。
+
+静态系数在读取A目标成绩和新训练前已由source-only校准固定：KL0.04998551146175206，direction0.44114306609656917。两行重放A的源课程eta，不按自身或目标分数推进。一次校准的0.1是五组／源batch的梯度比中位数，不代表后续强度恒定，也不等同新八位置实验的全局校准口径。
+
+实际训练release commit：704a3e917de3bd8f8a739fddb2a21212b2840148；冻结后源release commit：3db2906e49750819a6cb2a8f376325fbcb4f3b7f。一次archive传输比对／远端compile／普通N607账户预检、真实合规source checkpoint no-query smoke和PID/CWD/argv/GPU／日志独立回读均已VERIFIED。训练接线11项检查、源分析3项检查PASS；训练一次限定P0/P1审查PASS，未改变的后分析不重复审查。没有热改、停止或重启健康实验。
+
+训练命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_identity50.dispatch`；CWD PROJECT/releases/cvs_sigtime_joint160_kl_dir_e50_20261015_r01。后分析命令同Python下`-m experiments.cvs_urban_identity50.mechanism`，CWD PROJECT/releases/cvs_sigtime_joint160_identity_source_20261015_r01。精确launcher、不可变run/output、逐row矩阵、GPU、owner、stop rule和预期产物仍见experiment.json及source_identity_plan.md。
+
+图表（实际完成后生成）：
+- [complete_training_curves.png](E:/type10-7/local_artifacts/cvs_joint160_identity_20261015/final/figures/complete_training_curves.png)
+- [per_seed_formal_accuracy.png](E:/type10-7/local_artifacts/cvs_joint160_identity_20261015/final/figures/per_seed_formal_accuracy.png)
+- [source_identity_geometry.png](E:/type10-7/local_artifacts/cvs_joint160_identity_20261015/final/figures/source_identity_geometry.png)
+- [source_state_quality_strata.png](E:/type10-7/local_artifacts/cvs_joint160_identity_20261015/final/figures/source_state_quality_strata.png)
+
+原始核实产物：E:\type10-7\local_artifacts\cvs_joint160_identity_20261015\final\training_audit.json；E:\type10-7\local_artifacts\cvs_joint160_identity_20261015\source_identity_results.json；E:\type10-7\local_artifacts\cvs_joint160_identity_20261015\source_delivery_r01\readback.json。IQ、checkpoint、预测、原始日志及生成输出均不入Git。
+
+当前实现不是完整多阶段设计：容差方向、同信道中间视图、分组SIG_TIME局部教学、PA/ref局部目标与额外U特征目标尚未运行；严格A/B/C只改公式的要求也未由这个历史A比较满足。新八位置家族独立按其已登记源规则运行，不把本轮目标结果用于位置排序或扩展。
