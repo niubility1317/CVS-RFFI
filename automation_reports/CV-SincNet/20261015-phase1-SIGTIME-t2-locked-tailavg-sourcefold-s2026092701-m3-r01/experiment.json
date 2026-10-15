@@ -368,13 +368,14 @@
   "registered_at": "2026-10-15T03:17:26+00:00",
   "result": {
     "status": "RUNNING",
-    "evidence_ref": "launch_evidence.json",
+    "evidence_ref": "source_results_analysis.json",
+    "rows_complete": 1,
     "ordered_modes": [
       "ELEMENT",
       "NONE",
       "LOCKED"
     ],
-    "rows_complete": 0,
+    "primary_source_qualification": null,
     "target_access": false,
     "U_truth_read": false,
     "goal84_completed": false

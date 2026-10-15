@@ -21,3 +21,37 @@
 四tail callback/四次真实合成优化步的CUDA完整导出集成PASS；独立FP64 stack与所有188平均参数逐张量相等，12buffer保持，epoch20/native final权重一致检查和默认头FINAL/EMA/AVG接续读出通过。fixture使用合成IQ与自建合成checkpoint，非真实source训练，预算counter/健康值为显式fixture，不作科学结果。
 
 启动独立确认：执行 `a4a6dd6fc79a8073113ac9a5385e75d858d325fc`，ordinary GPU0所属PID/CWD/命令/GPU成员一致，所有owner总进程1/3，真实own-scratch checkpoint no-query smoke PASS、日志增长。首row ELEMENT的真实t2元件p=.1，LS0/13L+7U/ownEMA/无L或星地增强/四RX角色及loader排除条件一致。该进程顺序完成三row，尚未产出完整机制收益或84%结果。
+
+<!-- SOURCE_RESULTS_START -->
+
+
+已完成 1/3 条件的完整源训练与导出，解析 4440 条连续step记录及 20 条epoch记录。其余条件按原计划继续，完整矩阵资格待定，不将部分结果当完整比较。
+
+
+| 条件 | 导出 | heldRX1准确率 | Macro-F1 | 错误数 | meanCE | 最差day |
+
+|---|---|---|---|---|---|---|
+
+| ELEMENT | FINAL | 59.126984% | 55.373624% | 515 | 1.80715595 | 54.761905% |
+
+| ELEMENT | EMA | 59.841270% | 56.082046% | 506 | 1.69754573 | 55.476190% |
+
+| ELEMENT | TAIL_AVG | 59.047619% | 55.338053% | 516 | 1.80428535 | 54.761905% |
+
+
+| 对照差（候选减参考） | ΔCE | Δ错误 | 修正错误 | 新增错误 |
+
+|---|---|---|---|---|
+
+| ELEMENT_EMA minus ELEMENT_FINAL | -0.10961022 | -9 | 13 | 4 |
+
+| ELEMENT_TAIL_AVG minus ELEMENT_FINAL | -0.00287061 | +1 | 2 | 3 |
+
+
+以上为原始1260个固定sourceL包的默认头读出，heldRX1全程未参与训练。每包物理ID/label/pred保存在远端source_readouts；独立从全部预测重算错误/混淆/F1/day和paired修正破坏，全部吻合。四tail完整200state逐项FP64重算与平均导出逐位一致；epoch20与native final相同、EMA导出与本轨迹原EMA相同。没有新增IQ读取、推理或训练。
+
+ELEMENT：final训练LCE=0.02306368；tail各epoch与FINAL预测差异数[17:33, 18:23, 19:8, 20:0]。F71相对初值参数位移11.026524，AVG相对FINAL位移0.013463194；W也正常联合更新。参数变化只证明实际学习接线，不代替泛化收益。
+
+这是部分row结果；LOCKED与两个控制尚未齐全，未作候选晋级、窗口选择或正式target判断。
+
+完整逐epoch源曲线见source_complete_curves.csv，逐导出指标和配对错误见同名CSV，聚合机器证据见source_results_analysis.json。仅1seed/1heldRX，多时点复用同1260包；未读target/U真值，未另训分类头，84%目标仍active。
