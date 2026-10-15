@@ -1265,6 +1265,23 @@
       "remote_deployment": "VERIFIED",
       "training_release_unchanged": true,
       "formal_source_qualification": null
+    },
+    "native_SSL_prefix": {
+      "observed_at": "2026-10-15T08:55:17.755Z",
+      "steps": [
+        6770,
+        7730
+      ],
+      "source_stream_prefix_complete_epochs": [
+        30,
+        34
+      ],
+      "candidate_U_packets": 103292,
+      "candidate_U_accepted": 1649,
+      "hidden_U_truth_available": false,
+      "EMA_trajectory_replayed": true,
+      "formal_source_qualification": null,
+      "new_target_summary_read": false
     }
   },
   "registered_at": "2026-10-15T08:29:00+00:00"

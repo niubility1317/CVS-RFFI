@@ -85727,7 +85727,14 @@
       "training_source_prefix_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_prefix_e4.json",
       "training_analysis_bitwise_defect": "Offlinefixverifiedanddeployedseparately;runningreleaseunchanged",
       "training_analysis_release": "cvs_receiver_vrex50_analysis_20261015_r01",
-      "training_analysis_release_commit": "0416c8c4f7865b7bb879f9e1dba69a95dde9878d"
+      "training_analysis_release_commit": "0416c8c4f7865b7bb879f9e1dba69a95dde9878d",
+      "training_native_SSL_prefix": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/native_SSL_prefix.json",
+      "training_available_step_streams": [
+        6770,
+        7730
+      ],
+      "training_candidate_U_observations": 103292,
+      "training_hidden_U_truth_read": false
     }
   },
   "latest_complete_sinc_optimizer": {
