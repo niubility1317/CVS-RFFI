@@ -82381,6 +82381,19 @@
   },
   "next_directions": [
     {
+      "direction": "源 RX 梯度共识过滤",
+      "status": "LOCAL_VERIFIED_SOURCE_PROBE_NOT_LAUNCHED",
+      "source_evidence": "Existing source backbone-gradient variance changes were dominated by radial scale (85.92–96.54% in the recorded decomposition). RX risk variation is present, but scalar risk matching does not identify coordinate-level common directions. Source RX gradient agreement has not yet been measured for this candidate.",
+      "hypothesis": "AND-inspired sign agreement across five legal source RX can identify a nondegenerate common f_theta update, beyond matched random coordinate removal.",
+      "location": "All195041 actual identity feature parameters, excluding classW alone; keep base_norm/pa_norm/gain/reference",
+      "path_into_z": "Potential L_s backbone gradient update; source probe performs0updates and doesnot implementtraining",
+      "minimum_control": "Same original native source forward: original CE, RX sign-consensus mask and same-per-parameter-count random eligible mask",
+      "cost": "One predefined model900L/900forward/30derivative calls; only sourcePASS allows fixed02/03, up to2700forward/90calls; CPU2/noGPU",
+      "failure": "Fixed minRXcos>=0 and betterthanrandom, retainednorm>=.1, nondegenerateeligiblefraction.01to.99, all3body tensors5of5nonzero; no source-threshold/group/parent scan",
+      "report": "automation_reports/CV-SincNet/20261015-phase1-source-rx-consensus-manysig-m3-r01/report.md",
+      "reference": "https://arxiv.org/abs/2009.00329"
+    },
+    {
       "direction": "实际骨干梯度方差训练",
       "status": "ANALYZED_VERIFIED_NO_STABLE_TARGET_GAIN",
       "source_evidence": "936 existing actual matrices independently decomposed; loss already scale-normalized/floor0; terminal matched radial contribution85.92-96.54%, radial12/12decrease but weightedangular12/12increase; unweightedcosRAW5/6 improve,COND1/6",
@@ -82428,7 +82441,7 @@
     },
     {
       "direction": "源接收机群风险分配训练",
-      "status": "RUNNING_VERIFIED",
+      "status": "ANALYZED_VERIFIED_NO_STABLE_TARGET_GAIN",
       "source_evidence": "Prior sourcevariance training loss decreased without stableDG gain; pureangle terminalsourcecompatibilityfails2/3. No GroupDRO implementation in checked risk-action packages; direct identityrisk reweighting distinct.",
       "hypothesis": "Adaptive weights on five legal sourceRX identity risks may reduce reliance on easier source receivers; original GroupDRO warns naive weighting canfail; notassumed to improve target.",
       "location": "Original L_s CE, actual t1/t2/SIG and defaultW receive normaljoint weightedCE gradients",
@@ -82439,16 +82452,210 @@
     }
   ],
   "next_actions_max2": [
-    "Execute frozen seed2026092702/03 RX_BALANCED/RX_VREX scratch50 comparison unchanged",
-    "Complete fixedthree-seed defaulthead/feature boundary analysis;no target-driven tuning"
+    "发布固定原SIG_TIME源checkpoint的RX共识无更新诊断；先01，只有原预登记sourcePASS才自动原样测02/03；不读取U真值或target，不训练头。",
+    "依据完整源证据决定是否另登记真实原生训练接线/公平消融；sourceFAIL不扫描阈值、分组或父模型；不重复RDrop、随机差分交换或既有SAM。"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "发布已验证的风险方差E50首seed两新模型，原SIG_TIME/默认联合头/旧门控ownEMA/U损失/cos保持，同均衡CE vs系数1方差；沿用共享锁实时空卡并行。",
-    "训练冻结后自动clean预测/独立truth-last；先据固定源资格上传不变02/03决定，再读新目标汇总，完整保留曲线/实际特征/成本与正负结果。"
+    "发布固定原SIG_TIME源checkpoint的RX共识无更新诊断；先01，只有原预登记sourcePASS才自动原样测02/03；不读取U真值或target，不训练头。",
+    "依据完整源证据决定是否另登记真实原生训练接线/公平消融；sourceFAIL不扫描阈值、分组或父模型；不重复RDrop、随机差分交换或既有SAM。"
   ],
   "current_priority": {
+    "at": "2026-10-15T10:48:40.934Z",
+    "user_instruction": "固定SIG_TIME与默认联合分类头；研发不同于其他对话RDrop/交换增强的训练机制；每骨干<=50",
+    "architecture": "SIG_TIME actual joint160, unchanged default cosine6x160scale30",
+    "active_generalization_mechanism": {
+      "method": "RX_CONSENSUS_SOURCE_PROBE",
+      "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+      "run_id": "20261015-phase1-source-rx-consensus-manysig-m3-r01",
+      "source_seeds": [
+        2026092701,
+        2026092702,
+        2026092703
+      ],
+      "conditional_first_then_remaining": true,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "target_access": false,
+      "qualification_is_not_DG": true
+    },
+    "latest_complete_vrex": {
+      "run_id": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "status": "ANALYZED",
+      "accuracy_mean": 0.8247777777777777,
+      "matched_control_accuracy_mean": 0.8275317460317461,
+      "paired_difference": -0.0027539682539682677,
+      "positive_seeds": 1,
+      "seed_count": 3,
+      "goal_84": false,
+      "delivery_commit": "114e92128e06051bea674137c207a94dd48564a7"
+    },
+    "different_other_chat_route": "Original SIG_TIME recipe + RDrop nowactive; stochastic crossRX residualswap reserved there; no duplication",
+    "Phase2_development": false
+  },
+  "latest_complete_sinc_optimizer": {
+    "accuracy_mean": 0.8322321428571429,
+    "predefined_model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "goal_met": false,
+    "report": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
+  },
+  "receiver_vrex_remaining_seeds": {
+    "status": "ANALYZED",
+    "run_id": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+    "execution_commit": "f7aded2fc5c607064972991d07ab6fca227cd626",
+    "code_commit": "8ce0a02e4b0c56d1aaeda0171b7c08813d4a7811",
+    "source_decision_commit": "4056e9fb618fa92af5486c6d3670fc73bcc4194d",
+    "new_models": 4,
+    "historical_reused": 2,
+    "first_seed_retrained": false,
+    "all_models_final50": true,
+    "combined_models": 9,
+    "combined_model_seeds": [
+      2026092701,
+      2026092702,
+      2026092703
+    ],
+    "prediction_count": 1512000,
+    "metric_records": 162,
+    "summary": [
+      {
+        "arm": "OLD_GATE_COS50",
+        "seed_count": 3,
+        "accuracy_mean": 0.8052678571428572,
+        "accuracy_sd": 0.023775723031464996,
+        "seed_accuracy": {
+          "2026092701": 0.8066845238095238,
+          "2026092702": 0.7808154761904762,
+          "2026092703": 0.8283035714285715
+        },
+        "macro_f1_mean": 0.8000238637751929,
+        "worst_RX_mean": 0.6797083333333334,
+        "worst_day_mean": 0.7605555555555555
+      },
+      {
+        "arm": "RX_BALANCED",
+        "seed_count": 3,
+        "accuracy_mean": 0.8275317460317461,
+        "accuracy_sd": 0.016896113370073077,
+        "seed_accuracy": {
+          "2026092701": 0.8364047619047619,
+          "2026092702": 0.808047619047619,
+          "2026092703": 0.8381428571428572
+        },
+        "macro_f1_mean": 0.8220510180181115,
+        "worst_RX_mean": 0.7023194444444444,
+        "worst_day_mean": 0.7852460317460317
+      },
+      {
+        "arm": "RX_VREX",
+        "seed_count": 3,
+        "accuracy_mean": 0.8247777777777777,
+        "accuracy_sd": 0.01889754901433135,
+        "seed_accuracy": {
+          "2026092701": 0.8328511904761905,
+          "2026092702": 0.8031845238095238,
+          "2026092703": 0.838297619047619
+        },
+        "macro_f1_mean": 0.8191700227536953,
+        "worst_RX_mean": 0.6921527777777777,
+        "worst_day_mean": 0.7810476190476191
+      }
+    ],
+    "paired": [
+      {
+        "arm": "RX_VREX",
+        "control": "RX_BALANCED",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          -0.003553571428571378,
+          -0.00486309523809525,
+          0.00015476190476182428
+        ],
+        "mean_difference": -0.0027539682539682677,
+        "sd_difference": 0.0026027382703908146,
+        "positive_seeds": 1
+      },
+      {
+        "arm": "RX_VREX",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.02616666666666667,
+          0.022369047619047566,
+          0.009994047619047541
+        ],
+        "mean_difference": 0.019509920634920592,
+        "sd_difference": 0.00845691179145056,
+        "positive_seeds": 3
+      },
+      {
+        "arm": "RX_BALANCED",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701,
+          2026092702,
+          2026092703
+        ],
+        "seed_differences": [
+          0.02972023809523805,
+          0.027232142857142816,
+          0.009839285714285717
+        ],
+        "mean_difference": 0.02226388888888886,
+        "sd_difference": 0.010831700121090268,
+        "positive_seeds": 3
+      }
+    ],
+    "source_risk": [
+      {
+        "seed": 2026092701,
+        "balanced_variance": 0.01178006617093562,
+        "vrex_variance": 0.00956631377729135,
+        "variance_ratio": 0.812076404196595,
+        "balanced_worstRX_CE": 0.31672190503297093,
+        "vrex_worstRX_CE": 0.30265151426188364
+      },
+      {
+        "seed": 2026092702,
+        "balanced_variance": 0.012324653982852544,
+        "vrex_variance": 0.009823488412449715,
+        "variance_ratio": 0.7970599763788311,
+        "balanced_worstRX_CE": 0.3311315712302606,
+        "vrex_worstRX_CE": 0.31268208489199206
+      },
+      {
+        "seed": 2026092703,
+        "balanced_variance": 0.010255803598702514,
+        "vrex_variance": 0.008234474689193572,
+        "variance_ratio": 0.8029087735489918,
+        "balanced_worstRX_CE": 0.3043046331175372,
+        "vrex_worstRX_CE": 0.28865384806810473
+      }
+    ],
+    "actual_feature_models": 6,
+    "feature_parameters_per_model": 195041,
+    "head_fit_updates": 0,
+    "truth_last": true,
+    "target_feedback_to_training": false,
+    "goal_achieved": false,
+    "missing": [],
+    "result_ref": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01/results.json",
+    "report_ref": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
+  },
+  "previous_priority_before_rx_consensus": {
     "at": "2026-10-15T02:02:55.462Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
@@ -85749,165 +85956,14 @@
       "remaining_seed_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md"
     }
   },
-  "latest_complete_sinc_optimizer": {
-    "accuracy_mean": 0.8322321428571429,
-    "predefined_model_seeds": [
-      2026092701,
-      2026092702,
-      2026092703
+  "previous_actions_before_rx_consensus": {
+    "next_actions": [
+      "发布已验证的风险方差E50首seed两新模型，原SIG_TIME/默认联合头/旧门控ownEMA/U损失/cos保持，同均衡CE vs系数1方差；沿用共享锁实时空卡并行。",
+      "训练冻结后自动clean预测/独立truth-last；先据固定源资格上传不变02/03决定，再读新目标汇总，完整保留曲线/实际特征/成本与正负结果。"
     ],
-    "goal_met": false,
-    "report": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
-  },
-  "receiver_vrex_remaining_seeds": {
-    "status": "ANALYZED",
-    "run_id": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-    "execution_commit": "f7aded2fc5c607064972991d07ab6fca227cd626",
-    "code_commit": "8ce0a02e4b0c56d1aaeda0171b7c08813d4a7811",
-    "source_decision_commit": "4056e9fb618fa92af5486c6d3670fc73bcc4194d",
-    "new_models": 4,
-    "historical_reused": 2,
-    "first_seed_retrained": false,
-    "all_models_final50": true,
-    "combined_models": 9,
-    "combined_model_seeds": [
-      2026092701,
-      2026092702,
-      2026092703
-    ],
-    "prediction_count": 1512000,
-    "metric_records": 162,
-    "summary": [
-      {
-        "arm": "OLD_GATE_COS50",
-        "seed_count": 3,
-        "accuracy_mean": 0.8052678571428572,
-        "accuracy_sd": 0.023775723031464996,
-        "seed_accuracy": {
-          "2026092701": 0.8066845238095238,
-          "2026092702": 0.7808154761904762,
-          "2026092703": 0.8283035714285715
-        },
-        "macro_f1_mean": 0.8000238637751929,
-        "worst_RX_mean": 0.6797083333333334,
-        "worst_day_mean": 0.7605555555555555
-      },
-      {
-        "arm": "RX_BALANCED",
-        "seed_count": 3,
-        "accuracy_mean": 0.8275317460317461,
-        "accuracy_sd": 0.016896113370073077,
-        "seed_accuracy": {
-          "2026092701": 0.8364047619047619,
-          "2026092702": 0.808047619047619,
-          "2026092703": 0.8381428571428572
-        },
-        "macro_f1_mean": 0.8220510180181115,
-        "worst_RX_mean": 0.7023194444444444,
-        "worst_day_mean": 0.7852460317460317
-      },
-      {
-        "arm": "RX_VREX",
-        "seed_count": 3,
-        "accuracy_mean": 0.8247777777777777,
-        "accuracy_sd": 0.01889754901433135,
-        "seed_accuracy": {
-          "2026092701": 0.8328511904761905,
-          "2026092702": 0.8031845238095238,
-          "2026092703": 0.838297619047619
-        },
-        "macro_f1_mean": 0.8191700227536953,
-        "worst_RX_mean": 0.6921527777777777,
-        "worst_day_mean": 0.7810476190476191
-      }
-    ],
-    "paired": [
-      {
-        "arm": "RX_VREX",
-        "control": "RX_BALANCED",
-        "seeds": [
-          2026092701,
-          2026092702,
-          2026092703
-        ],
-        "seed_differences": [
-          -0.003553571428571378,
-          -0.00486309523809525,
-          0.00015476190476182428
-        ],
-        "mean_difference": -0.0027539682539682677,
-        "sd_difference": 0.0026027382703908146,
-        "positive_seeds": 1
-      },
-      {
-        "arm": "RX_VREX",
-        "control": "OLD_GATE_COS50",
-        "seeds": [
-          2026092701,
-          2026092702,
-          2026092703
-        ],
-        "seed_differences": [
-          0.02616666666666667,
-          0.022369047619047566,
-          0.009994047619047541
-        ],
-        "mean_difference": 0.019509920634920592,
-        "sd_difference": 0.00845691179145056,
-        "positive_seeds": 3
-      },
-      {
-        "arm": "RX_BALANCED",
-        "control": "OLD_GATE_COS50",
-        "seeds": [
-          2026092701,
-          2026092702,
-          2026092703
-        ],
-        "seed_differences": [
-          0.02972023809523805,
-          0.027232142857142816,
-          0.009839285714285717
-        ],
-        "mean_difference": 0.02226388888888886,
-        "sd_difference": 0.010831700121090268,
-        "positive_seeds": 3
-      }
-    ],
-    "source_risk": [
-      {
-        "seed": 2026092701,
-        "balanced_variance": 0.01178006617093562,
-        "vrex_variance": 0.00956631377729135,
-        "variance_ratio": 0.812076404196595,
-        "balanced_worstRX_CE": 0.31672190503297093,
-        "vrex_worstRX_CE": 0.30265151426188364
-      },
-      {
-        "seed": 2026092702,
-        "balanced_variance": 0.012324653982852544,
-        "vrex_variance": 0.009823488412449715,
-        "variance_ratio": 0.7970599763788311,
-        "balanced_worstRX_CE": 0.3311315712302606,
-        "vrex_worstRX_CE": 0.31268208489199206
-      },
-      {
-        "seed": 2026092703,
-        "balanced_variance": 0.010255803598702514,
-        "vrex_variance": 0.008234474689193572,
-        "variance_ratio": 0.8029087735489918,
-        "balanced_worstRX_CE": 0.3043046331175372,
-        "vrex_worstRX_CE": 0.28865384806810473
-      }
-    ],
-    "actual_feature_models": 6,
-    "feature_parameters_per_model": 195041,
-    "head_fit_updates": 0,
-    "truth_last": true,
-    "target_feedback_to_training": false,
-    "goal_achieved": false,
-    "missing": [],
-    "result_ref": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01/results.json",
-    "report_ref": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
+    "next_actions_max2": [
+      "Execute frozen seed2026092702/03 RX_BALANCED/RX_VREX scratch50 comparison unchanged",
+      "Complete fixedthree-seed defaulthead/feature boundary analysis;no target-driven tuning"
+    ]
   }
 }
