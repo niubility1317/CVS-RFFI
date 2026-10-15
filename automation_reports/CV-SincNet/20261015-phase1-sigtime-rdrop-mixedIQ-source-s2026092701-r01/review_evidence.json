@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/urban_p0p1_review",
+  "scope": "One independent next-real-run P0/P1 review for frozen source probe only",
+  "findings": [],
+  "confirmed": [
+    "Original RDrop import order and strict checkpoint provenance",
+    "Only full V27000 forwards; no U TX/query access",
+    "135002 forward budget and same coefficient reflect/edge controls",
+    "Frozen model and random states",
+    "New immutable run/release, no output overwrite or healthy task intervention"
+  ],
+  "local_checks": {
+    "source_protocol_and_statistics": 4,
+    "operator_checks_reused": 8,
+    "real_IQ_read": false,
+    "checkpoint_loads": 0,
+    "optimizer_steps": 0
+  },
+  "real_checkpoint_smoke": "Launcher first step, PASS continues immediately; not yet executed at prerelease"
+}
