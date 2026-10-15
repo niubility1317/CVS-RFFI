@@ -11,3 +11,4 @@
 |固定 SIG_TIME：双向身份排序 E50 预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r01/report.md)|
 |固定 SIG_TIME：语义身份排序 E50 单种子完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/report.md)|
 |固定 SIG_TIME：HQ 监督与局部 SIG 教学 E50 预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01/report.md)|
+|固定 RX1：两位等规模教师的源域互补小试|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-crossfit-RX1-teachers-e50-manysig-s2026092701-m2-r01/report.md)|

@@ -43,6 +43,7 @@ def config(row):
         comparison_baseline='SAMPLE uses equal4464 labeled physical items and exact same TX/day counts, all5 RX; EXCLUDE uses four RX',
         expansion='Two teachers only; later five-pair bank and BASE/SAMPLE-KD/RX-KD student not launched',
         benchmark_context='Source-only teacher falsification on exposed benchmark; no new target result')
+    c['seeds']=dict(c['seeds'],augmentation=None,evaluation=EVALUATION_SEED)
     return c
 
 

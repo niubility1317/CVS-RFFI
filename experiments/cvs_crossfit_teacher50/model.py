@@ -28,9 +28,15 @@ def own_model(c,device='cpu'):
         raise ValueError('Whole teacher lineage must be independent scratch')
     verify_contract(d.read(source/'source_contract.json'),d.read(d.SOURCE))
     expected_RX=[3,4,6,8] if c['arm']=='EXCLUDE_RX1' else [1,3,4,6,8]
-    if (inner['train_receivers']!=expected_RX or inner['counts']['L_train']!=4464 or inner['L_dev_updates']
+    if (inner['train_receivers']!=expected_RX or inner['counts']!=dict(L_train=4464,L_dev=720,L_unused=1116,U_s=56700,V=27000) or inner['L_dev_updates']
             or inner['fold_seed']!=2026101503 or inner['subset_seed']!=d.SUBSET_SEED or inner['arm']!=c['arm']):
         raise ValueError('Teacher actual RX exposure/source subset differs')
+    mechanism=d.read(source/'training_mechanism_complete.json')
+    if (mechanism['status']!='VERIFIED' or mechanism['optimizer_updates']!=11100 or mechanism['training_epochs']!=50
+            or mechanism['unique_train_samples']!=4464 or mechanism['forward_packets']['train']!=1420800
+            or mechanism['head_fit_updates'] or mechanism['U_forward_packets'] or mechanism['U_truth_read']
+            or mechanism['EMA_updates'] or mechanism['train_receivers']!=expected_RX):
+        raise ValueError('Actual complete L-only teacher exposure and joint default-head budget required')
     cp=torch.load(source/'final_ssdg.pth',map_location='cpu',weights_only=False)
     if (cp['epoch']!=50 or cp['a1_ema_successful_updates']!=11100 or cp['run_id']!=d.RUN or cp['candidate_id']!=c['row_id']
             or cp['split_info']['inner_source_contract']!=inner or not cp['args']['from_scratch']
