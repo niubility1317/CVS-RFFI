@@ -18,9 +18,12 @@ from experiments.cvs_feature_sequence50.source import train as shared_train
 class Observer:
     def __init__(self,c):
         self.c=c;self.steps=0;self.coverage=Counter();self.observed=Counter();self.epochs=[];self.augmentor=None
+        self.held=int(c['fold']['held_RX']);self.fit=tuple(c['fold']['fit_RX'])
+        if self.held not in (1,3,4,6,8) or self.fit!=tuple(r for r in (1,3,4,6,8) if r!=self.held):
+            raise ValueError('One allowed held RX and its exact four-RX complement required')
     def record(self,role,batch):
         x,y,domain,meta=batch
-        if set(meta['rx_i'].tolist())-set(d.FIT) or (role=='U_s' and bool((y>=0).any())):
+        if set(meta['rx_i'].tolist())-set(self.fit) or (role=='U_s' and bool((y>=0).any())):
             raise ValueError('Held RX or U TX truth entered training loader')
         self.observed[role]+=len(x)
         keys=('eq_i','rx_i','day_i','sig_i','base_index')
@@ -28,7 +31,7 @@ class Observer:
         self.sequence.write(json.dumps(dict(role=role,ids=list(zip(*values))),allow_nan=False)+'\n')
     def data(self,native,ctx,out):
         self.out=Path(out);self.sequence=gzip.open(self.out/'training_sequence.jsonl.gz','xt',encoding='utf-8',compresslevel=3)
-        self.held_loader=prepare(native,ctx,self.record)
+        self.held_loader=prepare(native,ctx,self.record,held_rx=self.held)
         from cvsrffi.xuc_fusion.native import role_ids_from_native
         self.roles=role_ids_from_native(ctx)
         self.held_ids=role_ids_from_native(dict(ctx,val_loader=self.held_loader))['V']
@@ -36,12 +39,12 @@ class Observer:
             raise ValueError('Actual four RX and held V roles differ')
         if set(self.held_ids)&set().union(*(set(v) for v in self.roles.values())):
             raise ValueError('Held V physical overlap')
-        d.write(self.out/'source_fold.json',dict(held_RX=1,fit_RX=list(d.FIT),effective_counts={k:len(v) for k,v in self.roles.items()},
+        d.write(self.out/'source_fold.json',dict(held_RX=self.held,fit_RX=list(self.fit),effective_counts={k:len(v) for k,v in self.roles.items()},
             held_V_count=5400,held_L_used=False,source_loader_generators='named private streams; same both arms',U_truth_read=False,target_access=False))
     def source_contract(self,expected,ctx):
         if any(not set(v)<=set(expected['role_ids'][k]) for k,v in self.roles.items()) or not set(self.held_ids)<=set(expected['role_ids']['V']):
             raise ValueError('Derived source roles escape original legal carrier')
-        return dict(expected,role_ids=self.roles,source_receivers=list(d.FIT),held_RX=1,carrier_contract_ref=d.SOURCE,
+        return dict(expected,role_ids=self.roles,source_receivers=list(self.fit),held_RX=self.held,carrier_contract_ref=d.SOURCE,
             native_role_comparison='EXACT_MATCH_CARRIER_THEN_SOURCE_FOLD',held_V_ids=self.held_ids,
             checkpoint_effective_training_contract='Fresh four RX only; held V no updates; no inherited model/teacher')
     def initialize(self,m,c,out):
@@ -95,7 +98,7 @@ class Observer:
         done=d.read(self.out/'completion.json')
         if done['optimizer_steps']!=4440 or self.steps!=4440 or done['initialization']!='scratch' or done['checkpoint_sources']:
             raise ValueError('Fixed fresh E20 required')
-        expected={(tx,rx,day) for tx in range(6) for rx in d.FIT for day in (1,2,3)}
+        expected={(tx,rx,day) for tx in range(6) for rx in self.fit for day in (1,2,3)}
         if set(self.coverage)!=expected or sum(self.coverage.values())!=568320 or self.observed['L_s']!=568320:
             raise ValueError('Actual L TX/RX/day coverage incomplete')
         if self.observed['U_s']!=396368:raise ValueError('Original source-fold U exposure budget changed')
@@ -113,14 +116,14 @@ class Observer:
                 for i in range(len(y)):
                     output.append(dict(label=int(truth[i]),prediction=int(pred[i]),day=int(meta['day_i'][i]),
                         eq=int(meta['eq_i'][i]),RX=int(meta['rx_i'][i]),sig_i=int(meta['sig_i'][i]),base_index=int(meta['base_index'][i]),margin=float(margin[i])))
-        if len(output)!=5400 or any(v['RX']!=1 for v in output):raise ValueError('Full held source V5400 required')
+        if len(output)!=5400 or any(v['RX']!=self.held for v in output):raise ValueError('Full held source V5400 required')
         cm=torch.zeros(6,6,dtype=torch.long)
         for v in output:cm[v['label'],v['prediction']]+=1
         correct=int(cm.diagonal().sum());f1=2*cm.diagonal().double()/(cm.sum(0)+cm.sum(1)).clamp_min(1)
         held=dict(count=5400,correct=correct,accuracy=correct/5400,macro_f1=float(f1.mean()),mean_CE=ce/5400,confusion=cm.tolist())
         d.write(self.out/'held_V_predictions.json',dict(role='V',count=5400,readout='FINAL defaulthead',records=output))
         last=self.epochs[-1];e=self.m.id_backbone.encoder
-        result=dict(status='SOURCE_FOLD_COMPLETE',arm=self.c['arm'],held_V=held,seen_V=done['final_source_metrics'],
+        result=dict(status='SOURCE_FOLD_COMPLETE',arm=self.c['arm'],held_RX=self.held,fit_RX=list(self.fit),held_V=held,seen_V=done['final_source_metrics'],
             complete_health=True,optimizer_updates=4440,epochs=20,checkpoint_sources=[],head_fit_updates=0,
             target_access=False,U_truth_read=False,L_forward_packets=1136640,training_loader_packets=dict(self.observed),
             student_U_forward_packets=e._ordinary_train_packets-1136640,
@@ -133,7 +136,10 @@ class Observer:
         return result
 
 
-def train(c):
+def train(c,design=None,model_api=None):
     observer=Observer(c)
-    shared_train(c,design=d,model_api=api,observer=observer)
+    design=d if design is None else design
+    view=SimpleNamespace(**{k:getattr(design,k) for k in ('validate','make_args','read','write','SOURCE','FULL_FP32_POLICY','ROOT','UPDATES')},
+        source_validation=lambda model,loader,device:d.source_validation(model,loader,device,fit=observer.fit))
+    shared_train(c,design=view,model_api=api if model_api is None else model_api,observer=observer)
     return observer.finish()

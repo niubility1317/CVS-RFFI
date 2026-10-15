@@ -36,31 +36,32 @@ with tarfile.open(archive) as f:
  f.extractall(release)
 python='/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python'
 env=dict(os.environ,PYTHONPATH=str(release),CUDA_VISIBLE_DEVICES='',OMP_NUM_THREADS='2',MKL_NUM_THREADS='2',OPENBLAS_NUM_THREADS='2')
-subprocess.run([python,'-m','compileall','-q',str(release/'experiments/cvs_ordinary_fold20')],cwd=release,env=env,check=True)
+subprocess.run([python,'-m','compileall','-q',*[str(release/v) for v in c['folders']]],cwd=release,env=env,check=True)
 preflight=dict(status='VERIFIED',archive_transfer='VERIFIED',remote_compile='PASS',ordinary_account=True,commit=c['commit'],read_at=time.time(),
  GPU_state=subprocess.check_output(['nvidia-smi','--query-gpu=index,memory.free','--format=csv,noheader,nounits'],text=True),disk_free_bytes=shutil.disk_usage(project).free)
 (release/'preflight.json').write_text(json.dumps(preflight,indent=2)+'\n')
-command=[python,'-u',str(release/'experiments/cvs_ordinary_fold20/runner.py')];log=release/'dispatcher.log'
+command=[python,'-u',str(release/c['package']/'runner.py')];log=release/'dispatcher.log'
 with log.open('x') as stream:child=subprocess.Popen(command,cwd=release,env=env,stdin=subprocess.DEVNULL,stdout=stream,stderr=subprocess.STDOUT,start_new_session=True)
 receipt=dict(status='SUBMITTED',pid=child.pid,cwd=str(release),argv=command,log=str(log),run_root=str(root),commit=c['commit'])
 (release/'submit.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
 '''
 
 
-def publish(output):
+def publish(output,design=None,package='experiments/cvs_ordinary_fold20',folders=None):
+    d=globals()['d'] if design is None else design
     output=Path(output);output.mkdir(parents=True,exist_ok=True)
-    folder='experiments/cvs_ordinary_fold20'
-    if subprocess.check_output(['git','status','--porcelain','--',folder],cwd=d.ROOT,text=True).strip():raise ValueError('Commit actual code/config first')
+    folder=package;folders=[folder] if folders is None else folders
+    if subprocess.check_output(['git','status','--porcelain','--',*folders],cwd=d.ROOT,text=True).strip():raise ValueError('Commit actual code/config first')
     spec=d.read(d.ROOT/folder/'registration.json')
     if [v['config'] for v in spec['rows']]!=[d.config(r) for r in d.rows()]:raise ValueError('Registered native configurations differ')
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=d.ROOT,text=True).strip()
-    archive=output/(d.RELEASE+'.tar.gz');names=subprocess.check_output(['git','ls-files',folder],cwd=d.ROOT,text=True).splitlines()
+    archive=output/(d.RELEASE+'.tar.gz');names=subprocess.check_output(['git','ls-files',*folders],cwd=d.ROOT,text=True).splitlines()
     with archive.open('xb') as raw:
         with tarfile.open(fileobj=raw,mode='w:gz') as tar:
             for name in names:
                 if Path(name).suffix in ('.py','.json'):tar.add(d.ROOT/name,arcname=name,recursive=False)
             blob=(commit+'\n').encode();m=tarfile.TarInfo('release_commit.txt');m.size=len(blob);tar.addfile(m,io.BytesIO(blob))
-    settings=dict(project=d.PROJECT,release=d.RELEASE,run=d.RUN,source=d.SOURCE,archive=archive.name,
+    settings=dict(project=d.PROJECT,release=d.RELEASE,run=d.RUN,source=d.SOURCE,archive=archive.name,package=package,folders=folders,
         sha256=hashlib.sha256(archive.read_bytes()).hexdigest(),commit=commit)
     d.write(output/'package.json',settings)
     subprocess.run(['scp',*SSH,str(archive),'N607:'+d.PROJECT+'/releases/'+archive.name],check=True,timeout=60)

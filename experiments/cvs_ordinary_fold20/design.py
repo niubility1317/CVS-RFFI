@@ -70,8 +70,9 @@ def qualify(results):
         formal_target_qualified=False,goal_completed=False,automatic_extension=False)
 
 
-def source_validation(model,loader,device):
+def source_validation(model,loader,device,fit=None):
     import torch
+    fit=FIT if fit is None else tuple(fit)
     hits=total=0;groups={};model.eval()
     with torch.no_grad():
         for x,y,domain,meta in loader:
@@ -79,6 +80,6 @@ def source_validation(model,loader,device):
             for r in meta['rx_i'].unique().tolist():
                 mask=meta['rx_i']==r;v=groups.setdefault(str(r),[0,0]);v[0]+=int(correct[mask].sum());v[1]+=int(mask.sum())
             hits+=int(correct.sum());total+=len(y)
-    if total!=21600 or set(groups)!=set(map(str,FIT)):raise ValueError('Seen V must exclude held RX1')
+    if total!=21600 or set(groups)!=set(map(str,fit)):raise ValueError('Seen V must exclude held source RX')
     rates={k:v[0]/v[1] for k,v in groups.items()}
     return dict(source_val_count=total,source_val_accuracy=hits/total,source_val_rx_accuracy=rates,source_val_worst_rx=min(rates.values()))

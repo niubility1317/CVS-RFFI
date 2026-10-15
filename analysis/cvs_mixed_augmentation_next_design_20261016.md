@@ -27,3 +27,7 @@
 ## RX1首轮实际通过
 
 20261016-phase1-ordinary-augmentation-RX1-e20-s2026092701-m2-r01已完成并独立复算：N0/N1 heldV76.2222/82.6296%，+6.4074pp；macroF1+7.3596pp，seenV-.3241pp。三day全正，TX0-11.8889pp/TX1-1.3333pp等负结果保留。40epoch/8880step/5994L-U batch全解析/逐条匹配，0 target，源资格PASS；其余4fold与正式混合仍未开始。额外CP张量比对缺依赖已标REJECTED_EXTRA_GATE取消阻塞，未重训或重读IQ。下一步仅按原方案确认其他源RX，不能直接宣称Ag/As联合或跨seed有效。
+
+## 其余四个源 RX 确认已落实
+
+已登记 `20261016-phase1-ordinary-augmentation-sourceRX-confirm-e20-s2026092701-m8-r01`，固定heldRX3/4/6/8各N0/N1，共8个独立scratch E20=13L+7U、每行4440更新。只参数化held/fit RX，当前RAW_HZ/LS.01、默认joint160/cos、RDrop/原ordinary/ownEMA/U规则及命名随机流保持；RX1仅复用已有合法结果，不加载权重、不重测。全部五RX训练/probe/U/val/calibration路径排除检查和当前实际图回归通过，唯一P0/P1增量审查PASS。本轮只源域，无target；初态/运行/预算/全部L/U实际序列完整性由原执行闭环核实。全局前三门槛沿用原计划，meanF1>=0与每fold seenV loss<=.5pp已在新数据前显式固定。新8行160model-epochs/35520updates；加历史RX1共10个独立E20模型，不能说成单模型E200。

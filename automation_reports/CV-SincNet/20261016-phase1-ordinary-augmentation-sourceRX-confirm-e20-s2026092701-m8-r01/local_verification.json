@@ -1,0 +1,83 @@
+{
+  "status": "PASS",
+  "all_RX_loader_masks": [
+    {
+      "held_RX": 1,
+      "all_five_loaders_exclude_held": true,
+      "held_V_only": true,
+      "U_TX_and_IQ_reads": 0
+    },
+    {
+      "held_RX": 3,
+      "all_five_loaders_exclude_held": true,
+      "held_V_only": true,
+      "U_TX_and_IQ_reads": 0
+    },
+    {
+      "held_RX": 4,
+      "all_five_loaders_exclude_held": true,
+      "held_V_only": true,
+      "U_TX_and_IQ_reads": 0
+    },
+    {
+      "held_RX": 6,
+      "all_five_loaders_exclude_held": true,
+      "held_V_only": true,
+      "U_TX_and_IQ_reads": 0
+    },
+    {
+      "held_RX": 8,
+      "all_five_loaders_exclude_held": true,
+      "held_V_only": true,
+      "U_TX_and_IQ_reads": 0
+    }
+  ],
+  "all_eight_native_configs": true,
+  "original_RX1_regression": {
+    "status": "PASS",
+    "rows": [
+      {
+        "arm": "N0",
+        "use_aug": false,
+        "label_smoothing": 0.01,
+        "L_forwards": 256
+      },
+      {
+        "arm": "N1",
+        "use_aug": true,
+        "label_smoothing": 0.01,
+        "L_forwards": 256
+      }
+    ],
+    "initial_state_tensors": 198,
+    "synthetic_network_forwards": 512,
+    "synthetic_augmentation_packets": 128,
+    "protocol_negatives": 5,
+    "private_RNG_preserved": true,
+    "same_sampler_seed_and_permutation": true,
+    "same_IQ_RDrop_pairs": true,
+    "default_head_and_SIG_gradients": true,
+    "U_TX_and_IQ_not_read_by_filter": true,
+    "checkpoint_loads": 0,
+    "real_IQ_packets": 0,
+    "optimizer_steps": 0
+  },
+  "actual_graph_held_RX": 3,
+  "initial_state_tensors": 198,
+  "same_original_initial_weights": true,
+  "synthetic_network_forwards": 1024,
+  "synthetic_augmentation_packets": 128,
+  "negative_cases": 14,
+  "default_head_SIG_gradients": true,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "optimizer_steps": 0,
+  "target_access": false,
+  "independent_P0P1_review": "PASS: one delta review; no direct defects; checks rerun1024 synthetic forwards/128 augmentation packets/14 negative cases",
+  "total_known_local_synthetic_network_forwards": 2048,
+  "total_known_local_synthetic_augmentation_packets": 256,
+  "N607_preflight": "PASS ordinary direct account/project/GPU readback",
+  "local_compile": "PASS common and new packages; embedded remote publisher syntax PASS",
+  "registration_fields": "VALID launch-ready; not scientific permission",
+  "real_checkpoint_smoke": "Each worker first model step: own fresh fourRX checkpoint save/reload, zeros2; PASS immediately continues"
+}
