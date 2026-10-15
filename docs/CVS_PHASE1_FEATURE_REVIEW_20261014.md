@@ -501,3 +501,12 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 2026-10-15 Sinc优化器首种子完整结果：SINC_UNITS83.354762% vs同路径SIG_TIME83.636905%，−0.282143个百分点；修正4258/引入4732，净−474。原Sinc48参数、EMA核与实际z确有更新，sourcePASS未转为本seed泛化收益，n1不替代3seed。全部54指标/504000决策、22200native步骤和3996真实L/U层梯度独立核实。[完整首结果](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/final_analysis.md)。源决定1a3be6d2568939ff56c38c8bc8dc9a879b7abe76推送后才读取首新目标分数；已按该预定决定原样启动02/03共4模型，真实PID/CWD/argv/GPU及日志增长核实，观察epoch15/16/14/16，无改参/重训01。[运行证据](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/launch_verified.json)。84目标仍未达成。
+
+
+## 下一训练机制的来源与重复路线排除
+
+2026-10-15，在读取本轮 Sinc 剩余种子的目标数值之前，已核对另一分支的 `cvs_cross_rx_feedback` 与 `cvs_feedback_teacher` 实际公式：前者按源 L 导数给 U 微组分配权重，后者用源 L 反馈调整教师。因此本对话不再把这两类方法作为独立新路线发布；本次没有重新核验它们的完整性能或当前运行状态。一般原理可见 [Ren 等的样本重加权论文](https://proceedings.mlr.press/v80/ren18a.html)与 [Meta Pseudo Labels](https://openaccess.thecvf.com/content/CVPR2021/html/Pham_Meta_Pseudo_Labels_CVPR_2021_paper.html)，不能直接迁移其收益结论。
+
+下一待检验假设为 dropout 两次随机前向的一致性。合法源依据仍是既有单模型 L720 的独立末端 dropout 回放：feature-feature area 噪声/clean RMS 31.9940%、实际残差160为25.2901%。该证据只覆盖隔离扰动，不能证明完整训练模式存在同幅度偏差，更不能证明它导致目标误差。[R-Drop 原论文](https://proceedings.neurips.cc/paper/2021/hash/5a66b9200f29ac3fa0ae244cc2a51b39-Abstract.html)以同输入的两个 dropout 子模型输出之间的双向 KL 作训练约束；这是一般方法依据，不是本任务的已验证效果。
+
+先做小规模 L-only 冻结源检验：预定义原DRO首SIG seed2026092701 final50父，测实际随机前向差异和原骨干导数，0训练/头拟合/optimizer更新，无U/V/目标。此处仅固定研究来源与父选择，尚未实现、登记或发布新实验。若后续证据支持训练，最低对照必须同为两次 L 前向、平均两次CE；变体仅加对称KL，保持 SIG_TIME、默认联合头、旧门控/ownEMA/U损失/cos与每模型≤50轮，额外成本单列。不能用另一个前向或额外监督量解释候选增益，也不把KL降低当特征迁移证明。

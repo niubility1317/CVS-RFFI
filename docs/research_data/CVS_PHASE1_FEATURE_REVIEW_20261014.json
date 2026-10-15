@@ -82440,16 +82440,16 @@
   ],
   "next_actions_max2": [
     "原样完成Sinc单位剩余02/03两臂：固定50轮、默认头clean自动truth-last，合并完整3seed正负结果、配对/样本SD/RXday/F1/错误与实际成本；不按首种子负差改变健康运行。",
-    "依据合法源身份监督和实际L/U导数研究下一项不同训练机制；不复用失败软关系公式、不扫描熵/投影参数，不把同RX邻包索引当跨RX同步正样本或U真值。"
+    "先实现固定SIG_TIME的L-only随机失活一致性源检验；R-Drop只作为待证伪的训练假设，不重复跨RX元重加权/反馈教师，不把中间扰动幅度当DG因果证明。"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "按已固定源PASS决定发布全部三臂02/03，复用已验证适配器和本轮N607预检，核对实际PID/CWD/argv/GPU/loggrowth；不重训01或据目标改变矩阵",
-    "源决定推送后回收首seed完整默认头clean结果、全部曲线和误差迁移；后续合并预定义三seed独立统计与实际feature witness检验84%，保留全部正负结果"
+    "原样完成Sinc单位剩余02/03两臂：固定50轮、默认头clean自动truth-last，合并完整3seed正负结果、配对/样本SD/RXday/F1/错误与实际成本；不按首种子负差改变健康运行。",
+    "先实现固定SIG_TIME的L-only随机失活一致性源检验；R-Drop只作为待证伪的训练假设，不重复跨RX元重加权/反馈教师，不把中间扰动幅度当DG因果证明。"
   ],
   "current_priority": {
-    "at": "2026-10-15T01:26:58.313Z",
+    "at": "2026-10-15T01:43:16.529Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": {
@@ -85225,6 +85225,47 @@
       "first_seed_retrained": false,
       "report": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/final_analysis.md",
       "goal84": false
+    },
+    "next_dropout_consistency": {
+      "status": "SOURCE_DIAGNOSTIC_DESIGN_ONLY_NOT_IMPLEMENTED_OR_LAUNCHED",
+      "fixed_at": "2026-10-15T01:43:16.529Z",
+      "before_remaining_Sinc_target_numeric_read": true,
+      "hypothesis": "Two stochastic dropout realizations of the same source input should not produce excessive default-head distribution inconsistency; whether regularizing it improves DG remains unproven",
+      "source_basis": {
+        "run_id": "20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01",
+        "source_report": "automation_reports/CV-SincNet/20261014-phase1-source-dropout-descriptor-manysig-s01-m1-r01/final_analysis.md",
+        "models": 1,
+        "physical_L_packets": 720,
+        "isolated_dropout_replays": 8,
+        "feature_feature_area_noise_over_clean_RMS": 0.31994,
+        "added_residual160_noise_over_clean_RMS": 0.252901,
+        "not_full_training_mode_or_DG_proof": true
+      },
+      "external_source": "https://proceedings.neurips.cc/paper/2021/hash/5a66b9200f29ac3fa0ae244cc2a51b39-Abstract.html",
+      "proposed_location": "Training objective only; fixed SIG_TIME and normal jointly-trained default head; no inference branch",
+      "minimum_training_control_if_later_warranted": "Same two stochastic L forwards: averaged two CE control vs averaged CE plus symmetric KL; native oldgate/ownEMA/U loss/cos unchanged, <=50 epochs. Extra L forwards/backwards measured.",
+      "first_next_action": "Implement a small L-only frozen-source check of actual full-dropout discrepancy and ftheta derivatives; no model/head/optimizer updates or U/V/query.",
+      "predefined_source_parent": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/SIG_TIME-s2026092701/source/final_ssdg.pth",
+      "parent_rule": "Predefined lowest seed fixed final50 source lineage, not a best-target parent. Matching remaining SIG parents only if original source-only follow-up rule is later registered.",
+      "feature_claim_boundary": "KL reduction and nonzero backbone gradients do not prove export or DG gain; an eventual trained variant still requires actual parameter/export witnesses and matched three-seed independent clean scoring",
+      "no_new_run_registration_or_release": true
+    },
+    "meta_route_duplication_check": {
+      "status": "CODE_DUPLICATION_FOUND_NO_NEW_LAUNCH",
+      "checked_at": "2026-10-15T01:43:16.529Z",
+      "branch": "origin/codex/report-physical-ssl-clean-delivery-20261011",
+      "files": [
+        "experiments/cvs_cross_rx_feedback/method.py",
+        "experiments/cvs_cross_rx_feedback/design.py",
+        "experiments/cvs_feedback_teacher/method.py",
+        "experiments/cvs_feedback_teacher/design.py"
+      ],
+      "observed": "Existing detached optimizer-metric L-guided U microgroup reweighting and finite-difference teacher feedback; not relabelled as new independent mechanisms in this thread",
+      "current_external_run_performance_not_reaudited": true,
+      "primary_sources": [
+        "https://proceedings.mlr.press/v80/ren18a.html",
+        "https://openaccess.thecvf.com/content/CVPR2021/html/Pham_Meta_Pseudo_Labels_CVPR_2021_paper.html"
+      ]
     }
   }
 }
