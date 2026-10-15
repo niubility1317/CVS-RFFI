@@ -367,15 +367,15 @@
   ],
   "registered_at": "2026-10-15T03:17:26+00:00",
   "result": {
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "evidence_ref": "source_results_analysis.json",
-    "rows_complete": 2,
+    "rows_complete": 3,
     "ordered_modes": [
       "ELEMENT",
       "NONE",
       "LOCKED"
     ],
-    "primary_source_qualification": null,
+    "primary_source_qualification": false,
     "target_access": false,
     "U_truth_read": false,
     "goal84_completed": false

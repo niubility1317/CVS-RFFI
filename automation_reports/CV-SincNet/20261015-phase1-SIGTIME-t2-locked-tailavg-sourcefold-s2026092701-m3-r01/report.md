@@ -1,6 +1,6 @@
 # SIG_TIME 时间共享随机失活与同轨迹平均
 
-状态 **RUNNING / 启动 VERIFIED**。下文保留预登记。用户2026-10-15新增报告指定下一批优先研究同轨迹平均和t2时间共享失活，R-Drop第三。本轮只实施前两项，保持现有SIG_TIME+CENTER25K、默认cosine头联合训练和原hidden-U任务。84%仍是正式clean三seed目标；该真实源留出训练不替代正式结果。
+状态 **ANALYZED / 完整源三条件结果已核实**。下文保留预登记。用户2026-10-15新增报告指定下一批优先研究同轨迹平均和t2时间共享失活，R-Drop第三。本轮只实施前两项，保持现有SIG_TIME+CENTER25K、默认cosine头联合训练和原hidden-U任务。84%仍是正式clean三seed目标；该真实源留出训练不替代正式结果。
 
 当前代码确认真实位置为`id_backbone.encoder.core.id_backbone.t2.drop`，原为逐元素`Dropout(0.10)`，t2输出同时进入原主路径和签名。签名取点/6维1×1投影/tanh/四窗口/112→160路径全部保持。局部算子假设：时间共享掩码不向恒定通道制造随机时间跳变；投影/tanh/其他dropout存在，不能推出最终签名无偏或DG必然提高。新意候选在CVS时序签名与训练噪声的匹配关系，通道dropout本身已有[PyTorch2.1实现](https://docs.pytorch.org/docs/2.1/generated/torch.nn.Dropout1d.html)，时间掩码在[Gal与Ghahramani](https://arxiv.org/abs/1512.05287)已有先例，不称全局首创。
 
@@ -25,7 +25,7 @@
 <!-- SOURCE_RESULTS_START -->
 
 
-已完成 2/3 条件的完整源训练与导出，解析 8880 条连续step记录及 40 条epoch记录。其余条件按原计划继续，完整矩阵资格待定，不将部分结果当完整比较。
+已完成 3/3 条件的完整源训练与导出，解析 13320 条连续step记录及 60 条epoch记录。所属进程自然结束，三次真实checkpoint no-query smoke、完整矩阵与冻结产物核实。
 
 
 | 条件 | 导出 | heldRX1准确率 | Macro-F1 | 错误数 | meanCE | 最差day |
@@ -44,6 +44,12 @@
 
 | NONE | TAIL_AVG | 70.555556% | 69.190096% | 371 | 1.23032372 | 62.619048% |
 
+| LOCKED | FINAL | 67.222222% | 64.835834% | 413 | 1.62008619 | 60.476190% |
+
+| LOCKED | EMA | 66.349206% | 63.580230% | 424 | 1.53513831 | 59.761905% |
+
+| LOCKED | TAIL_AVG | 66.984127% | 64.445446% | 416 | 1.64101497 | 60.714286% |
+
 
 | 对照差（候选减参考） | ΔCE | Δ错误 | 修正错误 | 新增错误 |
 
@@ -57,6 +63,28 @@
 
 | NONE_TAIL_AVG minus NONE_FINAL | -0.01343018 | -1 | 4 | 3 |
 
+| LOCKED_EMA minus LOCKED_FINAL | -0.08494788 | +11 | 3 | 14 |
+
+| LOCKED_TAIL_AVG minus LOCKED_FINAL | +0.02092878 | +3 | 2 | 5 |
+
+| LOCKED_FINAL minus ELEMENT_FINAL | -0.18706976 | -102 | 120 | 18 |
+
+| LOCKED_EMA minus ELEMENT_EMA | -0.16240742 | -82 | 106 | 24 |
+
+| LOCKED_TAIL_AVG minus ELEMENT_TAIL_AVG | -0.16327038 | -100 | 119 | 19 |
+
+| LOCKED_FINAL minus NONE_FINAL | +0.37633229 | +41 | 54 | 95 |
+
+| LOCKED_EMA minus NONE_EMA | +0.37028741 | +64 | 42 | 106 |
+
+| LOCKED_TAIL_AVG minus NONE_TAIL_AVG | +0.41069125 | +45 | 52 | 97 |
+
+| NONE_FINAL minus ELEMENT_FINAL | -0.56340205 | -143 | 163 | 20 |
+
+| NONE_EMA minus ELEMENT_EMA | -0.53269483 | -146 | 160 | 14 |
+
+| NONE_TAIL_AVG minus ELEMENT_TAIL_AVG | -0.57396163 | -145 | 166 | 21 |
+
 
 以上为原始1260个固定sourceL包的默认头读出，heldRX1全程未参与训练。每包物理ID/label/pred保存在远端source_readouts；独立从全部预测重算错误/混淆/F1/day和paired修正破坏，全部吻合。四tail完整200state逐项FP64重算与平均导出逐位一致；epoch20与native final相同、EMA导出与本轨迹原EMA相同。没有新增IQ读取、推理或训练。
 
@@ -68,6 +96,16 @@ NONE：final训练LCE=0.01441933；tail各epoch与FINAL预测差异数[17:24, 18
 
 NONE四个已观察tail状态：始终正确868包、始终错误345包、预测发生变化54包、最终错但之前对27包；EMA/AVG分别修正其中始终错误包5/0个。仅描述此固定四点，不概括全部训练状态。
 
-这是部分row结果；LOCKED与两个控制尚未齐全，未作候选晋级、窗口选择或正式target判断。
+LOCKED：final训练LCE=0.01642865；tail各epoch与FINAL预测差异数[17:42, 18:21, 19:6, 20:0]。F71相对初值参数位移11.418398，AVG相对FINAL位移0.012903559；W也正常联合更新。参数变化只证明实际学习接线，不代替泛化收益。
+
+LOCKED四个已观察tail状态：始终正确819包、始终错误406包、预测发生变化55包、最终错但之前对7包；EMA/AVG分别修正其中始终错误包1/0个。仅描述此固定四点，不概括全部训练状态。
+
+固定主机制源资格：**未通过**。判据保持LOCKED_FINAL同时比ELEMENT_FINAL和NONE_FINAL错误更少、meanCE不升，三条件final训练LCE≤.5。
+
+关闭本固定LOCKED候选，不扫p/层位/尾段窗口，不以EMA/AVG救援主机制；平均导出及对照中的正迹象单独保留。
+
+明确保留NONE对照的正迹象：相对ELEMENT_FINAL修正163个错误、新增20个，净少143个错误，准确率+11.349206个百分点、CE-0.56340205。此处5/6类别提升、1类相同，三day均提升；这仍仅是1seed/1heldRX的发现，须另行固定独立源确认，不能在本失败主假设内回改资格。
+
+四个尾段状态始终错误包分别为ELEMENT501/NONE345/LOCKED406；平均导出没有修正其中任一包。当前固定窗口的终点波动不足以解释主要剩余错误，不据此扫描其他平均窗口。时间共享噪声优于逐点噪声但弱于无噪声，支持优先检验该路径对训练噪声的敏感性；未证明路径几何破坏的因果机制。
 
 完整逐epoch源曲线见source_complete_curves.csv，逐导出指标和配对错误见同名CSV，聚合机器证据见source_results_analysis.json。仅1seed/1heldRX，多时点复用同1260包；未读target/U真值，未另训分类头，84%目标仍active。
