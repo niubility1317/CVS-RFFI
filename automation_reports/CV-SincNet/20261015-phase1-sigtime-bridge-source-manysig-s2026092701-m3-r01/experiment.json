@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Active Phase1 goal explicitly requests frozen source mechanism/error/margin/branch/gate attribution and actual figures. Source-only follow-up to already authorized scratch E50 HQ comparison; no target access, new training or teacher bank.",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "6c2933bb4089695181057837914fd7e426d98902",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; nativeLinuxN607; Windowsnative localvalidation",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_bridge_teaching_source_20261015_r01"
@@ -779,5 +779,19 @@
     "NOMINAL row has no CE comparator at its first pass and explicitly records null/count0 rather than inventing self-comparison. CE and SIG rows have the actual matched CE full prediction comparator.",
     "Actual training gradients/gates/full curves are read from original main training artifacts, not replayed optimizer updates. Scientific figures rendered from actual complete artifacts only."
   ],
-  "registered_at": "2026-10-15T10:48:51+00:00"
+  "registered_at": "2026-10-15T10:48:51+00:00",
+  "source_result": {
+    "status": "ANALYZED",
+    "evidence": "E:\\type10-7\\local_artifacts\\cvs_bridge_teaching_mechanism_20261015",
+    "forward_packets": 56882,
+    "seconds": 50.25683101196773,
+    "optimizer_updates": 0,
+    "source_only": true,
+    "seed_count": 1,
+    "PID_live_window_observed": false,
+    "terminal_artifacts_verified": true,
+    "raw_scalar_records": 25920,
+    "local_SIG_low_gain_packets": 4,
+    "no_formal_performance_claim": true
+  }
 }
