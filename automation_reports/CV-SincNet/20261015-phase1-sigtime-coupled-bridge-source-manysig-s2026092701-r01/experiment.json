@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "User authorized hierarchical identity transfer and same-channel HQ/grouped SIG study in attachment17f04499. This is its legal source-only zero-update measurement. Existing eight-position expansion failure remains unchanged; no target-based choice of parent or source settings.",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "baae811ff715831a51c86b13a488f5a2cab3a78c",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; nativeLinuxN607; Windowsnative localvalidation",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_coupled_bridge_source_20261015_r01"
@@ -388,5 +388,14 @@
     "No new model/head/module, no optimizer, all eval/student+ownEMA states unchanged. No new tests of existing parent formal views.",
     "This is authorized source diagnosis, not a feasibility certificate, approval flow or extra release gate. Actual D/E E50 training remains pending."
   ],
-  "registered_at": "2026-10-15T06:52:55+00:00"
+  "registered_at": "2026-10-15T06:52:55+00:00",
+  "observed_result": {
+    "status": "ANALYZED",
+    "forward_packets": 36000,
+    "seconds": 34.4096532179974,
+    "optimizer_updates": 0,
+    "source_only": true,
+    "query_read": false,
+    "model_seed": 2026092701
+  }
 }
