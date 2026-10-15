@@ -105,7 +105,7 @@ def train(c,design=None,model_api=None,observer=None,data_adapter=None):
             write(out/'resolved_config.json',dict(c,pid=os.getpid(),cwd=os.getcwd(),python=sys.executable,
                 commit=(ROOT/'release_commit.txt').read_text().strip(),torch_version=torch.__version__,native_fitted_probes_disabled=diagnostic_guard['active'],
                 cuda_visible_devices=os.environ.get('CUDA_VISIBLE_DEVICES'),total_parameters=sum(p.numel() for p in m.parameters()),
-                hardware=torch.cuda.get_device_name(dev),backend_flags=actual_flags(),native_args_ref=str(out/'resolved_native_args.json'),execution_policy=POLICY,config=c,actual_feature_extractor=m._feature_learning_report,L_context_steps=m._feature_l_steps,mask_counts=m._feature_mask_counts,identity_input_policy=m._identity_input_policy,baseline_recipe='historicaloldgate+EMA+cos',label_epochs=33,pseudo_epochs=17))
+                hardware=torch.cuda.get_device_name(dev),backend_flags=actual_flags(),native_args_ref=str(out/'resolved_native_args.json'),execution_policy=POLICY,config=c,actual_feature_extractor=m._feature_learning_report,L_context_steps=m._feature_l_steps,mask_counts=m._feature_mask_counts,identity_input_policy=m._identity_input_policy,baseline_recipe=c['baseline_recipe'],label_epochs=int(a.label_epochs),pseudo_epochs=int(a.pseudo_epochs)))
             write(out/'initialization.json',dict(scratch_only=True,checkpoint_sources=[],ancestors=[],source_roles='EXACT_MATCH',target_contact=False,teacher_origin='own scratch student only',seed=c['model_seed']))
             print('SMOKE PASS own scratch checkpoint; query_read=false',flush=True)
             return m
@@ -152,7 +152,7 @@ def train(c,design=None,model_api=None,observer=None,data_adapter=None):
         metrics=source_validation(m,state['ctx']['val_loader'],device)
         write(out/'completion.json',dict(status='SOURCE_TRAINED',epoch=50,checkpoint=str(out/'final_ssdg.pth'),
             elapsed_seconds=time.time()-started,final_source_metrics=metrics,target_access=False,target_evaluated=False,native_fitted_probes_disabled=True,native_disabled_probe_calls=diagnostic_guard['disabled_calls'],head_fit_updates=0,
-            checkpoint_sources=[],config=c,logged_steps=state.get('steps',0),optimizer_steps=payload['a1_ema_successful_updates'],feature_extractor=m._feature_learning_report,L_context_steps=m._feature_l_steps,mask_counts=m._feature_mask_counts,identity_input_policy=m._identity_input_policy,baseline_recipe='historicaloldgate+EMA+cos',label_epochs=33,pseudo_epochs=17,final_training_L_CE=state['final_L_CE_sum']/222,ancestors=[],initialization='scratch'))
+            checkpoint_sources=[],config=c,logged_steps=state.get('steps',0),optimizer_steps=payload['a1_ema_successful_updates'],feature_extractor=m._feature_learning_report,L_context_steps=m._feature_l_steps,mask_counts=m._feature_mask_counts,identity_input_policy=m._identity_input_policy,baseline_recipe=c['baseline_recipe'],label_epochs=int(a.label_epochs),pseudo_epochs=int(a.pseudo_epochs),final_training_L_CE=state['final_L_CE_sum']/222,ancestors=[],initialization='scratch'))
         write(out/'source_frozen.json',dict(status='SOURCE_FROZEN',config=c,checkpoint=str(out/'final_ssdg.pth'),epoch=50,selection='final_only',target_access=False))
 
 
