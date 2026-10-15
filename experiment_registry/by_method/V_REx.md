@@ -6,4 +6,5 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|固定 SIG_TIME：风险方差剩余两模型源复核|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-source-risk-variance-manysig-s0203-m2-r01/report.md)|
 |固定 SIG_TIME：接收机 CE 风险方差源端证伪|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-source-risk-variance-manysig-s2026092701-r01/report.md)|
