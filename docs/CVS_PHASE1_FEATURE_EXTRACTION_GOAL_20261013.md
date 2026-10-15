@@ -313,3 +313,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- SIGTIME_RDROP_DIFFERENCE_SOURCE_RESULT_20261015 -->
 SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIGTIME-rdrop-difference-gradient-sourcefold-s2026092702-m4-r01`；完整 17760 步与 80 model-epoch、默认头、真实 RX1 留出和无 target 核验 VERIFIED。预登记资格 FAIL。DIFFERENCE / FULL_KL / FEATURE_KL / SHRINK 的 RX1 错误分别为 247 / 284 / 291 / 286（各1260）。关闭固定差分梯度算子，不扩种子或用目标评分救跑。当前仅优化 SIG_TIME＋RDrop，既有 E50 RDrop 84.340079% 三种子均值继续保留；总目标仍 ACTIVE。详见相同 run 的 report.md。
+
+
+<!-- SIGTIME_RDROP_RX_EVIDENCE_PREREG_20261015 -->
+固定20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01四条件FULL/LOCAL/SAME_RX/CROSS_RX，下一源seed03各scratch20，RX1全路径先排除，默认头联合训练与旧配方不变。独立RDrop一致性对象假设：保留自包binary KL，在同身份跨RX间传输conditional混淆关系，停止关系质量权重梯度；同RX和跨RX有效配对质量匹配。无差分投影、父模型或target。CPU/CUDA57负例/5资格/198初态及原logits/CE/RNG、零真类raw logit直接关系梯度PASS。新四行尚未发布，科学资格见[同run报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01/report.md)。goal仍active。

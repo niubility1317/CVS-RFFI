@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "CPU": true,
+  "CUDA": true,
+  "protocol_negative_cases_each": 57,
+  "qualification_negative_cases_each": 5,
+  "initial_state_tensors": 198,
+  "native_CE_logits_and_RNG_identical": true,
+  "actual_postaug_input_reused": true,
+  "original_KL_value_and_gradient_exact": true,
+  "binary_KL_unchanged": true,
+  "relation_true_raw_logit_gradient_zero": true,
+  "balanced_same_cross_RX_transport": true,
+  "class_RX_permutation_invariance": true,
+  "synthetic_identity_forwards_per_device": 1024,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "optimizer_steps": 0,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "real_checkpoint_smoke": "Own first worker step; PASS continues immediately",
+  "one_peer_per_selected_anchor_symmetric_permutation": true
+}
