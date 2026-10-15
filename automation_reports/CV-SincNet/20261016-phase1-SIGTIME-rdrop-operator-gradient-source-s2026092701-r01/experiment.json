@@ -1,0 +1,232 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01",
+  "group_id": "phase1-SIGTIME-RDrop-operator-gradient",
+  "display_name": "SIG_TIME＋RDrop：同权重同输入算子梯度诊断",
+  "description": "Fixed own source FULL final20;common paired logits/features for4 existing operators plus CE;isolate local gradient direction/magnitude without training.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "同权重同mask RDrop梯度",
+    "RDrop operator gradient diagnostic"
+  ],
+  "tags": [
+    "SIG_TIME",
+    "RDrop",
+    "source_only",
+    "diagnostic",
+    "no_training",
+    "default_head_joint",
+    "gradient"
+  ],
+  "comparison_group_id": "SIGTIME-RDrop-frozen-operator-gradient",
+  "parent_run_ids": [
+    "20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Continue active goal,latest only SIG_TIME+RDrop. Source-only same-weight/same-L/same-dropout diagnostic preregistered as next action in closed source run;no new training or rescue of failed envelope.",
+  "code": {
+    "commit": "Actual Git HEAD in release_commit.txt",
+    "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
+    "environment": "ordinary N607 CVS-RFFI;CPU-only2threads,loader0",
+    "cwd": "PROJECT/releases/cvs_SIGTIME_rdrop_operator_probe_20261016_r01",
+    "entrypoint": "experiments.cvs_rdrop_operator_probe.runner",
+    "parent_code_commit": "7827a9a6b04764e690ecaf90457666435017c824"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing source contract",
+    "representation": "Existing raw post_sync/noeq clean IQ,256 samples; no explicit CFO identity coordinate; original internal compensation retained",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01/selected_L.json",
+    "label_map_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "roles": {
+      "L_s": "144 unique visible fit L from6300 carrier;subset of actual5040 trained L",
+      "U_s": "0 IQ/label materializations;carrier role handles only",
+      "V": "0 IQ/label materializations;carrier role handles only"
+    },
+    "train_ratio": null,
+    "capsule_id": "existing VALIDATED_ONCE Phase1 capsule manifest; reuse unchanged",
+    "split_id": "original registered source/target physical split; reuse unchanged",
+    "validation_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "parent_training_role_counts": {
+      "L_s": 5040,
+      "U_s": 45360,
+      "V": 21600
+    },
+    "diagnostic_no_new_data_split": true,
+    "held_RX1_access": false
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "forbidden",
+    "external_method_exception": null,
+    "claim_scope": "Local same-weight operator gradients on seen fit L,one fixed source model,4dropout draws/context;no causal/generalization/AdamW-step or newTX claim"
+  },
+  "checkpoint": {
+    "initialization": "Fixed own source FULL final20 loaded read-only;no further training",
+    "sources": [
+      "PROJECT/runs/20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01/FULL-RX1-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "PROJECT/runs/20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01/FULL-RX1-s2026092701/source/source_contract.json",
+    "provenance_verdict": "Parent source_proof before deserialization;own scratch20,fit4RX,ownEMA,0target,final-only,default joint head;diagnostic samples subset ofactual trained L",
+    "selection_rule": "FULL original RDrop control by preregistered role,not source/target score ranking;fixed final20 student",
+    "parent_training_cost": "20model-epochs/4440updates;separate from diagnostic0updates",
+    "real_checkpoint_smoke": "First step2synthetic noquery packets,immediately continue onPASS"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/SIGTIME-RDrop-operator-probe-20261016",
+    "gpu_policy": "CPU-only CUDA_VISIBLE_DEVICES empty;0GPUprocesses,CPU2,loader0",
+    "remote_run_root": "PROJECT/runs/20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01",
+    "remote_log_root": "PROJECT/releases/cvs_SIGTIME_rdrop_operator_probe_20261016_r01/stdout.log",
+    "local_artifact_root": "local_artifacts/cvs_SIGTIME_rdrop_operator_probe_20261016_r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_rdrop_operator_probe/runner.py experiments/cvs_rdrop_operator_probe/configs/request.json",
+    "stop_rule": "Wrong source role/checkpoint,query path,state mutation,nonfinite gradient or runtime failure preserves artifacts and fails;no automatic retry/optimizer/headfit/healthy or unrelated process changes. No performance threshold or parameter tuning."
+  },
+  "expected_artifacts": [
+    "selected_L.json",
+    "CLEAN-s2026101601.json through s2026101604",
+    "NATIVE_AUG-s2026101601.json through s2026101604",
+    "progress.json",
+    "completion.json",
+    "failure.json only on technical failure",
+    "release submit.json",
+    "release stdout.log"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "Loss scalar",
+      "Gradient L2 and cosine vsCE/FULL for logits/joint160/t1/t2/SIG/defaultW",
+      "CE+operator gradient vsCE",
+      "Paired output gradient common/difference energy",
+      "Perpacket CE-opposed gradient count",
+      "All parameter/buffer/gradslot/counter readonly checks"
+    ],
+    "dimensions": [
+      "one source FULL modelseed2026092701",
+      "CLEAN/NATIVE_AUG",
+      "4 fixed dropout draws",
+      "CE/FULL/MEAN/CONFIDENCE/ENVELOPE",
+      "gradient group"
+    ],
+    "prediction_ref": "No classification decisions or performance scoring;differentiable source logits only",
+    "scorer_ref": "Full8batch/240record finite math and paired identities audit,then descriptive aggregation;no truth-side target process",
+    "qualification": "None;no next-candidate threshold. This measures local gradients,not optimizer displacement or causes of previous generalization gap."
+  },
+  "rows": [
+    {
+      "row_id": "FULL-source-final20",
+      "method": "Fixed-source RDrop operator probe",
+      "purpose": "diagnostic",
+      "config": {
+        "run_id": "20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01",
+        "launch_owner": "codex/root/SIGTIME-RDrop-operator-probe-20261016",
+        "source_only": true,
+        "target_access": false,
+        "parent_release": "PROJECT/releases/cvs_SIGTIME_rdrop_margin_envelope_source20_20261016_r01",
+        "parent_commit": "7827a9a6b04764e690ecaf90457666435017c824",
+        "parent_row": {
+          "row_id": "FULL-RX1-s2026092701",
+          "arm": "FULL",
+          "model_seed": 2026092701
+        },
+        "model_release": "PROJECT/releases/cvs_originalSIGTIME_rdrop20_50_20261015_r01",
+        "dependency_release": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02",
+        "fold_release": "PROJECT/releases/cvs_SIGTIME_t2_locked_tailavg_sourcefold_20261015_r01",
+        "checkpoint": "PROJECT/runs/20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01/FULL-RX1-s2026092701/source/final_ssdg.pth",
+        "output_root": "PROJECT/runs/20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01",
+        "contexts": [
+          "CLEAN",
+          "NATIVE_AUG"
+        ],
+        "draw_seeds": [
+          2026101601,
+          2026101602,
+          2026101603,
+          2026101604
+        ],
+        "source_selection": "First2 native L indices in each TX/RX/day cell,fit RX3/4/6/8 only;144 unique L",
+        "input_views": "Clean plus original native normal augmentation configured at min(final20,label13),each augmentation drawn once and reused in both forwards",
+        "dropout": "Same paired native identity-only outputs reused by all4 operators;common seed across clean/aug contexts",
+        "parameters": [
+          "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "id_backbone.encoder.sequence_pool.local_projection.weight",
+          "id_backbone.encoder.core.id_backbone.cls_head.weight"
+        ],
+        "operators": [
+          "FULL",
+          "MEAN",
+          "CONFIDENCE",
+          "ENVELOPE"
+        ],
+        "physical_L_materializations": 144,
+        "synthetic_checkpoint_smoke_packets": 2,
+        "actual_identity_forward_packets": 2304,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "U_IQ_reads": 0,
+        "V_IQ_reads": 0,
+        "held_RX1_IQ_reads": 0,
+        "target_IQ_reads": 0,
+        "interpretation": "Local gradient direction and magnitude on seen fit L and frozen model;not an AdamW update,causal attribution,validation performance or next-candidate selection threshold"
+      },
+      "config_ref": "experiments/cvs_rdrop_operator_probe/configs/request.json",
+      "resolved_config_ref": "PROJECT/runs/20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01/completion.json#config",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": null,
+        "data": null,
+        "augmentation": 2026144811,
+        "support": null,
+        "evaluation": 2026101601
+      },
+      "seed_notes": "One inherited fixed model seed,not4models. Deterministic first2/cell meansno split/data/support RNG. Dropout draw seeds2026101601/02/03/04;augmentation seed=eachdraw+43210 in separate preserved stream;first values shown inseedfields.",
+      "k": null,
+      "scenario": "Source CLEAN and native normal augmentation,0satellite",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0updates;144L IQmaterializations;8paired forwards=2304identity packets;2ownCPsynthetic smoke;40autograd.grad calls,240records;parent20epoch cost separate",
+      "output_root": "PROJECT/runs/20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01",
+      "log_path": "PROJECT/releases/cvs_SIGTIME_rdrop_operator_probe_20261016_r01/stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_rdrop_operator_probe/runner.py experiments/cvs_rdrop_operator_probe/configs/request.json",
+      "expected_artifacts": [
+        "selected_L.json",
+        "CLEAN-s2026101601.json through s2026101604",
+        "NATIVE_AUG-s2026101601.json through s2026101604",
+        "progress.json",
+        "completion.json",
+        "failure.json only on technical failure"
+      ]
+    }
+  ],
+  "notes": [
+    "No new candidate,teacher training,alpha search,model training,head fitting or target access. Failed envelope remains closed.",
+    "Same exact forward graph reused by all4 operators andCE within each draw. CPU144 balanced fit L differs from historical GPU L128 training;not a replay of original step.",
+    "CLEAN and NATIVE_AUG use common dropout seed;native augmentation drawn once in independent preserved seed stream and reused twice. Native augmentation configured at min(final20,label13).",
+    "Common/difference is algebra of two output gradients;different view Jacobians meanno encoder-centre invariance or AdamW-step guarantee.",
+    "Snapshot equality includes persistentstate,nonpersistent buffers,empty gradslots andfeature-step counters;train mode only enablesdropout,0 optimizer/EMA changes.",
+    "CPU actual model9negative cases,30gradient records,288synthetic packets PASS;0realIQ/CP/updates/headfit. One independent new diagnostic P0/P1 PASS;no additional review."
+  ],
+  "registered_at": "2026-10-15T16:53:05+00:00"
+}

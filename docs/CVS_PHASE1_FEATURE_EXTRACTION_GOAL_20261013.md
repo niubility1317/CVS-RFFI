@@ -352,3 +352,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 
 包络闭合后的源证据：FULL/MEAN/CONFIDENCE/ENVELOPE 固定final20原生KL分别 0.035320/0.058906/0.068049/0.068834。后三者LCE/V略好、U接受观察更多，但heldRX1更差；不能仅靠更好V/更大置信度/接受量判定泛化。下一动作先做原版FULL同权重同L同mask的现有算子梯度诊断（尚未执行），不拟合头或救跑包络；仍仅SIG_TIME＋RDrop，goalactive。
+
+
+<!-- RDROP_OPERATOR_PROBE_PREREG_20261016 -->
+原版 FULL 固定源 final20 同权重同输入梯度诊断 20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01 已登记未发布：144fitL，CLEAN/NATIVE_AUG×4固定dropout draws，复用同一paired图比较4旧算子和CE，实际logits/joint160/t1/t2/SIG/defaultW梯度；0更新/头拟合/U/V/RX1/target IQ，父训练20轮单列。不是新训练候选，不救跑包络，不设科学晋级阈值；CPU9负例与真实梯度接线PASS。见[诊断方案](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-operator-gradient-source-s2026092701-r01/report.md)，goalactive。

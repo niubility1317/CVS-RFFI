@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "device": "cpu",
+  "protocol_negative_cases": 9,
+  "actual_gradient_records": 30,
+  "actual_joint160_connected": true,
+  "actual_t1_t2_SIG_defaultW_nonzero": true,
+  "parameter_buffer_and_gradslot_unchanged": true,
+  "synthetic_identity_forward_packets": 288,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "optimizer_steps": 0,
+  "head_fit_updates": 0,
+  "target_access": false
+}
