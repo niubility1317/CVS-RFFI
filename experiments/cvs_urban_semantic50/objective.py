@@ -26,6 +26,8 @@ def validate(clean,urban,labels,receiver,day,quality,margin):
 def mask(labels,receiver,day):
     # [anchor, positive, negative]. Both references share one RX/day; their
     # RX differs from the anchor. Known same-TX packets are never negatives.
+    receiver=receiver.to(device=labels.device,dtype=torch.long)
+    day=day.to(device=labels.device,dtype=torch.long)
     positive=(labels[:,None]==labels[None,:])&(receiver[:,None]!=receiver[None,:])
     negative=labels[:,None]!=labels[None,:]
     reference=(receiver[:,None]==receiver[None,:])&(day[:,None]==day[None,:])

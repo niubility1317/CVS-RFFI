@@ -36,6 +36,14 @@ class Checks(unittest.TestCase):
         gc,gu=torch.autograd.grad(two,[x['clean'],x['urban']]);self.assertGreater(float(gc.norm()),0.);self.assertGreater(float(gu.norm()),0.)
         self.assertLessEqual(float(two),2.1);self.assertTrue(torch.isfinite(two))
 
+    def test_CPU_metadata_is_moved_to_label_device_before_triplet_mask(self):
+        # Native move_batch keeps RX/day on CPU while labels follow the model.
+        # Meta is a distinct device available on the local CPU-only runtime.
+        x=self.inputs()
+        result=mask(torch.empty(8,device='meta',dtype=torch.long),x['receiver'],x['day'])
+        self.assertEqual(result.device.type,'meta')
+        self.assertEqual(tuple(result.shape),(8,8,8))
+
     def test_margin_satisfaction_stops_and_missing_groups_and_U_rejected(self):
         x=self.inputs();q=torch.zeros(8,160);q[torch.arange(8),x['labels']]=1.
         loss,_=semantic(**dict(x,clean=q,urban=q),bidirectional=True);self.assertEqual(float(loss),0.)

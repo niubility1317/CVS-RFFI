@@ -53,3 +53,13 @@ D0／D3／D4 都保留与原 A0/A-J 相同的128个额外 clean L EMA 前向；�
 当前没有新训练／正式测试结果。源冻结后将补充完整梯度／训练曲线、默认头、分支幅度与身份关系的归因，不能仅凭loss减小宣布有效。已完成HQ源诊断是固定权重降低新增噪声的受控效应，不是训练提升；Bridge-CE/Bridge-S留到语义源证据后独立比较。
 
 跨RX两教师支线已有匹配4464条L子集与L-only CE接线、4项本地测试；当前只有代码草稿，没有登记／发布／模型／教师互补结果，不混入此矩阵。它与A的E20条件不同，后续复用科学证据不能冒充相同预算或直接继承权重。
+
+## 实际发布及首步技术错误
+
+实际发布 commit `e8f51edabdf6b834ad688fc76f3f22370f2ec03c`，独立远端 OID 一致。一次 archive 传输比较 VERIFIED，remote compile PASS，真实 A0/A-J checkpoint 默认头 smoke PASS（4 前向，无 query）。源 epoch5 校准完成：L_dev720、2160 前向、0 更新，状态及 .grad 未变。两系数为 D3=0.6863719838、D4=1.1577435581；全局源比目标 .1，未调目标成绩。
+
+独立读回确认 dispatcher PID3059034、CWD/argv 与发布一致。D0 PID3059123 在 GPU0 继续健康训练，日志 6686→42449 字节，resolved commit 匹配。D3/D4（GPU1/2）均在首步因 labels CUDA、RX/day CPU 的布尔 mask 操作失败并退出，尚无完整 epoch／性能结果；本矩阵当前为 PARTIAL，不能标为完整实验。所有失败输出保留，原 D0 不停止、不重启、不修改。
+
+本地已复现设备错误，mask 在比较前仅把 RX/day 移至 labels.device 并统一 long；修复后7项检查PASS（6.435s），原设备问题定向P1复核PASS。本地修复尚未发布；后续用新不可覆盖run/release仅恢复失败D3/D4，原D0及已完成控制均复用，避免重复预算。原r01发布代码身份不改写为修复commit。源HQ的64.86%→70.97%仍只是冻结源域降噪受控效应，与此训练失败无关。
+
+证据：local artifact `independent_launch_evidence.json`、`independent_initial/readback.json`、`independent_growth/readback.json`、`source_initial.json`、`mixed_device_before.log`、`mixed_device_after.log`；没有正式新性能或跨seed结论。
