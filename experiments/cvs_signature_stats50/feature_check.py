@@ -35,7 +35,7 @@ def run(seed=None,only_row=None,*,design=None,build_fn=None):
     rows.append(dict(row_id=row['row_id'],arm=row['arm'],seed=row['model_seed'],feature_boundary=measure(initial,final,source,export_fn=export),actual_initial_to_final_parameters=change))
     models[c['arm']]=final;initials[c['arm']]=initial
    if only_row is None and len(models)==len(d.training_rows())//len(d.SEEDS):
-    first=initials['SIG_TIME'].state_dict();native={k:v for k,v in first.items() if '.sequence_pool.' not in k}
+    first=initials[getattr(d,'INITIAL_CONTROL','SIG_TIME')].state_dict();native={k:v for k,v in first.items() if '.sequence_pool.' not in k}
     if any(any(not torch.equal(v,m.state_dict()[k]) for k,v in native.items()) for m in initials.values()):raise ValueError('Actual same-seed initial native body/head differs')
     control=getattr(d,'FEATURE_CONTROL','SIG_TIME_X3');a,b=initials[control],initials[d.PRIMARY];aa,bb=dict(a.named_parameters()),dict(b.named_parameters())
     if set(aa)!=set(bb) or any(not torch.equal(v,bb[k]) for k,v in aa.items()):raise ValueError('Same-capacity actual initial parameters differ')
