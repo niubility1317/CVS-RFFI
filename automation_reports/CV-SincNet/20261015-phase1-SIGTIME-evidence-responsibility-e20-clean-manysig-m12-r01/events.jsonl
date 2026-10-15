@@ -1,1 +1,3 @@
 {"at": "2026-10-15T00:32:32+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-15T00:42:41+00:00", "status": "RUNNING", "note": "Ordinary-account release and checkpoint preflight passed; three rows launched, actual LS0 observed.", "evidence": ["technical_failure_evidence.json"], "row_id": null}
+{"at": "2026-10-15T00:42:41+00:00", "status": "FAILED", "note": "Step16 actual-versus-autograd-shadow diagnostic failed in all three launched rows; natural termination verified, no complete epochs or predictions/scores. Preserve R01, diagnose before new R02.", "evidence": ["technical_failure_evidence.json", "report.md"], "row_id": null}

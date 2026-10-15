@@ -1,0 +1,56 @@
+{
+  "status": "FAILED",
+  "post_state": "VERIFIED",
+  "code_commit": "7a92511e8b54a1da51edeef69af2857eeb9ae897",
+  "remote_oid_at_publication": "7a92511e8b54a1da51edeef69af2857eeb9ae897",
+  "dispatcher_naturally_exited": true,
+  "all_launched_workers_naturally_exited": true,
+  "launched_rows": [
+    {
+      "row_id": "BASE_CE-s2026092701",
+      "completed_epochs": 0,
+      "actual_label_smoothing": 0.0,
+      "source_complete": false,
+      "prediction_complete": false,
+      "score_complete": false
+    },
+    {
+      "row_id": "BASE_SSL-s2026092701",
+      "completed_epochs": 0,
+      "actual_label_smoothing": 0.0,
+      "source_complete": false,
+      "prediction_complete": false,
+      "score_complete": false
+    },
+    {
+      "row_id": "JOINT_GAP-s2026092701",
+      "completed_epochs": 0,
+      "actual_label_smoothing": 0.0,
+      "source_complete": false,
+      "prediction_complete": false,
+      "score_complete": false
+    }
+  ],
+  "unlaunched_rows": [
+    "ROUTED_GAP-s2026092701",
+    "BASE_CE-s2026092702",
+    "BASE_SSL-s2026092702",
+    "JOINT_GAP-s2026092702",
+    "ROUTED_GAP-s2026092702",
+    "BASE_CE-s2026092703",
+    "BASE_SSL-s2026092703",
+    "JOINT_GAP-s2026092703",
+    "ROUTED_GAP-s2026092703"
+  ],
+  "failure_layer": "diagnostic actual AdamW versus autograd-derived shadow comparison",
+  "failure_step": 16,
+  "fingerprint": "Once-only actual AdamW differs from shadow per element",
+  "failure_is_scientific_falsification": false,
+  "root_cause": "UNRESOLVED_PENDING_CUDA_REPRODUCTION",
+  "real_checkpoint_no_query_preflight": "PASS",
+  "automatic_retry": false,
+  "partial_outputs_preserved": true,
+  "healthy_unrelated_processes_modified": false,
+  "prediction_or_truth_scoring_started": false,
+  "goal84_completed": false
+}

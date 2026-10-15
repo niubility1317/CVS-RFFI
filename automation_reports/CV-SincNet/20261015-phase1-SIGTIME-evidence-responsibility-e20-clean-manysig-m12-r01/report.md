@@ -40,3 +40,10 @@ run `20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r01`�
 
 
 发布前聚焦验证已PASS：48个matrix负例、144个source/recipe/CP/probe负例与14个完整矩阵负例；四臂完整4440 callback/late synthetic日程、16次mock实际AdamW/32temp shadow、原objective四真实探针fixture、auxW/3gainNone、基线零bank/IQ/teacher与U隔离、角色/计数/恢复负例均PASS。四个实际CPU模型构造也PASS：各863730总参数/188参数张量/200state张量、原joint160/6class和四项exact，68auxfeature+4protected；对应首seed CPU初始state逐tensor相同。该结论限localCPU构造，不能替代尚未读取的真实CUDAworker初值。新actualmaincandidate唯一P0/P1集成审查PASS，无直接缺陷。源assay既有loss/代码不重复审查。
+
+
+## R01 技术终态
+
+**FAILED，退出后状态 VERIFIED。** 已启动的 BASE_CE、BASE_SSL、JOINT_GAP 首 seed 三行均在 step16 的诊断比较处退出；ROUTED_GAP 及其余种子尚未启动。调度器和三个 worker 已独立确认自然退出，无训练完整轮次、冻结模型、预测或 truth-last 评分。实际参数 label_smoothing=0，真实 no-query checkpoint preflight 已 PASS。失败不能作为责任路由机制的科学负结果。
+
+故障指纹为 `Once-only actual AdamW differs from shadow per element`，发生在实际更新与 autograd 推演结果的逐元素对照。当前 CPU 真实构造器合成输入未复现，CUDA 根因仍待核实；不得把推测写成结论，也不直接放宽容差。原不可变输出和部分产物保留，不在 R01 自动重试。修复仅限已定位的诊断问题，新 R02 保持四臂、三 seed、20 epoch、LS0、前 13 轮辅助及源规则不变，另行登记技术恢复。没有终止、重启或修改其他健康任务。见[独立终态证据](technical_failure_evidence.json)。84% 目标未完成。
