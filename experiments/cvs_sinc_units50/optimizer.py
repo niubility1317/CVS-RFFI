@@ -55,6 +55,7 @@ def native_scope(owner,mode):
    super().__init__(groups,**options);attach(self,policy)
    if getattr(owner,'optimizer',None) is not None:raise ValueError('More than one native optimizer')
    owner.optimizer=self
+   if hasattr(owner,'optimizer_created'):owner.optimizer_created(self)
  torch.optim.AdamW=ScopedAdamW
  try:yield
  finally:torch.optim.AdamW=original
