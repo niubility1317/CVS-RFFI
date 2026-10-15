@@ -23,3 +23,11 @@ SIG_TIME、旧内部门控、参考响应结构和默认 cosine6×160/scale30 �
 本地实际验证：`E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_urban_identity50.checks`，11项PASS，含两种实际新Observer/label阶段无U metadata调用、同流增强逐值相同、无额外参数、teacher停止梯度、CE继续更新原头/gain、辅助W/gain边界、错教师/隐藏标签拒绝、预测未完成禁止评分；stderr保存在local_artifacts/cvs_joint160_identity_20261015/training_checks_stderr.txt。源校准已独立完成并验证。新的训练接线唯一一次独立P0/P1审查完成，指定范围未发现P0/P1；默认头联合CE、ownEMA教学、辅助梯度边界、E50预算/源配方和七视图独立评分接线一致。不重复审查上一阶段未改的校准实现。
 
 设计对应记录：analysis/cvs_joint160_distill_traceability_20261015.md。本轮是第一阶段实现：容差目标、同信道高质量中间视图、分组SIG_TIME局部教学、PA/ref局部目标及额外U特征目标均未运行；不以当前实现冒充完整多阶段设计。冻结后的正确/错误TX特征距离、固定clean正确集合修复与新错、塌缩/gain诊断另行按同一合法源面板执行，不额外拟合头。
+
+实际发布状态：RUNNING / VERIFIED。code/config commit `704a3e917de3bd8f8a739fddb2a21212b2840148` 已push，独立远端branch OID一致。普通账户N607预检、一次archive传输比对、远端编译PASS；launcher真实合规C3 source checkpoint/no-query smoke通过后自动启动两条scratch训练。
+
+OUTPUT_KL-s2026092701：GPU1、PID2898654，CWD/argv正确，日志增长5170字节，实际完成2轮。首轮所有五个特征组、默认头与三组gain均有实际联合参数更新；新增aux的W/gain梯度全部为0。L/satellite/ownEMA前向计数见launch_verified.json，未读U真值/目标成绩。
+
+JOINT_DIR-s2026092701：GPU2、PID2898731，CWD/argv正确，日志增长5171字节，实际完成2轮。首轮所有五个特征组、默认头与三组gain均有实际联合参数更新；新增aux的W/gain梯度全部为0。L/satellite/ownEMA前向计数见launch_verified.json，未读U真值/目标成绩。
+
+核实证据：E:/type10-7/local_artifacts/cvs_joint160_identity_20261015/launch_verified.json；monitor/latest.json持续只读观察。初始reference gain=0时投影梯度为0是原初始化行为；CE先更新gain，其后真实投影梯度已记录，不改变原结构/初始化。源校准0.1是校准面板的中位比，训练过程不强迫达到0.1、不在线调lambda。

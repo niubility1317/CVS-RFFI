@@ -478,5 +478,5 @@
 |名称|状态|报告|
 |---|---|---|
 |joint160 方向蒸馏：零训练源梯度校准|ANALYZED|[打开](../automation_reports/CV-SincNet/20261015-phase1-sigtime-joint160-calibration-manysig-s2026092701-r01/report.md)|
-|固定 SIG_TIME：输出 KL 与 joint160 方向蒸馏 E50|LOCAL_VERIFIED|[打开](../automation_reports/CV-SincNet/20261015-phase1-sigtime-joint160-kl-dir-e50-manysig-s2026092701-m2-r01/report.md)|
+|固定 SIG_TIME：输出 KL 与 joint160 方向蒸馏 E50|RUNNING|[打开](../automation_reports/CV-SincNet/20261015-phase1-sigtime-joint160-kl-dir-e50-manysig-s2026092701-m2-r01/report.md)|
 |固定 SIG_TIME 的 E50 星地增强与可信源 EMA 监督|RUNNING|[打开](../automation_reports/CV-SincNet/20261015-phase1-sigtime-urban-ssl-e50-manysig-s2026092701-m4-r01/report.md)|

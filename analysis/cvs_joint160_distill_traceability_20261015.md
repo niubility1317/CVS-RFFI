@@ -33,3 +33,5 @@
 2026-10-15 源校准真实完成：2250前向、0更新、6.498s，模型/EMA状态不变、无query/U；静态KL lambda0.04998551146175206，direction lambda0.44114306609656917；两者源面板中位梯度比0.1。source_recipe.json在新训练及读取旧C3目标成绩前固定。实际新训练hook/同流物理增强/无query评分负例扩展后10项PASS。J08的B/C为匹配比较；A具有既有学生margin/质量权重且前向较少，报告已披露，不宣称严格只改公式。J09/J10仍待真实训练/预测产物，J11待冻结后源诊断。
 
 新训练发布前：11项定点检查PASS，package compile PASS，登记VALID；独立P0/P1审查指定新训练/预测/发布接线未发现P0/P1。正式运行尚未发布，J09/J10/J11仍保留pending。
+
+真实训练已VERIFIED启动：release commit704a3e917de3bd8f8a739fddb2a21212b2840148，GPU1/2，own scratch /真实source CP smoke均PASS，2轮时每行L/satellite/cleanEMA各56832前向，新增aux的W/gain梯度0，五组/原头/gain都有实际联合更新；J09/J10需等完整11100更新与七视图结果再标verified。J11冻结后源实现已完成，3项检查PASS；23040前向作业尚未发布，仍pending。源比较正确/错误TX距离和固定A正确集合，不拟合头。

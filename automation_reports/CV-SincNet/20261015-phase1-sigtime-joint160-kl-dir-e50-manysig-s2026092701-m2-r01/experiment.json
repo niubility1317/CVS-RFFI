@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "User design attachment 2026-10-15 requests first actual joint160 asymmetric transfer and A/B/C same-budget comparison; prior scratch E50 authorization retained. Two new single-seed E50 rows, no automatic expansion.",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "704a3e917de3bd8f8a739fddb2a21212b2840148",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python; nativeLinuxN607; Windowsnative localvalidation",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_sigtime_joint160_kl_dir_e50_20261015_r01"
@@ -704,5 +704,20 @@
     "Formal received IQ clean+six practical fixed at168000 each; seven predictions complete before independent truth-last scoring per row.",
     "Current old E50 and all other healthy experiments unchanged."
   ],
-  "registered_at": "2026-10-15T03:34:29+00:00"
+  "registered_at": "2026-10-15T03:34:29+00:00",
+  "source_analyses": [
+    {
+      "name": "frozen_source_identity_geometry",
+      "status": "PLANNED",
+      "plan_ref": "source_identity_plan.md",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-sigtime-joint160-kl-dir-e50-manysig-s2026092701-m2-r01/source_identity_mechanism",
+      "source_role": "L_s",
+      "source_count": 720,
+      "expected_forward_packets": 23040,
+      "training_updates": 0,
+      "query_read": false,
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_identity50.mechanism",
+      "release": "cvs_sigtime_joint160_identity_source_20261015_r01"
+    }
+  ]
 }
