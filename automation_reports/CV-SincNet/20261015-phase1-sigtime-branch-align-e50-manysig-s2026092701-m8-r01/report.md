@@ -23,3 +23,35 @@
 本地：`experiments.cvs_urban_branch50.checks`5项PASS，`training_checks`6项PASS，compileall/diff-check PASS；完整F/P、单项替换保留urban其他分支/rho、native实际concat学生图、teacher/U前hook移除、S梯度与主CE W、aux W/gain边界、全局中位数比与退化拒绝、L开发折互斥/均衡/顺序稳定、完整8配置和源家族规则均已检验。一次独立P0/P1审查PASS；发现的recipe部分写入竞态已按同目录临时完整写入后rename修复，并完成一次定点核实，其余指定范围未发现P0/P1。完整正式三seed与三种组合、同信道中间视图和局部SIG_TIME分组教学仍待后续证据，不把此小试等同全部目标完成。
 
 发布代码commit `152d8921c903fc6d5f782c199b075d0837840ece` 已push并独立核对远端OID。一次归档传输/远端编译/普通账户预检VERIFIED；dispatcher2937430，A0 worker2937455，GPU3，实际CWD/argv/默认checkpoint首步smoke核实，epoch1日志增长5152字节。实际inner_source_contract为L_train5580/L_dev720/U56700/V27000，物理ID数互斥，真实总参数863730，默认头未改，max_grad_norm=5.0，A0新增aux梯度全0。独立回读`local_artifacts/cvs_branch_alignment_20261015/pilot_delivery_r01/readback.json`及`monitor/latest.json`；唯一release不变，健康旧KL/DIR继续原E50。尚无八组target结果或正式三seed结论。
+
+
+## 一次源全局定标与八组放行
+
+A0固定epoch5源定标已SOURCE_BRANCH_CALIBRATED，6.332468秒、3600前向、0优化/拟合头更新。实际特征195041参数/71张量、W排除、未接收梯度按零；student/EMA state与已有训练grad逐值保持，CPU/CUDA随机流恢复。源only、query/U truth均未读取。所有参数系数在预设范围且未裁切。
+
+| 位置 | median全局aux梯度 | 冻结系数 | 定标后median范数比 |
+|---|---:|---:|---:|
+| T | 0.492487101 | 0.516316511 | 0.100000 |
+| F | 0.172256637 | 1.476165016 | 0.100000 |
+| P | 0.216721104 | 1.173301617 | 0.100000 |
+| R | 2.252207133 | 0.112902236 | 0.100000 |
+| S | 0.811468640 | 0.313356807 | 0.100000 |
+| J | 0.392445790 | 0.647934640 | 0.100000 |
+| ALL | 0.128869134 | 1.973158456 | 0.100000 |
+
+共同分母median||grad(.5 CEsat)||=2.542792220。ALL表中系数是先各分支定标、omega=.2平均后再乘的总系数，不是直接把五个单项强度相加。定标后比0.1指同一源静态检查点的全局范数中位数比，不保证各层或后续AdamW更新完全相同。
+
+八组均实际启动（旧release仍健康），每组独立scratch并按同规则先预热5轮，epoch6才开唯一aux；它们并未加载A0模型权重。一次放行后的独立PID/CWD/argv/GPU回读VERIFIED：
+
+| row | PID | GPU | 已完成epoch（读取时） |
+|---|---:|---:|---:|
+| A0-s2026092701 | 2937455 | 3 | 6 |
+| A-T-s2026092701 | 2941955 | 4 | 1 |
+| A-F-s2026092701 | 2942032 | 5 | 1 |
+| A-P-s2026092701 | 2942113 | 6 | 1 |
+| A-R-s2026092701 | 2942194 | 7 | 1 |
+| A-S-s2026092701 | 2942275 | 7 | 0 |
+| A-J-s2026092701 | 2942757 | 6 | 0 |
+| A-ALL-s2026092701 | 2942835 | 4 | 0 |
+
+源系数完整原始记录在local_artifacts/cvs_branch_alignment_20261015/branch_calibration.json；不将物理/训练原始数据入Git。训练完成及真实aux梯度/全部七视图评分仍待执行，本状态不等于八组完成。

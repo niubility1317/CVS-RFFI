@@ -16,22 +16,22 @@
 | B04 | 二P | 捕获pa_norm实际输出，含pa_local/pa_delta处理 | branches.py | verified | 不用pa_proj近似 |
 | B05 | 二R | 捕获response_projection，绝不直接匹配固定raw29 | branches.py | verified | 需可学习投影梯度 |
 | B06 | 二S | 捕获output_norm gain前160维，梯度到local_projection/t2 | branches.py/checks.py | verified | 首轮不对齐错位112维 |
-| B07 | 三 | 同一方向损失、eps、ownEMA clean eval/stopgrad和共用L资格 | objective.py | pending | 无urban学生置信要求，不改原U监督 |
+| B07 | 三 | 同一方向损失、eps、ownEMA clean eval/stopgrad和共用L资格 | objective.py | verified | 无urban学生置信要求，不改原U监督 |
 | B08 | 三.4/八 | 各分支gain前；J用原数值/stopgrad gain；aux W=0/CE W正常 | objective.py/checks.py | verified | 分支本身不能detach |
-| B09 | 四 | 一次同预热checkpoint全特征参数全局梯度校准，W排除、未接收梯度按0 | calibrate.py | pending | median范数的比，非先前五组比值中位数 |
+| B09 | 四 | 一次同预热checkpoint全特征参数全局梯度校准，W排除、未接收梯度按0 | calibrate.py | verified | median范数的比，非先前五组比值中位数 |
 | B10 | 四 | 小梯度/非有限拒绝，不无限放大；记录每层梯度和实际更新/裁剪 | calibrate.py/observer.py | pending | 有界静态lambda，不在线均衡 |
-| B11 | 四.3 | ALL先按同规则分支定标再校准组合总强度，omega和为1 | objective.py/calibrate.py | pending | 不直接相加五个单项系数 |
+| B11 | 四.3 | ALL先按同规则分支定标再校准组合总强度，omega和为1 | objective.py/calibrate.py | verified | 不直接相加五个单项系数 |
 | B12 | 五 | 同一冻结模型clean替换单分支，真实融合/后处理/default头重算 | replace.py | verified | 操作性诊断，不是训练上界/可得clean输入 |
 | B13 | 五 | T只换fuse输入T；S仍urban；F换完整F，rho/其他分支保留 | replace.py/checks.py | verified | 用实际其他张量/最终输出断言 |
 | B14 | 六 | 完整8配置统一E50/预热/EMA/数据/启用/教师前向；无对齐A0 | design.py/source.py | pending | 当前8组×3seed要求不缩成T/S/J三组 |
 | B15 | 六 | 3预定义seed逐row自动clean+6实测、独立truth-last、保留负差 | dispatch.py/evaluate.py/report.py | pending | 先单seed小试不声明稳定/最优 |
-| B16 | 七 | L内部开发折明确、V只健康；源选择规则/阈值先固定 | protocol/inner_source.py/design | pending | 不改外层目标/不解封U标签 |
+| B16 | 七 | L内部开发折明确、V只健康；源选择规则/阈值先固定 | protocol/inner_source.py/design | verified | 不改外层目标/不解封U标签 |
 | B17 | 七 | b1+b2、b1+J、b1+b2+J条件增益，按源规则选并重新总强度校准 | 后续组合 | deferred | 等完整单项源证据，非先验T+S |
 | B18 | 七 | clean保持/多seedlow/urban最差RX/少约束成本，源选择与目标报告分离 | selection.py/report.py | pending | 不用target挑最好首seed |
 | B19 | 八 | 教师detach、学生训练缓存保图、日志副本detach | branches.py/checks.py | verified | 不复用旧detach诊断observer作loss |
 | B20 | 八 | 共享T/S上游作用、梯度夹角、分支方差/gain/贡献，区分放弃与鲁棒 | observer.py/mechanism.py | pending | loss变小不等于成功 |
 | B21 | 交付 | 实际命令/commit、更新、父成本、全前向/墙钟、完整曲线与分层图 | registration/report | pending | 不能伪造路径或性能 |
-| B22 | 全局 | 固定SIG_TIME网络/默认头/正式IQ，合法来源和运行保护 | design/tests | pending | 不新增模型/独立头/测试期clean或元数据 |
+| B22 | 全局 | 固定SIG_TIME网络/默认头/正式IQ，合法来源和运行保护 | design/tests | verified | 不新增模型/独立头/测试期clean或元数据 |
 
 实施顺序：先真实分支捕获/替换负例与源冻结诊断；明确内部源开发折/匹配预热和预算；再实现/登记/审查/发布完整八组小试；按预登记source-only条件扩三seed，保留所有有效负对照；最后稀疏组合与中间视图等独立研究。此记录不是额外审批或签名层。
 
@@ -40,3 +40,5 @@
 2026-10-15进展：真实B0源替换run已ANALYZED，26640前向/0更新/20.838秒，模型state逐值不变、其余分支/rho保持；本地11项与compile PASS，8配置单seed小试已登记/一次P0-P1 PASS，尚未发布。L内部分折科学边界已先更新PROJECT_PROTOCOL，实际ID/全局定标和完整E50训练证据须待新run，不把本地接线当真实八组结果。当前verified9/pending12/deferred1，完整三seed/组合未完成。
 
 八组小试已以commit152d8921c903fc6d5f782c199b075d0837840ece发布并RUNNING；A0首epoch/实际inner物理ID5580/720、默认模型参数863730和aux零边界已VERIFIED。其余位置仍待一次源定标，B09/B11和完整B14/B15仍pending，不提前标已完成。
+
+一次真实源epoch5全局校准已通过：3600前向/6.332秒/0更新，actual theta195041/71、W排除、student/EMA/state/已有grad不变，ALL总强度另定标，全部lambda有界无裁切。八组进程CWD/argv/GPU均独立VERIFIED，网络和source实际内部ID保持。B07/B09/B11/B16/B22现有真实源/结构证据；B01/B10/B14/B15/B18/B20/B21仍待各aux实际启用、完整训练/自动测试与多seed。当前verified14/pending7/deferred1，非完整设计parity。
