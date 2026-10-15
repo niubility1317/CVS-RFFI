@@ -41,3 +41,17 @@ E20六个新模型已完成同row独立分析，和六个历史控制形成完�
 
 <!-- E20_SOURCE_DIAGNOSTICS -->
 完整E20源训练损失、KL和U接受量对照见[源机制统计](source_diagnostics_E20.md)，只作描述性源证据，不调整任何当前训练。
+
+<!-- PRIOR_RDROP_ROUTES_LEDGER -->
+此前RDrop路线的原始结论与当前状态如下。源折均值只在同row内与对应控制比较，各模型seed与数据范围保留；表中差值不跨源折或目标口径合并。源差分路线的少错观察保留，但其固定CE判据失败，仍关闭；原版RDrop的完整正收益仍是匹配参照。
+
+| 路线与范围 | 已核实观察 | 当前结论 |
+|---|---|---|
+| [Original SIG_TIME + standard RDrop E20](../20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)；full-source/fixed exposed clean target168000,three model seeds | clean均值83.942857%，相对ORIGINAL same budget/seed +0.827183个百分点，2/3正 | POSITIVE_MATCHED_TARGET_EVIDENCE |
+| [Original SIG_TIME + standard RDrop E50](../20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md)；full-source/fixed exposed clean target168000,three model seeds | clean均值84.340079%，相对ORIGINAL same budget/seed +1.418056个百分点，3/3正 | POSITIVE_MATCHED_TARGET_EVIDENCE |
+| [Difference-gradient RDrop E20](../20261015-phase1-SIGTIME-rdrop-difference-gradient-sourcefold-s2026092702-m4-r01/report.md)；true held source RX1,1260 legalL;not target | 相对FULL_KL +2.936508个百分点，错误-37，CE +0.042982 | SOURCE_FAIL_FIXED_RECIPE_CLOSED |
+| [Cross-RX conditional-evidence RDrop E20](../20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01/report.md)；true held source RX1,1260 legalL;not target | 相对FULL -2.301587个百分点，错误+29，CE -0.025792 | SOURCE_FAIL_FIXED_RECIPE_CLOSED |
+| [Paired masks RDrop source screen E20](../20261015-phase1-SIGTIME-rdrop-paired-masks-sourcefold-s2026092701-m4-r01/report.md)；true held source RX1,1260 legalL;not target | 相对INDEP_RDROP +0.396825个百分点，错误-5，CE -0.029638 | SOURCE_PASS |
+| [Paired masks RDrop full-source E20 E20](E20_summary.md)；fixed exposed clean target168000,three model seeds | clean均值83.592262%，相对INDEP_RDROP same budget/seed -0.350595个百分点，0/3正 | NEGATIVE_VS_STANDARD_RDROP |
+
+本候选的源筛选成本为80 model-epoch，此前其他已关闭假设的成本另见各run报告，没有并入本候选成本或充作父权重。E50主验证仍PENDING。
