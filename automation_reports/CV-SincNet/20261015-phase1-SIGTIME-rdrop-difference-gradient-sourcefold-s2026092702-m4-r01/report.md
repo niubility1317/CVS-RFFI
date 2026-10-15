@@ -1,6 +1,6 @@
 # SIG_TIME＋RDrop：差分梯度机制源RX留出验证
 
-状态 PLANNED，已登记，尚未发布。用户现只优化SIG_TIME＋RDrop，重点为RDrop机制。旧完整E50均值84.340079%的性能里程碑保留；本试不继承任何已评分权重，不读target，不据该分数调系数或选择父权重。刚实现的特征残差交换已暂缓、未发布，不纳入本试。
+状态 RUNNING，四行启动 VERIFIED。用户现只优化SIG_TIME＋RDrop，重点为RDrop机制。旧完整E50均值84.340079%的性能里程碑保留；本试不继承任何已评分权重，不读target，不据该分数调系数或选择父权重。刚实现的特征残差交换已暂缓、未发布，不纳入本试。
 
 唯一新假设：RDrop的KL同时推动W、两次特征的共同方向和随机差分；只对随机差分反传，可能更直接降低dropout敏感性。设KL到joint160的梯度g1/g2，将其替换为(g1-g2)/2与(g2-g1)/2，局部共同分量为0。它等价于对特征中心停止梯度的surrogate；不保证实际AdamW更新后中心不动。
 
@@ -21,3 +21,6 @@ CPU和CUDA检查各51负例、5资格布尔情形、1024合成identity包PASS，
 预期输出包括完整step/epoch/source角色/初末checkpoint/ownEMA/冻结、route backward审计、1260默认预测和逐day/TX/配对错误。完成后独立只读完整分析；本试明确source-only，无目标clean、practical或Phase2发布。
 
 Independent next-run P0/P1 review: PASS. No direct defects found. Scope and checked execution paths are recorded in review_evidence.json.
+
+<!-- LAUNCH_VERIFIED -->
+执行提交 `c4bc8ef402d9f6ab6e7b52f2043ae65f37347455` 已推送，远端 OID 独立匹配。单次发布 archive 比较及 remote compile VERIFIED。四行各通过 own checkpoint 无 query smoke，独立进程身份、实际 GPU、配置、角色和后续日志增长均已核实；KL 反向审计计数等于实际更新数。源域训练尚未完成，未访问 target。完整启动证据见 launch_verification.json。

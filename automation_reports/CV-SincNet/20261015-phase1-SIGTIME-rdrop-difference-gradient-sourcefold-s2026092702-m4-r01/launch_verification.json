@@ -1,0 +1,93 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-SIGTIME-rdrop-difference-gradient-sourcefold-s2026092702-m4-r01",
+  "execution_commit": "c4bc8ef402d9f6ab6e7b52f2043ae65f37347455",
+  "ready_rows": 4,
+  "rows": [
+    {
+      "row_id": "FULL_KL-RX1-s2026092702",
+      "gpu": "0",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11812,
+      "log_growth": 5192,
+      "smoke_PASS": true,
+      "backward_audit": {
+        "calls": 222,
+        "raw_energy": 2.175385630710843,
+        "common_energy": 0.19738989540066118,
+        "output_energy": 2.175385630710843,
+        "max_norm_relative_error": 0.0,
+        "max_difference_common_abs": 0.0
+      }
+    },
+    {
+      "row_id": "FEATURE_KL-RX1-s2026092702",
+      "gpu": "1",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11843,
+      "log_growth": 5199,
+      "smoke_PASS": true,
+      "backward_audit": {
+        "calls": 222,
+        "raw_energy": 2.4475125774418496,
+        "common_energy": 0.22438555328382956,
+        "output_energy": 2.4475125774418496,
+        "max_norm_relative_error": 0.0,
+        "max_difference_common_abs": 0.0
+      }
+    },
+    {
+      "row_id": "SHRINK-RX1-s2026092702",
+      "gpu": "2",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11803,
+      "log_growth": 5191,
+      "smoke_PASS": true,
+      "backward_audit": {
+        "calls": 222,
+        "raw_energy": 2.4734782304379546,
+        "common_energy": 0.22729969958778967,
+        "output_energy": 2.2461785274773405,
+        "max_norm_relative_error": 6.137141466281961e-08,
+        "max_difference_common_abs": 0.0
+      }
+    },
+    {
+      "row_id": "DIFFERENCE-RX1-s2026092702",
+      "gpu": "7",
+      "CPU_threads": 2,
+      "completed_epochs": 1,
+      "actual_steps": 222,
+      "log_bytes": 11841,
+      "log_growth": 5197,
+      "smoke_PASS": true,
+      "backward_audit": {
+        "calls": 222,
+        "raw_energy": 2.680951612425258,
+        "common_energy": 0.2352961276712195,
+        "output_energy": 2.445655484636565,
+        "max_norm_relative_error": 0.0,
+        "max_difference_common_abs": 0.0
+      }
+    }
+  ],
+  "all_eight_GPUs_considered": true,
+  "source_contract_counts": {
+    "L_s": 5040,
+    "U_s": 45360,
+    "V": 21600
+  },
+  "per_GPU_process_cap": 3,
+  "independent_PID_CWD_argv_GPU_and_log_growth": true,
+  "source_only": true,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "training_complete": false,
+  "goal_completed": false
+}
