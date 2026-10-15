@@ -1,6 +1,6 @@
 # 最新双增益主线：真实标签跨视图身份排序
 
-来源为用户31cc8a22附件。当前代码／本地管线已实现，源校准及r01发布已执行；D0健康训练，D3/D4首步设备错误后退出。HQ源反事实不是此方案训练结果；旧八位置族失败不改写。配置与矩阵见 experiments/cvs_urban_semantic50/registration.json 和对应自动化报告。
+来源为用户31cc8a22附件。当前修复后的r02三条训练已发布并保持运行；原r01失败记录和不匹配D0诊断保留。HQ源反事实不是此方案训练结果；旧八位置族失败不改写。配置与矩阵见 experiments/cvs_urban_semantic50/registration.json 和对应自动化报告。
 
 |ID|需求与实现位置|状态|证据／未完成|
 |---|---|---|---|
@@ -18,7 +18,7 @@
 |S12|3新模型＋2精确旧控制，禁止重复训练测试|verified|五条件配置及直接predict/preflight拒绝复用row测试|
 |S13|逐row原头七视图＋CPUtruth-last|pending|沿原实现自动接线，待冻结预测和独立评分|
 |S14|clean对D0、low对D1分别报告及跨seed|pending|报告／源条件预定；目前无新性能或多seed证据|
-|S15|实际梯度、clip、更新、分支信息与使用量归因|pending|训练记录已接；完整冻结机制与图待产物|
+|S15|实际梯度、clip、更新、分支信息与使用量归因|pending|r02实际非零关系梯度/W-gain额外0已读回；独立冻结源probe已实现/5检查及定向P1复核PASS，完整冻结机制与图待实际产物|
 |S16|Bridge-CE/S同成本局部教学|deferred|HQ物理源诊断已完成；按最新顺序留待语义证据后|
 |S17|独立跨RX教师库／学生KD|deferred|两教师core草稿独立保留，未发布；不并入语义损失|
 |S18|三方共享GPU锁、所有owner、不可覆盖与读回|verified|r02真实发布63f6bd461、实际GPU1/2/3；独立PID/CWD/argv/日志增长，无健康任务修改|
@@ -34,3 +34,5 @@
 恢复差异独立P0/P1审查PASS；D0新增匹配问题的定向复核PASS。无额外全量或报告审查。当前最高风险仍是原头的实际双增益，须等待新E50冻结证据。
 
 r02实际发布63f6bd461：archive/compile/真实CP smoke/源校准原样复用通过；三row独立活跃、D0/D3/D4 epoch4/2/2，日志增长。actual use_aug=True匹配确认。原r01 D0仍独立诊断。当前verified12/pending4/deferred2，缺项为完整预算、七视图、双增益及机制/跨seed；保持目标active。
+
+S15冻结源机制实现计划：`experiments/cvs_urban_semantic_mechanism/`，严格加载五条件final50/默认头，固定D1/A0 clean正确集合和一份共同source practical视图，记录错误修复/破坏、原头间隔、状态/RX/质量、实际分支/门控及同RX/day参照相对身份差。mid/low的零更新配对梯度使用同一次clean+urban实际joint图，D4 clean anchor不被无意detach；全部eval、autograd.grad不累积.grad。预算36722前向、L_dev720、U不开/V前向0；新增机制诊断须登记后在模型冻结时独立CPU发布，不热改训练或读取target。当前pending，不能由实现替代实际结果。

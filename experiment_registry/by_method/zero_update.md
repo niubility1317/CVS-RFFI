@@ -6,6 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|五条件冻结默认头：源域身份与退化归因预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-source-manysig-s2026092701-m5-r01/report.md)|
 |同信道 HQ 桥接：源域零更新预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-coupled-bridge-source-manysig-s2026092701-r01/report.md)|
 |固定 SIG_TIME：随机失活一致性源端检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01/report.md)|
 |固定 SIG_TIME：软身份关系的最小源诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-source-soft-relation-manysig-s2026092701-r01/report.md)|
