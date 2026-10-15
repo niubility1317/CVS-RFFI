@@ -650,5 +650,18 @@
     ],
     "source_only": true,
     "actual_U_EMA_augmentation": false
+  },
+  "source_result": {
+    "status": "ANALYZED",
+    "evidence": "E:\\type10-7\\local_artifacts\\cvs_crossfit_teacher50_20261015\\final",
+    "source_only": true,
+    "source_rule_passed": false,
+    "seed_count": 1,
+    "teacher_training_updates": 22200,
+    "target_predictions": 0,
+    "student_models_trained": 0,
+    "RX1_clean_net": -42,
+    "RX1_low_urban_net": -24,
+    "actual_training_commit": "f4018c9b2acdfc6f9b013b956a4735af74c435ee"
   }
 }

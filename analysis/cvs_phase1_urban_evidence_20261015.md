@@ -1,6 +1,6 @@
 # Phase1 urban：已完成证据与当前验证边界（2026-10-15）
 
-固定 SIG_TIME、原内部门控、参考响应及默认 cosine 分类头。本文只汇总已完成实验，训练期间的源域曲线和输入干预结果均不替代正式测试。新的 E50 HQ 教学及 RX1 教师实验尚未完成时，不补写其性能结果。
+固定 SIG_TIME、原内部门控、参考响应及默认 cosine 分类头。本文只汇总已完成实验，训练期间的源域曲线和输入干预结果均不替代正式测试。新的 E50 HQ 教学尚未完成，不补写其性能结果；RX1 教师源域小试已完成，负结果见下。
 
 ## 已确认的结论
 
@@ -8,7 +8,7 @@
 
 冻结 EMA 的独立噪声 HQ 实验，在源域 L_dev720 上将模拟器新增噪声功率降低 6 dB，low urban 从 467/720 增至 511/720（64.8611% 至 70.9722%）。这属于输入干预的可恢复性证据，优化器更新数为 0；正式测试 IQ、参考 SNR 及信道配置均未修改。它不能证明已训练模型在原测试信道下达到 70.9722%。
 
-现有正式结果尚未满足 low urban 60% 目标。已完成的新 E50 机制主要为一个模型种子，不能声称跨 seed 复现。后续判断继续遵循预登记源域规则，不根据已暴露目标分数重排候选或选择性重跑。
+本文所列已完成的正式结果尚未满足 low urban 60% 目标。已完成的新 E50 机制主要为一个模型种子，不能声称跨 seed 复现。后续判断继续遵循预登记源域规则，不根据已暴露目标分数重排候选或选择性重跑。
 
 ## E30：三种子的正式结果
 
@@ -146,7 +146,7 @@ D3 相对 D1 的 low urban 仅增加 0.2054 个百分点、clean 增加 0.8071 �
 
 2. 冻结后 HQ 机制分析：固定 A0、BRIDGE_CE、BRIDGE_SIG 和同一 L_dev720，分别记录完整/独立 HQ 下的默认头间隔、固定 clean 正确集合保持率、分支与门控、状态/质量分层。计划 56,882 个前向样本，0 次更新；完整新权重未产生前不运行或填结果。
 
-3. RX1 交叉拟合教师：两个独立 scratch E50 默认头，SAMPLE 与 EXCLUDE_RX1 各用 4,464 条合法 clean L_train，50L＋0U，U、EMA、增强均关闭；TX/day 数量匹配，EXCLUDE 的训练及可学习统计不包含 RX1。仅验证源域 RX1 的互补纠错，不启动教师库或 KD 学生，也不产生正式目标预测。完整训练后自动在同一 L_dev720 上执行七视图源评估及旧门控拒绝区域回放；回放不是历史 U 的真实接纳记录。
+3. RX1 交叉拟合教师已完成：两个独立 scratch E50 默认头，SAMPLE 与 EXCLUDE_RX1 各用 4,464 条合法 clean L_train，50L＋0U，U、EMA、增强均关闭；TX/day 数量匹配，EXCLUDE 的训练及可学习统计不包含 RX1。已在同一 L_dev720 上完成七视图源评估及旧门控拒绝区域回放。固定 RX1 clean144 条中，SAMPLE 为 144/144，EXCLUDE 为 102/144，纠正 0、新错 42；拒绝区136条净修复 −41，高置信度错误从 0 增至 6.25%。RX1 low urban 为 56/144 对 32/144，纠正 9、新错 33、净修复 −24。预登记源规则 FAIL，不扩教师库、学生或 seed；回放不是历史 U 的真实接纳记录，结果不是正式目标分数。
 
 4. low urban ≥60%、clean 代价约束及新机制跨 seed 复现尚未达成。未完成预算、正式分数、成本、分层图和全量曲线均保持缺项，后续只依据真实产物补充。
 
@@ -158,7 +158,7 @@ D3 相对 D1 的 low urban 仅增加 0.2054 个百分点、clean 增加 0.8071 �
 
 新增 [教师结果取回工具](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_crossfit_teacher50/harvest.py) 及 [定向检查](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_crossfit_teacher50/harvest_checks.py)。工具只在完整矩阵产物存在后取回报告、全日志解析曲线、实际成本及源域纠错统计；不读取 IQ、checkpoint 或目标真值。原矩阵尚未结束时，实际执行返回 `WAITING_FOR_MATRIX`，未生成部分曲线或最终成绩。
 
-已执行本地 3 项合成检查：未完成矩阵不宣称完成；非法 U 真值/预算不足/RX1 训练混入被拒绝；重复取回复用原文件且冲突时保留已有产物。合成检查仅验证报告工具，不作为训练及性能证据。报告中的 16 个实际文件链接已核对存在。
+已执行本地 3 项合成检查：未完成矩阵不宣称完成；非法 U 真值/预算不足/RX1 训练混入被拒绝；重复取回复用原文件且冲突时保留已有产物。合成检查仅验证报告工具，不作为训练及性能证据。所列文件和图片链接均已核对存在。
 
 在本工作树运行：
 
@@ -167,4 +167,8 @@ D3 相对 D1 的 low urban 仅增加 0.2054 个百分点、clean 增加 0.8071 �
 & "F:\App\miniconda3\python.exe" -X utf8 -m experiments.cvs_crossfit_teacher50.harvest --output "E:\type10-7\local_artifacts\cvs_crossfit_teacher50_20261015\final"
 ```
 
-完整真实产物取回后，再执行 `-m experiments.cvs_crossfit_teacher50.figures --root "E:\type10-7\local_artifacts\cvs_crossfit_teacher50_20261015\final"`；目前未将预期图路径写作已生成结果。
+最终矩阵完成后，取回工具已实际返回 `COMPLETE_SOURCE_EVIDENCE`，完成 `-m experiments.cvs_crossfit_teacher50.figures --root "E:\type10-7\local_artifacts\cvs_crossfit_teacher50_20261015\final"`。实际生成并逐图检查了 [源互补结果](E:/type10-7/local_artifacts/cvs_crossfit_teacher50_20261015/final/figures/source_teacher_complementarity.png)、[按 day/混淆/门控分层](E:/type10-7/local_artifacts/cvs_crossfit_teacher50_20261015/final/figures/source_teacher_day_confusion_gate.png)、[完整训练曲线](E:/type10-7/local_artifacts/cvs_crossfit_teacher50_20261015/final/figures/complete_teacher_training_curves.png)。
+
+两位教师均实际完成 50 轮、11,100 次更新、1,420,800 个训练前向样本和 2,754,000 个 eval 模式前向样本。训练墙钟为 1720.6747/1717.2011 s；完整 step 解析共 22,200 步。源预测各 5,042 个前向、9.1465/9.3416 s，另有共享参考 smoke2 和源门控回放 1,440 个前向；U、EMA、头拟合及学生训练均 0。完整源结果及成本保存在上述教师报告及其原产物中。
+
+clean 对照已完全正确，本面板没有可纠正的对照 clean 错误，不能据此宣称跨 RX 教师普遍无效。六种 practical 均有对照错误，但排除教师的新增错误仍全部多于纠正；本等预算 E50/RX1 小试没有支持互补教师机制。未改变原判定阈值或挑选有利子集。

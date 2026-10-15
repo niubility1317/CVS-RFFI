@@ -1,6 +1,6 @@
 # 固定 RX1：两位等规模教师的源域互补小试
 
-按用户fab17893附件先检验一个预定源RX，不直接训练十位教师或蒸馏学生。两位教师从零E50、原SIG_TIME/默认cosine头端到端CE：SAMPLE在五个源RX分层取4464个L，EXCLUDE_RX1用另四个源RX的4464个L。两者每TX744、每TX/day248，原外层角色/标签总权限不变。当前已发布，两行训练中，无最终教师性能或图。
+按用户fab17893附件先检验一个预定源RX，不直接训练十位教师或蒸馏学生。两位教师从零E50、原SIG_TIME/默认cosine头端到端CE：SAMPLE在五个源RX分层取4464个L，EXCLUDE_RX1用另四个源RX的4464个L。两者每TX744、每TX/day248，原外层角色/标签总权限不变。两行已完成固定 E50 及全部源预测，实际互补判定 FAIL；最终数值、成本及三图见下。
 
 矩阵、配置、seed、数据/模型来源、精确命令、环境/CWD、资源、stop与预期产物唯一维护于experiment.json和experiments/cvs_crossfit_teacher50/registration.json。代码身份是实际发布Git HEAD，发布时写入preflight；没有额外报告/成员SHA或审批。
 
@@ -20,10 +20,57 @@
 
 已有4项核心检查PASS1.468s：4464配额与RX物理排除、真实args关闭U/EMA/增强、222步ForbiddenU不被迭代、原头/t2/SIG真实CE梯度。新增4项评价检查PASS.700s，包含真实模型functional train强视图与克隆模型结果一致且原状态不变、native门控/无TX、错误修复/破坏和输出不覆盖。新增pipeline原3项中2项PASS；mock把str当Path导致1项fixture失败，改为Path后该定向PASS.004s，验证U暴露机制在加载CP前拒绝。合计11个唯一检查分批执行，不声称完整11项单次重跑。compileall通过；Torch/NumPy既有ABI警告未改环境。
 
-一次独立P0/P1审查PASS：核对两行4464/TX-day/RX排除、E50/11100纯L、关闭U/EMA/增强、默认头、强视图克隆buffer、源比较、发布和容量。一次archive/compile/preflight/真实CP smoke及独立PID/GPU/日志增长现已VERIFIED；源比较待冻结。后续只需按既定最小流程发布并核实运行，不增加报告审批或数据重验。最高风险是排除RX1损坏更多判断或提高高置信错误；若发生，保留负结果，不因概念合理而扩库。追踪见analysis/cvs_crossfit_teacher_traceability_20261015.md；当前verified5/pending5/deferred1/rejected0/blocked0；发布及初期读回已验证，全E50和源互补仍待完成。
+一次独立P0/P1审查PASS：核对两行4464/TX-day/RX排除、E50/11100纯L、关闭U/EMA/增强、默认头、强视图克隆buffer、源比较、发布和容量。一次archive/compile/preflight/真实CP smoke及独立PID/GPU/日志增长现已VERIFIED；最终源比较已完成且判定 FAIL；未新增审批或数据重验。最高风险是排除RX1损坏更多判断或提高高置信错误；若发生，保留负结果，不因概念合理而扩库。追踪见analysis/cvs_crossfit_teacher_traceability_20261015.md；当前verified10/pending0/deferred1/rejected0/blocked0；已验证全 E50 与实际负结果，教师库/学生不扩展。
 
 ## 实际启动与初期源暴露
 
 VERIFIED：训练commit `f4018c9b2acdfc6f9b013b956a4735af74c435ee` 已push且独立remote OID一致。一次不可覆盖release/run，archive传输比较VERIFIED，远端compile PASS，普通账号preflight VERIFIED；真实原A0默认头无query烟测PASS后两行从零继续。dispatcher PID3176235，SAMPLE PID3176260/GPU3，EXCLUDE_RX1 PID3176337/GPU6。独立/proc cwd/argv/CUDA mask及nvidia PID→UUID→index匹配，日志与teacher_batches流较初次读回增长。
 
 两行已实际完成4轮，各自覆盖4464不同训练样本。SAMPLE实际训练覆盖RX1/3/4/6/8，EXCLUDE只覆盖3/4/6/8；实际args为epochs=label_epochs=50、pseudo_epochs=0、U/EMA/use_aug/concat均false、sat_training_mode=disabled，源coverage的U前向/EMA更新均0。初始化scratch_only，ancestors/checkpoint_sources空、target_contact=false。全程11100预算、最终源预测与互补判定尚未完成，不把初期覆盖或V健康数当最终收益。证据readback_initial.json、readback_launch_verified.json、delivery_r01/submission.json。HQ两行仍按原发布运行，未热改/停止/迁移。
+
+## 固定 E50 的实际源域结果
+
+**源域互补条件 FAIL。** 两行均从零完成 E50/11,100 次更新、4,464 条训练样本，默认头随原骨干联合 CE 训练。所有训练 batch 的身份与 RX 暴露已由实际 observer 检查；scratch 来源、无 U/EMA/增强及最终源预测状态均已独立取回。2 个教师，1 个模型 seed2026092701；无目标预测、教师库或学生训练。
+
+|源视图|RX1 样本数|SAMPLE %|EXCLUDE_RX1 %|纠正|新增错误|净修复|
+|---|---:|---:|---:|---:|---:|---:|
+|clean|144|100.0000|70.8333|0|42|-42|
+|practical_high|144|73.6111|40.2778|2|50|-48|
+|practical_mid|144|61.1111|36.8056|6|41|-35|
+|practical_low_suburban|144|63.8889|38.8889|7|43|-36|
+|practical_high_urban|144|67.3611|40.2778|6|45|-39|
+|practical_mid_urban|144|49.3056|29.1667|7|36|-29|
+|practical_low_urban|144|38.8889|22.2222|9|33|-24|
+
+RX1 clean 高置信错误率（confidence≥.95）从 0.0000% 增至 6.2500%；真类概率从 0.997717 降至 0.633764；默认头间隔/30 从 0.239797 降至 0.067212。原门控源回放 RX1 拒绝区 n=136，SAMPLE 100.0000%、EXCLUDE 69.8529%，净修复 -41。高置信错误增加超过 .02，净修复也未满足预登记条件，不扩大教师库或启动 KD 学生。
+
+clean 对照已是 144/144，此固定面板没有可纠正的对照 clean 错误，故不能把结果解释成“已验证纠错互补性但收益小”，也不据此断言所有跨 RX 教师均无效。已预定的 low/mid urban 观测确有对照错误，排除教师在这些观测上仍是新增错误多于纠正，说明本 E50/等标签预算/RX1 契约没有支持所提互补机制。保持原判定，不事后改阈值或挑选有利子集。
+
+|源 day|RX1 样本数|SAMPLE clean %|EXCLUDE clean %|净修复|
+|---|---:|---:|---:|---:|
+|1|48|100.0000|68.7500|-15|
+|2|48|100.0000|83.3333|-8|
+|3|48|100.0000|60.4167|-19|
+
+原门控回放 accepted n=8/rejected n=136，仅描述固定 L_dev720 批次下的参考门控；不是历史 U 的真实接纳，也没有 U 标签准确率。混淆矩阵中主要新增错误包括 TX5→2（15 条）、TX3→1（10 条）、TX1→3（6 条）、TX2→0（6 条）；class 编号为训练映射内的 0 至 5。
+
+## 完整训练成本与机制状态
+
+|教师|父 epoch|实际 epoch|更新数|训练前向样本|eval 模式前向样本|训练墙钟 s|源七视图前向样本|源预测 s|梯度限幅步数|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+|SAMPLE|0|50|11100|1420800|2754000|1720.6747|5042|9.1465|26/11100|
+|EXCLUDE_RX1|0|50|11100|1420800|2754000|1717.2011|5042|9.3416|18/11100|
+
+两个教师的完整数值 step 日志各 11,100 步，合计 22,200 步均已解析。实际原生 eval 模式前向各 2,754,000，按 hook 实测记录，不把它们记作 U/EMA 教师前向。每行训练前向 1,420,800；额外每行源七视图预测 5,042（含真实最终 CP smoke2），共享 A0 smoke2、旧门控源回放 1,440 单列。模型训练 U 前向/EMA 更新/头拟合/额外辅助目标均为 0。E50 为固定预算终点，不宣称收敛；损失与梯度的全 50 轮曲线保留。
+
+实际训练代码 `f4018c9b2acdfc6f9b013b956a4735af74c435ee`；[真实完整结果](E:/type10-7/local_artifacts/cvs_crossfit_teacher50_20261015/final/comparison/results.json)、[实际成本](E:/type10-7/local_artifacts/cvs_crossfit_teacher50_20261015/final/resources.json)、[训练曲线原值](E:/type10-7/local_artifacts/cvs_crossfit_teacher50_20261015/final/training_curves.json)。取回工具提交 `34f2ca22dfa05d5321563ed01951de132ce0ced2`，已实际成功读取完整矩阵；其 3 项合成检查不作为模型性能证据。
+
+## 已生成并检查的图
+
+![source_teacher_complementarity.png](E:/type10-7/local_artifacts/cvs_crossfit_teacher50_20261015/final/figures/source_teacher_complementarity.png)
+
+![source_teacher_day_confusion_gate.png](E:/type10-7/local_artifacts/cvs_crossfit_teacher50_20261015/final/figures/source_teacher_day_confusion_gate.png)
+
+![complete_teacher_training_curves.png](E:/type10-7/local_artifacts/cvs_crossfit_teacher50_20261015/final/figures/complete_teacher_training_curves.png)
+
+原 4+4+3 项训练/评价/pipeline 检查及一次限定 P0/P1 审查保留原记录，不重复全审。此次最终取回仅解析完成产物，没有重新训练、重测、调用目标 scorer、改变固定主线 HQ 训练或重启其他 owner 的进程。
