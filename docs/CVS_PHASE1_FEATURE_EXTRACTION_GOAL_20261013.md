@@ -253,3 +253,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- RDROP_E20_E50_USER_BUDGET_20261015 -->
 2026-10-15 用户新预算：明确要求完整E50三seed，再要求E20预算比较，覆盖本轮旧E20限制及尚未发布的source-seed02等待条件。`20261015-phase1-SIGTIME-rdrop-budget-e20e50-clean-manysig-m12-r01` 已登记并实际启动12个全五源RX从零模型：E20/E50 × TWO_CE/RDROP × 2026092701/02/03；13+7/33+17，420modelepoch/93240更新，默认头联合训练，逐行clean预测后独立CPU truth-last。主结果预登记E50_RDROP，E20_RDROP预算比较，均检查84%但不挑target-best；当前RUNNING而非完成。此前四RX源fold是科学依据，不是全源E20预算对照。[当前矩阵报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-budget-e20e50-clean-manysig-m12-r01/report.md)。原有正负路线保留，其他健康任务不动，全目标active。
+
+
+<!-- RX_TEACHER_EXPOSURE_SOURCE20_FIXED_20261015 -->
+2026-10-15 独立监督来源路线已固定并登记：`20261015-phase1-RX-teacher-exposure-source-e20-s2026092701-m2-r01`，两个teacher从零纯CE E20/20L/4440更新，SAMPLE_80/EXCLUDE_RX1各5040L、每TX/day280，fit/calV仅4RX21600，held RX1 V5400只在final20冻结后评价。默认头joint/LS0/native dropout，0U迭代/EMA/训练增强/另训头。固定原BASE_SSL E20 student+ownEMA只作sourceV nativegate proxy，不继承到教师；资格为更少source错、CE不高且拒绝区域净纠正>0及源健康。44异常负例+4资格否决边界、200初态和真实CE梯度PASS；唯一P0/P1 PASS；当前PLANNED未发布，不是已有教师互补结果。B方E50/4464L/720dev仍是其独立草稿，不代替本试。该参数在未读取本次RDrop目标分数时固定；RDrop全E20/E50矩阵不变。[本试预登记](../automation_reports/CV-SincNet/20261015-phase1-RX-teacher-exposure-source-e20-s2026092701-m2-r01/report.md)。所有正负路线保留，goal仍active。

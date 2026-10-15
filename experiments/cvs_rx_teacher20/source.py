@@ -9,9 +9,10 @@ from experiments.cvs_sigtime_heldcredit.held_credit import fresh_parameter_cache
 class Observer:
  def __init__(self,c):self.c=c
  def data(self,native,ctx,out):
-  self.allowed,self.held=subset.apply(native,ctx,self.c['arm'])
+  self.allowed,self.held,records=subset.apply(native,ctx,self.c['arm'])
   from cvsrffi.xuc_fusion.native import role_ids_from_native
   self.roles=role_ids_from_native(ctx)
+  d.write(Path(out)/'teacher_subset.json',dict(config=self.c,train_records=records,fit_V_RX_counts={str(rx):sum(int(v.rx_i)==rx for v in ctx['val_loader'].dataset.index) for rx in d.FIT},U_iterator_calls=0,held_V_IQ_read_before_freeze=False,checkpoint_sources=[],ancestors=[]))
  def source_contract(self,expected,ctx):
   if {k:len(v) for k,v in self.roles.items()}!={'L_s':5040,'U_s':0,'V':21600} or any(not set(v)<=set(expected['role_ids'][k]) for k,v in self.roles.items()):raise ValueError('Source exposure escapes original legal roles')
   return dict(expected,role_ids=self.roles,source_receivers=self.c['teacher_exposure']['train_RX'],teacher_exposure=self.c['teacher_exposure'],native_role_comparison='EXACT_MATCH_CARRIER_THEN_TEACHER_SUBSET',carrier_contract_ref=d.SOURCE)

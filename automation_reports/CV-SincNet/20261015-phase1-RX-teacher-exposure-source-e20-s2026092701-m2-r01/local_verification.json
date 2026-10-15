@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "negative_cases": 44,
+  "models": 2,
+  "matched_initial_tensors": 200,
+  "native_dummy_epoch_steps": 222,
+  "U_iterator_calls": 0,
+  "synthetic_L_forward_packets": 128,
+  "actual_body_and_default_W_gradients_nonzero": true,
+  "zero_hook_gradient_equals_native_CE_bitwise": true,
+  "head_fit_updates": 0,
+  "checkpoint_loads": 0,
+  "real_IQ_reads": 0,
+  "query_reads": 0,
+  "optimizer_steps": 0,
+  "Python_files_compiled": 11,
+  "remote_embedded_strings_compiled": 2,
+  "qualification_negative_boolean_boundaries": 4,
+  "request_matches_design": true,
+  "remote_role_API_read_only": "VERIFIED NoU empty index supported; no real data/CP access",
+  "remote_launch": false
+}

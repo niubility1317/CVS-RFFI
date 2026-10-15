@@ -26,6 +26,7 @@ class NoU:
  def __len__(self):return 222
  def __iter__(self):raise AssertionError('Pure CE teacher attempted U iteration')
 def apply(native,ctx,arm):
+ from cvsrffi.game_tracking.data import opaque_id
  if ctx['named_test_loaders'] or ctx.get('balanced_train_sampler') is not None:raise ValueError('Only original source carrier permitted')
  L=ctx['train_loader'].dataset;V=ctx['val_loader'].dataset
  chosen=select(L.index,arm)
@@ -46,4 +47,5 @@ def apply(native,ctx,arm):
   teacher_exposure=dict(arm=arm,train_L=5040,U_iterator=False,EMA=False,held_RX1_V_final_only=5400,fixed_steps_per_epoch=222))
  allowed={int(L.selected[i]):(int(L.index[i].tx_i),int(L.index[i].rx_i),int(L.index[i].day_i)) for i in chosen}
  if len(allowed)!=5040:raise ValueError('Training physical metadata not one-to-one')
- return allowed,held_dataset
+ records=[dict(physical_id=opaque_id(L.index[i]),base_index=int(L.selected[i]),TX=int(L.index[i].tx_i),RX=int(L.index[i].rx_i),day=int(L.index[i].day_i)) for i in chosen]
+ return allowed,held_dataset,records

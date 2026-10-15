@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "candidate": "20261015-phase1-RX-teacher-exposure-source-e20-s2026092701-m2-r01",
+  "review_type": "single independent next-run P0/P1 review",
+  "findings": [],
+  "scope": [
+    "experiments/cvs_rx_teacher20/*.py",
+    "experiments/cvs_rx_teacher20/configs/matrix.json",
+    "Registered two-row matrix and source-only permissions",
+    "Direct consumed shared source/NoU pairing, original R02 model/provenance, original source gate, immutable bootstrap and shared capacity interfaces"
+  ],
+  "confirmed": [
+    "Both rows are seed2026092701 scratch pure-CE E20 with20 labeled epochs,0 pseudo epochs,4440 updates,LS0,unchanged SIG_TIME/CENTER25K and the jointly trained native default head. U iteration, EMA creation, lambda objectives, training augmentation and inherited checkpoints are disabled.",
+    "SAMPLE_80 selects56 legal L packets from each original70-packet TX/RX/day cell across all five RX. EXCLUDE_RX1 selects all70 from the other four RX. Both contain5040 unique L packets and280 per TX/day. Actual labeled batches are checked against their allowed base-index/label/RX/day map.",
+    "The data callback replaces train,probe,V and calibration loaders before model construction. Both fit/calibration V loaders contain only RX3/4/6/8. RX1 V is stored as an uniterated Subset reference and its first forward occurs after the own fixed-final freeze.",
+    "NoU has an empty hidden dataset and a222-step length-only interface whose iterator raises. The actual installed native M0 pairing path uses that length while yielding only L and never iterating U. The zero labeled verification hook preserves the original CE gradients.",
+    "The shared trainer disables separately fitted native heads and checks exact original source carrier roles before applying the subset. The effective contract, selected physical records,20L+0U arguments, own scratch/noEMA checkpoint and4440-step exposure counters are validated by the new source proof.",
+    "Both held readouts contain5400 unique RX1 source-V packets and only finite six-class default-head logits. The independent CPU comparison recounts labels, probabilities, errors and CE, then requires exact physical-ID/label equality between rows.",
+    "The A0 source replay validates original BASE_SSL source provenance before deserialization and strict-loads its own student and EMA. Its source builder requires native source-screen-only mode and an empty actual named-target-loader set; historical declared target axes are retained without constructing target data. Weak input is clean, strong input uses native0.015 noise plus student dropout, and gate metadata excludes TX fields.",
+    "The A0 replay has no model/EMA update or gradient and checks unchanged state. Its rejection mask is fixed before downstream source-label statistics. Qualification requires both source-health conditions, fewer complete RX1 errors, no higher CE and positive net correction in the rejected region; it does not launch a teacher bank, student or target evaluation.",
+    "The probability summaries and30 true/wrong-class pair records added during this same initial review consume only saved source readout probabilities/labels after qualification; they add no model/data access or qualification change.",
+    "The archive supplies the new package, shared capacity dependencies and the exact pure gate file. The CPU dispatcher uses the existing cross-owner GPU lock and actual/pre-CUDA process accounting, isolates row outputs, rejects existing roots and starts a fresh CUDA-hidden comparison only after both source workers complete."
+  ],
+  "verification": {
+    "focused_checks": {
+      "status": "PASS",
+      "negative_cases": 44,
+      "actual_models": 2,
+      "matched_initial_state_equality_asserted": true,
+      "native_dummy_epoch_steps": 222,
+      "U_iterator_calls": 0,
+      "synthetic_L_forward_packets": 128,
+      "actual_body_and_defaultW_gradients_nonzero": true,
+      "zero_hook_gradient_equals_native_CE_bitwise": true,
+      "checkpoint_loads": 0,
+      "real_IQ_reads": 0,
+      "query_reads": 0,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "command": "C:/Users/lh594/.conda/envs/ssr-gpu/python.exe -X utf8 E:/type10-7/.codex_tmp/native_polyphase_runner.py experiments.cvs_rx_teacher20.checks"
+    },
+    "fixed_matrix_matches_design": true,
+    "registration_rows_match_design": true,
+    "rows": 2,
+    "seed": 2026092701,
+    "training_L_per_row": 5040,
+    "A0_source_screen_only": true,
+    "A0_original_gate_settings": {
+      "domain_gate": false,
+      "temporal_gate": true,
+      "temporal_mode": "batch_neighbor",
+      "strong_agreement": true,
+      "strong_noise_std": 0.015
+    },
+    "fixture_log_counter_correction_inspected": true
+  },
+  "review_boundary": "Only this evidence file was written. No production edits, real IQ/checkpoint/target access, remote action, launch, commit, previous RDrop candidate re-review, report-completeness gate or added gate. Unchanged checks were not repeated after the log-only count correction."
+}
