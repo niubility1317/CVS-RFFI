@@ -1697,14 +1697,14 @@
   },
   "registered_at": "2026-10-15T04:59:15+00:00",
   "result": {
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "evidence_ref": "results_analysis.json",
-    "source_rows_complete": 5,
-    "scored_rows_complete": 5,
+    "source_rows_complete": 6,
+    "scored_rows_complete": 6,
     "source_fixed_primary": "CLEAN_SIG",
-    "matrix_complete": false,
+    "matrix_complete": true,
     "source_falsified": false,
-    "goal84_numerical_check": null,
+    "goal84_numerical_check": false,
     "goal_completed": false
   }
 }
