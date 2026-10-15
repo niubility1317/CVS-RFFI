@@ -1,0 +1,76 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "765fc0028bac95d0359a9d6e3678ea7ad9509435",
+  "remote_process_absent": true,
+  "remote_completion": {
+    "status": "ANALYZED",
+    "models": 1,
+    "source_packets": 900,
+    "forward_packets": 900,
+    "gradient_batches": 5,
+    "layer_records": 20,
+    "saved_vectors": 45,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0,
+    "conditionally_skipped_rows": [
+      "RX_CONSENSUS-s2026092702",
+      "RX_CONSENSUS-s2026092703"
+    ]
+  },
+  "failure": null,
+  "log_grew_bytes": 1242,
+  "preflight": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "negatives": 13,
+      "actual_feature_parameters": 195041,
+      "all_feature_norms_gains_preserved": true,
+      "actual_synthetic_native_forward_and_6_derivatives": true,
+      "head_W_excluded_only": true,
+      "old_W_zeroing_preserves_joint160": true,
+      "model_state_and_grad_buffers_unchanged": true,
+      "random_exact_per_tensor_sparsity": true,
+      "private_RNG_preserved": true,
+      "conditional_source_models": [
+        1,
+        3
+      ],
+      "real_IQ_or_checkpoint_read": false,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0
+    },
+    "real_checkpoint_no_query_smoke": true,
+    "source_checkpoint": "Fixed own701 originalSIG_TIME final50, matching original source contract",
+    "synthetic_IQ_packets": 2,
+    "source_only": true,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "optimizer_steps": 0,
+    "feature_parameters": 195041
+  },
+  "source_recounts": [
+    {
+      "row_id": "RX_CONSENSUS-s2026092701",
+      "status": "VERIFIED",
+      "source_packets": 900,
+      "model_forward_packets": 900,
+      "gradient_calls": 30,
+      "selected_layer_records": 20,
+      "saved_full_feature_or_W_vectors": 45,
+      "feature_parameters": 195041,
+      "default_W_excluded_only": true,
+      "new_forwards": 0,
+      "new_gradients": 0,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "query_read": false,
+      "raw_vectors_exist": true,
+      "raw_vectors_bytes": 34851043
+    }
+  ],
+  "raw_vectors_stay_private": true
+}

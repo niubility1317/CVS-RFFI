@@ -82377,12 +82377,32 @@
       "wrong_gradient_identifiability": "NOT_IDENTIFIED",
       "V_simple_feature_reliability_gate_supported": false,
       "source_report": "automation_reports/CV-SincNet/20261014-phase1-source-sigtime-pseudo-gradient-manysig-m3-r01/source_pseudo_gradient_analysis.md"
+    },
+    "source_rx_consensus": {
+      "run_id": "20261015-phase1-source-rx-consensus-manysig-m3-r01",
+      "status": "ANALYZED_VERIFIED_SOURCE_FAIL",
+      "method": "Fullf_theta sourceRX gradient sign consensus, tau.5",
+      "model_seeds": [
+        2026092701
+      ],
+      "source_packets": 900,
+      "model_forward_packets": 900,
+      "gradient_calls": 30,
+      "head_fit_updates": 0,
+      "target_tested": false,
+      "source_qualification": "FAIL",
+      "masked_min_RX_cosine": -0.026875652668050865,
+      "matched_random_min_RX_cosine": 0.017309198767756256,
+      "retained_gradient_norm_ratio": 0.7751001344898251,
+      "remaining_seeds": "Prospectively skipped02/03",
+      "decision": "No formaltraining, no threshold/grouping/parent scan",
+      "evidence": "automation_reports/CV-SincNet/20261015-phase1-source-rx-consensus-manysig-m3-r01/results.json"
     }
   },
   "next_directions": [
     {
       "direction": "源 RX 梯度共识过滤",
-      "status": "LOCAL_VERIFIED_SOURCE_PROBE_NOT_LAUNCHED",
+      "status": "ANALYZED_VERIFIED_SOURCE_FAIL",
       "source_evidence": "Existing source backbone-gradient variance changes were dominated by radial scale (85.92–96.54% in the recorded decomposition). RX risk variation is present, but scalar risk matching does not identify coordinate-level common directions. Source RX gradient agreement has not yet been measured for this candidate.",
       "hypothesis": "AND-inspired sign agreement across five legal source RX can identify a nondegenerate common f_theta update, beyond matched random coordinate removal.",
       "location": "All195041 actual identity feature parameters, excluding classW alone; keep base_norm/pa_norm/gain/reference",
@@ -82452,47 +82472,21 @@
     }
   ],
   "next_actions_max2": [
-    "发布固定原SIG_TIME源checkpoint的RX共识无更新诊断；先01，只有原预登记sourcePASS才自动原样测02/03；不读取U真值或target，不训练头。",
-    "依据完整源证据决定是否另登记真实原生训练接线/公平消融；sourceFAIL不扫描阈值、分组或父模型；不重复RDrop、随机差分交换或既有SAM。"
+    "保留梯度共识负结果，不扩种子或投入该机制训练",
+    "根据完整源证据选择不同机制，默认头和 SIG_TIME 保持"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "发布固定原SIG_TIME源checkpoint的RX共识无更新诊断；先01，只有原预登记sourcePASS才自动原样测02/03；不读取U真值或target，不训练头。",
-    "依据完整源证据决定是否另登记真实原生训练接线/公平消融；sourceFAIL不扫描阈值、分组或父模型；不重复RDrop、随机差分交换或既有SAM。"
+    "保留梯度共识负结果，不扩种子或投入该机制训练",
+    "根据完整源证据选择不同机制，默认头和 SIG_TIME 保持"
   ],
   "current_priority": {
-    "at": "2026-10-15T10:48:40.934Z",
-    "user_instruction": "固定SIG_TIME与默认联合分类头；研发不同于其他对话RDrop/交换增强的训练机制；每骨干<=50",
-    "architecture": "SIG_TIME actual joint160, unchanged default cosine6x160scale30",
-    "active_generalization_mechanism": {
-      "method": "RX_CONSENSUS_SOURCE_PROBE",
-      "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
-      "run_id": "20261015-phase1-source-rx-consensus-manysig-m3-r01",
-      "source_seeds": [
-        2026092701,
-        2026092702,
-        2026092703
-      ],
-      "conditional_first_then_remaining": true,
-      "optimizer_steps": 0,
-      "head_fit_updates": 0,
-      "target_access": false,
-      "qualification_is_not_DG": true
-    },
-    "latest_complete_vrex": {
-      "run_id": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-      "status": "ANALYZED",
-      "accuracy_mean": 0.8247777777777777,
-      "matched_control_accuracy_mean": 0.8275317460317461,
-      "paired_difference": -0.0027539682539682677,
-      "positive_seeds": 1,
-      "seed_count": 3,
-      "goal_84": false,
-      "delivery_commit": "114e92128e06051bea674137c207a94dd48564a7"
-    },
-    "different_other_chat_route": "Original SIG_TIME recipe + RDrop nowactive; stochastic crossRX residualswap reserved there; no duplication",
-    "Phase2_development": false
+    "status": "SOURCE_RX_CONSENSUS_REJECTED_BY_FIXED_SOURCE_RULE",
+    "latest_source_run": "20261015-phase1-source-rx-consensus-manysig-m3-r01",
+    "source_qualification": "FAIL",
+    "next_scope": "Develop a different mechanism from fixed source evidence; no sign threshold or mask scan",
+    "goal84": false
   },
   "latest_complete_sinc_optimizer": {
     "accuracy_mean": 0.8322321428571429,

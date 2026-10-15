@@ -1,0 +1,319 @@
+{
+  "schema": "source_rx_consensus_result_v1",
+  "run_id": "20261015-phase1-source-rx-consensus-manysig-m3-r01",
+  "execution_commit": "765fc0028bac95d0359a9d6e3678ea7ad9509435",
+  "status": "ANALYZED_VERIFIED_SOURCE_FAIL",
+  "completion": {
+    "status": "ANALYZED",
+    "models": 1,
+    "source_packets": 900,
+    "forward_packets": 900,
+    "gradient_batches": 5,
+    "layer_records": 20,
+    "saved_vectors": 45,
+    "source_only": true,
+    "query_read": false,
+    "U_truth_read": false,
+    "head_updates": 0,
+    "optimizer_steps": 0,
+    "conditionally_skipped_rows": [
+      "RX_CONSENSUS-s2026092702",
+      "RX_CONSENSUS-s2026092703"
+    ]
+  },
+  "source_qualification": {
+    "status": "FAIL",
+    "fixed_rules": {
+      "source_only": true,
+      "models_required_for_future_training": 3,
+      "minimum_global_masked_CE_cosine_each_RX": 0,
+      "global_min_RX_cosine_better_than_matched_random": true,
+      "global_retained_gradient_norm_ratio_min": 0.1,
+      "eligible_keep_fraction_each_cohort_min": 0.01,
+      "eligible_keep_fraction_each_cohort_max": 0.99,
+      "body_masked_gradient_nonzero_each_of5": true,
+      "model_and_default_W_unchanged": true,
+      "head_fit_updates": 0,
+      "first_failure_skips_remaining_models": true,
+      "no_automatic_training_release": true
+    },
+    "source_only": true,
+    "target_metrics_used": false,
+    "no_automatic_training_release": true
+  },
+  "rows": [
+    {
+      "row_id": "RX_CONSENSUS-s2026092701",
+      "model_seed": 2026092701,
+      "summary": {
+        "global_feature_gradient": {
+          "original_norm": 0.2283062326009824,
+          "masked_norm": 0.17696019159388673,
+          "random_norm": 0.14682506586930572,
+          "retained_gradient_norm_ratio": 0.7751001344898251,
+          "masked_CE_cosine": 0.666102197795475,
+          "random_CE_cosine": 0.5382718276253385,
+          "masked_RX_cosines": [
+            0.3060872841145843,
+            0.3527836568528609,
+            -0.026875652668050865,
+            0.3307382859930031,
+            0.22381994813605496
+          ],
+          "random_RX_cosines": [
+            0.18781701195468428,
+            0.33322599676058146,
+            0.017309198767756256,
+            0.1797272922101332,
+            0.22363190166339322
+          ],
+          "masked_min_RX_cosine": -0.026875652668050865,
+          "random_min_RX_cosine": 0.017309198767756256
+        },
+        "cohorts": [
+          {
+            "cohort": 0,
+            "source_packets": 180,
+            "source_loss": 0.11164207756519318,
+            "receiver_losses": [
+              0.13180838525295258,
+              0.1712469756603241,
+              0.07886878401041031,
+              0.08030663430690765,
+              0.09597963094711304
+            ],
+            "eligible": 169302,
+            "kept": 74221,
+            "eligible_keep_fraction": 0.4383941122963698,
+            "retained_gradient_norm_ratio": 0.7976663799311631,
+            "masked_CE_cosine": 0.7976663799311509,
+            "random_CE_cosine": 0.6525944391288138,
+            "masked_RX_cosines": [
+              0.2399307767432874,
+              0.5826218780470417,
+              0.47849668235805365,
+              0.40953051000110346,
+              0.2682037740740984
+            ],
+            "random_RX_cosines": [
+              0.1809392488812361,
+              0.5187031971570921,
+              0.30184233158879753,
+              0.2646109998380708,
+              0.19910845059023316
+            ]
+          },
+          {
+            "cohort": 1,
+            "source_packets": 180,
+            "source_loss": 0.10186857730150223,
+            "receiver_losses": [
+              0.08277901262044907,
+              0.09667785465717316,
+              0.15278354287147522,
+              0.09350421279668808,
+              0.08359827846288681
+            ],
+            "eligible": 169911,
+            "kept": 55909,
+            "eligible_keep_fraction": 0.3290487372801055,
+            "retained_gradient_norm_ratio": 0.5921673371932642,
+            "masked_CE_cosine": 0.5921673371932583,
+            "random_CE_cosine": 0.5558946884922567,
+            "masked_RX_cosines": [
+              0.2193891904541352,
+              0.3212292032266751,
+              0.4143843659741841,
+              0.16453407683627364,
+              0.18897780832833075
+            ],
+            "random_RX_cosines": [
+              0.00791411168916477,
+              0.3517855528890904,
+              0.4868684119588595,
+              0.0019260089756526,
+              -0.0034902742353087744
+            ]
+          },
+          {
+            "cohort": 2,
+            "source_packets": 180,
+            "source_loss": 0.09971827268600464,
+            "receiver_losses": [
+              0.08990100026130676,
+              0.14003854990005493,
+              0.09647344052791595,
+              0.08964106440544128,
+              0.08253730088472366
+            ],
+            "eligible": 170314,
+            "kept": 56707,
+            "eligible_keep_fraction": 0.3329555996571039,
+            "retained_gradient_norm_ratio": 0.6331005532032034,
+            "masked_CE_cosine": 0.6331005532031947,
+            "random_CE_cosine": 0.559485784973087,
+            "masked_RX_cosines": [
+              -0.015094603909408828,
+              0.5288879881375207,
+              0.16077366000992543,
+              0.1540564616593234,
+              0.31960298692143835
+            ],
+            "random_RX_cosines": [
+              -0.11864988877216007,
+              0.4554775105824294,
+              0.22667535815634407,
+              0.13003394127201656,
+              0.2068843887134308
+            ]
+          },
+          {
+            "cohort": 3,
+            "source_packets": 180,
+            "source_loss": 0.1078018844127655,
+            "receiver_losses": [
+              0.10647711157798767,
+              0.10836516320705414,
+              0.08879340440034866,
+              0.08673541992902756,
+              0.14863836765289307
+            ],
+            "eligible": 169609,
+            "kept": 50128,
+            "eligible_keep_fraction": 0.2955503540496082,
+            "retained_gradient_norm_ratio": 0.6423678114989657,
+            "masked_CE_cosine": 0.6423678114989605,
+            "random_CE_cosine": 0.5645179265446132,
+            "masked_RX_cosines": [
+              0.2157019342569066,
+              0.19431304093210125,
+              0.17121009539168483,
+              0.2820209426659024,
+              0.35722382396922236
+            ],
+            "random_RX_cosines": [
+              0.2392733484587474,
+              0.17868572044760384,
+              0.055387875203299235,
+              0.12876724993730604,
+              0.3293131474669386
+            ]
+          },
+          {
+            "cohort": 4,
+            "source_packets": 180,
+            "source_loss": 0.09754231572151184,
+            "receiver_losses": [
+              0.08748790621757507,
+              0.12095750868320465,
+              0.08424633741378784,
+              0.08273642510175705,
+              0.11228340864181519
+            ],
+            "eligible": 169875,
+            "kept": 83283,
+            "eligible_keep_fraction": 0.4902604856512141,
+            "retained_gradient_norm_ratio": 0.8378739744101809,
+            "masked_CE_cosine": 0.8378739744101715,
+            "random_CE_cosine": 0.6989295719556122,
+            "masked_RX_cosines": [
+              0.5753229003726935,
+              0.5161638705133349,
+              -0.1293421872722815,
+              0.4157131948727749,
+              0.6896835745053249
+            ],
+            "random_RX_cosines": [
+              0.48423823994114085,
+              0.4778415905775369,
+              -0.22561472683335565,
+              0.2067218075226223,
+              0.5770021088413911
+            ]
+          }
+        ],
+        "body": [
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+            "elements": 3456,
+            "masked_nonzero_cohorts": 5,
+            "masked_norm": 0.0405929844987739,
+            "CE_cosine": 0.6910010592032759,
+            "changed_direction_cohorts": 5
+          },
+          {
+            "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+            "elements": 6912,
+            "masked_nonzero_cohorts": 5,
+            "masked_norm": 0.032333534259688386,
+            "CE_cosine": 0.728901412101665,
+            "changed_direction_cohorts": 5
+          },
+          {
+            "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+            "elements": 576,
+            "masked_nonzero_cohorts": 5,
+            "masked_norm": 0.05855836158463735,
+            "CE_cosine": 0.7404626228361464,
+            "changed_direction_cohorts": 5
+          }
+        ],
+        "feature_parameters": 195041,
+        "class_W_masked": false,
+        "proposed_class_W_gradient": "Original CE gradient, excluded from mask; no update performed"
+      },
+      "qualification": {
+        "status": "FAIL",
+        "fixed_rules": {
+          "source_only": true,
+          "models_required_for_future_training": 3,
+          "minimum_global_masked_CE_cosine_each_RX": 0,
+          "global_min_RX_cosine_better_than_matched_random": true,
+          "global_retained_gradient_norm_ratio_min": 0.1,
+          "eligible_keep_fraction_each_cohort_min": 0.01,
+          "eligible_keep_fraction_each_cohort_max": 0.99,
+          "body_masked_gradient_nonzero_each_of5": true,
+          "model_and_default_W_unchanged": true,
+          "head_fit_updates": 0,
+          "first_failure_skips_remaining_models": true,
+          "no_automatic_training_release": true
+        },
+        "source_only": true,
+        "target_metrics_used": false,
+        "no_automatic_training_release": true
+      },
+      "model_parameters_buffers_unchanged": true,
+      "source_packets": 900,
+      "model_forward_packets": 900,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "query_read": false,
+      "U_truth_read": false,
+      "seconds": 6.394665956497192
+    }
+  ],
+  "independent_recounts": [
+    {
+      "row_id": "RX_CONSENSUS-s2026092701",
+      "status": "VERIFIED",
+      "source_packets": 900,
+      "model_forward_packets": 900,
+      "gradient_calls": 30,
+      "selected_layer_records": 20,
+      "saved_full_feature_or_W_vectors": 45,
+      "feature_parameters": 195041,
+      "default_W_excluded_only": true,
+      "new_forwards": 0,
+      "new_gradients": 0,
+      "optimizer_steps": 0,
+      "head_fit_updates": 0,
+      "query_read": false,
+      "raw_vectors_exist": true,
+      "raw_vectors_bytes": 34851043
+    }
+  ],
+  "target_tested": false,
+  "goal84_tested": false,
+  "continued_training": false,
+  "no_threshold_or_parent_scan": true
+}

@@ -34,7 +34,8 @@
     "entrypoint": "experiments.cvs_source_rx_consensus.audit",
     "config_paths": [
       "experiments/cvs_source_rx_consensus/design.py"
-    ]
+    ],
+    "execution_commit": "765fc0028bac95d0359a9d6e3678ea7ad9509435"
   },
   "data": {
     "dataset": "ManySig",
@@ -119,7 +120,8 @@
     "remote_log_root": "PROJECT/releases/cvs_source_rx_consensus_20261015_r01",
     "local_artifact_root": "LOCAL_ARTIFACTS/source_rx_consensus_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_source_rx_consensus.audit",
-    "stop_rule": "Technical input/lineage mismatch, missing fixed cohorts, nonfinite gradients, model/state mutation, artifact recount failure or immutable output collision: preserve outputs, no automatic retry or unrelated stop. Scientific01FAIL skips02/03; 01PASS runs both02/03 unchanged even if02FAIL. No threshold/mask/grouping/parent scan; no automatic training release."
+    "stop_rule": "Technical input/lineage mismatch, missing fixed cohorts, nonfinite gradients, model/state mutation, artifact recount failure or immutable output collision: preserve outputs, no automatic retry or unrelated stop. Scientific01FAIL skips02/03; 01PASS runs both02/03 unchanged even if02FAIL. No threshold/mask/grouping/parent scan; no automatic training release.",
+    "execution_commit": "765fc0028bac95d0359a9d6e3678ea7ad9509435"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -245,7 +247,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/receiver-dro50-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -283,11 +285,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final5_unweighted_L_CE_max": 0.5,
-            "feature_difference_min": 1e-06,
+            "feature_difference_min": 0.000001,
             "native_steps": 11100,
             "actual_U_packets": 963900,
             "required_gradient_epochs": [
@@ -559,7 +561,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/receiver-dro-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -597,11 +599,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final5_unweighted_L_CE_max": 0.5,
-            "feature_difference_min": 1e-06,
+            "feature_difference_min": 0.000001,
             "native_steps": 11100,
             "actual_U_packets": 963900,
             "required_gradient_epochs": [
@@ -881,7 +883,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/receiver-dro-seeds-20261015",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -919,11 +921,11 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "final5_unweighted_L_CE_max": 0.5,
-            "feature_difference_min": 1e-06,
+            "feature_difference_min": 0.000001,
             "native_steps": 11100,
             "actual_U_packets": 963900,
             "required_gradient_epochs": [
@@ -1135,11 +1137,33 @@
   ],
   "preparation_status": "LOCAL_VERIFIED_P0P1_PASS_PREREGISTERED",
   "results": {
-    "status": "PREREGISTERED",
+    "status": "ANALYZED_VERIFIED_SOURCE_FAIL",
+    "models": 1,
+    "source_packets": 900,
+    "model_forward_packets": 900,
+    "gradient_calls": 30,
+    "selected_layer_records": 20,
+    "saved_vectors": 45,
+    "source_qualification": "FAIL",
+    "masked_min_RX_cosine": -0.026875652668050865,
+    "random_min_RX_cosine": 0.017309198767756256,
+    "retained_gradient_norm_ratio": 0.7751001344898251,
+    "conditionally_skipped_rows": [
+      "RX_CONSENSUS-s2026092702",
+      "RX_CONSENSUS-s2026092703"
+    ],
+    "optimizer_steps": 0,
+    "head_fit_updates": 0,
     "training_started": false,
-    "source_probe_started": false,
+    "source_probe_started": true,
     "target_tested": false,
-    "goal84": false
+    "goal84": false,
+    "continued_training": false,
+    "evidence": [
+      "results.json",
+      "final_analysis.md",
+      "completion_evidence.json"
+    ]
   },
   "registered_at": "2026-10-15T10:52:47+00:00"
 }

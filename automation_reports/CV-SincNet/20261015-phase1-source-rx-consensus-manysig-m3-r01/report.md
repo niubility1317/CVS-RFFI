@@ -23,3 +23,5 @@
 验证：13 项协议负例、真实网络合成输入前向和 6 次导数、完整 f_theta 边界、class_W 清零不改变 joint160、状态/RNG 不变、逐参数随机数量相同均 PASS。一次独立 P0/P1 审查 PASS；不重复未变化检查。
 
 参考：[AND-mask 原论文](https://arxiv.org/abs/2009.00329)。本方案为源 RX 符号筛选改编，不声称论文原设置复现。
+
+结果：源诊断完成且独立复算 VERIFIED；首模型固定源判据 FAIL，另外两模型按计划跳过。详见 final_analysis.md 和 results.json。未进入训练或目标测试。
