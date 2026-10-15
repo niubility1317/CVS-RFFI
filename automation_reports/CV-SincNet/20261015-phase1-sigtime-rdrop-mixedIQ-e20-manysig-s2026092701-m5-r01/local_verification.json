@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "real_IQ_reads": 0,
+  "optimizer_updates": 0,
+  "native_graph": {
+    "rows": 5,
+    "initial_state_tensors": 198,
+    "synthetic_forward_packets": 3328,
+    "negative_cases": 10,
+    "same_generated_IQ_pairs": true,
+    "finite_nonzero_default_head_fusion_SIG_gradients": true,
+    "EMA_deepcopy": true
+  },
+  "protocol_negative_cases": 13,
+  "observer_synthetic_forward_packets": 774,
+  "atomic_panel_targeted_cases": 2,
+  "logs": [
+    "E:\\type10-7\\local_artifacts\\cvs_mixedIQ_train_20261015\\native_checks_final.log",
+    "E:\\type10-7\\local_artifacts\\cvs_mixedIQ_train_20261015\\observer_checks.log",
+    "E:\\type10-7\\local_artifacts\\cvs_mixedIQ_train_20261015\\panel_publish_checks.log"
+  ],
+  "real_checkpoint_smoke": "Launcher first step, then continues immediately on PASS"
+}

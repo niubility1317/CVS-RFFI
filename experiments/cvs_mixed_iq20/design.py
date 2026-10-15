@@ -1,4 +1,4 @@
-"""Executable design, not a registered training launcher or performance result."""
+"""Fixed mixed-IQ design; execution lives in the registered train_* launcher."""
 import argparse
 import json
 from pathlib import Path
@@ -36,7 +36,7 @@ def plan():
                          RDrop_forwards_per_IQ_view=2,
                          objective='original smoothed RDrop on one old-augmented IQ' if legacy
                          else '.25 RDrop(raw) + .25 RDrop(g) + .5 RDrop(s); inactive slot=raw'))
-    return dict(status='SOURCE_SAFETY_VERIFIED_TRAINING_PENDING', training_launcher_implemented=False,
+    return dict(status='TRAINING_IMPLEMENTED_RELEASE_PENDING', training_launcher_implemented=True,
                 training_models_launched=0, source_identity_preservation_test='PASS_ZERO_UPDATE_SOURCE_V_ONLY',
                 source_safety_run='20261015-phase1-sigtime-rdrop-mixedIQ-source-s2026092701-r01',
                 rows=rows, first_seed_only=True, training_scenes=list(SCENES),
