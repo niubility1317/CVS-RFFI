@@ -1,3 +1,4 @@
 {"at": "2026-10-15T07:20:17+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-15T07:26:45+00:00", "status": "PLANNED", "note": "Implementation/focused checks/final compile and single independent next-run P0P1 PASS; no training launched", "evidence": ["local_verification.json", "review_evidence.json"], "row_id": null}
 {"at": "2026-10-15T07:32:26+00:00", "status": "RUNNING", "note": "Two original scratch20 rows independently verified on GPU0/1, source RX1 excluded, both real CP smoke PASS, no target", "evidence": ["launch_verification.json"], "row_id": null}
+{"at": "2026-10-15T07:46:10+00:00", "status": "ANALYZED", "note": "Complete source2x20/8880steps independently analyzed, fixed source qualification True, no target or head fit", "evidence": ["results_analysis.json", "source_summary.csv", "source_complete_curves.csv", "source_strata.csv"], "row_id": null}

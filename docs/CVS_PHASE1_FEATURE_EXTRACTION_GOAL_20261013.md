@@ -245,3 +245,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- CROSSFIT_TEACHER_ROUTE_20261015 -->
 2026-10-15：用户追加跨RX交叉拟合教师报告，作为独立监督来源路线。已核实 DomED 存在互补域蒸馏先例；研究价值需先以匹配 SAMPLE 与 EXCLUDE_RX1 的纠正−破坏证明。urban 对话已实现 E50/11100、Lteacher4464/Ldev720（RX1=144）的两教师方案但当时未发布，保留其唯一 owner，本侧不重复教师训练。只共享机制证据，不把该 E50/不同 L 契约当成本侧 E20 对照或直接继承权重。外层 heldRX 必须在全部教师及继承来源排除；不对齐独立教师 joint160，不叠加新旧冲突U标签。RDrop 与跨拟合教师保持独立；尚未扩五教师库或学生蒸馏。
+
+
+<!-- RDROP_TRAINED_SOURCE_COMPLETE_20261015 -->
+2026-10-15：`20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01` 完整source两组scratch20/8880更新已独立复算；TWO_CE RX1=69.285714%/CE1.492366164，RDROP=75.158730%/CE1.157227747，配对Δ+5.873016pp，修正104/新增30，固定资格=True。0 target/另训头，16合成packet特征边界通过；不把冻结源梯度相容等同训练效力。仅允许单独登记独立source seed确认。[同row报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-sourcefold-s2026092701-m2-r01/report.md)。全目标仍active。
