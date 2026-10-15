@@ -216,3 +216,6 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 
 2026-10-15：SIG_TIME时间共享失活 `20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01` ANALYZED/VERIFIED，3×20epoch/13320更新/60epoch完整、9默认头导出、200state同初值及四tail独立FP64平均逐位核实；固定主source资格False。各条件FINAL/EMA/AVG、paired修正/破坏、F71变化和全部曲线保存在[同row报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-t2-locked-tailavg-sourcefold-s2026092701-m3-r01/report.md)。源RX1全程排除、L5040/U45360hidden/V21600、无新loss/headfit/target、1seed/1260独立held包，不能当正式三seed/84%。窗口和p未扫，历史正负结果保留；84%goalactive。
+
+
+2026-10-15：既有全5源RX固定BASE_SSL ownEMA导出 `20261015-phase1-SIGTIME-ownEMA-export-clean-manysig-m3-r01` ANALYZED/SOURCE_FALSIFIED，真实EMA no-query smoke及终态VERIFIED；首seed V27000错误501→504，CE0.07992632806→0.07925969537，固定资格失败，0新增训练/头拟合/target/评分，其他seed按规则未触发。原父、heldRX1两条件EMA小正和三条件tail平均负结果全部保留，不扫描decay/窗口救援。短run未捕获独立live GPU成员，已如实披露。84%goalactive。见[同row报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-ownEMA-export-clean-manysig-m3-r01/report.md)。

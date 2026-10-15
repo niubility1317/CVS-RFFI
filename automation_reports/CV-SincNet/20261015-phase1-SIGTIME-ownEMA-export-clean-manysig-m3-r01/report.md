@@ -1,6 +1,6 @@
 # SIG_TIME 原 EMA 导出：复用既有三种子 E20
 
-状态 PLANNED。这是独立性能导出比较，不称新颖训练机制，也不救援LOCKED的固定主资格。用户新增报告优先比较同轨迹FINAL/EMA/TAIL_AVG；当前source RX1两已完成条件EMA分别净修正9/12个错误，均只有1seed/1RX，不当正式三seed收益。完整tail缺失时不为平均单独重训。本轮复用 `20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02` 的三个固定BASE_SSL，不按target挑父；原实际LS0、SIG_TIME/CENTER25K、13L+7U/defaultcos，source-only scratch20/4440steps的own EMA decay=.999。当前四RX源折与正式全5RX契约不同，绝不加载其权重。
+状态 **ANALYZED / SOURCE_FALSIFIED，终态 VERIFIED**。下文保留原预登记。这是独立性能导出比较，不称新颖训练机制，也不救援LOCKED的固定主资格。用户新增报告优先比较同轨迹FINAL/EMA/TAIL_AVG；当前source RX1两已完成条件EMA分别净修正9/12个错误，均只有1seed/1RX，不当正式三seed收益。完整tail缺失时不为平均单独重训。本轮复用 `20261015-phase1-SIGTIME-evidence-responsibility-e20-clean-manysig-m12-r02` 的三个固定BASE_SSL，不按target挑父；原实际LS0、SIG_TIME/CENTER25K、13L+7U/defaultcos，source-only scratch20/4440steps的own EMA decay=.999。当前四RX源折与正式全5RX契约不同，绝不加载其权重。
 
 新训练为0epoch/0optimizer steps。所有feature、默认W、norm和gain一起取原final checkpoint内`ema_model`，原学生FINAL预测/评分保留复用；不重训/替换头，不跨seed平均，不改变teacher。模型元数据和完整继承来源通过已有source_proof/validate_checkpoint在反序列化前核对。原训练成本3×20/4440保持单列。
 
@@ -13,3 +13,10 @@
 Git commit固定实际代码/config；owner `codex/root/SIGTIME-ownEMA-export-20261015`。CWD `/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_ownEMA_export_clean_20261015_r01`；命令 `/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_sigtime_ema_export20/runner.py experiments/cvs_sigtime_ema_export20/configs/matrix.json`；不可覆盖输出 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261015-phase1-SIGTIME-ownEMA-export-clean-manysig-m3-r01`。普通N607/CVS-RFFI Python，单pipeline worker/一GPU，按最少现有进程后最大空闲选择，总所有owner≤3，当前健康dropout任务不干预。一次preflight、单archive本远SHA比较、remotecompile、真实checkpoint source-only smoke PASS后直接资格/冻结/逐row预测评分；唯一下一run P0/P1审查，启动后独立PID/CWD/cmd/GPU/log-growth。技术停止规则和完整矩阵见experiment.json，无额外审批或校验链。
 
 本地11项聚焦检查及compile PASS。唯一下一run审查发现source builder漏传device，已最小修复；实际接口签名的无数据回归修复前失败、修复后通过，独立定向复核PASS。源码/config提交后按预登记直接发布，无额外审批。
+
+
+完整首seed全源V27000：FINAL错误501、accuracy98.144444%、meanCE0.07992632806；ownEMA错误504、accuracy98.133333%、meanCE0.07925969537。EMA的CE下降0.00066663268，但新增净错误3个，accuracy下降0.011111个百分点，未通过预先固定的错误数不升规则。后两个seed比较、三个export冻结和全部target预测/评分均未触发；不因错误差很小而改规则，不扩扫decay或换父。
+
+执行commit见source_result_evidence.json，单archive传输/compile核实，真实ownEMA checkpoint no-query smoke PASS。独立读取完整stdout无异常、日志从0增长至56bytes，源结果、资格失败、零export/prediction/score产物及进程自然结束相互一致。发布记录有PID/CWD/argv，本次首次独立读取时短任务已结束，未捕获运行期GPU成员证据，不能把事后观察写成运行期核验。保留本项准确边界，不为补证重跑。
+
+实际新增训练0步/0epoch、拟合头0、目标决定0、目标truth读取0。第一seed读取27000个源V、两模型54000packet前向及2个zero smoke；其余row未执行。原三个父训练和既有测试产物均保留。全源V上的EMA小负结果不抹去此前两个heldRX1条件的EMA小正结果，但当前固定导出不晋级，也不当通用新颖训练机制。84%目标仍active。

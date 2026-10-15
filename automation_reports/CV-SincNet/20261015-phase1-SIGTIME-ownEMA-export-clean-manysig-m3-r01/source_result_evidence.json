@@ -1,0 +1,67 @@
+{
+  "status": "VERIFIED",
+  "scientific_outcome": "SOURCE_FALSIFIED",
+  "execution_commit": "5baf9d9185fe25c35d22c1fe8f61d7a6a6e0b044",
+  "archive_SHA_comparison": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "submitted_PID_CWD_command_matches": true,
+  "terminal_process_absent": true,
+  "final_log_growth_verified": true,
+  "running_GPU_membership_independently_captured": false,
+  "running_GPU_limitation": "First independent readback occurred after this short source-only run ended; do not claim a captured live GPU observation",
+  "real_own_EMA_checkpoint_no_query_smoke": true,
+  "source_metrics": {
+    "FINAL": {
+      "count": 27000,
+      "errors": 501,
+      "accuracy": 0.9814444444444445,
+      "mean_CE": 0.07992632805633486,
+      "receiver_accuracy": {
+        "1": 0.9951851851851852,
+        "3": 0.9492592592592592,
+        "4": 0.9842592592592593,
+        "6": 0.9959259259259259,
+        "8": 0.9825925925925926
+      }
+    },
+    "EMA": {
+      "count": 27000,
+      "errors": 504,
+      "accuracy": 0.9813333333333333,
+      "mean_CE": 0.07925969537358163,
+      "receiver_accuracy": {
+        "1": 0.9951851851851852,
+        "3": 0.9488888888888889,
+        "4": 0.9842592592592593,
+        "6": 0.9957407407407407,
+        "8": 0.9825925925925926
+      }
+    }
+  },
+  "source_gate": {
+    "first_seed_only": 2026092701,
+    "EMA_source_V_errors_not_higher": true,
+    "EMA_source_V_CE_not_higher": true,
+    "at_least_one_strict_improvement": true,
+    "CE_strict_tolerance": 1e-08,
+    "outcome": "If qualified freeze all three fixed own EMA exports, predict clean, then independent truth-last scoring; otherwise source-only closure",
+    "no_decay_window_parent_seed_scan": true
+  },
+  "source_gate_qualified": false,
+  "source_rows_compared": 1,
+  "source_rows_planned_maximum": 3,
+  "new_optimizer_steps": 0,
+  "new_head_fit_updates": 0,
+  "new_target_predictions": 0,
+  "new_target_truth_reads": 0,
+  "other_two_rows": "Not reached after fixed first-seed falsification; no selective rerun",
+  "log_fatal_markers": {
+    "Traceback (most recent call last)": 0,
+    "CUDA out of memory": 0,
+    "FloatingPointError:": 0,
+    "ValueError:": 0,
+    "RuntimeError:": 0,
+    "TypeError:": 0
+  },
+  "goal84_completed": false
+}

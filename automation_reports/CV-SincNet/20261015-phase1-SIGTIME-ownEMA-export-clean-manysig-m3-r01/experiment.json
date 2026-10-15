@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active Phase1 optimization and user report explicitly prioritize same-trajectory FINAL/EMA/average comparison; no averaging-only training rerun.",
   "code": {
-    "commit": "release_commit.txt (actual Git HEAD at launch)",
+    "commit": "5baf9d9185fe25c35d22c1fe8f61d7a6a6e0b044",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "N607 ordinary account/CVS-RFFI Python; narrow export package on immutable original R02 code runtime",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_ownEMA_export_clean_20261015_r01",
@@ -925,5 +925,14 @@
     "diagnostic_temporary_steps_per_model_before": 8,
     "diagnostic_temporary_steps_per_model_after": 12
   },
-  "registered_at": "2026-10-15T03:57:18+00:00"
+  "registered_at": "2026-10-15T03:57:18+00:00",
+  "result": {
+    "status": "ANALYZED",
+    "scientific_outcome": "SOURCE_FALSIFIED",
+    "evidence_ref": "source_result_evidence.json",
+    "source_rows_compared": 1,
+    "target_rows_predicted": 0,
+    "new_training_steps": 0,
+    "goal84_completed": false
+  }
 }
