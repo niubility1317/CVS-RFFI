@@ -1,5 +1,11 @@
 <!-- SIGTIME_RDROP_AF_CURRENT_20261015 -->
-当前执行：用户固定的 SIG_TIME＋RDrop A–F 匹配矩阵已发布（20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02，执行 09554c3a06c976c53efc4dbc61f5c501a1e7b06e）。B/C/D/E/F 首种子从零50轮健康运行；A 原 RDrop 三seed真实配方经元数据核实并通过源checkpoint无query检查，历史 clean 均值84.340079%是可复用 A 对照。新目标汇总未读取，源决定上传后才放固定02/03，最终必须回答 B/E/F 增量。此前 RX_CAGRAD 三seed已完整交付：82.2885%±1.2216pp，对同范数控制−0.293254±0.502655pp、1/3正，保留负结果；不据此修改 A–F 配方。
+最新固定矩阵已完整分析并交付：SIG_TIME＋RDrop A–F（20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02）18 行／3 个固定模型种子全部完成，15 个新增 scratch50 模型共 166,500 步；默认头按原流程联合训练，单独拟合 0，A 三行匹配历史产物复用。完整结果提交 4dd4846a782a7cd3dbefb898870f72c1f2a0ef81 已推送，独立远端 OID 相同；执行代码 09554c3a06c976c53efc4dbc61f5c501a1e7b06e。
+
+**F 达到 84% 均值，但 B、E、F 均未证明总体准确率高于原 A。** A84.3401%±0.8385pp、B84.0688%±0.6772pp、C84.2784%±0.4909pp、D84.3694%±0.7628pp、E84.2240%±0.4944pp、F84.2702%±0.2754pp。B−A −.271230pp（1/3正）；E−C −.054365pp（1/3正）、E−D −.145437pp（2/3正）；F−E +.046230pp、F−B +.201389pp、交互 +.317460pp（均2/3正）；F−A −.069841pp（2/3正）。F 的最差 RX/day 均值较 A 高2.134722/.950794pp，样本 SD 较小；这是三seed中的权衡，不能代替主准确率增益、新 TX 迁移或因果互补证据。
+
+源扩种子决定4173ae34先上传核对远端，再读取新目标汇总；02/03原样执行。全324个CM、同物理ID配对错误及166500步源记录均独立复算，全部原进程自然退出。统一公式、物理clip与origin衰减执行正确；E−D同时包含单位、裁剪度量与物理衰减，不单归因学习率。负结果全部保留，不追加目标反馈调参或选择性重跑。完整报告：[A–F 三种子结果](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02/final_analysis.md)，所属分支 codex/phase1-rdrop-combinations-20261015；根目录已有精确镜像。
+
+下文保留此前路线的历史进展和结论；其中“未达84%”仅指相应旧路线，最新 RDrop/A–F 状态以文首为准。此前 RX_CAGRAD 三seed82.2885%±1.2216pp、相对同范数控制−.293254±.502655pp（1/3正）等负结果不改写。
 
 <!-- CURRENT_TRAINING_PRIORITY_20261014 -->
 固定 SIG_TIME 和默认联合分类头，研发重点保持训练泛化与半监督机制。均值教师完整三seed已 ANALYZED/VERIFIED：FEATURE_MT82.4359%±1.5874pp，匹配SIG82.6806%±1.7906pp；配对−.2446±.2101个百分点，0/3正，净−1233/504000。三seed源U特征损失均下降约18%至21%，但未形成DG收益；保留完整负结果，不扫权重或换头补结论。完整报告 20261015-phase1-feature-mean-teacher-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md。
