@@ -18,3 +18,6 @@ E20已有ORIGINAL83.115675%、TWO_CE82.486111%、RDROP83.942857%，只是报告�
 
 
 恢复代码 33f6171a0fec6ac432df672d0c6f542b8d71434c 已提交推送，远程 OID 独立读回一致；实际模型代码仍为 b3ac442e2d33a5b315fb3251c30e0ad7083566bc。一次 N607 preflight、单发行包 SHA 比较与远程编译 VERIFIED。四行在 GPU0/2/7 运行，快照 all-owner 均不超过3进程/GPU，实测 3346 至 3350 MiB/worker，CPU2/loader0。全部默认头联合训练、真实源角色和原配方均已核实。原14行已全部自然完成 clean 预测与独立评分，无旧模型重训或停止；原 failure 保留。新4行冻结后自动逐行预测和独立 CPU truth-last，完整18行统计待齐。详见启动证据 launch_verification.json。
+
+
+只读合并分析工具已完成三个边界检查：14旧+4新逐行路径、全18行终点条件、保留完整原始审计并通过编译。训练与预测代码不变。全部终点到齐后才检查36份初末checkpoint、139860条step、630条epoch、3024000既有决定与324个混淆矩阵，并独立truth-last复算；当前未触发该完整分析。原缺失的一个launch receipt如实保留，不能伪造，源freeze时序使用其own初始checkpoint创建时间另行核对。检查中真实IQ/truth/CP读取、优化和新预测均为0。

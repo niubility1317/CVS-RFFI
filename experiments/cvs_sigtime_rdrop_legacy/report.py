@@ -17,12 +17,21 @@ def number(x,scale=1.,suffix='',signed=False):return '缺项' if x is None else 
 def main():
  if (A/'results_analysis.json').is_file():print('ALREADY_RECORDED');return
  v=d.read(P/'independent_readback.json');x=d.read(P/'independent_analysis.json')
- assert x['status']=='VERIFIED' and v['completion']['status']==x['terminal_status'] and not v['dispatcher'] and not any(r['process'] for r in v['rows']) and not v['failure']
+ assert x['status']=='VERIFIED'
+ physical=x.get('physical_execution')
+ if physical:
+  from experiments.cvs_sigtime_rdrop_recovery import design as recovery
+  from experiments.cvs_sigtime_rdrop_recovery.merged_analysis import ready
+  old=d.read(P/'technical_reconciliation.json');new=d.read(W/'local_artifacts'/recovery.RELEASE/'independent_readback.json')
+  assert ready(old,new) and physical['original_rows']==14 and physical['recovery_rows']==4 and physical['model_restarts']==0 and x['terminal_status']=='ARTIFACTS_COMPLETE'
+  assert physical['original_failure']['error']=="RuntimeError('Original SIG_TIME worker not observable')" and x['earlier_E20_summary_unchanged']
+ else:
+  assert v['completion']['status']==x['terminal_status'] and not v['dispatcher'] and not any(r['process'] for r in v['rows']) and not v['failure']
  actual=x['actual_totals'];assert len(x['rows'])==actual['models'] and len(x['records'])==actual['metric_records']==18*actual['models']
- x=public(x);overview=[];curves=[];cost=[]
+ x=public(x);physical=x.get('physical_execution');overview=[];curves=[];cost=[]
  for rid,r in x['rows'].items():
   overall=next(a for a in x['records'] if a['row_id']==rid and a['dimension']=='overall');source=r['source_V'];last=r['complete_epoch_curves'][-1]
-  overview.append(dict(row_id=rid,arm=r['arm'],seed=r['model_seed'],epochs=r['epochs'],accuracy=overall['accuracy'],macro_f1=overall['macro_f1'],source_V_accuracy=source['source_val_accuracy'],source_V_worst_RX=source['source_val_worst_rx'],final_train_CE1=r['final_training_L_CE'],final_pairedCE=last.get('legacy_rdrop/paired_CE'),final_KL=last.get('legacy_rdrop/symmetric_KL'),selected_U=r['pseudo_selected_observations'],U_observations=r['pseudo_observations'],training_seconds=r['elapsed_seconds'],prediction_seconds=r['prediction_seconds'],feature_L2_delta=r['feature_parameter_L2_delta'],default_W_L2_delta=r['default_W_L2_delta'],source_health=r['source_health']))
+  overview.append(dict(row_id=rid,physical_run_id=r.get('physical_run_id',d.RUN),arm=r['arm'],seed=r['model_seed'],epochs=r['epochs'],accuracy=overall['accuracy'],macro_f1=overall['macro_f1'],source_V_accuracy=source['source_val_accuracy'],source_V_worst_RX=source['source_val_worst_rx'],final_train_CE1=r['final_training_L_CE'],final_pairedCE=last.get('legacy_rdrop/paired_CE'),final_KL=last.get('legacy_rdrop/symmetric_KL'),selected_U=r['pseudo_selected_observations'],U_observations=r['pseudo_observations'],training_seconds=r['elapsed_seconds'],prediction_seconds=r['prediction_seconds'],feature_L2_delta=r['feature_parameter_L2_delta'],default_W_L2_delta=r['default_W_L2_delta'],source_health=r['source_health']))
   for epoch in r['complete_epoch_curves']:curves.append(dict(row_id=rid,arm=r['arm'],seed=r['model_seed'],**epoch))
   for stage,name in ((True,'L_only'),(False,'L_plus_U')):
    eps=[a for a in r['complete_epoch_curves'] if a['label_stage']==stage]
@@ -76,10 +85,25 @@ def main():
  '旧 RDrop、CENTER25K、NONE 等正证据和所有负结果独立保留；未发布的残差交换原型没有叠加本轮。RDrop 是已有方法，本次验证与旧 SIG_TIME 的实际结合效果，不声明全球方法创新。研究目标不会仅凭一个最高分自动关闭。','',
  '![完整训练曲线](training_curves.png)','',
  '执行代码与冻结配置提交：`'+x['execution_commit']+'`。完整预登记、一次 P0/P1、本地验证与启动证据见 experiment.json、review_evidence.json、local_verification.json、launch_verification.json；完整结果与配对分层见 results_analysis.json 和 CSV。']
+ if physical:
+  lines[2]=lines[2].replace('实际 18/18 行','逻辑矩阵 18/18 行')
+  lines.insert(3,'\n物理执行分为原运行14行与技术恢复4行。原调度器在启动后瞬时进程观测失败，原failure和未记录一个worker的缺口保留；已有14行自然完成且未重训。新不可变root仅补四个原未启动行，配方、seed与预算不变。所有最终训练/预测/评分进程已结束；原物理run仍为PARTIAL，逻辑矩阵18行完整，不将其改写为原调度器正常完成。')
+  lines=[line.replace('所有自有进程自然结束，未干预其他任务。','所有自有训练与评分进程自然结束，原调度失败历史保留，未干预其他任务。') for line in lines]
+  lines+=['',f"技术恢复run为 {physical['recovery_run_id']}，调度代码 {physical['recovery_orchestration_commit']}；18行实际模型代码均为 {physical['model_code_commit']}。metadata仅run_id/output_root/launch_owner变化。原E50_TWO_CE seed02无launch receipt，完整分析用其own初始checkpoint时间核对源freeze先于训练，不伪造PID或启动receipt。完整18行E20重算与此前已提交E20汇总完全相同。矩阵墙钟包含故障与发布等待；原failure至新四行首次准入间隔 {physical['recovery_launch_delay_seconds']:.2f} s，训练本身时间另见各行/各阶段CSV。两个不可变root及逐行归属见results_analysis.json和summary_by_seed.csv。"]
  (A/'report.md').write_text('\n'.join(lines).rstrip()+'\n',encoding='utf-8',newline='\n')
  spec=d.read(A/'experiment.json');spec['result']=dict(status='ANALYZED',terminal_status=x['terminal_status'],evidence_ref='results_analysis.json',actual_totals=actual,source_skipped=x['source_skipped'],primary='E50_RDROP',E50_RDROP_goal84_check=x['E50_RDROP_goal84_check'],E20_RDROP_goal84_check=x['E20_RDROP_goal84_check'],goal_completed=False);d.write(A/'experiment.json',spec)
  mod=importlib.util.spec_from_file_location('registry',W.parents[2]/'tools/experiment_registry.py');reg=importlib.util.module_from_spec(mod);mod.loader.exec_module(reg)
- reg.event(W,d.RUN,'ANALYZED',['results_analysis.json','summary_by_seed.csv','paired_errors.csv','paired_strata.csv','training_complete_curves.csv'],f"Original SIG_TIME RDrop completed {actual['models']}/18; full {actual['optimizer_steps']} steps/{actual['epochs']} epochs/{actual['clean_decisions']} existing decisions/{actual['metric_records']} CM independently recounted; explicit source skips preserved; no new predictions or fitting");reg.build(W,managed_only=True)
+ reg.event(W,d.RUN,'ANALYZED',['results_analysis.json','summary_by_seed.csv','paired_errors.csv','paired_strata.csv','training_complete_curves.csv'],f"Original SIG_TIME RDrop logical group completed {actual['models']}/18; full {actual['optimizer_steps']} steps/{actual['epochs']} epochs/{actual['clean_decisions']} existing decisions/{actual['metric_records']} CM independently recounted; technical history preserved; no new predictions or fitting")
+ extra_paths=[]
+ if physical:
+  spec['result'].update(physical_execution=physical,logical_group_status='ANALYZED',physical_run_status='PARTIAL',technical_recovery_status='ANALYZED');d.write(A/'experiment.json',spec)
+  component=W/'automation_reports/CV-SincNet'/physical['recovery_run_id'];component_spec=d.read(component/'experiment.json')
+  component_result=dict(status='ANALYZED',physical_rows=4,metric_records=72,logical_group_run_id=d.RUN,logical_group_rows=18,evidence_ref='../'+d.RUN+'/results_analysis.json',model_restarts=0,goal_completed=False)
+  component_spec['result']=component_result;d.write(component/'experiment.json',component_spec);d.write(component/'component_analysis.json',component_result)
+  s=(component/'report.md').read_text(encoding='utf-8');s+=f"\n\n最终状态 ANALYZED / 四行50轮、44400更新、672000固定clean决定与72个分层混淆矩阵完整核验 VERIFIED。原14+新4的完整三seed E20/E50组报告见 [合并报告](../{d.RUN}/report.md)。本run自身只有4行，不冒充独立完整三seed矩阵。本次合并分析的模型重训、另训头和新增真实IQ读取均为0，原failure保留。\n";(component/'report.md').write_text(s,encoding='utf-8',newline='\n')
+  reg.event(W,physical['recovery_run_id'],'ANALYZED',['component_analysis.json','../'+d.RUN+'/results_analysis.json'],'Four previously unstarted rows complete; combined14+4 full18 log/checkpoint/truthlast audit VERIFIED; no model restarts')
+  extra_paths=[(component/n).relative_to(W).as_posix() for n in ('experiment.json','events.jsonl','report.md','component_analysis.json')]
+ reg.build(W,managed_only=True)
  goal=W/'docs/CVS_PHASE1_FEATURE_EXTRACTION_GOAL_20261013.md';marker='<!-- ORIGINAL_SIGTIME_RDROP_COMPLETE_20261015 -->';text=goal.read_text(encoding='utf-8')
  if marker not in text:
   summary='；'.join(arm+' '+number(s['accuracy_mean'],100,'%')+f" n={s['seed_count']}" for arm,s in x['summary'].items())
@@ -87,7 +111,8 @@ def main():
   text+=f'\n\n{marker}\n2026-10-15 `{d.RUN}` 实际{actual["models"]}/18行已ANALYZED/VERIFIED，{actual["optimizer_steps"]}更新/{actual["epochs"]}epoch，保留旧RAW_HZ/LS.01/普通增强/默认头joint配方。{summary}。{contrasts}。E50_RDROP/E20_RDROP完整三seed84%检查分别{x["E50_RDROP_goal84_check"]}/{x["E20_RDROP_goal84_check"]}；不足三seed不冒充完整矩阵。固定源资格及缺项保留，无target反馈或选择性救跑。既有正负证据和未发布原型保留，RDrop不作为全球新方法；goal保持active。[完整报告](../automation_reports/CV-SincNet/{d.RUN}/report.md)。\n'
   goal.write_text(text,encoding='utf-8',newline='\n')
  names=('experiment.json','events.jsonl','report.md','results_analysis.json','summary_by_seed.csv','training_complete_curves.csv','paired_errors.csv','paired_strata.csv','training_stage_cost.csv','metrics_strata.csv','training_curves.png')
- paths=[(A/n).relative_to(W).as_posix() for n in names]+['experiments/cvs_sigtime_rdrop_legacy/analyze.py','experiments/cvs_sigtime_rdrop_legacy/report.py',goal.relative_to(W).as_posix()]
- d.write(W/'.codex_tmp/original_SIGTIME_rdrop_analysis_plan.json',dict(paths=paths,run_id=d.RUN,status='ANALYZED',message='Analyze original SIG_TIME RDrop E20 E50 default head comparison',evidence=str(P/'analysis_delivery.json')))
+ paths=[(A/n).relative_to(W).as_posix() for n in names]+['experiments/cvs_sigtime_rdrop_legacy/analyze.py','experiments/cvs_sigtime_rdrop_legacy/report.py',goal.relative_to(W).as_posix()]+extra_paths
+ if physical:paths+=['experiments/cvs_sigtime_rdrop_recovery/merged_analysis.py','experiments/cvs_sigtime_rdrop_recovery/checks_analysis.py']
+ d.write(W/'.codex_tmp/original_SIGTIME_rdrop_analysis_plan.json',dict(paths=paths,run_id=d.RUN,additional_runs=[physical['recovery_run_id']] if physical else [],status='ANALYZED',message='Analyze original SIG_TIME RDrop E20 E50 default head comparison',evidence=str(P/'analysis_delivery.json')))
  print(json.dumps(dict(status='ANALYZED',actual_totals=actual,summary=x['summary'],paired=x['paired_summary'],goal_completed=False),ensure_ascii=False))
 if __name__=='__main__':main()
