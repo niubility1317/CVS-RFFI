@@ -1,0 +1,19 @@
+{
+  "status": "VERIFIED",
+  "source_only": true,
+  "qualified": false,
+  "actual_rows": 4,
+  "actual_epochs": 80,
+  "actual_optimizer_steps": 17760,
+  "default_head_fit_updates": 0,
+  "target_prediction_count": 0,
+  "target_truth_reads": 0,
+  "execution_commit": "c4bc8ef402d9f6ab6e7b52f2043ae65f37347455",
+  "initial_state_equal_tensors": 198,
+  "max_objective_reconstruction_error": 2.384185791015625e-07,
+  "DIFFERENCE_zero_common_gradient": true,
+  "all_own_CP_smokes_pass": true,
+  "all_stdout_full_scan": true,
+  "all_step_and_epoch_logs_parsed": true,
+  "goal_completed": false
+}

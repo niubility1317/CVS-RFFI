@@ -309,3 +309,7 @@ E20跨RX特征脆弱性 `20261015-phase1-SIGTIME-center-crossRX-sharpness-e20-cl
 
 <!-- SIGTIME_RDROP_DIFFERENCE_SOURCE_PREREG_20261015 -->
 用户范围已收敛SIG_TIME＋RDrop。本试 20261015-phase1-SIGTIME-rdrop-difference-gradient-sourcefold-s2026092702-m4-r01 PLANNED：FULL_KL/FEATURE_KL/SHRINK/DIFFERENCE固定seed02各scratch20，旧RAW_HZ/原增强/LS.01/defaultheadjoint/oldU保持；仅KL梯度对象/共同分量改变。CPU/CUDA各51negative与5gatecases、198初值/原logits/前向目标/RNG逐位相同PASS。真RX1先全路径排除，最终1260源L和固定四控制资格，无target、无旧CP继承。diff投影不保证encoder中心或AdamW步长不变；文献先例与代价记录。本试尚未发布或真实训练。全goal active。[报告](../automation_reports/CV-SincNet/20261015-phase1-SIGTIME-rdrop-difference-gradient-sourcefold-s2026092702-m4-r01/report.md)。
+
+
+<!-- SIGTIME_RDROP_DIFFERENCE_SOURCE_RESULT_20261015 -->
+SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIGTIME-rdrop-difference-gradient-sourcefold-s2026092702-m4-r01`；完整 17760 步与 80 model-epoch、默认头、真实 RX1 留出和无 target 核验 VERIFIED。预登记资格 FAIL。DIFFERENCE / FULL_KL / FEATURE_KL / SHRINK 的 RX1 错误分别为 247 / 284 / 291 / 286（各1260）。关闭固定差分梯度算子，不扩种子或用目标评分救跑。当前仅优化 SIG_TIME＋RDrop，既有 E50 RDrop 84.340079% 三种子均值继续保留；总目标仍 ACTIVE。详见相同 run 的 report.md。
