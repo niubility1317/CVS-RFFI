@@ -1,0 +1,1426 @@
+{
+  "status": "VERIFIED_SAVED_SOURCE_ANALYSIS",
+  "run_id": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+  "code_commit": "9c8e88efb0fc2a08110d0d4161bf6f49f650efb6",
+  "rows": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "status": "VERIFIED_SAVED_SOURCE_ANALYSIS",
+      "diagnostic_epochs": [
+        33,
+        34
+      ],
+      "batch_records": 444,
+      "layer_records": 1332,
+      "saved_input_vectors": 3996,
+      "records": [
+        {
+          "epoch": 33,
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 222,
+          "entropy_nonzero_batches": 0,
+          "entropy_on_zero_U_CE_batches": 0,
+          "CE_to_combined_U_sign_reversal_batches": 0,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.3131557080555719,
+              "p50": 0.22291074936557842,
+              "p95": 0.7669426081013168,
+              "minimum": 0.05574325173971713,
+              "maximum": 2.5390897342599152
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_CE_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_combined_U": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 1,
+              "p50": 1,
+              "p95": 1.0000000000000009,
+              "minimum": 0.999999999999999,
+              "maximum": 1.000000000000001
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        {
+          "epoch": 33,
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 222,
+          "entropy_nonzero_batches": 0,
+          "entropy_on_zero_U_CE_batches": 0,
+          "CE_to_combined_U_sign_reversal_batches": 0,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.2881856719227775,
+              "p50": 0.1927240632693697,
+              "p95": 0.6894909102748754,
+              "minimum": 0.047602419733809444,
+              "maximum": 2.6678343153132724
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_CE_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_combined_U": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 0.9999999999999991,
+              "p50": 0.999999999999999,
+              "p95": 1.0000000000000002,
+              "minimum": 0.9999999999999973,
+              "maximum": 1.000000000000001
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        {
+          "epoch": 33,
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 222,
+          "entropy_nonzero_batches": 0,
+          "entropy_on_zero_U_CE_batches": 0,
+          "CE_to_combined_U_sign_reversal_batches": 0,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.3922435182932387,
+              "p50": 0.28921941321468936,
+              "p95": 1.1147910910533727,
+              "minimum": 0.0880188378112311,
+              "maximum": 2.017820162774523
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_CE_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_combined_U": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 1.0000000000000004,
+              "p50": 1.0000000000000004,
+              "p95": 1.0000000000000007,
+              "minimum": 0.9999999999999999,
+              "maximum": 1.0000000000000009
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        {
+          "epoch": 34,
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 32,
+          "entropy_nonzero_batches": 222,
+          "entropy_on_zero_U_CE_batches": 32,
+          "CE_to_combined_U_sign_reversal_batches": 8,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.28657533663167783,
+              "p50": 0.2206496483066204,
+              "p95": 0.6956908038775634,
+              "minimum": 0.043173096638435424,
+              "maximum": 3.010133584789115
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0.026721744263652675,
+              "p50": 0.007338275877769199,
+              "p95": 0.13446900443900087,
+              "minimum": 0,
+              "maximum": 0.47487032392931283
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0.027398401067401712,
+              "p50": 0.007799365956500042,
+              "p95": 0.1355611748548014,
+              "minimum": 0.001032338606500385,
+              "maximum": 0.4744124590592381
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0.0015985567001126522,
+              "p50": 0.0015204761537287092,
+              "p95": 0.002357890308148326,
+              "minimum": 0.0008838400869269427,
+              "maximum": 0.0031608720526471843
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0.007750189342963251,
+              "p50": 0.006888486394590047,
+              "p95": 0.016421980354138974,
+              "minimum": 0.0007104706495000848,
+              "maximum": 0.031500747570796496
+            },
+            "entropy_over_U_CE": {
+              "count": 190,
+              "mean": 0.3781197044790488,
+              "p50": 0.1564075367513642,
+              "p95": 1.41821201513017,
+              "minimum": 0.004476970792610041,
+              "maximum": 4.7927013983409275
+            },
+            "cos_L_U_CE": {
+              "count": 190,
+              "mean": 0.009447469285536378,
+              "p50": 0.013909883298495452,
+              "p95": 0.32977662381315015,
+              "minimum": -0.5493423320893729,
+              "maximum": 0.4707618632102717
+            },
+            "cos_L_entropy": {
+              "count": 222,
+              "mean": 0.05155461721544752,
+              "p50": 0.0724757561463805,
+              "p95": 0.47464600517219974,
+              "minimum": -0.6998263279421274,
+              "maximum": 0.6228114849629516
+            },
+            "cos_CE_entropy": {
+              "count": 190,
+              "mean": 0.19110714067431556,
+              "p50": 0.1932376401700304,
+              "p95": 0.6656647061318577,
+              "minimum": -0.5196105352072924,
+              "maximum": 0.8244052823652867
+            },
+            "cos_L_combined_U": {
+              "count": 222,
+              "mean": 0.023150244977140542,
+              "p50": 0.019441110392073014,
+              "p95": 0.3818182530264903,
+              "minimum": -0.5674860718343792,
+              "maximum": 0.5067138971914613
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 0.9789262771827566,
+              "p50": 0.9995394585803009,
+              "p95": 0.9999900016942611,
+              "minimum": 0.2967102373383734,
+              "maximum": 0.9999980021550121
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        {
+          "epoch": 34,
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 32,
+          "entropy_nonzero_batches": 222,
+          "entropy_on_zero_U_CE_batches": 32,
+          "CE_to_combined_U_sign_reversal_batches": 8,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.25577547121855815,
+              "p50": 0.18757634206634094,
+              "p95": 0.6972406513688457,
+              "minimum": 0.03563969001347756,
+              "maximum": 2.469694948674931
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0.022448505774920486,
+              "p50": 0.006288751834984953,
+              "p95": 0.11207185589842393,
+              "minimum": 0,
+              "maximum": 0.43413866605134943
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0.02303730577779545,
+              "p50": 0.006674678508343211,
+              "p95": 0.11188732665577807,
+              "minimum": 0.0009652180254239008,
+              "maximum": 0.43379638132305665
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0.0014149570313534792,
+              "p50": 0.0013284914064451907,
+              "p95": 0.0020827088433875143,
+              "minimum": 0.0007792775683843217,
+              "maximum": 0.002921347297919464
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0.008034425202873046,
+              "p50": 0.007068016427702804,
+              "p95": 0.017853849019836082,
+              "minimum": 0.0007847304434405643,
+              "maximum": 0.02971920726680397
+            },
+            "entropy_over_U_CE": {
+              "count": 190,
+              "mean": 0.3625061509657863,
+              "p50": 0.15533558629073108,
+              "p95": 1.3382840274620569,
+              "minimum": 0.004419742470793836,
+              "maximum": 4.1229405949549776
+            },
+            "cos_L_U_CE": {
+              "count": 190,
+              "mean": 0.01592097939979176,
+              "p50": 0.02383611042041016,
+              "p95": 0.38170295007294613,
+              "minimum": -0.535793688305765,
+              "maximum": 0.5811312068436005
+            },
+            "cos_L_entropy": {
+              "count": 222,
+              "mean": 0.0649486343438854,
+              "p50": 0.09238790247147097,
+              "p95": 0.5300033126941682,
+              "minimum": -0.7129599674704376,
+              "maximum": 0.6373107505877381
+            },
+            "cos_CE_entropy": {
+              "count": 190,
+              "mean": 0.185390828502325,
+              "p50": 0.18605801985674889,
+              "p95": 0.6792406048364301,
+              "minimum": -0.6201876105381331,
+              "maximum": 0.8761066333162335
+            },
+            "cos_L_combined_U": {
+              "count": 222,
+              "mean": 0.029426324171381024,
+              "p50": 0.02779756444502863,
+              "p95": 0.4233965086628736,
+              "minimum": -0.5798065229298022,
+              "maximum": 0.5666853076703947
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 0.9819996091301941,
+              "p50": 0.9994555532480004,
+              "p95": 0.9999905319781817,
+              "minimum": 0.48192779649669537,
+              "maximum": 0.9999987187252529
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        {
+          "epoch": 34,
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 32,
+          "entropy_nonzero_batches": 222,
+          "entropy_on_zero_U_CE_batches": 32,
+          "CE_to_combined_U_sign_reversal_batches": 8,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.36622920304156503,
+              "p50": 0.2940809997927073,
+              "p95": 0.9334266225792499,
+              "minimum": 0.05632850571718648,
+              "maximum": 2.0838973138868506
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0.033100125299332976,
+              "p50": 0.007691543234870788,
+              "p95": 0.14276363485535773,
+              "minimum": 0,
+              "maximum": 0.639803504390959
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0.03373205763272335,
+              "p50": 0.007966186620360754,
+              "p95": 0.14266829481268936,
+              "minimum": 0.0010563150510242564,
+              "maximum": 0.6403216196080656
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0.0016024053224947456,
+              "p50": 0.001575581598851186,
+              "p95": 0.002061795417676511,
+              "minimum": 0.0010563150510242564,
+              "maximum": 0.0025430001085806034
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0.005939160396901515,
+              "p50": 0.0052124986803363214,
+              "p95": 0.012664583072582815,
+              "minimum": 0.0009896442157214104,
+              "maximum": 0.029482088988300195
+            },
+            "entropy_over_U_CE": {
+              "count": 190,
+              "mean": 0.3657291886258021,
+              "p50": 0.13757964939657327,
+              "p95": 1.5659170222214527,
+              "minimum": 0.0027159893262240758,
+              "maximum": 4.520914813434284
+            },
+            "cos_L_U_CE": {
+              "count": 190,
+              "mean": 0.012296705155763091,
+              "p50": 0.02021792218656026,
+              "p95": 0.2420881569935443,
+              "minimum": -0.3954551237567964,
+              "maximum": 0.4062320128419732
+            },
+            "cos_L_entropy": {
+              "count": 222,
+              "mean": 0.027271639640411856,
+              "p50": 0.029124844565152866,
+              "p95": 0.26549488803618304,
+              "minimum": -0.49627352544995385,
+              "maximum": 0.40165384004364046
+            },
+            "cos_CE_entropy": {
+              "count": 190,
+              "mean": 0.16257717079902048,
+              "p50": 0.18213777566198558,
+              "p95": 0.39464497366303886,
+              "minimum": -0.3345681860447594,
+              "maximum": 0.6176362254186173
+            },
+            "cos_L_combined_U": {
+              "count": 222,
+              "mean": 0.020413873755560197,
+              "p50": 0.02124169675061941,
+              "p95": 0.2595264016754533,
+              "minimum": -0.4973735562663925,
+              "maximum": 0.40239587436008567
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 0.9808367001446355,
+              "p50": 0.9996507409642288,
+              "p95": 0.9999941677005062,
+              "minimum": 0.3576314860263713,
+              "maximum": 0.999999078665762
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        }
+      ],
+      "model_or_IQ_or_truth_read": false,
+      "new_gradient_calls": 0,
+      "new_forwards": 0,
+      "optimizer_updates": 0,
+      "head_fit_updates": 0,
+      "source_only": true,
+      "limitation": "E = saved grad(.16UCE+.01entropy) - saved grad(.16UCE), subject to saved float32 rounding. Three actual feature parameter tensors only; no independent entropy backward, full-ftheta inference, preconditioned/cumulative AdamW contribution, pseudo-label precision or DG claim."
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "status": "VERIFIED_SAVED_SOURCE_ANALYSIS",
+      "diagnostic_epochs": [
+        33,
+        34
+      ],
+      "batch_records": 444,
+      "layer_records": 1332,
+      "saved_input_vectors": 3996,
+      "records": [
+        {
+          "epoch": 33,
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 222,
+          "entropy_nonzero_batches": 0,
+          "entropy_on_zero_U_CE_batches": 0,
+          "CE_to_combined_U_sign_reversal_batches": 0,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.3028333348104111,
+              "p50": 0.221850568410799,
+              "p95": 0.7304460354904547,
+              "minimum": 0.05743135114554804,
+              "maximum": 1.9606890235901386
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_CE_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_combined_U": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 1,
+              "p50": 0.9999999999999999,
+              "p95": 1.0000000000000007,
+              "minimum": 0.9999999999999984,
+              "maximum": 1.0000000000000009
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        {
+          "epoch": 33,
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 222,
+          "entropy_nonzero_batches": 0,
+          "entropy_on_zero_U_CE_batches": 0,
+          "CE_to_combined_U_sign_reversal_batches": 0,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.2702184821332395,
+              "p50": 0.18431027667946537,
+              "p95": 0.6779477419959817,
+              "minimum": 0.04284067889710754,
+              "maximum": 1.6422963592770472
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_CE_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_combined_U": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 0.9999999999999991,
+              "p50": 0.9999999999999992,
+              "p95": 1.0000000000000002,
+              "minimum": 0.9999999999999971,
+              "maximum": 1.0000000000000009
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        {
+          "epoch": 33,
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 222,
+          "entropy_nonzero_batches": 0,
+          "entropy_on_zero_U_CE_batches": 0,
+          "CE_to_combined_U_sign_reversal_batches": 0,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.38380914223709534,
+              "p50": 0.2910328305292238,
+              "p95": 1.0166130445269481,
+              "minimum": 0.06846472634975699,
+              "maximum": 1.923529975518127
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            },
+            "entropy_over_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_U_CE": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_CE_entropy": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_combined_U": {
+              "count": 0,
+              "mean": null,
+              "p50": null,
+              "p95": null,
+              "minimum": null,
+              "maximum": null
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 1.0000000000000004,
+              "p50": 1.0000000000000004,
+              "p95": 1.0000000000000007,
+              "minimum": 0.9999999999999997,
+              "maximum": 1.0000000000000009
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        {
+          "epoch": 34,
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 31,
+          "entropy_nonzero_batches": 222,
+          "entropy_on_zero_U_CE_batches": 31,
+          "CE_to_combined_U_sign_reversal_batches": 3,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.27847058479450487,
+              "p50": 0.22071975892126383,
+              "p95": 0.5663517541586359,
+              "minimum": 0.05334547635976638,
+              "maximum": 1.5399640951413949
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0.023318602587132458,
+              "p50": 0.008047652577166962,
+              "p95": 0.09967979911799807,
+              "minimum": 0,
+              "maximum": 0.2736454138662972
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0.02390656158215807,
+              "p50": 0.008215210487857397,
+              "p95": 0.09957822244196174,
+              "minimum": 0.000968318052892817,
+              "maximum": 0.27472081422148537
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0.0014401546769329508,
+              "p50": 0.0014002695497291257,
+              "p95": 0.00204740054764174,
+              "minimum": 0.0009034409181377805,
+              "maximum": 0.002904275617616839
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0.007115922661554924,
+              "p50": 0.00622271281005439,
+              "p95": 0.014789089082370036,
+              "minimum": 0.0009324636379988059,
+              "maximum": 0.019803911933318964
+            },
+            "entropy_over_U_CE": {
+              "count": 191,
+              "mean": 0.3063213889127032,
+              "p50": 0.12970838229225753,
+              "p95": 1.0516004972621613,
+              "minimum": 0.005666252465034473,
+              "maximum": 3.0010529800265484
+            },
+            "cos_L_U_CE": {
+              "count": 191,
+              "mean": 0.004531402953456777,
+              "p50": 0.008372193826299655,
+              "p95": 0.3499884977670044,
+              "minimum": -0.5823527294679832,
+              "maximum": 0.5976839822274899
+            },
+            "cos_L_entropy": {
+              "count": 222,
+              "mean": 0.046025608855977514,
+              "p50": 0.03128965564466429,
+              "p95": 0.4586588926123467,
+              "minimum": -0.5941954937751416,
+              "maximum": 0.6917778402228956
+            },
+            "cos_CE_entropy": {
+              "count": 191,
+              "mean": 0.1963320196224581,
+              "p50": 0.1833086971216913,
+              "p95": 0.6286699482774869,
+              "minimum": -0.4861079650451751,
+              "maximum": 0.7810571293707982
+            },
+            "cos_L_combined_U": {
+              "count": 222,
+              "mean": 0.024136554857630336,
+              "p50": 0.03123302817700352,
+              "p95": 0.45618585764709896,
+              "minimum": -0.5849069827346903,
+              "maximum": 0.650687393305423
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 0.9820003089857753,
+              "p50": 0.9994731445176216,
+              "p95": 0.9999913285505758,
+              "minimum": 0.45684571393939966,
+              "maximum": 0.999997241269211
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        {
+          "epoch": 34,
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 31,
+          "entropy_nonzero_batches": 222,
+          "entropy_on_zero_U_CE_batches": 31,
+          "CE_to_combined_U_sign_reversal_batches": 4,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.24598673942398436,
+              "p50": 0.1882203158255547,
+              "p95": 0.5694315244146194,
+              "minimum": 0.045294080938393703,
+              "maximum": 1.4937669953503134
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0.019957040408502158,
+              "p50": 0.006784958157708571,
+              "p95": 0.08080699844001137,
+              "minimum": 0,
+              "maximum": 0.24282778802280292
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0.02050808172824531,
+              "p50": 0.007161616622886745,
+              "p95": 0.08123308208999214,
+              "minimum": 0.000892128113724262,
+              "maximum": 0.24386838496794638
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0.00131559277050009,
+              "p50": 0.001252171652690366,
+              "p95": 0.0019085882922834862,
+              "minimum": 0.0007688582668681791,
+              "maximum": 0.002744112346116297
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0.007626497684071232,
+              "p50": 0.006649364664148626,
+              "p95": 0.015612557983191881,
+              "minimum": 0.0008450044625963784,
+              "maximum": 0.023029756588476412
+            },
+            "entropy_over_U_CE": {
+              "count": 191,
+              "mean": 0.3073419455984333,
+              "p50": 0.1418309423318728,
+              "p95": 1.0983529680605248,
+              "minimum": 0.0056596427861531845,
+              "maximum": 3.179222482649856
+            },
+            "cos_L_U_CE": {
+              "count": 191,
+              "mean": 0.008909656053769081,
+              "p50": 0.013053357547349617,
+              "p95": 0.42677404745038894,
+              "minimum": -0.638388413460585,
+              "maximum": 0.5822981204130331
+            },
+            "cos_L_entropy": {
+              "count": 222,
+              "mean": 0.06874296168741328,
+              "p50": 0.06969013840481304,
+              "p95": 0.48552313551666215,
+              "minimum": -0.576212694939188,
+              "maximum": 0.7288216376695404
+            },
+            "cos_CE_entropy": {
+              "count": 191,
+              "mean": 0.21260860743764531,
+              "p50": 0.20556126587249682,
+              "p95": 0.6810305427710895,
+              "minimum": -0.46770649023223404,
+              "maximum": 0.8073993475602647
+            },
+            "cos_L_combined_U": {
+              "count": 222,
+              "mean": 0.030006082343007022,
+              "p50": 0.015917882506041696,
+              "p95": 0.4494319316507687,
+              "minimum": -0.6384420674299973,
+              "maximum": 0.7288216376695404
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 0.982131091308219,
+              "p50": 0.9994505202030228,
+              "p95": 0.9999917605749612,
+              "minimum": 0.5366461438786861,
+              "maximum": 0.999998278491428
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        },
+        {
+          "epoch": 34,
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "batches": 222,
+          "U_CE_zero_batches": 31,
+          "entropy_nonzero_batches": 222,
+          "entropy_on_zero_U_CE_batches": 31,
+          "CE_to_combined_U_sign_reversal_batches": 9,
+          "total_L_descent_sign_reversal_batches": 0,
+          "summary": {
+            "L_norm": {
+              "count": 222,
+              "mean": 0.35216033087087684,
+              "p50": 0.28552499436569057,
+              "p95": 0.7733267464325079,
+              "minimum": 0.08994599906714483,
+              "maximum": 1.572633857047961
+            },
+            "weighted_U_CE_norm": {
+              "count": 222,
+              "mean": 0.028545930398624405,
+              "p50": 0.009881803155743479,
+              "p95": 0.11614146583391535,
+              "minimum": 0,
+              "maximum": 0.36414430862880576
+            },
+            "combined_U_norm": {
+              "count": 222,
+              "mean": 0.029115145376686358,
+              "p50": 0.01004085392673178,
+              "p95": 0.11640251907778565,
+              "minimum": 0.0012035925396061326,
+              "maximum": 0.3642710064420608
+            },
+            "reconstructed_entropy_norm": {
+              "count": 222,
+              "mean": 0.0015529608412779457,
+              "p50": 0.001512265344774551,
+              "p95": 0.002023421467350959,
+              "minimum": 0.0010303544351367932,
+              "maximum": 0.002337876754037776
+            },
+            "entropy_over_L": {
+              "count": 222,
+              "mean": 0.005838407686035236,
+              "p50": 0.005427906423840198,
+              "p95": 0.012409148382464109,
+              "minimum": 0.0010125973937925386,
+              "maximum": 0.016366998266460462
+            },
+            "entropy_over_U_CE": {
+              "count": 191,
+              "mean": 0.3263699636207907,
+              "p50": 0.12133628272425408,
+              "p95": 1.2126138680991407,
+              "minimum": 0.0045189334334290905,
+              "maximum": 3.611084404900294
+            },
+            "cos_L_U_CE": {
+              "count": 191,
+              "mean": -0.0008367479449480909,
+              "p50": 0.009635064620556178,
+              "p95": 0.20255055948071704,
+              "minimum": -0.5180227827524042,
+              "maximum": 0.38524970192463276
+            },
+            "cos_L_entropy": {
+              "count": 222,
+              "mean": 0.036615137500736715,
+              "p50": 0.03162060972498866,
+              "p95": 0.3264037886484608,
+              "minimum": -0.39512514592615045,
+              "maximum": 0.4501086930126922
+            },
+            "cos_CE_entropy": {
+              "count": 191,
+              "mean": 0.134386174822485,
+              "p50": 0.12745464238302598,
+              "p95": 0.41012849714702315,
+              "minimum": -0.2672930026817872,
+              "maximum": 0.5504153687474815
+            },
+            "cos_L_combined_U": {
+              "count": 222,
+              "mean": 0.008504759864072732,
+              "p50": 0.009884037240726822,
+              "p95": 0.2335182219839434,
+              "minimum": -0.5153028419302254,
+              "maximum": 0.4105179342330882
+            },
+            "cos_L_total": {
+              "count": 222,
+              "mean": 0.9820840992687655,
+              "p50": 0.9995559919614372,
+              "p95": 0.9999938749236367,
+              "minimum": 0.4982002465050679,
+              "maximum": 0.9999984470321114
+            },
+            "entropy_reconstruction_residual": {
+              "count": 222,
+              "mean": 0,
+              "p50": 0,
+              "p95": 0,
+              "minimum": 0,
+              "maximum": 0
+            }
+          }
+        }
+      ],
+      "model_or_IQ_or_truth_read": false,
+      "new_gradient_calls": 0,
+      "new_forwards": 0,
+      "optimizer_updates": 0,
+      "head_fit_updates": 0,
+      "source_only": true,
+      "limitation": "E = saved grad(.16UCE+.01entropy) - saved grad(.16UCE), subject to saved float32 rounding. Three actual feature parameter tensors only; no independent entropy backward, full-ftheta inference, preconditioned/cumulative AdamW contribution, pseudo-label precision or DG claim."
+    }
+  ],
+  "query_or_truth_read": false,
+  "new_model_forwards": 0,
+  "new_gradient_calls": 0,
+  "head_fit_updates": 0,
+  "actual_native_U_objective": {
+    "lambda_U_CE": 0.16,
+    "lambda_entropy": 0.01,
+    "CE_scope": "original gate accepted pseudo labels only",
+    "entropy_scope": "all U students in each native batch, no mask in ordinary path",
+    "native_source": "experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+    "composition_function": "_compose_unlabeled_closed_loss withmuse_state=None"
+  },
+  "models": 2,
+  "model_seeds": [
+    2026092701
+  ],
+  "diagnostic_batch_records": 888,
+  "layer_records": 2664,
+  "saved_input_vectors": 7992,
+  "summary": [
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+      "entropy_over_L_mean_pct": 0.7750189342963251,
+      "entropy_over_L_p95_pct": 1.6421980354138974,
+      "entropy_over_U_CE_median": 0.1564075367513642,
+      "entropy_on_zero_U_CE_batches": 32,
+      "U_alignment_sign_reversals": 8,
+      "total_L_descent_sign_reversals": 0
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+      "entropy_over_L_mean_pct": 0.8034425202873046,
+      "entropy_over_L_p95_pct": 1.7853849019836083,
+      "entropy_over_U_CE_median": 0.15533558629073108,
+      "entropy_on_zero_U_CE_batches": 32,
+      "U_alignment_sign_reversals": 8,
+      "total_L_descent_sign_reversals": 0
+    },
+    {
+      "row_id": "SIG_TIME-s2026092701",
+      "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+      "entropy_over_L_mean_pct": 0.5939160396901515,
+      "entropy_over_L_p95_pct": 1.2664583072582816,
+      "entropy_over_U_CE_median": 0.13757964939657327,
+      "entropy_on_zero_U_CE_batches": 32,
+      "U_alignment_sign_reversals": 8,
+      "total_L_descent_sign_reversals": 0
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+      "entropy_over_L_mean_pct": 0.7115922661554924,
+      "entropy_over_L_p95_pct": 1.4789089082370037,
+      "entropy_over_U_CE_median": 0.12970838229225753,
+      "entropy_on_zero_U_CE_batches": 31,
+      "U_alignment_sign_reversals": 3,
+      "total_L_descent_sign_reversals": 0
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+      "entropy_over_L_mean_pct": 0.7626497684071232,
+      "entropy_over_L_p95_pct": 1.5612557983191881,
+      "entropy_over_U_CE_median": 0.1418309423318728,
+      "entropy_on_zero_U_CE_batches": 31,
+      "U_alignment_sign_reversals": 4,
+      "total_L_descent_sign_reversals": 0
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092701",
+      "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+      "entropy_over_L_mean_pct": 0.5838407686035236,
+      "entropy_over_L_p95_pct": 1.2409148382464108,
+      "entropy_over_U_CE_median": 0.12133628272425408,
+      "entropy_on_zero_U_CE_batches": 31,
+      "U_alignment_sign_reversals": 9,
+      "total_L_descent_sign_reversals": 0
+    }
+  ],
+  "training_changed": false,
+  "goal_84": false
+}

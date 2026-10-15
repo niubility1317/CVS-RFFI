@@ -492,3 +492,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 2026-10-15 中期更新：Sinc单位两臂分别回收到20/21轮完整源前缀，E17真实13批重复观察到标准组非零梯度但0数值更新、单位组48参数持续更新。原U在E34启用；当前源资格与目标收益均未知。原样02/03条件扩展已完成最小适配、4原生上下文/15负例/隔离包/一次P0P1验证，代码03fd8a8c7b64663bc52edb83359d3e610cfeb361；仍未启动。详见 [首种子源证据](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md)与 [条件扩展](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md)。
+
+
+2026-10-15 原生U诊断：Sinc单位首种子两臂已观察到E35、原pseudo阶段，U曝光与门控实际执行。对E33/E34全部888批、2664层记录、7992输入向量作源端只读分解，熵梯度/L范数均值0.584%至0.803%，0个总L+U方向被熵反转；仅三参数张量/单seed/两个预定epoch，不作fθ全局或AdamW因果推断，不开启熵扫描。另确认现有PAIR是同RX邻近sig，而非跨RX同次发射配对，未据索引构造跨RX伪监督。详见 [本运行主报告](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md)。

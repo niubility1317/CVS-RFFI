@@ -82449,7 +82449,7 @@
     "源决定推送后回收首seed完整默认头clean结果、全部曲线和误差迁移；后续合并预定义三seed独立统计与实际feature witness检验84%，保留全部正负结果"
   ],
   "current_priority": {
-    "at": "2026-10-15T00:46:24.118Z",
+    "at": "2026-10-15T00:56:33.751Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": {
@@ -84660,8 +84660,8 @@
       "execution_commit": "9fc348bc4be71f498a7684484fd86de81e3e4870",
       "actual_new_training_workers": 2,
       "observed_source_epochs": [
-        20,
-        21
+        35,
+        35
       ],
       "new_target_numeric_results_read": false,
       "actual_e1_Sinc_updates": [
@@ -84760,7 +84760,13 @@
       ],
       "prepared_extension_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
       "prepared_extension_code_commit": "03fd8a8c7b64663bc52edb83359d3e610cfeb361",
-      "extension_training_started": false
+      "extension_training_started": false,
+      "observed_phase": "pseudo",
+      "observed_latest_U_processed_each": 56700,
+      "observed_latest_U_accepted": [
+        915,
+        910
+      ]
     },
     "temporal_rsc_full_three_seed": {
       "status": "ANALYZED_VERIFIED_NO_GAIN",
@@ -84937,6 +84943,101 @@
       "default_head_only": true,
       "report": "automation_reports/CV-SincNet/20261015-phase1-temporal-rsc-oldgate-cos-e50-clean-manysig-s0203-m8-r01/final_analysis.md",
       "goal84": false
+    },
+    "ssl_native_entropy_diagnostic": {
+      "status": "ANALYZED_SAVED_SOURCE_ONLY",
+      "run_id": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+      "code_commit": "9c8e88efb0fc2a08110d0d4161bf6f49f650efb6",
+      "model_seeds": [
+        2026092701
+      ],
+      "models": 2,
+      "epochs": [
+        33,
+        34
+      ],
+      "batch_records": 888,
+      "layer_records": 2664,
+      "saved_input_vectors": 7992,
+      "new_forwards": 0,
+      "new_gradient_calls": 0,
+      "optimizer_updates": 0,
+      "head_fit_updates": 0,
+      "query_or_truth_read": false,
+      "summary": [
+        {
+          "row_id": "SIG_TIME-s2026092701",
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "entropy_over_L_mean_pct": 0.7750189342963251,
+          "entropy_over_L_p95_pct": 1.6421980354138974,
+          "entropy_over_U_CE_median": 0.1564075367513642,
+          "entropy_on_zero_U_CE_batches": 32,
+          "U_alignment_sign_reversals": 8,
+          "total_L_descent_sign_reversals": 0
+        },
+        {
+          "row_id": "SIG_TIME-s2026092701",
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "entropy_over_L_mean_pct": 0.8034425202873046,
+          "entropy_over_L_p95_pct": 1.7853849019836083,
+          "entropy_over_U_CE_median": 0.15533558629073108,
+          "entropy_on_zero_U_CE_batches": 32,
+          "U_alignment_sign_reversals": 8,
+          "total_L_descent_sign_reversals": 0
+        },
+        {
+          "row_id": "SIG_TIME-s2026092701",
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "entropy_over_L_mean_pct": 0.5939160396901515,
+          "entropy_over_L_p95_pct": 1.2664583072582816,
+          "entropy_over_U_CE_median": 0.13757964939657327,
+          "entropy_on_zero_U_CE_batches": 32,
+          "U_alignment_sign_reversals": 8,
+          "total_L_descent_sign_reversals": 0
+        },
+        {
+          "row_id": "SINC_UNITS-s2026092701",
+          "parameter": "id_backbone.encoder.core.id_backbone.t1.pw.weight",
+          "entropy_over_L_mean_pct": 0.7115922661554924,
+          "entropy_over_L_p95_pct": 1.4789089082370037,
+          "entropy_over_U_CE_median": 0.12970838229225753,
+          "entropy_on_zero_U_CE_batches": 31,
+          "U_alignment_sign_reversals": 3,
+          "total_L_descent_sign_reversals": 0
+        },
+        {
+          "row_id": "SINC_UNITS-s2026092701",
+          "parameter": "id_backbone.encoder.core.id_backbone.t2.pw.weight",
+          "entropy_over_L_mean_pct": 0.7626497684071232,
+          "entropy_over_L_p95_pct": 1.5612557983191881,
+          "entropy_over_U_CE_median": 0.1418309423318728,
+          "entropy_on_zero_U_CE_batches": 31,
+          "U_alignment_sign_reversals": 4,
+          "total_L_descent_sign_reversals": 0
+        },
+        {
+          "row_id": "SINC_UNITS-s2026092701",
+          "parameter": "id_backbone.encoder.sequence_pool.views.0.local_projection.weight",
+          "entropy_over_L_mean_pct": 0.5838407686035236,
+          "entropy_over_L_p95_pct": 1.2409148382464108,
+          "entropy_over_U_CE_median": 0.12133628272425408,
+          "entropy_on_zero_U_CE_batches": 31,
+          "U_alignment_sign_reversals": 9,
+          "total_L_descent_sign_reversals": 0
+        }
+      ],
+      "whole_L_descent_reversals": 0,
+      "full_ftheta_or_AdamW_causal_claim": false,
+      "report": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md",
+      "data": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_U_entropy_e33_e34.json",
+      "new_entropy_training_or_scan": false
+    },
+    "physical_pair_scope_audit": {
+      "status": "CODE_VERIFIED",
+      "actual": "SameRX/day/eq neighboring sig indices, gap1or2; existing sampler/gate ordering only",
+      "cross_RX_same_transmission_linkage_proven": false,
+      "new_direct_cross_RX_pair_supervision_launched": false,
+      "hidden_U_TX_unsealed": false
     }
   }
 }
