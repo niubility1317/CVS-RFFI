@@ -518,3 +518,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 2026-10-15 R-Drop源复核完成：原样02/03各自SIG_TIME父与首模型使用相同900有序物理L、RNG和alpha1，0模型/头/optimizer更新。三模型原规则均PASS，t1/t2/SIG聚合KL对CE余弦分别(.200427,.189996,.488580)、(.852692,.819312,.508874)、(.452480,.513207,.390470)；KL/CE导数范数比1.28至1.95。新增5400前向/40层80向量、合并8100前向/60层120向量独立复算，实际唯一物理样本仍900。代码`b0903780256454eaebcbd1f7da66af359a39712e`、执行`9bf37c2edf97375167b8d891c698838a1061fecc`，[完整三模型源结果](../automation_reports/CV-SincNet/20261015-phase1-source-dropout-consistency-manysig-s0203-m2-r01/final_analysis.md)。只证明末轮L导数兼容，不证明训练/U/DG；下一步实现同双L前向平均CE对照vsalpha1 KL的正式scratch50研究，原SIG_TIME、默认联合头、旧门控/ownEMA/U损失/cos保持，尚未发布训练。84%仍未完成。
+
+
+后续路线去重：只读核实另一对话已推进固定E20的R-Drop；其cleanL/LS0/排除RX1契约与本轮不同，不能合并，但本对话仍避免重复训练机制。三模型源PASS保留、不再发布自有R-Drop训练；已有VAT历史矩阵也复用不重跑。改为固定原SIG_TIME和默认头的V-REx源检验：五源RX的CE风险population variance，对比同前向均衡CE，不是GroupDRO权重或Fishr梯度方差。L900/900前向/0更新；本地14负例及实际骨干导数PASS，唯一P0/P1审查中，实际源资格未知。

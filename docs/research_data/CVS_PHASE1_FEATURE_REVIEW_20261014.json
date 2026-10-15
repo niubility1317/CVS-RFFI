@@ -82439,14 +82439,14 @@
     }
   ],
   "next_actions_max2": [
-    "落实R-Drop正式训练最小比较：两次L随机前向平均CE对照vs同路径加alpha1双向KL；不改网络、默认联合头、原门控/EMA/U损失/cos，首seed scratch50；按既有源阈值冻结扩展，不看目标决定。",
-    "发布前核对另一训练路线及实时全owner容量；首源规则通过才原样扩02/03，冻结后自动clean预测/独立truth-last评分、保留全部正负结果及Git交付。"
+    "完成固定SIG_TIME的V-REx源端证伪：原DRO第一SIG final50，L900/900FF/20层40向量，0参数和头更新，固定五RX population CE风险方差；源规则仅决定是否另登记02/03。",
+    "源机制值得推进后，再固定与旧门控+ownEMA+cos同预算的正式训练比较；现有R-Drop、VAT和另一对话交叉拟合教师不重复发布。"
   ],
   "goal_84": false,
   "Phase2_development": false,
   "next_actions": [
-    "落实R-Drop正式训练最小比较：两次L随机前向平均CE对照vs同路径加alpha1双向KL；不改网络、默认联合头、原门控/EMA/U损失/cos，首seed scratch50；按既有源阈值冻结扩展，不看目标决定。",
-    "发布前核对另一训练路线及实时全owner容量；首源规则通过才原样扩02/03，冻结后自动clean预测/独立truth-last评分、保留全部正负结果及Git交付。"
+    "完成固定SIG_TIME的V-REx源端证伪：原DRO第一SIG final50，L900/900FF/20层40向量，0参数和头更新，固定五RX population CE风险方差；源规则仅决定是否另登记02/03。",
+    "源机制值得推进后，再固定与旧门控+ownEMA+cos同预算的正式训练比较；现有R-Drop、VAT和另一对话交叉拟合教师不重复发布。"
   ],
   "current_priority": {
     "at": "2026-10-15T02:02:55.462Z",
@@ -85232,7 +85232,7 @@
       "goal84": false
     },
     "next_dropout_consistency": {
-      "status": "ANALYZED_VERIFIED_SOURCE_PASS_THREE_MODELS",
+      "status": "SOURCE_PASS_THREE_MODELS_TRAINING_DEFERRED_FOR_ROUTE_DEDUPLICATION",
       "fixed_at": "2026-10-15T01:43:16.529Z",
       "before_remaining_Sinc_target_numeric_read": true,
       "hypothesis": "Two stochastic dropout realizations of the same source input should not produce excessive default-head distribution inconsistency; whether regularizing it improves DG remains unproven",
@@ -85249,7 +85249,7 @@
       "external_source": "https://proceedings.neurips.cc/paper/2021/hash/5a66b9200f29ac3fa0ae244cc2a51b39-Abstract.html",
       "proposed_location": "Training objective only; fixed SIG_TIME and normal jointly-trained default head; no inference branch",
       "minimum_training_control_if_later_warranted": "Same two stochastic L forwards: averaged two CE control vs averaged CE plus symmetric KL; native oldgate/ownEMA/U loss/cos unchanged, <=50 epochs. Extra L forwards/backwards measured.",
-      "first_next_action": "以三模型源PASS为依据，实现并独立预登记同双L前向的平均CE对照与alpha1 R-Drop，固定SIG_TIME/默认联合头/旧门控ownEMA/U损失/cos/from-scratch50；正式训练与目标收益仍未知。",
+      "first_next_action": "保留三模型源PASS，不重复另一对话的R-Drop正式训练；新路线先测五源RX CE风险方差的骨干导数。",
       "predefined_source_parent": "20261015-phase1-receiver-dro-oldgate-cos-e50-clean-manysig-s01-m4-r01/SIG_TIME-s2026092701/source/final_ssdg.pth",
       "parent_rule": "Predefined lowest seed fixed final50 source lineage, not a best-target parent. Matching remaining SIG parents only if original source-only follow-up rule is later registered.",
       "feature_claim_boundary": "KL reduction and nonzero backbone gradients do not prove export or DG gain; an eventual trained variant still requires actual parameter/export witnesses and matched three-seed independent clean scoring",
@@ -85339,7 +85339,22 @@
             1.5997291867731018
           ]
         }
-      ]
+      ],
+      "route_deduplication": {
+        "status": "DEFER_OWN_RDROP_TRAINING_TO_AVOID_DUPLICATE_ROUTE",
+        "read_at": "2026-10-15T07:18:48.123Z",
+        "observed_chat_title": "继续优化 Phase1 双骨干域泛化",
+        "thread_id": "01a13822-a961-7820-a2d8-e2460697b963",
+        "observed_run": "20261015-phase1-SIGTIME-rdrop-source-e20-clean-manysig-m3-r01",
+        "observed_route": "E20 cleanL LS0 original E20 parents, plans matchedtwoCE vsalpha1RDrop with RX1excluded scratchE20",
+        "own_source": "DRO originalSIG final50/smoothing.01/strong.015;sourceRX1,3,4,6,8;differentcontractandbudget;not numericallymerged",
+        "own_RDrop_source_results_preserved": true,
+        "own_RDrop_training_launched": false,
+        "no_other_tasks_modified_or_stopped": true,
+        "next_distinct_mechanism": "Legal source receiver CE risk variance V-REx; one seed frozenL9000updates source falsification first",
+        "existing_VAT_reused_not_repeated": "experiments/cvs_virtual_adversarial, fixedthree-seed12models50epochs historical differentnetwork/recipe; no newVAT run",
+        "limitation": "Read-only coordination context, not authorization for newmessages or budgetchanges"
+      }
     },
     "meta_route_duplication_check": {
       "status": "CODE_DUPLICATION_FOUND_NO_NEW_LAUNCH",
@@ -85505,6 +85520,27 @@
       "export_interface": "VERIFIED",
       "goal84": false,
       "report": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/final_analysis.md"
+    },
+    "next_receiver_risk_variance": {
+      "status": "PREREGISTERED_LOCAL_VERIFIED_P0P1_PASS",
+      "hypothesis": "Variance across legal source receiver CE risks may discourage sourceRX-specific reliance; compatible backbone direction unknown",
+      "mechanism": "Population variance of5same-forward RX CE means; no GroupDRO q state/no gradient-statistical penalty/no newhead",
+      "network": "fixed SIG_TIME original default jointlytrained head",
+      "source_run": "20261015-phase1-source-risk-variance-manysig-s2026092701-r01",
+      "seed": 2026092701,
+      "source_packets": 900,
+      "forwards": 900,
+      "layer_records": 20,
+      "saved_vectors": 40,
+      "coefficient": 1,
+      "head_fit_updates": 0,
+      "optimizer_updates": 0,
+      "query_read": false,
+      "training_not_launched": true,
+      "first_source_qualification_unknown": true,
+      "external_source": "https://proceedings.mlr.press/v139/krueger21a.html",
+      "implementation_commit": "a9b04efa1441fce2f0a2810e4e51c88b41532dde",
+      "report": "automation_reports/CV-SincNet/20261015-phase1-source-risk-variance-manysig-s2026092701-r01/report.md"
     }
   },
   "latest_complete_sinc_optimizer": {
