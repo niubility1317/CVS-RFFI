@@ -32,3 +32,7 @@ ordinary N607/CVS-RFFI；CWD `PROJECT/releases/cvs_SIGTIME_rdrop_budget20_50_202
 技术停止条件：权限/物理角色/继承来源不匹配、非有限损失/输出、实际预算不足、预测不全、输出碰撞或worker/scorer失败即停止待启动行，保留产物；已启动健康行继续，不自动重跑。源健康报告，不因分数改变固定12行。每launcher首步自己的scratch checkpoint保存/重载、2个合成无query前向smoke PASS即继续。发布前唯一聚焦负例/模型检查和独立P0/P1、actualGitcommit；一次N607 preflight、单archiveSHA比较、remotecompile；之后独立PID/CWD/argv/GPU/log增长证据。预期产物和每行配置/命令/seed见experiment.json。
 
 REJECTED_EXTRA_GATE：单独设计审批/spec链、report-only重复审查、额外config/source/report哈希或新调度平台不加入最小流程。84%及可部署泛化目标仍待完整证据。
+
+
+<!-- COMPLETE_BUDGET_ANALYSIS_TOOL -->
+完整产物分析工具已版本化为 `experiments/cvs_rdrop_budget/analyze.py` 和 `report.py`：前者只在已核实12行终态后以独立CUDA空CPU进程解析全部93240step/420epoch、初末checkpoint及216个已有预测混淆矩阵；后者生成完整四组/四配对及source/成本CSV和曲线。工具不进入远端健康训练archive，不生成新的目标预测，不拟合头、不改变模型或候选；训练未结束时直接返回NOT_TERMINAL且不连接truth。完整分析实际执行仍待终态，编译通过不当作结果完成。
