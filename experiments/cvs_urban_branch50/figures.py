@@ -110,14 +110,18 @@ def source_mechanism():
             shared_parameter_names=sorted({name for g in records for name in g['T_S_shared_parameter_names']}),
             shared_scope='Current batch gradients of both losses nonzero >1e-12; independent projections excluded'))
     for ax,key,title in zip(axes,('T_S_full_cosines','T_S_shared_cosines'),('Full actual feature parameter vectors','Shared nonzero parameter intersection only')):
-        ax.boxplot([v[key] or [np.nan] for v in aggregate],labels=ARMS,showfliers=False)
+        ax.boxplot([v[key] or [np.nan] for v in aggregate],showfliers=False)
+        ax.set_xticks(range(1,len(ARMS)+1),ARMS)
         ax.axhline(0,color='grey',ls=':',lw=1);ax.set_ylim(-1.05,1.05);ax.set_ylabel('T/S loss-gradient cosine');ax.set_title(title);ax.grid(axis='y',alpha=.2)
     fig.suptitle('Frozen eval source mid/low batches; raw losses, not clipped stochastic AdamW updates')
     fig.savefig(OUT/'T_S_shared_gradient_angles.png',dpi=180);plt.close(fig)
 
     fig,axes=plt.subplots(1,3,figsize=(16,4.8),constrained_layout=True)
     for ax,field,title in zip(axes,('state','lock','quality'),('Visibility state','Receiver lock','Added-noise SNR (not total SNR)')):
-        values=sorted({s[field] for arm in ARMS for s in rows[arm]['scenes'][low]['strata']});xp=np.arange(len(values))
+        present={s[field] for arm in ARMS for s in rows[arm]['scenes'][low]['strata']}
+        order={'state':('LOS','PARTIAL','BLOCKED'),'lock':('locked','degraded','unlocked'),
+            'quality':('<3','3-8','8-15','>=15')}[field]
+        values=[value for value in order if value in present]+sorted(present-set(order));xp=np.arange(len(values))
         for arm,color in zip(ARMS,COLORS):
             strata=rows[arm]['scenes'][low]['strata'];rates=[]
             for value in values:

@@ -2027,7 +2027,7 @@
   "source_analyses": [
     {
       "id": "postfreeze_internal_L_branch_mechanism",
-      "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+      "status": "ANALYZED",
       "release": "cvs_sigtime_branch_align_source_20261015_r01",
       "launch_owner": "codex/root/branch-align-source-20261015",
       "source_only": true,
@@ -2053,7 +2053,25 @@
         "source_branch_mechanism/results.json",
         "source_branch_mechanism/sample_branch_identity.jsonl.gz"
       ],
-      "code_commit": "SEPARATE_ANALYSIS_RELEASE_COMMIT"
+      "code_commit": "0b5cc8b0451cfad03d298af3ba39102a665947af",
+      "actual_forward_packets": 46800,
+      "seconds": 131.67395329778083,
+      "independent_post_state": "VERIFIED"
     }
-  ]
+  ],
+  "observed_results": {
+    "status": "ANALYZED_SINGLE_SEED_PILOT",
+    "models": 8,
+    "model_seed": 2026092701,
+    "updates": 88800,
+    "predictions": 9408000,
+    "metric_records": 1008,
+    "cross_seed_confirmation": "NOT_RUN",
+    "source_family_expandable": false,
+    "target_feedback_forbidden": true,
+    "training_audit_ref": "E:\\type10-7\\local_artifacts\\cvs_branch_alignment_20261015\\final\\training_audit.json",
+    "channel_trace_audit_ref": "E:\\type10-7\\local_artifacts\\cvs_branch_alignment_20261015\\final\\channel_trace_audit.json",
+    "source_analysis_ref": "E:\\type10-7\\local_artifacts\\cvs_branch_alignment_20261015\\source_branch_results.json",
+    "total_forward_packets": 70776514
+  }
 }

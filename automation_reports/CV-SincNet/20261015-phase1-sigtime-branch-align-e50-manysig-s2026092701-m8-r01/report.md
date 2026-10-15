@@ -1,77 +1,157 @@
-# SIG_TIME 同分支位置对齐 E50 八组小试
+# SIG_TIME：同分支位置对齐 E50 单 seed 小试
 
-状态：RUNNING，A0已执行，其他七组等待共同源定标后自动从零起跑。落实用户最新附件：A0、A-T、A-F、A-P、A-R、A-S、A-J、A-ALL，单 seed 2026092701 先检验实现/学习信号，正式三 seed 为 2026092701/02/03。首 seed 不能宣布最佳分支，F/P/R 不按替换诊断或目标成绩剔除。旧四行 E50 和两行 KL/DIR 的 immutable release 不变。
+状态：八组小试训练／七视图独立评分／冻结后源机制均已ANALYZED／VERIFIED；仅model seed2026092701，正式三seed与稀疏组合尚未完成。本报告保留全部八组，不按目标成绩排序或选择性重跑。
 
-八组均从零 E50=33 labelled+17 native old-gated pseudo，222 更新/轮、11100 更新，128 原 L 样本+128真实 practical residual 普通拼接；各半 CE 均值等价于拼接 CE 均值。原 AdamW lr .0002/wd .0001、cosine/minlr1e-6、smoothing .01、own EMA 与原 U 训练不变。无 margin、KL、课程或新 U urban 目标。所有原网络与默认 cosine6×160/scale30 联合训练；不增加部署模块/拟合分类头。33/17 是 E50 原基线配方，额外方向损失仅 epoch6至50 启用，前5轮所有位置规则一致。A0 全程使用相同 clean EMA L 前向和实际分支捕获，只不加对齐。
+七种新增约束均未通过预登记源推进条件；本家族不扩seed、不挑单组晋级。正式结果中A-S对A0的low仅+0.3673个百分点、clean−0.1030个百分点；A-J为low+0.3012、clean+0.6988个百分点，A-ALL为low−0.0232、clean−0.6137个百分点。全部low低于60%，没有达到预设大幅urban改善目标，也没有跨seed证据。
 
-数据：复用外层 source contract split392005，L_s/U_s/V=6300/56700/27000、6TX、源RX1/3/4/6/8、day1/2/3，IQ256、25MHz、equalized=1、center/nativeRMS→simulatorRMS，输出不RMS。原L按TX×RX×day共90单元各70条，以fold seed2026101503的物理ID随机顺序各留8条，共L_dev720；L_train5580。开发样本不进入CE/U/EMA/normalization更新。V27000只健康诊断，不拆分；外层测试IQ/信道/物理集合不变。内部分折先已写入PROJECT_PROTOCOL，实际IDs写inner_source_contract.json并进入checkpoint split_info。历史完整L模型见过开发样本，不能作为新组初始化、教师或严格匹配基线，不能称开发折全历史未见盲测。
+| 配置 | urban均值 (%) | low urban (%) | mid urban (%) | clean (%) | suburban均值 (%) | urban Macro-F1 (%) | 最差urban RX (%) |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| A0 | 64.1504 | 53.2714 | 63.4143 | 79.8060 | 76.8667 | 63.6986 | 58.2903 |
+| A-T | 63.9609 | 53.1238 | 63.2399 | 79.2744 | 76.6274 | 63.5709 | 57.7028 |
+| A-F | 64.1825 | 53.2708 | 63.4381 | 80.1262 | 76.9089 | 63.6972 | 58.2472 |
+| A-P | 64.0238 | 53.3417 | 63.2952 | 79.9411 | 76.5196 | 63.4868 | 57.9847 |
+| A-R | 63.8454 | 53.0185 | 63.2190 | 78.3726 | 76.4093 | 63.3730 | 57.5958 |
+| A-S | 64.4821 | 53.6387 | 63.7548 | 79.7030 | 77.1286 | 63.7225 | 57.8069 |
+| A-J | 64.5524 | 53.5726 | 63.7738 | 80.5048 | 77.3234 | 64.1112 | 58.7611 |
+| A-ALL | 63.9597 | 53.2482 | 63.2512 | 79.1923 | 76.5093 | 63.4782 | 58.0972 |
 
-结构：真实core为experiments/adv3b02_xuc/code/model.py。T/F读实际fuse321输入，F包含启用freq_stats_proj；P读pa_norm的实际完整增量；R读response_projection；S读output_norm gain前160，反传到local_projection/t2。学生图保留，教师eval/stopgrad，日志detach；同一单位方向损失eps1e-4，L资格统一为clean ownEMA默认头正确×urban场景，无urban学生置信门槛，所有合法L satellite始终参与CE。J按原数值重组，仅aux gain stopgrad；所有aux不更新默认W/gain，CE正常更新。训练时在原concat前向前临时捕获，前向结束即移除hook，之后原生U和EMA不被捕获。
+| 相对A0（百分点） | urban | low urban | mid urban | clean | suburban | urban F1 | 最差 RX |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| A-T | -0.1895 | -0.1476 | -0.1744 | -0.5315 | -0.2393 | -0.1278 | -0.5875 |
+| A-F | +0.0321 | -0.0006 | +0.0238 | +0.3202 | +0.0423 | -0.0014 | -0.0431 |
+| A-P | -0.1266 | +0.0702 | -0.1190 | +0.1351 | -0.3470 | -0.2119 | -0.3056 |
+| A-R | -0.3050 | -0.2530 | -0.1952 | -1.4333 | -0.4573 | -0.3256 | -0.6944 |
+| A-S | +0.3317 | +0.3673 | +0.3405 | -0.1030 | +0.2619 | +0.0239 | -0.4833 |
+| A-J | +0.4020 | +0.3012 | +0.3595 | +0.6988 | +0.4567 | +0.4126 | +0.4708 |
+| A-ALL | -0.1907 | -0.0232 | -0.1631 | -0.6137 | -0.3573 | -0.2204 | -0.1931 |
 
-强度：A0固定epoch5保存student/ownEMA和内部契约，使用同一L_dev720、mid/low urban独立固定源流，计算实际joint祖先195041参数/71张量的全局梯度，不含W，无梯度项按0。lambda_b=.1*median||grad(.5 CEsat)||/(median||grad L_b||+1e-12)，不是旧逐组/逐batch比值的中位数。小于1e-8、非有限或系数超[1e-4,10]停止待发组并保留产物，不无限放大。ALL先用单分支尺度定标，omega=.2且和1，再校准组合总系数。定标3600前向、0优化更新，只做一次，后续位置和seed共享系数；源定标/面板保存并恢复CPU/CUDA RNG和所有模型状态/待积累梯度。其余位置等待源recipe存在后从零起跑，不继承A0权重。A0校准额外成本单列。
+目标low urban60%的实际达到组：无。这些目标指标仅用于结果报告，不进入源推进规则。一个seed不能证明位置最优、稳定优于KL或跨seed复现。E50结束不是收敛证明。
 
-源开发：固定14个epoch观察（1/5/6/10/15/20/25/30/33/34/35/40/45/50），全六源practical+clean，70560前向/组，不更新模型。仅final50参与推进。扩整个八组家族的预登记条件：至少一个新增约束对A0的源low≥+1pp、clean≥−0.5pp、urban≥0pp、最差urban RX≥−1pp；全部八组保留，随后额外两个预定义seed，绝不按target挑组。正式三seed后，b1/b2必须各在3/3源low提高、均值≥+0.5pp、均值clean≥−0.5pp、urban≥0pp、最差RX≥−1pp；按low、urban、最差RX顺序，0.2pp内才比较约束/成本。至少两个合格单项才做b1+b2、b1+J、b1+b2+J，重新定标组合总强度。此后续组合尚未发布，不预设T+S。若源家族条件不满足，保留负结果，不用target修正门槛。
+A0与所有变体共同使用新内部源折：原L6300固定拆为训练5580／开发720；U56700的TX真值保持隐藏，V27000仅健康诊断。各TX×RX×day单元70条L中固定留8条，FOLD_SEED2026101503；开发IQ不参与优化器／EMA／归一化统计更新。该开发折曾被历史全L模型见过，并用于本轮源定标／推进，不能声称全历史未见盲测。旧全L B0／C3／KL／方向模型不是这个内部折的严格匹配对照；不能把新旧基线差归因于某一约束。
 
-训练后每row固定final50，立即自动对原clean+六practical的168000物理记录/视图预测，共1176000预测/组；全部七视图预测固定后exec独立truth-last评分。当前正式IQ直接复用VALIDATED_ONCE，不重新生成/调SNR/删难样本。主指标low/mid/urban/最差RX/Macro-F1，保持clean/suburban。测试不回流参数/选模/推进。源分支方差、gain/贡献、梯度比例/夹角、原生实际clipping、总AdamW更新与覆盖保留，不能把aux loss下降或gain关闭称为鲁棒性改善。
+固定原SIG_TIME、内部门控、参考响应和默认cosine6×160／scale30；863730总参数，实际部署身份祖先195041参数／71张量。全部原参数仍由原CE／U训练联合更新，无新骨干、分类头、预测MLP或拟合诊断头。A0为普通clean＋星地拼接CE；全部有标签satellite都参与CE，clean:satellite=1:1分别均值，label_smoothing0.01。训练场景仅low suburban／mid urban／low urban；本位置矩阵课程eta=0，不与C3课程／间隔／新SSL叠加。原U旧门控33＋17安排保持。
 
-预算：每组父0/新增50/累计50，11100更新；主前向6190200=3×1420800个L clean/sat/EMAclean+2×963900个原U教师/强视图。另列70560源开发、A0一次3600校准、原生V各epoch和最终健康验证、smoke和1176000测试；墙钟以实际completion/telemetry为准。8组总88800更新。尚无本轮训练结果或收益声明。
+前5轮均无对齐，epoch6至50仅启用各自一个方向目标。全部八组都有同等L clean ownEMA eval教师前向；仅教师clean默认头正确且urban时参与额外方向约束，不要求urban学生高置信。T/F为实际fuse输入（F含freq_stats_proj），P为完整pa_norm，R为可学习response_projection，S为gain前output_norm的160维，J为实际joint160的前向等值stop-gradient gain重组。学生图保留，教师停止梯度；不匹配raw29、错位112维、所有gain或不同分支。
 
-发布命令：`E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_urban_branch50.publish --output E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/pilot_delivery_r01`；同参数加`--inspect`独立回读。远端命令`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_branch50.dispatch`，CWD PROJECT/releases/cvs_sigtime_branch_align_e50_20261015_r01；唯一run根PROJECT/runs/20261015-phase1-sigtime-branch-align-e50-manysig-s2026092701-m8-r01，owner codex/root/branch-align-e50-20261015。普通N607账户，CPU2线程/每GPU最多3总实验进程（计其他owner），共享容量锁/free≥12000MB，不终止或热改健康任务。
+一次静态强度校准使用A0自己的固定epoch5／ownEMA，其他组仍独立scratch，不加载A0预热权重。全局theta排除W、未接收梯度按0；lambda=.1×median||grad(.5CEsat)||／median||grad(Lb)||，不是层比值中位数。ALL先各分支定标、omega=.2平均，再对总强度独立定标。源静态10%不保证全训练／各层比例或AdamW更新相同，不在线追调lambda。
 
-最小发布：一次实际代码/config commit、11项有针对性的本地检查、首步真实冻结B0默认头无query smoke（仅操作检查，绝不作内部折初始化）、一次P0/P1审查、一次archive传输SHA比较、远端编译/预检、一次PID/CWD/argv/GPU与日志增长独立回读。输入/内部角色/来源、非有限、近零或越界校准、aux泄漏、预算、输出冲突或启动失败停止待发组，活动健康行自行完成，产物保留、不自动重训。后续真实产物以experiment.json列出的路径为准，代码/config身份以Git commit与release_commit.txt为准。
+| 目标 | 冻结lambda |
+|---|---:|
+| T | 0.516316511097 |
+| F | 1.476165015704 |
+| P | 1.173301616579 |
+| R | 0.112902236328 |
+| S | 0.313356807098 |
+| J | 0.647934640281 |
+| ALL | 1.973158456105 |
 
-本地：`experiments.cvs_urban_branch50.checks`5项PASS，`training_checks`6项PASS，compileall/diff-check PASS；完整F/P、单项替换保留urban其他分支/rho、native实际concat学生图、teacher/U前hook移除、S梯度与主CE W、aux W/gain边界、全局中位数比与退化拒绝、L开发折互斥/均衡/顺序稳定、完整8配置和源家族规则均已检验。一次独立P0/P1审查PASS；发现的recipe部分写入竞态已按同目录临时完整写入后rename修复，并完成一次定点核实，其余指定范围未发现P0/P1。完整正式三seed与三种组合、同信道中间视图和局部SIG_TIME分组教学仍待后续证据，不把此小试等同全部目标完成。
+FULL_FP32_POLICY的cudnn_deterministic=false：相同初始化规则／seed和增强不等于bitwise相同权重轨迹。前5轮的源小差如实保留，不借此改配置或重跑。
 
-发布代码commit `152d8921c903fc6d5f782c199b075d0837840ece` 已push并独立核对远端OID。一次归档传输/远端编译/普通账户预检VERIFIED；dispatcher2937430，A0 worker2937455，GPU3，实际CWD/argv/默认checkpoint首步smoke核实，epoch1日志增长5152字节。实际inner_source_contract为L_train5580/L_dev720/U56700/V27000，物理ID数互斥，真实总参数863730，默认头未改，max_grad_norm=5.0，A0新增aux梯度全0。独立回读`local_artifacts/cvs_branch_alignment_20261015/pilot_delivery_r01/readback.json`及`monitor/latest.json`；唯一release不变，健康旧KL/DIR继续原E50。尚无八组target结果或正式三seed结论。
+| row | E50成功更新 | 主训练前向 | L_dev面板 | 原V验证 | 墙钟 (s) | 裁剪步数 | 含测试总前向 |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| A0-s2026092701 | 11100 | 6190200 | 70560 | 1404000 | 4593.410 | 155 | 8840764 |
+| A-T-s2026092701 | 11100 | 6190200 | 70560 | 1404000 | 4886.580 | 163 | 8840764 |
+| A-F-s2026092701 | 11100 | 6190200 | 70560 | 1404000 | 4592.898 | 197 | 8840764 |
+| A-P-s2026092701 | 11100 | 6190200 | 70560 | 1404000 | 4798.450 | 139 | 8840764 |
+| A-R-s2026092701 | 11100 | 6190200 | 70560 | 1404000 | 4768.287 | 121 | 8840764 |
+| A-S-s2026092701 | 11100 | 6190200 | 70560 | 1404000 | 4833.575 | 166 | 8840764 |
+| A-J-s2026092701 | 11100 | 6190200 | 70560 | 1404000 | 4811.223 | 193 | 8840764 |
+| A-ALL-s2026092701 | 11100 | 6190200 | 70560 | 1404000 | 4793.529 | 152 | 8840764 |
 
+全部父训练0／新增50／累计50，每组11100更新，八组88800更新。主前向各6190200：L clean／satellite／ownEMA clean各1420800，原U教师／strong学生各963900。各有14×5040=70560开发前向。原V各50×27000，并有final geometry与wrapper最终健康各27000，合计1404000；每组原生geometry共5300 cache hit、0miss，没有另加重复前向。每组scratch smoke2、最终checkpoint smoke2、正式测试1176000。另有共享dispatcher smoke2、A0源校准3600／6.332秒／0更新，冻结后机制46800／131.674秒／0更新。上述实际新增前向总样本数70776514，不是FLOPs；多GPU重叠的各行耗时之和也不是总墙钟。历史B0只作启动smoke，无权重继承。
 
-## 一次源全局定标与八组放行
+全量解析88800步／400epoch及完整stdout，核对连续预算、有限训练标量、实际optimizer_step_applied=1、无非有限跳步和U真值暴露。source机制／梯度记录显示aux对默认W与三gain为0，原总训练仍更新五组身份特征／W／gain；原clip阈值5.0，实际裁剪如表。stdout中的inactive诊断nan与警告保存在审计JSON中，不混同实际训练非有限跳步。
 
-A0固定epoch5源定标已SOURCE_BRANCH_CALIBRATED，6.332468秒、3600前向、0优化/拟合头更新。实际特征195041参数/71张量、W排除、未接收梯度按零；student/EMA state与已有训练grad逐值保持，CPU/CUDA随机流恢复。源only、query/U truth均未读取。所有参数系数在预设范围且未裁切。
+| trace核对 | 增强输入数 | 实际L_train ID | 开发／其他ID | session数 | 相对A0损伤元数据差异数 |
+|---|---:|---:|---:|---:|---:|
+| A0-s2026092701 | 1420800 | 5580 | 0 | 15 | 0 |
+| A-F-s2026092701 | 1420800 | 5580 | 0 | 15 | 0 |
+| A-R-s2026092701 | 1420800 | 5580 | 0 | 15 | 0 |
+| A-P-s2026092701 | 1420800 | 5580 | 0 | 15 | 0 |
+| A-S-s2026092701 | 1420800 | 5580 | 0 | 15 | 0 |
+| A-J-s2026092701 | 1420800 | 5580 | 0 | 15 | 0 |
+| A-ALL-s2026092701 | 1420800 | 5580 | 0 | 15 | 0 |
+| A-T-s2026092701 | 1420800 | 5580 | 0 | 15 | 0 |
 
-| 位置 | median全局aux梯度 | 冻结系数 | 定标后median范数比 |
+trace使用source:<base_index>，登记使用opaque physical ID；通过原发布代码的L_s索引（仅6300合法有标签记录）做字段映射后遍历全部11366400个增强输入。索引重建按原生builder加载既有ManySig容器，仅遍历L_s metadata；不调用U/V/query样本的__getitem__或U标签张量，不构造query loader，不作模型前向／更新，不改原日志。这是样本使用层面的隔离，不声称原生容器加载没有读取任何非L字节。实际每个物理ID的session固定，15个RX/day/eq session均包含6个TX，90个TX×RX×状态单元有支持。匹配字段包含样本／session／场景／状态／锁定／质量／新增噪声SNR／CFO／残余核长／q；这是记录的生成状态匹配，不是IQ字节hash或模型权重轨迹相等声明。
+
+正式测试每行完成后立即自动预测原clean＋六practical（high／mid／low suburban／high urban／mid urban／low urban），每视图168000记录，每行1176000预测／126指标；八组合计9408000预测／1008指标。只有同row七视图全部prediction固定后，独立exec scorer才接truth并独立复算。默认checkpoint为final50学生头，非另训头；原正式IQ／SNR／困难样本均不改。
+
+| 源L_dev low urban | 准确率 (%) | 固定A0集合保持率 (%) | 修复A0错 | 新增A0错 | 归一化默认头margin |
+|---|---:|---:|---:|---:|---:|
+| A0 | 66.9444 | 68.2788 | 0 | 0 | 0.095764 |
+| A-T | 67.0833 | 68.2788 | 6 | 6 | 0.096670 |
+| A-F | 67.2222 | 68.5633 | 8 | 6 | 0.095452 |
+| A-P | 67.0833 | 68.2788 | 6 | 6 | 0.097024 |
+| A-R | 66.3889 | 67.5676 | 9 | 14 | 0.099663 |
+| A-S | 67.5000 | 68.9900 | 16 | 11 | 0.095774 |
+| A-J | 67.2222 | 68.2788 | 12 | 12 | 0.081752 |
+| A-ALL | 67.7778 | 68.9900 | 13 | 8 | 0.101462 |
+
+冻结后的固定参考为匹配A0 final50的clean正确集合703/720。源机制共46800前向，0optimizer／EMA／拟合头更新，模型及ownEMA state不变，V_forward0、无U/query读取。T/F/P/R/S/J真实节点方向、最近错误TX cosine、variance/norm、默认头修复／新错及margin均保留；最近错误TX比较只用720合法开发clean向量，不拟合决策规则。loss下降或配对cosine提高本身不证明身份判别提高，gain降低本身不证明鲁棒。
+
+| 单项或组合 | 检查节点 | clean配对cosine | 最近错误TX cosine | 分支均方差 |
+|---|---|---:|---:|---:|
+| A0 | T | 0.830967 | 0.955869 | 0.026597 |
+| A0 | F | 0.867154 | 0.931794 | 0.019972 |
+| A0 | P | 0.913250 | 0.966242 | 0.200187 |
+| A0 | R | 0.320002 | 0.658871 | 1.130055 |
+| A0 | S | 0.357843 | 0.770885 | 0.933751 |
+| A0 | J | 0.712107 | 0.895187 | 0.164988 |
+| A-T | T | 0.977923 | 0.994408 | 0.017738 |
+| A-F | F | 0.993171 | 0.996045 | 0.008428 |
+| A-P | P | 0.974953 | 0.990546 | 0.070550 |
+| A-R | R | 0.783205 | 0.883849 | 0.551354 |
+| A-S | S | 0.617519 | 0.902711 | 0.652056 |
+| A-J | J | 0.877745 | 0.949741 | 0.099571 |
+
+真实约束已在对应位置生效：T/F的配对cosine分别升至约.978/.993，R升至.783，S升至.618。但最近错误TX也更近，T/F/P等方差下降，默认头收益没有同步扩大。不能把这些量单独解释为身份迁移成功或完整特征塌缩。A-J中实际R分支幅度／joint norm比约.110，A0约.237，同时J方向更近；融合分配的改变也参与了结果，不能据J不变性推断每个分支更鲁棒。
+
+| 组别 | low源BLOCKED (%) | degraded (%) | unlocked (%) | 新增噪声SNR<3dB (%) |
+|---|---:|---:|---:|---:|
+| A0 | 43.2642 | 65.0350 | 38.5417 | 34.9515 |
+| A-T | 42.7461 | 66.4336 | 37.8472 | 32.5243 |
+| A-F | 43.0052 | 65.7343 | 38.5417 | 34.4660 |
+| A-P | 43.5233 | 67.1329 | 37.8472 | 33.4951 |
+| A-R | 41.7098 | 64.3357 | 37.1528 | 32.5243 |
+| A-S | 43.0052 | 66.4336 | 38.1944 | 33.0097 |
+| A-J | 43.0052 | 65.0350 | 38.8889 | 34.9515 |
+| A-ALL | 44.0415 | 65.7343 | 39.9306 | 34.9515 |
+
+状态、锁定和新增噪声SNR层相互重叠，表中按实际交叉单元样本数加权；新增噪声SNR不是总接收SNR。这些同流完整信道对比用于定位状态关联，不能独立断言解决了多径、Doppler、RX IQ或边界损伤。原四行total/fixed损伤移除诊断另行保留，不能把不同参考集合混合。
+
+| 组别 | T/S全feature梯度cosine中位数 | 双非零共享参数梯度cosine中位数 | 共享参数张量数（并集） |
 |---|---:|---:|---:|
-| T | 0.492487101 | 0.516316511 | 0.100000 |
-| F | 0.172256637 | 1.476165016 | 0.100000 |
-| P | 0.216721104 | 1.173301617 | 0.100000 |
-| R | 2.252207133 | 0.112902236 | 0.100000 |
-| S | 0.811468640 | 0.313356807 | 0.100000 |
-| J | 0.392445790 | 0.647934640 | 0.100000 |
-| ALL | 0.128869134 | 1.973158456 | 0.100000 |
+| A0 | 0.052070 | 0.089824 | 13 |
+| A-T | 0.046574 | 0.080960 | 13 |
+| A-F | 0.052428 | 0.086170 | 13 |
+| A-P | 0.054032 | 0.092758 | 13 |
+| A-R | 0.054125 | 0.088784 | 13 |
+| A-S | 0.029806 | 0.046285 | 13 |
+| A-J | 0.026706 | 0.043039 | 13 |
+| A-ALL | 0.049870 | 0.085703 | 13 |
 
-共同分母median||grad(.5 CEsat)||=2.542792220。ALL表中系数是先各分支定标、omega=.2平均后再乘的总系数，不是直接把五个单项强度相加。定标后比0.1指同一源静态检查点的全局范数中位数比，不保证各层或后续AdamW更新完全相同。
+上述T/S为冻结eval源mid/low各批raw目标梯度，不是实际Dropout／clipped AdamW更新。共享范围只含当前两个梯度norm均>1e-12的同名参数，排除各自独立投影；全feature角与共享角分别报告。P/R/S gain×分支norm与joint norm的比是幅度比，不是相加为1的贡献份额，抵消时可超过1；T/F仍是非线性fuse输入。
 
-八组均实际启动（旧release仍健康），每组独立scratch并按同规则先预热5轮，epoch6才开唯一aux；它们并未加载A0模型权重。一次放行后的独立PID/CWD/argv/GPU回读VERIFIED：
+源家族推进条件在target前固定：至少一项对A0的final50 L_dev low≥+1pp、clean≥−0.5pp、urban≥0、最差urban RX≥−1pp。实际family_expandable=False，满足条件的源信号组为[]。
+本家族未通过预登记源推进条件，保留负结果，不依据target放宽条件或挑某组扩seed。正式三seed与稀疏组合仍未执行。
+三seed之后才按预登记源规则找b1/b2：各项3/3源low提高、均值≥+0.5pp、clean均值≥−0.5pp、urban均值≥0、最差RX≥−1pp；按low→urban→最差RX，0.2pp内才比少约束／成本。至少两个合格单项才做b1+b2／b1+J／b1+b2+J并重新总强度定标。不预设T+S，不把ALL、J或某个首seed的目标最高分直接晋级。
 
-| row | PID | GPU | 已完成epoch（读取时） |
-|---|---:|---:|---:|
-| A0-s2026092701 | 2937455 | 3 | 6 |
-| A-T-s2026092701 | 2941955 | 4 | 1 |
-| A-F-s2026092701 | 2942032 | 5 | 1 |
-| A-P-s2026092701 | 2942113 | 6 | 1 |
-| A-R-s2026092701 | 2942194 | 7 | 1 |
-| A-S-s2026092701 | 2942275 | 7 | 0 |
-| A-J-s2026092701 | 2942757 | 6 | 0 |
-| A-ALL-s2026092701 | 2942835 | 4 | 0 |
+实际practical导入adv3b02_xuc/code/leo_practical/{channel,residual}.py，25MHz、IQ256、原native RMS后模拟器输入RMS，输出不再RMS；residual/post_sync、EQfalse（G=1）、reference_snr_db30、接收质量适配／phase tracking／IQcomp true、reflect。几何／传播／遮挡／噪声／接收状态／补偿依赖保持，未反演原录音未知TX硬件。
 
-源系数完整原始记录在local_artifacts/cvs_branch_alignment_20261015/branch_calibration.json；不将物理/训练原始数据入Git。训练完成及真实aux梯度/全部七视图评分仍待执行，本状态不等于八组完成。
+训练release commit152d8921c903fc6d5f782c199b075d0837840ece；一次源全局校准3600前向／6.332秒；源机制release commit0b5cc8b0451cfad03d298af3ba39102a665947af。11项训练／分支定点检查、4项源机制检查、真实checkpoint no-query smoke、一次限定训练P0/P1及源分析P0/P1检查完成；源recipe部分写入竞态按同目录原子rename修复并仅定点核实。普通N607账户、一次archive比对／远端compile和PID/CWD/argv/GPU／日志独立回读均VERIFIED。每GPU最多3总实验进程计其他owner；没有热改、停止或重启健康实验。
 
+训练命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u -m experiments.cvs_urban_branch50.dispatch`，CWD PROJECT/releases/cvs_sigtime_branch_align_e50_20261015_r01。冻结后`-m experiments.cvs_urban_branch50.mechanism`，CWD PROJECT/releases/cvs_sigtime_branch_align_source_20261015_r01。唯一run/output、owner、GPU、stop rule和全矩阵仍见experiment.json。绘图：`F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_urban_branch50.figures --artifacts E:/type10-7/local_artifacts/cvs_branch_alignment_20261015`。
+已执行的全日志获取／审计命令：`F:/App/miniconda3/python.exe -X utf8 E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/harvest.py`、同目录`source_index_aliases.py`和`audit_channel.py`。后两者分别翻译既有L metadata和遍历全部trace，0模型前向／更新；核心完整trace读码为experiments/cvs_urban_branch50/log_audit.py，可用`--run-root ... --row ... --index-map ...`复用。图像仅因本地Matplotlib的labels接口变化改用set_xticks后重绘，模型／预测／评分未重跑。
 
-## 真实辅助梯度与默认头联合更新
+实际图表：
+- [complete_training_curves.png](E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/final/figures/complete_training_curves.png)
+- [source_learning_progress.png](E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/final/figures/source_learning_progress.png)
+- [per_seed_formal_accuracy.png](E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/final/figures/per_seed_formal_accuracy.png)
+- [actual_branch_identity_geometry.png](E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/final/figures/actual_branch_identity_geometry.png)
+- [source_default_head_retention_margin.png](E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/final/figures/source_default_head_retention_margin.png)
+- [gain_and_contribution_amplitude.png](E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/final/figures/gain_and_contribution_amplitude.png)
+- [T_S_shared_gradient_angles.png](E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/final/figures/T_S_shared_gradient_angles.png)
+- [source_state_quality_strata.png](E:/type10-7/local_artifacts/cvs_branch_alignment_20261015/final/figures/source_state_quality_strata.png)
 
-八组活跃进程已独立回读。七种aux在epoch6以后真实进入梯度，W及三组融合gain的aux梯度均0；实际t1/t2、SIG_local、PA/reference投影、默认W与gain的最近完整epoch总AdamW更新norm均大于0（这是总训练更新，不是aux单独贡献）。native裁剪阈值5.0且optimizer_step_applied均1。一次静态eval源定标不使后续每层或全局比例恒定，不依据变化在线追调lambda。
-
-| row | 读取时完成epoch | 最近记录aux/CE全局norm比 | 默认W完整epoch更新norm |
-|---|---:|---:|---:|
-| A0-s2026092701 | 15 | 0.000000 | 0.046746 |
-| A-T-s2026092701 | 10 | 0.057482 | 0.055764 |
-| A-F-s2026092701 | 10 | 0.033741 | 0.055992 |
-| A-P-s2026092701 | 9 | 0.166300 | 0.063811 |
-| A-R-s2026092701 | 10 | 0.024329 | 0.057763 |
-| A-S-s2026092701 | 9 | 0.083100 | 0.064017 |
-| A-J-s2026092701 | 9 | 0.119800 | 0.063969 |
-| A-ALL-s2026092701 | 10 | 0.111629 | 0.055641 |
-
-各文件可能正在完成相邻epoch，表是读取时观测，完整逐步时间对应以最终step/epoch日志为准。原始局部记录local_artifacts/cvs_branch_alignment_20261015/active_gradient_evidence.json，最终全部50轮还需完整审计。前5轮无aux时源准确率已有小差异；FULL_FP32_POLICY.cudnn_deterministic=false，不能把相同初始化规则/seed宣称为bitwise同轨迹，也不能据首seed早期小差宣布分支最优。
-
-冻结后源分支解释工具已具备，[预登记](source_branch_mechanism_plan.md)对应同row零更新分析；4项实际模型检查、compile/--help和一次独立P0/P1 PASS。全部八组完成训练/评分后才独立发布CPU release；当前没有该阶段结果或三seed结论。训练release继续使用152d8921c，不受后分析代码提交影响。
+完整证据：final/training_audit.json、channel_trace_audit.json、source_family_decision.json、source_branch_results.json、source_gradient_aggregate.json和source_delivery_r01/readback.json。IQ／权重／预测／原始日志／生成图输出不入Git。仅本轮阶段实现与小试已完成，完整三seed／条件稀疏组合／同信道中间视图／局部SIG分组教学尚未完成。
