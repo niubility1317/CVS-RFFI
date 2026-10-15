@@ -364,3 +364,10 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- RDROP_CURVATURE_COMPLETION_PREREG_20261016 -->
 仅SIG_TIME＋RDrop，原fullKL保持，按默认头centered normalized-W rank5的可见/余空间增加等迹特征稳定性；FULL/SPAN/ISOTROPIC/NULL，固定seed02各scratchE20，RX1全路径排除、默认头联合。CPU/CUDA53协议负例/7科学否决、198初态及实际梯度/RNG检查PASS。NULL须同时少错且CE不升，FAIL关闭，PASS仅另行固定RX3源确认。20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01 RUNNING，四行启动VERIFIED，首轮真实几何/等迹信号通过，尚无最终源评价。[固定方案](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/report.md)。goalactive。
+
+
+<!-- RDROP_CURVATURE_COMPLETION_RESULT_20261016 -->
+20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01 四臂source-only E20已ANALYZED/VERIFIED，80model-epoch/17760步、默认头联合、RX1全路径排除。FULL/SPAN/ISOTROPIC/NULL错误依次281/283/263/273（各1260），固定资格 FAIL，关闭本配方。完整训练目标/几何/等迹审计与源逐包预测、特征实际更新及导出边界已核验，0target/另训头。原版RDrop正收益及所有负结果保留。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/report.md)。goalactive。
+
+
+同批全空间ISOTROPIC对照相对FULL修正45/新增27，净少错18，held RX1准确率+1.428571pp、CE−0.050462。保留为单seed源对照的未确认正迹象，不替换主NULL、不触发RX3或主目标矩阵。下一仅可做本批冻结joint160无拟合参数的源跨RX几何诊断；没有新训练或换头授权需求，原关闭规则不变。详见20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/report.md。

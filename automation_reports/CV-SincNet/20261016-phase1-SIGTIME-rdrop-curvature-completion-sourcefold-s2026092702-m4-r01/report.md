@@ -1,3 +1,71 @@
+# SIG_TIME＋RDrop：特征余空间曲率补全完整源域结果
+
+**FAIL：未达到固定源域条件，关闭本次配方，不扩种子或访问目标测试。** 四个固定 E20 模型全部完成，独立完整核验 VERIFIED。原版 full KL 在全部条件中保留，仅附加特征一致性二次型的方向不同。以下为一个预定义模型 seed2026092702、1260 包 held source RX1 的开发证据，不是目标三种子或新 TX 结论。
+
+| 条件 | RX1 错误 /1260 | 准确率 | mean CE | Macro-F1 | final L CE |
+|---|---:|---:|---:|---:|---:|
+| FULL | 281 | 77.6984% | 0.766282 | 77.5745% | 0.299493 |
+| SPAN | 283 | 77.5397% | 0.848411 | 77.1717% | 0.315624 |
+| ISOTROPIC | 263 | 79.1270% | 0.715820 | 79.1436% | 0.325134 |
+| NULL | 273 | 78.3333% | 0.737911 | 78.2077% | 0.324671 |
+
+| NULL 相对对照 | 准确率差（百分点） | 修正 / 新增错误 | mean CE 差 |
+|---|---:|---:|---:|
+| FULL | +0.6349 | 45 / 37 | -0.028371 |
+| SPAN | +0.7937 | 75 / 65 | -0.110500 |
+| ISOTROPIC | -0.7937 | 5 / 15 | +0.022090 |
+
+<!-- SOURCE_CONTROL_POSITIVE -->
+本轮有两项必须分开保留的观察。第一，主候选 NULL 相对 FULL 净少错8包，但相对普通全空间 ISOTROPIC 净多错10包、CE增加0.022090，未证明余空间定向优于简单全空间约束，按固定规则关闭，不启动 RX3 确认或主目标实验。第二，全空间对照相对原版 FULL 修正45包、引入27包，净少错18包，准确率+1.428571个百分点、mean CE−0.050462，是一个单模型seed的合法源域正迹象。它保留为未独立确认的对照结果，不替换本批主条件，也不据此把失败批次判为通过。
+
+全空间与余空间的 final 原生 KL 都约0.039至0.040，SPAN虽把KL进一步降低到0.024212，留出错误却更多。全空间源V和LCE也未优于FULL，而留出RX1指标更好。这些观察支持继续区分“降低输出分歧”和“有用的特征稳定性”，不能从某个loss或已见RX的V单独判定泛化。全空间特征一致性已有文献先例，此结果也没有证明解析Fisher权重本身的独立作用或新颖性。
+
+后续最多两个动作：保留原版RDrop作为性能参照，完成本批负结果和全空间正迹象归档；若继续机制诊断，仅对本批四个冻结模型进行无拟合参数的跨RX特征关系分析，检查实际joint160的源端几何是否与默认头结果一致。不训练/更换诊断头、不调整本批参数、不扩种子或追加目标测试；新训练假设需要独立方案及对照。全部6个同批配对见all_pairwise_source.csv，额外核对只读取已有源预测JSON，0新增IQ、模型前向或target。
+
+预登记判据：四行 final L CE≤.5 健康=True；NULL 辅助信号至少90%步骤为正=True；NULL 相对三个对照同时严格少错且 mean CE 不高的最终资格=False。不把次要对照的较好分数改成主条件，也不按结果扫描系数或种子救跑。
+
+| 条件 | final paired CE | 原版 KL | 新增辅助 loss | Fisher 迹均值 | 特征差余空间比例 | 已见 RX 的源 V |
+|---|---:|---:|---:|---:|---:|---:|
+| FULL | 0.299858 | 0.039824 | 0.000000 | 145.694264 | 99.6656% | 97.9769% |
+| SPAN | 0.316189 | 0.024212 | 0.024488 | 176.000262 | 99.8351% | 97.7778% |
+| ISOTROPIC | 0.325451 | 0.039279 | 0.147534 | 178.286382 | 98.7661% | 97.7361% |
+| NULL | 0.325035 | 0.039831 | 0.148262 | 177.505692 | 98.7078% | 97.7269% |
+
+上述梯度相关统计为各自训练轨迹上的完整 final epoch 均值；同迹条件只在相同权重/输入上对三个附加度量成立，不保证独立训练后的 Fisher 迹、实际 loss、梯度范数或 AdamW 位移相同。原版 KL 和附加项均已逐步核对，不能把总一致性 loss 的大小当作泛化效果的直接原因。余空间比例针对归一化 joint160 的两视图差，不代表这些方向都是接收机噪声。源 V 为已见 RX，不代替真正留出的 RX1；U 接受量见 same_metric_diagnostics.csv，均为循环观察计数，U 真值未读取，无法据此报告伪标签正确率。
+
+- FULL：实际 4440 步，数值秩始终 5 至 5；辅助项为正 0/4440；投影残差最大 1.21e-14，附加度量迹相对误差最大 0，独立逐步 Fisher 迹汇总与审计差 0。
+- SPAN：实际 4440 步，数值秩始终 5 至 5；辅助项为正 4440/4440；投影残差最大 1.07e-14，附加度量迹相对误差最大 1.14e-08，独立逐步 Fisher 迹汇总与审计差 0。
+- ISOTROPIC：实际 4440 步，数值秩始终 5 至 5；辅助项为正 4440/4440；投影残差最大 1.2e-14，附加度量迹相对误差最大 0，独立逐步 Fisher 迹汇总与审计差 0。
+- NULL：实际 4440 步，数值秩始终 5 至 5；辅助项为正 4440/4440；投影残差最大 1.12e-14，附加度量迹相对误差最大 3.53e-10，独立逐步 Fisher 迹汇总与审计差 0。
+
+![完整训练曲线](training_curves.png)
+
+曲线覆盖全部20轮，虚线区分13L＋7原U日程，无最高V选模。共17760步、80 model-epoch、4份完整stdout、8份初末CP和5040份源默认头决定已核验。实际目标 closed_loss＋.5×(CE2−CE1)＋native_KL＋aux 的逐步重构最大误差 3.58e-07。所有记录均为有限值，rank5/投影/迹与实际调用数审计通过；FULL 辅助项逐步为0且与原版KL一致。原本的U损失与未单独暴露的加权U熵贡献也已从closed_loss重构，未替换半监督机制。
+
+四臂 198 个初始张量逐位相同，实际t1、t2、SIG_TIME投影和默认W均有非零更新。初末实际joint160在固定合成包上改变，feature-only导出与原前向逐位一致，临时扰动W不改变z。它证明新损失训练接线与部署特征边界，不等同全部性能差异已归因于特征，也不证明新身份迁移。没有拟合、重训、替换或冻结分类头。
+
+各行有效L5040/U45360hidden/V21600，fit RX3/4/6/8、day1/2/3、六TX；RX1在全部训练/教师/统计/缓存和继承来源排除，全部从零、自己EMA、固定final20。总计2273280次额外L身份前向、1585472次循环U观察、5040次held决定；每行另144fit L anchor读取但未拟合。训练自己的初始CP每行2合成smoke包。分析0新增真实IQ/源或目标前向/头拟合/optimizer更新/CP写入；另32合成包检查实际导出边界。物理ID首列为eq_i而非TX，TX分层采用实际标签及native tx_i约定。
+
+真实执行提交 `78ad998e9dcb5653573fa801538e914189833d20`，所有所属worker和调度器均已终态，无技术失败或选择性重训。各arm的Macro-F1、day/TX、CM、配对CE转移、完整loss统计、参数更新与成本见同目录CSV/results_analysis.json。CE转移按全1260归一化并与整体CE差核对，不把描述性分组当作因果。
+
+若科学资格PASS，只按已固定规则另行登记RX3排除源确认；若FAIL，本余空间曲率补全配方关闭，不做主目标测试、扩种子或扫alpha/rank/层/温度/轮次。先前原版SIG_TIME＋RDrop完整E20/E50三种子clean均值83.942857%/84.340079%及所有负结果保留；不同源折和目标口径不混合汇总。既有RDrop、FD、LR-Drop已有一致性先例，本实验不宣称全球首创、统计显著、独立盲测、新TX或卫星部署有效。总目标ACTIVE。
+
+近期 RDrop 证据台账如下；历史部分仅复用已核实公开结果，本轮不冒称重新审计全部原始产物。完整数据/代码/成本边界见所链接报告及 related_routes_ledger.json/csv。
+
+| 路线 | 范围与 seed | 相对匹配控制准确率差（百分点） | 固定结论 |
+|---|---|---:|---|
+| [Original SIG_TIME + standard RDrop](../20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md) | full-source/fixed exposed clean target168000,three model seeds；n=3 | +0.827183 | POSITIVE_MATCHED_TARGET_EVIDENCE |
+| [Original SIG_TIME + standard RDrop](../20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01/report.md) | full-source/fixed exposed clean target168000,three model seeds；n=3 | +1.418056 | POSITIVE_MATCHED_TARGET_EVIDENCE |
+| [Difference-gradient RDrop](../20261015-phase1-SIGTIME-rdrop-difference-gradient-sourcefold-s2026092702-m4-r01/report.md) | true held source RX1,1260 legalL;not target；n=1 | +2.936508 | SOURCE_FAIL_FIXED_RECIPE_CLOSED |
+| [Cross-RX conditional-evidence RDrop](../20261015-phase1-SIGTIME-rdrop-RX-evidence-sourcefold-s2026092703-m4-r01/report.md) | true held source RX1,1260 legalL;not target；n=1 | -2.301587 | SOURCE_FAIL_FIXED_RECIPE_CLOSED |
+| [Paired masks RDrop source screen](../20261015-phase1-SIGTIME-rdrop-paired-masks-sourcefold-s2026092701-m4-r01/report.md) | true held source RX1,1260 legalL;not target；n=1 | +0.396825 | SOURCE_PASS |
+| [Paired masks RDrop full-source E20](../20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01/report.md) | fixed exposed clean target168000,three model seeds；n=3 | -0.350595 | NEGATIVE_VS_STANDARD_RDROP |
+| [Paired masks RDrop full-source E50](../20261015-phase1-SIGTIME-rdrop-paired-masks-e20e50-clean-manysig-m12-r01/report.md) | fixed exposed clean target168000,three model seeds；n=3 | -0.045040 | MAIN_PRIMARY_FAIL_FIXED_RECIPE_CLOSED |
+| [Margin-envelope teacher RDrop](../20261016-phase1-SIGTIME-rdrop-margin-envelope-sourcefold-s2026092701-m4-r01/report.md) | true held source RX1,1260 legalL;not target；n=1 | -7.222222 | SOURCE_FAIL_FIXED_RECIPE_CLOSED |
+| [Classifier-complement curvature RDrop](../20261016-phase1-SIGTIME-rdrop-curvature-completion-sourcefold-s2026092702-m4-r01/report.md) | true held source RX1,1260 legalL;not target；n=1 | +0.634921 | SOURCE_FAIL_FIXED_RECIPE_CLOSED |
+
+以下保留发布前和启动时固定方案，历史状态以本页开头终态为准。
+
 # SIG_TIME＋RDrop：特征余空间曲率补全源域预登记
 
 状态 RUNNING，四行启动 VERIFIED。只优化 SIG_TIME＋RDrop，固定原 SIG_TIME 与默认头联合训练。原版 RDrop E20/E50 三种子 clean 均值83.942857%/84.340079%的正收益保留；差分梯度、跨 RX 证据、互补掩码和包络的失败配方保持关闭。本轮新增的是原版预测一致性之外的特征学习信号，不救跑既有失败算子。
