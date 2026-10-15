@@ -395,3 +395,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- RDROP_NORM_MATCH_EXPLORATORY_RX3_20261016 -->
 同批NORM_MATCH仅作为探索性控制正迹象保留：RX3对FULL修正118/新增94、净少24错（+1.904762个百分点）、CE−.233749；对POINT净少25错、CE−.084705。仅2/6TX与2/3day改善，单seed，未被预登记为合格主候选，不直接晋级target。下一RDrop研究应独立源折确认固定自调梯度强度公式，并加入预先固定强度对照，区分动态校准与单纯更强正则；不重启CENTER或NULL失败配方、不按类别设规则。详见同run norm_route_exploratory.json。goalACTIVE。
+
+
+<!-- RDROP_GAIN_RX1_PREREG_20261016 -->
+20261016-phase1-SIGTIME-rdrop-gradient-gain-RX1-sourcefold-s2026092702-m4-r01 PLANNED：上一RX3控制NORM_MATCH的探索性+24错保留，独立RX1源折确认固定DYNAMIC算子；FULL/POINT/FIXED11/DYNAMIC，各seed02 scratchE20。固定11来自上一全部4440训练图r均值10.555876按最近整数，不扫权重。DYNAMIC须同时少错且CE不高于全部3对照；FAIL关闭，不以副对照替代。旧CENTER/NULL不重训。CPU/CUDA59负例、198初态及原DYNAMIC算子逐位/实际骨干梯度/RNG检查PASS，0target/拟合头。[最小预登记](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-gradient-gain-RX1-sourcefold-s2026092702-m4-r01/report.md)。goalACTIVE。
