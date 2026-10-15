@@ -1138,34 +1138,114 @@
     "Recovery7221e39e0301e0de68231c3526e6c755295270d8 onlyadds2runtimepackages and run/releaseIDs. Isolated release -I imports preflight/dispatch/publishPASS, no checkoutfallback; independent targetedP0/P1PASS. R01 verified0workers/updates and preserved."
   ],
   "results": {
-    "status": "SOURCE_QUALIFIED_DEFAULT_HEAD_SCORED_NOT_YET_NUMERICALLY_RETRIEVED",
-    "actual_new_training_workers": 2,
-    "completed_source_epochs": [
-      50,
-      50
-    ],
-    "real_checkpoint_noquery_smoke": "PASS",
-    "actual_Sinc_source_updates_e1_verified": true,
-    "source_qualification": "PASS",
-    "new_target_numeric_results_read": false,
-    "head_fit_updates": 0,
-    "goal_84": false,
-    "evidence": [
-      "launch_verified.json",
-      "source_progress_e1.json",
-      "source_progress_e17.json",
-      "source_training_mid.png",
-      "source_qualification.json",
-      "source_expansion_decision.json",
-      "source_feature_mechanism.json"
-    ],
-    "actual_Sinc_source_updates_e17_verified": true,
-    "prepared_conditional_extension_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-    "all_rows_predictions_and_scores_complete": true,
+    "status": "ANALYZED_VERIFIED",
     "models": 3,
+    "new_models": 2,
+    "reused_baselines": 1,
+    "model_seed_count": 1,
+    "model_seeds": [
+      2026092701
+    ],
     "prediction_count": 504000,
-    "source_expansion_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01"
+    "metric_records": 54,
+    "source_qualification": "PASS",
+    "summary": [
+      {
+        "arm": "OLD_GATE_COS50",
+        "seed_count": 1,
+        "accuracy_mean": 0.8066845238095238,
+        "accuracy_sd": null,
+        "seed_accuracy": {
+          "2026092701": 0.8066845238095238
+        },
+        "macro_f1_mean": 0.8017335328586674,
+        "worst_RX_mean": 0.7061666666666667,
+        "worst_day_mean": 0.7545238095238095
+      },
+      {
+        "arm": "SIG_TIME",
+        "seed_count": 1,
+        "accuracy_mean": 0.8363690476190476,
+        "accuracy_sd": null,
+        "seed_accuracy": {
+          "2026092701": 0.8363690476190476
+        },
+        "macro_f1_mean": 0.832033225769151,
+        "worst_RX_mean": 0.7092083333333333,
+        "worst_day_mean": 0.7892142857142858
+      },
+      {
+        "arm": "SINC_UNITS",
+        "seed_count": 1,
+        "accuracy_mean": 0.8335476190476191,
+        "accuracy_sd": null,
+        "seed_accuracy": {
+          "2026092701": 0.8335476190476191
+        },
+        "macro_f1_mean": 0.828672233606321,
+        "worst_RX_mean": 0.6715,
+        "worst_day_mean": 0.7883333333333333
+      }
+    ],
+    "paired": [
+      {
+        "arm": "SINC_UNITS",
+        "control": "SIG_TIME",
+        "seeds": [
+          2026092701
+        ],
+        "seed_differences": [
+          -0.0028214285714285303
+        ],
+        "mean_difference": -0.0028214285714285303,
+        "sd_difference": null,
+        "positive_seeds": 0
+      },
+      {
+        "arm": "SINC_UNITS",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701
+        ],
+        "seed_differences": [
+          0.02686309523809527
+        ],
+        "mean_difference": 0.02686309523809527,
+        "sd_difference": null,
+        "positive_seeds": 1
+      },
+      {
+        "arm": "SIG_TIME",
+        "control": "OLD_GATE_COS50",
+        "seeds": [
+          2026092701
+        ],
+        "seed_differences": [
+          0.0296845238095238
+        ],
+        "mean_difference": 0.0296845238095238,
+        "sd_difference": null,
+        "positive_seeds": 1
+      }
+    ],
+    "source_decision_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+    "first_own_target_numeric_read_at": "2026-10-15T01:14:15.557Z",
+    "head_fit_updates": 0,
+    "truth_last": true,
+    "goal_84": false,
+    "first_seed_is_not_full_three_seed_goal": true,
+    "remaining_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+    "evidence": [
+      "final_analysis.md",
+      "results.json",
+      "independent_statistics.json",
+      "native_recount.json",
+      "full_source_curves.json",
+      "source_feature_mechanism.json",
+      "source_qualification.json",
+      "source_expansion_decision.json"
+    ]
   },
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "registered_at": "2026-10-15T00:32:26+00:00"
 }

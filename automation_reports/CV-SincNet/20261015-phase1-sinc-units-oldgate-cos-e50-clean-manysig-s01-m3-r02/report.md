@@ -89,3 +89,6 @@ SOURCE_PASS。两臂均完成固定50轮/11100更新、每模型U963900；最后
 实际195041个fθ参数元素中，对照/候选数值改变193460/193959；两模型feature-only输出与原joint160逐元素一致，最大差0，清零或删除旧W均不改变z，诊断不修改参数/buffers，无拟合头、U真值或query读取。详见 [部署特征证据](source_feature_mechanism.json)。这证明数值优化作用进入真实部署特征，不证明泛化、新TX或Phase2收益。
 
 按事先固定规则，决定原样扩展SIG_TIME与SINC_UNITS至2026092702/03，01不重训。源决定将先提交推送并独立比较远端OID，随后才回收本候选新目标数值；当前未读取这些数值。[扩展决定](source_expansion_decision.json)及[后续矩阵](../20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md)保留全部固定行，任何后续分数都不改变该决定、训练预算或参数组。原自动测试已生成完整3行504000个默认头决策并独立truth-last评分；性能数值与全量核对将在决定推送后回收。
+
+
+完整首种子结果已回收并独立核实，见 [final_analysis.md](final_analysis.md)。SINC_UNITS83.354762%，同路径SIG_TIME83.636905%，差−0.282143个百分点；目标数字在源扩展决定1a3be6d2568939ff56c38c8bc8dc9a879b7abe76推送后读取，既定02/03健康扩展不因该差值改变。

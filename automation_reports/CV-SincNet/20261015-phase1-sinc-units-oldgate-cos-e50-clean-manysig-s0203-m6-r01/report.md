@@ -44,3 +44,10 @@
 ## 原首种子源资格已通过（发布前）
 
 原R02真实源资格PASS：最后5轮L CE两臂0.228386190/0.229129431、各11100更新/U963900；候选low/band各24/24改变，student/ownEMA滤波核相对L2为0.307170421/0.306414366，L720部署joint160差3.697698355。原阈值、完整实际预算和默认feature-only/W独立边界均已核实；source_only且未读取本候选新目标数值。按原规则决定两臂原样扩02/03，不重训01。先提交推送 [源决定](../20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json)，再发布本不可变运行；此时尚未发布或启动新模型，不据后续目标结果修改决定。
+
+
+## 真实发布已核实
+
+RUNNING_VERIFIED：执行/源决定提交1a3be6d2568939ff56c38c8bc8dc9a879b7abe76；普通N607预检、单归档比较、remote compile、真实CP无query smoke通过（真实CP optimizer更新0）。4个新PID/CWD/argv与实际GPU PID核对，GPU分配2/1/2/0，观察epoch15/16/14/16；日志持续增长，无failure，所有GPU总实验进程均≤3。预检时计入其他owner，此后部分其他任务自然退出；未停止或干预任何外部进程。详见 [启动证据](launch_verified.json)。
+
+原首种子新目标数值在源决定推送后才读取：单位臂83.354762% vsSIG_TIME83.636905%。这是首种子负结果，不改变本矩阵的两臂、预算、超参数或自动评分；不重训01、没有新源/目标选择。原样完成预定02/03后合并完整三seed，不把当前部分轮次当作矩阵完成。

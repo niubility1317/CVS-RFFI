@@ -34,7 +34,8 @@
     "config_paths": [
       "experiments/cvs_sinc_units_seeds/design.py",
       "experiments/cvs_sinc_units50/optimizer.py"
-    ]
+    ],
+    "execution_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76"
   },
   "data": {
     "dataset": "ManySig",
@@ -105,7 +106,8 @@
     "remote_log_root": "PROJECT/releases/cvs_sinc_units_seeds_20261015_r01",
     "local_artifact_root": "LOCAL_ARTIFACTS/sinc_units_seeds_delivery_r01",
     "launch_command": "python -u -m experiments.cvs_sinc_units_seeds.dispatch",
-    "stop_rule": "Source qualification of original firstseed mustPASS exactfixedrules beforelaunch. Onlyrun-owned systemictechnicalfailures stop a launchedrow:datapermission/defaulthead/hiddenU mismatch,nonfinitevalues,missingnativeupdates/expectedunitmapping,immutableoutputcollision. Preservepartialoutputs,noautomaticretry,no unrelatedprocessstop or targetfeedback. No newselectiongateafterextension."
+    "stop_rule": "Source qualification of original firstseed mustPASS exactfixedrules beforelaunch. Onlyrun-owned systemictechnicalfailures stop a launchedrow:datapermission/defaulthead/hiddenU mismatch,nonfinitevalues,missingnativeupdates/expectedunitmapping,immutableoutputcollision. Preservepartialoutputs,noautomaticretry,no unrelatedprocessstop or targetfeedback. No newselectiongateafterextension.",
+    "execution_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76"
   },
   "expected_artifacts": [
     "preflight.json",
@@ -2149,17 +2151,38 @@
     "Known exposedcleanbenchmark,source numericallearningqualification doesnotproveDG/84/newTX/Phase2/satellitedeployment. Allpositive/negative results committed,pushed,remoteOIDverified."
   ],
   "results": {
-    "status": "SOURCE_QUALIFIED_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED",
     "first_source_qualification": "PASS",
-    "source_qualification_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02",
-    "source_decision": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json",
-    "real_new_training": false,
+    "source_decision_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+    "execution_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+    "actual_new_training_workers": 4,
+    "observed_epochs": [
+      {
+        "row_id": "SIG_TIME-s2026092702",
+        "epochs": 15
+      },
+      {
+        "row_id": "SINC_UNITS-s2026092702",
+        "epochs": 16
+      },
+      {
+        "row_id": "SIG_TIME-s2026092703",
+        "epochs": 14
+      },
+      {
+        "row_id": "SINC_UNITS-s2026092703",
+        "epochs": 16
+      }
+    ],
     "first_seed_retrained": false,
-    "all_scientific_settings_unchanged": true,
-    "new_own_target_numeric_scores_read": false,
+    "scientific_formula_unchanged": true,
+    "new_remaining_target_numeric_scores_read": false,
     "head_fit_updates": 0,
-    "goal_84": false
+    "goal_84": false,
+    "evidence": [
+      "launch_verified.json"
+    ]
   },
-  "status": "PLANNED",
+  "status": "RUNNING",
   "registered_at": "2026-10-15T00:43:25+00:00"
 }

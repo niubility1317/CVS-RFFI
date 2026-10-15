@@ -82439,8 +82439,8 @@
     }
   ],
   "next_actions_max2": [
-    "按原50轮完成Sinc单位首种子；完整核实原生预算、student/ownEMA滤波核、L720部署特征和默认头源资格，源决定先提交推送再回收本候选新目标数值。",
-    "仅原源资格PASS才原样发布已准备02/03；FAIL保留首矩阵评分与负结果，不扫倍率/epsilon/父模型，继续依据合法源证据研究不同训练机制。"
+    "原样完成Sinc单位剩余02/03两臂：固定50轮、默认头clean自动truth-last，合并完整3seed正负结果、配对/样本SD/RXday/F1/错误与实际成本；不按首种子负差改变健康运行。",
+    "依据合法源身份监督和实际L/U导数研究下一项不同训练机制；不复用失败软关系公式、不扫描熵/投影参数，不把同RX邻包索引当跨RX同步正样本或U真值。"
   ],
   "goal_84": false,
   "Phase2_development": false,
@@ -82449,7 +82449,7 @@
     "源决定推送后回收首seed完整默认头clean结果、全部曲线和误差迁移；后续合并预定义三seed独立统计与实际feature witness检验84%，保留全部正负结果"
   ],
   "current_priority": {
-    "at": "2026-10-15T01:11:56.382Z",
+    "at": "2026-10-15T01:26:58.313Z",
     "user_instruction": "固定现有SIG_TIME网络；重点研发训练、泛化及半监督机制",
     "architecture": "fixed single SIG_TIME postDropout/t2 112descriptor -> deployedjoint160; defaultcos normaljoint",
     "active_generalization_mechanism": {
@@ -82928,7 +82928,7 @@
       },
       {
         "run_id": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
-        "status": "SOURCE_QUALIFIED_NOT_LAUNCHED",
+        "status": "RUNNING_VERIFIED",
         "code_commit": "03fd8a8c7b64663bc52edb83359d3e610cfeb361",
         "original_first_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02",
         "first_source_qualification": "PASS",
@@ -82946,11 +82946,34 @@
         "full_canonical_roundtrip": "PASS",
         "independent_P0P1": "PASS",
         "first_seed_retrained": false,
-        "real_new_training_started": false,
+        "real_new_training_started": true,
         "head_fit_updates": 0,
         "new_target_numeric_scores_read": false,
         "report": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/report.md",
-        "source_decision": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json"
+        "source_decision": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json",
+        "source_decision_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+        "execution_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+        "actual_new_training_workers": 4,
+        "actual_observed_epochs": [
+          {
+            "row_id": "SIG_TIME-s2026092702",
+            "epoch": 15
+          },
+          {
+            "row_id": "SINC_UNITS-s2026092702",
+            "epoch": 16
+          },
+          {
+            "row_id": "SIG_TIME-s2026092703",
+            "epoch": 14
+          },
+          {
+            "row_id": "SINC_UNITS-s2026092703",
+            "epoch": 16
+          }
+        ],
+        "evidence": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/launch_verified.json",
+        "new_remaining_target_numeric_scores_read": false
       }
     ],
     "feature_mean_teacher_first_seed": {
@@ -84629,7 +84652,7 @@
     },
     "next_optimizer_mechanism": {
       "method": "Optimizer-only fixed Sinc normalized sampling units",
-      "status": "SOURCE_QUALIFIED_FIRST_SCORED",
+      "status": "FIRST_ANALYZED_REMAINING_SEEDS_RUNNING",
       "network_architecture_unchanged": true,
       "parameterization_unchanged": true,
       "default_head_jointly_trained": true,
@@ -84761,7 +84784,7 @@
       ],
       "prepared_extension_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
       "prepared_extension_code_commit": "03fd8a8c7b64663bc52edb83359d3e610cfeb361",
-      "extension_training_started": false,
+      "extension_training_started": true,
       "observed_phase": "pseudo",
       "observed_latest_U_processed_each": 56700,
       "observed_latest_U_accepted": [
@@ -84771,7 +84794,32 @@
       "source_decision": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json",
       "actual_source_kernel_relative_L2": 0.30717042088508606,
       "actual_ownEMA_kernel_relative_L2": 0.3064143657684326,
-      "actual_L720_feature_difference": 3.6976983547210693
+      "actual_L720_feature_difference": 3.6976983547210693,
+      "source_decision_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+      "first_new_target_numeric_read_at": "2026-10-15T01:14:15.557Z",
+      "first_result": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/final_analysis.md",
+      "first_seed_gain_vs_SIG_pp": -0.28214285714285303,
+      "goal84": false,
+      "extension_execution_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+      "extension_observed_epochs": [
+        {
+          "row_id": "SIG_TIME-s2026092702",
+          "epochs": 15
+        },
+        {
+          "row_id": "SINC_UNITS-s2026092702",
+          "epochs": 16
+        },
+        {
+          "row_id": "SIG_TIME-s2026092703",
+          "epochs": 14
+        },
+        {
+          "row_id": "SINC_UNITS-s2026092703",
+          "epochs": 16
+        }
+      ],
+      "new_remaining_target_numeric_results_read": false
     },
     "temporal_rsc_full_three_seed": {
       "status": "ANALYZED_VERIFIED_NO_GAIN",
@@ -85043,6 +85091,140 @@
       "cross_RX_same_transmission_linkage_proven": false,
       "new_direct_cross_RX_pair_supervision_launched": false,
       "hidden_U_TX_unsealed": false
+    },
+    "sinc_optimizer_first_seed": {
+      "status": "ANALYZED_VERIFIED_NEGATIVE",
+      "run_id": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+      "models": 3,
+      "new_models": 2,
+      "model_seeds": [
+        2026092701
+      ],
+      "default_head_only": true,
+      "head_fit_updates": 0,
+      "summary": [
+        {
+          "arm": "OLD_GATE_COS50",
+          "seed_count": 1,
+          "accuracy_mean": 0.8066845238095238,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8066845238095238
+          },
+          "macro_f1_mean": 0.8017335328586674,
+          "worst_RX_mean": 0.7061666666666667,
+          "worst_day_mean": 0.7545238095238095
+        },
+        {
+          "arm": "SIG_TIME",
+          "seed_count": 1,
+          "accuracy_mean": 0.8363690476190476,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8363690476190476
+          },
+          "macro_f1_mean": 0.832033225769151,
+          "worst_RX_mean": 0.7092083333333333,
+          "worst_day_mean": 0.7892142857142858
+        },
+        {
+          "arm": "SINC_UNITS",
+          "seed_count": 1,
+          "accuracy_mean": 0.8335476190476191,
+          "accuracy_sd": null,
+          "seed_accuracy": {
+            "2026092701": 0.8335476190476191
+          },
+          "macro_f1_mean": 0.828672233606321,
+          "worst_RX_mean": 0.6715,
+          "worst_day_mean": 0.7883333333333333
+        }
+      ],
+      "paired": [
+        {
+          "arm": "SINC_UNITS",
+          "control": "SIG_TIME",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            -0.0028214285714285303
+          ],
+          "mean_difference": -0.0028214285714285303,
+          "sd_difference": null,
+          "positive_seeds": 0
+        },
+        {
+          "arm": "SINC_UNITS",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.02686309523809527
+          ],
+          "mean_difference": 0.02686309523809527,
+          "sd_difference": null,
+          "positive_seeds": 1
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seeds": [
+            2026092701
+          ],
+          "seed_differences": [
+            0.0296845238095238
+          ],
+          "mean_difference": 0.0296845238095238,
+          "sd_difference": null,
+          "positive_seeds": 1
+        }
+      ],
+      "error_transitions": [
+        {
+          "arm": "SINC_UNITS",
+          "control": "SIG_TIME",
+          "seed": 2026092701,
+          "corrected_errors": 4258,
+          "introduced_errors": 4732,
+          "both_correct": 135778,
+          "both_wrong": 23232,
+          "count": 168000
+        },
+        {
+          "arm": "SINC_UNITS",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 10597,
+          "introduced_errors": 6084,
+          "both_correct": 129439,
+          "both_wrong": 21880,
+          "count": 168000
+        },
+        {
+          "arm": "SIG_TIME",
+          "control": "OLD_GATE_COS50",
+          "seed": 2026092701,
+          "corrected_errors": 10467,
+          "introduced_errors": 5480,
+          "both_correct": 130043,
+          "both_wrong": 22010,
+          "count": 168000
+        }
+      ],
+      "source_steps": 22200,
+      "source_gradient_layers": 3996,
+      "source_gradient_input_vectors": 11988,
+      "Sinc_snapshot_batches": 104,
+      "Sinc_parameter_records": 208,
+      "full_native_CM_gradient_recount": "VERIFIED",
+      "source_decision_before_own_target": true,
+      "source_decision_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+      "remaining_run": "20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01",
+      "first_seed_retrained": false,
+      "report": "automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/final_analysis.md",
+      "goal84": false
     }
   }
 }

@@ -1,0 +1,89 @@
+{
+  "status": "VERIFIED",
+  "dispatcher_identity": true,
+  "preflight": "PASS",
+  "real_checkpoint_noquery_smoke": true,
+  "real_checkpoint_optimizer_updates": 0,
+  "rows": [
+    {
+      "row_id": "SIG_TIME-s2026092702",
+      "gpu": 2,
+      "PID_CWD_argv": true,
+      "actual_GPU_PID_match": true,
+      "epochs": 15,
+      "log_bytes_before": 27199,
+      "log_bytes_after": 84131,
+      "log_growth": true
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092702",
+      "gpu": 1,
+      "PID_CWD_argv": true,
+      "actual_GPU_PID_match": true,
+      "epochs": 16,
+      "log_bytes_before": 32407,
+      "log_bytes_after": 89380,
+      "log_growth": true
+    },
+    {
+      "row_id": "SIG_TIME-s2026092703",
+      "gpu": 2,
+      "PID_CWD_argv": true,
+      "actual_GPU_PID_match": true,
+      "epochs": 14,
+      "log_bytes_before": 27199,
+      "log_bytes_after": 78956,
+      "log_growth": true
+    },
+    {
+      "row_id": "SINC_UNITS-s2026092703",
+      "gpu": 0,
+      "PID_CWD_argv": true,
+      "actual_GPU_PID_match": true,
+      "epochs": 16,
+      "log_bytes_before": 27232,
+      "log_bytes_after": 89378,
+      "log_growth": true
+    }
+  ],
+  "capacity": {
+    "0": {
+      "all_owner_processes": 1,
+      "free_mb": 20769
+    },
+    "1": {
+      "all_owner_processes": 1,
+      "free_mb": 20769
+    },
+    "2": {
+      "all_owner_processes": 2,
+      "free_mb": 17418
+    },
+    "3": {
+      "all_owner_processes": 0,
+      "free_mb": 24124
+    },
+    "4": {
+      "all_owner_processes": 0,
+      "free_mb": 24124
+    },
+    "5": {
+      "all_owner_processes": 0,
+      "free_mb": 24124
+    },
+    "6": {
+      "all_owner_processes": 0,
+      "free_mb": 24124
+    },
+    "7": {
+      "all_owner_processes": 0,
+      "free_mb": 24124
+    }
+  },
+  "failure": null,
+  "source_decision_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+  "execution_commit": "1a3be6d2568939ff56c38c8bc8dc9a879b7abe76",
+  "first_seed_retrained": false,
+  "formula_unchanged": true,
+  "new_remaining_target_numeric_results_read": false
+}

@@ -498,3 +498,6 @@ RSC剩余02/03源复核适配器准备完成：代码`1f5c259e9945913d7bb33fb88b
 
 
 2026-10-15 Sinc单位首源资格PASS：两臂50/11100、各U963900完成；候选48参数全改变，student/EMA滤波核相对L2=0.307170421/0.306414366，真实L720 joint160差3.697698355；W独立feature-only边界最大差0。按原规则决定两臂原样扩02/03，源决定先提交推送，再读取本候选新目标数值；当前性能数值尚未回收，84目标不作已达成声明。[源决定](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/source_expansion_decision.json)。
+
+
+2026-10-15 Sinc优化器首种子完整结果：SINC_UNITS83.354762% vs同路径SIG_TIME83.636905%，−0.282143个百分点；修正4258/引入4732，净−474。原Sinc48参数、EMA核与实际z确有更新，sourcePASS未转为本seed泛化收益，n1不替代3seed。全部54指标/504000决策、22200native步骤和3996真实L/U层梯度独立核实。[完整首结果](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s01-m3-r02/final_analysis.md)。源决定1a3be6d2568939ff56c38c8bc8dc9a879b7abe76推送后才读取首新目标分数；已按该预定决定原样启动02/03共4模型，真实PID/CWD/argv/GPU及日志增长核实，观察epoch15/16/14/16，无改参/重训01。[运行证据](../automation_reports/CV-SincNet/20261015-phase1-sinc-units-oldgate-cos-e50-clean-manysig-s0203-m6-r01/launch_verified.json)。84目标仍未达成。
