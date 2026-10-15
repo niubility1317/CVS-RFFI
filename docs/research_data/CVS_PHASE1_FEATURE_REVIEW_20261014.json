@@ -85536,7 +85536,7 @@
       "head_fit_updates": 0,
       "optimizer_updates": 0,
       "query_read": false,
-      "training_not_launched": true,
+      "training_not_launched": false,
       "first_source_qualification_unknown": false,
       "external_source": "https://proceedings.mlr.press/v139/krueger21a.html",
       "implementation_commit": "a9b04efa1441fce2f0a2810e4e51c88b41532dde",
@@ -85708,7 +85708,7 @@
           ]
         }
       ],
-      "training_status": "PREREGISTERED_TECHNICAL_RECOVERY_PENDING_RELEASE",
+      "training_status": "RUNNING_VERIFIED",
       "training_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02",
       "training_implementation_commit": "1bcaa4919b835601c01cc4095ab8ed869c2e4b9b",
       "training_report": "automation_reports/CV-SincNet/20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02/report.md",
@@ -85716,7 +85716,14 @@
       "training_epochs_per_model": 50,
       "training_new_updates": 22200,
       "failed_before_training_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01",
-      "recovery_changes_scientific_recipe": false
+      "recovery_changes_scientific_recipe": false,
+      "training_execution_commit": "b7987055f7ad9e95f5fe65f2d368ce528dbac017",
+      "training_epochs_observed": [
+        1,
+        1
+      ],
+      "training_source_qualification": null,
+      "training_target_summary_read": false
     }
   },
   "latest_complete_sinc_optimizer": {

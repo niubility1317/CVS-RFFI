@@ -1,0 +1,89 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r02",
+  "release": "cvs_receiver_vrex50_20261015_r02",
+  "execution_commit": "b7987055f7ad9e95f5fe65f2d368ce528dbac017",
+  "checked_at": "2026-10-15T08:30:14.099Z",
+  "ordinary_account": true,
+  "one_archive_transport_comparison_passed": true,
+  "remote_compile_passed": true,
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "checks": {
+      "status": "PASS",
+      "portable_registration_resolves_exactly": true,
+      "registration_scientific_mismatch_rejected": true,
+      "nonregistration_reads_unchanged": true,
+      "focused_negatives": 16,
+      "exact_native_hook": true,
+      "formula_and_zero_penalty_and_missingRX": true,
+      "two_actual_initial_states_identical": true,
+      "original_U_loss_unchanged": true,
+      "native50_33_17_budget": true,
+      "actual_joint_optimizer_updates": [
+        [
+          3456,
+          6912,
+          570
+        ],
+        [
+          3456,
+          6912,
+          570
+        ]
+      ],
+      "existing_W_joint_update": true,
+      "W_zeroing_does_not_change_joint160": true,
+      "actual_updated_feature_difference": true,
+      "real_IQ_or_checkpoint_read": false,
+      "head_fit_updates": 0,
+      "synthetic_optimizer_steps_per_arm": 1
+    },
+    "real_checkpoint_no_query_smoke": true,
+    "synthetic_IQ_packets": 10,
+    "allthree_frozen_source_models_PASS": true,
+    "source_checkpoint": "OriginalfixedDRO SIG_TIME01final50;actualsource_proofchecked",
+    "training_inherits_checkpoint": false,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0
+  },
+  "dispatcher_PID_CWD_argv_verified": true,
+  "workers_PID_CWD_argv_GPU_verified": true,
+  "all_owner_max_processes_per_GPU": 3,
+  "pending_rows": 0,
+  "failed_rows": 0,
+  "historical_reference_closed": true,
+  "training_rows": [
+    {
+      "row_id": "RX_BALANCED-s2026092701",
+      "gpu": 7,
+      "epochs_observed": 1,
+      "epoch1_time_s": 49.784581661224365,
+      "optimizer_step_applied": 1,
+      "skipped_nonfinite_loss": 0,
+      "skipped_nonfinite_grad": 0,
+      "log_bytes_before": 6550,
+      "log_bytes_after": 11726,
+      "log_growth": true
+    },
+    {
+      "row_id": "RX_VREX-s2026092701",
+      "gpu": 1,
+      "epochs_observed": 1,
+      "epoch1_time_s": 49.87545299530029,
+      "optimizer_step_applied": 1,
+      "skipped_nonfinite_loss": 0,
+      "skipped_nonfinite_grad": 0,
+      "log_bytes_before": 6518,
+      "log_bytes_after": 11687,
+      "log_growth": true
+    }
+  ],
+  "training_complete": false,
+  "source_qualification": null,
+  "new_target_summary_read": false,
+  "head_fit_updates": 0,
+  "goal_84": false,
+  "technical_recovery_preserved_run": "20261015-phase1-receiver-vrex-oldgate-cos-e50-clean-manysig-s01-m3-r01"
+}

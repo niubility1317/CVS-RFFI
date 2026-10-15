@@ -137,7 +137,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -175,7 +175,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -307,7 +307,7 @@
       "final5_unweighted_L_CE_max": 0.5,
       "native_steps": 11100,
       "actual_U_packets": 963900,
-      "feature_difference_min": 1e-06,
+      "feature_difference_min": 0.000001,
       "required_gradient_epochs": [
         17,
         33,
@@ -409,7 +409,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -447,13 +447,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -554,7 +554,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06,
+          "lr_min": 0.000001,
           "launch_owner": "codex/root/feature-multiscale50-oldgate-20261013",
           "label_epochs": 33,
           "pseudo_epochs": 17,
@@ -592,7 +592,7 @@
             "temporal_mode": "batch_neighbor",
             "temporal_min_streak": 2,
             "lr_schedule": "cosine",
-            "lr_min": 1e-06
+            "lr_min": 0.000001
           },
           "source_falsification": {
             "first_seed": 2026092701,
@@ -800,7 +800,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -838,13 +838,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -1060,7 +1060,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/receiver-vrex50-20261015",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1098,13 +1098,13 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": {
           "final5_unweighted_L_CE_max": 0.5,
           "native_steps": 11100,
           "actual_U_packets": 963900,
-          "feature_difference_min": 1e-06,
+          "feature_difference_min": 0.000001,
           "required_gradient_epochs": [
             17,
             33,
@@ -1245,14 +1245,20 @@
     "LatestreadpeerchatisRDropE50three-seedroute;thiscandidateVREX only. Read-onlycoordination neverchanges scientificbudget or foreignhealthyjobs.",
     "Technical r02 recovery only: r01 dispatcher exited before workers because public PROJECT handle was not expanded. Original artifacts preserved, zero r01 training or target prediction. Portable config loader now resolves registration only; all scientific fields remain strict. Independent targeted review PASS, alpha or extra fields still rejected."
   ],
-  "execution_commit": null,
+  "execution_commit": "b7987055f7ad9e95f5fe65f2d368ce528dbac017",
   "completion": null,
-  "status": "PLANNED",
+  "status": "RUNNING",
   "result": {
-    "status": "PREREGISTERED",
+    "status": "RUNNING_VERIFIED",
+    "epochs_observed": [
+      1,
+      1
+    ],
     "training_complete": false,
+    "source_qualification": null,
     "new_target_summary_read": false,
-    "goal_84": false
+    "goal_84": false,
+    "all_fixed_rows_launched": true
   },
   "registered_at": "2026-10-15T08:29:00+00:00"
 }
