@@ -3,7 +3,7 @@ from pathlib import Path
 from . import design as d
 from experiments.cvs_report_ssl import publish as transport
 from experiments.cvs_source_soft_relation.publish import configure as previous,INSPECT as original
-INSPECT=original.replace('experiments.cvs_source_soft_relation','experiments.cvs_source_rdrop').replace('forward_packets=1800','forward_packets=2700')
+INSPECT=original.replace('experiments.cvs_source_soft_relation','experiments.cvs_source_rdrop').replace('forward_packets=1800','forward_packets=2700').replace('saved_vectors=60','saved_vectors=40')
 def configure():
  previous();transport.d=d
  transport.PATHS=list(dict.fromkeys([*transport.PATHS,'experiments/cvs_source_rdrop']))
