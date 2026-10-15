@@ -930,6 +930,22 @@
       "command": "python -u -m experiments.cvs_urban_sigtime50.mechanism",
       "plan_ref": "source_mechanism_plan.md",
       "code_commit": "record actual immutable analysis release commit at launch"
+    },
+    "teacher_launch_health": {
+      "status": "PASSED",
+      "source_role": "V",
+      "rows": [
+        "SSL_CONF-s2026092701",
+        "SSL_WEAK-s2026092701"
+      ],
+      "report_ref": "teacher_launch_health.md",
+      "result_ref": "E:\\type10-7\\local_artifacts\\cvs_urban_sigtime_e50_20261015\\teacher_launch_health.json",
+      "query_read": false,
+      "U_truth_read": false,
+      "head_fit_updates": 0,
+      "training_updates_during_calibration": 0,
+      "epoch": 34,
+      "step": 7327
     }
   }
 }
