@@ -82506,7 +82506,22 @@
     "first_epoch_gradient_recount": "104layerrecords416vectors VERIFIED;defaultWcorrectionexactzero",
     "source_qualification": null,
     "new_target_result": null,
-    "goal84": false
+    "goal84": false,
+    "remaining_seed_adapter": {
+      "status": "LOCAL_VERIFIED_NOT_REGISTERED_NOT_LAUNCHED",
+      "new_models_if_sourcePASS": 4,
+      "first_seed_retrained": false,
+      "scientific_recipe_unchanged": true,
+      "native_context_difference_keys": [
+        "seed",
+        "run_id",
+        "candidate_id",
+        "output_dir"
+      ],
+      "source_decision": "PENDING",
+      "head_fit_updates": 0,
+      "evidence": "automation_reports/CV-SincNet/20261015-phase1-rx-cagrad-oldgate-cos-e50-clean-manysig-s01-m3-r01/remaining_seed_preparation_checks.json"
+    }
   },
   "latest_complete_sinc_optimizer": {
     "accuracy_mean": 0.8322321428571429,

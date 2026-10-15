@@ -29,3 +29,5 @@
 来源：[CAGrad 原论文](https://proceedings.neurips.cc/paper/2021/file/9d27fdf2477ffbff837d73ef7ae23db9-Paper.pdf)；[官方实现](https://github.com/Cranial-XIX/CAGrad)。本项目为接收机梯度改编，不是原论文实验复现。
 
 实际运行更新：执行提交 22de3258841f6068688885ba99d8ceeb866be17c 已核验远端。真实源checkpoint no-query smoke PASS；两新worker的PID/CWD/argv/GPU/resolved/loggrowth核实，最新epoch={"OLD_GATE_COS50-s2026092701":50,"NORM_CONTROL-s2026092701":4,"RX_CAGRAD-s2026092701":3}，failure为空。首轮104层记录/416向量独立复算VERIFIED，实际selected=原CE+校正且符合设计，默认W附加梯度逐元素为0；最大相对L2误差5.14e-7。所有已落盘源前缀共843步（444/399），QP回退0、同范数局部方向指标检查通过。这些是源机制前缀证据，训练/新目标性能尚未完成。控制臂Gram中的候选方向统计仅作求解器观测，实际施加的是原CE方向同范数缩放。
+
+条件扩种子准备：四个02/03模型的实际原生上下文已检查，仅seed/run_id/candidate_id/output_dir不同；同seed两臂初始state逐元素相同、不同seed不同，原Observer L/U路径与默认W边界通过，11项适配负例PASS，未重复核心checks。适配实现尚未最终审查/登记/发布，源决定为PENDING；不因早期曲线扩展，不重训首seed。
