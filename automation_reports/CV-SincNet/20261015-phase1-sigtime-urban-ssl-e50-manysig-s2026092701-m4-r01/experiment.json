@@ -905,5 +905,31 @@
     "One model seed only; do not claim cross-seed reproduction of E50 results. Exposed benchmark, not a new blind test.",
     "Historical frozen E50 source checkpoint only provides no-query smoke and reusable source diagnosis, never initialization."
   ],
-  "registered_at": "2026-10-15T01:23:54+00:00"
+  "registered_at": "2026-10-15T01:23:54+00:00",
+  "source_analyses": {
+    "frozen_mechanism": {
+      "status": "PLANNED",
+      "source_role": "L_s",
+      "U_opened": false,
+      "query_read": false,
+      "added_training_updates": 0,
+      "epochs_added": 0,
+      "rows": [
+        "B0-s2026092701",
+        "C3-s2026092701",
+        "SSL_CONF-s2026092701",
+        "SSL_WEAK-s2026092701"
+      ],
+      "source_panel_count": 720,
+      "reference_rule": "same frozen source E50 clean-correct physical-ID set used previously",
+      "conditions": "full plus unchanged previous total/controlled damage interventions and edge boundary",
+      "checkpoint_passes": 10,
+      "expected_forward_packets": 267120,
+      "output": "source_mechanism",
+      "release": "cvs_sigtime_urban_ssl_e50_source_20261015_r01",
+      "command": "python -u -m experiments.cvs_urban_sigtime50.mechanism",
+      "plan_ref": "source_mechanism_plan.md",
+      "code_commit": "record actual immutable analysis release commit at launch"
+    }
+  }
 }
