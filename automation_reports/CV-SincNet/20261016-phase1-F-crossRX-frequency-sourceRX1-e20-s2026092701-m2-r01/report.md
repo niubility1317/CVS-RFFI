@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：轻度接收频偏独立视图 E20 源对照
 
-状态：PLANNED，尚未发布、训练或完成源身份评分。前一固定常数增益候选因clean+0.555556pp未达+1pp、全部practical下降而关闭，不调幅度/seed/RX救跑。当前唯一科学假设：保持旧ordinary/PA、原U、raw固定监督和默认头，独立轻度接收频偏L视图能改善未见RX clean且保护六practical。
+状态：RUNNING／VERIFIED。两组scratchE20已启动，尚未完成训练或源身份评分。前一固定常数增益候选因clean+0.555556pp未达+1pp、全部practical下降而关闭，不调幅度/seed/RX救跑。当前唯一科学假设：保持旧ordinary/PA、原U、raw固定监督和默认头，独立轻度接收频偏L视图能改善未见RX clean且保护六practical。
 
 ## 已有依据与固定矩阵
 
@@ -28,3 +28,13 @@ F三路SIG_TIME、统一Sinc、joint160、默认cosine头联合训练、NoExplic
 唯一owner codex/root/F-CROSS_RX-frequency-E20-20261016，普通N607账号、CPUdispatcher2线程、worker沿用共享容量锁/每GPU最多3个全部owner进程/启动前≥12000MiB空闲，健康任务不改/不停/不重启。精确逐row配置、命令/环境/CWD/路径/六类seed见experiment.json。一个Git实际code/config commit、一个不可覆盖root/一个N607 preflight/一个archive单次SHA比对/远端compile；启动后独立PID/CWD/argv/GPU/log增长读回。
 
 角色/来源/初始化/非有限/实际预算/无法产生合法预测为技术失败，保留产物、停止pending，不干预健康worker、无自动retry；科学低分不早停。首步实际CP no-query smoke2 PASS立即继续，无许可artifact/额外审批。代码/登记/小汇总Git交付，IQ/CP/逐包预测/原日志保留私有。13负例、同初始化、旧B00损失/头梯度精确控制、sixforward/sameIQ/ordinary-onlySupCon/defaulthead jointupdate/export160/privatefrequency/canonical算子与直接脚本回归PASS，一次限定P0/P1审查PASS；尚无实际训练或识别收益。
+
+
+## 实际发布与启动读回
+
+执行commit `bb38d5ef6dfcd3e60e7fb6d00c9c2fca976bfd66`；本地与远端分支OID独立一致。archive单次比对、远端compile及真实匹配CP no-query smoke2 PASS；dispatcher/两worker PID-CWD-argv-GPU与日志增长VERIFIED。实际seed2026092701、epochs/label/pseudo20/13/7、sourcefoldRX1、无baseline/teacher权重、Ag仅B10/0As均核对。
+
+- B00-RX1-s2026092701：GPU1，完整step387/4440、E2/20，stdout11662字节。
+- B10-RX1-s2026092701：GPU2，完整step372/4440、E2/20，stdout11663字节。
+
+上述是运行进度，不是身份收益。独立全量分析已准备，只在全部声明预测完成后执行；不修改已发布代码，不据中间/目标分数调配方。联合目标仍未完成。

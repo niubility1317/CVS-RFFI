@@ -1,0 +1,44 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "code_commit": "bb38d5ef6dfcd3e60e7fb6d00c9c2fca976bfd66",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_matching_checkpoint_smoke": "PASS",
+  "dispatcher_PID_CWD_argv": "VERIFIED",
+  "synthetic_real_CP_smoke_NN_packets": 2,
+  "prior_engineering_NN_packets": 162,
+  "prior_engineering_scope": "Separate completed synthetic/no-query input run,not identity efficacy",
+  "target_access": false,
+  "rows": [
+    {
+      "row_id": "B00-RX1-s2026092701",
+      "GPU": 1,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "actual_seed": 2026092701,
+      "actual_epochs": 20,
+      "actual_scratch": true,
+      "observed_complete_step": 387,
+      "observed_epoch": 2,
+      "log_bytes": 11662,
+      "step_log_growth_verified": true,
+      "frequency_packets": 0,
+      "Ag": false,
+      "As_training": false
+    },
+    {
+      "row_id": "B10-RX1-s2026092701",
+      "GPU": 2,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "actual_seed": 2026092701,
+      "actual_epochs": 20,
+      "actual_scratch": true,
+      "observed_complete_step": 372,
+      "observed_epoch": 2,
+      "log_bytes": 11663,
+      "step_log_growth_verified": true,
+      "frequency_packets": 28416,
+      "Ag": true,
+      "As_training": false
+    }
+  ]
+}

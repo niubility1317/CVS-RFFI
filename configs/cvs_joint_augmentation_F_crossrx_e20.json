@@ -132,7 +132,7 @@
   },
   "next_source_hypothesis": {
     "name": "Bounded receive-frequency-offset-only IQ view with NoExplicitCFO and internal compensation retained",
-    "status": "SOURCE_E20_REGISTERED_NOT_LAUNCHED",
+    "status": "SOURCE_E20_RUNNING_NO_IDENTITY_RESULT_YET",
     "frequency_max_cycles_per_sample": 0.00010024013357398965,
     "range_basis": "Actual current ordinary base aug_cfo_max .0004 times native E13 cap scale .2506003339349741;not constructor .0025 or extrapolated E20 .35,not source practical/target tuning",
     "operator": "x[n] exp(j2pi f n),n=0..255;native zero-origin packet-constant frequency ramp,not failed constant phase rotation;no centering-induced residual constant phase after existing compensation",
@@ -171,7 +171,8 @@
       "on_fail": "Close fixed frequency recipe,no range/seed/RX/threshold rescue",
       "on_pass": "Only supports independent source confirmation,not Ag/DG proof or automatic target"
     },
-    "new_training_epochs_per_model": 20
+    "new_training_epochs_per_model": 20,
+    "execution_commit": "bb38d5ef6dfcd3e60e7fb6d00c9c2fca976bfd66"
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
