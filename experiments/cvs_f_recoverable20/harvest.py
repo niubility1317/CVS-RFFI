@@ -6,6 +6,7 @@ from pathlib import Path
 import numpy as np
 from experiments.cvs_f_crossrx_practical20.harvest import full_logs,check_predictions,packet_key,groups,SCENES,read,write,metrics,SSH
 from .trace import check_trace
+from .transport import transport
 ROOT=Path(__file__).resolve().parents[2]
 FIT=(1,3,4,8);ARMS=('C0','C1','C2')
 COST_KEYS=('L_forward_packets','student_U_forward_packets','student_source_eval_forward_packets','EMA_eval_forward_packets','held_V_forward_packets','source_practical_forward_packets')
@@ -98,7 +99,7 @@ def analyze(output,spec,state,reference_root,cached=False):
                 paired.append(dict(comparison='C2-'+a,scene=scene,dimension=dim,value=value,count=len(keys),repaired=repair,broken=broken,accuracy_gain_pp=100*(repair-broken)/len(keys)))
     q=qualify(models,state['source_decision']);newcost=sum(costs[2][k] for k in COST_KEYS)
     summary=dict(status='ANALYZED',source_decision=q,models=models,scene_results=table,full_log_proof={a:r['proof'] for a,r in logs.items()},curriculum_trace_proof=trace,costs=costs,new_real_forward_packets=newcost,new_model_epochs=20,new_updates=4440,reused_reference_model_epochs=40,actual_primary_sequence_records=count,matrix_wall_seconds=state['completion']['wall_seconds'],actual_training_commit=state['submit']['commit'],model_seed_count=1,source_fold_count=1,target_access=False,formal_test_status='NOT_REGISTERED_SOURCE_ONLY',goal_completed=False,automatic_extension=False)
-    for name,records in [('scene_results.csv',table),('source_strata.csv',strata),('paired_strata.csv',paired),('training_curves.csv',curves),('fusion_gain_curves.csv',fusion),('measured_costs.csv',costs)]:
+    for name,records in [('scene_results.csv',table),('source_strata.csv',strata),('paired_strata.csv',paired),('training_curves.csv',curves),('fusion_gain_curves.csv',fusion),('measured_costs.csv',costs),('error_transport.csv',transport(predictions))]:
         with (output/name).open('w',encoding='utf-8',newline='') as f:
             writer=csv.DictWriter(f,fieldnames=list(dict.fromkeys(k for r in records for k in r)));writer.writeheader();writer.writerows(records)
     plot(output,table,curves,strata,read(paths['C2']/'curriculum_history.json')['records'],fusion);write(output/'analysis_summary.json',summary)

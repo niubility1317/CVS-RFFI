@@ -6,7 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|可恢复状态课程：RX6源预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-recoverable-source-RX6-e20-s2026092701-m1-r01/report.md)|
+|可恢复状态课程：完整源域结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-recoverable-source-RX6-e20-s2026092701-m1-r01/report.md)|
 |有界接收RXMIX：完整源域结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-rxmix-source-RX1-e20-s2026092701-m1-r01/report.md)|
 |RX 椭圆性：通过源统计，尚未证明增强有效|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-source-ellipticity-crossfit-manysig-m1-r01/report.md)|
 |源 RX 加性 DC 诊断：旧增强已覆盖，固定方向关闭|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-source-DC-crossfit-manysig-m1-r01/report.md)|

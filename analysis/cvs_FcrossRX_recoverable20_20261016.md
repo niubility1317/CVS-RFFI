@@ -21,3 +21,5 @@
 精确row／commit／命令／环境／CWD／路径／GPU／stop与artifact见experiment.json。必要验证仅聚焦负例和原网络合成前向、一次限定P0/P1、单archive比较／remotecompile、worker首步own scratchCP no-query smoke及独立运行读回。固定E20结束不代表收敛，一个源折／一个modelseed不代表跨seed复现。
 
 实际运行：代码`a47c7302eefc485e75703a78c749f24144e5b77b`已发布，唯一C2-RX6 worker ownCP no-query smoke及首轮真实PID/CWD/argv/GPU/log增长、E20/13L/7U、Fclip/4L/defaulthead联合更新VERIFIED。首轮eta0／28416 nominal输入／全部72fitL单元，0target。独立读取器24负例和512合成记录PASS；尚无FINAL，不宣称clean修复或urban提升。
+
+可恢复状态课程实际完成：20261016-phase1-FcrossRX-recoverable-source-RX6-e20-s2026092701-m1-r01，E20/七源视图及独立完整回放，固定源规则FAIL；相对C0 clean -3.9259259259259216pp，相对C1 urban 0.4629629629629613pp、low 0.05555555555555314pp。新增20模型轮/4440/3579018网络包，矩阵2892.487446784973s。0target，单modelseed/已暴露源RX6；关闭固定课程，不扫eta/范围/warm/proposals/RX/seed救援。 联合与跨seed目标未完成。[同run报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-recoverable-source-RX6-e20-s2026092701-m1-r01/report.md)。

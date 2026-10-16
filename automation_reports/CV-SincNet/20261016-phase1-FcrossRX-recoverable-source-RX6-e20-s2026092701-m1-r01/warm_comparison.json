@@ -1,0 +1,100 @@
+{
+  "status": "DIFFERENCE_RETAINED",
+  "epochs": 5,
+  "checks": {
+    "default_head_and_SIG_movement": false,
+    "default_fusion_gain": false,
+    "F_optimizer": true,
+    "SupCon": true
+  },
+  "max_absolute_difference": {
+    "default_head_and_SIG_movement": 1.4577865600585938,
+    "default_fusion_gain": 0.008735895156860352,
+    "F_optimizer": 0.0,
+    "SupCon": 0.0
+  },
+  "movement_by_parameter": {
+    "id_backbone.encoder.core.id_backbone.cls_head.weight": {
+      "reference": 0.7262200117111206,
+      "candidate": 0.7212703824043274,
+      "max_difference": 0.004949629306793213
+    },
+    "id_backbone.encoder.core.id_backbone.cls_head.gain": {
+      "reference": 0.5208579897880554,
+      "candidate": 0.5181752443313599,
+      "max_difference": 0.0029377639293670654
+    },
+    "id_backbone.encoder.sequence_pool.views.0.local_projection.weight": {
+      "reference": 0.7538753151893616,
+      "candidate": 0.7537402510643005,
+      "max_difference": 0.0003502964973449707
+    },
+    "id_backbone.encoder.sequence_pool.views.1.local_projection.weight": {
+      "reference": 0.7705847024917603,
+      "candidate": 0.7684319615364075,
+      "max_difference": 0.002152740955352783
+    },
+    "id_backbone.encoder.sequence_pool.views.2.local_projection.weight": {
+      "reference": 0.6955143213272095,
+      "candidate": 0.6942846179008484,
+      "max_difference": 0.001229703426361084
+    },
+    "id_backbone.encoder.core.id_backbone.sinc.low_coordinate": {
+      "reference": 25.491228103637695,
+      "candidate": 24.347923278808594,
+      "max_difference": 1.1433048248291016
+    },
+    "id_backbone.encoder.core.id_backbone.sinc.band_coordinate": {
+      "reference": 42.8207893371582,
+      "candidate": 42.687129974365234,
+      "max_difference": 1.4577865600585938
+    }
+  },
+  "step_comparison": {
+    "train/loss": {
+      "first_step_difference": 0.0,
+      "first_difference_over_1e_6": 6,
+      "max_difference": 0.03681635856628418
+    },
+    "pair/primary_CE": {
+      "first_step_difference": 0.0,
+      "first_difference_over_1e_6": 5,
+      "max_difference": 0.06522893905639648
+    },
+    "pair/secondary_CE": {
+      "first_step_difference": 0.0,
+      "first_difference_over_1e_6": 5,
+      "max_difference": 0.030918121337890625
+    },
+    "legacy_rdrop/symmetric_KL": {
+      "first_step_difference": 0.0,
+      "first_difference_over_1e_6": 6,
+      "max_difference": 0.014198511838912964
+    },
+    "train/grad_before_clip": {
+      "first_step_difference": 1.5446207868308193e-08,
+      "first_difference_over_1e_6": 4,
+      "max_difference": 18.407793062014136
+    }
+  },
+  "actual_backend_flags": {
+    "reference": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    },
+    "candidate": {
+      "cudnn_allow_tf32": false,
+      "cuda_matmul_allow_tf32": false,
+      "cudnn_benchmark": false,
+      "cudnn_deterministic": false,
+      "matmul_precision": "highest"
+    }
+  },
+  "exact_physics_coverage_sessions": true,
+  "all_nominal": true,
+  "source_only": true,
+  "IQ_checkpoint_network_access": 0
+}
