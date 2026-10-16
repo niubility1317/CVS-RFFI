@@ -87,3 +87,20 @@ clean 负结果不是少量随机错误：RX6 的 TX index2 下降 29.555556 pp�
 - [RX4 全部分层、保持率、成本与曲线表](E:/type10-7/local_artifacts/cvs_FcrossRX_folds20_20261016/final/RX4/report.md)
 - [RX6 全部分层、保持率、成本与曲线表](E:/type10-7/local_artifacts/cvs_FcrossRX_folds20_20261016/final/RX6/report.md)
 - [RX8 全部分层、保持率、成本与曲线表](E:/type10-7/local_artifacts/cvs_FcrossRX_folds20_20261016/final/RX8/report.md)
+
+## 五个源 RX 的 low urban 状态汇总
+
+从全部五折保存的预测分层表与修复／新错表汇总，0IQ／checkpoint／网络前向。此处在状态内合并五源RX的计数，宏F1按合并confusion计算，区别于前文逐RX宏F1的等权平均。C0/C1状态包与固定C0 clean正确集合完全相同，未重新选集合。
+
+|维度|状态|包数|C0 accuracy|C1 accuracy|Δ pp|修复|新错|
+|---|---|---:|---:|---:|---:|---:|---:|
+|receiver_lock_status|degraded|4916|24.491456%|35.740439%|+11.248983|1013|460|
+|receiver_lock_status|locked|10298|35.521460%|63.235580%|+27.714119|3716|862|
+|receiver_lock_status|unlocked|11786|19.582556%|22.933989%|+3.351434|1577|1182|
+|state_end|BLOCKED|15171|20.268934%|24.520467%|+4.251533|2164|1519|
+|state_end|LOS|8116|36.619024%|64.194184%|+27.575160|2940|702|
+|state_end|PARTIAL|3713|30.245085%|54.995960%|+24.750875|1202|283|
+
+收益主要在LOS／PARTIAL与locked；BLOCKED占15171/27000，C1仍只有24.520467%，unlocked仍22.933989%。不能把这两层的少量改善称为恢复到clean，也不能据相关分层宣布单一损伤原因或不可恢复的信息上限。新增noise的signal_to_added_noise_db分箱不是总SNR；全部正负质量区间保留。一个modelseed下五源折不证明跨seed。科学FAIL及不晋级决定保持。
+
+[实际汇总图](E:/type10-7/local_artifacts/cvs_FcrossRX_folds20_20261016/final/low_urban_five_source_strata.png)、[全部状态与质量表](E:/type10-7/local_artifacts/cvs_FcrossRX_folds20_20261016/final/low_urban_five_source_strata.csv)。新增1图已渲染检查，原17图保持。
