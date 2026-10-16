@@ -89,3 +89,14 @@ REFRESH相对RAW六practical全部下降：urban均值−1.2434pp、low27.9365%�
 全13320更新／60 model-epochs／17469956 NN（含dispatcher兼容smoke2），约1563.07s到矩阵完成；每组4440生成和消费／568320fresh包／5040唯一L／72格，完整原生loss/grad／20轮／全stdout／七视图独立复算PASS，5PNG＋5PDF保留。训练commit c72c359581cee36e9fc70440844803288ba851ef；默认formal practical不改、target0，全部进程自然终止。
 
 [完整结果、分层图与曲线](cvs_FcrossRX_viewrefresh20_20261017.md)。关闭固定独立ordinary观察，不扫强度／概率／权重／RX／seed／预算救援，不将REPLAY控制事后晋级。一次source RX／modelseed不能说明正式target增益或跨seed复现；没有新Ag确认／Ag×As因子证据，low urban>60%及最终联合目标仍未完成。
+
+
+## P14：有限波形功率代理与接收状态切换（2026-10-17）
+
+CPU源fit L5040、两个物理随机流×六原practical、0模型/权重/NN/更新/target。固定H、rx/day/eq1硬件session和底层噪声抽样，比较原白输入代理、显式重放、实际Hx全长功率、无人工FIR前缀内部功率及固定原status/scale控制。完整60480记录／302400原生物理process／864TX×RX×day格独立复算PASS，运行448.956941s，4PNG＋4PDF保留。
+
+mid urban绝对质量偏差中位数0.1728/0.1751dB、lock切换2.1032%/2.6389%；low为0.2337/0.2355dB、2.4206%/2.8770%，四组均未达到原≥1dB及≥5%。边界差约0.135至0.140dB、切换在内部保留68.85%至83.46%，内部至少195点，边界条件均通过。原生重放和固定接收状态控制IQ MSE均0。失败是整体偏差及切换不够大；不能据此断言每包代理都准确，mid有−8.887dB尾部。BLOCKED局部切换较多仍不事后挑子集晋级。
+
+正式测试仍residual/post_sync/EQoff G1/reference30/reflect；新增噪声SNR不是总SNR。G1只排除EQ FIR着色，原RX广义线性IQ镜像与旋转仍作用于噪声；共享底层抽样不等于所有总效应条件的处理后噪声波形相同。完整接收状态转移、LOS/PARTIAL/BLOCKED、RX、CFO、AGC和边界均保留。固定代理/状态切换假设FAIL关闭，无自动E20或默认头试验，不改阈值／状态／流／seed／场景／RX／窗口救援。
+
+本轮未测默认头准确率或clean代价；两个物理流不是模型seed。没有新Ag确认／Ag×As因子矩阵／正式联合收益或跨模型seed证明，活动目标继续。代码4f7968ec32ea52ff56f63c42c1654fb4507573d6，离线f78551c40afa82f8d6b4acb921a0099d641098f4。[完整报告](../automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-qualityproxy-fitL-manysig-m1-r01/report.md)。
