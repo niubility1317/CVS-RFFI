@@ -42,3 +42,9 @@ A2−A0：held accuracy≥+1pp、macroF1≥0、seenV 均值损失≤0.5pp；A2�
 ## 实际执行
 
 `20261016-phase1-F-raw-anchor-ordinary-RX1-e20-s2026092701-m3-r01` 已发布，实际训练代码 `44fc0bb689d03a65dc18a897b0e8e28324c7958a`。三行均 900722 参数，GPU0/1/2，真实 scratch CP no-query smoke、PID/CWD/argv/GPU/log 增长与首轮各 222 次 F 物理 clip 已独立读回。状态 VERIFIED/RUNNING，尚无 FINAL 源结果。限定 P0/P1 审查 PASS；本地累计 3584 次合成网络前向、512 个增强输入包、12 次合成 optimizer 更新另计，0 真实 IQ/CP；包含一次 512 前向的本地 fixture 失败，无远端热改或重启。
+
+## 首轮实际结果
+
+20261016-phase1-F-raw-anchor-ordinary-RX1-e20-s2026092701-m3-r01已完成，源规则FAIL：A2−A0 accuracy4.037037037037039pp；A2−A1 -0.6296296296296244pp。完整60epoch/13320update/默认头分层与三组全部L-U序列、F物理clip证明保存。0target，一个sourcefold/modelseed；不宣称完整Ag或clean/urban双收益。按预定首轮规则处理，不救援失败候选。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-F-raw-anchor-ordinary-RX1-e20-s2026092701-m3-r01/report.md)。
+
+主因果对照未通过：A2相对A1净损失34/5400，TX2+3.8889pp但TX5−6.8889pp；seenV相对A0仅−0.0278pp。保持条件属于近阈值失败，不能当成稳定劣势，也不能改阈值晋级。原始监督固定一半未解决错误迁移，本候选结束，无四折/As/target/seed扩展，不改用A1主行。训练CE降低未转化为对A1的身份净收益。

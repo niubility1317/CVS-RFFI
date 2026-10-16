@@ -1,0 +1,191 @@
+{
+  "status": "VERIFIED",
+  "source_decision": {
+    "status": "FAIL",
+    "checks": {
+      "vs_A0_accuracy": true,
+      "vs_A0_macroF1": true,
+      "seen_health": true,
+      "A1_accuracy_retained": false,
+      "A1_macroF1_retained": false,
+      "complete_health": true
+    },
+    "A2_vs_A0_accuracy_gain_pp": 4.037037037037039,
+    "A2_vs_A1_accuracy_gain_pp": -0.6296296296296244,
+    "A2_vs_A0_macroF1_gain_pp": 4.554566303290153,
+    "A2_vs_A1_macroF1_gain_pp": -0.5317080782610062,
+    "source_only": true,
+    "target_access": false,
+    "formal_target_qualified": false,
+    "automatic_extension": false,
+    "goal_completed": false
+  },
+  "costs": [
+    {
+      "arm": "A0",
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "real_forward_packets": 3546618,
+      "L_forward_packets": 2273280,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_seconds": 1123.7769889831543
+    },
+    {
+      "arm": "A1",
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "real_forward_packets": 3546618,
+      "L_forward_packets": 2273280,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_seconds": 1147.9372515678406
+    },
+    {
+      "arm": "A2",
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "real_forward_packets": 3546618,
+      "L_forward_packets": 2273280,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_seconds": 1052.6739344596863
+    }
+  ],
+  "paired": {
+    "A2_vs_A0": {
+      "repaired": 314,
+      "broken": 96
+    },
+    "A2_vs_A1": {
+      "repaired": 63,
+      "broken": 97
+    }
+  },
+  "actual_native_arg_differences": {
+    "A1": [
+      "candidate_id",
+      "output_dir",
+      "use_aug"
+    ],
+    "A2": [
+      "candidate_id",
+      "output_dir",
+      "use_aug"
+    ]
+  },
+  "full_log_proof": {
+    "A0": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "full_stdout_bytes": 114796,
+      "error_markers": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "legacy_rdrop/CE1": 0,
+        "legacy_rdrop/CE2": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_phase_objective_difference": 4.76837158203125e-07,
+      "stdout_warning_lines": []
+    },
+    "A1": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "full_stdout_bytes": 115362,
+      "error_markers": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "legacy_rdrop/CE1": 0,
+        "legacy_rdrop/CE2": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_phase_objective_difference": 3.5762786865234375e-07,
+      "stdout_warning_lines": []
+    },
+    "A2": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "full_stdout_bytes": 115348,
+      "error_markers": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "legacy_rdrop/CE1": 0,
+        "legacy_rdrop/CE2": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_phase_objective_difference": 2.384185791015625e-07,
+      "stdout_warning_lines": []
+    }
+  },
+  "actual_sequence_batch_records": 5994,
+  "model_epochs": 60,
+  "updates": 13320,
+  "real_forward_packets": 10639854,
+  "matrix_wall_seconds": 1157.6484084129333,
+  "model_seed_count": 1,
+  "source_fold_count": 1,
+  "target_access": false,
+  "automatic_extension": false,
+  "goal_completed": false,
+  "scientific_status": "FAIL_SOURCE_RX1_ONLY",
+  "actual_training_code": "44fc0bb689d03a65dc18a897b0e8e28324c7958a",
+  "terminal_workers_alive": false,
+  "terminal_dispatcher_alive": false,
+  "failure": null,
+  "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_F_raw_anchor20_20261016\\final"
+}

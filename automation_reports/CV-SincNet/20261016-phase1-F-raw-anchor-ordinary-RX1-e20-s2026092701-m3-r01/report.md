@@ -1,50 +1,64 @@
-# 预登记：F 原始监督份额三组检验
+# F 原始监督份额：RX1 三组 E20 结果
 
-状态 REGISTERED_NOT_RUN。精确矩阵、命令、环境/CWD、路径、seed、GPU及停止规则见 experiment.json。基座用户最新明确指定 F，全部scratch E20，不继承E50权重。
+源资格 **FAIL**。三组 scratch E20 均已完成，目标访问 0。
 
-# F 基座下的泛化增强与星地增强研发
+|模型|held RX1 accuracy|macroF1|seen V均值|seen V最差RX|
+|---|---:|---:|---:|---:|
+|A0|81.148148%|80.603394%|98.041667%|95.537037%|
+|A1|85.814815%|85.689668%|98.000000%|95.592593%|
+|A2|85.185185%|85.157960%|98.013889%|95.574074%|
 
-当前唯一基座采用用户指定 F：三路独立 SIG_TIME＋CENTER_25K＋CENTER_UNITS。历史 A–F 执行提交为 `09554c3a06c976c53efc4dbc61f5c501a1e7b06e`；实际实现位于 `experiments/cvs_rdrop_sinc_units`，三路投影共同进入原 joint160 和默认 cosine 头，不投票、不新增本轮部署分支。本轮复制其四个纯实现模块，不加载 E50 模型、optimizer、EMA、统计或 teacher，所有模型从零总 E20=13L+7U。
+A2−A0 accuracy +4.037037pp、macroF1 +4.554566pp；A2−A1 accuracy -0.629630pp、macroF1 -0.531708pp。
 
-F 的实际数学：Fs=25 MHz，s=25 kHz，p=p0+s*q；Sinc lr=alpha*Fs/s、epsilon=epsilon*s/Fs；使用物理 Hz 梯度与全模型一次 clip5，再恢复 q 梯度；原点在内的物理衰减 q-=alpha*lambda*(q+p0/s)，Sinc AdamW 自带 decay=0。其余网络/默认头正常联合 AdamW/cos，NoExplicitCFO 保持。输入仍原归一化 IQ 2×256，任何新视图在 IQ 处生成，不修改参考响应、补偿、测试 IQ 或 practical。
+逐项判定：{'vs_A0_accuracy': True, 'vs_A0_macroF1': True, 'seen_health': True, 'A1_accuracy_retained': False, 'A1_macroF1_retained': False, 'complete_health': True}。同物理ID修复/破坏：{'A2_vs_A0': {'repaired': 314, 'broken': 96}, 'A2_vs_A1': {'repaired': 63, 'broken': 97}}。完整60epoch/13320step/nativeCSV/fullstdout已解析；5994条实际L/U批次三组逐条匹配；F每行4440次物理clip/单位映射全部保存并检查。
 
-## 已完成探索的结论
+新60模型轮/13320更新，真实完整网络前向10639854，墙钟1157.648s；无历史权重成本，本地合成检查另列。默认头/三投影/q均按原联合训练更新，未拟合额外头。
 
-|证据|实际结果|不能据此声称|
-|---|---|---|
-|旧基座普通 practical paired CE|旧因子实验 B01−B00：low urban +20.1708pp，clean −2.8488pp|clean/urban 双提升；F 的收益|
-|旧 bounded G 与 practical 联合 B11−B01|low urban 约 +0.0393pp，clean +0.0131pp|泛化增强已独立有效|
-|旧普通增强五源 RX 训练|均值 +2.0296pp；RX6 −0.9259、RX8 −2.5926pp，仅 3/5 正|跨 RX 稳定性成立|
-|冻结模型的 PA 去除干预|五 RX 输入保持率均值 +1.1266pp，准确率 +0.6002pp|删除 PA 一定改善训练|
-|随后 NoPA E20 训练|RX1 比无增强 +3.0556pp，但比原 ordinary −3.3519pp，macroF1 −3.5120pp|NoPA 可晋级；冻结诊断等同训练因果收益|
-|HQ 独立噪声|冻结 EMA 默认头源 L_dev720：low urban 64.8611%→70.9722%，0 更新|目标测试提升或训练成功|
-|原始 SIG_TIME RDrop E20|三 seed clean 比 ORIGINAL +0.8272pp，2/3 正|IQ 泛化增强成立或星地同步获益|
-|F 历史 E50|clean 84.2702%±0.2754pp，F−A −0.0698pp；最差 RX 均值 +2.1347pp|E20 性能或总体均值优于 A|
+只有一个已使用过的源RX折、一个modelseed；不等于正式clean、urban或跨seed证据。固定E20用尽不等于收敛。FAIL关闭本候选；PASS只允许另登记固定其余四RX，不能直接进入target。
 
-课程、间隔与对齐的历史增量/负结果保留；它们未解决 clean 代价，不作为本轮叠加项。旧源域训练、冻结干预与正式 target 指标保持各自语义，不能跨行拼接收益。旧 RAW_HZ raw-anchor 仅本地原型，未登记、发布或训练；本轮改为 F 后重新检查实际图。
+逐TX/day负结果与完整曲线均保存。图：complete_training_curves.png、held_source_strata.png。正式practical和received IQ均未改动；clean/urban双突破仍未证明。
 
-## 唯一假设及最小否证实验
 
-普通增强替代原始视图的错误迁移，可能通过固定原始 IQ 的监督份额减轻。先在合法源域独立验证，不先重启完整混合矩阵。固定 held RX1、seed2026092701；三组均从零 E20、4440 updates，L5040/U45360/seenV21600，held 源 V5400 仅 FINAL；held L/U 不进入训练。split392005、原数据角色与全部 6 TX 保持，U 真值隐藏。
+实际运行与科学状态：**VERIFIED / FAIL_SOURCE_RX1_ONLY**。实际训练代码44fc0bb689d03a65dc18a897b0e8e28324c7958a；三worker和dispatcher自然退出，无failure。单archive transfer/remotecompile、真实scratchCP no-query smoke、PID/CWD/argv/GPU/log增长已独立保存。release未热改，不重跑或覆盖任何旧研究。
 
-定义 RD(v)=同一份 IQ 两次随机子网络前向的 mean CE(LS.01)+对称 KL(alpha1)。
+基座为用户指定F：SIG_TIME_X3/CENTER_25K/CENTER_UNITS，900722参数、25MHz/IQ256/equalized1/原nativeRMS；NoExplicitCFO、原内部补偿/joint160/defaultcos联合训练保持。复用固定数学实现，不继承历史E50/RAW_HZ权重或状态。三行同scratchE20=13L+7U，全部4440更新，L每物理样本四前向、两个同IQ的RD对各.5；没有跨raw/G一致性、As、额外头/部署分支/新U规则。G是原ordinary固定研究视图，仍包含正常PA，未预称所有硬件扰动标签保持。
 
-|行|第一对|第二对|总 L 目标|
-|---|---|---|---|
-|A0|原始 x|原始 x|0.5 RD(x)+0.5 RD(x)|
-|A1|G(x)|同一次 G(x)|0.5 RD(G)+0.5 RD(G)|
-|A2，唯一主候选|原始 x|G(x)|0.5 RD(x)+0.5 RD(G)|
+源契约：RX3/4/6/8 L5040/U45360/seenV21600；held源RX1 L/U不用，原V5400仅FINAL。U真值始终隐藏，V不更新状态。每行6TX×4RX×3day完整曝光、三行全部实际L/U批次序列逐条匹配。实际nativeargs只差candidate/output/use_aug；包装resolved顶层33/17是历史描述，实际nativeargs13/7与全20epoch/4440成功更新证明预算，没有延长E50。
 
-三组均每个 L 样本 4 次完整 CVS/default-head 前向。A0 不生成无用 G；A1/A2 每批只生成一次实际原 ordinary G，使用相同私有增强随机流、同一实际调度。G 保留历史正常 PA 等真实开关，仅为待验证的固定研究视图，不能逐项预称身份保持。每个 RD 对内两前向共享 IQ；没有 raw/G 跨视图一致性、特征对齐或新门控。全部组保留旧 U/ownEMA/oldgate 配方，完整对照实际 L/U 物理顺序。RDrop 是原训练正则，不称作 IQ 泛化增强。
+成本：新增60model-epoch/13320updates，真实完整网络前向10639854，矩阵墙钟1157.648408s。所有L/studentU/EMA/sourceeval(含初始smoke2)/heldV分项见measured_costs.csv；历史失败与F E50成本不计作本轮父权重。本地累计3584合成网络前向/512增强输入/12合成optimizer更新另列，0localrealIQ/CP，包含512前向后失败的测试fixture；另一次包路径fixture0前向，两者修正不改实际训练数学。CPU分析/绘图未统一计时，预算耗尽不等于收敛。
 
-A2−A0：held accuracy≥+1pp、macroF1≥0、seenV 均值损失≤0.5pp；A2−A1 的 accuracy 与 macroF1 各损失≤0.5pp，且预算、有限更新、覆盖、同物理序列全部成立。失败关闭本候选，不换主行、强度、RX 或 seed 救援。通过仅允许另登记原固定其余四源 RX，不能直接宣布 Ag/As 成功。跨五折预定均值≥+1pp、≥4/5 正、最差≥−1pp、mean macroF1≥0、每折 seenV 损失≤0.5pp，同时完整报告 A2−A1。
+完整60epoch/13320step/nativeCSV/fullstdout均已解析，有限关键loss/gradient、无跳步/U真值、两对平均CE/KL尺度匹配。F每行4440条真实优化器映射与physicalclip按step核对，默认W/gain、三路局部投影及两个q坐标有实际运动；这些机制证据不替代识别收益。未运行probe_dom_acc的空值是原占位字段，未拟合诊断头。
 
-新成本 3×20=60 模型轮、13320 更新；每行 2273280 个 L 网络前向，是旧双前向研究的 2 倍。U/EMA/源验证/held/CPsmoke 分别按实际计数，旧研究成本不隐藏。真实 scratch checkpoint 无 query smoke 为 worker 第一步，PASS 即继续。
+|源分层|A0准确率|A1准确率|A2准确率|A2−A0/pp|A2−A1/pp|
+|---|---:|---:|---:|---:|---:|
+|TX0|96.2222%|89.7778%|89.1111%|-7.1111|-0.6667|
+|TX1|86.0000%|86.0000%|85.5556%|-0.4444|-0.4444|
+|TX2|56.7778%|76.0000%|79.8889%|+23.1111|+3.8889|
+|TX3|65.5556%|65.5556%|65.8889%|+0.3333|+0.3333|
+|TX4|100.0000%|100.0000%|100.0000%|+0.0000|+0.0000|
+|TX5|82.3333%|97.5556%|90.6667%|+8.3333|-6.8889|
+|day1|80.0556%|87.0556%|85.5556%|+5.5000|-1.5000|
+|day2|88.2222%|92.4444%|94.0000%|+5.7778|+1.5556|
+|day3|75.1667%|77.9444%|76.0000%|+0.8333|-1.9444|
 
-本轮 source-only，不访问 target、不生成 As。若源域收益通过固定五折确认，再独立登记 full-source B00/B10/B01/B11，匹配 F/E20、前向/监督尺度、U 配方与初始化规则。raw、G(x)、原 practical As(x) 从同一原始 IQ 分别生成，先不叠 As(G(x))。As 保持原 residual/no-EQ 接收处理依赖，不偷换弱信道。正式行冻结后自动 clean+六 practical prediction，再独立 truth-last；目标分数不反馈晋级。low urban>60%、clean 正增益与 suburban 差距≤2pp（探索目标）目前均未证明，跨 seed 未验证。
+只有一个已使用过的源RX折和一个modelseed，不能替代完整跨RX或正式clean/practical证据。F由用户在已暴露A–F历史基准后指定，不声称新的独立盲测；本轮固定FINAL20，新目标分数不参与阈值、选模、调参或晋级。失败关闭raw-anchor候选，不换主行/强度/RX/seed救援；通过只允许另登记固定其余四RX，不能直接进target。clean净增益、lowurban>60%、suburban保持与跨seed均未证明，goal保持active。
 
-本地F实际图PASS：206初态张量与权威F构造一致，三投影/defaultW/gain/q梯度有限非零，物理clip/AdamW映射匹配，四前向两RD归一化及同一G复用正确，10负例通过。合计合成网络前向3584、增强输入512、合成optimizer更新12；0真实IQ/CP。两次本地fixture失败及修复如local_verification记载，不是远端实验失败。唯一限定P0/P1审查PASS；登记与compile通过。尚未发布，无新成绩。
+复现训练入口是experiment.json的immutable CWD/Python运行experiments/cvs_raw_anchor20/runner.py；已完成root禁止重复启动。离线复算不读IQ/CP：F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_raw_anchor20.harvest --output E:/type10-7/local_artifacts/cvs_F_raw_anchor20_20261016/final --state E:/type10-7/local_artifacts/cvs_F_raw_anchor20_20261016/terminal_readback.json --cached。
 
-## 实际启动已核实
+实际产物：
 
-VERIFIED / RUNNING。代码 44fc0bb689d03a65dc18a897b0e8e28324c7958a；三行PID/CWD/argv/GPU、scratchCP noquery smoke、日志增长、实际F三路/统一Sinc物理clip、E20=13+7、LS.01、NoExplicitCFO/默认头、ownEMA与source角色已独立核实。单archive transfer与remotecompile通过，未热改release/健康任务。尚无FINAL heldV成绩。
+- [完整三组训练曲线](E:/type10-7/local_artifacts/cvs_F_raw_anchor20_20261016/final/complete_training_curves.png)
+- [逐TX/day默认头结果](E:/type10-7/local_artifacts/cvs_F_raw_anchor20_20261016/final/held_source_strata.png)
+- [全部分层数值](E:/type10-7/local_artifacts/cvs_F_raw_anchor20_20261016/final/source_strata.csv)
+- [完整训练数值](E:/type10-7/local_artifacts/cvs_F_raw_anchor20_20261016/final/training_curves.csv)
+- [实际成本分项](E:/type10-7/local_artifacts/cvs_F_raw_anchor20_20261016/final/measured_costs.csv)
+
+## 收益归因与负结果
+
+A2相对A0修复314个、破坏96个判决，净修复218/5400，得到+4.0370pp；相对A1修复63个、破坏97个，净损失34/5400。A2相对A1的TX2提高3.8889pp、TX3提高0.3333pp，但TX5下降6.8889pp，TX0/1分别下降0.6667/0.4444pp，TX4持平。day2提高1.5556pp，day1/3分别下降1.5000/1.9444pp。它改变了错误分布，没有形成对增强控制的整体净收益。不能由这些TX分层直接推断PA、多径或其他某个物理算子是原因，更不能设置TX专属规则。
+
+A2的seenV均值只比A0低0.027778pp，健康保持条件通过；失败来自A1保持条件：accuracy下降0.629630pp（比预定0.5pp上限多0.129630pp），macroF1下降0.531708pp（多0.031708pp）。这是预定标准下的近阈值失败，单fold/单seed不能证明稳定劣势；同样不能事后放宽阈值或补换seed将它改判为PASS。本候选关闭，不扩其余四折、正式target、混合As或更多seed，不切换A1为新主行。
+
+完整曲线已查看：三组监督CE/KL早期下降、后期大体平台，普通增强两组仍有波动；physical grad_before_clip有限，E14按计划启用旧U，LR相同。A0的训练CE/KL更低却held RX1最差，A2的CE/KL低于A1也没有胜过A1；训练损失不能替代泛化收益。U选择量只作执行机制记录，没有TX真值，因此不报告伪标签准确率。没有由预算结束推断全局收敛。
+
+下一步设计边界：固定F/E20继续，但不把本近阈值结果改名晋级，也不沿raw比例调参救援。现有证据只支持“普通IQ扰动在这个F源折具有净收益，固定一半raw监督未保留其全部收益”；尚不能指定其身份保持算子或声称Ag已跨RX稳定。新的联合方案必须给出独立的源域机制依据和匹配raw/G/As控制，保持原始监督份额与实际前向预算可比较；在此之前，完整clean/practical四因子实验保持未启动。本轮已完成一个可执行的独立训练组织否证，不宣称星地双突破。
