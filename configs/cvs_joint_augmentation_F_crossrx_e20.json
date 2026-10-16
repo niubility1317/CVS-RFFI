@@ -1103,14 +1103,22 @@
         "practical_mid_urban",
         "practical_low_urban"
       ],
-      "min_clean_gain_pp": 1.0,
-      "min_clean_macroF1_gain_pp": 0.0,
+      "min_clean_gain_pp": 1,
+      "min_clean_macroF1_gain_pp": 0,
       "max_each_practical_drop_pp": 0.5,
       "max_seenV_drop_pp": 0.5,
       "final_base_L_objective_max": 0.5,
       "on_fail": "Close fixed sameTX IQmix recipe;no coefficient/alignment/window/donor/RX/seed or budget rescue",
       "on_pass": "Only supports independent source-seed confirmation;not formal target or fulljoint proof"
     },
-    "execution_commit": "192e6a84d72ca89d29489ce2750a20eb36bc765d"
+    "execution_commit": "192e6a84d72ca89d29489ce2750a20eb36bc765d",
+    "route_coordination": {
+      "other_thread": "01a13a98-fbec-7ba3-86b9-4cd56b8992c0",
+      "evidence": "Latest available agent messages;not remote job verification",
+      "overlap": "Both now study sameTX observed-IQ interpolation;not separate direction or matched multiseed evidence",
+      "current_matrix_unchanged": true,
+      "next_new_direction": "Avoid sameidentity interpolation family;decide from completed source evidence",
+      "other_task_modified": false
+    }
   }
 }
