@@ -1,0 +1,787 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01",
+  "group_id": "phase1-F-CROSS_RX-constantgain-source",
+  "display_name": "F＋跨 RX 同 TX：常数观测增益输入核对与 E20 源对照",
+  "description": "Fixed gain.9..1.1,oldordinary/PA/U retained;162synthetic no-query actual-function audit first,FAIL closes0training,PASS immediately runs2matched scratchE20 source rows,final source clean+6practical",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F CROSS_RX constant gain E20"
+  ],
+  "tags": [
+    "F",
+    "CROSS_RX",
+    "constant_received_gain",
+    "E20",
+    "source_RX1",
+    "matched_forward_control"
+  ],
+  "comparison_group_id": "F-CROSS_RX-constantgain-source",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research;PA-bypass failed and closed. New bounded packet-constant received gain candidate using existing oldordinary range,not failed withinpacket slope or new PA corruption. One conditional source-only release:engineering no-effect closes before realIQ/training;otherwise authorized E20,never target selection.",
+  "code": {
+    "commit": "PENDING_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
+    "environment": "ordinary N607 CVS-RFFI; CPU2/loader0",
+    "cwd": "PROJECT/releases/cvs_F_crossRX_constantgain_sourceRX1_e20_20261016_r01",
+    "entrypoint": "experiments/cvs_constant_gain20/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing original validated source carrier; fixed RX1-held effective source fold",
+    "representation": "NativeIQ256;raw/oldordinary/raw-or-gainraw,constant positive scalar only,not RX replacement;gain input synthetic audit has0realIQ",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Eachrow/source/source_contract.json exactL5040/U45360/V21600;heldRX1 originalL1260 final-only",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "RX3/4/6/8 L5040 training",
+      "U_s": "SameRX U45360 hiddenTX/originaloldgate/ownEMA",
+      "V": "SameRX V21600 health only;heldRX1 originalL1260 final-readout only"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "Eachrow/source/actual_channel.json; training/source-eval only; formal target IQ untouched"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Actual synthetic input effect only at launch;then source RX1 heldout E20 falsification if effect passes,no target/Ag/joint efficacy"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "Existing validated source carrier plus fixed RX1 fold,exact roleID filter;no parent loaded into training. Matching own B00 checkpoint used only dispatcher no-query smoke.",
+    "provenance_verdict": "SCRATCH_ONLY;EMA from own scratch student;no ancestor/E50/target-selected weight",
+    "selection_rule": "Final20 only,no target or seenV checkpoint selection"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-CROSS_RX-constantgain-E20-20261016",
+    "gpu_policy": "Shared capacity lock,max3 all-owner processes/GPU,min12000MiBfree;CPUdispatcher2threads;no healthy intervention",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01/logs",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_constant_gain20/runner.py",
+    "stop_rule": "Fixed engineering nontriviality FAIL:close0training without range/seed rescue. Role/initialization/output/budget/nonfinite/unlaunchable/illegalprediction systemic failure:preserve,stop pending,healthyworkers continue,no automatic retry. E20 scientificFAIL closes fixed gain recipe,no range/seed/RX/threshold rescue."
+  },
+  "expected_artifacts": [
+    "Matching realCP no-query smoke2 and synthetic input_audit160/traces,0realIQ",
+    "If input effect FAIL:completion CLOSED_INPUT_EFFECT_ONLY_NO_TRAINING,0rows/updates/sourceIQ",
+    "If PASS:two private scratch/final20 checkpoints and original ownEMA",
+    "All4440native/view/gain/Sincunit steps plus physicalL/U sequence,actualargs/source roles",
+    "Eachrow final source clean+6practical defaulthead predictions",
+    "Actual L/U/teacher/V/held/gain generation costs and complete stdout",
+    "Independent input-effect or fullsource recount/report,explicit scope"
+  ],
+  "metrics_plan": {
+    "input_effect": {
+      "real_CP_smoke_packets": 2,
+      "synthetic_packets": 32,
+      "synthetic_seed": 20261016321,
+      "families": [
+        "Gaussian",
+        "ARcolored",
+        "QPSKsmoothed",
+        "chirp+noise"
+      ],
+      "views": [
+        "identity",
+        "gain0.9",
+        "gain1.1",
+        "gain0.9_RMSrestored",
+        "gain1.1_RMSrestored"
+      ],
+      "actual_NN_packets": 162,
+      "real_source_IQ_reads": 0,
+      "criteria": {
+        "gain_RMS_relative_error_max": 1e-06,
+        "restored_input_relative_error_max": 1e-06,
+        "restored_normalized_joint_relative_error_max": 0.0001,
+        "restored_logits_abs_error_max": 0.001,
+        "at_least_one_endpoint_median_normalized_joint_change_min": 0.001,
+        "at_least_one_endpoint_logits_abs_change_max_min": 0.01
+      },
+      "on_fail": "Close fixed gain candidate,no real source IQ/training/range rescue",
+      "on_pass": "Continue scratchE20 immediately;engineering input effect only,not identity accuracy/Ag evidence"
+    },
+    "source_selection": {
+      "primary": "B10",
+      "reference": "B00",
+      "fixed_final": 20,
+      "held_RX": 1,
+      "held_L": 1260,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "min_clean_gain_pp": 1.0,
+      "min_clean_macroF1_gain_pp": 0.0,
+      "max_each_practical_drop_pp": 0.5,
+      "max_seenV_drop_pp": 0.5,
+      "final_L_CE_max": 0.5,
+      "on_fail": "Close fixed constant-gain training recipe,no range/seed/RX rescue",
+      "on_pass": "Only supports independent source confirmation,not Ag/DG proof or automatic target"
+    },
+    "metric_names": [
+      "actual encoder/Sinc input complexpower",
+      "joint160 normalized direction and defaulthead logits under fixed syntheticgain/RMSrestoration",
+      "source accuracy/macroF1/CM/pairedrepair-break/TX/day if E20 starts",
+      "all source6practical absoluteacc/suburban-ownclean gaps",
+      "L/U/teacher/V/heldNN/update/wallcost"
+    ],
+    "no_synthetic_identity_accuracy": true,
+    "target_access": false,
+    "success": "Engineering PASS only lets same preregistered E20 proceed;single sourcePASS only supports independent confirmation",
+    "failure": "Any original criterion fail closes fixed candidate,no rescue"
+  },
+  "rows": [
+    {
+      "row_id": "B00-RX1-s2026092701",
+      "method": "F_CROSS_RX_constant_gain_B00",
+      "purpose": "Raw third-slot matched control",
+      "config_ref": "experiments/cvs_constant_gain20/design.py:config(B00-RX1-s2026092701)",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016301,
+        "support": null,
+        "evaluation": 20261016103
+      },
+      "seed_notes": "Original global/native/modelseed2026092701;new gain privateCPU20261016301+step;fixed syntheticaudit20261016321;split392005 and sourceevalseeds unchanged;no target feedback",
+      "k": null,
+      "scenario": "Conditional engineering no-query first,then fixedRX1source final clean+6practical,noAs training",
+      "optimizer": "AdamW + existing complete physical CENTER_UNITS Sinc + cosine",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "report.md:162syntheticNN input audit first;then each scratchE20/4440updates/3409920LNN plus actualU/EMA/V/held if auditPASS",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01/logs/B00-RX1-s2026092701.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_constant_gain20/runner.py --worker B00-RX1-s2026092701",
+      "expected_artifacts": [
+        "Matching realCP no-query smoke2 and synthetic input_audit160/traces,0realIQ",
+        "If input effect FAIL:completion CLOSED_INPUT_EFFECT_ONLY_NO_TRAINING,0rows/updates/sourceIQ",
+        "If PASS:two private scratch/final20 checkpoints and original ownEMA",
+        "All4440native/view/gain/Sincunit steps plus physicalL/U sequence,actualargs/source roles",
+        "Eachrow final source clean+6practical defaulthead predictions",
+        "Actual L/U/teacher/V/held/gain generation costs and complete stdout",
+        "Independent input-effect or fullsource recount/report,explicit scope"
+      ],
+      "config": {
+        "schema": "F_CROSS_RX_constant_gain_source_v1",
+        "run_id": "20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01",
+        "stage": "source_RX1_falsification",
+        "arm": "B00",
+        "model_seed": 2026092701,
+        "row_id": "B00-RX1-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "F_CROSS_RX_constant_received_gain",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/F-CROSS_RX-constantgain-E20-20261016",
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "updates": 11100,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": null,
+        "training_recipe": "Scratch E20/13L+7U/F+CROSS_RX/defaultcos/RDrop1/LS.01; .5raw+.25unchanged oldordinary+.25(raw or constantgain raw),six L forwards;originalU/EMA and native augmentation min(epoch,13) unchanged",
+        "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1.0,
+            2.0
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "clean_net_positive": true,
+          "low_urban_above": 0.6,
+          "each_suburban_gap_exploratory_pp": 2.0,
+          "goal_complete": false,
+          "target_feedback": false
+        },
+        "budget_authorization": "User explicitly asks original SIG_TIME plus organically combined RDrop published for verification; prior full E50 three-seed and E20 comparison retained. Fixed18 scratch models, no old weights inherited.",
+        "cost_claim": "First162syntheticNN/0source/0updates;close with0training if input effect fails. Otherwise2scratchE20/8880updates;each3409920LNN+actual originalU/ownEMA/V/smoke/8820held;B10 568320gain IQ outputs,0As/headfit/parent training weights",
+        "baseline_reference": "New scratch F+CROSS_RX B00,matched6L forwards/raw .5/oldordinary .25/slot .25",
+        "baseline_reuse": false,
+        "readouts": [
+          "FINAL"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "F_base": true,
+          "CROSS_RX": true,
+          "Ag": false,
+          "As": false,
+          "ordinary_L": true,
+          "alpha": 1.0,
+          "label_smoothing": 0.01,
+          "use_aug": true,
+          "sinc_coordinates": "CENTER_25K",
+          "raw_weight": 0.5,
+          "ordinary_weight": 0.25,
+          "s_slot_weight": 0.25,
+          "L_forwards_per_packet": 6,
+          "expected_L_packets": 3409920,
+          "same_IQ_within_each_pair": true,
+          "U_rule": "Original13L+7U oldgate/ownEMA; no added U views or contrast",
+          "s_slot_name": "raw(B00) or bounded_constant_gain(raw)(B10)",
+          "no_new_U_augmentation": true
+        },
+        "fold": {
+          "held_RX": 1,
+          "training_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+          "effective_roles": {
+            "L_s": 5040,
+            "U_s": 45360,
+            "V": 21600
+          },
+          "held_L_evaluation": 1260,
+          "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+          "raw_source_carrier_and_static_domain_ID_map_retained": true,
+          "trained_checkpoint_reuse_allowed_for_all5RX": false,
+          "steps_per_epoch": 222,
+          "U_observations_per_pseudo_epoch": 56624
+        },
+        "source_selection": {
+          "primary": "B10",
+          "reference": "B00",
+          "fixed_final": 20,
+          "held_RX": 1,
+          "held_L": 1260,
+          "views": [
+            "clean",
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "min_clean_gain_pp": 1.0,
+          "min_clean_macroF1_gain_pp": 0.0,
+          "max_each_practical_drop_pp": 0.5,
+          "max_seenV_drop_pp": 0.5,
+          "final_L_CE_max": 0.5,
+          "on_fail": "Close fixed constant-gain training recipe,no range/seed/RX rescue",
+          "on_pass": "Only supports independent source confirmation,not Ag/DG proof or automatic target"
+        },
+        "supcon": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "scope": "Two shared native ordinary L forwards only, before raw/satellite extra forwards",
+          "extra_network_forwards": 0
+        },
+        "channel": {
+          "scenes": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "fs_hz": 25000000.0,
+          "fc_hz": 2462000000.0,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "selection": "Six fixed held-source views after final20 only",
+          "seed": 20261016101,
+          "receiver_seed": 20261016102,
+          "eval_seed": 20261016103,
+          "input": "Held-source evaluation raw only;no As training",
+          "session": "rx_i/day_i/eq_i, never TX",
+          "supervised": "All128 satellite L packets; no confidence gate",
+          "composition": false
+        },
+        "gain": {
+          "range": [
+            0.9,
+            1.1
+          ],
+          "seed": 20261016301,
+          "distribution": "Uniform independent scalar per physical L packet/step,private CPU generator seed+step",
+          "input": "raw L only,not ordinary augmentation",
+          "range_basis": "Existing verified ordinary amp_min .9/amp_max1.1;not chosen by source practical or target",
+          "label_or_RX_dependence": false,
+          "renormalization": false,
+          "frequency_shift": false,
+          "extra_noise": false,
+          "extra_multipath": false,
+          "extra_PA": false,
+          "composition": false,
+          "same_generated_IQ_within_RDrop_pair": true,
+          "supervised": "All128 legal gain L packets,no confidence/class filtering",
+          "meaning": "Linear scaling of already received IQ,not TX PA change or actual RX substitution;not failed within-packet ramp"
+        },
+        "input_audit": {
+          "real_CP_smoke_packets": 2,
+          "synthetic_packets": 32,
+          "synthetic_seed": 20261016321,
+          "families": [
+            "Gaussian",
+            "ARcolored",
+            "QPSKsmoothed",
+            "chirp+noise"
+          ],
+          "views": [
+            "identity",
+            "gain0.9",
+            "gain1.1",
+            "gain0.9_RMSrestored",
+            "gain1.1_RMSrestored"
+          ],
+          "actual_NN_packets": 162,
+          "real_source_IQ_reads": 0,
+          "criteria": {
+            "gain_RMS_relative_error_max": 1e-06,
+            "restored_input_relative_error_max": 1e-06,
+            "restored_normalized_joint_relative_error_max": 0.0001,
+            "restored_logits_abs_error_max": 0.001,
+            "at_least_one_endpoint_median_normalized_joint_change_min": 0.001,
+            "at_least_one_endpoint_logits_abs_change_max_min": 0.01
+          },
+          "on_fail": "Close fixed gain candidate,no real source IQ/training/range rescue",
+          "on_pass": "Continue scratchE20 immediately;engineering input effect only,not identity accuracy/Ag evidence"
+        }
+      }
+    },
+    {
+      "row_id": "B10-RX1-s2026092701",
+      "method": "F_CROSS_RX_constant_gain_B10",
+      "purpose": "Constant received gain third-slot only,oldordinary unchanged",
+      "config_ref": "experiments/cvs_constant_gain20/design.py:config(B10-RX1-s2026092701)",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01/B10-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016301,
+        "support": null,
+        "evaluation": 20261016103
+      },
+      "seed_notes": "Original global/native/modelseed2026092701;new gain privateCPU20261016301+step;fixed syntheticaudit20261016321;split392005 and sourceevalseeds unchanged;no target feedback",
+      "k": null,
+      "scenario": "Conditional engineering no-query first,then fixedRX1source final clean+6practical,noAs training",
+      "optimizer": "AdamW + existing complete physical CENTER_UNITS Sinc + cosine",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "report.md:162syntheticNN input audit first;then each scratchE20/4440updates/3409920LNN plus actualU/EMA/V/held if auditPASS",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01/B10-RX1-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01/logs/B10-RX1-s2026092701.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_constant_gain20/runner.py --worker B10-RX1-s2026092701",
+      "expected_artifacts": [
+        "Matching realCP no-query smoke2 and synthetic input_audit160/traces,0realIQ",
+        "If input effect FAIL:completion CLOSED_INPUT_EFFECT_ONLY_NO_TRAINING,0rows/updates/sourceIQ",
+        "If PASS:two private scratch/final20 checkpoints and original ownEMA",
+        "All4440native/view/gain/Sincunit steps plus physicalL/U sequence,actualargs/source roles",
+        "Eachrow final source clean+6practical defaulthead predictions",
+        "Actual L/U/teacher/V/held/gain generation costs and complete stdout",
+        "Independent input-effect or fullsource recount/report,explicit scope"
+      ],
+      "config": {
+        "schema": "F_CROSS_RX_constant_gain_source_v1",
+        "run_id": "20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01",
+        "stage": "source_RX1_falsification",
+        "arm": "B10",
+        "model_seed": 2026092701,
+        "row_id": "B10-RX1-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01/B10-RX1-s2026092701/source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "F_CROSS_RX_constant_received_gain",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/F-CROSS_RX-constantgain-E20-20261016",
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "updates": 11100,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": null,
+        "training_recipe": "Scratch E20/13L+7U/F+CROSS_RX/defaultcos/RDrop1/LS.01; .5raw+.25unchanged oldordinary+.25(raw or constantgain raw),six L forwards;originalU/EMA and native augmentation min(epoch,13) unchanged",
+        "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1.0,
+            2.0
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "clean_net_positive": true,
+          "low_urban_above": 0.6,
+          "each_suburban_gap_exploratory_pp": 2.0,
+          "goal_complete": false,
+          "target_feedback": false
+        },
+        "budget_authorization": "User explicitly asks original SIG_TIME plus organically combined RDrop published for verification; prior full E50 three-seed and E20 comparison retained. Fixed18 scratch models, no old weights inherited.",
+        "cost_claim": "First162syntheticNN/0source/0updates;close with0training if input effect fails. Otherwise2scratchE20/8880updates;each3409920LNN+actual originalU/ownEMA/V/smoke/8820held;B10 568320gain IQ outputs,0As/headfit/parent training weights",
+        "baseline_reference": "New scratch F+CROSS_RX B00,matched6L forwards/raw .5/oldordinary .25/slot .25",
+        "baseline_reuse": false,
+        "readouts": [
+          "FINAL"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "F_base": true,
+          "CROSS_RX": true,
+          "Ag": true,
+          "As": false,
+          "ordinary_L": true,
+          "alpha": 1.0,
+          "label_smoothing": 0.01,
+          "use_aug": true,
+          "sinc_coordinates": "CENTER_25K",
+          "raw_weight": 0.5,
+          "ordinary_weight": 0.25,
+          "s_slot_weight": 0.25,
+          "L_forwards_per_packet": 6,
+          "expected_L_packets": 3409920,
+          "same_IQ_within_each_pair": true,
+          "U_rule": "Original13L+7U oldgate/ownEMA; no added U views or contrast",
+          "s_slot_name": "raw(B00) or bounded_constant_gain(raw)(B10)",
+          "no_new_U_augmentation": true
+        },
+        "fold": {
+          "held_RX": 1,
+          "training_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+          "effective_roles": {
+            "L_s": 5040,
+            "U_s": 45360,
+            "V": 21600
+          },
+          "held_L_evaluation": 1260,
+          "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+          "raw_source_carrier_and_static_domain_ID_map_retained": true,
+          "trained_checkpoint_reuse_allowed_for_all5RX": false,
+          "steps_per_epoch": 222,
+          "U_observations_per_pseudo_epoch": 56624
+        },
+        "source_selection": {
+          "primary": "B10",
+          "reference": "B00",
+          "fixed_final": 20,
+          "held_RX": 1,
+          "held_L": 1260,
+          "views": [
+            "clean",
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "min_clean_gain_pp": 1.0,
+          "min_clean_macroF1_gain_pp": 0.0,
+          "max_each_practical_drop_pp": 0.5,
+          "max_seenV_drop_pp": 0.5,
+          "final_L_CE_max": 0.5,
+          "on_fail": "Close fixed constant-gain training recipe,no range/seed/RX rescue",
+          "on_pass": "Only supports independent source confirmation,not Ag/DG proof or automatic target"
+        },
+        "supcon": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "scope": "Two shared native ordinary L forwards only, before raw/satellite extra forwards",
+          "extra_network_forwards": 0
+        },
+        "channel": {
+          "scenes": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "fs_hz": 25000000.0,
+          "fc_hz": 2462000000.0,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "selection": "Six fixed held-source views after final20 only",
+          "seed": 20261016101,
+          "receiver_seed": 20261016102,
+          "eval_seed": 20261016103,
+          "input": "Held-source evaluation raw only;no As training",
+          "session": "rx_i/day_i/eq_i, never TX",
+          "supervised": "All128 satellite L packets; no confidence gate",
+          "composition": false
+        },
+        "gain": {
+          "range": [
+            0.9,
+            1.1
+          ],
+          "seed": 20261016301,
+          "distribution": "Uniform independent scalar per physical L packet/step,private CPU generator seed+step",
+          "input": "raw L only,not ordinary augmentation",
+          "range_basis": "Existing verified ordinary amp_min .9/amp_max1.1;not chosen by source practical or target",
+          "label_or_RX_dependence": false,
+          "renormalization": false,
+          "frequency_shift": false,
+          "extra_noise": false,
+          "extra_multipath": false,
+          "extra_PA": false,
+          "composition": false,
+          "same_generated_IQ_within_RDrop_pair": true,
+          "supervised": "All128 legal gain L packets,no confidence/class filtering",
+          "meaning": "Linear scaling of already received IQ,not TX PA change or actual RX substitution;not failed within-packet ramp"
+        },
+        "input_audit": {
+          "real_CP_smoke_packets": 2,
+          "synthetic_packets": 32,
+          "synthetic_seed": 20261016321,
+          "families": [
+            "Gaussian",
+            "ARcolored",
+            "QPSKsmoothed",
+            "chirp+noise"
+          ],
+          "views": [
+            "identity",
+            "gain0.9",
+            "gain1.1",
+            "gain0.9_RMSrestored",
+            "gain1.1_RMSrestored"
+          ],
+          "actual_NN_packets": 162,
+          "real_source_IQ_reads": 0,
+          "criteria": {
+            "gain_RMS_relative_error_max": 1e-06,
+            "restored_input_relative_error_max": 1e-06,
+            "restored_normalized_joint_relative_error_max": 0.0001,
+            "restored_logits_abs_error_max": 0.001,
+            "at_least_one_endpoint_median_normalized_joint_change_min": 0.001,
+            "at_least_one_endpoint_logits_abs_change_max_min": 0.01
+          },
+          "on_fail": "Close fixed gain candidate,no real source IQ/training/range rescue",
+          "on_pass": "Continue scratchE20 immediately;engineering input effect only,not identity accuracy/Ag evidence"
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Source roles L5040/U45360/V21600;heldRX1 originalL1260 finalonly,not fullL6300 or L5580/Ldev720",
+    "DefaultF/X3/unifiedSinc/joint160/cosine jointtraining and NoExplicitCFO retained",
+    "Oldordinary PA remains;gain branchraw only,no ordinarynoise or fullsatellite stack",
+    "Scalar gain positive/invertible on received IQ;no phase/CFO/window/nonlinear distortion;not actualRX or TXPA replacement",
+    "Private CPU gain seed20261016301+step;no native RNG advance;originalU and ordinary13epoch schedule cap unchanged",
+    "Local14negatives,control loss/headgradient/native6forward/sameIQ/SupCon/defaultheadupdate/export160 and actual untrainedF inputpath PASS;2474syntheticNN/2syntheticupdates/0realCPorIQ;not source evidence"
+  ],
+  "registered_at": "2026-10-16T09:37:24+00:00"
+}

@@ -132,7 +132,7 @@
   },
   "next_source_hypothesis": {
     "name": "Bounded packet-constant received-IQ gain view improves heldRX clean while retaining original ordinary PA",
-    "status": "PROPOSED_NOT_IMPLEMENTED_REGISTERED_OR_LAUNCHED",
+    "status": "REGISTERED_NOT_LAUNCHED",
     "minimum": "First actual input/normalization path audit;then separately registered samefold/seed/scratchE20/raw.5 ordinary.25 raw-or-gain-slot.25 with matched6forwards and unchanged U",
     "gain_range": [
       0.9,
@@ -141,7 +141,63 @@
     "gain_range_basis": "Existing verified ordinary gain contract,not source practical/target tuning",
     "abandon": "Gain removed by later RMS or no actual deployed-feature effect:no training;matchedE20 clean or practical guardrail failure:close fixed candidate",
     "target_access": false,
-    "Ag_efficacy_proved": false
+    "Ag_efficacy_proved": false,
+    "run_id": "20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01",
+    "input_audit": {
+      "real_CP_smoke_packets": 2,
+      "synthetic_packets": 32,
+      "synthetic_seed": 20261016321,
+      "families": [
+        "Gaussian",
+        "ARcolored",
+        "QPSKsmoothed",
+        "chirp+noise"
+      ],
+      "views": [
+        "identity",
+        "gain0.9",
+        "gain1.1",
+        "gain0.9_RMSrestored",
+        "gain1.1_RMSrestored"
+      ],
+      "actual_NN_packets": 162,
+      "real_source_IQ_reads": 0,
+      "criteria": {
+        "gain_RMS_relative_error_max": 1e-06,
+        "restored_input_relative_error_max": 1e-06,
+        "restored_normalized_joint_relative_error_max": 0.0001,
+        "restored_logits_abs_error_max": 0.001,
+        "at_least_one_endpoint_median_normalized_joint_change_min": 0.001,
+        "at_least_one_endpoint_logits_abs_change_max_min": 0.01
+      },
+      "on_fail": "Close fixed gain candidate,no real source IQ/training/range rescue",
+      "on_pass": "Continue scratchE20 immediately;engineering input effect only,not identity accuracy/Ag evidence"
+    },
+    "source_selection": {
+      "primary": "B10",
+      "reference": "B00",
+      "fixed_final": 20,
+      "held_RX": 1,
+      "held_L": 1260,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "min_clean_gain_pp": 1.0,
+      "min_clean_macroF1_gain_pp": 0.0,
+      "max_each_practical_drop_pp": 0.5,
+      "max_seenV_drop_pp": 0.5,
+      "final_L_CE_max": 0.5,
+      "on_fail": "Close fixed constant-gain training recipe,no range/seed/RX rescue",
+      "on_pass": "Only supports independent source confirmation,not Ag/DG proof or automatic target"
+    },
+    "source_fold": "L5040/U45360/V21600,heldRX1 finalL1260",
+    "real_CP_audit162_first": true
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
