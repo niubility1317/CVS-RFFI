@@ -237,3 +237,9 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 孤立轻度AWGN(raw) 20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01 已实现登记未启动：既有native propercomplex噪声20至36dB、全覆盖四命名流，无MP/PA/时移/后RMS/clip。双冻结原默认头fitL5040，每draw与pooled身份保护，全部尾部保留。14负例/9科学反例/1152合成noise PASS，一次P0/P1审查PASS；预计50402NN/0更新/target。保留公共旧ordinary的未来三匹配E20未实现登记启动；源PASS不称Ag/DG有效，旧RMS/联合移除等固定失败保持关闭。
+
+
+孤立AWGN源检验 20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01 VERIFIED／PASS_SOURCE_IDENTITY_ONLY：50400完整源判决／50402NN独立复算，20至36dB全覆盖；相对raw准确率−0.143849/−0.138889pp，raw正确保留99.850954/99.845986%，四draw与RX/TX/day全部条件PASS，IQ变化median.039368733/max.106857479；0训练/target。仅支持三匹配scratchE20，不证明Ag或联合目标；既有固定失败保持关闭。
+
+
+孤立AWGN三匹配E20 20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01 已实现登记未启动：G0sourceidentityPASS后仅检验Ag，公共raw.75/ordinary.25/SupCon/U保持，extra.25 raw/sameordinary/noise，8L前向/pairweight1.25，同scratchseed01/E20；B10须同时胜过两个控制clean≥1pp/F1不降/每practical与seenV≥−.5pp。28负例/4114合成NN/3合成更新PASS，一次P0/P1审查PASS；实际新训练尚为0，联合目标ACTIVE。

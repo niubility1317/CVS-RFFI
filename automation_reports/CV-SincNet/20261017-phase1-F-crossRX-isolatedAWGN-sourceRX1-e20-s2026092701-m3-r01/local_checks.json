@@ -1,0 +1,63 @@
+{
+  "status": "PASS",
+  "negative_cases": 28,
+  "rows": [
+    {
+      "arm": "B00",
+      "L_forwards": 8,
+      "common_inputs_exact": true,
+      "extra_same_IQ": true,
+      "noise_generated": 0,
+      "total_pair_weight": 1.25,
+      "loss": 5.789546012878418,
+      "base_loss": 4.62814998626709,
+      "tracked_BN_modules": 0,
+      "extra_BN_updates": 0,
+      "default_head_joint_update": true,
+      "export160_exact": true
+    },
+    {
+      "arm": "C_ordinary",
+      "L_forwards": 8,
+      "common_inputs_exact": true,
+      "extra_same_IQ": true,
+      "noise_generated": 0,
+      "total_pair_weight": 1.25,
+      "loss": 5.789880275726318,
+      "base_loss": 4.62814998626709,
+      "tracked_BN_modules": 0,
+      "extra_BN_updates": 0,
+      "default_head_joint_update": true,
+      "export160_exact": true
+    },
+    {
+      "arm": "B10",
+      "L_forwards": 8,
+      "common_inputs_exact": true,
+      "extra_same_IQ": true,
+      "noise_generated": 128,
+      "total_pair_weight": 1.25,
+      "loss": 5.789520740509033,
+      "base_loss": 4.62814998626709,
+      "tracked_BN_modules": 0,
+      "extra_BN_updates": 0,
+      "default_head_joint_update": true,
+      "export160_exact": true
+    }
+  ],
+  "identical_scratch_states": true,
+  "B00_loss_default_head_gradient_exactly_match_existing_additive_raw": true,
+  "CPU_Python_RNG_endstates_equal": true,
+  "native_AWGN_canonical_exact": true,
+  "stateless_step_repeatable_different_step_distinct": true,
+  "oldordinary_actualtensor_reused": true,
+  "unchanged_native_U_args": true,
+  "synthetic_ordinary_generations": 128,
+  "synthetic_native_noise_generations": 640,
+  "synthetic_NN_packets": 4114,
+  "synthetic_optimizer_updates": 3,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "target_access": false,
+  "head_fit_updates": 0
+}
