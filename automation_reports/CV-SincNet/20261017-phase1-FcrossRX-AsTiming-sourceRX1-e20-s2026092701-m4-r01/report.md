@@ -1,6 +1,6 @@
 # F＋跨 RX：等剂量早期与后期 As 的固定 E20 源域检验
 
-run_id：20261017-phase1-FcrossRX-AsTiming-sourceRX1-e20-s2026092701-m4-r01。当前 RUNNING，四行已完成E1，尚无冻结后的识别结果。逐行唯一矩阵见 experiment.json；固定配置和停止规则在首次运行前锁定，不按任何目标分数调整。
+run_id：20261017-phase1-FcrossRX-AsTiming-sourceRX1-e20-s2026092701-m4-r01。当前 RUNNING，四行已完成E4，尚无冻结后的识别结果。逐行唯一矩阵见 experiment.json；固定配置和停止规则在首次运行前锁定，不按任何目标分数调整。
 
 前一轮完整质量代理诊断已否定原整体状态切换假设。另一路逐包六场景循环已完成，较随机As仅low＋0.1587pp、urban均值＋0.5026pp，低于原门槛，固定方案关闭。实际F实例还核实没有BatchNorm（只有GroupNorm/LayerNorm、206个state张量、900722参数），所以不启动BN运行统计修补。这些事实不证明Ag或联合目标有效。
 
@@ -57,3 +57,9 @@ FAIL关闭固定等剂量早晚时序，不改起点、剂量、轮次、系数�
 运行代码f788309f5f9e27689ec1e98ae99a6bd83237e1f9已commit/push，GitHub独立OID identical。一次普通N607 preflight、一个archive传输比较和remotecompile PASS；真实同有效LUV的B00 no-query兼容smoke2NN PASS后丢弃。四行PID分别168714/168787/169270/169349、GPU0/1/2/3，dispatcher168626；独立/proc CWD/argv/CUDA和nvidia进程映射一致，四行日志增长，initialization均scratch_only、EXACT_MATCH、无祖先、ownEMA。当前状态RUNNING，训练及源评价尚未完成，不报告准确率。后续离线取回/分析提交不修改正在运行的release。
 
 首次完整epoch读回：四行均222更新／227328 LNN／56832 extraLNN／28416生成As；ALL与EARLY7各消费28416，RAW与LATE7为0，原SupCon仍按E6启用；四个PID均实存、日志增长、无Traceback/RuntimeError/FloatingPointError。此处只验证执行预算，不据源V或训练loss改变计划。
+
+## 完整分析工具准备状态
+
+训练保持运行代码f788309f5f9e27689ec1e98ae99a6bd83237e1f9，未热改。新增独立analyze.py只读已冻结源预测/全部结构日志，复算accuracy/F1/CM、原公式和日历、每个更新、全部覆盖/曝光及固定条件；保存CE/margin仅作原运行量，不冒称从未保存的全logits重算CE。EARLY/LATE覆盖差、原LR与SSL日历混杂明确保留。plot.py仅在完整独立分析后生成全20轮曲线、七视图、low状态/质量、固定RAW clean正确集保持/配对错误、实际日历/曝光分布；现在没有已生成的本轮结果图。
+
+离线19个协议反例／7个科学反例，以及四组完整17760步合成日历／8个计数反例PASS，0真实数据/IQ/CP/NN/更新；已有独立源预测8820条元数据格式兼容检查PASS，未新增推理或修改旧结果。最新独立进程读回四个原PID均live、全部E4、各888更新／113664生成As；ALL/EARLY各消费113664、RAW/LATE消费0，无系统异常。当前不进行完整训练结论分析；仍等待原固定E20及逐行自动七视图冻结完成。
