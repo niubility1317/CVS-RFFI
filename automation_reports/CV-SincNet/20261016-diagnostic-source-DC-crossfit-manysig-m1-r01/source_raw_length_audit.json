@@ -1,0 +1,31 @@
+{
+  "status": "VERIFIED",
+  "read_at": 1792139564.9905255,
+  "dataset_module_file": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/dataset_wisig.py",
+  "metadata_role": "Original source L6300, no IQ values or U/V labels iterated",
+  "raw_shapes": [
+    {
+      "length": 256,
+      "channels": 2,
+      "selected_L_packets": 6300
+    }
+  ],
+  "selected_L": 6300,
+  "source_cells": 90,
+  "per_cell_L": 70,
+  "native_out_len": 256,
+  "native_crop_mode": "center",
+  "native_normalize": true,
+  "native_center": false,
+  "longer_than_256": 0,
+  "shorter_than_256": 0,
+  "original_container_deserialized": true,
+  "IQ_values_inspected": 0,
+  "U_TX_truth_read": false,
+  "V_values_read": false,
+  "target_loaders_constructed": false,
+  "model_forwards": 0,
+  "checkpoint_loads": 0,
+  "optimizer_updates": 0,
+  "remote_files_written": false
+}

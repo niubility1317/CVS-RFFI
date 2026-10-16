@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "synthetic_descriptor_packets": 5040,
+  "synthetic_positive_18folds": true,
+  "entangled_and_zero_effect_FAIL": true,
+  "stable_but_already_covered_FAIL": true,
+  "held_TX_AND_day_prediction_isolation": true,
+  "protocol_negatives": 15,
+  "real_IQ_packets": 0,
+  "checkpoint_loads": 0,
+  "model_forwards": 0,
+  "optimizer_updates": 0,
+  "synthetic_fixtures_not_results": true,
+  "P0P1_review": "PASS one limited read-only review,0IQ/CP/NN; no direct defects",
+  "local_compile": "PASS",
+  "real_checkpoint_smoke": "NOT_APPLICABLE G0 no model/checkpoint or prediction; no unrelated state loaded",
+  "isolated_release_checks": {
+    "status": "PASS",
+    "isolated_runtime_import": true,
+    "one_config_exact": true,
+    "real_C0_DC_metadata_bound": 0.005012006678699483,
+    "real_IQ": 0,
+    "checkpoint_loads": 0,
+    "model_forwards": 0
+  },
+  "N607_preflight": "VERIFIED once 2026-10-16 16:42:09 CST,ordinary account/project/GPU readback;CPU-only job"
+}

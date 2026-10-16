@@ -1,0 +1,243 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-diagnostic-source-DC-crossfit-manysig-m1-r01",
+  "group_id": "phase1-source-DC-observability",
+  "display_name": "RX加性DC：跨TX和跨日重复性源证伪",
+  "description": "只用当前C0 fit RX3/4/6/8 L5040，18fold同时留TX/day预测RX均值差；先检验可重复性及旧DC参数是否已覆盖，零模型/分类器/目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-only",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_DC",
+    "cross_TX_day",
+    "source_only",
+    "no_model",
+    "CPU"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active Ag+As goal authorizes source-grounded IQ research on currentF+CROSS_RX/E20. G0 source statistics only,no model/extraepochs/checkpoint or target.",
+  "code": {
+    "commit": "CURRENT_RELEASE_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_DC_crossfit_20261016_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/source_cache.pt",
+    "version": "Existing VALIDATED_ONCE ManySig carrier; only currentC0 fitL5040 IDs used, RX1/U/V values excluded",
+    "representation": "Full256 mean(I,Q)/packetRMS from existing equalized1 source IQ25MHz; no new IQ transformation or inference normalization",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source/source_contract.json#role_ids/L_s",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#classes",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/preparation_complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "effective_counts": {
+      "L_used": 5040,
+      "held_RX1_IQ_used": 0,
+      "U_used": 0,
+      "V_used": 0
+    }
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "None; no target loader/model/checkpoint",
+    "external_method_exception": null,
+    "claim_scope": "CrossTX/day repeatability of source RX-associated additiveDC only; not physical hardware identification, label preservation or recognition efficacy"
+  },
+  "checkpoint": {
+    "initialization": "not_applicable_no_model",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "NO_CHECKPOINT_ACCESS; reference used only for exactL5040 role IDs and actual oldordinary DC metadata",
+    "selection_rule": "One full256 complexmean coordinate; all18 leaveTX-and-day folds; fixed qualification, no sourceV or hiddenU labels, no automatic model training"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-DC-crossfit-20261016",
+    "gpu_policy": "CPU only;CUDA hidden;2threads,no GPU reservation or foreign process changes",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-DC-crossfit-manysig-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_DC_crossfit_20261016_r01/dispatcher.log",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_source_DC_crossfit_20261016",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_DC_crossfit_20261016_r01/experiments/cvs_source_dc_crossfit/runner.py",
+    "stop_rule": "Own technical failure preserves immutable output,noauto retry. ScientificFAIL closes fixedDC synthesis direction,no window/magnitude/coordinate/RX/TX/day/threshold rescue. PASS supports only separately preregistered IQ trial,noautomatic training."
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "ROW/resolved_config.json",
+    "ROW/source_DC_statistics.npz (private derived source descriptors/profile,notGit)",
+    "ROW/summary.json",
+    "completion.json",
+    "dispatcher.log",
+    "all18fold risk table",
+    "source risk/envelope figure",
+    "same-run independent analysis"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "RX-contrast prediction risk vs zero effect",
+      "aggregate risk reduction",
+      "positive heldTX/day folds",
+      "component-max RX pair difference p95",
+      "actual oldordinaryE13 DC component bound",
+      "sourceDC energyfraction",
+      "zero network/checkpoint/optimizer cost"
+    ],
+    "dimensions": [
+      "18 heldTX/day folds",
+      "4 fitRX",
+      "6true labeledTX",
+      "full256 complexmean only"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null,
+    "primary": "nonzero baseline risk; aggregate risk reduction>=10%;>=12/18positive folds; RX profile paircomponent p95>actual oldordinaryDC bound.Else close fixed direction;not a classifier efficacy threshold."
+  },
+  "rows": [
+    {
+      "row_id": "DC-fitRX3_4_6_8",
+      "method": "Complex source DC contrast crossfit",
+      "purpose": "source_falsification",
+      "config_ref": "experiments/cvs_source_dc_crossfit/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-DC-crossfit-manysig-m1-r01/DC-fitRX3_4_6_8/resolved_config.json",
+      "data_overrides": {
+        "source_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "L_used": 5040,
+        "held_RX1_used": false
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Same original split/data392005. No model/augmentation/support/evaluation RNG used on real data; deterministic18fold means. Local synthetic RNG20261016901 only.",
+      "k": null,
+      "scenario": "clean fit-source L only,noAs/target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "5040 selectedL IQ statistic reads;0model/NN/checkpoint/updates;CPU2threads,no E20 budget consumed",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-DC-crossfit-manysig-m1-r01/DC-fitRX3_4_6_8",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_DC_crossfit_20261016_r01/dispatcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_DC_crossfit_20261016_r01/experiments/cvs_source_dc_crossfit/runner.py",
+      "expected_artifacts": [
+        "execution.json",
+        "ROW/resolved_config.json",
+        "ROW/source_DC_statistics.npz (private derived source descriptors/profile,notGit)",
+        "ROW/summary.json",
+        "completion.json",
+        "dispatcher.log",
+        "all18fold risk table",
+        "source risk/envelope figure",
+        "same-run independent analysis"
+      ],
+      "config": {
+        "schema": "source_DC_cross_TX_day_v1",
+        "run_id": "20261016-diagnostic-source-DC-crossfit-manysig-m1-r01",
+        "launch_owner": "codex/root/source-DC-crossfit-20261016",
+        "row_id": "DC-fitRX3_4_6_8",
+        "arm": "DC",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-DC-crossfit-manysig-m1-r01/DC-fitRX3_4_6_8",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "reference_metadata": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source",
+        "source_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "source_TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "held_RX1_used": false,
+        "L_packets": 5040,
+        "packets_per_cell": 70,
+        "descriptor": "mean_n(I,Q)/sqrt(mean_n(I^2+Q^2)); full256, original source L only; descriptor units are original native packet-RMS",
+        "cell_effect": "TX/RX/day mean descriptor minus sameTX/day mean across4 fitRX; no TX hardware inversion",
+        "crossfit": "18 folds: leave one TX AND one day out; predict held cell RX contrast from other5TX x other2days",
+        "null": "zero RX contrast; squared Euclidean prediction risk",
+        "primary": {
+          "aggregate_risk_reduction_min": 0.1,
+          "positive_folds_min": 12,
+          "fold_count": 18,
+          "envelope": "p95 of componentwise-max pair differences of fitted RX mean contrasts must exceed actual old ordinary E13 dc_offset_max"
+        },
+        "on_fail": "Close fixed RX-DC synthesis direction, no window/magnitude/coordinate/TX/day/RX/threshold rescue",
+        "on_pass": "Only supports separately preregistered bounded IQ training; no Ag efficacy or target/As promotion",
+        "fixed_identity_network": "F+CROSS_RX SupCon/SIG_TIME_X3/CENTER_25K/CENTER_UNITS/joint160/defaultcosine unchanged; no model used here",
+        "device": "CPU",
+        "CPU_threads": 2,
+        "CUDA_VISIBLE_DEVICES": "",
+        "new_models": 0,
+        "model_seed": null,
+        "model_forwards": 0,
+        "checkpoint_loads": 0,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "U_used": false,
+        "V_used": false,
+        "target_access": false,
+        "source_only": true,
+        "channel_generation": false,
+        "formal_test_changed": false,
+        "automatic_training": false,
+        "goal_completed": false
+      }
+    }
+  ],
+  "notes": [
+    "Full L6300 is only the existing carrier; IQ statistics consume exact currentC0 fitL5040 after sourceRX metadata selection. RX1/U/V values unused, U truth hidden.",
+    "Only full256 complexmean/RMS; no window/absolute-value-phase/receiver subset scan. RX association does not identify a causal physical RX chain.",
+    "DC oldparameter bound derived from actual C0 baseconfig andE13 executed probability ratio,not a claimed bound on all downstream compound ordinary effects.",
+    "No model or checkpoint in G0, so checkpoint noquery smoke is not applicable; do not load an unrelated model or make synthetic classifier outputs to satisfy an unused stage.",
+    "CurrentF+CROSS_RX/defaulthead and formalIQ/channel unchanged. PASS noautomatic training,target or method efficacy claim. Failed priorroutes not reopened."
+  ],
+  "registered_at": "2026-10-16T08:44:26+00:00"
+}
