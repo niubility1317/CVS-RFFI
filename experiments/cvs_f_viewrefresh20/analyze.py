@@ -173,7 +173,7 @@ def analyze(root):
   for v in VIEWS:scores[a][v].update(mean_margin_over30=statistics.mean(data[a][v]['margin_over30']),mean_CE=data[a][v]['mean_CE'])
  full_curve_summary={}
  for a in ARMS:
-  q=[z for z in curves if z['arm']==a];last=q[-5:];full_curve_summary[a]=dict(final_epoch=q[-1],last5_total_L_min=min(z['total_L'] for z in last),last5_total_L_max=max(z['total_L'] for z in last),last5_seenV_accuracy_min=min(z['seenV_accuracy'] for z in last),last5_seenV_accuracy_max=max(z['seenV_accuracy'] for z in last),last5_seenV_first_to_last_pp=100*(last[-1]['seenV_accuracy']-last[0]['seenV_accuracy']),best_seenV_epoch_diagnostic_only=max(q,key=lambda z:z['seenV_accuracy'])['epoch'])
+  q=[z for z in curves if z['arm']==a];last=q[-5:];full_curve_summary[a]=dict(final_epoch=q[-1],last5_total_L_min=min(z['total_L'] for z in last),last5_total_L_max=max(z['total_L'] for z in last),seenV_curve_unit='percent',last5_seenV_accuracy_min=min(z['seenV_accuracy'] for z in last),last5_seenV_accuracy_max=max(z['seenV_accuracy'] for z in last),last5_seenV_first_to_last_pp=last[-1]['seenV_accuracy']-last[0]['seenV_accuracy'],best_seenV_epoch_diagnostic_only=max(q,key=lambda z:z['seenV_accuracy'])['epoch'])
  divergence={}
  for ref in ('RAW','REPLAY'):
   a=list(lines(bases[ref]/'satmix_steps.jsonl.gz'));b=list(lines(bases['REFRESH']/'satmix_steps.jsonl.gz'));ga=list(lines(bases[ref]/'step_metrics.jsonl.gz'));gb=list(lines(bases['REFRESH']/'step_metrics.jsonl.gz'))

@@ -25,6 +25,7 @@ def draw(root):
  axs[0].set(xticks=x,xticklabels=LABELS,ylabel='Accuracy (%)',ylim=(0,105),title='Three newly trained matched8L rows; all seven fixed readouts');axs[0].legend()
  for j,ref in enumerate(('RAW','REPLAY')):
   gain=[s['comparisons'][ref]['all_view_gain_pp'][v] for v in VIEWS];bars=axs[1].bar(x+(j-.5)*.36,gain,.36,label='REFRESH - '+ref,color=COLORS[ref]);axs[1].bar_label(bars,fmt='%+.2f',padding=3,fontsize=8)
+ allg=[s['comparisons'][r]['all_view_gain_pp'][v] for r in ('RAW','REPLAY') for v in VIEWS];axs[1].set_ylim(min(allg)-.55,max(allg)+.65)
  axs[1].axhline(0,color='black',lw=.8);axs[1].set(xticks=x,xticklabels=LABELS,ylabel='Accuracy difference (pp)',title='Source qualification: '+str(s['qualified'])+'; no formal target or Ag+As evidence');axs[1].legend();save(fig,'source_scene_results')
  fig,axs=plt.subplots(3,2,figsize=(13,11));panels=(('total_L','Complete labeled objective'),('extra_CE','Fourth IQ pair CE'),('seenV_accuracy','Seen-RX V accuracy (%)'),('supcon','Original SupCon'),('grad_before_clip','Gradient norm before clipping'),('pseudo_selected','Original U accepted per epoch'))
  for ax,(k,title) in zip(axs.flat,panels):
