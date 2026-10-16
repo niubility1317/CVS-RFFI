@@ -2,5 +2,5 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|冻结 F：传播核公共相位与观察窗原点的源域分解|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-F-phase-origin-source-RX1-s2026092701-m2-r02/report.md)|
+|F 公共相位与观察窗原点：完整源域分解|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-F-phase-origin-source-RX1-s2026092701-m2-r02/report.md)|
 |冻结 F 公共相位与观察窗原点：预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-F-phase-origin-source-RX1-s2026092701-m2-r01/report.md)|
