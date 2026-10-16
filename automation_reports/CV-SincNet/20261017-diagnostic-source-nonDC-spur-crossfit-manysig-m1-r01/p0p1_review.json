@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "scope": "One independent P0/P1 static review of only next real CPU source diagnostic",
+  "reviewer": "urban_p0p1_review",
+  "findings": [],
+  "checked": [
+    "exact fit L5040 isolation",
+    "leave TX AND day simultaneously",
+    "rectangular fit-only RX/bin selection",
+    "same selection for both windows",
+    "immutable publication and complete loader dependencies"
+  ],
+  "real_IQ": 0,
+  "model_checkpoint_reads": 0,
+  "NN": 0,
+  "remote_access": false
+}

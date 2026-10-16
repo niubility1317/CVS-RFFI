@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "protocol_negative_tests": 18,
+  "analytic_RX_line_PASS": true,
+  "common_TX_entangled_no_line_FAIL": true,
+  "held_TX_AND_day_selection_isolation": true,
+  "same_fit_bin_both_windows": true,
+  "complete_synthetic_packets": 5040,
+  "additional_synthetic_waveform_evaluations": 33,
+  "source_cells": 72,
+  "FFT_bin_oracle": true,
+  "amplitude_invariance": true,
+  "RX_permutation_equivariance": true,
+  "real_IQ": 0,
+  "model_forwards": 0,
+  "checkpoint_loads": 0,
+  "optimizer_updates": 0
+}
