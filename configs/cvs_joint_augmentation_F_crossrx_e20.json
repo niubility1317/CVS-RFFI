@@ -132,7 +132,7 @@
   },
   "next_source_hypothesis": {
     "name": "The inherited circular time shift may add avoidable identity damage in ordinary augmentation",
-    "status": "PROPOSED_NOT_IMPLEMENTED_REGISTERED_OR_LAUNCHED",
+    "status": "REGISTERED_NOT_LAUNCHED",
     "type": "Ordinary IQ augmentation audit/correction candidate,not established newAg",
     "basis": "Actual _apply_time_shift uses modulo256 gather;wholebatch event and perpacket integer shift;native13cap gives max3..8,wrap seam outside reference80:160 but contents move;identity harm not proved",
     "minimum": "Separately register frozen own matching B00/seed01/final20,fitRX3/4/6/8 originalL5040 only;raw once plus fullordinary and same-draw shift-bypass for13 actual native epoch strength configs E1..13,warmup strengths may repeat,all6TX/day1..3;136080defaulthead decisions plus2synthetic CPsmoke=136082NN,0updates",
@@ -145,7 +145,16 @@
     "on_pass": "Only supports separately registered samefold/sameseed matched E20 ordinary correction;not Ag/DG/As benefit;sourcefit repair did not guarantee PA-bypass E20 efficacy",
     "training_confirmation": "If separately justified:oldordinary vs same-draw shift-bypassed ordinary,allraw/U/PA/defaulthead/6forwards/E20 matched;clean>=+1pp,F1>=0,each6practical/V>=-.5pp,allconditions;not launched",
     "target_access": false,
-    "Ag_efficacy_proved": false
+    "Ag_efficacy_proved": false,
+    "run_id": "20261016-diagnostic-F-crossRX-ordinaryshift-fitL-s2026092701-m1-r01",
+    "source_NN_packets": 136080,
+    "total_NN_packets": 136082,
+    "training_updates": 0,
+    "criteria": {
+      "nonzero_shift_accuracy_recovery_pp_min": 2.0,
+      "RX_positive_min": 3,
+      "all_RX_nonzero_coverage": true
+    }
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",

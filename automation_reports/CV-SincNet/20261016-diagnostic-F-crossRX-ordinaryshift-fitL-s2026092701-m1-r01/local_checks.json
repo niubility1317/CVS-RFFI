@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "negative_cases": 14,
+  "canonical_native_outputs_bitwise_equal": true,
+  "Python_Torch_final_RNG_equal": true,
+  "PA_strengths_same": true,
+  "all13_actual_L_schedules": true,
+  "natural_small_control_nonzero_shift_packets": 0,
+  "forced_gate_and_no_shift_controls": true,
+  "synthetic_augmentation_packets": 1440,
+  "prior_local_attempt": {
+    "synthetic_augmentation_packets": 1248,
+    "model_forwards": 0,
+    "updates": 0,
+    "failure": "Test incorrectly required a gate in13small random batches;forced positive control tests mechanism without altering real experiment draws"
+  },
+  "real_IQ_reads": 0,
+  "model_forwards": 0,
+  "training_updates": 0,
+  "target_access": false
+}

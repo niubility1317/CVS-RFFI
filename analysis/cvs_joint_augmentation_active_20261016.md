@@ -111,3 +111,6 @@ PA旁路两组E20及七源视图已完整ANALYZED/VERIFIED，原条件FAIL固定
 
 
 频偏E20固定配方FAIL已完整保留，不扩seed/改频偏救跑。下一唯一普通循环移位同draw反事实源诊断的拟定范围、净2pp/3of4RX条件及成本见配置next_source_hypothesis和原报告末尾；尚无新实验启动。
+
+
+已实现登记旧循环移位完整同抽样反事实 `20261016-diagnostic-F-crossRX-ordinaryshift-fitL-s2026092701-m1-r01`。实际E1..13，fitL5040，136082NN/0更新，132704增强生成；14负例与原生输出/RNG及PA抽样控制PASS，一次P0/P1审查PASS，尚未启动。PASS也只支持独立E20普通配方修正，不称新Ag。

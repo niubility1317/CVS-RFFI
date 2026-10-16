@@ -1,0 +1,230 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-diagnostic-F-crossRX-ordinaryshift-fitL-s2026092701-m1-r01",
+  "group_id": "F-crossRX-ordinaryshift-source",
+  "display_name": "F＋跨 RX 同 TX：旧循环移位同抽样源身份反事实",
+  "description": "Frozen original B00/defaulthead;fitL5040 only;raw and13 actual capped native schedules full vs shift-only bypass;zero updates/target",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "ordinary_shift",
+    "shift-counterfactual",
+    "F-CROSS_RX-source"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "source-only",
+    "counterfactual",
+    "circular-shift",
+    "zero-update"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research;source-only audit of inherited ordinary circular shift after fixed frequency E20 failed;not new timing augmentation or training extension",
+  "code": {
+    "commit": "PENDING_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
+    "environment": "ordinary N607 CVS-RFFI; CPU2/loader0",
+    "cwd": "PROJECT/releases/cvs_F_crossRX_ordinaryshift_fitL_20261016_r01",
+    "entrypoint": "experiments/cvs_shift_counterfactual16/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated source carrier;only exact fourRX model-fit L5040 used",
+    "representation": "RawIQ256,actual fullordinary vs same-draw shift-only bypass;all downstream operators replayed,noise power recalculated from respective signal",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Existing source cache originalL6300 filteredbeforeIQstats/inference;fitIDs exactly frozenmodelL5040",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "FitRX3/4/6/8 L5040 only;72cells70each",
+      "U_s": "Unused,truth hidden",
+      "V": "Unused;heldRX1 originalL1260 also unused"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source fit defaulthead errors attributable to inherited circular shift;not Ag/DG/As/joint efficacy",
+    "target_access": false
+  },
+  "checkpoint": {
+    "initialization": "frozen_evaluation_no_training",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse verified own scratch20/final20/fourRX source provenance and loader,strict model load before any realIQ",
+    "provenance_verdict": "Own scratch E20/fixedfinal20,source-only/no ancestors/defaulthead joint;does not initialize new training",
+    "selection_rule": "Predetermined B00/seed2026092701/final20;not target-selected"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-CROSS_RX-ordinaryshift-20261016",
+    "gpu_policy": "CPU2threads,CUDA_VISIBLE_DEVICES empty,no GPU slot or healthy intervention",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-ordinaryshift-fitL-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_crossRX_ordinaryshift_fitL_20261016_r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261016-diagnostic-F-crossRX-ordinaryshift-fitL-s2026092701-m1-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_shift_counterfactual16/runner.py",
+    "stop_rule": "Role/CP/nonfinite/native replay/canonical output or RNG/frozen-state/cost/output mismatch:technical failure,preserve and no automatic retry;complete13 schedules regardless scientific result;below2pp nonzero-shift recovery or fewer3positiveRX closes fixed hypothesis,no draw/seed/RX rescue"
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "real_checkpoint_smoke.json",
+    "fit_L_ids.json",
+    "predictions/raw.json",
+    "predictions/epoch01..13.json",
+    "epoch_scores.json",
+    "result.json",
+    "completion.json or failure.json"
+  ],
+  "metrics_plan": {
+    "scope": "SourcefitL only,no target/held/U/V",
+    "criteria": {
+      "nonzero_shift_accuracy_recovery_pp_min": 2.0,
+      "RX_positive_min": 3,
+      "all_RX_nonzero_coverage": true
+    },
+    "metrics": [
+      "raw/full/bypass accuracy,Macro-F1,CE,CM",
+      "all and actual nonzero-shift repairs/breaks",
+      "RX/TX/day strata",
+      "actual shift integers/changed count/canonical output+RNG controls",
+      "whole/reference-window MSE,power ratios"
+    ],
+    "training_promotion": "Only motivates separately registered matched scratchE20 ordinary-recipe correction",
+    "uncertainty": "Repeated physical packets across13 new diagnostic draws are correlated;no naive independent packet significance"
+  },
+  "rows": [
+    {
+      "row_id": "F-crossRX-shift-fitL-s2026092701",
+      "method": "F_CROSS_RX_ordinary_shift_counterfactual",
+      "purpose": "Test inherited circular shift avoidable source identity damage without changing other exogenous draws",
+      "config_ref": "experiments/cvs_shift_counterfactual16/design.py:config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-ordinaryshift-fitL-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016511,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed only identifies fixed original checkpoint;augmentation SEED+epoch;no split/data/support/eval resampling",
+      "k": null,
+      "scenario": "raw and13 real L-stage schedules;fullordinary vs same-draw shift bypass",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "report.md:136082NN/0updates;132704augmentation generations including1664canonical checks",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-ordinaryshift-fitL-s2026092701-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_crossRX_ordinaryshift_fitL_20261016_r01/ordinary_shift.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_shift_counterfactual16/runner.py",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "real_checkpoint_smoke.json",
+        "fit_L_ids.json",
+        "predictions/raw.json",
+        "predictions/epoch01..13.json",
+        "epoch_scores.json",
+        "result.json",
+        "completion.json or failure.json"
+      ],
+      "config": {
+        "run_id": "20261016-diagnostic-F-crossRX-ordinaryshift-fitL-s2026092701-m1-r01",
+        "owner": "codex/root/F-CROSS_RX-ordinaryshift-20261016",
+        "backend": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+        "backend_commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+        "checkpoint_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source",
+        "model": "Frozen own scratch F+CROSS_RX B00/final20/seed01;default jointly trained cosine head,no new fitting",
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "L": 5040,
+        "U_used": false,
+        "V_used": false,
+        "held_RX1_used": false,
+        "target_access": false,
+        "epochs": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13
+        ],
+        "augmentation_seed": 20261016511,
+        "draws": "Python/Torch SEED+epoch;fixed fit-cache batches128/last48;new diagnostic draws,not historical training reconstruction",
+        "augmentation": "Actual checkpoint args/native base and configure;only E1..13 because native label epoch is capped at13",
+        "views": "Raw once;13 schedules full ordinary and same-draw shift bypass;replay complete pipeline including PA",
+        "capture": "Module shift wrapper preserves original shift draws;whole replay preserves Python/Torch final state and PA strengths;downstream signal-dependent noise power naturally recalculates;canonical unwrapped output/RNG checked on first batch of every epoch",
+        "source_NN_packets": 136080,
+        "total_NN_packets": 136082,
+        "smoke_synthetic_packets": 2,
+        "ordinary_generated_packets": 131040,
+        "canonical_check_generated_packets": 1664,
+        "total_augmentation_generated_packets": 132704,
+        "shift_draw_inspection": "Each invoked shift draw is replayed once per paired path for observation then native RNG restored;extra scalar draws counted separately,not model forwards",
+        "training_updates": 0,
+        "head_fit_updates": 0,
+        "teacher_forwards": 0,
+        "As_generations": 0,
+        "device": "CPU",
+        "threads": 2,
+        "criteria": {
+          "nonzero_shift_accuracy_recovery_pp_min": 2.0,
+          "RX_positive_min": 3,
+          "all_RX_nonzero_coverage": true
+        },
+        "on_fail": "Close fixed shift-correction hypothesis;no seed/draw/RX/threshold rescue",
+        "on_pass": "Only supports separately registered matched scratch E20 ordinary-recipe correction;not new Ag cross-RX or joint efficacy",
+        "parent_cost_separate": "E20/4440updates/4686678NN;frozen diagnosis only"
+      }
+    }
+  ],
+  "notes": [
+    "Frozen own verified E20 CP only,not training initialization",
+    "Actual native configure epochs1..13;later supervised training reuses cap13",
+    "Paired full/bypass reset Python/Torch state and preserve final canonical state;all PA strengths equal",
+    "Canonical unwrapped augmentor compared at each epoch first128packets,1664extra augmentation generations and zero extra NN",
+    "Full source cache deserializes other roles/features;only exactfitL5040 used",
+    "Finite same-draw controls and local negative tests before release;one P0/P1review",
+    "No automatic E20 training on PASS;source repair is not proof of generalization"
+  ],
+  "registered_at": "2026-10-16T11:06:00+00:00"
+}
