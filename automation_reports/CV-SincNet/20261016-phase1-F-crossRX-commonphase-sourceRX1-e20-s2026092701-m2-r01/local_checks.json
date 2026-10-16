@@ -1,0 +1,47 @@
+{
+  "status": "PASS",
+  "negative_cases": 11,
+  "rows": [
+    {
+      "arm": "B00",
+      "L_forwards": 6,
+      "same_IQ_pairs": true,
+      "raw_weight": 0.5,
+      "ordinary_weight": 0.25,
+      "slot_weight": 0.25,
+      "phase_packets": 0,
+      "As_packets": 0,
+      "supcon_terms": 4,
+      "phase_and_raw_have_no_supcon": true,
+      "private_phase_generator_preserves_native_RNG": true,
+      "default_head_joint_update": true,
+      "export160_exact": true,
+      "total": 4.957714557647705
+    },
+    {
+      "arm": "B10",
+      "L_forwards": 6,
+      "same_IQ_pairs": true,
+      "raw_weight": 0.5,
+      "ordinary_weight": 0.25,
+      "slot_weight": 0.25,
+      "phase_packets": 128,
+      "As_packets": 0,
+      "supcon_terms": 4,
+      "phase_and_raw_have_no_supcon": true,
+      "private_phase_generator_preserves_native_RNG": true,
+      "default_head_joint_update": true,
+      "export160_exact": true,
+      "total": 4.962785243988037
+    }
+  ],
+  "identical_scratch_initialization": true,
+  "control_loss_and_head_gradient_exactly_match_previous_B00": true,
+  "phase_same_step_reproducible": true,
+  "phase_different_step_differs": true,
+  "source_IQ_reads": 0,
+  "target_access": false,
+  "synthetic_optimizer_steps": 2,
+  "synthetic_L_objectives": 3,
+  "head_fit_updates": 0
+}

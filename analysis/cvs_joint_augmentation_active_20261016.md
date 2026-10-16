@@ -45,3 +45,6 @@ seed02两行均自然完成E20/4440更新与全部七视图，独立重算VERIFI
 
 
 公共相位冻结源检验现已完整完成并独立复算：fitL identity99.841270%，+0.37rad75.337302%（−24.503968pp），−0.37rad63.015873%（−36.825397pp），各4/4源RX超过1pp下降。0更新/0头拟合/0教师/0As，15122实际NN包前向，功率误差≤2.981e−7，全部15120决策/logits/216视图单元核对通过。真实smoke/发布/进程/日志/自然退出VERIFIED。只证实当前F+CROSS_RX的公共相位脆弱性；未证明Ag有效。下一唯一拟检验独立相位L视图的匹配B00/B10 scratchE20，仍须单独登记，尚未训练，不访问target。
+
+
+独立相位训练候选现已实现/登记 `20261016-phase1-F-crossRX-commonphase-sourceRX1-e20-s2026092701-m2-r01`，匹配B00/B10各scratchE20/同六L前向/.5raw+.25ordinary+.25槽；B10槽为每包uniform[−.37,.37]rad私有随机流。CROSS_RX仅共有ordinary对，U/ownEMA不变，0As训练。11负例与实际F合成配对控制检查PASS、一次限定P0/P1审查PASS。源clean≥+1pp/F1不降/seenV最多−.5pp，失败关闭固定配方无angle/seed/RX救跑；尚未启动或取得训练结果。
