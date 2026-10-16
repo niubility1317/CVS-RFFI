@@ -1,0 +1,159 @@
+{
+  "status": "VERIFIED",
+  "actual_training_code": "b03d183c5672bbf7d7e1e84c30841203b105e9b5",
+  "checks": {
+    "dispatcher": true,
+    "one_worker": true,
+    "worker": true,
+    "cwd": true,
+    "argv": true,
+    "GPU": true,
+    "log_growth": true,
+    "own_scratch_CP_smoke": true,
+    "archive": true,
+    "remote_compile": true,
+    "E20": true,
+    "ownEMA": true,
+    "ordinary": true,
+    "noAs": true,
+    "scratch": true,
+    "source_fold": true,
+    "four_L": true,
+    "F_physical_clip": true,
+    "normal_joint_updates": true,
+    "primary_SupCon": true,
+    "phase_counts": true,
+    "exact_power": true,
+    "exact_inverse": true,
+    "balanced": true,
+    "unchanged_RNG": true,
+    "no_TX_selection": true,
+    "no_normalization": true,
+    "no_boundary": true,
+    "actual_import": true
+  },
+  "live": {
+    "pid": 3850430,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_phasecycle_source_RX1_E20_20261016_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_phasecycle_source_RX1_E20_20261016_r01/experiments/cvs_f_phasecycle20/runner.py",
+      "--worker",
+      "--row",
+      "C4-RX1-s2026092701"
+    ],
+    "GPU": "0"
+  },
+  "dispatcher": {
+    "pid": 3850404,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_phasecycle_source_RX1_E20_20261016_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_phasecycle_source_RX1_E20_20261016_r01/experiments/cvs_f_phasecycle20/runner.py"
+    ],
+    "GPU": ""
+  },
+  "read_at": 1792137952.0657134,
+  "epoch": 2,
+  "log_bytes": 16825,
+  "actual_source_fold": {
+    "held_RX": 1,
+    "fit_RX": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "effective_counts": {
+      "L_s": 5040,
+      "U_s": 45360,
+      "V": 21600
+    },
+    "held_V_count": 5400,
+    "held_L_used": false,
+    "source_loader_generators": "named private streams; same both arms",
+    "U_truth_read": false,
+    "target_access": false
+  },
+  "actual_native_args": {
+    "epochs": 20,
+    "label_epochs": 13,
+    "pseudo_epochs": 7,
+    "use_ema_teacher": true,
+    "use_unlabeled": true,
+    "use_aug": true,
+    "use_concat_sat_channel_aug": false,
+    "label_smoothing": 0.01,
+    "baseline_ckpt": "",
+    "teacher_ckpt": "",
+    "aug_enable_pa_normal": true,
+    "pseudo_temporal_mode": "batch_neighbor",
+    "phase1_lr_schedule": "cosine",
+    "max_grad_norm": 5.0
+  },
+  "module_files": {
+    "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+    "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+    "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+    "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+  },
+  "actual_phase_cycle": {
+    "calls": 444,
+    "packets": 56832,
+    "physical_IDs": 5040,
+    "physical_ID_rotations": 15120,
+    "max_per_ID_rotation_count_imbalance": 1,
+    "max_pointwise_power_error": 0.0,
+    "max_exact_inverse_error": 0.0,
+    "TX_used_for_selection": false,
+    "global_RNG_advance": false,
+    "new_normalization": false,
+    "boundary_change": false,
+    "added_noise": false
+  },
+  "phase_construct_seconds": 0.7211979513522238,
+  "F_optimizer": {
+    "mode": "CENTER_UNITS",
+    "steps": 444,
+    "physical_clip_calls": 444,
+    "last_actual_mapping": {
+      "step": 444,
+      "base_lr": 0.00019864294968857088,
+      "sinc_lr": 0.19864294968857088,
+      "sinc_eps": 1.0000000000000001e-11,
+      "sinc_weight_decay": 0.0,
+      "physical_decay_alpha_lambda": 1.986429496885709e-08,
+      "physical_clip_calls": 444
+    }
+  },
+  "default_head_SIG3_Sinc_parameter_movement": {
+    "id_backbone.encoder.core.id_backbone.cls_head.weight": 0.5215466618537903,
+    "id_backbone.encoder.core.id_backbone.cls_head.gain": 0.31900033354759216,
+    "id_backbone.encoder.sequence_pool.views.0.local_projection.weight": 0.6078182458877563,
+    "id_backbone.encoder.sequence_pool.views.1.local_projection.weight": 0.5794991850852966,
+    "id_backbone.encoder.sequence_pool.views.2.local_projection.weight": 0.5390749573707581,
+    "id_backbone.encoder.core.id_backbone.sinc.low_coordinate": 24.470413208007812,
+    "id_backbone.encoder.core.id_backbone.sinc.band_coordinate": 39.486202239990234
+  },
+  "actual_SupCon": {
+    "calls": 444,
+    "applied_calls": 0,
+    "last": {
+      "step": 444,
+      "epoch": 2,
+      "weight": 0.0,
+      "loss": 0.0,
+      "mode": "CROSS_RX",
+      "details": [],
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "extra_model_forwards": 0
+    },
+    "extra_model_forwards": 0
+  },
+  "source_only": true,
+  "target_access": false,
+  "goal_completed": false
+}

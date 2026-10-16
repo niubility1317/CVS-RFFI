@@ -23,3 +23,9 @@ REGISTERED_NOT_RUN。实际矩阵／commit／command／environment／CWD／paths
 精确矩阵/commit/command/environment/CWD/paths/GPU/owner/stop/artifacts在experiment.json。一个不可变run，最多一个worker；所有owner/preCUDA每GPU≤3且free≥12000MiB。首步自身scratchCP noquery smoke PASS后立即继续。技术失败只保留自身产物、不自动重试、不中止健康外部任务；最小工作流的一次限定P0/P1、一个archive传输比较、remotecompile和PID/log-growth核对足够，不增加审批或hash链。
 
 发布前实际验证：LOCAL_VERIFIED_NOT_RUN。1024合成网络包／2合成optimizer／15协议负例、206初态逐键匹配、原primary IQ逐值匹配、默认头／三SIG／Sinc联合梯度、F clip、ownEMA、四前向及原首对SupCon均PASS；C4代数／精确逆／逐点功率／每包轮转覆盖与全局RNG隔离PASS。两次测试脚本顺序错误已修正（native作用域创建optimizer、native日志清理），失败合成尝试另1152网络包／1更新，无真实IQ/CP；累计2176合成网络包／3更新。隔离发布导入、实际E20=13+7参数和当前C0真实元数据核对／污染拒绝PASS，0网络/IQ/CP。一次限定P0/P1只读审查PASS无直接问题，0额外网络/IQ/CP。N607普通账户preflight于2026-10-16 16:02:23 CST核实一次。尚未发布／无新实际训练分数。
+
+实际发布：VERIFIED/RUNNING，训练代码b03d183c5672bbf7d7e1e84c30841203b105e9b5，一个archive本远比较／remotecompile通过。唯一worker自身scratchCP无query smoke PASS，E2的PID/CWD/argv/GPU/log增长、实际5040/45360/21600/5400源角色、默认头/SIG3/Sinc参数正常更新、每步F clip、四L前向、单ordinary和原SupCon日程均核实。C4按每包访问循环刷新，逐点功率与精确逆误差均0、每包三旋转次数差≤1，未推进全局RNG或使用TX选择。原U/ownEMA未改，当前0target/As，无FINAL性能。
+
+离线读取工具已就绪：13个元数据负例、独立C4物理顺序/私有随机流/每包循环重放、固定源资格复算和未完成run在IO前拒绝均PASS；384合成metadata包、0真实IQ/CP/模型前向。结果读取只使用冻结保存的source预测／日志／trace，保持运行release不变。最终将解析全20轮／4440步／原nativeCSV／stdout／Fclip／SupCon、全部5994条L/U顺序、5040包各三旋转覆盖及七场景物理元数据，保留所有正负分层和实际费用。合成fixture不是实际性能。
+
+最终读取入口：`F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_f_phasecycle20.harvest --output E:/type10-7/local_artifacts/cvs_FcrossRX_phasecycle20_20261016/final --state E:/type10-7/local_artifacts/cvs_FcrossRX_phasecycle20_20261016/terminal_readback.json --reference-root E:/type10-7/local_artifacts/cvs_FcrossRX_practical20_20261016/final`；仅worker和dispatcher自然结束、七source视图完整后执行，后续离线复算用`--cached`，不重开IQ/CP或重测。
