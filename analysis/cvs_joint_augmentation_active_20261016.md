@@ -183,3 +183,6 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 下一不同方向仅为草案、未登记／实现／启动：固定完整 practical 分布上的 MC2 损失期望组织，比较同一个 As IQ 重复与两个独立 As IQ，另设同前向 raw 控制；均10 L 前向、原监督系数不变，不平均IQ、不减弱信道、不新增损失或分支、原U不变。检验clean保持与urban增益，失败不扩M/改系数或预算救跑。旧IQmix已关闭。
+
+
+完整practical MC2源E20 20261017-phase1-F-crossRX-practicalMC2-sourceRX1-e20-s2026092701-m3-r01 已登记未启动：M00 raw/raw、M_repeat As0/As0、M_independent As0/As1，完整原raw.75/ordinary.25/SupCon加两对各.125，均10 L前向／1.25总权重；scratch20/13L7U/4440更新。只平均loss不平均IQ，原practical分布／receiver session／U保持。固定双方源判据已写入report，失败不扩M/调系数或预算；旧IQmix关闭，联合目标未完成。

@@ -1190,5 +1190,66 @@
       "target_access": false,
       "not_a_rescue_of_closed_IQmix": true
     }
+  },
+  "practical_MC2_source": {
+    "status": "REGISTERED_NOT_LAUNCHED",
+    "run_id": "20261017-phase1-F-crossRX-practicalMC2-sourceRX1-e20-s2026092701-m3-r01",
+    "baseline": "F+CROSS_RX sameTX/SIG_TIME/unifiedSinc/joint160/defaultcos/NoExplicitCFO",
+    "rows": [
+      "M00",
+      "M_repeat",
+      "M_independent"
+    ],
+    "model_seed": 2026092701,
+    "new_epochs": 60,
+    "updates": 13320,
+    "L_NN_each": 5683200,
+    "extra_L_NN_each": 2273280,
+    "As_generated_packets": [
+      0,
+      568320,
+      1136640
+    ],
+    "total_pair_weight": 1.25,
+    "source_only": true,
+    "target_access": false,
+    "new_Ag": false,
+    "joint_goal_complete": false,
+    "criteria": {
+      "primary": "M_independent",
+      "references": [
+        "M00",
+        "M_repeat"
+      ],
+      "fixed_final": 20,
+      "held_RX": 1,
+      "held_L": 1260,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "vs_raw": {
+        "min_clean_gain_pp": 0.0,
+        "min_clean_macroF1_gain_pp": 0.0,
+        "min_low_urban_gain_pp": 5.0,
+        "min_urban_mean_gain_pp": 3.0,
+        "max_each_suburban_drop_pp": 0.5,
+        "max_seenV_drop_pp": 0.5
+      },
+      "vs_repeat": {
+        "min_clean_gain_pp": 1.0,
+        "min_clean_macroF1_gain_pp": 0.0,
+        "max_each_practical_drop_pp": 0.5,
+        "max_seenV_drop_pp": 0.5
+      },
+      "final_base_L_objective_max": 0.5,
+      "on_fail": "Close fixed MC2 organization;noM4/coefficient/RX/seed/budget rescue",
+      "on_pass": "Only independent source-seed confirmation;not Ag/target/joint proof"
+    }
   }
 }
