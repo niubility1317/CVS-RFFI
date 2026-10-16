@@ -37,6 +37,13 @@ def analyze(output,spec,state,control_root):
     control_done=read(control_root/'completion.json');control_contract=read(control_root/'source_contract.json')
     if control_contract['role_ids']!=contract['role_ids'] or control_done['config']['arm']!='A0' or control['L_forward_packets']!=2273280 or control['target_access']:
         raise ValueError('Exact matching historical source control required')
+    native_args=read(source/'actual_native_args.json');native_args=native_args.get('args',native_args)
+    control_args=read(control_root/'actual_native_args.json');control_args=control_args.get('args',control_args)
+    differences=sorted(k for k in set(native_args)|set(control_args) if native_args.get(k)!=control_args.get(k))
+    if any(k not in ('run_id','candidate_id','output_dir','use_aug') and not k.startswith('aug_') for k in differences):
+        raise ValueError(('Unexpected native/U recipe difference',differences))
+    mechanism=read(source/'mechanism_progress.json')['records']
+    if len(mechanism)!=20 or any(v<=0 for v in result['actual_feature_parameters_moved'].values()):raise ValueError('F/default head must actually update')
     if {(v['TX'],v['RX'],v['day']) for v in result['coverage']}!={(t,r,d) for t in range(6) for r in (3,4,6,8) for d in (1,2,3)} or sum(v['count'] for v in result['coverage'])!=568320:
         raise ValueError('Full source training coverage required')
     with gzip.open(source/'F_optimizer_steps.jsonl.gz','rt',encoding='utf-8') as f:steps=[json.loads(v) for v in f]
@@ -63,6 +70,7 @@ def analyze(output,spec,state,control_root):
         for a,b in zip_longest(x,y):
             if a!=b:raise ValueError('All actual L/U physical sequences differ')
             count+=1
+    if count!=5994:raise ValueError('Complete 4440L+1554U batch trace required')
     h,b=result['held_V'],control['held_V'];acc=100*(h['accuracy']-b['accuracy']);f1=100*(h['macro_f1']-b['macro_f1'])
     drop=100*(control['seen_V']['source_val_accuracy']-result['seen_V']['source_val_accuracy'])
     checks=dict(held_accuracy=acc>=1.-1e-9,held_macroF1=f1>=-1e-9,seen_health=drop<=.5+1e-9,complete_health=bool(result['complete_health'] and control['complete_health']))
@@ -72,7 +80,7 @@ def analyze(output,spec,state,control_root):
     summary=dict(status='ANALYZED',source_decision=q,models=dict(A0=control,W30=result),paired=dict(repaired=repaired,broken=broken),
         full_log_proof=dict(A0=control_logs['proof'],W30=logs['proof']),actual_sequence_batch_records=count,new_model_epochs=20,new_updates=4440,
         new_real_forward_packets=costs['W30'],reused_control_model_epochs=20,reused_control_updates=4440,reused_control_real_forward_packets=costs['A0'],
-        white_observation_proof=proof,matrix_wall_seconds=state['complete']['wall_seconds'],model_seed_count=1,source_fold_count=1,target_access=False,goal_completed=False,automatic_extension=False)
+        white_observation_proof=proof,actual_native_arg_differences=differences,matrix_wall_seconds=state['complete']['wall_seconds'],model_seed_count=1,source_fold_count=1,target_access=False,goal_completed=False,automatic_extension=False)
     for name,rows in (('training_curves.csv',curves),('source_strata.csv',strata)):
         fields=list(dict.fromkeys(k for v in rows for k in v))
         with (output/name).open('w',encoding='utf-8',newline='') as f:w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(rows)
