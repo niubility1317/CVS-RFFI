@@ -1035,7 +1035,7 @@
     "source_IQ_observations": 5040
   },
   "sameTX_IQmix_source_guard": {
-    "status": "REGISTERED_NOT_LAUNCHED",
+    "status": "ANALYZED_PASS_SOURCE_IDENTITY_GUARD_ONLY",
     "run_id": "20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01",
     "question": "Do mild same-TX cross-RX observed-IQ mixtures preserve frozen default-head identities before training?",
     "coefficient": 0.1,
@@ -1050,6 +1050,19 @@
     "Ag_efficacy_proved": false,
     "target_access": false,
     "automatic_training": false,
-    "joint_goal_complete": false
+    "joint_goal_complete": false,
+    "scientific_decision": "PASS_SOURCE_IDENTITY_GUARD_ONLY",
+    "actual_NN": 50402,
+    "actual_new_epochs": 0,
+    "source_analysis_ref": "automation_reports/CV-SincNet/20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01/source_analysis.json",
+    "source_accuracy_gain_pp": {
+      "2026092701": -0.10582010582010914,
+      "2026092702": -0.19179894179893742
+    },
+    "raw_correct_retention": {
+      "2026092701": 0.9988738738738738,
+      "2026092702": 0.9979464758876524
+    },
+    "next_unique_hypothesis": "MatchedscratchE20 crossRXsameTX IQmix must improve heldRX1 clean versus raw-slot and sameRXmix,not only pass fitidentityguard"
   }
 }

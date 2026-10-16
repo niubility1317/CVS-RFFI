@@ -1,0 +1,34 @@
+{
+  "status": "ANALYZED",
+  "post_state": "VERIFIED",
+  "executed_commit": "fb60dc2323661b3cd01747a7d1af46c6140eeb6f",
+  "source_only": true,
+  "scientific_decision": "PASS_SOURCE_IDENTITY_GUARD_ONLY",
+  "model_seeds": [
+    2026092701,
+    2026092702
+  ],
+  "unique_source_L": 5040,
+  "independent_source_predictions": 50400,
+  "actual_NN_packets": 50402,
+  "synthetic_realCP_smoke_NN": 2,
+  "IQmix_generations": 40320,
+  "new_training_epochs": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "teacher_forwards": 0,
+  "checkpoint_loads": 2,
+  "all_processes_naturally_exited": true,
+  "raw_IQ_transfers": 0,
+  "checkpoint_transfers": 0,
+  "target_access": false,
+  "Ag_efficacy_proved": false,
+  "joint_goal_complete": false,
+  "missing": [
+    "Matched scratchE20 raw-slot/sameRXmix/crossRXmix heldsource recognition comparison",
+    "Independent seed confirmation of any E20 gain",
+    "Effective separate As",
+    "Matched B00/B10/B01/B11 and interactions",
+    "Formal full-source clean plus sixpractical target truthlast and cross-seed joint verification"
+  ]
+}

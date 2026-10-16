@@ -165,3 +165,6 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 下一独立泛化方向 20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01 已登记：同 TX/day 的实际跨源 RX IQ 以固定0.1组合，raw／同RX／跨RX对照，两冻结原默认头 source-fit 身份保护检查。L5040／预计50402NN／0新epoch／0更新／0target；旧circularity和As失败仍关闭。尚未启动，PASS也不是Ag/DG收益。
+
+
+20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01 双冻结模型完整源fit检查及50400预测复算完成：PASS_SOURCE_IDENTITY_GUARD_ONLY。crossRX−raw accuracy为−0.105820/−0.191799pp，raw正确保留99.887387/99.794648%，IQ相对RMS变化median0.078128。50402NN／0更新／0target。只支持下一匹配E20三组raw-slot/sameRX/crossRX；未有Ag/DG收益或联合成功。

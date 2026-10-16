@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：真实 IQ 小比例组合的源身份保护检查
 
-状态：PLANNED，算子和权限定向检查通过；尚未读取本轮真实源 IQ 或启动。
+状态：ANALYZED／VERIFIED，全部双模型源身份保护检查与独立复算完成，PASS_SOURCE_IDENTITY_GUARD_ONLY。尚未进行新增 A_g 训练或取得 held-RX/target 泛化成绩。
 
 唯一假设：对同一 TX、同一日期的原始可见 L IQ，使用其他源 RX 的实际记录作轻度 donor，在保留 anchor 主要波形后，能否维持两个冻结默认头的身份判决。对照为 raw 与同 RX、同 TX 的另一包。它是观测空间的经验组合，不恢复、反演或替换真实接收机；同 TX 标签和 Mixup 形式本身不证明身份保持，更不证明域泛化。
 
@@ -39,3 +39,46 @@ owner codex/root/F-sameTX-IQmix-source-20261016；普通 N607 既有 CVS-RFFI Py
 产物包括 root request/active/launch/result/completion/failure，各seed provenance/resolved、全部三view原默认头 logits/判决、私有 anchor/donor 物理ID及变换统计、完整日志。完成后独立复算全部50400源判决及保留率/分层/成本，生成图和报告、更新登记并提交推送。原IQ/权重/逐包标量/判决/物理ID/日志不入Git，仅保留聚合。没有 target 预测，truth-last target 评分不适用。A_g、A_s 独立收益、完整 B00/B10/B01/B11及交互、正式 clean＋六 practical 与跨种子联合目标仍未完成。
 
 REJECTED_EXTRA_GATE：通用设计/计划审批超出项目最小流程白名单；本轮使用已有研发授权，不额外请求审批。
+
+## 完整结果与边界
+
+实际执行 commit：fb60dc2323661b3cd01747a7d1af46c6140eeb6f。普通 N607 单次归档传输/remote compile、独立进程/CWD/argv/CPU环境/日志及全部终态产物 VERIFIED。dispatcher 与两 worker 自然退出，无 failure；一次真实 CP 的2包合成 no-query smoke先于源IQ，未新增训练、另训头、U/teacher视图或target访问。
+
+| 冻结模型 seed | raw source-fit accuracy % | sameRX mix % | crossRX mix % | cross−raw pp | cross−sameRX pp | raw正确保留率 % |
+|---|---:|---:|---:|---:|---:|---:|
+| 2026092701 | 99.841270 | 99.682540 | 99.735450 | -0.105820 | +0.052910 | 99.887387 |
+| 2026092702 | 99.841270 | 99.722222 | 99.649471 | -0.191799 | -0.072751 | 99.794648 |
+
+上述均为模型训练契约中的 source fit L，不是 held RX1、source V 或目标 clean。约99.8%的准确率不能与此前约80%的 held-RX clean 直接比较。跨 RX mix 的微小负变化和两个 seed 相对 sameRX 的不同符号均保留，不称为性能提升。
+
+| seed | clean F1差 pp | 最差 RX差 pp | 最差 TX差 pp | 最差 day差 pp | 修复／新错（15120组合判决） |
+|---|---:|---:|---:|---:|---|
+| 2026092701 | -0.105827 | -0.185185 | -0.198413 | -0.178571 | 1/17 |
+| 2026092702 | -0.191779 | -0.423280 | -0.436508 | -0.257937 | 2/31 |
+
+| 固定条件 | seed01 | seed02 |
+|---|---|---|
+| overall_accuracy | PASS | PASS |
+| overall_macroF1 | PASS | PASS |
+| cross_vs_sameRX | PASS | PASS |
+| raw_correct_retention | PASS | PASS |
+| nonzero_IQ_change | PASS | PASS |
+| bounded_IQ_change | PASS | PASS |
+| power_preserved | PASS | PASS |
+| every_RX | PASS | PASS |
+| every_TX | PASS | PASS |
+| every_day | PASS | PASS |
+
+同一实际输入组合在两个模型间逐包完全相同。相对 IQ RMS 改变量 min／median／max 为 0.006688025／0.078127755／0.111279136，最大相对功率误差 1.53e-08。不是简单增益扰动被 RMS 消掉；没有依据称其等同真实 RX硬件变化或已经消除 RX依赖。
+
+独立程序未导入本候选的配对、评分或qualifier实现：从全部私有 physical IDs与TX/RX/day重新建立完整 donor映射，核对全部 same/cross配对；重算50400个默认头hard decision、logit argmax、CE、accuracy、Macro-F1、混淆矩阵、所有RX/TX/day、72单元×3视图×2模型及raw正确集合保留率；复算全部变换描述量分位数和固定判据。最大评分误差1.22e-17。未传回或独立重算原始IQ变换，边界明确保留。每个source anchor的3个跨RX视图不视为3个独立物理样本，不给伪重复置信区间。
+
+新成本为2×25200source NN＋一次2包真实CP合成smoke=50402 NN，40320次IQmix，2次CP读取，0新epoch／0优化器或头更新／0teacher前向。唯一源物理样本5040，两个worker各重复读入这一fit集合。两参照历史40 model epochs／8880更新／9373356 NN保持单独成本，未续训。原载体unused roles/features曾反序列化但不进入本轮观察，U真值未使用。
+
+本轮证实：固定有界组合在两原默认头上通过源fit身份保护，且实际IQ变化非零。仍未证实：跨接收机泛化、源held-RX clean收益、practical适应或联合收益。
+
+下一唯一科学假设为：同TX跨RX经验组合相较额外raw监督和同RX平均，能否在同预算scratchE20中提高未见RX的真实clean身份识别。最小三组及原淘汰阈值已在源观察前固定于上文：保留完整baseline监督，额外raw／sameRX／crossRX；所有组8L前向/原U规则，跨RX组须相对两个对照clean各≥+1pp、F1不降、每个practical与seenV≥-0.5pp。当前只支持实现登记该匹配训练，不自动访问target；新训练尚未启动。
+
+有效独立A_g/A_s、完整因子矩阵与交互、正式full-source clean＋六practical和跨种子联合目标仍未完成。
+
+完整图（已检查）：[source_identity_guard.png](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_sameTX_IQmix_source_20261016/source_identity_guard.png)。全部分层与原判据见source_analysis.json；执行与缺项见execution_summary.json。

@@ -1,1 +1,4 @@
 {"at": "2026-10-16T14:40:35+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-16T14:48:06+00:00", "status": "ANALYZED", "note": "VERIFIED all3 source-fit views and matching frozen state/cost;PASS identity guard only,not DG or training", "evidence": ["source_analysis.json", "execution_summary.json"], "row_id": "SOURCE_IDENTITY_GUARD-s2026092701"}
+{"at": "2026-10-16T14:48:06+00:00", "status": "ANALYZED", "note": "VERIFIED all3 source-fit views and matching frozen state/cost;PASS identity guard only,not DG or training", "evidence": ["source_analysis.json", "execution_summary.json"], "row_id": "SOURCE_IDENTITY_GUARD-s2026092702"}
+{"at": "2026-10-16T14:48:06+00:00", "status": "ANALYZED", "note": "PASS_SOURCE_IDENTITY_GUARD_ONLY;all50400sourcepredictions independently recounted;next E20 unlaunched;full jointgoal incomplete", "evidence": ["source_analysis.json", "execution_summary.json"], "row_id": null}
