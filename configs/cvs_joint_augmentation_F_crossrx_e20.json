@@ -1064,5 +1064,52 @@
       "2026092702": 0.9979464758876524
     },
     "next_unique_hypothesis": "MatchedscratchE20 crossRXsameTX IQmix must improve heldRX1 clean versus raw-slot and sameRXmix,not only pass fitidentityguard"
+  },
+  "sameTX_IQmix_E20_source": {
+    "status": "REGISTERED_NOT_LAUNCHED",
+    "run_id": "20261016-phase1-F-crossRX-sameTX-IQmix-sourceRX1-e20-s2026092701-m3-r01",
+    "baseline": "F+CROSS_RX sameTX/SIG_TIME/unifiedSinc/joint160/defaultcos/NoExplicitCFO",
+    "rows": [
+      "B00",
+      "C_same",
+      "B10"
+    ],
+    "model_seed": 2026092701,
+    "new_epochs": 60,
+    "updates": 13320,
+    "L_NN_each": 4546560,
+    "extra_L_NN_each": 1136640,
+    "visible_training_bank": 5040,
+    "coefficient": 0.1,
+    "source_only": true,
+    "target_access": false,
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false,
+    "criteria": {
+      "primary": "B10",
+      "references": [
+        "B00",
+        "C_same"
+      ],
+      "fixed_final": 20,
+      "held_RX": 1,
+      "held_L": 1260,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "min_clean_gain_pp": 1.0,
+      "min_clean_macroF1_gain_pp": 0.0,
+      "max_each_practical_drop_pp": 0.5,
+      "max_seenV_drop_pp": 0.5,
+      "final_base_L_objective_max": 0.5,
+      "on_fail": "Close fixed sameTX IQmix recipe;no coefficient/alignment/window/donor/RX/seed or budget rescue",
+      "on_pass": "Only supports independent source-seed confirmation;not formal target or fulljoint proof"
+    }
   }
 }

@@ -168,3 +168,6 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01 双冻结模型完整源fit检查及50400预测复算完成：PASS_SOURCE_IDENTITY_GUARD_ONLY。crossRX−raw accuracy为−0.105820/−0.191799pp，raw正确保留99.887387/99.794648%，IQ相对RMS变化median0.078128。50402NN／0更新／0target。只支持下一匹配E20三组raw-slot/sameRX/crossRX；未有Ag/DG收益或联合成功。
+
+
+同身份实测 IQ 混合源 E20 20261016-phase1-F-crossRX-sameTX-IQmix-sourceRX1-e20-s2026092701-m3-r01 已登记未启动：B00 raw／C_same 同 RX／B10 跨 RX，完整原 raw.75＋ordinary.25＋SupCon，再加匹配 .25 视图；均 8 次 L 前向、scratchE20／4440 更新。实际 L5040/U45360/V21600、RX1 原 L1260 final-only，固定旧 U 规则。B10 必须相对双方控制 clean≥+1pp、F1≥0、每 practical≥−.5pp、seenV≥−.5pp，失败关闭固定配方。G0 只证身份保持；正式目标和联合目标仍未完成。
