@@ -1,0 +1,2 @@
+{"at": "2026-10-16T03:47:58+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-16T03:54:13+00:00", "status": "LOCAL_VERIFIED", "note": "CPU/CUDA actual F checks PASS; independent next-real-run P0/P1 review PASS; all three seeds fixed before target; no source performance gate.", "evidence": ["automation_reports/CV-SincNet/20261016-phase1-F-supcon-e50-clean-manysig-m9-r01/implementation_checks.json"], "row_id": null}
