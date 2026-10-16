@@ -1,6 +1,6 @@
 # F/E20 的 practical 源域退化复核
 
-状态：IMPLEMENTED_REGISTERED_NOT_RUN。方案在 WHITE30 最终源成绩产生前固定，现已实现并独立登记。这是科学诊断，不是新训练或 WHITE30 晋级门槛。WHITE30 已正常完成且科学 FAIL，结论保持；不据诊断改其配方、阈值或预算。
+状态：ANALYZED_SOURCE_ONLY。方案在 WHITE30 最终源成绩产生前固定，现已实现、登记、实际运行并完成独立分析。这是科学诊断，不是新训练或 WHITE30 晋级门槛。WHITE30 已正常完成且科学 FAIL，结论保持；不据诊断改其配方、阈值或预算。
 
 当前固定基座已经从旧 RAW_HZ 单路切到用户指定 F（三路 SIG_TIME/CENTER_25K/CENTER_UNITS）。旧物理诊断证明了原模型的噪声遮蔽、状态与边界效应，但不足以给出新 F 默认头的分类保持率。新疑问是：**F 在真实 practical residual 下的哪些源域退化仍可恢复；独立轻度观测噪声训练是否改变了这种恢复性，而不只改变 clean 错误分布。** 不预设多径、相位、噪声或内部门控是主因。
 
@@ -16,4 +16,8 @@
 
 如记录梯度，只对既有参数或中间张量求无更新CE导数，复用既有前向、不积累`.grad`，不拟合probe、不把方向/范数当身份识别收益。模型始终eval，参数/buffer前后一致。新默认头分数只是source诊断，既不晋级已失败WHITE30，也不改其30dB或raw比例；物理归因需要分类修复证据支持。
 
-预计每模型1260×(1+6×11)+2真实checkpoint smoke=84422网络前向，两模型168844；batch63，各1340次复用图求导，共2680次，原14个参数张量，无optimizer。Sinc导数使用既有CENTER_25K坐标，不冒称物理Hz导数。每次trace另执行一次只含原默认头的classify以核实重建logits，单列读出成本，未增加骨干包前向。首次实现已通过12负例、12合成网络包/2导数、6物理draw/66波形与full-canonical一致检查，参数/buffer不变；此前开发合成检查32包/4导数，累计56包/8导数（含独立检查），0真实IQ/CP/optimizer。登记VALID、compilePASS，真实CP smoke在worker首步PASS立即继续。一次直接P0/P1审查、commit、immutable发布与启动核实按最小流程执行。预期产物含逐模型/场景/条件与状态结果、真实模块配置、完整私有逐样本明细、独立汇总、分层图、实际成本及负结果。目前尚不存在真实诊断成绩或新图。
+预计每模型1260×(1+6×11)+2真实checkpoint smoke=84422网络前向，两模型168844；batch63，各1340次复用图求导，共2680次，原14个参数张量，无optimizer。Sinc导数使用既有CENTER_25K坐标，不冒称物理Hz导数。每次trace另执行一次只含原默认头的classify以核实重建logits，单列读出成本，未增加骨干包前向。首次实现已通过12负例、12合成网络包/2导数、6物理draw/66波形与full-canonical一致检查，参数/buffer不变；此前开发合成检查32包/4导数，累计56包/8导数（含独立检查），0真实IQ/CP/optimizer。登记VALID、compilePASS，真实CP smoke在worker首步PASS立即继续。一次直接P0/P1审查、commit、immutable发布与启动核实按最小流程执行。预期产物含逐模型/场景/条件与状态结果、真实模块配置、完整私有逐样本明细、独立汇总、分层图、实际成本及负结果。实际完整结果与三张已检查图见同run报告。
+
+## 实际完成
+
+实际代码cf91b1be7c04ed9656bc2113f3b42ffdf69f2e20；两模型168844网络包/2680导数，255.346s、0新训练，参数/buffer逐值不变，worker/dispatcher自然结束。A0源clean81.1905%、lowurban29.4444%；W30分别80.0000/28.7302%，仍不支持该噪声Ag。A0移除新增噪声固定/重算效应仅+0.9524/+1.5079pp，不能归为唯一主要原因。报告见[完整源结果](../automation_reports/CV-SincNet/20261016-diagnostic-F-practical-source-RX1-s2026092701-m2-r01/report.md)，下一源问题见[公共相位与观察窗原点](cvs_F_phase_origin_next_20261016.md)。这些都不是正式target或跨seed成绩。

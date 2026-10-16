@@ -60,7 +60,7 @@ def run():
                 numeric_flags=actual_flags(),channel=channel,source_physical_count=len(idx),source_cache_deserialized=True,
                 unused_source_containers='Existing cache may contain other roles; only original labeled RX1 L1260 forwarded, U/V0',
                 training_module_file=__import__('SSDG.train_ssdg',fromlist=['x']).__file__,
-                input_normalization='Raw source clean follows original F; practical normalize_input before propagation, unchanged native model normalization afterward',
+                input_normalization='Clean source carrier follows original nativeRMS preparation; practical normalize_input before propagation then original AGC. No new packet RMS step in F forward; existing feature normalization layers unchanged',
                 counterfactuals='same named draw and actual tensor for both models; total recomputes state/AGC, fixed freezes full state/compensation/equalizer/AGC',
                 gradient_loss='Existing default-head CE(label_smoothing=.01), autograd.grad on14 original tensors, eval mode, no optimizer/grad accumulation',
                 head_reconstruction='One extra readout-only classify per traced packet to verify joint160; not an extra backbone packet forward',

@@ -26,4 +26,4 @@
 
 20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01已完整收尾，源规则FAIL：W30−A0 accuracy0.018518518518517713pp、macroF1-0.17358780268385pp。完整20epoch/4440step/默认头分层、5994真实L-U序列及每步F物理clip已独立核对，0target。仅sourceRX1/一个seed，不证明clean/practical双突破；按原规则处理，不救援失败候选。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01/report.md)。
 
-W30修复80/破坏79，TX5+5.6667pp、TX2−4.7778pp；仅1条净改善且macroF1下降，不足以证明本轻度噪声Ag。WHITE30关闭，不扫强度/概率或扩fold/seed。下一项F原practical冻结源诊断已在本最终源成绩前固定于d92fd04fb，但尚未实现/运行，不能当作已有证据。
+W30修复80/破坏79，TX5+5.6667pp、TX2−4.7778pp；仅1条净改善且macroF1下降，不足以证明本轻度噪声Ag。WHITE30关闭，不扫强度/概率或扩fold/seed。下一项F原practical冻结源诊断已在本最终源成绩前固定于d92fd04fb，现已另行完成源域冻结诊断；其结果不改变本训练FAIL，见cvs_F_practical_source_reaudit_20261016.md。
