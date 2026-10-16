@@ -1,0 +1,167 @@
+{
+  "status": "VERIFIED",
+  "source_decision": {
+    "status": "FAIL",
+    "checks": {
+      "clean": true,
+      "F1": true,
+      "seen": false,
+      "complete_health": true
+    },
+    "clean_gain_pp": 2.18518518518519,
+    "macroF1_gain_pp": 2.3635491743851267,
+    "seen_drop_pp": 0.6712962962962865,
+    "source_only": true,
+    "target_access": false,
+    "model_seeds": 1,
+    "automatic_extension": false,
+    "goal_completed": false
+  },
+  "full_log_proof": {
+    "C0": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "SupCon_steps": 4440,
+      "SupCon_applied": 3330,
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "F_supcon/loss": 0,
+        "F_supcon/weight": 0,
+        "pair/primary_CE": 0,
+        "pair/secondary_CE": 0
+      },
+      "stdout_errors": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_objective_error": 3.5762786865234375e-07,
+      "stdout_bytes": 115560,
+      "warnings": []
+    },
+    "C4": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "SupCon_steps": 4440,
+      "SupCon_applied": 3330,
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "F_supcon/loss": 0,
+        "F_supcon/weight": 0,
+        "pair/primary_CE": 0,
+        "pair/secondary_CE": 0
+      },
+      "stdout_errors": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_objective_error": 2.384185791015625e-07,
+      "stdout_bytes": 115603,
+      "warnings": []
+    }
+  },
+  "phase_cycle_trace_proof": {
+    "status": "VERIFIED",
+    "steps": 4440,
+    "primary_physical_IDs": 5040,
+    "physical_ID_rotations": 15120,
+    "phase_exposures": 568320,
+    "max_per_ID_imbalance": 1,
+    "checks": {
+      "calls": true,
+      "packets": true,
+      "physical": true,
+      "phase_cells": true,
+      "balance": true,
+      "power": true,
+      "inverse": true,
+      "no_label": true,
+      "RNG": true,
+      "normalization": true,
+      "boundary": true,
+      "noise": true,
+      "coverage": true
+    }
+  },
+  "costs": [
+    {
+      "arm": "C0",
+      "reused_reference": true,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 2273280,
+      "student_U_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "EMA_eval_forward_packets": 396368,
+      "held_V_forward_packets": 5400,
+      "source_practical_forward_packets": 32400,
+      "elapsed_seconds": 1123.5720767974854,
+      "source_practical_seconds": 64.00892653502524,
+      "phase_cycle_exposures": 0,
+      "phase_cycle_seconds": 0.0
+    },
+    {
+      "arm": "C4",
+      "reused_reference": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 2273280,
+      "student_U_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "EMA_eval_forward_packets": 396368,
+      "held_V_forward_packets": 5400,
+      "source_practical_forward_packets": 32400,
+      "elapsed_seconds": 1127.5887246131897,
+      "source_practical_seconds": 63.38306218502112,
+      "phase_cycle_exposures": 568320,
+      "phase_cycle_seconds": 7.04316147044301
+    }
+  ],
+  "new_real_forward_packets": 3579018,
+  "new_model_epochs": 20,
+  "new_updates": 4440,
+  "reused_C0_epochs": 20,
+  "reused_C0_updates": 4440,
+  "actual_primary_sequence_records": 5994,
+  "matrix_wall_seconds": 1198.810524225235,
+  "actual_training_commit": "b03d183c5672bbf7d7e1e84c30841203b105e9b5",
+  "model_seed_count": 1,
+  "source_fold_count": 1,
+  "target_access": false,
+  "formal_test_status": "NOT_REGISTERED_SOURCE_ONLY",
+  "goal_completed": false,
+  "automatic_extension": false,
+  "scientific_status": "FAIL_SOURCE_RX1_ONLY",
+  "terminal_workers_alive": false,
+  "terminal_dispatcher_alive": false,
+  "technical_failure": null,
+  "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_FcrossRX_phasecycle20_20261016\\final",
+  "figures_rendered_and_viewed": 3
+}

@@ -92,3 +92,9 @@ C0已完成E20及七源视图、默认头独立复算：held RX1 clean83.444444%
 20261016-phase1-FcrossRX-realpair-source-RX1-e20-s2026092701-m2-r01 两scratch E20完整完成、源规则FAIL。C0/SAME_RX/CROSS_RX clean83.444444/84.314815/83.870370%；CROSS比C0仅+0.425926 pp、比SAME低0.444444 pp且宏F1低0.456891 pp。六practical全部退化，low25.685185/22.574074/20.703704%。全568320 partner和5040 L ID／允许cell、5994原L/U序列、实际默认头联合训练均独立核实，排除本实现未执行配对或预算错误的解释。新增40模型轮／8880更新／7158036网络包，矩阵1253.321882 s；0target。关闭固定crossRX真实配对，不改选SAME、不调比例／换RX/seed救援。[实际报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-realpair-source-RX1-e20-s2026092701-m2-r01/report.md)。
 
 它未证明数字Ag或跨RX训练组织的独立价值，不推翻用户固定F＋跨RX SupCon底座。paired-As五源clean保护失败继续保留；真正混合和跨seed联合目标仍active。
+
+## C4精确相位轮转：源首折实际结果
+
+20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01 一个scratch E20与原C0结果对照已完整完成，源规则FAIL；clean Δ 2.18518518518519 pp、宏F1 Δ 2.3635491743851267 pp、seenV损失 0.6712962962962865 pp。20模型轮／4440更新／3579018网络包，矩阵墙钟1198.810524225235 s；0target、1modelseed/1源折。[实际报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01/report.md)。
+
+固定C4关闭，不调角度/概率/比例或换RX/seed救援。 真实混合及跨seed共同突破仍未证明，目标保持active。

@@ -12,6 +12,6 @@
 |F/E20：有界接收观测噪声源RX1结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01/report.md)|
 |F/E20：有界观察原点抖动的源 RX1 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-F-origin-jitter-RX1-e20-s2026092701-m1-r01/report.md)|
 |F＋跨 RX 同 TX：配对 practical 的源 RX1 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/report.md)|
-|F＋跨 RX 配对星地：五源折确认结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/report.md)|
 |真实同 TX 观测配对：源域完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-realpair-source-RX1-e20-s2026092701-m2-r01/report.md)|
-|C4精确相位轮转：源域预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01/report.md)|
+|F＋跨 RX 配对星地：五源折确认结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/report.md)|
+|精确 C4 相位轮转：源域完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01/report.md)|
