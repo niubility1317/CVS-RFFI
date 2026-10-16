@@ -78,3 +78,5 @@ C0已完成E20及七源视图、默认头独立复算：held RX1 clean83.444444%
 剩余源确认已登记并通过本地聚焦验证／一次限定P0P1，run 20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01；8新scratchE20，原RX1结果仅复用、不加载其权重。动态held源角色和4worker调度已实现，F/SupCon/As原数学及随机流保持，原RX1逐包等价验证通过。当前LOCAL_VERIFIED_NOT_RUN。[预登记](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/report.md)。
 
 剩余源确认已实际发布，训练代码b3fe1c7b2e04d3abada07e79335508be2af01882；RX3/RX4四worker的真实scratchCP smoke／源角色／实际原practical参数／默认头及F更新／PID与日志增长均VERIFIED，RX6/RX8按四worker上限排队。当前RUNNING，尚无新增FINAL结果，0target。
+
+剩余源确认的本地独立复算工具已完成：动态heldRX／训练补集检查、四新折及RX1冻结参考汇总、最差RX／全部失败折／单modelseed边界、完整source曲线和分层可执行。原RX1的75600冻结预测回归及七个角色／聚合负例通过，0IQ/CP/网络。运行release保持b3fe1c7b2，当前健康任务继续；不能把合成读数写成新RX性能。

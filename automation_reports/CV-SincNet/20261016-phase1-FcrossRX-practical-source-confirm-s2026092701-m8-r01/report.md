@@ -29,3 +29,11 @@ LOCAL_VERIFIED，未启动。4096合成网络包、8合成optimizer、800合成p
 VERIFIED/RUNNING，训练代码 b3fe1c7b2e04d3abada07e79335508be2af01882，归档一次本远对比及remotecompile PASS。RX3／RX4的C0/C1已在GPU2/3/4/5运行，四worker均通过own scratchCP noquery smoke；PID/CWD/argv/GPU/log增长、真实held／fit角色和5040/45360/21600/5400计数、E20=13+7、四L前向、每步F physicalclip及默认头／三SIG／Sinc更新核实通过。RX6／RX8四行由同dispatcher按四worker上限后续启动，尚无FINAL源成绩。
 
 运行时asdict审计确认所有六场景fs25MHz／residual/post_sync／EQoff=G1／reference30／quality_adaptation=true及quality_reference20／phase_tracking=true／IQcomp=true／reflect，原模块实际导入adv3b02_xuc/code。C1一次practical生成每L step，C0为0，SupCon warm5/ramp10和0额外前向保持；原U／ownEMA、NoExplicitCFO及默认头联合训练保持。0target，未干预其他健康任务或热改release。
+
+## 独立结果读取工具已就绪
+
+仅本地离线工具扩展held RX参数，按每折声明的RX及四源训练补集核对保存的原角色、TX×RX×day及scene/state覆盖、全部20轮／4440步／nativeCSV／stdout／SupCon／F clip／实际L-U顺序，再对默认头source预测独立复算。没有改动已发布的训练代码、信道、模型或运行根。
+
+回归验证PASS：原RX1全部75600个冻结预测及配对增量复算不变；合成heldRX3的5400条正确角色读数通过，混入其他RX、默认RX1误配及targetRX2三个负例被拒绝。聚合器合成验证PASS：即使五折平均clean增益为正，任一固定折失败仍整体FAIL；损坏均值、错误训练补集、缺折、把五折写成五个modelseed四个负例被拒绝。0原IQ／CP／网络前向；合成折只测接口，不是新增RX性能。
+
+最终入口（仅全部8worker自然结束且7source视图完整后执行）：`F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_f_crossrx_folds20.harvest --output E:/type10-7/local_artifacts/cvs_FcrossRX_folds20_20261016/final --state E:/type10-7/local_artifacts/cvs_FcrossRX_folds20_20261016/terminal_readback.json --reference-summary E:/type10-7/local_artifacts/cvs_FcrossRX_practical20_20261016/final/analysis_summary.json`。后续离线重算用`--cached`，不重跑训练、预测或读取checkpoint。分折报告中的wall明示整个八行矩阵，汇总不重复累加。当前还没有本矩阵的新FINAL源结果。

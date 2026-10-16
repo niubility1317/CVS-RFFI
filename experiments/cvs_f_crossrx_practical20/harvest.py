@@ -71,16 +71,19 @@ def groups(v):
     for key,edges in [('quality_snr_db',(-10,0,10,20,30)),('signal_to_added_noise_db',(-10,0,10,20,30)),('output_frequency_hz',(-10000,-1000,-100,0,100,1000,10000)),('residual_kernel_energy',(.01,.1,1,10))]:
         yield key,bucket(p[key],edges)
 
-def check_predictions(records,saved,scene):
+def check_predictions(records,saved,scene,held_RX=1):
+    if held_RX not in (1,3,4,6,8):raise ValueError('Only an original source RX may be held out')
     keys=[packet_key(v) for v in records]
-    if len(keys)!=5400 or len(set(keys))!=5400 or any(v['RX']!=1 or v['day'] not in (1,2,3) or not math.isfinite(v['margin']) for v in records):raise ValueError('Unique held RX1 V5400 required')
+    if len(keys)!=5400 or len(set(keys))!=5400 or any(v['RX']!=held_RX or v['day'] not in (1,2,3) or not math.isfinite(v['margin']) for v in records):raise ValueError('Unique declared held-source RX V5400 required')
     v=metrics(records)
     if v['confusion']!=saved['confusion'] or not math.isclose(v['accuracy'],saved['accuracy'],abs_tol=1e-12) or not math.isclose(v['macro_f1'],saved['macro_f1'],abs_tol=1e-12):raise ValueError('Independent saved default-head recount differs')
     if scene!='clean' and any(z['physics']['scene']!=scene or z['physics']['channel_equalization_applied'] or z['physics']['true_total_snr_known'] or z['physics']['ordinary_before_satellite'] or z['physics']['boundary']!='synthetic_reflect' for z in records):raise ValueError('Full original practical condition differs')
     return dict(zip(keys,records))
 
-def analyze(output,spec,state):
+def analyze(output,spec,state,held_RX=1):
     output=Path(output)
+    if held_RX not in (1,3,4,6,8) or len(spec['rows'])!=2 or {r['config']['arm'] for r in spec['rows']}!={'C0','C1'} or any(r['config']['held_RX']!=held_RX for r in spec['rows']):raise ValueError('One declared same-held-source C0/C1 pair required')
+    fit=tuple(rx for rx in (1,3,4,6,8) if rx!=held_RX)
     if state['failure'] or state['row_failures'] or state['dispatcher_live'] or any(v['live'] for v in state['rows']) or not state['complete'] or state['complete']['status']!='ARTIFACTS_COMPLETE':raise ValueError('Both source rows must finish before completed analysis')
     models={};predictions={};logs={};costs=[];curves=[];strata=[];fusion=[];arguments={}
     for row in spec['rows']:
@@ -88,15 +91,16 @@ def analyze(output,spec,state):
         if (done['config']!=row['config'] or done['epoch']!=20 or done['optimizer_steps']!=4440 or done['initialization']!='scratch' or done['checkpoint_sources'] or done['ancestors'] or done['head_fit_updates'] or done['target_access']
             or not init['scratch_only'] or init['checkpoint_sources'] or init['target_contact'] or freeze['epoch']!=20 or freeze['selection']!='final_only' or freeze['target_access']
             or r['optimizer_updates']!=4440 or r['L_forward_packets']!=2273280 or r['training_loader_packets']!={'L_s':568320,'U_s':396368} or r['U_truth_read'] or r['target_access'] or r['head_fit_updates'] or not r['default_head_joint_training']
+            or contract['held_RX']!=held_RX or contract['source_receivers']!=list(fit) or r['held_RX']!=held_RX or r['fit_RX']!=list(fit)
             or {k:len(v) for k,v in contract['role_ids'].items()}!={'L_s':5040,'U_s':45360,'V':21600}):raise ValueError('Actual F sourcefold/defaulthead/scratchE20 contract differs')
         fp=read(s/'F_implementation_proof.json');pair=read(s/'FcrossRX_pair_proof.json');ev=read(s/'source_practical_evaluation.json');sat=arm=='C1'
         if fp['steps']!=4440 or fp['physical_clip_calls']!=4440 or fp['optimizer']!='CENTER_UNITS' or pair['pair_weights']!=[.5,.5] or pair['student_confidence_gate'] or not pair['all_L_views_supervised'] or pair['ordinary_before_satellite'] or ev['optimizer_updates'] or ev['EMA_updates'] or ev['packet_forwards']!=32400:raise ValueError('F/paired/sourceevaluation execution differs')
         if r['training_practical']['calls']!=(4440 if sat else 0) or r['training_practical']['packets']!=(568320 if sat else 0) or r['supcon']['applied_calls']!=3330 or r['supcon']['calls']!=4440 or not r['supcon']['only_primary_pair']:raise ValueError('Actual As/SupCon counts differ')
         with gzip.open(s/'F_optimizer_steps.jsonl.gz','rt',encoding='utf-8') as f:opts=[json.loads(v) for v in f]
         if [v['step'] for v in opts]!=list(range(1,4441)) or any(v['physical_clip_calls']!=v['step'] or not math.isclose(v['sinc_lr'],v['base_lr']*1000,rel_tol=1e-12) or v['sinc_weight_decay']!=0 for v in opts):raise ValueError('Complete F physical optimizer trajectory differs')
-        if {(v['TX'],v['RX'],v['day']) for v in r['coverage']}!={(t,rx,day) for t in range(6) for rx in (3,4,6,8) for day in (1,2,3)} or sum(v['count'] for v in r['coverage'])!=568320:raise ValueError('Source exposure incomplete')
+        if {(v['TX'],v['RX'],v['day']) for v in r['coverage']}!={(t,rx,day) for t in range(6) for rx in fit for day in (1,2,3)} or sum(v['count'] for v in r['coverage'])!=568320:raise ValueError('Source exposure incomplete')
         coverage=r['TX_RX_scene_state_coverage']
-        if sat and ({(v['TX'],v['RX'],v['scene']) for v in coverage}!={(t,rx,sc) for t in range(6) for rx in (3,4,6,8) for sc in SCENES[3:4]+SCENES[5:]} or {(v['TX'],v['RX'],v['state']) for v in coverage}!={(t,rx,st) for t in range(6) for rx in (3,4,6,8) for st in ('LOS','PARTIAL','BLOCKED')} or sum(v['count'] for v in coverage)!=568320):raise ValueError('TX x RX x scene/state coverage incomplete')
+        if sat and ({(v['TX'],v['RX'],v['scene']) for v in coverage}!={(t,rx,sc) for t in range(6) for rx in fit for sc in SCENES[3:4]+SCENES[5:]} or {(v['TX'],v['RX'],v['state']) for v in coverage}!={(t,rx,st) for t in range(6) for rx in fit for st in ('LOS','PARTIAL','BLOCKED')} or sum(v['count'] for v in coverage)!=568320):raise ValueError('TX x RX x scene/state coverage incomplete')
         logs[arm]=full_logs(s,output/'logs'/(row['row_id']+'.log'));curves.extend(dict(arm=arm,**v) for v in logs[arm]['curves'])
         arguments[arm]=read(s/'actual_native_args.json');arguments[arm]=arguments[arm].get('args',arguments[arm]);predictions[arm]={}
         for scene in SCENES:
@@ -104,7 +108,7 @@ def analyze(output,spec,state):
             else:
                 with gzip.open(s/(scene+'_source_predictions.jsonl.gz'),'rt',encoding='utf-8') as f:records=[json.loads(v) for v in f]
                 saved=r['practical'][scene]
-            predictions[arm][scene]=check_predictions(records,saved,scene);grouped=defaultdict(list)
+            predictions[arm][scene]=check_predictions(records,saved,scene,held_RX=held_RX);grouped=defaultdict(list)
             for v in records:
                 for key,value in groups(v):grouped[(key,value)].append(v)
             ref=predictions['C0']['clean']
@@ -151,14 +155,17 @@ def analyze(output,spec,state):
     checks=dict(urban=ug>=3.-1e-9,low=lg>=5.-1e-9,urban_F1=fg>=-1e-9,clean=cd<=.5+1e-9,seen=sd<=.5+1e-9,complete_health=all(v['complete_health'] for v in models.values()))
     q=state['source_decision']
     if q['checks']!=checks or q['status']!=('PASS' if all(checks.values()) else 'FAIL'):raise ValueError('Independent source qualifier differs')
+    calculated=dict(urban_gain_pp=ug,low_gain_pp=lg,urban_macroF1_gain_pp=fg,clean_drop_pp=cd,seen_drop_pp=sd)
+    if any(not math.isclose(q[k],value,abs_tol=1e-9) for k,value in calculated.items()):raise ValueError('Independent source gain values differ')
+    if any(not math.isclose(q['suburban_gaps_pp'][scene],100*(models['C1']['held_V']['accuracy']-models['C1']['practical'][scene]['accuracy']),abs_tol=1e-9) for scene in SCENES[1:4]):raise ValueError('Independent suburban gaps differ')
     cost_keys=('L_forward_packets','student_U_forward_packets','student_source_eval_forward_packets','EMA_eval_forward_packets','held_V_forward_packets','source_practical_forward_packets')
     summary=dict(status='ANALYZED',source_decision=q,models=models,scene_results=table,actual_native_arg_differences=args_diff,full_log_proof={a:v['proof'] for a,v in logs.items()},costs=costs,
         real_forward_packets=sum(sum(v[k] for k in cost_keys) for v in costs),new_model_epochs=40,new_updates=8880,actual_sequence_batch_records=n,matrix_wall_seconds=state['complete']['wall_seconds'],model_seed_count=1,source_fold_count=1,target_access=False,formal_test_status='NOT_REGISTERED_SOURCE_ONLY',goal_completed=False,automatic_extension=False)
     for name,rows in [('scene_results.csv',table),('source_strata.csv',strata),('paired_strata.csv',paired_strata),('training_curves.csv',curves),('fusion_gain_curves.csv',fusion),('measured_costs.csv',costs)]:
         with (output/name).open('w',encoding='utf-8',newline='') as f:
             w=csv.DictWriter(f,fieldnames=list(dict.fromkeys(k for v in rows for k in v)));w.writeheader();w.writerows(rows)
-    plot(output,table,strata,curves,logs,fusion);write(output/'analysis_summary.json',summary)
-    lines=['# F＋跨 RX 同 TX：配对 practical 的源 RX1 结果','',f"源规则 **{q['status']}**；两组 scratch E20 完成，0 目标访问。",'',
+    plot(output,table,strata,curves,logs,fusion,held_RX=held_RX);write(output/'analysis_summary.json',summary)
+    lines=[f'# F＋跨 RX 同 TX：配对 practical 的源 RX{held_RX} 结果','',f"源规则 **{q['status']}**；两组 scratch E20 完成，0 目标访问。",'',
         '|场景|C0 准确率|C1 准确率|差值 pp|C0 F1|C1 F1|','|---|---:|---:|---:|---:|---:|']
     for scene in SCENES:
         a,b=[v for v in table if v['scene']==scene];lines.append(f"|{scene}|{100*a['accuracy']:.4f}%|{100*b['accuracy']:.4f}%|{b['C1_minus_C0_accuracy_pp']:+.4f}|{100*a['macro_f1']:.4f}%|{100*b['macro_f1']:.4f}%|")
@@ -166,12 +173,12 @@ def analyze(output,spec,state):
         f"完整 40 epoch／8880 更新／全部 stdout、native CSV、SupCon 和物理梯度轨迹已解析。全 L/U 批次 {n} 条逐条一致；默认头逐包保存预测独立复算，75,600 个 held source 预测。同名实际信道元数据完全一致。",'',
         f"总真实网络前向 {summary['real_forward_packets']}，矩阵墙钟 {summary['matrix_wall_seconds']:.3f} s；实际源六 practical 评分耗时、U/EMA/训练/验证成本见 measured_costs.csv，父模型权重成本0。本地合成检查另计。",'',
         'C0=.5 RD(共同旧 ordinary)+.5 RD(同一 IQ)；C1=.5 RD(共同旧 ordinary)+.5 RD(practical(raw))。两组四次 L 前向，原浅/中层跨 RX SupCon 仅复用前两次；无新 Ag、无额外跨视图一致性、所有有标签 satellite 直接监督。旧 ordinary 不是已验证的新泛化增强。', '',
-        '一个已使用过的源 RX1 折和一个模型 seed；不是正式目标测试或跨 seed 证据。低 urban 超过60%、clean 净收益、suburban 接近 clean 及联合 Ag/As 目标均须独立后续证据。预算用尽不等于收敛。固定配方 FAIL 不扫描强度、权重、场景或更换 RX/seed 救援；PASS 只支持另登记源确认，不自动进入目标测试。', '',
+        f'一个源 RX{held_RX} 折和一个模型 seed；不是正式目标测试或跨 seed 证据。低 urban 超过60%、clean 净收益、suburban 接近 clean 及联合 Ag/As 目标均须独立后续证据。预算用尽不等于收敛。固定配方 FAIL 不扫描强度、权重、场景或更换 RX/seed 救援；PASS 只支持另登记源确认，不自动进入目标测试。', '',
         '分层和固定 C0 clean 正确集合的保持率见 CSV。quality_snr_db 是白输入期望功率代理，signal_to_added_noise_db 只表示新增噪声，均不冒充原录音总 SNR。EQ 关闭、G=1，噪声未被 EQ 着色；固定 FIR 延迟与反射边界保持。状态分层是机制关联，不等于单因素因果归因。', '',
         '门控图记录实际默认融合 gain 参数随训练的变化；本矩阵没有额外逐样本分支/门控干预，不能将参数变化写成门控因果结论。']
     (output/'report.md').write_text('\n'.join(lines)+'\n',encoding='utf-8');return summary
 
-def plot(output,table,strata,curves,logs,fusion):
+def plot(output,table,strata,curves,logs,fusion,held_RX=1):
     import matplotlib
     matplotlib.use('Agg')
     import matplotlib.pyplot as plt
@@ -188,7 +195,7 @@ def plot(output,table,strata,curves,logs,fusion):
         rr=[v for v in table if v['arm']==arm];x=np.arange(7)+offset
         axes[0].bar(x,[100*v['accuracy'] for v in rr],width=.35,label=arm);axes[1].bar(x,[100*v['fixed_retention'] for v in rr],width=.35,label=arm)
     for ax in axes:ax.set_xticks(range(7),['clean','high','mid','low sub','high urb','mid urb','low urb'],rotation=30);ax.legend()
-    axes[0].set(ylabel='Held source RX1 accuracy (%)');axes[1].set(ylabel='Retention on fixed C0 clean-correct set (%)')
+    axes[0].set(ylabel=f'Held source RX{held_RX} accuracy (%)');axes[1].set(ylabel='Retention on fixed C0 clean-correct set (%)')
     fig.savefig(output/'source_scene_results.png',dpi=160);plt.close(fig)
     fig,axes=plt.subplots(2,3,figsize=(14,7),constrained_layout=True)
     for ax,dim in zip(axes.flat,('state_end','receiver_lock_status','quality_snr_db','signal_to_added_noise_db','TX','day')):

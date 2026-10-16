@@ -1,0 +1,26 @@
+{
+  "status": "PASS",
+  "reader": {
+    "status": "PASS",
+    "original_RX1_complete_recount_and_gains_unchanged": true,
+    "original_scene_predictions_recounted": 75600,
+    "synthetic_held3_positive": 5400,
+    "protocol_negatives": 3,
+    "real_IQ": 0,
+    "checkpoint_reads": 0,
+    "network_forwards": 0
+  },
+  "aggregate": {
+    "status": "PASS",
+    "synthetic_allfive_positive": true,
+    "one_failed_fold_overrides_positive_mean": true,
+    "protocol_negatives": 4,
+    "no_new_receiver_performance_results": true,
+    "real_IQ": 0,
+    "checkpoint_reads": 0,
+    "network_forwards": 0
+  },
+  "compile": "PASS",
+  "scope": "Local saved-source result reader only; active training release unchanged",
+  "new_receiver_performance_results": false
+}
