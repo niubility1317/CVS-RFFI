@@ -1,0 +1,105 @@
+{
+  "model": {
+    "status": "PASS",
+    "negative_cases": 20,
+    "rows": [
+      {
+        "arm": "D00",
+        "L_forwards": 8,
+        "common_inputs_exact": true,
+        "extra_same_IQ": true,
+        "extra_As_packets": 0,
+        "loss": 4.8004560470581055,
+        "base_loss": 4.8004560470581055,
+        "weight_sum": 1.0,
+        "tracked_BN_modules": 0,
+        "extra_BN_batch_updates": 0,
+        "default_head_joint_update": true,
+        "export160_exact": true,
+        "no_new_state_keys": true
+      },
+      {
+        "arm": "D_raw",
+        "L_forwards": 8,
+        "common_inputs_exact": true,
+        "extra_same_IQ": true,
+        "extra_As_packets": 0,
+        "loss": 5.923811435699463,
+        "base_loss": 4.8004560470581055,
+        "weight_sum": 1.25,
+        "tracked_BN_modules": 0,
+        "extra_BN_batch_updates": 0,
+        "default_head_joint_update": true,
+        "export160_exact": true,
+        "no_new_state_keys": true
+      },
+      {
+        "arm": "D_As",
+        "L_forwards": 8,
+        "common_inputs_exact": true,
+        "extra_same_IQ": true,
+        "extra_As_packets": 128,
+        "loss": 5.929813385009766,
+        "base_loss": 4.8004560470581055,
+        "weight_sum": 1.25,
+        "tracked_BN_modules": 0,
+        "extra_BN_batch_updates": 0,
+        "default_head_joint_update": true,
+        "export160_exact": true,
+        "no_new_state_keys": true
+      }
+    ],
+    "identical_scratch_states": true,
+    "D00_loss_and_all_parameter_gradients_match_original6forward": true,
+    "all3CPU_Python_RNG_endstates_equal": true,
+    "unchanged_native_U_args": true,
+    "full_unmodified_practical_only_on_raw": true,
+    "no_As_outside_L_context": true,
+    "synthetic_ordinary_generated_packets": 128,
+    "synthetic_As_generated_packets": 128,
+    "synthetic_NN_packets": 3858,
+    "synthetic_optimizer_updates": 3,
+    "real_IQ_reads": 0,
+    "target_access": false,
+    "head_fit_updates": 0
+  },
+  "fold": {
+    "status": "PASS",
+    "U_metadata_mask_count": 45360,
+    "U_TX_reads": 0,
+    "role_negatives": 6,
+    "fold_module_restored": true,
+    "physics_capture_exact_no_reprocess": true,
+    "synthetic_RecordingLoader_IQ_packets": 6,
+    "NN": 0
+  },
+  "RX_guards": {
+    "status": "PASS",
+    "RX1_allowed_with_static_original_domainmap": true,
+    "RX6_rejected": true,
+    "extra_synthetic_NN_packets": 1152,
+    "full_physics_capture_output_and_draws_exact": true,
+    "extra_synthetic_channel_packets": 4,
+    "optimizer_updates": 0,
+    "real_IQ_reads": 0
+  },
+  "cumulative_engineering_costs": {
+    "synthetic_NN_packets": 10020,
+    "synthetic_optimizer_updates": 6,
+    "synthetic_ordinary_packets": 256,
+    "synthetic_training_As_packets": 256,
+    "synthetic_extra_sourceeval_channel_packets": 8,
+    "real_IQ_reads": 0,
+    "real_checkpoint_loads": 0,
+    "target_access": false,
+    "explanation": "Includes complete main checks twice and RXguard checks twice;last failed only at final json NameError after all forwards,corrected narrow rerun. Initial import/argparse failures and backend constructions had0NN."
+  },
+  "boundary": {
+    "status": "PASS",
+    "exact_five_pp_boundary": true,
+    "smaller_than_five_pp_rejected": true,
+    "role_and_target_negatives": 2,
+    "NN": 0,
+    "updates": 0
+  }
+}
