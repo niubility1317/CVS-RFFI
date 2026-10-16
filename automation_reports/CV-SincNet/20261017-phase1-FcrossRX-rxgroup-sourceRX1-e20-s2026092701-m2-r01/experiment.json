@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active Ag/As research goal;F+CROSS_RX baseline,E20/model,source-only falsification before newcandidate seed/target expansion",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "82975411f152e2be7d80ebc79b7caa850d2ee858",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "ordinary N607 CVS-RFFI Python/Torch originalfullFP32",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_rxgroup_sourceRX1_E20_20261017_r01"
@@ -205,7 +205,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-rxgroup-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -243,7 +243,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original sixL .25RD(ordinary)+.75RD(raw),same originalSupCon/U/defaulthead;change ordinary batch coupling only,noAs",
@@ -462,7 +462,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-rxgroup-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -500,7 +500,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original sixL .25RD(ordinary)+.75RD(raw),same originalSupCon/U/defaulthead;change ordinary batch coupling only,noAs",

@@ -54,3 +54,5 @@ run root：/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-Fcross
 一次独立限定 P0/P1 静态 review PASS，无直接发布阻断；未读真实 IQ 或 checkpoint。一次 N607 只读 preflight VERIFIED。发布只使用一次 archive SHA 本地／远端比较及一次远端 compile，smoke PASS 立即继续训练，不增加签名／receipt／额外审批门槛。
 
 预期产物：完整20 epoch及4440 step logs、L/U物理序列、coupling trace及72cell覆盖、原门控及教师计数、七视图预测与状态、独立逐 row 指标及全曲线／分层图、真实 NN／墙钟时间、失败项和最终提交。尚无本轮成绩。
+
+发布状态：VERIFIED，code commit 82975411f152e2be7d80ebc79b7caa850d2ee858；真实 checkpoint 合成2 NN smoke PASS，dispatcher98932／BATCH99020 GPU0／RXGROUP99095 GPU1，独立 PID／CWD／argv／GPU／首 epoch 日志增长核对通过。两组健康运行，尚无最终成绩。
