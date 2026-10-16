@@ -131,25 +131,12 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": {
-    "name": "Existing ordinary PA-normal contribution to avoidable source identity errors",
-    "status": "REGISTERED_NOT_LAUNCHED",
-    "minimum": "Same native augmentation draws:raw/fullordinary/PA-only-bypassed ordinary,fitL/defaulthead only;record actual PA triggers and input differences",
-    "abandon": "No paired identity recovery on truly PA-affected samples,or unmatched native draws:no training promotion",
-    "data": "Fit4RX L5040 only,no held/U/V/target",
-    "budget": "0updates/headfit;fix exact source matrix/seed/cost/thresholds before IQ access",
-    "Ag_efficacy_proved": false,
+    "name": "Same-draw ordinary PA bypass improves heldRX clean under scratchE20 F+CROSS_RX",
+    "status": "PROPOSED_NOT_IMPLEMENTED_REGISTERED_OR_LAUNCHED",
+    "minimum": "FixedRX1 sourcefold scratchE20 matched B00/PA-bypass pair;original6forwards/raw.5 ordinary.25 sraw.25/SupCon ordinarypair/originalU;capture same native draw",
+    "abandon": "No heldRX clean gain or failed practical protection;fix numeric criteria/cost in own preregistration first,no seed/RX rescue",
     "target_access": false,
-    "run_id": "20261016-diagnostic-F-crossRX-ordinaryPA-fitL-s2026092701-m1-r01",
-    "source_NN_packets": 206640,
-    "total_NN_packets": 206642,
-    "training_updates": 0,
-    "criteria": {
-      "min_PA_changed_packets": 1000,
-      "pooled_changed_accuracy_recovery_pp_min": 2.0,
-      "RX_positive_min": 3,
-      "RX_recovery_pp_min": -1.0,
-      "each_day_recovery_pp_min": 0.0
-    }
+    "Ag_efficacy_proved": false
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
@@ -229,6 +216,25 @@
     "total_NN_packets": 126002,
     "training_updates": 0,
     "finite_PSD_RMSE_max": 0.6019248374171113,
+    "target_access": false,
+    "Ag_efficacy_proved": false
+  },
+  "source_ordinary_PA_result": {
+    "run_id": "20261016-diagnostic-F-crossRX-ordinaryPA-fitL-s2026092701-m1-r01",
+    "status": "ANALYZED_SOURCE_PASS",
+    "conditions": {
+      "sufficient_changed": true,
+      "changed_identity_recovery": true,
+      "RX_coverage": true,
+      "RX_positive": true,
+      "RX_protection": true,
+      "day_protection": true
+    },
+    "changed_packets": 3054,
+    "paired_recovery_pp": 20.072036673215454,
+    "source_NN_packets": 206640,
+    "total_NN_packets": 206642,
+    "training_updates": 0,
     "target_access": false,
     "Ag_efficacy_proved": false
   }
