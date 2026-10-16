@@ -1,0 +1,57 @@
+{
+  "status": "PASS",
+  "synthetic_model_packets": 1024,
+  "synthetic_optimizer_updates": 2,
+  "synthetic_practical_packets": 188,
+  "protocol_negatives": 10,
+  "initial_state_tensors": 206,
+  "matched_original_F_initialization": true,
+  "primary_IQ_same_across_rows": true,
+  "primary_two_RDrop_only_SupCon": true,
+  "no_satellite_feature_alignment": true,
+  "four_L_forwards": true,
+  "default_head_SIG3_Sinc_joint_gradients": true,
+  "extra_head_or_model_forwards": 0,
+  "unchanged_own_EMA": true,
+  "session_stability": true,
+  "named_stream_refresh_and_separation": true,
+  "real_IQ_packets": 0,
+  "checkpoint_loads": 0,
+  "target_access": false,
+  "rows": [
+    {
+      "arm": "C0",
+      "primary_secondary_same_IQ": true,
+      "actual_S_packets": 0,
+      "actual_S_scenes": [],
+      "CROSS_RX_weight": 0.010000000000000002,
+      "all_L_supervised": true
+    },
+    {
+      "arm": "C1",
+      "primary_secondary_same_IQ": false,
+      "actual_S_packets": 128,
+      "actual_S_scenes": [
+        "practical_low_suburban",
+        "practical_low_urban",
+        "practical_mid_urban"
+      ],
+      "CROSS_RX_weight": 0.010000000000000002,
+      "all_L_supervised": true
+    }
+  ],
+  "isolated_release_import": "PASS",
+  "actual_native_E20_args": "PASS20=13+7",
+  "local_compile": "PASS",
+  "registration": "VALID",
+  "N607_preflight": "VERIFIED 2026-10-16 13:24:05 CST",
+  "independent_P0P1_review": "PASS after one targeted P1 lock-parent fix; remaining scope PASS",
+  "review_extra": {
+    "real_IQ": 0,
+    "checkpoint_reads": 0,
+    "model_forwards": 0,
+    "optimizer_updates": 0
+  },
+  "P1_fixed": "Worker owner lock is BASE/(row_id+.owner.lock), whose parent exists; source output is not precreated",
+  "real_checkpoint_noquery": "Worker first step; own scratch checkpoint only; PASS immediately continues"
+}

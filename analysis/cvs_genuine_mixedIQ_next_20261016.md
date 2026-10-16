@@ -26,7 +26,7 @@
 
 这支持固定识别函数的观察原点／公共相位脆弱性，尚未证明任何增强保持身份或改善泛化。各因素含交互，不能把准确率差加成独立物理误差份额。低 SIG 激活相似度也不能证明某个分支是唯一原因。详细见[完整 practical 源归因](../automation_reports/CV-SincNet/20261016-diagnostic-F-practical-source-RX1-s2026092701-m2-r01/report.md)及[相位／原点分解](../automation_reports/CV-SincNet/20261016-diagnostic-F-phase-origin-source-RX1-s2026092701-m2-r02/report.md)。
 
-## 当前唯一训练假设与放弃条件
+## 已结束的 OJ24 训练检验与放弃条件
 
 OJ24 只检验观察原点。每个 L 包独立取 d∼Uniform{0,…,24}，G(x)[n]=x[abs(n−d)]，I/Q 共用索引。它精确复用原 FIR 的 delta[d] causal-reflect 数学，不做循环拼接、插值、公共相位、噪声、PA、DAC、CFO 或 A_s。前 d 点是人工反射过去，末 d 点被截去；不冒充长记录或真实未来补齐。保留至少 232/256 个原观察位置，记录实际能量变化，不追加 RMS/AGC。
 
@@ -53,3 +53,12 @@ OJ24 已在实际代码 `f601fc65f6eaafbfd98080882108f4d50e07db69` 启动，运�
 ## OJ24 首轮收尾
 
 完整 E20 已完成，源规则 FAIL。OJ24−A0 accuracy -1.9074074074074021、macroF1 -1.1833066289153482 个百分点，修复 247／新增错误 350。一个源折／一个 seed，0 target；不据此宣称正式双突破。候选关闭，不调整范围或更换 RX/seed 救援。
+
+
+## 新基线下的首项实际接入
+
+当前最值得检验的是新F＋CROSS_RX下的原practical配对训练能否保住clean并提高urban，暂不再追加新Ag/一致性/课程。最小实验为C0/C1，各自scratchE20=13L＋7U、4440更新、四L前向：第一对共同旧ordinary，第二对分别相同ordinary或practical(raw)。SupCon只读第一对两次已有前向，native旧U不变，所有有标签satellite直接参与原默认头CE/RDrop。旧ordinary仅是共同条件，不冒称有效新Ag，As前不叠它的PA/AWGN/多径。
+
+训练均匀三场景low_suburban/mid_urban/low_urban，源heldRX1原V5400在FINAL固定clean＋六原practical流，无target访问。判据C1−C0：sourceurban均值≥+3pp、low≥+5pp、urbanF1不降、clean及seenV损失≤0.5pp，并完整预算/全物理顺序和覆盖；FAIL关闭固定paired-As配方，PASS只支持另登记source确认，不自动扩target或Ag。suburban2pp差距如实报告为探索目标。完整矩阵/command/paths/stop见[该run报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/report.md)。
+
+实现、1024合成网络包/188信道输入/2合成optimizer/10负例、206初态匹配、隔离导入、实际E20args和唯一限定P0/P1（锁父目录P1已修复）均通过，0真实IQ/CP；当前REGISTERED_NOT_RUN。不能把新基线接入写成已有正式性能收益。
