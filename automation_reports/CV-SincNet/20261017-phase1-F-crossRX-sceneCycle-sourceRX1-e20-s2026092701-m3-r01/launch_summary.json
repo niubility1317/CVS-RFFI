@@ -1,0 +1,89 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01",
+  "execution_commit": "c9a74172e5f81bb4f04ce12cd4386ad4dd953ee9",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_checkpoint_smoke": "PASS",
+  "real_CP_synthetic_NN": 2,
+  "ordinary_account": true,
+  "live_process_CWD_argv_GPU_verified_each_row": true,
+  "eachrow_live_log_growth_verified": true,
+  "rows": {
+    "B00-RX1-s2026092701": {
+      "GPU": 0,
+      "progress": {
+        "epoch": 2,
+        "steps": 444,
+        "L_packets": 454656,
+        "extra_L_packets": 113664,
+        "As_packets": 0,
+        "supcon_applied": 0,
+        "scene_schedule": {
+          "mode": "none",
+          "training_calls": 0,
+          "training_packets": 0,
+          "unique_physical_L": 0,
+          "max_minus_min": 0,
+          "training_generation_wall_seconds": 0.0,
+          "permutation_cycles_constructed": 0
+        },
+        "target_access": false
+      },
+      "last_complete_live_step": 454,
+      "live": true
+    },
+    "C_IID-RX1-s2026092701": {
+      "GPU": 1,
+      "progress": {
+        "epoch": 1,
+        "steps": 222,
+        "L_packets": 227328,
+        "extra_L_packets": 56832,
+        "As_packets": 28416,
+        "supcon_applied": 0,
+        "scene_schedule": {
+          "mode": "iid",
+          "training_calls": 222,
+          "training_packets": 28416,
+          "unique_physical_L": 5040,
+          "max_minus_min": 5,
+          "training_generation_wall_seconds": 43.749310752609745,
+          "permutation_cycles_constructed": 0
+        },
+        "target_access": false
+      },
+      "last_complete_live_step": 238,
+      "live": true
+    },
+    "B01-RX1-s2026092701": {
+      "GPU": 2,
+      "progress": {
+        "epoch": 1,
+        "steps": 222,
+        "L_packets": 227328,
+        "extra_L_packets": 56832,
+        "As_packets": 28416,
+        "supcon_applied": 0,
+        "scene_schedule": {
+          "mode": "balanced",
+          "training_calls": 222,
+          "training_packets": 28416,
+          "unique_physical_L": 5040,
+          "max_minus_min": 1,
+          "training_generation_wall_seconds": 45.123437254689634,
+          "permutation_cycles_constructed": 5040
+        },
+        "target_access": false
+      },
+      "last_complete_live_step": 240,
+      "live": true
+    }
+  },
+  "completed_training_rows": 0,
+  "formal_scoring": false,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "Ag_efficacy_proved": false,
+  "joint_goal_complete": false
+}

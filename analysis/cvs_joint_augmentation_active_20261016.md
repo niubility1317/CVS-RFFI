@@ -291,3 +291,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 逐物理包六scene循环 20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01 已实现登记未启动：历史全部4440步精确replay，所有5040包都见过6scene、无缺失，次数差中位11/max27；只以减少曝光不均匀为新As训练组织假设，不是新Ag。三匹配scratchE20/8L/总weight1.25，完整raw.75+ordinary.25/SupCon+原U保留，extra.25raw/IIDfullAs/balancedsinglefullAs，边际sceneuniform/传播噪声补偿不改。35负例/4114合成NN/3合成更新/520fullpractical PASS，一次P0/P1 PASS；0实际新训练/target。低urban与urbanmean须同时胜过随机As各1pp、clean及F1不降等原固定条件，不靠覆盖指标宣称有效。联合目标ACTIVE。
+
+
+逐物理包六场景均衡三匹配E20 20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01 VERIFIED RUNNING，commit c9a74172e5f81bb4f04ce12cd4386ad4dd953ee9，真实CP smoke/归档传输/compile PASS，GPU0/1/2 actualPID/CWD/argv/CUDA与存活loggrowth核实；scratchE20已开始、尚无完整识别读出和科学结论，不增加预算、改配方或使用target。

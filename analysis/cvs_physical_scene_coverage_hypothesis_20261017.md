@@ -1,6 +1,6 @@
 # 下一唯一假设：按物理包均衡 practical 场景覆盖
 
-2026-10-17。状态：HISTORICAL_REPLAY_VERIFIED／E20_PREREGISTERED_NOT_LAUNCHED。尚无新的真实 IQ 读取或训练；三组 E20 已实现并预登记。采样抖动的固定四周期估计入口已关闭，不以增加周期、换统计量或放宽拒绝率救跑。
+2026-10-17。状态：HISTORICAL_REPLAY_VERIFIED／E20_VERIFIED_RUNNING_NO_FINAL_RESULTS。尚无新的真实 IQ 读取或训练；三组 E20 已实现并预登记。采样抖动的固定四周期估计入口已关闭，不以增加周期、换统计量或放宽拒绝率救跑。
 
 ## 为什么检验这个问题
 

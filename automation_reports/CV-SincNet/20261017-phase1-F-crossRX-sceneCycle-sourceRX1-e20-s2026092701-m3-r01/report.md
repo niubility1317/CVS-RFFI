@@ -23,3 +23,6 @@ B01相对C_IID须：clean accuracy与macroF1不降、lowurban accuracy≥+1pp且
 命令：CVS-RFFI/bin/python -u experiments/cvs_scene_cycle20/runner.py。环境：普通N607已有CVS-RFFI Python，FP32 GPU worker、CPUdispatcher2threads/loader0。CWD：PROJECT/releases/cvs_F_sceneCycle_sourceRX1_e20_20261017_r01；不可覆盖output：PROJECT/runs/20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01；logs为其logs子目录。每GPU最多3个所有owner进程、最少12000MiBfree，使用共享capacity锁。一个owner；一次普通账户预检、一次archive传输对比及remotecompile。实际代码/配置只由一个Gitcommit标识，不新增文档/成员hash或审批。
 
 技术停止仅限实际角色/来源/预算/输出/非有限值/无法启动/非法预测等系统问题：保留产物，取消pending，健康worker继续，不自动重试、不干预其他owner。预期产物为每row真实CP/config/roles/冻结/完整steps与L/U序列、逐step实际scene和visits、5040逐包scene计数、全部源七视图预测、独立全量复算/识别修复新错/差距/成本/报告/索引。原U真值和target始终不读。
+
+
+实际发布：VERIFIED RUNNING，执行commit c9a74172e5f81bb4f04ce12cd4386ad4dd953ee9。一个archive传输比较／remotecompile／真实匹配CP两合成包smoke PASS；三row真实进程CWD/argv/GPU及存活期loggrowth已独立比对，GPU0/1/2，未修改旧任务。详细状态见[launch_summary.json](launch_summary.json)。当前已开始训练，尚无最终heldRX读出／科学判定／正式评分，不能声称场景组织As有效或联合成功。
