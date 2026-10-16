@@ -1,0 +1,445 @@
+{
+  "status": "ANALYZED_SOURCE_ROW_ONLY",
+  "run_id": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+  "row_id": "B00-RX1-s2026092702",
+  "model_seed": 2026092702,
+  "execution": {
+    "full_steps": 4440,
+    "full_epochs": 20,
+    "raw_native_epochs": 20,
+    "full_stdout_lines": 800,
+    "stdout_warnings": [],
+    "native_nonfinite_placeholder_fields": [],
+    "all_step_numeric_values_finite_or_explicit_null": true,
+    "max_loss_scale_recount_error": 4.470348358154297e-07,
+    "supcon_layer_forward_terms": 13320,
+    "As_training_observations": 0,
+    "As_source_eval_observations": 7560,
+    "physical_observations": {
+      "L": 568320,
+      "U": 396368
+    },
+    "unique_physical_training": {
+      "L": 5040,
+      "U": 45360
+    },
+    "L_batches": 4440,
+    "U_batches": 1554,
+    "teacher_inherited_counter_offset_removed": 2,
+    "actual_network_forward_packets": 4686678,
+    "instrumented_counters": {
+      "student_train_forward_packets": 3806288,
+      "student_eval_forward_packets": 475202,
+      "teacher_train_forward_packets": 0,
+      "teacher_eval_forward_packets": 396370
+    },
+    "held_forward_packets": 8820,
+    "elapsed_training_seconds": 1294.776290655136,
+    "final_L_CE": 0.3184920991057748,
+    "seen_V": {
+      "source_val_count": 21600,
+      "source_val_accuracy": 0.9813425925925926,
+      "source_val_rx_accuracy": {
+        "3": 0.9592592592592593,
+        "4": 0.9842592592592593,
+        "6": 0.9951851851851852,
+        "8": 0.9866666666666667
+      },
+      "source_val_worst_rx": 0.9592592592592593,
+      "held_RX_excluded": true
+    }
+  },
+  "scores": {
+    "clean": {
+      "count": 1260,
+      "accuracy": 0.830952380952381,
+      "macro_F1": 0.830088602922407,
+      "confusion": [
+        [
+          203,
+          2,
+          4,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          163,
+          0,
+          44,
+          3,
+          0
+        ],
+        [
+          33,
+          16,
+          154,
+          2,
+          0,
+          5
+        ],
+        [
+          1,
+          84,
+          0,
+          124,
+          0,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          210,
+          0
+        ],
+        [
+          0,
+          0,
+          5,
+          0,
+          12,
+          193
+        ]
+      ]
+    },
+    "practical_high": {
+      "count": 1260,
+      "accuracy": 0.3817460317460317,
+      "macro_F1": 0.3212175569368684,
+      "confusion": [
+        [
+          95,
+          0,
+          73,
+          11,
+          31,
+          0
+        ],
+        [
+          78,
+          7,
+          5,
+          83,
+          37,
+          0
+        ],
+        [
+          15,
+          16,
+          10,
+          32,
+          117,
+          20
+        ],
+        [
+          70,
+          0,
+          4,
+          130,
+          6,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          5,
+          203,
+          1
+        ],
+        [
+          0,
+          0,
+          88,
+          0,
+          86,
+          36
+        ]
+      ]
+    },
+    "practical_mid": {
+      "count": 1260,
+      "accuracy": 0.3880952380952381,
+      "macro_F1": 0.33463651078834133,
+      "confusion": [
+        [
+          97,
+          0,
+          71,
+          9,
+          33,
+          0
+        ],
+        [
+          80,
+          6,
+          12,
+          72,
+          40,
+          0
+        ],
+        [
+          13,
+          8,
+          31,
+          46,
+          100,
+          12
+        ],
+        [
+          69,
+          1,
+          9,
+          125,
+          5,
+          1
+        ],
+        [
+          4,
+          0,
+          2,
+          11,
+          192,
+          1
+        ],
+        [
+          1,
+          0,
+          90,
+          1,
+          80,
+          38
+        ]
+      ]
+    },
+    "practical_low_suburban": {
+      "count": 1260,
+      "accuracy": 0.36587301587301585,
+      "macro_F1": 0.31577604736102355,
+      "confusion": [
+        [
+          92,
+          1,
+          78,
+          14,
+          25,
+          0
+        ],
+        [
+          75,
+          7,
+          19,
+          75,
+          32,
+          2
+        ],
+        [
+          14,
+          10,
+          33,
+          41,
+          102,
+          10
+        ],
+        [
+          81,
+          2,
+          8,
+          108,
+          9,
+          2
+        ],
+        [
+          3,
+          0,
+          8,
+          8,
+          189,
+          2
+        ],
+        [
+          2,
+          0,
+          89,
+          0,
+          87,
+          32
+        ]
+      ]
+    },
+    "practical_high_urban": {
+      "count": 1260,
+      "accuracy": 0.3880952380952381,
+      "macro_F1": 0.3394682859377785,
+      "confusion": [
+        [
+          87,
+          1,
+          78,
+          16,
+          28,
+          0
+        ],
+        [
+          71,
+          11,
+          10,
+          77,
+          40,
+          1
+        ],
+        [
+          19,
+          10,
+          24,
+          29,
+          114,
+          14
+        ],
+        [
+          68,
+          1,
+          4,
+          129,
+          8,
+          0
+        ],
+        [
+          3,
+          1,
+          2,
+          10,
+          193,
+          1
+        ],
+        [
+          2,
+          2,
+          71,
+          0,
+          90,
+          45
+        ]
+      ]
+    },
+    "practical_mid_urban": {
+      "count": 1260,
+      "accuracy": 0.30873015873015874,
+      "macro_F1": 0.27668161264852836,
+      "confusion": [
+        [
+          71,
+          8,
+          71,
+          10,
+          46,
+          4
+        ],
+        [
+          67,
+          7,
+          17,
+          69,
+          42,
+          8
+        ],
+        [
+          28,
+          15,
+          35,
+          25,
+          91,
+          16
+        ],
+        [
+          66,
+          4,
+          12,
+          95,
+          27,
+          6
+        ],
+        [
+          29,
+          7,
+          12,
+          12,
+          146,
+          4
+        ],
+        [
+          9,
+          3,
+          76,
+          3,
+          84,
+          35
+        ]
+      ]
+    },
+    "practical_low_urban": {
+      "count": 1260,
+      "accuracy": 0.2849206349206349,
+      "macro_F1": 0.25805815845957386,
+      "confusion": [
+        [
+          84,
+          10,
+          43,
+          20,
+          44,
+          9
+        ],
+        [
+          72,
+          12,
+          25,
+          41,
+          54,
+          6
+        ],
+        [
+          33,
+          11,
+          44,
+          28,
+          70,
+          24
+        ],
+        [
+          62,
+          7,
+          27,
+          71,
+          36,
+          7
+        ],
+        [
+          31,
+          7,
+          21,
+          20,
+          123,
+          8
+        ],
+        [
+          17,
+          8,
+          75,
+          10,
+          75,
+          25
+        ]
+      ]
+    }
+  },
+  "default_head_source_decisions": 8820,
+  "all_seven_source_views_recounted": true,
+  "target_access": false,
+  "candidate_comparison_available": false,
+  "whole_run_status": "RUNNING",
+  "analysis_module": "experiments/cvs_crossrx_satmix20/analysis.py --confirmation --row B00"
+}

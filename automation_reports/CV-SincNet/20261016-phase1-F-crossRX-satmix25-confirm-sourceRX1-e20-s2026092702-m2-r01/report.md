@@ -60,3 +60,12 @@ As 仅作用原始 x_l，不作用旧增强后的 IQ；不重复普通 AWGN/mult
 ## 实际普通增强补充审计
 
 独立只读代码解析已完成，覆盖实际DataAugmentation、导入的build_aug_base_cfg/configure_augmentor、resolved args、11个操作的顺序/概率/范围/标签依赖/归一化/边界，以及同IQ RDrop与raw practical调用。完整解释见analysis/cvs_joint_ordinary_IQ_audit_20261016.md，逐轮汇总见ordinary_augmentation_audit.json。0IQ/模型前向/训练更新；没有修改本run。概率缩放不等于增益/相位/AWGN范围缩放，前7轮taper恒等，PA保留未验证身份保持限制。此审计不构成Ag有效证据。
+
+
+## B00 完成，配对尚未齐全
+
+B00 已自然完成固定E20与held RX1 clean＋六practical，worker正常退出。独立重算全部4440step、20轮原生CSV/JSONL与compact记录、800行完整stdout、5994个L/U批次及8820个默认头决策；没有非有限、跳步、警告或U真值使用。最大L尺度重构误差为4.47034836e-07，CROSS_RX层位／前向目标13320项。
+
+L观察568320/U396368，唯一训练物理样本L5040/U45360，全部排除RX1。每模型实际NN前向4686678，训练墙钟1294.776291秒；已扣teacher复制带入counter2，student自身smoke2已包含，公共dispatcher smoke2留全矩阵另计。
+
+B00源clean为83.095238%，lowurban为28.492063%；这只是新seed的对照，无候选增益。B01继续原进程，整个run仍为RUNNING。完整汇总见B00_source_analysis.json，不进行候选晋级或target访问。
