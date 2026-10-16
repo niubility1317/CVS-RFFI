@@ -25,3 +25,9 @@ REGISTERED_NOT_RUN。实际矩阵／commit／command／environment／CWD／paths
 运行矩阵／命令／环境／CWD／路径／GPU／owner／stop rule／预期artifact以新run experiment.json为准。新输出根不可覆盖；共两个独占worker，所有owner/preCUDA每GPU≤3且free≥12000MiB。只停止自身协议／来源／非有限数／错误预算／缓存或输出技术错误，不自动重试、不动健康五源折确认或其他任务。原source数据VALIDATED_ONCE复用，不引入新校验链或审批。
 
 本地1024合成网络包／2次optimizer、1024 partner观测／1280 ordinary IQ、14协议负例、206初态、首两步primary逐值匹配、原默认头／SIG3／Sinc梯度、ownEMA与四前向均PASS。隔离发布导入／两行实际E20参数／真实C0元数据及一次污染拒绝PASS。唯一P0/P1发现raw domain未按native map转换，已修复；5040合成bank条目与实际native domain_from_extra逐域相同、128个额外partner及空map／identity map两负例PASS，0额外网络／更新。累计partner1152，0真实IQ／CP。原审查者仅对此P1做一次定向读回PASS。N607普通账户preflight于2026-10-16 15:19:03 CST核实一次。尚未启动，无实际新训练成绩。
+
+## 实际启动
+
+VERIFIED / RUNNING，实际代码 `9b2eebcfa809c8d5cfee6523d35b84aa10ded1a4`。两行自身scratch CP no-query smoke、source L5040 bank、raw→compact domain、实际E20/13+7与原U、PID/CWD/argv/GPU/log增长、默认头／三个SIG／Sinc更新、原物理clip、primary/secondary真实覆盖已独立读回。单archive传输对照／remotecompile通过。旧ordinary包含的原物理处理保持共有条件，配对算子本身不新增硬件合成。不改其他健康确认或原practical测试，尚无新FINAL性能。
+
+独立离线读取器已实现，仅读取已保存的完整source预测、日志、F/SupCon轨迹和真实pair记录，不导入训练／IQ／checkpoint。完成后将逐条复核三行primary L/U和每个partner的合法ID、同TX/day、RX关系、所有cell/5040 ID覆盖，独立重算两主比较、F1、seenV及默认头分层。13个纯元数据／指标负例及有效same/cross和资格fixture通过，0网络／IQ／CP；未完成的行在读取前拒绝。运行release仍为9b2eebcfa，未热改训练。

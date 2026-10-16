@@ -20,7 +20,7 @@
   "synthetic_ordinary_IQ_packets": 1280,
   "local_compile": "PASS",
   "P0P1_review": "PASS after one raw-to-compact domain P1 fix and only targeted readback; reviewer zero extra IQ/CP/network forwards",
-  "real_checkpoint_smoke": "Worker-first own scratch2 zeroIQ, PASS continues; not yet run",
+  "real_checkpoint_smoke": "VERIFIED both own scratch checkpoints, zero2/queryfalse; PASS continued before bank IQ reads",
   "domain_regression": {
     "status": "PASS",
     "regression": "Original full raw domains mapped with actual native data_ctx convention before Bank/model",

@@ -1,0 +1,2358 @@
+{
+  "status": "VERIFIED",
+  "actual_code": "9b2eebcfa809c8d5cfee6523d35b84aa10ded1a4",
+  "read_at": 1792135691.160636,
+  "checks": {
+    "two_workers": true,
+    "dispatcher_live": true,
+    "no_failure": true,
+    "SAME_RX-RX1-s2026092701": true,
+    "SAME_RX-RX1-s2026092701/actual_budget": true,
+    "SAME_RX-RX1-s2026092701/roles": true,
+    "SAME_RX-RX1-s2026092701/bank": true,
+    "SAME_RX-RX1-s2026092701/joint_updates": true,
+    "SAME_RX-RX1-s2026092701/real_pair": true,
+    "SAME_RX-RX1-s2026092701/primary_ordinary": true,
+    "SAME_RX-RX1-s2026092701/native": true,
+    "CROSS_RX-RX1-s2026092701": true,
+    "CROSS_RX-RX1-s2026092701/actual_budget": true,
+    "CROSS_RX-RX1-s2026092701/roles": true,
+    "CROSS_RX-RX1-s2026092701/bank": true,
+    "CROSS_RX-RX1-s2026092701/joint_updates": true,
+    "CROSS_RX-RX1-s2026092701/real_pair": true,
+    "CROSS_RX-RX1-s2026092701/primary_ordinary": true,
+    "CROSS_RX-RX1-s2026092701/native": true
+  },
+  "dispatcher": {
+    "pid": 3810177,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_realpair_source_RX1_E20_20261016_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_realpair_source_RX1_E20_20261016_r01/experiments/cvs_f_realpair20/runner.py"
+    ],
+    "GPU": ""
+  },
+  "rows": [
+    {
+      "row_id": "SAME_RX-RX1-s2026092701",
+      "worker": {
+        "pid": 3810201,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_realpair_source_RX1_E20_20261016_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_realpair_source_RX1_E20_20261016_r01/experiments/cvs_f_realpair20/runner.py",
+          "--worker",
+          "--row",
+          "SAME_RX-RX1-s2026092701"
+        ],
+        "GPU": "0"
+      },
+      "log_bytes": 22029,
+      "initial_log_bytes": 11692,
+      "epochs": 3,
+      "actual_native_args": {
+        "epochs": 20,
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "use_ema_teacher": true,
+        "use_unlabeled": true,
+        "use_aug": true,
+        "use_concat_sat_channel_aug": false,
+        "label_smoothing": 0.01,
+        "baseline_ckpt": "",
+        "teacher_ckpt": "",
+        "aug_enable_pa_normal": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "phase1_lr_schedule": "cosine",
+        "max_grad_norm": 5.0
+      },
+      "source_fold": {
+        "held_RX": 1,
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "effective_counts": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_V_count": 5400,
+        "held_L_used": false,
+        "source_loader_generators": "named private streams; same both arms",
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "bank": {
+        "status": "VERIFIED",
+        "bank": {
+          "calls": 0,
+          "packets": 0,
+          "unique_partner_packets": 0,
+          "bank_packets": 5040,
+          "bank_IQ_reads": 5040,
+          "strata": [],
+          "U_used": false,
+          "V_used": false,
+          "held_RX_used": false,
+          "target_access": false,
+          "IQ_mixing": false,
+          "synthetic_hardware": false
+        },
+        "read_after_own_scratch_checkpoint_smoke": true,
+        "source": "Exact current filtered train_loader.dataset",
+        "bank_read_seconds": 0.7517345759551972,
+        "raw_domain_remap": "Original data_ctx domain_label_map, identical to native domain_from_extra before forward",
+        "new_dataset_roles": false,
+        "extra_IQ_transform": false
+      },
+      "actual_updates": 666,
+      "F_optimizer": {
+        "mode": "CENTER_UNITS",
+        "steps": 666,
+        "physical_clip_calls": 666,
+        "last_actual_mapping": {
+          "step": 666,
+          "base_lr": 0.00019460881554921315,
+          "sinc_lr": 0.19460881554921317,
+          "sinc_eps": 1.0000000000000001e-11,
+          "sinc_weight_decay": 0.0,
+          "physical_decay_alpha_lambda": 1.9460881554921317e-08,
+          "physical_clip_calls": 666
+        }
+      },
+      "default_head_and_SIG_movement": {
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 0.5640790462493896,
+        "id_backbone.encoder.core.id_backbone.cls_head.gain": 0.3821777403354645,
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight": 0.6133493185043335,
+        "id_backbone.encoder.sequence_pool.views.1.local_projection.weight": 0.5769786834716797,
+        "id_backbone.encoder.sequence_pool.views.2.local_projection.weight": 0.5942090153694153,
+        "id_backbone.encoder.core.id_backbone.sinc.low_coordinate": 27.730154037475586,
+        "id_backbone.encoder.core.id_backbone.sinc.band_coordinate": 32.83830642700195
+      },
+      "primary_ordinary": {
+        "calls": 666,
+        "packets": 85248,
+        "waveform_MSE": 0.07880498197100631,
+        "max_abs": 33.05625915527344,
+        "probabilities": {
+          "p_dac": 0.0,
+          "p_pa": 0.014000000000000002,
+          "p_time_shift": 0.034999999999999996,
+          "p_amp_scale": 0.045000000000000005,
+          "p_phase_rot": 0.045000000000000005,
+          "p_cfo": 0.034999999999999996,
+          "p_phase_noise": 0.03,
+          "p_awgn": 0.04000000000000001,
+          "p_multipath": 0.018,
+          "p_dc_offset": 0.03,
+          "p_bandedge_taper": 0.025
+        }
+      },
+      "partner_ordinary": {
+        "calls": 666,
+        "packets": 85248,
+        "waveform_MSE": 0.08779860532431343,
+        "max_abs": 9.456680297851562,
+        "bank_read_seconds": 0.7517345759551972,
+        "partner_view_construction_seconds": 5.496871517971158,
+        "timing_scope": "Paired sampler+native ordinary+device transfer+waveform statistics+log/cache, no backbone forward; synchronized by scalar waveform statistics"
+      },
+      "real_pair": {
+        "calls": 666,
+        "packets": 85248,
+        "unique_partner_packets": 5040,
+        "bank_packets": 5040,
+        "bank_IQ_reads": 5040,
+        "strata": [
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 1185
+          },
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 1174
+          },
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 1189
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 1183
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 1183
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 1188
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 1197
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 1191
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 1171
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 1184
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 1190
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 1192
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 1178
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 1167
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 1190
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 1180
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 1189
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 1191
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 1177
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 1194
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 1181
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 1186
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 1175
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 1169
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 1185
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 1185
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 1190
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 1196
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 1189
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 1182
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 1178
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 1184
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 1193
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 1170
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 1184
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 1175
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 1181
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 1189
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 1186
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 1184
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 1184
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 1175
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 1183
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 1177
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 1183
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 1176
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 1180
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 1178
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 1177
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 1197
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 1185
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 1172
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 1176
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 1191
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 1168
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 1191
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 1183
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 1181
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 1190
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 1183
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 1200
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 1182
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 1191
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 1181
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 1184
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 1198
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 1173
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 1179
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 1193
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 1197
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 1194
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 1191
+          }
+        ],
+        "U_used": false,
+        "V_used": false,
+        "held_RX_used": false,
+        "target_access": false,
+        "IQ_mixing": false,
+        "synthetic_hardware": false
+      },
+      "modules": {
+        "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      }
+    },
+    {
+      "row_id": "CROSS_RX-RX1-s2026092701",
+      "worker": {
+        "pid": 3810278,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_realpair_source_RX1_E20_20261016_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_realpair_source_RX1_E20_20261016_r01/experiments/cvs_f_realpair20/runner.py",
+          "--worker",
+          "--row",
+          "CROSS_RX-RX1-s2026092701"
+        ],
+        "GPU": "1"
+      },
+      "log_bytes": 22045,
+      "initial_log_bytes": 6532,
+      "epochs": 3,
+      "actual_native_args": {
+        "epochs": 20,
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "use_ema_teacher": true,
+        "use_unlabeled": true,
+        "use_aug": true,
+        "use_concat_sat_channel_aug": false,
+        "label_smoothing": 0.01,
+        "baseline_ckpt": "",
+        "teacher_ckpt": "",
+        "aug_enable_pa_normal": true,
+        "pseudo_temporal_mode": "batch_neighbor",
+        "phase1_lr_schedule": "cosine",
+        "max_grad_norm": 5.0
+      },
+      "source_fold": {
+        "held_RX": 1,
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "effective_counts": {
+          "L_s": 5040,
+          "U_s": 45360,
+          "V": 21600
+        },
+        "held_V_count": 5400,
+        "held_L_used": false,
+        "source_loader_generators": "named private streams; same both arms",
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "bank": {
+        "status": "VERIFIED",
+        "bank": {
+          "calls": 0,
+          "packets": 0,
+          "unique_partner_packets": 0,
+          "bank_packets": 5040,
+          "bank_IQ_reads": 5040,
+          "strata": [],
+          "U_used": false,
+          "V_used": false,
+          "held_RX_used": false,
+          "target_access": false,
+          "IQ_mixing": false,
+          "synthetic_hardware": false
+        },
+        "read_after_own_scratch_checkpoint_smoke": true,
+        "source": "Exact current filtered train_loader.dataset",
+        "bank_read_seconds": 0.7585071451030672,
+        "raw_domain_remap": "Original data_ctx domain_label_map, identical to native domain_from_extra before forward",
+        "new_dataset_roles": false,
+        "extra_IQ_transform": false
+      },
+      "actual_updates": 666,
+      "F_optimizer": {
+        "mode": "CENTER_UNITS",
+        "steps": 666,
+        "physical_clip_calls": 666,
+        "last_actual_mapping": {
+          "step": 666,
+          "base_lr": 0.00019460881554921315,
+          "sinc_lr": 0.19460881554921317,
+          "sinc_eps": 1.0000000000000001e-11,
+          "sinc_weight_decay": 0.0,
+          "physical_decay_alpha_lambda": 1.9460881554921317e-08,
+          "physical_clip_calls": 666
+        }
+      },
+      "default_head_and_SIG_movement": {
+        "id_backbone.encoder.core.id_backbone.cls_head.weight": 0.5641127228736877,
+        "id_backbone.encoder.core.id_backbone.cls_head.gain": 0.387510746717453,
+        "id_backbone.encoder.sequence_pool.views.0.local_projection.weight": 0.6078656911849976,
+        "id_backbone.encoder.sequence_pool.views.1.local_projection.weight": 0.5877966284751892,
+        "id_backbone.encoder.sequence_pool.views.2.local_projection.weight": 0.5981649160385132,
+        "id_backbone.encoder.core.id_backbone.sinc.low_coordinate": 28.804094314575195,
+        "id_backbone.encoder.core.id_backbone.sinc.band_coordinate": 32.98155212402344
+      },
+      "primary_ordinary": {
+        "calls": 666,
+        "packets": 85248,
+        "waveform_MSE": 0.07880498197100631,
+        "max_abs": 33.05625915527344,
+        "probabilities": {
+          "p_dac": 0.0,
+          "p_pa": 0.014000000000000002,
+          "p_time_shift": 0.034999999999999996,
+          "p_amp_scale": 0.045000000000000005,
+          "p_phase_rot": 0.045000000000000005,
+          "p_cfo": 0.034999999999999996,
+          "p_phase_noise": 0.03,
+          "p_awgn": 0.04000000000000001,
+          "p_multipath": 0.018,
+          "p_dc_offset": 0.03,
+          "p_bandedge_taper": 0.025
+        }
+      },
+      "partner_ordinary": {
+        "calls": 666,
+        "packets": 85248,
+        "waveform_MSE": 0.08798849873795349,
+        "max_abs": 33.326637268066406,
+        "bank_read_seconds": 0.7585071451030672,
+        "partner_view_construction_seconds": 5.544405697146431,
+        "timing_scope": "Paired sampler+native ordinary+device transfer+waveform statistics+log/cache, no backbone forward; synchronized by scalar waveform statistics"
+      },
+      "real_pair": {
+        "calls": 666,
+        "packets": 85248,
+        "unique_partner_packets": 5040,
+        "bank_packets": 5040,
+        "bank_IQ_reads": 5040,
+        "strata": [
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 376
+          },
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 398
+          },
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 381
+          },
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 412
+          },
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 388
+          },
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 419
+          },
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 397
+          },
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 388
+          },
+          {
+            "TX": 0,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 389
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 394
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 391
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 387
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 403
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 394
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 400
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 386
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 398
+          },
+          {
+            "TX": 0,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 401
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 405
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 393
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 402
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 414
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 398
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 379
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 378
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 400
+          },
+          {
+            "TX": 0,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 390
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 383
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 394
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 405
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 398
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 397
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 383
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 403
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 399
+          },
+          {
+            "TX": 0,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 404
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 368
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 378
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 401
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 422
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 394
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 372
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 388
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 395
+          },
+          {
+            "TX": 1,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 417
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 413
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 372
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 430
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 393
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 422
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 381
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 374
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 395
+          },
+          {
+            "TX": 1,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 380
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 399
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 400
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 373
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 386
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 371
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 382
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 392
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 423
+          },
+          {
+            "TX": 1,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 426
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 376
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 366
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 375
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 423
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 409
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 420
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 387
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 400
+          },
+          {
+            "TX": 1,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 374
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 393
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 382
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 394
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 403
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 418
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 386
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 389
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 385
+          },
+          {
+            "TX": 2,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 410
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 390
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 413
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 387
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 414
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 381
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 405
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 392
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 395
+          },
+          {
+            "TX": 2,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 390
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 366
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 396
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 380
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 402
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 382
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 402
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 410
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 406
+          },
+          {
+            "TX": 2,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 411
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 384
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 392
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 395
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 410
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 388
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 386
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 376
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 404
+          },
+          {
+            "TX": 2,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 394
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 394
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 386
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 406
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 398
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 374
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 404
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 389
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 429
+          },
+          {
+            "TX": 3,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 376
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 361
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 399
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 387
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 424
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 390
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 373
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 399
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 395
+          },
+          {
+            "TX": 3,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 415
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 395
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 406
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 401
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 402
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 384
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 401
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 386
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 387
+          },
+          {
+            "TX": 3,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 381
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 404
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 403
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 387
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 383
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 380
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 411
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 389
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 397
+          },
+          {
+            "TX": 3,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 380
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 418
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 388
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 400
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 378
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 405
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 400
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 381
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 404
+          },
+          {
+            "TX": 4,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 385
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 403
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 385
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 405
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 389
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 362
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 383
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 380
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 429
+          },
+          {
+            "TX": 4,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 403
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 389
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 401
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 410
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 375
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 400
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 382
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 404
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 390
+          },
+          {
+            "TX": 4,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 391
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 431
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 380
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 403
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 374
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 409
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 392
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 376
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 401
+          },
+          {
+            "TX": 4,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 388
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 381
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 399
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 405
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 396
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 375
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 380
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 423
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 408
+          },
+          {
+            "TX": 5,
+            "primary_RX": 3,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 406
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 390
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 367
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 419
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 390
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 380
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 378
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 401
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 437
+          },
+          {
+            "TX": 5,
+            "primary_RX": 4,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 401
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 417
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 385
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 393
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 400
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 404
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 378
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 1,
+            "count": 356
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 2,
+            "count": 390
+          },
+          {
+            "TX": 5,
+            "primary_RX": 6,
+            "partner_RX": 8,
+            "day": 3,
+            "count": 422
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 1,
+            "count": 369
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 2,
+            "count": 374
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 3,
+            "day": 3,
+            "count": 368
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 1,
+            "count": 411
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 2,
+            "count": 417
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 4,
+            "day": 3,
+            "count": 384
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 1,
+            "count": 417
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 2,
+            "count": 403
+          },
+          {
+            "TX": 5,
+            "primary_RX": 8,
+            "partner_RX": 6,
+            "day": 3,
+            "count": 439
+          }
+        ],
+        "U_used": false,
+        "V_used": false,
+        "held_RX_used": false,
+        "target_access": false,
+        "IQ_mixing": false,
+        "synthetic_hardware": false
+      },
+      "modules": {
+        "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      }
+    }
+  ],
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "source_only": true,
+  "target_access": false
+}
