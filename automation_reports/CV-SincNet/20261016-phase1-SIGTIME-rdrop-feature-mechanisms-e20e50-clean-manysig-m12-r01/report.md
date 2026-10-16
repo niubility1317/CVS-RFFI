@@ -37,3 +37,6 @@ POINT 在原双 CE 均值＋完整对称 KL 上增加未中心化特征一致性
 
 <!-- E20_FEATURE_COMPLETE_BUDGET -->
 E20六新增行及三匹配历史控制形成完整三seed比较，见[E20测试汇总](E20_summary.md)。其他训练保持原矩阵，不因该分数改变。
+
+<!-- E20_FEATURE_SOURCE_DIAGNOSTICS -->
+完整E20训练信号、系数和U接受量见[训练机制统计](source_diagnostics_E20.md)。只描述已完成轨迹，不改变当前E50方案。
