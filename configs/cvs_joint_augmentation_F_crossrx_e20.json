@@ -133,7 +133,7 @@
   "next_source_hypothesis": {
     "name": "Add full practical supervision without reducing any existing baseline raw/ordinary loss,with extra-forward and repeated-raw-loss controls",
     "type": "As training organization,not new Ag or reopening fixed replacement ratio",
-    "status": "PROPOSED_NOT_IMPLEMENTED_REGISTERED_OR_LAUNCHED",
+    "status": "REGISTERED_NOT_LAUNCHED",
     "basis": "Actual oldAs hook reduces rawtotal.75->.50 despite mainraw.50 fixed;this is a comparison confound,not a proved cause",
     "baseline": "F+CROSS_RX originalPA/shift/U/defaultcos/NoExplicitCFO,all common base raw.75+ordinary.25 retained",
     "minimum": {
@@ -193,7 +193,49 @@
         "As": 0.2
       }
     },
-    "weight_scope": "Retain original absolute base-loss coefficients;relative fractions do change as explicitly disclosed;AdamW/clipping and clean protection require real controlled results"
+    "weight_scope": "Retain original absolute base-loss coefficients;relative fractions do change as explicitly disclosed;AdamW/clipping and clean protection require real controlled results",
+    "run_id": "20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01",
+    "criteria": {
+      "primary": "D_As",
+      "references": [
+        "D00",
+        "D_raw"
+      ],
+      "fixed_final": 20,
+      "held_RX": 1,
+      "held_L": 1260,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "vs_D00": {
+        "min_clean_gain_pp": 0.0,
+        "min_clean_macroF1_gain_pp": 0.0,
+        "min_low_urban_gain_pp": 5.0,
+        "min_urban_mean_gain_pp": 3.0,
+        "max_each_practical_drop_pp": 0.5,
+        "max_seenV_drop_pp": 0.5
+      },
+      "vs_D_raw": {
+        "max_clean_drop_pp": 0.5,
+        "max_clean_macroF1_drop_pp": 0.5,
+        "min_low_urban_gain_pp": 5.0,
+        "min_urban_mean_gain_pp": 3.0,
+        "max_each_practical_drop_pp": 0.5,
+        "max_seenV_drop_pp": 0.5
+      },
+      "final_common_base_L_objective_max": 0.5,
+      "on_fail": "Close fixed additive organization,no coefficient/seed/RX/scene-probability or extra-budget rescue",
+      "on_pass": "Only supports independent source confirmation,not Ag/joint efficacy or automatic target"
+    },
+    "implemented": true,
+    "model_epochs": 60,
+    "optimizer_updates": 13320
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",

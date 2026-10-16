@@ -1,0 +1,41 @@
+{
+  "status": "PASS",
+  "all_package_files_compile": true,
+  "config_matches_actual_native_budget": true,
+  "model_forward_packets": 0,
+  "values": [
+    {
+      "arm": "D00",
+      "updates": 4440,
+      "L_forward_packets": 4546560,
+      "native_arg_differences": [
+        "candidate_id",
+        "output_dir",
+        "run_id"
+      ],
+      "tracked_BN_module_count": 0
+    },
+    {
+      "arm": "D_raw",
+      "updates": 4440,
+      "L_forward_packets": 4546560,
+      "native_arg_differences": [
+        "candidate_id",
+        "output_dir",
+        "run_id"
+      ],
+      "tracked_BN_module_count": 0
+    },
+    {
+      "arm": "D_As",
+      "updates": 4440,
+      "L_forward_packets": 4546560,
+      "native_arg_differences": [
+        "candidate_id",
+        "output_dir",
+        "run_id"
+      ],
+      "tracked_BN_module_count": 0
+    }
+  ]
+}

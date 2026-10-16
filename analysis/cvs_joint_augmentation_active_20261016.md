@@ -129,3 +129,6 @@ PA旁路两组E20及七源视图已完整ANALYZED/VERIFIED，原条件FAIL固定
 
 
 下一唯一拟检验为保持完整baseline raw/ordinary监督的追加As训练组织，设置8前向同成本与额外raw监督/尺度控制，3row同源折/seed01 scratchE20。依据是实际旧As raw总权重.75->.50的代码事实，非已证实原因；具体原定候选条件和未启动边界见刚完成shift-bypass报告及活动配置。不复活旧shift/PA/gain/frequency失败配方，不访问target。
+
+
+已实现并登记 additive As 源反证 20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01：固定RX1/seed01三组scratchE20/8L前向，完整保留原raw.75＋ordinary.25；分别追加raw0/raw.25/完整As(raw).25。20负例/3858合成NN/3合成更新PASS，一次P0/P1审查PASS；当前F的trackedBN为0。最后E20预算元数据已更正，尚未启动。须同时胜过两个对照并保护clean/practical；失败关闭固定方案，不宣称新Ag或联合成功。
