@@ -186,3 +186,6 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 完整practical MC2源E20 20261017-phase1-F-crossRX-practicalMC2-sourceRX1-e20-s2026092701-m3-r01 已登记未启动：M00 raw/raw、M_repeat As0/As0、M_independent As0/As1，完整原raw.75/ordinary.25/SupCon加两对各.125，均10 L前向／1.25总权重；scratch20/13L7U/4440更新。只平均loss不平均IQ，原practical分布／receiver session／U保持。固定双方源判据已写入report，失败不扩M/调系数或预算；旧IQmix关闭，联合目标未完成。
+
+
+practical MC2 三组E20已实际 RUNNING/VERIFIED；执行commit 8c55f5f542a6a28b699156859f31345b9d15f76a，归档／编译／匹配CP smoke与worker进程、实际参数、GPU、日志增长均已核实。固定10 L前向／原base .75raw/.25ordinary／extra两对各.125；原U不变。当前无冻结源评分，As采样组织有效性和联合目标均未证明。

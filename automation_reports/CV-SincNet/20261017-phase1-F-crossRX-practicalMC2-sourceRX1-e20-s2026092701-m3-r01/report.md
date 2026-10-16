@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：完整 practical 双实现期望监督
 
-状态：PLANNED，已登记，尚未启动。当前唯一候选为 MC2 采样组织，联合目标未完成。执行代码以本次 Git commit 与 release_commit.txt 为准，发布后写入 execution_summary.json。
+状态：RUNNING／VERIFIED，三组已实际从零启动，尚未完成训练或源评分。当前唯一候选为 MC2 采样组织，联合目标未完成。执行代码以本次 Git commit 与 release_commit.txt 为准，发布后写入 execution_summary.json。
 
 ## 问题与假设
 
@@ -61,3 +61,14 @@ run_id：20261017-phase1-F-crossRX-practicalMC2-sourceRX1-e20-s2026092701-m3-r01
 本地43负例与真实F结构合成测试PASS：共同目标全部参数梯度精确匹配、三行scratch状态与CPU/Python RNG一致、10前向、每对同IQ、MC0输入／draw记录跨As行完全一致、receiver session稳定、默认头联合更新、完整joint160导出／状态键不变。一次独立P0/P1执行审查PASS，无待修问题；未追加未变代码或报告审查。
 
 预期产物：真实checkpoint smoke；实际args/config/角色/init/frozen；全部步与L/U序列；MC2_progress/audit及覆盖；七视图预测／独立评分；完整曲线、分层、错误转移、实际成本、同row报告和登记。只作一次发布归档本远端SHA比较与远端compile；不增加数据重验、签名、receipt链或审批层。
+
+
+## 实际发布与独立启动读回
+
+执行 commit 8c55f5f542a6a28b699156859f31345b9d15f76a 已推送，远端 OID 与本地 HEAD 独立核对一致；一次归档 SHA 比较、remote compile VERIFIED，匹配真实 checkpoint 无 query smoke PASS。dispatcher 与三个 worker 的 PID/CWD/argv/CUDA环境、实际 GPU 和逐步日志增长 VERIFIED。实际 seed2026092701、20/13/7、scratch、无 baseline/teacher 父权重；resolved 为原 F+CROSS_RX、L5040/U45360/V21600、10次L前向、两额外对各.125、总权重1.25，原U规则保持。
+
+- M00-RX1-s2026092701：GPU 0，观察完整 step 368/4440，E2/20。仅为运行证据，无最终识别结论。
+
+- M_repeat-RX1-s2026092701：GPU 1，观察完整 step 209/4440，E1/20。仅为运行证据，无最终识别结论。
+
+- M_independent-RX1-s2026092701：GPU 2，观察完整 step 157/4440，E1/20。仅为运行证据，无最终识别结论。
