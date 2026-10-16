@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "scope": "One independent P0/P1 original review plus one targeted re-review of only its two P1 fixes",
+  "reviewer": "dc_p0p1_review",
+  "original_findings": [
+    {
+      "severity": "P1",
+      "issue": "Fixed seed02 reference falsely rejected seed01",
+      "fix": "validate_base binds only seed to current registered model; all other actual ordinary config fields remain strict",
+      "state": "CLOSED"
+    },
+    {
+      "severity": "P1",
+      "issue": "Two nonfinite native args defaults could not be written to strictJSON",
+      "fix": "Recursive log copy converts nonfinite defaults to null and records path/kind; execution args unchanged",
+      "state": "CLOSED"
+    }
+  ],
+  "targeted_review": "PASS。两个 P1 均已关闭：参照 seed 绑定当前模型，其余增强参数仍严格比较；非有限值仅转换日志副本，原始执行参数保持不变。未发现修复直接引入新的 P0/P1。",
+  "evidence": "P1_fix_checks.json;full package compileall PASS;no additional full review"
+}

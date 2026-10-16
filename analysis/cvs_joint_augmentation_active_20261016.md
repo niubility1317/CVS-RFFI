@@ -216,3 +216,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 端部可见性 20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01 完整ANALYZED/VERIFIED：FAIL_FIXED_EDGE_VISIBILITY_IDENTITY_GUARD_CLOSED。两冻结模型/三视图全部30240判决、CE/F1/分层/窗统计复算，实际30242NN/0更新/target。seed02左/右accuracy−1.388889/−.654762pp，左端11包IQchange>.35；参考完全保持仍不足以保真。固定16/8zero8taper关闭，不缩长度/换边/阈值/RX/seed救跑，不启动E20；没有新有效Ag，联合目标ACTIVE。
+
+
+下一单一候选普通增强输出RMS恢复 20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01 已实现登记未启动：同一实际E13 ordinary IQ，仅正实数恢复原包功率；四命名抽样、两既有合法E20默认头fitL5040，预计90722NN，0新训练/更新/target。19输入负例＋8科学反例/96合成RMS PASS；原审查两P1修复定向PASS。固定完整ordinary后置RMS/E13/四抽样失败不换位置/部分系数/clip/禁用旧增强/抽样/RX/seed。PASS仅源尺度身份依据，须另登记三匹配E20控制，未证明Ag或联合收益。区别于另一对话practical正负噪声方向，旧失败全部保持关闭。

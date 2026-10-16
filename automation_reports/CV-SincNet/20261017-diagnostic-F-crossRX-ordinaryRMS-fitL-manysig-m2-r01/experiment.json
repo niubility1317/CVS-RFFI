@@ -1,0 +1,476 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01",
+  "group_id": "phase1-F-crossRX-ordinaryRMS-source-identity",
+  "display_name": "F＋跨RX同TX：同一普通增强IQ尺度恢复的双默认头源反证",
+  "description": "Actual ordinaryE13/fourfixed draws;compare originalIQ vs sameIQ restoredpacketRMS under two frozenE20 defaultheads;sourcefit only,0newtraining/target",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "ordinary output RMS restoration source counterfactual"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "ordinary_RMS",
+    "source_only",
+    "frozen_default_head",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+    "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active jointAg/As research;source ordinary-output calibration candidate,not randomgain(raw) rescue or modification to oldjobs. No target or automatictraining",
+  "code": {
+    "commit": "Actual execution commit in release_commit.txt/resolved_config",
+    "checkout": "Managed codex/cvs-iq-timing-e20-20261016 worktree",
+    "environment": "OrdinaryN607 existingCVS-RFFI Python,CPU2/CUDA hidden;eachfrozenmodel original immutablebackend",
+    "cwd": "PROJECT/releases/cvs_F_ordinary_RMS_fitL_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original VALIDATED_ONCE source carrier;fitL5040 exact frozenmodel L roles",
+    "representation": "Native EQ1 RMS IQ256/25Msps;originalordinary E13 thenonepositive packetpower restore;samegeneratedIQ comparison",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original L6300 handles;fitL5040 exact modelL IDs saved privately;RX1 excluded",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "OriginalL6300 deserialized;exactfitL5040 RX3/4/6/8 only;RX1L1260 excluded",
+      "U_s": "Opaque roleID metadata only,noIQ/labels in sourcecache;unused",
+      "V": "Unused sourceV/features deserialize"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Sourcefit ordinary scale/identity repair only;not heldRXclean,DG,As,hardware or joint efficacy"
+  },
+  "checkpoint": {
+    "initialization": "Two existing source-only scratchfinal20 B00 diagnosticreferences,not newtraininginit",
+    "sources": [
+      {
+        "model_seed": 2026092701,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+        "checkpoint": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth",
+        "immutable_backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+        "execution_commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8"
+      },
+      {
+        "model_seed": 2026092702,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+        "checkpoint": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source/final_ssdg.pth",
+        "immutable_backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+        "execution_commit": "d71531d53c1d9ec46e3915963e05bff96760e80e"
+      }
+    ],
+    "contract_check_ref": "Reuse original verifiedsourcefold checkpoints;initialization/completion/source_frozen/source_contract and payload checked:fitL5040/U45360/V21600,RX1held,sourceonly,no unknownancestors/target/headfit,strictdefaulthead",
+    "provenance_verdict": "Matching existing source-only diagnostic weights;runtime rechecks prior provenance handles before inference",
+    "selection_rule": "Existing final-only E20;no source/target checkpoint selection for this operator"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-ordinary-RMS-source-20261017",
+    "gpu_policy": "CPU only,2threads,CUDA_VISIBLE_DEVICES empty;workers sequential",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_ordinary_RMS_fitL_20261017_r01/source_ordinary_RMS.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_ordinary_rms17.dispatch",
+    "stop_rule": "Wrongoriginal source/provenance/augmentation/nativeargs,nonfinite/zeroenergy,outputcollision or workerexception:preservepartial/failure,no automaticretry/unrelatedprocess change. ScientificFAIL finishes bothfixedmodels thencloses fullordinary postRMS/E13/fourdraw recipe;no position/coefficient/clip/disableoperator/draw/RX/seed rescue."
+  },
+  "expected_artifacts": [
+    "root request/active/launch/result/completion",
+    "eachseed resolved actualnativeargs/augmentor files/base/schedule/checkpoint provenance",
+    "raw5040 plusfourdraw originalordinary/RMS-restored complete pairedlogits/predictions private",
+    "allsourceID/metadata private;all160batches permodel gain/RMS/powererror/shapeerror/PAstrength private",
+    "one2syntheticCP noquerysmoke PASSthencontinue;64syntheticcanonicalordinary permodel/noNN",
+    "fullstdout;independent all90720decisions/logits/CE/F1/strata/cells/fourdraw/stat/cost recount/report/registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "pairedrepair_broken",
+      "raw_correct_retention",
+      "each_RX_TX_day_accuracygain",
+      "eachdraw_accuracygain",
+      "fraction_calibrationgain_outside1pct",
+      "RMS/powererror/positivescalarshape",
+      "actualNN/generation/zero_update_cost"
+    ],
+    "dimensions": [
+      "twoexistingE20modelseeds",
+      "raw/originalordinary/RMS",
+      "fourfixedaugmentationdraws",
+      "RX3/4/6/8",
+      "TX0..5",
+      "day1/2/3",
+      "72cells"
+    ],
+    "prediction_ref": "Eachseed predictions/raw.json anddraw01..04.json private;sourcefit only",
+    "scorer_ref": "Independent fullsource prediction/scalarrecount,no targettruth",
+    "criteria": {
+      "min_RMS_vs_ordinary_accuracy_gain_pp": 0.2,
+      "min_RMS_vs_ordinary_macroF1_gain_pp": 0.0,
+      "min_positive_draws": 3,
+      "min_each_draw_RMS_vs_ordinary_gain_pp": -0.2,
+      "min_RMS_vs_raw_accuracy_gain_pp": -0.5,
+      "min_RMS_vs_raw_macroF1_gain_pp": -0.5,
+      "min_each_group_RMS_vs_raw_gain_pp": -1.0,
+      "min_each_group_RMS_vs_ordinary_gain_pp": -0.5,
+      "min_raw_correct_retention": 0.99,
+      "min_fraction_gain_outside_1pct": 0.05,
+      "max_relative_power_error": 1e-05,
+      "max_positive_scalar_shape_error": 1e-06
+    }
+  },
+  "rows": [
+    {
+      "row_id": "ORDINARY_RMS_SOURCE-s2026092701",
+      "method": "SameactualordinaryE13 IQ thenrestore sourcepacket RMS;frozenoriginaldefaulthead",
+      "purpose": "one_source_counterfactual_two_frozen_references",
+      "config_ref": "experiments/cvs_ordinary_rms17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01/s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existing modelseed,not newtraining. Fixedsplit392005;augmentation=null because multiple namedstreams,not one scalarseed;fourdeclaredaugmentationseeds andindependentshuffle seeds inconfig;no candidate/draw search.",
+      "k": null,
+      "scenario": "sourcefit_originalordinary_E13_paired_RMS_noAs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "45360sourceNN plus2syntheticCPsmoke onlyseed01;20160ordinary/RMS each,64syntheticcanonicalordinary,0newE/update/headfit/teacher;parentE20/4440 each separate",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01/s2026092701",
+      "log_path": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01/s2026092701.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_ordinary_rms17/runner.py --seed 2026092701",
+      "expected_artifacts": [
+        "root request/active/launch/result/completion",
+        "eachseed resolved actualnativeargs/augmentor files/base/schedule/checkpoint provenance",
+        "raw5040 plusfourdraw originalordinary/RMS-restored complete pairedlogits/predictions private",
+        "allsourceID/metadata private;all160batches permodel gain/RMS/powererror/shapeerror/PAstrength private",
+        "one2syntheticCP noquerysmoke PASSthencontinue;64syntheticcanonicalordinary permodel/noNN",
+        "fullstdout;independent all90720decisions/logits/CE/F1/strata/cells/fourdraw/stat/cost recount/report/registry"
+      ],
+      "config": {
+        "model_seed": 2026092701,
+        "fixed_question": {
+          "run_id": "20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01",
+          "launch_owner": "codex/root/F-ordinary-RMS-source-20261017",
+          "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01",
+          "models": {
+            "2026092701": {
+              "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+              "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+            },
+            "2026092702": {
+              "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+              "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+            }
+          },
+          "model": "FrozenownF+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO;two scratchE20final20",
+          "model_role": "Sourcefit ordinary-output scale counterfactual only,not future training initialization",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "days": [
+            1,
+            2,
+            3
+          ],
+          "TX": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "L_unique": 5040,
+          "samples_per_cell": 70,
+          "question": "Does restoring originalpacket RMS on the same already-generated ordinary IQ repair source identities under both original defaultheads?",
+          "effective_ordinary_epoch": 13,
+          "original_label_epochs": 13,
+          "augmentation_seeds": [
+            202610171701,
+            202610171702,
+            202610171703,
+            202610171704
+          ],
+          "shuffle_seeds": [
+            202610171710,
+            202610171711,
+            202610171712,
+            202610171713
+          ],
+          "sampling": "AllfitL onceperdraw,private randperm generator separatefrom originalordinary RNG;four frozen named streams identical acrossmodels;not actual training replay",
+          "ordinary": "Actual originalnative args/build_aug_base_cfg/configure_epoch13;PAon/DACoff/classsignatureoff;all existingnormalops retained;no As",
+          "reference_aug": "experiments/cvs_ordinary_rms17/reference_aug.json",
+          "operator": "o=originalordinary(x);n=o*sqrt(sum(x^2)/sum(o^2)),FP64power ratio thenoriginalfloat32;positive packet scalar only,no redraw/channel/PA inversion or SNR claim",
+          "normalization": "OriginalnativepacketRMS at dataset entry;restore thatsame packetpower only on ordinaryoutput,not raw/As/U/test IQ",
+          "views": {
+            "raw": 5040,
+            "ordinary": 20160,
+            "RMS_restored": 20160
+          },
+          "source_NN_per_model": 45360,
+          "total_NN_packets": 90722,
+          "synthetic_CP_smoke_NN": 2,
+          "ordinary_generated_per_model": 20160,
+          "normalized_generated_per_model": 20160,
+          "synthetic_ordinary_canonical_packets_per_model": 64,
+          "checkpoint_loads": 2,
+          "new_training_epochs": 0,
+          "optimizer_updates": 0,
+          "head_fit_updates": 0,
+          "teacher_forwards": 0,
+          "criteria": {
+            "min_RMS_vs_ordinary_accuracy_gain_pp": 0.2,
+            "min_RMS_vs_ordinary_macroF1_gain_pp": 0.0,
+            "min_positive_draws": 3,
+            "min_each_draw_RMS_vs_ordinary_gain_pp": -0.2,
+            "min_RMS_vs_raw_accuracy_gain_pp": -0.5,
+            "min_RMS_vs_raw_macroF1_gain_pp": -0.5,
+            "min_each_group_RMS_vs_raw_gain_pp": -1.0,
+            "min_each_group_RMS_vs_ordinary_gain_pp": -0.5,
+            "min_raw_correct_retention": 0.99,
+            "min_fraction_gain_outside_1pct": 0.05,
+            "max_relative_power_error": 1e-05,
+            "max_positive_scalar_shape_error": 1e-06
+          },
+          "on_fail": "Close fixed fullordinary postRMS/effectiveE13/fourdraw question;no norm stage/partial coefficient/gainclip/augmentation disable/draw/RX/seed rescue",
+          "on_pass": "Source scale/identity evidence only;separate matchedscratchE20 threecontrols required forheldRXclean,not automatictraining",
+          "future_training": "Originalcommonraw.75/ordinary.25/SupCon plus.25extra raw/originalordinary/sameordinaryRMS,8Lforwards/originalU/defaultheadjoint/E20,all lossweight1.25;no extraaugmentationdraw fornormalizedslot",
+          "future_source_criteria": "RMS must beatboth rawslot andordinaryslot clean>=+1pp,F1>=0,eachpractical/seenV>=-.5pp;independentconfirm aftersinglepass",
+          "U_used": false,
+          "U_truth_read": false,
+          "V_used": false,
+          "held_RX1_used": false,
+          "target_access": false,
+          "automatic_training": false,
+          "default_head_only": true,
+          "NoExplicitCFO": true,
+          "internal_reference_compensation_retained": true,
+          "device": "CPU",
+          "threads": 2,
+          "source_basis": [
+            "analysis/cvs_joint_ordinary_IQ_audit_20261016.md",
+            "analysis/cvs_ordinary_PA_schedule_correction_20261016.md",
+            "configs/cvs_joint_augmentation_F_crossrx_e20.json:source_constant_gain_E20_result.fixed_hypothesis.input_audit"
+          ],
+          "limitations": [
+            "Normalization cannot undo nonlinear PA,convolutional shape,phase,shift or noise damage",
+            "Previous randomgain-view E20failed;this deterministic removal of ordinary-outputscale is a different causal question,not a gain-range rescue",
+            "Sourcefit identityrepair does not prove DG or permit targetfeedback",
+            "Allfourdraw views repeat the samephysical5040,not independentdata or actual20epoch replay"
+          ]
+        }
+      }
+    },
+    {
+      "row_id": "ORDINARY_RMS_SOURCE-s2026092702",
+      "method": "SameactualordinaryE13 IQ thenrestore sourcepacket RMS;frozenoriginaldefaulthead",
+      "purpose": "one_source_counterfactual_two_frozen_references",
+      "config_ref": "experiments/cvs_ordinary_rms17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01/s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existing modelseed,not newtraining. Fixedsplit392005;augmentation=null because multiple namedstreams,not one scalarseed;fourdeclaredaugmentationseeds andindependentshuffle seeds inconfig;no candidate/draw search.",
+      "k": null,
+      "scenario": "sourcefit_originalordinary_E13_paired_RMS_noAs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "45360sourceNN plus2syntheticCPsmoke onlyseed01;20160ordinary/RMS each,64syntheticcanonicalordinary,0newE/update/headfit/teacher;parentE20/4440 each separate",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01/s2026092702",
+      "log_path": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01/s2026092702.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_ordinary_rms17/runner.py --seed 2026092702",
+      "expected_artifacts": [
+        "root request/active/launch/result/completion",
+        "eachseed resolved actualnativeargs/augmentor files/base/schedule/checkpoint provenance",
+        "raw5040 plusfourdraw originalordinary/RMS-restored complete pairedlogits/predictions private",
+        "allsourceID/metadata private;all160batches permodel gain/RMS/powererror/shapeerror/PAstrength private",
+        "one2syntheticCP noquerysmoke PASSthencontinue;64syntheticcanonicalordinary permodel/noNN",
+        "fullstdout;independent all90720decisions/logits/CE/F1/strata/cells/fourdraw/stat/cost recount/report/registry"
+      ],
+      "config": {
+        "model_seed": 2026092702,
+        "fixed_question": {
+          "run_id": "20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01",
+          "launch_owner": "codex/root/F-ordinary-RMS-source-20261017",
+          "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01",
+          "models": {
+            "2026092701": {
+              "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+              "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+            },
+            "2026092702": {
+              "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+              "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+            }
+          },
+          "model": "FrozenownF+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO;two scratchE20final20",
+          "model_role": "Sourcefit ordinary-output scale counterfactual only,not future training initialization",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "days": [
+            1,
+            2,
+            3
+          ],
+          "TX": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "L_unique": 5040,
+          "samples_per_cell": 70,
+          "question": "Does restoring originalpacket RMS on the same already-generated ordinary IQ repair source identities under both original defaultheads?",
+          "effective_ordinary_epoch": 13,
+          "original_label_epochs": 13,
+          "augmentation_seeds": [
+            202610171701,
+            202610171702,
+            202610171703,
+            202610171704
+          ],
+          "shuffle_seeds": [
+            202610171710,
+            202610171711,
+            202610171712,
+            202610171713
+          ],
+          "sampling": "AllfitL onceperdraw,private randperm generator separatefrom originalordinary RNG;four frozen named streams identical acrossmodels;not actual training replay",
+          "ordinary": "Actual originalnative args/build_aug_base_cfg/configure_epoch13;PAon/DACoff/classsignatureoff;all existingnormalops retained;no As",
+          "reference_aug": "experiments/cvs_ordinary_rms17/reference_aug.json",
+          "operator": "o=originalordinary(x);n=o*sqrt(sum(x^2)/sum(o^2)),FP64power ratio thenoriginalfloat32;positive packet scalar only,no redraw/channel/PA inversion or SNR claim",
+          "normalization": "OriginalnativepacketRMS at dataset entry;restore thatsame packetpower only on ordinaryoutput,not raw/As/U/test IQ",
+          "views": {
+            "raw": 5040,
+            "ordinary": 20160,
+            "RMS_restored": 20160
+          },
+          "source_NN_per_model": 45360,
+          "total_NN_packets": 90722,
+          "synthetic_CP_smoke_NN": 2,
+          "ordinary_generated_per_model": 20160,
+          "normalized_generated_per_model": 20160,
+          "synthetic_ordinary_canonical_packets_per_model": 64,
+          "checkpoint_loads": 2,
+          "new_training_epochs": 0,
+          "optimizer_updates": 0,
+          "head_fit_updates": 0,
+          "teacher_forwards": 0,
+          "criteria": {
+            "min_RMS_vs_ordinary_accuracy_gain_pp": 0.2,
+            "min_RMS_vs_ordinary_macroF1_gain_pp": 0.0,
+            "min_positive_draws": 3,
+            "min_each_draw_RMS_vs_ordinary_gain_pp": -0.2,
+            "min_RMS_vs_raw_accuracy_gain_pp": -0.5,
+            "min_RMS_vs_raw_macroF1_gain_pp": -0.5,
+            "min_each_group_RMS_vs_raw_gain_pp": -1.0,
+            "min_each_group_RMS_vs_ordinary_gain_pp": -0.5,
+            "min_raw_correct_retention": 0.99,
+            "min_fraction_gain_outside_1pct": 0.05,
+            "max_relative_power_error": 1e-05,
+            "max_positive_scalar_shape_error": 1e-06
+          },
+          "on_fail": "Close fixed fullordinary postRMS/effectiveE13/fourdraw question;no norm stage/partial coefficient/gainclip/augmentation disable/draw/RX/seed rescue",
+          "on_pass": "Source scale/identity evidence only;separate matchedscratchE20 threecontrols required forheldRXclean,not automatictraining",
+          "future_training": "Originalcommonraw.75/ordinary.25/SupCon plus.25extra raw/originalordinary/sameordinaryRMS,8Lforwards/originalU/defaultheadjoint/E20,all lossweight1.25;no extraaugmentationdraw fornormalizedslot",
+          "future_source_criteria": "RMS must beatboth rawslot andordinaryslot clean>=+1pp,F1>=0,eachpractical/seenV>=-.5pp;independentconfirm aftersinglepass",
+          "U_used": false,
+          "U_truth_read": false,
+          "V_used": false,
+          "held_RX1_used": false,
+          "target_access": false,
+          "automatic_training": false,
+          "default_head_only": true,
+          "NoExplicitCFO": true,
+          "internal_reference_compensation_retained": true,
+          "device": "CPU",
+          "threads": 2,
+          "source_basis": [
+            "analysis/cvs_joint_ordinary_IQ_audit_20261016.md",
+            "analysis/cvs_ordinary_PA_schedule_correction_20261016.md",
+            "configs/cvs_joint_augmentation_F_crossrx_e20.json:source_constant_gain_E20_result.fixed_hypothesis.input_audit"
+          ],
+          "limitations": [
+            "Normalization cannot undo nonlinear PA,convolutional shape,phase,shift or noise damage",
+            "Previous randomgain-view E20failed;this deterministic removal of ordinary-outputscale is a different causal question,not a gain-range rescue",
+            "Sourcefit identityrepair does not prove DG or permit targetfeedback",
+            "Allfourdraw views repeat the samephysical5040,not independentdata or actual20epoch replay"
+          ]
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Two known original source-only E20 F+CROSS_RX defaultheads;strictsourcefit L5040/U45360/V21600,RX1held/defaultcos30/joint160/NoExplicitCFO/final-only/no unknownancestor/target/headfit;oneckloadpermodel,nativeargs fromsamepayload.",
+    "Sameordinary o evaluated beforeandafter positive RMS scalar;oldPA/shift/phase/CFO/multipath/AWGN retained fromactualnativeargs andeffectiveepoch13,not strongerE14..20functionextrapolation. Canonicalreturnstrength mustpreserve nativeoutput/RNG;no secondordinary draw fornormalizedview.",
+    "Fourfixedaugmentation draws eachall5040physicalL,privategenerator shuffle independentofordinaryRNG;allviews/physicalmetadata kept,no filteredpackets ordraw/seed selection. UnknownUIQ/labels absent,unusedV/featuresdeserialize,heldRX1excluded.",
+    "Alloriginalfixedcriteria inconfig required forbothmodels;FAIL closesnormposition/partialcoef/gainclip/disableoldops/draw/RX/seed,not moving sourcegoalpost. PASSonlysourcebasis,no automaticE20 or target.",
+    "Futurethree matchedscratchE20 control rows rawslot/ordinaryslot/RMSsameordinaryslot;commonraw.75/ordinary.25/SupCon plus.25extra,8Lforward/1.25weight/originalU/defaultheadjoint. Clean+1pp vsboth controls,F1>=0,eachpractical/seenV>=-.5pp,independentconfirm aftersourcepass;not yetimplemented/registered/launched.",
+    "Local19 input/config negatives+8scientificcounterexamples/96syntheticRMS operations,0realIQ/NN/update. Existing localTorch NumPybridgewarning unused;no install. One independentP0/P1 andrealCPsmoke inminimalworkflow only."
+  ],
+  "registered_at": "2026-10-16T18:40:51+00:00"
+}
