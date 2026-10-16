@@ -1,0 +1,1426 @@
+{
+  "status": "VERIFIED",
+  "scientific_status": "PASS_DIRECT_PA_INPUT_EFFECT_ONLY",
+  "actual_code": "b6f646090df72865599de63c19af549d14ed9445",
+  "source_decision": {
+    "status": "PASS",
+    "checks": {
+      "mean_retention": true,
+      "positive_RX": true,
+      "worst_RX": true
+    },
+    "folds": [
+      {
+        "held_RX": 1,
+        "retention_gain_pp": 1.0618279569892475,
+        "accuracy_gain_pp": 0.7936507936507908,
+        "macroF1_gain_pp": 0.8861542244816167,
+        "PA_acted": 698,
+        "paired_repaired": 178,
+        "paired_broken": 18
+      },
+      {
+        "held_RX": 3,
+        "retention_gain_pp": 1.1212948517940746,
+        "accuracy_gain_pp": 0.1785714285714335,
+        "macroF1_gain_pp": 0.10957933026355393,
+        "PA_acted": 729,
+        "paired_repaired": 136,
+        "paired_broken": 100
+      },
+      {
+        "held_RX": 4,
+        "retention_gain_pp": 0.9610849056603699,
+        "accuracy_gain_pp": 0.778769841269844,
+        "macroF1_gain_pp": 0.8340071552133899,
+        "PA_acted": 684,
+        "paired_repaired": 172,
+        "paired_broken": 15
+      },
+      {
+        "held_RX": 6,
+        "retention_gain_pp": 1.0395277207392195,
+        "accuracy_gain_pp": 0.7589285714285743,
+        "macroF1_gain_pp": 0.8258920946944692,
+        "PA_acted": 713,
+        "paired_repaired": 176,
+        "paired_broken": 23
+      },
+      {
+        "held_RX": 8,
+        "retention_gain_pp": 1.449044585987258,
+        "accuracy_gain_pp": 0.4910714285714324,
+        "macroF1_gain_pp": 0.36858834830130194,
+        "PA_acted": 713,
+        "paired_repaired": 196,
+        "paired_broken": 97
+      }
+    ],
+    "mean_retention_gain_pp": 1.126556004234034,
+    "source_only": true,
+    "target_access": false,
+    "proves_training_gain": false,
+    "automatic_training": false,
+    "goal_completed": false
+  },
+  "models": {
+    "1": {
+      "RAW": {
+        "count": 1260,
+        "correct": 930,
+        "accuracy": 0.7380952380952381,
+        "macro_f1": 0.7230965081357957,
+        "confusion": [
+          [
+            203,
+            2,
+            2,
+            0,
+            3,
+            0
+          ],
+          [
+            0,
+            171,
+            1,
+            37,
+            0,
+            1
+          ],
+          [
+            53,
+            0,
+            128,
+            0,
+            0,
+            29
+          ],
+          [
+            3,
+            77,
+            0,
+            130,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            210,
+            0
+          ],
+          [
+            0,
+            0,
+            33,
+            16,
+            73,
+            88
+          ]
+        ]
+      },
+      "PA_acted": 698,
+      "FULL": {
+        "count": 20160,
+        "correct": 13022,
+        "accuracy": 0.6459325396825397,
+        "macro_f1": 0.6349006785301432,
+        "confusion": [
+          [
+            2797,
+            45,
+            218,
+            19,
+            271,
+            10
+          ],
+          [
+            115,
+            2342,
+            216,
+            487,
+            184,
+            16
+          ],
+          [
+            910,
+            10,
+            1846,
+            6,
+            167,
+            421
+          ],
+          [
+            203,
+            1090,
+            236,
+            1671,
+            158,
+            2
+          ],
+          [
+            107,
+            19,
+            208,
+            30,
+            2996,
+            0
+          ],
+          [
+            15,
+            8,
+            683,
+            174,
+            1110,
+            1370
+          ]
+        ],
+        "RAW_correct_retention": 0.8486559139784946,
+        "RAW_correct_exposures": 14880
+      },
+      "NO_PA": {
+        "count": 20160,
+        "correct": 13182,
+        "accuracy": 0.6538690476190476,
+        "macro_f1": 0.6437622207749594,
+        "confusion": [
+          [
+            2810,
+            45,
+            219,
+            19,
+            259,
+            8
+          ],
+          [
+            113,
+            2333,
+            219,
+            498,
+            181,
+            16
+          ],
+          [
+            915,
+            3,
+            1910,
+            6,
+            127,
+            399
+          ],
+          [
+            197,
+            1047,
+            241,
+            1721,
+            152,
+            2
+          ],
+          [
+            106,
+            19,
+            209,
+            30,
+            2996,
+            0
+          ],
+          [
+            14,
+            5,
+            668,
+            175,
+            1086,
+            1412
+          ]
+        ],
+        "RAW_correct_retention": 0.8592741935483871,
+        "RAW_correct_exposures": 14880
+      },
+      "paired_repaired": 178,
+      "paired_broken": 18
+    },
+    "3": {
+      "RAW": {
+        "count": 1260,
+        "correct": 641,
+        "accuracy": 0.5087301587301587,
+        "macro_f1": 0.4922886361623043,
+        "confusion": [
+          [
+            193,
+            2,
+            2,
+            3,
+            10,
+            0
+          ],
+          [
+            11,
+            109,
+            0,
+            88,
+            1,
+            1
+          ],
+          [
+            50,
+            11,
+            30,
+            109,
+            8,
+            2
+          ],
+          [
+            21,
+            82,
+            2,
+            101,
+            3,
+            1
+          ],
+          [
+            5,
+            17,
+            3,
+            29,
+            154,
+            2
+          ],
+          [
+            14,
+            64,
+            45,
+            27,
+            6,
+            54
+          ]
+        ]
+      },
+      "PA_acted": 729,
+      "FULL": {
+        "count": 20160,
+        "correct": 8965,
+        "accuracy": 0.4446924603174603,
+        "macro_f1": 0.43207887522655714,
+        "confusion": [
+          [
+            2688,
+            84,
+            224,
+            122,
+            220,
+            22
+          ],
+          [
+            368,
+            1384,
+            215,
+            1250,
+            118,
+            25
+          ],
+          [
+            851,
+            194,
+            725,
+            1385,
+            180,
+            25
+          ],
+          [
+            550,
+            1035,
+            231,
+            1368,
+            141,
+            35
+          ],
+          [
+            364,
+            230,
+            230,
+            412,
+            2065,
+            59
+          ],
+          [
+            594,
+            788,
+            677,
+            353,
+            213,
+            735
+          ]
+        ],
+        "RAW_correct_retention": 0.8001170046801872,
+        "RAW_correct_exposures": 10256
+      },
+      "NO_PA": {
+        "count": 20160,
+        "correct": 9001,
+        "accuracy": 0.4464781746031746,
+        "macro_f1": 0.4331746685291927,
+        "confusion": [
+          [
+            2720,
+            86,
+            211,
+            101,
+            224,
+            18
+          ],
+          [
+            370,
+            1395,
+            208,
+            1246,
+            116,
+            25
+          ],
+          [
+            872,
+            198,
+            694,
+            1391,
+            180,
+            25
+          ],
+          [
+            560,
+            1059,
+            223,
+            1343,
+            142,
+            33
+          ],
+          [
+            361,
+            234,
+            221,
+            396,
+            2093,
+            55
+          ],
+          [
+            611,
+            808,
+            656,
+            315,
+            214,
+            756
+          ]
+        ],
+        "RAW_correct_retention": 0.811329953198128,
+        "RAW_correct_exposures": 10256
+      },
+      "paired_repaired": 136,
+      "paired_broken": 100
+    },
+    "4": {
+      "RAW": {
+        "count": 1260,
+        "correct": 1060,
+        "accuracy": 0.8412698412698413,
+        "macro_f1": 0.8331208406201168,
+        "confusion": [
+          [
+            210,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            205,
+            0,
+            5,
+            0,
+            0
+          ],
+          [
+            27,
+            3,
+            90,
+            5,
+            0,
+            85
+          ],
+          [
+            1,
+            11,
+            1,
+            196,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            208,
+            0
+          ],
+          [
+            1,
+            1,
+            56,
+            0,
+            1,
+            151
+          ]
+        ]
+      },
+      "PA_acted": 684,
+      "FULL": {
+        "count": 20160,
+        "correct": 15115,
+        "accuracy": 0.7497519841269841,
+        "macro_f1": 0.7408171346234865,
+        "confusion": [
+          [
+            3166,
+            31,
+            19,
+            33,
+            111,
+            0
+          ],
+          [
+            237,
+            2828,
+            14,
+            126,
+            155,
+            0
+          ],
+          [
+            591,
+            81,
+            1285,
+            85,
+            112,
+            1206
+          ],
+          [
+            312,
+            289,
+            26,
+            2579,
+            154,
+            0
+          ],
+          [
+            256,
+            44,
+            40,
+            10,
+            3010,
+            0
+          ],
+          [
+            123,
+            45,
+            822,
+            26,
+            97,
+            2247
+          ]
+        ],
+        "RAW_correct_retention": 0.884375,
+        "RAW_correct_exposures": 16960
+      },
+      "NO_PA": {
+        "count": 20160,
+        "correct": 15272,
+        "accuracy": 0.7575396825396825,
+        "macro_f1": 0.7491572061756204,
+        "confusion": [
+          [
+            3166,
+            30,
+            19,
+            34,
+            111,
+            0
+          ],
+          [
+            220,
+            2847,
+            11,
+            132,
+            150,
+            0
+          ],
+          [
+            560,
+            67,
+            1304,
+            85,
+            109,
+            1235
+          ],
+          [
+            297,
+            231,
+            28,
+            2660,
+            144,
+            0
+          ],
+          [
+            256,
+            44,
+            40,
+            8,
+            3012,
+            0
+          ],
+          [
+            111,
+            29,
+            833,
+            26,
+            78,
+            2283
+          ]
+        ],
+        "RAW_correct_retention": 0.8939858490566037,
+        "RAW_correct_exposures": 16960
+      },
+      "paired_repaired": 172,
+      "paired_broken": 15
+    },
+    "6": {
+      "RAW": {
+        "count": 1260,
+        "correct": 974,
+        "accuracy": 0.773015873015873,
+        "macro_f1": 0.7501735193096358,
+        "confusion": [
+          [
+            205,
+            3,
+            1,
+            0,
+            0,
+            1
+          ],
+          [
+            2,
+            179,
+            0,
+            25,
+            0,
+            4
+          ],
+          [
+            1,
+            46,
+            128,
+            35,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            210,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            6,
+            204,
+            0
+          ],
+          [
+            0,
+            34,
+            127,
+            0,
+            1,
+            48
+          ]
+        ]
+      },
+      "PA_acted": 713,
+      "FULL": {
+        "count": 20160,
+        "correct": 13544,
+        "accuracy": 0.6718253968253968,
+        "macro_f1": 0.6565873021287268,
+        "confusion": [
+          [
+            2951,
+            107,
+            115,
+            44,
+            105,
+            38
+          ],
+          [
+            255,
+            2362,
+            182,
+            336,
+            162,
+            63
+          ],
+          [
+            317,
+            730,
+            1748,
+            402,
+            127,
+            36
+          ],
+          [
+            226,
+            144,
+            119,
+            2720,
+            138,
+            13
+          ],
+          [
+            161,
+            23,
+            166,
+            101,
+            2907,
+            2
+          ],
+          [
+            102,
+            499,
+            1845,
+            1,
+            57,
+            856
+          ]
+        ],
+        "RAW_correct_retention": 0.8459958932238193,
+        "RAW_correct_exposures": 15584
+      },
+      "NO_PA": {
+        "count": 20160,
+        "correct": 13697,
+        "accuracy": 0.6794146825396825,
+        "macro_f1": 0.6648462230756715,
+        "confusion": [
+          [
+            2947,
+            106,
+            118,
+            46,
+            105,
+            38
+          ],
+          [
+            252,
+            2369,
+            184,
+            344,
+            147,
+            64
+          ],
+          [
+            307,
+            688,
+            1792,
+            410,
+            129,
+            34
+          ],
+          [
+            201,
+            76,
+            120,
+            2811,
+            138,
+            14
+          ],
+          [
+            156,
+            23,
+            172,
+            101,
+            2906,
+            2
+          ],
+          [
+            71,
+            483,
+            1905,
+            0,
+            29,
+            872
+          ]
+        ],
+        "RAW_correct_retention": 0.8563911704312115,
+        "RAW_correct_exposures": 15584
+      },
+      "paired_repaired": 176,
+      "paired_broken": 23
+    },
+    "8": {
+      "RAW": {
+        "count": 1260,
+        "correct": 785,
+        "accuracy": 0.623015873015873,
+        "macro_f1": 0.6150581564983532,
+        "confusion": [
+          [
+            170,
+            0,
+            1,
+            39,
+            0,
+            0
+          ],
+          [
+            3,
+            64,
+            0,
+            133,
+            2,
+            8
+          ],
+          [
+            2,
+            3,
+            73,
+            5,
+            8,
+            119
+          ],
+          [
+            1,
+            78,
+            2,
+            108,
+            20,
+            1
+          ],
+          [
+            2,
+            1,
+            0,
+            0,
+            190,
+            17
+          ],
+          [
+            0,
+            3,
+            21,
+            1,
+            5,
+            180
+          ]
+        ]
+      },
+      "PA_acted": 713,
+      "FULL": {
+        "count": 20160,
+        "correct": 10714,
+        "accuracy": 0.5314484126984127,
+        "macro_f1": 0.5194857952675022,
+        "confusion": [
+          [
+            2378,
+            41,
+            133,
+            544,
+            252,
+            12
+          ],
+          [
+            348,
+            833,
+            198,
+            1635,
+            209,
+            137
+          ],
+          [
+            230,
+            60,
+            1250,
+            142,
+            121,
+            1557
+          ],
+          [
+            250,
+            1007,
+            290,
+            1321,
+            454,
+            38
+          ],
+          [
+            274,
+            27,
+            250,
+            35,
+            2496,
+            278
+          ],
+          [
+            103,
+            154,
+            519,
+            74,
+            74,
+            2436
+          ]
+        ],
+        "RAW_correct_retention": 0.807484076433121,
+        "RAW_correct_exposures": 12560
+      },
+      "NO_PA": {
+        "count": 20160,
+        "correct": 10813,
+        "accuracy": 0.536359126984127,
+        "macro_f1": 0.5231716787505152,
+        "confusion": [
+          [
+            2389,
+            37,
+            123,
+            552,
+            249,
+            10
+          ],
+          [
+            356,
+            828,
+            169,
+            1675,
+            199,
+            133
+          ],
+          [
+            230,
+            62,
+            1203,
+            134,
+            122,
+            1609
+          ],
+          [
+            241,
+            1012,
+            264,
+            1361,
+            450,
+            32
+          ],
+          [
+            277,
+            27,
+            219,
+            30,
+            2521,
+            286
+          ],
+          [
+            101,
+            143,
+            474,
+            61,
+            70,
+            2511
+          ]
+        ],
+        "RAW_correct_retention": 0.8219745222929936,
+        "RAW_correct_exposures": 12560
+      },
+      "paired_repaired": 196,
+      "paired_broken": 97
+    }
+  },
+  "proof": {
+    "1": {
+      "unique_held_L": 1260,
+      "paired_exposures": 20160,
+      "all16draws_complete": true,
+      "PA_acted": 698,
+      "upstream_identical": true,
+      "non_PA_output_identical": true,
+      "frozen_parameters_buffers": true,
+      "checkpoint_smoke_packets": 2,
+      "actual_code": "b6f646090df72865599de63c19af549d14ed9445",
+      "actual_modules": {
+        "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      },
+      "actual_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ordinary_PA_heldsource_20261016_r01",
+      "actual_GPU": 0,
+      "recipe": {
+        "base": {
+          "p_dac": 0.0,
+          "p_pa": 0.14,
+          "enable_class_signature": false,
+          "class_sig_mix": 0.1,
+          "seed": 2026092701,
+          "p_time_shift": 0.35,
+          "max_time_shift": 32,
+          "p_amp_scale": 0.45,
+          "amp_min": 0.9,
+          "amp_max": 1.1,
+          "p_phase_rot": 0.45,
+          "p_cfo": 0.35,
+          "cfo_max": 0.0004,
+          "p_phase_noise": 0.3,
+          "phase_noise_sigma_max": 0.006,
+          "p_awgn": 0.4,
+          "snr_min_db": 20.0,
+          "snr_max_db": 36.0,
+          "p_multipath": 0.18,
+          "mp_taps_min": 2,
+          "mp_taps_max": 4,
+          "mp_delay_max": 4,
+          "p_dc_offset": 0.3,
+          "dc_offset_max": 0.02,
+          "p_bandedge_taper": 0.25,
+          "taper_alpha_min": 0.02,
+          "taper_alpha_max": 0.1,
+          "defect_apply_channel": false,
+          "dac_only_apply_anti_shortcut": false,
+          "dac_only_apply_channel": false,
+          "pa_only_apply_anti_shortcut": false,
+          "pa_only_apply_channel": false,
+          "dac_pa_apply_anti_shortcut": true,
+          "dac_pa_apply_channel": true
+        },
+        "actual_E13_probabilities": {
+          "p_dac": 0.0,
+          "p_pa": 0.03508404675089638,
+          "p_time_shift": 0.08771011687724094,
+          "p_amp_scale": 0.11277015027073835,
+          "p_phase_rot": 0.11277015027073835,
+          "p_cfo": 0.08771011687724094,
+          "p_phase_noise": 0.07518010018049223,
+          "p_awgn": 0.10024013357398964,
+          "p_multipath": 0.045108060108295336,
+          "p_dc_offset": 0.07518010018049223,
+          "p_bandedge_taper": 0.06265008348374353
+        },
+        "schedule_state": {
+          "scale": 0.2506003339349741,
+          "p_dac": 0.0,
+          "p_pa": 0.03508404675089638,
+          "p_time_shift": 0.08771011687724094,
+          "p_cfo": 0.08771011687724094,
+          "p_awgn": 0.10024013357398964,
+          "p_multipath": 0.045108060108295336,
+          "max_time_shift": 8,
+          "cfo_max": 0.00010024013357398965,
+          "phase_noise_sigma_max": 0.0015036020036098448
+        },
+        "ranges": {
+          "max_time_shift": 8,
+          "cfo_max": 0.00010024013357398965,
+          "phase_noise_sigma_max": 0.0015036020036098448,
+          "dc_offset_max": 0.005012006678699482,
+          "taper_alpha_min": 0.005012006678699482,
+          "taper_alpha_max": 0.02506003339349741,
+          "mp_delay_max": 1
+        }
+      }
+    },
+    "3": {
+      "unique_held_L": 1260,
+      "paired_exposures": 20160,
+      "all16draws_complete": true,
+      "PA_acted": 729,
+      "upstream_identical": true,
+      "non_PA_output_identical": true,
+      "frozen_parameters_buffers": true,
+      "checkpoint_smoke_packets": 2,
+      "actual_code": "b6f646090df72865599de63c19af549d14ed9445",
+      "actual_modules": {
+        "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      },
+      "actual_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ordinary_PA_heldsource_20261016_r01",
+      "actual_GPU": 0,
+      "recipe": {
+        "base": {
+          "p_dac": 0.0,
+          "p_pa": 0.14,
+          "enable_class_signature": false,
+          "class_sig_mix": 0.1,
+          "seed": 2026092701,
+          "p_time_shift": 0.35,
+          "max_time_shift": 32,
+          "p_amp_scale": 0.45,
+          "amp_min": 0.9,
+          "amp_max": 1.1,
+          "p_phase_rot": 0.45,
+          "p_cfo": 0.35,
+          "cfo_max": 0.0004,
+          "p_phase_noise": 0.3,
+          "phase_noise_sigma_max": 0.006,
+          "p_awgn": 0.4,
+          "snr_min_db": 20.0,
+          "snr_max_db": 36.0,
+          "p_multipath": 0.18,
+          "mp_taps_min": 2,
+          "mp_taps_max": 4,
+          "mp_delay_max": 4,
+          "p_dc_offset": 0.3,
+          "dc_offset_max": 0.02,
+          "p_bandedge_taper": 0.25,
+          "taper_alpha_min": 0.02,
+          "taper_alpha_max": 0.1,
+          "defect_apply_channel": false,
+          "dac_only_apply_anti_shortcut": false,
+          "dac_only_apply_channel": false,
+          "pa_only_apply_anti_shortcut": false,
+          "pa_only_apply_channel": false,
+          "dac_pa_apply_anti_shortcut": true,
+          "dac_pa_apply_channel": true
+        },
+        "actual_E13_probabilities": {
+          "p_dac": 0.0,
+          "p_pa": 0.03508404675089638,
+          "p_time_shift": 0.08771011687724094,
+          "p_amp_scale": 0.11277015027073835,
+          "p_phase_rot": 0.11277015027073835,
+          "p_cfo": 0.08771011687724094,
+          "p_phase_noise": 0.07518010018049223,
+          "p_awgn": 0.10024013357398964,
+          "p_multipath": 0.045108060108295336,
+          "p_dc_offset": 0.07518010018049223,
+          "p_bandedge_taper": 0.06265008348374353
+        },
+        "schedule_state": {
+          "scale": 0.2506003339349741,
+          "p_dac": 0.0,
+          "p_pa": 0.03508404675089638,
+          "p_time_shift": 0.08771011687724094,
+          "p_cfo": 0.08771011687724094,
+          "p_awgn": 0.10024013357398964,
+          "p_multipath": 0.045108060108295336,
+          "max_time_shift": 8,
+          "cfo_max": 0.00010024013357398965,
+          "phase_noise_sigma_max": 0.0015036020036098448
+        },
+        "ranges": {
+          "max_time_shift": 8,
+          "cfo_max": 0.00010024013357398965,
+          "phase_noise_sigma_max": 0.0015036020036098448,
+          "dc_offset_max": 0.005012006678699482,
+          "taper_alpha_min": 0.005012006678699482,
+          "taper_alpha_max": 0.02506003339349741,
+          "mp_delay_max": 1
+        }
+      }
+    },
+    "4": {
+      "unique_held_L": 1260,
+      "paired_exposures": 20160,
+      "all16draws_complete": true,
+      "PA_acted": 684,
+      "upstream_identical": true,
+      "non_PA_output_identical": true,
+      "frozen_parameters_buffers": true,
+      "checkpoint_smoke_packets": 2,
+      "actual_code": "b6f646090df72865599de63c19af549d14ed9445",
+      "actual_modules": {
+        "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      },
+      "actual_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ordinary_PA_heldsource_20261016_r01",
+      "actual_GPU": 0,
+      "recipe": {
+        "base": {
+          "p_dac": 0.0,
+          "p_pa": 0.14,
+          "enable_class_signature": false,
+          "class_sig_mix": 0.1,
+          "seed": 2026092701,
+          "p_time_shift": 0.35,
+          "max_time_shift": 32,
+          "p_amp_scale": 0.45,
+          "amp_min": 0.9,
+          "amp_max": 1.1,
+          "p_phase_rot": 0.45,
+          "p_cfo": 0.35,
+          "cfo_max": 0.0004,
+          "p_phase_noise": 0.3,
+          "phase_noise_sigma_max": 0.006,
+          "p_awgn": 0.4,
+          "snr_min_db": 20.0,
+          "snr_max_db": 36.0,
+          "p_multipath": 0.18,
+          "mp_taps_min": 2,
+          "mp_taps_max": 4,
+          "mp_delay_max": 4,
+          "p_dc_offset": 0.3,
+          "dc_offset_max": 0.02,
+          "p_bandedge_taper": 0.25,
+          "taper_alpha_min": 0.02,
+          "taper_alpha_max": 0.1,
+          "defect_apply_channel": false,
+          "dac_only_apply_anti_shortcut": false,
+          "dac_only_apply_channel": false,
+          "pa_only_apply_anti_shortcut": false,
+          "pa_only_apply_channel": false,
+          "dac_pa_apply_anti_shortcut": true,
+          "dac_pa_apply_channel": true
+        },
+        "actual_E13_probabilities": {
+          "p_dac": 0.0,
+          "p_pa": 0.03508404675089638,
+          "p_time_shift": 0.08771011687724094,
+          "p_amp_scale": 0.11277015027073835,
+          "p_phase_rot": 0.11277015027073835,
+          "p_cfo": 0.08771011687724094,
+          "p_phase_noise": 0.07518010018049223,
+          "p_awgn": 0.10024013357398964,
+          "p_multipath": 0.045108060108295336,
+          "p_dc_offset": 0.07518010018049223,
+          "p_bandedge_taper": 0.06265008348374353
+        },
+        "schedule_state": {
+          "scale": 0.2506003339349741,
+          "p_dac": 0.0,
+          "p_pa": 0.03508404675089638,
+          "p_time_shift": 0.08771011687724094,
+          "p_cfo": 0.08771011687724094,
+          "p_awgn": 0.10024013357398964,
+          "p_multipath": 0.045108060108295336,
+          "max_time_shift": 8,
+          "cfo_max": 0.00010024013357398965,
+          "phase_noise_sigma_max": 0.0015036020036098448
+        },
+        "ranges": {
+          "max_time_shift": 8,
+          "cfo_max": 0.00010024013357398965,
+          "phase_noise_sigma_max": 0.0015036020036098448,
+          "dc_offset_max": 0.005012006678699482,
+          "taper_alpha_min": 0.005012006678699482,
+          "taper_alpha_max": 0.02506003339349741,
+          "mp_delay_max": 1
+        }
+      }
+    },
+    "6": {
+      "unique_held_L": 1260,
+      "paired_exposures": 20160,
+      "all16draws_complete": true,
+      "PA_acted": 713,
+      "upstream_identical": true,
+      "non_PA_output_identical": true,
+      "frozen_parameters_buffers": true,
+      "checkpoint_smoke_packets": 2,
+      "actual_code": "b6f646090df72865599de63c19af549d14ed9445",
+      "actual_modules": {
+        "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      },
+      "actual_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ordinary_PA_heldsource_20261016_r01",
+      "actual_GPU": 0,
+      "recipe": {
+        "base": {
+          "p_dac": 0.0,
+          "p_pa": 0.14,
+          "enable_class_signature": false,
+          "class_sig_mix": 0.1,
+          "seed": 2026092701,
+          "p_time_shift": 0.35,
+          "max_time_shift": 32,
+          "p_amp_scale": 0.45,
+          "amp_min": 0.9,
+          "amp_max": 1.1,
+          "p_phase_rot": 0.45,
+          "p_cfo": 0.35,
+          "cfo_max": 0.0004,
+          "p_phase_noise": 0.3,
+          "phase_noise_sigma_max": 0.006,
+          "p_awgn": 0.4,
+          "snr_min_db": 20.0,
+          "snr_max_db": 36.0,
+          "p_multipath": 0.18,
+          "mp_taps_min": 2,
+          "mp_taps_max": 4,
+          "mp_delay_max": 4,
+          "p_dc_offset": 0.3,
+          "dc_offset_max": 0.02,
+          "p_bandedge_taper": 0.25,
+          "taper_alpha_min": 0.02,
+          "taper_alpha_max": 0.1,
+          "defect_apply_channel": false,
+          "dac_only_apply_anti_shortcut": false,
+          "dac_only_apply_channel": false,
+          "pa_only_apply_anti_shortcut": false,
+          "pa_only_apply_channel": false,
+          "dac_pa_apply_anti_shortcut": true,
+          "dac_pa_apply_channel": true
+        },
+        "actual_E13_probabilities": {
+          "p_dac": 0.0,
+          "p_pa": 0.03508404675089638,
+          "p_time_shift": 0.08771011687724094,
+          "p_amp_scale": 0.11277015027073835,
+          "p_phase_rot": 0.11277015027073835,
+          "p_cfo": 0.08771011687724094,
+          "p_phase_noise": 0.07518010018049223,
+          "p_awgn": 0.10024013357398964,
+          "p_multipath": 0.045108060108295336,
+          "p_dc_offset": 0.07518010018049223,
+          "p_bandedge_taper": 0.06265008348374353
+        },
+        "schedule_state": {
+          "scale": 0.2506003339349741,
+          "p_dac": 0.0,
+          "p_pa": 0.03508404675089638,
+          "p_time_shift": 0.08771011687724094,
+          "p_cfo": 0.08771011687724094,
+          "p_awgn": 0.10024013357398964,
+          "p_multipath": 0.045108060108295336,
+          "max_time_shift": 8,
+          "cfo_max": 0.00010024013357398965,
+          "phase_noise_sigma_max": 0.0015036020036098448
+        },
+        "ranges": {
+          "max_time_shift": 8,
+          "cfo_max": 0.00010024013357398965,
+          "phase_noise_sigma_max": 0.0015036020036098448,
+          "dc_offset_max": 0.005012006678699482,
+          "taper_alpha_min": 0.005012006678699482,
+          "taper_alpha_max": 0.02506003339349741,
+          "mp_delay_max": 1
+        }
+      }
+    },
+    "8": {
+      "unique_held_L": 1260,
+      "paired_exposures": 20160,
+      "all16draws_complete": true,
+      "PA_acted": 713,
+      "upstream_identical": true,
+      "non_PA_output_identical": true,
+      "frozen_parameters_buffers": true,
+      "checkpoint_smoke_packets": 2,
+      "actual_code": "b6f646090df72865599de63c19af549d14ed9445",
+      "actual_modules": {
+        "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+        "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+        "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+        "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+      },
+      "actual_CWD": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ordinary_PA_heldsource_20261016_r01",
+      "actual_GPU": 0,
+      "recipe": {
+        "base": {
+          "p_dac": 0.0,
+          "p_pa": 0.14,
+          "enable_class_signature": false,
+          "class_sig_mix": 0.1,
+          "seed": 2026092701,
+          "p_time_shift": 0.35,
+          "max_time_shift": 32,
+          "p_amp_scale": 0.45,
+          "amp_min": 0.9,
+          "amp_max": 1.1,
+          "p_phase_rot": 0.45,
+          "p_cfo": 0.35,
+          "cfo_max": 0.0004,
+          "p_phase_noise": 0.3,
+          "phase_noise_sigma_max": 0.006,
+          "p_awgn": 0.4,
+          "snr_min_db": 20.0,
+          "snr_max_db": 36.0,
+          "p_multipath": 0.18,
+          "mp_taps_min": 2,
+          "mp_taps_max": 4,
+          "mp_delay_max": 4,
+          "p_dc_offset": 0.3,
+          "dc_offset_max": 0.02,
+          "p_bandedge_taper": 0.25,
+          "taper_alpha_min": 0.02,
+          "taper_alpha_max": 0.1,
+          "defect_apply_channel": false,
+          "dac_only_apply_anti_shortcut": false,
+          "dac_only_apply_channel": false,
+          "pa_only_apply_anti_shortcut": false,
+          "pa_only_apply_channel": false,
+          "dac_pa_apply_anti_shortcut": true,
+          "dac_pa_apply_channel": true
+        },
+        "actual_E13_probabilities": {
+          "p_dac": 0.0,
+          "p_pa": 0.03508404675089638,
+          "p_time_shift": 0.08771011687724094,
+          "p_amp_scale": 0.11277015027073835,
+          "p_phase_rot": 0.11277015027073835,
+          "p_cfo": 0.08771011687724094,
+          "p_phase_noise": 0.07518010018049223,
+          "p_awgn": 0.10024013357398964,
+          "p_multipath": 0.045108060108295336,
+          "p_dc_offset": 0.07518010018049223,
+          "p_bandedge_taper": 0.06265008348374353
+        },
+        "schedule_state": {
+          "scale": 0.2506003339349741,
+          "p_dac": 0.0,
+          "p_pa": 0.03508404675089638,
+          "p_time_shift": 0.08771011687724094,
+          "p_cfo": 0.08771011687724094,
+          "p_awgn": 0.10024013357398964,
+          "p_multipath": 0.045108060108295336,
+          "max_time_shift": 8,
+          "cfo_max": 0.00010024013357398965,
+          "phase_noise_sigma_max": 0.0015036020036098448
+        },
+        "ranges": {
+          "max_time_shift": 8,
+          "cfo_max": 0.00010024013357398965,
+          "phase_noise_sigma_max": 0.0015036020036098448,
+          "dc_offset_max": 0.005012006678699482,
+          "taper_alpha_min": 0.005012006678699482,
+          "taper_alpha_max": 0.02506003339349741,
+          "mp_delay_max": 1
+        }
+      }
+    }
+  },
+  "packet_forwards": 207910,
+  "optimizer_updates": 0,
+  "new_models": 0,
+  "U_used": false,
+  "V_used": false,
+  "target_access": false,
+  "automatic_training": false,
+  "goal_completed": false,
+  "worker_body_seconds": 23.314246024936438,
+  "postlaunch_live_snapshot": "MISSED: 23s job was terminal at first independent read; no rerun to fill observation",
+  "local_observer_issue": "Local inspect.py shadowed stdlib inspect; renamed before successful readback. No remote/data/model mutation or retry.",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "terminal_worker_alive": false,
+  "terminal_dispatcher_alive": false,
+  "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_ordinary_pa_source_20261016\\final"
+}

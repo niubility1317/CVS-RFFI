@@ -1,15 +1,42 @@
-# 五个源留出默认头：额外 PA 的直接输入影响
+# 额外 PA 对冻结默认头的源身份影响
 
-状态REGISTERED_NOT_RUN。原ordinary五fold均值+2.0296pp但RX6−.9259pp/RX8−2.5926pp，固定源规则FAIL，旧整体配方不进入full-source组合。本新问题只测额外PA的条件输入影响，不能冒充训练归因或Ag有效性。
+主判据：**PASS**。零训练更新；五个N0 final20，原held L6300。
 
-实际矩阵、五个N0 final20来源、命令/CWD/路径/seed、GPU和stop规则以experiment.json为准。一个worker依次处理五个模型，每个仅其训练排除的sourceRX原L1260，合计exact L6300，6TX×3day×70/折；V/U/target不使用。继承权重均是当前合法fourRX scratchE20=13L+7U、默认cos/joint160/SIG_TIME/RAW_HZ/NoExplicitCFO、无祖先/目标选模/独立拟合头。来源在CP载入前核对，原native模型正常构造再strict载入；不重训或更改部署图。
+|held RX|RAW准确率|FULL准确率|NO_PA准确率|保持率变化/pp|准确率变化/pp|实际PA作用数|
+|---|---:|---:|---:|---:|---:|---:|
+|1|73.8095%|64.5933%|65.3869%|+1.0618|+0.7937|698|
+|3|50.8730%|44.4692%|44.6478%|+1.1213|+0.1786|729|
+|4|84.1270%|74.9752%|75.7540%|+0.9611|+0.7788|684|
+|6|77.3016%|67.1825%|67.9415%|+1.0395|+0.7589|713|
+|8|62.3016%|53.1448%|53.6359%|+1.4490|+0.4911|713|
 
-RAW一次；原ordinary E13的FULL与NO_PA各16draw。只改末端no_pa标志，private诊断流20261016171与训练/目标分开；每draw/batch相同随机起点，TX不定义随机状态或session。实际断言前级IQ逐值一致、未作用PA的包输出一致，保留原RMS位置和完整CVS前向，不clip峰值、不提高SNR/改As。原native args明确PA启用，DAC0/classSignaturefalse；不根据默认值推断。
+NO_PA−FULL平均保持率+1.126556pp，事前条件逐项{'mean_retention': True, 'positive_RX': True, 'worst_RX': True}。
 
-主结果是NO_PA−FULL在固定RAW正确集合上的保持率差：五RX均值>=.5pp、>=4positive、worst>=−.5pp。准确率、macroF1、全部RX/TX/day、作用PA子集、修复/新增错误、headmargin和功率/峰值/PAPR/MSE均完整报告。不以次要层替代主结果；FAIL不提高PA/换RX/seed救援。PASS也不证明训练因果或有效Ag，不自动训练/target。
+RAW只前向一次；FULL/NO_PA各16draw。每折1260个唯一源L样本，所有20160配对记录独立复算，RAW正确集合固定；没有按学生增强置信度筛样本。逐TX/day/PA作用子集和macroF1见CSV。
 
-每行41580真实样本前向＋CPsmoke2，五行预计207910，0新模型/optimizer/headfit。父权重5×E20=100model-epochs是已有成本，非新增预算。只读缓存带入其他源role/feature反序列化，但仅保留使用合法L字段；无U TX、无旧feature/teacher继承。模型参数与buffers在整个诊断前后逐值不变，所有参数requires_gradfalse，无optimizer。
+真实样本前向207910（含5个CPsmoke共10），0 optimizer/额外head更新，墙钟23.314246s。继承五个E20权重的100model-epoch另列，完整五foldN0/N1研发成本200model-epoch不隐藏。本地合成网络前向96/增强输入192包另计。
 
-本地原增强配对、真实图冻结、TX标签置换不改变视图、RNG恢复通过，48合成网络前向/64增强输入包/13负例，0真实IQ/CP/更新。一次限定P0/P1审查正在执行；普通账户N607只读preflight已通过。运行尚未发布，无新科学结果。
+每折前级逐值相同、非PA作用包输出相同、模型参数/缓冲区冻结已实际断言，source配对预测由离线工具独立复算。没有V/U/target、星地输入或新训练。
 
-唯一独立P0/P1执行审查PASS，无直接缺陷；同检查再执行48合成前向。计数修正：上文64增强输入包漏计负测中32包，实际每次96、两次192；本地网络前向总96，0真实IQ/CP/更新。仅修正计数常量，不重跑未变代码。当前preflight、localcompile及登记字段通过，真实CP smoke留在worker首步，尚未发布。
+这只证明该冻结头在当前条件下的输入效应，不能把它当成PA导致旧N1训练后RX6/8下降的因果证据，不能证明NO_PA是有效Ag，也没有正式clean/urban或跨seed结果。主判据FAIL不改强度/seed/RX或切换次要终点救援；PASS也不自动训练。
+
+独立首个读回时23s任务已终止，运行中PID/CWD/日志增长快照缺失；发布记录、实际resolved CWD/GPU/commit、5smoke、全部draw日志、终态进程退出及结果已保存。没有补跑。最初本地观察器文件名遮蔽stdlib inspect，已改名；没有远端失败或重启。
+
+
+实际运行与科学状态：**VERIFIED / 直接PA输入风险判据PASS**。实际代码b6f646090df72865599de63c19af549d14ed9445；单归档transfer对照/remotecompile通过，原release未改。五fold原N0权重来源在载入前核对，完整原图构造后strict载入成功，5个真实CP noquery smoke通过，全部16draw×160配对batch/折完成，参数/buffer逐值不变。无技术失败，无重发/训练/目标访问。
+
+NO_PA−FULL平均准确率+0.600198pp；不过NO_PA相对RAW仍低8.209325pp，因此额外PA不能解释普通增强造成的全部冻结头损伤。不能把直接输入差额加到训练或目标成绩上。部分TX层有负差，完整CSV保留；五RX净增不等于所有类别均增。
+
+观察缺项：首次独立读取时worker/dispatcher已自然终止，未获得运行中的独立PID/CWD/日志增长快照。现有submit/launch、实际resolved CWD/GPU/commit、全部逐draw stdout、源计数及终态进程缺失提供完成证据。没有为补观测重复运行。最初本地脚本命名inspect.py遮蔽stdlib，已改名readback_local.py；这是本地读取失败，不是远端/NumPy环境失败，未安装或修改环境。
+
+预算：207910真实网络前向＋96本地合成网络前向＝已知208006；另有192本地合成增强输入包，不与网络前向混算。23.314246s为worker run主体实测，包含缓存/CP加载与推断，不包含Python bootstrap、发布/传输、离线分析绘图的全部时间；后者未统一计时。历史五N0权重100model-epoch及N0/N1完整200model-epoch分别披露。
+
+复现入口：预登记immutable CWD中普通N607 Python执行experiments/cvs_ordinary_pa_source/runner.py；同root不得重复启动。离线命令：F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_ordinary_pa_source.harvest --output E:/type10-7/local_artifacts/cvs_ordinary_pa_source_20261016/final --state E:/type10-7/local_artifacts/cvs_ordinary_pa_source_20261016/launch_readback.json --cached。离线仅源决策/统计，无IQ/CP/native导入。
+
+实际输出：
+
+- [五RX默认头结果与TX/day分层](E:/type10-7/local_artifacts/cvs_ordinary_pa_source_20261016/final/source_PA_effects.png)
+- [PA前后峰值与功率变化](E:/type10-7/local_artifacts/cvs_ordinary_pa_source_20261016/final/PA_waveform_effects.png)
+- [逐RX结果](E:/type10-7/local_artifacts/cvs_ordinary_pa_source_20261016/final/fold_results.csv)
+- [逐TX/day及PA作用层](E:/type10-7/local_artifacts/cvs_ordinary_pa_source_20261016/final/source_strata.csv)
+- [波形统计](E:/type10-7/local_artifacts/cvs_ordinary_pa_source_20261016/final/waveform_summary.csv)

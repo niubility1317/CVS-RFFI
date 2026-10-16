@@ -214,3 +214,7 @@ SIG相对普通增强NOMINAL：low +1.1488、mid +1.1333、urban +1.0907、最�
 ## 五个源 RX 配对确认完成
 
 20261016-phase1-ordinary-augmentation-sourceRX-confirm-e20-s2026092701-m8-r01已完整收尾：源规则FAIL，平均accuracy差2.029629629629631pp，macroF1差2.315206776186459pp。所有四对实际L/U完整序列匹配，新160epoch/35520step全日志解析；RX1结果只读复用。一个model seed，不是五seed，无As/target。完整正负分层及费用见[报告](../automation_reports/CV-SincNet/20261016-phase1-ordinary-augmentation-sourceRX-confirm-e20-s2026092701-m8-r01/report.md)。当前还没有正式clean/urban联合或跨seed结论；按固定源规则处理，不救援失败路线。
+
+## 已完成 PA 条件输入诊断
+
+20261016-diagnostic-ordinary-PA-heldsource-manysig-s2026092701-m5-r01已完整分析：NO_PA相对FULL保持率五RX全正、均值+1.126556pp；准确率五RX全正、均值+0.600198412698415pp。207910真实前向/0更新，5CP smoke与冻结/前级一致性通过，0V/U/target。科学判据PASS仅支持直接输入风险，不证明PA是旧N1训练负收益主因，也不证明NoPA可泛化；NO_PA相对RAW仍明显退化。首次独立运行中PID快照缺失如实保留，不补跑。[完整报告](../automation_reports/CV-SincNet/20261016-diagnostic-ordinary-PA-heldsource-manysig-s2026092701-m5-r01/report.md)。下一步训练因果需单独固定scratchE20对照，当前没有新训练或正式目标结果。

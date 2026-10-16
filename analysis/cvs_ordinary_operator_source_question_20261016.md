@@ -31,3 +31,7 @@
 AWGN、多径、移位、DC、taper 等还可能有单独影响和交互；本首轮不把它们全堆成候选。FULL/NO_PA 的同随机对照先给出一个能够解释的结果，避免根据源分数扫描开关组合。
 
 正式联合目标保持：clean 净改善、原 low urban 超过 60%、suburban 接近自身 clean；测试 IQ/信道和默认头固定。当前尚无该诊断结果、可靠 Ag、新 full-source 混合结果或跨 seed 结论。
+
+## 已完成 PA 条件输入诊断
+
+20261016-diagnostic-ordinary-PA-heldsource-manysig-s2026092701-m5-r01已完整分析：NO_PA相对FULL保持率五RX全正、均值+1.126556pp；准确率五RX全正、均值+0.600198412698415pp。207910真实前向/0更新，5CP smoke与冻结/前级一致性通过，0V/U/target。科学判据PASS仅支持直接输入风险，不证明PA是旧N1训练负收益主因，也不证明NoPA可泛化；NO_PA相对RAW仍明显退化。首次独立运行中PID快照缺失如实保留，不补跑。[完整报告](../automation_reports/CV-SincNet/20261016-diagnostic-ordinary-PA-heldsource-manysig-s2026092701-m5-r01/report.md)。下一步训练因果需单独固定scratchE20对照，当前没有新训练或正式目标结果。
