@@ -1,5 +1,5 @@
 """Full independent source score/cost/sequence recount, no research model import."""
-import csv,gzip,json,math,sys
+import csv,gzip,json,math,struct,sys
 from pathlib import Path
 root=Path(__file__).resolve().parents[2];sys.path.insert(0,str(root))
 from experiments.cvs_iq_timing20.harvest import score
@@ -8,6 +8,7 @@ RUN='20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01'
 SEED=2026092701
 VIEWS=('clean','practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
 ROWS=tuple(arm+'-RX1-s'+str(SEED) for arm in ('B00','B10'))
+GAIN_BOUNDS=tuple(struct.unpack('f',struct.pack('f',v))[0] for v in (.9,1.1))
 
 def read(p):return json.loads(p.read_text(encoding='utf8'))
 def records(p):
@@ -57,7 +58,7 @@ def analyze():
             assert sum(v['scene_counts'].values())==v['As_packets'] and sum(v['state_counts'].values())==v['As_packets'] and sum(v['lock_counts'].values())==v['As_packets']
             terms+=len(v['supcon_details']);satellite+=v['As_packets']
             values=v['gain_values'];expected_gain=128 if arm=='B10' else 0
-            assert v['gain_packets']==len(values)==expected_gain and all(math.isfinite(a) and .9<=a<=1.1 for a in values) and 0<=v['gain_power_error']<=1e-6
+            assert v['gain_packets']==len(values)==expected_gain and all(math.isfinite(a) and GAIN_BOUNDS[0]<=a<=GAIN_BOUNDS[1] for a in values) and 0<=v['gain_power_error']<=1e-6
             gain_count+=len(values);gain_sum+=sum(values);gain_sq+=sum(a*a for a in values);power_max=max(power_max,v['gain_power_error'])
             if values:gain_min=min(gain_min,min(values));gain_max=max(gain_max,max(values))
             else:assert v['sat_raw_MSE']==0.

@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ANALYZED_SOURCE_ONLY",
   "code_commit": "1d29887ef68319fe9a75b2c82fca30a7860dbf8e",
   "archive_transfer": "VERIFIED",
   "remote_compile": "VERIFIED",
@@ -31,7 +31,10 @@
       "step_log_growth_verified": true,
       "gain_packets": 0,
       "Ag": false,
-      "As_training": false
+      "As_training": false,
+      "training_epochs": 20,
+      "actual_optimizer_updates": 4440,
+      "training_and_source_views_complete": true
     },
     {
       "row_id": "B10-RX1-s2026092701",
@@ -46,7 +49,17 @@
       "step_log_growth_verified": true,
       "gain_packets": 28416,
       "Ag": true,
-      "As_training": false
+      "As_training": false,
+      "training_epochs": 20,
+      "actual_optimizer_updates": 4440,
+      "training_and_source_views_complete": true
     }
-  ]
+  ],
+  "terminal_processes": "Dispatcher and both workers naturally exited;completion exists,failure absent",
+  "all_seven_views_per_row_independently_recounted": true,
+  "full_native_steps_recounted_per_row": 4440,
+  "independent_analysis_code": "All complete hard predictions and full epoch/step/sequence/gain logs recounted;CE runtime reported only",
+  "source_qualification": "FAIL_CLOSE_FIXED_RECIPE",
+  "actual_total_NN_forward_packets": 9373518,
+  "joint_goal_complete": false
 }

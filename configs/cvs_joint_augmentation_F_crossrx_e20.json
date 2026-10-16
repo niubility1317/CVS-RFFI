@@ -131,83 +131,18 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": {
-    "name": "Bounded packet-constant received-IQ gain view improves heldRX clean while retaining original ordinary PA",
-    "status": "RUNNING_SOURCE_E20_NO_IDENTITY_RESULT_YET",
-    "minimum": "First actual input/normalization path audit;then separately registered samefold/seed/scratchE20/raw.5 ordinary.25 raw-or-gain-slot.25 with matched6forwards and unchanged U",
-    "gain_range": [
-      0.9,
-      1.1
-    ],
-    "gain_range_basis": "Existing verified ordinary gain contract,not source practical/target tuning",
-    "abandon": "Gain removed by later RMS or no actual deployed-feature effect:no training;matchedE20 clean or practical guardrail failure:close fixed candidate",
+    "name": "Bounded receive-frequency-offset-only IQ view with NoExplicitCFO and internal compensation retained",
+    "status": "PROPOSED_NOT_IMPLEMENTED_REGISTERED_OR_LAUNCHED",
+    "frequency_max_cycles_per_sample": 0.00010024013357398965,
+    "range_basis": "Actual current ordinary base aug_cfo_max .0004 times native E13 cap scale .2506003339349741;not constructor .0025 or extrapolated E20 .35,not source practical/target tuning",
+    "operator": "x[n] exp(j2pi f n),n=0..255;native zero-origin packet-constant frequency ramp,not failed constant phase rotation;no centering-induced residual constant phase after existing compensation",
+    "meaning": "Digital received-IQ LO-frequency observation variation,not changing TX or using CFO as identity;NoExplicitCFO coord27 stays0,internal packet compensation stays",
+    "minimum": "Separately register one matched frozen-sourceCP no-query input/function check:2smoke plus32synthetic packets x5views(identity,positive/negative fixed frequency endpoints,corresponding inverse controls),162NN/0realIQ/0updates;no training until actual input and compensated default function effect verified",
+    "if_engineering_pass": "Only justifies separately preregistered source identity/E20 falsification,not Ag efficacy or automatic target",
+    "source_training_minimum": "If subsequently justified and registered:matched B00/B10 sourceRX1/same seed/scratchE20/raw.5/oldordinary.25/raw-or-frequencyslot.25,6L forwards/oldU and PA retained;clean gain>=1pp,F1>=0,each6practical>=-.5pp,V>=-.5pp,full healthy budget",
+    "abandon": "Existing compensation removes nontrivial function effect:close with0training;any future fixed source criterion fails:close,no frequency/seed/RX/threshold rescue",
     "target_access": false,
-    "Ag_efficacy_proved": false,
-    "run_id": "20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01",
-    "input_audit": {
-      "real_CP_smoke_packets": 2,
-      "synthetic_packets": 32,
-      "synthetic_seed": 20261016321,
-      "families": [
-        "Gaussian",
-        "ARcolored",
-        "QPSKsmoothed",
-        "chirp+noise"
-      ],
-      "views": [
-        "identity",
-        "gain0.9",
-        "gain1.1",
-        "gain0.9_RMSrestored",
-        "gain1.1_RMSrestored"
-      ],
-      "actual_NN_packets": 162,
-      "real_source_IQ_reads": 0,
-      "criteria": {
-        "gain_RMS_relative_error_max": 1e-06,
-        "restored_input_relative_error_max": 1e-06,
-        "restored_normalized_joint_relative_error_max": 0.0001,
-        "restored_logits_abs_error_max": 0.001,
-        "at_least_one_endpoint_median_normalized_joint_change_min": 0.001,
-        "at_least_one_endpoint_logits_abs_change_max_min": 0.01
-      },
-      "on_fail": "Close fixed gain candidate,no real source IQ/training/range rescue",
-      "on_pass": "Continue scratchE20 immediately;engineering input effect only,not identity accuracy/Ag evidence"
-    },
-    "source_selection": {
-      "primary": "B10",
-      "reference": "B00",
-      "fixed_final": 20,
-      "held_RX": 1,
-      "held_L": 1260,
-      "views": [
-        "clean",
-        "practical_high",
-        "practical_mid",
-        "practical_low_suburban",
-        "practical_high_urban",
-        "practical_mid_urban",
-        "practical_low_urban"
-      ],
-      "min_clean_gain_pp": 1.0,
-      "min_clean_macroF1_gain_pp": 0.0,
-      "max_each_practical_drop_pp": 0.5,
-      "max_seenV_drop_pp": 0.5,
-      "final_L_CE_max": 0.5,
-      "on_fail": "Close fixed constant-gain training recipe,no range/seed/RX rescue",
-      "on_pass": "Only supports independent source confirmation,not Ag/DG proof or automatic target"
-    },
-    "source_fold": "L5040/U45360/V21600,heldRX1 finalL1260",
-    "real_CP_audit162_first": true,
-    "execution_commit": "1d29887ef68319fe9a75b2c82fca30a7860dbf8e",
-    "input_effect_result": {
-      "decision": "PASS",
-      "conditions": {
-        "gain_reaches_actual_sinc": true,
-        "restored_input": true,
-        "restored_function": true,
-        "nontrivial_default_function": true
-      }
-    }
+    "Ag_efficacy_proved": false
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
@@ -373,5 +308,161 @@
     "target_access": false,
     "Ag_efficacy_proved": false,
     "joint_goal_complete": false
+  },
+  "source_constant_gain_E20_result": {
+    "run_id": "20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01",
+    "status": "ANALYZED_SOURCE_FAIL_FIXED_RECIPE_CLOSED",
+    "qualification": {
+      "qualified": false,
+      "conditions": {
+        "healthy": true,
+        "clean": false,
+        "clean_macroF1": true,
+        "practical_protection": false,
+        "seen_V": true
+      },
+      "urban_mean_gain_pp": -0.8730158730158717,
+      "seen_V_gain_pp": -0.004629629629626653
+    },
+    "paired": {
+      "clean": {
+        "accuracy_gain_pp": 0.5555555555555536,
+        "macro_F1_gain_pp": 0.610393312470181,
+        "repaired": 11,
+        "broken": 4
+      },
+      "practical_high": {
+        "accuracy_gain_pp": -1.82539682539683,
+        "macro_F1_gain_pp": -0.8611811832534733,
+        "repaired": 6,
+        "broken": 29
+      },
+      "practical_mid": {
+        "accuracy_gain_pp": -1.7460317460317454,
+        "macro_F1_gain_pp": -1.0238792095979887,
+        "repaired": 9,
+        "broken": 31
+      },
+      "practical_low_suburban": {
+        "accuracy_gain_pp": -1.904761904761909,
+        "macro_F1_gain_pp": -1.505102657466556,
+        "repaired": 6,
+        "broken": 30
+      },
+      "practical_high_urban": {
+        "accuracy_gain_pp": -1.1904761904761862,
+        "macro_F1_gain_pp": -0.6068304834082272,
+        "repaired": 8,
+        "broken": 23
+      },
+      "practical_mid_urban": {
+        "accuracy_gain_pp": -1.1904761904761918,
+        "macro_F1_gain_pp": -0.666558992969235,
+        "repaired": 12,
+        "broken": 27
+      },
+      "practical_low_urban": {
+        "accuracy_gain_pp": -0.23809523809523725,
+        "macro_F1_gain_pp": 0.3044549739726454,
+        "repaired": 17,
+        "broken": 20
+      }
+    },
+    "training_updates": 8880,
+    "actual_NN_packets": 9373518,
+    "target_access": false,
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false,
+    "fixed_hypothesis": {
+      "name": "Bounded packet-constant received-IQ gain view improves heldRX clean while retaining original ordinary PA",
+      "status": "ANALYZED_SOURCE_FAIL_FIXED_RECIPE_CLOSED",
+      "minimum": "First actual input/normalization path audit;then separately registered samefold/seed/scratchE20/raw.5 ordinary.25 raw-or-gain-slot.25 with matched6forwards and unchanged U",
+      "gain_range": [
+        0.9,
+        1.1
+      ],
+      "gain_range_basis": "Existing verified ordinary gain contract,not source practical/target tuning",
+      "abandon": "Gain removed by later RMS or no actual deployed-feature effect:no training;matchedE20 clean or practical guardrail failure:close fixed candidate",
+      "target_access": false,
+      "Ag_efficacy_proved": false,
+      "run_id": "20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01",
+      "input_audit": {
+        "real_CP_smoke_packets": 2,
+        "synthetic_packets": 32,
+        "synthetic_seed": 20261016321,
+        "families": [
+          "Gaussian",
+          "ARcolored",
+          "QPSKsmoothed",
+          "chirp+noise"
+        ],
+        "views": [
+          "identity",
+          "gain0.9",
+          "gain1.1",
+          "gain0.9_RMSrestored",
+          "gain1.1_RMSrestored"
+        ],
+        "actual_NN_packets": 162,
+        "real_source_IQ_reads": 0,
+        "criteria": {
+          "gain_RMS_relative_error_max": 1e-06,
+          "restored_input_relative_error_max": 1e-06,
+          "restored_normalized_joint_relative_error_max": 0.0001,
+          "restored_logits_abs_error_max": 0.001,
+          "at_least_one_endpoint_median_normalized_joint_change_min": 0.001,
+          "at_least_one_endpoint_logits_abs_change_max_min": 0.01
+        },
+        "on_fail": "Close fixed gain candidate,no real source IQ/training/range rescue",
+        "on_pass": "Continue scratchE20 immediately;engineering input effect only,not identity accuracy/Ag evidence"
+      },
+      "source_selection": {
+        "primary": "B10",
+        "reference": "B00",
+        "fixed_final": 20,
+        "held_RX": 1,
+        "held_L": 1260,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "min_clean_gain_pp": 1.0,
+        "min_clean_macroF1_gain_pp": 0.0,
+        "max_each_practical_drop_pp": 0.5,
+        "max_seenV_drop_pp": 0.5,
+        "final_L_CE_max": 0.5,
+        "on_fail": "Close fixed constant-gain training recipe,no range/seed/RX rescue",
+        "on_pass": "Only supports independent source confirmation,not Ag/DG proof or automatic target"
+      },
+      "source_fold": "L5040/U45360/V21600,heldRX1 finalL1260",
+      "real_CP_audit162_first": true,
+      "execution_commit": "1d29887ef68319fe9a75b2c82fca30a7860dbf8e",
+      "input_effect_result": {
+        "decision": "PASS",
+        "conditions": {
+          "gain_reaches_actual_sinc": true,
+          "restored_input": true,
+          "restored_function": true,
+          "nontrivial_default_function": true
+        }
+      },
+      "identity_source_qualification": {
+        "qualified": false,
+        "conditions": {
+          "healthy": true,
+          "clean": false,
+          "clean_macroF1": true,
+          "practical_protection": false,
+          "seen_V": true
+        },
+        "urban_mean_gain_pp": -0.8730158730158717,
+        "seen_V_gain_pp": -0.004629629629626653
+      }
+    }
   }
 }
