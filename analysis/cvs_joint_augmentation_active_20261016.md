@@ -29,3 +29,6 @@ E20 是从零训练 13 轮 L＋7 轮原 U，4440 次实际更新；预期对比�
 
 
 独立seed02确认已登记为 `20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01`，状态PLANNED，尚未启动。固定runtime profile只改模型seed/run/release/output，底层F与原生seed均为2026092702；split/channel/receiver/eval、六前向、损失/阈值/U不变。两个模型各从零E20。10个负例与种子传递检查PASS，新入口一次限定P0/P1审查PASS；不重复审旧机制。源确认失败不扩seed03、不改RX或比例救跑，联合目标仍未完成。
+
+
+上述seed02确认已实际发布，执行commit `d71531d53c1d9ec46e3915963e05bff96760e80e`；两组native/config种子均为2026092702，真实smoke、archive单次比对、编译及PID/CWD/argv/GPU/log增长VERIFIED。当前RUNNING，B00 E2/20、B01 E1/20是已观察进度，尚未评分或确认收益。不重新提交同row。

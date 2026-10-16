@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：固定 75/25 practical 的独立 seed02 确认
 
-- 当前状态：PLANNED；尚未启动、训练或生成确认预测。
+- 当前状态：RUNNING；两个原进程已独立核实，尚无最终确认预测。
 - 唯一配置与逐行矩阵：[experiment.json](experiment.json)。
 - 执行代码 commit：由本次 Git 提交及 release_commit.txt 确认，训练解析时保存。
 
@@ -50,3 +50,8 @@ As 仅作用原始 x_l，不作用旧增强后的 IQ；不重复普通 AWGN/mult
 ## 本地验证
 
 已通过8个固定配置负例及2个未知runtime/publish profile负例、两个arm原生参数差异检查、底层F与native seed传递及幂等profile绑定；0IQ、0模型前向、0更新。复用已验证的六前向、SupCon、完整practical与真实checkpoint smoke实现；这次未重复跑不变训练模型。一次限定新profile入口的独立P0/P1审查PASS，无发现；不增加审批或旧机制重复审查。普通账号N607只读preflight已完成，实际传输/编译/smoke/启动状态待发布后按证据追加。
+
+
+## 实际发布与运行
+
+执行 commit `d71531d53c1d9ec46e3915963e05bff96760e80e` 已提交推送并独立核对远端OID。单份release archive传输比对、远端编译均VERIFIED，真实匹配checkpoint的两个合成包no-query smoke PASS后直接进入训练。独立读回两个原PID的CWD/argv、GPU0/1归属和stdout增长；两行的actual_native_args.seed与resolved config.model_seed均为2026092702。B00已完成E2/20、444更新；B01已完成E1/20、222更新、28416份实际practical监督；没有failure、target访问或重启。摘要见launch_verification.json。该读数只是进度，不是收益或跨seed确认。
