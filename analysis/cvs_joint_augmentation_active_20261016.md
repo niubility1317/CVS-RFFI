@@ -162,3 +162,6 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 20261016-diagnostic-F-IQ-circularity-source-crossfit-manysig-m1-r01 已完成并独立复算：FAIL_FIXED_CIRCULARITY_RX_BASIS_CLOSED。sameRX 风险减少73.0123%，最佳wrongRX为77.0565%，未达到预定指派特异性；其他条件通过不覆盖此失败。5040源L／0NN／0更新／0target；不改量、窗口、阈值或RX补救，不启动IQ镜像Ag。联合目标仍未完成。
+
+
+下一独立泛化方向 20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01 已登记：同 TX/day 的实际跨源 RX IQ 以固定0.1组合，raw／同RX／跨RX对照，两冻结原默认头 source-fit 身份保护检查。L5040／预计50402NN／0新epoch／0更新／0target；旧circularity和As失败仍关闭。尚未启动，PASS也不是Ag/DG收益。

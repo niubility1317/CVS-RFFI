@@ -1,0 +1,418 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01",
+  "group_id": "phase1-F-sameTX-IQmix-source-Ag-guard",
+  "display_name": "F＋跨RX同TX：同身份真实IQ小比例组合的源身份保护",
+  "description": "Fixed .1 coherent sameTX crossRX observed-IQ composition versus raw and sameRX control;two frozen default heads on legal L5040;no training/target;not receiver replacement.",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "sameTX IQmix guard",
+    "observed IQ sameidentity interpolation"
+  ],
+  "tags": [
+    "F",
+    "CROSS_RX",
+    "sameTX_IQmix",
+    "source_only",
+    "default_head",
+    "frozen_models"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+    "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active authorized distinct Ag/As goal;F+CROSS_RX/E20 latest baseline.Fixed prior circularity and additiveAs failures remain closed.New sameTX observedIQ empirical interpolation,not parameter rescue.",
+  "code": {
+    "commit": "Actual execution commit in release_commit/resolved config",
+    "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
+    "environment": "ordinaryN607 existingCVS-RFFI Python;CPU2;CUDAhidden",
+    "cwd": "PROJECT/releases/cvs_F_sameTX_IQmix_fitL_20261016_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "ExistingvalidatedsourcecarrierL6300;RX1 filteredbeforeIQobservations",
+    "representation": "Native equalized1 IQ256/25Msps/packetRMS;source-fit original L5040,known preamble",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Exact original source_contract L_s handles;fit5040 opaqueIDs retained privately",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "5040fitL only;all72cells70each;donors also sameL;not simultaneous emittedpacket",
+      "U_s": "Not used in this probe;TXtruth hidden;frozen models previously used own original U rule",
+      "V": "Not used in this probe;no head fitting"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen default-head source-fit identity guard only;not newtraining,crossRXDG or practical efficacy"
+  },
+  "checkpoint": {
+    "initialization": "Frozen own source diagnostic only;no training initialization",
+    "sources": [
+      {
+        "model_seed": 2026092701,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth",
+        "code_commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+        "data_contract": "Exact same effective L5040/U45360/V21600,fitRX3/4/6/8,days1/2/3,heldRX1 excluded",
+        "provenance": "Own scratchE20/final20/4440updates;no ancestors/baseline/teacherCP/target;original hiddenU rule",
+        "selection": "fixedfinal20 sourceonly"
+      },
+      {
+        "model_seed": 2026092702,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source/final_ssdg.pth",
+        "code_commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+        "data_contract": "Exact same effective L5040/U45360/V21600,fitRX3/4/6/8,days1/2/3,heldRX1 excluded",
+        "provenance": "Own scratchE20/final20/4440updates;no ancestors/baseline/teacherCP/target;original hiddenU rule",
+        "selection": "fixedfinal20 sourceonly"
+      }
+    ],
+    "contract_check_ref": "Existing source-only reports and worker exact initialization/completion/frozen/payload/sourcehandles checks;not data revalidation",
+    "provenance_verdict": "Two previously verified scratch/source-only references;no parameter fitting,inheritance or target feedback in new probe",
+    "selection_rule": "Both predetermined model seeds run;all original fixed guard conditions required,notbestseed"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-sameTX-IQmix-source-20261016",
+    "gpu_policy": "CPUonly,2threads,CUDA_VISIBLE_DEVICES empty",
+    "remote_run_root": "PROJECT/runs/20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_sameTX_IQmix_fitL_20261016_r01/sameTX_IQmix.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_same_tx_iq16.dispatch",
+    "stop_rule": "Wrongsourcehandles/CPprovenance/nonfinite/bounds/outputcollision/workerexception:preservepartial,stopnewownworkers,noautomaticretry;nevermodifyotherjobs"
+  },
+  "expected_artifacts": [
+    "request/active/launch/root result/completion or failure",
+    "Eachseed active/resolved_config/provenance/result/completion",
+    "One seed01 real_checkpoint_smoke2NN before IQ",
+    "Private all3view logits/predictions/anchor and donor mappings/transform metrics",
+    "Independent full50400sourceprediction recount/all72cells/allRXTXday/retention/figure/report/registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_fit_accuracy",
+      "macro_F1",
+      "raw_correct_retention",
+      "relative_IQ_change",
+      "power_error"
+    ],
+    "dimensions": [
+      "2frozen seeds",
+      "raw5040",
+      "sameRXsameTX5040",
+      "crossRXsameTX15120",
+      "allRX/TX/day and72cells"
+    ],
+    "prediction_ref": "Private perseed/predictions;physical IDs and donors private",
+    "scorer_ref": "Independent source-label scorer only;no targettruth access"
+  },
+  "rows": [
+    {
+      "row_id": "SOURCE_IDENTITY_GUARD-s2026092701",
+      "method": "Fixed .1 sameTX crossRX IQmix;raw and sameRX controls;frozen defaultcos",
+      "purpose": "source_identity_preservation_not_DG",
+      "config_ref": "experiments/cvs_same_tx_iq16/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01/s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozenmodelseed;deterministic all3donorRX/nextopaqueIDrank;no augmentation randomstream;synthetic seed20261016171 separate",
+      "k": null,
+      "scenario": "source_fit_clean_guard_no_practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "25200sourceNN permodel+2syntheticNN once seed01=50402total;40320IQmix generations;2CPloads;0training/teacher",
+      "output_root": "PROJECT/runs/20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01/s2026092701",
+      "log_path": "PROJECT/runs/20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01/s2026092701.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_same_tx_iq16/runner.py --seed 2026092701",
+      "expected_artifacts": [
+        "request/active/launch/root result/completion or failure",
+        "Eachseed active/resolved_config/provenance/result/completion",
+        "One seed01 real_checkpoint_smoke2NN before IQ",
+        "Private all3view logits/predictions/anchor and donor mappings/transform metrics",
+        "Independent full50400sourceprediction recount/all72cells/allRXTXday/retention/figure/report/registry"
+      ],
+      "config": {
+        "run_id": "20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01",
+        "launch_owner": "codex/root/F-sameTX-IQmix-source-20261016",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01",
+        "question": "Do mild same-TX cross-RX observed-IQ mixtures preserve frozen default-head identities before training?",
+        "models": {
+          "2026092701": {
+            "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+            "backend": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+            "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+            "source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+          },
+          "2026092702": {
+            "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+            "backend": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+            "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+            "source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+          }
+        },
+        "model": "Own F+CROSS_RX,3SIG_TIME,unifiedSinc,joint160,defaultcos30,NoExplicitCFO;fixedscratchE20final20;no new head",
+        "model_role": "Frozen source diagnostic only,not future training initialization",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "days": [
+          1,
+          2,
+          3
+        ],
+        "TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "L_unique": 5040,
+        "samples_per_cell": 70,
+        "donor_scope": "Same visibleL TX and same day,other fitRX;all3 otherRX peranchor;not simultaneous emission",
+        "pairing": "Sort opaqueIDs within each TX/RX/day cell;donor next rank modulo70,all otherRX;sameRX next-rank control;no class-specific parameter",
+        "operator": "Normalize donor to anchor RMS,align donor relative lag20 frequency and window80:160 commonphase to anchor,mix .9anchor+.1donor then restore anchorRMS;all256samples,no shift/crop/noise/channel/PA",
+        "mix_coefficient": 0.1,
+        "bound": "At most 2lambda/(1-2lambda)=.25 relative RMS before float rounding;engineering bound,not a measured RX strength",
+        "NoExplicitCFO": true,
+        "internal_reference_compensation_retained": true,
+        "anchor_frequency_not_zeroed": true,
+        "normalization": "Native already packetRMS;restore anchorpower after combination;cannot be eliminated as simple gain",
+        "views": {
+          "raw": 5040,
+          "sameRX_sameTX": 5040,
+          "crossRX_sameTX": 15120
+        },
+        "source_NN_per_model": 25200,
+        "total_NN_packets": 50402,
+        "synthetic_CP_smoke_NN": 2,
+        "new_training_epochs": 0,
+        "optimizer_updates": 0,
+        "teacher_forwards": 0,
+        "checkpoint_loads": 2,
+        "old_training_cost_separate": "2 scratchE20/8880updates/9373356 NN across frozen B00 models;verify prior records,no repeat",
+        "criteria": {
+          "min_overall_accuracy_gain_pp": -0.5,
+          "min_overall_macroF1_gain_pp": -0.5,
+          "min_each_RX_accuracy_gain_pp": -1.0,
+          "min_each_TX_accuracy_gain_pp": -1.0,
+          "min_each_day_accuracy_gain_pp": -1.0,
+          "min_cross_vs_sameRX_accuracy_gain_pp": -0.5,
+          "min_raw_correct_retention": 0.99,
+          "min_median_relative_IQ_change": 0.01,
+          "max_relative_IQ_change": 0.25001,
+          "max_relative_power_error": 1e-05
+        },
+        "on_fail": "Close fixed same-TX IQmix .1 alignment recipe;no coefficient/alignment/window/RX/seed rescue",
+        "on_pass": "Identity guard only;next matched scratchE20 raw-slot/sameRXmix/crossRXmix required;not Ag,DG or joint success",
+        "future_training": "F+CROSS_RX/E20,baseline raw.75+ordinary.25 preserved;extra .25 raw or sameRXmix or crossRXmix,8L forwards,original hiddenU/ownEMA unchanged;separately register before training",
+        "U_used": false,
+        "U_truth_read": false,
+        "V_used": false,
+        "held_RX1_used": false,
+        "target_access": false,
+        "automatic_training": false,
+        "default_head_only": true,
+        "device": "CPU",
+        "threads": 2,
+        "source_basis": [
+          "https://arxiv.org/pdf/2112.15363",
+          "https://arxiv.org/abs/1710.09412"
+        ],
+        "limitations": [
+          "Same-label convex mixing does not prove fingerprint preservation",
+          "No unique RXhardware replacement/inversion;RX nonlinearity and packet variability remain",
+          "Same-RX control distinguishes some averaging/extra-view effects;only future heldRX E20 can establish DG",
+          "Known preamble data,25Msps after equalization and CFO reapplication;anchor CFO is retained but never identity input"
+        ]
+      }
+    },
+    {
+      "row_id": "SOURCE_IDENTITY_GUARD-s2026092702",
+      "method": "Fixed .1 sameTX crossRX IQmix;raw and sameRX controls;frozen defaultcos",
+      "purpose": "source_identity_preservation_not_DG",
+      "config_ref": "experiments/cvs_same_tx_iq16/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01/s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozenmodelseed;deterministic all3donorRX/nextopaqueIDrank;no augmentation randomstream;synthetic seed20261016171 separate",
+      "k": null,
+      "scenario": "source_fit_clean_guard_no_practical",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "25200sourceNN permodel+2syntheticNN once seed01=50402total;40320IQmix generations;2CPloads;0training/teacher",
+      "output_root": "PROJECT/runs/20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01/s2026092702",
+      "log_path": "PROJECT/runs/20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01/s2026092702.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_same_tx_iq16/runner.py --seed 2026092702",
+      "expected_artifacts": [
+        "request/active/launch/root result/completion or failure",
+        "Eachseed active/resolved_config/provenance/result/completion",
+        "One seed01 real_checkpoint_smoke2NN before IQ",
+        "Private all3view logits/predictions/anchor and donor mappings/transform metrics",
+        "Independent full50400sourceprediction recount/all72cells/allRXTXday/retention/figure/report/registry"
+      ],
+      "config": {
+        "run_id": "20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01",
+        "launch_owner": "codex/root/F-sameTX-IQmix-source-20261016",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01",
+        "question": "Do mild same-TX cross-RX observed-IQ mixtures preserve frozen default-head identities before training?",
+        "models": {
+          "2026092701": {
+            "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+            "backend": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+            "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+            "source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+          },
+          "2026092702": {
+            "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+            "backend": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+            "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+            "source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+          }
+        },
+        "model": "Own F+CROSS_RX,3SIG_TIME,unifiedSinc,joint160,defaultcos30,NoExplicitCFO;fixedscratchE20final20;no new head",
+        "model_role": "Frozen source diagnostic only,not future training initialization",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "days": [
+          1,
+          2,
+          3
+        ],
+        "TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "L_unique": 5040,
+        "samples_per_cell": 70,
+        "donor_scope": "Same visibleL TX and same day,other fitRX;all3 otherRX peranchor;not simultaneous emission",
+        "pairing": "Sort opaqueIDs within each TX/RX/day cell;donor next rank modulo70,all otherRX;sameRX next-rank control;no class-specific parameter",
+        "operator": "Normalize donor to anchor RMS,align donor relative lag20 frequency and window80:160 commonphase to anchor,mix .9anchor+.1donor then restore anchorRMS;all256samples,no shift/crop/noise/channel/PA",
+        "mix_coefficient": 0.1,
+        "bound": "At most 2lambda/(1-2lambda)=.25 relative RMS before float rounding;engineering bound,not a measured RX strength",
+        "NoExplicitCFO": true,
+        "internal_reference_compensation_retained": true,
+        "anchor_frequency_not_zeroed": true,
+        "normalization": "Native already packetRMS;restore anchorpower after combination;cannot be eliminated as simple gain",
+        "views": {
+          "raw": 5040,
+          "sameRX_sameTX": 5040,
+          "crossRX_sameTX": 15120
+        },
+        "source_NN_per_model": 25200,
+        "total_NN_packets": 50402,
+        "synthetic_CP_smoke_NN": 2,
+        "new_training_epochs": 0,
+        "optimizer_updates": 0,
+        "teacher_forwards": 0,
+        "checkpoint_loads": 2,
+        "old_training_cost_separate": "2 scratchE20/8880updates/9373356 NN across frozen B00 models;verify prior records,no repeat",
+        "criteria": {
+          "min_overall_accuracy_gain_pp": -0.5,
+          "min_overall_macroF1_gain_pp": -0.5,
+          "min_each_RX_accuracy_gain_pp": -1.0,
+          "min_each_TX_accuracy_gain_pp": -1.0,
+          "min_each_day_accuracy_gain_pp": -1.0,
+          "min_cross_vs_sameRX_accuracy_gain_pp": -0.5,
+          "min_raw_correct_retention": 0.99,
+          "min_median_relative_IQ_change": 0.01,
+          "max_relative_IQ_change": 0.25001,
+          "max_relative_power_error": 1e-05
+        },
+        "on_fail": "Close fixed same-TX IQmix .1 alignment recipe;no coefficient/alignment/window/RX/seed rescue",
+        "on_pass": "Identity guard only;next matched scratchE20 raw-slot/sameRXmix/crossRXmix required;not Ag,DG or joint success",
+        "future_training": "F+CROSS_RX/E20,baseline raw.75+ordinary.25 preserved;extra .25 raw or sameRXmix or crossRXmix,8L forwards,original hiddenU/ownEMA unchanged;separately register before training",
+        "U_used": false,
+        "U_truth_read": false,
+        "V_used": false,
+        "held_RX1_used": false,
+        "target_access": false,
+        "automatic_training": false,
+        "default_head_only": true,
+        "device": "CPU",
+        "threads": 2,
+        "source_basis": [
+          "https://arxiv.org/pdf/2112.15363",
+          "https://arxiv.org/abs/1710.09412"
+        ],
+        "limitations": [
+          "Same-label convex mixing does not prove fingerprint preservation",
+          "No unique RXhardware replacement/inversion;RX nonlinearity and packet variability remain",
+          "Same-RX control distinguishes some averaging/extra-view effects;only future heldRX E20 can establish DG",
+          "Known preamble data,25Msps after equalization and CFO reapplication;anchor CFO is retained but never identity input"
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "Only visibleL sameTX/day donors;all3 otherfitRX and one sameRX control peranchor;eachphysicalanchor participates,no confidence/quality/TX/RX-specific filters.",
+    "Formula .9x+.1 aligned d followed by anchorpower restore;donor normalized to x RMS;lag20 relative frequency and80:160 commonphase alignment;anchorfrequency retained,NoExplicitCFO/internal comp unchanged.No temporal shift/crop/seam/artificial PA or channel.",
+    "Lambda.1 fixed by conservative mathematical relativeRMS<=.25 engineering bound,not source/target sweep or measured hardware amplitude.Preamble256/25Msps sourcegrounded in original WiSig IV-B;Mixup is mathematical context only,no labelpreservation/DG proof.",
+    "All fixed conditions per bothmodels:overall accuracy/F1>=-.5pp;eachRX/TX/day accuracy>=-1pp;cross>=sameRX-.5pp;rawcorrectretention>=.99;medianrelativeIQchange>=.01;max<=.25001;powererror<=1e-5.",
+    "FAIL closes fixed alignment/mixture .1 hypothesis;no coordinate/window/coefficient/RX/seed rescue.PASS only source-fit guard,then separately registered matched scratchE20 raw-slot/sameRX/crossRX must demonstrate heldsourceclean recognition gains before Ag claims.",
+    "No extra deploymentmodule/head/loss/fitting;one realCP smoke2NN launchfirst seed01;fixed twoCPU modelworkers sequential.OldCP training2E20/8880updates/9373356NN separate from new50402NN;sourcefitguardnot heldRX test.",
+    "Existing VALIDATED_ONCE sourcecarrierreused;onlyexactroles/handles checked.UnusedU/V/features/RX1 deserialized butneverinput tostatistic/classifier;Utruthhidden.Physical IDs/observations/logits/logs/weights private.",
+    "REJECTED_EXTRA_GATE: generic brainstorming design/spec/plan approval is outside ExclusiveMinimalExperimentWorkflow whitelist;active user authorization permits this bounded sourceprobe.No approval layer added.",
+    "No previously exposed target numbers participate in operator,amplitude,criteria or future promotion;this sourceonly probe is not a new independent blinded target test."
+  ],
+  "registered_at": "2026-10-16T14:40:35+00:00"
+}

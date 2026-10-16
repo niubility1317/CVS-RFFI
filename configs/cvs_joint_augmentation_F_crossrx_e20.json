@@ -1033,5 +1033,23 @@
     "risk_reduction": 0.7301227791954186,
     "gain_over_best_wrong_RX": -0.04044208650394765,
     "source_IQ_observations": 5040
+  },
+  "sameTX_IQmix_source_guard": {
+    "status": "REGISTERED_NOT_LAUNCHED",
+    "run_id": "20261016-diagnostic-F-crossRX-sameTX-IQmix-fitL-manysig-m2-r01",
+    "question": "Do mild same-TX cross-RX observed-IQ mixtures preserve frozen default-head identities before training?",
+    "coefficient": 0.1,
+    "model_seeds": [
+      2026092701,
+      2026092702
+    ],
+    "new_epochs": 0,
+    "expected_NN": 50402,
+    "expected_unique_L": 5040,
+    "source_only": true,
+    "Ag_efficacy_proved": false,
+    "target_access": false,
+    "automatic_training": false,
+    "joint_goal_complete": false
   }
 }

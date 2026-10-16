@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "negative_cases": 21,
+  "all5040synthetic_metadata_pairing": true,
+  "physical_order_TX_RX_permutation_invariant": true,
+  "known_phase_gain_frequency_alignment": true,
+  "donor_common_phase_gain_invariant": true,
+  "non_mutating_rng_preserving": true,
+  "common_equivariance_max_packet_relative_RMS": 5.897960265190752e-07,
+  "donor_equivariance_max_packet_relative_RMS": 1.7298790487589214e-07,
+  "relative_RMS_bound": 0.1108598805201681,
+  "relative_power_error": 9.111041106918785e-09,
+  "scientific_counterexamples": 5,
+  "synthetic_IQ_operator_packets": 104,
+  "zero_coefficient_packets": 16,
+  "source_IQ_reads": 0,
+  "model_forwards": 0,
+  "optimizer_updates": 0,
+  "target_access": false,
+  "initial_equivariance_check": "Initial per-coordinate1e-6 tolerance failed on float32 random low-coherence signals;max2.7046e-6/RMS2.0315e-7. Float64 reference max1.1466e-12. Changed engineering test to maximum per-packet relativeRMS<=8float32eps;scientific IQ bounds and identity criteria unchanged."
+}
