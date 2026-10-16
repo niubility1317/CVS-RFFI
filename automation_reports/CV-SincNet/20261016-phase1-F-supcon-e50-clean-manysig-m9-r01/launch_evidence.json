@@ -1,0 +1,187 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261016-phase1-F-supcon-e50-clean-manysig-m9-r01",
+  "execution_commit": "13db1177302d8bfd15eedc00ea035f17a1017afe",
+  "release_archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "real_checkpoint_no_query_smoke": true,
+    "all_three_reference_provenance": "VERIFIED",
+    "training_initialization": "all new models scratch; no inherited F weight",
+    "target_IQ_reads": 0,
+    "head_fit_updates": 0
+  },
+  "all_three_seeds_frozen": true,
+  "baseline_rows_reused": 3,
+  "new_models": 6,
+  "source_qualification_gate": false,
+  "training_budget_per_model": "50 = 33L + 17U",
+  "data_counts": {
+    "L": 6300,
+    "U_hidden": 56700,
+    "V_health_only": 27000
+  },
+  "default_head_jointly_trained": true,
+  "head_fit_updates": 0,
+  "target_performance_available": false,
+  "owner_processes": [
+    {
+      "row_id": "ALL_TX-s2026092701",
+      "PID": 3683702,
+      "GPU": "1",
+      "CWD": "PROJECT/releases/cvs_F_supcon50_clean_20261016_r01",
+      "argv": [
+        "PYTHON",
+        "experiments/cvs_f_supcon50/runner.py",
+        "--worker",
+        "ALL_TX-s2026092701"
+      ],
+      "live": true,
+      "epoch": 2,
+      "optimizer_steps": 444,
+      "log_growth_verified": true,
+      "SupCon": {
+        "epoch": 2,
+        "calls": 444,
+        "applied_calls": 0,
+        "mode": "ALL_TX",
+        "temporary_hooks_remaining": 0,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "U_truth_read": false
+      }
+    },
+    {
+      "row_id": "CROSS_RX-s2026092701",
+      "PID": 3683707,
+      "GPU": "2",
+      "CWD": "PROJECT/releases/cvs_F_supcon50_clean_20261016_r01",
+      "argv": [
+        "PYTHON",
+        "experiments/cvs_f_supcon50/runner.py",
+        "--worker",
+        "CROSS_RX-s2026092701"
+      ],
+      "live": true,
+      "epoch": 2,
+      "optimizer_steps": 444,
+      "log_growth_verified": true,
+      "SupCon": {
+        "epoch": 2,
+        "calls": 444,
+        "applied_calls": 0,
+        "mode": "CROSS_RX",
+        "temporary_hooks_remaining": 0,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "U_truth_read": false
+      }
+    },
+    {
+      "row_id": "ALL_TX-s2026092702",
+      "PID": 3683712,
+      "GPU": "3",
+      "CWD": "PROJECT/releases/cvs_F_supcon50_clean_20261016_r01",
+      "argv": [
+        "PYTHON",
+        "experiments/cvs_f_supcon50/runner.py",
+        "--worker",
+        "ALL_TX-s2026092702"
+      ],
+      "live": true,
+      "epoch": 2,
+      "optimizer_steps": 444,
+      "log_growth_verified": true,
+      "SupCon": {
+        "epoch": 2,
+        "calls": 444,
+        "applied_calls": 0,
+        "mode": "ALL_TX",
+        "temporary_hooks_remaining": 0,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "U_truth_read": false
+      }
+    },
+    {
+      "row_id": "CROSS_RX-s2026092702",
+      "PID": 3683718,
+      "GPU": "4",
+      "CWD": "PROJECT/releases/cvs_F_supcon50_clean_20261016_r01",
+      "argv": [
+        "PYTHON",
+        "experiments/cvs_f_supcon50/runner.py",
+        "--worker",
+        "CROSS_RX-s2026092702"
+      ],
+      "live": true,
+      "epoch": 2,
+      "optimizer_steps": 444,
+      "log_growth_verified": true,
+      "SupCon": {
+        "epoch": 2,
+        "calls": 444,
+        "applied_calls": 0,
+        "mode": "CROSS_RX",
+        "temporary_hooks_remaining": 0,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "U_truth_read": false
+      }
+    },
+    {
+      "row_id": "ALL_TX-s2026092703",
+      "PID": 3683724,
+      "GPU": "5",
+      "CWD": "PROJECT/releases/cvs_F_supcon50_clean_20261016_r01",
+      "argv": [
+        "PYTHON",
+        "experiments/cvs_f_supcon50/runner.py",
+        "--worker",
+        "ALL_TX-s2026092703"
+      ],
+      "live": true,
+      "epoch": 2,
+      "optimizer_steps": 444,
+      "log_growth_verified": true,
+      "SupCon": {
+        "epoch": 2,
+        "calls": 444,
+        "applied_calls": 0,
+        "mode": "ALL_TX",
+        "temporary_hooks_remaining": 0,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "U_truth_read": false
+      }
+    },
+    {
+      "row_id": "CROSS_RX-s2026092703",
+      "PID": 3683793,
+      "GPU": "6",
+      "CWD": "PROJECT/releases/cvs_F_supcon50_clean_20261016_r01",
+      "argv": [
+        "PYTHON",
+        "experiments/cvs_f_supcon50/runner.py",
+        "--worker",
+        "CROSS_RX-s2026092703"
+      ],
+      "live": true,
+      "epoch": 2,
+      "optimizer_steps": 444,
+      "log_growth_verified": true,
+      "SupCon": {
+        "epoch": 2,
+        "calls": 444,
+        "applied_calls": 0,
+        "mode": "CROSS_RX",
+        "temporary_hooks_remaining": 0,
+        "extra_model_forwards": 0,
+        "head_fit_updates": 0,
+        "U_truth_read": false
+      }
+    }
+  ],
+  "unrelated_processes_preserved": true
+}
