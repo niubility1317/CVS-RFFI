@@ -1,0 +1,280 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01",
+  "group_id": "F-crossRX-frequency-phase-source-basis",
+  "display_name": "F＋跨RX同TX：固定频域相位测度的全包源依据",
+  "description": "Unchanged synthetic-qualified80:160/lag20/12harmonicphaseclosure;allfitL5040/18heldTXday/wrongRX;0model/augmentation",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "frequency phase source observability"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "frequency_phase",
+    "source_only",
+    "no_model",
+    "no_training"
+  ],
+  "comparison_group_id": "F-crossRX-frequency-phase-source-basis",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active jointAg/As goal;afterall252synthetic measurementqualification;only original fitL sourceobservation. No augmentation/strength/train/target permissionchange.",
+  "code": {
+    "commit": "Actualexecutioncommit inrelease_commit.txt/resolved_config",
+    "checkout": "Managedcodex/cvs-iq-timing-e20-20261016worktree",
+    "environment": "OrdinaryN607 existingCVS-RFFI Python,CPU2/CUDAhidden;NumPyComplex128,existing sourcecache viaTorch only",
+    "cwd": "PROJECT/releases/cvs_F_frequency_phase_fitL_20261017_r01",
+    "entrypoint": "experiments.cvs_frequency_phase_source17.run"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated L6300 cache, four fit RX subset only",
+    "representation": "NativeEQ1 RMS IQ256/25Msps unchanged;measurement80:160 lag20 compensation/12harmonicprojection/8phaseclosures;no newnormalization orIQview",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Existing source_contract L_s handles; exact fit5040 IDs retained privately",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "5040 fitRX used;1260 RX1 deserialized then excluded before any IQ statistic",
+      "U_s": "Unused; TX truth never accessed",
+      "V": "Unused"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "All-packet sourceRX-associated phase statistic only;not purehardware/receiverreplacement/labelpreservation/identity/DG/As/jointproof"
+  },
+  "checkpoint": {
+    "initialization": "No model orcheckpoint",
+    "sources": [],
+    "contract_check_ref": "No model/CP;exact existing source handles/L6300 roles;only fitL5040 used;unused V/features deserialize;UopaqueIDs only",
+    "provenance_verdict": "SOURCE_DATA_ONLY_NO_INHERITED_MODEL_OR_FEATURES_USED",
+    "selection_rule": "Fixed observer andcriteria before sourceaccess;no model/candidate/augmentation selection"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-frequency-phase-source-basis-20261017",
+    "gpu_policy": "CPU only;2threads;CUDA_VISIBLE_DEVICES empty;no GPU or model allocation",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_frequency_phase_fitL_20261017_r01/source_frequency_phase.stdout.log",
+    "local_artifact_root": "WORKTREE/local_artifacts/F_frequency_phase_source_basis_20261017",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_frequency_phase_source17.run",
+    "stop_rule": "Wrongsourcehandle/role/nonfinite/input/outputcollision/runtimefailure:preservepartial,noautomaticretry/nohealthyprocess intervention;scientificFAIL closesfixedmeasure/window/period/carrier/CFO/quality/threshold/packet/RX/TX/day/seed;no IQaugmentation orE20"
+  },
+  "expected_artifacts": [
+    "active/resolved_config/completion orpreservedfailure",
+    "source_phase_basis.json all72cellmeans/variance/quality andavailable18foldrisks",
+    "packet_observations.json private5040x8complexclosures/allquality/visibleLmetadata",
+    "fit_L_ids.json private",
+    "source_frequency_phase.stdout.log private",
+    "Independent all5040savedobservations/72cells/availablefoldreconstruction/aggregate report/registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "all5040packets identifiable",
+      "all72cell andRXreference resultants",
+      "RXprofileRMS",
+      "18foldriskgain/eachRX/betterfolds",
+      "correctminusbestcyclicwrongRX",
+      "allpacketcarrierquality/0NN/updates/target"
+    ],
+    "dimensions": [
+      "RX3/4/6/8",
+      "6TX",
+      "day1/2/3",
+      "18heldTXanddayfolds"
+    ],
+    "prediction_ref": "No identityprediction;source_phase_basis.json phaseprofileonly",
+    "scorer_ref": "experiments/cvs_frequency_phase_source17/analysis.py independentstdlib allsavedobservations;not rawIQreplay",
+    "criteria": {
+      "profile_RMS_min_rad": 0.02,
+      "crossfit_risk_improvement_min": 0.5,
+      "better_folds_min": 15,
+      "each_RX_not_worse": true,
+      "correct_minus_best_wrong_RX_min": 0.05,
+      "all_packets_identifiable": true,
+      "all_cell_RX_resultants_identifiable": true
+    }
+  },
+  "rows": [
+    {
+      "row_id": "FREQUENCY_PHASE_SOURCE_CROSSFIT",
+      "method": "frequency_phase_observability",
+      "purpose": "single_hypothesis",
+      "config_ref": "experiments/cvs_frequency_phase_source17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No stochastic model/augmentation/support/evaluation. Source physical split392005 reused; cache directory seed2026092701 identifies historical preparation, not a newly trained model.",
+      "k": null,
+      "scenario": "source_clean_statistics_no_model",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "fitL5040/72cells/oneobserver/60480harmonicprojections/40320closures/atmost18crossfits;0model/CP/NN/updates/views",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_frequency_phase_fitL_20261017_r01/source_frequency_phase.stdout.log",
+      "command": "CVS-RFFI/bin/python -u -m experiments.cvs_frequency_phase_source17.run",
+      "expected_artifacts": [
+        "active/resolved_config/completion orpreservedfailure",
+        "source_phase_basis.json all72cellmeans/variance/quality andavailable18foldrisks",
+        "packet_observations.json private5040x8complexclosures/allquality/visibleLmetadata",
+        "fit_L_ids.json private",
+        "source_frequency_phase.stdout.log private",
+        "Independent all5040savedobservations/72cells/availablefoldreconstruction/aggregate report/registry"
+      ],
+      "config": {
+        "run_id": "20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01",
+        "launch_owner": "codex/root/F-frequency-phase-source-basis-20261017",
+        "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "fit_L": 5040,
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "days": [
+          1,
+          2,
+          3
+        ],
+        "TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "samples_per_cell": 70,
+        "IQ_length": 256,
+        "window": [
+          80,
+          160
+        ],
+        "sample_rate_Hz": 25000000,
+        "arithmetic": "Originalfloat IQ toComplex128;no newnormalization orIQview",
+        "measurement_dependency": "experiments.cvs_frequency_phase17.estimator.observe/summarize;unchanged synthetic-qualified code",
+        "nominal_period": 20,
+        "harmonics": [
+          -6,
+          -5,
+          -4,
+          -3,
+          -2,
+          -1,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6
+        ],
+        "closure_centers": [
+          -5,
+          -4,
+          -3,
+          -2,
+          2,
+          3,
+          4,
+          5
+        ],
+        "CFO": "Blindlag20 reference correction only;estimate discarded from phaseidentitycoordinates;no oracle ornewmodelcompensation",
+        "carrier_noise_ratio_min": 25.0,
+        "cell_resultant_min": 0.8,
+        "RX_reference_resultant_min": 0.8,
+        "relative_numerical_floor": 1e-12,
+        "all_5040_packets_required": true,
+        "all_72_cells_required": true,
+        "observation": "8 unitadjacentharmonicphaseclosures;all8centers andall70packets perTX/day/RX cell;circular RXreference andRXarithmeticcentering",
+        "crossfit": "18folds exclude BOTH heldTX andheldday;5TX*2daycellmeans fit4RX;zeroprofileand3cyclicwrongRX controls;no classifier orfittedscale",
+        "criteria": {
+          "profile_RMS_min_rad": 0.02,
+          "crossfit_risk_improvement_min": 0.5,
+          "better_folds_min": 15,
+          "each_RX_not_worse": true,
+          "correct_minus_best_wrong_RX_min": 0.05,
+          "all_packets_identifiable": true,
+          "all_cell_RX_resultants_identifiable": true
+        },
+        "on_fail": "Closefixedsourcephasebasis;no measure/window/period/harmonic/CFO/quality/threshold/TX/day/RX/packet/seed rescue;no IQaugmentation orE20",
+        "on_pass": "SourceRX-associated phase evidence only;separate physicallyjustified boundedIQ operator/identityprotection andmatchedE20 still required;no automaticaugmentation/training",
+        "source_only": true,
+        "model_constructed": false,
+        "checkpoint_loads": 0,
+        "source_cache_loads": 1,
+        "real_IQ_statistically_used": 5040,
+        "observer_calls": 1,
+        "network_forwards": 0,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "teacher_forwards": 0,
+        "IQ_views_generated": 0,
+        "IQ_modified": false,
+        "U_truth_read": false,
+        "U_statistically_used": false,
+        "V_statistically_used": false,
+        "held_RX1_statistically_used": false,
+        "target_access": false,
+        "automatic_training": false,
+        "device": "CPU",
+        "threads": 2,
+        "NoExplicitCFO_preserved": true,
+        "phase_or_CFO_not_identity_feature": true,
+        "baseline_boundary": "F+CROSS_RX/3SIG_TIME/unifiedSinc/joint160/defaultcos/E20/originalU unchanged;no model used here",
+        "limitations": [
+          "Finitewindowharmonicphase includesTX/channel/RX/equalizer effects;not pureRXhardware causation",
+          "Syntheticqualified observerdoesnot guarantee realEQ1periodicity orcarriercontent;no invalidpackets dropped",
+          "Sourceassociation isnotIQlabelpreservation,receiverreplacement,heldRXrecognition,DG,As orjointproof",
+          "ExistingcacheL6300/unusedV/features deserialize;onlyfitL5040 statisticallyused;UopaqueIDs only",
+          "Not oldamplitudespectralFIR/timepointphase/cyclecov/jittervariance rescue;none reopened"
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "Exactlyunchanged synthetic-qualifiedobserver80:160/lag20/12harmonics/8closures/carrierratio25/resultants.8;inputComplex128 fromoriginalfloat source,nonewnormalization. Independentanalysisreusesstdlib arithmetic only.",
+    "All5040originalpackets/72balancedcells retained;ANYcarrierinvalid refuses wholeassociation fit,no packet/cellmasking,refittingwindow/carrier/CFO/threshold ordatarescue.",
+    "Allvalid:profileRMS>=.02rad/crossfitgain>=.5/eachRXno worse/atleast15of18betterfolds/correctminusbestcyclicwrongRX>=.05. Same fixed syntheticdetectionthresholds,notrealdata-calibrated. AnyscientificFAIL closes currententry.",
+    "Sharedphasecoordinates excludeCFOestimate;blindCFOalignment remainsnuisance compensation only,notmodelidentityfeature;existing modelNoExplicitCFO/internalcompensation unchanged.",
+    "OnlyfitL5040 RX3/4/6/8 days1..3 sixTX/70percell fromoriginalvalidatedsource. WholeL6300/unusedV/features deserialize thenonlyLfieldsretained;RX1excludedbeforestatistics,UopaqueIDs only/noIQortruth;no V/heldRX1/target calibration.",
+    "Zero-modelstage:realcheckpoint noquerysmoke inapplicable;onefocusedsourcewrapper check/oneP0P1/onecommit/prereg/oneCPUrelease/poststate. No extraapproval/hashchains orunusedtrainingmachinery.",
+    "Local21protocol negatives/4scientificcases PASS;5040syntheticpackets/1290240complexpoints,oneobservercall/direct3summarycalls. Initialbalancedrotation fixture waslegal;correctedsinglelabelmutation,preservedfixturefailure,0realIQ.",
+    "PASS sourceassociation only;not hardwarecausation oridentitypreservation. No futureIQoperator/strength/E20chosen;no automaticaugmentation/training. FullAg/As/factorial/crossseed/formalmetrics still pending."
+  ],
+  "registered_at": "2026-10-16T23:51:27+00:00"
+}

@@ -24,3 +24,8 @@
 ## 完整合成结果
 
 20261017-diagnostic-F-crossRX-frequencyPhase-synthetic-m1-r01 已完整ANALYZED／VERIFIED，252/252格及63/63组通过。共享RX相位最大相对RMSE3.999642%，最小风险改善98.092207%；TX曲率、RX幅度、交互、窗外边界全部不误检，缺频全部拒绝。全部保存均值／18折风险／63组独立复算一致，主体50.409012秒，0真实IQ/CP/NN/更新/target。只证实固定测度的合成基础，不证实真实RX残留、Ag或身份性能。下一步仅另行预登记fitL源观测；当前未读源或训练。完整报告见[同一行报告](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-frequencyPhase-synthetic-m1-r01/report.md)。
+
+
+## 固定源观测登记
+
+20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01 已实现登记未启动，沿用原合成测度和数值条件；仅fitL5040全包，72格各70，任一必要包不可辨识则整体FAIL，不筛样本／不改阈值／不进E20。21协议负例和4科学用例及一次P0/P1通过。当前0真实源IQ已读／CP／NN／更新／增强，完整[源预登记](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01/preregistration.md)保留。

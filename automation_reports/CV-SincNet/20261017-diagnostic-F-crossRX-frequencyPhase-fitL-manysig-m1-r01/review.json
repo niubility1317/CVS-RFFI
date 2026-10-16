@@ -1,0 +1,8 @@
+{
+  "verdict": "PASS",
+  "reviewer": "/root/dc_p0p1_review",
+  "scope": "One focused P0/P1 new fixed source frequency-phase run/core/publish/analysis/config/permissions",
+  "summary": "未发现会直接导致下一次真实源运行错误、越权、破坏、无法启动或成本／指标非法的P0/P1。未读取真实源IQ、加载权重或启动实验。",
+  "real_IQ_read": false,
+  "experiment_launched": false
+}

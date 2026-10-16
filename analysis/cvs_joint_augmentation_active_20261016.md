@@ -312,3 +312,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 频域相位合成诊断 20261017-diagnostic-F-crossRX-frequencyPhase-synthetic-m1-r01 已完整ANALYZED／VERIFIED，PASS_FIXED_SYNTHETIC_MEASUREMENT_ONLY：252/252格／63/63组全部原判据通过；正例最大相对RMSE3.999642%、最小交叉风险改善98.092207%，全部负例不误检、退化全拒绝。325140480合成复点／50.409012秒，0真实IQ/CP/NN/更新/target。此为测度合成基础，不是RX因果、标签保持或Ag/As性能证据；下一唯一问题是另行预登记fitL源观测，尚未启动。F＋跨RX同TX/E20/原U保持，联合目标ACTIVE。
+
+
+频域相位源观测 20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01 已实现登记未启动：沿用合成通过的80:160／lag20／12谐波／8闭合量及数值条件，fitL5040 RX3/4/6/8、day1/2/3／六TX／72格全包保留，任一必要包不可辨识即FAIL；不使用U/V/RX1/target。21协议负例＋4科学用例PASS，一次P0/P1 PASS；0真实IQ已读／CP／NN／更新／增强。源关联不是RX因果或Ag性能，FAIL关闭当前入口，不改测度/质量/阈值/包/seed救跑、不进E20。F＋跨RX同TX/E20/原U保持，联合目标ACTIVE。
