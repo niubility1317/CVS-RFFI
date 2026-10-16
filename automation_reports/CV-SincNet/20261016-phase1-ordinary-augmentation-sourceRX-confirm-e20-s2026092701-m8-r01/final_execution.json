@@ -1,0 +1,561 @@
+{
+  "status": "VERIFIED",
+  "scientific_status": "FAIL_FIVE_SOURCE_RX_ONE_MODEL_SEED",
+  "training_code": "2cbaee17215772bc50ec63d77b771675894991ec",
+  "source_decision": {
+    "status": "FAIL",
+    "checks": {
+      "mean_accuracy": true,
+      "positive_folds": false,
+      "worst_fold": false,
+      "mean_macroF1": true,
+      "seen_health": true,
+      "complete_health": true
+    },
+    "folds": [
+      {
+        "held_RX": 1,
+        "accuracy_gain_pp": 6.4074074074074066,
+        "macroF1_gain": 0.07359611749373396,
+        "seen_V_mean_drop_pp": 0.3240740740740766,
+        "healthy": true
+      },
+      {
+        "held_RX": 3,
+        "accuracy_gain_pp": 4.425925925925927,
+        "macroF1_gain": 0.059330650298592136,
+        "seen_V_mean_drop_pp": 0.2268518518518503,
+        "healthy": true
+      },
+      {
+        "held_RX": 4,
+        "accuracy_gain_pp": 2.8333333333333433,
+        "macroF1_gain": 0.031099292296906222,
+        "seen_V_mean_drop_pp": 0.28240740740741455,
+        "healthy": true
+      },
+      {
+        "held_RX": 6,
+        "accuracy_gain_pp": -0.92592592592593,
+        "macroF1_gain": -0.006860508706732493,
+        "seen_V_mean_drop_pp": 0.18518518518518823,
+        "healthy": true
+      },
+      {
+        "held_RX": 8,
+        "accuracy_gain_pp": -2.592592592592591,
+        "macroF1_gain": -0.041405212573176864,
+        "seen_V_mean_drop_pp": 0.24999999999999467,
+        "healthy": true
+      }
+    ],
+    "mean_accuracy_gain_pp": 2.029629629629631,
+    "mean_macroF1_gain": 0.02315206776186459,
+    "model_seed_count": 1,
+    "source_fold_count": 5,
+    "source_only": true,
+    "target_access": false,
+    "formal_target_qualified": false,
+    "automatic_extension": false,
+    "goal_completed": false
+  },
+  "terminal_dispatcher_alive": false,
+  "terminal_workers_alive": false,
+  "failure": null,
+  "full_log_proof": {
+    "1": {
+      "N0": {
+        "epochs": 20,
+        "steps": 4440,
+        "native_CSV_rows": 20,
+        "full_stdout_bytes": 114397,
+        "error_markers": {
+          "Traceback": 0,
+          "CUDA out of memory": 0,
+          "FloatingPointError": 0,
+          "Killed": 0
+        },
+        "critical_nonfinite": {
+          "train/loss": 0,
+          "train/grad_total": 0,
+          "train/grad_backbone": 0,
+          "train/grad_before_clip": 0,
+          "legacy_rdrop/paired_CE": 0,
+          "legacy_rdrop/symmetric_KL": 0,
+          "legacy_rdrop/CE1": 0,
+          "legacy_rdrop/CE2": 0
+        },
+        "U_truth_available_max": 0.0,
+        "skipped": {
+          "train/skipped_nonfinite_loss": 0,
+          "train/skipped_nonfinite_grad": 0
+        },
+        "max_label_phase_objective_difference": 2.384185791015625e-07,
+        "stdout_warning_lines": []
+      },
+      "N1": {
+        "epochs": 20,
+        "steps": 4440,
+        "native_CSV_rows": 20,
+        "full_stdout_bytes": 114986,
+        "error_markers": {
+          "Traceback": 0,
+          "CUDA out of memory": 0,
+          "FloatingPointError": 0,
+          "Killed": 0
+        },
+        "critical_nonfinite": {
+          "train/loss": 0,
+          "train/grad_total": 0,
+          "train/grad_backbone": 0,
+          "train/grad_before_clip": 0,
+          "legacy_rdrop/paired_CE": 0,
+          "legacy_rdrop/symmetric_KL": 0,
+          "legacy_rdrop/CE1": 0,
+          "legacy_rdrop/CE2": 0
+        },
+        "U_truth_available_max": 0.0,
+        "skipped": {
+          "train/skipped_nonfinite_loss": 0,
+          "train/skipped_nonfinite_grad": 0
+        },
+        "max_label_phase_objective_difference": 3.5762786865234375e-07,
+        "stdout_warning_lines": []
+      }
+    },
+    "3": {
+      "N0": {
+        "epochs": 20,
+        "steps": 4440,
+        "native_CSV_rows": 20,
+        "full_stdout_bytes": 115073,
+        "error_markers": {
+          "Traceback": 0,
+          "CUDA out of memory": 0,
+          "FloatingPointError": 0,
+          "Killed": 0
+        },
+        "critical_nonfinite": {
+          "train/loss": 0,
+          "train/grad_total": 0,
+          "train/grad_backbone": 0,
+          "train/grad_before_clip": 0,
+          "legacy_rdrop/paired_CE": 0,
+          "legacy_rdrop/symmetric_KL": 0,
+          "legacy_rdrop/CE1": 0,
+          "legacy_rdrop/CE2": 0
+        },
+        "U_truth_available_max": 0.0,
+        "skipped": {
+          "train/skipped_nonfinite_loss": 0,
+          "train/skipped_nonfinite_grad": 0
+        },
+        "max_label_phase_objective_difference": 2.384185791015625e-07,
+        "stdout_warning_lines": []
+      },
+      "N1": {
+        "epochs": 20,
+        "steps": 4440,
+        "native_CSV_rows": 20,
+        "full_stdout_bytes": 115676,
+        "error_markers": {
+          "Traceback": 0,
+          "CUDA out of memory": 0,
+          "FloatingPointError": 0,
+          "Killed": 0
+        },
+        "critical_nonfinite": {
+          "train/loss": 0,
+          "train/grad_total": 0,
+          "train/grad_backbone": 0,
+          "train/grad_before_clip": 0,
+          "legacy_rdrop/paired_CE": 0,
+          "legacy_rdrop/symmetric_KL": 0,
+          "legacy_rdrop/CE1": 0,
+          "legacy_rdrop/CE2": 0
+        },
+        "U_truth_available_max": 0.0,
+        "skipped": {
+          "train/skipped_nonfinite_loss": 0,
+          "train/skipped_nonfinite_grad": 0
+        },
+        "max_label_phase_objective_difference": 3.5762786865234375e-07,
+        "stdout_warning_lines": []
+      }
+    },
+    "4": {
+      "N0": {
+        "epochs": 20,
+        "steps": 4440,
+        "native_CSV_rows": 20,
+        "full_stdout_bytes": 115075,
+        "error_markers": {
+          "Traceback": 0,
+          "CUDA out of memory": 0,
+          "FloatingPointError": 0,
+          "Killed": 0
+        },
+        "critical_nonfinite": {
+          "train/loss": 0,
+          "train/grad_total": 0,
+          "train/grad_backbone": 0,
+          "train/grad_before_clip": 0,
+          "legacy_rdrop/paired_CE": 0,
+          "legacy_rdrop/symmetric_KL": 0,
+          "legacy_rdrop/CE1": 0,
+          "legacy_rdrop/CE2": 0
+        },
+        "U_truth_available_max": 0.0,
+        "skipped": {
+          "train/skipped_nonfinite_loss": 0,
+          "train/skipped_nonfinite_grad": 0
+        },
+        "max_label_phase_objective_difference": 2.384185791015625e-07,
+        "stdout_warning_lines": []
+      },
+      "N1": {
+        "epochs": 20,
+        "steps": 4440,
+        "native_CSV_rows": 20,
+        "full_stdout_bytes": 115637,
+        "error_markers": {
+          "Traceback": 0,
+          "CUDA out of memory": 0,
+          "FloatingPointError": 0,
+          "Killed": 0
+        },
+        "critical_nonfinite": {
+          "train/loss": 0,
+          "train/grad_total": 0,
+          "train/grad_backbone": 0,
+          "train/grad_before_clip": 0,
+          "legacy_rdrop/paired_CE": 0,
+          "legacy_rdrop/symmetric_KL": 0,
+          "legacy_rdrop/CE1": 0,
+          "legacy_rdrop/CE2": 0
+        },
+        "U_truth_available_max": 0.0,
+        "skipped": {
+          "train/skipped_nonfinite_loss": 0,
+          "train/skipped_nonfinite_grad": 0
+        },
+        "max_label_phase_objective_difference": 2.384185791015625e-07,
+        "stdout_warning_lines": []
+      }
+    },
+    "6": {
+      "N0": {
+        "epochs": 20,
+        "steps": 4440,
+        "native_CSV_rows": 20,
+        "full_stdout_bytes": 115073,
+        "error_markers": {
+          "Traceback": 0,
+          "CUDA out of memory": 0,
+          "FloatingPointError": 0,
+          "Killed": 0
+        },
+        "critical_nonfinite": {
+          "train/loss": 0,
+          "train/grad_total": 0,
+          "train/grad_backbone": 0,
+          "train/grad_before_clip": 0,
+          "legacy_rdrop/paired_CE": 0,
+          "legacy_rdrop/symmetric_KL": 0,
+          "legacy_rdrop/CE1": 0,
+          "legacy_rdrop/CE2": 0
+        },
+        "U_truth_available_max": 0.0,
+        "skipped": {
+          "train/skipped_nonfinite_loss": 0,
+          "train/skipped_nonfinite_grad": 0
+        },
+        "max_label_phase_objective_difference": 2.384185791015625e-07,
+        "stdout_warning_lines": []
+      },
+      "N1": {
+        "epochs": 20,
+        "steps": 4440,
+        "native_CSV_rows": 20,
+        "full_stdout_bytes": 115646,
+        "error_markers": {
+          "Traceback": 0,
+          "CUDA out of memory": 0,
+          "FloatingPointError": 0,
+          "Killed": 0
+        },
+        "critical_nonfinite": {
+          "train/loss": 0,
+          "train/grad_total": 0,
+          "train/grad_backbone": 0,
+          "train/grad_before_clip": 0,
+          "legacy_rdrop/paired_CE": 0,
+          "legacy_rdrop/symmetric_KL": 0,
+          "legacy_rdrop/CE1": 0,
+          "legacy_rdrop/CE2": 0
+        },
+        "U_truth_available_max": 0.0,
+        "skipped": {
+          "train/skipped_nonfinite_loss": 0,
+          "train/skipped_nonfinite_grad": 0
+        },
+        "max_label_phase_objective_difference": 2.384185791015625e-07,
+        "stdout_warning_lines": []
+      }
+    },
+    "8": {
+      "N0": {
+        "epochs": 20,
+        "steps": 4440,
+        "native_CSV_rows": 20,
+        "full_stdout_bytes": 115083,
+        "error_markers": {
+          "Traceback": 0,
+          "CUDA out of memory": 0,
+          "FloatingPointError": 0,
+          "Killed": 0
+        },
+        "critical_nonfinite": {
+          "train/loss": 0,
+          "train/grad_total": 0,
+          "train/grad_backbone": 0,
+          "train/grad_before_clip": 0,
+          "legacy_rdrop/paired_CE": 0,
+          "legacy_rdrop/symmetric_KL": 0,
+          "legacy_rdrop/CE1": 0,
+          "legacy_rdrop/CE2": 0
+        },
+        "U_truth_available_max": 0.0,
+        "skipped": {
+          "train/skipped_nonfinite_loss": 0,
+          "train/skipped_nonfinite_grad": 0
+        },
+        "max_label_phase_objective_difference": 2.384185791015625e-07,
+        "stdout_warning_lines": []
+      },
+      "N1": {
+        "epochs": 20,
+        "steps": 4440,
+        "native_CSV_rows": 20,
+        "full_stdout_bytes": 115661,
+        "error_markers": {
+          "Traceback": 0,
+          "CUDA out of memory": 0,
+          "FloatingPointError": 0,
+          "Killed": 0
+        },
+        "critical_nonfinite": {
+          "train/loss": 0,
+          "train/grad_total": 0,
+          "train/grad_backbone": 0,
+          "train/grad_before_clip": 0,
+          "legacy_rdrop/paired_CE": 0,
+          "legacy_rdrop/symmetric_KL": 0,
+          "legacy_rdrop/CE1": 0,
+          "legacy_rdrop/CE2": 0
+        },
+        "U_truth_available_max": 0.0,
+        "skipped": {
+          "train/skipped_nonfinite_loss": 0,
+          "train/skipped_nonfinite_grad": 0
+        },
+        "max_label_phase_objective_difference": 2.384185791015625e-07,
+        "stdout_warning_lines": []
+      }
+    }
+  },
+  "actual_matched_sequences": {
+    "1": 5994,
+    "3": 5994,
+    "4": 5994,
+    "6": 5994,
+    "8": 5994
+  },
+  "repaired_broken": {
+    "1": {
+      "repaired": 513,
+      "broken": 167
+    },
+    "3": {
+      "repaired": 524,
+      "broken": 285
+    },
+    "4": {
+      "repaired": 185,
+      "broken": 32
+    },
+    "6": {
+      "repaired": 101,
+      "broken": 151
+    },
+    "8": {
+      "repaired": 283,
+      "broken": 423
+    }
+  },
+  "costs": [
+    {
+      "arm": "N0",
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 854.5869510173798,
+      "formal_forward_packets": 0,
+      "held_RX": 1,
+      "reused": true
+    },
+    {
+      "arm": "N1",
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 875.2027039527893,
+      "formal_forward_packets": 0,
+      "held_RX": 1,
+      "reused": true
+    },
+    {
+      "held_RX": 3,
+      "arm": "N0",
+      "reused": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 990.2433710098267,
+      "formal_forward_packets": 0
+    },
+    {
+      "held_RX": 3,
+      "arm": "N1",
+      "reused": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 1005.932865858078,
+      "formal_forward_packets": 0
+    },
+    {
+      "held_RX": 4,
+      "arm": "N0",
+      "reused": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 992.5423784255981,
+      "formal_forward_packets": 0
+    },
+    {
+      "held_RX": 4,
+      "arm": "N1",
+      "reused": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 1012.6416347026825,
+      "formal_forward_packets": 0
+    },
+    {
+      "held_RX": 6,
+      "arm": "N0",
+      "reused": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 1015.9201879501343,
+      "formal_forward_packets": 0
+    },
+    {
+      "held_RX": 6,
+      "arm": "N1",
+      "reused": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 1010.3919651508331,
+      "formal_forward_packets": 0
+    },
+    {
+      "held_RX": 8,
+      "arm": "N0",
+      "reused": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 999.4605321884155,
+      "formal_forward_packets": 0
+    },
+    {
+      "held_RX": 8,
+      "arm": "N1",
+      "reused": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 1136640,
+      "student_U_forward_packets": 396368,
+      "EMA_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "held_V_forward_packets": 5400,
+      "source_training_seconds": 1065.4513082504272,
+      "formal_forward_packets": 0
+    }
+  ],
+  "new_real_forward_packets": 19279824,
+  "reused_real_forward_packets": 4819956,
+  "new_model_epochs": 160,
+  "new_updates": 35520,
+  "reused_model_epochs": 40,
+  "reused_updates": 8880,
+  "matrix_wall_seconds": 1096.7085769176483,
+  "source_only": true,
+  "target_access": false,
+  "formal_target_qualified": false,
+  "all_five_source_folds_complete": true,
+  "model_seed_count": 1,
+  "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_ordinary_confirm20_20261016\\final"
+}

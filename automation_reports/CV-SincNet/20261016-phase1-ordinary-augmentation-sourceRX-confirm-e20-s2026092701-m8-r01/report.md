@@ -1,25 +1,48 @@
-# 旧普通增强：其余四个源 RX 的固定确认
+# 普通 IQ 增强的五个源 RX 留出结果
 
-状态REGISTERED_NOT_RUN。RX1首轮已通过原源门槛：当前RAW_HZ/LS.01/defaulthead、scratchE20的N1−N0 accuracy+6.4074pp，macroF1+7.3596pp，seenV−.3241pp；TX0−11.8889pp/TX1−1.3333pp等代价保留。本轮只执行此前固定的另外RX3/4/6/8×N0/N1，8个新scratchE20，不用任何旧模型或其他fold权重。RX1旧预测/结果只读复用，不重训/重测。
+源资格：**FAIL**。一个model seed，五个源RX折；RX1复用已有结果，其余8个独立E20完成。
 
-唯一假设：普通增强整体的源RX1净收益能在其他合法源接收机留出中重复，满足五fold均值/最差fold规则，而非单RX偶然收益。固定同一modelseed2026092701，不宣称五fold等于五个seed。数据是已有ManySig合法源carrier392005，模型、默认cos/joint160、NoExplicitCFO与必要内部补偿、25MHz/IQ256/equalized1/nativeRMS均固定。
+|held RX|N0准确率|N1准确率|增益/pp|macroF1增益/pp|seenV下降/pp|
+|---|---:|---:|---:|---:|---:|
+|1|76.222222%|82.629630%|+6.407407|+7.359612|+0.324074|
+|3|48.888889%|53.314815%|+4.425926|+5.933065|+0.226852|
+|4|83.018519%|85.851852%|+2.833333|+3.109929|+0.282407|
+|6|77.425926%|76.500000%|-0.925926|-0.686051|+0.185185|
+|8|64.222222%|61.629630%|-2.592593|-4.140521|+0.250000|
 
-每行只训练该heldRX补集4RX、day1/2/3和6TX：L5040/U45360，原V按RX评价分层，seen21600与held5400。该heldRX的L1260/U11340不使用；所有train/probe/calibration/EMA构建前排除heldRX，U只按RX元数据过滤，TX隐藏。V不参与梯度或持久模型更新。各fold不共享模型/teacher/特征缓存，完整L6300历史模型不加载。
+平均准确率差+2.029630pp，macroF1差+2.315207pp。源门槛逐项：{'mean_accuracy': True, 'positive_folds': False, 'worst_fold': False, 'mean_macroF1': True, 'seen_health': True, 'complete_health': True}。
 
-N0关闭ordinaryL，N1保留原完整ordinaryL系数及schedule。两行都是13L+7U、LS.01、RDrop1、同IQ两前向，AdamW lr.0002/wd.0001/cos与oldgate/ownEMA不改。私有augmentation stream20261016051、role loader20261016053及offset不改；每对最终逐条核对实际全部L/U物理样本序列。没有As、新G、新loss/branch/head/U机制，原测试IQ/信道不接触。
+新8模型共160model-epoch/35520updates/真实前向19279824；复用RX1 pair40model-epoch/8880updates/真实前向4819956。新矩阵墙钟1096.709s。本地合成前向另计。
 
-每行保留原222step/epoch=4440更新；四RX U loader178batch循环至222，因此每pseudo epoch56624重复观察。每行L1136640网络前向，U/EMA/sourceeval/held5400/smoke2按实际计数。新8×20=160model-epoch/35520更新，RX1旧pair40model-epoch/8880另外列账；总10个独立E20模型不是E200单模型，不加载E50/E200或续训权重。
+所有新行完整20epoch/4440step/nativeCSV/stdout已解析；所有四对实际L/U物理样本序列逐条相同。默认头联合更新、源TX/RX/day覆盖和U真值隐藏按实际日志核对；保存的heldV默认头决策独立复算。
 
-全局源规则：将旧RX1和新4fold全部纳入，N1−N0 accuracy均值>=+1pp、至少4fold严格正差、最差fold>=−1pp；同时平均macroF1不下降，各fold seenV均值下降<=.5pp，预算/有限值/覆盖/样本顺序完整。前三项在RX1前的设计中已固定；F1均值和逐fold健康限制在本轮任何新观察前显式固定。单fold低分不触发停止、重排或删除；全局FAIL结束本route，不换heldRX、强度或seed救援。PASS仅提供源证据，仍需独立full-source Ag/As矩阵和正式truth-last，当前不自动target/joint/扩seed。
+五个fold训练集相互重叠，不是五个model seed；只有FINAL heldV读出，不存在heldV训练曲线。该结果不等于正式跨RX clean/urban收益，不认证每个旧PA等算子的身份保持。E20用尽不是收敛。
 
-单owner/不可覆盖root，八卡都可用，shared receiver_residual_capacity4锁内按所有owner与preCUDA进程<=3/free>=12000MiB选择，CPU2/workers0。唯一本run技术异常保存产物、停止待启动行，健康已启动行继续；不热改、不自动重发、不干预其他任务。精确路径、CWD、命令、六类seed和矩阵见experiment.json。
+无target、无As、无旧权重。FAIL结束普通增强作为Ag的本候选，不换RX/强度/seed救援；PASS也不自动启动target或扩seed。原正式practical IQ与信道保持。
 
-共用已验证训练循环，只把heldRX/fitRX从单折常量变为每个配置的值。所有五个RX在五条train/probe/U/val/calibration路径的metadata-only fixture通过，0IQ/0U-TX读取。当前真实图1024个合成网络前向包含原RX1完整回归和新RX3两行；198个同初态state张量、默认W/SIG梯度、EMA绑定、全部8row nativeargs通过，14负例含最差fold/正fold数量/均值/F1/健康拒绝。真实scratchCP noquery smoke仍是每worker首个模型步骤，PASS立即继续。
 
-原ordinary含PA等未经逐操作认证部分；首折输入峰值204.893/累计MSE.181549并不支持将整个配方称轻度有界，正负类别效果将完整报告。本轮保持原配方作确认，不新增或放大PA/TXIQ/量化/剪裁，也不把数字操作等同真实RX替换。预算耗尽不是收敛；当前没有新增source成绩或正式urban结果。
+实际状态：**VERIFIED / 源资格FAIL**。训练代码2cbaee17215772bc50ec63d77b771675894991ec；原immutable release无热改，8个worker与dispatcher自然退出，无failure。发布归档单次比较、remotecompile、真实scratchCP noquery smoke及启动PID/CWD/argv/GPU/log增长通过；本地离线收尾不读取IQ/CP或执行网络。
 
-唯一独立P0/P1增量审查PASS，未发现直接缺陷；再执行1024合成前向/128增强包/14负例。本轮本地已知总2048合成前向/256增强包，0真实IQ/CP/更新。登记字段、common+new本地编译、内嵌remote发布编译通过；普通账户N607只读preflight通过。尚未发布。
+模型保持863730参数的当前SIG_TIME/RAW_HZ/NoExplicitCFO/joint160/defaultcos，25MHz/IQ256/equalized1/nativeRMS。每行留出一个源RX，只训练其余4RX L5040/U45360，seenV21600为原V评价分层；heldRX原V5400仅FINAL。held L1260/U11340不使用，U TX始终隐藏，无full-source/跨fold/EMA/其他checkpoint继承，无As/target/新损失/分支/头。全部参数和默认头按原训练联合更新，13L+7U。
 
-## 实际启动已核实
+N0/N1每对实际nativeargs只允许candidate_id/output_dir/use_aug差异；每对全部5994条L/U批次物理样本序列逐条相同，覆盖6TX×4训练RX×3day。所有新160epoch/35520step/nativeCSV和完整stdout已解析，RX1既有40epoch/8880step证明复用。原probe_dom_acc固定NaN空值不属于身份梯度/决策失败，未另训probe。完整逐项proof见final_execution；E20预算耗尽不能证明收敛。
 
-状态RUNNING，训练代码2cbaee17215772bc50ec63d77b771675894991ec已提交push并独立读回同OID。单归档传输对照/远端编译VERIFIED。8行在GPU4/5/6/7每卡2行，不干预GPU0..3其他owner；全部实际L5040/U45360/seenV21600、对应heldRX排除、E20=13+7、LS.01、ordinary开关、NoExplicitCFO/defaulthead、ownEMA/scratchCP noquery smoke、PID/CWD/argv/GPU与日志增长通过。逐行进度/参数/实际导入路径见launch_execution.json；当前不是最终source资格或target性能。原release与健康任务未热改/重启。
+旧ordinary仍含PA、AWGN、多径等，仅整体配方进行确认，不将单项操作或TX级效果预先称为身份保持；DAC/class_signature仍关闭。逐TX/day负差保留在source_strata.csv与五fold图，不用平均数抹去类别损失，也不按heldRX/分数改强度或选择重跑。五fold共享大量训练样本，只有一个model seed，不能声称跨seed复现。
+
+成本：新8×20=160model-epochs/35520updates/实际19279824真实网络前向；复用RX1旧pair40model-epochs/8880updates/4819956前向，累计24099780。每行计入L、studentU、ownEMA、seenV与smoke2、heldV；详见measured_costs.csv。新矩阵墙钟1096.709s，旧RX1矩阵883.864s另列。新本地2048个合成网络前向/256增强包另计，旧RX1本地1536/384另列；CPU离线采集/绘图未统一计时，不伪造墙钟。
+
+复现：在预登记immutable CWD中，以普通N607 Python执行 experiments/cvs_ordinary_confirm20/runner.py，或--row加对应登记row。已完成root不得重复提交。离线收尾使用本工作树：F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_ordinary_confirm20.harvest --output E:/type10-7/local_artifacts/cvs_ordinary_confirm20_20261016/final --first-output E:/type10-7/local_artifacts/cvs_ordinary_fold20_20261016/final --finish。
+
+未完成：跨model seed、full-source匹配Ag/As组合和原clean+6practical正式truth-last。当前源结果不回答哪种urban退化得到改善，不宣称lowurban>60%或clean/星地双突破。全局FAIL结束此普通增强作为Ag的候选，不换RX/强度/seed救援；PASS仅提供源证据，后续组合需独立固定方案。整体goal保持active。
+
+实际输出：
+
+- [五fold准确率及TX/day分层](E:/type10-7/local_artifacts/cvs_ordinary_confirm20_20261016/final/fivefold_source_results.png)
+- [RX3完整训练曲线](E:/type10-7/local_artifacts/cvs_ordinary_confirm20_20261016/final/training_RX3.png)
+- [RX4完整训练曲线](E:/type10-7/local_artifacts/cvs_ordinary_confirm20_20261016/final/training_RX4.png)
+- [RX6完整训练曲线](E:/type10-7/local_artifacts/cvs_ordinary_confirm20_20261016/final/training_RX6.png)
+- [RX8完整训练曲线](E:/type10-7/local_artifacts/cvs_ordinary_confirm20_20261016/final/training_RX8.png)
+- [逐fold数值](E:/type10-7/local_artifacts/cvs_ordinary_confirm20_20261016/final/fold_results.csv)
+- [逐TX/day数值](E:/type10-7/local_artifacts/cvs_ordinary_confirm20_20261016/final/source_strata.csv)
+- [逐模型成本](E:/type10-7/local_artifacts/cvs_ordinary_confirm20_20261016/final/measured_costs.csv)
+- [全部新模型训练曲线数值](E:/type10-7/local_artifacts/cvs_ordinary_confirm20_20261016/final/training_curves.csv)

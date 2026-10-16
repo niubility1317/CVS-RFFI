@@ -33,3 +33,7 @@
 已登记 `20261016-phase1-ordinary-augmentation-sourceRX-confirm-e20-s2026092701-m8-r01`，固定heldRX3/4/6/8各N0/N1，共8个独立scratch E20=13L+7U、每行4440更新。只参数化held/fit RX，当前RAW_HZ/LS.01、默认joint160/cos、RDrop/原ordinary/ownEMA/U规则及命名随机流保持；RX1仅复用已有合法结果，不加载权重、不重测。全部五RX训练/probe/U/val/calibration路径排除检查和当前实际图回归通过，唯一P0/P1增量审查PASS。本轮只源域，无target；初态/运行/预算/全部L/U实际序列完整性由原执行闭环核实。全局前三门槛沿用原计划，meanF1>=0与每fold seenV loss<=.5pp已在新数据前显式固定。新8行160model-epochs/35520updates；加历史RX1共10个独立E20模型，不能说成单模型E200。
 
 四个剩余源RX配对已发布运行VERIFIED，训练代码2cbaee17215772bc50ec63d77b771675894991ec；8个own scratchCP noquery smoke、实际角色/预算/默认头与日志增长通过。无As/target。新增离线五fold汇总器只读日志/默认头source决策，不载IQ/CP/native；不能据此热改运行。
+
+## 五个源 RX 配对确认完成
+
+20261016-phase1-ordinary-augmentation-sourceRX-confirm-e20-s2026092701-m8-r01已完整收尾：源规则FAIL，平均accuracy差2.029629629629631pp，macroF1差2.315206776186459pp。所有四对实际L/U完整序列匹配，新160epoch/35520step全日志解析；RX1结果只读复用。一个model seed，不是五seed，无As/target。完整正负分层及费用见[报告](../automation_reports/CV-SincNet/20261016-phase1-ordinary-augmentation-sourceRX-confirm-e20-s2026092701-m8-r01/report.md)。当前还没有正式clean/urban联合或跨seed结论；按固定源规则处理，不救援失败路线。

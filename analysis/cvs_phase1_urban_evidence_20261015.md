@@ -210,3 +210,7 @@ SIG相对普通增强NOMINAL：low +1.1488、mid +1.1333、urban +1.0907、最�
 20261016 源相位可重复性诊断实际完成：L6300、0网络/更新/目标；主80:160圆周riskgain.00054227，仅6/18折正，部分cell坐标可用0，固定规则FAIL。可用频点的周期一致性仍高，不将缺测占位误认为相位噪声。相位增强不启动，不改窗口/阈值挽救；见[同run报告](../automation_reports/CV-SincNet/20261016-diagnostic-source-phase-crossfit-manysig-m1-r01/report.md)。
 
 20261016旧普通增强匹配源RX1独立E20完成：N0/N1 heldV76.2222/82.6296%，macroF1+7.3596pp，seenV-.3241pp；三day均正、TX0-11.8889pp/TX1-1.3333pp，保留类别代价。源规则PASS只支持其余源RX确认，不是正式clean/urban或跨seed证据；[完整报告](../automation_reports/CV-SincNet/20261016-phase1-ordinary-augmentation-RX1-e20-s2026092701-m2-r01/report.md)。
+
+## 五个源 RX 配对确认完成
+
+20261016-phase1-ordinary-augmentation-sourceRX-confirm-e20-s2026092701-m8-r01已完整收尾：源规则FAIL，平均accuracy差2.029629629629631pp，macroF1差2.315206776186459pp。所有四对实际L/U完整序列匹配，新160epoch/35520step全日志解析；RX1结果只读复用。一个model seed，不是五seed，无As/target。完整正负分层及费用见[报告](../automation_reports/CV-SincNet/20261016-phase1-ordinary-augmentation-sourceRX-confirm-e20-s2026092701-m8-r01/report.md)。当前还没有正式clean/urban联合或跨seed结论；按固定源规则处理，不救援失败路线。
