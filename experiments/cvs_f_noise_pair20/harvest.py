@@ -20,7 +20,7 @@ def fetch(output,arm=None):
  env=dict(os.environ)
  if os.name=='nt':env.update(SystemRoot='C:/Windows',windir='C:/Windows',PATHEXT='.COM;.EXE;.BAT;.CMD')
  partial=output.parent/(output.name+'.fetch.partial.tar.gz')
- with partial.open('xb') as f:result=subprocess.run([ssh,'-F','E:/type10-7/tools/n607_ssh_config','-o','BatchMode=yes','-o','ConnectTimeout=10','-T','N607','/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -'],input=script.encode('utf8'),stdout=f,stderr=subprocess.PIPE,env=env,timeout=60)
+ with partial.open('xb') as f:result=subprocess.run([ssh,'-F','E:/type10-7/tools/n607_ssh_config','-o','BatchMode=yes','-o','ConnectTimeout=10','-T','N607','/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -'],input=script.encode('utf8'),stdout=f,stderr=subprocess.PIPE,env=env,timeout=300)
  if result.returncode:raise RuntimeError(result.stderr.decode('utf8',errors='replace'))
  with tarfile.open(partial) as t:
   members=t.getmembers()
