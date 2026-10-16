@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "scope": "One independent candidate P0/P1 static review;one targeted reread of tuple/list fix",
+  "findings": [
+    {
+      "severity": "P1",
+      "file": "probe.py",
+      "cause": "JSON-normalized new tuple fields compared to unnormalized original tuples",
+      "fixed": true,
+      "verified": "Both sides normalized;0NN synthetic exact configs plus SNR change rejection;targeted reviewerPASS"
+    }
+  ],
+  "IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "remote_calls": 0,
+  "model_execution": 0
+}

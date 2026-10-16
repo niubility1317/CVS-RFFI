@@ -1,0 +1,34 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "1bc071c9d3148de703f2ffcd6322feaa3aa33db6",
+  "reader_plot_commit": "f6e5c0c172b7271fd1db8de4fc930236c5e15717",
+  "all_owned_processes_naturally_absent": true,
+  "parallel_wall_seconds_approx": 148.12529039382935,
+  "rows": [
+    {
+      "row_id": "frozen-D_raw-s2026092701",
+      "native_worker_seconds": 143.59477843390778,
+      "process_to_finalreadout_seconds_approx": 145.4032905101776,
+      "process_absent": true,
+      "NN": 80642,
+      "updates": 0,
+      "parameters_and_buffers_unchanged": true
+    },
+    {
+      "row_id": "frozen-D_raw-s2026092702",
+      "native_worker_seconds": 141.2686308468692,
+      "process_to_finalreadout_seconds_approx": 143.09429025650024,
+      "process_absent": true,
+      "NN": 80642,
+      "updates": 0,
+      "parameters_and_buffers_unchanged": true
+    }
+  ],
+  "new_NN": 161284,
+  "new_model_epochs": 0,
+  "new_updates": 0,
+  "head_fit_updates": 0,
+  "EMA_updates": 0,
+  "target_access": false,
+  "analysis_NN": 0
+}

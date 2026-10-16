@@ -1,0 +1,17 @@
+{
+  "status": "VERIFIED",
+  "commit": "1bc071c9d3148de703f2ffcd6322feaa3aa33db6",
+  "source_only": true,
+  "target_access": false,
+  "single_archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "dispatcher_and_both_workers_identity_verified": true,
+  "both_actual_seed_and_real_CP_smokes_PASS": true,
+  "log_growth": true,
+  "GPU": [
+    0,
+    1
+  ],
+  "local_NN": 32,
+  "new_optimizer_updates": 0
+}

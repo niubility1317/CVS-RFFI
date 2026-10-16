@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "negative_cases": 34,
+  "exact_original_positive_view": true,
+  "original_AGC_each_sign": true,
+  "EQoff_and_EQon_noise_processing": true,
+  "variance_oracles": true,
+  "real_architecture_synthetic_NN": 16,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "source_IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "target_access": false,
+  "cumulative_local_synthetic_NN": 32,
+  "P1_config_fix_directed_zeroNN_PASS": true,
+  "preflight": "VERIFIED ordinary account read-only",
+  "actual_source_references_verified_both": true
+}

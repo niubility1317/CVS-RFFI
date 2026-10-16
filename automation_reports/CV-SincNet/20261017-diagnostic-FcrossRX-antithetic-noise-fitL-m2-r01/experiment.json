@@ -1,0 +1,362 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01",
+  "group_id": "F-crossRX-antithetic-noise-CE-variance",
+  "display_name": "F＋跨 RX：正负噪声配对 CE 方差源诊断",
+  "description": "两份既有 scratchE20 raw 基线、全部 fit L5040、每固定物理信道8独立原始噪声及正负视图；冻结默认头的确定性CE梯度，0更新。只检验采样方差理由，不称身份收益或Ag。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "noise_pair_variance",
+    "antithetic primitive Gaussian"
+  ],
+  "tags": [
+    "phase1",
+    "F_SIG_TIME_X3",
+    "CROSS_RX_SUPCON",
+    "antithetic_noise",
+    "source_only",
+    "frozen_defaulthead",
+    "zero_updates"
+  ],
+  "comparison_group_id": "F-crossRX-noise-pair-source-rationale",
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01",
+    "20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active Ag/As research;bounded legal source diagnostic,no training/query/U truth/new head. E20 per new model budget unchanged;existing E20 weights read-only,0 new model epoch.",
+  "code": {
+    "commit": "1bc071c9d3148de703f2ffcd6322feaa3aa33db6",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "ordinary N607 CVS-RFFI Python/Torch full FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_antithetic_noise_fitL_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing VALIDATED_ONCE split392005 original source carrier,matching4RX effective training contracts",
+    "representation": "Native RMS IQ2x256;full original residual/raw only;primitive noise pairing before RX/IQ/G,per-view originalAGC",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Existing D_raw/source/source_contract.json;each diagnostic input_contract.json",
+    "label_map_ref": "Original6 TX indices0..5;visible L only",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original6 source TX",
+    "roles": {
+      "L_s": "Allfit L5040,72TXxRXxday cells70 each;full sourcecacheL6300materialized,heldRX1 values excluded fromobserver",
+      "U_s": "No U IQ/truth/teacher access",
+      "V": "PriorcacheV/parentfeatures deserialized but unused;no V forward"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse current matching source data handles and VALIDATED_ONCE;no data rebuild/revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "Full original six nominal scenes/residual/post_sync/25MHz/fc2462MHz/EQoffG1/reference30/reflect;formaltestuntouched"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "CE derivative sampling variance onfitL;not heldRX/target/Ag efficacy/full training or AdamW effect"
+  },
+  "checkpoint": {
+    "initialization": "frozen_diagnostic_only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01/D_raw-RX1-s2026092701/source",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01/D_raw-RX1-s2026092702/source"
+    ],
+    "contract_check_ref": "verify_reference and actual full config/nativeargs/payload;exact scratchE20 original effective L/U/V IDs",
+    "provenance_verdict": "Required existing raw2seed source-only scratch final20/no ancestors,targetselection or separatehead;strict full state,0 updates",
+    "selection_rule": "Already frozenFINAL20,not chosen by target or this diagnostic"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/FcrossRX-antithetic-noise-20261017",
+    "gpu_policy": "2read-only derivative workers;sharedallowners<=3/GPU,free>=12000MiB,CPU2;never stophealthyotherowners",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_noise_pair_probe_20261017",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_antithetic_noise_fitL_20261017_r01/experiments/cvs_f_noise_pair_probe/runner.py",
+    "stop_rule": "Role/provenance/nonfinite/state-mutation/collision/unlaunchable failure preserves partials,no automatic retry;no poor-metric technical stop or unrelated process action"
+  },
+  "expected_artifacts": [
+    "Two realcheckpoint noquery smokes2syntheticNN each before sourceIQ",
+    "Perseed resolvedconfig,strictprovenance,unchangedallparam/buffer/.gradNone",
+    "All40batches/8draws/2signs/all5040fitL,80,640decisions perseed",
+    "240small full derivative Gram/group records perseed;independent variance/covariance recount",
+    "Actual channel __file__/configs/sessionhardware/nonnoise-state equality,AGC eachview",
+    "Full source predictions/scenes/states/locks/RX/day,margins/30 andindependentdescriptiveaccuracy/F1",
+    "Exact NN161284 total,0updates/epochs/headfit/EMA;parent40modelE/8880updates/11646636NN separate",
+    "Independent sourceonly summary/figures and fixedreasonPASS/FAIL;no autotraining or target"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "whole CE gradient tracevariance ratio",
+      "negative covariance fraction",
+      "fiveparameter groups descriptive",
+      "defaulthead fitL accuracy/macroF1/margin",
+      "full physical/sourcecoverage",
+      "NN/cost/walltime"
+    ],
+    "criteria": {
+      "primary": "Both source seed whole trace ratio<=.80 andnegativecovariance>=.60 of40batches",
+      "all_seed_required": true,
+      "on_fail": "Closefixedvariance rationale,no layer/state/RX/seed/draw/threshold rescue"
+    },
+    "target_access": false,
+    "primary": "Variance rationale only",
+    "success": "Only permits separatelypreregistered training comparison;not performanceproof",
+    "failure": "Abandon rationale,do not manufacture Ag or rescue closed recipes"
+  },
+  "rows": [
+    {
+      "row_id": "frozen-D_raw-s2026092701",
+      "method": "F_CROSS_RX_frozen_defaulthead_antithetic_CE_probe",
+      "purpose": "frozen_source_diagnostic",
+      "config_ref": "experiments/cvs_f_noise_pair_probe/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01/frozen-D_raw-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261017402,
+        "support": null,
+        "evaluation": 20261017403
+      },
+      "seed_notes": "Two model/globalordinary seeds were used in historical E20;diagnostic fixed perphysical geometry/phase/channel/order/noise streams separatefromtrain/validation/test;8noise draws not8modelseeds",
+      "k": null,
+      "scenario": "AlllegalfitL,nominalsixpractical;no heldRX/target/clean performance readout",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newepochs/updates;80642NN incl2syntheticCPsmoke;parentE20/4440updates perseed separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01/frozen-D_raw-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01/logs/frozen-D_raw-s2026092701.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_antithetic_noise_fitL_20261017_r01/experiments/cvs_f_noise_pair_probe/runner.py --worker frozen-D_raw-s2026092701",
+      "expected_artifacts": [
+        "Two realcheckpoint noquery smokes2syntheticNN each before sourceIQ",
+        "Perseed resolvedconfig,strictprovenance,unchangedallparam/buffer/.gradNone",
+        "All40batches/8draws/2signs/all5040fitL,80,640decisions perseed",
+        "240small full derivative Gram/group records perseed;independent variance/covariance recount",
+        "Actual channel __file__/configs/sessionhardware/nonnoise-state equality,AGC eachview",
+        "Full source predictions/scenes/states/locks/RX/day,margins/30 andindependentdescriptiveaccuracy/F1",
+        "Exact NN161284 total,0updates/epochs/headfit/EMA;parent40modelE/8880updates/11646636NN separate",
+        "Independent sourceonly summary/figures and fixedreasonPASS/FAIL;no autotraining or target"
+      ],
+      "config": {
+        "schema": "FcrossRX_antithetic_noise_fitL_v1",
+        "run_id": "20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01",
+        "launch_owner": "codex/root/FcrossRX-antithetic-noise-20261017",
+        "row_id": "frozen-D_raw-s2026092701",
+        "model_seed": 2026092701,
+        "arm": "noise_pair_variance",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01/frozen-D_raw-s2026092701",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "checkpoint_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01/D_raw-RX1-s2026092701/source",
+        "checkpoint_role": "Existing scratchE20 D_raw baseline,read-only diagnostic;no new student/teacher initialization",
+        "backend": {
+          "run": "20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01",
+          "backend": "cvs_F_crossRX_additiveAs_sourceRX1_e20_20261016_r01",
+          "commit": "7f398321cd2ffd2c2d2cb11f52f67bfd8c44987b"
+        },
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "held_RX1_used": false,
+        "source_L_count": 5040,
+        "source_TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "batch_size": 128,
+        "draws": 8,
+        "streams": {
+          "order": 20261017401,
+          "channel": 20261017402,
+          "noise": 20261017403,
+          "receiver": 20261016102
+        },
+        "scenes": [
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "channel": "Original residual/post_sync/EQoff G1/25MHz/fc2462MHz/reference30/reflect,uniform nominal six scenes;fixed per-packet all non-noise latents;RX/day/eq hardware session,not TX",
+        "noise_pair": "For each of8 independent named primitive standard-normal draws use +z and -z before original RX/IQ/G processing;each view recomputes original AGC;no output averaging,attenuation,denoising or post-hoc sign flip",
+        "network": "Fixed F+CROSS_RX,NoExplicitCFO,SIG_TIME_X3/unifiedSinc/joint160/defaultcos30;eval deterministic frozen parameters and buffers",
+        "loss": "Per-batch mean native default-head CE(label_smoothing=.01);no RDrop KL,SupCon or dropout in this isolated CE derivative observer",
+        "gradient": "All trainable parameter derivatives,no .grad accumulation;Sinc q/25000 physicalHz;whole sum of5disjoint groups",
+        "statistics": "Unbiased within-fixed-batch trace estimates across8 noise draws: V_ind=(Vplus+Vminus)/4,V_ant=var((gplus+gminus)/2);covariance_identity V_ant=V_ind+C/2. Control estimated from same marginal derivative samples,no extra model forwards",
+        "decision": "Both source model seeds must have summed whole V_ant/V_ind<=.80 and negative noise covariance in>=60% of40batches. Only licenses separate training preregistration;else abandon this variance rationale,no layer/state/RX/seed/draw/threshold rescue",
+        "source_only": true,
+        "target_access": false,
+        "U_used": false,
+        "V_used": false,
+        "old_source_cache_L6300_V_and_parent_features_materialized": true,
+        "only_fitL5040_values_consumed": true,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "EMA_updates": 0,
+        "model_epochs": 0,
+        "automatic_training": false,
+        "expected_NN": 80642,
+        "expected_decisions": 80640,
+        "expected_batches": 40,
+        "stop_rule": "Role/provenance/nonfinite/state-mutation/collision/unlaunchable failure preserves partials,no automatic retry;no poor-metric technical stop or unrelated process action"
+      }
+    },
+    {
+      "row_id": "frozen-D_raw-s2026092702",
+      "method": "F_CROSS_RX_frozen_defaulthead_antithetic_CE_probe",
+      "purpose": "frozen_source_diagnostic",
+      "config_ref": "experiments/cvs_f_noise_pair_probe/registration.json#rows/1/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01/frozen-D_raw-s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261017402,
+        "support": null,
+        "evaluation": 20261017403
+      },
+      "seed_notes": "Two model/globalordinary seeds were used in historical E20;diagnostic fixed perphysical geometry/phase/channel/order/noise streams separatefromtrain/validation/test;8noise draws not8modelseeds",
+      "k": null,
+      "scenario": "AlllegalfitL,nominalsixpractical;no heldRX/target/clean performance readout",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newepochs/updates;80642NN incl2syntheticCPsmoke;parentE20/4440updates perseed separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01/frozen-D_raw-s2026092702",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01/logs/frozen-D_raw-s2026092702.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_antithetic_noise_fitL_20261017_r01/experiments/cvs_f_noise_pair_probe/runner.py --worker frozen-D_raw-s2026092702",
+      "expected_artifacts": [
+        "Two realcheckpoint noquery smokes2syntheticNN each before sourceIQ",
+        "Perseed resolvedconfig,strictprovenance,unchangedallparam/buffer/.gradNone",
+        "All40batches/8draws/2signs/all5040fitL,80,640decisions perseed",
+        "240small full derivative Gram/group records perseed;independent variance/covariance recount",
+        "Actual channel __file__/configs/sessionhardware/nonnoise-state equality,AGC eachview",
+        "Full source predictions/scenes/states/locks/RX/day,margins/30 andindependentdescriptiveaccuracy/F1",
+        "Exact NN161284 total,0updates/epochs/headfit/EMA;parent40modelE/8880updates/11646636NN separate",
+        "Independent sourceonly summary/figures and fixedreasonPASS/FAIL;no autotraining or target"
+      ],
+      "config": {
+        "schema": "FcrossRX_antithetic_noise_fitL_v1",
+        "run_id": "20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01",
+        "launch_owner": "codex/root/FcrossRX-antithetic-noise-20261017",
+        "row_id": "frozen-D_raw-s2026092702",
+        "model_seed": 2026092702,
+        "arm": "noise_pair_variance",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-antithetic-noise-fitL-m2-r01/frozen-D_raw-s2026092702",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "checkpoint_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01/D_raw-RX1-s2026092702/source",
+        "checkpoint_role": "Existing scratchE20 D_raw baseline,read-only diagnostic;no new student/teacher initialization",
+        "backend": {
+          "run": "20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01",
+          "backend": "cvs_F_crossRX_additiveAs_confirm_sourceRX1_e20_20261016_r01",
+          "commit": "05984a1229ebac7025a95081dc5fae4108276b28"
+        },
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "held_RX1_used": false,
+        "source_L_count": 5040,
+        "source_TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "batch_size": 128,
+        "draws": 8,
+        "streams": {
+          "order": 20261017401,
+          "channel": 20261017402,
+          "noise": 20261017403,
+          "receiver": 20261016102
+        },
+        "scenes": [
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "channel": "Original residual/post_sync/EQoff G1/25MHz/fc2462MHz/reference30/reflect,uniform nominal six scenes;fixed per-packet all non-noise latents;RX/day/eq hardware session,not TX",
+        "noise_pair": "For each of8 independent named primitive standard-normal draws use +z and -z before original RX/IQ/G processing;each view recomputes original AGC;no output averaging,attenuation,denoising or post-hoc sign flip",
+        "network": "Fixed F+CROSS_RX,NoExplicitCFO,SIG_TIME_X3/unifiedSinc/joint160/defaultcos30;eval deterministic frozen parameters and buffers",
+        "loss": "Per-batch mean native default-head CE(label_smoothing=.01);no RDrop KL,SupCon or dropout in this isolated CE derivative observer",
+        "gradient": "All trainable parameter derivatives,no .grad accumulation;Sinc q/25000 physicalHz;whole sum of5disjoint groups",
+        "statistics": "Unbiased within-fixed-batch trace estimates across8 noise draws: V_ind=(Vplus+Vminus)/4,V_ant=var((gplus+gminus)/2);covariance_identity V_ant=V_ind+C/2. Control estimated from same marginal derivative samples,no extra model forwards",
+        "decision": "Both source model seeds must have summed whole V_ant/V_ind<=.80 and negative noise covariance in>=60% of40batches. Only licenses separate training preregistration;else abandon this variance rationale,no layer/state/RX/seed/draw/threshold rescue",
+        "source_only": true,
+        "target_access": false,
+        "U_used": false,
+        "V_used": false,
+        "old_source_cache_L6300_V_and_parent_features_materialized": true,
+        "only_fitL5040_values_consumed": true,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "EMA_updates": 0,
+        "model_epochs": 0,
+        "automatic_training": false,
+        "expected_NN": 80642,
+        "expected_decisions": 80640,
+        "expected_batches": 40,
+        "stop_rule": "Role/provenance/nonfinite/state-mutation/collision/unlaunchable failure preserves partials,no automatic retry;no poor-metric technical stop or unrelated process action"
+      }
+    }
+  ],
+  "notes": [
+    "FixedF+CROSS_RX and default cosine30,no newdeployment module/head/loss",
+    "Observationprimitive signperinstance only;originalformalenginefilesunchanged",
+    "AGC recomputed for eachsign;signalpowerquality remains originalproxy,notwaveform/totalSNR",
+    "EvalCE-only rationale excludes dropout/RDropKL/SupCon/actualAdamW;no performanceclaim",
+    "Independent-pair reference analytically estimated from8marginalderivatives,not extra independentNN",
+    "REJECTED_EXTRA_GATE:separate designapproval/reporthash not allowed;one focusedP0P1 only"
+  ],
+  "registered_at": "2026-10-16T17:45:11+00:00"
+}
