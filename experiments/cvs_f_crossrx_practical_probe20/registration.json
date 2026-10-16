@@ -1,0 +1,375 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-practical-frozen-source-attribution",
+  "display_name": "冻结 F＋跨RX：当前 C0／C1 practical 退化诊断",
+  "description": "当前F+CROSS_RX own final20，held source RX1原L1260；clean+6原practical×11共享控制、原默认头/真实分支/无更新CE导数；0新模型/训练/target。",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "F_SIG_TIME_X3",
+    "CENTER_UNITS",
+    "CROSS_RX_SUPCON",
+    "E20_parent",
+    "practical_residual",
+    "frozen_default_head",
+    "source_only",
+    "single_seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active Ag+As goal and newest user baseline F+CROSS_RX/E20 authorize source frozen diagnosis. Current parents/source matching metadata checked; no target or automatic new training.",
+  "code": {
+    "commit": "CURRENT_RELEASE_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_practical_source_RX1_20261016_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/source_cache.pt#labeled",
+    "version": "Same VALIDATED_ONCE original sourcecarrier392005; original held RX1 L only, not Ldev720 or V5400",
+    "representation": "nativeRMS/equalized1 IQ256/25MHz, original recorded IQ unchanged",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids/L_s",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#classes",
+    "source_receivers": [
+      1
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/preparation_complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "Original practical6 configs; actual adv3b02_xuc modulefiles/fullConfigs saved in execution.json; residual/post_sync/EQoff/G1/reference30/reflect",
+    "effective_diagnostic_counts": {
+      "held_L": 1260,
+      "model_readouts": 2,
+      "U": 0,
+      "V": 0,
+      "target": 0
+    }
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "not_constructed",
+    "external_method_exception": null,
+    "claim_scope": "Frozen current F+CROSS_RX sourceRX1 physical recoverability only; no new Ag efficacy, formal target performance, crossseed or automatic training/promotion."
+  },
+  "checkpoint": {
+    "initialization": "frozen_existing",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C1-RX1-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "cvs_f_crossrx_practical_probe20/provenance.check; current C0/C1 completion/initialization/source_contract/source_frozen/result",
+    "provenance_verdict": "Both scratch F+CROSS_RX E20=13L+7U/4440/defaultcos ownstudents fitRX3/4/6/8 only; metadata exact parent config/roles/final20 verified locally. HeldRX1 original L1260 excluded from all parent roles. Worker rechecks metadata before strictload, no fallback.",
+    "selection_rule": "Fixed C0/C1 final20 students from same firstfold run; source diagnosis cannot choose model or influence running source confirmation. Two zero IQ no-query packets per checkpoint first, PASS continues immediately."
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/FcrossRX-practical-source-RX1-20261016",
+    "gpu_policy": "One worker holds2 frozen models; all-owner/preCUDA<=3/GPU,free>=12000MiB/sharedcapacitylock;CPU2/workers0",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01/logs/worker.log",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_FcrossRX_probe20_20261016",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_practical_source_RX1_20261016_r01/experiments/cvs_f_crossrx_practical_probe20/runner.py",
+    "stop_rule": "Own legality/provenance/config/physics/nonfinite/budget/frozenstate/output/technical failure stops only this diagnostic, preserves root; no score stop, automatic retry, foreign stop, new training or target."
+  },
+  "expected_artifacts": [
+    "per-row resolved_config.json",
+    "per-row packets.jsonl.gz",
+    "per-row gradients.jsonl.gz",
+    "per-row completion.json",
+    "execution.json",
+    "progress.json",
+    "root completion.json",
+    "independent analysis/summary.json",
+    "analysis/metrics.csv",
+    "source strata figures/report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "defaulthead accuracy",
+      "fixed6 macroF1",
+      "self/C0/common clean-correct retention",
+      "repair/break vs full",
+      "cosine margin divided30",
+      "actual branch/gate activation",
+      "no-update original-parameter CE derivatives",
+      "receiver/quality/boundary statistics"
+    ],
+    "dimensions": [
+      "C0/C1",
+      "clean+6originalpractical",
+      "11sourcecounterfactualconditions",
+      "LOS/PARTIAL/BLOCKED",
+      "locked/degraded/unlocked",
+      "quality bins",
+      "TX0..5/day1..3",
+      "singlemodelseed2026092701"
+    ],
+    "prediction_ref": "per-row packets.jsonl.gz; actual views shared across2 models",
+    "scorer_ref": "Independent no-model harvest.py after all saved source predictions; legal source L truth only, no target truth service",
+    "primary": "Descriptive current-baseline attribution only; fixed vs recomputed receiver states separate and nonadditive, no qualification or automatic training/target."
+  },
+  "rows": [
+    {
+      "row_id": "C0-RX1-s2026092701",
+      "method": "frozen F+CROSS_RX C0 practical attribution",
+      "purpose": "fixed_source_RX1_physical_attribution",
+      "config_ref": "experiments/cvs_f_crossrx_practical_probe20/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01/C0-RX1-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016621,
+        "support": null,
+        "evaluation": 20261016621
+      },
+      "seed_notes": "Inherited model2026092701/split392005; independent diagnostic draw20261016621, hardware20261016622. PhysicalID/scene named stream shared both models; RX/day/eq hardware noTX. No new model/train/support/target RNG.",
+      "k": null,
+      "scenario": "held source RX1 L1260 clean+6practical×11sourcecontrols",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Each frozenfinal20:84422realpacketforwards incl2smoke/1340derivatives/0updates;2models168844packets/2680derivatives. Existingparents20/4440each separately;1260uniquephysical,not2seeds.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01/C0-RX1-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_practical_source_RX1_20261016_r01/experiments/cvs_f_crossrx_practical_probe20/runner.py --worker",
+      "expected_artifacts": [
+        "per-row resolved_config.json",
+        "per-row packets.jsonl.gz",
+        "per-row gradients.jsonl.gz",
+        "per-row completion.json",
+        "execution.json",
+        "progress.json",
+        "root completion.json",
+        "independent analysis/summary.json",
+        "analysis/metrics.csv",
+        "source strata figures/report"
+      ],
+      "config": {
+        "schema": "F_CROSSRX_practical_source_attribution_v1",
+        "run_id": "20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01",
+        "launch_owner": "codex/root/FcrossRX-practical-source-RX1-20261016",
+        "arm": "C0",
+        "row_id": "C0-RX1-s2026092701",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01/C0-RX1-s2026092701",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source/final_ssdg.pth",
+        "checkpoint_origin": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source",
+        "model_seed": 2026092701,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_only": true,
+        "target_access": false,
+        "held_RX": 1,
+        "evaluation_role": "held original source L1260; excluded from both parent training roles",
+        "source_count": 1260,
+        "source_training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_evaluation_days": [
+          1,
+          2,
+          3
+        ],
+        "TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "batch_size": 63,
+        "V_used": false,
+        "U_used": false,
+        "scenes": [
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "conditions": [
+          "full",
+          "no_noise/fixed",
+          "no_noise/total",
+          "flat_H/fixed",
+          "flat_H/total",
+          "no_carrier/fixed",
+          "no_carrier/total",
+          "no_RX_IQ/fixed",
+          "no_RX_IQ/total",
+          "actual_power_quality",
+          "edge_boundary"
+        ],
+        "draw_seed": 20261016621,
+        "receiver_seed": 20261016622,
+        "stream": "FcrossRX/source/practical_attribution_v1/scene/opaque_physical_id; same actual IQ tensor for both models",
+        "receiver_session": "RX/day/eq only, no TX session",
+        "channel_route": "original residual/post_sync/EQoff/G1/reference30/reflect",
+        "readout": "frozen F+CROSS_RX/SIG_TIME_X3/CENTER_25K/CENTER_UNITS/joint160/originalcos30",
+        "new_models": 0,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "head_fit_updates": 0,
+        "parent_training_epochs": 20,
+        "parent_optimizer_updates": 4440,
+        "checkpoint_smoke_packets": 2,
+        "expected_packet_forwards": 84422,
+        "expected_derivative_calls": 1340,
+        "selection": "Both completed own scratch E20 students, final_only; descriptive paired-As attribution, no checkpoint selection or target feedback",
+        "scientific_scope": "Frozen source physical recoverability only; no automatic new training/target, no efficacy qualification gate"
+      }
+    },
+    {
+      "row_id": "C1-RX1-s2026092701",
+      "method": "frozen F+CROSS_RX C1 practical attribution",
+      "purpose": "fixed_source_RX1_physical_attribution",
+      "config_ref": "experiments/cvs_f_crossrx_practical_probe20/registration.json#rows/1/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01/C1-RX1-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016621,
+        "support": null,
+        "evaluation": 20261016621
+      },
+      "seed_notes": "Inherited model2026092701/split392005; independent diagnostic draw20261016621, hardware20261016622. PhysicalID/scene named stream shared both models; RX/day/eq hardware noTX. No new model/train/support/target RNG.",
+      "k": null,
+      "scenario": "held source RX1 L1260 clean+6practical×11sourcecontrols",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Each frozenfinal20:84422realpacketforwards incl2smoke/1340derivatives/0updates;2models168844packets/2680derivatives. Existingparents20/4440each separately;1260uniquephysical,not2seeds.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01/C1-RX1-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_practical_source_RX1_20261016_r01/experiments/cvs_f_crossrx_practical_probe20/runner.py --worker",
+      "expected_artifacts": [
+        "per-row resolved_config.json",
+        "per-row packets.jsonl.gz",
+        "per-row gradients.jsonl.gz",
+        "per-row completion.json",
+        "execution.json",
+        "progress.json",
+        "root completion.json",
+        "independent analysis/summary.json",
+        "analysis/metrics.csv",
+        "source strata figures/report"
+      ],
+      "config": {
+        "schema": "F_CROSSRX_practical_source_attribution_v1",
+        "run_id": "20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01",
+        "launch_owner": "codex/root/FcrossRX-practical-source-RX1-20261016",
+        "arm": "C1",
+        "row_id": "C1-RX1-s2026092701",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01/C1-RX1-s2026092701",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C1-RX1-s2026092701/source/final_ssdg.pth",
+        "checkpoint_origin": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C1-RX1-s2026092701/source",
+        "model_seed": 2026092701,
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_only": true,
+        "target_access": false,
+        "held_RX": 1,
+        "evaluation_role": "held original source L1260; excluded from both parent training roles",
+        "source_count": 1260,
+        "source_training_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_evaluation_days": [
+          1,
+          2,
+          3
+        ],
+        "TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "batch_size": 63,
+        "V_used": false,
+        "U_used": false,
+        "scenes": [
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "conditions": [
+          "full",
+          "no_noise/fixed",
+          "no_noise/total",
+          "flat_H/fixed",
+          "flat_H/total",
+          "no_carrier/fixed",
+          "no_carrier/total",
+          "no_RX_IQ/fixed",
+          "no_RX_IQ/total",
+          "actual_power_quality",
+          "edge_boundary"
+        ],
+        "draw_seed": 20261016621,
+        "receiver_seed": 20261016622,
+        "stream": "FcrossRX/source/practical_attribution_v1/scene/opaque_physical_id; same actual IQ tensor for both models",
+        "receiver_session": "RX/day/eq only, no TX session",
+        "channel_route": "original residual/post_sync/EQoff/G1/reference30/reflect",
+        "readout": "frozen F+CROSS_RX/SIG_TIME_X3/CENTER_25K/CENTER_UNITS/joint160/originalcos30",
+        "new_models": 0,
+        "optimizer_updates": 0,
+        "EMA_updates": 0,
+        "head_fit_updates": 0,
+        "parent_training_epochs": 20,
+        "parent_optimizer_updates": 4440,
+        "checkpoint_smoke_packets": 2,
+        "expected_packet_forwards": 84422,
+        "expected_derivative_calls": 1340,
+        "selection": "Both completed own scratch E20 students, final_only; descriptive paired-As attribution, no checkpoint selection or target feedback",
+        "scientific_scope": "Frozen source physical recoverability only; no automatic new training/target, no efficacy qualification gate"
+      }
+    }
+  ],
+  "notes": [
+    "Heldsource original L1260 only, physicalIDs excluded from every parent training/V role; source cache can deserialize unused containers but U/V/target use/forward0.",
+    "C0/C1 are fixed same initialseed/samefour-forward E20 parents; firstfold sourceV result motivated this descriptive diagnosis, cannot serve as independent replication.",
+    "Original residual canonical full match; EQoff G1, reference30, qualityadapt reference20, phase/IQ compensation on, reflect. Formal tests unchanged.",
+    "Fixed full-state cohorts throughout 11controls; addednoise SNR not total. No_noise retains unknown originalnoise; flatH retainsdelay/commonphase; no_carrier is combined carrierphase removal.",
+    "No optimizer/newmodel/fittedhead. 14existingparameter CE gradients eval/autograd.grad. Extra readout-only classify checks not backbone forwards.",
+    "F was user-selected after historical exposed benchmark; no independent new blindtest claim. Running 8-row source confirmation untouched."
+  ]
+}
