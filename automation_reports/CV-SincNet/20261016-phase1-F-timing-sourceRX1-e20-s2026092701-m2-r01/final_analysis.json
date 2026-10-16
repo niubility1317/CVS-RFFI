@@ -1,0 +1,269 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261016-phase1-F-timing-sourceRX1-e20-s2026092701-m2-r01",
+  "actual_execution": "VERIFIED",
+  "qualification": {
+    "qualified": false,
+    "conditions": {
+      "healthy": true,
+      "held_accuracy": false,
+      "held_macroF1": false,
+      "seen_V": true
+    },
+    "accuracy_gain_pp": -0.5555555555555536,
+    "macroF1_gain_pp": -0.6353426790931538,
+    "seen_V_drop_pp": -0.037037037037035425
+  },
+  "results": {
+    "B00": {
+      "count": 1260,
+      "accuracy": 0.7952380952380952,
+      "macro_F1": 0.7846583962351733,
+      "confusion": [
+        [
+          206,
+          3,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          180,
+          0,
+          28,
+          2,
+          0
+        ],
+        [
+          54,
+          0,
+          98,
+          0,
+          0,
+          58
+        ],
+        [
+          3,
+          80,
+          0,
+          127,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          210,
+          0
+        ],
+        [
+          0,
+          0,
+          13,
+          15,
+          1,
+          181
+        ]
+      ],
+      "arm": "B00",
+      "seen_V": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.9798148148148148,
+        "source_val_rx_accuracy": {
+          "3": 0.9546296296296296,
+          "4": 0.9842592592592593,
+          "6": 0.9955555555555555,
+          "8": 0.9848148148148148
+        },
+        "source_val_worst_rx": 0.9546296296296296,
+        "held_RX_excluded": true
+      },
+      "mean_CE": 0.875032100081859,
+      "final_L_CE": 0.07626946689980524,
+      "L_forward_packets": 3409920,
+      "actual_steps": 4440,
+      "head_fit_updates": 0,
+      "target_access": false
+    },
+    "B10": {
+      "count": 1260,
+      "accuracy": 0.7896825396825397,
+      "macro_F1": 0.7783049694442418,
+      "confusion": [
+        [
+          199,
+          9,
+          0,
+          0,
+          2,
+          0
+        ],
+        [
+          0,
+          179,
+          0,
+          29,
+          2,
+          0
+        ],
+        [
+          60,
+          0,
+          92,
+          0,
+          0,
+          58
+        ],
+        [
+          2,
+          80,
+          0,
+          128,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          210,
+          0
+        ],
+        [
+          0,
+          0,
+          11,
+          12,
+          0,
+          187
+        ]
+      ],
+      "arm": "B10",
+      "seen_V": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.9801851851851852,
+        "source_val_rx_accuracy": {
+          "3": 0.9561111111111111,
+          "4": 0.9840740740740741,
+          "6": 0.9961111111111111,
+          "8": 0.9844444444444445
+        },
+        "source_val_worst_rx": 0.9561111111111111,
+        "held_RX_excluded": true
+      },
+      "mean_CE": 0.8750473490342366,
+      "final_L_CE": 0.07621797922629493,
+      "L_forward_packets": 3409920,
+      "actual_steps": 4440,
+      "head_fit_updates": 0,
+      "target_access": false
+    }
+  },
+  "paired": {
+    "repaired": 7,
+    "broken": 14
+  },
+  "execution": {
+    "B00-RX1-s2026092701": {
+      "full_steps": 4440,
+      "full_epochs": 20,
+      "max_weighted_L_loss_reconstruction_error": 2.682209014892578e-07,
+      "U_truth_records": 0,
+      "nonfinite_skips": 0,
+      "training_sequence_batches": 5994,
+      "L_observation_batches": 4440,
+      "U_observation_batches": 1554,
+      "physical_unique": {
+        "L": 5040,
+        "U": 45360
+      },
+      "physical_observations": {
+        "L": 568320,
+        "U": 396368
+      },
+      "stdout_lines": 800,
+      "stdout_warnings": [],
+      "total_actual_network_forward_packets": 4679118,
+      "counter_note": "student counts include initialsmoke2; teacher inherited counter2 subtracted; held1260 added; no extra smoke2 double count",
+      "elapsed_seconds": 1243.1902675628662
+    },
+    "B10-RX1-s2026092701": {
+      "full_steps": 4440,
+      "full_epochs": 20,
+      "max_weighted_L_loss_reconstruction_error": 2.980232238769531e-07,
+      "U_truth_records": 0,
+      "nonfinite_skips": 0,
+      "training_sequence_batches": 5994,
+      "L_observation_batches": 4440,
+      "U_observation_batches": 1554,
+      "physical_unique": {
+        "L": 5040,
+        "U": 45360
+      },
+      "physical_observations": {
+        "L": 568320,
+        "U": 396368
+      },
+      "stdout_lines": 800,
+      "stdout_warnings": [],
+      "total_actual_network_forward_packets": 4679118,
+      "counter_note": "student counts include initialsmoke2; teacher inherited counter2 subtracted; held1260 added; no extra smoke2 double count",
+      "elapsed_seconds": 1239.9073770046234
+    }
+  },
+  "input_audit": {
+    "B00-RX1-s2026092701": {
+      "mean_waveform_MSE": 0.0,
+      "max_relative_RMS_power_error": 0.0,
+      "max_abs_delay_samples": 0.0
+    },
+    "B10-RX1-s2026092701": {
+      "mean_waveform_MSE": 0.003893670631333481,
+      "max_relative_RMS_power_error": 3.5762786865234375e-07,
+      "max_abs_delay_samples": 0.1249999850988388
+    }
+  },
+  "native_argument_differences": [
+    "output_dir",
+    "candidate_id"
+  ],
+  "all_L_U_sequences_identical": true,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "new_model_epochs": 40,
+  "new_optimizer_updates": 8880,
+  "scope": "One model seed, heldsource RX1 development; no formal clean/practical or crossseed claim",
+  "native_epochs": {
+    "B00-RX1-s2026092701": {
+      "native_JSONL_records": 20,
+      "native_CSV_records": 20,
+      "compact_records": 20,
+      "key_curve_fields_exact": true
+    },
+    "B10-RX1-s2026092701": {
+      "native_JSONL_records": 20,
+      "native_CSV_records": 20,
+      "compact_records": 20,
+      "key_curve_fields_exact": true
+    }
+  },
+  "terminal_poststate": {
+    "all_workers_absent": true,
+    "dispatcher_absent": true,
+    "failure_absent": true,
+    "completion": {
+      "status": "ANALYZED",
+      "rows": 2,
+      "new_epochs": 40,
+      "new_optimizer_steps": 8880,
+      "qualified": false,
+      "target_access": false,
+      "head_fit_updates": 0
+    }
+  }
+}

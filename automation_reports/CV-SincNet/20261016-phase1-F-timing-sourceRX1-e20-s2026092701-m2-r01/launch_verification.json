@@ -1,0 +1,35 @@
+{
+  "status": "VERIFIED",
+  "source_code_commit": "4795ebe56e7319c3ad0c5b02ae11589a1134dcac",
+  "archive_SHA_comparison": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "ordinary_account_preflight": true,
+  "independent_PID_CWD_argv_GPU": true,
+  "log_growth": true,
+  "rows": [
+    {
+      "row_id": "B00-RX1-s2026092701",
+      "gpu": 0,
+      "full_epochs": 3,
+      "actual_steps": 666,
+      "total_parameters": 900722,
+      "NoExplicitCFO": true,
+      "internal_CFO_compensation": true,
+      "F_base": true,
+      "As": false,
+      "source_only": true
+    },
+    {
+      "row_id": "B10-RX1-s2026092701",
+      "gpu": 1,
+      "full_epochs": 3,
+      "actual_steps": 666,
+      "total_parameters": 900722,
+      "NoExplicitCFO": true,
+      "internal_CFO_compensation": true,
+      "F_base": true,
+      "As": false,
+      "source_only": true
+    }
+  ]
+}

@@ -1,6 +1,48 @@
 # F 基座轻度分数延时增强：E20 源 RX1 留出
 
-状态：LOCAL_VERIFIED，尚无新模型识别结果。唯一候选是假设性的有界采样落点变化；不能因算子检查、源健康或梯度通过就称为泛化有效。精确两行矩阵、seed、命令、路径和 stop rule 由 [experiment.json](experiment.json) 维护。
+状态：**ANALYZED／执行 VERIFIED，固定源资格 FAIL**。两个 F 模型各完成从零 E20、4440 次更新及 final20 默认头源域评价，完整日志和决定已独立重计。轻度分数延时没有改善本轮留出 RX1 的身份识别，按原规则结束此固定候选；不换幅度、RX、seed救援，不进入本候选的As/目标/扩种子。更广泛联合研究目标仍未完成。精确两行矩阵、seed、命令、路径和 stop rule 由 [experiment.json](experiment.json) 维护。
+
+## 本轮结果、判定与边界
+
+固定model seed2026092701，held RX1原L1260，6TX×3day。训练仅fit RX3/4/6/8的L5040、hiddenU45360，seenV21600只健康诊断。所有条件使用同一F/defaultcos头、相同数据和初始化规则、13L+7U、6次L前向与.5/.25/.25归一化；actual_native_args只差candidate_id和output_dir。
+
+|默认头终点|B00 raw槽匹配控制|B10 分数延时Ag|B10−B00|
+|---|---:|---:|---:|
+|held RX1准确率|79.523810%（1002/1260）|78.968254%（995/1260）|−.555556 pp|
+|held RX1 macro-F1|78.465840%|77.830497%|−.635343 pp|
+|held RX1 CE|.875032100|.875047349|+.000015249|
+|seen V均值|97.981481%|98.018519%|+.037037 pp|
+
+配对修复7条、破坏14条，净少对7条。TX0/2分别−3.3333/−2.8571pp，TX5+2.8571pp；day1为0，day2/3分别−.9524/−.7143pp。全部正负差及6×6混淆矩阵保留，不用TX5的局部收益挽救整体FAIL。默认头平均margin略升（3.368964→3.381037），没有变成正确率收益。
+
+事前四项判定：健康完整PASS，held准确率≥+1pp FAIL，macro-F1不下降FAIL，seen V下降≤.5pp PASS。源资格与远端预定判断独立重计一致。**被否定的是当前固定范围、算子和训练组织的晋级假设**；单model seed/单源RX结果不足以证明所有采样落点增强必然有害，也不证明源RX没有时序非身份因素。当前没有足够证据为此候选继续投入联合矩阵。
+
+没有正式clean/六practical预测、target truth、As训练或跨seed结果。clean净收益、low urban>60%、每个suburban距clean≤2pp和交互项均为未检验，不能填0或称已达成。
+
+## 完整执行、输入与成本证据
+
+全量解析40份epoch、8880条step、两行各5994条L/U物理批次序列、两份完整800行stdout、8880条timing和8880条Sinc实际更新记录，以及2520条held默认头决定。每对训练L/U物理序列逐条相同；每行实际唯一L5040/U45360，L观察568320/U观察396368，12个fitRX×day组合完整，heldRX不进入训练。U truth记录0，非有限跳步0，stdout技术错误/警告0；加权L目标逐步重构最大误差2.980233e−7。原native epochCSV/JSONL与所有私有完整文件保留。
+
+实际Ag后输入：4440个L批次，waveform MSE均值.003893671，最大相对RMS功率误差3.576279e−7，最大绝对delay .124999985sample。B00三项均0。这说明扰动实际执行且未只剩可归一化的纯增益，但不构成身份保持或泛化收益证明。没有通用AWGN/多径/PA/DAC/CFO叠加，实际ordinary L关闭；导入模块已保存，未改测试IQ或传播条件。
+
+|行|model epoch /更新|L网络前向|student U|ownEMA U|seen V|held /smoke|实际网络前向总数|训练墙钟|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|B00|20 /4440|3409920|396368|396368|475200|1260 /2|4679118|1243.1903s|
+|B10|20 /4440|3409920|396368|396368|475200|1260 /2|4679118|1239.9074s|
+
+两行合计40model-epoch/8880更新/9358236次真实网络包前向，无父训练、额外optimizer或拟合头。V为原20轮＋native尾部＋wrapper终态共22×21600，实际counter支持；teacher由含initial smoke2的student deepcopy而来，其继承counter2不是教师执行，汇总已扣除，smoke未重复计。每行另读取144个fit-L anchors但不前向/训练；本地真实F合成检查1536个训练包前向＋16个特征读出包另列，纯算子检查不算网络前向。两GPU并行，不能把两行秒数相加称矩阵墙钟；发布/离线分析未统一计时。E20用尽不证明收敛。
+
+两个worker与dispatcher自然退出，终态completion/空queue/failure不存在及PID缺失已独立回读。source运行提交始终为`4795ebe56e7319c3ad0c5b02ae11589a1134dcac`，发布后未热改、重启、重训或重测。既有其他owner任务保持。离线fetch有Python未来tarfilter弃用警告，边界检查已执行；实际取回成功，不是远端训练故障。
+
+实际离线命令（本工作树CWD，F:/App/miniconda3/python.exe -X utf8）：`-m experiments.cvs_iq_timing20.harvest`；增加输入/覆盖复算后仅`harvest --cached`；绘图`-m experiments.cvs_iq_timing20.figures`。后两步只读取保存的源日志/决定，不导入网络、不读取IQ/CP或truth。完整曲线和分层图已逐图查看。
+
+- [独立完整复算](final_analysis.json)
+- [完整20轮训练曲线](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_timing_preparation_r01/final/complete_training_curves.png)
+- [默认头源结果与TX/day分层](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_timing_preparation_r01/final/held_source_results.png)
+- [全部训练曲线数值](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_timing_preparation_r01/final/training_curves.csv)
+- [全部源分层数值](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_timing_preparation_r01/final/source_strata.csv)
+
+以下保留原审计、方法与预登记。过程中的RUNNING/尚无结果只对应当时阶段，以本报告开头终态和完整复算为准。
 
 ## 与另一个对话的分工
 
@@ -60,7 +102,7 @@ scale 真实参数为 min .10、max .35、warmup3、ramp15、curve1.25；概率�
 
 F保持三路 SIG_TIME、统一 Sinc 物理更新、900722总参数、真实joint160、默认cosine6×160/scale30，正常联合训练。每模型从零20轮=13L+7U/4440更新，无任何父权重/teacher继承，不冻结或另训头。RX1在全部训练、U、V、probe/calibration中排除；有效 L_train5040、hidden U45360、seenV21600。held原L1260只在final20开发评价；144 fit anchors由既有fold materialize读取但不用于训练或选择，成本披露。该契约不同于 fullL6300 或5580/720。
 
-令 RD(v)=同一 v 两次随机前向的平均 smoothedCE+.01标签平滑以及alpha1对称KL。
+令 RD(v)=同一 v 两次随机前向的平均 CE（label_smoothing=.01）加 alpha1 对称 KL。
 
 - B00：.5RD(x)+.25RD(x)+.25RD(x)。
 - B10：.5RD(x)+.25RD(Ag(x))+.25RD(x)。
@@ -80,3 +122,7 @@ F保持三路 SIG_TIME、统一 Sinc 物理更新、900722总参数、真实join
 REJECTED_EXTRA_GATE：通用设计批准、固定规划文件、全库测试和额外审核层不属于用户允许的阻塞项。本轮执行必要输入权限、真实代码commit、聚焦验证、一次P0/P1、最小登记及发布读回，不另增审批。
 
 当前唯一待证实结论是B10是否改善held源身份识别；联合clean正收益、low urban>60%、全部suburban接近clean与跨seed复现均未完成。
+
+发布执行提交 `4795ebe56e7319c3ad0c5b02ae11589a1134dcac` 已推送并独立比较远端分支OID。单归档传输/远端compile VERIFIED，两个worker自有真实scratch CP no-query smoke PASS；独立PID/CWD/argv/GPU与完整日志增长核实。初次阶段进度两行均E3/20、666步/511488个L前向，GPU0/1，failure为空；当前状态以最新私有readback为准。explicit_CFO_identity_input=false，必要内部逐包补偿true；源实际角色5040/45360/21600和900722参数已读回。[launch_verification.json](launch_verification.json)保留非私有聚合证据，PID和机器运行状态仅在私有readback。
+
+F构造时沿用的 `original_SIGTIME_RDrop` 描述块含历史E50前向数；它不是本轮执行预算。当前 operative 配方由 `IQ_timing`、actual_native_args 的20/13/7和实际计数确定，旧 `_legacy_calls` 不参与本轮loss。该描述差异不修补正在运行的release，完整收尾按真实计数报告。
