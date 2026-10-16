@@ -12,7 +12,7 @@ def plot(root):
  colors=['#28588b','#c27424','#32836d'];vl=['clean','full','no added noise / fixed RX'];arms=['RAW10','ANTI'];paths=[]
  plt.rcParams.update({'font.size':10,'axes.spines.top':False,'axes.spines.right':False})
  def save(fig,name):
-  fig.suptitle('Seen-source fitL diagnostic; frozen own default heads; seed 2026092701',fontsize=11);fig.tight_layout(rect=(0,0,1,.95))
+  fig.suptitle('Seen-source fitL diagnostic; frozen own default heads; seed 2026092701',fontsize=11);fig.tight_layout(rect=(0,0,1,.89) if name in ('accuracy_and_hard_states','ANTI_state_and_lock') else (0,0,1,.95))
   for ext in ('png','pdf'):p=out/(name+'.'+ext);fig.savefig(p,dpi=180);paths.append(str(p))
   plt.close(fig)
  fig,axes=plt.subplots(1,3,figsize=(13,4))
@@ -20,14 +20,14 @@ def plot(root):
   for i,v in enumerate(d.VIEWS):
    values=[100*(s['rows'][a]['scores'][v] if sel=='all' else s['rows'][a]['recoverability']['strata'][sel]['scores'][v])['accuracy'] for a in arms];bars=ax.bar(np.arange(2)+(i-1)*.24,values,.24,label=vl[i],color=colors[i]);ax.bar_label(bars,fmt='%.1f',fontsize=8)
   ax.set(xticks=range(2),xticklabels=arms,ylim=(0,108),title=sel,ylabel='Accuracy (%)')
- axes[0].legend(fontsize=8);save(fig,'accuracy_and_hard_states')
+ fig.legend(*axes[0].get_legend_handles_labels(),loc='upper center',bbox_to_anchor=(.5,.94),ncol=3,fontsize=9);save(fig,'accuracy_and_hard_states')
  fig,axes=plt.subplots(1,2,figsize=(12,4))
  for ax,dim in zip(axes,('state','lock')):
   keys=['LOS','PARTIAL','BLOCKED'] if dim=='state' else ['locked','degraded','unlocked']
   for i,v in enumerate(d.VIEWS):
    vals=[next(x['accuracy']*100 for x in strata if x['arm']=='ANTI' and x['view']==v and x['dimension']==dim and x['value']==k) for k in keys];ax.bar(np.arange(3)+(i-1)*.24,vals,.24,label=vl[i],color=colors[i])
   ax.set(xticks=range(3),xticklabels=keys,ylim=(0,105),ylabel='ANTI accuracy (%)',title=dim)
- axes[0].legend(fontsize=8);save(fig,'ANTI_state_and_lock')
+ fig.legend(*axes[0].get_legend_handles_labels(),loc='upper center',bbox_to_anchor=(.5,.94),ncol=3,fontsize=9);save(fig,'ANTI_state_and_lock')
  overall={(p['arm'],p['view']):p for p in m if p['dimension']=='all'}
  fig,axes=plt.subplots(2,2,figsize=(13,8))
  for arm,mark in zip(arms,('o','s')):

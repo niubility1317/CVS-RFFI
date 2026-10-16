@@ -1,0 +1,234 @@
+{
+  "physics": {
+    "all": {
+      "quality_snr_db": {
+        "min": -15.132312572246018,
+        "median": 6.923562779997162,
+        "mean": 10.85211720842119,
+        "max": 29.092045401185267
+      },
+      "signal_to_added_noise_db": {
+        "min": -15.1736098587007,
+        "median": 7.021935398562741,
+        "mean": 10.885955194437905,
+        "max": 29.37079549226761
+      },
+      "output_frequency_hz": {
+        "min": -1616.8219500271298,
+        "median": -2.769440004503849,
+        "mean": 1.3235761636593077,
+        "max": 2113.446972421574
+      },
+      "residual_kernel_energy": {
+        "min": 3.067388201623006e-05,
+        "median": 0.004924435298492165,
+        "mean": 0.09318379997820404,
+        "max": 0.8113430869720566
+      },
+      "residual_kernel_length": {
+        "min": 62,
+        "median": 62.0,
+        "mean": 62,
+        "max": 62
+      },
+      "numerical_filter_latency_samples": {
+        "min": 24,
+        "median": 24.0,
+        "mean": 24,
+        "max": 24
+      },
+      "agc_gain_db": {
+        "min": 0.9461662216301014,
+        "median": 22.227793736617315,
+        "mean": 17.7969354366992,
+        "max": 29.939555707667406
+      },
+      "measured_added_noise_power_pre_agc": {
+        "min": 0.0007509108116902438,
+        "median": 0.0009967596445802228,
+        "mean": 0.0009987717716984327,
+        "max": 0.0012561872042840085
+      },
+      "added_noise_variance_reference": {
+        "min": 0.001,
+        "median": 0.001,
+        "mean": 0.001,
+        "max": 0.001
+      },
+      "count": 5040,
+      "agc_limited": 0,
+      "phase_tracking_applied": 2900,
+      "iq_compensation_applied": 5040,
+      "noise_SNR_minus_quality": 0.03383798601671529
+    },
+    "BLOCKED": {
+      "quality_snr_db": {
+        "min": -15.132312572246018,
+        "median": 2.2426687807714094,
+        "mean": 2.1285455068194006,
+        "max": 12.49256572055321
+      },
+      "signal_to_added_noise_db": {
+        "min": -15.1736098587007,
+        "median": 2.241317846652878,
+        "mean": 2.150706156654035,
+        "max": 12.20441124052214
+      },
+      "output_frequency_hz": {
+        "min": -1616.8219500271298,
+        "median": 3.7463732032629196,
+        "mean": 3.523450359206105,
+        "max": 2113.446972421574
+      },
+      "residual_kernel_energy": {
+        "min": 3.067388201623006e-05,
+        "median": 0.0016759724606180317,
+        "mean": 0.002237533872710993,
+        "max": 0.01775237944434131
+      },
+      "residual_kernel_length": {
+        "min": 62,
+        "median": 62,
+        "mean": 62,
+        "max": 62
+      },
+      "numerical_filter_latency_samples": {
+        "min": 24,
+        "median": 24,
+        "mean": 24,
+        "max": 24
+      },
+      "agc_gain_db": {
+        "min": 17.48626460878169,
+        "median": 25.722998255351605,
+        "mean": 25.46616903448789,
+        "max": 29.939555707667406
+      },
+      "measured_added_noise_power_pre_agc": {
+        "min": 0.0007777684383808415,
+        "median": 0.0009979699640602657,
+        "mean": 0.000999787659106032,
+        "max": 0.0012561872042840085
+      },
+      "added_noise_variance_reference": {
+        "min": 0.001,
+        "median": 0.001,
+        "mean": 0.001,
+        "max": 0.001
+      },
+      "count": 2739,
+      "agc_limited": 0,
+      "phase_tracking_applied": 602,
+      "iq_compensation_applied": 2739,
+      "noise_SNR_minus_quality": 0.022160649834634442
+    },
+    "unlocked": {
+      "quality_snr_db": {
+        "min": -15.132312572246018,
+        "median": 1.25490295509469,
+        "mean": 0.8120359909621171,
+        "max": 4.997938718978413
+      },
+      "signal_to_added_noise_db": {
+        "min": -15.1736098587007,
+        "median": 1.2906088883322173,
+        "mean": 0.8391490793031432,
+        "max": 6.236121379623034
+      },
+      "output_frequency_hz": {
+        "min": -1616.8219500271298,
+        "median": 4.0924747687531635,
+        "mean": 6.440785157438324,
+        "max": 2113.446972421574
+      },
+      "residual_kernel_energy": {
+        "min": 3.067388201623006e-05,
+        "median": 0.0013350279459028828,
+        "mean": 0.0014326318107254824,
+        "max": 0.003160777112371951
+      },
+      "residual_kernel_length": {
+        "min": 62,
+        "median": 62.0,
+        "mean": 62,
+        "max": 62
+      },
+      "numerical_filter_latency_samples": {
+        "min": 24,
+        "median": 24.0,
+        "mean": 24,
+        "max": 24
+      },
+      "agc_gain_db": {
+        "min": 23.112410894361663,
+        "median": 26.32933232973991,
+        "mean": 26.344753508024276,
+        "max": 29.939555707667406
+      },
+      "measured_added_noise_power_pre_agc": {
+        "min": 0.0007777684383808415,
+        "median": 0.0009977069916919218,
+        "mean": 0.0009991510723405365,
+        "max": 0.0012561872042840085
+      },
+      "added_noise_variance_reference": {
+        "min": 0.001,
+        "median": 0.001,
+        "mean": 0.001,
+        "max": 0.001
+      },
+      "count": 2140,
+      "agc_limited": 0,
+      "phase_tracking_applied": 0,
+      "iq_compensation_applied": 2140,
+      "noise_SNR_minus_quality": 0.027113088341026065
+    }
+  },
+  "control_vs_full": {
+    "RAW10": {
+      "all": {
+        "repairs": 680,
+        "breaks": 349,
+        "net": 331
+      },
+      "BLOCKED": {
+        "repairs": 500,
+        "breaks": 273,
+        "net": 227
+      },
+      "unlocked": {
+        "repairs": 405,
+        "breaks": 228,
+        "net": 177
+      }
+    },
+    "ANTI": {
+      "all": {
+        "repairs": 675,
+        "breaks": 306,
+        "net": 369
+      },
+      "BLOCKED": {
+        "repairs": 600,
+        "breaks": 280,
+        "net": 320
+      },
+      "unlocked": {
+        "repairs": 491,
+        "breaks": 222,
+        "net": 269
+      }
+    }
+  },
+  "white_proxy_vs_waveform": {
+    "mean_actual_minus_proxy_db": 0.03383798601671529,
+    "min_actual_minus_proxy_db": -4.981134477063888,
+    "max_actual_minus_proxy_db": 2.4081964727012135,
+    "threshold_category_differs": 122,
+    "unlocked_actual_atleast5": 46,
+    "original_states_unchanged": true,
+    "not_total_SNR": true
+  },
+  "new_NN": 0,
+  "source_only": true
+}
