@@ -1,0 +1,40 @@
+{
+  "scalars": {
+    "status": "PASS",
+    "analytic_gradient_pairs": 4,
+    "scalar_negatives": 4,
+    "all_replica_rule_checks": 3,
+    "IQ_reads": 0,
+    "NN": 0,
+    "updates": 0
+  },
+  "model": {
+    "status": "PASS",
+    "synthetic_model_packets": 48,
+    "real_IQ_reads": 0,
+    "checkpoint_loads": 0,
+    "optimizer_updates": 0,
+    "protocol_negatives": 10,
+    "default_head_SIG3_Sinc_gradients": true,
+    "physical_Sinc_oracle": true,
+    "same_secondary_RNG_and_gradients": true,
+    "parameters_buffers_unchanged": true
+  },
+  "serialization": {
+    "status": "PASS",
+    "portable_config_roundtrip": true,
+    "tuple_JSON_equivalence": true,
+    "actual_value_difference_rejected": true
+  },
+  "reference_metadata": {
+    "status": "PASS",
+    "verified": [
+      "C0",
+      "C1"
+    ],
+    "provenance_negatives": 6,
+    "IQ_reads": 0,
+    "CP_loads": 0,
+    "NN": 0
+  }
+}

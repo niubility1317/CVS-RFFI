@@ -1,0 +1,257 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01",
+  "group_id": "diagnostic-FcrossRX-cleanAs-gradient-interference",
+  "display_name": "F＋跨RX：冻结默认头clean-As梯度关系源诊断",
+  "description": "冻结当前匹配C0/C1 final20，fitL5040两命名流，完整As与同ordinary重复控制，0更新；物理Hz Sinc梯度几何不冒称Adam运动或身份增益。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-gradient",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "F_SIG_TIME_X3",
+    "CENTER_UNITS",
+    "CROSS_RX_SUPCON",
+    "gradient_interference",
+    "source_only",
+    "default_head",
+    "single_seed"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active Ag+As goal authorizes frozen-defaulthead legal source mechanism diagnosis;not additiveAs duplicate,not closedlocalatten/shift/ratio rescue,0newtraining or target.",
+  "code": {
+    "commit": "CURRENT_RELEASE_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cleanAs_gradients_sourcefit_20261016_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "Reused VALIDATED_ONCE source carrier392005; no received IQ/physical split change",
+    "representation": "equalized1/25MHz/IQ256/native source packetRMS; original residual simulator input unitRMS and original AGC",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/preparation_complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "Original unchanged full3 training nominal practical scenes,one draw/packet/rep,EQoff G1;0targetreceivedIQ changes",
+    "effective_counts": {
+      "L_s_values": 5040,
+      "U_s_values": 0,
+      "V_values": 0
+    },
+    "source_holdout_RX": 1,
+    "full_source_reference_counts": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "source_receiver_note": "Only exact C0/C1 fit3/4/6/8 L values/labels;heldRX1 IQ excluded. Existing source cache also deserializes unused sourceV and old features;those values not consumed. No U cache."
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "None: no target IQ/prediction/truth or loader",
+    "external_method_exception": null,
+    "claim_scope": "Source fitL gradient geometry and descriptive defaulthead decisions only;not Ag/As efficacy,AdamW influence,formal target,unseenRX or crossseed"
+  },
+  "checkpoint": {
+    "initialization": "frozen_existing_C0_C1_defaultheads",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C1-RX1-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "design.verify_reference and exact same fitL5040/U45360/V21600 IDs;originalcarrier VALIDATED_ONCE reused",
+    "provenance_verdict": "Both scratch final20 with no parents/target/headfit;strict full-state load;no new training or teacher. SourceIQ-only cache excludes consumption of old parent features.",
+    "selection_rule": "Existing final20 identity only;no new selection or updates"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/FcrossRX-cleanAs-gradients-20261016",
+    "gpu_policy": "One frozen-gradient worker;allowners<=3/GPU and>=12000MiB free under commoncapacity lock;CPU2",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_FcrossRX_gradient_interference_20261016",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cleanAs_gradients_sourcefit_20261016_r01/experiments/cvs_f_gradient_interference/runner.py",
+    "stop_rule": "Only own protocol/provenance/nonfinite/parameterbufferchange/budget/output/unlaunchable technical failure;preserve/noauto retry/noforeignstop. Scientific rule closes rationale without layer/RX/rep/threshold rescue;noautomatic training."
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "checkpoint_noquery_smoke.json",
+    "observation_audit.json",
+    "observations.jsonl.gz",
+    "gradients.jsonl.gz",
+    "predictions.jsonl.gz",
+    "summary.json",
+    "completion.json",
+    "independent scalar/prediction/full-log analysis and figures"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "physical-coordinate group/whole gradient norm/cosine/dot",
+      "As and matchedclean opposed fractions",
+      "fixed twoCP/twostream evidence rule",
+      "fitL defaulthead descriptive accuracy/macroF1/margin30 byTX/RX/day/scene/state/lock",
+      "wholemodel immutability",
+      "NN/views/wall costs"
+    ],
+    "dimensions": [
+      "C0/C1 existing final20",
+      "fitL5040 sourceRX3/4/6/8",
+      "two observation streams not model seeds",
+      "sameordinary/As",
+      "whole and fixed5parameter groups"
+    ],
+    "prediction_ref": "60480 saved fitL decisions from unchangeddefaulthead,eachaveragedsameIQpairedlogits;no V/target",
+    "scorer_ref": "Independent saved scalar/visibleL prediction reader,0model/targettruth",
+    "primary": "Only consider separately registered training-organization experiment if BOTH checkpoints and BOTH replicate streams have median full-model As/primary norm ratio>1 and As primary-opposed fraction >= matched-control fraction+.20. Otherwise abandon gradient-dominance rationale; no group/RX/rep/threshold rescue."
+  },
+  "rows": [
+    {
+      "row_id": "frozen-C0-C1-fitL5040",
+      "method": "frozen_F_CROSS_RX_clean_As_gradient_geometry",
+      "purpose": "legal_source_mechanism_diagnosis_no_updates",
+      "config_ref": "experiments/cvs_f_gradient_interference/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01/frozen-C0-C1-fitL5040/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261017202,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Same modelseed2026092701 checkpoints withfixed data392005;distinct named order/ordinary/dropout/channel seeds in config;2observation replicates are not independent modelseeds.",
+      "k": null,
+      "scenario": "fitL5040 ordinary andoriginalnominal3 As,2namedreplicates",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newtraining;2existingE20/8880historicalupdates separate;120964NN+60480decisions incl4zero smoke,0optimizer/EMA/headfit",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01/frozen-C0-C1-fitL5040",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01/logs/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cleanAs_gradients_sourcefit_20261016_r01/experiments/cvs_f_gradient_interference/runner.py --worker",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "checkpoint_noquery_smoke.json",
+        "observation_audit.json",
+        "observations.jsonl.gz",
+        "gradients.jsonl.gz",
+        "predictions.jsonl.gz",
+        "summary.json",
+        "completion.json",
+        "independent scalar/prediction/full-log analysis and figures"
+      ],
+      "config": {
+        "schema": "FcrossRX_cleanAs_gradient_diagnostic_v1",
+        "run_id": "20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01",
+        "launch_owner": "codex/root/FcrossRX-cleanAs-gradients-20261016",
+        "row_id": "frozen-C0-C1-fitL5040",
+        "arm": "gradient_interference",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01/frozen-C0-C1-fitL5040",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "references": {
+          "C0": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source",
+          "C1": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C1-RX1-s2026092701/source"
+        },
+        "model_seed": 2026092701,
+        "source_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "held_RX1_used": false,
+        "source_L_count": 5040,
+        "source_TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "batch_size": 128,
+        "replicates": [
+          0,
+          1
+        ],
+        "seeds": {
+          "order": 20261017201,
+          "ordinary": 20261017202,
+          "dropout_primary": 20261017203,
+          "dropout_secondary": 20261017204,
+          "channel": 20261017205,
+          "receiver": 20261016423
+        },
+        "network": "Unchanged F+CROSS_RX/NoExplicitCFO/joint160/defaultcos30; two existing exact current source-fold E20 checkpoints",
+        "ordinary": "Actual shared native base config and E13-capped configure_augmentor_for_epoch at E20,one draw per batch/rep; reused across models",
+        "channel": "Original full practical residual/post_sync/EQoff G1/25MHz/reference30/reflect; nominal3 training scenes only,one draw per L/rep; no state rejection",
+        "losses": "Native RD(alpha1,LS.01),original shallow/mid SupCon(.1,first clean pair only); all visible L use true TX; no added training loss or optimizer",
+        "gradients": "Primary=.5*d(RD_ordinary)+.1*d(SupCon); secondary=.5*d(RD_sameordinary) control or .5*d(RD_As). PhysicalHz Sinc gradient=g_q/25000. Group and whole dot-products.",
+        "stochastic_control": "same primary/dropout-secondary streams across C0,C1 and secondary control/As; order independent of labels; all5040 included,final48 retained",
+        "diagnostic_boundary": "FitL only; gradient dot products are Euclidean first-order geometry,not actual AdamW motion or unseen-domain accuracy; no positive result licenses promotion",
+        "intervention_rule": "Only consider separately registered training-organization experiment if BOTH checkpoints and BOTH replicate streams have median full-model As/primary norm ratio>1 and As primary-opposed fraction >= matched-control fraction+.20. Otherwise abandon gradient-dominance rationale; no group/RX/rep/threshold rescue.",
+        "frozen_parameters": true,
+        "no_BatchNorm_required": true,
+        "state_unchanged_required": true,
+        "U_values_used": false,
+        "V_values_used": false,
+        "target_access": false,
+        "checkpoint_loads": 2,
+        "new_trained_models": 0,
+        "model_epochs": 0,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "EMA_updates": 0,
+        "expected_model_packets": 120964,
+        "expected_decisions": 60480,
+        "source_only": true,
+        "automatic_training": false,
+        "goal_completed": false
+      }
+    }
+  ],
+  "notes": [
+    "No BN or runningstatistics in actual F;GroupNorm/LayerNorm,900722params verified with0IQ/NN/CP.",
+    "SourcephysicalIDs explicit existingopaquehandles,neverdecodedtoTX;session RX/day/eq only;ordinaryclasssignaturefalse/DAC0/nativePA retained.",
+    "SupCon/CE/RDrop are only evaluated as original objectives,no optimizer or newlossmodule. Sincgradientdiv25000matchesexistingphysicalclip convention.",
+    "All5040included,last48batchretained;both40batchfrequencies unweighted and explicitlybatch-level;no confidence/recoverabilitygate.",
+    "Any positive geometry onlysupports separate trainingresearch,not efficacy or promotion. No interactionmatrix,targetorcrossseedresults yet.",
+    "REJECTED_EXTRA_GATE:generic independent designapproval outside projectminimal workflow;one limitedP0P1 only."
+  ]
+}
