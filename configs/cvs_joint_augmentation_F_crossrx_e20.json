@@ -132,7 +132,7 @@
   },
   "next_source_hypothesis": {
     "name": "Bounded smooth spectral observation filter:finite-IQ fidelity and source identity preservation",
-    "status": "PROPOSED_NOT_IMPLEMENTED_REGISTERED_OR_LAUNCHED",
+    "status": "REGISTERED_NOT_LAUNCHED",
     "basis": "Existing IQ-only 20261011-phase1-rx-spectral-crossfit-manysig-m1-r01 primary rectangular/DCT1to8 report relativeMSE0.6141 and18/18folds;partialRX-associated source variation,not calibrated RX hardware or Ag proof",
     "data": "Re-estimate on fitRX3/4/6/8 L5040 only;no reuse of fullL6300 coefficients including heldRX1,no U/V/target",
     "minimum": "Zero-update18TX/day crossfit plus one fixed mild finite-length IQ filter realization;match unstructured control,quantify achieved spectral shape/boundary/default-head fit-L identity preservation;no new classifier",
@@ -140,7 +140,12 @@
     "budget": "0training/0headfit;exact transform/controls/numeric thresholds/NN cost must be fixed in its own preregistration before IQ access",
     "Ag_efficacy_proved": false,
     "target_access": false,
-    "old_budget_not_adopted": "Historical E200+40 proposal is obsolete;any later real training remains scratchE20 under current baseline/data contract"
+    "old_budget_not_adopted": "Historical E200+40 proposal is obsolete;any later real training remains scratchE20 under current baseline/data contract",
+    "run_id": "20261016-diagnostic-F-crossRX-spectralIQ-fitL-s2026092701-m1-r01",
+    "filter_taps": 33,
+    "response_grid_bound_dB": 0.5,
+    "source_NN_packets": 126000,
+    "training_updates": 0
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",

@@ -55,3 +55,6 @@ seed02两行均自然完成E20/4440更新与全部七视图，独立重算VERIFI
 
 
 相位E20源run现已ANALYZED/VERIFIED：两行完整20epoch/4440更新及七视图，全部17640决策/完整step/相位角/物理序列独立核对。clean差-3.9682539682539653pp，clean F1差-4.4209738408452885pp，seenV差-0.07407407407407085pp，原源条件FAIL，固定相位配方关闭，无角度/seed/RX救跑。仅源证据，尚未证明Ag目标泛化或联合目标；实际总NN包前向9373358。
+
+
+频谱IQ可实现性候选已实现并登记 `20261016-diagnostic-F-crossRX-spectralIQ-fitL-s2026092701-m1-r01`：fit4RX L5040重估固定rectangular/DCT1to8，33tap/.5dB、6RX对双向与匹配control共25视图；126002NN包前向/0更新，不读held/U/V/target，不复用旧fullL系数。9个算子/权限负例和5个门槛负例PASS、一次独立P0/P1审查PASS。原阈值失败即关闭固定滤波，尚未启动或取得真实源身份结果。

@@ -1,0 +1,166 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-diagnostic-F-crossRX-spectralIQ-fitL-s2026092701-m1-r01",
+  "group_id": "phase1-F-CROSS_RX-spectral-IQ-Ag-As",
+  "display_name": "F＋跨RX同TX：有界平滑频谱IQ实现与身份保护",
+  "description": "Fit4RX L5040 only,18TX/day crossfit plus33tap .5dB structured/control FIR;own frozen defaulthead,25views/126000source decisions/0updates.",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "F CROSS_RX spectral IQ feasibility"
+  ],
+  "tags": [
+    "F",
+    "CROSS_RX",
+    "spectral_IQ",
+    "source_only",
+    "frozen_default_head",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research after fixed commonphase training failed and closed. Historical fixed spectral source observation supports next IQ-realization question;re-estimate fit4RX only,no fullL coefficients/held/U/V/target. Zero-update probe,not training extension.",
+  "code": {
+    "commit": "Actual Git commit in release_commit.txt/resolved_config",
+    "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
+    "environment": "ordinary N607 CVS-RFFI; CPU2/loader0",
+    "cwd": "PROJECT/releases/cvs_F_crossRX_spectralIQ_fitL_20261016_r01",
+    "entrypoint": "experiments/cvs_spectral_iq16/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated source carrier;only exact fourRX model-fit L5040 used",
+    "representation": "NativeIQ256;fixed33tap complex-linear reflectFIR,preRMS gridbound.5dB,explicit packetRMS restore. Circular reference diagnostic never model input",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Existing source cache originalL6300 filteredbeforeIQstats/inference;fitIDs exactly frozenmodelL5040",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "FitRX3/4/6/8 L5040 only;72cells70each",
+      "U_s": "Unused,truth hidden",
+      "V": "Unused;heldRX1 originalL1260 also unused"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Fit-source finite-IQ fidelity and frozen default-head identity preservation;not clean DG/Ag efficacy/As/joint success"
+  },
+  "checkpoint": {
+    "initialization": "frozen_evaluation_no_training",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse verified own scratch20/final20/fourRX source provenance and loader,strict model load before any realIQ",
+    "provenance_verdict": "Own scratch E20/fixedfinal20,source-only/no ancestors/defaulthead joint;does not initialize new training",
+    "selection_rule": "Predetermined B00/seed2026092701/final20;not target-selected"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-CROSS_RX-spectralIQ-20261016",
+    "gpu_policy": "CPU2threads,CUDA_VISIBLE_DEVICES empty,no GPU slot or healthy intervention",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-spectralIQ-fitL-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_crossRX_spectralIQ_fitL_20261016_r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261016-diagnostic-F-crossRX-spectralIQ-fitL-s2026092701-m1-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_spectral_iq16/runner.py",
+    "stop_rule": "Role/CP/nonfinite/output/frozen-state/cost failure:preserve,no automatic retry. ScientificFAIL closes fixedfilter/no bound/kernel/control/seed/RX rescue or training. All25views reported regardless statistical scientific outcome."
+  },
+  "expected_artifacts": [
+    "Matching realCP smoke2synthetic",
+    "resolved/fitIDs/active/progress private",
+    "Fit-only DCT8 observations/18fold statistics private",
+    "24matched kernel banks/response targets private",
+    "25complete default-head predictions and logits private",
+    "Fullview sufficient-statistic fidelity/edge/RMS records private",
+    "Fullstdout/completion or failure",
+    "Independent allscore/CE/strata/kernel/statistic/threshold recount and same-row report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "crossfitrelativeMSE/foldcount/controlSSE",
+      "kernel responseRMSE/gridbound/energy match",
+      "finitePSDrelativeRMSE/boundary fraction/interiorerror/RMS",
+      "accuracy/macroF1/CM/CE/RX-TX-day",
+      "actual NN and DSP cost"
+    ],
+    "dimensions": [
+      "fitL5040",
+      "18TX/dayfolds",
+      "raw+6RXpairs×2signs×structured/control=25views"
+    ],
+    "prediction_ref": "Own fit-source predictions/*.json,visibleLtruth only",
+    "scorer_ref": "Independent full source prediction/logit/sufficient-statistic recount,no target scorer"
+  },
+  "rows": [
+    {
+      "row_id": "SPECTRAL-IQ-fitL-s2026092701",
+      "method": "F+CROSS_RX frozen spectral-IQ feasibility",
+      "purpose": "zero_update_source_falsification",
+      "config_ref": "experiments/cvs_spectral_iq16/design.py:config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-spectralIQ-fitL-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen own modelseed01/split392005;all25views deterministic,controlDCT signs fixed;smoke synthetic generator20261016302 only",
+      "k": null,
+      "scenario": "Fit source raw+24FIR views,no satellite",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0updates/headfit/teacher/As;126000sourceNN+2smoke;120960finiteFIR+120960circularoracle DSP;oldparentE20/4440updates/4686678NN separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-spectralIQ-fitL-s2026092701-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_crossRX_spectralIQ_fitL_20261016_r01/spectral_source.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_spectral_iq16/runner.py",
+      "expected_artifacts": [
+        "Matching realCP smoke2synthetic",
+        "resolved/fitIDs/active/progress private",
+        "Fit-only DCT8 observations/18fold statistics private",
+        "24matched kernel banks/response targets private",
+        "25complete default-head predictions and logits private",
+        "Fullview sufficient-statistic fidelity/edge/RMS records private",
+        "Fullstdout/completion or failure",
+        "Independent allscore/CE/strata/kernel/statistic/threshold recount and same-row report"
+      ]
+    }
+  ],
+  "notes": [
+    "Only fitted-source L5040;no hiddenU/V/heldRX1/target operations. Existing cache can deserialize other source roles/features;onlyfiltered L IQ used. No fullL6300 coefficient reused.",
+    "Fixed historical primary rectangular/DCT1to8 re-estimated on4RX.18folds excludeTX ANDday. TX/day labels only stratifyfit;global fixedkernel application hasno label/RX/day input.",
+    "All6RXpairs,bothsigns,structured/control+raw reported,no bestfilter selection. Complexlinear FIR/no conjugation/PA/CFO/noise/multipath/roll/crop;actualresponse4096grid<=.5dB before RMS;postRMS shape bound peak-to-peak1dB,restore gain recorded.",
+    "ControlDCT sign scramble matches per-mode energy beforefinite design;postFIR perturbationenergy exactlymatched,commonattenuation capsactualresponse. Circular convolution usedonly fidelityoracle,never classifier input.",
+    "Fixed crossfitMSE<1,>=15/18folds,betterthansigncontrol;kernel andfinitePSDrelativeRMSE<=.35,boundaryfraction<=.25,interiorMSE<=1e-10,RMSerror<=1e-6;structured eachviewaccuracy loss<=.5pp andeachRX/TX/day<=1pp. Anyfailclose,no rescue or automatictraining.",
+    "RealCP smoke fromown F+CROSS_RXB00/final20 strictloader first;NoExplicitCFO/internalcompensation/defaultcos/joint160/SIG_TIME unchanged,modelstate unchanged,0headfit.",
+    "PASS onlymotivates separate matchedscratchE20,not Ag efficacy/finaljointproof;oldE200+40suggestion obsolete."
+  ],
+  "registered_at": "2026-10-16T08:12:59+00:00"
+}

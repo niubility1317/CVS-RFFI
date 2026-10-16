@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "negative_cases": 9,
+  "additive_RX_recovered": true,
+  "excluded_TX_AND_day_not_fitted": true,
+  "interaction_counterexample_rejected": true,
+  "complex_linear_centered_convolution_matches_circular_interior": true,
+  "structured_control_kernel_perturbation_energy_matched": true,
+  "max_grid_abs_dB": 0.500000000000002,
+  "max_kernel_relative_RMSE_synthetic": 0.26475310555439985,
+  "max_interior_relative_MSE": 1.6640076736482933e-31,
+  "max_RMS_relative_error": 1.3161248344521556e-08,
+  "identity_kernel_exact": true,
+  "source_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "model_forwards": 0,
+  "optimizer_updates": 0,
+  "synthetic_filter_packets": 400,
+  "synthetic_oracle_packets": 400
+}
