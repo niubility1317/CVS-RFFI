@@ -147,3 +147,6 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 上述三组additive As源反证已发布并实际运行；执行commit 05984a1229ebac7025a95081dc5fae4108276b28，Git远端OID/归档/编译/真实CPsmoke及三worker进程、参数、GPU和日志增长VERIFIED。各组固定20/13/7、4440更新、8L前向/保留原base raw.75；尚未完成训练、源预测或独立评分。
+
+
+首种子固定预测补算：首种子的 low urban 在双方 clean 都正确的 982 个样本中修复 188／新错 70，净增 118 个；其他三组净减 46 个，总体净增 72 个（+5.714286 个百分点）。因此，这个源折上的 practical 收益并非只伴随 clean 新修复样本增加；它仍包含明显错误转移，不能推断各 TX 普遍受益或传播因果机制。 0 新 IQ／前向／更新；当前唯一下一假设仍为已运行的 seed02 固定确认，不新增判据。完整分解见该 run 的 error_transitions.md/json。
