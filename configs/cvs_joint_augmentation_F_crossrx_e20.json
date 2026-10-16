@@ -132,7 +132,7 @@
   },
   "next_source_hypothesis": {
     "name": "Same-draw ordinary circular-shift bypass improves heldRX clean under scratchE20 F+CROSS_RX",
-    "status": "REGISTERED_NOT_LAUNCHED",
+    "status": "RUNNING_SOURCE_E20_NO_RESULT_YET",
     "minimum": "Fixed sourceRX1 fold,seed01,scratchE20 matched B00/shiftbypass,6Lforwards,raw.5/oldordinary.25/slotraw.25,originalU/PA/SupCon;actual native shift draws preserved",
     "criteria": {
       "primary": "B10",
@@ -161,7 +161,8 @@
     "source_only": true,
     "target_access": false,
     "Ag_efficacy_proved": false,
-    "run_id": "20261016-phase1-F-crossRX-shiftbypass-sourceRX1-e20-s2026092701-m2-r01"
+    "run_id": "20261016-phase1-F-crossRX-shiftbypass-sourceRX1-e20-s2026092701-m2-r01",
+    "execution_commit": "5476e2238d6d43408227decf916f7177a02f2129"
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",

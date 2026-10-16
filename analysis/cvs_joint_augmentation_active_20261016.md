@@ -120,3 +120,6 @@ PA旁路两组E20及七源视图已完整ANALYZED/VERIFIED，原条件FAIL固定
 
 
 已实现登记shift-bypass E20 `20261016-phase1-F-crossRX-shiftbypass-sourceRX1-e20-s2026092701-m2-r01`，固定RX1/seed01两组scratchE20、六L前向/原U/PA保持、自动源七视图；17负例/2312合成NN/2合成更新验证PASS，一次P0/P1review PASS，尚未启动。旧增强修正不冒称新Ag，完整联合目标保留。
+
+
+上述普通循环移位旁路B00/B10已实际发布并运行，执行commit `5476e2238d6d43408227decf916f7177a02f2129`；archive/compile/真实CPsmoke/两worker PID-CWD-argv-GPU及日志增长VERIFIED。实际seed2026092701、20/13/7和无训练父权重均核对；当前未完成训练/源预测/独立评分，不能称Ag有效。

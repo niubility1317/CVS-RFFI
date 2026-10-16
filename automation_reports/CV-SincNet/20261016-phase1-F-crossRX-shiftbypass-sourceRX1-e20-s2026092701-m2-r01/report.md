@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：旧循环移位旁路的匹配 E20 源域消融
 
-状态：PLANNED，未启动。唯一假设：在所有训练成本与原始监督份额匹配时，只旁路旧普通 IQ 循环移位能提升未见源 RX clean，同时保护六个 practical。这是旧普通配方修正，不是新的时延增强，也不是已成立的 A_g。
+状态：RUNNING／VERIFIED。两组已从零启动，尚未完成训练或源评分。唯一假设：在所有训练成本与原始监督份额匹配时，只旁路旧普通 IQ 循环移位能提升未见源 RX clean，同时保护六个 practical。这是旧普通配方修正，不是新的时延增强，也不是已成立的 A_g。
 
 前项冻结源fit诊断已完整复算：3946个非零shift观测，150修复/16新错、净恢复+3.395844pp；全65520增强观测+0.204518pp，4个fitRX均为正。其模型已经见过fitL，不能由此推断训练后的跨RX收益。历史PA旁路曾有更大fit恢复却未转成E20 clean收益，本次仍须训练反证；微频移、常增益、PA旁路及分数时延的固定失败配方不救跑。
 
@@ -36,3 +36,16 @@
 已完成一次P0/P1审查PASS；本地normal输出、两arm CPU随机末状态、B00旧损失/头梯度逐位相同、B10独立same-draw control、6forward/sameIQ/默认头更新和export160验证PASS。一次N607 preflight，单release归档本远端SHA对比、remote compile；dispatcher第一步真实CP无query smoke，PASS立即继续。启动后独立PID/CWD/argv/GPU/log增长核实。协议/初始化/预算/输出碰撞/系统非有限或无法产生合法prediction属技术失败，保存partial并取消pending，健康worker自然完成，无自动重试；负分不停止、重启或改配方。
 
 保存每row实际args/resolved/roles/init/frozen、私有checkpoint、完整stdout与20epoch日志、全部4440步native/view/Sincunit/shift轨迹和L/U物理序列、固定七视图prediction、result/completion或failure。训练后独立复算全部轨迹和17640源预测，给训练曲线/分层图/全部负结果；IQ、权重、逐包轨迹和日志不入Git，小型报告汇总入Git并推送。
+
+
+## 实际发布与启动读回
+
+执行commit `5476e2238d6d43408227decf916f7177a02f2129`，本地固定提交已核实；首次GitHub连接失败已恢复，使用系统既有代理完成push，远端分支OID独立读回与执行commit一致。归档单次比对、远端编译、匹配真实CP smoke PASS；dispatcher和两worker的PID/CWD/argv/GPU及日志增长VERIFIED。两行实际seed均2026092701，epochs/label/pseudo=20/13/7，source fold RX1，无baseline/teacher权重，实际shift旁路/Ag/As标志与登记一致。
+
+- B00-RX1-s2026092701：GPU0，已观察完整step250/4440、E2/20；stdout11683字节。此为运行进度，不是最终性能。
+- B10-RX1-s2026092701：GPU1，已观察完整step217/4440、E1/20；stdout6516字节。此为运行进度，不是最终性能。
+
+独立全量分析程序已准备并编译，只有全部声明预测完成后才执行。不修改已发布训练代码，不重复提交同run，不基于中间或目标分数改变配方。联合目标仍未完成。
+
+
+本地调用环境问题在正式发布前解决：直接使用原生 Windows PowerShell 5.1和可运行的既有SSH客户端，补齐当前子进程缺失的标准环境；未修改系统配置。此前失败均发生在本地连接检查或GitHub访问层，没有远端训练提交、CP前向或重启。实际release只提交一次，训练配置和代码5476e2238保持固定。最近独立读回两worker均进入E4，前3轮各666步的shift gate/非零计数一致；此为运行核验，尚无完整源七视图结论。
