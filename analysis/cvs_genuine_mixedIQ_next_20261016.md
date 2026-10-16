@@ -66,3 +66,11 @@ OJ24 已在实际代码 `f601fc65f6eaafbfd98080882108f4d50e07db69` 启动，运�
 实际代码8235c71cc已发布，C0/C1在N607 GPU2/3 verified running；own scratchCP smoke、PID/CWD/argv/log增长、真实F/默认头更新及As调用核对通过。当前仅源域RX1检验，完整source基线、正式clean+6practical及跨seed尚未运行。离线读取工具增加SupCon贡献核对与完整状态分层，未修改运行release。
 
 C0已完成E20及七源视图、默认头独立复算：held RX1 clean83.444444%、low urban25.685185%；完整4440日志／3330活跃SupCon、0U真值／跳步／错误。真实网络包3579018。C1仍运行，尚无配对收益或正式target结果；这是新F+CROSS_RX的实际单源折基线，不和不同信道流的旧F直接配对。
+
+## F＋跨RX首轮paired-As实际结果
+
+20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01 已完成40模型轮／8880更新和全部七源视图，源规则 PASS；urban均值 17.746913580246915、low 12.722222222222223、urban宏F1 21.616060692881106 个百分点，clean损失 -2.722222222222226 个百分点。单源RX1／单seed／0target；不等于正式或跨seed收益。完整日志、全部5994L/U顺序、实际F clip／默认头、训练覆盖和同流prediction已独立核对。[实际报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/report.md)。
+
+只支持另登记源确认，不自动扩target或宣称Ag有效。 真正Ag/As四格及其交互尚未执行，联合目标保持active。
+
+下一项源确认的固定问题：保持当前F+CROSS_RX／E20／pairedAs配方不变，在held RX3/4/6/8各新C0/C1确认，并复用RX1结果。逐折沿用同一通过条件，任一源折失败不声称稳定跨RX，不换失败折或seed救援。该八row矩阵目前尚未发布；后续独立Ag和四格交互仍未证明。当前主要收益在LOS/PARTIAL/locked，BLOCKED/unlocked改善较小，lowurban TX2下降20.5556pp必须保留。

@@ -57,8 +57,10 @@ def packet_key(v):return tuple(v[k] for k in KEYS)
 def bucket(x,edges):
     if x is None:return 'undefined'
     if not math.isfinite(x):raise ValueError('Nonfinite serialized source metadata')
+    previous=None
     for edge in edges:
-        if x<edge:return '<'+str(edge)
+        if x<edge:return '<'+str(edge) if previous is None else f'[{previous},{edge})'
+        previous=edge
     return '>='+str(edges[-1])
 def groups(v):
     p=v.get('physics',{})
@@ -191,6 +193,10 @@ def plot(output,table,strata,curves,logs,fusion):
     fig,axes=plt.subplots(2,3,figsize=(14,7),constrained_layout=True)
     for ax,dim in zip(axes.flat,('state_end','receiver_lock_status','quality_snr_db','signal_to_added_noise_db','TX','day')):
         rr=[v for v in strata if v['scene']=='practical_low_urban' and v['dimension']==dim];values=list(dict.fromkeys(v['value'] for v in rr))
+        if dim=='state_end':values=[v for v in ('LOS','PARTIAL','BLOCKED') if v in values]
+        elif dim=='receiver_lock_status':values=[v for v in ('locked','degraded','unlocked') if v in values]
+        elif dim in ('quality_snr_db','signal_to_added_noise_db'):
+            edges=(-10,0,10,20,30);order=[bucket(edges[0]-1,edges)]+[bucket(e,edges) for e in edges]+['undefined'];values=[v for v in order if v in values]
         for arm in ('C0','C1'):
             lookup={v['value']:v for v in rr if v['arm']==arm};ax.plot(values,[100*lookup[v]['accuracy'] if v in lookup else np.nan for v in values],marker='o',label=arm)
         ax.set(xlabel=dim,ylabel='Low urban source accuracy (%)');ax.tick_params(axis='x',rotation=25);ax.legend()

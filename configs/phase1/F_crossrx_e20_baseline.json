@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v1",
-  "status": "SOURCE_PAIR_RUNNING",
+  "status": "SOURCE_PAIR_ANALYZED",
   "authorization": "User changed the pre-augmentation baseline to F plus cross-RX same-TX contrastive learning on 2026-10-16; existing E20 budget remains in force.",
   "baseline_name": "F+CROSS_RX_SUPCON",
   "existing_mechanism_source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
@@ -106,18 +106,44 @@
     "formal_IQ_channel_SNR_boundary": "unchanged",
     "goal_completed": false
   },
-  "execution_boundary": "Two fresh F+CROSS_RX E20 held-source RX1 rows are verified running. Full-source formal clean+6practical and crossseed NOT_RUN; no final recognition result yet.",
+  "execution_boundary": "Both scratch source E20 rows analyzed; source outcome only. Full-source formal clean+6practical/crossseed and independent Ag/B00-B10-B01-B11 NOT_RUN; joint goal unproven.",
   "full_source_status": "NOT_RUN",
   "source_pair": {
     "run_id": "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01",
     "held_RX": 1,
     "package": "experiments/cvs_f_crossrx_practical20",
-    "status": "VERIFIED_RUNNING",
+    "status": "PASS_SOURCE_RX1_ONLY",
     "clarification": "This sourcefold has5040L/45360hiddenU/21600seenV/5400heldV, not fullsource6300L. Four L forwards match C0/C1; SupCon reuses only first2.",
     "training_code_commit": "8235c71cc4a1619eade9def1371e1bdfc31b9eae",
     "rows": {
       "C0": "ANALYZED_SOURCE_ONLY",
-      "C1": "RUNNING"
-    }
+      "C1": "ANALYZED_SOURCE_ONLY"
+    },
+    "source_decision": {
+      "status": "PASS",
+      "checks": {
+        "urban": true,
+        "low": true,
+        "urban_F1": true,
+        "clean": true,
+        "seen": true,
+        "complete_health": true
+      },
+      "urban_gain_pp": 17.746913580246915,
+      "low_gain_pp": 12.722222222222223,
+      "urban_macroF1_gain_pp": 21.616060692881106,
+      "clean_drop_pp": -2.722222222222226,
+      "seen_drop_pp": 0.18518518518517713,
+      "suburban_gaps_pp": {
+        "practical_high": 22.759259259259256,
+        "practical_mid": 25.537037037037035,
+        "practical_low_suburban": 28.96296296296297
+      },
+      "source_only": true,
+      "target_access": false,
+      "automatic_extension": false,
+      "goal_completed": false
+    },
+    "report": "automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/report.md"
   }
 }
