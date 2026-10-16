@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-17",
+  "status": "UNVERIFIED_SAME_PACKET_PAIRING_CURRENT_INPUT_CLOSED",
+  "baseline": "F+CROSS_RX_same_TX/3SIG_TIME/unifiedSinc/joint160/NoExplicitCFO/defaultcos/jointtraining/E20",
+  "actual_execution_commit": "51fc25d6862b7773e8d67fcc95a852c2e52ecc86",
+  "fixed_source_contract": {
+    "carrier": {
+      "L": 6300,
+      "U": 56700,
+      "V": 27000
+    },
+    "effective_fold": {
+      "L": 5040,
+      "U": 45360,
+      "V": 21600,
+      "fit_RX": [
+        3,
+        4,
+        6,
+        8
+      ],
+      "held_RX": 1,
+      "held_L_final_only": 1260
+    },
+    "equalized": "1",
+    "split_rule": "per_tx_rx_day_eq_contiguous_signal_index"
+  },
+  "official_code_findings": [
+    {
+      "url": "https://github.com/WiSig-dataset/wisig-process-raw/blob/master/matlab_equalization/equalize_dataset.m",
+      "lines": "22-34",
+      "finding": "EQ appends successful outputs only;no original pkt_i mapping saved"
+    },
+    {
+      "url": "https://github.com/WiSig-dataset/wisig-process-raw/blob/master/matlab_equalization/equalize_channel.m",
+      "lines": "3-24,47-56",
+      "finding": "Redetection/length checks can return empty;resampling/CFO handling/equalization are not a small simple channel toggle"
+    },
+    {
+      "url": "https://github.com/WiSig-dataset/wisig-process-raw/blob/master/python_pkl_creation/py/build_dataset_multirx.py",
+      "lines": "24-51",
+      "finding": "PKL stores data and node_list;filtered packet rows get local dense row indices,no original packet mapping"
+    },
+    {
+      "url": "https://github.com/WiSig-dataset/wisig-subset-creation/blob/master/data_utilities.py",
+      "lines": "124-160",
+      "finding": "Each representation independently receives same prefix slice,no pairing join"
+    },
+    {
+      "url": "https://github.com/WiSig-dataset/wisig-subset-creation/blob/master/py/002_FullWiSig_create_compact_datasets.py",
+      "lines": "44-51",
+      "finding": "ManySig uses max1000 and both representations,not proof of alignment"
+    }
+  ],
+  "existing_metadata": {
+    "carrier_contract_mapping": false,
+    "preparation_mapping": false,
+    "effective_contract_mapping": false,
+    "actual_loader": "WiSigIndex(tx_i,rx_i,day_i,eq_i,sig_i);EQ-specific index lookup,no original packet join",
+    "new_IQ_container_inspected": false
+  },
+  "counterexample": {
+    "raw_prefix": [
+      "p0",
+      "p1",
+      "p2"
+    ],
+    "EQ_success_prefix": [
+      "p0",
+      "p2",
+      "p3"
+    ],
+    "same_length": 3,
+    "wrong_equal_row_pairs": 2,
+    "meaning": "Counterexample to guarantee,not measurement of actual ManySig mismatch rate"
+  },
+  "decision": "Do not form raw/EQ same-row views,change equalized=both,expand L,or use similarity/neighbor/otherRX matching. Actual pairing remains unknown,not asserted false.",
+  "cost": {
+    "source_JSON_or_code_only": true,
+    "new_real_IQ_deserializations": 0,
+    "checkpoint_loads": 0,
+    "NN": 0,
+    "updates": 0,
+    "teacher_forwards": 0,
+    "head_fit_updates": 0,
+    "target_access": false,
+    "remote_mutations": 0
+  },
+  "next_candidate": "Sampling-jitter conditional covariance;algebra-only,empirical-estimator not yet implemented or source-tested",
+  "joint_goal_complete": false
+}

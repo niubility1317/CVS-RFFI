@@ -276,3 +276,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 下一唯一来源假设为同一原L物理包的raw/equalized接收预处理观察，见analysis/cvs_paired_preprocessing_basis_20261017.md。官方FullWiSig说明与loader eq维度不能证明compact数组逐行配对；先查构造索引/原角色，不假定同sig_i，不先读新IQ，无新模型/更新/target。配对或权限不可证即放弃该入口，不扩大L或改为equalized=both；不复活已关闭相位/噪声/其他固定失败。
+
+
+raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，状态 UNVERIFIED_SAME_PACKET_PAIRING_CURRENT_INPUT_CLOSED：官方均衡可跳包且不存原包映射，compact 分别截前缀；原契约、准备记录和实际依赖加载器没有补足 raw↔EQ 对应表。真实配对未知，不按同 sig_i／相似度／相邻包猜配对，不改 equalized=both 或扩大 L。新增真实 IQ／CP／NN／更新／target 均为 0。详见 analysis/cvs_paired_preprocessing_basis_20261017.md。下一唯一候选为与信号斜率相关的采样时刻扰动，目前仅 4 模板／80 合成点／5 项代数检查通过，单音等不可辨认反例保留；先检验短前导估计能否区分白噪声、增益和相位，没有源实验登记或训练。详见 analysis/cvs_sampling_jitter_source_basis_20261017.md。已关闭固定路线保持，F＋跨 RX 同 TX／E20／原 U 不变，联合目标 ACTIVE。

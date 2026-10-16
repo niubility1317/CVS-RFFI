@@ -1,0 +1,65 @@
+{
+  "status": "PASS_ALGEBRA_ONLY_NOT_SOURCE_EVIDENCE",
+  "checks": {
+    "multitone_full_rank": true,
+    "exact_covariance_coefficients": true,
+    "tone_jitter_phase_unidentifiable": true,
+    "constant_jitter_unidentifiable": true,
+    "zero_jitter_unidentifiable": true
+  },
+  "multitone": {
+    "active_columns": 4,
+    "rank": 4,
+    "singular_values": [
+      1.4384658417002072,
+      1.0061049914454039,
+      0.859510182705851,
+      0.4240412884087022
+    ],
+    "condition": 3.3922777828978194
+  },
+  "tone": {
+    "active_columns": 4,
+    "rank": 2,
+    "singular_values": [
+      1.6453287760160724,
+      1.1370546243753872,
+      1.0739820141673203e-16,
+      6.910629731265054e-17
+    ],
+    "condition": null
+  },
+  "constant": {
+    "active_columns": 3,
+    "rank": 2,
+    "singular_values": [
+      1.4142135623730951,
+      0.9999999999999998,
+      6.886266497095603e-17
+    ],
+    "condition": null
+  },
+  "zero": {
+    "active_columns": 1,
+    "rank": 1,
+    "singular_values": [
+      1
+    ],
+    "condition": 1
+  },
+  "exact_relative_covariance_error": 2.0644784948317693e-15,
+  "exact_relative_coefficient_error": 3.1481919212173364e-14,
+  "synthetic_templates": 4,
+  "synthetic_complex_template_points": 80,
+  "source_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false,
+  "limitations": [
+    "First-order ADC law only;not current WiSig impairment identification",
+    "Exact covariance supplied;no empirical four-cycle estimator has been validated",
+    "Complex Gaussian noise baseline and gain/phase/jitter directions can be degenerate;never remove inconvenient physical packets",
+    "Digital EQ/resampling and TX effects can confound any later source association"
+  ]
+}

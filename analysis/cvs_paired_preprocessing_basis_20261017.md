@@ -1,23 +1,41 @@
-# 下一唯一假设：同一物理包的接收预处理变化
+# raw／EQ 接收预处理配对审计：当前入口关闭
 
-2026-10-17。只提出下一项合法来源核实，尚无新IQ读取、模型、登记或训练。F＋跨RX同TX／三SIG_TIME／统一Sinc／joint160／NoExplicitCFO／默认头正常联合训练／E20保持，联合目标ACTIVE。
+2026-10-17。状态：**UNVERIFIED_SAME_PACKET_PAIRING_CURRENT_INPUT_CLOSED**。本次是代码及既有元数据核实，没有启动新实验。
 
-## 已完成的证据
+基线保持 F＋跨 RX 同 TX 对比学习、三路 SIG_TIME、统一 Sinc、真实 joint160、NoExplicitCFO、默认 cosine 头正常联合训练、从头 E20 和原 U 规则。原有效源折为 fitL5040／U45360／V21600（RX 3、4、6、8）；RX1 的 L1260 仅作既定最终源读出。不能与完整 L6300 或 L_train5580 契约混用。联合目标仍为 ACTIVE。
 
-有界非恒定相位G0的身份保护通过，E20三匹配训练却关闭：sourceRX1-held／seed01，B10 clean80.079365%，相对raw80.634921%下降0.555556pp，相对ordinary81.428571%下降1.349206pp；clean macro-F1也下降。lowurban27.698413%，相对raw−0.158730pp；suburban距自身clean约40至43pp。完整26460预测／13320更新轨迹／568320相位观察和成本复算一致，17469956NN，0target。固定sigma.006／peak.1rad／全覆盖路线不调幅、系数、RX、seed或预算救跑。
+## 实际完成与结论
 
-## 为什么换到这个问题
+读取了 WiSig 官方 raw→EQ→PKL→ManySig 构造代码，并以只读方式核对当前实际训练依赖中的加载器、原 source_contract.json、已有 preparation_complete.json，以及已保存的本轮源折契约和 resolved args。没有反序列化新的 IQ 容器或 checkpoint，也没有按 IQ 相似度猜配对。
 
-下一唯一假设：已有数据中同一RF包的不同接收预处理表示，可能比凭经验附加随机相位更适合构造有依据的观察变化。当前这只是研究动机，不是已证明的可用A_g、RX替换、source身份保持或泛化收益。
+证实的是：**现有构造流程不保证 raw／EQ 同下标对应同一原始包，当前已保存元数据也没有补足该映射。** 不能证实原 fitL5040 的 raw 对应项仍为同一物理 L 包，所以不发布此增强。实际 ManySig 哪些行错配仍然未知；本审计没有测出实际错配率，也不声称全部错配。
 
-[WiSig官方说明](https://cores.ee.ucla.edu/wisig/overview/)称Full WiSig提供未处理前导的256点和同一256点的均衡版本。它也指出RX缺少时间同步；不能跨RX把相同sig_i当逐包配对。更重要的是，这段说明不能单独证明当前ManySig紧凑包的raw/eq数组经过子集抽样后仍逐行对应。
+上轮有界非恒定相位三匹配 E20 已完成并关闭：B10 clean 为 80.079365%，相对 raw 对照下降 0.555556 个百分点，相对 ordinary 对照下降 1.349206 个百分点；low urban 为 27.698413%。这些是 sourceRX1-held／seed01 的源域反证结果，不能解释为正式目标成绩。完整报告及负结果继续保留：[相位 E20 报告](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01/report.md)。
 
-当前仓库 code/dataset_wisig.py 的载体为data[tx_i][rx_i][day_i][eq_i][sig_i]，equalized_list选择版本。loader按每个eq数组分别建立索引，__getitem__独立裁剪/RMS后返回；没有显式raw-eq物理pair-ID或重新排序映射校验。因此，存在eq维度不是配对证据，相同下标也不能绕过真实物理角色权限。
+## 官方构造代码的直接依据
 
-## 最小下一步与放弃条件
+| 环节 | 代码事实 | 对配对的影响 |
+|---|---|---|
+| [均衡数据构造](https://github.com/WiSig-dataset/wisig-process-raw/blob/master/matlab_equalization/equalize_dataset.m#L22) | 逐包均衡后只追加成功输出，保存的 packet_log 不含原 pkt_i 映射 | 一次跳包便可使后续 EQ 下标相对 raw 偏移 |
+| [单包处理](https://github.com/WiSig-dataset/wisig-process-raw/blob/master/matlab_equalization/equalize_channel.m#L3) | 检测及长度检查可返回空；处理还包括重采样、定时、频偏处理及均衡 | 不能假定所有包都保留，也不能预设 raw 视图只是轻度均衡变化 |
+| [PKL 构造](https://github.com/WiSig-dataset/wisig-process-raw/blob/master/python_pkl_creation/py/build_dataset_multirx.py#L24) | 将各 packet_log 压成连续数据行，只保存 data 和 node_list | 不恢复已丢失的逐包对应关系 |
+| [compact 构造](https://github.com/WiSig-dataset/wisig-subset-creation/blob/master/data_utilities.py#L124) | raw 与 EQ 分别加载并各取相同长度的前缀 | 相同前缀长度不能替代按原始包 ID 连接 |
+| [ManySig 配方](https://github.com/WiSig-dataset/wisig-subset-creation/blob/master/py/002_FullWiSig_create_compact_datasets.py#L44) | max_sig=1000，保存两种表示 | 有两种表示不等于逐行配对 |
 
-先只读原始compact构造代码、已经授权的source来源/物理ID元数据，核实：(1) raw和eq的抽样是否共享原packet索引；(2) 原fitL5040对应项是否一一同物理包；(3) 是否只涉及现有L，没有借用U/V/heldRX1/target或扩大有标签物理数量。此步骤0新IQ／checkpoint／NN／更新，不先反序列化不明全量数据来猜配对，不从其他RX或同TX相邻包补缺。
+[官方概述](https://cores.ee.ucla.edu/wisig/overview/)对 Full WiSig 的总体说明不能替代具体 compact 载体的包映射。跨 RX 也不因此成为同步逐包配对。
 
-若不能证明这三个事实，放弃此入口，不把同sig_i当证据、不新增L、不擅自更换训练契约。若能证明，才另行固定唯一view定义、输入变化范围与同预算控制；它仍须实际默认头识别和E20比较，不能把配对正确或源健康等同泛化有效。此时不预设raw视图必然轻度，也不把当前EQ1训练头在另一表示上的错误直接等同身份标签被改变。
+无需 IQ 的反例已执行验证：原顺序为 p0、p1、p2、p3；p1 均衡失败后 EQ 顺序为 p0、p2、p3。两侧各取前 3 项时长度相同，却有 2 个同下标对不是同一包。这只是“流程不保证配对”的反例，不是实际数据统计。
 
-没有新loss/分支/头或新的审批、hash、receipt链。科学数据与物理角色核实属于既有输入合法性；不是重新验证未变的整个VALIDATED_ONCE载体。完整source/target基准、测试IQ与practical保持原协议，不能在不存在可用raw配对时静默改为equalized=both重训。
+## 当前契约核实
+
+实际原生加载器使用 WiSigIndex(tx_i, rx_i, day_i, eq_i, sig_i)，按每个表示自己的数据行取值；没有原始 packet-ID 的跨表示连接。当前实际参数为 wisig_equalized=1。原角色契约、准备记录和有效源折契约记录了既有角色与不透明物理 ID，均未提供 raw↔EQ 对应表。准备记录内历史模型描述只作为已存在元数据读取，本次没有加载其权重或采用其训练方案。
+
+因此，不能把换 eq_i 后的相同行号自动认定为原 L 的另一视图。即使同 TX／RX／day，也可能引入不同物理包；若直接把两种表示各自划分或共同训练，还会改变数据契约。原 VALIDATED_ONCE 载体继续复用，本次没有重新验证未变的数据。
+
+## 关闭范围与成本
+
+关闭当前 ManySig raw／EQ 同下标增强入口；不改为 equalized=both，不增加 L，不从 U／V／RX1／target 或同 TX 相邻包补齐，也不以模型相似度反推物理配对。这一结论不否定“若有可靠原包映射，多预处理表示可能有价值”的一般假设。
+
+本次新增真实 IQ 读取／checkpoint 加载／NN 前向／优化更新／教师前向／头拟合均为 **0**；target 访问为 0，远端写入为 0。只读远端结果与本地已保存契约相互核对，读取状态 VERIFIED，配对可用性 UNKNOWN，实验未启动。
+
+聚合证据见 [审计 JSON](cvs_paired_preprocessing_audit_20261017.json)。下一唯一候选见 [采样抖动来源假设](cvs_sampling_jitter_source_basis_20261017.md)，目前只有代数检验，没有源 IQ、身份保护或训练收益证据。已关闭的相位、AWGN、时移等固定路线保持关闭。
