@@ -19,6 +19,9 @@ class Observer:
     def __init__(self,c):
         self.c=c;self.steps=0;self.coverage=Counter();self.observed=Counter();self.epochs=[];self.augmentor=None
         self.held=int(c['fold']['held_RX']);self.fit=tuple(c['fold']['fit_RX'])
+        self.L_forwards=int(c['training_mechanism']['L_forwards_per_sample'])
+        if self.L_forwards not in (2,4):raise ValueError('Declared paired-L forward count required')
+        self.expected_L_packets=568320*self.L_forwards
         if self.held not in (1,3,4,6,8) or self.fit!=tuple(r for r in (1,3,4,6,8) if r!=self.held):
             raise ValueError('One allowed held RX and its exact four-RX complement required')
     def record(self,role,batch):
@@ -80,14 +83,15 @@ class Observer:
     def epoch(self,m,ctx,rows,out,device):
         step=len(rows)*222
         if self.steps!=step or m._legacy_calls!=step or m._feature_l_steps!=step or m._legacy_extra_packets!=step*128 or m._legacy_actual_L_input is not None:
-            raise ValueError('Same two-forward E20 update sequence required')
+            raise ValueError('Same native paired-L E20 update sequence required')
         if self.c['training_mechanism']['ordinary_L']!=(self.augmentor is not None):raise ValueError('Actual ordinary switch differs')
         if self.augmentor and self.augmentor._calls!=step:raise ValueError('One ordinary IQ generation per L step required')
         self.sequence.flush()
         e=m.id_backbone.encoder;params=dict(m.named_parameters());head='id_backbone.encoder.core.id_backbone.cls_head.'
-        selected=[head+'weight',head+'gain','id_backbone.encoder.sequence_pool.local_projection.weight']
+        selected=getattr(self,'feature_parameter_names',
+            [head+'weight',head+'gain','id_backbone.encoder.sequence_pool.local_projection.weight'])
         if any(not params[k].requires_grad for k in selected):raise ValueError('Default head and SIG_TIME must train jointly')
-        self.epochs.append(dict(epoch=len(rows),steps=step,L_forward_packets=step*256,
+        self.epochs.append(dict(epoch=len(rows),steps=step,L_forward_packets=step*128*self.L_forwards,
             actual_training_loader_packets=dict(self.observed),student_train_forward_packets=e._ordinary_train_packets,
             student_eval_forward_packets=e._ordinary_eval_packets,EMA_eval_forward_packets=self.teacher.id_backbone.encoder._ordinary_eval_packets,
             default_head_and_SIG_movement={k:float((params[k].detach().cpu()-self.initial[k]).norm()) for k in selected},
@@ -125,8 +129,8 @@ class Observer:
         last=self.epochs[-1];e=self.m.id_backbone.encoder
         result=dict(status='SOURCE_FOLD_COMPLETE',arm=self.c['arm'],held_RX=self.held,fit_RX=list(self.fit),held_V=held,seen_V=done['final_source_metrics'],
             complete_health=True,optimizer_updates=4440,epochs=20,checkpoint_sources=[],head_fit_updates=0,
-            target_access=False,U_truth_read=False,L_forward_packets=1136640,training_loader_packets=dict(self.observed),
-            student_U_forward_packets=e._ordinary_train_packets-1136640,
+            target_access=False,U_truth_read=False,L_forward_packets=self.expected_L_packets,training_loader_packets=dict(self.observed),
+            student_U_forward_packets=e._ordinary_train_packets-self.expected_L_packets,
             student_source_eval_forward_packets=e._ordinary_eval_packets,initial_smoke_in_source_eval=2,
             EMA_eval_forward_packets=self.teacher.id_backbone.encoder._ordinary_eval_packets,held_V_forward_packets=5400,
             coverage=[dict(TX=k[0],RX=k[1],day=k[2],count=v) for k,v in sorted(self.coverage.items())],

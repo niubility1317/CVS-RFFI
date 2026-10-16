@@ -1,0 +1,65 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "arm": "A0",
+      "L_forwards": 512,
+      "ordinary_draws": 0,
+      "first_view": "raw",
+      "second_view": "raw"
+    },
+    {
+      "arm": "A1",
+      "L_forwards": 512,
+      "ordinary_draws": 1,
+      "first_view": "ordinary",
+      "second_view": "ordinary"
+    },
+    {
+      "arm": "A2",
+      "L_forwards": 512,
+      "ordinary_draws": 1,
+      "first_view": "raw",
+      "second_view": "ordinary"
+    }
+  ],
+  "initial_state_tensors": 206,
+  "synthetic_network_forwards": 1536,
+  "synthetic_augmentation_packets": 256,
+  "protocol_negatives": 10,
+  "same_three_initial_states": true,
+  "same_A1_A2_generated_IQ": true,
+  "same_IQ_within_each_RDpair": true,
+  "mean_two_pair_objective": true,
+  "default_head_SIG_gradients": true,
+  "F_three_projection_and_coordinate_gradients": true,
+  "exact_authoritative_F_initial_state": true,
+  "physical_clip_and_optimizer_reference_match": true,
+  "old_two_forward_counter_regression": true,
+  "U_truth_and_held_RX_rejected": true,
+  "checkpoint_loads": 0,
+  "real_IQ_packets": 0,
+  "synthetic_optimizer_updates": 6,
+  "target_access": false,
+  "independent_P0P1_review": {
+    "verdict": "PASS",
+    "scope": "One direct P0/P1 review, no direct defects",
+    "extra_synthetic_network_forwards": 1536,
+    "extra_synthetic_augmentation_packets": 256,
+    "extra_synthetic_optimizer_updates": 6,
+    "protocol_negatives": 10,
+    "real_IQ": 0,
+    "checkpoint_loads": 0,
+    "remote_access": false
+  },
+  "cumulative_local_synthetic_network_forwards": 3584,
+  "cumulative_local_synthetic_augmentation_packets": 512,
+  "cumulative_local_synthetic_optimizer_updates": 12,
+  "fixture_failures": [
+    "Local reference package path before model0fwd; explicit package path fixed",
+    "Synthetic reference clip accidentally used patched actual-model clip;512fwd/0optimizer, moved reference clip outside scope. No real run/native math changed"
+  ],
+  "local_compile": "PASS",
+  "registration_fields": "VALID",
+  "real_checkpoint_smoke": "Own scratch CP save/reload and zero2 noqueryforward firstworkerstep;PASS continues"
+}
