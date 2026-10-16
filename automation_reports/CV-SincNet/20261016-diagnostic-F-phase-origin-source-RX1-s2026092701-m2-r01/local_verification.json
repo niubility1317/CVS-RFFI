@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 14,
+  "synthetic_model_packet_forwards": 4,
+  "synthetic_derivative_calls": 0,
+  "optimizer_updates": 0,
+  "synthetic_original_kernel_checks": [
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "explicit_factor_formulas": true,
+  "zero_factors_identity": true,
+  "default_head_actual_trace": true,
+  "reconstruction_error": 0.0,
+  "parameters_buffers_unchanged": true,
+  "independent_metrics_fixture": true,
+  "real_IQ": 0,
+  "real_checkpoint": false,
+  "independent_P0P1_review": "PASS one limitedreview, no directP0/P1",
+  "cumulative_local_synthetic_model_packets": 8,
+  "cumulative_original_kernel_checks": 12,
+  "protocol_negative_assertions": 28,
+  "derivative_calls": 0,
+  "reviewer_extra": {
+    "synthetic_model_packets": 4,
+    "original_kernel_checks": 6,
+    "negative_assertions": 14
+  },
+  "isolated_release_import": "PASS0IQ0CP0forward",
+  "local_compile": "PASS",
+  "registration": "VALID",
+  "N607_preflight": "VERIFIED"
+}
