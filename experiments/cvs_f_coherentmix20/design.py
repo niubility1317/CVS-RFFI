@@ -4,7 +4,7 @@ from pathlib import Path
 from experiments.cvs_additive_as20 import design as parent
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,FULL_FP32_POLICY,read,write=(getattr(parent,k) for k in ('PROJECT','SOURCE','FULL_FP32_POLICY','read','write'))
-RUN='20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01';RELEASE='cvs_FcrossRX_coherentmix_source_E20_20261016_r01';OWNER='codex/root/FcrossRX-coherentmix-20261016'
+RUN='20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02';RELEASE='cvs_FcrossRX_coherentmix_source_E20_20261016_r02';OWNER='codex/root/FcrossRX-coherentmix-20261016'
 BASE=Path(PROJECT)/'runs'/RUN
 BACKEND=PROJECT+'/releases/cvs_F_crossRX_additiveAs_confirm_sourceRX1_e20_20261016_r01'
 BACKEND_COMMIT='05984a1229ebac7025a95081dc5fae4108276b28'

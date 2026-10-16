@@ -16,7 +16,7 @@ def hook(self,**kwargs):
  base=correction+kwargs['identity_loss'];record=self._joint_details[-1];epoch=record['epoch'];step=record['step'];c=self._additive_config;weight=c['additive']['extra_weight'];observations=[]
  raw_before=raw.clone();cpu_rng=torch.get_rng_state();py_rng=random.getstate()
  if self._mix_runtime is None:raise ValueError('Actual filtered-L bank must attach after scratch initialization')
- from .operator import coherent_mix
+ from .iqmix import coherent_mix
  partner,partner_domains,pairs=self._mix_runtime.bank.select(labels,extra[1],step,c['arm'],raw)
  view,observations=coherent_mix(raw,partner.to(raw.device));self._mix_calls+=1;self._mix_packets+=len(raw)
  for p,o in zip(pairs,observations):

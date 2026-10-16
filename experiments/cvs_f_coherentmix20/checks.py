@@ -6,7 +6,7 @@ import torch
 def run():
  from . import design as d,model as api
  from .pairing import Bank,Runtime,KEYS
- from .operator import coherent_mix
+ from .iqmix import coherent_mix
  from experiments.cvs_additive_as20 import model as parent
  from experiments.cvs_crossrx_satmix20 import supcon
  from experiments.cvs_rdrop_sinc_units.optimizer import build,clip_physical

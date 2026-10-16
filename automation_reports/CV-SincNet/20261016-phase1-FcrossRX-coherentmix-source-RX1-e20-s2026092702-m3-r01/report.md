@@ -25,3 +25,5 @@ FAIL关闭固定coherent插值，不调fraction/bound/window/RX/seed/预算救�
 实际命令：/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_coherentmix_source_E20_20261016_r01/experiments/cvs_f_coherentmix20/runner.py；CWD同release，普通账户。动态GPU所有owner≤3/GPU、启动≥12000MiB、CPU2/loader0。一个owner/run/outputroot，不覆盖、不重复启动，不动其他健康进程。只对本run协议/来源/角色、非有限、算子界、输出碰撞或不能合法预测的系统技术失败停止pending并保留partial/健康worker；不因科学分数停训练，禁止自动重试。
 
 一次限定P0/P1、本地commit、一次N607preflight、单release归档本远比较/远端compile、首步真实CPnoquerysmokePASS即继续、一次PID/CWD/argv/GPU/log增长与自然终态、独立读数报告/登记/Git交付。精确注册矩阵、路径、种子、成本与artifact见experiment.json。REJECTED_EXTRA_GATE：单独设计审批、报告hash等不在项目最小流程白名单，研发已授权，不新增审批。
+
+远端状态 FAILED：实际 direct-file launcher 在任何 backend/checkpoint/IQ 之前因本包 operator.py 遮蔽标准库而退出。独立 /proc 证实 dispatcher 已结束、无 worker、无 run root，0 NN/更新/真实 CP/IQ。发布归档比较及 compile 通过不足以证明启动。保留原 r01 release/log；仅重命名 iqmix.py 并补测脚本入口，另登记 r02 技术恢复，科学配方及 E20 不变。

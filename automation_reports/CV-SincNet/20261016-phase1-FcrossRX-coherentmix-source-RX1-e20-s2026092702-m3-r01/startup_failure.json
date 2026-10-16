@@ -1,0 +1,15 @@
+{
+  "status": "FAILED",
+  "layer": "Python direct-file import before backend bootstrap",
+  "release_commit": "0b692362a0cb2136b825af12bf4b6f0ecfd9ec40",
+  "root_created": false,
+  "dispatcher_live": false,
+  "workers_launched": 0,
+  "real_checkpoint_reads": 0,
+  "source_IQ_reads": 0,
+  "training_updates": 0,
+  "NN_packets": 0,
+  "root_cause": "Local operator.py shadowed Python standard-library operator during collections initialization",
+  "preservation": "Original immutable r01 release and dispatcher log retained;no retry in place",
+  "fix": "Rename to iqmix.py;actual direct-file invalid-argv entry RED then GREEN;new r02 identity"
+}

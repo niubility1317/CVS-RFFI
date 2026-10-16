@@ -22,6 +22,8 @@ FAIL关闭固定coherent插值，不调fraction/bound/window/RX/seed/预算救�
 
 本地合成检查：3090NN/3optimizerupdates/896成功算子输出、20负例；所有初态与共同loss/全部参数梯度逐位相同、同CPU/Python随机末态、8L/同IQ对、无As、默认头联合更新/export160、变化界/能量/相位尺度数值检查PASS。另16权限/阈值负例，U元数据隐藏getter、held1过滤45360、不泄漏或修改role scope、实际对照资格口径PASS，0额外NN/更新。NumPy2/Torch2.1本地ABI提示为已知非致命警告，不安装或修改环境。
 
-实际命令：/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_coherentmix_source_E20_20261016_r01/experiments/cvs_f_coherentmix20/runner.py；CWD同release，普通账户。动态GPU所有owner≤3/GPU、启动≥12000MiB、CPU2/loader0。一个owner/run/outputroot，不覆盖、不重复启动，不动其他健康进程。只对本run协议/来源/角色、非有限、算子界、输出碰撞或不能合法预测的系统技术失败停止pending并保留partial/健康worker；不因科学分数停训练，禁止自动重试。
+实际命令：/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_coherentmix_source_E20_20261016_r02/experiments/cvs_f_coherentmix20/runner.py；CWD同release，普通账户。动态GPU所有owner≤3/GPU、启动≥12000MiB、CPU2/loader0。一个owner/run/outputroot，不覆盖、不重复启动，不动其他健康进程。只对本run协议/来源/角色、非有限、算子界、输出碰撞或不能合法预测的系统技术失败停止pending并保留partial/健康worker；不因科学分数停训练，禁止自动重试。
 
 一次限定P0/P1、本地commit、一次N607preflight、单release归档本远比较/远端compile、首步真实CPnoquerysmokePASS即继续、一次PID/CWD/argv/GPU/log增长与自然终态、独立读数报告/登记/Git交付。精确注册矩阵、路径、种子、成本与artifact见experiment.json。REJECTED_EXTRA_GATE：单独设计审批、报告hash等不在项目最小流程白名单，研发已授权，不新增审批。
+
+技术恢复：r01（0b692362a0cb2136b825af12bf4b6f0ecfd9ec40）在读 CP/IQ 前因 operator.py 遮蔽标准库退出，0 训练/NN。原发布和报告保留 FAILED。r02 仅重命名 iqmix.py、更新两处导入及补测 direct-file argv 入口，不改变科学配方/种子/预算/数据角色。

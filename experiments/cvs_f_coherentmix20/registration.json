@@ -1,6 +1,6 @@
 {
   "schema": "experiment_record_v1",
-  "run_id": "20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01",
+  "run_id": "20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02",
   "group_id": "F-crossRX-coherent-IQ-interpolation-E20",
   "display_name": "同 TX 真实 IQ 有界相干插值：E20 源域检验",
   "description": "Fixed new Ag hypothesis:reference-aligned bounded actual sameTX/day two-observation interpolation,CROSS vs SAME_RX controls plus matching reused D_raw;2new scratchE20/noAs or newloss/head",
@@ -30,7 +30,7 @@
     "commit": "CURRENT_RELEASE_COMMIT",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "ordinary N607 CVS-RFFI Python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_coherentmix_source_E20_20261016_r01"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_coherentmix_source_E20_20261016_r02"
   },
   "data": {
     "dataset": "ManySig",
@@ -90,10 +90,10 @@
     "host": "ordinary N607",
     "launch_owner": "codex/root/FcrossRX-coherentmix-20261016",
     "gpu_policy": "2workers,shared allowners<=3/GPU,free>=12000MiB;CPU2/loader0",
-    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01",
-    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01/logs",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02/logs",
     "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_FcrossRX_coherentmix20_20261016",
-    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_coherentmix_source_E20_20261016_r01/experiments/cvs_f_coherentmix20/runner.py",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_coherentmix_source_E20_20261016_r02/experiments/cvs_f_coherentmix20/runner.py",
     "stop_rule": "Only exact-own systemic technical errors:illegal roles/provenance/nonfinite/bounds/unlaunchable/outputcollision/invalid predictions. Preservehealthyworkers+allartifacts;noauto retry. Scientific failure closes fixedoperator withoutfraction/bound/window/RX/seed/epoch rescue."
   },
   "expected_artifacts": [
@@ -129,9 +129,9 @@
       "fixed_final": 20,
       "held_RX": 1,
       "held_L": 1260,
-      "min_clean_gain_vs_raw_pp": 1,
+      "min_clean_gain_vs_raw_pp": 1.0,
       "min_clean_gain_vs_same_pp": 0.5,
-      "min_clean_macroF1_gain_pp": 0,
+      "min_clean_macroF1_gain_pp": 0.0,
       "standalone_practical_drop_reporting_threshold_pp": 0.5,
       "standalone_practical_is_nonblocking": true,
       "max_seenV_drop_pp": 0.5,
@@ -208,7 +208,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 0.000001,
+        "lr_min": 1e-06,
         "launch_owner": "codex/root/F-CROSS_RX-additiveAs-confirm-E20-20261016",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -246,7 +246,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 0.000001
+          "lr_min": 1e-06
         },
         "source_falsification": null,
         "training_recipe": "ScratchE20/F+CROSS_RX/defaultcos/NoExplicitCFO/originalPA+shift/U;retainraw.75+ordinary.25+SupCon;8Lforwards;extra raw0/raw.25/As(raw).25",
@@ -262,8 +262,8 @@
           "random_direction_seed": 2026101307,
           "random_direction_scales": [
             0.5,
-            1,
-            2
+            1.0,
+            2.0
           ],
           "descriptor_width": 28,
           "output_embedding": 160,
@@ -281,7 +281,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2,
+          "each_suburban_gap_exploratory_pp": 2.0,
           "goal_complete": false,
           "target_feedback": false
         },
@@ -301,7 +301,7 @@
           "Ag": false,
           "As": false,
           "ordinary_L": true,
-          "alpha": 1,
+          "alpha": 1.0,
           "label_smoothing": 0.01,
           "use_aug": true,
           "sinc_coordinates": "CENTER_25K",
@@ -313,7 +313,7 @@
           "same_IQ_within_each_pair": true,
           "U_rule": "Original13L+7U oldgate/ownEMA; no added U views or contrast",
           "base_raw_total_weight": 0.75,
-          "raw_total_weight": 1,
+          "raw_total_weight": 1.0,
           "s_slot_name": "Raw in all rows;original entire base objective retained",
           "extra_pair_weight": 0.25,
           "extra_pair_input": "raw",
@@ -359,18 +359,18 @@
             "practical_low_urban"
           ],
           "vs_D00": {
-            "min_clean_gain_pp": 0,
-            "min_clean_macroF1_gain_pp": 0,
-            "min_low_urban_gain_pp": 5,
-            "min_urban_mean_gain_pp": 3,
+            "min_clean_gain_pp": 0.0,
+            "min_clean_macroF1_gain_pp": 0.0,
+            "min_low_urban_gain_pp": 5.0,
+            "min_urban_mean_gain_pp": 3.0,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
           "vs_D_raw": {
             "max_clean_drop_pp": 0.5,
             "max_clean_macroF1_drop_pp": 0.5,
-            "min_low_urban_gain_pp": 5,
-            "min_urban_mean_gain_pp": 3,
+            "min_low_urban_gain_pp": 5.0,
+            "min_urban_mean_gain_pp": 3.0,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
@@ -400,8 +400,8 @@
             "practical_mid_urban",
             "practical_low_urban"
           ],
-          "fs_hz": 25000000,
-          "fc_hz": 2462000000,
+          "fs_hz": 25000000.0,
+          "fc_hz": 2462000000.0,
           "processing_route": "residual",
           "mode": "post_sync",
           "equalization_enabled": false,
@@ -419,7 +419,7 @@
           "extra_input": "raw",
           "extra_weight": 0.25,
           "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
-          "base_pair_weight_sum": 1,
+          "base_pair_weight_sum": 1.0,
           "pair_weight_sum": 1.25,
           "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
           "BN_RNG": "All3rows train-mode8forwards,including explicit zero-extra-loss D00 cost control;record BN updates and actual sequences",
@@ -434,7 +434,7 @@
       "method": "F_CROSS_RX_coherent_interpolation_SAME_RX",
       "purpose": "independent_Ag_SAME_RX",
       "config_ref": "experiments/cvs_f_coherentmix20/registration.json#rows/1/config",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01/SAME_RX-RX1-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02/SAME_RX-RX1-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -452,9 +452,9 @@
       "epochs": 20,
       "fl_rounds": null,
       "budget_ref": "New scratchE20/4440/4546560LNN+actualoriginalU/EMA/V/8820held;5040bankreads/568320extra realpartner exposures/interpolations;total8L",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01/SAME_RX-RX1-s2026092702/source",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01/logs/SAME_RX-RX1-s2026092702.stdout.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_coherentmix_source_E20_20261016_r01/experiments/cvs_f_coherentmix20/runner.py --worker SAME_RX-RX1-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02/SAME_RX-RX1-s2026092702/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02/logs/SAME_RX-RX1-s2026092702.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_coherentmix_source_E20_20261016_r02/experiments/cvs_f_coherentmix20/runner.py --worker SAME_RX-RX1-s2026092702",
       "expected_artifacts": [
         "single realCP no-querysmoke2synthetic",
         "Actual scratch/final20/defaulthead checkpoints androle/config/module/provenance metadata",
@@ -468,7 +468,7 @@
       ],
       "config": {
         "schema": "F_crossRX_coherent_IQ_interpolation_v1",
-        "run_id": "20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01",
+        "run_id": "20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02",
         "stage": "source_RX1_falsification",
         "arm": "SAME_RX",
         "model_seed": 2026092702,
@@ -481,7 +481,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01/SAME_RX-RX1-s2026092702/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02/SAME_RX-RX1-s2026092702/source",
         "epochs": 20,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -499,7 +499,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 0.000001,
+        "lr_min": 1e-06,
         "launch_owner": "codex/root/FcrossRX-coherentmix-20261016",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -537,7 +537,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 0.000001
+          "lr_min": 1e-06
         },
         "source_falsification": null,
         "training_recipe": "Unchanged8Lforward base plus .25R(coherent(real sameTX/day partner,raw));original U/defaulthead;no As",
@@ -553,8 +553,8 @@
           "random_direction_seed": 2026101307,
           "random_direction_scales": [
             0.5,
-            1,
-            2
+            1.0,
+            2.0
           ],
           "descriptor_width": 28,
           "output_embedding": 160,
@@ -572,7 +572,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2,
+          "each_suburban_gap_exploratory_pp": 2.0,
           "goal_complete": false,
           "target_feedback": false
         },
@@ -592,7 +592,7 @@
           "Ag": true,
           "As": false,
           "ordinary_L": true,
-          "alpha": 1,
+          "alpha": 1.0,
           "label_smoothing": 0.01,
           "use_aug": true,
           "sinc_coordinates": "CENTER_25K",
@@ -640,9 +640,9 @@
           "fixed_final": 20,
           "held_RX": 1,
           "held_L": 1260,
-          "min_clean_gain_vs_raw_pp": 1,
+          "min_clean_gain_vs_raw_pp": 1.0,
           "min_clean_gain_vs_same_pp": 0.5,
-          "min_clean_macroF1_gain_pp": 0,
+          "min_clean_macroF1_gain_pp": 0.0,
           "standalone_practical_drop_reporting_threshold_pp": 0.5,
           "standalone_practical_is_nonblocking": true,
           "max_seenV_drop_pp": 0.5,
@@ -673,8 +673,8 @@
             "practical_mid_urban",
             "practical_low_urban"
           ],
-          "fs_hz": 25000000,
-          "fc_hz": 2462000000,
+          "fs_hz": 25000000.0,
+          "fc_hz": 2462000000.0,
           "processing_route": "residual",
           "mode": "post_sync",
           "equalization_enabled": false,
@@ -692,7 +692,7 @@
           "extra_input": "bounded coherent SAME_RX interpolation of raw",
           "extra_weight": 0.25,
           "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
-          "base_pair_weight_sum": 1,
+          "base_pair_weight_sum": 1.0,
           "pair_weight_sum": 1.25,
           "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
           "BN_RNG": "All3rows train-mode8forwards,including explicit zero-extra-loss D00 cost control;record BN updates and actual sequences",
@@ -727,7 +727,7 @@
       "method": "F_CROSS_RX_coherent_interpolation_CROSS_RX",
       "purpose": "independent_Ag_CROSS_RX",
       "config_ref": "experiments/cvs_f_coherentmix20/registration.json#rows/2/config",
-      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01/CROSS_RX-RX1-s2026092702/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02/CROSS_RX-RX1-s2026092702/source/resolved_config.json",
       "data_overrides": {},
       "seeds": {
         "model": 2026092702,
@@ -745,9 +745,9 @@
       "epochs": 20,
       "fl_rounds": null,
       "budget_ref": "New scratchE20/4440/4546560LNN+actualoriginalU/EMA/V/8820held;5040bankreads/568320extra realpartner exposures/interpolations;total8L",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01/CROSS_RX-RX1-s2026092702/source",
-      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01/logs/CROSS_RX-RX1-s2026092702.stdout.log",
-      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_coherentmix_source_E20_20261016_r01/experiments/cvs_f_coherentmix20/runner.py --worker CROSS_RX-RX1-s2026092702",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02/CROSS_RX-RX1-s2026092702/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02/logs/CROSS_RX-RX1-s2026092702.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_coherentmix_source_E20_20261016_r02/experiments/cvs_f_coherentmix20/runner.py --worker CROSS_RX-RX1-s2026092702",
       "expected_artifacts": [
         "single realCP no-querysmoke2synthetic",
         "Actual scratch/final20/defaulthead checkpoints androle/config/module/provenance metadata",
@@ -761,7 +761,7 @@
       ],
       "config": {
         "schema": "F_crossRX_coherent_IQ_interpolation_v1",
-        "run_id": "20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01",
+        "run_id": "20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02",
         "stage": "source_RX1_falsification",
         "arm": "CROSS_RX",
         "model_seed": 2026092702,
@@ -774,7 +774,7 @@
         "variant": "reference_response",
         "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
         "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r01/CROSS_RX-RX1-s2026092702/source",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02/CROSS_RX-RX1-s2026092702/source",
         "epochs": 20,
         "steps_per_epoch": 222,
         "model_initialization": "scratch",
@@ -792,7 +792,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 0.000001,
+        "lr_min": 1e-06,
         "launch_owner": "codex/root/FcrossRX-coherentmix-20261016",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -830,7 +830,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 0.000001
+          "lr_min": 1e-06
         },
         "source_falsification": null,
         "training_recipe": "Unchanged8Lforward base plus .25R(coherent(real sameTX/day partner,raw));original U/defaulthead;no As",
@@ -846,8 +846,8 @@
           "random_direction_seed": 2026101307,
           "random_direction_scales": [
             0.5,
-            1,
-            2
+            1.0,
+            2.0
           ],
           "descriptor_width": 28,
           "output_embedding": 160,
@@ -865,7 +865,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2,
+          "each_suburban_gap_exploratory_pp": 2.0,
           "goal_complete": false,
           "target_feedback": false
         },
@@ -885,7 +885,7 @@
           "Ag": true,
           "As": false,
           "ordinary_L": true,
-          "alpha": 1,
+          "alpha": 1.0,
           "label_smoothing": 0.01,
           "use_aug": true,
           "sinc_coordinates": "CENTER_25K",
@@ -933,9 +933,9 @@
           "fixed_final": 20,
           "held_RX": 1,
           "held_L": 1260,
-          "min_clean_gain_vs_raw_pp": 1,
+          "min_clean_gain_vs_raw_pp": 1.0,
           "min_clean_gain_vs_same_pp": 0.5,
-          "min_clean_macroF1_gain_pp": 0,
+          "min_clean_macroF1_gain_pp": 0.0,
           "standalone_practical_drop_reporting_threshold_pp": 0.5,
           "standalone_practical_is_nonblocking": true,
           "max_seenV_drop_pp": 0.5,
@@ -966,8 +966,8 @@
             "practical_mid_urban",
             "practical_low_urban"
           ],
-          "fs_hz": 25000000,
-          "fc_hz": 2462000000,
+          "fs_hz": 25000000.0,
+          "fc_hz": 2462000000.0,
           "processing_route": "residual",
           "mode": "post_sync",
           "equalization_enabled": false,
@@ -985,7 +985,7 @@
           "extra_input": "bounded coherent CROSS_RX interpolation of raw",
           "extra_weight": 0.25,
           "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
-          "base_pair_weight_sum": 1,
+          "base_pair_weight_sum": 1.0,
           "pair_weight_sum": 1.25,
           "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
           "BN_RNG": "All3rows train-mode8forwards,including explicit zero-extra-loss D00 cost control;record BN updates and actual sequences",

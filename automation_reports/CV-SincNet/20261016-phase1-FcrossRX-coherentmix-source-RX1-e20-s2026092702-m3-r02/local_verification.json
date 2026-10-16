@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "negative_cases": 20,
+  "rows": [
+    {
+      "arm": "reused_D_raw",
+      "L_forwards": 8,
+      "common_inputs_exact": true,
+      "fourth_same_IQ": true,
+      "default_head_joint_update": true,
+      "export160_exact": true,
+      "new_parameters": 0,
+      "total_pair_weight": 1.25
+    },
+    {
+      "arm": "SAME_RX",
+      "L_forwards": 8,
+      "common_inputs_exact": true,
+      "fourth_same_IQ": true,
+      "default_head_joint_update": true,
+      "export160_exact": true,
+      "new_parameters": 0,
+      "total_pair_weight": 1.25
+    },
+    {
+      "arm": "CROSS_RX",
+      "L_forwards": 8,
+      "common_inputs_exact": true,
+      "fourth_same_IQ": true,
+      "default_head_joint_update": true,
+      "export160_exact": true,
+      "new_parameters": 0,
+      "total_pair_weight": 1.25
+    }
+  ],
+  "identical_initial_states": true,
+  "common_loss_and_all_parameter_gradients_exact": true,
+  "CPU_Python_RNG_endstates_equal": true,
+  "no_training_As": true,
+  "source_bank_only": true,
+  "synthetic_NN_packets": 3090,
+  "synthetic_optimizer_updates": 3,
+  "synthetic_operator_packets": 896,
+  "real_IQ_reads": 0,
+  "real_checkpoint_loads": 0,
+  "target_access": false,
+  "scope": {
+    "status": "PASS",
+    "negative_cases": 16,
+    "U_metadata_only_mask45360": true,
+    "fold_scope_restored": true,
+    "scientific_thresholds_checked": true,
+    "standalone_practical_nonblocking_explicit": true,
+    "NN": 0,
+    "updates": 0,
+    "real_IQ_reads": 0
+  },
+  "direct_file_entry": {
+    "status": "PASS",
+    "direct_file_entry": true,
+    "intended_invalid_argument_guard": true,
+    "backend_or_data_open": false,
+    "NN": 0,
+    "updates": 0
+  }
+}
