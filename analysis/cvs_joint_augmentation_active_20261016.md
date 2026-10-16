@@ -1,6 +1,6 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-用户于 2026-10-16 指定，增强前参照更换为 **F＋跨 RX 同 TX 对比学习**。该选择覆盖本对话旧的 F-only 参照；训练预算仍为 E20，没有延长到 E50 的新授权。唯一活动配方见 [配置](../configs/cvs_joint_augmentation_F_crossrx_e20.json)。当前源 B00/B01 已完整分析并通过单种子源阈值；正式完整源四因子尚未训练。
+用户于 2026-10-16 指定，增强前参照更换为 **F＋跨 RX 同 TX 对比学习**。该选择覆盖本对话旧的 F-only 参照；训练预算仍为 E20，没有延长到 E50 的新授权。唯一活动配方见 [配置](../configs/cvs_joint_augmentation_F_crossrx_e20.json)。两种子源 B00/B01 已完整分析；独立seed02因clean下降13.095238pp未通过，固定75/25候选关闭。正式完整源四因子尚未训练。
 
 已核实的来源是 `20261016-phase1-F-supcon-e50-clean-manysig-m9-r02` 的 `CROSS_RX`，执行 commit `4df7b94d0fd8ce29056bd8236364e45afa92e07f`。已读取完整报告、最终分析、实际 design/model/mechanism/source/observer，确认实际原生 extra 格式为 `(domain, metadata)`；不复用 r01 的错误读取方式。
 
@@ -32,3 +32,10 @@ E20 是从零训练 13 轮 L＋7 轮原 U，4440 次实际更新；预期对比�
 
 
 上述seed02确认已实际发布，执行commit `d71531d53c1d9ec46e3915963e05bff96760e80e`；两组native/config种子均为2026092702，真实smoke、archive单次比对、编译及PID/CWD/argv/GPU/log增长VERIFIED。当前RUNNING，B00 E2/20、B01 E1/20是已观察进度，尚未评分或确认收益。不重新提交同row。
+
+
+## 当前结论：75/25源确认失败并关闭
+
+seed02两行均自然完成E20/4440更新与全部七视图，独立重算VERIFIED。clean83.095238%→70.000000%（−13.095238pp），lowurban28.492063%→36.031746%（+7.539683pp），urban均值+11.825397pp。原clean保持条件失败，其余条件通过；不追加seed03、换RX/比例或延长预算。两个seed的clean差分别+3.095238/−13.095238pp，均值−5.000000pp；urban均值差+12.460317±0.897913pp，lowurban差+7.539683pp。As适应净收益被重复观察到，稳定clean保持没有成立。seed02差距缩小部分来自clean下跌，不能记为联合成功。四模型累计80模型轮/17760更新/18746716实际NN包前向，全部结果与CM、代价保留。
+
+下一唯一源假设为当前F+CROSS_RX对有界共同相位变化仍有默认头识别缺口。最小拟用自有B00/seed01/final20冻结模型，在fitL5040上做identity/+0.37rad/−0.37rad共15120决策、0更新；不读heldRX1、U、V、target或训练新头。两个方向均需至少2pp整体下降，且各自至少3/4 fitRX下降1pp，才支持另行考虑B00/B10；否则关闭相位方向，不扫描幅度。仅为待实现/登记/启动假设，敏感性不等于Ag有效。历史CNN相位和旧E200诊断不被当作当前F成绩。

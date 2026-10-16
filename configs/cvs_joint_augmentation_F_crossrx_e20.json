@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "SOURCE_B00_B01_ANALYZED_QUALIFIED_SINGLE_SEED_FORMAL_FACTORIAL_NOT_TRAINED",
+  "status": "FIXED_SATMIX25_CLOSED_AFTER_FAILED_SOURCE_CONFIRMATION_AG_PENDING",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User on 2026-10-16 changes pre-augmentation baseline to F plus cross-RX same-TX contrastive learning. Earlier E20 budget remains in force.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -104,10 +104,45 @@
       28.809523809523807
     ],
     "class_tradeoffs": "TX2/TX3 decrease in all six practical; no all-TX improvement claim",
-    "next": "Independent seed2026092702 source B00/B01 confirmation running VERIFIED; unchanged recipe/thresholds; no target",
+    "next": "Fixed75/25 candidate closed after failed independent confirmation;retain all results,no target or rescue",
     "target_access": false,
     "joint_goal_complete": false
   },
   "confirmation_experiment": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
-  "confirmation_status": "RUNNING_VERIFIED_NOT_SCORED"
+  "confirmation_status": "ANALYZED_SOURCE_FAIL_CLEAN_GUARDRAIL",
+  "source_confirmation_result": {
+    "model_seed": 2026092702,
+    "qualification": "FAIL_SOURCE_CLEAN",
+    "clean_gain_pp": -13.095238095238104,
+    "low_urban_gain_pp": 7.53968253968254,
+    "urban_mean_gain_pp": 11.825396825396824,
+    "all_other_registered_source_conditions_pass": true,
+    "recipe_status": "CLOSED_NO_SEED_RX_RATIO_RESCUE",
+    "target_access": false
+  },
+  "two_seed_source_result": {
+    "model_seeds": [
+      2026092701,
+      2026092702
+    ],
+    "clean_gain_mean_pp": -5.000000000000004,
+    "low_urban_gain_mean_pp": 7.53968253968254,
+    "qualification": "FAIL",
+    "joint_goal_complete": false
+  },
+  "next_source_hypothesis": {
+    "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
+    "status": "PROPOSED_NOT_IMPLEMENTED_OR_LAUNCHED",
+    "checkpoint": "Own B00/seed2026092701/final20 matching fourRX fold;frozen only,no new training initialization",
+    "data": "FitL5040 only,no heldRX1/U/V/target",
+    "views": [
+      "identity",
+      "+0.37rad",
+      "-0.37rad"
+    ],
+    "model_forward_packets": 15120,
+    "optimizer_updates": 0,
+    "abandon": "Both signs need>=2pp accuracy loss and each sign>=3/4 fitRX with>=1pp loss;otherwise close,no amplitude scan",
+    "Ag_efficacy_proved": false
+  }
 }
