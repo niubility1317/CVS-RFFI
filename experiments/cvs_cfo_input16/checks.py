@@ -1,10 +1,12 @@
 """Focused finite/budget/control negatives plus one local untrained-F path check."""
 from copy import deepcopy
-import math,torch
+import math,subprocess,sys,torch
 from . import design as d,audit
-from .operator import apply,view
+from .frequency_transform import apply,view
 from experiments.cvs_crossrx_satmix20 import model as api
 def run():
+ direct=subprocess.run([sys.executable,'-S',str(d.ROOT/'experiments/cvs_cfo_input16/runner.py'),'--unregistered'],capture_output=True,text=True,timeout=10)
+ assert direct.returncode!=0 and 'No frequency,seed,data or training overrides allowed' in direct.stderr and 'frequency_transform.py' not in direct.stderr and 'operator.py' not in direct.stderr
  torch.set_num_threads(2);x=audit.synthetic();rng=torch.get_rng_state().clone();positive=apply(x,d.FREQUENCY_MAX);negative=apply(x,-d.FREQUENCY_MAX);restored=apply(positive,-d.FREQUENCY_MAX)
  n=torch.arange(256,dtype=x.dtype);f=torch.full((32,1),d.FREQUENCY_MAX);phase=2.*math.pi*f*n;canonical=torch.complex(x[:,0],x[:,1])*torch.complex(phase.cos(),phase.sin())
  assert torch.equal(rng,torch.get_rng_state()) and torch.equal(view(x,'identity'),x) and torch.equal(positive[:,:,0],x[:,:,0]) and torch.allclose(positive,torch.stack((canonical.real,canonical.imag),1),rtol=0,atol=1e-6)
@@ -30,7 +32,7 @@ def run():
  old=d.BASE;d.BASE=d.ROOT/d.LOCAL/'local_untrained_input_check';d.BASE.mkdir(parents=True,exist_ok=True)
  try:result=audit.run(m)
  finally:d.BASE=old
- return dict(status='PASS',operator_protocol_rejections=negatives,qualifier_counterexamples=4,canonical_native_CFO_operator_matches=True,power_and_inverse_control_PASS=True,private_synthetic_rng_and_no_operator_rng=True,actual_untrained_F_input_path_PASS=True,default_head_shape=[6,160],NoExplicitCFO=True,internal_compensation_retained=True,synthetic_NN_packets=162,source_IQ_reads=0,real_CP_reads=0,training_updates=0,head_fit_updates=0,target_access=False,engineering_decision_is_not_efficacy=True)
+ return dict(status='PASS',direct_script_startup_regression_PASS=True,operator_protocol_rejections=negatives,qualifier_counterexamples=4,canonical_native_CFO_operator_matches=True,power_and_inverse_control_PASS=True,private_synthetic_rng_and_no_operator_rng=True,actual_untrained_F_input_path_PASS=True,default_head_shape=[6,160],NoExplicitCFO=True,internal_compensation_retained=True,synthetic_NN_packets=162,source_IQ_reads=0,real_CP_reads=0,training_updates=0,head_fit_updates=0,target_access=False,engineering_decision_is_not_efficacy=True)
 if __name__=='__main__':
  import json
  value=run();d.write(d.ROOT/d.LOCAL/'local_checks.json',value);print('LOCAL_RESULT '+json.dumps(value))

@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：轻度接收频偏的输入作用检查
 
-状态：PLANNED，尚未发布或取得真实checkpoint工程结果。前一常数增益源E20已FAIL关闭，clean+0.555556pp但未达+1pp，六practical全降；不调幅度/seed/RX救跑。当前唯一假设：温和接收频偏变化在保留NoExplicitCFO及内部补偿后，是否仍留下值得训练检验的实际默认函数作用。
+状态：FAILED_TECHNICAL_BEFORE_MODEL_LOAD／VERIFIED，未取得真实checkpoint工程或识别结果。前一常数增益源E20已FAIL关闭，clean+0.555556pp但未达+1pp，六practical全降；不调幅度/seed/RX救跑。当前唯一假设：温和接收频偏变化在保留NoExplicitCFO及内部补偿后，是否仍留下值得训练检验的实际默认函数作用。
 
 ## 固定最小实验
 
@@ -23,3 +23,10 @@ F三路SIG_TIME、统一Sinc、joint160、checkpoint默认cosine头和NoExplicit
 唯一owner codex/root/F-CROSS_RX-frequency-input-20261016；普通N607账号，CUDA_VISIBLE_DEVICES为空、CPU2线程，不创建GPUworker。精确命令/CWD/环境/路径、六类seed、来源与配置见experiment.json。代码Gitcommit固定；一次N607 preflight、一个archive单次local/remote比对、远端compile；启动后独立PID/CWD/argv/CPU-GPU环境/log增长读回。合成trace/log留私有，代码/登记/小汇总Git交付。
 
 本地10协议负例、4判断反例、canonical原生算子匹配/功率与逆变换/私有syntheticRNG、实际未训练F路径检查PASS；162合成NN/0更新/0真实CP或IQ，单列。一次限定P0/P1审查PASS。当前没有真实冻结CP工程结果，更没有识别收益。
+
+
+## 技术失败与保留
+
+实际执行commit `dd68fa82956cbdd45d16185e2242bcdd323b0723`。archive/compile及初始PID观察已完成，但独立后状态显示PID消失、run-root未创建，stdout为operator.py遮蔽标准库operator导致collections循环导入。错误发生在runner第2行，未加载CP或执行模型前向，实际NN/真实IQ/更新为0；不是CFO科学FAIL。旧release/archive/stdout保留，不原地重启，不干预其他任务。
+
+本地Python -S直接脚本路径已复现同名遮蔽；修复将operator.py改名frequency_transform.py并更新相对导入，加入直接入口回归。新r02只作技术替代，频偏/seed/输入矩阵/162预算/0训练不变。首次本地未训练F检查162NN及修后检查162NN均单列，累计324合成NN/0更新，远端r01为0NN。一次原问题定点复审后新发布，不增加全量复审。

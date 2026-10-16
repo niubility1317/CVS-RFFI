@@ -3,8 +3,8 @@ from pathlib import Path
 from experiments.cvs_crossrx_satmix20 import design as prior
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,read,write=(getattr(prior,k) for k in ('PROJECT','SOURCE','read','write'))
-RUN='20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r01'
-RELEASE='cvs_F_crossRX_frequency_input_20261016_r01'
+RUN='20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r02'
+RELEASE='cvs_F_crossRX_frequency_input_20261016_r02'
 OWNER='codex/root/F-CROSS_RX-frequency-input-20261016'
 LOCAL='local_artifacts/F_frequency_input16_20261016'
 BASE=Path(PROJECT)/'runs'/RUN

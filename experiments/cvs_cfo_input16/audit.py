@@ -2,7 +2,7 @@
 from types import MethodType
 import torch
 from . import design as d
-from .operator import view
+from .frequency_transform import view
 def synthetic():
  g=torch.Generator().manual_seed(d.AUDIT_SEED);noise=torch.randn(32,2,256,generator=g);x=noise.clone()
  for t in range(1,256):x[8:16,:,t]=.7*x[8:16,:,t-1]+noise[8:16,:,t]

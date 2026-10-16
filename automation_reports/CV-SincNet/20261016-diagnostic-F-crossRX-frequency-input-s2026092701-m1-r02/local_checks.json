@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "direct_script_startup_regression_PASS": true,
+  "operator_protocol_rejections": 10,
+  "qualifier_counterexamples": 4,
+  "canonical_native_CFO_operator_matches": true,
+  "power_and_inverse_control_PASS": true,
+  "private_synthetic_rng_and_no_operator_rng": true,
+  "actual_untrained_F_input_path_PASS": true,
+  "default_head_shape": [
+    6,
+    160
+  ],
+  "NoExplicitCFO": true,
+  "internal_compensation_retained": true,
+  "synthetic_NN_packets": 162,
+  "source_IQ_reads": 0,
+  "real_CP_reads": 0,
+  "training_updates": 0,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "engineering_decision_is_not_efficacy": true
+}

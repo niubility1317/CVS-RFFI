@@ -1,0 +1,18 @@
+{
+  "status": "FAILED_TECHNICAL_BEFORE_MODEL_LOAD",
+  "code_commit": "dd68fa82956cbdd45d16185e2242bcdd323b0723",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "startup_process_observed": "OBSERVED",
+  "terminal_PID_missing": true,
+  "run_root_never_created": true,
+  "failed_layer": "Direct script sys.path:local operator.py shadows Python stdlib operator;collections partial import",
+  "real_checkpoint_reads": 0,
+  "source_IQ_reads": 0,
+  "actual_NN_packets": 0,
+  "training_updates": 0,
+  "target_access": false,
+  "identity_result_available": false,
+  "artifacts_preserved": true,
+  "repair": "Rename module frequency_transform.py;direct-script -S argument-rejection regression;new run r02,same scientific plan"
+}

@@ -1,4 +1,4 @@
-"""Native zero-origin linear phase;no RMS/noise/window or model changes."""
+"""Native zero-origin linear phase;named to avoid stdlib operator shadowing."""
 import math,torch
 from . import design as d
 def apply(x,frequency):

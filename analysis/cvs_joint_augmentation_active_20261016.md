@@ -93,3 +93,6 @@ PA旁路两组E20及七源视图已完整ANALYZED/VERIFIED，原条件FAIL固定
 
 
 频偏输入候选已实现登记 `20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r01`，真实匹配CP＋162固定合成NN/0真实IQ/0更新/0target，原NoExplicitCFO及内部参考补偿保持。10协议负例、4判断反例和实际未训练F路径PASS，一次限定P0/P1审查PASS；尚未发布或取得真实CP工程结果，更无身份收益。
+
+
+频偏输入候选已实现登记 `20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r02`，真实匹配CP＋162固定合成NN/0真实IQ/0更新/0target，原NoExplicitCFO及内部参考补偿保持。10协议负例、4判断反例和实际未训练F路径PASS，一次限定P0/P1审查PASS；尚未发布或取得真实CP工程结果，更无身份收益。
