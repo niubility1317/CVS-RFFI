@@ -1,10 +1,15 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "SOURCE_B00_B01_RUNNING_VERIFIED_FORMAL_FACTORIAL_NOT_TRAINED",
+  "status": "SOURCE_B00_B01_ANALYZED_QUALIFIED_SINGLE_SEED_FORMAL_FACTORIAL_NOT_TRAINED",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User on 2026-10-16 changes pre-augmentation baseline to F plus cross-RX same-TX contrastive learning. Earlier E20 budget remains in force.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
-  "applies_to": ["B00", "B10", "B01", "B11"],
+  "applies_to": [
+    "B00",
+    "B10",
+    "B01",
+    "B11"
+  ],
   "model": {
     "architecture": "Existing F: three independent SIG_TIME local projections plus unified full physical Sinc correction",
     "deployed_embedding_dimension": 160,
@@ -35,7 +40,10 @@
     "source_code_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
     "source_module": "experiments/cvs_f_supcon50/mechanism.py",
     "mode": "CROSS_RX",
-    "levels": ["time_down", "t2.pool"],
+    "levels": [
+      "time_down",
+      "t2.pool"
+    ],
     "positive": "Other physical L packets with same visible TX and different physical RX",
     "negative": "Different visible TX only; same-TX same-RX packets excluded from denominator",
     "temperature": 0.2,
@@ -72,9 +80,32 @@
   "evaluation": {
     "target_feedback": false,
     "source_selection_only": true,
-    "formal_views": ["clean", "practical_high", "practical_mid", "practical_low_suburban", "practical_high_urban", "practical_mid_urban", "practical_low_urban"],
+    "formal_views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
     "prediction_before_truth": "All registered view predictions for each frozen row complete before independent truth-side scoring",
     "historical_E50_evidence": "Existing exposed clean benchmark supports recipe context only. No E20 or satellite benefit may be inferred or added to Ag/As gains.",
+    "joint_goal_complete": false
+  },
+  "source_result": {
+    "qualification": "PASS_SOURCE_SINGLE_SEED",
+    "clean_gain_pp": 3.0952380952380953,
+    "low_urban_gain_pp": 7.53968253968254,
+    "urban_mean_gain_pp": 13.095238095238095,
+    "suburban_gap_pp": [
+      22.22222222222222,
+      26.74603174603174,
+      28.809523809523807
+    ],
+    "class_tradeoffs": "TX2/TX3 decrease in all six practical; no all-TX improvement claim",
+    "next": "Separately preregister unchanged source pair for independent seed2026092702; not launched",
+    "target_access": false,
     "joint_goal_complete": false
   }
 }

@@ -3,7 +3,7 @@
 - run_id：`20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01`
 - group_id：`phase1-F-CROSS_RX-satmix25-source-Ag-As`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：RUNNING，独立验证两组进程、GPU 和日志增长；尚无最终源预测结果。
+- 当前登记状态：ANALYZED（仅本次源域证伪），两组 E20 与源七视图预测均完成，独立复算通过；源候选 PASS，正式四因子及联合目标未完成。
 
 ## 目的与对照
 
@@ -21,7 +21,7 @@ Fixed shared F+CROSS_RX/RDrop1, scratchE20, six L forwards; raw .5+ordinary .25+
 
 ## 结果与覆盖
 
-尚无结果。按预登记artifact逐项记录路径和缺项；保留每row与RX/day/TX/scene/K/seed的对应关系。
+完整源域结果见下文最终分析及 source_analysis.json。所有成绩均为同 seed、held RX1 原 L1260，不是正式 target 测试。
 源域训练完成、预测完成、评分完成及协议有效性分别陈述。不得用总索引或旧状态证明当前运行。
 
 ## 固定问题与最小矩阵
@@ -69,7 +69,7 @@ As 直接使用原始 `x_l`，不使用旧普通增强后的 `x_l_main`，避免
 
 首步执行一次真实 checkpoint no-query smoke，PASS 后立即继续。所读是本对话旧 timing run 的 B00 fixedfinal20、同一四 RX 有效数据契约；只验证严格加载和 2 个合成包默认头前向，不初始化任何新模型。每个新行仍由原 runner 做自身 scratch checkpoint smoke。角色、来源、输出碰撞、非有限值、预算或合法源预测错误才技术停止：保留产物、停止新 pending、健康 worker 继续、不自动重试。
 
-本地真实 F 检查 PASS：9 个负例，native move_batch 实际 `(domain,metadata)` 格式，旧普通增强配置构造，真实 6 次前向及原始/旧增强/卫星输入对应，CROSS_RX 只读原普通对，ownEMA/reader 深拷贝，默认 W 联合更新、joint160 导出逐元素一致。两个合成 optimizer step；0 源/目标 IQ。已完成一次独立下一真实运行 P0/P1 审查，PASS；不增加报告审查或审批。N607 只读 preflight 已完成；归档传输、远端编译和真实 smoke 尚待实际发布。
+本地真实 F 检查 PASS：9 个负例，native move_batch 实际 `(domain,metadata)` 格式，旧普通增强配置构造，真实 6 次前向及原始/旧增强/卫星输入对应，CROSS_RX 只读原普通对，ownEMA/reader 深拷贝，默认 W 联合更新、joint160 导出逐元素一致。两个合成 optimizer step；0 源/目标 IQ。已完成一次独立下一真实运行 P0/P1 审查，PASS；不增加报告审查或审批。N607 只读 preflight、单归档传输比对、远端编译和真实 no-query smoke 后续均已完成，见实际发布记录。
 
 本轮应交付完整训练日志、全部源场景预测、配对差、卫星覆盖、成本和负结果。没有源域分析通过、辅助 loss 降低或单种子改善能替代最终 clean 净收益、low urban >60% 与 suburban 接近 clean 的联合证明。
 
@@ -88,3 +88,90 @@ B00 已自然完成固定 E20 和 clean＋六 practical 的全部 held-source �
 B00 实际观察 L568320/U396368，唯一训练物理样本分别为 L5040/U45360，全部排除 RX1。实际 NN 前向包总计 4686678，训练墙钟 1273.98 秒；teacher 复制带入的 eval counter2 已扣除，student 初始 smoke2 已包含、不再次加算；dispatcher 的公共 smoke2 留到全矩阵成本单列。摘要见 [B00_source_analysis.json](B00_source_analysis.json)，重算代码为 `experiments/cvs_crossrx_satmix20/analysis.py`。
 
 此时仅 B00 行为源域 ANALYZED，整个 run 仍为 RUNNING。B01 尚未冻结并完成七视图，不提前作 75/25 候选收益判断，也不触发扩种子或正式 target 访问。
+
+
+## 最终源域配对分析
+
+**VERIFIED：本次固定 75/25 候选通过全部预登记源域条件。** 两组均从零 E20，使用用户指定的 F＋跨 RX 同 TX 对比学习；源 RX1 clean 净增 3.095238 pp，low urban 增 7.539683 pp，三个 urban 均值增 13.095238 pp。该判断来自全部七视图独立默认头重算，不来自训练 loss、特征距离或健康 V。没有 target、额外分类头、继承权重、延长预算或选择性重跑。
+
+| 源 RX1 场景 | B00 正确率 | B01 正确率 | 差值（百分点） | B00 / B01 macro-F1 | 修复 / 新增错误 |
+|---|---:|---:|---:|---:|---:|
+| clean | 81.666667% | 84.761905% | +3.095238 | 81.326326% / 84.668046% | 66 / 27 |
+| high suburban | 39.285714% | 62.539683% | +23.253968 | 29.005933% / 61.064375% | 409 / 116 |
+| mid suburban | 38.809524% | 58.015873% | +19.206349 | 29.615369% / 56.526889% | 375 / 133 |
+| low suburban | 35.714286% | 55.952381% | +20.238095 | 28.343112% / 54.491681% | 375 / 120 |
+| high urban | 38.968254% | 57.380952% | +18.412698 | 30.134815% / 55.897641% | 374 / 142 |
+| mid urban | 31.507937% | 44.841270% | +13.333333 | 26.653874% / 44.380379% | 297 / 129 |
+| low urban | 28.571429% | 36.111111% | +7.539683 | 24.952936% / 35.620185% | 226 / 131 |
+
+每场景均为同一 1260 个物理包、6 TX 各 210 包，使用同一命名 practical 抽样规则。修复与新增错误均计入：clean 修复 66、破坏 27，净增 39；low urban 修复 226、破坏 131，净增 95。全部场景净收益为正，但并非每包、每类都改善。
+
+| suburban 场景 | B00 与其 clean 的绝对差 | B01 与其 clean 的绝对差 |
+|---|---:|---:|
+| high suburban | 42.380952 pp | 22.222222 pp |
+| mid suburban | 42.857143 pp | 26.746032 pp |
+| low suburban | 45.952381 pp | 28.809524 pp |
+
+三个 suburban 差距仍远大于探索目标 2 pp；low urban 只有 36.111111%，未达到联合目标中的 60%。差距缩小伴随 clean 本身提高，不是靠降低 clean 形成。源候选通过不代表最终联合目标接近完成。
+
+### 分层收益与损失
+
+| TX（原映射索引） | clean 差值 | low urban B00 | low urban B01 | low urban 差值 |
+|---|---:|---:|---:|---:|
+| 0 | -5.238095 pp | 13.333333% | 27.619048% | +14.285714 pp |
+| 1 | +2.857143 pp | 3.809524% | 42.380952% | +38.571429 pp |
+| 2 | +14.761905 pp | 44.285714% | 26.190476% | -18.095238 pp |
+| 3 | +0.476190 pp | 43.809524% | 35.714286% | -8.095238 pp |
+| 4 | +0.000000 pp | 56.190476% | 58.571429% | +2.380952 pp |
+| 5 | +5.714286 pp | 10.000000% | 26.190476% | +16.190476 pp |
+
+TX2 与 TX3 在全部六种卫星场景均下降；其 low urban 分别下降 18.095238 pp 和 8.095238 pp，TX1 提高 38.571429 pp。TX0 的 clean 下降 5.238095 pp。该类间代价明确否定“所有身份均被恢复”的解释；整体 accuracy 与 macro-F1 均有净收益，也不能据此将下降类别删除、重权或选择性重跑。完整七场景混淆矩阵保留在 source_analysis.json，全部 TX/day 层的图及表保存在私有完整分析中。
+
+| day | clean 差值 | low urban 差值 |
+|---|---:|---:|
+| 1 | -0.952381 pp | +4.285714 pp |
+| 2 | +5.000000 pp | +12.142857 pp |
+| 3 | +5.238095 pp | +6.190476 pp |
+
+day1 clean 下降 0.952381 pp，day2/day3 提高；三个 day 的 low urban 均提高。以上仅描述固定源折，不能外推跨 RX、跨 seed 或正式目标。
+
+### 完整执行与成本
+
+独立核对每组 4440 条原生 step、4440 条视图 step、4440 条物理裁剪记录、20 轮原生 CSV/JSONL 和 compact 日志、800 行完整 stdout、5994 个 L/U 批次、8820 个源预测。没有非有限值、跳步、警告或 U 真值使用记录。L 公式按 .5raw＋.25ordinary＋.25Sslot 加原系数 SupCon 重构，最大误差分别为 3.874302e-7、2.384186e-7。
+
+两组所有 L/U 物理训练批次与顺序逐条相同；唯一可见训练样本为 L5040/U45360，原生参数仅 candidate_id/output_dir 不同。SupCon 每组 4440 调用、3330 非零、13320 层位／前向目标，额外 raw/satellite/U/teacher/eval 无新增对比目标或残留 hook。默认头随骨干联合更新，head-fit=0。
+
+| 实际成本 | B00 | B01 |
+|---|---:|---:|
+| 从零训练 epoch / 更新 | 20 / 4440 | 20 / 4440 |
+| L 网络包前向 | 3409920 | 3409920 |
+| U student 网络包前向 | 396368 | 396368 |
+| ownEMA 实际前向（已扣复制带入 counter2） | 396368 | 396368 |
+| student V 与初始 smoke 包前向 | 475202 | 475202 |
+| 七视图 held-source 包前向 | 8820 | 8820 |
+| 每模型实际 NN 包前向合计 | 4686678 | 4686678 |
+| practical 训练 IQ 生成 | 0 | 568320 |
+| practical 源评估 IQ 生成 | 7560 | 7560 |
+| 训练墙钟（秒） | 1273.977375 | 2197.805176 |
+| final L CE | 0.277365783 | 0.276038458 |
+| seen V 健康正确率 | 98.046296% | 98.041667% |
+
+两个模型合计 40 模型轮、8880 更新、9373358 个实际 NN 包前向（含 dispatcher 公共 smoke2），没有父训练或续训成本。旧单对 RDrop 的 L 前向为 1136640/模型，本次多 2273280/模型；两组完全匹配。practical 生成造成的 CPU/墙钟开销单列，不冒称网络额外前向。并行任务的训练墙钟不可相加冒充总体经过时间。
+
+### 实际输入与增强边界
+
+实际 import 来自不可变 AF release 中的 experiments/adv3b02_xuc/code/SSDG/train_ssdg.py 与其 leo_practical/channel.py、residual.py。实际 channel 配置为 Fs25MHz、fc2.462GHz、residual/post_sync、EQ关闭 G=1、reflect、质量适配/相位跟踪/IQ补偿开启、reference_snr_db30；正式测试没有改变。
+
+共同旧普通增强的 resolved 配置确实开启 use_aug、PA-normal（base p_pa0.14）、随机 CFO（base p_cfo0.35）、循环移位、增益/相位/相位噪声/AWGN/multipath/DC/taper；DAC p=0，class-signature=false。强度仍按既有 warmup/ramp 的 0.1 至 0.35 调度，不能把 base 参数当作全程实际概率。PA/CFO 是继承普通配方，不是已验证的新身份保持 A_g；NoExplicitCFO 特征路径约束继续保留。后续若改变该公共配方，须形成新的匹配控制，不静默把当前 B00 改名复用。
+
+As 从原始 x_l 产生，不从普通增强 IQ 产生，因此没有普通 AWGN/multipath 后再叠完整 practical；每个 RDrop 对复用同一份已生成 IQ，没有第二次重抽。所有 satellite L 包都接受真实标签监督，无置信门槛，不筛掉困难状态。旧普通增强输入 MSE 范围 0 至 3.850063，不能把非零 MSE 本身当作身份保持证据。
+
+### 判断、下一假设与未完成项
+
+已证实的范围：该固定 75/25 监督组织在 seed2026092701、RX1 源留出、默认头与匹配六前向条件下，提高 clean 和全部六种 practical 的整体识别。已否定的解释：收益不等于所有 TX 都改善、suburban 接近 clean、low urban 达到 60% 或 A_g 有效；也不证明用户新基线优于旧 F-only，因为此处没有该独立因子。
+
+当前唯一值得继续检验的假设是：固定配方的 clean 与 urban 净收益可在独立模型 seed 复现，而非本 seed 的类间错误重分配。下一最小实验是另行登记 seed2026092702 的同一源 RX1、同一 E20 B00/B01 配对，保持比例、信道、损失、U、默认头与前向控制，均从零。确认前不扩完整源、不读目标、不加入 Ag 或组合损失。若独立配对未同时达到原 low urban≥+5pp、urban均值≥+3pp、clean/每个suburban/seenV≥−0.5pp 与完整健康预算条件，则不晋级，不改 seed、RX 或比例救跑；该确认尚未启动。
+
+缺项仍为：有源证据的 A_g、B10/B11、交互项、正式完整源训练及 clean＋六 practical 的独立 truth-last 评分、跨 seed 确认、最终联合指标。当前 source ANALYZED 不等于正式实验／联合目标完成。
+
+完整曲线、七场景配对及全部 TX/day 图已生成并逐图检查，位于私有 local_artifacts/F_crossrx_satmix20_20261016/final；不提交预测、日志、checkpoint 或图像到 Git。可审查的汇总为 [source_analysis.json](source_analysis.json)，重算与绘图分别由 analysis.py、figures.py 完成。

@@ -1,0 +1,1181 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+  "actual_execution": "VERIFIED",
+  "source_only": true,
+  "model_seed": 2026092701,
+  "qualification": {
+    "qualified": true,
+    "conditions": {
+      "healthy": true,
+      "clean": true,
+      "low_urban": true,
+      "urban_mean": true,
+      "suburban": true,
+      "seen_V": true
+    },
+    "urban_mean_gain_pp": 13.095238095238095,
+    "seen_V_gain_pp": -0.004629629629626653
+  },
+  "scores": {
+    "B00": {
+      "clean": {
+        "count": 1260,
+        "accuracy": 0.8166666666666667,
+        "macro_F1": 0.8132632627192464,
+        "confusion": [
+          [
+            192,
+            12,
+            2,
+            1,
+            3,
+            0
+          ],
+          [
+            0,
+            179,
+            0,
+            28,
+            2,
+            1
+          ],
+          [
+            6,
+            0,
+            124,
+            0,
+            0,
+            80
+          ],
+          [
+            2,
+            81,
+            0,
+            126,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            210,
+            0
+          ],
+          [
+            0,
+            0,
+            8,
+            4,
+            0,
+            198
+          ]
+        ]
+      },
+      "practical_high": {
+        "count": 1260,
+        "accuracy": 0.39285714285714285,
+        "macro_F1": 0.2900593331587099,
+        "confusion": [
+          [
+            5,
+            0,
+            146,
+            35,
+            24,
+            0
+          ],
+          [
+            5,
+            2,
+            8,
+            143,
+            49,
+            3
+          ],
+          [
+            1,
+            0,
+            143,
+            1,
+            39,
+            26
+          ],
+          [
+            6,
+            1,
+            31,
+            162,
+            10,
+            0
+          ],
+          [
+            1,
+            0,
+            21,
+            16,
+            171,
+            1
+          ],
+          [
+            0,
+            0,
+            123,
+            0,
+            75,
+            12
+          ]
+        ]
+      },
+      "practical_mid": {
+        "count": 1260,
+        "accuracy": 0.3880952380952381,
+        "macro_F1": 0.29615368568760364,
+        "confusion": [
+          [
+            10,
+            0,
+            137,
+            36,
+            24,
+            3
+          ],
+          [
+            11,
+            5,
+            13,
+            125,
+            52,
+            4
+          ],
+          [
+            2,
+            2,
+            143,
+            2,
+            34,
+            27
+          ],
+          [
+            9,
+            1,
+            32,
+            152,
+            15,
+            1
+          ],
+          [
+            3,
+            1,
+            22,
+            15,
+            168,
+            1
+          ],
+          [
+            2,
+            0,
+            120,
+            1,
+            76,
+            11
+          ]
+        ]
+      },
+      "practical_low_suburban": {
+        "count": 1260,
+        "accuracy": 0.35714285714285715,
+        "macro_F1": 0.28343111740716526,
+        "confusion": [
+          [
+            12,
+            0,
+            137,
+            35,
+            24,
+            2
+          ],
+          [
+            15,
+            6,
+            19,
+            114,
+            49,
+            7
+          ],
+          [
+            2,
+            3,
+            131,
+            4,
+            38,
+            32
+          ],
+          [
+            11,
+            2,
+            40,
+            123,
+            28,
+            6
+          ],
+          [
+            3,
+            0,
+            31,
+            15,
+            160,
+            1
+          ],
+          [
+            0,
+            0,
+            116,
+            2,
+            74,
+            18
+          ]
+        ]
+      },
+      "practical_high_urban": {
+        "count": 1260,
+        "accuracy": 0.3896825396825397,
+        "macro_F1": 0.3013481532940267,
+        "confusion": [
+          [
+            9,
+            1,
+            152,
+            27,
+            21,
+            0
+          ],
+          [
+            10,
+            5,
+            8,
+            133,
+            48,
+            6
+          ],
+          [
+            2,
+            1,
+            129,
+            5,
+            45,
+            28
+          ],
+          [
+            1,
+            2,
+            25,
+            168,
+            13,
+            1
+          ],
+          [
+            2,
+            1,
+            25,
+            17,
+            162,
+            3
+          ],
+          [
+            3,
+            1,
+            106,
+            0,
+            82,
+            18
+          ]
+        ]
+      },
+      "practical_mid_urban": {
+        "count": 1260,
+        "accuracy": 0.31507936507936507,
+        "macro_F1": 0.26653873717670934,
+        "confusion": [
+          [
+            20,
+            1,
+            112,
+            28,
+            42,
+            7
+          ],
+          [
+            20,
+            7,
+            17,
+            99,
+            52,
+            15
+          ],
+          [
+            16,
+            4,
+            105,
+            16,
+            39,
+            30
+          ],
+          [
+            19,
+            3,
+            26,
+            119,
+            30,
+            13
+          ],
+          [
+            21,
+            8,
+            29,
+            20,
+            123,
+            9
+          ],
+          [
+            3,
+            1,
+            107,
+            1,
+            75,
+            23
+          ]
+        ]
+      },
+      "practical_low_urban": {
+        "count": 1260,
+        "accuracy": 0.2857142857142857,
+        "macro_F1": 0.2495293617222908,
+        "confusion": [
+          [
+            28,
+            6,
+            90,
+            27,
+            41,
+            18
+          ],
+          [
+            33,
+            8,
+            28,
+            60,
+            65,
+            16
+          ],
+          [
+            18,
+            6,
+            93,
+            19,
+            45,
+            29
+          ],
+          [
+            25,
+            7,
+            23,
+            92,
+            47,
+            16
+          ],
+          [
+            19,
+            7,
+            31,
+            25,
+            118,
+            10
+          ],
+          [
+            13,
+            4,
+            91,
+            9,
+            72,
+            21
+          ]
+        ]
+      }
+    },
+    "B01": {
+      "clean": {
+        "count": 1260,
+        "accuracy": 0.8476190476190476,
+        "macro_F1": 0.8466804618936644,
+        "confusion": [
+          [
+            181,
+            19,
+            4,
+            5,
+            1,
+            0
+          ],
+          [
+            2,
+            185,
+            0,
+            21,
+            1,
+            1
+          ],
+          [
+            7,
+            0,
+            155,
+            0,
+            0,
+            48
+          ],
+          [
+            0,
+            83,
+            0,
+            127,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            210,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            210
+          ]
+        ]
+      },
+      "practical_high": {
+        "count": 1260,
+        "accuracy": 0.6253968253968254,
+        "macro_F1": 0.6106437498292469,
+        "confusion": [
+          [
+            76,
+            2,
+            84,
+            44,
+            3,
+            1
+          ],
+          [
+            6,
+            184,
+            1,
+            16,
+            1,
+            2
+          ],
+          [
+            38,
+            3,
+            98,
+            7,
+            0,
+            64
+          ],
+          [
+            5,
+            68,
+            0,
+            124,
+            13,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            209,
+            0
+          ],
+          [
+            0,
+            0,
+            58,
+            0,
+            55,
+            97
+          ]
+        ]
+      },
+      "practical_mid": {
+        "count": 1260,
+        "accuracy": 0.5801587301587302,
+        "macro_F1": 0.5652688943479863,
+        "confusion": [
+          [
+            71,
+            3,
+            86,
+            45,
+            2,
+            3
+          ],
+          [
+            10,
+            181,
+            0,
+            14,
+            4,
+            1
+          ],
+          [
+            43,
+            3,
+            86,
+            10,
+            0,
+            68
+          ],
+          [
+            14,
+            63,
+            3,
+            114,
+            15,
+            1
+          ],
+          [
+            3,
+            6,
+            2,
+            1,
+            197,
+            1
+          ],
+          [
+            1,
+            0,
+            65,
+            0,
+            62,
+            82
+          ]
+        ]
+      },
+      "practical_low_suburban": {
+        "count": 1260,
+        "accuracy": 0.5595238095238095,
+        "macro_F1": 0.5449168090565776,
+        "confusion": [
+          [
+            80,
+            3,
+            82,
+            41,
+            2,
+            2
+          ],
+          [
+            14,
+            163,
+            2,
+            25,
+            6,
+            0
+          ],
+          [
+            49,
+            11,
+            71,
+            15,
+            7,
+            57
+          ],
+          [
+            17,
+            64,
+            5,
+            105,
+            18,
+            1
+          ],
+          [
+            0,
+            3,
+            1,
+            2,
+            203,
+            1
+          ],
+          [
+            2,
+            2,
+            61,
+            0,
+            62,
+            83
+          ]
+        ]
+      },
+      "practical_high_urban": {
+        "count": 1260,
+        "accuracy": 0.5738095238095238,
+        "macro_F1": 0.5589764093457965,
+        "confusion": [
+          [
+            69,
+            4,
+            87,
+            46,
+            4,
+            0
+          ],
+          [
+            11,
+            176,
+            2,
+            13,
+            4,
+            4
+          ],
+          [
+            45,
+            4,
+            71,
+            15,
+            8,
+            67
+          ],
+          [
+            9,
+            60,
+            1,
+            122,
+            18,
+            0
+          ],
+          [
+            5,
+            6,
+            4,
+            4,
+            191,
+            0
+          ],
+          [
+            3,
+            4,
+            49,
+            1,
+            59,
+            94
+          ]
+        ]
+      },
+      "practical_mid_urban": {
+        "count": 1260,
+        "accuracy": 0.44841269841269843,
+        "macro_F1": 0.4438037941635839,
+        "confusion": [
+          [
+            73,
+            11,
+            76,
+            37,
+            9,
+            4
+          ],
+          [
+            22,
+            131,
+            14,
+            24,
+            14,
+            5
+          ],
+          [
+            58,
+            18,
+            57,
+            15,
+            18,
+            44
+          ],
+          [
+            23,
+            62,
+            10,
+            86,
+            23,
+            6
+          ],
+          [
+            28,
+            11,
+            10,
+            16,
+            140,
+            5
+          ],
+          [
+            4,
+            8,
+            51,
+            1,
+            68,
+            78
+          ]
+        ]
+      },
+      "practical_low_urban": {
+        "count": 1260,
+        "accuracy": 0.3611111111111111,
+        "macro_F1": 0.35620185084393313,
+        "confusion": [
+          [
+            58,
+            15,
+            66,
+            38,
+            18,
+            15
+          ],
+          [
+            37,
+            89,
+            19,
+            23,
+            33,
+            9
+          ],
+          [
+            39,
+            30,
+            55,
+            21,
+            23,
+            42
+          ],
+          [
+            30,
+            54,
+            18,
+            75,
+            26,
+            7
+          ],
+          [
+            26,
+            19,
+            14,
+            21,
+            123,
+            7
+          ],
+          [
+            16,
+            13,
+            53,
+            3,
+            70,
+            55
+          ]
+        ]
+      }
+    }
+  },
+  "paired": {
+    "clean": {
+      "accuracy_gain_pp": 3.0952380952380953,
+      "macro_F1_gain_pp": 3.341719917441799,
+      "repaired": 66,
+      "broken": 27
+    },
+    "practical_high": {
+      "accuracy_gain_pp": 23.253968253968253,
+      "macro_F1_gain_pp": 32.05844166705369,
+      "repaired": 409,
+      "broken": 116
+    },
+    "practical_mid": {
+      "accuracy_gain_pp": 19.20634920634921,
+      "macro_F1_gain_pp": 26.91152086603827,
+      "repaired": 375,
+      "broken": 133
+    },
+    "practical_low_suburban": {
+      "accuracy_gain_pp": 20.238095238095237,
+      "macro_F1_gain_pp": 26.148569164941232,
+      "repaired": 375,
+      "broken": 120
+    },
+    "practical_high_urban": {
+      "accuracy_gain_pp": 18.412698412698408,
+      "macro_F1_gain_pp": 25.76282560517698,
+      "repaired": 374,
+      "broken": 142
+    },
+    "practical_mid_urban": {
+      "accuracy_gain_pp": 13.333333333333336,
+      "macro_F1_gain_pp": 17.726505698687454,
+      "repaired": 297,
+      "broken": 129
+    },
+    "practical_low_urban": {
+      "accuracy_gain_pp": 7.53968253968254,
+      "macro_F1_gain_pp": 10.667248912164235,
+      "repaired": 226,
+      "broken": 131
+    }
+  },
+  "suburban_gaps": {
+    "B00": {
+      "practical_high": {
+        "clean_minus_suburban_pp": 42.38095238095238,
+        "absolute_gap_pp": 42.38095238095238
+      },
+      "practical_mid": {
+        "clean_minus_suburban_pp": 42.857142857142854,
+        "absolute_gap_pp": 42.857142857142854
+      },
+      "practical_low_suburban": {
+        "clean_minus_suburban_pp": 45.95238095238095,
+        "absolute_gap_pp": 45.95238095238095
+      }
+    },
+    "B01": {
+      "practical_high": {
+        "clean_minus_suburban_pp": 22.22222222222222,
+        "absolute_gap_pp": 22.22222222222222
+      },
+      "practical_mid": {
+        "clean_minus_suburban_pp": 26.74603174603174,
+        "absolute_gap_pp": 26.74603174603174
+      },
+      "practical_low_suburban": {
+        "clean_minus_suburban_pp": 28.809523809523807,
+        "absolute_gap_pp": 28.809523809523807
+      }
+    }
+  },
+  "execution": {
+    "B00": {
+      "full_steps": 4440,
+      "full_epochs": 20,
+      "raw_native_epochs": 20,
+      "full_stdout_lines": 800,
+      "stdout_warnings": [],
+      "native_nonfinite_placeholder_fields": [],
+      "all_step_numeric_values_finite_or_explicit_null": true,
+      "max_loss_scale_recount_error": 3.8743019104003906e-07,
+      "supcon_layer_forward_terms": 13320,
+      "As_training_observations": 0,
+      "As_source_eval_observations": 7560,
+      "physical_observations": {
+        "L": 568320,
+        "U": 396368
+      },
+      "unique_physical_training": {
+        "L": 5040,
+        "U": 45360
+      },
+      "L_batches": 4440,
+      "U_batches": 1554,
+      "teacher_inherited_counter_offset_removed": 2,
+      "actual_network_forward_packets": 4686678,
+      "instrumented_counters": {
+        "student_train_forward_packets": 3806288,
+        "student_eval_forward_packets": 475202,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 396370
+      },
+      "held_forward_packets": 8820,
+      "elapsed_training_seconds": 1273.977374792099,
+      "final_L_CE": 0.27736578274283324,
+      "seen_V": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.980462962962963,
+        "source_val_rx_accuracy": {
+          "3": 0.9542592592592593,
+          "4": 0.9857407407407407,
+          "6": 0.9959259259259259,
+          "8": 0.9859259259259259
+        },
+        "source_val_worst_rx": 0.9542592592592593,
+        "held_RX_excluded": true
+      },
+      "ordinary_augmentation": {
+        "use_aug": true,
+        "base_config": {
+          "p_dac": 0.0,
+          "p_pa": 0.14,
+          "enable_class_signature": false,
+          "class_sig_mix": 0.1,
+          "seed": 2026092701,
+          "p_time_shift": 0.35,
+          "max_time_shift": 32,
+          "p_amp_scale": 0.45,
+          "amp_min": 0.9,
+          "amp_max": 1.1,
+          "p_phase_rot": 0.45,
+          "p_cfo": 0.35,
+          "cfo_max": 0.0004,
+          "p_phase_noise": 0.3,
+          "phase_noise_sigma_max": 0.006,
+          "p_awgn": 0.4,
+          "snr_min_db": 20.0,
+          "snr_max_db": 36.0,
+          "p_multipath": 0.18,
+          "mp_taps_min": 2,
+          "mp_taps_max": 4,
+          "mp_delay_max": 4,
+          "p_dc_offset": 0.3,
+          "dc_offset_max": 0.02,
+          "p_bandedge_taper": 0.25,
+          "taper_alpha_min": 0.02,
+          "taper_alpha_max": 0.1,
+          "defect_apply_channel": false,
+          "dac_only_apply_anti_shortcut": false,
+          "dac_only_apply_channel": false,
+          "pa_only_apply_anti_shortcut": false,
+          "pa_only_apply_channel": false,
+          "dac_pa_apply_anti_shortcut": true,
+          "dac_pa_apply_channel": true
+        },
+        "args": {
+          "aug_enable_class_signature": false,
+          "aug_enable_pa_normal": true,
+          "aug_dac_only_apply_anti_shortcut": false,
+          "aug_dac_only_apply_channel": false,
+          "aug_pa_only_apply_anti_shortcut": false,
+          "aug_pa_only_apply_channel": false,
+          "aug_dac_pa_apply_anti_shortcut": true,
+          "aug_dac_pa_apply_channel": true,
+          "aug_scale_min": 0.1,
+          "aug_scale_max": 0.35,
+          "aug_warmup_epochs": 3,
+          "aug_ramp_epochs": 15,
+          "aug_ramp_curve": 1.25,
+          "aug_p_dac": 0.0,
+          "aug_p_pa": 0.14,
+          "aug_class_sig_mix": 0.1,
+          "aug_p_time_shift": 0.35,
+          "aug_max_time_shift": 32,
+          "aug_p_amp_scale": 0.45,
+          "aug_amp_min": 0.9,
+          "aug_amp_max": 1.1,
+          "aug_p_phase_rot": 0.45,
+          "aug_p_cfo": 0.35,
+          "aug_cfo_max": 0.0004,
+          "aug_p_phase_noise": 0.3,
+          "aug_phase_noise_sigma_max": 0.006,
+          "aug_p_awgn": 0.4,
+          "aug_snr_min_db": 20.0,
+          "aug_snr_max_db": 36.0,
+          "aug_p_multipath": 0.18,
+          "aug_mp_taps_min": 2,
+          "aug_mp_taps_max": 4,
+          "aug_mp_delay_max": 4,
+          "aug_p_dc_offset": 0.3,
+          "aug_dc_offset_max": 0.02,
+          "aug_p_bandedge_taper": 0.25,
+          "aug_taper_alpha_min": 0.02,
+          "aug_taper_alpha_max": 0.1,
+          "aug_dac_jitter_max": 0.002,
+          "aug_dac_poly_a3": 0.12,
+          "aug_dac_poly_a5": 0.03,
+          "aug_dac_iq_img_max": 0.04,
+          "aug_dac_inter_gain_max": 0.03,
+          "aug_dac_inter_off_max": 0.008,
+          "aug_dac_inter_skew_max": 0.05,
+          "aug_dac_dither": 0.002,
+          "aug_dac_inl_warp": 0.03,
+          "aug_dac_spur_amp_max": 0.012,
+          "aug_dac_slew_max": 0.18,
+          "aug_pa_mp_sigma": 0.05,
+          "aug_pa_mem_sigma": 0.04,
+          "aug_pa_ampm_max": 0.2,
+          "aug_pa_iq_img_max": 0.02
+        },
+        "input_MSE_min": 0.0,
+        "input_MSE_max": 3.8500633239746094,
+        "no_second_pair_redraw": true,
+        "practical_input_is_raw": true
+      }
+    },
+    "B01": {
+      "full_steps": 4440,
+      "full_epochs": 20,
+      "raw_native_epochs": 20,
+      "full_stdout_lines": 800,
+      "stdout_warnings": [],
+      "native_nonfinite_placeholder_fields": [],
+      "all_step_numeric_values_finite_or_explicit_null": true,
+      "max_loss_scale_recount_error": 2.384185791015625e-07,
+      "supcon_layer_forward_terms": 13320,
+      "As_training_observations": 568320,
+      "As_source_eval_observations": 7560,
+      "physical_observations": {
+        "L": 568320,
+        "U": 396368
+      },
+      "unique_physical_training": {
+        "L": 5040,
+        "U": 45360
+      },
+      "L_batches": 4440,
+      "U_batches": 1554,
+      "teacher_inherited_counter_offset_removed": 2,
+      "actual_network_forward_packets": 4686678,
+      "instrumented_counters": {
+        "student_train_forward_packets": 3806288,
+        "student_eval_forward_packets": 475202,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 396370
+      },
+      "held_forward_packets": 8820,
+      "elapsed_training_seconds": 2197.80517578125,
+      "final_L_CE": 0.2760384576479057,
+      "seen_V": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.9804166666666667,
+        "source_val_rx_accuracy": {
+          "3": 0.9564814814814815,
+          "4": 0.9840740740740741,
+          "6": 0.9948148148148148,
+          "8": 0.9862962962962963
+        },
+        "source_val_worst_rx": 0.9564814814814815,
+        "held_RX_excluded": true
+      },
+      "ordinary_augmentation": {
+        "use_aug": true,
+        "base_config": {
+          "p_dac": 0.0,
+          "p_pa": 0.14,
+          "enable_class_signature": false,
+          "class_sig_mix": 0.1,
+          "seed": 2026092701,
+          "p_time_shift": 0.35,
+          "max_time_shift": 32,
+          "p_amp_scale": 0.45,
+          "amp_min": 0.9,
+          "amp_max": 1.1,
+          "p_phase_rot": 0.45,
+          "p_cfo": 0.35,
+          "cfo_max": 0.0004,
+          "p_phase_noise": 0.3,
+          "phase_noise_sigma_max": 0.006,
+          "p_awgn": 0.4,
+          "snr_min_db": 20.0,
+          "snr_max_db": 36.0,
+          "p_multipath": 0.18,
+          "mp_taps_min": 2,
+          "mp_taps_max": 4,
+          "mp_delay_max": 4,
+          "p_dc_offset": 0.3,
+          "dc_offset_max": 0.02,
+          "p_bandedge_taper": 0.25,
+          "taper_alpha_min": 0.02,
+          "taper_alpha_max": 0.1,
+          "defect_apply_channel": false,
+          "dac_only_apply_anti_shortcut": false,
+          "dac_only_apply_channel": false,
+          "pa_only_apply_anti_shortcut": false,
+          "pa_only_apply_channel": false,
+          "dac_pa_apply_anti_shortcut": true,
+          "dac_pa_apply_channel": true
+        },
+        "args": {
+          "aug_enable_class_signature": false,
+          "aug_enable_pa_normal": true,
+          "aug_dac_only_apply_anti_shortcut": false,
+          "aug_dac_only_apply_channel": false,
+          "aug_pa_only_apply_anti_shortcut": false,
+          "aug_pa_only_apply_channel": false,
+          "aug_dac_pa_apply_anti_shortcut": true,
+          "aug_dac_pa_apply_channel": true,
+          "aug_scale_min": 0.1,
+          "aug_scale_max": 0.35,
+          "aug_warmup_epochs": 3,
+          "aug_ramp_epochs": 15,
+          "aug_ramp_curve": 1.25,
+          "aug_p_dac": 0.0,
+          "aug_p_pa": 0.14,
+          "aug_class_sig_mix": 0.1,
+          "aug_p_time_shift": 0.35,
+          "aug_max_time_shift": 32,
+          "aug_p_amp_scale": 0.45,
+          "aug_amp_min": 0.9,
+          "aug_amp_max": 1.1,
+          "aug_p_phase_rot": 0.45,
+          "aug_p_cfo": 0.35,
+          "aug_cfo_max": 0.0004,
+          "aug_p_phase_noise": 0.3,
+          "aug_phase_noise_sigma_max": 0.006,
+          "aug_p_awgn": 0.4,
+          "aug_snr_min_db": 20.0,
+          "aug_snr_max_db": 36.0,
+          "aug_p_multipath": 0.18,
+          "aug_mp_taps_min": 2,
+          "aug_mp_taps_max": 4,
+          "aug_mp_delay_max": 4,
+          "aug_p_dc_offset": 0.3,
+          "aug_dc_offset_max": 0.02,
+          "aug_p_bandedge_taper": 0.25,
+          "aug_taper_alpha_min": 0.02,
+          "aug_taper_alpha_max": 0.1,
+          "aug_dac_jitter_max": 0.002,
+          "aug_dac_poly_a3": 0.12,
+          "aug_dac_poly_a5": 0.03,
+          "aug_dac_iq_img_max": 0.04,
+          "aug_dac_inter_gain_max": 0.03,
+          "aug_dac_inter_off_max": 0.008,
+          "aug_dac_inter_skew_max": 0.05,
+          "aug_dac_dither": 0.002,
+          "aug_dac_inl_warp": 0.03,
+          "aug_dac_spur_amp_max": 0.012,
+          "aug_dac_slew_max": 0.18,
+          "aug_pa_mp_sigma": 0.05,
+          "aug_pa_mem_sigma": 0.04,
+          "aug_pa_ampm_max": 0.2,
+          "aug_pa_iq_img_max": 0.02
+        },
+        "input_MSE_min": 0.0,
+        "input_MSE_max": 3.8500633239746094,
+        "no_second_pair_redraw": true,
+        "practical_input_is_raw": true
+      }
+    }
+  },
+  "all_L_U_sequences_identical": true,
+  "native_argument_differences": [
+    "output_dir",
+    "candidate_id"
+  ],
+  "new_model_epochs": 40,
+  "new_optimizer_updates": 8880,
+  "dispatcher_smoke_NN_packets": 2,
+  "total_actual_NN_forward_packets": 9373358,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "joint_goal_complete": false,
+  "missing": [
+    "Ag candidate",
+    "B10/B11",
+    "factorial interaction",
+    "formal target clean+six practical",
+    "multi-seed confirmation"
+  ],
+  "analysis_module": "experiments/cvs_crossrx_satmix20/analysis.py",
+  "figure_module": "experiments/cvs_crossrx_satmix20/figures.py"
+}
