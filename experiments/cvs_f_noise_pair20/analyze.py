@@ -29,6 +29,13 @@ def describe(v):
  def q(p):return v[min(n-1,int(p*(n-1)))] if n else None
  return dict(count=n,min=q(0),p10=q(.1),median=q(.5),p90=q(.9),max=q(1),mean=statistics.fmean(v) if n else None)
 
+def gradient_record(metrics):
+ keys={"grad_before_clip":"train/grad_before_clip","grad_after_clip":"train/grad_total","grad_backbone_after_clip":"train/grad_backbone","grad_clip_limit":"train/grad_clip_limit"}
+ values={k:metrics.get(v) for k,v in keys.items()}
+ # Native finite norm telemetry only;never a new scientific threshold.
+ assert all(type(x) in (int,float) and math.isfinite(x) and x>=0 for x in values.values()) and values["grad_clip_limit"]>0
+ return dict(values,grad_pre_exceeds_limit=float(values["grad_before_clip"]>values["grad_clip_limit"]))
+
 COMMON=('physical_id','TX','RX','day','step','epoch','scene','session','state','lock','quality_snr_db','output_frequency_hz','residual_scale','residual_kernel_energy','residual_kernel_length','numerical_filter_latency_samples','boundary','phase_tracking_applied','iq_compensation_applied','EQ','G','nonnoise_latents_shared','AGC_recomputed_per_view','added_noise_variance_reference')
 def pair_valid(a,b):
  assert a['view']==0 and b['view']==1 and all(a[k]==b[k] for k in COMMON)
@@ -70,7 +77,7 @@ def analyze(root):
   assert [x['epoch'] for x in native]==list(range(1,21)) and len(compact)==len(table)==20
   for a,b,c in zip(native,compact,table):
    for k in ('train_loss_tx_labeled','train_loss_unlabeled','val_tx_acc','lr'):assert math.isclose(float(a[k]),float(b[k]),abs_tol=1e-10) and math.isclose(float(a[k]),float(c[k]),abs_tol=1e-10)
-  counts=terms=truth=skips=0;formula_error=base_error=0.;agg={}
+  counts=terms=truth=skips=0;formula_error=base_error=0.;agg={};gradients=[]
   for n,v,u in zip_longest(stream(src/'step_metrics.jsonl.gz'),stream(src/'satmix_steps.jsonl.gz'),stream(src/'unit_steps.jsonl.gz')):
    assert n is not None and v is not None and u is not None;counts+=1;finite(n);finite(v);finite(u);assert n['step']==v['step']==u['step']==counts and u['physical_clip_calls']==counts
    epoch=(counts-1)//222+1;weight=.1*min(max((epoch-5)/10,0.),1.);assert v['epoch']==epoch and v['same_IQ_pairs'] and v['all_L_supervised'] and v['extra_same_IQ_pair'] and not v['cross_noise_KL'] and v['L_forwards_per_sample']==10 and v['extra_pair_count']==2
@@ -81,7 +88,8 @@ def analyze(root):
    base_error=max(base_error,abs(base-v['base_total_L']));formula_error=max(formula_error,abs(extra-v['extra_pair_loss']),abs(total-v['total_L']),abs(.25*extra-v['extra_pair_weighted']),abs(v['extra_pair_CE']-.5*(v['extra_pair0_CE']+v['extra_pair1_CE'])),abs(v['extra_pair_KL']-.5*(v['extra_pair0_KL']+v['extra_pair1_KL'])))
    for k in ('base_total_L','extra_pair_CE','extra_pair_KL','extra_pair_loss','extra_pair_weighted','total_L','extra_As_packets','extra_raw_MSE','noise_view_pair_MSE'):assert math.isclose(float(n['metrics']['satmix/'+k]),v[k],abs_tol=1e-6)
    truth+=int(n['metrics'].get('train/pseudo_truth_available',0) or 0);skips+=int(n['metrics'].get('train/skipped_nonfinite_loss',0) or n['metrics'].get('train/skipped_nonfinite_grad',0) or 0)
-   sums=agg.setdefault(epoch,{})
+   g=gradient_record(n['metrics']);gradients.append(g);sums=agg.setdefault(epoch,{})
+   for k,value in g.items():sums[k]=sums.get(k,0.)+value/222
    for k in ('total_L','base_total_L','raw_CE','ordinary_CE','s_slot_CE','supcon','extra_pair_CE','extra_pair_KL','extra_pair_loss','extra_pair0_CE','extra_pair1_CE','extra_pair0_KL','extra_pair1_KL','extra_raw_MSE','noise_view_pair_MSE'):sums[k]=sums.get(k,0.)+v[k]/222
   assert counts==4440 and terms==13320 and truth==skips==0 and formula_error<1e-5 and base_error<1e-5 and math.isclose(agg[20]['base_total_L'],r['final_base_L_objective'],abs_tol=1e-8)
   for v in compact:curves.append(dict(arm=arm,**v,**agg[v['epoch']]))
@@ -97,7 +105,7 @@ def analyze(root):
   coverage=read(src/'satellite_supervision_coverage.json');assert coverage['total']==r['As_training_observations'] and not coverage['confidence_gate'] and coverage['all_legal_L_supervised']
   counters={k:r[k] for k in ('student_train_forward_packets','student_eval_forward_packets','teacher_train_forward_packets','teacher_eval_forward_packets')};NN=sum(counters.values())-2+r['held_forward_packets'];assert counters['student_train_forward_packets']==5683200+obs['U'] and NN==6959958
   stdout=(root/'logs'/(arm+'-RX1-s'+str(SEED)+'.stdout.log')).read_text(encoding='utf8',errors='replace');assert 'SMOKE PASS own scratch checkpoint; query_read=false' in stdout and not any(v in stdout for v in ('Traceback (most recent call last)','CUDA out of memory','FloatingPointError','SIGKILL'))
-  execution[arm]=dict(epochs=20,optimizer_updates=4440,actual_network_forward_packets=NN,L_network_packets=r['L_forward_packets'],extra_L_network_packets=r['extra_L_forward_packets'],held_forward_packets=r['held_forward_packets'],native_elapsed_seconds=r['elapsed_seconds'],teacher_counter_offset_removed=2,instrumented_counters=counters,physical_observations=dict(obs),unique_physical_packets={k:len(v) for k,v in unique.items()},seen_V=r['seen_V'],final_base_L_objective=r['final_base_L_objective'],full_epochs_parsed=20,full_steps_parsed=4440,stdout_lines=len(stdout.splitlines()),formula_error=formula_error,base_formula_error=base_error,teacher_noise_pair_calls=0)
+  execution[arm]=dict(epochs=20,optimizer_updates=4440,actual_network_forward_packets=NN,L_network_packets=r['L_forward_packets'],extra_L_network_packets=r['extra_L_forward_packets'],held_forward_packets=r['held_forward_packets'],native_elapsed_seconds=r['elapsed_seconds'],teacher_counter_offset_removed=2,instrumented_counters=counters,physical_observations=dict(obs),unique_physical_packets={k:len(v) for k,v in unique.items()},seen_V=r['seen_V'],final_base_L_objective=r['final_base_L_objective'],full_epochs_parsed=20,full_steps_parsed=4440,stdout_lines=len(stdout.splitlines()),formula_error=formula_error,base_formula_error=base_error,teacher_noise_pair_calls=0,gradient_health=dict(measured_steps=len(gradients),norms={k:describe([g[k] for g in gradients]) for k in ('grad_before_clip','grad_after_clip','grad_backbone_after_clip','grad_clip_limit')},pre_norm_exceeds_limit_count=int(sum(g['grad_pre_exceeds_limit'] for g in gradients)),pre_norm_exceeds_limit_fraction=sum(g['grad_pre_exceeds_limit'] for g in gradients)/len(gradients),zero_after_clip_count=sum(g['grad_after_clip']==0 for g in gradients),interpretation='Native whole-model/backbone norm telemetry;not gradient covariance or causal attribution;original scientific criteria unchanged'))
  assert all(contracts[a]==contracts['RAW10'] for a in ARMS)
  argdiff={a:sorted(k for k in set(arguments[a])|set(arguments['RAW10']) if arguments[a].get(k)!=arguments['RAW10'].get(k)) for a in ARMS[1:]};assert all(set(v)<=set(('candidate_id','output_dir')) for v in argdiff.values())
  for view in VIEWS:

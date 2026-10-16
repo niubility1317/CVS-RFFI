@@ -65,6 +65,13 @@ def draw(root,output):
   if a!='RAW10':axes[1,1].plot(e,[float(x['noise_view_pair_MSE']) for x in rows],color=COLORS[a],label=a)
  axes[1,0].set_title('Mean extra-view CE, all 4440 updates / arm');axes[1,0].set_ylabel('Label-smoothed CE');axes[1,1].set_title('Observed two-view IQ distance after receiver/AGC');axes[1,1].set_ylabel('Mean squared IQ difference')
  for ax in axes[1]:ax.set_xlabel('Epoch');ax.set_xticks([1,5,10,13,15,20]);ax.grid(alpha=.2);ax.legend(fontsize=8)
- save(fig,'noise_training_and_coverage');return names
+ save(fig,'noise_training_and_coverage')
+ fig,axes=plt.subplots(1,3,figsize=(14,4.5),constrained_layout=True)
+ for a in ARMS:
+  rows=[x for x in curves if x['arm']==a];e=[int(x['epoch']) for x in rows]
+  axes[0].plot(e,[float(x['grad_before_clip']) for x in rows],color=COLORS[a],label=a);axes[1].plot(e,[float(x['grad_after_clip']) for x in rows],color=COLORS[a],label=a);axes[2].plot(e,[100*float(x['grad_pre_exceeds_limit']) for x in rows],color=COLORS[a],label=a)
+ for ax,title in zip(axes,('Mean whole-model norm before clipping','Mean native total norm after clipping','Updates with pre-norm above original limit')):
+  ax.set_title(title);ax.set_xlabel('Epoch');ax.set_xticks([1,5,10,13,15,20]);ax.grid(alpha=.2);ax.legend(fontsize=8);ax.axvline(13.5,color='grey',ls=':',lw=.7)
+ axes[0].set_ylabel('Gradient L2 norm');axes[1].set_ylabel('Gradient L2 norm');axes[2].set_ylabel('Updates (%)');save(fig,'gradient_health');return names
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--input',required=True);p.add_argument('--output',required=True);a=p.parse_args();print(json.dumps(draw(a.input,a.output)))

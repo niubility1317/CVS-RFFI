@@ -1,6 +1,6 @@
 """Independent-scoring protocol negatives and exact threshold oracles;0NN."""
 from copy import deepcopy
-from .analyze import pair_valid,independent_qualify,ARMS,VIEWS,FIT
+from .analyze import pair_valid,independent_qualify,gradient_record,ARMS,VIEWS,FIT
 
 def run():
  negative=0
@@ -24,6 +24,10 @@ def run():
   ss=deepcopy(scores);ss[arm][view][key]=value;assert not independent_qualify(results,ss)['qualified'];negative+=1
  for key,value in [('extra_L_forward_packets',1136640),('teacher_noise_pair_calls',1),('head_fit_updates',1),('target_access',True),('actual_steps',4439)]:
   rr=deepcopy(results);rr['ANTI'][key]=value;assert not independent_qualify(rr,scores)['qualified'];negative+=1
+ gg={'train/grad_before_clip':10.,'train/grad_total':5.,'train/grad_backbone':5.,'train/grad_clip_limit':5.};assert gradient_record(gg)['grad_pre_exceeds_limit']==1.
+ assert gradient_record(dict(gg,**{'train/grad_before_clip':5.}))['grad_pre_exceeds_limit']==0.
+ for key,value in [('train/grad_before_clip',None),('train/grad_total',float('nan')),('train/grad_backbone',-1.),('train/grad_clip_limit',0.)]:
+  bad=dict(gg);bad[key]=value;rejects(lambda bad=bad:gradient_record(bad))
  return dict(status='PASS',negative_cases=negative,independent_variance_training_gate_boundary=True,per_view_AGC_difference_allowed=True,old8L_counter_rejected=True,new_NN=0,updates=0,IQ_reads=0,target_access=False)
 if __name__=='__main__':
  import json
