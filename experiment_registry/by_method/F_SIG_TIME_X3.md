@@ -2,6 +2,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|F＋跨 RX 配对星地：其余四源折 E20 确认|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/report.md)|
 |F＋跨 RX 同 TX：配对 practical 的源 RX1 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/report.md)|
 |F/E20：有界观察原点抖动的源 RX1 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-F-origin-jitter-RX1-e20-s2026092701-m1-r01/report.md)|
 |F 公共相位与观察窗原点：完整源域分解|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-F-phase-origin-source-RX1-s2026092701-m2-r02/report.md)|

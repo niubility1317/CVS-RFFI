@@ -74,3 +74,5 @@ C0已完成E20及七源视图、默认头独立复算：held RX1 clean83.444444%
 只支持另登记源确认，不自动扩target或宣称Ag有效。 真正Ag/As四格及其交互尚未执行，联合目标保持active。
 
 下一项源确认的固定问题：保持当前F+CROSS_RX／E20／pairedAs配方不变，在held RX3/4/6/8各新C0/C1确认，并复用RX1结果。逐折沿用同一通过条件，任一源折失败不声称稳定跨RX，不换失败折或seed救援。该八row矩阵目前尚未发布；后续独立Ag和四格交互仍未证明。当前主要收益在LOS/PARTIAL/locked，BLOCKED/unlocked改善较小，lowurban TX2下降20.5556pp必须保留。
+
+剩余源确认已登记并通过本地聚焦验证／一次限定P0P1，run 20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01；8新scratchE20，原RX1结果仅复用、不加载其权重。动态held源角色和4worker调度已实现，F/SupCon/As原数学及随机流保持，原RX1逐包等价验证通过。当前LOCAL_VERIFIED_NOT_RUN。[预登记](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/report.md)。

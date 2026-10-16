@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v1",
-  "status": "SOURCE_PAIR_ANALYZED",
+  "status": "SOURCE_CONFIRMATION_IMPLEMENTED_NOT_RUN",
   "authorization": "User changed the pre-augmentation baseline to F plus cross-RX same-TX contrastive learning on 2026-10-16; existing E20 budget remains in force.",
   "baseline_name": "F+CROSS_RX_SUPCON",
   "existing_mechanism_source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
@@ -106,7 +106,7 @@
     "formal_IQ_channel_SNR_boundary": "unchanged",
     "goal_completed": false
   },
-  "execution_boundary": "Both scratch source E20 rows analyzed; source outcome only. Full-source formal clean+6practical/crossseed and independent Ag/B00-B10-B01-B11 NOT_RUN; joint goal unproven.",
+  "execution_boundary": "RX1 source pair analyzed PASS; eight-row remaining-source confirmation implemented and locally verified,not launched. Formal fullsource/target/crossseed/independentAg/fourcell joint goal unproven.",
   "full_source_status": "NOT_RUN",
   "source_pair": {
     "run_id": "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01",
@@ -145,5 +145,20 @@
       "goal_completed": false
     },
     "report": "automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/report.md"
+  },
+  "source_confirmation": {
+    "run_id": "20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01",
+    "new_held_RX": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "model_seed": 2026092701,
+    "new_rows": 8,
+    "epochs_each": 20,
+    "status": "LOCAL_VERIFIED_NOT_RUN",
+    "reference_RX1": "frozen results only, no weights",
+    "all_five_folds_must_pass": true
   }
 }
