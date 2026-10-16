@@ -1,0 +1,48 @@
+{
+  "status": "VERIFIED_CONTROL_COMPARISON_ONLY",
+  "all_L_U_physical_sequences_equal": true,
+  "native_arg_differences": [
+    "output_dir",
+    "candidate_id"
+  ],
+  "paired": {
+    "clean": {
+      "D_raw_minus_D00_pp": -1.4285714285714286,
+      "repaired": 20,
+      "broken": 38
+    },
+    "practical_high": {
+      "D_raw_minus_D00_pp": 0.31746031746031744,
+      "repaired": 30,
+      "broken": 26
+    },
+    "practical_mid": {
+      "D_raw_minus_D00_pp": -0.23809523809523808,
+      "repaired": 24,
+      "broken": 27
+    },
+    "practical_low_suburban": {
+      "D_raw_minus_D00_pp": -0.6349206349206349,
+      "repaired": 26,
+      "broken": 34
+    },
+    "practical_high_urban": {
+      "D_raw_minus_D00_pp": 0.6349206349206349,
+      "repaired": 31,
+      "broken": 23
+    },
+    "practical_mid_urban": {
+      "D_raw_minus_D00_pp": -0.873015873015873,
+      "repaired": 19,
+      "broken": 30
+    },
+    "practical_low_urban": {
+      "D_raw_minus_D00_pp": 0.0,
+      "repaired": 30,
+      "broken": 30
+    }
+  },
+  "As_comparison_available": false,
+  "model_forward_packets": 0,
+  "target_access": false
+}

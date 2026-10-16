@@ -63,3 +63,54 @@ CWD /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_additiveAs_
 
 
 远端runtime.json的confirmation_seed02已独立读回；三row实际native与resolved model_seed均2026092702，initialization均scratch_only且checkpoint_sources/ancestors为空、无target_contact。实际F构造配置seed02的本地state验证与已提交runtime接线一致，未将首轮smoke权重用于训练。
+
+
+## 已完成行的独立源读出：D_raw-RX1-s2026092702
+
+此行已完成E20/4440更新、七源视图及8820固定预测的完整独立复算，进程自然结束。矩阵其他行仍运行，尚无完整As比较，不据此改变训练或选择配方。
+
+| 场景 | Accuracy % | Macro-F1 % |
+|---|---:|---:|
+| clean | 81.190476 | 81.080657 |
+| practical_high | 37.698413 | 31.713206 |
+| practical_mid | 37.142857 | 31.601767 |
+| practical_low_suburban | 34.920635 | 29.868069 |
+| practical_high_urban | 38.492063 | 33.810567 |
+| practical_mid_urban | 30.158730 | 26.469637 |
+| practical_low_urban | 27.380952 | 24.317261 |
+
+实际L NN 4546560，extra L NN 1136640，含原U/EMA/V/held的实际NN 5823318。第一ordinary平滑CE 0.3171610871145317，共同base完整目标 0.3372762059574729；二者口径不同。未访问target或拟合任何头。
+
+
+## 已完成行的独立源读出：D00-RX1-s2026092702
+
+此行已完成E20/4440更新、七源视图及8820固定预测的完整独立复算，进程自然结束。矩阵其他行仍运行，尚无完整As比较，不据此改变训练或选择配方。
+
+| 场景 | Accuracy % | Macro-F1 % |
+|---|---:|---:|
+| clean | 82.619048 | 82.627195 |
+| practical_high | 37.380952 | 31.501339 |
+| practical_mid | 37.380952 | 32.055336 |
+| practical_low_suburban | 35.555556 | 30.498361 |
+| practical_high_urban | 37.857143 | 32.985774 |
+| practical_mid_urban | 31.031746 | 27.294329 |
+| practical_low_urban | 27.380952 | 24.317713 |
+
+实际L NN 4546560，extra L NN 1136640，含原U/EMA/V/held的实际NN 5823318。第一ordinary平滑CE 0.31106840960077337，共同base完整目标 0.3340985238686338；二者口径不同。未访问target或拟合任何头。
+
+
+## seed02 两个控制组的完整匹配比较
+
+两行均已自然退出并完成全部七源视图，完整 8880 步与 17640 个硬预测已独立复算。L／U 物理训练序列完全相同，实际 native 参数仅 candidate_id／output_dir 不同。每行实际 NN 为 5823318，L NN 为 4546560（其中额外前向 1136640），4440 次更新，无 As／额外 teacher 调用。
+
+| 场景 | D_raw−D00 accuracy pp | 修复 | 新错 |
+|---|---:|---:|---:|
+| clean | -1.428571 | 20 | 38 |
+| practical_high | 0.317460 | 30 | 26 |
+| practical_mid | -0.238095 | 24 | 27 |
+| practical_low_suburban | -0.634921 | 26 | 34 |
+| practical_high_urban | 0.634921 | 31 | 23 |
+| practical_mid_urban | -0.873016 | 19 | 30 |
+| practical_low_urban | 0.000000 | 30 | 30 |
+
+D_raw 的额外 raw pair 使用 CE＋原 RDrop，且总 pair 系数从 1 增至 1.25；这是额外监督和损失尺度控制，不能把结果归因为单独 CE 或 RDrop。此 seed 的 clean 下降 1.428571 个百分点、low urban 无差异，未形成 clean／low urban 联合提升。As 行仍运行，原固定晋级条件不变；本比较没有候选晋级或目标访问。详见 controls_comparison.json。
