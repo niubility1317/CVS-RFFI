@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：有界非恒定相位的三组匹配源 E20
 
-PLANNED，尚未启动。唯一逐 row 矩阵见 [experiment.json](experiment.json)。三个新 scratch 模型分别为 B00 额外 raw、C_ordinary 额外同一份 ordinary、B10 额外 bounded phase(raw)。固定 seed2026092701，每 row E20／13L＋7U／4440更新，合计60 model-epoch／13320更新，无父权重、续训或另训头。
+VERIFIED RUNNING，三组真实训练均已启动，尚无最终源识别结果。唯一逐 row 矩阵见 [experiment.json](experiment.json)。三个新 scratch 模型分别为 B00 额外 raw、C_ordinary 额外同一份 ordinary、B10 额外 bounded phase(raw)。固定 seed2026092701，每 row E20／13L＋7U／4440更新，合计60 model-epoch／13320更新，无父权重、续训或另训头。
 
 保持 F＋跨 RX 同 TX、三 SIG_TIME、统一 Sinc、joint160、NoExplicitCFO、默认 cosine30 头正常联合训练，保留必要内部补偿。公共 raw.75＋原 ordinary.25＋原浅层/中层 CROSS_RX SupCon 完整保留，额外 .25R(view)，R=原 smoothedCE.01均值＋同IQ RDrop1KL。三组都8L前向／总pair权重1.25，不除以视图数；原样本绝对监督权重稳定。C_ordinary复用已生成的实际ordinary tensor，RDrop两次前向共享同一份IQ，无重抽增强、交叉视图一致性损失或新部署分支。
 
@@ -23,3 +23,6 @@ B10唯一新IQ算子与G0相同：CPU Float64 iidGaussian增量sigma.006，cumsu
 发布入口 E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_bounded_phase20.publish，CWD当前managed工作树。Git commit为代码身份，写release_commit.txt/resolved；一个普通账户preflight、一份archive／一次传输SHA比较、remotecompile、一次launch，独立PID/CWD/argv/GPU/loggrowth核实。系统性protocol/角色/初始化/预算/路径/非有限/启动或非法prediction错误保留failure/partial、取消pending、健康worker继续，无自动重试。
 
 期望完整训练/实际args/默认头checkpoint/固定冻结、每row七源视图、全部曲线/配对修复新错/分层/suburban绝对值与自身clean差距/实际NN教师更新和walltime、独立复算及同row报告/登记/Git。IQ、权重、私有ID、逐包预测、完整日志、私有运行路径不入Git。完整契约Ag/As四格交互、跨seed、正式clean＋六practical、lowurban>60%和suburban距clean≤2pp探索目标仍ACTIVE。
+
+
+实际发布：VERIFIED RUNNING，执行commit 51fc25d6862b7773e8d67fcc95a852c2e52ecc86。一个archive传输比较／remotecompile／真实匹配CP两合成包smoke PASS；三row真实进程CWD/argv/GPU及存活期loggrowth已独立比对，GPU0/1/2，未修改旧任务。详细状态见[launch_summary.json](launch_summary.json)。当前已开始训练，尚无最终heldRX读出／科学判定／正式评分，不能声称有界相位Ag有效或联合成功。
