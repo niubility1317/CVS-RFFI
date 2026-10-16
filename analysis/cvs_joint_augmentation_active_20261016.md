@@ -300,3 +300,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 逐物理包六scene循环 20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01 ANALYZED/VERIFIED：FAIL_FIXED_PER_PHYSICAL_PACKET_SIX_SCENE_SCHEDULING_CLOSED；三匹配scratchE20/60modelE/13320更新/17469956NN，26460源预测与两As行1136640scene选择全量复算。B01−CIID clean 0.23809523809523725pp／lowurban 0.15873015873015817pp；0target。联合目标ACTIVE，当前无新Ag证明。
+
+
+下一唯一问题转向真实同包连续窗口可用性，见 analysis/cvs_contiguous_window_availability_20261017.md。实际冻结后端支持T>256中心裁剪，当前out_len256/EQ1；这不证明现有合法L有长上下文，未读取新IQ或启动训练。若仅256点或缺原包／参考对应，关闭入口，不以roll/插值/拼接相邻包/换eq救援。0新增NN/更新/target；闭合的scene均衡失败保持不变，联合目标ACTIVE。
