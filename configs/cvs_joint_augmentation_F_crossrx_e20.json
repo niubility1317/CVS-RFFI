@@ -132,7 +132,7 @@
   },
   "next_source_hypothesis": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
-    "status": "REGISTERED_NOT_LAUNCHED",
+    "status": "ANALYZED_SOURCE_SENSITIVITY_PASS_NOT_AG_EFFICACY",
     "checkpoint": "Own B00/seed2026092701/final20 matching fourRX fold;frozen only,no new training initialization",
     "data": "FitL5040 only,no heldRX1/U/V/target",
     "views": [
@@ -144,6 +144,23 @@
     "optimizer_updates": 0,
     "abandon": "Both signs need>=2pp accuracy loss and each sign>=3/4 fitRX with>=1pp loss;otherwise close,no amplitude scan",
     "Ag_efficacy_proved": false,
-    "run_id": "20261016-diagnostic-F-crossRX-commonphase-sourceL-s2026092701-m1-r01"
+    "run_id": "20261016-diagnostic-F-crossRX-commonphase-sourceL-s2026092701-m1-r01",
+    "result": {
+      "identity_accuracy": 0.9984126984126984,
+      "phase_plus_drop_pp": 24.503968253968257,
+      "phase_minus_drop_pp": 36.82539682539683,
+      "each_sign_RX_above1pp": 4,
+      "total_NN_packets": 15122,
+      "training_updates": 0,
+      "Ag_efficacy_proved": false,
+      "target_access": false
+    }
+  },
+  "next_training_hypothesis": {
+    "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
+    "status": "PROPOSED_NOT_REGISTERED_OR_TRAINED",
+    "minimum": "Matched B00/B10 scratchE20,sourceRX1 fold,same raw share/six L forwards/U/default head;fixed phase-only new slot",
+    "abandon": "No preregistered positive heldRX clean gain or harmful source health;no target feedback/angle/seed/RX rescue",
+    "Ag_efficacy_proved": false
   }
 }

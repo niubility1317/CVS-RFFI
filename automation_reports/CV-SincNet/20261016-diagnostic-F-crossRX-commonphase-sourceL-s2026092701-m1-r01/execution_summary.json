@@ -1,0 +1,18 @@
+{
+  "status": "VERIFIED",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_matching_checkpoint_no_query_smoke": "PASS",
+  "PID_CWD_argv_CPU_environment": "VERIFIED",
+  "log_growth_bytes": [
+    139,
+    1005
+  ],
+  "terminal_process": "Naturally exited;completion present,failure absent",
+  "source_decisions": 15120,
+  "total_NN_packets": 15122,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "code_commit": "45bc263e31dad53d872ecd8b4c194dd9c3461347"
+}
