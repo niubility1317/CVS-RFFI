@@ -288,3 +288,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 下一唯一问题转向不增加视图的 A_s 训练组织：按物理 L 包均衡六场景覆盖，见 analysis/cvs_physical_scene_coverage_hypothesis_20261017.md。已确认原 PairedChannel 独立均匀场景及每step刷新，既有训练序列与scene_counts可供零IQ历史复算；实际每包覆盖尚未复算，无新E20实现/登记/启动。不能把计数均匀当识别增益，若匹配成本/clean/suburban保护下不胜随机As的urban识别则放弃。旧多视图/相位/噪声/四周期抖动失败均保持关闭，F＋跨RX同TX/E20/原U不变，联合目标ACTIVE。
+
+
+逐物理包六scene循环 20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01 已实现登记未启动：历史全部4440步精确replay，所有5040包都见过6scene、无缺失，次数差中位11/max27；只以减少曝光不均匀为新As训练组织假设，不是新Ag。三匹配scratchE20/8L/总weight1.25，完整raw.75+ordinary.25/SupCon+原U保留，extra.25raw/IIDfullAs/balancedsinglefullAs，边际sceneuniform/传播噪声补偿不改。35负例/4114合成NN/3合成更新/520fullpractical PASS，一次P0/P1 PASS；0实际新训练/target。低urban与urbanmean须同时胜过随机As各1pp、clean及F1不降等原固定条件，不靠覆盖指标宣称有效。联合目标ACTIVE。

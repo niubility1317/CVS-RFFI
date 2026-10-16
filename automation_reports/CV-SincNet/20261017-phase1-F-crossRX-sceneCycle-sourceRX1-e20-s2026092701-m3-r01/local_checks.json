@@ -1,0 +1,54 @@
+{
+  "status": "PASS",
+  "negative_cases": 35,
+  "rows": [
+    {
+      "arm": "B00",
+      "L_forwards": 8,
+      "same_IQ_pairs": true,
+      "As_generated": 0,
+      "total_pair_weight": 1.25,
+      "tracked_BN_modules": 0,
+      "default_head_joint_update": true,
+      "export160_exact": true
+    },
+    {
+      "arm": "C_IID",
+      "L_forwards": 8,
+      "same_IQ_pairs": true,
+      "As_generated": 128,
+      "total_pair_weight": 1.25,
+      "tracked_BN_modules": 0,
+      "default_head_joint_update": true,
+      "export160_exact": true
+    },
+    {
+      "arm": "B01",
+      "L_forwards": 8,
+      "same_IQ_pairs": true,
+      "As_generated": 128,
+      "total_pair_weight": 1.25,
+      "tracked_BN_modules": 0,
+      "default_head_joint_update": true,
+      "export160_exact": true
+    }
+  ],
+  "identical_scratch_states": true,
+  "B00_loss_default_head_gradient_exact_existing_additive_raw": true,
+  "CPU_Python_RNG_endstates_equal": true,
+  "IID_fullIQ_and_metadata_exact_native": true,
+  "balanced_fullphysics_manual_packets_exact": 4,
+  "source_eval_fullIQ_exact_native_no_schedule_state": true,
+  "balanced_counts_gap_at_most1_every_visit": true,
+  "all6_eachblock6": true,
+  "algebraic_schedule_choices": 1921,
+  "unchanged_native_U_args": true,
+  "synthetic_ordinary_generations": 128,
+  "synthetic_fullpractical_generations": 520,
+  "synthetic_NN_packets": 4114,
+  "synthetic_optimizer_updates": 3,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "target_access": false,
+  "head_fit_updates": 0
+}

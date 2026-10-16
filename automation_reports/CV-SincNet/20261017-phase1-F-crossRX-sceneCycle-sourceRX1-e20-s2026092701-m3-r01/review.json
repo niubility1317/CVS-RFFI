@@ -1,0 +1,8 @@
+{
+  "verdict": "PASS",
+  "reviewer": "/root/dc_p0p1_review",
+  "scope": "One focused P0/P1 of new real E20 implementation/config/preregistration;not old jitter review",
+  "summary": "受审实现未发现会直接导致本次真实 E20 运行错误、越权、破坏、无法启动或不能生成合法默认头预测的 P0/P1。",
+  "local_checks": "35negative/4114syntheticNN/3syntheticupdates/520fullpractical,0realIQ/CP/target",
+  "launched": false
+}

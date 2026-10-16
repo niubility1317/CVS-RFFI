@@ -1,0 +1,765 @@
+{
+  "status": "VERIFIED_HISTORICAL_SCENE_REPLAY",
+  "source_run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+  "row": "B01-RX1-s2026092701",
+  "all4440_step_scene_counts_exact": true,
+  "coverage_aggregate_exact": true,
+  "unique_L": 5040,
+  "L_observations": 568320,
+  "all_packets_all6scenes_seen": true,
+  "missing_packet_scene_cells": 0,
+  "global_scene_counts": {
+    "practical_mid_urban": 94859,
+    "practical_mid": 94202,
+    "practical_high": 94457,
+    "practical_high_urban": 95315,
+    "practical_low_suburban": 94978,
+    "practical_low_urban": 94509
+  },
+  "per_packet_occurrences": {
+    "min": 104.0,
+    "q05": 109.0,
+    "median": 113.0,
+    "q95": 116.0,
+    "max": 120.0,
+    "mean": 112.76190476190476
+  },
+  "per_packet_min_scene": {
+    "min": 6.0,
+    "q05": 10.0,
+    "median": 14.0,
+    "q95": 16.0,
+    "max": 18.0,
+    "mean": 13.461706349206349
+  },
+  "per_packet_max_minus_min": {
+    "min": 2.0,
+    "q05": 5.0,
+    "median": 11.0,
+    "q95": 18.0,
+    "max": 27.0,
+    "mean": 11.029960317460317
+  },
+  "per_packet_scene_TV_from_uniform": {
+    "min": 0.014749262536873184,
+    "q05": 0.0416666666666667,
+    "median": 0.08333333333333336,
+    "q95": 0.1351540793129579,
+    "max": 0.20909090909090908,
+    "mean": 0.08489278782198853
+  },
+  "per_scene_counts": {
+    "practical_high": {
+      "min": 7.0,
+      "q05": 12.0,
+      "median": 19.0,
+      "q95": 26.0,
+      "max": 34.0,
+      "mean": 18.741468253968254
+    },
+    "practical_mid": {
+      "min": 6.0,
+      "q05": 12.0,
+      "median": 19.0,
+      "q95": 25.0,
+      "max": 35.0,
+      "mean": 18.690873015873017
+    },
+    "practical_low_suburban": {
+      "min": 6.0,
+      "q05": 12.0,
+      "median": 19.0,
+      "q95": 26.0,
+      "max": 37.0,
+      "mean": 18.844841269841268
+    },
+    "practical_high_urban": {
+      "min": 6.0,
+      "q05": 12.0,
+      "median": 19.0,
+      "q95": 26.0,
+      "max": 34.0,
+      "mean": 18.911706349206348
+    },
+    "practical_mid_urban": {
+      "min": 6.0,
+      "q05": 12.0,
+      "median": 19.0,
+      "q95": 26.0,
+      "max": 36.0,
+      "mean": 18.82123015873016
+    },
+    "practical_low_urban": {
+      "min": 7.0,
+      "q05": 12.0,
+      "median": 19.0,
+      "q95": 26.0,
+      "max": 34.0,
+      "mean": 18.751785714285713
+    }
+  },
+  "per_packet_imbalance_histogram": {
+    "2": 4,
+    "3": 30,
+    "4": 75,
+    "5": 159,
+    "6": 241,
+    "7": 367,
+    "8": 443,
+    "9": 474,
+    "10": 548,
+    "11": 581,
+    "12": 501,
+    "13": 415,
+    "14": 377,
+    "15": 241,
+    "16": 180,
+    "17": 148,
+    "18": 111,
+    "19": 45,
+    "20": 34,
+    "21": 26,
+    "22": 17,
+    "23": 9,
+    "24": 8,
+    "25": 3,
+    "26": 2,
+    "27": 1
+  },
+  "RX_day": {
+    "RX3/day1": {
+      "unique_L": 420,
+      "observations": 47289,
+      "occurrences": {
+        "min": 105.0,
+        "q05": 108.95,
+        "median": 113.0,
+        "q95": 116.0,
+        "max": 119.0,
+        "mean": 112.59285714285714
+      },
+      "per_scene_totals": {
+        "practical_high": 7980,
+        "practical_mid": 7759,
+        "practical_low_suburban": 7865,
+        "practical_high_urban": 7942,
+        "practical_mid_urban": 7921,
+        "practical_low_urban": 7822
+      },
+      "per_packet_min_scene": {
+        "min": 7.0,
+        "q05": 10.0,
+        "median": 14.0,
+        "q95": 16.0,
+        "max": 18.0,
+        "mean": 13.352380952380953
+      },
+      "per_packet_max_minus_min": {
+        "min": 3.0,
+        "q05": 5.950000000000003,
+        "median": 11.0,
+        "q95": 18.0,
+        "max": 24.0,
+        "mean": 11.161904761904761
+      },
+      "low_urban": {
+        "min": 8.0,
+        "q05": 12.0,
+        "median": 18.0,
+        "q95": 26.0,
+        "max": 31.0,
+        "mean": 18.623809523809523
+      },
+      "mid_urban": {
+        "min": 10.0,
+        "q05": 13.0,
+        "median": 19.0,
+        "q95": 26.0,
+        "max": 32.0,
+        "mean": 18.85952380952381
+      }
+    },
+    "RX3/day2": {
+      "unique_L": 420,
+      "observations": 47328,
+      "occurrences": {
+        "min": 105.0,
+        "q05": 109.0,
+        "median": 113.0,
+        "q95": 116.0,
+        "max": 119.0,
+        "mean": 112.68571428571428
+      },
+      "per_scene_totals": {
+        "practical_high": 7804,
+        "practical_mid": 7829,
+        "practical_low_suburban": 7951,
+        "practical_high_urban": 7895,
+        "practical_mid_urban": 7921,
+        "practical_low_urban": 7928
+      },
+      "per_packet_min_scene": {
+        "min": 8.0,
+        "q05": 10.0,
+        "median": 14.0,
+        "q95": 16.049999999999955,
+        "max": 17.0,
+        "mean": 13.533333333333333
+      },
+      "per_packet_max_minus_min": {
+        "min": 3.0,
+        "q05": 5.0,
+        "median": 10.5,
+        "q95": 17.0,
+        "max": 25.0,
+        "mean": 10.82857142857143
+      },
+      "low_urban": {
+        "min": 9.0,
+        "q05": 13.0,
+        "median": 19.0,
+        "q95": 25.0,
+        "max": 29.0,
+        "mean": 18.876190476190477
+      },
+      "mid_urban": {
+        "min": 10.0,
+        "q05": 12.0,
+        "median": 19.0,
+        "q95": 26.0,
+        "max": 36.0,
+        "mean": 18.85952380952381
+      }
+    },
+    "RX3/day3": {
+      "unique_L": 420,
+      "observations": 47426,
+      "occurrences": {
+        "min": 107.0,
+        "q05": 109.0,
+        "median": 113.0,
+        "q95": 116.0,
+        "max": 119.0,
+        "mean": 112.91904761904762
+      },
+      "per_scene_totals": {
+        "practical_high": 7811,
+        "practical_mid": 7775,
+        "practical_low_suburban": 7960,
+        "practical_high_urban": 7969,
+        "practical_mid_urban": 7985,
+        "practical_low_urban": 7926
+      },
+      "per_packet_min_scene": {
+        "min": 6.0,
+        "q05": 10.0,
+        "median": 13.0,
+        "q95": 16.0,
+        "max": 18.0,
+        "mean": 13.257142857142858
+      },
+      "per_packet_max_minus_min": {
+        "min": 3.0,
+        "q05": 6.0,
+        "median": 11.0,
+        "q95": 18.0,
+        "max": 23.0,
+        "mean": 11.3
+      },
+      "low_urban": {
+        "min": 7.0,
+        "q05": 12.0,
+        "median": 19.0,
+        "q95": 25.0,
+        "max": 32.0,
+        "mean": 18.87142857142857
+      },
+      "mid_urban": {
+        "min": 7.0,
+        "q05": 12.0,
+        "median": 19.0,
+        "q95": 26.0,
+        "max": 29.0,
+        "mean": 19.011904761904763
+      }
+    },
+    "RX4/day1": {
+      "unique_L": 420,
+      "observations": 47344,
+      "occurrences": {
+        "min": 107.0,
+        "q05": 109.0,
+        "median": 113.0,
+        "q95": 116.0,
+        "max": 119.0,
+        "mean": 112.72380952380952
+      },
+      "per_scene_totals": {
+        "practical_high": 7861,
+        "practical_mid": 7844,
+        "practical_low_suburban": 7979,
+        "practical_high_urban": 7933,
+        "practical_mid_urban": 7786,
+        "practical_low_urban": 7941
+      },
+      "per_packet_min_scene": {
+        "min": 7.0,
+        "q05": 10.0,
+        "median": 14.0,
+        "q95": 16.049999999999955,
+        "max": 18.0,
+        "mean": 13.535714285714286
+      },
+      "per_packet_max_minus_min": {
+        "min": 3.0,
+        "q05": 5.0,
+        "median": 11.0,
+        "q95": 17.0,
+        "max": 23.0,
+        "mean": 10.916666666666666
+      },
+      "low_urban": {
+        "min": 8.0,
+        "q05": 12.0,
+        "median": 19.0,
+        "q95": 26.0,
+        "max": 32.0,
+        "mean": 18.90714285714286
+      },
+      "mid_urban": {
+        "min": 9.0,
+        "q05": 12.0,
+        "median": 18.0,
+        "q95": 26.0,
+        "max": 30.0,
+        "mean": 18.538095238095238
+      }
+    },
+    "RX4/day2": {
+      "unique_L": 420,
+      "observations": 47346,
+      "occurrences": {
+        "min": 105.0,
+        "q05": 109.0,
+        "median": 113.0,
+        "q95": 116.0,
+        "max": 118.0,
+        "mean": 112.72857142857143
+      },
+      "per_scene_totals": {
+        "practical_high": 7960,
+        "practical_mid": 7854,
+        "practical_low_suburban": 7957,
+        "practical_high_urban": 7778,
+        "practical_mid_urban": 7936,
+        "practical_low_urban": 7861
+      },
+      "per_packet_min_scene": {
+        "min": 7.0,
+        "q05": 10.0,
+        "median": 14.0,
+        "q95": 17.0,
+        "max": 18.0,
+        "mean": 13.630952380952381
+      },
+      "per_packet_max_minus_min": {
+        "min": 2.0,
+        "q05": 5.0,
+        "median": 11.0,
+        "q95": 17.0,
+        "max": 22.0,
+        "mean": 10.85952380952381
+      },
+      "low_urban": {
+        "min": 10.0,
+        "q05": 12.0,
+        "median": 18.0,
+        "q95": 26.0,
+        "max": 32.0,
+        "mean": 18.716666666666665
+      },
+      "mid_urban": {
+        "min": 9.0,
+        "q05": 13.0,
+        "median": 19.0,
+        "q95": 26.0,
+        "max": 33.0,
+        "mean": 18.895238095238096
+      }
+    },
+    "RX4/day3": {
+      "unique_L": 420,
+      "observations": 47336,
+      "occurrences": {
+        "min": 105.0,
+        "q05": 109.0,
+        "median": 113.0,
+        "q95": 116.0,
+        "max": 119.0,
+        "mean": 112.70476190476191
+      },
+      "per_scene_totals": {
+        "practical_high": 7756,
+        "practical_mid": 8087,
+        "practical_low_suburban": 7977,
+        "practical_high_urban": 7994,
+        "practical_mid_urban": 7751,
+        "practical_low_urban": 7771
+      },
+      "per_packet_min_scene": {
+        "min": 7.0,
+        "q05": 10.0,
+        "median": 14.0,
+        "q95": 16.0,
+        "max": 17.0,
+        "mean": 13.407142857142857
+      },
+      "per_packet_max_minus_min": {
+        "min": 3.0,
+        "q05": 5.0,
+        "median": 11.0,
+        "q95": 17.0,
+        "max": 24.0,
+        "mean": 11.09047619047619
+      },
+      "low_urban": {
+        "min": 10.0,
+        "q05": 12.0,
+        "median": 18.0,
+        "q95": 25.0,
+        "max": 30.0,
+        "mean": 18.502380952380953
+      },
+      "mid_urban": {
+        "min": 7.0,
+        "q05": 12.0,
+        "median": 18.0,
+        "q95": 25.049999999999955,
+        "max": 28.0,
+        "mean": 18.454761904761906
+      }
+    },
+    "RX6/day1": {
+      "unique_L": 420,
+      "observations": 47332,
+      "occurrences": {
+        "min": 106.0,
+        "q05": 108.95,
+        "median": 113.0,
+        "q95": 116.0,
+        "max": 118.0,
+        "mean": 112.6952380952381
+      },
+      "per_scene_totals": {
+        "practical_high": 7946,
+        "practical_mid": 7752,
+        "practical_low_suburban": 7895,
+        "practical_high_urban": 8020,
+        "practical_mid_urban": 7922,
+        "practical_low_urban": 7797
+      },
+      "per_packet_min_scene": {
+        "min": 6.0,
+        "q05": 10.0,
+        "median": 14.0,
+        "q95": 17.0,
+        "max": 18.0,
+        "mean": 13.495238095238095
+      },
+      "per_packet_max_minus_min": {
+        "min": 2.0,
+        "q05": 5.0,
+        "median": 10.0,
+        "q95": 18.0,
+        "max": 27.0,
+        "mean": 10.842857142857143
+      },
+      "low_urban": {
+        "min": 7.0,
+        "q05": 13.0,
+        "median": 18.0,
+        "q95": 25.0,
+        "max": 34.0,
+        "mean": 18.564285714285713
+      },
+      "mid_urban": {
+        "min": 10.0,
+        "q05": 13.0,
+        "median": 19.0,
+        "q95": 25.0,
+        "max": 33.0,
+        "mean": 18.86190476190476
+      }
+    },
+    "RX6/day2": {
+      "unique_L": 420,
+      "observations": 47361,
+      "occurrences": {
+        "min": 104.0,
+        "q05": 109.0,
+        "median": 113.0,
+        "q95": 116.0,
+        "max": 118.0,
+        "mean": 112.76428571428572
+      },
+      "per_scene_totals": {
+        "practical_high": 7926,
+        "practical_mid": 7903,
+        "practical_low_suburban": 7861,
+        "practical_high_urban": 7945,
+        "practical_mid_urban": 7968,
+        "practical_low_urban": 7758
+      },
+      "per_packet_min_scene": {
+        "min": 8.0,
+        "q05": 10.0,
+        "median": 14.0,
+        "q95": 16.0,
+        "max": 18.0,
+        "mean": 13.433333333333334
+      },
+      "per_packet_max_minus_min": {
+        "min": 2.0,
+        "q05": 6.0,
+        "median": 11.0,
+        "q95": 18.0,
+        "max": 24.0,
+        "mean": 11.047619047619047
+      },
+      "low_urban": {
+        "min": 8.0,
+        "q05": 12.0,
+        "median": 18.0,
+        "q95": 25.0,
+        "max": 32.0,
+        "mean": 18.47142857142857
+      },
+      "mid_urban": {
+        "min": 9.0,
+        "q05": 13.950000000000003,
+        "median": 19.0,
+        "q95": 25.0,
+        "max": 34.0,
+        "mean": 18.97142857142857
+      }
+    },
+    "RX6/day3": {
+      "unique_L": 420,
+      "observations": 47387,
+      "occurrences": {
+        "min": 104.0,
+        "q05": 109.0,
+        "median": 113.0,
+        "q95": 117.0,
+        "max": 119.0,
+        "mean": 112.82619047619048
+      },
+      "per_scene_totals": {
+        "practical_high": 7699,
+        "practical_mid": 7819,
+        "practical_low_suburban": 7901,
+        "practical_high_urban": 8008,
+        "practical_mid_urban": 8008,
+        "practical_low_urban": 7952
+      },
+      "per_packet_min_scene": {
+        "min": 6.0,
+        "q05": 10.0,
+        "median": 14.0,
+        "q95": 16.0,
+        "max": 18.0,
+        "mean": 13.561904761904762
+      },
+      "per_packet_max_minus_min": {
+        "min": 2.0,
+        "q05": 5.0,
+        "median": 11.0,
+        "q95": 17.0,
+        "max": 26.0,
+        "mean": 10.928571428571429
+      },
+      "low_urban": {
+        "min": 9.0,
+        "q05": 13.0,
+        "median": 19.0,
+        "q95": 26.0,
+        "max": 31.0,
+        "mean": 18.933333333333334
+      },
+      "mid_urban": {
+        "min": 8.0,
+        "q05": 12.950000000000003,
+        "median": 19.0,
+        "q95": 25.049999999999955,
+        "max": 34.0,
+        "mean": 19.066666666666666
+      }
+    },
+    "RX8/day1": {
+      "unique_L": 420,
+      "observations": 47405,
+      "occurrences": {
+        "min": 106.0,
+        "q05": 109.0,
+        "median": 113.0,
+        "q95": 117.0,
+        "max": 118.0,
+        "mean": 112.86904761904762
+      },
+      "per_scene_totals": {
+        "practical_high": 7850,
+        "practical_mid": 7869,
+        "practical_low_suburban": 8061,
+        "practical_high_urban": 7904,
+        "practical_mid_urban": 7935,
+        "practical_low_urban": 7786
+      },
+      "per_packet_min_scene": {
+        "min": 6.0,
+        "q05": 10.0,
+        "median": 14.0,
+        "q95": 16.0,
+        "max": 17.0,
+        "mean": 13.42142857142857
+      },
+      "per_packet_max_minus_min": {
+        "min": 3.0,
+        "q05": 5.0,
+        "median": 11.0,
+        "q95": 18.049999999999955,
+        "max": 25.0,
+        "mean": 11.273809523809524
+      },
+      "low_urban": {
+        "min": 8.0,
+        "q05": 12.0,
+        "median": 18.0,
+        "q95": 25.0,
+        "max": 34.0,
+        "mean": 18.538095238095238
+      },
+      "mid_urban": {
+        "min": 6.0,
+        "q05": 12.950000000000003,
+        "median": 19.0,
+        "q95": 26.0,
+        "max": 34.0,
+        "mean": 18.892857142857142
+      }
+    },
+    "RX8/day2": {
+      "unique_L": 420,
+      "observations": 47314,
+      "occurrences": {
+        "min": 106.0,
+        "q05": 109.0,
+        "median": 113.0,
+        "q95": 116.0,
+        "max": 119.0,
+        "mean": 112.65238095238095
+      },
+      "per_scene_totals": {
+        "practical_high": 7942,
+        "practical_mid": 7793,
+        "practical_low_suburban": 7736,
+        "practical_high_urban": 7991,
+        "practical_mid_urban": 7868,
+        "practical_low_urban": 7984
+      },
+      "per_packet_min_scene": {
+        "min": 7.0,
+        "q05": 10.0,
+        "median": 14.0,
+        "q95": 16.0,
+        "max": 18.0,
+        "mean": 13.519047619047619
+      },
+      "per_packet_max_minus_min": {
+        "min": 3.0,
+        "q05": 6.0,
+        "median": 11.0,
+        "q95": 17.0,
+        "max": 22.0,
+        "mean": 10.895238095238096
+      },
+      "low_urban": {
+        "min": 7.0,
+        "q05": 13.0,
+        "median": 19.0,
+        "q95": 26.0,
+        "max": 32.0,
+        "mean": 19.00952380952381
+      },
+      "mid_urban": {
+        "min": 9.0,
+        "q05": 13.0,
+        "median": 19.0,
+        "q95": 26.0,
+        "max": 31.0,
+        "mean": 18.733333333333334
+      }
+    },
+    "RX8/day3": {
+      "unique_L": 420,
+      "observations": 47452,
+      "occurrences": {
+        "min": 105.0,
+        "q05": 109.0,
+        "median": 113.0,
+        "q95": 116.0,
+        "max": 120.0,
+        "mean": 112.98095238095237
+      },
+      "per_scene_totals": {
+        "practical_high": 7922,
+        "practical_mid": 7918,
+        "practical_low_suburban": 7835,
+        "practical_high_urban": 7936,
+        "practical_mid_urban": 7858,
+        "practical_low_urban": 7983
+      },
+      "per_packet_min_scene": {
+        "min": 7.0,
+        "q05": 10.0,
+        "median": 14.0,
+        "q95": 16.0,
+        "max": 18.0,
+        "mean": 13.392857142857142
+      },
+      "per_packet_max_minus_min": {
+        "min": 3.0,
+        "q05": 6.0,
+        "median": 11.0,
+        "q95": 18.0,
+        "max": 24.0,
+        "mean": 11.214285714285714
+      },
+      "low_urban": {
+        "min": 9.0,
+        "q05": 12.950000000000003,
+        "median": 19.0,
+        "q95": 26.0,
+        "max": 33.0,
+        "mean": 19.007142857142856
+      },
+      "mid_urban": {
+        "min": 7.0,
+        "q05": 12.0,
+        "median": 19.0,
+        "q95": 26.0,
+        "max": 35.0,
+        "mean": 18.70952380952381
+      }
+    }
+  },
+  "wall_seconds": 19.719129799996153,
+  "IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "NN": 0,
+  "updates": 0,
+  "channel_IQ_generated": 0,
+  "U_truth_read": false,
+  "target_access": false,
+  "scope": "Historical L metadata scene replay only;not recognition efficacy or source nuisance proof",
+  "counterfactual_property": "A six-scene permutation per six appearances would bound each packet countmax-countmin<=1;not measured recognition benefit"
+}
