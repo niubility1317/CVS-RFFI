@@ -639,6 +639,13 @@
           "scope": "Training-only feature loss;no inference transform/state,head refit or frozen backbone"
         },
         "source_selection": null
+      },
+      "result": {
+        "status": "ANALYZED",
+        "evidence_ref": "row_reports/E20_DYNAMIC-s2026092701.json",
+        "clean_predictions": 168000,
+        "truth_last": true,
+        "head_fit_updates": 0
       }
     },
     {
@@ -1443,6 +1450,13 @@
           "scope": "Training-only feature loss;no inference transform/state,head refit or frozen backbone"
         },
         "source_selection": null
+      },
+      "result": {
+        "status": "ANALYZED",
+        "evidence_ref": "row_reports/E20_DYNAMIC-s2026092702.json",
+        "clean_predictions": 168000,
+        "truth_last": true,
+        "head_fit_updates": 0
       }
     },
     {
@@ -2672,6 +2686,10 @@
     "source_scientific_gate": false,
     "training_complete": false,
     "target_feedback": false,
-    "goal_completed": false
+    "goal_completed": false,
+    "independently_analyzed_rows": [
+      "E20_DYNAMIC-s2026092701",
+      "E20_DYNAMIC-s2026092702"
+    ]
   }
 }

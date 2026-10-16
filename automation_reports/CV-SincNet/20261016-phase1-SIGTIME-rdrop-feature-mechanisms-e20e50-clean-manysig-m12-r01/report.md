@@ -26,3 +26,6 @@ POINT 在原双 CE 均值＋完整对称 KL 上增加未中心化特征一致性
 
 <!-- FEATURES_MAIN_LAUNCH_VERIFIED -->
 执行提交`c0393fc8c5de7700933ba4f5f16d6cc0a73c108f`已推送且远端OID匹配。单archive传输比较与remote compile VERIFIED；12行PID/startticks/CWD/argv/实际GPU、首轮日志增长、own初始CP无query smoke、完整源角色、原配方和特征约束实际调用已核实。所有owner当前GPU进程数≤3。模型仍在训练，尚无本批新测试成绩。见launch_verification.json。
+
+<!-- ROW_REPORTS E20_DYNAMIC-s2026092701,E20_DYNAMIC-s2026092702 -->
+同row分析新增：[E20_DYNAMIC-s2026092701](row_reports/E20_DYNAMIC-s2026092701.md)、[E20_DYNAMIC-s2026092702](row_reports/E20_DYNAMIC-s2026092702.md)。这些完整单row结果不构成整批三seed结论，其他健康训练保持冻结方案。
