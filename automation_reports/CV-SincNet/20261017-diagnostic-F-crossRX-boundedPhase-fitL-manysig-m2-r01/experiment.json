@@ -1,0 +1,473 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01",
+  "group_id": "phase1-F-crossRX-boundednonaffinephase-source-identity",
+  "display_name": "F＋跨RX同TX：有界非恒定相位双默认头源身份检验",
+  "description": "Fixed rawIQ256 unitphase:Wienersigma.006,removeaffine,globalpeak.1rad;fourdraws/twofrozen defaultheads,0training/target",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "bounded nonaffine phase raw source guard"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "bounded_nonaffine_phase",
+    "source_only",
+    "frozen_default_head",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+    "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active jointAg/As research,sourceonlyidentityfalsification ofonefixedboundedphaseview;oldordinaryhasWiener so notnewfamily;not commonphaseE20/featurecurvature/template/timegrid rescue",
+  "code": {
+    "commit": "Actualexecutioncommit inrelease_commit.txt/resolved_config",
+    "checkout": "Managed codex/cvs-iq-timing-e20-20261016 worktree",
+    "environment": "OrdinaryN607 existingCVS-RFFI Python,CPU2/CUDAhidden;eachmodel original immutablebackend",
+    "cwd": "PROJECT/releases/cvs_F_bounded_nonaffine_phase_fitL_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original VALIDATED_ONCE source carrier;fitL5040 exact frozenmodel L roles",
+    "representation": "NativeEQ1 RMS IQ256/25Msps,thenall256 boundednonaffine unitphase;no IQamplitude/RMS/crop change",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original L6300 handles;fitL5040 exact modelL IDs saved privately;RX1 excluded",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "OriginalL6300 deserialized;exactfitL5040 RX3/4/6/8 only;RX1L1260 excluded",
+      "U_s": "Opaque roleID metadata only,noIQ/labels in sourcecache;unused",
+      "V": "Unused sourceV/features deserialize"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Sourcefit identity retention only;not receiverreplacement,oscillatoridentification,DG/As/heldRX performance orjointsuccess"
+  },
+  "checkpoint": {
+    "initialization": "Twoverifiedexisting source-only scratchfinal20 B00 defaultheads fordiagnostic only,nottraininginit",
+    "sources": [
+      {
+        "model_seed": 2026092701,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+        "checkpoint": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth",
+        "immutable_backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+        "execution_commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8"
+      },
+      {
+        "model_seed": 2026092702,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+        "checkpoint": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source/final_ssdg.pth",
+        "immutable_backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+        "execution_commit": "d71531d53c1d9ec46e3915963e05bff96760e80e"
+      }
+    ],
+    "contract_check_ref": "Reuse original verifiedsourcefold checkpoints;initialization/completion/source_frozen/source_contract and payload checked:fitL5040/U45360/V21600,RX1held,sourceonly,no unknownancestors/target/headfit,strictdefaulthead",
+    "provenance_verdict": "Matching existing source-only diagnostic weights;runtime rechecks prior provenance handles before inference",
+    "selection_rule": "Existingoriginal scratchE20final20 only,no targetselection ornewmodel/headfit"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-bounded-nonaffine-phase-source-20261017",
+    "gpu_policy": "CPU only,2threads,CUDA_VISIBLE_DEVICES empty;workers sequential",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_bounded_nonaffine_phase_fitL_20261017_r01/source_bounded_phase.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_bounded_phase17.dispatch",
+    "stop_rule": "Wrongsource/provenance/roles/config/nonfinite/zeroenergy/outputcollision/workerexception:preservefailurepartial,noautomaticretry. ScientificFAIL stillfinishesbothmodels/allfourdraws;closefixedsigma.006/peak.1/fullcoverage/affineremoval,no amplitude/sigma/RX/seed/draw rescue,noE20."
+  },
+  "expected_artifacts": [
+    "rootrequest/active/launch/result/completion",
+    "eachmodelnativeargs/actualcallfiles/baseofexistingmodel/exactcheckpointprovenance",
+    "raw5040plusfourphase5040 completepairedlogits/harddecisions private",
+    "320batchrecords allpacket phaseRMS/peak/mean/slope/scale,raw-outputpower,IQ/referencechange,full256phasepaths gzip private",
+    "one realcheckpoint2synthetic noquerysmoke PASSthencontinue",
+    "32syntheticphase/model,64total,noNN;modelstate unchanged",
+    "independent full50400source decisions/logits/CE/F1/strata/72cells/perdraw/retention,allphasepaths/moments/bounds/costrecount,figures/report/registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "CE",
+      "raw_correct_retention",
+      "eachRX_TX_day_72cells",
+      "eachdraw_identityguard",
+      "phaseRMS_peak_affinemoments_scale",
+      "IQ_reference_change_power",
+      "actualNN_phasegenerations"
+    ],
+    "dimensions": [
+      "twoexistingmodelseeds",
+      "raw/phase",
+      "fourfixedaugmentationdraws",
+      "RX3/4/6/8",
+      "TX0..5",
+      "day1/2/3",
+      "72cells"
+    ],
+    "prediction_ref": "Eachseed raw.json anddraw01..04.json private;sourcefit only",
+    "scorer_ref": "Independentcomplete scalarrecount,no targettruth",
+    "criteria": {
+      "min_accuracy_gain_pp": -0.5,
+      "min_macroF1_gain_pp": -0.5,
+      "min_raw_correct_retention": 0.99,
+      "min_each_group_accuracy_gain_pp": -1.0,
+      "require_each_draw_same_guard": true,
+      "min_IQ_change_median": 0.01,
+      "max_IQ_change": 0.1
+    }
+  },
+  "rows": [
+    {
+      "row_id": "BOUNDED_PHASE_SOURCE-s2026092701",
+      "method": "Whole256boundednonaffine unitphase,sigma.006/peak.1",
+      "purpose": "onefixedsourceidentityguard_beforematchedE20",
+      "config_ref": "experiments/cvs_bounded_phase17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01/s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existingmodelseed;no newtraining. Fourfixedaugmentation202610173101..104 andshuffle202610173110..113,stored inconfig;no drawselection",
+      "k": null,
+      "scenario": "sourcefit_boundednonaffinephase_noAs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "25200sourceNN/model plus2syntheticCP onlyseed01;20160sourcephase/model;32syntheticphase/model;0newE/update/headfit/teacher",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01/s2026092701",
+      "log_path": "PROJECT/runs/20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01/s2026092701.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_bounded_phase17/runner.py --seed 2026092701",
+      "expected_artifacts": [
+        "rootrequest/active/launch/result/completion",
+        "eachmodelnativeargs/actualcallfiles/baseofexistingmodel/exactcheckpointprovenance",
+        "raw5040plusfourphase5040 completepairedlogits/harddecisions private",
+        "320batchrecords allpacket phaseRMS/peak/mean/slope/scale,raw-outputpower,IQ/referencechange,full256phasepaths gzip private",
+        "one realcheckpoint2synthetic noquerysmoke PASSthencontinue",
+        "32syntheticphase/model,64total,noNN;modelstate unchanged",
+        "independent full50400source decisions/logits/CE/F1/strata/72cells/perdraw/retention,allphasepaths/moments/bounds/costrecount,figures/report/registry"
+      ],
+      "config": {
+        "model_seed": 2026092701,
+        "fixed_question": {
+          "run_id": "20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01",
+          "launch_owner": "codex/root/F-bounded-nonaffine-phase-source-20261017",
+          "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01",
+          "models": {
+            "2026092701": {
+              "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+              "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+            },
+            "2026092702": {
+              "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+              "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+            }
+          },
+          "baseline": "F+CROSS_RX/3SIG_TIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "claim": "Source identity retention ofone fixed IQ observation only,not receiverreplacement/phase-noise identification/DG/As",
+          "question": "Can fullcoverage bounded nonaffine phase onraw retain source TX identities under both frozen defaultheads?",
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "days": [
+            1,
+            2,
+            3
+          ],
+          "TX": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "L_unique": 5040,
+          "cells": 72,
+          "samples_per_cell": 70,
+          "augmentation_seeds": [
+            202610173101,
+            202610173102,
+            202610173103,
+            202610173104
+          ],
+          "shuffle_seeds": [
+            202610173110,
+            202610173111,
+            202610173112,
+            202610173113
+          ],
+          "operator": "g[n] iidN(0,.006^2),phi=cumsum(g),orthogonal remove constant andlinear sampleindex,theta=phi_perp*min(1,.1/maxabs(phi_perp)),rotateall256IQ byexp(jtheta),no redraw/pointclip/RMS restoration",
+          "phase_increment_sigma_rad": 0.006,
+          "phase_peak_bound_rad": 0.1,
+          "phase_distribution": "Bounded globallyrescaled detrended Wiener-derived trajectory;not an untouched Wiener process or identified receiver LO",
+          "range_basis": "sigma .006 isexisting native unscaled upper increment;peak .1rad isfixed engineering prior for<=2sin(.05)<10% complexpointchange,not inferred fromsource RX association/target",
+          "affine_phase_removed": true,
+          "all256points": true,
+          "source_RX_templates_used": false,
+          "all_paths_retained": true,
+          "views_per_model": {
+            "raw": 5040,
+            "phase": 20160
+          },
+          "source_NN_per_model": 25200,
+          "total_NN_packets": 50402,
+          "synthetic_CP_smoke_NN": 2,
+          "source_phase_views_generated": 40320,
+          "synthetic_phase_views_generated": 64,
+          "checkpoint_loads": 2,
+          "new_training_epochs": 0,
+          "optimizer_updates": 0,
+          "teacher_forwards": 0,
+          "head_fit_updates": 0,
+          "criteria": {
+            "min_accuracy_gain_pp": -0.5,
+            "min_macroF1_gain_pp": -0.5,
+            "min_raw_correct_retention": 0.99,
+            "min_each_group_accuracy_gain_pp": -1.0,
+            "require_each_draw_same_guard": true,
+            "min_IQ_change_median": 0.01,
+            "max_IQ_change": 0.1
+          },
+          "on_fail": "Closefixedsigma.006/peak.1/detrendedfullcoveragephase;no sigma/peak/conditioning/draw/RX/seed rescue,noE20",
+          "on_pass": "Onlysourceidentity guard;independent matchedscratchE20rawslot/sameordinaryslot/phaseslot still required,noautomatictraining",
+          "future_E20": "Commonraw.75/ordinary.25/SupCon/originalU unchanged,extra.25raw/sameordinary/phase(raw);8Lforwards/weight1.25/sameIQ RDrop;seed01phase mustbeatbothcontrols clean>=+1pp,F1>=0,eachpractical/seenV>=-.5pp before independentconfirm",
+          "NoExplicitCFO": true,
+          "internal_compensation_retained": true,
+          "default_head_only": true,
+          "source_only": true,
+          "target_access": false,
+          "U_used": false,
+          "V_used": false,
+          "held_RX1_used": false,
+          "automatic_training": false,
+          "device": "CPU",
+          "threads": 2,
+          "historical_model_cost": {
+            "model_epochs": 40,
+            "updates": 8880,
+            "NN": 9373356
+          },
+          "source_basis": [
+            "analysis/cvs_phase_curvature_source_basis_20261017.md",
+            "analysis/cvs_bounded_nonaffine_phase_candidate_20261017.md"
+          ],
+          "limits": [
+            "StableRXassociationdoesnotidentifyoscillatornoise orprove labelpreservation",
+            "OldordinaryalreadycontainslowprobabilityWiener;thisis an isolated bounded nonaffine view variant,not newaugmentationfamily",
+            "DoesnotreplaylargephaseRXtemplates orclaimfullRXdifferencecoverage",
+            "Allreceivedsignalincludingexistingnoise rotated;not a physicalRXreplacement"
+          ]
+        }
+      }
+    },
+    {
+      "row_id": "BOUNDED_PHASE_SOURCE-s2026092702",
+      "method": "Whole256boundednonaffine unitphase,sigma.006/peak.1",
+      "purpose": "onefixedsourceidentityguard_beforematchedE20",
+      "config_ref": "experiments/cvs_bounded_phase17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01/s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existingmodelseed;no newtraining. Fourfixedaugmentation202610173101..104 andshuffle202610173110..113,stored inconfig;no drawselection",
+      "k": null,
+      "scenario": "sourcefit_boundednonaffinephase_noAs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "25200sourceNN/model plus2syntheticCP onlyseed01;20160sourcephase/model;32syntheticphase/model;0newE/update/headfit/teacher",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01/s2026092702",
+      "log_path": "PROJECT/runs/20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01/s2026092702.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_bounded_phase17/runner.py --seed 2026092702",
+      "expected_artifacts": [
+        "rootrequest/active/launch/result/completion",
+        "eachmodelnativeargs/actualcallfiles/baseofexistingmodel/exactcheckpointprovenance",
+        "raw5040plusfourphase5040 completepairedlogits/harddecisions private",
+        "320batchrecords allpacket phaseRMS/peak/mean/slope/scale,raw-outputpower,IQ/referencechange,full256phasepaths gzip private",
+        "one realcheckpoint2synthetic noquerysmoke PASSthencontinue",
+        "32syntheticphase/model,64total,noNN;modelstate unchanged",
+        "independent full50400source decisions/logits/CE/F1/strata/72cells/perdraw/retention,allphasepaths/moments/bounds/costrecount,figures/report/registry"
+      ],
+      "config": {
+        "model_seed": 2026092702,
+        "fixed_question": {
+          "run_id": "20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01",
+          "launch_owner": "codex/root/F-bounded-nonaffine-phase-source-20261017",
+          "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01",
+          "models": {
+            "2026092701": {
+              "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+              "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+            },
+            "2026092702": {
+              "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+              "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+            }
+          },
+          "baseline": "F+CROSS_RX/3SIG_TIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "claim": "Source identity retention ofone fixed IQ observation only,not receiverreplacement/phase-noise identification/DG/As",
+          "question": "Can fullcoverage bounded nonaffine phase onraw retain source TX identities under both frozen defaultheads?",
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "days": [
+            1,
+            2,
+            3
+          ],
+          "TX": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "L_unique": 5040,
+          "cells": 72,
+          "samples_per_cell": 70,
+          "augmentation_seeds": [
+            202610173101,
+            202610173102,
+            202610173103,
+            202610173104
+          ],
+          "shuffle_seeds": [
+            202610173110,
+            202610173111,
+            202610173112,
+            202610173113
+          ],
+          "operator": "g[n] iidN(0,.006^2),phi=cumsum(g),orthogonal remove constant andlinear sampleindex,theta=phi_perp*min(1,.1/maxabs(phi_perp)),rotateall256IQ byexp(jtheta),no redraw/pointclip/RMS restoration",
+          "phase_increment_sigma_rad": 0.006,
+          "phase_peak_bound_rad": 0.1,
+          "phase_distribution": "Bounded globallyrescaled detrended Wiener-derived trajectory;not an untouched Wiener process or identified receiver LO",
+          "range_basis": "sigma .006 isexisting native unscaled upper increment;peak .1rad isfixed engineering prior for<=2sin(.05)<10% complexpointchange,not inferred fromsource RX association/target",
+          "affine_phase_removed": true,
+          "all256points": true,
+          "source_RX_templates_used": false,
+          "all_paths_retained": true,
+          "views_per_model": {
+            "raw": 5040,
+            "phase": 20160
+          },
+          "source_NN_per_model": 25200,
+          "total_NN_packets": 50402,
+          "synthetic_CP_smoke_NN": 2,
+          "source_phase_views_generated": 40320,
+          "synthetic_phase_views_generated": 64,
+          "checkpoint_loads": 2,
+          "new_training_epochs": 0,
+          "optimizer_updates": 0,
+          "teacher_forwards": 0,
+          "head_fit_updates": 0,
+          "criteria": {
+            "min_accuracy_gain_pp": -0.5,
+            "min_macroF1_gain_pp": -0.5,
+            "min_raw_correct_retention": 0.99,
+            "min_each_group_accuracy_gain_pp": -1.0,
+            "require_each_draw_same_guard": true,
+            "min_IQ_change_median": 0.01,
+            "max_IQ_change": 0.1
+          },
+          "on_fail": "Closefixedsigma.006/peak.1/detrendedfullcoveragephase;no sigma/peak/conditioning/draw/RX/seed rescue,noE20",
+          "on_pass": "Onlysourceidentity guard;independent matchedscratchE20rawslot/sameordinaryslot/phaseslot still required,noautomatictraining",
+          "future_E20": "Commonraw.75/ordinary.25/SupCon/originalU unchanged,extra.25raw/sameordinary/phase(raw);8Lforwards/weight1.25/sameIQ RDrop;seed01phase mustbeatbothcontrols clean>=+1pp,F1>=0,eachpractical/seenV>=-.5pp before independentconfirm",
+          "NoExplicitCFO": true,
+          "internal_compensation_retained": true,
+          "default_head_only": true,
+          "source_only": true,
+          "target_access": false,
+          "U_used": false,
+          "V_used": false,
+          "held_RX1_used": false,
+          "automatic_training": false,
+          "device": "CPU",
+          "threads": 2,
+          "historical_model_cost": {
+            "model_epochs": 40,
+            "updates": 8880,
+            "NN": 9373356
+          },
+          "source_basis": [
+            "analysis/cvs_phase_curvature_source_basis_20261017.md",
+            "analysis/cvs_bounded_nonaffine_phase_candidate_20261017.md"
+          ],
+          "limits": [
+            "StableRXassociationdoesnotidentifyoscillatornoise orprove labelpreservation",
+            "OldordinaryalreadycontainslowprobabilityWiener;thisis an isolated bounded nonaffine view variant,not newaugmentationfamily",
+            "DoesnotreplaylargephaseRXtemplates orclaimfullRXdifferencecoverage",
+            "Allreceivedsignalincludingexistingnoise rotated;not a physicalRXreplacement"
+          ]
+        }
+      }
+    }
+  ],
+  "notes": [
+    "OriginalscratchE20final20defaultheads,fitL5040/U45360/V21600,RX1held/final-only/4440updates;defaultcos30/joint160/NoExplicitCFO;oneCP/model. No newheadfit ortraininginit.",
+    "Sigma.006fromexistingnativeupperincrement;peak.1radfixedengineeringpriorforpointwisecomplexperturbation<10%,notfittoRXsource/target;phaseglobalrescaling notpointclip orpathdrop.",
+    "All256unitphase,affine removed,noAWGN/MP/PA/DAC/CFO/commonphase/RMS/crop/newbranch. OldordinaryalreadyhasWiener;thisisboundedindependentviewvariant,notnewfamily.",
+    "Same5040physicalpackets/fourdraws/all72cells;sourcecacheL6300/unusedVfeaturesdeserialize,RX1excluded,UopaqueIDsonly/noIQorlabels.",
+    "Everydrawandpooledidentityguards bothmodels. PASSonlysourceidentity;latermatchedscratchE20controls independentlyregistered,notautomatictraining.",
+    "28localinput/confignegatives+18analytic/scientificcounterexamples/388syntheticphase,0sourceIQ/CP/NN/updates. NumPybridgeunused/noinstall.",
+    "OneindependentP0/P1review andone realCPsmoke,no extragate/receipt/hashchain/datarevalidation."
+  ],
+  "registered_at": "2026-10-16T20:37:07+00:00"
+}
