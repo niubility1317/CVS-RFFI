@@ -294,3 +294,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 逐物理包六场景均衡三匹配E20 20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01 VERIFIED RUNNING，commit c9a74172e5f81bb4f04ce12cd4386ad4dd953ee9，真实CP smoke/归档传输/compile PASS，GPU0/1/2 actualPID/CWD/argv/CUDA与存活loggrowth核实；scratchE20已开始、尚无完整识别读出和科学结论，不增加预算、改配方或使用target。
+
+
+20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01 B00首行SOURCE_ROW_ANALYZED：完整E20/4440更新/7view独立复算，sourceRX1 clean80.158730%／lowurban27.777778%，5823318NN；两As组仍健康运行，未形成组间科学判定，不改参数，0target。

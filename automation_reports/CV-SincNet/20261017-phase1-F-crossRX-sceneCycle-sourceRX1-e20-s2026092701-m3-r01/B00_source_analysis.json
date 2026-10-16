@@ -1,0 +1,491 @@
+{
+  "status": "COMPLETED_SOURCE_ROW_ANALYZED",
+  "run_id": "20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01",
+  "arm": "B00",
+  "scores": {
+    "B00": {
+      "clean": {
+        "count": 1260,
+        "accuracy": 0.8015873015873016,
+        "macro_F1": 0.7974293704555123,
+        "confusion": [
+          [
+            188,
+            17,
+            2,
+            1,
+            2,
+            0
+          ],
+          [
+            0,
+            179,
+            0,
+            29,
+            1,
+            1
+          ],
+          [
+            18,
+            0,
+            120,
+            0,
+            0,
+            72
+          ],
+          [
+            3,
+            81,
+            0,
+            125,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            210,
+            0
+          ],
+          [
+            0,
+            0,
+            18,
+            4,
+            0,
+            188
+          ]
+        ]
+      },
+      "practical_high": {
+        "count": 1260,
+        "accuracy": 0.39920634920634923,
+        "macro_F1": 0.2904946639126604,
+        "confusion": [
+          [
+            5,
+            0,
+            154,
+            44,
+            7,
+            0
+          ],
+          [
+            1,
+            2,
+            4,
+            163,
+            37,
+            3
+          ],
+          [
+            1,
+            0,
+            142,
+            3,
+            41,
+            23
+          ],
+          [
+            4,
+            2,
+            11,
+            186,
+            7,
+            0
+          ],
+          [
+            1,
+            0,
+            19,
+            27,
+            162,
+            1
+          ],
+          [
+            0,
+            0,
+            158,
+            0,
+            46,
+            6
+          ]
+        ]
+      },
+      "practical_mid": {
+        "count": 1260,
+        "accuracy": 0.4023809523809524,
+        "macro_F1": 0.302242556122641,
+        "confusion": [
+          [
+            13,
+            0,
+            146,
+            34,
+            15,
+            2
+          ],
+          [
+            6,
+            4,
+            7,
+            153,
+            36,
+            4
+          ],
+          [
+            3,
+            0,
+            144,
+            8,
+            29,
+            26
+          ],
+          [
+            2,
+            2,
+            15,
+            180,
+            10,
+            1
+          ],
+          [
+            2,
+            1,
+            19,
+            24,
+            162,
+            2
+          ],
+          [
+            2,
+            0,
+            149,
+            0,
+            55,
+            4
+          ]
+        ]
+      },
+      "practical_low_suburban": {
+        "count": 1260,
+        "accuracy": 0.3634920634920635,
+        "macro_F1": 0.28312995867808777,
+        "confusion": [
+          [
+            10,
+            1,
+            140,
+            40,
+            15,
+            4
+          ],
+          [
+            10,
+            6,
+            16,
+            135,
+            37,
+            6
+          ],
+          [
+            1,
+            4,
+            129,
+            12,
+            40,
+            24
+          ],
+          [
+            8,
+            2,
+            20,
+            150,
+            24,
+            6
+          ],
+          [
+            5,
+            1,
+            28,
+            24,
+            150,
+            2
+          ],
+          [
+            0,
+            0,
+            138,
+            1,
+            58,
+            13
+          ]
+        ]
+      },
+      "practical_high_urban": {
+        "count": 1260,
+        "accuracy": 0.3896825396825397,
+        "macro_F1": 0.295837835193932,
+        "confusion": [
+          [
+            10,
+            1,
+            146,
+            38,
+            15,
+            0
+          ],
+          [
+            8,
+            3,
+            5,
+            148,
+            40,
+            6
+          ],
+          [
+            3,
+            1,
+            129,
+            8,
+            42,
+            27
+          ],
+          [
+            3,
+            3,
+            9,
+            187,
+            7,
+            1
+          ],
+          [
+            7,
+            2,
+            21,
+            25,
+            151,
+            4
+          ],
+          [
+            3,
+            1,
+            144,
+            0,
+            51,
+            11
+          ]
+        ]
+      },
+      "practical_mid_urban": {
+        "count": 1260,
+        "accuracy": 0.3246031746031746,
+        "macro_F1": 0.2690652930330513,
+        "confusion": [
+          [
+            15,
+            2,
+            110,
+            32,
+            39,
+            12
+          ],
+          [
+            15,
+            6,
+            18,
+            110,
+            44,
+            17
+          ],
+          [
+            14,
+            4,
+            104,
+            19,
+            41,
+            28
+          ],
+          [
+            14,
+            5,
+            12,
+            136,
+            29,
+            14
+          ],
+          [
+            23,
+            6,
+            19,
+            27,
+            125,
+            10
+          ],
+          [
+            4,
+            1,
+            122,
+            2,
+            58,
+            23
+          ]
+        ]
+      },
+      "practical_low_urban": {
+        "count": 1260,
+        "accuracy": 0.2777777777777778,
+        "macro_F1": 0.2456925823629057,
+        "confusion": [
+          [
+            27,
+            4,
+            96,
+            20,
+            44,
+            19
+          ],
+          [
+            29,
+            10,
+            23,
+            68,
+            62,
+            18
+          ],
+          [
+            16,
+            10,
+            85,
+            21,
+            48,
+            30
+          ],
+          [
+            23,
+            9,
+            21,
+            92,
+            49,
+            16
+          ],
+          [
+            19,
+            4,
+            27,
+            31,
+            113,
+            16
+          ],
+          [
+            12,
+            4,
+            96,
+            6,
+            69,
+            23
+          ]
+        ]
+      }
+    }
+  },
+  "execution": {
+    "B00": {
+      "full_steps": 4440,
+      "full_epochs": 20,
+      "full_stdout_lines": 800,
+      "stdout_warnings": [],
+      "native_nonfinite_placeholder_fields": [],
+      "all_step_values_finite_or_explicit_null": true,
+      "max_loss_recount_error": 4.172325134277344e-07,
+      "max_base_loss_recount_error": 2.980232238769531e-07,
+      "supcon_layer_forward_terms": 13320,
+      "L_forward_packets": 4546560,
+      "extra_L_forward_packets": 1136640,
+      "As_training_observations": 0,
+      "As_source_eval_observations": 7560,
+      "ordinary_generated_packets": 568320,
+      "physical_observations": {
+        "L": 568320,
+        "U": 396368
+      },
+      "unique_physical_training": {
+        "L": 5040,
+        "U": 45360
+      },
+      "teacher_additive_calls": 0,
+      "scene_schedule_mode": "none",
+      "schedule_recount": {
+        "status": "VERIFIED",
+        "arm": "B00",
+        "mode": "none",
+        "training_calls": 0,
+        "training_packets": 0,
+        "unique_physical_L": 0,
+        "all_actual_decisions_replayed": true,
+        "per_packet_final_counts_identical": true,
+        "global_scene_counts": {},
+        "permutation_cycles_constructed": 0,
+        "per_packet_appearance_distribution": null,
+        "per_packet_max_minus_min_distribution": null,
+        "missing_packet_scene_cells": 0,
+        "all_TX_RX_day_state_coverage_runtime_report": {
+          "total": 0,
+          "cells": [],
+          "all_legal_L_supervised": true,
+          "confidence_gate": false
+        },
+        "independent_RX_day_scene_counts": [],
+        "runtime_generation_wall_seconds": 0.0,
+        "recount_wall_seconds": 0.757056599992211,
+        "IQ_reads": 0,
+        "checkpoint_loads": 0,
+        "NN": 0,
+        "new_updates": 0,
+        "target_access": false
+      },
+      "channel_generation_wall_seconds": 0.0,
+      "teacher_inherited_counter_offset_removed": 2,
+      "instrumented_counters": {
+        "student_train_forward_packets": 4942928,
+        "student_eval_forward_packets": 475202,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 396370
+      },
+      "actual_network_forward_packets": 5823318,
+      "held_forward_packets": 8820,
+      "elapsed_training_seconds": 1403.310507774353,
+      "final_native_logged_first_ordinary_CE": 0.26407650744055844,
+      "final_base_L_objective": 0.31048761489423543,
+      "final_extra_pair_objective": 0.09732600533076234,
+      "total_pair_weight": 1.25,
+      "seen_V": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.9803703703703703,
+        "source_val_rx_accuracy": {
+          "3": 0.9537037037037037,
+          "4": 0.9857407407407407,
+          "6": 0.9957407407407407,
+          "8": 0.9862962962962963
+        },
+        "source_val_worst_rx": 0.9537037037037037,
+        "held_RX_excluded": true
+      },
+      "tracked_BN_module_names": [],
+      "extra_BN_updates": 0,
+      "coverage": {
+        "total": 0,
+        "cells": [],
+        "all_legal_L_supervised": true,
+        "confidence_gate": false
+      }
+    }
+  },
+  "source_only": true,
+  "target_access": false,
+  "comparison_available": false,
+  "executed_code_commit": "c9a74172e5f81bb4f04ce12cd4386ad4dd953ee9",
+  "claim": "Newmatched B00 reference only;no Ascomparison,formal orjoint result"
+}

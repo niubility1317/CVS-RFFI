@@ -1,6 +1,6 @@
 # 逐物理包六场景覆盖：三匹配 E20 预登记
 
-状态：PLANNED，尚未启动。run：20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01；owner：codex/root/F-sceneCycle-E20-20261017。实际执行 commit 将由 release_commit.txt／resolved_config 固定。
+状态：RUNNING；B00 已完成源七视图独立复算，C_IID／B01 仍在训练。run：20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01；owner：codex/root/F-sceneCycle-E20-20261017。实际执行 commit 将由 release_commit.txt／resolved_config 固定。
 
 本轮只检验 A_s 的场景组织，不是新 A_g。旧 sourceRX1／seed01 的全部4440步和568320次L场景选择已按真实seed/元数据/namespace精确复现。5040物理包均见过6scene，缺失为0；同包scene次数差中位11、最大27。因此不声称漏掉困难场景，只检验减少跨出现次数的不均衡能否提高识别。历史复算0IQ／CP／NN／更新。
 
@@ -26,3 +26,20 @@ B01相对C_IID须：clean accuracy与macroF1不降、lowurban accuracy≥+1pp且
 
 
 实际发布：VERIFIED RUNNING，执行commit c9a74172e5f81bb4f04ce12cd4386ad4dd953ee9。一个archive传输比较／remotecompile／真实匹配CP两合成包smoke PASS；三row真实进程CWD/argv/GPU及存活期loggrowth已独立比对，GPU0/1/2，未修改旧任务。详细状态见[launch_summary.json](launch_summary.json)。当前已开始训练，尚无最终heldRX读出／科学判定／正式评分，不能声称场景组织As有效或联合成功。
+
+
+## B00 首行已完成，矩阵仍在运行
+
+B00的20轮／4440更新及全部七视图1260源物理包读出已独立复算，[首行完整结果](B00_source_analysis.json)。仅sourceRX1-held／seed01，未做正式target评分，不是As或联合收益。两个As组继续原E20参数，结果不回流健康训练。
+
+| 场景 | accuracy % | macro-F1 % |
+|---|---:|---:|
+| clean | 80.158730 | 79.742937 |
+| practical_high | 39.920635 | 29.049466 |
+| practical_mid | 40.238095 | 30.224256 |
+| practical_low_suburban | 36.349206 | 28.312996 |
+| practical_high_urban | 38.968254 | 29.583784 |
+| practical_mid_urban | 32.460317 | 26.906529 |
+| practical_low_urban | 27.777778 | 24.569258 |
+
+实际NN包前向 5823318（L 4546560，extraL 1136640；原U／teacher／V／held分列，teacher offset2扣除）；训练秒 1403.310507774353。As训练0，新增teacher0，完整base最终目标 0.31048761489423543；loss下降不作识别收益。
