@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "scope": "DC statistic diagnostic, no model or checkpoint",
+  "known_cases": {"RX": "PASS", "TX": "FAIL", "DAYFLIP": "FAIL"},
+  "zero_baseline_gain": null,
+  "negative_cases": 7,
+  "TX_permutation_invariant": true,
+  "synthetic_packets": 15120,
+  "network_forwards": 0,
+  "optimizer_steps": 0,
+  "independent_P0P1_review": "PASS; no direct next-run defects",
+  "reviewer": "dc_p0p1_review",
+  "compile": "PASS",
+  "real_checkpoint_smoke": "not_applicable_no_model_or_checkpoint"
+}
