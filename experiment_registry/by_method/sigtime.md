@@ -25,3 +25,4 @@
 |源响应方向的独立 Ag：E20 完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-source-response-e20-manysig-s2026092701-m2-r01/report.md)|
 |旧普通 IQ 增强的 RX1 留出结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-ordinary-augmentation-RX1-e20-s2026092701-m2-r01/report.md)|
 |普通 IQ 增强的五个源 RX 留出结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-ordinary-augmentation-sourceRX-confirm-e20-s2026092701-m8-r01/report.md)|
+|额外 PA 对源身份的直接影响：五个冻结留出模型|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-ordinary-PA-heldsource-manysig-s2026092701-m5-r01/report.md)|

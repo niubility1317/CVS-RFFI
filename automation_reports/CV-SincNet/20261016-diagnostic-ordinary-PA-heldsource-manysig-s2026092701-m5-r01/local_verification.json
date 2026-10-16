@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "synthetic_network_forwards": 48,
+  "synthetic_augmented_input_packets": 96,
+  "negative_cases": 13,
+  "actual_native_PA_pair_identical_upstream": true,
+  "labels_do_not_change_views": true,
+  "frozen_model_unchanged": true,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "optimizer_updates": 0,
+  "target_access": false,
+  "independent_P0P1_review": "PASS one review, no direct defects; same checks48 forwards/96 actual augmented input packets",
+  "total_known_local_synthetic_network_forwards": 96,
+  "total_known_local_synthetic_augmented_input_packets": 192,
+  "count_correction": "Original test summary64 omitted32 native augmented packets in the divergent-upstream rejection test; both executions each actually96. No rerun or behavior change.",
+  "N607_preflight": "PASS current direct ordinary account/project/GPU readback",
+  "local_compile": "PASS",
+  "real_checkpoint_smoke": "First loaded N0 checkpoint step of every fold, zeros2 noquery; PASS immediately continues"
+}
