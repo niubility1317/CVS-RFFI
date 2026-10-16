@@ -1,0 +1,232 @@
+{
+  "status": "VERIFIED",
+  "source_decision": {
+    "status": "FAIL",
+    "checks": {
+      "vs_C0": false,
+      "vs_same": false,
+      "F1": false,
+      "seen": true,
+      "complete_health": true
+    },
+    "paired_comparisons": {
+      "C0": {
+        "accuracy_gain_pp": 0.4259259259259296,
+        "macroF1_gain_pp": 0.43136369271473685,
+        "seen_drop_pp": -0.04629629629629983
+      },
+      "SAME_RX": {
+        "accuracy_gain_pp": -0.4444444444444473,
+        "macroF1_gain_pp": -0.456890945690569,
+        "seen_drop_pp": -0.037037037037035425
+      }
+    },
+    "source_only": true,
+    "target_access": false,
+    "model_seeds": 1,
+    "automatic_extension": false,
+    "goal_completed": false
+  },
+  "full_log_proof": {
+    "C0": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "SupCon_steps": 4440,
+      "SupCon_applied": 3330,
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "F_supcon/loss": 0,
+        "F_supcon/weight": 0,
+        "pair/primary_CE": 0,
+        "pair/secondary_CE": 0
+      },
+      "stdout_errors": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_objective_error": 3.5762786865234375e-07,
+      "stdout_bytes": 115560,
+      "warnings": []
+    },
+    "SAME_RX": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "SupCon_steps": 4440,
+      "SupCon_applied": 3330,
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "F_supcon/loss": 0,
+        "F_supcon/weight": 0,
+        "pair/primary_CE": 0,
+        "pair/secondary_CE": 0
+      },
+      "stdout_errors": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_objective_error": 4.76837158203125e-07,
+      "stdout_bytes": 115759,
+      "warnings": []
+    },
+    "CROSS_RX": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "SupCon_steps": 4440,
+      "SupCon_applied": 3330,
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "F_supcon/loss": 0,
+        "F_supcon/weight": 0,
+        "pair/primary_CE": 0,
+        "pair/secondary_CE": 0
+      },
+      "stdout_errors": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_objective_error": 2.980232238769531e-07,
+      "stdout_bytes": 115807,
+      "warnings": []
+    }
+  },
+  "real_pair_trace_proof": {
+    "SAME_RX": {
+      "status": "VERIFIED",
+      "steps": 4440,
+      "primary_physical_ids": 5040,
+      "partner_physical_ids": 5040,
+      "partner_exposures": 568320,
+      "cells": 72,
+      "same_true_TX_day": true,
+      "distinct_physical_packet": true
+    },
+    "CROSS_RX": {
+      "status": "VERIFIED",
+      "steps": 4440,
+      "primary_physical_ids": 5040,
+      "partner_physical_ids": 5040,
+      "partner_exposures": 568320,
+      "cells": 216,
+      "same_true_TX_day": true,
+      "distinct_physical_packet": true
+    }
+  },
+  "costs": [
+    {
+      "arm": "C0",
+      "reused_reference": true,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 2273280,
+      "student_U_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "EMA_eval_forward_packets": 396368,
+      "held_V_forward_packets": 5400,
+      "source_practical_forward_packets": 32400,
+      "elapsed_seconds": 1123.5720767974854,
+      "source_practical_seconds": 64.00892653502524,
+      "bank_IQ_reads": 0,
+      "partner_physical_exposures": 0,
+      "bank_read_seconds": 0.0,
+      "partner_view_construction_seconds": 0.0
+    },
+    {
+      "arm": "SAME_RX",
+      "reused_reference": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 2273280,
+      "student_U_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "EMA_eval_forward_packets": 396368,
+      "held_V_forward_packets": 5400,
+      "source_practical_forward_packets": 32400,
+      "elapsed_seconds": 1182.9034476280212,
+      "source_practical_seconds": 64.52367390994914,
+      "bank_IQ_reads": 5040,
+      "partner_physical_exposures": 568320,
+      "bank_read_seconds": 0.7517345759551972,
+      "partner_view_construction_seconds": 39.20450063445605
+    },
+    {
+      "arm": "CROSS_RX",
+      "reused_reference": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 2273280,
+      "student_U_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "EMA_eval_forward_packets": 396368,
+      "held_V_forward_packets": 5400,
+      "source_practical_forward_packets": 32400,
+      "elapsed_seconds": 1143.488998413086,
+      "source_practical_seconds": 63.72020623786375,
+      "bank_IQ_reads": 5040,
+      "partner_physical_exposures": 568320,
+      "bank_read_seconds": 0.7585071451030672,
+      "partner_view_construction_seconds": 37.75979690416716
+    }
+  ],
+  "new_real_forward_packets": 7158036,
+  "new_model_epochs": 40,
+  "new_updates": 8880,
+  "reused_C0_epochs": 20,
+  "reused_C0_updates": 4440,
+  "actual_primary_sequence_records": 5994,
+  "matrix_wall_seconds": 1253.3218817710876,
+  "actual_training_commit": "9b2eebcfa809c8d5cfee6523d35b84aa10ded1a4",
+  "model_seed_count": 1,
+  "source_fold_count": 1,
+  "target_access": false,
+  "formal_test_status": "NOT_REGISTERED_SOURCE_ONLY",
+  "goal_completed": false,
+  "automatic_extension": false,
+  "scientific_status": "FAIL_SOURCE_RX1_ONLY",
+  "terminal_workers_alive": false,
+  "terminal_dispatcher_alive": false,
+  "technical_failure": null,
+  "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_FcrossRX_realpair20_20261016\\final",
+  "figures_rendered_and_viewed": 3
+}

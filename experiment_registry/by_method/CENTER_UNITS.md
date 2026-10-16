@@ -2,8 +2,8 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|真实同 TX 观测配对：源域完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-realpair-source-RX1-e20-s2026092701-m2-r01/report.md)|
 |F＋跨 RX 配对星地：五源折确认结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/report.md)|
-|真实同 TX 观测配对：源域预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-realpair-source-RX1-e20-s2026092701-m2-r01/report.md)|
 |F＋跨 RX 当前底座：冻结 practical 源诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-FcrossRX-practical-source-RX1-s2026092701-m2-r01/report.md)|
 |F＋跨 RX 同 TX：配对 practical 的源 RX1 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/report.md)|
 |F/E20：有界观察原点抖动的源 RX1 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-F-origin-jitter-RX1-e20-s2026092701-m1-r01/report.md)|

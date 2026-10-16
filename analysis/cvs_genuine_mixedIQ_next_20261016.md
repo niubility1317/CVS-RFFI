@@ -86,3 +86,9 @@ C0已完成E20及七源视图、默认头独立复算：held RX1 clean83.444444%
 20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01 八行全部自然结束且完整离线复算，科学判定 FAIL。五源平均 urban +20.039506 pp、low +14.081481 pp、clean +0.881481 pp，但 RX6/RX8 clean -3.648148/-2.129630 pp，不能按均值晋级。C1 源 low 均值40.637037%、最差RX3为34.203704%，suburban距自身clean平均8.933333/11.448148/14.285185 pp，联合目标未达。新增160模型轮／35520更新／28632144网络包、矩阵墙钟4309.823827 s；RX1既有40模型轮另列。一个model seed、五源折，0target。[实际报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/report.md)。
 
 固定 paired-As 的独立晋级关闭，不换失败折／seed、调权重、扫描强度或追加epoch救援。先前冻结的独立观测 SAME_RX/CROSS_RX 比较保持原方案，它尚不能叫数字 Ag。正式七视图、跨seed和真正四格混合目标继续 active。
+
+## 真实同 TX/day 观测配对：源规则失败
+
+20261016-phase1-FcrossRX-realpair-source-RX1-e20-s2026092701-m2-r01 两scratch E20完整完成、源规则FAIL。C0/SAME_RX/CROSS_RX clean83.444444/84.314815/83.870370%；CROSS比C0仅+0.425926 pp、比SAME低0.444444 pp且宏F1低0.456891 pp。六practical全部退化，low25.685185/22.574074/20.703704%。全568320 partner和5040 L ID／允许cell、5994原L/U序列、实际默认头联合训练均独立核实，排除本实现未执行配对或预算错误的解释。新增40模型轮／8880更新／7158036网络包，矩阵1253.321882 s；0target。关闭固定crossRX真实配对，不改选SAME、不调比例／换RX/seed救援。[实际报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-realpair-source-RX1-e20-s2026092701-m2-r01/report.md)。
+
+它未证明数字Ag或跨RX训练组织的独立价值，不推翻用户固定F＋跨RX SupCon底座。paired-As五源clean保护失败继续保留；真正混合和跨seed联合目标仍active。
