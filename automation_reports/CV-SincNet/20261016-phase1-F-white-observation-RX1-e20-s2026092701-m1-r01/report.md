@@ -23,3 +23,7 @@
 新成本20模型轮/4440更新/2273280 L前向；复用A0历史20轮/4440更新单列，0父权重成本。U/EMA/源eval/heldV/CPsmoke按实际计数。本轮source-only，无新target/星地成绩。正式联合模型仍须相同默认头、原clean+六practical、冻结prediction后truth-last，并证明clean正收益、lowurban>60%、suburban保持及跨seed；目标保持未完成。
 
 本地实际图与唯一限定P0/P1审查均PASS，无直接缺陷；累计1024合成网络前向/1536噪声输入/2合成optimizer更新，两次各11负例，206初态张量与匹配F_A0构造相同。0realIQ/CP，未运行新真实训练。登记VALID、compilePASS；真实ownCP noquery smoke留在worker首步PASS立即继续，不增加额外审批。
+
+## 实际启动核实
+
+VERIFIED/RUNNING，实际代码b30b94ce3d448d8746f7e3b41a647b766828bbf6。PID/CWD/argv/GPU/log增长、真实scratchCP noquery smoke、实际E20=13+7/F三路/统一Sinc每步physicalclip/defaulthead联合更新均通过。真实white能量比30dB、其他ordinary概率0/PAOFF/classsigfalse，原U配方和strong_noise_std保持；nativeargs差异仅run/candidate/output/use_aug/明确的aug设置。源角色5040/45360/21600，无target/As。单archive transfer与remotecompile通过。尚无FINAL源识别收益，原release未热改/重启。

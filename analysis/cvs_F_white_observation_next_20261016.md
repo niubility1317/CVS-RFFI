@@ -17,3 +17,7 @@
 唯一主比较 W30−A0：held accuracy≥+1pp，macroF1不下降，seenV均值损失≤0.5pp，有限完整预算与6TX×4RX×3day覆盖、全部实际L/U物理顺序相同。失败关闭WHITE30，不扫SNR/概率、换RX/seed/主终点；通过只允许另登记固定其余RX3/4/6/8的同算子匹配研究。五折后仍要求均值≥+1pp、至少4/5正、最差≥−1pp、mean macroF1≥0、每折seenV损失≤0.5pp，再独立固定Ag/As矩阵，不能从单fold进入target。
 
 新成本20模型轮/4440更新/2273280 L前向；复用A0历史20轮/4440更新单列，0父权重成本。U/EMA/源eval/heldV/CPsmoke按实际计数。本轮source-only，无新target/星地成绩。正式联合模型仍须相同默认头、原clean+六practical、冻结prediction后truth-last，并证明clean正收益、lowurban>60%、suburban保持及跨seed；目标保持未完成。
+
+## 实际启动
+
+`20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01` 已发布，实际训练代码 `b30b94ce3d448d8746f7e3b41a647b766828bbf6`；worker GPU0的PID/CWD/argv/log增长、own真实scratch CP noquery smoke、F三路和统一Sinc每步physicalclip/默认头联合更新均已独立核实。E1真实新增噪声比29.9999985至30.0000014dB，其他ordinary概率0/PAOFF/classsigfalse，旧U和strong_noise_std保持。状态VERIFIED/RUNNING，尚无FINAL源成绩；没有热改或重启其他健康任务。本地1024合成fwd/1536噪声输入/2合成optimizer更新另计，0真实IQ/CP；唯一限定P0/P1审查、登记/compile均PASS。
