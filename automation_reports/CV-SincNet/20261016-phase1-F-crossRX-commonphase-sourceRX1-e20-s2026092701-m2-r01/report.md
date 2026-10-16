@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：独立有界公共相位视图 E20 源配对
 
-状态：PLANNED；尚未启动或获得训练识别结果。逐行矩阵、实际路径与 seed 的唯一登记见 [experiment.json](experiment.json)。执行代码由实际 Git 提交及 release_commit.txt/resolved_config 标识。
+状态：RUNNING／VERIFIED。两组已从零启动，尚未完成训练或源评分。逐行矩阵、实际路径与 seed 的唯一登记见 [experiment.json](experiment.json)。执行代码由实际 Git 提交及 release_commit.txt/resolved_config 标识。
 
 ## 假设与最小矩阵
 
@@ -40,3 +40,13 @@ owner `codex/root/F-CROSS_RX-commonphase-E20-20261016`。普通N607账号，CPU 
 保存实际args/config/模块/来源、完整20epoch/4440step/unitstep、全部phase角度/功率误差、物理L/U训练序列、各view默认头预测、成本、独立分析和图。checkpoint/IQ/物理ID/逐包预测/完整日志私有；代码、配置、登记、汇总报告入Git。训练完成或源V健康不代替完整实验结果。
 
 本地11个负例及真实F合成检查PASS：同scratch初始化、六前向/同IQ对、私有phase RNG、默认头联合更新、导出160维一致；新B00的loss和head梯度与旧匹配B00完全相同。两次检查脚本问题分别为浮点精确比较和原生未启用诊断NaN比较，已修检查，训练实现未改。一次独立限定P0/P1审查PASS，无发现。实际发布/训练/读出状态待独立证据追加。
+
+
+## 实际发布与启动读回
+
+执行commit `39d95f79d91ccf2a570f1c1349adacfb409c0833`，本地与远端分支OID已独立一致。归档单次比对、远端编译、匹配真实CP smoke PASS；dispatcher和两worker的PID/CWD/argv/GPU及日志增长VERIFIED。两行实际seed均2026092701，epochs/label/pseudo=20/13/7，source fold RX1，无baseline/teacher权重，实际phase/Ag/As标志与登记一致。
+
+- B00-RX1-s2026092701：GPU2，已观察完整step461/4440、E3/20；stdout16850字节。此为运行进度，不是最终性能。
+- B10-RX1-s2026092701：GPU4，已观察完整step459/4440、E3/20；stdout16849字节。此为运行进度，不是最终性能。
+
+独立全量分析/图程序已准备并编译，只有全部声明预测完成后才执行。不修改已发布训练代码，不重复提交同run，不基于中间或目标分数改变配方。联合目标仍未完成。

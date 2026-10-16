@@ -48,3 +48,6 @@ seed02两行均自然完成E20/4440更新与全部七视图，独立重算VERIFI
 
 
 独立相位训练候选现已实现/登记 `20261016-phase1-F-crossRX-commonphase-sourceRX1-e20-s2026092701-m2-r01`，匹配B00/B10各scratchE20/同六L前向/.5raw+.25ordinary+.25槽；B10槽为每包uniform[−.37,.37]rad私有随机流。CROSS_RX仅共有ordinary对，U/ownEMA不变，0As训练。11负例与实际F合成配对控制检查PASS、一次限定P0/P1审查PASS。源clean≥+1pp/F1不降/seenV最多−.5pp，失败关闭固定配方无angle/seed/RX救跑；尚未启动或取得训练结果。
+
+
+上述公共相位B00/B10已实际发布并运行，执行commit `39d95f79d91ccf2a570f1c1349adacfb409c0833`；archive/compile/真实CPsmoke/两worker PID-CWD-argv-GPU及日志增长VERIFIED。实际seed2026092701、20/13/7和无训练父权重均核对；当前未完成训练/源预测/独立评分，不能称Ag有效。

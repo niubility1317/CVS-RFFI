@@ -158,7 +158,7 @@
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
-    "status": "REGISTERED_NOT_LAUNCHED",
+    "status": "RUNNING_SOURCE_E20_NO_RESULT_YET",
     "minimum": "Matched B00/B10 scratchE20,sourceRX1 fold,same raw share/six L forwards/U/default head;fixed phase-only new slot",
     "abandon": "No preregistered positive heldRX clean gain or harmful source health;no target feedback/angle/seed/RX rescue",
     "Ag_efficacy_proved": false,
@@ -176,6 +176,7 @@
       "clean_gain_pp": 1.0,
       "macroF1_gain_pp": 0.0,
       "seenV_min_gain_pp": -0.5
-    }
+    },
+    "execution_commit": "39d95f79d91ccf2a570f1c1349adacfb409c0833"
   }
 }
