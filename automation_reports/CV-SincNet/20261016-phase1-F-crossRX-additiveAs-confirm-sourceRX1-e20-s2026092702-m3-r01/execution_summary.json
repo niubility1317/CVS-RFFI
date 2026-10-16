@@ -1,66 +1,83 @@
 {
-  "status": "VERIFIED_RUNNING",
-  "code_commit": "05984a1229ebac7025a95081dc5fae4108276b28",
-  "git_remote_OID": "VERIFIED",
-  "archive_transfer": "VERIFIED",
-  "remote_compile": "VERIFIED",
-  "real_matching_checkpoint_smoke": "PASS",
-  "dispatcher_PID_CWD_argv": "VERIFIED",
-  "target_access": false,
-  "rows": [
-    {
-      "row_id": "D00-RX1-s2026092702",
-      "GPU": 0,
-      "PID_CWD_argv_GPU": "VERIFIED",
-      "actual_seed": 2026092702,
-      "actual_epochs": 20,
-      "actual_scratch": true,
-      "observed_complete_step": 315,
-      "observed_epoch": 2,
-      "log_bytes": 11753,
-      "step_log_growth_verified": true,
-      "As_training": false,
-      "base_raw_total_weight": 0.75,
-      "extra_weight": 0,
-      "L_forwards": 8
+  "status": "ANALYZED",
+  "actual_execution": "VERIFIED",
+  "executed_code_commit": "05984a1229ebac7025a95081dc5fae4108276b28",
+  "source_only": true,
+  "model_seed": 2026092702,
+  "actual_rows": 3,
+  "new_model_epochs": 60,
+  "new_optimizer_updates": 13320,
+  "actual_NN_forward_packets": 17469956,
+  "dispatcher_smoke_NN_packets": 2,
+  "qualification": {
+    "qualified": false,
+    "conditions": {
+      "D00_clean": false,
+      "D00_clean_macroF1": false,
+      "D00_low_urban": true,
+      "D00_urban_mean": true,
+      "D00_practical_protection": true,
+      "D00_seen_V": true,
+      "D_raw_clean": false,
+      "D_raw_clean_macroF1": false,
+      "D_raw_low_urban": true,
+      "D_raw_urban_mean": true,
+      "D_raw_practical_protection": true,
+      "D_raw_seen_V": true,
+      "healthy": true
     },
-    {
-      "row_id": "D_raw-RX1-s2026092702",
-      "GPU": 1,
-      "PID_CWD_argv_GPU": "VERIFIED",
-      "actual_seed": 2026092702,
-      "actual_epochs": 20,
-      "actual_scratch": true,
-      "observed_complete_step": 372,
-      "observed_epoch": 2,
-      "log_bytes": 11771,
-      "step_log_growth_verified": true,
-      "As_training": false,
-      "base_raw_total_weight": 0.75,
-      "extra_weight": 0.25,
-      "L_forwards": 8
-    },
-    {
-      "row_id": "D_As-RX1-s2026092702",
-      "GPU": 2,
-      "PID_CWD_argv_GPU": "VERIFIED",
-      "actual_seed": 2026092702,
-      "actual_epochs": 20,
-      "actual_scratch": true,
-      "observed_complete_step": 214,
-      "observed_epoch": 1,
-      "log_bytes": 6580,
-      "step_log_growth_verified": true,
-      "As_training": true,
-      "base_raw_total_weight": 0.75,
-      "extra_weight": 0.25,
-      "L_forwards": 8
+    "comparisons": {
+      "D00": {
+        "conditions": {
+          "clean": false,
+          "clean_macroF1": false,
+          "low_urban": true,
+          "urban_mean": true,
+          "practical_protection": true,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": -8.253968253968246,
+          "practical_high": 20.317460317460313,
+          "practical_mid": 16.587301587301585,
+          "practical_low_suburban": 17.539682539682538,
+          "practical_high_urban": 17.06349206349207,
+          "practical_mid_urban": 11.269841269841269,
+          "practical_low_urban": 8.730158730158728
+        },
+        "clean_macroF1_gain_pp": -8.89266748074684,
+        "seen_V_gain_pp": 0.05555555555556424,
+        "urban_mean_gain_pp": 12.354497354497354
+      },
+      "D_raw": {
+        "conditions": {
+          "clean": false,
+          "clean_macroF1": false,
+          "low_urban": true,
+          "urban_mean": true,
+          "practical_protection": true,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": -6.825396825396823,
+          "practical_high": 19.999999999999996,
+          "practical_mid": 16.825396825396822,
+          "practical_low_suburban": 18.174603174603178,
+          "practical_high_urban": 16.42857142857143,
+          "practical_mid_urban": 12.142857142857144,
+          "practical_low_urban": 8.730158730158728
+        },
+        "clean_macroF1_gain_pp": -7.346129584395733,
+        "seen_V_gain_pp": -0.013888888888879958,
+        "urban_mean_gain_pp": 12.433862433862435
+      }
     }
-  ],
-  "independent_analysis": "Prepared/compiled;0completed predictions scored;runtime CE separated from common/additive objectives",
-  "immutable_runtime_profile": "confirmation_seed02",
-  "actual_native_seed": 2026092702,
-  "actual_recorded_model_config_seed": 2026092702,
-  "scratch_initialization_metadata": "VERIFIED",
-  "local_F_constructor_seed": 2026092702
+  },
+  "source_prediction_count": 26460,
+  "completed_source_views": 21,
+  "independent_all_step_rows": 13320,
+  "all_workers_naturally_exited": true,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "joint_goal_complete": false
 }

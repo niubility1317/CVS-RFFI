@@ -900,7 +900,7 @@
     "healthy_tasks_changed": false
   },
   "additive_As_independent_confirmation": {
-    "status": "RUNNING_SOURCE_E20_NO_RESULT_YET",
+    "status": "ANALYZED_SOURCE_CONFIRMATION_FAIL_FIXED_CANDIDATE_CLOSED",
     "run_id": "20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01",
     "first_source": "20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01",
     "model_seed": 2026092702,
@@ -917,6 +917,82 @@
     "on_fail": "Stopfixedcandidate,no seed03/RX/coefficient/sceneprobability/extra-budget rescue",
     "target_access": false,
     "joint_goal_complete": false,
-    "execution_commit": "05984a1229ebac7025a95081dc5fae4108276b28"
+    "execution_commit": "05984a1229ebac7025a95081dc5fae4108276b28",
+    "scientific_verdict": "FAIL_FIXED_ADDITIVE_AS_CLOSED_AFTER_CONFIRMATION",
+    "source_analysis_ref": "automation_reports/CV-SincNet/20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01/source_analysis.json",
+    "qualification": {
+      "qualified": false,
+      "conditions": {
+        "D00_clean": false,
+        "D00_clean_macroF1": false,
+        "D00_low_urban": true,
+        "D00_urban_mean": true,
+        "D00_practical_protection": true,
+        "D00_seen_V": true,
+        "D_raw_clean": false,
+        "D_raw_clean_macroF1": false,
+        "D_raw_low_urban": true,
+        "D_raw_urban_mean": true,
+        "D_raw_practical_protection": true,
+        "D_raw_seen_V": true,
+        "healthy": true
+      },
+      "comparisons": {
+        "D00": {
+          "conditions": {
+            "clean": false,
+            "clean_macroF1": false,
+            "low_urban": true,
+            "urban_mean": true,
+            "practical_protection": true,
+            "seen_V": true
+          },
+          "all_view_gain_pp": {
+            "clean": -8.253968253968246,
+            "practical_high": 20.317460317460313,
+            "practical_mid": 16.587301587301585,
+            "practical_low_suburban": 17.539682539682538,
+            "practical_high_urban": 17.06349206349207,
+            "practical_mid_urban": 11.269841269841269,
+            "practical_low_urban": 8.730158730158728
+          },
+          "clean_macroF1_gain_pp": -8.89266748074684,
+          "seen_V_gain_pp": 0.05555555555556424,
+          "urban_mean_gain_pp": 12.354497354497354
+        },
+        "D_raw": {
+          "conditions": {
+            "clean": false,
+            "clean_macroF1": false,
+            "low_urban": true,
+            "urban_mean": true,
+            "practical_protection": true,
+            "seen_V": true
+          },
+          "all_view_gain_pp": {
+            "clean": -6.825396825396823,
+            "practical_high": 19.999999999999996,
+            "practical_mid": 16.825396825396822,
+            "practical_low_suburban": 18.174603174603178,
+            "practical_high_urban": 16.42857142857143,
+            "practical_mid_urban": 12.142857142857144,
+            "practical_low_urban": 8.730158730158728
+          },
+          "clean_macroF1_gain_pp": -7.346129584395733,
+          "seen_V_gain_pp": -0.013888888888879958,
+          "urban_mean_gain_pp": 12.433862433862435
+        }
+      }
+    },
+    "actual_NN_forward_packets": 17469956,
+    "two_seed_confirmation": "FAIL_FIXED_ADDITIVE_AS_CLOSED_AFTER_CONFIRMATION",
+    "two_seed_source_report": "automation_reports/CV-SincNet/20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01/two_seed_source_confirmation.md",
+    "source_model_seeds": [
+      2026092701,
+      2026092702
+    ],
+    "cumulative_model_epochs": 120,
+    "cumulative_optimizer_updates": 26640,
+    "cumulative_actual_NN_forward_packets": 34939912
   }
 }

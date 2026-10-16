@@ -150,3 +150,9 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 首种子固定预测补算：首种子的 low urban 在双方 clean 都正确的 982 个样本中修复 188／新错 70，净增 118 个；其他三组净减 46 个，总体净增 72 个（+5.714286 个百分点）。因此，这个源折上的 practical 收益并非只伴随 clean 新修复样本增加；它仍包含明显错误转移，不能推断各 TX 普遍受益或传播因果机制。 0 新 IQ／前向／更新；当前唯一下一假设仍为已运行的 seed02 固定确认，不新增判据。完整分解见该 run 的 error_transitions.md/json。
+
+
+固定 additive As seed02 三组 E20 与七源视图完成：FAIL_FIXED_ADDITIVE_AS_CLOSED_AFTER_CONFIRMATION。无 target；source_analysis 与两种子汇总分别记录，不把 source PASS 当联合目标完成。
+
+
+固定 additive As seed02 完整确认失败：D_As clean 74.365079%，相对 D00 −8.253968pp、D_raw −6.825397pp；low urban 36.111111% 虽提高，仍未达 60%。两种子相对 D00 clean 均值差 −2.460317pp、low urban +7.222222pp，原逐 seed 条件失败，关闭此固定候选扩展。绝对 raw 系数保留不足以保护 clean，健康通过不等于联合收益。六模型120 modelE／26640更新／34939912实测NN，无target或额外头。完整结果见确认run的two_seed_source_confirmation.md/json。未产生有效新Ag、正式target或联合目标证明。

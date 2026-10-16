@@ -1,6 +1,6 @@
 # additive As：固定 seed02 的独立源域确认
 
-状态：RUNNING／VERIFIED。三组已从零启动，尚未完成训练或源评分。本轮只检验同一候选的独立种子可复现性，不增加 IQ 算子、损失、U 规则或模型分支。
+状态：ANALYZED／VERIFIED。三组 E20 和全部七源视图已完成独立复算。FAIL_FIXED_ADDITIVE_AS_CLOSED_AFTER_CONFIRMATION。
 
 首轮 20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01 的三组 E20、26460 个预测和全部13320步已独立复算，原两对照源条件全通过。As 相对 D00 clean +3.333333pp、low urban +5.714286pp、urban均值 +9.708995pp；相对D_raw也通过。它仍有TX标签2/3在六practical的明显负收益，lowurban仅33.809524%，suburban自身clean差25.396825/28.809524/32.063492pp。首轮没有证明 A_g、跨seed或完整联合目标，也不能证明raw权重变化是旧normalized75/25失败的唯一原因。
 
@@ -114,3 +114,82 @@ CWD /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_additiveAs_
 | practical_low_urban | 0.000000 | 30 | 30 |
 
 D_raw 的额外 raw pair 使用 CE＋原 RDrop，且总 pair 系数从 1 增至 1.25；这是额外监督和损失尺度控制，不能把结果归因为单独 CE 或 RDrop。此 seed 的 clean 下降 1.428571 个百分点、low urban 无差异，未形成 clean／low urban 联合提升。As 行仍运行，原固定晋级条件不变；本比较没有候选晋级或目标访问。详见 controls_comparison.json。
+
+## seed02 完整结果
+
+全部三 worker 和 dispatcher 自然结束，无技术失败。完整读取 13320 步 native/view/Sinc 修正记录、3×20 轮、全部 L/U 物理序列与 26460 个固定硬预测，三组物理训练序列相同。以下仅为同一个源 RX1-held 契约的 seed02，不是正式 target 或完整三种子结果。
+
+| 场景 | D00 % | D_raw % | D_As % | As−D00 pp | As−D_raw pp |
+|---|---:|---:|---:|---:|---:|
+| clean | 82.619048 | 81.190476 | 74.365079 | -8.253968 | -6.825397 |
+| practical_high | 37.380952 | 37.698413 | 57.698413 | +20.317460 | +20.000000 |
+| practical_mid | 37.380952 | 37.142857 | 53.968254 | +16.587302 | +16.825397 |
+| practical_low_suburban | 35.555556 | 34.920635 | 53.095238 | +17.539683 | +18.174603 |
+| practical_high_urban | 37.857143 | 38.492063 | 54.920635 | +17.063492 | +16.428571 |
+| practical_mid_urban | 31.031746 | 30.158730 | 42.301587 | +11.269841 | +12.142857 |
+| practical_low_urban | 27.380952 | 27.380952 | 36.111111 | +8.730159 | +8.730159 |
+
+| 对照 | clean F1 差 pp | low urban 修复／新错 | urban 均值差 pp | seen V 差 pp |
+|---|---:|---|---:|---:|
+| D_As−D00 | -8.892667 | 199/89 | +12.354497 | +0.055556 |
+| D_As−D_raw | -7.346130 | 202/92 | +12.433862 | -0.013889 |
+
+| 原固定条件 | 结果 |
+|---|---|
+| D00_clean | FAIL |
+| D00_clean_macroF1 | FAIL |
+| D00_low_urban | PASS |
+| D00_urban_mean | PASS |
+| D00_practical_protection | PASS |
+| D00_seen_V | PASS |
+| D_raw_clean | FAIL |
+| D_raw_clean_macroF1 | FAIL |
+| D_raw_low_urban | PASS |
+| D_raw_urban_mean | PASS |
+| D_raw_practical_protection | PASS |
+| D_raw_seen_V | PASS |
+| healthy | PASS |
+
+| row | 第一 ordinary 平滑 CE | 共同 base 完整目标 | 未加权 extra 目标 | 总 pair 系数 | 实际 NN 包 | 训练秒 |
+|---|---:|---:|---:|---:|---:|---:|
+| D00 | 0.31106841 | 0.33409852 | 0.10483400 | 1.0 | 5823318 | 1556.230 |
+| D_raw | 0.31716109 | 0.33727621 | 0.10136575 | 1.25 | 5823318 | 1432.415 |
+| D_As | 0.31783310 | 0.34827843 | 0.57095288 | 1.25 | 5823318 | 2259.272 |
+
+各目标为最后 222 步均值，native CE 不是完整训练目标。硬预测缺少 logits，runtime 读出 CE 未独立复算。每组 4440 更新、4546560 L NN，其中 extra 1136640；每组 568320 次 ordinary，只有 D_As 另生成 568320 次完整 practical，无额外 U／teacher As，tracked BN 和额外 BN 更新实际均为 0。新局部 profile 检查 24 个负例，0 IQ／0 NN／0 更新；原机制 3858 合成 NN／3 合成更新复用未重跑。
+
+| D_As 场景 | 绝对 accuracy % | 与自身 clean 的差距 pp |
+|---|---:|---:|
+| practical_high | 57.698413 | 16.666667 |
+| practical_mid | 53.968254 | 20.396825 |
+| practical_low_suburban | 53.095238 | 21.269841 |
+
+全部 TX／day 分层、accuracy／Macro-F1、混淆矩阵和相对两个对照修复／新错均保留于 source_analysis.json。不得用总均值掩盖类别负收益。
+
+第二种子未通过原规则，关闭固定 additive As 候选扩展。不做 seed03、换 RX、系数、场景概率、阈值或额外预算救跑；与首轮正结果共同保留。其他健康任务不变。
+
+本轮实测总 NN 17469956（包含 dispatcher 真实 CP 的合成 smoke 2），60 model epochs／13320 更新。首轮不作训练父权重，累计成本在两种子报告中分别汇总。E20 为用户指定的压缩探索预算，历史 clean 基准已暴露，本轮仅源域判断，不声称新的独立盲测。尚无有效新增 Ag、完整因子矩阵及交互项、正式 target clean＋六 practical 或跨种子联合成功。
+
+完整训练曲线：[complete_training_curves.png](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_additive_As_confirm20_20261016/final/complete_training_curves.png)。
+
+七源视图与自身 clean 差距：[held_source_results.png](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_additive_As_confirm20_20261016/final/held_source_results.png)。
+
+全部 TX／day 分层：[source_strata.png](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_additive_As_confirm20_20261016/final/source_strata.png)。
+
+
+## 同源折两种子合并结果
+
+FAIL_FIXED_ADDITIVE_AS_CLOSED_AFTER_CONFIRMATION。两种子均值、样本标准差、每种子的原条件、全部 TX／day 代价、suburban 差距和累计成本见 [两种子确认报告](two_seed_source_confirmation.md) 与 [完整聚合](two_seed_source_confirmation.json)。n=2／同一 RX1-held 源折，联合目标仍未完成。
+
+
+## 确认失败的具体含义
+
+第二种子相对 D00 的 clean −8.253968pp、clean Macro-F1 −8.892667pp；相对 D_raw 的 clean −6.825397pp、Macro-F1 −7.346130pp，均违反原保护条件。urban 均值及 low urban 对两个控制均提高，六 practical、seen V 与共同 base 健康条件通过，但这不能补偿 clean 失败。
+
+绝对 raw 监督系数 .75 保留这一实现事实，仍不足以保护跨 RX clean；不再将它当作充分条件，也不能据此断言旧失败只由监督稀释造成。此固定候选关闭扩展，首轮正结果完整保留。没有 seed03、换 RX、改系数或延长 E20 救跑。其他 owner 的健康实验不变。
+
+第二种子 D_As 的 suburban 自身 clean 差距为 16.666667／20.396825／21.269841pp，仍远超探索 2pp；这些差距变小也包含 clean 下降 8.253968pp 的贡献，不能声称通过保护 clean 达到接近。其 clean 三个 day 均退化，TX 2 的 clean 相对 D00 下降 36.190476pp；首轮与第二轮受损 TX／场景并不完全相同，不能把均值当作各身份稳定获益。
+
+[固定预测错误转移](error_transitions.md) 及 [全部转移聚合](error_transitions.json) 只解释同一源物理样本的描述性变化。完整 20 轮训练曲线、七视图绝对结果及全部 TX／day 图已生成并逐张查看，未新增前向。
+
+累计六模型 120 model epochs／26640 更新，实测 NN 34939912。学生 train／eval 为 29657568／2851212；teacher train 为 0，teacher eval 仪表值 2378220，扣除继承计数 12 后为 2378208。另 held 52920 和 dispatcher smoke 4。旧本地工程 3858 合成 NN／3 合成更新另计，确认 profile 新检查 0 IQ／0 NN／0 更新，未重复旧工程测试。
