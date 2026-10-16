@@ -80,3 +80,8 @@ PA子链实际调用与涉及包数：{"_pa_memory_polynomial": {"calls": 684, "
 实际执行commit `cf1586790344aff65d5d7034e8d92e72f91b27d5`；单归档传输/compile/CP smoke/PID-CWD-argv-CPU/log增长VERIFIED，进程自然退出且无failure；无重启或热改。新增206642NN包前向、100800普通增强观测、0训练/头拟合/teacher/As，参数与buffer不变，墙钟121.896775秒，完整stdout23行。父模型与本地1344合成增强包成本另列；未用heldRX1/U/V/target。
 
 已证实：当前冻结默认头和实际日程下，旧PA分量带来可避免的fit源身份错误，且原定RX/day条件通过。未证实：移除PA能改善训练后的未见RX clean或星地适应。下一唯一训练假设是仅旁路ordinary PA、保留相同原生抽样及原L/U/F+CROSS_RX，可改善未见RX clean；最小为固定RX1源折同seed各从零E20的匹配B00/PA-bypass两组，保持六L前向/原损失尺度、同物理序列/默认头/U，使用同次完整原生call捕获prefix以保留native随机流。必须先单独登记数值门槛、成本与自动源七视图；若clean不增或practical保护失败，不改seed/RX/范围救跑。此处仅提出，未实施/登记/启动训练。
+
+
+## 训练调用日程更正
+
+训练调用路径更正：实际 native trainer 使用 configure_augmentor_for_epoch(...,min(epoch,label_epochs),args)，本配方 label_epochs=13，因此 E14至20 保持 E13 强度，PA概率上限0.035084047。旧审计的0.014至0.049是直接传入epoch1至20的函数日程，不能当作实际E20训练日程。已完成普通PA零更新探针也是直接调用epoch1至20；其3054变动观测/640修复/27新错及原预登记PASS不变，但E14至20是更强的诊断外推，不是实际训练重放。仅描述性重算前13轮：1475变动观测、254修复、7新错、净恢复16.745763pp；没有新IQ、NN、随机抽样、重跑或判据变更。后续训练必须保持原生min(epoch,13)并记录实际调用，不据外推强度改配方。

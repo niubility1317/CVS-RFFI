@@ -1,6 +1,6 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-当前没有获得跨 RX 收益证明的新增 A_g。公共相位 E20 和固定谱滤波已失败关闭。普通 PA 同抽样源诊断现已完整复算通过：3054 个实际变动观测修复 640、引入 27 个新错，净恢复 20.072037pp，四 RX、三 day、六 TX 均为正。它只证明冻结默认头下的可避免源错误，不证明修改训练配方后的泛化。下一唯一训练假设是只旁路普通 PA、保留同次原生抽样及 F＋CROSS_RX／原 U／六 L 前向，可改善未见 RX clean；拟用固定 RX1 源折同 seed 两组 scratch E20 检验。该训练尚未实现、登记或启动，数值门槛和成本须在其独立预登记固定。
+当前没有获得跨 RX 收益证明的新增 A_g。公共相位 E20 和固定谱滤波已失败关闭。普通 PA 同抽样源诊断支持存在可避免身份错误；其 E14 至20是直接函数配置的更强诊断外推，实际训练增强强度截于第13轮，不能混用。下一唯一训练假设是只旁路普通 PA、保留同次原生抽样及 F＋CROSS_RX／原 U／六 L 前向，可改善未见 RX clean。固定 RX1 源折同 seed 两组 scratch E20 已实现、登记，尚未启动；clean≥+1pp、F1≥0、各practical及V≥−.5pp，全满足才支持独立确认。实际min(epoch,13)日程保持并逐轮记录，不按前诊断外推强度改训练。
 用户于 2026-10-16 指定，增强前参照更换为 **F＋跨 RX 同 TX 对比学习**。该选择覆盖本对话旧的 F-only 参照；训练预算仍为 E20，没有延长到 E50 的新授权。唯一活动配方见 [配置](../configs/cvs_joint_augmentation_F_crossrx_e20.json)。两种子源 B00/B01 已完整分析；独立seed02因clean下降13.095238pp未通过，固定75/25候选关闭。正式完整源四因子尚未训练。
 
 已核实的来源是 `20261016-phase1-F-supcon-e50-clean-manysig-m9-r02` 的 `CROSS_RX`，执行 commit `4df7b94d0fd8ce29056bd8236364e45afa92e07f`。已读取完整报告、最终分析、实际 design/model/mechanism/source/observer，确认实际原生 extra 格式为 `(domain, metadata)`；不复用 r01 的错误读取方式。
@@ -69,3 +69,6 @@ seed02两行均自然完成E20/4440更新与全部七视图，独立重算VERIFI
 
 
 普通PA同抽样源诊断完整复算VERIFIED，原判定PASS；实际变动3054包观测，净恢复20.072036673215454pp，206642NN/0更新，无held/U/V/target。只说明冻结fit源的PA因果贡献，不证明Ag/DG/As；具体下一假设见活动配置，未启动新训练。
+
+
+已实现登记PA旁路E20源配对 `20261016-phase1-F-crossRX-PAbypass-sourceRX1-e20-s2026092701-m2-r01`，两组同seed scratch20/原U/六L前向，B00原ordinary/B10同draw捕获PA前prefix，完整PA生成两组相同。实际native增强日程截13，已修正前探针E14至20外推范围声明。clean>=+1pp/F1>=0/各practical及V>=-.5pp，失败关闭固定配方。14负例与默认头/随机流/原生对照PASS，一次P0/P1审查PASS；尚未启动。

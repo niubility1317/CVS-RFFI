@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "negative_cases": 14,
+  "rows": [
+    {
+      "arm": "B00",
+      "L_forwards": 6,
+      "same_IQ_pairs": true,
+      "raw_weight": 0.5,
+      "ordinary_weight": 0.25,
+      "raw_slot_weight": 0.25,
+      "original_ordinary_pair_only_supcon": true,
+      "default_head_joint_update": true,
+      "export160_exact": true,
+      "no_new_deployment_parameters": true,
+      "total": 4.804814338684082
+    },
+    {
+      "arm": "B10",
+      "L_forwards": 6,
+      "same_IQ_pairs": true,
+      "raw_weight": 0.5,
+      "ordinary_weight": 0.25,
+      "raw_slot_weight": 0.25,
+      "original_ordinary_pair_only_supcon": true,
+      "default_head_joint_update": true,
+      "export160_exact": true,
+      "no_new_deployment_parameters": true,
+      "total": 4.825584411621094
+    }
+  ],
+  "identical_scratch_initialization": true,
+  "control_loss_and_head_gradient_exactly_match_previous_B00": true,
+  "canonical_native_B00_output_bitwise": true,
+  "B10_equals_same_draw_PA_prefix": true,
+  "both_arms_native_Python_Torch_RNG_endstates_exact": true,
+  "actual_native_schedule_capped_at13": true,
+  "synthetic_augmentation_packets": 13056,
+  "synthetic_NN_packets": 2312,
+  "synthetic_optimizer_steps": 2,
+  "source_IQ_reads": 0,
+  "target_access": false,
+  "head_fit_updates": 0
+}
