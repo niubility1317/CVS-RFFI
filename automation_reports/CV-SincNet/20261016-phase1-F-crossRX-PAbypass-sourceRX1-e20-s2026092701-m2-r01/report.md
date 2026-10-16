@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：同抽样普通 PA 旁路 E20 源对照
 
-状态：PLANNED，尚未启动或完成训练。当前固定基线F＋CROSS_RX，E20从零，默认cosine头正常联合训练；不把源诊断或RDrop/SupCon当作IQ泛化完成。
+状态：RUNNING／VERIFIED。两组已从零启动，尚未完成训练或源评分。当前固定基线F＋CROSS_RX，E20从零，默认cosine头正常联合训练；不把源诊断或RDrop/SupCon当作IQ泛化完成。
 
 ## 唯一假设及证据边界
 
@@ -34,3 +34,15 @@ fixedfinal20后比较B10−B00：heldRX1 clean准确率≥+1pp，clean MacroF1�
 一个不可覆盖run/output root、一个N607 preflight、一个归档单次SHA比对和远端compile；launcher第一步真实CP no-query smoke，PASS继续，不另建许可。启动后独立核实PID/CWD/argv/GPU/log增长。角色/初始化/预算/非有限/输出冲突/不可执行或不能合法完整预测为技术失败：保留产物、停pending、不干预健康worker、无自动重试。科学低分不停止、改配方或追加预算。
 
 每row final20后自动完成clean及六practical源默认头读出；全部prediction固定后本地独立复算完整epoch/step/PA记录、实际日程和NN成本、物理L/U序列、accuracy/F1/CM/CE、配对修复/新错和TX/day分层及原判断。IQ/CP/逐包预测与完整日志私有，只代码/config/登记/汇总入Git。一次限定P0/P1审查及14个负例、原生输出/随机流精确匹配、同初始化/B00损失和头梯度精确对照、六前向同IQ/SupCon域、默认头联合更新和export160检查通过；这些不是识别收益。
+
+
+## 实际发布与启动读回
+
+执行commit `bdb3733de36b2d0e01515c91b7c9df8462b8c39b`，本地与远端分支OID已独立一致。归档单次比对、远端编译、匹配真实CP smoke PASS；dispatcher和两worker的PID/CWD/argv/GPU及日志增长VERIFIED。两行实际seed均2026092701，epochs/label/pseudo=20/13/7，source fold RX1，无baseline/teacher权重，实际PA旁路/Ag/As标志与登记一致。
+
+- B00-RX1-s2026092701：GPU0，已观察完整step532/4440、E3/20；stdout16814字节。此为运行进度，不是最终性能。
+- B10-RX1-s2026092701：GPU1，已观察完整step465/4440、E3/20；stdout16815字节。此为运行进度，不是最终性能。
+
+独立全量分析程序已准备并编译，只有全部声明预测完成后才执行。不修改已发布训练代码，不重复提交同run，不基于中间或目标分数改变配方。联合目标仍未完成。
+
+独立评分边界：当前继承源读出保存hard predictions及运行时mean CE，没有logits。完成后独立复算accuracy/F1/CM/repair-break和全部训练/PA成本；mean CE仅引用冻结前向的记录，不声称从hard predictions独立重算CE。该限制不改变预登记识别准确率/F1及practical保护判断。

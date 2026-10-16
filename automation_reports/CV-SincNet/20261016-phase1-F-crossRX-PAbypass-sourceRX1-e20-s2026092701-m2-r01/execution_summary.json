@@ -1,0 +1,42 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "code_commit": "bdb3733de36b2d0e01515c91b7c9df8462b8c39b",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_matching_checkpoint_smoke": "PASS",
+  "dispatcher_PID_CWD_argv": "VERIFIED",
+  "target_access": false,
+  "rows": [
+    {
+      "row_id": "B00-RX1-s2026092701",
+      "GPU": 0,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "actual_seed": 2026092701,
+      "actual_epochs": 20,
+      "actual_scratch": true,
+      "observed_complete_step": 532,
+      "observed_epoch": 3,
+      "log_bytes": 16814,
+      "step_log_growth_verified": true,
+      "As_training": false,
+      "PA_bypass": false,
+      "ordinary_L_packets_observed": 56832
+    },
+    {
+      "row_id": "B10-RX1-s2026092701",
+      "GPU": 1,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "actual_seed": 2026092701,
+      "actual_epochs": 20,
+      "actual_scratch": true,
+      "observed_complete_step": 465,
+      "observed_epoch": 3,
+      "log_bytes": 16815,
+      "step_log_growth_verified": true,
+      "As_training": false,
+      "PA_bypass": true,
+      "ordinary_L_packets_observed": 56832
+    }
+  ],
+  "independent_analysis_code": "Prepared/compiled,no completed predictions scored;CE reported only because saved hard predictions have no logits"
+}
