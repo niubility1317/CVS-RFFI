@@ -1,0 +1,258 @@
+{
+  "status": "VERIFIED",
+  "scientific_status": "FAIL_SOURCE_DC_OLD_ENVELOPE_COVERED",
+  "run_id": "20261016-diagnostic-source-DC-crossfit-manysig-m1-r01",
+  "actual_code_commit": "f3c33bbee0d175f71444b7bd8c2f86a94618dd4b",
+  "checks": {
+    "nonzero_effect": true,
+    "risk": true,
+    "positive_folds": true,
+    "outside_old_ordinary": false
+  },
+  "aggregate_risk_reduction": 0.29912509696267287,
+  "positive_folds": 16,
+  "fold_count": 18,
+  "RX_pair_DC_component_p95": 0.0041604634882418555,
+  "old_ordinary_DC_component_max": 0.005012006678699483,
+  "observed_to_old_bound_ratio": 0.8300993504105653,
+  "source_L_packets": 5040,
+  "roles": {
+    "selected_L_packets": 5040,
+    "original_L_carrier": 6300,
+    "source_cells": 72,
+    "unused_cached_source_roles_deserialized": true,
+    "held_RX1_IQ_values_used": false,
+    "U_values_or_truth_used": false,
+    "V_values_used": false,
+    "target_access": false,
+    "packet_power_min": 0.9999997851641589,
+    "packet_power_max": 1.0000002053912538,
+    "DC_energy_fraction_mean": 0.0005831671281242478
+  },
+  "model_forwards": 0,
+  "checkpoint_loads": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "new_models": 0,
+  "target_access": false,
+  "wall_seconds": 1.4210832118988037,
+  "terminal_worker_alive": false,
+  "execution": {
+    "status": "RUNNING",
+    "pid": 3876301,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_DC_crossfit_20261016_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_DC_crossfit_20261016_r01/experiments/cvs_source_dc_crossfit/runner.py"
+    ],
+    "owner": "codex/root/source-DC-crossfit-20261016",
+    "GPU": "",
+    "actual_training_code": "f3c33bbee0d175f71444b7bd8c2f86a94618dd4b",
+    "read_at": 1792140559.9312108
+  },
+  "completion": {
+    "status": "ARTIFACTS_COMPLETE",
+    "scientific_status": "FAIL",
+    "source_only": true,
+    "target_access": false,
+    "rows": [
+      "DC-fitRX3_4_6_8"
+    ],
+    "new_models": 0,
+    "model_forwards": 0,
+    "optimizer_updates": 0,
+    "wall_seconds": 1.4210832118988037,
+    "automatic_training": false,
+    "goal_completed": false
+  },
+  "log_bytes": 355,
+  "live_PID_observation": "Not observed: job completed before independent readback; authoritative execution/completion/log read back",
+  "private_statistics_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-DC-crossfit-manysig-m1-r01/DC-fitRX3_4_6_8/source_DC_statistics.npz",
+  "folds": [
+    {
+      "held_TX": 0,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 3.2487211860700244e-05,
+      "predicted_effect_risk": 1.8100092423340404e-05,
+      "risk_reduction": 0.4428548531357327
+    },
+    {
+      "held_TX": 0,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 2.445325398418562e-05,
+      "predicted_effect_risk": 1.7053094481211375e-05,
+      "risk_reduction": 0.30262473484142716
+    },
+    {
+      "held_TX": 0,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 5.9916472719302965e-05,
+      "predicted_effect_risk": 4.6993492019064883e-05,
+      "risk_reduction": 0.21568326895309298
+    },
+    {
+      "held_TX": 1,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 2.163954077201689e-05,
+      "predicted_effect_risk": 1.560237133415077e-05,
+      "risk_reduction": 0.2789878723153436
+    },
+    {
+      "held_TX": 1,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 1.526800411225746e-05,
+      "predicted_effect_risk": 8.306229315419145e-06,
+      "risk_reduction": 0.45597150391446795
+    },
+    {
+      "held_TX": 1,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 2.304886392845389e-05,
+      "predicted_effect_risk": 1.1395323156926835e-05,
+      "risk_reduction": 0.505601525858319
+    },
+    {
+      "held_TX": 2,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 5.61950595576554e-05,
+      "predicted_effect_risk": 3.35973743313552e-05,
+      "risk_reduction": 0.4021293936545305
+    },
+    {
+      "held_TX": 2,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 4.8021192102998114e-05,
+      "predicted_effect_risk": 3.6679998935650384e-05,
+      "risk_reduction": 0.23617058783177658
+    },
+    {
+      "held_TX": 2,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 6.721056980811347e-05,
+      "predicted_effect_risk": 3.3160158225360386e-05,
+      "risk_reduction": 0.5066228672062622
+    },
+    {
+      "held_TX": 3,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 2.4131273884046447e-05,
+      "predicted_effect_risk": 8.24594202983788e-06,
+      "risk_reduction": 0.658288158782641
+    },
+    {
+      "held_TX": 3,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 4.825505870935372e-06,
+      "predicted_effect_risk": 7.532110965139433e-06,
+      "risk_reduction": -0.5608956172877715
+    },
+    {
+      "held_TX": 3,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 2.4220246766768893e-05,
+      "predicted_effect_risk": 1.8299801461724238e-06,
+      "risk_reduction": 0.9244441989466752
+    },
+    {
+      "held_TX": 4,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 2.197779580067288e-05,
+      "predicted_effect_risk": 2.104668731058441e-05,
+      "risk_reduction": 0.04236587228915656
+    },
+    {
+      "held_TX": 4,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 2.329998047434037e-05,
+      "predicted_effect_risk": 2.4581472475785344e-05,
+      "risk_reduction": -0.054999702804740425
+    },
+    {
+      "held_TX": 4,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 2.4037187803562978e-05,
+      "predicted_effect_risk": 2.396268999813118e-05,
+      "risk_reduction": 0.003099272928289709
+    },
+    {
+      "held_TX": 5,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 9.301806746668753e-05,
+      "predicted_effect_risk": 7.89788868073353e-05,
+      "risk_reduction": 0.15092961014676065
+    },
+    {
+      "held_TX": 5,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 2.4543759886558864e-05,
+      "predicted_effect_risk": 1.2120246660968481e-05,
+      "risk_reduction": 0.5061780787871051
+    },
+    {
+      "held_TX": 5,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 5.429723104226652e-05,
+      "predicted_effect_risk": 5.118990688088217e-05,
+      "risk_reduction": 0.05722804094679379
+    }
+  ],
+  "figure": "E:\\type10-7\\local_artifacts\\cvs_source_DC_crossfit_20261016\\final\\source_DC_risk_and_coverage.png",
+  "analysis_network_IQ_checkpoint_access": 0,
+  "interpretation": "RX-associated mean contrast is repeatable across held TX/day, but p95 amplitude is covered by the old ordinary DC parameter. Fixed synthesis direction fails; no causal hardware or Ag efficacy claim.",
+  "automatic_training": false,
+  "goal_completed": false,
+  "figures_rendered_and_viewed": 1
+}

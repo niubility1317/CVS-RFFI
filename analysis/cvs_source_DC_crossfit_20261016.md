@@ -13,3 +13,5 @@
 PASS也只支持另登记有界IQ训练候选，仍不能称DC是物理因果硬件效应或Ag已经改善识别。当前0模型、0网络前向、0checkpoint、0更新、0As与target。CPU2线程、CUDA隐藏；读取5040个合法L IQ用于均值统计，原有E20训练预算不消耗。源判定后保存全部18fold误差、原扰动幅度、量级图及正负结果，无跨seed或正式性能声明。
 
 精确row、commit、command、environment/CWD、输入输出/log、owner、停止规则与预期artifact在experiment.json。唯一不可变run；技术错误保留产物、不自动重试，不动健康外部任务。最小工作流按G0只使用源统计所需能力，checkpoint smoke不适用于0模型/0checkpoint统计；不为此加载无关权重、创建头或生成prediction。聚焦负例、一次限定P0/P1、一个archive比较／remotecompile及PID/CWD/argv/CPU/log核实足够。
+
+实际结果：VERIFIED／ANALYZED，科学 FAIL。18 折 16 折预测风险降低，聚合降低 29.912510%；RX 对差分量 p95 0.004160463488，小于旧 DC 参数界 0.005012006679。没有未覆盖的 DC 尺度证据；按原规则关闭固定 RX-DC 合成方向。0 新模型／网络／checkpoint／更新／目标，CPU 1.421083 s。[完整同 run 报告](../automation_reports/CV-SincNet/20261016-diagnostic-source-DC-crossfit-manysig-m1-r01/report.md)。
