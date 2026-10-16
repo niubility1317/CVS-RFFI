@@ -13,3 +13,18 @@
 本次核查范围有限，未取得能直接支持全通相位滤波、采样时钟扭曲等候选在当前数据上身份保持且跨 RX 有效的证据。它们尚未实现、登记或启动；物理动机不是实证结论，也不是宣称不存在相关文献。后续若提出新 A_g，仍需先有适用于本数据的独立依据，再固定一项最小源域反证；不把健康、输入有变化或论文命名作为识别收益。
 
 当前唯一在检验的假设仍是：保留完整原始 raw/ordinary 绝对监督系数后，追加完整 practical(raw) 是否同时保护 clean、改善 urban，并超过等尺度重复 raw 监督。现有三组固定 source RX1-held/seed01/scratchE20/8 L 前向，最终源读出前不改变方案。完整联合目标、A_g 证明、B00/B10/B01/B11 交互项、跨 seed 和正式 target clean＋六 practical 仍未完成。
+
+
+## 采样时钟变化的定向补查（2026-10-16）
+
+本次只做文献证据核对，没有登记、实现或启动新的 IQ 增强。当前唯一在检验的候选仍为原配方 seed02 additive As 确认。使用 nature-academic-search 的来源核对方法；本环境没有该 skill 列出的 arXiv／CrossRef MCP，改用网页工具读取 arXiv 正文和作者机构原稿。只采用原始研究内容，不采用搜索摘要、商业术语页面或综述作为增强有效性的依据。
+
+| 原始研究与已核对位置 | 可支持的事实 | 对本项目的限制 |
+|---|---|---|
+| Cekic、Gopalakrishnan、Madhow，[Wireless Fingerprinting via Deep Learning: The Impact of Confounding Factors](https://arxiv.org/html/2002.10791)，v3，2021-03-09，IV-A 至 IV-D、表 I 至 VI | 研究 CFO／信道混杂、补偿与增强；文中的 clock drift 实验落实为 CFO，比较了共享跨设备的扰动集合和独立随机扰动。 | 这不是 ADC 采样时钟重采样的身份保持证据。结果还涉及多日模拟与测试时多视图，不能移植到本项目 E20／默认单次预测，不能为已失败频移路线救跑。 |
+| Meneghello、Rossi、Restuccia，[DeepCSI](https://www.research.unipd.it/retrieve/c6e521ee-850a-416d-9dfb-22ffa96cd163/DeepCSI_Rethinking_Wi-Fi_Radio_Fingerprinting_Through_MU-MIMO_CSI_Feedback_Deep_Learning.pdf)，ICDCS 2022，DOI 10.1109/ICDCS54860.2022.00106，PDF 第 9 至 10 页、式 (9)、图 16 | 作者把 SFO 列入相位偏差模型；在其 MU-MIMO 反馈表示上，offset cleaning 降低识别表现，说明被移除成分可能携带 TX 证据。 | 它不是 CVS 原始 IQ 的重采样增强实验；也不是单独隔离 SFO 的因果结果。不能把采样时钟变化一概视为接收机无关 nuisance，更不能由校正失败推出随机扰动有效。 |
+| Wei、Li、Zhang、Yang，[Division-based Receiver-agnostic RFF Identification in WiFi Systems](https://arxiv.org/html/2511.15458)，III、V-A | 依赖特定 WiFi 前导的频域相除、参考设备／训练字段结构，并采用对应表示与分类流程。 | 不是当前固定 CVS 的标签保持 IQ 增强对照，不引入其参考访问、替代表示或多个分类网络。 |
+
+明确区分两种算子：CFO 是样本上的复指数相乘，采样频率偏差是时间坐标重采样。即使均用 ppm 表示，前者不能给后者提供幅度依据。按定义推导，采样比例误差 epsilon 在样本 n 的位移约为 epsilon×n；例如 20 ppm 在 n=1023 仅约 0.02046 个样本。这只是单位核对，不是推荐幅度、有效性或身份保持证明；有限插值误差仍可能超过所模拟的变化。
+
+定向检索使用 RF fingerprint／receiver／sampling clock／sampling frequency offset／augmentation 等组合，核对范围有限。当前结论为“未获得足够直接依据”，而非断言所有文献均不存在该证据。没有因此选择 sampling-clock、SFO、time-warp 或 all-pass 候选，也没有重开已关闭的 timing／frequency／spectral 路线。后续若考虑时钟类观测变化，需要先在合法源域区分跨 TX／day 一致的 RX 成分与 TX 成分，并证明数值实现没有以插值伪迹替代预期扰动；仍须以匹配 E20 跨 RX clean 识别收益判断，不能用文献标题、扰动很小或健康检查代替。
