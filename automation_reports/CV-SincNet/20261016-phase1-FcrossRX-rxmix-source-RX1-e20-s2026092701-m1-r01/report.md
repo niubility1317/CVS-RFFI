@@ -21,3 +21,7 @@ REGISTERED_NOT_RUN。精确row／command／environment／CWD／paths／owner／G
 精确row／commit／command／environment／CWD／paths／GPU／stop／artifacts见本run experiment.json。发布前仅聚焦协议负例和真实默认头合成前向验证、一次限定P0/P1、一个archive本远比较与remotecompile；own scratch实际checkpoint无query smoke是worker第一步，PASS立即继续。当前为实现候选，不是识别增益或完成正式实验的声明。
 
 发布前 LOCAL_VERIFIED_NOT_RUN：1024合成网络包／2更新、16负例、206初态匹配、5120合成变换、240个epoch/RX/day session、公式／已知逆／能量界、第一对IQ逐值C0匹配、原头三路Sinc梯度、首对SupCon／四L前向／原EMA和全局RNG均PASS；隔离实际E20参数、真实C0和源统计metadata／污染拒绝／源角色隔离与私有profile上界fixture均PASS。唯一P0/P1只读审查PASS。0真实IQ／checkpoint／目标。N607发布时一次preflight／单archive比较／remotecompile；worker第一步own scratch checkpoint无query smoke，PASS继续，不需token。
+
+实际发布 VERIFIED/RUNNING，训练代码772046d5758bbecf0a98d12542350f9862852eb6。唯一worker own scratchCP无query smoke PASS；E1的PID/CWD/argv/GPU/log增长、实际5040/45360/21600/5400源角色、原头/SIG3/Sinc更新、F物理clip、四L前向、原SupCon均VERIFIED。RXMIX实际幅度最大0.01642912927936461，按RX/day/epoch稳定，无TX参数选择、边界变化、逐包RMS、额外噪声或未知TX反演；运行时已知逆最大误差4.76837158203125e-07、能量界浮点误差2.86102294921875e-06，无执行failure。一个archive比较／remotecompile通过；原U/ownEMA不改，0target/As，FINAL性能待定。
+
+离线读取器已实现：只读保存的source结果／metadata／私有源profile（仅4个fitRX统计值）、逐条重放session幅度与方向、全4440L／5994L-U／568320变换、全部20轮／F clip／SupCon／七视图原头分层。16元数据负例与384合成trace包PASS，0IQ／checkpoint／网络，未导入torch；运行release仍固定772046d5758bbecf0a98d12542350f9862852eb6，未热改。实际读取时仍需等待FINAL及全部七源视图，不把读取器合成验证作为识别结果。

@@ -98,3 +98,7 @@ C0已完成E20及七源视图、默认头独立复算：held RX1 clean83.444444%
 20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01 一个scratch E20与原C0结果对照已完整完成，源规则FAIL；clean Δ 2.18518518518519 pp、宏F1 Δ 2.3635491743851267 pp、seenV损失 0.6712962962962865 pp。20模型轮／4440更新／3579018网络包，矩阵墙钟1198.810524225235 s；0target、1modelseed/1源折。[实际报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01/report.md)。
 
 固定C4关闭，不调角度/概率/比例或换RX/seed救援。 真实混合及跨seed共同突破仍未证明，目标保持active。
+
+## 独立接收IQ候选：RXMIX运行中
+
+源RX-DC方向因旧幅度已覆盖关闭；独立full256 AC椭圆性统计PASS_SOURCE_STATISTIC_ONLY（12/18正折，聚合风险-27.486642%，RX对差p95=.032791289171），保留TX index1/3全部6负折，不声称因果或身份安全。新run 20261016-phase1-FcrossRX-rxmix-source-RX1-e20-s2026092701-m1-r01 已发布一个scratch E20／4440步，.5RD原ordinary+.5RD同IQ有界广义线性RXMIX，原F+CROSS_RX/defaulthead/U/ownEMA不改。实际bmax=.01642912927936461，按RX/day虚拟session跨TX稳定、epoch刷新，首轮正常梯度／真实ownCP smoke／PID日志均VERIFIED，训练代码772046d5758bbecf0a98d12542350f9862852eb6。当前无FINAL性能；固定clean≥+1pp／F1不降／seenV损失≤.5pp／健康判据，FAIL关闭fixedRXMIX，不扫幅度或RX/seed救援。[同run报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-rxmix-source-RX1-e20-s2026092701-m1-r01/report.md)。
