@@ -1,0 +1,468 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01",
+  "group_id": "phase1-FcrossRX-exact-phase-cycle",
+  "display_name": "F＋跨RX：精确C4相位轮转E20独立源检验",
+  "description": "一个新scratchE20：同实际ordinary IQ的精确I/Q交换与符号轮转，匹配四前向、一次ordinary、原U/F/defaulthead；C0结果只读参考，无As/target。",
+  "kind": "cvs",
+  "stage": "Phase1-source-training",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "F_SIG_TIME_X3",
+    "CENTER_UNITS",
+    "E20",
+    "CROSS_RX_SUPCON",
+    "C4_IQ_phase",
+    "source_only",
+    "single_seed",
+    "default_head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active Ag+As goal and newest F+CROSS_RX/E20 baseline authorize one independent source-only IQ augmentation scratchE20; no inherited weights/target or failed-candidate rescue.",
+  "code": {
+    "commit": "CURRENT_RELEASE_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_phasecycle_source_RX1_E20_20261016_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "Same VALIDATED_ONCE source carrier392005; exact fit4RX L5040/U45360/V21600",
+    "representation": "equalized1/25MHz/IQ256/native source packetRMS; original residual simulator input unitRMS and original AGC",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#classes",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/preparation_complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "Only final source evaluation uses unchanged original sixpractical; no satellite training",
+    "effective_counts": {
+      "L_s": 5040,
+      "U_s_hidden": 45360,
+      "V_seen_RX": 21600,
+      "V_held_RX": 5400
+    },
+    "source_holdout_RX": 1,
+    "full_source_reference_counts": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "source_receiver_note": "Fit3/4/6/8;held1 L/U excluded. Same physicalIQ only, no partner bank or new labels."
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "None: no target IQ/prediction/truth or loader",
+    "external_method_exception": null,
+    "claim_scope": "Source-only exact packet-global phase-cycle IQ efficacy, no RX hardware replacement or target, no automatic Ag+As/crossseed claim"
+  },
+  "checkpoint": {
+    "initialization": "scratch_only",
+    "sources": [],
+    "contract_check_ref": "Exact original roles then sourcefold; C0 result-only reference checked before launch in design.reference_result",
+    "provenance_verdict": "New model zero inherited model/EMA/optimizer state. C0 exact scratch final20/current baseline source contract, result/sequence only; no C0 weights read.",
+    "selection_rule": "FINAL20 only;heldV5400 once,seenV health,no bestcheckpoint or targetselection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/FcrossRX-phasecycle-source-20261016",
+    "gpu_policy": "One worker;all-owner/preCUDA<=3/GPU,free>=12000MiB/sharedcapacitylock;CPU2/workers0",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_FcrossRX_phasecycle20_20261016",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_phasecycle_source_RX1_E20_20261016_r01/experiments/cvs_f_phasecycle20/runner.py",
+    "stop_rule": "Only own protocol/provenance/nonfinite/budget/view cache/output/execution technical failure;preserve outputs/noauto retry/noforeignstop. Low source score never stops healthy worker. FAIL closes fixed C4,no angle/probability/ratio/RX/seed rescue."
+  },
+  "expected_artifacts": [
+    "source/resolved_config.json",
+    "source/actual_native_args.json",
+    "source/initialization.json",
+    "source/source_contract.json",
+    "source/final_ssdg.pth",
+    "source/completion.json",
+    "source/source_frozen.json",
+    "source/result.json",
+    "source/step_metrics.jsonl.gz",
+    "source/training_sequence.jsonl.gz",
+    "source/phase_cycle_sequence.jsonl.gz",
+    "source/phase_cycle_proof.json",
+    "source/F_implementation_proof.json",
+    "source/F_optimizer_steps.jsonl.gz",
+    "source/supcon_steps.jsonl.gz",
+    "source/held_V_predictions.json",
+    "source/six practical source prediction gzip files",
+    "matched_sequences.json",
+    "source_decision.json",
+    "completion.json",
+    "independent full-row analysis and figures"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "defaulthead clean accuracy",
+      "macroF1",
+      "seenV mean/worstRX",
+      "source sixpractical",
+      "repair/break vs C0",
+      "cosine margin/30",
+      "actual physical phase coverage and exact IQ conservation",
+      "complete training loss/gradient/SupCon/F update curves",
+      "network/IQ/cost"
+    ],
+    "dimensions": [
+      "C0 result reference/C4",
+      "held sourceRX1",
+      "TX/day/state/lock/quality",
+      "one modelseed2026092701"
+    ],
+    "prediction_ref": "Whole heldV5400 clean+6originalpractical after final20",
+    "scorer_ref": "Independent no-model source analysis after completed predictions;legal source labels,0targettruth service",
+    "primary": "C4-C0 clean accuracy>=1pp,macroF1>=0,seenVloss<=.5pp and complete health/coverage/primary sequence match.Else close fixed C4."
+  },
+  "rows": [
+    {
+      "row_id": "C4-RX1-s2026092701",
+      "method": "F+CROSS_RX exact C4 phase-cycle",
+      "purpose": "independent_phase_cycle_source_falsification",
+      "config_ref": "experiments/cvs_f_phasecycle20/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01/C4-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016811,
+        "support": null,
+        "evaluation": 20261016422
+      },
+      "seed_notes": "Model2026092701/split392005;primaryordinary20261016051/loader20261016053 unchanged;newC4 privategenerator20261016811,offset perfirstphysicalpacket encounter then1/2/3cycle,noTX/quality/loss input. Sourcepracticalvalidation20261016422/hardware20261016423 unchanged.",
+      "k": null,
+      "scenario": "held sourceRX1 clean+6practical;fit3/4/6/8;noAs train",
+      "optimizer": "original AdamW withF CENTER_UNITS",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "ScratchE20=13L+7U/4440updates/2273280Lnetwork packets,originalU/EMA.568320 exactsecondary rotations;C0 same4forwards/oneordinary draw priorE20 separate.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01/C4-RX1-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01/logs/C4-RX1-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_phasecycle_source_RX1_E20_20261016_r01/experiments/cvs_f_phasecycle20/runner.py --worker --row C4-RX1-s2026092701",
+      "expected_artifacts": [
+        "source/resolved_config.json",
+        "source/actual_native_args.json",
+        "source/initialization.json",
+        "source/source_contract.json",
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/step_metrics.jsonl.gz",
+        "source/training_sequence.jsonl.gz",
+        "source/phase_cycle_sequence.jsonl.gz",
+        "source/phase_cycle_proof.json",
+        "source/F_implementation_proof.json",
+        "source/F_optimizer_steps.jsonl.gz",
+        "source/supcon_steps.jsonl.gz",
+        "source/held_V_predictions.json",
+        "source/six practical source prediction gzip files",
+        "matched_sequences.json",
+        "source_decision.json",
+        "completion.json",
+        "independent full-row analysis and figures"
+      ],
+      "config": {
+        "schema": "FcrossRX_C4_phasecycle_E20_v1",
+        "run_id": "20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01",
+        "stage": "repair",
+        "arm": "C4",
+        "model_seed": 2026092701,
+        "row_id": "C4-RX1-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01/C4-RX1-s2026092701/source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "FcrossRX_C4_phasecycle",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/FcrossRX-phasecycle-source-20261016",
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "updates": 4440,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": {
+          "held_clean_accuracy_gain_pp_min": 1.0,
+          "macroF1_gain_pp_min": 0.0,
+          "seen_V_drop_pp_max": 0.5,
+          "final_only": true,
+          "on_fail": "Close fixed C4 phase-cycle hypothesis; no rotation/probability/ratio/RX/seed rescue",
+          "on_pass": "Separately preregister remaining source folds; no automatic target or Ag+As promotion"
+        },
+        "training_recipe": "F+CROSS_RX unchanged; .5RD(original ordinary IQ)+.5RD(C4(same actual ordinary IQ)); scratch20=13L+7U, original ownEMA/oldU/cos",
+        "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1.0,
+            2.0
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "source_only": true,
+          "clean_positive_gain": true,
+          "low_urban_target": 0.6,
+          "goal_completed": false,
+          "target_feedback": false
+        },
+        "budget_authorization": "Active mixed Ag+As goal, newest F+CROSS_RX/E20 baseline; one independent source-only scratchE20",
+        "cost_claim": "1newE20/4440updates/2273280Lnetwork packets; same4 forwards/oneordinary draw/same primaryL-U as C0.568320 exact secondary rotations; C0 E20 result reference separate,no inherited weights.",
+        "baseline_reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source",
+        "baseline_reuse": false,
+        "readouts": [
+          "FINAL"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "ordinary_L": true,
+          "RDrop_alpha": 1.0,
+          "label_smoothing": 0.01,
+          "L_forwards_per_sample": 4,
+          "expected_L_forward_packets": 2273280,
+          "same_generated_IQ_in_pair": true,
+          "ordinary_stream_seed": 20261016051,
+          "loader_stream_seed": 20261016053,
+          "original_U_recipe": true,
+          "own_EMA": true,
+          "new_U_augmentation": false,
+          "new_losses": false,
+          "extra_parameters": 0,
+          "ordinary_policy": "Existing old ordinary unchanged on first view, generated once then reused; C4 is the only additional IQ operator",
+          "randomization": "same named loader generators in both arms; ordinary-only private Python/NumPy/CPU/CUDA stream, no changes to global model/U RNG",
+          "sinc_coordinates": "CENTER_25K",
+          "first_pair": "old ordinary clean",
+          "second_pair": "exact C4 rotation of same generated ordinary IQ",
+          "pair_weights": [
+            0.5,
+            0.5
+          ],
+          "two_RD_pairs": true,
+          "cross_view_consistency": false,
+          "actual_ordinary_draws_per_L_step": 1,
+          "same_IQ_within_RDpair": true,
+          "new_crossview_loss": false,
+          "SupCon_only_first_RDpair": true,
+          "raw_definition": "Original physical IQ before common old ordinary; second As view bypasses ordinary",
+          "unique_physical_packets_per_anchor": 1
+        },
+        "fold": {
+          "held_RX": 1,
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "effective_roles": {
+            "L_s": 5040,
+            "U_s": 45360,
+            "V": 21600
+          },
+          "held_V_count": 5400,
+          "held_L_used": false,
+          "static_full_source_domain_map": true,
+          "original_steps_per_epoch": 222,
+          "actual_U_batches_per_loader": 178,
+          "U_observations_per_pseudo_epoch": 56624
+        },
+        "held_RX": 1,
+        "combination": {
+          "SIG_TIME": "SIG_TIME_X3",
+          "Sinc_coordinates": "CENTER_25K",
+          "Sinc_optimizer": "CENTER_UNITS",
+          "s": 25000.0,
+          "Fs": 25000000.0,
+          "default_head_joint": true,
+          "MEAN_VAR": false,
+          "COV": false,
+          "ensemble": false
+        },
+        "F_implementation": {
+          "source_commit": "09554c3a06c976c53efc4dbc61f5c501a1e7b06e",
+          "source_package": "experiments/cvs_rdrop_sinc_units",
+          "modules": [
+            "coordinate.py",
+            "optimizer.py",
+            "x3_features.py",
+            "descriptors.py"
+          ],
+          "scope": "Exact F feature/Sinc math reused; scratch E20 schedule and source fold, no E50 initialization"
+        },
+        "sinc_optimizer_units": {
+          "mode": "CENTER_UNITS",
+          "sample_rate_Hz": 25000000.0,
+          "center_scale_Hz": 25000.0,
+          "lr": "alpha Fs/s",
+          "epsilon": "epsilon s/Fs",
+          "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+          "gradient_clipping": "physical Hz globalclip5",
+          "extra_optimizer_steps": 0
+        },
+        "supcon": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "max_weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "positive": "same true L TX, different physical RX",
+          "negative": "different true L TX",
+          "exclude": "self and sameTX sameRX",
+          "descriptor": "channel mean/populationstd; current L batch detached standardization floor1e-4, sampleL2 eps1e-4",
+          "forwards": "Only the first ordinary-clean RD pair, same IQ twice; no feature constraint on satellite; zero extra forwards",
+          "source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+          "new_parameters": 0,
+          "U_truth": false
+        },
+        "new_Ag": "UNPROVEN exact packet-global C4 IQ rotation",
+        "As": false,
+        "channel": null,
+        "phase_cycle": {
+          "group": "C4 packet-global rotations; secondary uses nonidentity k=1,2,3",
+          "formulas": [
+            "(-Q,I)",
+            "(-I,-Q)",
+            "(Q,-I)"
+          ],
+          "operation": "exact sign and channel permutation; no interpolation or complex rounding",
+          "phase_seed": 20261016811,
+          "selection": "per-physical-packet random offset then cycle1/2/3 on successive visits; no TX input",
+          "preserved": "sample time, instantaneous power, full complex information, spectrum magnitude, IQ length and sample rate",
+          "excluded": [
+            "CFO",
+            "phase noise",
+            "IQ imbalance",
+            "conjugation",
+            "PA",
+            "DAC",
+            "noise",
+            "multipath",
+            "time shift",
+            "boundary extension",
+            "new normalization"
+          ],
+          "scope": "Post-observation scalar complex phase, not a fitted RX replacement, TX hardware inversion or frequency-dependent empirical phase bank"
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Only post-observation scalar complex C4 phase:exact sign/permutation,power/information/time/spectrum preserved,noCFO/IQimbalance/newnoise/boundary.",
+    "Old normal phase probability is batch-wide base.45 times original epochscale(actual.045 to~.1128),fullphase range[0,2pi);current candidate is fixed paired C4 coverage,not empirical phase response bank or probability scan.",
+    "SupCon primary2 only,originalU/ownEMA/oldgates/F/defaulthead unchanged. NoAg/As efficacy assumed,sourceonly.",
+    "Failed OJ24/WHITE30/EMP/ROT/phasecurvature/NoPA/realpair and fivefold pairedAs negatives preserved,no rescue or targetfeedback.",
+    "User-selected F from historically exposed benchmark,no newblind claim; matched source C0 is exactcontract/code/result reference,not E50 parent."
+  ]
+}

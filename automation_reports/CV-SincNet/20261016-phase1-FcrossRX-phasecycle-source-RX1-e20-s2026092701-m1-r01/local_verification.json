@@ -1,0 +1,59 @@
+{
+  "status": "PASS",
+  "synthetic_model_packets": 1024,
+  "synthetic_optimizer_updates": 2,
+  "synthetic_rotation_packets": 8704,
+  "synthetic_ordinary_IQ_packets": 512,
+  "protocol_negatives": 15,
+  "initial_state_tensors": 206,
+  "matched_original_F_initialization": true,
+  "primary_IQ_exact_C0": true,
+  "exact_inverse_and_pointwise_power": true,
+  "C4_group_algebra": true,
+  "per_physical_balanced_cycle": true,
+  "no_TX_rotation_selection": true,
+  "primary_two_RDrop_only_SupCon": true,
+  "four_L_forwards": true,
+  "default_head_SIG3_Sinc_joint_gradients": true,
+  "extra_model_forwards": 0,
+  "unchanged_own_EMA": true,
+  "global_RNG_preserved": true,
+  "real_IQ_packets": 0,
+  "checkpoint_loads": 0,
+  "target_access": false,
+  "initial_fixture_attempts": [
+    {
+      "synthetic_model_packets": 512,
+      "optimizer_updates": 0,
+      "reason": "Test optimizer creation outside native optimizer scope"
+    },
+    {
+      "synthetic_model_packets": 640,
+      "optimizer_updates": 1,
+      "reason": "Test omitted native step-log consumption before its second update"
+    }
+  ],
+  "local_compile": "PASS",
+  "P0P1_review": "PASS, one limited read-only review; no direct P0/P1 and zero extra IQ/checkpoint/network",
+  "real_checkpoint_smoke": "Worker-first own scratch2 zeroIQ,PASS continues,not yet run",
+  "isolated_release_checks": {
+    "status": "PASS",
+    "isolated_release_import": true,
+    "rows": [
+      {
+        "row": "C4-RX1-s2026092701",
+        "E": 20,
+        "label": 13,
+        "pseudo": 7
+      }
+    ],
+    "real_C0_metadata_reference": true,
+    "contaminated_reference_rejected": true,
+    "real_IQ": 0,
+    "checkpoint_loaded": false,
+    "network_forwards": 0
+  },
+  "total_local_synthetic_model_packets_including_fixture_failures": 2176,
+  "total_local_synthetic_optimizer_updates_including_fixture_failures": 3,
+  "N607_preflight": "VERIFIED once 2026-10-16 16:02:23 CST,ordinary account/project/GPU;all-owner<=3 remains live scheduler policy"
+}
