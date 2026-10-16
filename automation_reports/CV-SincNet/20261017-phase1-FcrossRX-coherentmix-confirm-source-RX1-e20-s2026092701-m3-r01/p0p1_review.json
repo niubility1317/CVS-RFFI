@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "scope": "One independent direct P0/P1 review of changed seed01 profile/launcher/publication boundary only",
+  "reviewer": "/root/urban_p0p1_review",
+  "findings": [],
+  "actual_F_constructor_and_native_seed": 2026092701,
+  "pinned_backend": "7f398321cd2ffd2c2d2cb11f52f67bfd8c44987b",
+  "publisher_activation_verified": true,
+  "unchanged_core_not_rereviewed": [
+    "iqmix",
+    "model",
+    "pairing",
+    "source"
+  ],
+  "real_IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "remote_access": false
+}

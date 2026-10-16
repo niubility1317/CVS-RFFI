@@ -14,7 +14,7 @@ SEED=2026092702;HELD=1;RX=(1,3,4,6,8);FIT=(3,4,6,8);STEPS=222;UPDATES=4440;ARMS=
 macro_f1=parent.macro_f1
 
 def template():
- if parent.SEED!=SEED or parent.base_model_config()['model_seed']!=SEED:raise ValueError('Pinned seed02 profile must activate before config/model construction')
+ if parent.SEED!=SEED or parent.base_model_config()['model_seed']!=SEED:raise ValueError('Pinned model-seed profile must activate before config/model construction')
  return parent.config(next(r for r in parent.rows() if r['arm']=='D_raw'))
 def rows():return [dict(row_id=a+'-RX1-s'+str(SEED),arm=a,model_seed=SEED) for a in ARMS]
 def config(row):
@@ -24,7 +24,7 @@ def config(row):
  c['additive'].update(extra_input=c['training_mechanism']['extra_pair_input'],operator='One source IQ interpolation;no As,ordinary-before-mix,extra loss or U view')
  c['coherent_mix']=dict(mode=row['arm'],partner='Current filtered fitL only;same trueTX/day,distinct physicalpacket;SAME_RX or uniform other3fitRX',reference_window=[80,160],complex_scalar='LS donor-to-anchor on fixed reference;not deconvolution or TX inversion',mixture_fraction=.25,normalization='Retain anchor full-packet L2 norm',max_relative_L2_change=.10,projection='Shortest real-vector sphere arc from anchor to normalized coherent mixture;all I/Q samples same scalar coefficients',label_condition='Partner selection only;all formulas/hyperparameters common to all TX',pair_seed=PAIR_SEED,refresh='Private seed+step;does not advance native random streams',all_L_supervised=True,U_or_V_donors=False,new_physical_records=False,hardware_replacement_claim=False)
  c['source_selection']=dict(primary='CROSS_RX',references=['reused_D_raw','SAME_RX'],fixed_final=20,held_RX=1,held_L=1260,min_clean_gain_vs_raw_pp=1.,min_clean_gain_vs_same_pp=.5,min_clean_macroF1_gain_pp=0.,standalone_practical_drop_reporting_threshold_pp=.5,standalone_practical_is_nonblocking=True,max_seenV_drop_pp=.5,max_final_common_base_objective=.5,numerical_tolerance_pp=1e-10,on_fail='Close fixed coherent interpolation;no fraction/bound/window/RX/seed/budget rescue',on_pass='Only supports independent source confirmation;not Ag efficacy across seeds,joint goal or target')
- c.update(baseline_reference=SMOKE_SOURCE.as_posix(),baseline_reuse=False,budget_authorization='Active Ag/As goal;two new scratchE20(40modelE/8880updates) plus exact matching existing seed02 D_raw;no inherited weights',cost_claim='Each new4546560LNN+originalU/EMA/V/8820held;568320mix+extra partner exposures;5040fitL bank reads;reference cost separately;dispatcher2syntheticCPsmoke')
+ c.update(baseline_reference=SMOKE_SOURCE.as_posix(),baseline_reuse=False,budget_authorization='Active Ag/As goal;two new scratchE20(40modelE/8880updates) plus exact matching existing seed D_raw;no inherited weights',cost_claim='Each new4546560LNN+originalU/EMA/V/8820held;568320mix+extra partner exposures;5040fitL bank reads;reference cost separately;dispatcher2syntheticCPsmoke')
  return c
 
 def validate(c):
@@ -34,7 +34,7 @@ def validate(c):
 
 def make_args(c,device='cuda:0'):
  validate(c);a=parent.make_args(template(),device);a.run_id=RUN;a.candidate_id=c['row_id'];a.output_dir=c['output_root']
- if a.seed!=SEED or (a.epochs,a.label_epochs,a.pseudo_epochs,a.label_smoothing)!=(20,13,7,.01) or a.source_fold_held_rx!=HELD or a.baseline_ckpt or a.teacher_ckpt:raise ValueError('Exact scratchE20/seed02 source contract required')
+ if a.seed!=SEED or (a.epochs,a.label_epochs,a.pseudo_epochs,a.label_smoothing)!=(20,13,7,.01) or a.source_fold_held_rx!=HELD or a.baseline_ckpt or a.teacher_ckpt:raise ValueError('Exact scratchE20/model-seed source contract required')
  return a
 source_validation=parent.source_validation
 

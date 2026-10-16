@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "rows": [
+    {
+      "row_id": "SAME_RX-RX1-s2026092701",
+      "actual_model_seed": 2026092701,
+      "native_seed": 2026092701,
+      "scratch20": true
+    },
+    {
+      "row_id": "CROSS_RX-RX1-s2026092701",
+      "actual_model_seed": 2026092701,
+      "native_seed": 2026092701,
+      "scratch20": true
+    }
+  ],
+  "negative_cases": 25,
+  "actual_constructor_native_seed1": true,
+  "initial_states_equal": true,
+  "initial_states_equal_same_seed_raw_backend": true,
+  "unchanged_core_scientific_configuration": true,
+  "state_key_count": 206,
+  "direct_entry": {
+    "status": "PASS",
+    "direct_file_entry": true,
+    "intended_invalid_argument_guard": true,
+    "backend_or_data_open": false,
+    "NN": 0,
+    "updates": 0
+  },
+  "synthetic_NN_packets": 0,
+  "synthetic_optimizer_updates": 0,
+  "real_IQ_reads": 0,
+  "real_checkpoint_reads": 0,
+  "target_access": false,
+  "previous_checks": "Original3090NN/3updates/20negative+16scope+directentryfix retained;unchangedIQ/model/fold not repeated",
+  "scope": {
+    "status": "PASS",
+    "scope": "Changed profile/actualseed/argguard;prior unchangedfold 16neg retained",
+    "negative_cases": 25,
+    "NN": 0,
+    "IQ": 0
+  }
+}
