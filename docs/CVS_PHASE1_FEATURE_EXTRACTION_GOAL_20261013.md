@@ -411,3 +411,7 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- USER_DIRECT_TEST_POLICY_20261016 -->
 用户最新明确：“直接跑测试查看性能结果，而不是看源域留出的接收机”。当前goal后续不再新增源RX留出筛选，也不把此前源域科学资格作为正式发布门槛；原始负结果完整保留，不追溯改成PASS。转为完整五源RX、L6300/U56700hidden/V27000，从零训练后固定终轮直接clean预测与独立truth-last评分。保持用户E20/E50两预算与2026092701/02/03三模型seed、旧SIG_TIME/默认头联合/fullKL；固定比较原版RDrop、POINT特征一致性、DYNAMIC自调，原版六行已完成匹配产物复用，新增两机制12scratch模型。源留出权重不作为完整源域初始化。全部新参数/配方/矩阵在首次新目标访问前固定，逐row训练→冻结→预测→独立评分自动串联，不按目标分数调参、改矩阵、挑seed或重训。此用户指示覆盖本goal旧source qualification发布限制，数据权限/checkpoint来源/输出与健康任务保护继续适用。goalACTIVE。
+
+
+<!-- SIGTIME_RDROP_FEATURE_MAIN_PREREG_20261016 -->
+按最新用户直接测试要求，登记20261016-phase1-SIGTIME-rdrop-feature-mechanisms-e20e50-clean-manysig-m12-r01：POINT/DYNAMIC×E20/E50×固定三seed，12次完整五源RX从零训练、420epoch/93240更新；复用6个原RDROP匹配已评分控制。取消留源RX筛选及源科学分数gate，保留原负结果。逐行固定终点默认头clean预测→独立truthlast。矩阵在新target访问前固定，不反馈调参或选择性重跑。目标继续active，见[预登记](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-feature-mechanisms-e20e50-clean-manysig-m12-r01/report.md)。

@@ -1,0 +1,98 @@
+{
+  "status": "VERIFIED",
+  "rows": [
+    {
+      "row_id": "E20_RDROP-s2026092701",
+      "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01",
+      "epochs": 20,
+      "model_seed": 2026092701,
+      "same_scientific_config": true,
+      "same_actual_recipe": true,
+      "source_roles": "EXACT_MATCH",
+      "prediction_complete": true,
+      "scoring_complete": true
+    },
+    {
+      "row_id": "E50_RDROP-s2026092701",
+      "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01",
+      "epochs": 50,
+      "model_seed": 2026092701,
+      "same_scientific_config": true,
+      "same_actual_recipe": true,
+      "source_roles": "EXACT_MATCH",
+      "prediction_complete": true,
+      "scoring_complete": true
+    },
+    {
+      "row_id": "E20_RDROP-s2026092702",
+      "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01",
+      "epochs": 20,
+      "model_seed": 2026092702,
+      "same_scientific_config": true,
+      "same_actual_recipe": true,
+      "source_roles": "EXACT_MATCH",
+      "prediction_complete": true,
+      "scoring_complete": true
+    },
+    {
+      "row_id": "E50_RDROP-s2026092702",
+      "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02",
+      "epochs": 50,
+      "model_seed": 2026092702,
+      "same_scientific_config": true,
+      "same_actual_recipe": true,
+      "source_roles": "EXACT_MATCH",
+      "prediction_complete": true,
+      "scoring_complete": true
+    },
+    {
+      "row_id": "E20_RDROP-s2026092703",
+      "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e20e50-clean-manysig-m18-r01",
+      "epochs": 20,
+      "model_seed": 2026092703,
+      "same_scientific_config": true,
+      "same_actual_recipe": true,
+      "source_roles": "EXACT_MATCH",
+      "prediction_complete": true,
+      "scoring_complete": true
+    },
+    {
+      "row_id": "E50_RDROP-s2026092703",
+      "physical_run_id": "20261015-phase1-originalSIGTIME-rdrop-e50-technical-clean-manysig-m4-r02",
+      "epochs": 50,
+      "model_seed": 2026092703,
+      "same_scientific_config": true,
+      "same_actual_recipe": true,
+      "source_roles": "EXACT_MATCH",
+      "prediction_complete": true,
+      "scoring_complete": true
+    }
+  ],
+  "matched_rows": 6,
+  "new_checkpoints_loaded": 0,
+  "source_or_target_IQ_reads": 0,
+  "target_truth_or_scores_read": false,
+  "unchanged_VALIDATED_ONCE_manifest": {
+    "status": "VALIDATED_ONCE",
+    "count": 168000,
+    "classes": [
+      "14-10",
+      "14-7",
+      "20-15",
+      "20-19",
+      "6-15",
+      "8-20"
+    ],
+    "scenes": [
+      "practical_high",
+      "practical_mid",
+      "practical_low_urban"
+    ],
+    "source_target_disjoint": true,
+    "unique_ids": true,
+    "one_satellite_observation_per_id": true,
+    "clean_role": "Phase1 paired diagnostic only; never exported to Phase2",
+    "channel": "residual/post_sync/noeq",
+    "fs_hz": 25000000
+  }
+}

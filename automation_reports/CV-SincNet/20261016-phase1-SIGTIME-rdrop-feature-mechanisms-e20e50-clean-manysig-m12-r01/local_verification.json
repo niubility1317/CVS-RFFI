@@ -1,0 +1,100 @@
+{
+  "status": "PASS",
+  "CPU": {
+    "status": "PASS",
+    "device": "cpu",
+    "protocol_negative_cases": 151,
+    "qualification_negative_cases": 3,
+    "actual_initial_tensors_equal": 198,
+    "new_models": 12,
+    "reused_rows": 6,
+    "all_seed_epoch_stage_args_verified": true,
+    "full_source_only": true,
+    "source_gate_used": false,
+    "default_W_joint": true,
+    "auxiliary_direct_W_gradient_none": true,
+    "actual_body_SIG_defaultW_gradient_norms": {
+      "E20_POINT-s2026092701": [
+        0.5238264203071594,
+        1.1222963333129883,
+        0.1647777259349823,
+        4.0427680015563965
+      ],
+      "E20_DYNAMIC-s2026092701": [
+        0.5530015826225281,
+        1.2011114358901978,
+        0.16668233275413513,
+        4.0427680015563965
+      ],
+      "E50_POINT-s2026092703": [
+        1.2998988628387451,
+        2.6068320274353027,
+        0.19798095524311066,
+        3.687857151031494
+      ],
+      "E50_DYNAMIC-s2026092703": [
+        1.3599680662155151,
+        2.697822332382202,
+        0.20917926728725433,
+        3.687857151031494
+      ]
+    },
+    "actual_CE_logits_RNG_equal": true,
+    "synthetic_identity_packets": 1024,
+    "real_IQ_reads": 0,
+    "checkpoint_loads": 0,
+    "optimizer_steps": 0,
+    "head_fit_updates": 0,
+    "target_reads": 0,
+    "unchanged_operator_checks": "Reuse complete gain20/center20 source audits and CPU/CUDA geometry checks;not repeated"
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "protocol_negative_cases": 151,
+    "qualification_negative_cases": 3,
+    "actual_initial_tensors_equal": 198,
+    "new_models": 12,
+    "reused_rows": 6,
+    "all_seed_epoch_stage_args_verified": true,
+    "full_source_only": true,
+    "source_gate_used": false,
+    "default_W_joint": true,
+    "auxiliary_direct_W_gradient_none": true,
+    "actual_body_SIG_defaultW_gradient_norms": {
+      "E20_POINT-s2026092701": [
+        0.5562173128128052,
+        0.9538223743438721,
+        0.18311478197574615,
+        4.303382396697998
+      ],
+      "E20_DYNAMIC-s2026092701": [
+        0.5723106265068054,
+        1.0011529922485352,
+        0.18841437995433807,
+        4.303382396697998
+      ],
+      "E50_POINT-s2026092703": [
+        1.3665884733200073,
+        2.5488598346710205,
+        0.16667987406253815,
+        3.835681438446045
+      ],
+      "E50_DYNAMIC-s2026092703": [
+        1.4141732454299927,
+        2.6529743671417236,
+        0.17411938309669495,
+        3.835681438446045
+      ]
+    },
+    "actual_CE_logits_RNG_equal": true,
+    "synthetic_identity_packets": 1024,
+    "real_IQ_reads": 0,
+    "checkpoint_loads": 0,
+    "optimizer_steps": 0,
+    "head_fit_updates": 0,
+    "target_reads": 0,
+    "unchanged_operator_checks": "Reuse complete gain20/center20 source audits and CPU/CUDA geometry checks;not repeated"
+  },
+  "real_checkpoint_smoke": "Own initial checkpoint first worker step;PASS immediately continues"
+}
