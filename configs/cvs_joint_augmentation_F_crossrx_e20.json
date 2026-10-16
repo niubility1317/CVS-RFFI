@@ -131,6 +131,56 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": {
+    "name": "Bounded smooth spectral observation filter:finite-IQ fidelity and source identity preservation",
+    "status": "PROPOSED_NOT_IMPLEMENTED_REGISTERED_OR_LAUNCHED",
+    "basis": "Existing IQ-only 20261011-phase1-rx-spectral-crossfit-manysig-m1-r01 primary rectangular/DCT1to8 report relativeMSE0.6141 and18/18folds;partialRX-associated source variation,not calibrated RX hardware or Ag proof",
+    "data": "Re-estimate on fitRX3/4/6/8 L5040 only;no reuse of fullL6300 coefficients including heldRX1,no U/V/target",
+    "minimum": "Zero-update18TX/day crossfit plus one fixed mild finite-length IQ filter realization;match unstructured control,quantify achieved spectral shape/boundary/default-head fit-L identity preservation;no new classifier",
+    "abandon": "No cross-TX/day stable RX-associated component,poor finite-IQ realization/boundary domination,or failed fixed source identity-preservation guardrail:do not launch filter augmentation training",
+    "budget": "0training/0headfit;exact transform/controls/numeric thresholds/NN cost must be fixed in its own preregistration before IQ access",
+    "Ag_efficacy_proved": false,
+    "target_access": false,
+    "old_budget_not_adopted": "Historical E200+40 proposal is obsolete;any later real training remains scratchE20 under current baseline/data contract"
+  },
+  "next_training_hypothesis": {
+    "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
+    "status": "ANALYZED_SOURCE_FAIL_FIXED_PHASE_CLOSED",
+    "minimum": "Matched B00/B10 scratchE20,sourceRX1 fold,same raw share/six L forwards/U/default head;fixed phase-only new slot",
+    "abandon": "No preregistered positive heldRX clean gain or harmful source health;no target feedback/angle/seed/RX rescue",
+    "Ag_efficacy_proved": false,
+    "run_id": "20261016-phase1-F-crossRX-commonphase-sourceRX1-e20-s2026092701-m2-r01",
+    "fixed_phase_range_rad": [
+      -0.37,
+      0.37
+    ],
+    "raw_ordinary_slot_weights": [
+      0.5,
+      0.25,
+      0.25
+    ],
+    "source_thresholds": {
+      "clean_gain_pp": 1.0,
+      "macroF1_gain_pp": 0.0,
+      "seenV_min_gain_pp": -0.5
+    },
+    "execution_commit": "39d95f79d91ccf2a570f1c1349adacfb409c0833",
+    "source_result": {
+      "qualified": false,
+      "conditions": {
+        "healthy": true,
+        "clean": false,
+        "clean_macroF1": false,
+        "seen_V": true
+      },
+      "clean_gain_pp": -3.9682539682539653,
+      "clean_macroF1_gain_pp": -4.4209738408452885,
+      "seen_V_gain_pp": -0.07407407407407085,
+      "target_access": false,
+      "Ag_efficacy_proved": false,
+      "joint_goal_complete": false
+    }
+  },
+  "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
     "status": "ANALYZED_SOURCE_SENSITIVITY_PASS_NOT_AG_EFFICACY",
     "checkpoint": "Own B00/seed2026092701/final20 matching fourRX fold;frozen only,no new training initialization",
@@ -155,28 +205,5 @@
       "Ag_efficacy_proved": false,
       "target_access": false
     }
-  },
-  "next_training_hypothesis": {
-    "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
-    "status": "RUNNING_SOURCE_E20_NO_RESULT_YET",
-    "minimum": "Matched B00/B10 scratchE20,sourceRX1 fold,same raw share/six L forwards/U/default head;fixed phase-only new slot",
-    "abandon": "No preregistered positive heldRX clean gain or harmful source health;no target feedback/angle/seed/RX rescue",
-    "Ag_efficacy_proved": false,
-    "run_id": "20261016-phase1-F-crossRX-commonphase-sourceRX1-e20-s2026092701-m2-r01",
-    "fixed_phase_range_rad": [
-      -0.37,
-      0.37
-    ],
-    "raw_ordinary_slot_weights": [
-      0.5,
-      0.25,
-      0.25
-    ],
-    "source_thresholds": {
-      "clean_gain_pp": 1.0,
-      "macroF1_gain_pp": 0.0,
-      "seenV_min_gain_pp": -0.5
-    },
-    "execution_commit": "39d95f79d91ccf2a570f1c1349adacfb409c0833"
   }
 }

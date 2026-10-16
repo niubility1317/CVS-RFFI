@@ -1,5 +1,6 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
+当前没有通过晋级的新增 A_g：有界公共相位E20已完整源证伪并关闭（clean −3.968254pp，六practical均负）。下一唯一拟检验有限长平滑频谱IQ滤波的可实现性和身份保护，基于已有固定观测的源统计；先在fit4RX重新估计，尚未实现/登记/启动。
 用户于 2026-10-16 指定，增强前参照更换为 **F＋跨 RX 同 TX 对比学习**。该选择覆盖本对话旧的 F-only 参照；训练预算仍为 E20，没有延长到 E50 的新授权。唯一活动配方见 [配置](../configs/cvs_joint_augmentation_F_crossrx_e20.json)。两种子源 B00/B01 已完整分析；独立seed02因clean下降13.095238pp未通过，固定75/25候选关闭。正式完整源四因子尚未训练。
 
 已核实的来源是 `20261016-phase1-F-supcon-e50-clean-manysig-m9-r02` 的 `CROSS_RX`，执行 commit `4df7b94d0fd8ce29056bd8236364e45afa92e07f`。已读取完整报告、最终分析、实际 design/model/mechanism/source/observer，确认实际原生 extra 格式为 `(domain, metadata)`；不复用 r01 的错误读取方式。
@@ -51,3 +52,6 @@ seed02两行均自然完成E20/4440更新与全部七视图，独立重算VERIFI
 
 
 上述公共相位B00/B10已实际发布并运行，执行commit `39d95f79d91ccf2a570f1c1349adacfb409c0833`；archive/compile/真实CPsmoke/两worker PID-CWD-argv-GPU及日志增长VERIFIED。实际seed2026092701、20/13/7和无训练父权重均核对；当前未完成训练/源预测/独立评分，不能称Ag有效。
+
+
+相位E20源run现已ANALYZED/VERIFIED：两行完整20epoch/4440更新及七视图，全部17640决策/完整step/相位角/物理序列独立核对。clean差-3.9682539682539653pp，clean F1差-4.4209738408452885pp，seenV差-0.07407407407407085pp，原源条件FAIL，固定相位配方关闭，无角度/seed/RX救跑。仅源证据，尚未证明Ag目标泛化或联合目标；实际总NN包前向9373358。
