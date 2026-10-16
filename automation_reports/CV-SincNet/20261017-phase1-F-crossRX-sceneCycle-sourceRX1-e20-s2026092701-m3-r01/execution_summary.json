@@ -1,0 +1,100 @@
+{
+  "status": "ANALYZED",
+  "actual_execution": "VERIFIED",
+  "run_id": "20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01",
+  "executed_code_commit": "c9a74172e5f81bb4f04ce12cd4386ad4dd953ee9",
+  "source_only": true,
+  "actual_rows": 3,
+  "new_model_epochs": 60,
+  "new_optimizer_updates": 13320,
+  "actual_NN_forward_packets": 17469956,
+  "dispatcher_realCP_smoke_NN_packets": 2,
+  "qualification": {
+    "qualified": false,
+    "conditions": {
+      "B00_clean": true,
+      "B00_clean_macroF1": true,
+      "B00_low_urban": true,
+      "B00_low_urban_macroF1": true,
+      "B00_mid_urban": true,
+      "B00_urban_mean": true,
+      "B00_each_practical": true,
+      "B00_seen_V": true,
+      "C_IID_clean": true,
+      "C_IID_clean_macroF1": true,
+      "C_IID_low_urban": false,
+      "C_IID_low_urban_macroF1": true,
+      "C_IID_mid_urban": true,
+      "C_IID_urban_mean": false,
+      "C_IID_each_practical": true,
+      "C_IID_seen_V": true,
+      "healthy": true
+    },
+    "comparisons": {
+      "B00": {
+        "conditions": {
+          "clean": true,
+          "clean_macroF1": true,
+          "low_urban": true,
+          "low_urban_macroF1": true,
+          "mid_urban": true,
+          "urban_mean": true,
+          "each_practical": true,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": 4.523809523809518,
+          "practical_high": 20.63492063492063,
+          "practical_mid": 16.587301587301585,
+          "practical_low_suburban": 18.09523809523809,
+          "practical_high_urban": 16.34920634920635,
+          "practical_mid_urban": 11.428571428571427,
+          "practical_low_urban": 6.26984126984127
+        },
+        "clean_macroF1_gain_pp": 4.542045111911208,
+        "low_urban_macroF1_gain_pp": 8.826562316485925,
+        "seen_V_gain_pp": 0.004629629629637755,
+        "urban_mean_gain_pp": 11.34920634920635
+      },
+      "C_IID": {
+        "conditions": {
+          "clean": true,
+          "clean_macroF1": true,
+          "low_urban": false,
+          "low_urban_macroF1": true,
+          "mid_urban": true,
+          "urban_mean": false,
+          "each_practical": true,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": 0.23809523809523725,
+          "practical_high": 1.1904761904761862,
+          "practical_mid": 1.1111111111111072,
+          "practical_low_suburban": 1.825396825396819,
+          "practical_high_urban": 0.9523809523809601,
+          "practical_mid_urban": 0.3968253968253954,
+          "practical_low_urban": 0.15873015873015817
+        },
+        "clean_macroF1_gain_pp": 0.2527138644067395,
+        "low_urban_macroF1_gain_pp": 0.28103338992867544,
+        "seen_V_gain_pp": -0.05555555555555314,
+        "urban_mean_gain_pp": 0.5026455026455046
+      }
+    }
+  },
+  "source_prediction_count": 26460,
+  "completed_source_views": 21,
+  "independent_full_native_view_unit_steps": 13320,
+  "independent_actual_scene_decisions": 1136640,
+  "all5040_per_packet_scene_counts_recounted_each_As_row": true,
+  "all_own_PIDs_naturally_exited": true,
+  "no_training_technical_failure": true,
+  "independent_reader_issue_corrected": true,
+  "reader_fix": "role/IDs stream has no step field;use ordered L records and matched satmix steps,all decisions replayed",
+  "target_access": false,
+  "head_fit_updates": 0,
+  "Ag_efficacy_proved": false,
+  "As_stability_proved": false,
+  "joint_goal_complete": false
+}

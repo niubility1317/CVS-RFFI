@@ -297,3 +297,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01 B00首行SOURCE_ROW_ANALYZED：完整E20/4440更新/7view独立复算，sourceRX1 clean80.158730%／lowurban27.777778%，5823318NN；两As组仍健康运行，未形成组间科学判定，不改参数，0target。
+
+
+逐物理包六scene循环 20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01 ANALYZED/VERIFIED：FAIL_FIXED_PER_PHYSICAL_PACKET_SIX_SCENE_SCHEDULING_CLOSED；三匹配scratchE20/60modelE/13320更新/17469956NN，26460源预测与两As行1136640scene选择全量复算。B01−CIID clean 0.23809523809523725pp／lowurban 0.15873015873015817pp；0target。联合目标ACTIVE，当前无新Ag证明。

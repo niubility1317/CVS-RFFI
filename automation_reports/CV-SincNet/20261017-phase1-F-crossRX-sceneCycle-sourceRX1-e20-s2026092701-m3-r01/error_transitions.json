@@ -1,0 +1,5522 @@
+{
+  "status": "ANALYZED",
+  "source_only": true,
+  "run_id": "20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01",
+  "model_seed": 2026092701,
+  "held_RX": 1,
+  "source_packet_count": 1260,
+  "target_access": false,
+  "new_IQ_reads": 0,
+  "new_NN_forward_packets": 0,
+  "new_optimizer_updates": 0,
+  "new_head_fit_updates": 0,
+  "threshold_or_candidate_change": false,
+  "comparisons": {
+    "B00": {
+      "practical_high": {
+        "overall_reference_accuracy": 0.39920634920634923,
+        "overall_As_accuracy": 0.6055555555555555,
+        "accuracy_gain_pp": 20.63492063492063,
+        "groups": {
+          "both_clean_correct": {
+            "count": 992,
+            "reference_sat_correct": 372,
+            "As_sat_correct": 720,
+            "reference_sat_accuracy": 0.375,
+            "As_sat_accuracy": 0.7258064516129032,
+            "repaired": 373,
+            "broken": 25,
+            "net_correct": 348,
+            "contribution_to_full_accuracy_pp": 27.61904761904762
+          },
+          "As_clean_repaired": {
+            "count": 75,
+            "reference_sat_correct": 33,
+            "As_sat_correct": 18,
+            "reference_sat_accuracy": 0.44,
+            "As_sat_accuracy": 0.24,
+            "repaired": 4,
+            "broken": 19,
+            "net_correct": -15,
+            "contribution_to_full_accuracy_pp": -1.1904761904761905
+          },
+          "As_clean_broken": {
+            "count": 18,
+            "reference_sat_correct": 8,
+            "As_sat_correct": 5,
+            "reference_sat_accuracy": 0.4444444444444444,
+            "As_sat_accuracy": 0.2777777777777778,
+            "repaired": 2,
+            "broken": 5,
+            "net_correct": -3,
+            "contribution_to_full_accuracy_pp": -0.23809523809523808
+          },
+          "both_clean_wrong": {
+            "count": 175,
+            "reference_sat_correct": 90,
+            "As_sat_correct": 20,
+            "reference_sat_accuracy": 0.5142857142857142,
+            "As_sat_accuracy": 0.11428571428571428,
+            "repaired": 7,
+            "broken": 77,
+            "net_correct": -70,
+            "contribution_to_full_accuracy_pp": -5.555555555555555
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1010,
+            "reference_sat_correct": 380,
+            "As_sat_correct": 725,
+            "reference_sat_accuracy": 0.37623762376237624,
+            "As_sat_accuracy": 0.7178217821782178
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 405,
+            "As_sat_correct": 738,
+            "reference_sat_accuracy": 0.3795688847235239,
+            "As_sat_accuracy": 0.6916588566073102
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 143
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 55
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 54
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 39
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 37
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 35
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 27
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 27
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 27
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 26
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 21
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 21
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 19
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 17
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 16
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 7
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 7
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 6
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 4
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 4
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 4
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 1
+          }
+        ]
+      },
+      "practical_mid": {
+        "overall_reference_accuracy": 0.4023809523809524,
+        "overall_As_accuracy": 0.5682539682539682,
+        "accuracy_gain_pp": 16.587301587301585,
+        "groups": {
+          "both_clean_correct": {
+            "count": 992,
+            "reference_sat_correct": 371,
+            "As_sat_correct": 663,
+            "reference_sat_accuracy": 0.37399193548387094,
+            "As_sat_accuracy": 0.6683467741935484,
+            "repaired": 340,
+            "broken": 48,
+            "net_correct": 292,
+            "contribution_to_full_accuracy_pp": 23.174603174603174
+          },
+          "As_clean_repaired": {
+            "count": 75,
+            "reference_sat_correct": 30,
+            "As_sat_correct": 17,
+            "reference_sat_accuracy": 0.4,
+            "As_sat_accuracy": 0.22666666666666666,
+            "repaired": 6,
+            "broken": 19,
+            "net_correct": -13,
+            "contribution_to_full_accuracy_pp": -1.0317460317460319
+          },
+          "As_clean_broken": {
+            "count": 18,
+            "reference_sat_correct": 11,
+            "As_sat_correct": 6,
+            "reference_sat_accuracy": 0.6111111111111112,
+            "As_sat_accuracy": 0.3333333333333333,
+            "repaired": 1,
+            "broken": 6,
+            "net_correct": -5,
+            "contribution_to_full_accuracy_pp": -0.3968253968253968
+          },
+          "both_clean_wrong": {
+            "count": 175,
+            "reference_sat_correct": 95,
+            "As_sat_correct": 30,
+            "reference_sat_accuracy": 0.5428571428571428,
+            "As_sat_accuracy": 0.17142857142857143,
+            "repaired": 12,
+            "broken": 77,
+            "net_correct": -65,
+            "contribution_to_full_accuracy_pp": -5.158730158730159
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1010,
+            "reference_sat_correct": 382,
+            "As_sat_correct": 669,
+            "reference_sat_accuracy": 0.3782178217821782,
+            "As_sat_accuracy": 0.6623762376237624
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 401,
+            "As_sat_correct": 680,
+            "reference_sat_accuracy": 0.37582005623242737,
+            "As_sat_accuracy": 0.6373008434864105
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 135
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 52
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 46
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 31
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 31
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 29
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 29
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 26
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 26
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 22
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 18
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 17
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 17
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 14
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 13
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 9
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 9
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 7
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 7
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 7
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 7
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 5
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 5
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 5
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          }
+        ]
+      },
+      "practical_low_suburban": {
+        "overall_reference_accuracy": 0.3634920634920635,
+        "overall_As_accuracy": 0.5444444444444444,
+        "accuracy_gain_pp": 18.09523809523809,
+        "groups": {
+          "both_clean_correct": {
+            "count": 992,
+            "reference_sat_correct": 344,
+            "As_sat_correct": 643,
+            "reference_sat_accuracy": 0.3467741935483871,
+            "As_sat_accuracy": 0.6481854838709677,
+            "repaired": 340,
+            "broken": 41,
+            "net_correct": 299,
+            "contribution_to_full_accuracy_pp": 23.73015873015873
+          },
+          "As_clean_repaired": {
+            "count": 75,
+            "reference_sat_correct": 23,
+            "As_sat_correct": 12,
+            "reference_sat_accuracy": 0.30666666666666664,
+            "As_sat_accuracy": 0.16,
+            "repaired": 6,
+            "broken": 17,
+            "net_correct": -11,
+            "contribution_to_full_accuracy_pp": -0.873015873015873
+          },
+          "As_clean_broken": {
+            "count": 18,
+            "reference_sat_correct": 12,
+            "As_sat_correct": 6,
+            "reference_sat_accuracy": 0.6666666666666666,
+            "As_sat_accuracy": 0.3333333333333333,
+            "repaired": 1,
+            "broken": 7,
+            "net_correct": -6,
+            "contribution_to_full_accuracy_pp": -0.47619047619047616
+          },
+          "both_clean_wrong": {
+            "count": 175,
+            "reference_sat_correct": 79,
+            "As_sat_correct": 25,
+            "reference_sat_accuracy": 0.4514285714285714,
+            "As_sat_accuracy": 0.14285714285714285,
+            "repaired": 10,
+            "broken": 64,
+            "net_correct": -54,
+            "contribution_to_full_accuracy_pp": -4.285714285714286
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1010,
+            "reference_sat_correct": 356,
+            "As_sat_correct": 649,
+            "reference_sat_accuracy": 0.35247524752475246,
+            "As_sat_accuracy": 0.6425742574257426
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 367,
+            "As_sat_correct": 655,
+            "reference_sat_accuracy": 0.34395501405810686,
+            "As_sat_accuracy": 0.6138706654170571
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 106
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 48
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 38
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 34
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 34
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 32
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 27
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 26
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 26
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 22
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 20
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 20
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 18
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 13
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 13
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 12
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 12
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 9
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 8
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 8
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 7
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 7
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 6
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 6
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 6
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 5
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 5
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 5
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 5
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 5
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 4
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          }
+        ]
+      },
+      "practical_high_urban": {
+        "overall_reference_accuracy": 0.3896825396825397,
+        "overall_As_accuracy": 0.5531746031746032,
+        "accuracy_gain_pp": 16.34920634920635,
+        "groups": {
+          "both_clean_correct": {
+            "count": 992,
+            "reference_sat_correct": 365,
+            "As_sat_correct": 659,
+            "reference_sat_accuracy": 0.36794354838709675,
+            "As_sat_accuracy": 0.6643145161290323,
+            "repaired": 345,
+            "broken": 51,
+            "net_correct": 294,
+            "contribution_to_full_accuracy_pp": 23.333333333333332
+          },
+          "As_clean_repaired": {
+            "count": 75,
+            "reference_sat_correct": 32,
+            "As_sat_correct": 14,
+            "reference_sat_accuracy": 0.4266666666666667,
+            "As_sat_accuracy": 0.18666666666666668,
+            "repaired": 5,
+            "broken": 23,
+            "net_correct": -18,
+            "contribution_to_full_accuracy_pp": -1.4285714285714286
+          },
+          "As_clean_broken": {
+            "count": 18,
+            "reference_sat_correct": 11,
+            "As_sat_correct": 4,
+            "reference_sat_accuracy": 0.6111111111111112,
+            "As_sat_accuracy": 0.2222222222222222,
+            "repaired": 0,
+            "broken": 7,
+            "net_correct": -7,
+            "contribution_to_full_accuracy_pp": -0.5555555555555556
+          },
+          "both_clean_wrong": {
+            "count": 175,
+            "reference_sat_correct": 83,
+            "As_sat_correct": 20,
+            "reference_sat_accuracy": 0.4742857142857143,
+            "As_sat_accuracy": 0.11428571428571428,
+            "repaired": 9,
+            "broken": 72,
+            "net_correct": -63,
+            "contribution_to_full_accuracy_pp": -5.0
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1010,
+            "reference_sat_correct": 376,
+            "As_sat_correct": 663,
+            "reference_sat_accuracy": 0.3722772277227723,
+            "As_sat_accuracy": 0.6564356435643565
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 397,
+            "As_sat_correct": 673,
+            "reference_sat_accuracy": 0.37207122774133083,
+            "As_sat_accuracy": 0.6307403936269915
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 127
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 53
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 44
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 43
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 37
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 33
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 30
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 29
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 27
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 27
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 20
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 17
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 17
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 12
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 10
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 10
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 9
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 7
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 6
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 5
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 1
+          }
+        ]
+      },
+      "practical_mid_urban": {
+        "overall_reference_accuracy": 0.3246031746031746,
+        "overall_As_accuracy": 0.4388888888888889,
+        "accuracy_gain_pp": 11.428571428571427,
+        "groups": {
+          "both_clean_correct": {
+            "count": 992,
+            "reference_sat_correct": 301,
+            "As_sat_correct": 500,
+            "reference_sat_accuracy": 0.3034274193548387,
+            "As_sat_accuracy": 0.5040322580645161,
+            "repaired": 275,
+            "broken": 76,
+            "net_correct": 199,
+            "contribution_to_full_accuracy_pp": 15.793650793650794
+          },
+          "As_clean_repaired": {
+            "count": 75,
+            "reference_sat_correct": 18,
+            "As_sat_correct": 13,
+            "reference_sat_accuracy": 0.24,
+            "As_sat_accuracy": 0.17333333333333334,
+            "repaired": 7,
+            "broken": 12,
+            "net_correct": -5,
+            "contribution_to_full_accuracy_pp": -0.3968253968253968
+          },
+          "As_clean_broken": {
+            "count": 18,
+            "reference_sat_correct": 11,
+            "As_sat_correct": 7,
+            "reference_sat_accuracy": 0.6111111111111112,
+            "As_sat_accuracy": 0.3888888888888889,
+            "repaired": 1,
+            "broken": 5,
+            "net_correct": -4,
+            "contribution_to_full_accuracy_pp": -0.31746031746031744
+          },
+          "both_clean_wrong": {
+            "count": 175,
+            "reference_sat_correct": 79,
+            "As_sat_correct": 33,
+            "reference_sat_accuracy": 0.4514285714285714,
+            "As_sat_accuracy": 0.18857142857142858,
+            "repaired": 10,
+            "broken": 56,
+            "net_correct": -46,
+            "contribution_to_full_accuracy_pp": -3.6507936507936507
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1010,
+            "reference_sat_correct": 312,
+            "As_sat_correct": 507,
+            "reference_sat_accuracy": 0.3089108910891089,
+            "As_sat_accuracy": 0.501980198019802
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 319,
+            "As_sat_correct": 513,
+            "reference_sat_accuracy": 0.29896907216494845,
+            "As_sat_accuracy": 0.48078725398313027
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 85
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 36
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 35
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 34
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 32
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 27
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 24
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 21
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 18
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 17
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 15
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 13
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 12
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 12
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 10
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 10
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 9
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 8
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 8
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 8
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 8
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 8
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 7
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 7
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 6
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 6
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 5
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 5
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 5
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 5
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 5
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 5
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 5
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 4
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 4
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 4
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 4
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 1,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          }
+        ]
+      },
+      "practical_low_urban": {
+        "overall_reference_accuracy": 0.2777777777777778,
+        "overall_As_accuracy": 0.3404761904761905,
+        "accuracy_gain_pp": 6.26984126984127,
+        "groups": {
+          "both_clean_correct": {
+            "count": 992,
+            "reference_sat_correct": 268,
+            "As_sat_correct": 387,
+            "reference_sat_accuracy": 0.2701612903225806,
+            "As_sat_accuracy": 0.3901209677419355,
+            "repaired": 185,
+            "broken": 66,
+            "net_correct": 119,
+            "contribution_to_full_accuracy_pp": 9.444444444444445
+          },
+          "As_clean_repaired": {
+            "count": 75,
+            "reference_sat_correct": 18,
+            "As_sat_correct": 10,
+            "reference_sat_accuracy": 0.24,
+            "As_sat_accuracy": 0.13333333333333333,
+            "repaired": 6,
+            "broken": 14,
+            "net_correct": -8,
+            "contribution_to_full_accuracy_pp": -0.6349206349206349
+          },
+          "As_clean_broken": {
+            "count": 18,
+            "reference_sat_correct": 9,
+            "As_sat_correct": 5,
+            "reference_sat_accuracy": 0.5,
+            "As_sat_accuracy": 0.2777777777777778,
+            "repaired": 1,
+            "broken": 5,
+            "net_correct": -4,
+            "contribution_to_full_accuracy_pp": -0.31746031746031744
+          },
+          "both_clean_wrong": {
+            "count": 175,
+            "reference_sat_correct": 55,
+            "As_sat_correct": 27,
+            "reference_sat_accuracy": 0.3142857142857143,
+            "As_sat_accuracy": 0.15428571428571428,
+            "repaired": 9,
+            "broken": 37,
+            "net_correct": -28,
+            "contribution_to_full_accuracy_pp": -2.2222222222222223
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1010,
+            "reference_sat_correct": 277,
+            "As_sat_correct": 392,
+            "reference_sat_accuracy": 0.2742574257425743,
+            "As_sat_accuracy": 0.38811881188118813
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 286,
+            "As_sat_correct": 397,
+            "reference_sat_accuracy": 0.26804123711340205,
+            "As_sat_accuracy": 0.37207122774133083
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 45
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 25
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 22
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 22
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 22
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 16
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 15
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 15
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 14
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 14
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 13
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 12
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 11
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 10
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 8
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 8
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 8
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 8
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 8
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 8
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 7
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 7
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 7
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 7
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 6
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 6
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 6
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 6
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 6
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 5
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 5
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 5
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 5
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 5
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 5
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 5
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 5
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 5
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 5
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 5
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 5
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 5
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 4
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 4
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 4
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 4
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 4
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 4
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 3
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 3
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 5,
+            "count": 3
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 1,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 3,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          }
+        ]
+      }
+    },
+    "C_IID": {
+      "practical_high": {
+        "overall_reference_accuracy": 0.5936507936507937,
+        "overall_As_accuracy": 0.6055555555555555,
+        "accuracy_gain_pp": 1.1904761904761862,
+        "groups": {
+          "both_clean_correct": {
+            "count": 1061,
+            "reference_sat_correct": 717,
+            "As_sat_correct": 736,
+            "reference_sat_accuracy": 0.6757775683317625,
+            "As_sat_accuracy": 0.6936852026390198,
+            "repaired": 28,
+            "broken": 9,
+            "net_correct": 19,
+            "contribution_to_full_accuracy_pp": 1.507936507936508
+          },
+          "As_clean_repaired": {
+            "count": 6,
+            "reference_sat_correct": 2,
+            "As_sat_correct": 2,
+            "reference_sat_accuracy": 0.3333333333333333,
+            "As_sat_accuracy": 0.3333333333333333,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "As_clean_broken": {
+            "count": 3,
+            "reference_sat_correct": 1,
+            "As_sat_correct": 1,
+            "reference_sat_accuracy": 0.3333333333333333,
+            "As_sat_accuracy": 0.3333333333333333,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "both_clean_wrong": {
+            "count": 190,
+            "reference_sat_correct": 28,
+            "As_sat_correct": 24,
+            "reference_sat_accuracy": 0.14736842105263157,
+            "As_sat_accuracy": 0.12631578947368421,
+            "repaired": 3,
+            "broken": 7,
+            "net_correct": -4,
+            "contribution_to_full_accuracy_pp": -0.31746031746031744
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1064,
+            "reference_sat_correct": 718,
+            "As_sat_correct": 737,
+            "reference_sat_accuracy": 0.674812030075188,
+            "As_sat_accuracy": 0.6926691729323309
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 719,
+            "As_sat_correct": 738,
+            "reference_sat_accuracy": 0.6738519212746017,
+            "As_sat_accuracy": 0.6916588566073102
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 11
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 9
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 7
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 4
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 4
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 1
+          }
+        ]
+      },
+      "practical_mid": {
+        "overall_reference_accuracy": 0.5571428571428572,
+        "overall_As_accuracy": 0.5682539682539682,
+        "accuracy_gain_pp": 1.1111111111111072,
+        "groups": {
+          "both_clean_correct": {
+            "count": 1061,
+            "reference_sat_correct": 663,
+            "As_sat_correct": 678,
+            "reference_sat_accuracy": 0.6248821866163996,
+            "As_sat_accuracy": 0.6390197926484449,
+            "repaired": 29,
+            "broken": 14,
+            "net_correct": 15,
+            "contribution_to_full_accuracy_pp": 1.1904761904761905
+          },
+          "As_clean_repaired": {
+            "count": 6,
+            "reference_sat_correct": 2,
+            "As_sat_correct": 2,
+            "reference_sat_accuracy": 0.3333333333333333,
+            "As_sat_accuracy": 0.3333333333333333,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "As_clean_broken": {
+            "count": 3,
+            "reference_sat_correct": 1,
+            "As_sat_correct": 1,
+            "reference_sat_accuracy": 0.3333333333333333,
+            "As_sat_accuracy": 0.3333333333333333,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "both_clean_wrong": {
+            "count": 190,
+            "reference_sat_correct": 36,
+            "As_sat_correct": 35,
+            "reference_sat_accuracy": 0.18947368421052632,
+            "As_sat_accuracy": 0.18421052631578946,
+            "repaired": 2,
+            "broken": 3,
+            "net_correct": -1,
+            "contribution_to_full_accuracy_pp": -0.07936507936507936
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1064,
+            "reference_sat_correct": 664,
+            "As_sat_correct": 679,
+            "reference_sat_accuracy": 0.6240601503759399,
+            "As_sat_accuracy": 0.6381578947368421
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 665,
+            "As_sat_correct": 680,
+            "reference_sat_accuracy": 0.6232427366447985,
+            "As_sat_accuracy": 0.6373008434864105
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 12
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 9
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 7
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 5
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          }
+        ]
+      },
+      "practical_low_suburban": {
+        "overall_reference_accuracy": 0.5261904761904762,
+        "overall_As_accuracy": 0.5444444444444444,
+        "accuracy_gain_pp": 1.825396825396819,
+        "groups": {
+          "both_clean_correct": {
+            "count": 1061,
+            "reference_sat_correct": 632,
+            "As_sat_correct": 652,
+            "reference_sat_accuracy": 0.5956644674835061,
+            "As_sat_accuracy": 0.6145146088595664,
+            "repaired": 32,
+            "broken": 12,
+            "net_correct": 20,
+            "contribution_to_full_accuracy_pp": 1.5873015873015872
+          },
+          "As_clean_repaired": {
+            "count": 6,
+            "reference_sat_correct": 3,
+            "As_sat_correct": 3,
+            "reference_sat_accuracy": 0.5,
+            "As_sat_accuracy": 0.5,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "As_clean_broken": {
+            "count": 3,
+            "reference_sat_correct": 1,
+            "As_sat_correct": 1,
+            "reference_sat_accuracy": 0.3333333333333333,
+            "As_sat_accuracy": 0.3333333333333333,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "both_clean_wrong": {
+            "count": 190,
+            "reference_sat_correct": 27,
+            "As_sat_correct": 30,
+            "reference_sat_accuracy": 0.14210526315789473,
+            "As_sat_accuracy": 0.15789473684210525,
+            "repaired": 4,
+            "broken": 1,
+            "net_correct": 3,
+            "contribution_to_full_accuracy_pp": 0.23809523809523808
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1064,
+            "reference_sat_correct": 633,
+            "As_sat_correct": 653,
+            "reference_sat_accuracy": 0.5949248120300752,
+            "As_sat_accuracy": 0.6137218045112782
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 635,
+            "As_sat_correct": 655,
+            "reference_sat_accuracy": 0.5951265229615745,
+            "As_sat_accuracy": 0.6138706654170571
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 12
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 8
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 6
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 5
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          }
+        ]
+      },
+      "practical_high_urban": {
+        "overall_reference_accuracy": 0.5436507936507936,
+        "overall_As_accuracy": 0.5531746031746032,
+        "accuracy_gain_pp": 0.9523809523809601,
+        "groups": {
+          "both_clean_correct": {
+            "count": 1061,
+            "reference_sat_correct": 658,
+            "As_sat_correct": 673,
+            "reference_sat_accuracy": 0.6201696512723845,
+            "As_sat_accuracy": 0.6343072573044298,
+            "repaired": 26,
+            "broken": 11,
+            "net_correct": 15,
+            "contribution_to_full_accuracy_pp": 1.1904761904761905
+          },
+          "As_clean_repaired": {
+            "count": 6,
+            "reference_sat_correct": 0,
+            "As_sat_correct": 0,
+            "reference_sat_accuracy": 0.0,
+            "As_sat_accuracy": 0.0,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "As_clean_broken": {
+            "count": 3,
+            "reference_sat_correct": 1,
+            "As_sat_correct": 1,
+            "reference_sat_accuracy": 0.3333333333333333,
+            "As_sat_accuracy": 0.3333333333333333,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "both_clean_wrong": {
+            "count": 190,
+            "reference_sat_correct": 26,
+            "As_sat_correct": 23,
+            "reference_sat_accuracy": 0.1368421052631579,
+            "As_sat_accuracy": 0.12105263157894737,
+            "repaired": 2,
+            "broken": 5,
+            "net_correct": -3,
+            "contribution_to_full_accuracy_pp": -0.23809523809523808
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1064,
+            "reference_sat_correct": 659,
+            "As_sat_correct": 674,
+            "reference_sat_accuracy": 0.6193609022556391,
+            "As_sat_accuracy": 0.6334586466165414
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 658,
+            "As_sat_correct": 673,
+            "reference_sat_accuracy": 0.6166822867853796,
+            "As_sat_accuracy": 0.6307403936269915
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 12
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 11
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 8
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 5,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 1
+          }
+        ]
+      },
+      "practical_mid_urban": {
+        "overall_reference_accuracy": 0.43492063492063493,
+        "overall_As_accuracy": 0.4388888888888889,
+        "accuracy_gain_pp": 0.3968253968253954,
+        "groups": {
+          "both_clean_correct": {
+            "count": 1061,
+            "reference_sat_correct": 504,
+            "As_sat_correct": 512,
+            "reference_sat_accuracy": 0.4750235626767201,
+            "As_sat_accuracy": 0.4825636192271442,
+            "repaired": 19,
+            "broken": 11,
+            "net_correct": 8,
+            "contribution_to_full_accuracy_pp": 0.6349206349206349
+          },
+          "As_clean_repaired": {
+            "count": 6,
+            "reference_sat_correct": 1,
+            "As_sat_correct": 1,
+            "reference_sat_accuracy": 0.16666666666666666,
+            "As_sat_accuracy": 0.16666666666666666,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "As_clean_broken": {
+            "count": 3,
+            "reference_sat_correct": 1,
+            "As_sat_correct": 1,
+            "reference_sat_accuracy": 0.3333333333333333,
+            "As_sat_accuracy": 0.3333333333333333,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "both_clean_wrong": {
+            "count": 190,
+            "reference_sat_correct": 42,
+            "As_sat_correct": 39,
+            "reference_sat_accuracy": 0.22105263157894736,
+            "As_sat_accuracy": 0.20526315789473684,
+            "repaired": 2,
+            "broken": 5,
+            "net_correct": -3,
+            "contribution_to_full_accuracy_pp": -0.23809523809523808
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1064,
+            "reference_sat_correct": 505,
+            "As_sat_correct": 513,
+            "reference_sat_accuracy": 0.47462406015037595,
+            "As_sat_accuracy": 0.48214285714285715
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 505,
+            "As_sat_correct": 513,
+            "reference_sat_accuracy": 0.4732895970009372,
+            "As_sat_accuracy": 0.48078725398313027
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 5
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 4
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 4
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 3
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 1
+          }
+        ]
+      },
+      "practical_low_urban": {
+        "overall_reference_accuracy": 0.3388888888888889,
+        "overall_As_accuracy": 0.3404761904761905,
+        "accuracy_gain_pp": 0.15873015873015817,
+        "groups": {
+          "both_clean_correct": {
+            "count": 1061,
+            "reference_sat_correct": 397,
+            "As_sat_correct": 396,
+            "reference_sat_accuracy": 0.37417530631479734,
+            "As_sat_accuracy": 0.37323279924599434,
+            "repaired": 17,
+            "broken": 18,
+            "net_correct": -1,
+            "contribution_to_full_accuracy_pp": -0.07936507936507936
+          },
+          "As_clean_repaired": {
+            "count": 6,
+            "reference_sat_correct": 1,
+            "As_sat_correct": 1,
+            "reference_sat_accuracy": 0.16666666666666666,
+            "As_sat_accuracy": 0.16666666666666666,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "As_clean_broken": {
+            "count": 3,
+            "reference_sat_correct": 1,
+            "As_sat_correct": 1,
+            "reference_sat_accuracy": 0.3333333333333333,
+            "As_sat_accuracy": 0.3333333333333333,
+            "repaired": 0,
+            "broken": 0,
+            "net_correct": 0,
+            "contribution_to_full_accuracy_pp": 0.0
+          },
+          "both_clean_wrong": {
+            "count": 190,
+            "reference_sat_correct": 28,
+            "As_sat_correct": 31,
+            "reference_sat_accuracy": 0.14736842105263157,
+            "As_sat_accuracy": 0.1631578947368421,
+            "repaired": 3,
+            "broken": 0,
+            "net_correct": 3,
+            "contribution_to_full_accuracy_pp": 0.23809523809523808
+          }
+        },
+        "fixed_clean_correct_sets": {
+          "reference_clean_correct": {
+            "count": 1064,
+            "reference_sat_correct": 398,
+            "As_sat_correct": 397,
+            "reference_sat_accuracy": 0.37406015037593987,
+            "As_sat_accuracy": 0.3731203007518797
+          },
+          "As_clean_correct": {
+            "count": 1067,
+            "reference_sat_correct": 398,
+            "As_sat_correct": 397,
+            "reference_sat_accuracy": 0.37300843486410495,
+            "As_sat_accuracy": 0.37207122774133083
+          }
+        },
+        "prediction_changes": [
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 5
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 4
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 3
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 5,
+            "count": 3
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 2
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 2
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 2
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 2
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 2
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 3,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 0,
+            "reference_prediction": 4,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 0,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 1,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 1,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 3,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 4,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 2,
+            "reference_prediction": 5,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 2,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 3,
+            "reference_prediction": 5,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 0,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 3,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 1,
+            "As_prediction": 4,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 0,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 2,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 1,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 3,
+            "As_prediction": 5,
+            "count": 1
+          },
+          {
+            "true_TX": 4,
+            "reference_prediction": 4,
+            "As_prediction": 2,
+            "count": 1
+          },
+          {
+            "true_TX": 5,
+            "reference_prediction": 4,
+            "As_prediction": 3,
+            "count": 1
+          }
+        ]
+      }
+    }
+  },
+  "limits": [
+    "Hard predictions only;no logits/margins or propagation-state metadata in these artifacts",
+    "Fixedphysical1260 and same preregistered channel evaluation;no receivedIQbytecomparison asserted",
+    "Clean-correct conditioning is descriptive,not a new selection gate or causal proof",
+    "Same heldsourcefold,singlemodelseed;not fullsource target or As efficacy"
+  ]
+}

@@ -1,6 +1,6 @@
 # 下一唯一假设：按物理包均衡 practical 场景覆盖
 
-2026-10-17。状态：HISTORICAL_REPLAY_VERIFIED／E20_VERIFIED_RUNNING_NO_FINAL_RESULTS。三组 E20 已发布；B00 完成源七视图独立复算，另两组仍在训练，无正式 target 访问。采样抖动的固定四周期估计入口已关闭，不以增加周期、换统计量或放宽拒绝率救跑。
+2026-10-17。状态：HISTORICAL_REPLAY_VERIFIED／E20_ANALYZED_FAIL_FIXED_PER_PHYSICAL_PACKET_SIX_SCENE_SCHEDULING_CLOSED。三组 E20 已完成，全部七视图与场景决策已独立复算，固定方案关闭，无正式 target 访问。采样抖动的固定四周期估计入口已关闭，不以增加周期、换统计量或放宽拒绝率救跑。
 
 ## 为什么检验这个问题
 
@@ -33,6 +33,13 @@
 
 原 B01 的全部4440步场景计数及最终scene汇总精确复现；568320次L观察、5040物理包。全部包见过全部6场景，缺失包×scene为0，故不能以未见过困难场景解释原结果。同包出现104至120次，中位113；六场景次数最小值中位14、最小6；最多与最少次数差中位11、最大27。TV距均匀分布中位0.08333。只读取已有L元数据，0新IQ／CP／NN／更新／信道IQ生成。完整RX/day与分布见 cvs_physical_scene_coverage_replay_20261017.json。
 
-新反证实现 experiments/cvs_scene_cycle20：B00额外raw、C_IID原独立单As、B01逐包每6次覆盖6scene，均scratchE20／8L前向／总pairweight1.25／原U，已预登记并发布；完整矩阵尚未完成。公共raw.75＋ordinary.25＋原浅中层SupCon完整保留；只加同预算.25R(view)，不增加新损失／分支。35负例、4114合成NN／3合成更新／520合成fullpractical生成通过，0真实IQ／checkpoint／target。B00损失和默认头梯度与既有D_raw完全相同，IID输入与原practical逐点一致，固定source-eval也逐点一致；默认头正常更新、joint160导出相同。
+新反证实现 experiments/cvs_scene_cycle20：B00额外raw、C_IID原独立单As、B01逐包每6次覆盖6scene，均scratchE20／8L前向／总pairweight1.25／原U，已完成三组 E20 与完整独立复算；固定六scene循环未通过原晋级条件，关闭。公共raw.75＋ordinary.25＋原浅中层SupCon完整保留；只加同预算.25R(view)，不增加新损失／分支。35负例、4114合成NN／3合成更新／520合成fullpractical生成通过，0真实IQ／checkpoint／target。B00损失和默认头梯度与既有D_raw完全相同，IID输入与原practical逐点一致，固定source-eval也逐点一致；默认头正常更新、joint160导出相同。
 
 原始As总体边际概率不变；本候选只改变同一物理包多次出现的相关性，不是提高urban概率或重开旧系数探索。候选相对C_IID须lowurban与urban均值各≥+1pp，相对B00须lowurban≥+5pp／urban均值≥+3pp，同时两对照下clean与clean F1／low F1／midurban均不降、每practical及seenV≥−.5pp。固定最终20，不删包、不换概率／周期／seed／RX／系数／预算救跑。suburban距自身clean的2pp仍只是未达探索目标，联合成功未证明。
+
+
+## E20 固定方案终态
+
+ANALYZED／VERIFIED，FAIL_FIXED_PER_PHYSICAL_PACKET_SIX_SCENE_SCHEDULING_CLOSED。B00／随机As／均衡As的clean为80.158730%／84.444444%／84.682540%，lowurban为27.777778%／33.888889%／34.047619%。均衡相对随机clean＋0.238095pp、lowurban＋0.158730pp、urban均值＋0.502646pp；low及urban均值均未达原＋1pp条件。逐包次数差中位由11降至1，但不能代替识别收益。两As行1136640个场景决策、26460源预测、13320训练steps与成本全量复算。固定方案关闭，不换seed／cycle／概率／系数／RX／预算救跑。
+
+sourceRX1／单种子结果不证明新Ag、稳定As或联合目标；均衡组suburban距自身clean仍24.126984／27.857143／30.238095pp，lowurban未达60%。完整四格交互、跨seed与正式truth-last继续缺失，联合目标ACTIVE。
