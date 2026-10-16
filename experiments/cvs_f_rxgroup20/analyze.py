@@ -131,7 +131,7 @@ def analyze(root):
     ph=r['physics'][i]
     for dim,k in [('state','state'),('lock','lock'),('AGC_limited','agc_limited'),('kernel_length','residual_kernel_length'),('boundary','boundary')]:groups[dim,str(ph[k])].append(i)
     for dim,k,edges in [('quality','quality_snr_db',(0,5,10,20,30)),('added_noise_SNR','signal_to_added_noise_db',(0,5,10,20,30)),('abs_CFO','output_frequency_hz',(10,100,1000))]:
-     x=abs(ph[k]) if dim=='abs_CFO' else ph[k];bn=next(('<'+str(z) for z in edges if x<z),'>='+str(edges[-1]));groups[dim,bn].append(i)
+     x=abs(ph[k]) if dim=='abs_CFO' else ph[k];j=next((j for j,z in enumerate(edges) if x<z),len(edges));bn=('<'+str(edges[0])) if j==0 else ('>='+str(edges[-1])) if j==len(edges) else '['+str(edges[j-1])+','+str(edges[j])+')';groups[dim,bn].append(i)
   for (dim,value),ix in groups.items():
    for a in ARMS:
     z=data[a][v];strata.append(dict(arm=a,scene=v,dimension=dim,value=value,**metrics([y[i] for i in ix],[z['predictions'][i] for i in ix]),mean_margin_over30=statistics.mean(z['margin_over30'][i] for i in ix)))

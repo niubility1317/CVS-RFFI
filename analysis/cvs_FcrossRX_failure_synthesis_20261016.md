@@ -53,3 +53,16 @@
 
 
 非 DC 局部谱峰 G0 已完整执行并独立复算：fit L5040、18个跨TX/day留出折，0模型／网络／权重／更新。两窗RX对比风险下降94.8190%／91.5295%，17/18折局部峰条件通过，但精确RX/bin仅14/18一致，未达原15/18；固定候选FAIL，关闭且不放宽频率容差。两种选频均靠近既有20点重复参考谐波，与梳状谱相符，不能当作独立接收杂散或安全Ag方向；此解释不用于重选。统计阳性不是默认头收益，未启动E20。见[完整报告](E:/type10-7/automation_reports/CV-SincNet/20261017-diagnostic-source-nonDC-spur-crossfit-manysig-m1-r01/report.md)。
+
+
+## P12：原普通增强的物理 RX 分组条件（2026-10-17）
+
+两组新 scratch E20／seed2026092701／源 held RX1L1260，F＋CROSS_RX／原6L／原U／defaultcos30，唯一改变原 anti-shortcut 与 general-channel 的跨 RX 条件相关性，无新算子／损失／NN／As。训练代码82975411f152e2be7d80ebc79b7caa850d2ee858。
+
+独立完整复算：clean81.6667→81.8254（＋0.1587 pp，13修复／11损坏），低于预登记＋1 pp；macroF1＋0.2974 pp、seenV＋0.0417 pp及训练健康均通过。urban均值32.8042→33.8095（＋1.0053 pp），low28.3333→28.8889（＋0.5556 pp，37修复／30损坏）；所有六种practical均小幅增加，不能称为独立泛化突破或跨seed复现。
+
+low urban：LOS＋2.6042 pp／locked＋2.3555 pp；BLOCKED＋0.1401 pp；PARTIAL−2.4691 pp／degraded−3.5088 pp，困难状态仍无稳定改善。这是固定状态表现分层，非噪声／多径因果消融。
+
+完整8880训练步、40 model-epochs、9373358记录NN（含兼容smoke2）、全部七视图、原L/U序列完全匹配、72cells/5040L各组覆盖，约1268.4 s到矩阵结果；进程自然终止，无target访问，所有输出保留。固定RX分组候选科学FAIL并关闭，不改算子子集／分组／RX／seed／阈值／budget救援。
+
+[完整报告](cvs_FcrossRX_rxgroup20_20261017.md)。run_id：20261017-phase1-FcrossRX-rxgroup-sourceRX1-e20-s2026092701-m2-r01。仍无已验证新Ag／Ag×As因子矩阵／正式target联合证明／跨seed low urban>60%或suburban接近clean证据，活动目标继续。
