@@ -1,0 +1,29 @@
+{
+  "status": "VERIFIED",
+  "release_commit": "fdd6724a67c1e983b1e9a130a958f994541c2f04",
+  "release_archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "real_checkpoint_noquery_smoke": "PASS",
+  "dispatcher_PID_verified": 4113383,
+  "worker_PIDs": [
+    4113473,
+    4113601
+  ],
+  "GPU": [
+    0,
+    1
+  ],
+  "CWD_argv_GPU_verified": true,
+  "log_growth_verified": true,
+  "completed_epochs_observed": 3,
+  "observed_steps_per_new_row": 666,
+  "role_IDs_exact_matching_reference": true,
+  "actual_counts": {
+    "L": 5040,
+    "U_hidden": 45360,
+    "V": 21600
+  },
+  "donors": "filtered visible fitL5040 only",
+  "source_only": true,
+  "target_access": false
+}

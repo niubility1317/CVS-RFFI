@@ -1,1 +1,4 @@
 {"at": "2026-10-16T16:00:35+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-16T16:06:37+00:00", "status": "ANALYZED", "note": "Existing immutable source seed02 raw8L final20 result reused only;0newNN or initialization.", "evidence": ["launch_verification.json"], "row_id": "reused_D_raw-RX1-s2026092702"}
+{"at": "2026-10-16T16:06:39+00:00", "status": "RUNNING", "note": "VERIFIED ownPID/CWD/argv/GPU/loggrowth;epoch3/666updates;data roles exactly matchreference.", "evidence": ["launch_verification.json"], "row_id": "SAME_RX-RX1-s2026092702"}
+{"at": "2026-10-16T16:06:42+00:00", "status": "RUNNING", "note": "VERIFIED ownPID/CWD/argv/GPU/loggrowth;epoch3/666updates;data roles exactly matchreference.", "evidence": ["launch_verification.json"], "row_id": "CROSS_RX-RX1-s2026092702"}

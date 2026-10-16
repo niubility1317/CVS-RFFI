@@ -1,6 +1,6 @@
 # 同 TX 真实 IQ 有界相干插值：E20 源域证伪
 
-REGISTERED_NOT_RUN。独立一次 P0/P1 审查 PASS，唯一 baseline_reuse 标记问题已修复并定向读回；N607 普通账户预检 VERIFIED，尚未启动真实训练。起点1452eecc766197010c3a5971303baa9b4fa8dfeb；实际执行commit由release记录。唯一假设：真实sameTX/day跨RX观测经固定参考窗复标量对齐、插值与有界能量投影后，能提高源跨RX clean身份识别，且超过同RX插值的增量。原RXMIX为共轭混合，旧realpair为独立ordinary对监督，二者已关闭；本次研究新的IQ组合算子，不修改或复跑旧产物，也不以缩强度/换seed救援。
+RUNNING。实际训练 release commit 为 fdd6724a67c1e983b1e9a130a958f994541c2f04；两行 PID/CWD/argv/GPU/日志增长、真实 CP no-query smoke 和实际角色一致已核实。当前源域训练尚未完成，无最终识别结论。起点1452eecc766197010c3a5971303baa9b4fa8dfeb；实际执行commit由release记录。唯一假设：真实sameTX/day跨RX观测经固定参考窗复标量对齐、插值与有界能量投影后，能提高源跨RX clean身份识别，且超过同RX插值的增量。原RXMIX为共轭混合，旧realpair为独立ordinary对监督，二者已关闭；本次研究新的IQ组合算子，不修改或复跑旧产物，也不以缩强度/换seed救援。
 
 最新As证据：固定additive在RX6 seed01 clean+4.52、urban+23.39、low+16.27pp，但RX1seed02 clean−8.25pp，双提升不稳定。已有F+CROSS_RX固定接收状态/重算状态的单损伤完整诊断，移除新增noise、flatH、carrier或RXIQ均未恢复clean；不重复该矩阵、不据状态关联定单因果。当前仍无合格新Ag、四格交互、low>60%或suburban距clean≤2pp证据。
 
