@@ -1,0 +1,864 @@
+{
+  "status": "PARTIAL_SOURCE_ROWS_ANALYZED_MATRIX_RUNNING",
+  "source_only": true,
+  "run_id": "20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01",
+  "completed_rows": {
+    "D00-RX1-s2026092701": {
+      "scores": {
+        "clean": {
+          "count": 1260,
+          "accuracy": 0.8023809523809524,
+          "macro_F1": 0.7991751660872396,
+          "confusion": [
+            [
+              184,
+              21,
+              4,
+              1,
+              0,
+              0
+            ],
+            [
+              0,
+              175,
+              0,
+              33,
+              2,
+              0
+            ],
+            [
+              10,
+              0,
+              117,
+              0,
+              0,
+              83
+            ],
+            [
+              1,
+              79,
+              0,
+              129,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              210,
+              0
+            ],
+            [
+              0,
+              0,
+              12,
+              2,
+              0,
+              196
+            ]
+          ]
+        },
+        "practical_high": {
+          "count": 1260,
+          "accuracy": 0.4119047619047619,
+          "macro_F1": 0.3010051350653781,
+          "confusion": [
+            [
+              5,
+              0,
+              165,
+              30,
+              10,
+              0
+            ],
+            [
+              2,
+              3,
+              2,
+              155,
+              45,
+              3
+            ],
+            [
+              0,
+              0,
+              171,
+              3,
+              26,
+              10
+            ],
+            [
+              6,
+              2,
+              20,
+              174,
+              8,
+              0
+            ],
+            [
+              4,
+              0,
+              24,
+              21,
+              160,
+              1
+            ],
+            [
+              0,
+              0,
+              166,
+              0,
+              38,
+              6
+            ]
+          ]
+        },
+        "practical_mid": {
+          "count": 1260,
+          "accuracy": 0.40555555555555556,
+          "macro_F1": 0.30503445942994106,
+          "confusion": [
+            [
+              13,
+              1,
+              148,
+              28,
+              18,
+              2
+            ],
+            [
+              9,
+              5,
+              8,
+              137,
+              47,
+              4
+            ],
+            [
+              2,
+              0,
+              169,
+              4,
+              22,
+              13
+            ],
+            [
+              8,
+              1,
+              23,
+              163,
+              14,
+              1
+            ],
+            [
+              7,
+              2,
+              20,
+              23,
+              157,
+              1
+            ],
+            [
+              1,
+              0,
+              159,
+              0,
+              46,
+              4
+            ]
+          ]
+        },
+        "practical_low_suburban": {
+          "count": 1260,
+          "accuracy": 0.373015873015873,
+          "macro_F1": 0.2883972204821088,
+          "confusion": [
+            [
+              10,
+              0,
+              155,
+              24,
+              18,
+              3
+            ],
+            [
+              9,
+              6,
+              15,
+              124,
+              51,
+              5
+            ],
+            [
+              1,
+              2,
+              155,
+              5,
+              32,
+              15
+            ],
+            [
+              12,
+              2,
+              28,
+              133,
+              30,
+              5
+            ],
+            [
+              9,
+              0,
+              26,
+              19,
+              154,
+              2
+            ],
+            [
+              0,
+              0,
+              145,
+              1,
+              52,
+              12
+            ]
+          ]
+        },
+        "practical_high_urban": {
+          "count": 1260,
+          "accuracy": 0.4023809523809524,
+          "macro_F1": 0.3052379841539175,
+          "confusion": [
+            [
+              9,
+              1,
+              160,
+              22,
+              18,
+              0
+            ],
+            [
+              10,
+              3,
+              2,
+              145,
+              44,
+              6
+            ],
+            [
+              1,
+              0,
+              159,
+              7,
+              30,
+              13
+            ],
+            [
+              4,
+              3,
+              18,
+              177,
+              7,
+              1
+            ],
+            [
+              8,
+              1,
+              23,
+              25,
+              147,
+              6
+            ],
+            [
+              3,
+              0,
+              154,
+              0,
+              41,
+              12
+            ]
+          ]
+        },
+        "practical_mid_urban": {
+          "count": 1260,
+          "accuracy": 0.3277777777777778,
+          "macro_F1": 0.272158303094354,
+          "confusion": [
+            [
+              16,
+              1,
+              120,
+              20,
+              42,
+              11
+            ],
+            [
+              12,
+              6,
+              14,
+              107,
+              53,
+              18
+            ],
+            [
+              11,
+              4,
+              119,
+              16,
+              36,
+              24
+            ],
+            [
+              14,
+              2,
+              21,
+              126,
+              32,
+              15
+            ],
+            [
+              19,
+              6,
+              28,
+              26,
+              122,
+              9
+            ],
+            [
+              1,
+              1,
+              128,
+              2,
+              54,
+              24
+            ]
+          ]
+        },
+        "practical_low_urban": {
+          "count": 1260,
+          "accuracy": 0.28095238095238095,
+          "macro_F1": 0.24439369727622876,
+          "confusion": [
+            [
+              23,
+              4,
+              98,
+              20,
+              47,
+              18
+            ],
+            [
+              28,
+              9,
+              25,
+              64,
+              65,
+              19
+            ],
+            [
+              12,
+              6,
+              96,
+              20,
+              49,
+              27
+            ],
+            [
+              21,
+              9,
+              32,
+              90,
+              43,
+              15
+            ],
+            [
+              20,
+              4,
+              29,
+              28,
+              115,
+              14
+            ],
+            [
+              10,
+              5,
+              105,
+              7,
+              62,
+              21
+            ]
+          ]
+        }
+      },
+      "execution": {
+        "full_steps": 4440,
+        "full_epochs": 20,
+        "L_forward_packets": 4546560,
+        "extra_L_forward_packets": 1136640,
+        "As_training_observations": 0,
+        "teacher_additive_calls": 0,
+        "actual_network_forward_packets": 5823318,
+        "held_forward_packets": 8820,
+        "elapsed_training_seconds": 1377.4409923553467,
+        "final_native_logged_first_ordinary_CE": 0.2630319998742224,
+        "final_base_L_objective": 0.3095917972895476,
+        "final_extra_pair_objective": 0.10200267315313623,
+        "total_pair_weight": 1.0,
+        "seen_V": {
+          "source_val_count": 21600,
+          "source_val_accuracy": 0.9801388888888889,
+          "source_val_rx_accuracy": {
+            "3": 0.9522222222222222,
+            "4": 0.9861111111111112,
+            "6": 0.9955555555555555,
+            "8": 0.9866666666666667
+          },
+          "source_val_worst_rx": 0.9522222222222222,
+          "held_RX_excluded": true
+        },
+        "tracked_BN_module_names": [],
+        "extra_BN_updates": 0,
+        "instrumented_counters": {
+          "student_train_forward_packets": 4942928,
+          "student_eval_forward_packets": 475202,
+          "teacher_train_forward_packets": 0,
+          "teacher_eval_forward_packets": 396370
+        }
+      },
+      "source_prediction_count": 8820,
+      "all4440native_view_unit_steps_recounted": true,
+      "naturally_exited": true
+    },
+    "D_raw-RX1-s2026092701": {
+      "scores": {
+        "clean": {
+          "count": 1260,
+          "accuracy": 0.8047619047619048,
+          "macro_F1": 0.8010323874987145,
+          "confusion": [
+            [
+              189,
+              16,
+              2,
+              1,
+              2,
+              0
+            ],
+            [
+              0,
+              178,
+              0,
+              30,
+              1,
+              1
+            ],
+            [
+              21,
+              0,
+              123,
+              0,
+              0,
+              66
+            ],
+            [
+              1,
+              81,
+              0,
+              127,
+              1,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0,
+              210,
+              0
+            ],
+            [
+              0,
+              0,
+              19,
+              4,
+              0,
+              187
+            ]
+          ]
+        },
+        "practical_high": {
+          "count": 1260,
+          "accuracy": 0.3873015873015873,
+          "macro_F1": 0.28052755045556693,
+          "confusion": [
+            [
+              5,
+              0,
+              154,
+              44,
+              7,
+              0
+            ],
+            [
+              2,
+              2,
+              3,
+              165,
+              35,
+              3
+            ],
+            [
+              1,
+              0,
+              126,
+              7,
+              54,
+              22
+            ],
+            [
+              4,
+              2,
+              9,
+              188,
+              7,
+              0
+            ],
+            [
+              1,
+              0,
+              20,
+              26,
+              162,
+              1
+            ],
+            [
+              0,
+              0,
+              157,
+              0,
+              48,
+              5
+            ]
+          ]
+        },
+        "practical_mid": {
+          "count": 1260,
+          "accuracy": 0.39365079365079364,
+          "macro_F1": 0.2931300266721519,
+          "confusion": [
+            [
+              11,
+              0,
+              142,
+              39,
+              16,
+              2
+            ],
+            [
+              6,
+              4,
+              9,
+              153,
+              34,
+              4
+            ],
+            [
+              3,
+              0,
+              133,
+              10,
+              41,
+              23
+            ],
+            [
+              2,
+              2,
+              14,
+              182,
+              9,
+              1
+            ],
+            [
+              3,
+              1,
+              16,
+              26,
+              162,
+              2
+            ],
+            [
+              2,
+              0,
+              148,
+              0,
+              56,
+              4
+            ]
+          ]
+        },
+        "practical_low_suburban": {
+          "count": 1260,
+          "accuracy": 0.3619047619047619,
+          "macro_F1": 0.2830128467247519,
+          "confusion": [
+            [
+              12,
+              1,
+              139,
+              38,
+              16,
+              4
+            ],
+            [
+              12,
+              6,
+              16,
+              132,
+              38,
+              6
+            ],
+            [
+              1,
+              4,
+              122,
+              13,
+              46,
+              24
+            ],
+            [
+              8,
+              2,
+              19,
+              152,
+              23,
+              6
+            ],
+            [
+              5,
+              1,
+              27,
+              23,
+              152,
+              2
+            ],
+            [
+              0,
+              0,
+              138,
+              2,
+              58,
+              12
+            ]
+          ]
+        },
+        "practical_high_urban": {
+          "count": 1260,
+          "accuracy": 0.38492063492063494,
+          "macro_F1": 0.2917065301386244,
+          "confusion": [
+            [
+              9,
+              1,
+              148,
+              37,
+              15,
+              0
+            ],
+            [
+              9,
+              4,
+              5,
+              149,
+              37,
+              6
+            ],
+            [
+              3,
+              1,
+              118,
+              8,
+              57,
+              23
+            ],
+            [
+              3,
+              3,
+              6,
+              190,
+              7,
+              1
+            ],
+            [
+              8,
+              2,
+              17,
+              26,
+              153,
+              4
+            ],
+            [
+              3,
+              1,
+              144,
+              0,
+              51,
+              11
+            ]
+          ]
+        },
+        "practical_mid_urban": {
+          "count": 1260,
+          "accuracy": 0.3246031746031746,
+          "macro_F1": 0.2684395909258171,
+          "confusion": [
+            [
+              15,
+              2,
+              108,
+              35,
+              39,
+              11
+            ],
+            [
+              16,
+              6,
+              16,
+              113,
+              43,
+              16
+            ],
+            [
+              15,
+              4,
+              99,
+              20,
+              45,
+              27
+            ],
+            [
+              15,
+              5,
+              10,
+              139,
+              27,
+              14
+            ],
+            [
+              22,
+              6,
+              18,
+              27,
+              127,
+              10
+            ],
+            [
+              3,
+              1,
+              120,
+              2,
+              61,
+              23
+            ]
+          ]
+        },
+        "practical_low_urban": {
+          "count": 1260,
+          "accuracy": 0.2761904761904762,
+          "macro_F1": 0.24447425052564484,
+          "confusion": [
+            [
+              29,
+              4,
+              98,
+              16,
+              44,
+              19
+            ],
+            [
+              28,
+              9,
+              23,
+              68,
+              64,
+              18
+            ],
+            [
+              14,
+              11,
+              79,
+              24,
+              54,
+              28
+            ],
+            [
+              24,
+              9,
+              20,
+              94,
+              47,
+              16
+            ],
+            [
+              18,
+              3,
+              26,
+              31,
+              114,
+              18
+            ],
+            [
+              11,
+              4,
+              95,
+              7,
+              70,
+              23
+            ]
+          ]
+        }
+      },
+      "execution": {
+        "full_steps": 4440,
+        "full_epochs": 20,
+        "L_forward_packets": 4546560,
+        "extra_L_forward_packets": 1136640,
+        "As_training_observations": 0,
+        "teacher_additive_calls": 0,
+        "actual_network_forward_packets": 5823318,
+        "held_forward_packets": 8820,
+        "elapsed_training_seconds": 1492.9098567962646,
+        "final_native_logged_first_ordinary_CE": 0.26425804815313836,
+        "final_base_L_objective": 0.3108200500677298,
+        "final_extra_pair_objective": 0.09726899489760399,
+        "total_pair_weight": 1.25,
+        "seen_V": {
+          "source_val_count": 21600,
+          "source_val_accuracy": 0.9800925925925926,
+          "source_val_rx_accuracy": {
+            "3": 0.9531481481481482,
+            "4": 0.9855555555555555,
+            "6": 0.9955555555555555,
+            "8": 0.9861111111111112
+          },
+          "source_val_worst_rx": 0.9531481481481482,
+          "held_RX_excluded": true
+        },
+        "tracked_BN_module_names": [],
+        "extra_BN_updates": 0,
+        "instrumented_counters": {
+          "student_train_forward_packets": 4942928,
+          "student_eval_forward_packets": 475202,
+          "teacher_train_forward_packets": 0,
+          "teacher_eval_forward_packets": 396370
+        }
+      },
+      "source_prediction_count": 8820,
+      "all4440native_view_unit_steps_recounted": true,
+      "naturally_exited": true
+    }
+  },
+  "comparison_available": false,
+  "target_access": false,
+  "joint_goal_complete": false
+}

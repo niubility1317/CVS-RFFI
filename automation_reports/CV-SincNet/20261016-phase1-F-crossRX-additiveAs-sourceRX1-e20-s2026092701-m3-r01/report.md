@@ -73,3 +73,40 @@ CWD：/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_additiveA
 - D_As-RX1-s2026092701：GPU2，观察完整step207/4440，E1/20；stdout6516字节。仅为运行进度，无最终识别结论。
 
 仅修改本轮本地报告和状态，不改已发布训练release，不重复启动同run。完整联合目标仍未完成。
+
+
+## 已完成行的独立源读出：D00-RX1-s2026092701
+
+此行已完成E20/4440更新、七源视图及8820固定预测的完整独立复算，进程自然结束。矩阵其他行仍运行，尚无完整As比较，不据此改变训练或选择配方。
+
+| 场景 | Accuracy % | Macro-F1 % |
+|---|---:|---:|
+| clean | 80.238095 | 79.917517 |
+| practical_high | 41.190476 | 30.100514 |
+| practical_mid | 40.555556 | 30.503446 |
+| practical_low_suburban | 37.301587 | 28.839722 |
+| practical_high_urban | 40.238095 | 30.523798 |
+| practical_mid_urban | 32.777778 | 27.215830 |
+| practical_low_urban | 28.095238 | 24.439370 |
+
+实际L NN 4546560，extra L NN 1136640，含原U/EMA/V/held的实际NN 5823318。第一ordinary平滑CE 0.2630319998742224，共同base完整目标 0.3095917972895476；二者口径不同。未访问target或拟合任何头。
+
+
+## 已完成行的独立源读出：D_raw-RX1-s2026092701
+
+此行已完成E20/4440更新、七源视图及8820固定预测的完整独立复算，进程自然结束。矩阵其他行仍运行，尚无完整As比较，不据此改变训练或选择配方。
+
+| 场景 | Accuracy % | Macro-F1 % |
+|---|---:|---:|
+| clean | 80.476190 | 80.103239 |
+| practical_high | 38.730159 | 28.052755 |
+| practical_mid | 39.365079 | 29.313003 |
+| practical_low_suburban | 36.190476 | 28.301285 |
+| practical_high_urban | 38.492063 | 29.170653 |
+| practical_mid_urban | 32.460317 | 26.843959 |
+| practical_low_urban | 27.619048 | 24.447425 |
+
+实际L NN 4546560，extra L NN 1136640，含原U/EMA/V/held的实际NN 5823318。第一ordinary平滑CE 0.26425804815313836，共同base完整目标 0.3108200500677298；二者口径不同。未访问target或拟合任何头。
+
+
+两个完整对照的全部 L/U 物理训练序列一致，actual native args 只在 output_dir/candidate_id 不同。D_raw−D00：clean +0.238095pp（21修复/18新错），六 practical 依次 −2.460317/−1.190476/−1.111111/−1.746032/−0.317460/−0.476190pp；均为固定源fold单seed配对结果，未得出As结论。完整对照配对计数见controls_comparison.json。
