@@ -1,0 +1,93 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01",
+  "source_only": true,
+  "target_access": false,
+  "independent_complete_record_recount": true,
+  "recounted_decisions_including_reused_reference": 17640,
+  "new_model_epochs": 20,
+  "new_optimizer_updates": 4440,
+  "reference_model_epochs": 20,
+  "reference_optimizer_updates": 4440,
+  "new_NN": 5823320,
+  "offline_NN": 0,
+  "offline_IQ_reads": 0,
+  "offline_checkpoint_reads": 0,
+  "matched_primary_L_U_sequence_entries": 5994,
+  "checked_timegrid_trace_records": 568320,
+  "source_views_per_arm": 7,
+  "checked_full_stdout_lines_per_arm": 800,
+  "figures": [
+    {
+      "name": "source_scene_results",
+      "png": true,
+      "pdf": true,
+      "png_visually_inspected": true
+    },
+    {
+      "name": "complete_training_curves",
+      "png": true,
+      "pdf": true,
+      "png_visually_inspected": true
+    },
+    {
+      "name": "low_urban_strata",
+      "png": true,
+      "pdf": true,
+      "png_visually_inspected": true
+    },
+    {
+      "name": "fixed_clean_retention_and_errors",
+      "png": true,
+      "pdf": true,
+      "png_visually_inspected": true
+    },
+    {
+      "name": "grid_exposure_and_original_U",
+      "png": true,
+      "pdf": true,
+      "png_visually_inspected": true
+    }
+  ],
+  "scientific_qualified": false,
+  "fixed_candidate_closed": true,
+  "old_reference_missing_per_packet_practical_margin_and_physics": true,
+  "new_default_head_mean_margin_over30": {
+    "clean": {
+      "count": 1260,
+      "mean": 0.11037816148054205,
+      "positive": 1014
+    },
+    "practical_high": {
+      "count": 1260,
+      "mean": -0.037899962753308834,
+      "positive": 496
+    },
+    "practical_mid": {
+      "count": 1260,
+      "mean": -0.036495001636687,
+      "positive": 495
+    },
+    "practical_low_suburban": {
+      "count": 1260,
+      "mean": -0.039810203637326576,
+      "positive": 458
+    },
+    "practical_high_urban": {
+      "count": 1260,
+      "mean": -0.03878583855407121,
+      "positive": 478
+    },
+    "practical_mid_urban": {
+      "count": 1260,
+      "mean": -0.04494445906092156,
+      "positive": 409
+    },
+    "practical_low_urban": {
+      "count": 1260,
+      "mean": -0.04856231858377306,
+      "positive": 349
+    }
+  },
+  "formal_target_or_cross_seed_efficacy_proved": false
+}

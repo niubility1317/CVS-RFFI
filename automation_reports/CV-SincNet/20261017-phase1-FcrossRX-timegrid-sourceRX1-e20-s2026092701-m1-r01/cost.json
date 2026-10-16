@@ -1,0 +1,22 @@
+{
+  "execution": "VERIFIED",
+  "all_own_processes_naturally_terminal": true,
+  "new_model_epochs": 20,
+  "new_optimizer_updates": 4440,
+  "new_NN": 5823320,
+  "dispatcher_real_checkpoint_smoke_NN": 2,
+  "reused_reference_model_epochs": 20,
+  "reused_reference_updates": 4440,
+  "reused_reference_NN": 5823318,
+  "parent_weight_inheritance_epochs": 0,
+  "native_elapsed_seconds": 1443.5856084823608,
+  "process_to_final_result_seconds": 1463.244431734085,
+  "worker_start_to_dispatcher_completion_seconds": 1466.3174314498901,
+  "first_to_last_source_readout_write_seconds": 14.34799861907959,
+  "construct_seconds": 20.993281056173146,
+  "timestamp_precision_seconds": 1,
+  "head_fit_updates": 0,
+  "source_only": true,
+  "target_access": false,
+  "full_runtime_evidence_local_ref": "E:/type10-7/local_artifacts/cvs_FcrossRX_timegrid20_20261017/final/cost.json"
+}

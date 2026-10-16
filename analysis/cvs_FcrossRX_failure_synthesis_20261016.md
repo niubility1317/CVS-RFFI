@@ -39,3 +39,14 @@
 局部观察衰减 LA16 的实际 E20 源 RX1 结果补充：clean +2.555556pp、宏 F1 +2.635702pp、seenV +0.041667pp，但六 practical 全降，urban −1.919753pp、low −1.370370pp，原源条件 FAIL。low 的 BLOCKED 仅净+8、unlocked净+18，而 LOS/PARTIAL/locked/degraded 的损失更大；TX2 low −14pp。新修复 clean 的159包，其low正确反而42→28，说明局部clean收益没有转化为受损观察下的同一身份证据收益。原C0 clean正确集low保持率25.943187%→25.011096%，平均间隔略升也未变成准确率收益。保持全部负结果，关闭固定独立配方，不做强度/比例/RX/seed救援。一个sourcefold/modelseed、0As/target，不能据此否定所有未运行联合交互，也不能宣称Ag总体有效或联合完成。[报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-localatten-source-RX1-e20-s2026092701-m1-r01/report.md)。
 
 冻结 current C0/C1 的 ordinary／As 梯度共同支配假设按原规则未获支持：C0 负内积批 42.5%／32.5%，C1 12.5%／17.5%，控制均0；120964 NN、0更新。未检验失败RX6或训练早期，不能据此排除所有梯度机制，但本固定理由关闭，不从层/RX/流/阈值挑阳性晋级。[报告](../automation_reports/CV-SincNet/20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01/report.md)。
+
+
+新增完整匹配结果（2026-10-17）：
+
+独立噪声／反向噪声双视图的三行同预算 E20 检验已完成。ANTI 对 RAW10 的源 held RX1 clean 为 +6.1111 个百分点、urban 均值为 +10.3175 个百分点，但对匹配 INDEP 控制的 urban 为 −0.1323、low 为 −0.3968 个百分点，未达到两项均至少 +1 的预登记条件。收益主要出现在 LOS／PARTIAL／locked；BLOCKED／unlocked 没有获得对应改善。固定反向噪声训练路线关闭，不依据 INDEP 的局部高分追加种子或重新选候选。[完整报告](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-FcrossRX-noisepair-sourceRX1-e20-s2026092701-m3-r01/report.md)。
+
+随后冻结 ANTI 默认头、只在源 fit L5040 上移除新增噪声并固定接收状态及补偿参数，BLOCKED 的 clean→full 错误差仅恢复 17.6018%，unlocked 仅恢复 18.3118%，均未达到原定 50%。这否定了当前噪声遮蔽理由的晋级条件；没有证明其他损伤不可恢复。该诊断为已见训练源、零更新，不能作为 held RX 或正式 low urban 超过 60% 的证据。[受控诊断报告](E:/type10-7/automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/report.md)。
+
+有界包内时间栅格收缩 TIMEGRID 的一个 scratch E20 已完成，默认头的源 held RX1 clean 为 80.4762%→80.4762%，宏 F1 下降 0.0179 个百分点；urban 均值下降 0.1587 个百分点，low 为 27.6190%→27.6984%，只净增 1 个正确样本。clean 修复 6 个错误并新增 6 个错误。全 4,440 更新、568,320 次 IQ 变换、L／U 序列、覆盖、损失与梯度健康均核对通过，故不是增强未执行。固定候选未通过预登记 clean 与宏 F1 条件，关闭；不调整 rho、插值、概率、权重、RX、种子、epoch 或门槛救援。有界可逆与轻微输入变化都没有在这次训练产生独立泛化收益，且不能把插值效应唯一解释为 RX 时钟变化。[全量结果、分层图与训练曲线](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01/report.md)。
+
+这三项都是源域证据；原有默认分类头、F＋跨 RX 同 TX SupCon 基线、E20 预算和正式 practical 测试条件保持。当前仍没有经独立确认的新增 Ag，也没有 B00／B10／B01／B11 交互、正式目标联合收益或跨模型 seed 重现。新增假设尚需依据合法源域证据另行确定，未启动新的补救训练。
