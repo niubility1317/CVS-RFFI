@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "scope": "source-only gain-envelope statistics, no model/checkpoint",
+  "known_cases": {"RX": "PASS", "TX": "FAIL", "DAYFLIP": "FAIL"},
+  "slope_formula_exact": true,
+  "RMS_invariant": true,
+  "zero_baseline_gain": null,
+  "negative_cases": 7,
+  "synthetic_packets": 15120,
+  "network_forwards": 0,
+  "optimizer_steps": 0,
+  "independent_P0P1_review": "PASS; no direct next-run defect",
+  "reviewer": "dc_p0p1_review, separate gain candidate review",
+  "compile": "PASS",
+  "registration": "VALID",
+  "real_checkpoint_smoke": "not_applicable_no_model_or_checkpoint"
+}
