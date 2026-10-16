@@ -65,6 +65,23 @@ def draw(analysis,output):
  for state,color in zip(states,('#5B8E7D','#D4A373','#B35C5C')):
   vals=np.array([sum(x['count'] for x in cells if x['scene']==v and x['state']==state) for v in VIEWS[1:]]);axes[1].bar(range(6),vals,bottom=bottom,color=color,label=state);bottom+=vals
  axes[1].set_xticks(range(6),SHORT[1:],rotation=35,ha='right');axes[1].set_ylabel('Training observations');axes[1].set_title('Full nominal prior, total='+str(coverage['total']));axes[1].legend(fontsize=8);save(fig,'training_coverage')
+ crossfile=analysis/'crossseed_RX1.json'
+ if crossfile.exists():
+  cross=read(crossfile);rows=cross['rows'];fig,axes=plt.subplots(2,2,figsize=(11.5,7.4),constrained_layout=True)
+  for ax,view,title in zip(axes[0],('clean','practical_low_urban'),('Clean accuracy','Low-urban accuracy')):
+   for j,a in enumerate(ARMS):
+    bars=ax.bar(np.arange(2)+(j-1)*.24,[100*x['scores'][a][view]['accuracy'] for x in rows],width=.23,color=colors[a],label=a);ax.bar_label(bars,fmt='%.1f',padding=2,fontsize=8)
+   ax.set_xticks(range(2),[str(x['model_seed']) for x in rows]);ax.set_ylim(0,100);ax.set_ylabel('Accuracy (%)');ax.set_title(title);ax.legend(fontsize=8)
+  for j,ref in enumerate(ARMS[:2]):
+   vals=[x['comparisons'][ref]['all_view_gain_pp']['clean'] for x in rows];bars=axes[1,0].bar(np.arange(2)+(j-.5)*.3,vals,width=.28,color=colors[ref],label='D_As - '+ref);axes[1,0].bar_label(bars,fmt='%+.2f',padding=3,fontsize=8)
+  axes[1,0].set_title('Clean benefit does not reproduce');axes[1,0].axhline(0,color='grey',lw=.8);axes[1,0].set_ylabel('Gain (pp)');axes[1,0].legend(fontsize=8)
+  for j,(key,title) in enumerate((('urban','Urban mean'),('low','Low urban'))):
+   vals=[x['comparisons']['D00']['urban_mean_gain_pp'] if key=='urban' else x['comparisons']['D00']['all_view_gain_pp']['practical_low_urban'] for x in rows];bars=axes[1,1].bar(np.arange(2)+(j-.5)*.3,vals,width=.28,color='#A26A3A' if j==0 else '#D7A56B',label=title);axes[1,1].bar_label(bars,fmt='%+.2f',padding=3,fontsize=8)
+  axes[1,1].set_title('Satellite gain in both source seeds');axes[1,1].axhline(0,color='grey',lw=.8);axes[1,1].set_ylabel('D_As - D00 (pp)');axes[1,1].legend(fontsize=8)
+  for ax in axes[1]:ax.set_xticks(range(2),[str(x['model_seed']) for x in rows])
+  fig.suptitle('Source RX1 | same roles and channel configurations | two seeds | E20 default head',fontsize=10)
+  for ext in ('png','pdf'):fig.savefig(output/('crossseed_RX1.'+ext),dpi=180)
+  plt.close(fig);names.append('crossseed_RX1.png')
  return names
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--analysis',required=True);p.add_argument('--output',required=True);a=p.parse_args();print(json.dumps(draw(a.analysis,a.output)))

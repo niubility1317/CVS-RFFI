@@ -51,6 +51,7 @@ def analyze(arms=ARMS):
    assert math.isclose(s['accuracy'],r['views'][view]['accuracy'],abs_tol=1e-12) and math.isclose(s['macro_F1'],r['views'][view]['macro_F1'],abs_tol=1e-12)
    if view!='clean':assert p['labels']==predictions[arm]['clean']['labels'] and p['physical_ids']==predictions[arm]['clean']['physical_ids']
    assert len(p['margin_over30'])==1260 and all(math.isfinite(x) for x in p['margin_over30'])
+   assert all((z<=1e-12 or y==q) and (z>=-1e-12 or y!=q) for y,q,z in zip(p['labels'],p['predictions'],p['margin_over30']))
    if view!='clean':
     assert len(p['physics'])==1260
     for m in p['physics']:
