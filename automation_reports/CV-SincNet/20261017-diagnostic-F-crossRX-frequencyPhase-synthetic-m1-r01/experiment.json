@@ -1,0 +1,293 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-crossRX-frequencyPhase-synthetic-m1-r01",
+  "group_id": "F-crossRX-frequency-phase-observability-synthetic",
+  "display_name": "F＋跨RX：短窗频域相位测度的合成反证",
+  "description": "固定lag20补偿与80点12谐波phaseclosure；正RX_LTI、无RX、TX曲率、RX幅度、TX×RX交互、窗外边界和缺频退化；0真实IQ/NN",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "frequency phase closure synthetic",
+    "finite-window group delay observable"
+  ],
+  "tags": [
+    "CVS",
+    "synthetic-only",
+    "frequency_phase",
+    "zero-NN"
+  ],
+  "comparison_group_id": "F-crossRX-frequency-phase-observability-synthetic",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Activejoint Ag/As research/latest F+CROSS_RX/E20;previousturn fixed synthetic identifiability before sourceIQ;no training budget or inputrole change",
+  "code": {
+    "commit": "Actual one execution Git HEAD read into resolved_config.json",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "NativeWindows F:/App/miniconda3/python.exe/NumPy,CPU2threads,noTorch/GPU/remote",
+    "cwd": "WORKTREE",
+    "entrypoint": "experiments.cvs_frequency_phase17.run"
+  },
+  "data": {
+    "dataset": "Analytic synthetic multitone observations only",
+    "version": "3templates/7cases/3SNR/4draws;6x3x4x70 syntheticfactors;252cohorts",
+    "representation": "256Complex64 input/Complex128 estimator;325140480 syntheticcomplexpoints,no WiSig IQ",
+    "contract_ref": "No actual dataset/VALIDATED_ONCE inputs opened;originalL/U/V untouched",
+    "physical_ids_ref": "Synthetic tuple(template,SNR,case,draw,t,d,r,p);not actual RFpacket IDs",
+    "label_map_ref": "Synthetict0to5/r0to3/d0to2 only,no classifier or physical TX labels",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "Not applicable:syntheticfactors only",
+    "roles": {
+      "L_s": "Not opened",
+      "U_s": "Not opened;truth hidden",
+      "V": "Not opened",
+      "support": "Not applicable",
+      "query": "Not applicable"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "local_checks.json;no physicaldata validation consumed",
+    "support_query_ref": "Not applicable",
+    "leo_config_ref": "No As,practical orformaltest IQ"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Syntheticmeasurement falsification only;not receiverhardware causation,labelpreservation,DG/As/identity orjoint proof"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "No checkpoint/model used",
+    "provenance_verdict": "NOT_APPLICABLE_NO_MODEL",
+    "selection_rule": "All252cohorts retained;no candidate selection/retry"
+  },
+  "execution": {
+    "host": "Local Windows ordinary account",
+    "launch_owner": "codex/root/F-frequency-phase-observability-20261017",
+    "gpu_policy": "No GPU;CPU2threads",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "WORKTREE/local_artifacts/F_frequency_phase_observability_20261017/run",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_frequency_phase17.run --output local_artifacts/F_frequency_phase_observability_20261017/run",
+    "stop_rule": "Technical input/config/nonfinite/budget/output error:preserve ownroot,no automaticretry;all scientificcells finish,anyfixedcondition FAIL closes estimator,no window/period/carrier/CFOmethod/threshold/SNR/draw/seed/template/case/oracle rescue;no sourceIQ orE20"
+  },
+  "expected_artifacts": [
+    "resolved_config.json commit/PID/CWD/NumPy/threads",
+    "cells.jsonl.gz all252 cellmeans/quality/estimates and separate synthetictruth",
+    "progress.json/completion.json actualcomplexpoints/walltime",
+    "Independentstdlib all252profile/fold/metric reconstructions and63groups",
+    "Allstdout/same-run report/events/catalog;no IQ/checkpoint oridentityprediction"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "allrequiredcarrier identifiable",
+      "trueRXphase profile relativeRMSE",
+      "crossfitrisk reduction/perRX/folds/wrongRX specificity",
+      "null sharedRXphase RMS",
+      "interaction rejection",
+      "degenerate refusal fraction",
+      "actualsyntheticpoints/CPUtime/zero-realIQ/NN"
+    ],
+    "dimensions": [
+      "template",
+      "case",
+      "SNR",
+      "draw"
+    ],
+    "prediction_ref": "No identityprediction;cells.jsonl.gz numericalestimates fixed before independentrecount",
+    "scorer_ref": "experiments/cvs_frequency_phase17/analysis.py;stdlibonly,no estimator import",
+    "criteria": {
+      "positive_profile_relative_RMSE_max": 0.25,
+      "positive_crossfit_risk_improvement_min": 0.5,
+      "positive_better_folds_min": 15,
+      "positive_each_RX_not_worse": true,
+      "positive_correct_vs_best_wrong_RX_improvement_margin_min": 0.05,
+      "detector_profile_RMS_min_rad": 0.02,
+      "null_profile_RMS_max_rad": 0.01,
+      "interaction_risk_improvement_max": 0.0,
+      "degenerate_rejected_fraction_min": 0.99
+    },
+    "config": {
+      "run_id": "20261017-diagnostic-F-crossRX-frequencyPhase-synthetic-m1-r01",
+      "owner": "codex/root/F-frequency-phase-observability-20261017",
+      "output_root": "WORKTREE/local_artifacts/F_frequency_phase_observability_20261017/run",
+      "templates": [
+        "flat12",
+        "qpsk12",
+        "chirp12"
+      ],
+      "cases": [
+        "RX_LTI",
+        "NO_RX",
+        "TX_CURVATURE",
+        "RX_GAIN_ONLY",
+        "TX_RX_INTERACTION",
+        "EDGE_ONLY",
+        "DEGENERATE"
+      ],
+      "SNR_dB": [
+        20.0,
+        30.0,
+        40.0
+      ],
+      "draws": 4,
+      "data_seed": 202610178201,
+      "cells": 252,
+      "synthetic_packets": 1270080,
+      "synthetic_complex_points": 325140480,
+      "factor_grid": {
+        "TX": 6,
+        "day": 3,
+        "RX": 4,
+        "packets_per_cell": 70,
+        "physical": false
+      },
+      "IQ_length": 256,
+      "fs_hz": 25000000.0,
+      "reference": [
+        80,
+        160
+      ],
+      "nominal_period": 20,
+      "harmonics": [
+        -6,
+        -5,
+        -4,
+        -3,
+        -2,
+        -1,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "closure_centers": [
+        -5,
+        -4,
+        -3,
+        -2,
+        2,
+        3,
+        4,
+        5
+      ],
+      "allpass_a": [
+        -0.45,
+        -0.15,
+        0.15,
+        0.45
+      ],
+      "estimator": "Own lag20 commonCFO estimate onreference80:160;discard scalar;80point occupied harmonic projection;unit adjacent-harmonic phaseclosure;cell circular RX reference then RX-centering;18excludeTX ANDday fits;no oracletemplate/CFO/response/coefficients",
+      "quality": {
+        "relative_numerical_floor": 1e-12,
+        "min_harmonic_power_to_projected_noise_ratio": 25.0,
+        "min_cell_closure_resultant": 0.8,
+        "min_RX_reference_resultant": 0.8,
+        "all_non_degenerate_packets_required": true
+      },
+      "criteria": {
+        "positive_profile_relative_RMSE_max": 0.25,
+        "positive_crossfit_risk_improvement_min": 0.5,
+        "positive_better_folds_min": 15,
+        "positive_each_RX_not_worse": true,
+        "positive_correct_vs_best_wrong_RX_improvement_margin_min": 0.05,
+        "detector_profile_RMS_min_rad": 0.02,
+        "null_profile_RMS_max_rad": 0.01,
+        "interaction_risk_improvement_max": 0.0,
+        "degenerate_rejected_fraction_min": 0.99
+      },
+      "case_models": {
+        "RX_LTI": "Unitmagnitude allpass(a) at twelve tones;halfCFO precedes response",
+        "NO_RX": "NoRXresponse;all CFO/gain/delay/clock nuisance retained",
+        "TX_CURVATURE": "Additional TXallpass a=linspace(-.45,.45,6),same across RX",
+        "RX_GAIN_ONLY": "Positive amplitude exp(.115*((r-1.5)/1.5)*(q/6)),zero phase",
+        "TX_RX_INTERACTION": "Alternating syntheticTX sign conjugates RX allpassphase;no sharedmain effect",
+        "EDGE_ONLY": "NoRXresponse;replace n<80 or n>=160 with noise times(2+RXindex)",
+        "DEGENERATE": "NoRXresponse;remove necessary +3 harmonic in every packet"
+      },
+      "CFO_before_RX_fraction": 0.5,
+      "TX_waveform": "12tones/20point nominalperiod;amplitude .95+.15cos((TX+1)q/4);templatephase plus .15cos(pi*(TX+1)q/7)+.25*(TX-2.5)/2.5*(q/6)^2",
+      "normalization": "Whole256 packetRMS then Complex64 input,Complex128 analysis;no clipping",
+      "nuisances": {
+        "common_phase": "Uniform[-pi,pi]/packet",
+        "gain": "exp(U[-.2,.2]) times exp(.1*(RXindex-1.5))",
+        "CFO_Hz": "(RXindex-1.5)*60000+(TXindex-2.5)*2000+U[-5000,5000]",
+        "delay_samples": "RX[-5.25,-1.75,2.25,6.5]+day[-.5,0,.5]+U[-.5,.5]",
+        "sample_clock_ppm": "RX[-80,40,-40,80] times day[1,-.5,.75]",
+        "edge_only": "Arbitrary receiver-dependent contents outside80:160;testlocality,not a physical channel proof",
+        "noise": "Propercomplex Gaussian added after response/CFO/gain;nominalSNR relative to cleanreference power;stress values not sourcecalibration"
+      },
+      "randomness": "seed=data_seed+template_index*100000+SNR_index*1000+draw;all7cases share latent draws and all draws retained",
+      "scope": "Finite-window estimator falsification only;not RXhardware separation,labelpreserving augmentation,identityclassification,DG/As/joint evidence",
+      "cost": {
+        "real_IQ": 0,
+        "checkpoint": 0,
+        "NN": 0,
+        "updates": 0,
+        "teacher": 0,
+        "head_fit": 0,
+        "GPU": 0,
+        "target_access": false
+      },
+      "on_fail": "Closefixed80:160/12harmonic/lag20 compensation/phaseclosure estimator;no waveform/case/SNR/draw/clock/threshold/seed/window/period/carrier/oracle rescue;no sourceIQ orE20",
+      "on_pass": "Only separate source-observation preregistration;no automaticdataaccess/Ag/training",
+      "baseline": "F+CROSS_RX/3SIG_TIME/unifiedSinc/joint160/NoExplicitCFO/defaultcos/E20/originalU unchanged;no model here"
+    }
+  },
+  "rows": [
+    {
+      "row_id": "fixed-frequency-phase-synthetic",
+      "method": "frequency_phase_observability",
+      "purpose": "Onefixed fullpositive/null/interaction/degenerate matrix",
+      "config_ref": "experiments/cvs_frequency_phase17/design.py:config",
+      "resolved_config_ref": "WORKTREE/local_artifacts/F_frequency_phase_observability_20261017/run/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 202610178201,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "data_seed+templateindex*100000+SNRindex*1000+draw;all7cases sharelatentdraws;otherseeds notapplicable",
+      "k": null,
+      "scenario": "Syntheticfactors,no actual source/target domains",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "252cohorts/1270080syntheticpackets/325140480complexpoints;0realIQ/CP/NN/updates/GPU",
+      "output_root": "WORKTREE/local_artifacts/F_frequency_phase_observability_20261017/run",
+      "log_path": "WORKTREE/local_artifacts/F_frequency_phase_observability_20261017/run.stdout.log",
+      "command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_frequency_phase17.run --output local_artifacts/F_frequency_phase_observability_20261017/run",
+      "expected_artifacts": [
+        "resolved_config.json commit/PID/CWD/NumPy/threads",
+        "cells.jsonl.gz all252 cellmeans/quality/estimates and separate synthetictruth",
+        "progress.json/completion.json actualcomplexpoints/walltime",
+        "Independentstdlib all252profile/fold/metric reconstructions and63groups",
+        "Allstdout/same-run report/events/catalog;no IQ/checkpoint oridentityprediction"
+      ]
+    }
+  ],
+  "notes": [
+    "No truth template/CFO/response/clean observation passed to estimator;synthetictruth used generator and scoring only",
+    "EstimatedCFO is discarded nuisance alignment,not identityfeature or modification to existing model compensation",
+    "6x3x4x70 is structuralanalogy only,doesnot claim actualsample laws",
+    "Reference80:160 is existingF reference location;this is frequencyphase not oldcyclecovariance/jitter variance rescue",
+    "All required carrier packets must be estimable in nondegeneratecohorts;no invalidpacket orcell dropped",
+    "SyntheticSNR/clock/allpass/edge controls are stress values,not evidence or chosen amplitude for futureAg",
+    "Steady-state analyticallpass and outsidewindow locality tests do not prove finite realfiltertransients orWiSig calibration",
+    "No-model localstage:realCPsmoke/N607archive/remotecompile notconsumed;unusedfuturemachinery not built",
+    "REJECTED_EXTRA_GATE:generic brainstorming design/spec approval and legacy extra reviews/hashchains outside current exclusive minimalworkflow;userresearch authorization retained",
+    "PASS only permits separate source-observation preregistration,not automaticdataaccess or training"
+  ],
+  "registered_at": "2026-10-16T23:40:25+00:00"
+}

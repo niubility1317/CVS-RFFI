@@ -306,3 +306,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 真实同包连续窗口入口NO_TRACEABLE_LONG_CONTEXT_CURRENT_INPUT_CLOSED：官方FullWiSig/PKL保留256点，compact仅选择包行，现存元记录无raw capture／参考定位；未逐包扫描本地数组，不声称实测长度。0新IQ/CP/NN/更新/target，不拼接邻包或换eq救跑。下一唯一依据问题为短窗频域非仿射相位的可辨识RX关联，见analysis/cvs_frequency_phase_observability_basis_20261017.md；先固定有限窗口代数/合成辨识问题，尚未登记或执行新实验，不能以旧幅度谱或时域相位结果作为成功证据。联合目标ACTIVE。
+
+
+短窗频域相位合成诊断 20261017-diagnostic-F-crossRX-frequencyPhase-synthetic-m1-r01 已实现登记未启动：固定80:160／lag20自身CFO补偿（数值不作身份）／12谐波相位闭合量，3模板×7情况×3SNR×4抽样＝252格／1270080合成包／325140480复点；正共享RX、无RX、TX曲率、RX幅度、交互、窗外边界及缺频退化均保留。19输入负例＋8代数检查及一次P0/P1通过。0真实IQ／CP／NN／更新／target。全部固定标准须通过；任一失败关闭此估计器，不改窗口/载波/补偿/阈值/SNR/seed救跑，不进入源数据或E20。通过仅支持另行源观测登记。基线F＋跨RX同TX／E20／原U保持，联合目标ACTIVE。
