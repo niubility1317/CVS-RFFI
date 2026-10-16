@@ -1066,7 +1066,7 @@
     "next_unique_hypothesis": "MatchedscratchE20 crossRXsameTX IQmix must improve heldRX1 clean versus raw-slot and sameRXmix,not only pass fitidentityguard"
   },
   "sameTX_IQmix_E20_source": {
-    "status": "REGISTERED_NOT_LAUNCHED",
+    "status": "RUNNING_SOURCE_E20_NO_RESULT_YET",
     "run_id": "20261016-phase1-F-crossRX-sameTX-IQmix-sourceRX1-e20-s2026092701-m3-r01",
     "baseline": "F+CROSS_RX sameTX/SIG_TIME/unifiedSinc/joint160/defaultcos/NoExplicitCFO",
     "rows": [
@@ -1110,6 +1110,7 @@
       "final_base_L_objective_max": 0.5,
       "on_fail": "Close fixed sameTX IQmix recipe;no coefficient/alignment/window/donor/RX/seed or budget rescue",
       "on_pass": "Only supports independent source-seed confirmation;not formal target or fulljoint proof"
-    }
+    },
+    "execution_commit": "192e6a84d72ca89d29489ce2750a20eb36bc765d"
   }
 }

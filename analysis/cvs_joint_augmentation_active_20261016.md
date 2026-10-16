@@ -171,3 +171,6 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 同身份实测 IQ 混合源 E20 20261016-phase1-F-crossRX-sameTX-IQmix-sourceRX1-e20-s2026092701-m3-r01 已登记未启动：B00 raw／C_same 同 RX／B10 跨 RX，完整原 raw.75＋ordinary.25＋SupCon，再加匹配 .25 视图；均 8 次 L 前向、scratchE20／4440 更新。实际 L5040/U45360/V21600、RX1 原 L1260 final-only，固定旧 U 规则。B10 必须相对双方控制 clean≥+1pp、F1≥0、每 practical≥−.5pp、seenV≥−.5pp，失败关闭固定配方。G0 只证身份保持；正式目标和联合目标仍未完成。
+
+
+上述同身份实测 IQmix 三组 E20 已实际运行；执行 commit 192e6a84d72ca89d29489ce2750a20eb36bc765d。归档、编译、匹配 checkpoint 烟测及三 worker 的进程、实际参数、GPU、日志增长 VERIFIED；固定 20/13/7、4440 更新、8 次 L 前向，As 训练关闭。尚未完成训练与源七视图评分，泛化和联合目标均未证明。

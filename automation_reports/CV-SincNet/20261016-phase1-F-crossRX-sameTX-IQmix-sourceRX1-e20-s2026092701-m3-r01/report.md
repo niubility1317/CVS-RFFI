@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：同身份实测 IQ 混合的源域 E20
 
-状态：PREREGISTERED，未发布、未训练。联合目标未完成。执行代码身份以本次 Git commit 和 release_commit.txt 为准，发布后填入 execution_summary.json。
+状态：RUNNING／VERIFIED。三组已从零启动，尚未完成训练或源评分。联合目标未完成。执行代码身份以本次 Git commit 和 release_commit.txt 为准，发布后填入 execution_summary.json。
 
 当前唯一假设：在同 TX/day 的不同实测包之间，固定 10% 的轻度、相干对齐 IQ 混合能带来留出 RX 的身份识别收益，且收益超过同 RX 平均本身。实测 IQ 的数字组合不能称为更换真实接收机。
 
@@ -61,3 +61,14 @@ CWD：PROJECT/releases/cvs_F_sameTX_IQmix_sourceRX1_e20_20261016_r01。启动命
 已完成本地 35 个协议负例；3 个真实 F 结构合成联合优化步骤；B00 与既有 additive D_raw 的 loss 和默认头梯度精确匹配；三行初始化及 RNG 状态匹配、8 前向与同 IQ RDrop、joint160 导出、银行不进状态均 PASS。本地工程成本 4114 synthetic NN、3 synthetic updates、5040 synthetic bank、1024 IQmix、128 ordinary，0 real IQ、0 target、0 另训头。一次独立 P0/P1 执行审查 PASS。N607 一次普通账号/资源只读预检完成。
 
 预期产物：真实 checkpoint 烟测、原生 resolved args/source contract/init/frozen、全部 4440 步/行、银行与访问审计、每行七视图预测/评分、独立完整源分析、实际成本、同 row 报告及登记。仅发布包作一次本地/远端 SHA 比较和远端 compile；不增加签名、数据重验或审批层。
+
+
+## 实际发布与启动读回
+
+执行 commit 192e6a84d72ca89d29489ce2750a20eb36bc765d 已推送，远端 OID 与本地 HEAD 独立比对一致。一次归档 SHA 比较、remote compile VERIFIED；匹配真实 checkpoint 无 query 烟测 PASS。dispatcher 与三个 worker 的 PID/CWD/argv/CUDA 环境、实际 GPU 进程和逐步日志增长独立核实 VERIFIED。三行实际参数为 seed2026092701、20/13/7、scratch、无 baseline/teacher 父权重。resolved 契约为 L5040/U45360/V21600、8 次 L 前向、保留 raw.75/ordinary.25 并追加 .25，权重总和1.25，As 训练关闭。
+
+- B00-RX1-s2026092701：GPU 0，已观察 step 177/4440，仅为运行证据，无最终识别结论。
+
+- C_same-RX1-s2026092701：GPU 1，已观察 step 133/4440，仅为运行证据，无最终识别结论。
+
+- B10-RX1-s2026092701：GPU 2，已观察 step 146/4440，仅为运行证据，无最终识别结论。
