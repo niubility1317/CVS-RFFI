@@ -1,6 +1,6 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-当前没有获得跨RX泛化证明的新增Ag。常数增益匹配E20已FAIL关闭：clean仅+0.555556pp，六practical全降，不能晋级。下一唯一候选为独立轻度接收频偏L视图，原生零起点、范围沿用实际ordinary E13截断，NoExplicitCFO与内部参考补偿保持。其真实CP零更新输入r02已完成162合成NN及5×32数组独立复算，工程PASS但不证明身份收益；r01命名遮蔽技术失败保留，0NN。两组同折/seed/scratchE20源B00/B10已实际发布并RUNNING，尚未取得识别结果；原U/PA/默认头/六L前向保持，不读取target。
+当前没有获得跨RX泛化证明的新增Ag。固定轻度频偏候选两组scratchE20/七源视图已完整独立分析，未通过源门槛，固定配方关闭，不改幅度/seed/RX救跑。clean差+0.000000pp，lowurban差-0.079365pp。真实CP输入作用PASS只属于工程证据。原ordinary含PA、默认头、原U保持；尚无target/联合成功结果。下一唯一拟审计旧ordinary循环移位的同draw身份影响：仅fitL5040冻结CP、13个真实强度配置/full与shift旁路、136082NN/0更新；净修复<2pp或不足3/4源RX改善则关闭。尚未实现、登记或启动，不把普通增强修正冒称Ag。
 用户于 2026-10-16 指定，增强前参照更换为 **F＋跨 RX 同 TX 对比学习**。该选择覆盖本对话旧的 F-only 参照；训练预算仍为 E20，没有延长到 E50 的新授权。唯一活动配方见 [配置](../configs/cvs_joint_augmentation_F_crossrx_e20.json)。两种子源 B00/B01 已完整分析；独立seed02因clean下降13.095238pp未通过，固定75/25候选关闭。正式完整源四因子尚未训练。
 
 已核实的来源是 `20261016-phase1-F-supcon-e50-clean-manysig-m9-r02` 的 `CROSS_RX`，执行 commit `4df7b94d0fd8ce29056bd8236364e45afa92e07f`。已读取完整报告、最终分析、实际 design/model/mechanism/source/observer，确认实际原生 extra 格式为 `(domain, metadata)`；不复用 r01 的错误读取方式。
@@ -105,3 +105,9 @@ PA旁路两组E20及七源视图已完整ANALYZED/VERIFIED，原条件FAIL固定
 
 
 频偏匹配源E20已发布RUNNING，commit `bb38d5ef6dfcd3e60e7fb6d00c9c2fca976bfd66`，实际CP smoke2/归档-编译/两worker PID-CWD-argv-GPU-log增长VERIFIED，seed与20/13/7及0训练父权重核对。独立source全量分析已准备；尚无训练后身份分数，不将工程PASS当Ag有效。
+
+
+轻度频偏两组E20及七源视图完整ANALYZED/VERIFIED，原条件FAIL固定配方关闭；全部17640身份决策、完整训练/frequency/物理序列/成本复算。实际NN 9373358，0target/另训头，联合目标未完成。
+
+
+频偏E20固定配方FAIL已完整保留，不扩seed/改频偏救跑。下一唯一普通循环移位同draw反事实源诊断的拟定范围、净2pp/3of4RX条件及成本见配置next_source_hypothesis和原报告末尾；尚无新实验启动。
