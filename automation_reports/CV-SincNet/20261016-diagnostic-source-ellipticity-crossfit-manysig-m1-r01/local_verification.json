@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 16,
+  "synthetic_descriptor_packets": 5040,
+  "exact_widely_linear_descriptor": true,
+  "scalar_phase_gain_DC_invariance": true,
+  "stable_effect_18fold_PASS": true,
+  "TX_RX_interaction_and_zero_FAIL": true,
+  "tiny_stable_effect_FAIL": true,
+  "held_TX_AND_day_prediction_isolation": true,
+  "real_IQ_packets": 0,
+  "checkpoint_loads": 0,
+  "model_forwards": 0,
+  "optimizer_updates": 0,
+  "synthetic_fixtures_not_results": true,
+  "local_compile": "PASS",
+  "P0P1_review": "PASS one limited read-only review,no P0/P1;0realIQ/CP/NN/modifications",
+  "real_checkpoint_smoke": "NOT_APPLICABLE G0 no model/checkpoint/prediction",
+  "isolated_release_checks": {
+    "status": "PASS",
+    "actual_module_files": [
+      "E:\\type10-7\\local_artifacts\\cvs_source_ellipticity_20261016\\isolated_release\\experiments\\cvs_source_ellipticity\\design.py",
+      "E:\\type10-7\\local_artifacts\\cvs_source_ellipticity_20261016\\isolated_release\\experiments\\cvs_source_ellipticity\\core.py",
+      "E:\\type10-7\\local_artifacts\\cvs_source_ellipticity_20261016\\isolated_release\\experiments\\cvs_source_ellipticity\\run.py"
+    ],
+    "exact_registered_config": true,
+    "torch_imported": false,
+    "real_IQ_packets": 0,
+    "checkpoint_loads": 0,
+    "model_forwards": 0,
+    "optimizer_updates": 0
+  }
+}

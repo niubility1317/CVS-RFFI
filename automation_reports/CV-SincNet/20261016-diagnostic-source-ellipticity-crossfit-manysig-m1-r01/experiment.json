@@ -1,0 +1,242 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-diagnostic-source-ellipticity-crossfit-manysig-m1-r01",
+  "group_id": "phase1-source-ellipticity-observability",
+  "display_name": "RX椭圆性：跨TX和跨日重复性源证伪",
+  "description": "只用当前C0 fit RX3/4/6/8 L5040，18fold同时留TX/day预测完整256点AC椭圆性RX均值差；零模型/分类器/目标。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-only",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "source_ellipticity",
+    "cross_TX_day",
+    "source_only",
+    "no_model",
+    "CPU"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active Ag+As goal authorizes source-grounded IQ research on currentF+CROSS_RX/E20. G0 source statistics only,no model/extraepochs/checkpoint or target.",
+  "code": {
+    "commit": "CURRENT_RELEASE_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_ellipticity_crossfit_20261016_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/source_cache.pt",
+    "version": "Existing VALIDATED_ONCE ManySig carrier; only currentC0 fitL5040 IDs used, RX1/U/V values excluded",
+    "representation": "Full256 AC ellipticity magnitude abs(mean(x_ac**2))/mean(abs(x_ac)**2); source25MHz/equalized1/nativeRMS. Statistical AC centering only,no IQ transformation or inference normalization",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source/source_contract.json#role_ids/L_s",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#classes",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/preparation_complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "effective_counts": {
+      "L_used": 5040,
+      "held_RX1_IQ_used": 0,
+      "U_used": 0,
+      "V_used": 0
+    }
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "None; no target loader/model/checkpoint",
+    "external_method_exception": null,
+    "claim_scope": "CrossTX/day repeatability of source RX-associated AC ellipticity magnitude; not physical hardware attribution, label preservation or recognition efficacy"
+  },
+  "checkpoint": {
+    "initialization": "not_applicable_no_model",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "NO_CHECKPOINT_ACCESS; C0 metadata only verifies exact legal fitL5040 physical IDs",
+    "selection_rule": "One full256 AC ellipticity magnitude; all18 leaveTX AND day folds; fixed risk,fold and .01scale qualification; no sourceV/U truth or automatic training"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-ellipticity-crossfit-20261016",
+    "gpu_policy": "CPU only;CUDA hidden;2threads,no GPU reservation or foreign process changes",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-ellipticity-crossfit-manysig-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_ellipticity_crossfit_20261016_r01/dispatcher.log",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_source_ellipticity_20261016",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_ellipticity_crossfit_20261016_r01/experiments/cvs_source_ellipticity/runner.py",
+    "stop_rule": "Technical failure preserves immutable output,noautomatic retry. ScientificFAIL closes fixed full256 ellipticity-guided RX synthesis,no complex orientation/window/RX/TX/day/threshold rescue. PASS only separately preregistered bounded IQ training,noautomatic launch."
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "ROW/resolved_config.json",
+    "ROW/source_ellipticity_statistics.npz (private derived source descriptor/profile,notGit)",
+    "ROW/summary.json",
+    "completion.json",
+    "dispatcher.log",
+    "all18fold risk table",
+    "source risk/scale figure",
+    "same-run independent analysis"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "RX ellipticity contrast risk vs zero effect",
+      "aggregate risk reduction",
+      "positive heldTX/day folds",
+      "RX pair ellipticity p95",
+      "packet ellipticity range",
+      "zero network/checkpoint/optimizer cost"
+    ],
+    "dimensions": [
+      "18 heldTX/day folds",
+      "4 fitRX",
+      "6true labeledTX",
+      "full256 AC ellipticity magnitude"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null,
+    "primary": "Nonzero zero-effect risk; aggregate risk reduction>=10%;>=12/18positive folds; RX ellipticity pairdifference p95>=.01. Allrequired; no classifier efficacy claim."
+  },
+  "rows": [
+    {
+      "row_id": "ELLIP-fitRX3_4_6_8",
+      "method": "Source AC ellipticity contrast crossfit",
+      "purpose": "source_falsification",
+      "config_ref": "experiments/cvs_source_ellipticity/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-ellipticity-crossfit-manysig-m1-r01/ELLIP-fitRX3_4_6_8/resolved_config.json",
+      "data_overrides": {
+        "source_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "L_used": 5040,
+        "held_RX1_used": false
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Originalsplit/data392005. No real model/augmentation/support/evaluation RNG; deterministic18fold means. Local synthetic RNG20261016911 only.",
+      "k": null,
+      "scenario": "clean fit-source L only,noAs/target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "5040 selectedL IQ statistic reads;0model/NN/checkpoint/updates;CPU2threads,no E20 budget consumed",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-ellipticity-crossfit-manysig-m1-r01/ELLIP-fitRX3_4_6_8",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_ellipticity_crossfit_20261016_r01/dispatcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_ellipticity_crossfit_20261016_r01/experiments/cvs_source_ellipticity/runner.py",
+      "expected_artifacts": [
+        "execution.json",
+        "ROW/resolved_config.json",
+        "ROW/source_ellipticity_statistics.npz (private derived source descriptor/profile,notGit)",
+        "ROW/summary.json",
+        "completion.json",
+        "dispatcher.log",
+        "all18fold risk table",
+        "source risk/scale figure",
+        "same-run independent analysis"
+      ],
+      "config": {
+        "schema": "source_ellipticity_cross_TX_day_v1",
+        "run_id": "20261016-diagnostic-source-ellipticity-crossfit-manysig-m1-r01",
+        "launch_owner": "codex/root/source-ellipticity-crossfit-20261016",
+        "row_id": "ELLIP-fitRX3_4_6_8",
+        "arm": "ELLIP",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-ellipticity-crossfit-manysig-m1-r01/ELLIP-fitRX3_4_6_8",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "reference_metadata": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source",
+        "source_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "source_TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "held_RX1_used": false,
+        "L_packets": 5040,
+        "packets_per_cell": 70,
+        "descriptor": "abs(mean((x-mean(x))**2))/mean(abs(x-mean(x))**2); one full256 AC ellipticity magnitude, not complex orientation",
+        "cell_effect": "TX/RX/day mean descriptor minus sameTX/day mean across4 fitRX; no TX/RX hardware inversion",
+        "crossfit": "18fold simultaneously leave one TX AND one day; estimate from other5TX x other2days",
+        "primary": {
+          "nonzero_zero_effect_risk": true,
+          "aggregate_risk_reduction_min": 0.1,
+          "positive_folds_min": 12,
+          "fold_count": 18,
+          "RX_pair_ellipticity_p95_min": 0.01
+        },
+        "rationale": "Scalar phase/gain/DC changes leave this descriptor invariant. Other old compound operators may change it; no claim their output support is disjoint.",
+        "on_fail": "Close this fixed full256 RX ellipticity-guided synthesis direction; no complex-orientation/window/RX/TX/day/threshold rescue",
+        "on_pass": "Only supports separately registered bounded widely-linear received-IQ training; does not establish causal RX hardware, identity preservation or Ag efficacy",
+        "fixed_identity_network": "F+CROSS_RX/SIG_TIME_X3/joint160/defaultcosine unchanged; no model used",
+        "device": "CPU",
+        "CPU_threads": 2,
+        "CUDA_VISIBLE_DEVICES": "",
+        "new_models": 0,
+        "model_forwards": 0,
+        "checkpoint_loads": 0,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "U_used": false,
+        "V_used": false,
+        "target_access": false,
+        "source_only": true,
+        "channel_generation": false,
+        "formal_test_changed": false,
+        "automatic_training": false,
+        "goal_completed": false
+      }
+    }
+  ],
+  "notes": [
+    "Existing L6300 carrier; statistic consumes exactcurrentC0 fitL5040 after sourceRX metadata selection. heldRX1/U/V values unused,Utruth hidden.",
+    "One full256 AC ellipticity magnitude only; no complex orientation/frequency/window/subset scan. Scalar phase/gain/DC invariance is algebra,not evidence of RX causal hardware.",
+    "Old compound PA/multipath/noise can change ellipticity; do not infer output supports disjoint. This is independent from closed DC and frequency-response-bank directions.",
+    "G0 no model/checkpoint/prediction; realcheckpoint smoke notapplicable,no unrelated state loaded.",
+    "PASS only permits separately registered IQ identity-efficacy trial. CurrentF+CROSS_RX/defaulthead and formalIQ/channels unchanged; no automatic training/As/target."
+  ],
+  "registered_at": "2026-10-16T08:59:10+00:00"
+}
