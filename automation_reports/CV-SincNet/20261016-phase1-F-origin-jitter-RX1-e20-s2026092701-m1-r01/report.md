@@ -19,3 +19,7 @@
 新增成本1模型E20/4440更新/2273280 L网络包，原A0历史E20/4440单列；U/EMA/源eval/heldV/真实CPsmoke按实际记录。合法scratchCP noquery smoke为worker首步，PASS立即继续。目标指标、增强幅度和候选晋级不相连。正式混合仍需匹配四因子、原clean+六practical冻结预测后独立truth-last；本项明确source-only，lowurban>60%、clean与星地双提升、跨seed尚未证明。
 
 实现已完成并登记，尚无真实训练成绩。一次限定P0/P1 PASS；全25种整数偏移逐值匹配原FIR、标签独立/随机流恢复、四前向/原头三SIG与Sinc联合梯度均通过；206初态张量与匹配F A0相同。累计512合成网络包、896合法jitter输入/50公式输入、1合成optimizer、13负例，0真实IQ/CP。四包隔离导入、实际E20args、compile、登记和N607普通账户preflight通过。真实scratchCP noquery smoke在worker首步PASS立即继续。
+
+## 实际启动核实
+
+VERIFIED/RUNNING，实际代码 f601fc65f6eaafbfd98080882108f4d50e07db69。PID/CWD/argv/GPU/log 增长、真实 scratch checkpoint 无查询 smoke、实际 E20=13+7/F 三路/统一 Sinc 每步 physicalclip/defaulthead 联合更新均通过。OJ24 已覆盖全部 25 种偏移，四次 L 前向和半 raw 权重实际生效；其他普通增强概率为 0、PA/classsignature 关闭、As 调用关闭，原 U/EMA/strong_noise_std 保持。实际 leo_practical、DataAugmentation、SSDG 导入来自依赖 release 的 experiments/adv3b02_xuc/code/。源角色5040/45360/21600，无 target。单 archive transfer 和 remotecompile 通过。遗留描述字段 updates/旧阶段轮数并非执行预算，实际 nativeargs 为20/13/7，成功更新目标4440；保留原发布配置，未热改。尚无 FINAL 源识别收益。
