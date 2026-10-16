@@ -44,3 +44,7 @@ A2−A0：held accuracy≥+1pp、macroF1≥0、seenV 均值损失≤0.5pp；A2�
 本轮 source-only，不访问 target、不生成 As。若源域收益通过固定五折确认，再独立登记 full-source B00/B10/B01/B11，匹配 F/E20、前向/监督尺度、U 配方与初始化规则。raw、G(x)、原 practical As(x) 从同一原始 IQ 分别生成，先不叠 As(G(x))。As 保持原 residual/no-EQ 接收处理依赖，不偷换弱信道。正式行冻结后自动 clean+六 practical prediction，再独立 truth-last；目标分数不反馈晋级。low urban>60%、clean 正增益与 suburban 差距≤2pp（探索目标）目前均未证明，跨 seed 未验证。
 
 本地F实际图PASS：206初态张量与权威F构造一致，三投影/defaultW/gain/q梯度有限非零，物理clip/AdamW映射匹配，四前向两RD归一化及同一G复用正确，10负例通过。合计合成网络前向3584、增强输入512、合成optimizer更新12；0真实IQ/CP。两次本地fixture失败及修复如local_verification记载，不是远端实验失败。唯一限定P0/P1审查PASS；登记与compile通过。尚未发布，无新成绩。
+
+## 实际启动已核实
+
+VERIFIED / RUNNING。代码 44fc0bb689d03a65dc18a897b0e8e28324c7958a；三行PID/CWD/argv/GPU、scratchCP noquery smoke、日志增长、实际F三路/统一Sinc物理clip、E20=13+7、LS.01、NoExplicitCFO/默认头、ownEMA与source角色已独立核实。单archive transfer与remotecompile通过，未热改release/健康任务。尚无FINAL heldV成绩。

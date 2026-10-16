@@ -1,0 +1,141 @@
+{
+  "status": "VERIFIED",
+  "actual_training_code": "44fc0bb689d03a65dc18a897b0e8e28324c7958a",
+  "checks": {
+    "A0-RX1-s2026092701": {
+      "live": true,
+      "CWD": true,
+      "argv": true,
+      "GPU": true,
+      "log_growth": true,
+      "CP_smoke": true,
+      "actual_E20": true,
+      "LS01": true,
+      "no_satellite": true,
+      "scratch": true,
+      "ownEMA": true,
+      "legal_roles": true,
+      "NoExplicitCFO": true,
+      "default_head_only": true,
+      "F_three": true,
+      "F_units": true,
+      "F_clips": true
+    },
+    "A1-RX1-s2026092701": {
+      "live": true,
+      "CWD": true,
+      "argv": true,
+      "GPU": true,
+      "log_growth": true,
+      "CP_smoke": true,
+      "actual_E20": true,
+      "LS01": true,
+      "no_satellite": true,
+      "scratch": true,
+      "ownEMA": true,
+      "legal_roles": true,
+      "NoExplicitCFO": true,
+      "default_head_only": true,
+      "F_three": true,
+      "F_units": true,
+      "F_clips": true
+    },
+    "A2-RX1-s2026092701": {
+      "live": true,
+      "CWD": true,
+      "argv": true,
+      "GPU": true,
+      "log_growth": true,
+      "CP_smoke": true,
+      "actual_E20": true,
+      "LS01": true,
+      "no_satellite": true,
+      "scratch": true,
+      "ownEMA": true,
+      "legal_roles": true,
+      "NoExplicitCFO": true,
+      "default_head_only": true,
+      "F_three": true,
+      "F_units": true,
+      "F_clips": true
+    }
+  },
+  "workers": [
+    {
+      "row_id": "A0-RX1-s2026092701",
+      "worker": {
+        "pid": 3633437,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_raw_anchor_ordinary_RX1_e20_20261016_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_raw_anchor_ordinary_RX1_e20_20261016_r01/experiments/cvs_raw_anchor20/runner.py",
+          "--row",
+          "A0-RX1-s2026092701",
+          ""
+        ],
+        "GPU": "0"
+      },
+      "epochs": 1,
+      "log_bytes": 11614,
+      "prior_log_bytes": 6460,
+      "parameters": 900722
+    },
+    {
+      "row_id": "A1-RX1-s2026092701",
+      "worker": {
+        "pid": 3633514,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_raw_anchor_ordinary_RX1_e20_20261016_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_raw_anchor_ordinary_RX1_e20_20261016_r01/experiments/cvs_raw_anchor20/runner.py",
+          "--row",
+          "A1-RX1-s2026092701",
+          ""
+        ],
+        "GPU": "1"
+      },
+      "epochs": 1,
+      "log_bytes": 11612,
+      "prior_log_bytes": 6460,
+      "parameters": 900722
+    },
+    {
+      "row_id": "A2-RX1-s2026092701",
+      "worker": {
+        "pid": 3633663,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_raw_anchor_ordinary_RX1_e20_20261016_r01",
+        "argv": [
+          "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+          "-u",
+          "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_raw_anchor_ordinary_RX1_e20_20261016_r01/experiments/cvs_raw_anchor20/runner.py",
+          "--row",
+          "A2-RX1-s2026092701",
+          ""
+        ],
+        "GPU": "2"
+      },
+      "epochs": 1,
+      "log_bytes": 11613,
+      "prior_log_bytes": 6460,
+      "parameters": 900722
+    }
+  ],
+  "dispatcher": {
+    "pid": 3633411,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_raw_anchor_ordinary_RX1_e20_20261016_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_raw_anchor_ordinary_RX1_e20_20261016_r01/experiments/cvs_raw_anchor20/runner.py",
+      ""
+    ],
+    "GPU": ""
+  },
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "read_at": 1792118038.2829216,
+  "source_only": true,
+  "target_access": false
+}

@@ -38,3 +38,7 @@ A2−A0：held accuracy≥+1pp、macroF1≥0、seenV 均值损失≤0.5pp；A2�
 新成本 3×20=60 模型轮、13320 更新；每行 2273280 个 L 网络前向，是旧双前向研究的 2 倍。U/EMA/源验证/held/CPsmoke 分别按实际计数，旧研究成本不隐藏。真实 scratch checkpoint 无 query smoke 为 worker 第一步，PASS 即继续。
 
 本轮 source-only，不访问 target、不生成 As。若源域收益通过固定五折确认，再独立登记 full-source B00/B10/B01/B11，匹配 F/E20、前向/监督尺度、U 配方与初始化规则。raw、G(x)、原 practical As(x) 从同一原始 IQ 分别生成，先不叠 As(G(x))。As 保持原 residual/no-EQ 接收处理依赖，不偷换弱信道。正式行冻结后自动 clean+六 practical prediction，再独立 truth-last；目标分数不反馈晋级。low urban>60%、clean 正增益与 suburban 差距≤2pp（探索目标）目前均未证明，跨 seed 未验证。
+
+## 实际执行
+
+`20261016-phase1-F-raw-anchor-ordinary-RX1-e20-s2026092701-m3-r01` 已发布，实际训练代码 `44fc0bb689d03a65dc18a897b0e8e28324c7958a`。三行均 900722 参数，GPU0/1/2，真实 scratch CP no-query smoke、PID/CWD/argv/GPU/log 增长与首轮各 222 次 F 物理 clip 已独立读回。状态 VERIFIED/RUNNING，尚无 FINAL 源结果。限定 P0/P1 审查 PASS；本地累计 3584 次合成网络前向、512 个增强输入包、12 次合成 optimizer 更新另计，0 真实 IQ/CP；包含一次 512 前向的本地 fixture 失败，无远端热改或重启。
