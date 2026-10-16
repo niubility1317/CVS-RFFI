@@ -1,0 +1,237 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01",
+  "group_id": "phase1-Sinc-adaptive-bandgeometry-RDrop",
+  "display_name": "Sinc 频带尺度位移＋原 RDrop：RX1 留出三条件",
+  "description": "Keep full original RDrop; compare unified physical AdamW displacement FULL, own-step norm-matched scalar NORM and fixed perband BAND. Source-only scratch20 qualification before any target run.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "Sinc bandgain RDrop source"
+  ],
+  "tags": [
+    "Sinc",
+    "RDrop",
+    "bandwidth_step",
+    "norm_control",
+    "true_RX_holdout",
+    "default_head",
+    "source_only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User20261016 requests continuing Sinc+RDrop mutual performance improvement. One optimizer-geometry hypothesis grounded in completed legal source gradient/update evidence. Preserve oldjobs and eachmodel<=50.",
+  "code": {
+    "commit": "Actual Git HEAD in release_commit.txt and row resolved_config",
+    "checkout": "E:/type10-7/code/worktrees/phase1_rdrop_combinations_20261015",
+    "environment": "ordinary N607 CVS-RFFI; CPU2/loader0",
+    "cwd": "PROJECT/releases/cvs_sinc_bandgain_rdrop_source20_20261016_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing7/63/30 carrier, true heldRX1 development fold",
+    "representation": "raw residual/post_sync/noeq256 IQ; same ordinary augmentation",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "same#role_ids then fixed RX1 metadata exclusion before model creation",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "fit5040; held1260 originalL only fixedfinal20 evaluation;144fitanchors read unused",
+      "U_s": "45360 original hiddenU afterRX1 removal; no TX truth",
+      "V": "21600 sourcehealthonly afterRX1 removal"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "True held sourceRX1 qualification only; no target/newTX/Phase2 claim"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "Own initialization.json/source_contract.json; no inherited models/teacher; model code reused from verified A-F09554c3a only",
+    "provenance_verdict": "No checkpoint inputs; own initial checkpoint noquery smoke first model step",
+    "selection_rule": "Fixedfinal20 student defaulthead; EMAtrainedownonly, no candidate/epoch selection"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/Sinc-bandgain-RDrop-20261016",
+    "gpu_policy": "crossowner max3 total/GPU includingpreCUDA;12000MiBfree;sharedcapacitylock",
+    "remote_run_root": "PROJECT/runs/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01",
+    "remote_log_root": "PROJECT/runs/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/logs",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_sinc_bandgain20/runner.py",
+    "stop_rule": "Wrongsource/provenance, nonfinite, missingbudget/gradient/artifact, collision/worker failure: preserveoutputs, stopnewpending, healthyown/otherjobs continue; no automatic retry or science-score stopping."
+  },
+  "expected_artifacts": [
+    "own initial_smoke.pt/final_ssdg.pth (private)",
+    "source_contract/resolved_config/initialization/source_frozen/completion",
+    "complete native epoch/step logs(private)",
+    "gain_steps/unit_steps and actual gain_update_witness e1/13/14/20(private)",
+    "band_gain_policy/gain_progress",
+    "joint160 student/EMA feature/export/defaultW boundary witness",
+    "1260heldL defaulthead FINAL predictions(private)",
+    "perrow gain_result,source_qualification,result,completion"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "heldsource errors",
+      "accuracy",
+      "CE",
+      "MacroF1",
+      "perday",
+      "Sinc movement",
+      "normcontrol/physicaldecay correctness",
+      "cost"
+    ],
+    "dimensions": [
+      "FULL/NORM/BAND",
+      "fixedseed2026092701",
+      "heldRX1 day1/2/3 and6TX"
+    ],
+    "prediction_ref": "Eachrow source/source_readouts/FINAL.json",
+    "scorer_ref": "Defaulthead sourceheld predictions only; independent complete log/CM/update witness recount before result delivery"
+  },
+  "rows": [
+    {
+      "row_id": "FULL-RX1-s2026092701",
+      "method": "UnifiedSinc adaptivegain FULL plus exact originalSIG_TIME/RDrop",
+      "purpose": "matched_control",
+      "config_ref": "automation_reports/CV-SincNet/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/experiment.json#rows/FULL-RX1-s2026092701",
+      "resolved_config_ref": "PROJECT/runs/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/FULL-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Native model/augmentation/sampler streams controlled by modelseed; fixedphysicalsplit392005; no independent data seed; support/eval inapplicable.",
+      "k": null,
+      "scenario": "source_RX1_true_holdout",
+      "optimizer": "Original AdamW physicalHz globalclip5, centeredq scale25k,originphysicalWD; only adaptive displacement gain FULL",
+      "lr": "Original20epoch cosine alpha0.0002 to1e-6;Sincq lr=alpha*1000,eps1e-11,WDq0 plusmanualphysicalWDalpha1e-4",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "13L+7U;222steps/epoch;4440updates;568320extraL;396368hiddenUobservations;1260heldL+144unusedanchors; no oldCP",
+      "output_root": "PROJECT/runs/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/FULL-RX1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/logs/FULL-RX1-s2026092701.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_sinc_bandgain20/runner.py --worker FULL-RX1-s2026092701",
+      "expected_artifacts": [
+        "own initial_smoke.pt/final_ssdg.pth (private)",
+        "source_contract/resolved_config/initialization/source_frozen/completion",
+        "complete native epoch/step logs(private)",
+        "gain_steps/unit_steps and actual gain_update_witness e1/13/14/20(private)",
+        "band_gain_policy/gain_progress",
+        "joint160 student/EMA feature/export/defaultW boundary witness",
+        "1260heldL defaulthead FINAL predictions(private)",
+        "perrow gain_result,source_qualification,result,completion"
+      ]
+    },
+    {
+      "row_id": "NORM-RX1-s2026092701",
+      "method": "UnifiedSinc adaptivegain NORM plus exact originalSIG_TIME/RDrop",
+      "purpose": "matched_control",
+      "config_ref": "automation_reports/CV-SincNet/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/experiment.json#rows/NORM-RX1-s2026092701",
+      "resolved_config_ref": "PROJECT/runs/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/NORM-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Native model/augmentation/sampler streams controlled by modelseed; fixedphysicalsplit392005; no independent data seed; support/eval inapplicable.",
+      "k": null,
+      "scenario": "source_RX1_true_holdout",
+      "optimizer": "Original AdamW physicalHz globalclip5, centeredq scale25k,originphysicalWD; only adaptive displacement gain NORM",
+      "lr": "Original20epoch cosine alpha0.0002 to1e-6;Sincq lr=alpha*1000,eps1e-11,WDq0 plusmanualphysicalWDalpha1e-4",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "13L+7U;222steps/epoch;4440updates;568320extraL;396368hiddenUobservations;1260heldL+144unusedanchors; no oldCP",
+      "output_root": "PROJECT/runs/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/NORM-RX1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/logs/NORM-RX1-s2026092701.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_sinc_bandgain20/runner.py --worker NORM-RX1-s2026092701",
+      "expected_artifacts": [
+        "own initial_smoke.pt/final_ssdg.pth (private)",
+        "source_contract/resolved_config/initialization/source_frozen/completion",
+        "complete native epoch/step logs(private)",
+        "gain_steps/unit_steps and actual gain_update_witness e1/13/14/20(private)",
+        "band_gain_policy/gain_progress",
+        "joint160 student/EMA feature/export/defaultW boundary witness",
+        "1260heldL defaulthead FINAL predictions(private)",
+        "perrow gain_result,source_qualification,result,completion"
+      ]
+    },
+    {
+      "row_id": "BAND-RX1-s2026092701",
+      "method": "UnifiedSinc adaptivegain BAND plus exact originalSIG_TIME/RDrop",
+      "purpose": "primary",
+      "config_ref": "automation_reports/CV-SincNet/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/experiment.json#rows/BAND-RX1-s2026092701",
+      "resolved_config_ref": "PROJECT/runs/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/BAND-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Native model/augmentation/sampler streams controlled by modelseed; fixedphysicalsplit392005; no independent data seed; support/eval inapplicable.",
+      "k": null,
+      "scenario": "source_RX1_true_holdout",
+      "optimizer": "Original AdamW physicalHz globalclip5, centeredq scale25k,originphysicalWD; only adaptive displacement gain BAND",
+      "lr": "Original20epoch cosine alpha0.0002 to1e-6;Sincq lr=alpha*1000,eps1e-11,WDq0 plusmanualphysicalWDalpha1e-4",
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "13L+7U;222steps/epoch;4440updates;568320extraL;396368hiddenUobservations;1260heldL+144unusedanchors; no oldCP",
+      "output_root": "PROJECT/runs/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/BAND-RX1-s2026092701/source",
+      "log_path": "PROJECT/runs/20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01/logs/BAND-RX1-s2026092701.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_sinc_bandgain20/runner.py --worker BAND-RX1-s2026092701",
+      "expected_artifacts": [
+        "own initial_smoke.pt/final_ssdg.pth (private)",
+        "source_contract/resolved_config/initialization/source_frozen/completion",
+        "complete native epoch/step logs(private)",
+        "gain_steps/unit_steps and actual gain_update_witness e1/13/14/20(private)",
+        "band_gain_policy/gain_progress",
+        "joint160 student/EMA feature/export/defaultW boundary witness",
+        "1260heldL defaulthead FINAL predictions(private)",
+        "perrow gain_result,source_qualification,result,completion"
+      ]
+    }
+  ],
+  "notes": [
+    "Initialweights/model/head,physicalclip,originWD and completeRDrop/oldU/ownEMA all identical across conditions. No extra forward,gradcall,param oroptimizerstep beyond RDrop.",
+    "Fixed gain w_i=max(initial_effective_bandwidth_i,Fs/K)/Fs,Fs25e6,K79; grid floor is explicit scale heuristic, not a physical resolution theorem. No weight chosen from target or strength scan.",
+    "NORM matches BAND local adaptive-step norm at its own incoming raw Adam step; does not match total decay-inclusive displacement or cross-trajectory moves. FP32 addition rounding measured separately.",
+    "SOURCE GATE before anytarget: completehealthy3rows/finalLCE<=.5; BAND fixedheld errors strictly lower and meanCE nohigher than bothFULL/NORM; defaulthead/export and realstep witnesses correct. PASS only separately registered fullsource50 unchangedmain;FAIL closesfixedformula without rescue.",
+    "Evidence a1c4c74a source diagnosis rejected KL projection at9/50<10; sampled existingE narrowband relativeupdate motivates this distinct optimizer hypothesis, no targetfeedback."
+  ],
+  "registered_at": "2026-10-16T02:03:12+00:00"
+}

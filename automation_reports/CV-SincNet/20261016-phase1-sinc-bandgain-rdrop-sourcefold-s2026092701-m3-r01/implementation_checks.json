@@ -1,0 +1,150 @@
+{
+  "status": "PASS",
+  "CPU": {
+    "status": "PASS",
+    "device": "cpu",
+    "conditions": [
+      {
+        "mode": "FULL",
+        "independent_forward_gradient_max_abs_difference": 0,
+        "gain_min": 0.012658227235078812,
+        "gain_max": 0.16691318154335022,
+        "actual_step": {
+          "step": 1,
+          "mode": "FULL",
+          "base_alpha": 0.0002,
+          "raw_adaptive_L2_Hz": 34278.18298454733,
+          "counterfactual_band_L2_Hz": 1391.3296236384351,
+          "scalar_gain": 0.04058936333543844,
+          "actual_adaptive_L2_Hz": 34278.18298454733,
+          "physical_decay_unscaled": true,
+          "head_fit_updates": 0
+        }
+      },
+      {
+        "mode": "NORM",
+        "independent_forward_gradient_max_abs_difference": 0,
+        "gain_min": 0.012658227235078812,
+        "gain_max": 0.16691318154335022,
+        "actual_step": {
+          "step": 1,
+          "mode": "NORM",
+          "base_alpha": 0.0002,
+          "raw_adaptive_L2_Hz": 34278.18298454733,
+          "counterfactual_band_L2_Hz": 1391.3296236384351,
+          "scalar_gain": 0.04058936333543844,
+          "actual_adaptive_L2_Hz": 1391.3295992918052,
+          "physical_decay_unscaled": true,
+          "head_fit_updates": 0
+        }
+      },
+      {
+        "mode": "BAND",
+        "independent_forward_gradient_max_abs_difference": 0,
+        "gain_min": 0.012658227235078812,
+        "gain_max": 0.16691318154335022,
+        "actual_step": {
+          "step": 1,
+          "mode": "BAND",
+          "base_alpha": 0.0002,
+          "raw_adaptive_L2_Hz": 34278.18298454733,
+          "counterfactual_band_L2_Hz": 1391.3296236384351,
+          "scalar_gain": 0.04058936333543844,
+          "actual_adaptive_L2_Hz": 1391.3296236384351,
+          "physical_decay_unscaled": true,
+          "head_fit_updates": 0
+        }
+      }
+    ],
+    "physical_origin_decay_unscaled_once": [
+      "FULL",
+      "NORM",
+      "BAND"
+    ],
+    "body_defaultW_first_update_bitwise_equal_under_identical_gradient": true,
+    "local_norm_difference": 4.0666221501339805e-9,
+    "negative_cases": 3,
+    "source_IQ_reads": 0,
+    "head_fit_updates": 0,
+    "synthetic_joint_optimizer_steps": 6
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "conditions": [
+      {
+        "mode": "FULL",
+        "independent_forward_gradient_max_abs_difference": 0,
+        "gain_min": 0.012658227235078812,
+        "gain_max": 0.16691318154335022,
+        "actual_step": {
+          "step": 1,
+          "mode": "FULL",
+          "base_alpha": 0.0002,
+          "raw_adaptive_L2_Hz": 34278.217870213826,
+          "counterfactual_band_L2_Hz": 1391.329145497946,
+          "scalar_gain": 0.040589308077971765,
+          "actual_adaptive_L2_Hz": 34278.217870213826,
+          "physical_decay_unscaled": true,
+          "head_fit_updates": 0
+        }
+      },
+      {
+        "mode": "NORM",
+        "independent_forward_gradient_max_abs_difference": 2.2737367544323206e-7,
+        "gain_min": 0.012658227235078812,
+        "gain_max": 0.16691318154335022,
+        "actual_step": {
+          "step": 1,
+          "mode": "NORM",
+          "base_alpha": 0.0002,
+          "raw_adaptive_L2_Hz": 34278.217870213826,
+          "counterfactual_band_L2_Hz": 1391.329145497946,
+          "scalar_gain": 0.040589308077971765,
+          "actual_adaptive_L2_Hz": 1391.3291000553393,
+          "physical_decay_unscaled": true,
+          "head_fit_updates": 0
+        }
+      },
+      {
+        "mode": "BAND",
+        "independent_forward_gradient_max_abs_difference": 9.09494815459766e-7,
+        "gain_min": 0.012658227235078812,
+        "gain_max": 0.16691318154335022,
+        "actual_step": {
+          "step": 1,
+          "mode": "BAND",
+          "base_alpha": 0.0002,
+          "raw_adaptive_L2_Hz": 34278.217870213826,
+          "counterfactual_band_L2_Hz": 1391.329145497946,
+          "scalar_gain": 0.040589308077971765,
+          "actual_adaptive_L2_Hz": 1391.329145497946,
+          "physical_decay_unscaled": true,
+          "head_fit_updates": 0
+        }
+      }
+    ],
+    "physical_origin_decay_unscaled_once": [
+      "FULL",
+      "NORM",
+      "BAND"
+    ],
+    "body_defaultW_first_update_bitwise_equal_under_identical_gradient": true,
+    "local_norm_difference": 3.167647061319556e-9,
+    "negative_cases": 3,
+    "source_IQ_reads": 0,
+    "head_fit_updates": 0,
+    "synthetic_joint_optimizer_steps": 6
+  },
+  "scope": "Identical-gradient isolation of actual optimizer intervention; independent native CUDA gradients differed up to9.10e-7 before intervention, consistent with non-deterministic configured backend. No blanket bitwise trajectory claim.",
+  "compile": "PASS",
+  "source_IQ_reads": 0,
+  "head_fit_updates": 0,
+  "protocol": {
+    "status": "PASS",
+    "protocol_negative_cases": 5,
+    "source_gate_cases": 3,
+    "source_IQ_reads": 0,
+    "head_fit_updates": 0
+  }
+}
