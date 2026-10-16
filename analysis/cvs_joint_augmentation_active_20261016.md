@@ -261,3 +261,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 有界非恒定相位源身份检验 20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01 已实现登记未启动：固定sigma.006、去常数/线性、整路径峰值.1rad、全256单位模，无RX模板/尾部删除/重抽。两个原合法scratchE20 B00默认头、fitL5040、四draw，预计50402NN/40320sourcephase+64synthetic/0更新/target。28负例+18科学/解析反例/388合成phase PASS，一次P0/P1 PASS。旧ordinary本有Wiener，此为独立全覆盖有界视图变体，非新增强原理；identitypass也非DG。共同F＋跨RX同TX/E20/原U保持，联合目标ACTIVE。
+
+
+有界非恒定相位源身份检验 20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01 完整ANALYZED／VERIFIED：PASS_SOURCE_IDENTITY_ONLY，两个默认头accuracy相对raw−.019841/−.029762pp，raw正确保留99.965223/99.970191%；四draw和每RX/TX/day通过。50400源预测/10321920相位坐标/320batch全部独立复算，实际50402NN/40320sourcephase+64synthetic/2CP/0更新/target；全IQ变化median.022373/max.058648，312/20160路径整包收缩，全部尾部保留。raw全logits与旧AWGN源检查一致。支持下一三匹配scratchE20，不是DG/As有效；当前尚未实现登记E20。F＋跨RX同TX底座保持，联合目标ACTIVE。

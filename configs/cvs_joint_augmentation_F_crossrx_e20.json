@@ -1979,7 +1979,7 @@
     "actual_updates": 0
   },
   "bounded_nonaffine_phase_source_guard": {
-    "status": "REGISTERED_LOCAL_VALIDATED_ONE_REVIEW_PASS_NOT_LAUNCHED",
+    "status": "ANALYZED_SOURCE_IDENTITY_PASS_PENDING_MATCHED_E20",
     "run_id": "20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01",
     "package": "experiments/cvs_bounded_phase17",
     "source_only": true,
@@ -2010,6 +2010,23 @@
     "target_access": false,
     "Ag_efficacy_proved": false,
     "joint_goal_complete": false,
-    "note_ref": "analysis/cvs_bounded_nonaffine_phase_candidate_20261017.md"
+    "note_ref": "analysis/cvs_bounded_nonaffine_phase_candidate_20261017.md",
+    "scientific_verdict": "PASS_SOURCE_IDENTITY_ONLY",
+    "execution_commit": "b59b0d92c67d6e8d14056e666cfb6f2d4a3f0859",
+    "source_analysis_ref": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01/source_analysis.json",
+    "actual_NN": 50402,
+    "source_NN": 50400,
+    "actual_phase_views": 40320,
+    "actual_synthetic_phase_views": 64,
+    "E20_launched": false,
+    "source_identity_pass": true,
+    "accuracy_gains_pp": {
+      "2026092701": -0.01984126984126977,
+      "2026092702": -0.029761904761904656
+    },
+    "raw_correct_retention": {
+      "2026092701": 0.9996522257551669,
+      "2026092702": 0.9997019077901431
+    }
   }
 }

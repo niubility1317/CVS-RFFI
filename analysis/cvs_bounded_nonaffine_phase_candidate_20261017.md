@@ -1,6 +1,6 @@
 # 有界非恒定相位视图：唯一候选与放弃条件
 
-2026-10-17，底座 F＋跨 RX 同 TX、3 SIG_TIME、统一 Sinc、joint160、NoExplicitCFO、原默认 cosine 头正常联合训练、后续 E20 保持。本候选先做两个合法冻结默认头的 fitL 身份保持检查；尚未训练或证明 A_g 有效。
+2026-10-17，底座 F＋跨 RX 同 TX、3 SIG_TIME、统一 Sinc、joint160、NoExplicitCFO、原默认 cosine 头正常联合训练、后续 E20 保持。两个合法冻结默认头的完整 fitL 身份保持检查已完成且通过；尚未训练或证明 A_g 有效。
 
 上一相位曲率统计在全部 fitL5040／72 格／18 held TX/day 组通过 RX 关联条件，MSE 减少 91.368334%。但该统计包含 TX、传播、滤波及均衡；不识别纯 RX 振荡器。源均值相位模板直接积分后的多数大差异 RX 对 RMS 为 1.28 至 1.38 rad，不支持轻度模板回放。这里不使用任何 RX 模板、标签或分组决定扰动，不声称覆盖全部源 RX 差异。
 
@@ -31,3 +31,6 @@ PASS 只证明这两个已见源训练模型下的身份保持，不证明 DG。
 [Chen等原始论文，2023](https://arxiv.org/pdf/2307.04955)在多天线接收模型中区分发射失真与接收振荡器相位噪声，并采用随机相位模型。这支持乘性接收相位变化的研究动机，不证明本有界过程、幅度或弱标注跨RX训练有效；不采用其多天线融合、滤除器、额外分类器或实验增益。源相位曲率结果也不替代本固定身份检验。
 
 当前唯一假设是：该轻度、全包、无仿射相位的独立 IQ 视图可保持 TX 身份，值得进一步匹配训练。身份保护失败即关闭本算子；通过后仍须正式识别结果。联合目标 ACTIVE，low urban>60%／clean净增益／suburban距clean≤2pp探索目标均未证明。
+
+
+有界非恒定相位源身份检验 20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01 完整ANALYZED／VERIFIED：PASS_SOURCE_IDENTITY_ONLY，两个默认头accuracy相对raw−.019841/−.029762pp，raw正确保留99.965223/99.970191%；四draw和每RX/TX/day通过。50400源预测/10321920相位坐标/320batch全部独立复算，实际50402NN/40320sourcephase+64synthetic/2CP/0更新/target；全IQ变化median.022373/max.058648，312/20160路径整包收缩，全部尾部保留。raw全logits与旧AWGN源检查一致。支持下一三匹配scratchE20，不是DG/As有效；当前尚未实现登记E20。F＋跨RX同TX底座保持，联合目标ACTIVE。
