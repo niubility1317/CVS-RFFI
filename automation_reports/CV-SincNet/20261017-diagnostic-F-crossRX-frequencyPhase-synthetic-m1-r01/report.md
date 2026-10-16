@@ -1,31 +1,47 @@
-# 短窗频域相位测度：本地合成反证预登记
+# 短窗频域相位：完整合成辨识通过，尚无真实源证据
 
-状态：PLANNED，正式矩阵未启动。run：20261017-diagnostic-F-crossRX-frequencyPhase-synthetic-m1-r01；owner：codex/root/F-frequency-phase-observability-20261017。矩阵／所有数值以experiment.json为唯一配置入口，实际执行commit由resolved_config.json记录。
+**ANALYZED／VERIFIED；PASS_FIXED_SYNTHETIC_MEASUREMENT_ONLY。** [原预登记](preregistration.md)、[固定矩阵](experiment.json)、[全部63组结果](analysis_summary.json)、[按情况汇总](case_summary.json)、[执行成本](execution_summary.json)。实际执行提交 e0e1e7adee189c5459e45689a8ee4830613b334b；一个候选、一次运行、一次限定P0/P1 PASS，无参数或种子重试。
 
-本轮只检验短窗频域相位测度是否可辨识；无新IQ增强、模型或分类头。F＋跨RX同TX／三SIG_TIME／统一Sinc／joint160／NoExplicitCFO／默认cosine头正常联合训练／E20／原U保持。当前源物理L/U/V、formal target与received IQ均不打开。真实长上下文入口及旧幅度谱FIR／时域非仿射相位／周期残差协方差／四周期抖动等固定失败保持关闭。
+## 实际结果
 
-## 固定测度
+3模板×7情况×3 SNR×4抽样共252格、63分组全部完成，全部通过原数值条件。每格为6个合成TX×3日×4RX×70包；这些是合成因素，不是真实设备、日期或物理包。所有非退化格均5040/5040包可辨识，没有删除失败包、TX、day或RX。缺频情况36格的181440包全部拒绝。
 
-输入为256点复IQ，模拟原packet RMS并转Complex64后以Complex128计算。只在网络既有80:160参考区域内，用lag20复内积角估计公共频偏并扣除；估计量不接收真实CFO，也不把它输出为身份特征，不改变现有模型内部补偿。对80点窗口投影到k=-6..-1,+1..+6、周期20的12个已知谐波。对中心k=-5..-2,+2..+5计算单位模A[k-1]A[k+1]conj(A[k])²，得到8个相位闭合观察。公共相位与线性频率相位在此抵消；不把抵消线性频率相位等同于消除时域CFO。
+| 情况（每种36格） | 识别为共享RX | 最大相位轮廓RMS（rad） | 原固定条件 |
+|---|---:|---:|---|
+| 共享RX全通相位 RX_LTI | 36/36 | 0.058159 | PASS |
+| 无RX响应，保留全部干扰 | 0/36 | 0.002594 | PASS |
+| 仅TX额外相位曲率 | 0/36 | 0.002271 | PASS |
+| 仅RX幅度变化 | 0/36 | 0.002564 | PASS |
+| TX×RX相位交互，无共享主效应 | 0/36 | 0.002327 | PASS |
+| 仅窗外接收机相关边界 | 0/36 | 0.002594 | PASS |
+| 缺失必要+3谐波 | 不可辨识 | 不计算 | 100%拒绝，PASS |
 
-噪声代理为12谐波重构后的68自由度残差，并设1e-12相对数值floor；每个必要谐波功率／投影噪声比须≥25。普通情况任何包不可靠就将整个cohort记为不可辨识，不丢包后求成功率；DEGENERATE明确要求拒绝。每个合成TX/day/RX格70包的复均值先作RX圆参考，再减RX均值；cell resultant及RX圆参考resultant均须≥.8。对6TX×3day的18折同时排除一个TX和一个day，用其余5TX×2day预测每个RX相位；零RX对比和3种错误RX循环映射为控制。这是均值统计，不拟合身份或RX分类器。
+共享RX正例相对轮廓RMSE最大3.999642%（上限25%）；交叉留出风险改善最小98.092207%（下限50%），每格18/18个留出折改善，全部RX均不劣于零RX对照。正确RX相对最佳循环错误RX映射的改善余量最小 2.321396832（下限0.05）。这些是相位测量误差／风险，不是身份准确率。
 
-## 完整最小矩阵与放弃条件
+TX×RX交互的交叉留出风险改善为−43.996844%至−43.264248%，没有被当作可泛化的共享RX分量。无RX、仅幅度和仅窗外边界的部分格风险改善略大于0，但轮廓RMS小于0.01rad且不满足整体检测条件，不能把单一正风险量视为RX证据。全部正负条件按原联合判据报告，没有事后选择表现最好的模板或SNR。
 
-3种预定12音模板（flat、QPSK、chirp），7情况（RX_LTI、NO_RX、TX_CURVATURE、RX_GAIN_ONLY、TX_RX_INTERACTION、EDGE_ONLY、DEGENERATE），SNR20/30/40dB，每格4抽样。每次6×3×4×70=5040个合成包／256点，总252格／1270080包／325140480复观察点。data seed202610178201+templateindex×100000+SNRindex×1000+draw；7情况共用latent随机量，真实coefficients／CFO／响应仅生成与独立评分可见。所有合成因素都不映射真实物理TX/RX。
+## 测度、控制与独立复算
 
-RX_LTI用a=[-.45,-.15,.15,.45]单位模全通响应；一半合成CFO在该响应前、一半在后，正例与零RX情况都保留随机公共相位、增益、时间偏移、RX/day采样钟差及propercomplex噪声。TX_CURVATURE只改变TX滤波；RX_GAIN_ONLY为实正幅度响应；交互情况按TX交替共轭RX相位，不含稳定共享主效应。EDGE_ONLY只改80:160之外以检查观察窗局部性，不把它当实际滤波瞬态证明；DEGENERATE缺失+3必要谐波。具体表达式／范围保存在配置与代码，合成SNR与范围不是实际源分布或未来Ag幅度。
+估计器只接收归一化后的Complex64 N×256观察。固定参考80:160，先自行估计lag20公共CFO并仅作干扰补偿，不保留为身份特征；再投影12个周期20谐波，计算8个相邻谐波相位闭合量。公共旋转与线性频率相位在闭合量中消除；时域CFO先作独立补偿，不混称为线性频率相位。每个TX/day按RX圆均值对齐后减去RX均值，18折同时留出TX和day，仅从其余5×2单元估计共享RX轮廓。
 
-正例每次必须全部可靠、profile相对RMSE≤25%，18折风险至少下降50%、至少15折改善、每RX风险不升，正确RX映射的风险改善比最佳错误映射至少高5个百分点。RX检测同时要求profile RMS≥.02rad。NO_RX／TX_CURVATURE／RX_GAIN_ONLY／EDGE_ONLY都须可辨识、共享RX profile RMS≤.01rad且不触发RX检测。纯交互须不触发检测、crossfit风险改善≤0且profile RMS≤.01rad；缺谐波退化每次拒绝比例≥99%。全部252格／63组各4次都须满足原条件；不挑模板／SNR／case／抽样或删包。
+生成器包含未知TX频率相位、全局旋转、RX相关增益／CFO／时移／时钟误差、两种CFO与响应顺序，以及响应后复高斯噪声。12音解析稳态波形、全通系数、20/30/40dB均是预定合成压力条件，不是当前WiSig残留分量、真实通道范围或未来增强强度的校准。合成真模板、CFO和响应不输入估计器；名义响应真值仅供评分。CFO与响应不交换时仍以名义RX相位为参照，未使用oracle纠正。
 
-任一条件FAIL，完成全部格并关闭当前固定80:160／lag20／12谐波phaseclosure估计器；不改窗口、period、carrier、CFO方法、阈值、SNR、draw、seed、模板、case或提供oracle救跑，不读源IQ或启动E20。PASS也仅支持另行登记源观察验证，不证明RX硬件因果、标签保持、跨RX clean、As或联合目标。合成稳态频率响应及窗外扰动不覆盖真实捕获误帧或滤波瞬态；不能拿本结果替代这些缺失。
+独立stdlib reader不导入估计器，从全部252格已保存的有效计数、复闭合量单元均值重算圆对齐、所有RX轮廓、全部18折风险、3种错误RX映射、36个正例相对误差、63组及原判据；合成响应相位用独立复数公式重建，全部与运行输出一致。它验证保存充分统计后的全部推导，未冒称重新生成逐点合成IQ或从逐点信号重复计算投影。此前19项输入负例和8项代数检查单独记录，未充当正式含噪矩阵。
 
-## 执行与验证
+窗外改动只验证80:160测度的局部性。它不能证明真实有限滤波的过渡区、失步切片、时变信道或实际帧定位不存在影响。对缺频的全拒绝也是固定可观测条件，不能在后续真实数据中删掉困难包取得通过。
 
-本地19输入／配置负例与8项代数检查PASS：公共旋转／增益／可补偿CFO不变、窗外修改不变、缺频拒绝、理想共享相位恢复及交互反例拒绝。原始合成生成144包／36864复点；6次测度调用432包／110592复点。均0真实IQ／checkpoint／NN／更新。正式含噪矩阵未执行；一次限定P0/P1审查另附，不新增重复审查。
+## 实际成本与状态
 
-本地普通Windows已有F:/App/miniconda3/python.exe／NumPy，CPU2线程，CUDA_VISIBLE_DEVICES为空；CWD为当前worktree。命令：F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_frequency_phase17.run --output local_artifacts/F_frequency_phase_observability_20261017/run。不可覆盖输出根local_artifacts/F_frequency_phase_observability_20261017/run；日志local_artifacts/F_frequency_phase_observability_20261017/run.stdout.log。只允许既定单一owner启动一次，技术失败保留全部输出、不自动重试或改动任何健康旧任务。
+正式矩阵生成1270080包／325140480复点，运行主体墙钟50.409012秒。工程检查另生成144包／36864复点，6次观察器调用复用合成输入共432包／110592复点；不与正式生成量混为同一成本。独立分析与准备时间不含在主体墙钟中。
 
-实际首项仅是输入／配置／输出位置核对；无模型，不加载真实checkpoint作无用smoke，无远端发布，因此N607预检、archive及remotecompile不适用，不建未消费未来流程。仅用一个实际代码／配置Gitcommit，一次本地PID/CWD/cmdline/CPU/loggrowth观察；全部252格完成后以不导入估计器的stdlib reader独立重算cell means对应的RX profile、18fold风险、错误映射、指标与63组判据，再更新同run报告／登记／Git。
+真实IQ读取、checkpoint、网络前向、优化更新、教师和另训头均为0，target访问为0。CPU2线程，无GPU或远端发布。实际worker配置保存commit、CWD、PID和线程；存活期间独立Windows进程查询抓取PID／可执行文件／命令，日志由1268增至4839字节，完成后独立确认原进程不存在。OS层未单独读取CWD，CWD证据来自worker及launcher，边界明确。全部原始统计、完整stdout与运行元记录保留在本地忽略目录，不提交到Git。
 
-REJECTED_EXTRA_GATE：generic brainstorming的逐阶段design/spec人工审批及旧契约多Agent、逐文件hash／seal规则不进入当前白名单；按用户本轮持续研究授权和ExclusiveMinimalWorkflow执行。当前不增加部署分支、损失或头，也不因基础检查通过宣称Ag或联合成功。
+## 证实、未证实与下一步
+
+证实的是这个固定短窗测度在预登记合成因素中能区分共享RX相位、TX曲率、幅度、交互和退化。它没有证明真实WiSig EQ1仍保留可迁移RX相位，未证明RX硬件因果、标签保持、跨RX身份提取或任何A_g／A_s性能收益；不能把合成通过当成clean提升。
+
+下一唯一假设：合法fitL5040中的该测度能在同时留出TX和day后保留RX特异性。最小下一实验是另行固定源观测登记，仅fit RX3/4/6/8／day1/2/3／6TX，全部物理包保留；不使用U/V/RX1/target校准测度、阈值或幅度。当前未启动这一步，也没有IQ增强或E20。若任何必要源格不可辨识、RX效应跨TX/day不稳定、错误RX控制不能排除或主要被CFO／边界支配，就放弃当前源依据，不删包或改测度救跑。
+
+F＋跨RX同TX／三SIG_TIME／统一Sinc／joint160／NoExplicitCFO／默认cosine头正常联合训练／E20／原U规则保持。有效A_g、稳定A_s、匹配B00/B10/B01/B11交互、跨seed及正式clean＋六practical truth-last仍缺，联合目标ACTIVE。
+
+完整数值JSON和执行汇总仅作本地报告附件保留，不纳入Git；Git保存实际代码、预登记、审查结论及本报告。
