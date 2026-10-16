@@ -1,0 +1,29 @@
+{
+  "status": "VERIFIED",
+  "training_commit": "2609d1ec4f62ccace9694db9ce7bf5fe53739964",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "real_checkpoint_noquery_smoke": "PASS",
+  "dispatcher_PID": 4138793,
+  "worker_PIDs": [
+    4138875,
+    4138950
+  ],
+  "GPU": [
+    3,
+    4
+  ],
+  "CWD_argv_GPU_verified": true,
+  "log_growth_verified": true,
+  "observed_epochs": 5,
+  "observed_updates_per_row": 1110,
+  "actual_model_and_native_seed": 2026092701,
+  "actual_counts": {
+    "L_s": 5040,
+    "U_s_hidden": 45360,
+    "V": 21600
+  },
+  "actual_role_IDs_exact_same_seed_reference": true,
+  "source_only": true,
+  "target_access": false
+}

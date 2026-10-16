@@ -9,7 +9,7 @@ def bucket(x,bounds):
   if x<hi:return label
  raise AssertionError('Final bin must include infinity')
 def summarize(root,reference):
- root=Path(root);reference=Path(reference);paths={a:(reference if a=='D_raw' else root)/(a+'-RX1-s2026092702/source') for a in ARMS};pred={a:{v:read(s/'source_readouts'/(v+'.json')) for v in VIEWS} for a,s in paths.items()}
+ root=Path(root);reference=Path(reference);seed=read(root/'analysis_summary.json')['model_seed'];assert seed in (2026092701,2026092702);paths={a:(reference if a=='D_raw' else root)/(a+'-RX1-s'+str(seed)+'/source') for a in ARMS};pred={a:{v:read(s/'source_readouts'/(v+'.json')) for v in VIEWS} for a,s in paths.items()}
  baseline=pred['D_raw']['clean'];fixed=[i for i,(y,p) in enumerate(zip(baseline['labels'],baseline['predictions'])) if y==p];strata=[];physics={};retention={}
  assert fixed
  for a in ARMS:
@@ -31,7 +31,7 @@ def summarize(root,reference):
     for ref in ARMS[:2]:
      repair=sum(pred[ref][v]['predictions'][i]!=baseline['labels'][i] and pred['CROSS_RX'][v]['predictions'][i]==baseline['labels'][i] for i in take);broken=sum(pred[ref][v]['predictions'][i]==baseline['labels'][i] and pred['CROSS_RX'][v]['predictions'][i]!=baseline['labels'][i] for i in take);paired[ref]=dict(accuracy_gain_pp=100*(acc['CROSS_RX']-acc[ref]),repaired=repair,broken=broken)
     strata.append(dict(view=v,dimension=dimension,value=value,count=len(take),accuracy=acc,paired=paired))
- result=dict(source_only=True,readout_role='Held source RX1 L1260,modelseed2026092702,fixedfinal20,defaultcosine',analysis_NN=0,analysis_IQ_reads=0,updates=0,target_access=False,fixed_raw_clean_correct_count=len(fixed),margins_and_retention=retention,strata=strata,physics=physics,reference_limit='Original reused raw has no per-packet stored margins/physics;new-arm physics identical;reference decisions grouped by same physical IDs under same frozen renderer/config/namedstream',causal_claim=False)
+ result=dict(source_only=True,readout_role='Held source RX1 L1260,modelseed'+str(seed)+',fixedfinal20,defaultcosine',analysis_NN=0,analysis_IQ_reads=0,updates=0,target_access=False,fixed_raw_clean_correct_count=len(fixed),margins_and_retention=retention,strata=strata,physics=physics,reference_limit='Original reused raw has no per-packet stored margins/physics;new-arm physics identical;reference decisions grouped by same physical IDs under same frozen renderer/config/namedstream',causal_claim=False)
  dump(root/'mechanism_analysis.json',result);return result
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--input',required=True);p.add_argument('--reference',required=True);a=p.parse_args();r=summarize(a.input,a.reference);print(json.dumps(dict(status='ANALYZED',strata=len(r['strata']),new_NN=0)))

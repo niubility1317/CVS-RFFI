@@ -1,6 +1,6 @@
 # 真实 IQ 相干插值：seed01 独立确认
 
-LOCAL_VERIFIED，尚未启动。一次限定 profile/launcher P0/P1 审查 PASS，N607 普通账户预检 VERIFIED。起点 commit 444f19e6937112a85b16b5ad4177c1a4af8fc05d；实际 release commit 在发布时记录。本轮唯一假设：已在 seed02 源 RX1 获得的 clean 独立收益能在 seed01 的匹配三行矩阵中保留，不改变算子、强度、参考窗、阶段或 U 规则。
+RUNNING。实际 release commit 2609d1ec4f62ccace9694db9ce7bf5fe53739964；smoke/PID/CWD/argv/GPU/log增长与实际seed/角色已核实，正在执行固定预算，无最终成绩。起点 commit 444f19e6937112a85b16b5ad4177c1a4af8fc05d；实际 release commit 在发布时记录。本轮唯一假设：已在 seed02 源 RX1 获得的 clean 独立收益能在 seed01 的匹配三行矩阵中保留，不改变算子、强度、参考窗、阶段或 U 规则。
 
 前轮已完成：seed02 raw81.190476%、SAME81.269841%、CROSS83.492063%；CROSS 相对 raw clean+2.301587pp/F1+2.308524pp，相对 SAME clean+2.222222pp；fit V−.050926pp，全部预算/默认头/覆盖健康项通过。urban 均值−.978836pp，low−.238095pp，BLOCKED/unlocked 下降，未得到联合收益。对照实际扰动 L2 均值 SAME .07360/CROSS .09492，未逐包等强；不能唯一归因 RX 内容。本轮只确认固定配方的识别收益，不将单 seed 结果视为有效 Ag，也不把不同实验增益相加。
 

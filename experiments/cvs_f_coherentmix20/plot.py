@@ -13,7 +13,7 @@ def draw(root,output):
  with (root/'source_strata.csv').open(encoding='utf8',newline='') as f:tx=list(csv.DictReader(f))
  colors={'D_raw':'#4A7A5C','SAME_RX':'#3D6D9B','CROSS_RX':'#C86A38'};names=[]
  def save(fig,name):
-  fig.suptitle('Held source RX1 | seed 2026092702 | scratch E20 | default cosine head',fontsize=10)
+  fig.suptitle('Held source RX1 | seed '+str(r['model_seed'])+' | scratch E20 | default cosine head',fontsize=10)
   for ext in ('png','pdf'):fig.savefig(output/(name+'.'+ext),dpi=180)
   plt.close(fig);names.append(name+'.png')
  fig,axes=plt.subplots(1,2,figsize=(13.5,4.8),constrained_layout=True)
@@ -62,6 +62,23 @@ def draw(root,output):
   cells=r['mix_audits'][a]['coverage'];arr=np.array([[sum(c['count'] for c in cells if c['primary_RX']==rx and c['partner_RX']==other) for other in fits] for rx in fits]);im=ax.imshow(arr,cmap='Blues',aspect='auto',vmin=0,vmax=max(1,float(arr.max()))*1.3);ax.set_xticks(range(4),['RX'+str(x) for x in fits]);ax.set_yticks(range(4),['RX'+str(x) for x in fits]);ax.set_xlabel('Donor');ax.set_ylabel('Anchor');ax.set_title(a+' partner coverage')
   for i in range(4):
    for j in range(4):ax.text(j,i,str(arr[i,j]),ha='center',va='center',fontsize=8)
- save(fig,'IQ_mixing_and_coverage');return names
+ save(fig,'IQ_mixing_and_coverage')
+ if (root/'crossseed_analysis.json').is_file():
+  cross=read(root/'crossseed_analysis.json');rows=cross['rows'];fig,axes=plt.subplots(2,2,figsize=(12,7.5),constrained_layout=True)
+  for ax,v,title in zip(axes[0],('clean','practical_low_urban'),('Clean identity accuracy','Low-urban accuracy')):
+   for j,a in enumerate(ARMS):
+    bars=ax.bar(np.arange(2)+(j-1)*.25,[100*x['scores'][a][v]['accuracy'] for x in rows],width=.24,color=colors[a],label=a);ax.bar_label(bars,fmt='%.1f',padding=3,fontsize=8,rotation=90)
+   ax.set_ylim(0,100);ax.set_ylabel('Accuracy (%)');ax.set_title(title);ax.legend(fontsize=7)
+  for j,ref in enumerate(ARMS[:2]):
+   vals=[x['qualification']['comparisons'][ref]['all_view_gain_pp']['clean'] for x in rows];bars=axes[1,0].bar(np.arange(2)+(j-.5)*.3,vals,width=.28,color=colors[ref],label='CROSS - '+ref);axes[1,0].bar_label(bars,fmt='%+.2f',padding=3,fontsize=8)
+  for j,(key,title) in enumerate((('urban','Urban mean'),('low','Low urban'))):
+   vals=[x['qualification']['comparisons']['D_raw']['urban_mean_gain_pp'] if key=='urban' else x['qualification']['comparisons']['D_raw']['all_view_gain_pp']['practical_low_urban'] for x in rows];bars=axes[1,1].bar(np.arange(2)+(j-.5)*.3,vals,width=.28,color='#A26A3A' if j==0 else '#D7A56B',label=title);axes[1,1].bar_label(bars,fmt='%+.2f',padding=3,fontsize=8)
+  axes[1,0].set_title('Paired clean gain');axes[1,1].set_title('CROSS_RX - D_raw practical gain')
+  for ax in axes.flat:ax.set_xticks(range(2),[str(x['model_seed']) for x in rows])
+  for ax in axes[1]:ax.axhline(0,color='grey',lw=.7);ax.set_ylabel('Percentage points');ax.legend(fontsize=7)
+  fig.suptitle('Same held source RX1 and physical channel draws | two scratch E20 seeds | default head',fontsize=10)
+  for ext in ('png','pdf'):fig.savefig(output/('crossseed_comparison.'+ext),dpi=180)
+  plt.close(fig);names.append('crossseed_comparison.png')
+ return names
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--input',required=True);p.add_argument('--output',required=True);a=p.parse_args();print(json.dumps(draw(a.input,a.output)))
