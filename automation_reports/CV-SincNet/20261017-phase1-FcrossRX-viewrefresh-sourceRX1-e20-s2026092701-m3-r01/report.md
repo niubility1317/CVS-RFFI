@@ -57,3 +57,5 @@ run root：/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-Fcross
 一次限定P0/P1只读审查PASS。一次本次N607只读preflight VERIFIED。实际发布采用一个Git代码/config提交、一份archive本远端SHA比较、一次remotecompile，真实同契约checkpoint smoke PASS立即继续；无额外审批、seal、逐成员hash或数据重验。
 
 预期保留完整20轮、4440step、原L/U序列、refresh IQ统计与可见L标签/ID、native gates、默认头七视图预测/间隔/物理状态、独立全量复算、曲线/分层图/负结果、增量与历史成本及最终commit。尚无本轮成绩。
+
+启动核实：执行 commit c72c359581cee36e9fc70440844803288ba851ef 已 push 且独立 GitHub OID 相同。单 archive transfer VERIFIED／remote compile PASS；dispatcher123079、RAW123167/GPU3、REPLAY123245/GPU4、REFRESH123322/GPU5 的PID/CWD/argv/GPU/日志增长已独立核实。真实同契约B00 strict-load兼容smoke2合成NN PASS并立即继续scratch。当前RUNNING，无target访问；运行中代码与配置不改。离线评分18个协议负例PASS，0 IQ/CP/NN/更新。
