@@ -2028,5 +2028,69 @@
       "2026092701": 0.9996522257551669,
       "2026092702": 0.9997019077901431
     }
+  },
+  "bounded_nonaffine_phase_E20": {
+    "status": "REGISTERED_LOCAL_VALIDATED_ONE_REVIEW_PASS_NOT_LAUNCHED",
+    "run_id": "20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01",
+    "package": "experiments/cvs_bounded_phase20",
+    "baseline": "F+CROSS_RX/3SIG_TIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
+    "source_only": true,
+    "target_access": false,
+    "model_seed": 2026092701,
+    "arms": [
+      "B00",
+      "C_ordinary",
+      "B10"
+    ],
+    "scratch_epochs_each": 20,
+    "planned_total_epochs": 60,
+    "updates_each": 4440,
+    "planned_total_updates": 13320,
+    "phase_increment_sigma": 0.006,
+    "phase_peak_bound": 0.1,
+    "phase_seed": 202610173401,
+    "common_raw_weight": 0.75,
+    "common_ordinary_weight": 0.25,
+    "extra_pair_weight": 0.25,
+    "total_pair_weight": 1.25,
+    "L_forwards": 8,
+    "L_NN_each": 4546560,
+    "extra_L_NN_each": 1136640,
+    "oldordinary_each": 568320,
+    "newphase_B10": 568320,
+    "newAs": 0,
+    "newU_or_teacher_views": 0,
+    "head_fit_updates": 0,
+    "source_guard": "20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01",
+    "source_guard_verdict": "PASS_SOURCE_IDENTITY_ONLY",
+    "criteria": {
+      "primary": "B10",
+      "references": [
+        "B00",
+        "C_ordinary"
+      ],
+      "fixed_final": 20,
+      "held_RX": 1,
+      "held_L": 1260,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "min_clean_gain_pp": 1,
+      "min_clean_macroF1_gain_pp": 0,
+      "max_each_practical_drop_pp": 0.5,
+      "max_seenV_drop_pp": 0.5,
+      "final_base_L_objective_max": 0.5,
+      "on_fail": "Closefixedsigma.006/peak.1/fullcoverage nonaffinephase training;no sigma/peak/range/coefficient/clip/pathdrop/redraw/RX/TX/day/seed/budget rescue",
+      "on_pass": "Independent source-seed confirmation only;not target/DG/fulljoint proof"
+    },
+    "Ag_efficacy_proved": false,
+    "As_efficacy_proved": false,
+    "joint_goal_complete": false
   }
 }
