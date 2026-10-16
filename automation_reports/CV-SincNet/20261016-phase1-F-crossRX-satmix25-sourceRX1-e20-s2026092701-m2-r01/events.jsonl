@@ -1,2 +1,3 @@
 {"at": "2026-10-16T05:16:07+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-16T05:23:27+00:00", "status": "RUNNING", "note": "VERIFIED source-only B00/B01 both live with PID/CWD/argv/GPU/log growth. Real matched CP no-query smoke PASS. Both scratch F+CROSS_RX E20; no results or target access.", "evidence": ["launch_verification.json"], "row_id": null}
+{"at": "2026-10-16T05:45:37+00:00", "status": "ANALYZED", "note": "VERIFIED B00 source-only final20:4440 steps,20epochs,all8820 seven-view decisions,full800stdout lines,5994L/U batches independently recounted. B01 continues; no candidate or target performance claim.", "evidence": ["B00_source_analysis.json"], "row_id": "B00-RX1-s2026092701"}

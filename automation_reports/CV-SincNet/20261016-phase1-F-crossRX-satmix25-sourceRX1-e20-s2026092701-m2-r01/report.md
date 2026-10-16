@@ -80,3 +80,11 @@ As 直接使用原始 `x_l`，不使用旧普通增强后的 `x_l_main`，避免
 独立读回已验证 dispatcher、两 worker 的 PID/CWD/argv、GPU 实际占用和各自 stdout 增长，首个完成的源 epoch 分别为 B00 E2/20、B01 E1/20；B01 已生成并监督 28416 份实际 practical IQ。无 failure，无 target 接触。摘要见 [launch_verification.json](launch_verification.json)，私有原始读回保留在本地运行证据目录。此处只是已观察到的进度，不是最终训练或性能结论；恢复继续读原 run，不重复提交。
 
 随后只读进度已到 B00 E6/20（1332 更新，222 次非零 CROSS_RX 调用）和 B01 E3/20（666 更新，85248 份监督 practical IQ），临时 hooks 均为零；两个原 PID 仍在各自 GPU 正常运行。尚无 final20 读出，不按中途源指标改变计划。后续继续监控该 run 并收齐最终源七视图，不另起同 row。
+
+## B00 已完成，B01 继续运行
+
+B00 已自然完成固定 E20 和 clean＋六 practical 的全部 held-source 决策，worker 正常退出。独立核算完整 4440 个 step、20 轮原生 CSV/JSONL 及 compact 日志、800 行 stdout、5994 个 L/U 观察批次和 8820 个默认头决策；没有非有限数或技术警告。其损失尺度重构误差最大为 `3.8743e-7`，CROSS_RX 层位／前向目标总计 13320 项。
+
+B00 实际观察 L568320/U396368，唯一训练物理样本分别为 L5040/U45360，全部排除 RX1。实际 NN 前向包总计 4686678，训练墙钟 1273.98 秒；teacher 复制带入的 eval counter2 已扣除，student 初始 smoke2 已包含、不再次加算；dispatcher 的公共 smoke2 留到全矩阵成本单列。摘要见 [B00_source_analysis.json](B00_source_analysis.json)，重算代码为 `experiments/cvs_crossrx_satmix20/analysis.py`。
+
+此时仅 B00 行为源域 ANALYZED，整个 run 仍为 RUNNING。B01 尚未冻结并完成七视图，不提前作 75/25 候选收益判断，也不触发扩种子或正式 target 访问。
