@@ -252,3 +252,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 当前唯一下一source假设：原IQ的常相位／线性CFO不变相位曲率统计，是否有跨TX/day共享RX位移；只拟用fitL5040、0CP/NN/新视图/更新/target，按固定交叉TX/day误差验证后才考虑增强；尚未实现登记启动。详见analysis/cvs_phase_curvature_source_basis_20261017.md。旧commonphase训练／phase_curvature结构／cyclecovariance等失败保持关闭，联合目标ACTIVE。
+
+
+非恒定相位曲率源依据 20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01 已实现登记未启动：固定80:160全78相邻三点/Complex128eps1e-12，156RI，fitL5040/72格/18组同时留TX与day；pooledMSE减少≥10%/每RX不恶化/至少15正组。29负例+7反例/266合成IQ PASS，一次P0/P1审查PASS；0模型/CP/NN/增强/更新/target。仅源RX关联依据，不重开commonphase/featurecurvature/cyclecov/AWGN失败路线，联合目标ACTIVE。

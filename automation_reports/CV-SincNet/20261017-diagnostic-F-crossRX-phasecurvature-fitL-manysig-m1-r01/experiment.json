@@ -1,0 +1,241 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01",
+  "group_id": "phase1-F-crossRX-nonaffinephase-source-basis",
+  "display_name": "F＋跨RX同TX：非恒定相位形态的跨TX/day源依据",
+  "description": "Fixed adjacenttriplet phasecurvature inrawIQ80:160;18heldTX/day RXcontrast tests;0models/augmentation/CP/NN/updates/target",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "nonaffine phase RX association source rationale"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "phase_curvature_basis",
+    "source_only",
+    "cross_TX_day",
+    "no_model",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active jointAg/As goal;newsourcebasis afterfixedisolatedAWGN E20closure;not oldcommonphase training/featurecurvature/cyclecov rescue. No newaugmentation orperformance claim.",
+  "code": {
+    "commit": "Actualexecutioncommit inrelease_commit.txt/resolved_config",
+    "checkout": "Managed codex/cvs-iq-timing-e20-20261016 worktree",
+    "environment": "OrdinaryN607 existingCVS-RFFI Python,CPU2/CUDAhidden;NumPyFloat64/Complex128,sourcecache viaTorch",
+    "cwd": "PROJECT/releases/cvs_F_phase_curvature_fitL_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated L6300 cache, four fit RX subset only",
+    "representation": "NativeEQ1 RMS IQ256/25Msps;analysis-onlyIQ80:160 all78adjacenttriplets;Complex128softphase c/(abs(c)+1e-12),no IQmodification",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Existing source_contract L_s handles; exact fit5040 IDs retained privately",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "5040 fitRX used;1260 RX1 deserialized then excluded before any IQ statistic",
+      "U_s": "Unused; TX truth never accessed",
+      "V": "Unused"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "KnownsourceRX-associated nonaffine waveformshape only;not oscillatoridentification,hardwareRXreplacement,IQlabelpreservation,identity,DG,As orjoint proof"
+  },
+  "checkpoint": {
+    "initialization": "No model orcheckpoint",
+    "sources": [],
+    "contract_check_ref": "No model/CP. ReuseexistingVALIDATED_ONCE sourcecache,exactoriginalL6300 roles andsourcehandles;fitL5040 extracted beforestatistics. V/features deserialized unused,U opaqueIDs only/noIQorlabels.",
+    "provenance_verdict": "SOURCE_DATA_ONLY;no inheritedmodel/features used",
+    "selection_rule": "Fixedstatistic/window/criteria before source data;no identitymodel selection"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-phase-curvature-source-basis-20261017",
+    "gpu_policy": "CPU only;2threads;CUDA_VISIBLE_DEVICES empty;no GPU or model allocation",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_phase_curvature_fitL_20261017_r01/source_phase_curvature_basis.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_phase_curvature_basis17.run",
+    "stop_rule": "Systemicwrongsourcehandle/role/nonfinite/input/outputcollision/runtimefailure:preservepartial/failure,noautomaticretry/nohealthyprocess intervention. ScienceFAIL closesfixedstatistic/lag/window/TX/day/RX/threshold/seed;noautomaticaugmentation/E20."
+  },
+  "expected_artifacts": [
+    "active/resolved_config/completion orpreservedfailure",
+    "phase_curvature_basis.json all72cellmeans/variances and18fullfold vectors/risks",
+    "packet_observations.json privateall5040x156coordinates andallpointzero/softweight/statistics/visiblemetadata",
+    "fit_L_ids.json private",
+    "source_phase_curvature_basis stdout private",
+    "independent all5040observations/72cells/18fold mean-risk-count recount,aggregatefigures/report/registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "pooled_RXcontrast_risk_gain",
+      "per_RX_risk_gain",
+      "18fold risk_gain andpositivegroupcount",
+      "all72cellpopulationmeans/variance",
+      "all5040packetobservations andsoftmodulus/zero/dispersion",
+      "actual0NN/CP/updates/augmentation/target"
+    ],
+    "dimensions": [
+      "RX3/4/6/8",
+      "6TX",
+      "day1/2/3",
+      "18heldTXanddayfolds"
+    ],
+    "prediction_ref": "No identityprediction;phase_curvature_basis.json sourceprofileprediction only",
+    "scorer_ref": "Independent allsavedphaseobservations/72cell/18fold arithmeticrecount;no targettruth",
+    "criteria": {
+      "min_pooled_risk_gain": 0.1,
+      "min_each_RX_risk_gain": 0.0,
+      "min_positive_TXday_groups": 15
+    }
+  },
+  "rows": [
+    {
+      "row_id": "PHASE_CURVATURE_SOURCE_CROSSFIT",
+      "method": "Adjacenttriple softcomplex phasecurvature;heldTX/day sourceRXmean contrast",
+      "purpose": "single_hypothesis",
+      "config_ref": "experiments/cvs_phase_curvature_basis17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No stochastic model/augmentation/support/evaluation. Source physical split392005 reused; cache directory seed2026092701 identifies historical preparation, not a newly trained model.",
+      "k": null,
+      "scenario": "source_clean_statistics_no_model",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "fitL5040/72cells/18crossfits/393120triplets;0models/CP/NN/updates/views;unusedV/features deserialize,heldRX1 excluded,U metadataonly",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_phase_curvature_fitL_20261017_r01/source_phase_curvature_basis.stdout.log",
+      "command": "CVS-RFFI/bin/python -u -m experiments.cvs_phase_curvature_basis17.run",
+      "expected_artifacts": [
+        "active/resolved_config/completion orpreservedfailure",
+        "phase_curvature_basis.json all72cellmeans/variances and18fullfold vectors/risks",
+        "packet_observations.json privateall5040x156coordinates andallpointzero/softweight/statistics/visiblemetadata",
+        "fit_L_ids.json private",
+        "source_phase_curvature_basis stdout private",
+        "independent all5040observations/72cells/18fold mean-risk-count recount,aggregatefigures/report/registry"
+      ],
+      "config": {
+        "run_id": "20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01",
+        "launch_owner": "codex/root/F-phase-curvature-source-basis-20261017",
+        "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "fit_L": 5040,
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "days": [
+          1,
+          2,
+          3
+        ],
+        "TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "samples_per_cell": 70,
+        "window": [
+          80,
+          160
+        ],
+        "triplet_lag": 1,
+        "triplet_count_per_packet": 78,
+        "coordinates": 156,
+        "numerical_epsilon": 1e-12,
+        "arithmetic": "Complex128/Float64",
+        "observation": "c[n]=z[n+1]^2*conj(z[n])*conj(z[n+2]);q=c/(abs(c)+1e-12);78 interleaved real/imag coordinates for n80..157;allpoints/no filtering or unwrapping",
+        "cell_summary": "Mean of all70 observed vectors;population variance percoordinate;allraw packet observations retained",
+        "crossfit": "18heldTX/day groups;train excludes BOTH heldTX and heldday;other5TX*2day*4RX cellmeans;center4RX within eachTX/day;meanRX displacement predictsheldgroup;no fittedscale/projection/classifier",
+        "criteria": {
+          "min_pooled_risk_gain": 0.1,
+          "min_each_RX_risk_gain": 0.0,
+          "min_positive_TXday_groups": 15
+        },
+        "risk_definition": "Mean squared Euclidean error over18groups*4RX*156coordinates;zeroRX displacement baseline;perRX equally weighted;positive group strictlygain>0",
+        "on_fail": "Closefixedphasebasis;no statistic/lag/window/TX/day/RX/threshold/seed rescue;no IQtransform or E20",
+        "on_pass": "SourceRX-associated phase-shape evidence only;separate physically justified boundedIQ operator/identityprotection and matchedE20 still required;no automatictraining",
+        "source_only": true,
+        "model_constructed": false,
+        "checkpoint_loads": 0,
+        "source_cache_loads": 1,
+        "network_forwards": 0,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "teacher_forwards": 0,
+        "IQ_views_generated": 0,
+        "IQ_modified": false,
+        "U_truth_read": false,
+        "U_statistically_used": false,
+        "V_statistically_used": false,
+        "held_RX1_statistically_used": false,
+        "target_access": false,
+        "automatic_training": false,
+        "device": "CPU",
+        "threads": 2,
+        "NoExplicitCFO_preserved": true,
+        "phase_or_CFO_not_identity_feature": true,
+        "baseline_boundary": "FutureF+CROSS_RX/3SIG_TIME/unifiedSinc/joint160/defaultcos/E20/originalU unchanged;no model used here",
+        "limitations": [
+          "Measuredwaveformcurvature includesTX/channel/RX/filter/equalizer effects;not identifiableRX oscillatorphasenoise",
+          "Sourceassociation is not hardwareRXreplacement,IQ identitypreservation,heldRXrecognition,DG,As orjointproof",
+          "CacheL6300/unusedV/features deserialized;only originalfitL5040 statisticallyused,U opaqueIDs only",
+          "Not periodiclag20 residual or oldtrainable featurecurvature branch;no oldroute reactivation"
+        ]
+      }
+    }
+  ],
+  "notes": [
+    "Fixed80:160/adjacentlag1/all78triplets,Complex128eps1e-12 before sourceaccess;no wrap/cropalteration/cycle20 model/spectralfit/meanphaseorCFOidentityfeature.",
+    "q=c/(abs(c)+eps),c=z[n+1]^2conjz[n]conjz[n+2];interleave156RIcoordinates. Keepzeros/lowenergy/allpoints,reportsoftmodulus anddispersion;no phaseunwrapping/filter/retry/clip.",
+    "Mean70packets perTX/RX/day cell;18heldTX/dayfolds,trainexcludesbothheldTX/day,other5TX*2day RXcentereddisplacements predictheldgroup;zeroRX baseline.No fittedidentity/RXclassifier,projectionor scale.",
+    "FixedpooledMSEreduction>=.10,eachRX>=0,atleast15/18strictpositivegroups;anyFAIL closesfixedstatistic/lag/window/TX/day/RX/threshold/seed.Noautomaticaugmentation orE20.",
+    "OnlyfitL5040 RX3/4/6/8/day1..3/6TX/70cell fromoriginalvalidatedcarrier;L6300 andunusedV/features deserialize,U opaqueIDs only/noIQortruth. NoheldRX1/targetstats. No fullL6300 orL_train5580 conflation.",
+    "No model stage:realcheckpoint noquerysmoke inapplicable;only stageconsumedsourcehandles/localchecks/oneP0P1/onecommit/prereg/release/poststate. No newdatahashes/seals/approvallayers.",
+    "Local29input-config negatives/7scientificcounterexamples/266syntheticIQ/5040syntheticmetadata PASS;affinephaseinvariance/quadraticresponse/outsidewindow/zeros/allmetadata tested;0sourceIQ/NN/updates.",
+    "SourceRXassociation is not pureRXphase-noise separation,receiverreplacement,IQidentitypreservation,heldRXrecognition,DG,As orjoint proof;futureoperator/range notselected. OriginalF+CROSS_RX/defaultheadjoint/E20/originalU preserved.",
+    "Oldcommonphase20 failed,oldphasecurvature featurebranch notreactivated,oldcyclecovariance/spectral/DC/IQcircularity/frequency failuresclosed. IsolatedAWGN20..36E20 closed,norange/seed rescue."
+  ],
+  "registered_at": "2026-10-16T20:19:14+00:00"
+}

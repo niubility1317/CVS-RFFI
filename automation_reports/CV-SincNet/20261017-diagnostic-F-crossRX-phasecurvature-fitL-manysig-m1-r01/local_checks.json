@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "input_config_negatives": 29,
+  "scientific_counterexamples": 7,
+  "synthetic_IQ_observations": 266,
+  "synthetic_metadata_vectors": 5040,
+  "affine_phase_invariance": true,
+  "known_quadratic_phase_response": true,
+  "strict_reference_window_no_wrap": true,
+  "zeros_and_all_points_retained": true,
+  "held_TX_and_day_both_excluded": true,
+  "persistent_RX_case_PASS": true,
+  "TX_day_only_or_reversal_FAIL": true,
+  "onebadRX_and_14positive_groups_FAIL": true,
+  "source_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "network_forwards": 0,
+  "optimizer_steps": 0,
+  "head_fit_updates": 0,
+  "target_access": false
+}
