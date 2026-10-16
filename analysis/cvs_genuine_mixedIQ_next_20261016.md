@@ -1,6 +1,6 @@
 # 真正混合 IQ 增强：失败复盘与当前检验
 
-当前没有证明 clean 与 practical 的共同突破。新主线仍固定用户指定的 F（三路 SIG_TIME＋统一 Sinc 修正）、从零 E20、原 joint160/default cosine 联合训练、NoExplicitCFO 和原 U/EMA/旧门控。没有把旧 E50 权重或旧基座的性能增量移植到 F。
+当前没有证明 clean 与 practical 的共同突破。用户最新将增强前基线改为 **F＋跨 RX 同 TX 对比学习**，从零 E20、原 joint160/default cosine 联合训练、NoExplicitCFO 和原 U/EMA/旧门控保持。以下已完成 OJ24 等实验使用旧 F 对照，不能充当新基线的匹配证据。没有把旧 E50 权重或性能增量移植为新 E20 结果。
 
 ## 已完成探索留下了什么
 
@@ -34,10 +34,22 @@ OJ24 只检验观察原点。每个 L 包独立取 d∼Uniform{0,…,24}，G(x)[
 
 首轮固定源 RX1 留出：训练 RX3/4/6/8 的 L5040/U45360，seen V21600，held V5400 仅 FINAL。OJ24−A0 必须达到 held 准确率至少 +1 个百分点、宏平均 F1 不下降、seen V 损失不超过 0.5 个百分点，并满足完整有限 4440 更新、全 TX×RX×day 覆盖及全部实际 L/U 物理序列相同。失败立即关闭 OJ24，不调整范围／概率、不换 RX 或 seed 救援；通过只支持另登记其余四个源 RX 确认，不直接展开 target 或联合 A_s。
 
-OJ24 已在实际代码 `f601fc65f6eaafbfd98080882108f4d50e07db69` 启动，运行根和命令见[该 run 报告](../automation_reports/CV-SincNet/20261016-phase1-F-origin-jitter-RX1-e20-s2026092701-m1-r01/report.md)。真实 own scratch checkpoint 无查询 smoke 通过，实际 E20/原头联合更新、25 种偏移、每步 physicalclip、四前向及原 U 参数已核实。此处写作时尚无 FINAL 性能结论。
+OJ24 已在实际代码 `f601fc65f6eaafbfd98080882108f4d50e07db69` 启动，运行根和命令见[该 run 报告](../automation_reports/CV-SincNet/20261016-phase1-F-origin-jitter-RX1-e20-s2026092701-m1-r01/report.md)。真实 own scratch checkpoint 无查询 smoke 通过，实际 E20/原头联合更新、25 种偏移、每步 physicalclip、四前向及原 U 参数已核实。以上为发布时的固定设计；实际 FINAL 结果见末节。
 
 ## 如何进入真正混合验证
 
 只有独立 A_g 的源证据成立后，才固定同 F/E20、同数据／初始化／U／默认头／前向成本的 B00、B10、B01、B11。分别检验 A_g 的跨 RX clean 收益、A_s 的 practical 适应和联合净收益及交互。初轮不同时叠 A_s(A_g(x)) 和多种新损失；全部合法有标签 satellite 视图直接参与 CE。
 
 正式测试仍使用原 clean＋六 practical，冻结逐 row prediction 后独立 truth-last，不因目标分数调整幅度、选模、晋级或重跑。目标仍是 clean 净正、low urban >60%、suburban 接近自身 clean 以及跨 seed 复现；当前均未由新 F 联合模型证明。
+
+## 用户最新基线覆盖
+
+后续控制和增强变体共同使用 F＋CROSS_RX_SUPCON，不再用纯 F 对照计算新增增强收益。现有真实配方位于提交 `4df7b94d0fd8ce29056bd8236364e45afa92e07f` 的 `experiments/cvs_f_supcon50/mechanism.py`：在 `time_down` 与 `t2.pool` 上，真实 L 的同 TX／不同物理 RX 为正对，不同 TX 为负对，同 TX 同 RX 及自身不进分母；温度 0.2、最大权重 0.1，前 5 轮为 0、随后 10 轮线性增加。复用两次原 RDrop 前向，不新增投影头、参数或网络前向，不给 U 增加真值或对比损失。默认头继续通过原 CE/RDrop 联合更新。
+
+新 E20 保持该绝对 warm/ramp 日程，即 E6 起启用、E15 到 0.1；总计 13L＋7U、4440 更新，FINAL20。保留原有普通增强作为共同条件，发布前记录真实工厂／开关／概率，不能把“无新增 A_g”写成完全无增强。完整源 L6300/U56700/V27000 与留出源折严格区分，不用 E50 权重或把 E50 成绩当作 E20。
+
+当前机器可读契约见 [F＋跨 RX 对比 E20 基线](../configs/phase1/F_crossrx_e20_baseline.json)。这是基线覆盖和接入设计，尚未发布新 E20；现有 E50 的数据／权重来源与本轮契约分别核对，不能直接续训或冒称已验证新预算。新机制与 A_g／A_s 的收益均须相对这个相同配方、数据、预算和前向量的对照计算。OJ24 的失败继续保留，不因更换基线重跑救援。
+
+## OJ24 首轮收尾
+
+完整 E20 已完成，源规则 FAIL。OJ24−A0 accuracy -1.9074074074074021、macroF1 -1.1833066289153482 个百分点，修复 247／新增错误 350。一个源折／一个 seed，0 target；不据此宣称正式双突破。候选关闭，不调整范围或更换 RX/seed 救援。

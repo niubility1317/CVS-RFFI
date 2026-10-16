@@ -1,0 +1,81 @@
+{
+  "schema": "phase1_augmentation_baseline_policy_v1",
+  "status": "USER_FIXED_NOT_YET_RUN_E20",
+  "authorization": "User changed the pre-augmentation baseline to F plus cross-RX same-TX contrastive learning on 2026-10-16; existing E20 budget remains in force.",
+  "baseline_name": "F+CROSS_RX_SUPCON",
+  "existing_mechanism_source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+  "existing_mechanism_source": "experiments/cvs_f_supcon50/mechanism.py",
+  "inheritance": {
+    "weights": "none; scratch only",
+    "optimizer": "none",
+    "EMA": "own scratch model only",
+    "E50_results": "historical context only; no performance substitution or automatic budget extension"
+  },
+  "model": {
+    "SIG_TIME": "SIG_TIME_X3",
+    "Sinc_coordinates": "CENTER_25K",
+    "Sinc_optimizer": "CENTER_UNITS",
+    "sample_rate_Hz": 25000000,
+    "IQ_length": 256,
+    "embedding": "original joint160",
+    "classifier": "original default cosine, jointly trained, fixed logit scale30",
+    "NoExplicitCFO": true,
+    "new_deployment_parameters": 0,
+    "new_classifier_or_probe": false
+  },
+  "budget": {
+    "epochs": 20,
+    "label_epochs": 13,
+    "pseudo_epochs": 7,
+    "steps_per_epoch": 222,
+    "optimizer_updates": 4440,
+    "checkpoint_selection": "FINAL20",
+    "resume_or_E50_parent": false
+  },
+  "training": {
+    "RDrop_alpha": 1.0,
+    "label_smoothing": 0.01,
+    "cosine_schedule": "original E20 schedule",
+    "ordinary_augmentation": "preserve the existing F+CROSS_RX recipe as a common condition; record actual factory, probabilities and schedule at release",
+    "original_U_gates_and_EMA": true,
+    "U_TX_truth": "hidden",
+    "new_U_contrastive_loss": false,
+    "new_Ag": false,
+    "As": false
+  },
+  "contrastive": {
+    "mode": "CROSS_RX",
+    "input_role": "true-labeled source L only",
+    "levels": ["time_down", "t2.pool"],
+    "descriptor": "channel temporal mean and population std; current L-batch detached standardization floor1e-4; sample L2 eps1e-4",
+    "positive": "same true TX, different physical source RX",
+    "negative": "different true TX",
+    "exclude_from_denominator": "self and same-TX same-RX",
+    "invalid_anchor": "exclude if no positive or no negative; finite zero if no valid anchor",
+    "temperature": 0.2,
+    "max_weight": 0.1,
+    "weight_schedule": "0.1*clamp((epoch-5)/10,0,1); preserve absolute warm/ramp lengths in E20",
+    "two_forward_policy": "reuse the same generated L IQ and the two existing RDrop forwards; mean over the two depths and two forwards",
+    "physical_RX_validation": "compare metadata rx_i with the original RX/day domain map; day difference alone is not cross RX",
+    "extra_model_forwards": 0,
+    "direct_auxiliary_default_head_gradient": false,
+    "default_head_CE_training": true
+  },
+  "data": {
+    "contract": "unchanged legacy source L/U/V 7/63/30",
+    "full_source_counts": {"L": 6300, "U_hidden": 56700, "V": 27000},
+    "source_RX": [1, 3, 4, 6, 8],
+    "source_days": [1, 2, 3],
+    "source_folds": "explicit exclusion of held RX from L/U for any separately registered source diagnostic; never mix full-source and held-fold results",
+    "target_use": "frozen registered prediction then independent truth-last scoring only",
+    "target_feedback_to_design": false
+  },
+  "comparison": {
+    "future_augmentation_control": "same F+CROSS_RX_SUPCON, E20, data contract, initialization rule, original U recipe and actual forward budget",
+    "no_reuse_as_new_control": ["old F without contrastive", "old E50 F+CROSS_RX", "OJ24 source RX1 run"],
+    "formal_views": ["clean", "practical_high", "practical_mid", "practical_low_suburban", "practical_high_urban", "practical_mid_urban", "practical_low_urban"],
+    "formal_IQ_channel_SNR_boundary": "unchanged",
+    "goal_completed": false
+  },
+  "execution_boundary": "This is the current baseline policy, not a resolved run configuration or a new experiment launch. Port integration, focused checks, preregistration and actual E20 execution remain to be completed before claiming new baseline results."
+}

@@ -52,20 +52,24 @@ def analyze(output,spec,state,control_root):
     logs=parse_logs(source,output/(row['row_id']+'.log'));curves=[dict(arm='OJ24',**v) for v in logs['curves']]
     control_logs=parse_logs(control_root,control_root.parents[1]/'logs'/(control_root.parent.name+'.log'))
     curves += [dict(arm='A0',**v) for v in control_logs['curves']]
-    predictions={};strata=[]
+    predictions={};strata=[];margins={}
     for arm,path,v in (('A0',control_root,control),('OJ24',source,result)):
         pred=read(path/'held_V_predictions.json')['records'];keys=[tuple(z[k] for k in ('eq','RX','day','sig_i','base_index')) for z in pred]
         if len(pred)!=5400 or len(set(keys))!=5400 or any(z['RX']!=1 for z in pred):raise ValueError('Unique heldV5400 required')
         recount=metrics(pred)
         if recount['confusion']!=v['held_V']['confusion'] or abs(recount['accuracy']-v['held_V']['accuracy'])>1e-12 or abs(recount['macro_f1']-v['held_V']['macro_f1'])>1e-12:raise ValueError('Independent default-head recount differs')
         predictions[arm]=dict(zip(keys,pred))
+        if any(not math.isfinite(z['margin']) for z in pred):raise ValueError('Finite scale-normalized default-head margins required')
+        margins[arm]=dict(count=len(pred),mean=sum(z['margin'] for z in pred)/len(pred),definition='(true logit - strongest wrong logit)/30; original default head')
         for dim,values in (('TX',range(6)),('day',(1,2,3)),('TX_day',[f'{t}/{d}' for t in range(6) for d in (1,2,3)])):
             for value in values:
                 selected=[z for z in pred if (z['label'] if dim=='TX' else z['day'] if dim=='day' else f"{z['label']}/{z['day']}")==value]
-                strata.append(dict(arm=arm,dimension=dim,value=value,**metrics(selected)))
+                strata.append(dict(arm=arm,dimension=dim,value=value,**metrics(selected),mean_margin_over30=sum(z['margin'] for z in selected)/len(selected)))
     if predictions['A0'].keys()!=predictions['OJ24'].keys() or any(z['label']!=predictions['A0'][k]['label'] for k,z in predictions['OJ24'].items()):raise ValueError('Matched held physical IDs/truth required')
     repaired=sum(z['prediction']==z['label'] and predictions['A0'][k]['prediction']!=z['label'] for k,z in predictions['OJ24'].items())
     broken=sum(z['prediction']!=z['label'] and predictions['A0'][k]['prediction']==z['label'] for k,z in predictions['OJ24'].items())
+    reference_correct=sum(z['prediction']==z['label'] for z in predictions['A0'].values())
+    kept=reference_correct-broken
     count=0
     with gzip.open(source/'training_sequence.jsonl.gz','rt') as x,gzip.open(control_root/'training_sequence.jsonl.gz','rt') as y:
         for a,b in zip_longest(x,y):
@@ -78,7 +82,8 @@ def analyze(output,spec,state,control_root):
     q=state['source_decision']
     if q['checks']!=checks or q['status']!=('PASS' if all(checks.values()) else 'FAIL'):raise ValueError('Independent qualification differs')
     costs={arm:sum(v[k] for k in ('L_forward_packets','student_U_forward_packets','student_source_eval_forward_packets','EMA_eval_forward_packets','held_V_forward_packets')) for arm,v in (('A0',control),('OJ24',result))}
-    summary=dict(status='ANALYZED',source_decision=q,models=dict(A0=control,OJ24=result),paired=dict(repaired=repaired,broken=broken),
+    summary=dict(status='ANALYZED',source_decision=q,models=dict(A0=control,OJ24=result),paired=dict(repaired=repaired,broken=broken,
+        fixed_A0_clean_correct_count=reference_correct,retained=kept,retention=kept/reference_correct),default_head_margins=margins,
         full_log_proof=dict(A0=control_logs['proof'],OJ24=logs['proof']),actual_sequence_batch_records=count,new_model_epochs=20,new_updates=4440,
         new_real_forward_packets=costs['OJ24'],reused_control_model_epochs=20,reused_control_updates=4440,reused_control_real_forward_packets=costs['A0'],
         origin_jitter_proof=proof,actual_native_arg_differences=differences,matrix_wall_seconds=state['complete']['wall_seconds'],model_seed_count=1,source_fold_count=1,target_access=False,goal_completed=False,automatic_extension=False)

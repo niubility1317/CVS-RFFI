@@ -1,0 +1,190 @@
+{
+  "status": "VERIFIED",
+  "source_decision": {
+    "status": "FAIL",
+    "checks": {
+      "held_accuracy": false,
+      "held_macroF1": false,
+      "seen_health": true,
+      "complete_health": true
+    },
+    "accuracy_gain_pp": -1.9074074074074021,
+    "macroF1_gain_pp": -1.1833066289153482,
+    "seen_V_mean_drop_pp": 0.18518518518518823,
+    "source_only": true,
+    "target_access": false,
+    "automatic_extension": false,
+    "goal_completed": false
+  },
+  "paired": {
+    "repaired": 247,
+    "broken": 350,
+    "fixed_A0_clean_correct_count": 4382,
+    "retained": 4032,
+    "retention": 0.9201277955271565
+  },
+  "default_head_margins": {
+    "A0": {
+      "count": 5400,
+      "mean": 0.11728866005785406,
+      "definition": "(true logit - strongest wrong logit)/30; original default head"
+    },
+    "OJ24": {
+      "count": 5400,
+      "mean": 0.10300349670641767,
+      "definition": "(true logit - strongest wrong logit)/30; original default head"
+    }
+  },
+  "full_log_proof": {
+    "A0": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "full_stdout_bytes": 114796,
+      "error_markers": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "legacy_rdrop/CE1": 0,
+        "legacy_rdrop/CE2": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_phase_objective_difference": 4.76837158203125e-07,
+      "stdout_warning_lines": []
+    },
+    "OJ24": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "full_stdout_bytes": 115077,
+      "error_markers": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "legacy_rdrop/CE1": 0,
+        "legacy_rdrop/CE2": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_phase_objective_difference": 3.5762786865234375e-07,
+      "stdout_warning_lines": []
+    }
+  },
+  "actual_sequence_batch_records": 5994,
+  "new_model_epochs": 20,
+  "new_updates": 4440,
+  "new_real_forward_packets": 3546618,
+  "reused_control_model_epochs": 20,
+  "reused_control_updates": 4440,
+  "reused_control_real_forward_packets": 3546618,
+  "origin_jitter_proof": {
+    "status": "VERIFIED",
+    "actual": {
+      "kind": "CAUSAL_REFLECT_ORIGIN_JITTER",
+      "calls": 4440,
+      "packets": 568320,
+      "delay_counts": [
+        22917,
+        22418,
+        22683,
+        22839,
+        23068,
+        22895,
+        22637,
+        22489,
+        22350,
+        22819,
+        22713,
+        22828,
+        22796,
+        22627,
+        22884,
+        23080,
+        22536,
+        22605,
+        22705,
+        22927,
+        22729,
+        22780,
+        22727,
+        22676,
+        22592
+      ],
+      "delay_min": 0,
+      "delay_max": 24,
+      "synthetic_prefix_max": 24,
+      "real_observation_min": 232,
+      "window_energy_ratio_min": 0.8590067943962606,
+      "window_energy_ratio_max": 1.2877344947217761,
+      "waveform_MSE": 0.9657494850006249,
+      "max_abs": 3.9019274711608887,
+      "circular_roll": false,
+      "post_normalization": false,
+      "all_other_operators": false,
+      "labels_used": false,
+      "hardware_changes": false
+    },
+    "raw_weight": 0.5,
+    "jitter_weight": 0.5,
+    "same_IQ_within_RDpair": true,
+    "original_ordinary_calls": 0,
+    "As_calls": 0,
+    "head_fit_updates": 0,
+    "target_access": false
+  },
+  "actual_native_arg_differences": [
+    "aug_enable_pa_normal",
+    "aug_max_time_shift",
+    "aug_p_amp_scale",
+    "aug_p_awgn",
+    "aug_p_bandedge_taper",
+    "aug_p_cfo",
+    "aug_p_dc_offset",
+    "aug_p_multipath",
+    "aug_p_pa",
+    "aug_p_phase_noise",
+    "aug_p_phase_rot",
+    "aug_p_time_shift",
+    "candidate_id",
+    "output_dir",
+    "run_id",
+    "use_aug"
+  ],
+  "matrix_wall_seconds": 1102.2336192131042,
+  "model_seed_count": 1,
+  "source_fold_count": 1,
+  "target_access": false,
+  "goal_completed": false,
+  "automatic_extension": false,
+  "scientific_status": "FAIL_SOURCE_RX1_ONLY",
+  "actual_training_code": "f601fc65f6eaafbfd98080882108f4d50e07db69",
+  "terminal_workers_alive": false,
+  "terminal_dispatcher_alive": false,
+  "failure": null,
+  "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_origin_jitter20_20261016\\final"
+}
