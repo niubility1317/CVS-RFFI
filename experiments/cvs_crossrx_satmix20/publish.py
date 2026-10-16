@@ -4,16 +4,20 @@ from pathlib import Path
 from . import design as d
 from experiments.cvs_rdrop_sinc_units.publish import PYTHON
 from experiments.cvs_phase1_stack.publish import ssh,CONNECTION
-RUN=d.RUN
-RELEASE=d.RELEASE
 PKG='experiments/cvs_crossrx_satmix20'
 def activation_ssh(script):
  compile(script,'remote_activation','exec')
  result=subprocess.run(['ssh',*CONNECTION,'-T','N607',PYTHON+' -'],input=script.encode('utf8'),capture_output=True,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
  if result.returncode:raise RuntimeError(result.stderr.decode('utf8',errors='replace'))
  return result.stdout
-def main():
- root=Path(__file__).resolve().parents[2];local=root/'local_artifacts/F_crossrx_satmix20_20261016';local.mkdir(parents=True,exist_ok=True)
+def main(profile='discovery_seed01'):
+ if profile not in ('discovery_seed01','confirmation_seed02'):raise ValueError('Unregistered source profile')
+ if profile=='confirmation_seed02':
+  from .confirmation import activate,LOCAL
+  activate()
+ else:LOCAL='local_artifacts/F_crossrx_satmix20_20261016'
+ RUN,RELEASE=d.RUN,d.RELEASE
+ root=Path(__file__).resolve().parents[2];local=root/LOCAL;local.mkdir(parents=True,exist_ok=True)
  if subprocess.check_output(['git','status','--porcelain','--',PKG],cwd=root,text=True).strip():raise ValueError('Uncommitted diagnostic code')
  commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip();remote=d.PROJECT+'/releases/'+RELEASE
  c=dict(release=remote,archive=remote+'.tar.gz',root=d.PROJECT+'/runs/'+RUN,AF=d.AF_RELEASE,python=PYTHON,commit=commit)
@@ -32,7 +36,7 @@ print(json.dumps(dict(status='VERIFIED',ordinary_account=True,immutable_dependen
  with tarfile.open(fileobj=io.BytesIO(raw)) as original,tarfile.open(archive,'w:gz') as packed:
   for member in original.getmembers():
    if member.isfile():packed.addfile(member,original.extractfile(member))
-  for name,data in [('release_commit.txt',(commit+'\n').encode()),('runtime.json',json.dumps(dict(AF=c['AF'])).encode()),('registration/experiment.json',record)]:
+  for name,data in [('release_commit.txt',(commit+'\n').encode()),('runtime.json',json.dumps(dict(AF=c['AF'],profile=profile)).encode()),('registration/experiment.json',record)]:
    member=tarfile.TarInfo(name);member.size=len(data);packed.addfile(member,io.BytesIO(data))
  c['sha256']=hashlib.sha256(archive.read_bytes()).hexdigest();subprocess.run(['scp',*CONNECTION,str(archive),'N607:'+c['archive']],check=True,capture_output=True)
  script=r'''

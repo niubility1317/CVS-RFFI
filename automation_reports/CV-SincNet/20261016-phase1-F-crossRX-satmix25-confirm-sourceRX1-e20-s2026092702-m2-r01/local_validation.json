@@ -1,0 +1,35 @@
+{
+  "status": "PASS",
+  "profile": "confirmation_seed02",
+  "rows": [
+    {
+      "row_id": "B00-RX1-s2026092702",
+      "model_seed": 2026092702,
+      "native_argument_changes": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "no_checkpoint_initialization": true,
+      "same_data_channel_loss_U_budget": true
+    },
+    {
+      "row_id": "B01-RX1-s2026092702",
+      "model_seed": 2026092702,
+      "native_argument_changes": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "no_checkpoint_initialization": true,
+      "same_data_channel_loss_U_budget": true
+    }
+  ],
+  "negative_cases": 10,
+  "source_IQ_reads": 0,
+  "target_access": false,
+  "model_forwards": 0,
+  "training_updates": 0
+}

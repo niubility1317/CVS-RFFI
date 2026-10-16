@@ -1,0 +1,217 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+  "group_id": "phase1-F-CROSS_RX-satmix25-source-Ag-As",
+  "display_name": "F＋跨RX同TX：固定75/25 practical独立seed02确认",
+  "description": "Unchanged qualified75/25 source recipe, independent model seed2026092702; paired scratchE20 B00/B01, no new IQ/loss/U mechanism or target.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F CROSS_RX satmix25 seed02 confirmation"
+  ],
+  "tags": [
+    "F",
+    "CROSS_RX",
+    "satmix25",
+    "E20",
+    "source_RX1",
+    "paired_forward_control",
+    "independent_seed_confirmation"
+  ],
+  "comparison_group_id": "phase1-F-CROSS_RX-satmix25-source-Ag-As",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research, original single-seed source criteria passed. Minimal independent seed02 confirmation, E20 per model unchanged; no target or recipe/ratio search.",
+  "code": {
+    "commit": "Actual execution Git commit in release_commit.txt/resolved_config",
+    "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
+    "environment": "ordinary N607 CVS-RFFI; CPU2/loader0",
+    "cwd": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+    "entrypoint": "experiments/cvs_crossrx_satmix20/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing original validated source carrier; fixed RX1-held effective source fold",
+    "representation": "Native IQ256 at25MHz; original raw, shared old ordinary IQ, complete practical residual post_sync/noeq atfc2.462GHz",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Eachrow/source/source_contract.json exact L5040/U45360/V21600; held original RX1 L1260 IDs private",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "5040 fit;1260 held RX1 original L for fixed-final development only;144 fit anchor reads unused",
+      "U_s": "45360 hidden labels; original weak/strong/oldgate/ownEMA rule",
+      "V": "21600 fitRX health only"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "Eachrow/source/actual_channel.json; training/source-eval only; formal target IQ untouched"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "True held sourceRX1 qualification only; no target/newTX/Phase2 claim"
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "Eachrow/source/initialization.json and source_contract.json; existing carrier exact match then fixed RX1 exclusion. Real no-query smoke reads matching fourRX prior B00 checkpoint only, never initializes train models.",
+    "provenance_verdict": "No inherited weight. Smoke checkpoint is own prior scratchF/source-only/fixedfinal20 same effective roles, target access false.",
+    "selection_rule": "Fixedfinal20; all heldsource views complete then compare source-only preregistered thresholds; no target selection"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-crossRX-satmix25-confirm-20261016",
+    "gpu_policy": "crossowner max3 total/GPU includingpreCUDA;12000MiBfree;sharedcapacitylock",
+    "remote_run_root": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/logs",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_crossrx_satmix20/runner.py",
+    "stop_rule": "Wrong source/role/checkpoint/output, nonfinite, step/forward budget violation or failed legal source prediction: preserve all artifacts, stop new pending, keep healthy workers, no automatic retry. Scientific stop after both final20 source rows: close fixed75/25 on failed preregistered thresholds; never target feedback."
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "request/launch/queue_state/result/completion",
+    "Eachrow/source/source_contract and actual_native_args/resolved_config/initialization",
+    "Eachrow/source/final_ssdg.pth private",
+    "Eachrow/source/satmix_result.json",
+    "Eachrow/source/source_readouts/clean and six practical source predictions private",
+    "Eachrow/source/ordinary_augmentation_actual and actual_channel",
+    "Eachrow/source/satmix_steps.jsonl.gz and training_sequence.jsonl.gz private",
+    "Eachrow/source/satellite_supervision_coverage.json private",
+    "Eachrow/source/step/epoch logs and unit_steps private",
+    "independent full log/paired source analysis and report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "held source defaulthead accuracy",
+      "macro_F1",
+      "urban mean/low/mid",
+      "each suburban accuracy and clean gap",
+      "repair/break same physical source IDs",
+      "sourceV health",
+      "actual steps/LNN/U/EMA/satellite generation costs"
+    ],
+    "dimensions": [
+      "B00/B01",
+      "seed2026092702",
+      "RX1held source",
+      "clean+sixpractical",
+      "same physical1260"
+    ],
+    "prediction_ref": "Eachrow/source/source_readouts (source L labels only, no target)",
+    "scorer_ref": "Independent complete source prediction/log recount; no target truth-side scorer applies at this stage"
+  },
+  "rows": [
+    {
+      "row_id": "B00-RX1-s2026092702",
+      "method": "F+CROSS_RX B00 raw.5/ordinary.25/s_slot.25",
+      "purpose": "independent_seed_source_confirmation",
+      "config_ref": "experiments/cvs_crossrx_satmix20/design.py:config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016101,
+        "support": null,
+        "evaluation": 20261016103
+      },
+      "seed_notes": "model seed controls original init/dropout/native ordinary RNG. New practical named seed20261016101;session receiver20261016102;heldsource eval20261016103;no TX-conditioned RNG. Same physical split392005.",
+      "k": null,
+      "scenario": "held source clean plus six declared practical",
+      "optimizer": "AdamW + existing complete physical CENTER_UNITS Sinc + cosine",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "20x222=4440updates,13L+7U;L3409920 sixforward packets;SupCon3330nonzero/13320terms;B01 As568320 generation,B00zero;held8820 forwards each;U/EMA/V separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source",
+      "log_path": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/logs/B00-RX1-s2026092702.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_crossrx_satmix20/runner.py --worker B00-RX1-s2026092702",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "request/launch/queue_state/result/completion",
+        "Eachrow/source/source_contract and actual_native_args/resolved_config/initialization",
+        "Eachrow/source/final_ssdg.pth private",
+        "Eachrow/source/satmix_result.json",
+        "Eachrow/source/source_readouts/clean and six practical source predictions private",
+        "Eachrow/source/ordinary_augmentation_actual and actual_channel",
+        "Eachrow/source/satmix_steps.jsonl.gz and training_sequence.jsonl.gz private",
+        "Eachrow/source/satellite_supervision_coverage.json private",
+        "Eachrow/source/step/epoch logs and unit_steps private",
+        "independent full log/paired source analysis and report"
+      ]
+    },
+    {
+      "row_id": "B01-RX1-s2026092702",
+      "method": "F+CROSS_RX B01 raw.5/ordinary.25/s_slot.25",
+      "purpose": "independent_seed_source_confirmation",
+      "config_ref": "experiments/cvs_crossrx_satmix20/design.py:config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B01-RX1-s2026092702/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016101,
+        "support": null,
+        "evaluation": 20261016103
+      },
+      "seed_notes": "model seed controls original init/dropout/native ordinary RNG. New practical named seed20261016101;session receiver20261016102;heldsource eval20261016103;no TX-conditioned RNG. Same physical split392005.",
+      "k": null,
+      "scenario": "held source clean plus six declared practical",
+      "optimizer": "AdamW + existing complete physical CENTER_UNITS Sinc + cosine",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "20x222=4440updates,13L+7U;L3409920 sixforward packets;SupCon3330nonzero/13320terms;B01 As568320 generation,B00zero;held8820 forwards each;U/EMA/V separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B01-RX1-s2026092702/source",
+      "log_path": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/logs/B01-RX1-s2026092702.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_crossrx_satmix20/runner.py --worker B01-RX1-s2026092702",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "request/launch/queue_state/result/completion",
+        "Eachrow/source/source_contract and actual_native_args/resolved_config/initialization",
+        "Eachrow/source/final_ssdg.pth private",
+        "Eachrow/source/satmix_result.json",
+        "Eachrow/source/source_readouts/clean and six practical source predictions private",
+        "Eachrow/source/ordinary_augmentation_actual and actual_channel",
+        "Eachrow/source/satmix_steps.jsonl.gz and training_sequence.jsonl.gz private",
+        "Eachrow/source/satellite_supervision_coverage.json private",
+        "Eachrow/source/step/epoch logs and unit_steps private",
+        "independent full log/paired source analysis and report"
+      ]
+    }
+  ],
+  "notes": [
+    "Latest user-selected F+CROSS_RX in both rows. Historical E50 code/recipe only, no E50 or F-only parent checkpoint; no new deploybranch/head/diagnostic classifier. Original U rule fixed;U truth hidden.",
+    "Three same-IQ RDrop pairs: raw.5,common ordinary.25,Sslot.25(raw B00 or full practical(raw) B01). Stable raw.5 plus ordinary.25 gives75%originalL supervision; total view scale1. SupCon stays on two ordinary forwards with original coefficient/schedule, no contrast on newraw/satellite/U.",
+    "Independent fixed source-only pair, not fullL6300 nor L5580/Ldev720. Both start scratch on identical RX3/4/6/8 L5040/U45360;RX1 originalL1260 final-readout only, V21600 health.",
+    "All128 satellite packets supervised without urban confidence gate. One channel draw each physicalsample/step,uniform6scenes,session RX/day/eq never TX,private named NumPy RNG. Raw channel input avoids ordinary AWGN/multipath before practical. No operator composition or extra alignment.",
+    "Fixed source thresholds:lowurban>=+5pp,urbanmean>=+3pp,clean>=-.5pp,eachsuburban>=-.5pp,seenV>=-.5pp,finite complete4440steps/3409920Lforwards/SupCon3330 and finalLCE<=.5. Failure closes this ratio, no rescue. Report absolute suburban gaps against exploratory2pp, not a completed hard target.",
+    "One matching real-checkpoint synthetic no-query smoke is dispatcher first step, PASS continues immediately. Source is own timing B00 fixedfinal20 with exact same fourRX roles; consumed only for strict compatibility smoke, never child initialization.",
+    "Formal full-source stage remains clean+sixpractical independent truth-last;this explicit source-only stage performs no target prediction or scoring and cannot complete the joint objective.",
+    "Confirms 20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01 after complete source-only PASS, not a retry, inherited model, or target-selected source. parent_run_ids remains empty because both models start scratch.",
+    "Immutable runtime.json profile=confirmation_seed02 binds both dispatcher and every worker before configuration/model import; underlying timing and F design seed also2026092702. Native seed alone changes; split/channel/receiver/eval seeds remain fixed.",
+    "Original lowurban>=+5pp,urbanmean>=+3pp,clean/eachsuburban/seenV>=-.5pp and healthy full budget thresholds all required independently. Failure means no promotion and no seed03/RX/ratio rescue. No automatic full-source or target work.",
+    "Previous pair cost separately:40 model epochs/8880updates/9373358 actualNNpackets. Confirmation adds40/8880; no continuation or external teacher. Report aggregate with all seeds including negative confirmation."
+  ],
+  "registered_at": "2026-10-16T06:06:38+00:00"
+}

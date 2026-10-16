@@ -8,7 +8,10 @@ from pathlib import Path
 
 def bootstrap():
     here=Path(__file__).resolve().parents[2]
-    af=Path(json.loads((here/'runtime.json').read_text(encoding='utf8'))['AF'])
+    runtime=json.loads((here/'runtime.json').read_text(encoding='utf8'))
+    af=Path(runtime['AF'])
+    profile=runtime.get('profile','discovery_seed01')
+    if profile not in ('discovery_seed01','confirmation_seed02'):raise ValueError('Unregistered source profile')
     request=json.loads((af/'experiments/cvs_rdrop_sinc_units/configs/matrix.json').read_text(encoding='utf8'))
     original,fold=(Path(request[k]) for k in ('dependency_release','fold_release'))
     sys.path[:0]=[str(original),str(original/'code'),str(original/'experiments/adv3b02_xuc/code')]
@@ -16,6 +19,9 @@ def bootstrap():
         name='experiments.'+suffix;module=types.ModuleType(name);module.__path__=[str(root/'experiments'/suffix)];sys.modules[name]=module
     name='experiments.cvs_feature_sequence50.source'
     spec=importlib.util.spec_from_file_location(name,fold/'experiments/cvs_feature_sequence50/source.py');module=importlib.util.module_from_spec(spec);sys.modules[name]=module;spec.loader.exec_module(module)
+    if profile=='confirmation_seed02':
+        from experiments.cvs_crossrx_satmix20.confirmation import activate
+        activate()
     return here
 
 
