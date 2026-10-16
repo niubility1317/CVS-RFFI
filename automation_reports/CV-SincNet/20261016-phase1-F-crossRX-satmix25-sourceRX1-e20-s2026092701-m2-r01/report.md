@@ -3,7 +3,7 @@
 - run_id：`20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01`
 - group_id：`phase1-F-CROSS_RX-satmix25-source-Ag-As`；类别：`cvs`；阶段：`Phase1`
 - 配置与矩阵：[experiment.json](experiment.json)；状态记录：[events.jsonl](events.jsonl)
-- 当前登记状态：PLANNED（实际状态按events.jsonl及独立证据更新）
+- 当前登记状态：RUNNING，独立验证两组进程、GPU 和日志增长；尚无最终源预测结果。
 
 ## 目的与对照
 
@@ -61,7 +61,7 @@ As 直接使用原始 `x_l`，不使用旧普通增强后的 `x_l_main`，避免
 
 同时原样报告每个 suburban 与该模型 clean 的绝对差距，2 个百分点为探索目标，不把本次非退化条件冒称最终目标。失败即关闭固定 75/25 候选，不改变比例、seed、RX 或目标数据反馈救跑。通过也只支持独立登记的确认／完整 L 四因子阶段，不能证明 A_g 有效或联合完成。
 
-## 启动、技术停止与验证
+## 启动、技术停止与验证（启动前记录）
 
 唯一 owner `codex/root/F-crossRX-satmix25-20261016`。普通 N607 账号，现有 CVS-RFFI Python；CWD 为 `PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01`，命令 `CVS-RFFI/bin/python -u experiments/cvs_crossrx_satmix20/runner.py`。精确来源和路径见登记配置；实际 Git commit 在发布包 `release_commit.txt` 与 resolved config 中保存。
 
@@ -72,3 +72,11 @@ As 直接使用原始 `x_l`，不使用旧普通增强后的 `x_l_main`，避免
 本地真实 F 检查 PASS：9 个负例，native move_batch 实际 `(domain,metadata)` 格式，旧普通增强配置构造，真实 6 次前向及原始/旧增强/卫星输入对应，CROSS_RX 只读原普通对，ownEMA/reader 深拷贝，默认 W 联合更新、joint160 导出逐元素一致。两个合成 optimizer step；0 源/目标 IQ。已完成一次独立下一真实运行 P0/P1 审查，PASS；不增加报告审查或审批。N607 只读 preflight 已完成；归档传输、远端编译和真实 smoke 尚待实际发布。
 
 本轮应交付完整训练日志、全部源场景预测、配对差、卫星覆盖、成本和负结果。没有源域分析通过、辅助 loss 降低或单种子改善能替代最终 clean 净收益、low urban >60% 与 suburban 接近 clean 的联合证明。
+
+## 实际发布与运行
+
+执行代码 commit `0ae066adb10a001e834c8c679c5b7b81c20b3ac8` 已提交、推送并独立核对远端分支 OID。单份 archive 传输比对、远端编译及真实匹配 checkpoint 的 synthetic no-query smoke 均 PASS/VERIFIED；该 smoke 没有给新模型继承权重。两个新 worker 均从零启动。
+
+独立读回已验证 dispatcher、两 worker 的 PID/CWD/argv、GPU 实际占用和各自 stdout 增长，首个完成的源 epoch 分别为 B00 E2/20、B01 E1/20；B01 已生成并监督 28416 份实际 practical IQ。无 failure，无 target 接触。摘要见 [launch_verification.json](launch_verification.json)，私有原始读回保留在本地运行证据目录。此处只是已观察到的进度，不是最终训练或性能结论；恢复继续读原 run，不重复提交。
+
+随后只读进度已到 B00 E6/20（1332 更新，222 次非零 CROSS_RX 调用）和 B01 E3/20（666 更新，85248 份监督 practical IQ），临时 hooks 均为零；两个原 PID 仍在各自 GPU 正常运行。尚无 final20 读出，不按中途源指标改变计划。后续继续监控该 run 并收齐最终源七视图，不另起同 row。

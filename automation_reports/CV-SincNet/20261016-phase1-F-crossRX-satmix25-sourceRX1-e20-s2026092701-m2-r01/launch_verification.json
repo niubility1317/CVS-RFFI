@@ -1,0 +1,34 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_matching_checkpoint_smoke": "PASS;2synthetic packets;never training initialization",
+  "dispatcher_observed": true,
+  "rows": [
+    {
+      "row_id": "B00-RX1-s2026092701",
+      "gpu": 0,
+      "PID_CWD_argv_match": true,
+      "GPU_process_observed": true,
+      "log_growth": true,
+      "epoch": 2,
+      "steps": 444,
+      "L_forward_packets": 340992,
+      "As_packets": 0
+    },
+    {
+      "row_id": "B01-RX1-s2026092701",
+      "gpu": 1,
+      "PID_CWD_argv_match": true,
+      "GPU_process_observed": true,
+      "log_growth": true,
+      "epoch": 1,
+      "steps": 222,
+      "L_forward_packets": 170496,
+      "As_packets": 28416
+    }
+  ],
+  "target_access": false,
+  "prediction_results_available": false
+}
