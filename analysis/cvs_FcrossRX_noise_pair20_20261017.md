@@ -35,3 +35,7 @@ fitRX3/4/6/8的有效L5040／U45360hidden／V21600，held source RX1原L1260只�
 命令：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noisepair_sourceRX1_E20_20261017_r01/experiments/cvs_f_noise_pair20/runner.py`。环境/CWD：`ordinary N607 CVS-RFFI Python/Torch originalfullFP32`／`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noisepair_sourceRX1_E20_20261017_r01`。远端root：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-noisepair-sourceRX1-e20-s2026092701-m3-r01`，本地root：`E:/type10-7/local_artifacts/cvs_FcrossRX_noise_pair20_20261017`；逐row config、六类seed、日志、输出、GPU政策、停止规则和预期artifact均在experiment.json。
 
 REJECTED_EXTRA_GATE：不增加design批准、配置／报告hash、成员hash、smoke凭证、receipt链或额外review。当前整体目标ACTIVE；尚无合格新增Ag、Ag/As四格与交互或正式目标联合证明。
+
+独立结果读取实现已就绪：完整20轮／4440步、全部L/U顺序、两条As共2273280条噪声记录、21个源域读出及固定资格规则均独立重算；不重新加载IQ、checkpoint或拟合分类头。20个reader负例与门槛边界测试通过，新增分析前向／更新／目标访问均为0。六组科学图仅使用实际重算输出，未完成前不生成结果或性能结论。
+
+真实发布状态VERIFIED/RUNNING：一次归档传输比较、remote compile与真实CP合成no-query smoke通过；启动后已独立核实三行进程身份、原adv3b02_xuc实际导入、空初始化、E20/13+7、default头、原physics和持续日志增长。训练发布代码仍固定ee305facac7874bfc1340291ee5360a3665621d9；之后提交的离线reader不热改运行源码。本轮全部结果待自然完成后逐row独立重算，整体goal保持ACTIVE。
