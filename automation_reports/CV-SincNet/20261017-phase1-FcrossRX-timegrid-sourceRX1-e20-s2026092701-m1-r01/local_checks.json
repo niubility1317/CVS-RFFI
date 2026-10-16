@@ -1,0 +1,51 @@
+{
+  "status": "PASS",
+  "negative_cases": 23,
+  "matrix_proofs": [
+    {
+      "rho": 0.0001220703125,
+      "inverse_max_error": 4.440892098500626e-16,
+      "L2_operator_bound": 0.03106683457524298,
+      "diagonal_min": 0.98443603515625,
+      "nonnegative_convex_rows": true
+    },
+    {
+      "rho": 0.000244140625,
+      "inverse_max_error": 4.440892098500626e-16,
+      "L2_operator_bound": 0.06213366915048596,
+      "diagonal_min": 0.9688720703125,
+      "nonnegative_convex_rows": true
+    }
+  ],
+  "rows": [
+    {
+      "arm": "D_raw",
+      "L_forwards": 8,
+      "common_inputs_exact": true,
+      "fourth_same_IQ": true,
+      "default_head_joint_update": true,
+      "export160_exact": true,
+      "new_parameters": 0
+    },
+    {
+      "arm": "TIMEGRID",
+      "L_forwards": 8,
+      "common_inputs_exact": true,
+      "fourth_same_IQ": true,
+      "default_head_joint_update": true,
+      "export160_exact": true,
+      "new_parameters": 0
+    }
+  ],
+  "all_initial_states_exact": true,
+  "common_loss_and_all_parameter_gradients_exact": true,
+  "RNG_endstates_equal": true,
+  "TX_not_used_in_session_rho": true,
+  "session_refresh": true,
+  "no_padding_or_RMS": true,
+  "synthetic_NN_packets": 2060,
+  "synthetic_optimizer_updates": 2,
+  "real_IQ_reads": 0,
+  "real_checkpoint_loads": 0,
+  "target_access": false
+}

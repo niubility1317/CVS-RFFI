@@ -1,0 +1,451 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01",
+  "group_id": "F-crossRX-bounded-timegrid-E20",
+  "display_name": "F＋跨 RX：有界包内时间栅格收缩的独立 clean 检验",
+  "description": "唯一新IQ算子：原256点内部相邻点凸插值，固定session小幅时间收缩；只替换第四对.25RD(raw)，原base不变，0As/新loss/头。一个源RX1/seed从零E20，与既有相同8L D_raw结果严格比较。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "FcrossRX timegrid",
+    "bounded sampling grid contraction"
+  ],
+  "tags": [
+    "source_only",
+    "F_CROSS_RX",
+    "timegrid",
+    "scratchE20",
+    "matched8L"
+  ],
+  "comparison_group_id": "F-crossRX-bounded-timegrid-E20",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active Ag/As research goal;F+CROSS_RX baseline,E20/model,source-only falsification before newcandidate seed/target expansion",
+  "code": {
+    "commit": "Actual release HEAD in release_commit.txt and canonical record before realNN",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "ordinary N607 CVS-RFFI Python/Torch originalfullFP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_timegrid_sourceRX1_E20_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged VALIDATED_ONCE split392005 originalsourcecarrier",
+    "representation": "NativeRMS IQ2x256;addtimegrid onlyrawL,notordinary-beforeAs",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Exacteffectivefit L5040/U45360/V21600 roles;sourceheldRX1L1260 FINALonly",
+    "label_map_ref": "Original6sourceTX0..5,onlyL visible/Utruth hidden",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "OriginalsixsourceTX",
+    "roles": {
+      "L_s": "RX3/4/6/8L5040 train;heldRX1L1260 finalsourceevaluation only",
+      "U_s": "RX3/4/6/8U45360 hiddenTX,originaloldgate/ownEMA/no extra view",
+      "V": "RX3/4/6/8V21600 healthonly,no update"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse source VALIDATED_ONCE handles;CP exactsamecontract/provenance checked for smokeonly;never inherited",
+    "support_query_ref": null,
+    "leo_config_ref": "Originalsix nominalpractical for finalsourceonly,25MHz/IQ256/residual/post_sync/EQoffG1/reference30/reflect,eval20261016103,noformalchange"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Singlefixedsourcefold/modelseed IQcandidate falsification,not validAg/joint/low60/formaltarget/crossseed proof"
+  },
+  "checkpoint": {
+    "initialization": "scratch_only",
+    "sources": [],
+    "contract_check_ref": "preflight matching known D_raw FINAL20/noquerysmoke only;strictcurrentroles beforetrain",
+    "provenance_verdict": "Newstudent/ownEMA/optimizer scratch no ancestors;D_raw state compatibility2syntheticNN then discard,no init/teacher. MatchingCP knownE20/4440samefold/no target/headfit.",
+    "selection_rule": "FixedFINAL20 originaljointlytrained studentdefaultcos30;no sourcebestepoch/targetselection"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/FcrossRX-timegrid-20261017",
+    "gpu_policy": "oneworker;allowners/preCUDA<=3/GPU,free>=12000MiB/CPU2;unrelatedhealthyprotected",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_FcrossRX_timegrid20_20261017",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_timegrid_sourceRX1_E20_20261017_r01/experiments/cvs_f_timegrid20/runner.py",
+    "stop_rule": "Onlyownsystemic role/provenance/nonfinite/incorrectbudget/outputcollision/unlaunchable failure,preservepartial/noauto retry/no healthyjob changes;low scoreis scientificFAIL andfixedcandidateclosed,no strength/RX/seed/epoch rescue"
+  },
+  "expected_artifacts": [
+    "MatchingrealCP2syntheticnoquerysmoke beforedata,then ownscratchsmoke immediatecontinue",
+    "Actualconfig/nativeargs/modules/channel/foldroles/defaulthead/sinc audit",
+    "Full20epochs/4440steps/nativeunit/satmix/RDrop/SupCon and5994L-U sequences",
+    "568320timegrid traces/rho/relativeL2/power/240epochsessions/TXRXday72coverage",
+    "Newfinalownjointhead clean+6sourcepractical predictions/margin/physics/fixedsourceIDs",
+    "Independentallrecords recount/macroF1/fixedreferenceclean-correctretention/pairedrepairsbreaks/negativeTXday",
+    "Trainingcurves/strata/constructcost/newNN/parentcost/noformalclaims"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "heldsourceaccuracy",
+      "macroF1",
+      "urbanmean/low",
+      "suburban-clean gaps",
+      "defaultmargin/30",
+      "fixedD_rawclean-correctretention",
+      "pairedrepairsbreaks",
+      "actualtimegridbounds/sessions/coverage",
+      "updates/NN/teacher/wall"
+    ],
+    "dimensions": [
+      "modelseed",
+      "view",
+      "TX",
+      "day",
+      "state",
+      "lock",
+      "quality",
+      "addednoiseSNR",
+      "CFO",
+      "kernel",
+      "AGC",
+      "boundary"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01/TIMEGRID-RX1-s2026092701/source/source_readouts",
+    "scorer_ref": "experiments.cvs_f_timegrid20.analyze",
+    "criteria": {
+      "primary": "TIMEGRID",
+      "fixed_final": 20,
+      "held_RX": 1,
+      "held_L": 1260,
+      "min_clean_gain_pp": 1.0,
+      "min_clean_macroF1_gain_pp": 0.0,
+      "max_seenV_drop_pp": 0.5,
+      "max_final_common_base_objective": 0.5,
+      "standalone_practical_nonblocking": true,
+      "on_fail": "Close fixed timegrid;no rho/interpolation/probability/weight/RX/seed/budget rescue",
+      "on_pass": "Only separately preregistered secondseed source confirmation;not Ag/joint/target proof"
+    },
+    "target_access": false
+  },
+  "rows": [
+    {
+      "row_id": "TIMEGRID-RX1-s2026092701",
+      "method": "F+CROSS_RX sameTX +bounded timegrid rawL",
+      "purpose": "primary_source_falsification",
+      "config_ref": "experiments/cvs_f_timegrid20/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01/TIMEGRID-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261017701,
+        "support": null,
+        "evaluation": 20261016103
+      },
+      "seed_notes": "Model/globalordinary2026092701;split392005;privategrid20261017701/epoch/RX/day/eq;eval20261016103/receiver20261016102 unchanged;data/supportnull no resplit/K",
+      "k": null,
+      "scenario": "HeldsourceRX1 clean+6unchangedpractical FINALonly;no target",
+      "optimizer": "OriginalAdamW/CENTER_UNITS Sinc physicalclip/cosine",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "NewE20/4440updates/4546560LNN/expected5823318rowNN+dispatcher2;568320newgridviews/0extraUteacher",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01/TIMEGRID-RX1-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01/logs/TIMEGRID-RX1-s2026092701.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_timegrid_sourceRX1_E20_20261017_r01/experiments/cvs_f_timegrid20/runner.py --worker TIMEGRID-RX1-s2026092701",
+      "expected_artifacts": [
+        "MatchingrealCP2syntheticnoquerysmoke beforedata,then ownscratchsmoke immediatecontinue",
+        "Actualconfig/nativeargs/modules/channel/foldroles/defaulthead/sinc audit",
+        "Full20epochs/4440steps/nativeunit/satmix/RDrop/SupCon and5994L-U sequences",
+        "568320timegrid traces/rho/relativeL2/power/240epochsessions/TXRXday72coverage",
+        "Newfinalownjointhead clean+6sourcepractical predictions/margin/physics/fixedsourceIDs",
+        "Independentallrecords recount/macroF1/fixedreferenceclean-correctretention/pairedrepairsbreaks/negativeTXday",
+        "Trainingcurves/strata/constructcost/newNN/parentcost/noformalclaims"
+      ],
+      "config": {
+        "schema": "F_CROSS_RX_timegrid_source_v1",
+        "run_id": "20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01",
+        "stage": "source_RX1_falsification",
+        "arm": "TIMEGRID",
+        "model_seed": 2026092701,
+        "row_id": "TIMEGRID-RX1-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01/TIMEGRID-RX1-s2026092701/source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "F_CROSS_RX_bounded_timegrid",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/FcrossRX-timegrid-20261017",
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "updates": 4440,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": null,
+        "training_recipe": "Unchanged raw.75/ordinary.25/SupCon base plus .25RD(timegrid(raw));all8L;originalU/defaulthead;noAs",
+        "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1.0,
+            2.0
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "clean_net_positive": true,
+          "low_urban_above": 0.6,
+          "each_suburban_gap_exploratory_pp": 2.0,
+          "goal_complete": false,
+          "target_feedback": false
+        },
+        "budget_authorization": "Active Ag/As goal one new scratchE20/4440updates,0inheritedweights;matchingexistingD_raw8L report only",
+        "cost_claim": "4546560LNN+originalU/EMA/V/8820held=5823318rowNN;568320gridviews/240epoch-RX-day sessions;dispatcherCPsmoke2 separate",
+        "baseline_reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01/D_raw-RX1-s2026092701/source",
+        "baseline_reuse": false,
+        "readouts": [
+          "FINAL"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "F_base": true,
+          "CROSS_RX": true,
+          "Ag": "candidate_not_validated",
+          "As": false,
+          "ordinary_L": true,
+          "alpha": 1.0,
+          "label_smoothing": 0.01,
+          "use_aug": true,
+          "sinc_coordinates": "CENTER_25K",
+          "raw_weight": 0.5,
+          "ordinary_weight": 0.25,
+          "s_slot_weight": 0.25,
+          "L_forwards_per_packet": 8,
+          "expected_L_packets": 4546560,
+          "same_IQ_within_each_pair": true,
+          "U_rule": "Original13L+7U oldgate/ownEMA; no added U views or contrast",
+          "base_raw_total_weight": 0.75,
+          "raw_total_weight": 0.75,
+          "s_slot_name": "Raw in all rows;original entire base objective retained",
+          "extra_pair_weight": 0.25,
+          "extra_pair_input": "bounded interior timegrid contraction of rawL",
+          "no_new_U_augmentation": true
+        },
+        "fold": {
+          "held_RX": 1,
+          "training_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+          "effective_roles": {
+            "L_s": 5040,
+            "U_s": 45360,
+            "V": 21600
+          },
+          "held_L_evaluation": 1260,
+          "all_model_teacher_training_calibration_and_feature_cache_inputs_exclude_RX1": true,
+          "raw_source_carrier_and_static_domain_ID_map_retained": true,
+          "trained_checkpoint_reuse_allowed_for_all5RX": false,
+          "steps_per_epoch": 222,
+          "U_observations_per_pseudo_epoch": 56624
+        },
+        "source_selection": {
+          "primary": "TIMEGRID",
+          "fixed_final": 20,
+          "held_RX": 1,
+          "held_L": 1260,
+          "min_clean_gain_pp": 1.0,
+          "min_clean_macroF1_gain_pp": 0.0,
+          "max_seenV_drop_pp": 0.5,
+          "max_final_common_base_objective": 0.5,
+          "standalone_practical_nonblocking": true,
+          "on_fail": "Close fixed timegrid;no rho/interpolation/probability/weight/RX/seed/budget rescue",
+          "on_pass": "Only separately preregistered secondseed source confirmation;not Ag/joint/target proof"
+        },
+        "supcon": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "scope": "Two shared native ordinary L forwards only, before raw/satellite extra forwards",
+          "extra_network_forwards": 0
+        },
+        "channel": {
+          "scenes": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "fs_hz": 25000000.0,
+          "fc_hz": 2462000000.0,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "selection": "One uniform scene draw per physical L packet/step, never conditioned on label/confidence",
+          "seed": 20261016101,
+          "receiver_seed": 20261016102,
+          "eval_seed": 20261016103,
+          "input": "Original raw L only in additive fourth IQ pair;third common pair stays raw",
+          "session": "rx_i/day_i/eq_i, never TX",
+          "supervised": "All128 satellite L packets; no confidence gate",
+          "composition": false
+        },
+        "additive": {
+          "common": "Unchanged original3pair base,including original ordinary-only SupCon",
+          "extra_input": "timegrid(rawL)",
+          "extra_weight": 0.25,
+          "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
+          "base_pair_weight_sum": 1.0,
+          "pair_weight_sum": 1.25,
+          "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
+          "BN_RNG": "All3rows train-mode8forwards,including explicit zero-extra-loss D00 cost control;record BN updates and actual sequences",
+          "operator": "One bounded interior resampling;no As/ordinary-before-grid/U/teacher/newloss",
+          "channel_seeds": "Original fixed channel/session/source-eval streams",
+          "original_U": "Unchanged original13L+7U rule,truth hidden;no extra U/teacher forwards"
+        },
+        "timegrid": {
+          "position": "t[n]=127.5+(1-rho)*(n-127.5)",
+          "interpolation": "Two adjacent original samples,convex linear weights;no padding/wrap/crop/extrapolation",
+          "rho_min": 0.0001220703125,
+          "rho_max": 0.000244140625,
+          "universal_relative_L2_bound": 0.062255859375,
+          "max_displacement_samples": 0.0311279296875,
+          "session": "actualRX/day/eq,allTX same rho;private refresh everyepoch",
+          "seed": 20261017701,
+          "normalization": "None;original source nativeRMS kept",
+          "claim": "Digital timing observation candidate,not measured RXclock/hardware replacement/known identity preservation",
+          "all_L_supervised": true,
+          "U_or_V": false
+        }
+      }
+    },
+    {
+      "row_id": "reused-D_raw-RX1-s2026092701",
+      "method": "Exactmatching F+CROSS_RX raw8L",
+      "purpose": "reference_only_reuse",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01/D_raw-RX1-s2026092701/source/resolved_config.json",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01/D_raw-RX1-s2026092701/source/resolved_config.json",
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 20261016103
+      },
+      "seed_notes": "Existingnativeglobalordinary modelseed01;no newgrid/newtraining;no support",
+      "epochs": 0,
+      "optimizer": null,
+      "lr": null,
+      "k": null,
+      "scenario": "ExistingsourceRX1 clean+6practical",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01/D_raw-RX1-s2026092701/source",
+      "budget_ref": "ExistingE20/4440/5823318NN reported separately;result reuseonly0stateinheritance",
+      "command": "No new launch,result reuseonly"
+    }
+  ],
+  "notes": [
+    "Timegrid is notconstantfractionaldelay,CFO,LA16,RXMIX orcoherentmix;no reopeningtheirfailedparams",
+    "rho<=1/4096 chosenfrommathematical6.2256% bound,not target/fittedclock estimate",
+    "Originalmatrixstrictdiagonaldominant;numericinverse testverifies knowninterpolation only,notTXhardwareinversion/identitypreservation",
+    "Ag independentclean endpointfixedbeforedata;allpracticalreported;noautomaticjointpromotion",
+    "OnlyoriginalrawL warped;allvisiblelabels supervised/no sampledrop",
+    "REJECTED_EXTRA_GATE:separate designapproval/seals/repeatedreview/configSHA outside minimalworkflow"
+  ]
+}
