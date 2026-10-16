@@ -66,3 +66,13 @@ low urban：LOS＋2.6042 pp／locked＋2.3555 pp；BLOCKED＋0.1401 pp；PARTIAL
 完整8880训练步、40 model-epochs、9373358记录NN（含兼容smoke2）、全部七视图、原L/U序列完全匹配、72cells/5040L各组覆盖，约1268.4 s到矩阵结果；进程自然终止，无target访问，所有输出保留。固定RX分组候选科学FAIL并关闭，不改算子子集／分组／RX／seed／阈值／budget救援。
 
 [完整报告](cvs_FcrossRX_rxgroup20_20261017.md)。run_id：20261017-phase1-FcrossRX-rxgroup-sourceRX1-e20-s2026092701-m2-r01。仍无已验证新Ag／Ag×As因子矩阵／正式target联合证明／跨seed low urban>60%或suburban接近clean证据，活动目标继续。
+
+
+## 补充：原普通增强的独立控制证据（2026-10-17）
+
+另一路 owner 已完成两个三组新 scratch E20／8L／源 held RX1／seed2026092701 的固定检验，不能把其未选控制事后晋级：
+
+- 原生 AWGN20至36dB 的独立加噪：RAW／复用原ordinary控制／AWGN clean为79.6825%／81.1111%／80.6349%。新AWGN相对RAW＋0.9524pp、相对ordinary−0.4762pp，均不满足预设双控制clean条件。固定范围和full-coverage配方关闭，不扫描SNR／权重／RX／seed救援。[完整报告](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01/report.md)。
+- 有界非仿射相位 sigma.006／peak.1：RAW／ordinary／新phase clean为80.6349%／81.4286%／80.0794%，相对两控制−0.5556／−1.3492pp；固定配方关闭。[完整报告](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01/report.md)。
+
+这些ordinary额外对重用同一份已经生成的IQ，没有重新抽普通增强；因此不等于已检验第二个独立观察。其同seed原生raw控制与历史同参数控制存在约1pp级判决变化，来源尚未独立定位；不能只凭相同seed和参数宣称逐包复现，也不能将不同run的局部涨分相加。本轮独立观察采用三个新匹配控制，仍要求后续独立seed确认，当前运行不作参数调整。
