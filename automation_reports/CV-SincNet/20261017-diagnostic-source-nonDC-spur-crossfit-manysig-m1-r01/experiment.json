@@ -20,10 +20,11 @@
   "replaces_run_id": null,
   "authorization": "Active Ag+As goal on F+CROSS_RX/E20;source-grounded CPU diagnostic only,no model or target or automatic training.",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "e08cd7474f80c8c5d1c6823d98f765e53eccc4b3",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_nonDC_spur_crossfit_20261017_r01"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_nonDC_spur_crossfit_20261017_r01",
+    "offline_analysis_commit": "a0c0e09a0aecc95d8c2b8e7aaf83fa0a1bf4fafe"
   },
   "data": {
     "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/source_cache.pt",

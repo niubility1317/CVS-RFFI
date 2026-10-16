@@ -6,5 +6,5 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|非 DC 窄带峰值：跨 TX、日期的 RX 关联检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-source-nonDC-spur-crossfit-manysig-m1-r01/report.md)|
+|非 DC 局部谱峰：完整源域结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-source-nonDC-spur-crossfit-manysig-m1-r01/report.md)|
 |九行冻结 RX 对抗模型的源域独立探针|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-conditional-rx-probe-health-manysig-m9-r01/report.md)|

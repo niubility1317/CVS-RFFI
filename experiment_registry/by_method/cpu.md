@@ -6,4 +6,5 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|非 DC 局部谱峰：完整源域结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-source-nonDC-spur-crossfit-manysig-m1-r01/report.md)|
 |简洁星地信道增强：单视图原型与计算诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261008-diagnostic-cvs-singleview-synthetic-m3-r01/report.md)|
