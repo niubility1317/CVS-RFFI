@@ -1,0 +1,170 @@
+{
+  "CPU": {
+    "status": "PASS",
+    "protocol": {
+      "status": "PASS",
+      "negative_cases": 8,
+      "source_IQ_reads": 0,
+      "target_IQ_reads": 0,
+      "head_fit_updates": 0
+    },
+    "physics": {
+      "status": "PASS",
+      "device": "cpu",
+      "conditions": [
+        {
+          "mode": "FULL",
+          "independent_forward_gradient_max_abs_difference": 0,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "FULL",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34277.89098740259,
+            "counterfactual_band_L2_Hz": 1391.3282025188457,
+            "scalar_gain": 0.040589667638250275,
+            "actual_adaptive_L2_Hz": 34277.89098740259,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        },
+        {
+          "mode": "NORM",
+          "independent_forward_gradient_max_abs_difference": 0,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "NORM",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34277.89098740259,
+            "counterfactual_band_L2_Hz": 1391.3282025188457,
+            "scalar_gain": 0.040589667638250275,
+            "actual_adaptive_L2_Hz": 1391.3282110783236,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        },
+        {
+          "mode": "BAND",
+          "independent_forward_gradient_max_abs_difference": 0,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "BAND",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34277.89098740259,
+            "counterfactual_band_L2_Hz": 1391.3282025188457,
+            "scalar_gain": 0.040589667638250275,
+            "actual_adaptive_L2_Hz": 1391.3282025188457,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        }
+      ],
+      "physical_origin_decay_unscaled_once": [
+        "FULL",
+        "NORM",
+        "BAND"
+      ],
+      "body_defaultW_first_update_bitwise_equal_under_identical_gradient": true,
+      "local_norm_difference": 4.0666221501339805e-9,
+      "negative_cases": 3,
+      "source_IQ_reads": 0,
+      "head_fit_updates": 0,
+      "synthetic_joint_optimizer_steps": 6
+    },
+    "actual_F_parameters": 900722,
+    "independent_SIG_TIME_views": 3,
+    "registered_rows": 9,
+    "new_models": 6,
+    "per_model_epochs": 50,
+    "source_qualification_gate": false
+  },
+  "CUDA": {
+    "status": "PASS",
+    "protocol": {
+      "status": "PASS",
+      "negative_cases": 8,
+      "source_IQ_reads": 0,
+      "target_IQ_reads": 0,
+      "head_fit_updates": 0
+    },
+    "physics": {
+      "status": "PASS",
+      "device": "cuda:0",
+      "conditions": [
+        {
+          "mode": "FULL",
+          "independent_forward_gradient_max_abs_difference": 0,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "FULL",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34278.19374433887,
+            "counterfactual_band_L2_Hz": 1391.3294050388624,
+            "scalar_gain": 0.04058934421737564,
+            "actual_adaptive_L2_Hz": 34278.19374433887,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        },
+        {
+          "mode": "NORM",
+          "independent_forward_gradient_max_abs_difference": 4.5474700982595095e-7,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "NORM",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34278.19374433887,
+            "counterfactual_band_L2_Hz": 1391.3294050388624,
+            "scalar_gain": 0.04058934421737564,
+            "actual_adaptive_L2_Hz": 1391.329385359828,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        },
+        {
+          "mode": "BAND",
+          "independent_forward_gradient_max_abs_difference": 4.547482603811659e-7,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "BAND",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34278.19374433887,
+            "counterfactual_band_L2_Hz": 1391.3294050388624,
+            "scalar_gain": 0.04058934421737564,
+            "actual_adaptive_L2_Hz": 1391.3294050388624,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        }
+      ],
+      "physical_origin_decay_unscaled_once": [
+        "FULL",
+        "NORM",
+        "BAND"
+      ],
+      "body_defaultW_first_update_bitwise_equal_under_identical_gradient": true,
+      "local_norm_difference": 3.167647061319556e-9,
+      "negative_cases": 3,
+      "source_IQ_reads": 0,
+      "head_fit_updates": 0,
+      "synthetic_joint_optimizer_steps": 6
+    },
+    "actual_F_parameters": 900722,
+    "independent_SIG_TIME_views": 3,
+    "registered_rows": 9,
+    "new_models": 6,
+    "per_model_epochs": 50,
+    "source_qualification_gate": false
+  }
+}

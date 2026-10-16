@@ -1,0 +1,232 @@
+{
+  "CPU": {
+    "status": "PASS",
+    "device": "cpu",
+    "protocol": {
+      "status": "PASS",
+      "protocol_negative_cases": 5,
+      "source_gate_cases": 3,
+      "source_IQ_reads": 0,
+      "head_fit_updates": 0
+    },
+    "physics": {
+      "status": "PASS",
+      "device": "cpu",
+      "conditions": [
+        {
+          "mode": "FULL",
+          "independent_forward_gradient_max_abs_difference": 0,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "FULL",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34277.89098740259,
+            "counterfactual_band_L2_Hz": 1391.3282025188457,
+            "scalar_gain": 0.040589667638250275,
+            "actual_adaptive_L2_Hz": 34277.89098740259,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        },
+        {
+          "mode": "NORM",
+          "independent_forward_gradient_max_abs_difference": 0,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "NORM",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34277.89098740259,
+            "counterfactual_band_L2_Hz": 1391.3282025188457,
+            "scalar_gain": 0.040589667638250275,
+            "actual_adaptive_L2_Hz": 1391.3282110783236,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        },
+        {
+          "mode": "BAND",
+          "independent_forward_gradient_max_abs_difference": 0,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "BAND",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34277.89098740259,
+            "counterfactual_band_L2_Hz": 1391.3282025188457,
+            "scalar_gain": 0.040589667638250275,
+            "actual_adaptive_L2_Hz": 1391.3282025188457,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        }
+      ],
+      "physical_origin_decay_unscaled_once": [
+        "FULL",
+        "NORM",
+        "BAND"
+      ],
+      "body_defaultW_first_update_bitwise_equal_under_identical_gradient": true,
+      "local_norm_difference": 4.0666221501339805e-9,
+      "negative_cases": 3,
+      "source_IQ_reads": 0,
+      "head_fit_updates": 0,
+      "synthetic_joint_optimizer_steps": 6
+    },
+    "F_parameters": 900722,
+    "F_independent_views": 3,
+    "default_head_shape": [
+      6,
+      160
+    ],
+    "per_branch_CE_mask_sensitivity": [
+      0.028863055995885123,
+      0.053722918231217776,
+      0.022304473602304142,
+      0.08701441270218924
+    ],
+    "descriptor_stats": {
+      "descriptor_width_each": 112,
+      "descriptors": 3,
+      "all_CKA": {
+        "0:1": 0.7919381146652682,
+        "0:2": 0.7631754978108873,
+        "1:2": 0.8273990162549276
+      },
+      "within_class_residual_CKA": {
+        "0:1": 0.8596826623644072,
+        "0:2": 0.8272653939483495,
+        "1:2": 0.8883757088407973
+      },
+      "mean_squared_norm": [
+        6.760783776385924,
+        6.290570625694921,
+        7.053472683560179
+      ],
+      "interpretation": "Fixed source feature analysis, no fitted head. High CKA alone does not prove harmful collapse; masking is sensitivity, not a trained smaller architecture."
+    },
+    "F_Sinc_and_view_gradient_tensors": 5,
+    "no_parameter_buffer_changes": true,
+    "source_IQ_reads": 0,
+    "head_fit_updates": 0
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "protocol": {
+      "status": "PASS",
+      "protocol_negative_cases": 5,
+      "source_gate_cases": 3,
+      "source_IQ_reads": 0,
+      "head_fit_updates": 0
+    },
+    "physics": {
+      "status": "PASS",
+      "device": "cuda:0",
+      "conditions": [
+        {
+          "mode": "FULL",
+          "independent_forward_gradient_max_abs_difference": 0,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "FULL",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34278.208415326175,
+            "counterfactual_band_L2_Hz": 1391.329476267263,
+            "scalar_gain": 0.04058932892318795,
+            "actual_adaptive_L2_Hz": 34278.208415326175,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        },
+        {
+          "mode": "NORM",
+          "independent_forward_gradient_max_abs_difference": 3.637978807091713e-7,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "NORM",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34278.208415326175,
+            "counterfactual_band_L2_Hz": 1391.329476267263,
+            "scalar_gain": 0.04058932892318795,
+            "actual_adaptive_L2_Hz": 1391.3294668468386,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        },
+        {
+          "mode": "BAND",
+          "independent_forward_gradient_max_abs_difference": 1.8189996353612514e-7,
+          "gain_min": 0.012658227235078812,
+          "gain_max": 0.16691318154335022,
+          "actual_step": {
+            "step": 1,
+            "mode": "BAND",
+            "base_alpha": 0.0002,
+            "raw_adaptive_L2_Hz": 34278.208415326175,
+            "counterfactual_band_L2_Hz": 1391.329476267263,
+            "scalar_gain": 0.04058932892318795,
+            "actual_adaptive_L2_Hz": 1391.329476267263,
+            "physical_decay_unscaled": true,
+            "head_fit_updates": 0
+          }
+        }
+      ],
+      "physical_origin_decay_unscaled_once": [
+        "FULL",
+        "NORM",
+        "BAND"
+      ],
+      "body_defaultW_first_update_bitwise_equal_under_identical_gradient": true,
+      "local_norm_difference": 3.167647061319556e-9,
+      "negative_cases": 3,
+      "source_IQ_reads": 0,
+      "head_fit_updates": 0,
+      "synthetic_joint_optimizer_steps": 6
+    },
+    "F_parameters": 900722,
+    "F_independent_views": 3,
+    "default_head_shape": [
+      6,
+      160
+    ],
+    "per_branch_CE_mask_sensitivity": [
+      0.028863251634503317,
+      0.05372277572841355,
+      0.02230446134009112,
+      0.08701443384993812
+    ],
+    "descriptor_stats": {
+      "descriptor_width_each": 112,
+      "descriptors": 3,
+      "all_CKA": {
+        "0:1": 0.7919380626247164,
+        "0:2": 0.7631755168867213,
+        "1:2": 0.8273989873100969
+      },
+      "within_class_residual_CKA": {
+        "0:1": 0.8596825799501125,
+        "0:2": 0.8272653756369687,
+        "1:2": 0.8883757122567385
+      },
+      "mean_squared_norm": [
+        6.7607835692960085,
+        6.290570477489839,
+        7.053472948858231
+      ],
+      "interpretation": "Fixed source feature analysis, no fitted head. High CKA alone does not prove harmful collapse; masking is sensitivity, not a trained smaller architecture."
+    },
+    "F_Sinc_and_view_gradient_tensors": 5,
+    "no_parameter_buffer_changes": true,
+    "source_IQ_reads": 0,
+    "head_fit_updates": 0
+  }
+}
