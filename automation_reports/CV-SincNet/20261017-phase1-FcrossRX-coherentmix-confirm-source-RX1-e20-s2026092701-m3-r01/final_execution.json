@@ -1,0 +1,35 @@
+{
+  "status": "VERIFIED",
+  "training_commit": "2609d1ec4f62ccace9694db9ce7bf5fe53739964",
+  "all_owned_processes_absent": true,
+  "completion": {
+    "status": "ANALYZED",
+    "rows": 3,
+    "new_rows": 2,
+    "reused_rows": 1,
+    "new_epochs": 40,
+    "new_optimizer_steps": 8880,
+    "qualified": false,
+    "target_access": false,
+    "head_fit_updates": 0
+  },
+  "new_epochs": 40,
+  "new_updates": 8880,
+  "parallel_wall_seconds_approx": 1577.8224565982819,
+  "rows": [
+    {
+      "row_id": "SAME_RX-RX1-s2026092701",
+      "native_elapsed_seconds": 1511.4057400226593,
+      "process_to_finalreadout_wall_seconds_approx": 1530.903460741043,
+      "default_head_joint": true
+    },
+    {
+      "row_id": "CROSS_RX-RX1-s2026092701",
+      "native_elapsed_seconds": 1551.359031677246,
+      "process_to_finalreadout_wall_seconds_approx": 1570.9904568195343,
+      "default_head_joint": true
+    }
+  ],
+  "analysis_NN": 0,
+  "target_access": false
+}

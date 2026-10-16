@@ -1,0 +1,317 @@
+{
+  "status": "ANALYZED_TWO_SOURCE_SEEDS",
+  "source_only": true,
+  "target_access": false,
+  "seeds": [
+    2026092701,
+    2026092702
+  ],
+  "held_source_RX": 1,
+  "held_unique_L": 1260,
+  "first_and_confirmation_pass": false,
+  "clean_positive_direction_repeated": false,
+  "fixed_operator_close": true,
+  "same_physical_roles_and_held_packets": true,
+  "same_all_six_physics_records": true,
+  "native_argument_differences": [
+    "candidate_id",
+    "output_dir",
+    "run_id",
+    "seed"
+  ],
+  "paired_gain_pp": {
+    "D_raw": {
+      "clean": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": 0.7936507936507964,
+          "sample_std": 2.132544260721334,
+          "values": [
+            -0.7142857142857117,
+            2.3015873015873045
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": 0.7604551902742784,
+          "sample_std": 2.1892992993303553,
+          "values": [
+            -0.7876131903291728,
+            2.3085235708777296
+          ]
+        }
+      },
+      "practical_high": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": 0.6349206349206354,
+          "sample_std": 1.010152544552211,
+          "values": [
+            1.34920634920635,
+            -0.07936507936507908
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": 0.6640438646686286,
+          "sample_std": 0.40159461885982994,
+          "values": [
+            0.9480141429524414,
+            0.3800735863848159
+          ]
+        }
+      },
+      "practical_mid": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": 0.5158730158730168,
+          "sample_std": 1.066272130360667,
+          "values": [
+            1.2698412698412709,
+            -0.23809523809523725
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": 0.7880796846373744,
+          "sample_std": 0.5610618300470249,
+          "values": [
+            1.18481030932856,
+            0.39134905994618885
+          ]
+        }
+      },
+      "practical_low_suburban": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": 0.3968253968253982,
+          "sample_std": 0.33671751485073964,
+          "values": [
+            0.6349206349206382,
+            0.15873015873015817
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": 0.6098268674543023,
+          "sample_std": 0.26657646556072195,
+          "values": [
+            0.42132884095157364,
+            0.7983248939570309
+          ]
+        }
+      },
+      "practical_high_urban": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": -0.3174603174603191,
+          "sample_std": 1.7958267458705945,
+          "values": [
+            0.952380952380949,
+            -1.5873015873015872
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": -0.45132872098910815,
+          "sample_std": 1.4224869835771832,
+          "values": [
+            0.5545214712479152,
+            -1.4571789132261315
+          ]
+        }
+      },
+      "practical_mid_urban": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": -0.4761904761904745,
+          "sample_std": 0.8979133729352953,
+          "values": [
+            0.15873015873015817,
+            -1.1111111111111072
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": -0.29809792424968784,
+          "sample_std": 0.7873869652160028,
+          "values": [
+            0.25866873827244397,
+            -0.8548645867718196
+          ]
+        }
+      },
+      "practical_low_urban": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": -0.15873015873016094,
+          "sample_std": 0.11223917161691584,
+          "values": [
+            -0.07936507936507908,
+            -0.2380952380952428
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": -0.21207619702130753,
+          "sample_std": 0.3602898789598946,
+          "values": [
+            -0.46683961362672943,
+            0.042687219584114366
+          ]
+        }
+      }
+    },
+    "SAME_RX": {
+      "clean": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": 0.3174603174603219,
+          "sample_std": 2.6937401188058936,
+          "values": [
+            -1.5873015873015817,
+            2.2222222222222254
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": 0.3621662585936325,
+          "sample_std": 2.833379513136424,
+          "values": [
+            -1.6413356088201714,
+            2.3656681260074364
+          ]
+        }
+      },
+      "practical_high": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": -0.11904761904761585,
+          "sample_std": 0.6173154438930194,
+          "values": [
+            0.3174603174603219,
+            -0.5555555555555536
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": -0.1430917246791702,
+          "sample_std": 0.19008335936174273,
+          "values": [
+            -0.2775009570745779,
+            -0.0086824922837625
+          ]
+        }
+      },
+      "practical_mid": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": -0.515873015873014,
+          "sample_std": 0.056119585808455955,
+          "values": [
+            -0.5555555555555536,
+            -0.4761904761904745
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": 0.15254784694299361,
+          "sample_std": 0.3240469526113777,
+          "values": [
+            -0.07658795067134738,
+            0.3816836445573346
+          ]
+        }
+      },
+      "practical_low_suburban": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": -0.27777777777777957,
+          "sample_std": 0.1683587574253718,
+          "values": [
+            -0.15873015873015817,
+            -0.39682539682540097
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": 0.10094111562160835,
+          "sample_std": 0.5200865079465283,
+          "values": [
+            -0.2668155809510131,
+            0.4686978121942298
+          ]
+        }
+      },
+      "practical_high_urban": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": -0.8333333333333304,
+          "sample_std": 0.7295546155099274,
+          "values": [
+            -0.31746031746031633,
+            -1.3492063492063444
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": -0.6091221445328948,
+          "sample_std": 0.43559624751239584,
+          "values": [
+            -0.30110908405746595,
+            -0.9171352050083237
+          ]
+        }
+      },
+      "practical_mid_urban": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": -0.5555555555555564,
+          "sample_std": 1.4591092310198588,
+          "values": [
+            0.4761904761904745,
+            -1.5873015873015872
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": -0.3412321509856181,
+          "sample_std": 1.287952382939798,
+          "values": [
+            0.5694877128364861,
+            -1.2519520148077223
+          ]
+        }
+      },
+      "practical_low_urban": {
+        "accuracy_gain_pp": {
+          "n": 2,
+          "mean": 0,
+          "sample_std": 0.3367175148507357,
+          "values": [
+            -0.23809523809523725,
+            0.23809523809523725
+          ]
+        },
+        "macro_F1_gain_pp": {
+          "n": 2,
+          "mean": 0.17910474640417395,
+          "sample_std": 0.7046799572869674,
+          "values": [
+            -0.3191792299596874,
+            0.6773887227680353
+          ]
+        }
+      }
+    }
+  },
+  "total_new_model_epochs": 80,
+  "total_new_optimizer_updates": 17760,
+  "total_new_NN_packets": 23293276,
+  "Ag_allRX_or_target_proved": false,
+  "joint_goal_complete": false,
+  "head_fit_updates": 0,
+  "analysis_NN": 0,
+  "uncertainty": "n2 sample standarddeviation acrossmodelseeds;no pseudo2520-independent-sample CI",
+  "on_fail": "Close fixed coherent interpolation,no seed03/RX/fraction/window/budget rescue"
+}
