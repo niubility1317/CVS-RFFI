@@ -1322,5 +1322,79 @@
     },
     "source_analysis_ref": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-practicalMC2-sourceRX1-e20-s2026092701-m3-r01/source_analysis.json",
     "actual_NN_forward_packets": 20879876
+  },
+  "cycle_residual_covariance_source_basis": {
+    "status": "REGISTERED_LOCAL_VALIDATED_REVIEW_PASS_NOT_LAUNCHED",
+    "baseline": "F+CROSS_RX sameTX/SIG_TIME/unifiedSinc/joint160/defaultcos/NoExplicitCFO",
+    "question": "Does fixed cycle-difference residual lag1to4 correlation shape carry RX contrasts transferable across held TX and day?",
+    "note_ref": "analysis/cvs_cycle_residual_covariance_basis_20261017.md",
+    "fit_contract": {
+      "L": 5040,
+      "RX": [
+        3,
+        4,
+        6,
+        8
+      ],
+      "days": [
+        1,
+        2,
+        3
+      ],
+      "TX": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5
+      ],
+      "samples_per_cell": 70
+    },
+    "observation": {
+      "window": [
+        20,
+        180
+      ],
+      "cycle": 20,
+      "cycles": 8,
+      "lags": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "cross_cycle_lag_pairs": false,
+      "phase_estimate_for_analysis_only": true,
+      "IQ_modified": false
+    },
+    "criteria": {
+      "min_cell_median_coherence": 0.9,
+      "min_cell_q10_coherence": 0.8,
+      "min_shape_contrast_baseline_RMS": 0.02,
+      "min_pooled_shape_risk_gain": 0.2,
+      "min_positive_folds": 15,
+      "min_each_RX_risk_gain": 0,
+      "min_gain_over_best_wrong_RX": 0.02
+    },
+    "planned_cost": {
+      "source_IQ_statistically_used": 5040,
+      "models": 0,
+      "checkpoints": 0,
+      "NN": 0,
+      "updates": 0,
+      "teacher": 0
+    },
+    "on_fail": "Close fixed window/cycle/lags/source question;no window/lag/threshold/RX/seed rescue or automatictraining",
+    "on_pass": "Source RX-association rationale only;separate bounded-IQ identityguard and matched E20 clean identification required",
+    "new_Ag_implemented": false,
+    "Ag_efficacy_proved": false,
+    "As_efficacy_proved": false,
+    "target_access": false,
+    "joint_goal_complete": false,
+    "run_id": "20261017-diagnostic-F-crossRX-cyclecov-fitL-manysig-m1-r01",
+    "package": "experiments/cvs_cycle_covariance17",
+    "local_negative_checks": 22,
+    "independent_P0P1_review": "PASS"
   }
 }

@@ -201,3 +201,9 @@ practical MC2三组E20与源七视图完整ANALYZED/VERIFIED：FAIL_FIXED_MC2_CL
 
 
 MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六practical accuracy／F1均负，FAIL_FIXED_MC2_CLOSED；相对raw clean+4.603175pp／lowurban+5.952381pp不能补偿增量失败。lowurban TX2/TX3分别净−32/−23包，全部TX/day与固定clean正确集合错误转移已报告。控制M_repeat不事后晋级，无后继已登记候选；新Ag与完整联合证据仍缺。
+
+
+下一唯一源依据问题：周期差异残差lag1至4形状是否有跨TX/day可迁移的RX分量；文献与实际EQ1/25Msps/256点口径已核查，尚未实现、登记或运行。固定窗口20:180、8个20点周期、18折与coherence/风险/错RX条件见cycle_residual_covariance_source_basis及研究说明。0拟新增NN/更新/模型/target；只有源统计问题，尚未选择IQ算子或幅度，不宣称Ag或联合收益。MC2及旧失败路线继续关闭。
+
+
+周期差异残差相关形状源检验 20261017-diagnostic-F-crossRX-cyclecov-fitL-manysig-m1-r01 已实现登记未启动：L5040/72格/18折/3wrongRX控制，窗口20:180、8个20点周期、lag1至4；22本地反例检查及一次独立P0/P1审查PASS。0模型/CP/NN/更新/target，U只有角色ID、无IQ/标签。只检验源RX关联依据；未构造Ag或宣称身份收益，固定失败不改窗口/lag/RX/seed救跑。
