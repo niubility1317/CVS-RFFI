@@ -48,7 +48,7 @@ OJ24 已在实际代码 `f601fc65f6eaafbfd98080882108f4d50e07db69` 启动，运�
 
 新 E20 保持该绝对 warm/ramp 日程，即 E6 起启用、E15 到 0.1；总计 13L＋7U、4440 更新，FINAL20。保留原有普通增强作为共同条件，发布前记录真实工厂／开关／概率，不能把“无新增 A_g”写成完全无增强。完整源 L6300/U56700/V27000 与留出源折严格区分，不用 E50 权重或把 E50 成绩当作 E20。
 
-当前机器可读契约见 [F＋跨 RX 对比 E20 基线](../configs/phase1/F_crossrx_e20_baseline.json)。这是基线覆盖和接入设计，尚未发布新 E20；现有 E50 的数据／权重来源与本轮契约分别核对，不能直接续训或冒称已验证新预算。新机制与 A_g／A_s 的收益均须相对这个相同配方、数据、预算和前向量的对照计算。OJ24 的失败继续保留，不因更换基线重跑救援。
+当前机器可读契约见 [F＋跨 RX 对比 E20 基线](../configs/phase1/F_crossrx_e20_baseline.json)。这是当前基线覆盖和接入设计；新 E20 的实际状态见末节，现有 E50 的数据／权重来源与本轮契约分别核对，不能直接续训或冒称已验证新预算。新机制与 A_g／A_s 的收益均须相对这个相同配方、数据、预算和前向量的对照计算。OJ24 的失败继续保留，不因更换基线重跑救援。
 
 ## OJ24 首轮收尾
 
@@ -61,6 +61,8 @@ OJ24 已在实际代码 `f601fc65f6eaafbfd98080882108f4d50e07db69` 启动，运�
 
 训练均匀三场景low_suburban/mid_urban/low_urban，源heldRX1原V5400在FINAL固定clean＋六原practical流，无target访问。判据C1−C0：sourceurban均值≥+3pp、low≥+5pp、urbanF1不降、clean及seenV损失≤0.5pp，并完整预算/全物理顺序和覆盖；FAIL关闭固定paired-As配方，PASS只支持另登记source确认，不自动扩target或Ag。suburban2pp差距如实报告为探索目标。完整矩阵/command/paths/stop见[该run报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/report.md)。
 
-实现、1024合成网络包/188信道输入/2合成optimizer/10负例、206初态匹配、隔离导入、实际E20args和唯一限定P0/P1（锁父目录P1已修复）均通过，0真实IQ/CP；当前REGISTERED_NOT_RUN。不能把新基线接入写成已有正式性能收益。
+实现、1024合成网络包/188信道输入/2合成optimizer/10负例、206初态匹配、隔离导入、实际E20args和唯一限定P0/P1（锁父目录P1已修复）均通过，0真实IQ/CP；这是发布前的REGISTERED_NOT_RUN记录，当前状态见后续实际记录。不能把新基线接入写成已有正式性能收益。
 
 实际代码8235c71cc已发布，C0/C1在N607 GPU2/3 verified running；own scratchCP smoke、PID/CWD/argv/log增长、真实F/默认头更新及As调用核对通过。当前仅源域RX1检验，完整source基线、正式clean+6practical及跨seed尚未运行。离线读取工具增加SupCon贡献核对与完整状态分层，未修改运行release。
+
+C0已完成E20及七源视图、默认头独立复算：held RX1 clean83.444444%、low urban25.685185%；完整4440日志／3330活跃SupCon、0U真值／跳步／错误。真实网络包3579018。C1仍运行，尚无配对收益或正式target结果；这是新F+CROSS_RX的实际单源折基线，不和不同信道流的旧F直接配对。

@@ -29,3 +29,21 @@ LOCAL_VERIFIED，尚未发布。两组累计1024合成网络包、188合成pract
 VERIFIED/RUNNING，实际训练代码 8235c71cc4a1619eade9def1371e1bdfc31b9eae。两组 PID/CWD/argv/GPU/log 增长、own scratch checkpoint 无查询 smoke、实际 E20=13+7、5040/45360/21600 源角色、默认头及 F 三路/Sinc 联合更新、每步 physical clip 和四次 L 前向均已核实。SupCon 原前两次前向复用，warm5/ramp10；C0 信道调用 0，C1 每步生成一个128包 practical 视图，As 输入未叠 ordinary，EQ 关闭/G=1/ref30。实际导入依赖 release 的 experiments/adv3b02_xuc/code/leo_practical；单 archive transfer/remote compile PASS。0 target，尚无 FINAL 源收益。
 
 离线结果读取器已编译；以完整20轮/4440更新的明确合成日志测试验证了SupCon目标分解，并拒绝U真值可用和损失贡献篡改两个负例。指标复算/分层测试通过，0真实IQ/CP/model；这不构成真实成绩。
+
+## C0 已完成，C1 仍在运行
+
+C0 的 E20 FINAL 与 clean＋六原 practical 源评估已自然结束。以下是一个原源 RX1 留出折／seed2026092701 的默认头结果，0 target；配对差、科学判据和增强结论必须等待 C1。
+
+|场景|C0 准确率|C0 宏平均 F1|
+|---|---:|---:|
+|clean|83.444444%|83.227457%|
+|practical_high|38.425926%|30.178906%|
+|practical_mid|36.166667%|29.092638%|
+|practical_low_suburban|34.037037%|28.001335%|
+|practical_high_urban|37.000000%|29.069414%|
+|practical_mid_urban|30.166667%|26.372042%|
+|practical_low_urban|25.685185%|23.118247%|
+
+完整20轮／4440更新／20行nativeCSV／全部stdout／4440条SupCon记录已解析；3330次活跃SupCon，所有关键loss和gradient有限，0跳步／0U真值／0错误标记，label阶段目标分解最大误差3.57627869e-07。37,800个冻结源默认头预测独立复算一致。真实网络包3579018，其中六practical32400，训练记录时间1123.572077s、额外六场景源评估64.008927s。0旧父权重，完整成本不是只记L前向。
+
+C0完成不代表整个矩阵完成，未访问正式测试、未证明跨seed或A_g/A_s联合收益；C1按原发布配置继续，无热改或重启。

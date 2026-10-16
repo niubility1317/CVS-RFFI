@@ -105,7 +105,12 @@ def analyze(output,spec,state):
             predictions[arm][scene]=check_predictions(records,saved,scene);grouped=defaultdict(list)
             for v in records:
                 for key,value in groups(v):grouped[(key,value)].append(v)
-            for (dim,value),rr in sorted(grouped.items()):strata.append(dict(arm=arm,scene=scene,dimension=dim,value=value,**metrics(rr),mean_margin_over30=float(np.mean([z['margin'] for z in rr]))))
+            ref=predictions['C0']['clean']
+            for (dim,value),rr in sorted(grouped.items()):
+                eligible=[z for z in rr if ref[packet_key(z)]['label']==ref[packet_key(z)]['prediction']]
+                kept=sum(z['label']==z['prediction'] for z in eligible)
+                strata.append(dict(arm=arm,scene=scene,dimension=dim,value=value,**metrics(rr),mean_margin_over30=float(np.mean([z['margin'] for z in rr])),
+                    fixed_C0_clean_correct_count=len(eligible),fixed_retained=kept,fixed_retention=kept/len(eligible) if eligible else None))
         mechanism=read(s/'mechanism_progress.json')['records']
         if len(mechanism)!=20 or any(v<=0 for v in r['actual_feature_parameters_moved'].values()):raise ValueError('Actual F and defaulthead joint training required')
         for v in mechanism:
@@ -120,12 +125,19 @@ def analyze(output,spec,state):
             if x!=y:raise ValueError('Actual whole L/U physical sequence differs')
             n+=1
     if n!=5994:raise ValueError('Complete L/U sequence required')
-    table=[];reference=predictions['C0']['clean'];fixed={k for k,v in reference.items() if v['label']==v['prediction']}
+    table=[];paired_strata=[];reference=predictions['C0']['clean'];fixed={k for k,v in reference.items() if v['label']==v['prediction']}
     for scene in SCENES:
         x,y=(predictions[a][scene] for a in ('C0','C1'))
         if x.keys()!=y.keys() or x.keys()!=reference.keys() or any(x[k]['label']!=y[k]['label'] or x[k]['label']!=reference[k]['label'] or x[k].get('physics')!=y[k].get('physics') for k in x):raise ValueError('Matched samples/truth/physical streams required')
         scores={a:metrics(list(predictions[a][scene].values())) for a in ('C0','C1')}
         repaired=sum(x[k]['prediction']!=x[k]['label'] and y[k]['prediction']==y[k]['label'] for k in x);broken=sum(x[k]['prediction']==x[k]['label'] and y[k]['prediction']!=y[k]['label'] for k in x)
+        grouped=defaultdict(list)
+        for k,v in x.items():
+            for dim,value in groups(v):grouped[(dim,value)].append(k)
+        for (dim,value),kk in sorted(grouped.items()):
+            repair=sum(x[k]['prediction']!=x[k]['label'] and y[k]['prediction']==y[k]['label'] for k in kk)
+            broke=sum(x[k]['prediction']==x[k]['label'] and y[k]['prediction']!=y[k]['label'] for k in kk)
+            paired_strata.append(dict(scene=scene,dimension=dim,value=value,count=len(kk),repaired=repair,broken=broke,net=repair-broke,accuracy_gain_pp=100*(repair-broke)/len(kk)))
         for arm in ('C0','C1'):
             rr=predictions[arm][scene];kept=sum(rr[k]['label']==rr[k]['prediction'] for k in fixed)
             table.append(dict(arm=arm,scene=scene,**scores[arm],mean_margin_over30=float(np.mean([v['margin'] for v in rr.values()])),fixed_C0_clean_correct_count=len(fixed),fixed_retained=kept,fixed_retention=kept/len(fixed),
@@ -140,7 +152,7 @@ def analyze(output,spec,state):
     cost_keys=('L_forward_packets','student_U_forward_packets','student_source_eval_forward_packets','EMA_eval_forward_packets','held_V_forward_packets','source_practical_forward_packets')
     summary=dict(status='ANALYZED',source_decision=q,models=models,scene_results=table,actual_native_arg_differences=args_diff,full_log_proof={a:v['proof'] for a,v in logs.items()},costs=costs,
         real_forward_packets=sum(sum(v[k] for k in cost_keys) for v in costs),new_model_epochs=40,new_updates=8880,actual_sequence_batch_records=n,matrix_wall_seconds=state['complete']['wall_seconds'],model_seed_count=1,source_fold_count=1,target_access=False,formal_test_status='NOT_REGISTERED_SOURCE_ONLY',goal_completed=False,automatic_extension=False)
-    for name,rows in [('scene_results.csv',table),('source_strata.csv',strata),('training_curves.csv',curves),('fusion_gain_curves.csv',fusion),('measured_costs.csv',costs)]:
+    for name,rows in [('scene_results.csv',table),('source_strata.csv',strata),('paired_strata.csv',paired_strata),('training_curves.csv',curves),('fusion_gain_curves.csv',fusion),('measured_costs.csv',costs)]:
         with (output/name).open('w',encoding='utf-8',newline='') as f:
             w=csv.DictWriter(f,fieldnames=list(dict.fromkeys(k for v in rows for k in v)));w.writeheader();w.writerows(rows)
     plot(output,table,strata,curves,logs,fusion);write(output/'analysis_summary.json',summary)

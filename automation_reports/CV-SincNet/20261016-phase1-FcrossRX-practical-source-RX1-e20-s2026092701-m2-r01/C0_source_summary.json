@@ -1,0 +1,477 @@
+{
+  "status": "C0_ANALYZED_MATRIX_STILL_RUNNING",
+  "source_only": true,
+  "target_access": false,
+  "actual_training_commit": "8235c71cc4a1619eade9def1371e1bdfc31b9eae",
+  "row_id": "C0-RX1-s2026092701",
+  "head": "checkpoint default jointly trained",
+  "checkpoint_epoch": 20,
+  "scenes": {
+    "clean": {
+      "count": 5400,
+      "correct": 4506,
+      "accuracy": 0.8344444444444444,
+      "macro_f1": 0.8322745733399545,
+      "mean_CE": 0.6265849558035498,
+      "confusion": [
+        [
+          787,
+          43,
+          42,
+          13,
+          14,
+          1
+        ],
+        [
+          4,
+          772,
+          2,
+          122,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          573,
+          0,
+          0,
+          327
+        ],
+        [
+          7,
+          304,
+          1,
+          584,
+          4,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          900,
+          0
+        ],
+        [
+          1,
+          0,
+          8,
+          1,
+          0,
+          890
+        ]
+      ]
+    },
+    "practical_high": {
+      "count": 5400,
+      "correct": 2075,
+      "accuracy": 0.38425925925925924,
+      "macro_f1": 0.30178906145196777,
+      "mean_CE": 1.8804172911467376,
+      "confusion": [
+        [
+          47,
+          2,
+          600,
+          157,
+          92,
+          2
+        ],
+        [
+          106,
+          18,
+          22,
+          525,
+          228,
+          1
+        ],
+        [
+          7,
+          0,
+          520,
+          20,
+          239,
+          114
+        ],
+        [
+          47,
+          4,
+          127,
+          697,
+          25,
+          0
+        ],
+        [
+          77,
+          0,
+          13,
+          84,
+          725,
+          1
+        ],
+        [
+          0,
+          1,
+          712,
+          0,
+          119,
+          68
+        ]
+      ]
+    },
+    "practical_mid": {
+      "count": 5400,
+      "correct": 1953,
+      "accuracy": 0.3616666666666667,
+      "macro_f1": 0.2909263765607954,
+      "mean_CE": 1.926874297813133,
+      "confusion": [
+        [
+          62,
+          5,
+          575,
+          141,
+          112,
+          5
+        ],
+        [
+          96,
+          20,
+          63,
+          483,
+          236,
+          2
+        ],
+        [
+          26,
+          7,
+          500,
+          25,
+          226,
+          116
+        ],
+        [
+          65,
+          6,
+          164,
+          616,
+          46,
+          3
+        ],
+        [
+          87,
+          3,
+          46,
+          72,
+          685,
+          7
+        ],
+        [
+          7,
+          3,
+          680,
+          3,
+          137,
+          70
+        ]
+      ]
+    },
+    "practical_low_suburban": {
+      "count": 5400,
+      "correct": 1838,
+      "accuracy": 0.3403703703703704,
+      "macro_f1": 0.2800133479481051,
+      "mean_CE": 1.9812208338137025,
+      "confusion": [
+        [
+          66,
+          4,
+          565,
+          131,
+          122,
+          12
+        ],
+        [
+          92,
+          21,
+          102,
+          419,
+          260,
+          6
+        ],
+        [
+          31,
+          9,
+          492,
+          43,
+          192,
+          133
+        ],
+        [
+          83,
+          13,
+          185,
+          543,
+          69,
+          7
+        ],
+        [
+          81,
+          6,
+          78,
+          90,
+          632,
+          13
+        ],
+        [
+          11,
+          2,
+          661,
+          1,
+          141,
+          84
+        ]
+      ]
+    },
+    "practical_high_urban": {
+      "count": 5400,
+      "correct": 1998,
+      "accuracy": 0.37,
+      "macro_f1": 0.29069414054427095,
+      "mean_CE": 1.955858258847837,
+      "confusion": [
+        [
+          59,
+          4,
+          567,
+          162,
+          102,
+          6
+        ],
+        [
+          70,
+          13,
+          42,
+          540,
+          231,
+          4
+        ],
+        [
+          14,
+          9,
+          488,
+          26,
+          251,
+          112
+        ],
+        [
+          52,
+          5,
+          119,
+          663,
+          49,
+          12
+        ],
+        [
+          56,
+          1,
+          37,
+          89,
+          708,
+          9
+        ],
+        [
+          8,
+          4,
+          661,
+          9,
+          151,
+          67
+        ]
+      ]
+    },
+    "practical_mid_urban": {
+      "count": 5400,
+      "correct": 1629,
+      "accuracy": 0.3016666666666667,
+      "macro_f1": 0.2637204201110697,
+      "mean_CE": 2.163010353512234,
+      "confusion": [
+        [
+          106,
+          8,
+          461,
+          122,
+          167,
+          36
+        ],
+        [
+          121,
+          23,
+          113,
+          331,
+          273,
+          39
+        ],
+        [
+          64,
+          19,
+          373,
+          74,
+          230,
+          140
+        ],
+        [
+          86,
+          21,
+          172,
+          451,
+          111,
+          59
+        ],
+        [
+          110,
+          15,
+          95,
+          101,
+          542,
+          37
+        ],
+        [
+          32,
+          3,
+          563,
+          18,
+          150,
+          134
+        ]
+      ]
+    },
+    "practical_low_urban": {
+      "count": 5400,
+      "correct": 1387,
+      "accuracy": 0.25685185185185183,
+      "macro_f1": 0.2311824730093116,
+      "mean_CE": 2.282819107196949,
+      "confusion": [
+        [
+          107,
+          31,
+          381,
+          111,
+          202,
+          68
+        ],
+        [
+          145,
+          37,
+          158,
+          246,
+          234,
+          80
+        ],
+        [
+          73,
+          39,
+          352,
+          86,
+          205,
+          145
+        ],
+        [
+          122,
+          19,
+          179,
+          316,
+          193,
+          71
+        ],
+        [
+          129,
+          23,
+          154,
+          78,
+          452,
+          64
+        ],
+        [
+          51,
+          22,
+          493,
+          37,
+          174,
+          123
+        ]
+      ]
+    }
+  },
+  "full_log_proof": {
+    "epochs": 20,
+    "steps": 4440,
+    "native_CSV_rows": 20,
+    "SupCon_steps": 4440,
+    "SupCon_applied": 3330,
+    "critical_nonfinite": {
+      "train/loss": 0,
+      "train/grad_total": 0,
+      "train/grad_backbone": 0,
+      "train/grad_before_clip": 0,
+      "legacy_rdrop/paired_CE": 0,
+      "legacy_rdrop/symmetric_KL": 0,
+      "F_supcon/loss": 0,
+      "F_supcon/weight": 0,
+      "pair/primary_CE": 0,
+      "pair/secondary_CE": 0
+    },
+    "stdout_errors": {
+      "Traceback": 0,
+      "CUDA out of memory": 0,
+      "FloatingPointError": 0,
+      "Killed": 0
+    },
+    "U_truth_available_max": 0.0,
+    "skipped": {
+      "train/skipped_nonfinite_loss": 0,
+      "train/skipped_nonfinite_grad": 0
+    },
+    "max_label_objective_error": 3.5762786865234375e-07,
+    "stdout_bytes": 115560,
+    "warnings": []
+  },
+  "forward_costs": {
+    "L_forward_packets": 2273280,
+    "student_U_forward_packets": 396368,
+    "student_source_eval_forward_packets": 475202,
+    "EMA_eval_forward_packets": 396368,
+    "held_V_forward_packets": 5400,
+    "source_practical_forward_packets": 32400
+  },
+  "real_network_forward_packets": 3579018,
+  "paired_result": "PENDING_C1",
+  "model_seed_count": 1,
+  "source_fold_count": 1,
+  "goal_completed": false,
+  "training_seconds": 1123.5720767974854,
+  "source_practical_seconds": 64.00892653502524,
+  "seen_V": {
+    "source_val_count": 21600,
+    "source_val_accuracy": 0.9788425925925925,
+    "source_val_rx_accuracy": {
+      "3": 0.9524074074074074,
+      "4": 0.9842592592592593,
+      "6": 0.9942592592592593,
+      "8": 0.9844444444444445
+    },
+    "source_val_worst_rx": 0.9524074074074074
+  },
+  "source_roles": {
+    "L": 5040,
+    "U_hidden": 45360,
+    "seenV": 21600,
+    "heldV": 5400
+  },
+  "model": "F+CROSS_RX_SUPCON+originalRDrop/oldU/EMA/cos",
+  "extra_head_training": 0
+}
