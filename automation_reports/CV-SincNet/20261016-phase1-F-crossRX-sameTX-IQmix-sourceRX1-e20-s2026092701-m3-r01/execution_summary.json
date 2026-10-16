@@ -1,68 +1,75 @@
 {
-  "status": "VERIFIED_RUNNING",
-  "execution_commit": "192e6a84d72ca89d29489ce2750a20eb36bc765d",
-  "remote_OID": "VERIFIED",
-  "archive_transfer": "VERIFIED",
-  "remote_compile": "VERIFIED",
-  "real_matching_checkpoint_noquery_smoke": "PASS",
-  "dispatcher_PID_CWD_argv": "VERIFIED",
-  "target_access": false,
-  "completed_predictions": 0,
-  "goal_complete": false,
-  "rows": [
-    {
-      "row_id": "B00-RX1-s2026092701",
-      "GPU": 0,
-      "PID_CWD_argv_GPU": "VERIFIED",
-      "actual_seed": 2026092701,
-      "actual_epochs": 20,
-      "actual_scratch": true,
-      "observed_complete_step": 177,
-      "observed_epoch": 1,
-      "step_log_growth_verified": true,
-      "Ag_training": false,
-      "As_training": false,
-      "base_raw_weight": 0.75,
-      "ordinary_weight": 0.25,
-      "extra_weight": 0.25,
-      "total_pair_weight": 1.25,
-      "L_forwards": 8
+  "status": "ANALYZED",
+  "actual_execution": "VERIFIED",
+  "executed_code_commit": "192e6a84d72ca89d29489ce2750a20eb36bc765d",
+  "source_only": true,
+  "actual_rows": 3,
+  "new_model_epochs": 60,
+  "new_optimizer_updates": 13320,
+  "actual_NN_forward_packets": 17469956,
+  "dispatcher_smoke_NN_packets": 2,
+  "qualification": {
+    "qualified": false,
+    "conditions": {
+      "B00_clean": false,
+      "B00_clean_macroF1": true,
+      "B00_each_practical": false,
+      "B00_seen_V": true,
+      "C_same_clean": false,
+      "C_same_clean_macroF1": false,
+      "C_same_each_practical": false,
+      "C_same_seen_V": true,
+      "healthy": true
     },
-    {
-      "row_id": "C_same-RX1-s2026092701",
-      "GPU": 1,
-      "PID_CWD_argv_GPU": "VERIFIED",
-      "actual_seed": 2026092701,
-      "actual_epochs": 20,
-      "actual_scratch": true,
-      "observed_complete_step": 133,
-      "observed_epoch": 1,
-      "step_log_growth_verified": true,
-      "Ag_training": false,
-      "As_training": false,
-      "base_raw_weight": 0.75,
-      "ordinary_weight": 0.25,
-      "extra_weight": 0.25,
-      "total_pair_weight": 1.25,
-      "L_forwards": 8
-    },
-    {
-      "row_id": "B10-RX1-s2026092701",
-      "GPU": 2,
-      "PID_CWD_argv_GPU": "VERIFIED",
-      "actual_seed": 2026092701,
-      "actual_epochs": 20,
-      "actual_scratch": true,
-      "observed_complete_step": 146,
-      "observed_epoch": 1,
-      "step_log_growth_verified": true,
-      "Ag_training": true,
-      "As_training": false,
-      "base_raw_weight": 0.75,
-      "ordinary_weight": 0.25,
-      "extra_weight": 0.25,
-      "total_pair_weight": 1.25,
-      "L_forwards": 8
+    "comparisons": {
+      "B00": {
+        "conditions": {
+          "clean": false,
+          "clean_macroF1": true,
+          "each_practical": false,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": 0.4761904761904745,
+          "practical_high": 0.07936507936507908,
+          "practical_mid": 0.31746031746031633,
+          "practical_low_suburban": 0.23809523809523725,
+          "practical_high_urban": 0.6349206349206327,
+          "practical_mid_urban": -0.7142857142857117,
+          "practical_low_urban": 0.23809523809523725
+        },
+        "clean_macroF1_gain_pp": 0.35328472445450565,
+        "seen_V_gain_pp": 0.050925925925926485
+      },
+      "C_same": {
+        "conditions": {
+          "clean": false,
+          "clean_macroF1": false,
+          "each_practical": false,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": -0.4761904761904745,
+          "practical_high": -0.2380952380952428,
+          "practical_mid": -1.1904761904761918,
+          "practical_low_suburban": -0.15873015873015817,
+          "practical_high_urban": -0.47619047619048005,
+          "practical_mid_urban": 0.0,
+          "practical_low_urban": 0.15873015873015817
+        },
+        "clean_macroF1_gain_pp": -0.5466398816697526,
+        "seen_V_gain_pp": 0.03240740740739767
+      }
     }
-  ]
+  },
+  "source_prediction_count": 26460,
+  "completed_source_views": 21,
+  "independent_all_step_rows": 13320,
+  "all_donor_selections_recounted": true,
+  "bank_dataset_reads": 15120,
+  "source_only_no_truth_side_target": true,
+  "all_workers_naturally_exited": true,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "joint_goal_complete": false
 }

@@ -177,3 +177,9 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 并行分工核对：最新可用《开发 CVS Phase1 星地增强训练》对话也已转向同 TX/day 跨 RX 实测 IQ 插值。与本路相对频率／相位对齐的固定 .1 组合细节不同，但属同一类，不能作为两条独立方向或直接合并跨 seed。当前已运行 IQmix 三组 E20、原判据与七视图源评分不变；后续新候选避开同身份插值类。不据聊天状态推断对方远端作业，不修改或消息干预其任务。
+
+
+同 TX 实测 IQmix 三组 E20 和源七视图已完整 ANALYZED/VERIFIED：FAIL_FIXED_SAMETX_IQMIX_CLOSED。B10 相对 B00 clean 0.4761904761904745pp、low urban 0.23809523809523725pp；相对 C_same clean -0.4761904761904745pp。真实60modelE／13320更新／17469956NN，0 target。原判据不变；非完整联合证明，后续新方向避开同身份插值类。
+
+
+下一不同方向仅为草案、未登记／实现／启动：固定完整 practical 分布上的 MC2 损失期望组织，比较同一个 As IQ 重复与两个独立 As IQ，另设同前向 raw 控制；均10 L 前向、原监督系数不变，不平均IQ、不减弱信道、不新增损失或分支、原U不变。检验clean保持与urban增益，失败不扩M/改系数或预算救跑。旧IQmix已关闭。

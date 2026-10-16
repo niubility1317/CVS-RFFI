@@ -1,0 +1,4865 @@
+{
+  "status": "ANALYZED",
+  "actual_execution": "VERIFIED",
+  "run_id": "20261016-phase1-F-crossRX-sameTX-IQmix-sourceRX1-e20-s2026092701-m3-r01",
+  "source_only": true,
+  "model_seed": 2026092701,
+  "qualification": {
+    "qualified": false,
+    "conditions": {
+      "B00_clean": false,
+      "B00_clean_macroF1": true,
+      "B00_each_practical": false,
+      "B00_seen_V": true,
+      "C_same_clean": false,
+      "C_same_clean_macroF1": false,
+      "C_same_each_practical": false,
+      "C_same_seen_V": true,
+      "healthy": true
+    },
+    "comparisons": {
+      "B00": {
+        "conditions": {
+          "clean": false,
+          "clean_macroF1": true,
+          "each_practical": false,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": 0.4761904761904745,
+          "practical_high": 0.07936507936507908,
+          "practical_mid": 0.31746031746031633,
+          "practical_low_suburban": 0.23809523809523725,
+          "practical_high_urban": 0.6349206349206327,
+          "practical_mid_urban": -0.7142857142857117,
+          "practical_low_urban": 0.23809523809523725
+        },
+        "clean_macroF1_gain_pp": 0.35328472445450565,
+        "seen_V_gain_pp": 0.050925925925926485
+      },
+      "C_same": {
+        "conditions": {
+          "clean": false,
+          "clean_macroF1": false,
+          "each_practical": false,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": -0.4761904761904745,
+          "practical_high": -0.2380952380952428,
+          "practical_mid": -1.1904761904761918,
+          "practical_low_suburban": -0.15873015873015817,
+          "practical_high_urban": -0.47619047619048005,
+          "practical_mid_urban": 0.0,
+          "practical_low_urban": 0.15873015873015817
+        },
+        "clean_macroF1_gain_pp": -0.5466398816697526,
+        "seen_V_gain_pp": 0.03240740740739767
+      }
+    }
+  },
+  "scores": {
+    "B00": {
+      "clean": {
+        "count": 1260,
+        "accuracy": 0.803968253968254,
+        "macro_F1": 0.8006513341207638,
+        "confusion": [
+          [
+            187,
+            18,
+            3,
+            1,
+            1,
+            0
+          ],
+          [
+            0,
+            179,
+            0,
+            29,
+            1,
+            1
+          ],
+          [
+            19,
+            0,
+            124,
+            0,
+            0,
+            67
+          ],
+          [
+            1,
+            82,
+            0,
+            126,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            210,
+            0
+          ],
+          [
+            0,
+            0,
+            19,
+            4,
+            0,
+            187
+          ]
+        ]
+      },
+      "practical_high": {
+        "count": 1260,
+        "accuracy": 0.3976190476190476,
+        "macro_F1": 0.2901021118852372,
+        "confusion": [
+          [
+            5,
+            0,
+            155,
+            43,
+            7,
+            0
+          ],
+          [
+            2,
+            2,
+            6,
+            163,
+            34,
+            3
+          ],
+          [
+            1,
+            0,
+            139,
+            7,
+            40,
+            23
+          ],
+          [
+            4,
+            2,
+            10,
+            187,
+            7,
+            0
+          ],
+          [
+            1,
+            0,
+            19,
+            27,
+            162,
+            1
+          ],
+          [
+            0,
+            0,
+            160,
+            0,
+            44,
+            6
+          ]
+        ]
+      },
+      "practical_mid": {
+        "count": 1260,
+        "accuracy": 0.3952380952380952,
+        "macro_F1": 0.2959908805617858,
+        "confusion": [
+          [
+            12,
+            0,
+            145,
+            36,
+            15,
+            2
+          ],
+          [
+            10,
+            4,
+            8,
+            148,
+            36,
+            4
+          ],
+          [
+            3,
+            0,
+            142,
+            11,
+            30,
+            24
+          ],
+          [
+            4,
+            2,
+            18,
+            175,
+            10,
+            1
+          ],
+          [
+            4,
+            2,
+            16,
+            25,
+            162,
+            1
+          ],
+          [
+            2,
+            0,
+            151,
+            0,
+            54,
+            3
+          ]
+        ]
+      },
+      "practical_low_suburban": {
+        "count": 1260,
+        "accuracy": 0.3626984126984127,
+        "macro_F1": 0.28504803264912354,
+        "confusion": [
+          [
+            13,
+            1,
+            140,
+            37,
+            15,
+            4
+          ],
+          [
+            12,
+            6,
+            17,
+            132,
+            37,
+            6
+          ],
+          [
+            3,
+            4,
+            126,
+            12,
+            41,
+            24
+          ],
+          [
+            9,
+            2,
+            20,
+            149,
+            24,
+            6
+          ],
+          [
+            5,
+            1,
+            27,
+            24,
+            151,
+            2
+          ],
+          [
+            0,
+            0,
+            140,
+            2,
+            56,
+            12
+          ]
+        ]
+      },
+      "practical_high_urban": {
+        "count": 1260,
+        "accuracy": 0.3896825396825397,
+        "macro_F1": 0.29537944935149824,
+        "confusion": [
+          [
+            9,
+            1,
+            150,
+            35,
+            15,
+            0
+          ],
+          [
+            10,
+            3,
+            5,
+            149,
+            37,
+            6
+          ],
+          [
+            3,
+            1,
+            129,
+            11,
+            42,
+            24
+          ],
+          [
+            3,
+            3,
+            9,
+            187,
+            7,
+            1
+          ],
+          [
+            9,
+            2,
+            17,
+            26,
+            152,
+            4
+          ],
+          [
+            3,
+            1,
+            146,
+            0,
+            49,
+            11
+          ]
+        ]
+      },
+      "practical_mid_urban": {
+        "count": 1260,
+        "accuracy": 0.3277777777777778,
+        "macro_F1": 0.2732593852409078,
+        "confusion": [
+          [
+            18,
+            2,
+            113,
+            33,
+            36,
+            8
+          ],
+          [
+            15,
+            6,
+            18,
+            111,
+            44,
+            16
+          ],
+          [
+            15,
+            4,
+            102,
+            20,
+            41,
+            28
+          ],
+          [
+            14,
+            6,
+            12,
+            139,
+            27,
+            12
+          ],
+          [
+            21,
+            8,
+            19,
+            27,
+            125,
+            10
+          ],
+          [
+            4,
+            1,
+            124,
+            2,
+            56,
+            23
+          ]
+        ]
+      },
+      "practical_low_urban": {
+        "count": 1260,
+        "accuracy": 0.2785714285714286,
+        "macro_F1": 0.24506852350263886,
+        "confusion": [
+          [
+            29,
+            4,
+            99,
+            20,
+            40,
+            18
+          ],
+          [
+            28,
+            9,
+            26,
+            68,
+            62,
+            17
+          ],
+          [
+            14,
+            12,
+            86,
+            26,
+            43,
+            29
+          ],
+          [
+            24,
+            9,
+            22,
+            95,
+            45,
+            15
+          ],
+          [
+            19,
+            6,
+            27,
+            32,
+            112,
+            14
+          ],
+          [
+            11,
+            4,
+            100,
+            8,
+            67,
+            20
+          ]
+        ]
+      }
+    },
+    "C_same": {
+      "clean": {
+        "count": 1260,
+        "accuracy": 0.8134920634920635,
+        "macro_F1": 0.8096505801820064,
+        "confusion": [
+          [
+            190,
+            14,
+            2,
+            1,
+            3,
+            0
+          ],
+          [
+            0,
+            180,
+            0,
+            27,
+            2,
+            1
+          ],
+          [
+            15,
+            0,
+            126,
+            0,
+            0,
+            69
+          ],
+          [
+            2,
+            82,
+            0,
+            125,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            210,
+            0
+          ],
+          [
+            0,
+            0,
+            11,
+            5,
+            0,
+            194
+          ]
+        ]
+      },
+      "practical_high": {
+        "count": 1260,
+        "accuracy": 0.4007936507936508,
+        "macro_F1": 0.291359478844677,
+        "confusion": [
+          [
+            6,
+            1,
+            124,
+            63,
+            16,
+            0
+          ],
+          [
+            1,
+            2,
+            1,
+            166,
+            37,
+            3
+          ],
+          [
+            1,
+            0,
+            144,
+            3,
+            44,
+            18
+          ],
+          [
+            4,
+            2,
+            5,
+            190,
+            9,
+            0
+          ],
+          [
+            1,
+            0,
+            24,
+            30,
+            154,
+            1
+          ],
+          [
+            0,
+            0,
+            146,
+            0,
+            55,
+            9
+          ]
+        ]
+      },
+      "practical_mid": {
+        "count": 1260,
+        "accuracy": 0.4103174603174603,
+        "macro_F1": 0.30675776613137856,
+        "confusion": [
+          [
+            14,
+            0,
+            125,
+            50,
+            19,
+            2
+          ],
+          [
+            8,
+            4,
+            4,
+            152,
+            38,
+            4
+          ],
+          [
+            1,
+            0,
+            150,
+            9,
+            32,
+            18
+          ],
+          [
+            3,
+            1,
+            10,
+            185,
+            10,
+            1
+          ],
+          [
+            1,
+            2,
+            22,
+            25,
+            158,
+            2
+          ],
+          [
+            2,
+            0,
+            139,
+            0,
+            63,
+            6
+          ]
+        ]
+      },
+      "practical_low_suburban": {
+        "count": 1260,
+        "accuracy": 0.36666666666666664,
+        "macro_F1": 0.2841107473900523,
+        "confusion": [
+          [
+            11,
+            1,
+            126,
+            50,
+            18,
+            4
+          ],
+          [
+            9,
+            5,
+            10,
+            135,
+            43,
+            8
+          ],
+          [
+            2,
+            3,
+            137,
+            7,
+            40,
+            21
+          ],
+          [
+            12,
+            2,
+            14,
+            152,
+            24,
+            6
+          ],
+          [
+            6,
+            1,
+            30,
+            28,
+            143,
+            2
+          ],
+          [
+            0,
+            0,
+            132,
+            2,
+            62,
+            14
+          ]
+        ]
+      },
+      "practical_high_urban": {
+        "count": 1260,
+        "accuracy": 0.4007936507936508,
+        "macro_F1": 0.3036372771607167,
+        "confusion": [
+          [
+            9,
+            1,
+            136,
+            46,
+            18,
+            0
+          ],
+          [
+            9,
+            4,
+            3,
+            150,
+            38,
+            6
+          ],
+          [
+            3,
+            1,
+            139,
+            5,
+            45,
+            17
+          ],
+          [
+            3,
+            3,
+            3,
+            193,
+            7,
+            1
+          ],
+          [
+            4,
+            2,
+            28,
+            26,
+            146,
+            4
+          ],
+          [
+            3,
+            1,
+            139,
+            0,
+            53,
+            14
+          ]
+        ]
+      },
+      "practical_mid_urban": {
+        "count": 1260,
+        "accuracy": 0.32063492063492066,
+        "macro_F1": 0.2661633815954622,
+        "confusion": [
+          [
+            15,
+            2,
+            98,
+            38,
+            47,
+            10
+          ],
+          [
+            16,
+            6,
+            13,
+            112,
+            47,
+            16
+          ],
+          [
+            14,
+            4,
+            102,
+            20,
+            44,
+            26
+          ],
+          [
+            16,
+            5,
+            8,
+            135,
+            32,
+            14
+          ],
+          [
+            25,
+            6,
+            21,
+            28,
+            121,
+            9
+          ],
+          [
+            4,
+            1,
+            116,
+            2,
+            62,
+            25
+          ]
+        ]
+      },
+      "practical_low_urban": {
+        "count": 1260,
+        "accuracy": 0.27936507936507937,
+        "macro_F1": 0.24571675587664832,
+        "confusion": [
+          [
+            31,
+            5,
+            83,
+            30,
+            42,
+            19
+          ],
+          [
+            27,
+            9,
+            22,
+            69,
+            65,
+            18
+          ],
+          [
+            16,
+            9,
+            83,
+            21,
+            54,
+            27
+          ],
+          [
+            27,
+            7,
+            19,
+            95,
+            47,
+            15
+          ],
+          [
+            18,
+            5,
+            28,
+            30,
+            114,
+            15
+          ],
+          [
+            13,
+            5,
+            93,
+            6,
+            73,
+            20
+          ]
+        ]
+      }
+    },
+    "B10": {
+      "clean": {
+        "count": 1260,
+        "accuracy": 0.8087301587301587,
+        "macro_F1": 0.8041841813653089,
+        "confusion": [
+          [
+            191,
+            14,
+            2,
+            1,
+            2,
+            0
+          ],
+          [
+            0,
+            180,
+            0,
+            28,
+            1,
+            1
+          ],
+          [
+            12,
+            0,
+            117,
+            0,
+            0,
+            81
+          ],
+          [
+            2,
+            82,
+            0,
+            125,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            210,
+            0
+          ],
+          [
+            0,
+            0,
+            8,
+            6,
+            0,
+            196
+          ]
+        ]
+      },
+      "practical_high": {
+        "count": 1260,
+        "accuracy": 0.3984126984126984,
+        "macro_F1": 0.290338866072216,
+        "confusion": [
+          [
+            6,
+            1,
+            123,
+            59,
+            21,
+            0
+          ],
+          [
+            4,
+            3,
+            3,
+            160,
+            37,
+            3
+          ],
+          [
+            1,
+            0,
+            142,
+            4,
+            36,
+            27
+          ],
+          [
+            6,
+            1,
+            12,
+            182,
+            9,
+            0
+          ],
+          [
+            1,
+            0,
+            20,
+            27,
+            161,
+            1
+          ],
+          [
+            0,
+            0,
+            121,
+            0,
+            81,
+            8
+          ]
+        ]
+      },
+      "practical_mid": {
+        "count": 1260,
+        "accuracy": 0.3984126984126984,
+        "macro_F1": 0.30265501678541956,
+        "confusion": [
+          [
+            13,
+            0,
+            122,
+            48,
+            25,
+            2
+          ],
+          [
+            11,
+            5,
+            6,
+            145,
+            38,
+            5
+          ],
+          [
+            3,
+            1,
+            146,
+            7,
+            24,
+            29
+          ],
+          [
+            12,
+            1,
+            16,
+            168,
+            12,
+            1
+          ],
+          [
+            2,
+            1,
+            21,
+            22,
+            162,
+            2
+          ],
+          [
+            2,
+            0,
+            124,
+            0,
+            76,
+            8
+          ]
+        ]
+      },
+      "practical_low_suburban": {
+        "count": 1260,
+        "accuracy": 0.36507936507936506,
+        "macro_F1": 0.28550857605295854,
+        "confusion": [
+          [
+            12,
+            0,
+            117,
+            49,
+            28,
+            4
+          ],
+          [
+            12,
+            7,
+            12,
+            129,
+            41,
+            9
+          ],
+          [
+            2,
+            4,
+            137,
+            5,
+            34,
+            28
+          ],
+          [
+            17,
+            2,
+            25,
+            139,
+            21,
+            6
+          ],
+          [
+            4,
+            1,
+            29,
+            22,
+            152,
+            2
+          ],
+          [
+            0,
+            0,
+            114,
+            1,
+            82,
+            13
+          ]
+        ]
+      },
+      "practical_high_urban": {
+        "count": 1260,
+        "accuracy": 0.396031746031746,
+        "macro_F1": 0.3004322534447581,
+        "confusion": [
+          [
+            10,
+            1,
+            129,
+            42,
+            28,
+            0
+          ],
+          [
+            11,
+            4,
+            6,
+            145,
+            38,
+            6
+          ],
+          [
+            3,
+            1,
+            133,
+            7,
+            37,
+            29
+          ],
+          [
+            4,
+            3,
+            8,
+            186,
+            8,
+            1
+          ],
+          [
+            7,
+            2,
+            20,
+            24,
+            153,
+            4
+          ],
+          [
+            3,
+            1,
+            110,
+            0,
+            83,
+            13
+          ]
+        ]
+      },
+      "practical_mid_urban": {
+        "count": 1260,
+        "accuracy": 0.32063492063492066,
+        "macro_F1": 0.2660544015736197,
+        "confusion": [
+          [
+            14,
+            2,
+            100,
+            39,
+            47,
+            8
+          ],
+          [
+            19,
+            7,
+            13,
+            109,
+            46,
+            16
+          ],
+          [
+            13,
+            4,
+            99,
+            16,
+            42,
+            36
+          ],
+          [
+            18,
+            4,
+            11,
+            135,
+            30,
+            12
+          ],
+          [
+            22,
+            8,
+            23,
+            23,
+            126,
+            8
+          ],
+          [
+            4,
+            1,
+            107,
+            0,
+            75,
+            23
+          ]
+        ]
+      },
+      "practical_low_urban": {
+        "count": 1260,
+        "accuracy": 0.28095238095238095,
+        "macro_F1": 0.24516017760600428,
+        "confusion": [
+          [
+            27,
+            5,
+            80,
+            29,
+            50,
+            19
+          ],
+          [
+            32,
+            9,
+            26,
+            67,
+            62,
+            14
+          ],
+          [
+            15,
+            10,
+            86,
+            19,
+            53,
+            27
+          ],
+          [
+            25,
+            9,
+            23,
+            89,
+            48,
+            16
+          ],
+          [
+            16,
+            5,
+            25,
+            27,
+            122,
+            15
+          ],
+          [
+            12,
+            4,
+            85,
+            6,
+            82,
+            21
+          ]
+        ]
+      }
+    }
+  },
+  "paired": {
+    "B00": {
+      "clean": {
+        "accuracy_gain_pp": 0.4761904761904745,
+        "macro_F1_gain_pp": 0.35328472445450565,
+        "repaired": 19,
+        "broken": 13
+      },
+      "practical_high": {
+        "accuracy_gain_pp": 0.07936507936507908,
+        "macro_F1_gain_pp": 0.02367541869787715,
+        "repaired": 15,
+        "broken": 14
+      },
+      "practical_mid": {
+        "accuracy_gain_pp": 0.31746031746031633,
+        "macro_F1_gain_pp": 0.6664136223633765,
+        "repaired": 21,
+        "broken": 17
+      },
+      "practical_low_suburban": {
+        "accuracy_gain_pp": 0.23809523809523725,
+        "macro_F1_gain_pp": 0.04605434038350009,
+        "repaired": 24,
+        "broken": 21
+      },
+      "practical_high_urban": {
+        "accuracy_gain_pp": 0.6349206349206327,
+        "macro_F1_gain_pp": 0.5052804093259866,
+        "repaired": 19,
+        "broken": 11
+      },
+      "practical_mid_urban": {
+        "accuracy_gain_pp": -0.7142857142857117,
+        "macro_F1_gain_pp": -0.7204983667288112,
+        "repaired": 13,
+        "broken": 22
+      },
+      "practical_low_urban": {
+        "accuracy_gain_pp": 0.23809523809523725,
+        "macro_F1_gain_pp": 0.00916541033654239,
+        "repaired": 25,
+        "broken": 22
+      }
+    },
+    "C_same": {
+      "clean": {
+        "accuracy_gain_pp": -0.4761904761904745,
+        "macro_F1_gain_pp": -0.5466398816697526,
+        "repaired": 5,
+        "broken": 11
+      },
+      "practical_high": {
+        "accuracy_gain_pp": -0.2380952380952428,
+        "macro_F1_gain_pp": -0.10206127724610159,
+        "repaired": 16,
+        "broken": 19
+      },
+      "practical_mid": {
+        "accuracy_gain_pp": -1.1904761904761918,
+        "macro_F1_gain_pp": -0.41027493459590003,
+        "repaired": 17,
+        "broken": 32
+      },
+      "practical_low_suburban": {
+        "accuracy_gain_pp": -0.15873015873015817,
+        "macro_F1_gain_pp": 0.13978286629062198,
+        "repaired": 22,
+        "broken": 24
+      },
+      "practical_high_urban": {
+        "accuracy_gain_pp": -0.47619047619048005,
+        "macro_F1_gain_pp": -0.3205023715958599,
+        "repaired": 17,
+        "broken": 23
+      },
+      "practical_mid_urban": {
+        "accuracy_gain_pp": 0.0,
+        "macro_F1_gain_pp": -0.010898002184250855,
+        "repaired": 16,
+        "broken": 16
+      },
+      "practical_low_urban": {
+        "accuracy_gain_pp": 0.15873015873015817,
+        "macro_F1_gain_pp": -0.0556578270644037,
+        "repaired": 23,
+        "broken": 21
+      }
+    }
+  },
+  "suburban_gaps": {
+    "B00": {
+      "practical_high": {
+        "clean_minus_suburban_pp": 40.63492063492064,
+        "absolute_gap_pp": 40.63492063492064
+      },
+      "practical_mid": {
+        "clean_minus_suburban_pp": 40.87301587301588,
+        "absolute_gap_pp": 40.87301587301588
+      },
+      "practical_low_suburban": {
+        "clean_minus_suburban_pp": 44.126984126984134,
+        "absolute_gap_pp": 44.126984126984134
+      }
+    },
+    "C_same": {
+      "practical_high": {
+        "clean_minus_suburban_pp": 41.269841269841265,
+        "absolute_gap_pp": 41.269841269841265
+      },
+      "practical_mid": {
+        "clean_minus_suburban_pp": 40.317460317460316,
+        "absolute_gap_pp": 40.317460317460316
+      },
+      "practical_low_suburban": {
+        "clean_minus_suburban_pp": 44.682539682539684,
+        "absolute_gap_pp": 44.682539682539684
+      }
+    },
+    "B10": {
+      "practical_high": {
+        "clean_minus_suburban_pp": 41.03174603174604,
+        "absolute_gap_pp": 41.03174603174604
+      },
+      "practical_mid": {
+        "clean_minus_suburban_pp": 41.03174603174604,
+        "absolute_gap_pp": 41.03174603174604
+      },
+      "practical_low_suburban": {
+        "clean_minus_suburban_pp": 44.36507936507937,
+        "absolute_gap_pp": 44.36507936507937
+      }
+    }
+  },
+  "execution": {
+    "B00": {
+      "full_steps": 4440,
+      "full_epochs": 20,
+      "stdout_lines": 800,
+      "native_nonfinite_placeholder_fields": [],
+      "max_loss_recount_error": 3.2782554626464844e-07,
+      "L_forward_packets": 4546560,
+      "extra_L_forward_packets": 1136640,
+      "ordinary_generated_packets": 568320,
+      "IQmix_generated_packets": 0,
+      "donor_IQ_gathers": 0,
+      "bank_dataset_reads": 5040,
+      "bank_unique_L": 5040,
+      "anchor_observations": 568320,
+      "anchor_visit_min": 104,
+      "anchor_visit_max": 120,
+      "all_donor_selections_recounted": true,
+      "IQmix_coverage": [],
+      "teacher_IQmix_calls": 0,
+      "As_training_observations": 0,
+      "physical_observations": {
+        "L": 568320,
+        "U": 396368
+      },
+      "unique_physical_training": {
+        "L": 5040,
+        "U": 45360
+      },
+      "teacher_inherited_counter_offset_removed": 2,
+      "instrumented_counters": {
+        "student_train_forward_packets": 4942928,
+        "student_eval_forward_packets": 475202,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 396370
+      },
+      "actual_network_forward_packets": 5823318,
+      "held_forward_packets": 8820,
+      "elapsed_training_seconds": 1374.1747841835022,
+      "final_native_logged_first_ordinary_CE": 0.26397778640861985,
+      "final_base_L_objective": 0.31081179965723743,
+      "final_extra_pair_objective": 0.09727651105673464,
+      "seen_V": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.9800462962962962,
+        "source_val_rx_accuracy": {
+          "3": 0.9533333333333334,
+          "4": 0.9855555555555555,
+          "6": 0.9951851851851852,
+          "8": 0.9861111111111112
+        },
+        "source_val_worst_rx": 0.9533333333333334,
+        "held_RX_excluded": true
+      },
+      "tracked_BN_module_names": [],
+      "extra_BN_updates": 0,
+      "relative_IQ_change_mean_of_all_generated": 0,
+      "relative_IQ_change_min": 0,
+      "relative_IQ_change_max": 0,
+      "relative_power_error_max": 0,
+      "stdout_warning_count": 0
+    },
+    "C_same": {
+      "full_steps": 4440,
+      "full_epochs": 20,
+      "stdout_lines": 800,
+      "native_nonfinite_placeholder_fields": [],
+      "max_loss_recount_error": 4.76837158203125e-07,
+      "L_forward_packets": 4546560,
+      "extra_L_forward_packets": 1136640,
+      "ordinary_generated_packets": 568320,
+      "IQmix_generated_packets": 568320,
+      "donor_IQ_gathers": 568320,
+      "bank_dataset_reads": 5040,
+      "bank_unique_L": 5040,
+      "anchor_observations": 568320,
+      "anchor_visit_min": 104,
+      "anchor_visit_max": 120,
+      "all_donor_selections_recounted": true,
+      "IQmix_coverage": [
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 7919
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 7883
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 7898
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 7895
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 7874
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 7896
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 7910
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 7874
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 7891
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 7909
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 7900
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 7924
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 7833
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 7858
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 7923
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 7897
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 7881
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 7905
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 7891
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 7909
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 7896
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 7889
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 7880
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 7900
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 7878
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 7927
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 7900
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 7891
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 7877
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 7876
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 7903
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 7908
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 7880
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 7923
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 7864
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 7904
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 7878
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 7902
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 7897
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 7896
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 7888
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 7894
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 7887
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 7892
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 7881
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 7894
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 7919
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 7894
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 7873
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 7874
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 7921
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 7878
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 7918
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 7858
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 7874
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 7889
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 7900
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 7892
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 7877
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 7897
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 7908
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 7884
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 7887
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 7887
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 7908
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 7907
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 7867
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 7889
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 7939
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 7898
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 7874
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 7933
+        }
+      ],
+      "teacher_IQmix_calls": 0,
+      "As_training_observations": 0,
+      "physical_observations": {
+        "L": 568320,
+        "U": 396368
+      },
+      "unique_physical_training": {
+        "L": 5040,
+        "U": 45360
+      },
+      "teacher_inherited_counter_offset_removed": 2,
+      "instrumented_counters": {
+        "student_train_forward_packets": 4942928,
+        "student_eval_forward_packets": 475202,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 396370
+      },
+      "actual_network_forward_packets": 5823318,
+      "held_forward_packets": 8820,
+      "elapsed_training_seconds": 1560.171618461609,
+      "final_native_logged_first_ordinary_CE": 0.26520305801485033,
+      "final_base_L_objective": 0.311157928058156,
+      "final_extra_pair_objective": 0.09988538679238912,
+      "seen_V": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.9802314814814815,
+        "source_val_rx_accuracy": {
+          "3": 0.9538888888888889,
+          "4": 0.9851851851851852,
+          "6": 0.9961111111111111,
+          "8": 0.9857407407407407
+        },
+        "source_val_worst_rx": 0.9538888888888889,
+        "held_RX_excluded": true
+      },
+      "tracked_BN_module_names": [],
+      "extra_BN_updates": 0,
+      "relative_IQ_change_mean_of_all_generated": 0.0482413167229195,
+      "relative_IQ_change_min": 0.0018902299355703508,
+      "relative_IQ_change_max": 0.11128331139758128,
+      "relative_power_error_max": 1.635468393368301e-08,
+      "stdout_warning_count": 0
+    },
+    "B10": {
+      "full_steps": 4440,
+      "full_epochs": 20,
+      "stdout_lines": 800,
+      "native_nonfinite_placeholder_fields": [],
+      "max_loss_recount_error": 4.76837158203125e-07,
+      "L_forward_packets": 4546560,
+      "extra_L_forward_packets": 1136640,
+      "ordinary_generated_packets": 568320,
+      "IQmix_generated_packets": 568320,
+      "donor_IQ_gathers": 568320,
+      "bank_dataset_reads": 5040,
+      "bank_unique_L": 5040,
+      "anchor_observations": 568320,
+      "anchor_visit_min": 104,
+      "anchor_visit_max": 120,
+      "all_donor_selections_recounted": true,
+      "IQmix_coverage": [
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2665
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2640
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2614
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2653
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2628
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2602
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2655
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2636
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2607
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2650
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2634
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2611
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2646
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2626
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2602
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2659
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2629
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2608
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2660
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2640
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2610
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2645
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2628
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2601
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2654
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2629
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2608
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2660
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2638
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2611
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2657
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2631
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2612
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2665
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2642
+        },
+        {
+          "TX": 0,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2617
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2633
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2612
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2588
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2645
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2618
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2595
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2666
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2642
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2615
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2657
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2634
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2606
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2647
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2636
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2598
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2659
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2635
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2611
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2656
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2629
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2606
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2663
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2634
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2612
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2652
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2632
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2612
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2649
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2631
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2609
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2652
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2624
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2604
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2654
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2632
+        },
+        {
+          "TX": 1,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2614
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2646
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2629
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2603
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2670
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2641
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2616
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2661
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2628
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2611
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2652
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2631
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2608
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2648
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2628
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2601
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2648
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2625
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2603
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2659
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2634
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2610
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2659
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2635
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2614
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2643
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2627
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2610
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2662
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2641
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2620
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2645
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2624
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2595
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2658
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2634
+        },
+        {
+          "TX": 2,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2612
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2651
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2625
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2602
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2657
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2634
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2611
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2651
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2630
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2616
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2653
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2633
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2610
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2654
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2627
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2607
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2653
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2631
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2610
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2655
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2626
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2606
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2652
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2631
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2609
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2651
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2623
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2607
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2658
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2631
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2605
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2667
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2637
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2615
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2653
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2633
+        },
+        {
+          "TX": 3,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2608
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2647
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2625
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2601
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2649
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2624
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2601
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2665
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2636
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2620
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2646
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2629
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2603
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2656
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2643
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2619
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2644
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2618
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2596
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2651
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2623
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2600
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2651
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2632
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2606
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2655
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2634
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2611
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2656
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2628
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2608
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2651
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2629
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2597
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2657
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2633
+        },
+        {
+          "TX": 4,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2607
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2657
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2638
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2613
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2645
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2631
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2608
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2653
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2628
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 3,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2606
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2649
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2634
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2604
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2662
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2634
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2612
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2656
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2637
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 4,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2614
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2645
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2626
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 1,
+          "donor_RX": 8,
+          "count": 2596
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2654
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2629
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 2,
+          "donor_RX": 8,
+          "count": 2606
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2674
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2645
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 6,
+          "day": 3,
+          "donor_RX": 8,
+          "count": 2620
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 3,
+          "count": 2656
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 4,
+          "count": 2634
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 1,
+          "donor_RX": 6,
+          "count": 2608
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 3,
+          "count": 2649
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 4,
+          "count": 2623
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 2,
+          "donor_RX": 6,
+          "count": 2602
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 3,
+          "count": 2670
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 4,
+          "count": 2642
+        },
+        {
+          "TX": 5,
+          "anchor_RX": 8,
+          "day": 3,
+          "donor_RX": 6,
+          "count": 2621
+        }
+      ],
+      "teacher_IQmix_calls": 0,
+      "As_training_observations": 0,
+      "physical_observations": {
+        "L": 568320,
+        "U": 396368
+      },
+      "unique_physical_training": {
+        "L": 5040,
+        "U": 45360
+      },
+      "teacher_inherited_counter_offset_removed": 2,
+      "instrumented_counters": {
+        "student_train_forward_packets": 4942928,
+        "student_eval_forward_packets": 475202,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 396370
+      },
+      "actual_network_forward_packets": 5823318,
+      "held_forward_packets": 8820,
+      "elapsed_training_seconds": 1425.4599306583405,
+      "final_native_logged_first_ordinary_CE": 0.2644871447470274,
+      "final_base_L_objective": 0.31098457788293427,
+      "final_extra_pair_objective": 0.10085881008086978,
+      "seen_V": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.9805555555555555,
+        "source_val_rx_accuracy": {
+          "3": 0.9544444444444444,
+          "4": 0.9855555555555555,
+          "6": 0.9961111111111111,
+          "8": 0.9861111111111112
+        },
+        "source_val_worst_rx": 0.9544444444444444,
+        "held_RX_excluded": true
+      },
+      "tracked_BN_module_names": [],
+      "extra_BN_updates": 0,
+      "relative_IQ_change_mean_of_all_generated": 0.0745620416388093,
+      "relative_IQ_change_min": 0.006688024840595977,
+      "relative_IQ_change_max": 0.11127913567127028,
+      "relative_power_error_max": 1.5325249469842065e-08,
+      "stdout_warning_count": 0
+    }
+  },
+  "all_L_U_sequences_identical": true,
+  "native_argument_differences": [
+    [
+      "candidate_id",
+      "output_dir"
+    ],
+    [
+      "candidate_id",
+      "output_dir"
+    ]
+  ],
+  "CE_scope": "Native final_L_CE is first ordinary smoothedCE;runtime readout CE is not independently recoverable from stored hardpredictions;full recorded objectives independently recounted",
+  "new_model_epochs": 60,
+  "new_optimizer_updates": 13320,
+  "dispatcher_smoke_NN_packets": 2,
+  "total_actual_NN_forward_packets": 17469956,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "Ag_efficacy_proved": false,
+  "joint_goal_complete": false,
+  "missing": [
+    "Independent source confirmation if fixed candidate qualifies",
+    "Validated Ag",
+    "Samecontract B00/B10/B01/B11 and interaction",
+    "Formal target clean+sixpractical",
+    "Crossseed joint verification"
+  ],
+  "all_source_TX_day_strata": [
+    {
+      "B10_accuracy": "0.9095238095238095",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "1.904761904761909",
+      "reference": "B00",
+      "reference_accuracy": "0.8904761904761904",
+      "value": "0",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.8571428571428571",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904745",
+      "reference": "B00",
+      "reference_accuracy": "0.8523809523809524",
+      "value": "1",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.5571428571428572",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-3.3333333333333326",
+      "reference": "B00",
+      "reference_accuracy": "0.5904761904761905",
+      "value": "2",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.5952380952380952",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.4761904761904745",
+      "reference": "B00",
+      "reference_accuracy": "0.6",
+      "value": "3",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "1.0",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "B00",
+      "reference_accuracy": "1.0",
+      "value": "4",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.9333333333333333",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "4.285714285714293",
+      "reference": "B00",
+      "reference_accuracy": "0.8904761904761904",
+      "value": "5",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.8214285714285714",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.4761904761904745",
+      "reference": "B00",
+      "reference_accuracy": "0.8166666666666667",
+      "value": "1",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.861904761904762",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-1.6666666666666607",
+      "reference": "B00",
+      "reference_accuracy": "0.8785714285714286",
+      "value": "2",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.7428571428571429",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "2.619047619047621",
+      "reference": "B00",
+      "reference_accuracy": "0.7166666666666667",
+      "value": "3",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.02857142857142857",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904762",
+      "reference": "B00",
+      "reference_accuracy": "0.023809523809523808",
+      "value": "0",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.014285714285714285",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.47619047619047605",
+      "reference": "B00",
+      "reference_accuracy": "0.009523809523809525",
+      "value": "1",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.6761904761904762",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "1.4285714285714346",
+      "reference": "B00",
+      "reference_accuracy": "0.6619047619047619",
+      "value": "2",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.8666666666666667",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-2.3809523809523725",
+      "reference": "B00",
+      "reference_accuracy": "0.8904761904761904",
+      "value": "3",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.7666666666666667",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.4761904761904745",
+      "reference": "B00",
+      "reference_accuracy": "0.7714285714285715",
+      "value": "4",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.0380952380952381",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.9523809523809528",
+      "reference": "B00",
+      "reference_accuracy": "0.02857142857142857",
+      "value": "5",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.4238095238095238",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.4761904761904745",
+      "reference": "B00",
+      "reference_accuracy": "0.41904761904761906",
+      "value": "1",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.45",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-0.7142857142857117",
+      "reference": "B00",
+      "reference_accuracy": "0.45714285714285713",
+      "value": "2",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.32142857142857145",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.47619047619048005",
+      "reference": "B00",
+      "reference_accuracy": "0.31666666666666665",
+      "value": "3",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.06190476190476191",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904766",
+      "reference": "B00",
+      "reference_accuracy": "0.05714285714285714",
+      "value": "0",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.023809523809523808",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904759",
+      "reference": "B00",
+      "reference_accuracy": "0.01904761904761905",
+      "value": "1",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.6952380952380952",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "1.904761904761898",
+      "reference": "B00",
+      "reference_accuracy": "0.6761904761904762",
+      "value": "2",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.8",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-3.3333333333333326",
+      "reference": "B00",
+      "reference_accuracy": "0.8333333333333334",
+      "value": "3",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.7714285714285715",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "B00",
+      "reference_accuracy": "0.7714285714285715",
+      "value": "4",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.0380952380952381",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "2.3809523809523814",
+      "reference": "B00",
+      "reference_accuracy": "0.014285714285714285",
+      "value": "5",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.4357142857142857",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-0.23809523809523725",
+      "reference": "B00",
+      "reference_accuracy": "0.4380952380952381",
+      "value": "1",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.430952380952381",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.47619047619048005",
+      "reference": "B00",
+      "reference_accuracy": "0.4261904761904762",
+      "value": "2",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.32857142857142857",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.7142857142857117",
+      "reference": "B00",
+      "reference_accuracy": "0.32142857142857145",
+      "value": "3",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.05714285714285714",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.4761904761904766",
+      "reference": "B00",
+      "reference_accuracy": "0.06190476190476191",
+      "value": "0",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.03333333333333333",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904762",
+      "reference": "B00",
+      "reference_accuracy": "0.02857142857142857",
+      "value": "1",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.6523809523809524",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "5.238095238095242",
+      "reference": "B00",
+      "reference_accuracy": "0.6",
+      "value": "2",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.6619047619047619",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-4.761904761904767",
+      "reference": "B00",
+      "reference_accuracy": "0.7095238095238096",
+      "value": "3",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.7238095238095238",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904745",
+      "reference": "B00",
+      "reference_accuracy": "0.719047619047619",
+      "value": "4",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.06190476190476191",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904766",
+      "reference": "B00",
+      "reference_accuracy": "0.05714285714285714",
+      "value": "5",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.38095238095238093",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "1.9047619047619035",
+      "reference": "B00",
+      "reference_accuracy": "0.3619047619047619",
+      "value": "1",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.3976190476190476",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-0.7142857142857173",
+      "reference": "B00",
+      "reference_accuracy": "0.40476190476190477",
+      "value": "2",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.31666666666666665",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-0.47619047619048005",
+      "reference": "B00",
+      "reference_accuracy": "0.32142857142857145",
+      "value": "3",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.047619047619047616",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904759",
+      "reference": "B00",
+      "reference_accuracy": "0.04285714285714286",
+      "value": "0",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.01904761904761905",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904764",
+      "reference": "B00",
+      "reference_accuracy": "0.014285714285714285",
+      "value": "1",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.6333333333333333",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "1.904761904761898",
+      "reference": "B00",
+      "reference_accuracy": "0.6142857142857143",
+      "value": "2",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.8857142857142857",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.4761904761904745",
+      "reference": "B00",
+      "reference_accuracy": "0.8904761904761904",
+      "value": "3",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.7285714285714285",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904745",
+      "reference": "B00",
+      "reference_accuracy": "0.7238095238095238",
+      "value": "4",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.06190476190476191",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.9523809523809524",
+      "reference": "B00",
+      "reference_accuracy": "0.05238095238095238",
+      "value": "5",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.45476190476190476",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "2.619047619047621",
+      "reference": "B00",
+      "reference_accuracy": "0.42857142857142855",
+      "value": "1",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.41904761904761906",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.0",
+      "reference": "B00",
+      "reference_accuracy": "0.41904761904761906",
+      "value": "2",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.3142857142857143",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-0.7142857142857173",
+      "reference": "B00",
+      "reference_accuracy": "0.32142857142857145",
+      "value": "3",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.06666666666666667",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-1.9047619047619049",
+      "reference": "B00",
+      "reference_accuracy": "0.08571428571428572",
+      "value": "0",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.03333333333333333",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904762",
+      "reference": "B00",
+      "reference_accuracy": "0.02857142857142857",
+      "value": "1",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.4714285714285714",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-1.428571428571429",
+      "reference": "B00",
+      "reference_accuracy": "0.4857142857142857",
+      "value": "2",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.6428571428571429",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-1.904761904761898",
+      "reference": "B00",
+      "reference_accuracy": "0.6619047619047619",
+      "value": "3",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.6",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904745",
+      "reference": "B00",
+      "reference_accuracy": "0.5952380952380952",
+      "value": "4",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.10952380952380952",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "B00",
+      "reference_accuracy": "0.10952380952380952",
+      "value": "5",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.34523809523809523",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.23809523809523725",
+      "reference": "B00",
+      "reference_accuracy": "0.34285714285714286",
+      "value": "1",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.3476190476190476",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-1.1904761904761918",
+      "reference": "B00",
+      "reference_accuracy": "0.3595238095238095",
+      "value": "2",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.26904761904761904",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-1.1904761904761918",
+      "reference": "B00",
+      "reference_accuracy": "0.28095238095238095",
+      "value": "3",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.12857142857142856",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.9523809523809545",
+      "reference": "B00",
+      "reference_accuracy": "0.1380952380952381",
+      "value": "0",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.04285714285714286",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "B00",
+      "reference_accuracy": "0.04285714285714286",
+      "value": "1",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.4095238095238095",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "B00",
+      "reference_accuracy": "0.4095238095238095",
+      "value": "2",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.4238095238095238",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-2.857142857142858",
+      "reference": "B00",
+      "reference_accuracy": "0.4523809523809524",
+      "value": "3",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.580952380952381",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "4.761904761904767",
+      "reference": "B00",
+      "reference_accuracy": "0.5333333333333333",
+      "value": "4",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.1",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904773",
+      "reference": "B00",
+      "reference_accuracy": "0.09523809523809523",
+      "value": "5",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.29523809523809524",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.0",
+      "reference": "B00",
+      "reference_accuracy": "0.29523809523809524",
+      "value": "1",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.2833333333333333",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-0.23809523809523725",
+      "reference": "B00",
+      "reference_accuracy": "0.2857142857142857",
+      "value": "2",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.2642857142857143",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.9523809523809545",
+      "reference": "B00",
+      "reference_accuracy": "0.25476190476190474",
+      "value": "3",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.9095238095238095",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904745",
+      "reference": "C_same",
+      "reference_accuracy": "0.9047619047619048",
+      "value": "0",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.8571428571428571",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "C_same",
+      "reference_accuracy": "0.8571428571428571",
+      "value": "1",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.5571428571428572",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-4.285714285714281",
+      "reference": "C_same",
+      "reference_accuracy": "0.6",
+      "value": "2",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.5952380952380952",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "C_same",
+      "reference_accuracy": "0.5952380952380952",
+      "value": "3",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "1.0",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "C_same",
+      "reference_accuracy": "1.0",
+      "value": "4",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.9333333333333333",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.952380952380949",
+      "reference": "C_same",
+      "reference_accuracy": "0.9238095238095239",
+      "value": "5",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.8214285714285714",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-0.23809523809523725",
+      "reference": "C_same",
+      "reference_accuracy": "0.8238095238095238",
+      "value": "1",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.861904761904762",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-1.904761904761898",
+      "reference": "C_same",
+      "reference_accuracy": "0.8809523809523809",
+      "value": "2",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.7428571428571429",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.7142857142857117",
+      "reference": "C_same",
+      "reference_accuracy": "0.7357142857142858",
+      "value": "3",
+      "view": "clean"
+    },
+    {
+      "B10_accuracy": "0.02857142857142857",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "C_same",
+      "reference_accuracy": "0.02857142857142857",
+      "value": "0",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.014285714285714285",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.47619047619047605",
+      "reference": "C_same",
+      "reference_accuracy": "0.009523809523809525",
+      "value": "1",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.6761904761904762",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.952380952380949",
+      "reference": "C_same",
+      "reference_accuracy": "0.6857142857142857",
+      "value": "2",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.8666666666666667",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-3.809523809523807",
+      "reference": "C_same",
+      "reference_accuracy": "0.9047619047619048",
+      "value": "3",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.7666666666666667",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "3.3333333333333437",
+      "reference": "C_same",
+      "reference_accuracy": "0.7333333333333333",
+      "value": "4",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.0380952380952381",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.4761904761904759",
+      "reference": "C_same",
+      "reference_accuracy": "0.04285714285714286",
+      "value": "5",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.4238095238095238",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.4761904761904745",
+      "reference": "C_same",
+      "reference_accuracy": "0.41904761904761906",
+      "value": "1",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.45",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-2.1428571428571406",
+      "reference": "C_same",
+      "reference_accuracy": "0.4714285714285714",
+      "value": "2",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.32142857142857145",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.9523809523809545",
+      "reference": "C_same",
+      "reference_accuracy": "0.3119047619047619",
+      "value": "3",
+      "view": "practical_high"
+    },
+    {
+      "B10_accuracy": "0.06190476190476191",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.4761904761904759",
+      "reference": "C_same",
+      "reference_accuracy": "0.06666666666666667",
+      "value": "0",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.023809523809523808",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904759",
+      "reference": "C_same",
+      "reference_accuracy": "0.01904761904761905",
+      "value": "1",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.6952380952380952",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-1.904761904761909",
+      "reference": "C_same",
+      "reference_accuracy": "0.7142857142857143",
+      "value": "2",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.8",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-8.095238095238088",
+      "reference": "C_same",
+      "reference_accuracy": "0.8809523809523809",
+      "value": "3",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.7714285714285715",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "1.904761904761909",
+      "reference": "C_same",
+      "reference_accuracy": "0.7523809523809524",
+      "value": "4",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.0380952380952381",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.9523809523809528",
+      "reference": "C_same",
+      "reference_accuracy": "0.02857142857142857",
+      "value": "5",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.4357142857142857",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-0.952380952380949",
+      "reference": "C_same",
+      "reference_accuracy": "0.4452380952380952",
+      "value": "1",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.430952380952381",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-1.9047619047619035",
+      "reference": "C_same",
+      "reference_accuracy": "0.45",
+      "value": "2",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.32857142857142857",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-0.7142857142857117",
+      "reference": "C_same",
+      "reference_accuracy": "0.3357142857142857",
+      "value": "3",
+      "view": "practical_mid"
+    },
+    {
+      "B10_accuracy": "0.05714285714285714",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904759",
+      "reference": "C_same",
+      "reference_accuracy": "0.05238095238095238",
+      "value": "0",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.03333333333333333",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.9523809523809524",
+      "reference": "C_same",
+      "reference_accuracy": "0.023809523809523808",
+      "value": "1",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.6523809523809524",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "C_same",
+      "reference_accuracy": "0.6523809523809524",
+      "value": "2",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.6619047619047619",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-6.190476190476191",
+      "reference": "C_same",
+      "reference_accuracy": "0.7238095238095238",
+      "value": "3",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.7238095238095238",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "4.285714285714281",
+      "reference": "C_same",
+      "reference_accuracy": "0.680952380952381",
+      "value": "4",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.06190476190476191",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.4761904761904759",
+      "reference": "C_same",
+      "reference_accuracy": "0.06666666666666667",
+      "value": "5",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.38095238095238093",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.4761904761904745",
+      "reference": "C_same",
+      "reference_accuracy": "0.3761904761904762",
+      "value": "1",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.3976190476190476",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-1.1904761904761918",
+      "reference": "C_same",
+      "reference_accuracy": "0.4095238095238095",
+      "value": "2",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.31666666666666665",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.23809523809523725",
+      "reference": "C_same",
+      "reference_accuracy": "0.3142857142857143",
+      "value": "3",
+      "view": "practical_low_suburban"
+    },
+    {
+      "B10_accuracy": "0.047619047619047616",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904759",
+      "reference": "C_same",
+      "reference_accuracy": "0.04285714285714286",
+      "value": "0",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.01904761904761905",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "C_same",
+      "reference_accuracy": "0.01904761904761905",
+      "value": "1",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.6333333333333333",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-2.857142857142858",
+      "reference": "C_same",
+      "reference_accuracy": "0.6619047619047619",
+      "value": "2",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.8857142857142857",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-3.3333333333333326",
+      "reference": "C_same",
+      "reference_accuracy": "0.919047619047619",
+      "value": "3",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.7285714285714285",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "3.3333333333333326",
+      "reference": "C_same",
+      "reference_accuracy": "0.6952380952380952",
+      "value": "4",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.06190476190476191",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.4761904761904759",
+      "reference": "C_same",
+      "reference_accuracy": "0.06666666666666667",
+      "value": "5",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.45476190476190476",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.23809523809523725",
+      "reference": "C_same",
+      "reference_accuracy": "0.4523809523809524",
+      "value": "1",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.41904761904761906",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-1.1904761904761918",
+      "reference": "C_same",
+      "reference_accuracy": "0.430952380952381",
+      "value": "2",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.3142857142857143",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-0.4761904761904745",
+      "reference": "C_same",
+      "reference_accuracy": "0.319047619047619",
+      "value": "3",
+      "view": "practical_high_urban"
+    },
+    {
+      "B10_accuracy": "0.06666666666666667",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.4761904761904759",
+      "reference": "C_same",
+      "reference_accuracy": "0.07142857142857142",
+      "value": "0",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.03333333333333333",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904762",
+      "reference": "C_same",
+      "reference_accuracy": "0.02857142857142857",
+      "value": "1",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.4714285714285714",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-1.428571428571429",
+      "reference": "C_same",
+      "reference_accuracy": "0.4857142857142857",
+      "value": "2",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.6428571428571429",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "C_same",
+      "reference_accuracy": "0.6428571428571429",
+      "value": "3",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.6",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "2.3809523809523836",
+      "reference": "C_same",
+      "reference_accuracy": "0.5761904761904761",
+      "value": "4",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.10952380952380952",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-0.9523809523809518",
+      "reference": "C_same",
+      "reference_accuracy": "0.11904761904761904",
+      "value": "5",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.34523809523809523",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.4761904761904745",
+      "reference": "C_same",
+      "reference_accuracy": "0.3404761904761905",
+      "value": "1",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.3476190476190476",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-0.47619047619048005",
+      "reference": "C_same",
+      "reference_accuracy": "0.3523809523809524",
+      "value": "2",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.26904761904761904",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.0",
+      "reference": "C_same",
+      "reference_accuracy": "0.26904761904761904",
+      "value": "3",
+      "view": "practical_mid_urban"
+    },
+    {
+      "B10_accuracy": "0.12857142857142856",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-1.9047619047619064",
+      "reference": "C_same",
+      "reference_accuracy": "0.14761904761904762",
+      "value": "0",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.04285714285714286",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.0",
+      "reference": "C_same",
+      "reference_accuracy": "0.04285714285714286",
+      "value": "1",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.4095238095238095",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "1.428571428571429",
+      "reference": "C_same",
+      "reference_accuracy": "0.3952380952380952",
+      "value": "2",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.4238095238095238",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "-2.857142857142858",
+      "reference": "C_same",
+      "reference_accuracy": "0.4523809523809524",
+      "value": "3",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.580952380952381",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "3.809523809523818",
+      "reference": "C_same",
+      "reference_accuracy": "0.5428571428571428",
+      "value": "4",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.1",
+      "count": "210",
+      "dimension": "TX",
+      "gain_pp": "0.4761904761904773",
+      "reference": "C_same",
+      "reference_accuracy": "0.09523809523809523",
+      "value": "5",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.29523809523809524",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.9523809523809545",
+      "reference": "C_same",
+      "reference_accuracy": "0.2857142857142857",
+      "value": "1",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.2833333333333333",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "-1.428571428571429",
+      "reference": "C_same",
+      "reference_accuracy": "0.2976190476190476",
+      "value": "2",
+      "view": "practical_low_urban"
+    },
+    {
+      "B10_accuracy": "0.2642857142857143",
+      "count": "420",
+      "dimension": "day",
+      "gain_pp": "0.9523809523809545",
+      "reference": "C_same",
+      "reference_accuracy": "0.25476190476190474",
+      "value": "3",
+      "view": "practical_low_urban"
+    }
+  ],
+  "scientific_verdict": "FAIL_FIXED_SAMETX_IQMIX_CLOSED",
+  "executed_code_commit": "192e6a84d72ca89d29489ce2750a20eb36bc765d",
+  "engineering_local_checks": {
+    "synthetic_NN_packets": 4114,
+    "synthetic_optimizer_updates": 3,
+    "synthetic_bank_packets": 5040,
+    "synthetic_IQmix_generated_packets": 1024,
+    "synthetic_ordinary_generated_packets": 128,
+    "real_IQ_reads": 0,
+    "target_access": false
+  },
+  "claim": "One heldsourceRX1 fold/seed01;empirical IQmix not hardwareRX replacement or formal target/DG/joint proof",
+  "parallel_route_overlap": "Sameidentity interpolation family now also described by referenced chat;not a separate direction or matched seed confirmation",
+  "closed_recipe_scope": "Fixed lambda.1 G0-relativefrequency/phase-aligned IQmix and 3 donor variants;not all possible IQ interpolation,Ag or channel augmentation",
+  "no_rescue": "No coefficient/alignment/window/donor/RX/seed or extra-budget rerun"
+}

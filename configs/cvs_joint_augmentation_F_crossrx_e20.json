@@ -1066,7 +1066,7 @@
     "next_unique_hypothesis": "MatchedscratchE20 crossRXsameTX IQmix must improve heldRX1 clean versus raw-slot and sameRXmix,not only pass fitidentityguard"
   },
   "sameTX_IQmix_E20_source": {
-    "status": "RUNNING_SOURCE_E20_NO_RESULT_YET",
+    "status": "ANALYZED_SOURCE_FAIL_FIXED_IQMIX_CLOSED",
     "run_id": "20261016-phase1-F-crossRX-sameTX-IQmix-sourceRX1-e20-s2026092701-m3-r01",
     "baseline": "F+CROSS_RX sameTX/SIG_TIME/unifiedSinc/joint160/defaultcos/NoExplicitCFO",
     "rows": [
@@ -1119,6 +1119,76 @@
       "current_matrix_unchanged": true,
       "next_new_direction": "Avoid sameidentity interpolation family;decide from completed source evidence",
       "other_task_modified": false
+    },
+    "scientific_verdict": "FAIL_FIXED_SAMETX_IQMIX_CLOSED",
+    "qualification": {
+      "qualified": false,
+      "conditions": {
+        "B00_clean": false,
+        "B00_clean_macroF1": true,
+        "B00_each_practical": false,
+        "B00_seen_V": true,
+        "C_same_clean": false,
+        "C_same_clean_macroF1": false,
+        "C_same_each_practical": false,
+        "C_same_seen_V": true,
+        "healthy": true
+      },
+      "comparisons": {
+        "B00": {
+          "conditions": {
+            "clean": false,
+            "clean_macroF1": true,
+            "each_practical": false,
+            "seen_V": true
+          },
+          "all_view_gain_pp": {
+            "clean": 0.4761904761904745,
+            "practical_high": 0.07936507936507908,
+            "practical_mid": 0.31746031746031633,
+            "practical_low_suburban": 0.23809523809523725,
+            "practical_high_urban": 0.6349206349206327,
+            "practical_mid_urban": -0.7142857142857117,
+            "practical_low_urban": 0.23809523809523725
+          },
+          "clean_macroF1_gain_pp": 0.35328472445450565,
+          "seen_V_gain_pp": 0.050925925925926485
+        },
+        "C_same": {
+          "conditions": {
+            "clean": false,
+            "clean_macroF1": false,
+            "each_practical": false,
+            "seen_V": true
+          },
+          "all_view_gain_pp": {
+            "clean": -0.4761904761904745,
+            "practical_high": -0.2380952380952428,
+            "practical_mid": -1.1904761904761918,
+            "practical_low_suburban": -0.15873015873015817,
+            "practical_high_urban": -0.47619047619048005,
+            "practical_mid_urban": 0.0,
+            "practical_low_urban": 0.15873015873015817
+          },
+          "clean_macroF1_gain_pp": -0.5466398816697526,
+          "seen_V_gain_pp": 0.03240740740739767
+        }
+      }
+    },
+    "source_analysis_ref": "automation_reports/CV-SincNet/20261016-phase1-F-crossRX-sameTX-IQmix-sourceRX1-e20-s2026092701-m3-r01/source_analysis.json",
+    "actual_NN_forward_packets": 17469956,
+    "next_distinct_hypothesis": {
+      "status": "CONCEPT_NOT_REGISTERED_NOT_IMPLEMENTED_NOT_LAUNCHED",
+      "method": "practical_MC2_loss_expectation",
+      "question": "Independent fullpractical views versus repeated samefullview,matched10Lforwards/1.25pairweight;clean preservation andurban adaptation",
+      "no_IQ_averaging": true,
+      "original_practical_law_preserved": true,
+      "original_U_rule": true,
+      "new_losses": 0,
+      "new_deployment_branches": 0,
+      "checkpoint_training": "scratchE20 only",
+      "target_access": false,
+      "not_a_rescue_of_closed_IQmix": true
     }
   }
 }
