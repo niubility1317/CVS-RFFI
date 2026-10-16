@@ -1,6 +1,6 @@
 # 普通 AWGN／multipath 的源因果对照
 
-2026-10-17。当前方案已实现并完成本地检查，已登记，尚未启动。基线保持 F＋跨 RX 同 TX，三 SIG_TIME、统一 Sinc、joint160、NoExplicitCFO、原 cosine 默认头；本轮冻结两份原 E20 final20 模型作源审计，新增训练预算为 0。旧 RMS、PA bypass、shift bypass 和其他固定失败继续关闭。
+2026-10-17。当前固定源矩阵已执行并完整复算，联合移除主候选未通过 raw 身份保护条件，已关闭。基线保持 F＋跨 RX 同 TX，三 SIG_TIME、统一 Sinc、joint160、NoExplicitCFO、原 cosine 默认头；本轮冻结两份原 E20 final20 模型作源审计，新增训练预算为 0。旧 RMS、PA bypass、shift bypass 和其他固定失败继续关闭。
 
 真实调用已经否定“普通信道再接完整 As”的说法：既有 As 读取 raw，不读取 ordinary。本问题是普通监督视图中的身份损伤，不是降低 practical 测试难度，也不把移除旧损伤称作新增 A_g。
 
@@ -21,3 +21,6 @@
 本地 17 输入／配置负例、7 科学反例通过；480 合成 ordinary、72 个私有 kernel 随机标量，0 源 IQ／CP／NN／更新。确认 full 对原生输出／RNG 精确保持，PA 掩码和原语参数匹配、AWGN 功率依赖、无信道时输入精确保持及原函数恢复。旧 Torch NumPy 桥警告未被调用，不装包。一次独立 P0／P1 审查及仅预检缺字段的定向复审 PASS。
 
 完整联合目标仍 ACTIVE：有效新增 A_g、稳定 A_s、完整训练契约 B00／B10／B01／B11 与交互项、跨 seed、正式 clean＋六 practical、low urban>60%、suburban 距自身 clean≤2 pp 探索目标均未完成。
+
+
+普通AWGN/multipath源审计 20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01 完整ANALYZED/VERIFIED：FAIL_FIXED_JOINT_ORDINARY_CHANNEL_REMOVAL_RAW_IDENTITY_GUARD_CLOSED；171360源判决/320逻辑batch全部复算，171362NN/0更新/target。联合移除比full+1.522817/+1.488095pp，但比raw−5.868056/−5.962302pp、raw正确保留94.102742/94.023251%，固定raw保护FAIL，关闭不启动E20，不选单项fallback。每模型MP/AWGN/双门batch=6/17/0，interaction不证明无物理交互；full和raw全部logits与既有RMS源研究对应原视图完全相同。As本来读raw，无同视图普通信道再叠As。下一孤立轻度noise(raw)候选尚未实现登记启动，不能称新增Ag有效；联合目标ACTIVE。

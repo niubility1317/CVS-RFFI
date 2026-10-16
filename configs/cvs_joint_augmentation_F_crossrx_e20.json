@@ -1650,7 +1650,7 @@
     }
   },
   "ordinary_channel_source_audit": {
-    "status": "REGISTERED_LOCAL_VALIDATED_ONE_REVIEW_FIXED_P1_PASS_NOT_LAUNCHED",
+    "status": "ANALYZED_SOURCE_FIXED_JOINT_REMOVAL_RAW_GUARD_FAIL_CLOSED",
     "run_id": "20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01",
     "package": "experiments/cvs_ordinary_channel17",
     "baseline": "F+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
@@ -1707,6 +1707,30 @@
     "Ag_efficacy_proved": false,
     "As_efficacy_proved": false,
     "joint_goal_complete": false,
-    "note_ref": "analysis/cvs_ordinary_channel_source_20261017.md"
+    "note_ref": "analysis/cvs_ordinary_channel_source_20261017.md",
+    "scientific_verdict": "FAIL_FIXED_JOINT_ORDINARY_CHANNEL_REMOVAL_RAW_IDENTITY_GUARD_CLOSED",
+    "execution_commit": "3c76c7ebdbad7f2ea6fa2daa6ac87a2aa108f759",
+    "source_analysis_ref": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01/source_analysis.json",
+    "actual_NN": 171362,
+    "actual_source_NN": 171360,
+    "actual_source_ordinary_generations": 161280,
+    "actual_source_primitive_counts": {
+      "ordinary_generations": 161280,
+      "kernel_replay_random_scalars": 456,
+      "MP_primitive_packets": 6144,
+      "AWGN_primitive_packets": 16768,
+      "MP_applied_packets": 3072,
+      "AWGN_applied_packets": 8384,
+      "PA_observations_per_arm": 1420
+    },
+    "actual_updates": 0,
+    "E20_launched": false,
+    "single_bypass_promoted": false,
+    "successor_registered": false,
+    "primary_gains_pp": {
+      "2026092701": 1.5228174603174605,
+      "2026092702": 1.4880952380952328
+    },
+    "joint_gate_batches_per_model": 0
   }
 }

@@ -1,0 +1,63 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01",
+  "execution_commit": "3c76c7ebdbad7f2ea6fa2daa6ac87a2aa108f759",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "ordinary_account": true,
+  "CPU_threads": 2,
+  "GPU": "none",
+  "live_dispatcher_PID_CWD_argv_CUDA_observed": true,
+  "each_worker_live_PID_CWD_argv_CUDA_observed": {
+    "2026092701": true,
+    "2026092702": true
+  },
+  "each_worker_log_grew_between_live_and_terminal_observations": true,
+  "no_continuous_worker_livegrowth_claim": true,
+  "all_owned_PIDs_naturally_absent": true,
+  "no_technical_failure": true,
+  "actual_NN": 171362,
+  "source_NN": 171360,
+  "synthetic_CP_smoke_NN": 2,
+  "source_ordinary_generations": 161280,
+  "synthetic_canonical_ordinary": 320,
+  "checkpoint_loads": 2,
+  "source_primitive_counts": {
+    "ordinary_generations": 161280,
+    "kernel_replay_random_scalars": 456,
+    "MP_primitive_packets": 6144,
+    "AWGN_primitive_packets": 16768,
+    "MP_applied_packets": 3072,
+    "AWGN_applied_packets": 8384,
+    "PA_observations_per_arm": 1420
+  },
+  "synthetic_kernel_private_replay_random_scalars": 0,
+  "local_synthetic_ordinary": 480,
+  "local_kernel_private_replay_random_scalars": 72,
+  "new_model_epochs": 0,
+  "optimizer_updates": 0,
+  "teacher_forwards": 0,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "unique_fitL": 5040,
+  "source_L_deserialized_each_model": 6300,
+  "unused_V_features_deserialized": true,
+  "U_roleID_metadata_only": true,
+  "U_IQ_labels_in_cache": false,
+  "worker_seconds": {
+    "2026092701": 56.122878631111234,
+    "2026092702": 60.657598548103124
+  },
+  "worker_seconds_sum": 116.78047717921436,
+  "total_dispatcher_wall_seconds": null,
+  "analysis_plot_sourceIQ_NN_updates": 0,
+  "PNG_PDF_generated_and_PNG_viewed": true,
+  "historical_model_cost": {
+    "model_epochs": 40,
+    "updates": 8880,
+    "NN": 9373356
+  },
+  "Ag_efficacy_proved": false,
+  "As_efficacy_proved": false,
+  "joint_goal_complete": false
+}
