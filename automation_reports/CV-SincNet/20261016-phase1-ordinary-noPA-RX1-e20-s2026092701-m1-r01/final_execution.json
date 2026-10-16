@@ -1,0 +1,96 @@
+{
+  "status": "VERIFIED",
+  "source_decision": {
+    "status": "FAIL",
+    "checks": {
+      "vs_N0_accuracy": true,
+      "vs_N0_macroF1": true,
+      "seen_health": true,
+      "N1_accuracy_retained": false,
+      "N1_macroF1_retained": false,
+      "complete_health": true
+    },
+    "source_only": true,
+    "target_access": false,
+    "vs_N0_accuracy_gain_pp": 3.055555555555556,
+    "vs_N1_accuracy_gain_pp": -3.3518518518518503,
+    "vs_N0_macroF1_gain_pp": 3.847569969574116,
+    "vs_N1_macroF1_gain_pp": -3.51204177979928,
+    "formal_target_qualified": false,
+    "automatic_extension": false,
+    "goal_completed": false
+  },
+  "actual_native_arg_differences": [
+    "aug_enable_pa_normal",
+    "candidate_id",
+    "output_dir",
+    "run_id"
+  ],
+  "full_log_proof": {
+    "epochs": 20,
+    "steps": 4440,
+    "native_CSV_rows": 20,
+    "full_stdout_bytes": 114634,
+    "error_markers": {
+      "Traceback": 0,
+      "CUDA out of memory": 0,
+      "FloatingPointError": 0,
+      "Killed": 0
+    },
+    "critical_nonfinite": {
+      "train/loss": 0,
+      "train/grad_total": 0,
+      "train/grad_backbone": 0,
+      "train/grad_before_clip": 0,
+      "legacy_rdrop/paired_CE": 0,
+      "legacy_rdrop/symmetric_KL": 0,
+      "legacy_rdrop/CE1": 0,
+      "legacy_rdrop/CE2": 0
+    },
+    "U_truth_available_max": 0.0,
+    "skipped": {
+      "train/skipped_nonfinite_loss": 0,
+      "train/skipped_nonfinite_grad": 0
+    },
+    "max_label_phase_objective_difference": 2.384185791015625e-07,
+    "stdout_warning_lines": []
+  },
+  "paired": {
+    "N0": {
+      "repaired": 339,
+      "broken": 174
+    },
+    "N1": {
+      "repaired": 78,
+      "broken": 259
+    }
+  },
+  "actual_sequence_batch_records": 5994,
+  "new_model_epochs": 20,
+  "new_updates": 4440,
+  "new_real_forward_packets": 2409978,
+  "reused_control_model_epochs": 40,
+  "reused_control_updates": 8880,
+  "reused_control_real_forward_packets": 4819956,
+  "matrix_wall_seconds": 899.7531726360321,
+  "model_seed_count": 1,
+  "source_fold_count": 1,
+  "target_access": false,
+  "goal_completed": false,
+  "PA_removal_proof": {
+    "actual_PA_calls": 0,
+    "guard_enabled": true,
+    "ordinary_calls": 4440,
+    "actual_aug_enable_pa_normal": false,
+    "other_ordinary_enabled": true,
+    "U_recipe_changed": false,
+    "target_access": false
+  },
+  "automatic_extension": false,
+  "scientific_status": "FAIL_SOURCE_RX1_ONLY",
+  "actual_training_code": "2b916b8892fce0dd1ae80ff9c8f1d649445b245b",
+  "terminal_worker_alive": false,
+  "terminal_dispatcher_alive": false,
+  "failure": null,
+  "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_ordinary_noPA20_20261016\\final"
+}

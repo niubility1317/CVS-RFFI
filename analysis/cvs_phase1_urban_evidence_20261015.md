@@ -218,3 +218,7 @@ SIG相对普通增强NOMINAL：low +1.1488、mid +1.1333、urban +1.0907、最�
 ## 已完成 PA 条件输入诊断
 
 20261016-diagnostic-ordinary-PA-heldsource-manysig-s2026092701-m5-r01已完整分析：NO_PA相对FULL保持率五RX全正、均值+1.126556pp；准确率五RX全正、均值+0.600198412698415pp。207910真实前向/0更新，5CP smoke与冻结/前级一致性通过，0V/U/target。科学判据PASS仅支持直接输入风险，不证明PA是旧N1训练负收益主因，也不证明NoPA可泛化；NO_PA相对RAW仍明显退化。首次独立运行中PID快照缺失如实保留，不补跑。[完整报告](../automation_reports/CV-SincNet/20261016-diagnostic-ordinary-PA-heldsource-manysig-s2026092701-m5-r01/report.md)。下一步训练因果需单独固定scratchE20对照，当前没有新训练或正式目标结果。
+
+## NoPA 首轮训练已完成
+
+20261016-phase1-ordinary-noPA-RX1-e20-s2026092701-m1-r01完整收尾，RX1源规则FAIL：N2−N0 accuracy3.055555555555556pp，N2−N1-3.3518518518518503pp；默认头macroF1/seen健康/PA零调用/全L-U序列证明保留。新20epoch/4440steps完整解析，0target。一个sourcefold/modelseed，不能替代完整Ag、正式clean/urban或跨seed；按固定首轮规则处理，不救援失败候选。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-ordinary-noPA-RX1-e20-s2026092701-m1-r01/report.md)。

@@ -17,3 +17,7 @@
 ## 已实现并启动
 
 20261016-phase1-ordinary-noPA-RX1-e20-s2026092701-m1-r01已实际发布运行VERIFIED；代码2b916b8892fce0dd1ae80ff9c8f1d649445b245b，新N2 scratchE20，真实CP noquery smoke、PID/CWD/argv/GPU和日志增长已独立核实。当前E2，尚无FINAL源成绩。一个限定P0/P1增量审查PASS，本地实际图512合成fwd/256aug计入成本，0local realIQ/CP/optimizer。只关闭PA的actualnativeflag已读回，U/defaulthead/预算/角色保持；完成后按原固定条件处理，不热改。
+
+## NoPA 首轮训练已完成
+
+20261016-phase1-ordinary-noPA-RX1-e20-s2026092701-m1-r01完整收尾，RX1源规则FAIL：N2−N0 accuracy3.055555555555556pp，N2−N1-3.3518518518518503pp；默认头macroF1/seen健康/PA零调用/全L-U序列证明保留。新20epoch/4440steps完整解析，0target。一个sourcefold/modelseed，不能替代完整Ag、正式clean/urban或跨seed；按固定首轮规则处理，不救援失败候选。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-ordinary-noPA-RX1-e20-s2026092701-m1-r01/report.md)。
