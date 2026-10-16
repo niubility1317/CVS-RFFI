@@ -76,3 +76,16 @@ low urban：LOS＋2.6042 pp／locked＋2.3555 pp；BLOCKED＋0.1401 pp；PARTIAL
 - 有界非仿射相位 sigma.006／peak.1：RAW／ordinary／新phase clean为80.6349%／81.4286%／80.0794%，相对两控制−0.5556／−1.3492pp；固定配方关闭。[完整报告](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01/report.md)。
 
 这些ordinary额外对重用同一份已经生成的IQ，没有重新抽普通增强；因此不等于已检验第二个独立观察。其同seed原生raw控制与历史同参数控制存在约1pp级判决变化，来源尚未独立定位；不能只凭相同seed和参数宣称逐包复现，也不能将不同run的局部涨分相加。本轮独立观察采用三个新匹配控制，仍要求后续独立seed确认，当前运行不作参数调整。
+
+
+## P13：同一步内独立 ordinary IQ 观察（2026-10-17）
+
+三个新匹配 scratch E20／源 held RX1L1260／seed2026092701，F＋CROSS_RX／默认cos30／原13L＋7U保持。完整base raw.75／ordinary.25＋SupCon保留，另加.25同IQ RDrop pair；RAW返回raw，REPLAY复用原prePA缓存，REFRESH独立抽原anti→channel。三组同8L、同额外fresh shadow成本，无新增PA/DAC／头／部署参数／As／U视图，三组原L/U序列和保存的原/fresh统计完全相同。
+
+默认头clean：RAW80.3175%、REPLAY81.4286%、REFRESH82.0635%。REFRESH−RAW＋1.7460pp，但−REPLAY仅＋0.6349pp，低于两控制都≥＋1pp的预登记门槛；F1／seenV和健康条件通过，固定方案科学FAIL并关闭。clean对RAW修复28／损坏6，对REPLAY修复15／损坏7，不能将全部相对raw的收益归因于独立刷新。
+
+REFRESH相对RAW六practical全部下降：urban均值−1.2434pp、low27.9365%→27.2222%（−0.7143pp；37修复／46损坏）。对REPLAY urban仅＋0.0794pp、low−0.0794pp。low的BLOCKED相对RAW＋0.8403pp，但对REPLAY−0.1401pp；unlocked相对RAW＋0.8850pp而对REPLAY−0.1770pp。LOS／PARTIAL／locked相对RAW下降，未证明困难urban退化稳定缓解。suburban与clean仍相差约45至48pp，不能声称联合突破。
+
+全13320更新／60 model-epochs／17469956 NN（含dispatcher兼容smoke2），约1563.07s到矩阵完成；每组4440生成和消费／568320fresh包／5040唯一L／72格，完整原生loss/grad／20轮／全stdout／七视图独立复算PASS，5PNG＋5PDF保留。训练commit c72c359581cee36e9fc70440844803288ba851ef；默认formal practical不改、target0，全部进程自然终止。
+
+[完整结果、分层图与曲线](cvs_FcrossRX_viewrefresh20_20261017.md)。关闭固定独立ordinary观察，不扫强度／概率／权重／RX／seed／预算救援，不将REPLAY控制事后晋级。一次source RX／modelseed不能说明正式target增益或跨seed复现；没有新Ag确认／Ag×As因子证据，low urban>60%及最终联合目标仍未完成。
