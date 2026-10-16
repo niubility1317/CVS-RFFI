@@ -1,0 +1,150 @@
+{
+  "status": "DESCRIPTIVE_ONLY_NO_SELECTION",
+  "groups": {
+    "2026092701": {
+      "ALL": {
+        "count": 20160,
+        "raw_correct": 20128,
+        "ordinary_correct": 18638,
+        "RMS_correct": 18551,
+        "repaired": 82,
+        "broken": 169,
+        "RMS_vs_ordinary_pp": -0.43154761904761907,
+        "ordinary_vs_raw_pp": -7.390873015873016
+      },
+      "PA_inactive": {
+        "count": 19450,
+        "raw_correct": 19419,
+        "ordinary_correct": 18118,
+        "RMS_correct": 18126,
+        "repaired": 40,
+        "broken": 32,
+        "RMS_vs_ordinary_pp": 0.04113110539845758,
+        "ordinary_vs_raw_pp": -6.688946015424165
+      },
+      "scale_within_1pct": {
+        "count": 17144,
+        "raw_correct": 17118,
+        "ordinary_correct": 16184,
+        "RMS_correct": 16185,
+        "repaired": 1,
+        "broken": 0,
+        "RMS_vs_ordinary_pp": 0.005832944470368642,
+        "ordinary_vs_raw_pp": -5.4479701353243115
+      },
+      "scale_increase_or_equal": {
+        "count": 15217,
+        "raw_correct": 15195,
+        "ordinary_correct": 14332,
+        "RMS_correct": 14238,
+        "repaired": 64,
+        "broken": 158,
+        "RMS_vs_ordinary_pp": -0.6177301702043767,
+        "ordinary_vs_raw_pp": -5.6712886902806074
+      },
+      "PA_active": {
+        "count": 710,
+        "raw_correct": 709,
+        "ordinary_correct": 520,
+        "RMS_correct": 425,
+        "repaired": 42,
+        "broken": 137,
+        "RMS_vs_ordinary_pp": -13.380281690140846,
+        "ordinary_vs_raw_pp": -26.619718309859156
+      },
+      "scale_outside_1pct": {
+        "count": 3016,
+        "raw_correct": 3010,
+        "ordinary_correct": 2454,
+        "RMS_correct": 2366,
+        "repaired": 81,
+        "broken": 169,
+        "RMS_vs_ordinary_pp": -2.9177718832891246,
+        "ordinary_vs_raw_pp": -18.43501326259947
+      },
+      "scale_reduction": {
+        "count": 4943,
+        "raw_correct": 4933,
+        "ordinary_correct": 4306,
+        "RMS_correct": 4313,
+        "repaired": 18,
+        "broken": 11,
+        "RMS_vs_ordinary_pp": 0.14161440420797086,
+        "ordinary_vs_raw_pp": -12.684604491199677
+      }
+    },
+    "2026092702": {
+      "ALL": {
+        "count": 20160,
+        "raw_correct": 20128,
+        "ordinary_correct": 18626,
+        "RMS_correct": 18548,
+        "repaired": 97,
+        "broken": 175,
+        "RMS_vs_ordinary_pp": -0.3869047619047619,
+        "ordinary_vs_raw_pp": -7.450396825396825
+      },
+      "PA_inactive": {
+        "count": 19450,
+        "raw_correct": 19420,
+        "ordinary_correct": 18121,
+        "RMS_correct": 18131,
+        "repaired": 33,
+        "broken": 23,
+        "RMS_vs_ordinary_pp": 0.05141388174807198,
+        "ordinary_vs_raw_pp": -6.67866323907455
+      },
+      "scale_within_1pct": {
+        "count": 17144,
+        "raw_correct": 17119,
+        "ordinary_correct": 16188,
+        "RMS_correct": 16187,
+        "repaired": 0,
+        "broken": 1,
+        "RMS_vs_ordinary_pp": -0.005832944470368642,
+        "ordinary_vs_raw_pp": -5.430471301913205
+      },
+      "scale_increase_or_equal": {
+        "count": 15217,
+        "raw_correct": 15194,
+        "ordinary_correct": 14316,
+        "RMS_correct": 14238,
+        "repaired": 83,
+        "broken": 161,
+        "RMS_vs_ordinary_pp": -0.5125846093185253,
+        "ordinary_vs_raw_pp": -5.769862653611093
+      },
+      "PA_active": {
+        "count": 710,
+        "raw_correct": 708,
+        "ordinary_correct": 505,
+        "RMS_correct": 417,
+        "repaired": 64,
+        "broken": 152,
+        "RMS_vs_ordinary_pp": -12.394366197183098,
+        "ordinary_vs_raw_pp": -28.591549295774648
+      },
+      "scale_outside_1pct": {
+        "count": 3016,
+        "raw_correct": 3009,
+        "ordinary_correct": 2438,
+        "RMS_correct": 2361,
+        "repaired": 97,
+        "broken": 174,
+        "RMS_vs_ordinary_pp": -2.553050397877984,
+        "ordinary_vs_raw_pp": -18.93236074270557
+      },
+      "scale_reduction": {
+        "count": 4943,
+        "raw_correct": 4934,
+        "ordinary_correct": 4310,
+        "RMS_correct": 4310,
+        "repaired": 14,
+        "broken": 14,
+        "RMS_vs_ordinary_pp": 0.0,
+        "ordinary_vs_raw_pp": -12.623912603681974
+      }
+    }
+  },
+  "note": "PA/scale groups are descriptive strata of alreadyfixedobservations,not causalPA ablation or nextcandidate selection;no filters,thresholdchange,IQ/NN calls"
+}

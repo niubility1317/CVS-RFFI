@@ -1,6 +1,6 @@
 # 同一普通增强 IQ 的尺度恢复：源反证
 
-2026-10-17。当前固定候选：对已生成的原ordinary IQ恢复对应原始包RMS。已实现登记，19输入/配置负例＋8科学反例和96合成RMS操作PASS；原两P1修复及定向复审PASS，尚未启动真实源检验。基线仍F＋跨RX同TX、3SIG_TIME/统一Sinc/joint160/defaultcos/NoExplicitCFO，未来单模型训练预算E20。旧edge/cycle/IQmix/MC2/additive等固定失败继续关闭。
+2026-10-17。当前状态：r02 源检验与完整独立复算已完成，FAIL_FIXED_ORDINARY_POST_RMS_E13_FOURDRAW_CLOSED；r01 技术失败单列保留。完整普通增强后恢复原包 RMS 的固定候选已关闭，不进入 E20。基线仍 F＋跨 RX 同 TX、3SIG_TIME／统一 Sinc／joint160／defaultcos／NoExplicitCFO；未来单模型训练预算 E20。旧固定失败继续关闭。
 
 ## 依据和区别
 
@@ -33,3 +33,5 @@ x为原生RMS的raw，o=A_old(x)只生成一次，n=o sqrt(sum(x²)/sum(o²))。
 
 
 r02 20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r02 已登记未启动；仅修复原生dataclass日志表示，原科学矩阵和条件保持，r01失败成本单列。
+
+普通增强RMS恢复 20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r02 完整ANALYZED/VERIFIED：FAIL_FIXED_ORDINARY_POST_RMS_E13_FOURDRAW_CLOSED。90720源判决/320batch全复算，90722NN/0训练更新/target；连r01技术失败共90724NN。RMS相对ordinary accuracy−.431548/−.386905pp，四抽样全部下降；修复82/97而新错169/175。正确尺度恢复仍损害身份，关闭固定完整ordinary后置RMS/E13/四抽样，不做PA条件/系数/clip/禁用旧操作/抽样/RX/seed救跑，不启动E20。下一独立普通通用AWGN/multipath审计尚未实现登记启动，不能冒称新Ag；联合目标ACTIVE。

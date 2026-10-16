@@ -225,3 +225,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 普通增强输出RMS日志技术修复r02 20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r02 已实现登记未启动：同一实际E13 ordinary IQ，仅正实数恢复原包功率；四命名抽样、两既有合法E20默认头fitL5040，预计90722NN，0新训练/更新/target。19输入负例＋8科学反例/96合成RMS PASS；原审查两P1修复定向PASS。固定完整ordinary后置RMS/E13/四抽样失败不换位置/部分系数/clip/禁用旧增强/抽样/RX/seed。PASS仅源尺度身份依据，须另登记三匹配E20控制，未证明Ag或联合收益。区别于另一对话practical正负噪声方向，旧失败全部保持关闭。
+
+
+普通增强RMS恢复 20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r02 完整ANALYZED/VERIFIED：FAIL_FIXED_ORDINARY_POST_RMS_E13_FOURDRAW_CLOSED。90720源判决/320batch全复算，90722NN/0训练更新/target；连r01技术失败共90724NN。RMS相对ordinary accuracy−.431548/−.386905pp，四抽样全部下降；修复82/97而新错169/175。正确尺度恢复仍损害身份，关闭固定完整ordinary后置RMS/E13/四抽样，不做PA条件/系数/clip/禁用旧操作/抽样/RX/seed救跑，不启动E20。下一独立普通通用AWGN/multipath审计尚未实现登记启动，不能冒称新Ag；联合目标ACTIVE。

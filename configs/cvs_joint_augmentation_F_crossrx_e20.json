@@ -1579,7 +1579,7 @@
     "hypothesis_tested": false
   },
   "ordinary_RMS_source_recovery_r02": {
-    "status": "REGISTERED_LOCAL_VALIDATED_TARGETED_REVIEW_PASS_NOT_LAUNCHED",
+    "status": "ANALYZED_SOURCE_FAIL_FIXED_ORDINARY_POST_RMS_CLOSED",
     "run_id": "20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r02",
     "package": "experiments/cvs_ordinary_rms17",
     "baseline": "F+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
@@ -1633,6 +1633,20 @@
     "Ag_efficacy_proved": false,
     "As_efficacy_proved": false,
     "joint_goal_complete": false,
-    "note_ref": "analysis/cvs_ordinary_RMS_source_20261017.md"
+    "note_ref": "analysis/cvs_ordinary_RMS_source_20261017.md",
+    "scientific_verdict": "FAIL_FIXED_ORDINARY_POST_RMS_E13_FOURDRAW_CLOSED",
+    "execution_commit": "48a90f90a027b58a549ed499bde77e24e8f813d4",
+    "source_analysis_ref": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r02/source_analysis.json",
+    "actual_NN": 90722,
+    "actual_source_NN": 90720,
+    "actual_updates": 0,
+    "all_attempts_NN": 90724,
+    "automatic_training": false,
+    "E20_launched": false,
+    "successor_registered": false,
+    "accuracy_gains_pp": {
+      "2026092701": -0.43154761904762307,
+      "2026092702": -0.38690476190477163
+    }
   }
 }
