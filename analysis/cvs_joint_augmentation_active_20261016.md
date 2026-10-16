@@ -282,3 +282,9 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 采样抖动短前导估计器 20261017-diagnostic-F-crossRX-jitterEstimator-synthetic-m1-r01 已实现登记未启动：5模板／9情况／3SNR／32抽样／70包／4周期／20点，共4320格及24192000合成复观察；两周期差协方差与另外两周期交叉方向，不提供真模板；全部3配对、非负4方差矩求解，固定5倍标准误可辨认条件。22输入负例＋11公式/退化检查通过，一次P0/P1通过；0真实IQ／CP／NN／更新／target。固定任一组失败关闭入口，不改周期/窗口/包数/频带/不确定度/幅度/阈值/seed救跑，不进入源数据或E20。F＋跨RX同TX/E20/原U保持，联合目标ACTIVE。
+
+
+采样抖动短前导估计器 20261017-diagnostic-F-crossRX-jitterEstimator-synthetic-m1-r01 已完整 ANALYZED／VERIFIED，FAIL_FIXED_FOURCYCLE_JITTER_COVARIANCE_ENTRANCE_CLOSED；4320格/135组充分统计及方差/判据全部独立复算一致。134组通过，唯一20dB gain_white组可辨认30/32＜95%，按原规则关闭；正例误差、误归因及退化拒绝条件全部通过，不等于物理抖动不存在。24192000合成观察/12.301378秒，0真实IQ/CP/NN/更新/target，不进入源数据或E20、不调判据救跑。F＋跨RX同TX/E20/原U保持，联合目标ACTIVE。
+
+
+下一唯一问题转向不增加视图的 A_s 训练组织：按物理 L 包均衡六场景覆盖，见 analysis/cvs_physical_scene_coverage_hypothesis_20261017.md。已确认原 PairedChannel 独立均匀场景及每step刷新，既有训练序列与scene_counts可供零IQ历史复算；实际每包覆盖尚未复算，无新E20实现/登记/启动。不能把计数均匀当识别增益，若匹配成本/clean/suburban保护下不胜随机As的urban识别则放弃。旧多视图/相位/噪声/四周期抖动失败均保持关闭，F＋跨RX同TX/E20/原U不变，联合目标ACTIVE。

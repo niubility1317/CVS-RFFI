@@ -1,6 +1,6 @@
 # 下一唯一假设：与信号斜率相关的采样时刻扰动
 
-2026-10-17。状态：**HYPOTHESIS_ONLY／PASS_ALGEBRA_ONLY_NOT_SOURCE_EVIDENCE**。没有实现或登记源数据实验，没有定义可发布的 A_g，没有启动 E20。
+2026-10-17。状态：**FAIL_FIXED_FOURCYCLE_JITTER_COVARIANCE_ENTRANCE_CLOSED**。本地完整合成诊断已完成；没有源数据实验、可发布的 A_g 或 E20。初始代数检验保留作历史证据，终态见文末。
 
 ## 依据及适用边界
 
@@ -27,3 +27,10 @@ raw／EQ 配对入口因缺少物理映射已关闭。下一问题是：现有�
 此路线不调整旧 cycle-covariance 的 lag／窗口／RX 使其通过，也不回放 RX 模板、添加有色噪声或重开固定延时、phase、AWGN 失败路线。将来即使有源相关性，也仍需独立验证有界算子的身份保护和同预算 E20，不由统计拟合直接晋级联合模型。
 
 底座继续为 F＋跨 RX 同 TX／三 SIG_TIME／统一 Sinc／joint160／NoExplicitCFO／默认 cosine 头正常联合训练／E20／原隐藏 U 规则。不得把一阶数字变换称为替换真实 RX。联合目标保持 ACTIVE。
+
+
+## 四周期合成诊断终态
+
+20261017-diagnostic-F-crossRX-jitterEstimator-synthetic-m1-r01 已完整 ANALYZED／VERIFIED：134/135 组通过，唯一 gain_white／multitone_quadratic／20dB 组可辨认30/32＝93.75%＜95%；两次不确定度拒绝导致固定入口关闭。全部正例误差、零抖动误归因、退化拒绝条件通过，不能宣称普遍混淆或实际抖动不存在。4320格充分矩统计／全部方差解／135组条件独立复算一致；24192000合成复观察／12.301378秒，0真实IQ／CP／NN／更新／target。不改包数/周期/窗口/系数/幅度/阈值/seed救跑，不进入源数据或E20。完整报告见 ../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-jitterEstimator-synthetic-m1-r01/report.md。
+
+下一项独立训练组织假设见 [按物理包均衡 practical 场景覆盖](cvs_physical_scene_coverage_hypothesis_20261017.md)。它不重开本入口，不把本轮合成估计器用于源 IQ。
