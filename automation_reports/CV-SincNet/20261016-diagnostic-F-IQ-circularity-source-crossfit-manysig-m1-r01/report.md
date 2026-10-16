@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：I/Q 非圆对称的源域证伪
 
-状态：PLANNED，已完成本地合成/权限验证；尚未读取本轮源统计或启动。
+状态：ANALYZED／VERIFIED。源测量和全量保存描述量的独立复算已完成；固定 circularity RX 依据判为 FAIL，关闭该假设。
 
 唯一问题：固定参考窗的中心化非圆对称系数幅值，在排除同一 TX 和日期后，是否仍有稳定的 RX 关联。它可能同时含 TX、RX、信道及已有均衡处理信息，本轮不恢复硬件参数，也不把 RX 统计可预测当作身份保持或泛化收益。固定 additive As 已因第二种子 clean 失败关闭，本轮不是该配方的系数/种子/RX 救跑。另一对话的 RX6 实验保持独立，不修改其健康进程。
 
@@ -38,3 +38,40 @@ owner：codex/root/F-IQ-circularity-source-20261016。普通 N607 现有 CVS-RFF
 
 
 独立 P0/P1 审查 PASS，未发现使本次 G0 越权、算错或无法执行的缺陷；未要求新增模型、CP smoke 或报告审批。仍未启动源测量。
+
+## 完整实测与固定判据
+
+实际执行 commit：a6d2415076f3b2e750368d0dc645fe88c89af9d7。一次归档传输本远端 SHA 对比、remote compile 与独立终态回读均 VERIFIED；进程自然结束，无 failure，日志和全部登记产物存在。本地及远端合成 smoke 各一次；未构造模型或分类器、未读取 checkpoint、未训练或测试 target。
+
+| 固定条件 | 实际值 | 判定 |
+|---|---:|---|
+| nonzero_baseline | 0.00287788703 | PASS |
+| mean_risk_gain | 0.730122779 | PASS |
+| positive_folds | 18 | PASS |
+| all_RX_nonnegative | 0.597134618 | PASS |
+| above_best_wrong_RX | -0.0404420865 | FAIL |
+| all_TX_split_center_cosine | 0.907835837 | PASS |
+| RX_cycle_repeatability | 5058.76317 | PASS |
+
+主量的 pooled-mean MSE 为 0.002877887032，same-RX MSE 为 0.000776676154，相对风险减少 73.012278%；18/18 折为正，各 RX 减少 59.71% 至 94.00%。但 RX 顺序 3/4/6/8 映射到 8/6/4/3 的错误映射 MSE 更低，为 0.000660288398，相对减少 77.056487%。same-RX 比最佳错误映射低 4.044209 个风险收益百分点，未达到预定高出 2 个百分点的条件。这里的百分点指风险减少率差，不是身份识别准确率。
+
+全部 10 个 TX 分组方向一致性最小值为 0.907836，RX 奇偶周期重复性比值为 5058.763。这些正结果保留，但不能覆盖 wrong-RX 条件失败，更不能当作 A_g 有效或硬件参数可辨识。四个源 RX 均值为：
+
+| RX | 中心化 circularity 均值 |
+|---|---:|
+| 3 | 0.127237352 |
+| 4 | 0.025538687 |
+| 6 | 0.032940642 |
+| 8 | 0.119673992 |
+
+RX3/8 和 RX4/6 的相近数值可以解释错误映射为何仍可预测；这只是数据中的关联描述，不能据此改成成对 RX、重新选择量或放宽预定条件。
+
+独立程序未调用本次 core/qualifier，重新读取保存的全部 5040×5 个逐包标量，重算 72 单元均值和标准差、18 折、全部 9 个错误映射及全部 10 个 TX 分组。单元误差为 0，汇总最大差 8.9e-16。原始 IQ 未传回，也未独立重算逐包 IQ 变换；该边界明确保留。全部逐包标量和物理 ID 留在私有目录，不入 Git。
+
+总成本：5040 个真实源包的统计观察；本地和远端检查合计 40320 个合成标量描述包、14 个合成 IQ 包；0 model epoch／0 NN／0 optimizer update／0 teacher forward／0 checkpoint load。G0 不消费 checkpoint，因此 real-checkpoint smoke 不适用。载体中 U/V、其他特征与 RX1 L 曾被反序列化，但未加入观察或统计，未访问其标签/特征；U 真值始终隐藏。
+
+本轮证实的是：该标量存在跨 TX/day 的 RX 组关联。被否定的是：该固定定义达到预定的 RX 指派特异性要求。按登记关闭，不换窗口、坐标、补偿、阈值、RX 或种子补救，不实现或启动由此导出的 IQ 镜像 A_g。它也不推翻所有 I/Q 相关方法，只关闭本次固定依据。
+
+F＋跨 RX 同 TX／E20 基线不变。有效 A_g、独立有效 A_s、匹配 B00/B10/B01/B11 交互、正式 target clean＋六 practical 与跨种子联合验证仍未完成；low urban>60% 和 suburban 接近自身 clean 均未由本轮证明。
+
+完整图（已检查）：[source_circularity_results.png](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_IQ_circularity_source_20261016/source_circularity_results.png)。完整各折、各单元和全部对照见 source_analysis.json；执行、成本和缺项见 execution_summary.json。
