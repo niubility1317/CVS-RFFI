@@ -1,1 +1,3 @@
 {"at": "2026-10-16T23:51:27+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-16T23:55:52+00:00", "status": "ANALYZED", "note": "All5040 observed/72cells independently reconstructed;2492carrier-valid/2548rejected;no sharedRX fit;fixedsourceentry closed", "evidence": ["source_analysis.json", "execution_summary.json"], "row_id": "FREQUENCY_PHASE_SOURCE_CROSSFIT"}
+{"at": "2026-10-16T23:55:52+00:00", "status": "ANALYZED", "note": "VERIFIED natural terminal;FAIL_FIXED_SOURCE_PHASE_OBSERVABILITY_CLOSED;0CP/NN/updates/views/target", "evidence": ["source_analysis.json", "execution_summary.json"], "row_id": null}

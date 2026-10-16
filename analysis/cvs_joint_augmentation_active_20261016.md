@@ -315,3 +315,9 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 频域相位源观测 20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01 已实现登记未启动：沿用合成通过的80:160／lag20／12谐波／8闭合量及数值条件，fitL5040 RX3/4/6/8、day1/2/3／六TX／72格全包保留，任一必要包不可辨识即FAIL；不使用U/V/RX1/target。21协议负例＋4科学用例PASS，一次P0/P1 PASS；0真实IQ已读／CP／NN／更新／增强。源关联不是RX因果或Ag性能，FAIL关闭当前入口，不改测度/质量/阈值/包/seed救跑、不进E20。F＋跨RX同TX/E20/原U保持，联合目标ACTIVE。
+
+
+频域相位源观测 20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01 已完整ANALYZED／VERIFIED，FAIL_FIXED_SOURCE_PHASE_OBSERVABILITY_CLOSED：5040包全部观测，2492通过必要频点、2548未通过；RX3/4/6/8分别通过0/1248/1243/1。72格全留，22全通过／35全拒绝／15部分；共享RX折实际0，不筛包或只取RX4/6。全部5040观察质量与72格均值方差独立复算一致。1次cache／40320闭合量／1.396791秒，0CP/NN/更新/新视图/target。关闭当前源依据，不改测度/窗口/频点/质量/阈值/子集/seed救跑，不进增强/E20；不等于真实RX相位不存在。F＋跨RX同TX/E20/原U保持，联合目标ACTIVE。
+
+
+当前唯一待检验问题转为既有跨RX同TX对比项的视图覆盖：已读实际model.hook/supcon及scene_cycle extra路径，SupCon只看ordinary两次RDrop的浅/中map，raw与As均未进入该项。拟用相同As/CE/8L前向/总权重，固定ordinary-only／As-only／64:64混合的原项输入控制，复用原loss而不加项；这是As训练组织，不是新Ag，未登记或启动。见analysis/cvs_existing_supcon_view_coverage_20261017.md。频域相位源入口保持关闭，联合目标ACTIVE。

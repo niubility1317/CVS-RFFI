@@ -1,6 +1,6 @@
 # 短窗频域相位：尚无源数据或增强有效性证据
 
-2026-10-17。状态 ANALYZED／PASS_FIXED_SYNTHETIC_MEASUREMENT_ONLY。前项真实同包连续上下文入口已按现有构造和映射条件关闭；六scene均衡及旧幅度谱FIR、时域非仿射相位、周期残差相关路线保持关闭。当前没有新Ag算子、默认头实验、训练或目标访问。
+2026-10-17。状态 SYNTHETIC_PASS／SOURCE_OBSERVABILITY_CLOSED。前项真实同包连续上下文入口已按现有构造和映射条件关闭；六scene均衡及旧幅度谱FIR、时域非仿射相位、周期残差相关路线保持关闭。当前没有新Ag算子、默认头实验、训练或目标访问。
 
 ## 依据与未知
 
@@ -29,3 +29,6 @@
 ## 固定源观测登记
 
 20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01 已实现登记未启动，沿用原合成测度和数值条件；仅fitL5040全包，72格各70，任一必要包不可辨识则整体FAIL，不筛样本／不改阈值／不进E20。21协议负例和4科学用例及一次P0/P1通过。当前0真实源IQ已读／CP／NN／更新／增强，完整[源预登记](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01/preregistration.md)保留。
+
+
+频域相位源观测 20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01 已完整ANALYZED／VERIFIED，FAIL_FIXED_SOURCE_PHASE_OBSERVABILITY_CLOSED：5040包全部观测，2492通过必要频点、2548未通过；RX3/4/6/8分别通过0/1248/1243/1。72格全留，22全通过／35全拒绝／15部分；共享RX折实际0，不筛包或只取RX4/6。全部5040观察质量与72格均值方差独立复算一致。1次cache／40320闭合量／1.396791秒，0CP/NN/更新/新视图/target。关闭当前源依据，不改测度/窗口/频点/质量/阈值/子集/seed救跑，不进增强/E20；不等于真实RX相位不存在。F＋跨RX同TX/E20/原U保持，联合目标ACTIVE。

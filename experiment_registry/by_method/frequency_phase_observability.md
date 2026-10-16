@@ -5,3 +5,5 @@
 - 终态 20261017-diagnostic-F-crossRX-frequencyPhase-synthetic-m1-r01：ANALYZED／VERIFIED；PASS_FIXED_SYNTHETIC_MEASUREMENT_ONLY，252/252格／63/63组通过。0真实IQ/CP/NN/更新；仅可支持另行源观测登记，不是Ag或身份性能证据。
 
 - [20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01](../../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01/report.md)：PLANNED；固定原测度全包源观测fitL5040／72格，0CP／NN／更新／增强／target。任一必要源包不可辨识或RX特异性失败关闭当前入口，不救跑／不进E20。
+
+- 终态 20261017-diagnostic-F-crossRX-frequencyPhase-fitL-manysig-m1-r01：ANALYZED／VERIFIED；FAIL_FIXED_SOURCE_PHASE_OBSERVABILITY_CLOSED，2492/5040包必要频点通过、2548未通过、共享RX折0；全包保留，不调阈值或子集救跑，无增强/E20。
