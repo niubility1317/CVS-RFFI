@@ -1,0 +1,459 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01",
+  "group_id": "phase1-F-crossRX-isolatedAWGN-source-identity",
+  "display_name": "F＋跨RX同TX：孤立轻度AWGN(raw)双默认头源身份检验",
+  "description": "Existingnative propercomplexAWGN rawonly20..36dB/fourfixeddraws,twofrozen E20defaultheads;no otherordinaryops,0newtraining/target",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "isolated native AWGN raw source guard"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "isolated_AWGN",
+    "source_only",
+    "frozen_default_head",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+    "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active jointAg/As research;newisolated rawnoise observation candidate withcommonoldordinary retained infuturetraining,not jointremoval/RMSrescue orAsnoise-pair variant",
+  "code": {
+    "commit": "Actualexecutioncommit inrelease_commit.txt/resolved_config",
+    "checkout": "Managed codex/cvs-iq-timing-e20-20261016 worktree",
+    "environment": "OrdinaryN607 existingCVS-RFFI Python,CPU2/CUDA hidden;eachmodel original immutablebackend",
+    "cwd": "PROJECT/releases/cvs_F_isolated_AWGN_fitL_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original VALIDATED_ONCE source carrier;fitL5040 exact frozenmodel L roles",
+    "representation": "NativeEQ1 RMS rawIQ256/25Msps thenisolated propercomplex AWGN20..36dB;no postRMS",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original L6300 handles;fitL5040 exact modelL IDs saved privately;RX1 excluded",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "OriginalL6300 deserialized;exactfitL5040 RX3/4/6/8 only;RX1L1260 excluded",
+      "U_s": "Opaque roleID metadata only,noIQ/labels in sourcecache;unused",
+      "V": "Unused sourceV/features deserialize"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Sourcefit rawidentity retention only;not newAg efficacy,heldRXclean,DG,As orjoint success"
+  },
+  "checkpoint": {
+    "initialization": "Twoverifiedexisting source-only scratchfinal20 B00 defaultheads fordiagnostic only,nottraininginit",
+    "sources": [
+      {
+        "model_seed": 2026092701,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+        "checkpoint": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth",
+        "immutable_backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+        "execution_commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8"
+      },
+      {
+        "model_seed": 2026092702,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+        "checkpoint": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source/final_ssdg.pth",
+        "immutable_backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+        "execution_commit": "d71531d53c1d9ec46e3915963e05bff96760e80e"
+      }
+    ],
+    "contract_check_ref": "Reuse original verifiedsourcefold checkpoints;initialization/completion/source_frozen/source_contract and payload checked:fitL5040/U45360/V21600,RX1held,sourceonly,no unknownancestors/target/headfit,strictdefaulthead",
+    "provenance_verdict": "Matching existing source-only diagnostic weights;runtime rechecks prior provenance handles before inference",
+    "selection_rule": "Existing final-only E20;no source/target checkpoint selection for this operator"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-isolated-AWGN-source-20261017",
+    "gpu_policy": "CPU only,2threads,CUDA_VISIBLE_DEVICES empty;workers sequential",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_isolated_AWGN_fitL_20261017_r01/source_isolated_AWGN.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_isolated_awgn17.dispatch",
+    "stop_rule": "Wrongsource/provenance/config/nativefunction/nonfinite/zeroenergy oroutputcollision/workerexception:preservepartial/failure,noautomaticretry. ScientificFAIL stillfinishesbothmodels/allfourdraws,thenclosefixed20..36dBfullcoverage;no raisingSNR/clip/taildelete/redraw/conditioning/draw/RX/seed rescue."
+  },
+  "expected_artifacts": [
+    "rootrequest/active/launch/result/completion",
+    "eachmodel nativeargs/actualAWGN callablefiles/baseofexistingmodel/checkpointprovenance",
+    "raw5040 plusfournoise5040/draw completepairedlogits andharddecisions private",
+    "320batchrecords allpacket nominal/actualaddednoiseSNR/RMS/IQchange/powercross-term private,no tailfilter",
+    "one realcheckpoint2synthetic noquerysmoke PASSthencontinue",
+    "64syntheticcanonical nativeAWGN/model,0NN;allsource costs/counters/modelstate unchanged",
+    "fullstdout;independent all50400source decisions/logits/CE/F1/strata/72cells/perdraw/rawcorrectretention/inputstats/costrecount,figures/report/registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "CE",
+      "pairedrepair_broken",
+      "raw_correct_retention",
+      "eachRX_TX_day_72cells",
+      "eachdraw_identityguard",
+      "actual_addednoise_SNR_vsnominal",
+      "IQ_RMS_change_energy_powercross-term",
+      "actualNN_noisegenerations"
+    ],
+    "dimensions": [
+      "twoexistingmodelseeds",
+      "raw/noise",
+      "fourfixedaugmentationdraws",
+      "RX3/4/6/8",
+      "TX0..5",
+      "day1/2/3",
+      "72cells"
+    ],
+    "prediction_ref": "Eachseed raw.json anddraw01..04.json private;sourcefit only",
+    "scorer_ref": "Independent complete scalarrecount,no targettruth",
+    "criteria": {
+      "min_accuracy_gain_pp": -0.5,
+      "min_macroF1_gain_pp": -0.5,
+      "min_raw_correct_retention": 0.99,
+      "min_each_group_accuracy_gain_pp": -1.0,
+      "require_each_draw_same_guard": true,
+      "min_IQ_change_median": 0.01,
+      "max_IQ_change": 0.15
+    }
+  },
+  "rows": [
+    {
+      "row_id": "ISOLATED_AWGN_SOURCE-s2026092701",
+      "method": "Originalnative isolatedpropercomplexAWGN(raw),20..36dB",
+      "purpose": "onefixedsourceidentityguard_beforematchedE20",
+      "config_ref": "experiments/cvs_isolated_awgn17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01/s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existingmodelseed notnewtraining;fourfixedaugmentation202610172101..04 andprivate shuffle202610172110..13,notsinglescalarseed",
+      "k": null,
+      "scenario": "sourcefit_isolatedAWGN20to36dB_noAs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "25200sourceNN/model plus2syntheticCP onlyseed01;20160sourceAWGN/model;64syntheticcanonical/model;0newE/update/headfit/teacher",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01/s2026092701",
+      "log_path": "PROJECT/runs/20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01/s2026092701.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_isolated_awgn17/runner.py --seed 2026092701",
+      "expected_artifacts": [
+        "rootrequest/active/launch/result/completion",
+        "eachmodel nativeargs/actualAWGN callablefiles/baseofexistingmodel/checkpointprovenance",
+        "raw5040 plusfournoise5040/draw completepairedlogits andharddecisions private",
+        "320batchrecords allpacket nominal/actualaddednoiseSNR/RMS/IQchange/powercross-term private,no tailfilter",
+        "one realcheckpoint2synthetic noquerysmoke PASSthencontinue",
+        "64syntheticcanonical nativeAWGN/model,0NN;allsource costs/counters/modelstate unchanged",
+        "fullstdout;independent all50400source decisions/logits/CE/F1/strata/72cells/perdraw/rawcorrectretention/inputstats/costrecount,figures/report/registry"
+      ],
+      "config": {
+        "model_seed": 2026092701,
+        "fixed_question": {
+          "run_id": "20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01",
+          "launch_owner": "codex/root/F-isolated-AWGN-source-20261017",
+          "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01",
+          "models": {
+            "2026092701": {
+              "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+              "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+            },
+            "2026092702": {
+              "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+              "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+            }
+          },
+          "baseline": "F+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "claim": "Isolatednoise sourceidentity guard only,not cleanDG/As/trainingefficacy",
+          "question": "Does nativeisolated AWGN(raw),existing20to36dB,retain allsource identities without otherordinarychanges?",
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "days": [
+            1,
+            2,
+            3
+          ],
+          "TX": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "L_unique": 5040,
+          "cells": 72,
+          "samples_per_cell": 70,
+          "augmentation_seeds": [
+            202610172101,
+            202610172102,
+            202610172103,
+            202610172104
+          ],
+          "shuffle_seeds": [
+            202610172110,
+            202610172111,
+            202610172112,
+            202610172113
+          ],
+          "operator": "Originalnative propercomplexAWGN(raw),SNR uniform20..36 perpacket usingrawpower;no multipath/PA/phase/time/RMS/clip/redraw",
+          "nominal_SNR_dB": [
+            20.0,
+            36.0
+          ],
+          "nominal_not_total_recording_SNR": true,
+          "Gaussian_amplitude_strictly_bounded": false,
+          "retain_all_tail_samples": true,
+          "views_per_model": {
+            "raw": 5040,
+            "noise": 20160
+          },
+          "source_NN_per_model": 25200,
+          "total_NN_packets": 50402,
+          "synthetic_CP_smoke_NN": 2,
+          "source_noise_generations": 40320,
+          "synthetic_native_canonical_generations": 128,
+          "checkpoint_loads": 2,
+          "new_training_epochs": 0,
+          "optimizer_updates": 0,
+          "teacher_forwards": 0,
+          "head_fit_updates": 0,
+          "criteria": {
+            "min_accuracy_gain_pp": -0.5,
+            "min_macroF1_gain_pp": -0.5,
+            "min_raw_correct_retention": 0.99,
+            "min_each_group_accuracy_gain_pp": -1.0,
+            "require_each_draw_same_guard": true,
+            "min_IQ_change_median": 0.01,
+            "max_IQ_change": 0.15
+          },
+          "on_fail": "ClosefixedisolatedAWGN20..36/fullcoverage,no raisingSNR/clip/taildelete/redraw/conditioning/draw/RX/seed rescue",
+          "on_pass": "Sourceidentity only;next three matchedscratchE20 rawslot/ordinaryslot/noiseslot,commonoldordinary unchanged,not automatictraininginthislauncher",
+          "future_E20": "Commonraw.75/ordinary.25/SupCon/originalU unchanged,extra.25 raw/sameordinary/noise(raw),8Lforwards/weight1.25/sameIQ RDrop,seed01noise mustbeatbothcontrols clean>=+1pp,F1>=0,eachpractical/seenV>=-.5pp before independentconfirm",
+          "NoExplicitCFO": true,
+          "internal_compensation_retained": true,
+          "default_head_only": true,
+          "source_only": true,
+          "target_access": false,
+          "U_used": false,
+          "V_used": false,
+          "held_RX1_used": false,
+          "automatic_training": false,
+          "device": "CPU",
+          "threads": 2,
+          "historical_model_cost": {
+            "model_epochs": 40,
+            "updates": 8880,
+            "NN": 9373356
+          },
+          "source_basis": [
+            "analysis/cvs_isolated_awgn_candidate_20261017.md",
+            "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01/report.md"
+          ]
+        }
+      }
+    },
+    {
+      "row_id": "ISOLATED_AWGN_SOURCE-s2026092702",
+      "method": "Originalnative isolatedpropercomplexAWGN(raw),20..36dB",
+      "purpose": "onefixedsourceidentityguard_beforematchedE20",
+      "config_ref": "experiments/cvs_isolated_awgn17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01/s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existingmodelseed notnewtraining;fourfixedaugmentation202610172101..04 andprivate shuffle202610172110..13,notsinglescalarseed",
+      "k": null,
+      "scenario": "sourcefit_isolatedAWGN20to36dB_noAs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "25200sourceNN/model plus2syntheticCP onlyseed01;20160sourceAWGN/model;64syntheticcanonical/model;0newE/update/headfit/teacher",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01/s2026092702",
+      "log_path": "PROJECT/runs/20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01/s2026092702.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_isolated_awgn17/runner.py --seed 2026092702",
+      "expected_artifacts": [
+        "rootrequest/active/launch/result/completion",
+        "eachmodel nativeargs/actualAWGN callablefiles/baseofexistingmodel/checkpointprovenance",
+        "raw5040 plusfournoise5040/draw completepairedlogits andharddecisions private",
+        "320batchrecords allpacket nominal/actualaddednoiseSNR/RMS/IQchange/powercross-term private,no tailfilter",
+        "one realcheckpoint2synthetic noquerysmoke PASSthencontinue",
+        "64syntheticcanonical nativeAWGN/model,0NN;allsource costs/counters/modelstate unchanged",
+        "fullstdout;independent all50400source decisions/logits/CE/F1/strata/72cells/perdraw/rawcorrectretention/inputstats/costrecount,figures/report/registry"
+      ],
+      "config": {
+        "model_seed": 2026092702,
+        "fixed_question": {
+          "run_id": "20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01",
+          "launch_owner": "codex/root/F-isolated-AWGN-source-20261017",
+          "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01",
+          "models": {
+            "2026092701": {
+              "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+              "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+            },
+            "2026092702": {
+              "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+              "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+            }
+          },
+          "baseline": "F+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "claim": "Isolatednoise sourceidentity guard only,not cleanDG/As/trainingefficacy",
+          "question": "Does nativeisolated AWGN(raw),existing20to36dB,retain allsource identities without otherordinarychanges?",
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "days": [
+            1,
+            2,
+            3
+          ],
+          "TX": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "L_unique": 5040,
+          "cells": 72,
+          "samples_per_cell": 70,
+          "augmentation_seeds": [
+            202610172101,
+            202610172102,
+            202610172103,
+            202610172104
+          ],
+          "shuffle_seeds": [
+            202610172110,
+            202610172111,
+            202610172112,
+            202610172113
+          ],
+          "operator": "Originalnative propercomplexAWGN(raw),SNR uniform20..36 perpacket usingrawpower;no multipath/PA/phase/time/RMS/clip/redraw",
+          "nominal_SNR_dB": [
+            20.0,
+            36.0
+          ],
+          "nominal_not_total_recording_SNR": true,
+          "Gaussian_amplitude_strictly_bounded": false,
+          "retain_all_tail_samples": true,
+          "views_per_model": {
+            "raw": 5040,
+            "noise": 20160
+          },
+          "source_NN_per_model": 25200,
+          "total_NN_packets": 50402,
+          "synthetic_CP_smoke_NN": 2,
+          "source_noise_generations": 40320,
+          "synthetic_native_canonical_generations": 128,
+          "checkpoint_loads": 2,
+          "new_training_epochs": 0,
+          "optimizer_updates": 0,
+          "teacher_forwards": 0,
+          "head_fit_updates": 0,
+          "criteria": {
+            "min_accuracy_gain_pp": -0.5,
+            "min_macroF1_gain_pp": -0.5,
+            "min_raw_correct_retention": 0.99,
+            "min_each_group_accuracy_gain_pp": -1.0,
+            "require_each_draw_same_guard": true,
+            "min_IQ_change_median": 0.01,
+            "max_IQ_change": 0.15
+          },
+          "on_fail": "ClosefixedisolatedAWGN20..36/fullcoverage,no raisingSNR/clip/taildelete/redraw/conditioning/draw/RX/seed rescue",
+          "on_pass": "Sourceidentity only;next three matchedscratchE20 rawslot/ordinaryslot/noiseslot,commonoldordinary unchanged,not automatictraininginthislauncher",
+          "future_E20": "Commonraw.75/ordinary.25/SupCon/originalU unchanged,extra.25 raw/sameordinary/noise(raw),8Lforwards/weight1.25/sameIQ RDrop,seed01noise mustbeatbothcontrols clean>=+1pp,F1>=0,eachpractical/seenV>=-.5pp before independentconfirm",
+          "NoExplicitCFO": true,
+          "internal_compensation_retained": true,
+          "default_head_only": true,
+          "source_only": true,
+          "target_access": false,
+          "U_used": false,
+          "V_used": false,
+          "held_RX1_used": false,
+          "automatic_training": false,
+          "device": "CPU",
+          "threads": 2,
+          "historical_model_cost": {
+            "model_epochs": 40,
+            "updates": 8880,
+            "NN": 9373356
+          },
+          "source_basis": [
+            "analysis/cvs_isolated_awgn_candidate_20261017.md",
+            "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01/report.md"
+          ]
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Twooriginal source-only scratchE20defaultheads,fitL5040/U45360/V21600,RX1held/final-only/4440updates,strictdefaultcos30/joint160/NoExplicitCFO;onecheckpointload/model,nativelogcopydataclass/NaN conversion doesnotchangeexecutionargs.",
+    "Onlynative AWGN isgenerated onraw,properI/Q independentnoise,SNR20..36 fromexistingrepositoryrange,notselectedfromtarget/sourcecurves;nominalnotrecordingtotalSNR. NoPA/MP/phase/time/CFO/RMS/clip orsamplinguntilpass.",
+    "Samephysical5040 repeatsfourdraws/all72cells/labels/strata kept;sourcecacheL6300/unusedVfeaturesdeserialize,UonlyopaqueIDmetadata/noIQorlabels,RX1L1260excludedbeforeinference.",
+    "Eachdraw andpooled identityguards onbothmodelsrequired. SourcepassnotDG;futurethree matchedscratchE20 rawslot/ordinaryslot/noiseslot withcommonoldordinary/U/head unchanged,equal8Lforwards/1.25weight/sameIQ RDrop;cleannoise>=+1pp vsboth,F1>=0,eachpractical/seenV>=-.5pp thenindependentconfirm. Notimplementedorlaunchedhere.",
+    "Local14negative+9scientificcounterexamples/1152syntheticnativeAWGN,0sourceIQ/CP/NN/update;canonicaloutput/RNG,positivegainequivariance,properness/lagstatistics,non-mutatinginputs PASS. ExistingNumPybridgewarning unused/noinstall.",
+    "Oneindependent P0/P1 review andrealcheckpointsmoke only;no extra hash/receipt/approval/datarevalidation. SourceguarddoesnotestablishcrossRXgeneralizationorAsbenefit."
+  ],
+  "registered_at": "2026-10-16T19:24:44+00:00"
+}

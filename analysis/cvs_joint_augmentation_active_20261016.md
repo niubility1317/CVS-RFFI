@@ -234,3 +234,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 普通AWGN/multipath源审计 20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01 完整ANALYZED/VERIFIED：FAIL_FIXED_JOINT_ORDINARY_CHANNEL_REMOVAL_RAW_IDENTITY_GUARD_CLOSED；171360源判决/320逻辑batch全部复算，171362NN/0更新/target。联合移除比full+1.522817/+1.488095pp，但比raw−5.868056/−5.962302pp、raw正确保留94.102742/94.023251%，固定raw保护FAIL，关闭不启动E20，不选单项fallback。每模型MP/AWGN/双门batch=6/17/0，interaction不证明无物理交互；full和raw全部logits与既有RMS源研究对应原视图完全相同。As本来读raw，无同视图普通信道再叠As。下一孤立轻度noise(raw)候选尚未实现登记启动，不能称新增Ag有效；联合目标ACTIVE。
+
+
+孤立轻度AWGN(raw) 20261017-diagnostic-F-crossRX-isolatedAWGN-fitL-manysig-m2-r01 已实现登记未启动：既有native propercomplex噪声20至36dB、全覆盖四命名流，无MP/PA/时移/后RMS/clip。双冻结原默认头fitL5040，每draw与pooled身份保护，全部尾部保留。14负例/9科学反例/1152合成noise PASS，一次P0/P1审查PASS；预计50402NN/0更新/target。保留公共旧ordinary的未来三匹配E20未实现登记启动；源PASS不称Ag/DG有效，旧RMS/联合移除等固定失败保持关闭。
