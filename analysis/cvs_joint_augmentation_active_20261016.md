@@ -192,3 +192,6 @@ practical MC2 三组E20已实际 RUNNING/VERIFIED；执行commit 8c55f5f542a6a28
 
 
 MC2首行M00已source-only ANALYZED/VERIFIED：E20/4440更新/7视图8820预测，clean79.841270%、lowurban27.063492%，NN6959958。另两As行仍健康运行，未作科学资格判断，参数/预算/门槛保持。整体和联合目标均未完成。
+
+
+MC2第二行M_repeat已source-only ANALYZED/VERIFIED：E20/4440更新/7视图8820预测；相对M00 clean 4.761904761904756pp、lowurban 6.190476190476191pp。第三行仍健康运行，科学资格待定，参数／预算／门槛不变，完整联合目标未完成。

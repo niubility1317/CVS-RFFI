@@ -89,3 +89,22 @@ M00 raw/raw 对照已自然退出，final20 冻结后源 RX1-held 的 clean＋�
 | practical_low_urban | 27.063492 | 23.452034 |
 
 实际NN包前向6959958（含学生／自身EMA／seenV／held读出，扣除teacher继承仪表offset2），L5683200／extra2273280，As生成0；一次dispatcher合成smoke2尚不并入单行。final共同base目标0.30881574，仅为健康信息。每视图同1260物理样本，不能将8820次决策视为独立样本。完整聚合见source_partial_analysis.json，完整三行结论待两条As行完成。
+
+
+## 第二行完成：M_repeat
+
+重复同一完整As的M_repeat行自然结束，20轮／4440步／7源视图8820预测已独立复算，0新增NN／0更新／0target。M_independent仍按原E20运行，不依据本段调整参数、预算或门槛。以下只描述完整practical重复监督相对本轮匹配raw的变化，独立采样假设仍待第三行。
+
+| 源视图 | M00 accuracy % | M_repeat accuracy % | repeat−M00 pp | repeat F1 差 pp | 修复／新错 |
+|---|---:|---:|---:|---:|---|
+| clean | 79.841270 | 84.603175 | +4.761905 | +4.973918 | 78/18 |
+| practical_high | 37.063492 | 57.619048 | +20.555556 | +29.438802 | 371/112 |
+| practical_mid | 36.666667 | 52.619048 | +15.952381 | +23.825093 | 344/143 |
+| practical_low_suburban | 33.968254 | 51.746032 | +17.777778 | +24.332333 | 346/122 |
+| practical_high_urban | 37.380952 | 53.412698 | +16.031746 | +24.266633 | 336/134 |
+| practical_mid_urban | 30.952381 | 41.031746 | +10.079365 | +14.854826 | 264/137 |
+| practical_low_urban | 27.063492 | 33.253968 | +6.190476 | +9.229747 | 198/120 |
+
+M_repeat实际NN包前向6959958；L5683200／extra2273280，完整As生成568320，As监督pair-observations1136640。相同已生成As复用两对，每对两次前向共享该IQ，teacher_MC2=0；两行匹配10 L前向和1.25总pair权重，但M00总raw系数1，As行为.75，保留共同.75不能推出clean必然安全。每场景仍是同1260物理样本。
+
+完整两行聚合／配对变化见source_partial_analysis.json；完整采样联合表和原日志留私有产物，公开覆盖仅为每slot边缘计数摘要。当前未作MC2资格、Ag或正式target／跨seed／联合完成声明。

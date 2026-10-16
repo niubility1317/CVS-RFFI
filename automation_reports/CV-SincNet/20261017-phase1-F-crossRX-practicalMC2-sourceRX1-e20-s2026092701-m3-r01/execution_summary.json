@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING_WITH_ONE_SOURCE_ROW_ANALYZED",
+  "status": "VERIFIED_RUNNING_WITH_TWO_SOURCE_ROWS_ANALYZED",
   "execution_commit": "8c55f5f542a6a28b699156859f31345b9d15f76a",
   "remote_OID": "VERIFIED",
   "archive_transfer": "VERIFIED",
@@ -38,8 +38,8 @@
       "actual_seed": 2026092701,
       "actual_epochs": 20,
       "actual_scratch": true,
-      "observed_complete_step": 209,
-      "observed_epoch": 1,
+      "observed_complete_step": 4440,
+      "observed_epoch": 20,
       "step_log_growth_verified": true,
       "As_training": true,
       "unique_As_views": 1,
@@ -48,7 +48,9 @@
       "extra_pair_weight": 0.125,
       "extra_pair_count": 2,
       "total_pair_weight": 1.25,
-      "L_forwards": 10
+      "L_forwards": 10,
+      "status": "ANALYZED_SOURCE_ONLY",
+      "worker_naturally_exited": true
     },
     {
       "row_id": "M_independent-RX1-s2026092701",
@@ -71,11 +73,13 @@
     }
   ],
   "completed_source_rows": [
-    "M00-RX1-s2026092701"
+    "M00-RX1-s2026092701",
+    "M_repeat-RX1-s2026092701"
   ],
-  "completed_source_views": 7,
-  "completed_source_predictions": 8820,
+  "completed_source_views": 14,
+  "completed_source_predictions": 17640,
   "completed_source_M00_NN": 6959958,
   "source_partial_analysis_ref": "source_partial_analysis.json",
-  "qualification": "PENDING_BOTH_AS_ROWS"
+  "qualification": "PENDING_M_INDEPENDENT",
+  "completed_source_NN": 13919916
 }
