@@ -195,3 +195,9 @@ MC2首行M00已source-only ANALYZED/VERIFIED：E20/4440更新/7视图8820预测�
 
 
 MC2第二行M_repeat已source-only ANALYZED/VERIFIED：E20/4440更新/7视图8820预测；相对M00 clean 4.761904761904756pp、lowurban 6.190476190476191pp。第三行仍健康运行，科学资格待定，参数／预算／门槛不变，完整联合目标未完成。
+
+
+practical MC2三组E20与源七视图完整ANALYZED/VERIFIED：FAIL_FIXED_MC2_CLOSED。独立组相对M00 clean 4.6031746031745975pp、lowurban 5.952380952380953pp；相对repeat clean -0.15873015873015817pp。真实60modelE／13320更新／20879876NN；0新增Ag／0target。完整联合目标未完成，固定失败不扩M／调系数／RX／seed／预算。
+
+
+MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六practical accuracy／F1均负，FAIL_FIXED_MC2_CLOSED；相对raw clean+4.603175pp／lowurban+5.952381pp不能补偿增量失败。lowurban TX2/TX3分别净−32/−23包，全部TX/day与固定clean正确集合错误转移已报告。控制M_repeat不事后晋级，无后继已登记候选；新Ag与完整联合证据仍缺。

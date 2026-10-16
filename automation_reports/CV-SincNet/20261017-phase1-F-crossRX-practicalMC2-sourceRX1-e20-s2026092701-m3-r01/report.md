@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：完整 practical 双实现期望监督
 
-状态：RUNNING／VERIFIED，三组已实际从零启动，尚未完成训练或源评分。当前唯一候选为 MC2 采样组织，联合目标未完成。执行代码以本次 Git commit 与 release_commit.txt 为准，发布后写入 execution_summary.json。
+状态：ANALYZED／VERIFIED，三组 E20 和全部源视图已完成。固定源规则：FAIL_FIXED_MC2_CLOSED。当前唯一候选为 MC2 采样组织，联合目标未完成。执行代码以本次 Git commit 与 release_commit.txt 为准，发布后写入 execution_summary.json。
 
 ## 问题与假设
 
@@ -108,3 +108,94 @@ M00 raw/raw 对照已自然退出，final20 冻结后源 RX1-held 的 clean＋�
 M_repeat实际NN包前向6959958；L5683200／extra2273280，完整As生成568320，As监督pair-observations1136640。相同已生成As复用两对，每对两次前向共享该IQ，teacher_MC2=0；两行匹配10 L前向和1.25总pair权重，但M00总raw系数1，As行为.75，保留共同.75不能推出clean必然安全。每场景仍是同1260物理样本。
 
 完整两行聚合／配对变化见source_partial_analysis.json；完整采样联合表和原日志留私有产物，公开覆盖仅为每slot边缘计数摘要。当前未作MC2资格、Ag或正式target／跨seed／联合完成声明。
+
+
+## 完整执行与独立源结果
+
+三 worker 和 dispatcher 自然结束，无技术失败。完整复算 3×20 轮、13320 步 native/view/Sinc 记录、全部 L/U 物理序列、MC0/MC1 生成计数与记录、逐对损失及 26460 个冻结硬预测。三组 L/U 物理序列相同，native 参数仅 candidate_id/output_dir 不同。本轮仅为源 RX1-held／seed2026092701 的 A_s 采样组织实验；没有新增 A_g，不是正式 target、跨 seed 或联合证明。
+
+| 场景 | M00 accuracy % | M_repeat accuracy % | M_independent accuracy % | independent−M00 pp | independent−repeat pp |
+|---|---:|---:|---:|---:|---:|
+| clean | 79.841270 | 84.603175 | 84.444444 | +4.603175 | -0.158730 |
+| practical_high | 37.063492 | 57.619048 | 55.714286 | +18.650794 | -1.904762 |
+| practical_mid | 36.666667 | 52.619048 | 51.507937 | +14.841270 | -1.111111 |
+| practical_low_suburban | 33.968254 | 51.746032 | 50.317460 | +16.349206 | -1.428571 |
+| practical_high_urban | 37.380952 | 53.412698 | 51.507937 | +14.126984 | -1.904762 |
+| practical_mid_urban | 30.952381 | 41.031746 | 40.714286 | +9.761905 | -0.317460 |
+| practical_low_urban | 27.063492 | 33.253968 | 33.015873 | +5.952381 | -0.238095 |
+
+每场景复用同一批 1260 个源物理包，不能将 26460 次决策视为独立物理样本。完整 MacroF1、混淆矩阵、双方修复／新错和全部 TX/day 分层见 source_analysis.json。
+
+| 对照 | clean F1 差 pp | clean 修复／新错 | low urban 修复／新错 | urban 均值差 pp | seen V 差 pp |
+|---|---:|---|---|---:|---:|
+| independent−M00 | +4.800098 | 76/18 | 191/116 | +9.947090 | +0.041667 |
+| independent−M_repeat | -0.173820 | 5/7 | 13/16 | -0.820106 | -0.004630 |
+
+| 固定条件 | 结果 |
+|---|---|
+| M00_clean | PASS |
+| M00_clean_macroF1 | PASS |
+| M00_low_urban | PASS |
+| M00_urban_mean | PASS |
+| M00_suburban | PASS |
+| M00_seen_V | PASS |
+| M_repeat_clean | FAIL |
+| M_repeat_clean_macroF1 | FAIL |
+| M_repeat_each_practical | FAIL |
+| M_repeat_seen_V | PASS |
+| healthy | PASS |
+
+| 行 | high suburban 与自身 clean 差 pp | mid suburban 与自身 clean 差 pp | low suburban 与自身 clean 差 pp |
+|---|---:|---:|---:|
+| M00 | 42.777778 | 43.174603 | 45.873016 |
+| M_repeat | 26.984127 | 31.984127 | 32.857143 |
+| M_independent | 28.730159 | 32.936508 | 34.126984 |
+
+自身 clean 下降不能被解释为 suburban 更接近 clean 的成功。探索目标仍为各 suburban 绝对差距 ≤2pp。固定源硬预测错误转移见 error_transitions.md/json，条件集合仅作描述，不删样本、不作为新晋级门槛。
+
+### 完整成本与训练轨迹
+
+| 行 | native 第一 ordinary 平滑 CE | 共同 base 目标 | extra 对均值目标 | 实际 NN 包前向 | 训练秒 |
+|---|---:|---:|---:|---:|---:|
+| M00 | 0.26023448 | 0.30881574 | 0.09748137 | 6959958 | 1554.452 |
+| M_repeat | 0.26120145 | 0.31648055 | 0.54907337 | 6959958 | 2445.950 |
+| M_independent | 0.25989240 | 0.31532648 | 0.55159069 | 6959958 | 3404.019 |
+
+每行 4440 更新、5683200 L 前向（extra2273280），568320 次普通增强生成；三行总 60 model-epochs／13320 更新。As 实际生成数 M00/M_repeat/M_independent 为 0/568320/1136640，As 监督 pair-observations 为 0/1136640/1136640。固定 10 L 前向和 1.25 总 pair 权重，原共同 .75 raw／.25 ordinary／SupCon 保留。M00 额外 raw 使其 raw 总权重为1，As行为.75，不能将绝对raw权重固定误称完整clean保护。
+
+实测总 NN 20879876，其中一次 dispatcher 匹配真实 checkpoint 合成 smoke2。学生 train/eval 18238704／1425606；teacher train/eval 仪表 0／1189110，扣除继承 offset 6；held 读出 26460。原 U／自身 EMA／seen V 单列，teacher MC2 调用为0，无新增 U-As。另计本地工程4626合成NN／3合成更新／384完整As生成／128ordinary，0真实IQ／0target／0另训头。
+
+损失为最后222步均值，native第一ordinary CE不是完整目标；全部base／extra CE、同IQ RDrop KL、SupCon与总损失逐步重算。硬预测文件不含logits，读出CE保留运行时报告，不声称独立复算。source_contract.counts保留原载体计数，实际角色以role_ids的L5040/U45360/V21600为准。
+
+共享MC0的全部4440组namespace／seed／scene／session记录逐项相等，逐步rawMSE最大差 0.0（固定容差1e−6）；未保存received IQ字节，不声称逐字节比较。MC1独立命名流、全部生成／pair计数、每对同IQ以及receiver session规则保持。覆盖核对范围为逐步scene/state/lock边缘总数与存储的TX/RX/day/scene/state/lock联合表；日志未保存逐packet的TX/state对应，未冒称独立重建全部联合单元。
+
+完整20轮训练曲线、七视图结果／own-clean gap、全部TX/day图位于本地私有 local_artifacts/F_practical_MC2_E20_20261017/final/；不提交原始IQ、权重、样本ID、私有日志或生成图片。
+
+### 结论与后续边界
+
+固定MC2未通过预登记识别条件，关闭当前配方，不扩M4、不调整系数／RX／seed／预算救跑。训练健康、采样覆盖或辅助目标下降不能补偿clean／practical识别条件失败；这不证明所有As采样组织均无效。
+
+本轮测试与训练practical传播、噪声、补偿规则未减弱，未改目标IQ/SNR、困难样本或其他健康任务。尚缺有效Ag、跨seed、完整契约B00/B10/B01/B11与交互项、正式target clean＋六practical。clean净正收益、lowurban>60%与suburban接近自身clean仍需共同证明。E20为用户指定、历史测试基准已暴露的探索预算，不声称新的独立盲测。
+
+
+### 识别收益的分布与停止含义
+
+独立As相对raw，clean修复76／新错18，lowurban修复191／新错116；相对重复As，clean修复5／新错7，lowurban修复13／新错16。后者不是要求的≥+1pp clean增量，六个practical的accuracy和MacroF1也均为负差。各suburban与自身clean仍差28.730159／32.936508／34.126984pp。本源折的正收益不足以证明正式target、跨seed或联合目标。
+
+| 源TX | independent−raw lowurban pp | 净正确样本变化（每TX210包） |
+|---|---:|---:|
+| 0 | +15.714286 | +33 |
+| 1 | +34.761905 | +73 |
+| 2 | -15.238095 | -32 |
+| 3 | -10.952381 | -23 |
+| 4 | -1.428571 | -3 |
+| 5 | +12.857143 | +27 |
+
+TX2相对raw的clean提高+16.666667pp，mid suburban反而降低31.428571pp；TX3的clean差为+0.000000pp，highurban降低30.952381pp。相对重复As，TX2的high suburban／highurban分别为-8.095238／-7.142857pp。全部TX/day正负差保留，不能用总体均值宣称各TX身份提取均改善。
+
+相对M00，双方clean均正确的固定集合共988包，lowurban修复175／新错64，净+111包，对全1260包accuracy贡献+8.809524pp。
+相对M_repeat，双方clean均正确的固定集合共1059包，lowurban修复12／新错16，净-4包，对全1260包accuracy贡献-0.317460pp。
+
+这些固定预测条件统计只描述错误分布，不证明传播状态或采样方差的因果机制，不用于过滤样本、重设门槛或重跑。共同base目标、额外CE/KL和seenV曲线接近，不能替代默认头识别增量。三行实测训练秒数来自不同GPU与并发时段，仅作成本记录，不视为算子速度的严格因果比较。
+
+原MC2候选是M_independent，M_repeat是预登记控制；不会因其单种子正结果而事后晋级控制行。固定MC2关闭，不扩M4、不调系数／RX／seed／预算。当前没有后继已登记或运行候选，后续仍须建立新的Ag来源与身份保持证据，再按固定同契约因子矩阵检验联合收益。source_partial_analysis.json为之前两行完成时的历史快照，最终状态与结果以source_analysis.json和本节为准。
