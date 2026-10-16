@@ -2,7 +2,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|F＋跨 RX：有界包内时间栅格收缩的独立 clean 检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01/report.md)|
+|F＋跨 RX：有界包内时间栅格收缩|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01/report.md)|
 |F＋跨 RX：正负噪声配对 As 的匹配 E20 源域训练|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-noisepair-sourceRX1-e20-s2026092701-m3-r01/report.md)|
 |相干 IQ 插值：seed01 独立确认与两 seed 完整源域结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-coherentmix-confirm-source-RX1-e20-s2026092701-m3-r01/report.md)|
 |同 TX 真实 IQ 有界相干插值：完整源域结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-coherentmix-source-RX1-e20-s2026092702-m3-r02/report.md)|
