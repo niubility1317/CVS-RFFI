@@ -18,7 +18,7 @@ def draw(root,output):
   plt.close(fig);names.append(name+'.png')
  fig,axes=plt.subplots(1,2,figsize=(13.5,4.8),constrained_layout=True)
  for j,a in enumerate(ARMS):
-  bars=axes[0].bar(np.arange(7)+(j-1)*.25,[100*r['scores'][a][v]['accuracy'] for v in VIEWS],width=.24,color=colors[a],label=a);axes[0].bar_label(bars,fmt='%.1f',padding=2,fontsize=7)
+  bars=axes[0].bar(np.arange(7)+(j-1)*.25,[100*r['scores'][a][v]['accuracy'] for v in VIEWS],width=.24,color=colors[a],label=a);axes[0].bar_label(bars,fmt='%.1f',padding=3,fontsize=7,rotation=90)
  for j,ref in enumerate(ARMS[:2]):
   bars=axes[1].bar(np.arange(7)+(j-.5)*.34,[r['paired'][ref][v]['accuracy_gain_pp'] for v in VIEWS],width=.32,color=colors[ref],label='CROSS - '+ref);axes[1].bar_label(bars,fmt='%+.1f',padding=3,fontsize=8)
  for ax in axes:ax.set_xticks(range(7),SHORT,rotation=35,ha='right');ax.legend(fontsize=8);ax.axhline(0,color='grey',lw=.6)
