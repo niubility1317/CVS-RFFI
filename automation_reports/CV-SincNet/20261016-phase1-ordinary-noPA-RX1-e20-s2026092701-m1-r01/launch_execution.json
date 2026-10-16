@@ -1,0 +1,54 @@
+{
+  "status": "VERIFIED",
+  "actual_training_code": "2b916b8892fce0dd1ae80ff9c8f1d649445b245b",
+  "checks": {
+    "live_worker": true,
+    "live_dispatcher": true,
+    "CWD": true,
+    "argv": true,
+    "GPU": true,
+    "log_growth": true,
+    "scratch_CP_smoke": true,
+    "PA_disabled": true,
+    "ordinary_enabled": true,
+    "actual_E20": true,
+    "LS01": true,
+    "no_satellite": true,
+    "scratch": true,
+    "ownEMA": true,
+    "legal_roles": true,
+    "NoExplicitCFO": true,
+    "default_head_only": true
+  },
+  "worker": {
+    "pid": 3609877,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ordinary_noPA_RX1_e20_20261016_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ordinary_noPA_RX1_e20_20261016_r01/experiments/cvs_ordinary_noPA20/runner.py",
+      "--worker"
+    ],
+    "GPU": "0"
+  },
+  "dispatcher": {
+    "pid": 3609787,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ordinary_noPA_RX1_e20_20261016_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_ordinary_noPA_RX1_e20_20261016_r01/experiments/cvs_ordinary_noPA20/runner.py"
+    ],
+    "GPU": ""
+  },
+  "epochs": 2,
+  "log_bytes": 16669,
+  "prior_log_bytes": 6396,
+  "parameters": 863730,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "PASS",
+  "default_head_only": true,
+  "target_access": false,
+  "source_only": true,
+  "observed_at": 1792115450.03573
+}

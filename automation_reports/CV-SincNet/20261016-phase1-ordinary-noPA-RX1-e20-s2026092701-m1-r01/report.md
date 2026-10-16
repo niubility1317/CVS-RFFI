@@ -13,3 +13,7 @@
 本地256合成网络前向/128增强包/8负例通过，0realIQ/CP/optimizer，默认W/gain/SIG梯度有限非零、RDrop两前向同IQ。首次argsfixture将两个双方相同的nativeNaN占位判成差异，在模型构造前0fwd失败；修正NaN对等测试后通过，没有改实际native参数或模型。一限定独立P0/P1审查正在执行；真实scratchCP无query smoke在worker首步PASS立即训练。尚无本新候选训练结果或正式测试结果。
 
 唯一限定P0/P1增量审查PASS，无直接缺陷；检查再执行256合成前向/128增强包/8负例。合计本地512合成网络前向/256增强输入，0真实IQ/CP/optimizer。登记字段及compile通过。真实scratchCP smoke留在worker首步，尚未发布。
+
+## 启动已核实
+
+状态RUNNING，实际训练代码2b916b8892fce0dd1ae80ff9c8f1d649445b245b已提交推送并独立读回同OID，单归档transfer对照与remotecompile通过。worker PID3609877/GPU0的CWD/argv/GPU、真实scratchCP noquery smoke与日志增长6396→16669已独立核实。当前E2，实际5040/45360/21600角色、E20=13+7、LS.01、ordinaryON/PAOFF、NoExplicitCFO/defaulthead、ownEMA/scratch、AsOFF全部通过。尚未读取FINAL heldV，不能宣称源收益或target改善。原release/健康任务未热改/重启。

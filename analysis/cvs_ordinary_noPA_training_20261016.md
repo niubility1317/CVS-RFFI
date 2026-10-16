@@ -13,3 +13,7 @@
 这不是按目标成绩删PA，也不把删除一个有害算子当作“新混合增强已成功”。本轮没有As/新G/对齐/头/分支或U机制变化，明确source-only，无目标预测。源证据成立后还需要独立固定full-source的Ag/As因子矩阵；每个正式训练row仍E20，自动原clean+6practical冻结预测和truth-last。lowurban>60%、clean净增和跨seed重现都尚未证明。
 
 新成本为一个E20/4440更新/1136640 L网络前向，U/EMA/sourceeval/heldV5400/smoke2按实际计数。复用的RX1 N0/N1父对照各20epoch是历史40model-epoch成本，新模型不继承它们。既有200model-epoch五fold研发与207910前向PA诊断另外保留，不隐藏成本。
+
+## 已实现并启动
+
+20261016-phase1-ordinary-noPA-RX1-e20-s2026092701-m1-r01已实际发布运行VERIFIED；代码2b916b8892fce0dd1ae80ff9c8f1d649445b245b，新N2 scratchE20，真实CP noquery smoke、PID/CWD/argv/GPU和日志增长已独立核实。当前E2，尚无FINAL源成绩。一个限定P0/P1增量审查PASS，本地实际图512合成fwd/256aug计入成本，0local realIQ/CP/optimizer。只关闭PA的actualnativeflag已读回，U/defaulthead/预算/角色保持；完成后按原固定条件处理，不热改。
