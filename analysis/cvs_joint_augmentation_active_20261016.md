@@ -303,3 +303,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 下一唯一问题转向真实同包连续窗口可用性，见 analysis/cvs_contiguous_window_availability_20261017.md。实际冻结后端支持T>256中心裁剪，当前out_len256/EQ1；这不证明现有合法L有长上下文，未读取新IQ或启动训练。若仅256点或缺原包／参考对应，关闭入口，不以roll/插值/拼接相邻包/换eq救援。0新增NN/更新/target；闭合的scene均衡失败保持不变，联合目标ACTIVE。
+
+
+真实同包连续窗口入口NO_TRACEABLE_LONG_CONTEXT_CURRENT_INPUT_CLOSED：官方FullWiSig/PKL保留256点，compact仅选择包行，现存元记录无raw capture／参考定位；未逐包扫描本地数组，不声称实测长度。0新IQ/CP/NN/更新/target，不拼接邻包或换eq救跑。下一唯一依据问题为短窗频域非仿射相位的可辨识RX关联，见analysis/cvs_frequency_phase_observability_basis_20261017.md；先固定有限窗口代数/合成辨识问题，尚未登记或执行新实验，不能以旧幅度谱或时域相位结果作为成功证据。联合目标ACTIVE。

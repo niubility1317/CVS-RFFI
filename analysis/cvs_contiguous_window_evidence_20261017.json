@@ -1,0 +1,29 @@
+{
+  "status": "NO_TRACEABLE_LONG_CONTEXT_CURRENT_INPUT_CLOSED",
+  "evidence_scope": "Declared official ManySig construction and existing carrier/preparation metadata,not local per-record array scan",
+  "official_fullwisig_id_samples": 256,
+  "official_pkl_pkt_len": 256,
+  "official_pkl_slice": [
+    0,
+    256
+  ],
+  "compact_operation": "Select physical packet rows only;no recovery of discarded context",
+  "runtime_wisig_out_len": 256,
+  "runtime_equalized": 1,
+  "source_fit_L": 5040,
+  "full_L6300_not_new_training_contract": true,
+  "raw_capture_or_reference_offset_mapping_in_existing_metadata": false,
+  "actual_local_original_array_shape_scan": false,
+  "new_IQ_deserializations": 0,
+  "checkpoint_reads": 0,
+  "NN": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "new_training_launched": false,
+  "source_urls": [
+    "https://cores.ee.ucla.edu/wisig/overview/",
+    "https://github.com/WiSig-dataset/wisig-process-raw/blob/master/python_pkl_creation/py/build_dataset_multirx.py",
+    "https://github.com/WiSig-dataset/wisig-subset-creation/blob/master/data_utilities.py"
+  ]
+}
