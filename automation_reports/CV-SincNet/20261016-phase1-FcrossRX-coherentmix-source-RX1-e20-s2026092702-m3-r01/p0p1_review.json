@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "scope": "One independent static direct P0/P1 next-run review",
+  "reviewer": "/root/urban_p0p1_review",
+  "finding": "New train rows baseline_reuse must be false",
+  "resolution": "False in design and all new registered row configs; existing reference remains reuse-only",
+  "targeted_readback": "PASS",
+  "real_IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "remote_access": false
+}
