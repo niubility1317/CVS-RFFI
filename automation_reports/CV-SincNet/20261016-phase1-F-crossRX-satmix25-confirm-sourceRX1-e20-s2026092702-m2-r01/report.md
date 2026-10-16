@@ -55,3 +55,8 @@ As 仅作用原始 x_l，不作用旧增强后的 IQ；不重复普通 AWGN/mult
 ## 实际发布与运行
 
 执行 commit `d71531d53c1d9ec46e3915963e05bff96760e80e` 已提交推送并独立核对远端OID。单份release archive传输比对、远端编译均VERIFIED，真实匹配checkpoint的两个合成包no-query smoke PASS后直接进入训练。独立读回两个原PID的CWD/argv、GPU0/1归属和stdout增长；两行的actual_native_args.seed与resolved config.model_seed均为2026092702。B00已完成E2/20、444更新；B01已完成E1/20、222更新、28416份实际practical监督；没有failure、target访问或重启。摘要见launch_verification.json。该读数只是进度，不是收益或跨seed确认。
+
+
+## 实际普通增强补充审计
+
+独立只读代码解析已完成，覆盖实际DataAugmentation、导入的build_aug_base_cfg/configure_augmentor、resolved args、11个操作的顺序/概率/范围/标签依赖/归一化/边界，以及同IQ RDrop与raw practical调用。完整解释见analysis/cvs_joint_ordinary_IQ_audit_20261016.md，逐轮汇总见ordinary_augmentation_audit.json。0IQ/模型前向/训练更新；没有修改本run。概率缩放不等于增益/相位/AWGN范围缩放，前7轮taper恒等，PA保留未验证身份保持限制。此审计不构成Ag有效证据。

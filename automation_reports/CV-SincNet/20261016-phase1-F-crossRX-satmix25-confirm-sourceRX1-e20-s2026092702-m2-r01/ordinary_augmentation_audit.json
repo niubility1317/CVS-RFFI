@@ -1,0 +1,891 @@
+{
+  "status": "ACTUAL_CODE_AND_ARGS_AUDITED",
+  "execution_commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+  "scope": "Shared old ordinary L augmentation in qualified seed01 and active confirmation02;not a new Ag efficacy experiment",
+  "actual_callable_refs": {
+    "native": "cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py",
+    "augmentation": "cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+    "build_aug_base_cfg": "cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/cvsrffi/schedule.py",
+    "configure_augmentor": "cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/cvsrffi/schedule.py",
+    "model": "cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/model.py",
+    "reference": "cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/cvs_reference_identity/model.py"
+  },
+  "base_config": {
+    "p_dac": 0.0,
+    "p_pa": 0.14,
+    "enable_class_signature": false,
+    "class_sig_mix": 0.1,
+    "seed": 2026092702,
+    "p_time_shift": 0.35,
+    "max_time_shift": 32,
+    "p_amp_scale": 0.45,
+    "amp_min": 0.9,
+    "amp_max": 1.1,
+    "p_phase_rot": 0.45,
+    "p_cfo": 0.35,
+    "cfo_max": 0.0004,
+    "p_phase_noise": 0.3,
+    "phase_noise_sigma_max": 0.006,
+    "p_awgn": 0.4,
+    "snr_min_db": 20.0,
+    "snr_max_db": 36.0,
+    "p_multipath": 0.18,
+    "mp_taps_min": 2,
+    "mp_taps_max": 4,
+    "mp_delay_max": 4,
+    "p_dc_offset": 0.3,
+    "dc_offset_max": 0.02,
+    "p_bandedge_taper": 0.25,
+    "taper_alpha_min": 0.02,
+    "taper_alpha_max": 0.1,
+    "defect_apply_channel": false,
+    "dac_only_apply_anti_shortcut": false,
+    "dac_only_apply_channel": false,
+    "pa_only_apply_anti_shortcut": false,
+    "pa_only_apply_channel": false,
+    "dac_pa_apply_anti_shortcut": true,
+    "dac_pa_apply_channel": true
+  },
+  "resolved_controls": {
+    "use_aug": true,
+    "aug_enable_pa_normal": true,
+    "aug_enable_class_signature": false,
+    "aug_scale_min": 0.1,
+    "aug_scale_max": 0.35,
+    "aug_warmup_epochs": 3,
+    "aug_ramp_epochs": 15,
+    "aug_ramp_curve": 1.25,
+    "late_stable_start": 0,
+    "late_aug_min_scale": "absent;getattr(-1) applies",
+    "use_concat_sat_channel_aug": false
+  },
+  "operators": [
+    {
+      "order": 1,
+      "name": "DC",
+      "target": "whole batch gate,per-packet I/Q offsets",
+      "probability": "0.30*scale",
+      "range": "each I/Q U[-0.02*scale,+0.02*scale]",
+      "label_dependence": false,
+      "boundary": "constant offset,not a new receiver"
+    },
+    {
+      "order": 2,
+      "name": "Tukey edge taper",
+      "target": "whole batch gate and shared alpha",
+      "probability": "0.25*scale",
+      "range": "alpha U[0.02*scale,0.10*scale]",
+      "label_dependence": false,
+      "boundary": "edge=int(alpha*255/2);edge<=1 returns ones;E1-7 always identity,late at most4samples/edge"
+    },
+    {
+      "order": 3,
+      "name": "circular time shift",
+      "target": "whole batch gate,per-packet shift",
+      "probability": "0.35*scale",
+      "range": "integer U[-round(32*scale),+round(32*scale)]",
+      "label_dependence": false,
+      "boundary": "mod256 gather creates wrap seam;max3..11samples;seam outside reference80:160,but content alignment changes"
+    },
+    {
+      "order": 4,
+      "name": "constant amplitude",
+      "target": "whole batch gate,per-packet gain",
+      "probability": "0.45*scale",
+      "range": "U[0.9,1.1],range not ramped",
+      "label_dependence": false,
+      "boundary": "no boundary insertion;no IQ RMS normalization at augmentation exit or native backbone entrance"
+    },
+    {
+      "order": 5,
+      "name": "phase rotation",
+      "target": "whole batch gate,per-packet phase",
+      "probability": "0.45*scale",
+      "range": "U[0,2*pi],range not ramped",
+      "label_dependence": false,
+      "boundary": "whole packet rotation"
+    },
+    {
+      "order": 6,
+      "name": "CFO",
+      "target": "whole batch gate,per-packet linear phase",
+      "probability": "0.35*scale",
+      "range": "U[-0.0004*scale,+0.0004*scale]cycles/sample;1000..3500Hz max",
+      "label_dependence": false,
+      "boundary": "no seam;NoExplicitCFO masks identity coordinate27,internal packet compensation preserved"
+    },
+    {
+      "order": 7,
+      "name": "Wiener phase noise",
+      "target": "whole batch gate,per-packet sigma",
+      "probability": "0.30*scale",
+      "range": "sigma U[0,0.006*scale]rad/sample increment",
+      "label_dependence": false,
+      "boundary": "cumsum increments,starts with random first increment"
+    },
+    {
+      "order": 8,
+      "name": "ordinary multipath",
+      "target": "whole batch gate,shared sampled taps/delays",
+      "probability": "0.18*scale",
+      "range": "2..4complex taps;integer delay0..round(4*scale),max0..1 in this schedule",
+      "label_dependence": false,
+      "boundary": "left reflect pad then conv1d,256output;not cascaded into practical"
+    },
+    {
+      "order": 9,
+      "name": "ordinary AWGN",
+      "target": "whole batch gate,per-packet SNR",
+      "probability": "0.40*scale",
+      "range": "U[20,36]dB,range not ramped;power from signal after preceding operations",
+      "label_dependence": false,
+      "boundary": "complex white noise;not cascaded into practical"
+    },
+    {
+      "order": 10,
+      "name": "DAC gate",
+      "target": "per-packet mask",
+      "probability": "0*scale=0",
+      "range": "disabled",
+      "label_dependence": false,
+      "boundary": "no normal DAC quantization/clipping chain executed"
+    },
+    {
+      "order": 11,
+      "name": "PA gate",
+      "target": "per-packet mask,subchain operation gates shared in selected subset",
+      "probability": "0.14*scale=0.014..0.049",
+      "range": "s=sqrt(U[0,1]);PA polynomial/FIR/AMPM/IQ maxima partly scaled;Rapp sat0.6..1.1 and p2..5 not ramped",
+      "label_dependence": "normal call passes visible L labels;class_signature=false disables label-conditioned signature",
+      "boundary": "polynomial zero-pad memory<=2;FIR uses circular roll<=3;Rapp nonlinear compression;unvalidated identity-preserving operation"
+    }
+  ],
+  "epoch_schedule": [
+    {
+      "epoch": 1,
+      "scale": 0.1,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.014000000000000002,
+        "p_time_shift": 0.034999999999999996,
+        "p_amp_scale": 0.045000000000000005,
+        "p_phase_rot": 0.045000000000000005,
+        "p_cfo": 0.034999999999999996,
+        "p_phase_noise": 0.03,
+        "p_awgn": 0.04000000000000001,
+        "p_multipath": 0.018,
+        "p_dc_offset": 0.03,
+        "p_bandedge_taper": 0.025
+      },
+      "max_time_shift": 3,
+      "cfo_max_cycles_per_sample": 4e-05,
+      "cfo_max_Hz": 1000.0000000000001,
+      "phase_noise_sigma_max_rad": 0.0006000000000000001,
+      "dc_offset_max": 0.002,
+      "taper_alpha": [
+        0.002,
+        0.010000000000000002
+      ],
+      "taper_max_edge_samples": 1,
+      "mp_delay_max": 0,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.005000000000000001,
+        "mem_sigma": 0.004,
+        "ampm_max": 0.020000000000000004,
+        "iq_img_max": 0.002
+      }
+    },
+    {
+      "epoch": 2,
+      "scale": 0.1,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.014000000000000002,
+        "p_time_shift": 0.034999999999999996,
+        "p_amp_scale": 0.045000000000000005,
+        "p_phase_rot": 0.045000000000000005,
+        "p_cfo": 0.034999999999999996,
+        "p_phase_noise": 0.03,
+        "p_awgn": 0.04000000000000001,
+        "p_multipath": 0.018,
+        "p_dc_offset": 0.03,
+        "p_bandedge_taper": 0.025
+      },
+      "max_time_shift": 3,
+      "cfo_max_cycles_per_sample": 4e-05,
+      "cfo_max_Hz": 1000.0000000000001,
+      "phase_noise_sigma_max_rad": 0.0006000000000000001,
+      "dc_offset_max": 0.002,
+      "taper_alpha": [
+        0.002,
+        0.010000000000000002
+      ],
+      "taper_max_edge_samples": 1,
+      "mp_delay_max": 0,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.005000000000000001,
+        "mem_sigma": 0.004,
+        "ampm_max": 0.020000000000000004,
+        "iq_img_max": 0.002
+      }
+    },
+    {
+      "epoch": 3,
+      "scale": 0.1,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.014000000000000002,
+        "p_time_shift": 0.034999999999999996,
+        "p_amp_scale": 0.045000000000000005,
+        "p_phase_rot": 0.045000000000000005,
+        "p_cfo": 0.034999999999999996,
+        "p_phase_noise": 0.03,
+        "p_awgn": 0.04000000000000001,
+        "p_multipath": 0.018,
+        "p_dc_offset": 0.03,
+        "p_bandedge_taper": 0.025
+      },
+      "max_time_shift": 3,
+      "cfo_max_cycles_per_sample": 4e-05,
+      "cfo_max_Hz": 1000.0000000000001,
+      "phase_noise_sigma_max_rad": 0.0006000000000000001,
+      "dc_offset_max": 0.002,
+      "taper_alpha": [
+        0.002,
+        0.010000000000000002
+      ],
+      "taper_max_edge_samples": 1,
+      "mp_delay_max": 0,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.005000000000000001,
+        "mem_sigma": 0.004,
+        "ampm_max": 0.020000000000000004,
+        "iq_img_max": 0.002
+      }
+    },
+    {
+      "epoch": 4,
+      "scale": 0.10846887913591025,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.015185643079027436,
+        "p_time_shift": 0.03796410769756858,
+        "p_amp_scale": 0.04881099561115961,
+        "p_phase_rot": 0.04881099561115961,
+        "p_cfo": 0.03796410769756858,
+        "p_phase_noise": 0.03254066374077307,
+        "p_awgn": 0.0433875516543641,
+        "p_multipath": 0.019524398244463843,
+        "p_dc_offset": 0.03254066374077307,
+        "p_bandedge_taper": 0.02711721978397756
+      },
+      "max_time_shift": 3,
+      "cfo_max_cycles_per_sample": 4.33875516543641e-05,
+      "cfo_max_Hz": 1084.6887913591024,
+      "phase_noise_sigma_max_rad": 0.0006508132748154615,
+      "dc_offset_max": 0.002169377582718205,
+      "taper_alpha": [
+        0.002169377582718205,
+        0.010846887913591025
+      ],
+      "taper_max_edge_samples": 1,
+      "mp_delay_max": 0,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.005423443956795513,
+        "mem_sigma": 0.00433875516543641,
+        "ampm_max": 0.02169377582718205,
+        "iq_img_max": 0.002169377582718205
+      }
+    },
+    {
+      "epoch": 5,
+      "scale": 0.12014250264904512,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.016819950370866317,
+        "p_time_shift": 0.04204987592716579,
+        "p_amp_scale": 0.05406412619207031,
+        "p_phase_rot": 0.05406412619207031,
+        "p_cfo": 0.04204987592716579,
+        "p_phase_noise": 0.036042750794713536,
+        "p_awgn": 0.04805700105961805,
+        "p_multipath": 0.021625650476828122,
+        "p_dc_offset": 0.036042750794713536,
+        "p_bandedge_taper": 0.03003562566226128
+      },
+      "max_time_shift": 4,
+      "cfo_max_cycles_per_sample": 4.805700105961805e-05,
+      "cfo_max_Hz": 1201.4250264904513,
+      "phase_noise_sigma_max_rad": 0.0007208550158942708,
+      "dc_offset_max": 0.0024028500529809024,
+      "taper_alpha": [
+        0.0024028500529809024,
+        0.012014250264904512
+      ],
+      "taper_max_edge_samples": 1,
+      "mp_delay_max": 0,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.006007125132452256,
+        "mem_sigma": 0.004805700105961805,
+        "ampm_max": 0.024028500529809024,
+        "iq_img_max": 0.0024028500529809024
+      }
+    },
+    {
+      "epoch": 6,
+      "scale": 0.1334370152488211,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.018681182134834957,
+        "p_time_shift": 0.04670295533708738,
+        "p_amp_scale": 0.06004665686196949,
+        "p_phase_rot": 0.06004665686196949,
+        "p_cfo": 0.04670295533708738,
+        "p_phase_noise": 0.04003110457464633,
+        "p_awgn": 0.05337480609952844,
+        "p_multipath": 0.024018662744787797,
+        "p_dc_offset": 0.04003110457464633,
+        "p_bandedge_taper": 0.033359253812205274
+      },
+      "max_time_shift": 4,
+      "cfo_max_cycles_per_sample": 5.337480609952844e-05,
+      "cfo_max_Hz": 1334.370152488211,
+      "phase_noise_sigma_max_rad": 0.0008006220914929266,
+      "dc_offset_max": 0.002668740304976422,
+      "taper_alpha": [
+        0.002668740304976422,
+        0.01334370152488211
+      ],
+      "taper_max_edge_samples": 1,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.006671850762441055,
+        "mem_sigma": 0.005337480609952844,
+        "ampm_max": 0.02668740304976422,
+        "iq_img_max": 0.002668740304976422
+      }
+    },
+    {
+      "epoch": 7,
+      "scale": 0.14790721492841122,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.020707010089977572,
+        "p_time_shift": 0.051767525224943926,
+        "p_amp_scale": 0.06655824671778506,
+        "p_phase_rot": 0.06655824671778506,
+        "p_cfo": 0.051767525224943926,
+        "p_phase_noise": 0.044372164478523365,
+        "p_awgn": 0.05916288597136449,
+        "p_multipath": 0.02662329868711402,
+        "p_dc_offset": 0.044372164478523365,
+        "p_bandedge_taper": 0.036976803732102805
+      },
+      "max_time_shift": 5,
+      "cfo_max_cycles_per_sample": 5.916288597136449e-05,
+      "cfo_max_Hz": 1479.0721492841124,
+      "phase_noise_sigma_max_rad": 0.0008874432895704673,
+      "dc_offset_max": 0.0029581442985682246,
+      "taper_alpha": [
+        0.0029581442985682246,
+        0.014790721492841122
+      ],
+      "taper_max_edge_samples": 1,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.007395360746420561,
+        "mem_sigma": 0.005916288597136449,
+        "ampm_max": 0.029581442985682244,
+        "iq_img_max": 0.0029581442985682246
+      }
+    },
+    {
+      "epoch": 8,
+      "scale": 0.16331964047096603,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.022864749665935248,
+        "p_time_shift": 0.05716187416483811,
+        "p_amp_scale": 0.07349383821193471,
+        "p_phase_rot": 0.07349383821193471,
+        "p_cfo": 0.05716187416483811,
+        "p_phase_noise": 0.048995892141289805,
+        "p_awgn": 0.06532785618838642,
+        "p_multipath": 0.029397535284773884,
+        "p_dc_offset": 0.048995892141289805,
+        "p_bandedge_taper": 0.04082991011774151
+      },
+      "max_time_shift": 5,
+      "cfo_max_cycles_per_sample": 6.532785618838642e-05,
+      "cfo_max_Hz": 1633.1964047096603,
+      "phase_noise_sigma_max_rad": 0.0009799178428257962,
+      "dc_offset_max": 0.0032663928094193205,
+      "taper_alpha": [
+        0.0032663928094193205,
+        0.016331964047096605
+      ],
+      "taper_max_edge_samples": 2,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.008165982023548303,
+        "mem_sigma": 0.006532785618838641,
+        "ampm_max": 0.03266392809419321,
+        "iq_img_max": 0.0032663928094193205
+      }
+    },
+    {
+      "epoch": 9,
+      "scale": 0.17952707287670505,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.02513379020273871,
+        "p_time_shift": 0.06283447550684676,
+        "p_amp_scale": 0.08078718279451727,
+        "p_phase_rot": 0.08078718279451727,
+        "p_cfo": 0.06283447550684676,
+        "p_phase_noise": 0.05385812186301151,
+        "p_awgn": 0.07181082915068203,
+        "p_multipath": 0.03231487311780691,
+        "p_dc_offset": 0.05385812186301151,
+        "p_bandedge_taper": 0.04488176821917626
+      },
+      "max_time_shift": 6,
+      "cfo_max_cycles_per_sample": 7.181082915068202e-05,
+      "cfo_max_Hz": 1795.2707287670505,
+      "phase_noise_sigma_max_rad": 0.0010771624372602304,
+      "dc_offset_max": 0.003590541457534101,
+      "taper_alpha": [
+        0.003590541457534101,
+        0.017952707287670507
+      ],
+      "taper_max_edge_samples": 2,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.008976353643835254,
+        "mem_sigma": 0.007181082915068202,
+        "ampm_max": 0.035905414575341014,
+        "iq_img_max": 0.003590541457534101
+      }
+    },
+    {
+      "epoch": 10,
+      "scale": 0.196426962144261,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.027499774700196544,
+        "p_time_shift": 0.06874943675049135,
+        "p_amp_scale": 0.08839213296491745,
+        "p_phase_rot": 0.08839213296491745,
+        "p_cfo": 0.06874943675049135,
+        "p_phase_noise": 0.058928088643278295,
+        "p_awgn": 0.07857078485770441,
+        "p_multipath": 0.03535685318596698,
+        "p_dc_offset": 0.058928088643278295,
+        "p_bandedge_taper": 0.04910674053606525
+      },
+      "max_time_shift": 6,
+      "cfo_max_cycles_per_sample": 7.857078485770441e-05,
+      "cfo_max_Hz": 1964.2696214426103,
+      "phase_noise_sigma_max_rad": 0.001178561772865566,
+      "dc_offset_max": 0.00392853924288522,
+      "taper_alpha": [
+        0.00392853924288522,
+        0.019642696214426103
+      ],
+      "taper_max_edge_samples": 2,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.009821348107213052,
+        "mem_sigma": 0.00785707848577044,
+        "ampm_max": 0.039285392428852206,
+        "iq_img_max": 0.00392853924288522
+      }
+    },
+    {
+      "epoch": 11,
+      "scale": 0.2139432017056624,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.029952048238792738,
+        "p_time_shift": 0.07488012059698183,
+        "p_amp_scale": 0.09627444076754808,
+        "p_phase_rot": 0.09627444076754808,
+        "p_cfo": 0.07488012059698183,
+        "p_phase_noise": 0.06418296051169871,
+        "p_awgn": 0.08557728068226496,
+        "p_multipath": 0.03850977630701923,
+        "p_dc_offset": 0.06418296051169871,
+        "p_bandedge_taper": 0.0534858004264156
+      },
+      "max_time_shift": 7,
+      "cfo_max_cycles_per_sample": 8.557728068226496e-05,
+      "cfo_max_Hz": 2139.432017056624,
+      "phase_noise_sigma_max_rad": 0.0012836592102339743,
+      "dc_offset_max": 0.004278864034113248,
+      "taper_alpha": [
+        0.004278864034113248,
+        0.02139432017056624
+      ],
+      "taper_max_edge_samples": 2,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.01069716008528312,
+        "mem_sigma": 0.008557728068226496,
+        "ampm_max": 0.04278864034113248,
+        "iq_img_max": 0.004278864034113248
+      }
+    },
+    {
+      "epoch": 12,
+      "scale": 0.232016760519009,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.03248234647266126,
+        "p_time_shift": 0.08120586618165314,
+        "p_amp_scale": 0.10440754223355404,
+        "p_phase_rot": 0.10440754223355404,
+        "p_cfo": 0.08120586618165314,
+        "p_phase_noise": 0.0696050281557027,
+        "p_awgn": 0.0928067042076036,
+        "p_multipath": 0.041763016893421614,
+        "p_dc_offset": 0.0696050281557027,
+        "p_bandedge_taper": 0.05800419012975225
+      },
+      "max_time_shift": 7,
+      "cfo_max_cycles_per_sample": 9.28067042076036e-05,
+      "cfo_max_Hz": 2320.16760519009,
+      "phase_noise_sigma_max_rad": 0.001392100563114054,
+      "dc_offset_max": 0.00464033521038018,
+      "taper_alpha": [
+        0.00464033521038018,
+        0.0232016760519009
+      ],
+      "taper_max_edge_samples": 2,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.01160083802595045,
+        "mem_sigma": 0.00928067042076036,
+        "ampm_max": 0.0464033521038018,
+        "iq_img_max": 0.00464033521038018
+      }
+    },
+    {
+      "epoch": 13,
+      "scale": 0.2506003339349741,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.03508404675089638,
+        "p_time_shift": 0.08771011687724094,
+        "p_amp_scale": 0.11277015027073835,
+        "p_phase_rot": 0.11277015027073835,
+        "p_cfo": 0.08771011687724094,
+        "p_phase_noise": 0.07518010018049223,
+        "p_awgn": 0.10024013357398964,
+        "p_multipath": 0.045108060108295336,
+        "p_dc_offset": 0.07518010018049223,
+        "p_bandedge_taper": 0.06265008348374353
+      },
+      "max_time_shift": 8,
+      "cfo_max_cycles_per_sample": 0.00010024013357398965,
+      "cfo_max_Hz": 2506.0033393497415,
+      "phase_noise_sigma_max_rad": 0.0015036020036098448,
+      "dc_offset_max": 0.005012006678699482,
+      "taper_alpha": [
+        0.005012006678699482,
+        0.02506003339349741
+      ],
+      "taper_max_edge_samples": 3,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.012530016696748705,
+        "mem_sigma": 0.010024013357398965,
+        "ampm_max": 0.05012006678699482,
+        "iq_img_max": 0.005012006678699482
+      }
+    },
+    {
+      "epoch": 14,
+      "scale": 0.26965504991984524,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.03775170698877834,
+        "p_time_shift": 0.09437926747194583,
+        "p_amp_scale": 0.12134477246393036,
+        "p_phase_rot": 0.12134477246393036,
+        "p_cfo": 0.09437926747194583,
+        "p_phase_noise": 0.08089651497595357,
+        "p_awgn": 0.1078620199679381,
+        "p_multipath": 0.04853790898557214,
+        "p_dc_offset": 0.08089651497595357,
+        "p_bandedge_taper": 0.06741376247996131
+      },
+      "max_time_shift": 9,
+      "cfo_max_cycles_per_sample": 0.0001078620199679381,
+      "cfo_max_Hz": 2696.5504991984526,
+      "phase_noise_sigma_max_rad": 0.0016179302995190715,
+      "dc_offset_max": 0.005393100998396905,
+      "taper_alpha": [
+        0.005393100998396905,
+        0.026965504991984524
+      ],
+      "taper_max_edge_samples": 3,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.013482752495992262,
+        "mem_sigma": 0.01078620199679381,
+        "ampm_max": 0.05393100998396905,
+        "iq_img_max": 0.005393100998396905
+      }
+    },
+    {
+      "epoch": 15,
+      "scale": 0.28914832180063516,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.040480765052088925,
+        "p_time_shift": 0.1012019126302223,
+        "p_amp_scale": 0.13011674481028582,
+        "p_phase_rot": 0.13011674481028582,
+        "p_cfo": 0.1012019126302223,
+        "p_phase_noise": 0.08674449654019055,
+        "p_awgn": 0.11565932872025407,
+        "p_multipath": 0.05204669792411432,
+        "p_dc_offset": 0.08674449654019055,
+        "p_bandedge_taper": 0.07228708045015879
+      },
+      "max_time_shift": 9,
+      "cfo_max_cycles_per_sample": 0.00011565932872025407,
+      "cfo_max_Hz": 2891.4832180063518,
+      "phase_noise_sigma_max_rad": 0.001734889930803811,
+      "dc_offset_max": 0.005782966436012703,
+      "taper_alpha": [
+        0.005782966436012703,
+        0.028914832180063518
+      ],
+      "taper_max_edge_samples": 3,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.014457416090031759,
+        "mem_sigma": 0.011565932872025406,
+        "ampm_max": 0.057829664360127035,
+        "iq_img_max": 0.005782966436012703
+      }
+    },
+    {
+      "epoch": 16,
+      "scale": 0.3090523843352183,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.04326733380693057,
+        "p_time_shift": 0.10816833451732641,
+        "p_amp_scale": 0.13907357295084824,
+        "p_phase_rot": 0.13907357295084824,
+        "p_cfo": 0.10816833451732641,
+        "p_phase_noise": 0.0927157153005655,
+        "p_awgn": 0.12362095373408732,
+        "p_multipath": 0.05562942918033929,
+        "p_dc_offset": 0.0927157153005655,
+        "p_bandedge_taper": 0.07726309608380458
+      },
+      "max_time_shift": 10,
+      "cfo_max_cycles_per_sample": 0.00012362095373408732,
+      "cfo_max_Hz": 3090.523843352183,
+      "phase_noise_sigma_max_rad": 0.00185431430601131,
+      "dc_offset_max": 0.006181047686704366,
+      "taper_alpha": [
+        0.006181047686704366,
+        0.03090523843352183
+      ],
+      "taper_max_edge_samples": 3,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.015452619216760916,
+        "mem_sigma": 0.012362095373408733,
+        "ampm_max": 0.06181047686704366,
+        "iq_img_max": 0.006181047686704366
+      }
+    },
+    {
+      "epoch": 17,
+      "scale": 0.32934325892010646,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.04610805624881491,
+        "p_time_shift": 0.11527014062203725,
+        "p_amp_scale": 0.14820446651404792,
+        "p_phase_rot": 0.14820446651404792,
+        "p_cfo": 0.11527014062203725,
+        "p_phase_noise": 0.09880297767603194,
+        "p_awgn": 0.13173730356804259,
+        "p_multipath": 0.05928178660561916,
+        "p_dc_offset": 0.09880297767603194,
+        "p_bandedge_taper": 0.08233581473002662
+      },
+      "max_time_shift": 11,
+      "cfo_max_cycles_per_sample": 0.0001317373035680426,
+      "cfo_max_Hz": 3293.432589201065,
+      "phase_noise_sigma_max_rad": 0.0019760595535206387,
+      "dc_offset_max": 0.00658686517840213,
+      "taper_alpha": [
+        0.00658686517840213,
+        0.032934325892010646
+      ],
+      "taper_max_edge_samples": 4,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.016467162946005323,
+        "mem_sigma": 0.01317373035680426,
+        "ampm_max": 0.06586865178402129,
+        "iq_img_max": 0.00658686517840213
+      }
+    },
+    {
+      "epoch": 18,
+      "scale": 0.35,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.049,
+        "p_time_shift": 0.12249999999999998,
+        "p_amp_scale": 0.1575,
+        "p_phase_rot": 0.1575,
+        "p_cfo": 0.12249999999999998,
+        "p_phase_noise": 0.105,
+        "p_awgn": 0.13999999999999999,
+        "p_multipath": 0.063,
+        "p_dc_offset": 0.105,
+        "p_bandedge_taper": 0.0875
+      },
+      "max_time_shift": 11,
+      "cfo_max_cycles_per_sample": 0.00014,
+      "cfo_max_Hz": 3499.9999999999995,
+      "phase_noise_sigma_max_rad": 0.0021,
+      "dc_offset_max": 0.006999999999999999,
+      "taper_alpha": [
+        0.006999999999999999,
+        0.034999999999999996
+      ],
+      "taper_max_edge_samples": 4,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.017499999999999998,
+        "mem_sigma": 0.013999999999999999,
+        "ampm_max": 0.06999999999999999,
+        "iq_img_max": 0.006999999999999999
+      }
+    },
+    {
+      "epoch": 19,
+      "scale": 0.35,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.049,
+        "p_time_shift": 0.12249999999999998,
+        "p_amp_scale": 0.1575,
+        "p_phase_rot": 0.1575,
+        "p_cfo": 0.12249999999999998,
+        "p_phase_noise": 0.105,
+        "p_awgn": 0.13999999999999999,
+        "p_multipath": 0.063,
+        "p_dc_offset": 0.105,
+        "p_bandedge_taper": 0.0875
+      },
+      "max_time_shift": 11,
+      "cfo_max_cycles_per_sample": 0.00014,
+      "cfo_max_Hz": 3499.9999999999995,
+      "phase_noise_sigma_max_rad": 0.0021,
+      "dc_offset_max": 0.006999999999999999,
+      "taper_alpha": [
+        0.006999999999999999,
+        0.034999999999999996
+      ],
+      "taper_max_edge_samples": 4,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.017499999999999998,
+        "mem_sigma": 0.013999999999999999,
+        "ampm_max": 0.06999999999999999,
+        "iq_img_max": 0.006999999999999999
+      }
+    },
+    {
+      "epoch": 20,
+      "scale": 0.35,
+      "probabilities": {
+        "p_dac": 0.0,
+        "p_pa": 0.049,
+        "p_time_shift": 0.12249999999999998,
+        "p_amp_scale": 0.1575,
+        "p_phase_rot": 0.1575,
+        "p_cfo": 0.12249999999999998,
+        "p_phase_noise": 0.105,
+        "p_awgn": 0.13999999999999999,
+        "p_multipath": 0.063,
+        "p_dc_offset": 0.105,
+        "p_bandedge_taper": 0.0875
+      },
+      "max_time_shift": 11,
+      "cfo_max_cycles_per_sample": 0.00014,
+      "cfo_max_Hz": 3499.9999999999995,
+      "phase_noise_sigma_max_rad": 0.0021,
+      "dc_offset_max": 0.006999999999999999,
+      "taper_alpha": [
+        0.006999999999999999,
+        0.034999999999999996
+      ],
+      "taper_max_edge_samples": 4,
+      "mp_delay_max": 1,
+      "pa_scaled_parameters": {
+        "mp_sigma": 0.017499999999999998,
+        "mem_sigma": 0.013999999999999999,
+        "ampm_max": 0.06999999999999999,
+        "iq_img_max": 0.006999999999999999
+      }
+    }
+  ],
+  "pa_unramped_defaults": {
+    "strength_dist": "sqrt",
+    "beta_a": 2.0,
+    "beta_b": 1.2,
+    "p_mp": 0.9,
+    "mp_order_max": 7,
+    "mp_memory_max": 3,
+    "mp_sigma": 0.08,
+    "p_mem_fir": 0.4,
+    "mem_taps_min": 2,
+    "mem_taps_max": 5,
+    "mem_delay_max": 3,
+    "mem_sigma": 0.06,
+    "p_rapp": 0.9,
+    "sat_min": 0.6,
+    "sat_max": 1.1,
+    "rapp_p_min": 2.0,
+    "rapp_p_max": 5.0,
+    "p_am_pm": 0.6,
+    "ampm_max": 0.35,
+    "p_iq_imb": 0.05,
+    "iq_img_max": 0.01
+  },
+  "normalization": {
+    "loader": "normalize=True;pad/crop before RMS",
+    "ordinary_exit": "nan_to_num only,no IQ RMS",
+    "native_backbone_entrance": "pad_crop_iq then filters,not input RMS",
+    "reference": "per-packet coherent mean energy and relative transfer normalization;does not establish whole-network gain invariance"
+  },
+  "input_evidence": {
+    "completed_seed01_ordinary_raw_MSE_min": 0.0,
+    "completed_seed01_ordinary_raw_MSE_max": 3.8500633239746094,
+    "same_generated_IQ_per_RDrop_pair": true,
+    "practical_input": "raw x_l,not augmented x_l_main"
+  },
+  "limitations": [
+    "Configured probabilities and reconstructed schedule,not realized random event counts",
+    "PA identity preservation is not proved;its inherited common use is not newAg evidence",
+    "Circular boundary is artificial;safe placement does not prove identity preservation",
+    "No IQ or model calls in this audit;no identity-performance claim"
+  ],
+  "source_IQ_reads": 0,
+  "target_access": false,
+  "model_forwards": 0,
+  "training_updates": 0,
+  "does_not_change_live_run": true
+}

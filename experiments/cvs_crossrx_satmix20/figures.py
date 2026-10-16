@@ -22,7 +22,7 @@ def main():
             ax.plot(epochs,[float(v[key]) for v in values],color=colors[arm],label=arm)
             ax.set(title=title,xlabel='Epoch',xlim=(1,20));ax.axvline(5.5,color='#888888',ls='--',lw=.8);ax.axvline(13.5,color='#888888',ls=':',lw=.8);ax.grid(alpha=.18)
     axes[0,0].legend(frameon=False)
-    fig.suptitle('F + CROSS_RX / source RX1 holdout / seed2026092701 / all20 epochs\nDashed: contrast starts; dotted: original U stage starts',fontsize=12)
+    fig.suptitle('F + CROSS_RX / source RX1 holdout / seed'+str(a['model_seed'])+' / all20 epochs\nDashed: contrast starts; dotted: original U stage starts',fontsize=12)
     fig.savefig(OUT/'complete_training_curves.png');plt.close(fig)
     fig,axes=plt.subplots(1,2,figsize=(14,4.7),layout='constrained');x=np.arange(7)
     for arm,offset in (('B00',-.18),('B01',.18)):
@@ -48,4 +48,10 @@ def main():
     fig.savefig(OUT/'source_strata.png');plt.close(fig)
     print('Three completed-source figures saved')
 
-if __name__=='__main__':main()
+if __name__=='__main__':
+    import sys
+    if sys.argv[1:]==['--confirmation']:
+        from .confirmation import LOCAL
+        OUT=Path(__file__).resolve().parents[2]/LOCAL/'final'
+    elif sys.argv[1:]:raise ValueError('Only --confirmation or the original default source figure selection is registered')
+    main()

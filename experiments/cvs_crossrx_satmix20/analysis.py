@@ -5,8 +5,15 @@ root=Path(__file__).resolve().parents[2];sys.path.insert(0,str(root))
 from experiments.cvs_iq_timing20.harvest import score
 OUT=root/'local_artifacts/F_crossrx_satmix20_20261016/final'
 RUN='20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01'
+SEED=2026092701
 VIEWS=('clean','practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
-ROWS=('B00-RX1-s2026092701','B01-RX1-s2026092701')
+ROWS=tuple(arm+'-RX1-s'+str(SEED) for arm in ('B00','B01'))
+
+def select_confirmation():
+    global OUT,RUN,SEED,ROWS
+    from . import confirmation as c
+    OUT=root/c.LOCAL/'final';RUN=c.RUN;SEED=c.SEED
+    ROWS=tuple(arm+'-RX1-s'+str(SEED) for arm in ('B00','B01'))
 def read(p):return json.loads(p.read_text(encoding='utf8'))
 def records(p):
     opener=gzip.open if p.suffix=='.gz' else open
@@ -68,7 +75,7 @@ def analyze():
         assert all(p[1] in (3,4,6,8) for v in seq for p in v['ids'])
         observed={r:sum(len(v['ids']) for v in seq if v['role']==r) for r in ('L','U')};unique={r:len({tuple(p) for v in seq if v['role']==r for p in v['ids']}) for r in ('L','U')}
         assert observed=={'L':568320,'U':396368} and unique=={'L':5040,'U':45360}
-        args=read(src/'actual_native_args.json');native_args.append(args);assert args['use_aug'] and args['source_fold_held_rx']==1
+        args=read(src/'actual_native_args.json');native_args.append(args);assert args['seed']==SEED and args['use_aug'] and args['source_fold_held_rx']==1
         ordinary=read(src/'ordinary_augmentation_actual.json');assert ordinary['no_second_pair_redraw'] and ordinary['practical_input_is_raw']
         stdout=(OUT/'logs'/(row+'.stdout.log')).read_text(encoding='utf8',errors='replace')
         fatal=[v for v in stdout.splitlines() if any(s in v for s in ('Traceback (most recent call last)','CUDA out of memory','FloatingPointError','SIGKILL'))]
@@ -100,7 +107,7 @@ def analyze():
     conditions=dict(healthy=all(v['final_L_CE']<=.5 for v in execution.values()),clean=paired['clean']['accuracy_gain_pp']>=-.5,low_urban=paired['practical_low_urban']['accuracy_gain_pp']>=5.,urban_mean=urban>=3.,suburban=all(paired[v]['accuracy_gain_pp']>=-.5 for v in VIEWS[1:4]),seen_V=deltaV>=-.5)
     qualified=all(conditions.values());assert qualified==complete['qualified'] and conditions==read(OUT/'result.json')['qualification']['conditions']
     gaps={arm:{view:dict(clean_minus_suburban_pp=100*(s['clean']['accuracy']-s[view]['accuracy']),absolute_gap_pp=100*abs(s['clean']['accuracy']-s[view]['accuracy'])) for view in VIEWS[1:4]} for arm,s in scores.items()}
-    analysis=dict(status='ANALYZED',run_id=RUN,actual_execution='VERIFIED',source_only=True,model_seed=2026092701,qualification=dict(qualified=qualified,conditions=conditions,urban_mean_gain_pp=urban,seen_V_gain_pp=deltaV),scores=scores,paired=paired,suburban_gaps=gaps,execution=execution,all_L_U_sequences_identical=True,native_argument_differences=differences,new_model_epochs=40,new_optimizer_updates=8880,dispatcher_smoke_NN_packets=2,total_actual_NN_forward_packets=sum(v['actual_network_forward_packets'] for v in execution.values())+2,target_access=False,head_fit_updates=0,joint_goal_complete=False,missing=['Ag candidate','B10/B11','factorial interaction','formal target clean+six practical','multi-seed confirmation'])
+    analysis=dict(status='ANALYZED',run_id=RUN,actual_execution='VERIFIED',source_only=True,model_seed=SEED,qualification=dict(qualified=qualified,conditions=conditions,urban_mean_gain_pp=urban,seen_V_gain_pp=deltaV),scores=scores,paired=paired,suburban_gaps=gaps,execution=execution,all_L_U_sequences_identical=True,native_argument_differences=differences,new_model_epochs=40,new_optimizer_updates=8880,dispatcher_smoke_NN_packets=2,total_actual_NN_forward_packets=sum(v['actual_network_forward_packets'] for v in execution.values())+2,target_access=False,head_fit_updates=0,joint_goal_complete=False,missing=['Ag candidate','B10/B11','factorial interaction','formal target clean+six practical','cross-seed joint verification'])
     dump(OUT/'analysis_summary.json',analysis)
     for name,values in (('training_curves.csv',curves),('source_strata.csv',strata)):
         fields=sorted({k for v in values for k in v})
@@ -108,7 +115,9 @@ def analyze():
     print(json.dumps({k:v for k,v in analysis.items() if k in ('qualification','paired','suburban_gaps','total_actual_NN_forward_packets')},ensure_ascii=False,indent=2));return analysis
 
 if __name__=='__main__':
+    if sys.argv[1:2]==['--confirmation']:
+        select_confirmation();sys.argv.pop(1)
     if len(sys.argv)>1:
         assert len(sys.argv)==3 and sys.argv[1]=='--row' and sys.argv[2] in ('B00','B01')
-        ROWS=(sys.argv[2]+'-RX1-s2026092701',)
+        ROWS=(sys.argv[2]+'-RX1-s'+str(SEED),)
     analyze()
