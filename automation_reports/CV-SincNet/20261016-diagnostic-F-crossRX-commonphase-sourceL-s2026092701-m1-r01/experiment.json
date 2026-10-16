@@ -1,0 +1,165 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-diagnostic-F-crossRX-commonphase-sourceL-s2026092701-m1-r01",
+  "group_id": "phase1-F-CROSS_RX-commonphase-Ag-As",
+  "display_name": "F＋跨RX同TX：有界共同相位的冻结源L识别检验",
+  "description": "One frozen own B00 final20;fitL5040 identity/+0.37rad/-0.37rad,15120 default-head decisions,no update/U/V/heldRX1/target.",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "F CROSS_RX bounded common phase"
+  ],
+  "tags": [
+    "F",
+    "CROSS_RX",
+    "common_phase",
+    "source_only",
+    "frozen_default_head",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research after fixed75/25 source confirmation failed and closed. Next predeclared zero-update bounded common-phase source question;not a training extension or new target access.",
+  "code": {
+    "commit": "Actual Git commit in release_commit.txt/resolved_config",
+    "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
+    "environment": "ordinary N607 CVS-RFFI; CPU2/loader0",
+    "cwd": "PROJECT/releases/cvs_F_crossRX_commonphase_sourceL_20261016_r01",
+    "entrypoint": "experiments/cvs_commonphase_source/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated source carrier;only exact fourRX model-fit L5040 used",
+    "representation": "Native RMS IQ256;constant unit complex multiplication only,phase0/+/-.37,no renormalization",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Existing source cache originalL6300 then fitIDs equal frozen model L5040;filter before IQ inference",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "5040fit used;heldRX1 L1260 unused",
+      "U_s": "Unused,TX truth never accessed",
+      "V": "Unused"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen trained-fit L phase sensitivity only;no heldRX DG/Ag efficacy/formal target claim"
+  },
+  "checkpoint": {
+    "initialization": "frozen_evaluation_no_training",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Existing parent source_analysis/init/completion/frozen and exact effective fourRX roles reused;strict payload load before source IQ",
+    "provenance_verdict": "Own scratch E20/fixedfinal20,source-only/no ancestors/defaulthead joint;does not initialize new training",
+    "selection_rule": "Predetermined B00/seed2026092701/final20;not target-selected"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-crossRX-commonphase-20261016",
+    "gpu_policy": "CPU-only,2threads,CUDA_VISIBLE_DEVICES empty;no GPU slot or process intervention",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-commonphase-sourceL-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_crossRX_commonphase_sourceL_20261016_r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261016-diagnostic-F-crossRX-commonphase-sourceL-s2026092701-m1-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_commonphase_source/runner.py",
+    "stop_rule": "On role/checkpoint/nonfinite/phase-power/state-change/count/output error preserve artifacts and fail,no automatic retry;scientificFAIL closes fixed phase direction,no angle/seed/RX search or automatic training"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "active/resolved_config/progress/result/completion or failure",
+    "predictions/identity/phase_plus/phase_minus.json private",
+    "full stdout private",
+    "independent complete prediction/coverage/qualification/cost analysis",
+    "same-row source report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "confusion",
+      "CE",
+      "paired repair/break",
+      "perRX/TX/day/cell scores",
+      "phase power error",
+      "actual NN packet count and wall time"
+    ],
+    "dimensions": [
+      "seed2026092701",
+      "fitRX3/4/6/8",
+      "L5040",
+      "identity/+0.37rad/-0.37rad"
+    ],
+    "prediction_ref": "Own run predictions/*.json,visible fitL labels only",
+    "scorer_ref": "Independent full source decisions recount,no target scorer"
+  },
+  "rows": [
+    {
+      "row_id": "PHASE-sourceL-s2026092701",
+      "method": "F+CROSS_RX frozen common-phase sourceL",
+      "purpose": "zero_update_source_falsification",
+      "config_ref": "experiments/cvs_commonphase_source/design.py:config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-commonphase-sourceL-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Frozen firstmodel seed01/split392005;three exact deterministic phases,no augmentation/evaluation draws;smoke synthetic generator20261016131 only.",
+      "k": null,
+      "scenario": "fit source identity/+0.37/-0.37rad",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0updates/0headfit/0teacher/0As;15120 source NNpackets+2synthetic realCPsmoke;parentE20/4440updates/4686678NNpackets separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-commonphase-sourceL-s2026092701-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_crossRX_commonphase_sourceL_20261016_r01/phase_source.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_commonphase_source/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "active/resolved_config/progress/result/completion or failure",
+        "predictions/identity/phase_plus/phase_minus.json private",
+        "full stdout private",
+        "independent complete prediction/coverage/qualification/cost analysis",
+        "same-row source report"
+      ]
+    }
+  ],
+  "notes": [
+    "No training,no teacher forward,no new classifier/head fit/deployment branch. Default cosine head and complete F/SIG_TIME/unifiedSinc/joint160/NoExplicitCFO retained.",
+    "Only fitL5040,exact same IDs seen by frozen model. HeldRX1/U/V/target never scored;old cache other source roles/features may deserialize but are never used. No phase-derived identity classifier or labels in operator.",
+    "Fixed +/-0.37rad from prior public physical diagnostic and already recorded next hypothesis;no amplitude scan or target feedback. Unit phase is an observation rotation,not a real RX replacement.",
+    "Eachsign requires>=2pp total accuracy drop and>=3/4fitRX with>=1pp drop. Fail closes fixed bounded phase direction;PASS only motivates separately registered scratchE20 B00/B10,not Ag efficacy or joint success.",
+    "Historical CNN phase-training qualification failed;old E200 source sensitivity is context only. Current F+CROSS_RX evidence must be measured independently.",
+    "Frozen source model/recipe is user-designated exposed historical baseline context;this source-only operational diagnostic makes no independent target/blind-test claim."
+  ],
+  "registered_at": "2026-10-16T07:13:02+00:00"
+}
