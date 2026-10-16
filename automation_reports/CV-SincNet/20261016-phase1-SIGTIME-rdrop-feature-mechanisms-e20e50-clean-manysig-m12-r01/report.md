@@ -1,6 +1,8 @@
 # SIG_TIME＋RDrop特征一致性：E20/E50三种子直接测试
 
-状态 RUNNING，12 行已启动并独立核验 VERIFIED。按用户“直接跑测试查看性能结果，而不是看源域留出的接收机”的最新要求，本批使用完整源域从零训练，取消新增留出接收机筛选及源域分数放行条件。每行固定终轮后立即预测 clean 测试集，再由独立 CPU 进程连接 truth 评分。测试分数不改变剩余矩阵、参数、终点或种子。
+状态 RUNNING。E20 六个新增模型与三个匹配原版 RDrop 控制已完成完整三种子 clean 测试及独立核验：原版均值 83.942857%，POINT 82.787500%（−1.155357 个百分点，1/3 正差），DYNAMIC 80.797817%（−3.145040 个百分点，0/3 正差）。本次两项特征约束在 E20 均未改善平均性能；完整逐种子、样本标准差、分组指标与修正/新增错误见 [E20 测试汇总](E20_summary.md)。E50 六行继续按固定 50 轮运行，尚无完整结果，不据 E20 成绩改参、停止或选择性重跑。
+
+按用户“直接跑测试查看性能结果，而不是看源域留出的接收机”的最新要求，本批使用完整源域从零训练，取消新增留出接收机筛选及源域分数放行条件。每行固定终轮后立即预测 clean 测试集，再由独立 CPU 进程连接 truth 评分。测试分数不改变剩余矩阵、参数、终点或种子。
 
 | 条件 | E20 | E50 | 动作 |
 |---|---|---|---|
@@ -22,7 +24,7 @@ POINT 在原双 CE 均值＋完整对称 KL 上增加未中心化特征一致性
 
 环境ordinary N607 CVS-RFFI，CWD PROJECT/releases/cvs_SIGTIME_rdrop_feature_mechanisms_main20_50_20261016_r01；命令`CVS-RFFI/bin/python -u experiments/cvs_sigtime_rdrop_features_main/runner.py experiments/cvs_sigtime_rdrop_features_main/configs/matrix.json`；root PROJECT/runs/20261016-phase1-SIGTIME-rdrop-feature-mechanisms-e20e50-clean-manysig-m12-r01；唯一owner `codex/root/SIGTIME-RDrop-features-direct-test-20261016`。actual Git身份由release_commit.txt记录，代码/config/登记提交后发布一个archive、一次本地远端SHA比较和remote compile。共享资源锁计入所有owner及preCUDA，每GPU最多3实验进程，CPU2/worker、loader0、独立scorer CUDA为空。发布后独立核验PID/CWD/argv/GPU/日志增长。Only protocol/data/checkpoint/defaulthead/nonfinite/incomplete execution/worker/scorer technical failures stop pending and preserve outputs;healthy and unrelated processes continue. No source scientific score gate;all12 predetermined rows run regardless of source/target scores. No automatic retry,head refit or target-feedback tuning/reordering/selective rerun.
 
-逐行矩阵、原始依赖commit、物理角色和预期产物在experiment.json。初末CP、真实数据、训练日志及逐包预测留既定输出存储，不入Git。当前尚无本批新增模型的测试结果，不把历史84.340079%当成本批成绩。
+逐行矩阵、原始依赖commit、物理角色和预期产物在experiment.json。初末CP、真实数据、训练日志及逐包预测留既定输出存储，不入Git。发布前尚无本批新增模型的测试结果，不把历史84.340079%当成本批成绩。
 
 <!-- FEATURES_MAIN_LAUNCH_VERIFIED -->
 执行提交`c0393fc8c5de7700933ba4f5f16d6cc0a73c108f`已推送且远端OID匹配。单archive传输比较与remote compile VERIFIED；12行PID/startticks/CWD/argv/实际GPU、首轮日志增长、own初始CP无query smoke、完整源角色、原配方和特征约束实际调用已核实。所有owner当前GPU进程数≤3。模型仍在训练，尚无本批新测试成绩。见launch_verification.json。
@@ -32,3 +34,6 @@ POINT 在原双 CE 均值＋完整对称 KL 上增加未中心化特征一致性
 
 <!-- ROW_REPORTS E20_DYNAMIC-s2026092703,E20_POINT-s2026092701,E20_POINT-s2026092702,E20_POINT-s2026092703 -->
 同row分析新增：[E20_DYNAMIC-s2026092703](row_reports/E20_DYNAMIC-s2026092703.md)、[E20_POINT-s2026092701](row_reports/E20_POINT-s2026092701.md)、[E20_POINT-s2026092702](row_reports/E20_POINT-s2026092702.md)、[E20_POINT-s2026092703](row_reports/E20_POINT-s2026092703.md)。这些完整单row结果不构成整批三seed结论，其他健康训练保持冻结方案。
+
+<!-- E20_FEATURE_COMPLETE_BUDGET -->
+E20六新增行及三匹配历史控制形成完整三seed比较，见[E20测试汇总](E20_summary.md)。其他训练保持原矩阵，不因该分数改变。
