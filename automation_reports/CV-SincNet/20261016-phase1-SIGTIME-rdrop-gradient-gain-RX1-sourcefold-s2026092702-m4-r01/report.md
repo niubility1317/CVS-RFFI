@@ -1,3 +1,45 @@
+# SIG_TIME＋RDrop：梯度强度自调完整源折确认结果
+
+**DYNAMIC：FAIL，关闭本固定动态gain候选，不改比值/权重/上限/种子/轮次救援。** 四组固定E20全部完成，完整产物核验VERIFIED，无技术失败、重启或选择性重训。本轮是一个seed2026092702、held source RX1的开发证据，不是目标集或三种子结论。默认分类头始终联合训练。
+
+| 条件 | RX1 错误 /1260 | 准确率 | mean CE | Macro-F1 | final L CE |
+|---|---:|---:|---:|---:|---:|
+| FULL | 292 | 76.8254% | 0.774862 | 76.6635% | 0.300408 |
+| POINT | 263 | 79.1270% | 0.717233 | 79.1150% | 0.325657 |
+| FIXED11 | 531 | 57.8571% | 0.867081 | 57.6631% | 0.446169 |
+| DYNAMIC | 394 | 68.7302% | 0.855673 | 66.6488% | 0.508128 |
+
+| DYNAMIC 相对对照 | 准确率差（百分点） | 修正 / 新增错误 | mean CE 差 |
+|---|---:|---:|---:|
+| FULL | -8.0952 | 29 / 131 | +0.080811 |
+| POINT | -10.3968 | 19 / 150 | +0.138440 |
+| FIXED11 | +10.8730 | 227 / 90 | -0.011408 |
+
+预登记固定判据：四行finalLCE≤.5健康=False；DYNAMIC辅助项≥90%实际L步为正=True；DYNAMIC对FULL/POINT/FIXED11同时严格少错且meanCE不高的主资格=False。FIXED11来自上一RX3全部4440训练图参考比的均值10.555876按最近整数，不由本RX1或目标分数调节。未扫描权重，也不以最好的副对照替换主候选。
+
+相对FULL，DYNAMIC在0/3day和2/6TX准确率改善，详见source_strata.csv；这是描述性分层，不能据此给特定TX设置规则/权重或补训。此前RX3发现折NORM_MATCH对FULL净少24错、CE−.233749保留为探索性证据；新RX1结果与旧RX3不按包数或比例混成“多seed”，同seed也不代表独立研究盲测。
+
+| 条件 | final paired CE | 原 KL | 附加项 | 实际增益 | 参考范数比 | U 接受 /396368 |
+|---|---:|---:|---:|---:|---:|---:|
+| FULL | 0.300975 | 0.039686 | 0.000000 | 0.000000 | 1.000000 | 6971 |
+| POINT | 0.325958 | 0.039089 | 0.147886 | 1.000000 | 4.803524 | 5918 |
+| FIXED11 | 0.446297 | 0.039787 | 0.665497 | 11.000000 | 16.378766 | 1325 |
+| DYNAMIC | 0.507734 | 0.045585 | 1.069412 | 28.887637 | 28.887637 | 1041 |
+
+![完整20轮训练曲线](training_curves.png)
+
+曲线覆盖全部20轮、13L＋7原U。实际附加增益逐步为FULL0/POINT1/FIXED1111/DYNAMIC当前r，单独记录与参考r区分。FULL不做附加梯度探测，参考r1及边界范数0是占位。派生实际辅助特征梯度范数为applied_gain×||gP||，不等于参数梯度或实际AdamW位移。DYNAMIC的r只匹配当前图中的gP/gC总L2，C只提供标量力度，实际方向始终是未经中心化的P；并不继承C的共同平移不变性。
+
+完整17760步、80 model-epoch、4份stdout、8份初末CP和5040个固定源默认头决定均已独立核验。原closed_loss＋.5(CE2−CE1)＋nativeKL＋aux逐步重构最大误差1.79e-06。原pairedCE/fullKL/hiddenU、加权U熵以及FIXED11乘法与DYNAMIC原算子均与登记相符；实际增益的逐步值/最小最大/总和和审计对齐。边界范数匹配相对误差最大6.31e-08，可微参考C的共同平移梯度比例最大2.02e-08。该数值检查只证明训练接线，不能单独证明泛化或因果。
+
+四臂198初态张量逐位相同；实际t1/t2/SIG投影和默认W均非零更新。固定合成包初末joint160确实改变，原前向与feature-only导出逐位一致，临时扰动W不改变z。未冻结骨干、替换/另训头或拟合诊断分类器；实际特征包含旧归一化/增益结构，未按模块名误删。训练与导出路径证据和性能证据分别记录，不宣称尚未测的新TX能力。
+
+实际fit RX3/4/6/8、day1/2/3、六TX；RX1在五loader/EMA/校准/缓存和初始化继承路径全排除。L5040/U45360hidden/V21600，四行scratch20/自身EMA/final20学生。代码依赖原模型和center20，均不提供trained checkpoint、EMA或source feature状态；固定11只有已披露的训练标量来源。共2273280额外L身份包次、1585472循环U观察、5040held决定，另每行144unusedfit L anchor读取但未训练/拟合。每行首步自己的真实初始CP2合成smoke包；分析0新增真实IQ/源或目标前向/优化步/CP写入/头拟合，另32合成包验证部署边界。U接受计数为重复观察，无U真值，不能推断伪标签精度。物理ID首列eq_i非TX，分层使用实际标签与native tx_i约定。
+
+执行代码 `9e3034698962f6a5c61b37f92f63a80a1a82ae03`，全部所属worker和调度器已终态，0target/卫星/Phase2访问。完整day/TX/CM/MacroF1、配对CE转移、loss统计、参数更新和成本见同目录CSV与results_analysis.json。源V为已见RX健康监测，不替代heldRX1。单seed不声明统计显著或新的独立盲测。失败只关闭本固定候选，原版SIG_TIME＋RDrop E20/E50三种子83.942857%/84.340079%及此前正负记录全部保留；PASS也须另行预登记正式验证，本源批没有目标队列。目标仍ACTIVE。
+
+以下保留发布前与启动时固定方案，终态以本页开头为准。
+
 # SIG_TIME＋RDrop：梯度强度自调源折确认预登记
 
 状态PLANNED。上一goal turn为实质进展：四个固定E20及完整日志/CP/默认头源读出已ANALYZED/VERIFIED，代码/报告已push，结果改变本轮行动。本批继续只优化SIG_TIME＋RDrop，保留原双向KL和默认分类头联合训练；数字84%均值里程碑已由原版E50三seed达成，但更有创新性的稳定改进尚未验证，goal ACTIVE。
@@ -49,3 +91,8 @@ REJECTED_EXTRA_GATE：通用brainstorming/spec额外审批不在用户最小流�
 ## 启动独立核实
 
 VERIFIED / RUNNING。实际代码提交 `9e3034698962f6a5c61b37f92f63a80a1a82ae03` 已push并独立核对远端OID；一次release archive SHA比较和remote compile均VERIFIED。四行均已通过自己的真实初始checkpoint noquery smoke并完成首轮，独立PID/CWD/argv/GPU及实际compute app匹配，日志均增长，无技术异常。实际RX1全部五loader排除，fit3/4/6/8、L5040/U45360hidden/V21600；旧13L＋7U/LS.01/普通增强等实际args一致。新增信号与梯度数值审计在真实训练通过。全部owner当前GPU compute app数量≤3，preCUDA容量在每次launch前计入。详见launch_verification.json；原始进程/命令/日志与私有运行细节只留local_artifacts。尚无final20结果或目标预测，不能宣称机制有效。
+
+
+## 用户后续范围更新
+
+用户在本批终态后明确要求直接测试实际性能，当前goal取消后续源RX留出与source qualification发布门槛。上方固定源域FAIL保持原结论；后续另行登记完整五源域的E20/E50三seed固定矩阵，使用旧SIG_TIME及默认头联合，原版/POINT/DYNAMIC固定对比，自动clean预测和独立truth-last，不继承本源折权重、不按目标分数改配方。

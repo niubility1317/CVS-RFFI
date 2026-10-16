@@ -1,0 +1,13 @@
+arm,parameter,L2_update
+FULL,id_backbone.encoder.core.id_backbone.t1.pw.weight,2.1871815579410288
+FULL,id_backbone.encoder.core.id_backbone.t2.pw.weight,3.067216179995919
+FULL,id_backbone.encoder.sequence_pool.local_projection.weight,0.9252380565466062
+POINT,id_backbone.encoder.core.id_backbone.t1.pw.weight,2.3076523607959762
+POINT,id_backbone.encoder.core.id_backbone.t2.pw.weight,3.2080653818776748
+POINT,id_backbone.encoder.sequence_pool.local_projection.weight,0.9497371902797097
+FIXED11,id_backbone.encoder.core.id_backbone.t1.pw.weight,2.696729455034221
+FIXED11,id_backbone.encoder.core.id_backbone.t2.pw.weight,3.4556124292565156
+FIXED11,id_backbone.encoder.sequence_pool.local_projection.weight,1.1733440866533675
+DYNAMIC,id_backbone.encoder.core.id_backbone.t1.pw.weight,2.4909162632400137
+DYNAMIC,id_backbone.encoder.core.id_backbone.t2.pw.weight,3.4600628106533926
+DYNAMIC,id_backbone.encoder.sequence_pool.local_projection.weight,1.044773126260654

@@ -403,3 +403,11 @@ SIG_TIME＋RDrop 差分 KL 源域四条件 E20 完成，run `20261015-phase1-SIG
 
 <!-- RDROP_BATCH_CENTER_RX1_LAUNCHED_20261016 -->
 20261016-phase1-SIGTIME-rdrop-gradient-gain-RX1-sourcefold-s2026092702-m4-r01 VERIFIED/RUNNING，四臂真实scratchE20启动，首轮完成、自己CP noquery smoke及PID/CWD/argv/GPU/log增长通过，实际RX1全路径排除/默认头联合/新辅助数值审计一致。代码9e3034698962f6a5c61b37f92f63a80a1a82ae03，0target/头拟合，未有final结果。[启动证据](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-gradient-gain-RX1-sourcefold-s2026092702-m4-r01/launch_verification.json)。goalACTIVE。
+
+
+<!-- RDROP_GAIN_RX1_RESULT_20261016 -->
+20261016-phase1-SIGTIME-rdrop-gradient-gain-RX1-sourcefold-s2026092702-m4-r01 source-only4×E20已ANALYZED/VERIFIED，80model-epoch/17760步，RX1全路径排除/默认头联合。FULL/POINT/FIXED11/DYNAMIC错误依次292/263/531/394（各1260），主DYNAMIC资格False；按固定判据，不替换主候选/扫参数救援。完整logs/CP/默认头决定、实际gain/边界梯度/目标重构与特征更新导出已核验，0target/拟合头。旧RX3探索性正迹象及所有负结果保留。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-SIGTIME-rdrop-gradient-gain-RX1-sourcefold-s2026092702-m4-r01/report.md)。goalACTIVE。
+
+
+<!-- USER_DIRECT_TEST_POLICY_20261016 -->
+用户最新明确：“直接跑测试查看性能结果，而不是看源域留出的接收机”。当前goal后续不再新增源RX留出筛选，也不把此前源域科学资格作为正式发布门槛；原始负结果完整保留，不追溯改成PASS。转为完整五源RX、L6300/U56700hidden/V27000，从零训练后固定终轮直接clean预测与独立truth-last评分。保持用户E20/E50两预算与2026092701/02/03三模型seed、旧SIG_TIME/默认头联合/fullKL；固定比较原版RDrop、POINT特征一致性、DYNAMIC自调，原版六行已完成匹配产物复用，新增两机制12scratch模型。源留出权重不作为完整源域初始化。全部新参数/配方/矩阵在首次新目标访问前固定，逐row训练→冻结→预测→独立评分自动串联，不按目标分数调参、改矩阵、挑seed或重训。此用户指示覆盖本goal旧source qualification发布限制，数据权限/checkpoint来源/输出与健康任务保护继续适用。goalACTIVE。

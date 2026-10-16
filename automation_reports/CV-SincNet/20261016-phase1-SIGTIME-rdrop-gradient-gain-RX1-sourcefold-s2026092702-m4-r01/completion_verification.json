@@ -1,0 +1,29 @@
+{
+  "status": "VERIFIED",
+  "experiment_status": "ANALYZED",
+  "source_only": true,
+  "DYNAMIC_qualified": false,
+  "actual_rows": 4,
+  "actual_epochs": 80,
+  "actual_optimizer_steps": 17760,
+  "execution_commit": "9e3034698962f6a5c61b37f92f63a80a1a82ae03",
+  "all_initial_state_tensors_equal": 198,
+  "actual_default_head_joint": true,
+  "actual_t1_t2_SIG_updates": true,
+  "head_fit_updates": 0,
+  "source_predictions": 5040,
+  "target_predictions": 0,
+  "target_truth_reads": 0,
+  "analysis_actual_IQ_reads": 0,
+  "complete_step_epoch_logs_and_stdout_parsed": true,
+  "max_objective_reconstruction_error": 1.7881393432617188e-06,
+  "max_norm_match_relative_error": 6.312095510105498e-08,
+  "max_common_translation_gradient_ratio": 2.0224829858285313e-08,
+  "actual_gains_checked": true,
+  "fixed_gain": 11,
+  "DYNAMIC_vs_FULL_positive_groups": {
+    "day": 0,
+    "TX": 2
+  },
+  "goal_completed": false
+}
