@@ -1,0 +1,42 @@
+{
+  "status": "PASS",
+  "negative_cases": 9,
+  "source_IQ_reads": 0,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "synthetic_optimizer_steps": 2,
+  "rows": [
+    {
+      "arm": "B00",
+      "parameters": 900722,
+      "L_forwards": 6,
+      "same_IQ_pairs": true,
+      "raw_fixed_weight": 0.5,
+      "ordinary_weight": 0.25,
+      "s_slot_weight": 0.25,
+      "supcon_layer_forward_terms": 4,
+      "extra_views_have_no_supcon": true,
+      "default_W_joint_update": true,
+      "export160_exact": true,
+      "As_calls": 0
+    },
+    {
+      "arm": "B01",
+      "parameters": 900722,
+      "L_forwards": 6,
+      "same_IQ_pairs": true,
+      "raw_fixed_weight": 0.5,
+      "ordinary_weight": 0.25,
+      "s_slot_weight": 0.25,
+      "supcon_layer_forward_terms": 4,
+      "extra_views_have_no_supcon": true,
+      "default_W_joint_update": true,
+      "export160_exact": true,
+      "As_calls": 128
+    }
+  ],
+  "independent_P0P1_review": "PASS, one review of this candidate",
+  "compile": "PASS",
+  "registration": "VALID",
+  "real_checkpoint_smoke": "Dispatcher first step; not claimed before actual artifact"
+}
