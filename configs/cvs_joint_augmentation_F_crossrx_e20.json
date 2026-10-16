@@ -131,21 +131,14 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": {
-    "name": "Bounded smooth spectral observation filter:finite-IQ fidelity and source identity preservation",
-    "status": "REGISTERED_NOT_LAUNCHED",
-    "basis": "Existing IQ-only 20261011-phase1-rx-spectral-crossfit-manysig-m1-r01 primary rectangular/DCT1to8 report relativeMSE0.6141 and18/18folds;partialRX-associated source variation,not calibrated RX hardware or Ag proof",
-    "data": "Re-estimate on fitRX3/4/6/8 L5040 only;no reuse of fullL6300 coefficients including heldRX1,no U/V/target",
-    "minimum": "Zero-update18TX/day crossfit plus one fixed mild finite-length IQ filter realization;match unstructured control,quantify achieved spectral shape/boundary/default-head fit-L identity preservation;no new classifier",
-    "abandon": "No cross-TX/day stable RX-associated component,poor finite-IQ realization/boundary domination,or failed fixed source identity-preservation guardrail:do not launch filter augmentation training",
-    "budget": "0training/0headfit;exact transform/controls/numeric thresholds/NN cost must be fixed in its own preregistration before IQ access",
+    "name": "Existing ordinary PA-normal contribution to avoidable source identity errors",
+    "status": "PROPOSED_NOT_IMPLEMENTED_REGISTERED_OR_LAUNCHED",
+    "minimum": "Same native augmentation draws:raw/fullordinary/PA-only-bypassed ordinary,fitL/defaulthead only;record actual PA triggers and input differences",
+    "abandon": "No paired identity recovery on truly PA-affected samples,or unmatched native draws:no training promotion",
+    "data": "Fit4RX L5040 only,no held/U/V/target",
+    "budget": "0updates/headfit;fix exact source matrix/seed/cost/thresholds before IQ access",
     "Ag_efficacy_proved": false,
-    "target_access": false,
-    "old_budget_not_adopted": "Historical E200+40 proposal is obsolete;any later real training remains scratchE20 under current baseline/data contract",
-    "run_id": "20261016-diagnostic-F-crossRX-spectralIQ-fitL-s2026092701-m1-r01",
-    "filter_taps": 33,
-    "response_grid_bound_dB": 0.5,
-    "source_NN_packets": 126000,
-    "training_updates": 0
+    "target_access": false
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
@@ -210,5 +203,22 @@
       "Ag_efficacy_proved": false,
       "target_access": false
     }
+  },
+  "source_spectral_IQ_result": {
+    "run_id": "20261016-diagnostic-F-crossRX-spectralIQ-fitL-s2026092701-m1-r01",
+    "status": "ANALYZED_SOURCE_FAIL_FIXED_FILTER_CLOSED",
+    "conditions": {
+      "stable_RX": true,
+      "kernel_realization": true,
+      "matched_control": true,
+      "finite_IQ_realization": false,
+      "source_identity": true
+    },
+    "source_NN_packets": 126000,
+    "total_NN_packets": 126002,
+    "training_updates": 0,
+    "finite_PSD_RMSE_max": 0.6019248374171113,
+    "target_access": false,
+    "Ag_efficacy_proved": false
   }
 }
