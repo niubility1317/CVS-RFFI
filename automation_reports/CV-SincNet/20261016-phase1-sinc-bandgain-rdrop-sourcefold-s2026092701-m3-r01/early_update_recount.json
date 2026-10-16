@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "source": "Frozen e1 actual training update witnesses; independent CPU arithmetic",
+  "results": {
+    "FULL": {
+      "witnesses": 13,
+      "physical_decay_max_error_Hz": 0,
+      "adaptive_update_max_error_Hz": 0,
+      "NORM_local_adaptive_norm_rounding_Hz": 0,
+      "scalar_gain_min": 0.02080282356832506,
+      "scalar_gain_max": 0.0845239202712385
+    },
+    "NORM": {
+      "witnesses": 13,
+      "physical_decay_max_error_Hz": 0,
+      "adaptive_update_max_error_Hz": 0,
+      "NORM_local_adaptive_norm_rounding_Hz": 0.001176742555307475,
+      "scalar_gain_min": 0.031205683521800764,
+      "scalar_gain_max": 0.05110642974822154
+    },
+    "BAND": {
+      "witnesses": 13,
+      "physical_decay_max_error_Hz": 0,
+      "adaptive_update_max_error_Hz": 0,
+      "NORM_local_adaptive_norm_rounding_Hz": 0,
+      "scalar_gain_min": 0.03169519463644027,
+      "scalar_gain_max": 0.0514457747348841
+    }
+  },
+  "new_IQ_reads": 0,
+  "new_forwards": 0,
+  "target_reads": 0
+}
