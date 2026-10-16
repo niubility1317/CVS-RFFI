@@ -23,3 +23,6 @@ B10在原raw调用native proper complex AWGN，各包uniform[20,36]dB、按包�
 发布使用已验证本地Torch Python E:/type10-7/local_envs/ssr-gpu/python.exe -X utf8 -m experiments.cvs_isolated_awgn20.publish，CWD当前managed WT。Git commit为代码身份，实际写release_commit.txt/resolved；一个普通账户预检、一份archive/一次传输SHA比较、remotecompile、启动后PID/CWD/argv/GPU/loggrowth读回。系统性protocol/role/init/budget/output/nonfinite/启动或非法预测错误保留failure/partial、取消pending、健康worker继续，无自动重试。
 
 期望：实际checkpoint/args/角色/初始化/冻结、每row默认头7views、全native/view/unitsteps和完整noise统计、实际计数／全曲线／分层／suburban绝对与ownclean gap／修复新错／独立复算报告登记/Git。IQ/权重/逐包ID/预测/日志不提交Git，只提交聚合。有效Ag、稳定As、完整四格交互及正式联合目标仍ACTIVE。
+
+
+实际发布：VERIFIED RUNNING，执行commit 06ebf579c87c834d0ebc14856212e3fa97619d30。一个archive传输比较／remotecompile／真实匹配CP两合成包smoke PASS；三row真实进程CWD/argv/GPU及存活期loggrowth已独立比对，GPU0/1/2，未修改旧任务。详细状态见[launch_summary.json](launch_summary.json)。当前已开始训练，尚无最终heldRX读出／科学判定／正式评分，不能声称新增Ag有效或联合成功。

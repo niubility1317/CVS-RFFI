@@ -243,3 +243,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 孤立AWGN三匹配E20 20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01 已实现登记未启动：G0sourceidentityPASS后仅检验Ag，公共raw.75/ordinary.25/SupCon/U保持，extra.25 raw/sameordinary/noise，8L前向/pairweight1.25，同scratchseed01/E20；B10须同时胜过两个控制clean≥1pp/F1不降/每practical与seenV≥−.5pp。28负例/4114合成NN/3合成更新PASS，一次P0/P1审查PASS；实际新训练尚为0，联合目标ACTIVE。
+
+
+孤立AWGN三匹配E20 20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01 VERIFIED RUNNING，commit 06ebf579c87c834d0ebc14856212e3fa97619d30，真实CP smoke/归档传输/compile PASS，GPU0/1/2 actualPID/CWD/argv/CUDA与存活loggrowth核实；scratchE20已开始、尚无完整识别读出和科学结论，不增加预算、改配方或使用target。

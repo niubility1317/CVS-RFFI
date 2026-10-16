@@ -1,0 +1,65 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01",
+  "execution_commit": "06ebf579c87c834d0ebc14856212e3fa97619d30",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_checkpoint_smoke": "PASS",
+  "real_CP_synthetic_NN": 2,
+  "ordinary_account": true,
+  "live_process_CWD_argv_GPU_verified_each_row": true,
+  "eachrow_live_log_growth_verified": true,
+  "rows": {
+    "B00-RX1-s2026092701": {
+      "GPU": 0,
+      "progress": {
+        "epoch": 3,
+        "steps": 666,
+        "L_packets": 681984,
+        "extra_L_packets": 170496,
+        "noise_generated": 0,
+        "As_packets": 0,
+        "supcon_applied": 0,
+        "target_access": false
+      },
+      "last_complete_live_step": 723,
+      "live": true
+    },
+    "C_ordinary-RX1-s2026092701": {
+      "GPU": 1,
+      "progress": {
+        "epoch": 2,
+        "steps": 444,
+        "L_packets": 454656,
+        "extra_L_packets": 113664,
+        "noise_generated": 0,
+        "As_packets": 0,
+        "supcon_applied": 0,
+        "target_access": false
+      },
+      "last_complete_live_step": 659,
+      "live": true
+    },
+    "B10-RX1-s2026092701": {
+      "GPU": 2,
+      "progress": {
+        "epoch": 2,
+        "steps": 444,
+        "L_packets": 454656,
+        "extra_L_packets": 113664,
+        "noise_generated": 56832,
+        "As_packets": 0,
+        "supcon_applied": 0,
+        "target_access": false
+      },
+      "last_complete_live_step": 639,
+      "live": true
+    }
+  },
+  "completed_training_rows": 0,
+  "formal_scoring": false,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "Ag_efficacy_proved": false,
+  "joint_goal_complete": false
+}
