@@ -1,0 +1,60 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 14,
+  "synthetic_network_packets": 1024,
+  "synthetic_optimizer_updates": 2,
+  "synthetic_partner_packets": 1152,
+  "initial_state_tensors": 206,
+  "matched_C0_initialization": true,
+  "original_primary_IQ_two_steps_exact": true,
+  "actual_partner_RX_day_domains": true,
+  "intact_sameTX_day_distinct_packets": true,
+  "four_forward_supervised_pairs": true,
+  "only_original_primary_SupCon": true,
+  "unchanged_own_EMA": true,
+  "default_head_SIG3_Sinc_joint_gradients": true,
+  "independent_observation_control_required": true,
+  "real_IQ_packets": 0,
+  "checkpoint_loads": 0,
+  "target_access": false,
+  "synthetic_ordinary_IQ_packets": 1280,
+  "local_compile": "PASS",
+  "P0P1_review": "PASS after one raw-to-compact domain P1 fix and only targeted readback; reviewer zero extra IQ/CP/network forwards",
+  "real_checkpoint_smoke": "Worker-first own scratch2 zeroIQ, PASS continues; not yet run",
+  "domain_regression": {
+    "status": "PASS",
+    "regression": "Original full raw domains mapped with actual native data_ctx convention before Bank/model",
+    "synthetic_bank_IQ_packets": 5040,
+    "partner_packets": 128,
+    "all_domains_equal_native_domain_from_extra": true,
+    "missing_and_identity_maps_rejected": 2,
+    "network_forwards": 0,
+    "optimizer_updates": 0,
+    "real_IQ_packets": 0,
+    "checkpoint_loads": 0
+  },
+  "isolated_release_checks": {
+    "status": "PASS",
+    "isolated_release_import": true,
+    "rows": [
+      {
+        "row": "SAME_RX-RX1-s2026092701",
+        "E": 20,
+        "label": 13,
+        "pseudo": 7
+      },
+      {
+        "row": "CROSS_RX-RX1-s2026092701",
+        "E": 20,
+        "label": 13,
+        "pseudo": 7
+      }
+    ],
+    "real_C0_metadata_reference": true,
+    "contaminated_reference_rejected": true,
+    "real_IQ": 0,
+    "checkpoint_loaded": false,
+    "network_forwards": 0
+  },
+  "N607_preflight": "VERIFIED once 2026-10-16 15:19:03 CST, ordinary account/project/foreign workloads observed; all-owner<=3 remains live scheduler policy"
+}
