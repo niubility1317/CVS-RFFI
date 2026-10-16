@@ -135,3 +135,9 @@ PA旁路两组E20及七源视图已完整ANALYZED/VERIFIED，原条件FAIL固定
 
 
 上述三组additive As源反证已发布并实际运行；执行commit 7f398321cd2ffd2c2d2cb11f52f67bfd8c44987b，Git远端OID/归档/编译/真实CPsmoke及三worker进程、参数、GPU和日志增长VERIFIED。各组固定20/13/7、4440更新、8L前向/保留原base raw.75；尚未完成训练、源预测或独立评分。
+
+
+additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SOURCE_SINGLE_SEED。相对D00 clean 3.3333333333333326pp、lowurban 5.714285714285716pp；相对D_raw clean 3.0952380952380953pp、lowurban 6.190476190476191pp。实际60modelepochs/13320更新/17469956NN。仅源fold/单seed，不是Ag或联合目标完成；原科学淘汰/确认规则保持。
+
+
+本轮additive As通过单seed源规则，但TX标签2/3在六practical仍负；lowurban仅33.809524%，suburban自身clean差25.396825/28.809524/32.063492pp，完整目标未达。下一唯一假设是原样seed2026092702三组E20独立确认；失败停止固定候选，不以seed03或参数救跑；尚未登记发布。

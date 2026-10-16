@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：保留基线监督的 additive As 源域反证
 
-状态：RUNNING／VERIFIED。三组已从零启动，尚未完成训练或源评分。唯一假设：完整保留原有 raw/ordinary 损失，再追加一次完整 practical(raw) 监督，能在不牺牲 clean 的条件下改善未见源 RX 的 urban，并优于单纯追加 raw 监督。此处研究 As 训练组织，不是新的物理 A_g；RDrop、SupCon 均不冒称 IQ 泛化增强。
+状态：ANALYZED／VERIFIED，三组 E20 和全部源视图已完成。固定源规则：PASS_SOURCE_SINGLE_SEED。唯一假设：完整保留原有 raw/ordinary 损失，再追加一次完整 practical(raw) 监督，能在不牺牲 clean 的条件下改善未见源 RX 的 urban，并优于单纯追加 raw 监督。此处研究 As 训练组织，不是新的物理 A_g；RDrop、SupCon 均不冒称 IQ 泛化增强。
 
 ## 依据与既有负结果
 
@@ -110,3 +110,73 @@ CWD：/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_additiveA
 
 
 两个完整对照的全部 L/U 物理训练序列一致，actual native args 只在 output_dir/candidate_id 不同。D_raw−D00：clean +0.238095pp（21修复/18新错），六 practical 依次 −2.460317/−1.190476/−1.111111/−1.746032/−0.317460/−0.476190pp；均为固定源fold单seed配对结果，未得出As结论。完整对照配对计数见controls_comparison.json。
+
+
+## 完整执行与独立源结果
+
+三worker及dispatcher自然结束，无技术失败。完整复算3×20轮训练日志、13320步native/view/Sincunit记录、全部L/U物理序列及26460个固定硬预测；三组L/U物理序列相同，实际native参数只在candidate_id/output_dir不同。全部默认头在原骨干流程联合更新，scratch/最终20及sourceRX1权限核实。下面均为源RX1-held fold/seed2026092701，不是正式target或多seed结果。
+
+| 场景 | D00 accuracy % | D_raw accuracy % | D_As accuracy % | As−D00 pp | As−D_raw pp |
+|---|---:|---:|---:|---:|---:|
+| clean | 80.238095 | 80.476190 | 83.571429 | +3.333333 | +3.095238 |
+| practical_high | 41.190476 | 38.730159 | 58.174603 | +16.984127 | +19.444444 |
+| practical_mid | 40.555556 | 39.365079 | 54.761905 | +14.206349 | +15.396825 |
+| practical_low_suburban | 37.301587 | 36.190476 | 51.507937 | +14.206349 | +15.317460 |
+| practical_high_urban | 40.238095 | 38.492063 | 53.650794 | +13.412698 | +15.158730 |
+| practical_mid_urban | 32.777778 | 32.460317 | 42.777778 | +10.000000 | +10.317460 |
+| practical_low_urban | 28.095238 | 27.619048 | 33.809524 | +5.714286 | +6.190476 |
+
+每场景1260个同物理源包。全部场景Macro-F1、6×6混淆矩阵、相对两个对照修复/新错及每个suburban差距见source_analysis.json；完整逐TX/day分层保留在私有final/source_strata.csv和图中，不按最好类别/日期选择。
+
+| 对照 | clean F1差 pp | lowurban 修复/新错 | urban均值差 pp | seenV差 pp |
+|---|---:|---|---:|---:|
+| D_As−D00 | +3.103193 | 207/135 | +9.708995 | +0.069444 |
+| D_As−D_raw | +2.917470 | 200/122 | +10.555556 | +0.074074 |
+
+| 条件 | 结果 |
+|---|---|
+| D00_clean | PASS |
+| D00_clean_macroF1 | PASS |
+| D00_low_urban | PASS |
+| D00_urban_mean | PASS |
+| D00_practical_protection | PASS |
+| D00_seen_V | PASS |
+| D_raw_clean | PASS |
+| D_raw_clean_macroF1 | PASS |
+| D_raw_low_urban | PASS |
+| D_raw_urban_mean | PASS |
+| D_raw_practical_protection | PASS |
+| D_raw_seen_V | PASS |
+| healthy | PASS |
+
+### 损失与预算
+
+| row | native第一ordinary平滑CE | 共同base目标 | 未加权extra pair目标 | pair系数和 | 实际NN包 | 训练秒 |
+|---|---:|---:|---:|---:|---:|---:|
+| D00 | 0.26303200 | 0.30959180 | 0.10200267 | 1.0 | 5823318 | 1377.441 |
+| D_raw | 0.26425805 | 0.31082005 | 0.09726899 | 1.25 | 5823318 | 1492.910 |
+| D_As | 0.26691073 | 0.32161303 | 0.55467694 | 1.25 | 5823318 | 2282.088 |
+
+共同base和extra目标为最后222步均值；native第一ordinary CE并非完整目标，源读出meanCE由默认头运行时报告，硬预测不含logits，未独立复算CE。每组实际4546560 L NN、其中extra1136640，均4440次更新；568320次nativeordinary生成每组，D_As独有568320完整As生成；trackedBN模块和extraBN更新实际均0。原U/自身EMA/V/held与smoke计数见source_analysis.json，EMA继承eval偏移2已扣除。三模型60modelepochs/13320更新，实际总NN 17469956（含dispatcher真实CP合成smoke2）。本地工程测试3858合成NN、3合成更新及128ordinary128As另计，无真实IQ或target。
+
+### 结论与缺项
+
+本固定additive As训练组织通过单源折单种子规则，支持独立源确认；这仍不是Ag身份保持或跨目标泛化证明，也不是三种子/完整联合目标完成。后续确认必须另行登记固定seed与同契约控制，不能读取target后救跑。
+E20为用户指定的压缩探索预算，历史clean基准已暴露；本轮只用源域决策，不声称新的独立盲测。
+
+所有负结果保留，目标IQ/SNR/信道、困难样本和其他健康任务未变。当前实验没有新物理Ag，也没有完整B00/B10/B01/B11交互项、跨seed联合验证或正式target clean＋六practical；不宣称lowurban>60%或各suburban接近自身clean已实现。
+
+完整训练曲线：[/E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_additive_As20_20261016/final/complete_training_curves.png](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_additive_As20_20261016/final/complete_training_curves.png)。
+
+七源视图及自身clean差距：[/E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_additive_As20_20261016/final/held_source_results.png](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_additive_As20_20261016/final/held_source_results.png)。
+
+全部TX/day分层：[/E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_additive_As20_20261016/final/source_strata.png](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_additive_As20_20261016/final/source_strata.png)。
+
+
+### 类别代价与不能扩大的结论
+
+平均准确率及Macro-F1虽为正，TX标签索引2、3在六个practical均下降。以D00为参照，high urban分别 −50.476190、−25.714286pp；low urban分别 −23.809524、−10.476190pp。low urban有207修复/135新错，净增加72个正确包，不能隐去新增错误或声称各TX普遍改善。clean标签索引3也下降0.952381pp。完整类别/日期差图已逐张检查，面板与图例完整。
+
+D_As的三个suburban绝对准确率58.174603/54.761905/51.507937%，与自身clean83.571429%的差分别25.396825/28.809524/32.063492pp，均远高于探索2pp；lowurban33.809524%也未到60%。这是单源折单seed的As组织证据，没有新Ag、交互项或正式target结果。不能由此证明raw监督稀释是旧两seed失败的唯一原因。
+
+下一唯一待检验假设：这套未改动的additive As组织在预先固定的独立modelseed2026092702上仍同时满足原两对照源规则。最小确认仍为三组scratchE20/8L前向、原U、默认头及sourceRX1 fold；系数、场景、阈值均保持，失败则停止固定候选扩展，不用seed03、RX或系数救跑。当前确认尚未登记或发布。
