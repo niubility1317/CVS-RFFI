@@ -13,7 +13,7 @@ def activation_ssh(script):
  if result.returncode:raise RuntimeError(result.stderr.decode('utf8',errors='replace'))
  return result.stdout
 def main():
- root=Path(__file__).resolve().parents[2];local=root/'local_artifacts/F_supcon50_preparation_r01';local.mkdir(parents=True,exist_ok=True)
+ root=Path(__file__).resolve().parents[2];local=root/'local_artifacts/F_supcon50_preparation_r02';local.mkdir(parents=True,exist_ok=True)
  if subprocess.check_output(['git','status','--porcelain','--',PKG],cwd=root,text=True).strip():raise ValueError('Uncommitted diagnostic code')
  commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip();remote=d.PROJECT+'/releases/'+RELEASE
  c=dict(release=remote,archive=remote+'.tar.gz',root=d.PROJECT+'/runs/'+RUN,AF=d.AF_RELEASE,python=PYTHON,commit=commit)

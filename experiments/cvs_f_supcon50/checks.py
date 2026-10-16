@@ -18,11 +18,12 @@ def protocol():
  else:raise ValueError('Existing F reference retrained')
  return count
 def fixture(m,epoch,device,seed=7061):
+ from cvsrffi.tensors import unpack_batch
  torch.manual_seed(seed);x=torch.randn(128,2,256,device=device);y=torch.arange(128,device=device)%6;domain=torch.arange(128,device=device)%15;rx=torch.tensor(me.RX_BY_DOMAIN,device=device)[domain];prior=(epoch-1)*222;m._feature_l_steps=prior;m._legacy_calls=prior;m._legacy_extra_packets=prior*128
  if hasattr(m,'_supcon_calls'):m._supcon_calls=prior
  with fresh_parameter_caches(m):
   with m._phase1_labeled_feature_context():first=m(x,y_tx=y,return_aux=True,domain_labels=domain,update_crra_support=False)
-  ce=F.cross_entropy(first['tx_logits'],y,label_smoothing=.01);correction,metrics=m._source_labeled_feature_hook(model=m,labeled_output=first,labels=y,extra={'rx_i':rx},domains=domain,optimizer_step=prior+1,identity_loss=ce,labeled_count=128)
+  ce=F.cross_entropy(first['tx_logits'],y,label_smoothing=.01);_,_,extra=unpack_batch((x,y,domain.cpu(),{'rx_i':rx.cpu()}));correction,metrics=m._source_labeled_feature_hook(model=m,labeled_output=first,labels=y,extra=extra,domains=domain,optimizer_step=prior+1,identity_loss=ce,labeled_count=128)
  return ce+correction,metrics
 def run(device='cpu'):
  torch.set_num_threads(2);negative=protocol();objective=[];flows=[]

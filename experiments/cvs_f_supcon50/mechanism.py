@@ -1,5 +1,6 @@
 """L-only shallow/middle SupCon on the two existing RDrop forwards."""
 from contextlib import contextmanager
+from collections.abc import Mapping
 from types import MethodType
 import torch
 from torch.nn import functional as F
@@ -66,8 +67,8 @@ def training_hook(self,**kwargs):
    y=kwargs['labels'];domains=kwargs['domains']
    if domains is None or domains.shape!=y.shape or domains.dtype!=torch.long or not bool(((domains>=0)&(domains<15)).all()):raise ValueError('Actual source RX/day domain labels required')
    extra=kwargs['extra']
-   if not isinstance(extra,dict) or 'rx_i' not in extra:raise ValueError('Actual physical L receiver metadata required')
-   rx=torch.as_tensor(extra['rx_i'],device=y.device,dtype=torch.long)
+   if not isinstance(extra,(tuple,list)) or len(extra)<2 or not isinstance(extra[1],Mapping) or 'rx_i' not in extra[1]:raise ValueError('Native (domain, metadata) L receiver extra required')
+   rx=torch.as_tensor(extra[1]['rx_i'],device=y.device,dtype=torch.long)
    if rx.shape!=y.shape or not torch.equal(rx,torch.tensor(RX_BY_DOMAIN,device=domains.device,dtype=torch.long)[domains]):raise ValueError('Physical L RX and original domain map disagree')
    values=[]
    for phase in ('first','second'):

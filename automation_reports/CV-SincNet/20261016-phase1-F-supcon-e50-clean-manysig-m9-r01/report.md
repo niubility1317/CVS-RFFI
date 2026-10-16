@@ -33,3 +33,5 @@ Sinc保持F完整原统一方案：p=p0+25000q、q初始0、Fs25MHz，lr_q=alpha
 技术停止仅角色/来源/输出碰撞/非有限/预算或合法prediction问题，保留产物、停止新pending，健康worker继续，无自动重试或分数停止。执行后核实PID/CWD/argv/GPU/log增长，评分后同row分析及Gitpush/远端OID/根镜像。原IQ、权重、原始日志/预测及私有机器状态不提交。
 
 边界：已暴露ManySig clean默认头测试，不声称新独立盲测、新TX、Phase2或卫星部署收益。新辅助损失进入f_theta不等于性能一定改善；最终以测试集目标域配对分数回答。REJECTED_EXTRA_GATE：brainstorming的额外设计审批与本项目Exclusive Minimal Experiment Workflow及用户既有自动研发授权冲突，按NONBLOCKING记录，不另问许可。
+
+技术失败：r01 的 6 个新增模型完成 5 轮后，在第 6 轮首步辅助损失读取 RX 元数据时退出。原生 extra 为 (domain, metadata)，实现误读为字典。新增目标预测为 0，没有性能结果；6660 次已完成更新和全部输出保留。CPU 原生 unpack_batch 回归已复现同一错误，修复后以新 r02 从零恢复，配方及种子不变。

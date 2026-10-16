@@ -1,0 +1,338 @@
+{
+  "CPU": {
+    "status": "PASS",
+    "device": "cpu",
+    "protocol_negative_cases": 10,
+    "objective": [
+      {
+        "mode": "ALL_TX",
+        "value": 2.485306248328001,
+        "valid": 12
+      },
+      {
+        "mode": "CROSS_RX",
+        "value": 2.485306248328001,
+        "valid": 12
+      }
+    ],
+    "warmup_loss_difference": 0,
+    "actual_F_flows": [
+      {
+        "mode": "ALL_TX",
+        "actual_calls": 1111,
+        "aux_direct_W_gradient": null,
+        "aux_Sinc_gradient_norm": 0.009597523137927055,
+        "main_W_gradient_norm": 4.017119407653809,
+        "feature_export_exact": true,
+        "EMA_eval_untouched": true,
+        "temporary_hooks_remaining": 0,
+        "real_paired_details": [
+          {
+            "stage": "first",
+            "level": "time_down",
+            "shape": [
+              128,
+              48,
+              128
+            ],
+            "loss": 3.526437997817993,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 20,
+            "positive_max": 21
+          },
+          {
+            "stage": "first",
+            "level": "t2.pool",
+            "shape": [
+              128,
+              96,
+              32
+            ],
+            "loss": 2.6400060653686523,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 20,
+            "positive_max": 21
+          },
+          {
+            "stage": "second",
+            "level": "time_down",
+            "shape": [
+              128,
+              48,
+              128
+            ],
+            "loss": 3.526437997817993,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 20,
+            "positive_max": 21
+          },
+          {
+            "stage": "second",
+            "level": "t2.pool",
+            "shape": [
+              128,
+              96,
+              32
+            ],
+            "loss": 2.6518077850341797,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 20,
+            "positive_max": 21
+          }
+        ]
+      },
+      {
+        "mode": "CROSS_RX",
+        "actual_calls": 1111,
+        "aux_direct_W_gradient": null,
+        "aux_Sinc_gradient_norm": 0.009636683389544487,
+        "main_W_gradient_norm": 4.017119407653809,
+        "feature_export_exact": true,
+        "EMA_eval_untouched": true,
+        "temporary_hooks_remaining": 0,
+        "real_paired_details": [
+          {
+            "stage": "first",
+            "level": "time_down",
+            "shape": [
+              128,
+              48,
+              128
+            ],
+            "loss": 3.6714043617248535,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 16,
+            "positive_max": 18
+          },
+          {
+            "stage": "first",
+            "level": "t2.pool",
+            "shape": [
+              128,
+              96,
+              32
+            ],
+            "loss": 2.7825934886932373,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 16,
+            "positive_max": 18
+          },
+          {
+            "stage": "second",
+            "level": "time_down",
+            "shape": [
+              128,
+              48,
+              128
+            ],
+            "loss": 3.6714043617248535,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 16,
+            "positive_max": 18
+          },
+          {
+            "stage": "second",
+            "level": "t2.pool",
+            "shape": [
+              128,
+              96,
+              32
+            ],
+            "loss": 2.801841974258423,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 16,
+            "positive_max": 18
+          }
+        ]
+      }
+    ],
+    "source_or_target_IQ_reads": 0,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0,
+    "network_parameters": 900722,
+    "default_head_shape": [
+      6,
+      160
+    ],
+    "source_qualification_gate": false
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "protocol_negative_cases": 10,
+    "objective": [
+      {
+        "mode": "ALL_TX",
+        "value": 3.1955083608499586,
+        "valid": 12
+      },
+      {
+        "mode": "CROSS_RX",
+        "value": 3.1955083608499586,
+        "valid": 12
+      }
+    ],
+    "warmup_loss_difference": 0,
+    "actual_F_flows": [
+      {
+        "mode": "ALL_TX",
+        "actual_calls": 1111,
+        "aux_direct_W_gradient": null,
+        "aux_Sinc_gradient_norm": 0.009734907187521458,
+        "main_W_gradient_norm": 3.9951705932617188,
+        "feature_export_exact": true,
+        "EMA_eval_untouched": true,
+        "temporary_hooks_remaining": 0,
+        "real_paired_details": [
+          {
+            "stage": "first",
+            "level": "time_down",
+            "shape": [
+              128,
+              48,
+              128
+            ],
+            "loss": 3.587193727493286,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 20,
+            "positive_max": 21
+          },
+          {
+            "stage": "first",
+            "level": "t2.pool",
+            "shape": [
+              128,
+              96,
+              32
+            ],
+            "loss": 2.622309923171997,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 20,
+            "positive_max": 21
+          },
+          {
+            "stage": "second",
+            "level": "time_down",
+            "shape": [
+              128,
+              48,
+              128
+            ],
+            "loss": 3.587193727493286,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 20,
+            "positive_max": 21
+          },
+          {
+            "stage": "second",
+            "level": "t2.pool",
+            "shape": [
+              128,
+              96,
+              32
+            ],
+            "loss": 2.6433773040771484,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 20,
+            "positive_max": 21
+          }
+        ]
+      },
+      {
+        "mode": "CROSS_RX",
+        "actual_calls": 1111,
+        "aux_direct_W_gradient": null,
+        "aux_Sinc_gradient_norm": 0.009357728064060211,
+        "main_W_gradient_norm": 3.9951705932617188,
+        "feature_export_exact": true,
+        "EMA_eval_untouched": true,
+        "temporary_hooks_remaining": 0,
+        "real_paired_details": [
+          {
+            "stage": "first",
+            "level": "time_down",
+            "shape": [
+              128,
+              48,
+              128
+            ],
+            "loss": 3.7021191120147705,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 16,
+            "positive_max": 18
+          },
+          {
+            "stage": "first",
+            "level": "t2.pool",
+            "shape": [
+              128,
+              96,
+              32
+            ],
+            "loss": 2.7408394813537598,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 16,
+            "positive_max": 18
+          },
+          {
+            "stage": "second",
+            "level": "time_down",
+            "shape": [
+              128,
+              48,
+              128
+            ],
+            "loss": 3.7021191120147705,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 16,
+            "positive_max": 18
+          },
+          {
+            "stage": "second",
+            "level": "t2.pool",
+            "shape": [
+              128,
+              96,
+              32
+            ],
+            "loss": 2.7650723457336426,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "positive_min": 16,
+            "positive_max": 18
+          }
+        ]
+      }
+    ],
+    "source_or_target_IQ_reads": 0,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0,
+    "network_parameters": 900722,
+    "default_head_shape": [
+      6,
+      160
+    ],
+    "source_qualification_gate": false
+  },
+  "regression": {
+    "native_unpack_batch_used": true,
+    "red": "same metadata ValueError reproduced before fix",
+    "green": "PASS on CPU/CUDA",
+    "fix_scope": "read extra[1] Mapping; source RX/domain agreement unchanged"
+  }
+}

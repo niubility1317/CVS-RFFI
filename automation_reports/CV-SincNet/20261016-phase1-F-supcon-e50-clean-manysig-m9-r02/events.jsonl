@@ -1,0 +1,2 @@
+{"at": "2026-10-16T04:02:31+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-16T04:03:22+00:00", "status": "LOCAL_VERIFIED", "note": "Technical recovery with same formula/seeds and scratch50. Native unpack_batch regression RED before metadata fix, CPU/CUDA GREEN after; one targeted direct-fix rereview PASS. Original failed artifacts preserved, no new target results seen.", "evidence": ["automation_reports/CV-SincNet/20261016-phase1-F-supcon-e50-clean-manysig-m9-r02/implementation_checks.json"], "row_id": null}

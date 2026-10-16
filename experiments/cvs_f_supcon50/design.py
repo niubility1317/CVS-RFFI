@@ -4,7 +4,7 @@ from pathlib import Path
 from experiments.cvs_rdrop_sinc_units import design as af
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,CAPSULE,TRUTH,CLASSES,SEEDS,FULL_FP32_POLICY,read,write=(getattr(af,k) for k in ('PROJECT','SOURCE','CAPSULE','TRUTH','CLASSES','SEEDS','FULL_FP32_POLICY','read','write'))
-RUN='20261016-phase1-F-supcon-e50-clean-manysig-m9-r01';RELEASE='cvs_F_supcon50_clean_20261016_r01';OWNER='codex/root/F-paired-SupCon-20261016';BASE=Path(PROJECT)/'runs'/RUN
+RUN='20261016-phase1-F-supcon-e50-clean-manysig-m9-r02';RELEASE='cvs_F_supcon50_clean_20261016_r02';OWNER='codex/root/F-paired-SupCon-20261016';BASE=Path(PROJECT)/'runs'/RUN
 AF_RELEASE=PROJECT+'/releases/'+af.RELEASE;AF_COMMIT='09554c3a06c976c53efc4dbc61f5c501a1e7b06e'
 ARMS=('BASE','ALL_TX','CROSS_RX');BASELINE_ARM='BASE';PRIMARY='CROSS_RX';EPOCHS=50;LABEL_EPOCHS=33;PSEUDO_EPOCHS=17;UPDATES=11100;SINC_DIAGNOSTIC_EPOCHS=(1,17,33,50);VIEWS=('clean',);READOUTS=('NATIVE_HEAD',)
 def base_config(seed):return af.config(next(r for r in af.rows() if r['arm']=='F' and r['model_seed']==seed))

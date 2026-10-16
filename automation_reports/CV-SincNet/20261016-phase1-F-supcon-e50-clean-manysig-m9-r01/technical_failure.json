@@ -1,0 +1,61 @@
+{
+  "status": "FAILED",
+  "failure_layer": "native source labeled hook metadata container",
+  "execution_commit": "13db1177302d8bfd15eedc00ea035f17a1017afe",
+  "failed_before_first_auxiliary_optimizer_update": true,
+  "expected_extra": "native unpack_batch returns (domain, metadata)",
+  "implementation_error": "r01 expected metadata mapping directly",
+  "rows": [
+    {
+      "row_id": "ALL_TX-s2026092701",
+      "epochs_completed": 5,
+      "optimizer_steps_completed": 1110,
+      "applied_SupCon_steps": 0,
+      "owned_process_gone": true
+    },
+    {
+      "row_id": "CROSS_RX-s2026092701",
+      "epochs_completed": 5,
+      "optimizer_steps_completed": 1110,
+      "applied_SupCon_steps": 0,
+      "owned_process_gone": true
+    },
+    {
+      "row_id": "ALL_TX-s2026092702",
+      "epochs_completed": 5,
+      "optimizer_steps_completed": 1110,
+      "applied_SupCon_steps": 0,
+      "owned_process_gone": true
+    },
+    {
+      "row_id": "CROSS_RX-s2026092702",
+      "epochs_completed": 5,
+      "optimizer_steps_completed": 1110,
+      "applied_SupCon_steps": 0,
+      "owned_process_gone": true
+    },
+    {
+      "row_id": "ALL_TX-s2026092703",
+      "epochs_completed": 5,
+      "optimizer_steps_completed": 1110,
+      "applied_SupCon_steps": 0,
+      "owned_process_gone": true
+    },
+    {
+      "row_id": "CROSS_RX-s2026092703",
+      "epochs_completed": 5,
+      "optimizer_steps_completed": 1110,
+      "applied_SupCon_steps": 0,
+      "owned_process_gone": true
+    }
+  ],
+  "total_completed_epochs": 30,
+  "total_completed_updates": 6660,
+  "new_target_predictions": 0,
+  "U_training_reached": false,
+  "all_owned_processes_gone": true,
+  "outputs_preserved": true,
+  "healthy_tasks_stopped": false,
+  "performance_result_available": false,
+  "recovery": "new immutable r02; same matrix/seeds/formula/budget; metadata format fix only; no weight inheritance"
+}

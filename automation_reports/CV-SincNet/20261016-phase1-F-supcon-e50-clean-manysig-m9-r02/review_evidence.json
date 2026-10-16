@@ -1,0 +1,11 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/sinc_rdrop_diag_p0p1",
+  "review_scope": "One targeted rereview of direct metadata P1 repair only",
+  "original_review": "r01 single full next-real-run review PASS",
+  "direct_issue": "native unpack_batch returns (domain, metadata)",
+  "fix": "extra[1] Mapping receiver extraction and original domain→RX equality retained",
+  "regression": "RED on actual native unpack_batch before fix; CPU/CUDA GREEN after",
+  "remaining_findings": [],
+  "formula_and_seeds_unchanged": true
+}
