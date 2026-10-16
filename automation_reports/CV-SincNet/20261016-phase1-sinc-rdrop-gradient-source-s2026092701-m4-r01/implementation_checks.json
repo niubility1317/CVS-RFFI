@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "CPU": {
+    "status": "PASS",
+    "real_networks": 2,
+    "physical_Sinc_gradient": 48,
+    "groups": 5,
+    "negative_cases": 3,
+    "parameters_buffers_preserved": true,
+    "source_IQ_reads": 0,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0
+  },
+  "CUDA": {
+    "status": "PASS",
+    "device": "cuda:0",
+    "actual_networks": [
+      {
+        "arm": "A",
+        "physical_Sinc_CE_norm": 1.361863217718495e-7,
+        "physical_Sinc_KL_norm": 1.6771947869495767e-7,
+        "model_parameters_preserved": true
+      },
+      {
+        "arm": "E",
+        "physical_Sinc_CE_norm": 1.3618634274793493e-7,
+        "physical_Sinc_KL_norm": 1.6771946977073958e-7,
+        "model_parameters_preserved": true
+      }
+    ],
+    "negative_cases": 3,
+    "source_IQ_reads": 0,
+    "checkpoint_loads": 0,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0
+  },
+  "compile": "PASS",
+  "limitation": "Datafree implementation checks, not source or performance results."
+}
