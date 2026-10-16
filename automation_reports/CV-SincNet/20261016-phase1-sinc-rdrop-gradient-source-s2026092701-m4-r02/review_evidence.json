@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "initial_review": "PASS for next-run P0/P1 scope; r01 later exposed interpreter activation defect",
+  "targeted_followup": "PASS: actual activation SSH argv explicitly CVS-RFFI PYTHON plus stdin; regression verifies actual last argument",
+  "scope": "Only the one observed interpreter launch defect; no repeated full review",
+  "reviewer": "sinc_rdrop_diag_p0p1",
+  "scientific_change": false
+}

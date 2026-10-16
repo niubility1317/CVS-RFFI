@@ -17,3 +17,5 @@
 边界：这是已训练源 L 上的冻结模型操作诊断，不能称源留RX泛化、未见样本证据、训练因果结论、新TX迁移或卫星部署收益；未测U/pseudo梯度。后续目标仍是获得真实三seed匹配性能提升，本目标保持ACTIVE。
 
 本地验证：CPU/CUDA 两种真实网络 A/E 均通过，五组 CE/KL 梯度非零、48 个 Sinc 分量及参数 buffers 保留，3 个负例通过，compile PASS。GPU 观察超时未作为检查失败或运行依据；核实原检查进程结束后，保存重读检查日志并核实 PASS。本地源 IQ/CP/optimizer/head 更新均为0。
+
+最终状态：FAILED_BEFORE_CHILD。归档和编译已完成；系统Python3在启动前bootstrap导入torch失败。独立读回确认release存在、run根不存在、无submit/worker/source批次/CP读取。保留r01，唯一修复为激活脚本显式使用CVS-RFFI Python，新r02重新登记，方法数据预算不变。

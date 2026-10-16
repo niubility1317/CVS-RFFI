@@ -4,9 +4,14 @@ from pathlib import Path
 from experiments.cvs_rdrop_sinc_units import design as d
 from experiments.cvs_rdrop_sinc_units.publish import PYTHON
 from experiments.cvs_phase1_stack.publish import ssh,CONNECTION
-RUN='20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r01'
-RELEASE='cvs_sinc_rdrop_gradient_source_20261016_r01'
+RUN='20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02'
+RELEASE='cvs_sinc_rdrop_gradient_source_20261016_r02'
 PKG='experiments/cvs_sinc_rdrop_coupling'
+def activation_ssh(script):
+ compile(script,'remote_activation','exec')
+ result=subprocess.run(['ssh',*CONNECTION,'-T','N607',PYTHON+' -'],input=script.encode('utf8'),capture_output=True,creationflags=getattr(subprocess,'CREATE_NO_WINDOW',0))
+ if result.returncode:raise RuntimeError(result.stderr.decode('utf8',errors='replace'))
+ return result.stdout
 def main():
  root=Path(__file__).resolve().parents[2];local=root/'local_artifacts/sinc_rdrop_coupling_preparation_r01';local.mkdir(parents=True,exist_ok=True)
  if subprocess.check_output(['git','status','--porcelain','--',PKG],cwd=root,text=True).strip():raise ValueError('Uncommitted diagnostic code')
@@ -58,5 +63,5 @@ try:
 except Exception as e:submit.update(status='OBSERVATION_FAILED',observation_error=str(e))
 (r/'submit.json').write_text(json.dumps(submit,indent=2)+'\n');print(json.dumps(submit))
 '''
- submit=json.loads(ssh(script.replace('CONFIG',repr(c))));(local/'diagnostic_submit.json').write_text(json.dumps(submit,indent=2)+'\n');print(json.dumps({k:submit[k] for k in ('status','pid','gpu','commit','archive_SHA_comparison','remote_compile')}))
+ submit=json.loads(activation_ssh(script.replace('CONFIG',repr(c))));(local/'diagnostic_submit.json').write_text(json.dumps(submit,indent=2)+'\n');print(json.dumps({k:submit[k] for k in ('status','pid','gpu','commit','archive_SHA_comparison','remote_compile')}))
 if __name__=='__main__':main()

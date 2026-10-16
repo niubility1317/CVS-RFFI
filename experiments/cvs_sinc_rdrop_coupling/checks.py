@@ -22,6 +22,12 @@ def run(device='cpu'):
    observed.append(dict(arm=arm,physical_Sinc_CE_norm=stats['Sinc']['CE_norm'],physical_Sinc_KL_norm=stats['Sinc']['KL_norm'],model_parameters_preserved=True))
  if not moments(torch.tensor([1.,0.]),torch.tensor([-2.,0.]))['conflict']:raise ValueError('Conflict sign incorrect')
  if moments(torch.tensor([1.,0.]),torch.tensor([2.,0.]))['conflict']:raise ValueError('Compatible sign incorrect')
+ from unittest.mock import patch
+ from types import SimpleNamespace
+ from .publish import activation_ssh,PYTHON
+ with patch('experiments.cvs_sinc_rdrop_coupling.publish.subprocess.run',return_value=SimpleNamespace(returncode=0,stdout=b'{}',stderr=b'')) as call:
+  activation_ssh('import torch')
+  if call.call_args.args[0][-1]!=PYTHON+' -':raise ValueError('Activation fell back to torch-less system Python')
  old=sys.argv
  try:
   sys.argv=['diagnose','--output','forbidden_target_or_existing_root']
@@ -30,5 +36,5 @@ def run(device='cpu'):
    if 'immutable source-only root' not in str(e):raise
   else:raise ValueError('Unregistered output accepted')
  finally:sys.argv=old
- return dict(status='PASS',device=device,actual_networks=observed,negative_cases=3,source_IQ_reads=0,checkpoint_loads=0,head_fit_updates=0,optimizer_updates=0)
+ return dict(status='PASS',device=device,actual_networks=observed,negative_cases=4,source_IQ_reads=0,checkpoint_loads=0,head_fit_updates=0,optimizer_updates=0)
 if __name__=='__main__':print(json.dumps(run(sys.argv[1] if len(sys.argv)>1 else 'cpu')))

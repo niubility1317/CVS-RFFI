@@ -1,0 +1,265 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02",
+  "group_id": "phase1-sinc-rdrop-coupling",
+  "display_name": "Sinc 与 RDrop 的源 L 梯度分解：RAW 与统一居中初末状态",
+  "description": "Actual source-L CE/KL physical-Hz Sinc conflict and relative strength, body and default W controls. Frozen initial/final50 A/E checkpoints; no training or fitted heads; all6300L percase.",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "Sinc RDrop coupling gradient"
+  ],
+  "tags": [
+    "Sinc",
+    "RDrop",
+    "source_only",
+    "physical_Hz_gradient",
+    "no_update",
+    "default_head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": "20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r01",
+  "authorization": "User20261016 requests continued Sinc+RDrop mutual performance improvement; first bounded source-only mechanism diagnostic, original roles and all historical tasks preserved.",
+  "code": {
+    "commit": "Actual Git HEAD in release_commit.txt",
+    "checkout": "E:/type10-7/code/worktrees/phase1_rdrop_combinations_20261015",
+    "environment": "ordinary N607 CVS-RFFI Python, CPU2, loader0",
+    "cwd": "PROJECT/releases/cvs_sinc_rdrop_gradient_source_20261016_r02"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing original7/63/30 source contract",
+    "representation": "Original raw received residual/post_sync/noeq256 IQ; native ordinaryaugmentation E1/E33",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "same#role_ids",
+    "label_map_ref": "same source contract",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 original sourceTX",
+    "roles": {
+      "L_s": "6300 originally labelled seen-source diagnostic, one complete pass perrow",
+      "U_s": "56700 unchanged, not sampled, labels remainhidden",
+      "V": "27000 unchanged, notsampled"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Existing role contract reused; exact role_ids comparison only",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source operation diagnosis only; no targetperformance, unseenRX, newTX or Phase2 claim"
+  },
+  "checkpoint": {
+    "initialization": "Frozen operation diagnosis; no new training",
+    "sources": [
+      "Original A seed01 initial_smoke.pt/final_ssdg.pth",
+      "Unified E seed01 initial_smoke.pt/final_ssdg.pth in A-F r02"
+    ],
+    "contract_check_ref": "Reuse source_proof() original actualconfig/emptyancestry/fullroles/fixedfinal50 checks before loading; same saved checkpoint identities",
+    "provenance_verdict": "Existing VERIFIED provenance reused and minimumcurrenthandle checked at launch",
+    "selection_rule": "Both original fixed initial and final50; no target selection"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/Sinc-RDrop-gradient-20261016",
+    "gpu_policy": "max3 totalperGPU including allowners/preCUDA; sharedcapacitylock;12GiBfree",
+    "remote_run_root": "PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02",
+    "remote_log_root": "PROJECT/releases/cvs_sinc_rdrop_gradient_source_20261016_r02/diagnostic.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_sinc_rdrop_coupling/runner.py --output PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02",
+    "stop_rule": "Any source role/provenance violation, changed modelstate, nonfinite/missinggrad, failure or outputcollision: preserve artifacts, no retry/retrain, no otherownerprocess mutation."
+  },
+  "expected_artifacts": [
+    "real_checkpoint_no_query_smoke.json",
+    "batch_metrics.jsonl",
+    "Sinc_source_gradient_vectors.pt (private)",
+    "result.json",
+    "completion.json",
+    "diagnostic.stdout.log (private)"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "CE/KL gradientphysicalnorm",
+      "cosine",
+      "conflict_fraction",
+      "KL/CE normratio",
+      "total gradient opposing CE",
+      "CE/KL losses"
+    ],
+    "dimensions": [
+      "A/E",
+      "initial/final50",
+      "Sinc/time_middle/SIG_TIME/remaining_feature/default_W"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "No target predictions/truth; independent source vector arithmetic recount after completion"
+  },
+  "rows": [
+    {
+      "row_id": "A-initial-s2026092701",
+      "method": "RAWstandard+originalRDrop gradientdiagnosis",
+      "purpose": "mechanism",
+      "config_ref": "automation_reports/CV-SincNet/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/experiment.json#rows/A-initial-s2026092701",
+      "resolved_config_ref": "PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101601,
+        "augmentation": 2026101602,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "DataLoader shuffle fixed2026101601; native augmentation/dropout fixed2026101602+epoch*1000+batch; support/eval notapplicable; no modelseed scan.",
+      "k": null,
+      "scenario": "source_L_seen_frozen_diagnostic",
+      "optimizer": "none; no updates",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Eachrow full6300L,50batches,2forward128orlast28; 50400totalpacketforwards,0U/V/target",
+      "output_root": "PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/A-initial-s2026092701",
+      "log_path": "PROJECT/releases/cvs_sinc_rdrop_gradient_source_20261016_r02/diagnostic.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_sinc_rdrop_coupling/runner.py --output PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02",
+      "expected_artifacts": [
+        "real_checkpoint_no_query_smoke.json",
+        "batch_metrics.jsonl",
+        "Sinc_source_gradient_vectors.pt (private)",
+        "result.json",
+        "completion.json",
+        "diagnostic.stdout.log (private)"
+      ]
+    },
+    {
+      "row_id": "A-final50-s2026092701",
+      "method": "RAWstandard+originalRDrop gradientdiagnosis",
+      "purpose": "mechanism",
+      "config_ref": "automation_reports/CV-SincNet/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/experiment.json#rows/A-final50-s2026092701",
+      "resolved_config_ref": "PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101601,
+        "augmentation": 2026101602,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "DataLoader shuffle fixed2026101601; native augmentation/dropout fixed2026101602+epoch*1000+batch; support/eval notapplicable; no modelseed scan.",
+      "k": null,
+      "scenario": "source_L_seen_frozen_diagnostic",
+      "optimizer": "none; no updates",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Eachrow full6300L,50batches,2forward128orlast28; 50400totalpacketforwards,0U/V/target",
+      "output_root": "PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/A-final50-s2026092701",
+      "log_path": "PROJECT/releases/cvs_sinc_rdrop_gradient_source_20261016_r02/diagnostic.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_sinc_rdrop_coupling/runner.py --output PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02",
+      "expected_artifacts": [
+        "real_checkpoint_no_query_smoke.json",
+        "batch_metrics.jsonl",
+        "Sinc_source_gradient_vectors.pt (private)",
+        "result.json",
+        "completion.json",
+        "diagnostic.stdout.log (private)"
+      ]
+    },
+    {
+      "row_id": "E-initial-s2026092701",
+      "method": "CENTER25K+physicalAdamW+originalRDrop gradientdiagnosis",
+      "purpose": "mechanism",
+      "config_ref": "automation_reports/CV-SincNet/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/experiment.json#rows/E-initial-s2026092701",
+      "resolved_config_ref": "PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101601,
+        "augmentation": 2026101602,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "DataLoader shuffle fixed2026101601; native augmentation/dropout fixed2026101602+epoch*1000+batch; support/eval notapplicable; no modelseed scan.",
+      "k": null,
+      "scenario": "source_L_seen_frozen_diagnostic",
+      "optimizer": "none; no updates",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Eachrow full6300L,50batches,2forward128orlast28; 50400totalpacketforwards,0U/V/target",
+      "output_root": "PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/E-initial-s2026092701",
+      "log_path": "PROJECT/releases/cvs_sinc_rdrop_gradient_source_20261016_r02/diagnostic.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_sinc_rdrop_coupling/runner.py --output PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02",
+      "expected_artifacts": [
+        "real_checkpoint_no_query_smoke.json",
+        "batch_metrics.jsonl",
+        "Sinc_source_gradient_vectors.pt (private)",
+        "result.json",
+        "completion.json",
+        "diagnostic.stdout.log (private)"
+      ]
+    },
+    {
+      "row_id": "E-final50-s2026092701",
+      "method": "CENTER25K+physicalAdamW+originalRDrop gradientdiagnosis",
+      "purpose": "mechanism",
+      "config_ref": "automation_reports/CV-SincNet/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/experiment.json#rows/E-final50-s2026092701",
+      "resolved_config_ref": "PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/result.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 2026101601,
+        "augmentation": 2026101602,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "DataLoader shuffle fixed2026101601; native augmentation/dropout fixed2026101602+epoch*1000+batch; support/eval notapplicable; no modelseed scan.",
+      "k": null,
+      "scenario": "source_L_seen_frozen_diagnostic",
+      "optimizer": "none; no updates",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Eachrow full6300L,50batches,2forward128orlast28; 50400totalpacketforwards,0U/V/target",
+      "output_root": "PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02/E-final50-s2026092701",
+      "log_path": "PROJECT/releases/cvs_sinc_rdrop_gradient_source_20261016_r02/diagnostic.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_sinc_rdrop_coupling/runner.py --output PROJECT/runs/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02",
+      "expected_artifacts": [
+        "real_checkpoint_no_query_smoke.json",
+        "batch_metrics.jsonl",
+        "Sinc_source_gradient_vectors.pt (private)",
+        "result.json",
+        "completion.json",
+        "diagnostic.stdout.log (private)"
+      ]
+    }
+  ],
+  "notes": [
+    "This source diagnosis does not itself establish Sinc/RDrop performance gain.",
+    "A/E actual checkpoint ancestry remains source-only; no final target metric consumed by diagnosis or any gate.",
+    "Candidate design follows actual source CE/KL evidence and code; not historical target score ordering.",
+    "All training budgets0 in this operation diagnostic; historical scratch50 cost is not hidden.",
+    "r01 failed beforechild because torch-less system Python in activation. Fixed explicit CVS-RFFI interpreter with mocked regression; preserve oldrelease; no real-source or training repeated."
+  ],
+  "registered_at": "2026-10-16T01:36:36+00:00"
+}

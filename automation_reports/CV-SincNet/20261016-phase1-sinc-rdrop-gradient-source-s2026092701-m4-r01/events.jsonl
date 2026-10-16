@@ -1,1 +1,2 @@
 {"at": "2026-10-16T01:29:40+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-16T01:36:34+00:00", "status": "FAILED", "note": "VERIFIED pre-child activation failure: system python3 lacks torch; no submit/worker/runroot/checkpoint/source IQ. Preserve release r01; bounded interpreter fix uses newr02, no training rerun.", "evidence": ["automation_reports/CV-SincNet/20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r01/failed_startup_evidence.json"], "row_id": null}
