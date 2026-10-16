@@ -6,7 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|固定additive As：源RX6预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-additiveAs-source-RX6-e20-s2026092701-m3-r01/report.md)|
+|固定 additive As：RX6 确认通过，跨 seed clean 保持失败|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-additiveAs-source-RX6-e20-s2026092701-m3-r01/report.md)|
 |F＋跨 RX：冻结默认头的 ordinary／As 梯度关系|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01/report.md)|
 |有界局部观察衰减：完整源域结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-localatten-source-RX1-e20-s2026092701-m1-r01/report.md)|
 |重复差残差相关性：零更新源域检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01/report.md)|

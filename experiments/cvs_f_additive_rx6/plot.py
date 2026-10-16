@@ -57,7 +57,7 @@ def draw(analysis,output):
   fig.colorbar(im,ax=ax,label='Percentage points',shrink=.8)
  save(fig,'error_redistribution')
  coverage=r['execution']['D_As']['coverage'];cells=coverage['cells'];fits=(1,3,4,8);fig,axes=plt.subplots(1,2,figsize=(13,4.8),constrained_layout=True)
- arr=np.array([[sum(x['count'] for x in cells if x['TX']==t and x['RX']==rx) for rx in fits] for t in range(6)]);im=axes[0].imshow(arr,cmap='Blues',aspect='auto');axes[0].set_xticks(range(4),['RX'+str(v) for v in fits]);axes[0].set_yticks(range(6),['TX'+str(v) for v in range(6)]);axes[0].set_title('All labeled satellite observations by TX / fit RX')
+ arr=np.array([[sum(x['count'] for x in cells if x['TX']==t and x['RX']==rx) for rx in fits] for t in range(6)]);im=axes[0].imshow(arr,cmap='Blues',aspect='auto',vmin=0,vmax=max(1,float(arr.max()))*1.5);axes[0].set_xticks(range(4),['RX'+str(v) for v in fits]);axes[0].set_yticks(range(6),['TX'+str(v) for v in range(6)]);axes[0].set_title('All labeled satellite observations by TX / fit RX')
  for i in range(6):
   for j in range(4):axes[0].text(j,i,str(arr[i,j]),ha='center',va='center',fontsize=8)
  fig.colorbar(im,ax=axes[0],label='Packets')

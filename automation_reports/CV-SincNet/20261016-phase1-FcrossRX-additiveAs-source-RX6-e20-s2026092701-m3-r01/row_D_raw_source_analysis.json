@@ -5,7 +5,7 @@
   "source_only": true,
   "target_access": false,
   "training_code_commit": "367b2f945ef65488e6d97eddd2357388d2477100",
-  "independent_reader_commit": "408512f4738058042007f36d6d249d9ad8503fb7",
+  "independent_reader_commit": "e1ef20d19da3d8ff1e17b865d7fb6b837b39c0db",
   "scores": {
     "clean": {
       "count": 1260,
@@ -568,5 +568,6 @@
       "no_second_pair_redraw": true,
       "practical_input_is_raw": true
     }
-  }
+  },
+  "full_matrix_recounted": true
 }

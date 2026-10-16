@@ -1,0 +1,37 @@
+{
+  "status": "PASS",
+  "RX6_all_epochs": 60,
+  "RX6_native_steps": 13320,
+  "RX6_satmix_steps": 13320,
+  "RX6_unit_steps": 13320,
+  "RX6_predictions": 26460,
+  "all_L_U_sequences_identical": true,
+  "same_physics_across_rows": true,
+  "all_source_row_and_result_metrics_independently_recounted": true,
+  "RX1_seed02_independent_steps": 13320,
+  "RX1_seed02_independent_predictions": 26460,
+  "source_contract_replication": {
+    "status": "VERIFIED",
+    "fit_role_IDs_identical": true,
+    "held_labels_and_physical_IDs_identical": true,
+    "all_actual_channel_configs_identical": true,
+    "native_argument_differences": [
+      "output_dir",
+      "run_id",
+      "candidate_id",
+      "seed"
+    ],
+    "model_seed_and_global_ordinary_augmentation_seed_differ": true,
+    "new_forward_packets": 0,
+    "new_updates": 0,
+    "target_access": false
+  },
+  "new_NN_for_analysis": 0,
+  "new_updates_for_analysis": 0,
+  "formal_target_access": false,
+  "diagnostic_head_fit": 0,
+  "source_only": true,
+  "plot_PNGs_visually_checked": 7,
+  "plot_files_PNG_PDF": 14,
+  "geometry_and_noise_parameters_unchanged": true
+}
