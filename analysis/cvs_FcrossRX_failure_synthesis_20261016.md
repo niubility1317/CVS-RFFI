@@ -100,3 +100,12 @@ mid urban绝对质量偏差中位数0.1728/0.1751dB、lock切换2.1032%/2.6389%�
 正式测试仍residual/post_sync/EQoff G1/reference30/reflect；新增噪声SNR不是总SNR。G1只排除EQ FIR着色，原RX广义线性IQ镜像与旋转仍作用于噪声；共享底层抽样不等于所有总效应条件的处理后噪声波形相同。完整接收状态转移、LOS/PARTIAL/BLOCKED、RX、CFO、AGC和边界均保留。固定代理/状态切换假设FAIL关闭，无自动E20或默认头试验，不改阈值／状态／流／seed／场景／RX／窗口救援。
 
 本轮未测默认头准确率或clean代价；两个物理流不是模型seed。没有新Ag确认／Ag×As因子矩阵／正式联合收益或跨模型seed证明，活动目标继续。代码4f7968ec32ea52ff56f63c42c1654fb4507573d6，离线f78551c40afa82f8d6b4acb921a0099d641098f4。[完整报告](../automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-qualityproxy-fitL-manysig-m1-r01/report.md)。
+
+
+## 补充：逐包场景循环与归一化机制（2026-10-17）
+
+另一路固定逐包六scene循环已完成：B00/C_IID/B01的heldRX1 clean80.1587/84.4444/84.6825%，low27.7778/33.8889/34.0476%；B01对IID的low仅＋0.1587pp、urban均值＋0.5026pp，低于原各＋1pp，固定路线关闭，不改cycle或边际概率救跑。low修复20/新增18，两组clean均正确1061包中low净减少1，均衡覆盖本身不是身份收益。[报告](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01/report.md)。
+
+固定F实际实例检查：206个state张量、900722参数，BatchNorm=0，采用GroupNorm/LayerNorm；故BN运行统计污染不适用。0真实IQ/权重/NN/优化更新的架构检查只排除该实现假设，不说明任何IQ增强有效。
+
+新独立问题是固定E20内的等剂量As时序，不是Ag：RAW/ALL/EARLY7/LATE7四个新scratchE20/8L匹配，完整原base+原13L7U/oldgate/ownEMA保持，额外.25RD对按epoch使用raw或原singleAs(raw)，早晚各198912监督As包。四组全程生成同样568320原物理shadow，禁止source/target结果回流改日历；正式测试不变。它也改变As所在LR/SSL阶段，不冒称单独隔离身份先学因果；实际激活物理ID/状态集合仍需全量说明。代码f788309f5f9e27689ec1e98ae99a6bd83237e1f9，本轮已VERIFIED启动，尚无训练/准确率结果。[固定报告](../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-AsTiming-sourceRX1-e20-s2026092701-m4-r01/report.md)。

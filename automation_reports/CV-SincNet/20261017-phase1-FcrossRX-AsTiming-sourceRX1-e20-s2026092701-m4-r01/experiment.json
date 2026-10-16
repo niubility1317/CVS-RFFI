@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "ActivejointAg/As goal;fixedE20/model;new As training organization/source-only falsification,not newAg or closedsceneCycle/curriculum rescue",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "f788309f5f9e27689ec1e98ae99a6bd83237e1f9",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "ordinary N607 CVS-RFFI Python/Torch originalfullFP32",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_AsTiming_sourceRX1_E20_20261017_r01"
@@ -224,7 +224,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-AsTiming-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -262,7 +262,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ScratchE20 original13L+7U/base.75raw+.25ordinary+SupCon plus .25RD(raw or singleAs(raw));same8L and1.25total pairweight;ALL20/EARLY7/LATE7/RAW",
@@ -520,7 +520,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-AsTiming-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -558,7 +558,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ScratchE20 original13L+7U/base.75raw+.25ordinary+SupCon plus .25RD(raw or singleAs(raw));same8L and1.25total pairweight;ALL20/EARLY7/LATE7/RAW",
@@ -837,7 +837,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-AsTiming-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -875,7 +875,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ScratchE20 original13L+7U/base.75raw+.25ordinary+SupCon plus .25RD(raw or singleAs(raw));same8L and1.25total pairweight;ALL20/EARLY7/LATE7/RAW",
@@ -1141,7 +1141,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-AsTiming-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -1179,7 +1179,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ScratchE20 original13L+7U/base.75raw+.25ordinary+SupCon plus .25RD(raw or singleAs(raw));same8L and1.25total pairweight;ALL20/EARLY7/LATE7/RAW",

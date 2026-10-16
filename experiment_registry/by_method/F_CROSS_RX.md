@@ -2,7 +2,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|F＋跨 RX：等剂量早期与后期星地训练 E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-AsTiming-sourceRX1-e20-s2026092701-m4-r01/report.md)|
+|F＋跨 RX：等剂量早期与后期 As 的固定 E20 源域检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-AsTiming-sourceRX1-e20-s2026092701-m4-r01/report.md)|
 |F＋跨 RX：白输入质量代理的状态切换与边界反事实|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-qualityproxy-fitL-manysig-m1-r01/report.md)|
 |原普通 IQ 观察的独立刷新：源域最小检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-viewrefresh-sourceRX1-e20-s2026092701-m3-r01/report.md)|
 |原普通增强按物理 RX 分组：最小源域对照|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-rxgroup-sourceRX1-e20-s2026092701-m2-r01/report.md)|
