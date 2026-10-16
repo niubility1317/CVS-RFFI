@@ -1,0 +1,1048 @@
+{
+  "status": "VERIFIED",
+  "source_decision": {
+    "status": "FAIL",
+    "checks": {
+      "clean": true,
+      "F1": true,
+      "seen": true,
+      "practical": false,
+      "complete_health": true
+    },
+    "clean_gain_pp": 2.5555555555555554,
+    "macroF1_gain_pp": 2.635701558899206,
+    "seen_drop_pp": -0.04166666666667318,
+    "practical_gain_pp": {
+      "practical_high": -2.3333333333333317,
+      "practical_mid": -2.7962962962962967,
+      "practical_low_suburban": -1.5370370370370368,
+      "practical_high_urban": -2.7962962962962967,
+      "practical_mid_urban": -1.5925925925925954,
+      "practical_low_urban": -1.370370370370369
+    },
+    "source_only": true,
+    "target_access": false,
+    "model_seeds": 1,
+    "automatic_extension": false,
+    "goal_completed": false
+  },
+  "scene_results": [
+    {
+      "arm": "C0",
+      "scene": "clean",
+      "count": 5400,
+      "correct": 4506,
+      "accuracy": 0.8344444444444444,
+      "macro_f1": 0.8322745733399545,
+      "confusion": [
+        [
+          787,
+          43,
+          42,
+          13,
+          14,
+          1
+        ],
+        [
+          4,
+          772,
+          2,
+          122,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          573,
+          0,
+          0,
+          327
+        ],
+        [
+          7,
+          304,
+          1,
+          584,
+          4,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          900,
+          0
+        ],
+        [
+          1,
+          0,
+          8,
+          1,
+          0,
+          890
+        ]
+      ],
+      "mean_margin_over30": 0.13189740206300585,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 4506,
+      "fixed_retention": 1.0
+    },
+    {
+      "arm": "LA16",
+      "scene": "clean",
+      "count": 5400,
+      "correct": 4644,
+      "accuracy": 0.86,
+      "macro_f1": 0.8586315889289465,
+      "confusion": [
+        [
+          835,
+          21,
+          25,
+          8,
+          11,
+          0
+        ],
+        [
+          2,
+          771,
+          0,
+          125,
+          2,
+          0
+        ],
+        [
+          1,
+          6,
+          669,
+          0,
+          0,
+          224
+        ],
+        [
+          9,
+          310,
+          0,
+          578,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          900,
+          0
+        ],
+        [
+          1,
+          0,
+          6,
+          2,
+          0,
+          891
+        ]
+      ],
+      "mean_margin_over30": 0.14026932215977872,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 4485,
+      "fixed_retention": 0.9953395472703063
+    },
+    {
+      "arm": "C0",
+      "scene": "practical_high",
+      "count": 5400,
+      "correct": 2075,
+      "accuracy": 0.38425925925925924,
+      "macro_f1": 0.30178906145196777,
+      "confusion": [
+        [
+          47,
+          2,
+          600,
+          157,
+          92,
+          2
+        ],
+        [
+          106,
+          18,
+          22,
+          525,
+          228,
+          1
+        ],
+        [
+          7,
+          0,
+          520,
+          20,
+          239,
+          114
+        ],
+        [
+          47,
+          4,
+          127,
+          697,
+          25,
+          0
+        ],
+        [
+          77,
+          0,
+          13,
+          84,
+          725,
+          1
+        ],
+        [
+          0,
+          1,
+          712,
+          0,
+          119,
+          68
+        ]
+      ],
+      "mean_margin_over30": -0.025454154699482378,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1704,
+      "fixed_retention": 0.3781624500665779
+    },
+    {
+      "arm": "LA16",
+      "scene": "practical_high",
+      "count": 5400,
+      "correct": 1949,
+      "accuracy": 0.36092592592592593,
+      "macro_f1": 0.2927898503896513,
+      "confusion": [
+        [
+          91,
+          4,
+          433,
+          277,
+          93,
+          2
+        ],
+        [
+          161,
+          14,
+          25,
+          507,
+          190,
+          3
+        ],
+        [
+          14,
+          85,
+          301,
+          35,
+          228,
+          237
+        ],
+        [
+          130,
+          6,
+          35,
+          715,
+          14,
+          0
+        ],
+        [
+          72,
+          0,
+          10,
+          76,
+          740,
+          2
+        ],
+        [
+          1,
+          2,
+          592,
+          0,
+          217,
+          88
+        ]
+      ],
+      "mean_margin_over30": -0.02357922474400025,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1651,
+      "fixed_retention": 0.3664003550821127
+    },
+    {
+      "arm": "C0",
+      "scene": "practical_mid",
+      "count": 5400,
+      "correct": 1953,
+      "accuracy": 0.3616666666666667,
+      "macro_f1": 0.29092637656079534,
+      "confusion": [
+        [
+          62,
+          5,
+          575,
+          141,
+          112,
+          5
+        ],
+        [
+          96,
+          20,
+          63,
+          483,
+          236,
+          2
+        ],
+        [
+          26,
+          7,
+          500,
+          25,
+          226,
+          116
+        ],
+        [
+          65,
+          6,
+          164,
+          616,
+          46,
+          3
+        ],
+        [
+          87,
+          3,
+          46,
+          72,
+          685,
+          7
+        ],
+        [
+          7,
+          3,
+          680,
+          3,
+          137,
+          70
+        ]
+      ],
+      "mean_margin_over30": -0.02881580171478129,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1629,
+      "fixed_retention": 0.3615179760319574
+    },
+    {
+      "arm": "LA16",
+      "scene": "practical_mid",
+      "count": 5400,
+      "correct": 1802,
+      "accuracy": 0.3337037037037037,
+      "macro_f1": 0.2783808916616067,
+      "confusion": [
+        [
+          98,
+          7,
+          436,
+          256,
+          94,
+          9
+        ],
+        [
+          153,
+          16,
+          58,
+          497,
+          173,
+          3
+        ],
+        [
+          39,
+          99,
+          260,
+          39,
+          215,
+          248
+        ],
+        [
+          142,
+          4,
+          63,
+          664,
+          23,
+          4
+        ],
+        [
+          115,
+          2,
+          37,
+          73,
+          664,
+          9
+        ],
+        [
+          6,
+          5,
+          546,
+          4,
+          239,
+          100
+        ]
+      ],
+      "mean_margin_over30": -0.027398490187695947,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1531,
+      "fixed_retention": 0.33976919662671995
+    },
+    {
+      "arm": "C0",
+      "scene": "practical_low_suburban",
+      "count": 5400,
+      "correct": 1838,
+      "accuracy": 0.3403703703703704,
+      "macro_f1": 0.2800133479481051,
+      "confusion": [
+        [
+          66,
+          4,
+          565,
+          131,
+          122,
+          12
+        ],
+        [
+          92,
+          21,
+          102,
+          419,
+          260,
+          6
+        ],
+        [
+          31,
+          9,
+          492,
+          43,
+          192,
+          133
+        ],
+        [
+          83,
+          13,
+          185,
+          543,
+          69,
+          7
+        ],
+        [
+          81,
+          6,
+          78,
+          90,
+          632,
+          13
+        ],
+        [
+          11,
+          2,
+          661,
+          1,
+          141,
+          84
+        ]
+      ],
+      "mean_margin_over30": -0.03143416801633403,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1540,
+      "fixed_retention": 0.3417665335108744
+    },
+    {
+      "arm": "LA16",
+      "scene": "practical_low_suburban",
+      "count": 5400,
+      "correct": 1755,
+      "accuracy": 0.325,
+      "macro_f1": 0.28298846283155493,
+      "confusion": [
+        [
+          123,
+          13,
+          433,
+          212,
+          105,
+          14
+        ],
+        [
+          184,
+          23,
+          62,
+          441,
+          180,
+          10
+        ],
+        [
+          40,
+          105,
+          271,
+          41,
+          189,
+          254
+        ],
+        [
+          178,
+          12,
+          83,
+          581,
+          37,
+          9
+        ],
+        [
+          103,
+          7,
+          62,
+          80,
+          631,
+          17
+        ],
+        [
+          13,
+          4,
+          547,
+          2,
+          208,
+          126
+        ]
+      ],
+      "mean_margin_over30": -0.029885976432497213,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1511,
+      "fixed_retention": 0.3353306702174878
+    },
+    {
+      "arm": "C0",
+      "scene": "practical_high_urban",
+      "count": 5400,
+      "correct": 1998,
+      "accuracy": 0.37,
+      "macro_f1": 0.290694140544271,
+      "confusion": [
+        [
+          59,
+          4,
+          567,
+          162,
+          102,
+          6
+        ],
+        [
+          70,
+          13,
+          42,
+          540,
+          231,
+          4
+        ],
+        [
+          14,
+          9,
+          488,
+          26,
+          251,
+          112
+        ],
+        [
+          52,
+          5,
+          119,
+          663,
+          49,
+          12
+        ],
+        [
+          56,
+          1,
+          37,
+          89,
+          708,
+          9
+        ],
+        [
+          8,
+          4,
+          661,
+          9,
+          151,
+          67
+        ]
+      ],
+      "mean_margin_over30": -0.028953143214206882,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1632,
+      "fixed_retention": 0.3621837549933422
+    },
+    {
+      "arm": "LA16",
+      "scene": "practical_high_urban",
+      "count": 5400,
+      "correct": 1847,
+      "accuracy": 0.34203703703703703,
+      "macro_f1": 0.2784495289831629,
+      "confusion": [
+        [
+          96,
+          11,
+          425,
+          259,
+          103,
+          6
+        ],
+        [
+          128,
+          16,
+          42,
+          529,
+          178,
+          7
+        ],
+        [
+          24,
+          73,
+          258,
+          41,
+          252,
+          252
+        ],
+        [
+          129,
+          6,
+          52,
+          673,
+          25,
+          15
+        ],
+        [
+          68,
+          2,
+          29,
+          72,
+          721,
+          8
+        ],
+        [
+          9,
+          3,
+          558,
+          10,
+          237,
+          83
+        ]
+      ],
+      "mean_margin_over30": -0.02762507024032495,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1571,
+      "fixed_retention": 0.3486462494451842
+    },
+    {
+      "arm": "C0",
+      "scene": "practical_mid_urban",
+      "count": 5400,
+      "correct": 1629,
+      "accuracy": 0.3016666666666667,
+      "macro_f1": 0.2637204201110697,
+      "confusion": [
+        [
+          106,
+          8,
+          461,
+          122,
+          167,
+          36
+        ],
+        [
+          121,
+          23,
+          113,
+          331,
+          273,
+          39
+        ],
+        [
+          64,
+          19,
+          373,
+          74,
+          230,
+          140
+        ],
+        [
+          86,
+          21,
+          172,
+          451,
+          111,
+          59
+        ],
+        [
+          110,
+          15,
+          95,
+          101,
+          542,
+          37
+        ],
+        [
+          32,
+          3,
+          563,
+          18,
+          150,
+          134
+        ]
+      ],
+      "mean_margin_over30": -0.03992410393470133,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1375,
+      "fixed_retention": 0.3051486906347093
+    },
+    {
+      "arm": "LA16",
+      "scene": "practical_mid_urban",
+      "count": 5400,
+      "correct": 1543,
+      "accuracy": 0.28574074074074074,
+      "macro_f1": 0.2561409685321476,
+      "confusion": [
+        [
+          137,
+          18,
+          369,
+          195,
+          146,
+          35
+        ],
+        [
+          180,
+          27,
+          95,
+          342,
+          216,
+          40
+        ],
+        [
+          72,
+          83,
+          231,
+          83,
+          207,
+          224
+        ],
+        [
+          148,
+          23,
+          108,
+          470,
+          95,
+          56
+        ],
+        [
+          126,
+          19,
+          84,
+          98,
+          529,
+          44
+        ],
+        [
+          34,
+          8,
+          481,
+          24,
+          204,
+          149
+        ]
+      ],
+      "mean_margin_over30": -0.038573562788571034,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1322,
+      "fixed_retention": 0.2933865956502441
+    },
+    {
+      "arm": "C0",
+      "scene": "practical_low_urban",
+      "count": 5400,
+      "correct": 1387,
+      "accuracy": 0.25685185185185183,
+      "macro_f1": 0.23118247300931158,
+      "confusion": [
+        [
+          107,
+          31,
+          381,
+          111,
+          202,
+          68
+        ],
+        [
+          145,
+          37,
+          158,
+          246,
+          234,
+          80
+        ],
+        [
+          73,
+          39,
+          352,
+          86,
+          205,
+          145
+        ],
+        [
+          122,
+          19,
+          179,
+          316,
+          193,
+          71
+        ],
+        [
+          129,
+          23,
+          154,
+          78,
+          452,
+          64
+        ],
+        [
+          51,
+          22,
+          493,
+          37,
+          174,
+          123
+        ]
+      ],
+      "mean_margin_over30": -0.04572493576378528,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1169,
+      "fixed_retention": 0.2594318686196183
+    },
+    {
+      "arm": "LA16",
+      "scene": "practical_low_urban",
+      "count": 5400,
+      "correct": 1313,
+      "accuracy": 0.24314814814814814,
+      "macro_f1": 0.2265212092185607,
+      "confusion": [
+        [
+          133,
+          41,
+          298,
+          170,
+          181,
+          77
+        ],
+        [
+          185,
+          42,
+          140,
+          260,
+          180,
+          93
+        ],
+        [
+          95,
+          90,
+          226,
+          92,
+          183,
+          214
+        ],
+        [
+          172,
+          32,
+          120,
+          335,
+          167,
+          74
+        ],
+        [
+          137,
+          32,
+          140,
+          89,
+          426,
+          76
+        ],
+        [
+          60,
+          27,
+          433,
+          39,
+          190,
+          151
+        ]
+      ],
+      "mean_margin_over30": -0.044931253950782304,
+      "fixed_C0_clean_correct_count": 4506,
+      "fixed_retained": 1127,
+      "fixed_retention": 0.2501109631602308
+    }
+  ],
+  "full_log_proof": {
+    "C0": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "SupCon_steps": 4440,
+      "SupCon_applied": 3330,
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "F_supcon/loss": 0,
+        "F_supcon/weight": 0,
+        "pair/primary_CE": 0,
+        "pair/secondary_CE": 0
+      },
+      "stdout_errors": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_objective_error": 3.5762786865234375e-07,
+      "stdout_bytes": 115560,
+      "warnings": []
+    },
+    "LA16": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "SupCon_steps": 4440,
+      "SupCon_applied": 3330,
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "F_supcon/loss": 0,
+        "F_supcon/weight": 0,
+        "pair/primary_CE": 0,
+        "pair/secondary_CE": 0
+      },
+      "stdout_errors": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_objective_error": 2.384185791015625e-07,
+      "stdout_bytes": 115688,
+      "warnings": []
+    }
+  },
+  "costs": [
+    {
+      "arm": "C0",
+      "reused_reference": true,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 2273280,
+      "student_U_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "EMA_eval_forward_packets": 396368,
+      "held_V_forward_packets": 5400,
+      "source_practical_forward_packets": 32400,
+      "elapsed_seconds": 1123.5720767974854,
+      "source_practical_seconds": 64.00892653502524,
+      "local_attenuation_exposures": 0,
+      "local_attenuation_seconds": 0.0
+    },
+    {
+      "arm": "LA16",
+      "reused_reference": false,
+      "epochs": 20,
+      "updates": 4440,
+      "parent_weight_epochs": 0,
+      "L_forward_packets": 2273280,
+      "student_U_forward_packets": 396368,
+      "student_source_eval_forward_packets": 475202,
+      "EMA_eval_forward_packets": 396368,
+      "held_V_forward_packets": 5400,
+      "source_practical_forward_packets": 32400,
+      "elapsed_seconds": 1152.8673360347748,
+      "source_practical_seconds": 65.78295547002926,
+      "local_attenuation_exposures": 568320,
+      "local_attenuation_seconds": 11.209853381384164
+    }
+  ],
+  "new_real_forward_packets": 3579018,
+  "new_model_epochs": 20,
+  "new_updates": 4440,
+  "reused_C0_epochs": 20,
+  "reused_C0_updates": 4440,
+  "actual_primary_sequence_records": 5994,
+  "matrix_wall_seconds": 1225.787516117096,
+  "actual_training_commit": "3bba9d406fe1dee68b7f76e403f114c11954b862",
+  "model_seed_count": 1,
+  "source_fold_count": 1,
+  "target_access": false,
+  "formal_test_status": "NOT_REGISTERED_SOURCE_ONLY",
+  "goal_completed": false,
+  "automatic_extension": false,
+  "scientific_status": "FAIL_SOURCE_RX1_ONE_SEED",
+  "terminal_workers_alive": false,
+  "training_technical_failures": 0,
+  "source_only": true,
+  "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_FcrossRX_localatten20_20261016\\final",
+  "local_attenuation_trace": {
+    "status": "VERIFIED",
+    "steps": 4440,
+    "packets": 568320,
+    "physical_IDs": 5040,
+    "start_positions": 241,
+    "region_cells": 1152,
+    "width": 16,
+    "max_depth": 0.5,
+    "max_relative_L2": 0.09999982019182536,
+    "max_removed_power_fraction": 0.17550989497859526,
+    "mean_relative_L2": 0.07507408916011786,
+    "mean_removed_power_fraction": 0.02542508326787199,
+    "zero_energy_packets_kept": 0,
+    "outside_max_error": 0.0,
+    "scope": "Positions replayed independently;stats reduced and bounds checked from saved trace,not recomputed from original IQ",
+    "new_IQ_reads": 0,
+    "checkpoint_loads": 0,
+    "model_forwards": 0
+  },
+  "rendered_viewed_figures": [
+    "complete_training_curves.png",
+    "source_scene_results.png",
+    "low_urban_strata.png",
+    "local_observation_coverage_cumulative.png"
+  ]
+}

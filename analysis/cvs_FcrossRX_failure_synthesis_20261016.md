@@ -35,3 +35,5 @@
 缓变包络 G0 虽有跨 TX/day 的 RX 关联，但线性 R² 中位数 0.303317 未达预定 0.8，关闭；本轮重复差相关 G0 也关闭：5040 包／18折独立复算一致，RX3 残差功率比中位数 10.275181% 高于预定 10%。后者的 RX 对比平方风险下降 62.523108% 不是默认头准确率，更不证明残差是纯接收噪声。0 模型／网络前向／更新，CPU 1.689140 s。见[本轮报告](../automation_reports/CV-SincNet/20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01/report.md)。
 
 截至此处，没有通过原定源规则的独立 IQ Ag；不把 RDrop、既有 SupCon、源统计可重复性或同类真实观察重新命名成已验证 Ag。固定 F＋跨 RX 同 TX 基线与 E20 保持，当前正式联合提升及跨 seed 重现均未证明。
+
+局部观察衰减 LA16 的实际 E20 源 RX1 结果补充：clean +2.555556pp、宏 F1 +2.635702pp、seenV +0.041667pp，但六 practical 全降，urban −1.919753pp、low −1.370370pp，原源条件 FAIL。low 的 BLOCKED 仅净+8、unlocked净+18，而 LOS/PARTIAL/locked/degraded 的损失更大；TX2 low −14pp。新修复 clean 的159包，其low正确反而42→28，说明局部clean收益没有转化为受损观察下的同一身份证据收益。原C0 clean正确集low保持率25.943187%→25.011096%，平均间隔略升也未变成准确率收益。保持全部负结果，关闭固定独立配方，不做强度/比例/RX/seed救援。一个sourcefold/modelseed、0As/target，不能据此否定所有未运行联合交互，也不能宣称Ag总体有效或联合完成。[报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-localatten-source-RX1-e20-s2026092701-m1-r01/report.md)。

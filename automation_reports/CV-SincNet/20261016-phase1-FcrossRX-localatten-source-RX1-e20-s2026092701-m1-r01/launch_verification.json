@@ -1,0 +1,38 @@
+{
+  "status": "VERIFIED",
+  "actual_code_commit": "3bba9d406fe1dee68b7f76e403f114c11954b862",
+  "archive_transfer": "VERIFIED_SINGLE_ARCHIVE_COMPARISON",
+  "remote_compile": "PASS",
+  "ordinary_account": true,
+  "worker_gpu": 0,
+  "actual_GPU_match": true,
+  "observed_GPU_process_counts": {
+    "0": 1
+  },
+  "all_observed_GPU_counts_le3": true,
+  "log_growth": true,
+  "log_bytes": 11682,
+  "own_scratch_no_query_smoke": true,
+  "actual_epochs": 20,
+  "actual_label_epochs": 13,
+  "actual_pseudo_epochs": 7,
+  "model_seed": 2026092701,
+  "source_roles": "fit3/4/6/8 L5040/U45360/V21600;heldRX1 V5400FINAL only",
+  "baseline_ckpt": "",
+  "teacher_ckpt": "",
+  "new_As": false,
+  "source_only": true,
+  "target_access": false,
+  "first_observed_epoch": 1,
+  "first_epoch_max_relative_L2": 0.09999980994737154,
+  "first_epoch_mean_removed_power": 0.02540395709166407,
+  "default_head_SIG3_Sinc_all_moved": true,
+  "modules": {
+    "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+    "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+    "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+    "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+  },
+  "pid_cwd_argv_independently_verified": true,
+  "private_process_evidence": "E:\\type10-7\\local_artifacts\\cvs_FcrossRX_localatten20_20261016\\postlaunch_second.json"
+}

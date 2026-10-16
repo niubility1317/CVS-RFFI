@@ -23,3 +23,5 @@ FINAL逐row自动源clean+原六practical读出并独立复算，源视图不构
 唯一owner为codex/root/FcrossRX-localatten-source-20261016。普通N607账户、CPU dispatcher2线程，worker动态选择≥12000MiB空闲且所有owner总进程<3的GPU，不改健康任务。不可覆盖run/root、一个release归档单次SHA比较、remotecompile；实际own scratchCP no-query smoke为训练首步，PASS立即继续。只对本run系统技术失败停止pending并保留输出，不自动重试，不触碰外部进程。完整command/environment/CWD/paths/GPU规则/stop/artifacts在同run experiment.json。
 
 REJECTED_EXTRA_GATE：brainstorming技能要求的独立设计审批不在项目最高优先级最小流程白名单；本任务已有研发授权，不增加审批或等待。一次限定独立P0/P1审查只检查会让本次实际运行错误、越权、破坏、不可启动或无法合法预测的缺陷；不做P2阻塞或重复不变审查。
+
+实际完成：20261016-phase1-FcrossRX-localatten-source-RX1-e20-s2026092701-m1-r01，20轮/4440更新/3579018NN，科学FAIL。clean83.444444%→86.000000%（+2.555556pp/F1+2.635702pp），但六practical全降、urban均值−1.919753pp、mid−1.592593pp、low25.685185%→24.314815%（−1.370370pp）；0As/target，一modelseed/一已暴露源RX1。5994主L/U与C0相同，全568320窗口和完整日志独立核对。矩阵1225.787516s，固定配方关闭，不扫width/depth/bound/probability/ratio/RX/seed救援；clean局部收益不等于真正混合或跨seed成立。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-localatten-source-RX1-e20-s2026092701-m1-r01/report.md)。
