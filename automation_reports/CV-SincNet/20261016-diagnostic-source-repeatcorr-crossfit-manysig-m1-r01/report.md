@@ -1,0 +1,29 @@
+# 重复差相关性：源域预登记
+
+REGISTERED_NOT_RUN。实际row／command／environment／CWD／paths／CPU／owner／stop／artifacts见experiment.json。
+
+# 重复差残差相关性：零更新源域检验
+
+当前训练底座保持 F＋跨 RX 同 TX 对比学习、E20、默认 cosine 头联合训练。本轮 G0 不建立或加载模型，0 个 checkpoint、网络前向、优化更新和目标访问，不改变任何 IQ 或正式 practical 条件。
+
+上一轮课程已完整结束，源 RX6 的 C2−C1 clean −0.277778 pp、urban +0.462963 pp、low +0.055556 pp；相对 C0 clean −3.925926 pp，固定候选关闭。新的检验不调课程参数，也不重新训练已关闭的 WHITE30、RXMIX、相位或包络候选。
+
+唯一假设：合法源 IQ 的固定重复差中存在跨 TX/day 可重复的 RX 相关短时结构，可为有色观测扰动提供先验。残差可以保留 TX 瞬态、传播和已有处理，不能先称为纯接收噪声。统计阳性也不证明身份保持或泛化。
+
+只使用现有合法缓存中、与当前 C0 RX1 留出合同完全一致的 fit RX3/4/6/8 L5040；6TX×4RX×3day，每格70包。RX1 IQ 在取值前排除；U/V 不参与统计，缓存反序列化会带入未使用的其他源角色对象，如实披露。复用已有数据，不另建 hash 或验证链。
+
+固定原256点中 `[80,160)` 四个20点周期。由三个相邻周期的 pooled 复相关得到一个单位相位 q，不拟合幅度。构造两组不重叠差 `(cycle1-q cycle0)/sqrt2` 和 `(cycle3-q cycle2)/sqrt2`，只在各20点差内计算复 lag1 归一化相关，不跨两组边界连接，不去均值。零残差等使 rho 未定义时保留包、存零哨兵和 invalid 标志，任何 invalid 都使候选失败。
+
+主描述子只有复 lag1 相关的实、虚两维。每 TX/RX/day 取均值，减去同 TX/day 的四 RX 均值，得到 RX 关联对比。18 折同时留一个 TX 和一个 day，用其他5TX×2day估计四 RX 对比。零对比为主参照，并保留3个循环错配 RX 对照；无拟合分类器或身份头。
+
+以下条件全部满足才通过：全部5040包 rho 有定义；重复相干度 q10≥0.8；四 RX 的残差/周期功率比中位数均≤0.1；RX对比风险聚合下降≥10%、至少14/18折正、四 RX 风险增益均非负；超过最佳错配 RX 至少2个百分点；两组 TX 的中心 RX profile 余弦≥0.8；RX profile 绝对 rho 中位数≥0.05、RX对间 profile 距离 p95≥0.05。风险下降不是识别准确率。
+
+FAIL 即关闭固定重复差 lag1 着色依据，不改周期、窗口、lag、统计量、TX/day/RX 或阈值补救。PASS 只支持另行预登记固定功率、匹配白噪声控制的 IQ 训练；不自动启动，不扩目标或宣称 Ag 成立。未来仍需默认头实际 E20 身份收益和 B00/B10/B01/B11 交互证据。
+
+本轮与已关闭的周期相对参考/正交补预训练不同：不预测任何 residual 或拟合 decoder，不强迫骨干学习残差，不以该残差替代部署特征。此前残差身份关系弱的负结果继续保留，正是不能将它当作 TX 目标的原因。
+
+缓变增益斜坡曾在源数据得到 RX 关联风险下降，但线性 R² 仅0.303317，未达0.8，已关闭；本轮不以换窗口重开该路线。公共相位、观察原点、分数延迟、频偏、常数增益、DC 和谱响应等已登记结果按原判据保留。
+
+运行计划为普通 N607 账户、CPU2线程、CUDA隐藏、唯一不可覆盖 run/output root、一次发布和独立回读。实际命令、路径、owner、stop 和预期 artifacts 由同 run experiment.json 维护。无模型的 G0 不加载无关 checkpoint 来凑 smoke。科学失败不做技术重试。
+
+发布前 LOCAL_VERIFIED_NOT_RUN：17协议负例、5433有效合成描述子输入（其中5040完整合成波形）、18fold阳性/白残差与TX混杂及坏质量阴性、RMS不变、disjoint边界、undefinedrho保留并失败、leaveTX AND day隔离均PASS。纯NumPy在已验证SSR Python3.10执行，0真实IQ/CP/网络。唯一限定P0/P1静态审查PASS，无直接缺陷。首个直接F Python因缺NumPy未进入检查，随后使用现有SSR依赖、未安装任何包；shell参数被平台忽略的问题通过Node execFile shell=false绕过，不再调用pwsh。G0无模型、真实CP smoke不适用。

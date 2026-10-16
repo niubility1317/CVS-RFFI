@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 17,
+  "synthetic_waveform_packets": 5040,
+  "synthetic_positive18folds": true,
+  "white_entangled_bad_quality_FAIL": true,
+  "disjoint_residual_boundaries": true,
+  "RMS_invariant": true,
+  "undefined_rho_fails_without_dropping": true,
+  "held_TX_AND_day_isolation": true,
+  "real_IQ_packets": 0,
+  "checkpoint_loads": 0,
+  "model_forwards": 0,
+  "optimizer_updates": 0,
+  "valid_synthetic_descriptor_evaluations": 5433,
+  "direct_python": "E:/type10-7/local_envs/ssr-gpu/python.exe",
+  "execution_boundary": "Node execFile shell=false, native verified project Python; no pwsh",
+  "P0P1_review": "PASS one limited static read-only review,no direct P0/P1;0realIQ/CP/NN/modifications",
+  "local_compile": "PASS",
+  "real_checkpoint_smoke": "NOT_APPLICABLE:G0 no model,checkpoint or predictions"
+}

@@ -1,0 +1,265 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01",
+  "group_id": "phase1-source-repeat-residual-coloration",
+  "display_name": "重复差相关性：跨TX和跨日的RX关联源证伪",
+  "description": "固定80:160周期20的两个disjoint重复差，检验复lag1相关是否具有跨TX/day的RX对比重复性；零网络/模型/CP/更新，不称纯RX噪声或有效Ag。",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-only",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "repeat_residual_color",
+    "cross_TX_day",
+    "source_only",
+    "no_model",
+    "CPU"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active Ag+As goal on latest F+CROSS_RX/E20 authorizes source-grounded IQ research. One CPU G0 only; no model,extraepochs,checkpoint,target or automatic training.",
+  "code": {
+    "commit": "CURRENT_RELEASE_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_repeatcorr_crossfit_20261016_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/source_cache.pt",
+    "version": "Existing VALIDATED_ONCE source carrier; exact currentC0 fitL5040 on RX3/4/6/8 only",
+    "representation": "Existing source equalized1 IQ256,declared25MHz; fixed80:160 repeated-difference statistical view only,no IQ transformation",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source/source_contract.json#role_ids/L_s",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#classes",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/preparation_complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "effective_counts": {
+      "L_used": 5040,
+      "held_RX1_IQ_used": 0,
+      "U_used": 0,
+      "V_used": 0
+    }
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "None; no target or model loader",
+    "external_method_exception": null,
+    "claim_scope": "RX-associated source repeated-difference lag1 correlation repeatability; not pure receiver noise,causal hardware,label preservation or identity accuracy"
+  },
+  "checkpoint": {
+    "initialization": "not_applicable_no_model",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "NO_CHECKPOINT_ACCESS; C0 referenced for exact fitL roles only,zero state inheritance",
+    "selection_rule": "Fixed window80:160/period20/complexlag1 only;18leaveTX AND day;all criteria frozen;no Utruth/sourceV/target"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/source-repeatcorr-crossfit-20261016",
+    "gpu_policy": "CPU only,CUDA hidden,2threads,no GPU reservation or foreign process mutation",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_repeatcorr_crossfit_20261016_r01/dispatcher.log",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_source_repeatcorr_20261016",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_repeatcorr_crossfit_20261016_r01/experiments/cvs_source_repeatcorr/runner.py",
+    "stop_rule": "Own technical failure preserves immutable output,noauto retry. ScientificFAIL closes fixed repeat-difference coloration; no period/window/lag/statistic/RX/TX/day/threshold rescue. PASS only supports separately preregistered IQ trial."
+  },
+  "expected_artifacts": [
+    "execution.json",
+    "ROW/resolved_config.json",
+    "ROW/source_repeatcorr_statistics.npz (private,noIQ or Git)",
+    "ROW/summary.json",
+    "completion.json",
+    "dispatcher.log",
+    "all18fold and4RX risks",
+    "quality/repeatability figure",
+    "same-run independent recount"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "valid rho packet count",
+      "repeat coherence q10",
+      "fourRX median residual-power ratio",
+      "RX contrast risk vs zero",
+      "positive18fold count",
+      "fourRX risks",
+      "threewrongRX controls",
+      "twoTXhalf cosine",
+      "nonwhite profile magnitude",
+      "RX pair distance p95",
+      "zeroNN/CP/update cost"
+    ],
+    "dimensions": [
+      "5040 legalL packets",
+      "72TX/RX/day cells",
+      "18heldTX/day folds",
+      "4fitRX"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": null,
+    "primary": "All5040valid;coherenceq10>=.8;eachRXmedianresidualratio<=.1;aggregate risk reduction>=.1;>=14/18positive;allRX>=0;correct-bestwrong>=.02;TXhalfcos>=.8;medianprofileabsrho>=.05;RXpairdistancep95>=.05.ElseclosefixedG0,not classification performance."
+  },
+  "rows": [
+    {
+      "row_id": "repeatcorr-fitRX3_4_6_8",
+      "method": "Repeated-difference lag1 RX contrast crossfit",
+      "purpose": "source_falsification",
+      "config_ref": "experiments/cvs_source_repeatcorr/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01/repeatcorr-fitRX3_4_6_8/resolved_config.json",
+      "data_overrides": {
+        "source_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "L_used": 5040,
+        "held_RX1_used": false
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original split/data392005. Real G0 deterministic,zero model/augmentation/support/evaluation RNG. Local synthetic RNG20261017161 only.",
+      "k": null,
+      "scenario": "clean fitL only,noAs/target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": null,
+      "fl_rounds": null,
+      "budget_ref": "5040 selectedL statistic reads;0models/NN/CP/updates;CPU2;no E20 consumed",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01/repeatcorr-fitRX3_4_6_8",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_repeatcorr_crossfit_20261016_r01/dispatcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_repeatcorr_crossfit_20261016_r01/experiments/cvs_source_repeatcorr/runner.py",
+      "expected_artifacts": [
+        "execution.json",
+        "ROW/resolved_config.json",
+        "ROW/source_repeatcorr_statistics.npz (private,noIQ or Git)",
+        "ROW/summary.json",
+        "completion.json",
+        "dispatcher.log",
+        "all18fold and4RX risks",
+        "quality/repeatability figure",
+        "same-run independent recount"
+      ],
+      "config": {
+        "schema": "source_repeat_difference_lag1_crossfit_v1",
+        "run_id": "20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01",
+        "launch_owner": "codex/root/source-repeatcorr-crossfit-20261016",
+        "row_id": "repeatcorr-fitRX3_4_6_8",
+        "arm": "repeatcorr",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01/repeatcorr-fitRX3_4_6_8",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "reference_metadata": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source",
+        "source_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "held_RX1_used": false,
+        "L_packets": 5040,
+        "packets_per_cell": 70,
+        "observation": {
+          "IQ_length": 256,
+          "window": [
+            80,
+            160
+          ],
+          "period": 20,
+          "cycle_count": 4,
+          "phase": "unit pooled adjacent-cycle complex correlation; no amplitude fit",
+          "residuals": "(cycle1-q*cycle0)/sqrt2 and (cycle3-q*cycle2)/sqrt2; disjoint pairs",
+          "descriptor": "Complex normalized lag1 correlation within each20-point difference; no joining across residual-pair boundaries or demeaning",
+          "validity": "Residual/preamble power ratio>1e-12 and positive adjacent covariance denominator. Undefined rho stored0 with valid=false; any undefined packet fails; no dropping.",
+          "claim": "Repeated-difference residual, not verified pure RX noise; TX transients, propagation and preexisting processing can remain"
+        },
+        "cell_effect": "Mean complex rho in each TX/RX/day minus mean over4 RX in same TX/day",
+        "crossfit": "18fold simultaneously leaveTX AND day; predict from other5TX x other2days; null zero RX effect; 3 cyclic RX mismatches",
+        "primary": {
+          "all_valid_packets": true,
+          "coherence_p10_min": 0.8,
+          "each_RX_median_residual_ratio_max": 0.1,
+          "aggregate_risk_reduction_min": 0.1,
+          "positive_folds_min": 14,
+          "each_RX_gain_min": 0.0,
+          "correct_over_best_wrong_min": 0.02,
+          "TX_half_profile_cosine_min": 0.8,
+          "median_RX_profile_absolute_rho_min": 0.05,
+          "RX_pair_profile_distance_p95_min": 0.05
+        },
+        "on_fail": "Close fixed repeat-difference lag1 coloration direction; no period/window/lag/statistic/TX/day/RX/threshold rescue",
+        "on_pass": "Only supports separately registered bounded colored-versus-white IQ training on F+CROSS_RX/E20; not automatic training, pureRX/label-preservation or Ag efficacy proof",
+        "fixed_network": "F+CROSS_RX/SIG_TIME_X3/CENTER_25K/CENTER_UNITS/joint160/defaultcos30/NoExplicitCFO unchanged; no model here",
+        "device": "CPU",
+        "CPU_threads": 2,
+        "CUDA_VISIBLE_DEVICES": "",
+        "new_models": 0,
+        "model_seed": null,
+        "model_forwards": 0,
+        "checkpoint_loads": 0,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "U_used": false,
+        "V_used": false,
+        "target_access": false,
+        "source_only": true,
+        "channel_generation": false,
+        "formal_test_changed": false,
+        "automatic_training": false,
+        "goal_completed": false
+      }
+    }
+  ],
+  "notes": [
+    "OriginalL6300 carrier/cache includes unused source-role objects on deserialization; only exactC0 fitL5040 IQ and trueL TX enter descriptor,heldRX1/U/V values unused.",
+    "Repeated differences can contain TX transients/propagation/old processing. RX association is not causal hardware separation or identity-label-preservation proof.",
+    "Fixed80:160/period20/lag1,disjoint residual pairs and no demeaning. Undefined rho sentinel0 flagged;any undefined fails,no packet deletion.",
+    "No prediction pretext/decoder/feature alignment,unlike closed visible-period/null-reference routes. Closed slope/DC/frequency/WHITE30/RXMIX/OJ24/C4/curriculum results retained,no rescue.",
+    "PASS only supports separately registered same-power white/color IQ identity training on currentF+CROSS_RX E20; no automatic training or target.",
+    "G0 no model/checkpoint so ownCP smoke is NOT_APPLICABLE,do not load unrelated state. One CPU publication/ordinary-account preflight/archive comparison/compile/poststate.",
+    "Current exec_command boundary ignored selected native shell and invoked prohibitedpwsh; subsequent local actions use Node execFile shell=false and verified project Python,without installation."
+  ],
+  "registered_at": "2026-10-15T17:39:01+00:00"
+}
