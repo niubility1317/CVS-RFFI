@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：保留基线监督的 additive As 源域反证
 
-状态：PLANNED，尚未启动。唯一假设：完整保留原有 raw/ordinary 损失，再追加一次完整 practical(raw) 监督，能在不牺牲 clean 的条件下改善未见源 RX 的 urban，并优于单纯追加 raw 监督。此处研究 As 训练组织，不是新的物理 A_g；RDrop、SupCon 均不冒称 IQ 泛化增强。
+状态：RUNNING／VERIFIED。三组已从零启动，尚未完成训练或源评分。唯一假设：完整保留原有 raw/ordinary 损失，再追加一次完整 practical(raw) 监督，能在不牺牲 clean 的条件下改善未见源 RX 的 urban，并优于单纯追加 raw 监督。此处研究 As 训练组织，不是新的物理 A_g；RDrop、SupCon 均不冒称 IQ 泛化增强。
 
 ## 依据与既有负结果
 
@@ -60,3 +60,16 @@ CWD：/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_additiveA
 一轮N607 preflight、一个release归档本远端SHA比较、remote compile，dispatcher第一步真实CP无query smoke通过即继续。协议/初始化/角色/预算/输出碰撞/系统性非有限/无法产生合法prediction为技术失败：保存partial，取消pending，健康worker自然完成，不自动重试。科学负分不触发停止、重启、改配方。
 
 产物：每row实际args/resolved/roles/init/frozen、私有scratch/final checkpoint、完整stdout和20轮日志、4440步native/view/Sincunit和L/U序列、As全覆盖、固定七视图prediction、result/completion或failure、独立同row分析与汇总图。IQ、权重、逐包轨迹、日志及机器私有信息不入Git；小型汇总、配置和报告提交推送。
+
+
+## 实际发布与启动读回
+
+执行commit 7f398321cd2ffd2c2d2cb11f52f67bfd8c44987b 已推送，远端OID与本地HEAD独立比对一致。归档单次本远端SHA比对、remote compile VERIFIED；匹配真实CP noquery smoke PASS。dispatcher和三worker的PID/CWD/argv/CUDA环境、实际GPU进程以及日志增长独立核实VERIFIED。三行真实seed2026092701，20/13/7，sourceRX1 fold，无baseline/teacher父权重；resolved为8L前向、保留base raw.75/ordinary.25及extra raw0/raw.25/As.25，updates4440。
+
+- D00-RX1-s2026092701：GPU0，观察完整step437/4440，E2/20；stdout11672字节。仅为运行进度，无最终识别结论。
+
+- D_raw-RX1-s2026092701：GPU1，观察完整step390/4440，E2/20；stdout11693字节。仅为运行进度，无最终识别结论。
+
+- D_As-RX1-s2026092701：GPU2，观察完整step207/4440，E1/20；stdout6516字节。仅为运行进度，无最终识别结论。
+
+仅修改本轮本地报告和状态，不改已发布训练release，不重复启动同run。完整联合目标仍未完成。

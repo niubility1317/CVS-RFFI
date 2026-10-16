@@ -132,3 +132,6 @@ PA旁路两组E20及七源视图已完整ANALYZED/VERIFIED，原条件FAIL固定
 
 
 已实现并登记 additive As 源反证 20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01：固定RX1/seed01三组scratchE20/8L前向，完整保留原raw.75＋ordinary.25；分别追加raw0/raw.25/完整As(raw).25。20负例/3858合成NN/3合成更新PASS，一次P0/P1审查PASS；当前F的trackedBN为0。最后E20预算元数据已更正，尚未启动。须同时胜过两个对照并保护clean/practical；失败关闭固定方案，不宣称新Ag或联合成功。
+
+
+上述三组additive As源反证已发布并实际运行；执行commit 7f398321cd2ffd2c2d2cb11f52f67bfd8c44987b，Git远端OID/归档/编译/真实CPsmoke及三worker进程、参数、GPU和日志增长VERIFIED。各组固定20/13/7、4440更新、8L前向/保留原base raw.75；尚未完成训练、源预测或独立评分。

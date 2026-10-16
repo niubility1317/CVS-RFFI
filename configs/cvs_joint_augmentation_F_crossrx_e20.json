@@ -133,7 +133,7 @@
   "next_source_hypothesis": {
     "name": "Add full practical supervision without reducing any existing baseline raw/ordinary loss,with extra-forward and repeated-raw-loss controls",
     "type": "As training organization,not new Ag or reopening fixed replacement ratio",
-    "status": "REGISTERED_NOT_LAUNCHED",
+    "status": "RUNNING_SOURCE_E20_NO_RESULT_YET",
     "basis": "Actual oldAs hook reduces rawtotal.75->.50 despite mainraw.50 fixed;this is a comparison confound,not a proved cause",
     "baseline": "F+CROSS_RX originalPA/shift/U/defaultcos/NoExplicitCFO,all common base raw.75+ordinary.25 retained",
     "minimum": {
@@ -235,7 +235,8 @@
     },
     "implemented": true,
     "model_epochs": 60,
-    "optimizer_updates": 13320
+    "optimizer_updates": 13320,
+    "execution_commit": "7f398321cd2ffd2c2d2cb11f52f67bfd8c44987b"
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",

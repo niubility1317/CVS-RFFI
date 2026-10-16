@@ -1,0 +1,61 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "code_commit": "7f398321cd2ffd2c2d2cb11f52f67bfd8c44987b",
+  "git_remote_OID": "VERIFIED",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_matching_checkpoint_smoke": "PASS",
+  "dispatcher_PID_CWD_argv": "VERIFIED",
+  "target_access": false,
+  "rows": [
+    {
+      "row_id": "D00-RX1-s2026092701",
+      "GPU": 0,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "actual_seed": 2026092701,
+      "actual_epochs": 20,
+      "actual_scratch": true,
+      "observed_complete_step": 437,
+      "observed_epoch": 2,
+      "log_bytes": 11672,
+      "step_log_growth_verified": true,
+      "As_training": false,
+      "base_raw_total_weight": 0.75,
+      "extra_weight": 0.0,
+      "L_forwards": 8
+    },
+    {
+      "row_id": "D_raw-RX1-s2026092701",
+      "GPU": 1,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "actual_seed": 2026092701,
+      "actual_epochs": 20,
+      "actual_scratch": true,
+      "observed_complete_step": 390,
+      "observed_epoch": 2,
+      "log_bytes": 11693,
+      "step_log_growth_verified": true,
+      "As_training": false,
+      "base_raw_total_weight": 0.75,
+      "extra_weight": 0.25,
+      "L_forwards": 8
+    },
+    {
+      "row_id": "D_As-RX1-s2026092701",
+      "GPU": 2,
+      "PID_CWD_argv_GPU": "VERIFIED",
+      "actual_seed": 2026092701,
+      "actual_epochs": 20,
+      "actual_scratch": true,
+      "observed_complete_step": 207,
+      "observed_epoch": 1,
+      "log_bytes": 6516,
+      "step_log_growth_verified": true,
+      "As_training": true,
+      "base_raw_total_weight": 0.75,
+      "extra_weight": 0.25,
+      "L_forwards": 8
+    }
+  ],
+  "independent_analysis": "Prepared/compiled;0completed predictions scored;runtime CE separated from common/additive objectives"
+}
