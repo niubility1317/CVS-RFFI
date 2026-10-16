@@ -1,0 +1,890 @@
+{
+  "status": "COMPLETED_SOURCE_ROW_ANALYZED",
+  "run_id": "20261017-phase1-F-crossRX-practicalMC2-sourceRX1-e20-s2026092701-m3-r01",
+  "scores": {
+    "M00": {
+      "clean": {
+        "count": 1260,
+        "accuracy": 0.7984126984126985,
+        "macro_F1": 0.7927523324905388,
+        "confusion": [
+          [
+            182,
+            19,
+            3,
+            1,
+            5,
+            0
+          ],
+          [
+            0,
+            179,
+            0,
+            29,
+            1,
+            1
+          ],
+          [
+            13,
+            0,
+            109,
+            0,
+            0,
+            88
+          ],
+          [
+            3,
+            80,
+            0,
+            126,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            210,
+            0
+          ],
+          [
+            0,
+            0,
+            7,
+            3,
+            0,
+            200
+          ]
+        ]
+      },
+      "practical_high": {
+        "count": 1260,
+        "accuracy": 0.37063492063492065,
+        "macro_F1": 0.2628693311567242,
+        "confusion": [
+          [
+            7,
+            1,
+            125,
+            48,
+            29,
+            0
+          ],
+          [
+            2,
+            3,
+            0,
+            157,
+            45,
+            3
+          ],
+          [
+            1,
+            0,
+            83,
+            1,
+            120,
+            5
+          ],
+          [
+            5,
+            2,
+            10,
+            179,
+            14,
+            0
+          ],
+          [
+            1,
+            0,
+            4,
+            15,
+            189,
+            1
+          ],
+          [
+            0,
+            0,
+            118,
+            0,
+            86,
+            6
+          ]
+        ]
+      },
+      "practical_mid": {
+        "count": 1260,
+        "accuracy": 0.36666666666666664,
+        "macro_F1": 0.2690271368330249,
+        "confusion": [
+          [
+            8,
+            1,
+            116,
+            49,
+            33,
+            3
+          ],
+          [
+            13,
+            5,
+            3,
+            136,
+            49,
+            4
+          ],
+          [
+            3,
+            0,
+            93,
+            1,
+            102,
+            11
+          ],
+          [
+            8,
+            2,
+            13,
+            167,
+            19,
+            1
+          ],
+          [
+            2,
+            2,
+            2,
+            21,
+            182,
+            1
+          ],
+          [
+            1,
+            0,
+            124,
+            0,
+            78,
+            7
+          ]
+        ]
+      },
+      "practical_low_suburban": {
+        "count": 1260,
+        "accuracy": 0.3396825396825397,
+        "macro_F1": 0.25832379161558305,
+        "confusion": [
+          [
+            9,
+            1,
+            116,
+            45,
+            35,
+            4
+          ],
+          [
+            11,
+            6,
+            8,
+            125,
+            52,
+            8
+          ],
+          [
+            3,
+            5,
+            91,
+            6,
+            95,
+            10
+          ],
+          [
+            15,
+            2,
+            19,
+            137,
+            31,
+            6
+          ],
+          [
+            6,
+            1,
+            12,
+            15,
+            174,
+            2
+          ],
+          [
+            0,
+            0,
+            112,
+            2,
+            85,
+            11
+          ]
+        ]
+      },
+      "practical_high_urban": {
+        "count": 1260,
+        "accuracy": 0.3738095238095238,
+        "macro_F1": 0.27534082195118886,
+        "confusion": [
+          [
+            8,
+            1,
+            124,
+            44,
+            33,
+            0
+          ],
+          [
+            8,
+            4,
+            3,
+            145,
+            45,
+            5
+          ],
+          [
+            2,
+            1,
+            83,
+            6,
+            112,
+            6
+          ],
+          [
+            5,
+            2,
+            6,
+            185,
+            11,
+            1
+          ],
+          [
+            5,
+            2,
+            4,
+            16,
+            179,
+            4
+          ],
+          [
+            2,
+            1,
+            110,
+            0,
+            85,
+            12
+          ]
+        ]
+      },
+      "practical_mid_urban": {
+        "count": 1260,
+        "accuracy": 0.30952380952380953,
+        "macro_F1": 0.2564941052873874,
+        "confusion": [
+          [
+            13,
+            2,
+            93,
+            36,
+            55,
+            11
+          ],
+          [
+            13,
+            9,
+            9,
+            104,
+            57,
+            18
+          ],
+          [
+            16,
+            5,
+            68,
+            16,
+            89,
+            16
+          ],
+          [
+            18,
+            4,
+            15,
+            130,
+            32,
+            11
+          ],
+          [
+            15,
+            9,
+            13,
+            18,
+            145,
+            10
+          ],
+          [
+            3,
+            2,
+            104,
+            1,
+            75,
+            25
+          ]
+        ]
+      },
+      "practical_low_urban": {
+        "count": 1260,
+        "accuracy": 0.2706349206349206,
+        "macro_F1": 0.23452033621574464,
+        "confusion": [
+          [
+            24,
+            5,
+            78,
+            30,
+            55,
+            18
+          ],
+          [
+            28,
+            9,
+            21,
+            64,
+            69,
+            19
+          ],
+          [
+            15,
+            9,
+            65,
+            21,
+            77,
+            23
+          ],
+          [
+            24,
+            8,
+            21,
+            94,
+            47,
+            16
+          ],
+          [
+            21,
+            4,
+            21,
+            21,
+            129,
+            14
+          ],
+          [
+            11,
+            4,
+            88,
+            6,
+            81,
+            20
+          ]
+        ]
+      }
+    }
+  },
+  "execution": {
+    "M00": {
+      "full_steps": 4440,
+      "full_epochs": 20,
+      "stdout_lines": 800,
+      "native_nonfinite_placeholder_fields": [],
+      "max_loss_recount_error": 2.980232238769531e-07,
+      "L_forward_packets": 5683200,
+      "extra_L_forward_packets": 2273280,
+      "ordinary_generated_packets": 568320,
+      "As_generated_packets": 0,
+      "As_generated_by_slot": [
+        0,
+        0
+      ],
+      "As_supervised_pair_observations": 0,
+      "coverage_by_slot": [],
+      "coverage_recount_scope": "Per-step scene/state/lock marginals crosschecked against jointcoverage;full perpacket TX/state mapping not stored",
+      "MC1_equal_seed_count": 0,
+      "mean_extra_view_difference_MSE": 0.0,
+      "teacher_MC2_calls": 0,
+      "physical_observations": {
+        "L": 568320,
+        "U": 396368
+      },
+      "unique_physical_training": {
+        "L": 5040,
+        "U": 45360
+      },
+      "teacher_inherited_counter_offset_removed": 2,
+      "instrumented_counters": {
+        "student_train_forward_packets": 6079568,
+        "student_eval_forward_packets": 475202,
+        "teacher_train_forward_packets": 0,
+        "teacher_eval_forward_packets": 396370
+      },
+      "actual_network_forward_packets": 6959958,
+      "held_forward_packets": 8820,
+      "elapsed_training_seconds": 1554.4522972106934,
+      "final_native_logged_first_ordinary_CE": 0.26023448020354045,
+      "final_base_L_objective": 0.308815741525577,
+      "final_extra_pair_mean_objective": 0.09748137228795,
+      "seen_V": {
+        "source_val_count": 21600,
+        "source_val_accuracy": 0.9803703703703703,
+        "source_val_rx_accuracy": {
+          "3": 0.9546296296296296,
+          "4": 0.9853703703703703,
+          "6": 0.9959259259259259,
+          "8": 0.9855555555555555
+        },
+        "source_val_worst_rx": 0.9546296296296296,
+        "held_RX_excluded": true
+      },
+      "tracked_BN_module_names": [],
+      "extra_BN_updates": 0,
+      "actual_channel": {
+        "channel_file": "adv3b02_xuc/code/leo_practical/channel.py",
+        "residual_file": "adv3b02_xuc/code/leo_practical/residual.py",
+        "actual_configs": {
+          "practical_high": {
+            "fs_hz": 25000000.0,
+            "scenario": "practical_high",
+            "fc_hz": 2462000000.0,
+            "altitude_m": 600000.0,
+            "reference_altitude_m": 600000.0,
+            "reference_elevation_deg": 60.0,
+            "reference_snr_db": 30.0,
+            "receiver_cfo_std_hz": 200.0,
+            "residual_cfo_std_hz": 100.0,
+            "phase_noise_linewidth_hz": 1.0,
+            "iq_amp_max_db": 0.2,
+            "iq_phase_max_deg": 1.0,
+            "shadow_corr_distance_m": 3.0,
+            "terminal_speed_mps": 1.0,
+            "shadow_corr_time_s": null,
+            "state_mix_time_s": 1.0,
+            "scatter_doppler_hz": null,
+            "scatter_sinusoids": 32,
+            "los_mean_db": [
+              0.0,
+              -8.0,
+              0.0
+            ],
+            "los_std_db": [
+              1.0,
+              3.0,
+              0.0
+            ],
+            "diffuse_power_db": [
+              -18.0,
+              -18.0,
+              -20.0
+            ],
+            "rms_delay_ns": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "input_processing_state": "unknown_ground_recording_processing",
+            "iq_compensation_enabled": true,
+            "iq_estimation_amp_std_db": 0.05,
+            "iq_estimation_phase_std_deg": 0.2,
+            "phase_tracking_enabled": true,
+            "phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_correlation_time_s": 0.001,
+            "agc_enabled": true,
+            "agc_limit_db": 30.0,
+            "boundary": "reflect",
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "local_geometry_max_duration_s": 10.0,
+            "quality_adaptation_enabled": true,
+            "locked_snr_db": 15.0,
+            "unlocked_snr_db": 5.0,
+            "quality_reference_snr_db": 20.0,
+            "max_residual_scale": 10.0,
+            "coarse_doppler_error_std_hz": 500.0,
+            "fractional_delay_half_length": 24,
+            "processing_route": "residual",
+            "equalization_enabled": false,
+            "equalizer_method": "mmse",
+            "equalizer_length": 129,
+            "equalizer_delay_samples": 64,
+            "equalizer_max_gain_db": 20.0,
+            "channel_estimation_nmse_db": -25.0,
+            "zf_regularization": 1e-06
+          },
+          "practical_mid": {
+            "fs_hz": 25000000.0,
+            "scenario": "practical_mid",
+            "fc_hz": 2462000000.0,
+            "altitude_m": 600000.0,
+            "reference_altitude_m": 600000.0,
+            "reference_elevation_deg": 60.0,
+            "reference_snr_db": 30.0,
+            "receiver_cfo_std_hz": 200.0,
+            "residual_cfo_std_hz": 100.0,
+            "phase_noise_linewidth_hz": 1.0,
+            "iq_amp_max_db": 0.2,
+            "iq_phase_max_deg": 1.0,
+            "shadow_corr_distance_m": 3.0,
+            "terminal_speed_mps": 1.0,
+            "shadow_corr_time_s": null,
+            "state_mix_time_s": 1.0,
+            "scatter_doppler_hz": null,
+            "scatter_sinusoids": 32,
+            "los_mean_db": [
+              0.0,
+              -8.0,
+              0.0
+            ],
+            "los_std_db": [
+              1.0,
+              3.0,
+              0.0
+            ],
+            "diffuse_power_db": [
+              -18.0,
+              -18.0,
+              -20.0
+            ],
+            "rms_delay_ns": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "input_processing_state": "unknown_ground_recording_processing",
+            "iq_compensation_enabled": true,
+            "iq_estimation_amp_std_db": 0.05,
+            "iq_estimation_phase_std_deg": 0.2,
+            "phase_tracking_enabled": true,
+            "phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_correlation_time_s": 0.001,
+            "agc_enabled": true,
+            "agc_limit_db": 30.0,
+            "boundary": "reflect",
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "local_geometry_max_duration_s": 10.0,
+            "quality_adaptation_enabled": true,
+            "locked_snr_db": 15.0,
+            "unlocked_snr_db": 5.0,
+            "quality_reference_snr_db": 20.0,
+            "max_residual_scale": 10.0,
+            "coarse_doppler_error_std_hz": 500.0,
+            "fractional_delay_half_length": 24,
+            "processing_route": "residual",
+            "equalization_enabled": false,
+            "equalizer_method": "mmse",
+            "equalizer_length": 129,
+            "equalizer_delay_samples": 64,
+            "equalizer_max_gain_db": 20.0,
+            "channel_estimation_nmse_db": -25.0,
+            "zf_regularization": 1e-06
+          },
+          "practical_low_suburban": {
+            "fs_hz": 25000000.0,
+            "scenario": "practical_low_suburban",
+            "fc_hz": 2462000000.0,
+            "altitude_m": 600000.0,
+            "reference_altitude_m": 600000.0,
+            "reference_elevation_deg": 60.0,
+            "reference_snr_db": 30.0,
+            "receiver_cfo_std_hz": 200.0,
+            "residual_cfo_std_hz": 100.0,
+            "phase_noise_linewidth_hz": 1.0,
+            "iq_amp_max_db": 0.2,
+            "iq_phase_max_deg": 1.0,
+            "shadow_corr_distance_m": 3.0,
+            "terminal_speed_mps": 1.0,
+            "shadow_corr_time_s": null,
+            "state_mix_time_s": 1.0,
+            "scatter_doppler_hz": null,
+            "scatter_sinusoids": 32,
+            "los_mean_db": [
+              0.0,
+              -8.0,
+              0.0
+            ],
+            "los_std_db": [
+              1.0,
+              3.0,
+              0.0
+            ],
+            "diffuse_power_db": [
+              -18.0,
+              -18.0,
+              -20.0
+            ],
+            "rms_delay_ns": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "input_processing_state": "unknown_ground_recording_processing",
+            "iq_compensation_enabled": true,
+            "iq_estimation_amp_std_db": 0.05,
+            "iq_estimation_phase_std_deg": 0.2,
+            "phase_tracking_enabled": true,
+            "phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_correlation_time_s": 0.001,
+            "agc_enabled": true,
+            "agc_limit_db": 30.0,
+            "boundary": "reflect",
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "local_geometry_max_duration_s": 10.0,
+            "quality_adaptation_enabled": true,
+            "locked_snr_db": 15.0,
+            "unlocked_snr_db": 5.0,
+            "quality_reference_snr_db": 20.0,
+            "max_residual_scale": 10.0,
+            "coarse_doppler_error_std_hz": 500.0,
+            "fractional_delay_half_length": 24,
+            "processing_route": "residual",
+            "equalization_enabled": false,
+            "equalizer_method": "mmse",
+            "equalizer_length": 129,
+            "equalizer_delay_samples": 64,
+            "equalizer_max_gain_db": 20.0,
+            "channel_estimation_nmse_db": -25.0,
+            "zf_regularization": 1e-06
+          },
+          "practical_high_urban": {
+            "fs_hz": 25000000.0,
+            "scenario": "practical_high_urban",
+            "fc_hz": 2462000000.0,
+            "altitude_m": 600000.0,
+            "reference_altitude_m": 600000.0,
+            "reference_elevation_deg": 60.0,
+            "reference_snr_db": 30.0,
+            "receiver_cfo_std_hz": 200.0,
+            "residual_cfo_std_hz": 100.0,
+            "phase_noise_linewidth_hz": 1.0,
+            "iq_amp_max_db": 0.2,
+            "iq_phase_max_deg": 1.0,
+            "shadow_corr_distance_m": 3.0,
+            "terminal_speed_mps": 1.0,
+            "shadow_corr_time_s": null,
+            "state_mix_time_s": 1.0,
+            "scatter_doppler_hz": null,
+            "scatter_sinusoids": 32,
+            "los_mean_db": [
+              0.0,
+              -8.0,
+              0.0
+            ],
+            "los_std_db": [
+              1.0,
+              3.0,
+              0.0
+            ],
+            "diffuse_power_db": [
+              -18.0,
+              -18.0,
+              -20.0
+            ],
+            "rms_delay_ns": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "input_processing_state": "unknown_ground_recording_processing",
+            "iq_compensation_enabled": true,
+            "iq_estimation_amp_std_db": 0.05,
+            "iq_estimation_phase_std_deg": 0.2,
+            "phase_tracking_enabled": true,
+            "phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_correlation_time_s": 0.001,
+            "agc_enabled": true,
+            "agc_limit_db": 30.0,
+            "boundary": "reflect",
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "local_geometry_max_duration_s": 10.0,
+            "quality_adaptation_enabled": true,
+            "locked_snr_db": 15.0,
+            "unlocked_snr_db": 5.0,
+            "quality_reference_snr_db": 20.0,
+            "max_residual_scale": 10.0,
+            "coarse_doppler_error_std_hz": 500.0,
+            "fractional_delay_half_length": 24,
+            "processing_route": "residual",
+            "equalization_enabled": false,
+            "equalizer_method": "mmse",
+            "equalizer_length": 129,
+            "equalizer_delay_samples": 64,
+            "equalizer_max_gain_db": 20.0,
+            "channel_estimation_nmse_db": -25.0,
+            "zf_regularization": 1e-06
+          },
+          "practical_mid_urban": {
+            "fs_hz": 25000000.0,
+            "scenario": "practical_mid_urban",
+            "fc_hz": 2462000000.0,
+            "altitude_m": 600000.0,
+            "reference_altitude_m": 600000.0,
+            "reference_elevation_deg": 60.0,
+            "reference_snr_db": 30.0,
+            "receiver_cfo_std_hz": 200.0,
+            "residual_cfo_std_hz": 100.0,
+            "phase_noise_linewidth_hz": 1.0,
+            "iq_amp_max_db": 0.2,
+            "iq_phase_max_deg": 1.0,
+            "shadow_corr_distance_m": 3.0,
+            "terminal_speed_mps": 1.0,
+            "shadow_corr_time_s": null,
+            "state_mix_time_s": 1.0,
+            "scatter_doppler_hz": null,
+            "scatter_sinusoids": 32,
+            "los_mean_db": [
+              0.0,
+              -8.0,
+              0.0
+            ],
+            "los_std_db": [
+              1.0,
+              3.0,
+              0.0
+            ],
+            "diffuse_power_db": [
+              -18.0,
+              -18.0,
+              -20.0
+            ],
+            "rms_delay_ns": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "input_processing_state": "unknown_ground_recording_processing",
+            "iq_compensation_enabled": true,
+            "iq_estimation_amp_std_db": 0.05,
+            "iq_estimation_phase_std_deg": 0.2,
+            "phase_tracking_enabled": true,
+            "phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_correlation_time_s": 0.001,
+            "agc_enabled": true,
+            "agc_limit_db": 30.0,
+            "boundary": "reflect",
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "local_geometry_max_duration_s": 10.0,
+            "quality_adaptation_enabled": true,
+            "locked_snr_db": 15.0,
+            "unlocked_snr_db": 5.0,
+            "quality_reference_snr_db": 20.0,
+            "max_residual_scale": 10.0,
+            "coarse_doppler_error_std_hz": 500.0,
+            "fractional_delay_half_length": 24,
+            "processing_route": "residual",
+            "equalization_enabled": false,
+            "equalizer_method": "mmse",
+            "equalizer_length": 129,
+            "equalizer_delay_samples": 64,
+            "equalizer_max_gain_db": 20.0,
+            "channel_estimation_nmse_db": -25.0,
+            "zf_regularization": 1e-06
+          },
+          "practical_low_urban": {
+            "fs_hz": 25000000.0,
+            "scenario": "practical_low_urban",
+            "fc_hz": 2462000000.0,
+            "altitude_m": 600000.0,
+            "reference_altitude_m": 600000.0,
+            "reference_elevation_deg": 60.0,
+            "reference_snr_db": 30.0,
+            "receiver_cfo_std_hz": 200.0,
+            "residual_cfo_std_hz": 100.0,
+            "phase_noise_linewidth_hz": 1.0,
+            "iq_amp_max_db": 0.2,
+            "iq_phase_max_deg": 1.0,
+            "shadow_corr_distance_m": 3.0,
+            "terminal_speed_mps": 1.0,
+            "shadow_corr_time_s": null,
+            "state_mix_time_s": 1.0,
+            "scatter_doppler_hz": null,
+            "scatter_sinusoids": 32,
+            "los_mean_db": [
+              0.0,
+              -8.0,
+              0.0
+            ],
+            "los_std_db": [
+              1.0,
+              3.0,
+              0.0
+            ],
+            "diffuse_power_db": [
+              -18.0,
+              -18.0,
+              -20.0
+            ],
+            "rms_delay_ns": [
+              20.0,
+              50.0,
+              100.0
+            ],
+            "mode": "post_sync",
+            "receiver_location": "satellite",
+            "input_processing_state": "unknown_ground_recording_processing",
+            "iq_compensation_enabled": true,
+            "iq_estimation_amp_std_db": 0.05,
+            "iq_estimation_phase_std_deg": 0.2,
+            "phase_tracking_enabled": true,
+            "phase_tracking_residual_std_deg": 1.0,
+            "phase_tracking_correlation_time_s": 0.001,
+            "agc_enabled": true,
+            "agc_limit_db": 30.0,
+            "boundary": "reflect",
+            "atmosphere_loss_db": 0.0,
+            "atmosphere_source": "clear_simplified_no_weather_injection",
+            "local_geometry_max_duration_s": 10.0,
+            "quality_adaptation_enabled": true,
+            "locked_snr_db": 15.0,
+            "unlocked_snr_db": 5.0,
+            "quality_reference_snr_db": 20.0,
+            "max_residual_scale": 10.0,
+            "coarse_doppler_error_std_hz": 500.0,
+            "fractional_delay_half_length": 24,
+            "processing_route": "residual",
+            "equalization_enabled": false,
+            "equalizer_method": "mmse",
+            "equalizer_length": 129,
+            "equalizer_delay_samples": 64,
+            "equalizer_max_gain_db": 20.0,
+            "channel_estimation_nmse_db": -25.0,
+            "zf_regularization": 1e-06
+          }
+        },
+        "EQ_off_G_one": true,
+        "formal_test_unchanged": true
+      },
+      "stdout_warning_count": 0
+    }
+  },
+  "target_access": false,
+  "comparison_available": false,
+  "actual_execution": "VERIFIED",
+  "overall_run_status": "RUNNING",
+  "completed_source_rows": 1,
+  "expected_source_rows": 3,
+  "scientific_qualification": "PENDING_BOTH_AS_ROWS",
+  "new_Ag": false,
+  "joint_goal_complete": false,
+  "received_IQ_bytes_compared": false
+}

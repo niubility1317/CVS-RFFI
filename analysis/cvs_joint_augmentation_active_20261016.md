@@ -189,3 +189,6 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 practical MC2 三组E20已实际 RUNNING/VERIFIED；执行commit 8c55f5f542a6a28b699156859f31345b9d15f76a，归档／编译／匹配CP smoke与worker进程、实际参数、GPU、日志增长均已核实。固定10 L前向／原base .75raw/.25ordinary／extra两对各.125；原U不变。当前无冻结源评分，As采样组织有效性和联合目标均未证明。
+
+
+MC2首行M00已source-only ANALYZED/VERIFIED：E20/4440更新/7视图8820预测，clean79.841270%、lowurban27.063492%，NN6959958。另两As行仍健康运行，未作科学资格判断，参数/预算/门槛保持。整体和联合目标均未完成。

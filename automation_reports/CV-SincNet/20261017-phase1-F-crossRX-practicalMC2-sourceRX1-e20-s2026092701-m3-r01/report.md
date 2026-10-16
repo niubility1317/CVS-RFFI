@@ -72,3 +72,20 @@ run_id：20261017-phase1-F-crossRX-practicalMC2-sourceRX1-e20-s2026092701-m3-r01
 - M_repeat-RX1-s2026092701：GPU 1，观察完整 step 209/4440，E1/20。仅为运行证据，无最终识别结论。
 
 - M_independent-RX1-s2026092701：GPU 2，观察完整 step 157/4440，E1/20。仅为运行证据，无最终识别结论。
+
+
+## 首行完成：M00
+
+M00 raw/raw 对照已自然退出，final20 冻结后源 RX1-held 的 clean＋六 practical 全部完成。独立复算全部20轮、4440步、L/U物理序列、8820个固定硬预测和成本，0新增NN／0更新／0target。另两条As行仍运行，保持原参数、预算和判据；本段不作候选晋级或假设成败判断。
+
+| 源视图 | accuracy % | MacroF1 % |
+|---|---:|---:|
+| clean | 79.841270 | 79.275233 |
+| practical_high | 37.063492 | 26.286933 |
+| practical_mid | 36.666667 | 26.902714 |
+| practical_low_suburban | 33.968254 | 25.832379 |
+| practical_high_urban | 37.380952 | 27.534082 |
+| practical_mid_urban | 30.952381 | 25.649411 |
+| practical_low_urban | 27.063492 | 23.452034 |
+
+实际NN包前向6959958（含学生／自身EMA／seenV／held读出，扣除teacher继承仪表offset2），L5683200／extra2273280，As生成0；一次dispatcher合成smoke2尚不并入单行。final共同base目标0.30881574，仅为健康信息。每视图同1260物理样本，不能将8820次决策视为独立样本。完整聚合见source_partial_analysis.json，完整三行结论待两条As行完成。
