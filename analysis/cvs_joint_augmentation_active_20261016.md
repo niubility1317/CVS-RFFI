@@ -255,3 +255,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 非恒定相位曲率源依据 20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01 已实现登记未启动：固定80:160全78相邻三点/Complex128eps1e-12，156RI，fitL5040/72格/18组同时留TX与day；pooledMSE减少≥10%/每RX不恶化/至少15正组。29负例+7反例/266合成IQ PASS，一次P0/P1审查PASS；0模型/CP/NN/增强/更新/target。仅源RX关联依据，不重开commonphase/featurecurvature/cyclecov/AWGN失败路线，联合目标ACTIVE。
+
+
+非恒定相位曲率源依据 20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01 已完整ANALYZED／VERIFIED：PASS_SOURCE_RX_ASSOCIATION_ONLY，pooledMSE减少91.368334%，每RX正、18/18heldTX/day正；5040×156观察/72格均值方差/18全向量风险独立复算一致。0CP/NN/更新/新IQ/target。描述性最佳逐点相位只能解释76.452086%源均值差，主值积分的大差异RX对RMS约1.28至1.38rad，尚不支持轻度相位模板回放；不是全局幅度不可能性证明。没有固定新IQ算子/范围、身份保护或E20，旧commonphase/featurecurvature/cyclecov/AWGN失败保持关闭。F＋跨RX同TX底座不变；联合目标ACTIVE。

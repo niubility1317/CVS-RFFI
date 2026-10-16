@@ -1,19 +1,97 @@
-# 非恒定相位形态：跨 TX/day 的 RX 相关源依据
+# 相位曲率源依据：结果及可实现性边界
 
-PLANNED，尚未启动。固定候选／矩阵见[experiment.json](experiment.json)，此前来源与边界见[研究说明](../../../analysis/cvs_phase_curvature_source_basis_20261017.md)。本轮只有一个统计row，非IQ增强或训练；0模型/CP/NN/优化器/教师/头拟合/新IQ视图/target，不替代最终身份识别目标。F＋跨RX同TX／3SIG_TIME／统一Sinc／joint160／NoExplicitCFO／默认cosine头正常联合训练／E20边界不变。
+**ANALYZED／VERIFIED：PASS_SOURCE_RX_ASSOCIATION_ONLY。** 原预登记的 RX 相关源依据检验通过。它没有生成 IQ 增强、加载网络或产生身份识别成绩，不是 A_g、A_s 或联合目标已完成。
 
-唯一问题：原接收IQ的非恒定相位形态，是否具有跨TX/day共享、可复现的RX相关分量。旧commonphase20、可训练feature phasecurvature、cycle20 covariance和孤立AWGN E20保持关闭。没有新loss/分支/补偿/分类器，不根据此分析直接宣称RX振荡器参数或域泛化。
+底座已固定为 **F＋跨 RX 同 TX 对比学习**，3 路 SIG_TIME、统一 Sinc、joint160、NoExplicitCFO、原默认 cosine 头按原流程联合训练，后续模型训练 E20；本零模型诊断不修改底座，不继承其他对话的权重或方法。其他对话的任务只作只读路线边界参考，没有发送消息、修改或干预其任务。
 
-只用原VALIDATED_ONCE载体精确fitL5040，RX3/4/6/8×day1/2/3×6TX、72格各70包。L6300及未用V/历史features反序列化，RX1 L1260在统计前排除；U只有角色ID、无IQ/TX标签。不使用U/V/heldRX1/target统计，不混同fullL6300或L_train5580/L_dev720。复用原source_contract/preparation句柄，仅核对角色，不新增数据验证/hash/allowlist。
+[原始预登记](preregistration.md)与[唯一配置／数据角色](experiment.json)保留，执行代码 commit：13abfd464f041d58a71dc2bedb27cd5f39f47917。
 
-固定输入窗口80:160，包含n80..157全部78个三点。Complex128：c[n]=z[n+1]^2 conj(z[n])conj(z[n+2])，q=c/(abs(c)+1e-12)，156维交错实虚坐标。常相位与线性CFO影响抵消；不做lag20周期假设、unwrap、wrap、过滤、clip、重采样或范围扫描。全部低能量点／零点／包保留，softmodulus、零点、逐包均值与离散程度保存。这个观测仍包含TX/信道/RX/均衡影响，不识别纯RX phase noise。
+## 固定问题、数据与计算
 
-每cell全部70包均值、总体方差；18个heldTX/day交叉组同时排除heldTX和heldday，只用其他5TX×2day的4RX均值，先在各TX/day中心化，再平均RX位移预测held组。held组中心化4RX作为实际相对位移，与零RX位移比较156维均方误差，无拟合scale/projection/身份或RX分类器。固定条件：pooled MSE至少减少10%，每RX不恶化，18个TX/day组至少15个strict正收益。任何FAIL关闭固定统计/lag/window/TX/day/RX/threshold/seed，不救跑、不自动生成增强或E20。PASS仅源关联依据，仍需独立物理合理算子、身份保持与匹配训练检验。
+问题是：原接收 IQ 的非恒定相位形态是否有跨 TX/day 稳定的源 RX 相关分量。精确 fitL5040 为 RX3/4/6/8×day1/2/3×6TX，72 格各 70 包。原缓存 L6300、未用 V 和历史特征会反序列化；RX1 原 L1260 在统计前排除。U 仅 opaque 角色 ID，无 U IQ／TX 标签。没有 U、V、heldRX1 或 target 统计；不冒充完整 L6300 或 L_train5580/L_dev720。
 
-本地29输入配置负例＋7科学反例、266合成IQ统计／5040合成metadata PASS，0realIQ/CP/NN/更新。核实常相位/线性CFO不变性、已知二次相位响应、窗口外变化无影响、零点保留、留出TX/day均排除，及无RX/跨day或TX反转/单RX恶化/仅14正组/不足10%/零风险反例。一次独立P0/P1审查PASS。零模型stage不加载checkpoint，无realCP smoke，不新增无关阶段门槛。
+只用原 IQ 窗口 80:160 的全部 78 个相邻三点。Complex128 计算 c[n]=z[n+1]^2·conj(z[n])·conj(z[n+2])，q=c/(abs(c)+1e-12)，得到 156 维交错实虚坐标。常相位和线性 CFO 在此观测中抵消；无周期20、unwrap、wrap、过滤、clip、重采样、包删除、低能量屏蔽或 IQ 修改。该统计仍含 TX、传播、接收滤波和均衡影响，不能识别纯 RX 振荡器噪声。
 
-唯一owner codex/root/F-phase-curvature-source-basis-20261017，普通N607现有CVS-RFFI Python，CPU/OMP/MKL/OpenBLAS2，CUDA_VISIBLE_DEVICES空，无GPU，不干预旧健康任务。CWD PROJECT/releases/cvs_F_phase_curvature_fitL_20261017_r01；命令CVS-RFFI/bin/python -u -m experiments.cvs_phase_curvature_basis17.run。不可变输出PROJECT/runs/20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01，日志release/source_phase_curvature_basis.stdout.log。发布入口F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_phase_curvature_basis17.publish，CWD当前managed工作树。
+每格全部 70 包求均值和总体方差。18 个 held TX/day 组同时排除该 TX 和该 day，只用其他 5TX×2day 估计四 RX 在各 TX/day 内中心化后的平均位移，预测留出组的中心化 RX 位移。零位移作基准，全部 18×4×156 坐标等权。无拟合 scale、投影、身份头或 RX 分类器。固定通过条件是 pooled MSE 至少减少 10%、每 RX 不恶化、至少 15/18 组严格正收益。
 
-Git commit为代码身份，实际写release_commit.txt/resolved；一次普通账户source句柄/空间预检、一份archive/一次传输SHA比较、remotecompile、一次launch、独立PID/CWD/argv/CUDA/loggrowth或自然终态回读。系统性角色/输入/非有限/输出碰撞/运行失败保留failure/partial，无自动重试或健康旧进程修改。
+## 完整结果
 
-期望active/resolved/completion、72cell完整均值/总体方差、18fold所有预测/实际向量和风险、全部5040×156逐包观察及零点/soft统计/源metadata、私有物理ID和stdout；独立全观察/72格/18折/固定条件/成本复算、聚合图和同row报告登记/Git。新源统计393120三点计算，0新前向或更新；IQ/权重/物理ID/逐包向量/日志不入Git，只保留聚合。联合目标ACTIVE。
+| 指标 | 实际值 |
+|---|---:|
+| 零 RX 位移基准 MSE | 0.062705402350401 |
+| 源 RX 位移预测 MSE | 0.005412521197686 |
+| pooled MSE 减少 | 91.368334% |
+| 正收益 held TX/day 组 | 18 / 18 |
+
+| RX | 留出 MSE 减少 |
+|---|---:|
+| 3 | 89.182028% |
+| 4 | 96.079148% |
+| 6 | 94.684976% |
+| 8 | 85.997282% |
+
+| held day | held TX | 基准 MSE | 预测 MSE | 减少 % |
+|---|---:|---:|---:|---:|
+| 1 | 0 | 0.072954891 | 0.012759765 | 82.510062 |
+| 1 | 1 | 0.060440357 | 0.002448526 | 95.948856 |
+| 1 | 2 | 0.058025816 | 0.003450829 | 94.052941 |
+| 1 | 3 | 0.064404914 | 0.003258523 | 94.940568 |
+| 1 | 4 | 0.060995385 | 0.005599952 | 90.819056 |
+| 1 | 5 | 0.060699373 | 0.004175478 | 93.121052 |
+| 2 | 0 | 0.061797515 | 0.004755781 | 92.304252 |
+| 2 | 1 | 0.062033600 | 0.003309054 | 94.665707 |
+| 2 | 2 | 0.062720383 | 0.003782010 | 93.970047 |
+| 2 | 3 | 0.061534048 | 0.004328559 | 92.965588 |
+| 2 | 4 | 0.063276438 | 0.008477584 | 86.602305 |
+| 2 | 5 | 0.063624932 | 0.005581184 | 91.227992 |
+| 3 | 0 | 0.067515353 | 0.006612917 | 90.205314 |
+| 3 | 1 | 0.059095994 | 0.002947134 | 95.012971 |
+| 3 | 2 | 0.061841940 | 0.004090572 | 93.385441 |
+| 3 | 3 | 0.060745821 | 0.002156931 | 96.449252 |
+| 3 | 4 | 0.064496098 | 0.011982414 | 81.421490 |
+| 3 | 5 | 0.062494385 | 0.007708167 | 87.665824 |
+
+全部 5040 包、393120 三点均保留，零三点实际为 0；逐包最小 soft modulus 的全局最小值 0.9999997625700647、逐包平均 soft modulus 全局最小值 0.9999999968936644。数值稳定项没有靠删除尾部获得通过。该结果证实共享源 RX 相关分量；不证明模型已学到它、不证明该分量是纯非身份因素，更不证明消除它会提高 TX 识别。
+
+## 同一 row 的描述性相位分解
+
+这部分只重算已经保存的 72 格均值，不读取新 IQ、不修改原判定或候选。每 RX 等权平均 18 个 TX/day 复数均值轮廓 mu_RX[n]。对六个无序 RX 对，将完整复数均值差异分解为相位可解释项和不可由逐点单位旋转消除的模长项：后者为 sum_n (|mu_a[n]|−|mu_b[n]|)^2。
+
+允许每个曲率位置独立任意旋转时，合计差异最多有 **76.452086%** 可由相位变化解释，剩余 **23.547914%** 是模长差异。q 的复均值模长反映离散程度和 soft 权重，不能解读为原 IQ 幅度或发射功率。这是无约束数学分解，没有新通过阈值，也不是物理接收机替换。
+
+进一步用每点主值相位差 d[n]=arg(mu_b[n]·conj(mu_a[n]))，递推 theta[n+2]=2theta[n+1]−theta[n]−d[n]，再去掉普通最小二乘仿射项。二阶相位响应误差全部低于 7e−15。没有搜索 2pi 整数分支、频率、窗口、系数或模板，也没有延伸到完整 256 点 IQ。
+
+| RX 对 | 最佳逐点相位解释 % | 主值积分相位 RMS rad | 最大绝对相位 rad | 最大相邻步进 rad |
+|---|---:|---:|---:|---:|
+| 3–4 | 73.759321 | 1.283762 | 2.432235 | 1.510786 |
+| 3–6 | 74.579201 | 1.278927 | 2.465942 | 1.495829 |
+| 3–8 | 37.029202 | 0.486428 | 0.836062 | 0.192381 |
+| 4–6 | 78.036439 | 0.049172 | 0.153140 | 0.066469 |
+| 4–8 | 78.586044 | 1.379354 | 2.611235 | 1.574775 |
+| 6–8 | 79.446356 | 1.366739 | 2.644942 | 1.583210 |
+
+多数差异较大的 RX 对需要相位 RMS 约 1.28 至 1.38 rad、峰值约 2.43 至 2.64 rad；对应不加波形功率权重的单位模 IQ 相对变化 RMS 约 1.12 至 1.19，并非实际源 IQ 扰动实测。RX4–6 的轨迹较小，但不能据此择优只覆盖这一对 RX 或删除其他对。
+
+因此当前结果**不足以支持直接回放源 RX 均值相位模板进入训练**。它也不是所有有界相位变换均不可能的证明：这里只使用主值分支和最小二乘仿射规约，没有计算全局最小幅度下界。不能任意缩小模板后仍声称覆盖了已观察的 RX 变化，不能把尖锐、与前导波形同步的轮廓直接命名为 LO 相位噪声。当前没有固定新 IQ 算子、幅度、身份保护候选或 E20。
+
+## 验证、执行与成本
+
+本地 29 个输入／配置负例、7 个科学反例通过：266 次合成 IQ 统计、5040 条合成 metadata；验证常相位／线性 CFO 不变性、二次相位解析响应、窗口外独立、零点保留，以及 TX/day-only、反转、单 RX 恶化、仅 14 正组、不足 10%、零风险等反例。0 real IQ／CP／NN／更新。唯一一次独立 P0/P1 审查 PASS，无新增审查或审批层；零模型阶段无 checkpoint smoke。
+
+独立 reader 未导入候选 core／判定器或网络，完整复算全部 5040×156 保存坐标的有限性、界限、逐包 soft／零点／均值／离散统计、72 格均值和总体方差、18 组全部预测和实际向量、MSE 和所有固定条件、计数及权限边界。原始 IQ 未传回或再次执行，独立复算范围如实限于保存观察；不能冒称第二次 raw IQ 字节重算。
+
+一次普通账户 N607 source 句柄／空间预检、一次归档传输 SHA 比较、remote compile 均 VERIFIED。发布器和初次独立回读实际观察到同一进程 PID／CWD／argv／CUDA 隐藏；日志从 live 时 0 bytes 到终态 688 bytes。最终自然退出、完整七产物，无 failure／重启／健康旧任务干预；没有持续 live 日志增长采样的夸大。主体 1.528778 秒，总调度墙钟未单独计时。
+
+真实成本为 1 次 source cache 加载、5040 包统计／393120 三点；**0 checkpoint、0 网络前向、0 模型 epoch、0 优化器、0 教师、0 另训头、0 新 IQ 视图、0 target**。分析／绘图只读聚合和保存观察，没有新增 IQ／NN／更新。两张 PNG 和对应 PDF 已生成，PNG 已实际查看。原始 IQ、私有 ID、逐包向量、完整日志、运行账户路径不入 Git。
+
+结果见[source_analysis.json](source_analysis.json)、[执行摘要](execution_summary.json)、[逐点相位分解](phase_representability.json)、[主值积分](phase_integrability.json)。图：[源关联与轮廓](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_phase_curvature_source_basis_20261017/final/figures/source_phase_curvature_basis.png)、[相位可实现性边界](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_phase_curvature_source_basis_20261017/final/figures/source_phase_curvature_phase_bound.png)；同目录 PDF 保留。
+
+## 当前结论和下一步边界
+
+已证实：固定相位曲率统计有跨 TX/day 共享的源 RX 相关差异。被否定的是“源关联通过即可直接当作轻度相位 IQ 增强依据”的推断；没有否定所有相位增强，也没有给出身份或跨 RX clean 正收益。
+
+当前唯一值得继续检验的假设是：能否用**预先固定、全包有界且物理可解释的单位模 IQ 变化**覆盖源差异中的一部分，同时保留 TX 身份。最小后续实验应先固定一个算子和范围，在合法 fitL 上用两个既有合规 F＋跨 RX 同 TX 默认头检验全覆盖身份保持与实际 IQ／参考窗变化，并保留原 raw 对照；不比较多个范围后择优、不依赖 U/heldRX1/target、不直接启动 E20。当前证据尚不足以固定该算子及范围，因此这不是已登记或待自动执行的新实验。若物理定义不能成立，或固定源身份保护失败，即放弃该具体算子；不按 RX 子群、包尾部、幅度、seed 或预算救跑。
+
+常相位 E20、旧可训练 feature-curvature、周期 covariance、孤立 AWGN E20 等历史失败保持关闭。另一对话的 practical 噪声配对及时间栅格研究不在本轮复刻。
+
+联合目标 ACTIVE：新增 A_g 的跨 RX clean 价值、A_s 的稳定身份适应、完整契约匹配 B00/B10/B01/B11 与交互项、跨 seed、正式 clean＋六 practical、low urban>60% 和 suburban 距自身 clean≤2pp 探索目标仍未完成。下一阶段不增加对齐损失、门控或网络分支。

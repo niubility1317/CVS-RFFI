@@ -1,6 +1,6 @@
 # 下一唯一假设：输入相位曲率是否存在可复现的 RX 相关分量
 
-2026-10-17。仅提出一个 source-only 依据检验；已实现登记，尚未启动，不是已有效 A_g，不授权目标访问或新增训练预算。完整联合目标 ACTIVE，F＋跨 RX 同 TX／默认头联合训练／E20 保持。
+2026-10-17。固定 source-only 依据检验已执行、完整复算并通过源关联条件，不是已有效 A_g，不授权目标访问或新增训练预算。完整联合目标 ACTIVE，F＋跨 RX 同 TX／默认头联合训练／E20 保持。
 
 ## 为什么检验这一点
 
@@ -28,4 +28,7 @@
 
 [Huang等，AAAI2026](https://ojs.aaai.org/index.php/AAAI/article/view/37005/40967)将多种时域变换、对齐与目标无标签适应放在同一系统，不能把总成绩当作孤立增强的DG证据；本次不采用片段重排、window/time warping、prototype损失或target适应，也不把其“模拟多径”的文字等同真实practical。
 
-当前不是实验预登记或发布门槛新增层；实现前须按既有最小实验流程登记唯一source-only统计矩阵，之后直接运行，不另设审批。
+本实验已按既有最小流程登记并执行，一次独立P0/P1审查PASS；没有新增审批或数据复验。完整结果见对应同row报告。
+
+
+非恒定相位曲率源依据 20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01 已完整ANALYZED／VERIFIED：PASS_SOURCE_RX_ASSOCIATION_ONLY，pooledMSE减少91.368334%，每RX正、18/18heldTX/day正；5040×156观察/72格均值方差/18全向量风险独立复算一致。0CP/NN/更新/新IQ/target。描述性最佳逐点相位只能解释76.452086%源均值差，主值积分的大差异RX对RMS约1.28至1.38rad，尚不支持轻度相位模板回放；不是全局幅度不可能性证明。没有固定新IQ算子/范围、身份保护或E20，旧commonphase/featurecurvature/cyclecov/AWGN失败保持关闭。F＋跨RX同TX底座不变；联合目标ACTIVE。

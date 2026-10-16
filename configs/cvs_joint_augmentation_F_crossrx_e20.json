@@ -1929,7 +1929,7 @@
     "actual_NN_forward_packets": 17469956
   },
   "phase_curvature_source_basis": {
-    "status": "REGISTERED_LOCAL_VALIDATED_ONE_REVIEW_PASS_NOT_LAUNCHED",
+    "status": "ANALYZED_SOURCE_RX_ASSOCIATION_PASS_NO_IQ_OPERATOR",
     "run_id": "20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01",
     "package": "experiments/cvs_phase_curvature_basis17",
     "source_only": true,
@@ -1959,6 +1959,23 @@
     "target_access": false,
     "Ag_efficacy_proved": false,
     "joint_goal_complete": false,
-    "note_ref": "analysis/cvs_phase_curvature_source_basis_20261017.md"
+    "note_ref": "analysis/cvs_phase_curvature_source_basis_20261017.md",
+    "scientific_verdict": "PASS_SOURCE_RX_ASSOCIATION_ONLY",
+    "execution_commit": "13abfd464f041d58a71dc2bedb27cd5f39f47917",
+    "source_analysis_ref": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-phasecurvature-fitL-manysig-m1-r01/source_analysis.json",
+    "pooled_MSE_reduction": 0.9136833351703837,
+    "each_RX_MSE_reduction": {
+      "3": 0.8918202839459516,
+      "4": 0.9607914822842909,
+      "6": 0.9468497627312246,
+      "8": 0.8599728190911139
+    },
+    "positive_held_groups": 18,
+    "phase_only_best_unconstrained_fraction": 0.7645208571718549,
+    "mild_physical_IQ_operator_fixed": false,
+    "identity_preservation_proved": false,
+    "E20_launched": false,
+    "actual_NN": 0,
+    "actual_updates": 0
   }
 }
