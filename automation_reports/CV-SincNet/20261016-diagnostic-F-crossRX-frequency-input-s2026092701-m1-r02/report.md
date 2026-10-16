@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：轻度接收频偏的输入作用检查
 
-状态：PLANNED，尚未发布或取得真实checkpoint工程结果。前一常数增益源E20已FAIL关闭，clean+0.555556pp但未达+1pp，六practical全降；不调幅度/seed/RX救跑。当前唯一假设：温和接收频偏变化在保留NoExplicitCFO及内部补偿后，是否仍留下值得训练检验的实际默认函数作用。
+状态：ANALYZED_ENGINEERING_INPUT_ONLY／VERIFIED。真实冻结CP工程检查及独立完整复算已完成，未开展身份实验。前一常数增益源E20已FAIL关闭，clean+0.555556pp但未达+1pp，六practical全降；不调幅度/seed/RX救跑。当前唯一假设：温和接收频偏变化在保留NoExplicitCFO及内部补偿后，是否仍留下值得训练检验的实际默认函数作用。
 
 ## 固定最小实验
 
@@ -26,3 +26,20 @@ F三路SIG_TIME、统一Sinc、joint160、checkpoint默认cosine头和NoExplicit
 
 
 r02仅替代r01标准库同名遮蔽技术失败，旧r01 release/log及FAILED记录保留。修复仅operator.py改名frequency_transform.py/相对导入与直接脚本回归；频偏、seed、162NN/0真实IQ/更新矩阵不变。初始一次审查后，原问题仅一次定点复审PASS。两版本本地未训练F检查各162NN累计324合成NN/0更新，r01远端实际0NN；本r02远端预算仍162NN。
+
+
+## 实际结果与边界
+
+执行commit `3996730c4d70b36f0e3c4b0a091927dd0a77ffe0`；archive/compile/初始PID-CWD-argv-GPU环境VERIFIED，进程自然退出、completion存在、无failure，独立终态log 417字节。真实CP strictload/no-query smoke及162实际NN完整完成，0真实IQ/更新/teacher/另训头/target。全部5×32 joint/logits/power独立NumPy复算与原结果一致，原固定工程判断PASS。
+
+| 视图 | 单位joint变化lower median | 最大logits绝对变化 | 功率最大相对误差 |
+|---|---:|---:|---:|
+| identity | 0 | 0 | 0 |
+| frequency_positive | 0.0281140576 | 0.800132394 | 1.19209297e-07 |
+| frequency_negative | 0.0309339524 | 0.686725855 | 1.19209297e-07 |
+| positive_inverse | 2.46831232e-07 | 2.14576721e-06 | 1.19209297e-07 |
+| negative_inverse | 2.43528681e-07 | 2.96533108e-06 | 1.19209297e-07 |
+
+输入相等/逆变换input L2/coord27及内部补偿/冻结state与计数为实际runtime直接检查；独立复算范围为完整joint/logits/power数组，未声称独立重算不可见IQ或模型state。工程结果仅证明固定温和频偏对当前完整默认函数有非平凡作用，不能代替身份保护、跨RX净收益或星地收益。
+
+下一唯一科学假设：保留旧ordinary、PA、原U、固定raw监督和默认头的条件下，独立频偏L视图能改善heldRX clean且保护6practical。最小待登记验证是同RX1源折/同seed匹配B00/B10各scratchE20，raw.5＋ordinary.25＋第三槽raw或频偏.25、六L前向；clean≥+1pp、F1不降、每practical及V≥−.5pp、完整健康预算必须全部通过，失败固定配方关闭无幅度/seed/RX救跑。尚未启动该训练；本run全部完成但联合目标未完成。

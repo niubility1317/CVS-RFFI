@@ -1,0 +1,50 @@
+{
+  "status": "PASS",
+  "negative_cases": 13,
+  "rows": [
+    {
+      "arm": "B00",
+      "L_forwards": 6,
+      "same_IQ_pairs": true,
+      "raw_weight": 0.5,
+      "ordinary_weight": 0.25,
+      "slot_weight": 0.25,
+      "frequency_packets": 0,
+      "As_packets": 0,
+      "supcon_terms": 4,
+      "frequency_and_raw_have_no_supcon": true,
+      "private_frequency_generator_preserves_native_RNG": true,
+      "default_head_joint_update": true,
+      "export160_exact": true,
+      "total": 4.957714557647705
+    },
+    {
+      "arm": "B10",
+      "L_forwards": 6,
+      "same_IQ_pairs": true,
+      "raw_weight": 0.5,
+      "ordinary_weight": 0.25,
+      "slot_weight": 0.25,
+      "frequency_packets": 128,
+      "As_packets": 0,
+      "supcon_terms": 4,
+      "frequency_and_raw_have_no_supcon": true,
+      "private_frequency_generator_preserves_native_RNG": true,
+      "default_head_joint_update": true,
+      "export160_exact": true,
+      "total": 4.960264682769775
+    }
+  ],
+  "identical_scratch_initialization": true,
+  "control_loss_and_head_gradient_exactly_match_previous_B00": true,
+  "frequency_same_step_reproducible": true,
+  "frequency_different_step_differs": true,
+  "source_IQ_reads": 0,
+  "target_access": false,
+  "synthetic_optimizer_steps": 2,
+  "synthetic_L_objectives": 3,
+  "synthetic_NN_packets": 2312,
+  "direct_script_startup_regression_PASS": true,
+  "canonical_native_CFO_operator_matches": true,
+  "head_fit_updates": 0
+}

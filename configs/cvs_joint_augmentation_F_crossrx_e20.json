@@ -132,7 +132,7 @@
   },
   "next_source_hypothesis": {
     "name": "Bounded receive-frequency-offset-only IQ view with NoExplicitCFO and internal compensation retained",
-    "status": "REGISTERED_NOT_LAUNCHED",
+    "status": "SOURCE_E20_REGISTERED_NOT_LAUNCHED",
     "frequency_max_cycles_per_sample": 0.00010024013357398965,
     "range_basis": "Actual current ordinary base aug_cfo_max .0004 times native E13 cap scale .2506003339349741;not constructor .0025 or extrapolated E20 .35,not source practical/target tuning",
     "operator": "x[n] exp(j2pi f n),n=0..255;native zero-origin packet-constant frequency ramp,not failed constant phase rotation;no centering-induced residual constant phase after existing compensation",
@@ -145,7 +145,33 @@
     "Ag_efficacy_proved": false,
     "run_id": "20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r02",
     "input_only_NN_packets": 162,
-    "new_training_epochs": 0
+    "new_training_epochs": 0,
+    "input_run_id": "20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r02",
+    "source_run_id": "20261016-phase1-F-crossRX-frequency-sourceRX1-e20-s2026092701-m2-r01",
+    "source_selection": {
+      "primary": "B10",
+      "reference": "B00",
+      "fixed_final": 20,
+      "held_RX": 1,
+      "held_L": 1260,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "min_clean_gain_pp": 1.0,
+      "min_clean_macroF1_gain_pp": 0.0,
+      "max_each_practical_drop_pp": 0.5,
+      "max_seenV_drop_pp": 0.5,
+      "final_L_CE_max": 0.5,
+      "on_fail": "Close fixed frequency recipe,no range/seed/RX/threshold rescue",
+      "on_pass": "Only supports independent source confirmation,not Ag/DG proof or automatic target"
+    },
+    "new_training_epochs_per_model": 20
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
@@ -467,5 +493,55 @@
         "seen_V_gain_pp": -0.004629629629626653
       }
     }
+  },
+  "source_frequency_input_result": {
+    "run_id": "20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r02",
+    "status": "ANALYZED_ENGINEERING_INPUT_ONLY",
+    "qualification": {
+      "decision": "PASS",
+      "conditions": {
+        "power_preserved": true,
+        "inverse_input": true,
+        "inverse_function": true,
+        "nontrivial_default_function": true
+      }
+    },
+    "views": {
+      "identity": {
+        "normalized_joint_change_median": 0.0,
+        "normalized_joint_change_max": 0.0,
+        "logits_abs_change_max": 0.0,
+        "power_relative_error_max": 0.0
+      },
+      "frequency_positive": {
+        "normalized_joint_change_median": 0.028114057573549345,
+        "normalized_joint_change_max": 0.07891873674507616,
+        "logits_abs_change_max": 0.8001323938369751,
+        "power_relative_error_max": 1.1920929665620903e-07
+      },
+      "frequency_negative": {
+        "normalized_joint_change_median": 0.030933952366895397,
+        "normalized_joint_change_max": 0.09228761947654268,
+        "logits_abs_change_max": 0.6867258548736572,
+        "power_relative_error_max": 1.1920929665620903e-07
+      },
+      "positive_inverse": {
+        "normalized_joint_change_median": 2.468312315427261e-07,
+        "normalized_joint_change_max": 4.3724486502102043e-07,
+        "logits_abs_change_max": 2.1457672119140625e-06,
+        "power_relative_error_max": 1.1920929665620903e-07
+      },
+      "negative_inverse": {
+        "normalized_joint_change_median": 2.435286810695189e-07,
+        "normalized_joint_change_max": 4.6643793881199466e-07,
+        "logits_abs_change_max": 2.9653310775756836e-06,
+        "power_relative_error_max": 1.1920929665620903e-07
+      }
+    },
+    "actual_NN_packets": 162,
+    "training_updates": 0,
+    "source_IQ_reads": 0,
+    "target_access": false,
+    "Ag_efficacy_proved": false
   }
 }
