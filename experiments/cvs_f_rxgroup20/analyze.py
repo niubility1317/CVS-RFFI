@@ -109,6 +109,14 @@ def analyze(root):
  records={};scores={};data={};health={};sequences={};curves=[]
  for a in ARMS:
   b=root/(a+'-RX1-s'+str(SEED))/'source';records[a],c,health[a],sequences[a]=training(b,a);scores[a],data[a]=predictions(b);curves+=c
+ bases={a:root/(a+'-RX1-s'+str(SEED))/'source' for a in ARMS}
+ if read(bases['BATCH']/'source_contract.json')!=read(bases['RXGROUP']/'source_contract.json'):raise ValueError('Exact matched scientific role IDs required')
+ channels={a:read(bases[a]/'actual_channel.json') for a in ARMS}
+ if channels['BATCH']!=channels['RXGROUP']:raise ValueError('Fixed actual physical channel configs differ')
+ for c in channels.values():
+  if not c['EQ_off_G_one'] or not c['formal_test_unchanged'] or set(c['actual_configs'])!=set(VIEWS[1:]):raise ValueError('Six original practical conditions required')
+  for scene,z in c['actual_configs'].items():
+   if (z['fs_hz'],z['processing_route'],z['mode'],z['equalization_enabled'],z['reference_snr_db'],z['boundary'])!=(25000000,'residual','post_sync',False,30,'reflect') or not all(z[k] for k in ('quality_adaptation_enabled','iq_compensation_enabled','phase_tracking_enabled')):raise ValueError('Unchanged practical receiver settings required')
  for v in VIEWS:
   for k in ('physical_ids','labels'):
    if data['BATCH'][v][k]!=data['RXGROUP'][v][k]:raise ValueError('Matched held physical IDs/labels required')
