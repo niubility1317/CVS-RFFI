@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "negative_cases": 19,
+  "scientific_counterexamples": 7,
+  "synthetic_IQ_window_applications": 120,
+  "source_IQ_reads": 0,
+  "NN": 0,
+  "updates": 0,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "reference_outside_exact": true,
+  "global_gain_phase_equivariant": true,
+  "input_RNG_unmodified": true,
+  "environment_note": "Existing local Torch NumPy bridge warning;no numpy bridge used,no package changes"
+}

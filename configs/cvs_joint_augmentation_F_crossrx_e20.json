@@ -1413,5 +1413,58 @@
     "actual_updates": 0,
     "automatic_training": false,
     "successor_registered": false
+  },
+  "edge_visibility_source_guard": {
+    "status": "REGISTERED_LOCAL_VALIDATED_REVIEW_PASS_NOT_LAUNCHED",
+    "run_id": "20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01",
+    "package": "experiments/cvs_edge_visibility17",
+    "baseline": "F+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
+    "source_only": true,
+    "target_access": false,
+    "model_seeds": [
+      2026092701,
+      2026092702
+    ],
+    "fitL": 5040,
+    "views": [
+      "raw",
+      "left",
+      "right"
+    ],
+    "operator": {
+      "one_edge_only": true,
+      "support16": true,
+      "zero8": true,
+      "halfcos8": true,
+      "reference_unchanged": [
+        80,
+        160
+      ],
+      "global_RMS": false,
+      "noise_channel": false,
+      "time_shift": false
+    },
+    "planned_NN": 30242,
+    "new_training_epochs": 0,
+    "new_updates": 0,
+    "head_fit_updates": 0,
+    "teacher_forwards": 0,
+    "criteria": {
+      "min_overall_accuracy_gain_pp": -0.5,
+      "min_overall_macroF1_gain_pp": -0.5,
+      "min_each_RX_accuracy_gain_pp": -1.0,
+      "min_each_TX_accuracy_gain_pp": -1.0,
+      "min_each_day_accuracy_gain_pp": -1.0,
+      "min_raw_correct_retention": 0.99,
+      "min_median_relative_IQ_change": 0.01,
+      "max_relative_IQ_change": 0.35,
+      "max_power_increase": 1e-06
+    },
+    "on_fail": "Close fixed16/8zero8halfcos,no length/edge/windowshape/threshold/RX/seed rescue",
+    "on_pass": "Sourcefit identityguard only,separate matchedE20 required;notautomatictraining",
+    "Ag_efficacy_proved": false,
+    "As_efficacy_proved": false,
+    "joint_goal_complete": false,
+    "note_ref": "analysis/cvs_edge_visibility_source_20261017.md"
   }
 }

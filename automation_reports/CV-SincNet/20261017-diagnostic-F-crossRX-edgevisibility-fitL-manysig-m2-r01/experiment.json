@@ -1,0 +1,441 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01",
+  "group_id": "phase1-F-crossRX-edgevisibility-source-identity",
+  "display_name": "F＋跨RX同TX：单侧边缘可见性的双默认头源身份检验",
+  "description": "Fixed16edge support/8zero8halfcos;raw/left/right through originaltwo frozenE20 defaultheads;sourcefitL5040,0updates/target;not Ag efficacy",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "one-sided edge visibility source identity guard"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "edge_visibility",
+    "source_only",
+    "frozen_default_head",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+    "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active jointAg/As research goal;new boundedIQ observation candidate distinct from referenced chat antithetic practicalnoise. Source operationguard only;no target or automatictraining",
+  "code": {
+    "commit": "Actual execution commit in release_commit.txt/resolved_config",
+    "checkout": "Managed codex/cvs-iq-timing-e20-20261016 worktree",
+    "environment": "Ordinary N607 existing CVS-RFFI Python;CPU2,CUDA hidden;each model own immutable backend",
+    "cwd": "PROJECT/releases/cvs_F_edge_visibility_fitL_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original VALIDATED_ONCE source carrier;fitL5040 exact frozenmodel L roles",
+    "representation": "Native EQ1 RMS IQ256/25Msps;one-edge16point visibility;reference80:160 unchanged",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original L6300 handles;fitL5040 exact modelL IDs saved privately;RX1 excluded",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "OriginalL6300 deserialized,fitRX3/4/6/8 L5040 only;heldRX1L1260 excluded before defaulthead inference",
+      "U_s": "U roleID metadata only,no UIQ/labels in cache;unused",
+      "V": "SourceV/features deserialize unused"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-fit defaulthead identity guard only;not heldRXclean,DG,As,hardware or joint efficacy"
+  },
+  "checkpoint": {
+    "initialization": "Two frozen ownscratchE20final20 B00 references,not future training initialization",
+    "sources": [
+      {
+        "model_seed": 2026092701,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+        "checkpoint": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth",
+        "immutable_backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+        "execution_commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8"
+      },
+      {
+        "model_seed": 2026092702,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+        "checkpoint": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source/final_ssdg.pth",
+        "immutable_backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+        "execution_commit": "d71531d53c1d9ec46e3915963e05bff96760e80e"
+      }
+    ],
+    "contract_check_ref": "Reuse original verifiedsourcefold checkpoints;initialization/completion/source_frozen/source_contract and payload checked:fitL5040/U45360/V21600,RX1held,sourceonly,no unknownancestors/target/headfit,strictdefaulthead",
+    "provenance_verdict": "Matching existing source-only diagnostic weights;runtime rechecks prior provenance handles before inference",
+    "selection_rule": "Existing final-only E20;no source/target checkpoint selection for this operator"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-edge-visibility-source-20261017",
+    "gpu_policy": "CPU only,2threads,CUDA_VISIBLE_DEVICES empty;workers sequential",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_edge_visibility_fitL_20261017_r01/source_edge_visibility.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_edge_visibility17.dispatch",
+    "stop_rule": "Wrongsource/provenance/model,input shape/nonfinite,output collision or exception:preservepartial/failure,noautomaticretry,no unrelatedprocess changes. ScientificFAIL completes both declaredmodels thencloses fixed16/8zero8taper candidate;no parameter/edge/RX/seed rescue."
+  },
+  "expected_artifacts": [
+    "root request/active/launch/result/completion",
+    "eachseed resolved_config/checkpoint provenance/result/completion",
+    "3view raw/left/right complete5040defaulthead logits/predictions private",
+    "private allsourceIDs/metadata and perpacket windowstatistics",
+    "one realcheckpoint 2syntheticpacket noquerysmoke PASS thencontinue",
+    "fullstdout private;independent all30240decisions/RX/TX/day/72cells/recount/report/registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "raw_correct_retention",
+      "per_RX_TX_day_accuracy_differences",
+      "relative_IQ_change",
+      "reference_and_outside_support_unchanged",
+      "power_increase",
+      "actual_NN/cost/state_unchanged"
+    ],
+    "dimensions": [
+      "modelseed01/02",
+      "raw/left/right",
+      "RX3/4/6/8",
+      "TX0..5",
+      "day1/2/3",
+      "72cells"
+    ],
+    "prediction_ref": "Eachseed predictions/{raw,left,right}.json private;source-fit only",
+    "scorer_ref": "Independent logits/hardprediction recount after complete;no targettruth",
+    "criteria": {
+      "min_overall_accuracy_gain_pp": -0.5,
+      "min_overall_macroF1_gain_pp": -0.5,
+      "min_each_RX_accuracy_gain_pp": -1.0,
+      "min_each_TX_accuracy_gain_pp": -1.0,
+      "min_each_day_accuracy_gain_pp": -1.0,
+      "min_raw_correct_retention": 0.99,
+      "min_median_relative_IQ_change": 0.01,
+      "max_relative_IQ_change": 0.35,
+      "max_power_increase": 1e-06
+    }
+  },
+  "rows": [
+    {
+      "row_id": "EDGE_VISIBILITY_SOURCE-s2026092701",
+      "method": "Fixedoneedge16support/8zero8halfcos;originalfrozenFdefaulthead",
+      "purpose": "single_hypothesis_two_frozen_references",
+      "config_ref": "experiments/cvs_edge_visibility17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01/s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Modelseed identifies existing frozen E20;no new training/random augmentation. Both deterministic sides evaluated exhaustively;fixedphysicalsplit392005,not new draw.",
+      "k": null,
+      "scenario": "source_clean_fit_raw_left_right_noAs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "15120sourceNN plus2syntheticCPsmoke onlyseed01;0newE/update/headfit/teacher. HistoricaleachE20/4440updates,combined9373356NN separate.",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01/s2026092701",
+      "log_path": "PROJECT/runs/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01/s2026092701.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_edge_visibility17/runner.py --seed 2026092701",
+      "expected_artifacts": [
+        "root request/active/launch/result/completion",
+        "eachseed resolved_config/checkpoint provenance/result/completion",
+        "3view raw/left/right complete5040defaulthead logits/predictions private",
+        "private allsourceIDs/metadata and perpacket windowstatistics",
+        "one realcheckpoint 2syntheticpacket noquerysmoke PASS thencontinue",
+        "fullstdout private;independent all30240decisions/RX/TX/day/72cells/recount/report/registry"
+      ],
+      "config": {
+        "model_seed": 2026092701,
+        "fixed_question": {
+          "run_id": "20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01",
+          "launch_owner": "codex/root/F-edge-visibility-source-20261017",
+          "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01",
+          "models": {
+            "2026092701": {
+              "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+              "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+            },
+            "2026092702": {
+              "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+              "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+            }
+          },
+          "model": "Frozen F+CROSS_RX,3SIG_TIME,unifiedSinc,joint160,defaultcos30,NoExplicitCFO;two scratchE20final20,0newhead",
+          "model_role": "Source-fit operation guard only;not future training initialization",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "days": [
+            1,
+            2,
+            3
+          ],
+          "TX": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "L_unique": 5040,
+          "samples_per_cell": 70,
+          "question": "Does fixed one-sided 16point visibility reduction preserve identities under both frozen default heads?",
+          "operator": "One edge only:outer8zero,inner8halfcosine to1;rightmirror;same realwindow onI/Q;all other samples unchanged",
+          "edge_support": 16,
+          "zero_samples": 8,
+          "taper_samples": 8,
+          "reference": [
+            80,
+            160
+          ],
+          "views": [
+            "raw",
+            "left",
+            "right"
+          ],
+          "source_NN_per_model": 15120,
+          "total_NN_packets": 30242,
+          "synthetic_CP_smoke_NN": 2,
+          "checkpoint_loads": 2,
+          "new_training_epochs": 0,
+          "optimizer_updates": 0,
+          "head_fit_updates": 0,
+          "teacher_forwards": 0,
+          "criteria": {
+            "min_overall_accuracy_gain_pp": -0.5,
+            "min_overall_macroF1_gain_pp": -0.5,
+            "min_each_RX_accuracy_gain_pp": -1.0,
+            "min_each_TX_accuracy_gain_pp": -1.0,
+            "min_each_day_accuracy_gain_pp": -1.0,
+            "min_raw_correct_retention": 0.99,
+            "min_median_relative_IQ_change": 0.01,
+            "max_relative_IQ_change": 0.35,
+            "max_power_increase": 1e-06
+          },
+          "normalization": "NativepacketRMS only;no postmask globalRMS/powerrestore;inputreference andsupportoutside bitwiseunchanged",
+          "old_training_cost": "2scratchE20/8880updates/9373356NN;separate historical frozen model cost,no repeat",
+          "on_fail": "Close fixed16support/8zero8taper;no length/edge/windowshape/threshold/RX/seed rescue",
+          "on_pass": "Source-fit identityguard only;separate matchedscratchE20raw-slot vsedgeview needed forheldRXclean;no automatictraining",
+          "future_training": "Common raw.75/ordinary.25/originalSupCon plus.25raw or.25edge sameIQ RDrop pair,8Lforwards/originalU/defaulthead joint;E20;separately register",
+          "future_source_criteria": "clean>=+1pp;macroF1>=0;eachpractical/seenV>=-.5pp;single seed notjointproof",
+          "U_used": false,
+          "U_truth_read": false,
+          "V_used": false,
+          "held_RX1_used": false,
+          "target_access": false,
+          "automatic_training": false,
+          "default_head_only": true,
+          "NoExplicitCFO": true,
+          "internal_reference_compensation_retained": true,
+          "device": "CPU",
+          "threads": 2,
+          "source_basis": [
+            "https://arxiv.org/html/2601.03063",
+            "https://onlinelibrary.wiley.com/doi/full/10.1155/2024/7891968",
+            "https://arxiv.org/html/2412.08885"
+          ],
+          "limitations": [
+            "Literature ADSB masking not currentWiFi/crossRX or independentmask efficacy",
+            "Partial observation can erase identities;sourceguard is necessary evidence,not DGproof",
+            "Digital edgewindow does not replace RXhardware,shift timing or reduce actualnoise",
+            "Inputreference unchanged does not imply allinternal features/quality unchanged"
+          ]
+        }
+      }
+    },
+    {
+      "row_id": "EDGE_VISIBILITY_SOURCE-s2026092702",
+      "method": "Fixedoneedge16support/8zero8halfcos;originalfrozenFdefaulthead",
+      "purpose": "single_hypothesis_two_frozen_references",
+      "config_ref": "experiments/cvs_edge_visibility17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01/s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Modelseed identifies existing frozen E20;no new training/random augmentation. Both deterministic sides evaluated exhaustively;fixedphysicalsplit392005,not new draw.",
+      "k": null,
+      "scenario": "source_clean_fit_raw_left_right_noAs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "15120sourceNN plus2syntheticCPsmoke onlyseed01;0newE/update/headfit/teacher. HistoricaleachE20/4440updates,combined9373356NN separate.",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01/s2026092702",
+      "log_path": "PROJECT/runs/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01/s2026092702.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_edge_visibility17/runner.py --seed 2026092702",
+      "expected_artifacts": [
+        "root request/active/launch/result/completion",
+        "eachseed resolved_config/checkpoint provenance/result/completion",
+        "3view raw/left/right complete5040defaulthead logits/predictions private",
+        "private allsourceIDs/metadata and perpacket windowstatistics",
+        "one realcheckpoint 2syntheticpacket noquerysmoke PASS thencontinue",
+        "fullstdout private;independent all30240decisions/RX/TX/day/72cells/recount/report/registry"
+      ],
+      "config": {
+        "model_seed": 2026092702,
+        "fixed_question": {
+          "run_id": "20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01",
+          "launch_owner": "codex/root/F-edge-visibility-source-20261017",
+          "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01",
+          "models": {
+            "2026092701": {
+              "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+              "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+            },
+            "2026092702": {
+              "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+              "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+            }
+          },
+          "model": "Frozen F+CROSS_RX,3SIG_TIME,unifiedSinc,joint160,defaultcos30,NoExplicitCFO;two scratchE20final20,0newhead",
+          "model_role": "Source-fit operation guard only;not future training initialization",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "days": [
+            1,
+            2,
+            3
+          ],
+          "TX": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "L_unique": 5040,
+          "samples_per_cell": 70,
+          "question": "Does fixed one-sided 16point visibility reduction preserve identities under both frozen default heads?",
+          "operator": "One edge only:outer8zero,inner8halfcosine to1;rightmirror;same realwindow onI/Q;all other samples unchanged",
+          "edge_support": 16,
+          "zero_samples": 8,
+          "taper_samples": 8,
+          "reference": [
+            80,
+            160
+          ],
+          "views": [
+            "raw",
+            "left",
+            "right"
+          ],
+          "source_NN_per_model": 15120,
+          "total_NN_packets": 30242,
+          "synthetic_CP_smoke_NN": 2,
+          "checkpoint_loads": 2,
+          "new_training_epochs": 0,
+          "optimizer_updates": 0,
+          "head_fit_updates": 0,
+          "teacher_forwards": 0,
+          "criteria": {
+            "min_overall_accuracy_gain_pp": -0.5,
+            "min_overall_macroF1_gain_pp": -0.5,
+            "min_each_RX_accuracy_gain_pp": -1.0,
+            "min_each_TX_accuracy_gain_pp": -1.0,
+            "min_each_day_accuracy_gain_pp": -1.0,
+            "min_raw_correct_retention": 0.99,
+            "min_median_relative_IQ_change": 0.01,
+            "max_relative_IQ_change": 0.35,
+            "max_power_increase": 1e-06
+          },
+          "normalization": "NativepacketRMS only;no postmask globalRMS/powerrestore;inputreference andsupportoutside bitwiseunchanged",
+          "old_training_cost": "2scratchE20/8880updates/9373356NN;separate historical frozen model cost,no repeat",
+          "on_fail": "Close fixed16support/8zero8taper;no length/edge/windowshape/threshold/RX/seed rescue",
+          "on_pass": "Source-fit identityguard only;separate matchedscratchE20raw-slot vsedgeview needed forheldRXclean;no automatictraining",
+          "future_training": "Common raw.75/ordinary.25/originalSupCon plus.25raw or.25edge sameIQ RDrop pair,8Lforwards/originalU/defaulthead joint;E20;separately register",
+          "future_source_criteria": "clean>=+1pp;macroF1>=0;eachpractical/seenV>=-.5pp;single seed notjointproof",
+          "U_used": false,
+          "U_truth_read": false,
+          "V_used": false,
+          "held_RX1_used": false,
+          "target_access": false,
+          "automatic_training": false,
+          "default_head_only": true,
+          "NoExplicitCFO": true,
+          "internal_reference_compensation_retained": true,
+          "device": "CPU",
+          "threads": 2,
+          "source_basis": [
+            "https://arxiv.org/html/2601.03063",
+            "https://onlinelibrary.wiley.com/doi/full/10.1155/2024/7891968",
+            "https://arxiv.org/html/2412.08885"
+          ],
+          "limitations": [
+            "Literature ADSB masking not currentWiFi/crossRX or independentmask efficacy",
+            "Partial observation can erase identities;sourceguard is necessary evidence,not DGproof",
+            "Digital edgewindow does not replace RXhardware,shift timing or reduce actualnoise",
+            "Inputreference unchanged does not imply allinternal features/quality unchanged"
+          ]
+        }
+      }
+    }
+  ],
+  "notes": [
+    "All5040fitL/72cells permodel;originalL6300+unusedV/features deserialize,UonlyroleIDmetadata,noUIQ/labels;RX1excluded beforeinference. No target or cachedfeatures consumed. NotL6300fulltrain orL5580contract.",
+    "Fixedbaseline F+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO;eachmodel originallyjointlytrained sourceonly E20 withoriginalU/EMA. Thisguard never fitshead orupdatesbone/teacher.",
+    "Maskoneedge16,8zero8halfcos;allotherpoints incl80:160exactlyunchanged,no globalRMS/powerrestore. No shifting/resampling/CFO/phase/noise/PA/quantization/channel;no physicalRX replacementclaim.",
+    "Bothmodels andbothsides mustmeet originalcriteria;FAILcloseslength/side/windowshape/threshold/RX/seed withoutrescue;PASSidentityguardonly,notDG or automaticE20.",
+    "Future matchedE20 raw-slot vsedgeview requires separate registration;commonraw.75/ordinary.25/SupCon andoriginalU/defaulthead joint,8Lforwards;clean+1pp,F1>=0,allpractical/seenV>=-.5pp;single seed notjointproof. No sourceG0 score used to choose amplitude.",
+    "Local19 input/config negatives+7qualificationcounterexamples/120syntheticIQwindows;0realIQ/NN/updates. One P0/P1 review and realCPsmoke as current minimalworkflow;no extra gates."
+  ],
+  "registered_at": "2026-10-16T18:16:12+00:00"
+}

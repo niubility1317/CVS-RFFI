@@ -210,3 +210,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 周期差异残差源依据 20261017-diagnostic-F-crossRX-cyclecov-fitL-manysig-m1-r01 已完整ANALYZED/VERIFIED：FAIL_FIXED_CYCLE_RESIDUAL_COVARIANCE_BASIS_CLOSED。合并形状风险改善35.211296%/17正折不足以覆盖50/72中位数、43/72q10失败和RX6风险+17.668361%；原固定窗口/cycle/lag/RX/阈值/seed关闭。L5040/0模型/NN/更新/target，全量逐包统计复算与图完成；没有新Ag或后继已登记候选，联合目标ACTIVE。
+
+
+下一单一候选端部可见性 20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01 已实现登记未启动：16点支持/外8归零内8半余弦，raw/left/right，两既有合法E20默认头fitL5040操作身份检验。19输入/配置负例和7科学反例/120合成IQ窗PASS，一次P0/P1审查PASS；预计30242NN、0新训练/更新/target。原条件失败不缩窗/换边/改阈值/RX/seed；PASS也不是Ag/DG或联合收益。与另一对话practical正负噪声方向不同，全部旧失败路线继续关闭。
