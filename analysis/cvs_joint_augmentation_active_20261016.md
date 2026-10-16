@@ -279,3 +279,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，状态 UNVERIFIED_SAME_PACKET_PAIRING_CURRENT_INPUT_CLOSED：官方均衡可跳包且不存原包映射，compact 分别截前缀；原契约、准备记录和实际依赖加载器没有补足 raw↔EQ 对应表。真实配对未知，不按同 sig_i／相似度／相邻包猜配对，不改 equalized=both 或扩大 L。新增真实 IQ／CP／NN／更新／target 均为 0。详见 analysis/cvs_paired_preprocessing_basis_20261017.md。下一唯一候选为与信号斜率相关的采样时刻扰动，目前仅 4 模板／80 合成点／5 项代数检查通过，单音等不可辨认反例保留；先检验短前导估计能否区分白噪声、增益和相位，没有源实验登记或训练。详见 analysis/cvs_sampling_jitter_source_basis_20261017.md。已关闭固定路线保持，F＋跨 RX 同 TX／E20／原 U 不变，联合目标 ACTIVE。
+
+
+采样抖动短前导估计器 20261017-diagnostic-F-crossRX-jitterEstimator-synthetic-m1-r01 已实现登记未启动：5模板／9情况／3SNR／32抽样／70包／4周期／20点，共4320格及24192000合成复观察；两周期差协方差与另外两周期交叉方向，不提供真模板；全部3配对、非负4方差矩求解，固定5倍标准误可辨认条件。22输入负例＋11公式/退化检查通过，一次P0/P1通过；0真实IQ／CP／NN／更新／target。固定任一组失败关闭入口，不改周期/窗口/包数/频带/不确定度/幅度/阈值/seed救跑，不进入源数据或E20。F＋跨RX同TX/E20/原U保持，联合目标ACTIVE。

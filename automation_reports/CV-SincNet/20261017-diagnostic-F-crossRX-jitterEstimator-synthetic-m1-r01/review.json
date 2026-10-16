@@ -1,0 +1,9 @@
+{
+  "verdict": "PASS",
+  "reviewer": "/root/dc_p0p1_review",
+  "scope": "One focused P0/P1 review of fixed synthetic estimator/generator/run/checks/design/spec/preregistration/independent analysis;no repeated/full/report-only review",
+  "summary": "受审范围内未发现会直接导致本次合成矩阵运行错误、越权、覆盖输出、无法启动或错误科学判定的 P0/P1。",
+  "real_IQ_reads": 0,
+  "checkpoint_smoke": "Not applicable:zero-model/zero-NN synthetic stage",
+  "run_launched": false
+}

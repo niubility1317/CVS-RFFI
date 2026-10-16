@@ -1,0 +1,304 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-crossRX-jitterEstimator-synthetic-m1-r01",
+  "group_id": "F-crossRX-jitter-estimator-synthetic",
+  "display_name": "F＋跨RX同TX：四周期采样抖动估计器的合成反证",
+  "description": "No realIQ/model:4cycle independent-pair moment estimator versus known Gaussian gain/phase/white/jitter and CFO negatives;all degenerate templates retained",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "four-cycle jitter conditional covariance estimator"
+  ],
+  "tags": [
+    "CVS",
+    "synthetic-only",
+    "sampling_jitter",
+    "zero-NN"
+  ],
+  "comparison_group_id": "F-crossRX-jitter-estimator-synthetic",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active Ag/As research goal/latest F+CROSS_RX/E20;prior turn explicitly fixed synthetic feasibility before any realIQ or training",
+  "code": {
+    "commit": "Actual one execution commit read from Git HEAD into resolved_config.json",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "Existing native Windows Python/NumPy,CPU2threads;no Torch/GPU/remote",
+    "cwd": "WORKTREE",
+    "entrypoint": "experiments.cvs_jitter_estimator17.run"
+  },
+  "data": {
+    "dataset": "Synthetic periodic complex signals only",
+    "version": "Fixed5templates/9mixtures/3SNR/32streams/70packets/4cycles/20points",
+    "representation": "Complex128/Float64;24192000 synthetic complex observation points;no actual WiSig or RF capture",
+    "contract_ref": "No realdata contract consumed;unchanged sourceVALIDATED_ONCE and L/U/V not opened",
+    "physical_ids_ref": "Syntheticcell=(template,SNR,case,draw);not RFpacket IDs",
+    "label_map_ref": "No classifier/TX labels",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "None;not actual TX/RX/day",
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "local_checks.json;no new data validation",
+    "support_query_ref": "Not applicable",
+    "leo_config_ref": "No As or practical input/test"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Synthetic variance-estimator falsification only;not realRX mechanism,identitypreservation,classification,DG or joint evidence"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "No checkpoint or model used",
+    "provenance_verdict": "NOT_APPLICABLE_NO_MODEL",
+    "selection_rule": "Fixed all4320cells,no selection/retry"
+  },
+  "execution": {
+    "host": "Local Windows ordinary account",
+    "launch_owner": "codex/root/F-sampling-jitter-estimator-20261017",
+    "gpu_policy": "No GPU;CPU2threads",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "WORKTREE/local_artifacts/F_sampling_jitter_estimator_20261017/run",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_jitter_estimator17.run --output local_artifacts/F_sampling_jitter_estimator_20261017/run",
+    "stop_rule": "Nonfinite/input/config/shape/budget/output/math technical failure:preserve immutable root,no automatic retry;scientific FAIL completes allcells and closes fixed estimator,no range/window/cycle/bin/seed/threshold/oracle-template rescue"
+  },
+  "expected_artifacts": [
+    "resolved_config.json executioncommit/PID/CWD/Python/threads",
+    "cells.jsonl.gz all4320 sufficientGram/secondmoments/rhs/estimate and separate synthetictruth",
+    "progress.json and completion.json allsyntheticcosts",
+    "independent analysis_summary.json all4320 moment/variance/metric reconstructions and135groups",
+    "same-run report/events/registry,no IQ/checkpoints/prediction or sourceclassification"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "identifiable fraction",
+      "degenerate rejection fraction",
+      "zero-jitter estimatedenergy fraction median/q95",
+      "positive-jitter variance relativeerror median/q95",
+      "nonCFO trueconditionalcovariance relativeerror median/q95",
+      "actualsyntheticpoints/walltime/zero-realIQ/NN/updates"
+    ],
+    "dimensions": [
+      "template",
+      "SNR",
+      "mixture",
+      "draw"
+    ],
+    "prediction_ref": "No identityprediction;cells.jsonl.gz estimates before separate analysis",
+    "scorer_ref": "Private independently written all-cell analyze.py",
+    "criteria": {
+      "min_identifiable_fraction_each_multitone_group": 0.95,
+      "min_rejected_fraction_each_degenerate_group": 0.95,
+      "zero_jitter_energy_fraction_median_max": 0.02,
+      "zero_jitter_energy_fraction_q95_max": 0.1,
+      "positive_jitter_relative_error_median_max": 0.2,
+      "positive_jitter_relative_error_q95_max": 0.5,
+      "nonCFO_covariance_relative_error_median_max": 0.2,
+      "nonCFO_covariance_relative_error_q95_max": 0.35
+    },
+    "config": {
+      "run_id": "20261017-diagnostic-F-crossRX-jitterEstimator-synthetic-m1-r01",
+      "owner": "codex/root/F-sampling-jitter-estimator-20261017",
+      "output_root": "WORKTREE/local_artifacts/F_sampling_jitter_estimator_20261017/run",
+      "templates": [
+        "multitone_quadratic",
+        "multitone_cubic",
+        "tone",
+        "constant",
+        "zero"
+      ],
+      "SNR_dB": [
+        20.0,
+        28.0,
+        36.0
+      ],
+      "cases": [
+        {
+          "name": "white",
+          "energy_shares": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "CFO_cycles_per_sample": 0.0
+        },
+        {
+          "name": "gain_white",
+          "energy_shares": [
+            0.5,
+            0.5,
+            0.0,
+            0.0
+          ],
+          "CFO_cycles_per_sample": 0.0
+        },
+        {
+          "name": "phase_white",
+          "energy_shares": [
+            0.5,
+            0.0,
+            0.5,
+            0.0
+          ],
+          "CFO_cycles_per_sample": 0.0
+        },
+        {
+          "name": "gain_phase_white",
+          "energy_shares": [
+            0.34,
+            0.33,
+            0.33,
+            0.0
+          ],
+          "CFO_cycles_per_sample": 0.0
+        },
+        {
+          "name": "jitter_white",
+          "energy_shares": [
+            0.5,
+            0.0,
+            0.0,
+            0.5
+          ],
+          "CFO_cycles_per_sample": 0.0
+        },
+        {
+          "name": "all",
+          "energy_shares": [
+            0.4,
+            0.2,
+            0.2,
+            0.2
+          ],
+          "CFO_cycles_per_sample": 0.0
+        },
+        {
+          "name": "jitter_only",
+          "energy_shares": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "CFO_cycles_per_sample": 0.0
+        },
+        {
+          "name": "CFOplus_white",
+          "energy_shares": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "CFO_cycles_per_sample": 0.0001
+        },
+        {
+          "name": "CFOminus_white",
+          "energy_shares": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "CFO_cycles_per_sample": -0.0001
+        }
+      ],
+      "draws": 32,
+      "packets_per_cell": 70,
+      "cycles": 4,
+      "period": 20,
+      "data_seed": 202610174001,
+      "cells": 4320,
+      "synthetic_packets": 302400,
+      "synthetic_complex_points": 24192000,
+      "estimator": "All3two-pair partitions:independent-cycle cross outer-product bases;half squared pair difference covariance;unbiased cross Gram/right-hand moments;nonnegative4variance moment solve;no clean template input",
+      "derivative": "20point periodic FFT derivative,all bins retained;not a deployed filter",
+      "arithmetic": "Complex128/Float64",
+      "uncertainty_multiplier": 5.0,
+      "identifiability": "Positive normalized crossGram min eigenvalue >5*Frobenius standarderror from70packet Grams;all diagonal entries positive",
+      "criteria": {
+        "min_identifiable_fraction_each_multitone_group": 0.95,
+        "min_rejected_fraction_each_degenerate_group": 0.95,
+        "zero_jitter_energy_fraction_median_max": 0.02,
+        "zero_jitter_energy_fraction_q95_max": 0.1,
+        "positive_jitter_relative_error_median_max": 0.2,
+        "positive_jitter_relative_error_q95_max": 0.5,
+        "nonCFO_covariance_relative_error_median_max": 0.2,
+        "nonCFO_covariance_relative_error_q95_max": 0.35
+      },
+      "randomness": "Same data_seed+template_index*10000+SNR_index*100+draw for all9cases;alllatent arrays drawn even when coefficient0;globalpacket phase random,percycle real gain/phase,perpoint real jitter/propernoise;templates fixed and normalized",
+      "scope": "Synthetic-only first-order feasibility;no physicalsourceTX/RX/day or U roles;SNR/shares/CFO are stress tests,not future augmentation amplitude",
+      "cost": {
+        "real_IQ_reads": 0,
+        "checkpoints": 0,
+        "NN": 0,
+        "updates": 0,
+        "teacher_forwards": 0,
+        "head_fit_updates": 0,
+        "GPU": 0,
+        "target_access": false
+      },
+      "on_fail": "Closefixedfour-cycle conditional-covariance jitter source entrance;no packet/cycle/window/bin/uncertainty/threshold/range/seed/oracle-template rescue;no realIQ/sourceexperiment/E20",
+      "on_pass": "Sourcehypothesis remains unproved;separate source-only measurement preregistration needed;no automaticIQ access or training",
+      "baseline": "F+CROSS_RX/3SIG_TIME/unifiedSinc/joint160/defaultcos/NoExplicitCFO/E20/originalU unchanged;no network in this diagnostic"
+    }
+  },
+  "rows": [
+    {
+      "row_id": "fixed-estimator-synthetic",
+      "method": "sampling_jitter_fourcycle_moments",
+      "purpose": "Onlyfixed estimator,fullpositive/negative/degenerate matrix",
+      "config_ref": "experiments/cvs_jitter_estimator17/design.py:config",
+      "resolved_config_ref": "WORKTREE/local_artifacts/F_sampling_jitter_estimator_20261017/run/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 202610174001,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Onlydata generation;template*10000+SNR*100+draw;all9mixtures sharelatentdraw;otherseeds null no model/split/aug/support/evalRNG",
+      "k": null,
+      "scenario": "Synthetic5templates/9mixtures/3SNR/32draws,not physicalradio domains",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "4320cells/302400syntheticpackets/24192000complexobservations;0realIQ/CP/NN/updates/GPU",
+      "output_root": "WORKTREE/local_artifacts/F_sampling_jitter_estimator_20261017/run",
+      "log_path": "WORKTREE/local_artifacts/F_sampling_jitter_estimator_20261017/run.stdout.log",
+      "command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_jitter_estimator17.run --output local_artifacts/F_sampling_jitter_estimator_20261017/run",
+      "expected_artifacts": [
+        "resolved_config.json executioncommit/PID/CWD/Python/threads",
+        "cells.jsonl.gz all4320 sufficientGram/secondmoments/rhs/estimate and separate synthetictruth",
+        "progress.json and completion.json allsyntheticcosts",
+        "independent analysis_summary.json all4320 moment/variance/metric reconstructions and135groups",
+        "same-run report/events/registry,no IQ/checkpoints/prediction or sourceclassification"
+      ]
+    }
+  ],
+  "notes": [
+    "SNR20/28/36 andenergyshares/CFO±.0001 are synthetic stress settings,not sourcefit or Ag parameterselection",
+    "No trueclean template/latentnoise/coefficients passed to estimator;truth used only generator/independent scoring",
+    "PaircrossGram and RHS use disjoint cycles;3pairpartitions/6directions;no cycles/samples/cells dropped",
+    "Moment4variance fit is a physicalstatistical estimator,not an identity/RX diagnostic classifier or learnednetwork",
+    "Conditional estimates summarized only when identifiable;rejectedfraction mandatory,all32cellrecords retained;no broad RFmechanismclaim",
+    "0NN stage has no checkpoint smoke;no N607 release/archive/GPUpreflight needed;do not build unused future machinery",
+    "All existing F/defaulthead/U source andtest protocols remain;no training or sixpractical scoring applies to this synthetic-only question"
+  ],
+  "registered_at": "2026-10-16T21:43:36+00:00"
+}

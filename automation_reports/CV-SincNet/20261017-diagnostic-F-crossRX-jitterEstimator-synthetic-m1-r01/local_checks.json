@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 22,
+  "science_checks": {
+    "no_oracle_or_metadata_argument": true,
+    "input_unchanged": true,
+    "noiseless_covariance_zero": true,
+    "noiseless_full_rank": true,
+    "analytic_periodic_derivative": true,
+    "cross_outer_exact": true,
+    "noiseless_Gram_exact": true,
+    "exact_four_variance_recovery": true,
+    "tone_unidentifiable": true,
+    "constant_unidentifiable": true,
+    "zero_unidentifiable": true
+  },
+  "synthetic_noiseless_estimator_calls": 4,
+  "synthetic_noiseless_estimator_observations": 22400,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false
+}
