@@ -11,3 +11,5 @@
 FAIL 关闭这一固定 full256 椭圆性引导的 RX 合成方向，不改复数方向、窗口、RX/TX/day 子集、强度或阈值救援。PASS 只支持另登记有界广义线性接收 IQ 的 E20 源身份训练检验；不自动训练，不自动进入 As 或目标，不反演未知 TX 效应，不预告 clean 或 urban 增益。
 
 CPU2 线程、CUDA隐藏，0模型／网络前向／checkpoint／头拟合／优化更新／星地生成，E20预算消耗0。一个不可变 root、一个 owner；技术错误保留输出不自动重试。当前 G0 不使用模型，checkpoint no-query smoke 不适用，不加载无关权重。精确 row、代码提交、命令、环境／CWD、路径、停止规则和预期产物见该 run experiment.json；一次聚焦负例、一次限定P0/P1、单archive本远比较、remote compile和独立执行读回。
+
+实际结果：VERIFIED／ANALYZED，PASS_SOURCE_STATISTIC_ONLY。聚合预测风险降低27.486642%、12/18正折，RX椭圆性对差p95=0.032791289171；TX index1/3的全部6折风险增加保留。仅支持另登记有界接收IQ的E20身份验证，未实现或启动训练、未证明Ag有效。CPU1.737601s、0模型/网络/checkpoint/更新/目标。[同run报告](../automation_reports/CV-SincNet/20261016-diagnostic-source-ellipticity-crossfit-manysig-m1-r01/report.md)。

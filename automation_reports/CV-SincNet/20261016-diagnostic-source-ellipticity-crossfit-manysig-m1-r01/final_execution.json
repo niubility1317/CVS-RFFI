@@ -1,0 +1,257 @@
+{
+  "status": "VERIFIED",
+  "scientific_status": "PASS_SOURCE_STATISTIC_ONLY",
+  "run_id": "20261016-diagnostic-source-ellipticity-crossfit-manysig-m1-r01",
+  "actual_code_commit": "5d1061781635f5227dfb7b9b1bee1868084d497d",
+  "checks": {
+    "nonzero_effect": true,
+    "risk": true,
+    "positive_folds": true,
+    "ellipticity_scale": true
+  },
+  "aggregate_risk_reduction": 0.2748664222349735,
+  "positive_folds": 12,
+  "fold_count": 18,
+  "RX_pair_ellipticity_p95": 0.03279128917087134,
+  "RX_pair_ellipticity_p95_min": 0.01,
+  "roles": {
+    "selected_L_packets": 5040,
+    "original_L_carrier": 6300,
+    "source_cells": 72,
+    "unused_cached_source_roles_deserialized": true,
+    "held_RX1_IQ_values_used": false,
+    "U_values_or_truth_used": false,
+    "V_values_used": false,
+    "target_access": false,
+    "packet_ellipticity_min": 0.0009529623807344361,
+    "packet_ellipticity_max": 0.3288577760902165,
+    "packet_ellipticity_mean": 0.07410056473228809
+  },
+  "source_L_packets": 5040,
+  "model_forwards": 0,
+  "checkpoint_loads": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "new_models": 0,
+  "target_access": false,
+  "wall_seconds": 1.737600564956665,
+  "terminal_worker_alive": false,
+  "execution": {
+    "status": "RUNNING",
+    "pid": 3882390,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_ellipticity_crossfit_20261016_r01",
+    "argv": [
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_source_ellipticity_crossfit_20261016_r01/experiments/cvs_source_ellipticity/runner.py"
+    ],
+    "owner": "codex/root/source-ellipticity-crossfit-20261016",
+    "GPU": "",
+    "actual_code_commit": "5d1061781635f5227dfb7b9b1bee1868084d497d",
+    "read_at": 1792141185.3464425
+  },
+  "completion": {
+    "status": "ARTIFACTS_COMPLETE",
+    "scientific_status": "PASS",
+    "rows": [
+      "ELLIP-fitRX3_4_6_8"
+    ],
+    "source_only": true,
+    "target_access": false,
+    "new_models": 0,
+    "model_forwards": 0,
+    "optimizer_updates": 0,
+    "wall_seconds": 1.737600564956665,
+    "automatic_training": false,
+    "goal_completed": false
+  },
+  "log_bytes": 294,
+  "live_PID_observation": "Not observed: job completed before independent readback; execution/completion/log independently verified",
+  "private_statistics_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-source-ellipticity-crossfit-manysig-m1-r01/ELLIP-fitRX3_4_6_8/source_ellipticity_statistics.npz",
+  "folds": [
+    {
+      "held_TX": 0,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.001034309711541835,
+      "predicted_effect_risk": 0.00013427496910729418,
+      "risk_reduction": 0.8701791469141947
+    },
+    {
+      "held_TX": 0,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.0008533109391146504,
+      "predicted_effect_risk": 0.00021995926366958688,
+      "risk_reduction": 0.7422284731310198
+    },
+    {
+      "held_TX": 0,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.0008295745017461184,
+      "predicted_effect_risk": 0.0007252453140509477,
+      "risk_reduction": 0.12576228834851466
+    },
+    {
+      "held_TX": 1,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.0006575330519499743,
+      "predicted_effect_risk": 0.001158726633157001,
+      "risk_reduction": -0.7622332895976729
+    },
+    {
+      "held_TX": 1,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.0003402920858862876,
+      "predicted_effect_risk": 0.0005027707424452747,
+      "risk_reduction": -0.47746822009043455
+    },
+    {
+      "held_TX": 1,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.00022637103357557093,
+      "predicted_effect_risk": 0.0004324646586473475,
+      "risk_reduction": -0.9104240141350726
+    },
+    {
+      "held_TX": 2,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.0009882695058435413,
+      "predicted_effect_risk": 0.000683905588270253,
+      "risk_reduction": 0.3079766356986774
+    },
+    {
+      "held_TX": 2,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.0008580600645600847,
+      "predicted_effect_risk": 0.0004572653917477527,
+      "risk_reduction": 0.4670939592297816
+    },
+    {
+      "held_TX": 2,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.0035050947094493485,
+      "predicted_effect_risk": 0.0013013247460125171,
+      "risk_reduction": 0.6287333570461622
+    },
+    {
+      "held_TX": 3,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.00018355368752688694,
+      "predicted_effect_risk": 0.001307899033518429,
+      "risk_reduction": -6.125430445666465
+    },
+    {
+      "held_TX": 3,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.00035639427293734504,
+      "predicted_effect_risk": 0.00038175662326037394,
+      "risk_reduction": -0.07116374265499958
+    },
+    {
+      "held_TX": 3,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.00011906281906732067,
+      "predicted_effect_risk": 0.0006993763583319009,
+      "risk_reduction": -4.874011415238358
+    },
+    {
+      "held_TX": 4,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.0032742770769528954,
+      "predicted_effect_risk": 0.0027441447582263814,
+      "risk_reduction": 0.16190820332769917
+    },
+    {
+      "held_TX": 4,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.00763354867642179,
+      "predicted_effect_risk": 0.005986674896912144,
+      "risk_reduction": 0.21574157044369746
+    },
+    {
+      "held_TX": 4,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.001183965692675127,
+      "predicted_effect_risk": 0.0008483764547222962,
+      "risk_reduction": 0.2834450694213776
+    },
+    {
+      "held_TX": 5,
+      "held_day": 1,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.005649164247966534,
+      "predicted_effect_risk": 0.003892643656358647,
+      "risk_reduction": 0.31093459395169154
+    },
+    {
+      "held_TX": 5,
+      "held_day": 2,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.006753232507543671,
+      "predicted_effect_risk": 0.0042095399955832755,
+      "risk_reduction": 0.37666295498029634
+    },
+    {
+      "held_TX": 5,
+      "held_day": 3,
+      "training_TX": 5,
+      "training_days": 2,
+      "held_RX_count": 4,
+      "zero_effect_risk": 0.00567311308753427,
+      "predicted_effect_risk": 0.003405377501800464,
+      "risk_reduction": 0.3997338940266819
+    }
+  ],
+  "figure": "E:\\type10-7\\local_artifacts\\cvs_source_ellipticity_20261016\\final\\source_ellipticity_risk_and_scale.png",
+  "analysis_network_IQ_checkpoint_access": 0,
+  "interpretation": "Only supports a separately preregistered bounded widely-linear received-IQ E20 source identity test. Six nonpositive folds remain; no causal hardware, label-preservation, Ag efficacy, target or cross-seed claim.",
+  "automatic_training": false,
+  "goal_completed": false,
+  "figures_rendered_and_viewed": 1
+}
