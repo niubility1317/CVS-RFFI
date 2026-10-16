@@ -1,0 +1,431 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01",
+  "group_id": "phase1-F-white-observation-source-training",
+  "display_name": "F/E20：仅轻度有界接收观测噪声的独立泛化训练检验",
+  "description": "一个新scratchE20，.5RD(raw)+.5RD(固定能量white30)；匹配已完成F四前向A0原始控制，不继承权重。无wholeordinary/PA/As，原U保持，先固定源RX1。",
+  "kind": "cvs",
+  "stage": "Phase1-source-training",
+  "aliases": [],
+  "tags": [
+    "phase1",
+    "F_SIG_TIME_X3",
+    "CENTER_UNITS",
+    "E20",
+    "RDrop",
+    "white_observation",
+    "fixed_energy_noise",
+    "source_only",
+    "single_seed",
+    "default_head"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-raw-anchor-ordinary-RX1-e20-s2026092701-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active Ag+As goal, user-fixed F/scratchE20. New isolated mild observation-noise hypothesis, single source fold; no target or automatic expansion.",
+  "code": {
+    "commit": "CURRENT_RELEASE_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_white_observation_RX1_e20_20261016_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+    "version": "Reuse existing VALIDATED_ONCE source carrier392005; metadata-only source RX1 training exclusion",
+    "representation": "equalized1/native packetRMS IQ256/25MHz; RAW_HZ NoExplicitCFO joint160; only L ordinary on/off",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#classes",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": 0.07,
+      "U_s": 0.63,
+      "V": 0.3
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/preparation_complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": null,
+    "effective_counts": {
+      "L_s": 5040,
+      "U_s": 45360,
+      "V_seen_RX": 21600,
+      "V_held_RX": 5400
+    },
+    "source_holdout_RX": 1
+  },
+  "permissions": {
+    "regime": "source_only_CVS",
+    "query_use": "None; no target loader/view/truth/prediction",
+    "external_method_exception": null,
+    "claim_scope": "Source RX1 isolated white observation training falsification only; no full clean/urban or crossseed claim."
+  },
+  "checkpoint": {
+    "initialization": "scratch",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "No prior model/optimizer/EMA/teacher/statistics loaded. Exact matching completed F A0 source metrics and L/U traces reused, own scratch student/EMA only.",
+    "selection_rule": "FINAL20 only. W30-A0 held accuracy>=1pp/macroF1>=0/seenV loss<=.5pp;full health/coverage/sequence. No target/epoch/strength choice."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/F-white-observation-RX1-E20-20261016",
+    "gpu_policy": "One worker;all-owner/preCUDA<=3/GPU,free>=12000MiB,sharedcapacitylock,CPU2/workers0",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_F_white_observation20_20261016",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_white_observation_RX1_e20_20261016_r01/experiments/cvs_white_observation20/runner.py",
+    "stop_rule": "Own technical/data/nonfinite/budget/sequence/output failure preserves artifacts, no automatic retry or foreign stop. ScientificFAIL closesWHITE30:no SNR/probability/seed/RX rescue. PASS only separate fixedother4RX registration;no target/joint automatic expansion."
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "actual_native_args.json",
+    "module_files.json",
+    "initialization.json",
+    "source_contract.json",
+    "source_frozen.json",
+    "final_ssdg.pth",
+    "completion.json",
+    "result.json",
+    "held_V_predictions.json",
+    "mechanism_progress.json",
+    "training_sequence.jsonl.gz",
+    "step_metrics.jsonl.gz",
+    "epoch_metrics.jsonl",
+    "metrics_epoch.csv",
+    "observation_noise_config.json",
+    "white_observation_proof.json",
+    "F_implementation_proof.json",
+    "F_optimizer_steps.jsonl.gz",
+    "matched_sequences.json",
+    "source_decision.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "FINAL defaulthead heldV5400 accuracy/macroF1/CE/confusion",
+      "seenV21600 accuracy/worstRX",
+      "day/TX paired corrections/new errors and head margin",
+      "full20 training curves/gradients/unchanged Utruth flag",
+      "actual TX x fitRX x day L coverage",
+      "all real L/U physical sample sequence equality",
+      "actual L/U/EMA/source forward and wall costs"
+    ],
+    "dimensions": [
+      "W30 vs reused A0",
+      "sourceheldRX1",
+      "TX0..5",
+      "day1..3",
+      "seed2026092701"
+    ],
+    "prediction_ref": "source-only held_V_predictions.json",
+    "scorer_ref": null,
+    "qualification_rule": "W30-A0 heldaccuracy>=1pp/F1>=0/seenV loss<=.5pp,completehealth/coverage/all5994L-Uphysicaltraces;singleprimaryW30,noSNRsweep."
+  },
+  "rows": [
+    {
+      "row_id": "W30-RX1-s2026092701",
+      "method": "F raw + bounded white observation30",
+      "purpose": "source_training_falsification",
+      "config_ref": "experiments/cvs_white_observation20/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01/W30-RX1-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016051,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model2026092701/split-data392005;newprivatewhite20261016231 percall/device,originalnamedloader20261016053+roleoffsets unchanged;no TXlabel/RXidentity/noise session coupling, no new evaluation/support RNG.",
+      "k": null,
+      "scenario": "clean legal source only; heldRX1 absent from all L/U/model/EMA updates",
+      "optimizer": "native AdamW",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "New20modelE/4440updates/2273280Lforwards;reuseA0historical20modelE/4440 separately,0inheritedweights.U/EMA/eval actualcounts.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01/W30-RX1-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01/logs/W30-RX1-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_white_observation_RX1_e20_20261016_r01/experiments/cvs_white_observation20/runner.py --worker",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "actual_native_args.json",
+        "module_files.json",
+        "initialization.json",
+        "source_contract.json",
+        "source_frozen.json",
+        "final_ssdg.pth",
+        "completion.json",
+        "result.json",
+        "held_V_predictions.json",
+        "mechanism_progress.json",
+        "training_sequence.jsonl.gz",
+        "step_metrics.jsonl.gz",
+        "epoch_metrics.jsonl",
+        "metrics_epoch.csv",
+        "observation_noise_config.json",
+        "white_observation_proof.json",
+        "F_implementation_proof.json",
+        "F_optimizer_steps.jsonl.gz",
+        "matched_sequences.json",
+        "source_decision.json"
+      ],
+      "config": {
+        "schema": "F_white_observation_RX1_v1",
+        "run_id": "20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01",
+        "stage": "repair",
+        "arm": "W30",
+        "model_seed": 2026092701,
+        "row_id": "W30-RX1-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01/W30-RX1-s2026092701/source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "bounded_white_observation",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/F-white-observation-RX1-E20-20261016",
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "updates": 11100,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": {
+          "vs_raw_accuracy_gain_pp_min": 1.0,
+          "vs_raw_macroF1_gain_pp_min": 0.0,
+          "seen_V_mean_drop_pp_max": 0.5,
+          "all_actual_L_U_sequence_equal": true,
+          "finite_complete_updates": true,
+          "full_TX_RX_day_coverage": true,
+          "on_fail": "Close white30 candidate, no SNR/probability/seed/RX rescue",
+          "on_pass": "Only separately register fixed remaining4 sourceRX same F/white30; no target or joint automatic extension"
+        },
+        "training_recipe": "F scratch20=13L+7U/oldU/defaultcos; .5 RD(raw)+.5 RD(white30); no wholeordinary or As",
+        "baseline_definition": "user explicitly confirmed historical pseudo gate+EMA+cos, not CE-only baseline",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1.0,
+            2.0
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "source_only": true,
+          "clean_positive_gain": true,
+          "low_urban_target": 0.6,
+          "goal_completed": false,
+          "target_feedback": false
+        },
+        "budget_authorization": "User explicitly asks original SIG_TIME plus organically combined RDrop published for verification; prior full E50 three-seed and E20 comparison retained. Fixed18 scratch models, no old weights inherited.",
+        "cost_claim": "One new scratch20/4440updates/2273280Lforwards; matched completed F A0 result reused, no weight loaded; U/EMA/eval separately counted",
+        "baseline_reference": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-raw-anchor-ordinary-RX1-e20-s2026092701-m3-r01/A0-RX1-s2026092701/source",
+        "baseline_reuse": false,
+        "readouts": [
+          "FINAL"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "ordinary_L": true,
+          "RDrop_alpha": 1.0,
+          "label_smoothing": 0.01,
+          "L_forwards_per_sample": 4,
+          "expected_L_forward_packets": 2273280,
+          "same_generated_IQ_in_pair": true,
+          "ordinary_stream_seed": 20261016231,
+          "loader_stream_seed": 20261016053,
+          "original_U_recipe": true,
+          "own_EMA": true,
+          "new_U_augmentation": false,
+          "new_losses": false,
+          "extra_parameters": 0,
+          "ordinary_policy": "ordinary_L is legacy use_aug factory switch only; actual factory solely fixed-energy white30",
+          "randomization": "same named loader generators in both arms; ordinary-only private Python/NumPy/CPU/CUDA stream, no changes to global model/U RNG",
+          "sinc_coordinates": "CENTER_25K",
+          "first_pair": "raw",
+          "second_pair": "white_observation",
+          "pair_weights": [
+            0.5,
+            0.5
+          ],
+          "two_RD_pairs": true,
+          "cross_view_consistency": false,
+          "actual_ordinary_draws_per_L_step": 1,
+          "L_view_kind": "WHITE_FIXED_ENERGY",
+          "no_original_ordinary_operators": true
+        },
+        "fold": {
+          "held_RX": 1,
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "effective_roles": {
+            "L_s": 5040,
+            "U_s": 45360,
+            "V": 21600
+          },
+          "held_V_count": 5400,
+          "held_L_used": false,
+          "static_full_source_domain_map": true,
+          "original_steps_per_epoch": 222,
+          "actual_U_batches_per_loader": 178,
+          "U_observations_per_pseudo_epoch": 56624
+        },
+        "held_RX": 1,
+        "combination": {
+          "SIG_TIME": "SIG_TIME_X3",
+          "Sinc_coordinates": "CENTER_25K",
+          "Sinc_optimizer": "CENTER_UNITS",
+          "s": 25000.0,
+          "Fs": 25000000.0,
+          "default_head_joint": true,
+          "MEAN_VAR": false,
+          "COV": false,
+          "ensemble": false
+        },
+        "F_implementation": {
+          "source_commit": "09554c3a06c976c53efc4dbc61f5c501a1e7b06e",
+          "source_package": "experiments/cvs_rdrop_sinc_units",
+          "modules": [
+            "coordinate.py",
+            "optimizer.py",
+            "x3_features.py",
+            "descriptors.py"
+          ],
+          "scope": "Exact F feature/Sinc math reused; scratch E20 schedule and source fold, no E50 initialization"
+        },
+        "sinc_optimizer_units": {
+          "mode": "CENTER_UNITS",
+          "sample_rate_Hz": 25000000.0,
+          "center_scale_Hz": 25000.0,
+          "lr": "alpha Fs/s",
+          "epsilon": "epsilon s/Fs",
+          "weight_decay": "q -= alpha lambda (q+p0/s); AdamW q decay0",
+          "gradient_clipping": "physical Hz globalclip5",
+          "extra_optimizer_steps": 0
+        },
+        "observation_noise": {
+          "kind": "WHITE_FIXED_ENERGY",
+          "signal_to_added_noise_db": 30.0,
+          "added_energy_ratio": 0.001,
+          "seed": 20261016231,
+          "per_packet": true,
+          "probability": 1.0,
+          "strength_schedule": "fixed all20 epochs; no amplitude sweep",
+          "formula": "n=z*sqrt(.001*sum(x^2)/sum(z^2)); G=x+n; original model normalization unchanged",
+          "distribution": "Gaussian IID direction normalized to a sphere; isotropic fixed energy, not exact Gaussian AWGN",
+          "zero_power_policy": "zero n, preserve packet, count separately",
+          "labels_used": false,
+          "hardware_effects": false,
+          "before_satellite": false,
+          "boundary_change": false,
+          "total_SNR_claim": false
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Previous fixed raw+wholeordinary candidate closedFAIL,not expanded or promoted. This isolated bounded observational-noise operator is a new physical treatment, not raw proportion/SNR rescue.",
+    "30dB=0.1%actual waveform energy fixed before training;Gaussian direction normalized sphere isisotropic fixedenergy,notexactAWGN/not totalSNR. No targetnoise weakening or new As generation.",
+    "SourceRX1 firstfold only:fitRX3/4/6/8L5040/U45360hidden/seenV21600,heldV5400FINAL;heldL/Uunused. ExactcompletedA0controlconfig/steps checked,allactualL-Utracescompare.",
+    "Native use_aug/ordinary_L historicalswitch invokes only WhiteObservation factory;no originalordinaryfactory/schedule. Actual flags allotherprobabilities0/PAOFF/classsigfalse;fixednew30dB scheduleall20,not oldramp.",
+    "OldU _strong_augment/strong_noise_std/ownEMA/oldgate unchanged;newwhiteonlyL.No perTXweights,gates,heads,branches,alignmentsorprojectionloss.",
+    "F from userchoice after exposedAF historicalbenchmark;no new independentblindtestclaim. No E50modelweights or budget loaded.",
+    "Localactualnetwork512syntheticfwd/768noiseinput/11negative/1syntheticoptimizerPASS,206initialF_A0statesexact;0realIQ/CP. UniqueP0P1 reviewbeforepublish;workerfirstownscratchCPnoquerysmokecontinuesonPASS."
+  ]
+}

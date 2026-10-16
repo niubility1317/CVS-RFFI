@@ -34,8 +34,9 @@ def hook(self,**kw):
     return .5*(correction+value-kw['identity_loss']),metrics
 hook._accepts_labeled_inputs=False
 
-def attach(m,c):
-    d.validate(c);m=base.attach(m,c,validator=d.validate)
+def attach(m,c,validator=None):
+    validator=validator or d.validate
+    validator(c);m=base.attach(m,c,validator=validator)
     m._anchor_original_hook=m._source_labeled_feature_hook;m._source_labeled_feature_hook=MethodType(hook,m)
     m._anchor_G=None;m._anchor_raw=None;m._anchor_calls=0;m._anchor_extra_packets=0
     m._anchor_augmented=c['training_mechanism']['ordinary_L'];m._anchor_arm=c['arm']

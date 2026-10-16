@@ -6,6 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|F/E20：仅轻度有界接收观测噪声的独立泛化训练检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01/report.md)|
 |F 原始监督份额：RX1 三组 E20 结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-F-raw-anchor-ordinary-RX1-e20-s2026092701-m3-r01/report.md)|
 |普通增强关闭 PA：RX1 独立 E20 训练结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-ordinary-noPA-RX1-e20-s2026092701-m1-r01/report.md)|
 |额外 PA 对冻结默认头的源身份影响|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-ordinary-PA-heldsource-manysig-s2026092701-m5-r01/report.md)|
