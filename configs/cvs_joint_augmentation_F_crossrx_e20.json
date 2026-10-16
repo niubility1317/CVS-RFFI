@@ -131,40 +131,17 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": {
-    "name": "Same-draw ordinary PA bypass improves heldRX clean under scratchE20 F+CROSS_RX",
-    "status": "RUNNING_SOURCE_E20_NO_RESULT_YET",
-    "minimum": "FixedRX1 sourcefold scratchE20 matched B00/PA-bypass pair;original6forwards/raw.5 ordinary.25 sraw.25/SupCon ordinarypair/originalU;capture same native draw",
-    "abandon": "No heldRX clean gain or failed practical protection;fix numeric criteria/cost in own preregistration first,no seed/RX rescue",
+    "name": "Bounded packet-constant received-IQ gain view improves heldRX clean while retaining original ordinary PA",
+    "status": "PROPOSED_NOT_IMPLEMENTED_REGISTERED_OR_LAUNCHED",
+    "minimum": "First actual input/normalization path audit;then separately registered samefold/seed/scratchE20/raw.5 ordinary.25 raw-or-gain-slot.25 with matched6forwards and unchanged U",
+    "gain_range": [
+      0.9,
+      1.1
+    ],
+    "gain_range_basis": "Existing verified ordinary gain contract,not source practical/target tuning",
+    "abandon": "Gain removed by later RMS or no actual deployed-feature effect:no training;matchedE20 clean or practical guardrail failure:close fixed candidate",
     "target_access": false,
-    "Ag_efficacy_proved": false,
-    "run_id": "20261016-phase1-F-crossRX-PAbypass-sourceRX1-e20-s2026092701-m2-r01",
-    "source_selection": {
-      "primary": "B10",
-      "reference": "B00",
-      "fixed_final": 20,
-      "held_RX": 1,
-      "held_L": 1260,
-      "views": [
-        "clean",
-        "practical_high",
-        "practical_mid",
-        "practical_low_suburban",
-        "practical_high_urban",
-        "practical_mid_urban",
-        "practical_low_urban"
-      ],
-      "min_clean_gain_pp": 1.0,
-      "min_clean_macroF1_gain_pp": 0.0,
-      "max_each_practical_drop_pp": 0.5,
-      "max_seenV_drop_pp": 0.5,
-      "final_L_CE_max": 0.5,
-      "on_fail": "Close fixed PA-bypass training recipe;no seed/RX/intensity/threshold rescue",
-      "on_pass": "Supports separate independent source confirmation only;not Ag/DG efficacy or automatic target"
-    },
-    "source_fold": "L5040/U45360/V21600,heldRX1 originalL1260 finalonly",
-    "same_native_draw_both_arms": true,
-    "actual_augmentation_epoch_cap": 13,
-    "execution_commit": "bdb3733de36b2d0e01515c91b7c9df8462b8c39b"
+    "Ag_efficacy_proved": false
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
@@ -265,5 +242,70 @@
     "training_updates": 0,
     "target_access": false,
     "Ag_efficacy_proved": false
+  },
+  "source_PA_bypass_E20_result": {
+    "run_id": "20261016-phase1-F-crossRX-PAbypass-sourceRX1-e20-s2026092701-m2-r01",
+    "status": "ANALYZED_SOURCE_FAIL_FIXED_RECIPE_CLOSED",
+    "qualification": {
+      "qualified": false,
+      "conditions": {
+        "healthy": true,
+        "clean": false,
+        "clean_macroF1": false,
+        "practical_protection": true,
+        "seen_V": true
+      },
+      "urban_mean_gain_pp": 1.2962962962962974,
+      "seen_V_gain_pp": 0.009259259259253305
+    },
+    "paired": {
+      "clean": {
+        "accuracy_gain_pp": -1.2698412698412653,
+        "macro_F1_gain_pp": -1.2455541733645714,
+        "repaired": 2,
+        "broken": 18
+      },
+      "practical_high": {
+        "accuracy_gain_pp": 1.5873015873015872,
+        "macro_F1_gain_pp": 0.5760494036528452,
+        "repaired": 45,
+        "broken": 25
+      },
+      "practical_mid": {
+        "accuracy_gain_pp": 1.5079365079365081,
+        "macro_F1_gain_pp": -0.09523639951886098,
+        "repaired": 45,
+        "broken": 26
+      },
+      "practical_low_suburban": {
+        "accuracy_gain_pp": 1.0317460317460336,
+        "macro_F1_gain_pp": -0.2772268868223571,
+        "repaired": 37,
+        "broken": 24
+      },
+      "practical_high_urban": {
+        "accuracy_gain_pp": 1.5873015873015872,
+        "macro_F1_gain_pp": 0.027468836401101093,
+        "repaired": 44,
+        "broken": 24
+      },
+      "practical_mid_urban": {
+        "accuracy_gain_pp": 0.8730158730158755,
+        "macro_F1_gain_pp": 0.025157460298425027,
+        "repaired": 34,
+        "broken": 23
+      },
+      "practical_low_urban": {
+        "accuracy_gain_pp": 1.428571428571429,
+        "macro_F1_gain_pp": 1.1273229048690574,
+        "repaired": 39,
+        "broken": 21
+      }
+    },
+    "training_updates": 8880,
+    "actual_NN_packets": 9373358,
+    "target_access": false,
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false
   }
 }

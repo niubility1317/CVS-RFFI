@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：同抽样普通 PA 旁路 E20 源对照
 
-状态：RUNNING／VERIFIED。两组已从零启动，尚未完成训练或源评分。当前固定基线F＋CROSS_RX，E20从零，默认cosine头正常联合训练；不把源诊断或RDrop/SupCon当作IQ泛化完成。
+状态：ANALYZED_SOURCE_ONLY／VERIFIED。两组 scratch E20、全部七个源视图及独立完整分析已完成。固定 PA 旁路候选未通过源条件，关闭固定配方。当前固定基线F＋CROSS_RX，E20从零，默认cosine头正常联合训练；不把源诊断或RDrop/SupCon当作IQ泛化完成。
 
 ## 唯一假设及证据边界
 
@@ -46,3 +46,51 @@ fixedfinal20后比较B10−B00：heldRX1 clean准确率≥+1pp，clean MacroF1�
 独立全量分析程序已准备并编译，只有全部声明预测完成后才执行。不修改已发布训练代码，不重复提交同run，不基于中间或目标分数改变配方。联合目标仍未完成。
 
 独立评分边界：当前继承源读出保存hard predictions及运行时mean CE，没有logits。完成后独立复算accuracy/F1/CM/repair-break和全部训练/PA成本；mean CE仅引用冻结前向的记录，不声称从hard predictions独立重算CE。该限制不改变预登记识别准确率/F1及practical保护判断。
+
+
+## 完整源结果与原定判断
+
+两worker和dispatcher自然退出、completion齐全、无failure；无重启/热改/选择性重跑。每组E20/4440更新/3409920LNN、3330非零SupCon调用/13320层位前向项，全部17640个默认头源决策、完整epoch/step、两组物理L/U序列、PA抽样和实际13截断日程独立复算。mean CE引用冻结运行记录，hard predictions无logits，未冒称独立重算CE。
+
+| 固定 held RX1 源视图 | B00 准确率 | B10 准确率 | 差值 | B00 Macro-F1 | B10 Macro-F1 | 修复/新错 |
+|---|---:|---:|---:|---:|---:|---:|
+| clean | 81.507937% | 80.238095% | -1.269841pp | 81.132673% | 79.887119% | 2/18 |
+| practical_high | 37.857143% | 39.444444% | +1.587302pp | 27.877176% | 28.453225% | 45/25 |
+| practical_mid | 38.095238% | 39.603175% | +1.507937pp | 29.135008% | 29.039771% | 45/26 |
+| practical_low_suburban | 35.000000% | 36.031746% | +1.031746pp | 27.678789% | 27.401562% | 37/24 |
+| practical_high_urban | 37.698413% | 39.285714% | +1.587302pp | 29.105684% | 29.133153% | 44/24 |
+| practical_mid_urban | 31.190476% | 32.063492% | +0.873016pp | 26.168089% | 26.193247% | 34/23 |
+| practical_low_urban | 27.857143% | 29.285714% | +1.428571pp | 24.115680% | 25.243003% | 39/21 |
+
+| suburban 与自身 clean 绝对差 | B00 | B10 |
+|---|---:|---:|
+| practical_high | 43.650794pp | 40.793651pp |
+| practical_mid | 43.412698pp | 40.634921pp |
+| practical_low_suburban | 46.507937pp | 44.206349pp |
+
+原预登记条件：{"healthy": true, "clean": false, "clean_macroF1": false, "practical_protection": true, "seen_V": true}。全部同时通过才晋级；六practical每场景≥−.5pp属于原保护条件，不能事后删去urban或suburban失败项。
+
+- B00：最终LCE 0.277130948，seenV 98.041667%；实际NN 4686678，墙钟1267.253秒，完整stdout 800行。完整ordinary管线覆盖568320包、调用4440，真实触发15144、IQ改变15124，旁路返回0；PA捕获和实际ordinary输入MSE重算最大差2.41212547e-07。
+- B10：最终LCE 0.251672544，seenV 98.050926%；实际NN 4686678，墙钟1231.857秒，完整stdout 800行。完整ordinary管线覆盖568320包、调用4440，真实触发15144、IQ改变15124，旁路返回568320；PA捕获和实际ordinary输入MSE重算最大差2.29105353e-07。
+
+两组PA mask/subchain/strength及有效概率/shift逐step匹配：{"triggered_bits": true, "changed_bits": true, "subchains": true, "strength_max": true, "effective_p_pa": true, "effective_max_time_shift": true}；U TX真值可用和非有限跳步均0。所有同IQ RDrop对、六L前向和原损失尺度逐step复算；0As训练、0头拟合，未新增部署分支或加载父权重。
+
+本实验40模型轮/8880更新，含dispatcher真实CP smoke2的总实际NN包前向9373358；原L、U学生/教师、V/学生评估和held8820分列，EMA继承计数2已扣除。局部合成13056增强/2312NN/2更新和先前源诊断206642NN/0更新另列，不并入真实E20。source-only，无target预测或调参，联合目标未完成。
+
+本次否定固定PA旁路配方的训练晋级依据；源冻结诊断的修复并未保留为全部训练收益。关闭此配方，不换seed/RX/强度/阈值或追加预算救跑，不扩seed。suburban与clean差距缩小同时包含clean下降的贡献，不能记为联合成功；practical平均准确率的正差亦不能覆盖类别负结果。
+
+| 分层 | clean | high sub | mid sub | low sub | high urban | mid urban | low urban |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| TX0 | -1.904762pp | +0.000000pp | +0.000000pp | +0.476190pp | -0.952381pp | -0.952381pp | +2.380952pp |
+| TX1 | -0.476190pp | +0.000000pp | +0.000000pp | -0.952381pp | -0.952381pp | -0.476190pp | +1.904762pp |
+| TX2 | -1.904762pp | +19.047619pp | +16.190476pp | +14.761905pp | +19.047619pp | +11.428571pp | +9.523810pp |
+| TX3 | +0.000000pp | -3.809524pp | -0.476190pp | -1.428571pp | -1.904762pp | -3.333333pp | -1.428571pp |
+| TX4 | +0.000000pp | -1.428571pp | -0.952381pp | -0.952381pp | -0.952381pp | +0.952381pp | -1.428571pp |
+| TX5 | -3.333333pp | -4.285714pp | -5.714286pp | -5.714286pp | -4.761905pp | -2.380952pp | -2.380952pp |
+| day1 | -1.428571pp | +1.904762pp | +2.619048pp | +3.333333pp | +2.619048pp | -0.476190pp | +1.666667pp |
+| day2 | -0.714286pp | +0.238095pp | -1.666667pp | -0.952381pp | +0.476190pp | +0.714286pp | +1.428571pp |
+| day3 | -1.666667pp | +2.619048pp | +3.571429pp | +0.714286pp | +1.666667pp | +2.380952pp | +1.190476pp |
+
+下一唯一拟检验：温和的包内常数观测增益视图x→a·x，是否在保留全部旧ordinary及原U的条件下，带来未见RX clean净收益。a先固定在已核实旧增益范围0.9至1.1，不从本次practical或target分数选幅度；它是线性缩放已接收IQ，不等于改变TX PA或替换真实RX。此方向区别于已失败的包内缓变斜坡，也不删除PA。先核对实际输入/后续RMS归一化是否将其消除；若只成identity，不启动训练。最小训练仍应为固定源折/同seed/同六前向的scratchE20 B00/B10，原raw.5/ordinary.25份额保持，第三槽raw或独立轻增益raw；在任何新增源计算前独立登记。若clean无预定净收益或practical保护失败即关闭，不靠源fit敏感性晋级。当前仅提出，尚未实现、登记或启动。
+
+成本用语：PA_native_L_packets=568320统计有资格进入原生PA门控的ordinary L包数，不表示每包都执行非线性子链。两组真正选中PA的包数均为15144，其中15124包IQ实际改变；PA子链调用按私有PA_steps逐项保存。两组门控/子链和完整生成工作相同，无新增网络前向。

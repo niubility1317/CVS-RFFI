@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ANALYZED_SOURCE_ONLY",
   "code_commit": "bdb3733de36b2d0e01515c91b7c9df8462b8c39b",
   "archive_transfer": "VERIFIED",
   "remote_compile": "VERIFIED",
@@ -20,7 +20,10 @@
       "step_log_growth_verified": true,
       "As_training": false,
       "PA_bypass": false,
-      "ordinary_L_packets_observed": 56832
+      "ordinary_L_packets_observed": 56832,
+      "training_epochs": 20,
+      "actual_optimizer_updates": 4440,
+      "training_and_source_views_complete": true
     },
     {
       "row_id": "B10-RX1-s2026092701",
@@ -35,8 +38,17 @@
       "step_log_growth_verified": true,
       "As_training": false,
       "PA_bypass": true,
-      "ordinary_L_packets_observed": 56832
+      "ordinary_L_packets_observed": 56832,
+      "training_epochs": 20,
+      "actual_optimizer_updates": 4440,
+      "training_and_source_views_complete": true
     }
   ],
-  "independent_analysis_code": "Prepared/compiled,no completed predictions scored;CE reported only because saved hard predictions have no logits"
+  "independent_analysis_code": "Executed against all complete hard predictions and full logs;CE reported only",
+  "terminal_processes": "Dispatcher and both workers naturally exited;completion exists,failure absent",
+  "all_seven_views_per_row_independently_recounted": true,
+  "full_native_steps_recounted_per_row": 4440,
+  "source_qualification": "FAIL_CLOSE_FIXED_RECIPE",
+  "actual_total_NN_forward_packets": 9373358,
+  "joint_goal_complete": false
 }
