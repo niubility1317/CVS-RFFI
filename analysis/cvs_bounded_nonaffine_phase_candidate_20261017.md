@@ -34,3 +34,6 @@ PASS 只证明这两个已见源训练模型下的身份保持，不证明 DG。
 
 
 有界非恒定相位源身份检验 20261017-diagnostic-F-crossRX-boundedPhase-fitL-manysig-m2-r01 完整ANALYZED／VERIFIED：PASS_SOURCE_IDENTITY_ONLY，两个默认头accuracy相对raw−.019841/−.029762pp，raw正确保留99.965223/99.970191%；四draw和每RX/TX/day通过。50400源预测/10321920相位坐标/320batch全部独立复算，实际50402NN/40320sourcephase+64synthetic/2CP/0更新/target；全IQ变化median.022373/max.058648，312/20160路径整包收缩，全部尾部保留。raw全logits与旧AWGN源检查一致。支持下一三匹配scratchE20，不是DG/As有效；当前尚未实现登记E20。F＋跨RX同TX底座保持，联合目标ACTIVE。
+
+
+固定有界相位三匹配E20 20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01 已完成并完整复算：FAIL_FIXED_NATIVE_BOUNDED_NONAFFINE_PHASE_006_01_FULL_COVERAGE_TRAINING_CLOSED。B10 clean80.079365%，相对raw−.555556pp、相对ordinary−1.349206pp，macro-F1均下降；lowurban27.698413%、相对raw−.158730pp。全部26460源预测/13320更新轨迹/568320相位统计一致，17469956NN/0target。关闭sigma.006/peak.1全覆盖相位，不改幅度/系数/分层/RX/seed/预算救跑。下一来源假设见cvs_paired_preprocessing_basis_20261017.md，raw/eq配对与原L权限尚未证明，未读新IQ或启动训练；联合目标ACTIVE。

@@ -270,3 +270,9 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 有界非恒定相位三匹配E20 20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01 VERIFIED RUNNING，commit 51fc25d6862b7773e8d67fcc95a852c2e52ecc86，真实CP smoke/归档传输/compile PASS，GPU0/1/2 actualPID/CWD/argv/CUDA与存活loggrowth核实；scratchE20已开始、尚无完整识别读出和科学结论，不增加预算、改配方或使用target。
+
+
+有界非恒定相位三匹配E20 20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01 ANALYZED/VERIFIED：FAIL_FIXED_NATIVE_BOUNDED_NONAFFINE_PHASE_006_01_FULL_COVERAGE_TRAINING_CLOSED；60modelE/13320更新/17469956NN，完整26460源预测/全部steps/phase统计复算；B10相对raw clean -0.5555555555555536pp，相对ordinary clean -1.3492063492063444pp。仅sourceRX1/seed01，无target；原晋级条件不变，联合目标ACTIVE。
+
+
+下一唯一来源假设为同一原L物理包的raw/equalized接收预处理观察，见analysis/cvs_paired_preprocessing_basis_20261017.md。官方FullWiSig说明与loader eq维度不能证明compact数组逐行配对；先查构造索引/原角色，不假定同sig_i，不先读新IQ，无新模型/更新/target。配对或权限不可证即放弃该入口，不扩大L或改为equalized=both；不复活已关闭相位/噪声/其他固定失败。

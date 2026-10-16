@@ -1,0 +1,77 @@
+{
+  "status": "ANALYZED",
+  "actual_execution": "VERIFIED",
+  "executed_code_commit": "51fc25d6862b7773e8d67fcc95a852c2e52ecc86",
+  "source_only": true,
+  "actual_rows": 3,
+  "new_model_epochs": 60,
+  "new_optimizer_updates": 13320,
+  "actual_NN_forward_packets": 17469956,
+  "dispatcher_realCP_smoke_NN_packets": 2,
+  "qualification": {
+    "qualified": false,
+    "conditions": {
+      "B00_clean": false,
+      "B00_clean_macroF1": false,
+      "B00_each_practical": true,
+      "B00_seen_V": true,
+      "C_ordinary_clean": false,
+      "C_ordinary_clean_macroF1": false,
+      "C_ordinary_each_practical": true,
+      "C_ordinary_seen_V": true,
+      "healthy": true
+    },
+    "comparisons": {
+      "B00": {
+        "conditions": {
+          "clean": false,
+          "clean_macroF1": false,
+          "each_practical": true,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": -0.5555555555555536,
+          "practical_high": 0.7142857142857117,
+          "practical_mid": 0.9523809523809545,
+          "practical_low_suburban": 1.1904761904761918,
+          "practical_high_urban": 0.9523809523809545,
+          "practical_mid_urban": -0.07936507936507908,
+          "practical_low_urban": -0.15873015873015817
+        },
+        "clean_macroF1_gain_pp": -0.5931043783318324,
+        "seen_V_gain_pp": 0.004629629629637755
+      },
+      "C_ordinary": {
+        "conditions": {
+          "clean": false,
+          "clean_macroF1": false,
+          "each_practical": true,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": -1.3492063492063444,
+          "practical_high": 4.206349206349202,
+          "practical_mid": 4.285714285714287,
+          "practical_low_suburban": 3.4126984126984174,
+          "practical_high_urban": 3.4920634920634908,
+          "practical_mid_urban": 1.7460317460317454,
+          "practical_low_urban": 0.5555555555555591
+        },
+        "clean_macroF1_gain_pp": -1.3031236519644773,
+        "seen_V_gain_pp": -0.06018518518517979
+      }
+    }
+  },
+  "source_prediction_count": 26460,
+  "completed_source_views": 21,
+  "independent_all_native_view_unit_steps": 13320,
+  "all568320_phase_energy_stat_rows_recounted": true,
+  "source_phase_72cells_runtime_reported_RXday_recounted_from_sequences": true,
+  "TX_step_assignments_not_separately_stored": true,
+  "source_only_no_truth_side_target": true,
+  "all_own_PIDs_naturally_exited": true,
+  "no_technical_failure": true,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "joint_goal_complete": false
+}
