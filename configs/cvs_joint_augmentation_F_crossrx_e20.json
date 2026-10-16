@@ -132,13 +132,24 @@
   },
   "next_source_hypothesis": {
     "name": "Existing ordinary PA-normal contribution to avoidable source identity errors",
-    "status": "PROPOSED_NOT_IMPLEMENTED_REGISTERED_OR_LAUNCHED",
+    "status": "REGISTERED_NOT_LAUNCHED",
     "minimum": "Same native augmentation draws:raw/fullordinary/PA-only-bypassed ordinary,fitL/defaulthead only;record actual PA triggers and input differences",
     "abandon": "No paired identity recovery on truly PA-affected samples,or unmatched native draws:no training promotion",
     "data": "Fit4RX L5040 only,no held/U/V/target",
     "budget": "0updates/headfit;fix exact source matrix/seed/cost/thresholds before IQ access",
     "Ag_efficacy_proved": false,
-    "target_access": false
+    "target_access": false,
+    "run_id": "20261016-diagnostic-F-crossRX-ordinaryPA-fitL-s2026092701-m1-r01",
+    "source_NN_packets": 206640,
+    "total_NN_packets": 206642,
+    "training_updates": 0,
+    "criteria": {
+      "min_PA_changed_packets": 1000,
+      "pooled_changed_accuracy_recovery_pp_min": 2.0,
+      "RX_positive_min": 3,
+      "RX_recovery_pp_min": -1.0,
+      "each_day_recovery_pp_min": 0.0
+    }
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",

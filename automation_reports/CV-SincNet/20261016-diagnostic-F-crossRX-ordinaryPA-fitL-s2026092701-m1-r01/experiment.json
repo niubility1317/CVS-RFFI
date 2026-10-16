@@ -1,0 +1,234 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-diagnostic-F-crossRX-ordinaryPA-fitL-s2026092701-m1-r01",
+  "group_id": "F-crossRX-ordinaryPA-source",
+  "display_name": "F＋CROSS_RX：原生普通 PA 增强同抽样源身份反事实",
+  "description": "Frozen original B00/defaulthead;fitL5040 only;raw and all20 actual ordinary schedules full vs captured PA-only bypass;no training,target or forced trigger",
+  "kind": "diagnostic",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "ordinary_PA",
+    "PA-counterfactual",
+    "F-CROSS_RX-source"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "source-only",
+    "counterfactual",
+    "PA",
+    "zero-update"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research;source-only audit of already enabled ordinary PA after fixed spectral candidate closed. No training extension or new PA corruption.",
+  "code": {
+    "commit": "PENDING_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
+    "environment": "ordinary N607 CVS-RFFI; CPU2/loader0",
+    "cwd": "PROJECT/releases/cvs_F_crossRX_ordinaryPA_fitL_20261016_r01",
+    "entrypoint": "experiments/cvs_pa_counterfactual16/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated source carrier;only exact fourRX model-fit L5040 used",
+    "representation": "NativeIQ256/raw plus exact original ordinary augmentation;PA-only bypass captured from same call,no extra normalization",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Existing source cache originalL6300 filteredbeforeIQstats/inference;fitIDs exactly frozenmodelL5040",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "FitRX3/4/6/8 L5040 only;72cells70each",
+      "U_s": "Unused,truth hidden",
+      "V": "Unused;heldRX1 originalL1260 also unused"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source-only causal PA contribution to defaulthead errors;not clean DG/Ag/As/joint efficacy",
+    "target_access": false
+  },
+  "checkpoint": {
+    "initialization": "frozen_evaluation_no_training",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse verified own scratch20/final20/fourRX source provenance and loader,strict model load before any realIQ",
+    "provenance_verdict": "Own scratch E20/fixedfinal20,source-only/no ancestors/defaulthead joint;does not initialize new training",
+    "selection_rule": "Predetermined B00/seed2026092701/final20;not target-selected"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-CROSS_RX-ordinaryPA-20261016",
+    "gpu_policy": "CPU2threads,CUDA_VISIBLE_DEVICES empty,no GPU slot or healthy intervention",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-ordinaryPA-fitL-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_crossRX_ordinaryPA_fitL_20261016_r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261016-diagnostic-F-crossRX-ordinaryPA-fitL-s2026092701-m1-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_pa_counterfactual16/runner.py",
+    "stop_rule": "Role/CP/nonfinite/output/frozen-state/cost or native-draw mismatch:preserve failure,no automatic retry. Complete all20schedules regardless scientific results. FAIL closes PA-harm training rationale,no intensity/seed/RX/threshold rescue."
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "real_checkpoint_smoke.json",
+    "predictions/raw.json",
+    "predictions/epoch01..20.json",
+    "epoch_scores.json",
+    "result.json",
+    "completion.json or failure.json"
+  ],
+  "metrics_plan": {
+    "scope": "Source-only,no target/default final testing in this zero-update diagnostic",
+    "criteria": {
+      "min_PA_changed_packets": 1000,
+      "pooled_changed_accuracy_recovery_pp_min": 2.0,
+      "RX_positive_min": 3,
+      "RX_recovery_pp_min": -1.0,
+      "each_day_recovery_pp_min": 0.0
+    },
+    "metrics": [
+      "raw/full/bypass accuracy,Macro-F1,CE,confusion",
+      "same-draw repairs/broken on all and actual PA-changed packets",
+      "all20epochs/RX/TX/day effects",
+      "actual PA trigger/changed/subchain counts,power and reference-window MSE"
+    ],
+    "training_promotion": "Only supports separately registered matching E20,no automatic training",
+    "failure": "Fixed rationale closed,no rescue",
+    "uncertainty": "Repeated physical samples under20 fixed draws are not independent trials;no naive packet-level p value"
+  },
+  "rows": [
+    {
+      "row_id": "F-crossRX-PA-fitL-s2026092701",
+      "method": "F_CROSS_RX_ordinary_PA_counterfactual",
+      "purpose": "Actual inherited PA component causes avoidable source identity errors on same-draw PA-changed packets",
+      "config_ref": "experiments/cvs_pa_counterfactual16/design.py:config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-ordinaryPA-fitL-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016241,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "modelseed only identifies fixed original checkpoint;augmentation SEED+epoch;no split/data/support/eval resampling",
+      "k": null,
+      "scenario": "fitL only;raw plus20 actual schedules fullordinary/PA-only bypass",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "report.md:206642actualNN/0updates,100800ordinary-generated packets",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-ordinaryPA-fitL-s2026092701-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_crossRX_ordinaryPA_fitL_20261016_r01/ordinary_PA.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_pa_counterfactual16/runner.py",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "real_checkpoint_smoke.json",
+        "predictions/raw.json",
+        "predictions/epoch01..20.json",
+        "epoch_scores.json",
+        "result.json",
+        "completion.json or failure.json"
+      ],
+      "config": {
+        "run_id": "20261016-diagnostic-F-crossRX-ordinaryPA-fitL-s2026092701-m1-r01",
+        "owner": "codex/root/F-CROSS_RX-ordinaryPA-20261016",
+        "backend": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+        "backend_commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+        "checkpoint_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source",
+        "model": "Frozen own scratch F+CROSS_RX B00/final20/seed01;default jointly trained cosine head,no new fitting",
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "L": 5040,
+        "U_used": false,
+        "V_used": false,
+        "held_RX1_used": false,
+        "target_access": false,
+        "epochs": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15,
+          16,
+          17,
+          18,
+          19,
+          20
+        ],
+        "augmentation_seed": 20261016241,
+        "draws": "Seed Python and Torch once at each epoch with SEED+epoch;fixed fit-cache order,batches128/last48;new diagnostic draws,not a reconstruction of historical training draws",
+        "augmentation": "Exact native build_aug_base_cfg/make_augmentor/configure_augmentor_for_epoch using original checkpoint args;one actual normal call per batch",
+        "views": "Raw once;each of20 actual schedules:fullordinary and PA-only-bypassed ordinary from captured post-general-channel prefix of same call",
+        "capture": "PA is last;DAC probability must be0,class_signature false,no extra input RMS;record real strengths,subchains and changed packets;no independent redraw or forced trigger",
+        "source_NN_packets": 206640,
+        "total_NN_packets": 206642,
+        "smoke_synthetic_packets": 2,
+        "ordinary_generated_packets": 100800,
+        "training_updates": 0,
+        "head_fit_updates": 0,
+        "teacher_forwards": 0,
+        "As_generations": 0,
+        "device": "CPU",
+        "threads": 2,
+        "criteria": {
+          "min_PA_changed_packets": 1000,
+          "pooled_changed_accuracy_recovery_pp_min": 2.0,
+          "RX_positive_min": 3,
+          "RX_recovery_pp_min": -1.0,
+          "each_day_recovery_pp_min": 0.0
+        },
+        "on_fail": "Close PA-harm training rationale,no seed/intensity/RX/threshold rescue;not proof PA identity preserving",
+        "on_pass": "Only motivates matched separately registered scratch E20 ordinary-recipe ablation;not Ag cross-RX or joint efficacy",
+        "parent_cost_separate": "E20/4440updates/4686678NN;frozen diagnosis only"
+      }
+    }
+  ],
+  "notes": [
+    "Exact native outputs and Python/Torch RNG preservation verified synthetically across20 schedules",
+    "No sourceIQ/CP/NN in local checks;1344syntheticaugmentation packets/11negatives",
+    "No new PA corruption proposed;causal audit of already enabled ordinary PA",
+    "Parent CP source cost separate,own scratch20 no target selection",
+    "All paired input changes from same actual native call;not two independent augmentation draws"
+  ],
+  "registered_at": "2026-10-16T08:35:38+00:00"
+}

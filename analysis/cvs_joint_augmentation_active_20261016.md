@@ -63,3 +63,6 @@ seed02两行均自然完成E20/4440更新与全部七视图，独立重算VERIFI
 
 
 频谱IQ零更新候选已完整ANALYZED/VERIFIED：18折MSE比0.577122、18/18优于零，源身份保护/核响应/能量对照通过，但有限PSD相对RMSE最高0.601925超原0.35，固定滤波关闭。全部126000决策独立复算，126002NN/0更新，未用held/U/V/target。下一唯一拟诊断旧ordinary的PA-normal实际触发是否导致身份错误：同原生draw对比full/旁路PA/raw，尚未实现/登记/启动，不把源健康当Ag收益。
+
+
+已实现并登记旧ordinary PA同抽样反事实 `20261016-diagnostic-F-crossRX-ordinaryPA-fitL-s2026092701-m1-r01`：固定fitL5040/20原日程/raw与full/捕获PA前prefix，206642NN/0更新，11负例及canonical原生输出和RNG终态一致检查PASS，一次P0/P1审查PASS；尚未启动。配对无恢复则不以此启动训练，源恢复也不证明Ag。

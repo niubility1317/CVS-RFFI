@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "negative_cases": 11,
+  "canonical_native_outputs_bitwise_equal": true,
+  "native_Python_Torch_RNG_end_states_equal": true,
+  "same_draw_noPA_equals_captured_prefix": true,
+  "all20_actual_schedules": true,
+  "synthetic_augmentation_packets": 1344,
+  "real_IQ_reads": 0,
+  "model_forwards": 0,
+  "training_updates": 0,
+  "target_access": false
+}
