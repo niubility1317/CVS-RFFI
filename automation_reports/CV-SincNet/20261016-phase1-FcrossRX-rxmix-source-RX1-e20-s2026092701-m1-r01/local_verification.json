@@ -1,0 +1,48 @@
+{
+  "status": "PASS",
+  "synthetic_model_packets": 1024,
+  "synthetic_optimizer_updates": 2,
+  "synthetic_transform_packets": 5120,
+  "synthetic_ordinary_IQ_packets": 512,
+  "protocol_negatives": 16,
+  "initial_state_tensors": 206,
+  "matched_original_F_initialization": true,
+  "primary_IQ_exact_C0": true,
+  "exact_widely_linear_formula": true,
+  "bounded_inverse_and_power": true,
+  "stable_RX_day_session_all_TX": true,
+  "all20epoch12session_coverage": true,
+  "session_seed_not_TX": true,
+  "primary_two_RDrop_only_SupCon": true,
+  "four_L_forwards": true,
+  "default_head_SIG3_Sinc_joint_gradients": true,
+  "extra_model_forwards": 0,
+  "unchanged_own_EMA": true,
+  "global_RNG_preserved": true,
+  "real_IQ_packets": 0,
+  "checkpoint_loads": 0,
+  "target_access": false,
+  "P0P1_review": "PASS one limited read-only review,no direct defects;0realIQ/CP/NN/modifications",
+  "real_checkpoint_noquery_smoke": "Worker first step with own scratch checkpoint; continues on PASS",
+  "isolated_release_checks": {
+    "status": "PASS",
+    "isolated_release_import": true,
+    "rows": [
+      {
+        "row": "RXMIX-RX1-s2026092701",
+        "E": 20,
+        "label": 13,
+        "pseudo": 7
+      }
+    ],
+    "exact_registered_config": true,
+    "real_C0_metadata_reference": true,
+    "contaminated_reference_rejected": true,
+    "real_source_statistic_metadata": true,
+    "synthetic_profile_bound_and_role_guard": true,
+    "real_IQ": 0,
+    "real_profile_values_read": false,
+    "checkpoint_loaded": false,
+    "network_forwards": 0
+  }
+}
