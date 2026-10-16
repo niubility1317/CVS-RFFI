@@ -6,6 +6,16 @@ from .core import factor_views,phase_from_kernel
 from experiments.cvs_f_practical_source20.checks import reject
 from experiments.cvs_urban_sigtime.channel import imports,configurations,tensor_iq
 
+def serialization_regression():
+    import json
+    from experiments.cvs_urban_sigtime.channel import audit
+    from .core import require_same_practical
+    current=audit()['actual_configs'];saved=json.loads(json.dumps(current))
+    assert current!=saved;require_same_practical(current,saved)
+    for key,value in [('reference_snr_db',31.),('boundary','edge'),('equalization_enabled',True)]:
+        changed=copy.deepcopy(saved);changed['practical_low_urban'][key]=value;reject(lambda:require_same_practical(current,changed))
+    return dict(status='PASS',tuple_list_semantic_equality=True,real_scalar_changes_rejected=3,model_forwards=0,IQ_reads=0,CP_reads=0)
+
 def run():
     torch.set_num_threads(2);negative=0
     for key,value in [('target_access',True),('V_used',True),('U_used',True),('delay_samples',25),('boundary','wrap'),

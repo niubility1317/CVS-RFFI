@@ -2,8 +2,8 @@ from pathlib import Path
 from experiments.cvs_f_practical_source20 import design as prior
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,SEED,DRAW_SEED,SCENES,read,write=(getattr(prior,k) for k in ('PROJECT','SOURCE','SEED','DRAW_SEED','SCENES','read','write'))
-RUN='20261016-diagnostic-F-phase-origin-source-RX1-s2026092701-m2-r01'
-RELEASE='cvs_F_phase_origin_source_RX1_20261016_r01'
+RUN='20261016-diagnostic-F-phase-origin-source-RX1-s2026092701-m2-r02'
+RELEASE='cvs_F_phase_origin_source_RX1_20261016_r02'
 OWNER='codex/root/F-phase-origin-source-RX1-20261016'
 BASE=Path(PROJECT)/'runs'/RUN
 PREVIOUS=Path(PROJECT)/'runs'/prior.RUN

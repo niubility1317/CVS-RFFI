@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from . import design as d
-from .core import factor_views,phase_from_kernel
+from .core import factor_views,phase_from_kernel,require_same_practical
 from experiments.cvs_f_practical_source20.provenance import load
 from experiments.cvs_f_practical_source20.trace import ActualTrace,feature_summary
 from experiments.cvs_f_practical_source20.run import decisions,emit
@@ -52,7 +52,7 @@ def run():
             old=previous();L=source_L();idx=d.prior.legal_held_indices(L,contracts)
             with stream(d.DRAW_SEED,0):idx=idx[torch.randperm(len(idx))]
             ch,_=imports();cfgs=configurations();channel=audit()
-            if channel['actual_configs']!=d.read(d.PREVIOUS/'execution.json')['channel']['actual_configs']:raise ValueError('Original practical settings changed')
+            require_same_practical(channel['actual_configs'],d.read(d.PREVIOUS/'execution.json')['channel']['actual_configs'])
             files={a:stack.enter_context(gzip.open(roots[a]/'packets.jsonl.gz','wt',encoding='utf-8',compresslevel=3)) for a in models}
             d.write(d.BASE/'execution.json',dict(pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,GPU=os.environ.get('CUDA_VISIBLE_DEVICES'),
                 commit=(d.ROOT/'release_commit.txt').read_text().strip(),channel=channel,numeric_flags=actual_flags(),

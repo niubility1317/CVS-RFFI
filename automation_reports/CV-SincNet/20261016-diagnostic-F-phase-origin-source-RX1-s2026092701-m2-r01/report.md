@@ -19,3 +19,7 @@
 训练端后续仍需分别证明A_g跨RX clean收益和A_s真实practical适应，再运行匹配四因子。raw、A_g(x)、A_s(x)从同原IQ独立生成、原始监督份额显式归一化；首轮不叠As(Ag(x))或额外跨视图损失。保持原U规则、所有有标签satellite CE、默认头联合训练和总E20。正式IQ/信道/SNR/边界不变，冻结后自动clean＋六practical及独立truth-last；不能以“修正模拟器”方式取得测试提升。
 
 实现已完成：固定公式/6个实际原核检查/14负例/原F默认头图及独立指标fixture通过，一次P0/P1 PASS。含独立检查累计8个合成网络包、12原核核对、28负例断言，0导数/optimizer/真实IQ或CP。七包隔离导入、compile、登记VALID、N607普通账户preflight通过。真实CP smoke为worker首步，PASS立即继续；尚未发布。
+
+## 实际技术终止
+
+FAILED_TECHNICAL / VERIFIED。代码b90567bb4d251fc8f3ec3985c66fca50a389d3c9。两真实CP noquery smoke和运行中PID/CWD/argv/GPU/log增长已观察；worker/dispatcher随后自然终止。内存Config的24个tuple字段与持久JSON list数值相同却被直接不等比较误判，0源IQ模型前向、0更新，4个真实CP smoke包。已有source缓存已反序列化、原L6300检查并选取RX1L1260，不称0数据读取；无target。没有科学结果/新图，不作假设否定或晋级。精确失败墙钟未记录，保留UNKNOWN。旧release/root保留；本地0IQ0CP0前向复现并定向修复/回归，SNR/边界/EQ真实变更仍拒绝。一次定向P0/P1复核PASS，另登记r02，数学/随机流/模型/数据/预算不改。

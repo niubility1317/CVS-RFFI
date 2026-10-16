@@ -1,8 +1,14 @@
 """Exact source counterfactuals; not a practical or test-channel replacement."""
 from dataclasses import replace
+import json
 import math
 import numpy as np
 from experiments.cvs_urban_sigtime.channel import imports
+
+def require_same_practical(current,persisted):
+    # asdict retains tuple fields; JSON artifacts necessarily contain lists.
+    if json.loads(json.dumps(current,allow_nan=False))!=persisted:
+        raise ValueError('Original practical settings changed')
 
 
 def phase_from_kernel(cfg,seed,receiver):
