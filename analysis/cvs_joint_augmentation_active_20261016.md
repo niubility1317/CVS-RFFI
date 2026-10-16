@@ -156,3 +156,6 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 固定 additive As seed02 完整确认失败：D_As clean 74.365079%，相对 D00 −8.253968pp、D_raw −6.825397pp；low urban 36.111111% 虽提高，仍未达 60%。两种子相对 D00 clean 均值差 −2.460317pp、low urban +7.222222pp，原逐 seed 条件失败，关闭此固定候选扩展。绝对 raw 系数保留不足以保护 clean，健康通过不等于联合收益。六模型120 modelE／26640更新／34939912实测NN，无target或额外头。完整结果见确认run的two_seed_source_confirmation.md/json。未产生有效新Ag、正式target或联合目标证明。
+
+
+下一单一问题已登记 20261016-diagnostic-F-IQ-circularity-source-crossfit-manysig-m1-r01：源RX关联的中心化circularity幅值能否跨TX/day复现，L5040／72单元／18折／9wrongRX／10TXsplit，0模型/NN/更新。固定As候选仍关闭；本轮尚未启动，不构造或声称新的标签保持Ag。

@@ -994,5 +994,29 @@
     "cumulative_model_epochs": 120,
     "cumulative_optimizer_updates": 26640,
     "cumulative_actual_NN_forward_packets": 34939912
+  },
+  "iq_circularity_source_basis": {
+    "status": "REGISTERED_NOT_LAUNCHED",
+    "run_id": "20261016-diagnostic-F-IQ-circularity-source-crossfit-manysig-m1-r01",
+    "hypothesis": "RX-associated centeredcircularity transports across heldTX/day",
+    "primary": "Centered circularity magnitude abs(mean((w-mean(w))**2))/(mean(abs(w-mean(w))**2)+eps**2),after unchanged reference lag20 CFO compensation",
+    "criteria": {
+      "min_total_risk_gain": 0.05,
+      "min_positive_folds": 14,
+      "min_RX_gain": 0.0,
+      "min_gain_above_best_wrong_RX": 0.02,
+      "min_all_TX_split_center_cosine": 0.8,
+      "min_RX_center_to_odd_even_difference_power_ratio": 2.0
+    },
+    "L_used": 5040,
+    "U_used": false,
+    "V_used": false,
+    "heldRX1_used": false,
+    "NN": 0,
+    "updates": 0,
+    "target_access": false,
+    "automatic_training": false,
+    "Ag_proved": false,
+    "joint_goal_complete": false
   }
 }

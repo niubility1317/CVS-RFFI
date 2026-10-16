@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "known_cases": {
+    "RX": "PASS",
+    "TX": "FAIL",
+    "DAYFLIP": "FAIL",
+    "TXFLIP": "FAIL"
+  },
+  "negative_cases": 10,
+  "allTX_and_RX_day_permutation_invariant": true,
+  "known_image_analytic_circularity_error": 6.000755448098971e-14,
+  "fixed_window_and_no_input_mutation": true,
+  "synthesized_descriptor_packets": 20160,
+  "synthetic_IQ_packets_observed": 7,
+  "network_forwards": 0,
+  "optimizer_steps": 0,
+  "source_IQ_reads": 0,
+  "target_access": false
+}
