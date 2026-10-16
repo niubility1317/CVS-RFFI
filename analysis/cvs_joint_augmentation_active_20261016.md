@@ -1,6 +1,6 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-当前没有获得跨 RX 收益证明的新增 A_g。公共相位 E20、固定谱滤波及 PA 旁路 E20 均已失败关闭。PA 旁路完整源配对 clean81.507937%→80.238095%（−1.269841pp）、F1−1.245554pp；六practical准确率均略增，但主要集中TX2，其他类别存在负结果，不能抵消clean损失。原ordinary PA保留，不扩seed或改强度救跑。当前唯一候选为包内常数观测增益视图（沿用旧范围0.9至1.1），已实现并登记；launcher先以真实匹配CP进行162个合成包/no-query输入作用核对，工程FAIL零训练关闭，PASS立即开始已登记两组匹配scratchE20。不删除旧增强，不从本次practical或target挑幅度，不用源fit敏感性代替训练后跨RX收益。当前尚未发布或取得真实工程/训练结果。
+当前没有获得跨 RX 收益证明的新增 A_g。公共相位 E20、固定谱滤波及 PA 旁路 E20 均已失败关闭。PA 旁路完整源配对 clean81.507937%→80.238095%（−1.269841pp）、F1−1.245554pp；六practical准确率均略增，但主要集中TX2，其他类别存在负结果，不能抵消clean损失。原ordinary PA保留，不扩seed或改强度救跑。当前唯一候选为包内常数观测增益视图（沿用旧范围0.9至1.1），已实现并登记；launcher先以真实匹配CP进行162个合成包/no-query输入作用核对，工程FAIL零训练关闭，PASS立即开始已登记两组匹配scratchE20。不删除旧增强，不从本次practical或target挑幅度，不用源fit敏感性代替训练后跨RX收益。真实CP输入作用核对已通过，两组匹配scratchE20正在运行；尚未取得源身份收益。
 用户于 2026-10-16 指定，增强前参照更换为 **F＋跨 RX 同 TX 对比学习**。该选择覆盖本对话旧的 F-only 参照；训练预算仍为 E20，没有延长到 E50 的新授权。唯一活动配方见 [配置](../configs/cvs_joint_augmentation_F_crossrx_e20.json)。两种子源 B00/B01 已完整分析；独立seed02因clean下降13.095238pp未通过，固定75/25候选关闭。正式完整源四因子尚未训练。
 
 已核实的来源是 `20261016-phase1-F-supcon-e50-clean-manysig-m9-r02` 的 `CROSS_RX`，执行 commit `4df7b94d0fd8ce29056bd8236364e45afa92e07f`。已读取完整报告、最终分析、实际 design/model/mechanism/source/observer，确认实际原生 extra 格式为 `(domain, metadata)`；不复用 r01 的错误读取方式。
@@ -81,3 +81,6 @@ PA旁路两组E20及七源视图已完整ANALYZED/VERIFIED，原条件FAIL固定
 
 
 已实现登记常数增益候选 `20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01`：先真实匹配CP的162合成包/no-query输入作用核对，工程FAIL则0真实IQ/0训练关闭；PASS直接两组同源折同seed scratchE20，raw.5/oldordinary.25/第三槽raw或gain.25，旧PA/U/六L前向不变，range固定旧.9至1.1。14负例/原参照梯度/输入路径及一次P0/P1审查PASS。尚未发布或取得真实工程/训练收益。
+
+
+常数增益候选已实际发布，commit `1d29887ef68319fe9a75b2c82fca30a7860dbf8e`。真实匹配CP的162合成NN、5×32 joint/logits/power独立复算PASS；实际Sinc输入与RMS恢复control符合预定，默认函数有非平凡作用。两worker PID/CWD/argv/GPU/log增长VERIFIED，20/13/7、同seed、无训练父权重均核对。只是输入作用与运行状态，不是Ag身份收益或联合目标完成。

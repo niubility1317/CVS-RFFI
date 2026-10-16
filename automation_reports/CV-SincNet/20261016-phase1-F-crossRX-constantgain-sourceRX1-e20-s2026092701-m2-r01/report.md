@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：常数观测增益输入核对与 E20 源对照
 
-状态：PLANNED，尚未发布、取得真实checkpoint工程结果或启动训练。PA旁路E20已完整源证伪关闭，旧ordinary含PA保留，不改seed/幅度救跑。此为新的包内常数线性观测增益，不沿用已失败的包内缓变斜坡或公共相位。
+状态：RUNNING／VERIFIED。真实冻结CP工程输入核对通过，两组scratchE20已启动，尚未完成训练或源身份评分。PA旁路E20已完整源证伪关闭，旧ordinary含PA保留，不改seed/幅度救跑。此为新的包内常数线性观测增益，不沿用已失败的包内缓变斜坡或公共相位。
 
 ## 唯一假设及启动首步
 
@@ -36,3 +36,15 @@ F三路SIG_TIME、统一Sinc、joint160、NoExplicitCFO与必要逐包补偿、�
 角色/来源/初始化/非有限/实际预算或合法prediction失败为技术失败，保留产物、停止pending、不干预健康worker，无自动重试；科学输入无效或源条件失败按上文关闭，不延长预算。工程结果或全部源预测完成后独立复算相应完整产物及原判断；hard source predictions独立复算accuracy/F1/CM/repair-break，运行时meanCE仅引用，不冒称从hard predictions重算CE。源码/配置/登记/小汇总入Git，IQ/CP/逐包预测、features/traces/原始日志私有。
 
 一次限定P0/P1审查PASS，14负例及B00损失/头梯度精确对照、同初始化/六前向/同IQ/SupCon/默认头联合更新/export160、私有gain随机流与实际untrainedF输入路径和无效果/恢复反例检查PASS。真实冻结CP工程判断仍待运行，更无训练/正式识别收益。
+
+
+## 实际发布与输入作用结果
+
+执行commit `1d29887ef68319fe9a75b2c82fca30a7860dbf8e`；本地与远端分支OID独立一致。archive单次比对、远端compile及真实匹配CP smoke PASS，dispatcher和两worker的PID/CWD/argv/GPU与日志增长VERIFIED。实际seed2026092701、20/13/7、sourcefold RX1、无baseline/teacher来源均一致；Ag仅B10，0As。
+
+162合成NN/0真实sourceIQ/0更新输入核对及独立NumPy完整5×32 joint/logits/power复算PASS。gain0.9/1.1的normalizedjoint变化中位数分别0.089504101/0.076122214，默认logits最大绝对变化2.043222874/1.380674869；RMS恢复control在固定容差内回到identity。该结果只证实实际模型对常数增益有作用，不证明标签保持、跨RX识别收益或Ag有效。详情见input_function_summary.json。
+
+- B00-RX1-s2026092701：GPU0，已观察完整step427/4440、E2/20；日志11693字节。
+- B10-RX1-s2026092701：GPU1，已观察完整step439/4440、E2/20；日志11693字节。
+
+上述数字是运行进度；全部final源预测完成后再独立评分，不改变已发布配方。联合目标未完成。

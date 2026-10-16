@@ -1,0 +1,63 @@
+{
+  "status": "VERIFIED",
+  "qualification": {
+    "decision": "PASS",
+    "conditions": {
+      "gain_reaches_actual_sinc": true,
+      "restored_input": true,
+      "restored_function": true,
+      "nontrivial_default_function": true
+    }
+  },
+  "views": {
+    "identity": {
+      "normalized_joint_change_median": 0.0,
+      "normalized_joint_change_max": 0.0,
+      "logits_abs_change_max": 0.0,
+      "raw_joint_relative_change": 0.0,
+      "gain_power_relative_error_max": 0.0
+    },
+    "gain0.9": {
+      "normalized_joint_change_median": 0.08950410074239755,
+      "normalized_joint_change_max": 0.12309713569060961,
+      "logits_abs_change_max": 2.043222874403,
+      "raw_joint_relative_change": 0.08672819798661972,
+      "gain_power_relative_error_max": 1.5820986904645577e-07
+    },
+    "gain1.1": {
+      "normalized_joint_change_median": 0.07612221433901428,
+      "normalized_joint_change_max": 0.10724153419471903,
+      "logits_abs_change_max": 1.3806748688220978,
+      "raw_joint_relative_change": 0.07203191485111982,
+      "gain_power_relative_error_max": 1.6551372448911564e-07
+    },
+    "gain0.9_RMSrestored": {
+      "normalized_joint_change_median": 2.4953778263852763e-07,
+      "normalized_joint_change_max": 6.256640829302183e-07,
+      "logits_abs_change_max": 3.4803524613380432e-06,
+      "raw_joint_relative_change": 3.0341360782230403e-07,
+      "gain_power_relative_error_max": 2.384185222581572e-07
+    },
+    "gain1.1_RMSrestored": {
+      "normalized_joint_change_median": 2.4338285544818867e-07,
+      "normalized_joint_change_max": 6.21497754137046e-07,
+      "logits_abs_change_max": 1.9073486328125e-06,
+      "raw_joint_relative_change": 2.9879206919032765e-07,
+      "gain_power_relative_error_max": 2.384185791015625e-07
+    }
+  },
+  "synthetic_packets_per_view": 32,
+  "actual_NN_packets": 162,
+  "source_IQ_reads": 0,
+  "training_updates": 0,
+  "identity_accuracy_computed": false,
+  "target_access": false,
+  "joint_logit_power_recount": "All 5x32 arrays independent NumPy;lower median same as Torch",
+  "runtime_only_checks": [
+    "RMSrestored input L2",
+    "actual encoder/Sinc equality",
+    "NoExplicitCFO coord27",
+    "frozen model state/counters"
+  ],
+  "claim": "Engineering input effect only;not identity protection or Ag efficacy"
+}

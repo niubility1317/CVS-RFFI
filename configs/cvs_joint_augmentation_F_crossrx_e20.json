@@ -132,7 +132,7 @@
   },
   "next_source_hypothesis": {
     "name": "Bounded packet-constant received-IQ gain view improves heldRX clean while retaining original ordinary PA",
-    "status": "REGISTERED_NOT_LAUNCHED",
+    "status": "RUNNING_SOURCE_E20_NO_IDENTITY_RESULT_YET",
     "minimum": "First actual input/normalization path audit;then separately registered samefold/seed/scratchE20/raw.5 ordinary.25 raw-or-gain-slot.25 with matched6forwards and unchanged U",
     "gain_range": [
       0.9,
@@ -197,7 +197,17 @@
       "on_pass": "Only supports independent source confirmation,not Ag/DG proof or automatic target"
     },
     "source_fold": "L5040/U45360/V21600,heldRX1 finalL1260",
-    "real_CP_audit162_first": true
+    "real_CP_audit162_first": true,
+    "execution_commit": "1d29887ef68319fe9a75b2c82fca30a7860dbf8e",
+    "input_effect_result": {
+      "decision": "PASS",
+      "conditions": {
+        "gain_reaches_actual_sinc": true,
+        "restored_input": true,
+        "restored_function": true,
+        "nontrivial_default_function": true
+      }
+    }
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
