@@ -117,3 +117,6 @@ PA旁路两组E20及七源视图已完整ANALYZED/VERIFIED，原条件FAIL固定
 
 
 循环移位同抽样源fit诊断全量复算VERIFIED／PASS，非零3946观测，净恢复3.395843892549417pp；136082NN/0更新。只证明本固定源fit默认头贡献，不证明Ag/DG/As/联合收益，未启动后续训练。
+
+
+已实现登记shift-bypass E20 `20261016-phase1-F-crossRX-shiftbypass-sourceRX1-e20-s2026092701-m2-r01`，固定RX1/seed01两组scratchE20、六L前向/原U/PA保持、自动源七视图；17负例/2312合成NN/2合成更新验证PASS，一次P0/P1review PASS，尚未启动。旧增强修正不冒称新Ag，完整联合目标保留。
