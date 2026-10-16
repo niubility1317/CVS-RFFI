@@ -1,0 +1,28 @@
+{
+  "status": "PASS",
+  "actual_native_arg_differences": [
+    "aug_enable_pa_normal",
+    "candidate_id",
+    "output_dir",
+    "run_id"
+  ],
+  "synthetic_network_forwards": 256,
+  "synthetic_augmentation_packets": 128,
+  "initial_state_tensors": 198,
+  "same_old_N1_initial_state": true,
+  "same_IQ_RDrop_pair": true,
+  "PA_calls_rejected": true,
+  "other_ordinary_enabled": true,
+  "default_head_SIG_gradients": true,
+  "protocol_negatives": 8,
+  "real_IQ_packets": 0,
+  "checkpoint_loads": 0,
+  "optimizer_updates": 0,
+  "target_access": false,
+  "independent_P0P1_review": "PASS one review, no direct defect; same256syntheticfwd/128aug/8negative",
+  "total_known_local_synthetic_network_forwards": 512,
+  "total_known_local_synthetic_augmentation_packets": 256,
+  "first_fixture_failure": "Only equality of two unchanged native NaN sentinels, before model construction0fwd; corrected test, no native change",
+  "local_compile": "PASS",
+  "real_checkpoint_smoke": "Original firstworker step own scratch checkpoint save/reload, zeros2;PASS continues"
+}
