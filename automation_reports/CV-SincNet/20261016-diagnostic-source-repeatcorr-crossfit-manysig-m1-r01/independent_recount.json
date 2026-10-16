@@ -1,0 +1,57 @@
+{
+  "status": "PASS_INDEPENDENT_RECOUNT",
+  "scientific_status": "FAIL",
+  "packet_count": 5040,
+  "cells": 72,
+  "each_cell_count": 70,
+  "folds": 18,
+  "fit_RX": [
+    3,
+    4,
+    6,
+    8
+  ],
+  "checks": {
+    "all_valid_packets": true,
+    "repeat_coherence": true,
+    "small_residual": false,
+    "nonzero_RX_effect": true,
+    "aggregate": true,
+    "positive_folds": true,
+    "all_RX": true,
+    "wrong_RX_control": true,
+    "TX_half_agreement": true,
+    "nonwhite": true,
+    "RX_difference": true
+  },
+  "values": {
+    "aggregate_risk_reduction": 0.6252310773242464,
+    "positive_folds": 15,
+    "TX_half_profile_cosine": 0.9533719870547285,
+    "median_RX_profile_absolute_rho": 0.5150159232500056,
+    "RX_pair_profile_distance_p95": 0.7009555754232784,
+    "correct_over_best_wrong": 1.3456147619666545
+  },
+  "RX_median_residual_ratio": [
+    0.10275180589365661,
+    0.001813278669181768,
+    0.0036994887679392017,
+    0.0932024157802776
+  ],
+  "RX_risk_reduction": [
+    0.6975984024045019,
+    0.4937940901769631,
+    0.5655663289707984,
+    0.8133676310196515
+  ],
+  "wrong_RX_risk_reduction": [
+    -0.7203836846424081,
+    -2.1222994667909285,
+    -0.7203836846424081
+  ],
+  "coherence_q10": 0.8038346554815168,
+  "new_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "model_forwards": 0,
+  "updates": 0
+}

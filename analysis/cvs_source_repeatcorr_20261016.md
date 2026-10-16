@@ -21,3 +21,5 @@ FAIL 即关闭固定重复差 lag1 着色依据，不改周期、窗口、lag、
 缓变增益斜坡曾在源数据得到 RX 关联风险下降，但线性 R² 仅0.303317，未达0.8，已关闭；本轮不以换窗口重开该路线。公共相位、观察原点、分数延迟、频偏、常数增益、DC 和谱响应等已登记结果按原判据保留。
 
 运行计划为普通 N607 账户、CPU2线程、CUDA隐藏、唯一不可覆盖 run/output root、一次发布和独立回读。实际命令、路径、owner、stop 和预期 artifacts 由同 run experiment.json 维护。无模型的 G0 不加载无关 checkpoint 来凑 smoke。科学失败不做技术重试。
+
+实际执行已完成：20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01，代码3812d3825cdf08546b4e37e8607559d34d2b6928，全部5040包/72单元/18折独立复算一致。固定科学FAIL：RX3残差比中位数10.275181%高于10%；风险下降62.523108%不等于身份识别增益。关闭本固定估计，不换窗口/lag/阈值救援；0模型/NN/CP/更新/target，CPU1.689140s。源图、全部指标和传输恢复见[同run完整报告](../automation_reports/CV-SincNet/20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01/report.md)。

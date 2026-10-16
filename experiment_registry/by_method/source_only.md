@@ -6,7 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|重复差相关性：跨TX和跨日的RX关联源证伪|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01/report.md)|
+|重复差残差相关性：零更新源域检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01/report.md)|
 |可恢复状态课程：完整源域结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-recoverable-source-RX6-e20-s2026092701-m1-r01/report.md)|
 |有界接收RXMIX：完整源域结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-rxmix-source-RX1-e20-s2026092701-m1-r01/report.md)|
 |RX 椭圆性：通过源统计，尚未证明增强有效|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-source-ellipticity-crossfit-manysig-m1-r01/report.md)|

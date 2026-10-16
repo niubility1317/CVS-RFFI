@@ -27,3 +27,11 @@
 ![已完成候选的 clean 与 low urban 增量](E:/type10-7/local_artifacts/cvs_FcrossRX_recoverable20_20261016/history/closed_routes_clean_low.png)
 
 上图仅使用已完成 run 的保存结果，四个点均为相同 held 源 RX1、一个 model seed、E20 的匹配 C0 增量。SAME_RX 为真实观察配对中的控制，不是另行晋级候选；这些点不是四个独立 seed，也不估计置信区间。数值见[源结果表](E:/type10-7/local_artifacts/cvs_FcrossRX_recoverable20_20261016/history/closed_routes.csv)，绘图没有新 IQ／checkpoint／网络访问。
+
+新增已核实历史证据（2026-10-16）：另一路 owner 的固定 75/25 practical 使用六 L 前向和 heldL1260，和上表本路线四 L 前向／heldV5400不同，不直接比较绝对分数。两种子同配方的 clean 配对差为 +3.095238／−13.095238 pp，均值 −5.000000 pp；urban 配对均值 +12.460317 pp，但第二种子未通过原 clean 条件，固定比例已关闭。它只证明星地适应有重复收益，没有证明 clean 正收益能跨 seed。参见[二种子报告](E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/report.md)。
+
+同一六前向／heldL1260路线的常数增益作用核对通过，E20 clean 仅 +0.555556 pp、六 practical 全部下降，未通过 +1 pp 和保持条件；频偏训练 clean 0 pp、urban −1.084656 pp，也已关闭。不能用实际输入／logits 发生变化代替身份收益。来源：[常数增益](E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-F-crossRX-constantgain-sourceRX1-e20-s2026092701-m2-r01/report.md)、[频偏](E:/type10-7/automation_reports/CV-SincNet/20261016-phase1-F-crossRX-frequency-sourceRX1-e20-s2026092701-m2-r01/report.md)。
+
+缓变包络 G0 虽有跨 TX/day 的 RX 关联，但线性 R² 中位数 0.303317 未达预定 0.8，关闭；本轮重复差相关 G0 也关闭：5040 包／18折独立复算一致，RX3 残差功率比中位数 10.275181% 高于预定 10%。后者的 RX 对比平方风险下降 62.523108% 不是默认头准确率，更不证明残差是纯接收噪声。0 模型／网络前向／更新，CPU 1.689140 s。见[本轮报告](../automation_reports/CV-SincNet/20261016-diagnostic-source-repeatcorr-crossfit-manysig-m1-r01/report.md)。
+
+截至此处，没有通过原定源规则的独立 IQ Ag；不把 RDrop、既有 SupCon、源统计可重复性或同类真实观察重新命名成已验证 Ag。固定 F＋跨 RX 同 TX 基线与 E20 保持，当前正式联合提升及跨 seed 重现均未证明。
