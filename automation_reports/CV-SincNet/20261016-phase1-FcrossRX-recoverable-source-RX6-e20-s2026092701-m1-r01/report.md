@@ -25,3 +25,7 @@ REGISTERED_NOT_RUN。精确row／command／environment／CWD／paths／GPU／own
 精确row／commit／命令／环境／CWD／路径／GPU／stop与artifact见experiment.json。必要验证仅聚焦负例和原网络合成前向、一次限定P0/P1、单archive比较／remotecompile、worker首步own scratchCP no-query smoke及独立运行读回。固定E20结束不代表收敛，一个源折／一个modelseed不代表跨seed复现。
 
 发布前 LOCAL_VERIFIED_NOT_RUN：14协议负例、1024合成网络包／2更新、206初态匹配、528个模拟选中信道观察／656个完整模拟提案、eta0与C1逐值IQ／physics一致、finite fallback返回nominal、原头SIG3Sinc梯度／4L／首对SupCon／无新loss／ownEMA与全局RNG均PASS。隔离发布实际E20/13L/7U与RX6fit角色、真实C0/C1 metadata／污染拒绝／固定资格fixture及实际epoch梯度字段通过。唯一限定P0/P1只读审查PASS，无直接问题。0真实IQ／checkpoint／目标；发布时一次N607preflight／单archive比较／remotecompile，worker第一步own scratchCP no-query smoke，PASS继续。
+
+实际发布 VERIFIED/RUNNING，训练代码 `a47c7302eefc485e75703a78c749f24144e5b77b`。唯一worker own scratchCP no-query smoke PASS；E1 PID/CWD/argv/GPU/log增长及实际源角色、F物理clip、四L前向、原SupCon、原默认头/SIG3/Sinc更新均VERIFIED。课程warm期eta=0，所有28416实际sourceL都保留原nominal view，72个TX/RX/day进展单元齐全；无heldV/Utruth/target反馈及新增前向。单archive比较/remotecompile通过，FINAL性能待定。
+
+独立离线读取器本地PASS：24元数据负例／512合成draw记录／20轮history，0新IQ／checkpoint／网络。最终将逐条复算568320个实际选择及提案、sourceL单元进展／native gradient／固定eta规则、完整20轮／4440步／5994批次、七源视图默认头预测和原physics一致性；运行release保持a47c7302，不热改。

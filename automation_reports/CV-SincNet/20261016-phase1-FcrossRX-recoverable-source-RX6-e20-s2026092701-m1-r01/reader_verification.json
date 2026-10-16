@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_f_recoverable20.reader_checks",
+  "metadata_negative_cases": 24,
+  "synthetic_draw_records": 512,
+  "synthetic_history_epochs": 20,
+  "IQ_checkpoint_network_access": 0,
+  "syntax_compile": "PASS",
+  "actual_first_saved_trace_ID_session_seed": "Verified against observed first remote source record; metadata only"
+}

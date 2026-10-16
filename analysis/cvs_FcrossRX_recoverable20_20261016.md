@@ -19,3 +19,5 @@
 新增预算1个scratch E20／4440更新，预期3579018网络包（以实际重算为准），C0/C1既有40模型轮分列，父权重0。提案数与物理模拟／trace耗时额外实测，不把相同网络前向当作相同墙钟。训练后自动完成七源视图，固定fs25MHz／IQ256／residual／post_sync／EQoff G1／reference30／quality adapt／phase tracking／IQcomp／AGC／reflect；正式received IQ和信道不变，0target。一个owner／不可变root，遵守所有owner每GPU最多3实验进程；技术错误保留产物不自动重试，不动健康任务。
 
 精确row／commit／命令／环境／CWD／路径／GPU／stop与artifact见experiment.json。必要验证仅聚焦负例和原网络合成前向、一次限定P0/P1、单archive比较／remotecompile、worker首步own scratchCP no-query smoke及独立运行读回。固定E20结束不代表收敛，一个源折／一个modelseed不代表跨seed复现。
+
+实际运行：代码`a47c7302eefc485e75703a78c749f24144e5b77b`已发布，唯一C2-RX6 worker ownCP no-query smoke及首轮真实PID/CWD/argv/GPU/log增长、E20/13L/7U、Fclip/4L/defaulthead联合更新VERIFIED。首轮eta0／28416 nominal输入／全部72fitL单元，0target。独立读取器24负例和512合成记录PASS；尚无FINAL，不宣称clean修复或urban提升。

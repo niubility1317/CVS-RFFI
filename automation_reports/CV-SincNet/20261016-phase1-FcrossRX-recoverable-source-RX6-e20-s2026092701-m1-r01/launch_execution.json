@@ -1,0 +1,188 @@
+{
+  "status": "VERIFIED",
+  "actual_training_code": "a47c7302eefc485e75703a78c749f24144e5b77b",
+  "checks": {
+    "dispatcher": true,
+    "one_worker": true,
+    "worker": true,
+    "cwd": true,
+    "argv": true,
+    "GPU": true,
+    "log_growth": true,
+    "own_scratch_CP_smoke": true,
+    "archive": true,
+    "remote_compile": true,
+    "E20": true,
+    "ownEMA": true,
+    "ordinary": true,
+    "no_native_concat": true,
+    "scratch": true,
+    "source_fold": true,
+    "four_L": true,
+    "F_physical_clip": true,
+    "normal_joint_updates": true,
+    "primary_SupCon": true,
+    "selected_views": true,
+    "warm_nominal": true,
+    "complete_fit_progress": true,
+    "no_progress_leak": true,
+    "no_CE_gate": true,
+    "actual_native_import": true
+  },
+  "live": {
+    "pid": 3918091,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_recoverable_source_RX6_E20_20261016_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_recoverable_source_RX6_E20_20261016_r01/experiments/cvs_f_recoverable20/runner.py",
+      "--worker",
+      "--row",
+      "C2-RX6-s2026092701"
+    ],
+    "GPU": "0"
+  },
+  "dispatcher": {
+    "pid": 3918067,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_recoverable_source_RX6_E20_20261016_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_recoverable_source_RX6_E20_20261016_r01/experiments/cvs_f_recoverable20/runner.py"
+    ],
+    "GPU": ""
+  },
+  "read_at": 1792145235.601092,
+  "epoch": 1,
+  "log_bytes": 11672,
+  "actual_source_fold": {
+    "held_RX": 6,
+    "fit_RX": [
+      1,
+      3,
+      4,
+      8
+    ],
+    "effective_counts": {
+      "L_s": 5040,
+      "U_s": 45360,
+      "V": 21600
+    },
+    "held_V_count": 5400,
+    "held_L_used": false,
+    "source_loader_generators": "named private streams; same both arms",
+    "U_truth_read": false,
+    "target_access": false
+  },
+  "actual_native_args": {
+    "epochs": 20,
+    "label_epochs": 13,
+    "pseudo_epochs": 7,
+    "use_ema_teacher": true,
+    "use_unlabeled": true,
+    "use_aug": true,
+    "use_concat_sat_channel_aug": false,
+    "label_smoothing": 0.01,
+    "baseline_ckpt": "",
+    "teacher_ckpt": "",
+    "aug_enable_pa_normal": true,
+    "pseudo_temporal_mode": "batch_neighbor",
+    "phase1_lr_schedule": "cosine",
+    "max_grad_norm": 5.0
+  },
+  "module_files": {
+    "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+    "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+    "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+    "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+  },
+  "actual_curriculum": {
+    "epoch": 1,
+    "eta_used": 0.0,
+    "eta_next": 0.0,
+    "absolute_ready": false,
+    "stable": true,
+    "metrics": {
+      "L_packets": 28416,
+      "source_cells": 72,
+      "all_72_fit_cells": true,
+      "accuracy": 0.5813626126126126,
+      "mean_margin": 0.004599631178298211,
+      "mean_CE": 1.3118601453609593,
+      "p10_cell_accuracy": 0.39021160496177154,
+      "p10_cell_margin": -0.015282041869309322,
+      "gradient": 2.819569837974776
+    },
+    "extra_model_forwards": 0,
+    "held_V_used": false,
+    "U_truth_read": false,
+    "target_access": false
+  },
+  "actual_training_practical": {
+    "calls": 222,
+    "packets": 28416,
+    "role": "train",
+    "session_count": 12,
+    "geometry_noise_receiver_dependencies": "original full practical residual",
+    "proposal_rejection": true,
+    "dropped_samples": 0,
+    "ordinary_before_satellite": false,
+    "formal_test_changed": false,
+    "proposal_packets": 28416,
+    "rejected_channel_draws": 0,
+    "hard_requested": 0,
+    "hard_accepted": 0,
+    "hard_fallback": 0,
+    "nominal_selected": 28416,
+    "nominal_support_floor": 0.5,
+    "extra_proposals_max": 4,
+    "finite_fallback": "Original nominal draw, never the final failed proposal",
+    "generation_seconds": 47.79120981809683,
+    "added_noise_proxy_not_total_SNR": true,
+    "TX_used_for_selection": false,
+    "student_confidence_gate": false,
+    "physical_samples_dropped": 0
+  },
+  "F_optimizer": {
+    "mode": "CENTER_UNITS",
+    "steps": 222,
+    "physical_clip_calls": 222,
+    "last_actual_mapping": {
+      "step": 222,
+      "base_lr": 0.0002,
+      "sinc_lr": 0.2,
+      "sinc_eps": 1.0000000000000001e-11,
+      "sinc_weight_decay": 0.0,
+      "physical_decay_alpha_lambda": 2e-08,
+      "physical_clip_calls": 222
+    }
+  },
+  "default_head_SIG3_Sinc_parameter_movement": {
+    "id_backbone.encoder.core.id_backbone.cls_head.weight": 0.3559165298938751,
+    "id_backbone.encoder.core.id_backbone.cls_head.gain": 0.20405910909175873,
+    "id_backbone.encoder.sequence_pool.views.0.local_projection.weight": 0.40897130966186523,
+    "id_backbone.encoder.sequence_pool.views.1.local_projection.weight": 0.4297157824039459,
+    "id_backbone.encoder.sequence_pool.views.2.local_projection.weight": 0.3730618953704834,
+    "id_backbone.encoder.core.id_backbone.sinc.low_coordinate": 24.262605667114258,
+    "id_backbone.encoder.core.id_backbone.sinc.band_coordinate": 22.12386703491211
+  },
+  "actual_SupCon": {
+    "calls": 222,
+    "applied_calls": 0,
+    "last": {
+      "step": 222,
+      "epoch": 1,
+      "weight": 0.0,
+      "loss": 0.0,
+      "mode": "CROSS_RX",
+      "details": [],
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "extra_model_forwards": 0
+    },
+    "extra_model_forwards": 0
+  },
+  "source_only": true,
+  "target_access": false,
+  "goal_completed": false
+}
