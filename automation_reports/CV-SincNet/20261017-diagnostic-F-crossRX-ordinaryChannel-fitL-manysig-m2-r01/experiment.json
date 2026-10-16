@@ -1,0 +1,487 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01",
+  "group_id": "phase1-F-crossRX-ordinarychannel-source-causal",
+  "display_name": "F＋跨RX同TX：旧ordinary AWGN与multipath匹配源因果对照",
+  "description": "Actualordinary E13/fourdraws/full-noAWGN-noMP-noboth;twofrozen defaultheads,primarynoboth;totalchaineffects,0newtraining/target",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "ordinary AWGN multipath total-effect source factorial"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "ordinary_channel_audit",
+    "source_only",
+    "frozen_default_head",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+    "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active jointAg/As research;independent oldordinary channel audit,not RMSrescue/Asduplicateclaim or newAg efficacy",
+  "code": {
+    "commit": "Actual executioncommit inrelease_commit.txt/resolved_config",
+    "checkout": "Managed codex/cvs-iq-timing-e20-20261016 worktree",
+    "environment": "OrdinaryN607 existingCVS-RFFI Python,CPU2/CUDA hidden;eachmodel original immutablebackend",
+    "cwd": "PROJECT/releases/cvs_F_ordinary_channel_fitL_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original VALIDATED_ONCE source carrier;fitL5040 exact frozenmodel L roles",
+    "representation": "Native EQ1 RMS IQ256/25Msps;originalordinary E13 andmatchedprimitive-removal totalchaincontrols,no RMS restoration",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original L6300 handles;fitL5040 exact modelL IDs saved privately;RX1 excluded",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "OriginalL6300 deserialized;exactfitL5040 RX3/4/6/8 only;RX1L1260 excluded",
+      "U_s": "Opaque roleID metadata only,noIQ/labels in sourcecache;unused",
+      "V": "Unused sourceV/features deserialize"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Sourcefit causal ordinarychannel identityrepair only;notnewAg,heldRXclean,DG,As orjoint efficacy"
+  },
+  "checkpoint": {
+    "initialization": "Two existingsource-only scratchfinal20 B00 diagnosticreferences,nottraininginit",
+    "sources": [
+      {
+        "model_seed": 2026092701,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+        "checkpoint": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth",
+        "immutable_backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+        "execution_commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8"
+      },
+      {
+        "model_seed": 2026092702,
+        "run_id": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+        "checkpoint": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source/final_ssdg.pth",
+        "immutable_backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+        "execution_commit": "d71531d53c1d9ec46e3915963e05bff96760e80e"
+      }
+    ],
+    "contract_check_ref": "Reuse original verifiedsourcefold checkpoints;initialization/completion/source_frozen/source_contract and payload checked:fitL5040/U45360/V21600,RX1held,sourceonly,no unknownancestors/target/headfit,strictdefaulthead",
+    "provenance_verdict": "Matching existing source-only diagnostic weights;runtime rechecks prior provenance handles before inference",
+    "selection_rule": "Existing final-only E20;no source/target checkpoint selection for this operator"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-ordinary-channel-source-20261017",
+    "gpu_policy": "CPU only,2threads,CUDA_VISIBLE_DEVICES empty;workers sequential",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_ordinary_channel_fitL_20261017_r01/source_ordinary_channel.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_ordinary_channel17.dispatch",
+    "stop_rule": "Wrongsource/provenance/config,nonfinite,unmatchedRNG/primitiveparams/PAstrength,outputcollision orworkerexception:preservepartial/failure,noautomaticretry. ScienceFAIL finishesbothmodels/allfourarms thenclosesjointremoval;no promoting diagnostic singlebypass orPAconditional/coefficient/draw/RX/seed rescue."
+  },
+  "expected_artifacts": [
+    "rootrequest/active/launch/result/completion",
+    "eachmodel nativeargs/callablefiles/base/effectiveE13/checkpointprovenance",
+    "raw5040 plusfourdraws allfourarms logits/hardpredictions private",
+    "320sourcebatchrecords:primitive params/full pre/postRNGmatch/PAstrength/powerdependency andactualIQchangestatistics private",
+    "one realcheckpoint2synthetic noquerysmoke PASSthencontinue",
+    "canonicalnative 160syntheticordinary/model,0NN;actualsourceprimitivegenerations/appliedcounts/privatekernelreplays",
+    "fullstdout;independent all171360source decisions/logits/CE/F1/RX-TX-day/72cells/interaction/pairedtransitions/stats/cost recount,figures/report/registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "CE",
+      "pairedrepair_broken",
+      "raw_correct_retention",
+      "RX_TX_day_and72cells",
+      "fourdraw_primarygains",
+      "ordinaryfactorial_interaction",
+      "nativeparams_RNG_PA_matching",
+      "actualIQ_power_reference_changes",
+      "actualNN_andgenerationcounts"
+    ],
+    "dimensions": [
+      "twoexistingmodelseeds",
+      "raw/full/noAWGN/noMP/noboth",
+      "fourfixedaugmentationdraws",
+      "RX3/4/6/8",
+      "TX0..5",
+      "day1/2/3",
+      "72cells"
+    ],
+    "prediction_ref": "Eachseed raw.json anddraw01..04.json private;sourcefit only",
+    "scorer_ref": "Independent fullsource scalarrecount,no targettruth",
+    "criteria": {
+      "min_primary_vs_full_accuracy_gain_pp": 0.2,
+      "min_primary_vs_full_macroF1_gain_pp": 0.0,
+      "min_positive_draws": 3,
+      "min_each_draw_gain_pp": -0.2,
+      "min_primary_vs_raw_accuracy_gain_pp": -0.5,
+      "min_primary_vs_raw_macroF1_gain_pp": -0.5,
+      "min_each_group_vs_raw_gain_pp": -1.0,
+      "min_each_group_vs_full_gain_pp": -0.5,
+      "min_raw_correct_retention": 0.99
+    }
+  },
+  "rows": [
+    {
+      "row_id": "ORDINARY_CHANNEL_SOURCE-s2026092701",
+      "method": "Originalordinary totalchainfactorial withpairednative randomdraws",
+      "purpose": "onefixedjointremoval_candidate_singlebypasses_diagnostic_only",
+      "config_ref": "experiments/cvs_ordinary_channel17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01/s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existingmodelseed notnewtraining;fouraugmentation andprivateshuffle namedstreams inconfig;not one scalaraugmentationseed orcandidate search",
+      "k": null,
+      "scenario": "sourcefit_ordinary_E13_totalchain_noAs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "85680sourceNN/model plus2syntheticCP onlyseed01;80640sourceordinary/model;160syntheticcanonical/model;privatekernelprimitive replays counted;0newE/update/headfit/teacher",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01/s2026092701",
+      "log_path": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01/s2026092701.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_ordinary_channel17/runner.py --seed 2026092701",
+      "expected_artifacts": [
+        "rootrequest/active/launch/result/completion",
+        "eachmodel nativeargs/callablefiles/base/effectiveE13/checkpointprovenance",
+        "raw5040 plusfourdraws allfourarms logits/hardpredictions private",
+        "320sourcebatchrecords:primitive params/full pre/postRNGmatch/PAstrength/powerdependency andactualIQchangestatistics private",
+        "one realcheckpoint2synthetic noquerysmoke PASSthencontinue",
+        "canonicalnative 160syntheticordinary/model,0NN;actualsourceprimitivegenerations/appliedcounts/privatekernelreplays",
+        "fullstdout;independent all171360source decisions/logits/CE/F1/RX-TX-day/72cells/interaction/pairedtransitions/stats/cost recount,figures/report/registry"
+      ],
+      "config": {
+        "model_seed": 2026092701,
+        "fixed_question": {
+          "run_id": "20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01",
+          "launch_owner": "codex/root/F-ordinary-channel-source-20261017",
+          "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01",
+          "models": {
+            "2026092701": {
+              "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+              "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+            },
+            "2026092702": {
+              "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+              "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+            }
+          },
+          "baseline": "F+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
+          "question": "Does fixed joint removal of existingordinary AWGN/multipath repair sourceidentities without harming raw retention?",
+          "claim": "Oldordinary causal audit only,not newAg orDG/As efficacy",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "days": [
+            1,
+            2,
+            3
+          ],
+          "TX": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "L_unique": 5040,
+          "cells": 72,
+          "samples_per_cell": 70,
+          "effective_epoch": 13,
+          "augmentation_seeds": [
+            202610171701,
+            202610171702,
+            202610171703,
+            202610171704
+          ],
+          "shuffle_seeds": [
+            202610171710,
+            202610171711,
+            202610171712,
+            202610171713
+          ],
+          "arms": [
+            "full",
+            "no_AWGN",
+            "no_MP",
+            "no_both"
+          ],
+          "primary_arm": "no_both",
+          "diagnostic_arms": [
+            "no_AWGN",
+            "no_MP"
+          ],
+          "operator": "All originalnativeops/params/PA remain;eacharm restores samebatch startingRNG;wrappers execute originalprimitive toconsume draws thenreturn input forremovedprimitive;no RMS restore",
+          "dependency": "MP thenpower-relativeAWGN thenPA;totalchain effects withAWGNsigmarecomputed andPAapplied tochangedIQ;not fixedaddednoise controlleddirecteffect",
+          "As_input": "ExistingAs usesraw,notordinary;no sameview duplicateAWGN/MP established;no As generated here",
+          "matching": "Exactnativecallback params/Python+Torch pre/postRNG/PAstrength matched;kernel params replayed withprivategenerator forlogging only;wrappers restored",
+          "views_per_model": {
+            "raw": 5040,
+            "full": 20160,
+            "no_AWGN": 20160,
+            "no_MP": 20160,
+            "no_both": 20160
+          },
+          "source_NN_per_model": 85680,
+          "total_NN_packets": 171362,
+          "synthetic_CP_smoke_NN": 2,
+          "ordinary_generations": 161280,
+          "checkpoint_loads": 2,
+          "new_training_epochs": 0,
+          "optimizer_updates": 0,
+          "teacher_forwards": 0,
+          "head_fit_updates": 0,
+          "criteria": {
+            "min_primary_vs_full_accuracy_gain_pp": 0.2,
+            "min_primary_vs_full_macroF1_gain_pp": 0.0,
+            "min_positive_draws": 3,
+            "min_each_draw_gain_pp": -0.2,
+            "min_primary_vs_raw_accuracy_gain_pp": -0.5,
+            "min_primary_vs_raw_macroF1_gain_pp": -0.5,
+            "min_each_group_vs_raw_gain_pp": -1.0,
+            "min_each_group_vs_full_gain_pp": -0.5,
+            "min_raw_correct_retention": 0.99
+          },
+          "on_fail": "Closefixed jointordinary AWGN/MP removal;do not promote singlebypass diagnostics/conditiononPA/coefficient/gainclip/draw/RX/seed rescue;not RMS revival",
+          "on_pass": "Sourceidentity repair only;separate samebudget/sameforward scratchE20 required,not automatictraining",
+          "NoExplicitCFO": true,
+          "internal_compensation_retained": true,
+          "default_head_only": true,
+          "source_only": true,
+          "target_access": false,
+          "U_used": false,
+          "V_used": false,
+          "held_RX1_used": false,
+          "automatic_training": false,
+          "device": "CPU",
+          "threads": 2,
+          "historical_model_cost": {
+            "model_epochs": 40,
+            "updates": 8880,
+            "NN": 9373356
+          },
+          "source_basis": [
+            "analysis/cvs_joint_ordinary_IQ_audit_20261016.md",
+            "analysis/cvs_ordinary_PA_schedule_correction_20261016.md",
+            "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r02/report.md"
+          ]
+        }
+      }
+    },
+    {
+      "row_id": "ORDINARY_CHANNEL_SOURCE-s2026092702",
+      "method": "Originalordinary totalchainfactorial withpairednative randomdraws",
+      "purpose": "onefixedjointremoval_candidate_singlebypasses_diagnostic_only",
+      "config_ref": "experiments/cvs_ordinary_channel17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01/s2026092702/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092702,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existingmodelseed notnewtraining;fouraugmentation andprivateshuffle namedstreams inconfig;not one scalaraugmentationseed orcandidate search",
+      "k": null,
+      "scenario": "sourcefit_ordinary_E13_totalchain_noAs",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "85680sourceNN/model plus2syntheticCP onlyseed01;80640sourceordinary/model;160syntheticcanonical/model;privatekernelprimitive replays counted;0newE/update/headfit/teacher",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01/s2026092702",
+      "log_path": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01/s2026092702.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_ordinary_channel17/runner.py --seed 2026092702",
+      "expected_artifacts": [
+        "rootrequest/active/launch/result/completion",
+        "eachmodel nativeargs/callablefiles/base/effectiveE13/checkpointprovenance",
+        "raw5040 plusfourdraws allfourarms logits/hardpredictions private",
+        "320sourcebatchrecords:primitive params/full pre/postRNGmatch/PAstrength/powerdependency andactualIQchangestatistics private",
+        "one realcheckpoint2synthetic noquerysmoke PASSthencontinue",
+        "canonicalnative 160syntheticordinary/model,0NN;actualsourceprimitivegenerations/appliedcounts/privatekernelreplays",
+        "fullstdout;independent all171360source decisions/logits/CE/F1/RX-TX-day/72cells/interaction/pairedtransitions/stats/cost recount,figures/report/registry"
+      ],
+      "config": {
+        "model_seed": 2026092702,
+        "fixed_question": {
+          "run_id": "20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01",
+          "launch_owner": "codex/root/F-ordinary-channel-source-20261017",
+          "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01",
+          "models": {
+            "2026092701": {
+              "run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+              "commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"
+            },
+            "2026092702": {
+              "run": "20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01",
+              "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01",
+              "commit": "d71531d53c1d9ec46e3915963e05bff96760e80e",
+              "source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"
+            }
+          },
+          "baseline": "F+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
+          "question": "Does fixed joint removal of existingordinary AWGN/multipath repair sourceidentities without harming raw retention?",
+          "claim": "Oldordinary causal audit only,not newAg orDG/As efficacy",
+          "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+          "fit_RX": [
+            3,
+            4,
+            6,
+            8
+          ],
+          "days": [
+            1,
+            2,
+            3
+          ],
+          "TX": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5
+          ],
+          "L_unique": 5040,
+          "cells": 72,
+          "samples_per_cell": 70,
+          "effective_epoch": 13,
+          "augmentation_seeds": [
+            202610171701,
+            202610171702,
+            202610171703,
+            202610171704
+          ],
+          "shuffle_seeds": [
+            202610171710,
+            202610171711,
+            202610171712,
+            202610171713
+          ],
+          "arms": [
+            "full",
+            "no_AWGN",
+            "no_MP",
+            "no_both"
+          ],
+          "primary_arm": "no_both",
+          "diagnostic_arms": [
+            "no_AWGN",
+            "no_MP"
+          ],
+          "operator": "All originalnativeops/params/PA remain;eacharm restores samebatch startingRNG;wrappers execute originalprimitive toconsume draws thenreturn input forremovedprimitive;no RMS restore",
+          "dependency": "MP thenpower-relativeAWGN thenPA;totalchain effects withAWGNsigmarecomputed andPAapplied tochangedIQ;not fixedaddednoise controlleddirecteffect",
+          "As_input": "ExistingAs usesraw,notordinary;no sameview duplicateAWGN/MP established;no As generated here",
+          "matching": "Exactnativecallback params/Python+Torch pre/postRNG/PAstrength matched;kernel params replayed withprivategenerator forlogging only;wrappers restored",
+          "views_per_model": {
+            "raw": 5040,
+            "full": 20160,
+            "no_AWGN": 20160,
+            "no_MP": 20160,
+            "no_both": 20160
+          },
+          "source_NN_per_model": 85680,
+          "total_NN_packets": 171362,
+          "synthetic_CP_smoke_NN": 2,
+          "ordinary_generations": 161280,
+          "checkpoint_loads": 2,
+          "new_training_epochs": 0,
+          "optimizer_updates": 0,
+          "teacher_forwards": 0,
+          "head_fit_updates": 0,
+          "criteria": {
+            "min_primary_vs_full_accuracy_gain_pp": 0.2,
+            "min_primary_vs_full_macroF1_gain_pp": 0.0,
+            "min_positive_draws": 3,
+            "min_each_draw_gain_pp": -0.2,
+            "min_primary_vs_raw_accuracy_gain_pp": -0.5,
+            "min_primary_vs_raw_macroF1_gain_pp": -0.5,
+            "min_each_group_vs_raw_gain_pp": -1.0,
+            "min_each_group_vs_full_gain_pp": -0.5,
+            "min_raw_correct_retention": 0.99
+          },
+          "on_fail": "Closefixed jointordinary AWGN/MP removal;do not promote singlebypass diagnostics/conditiononPA/coefficient/gainclip/draw/RX/seed rescue;not RMS revival",
+          "on_pass": "Sourceidentity repair only;separate samebudget/sameforward scratchE20 required,not automatictraining",
+          "NoExplicitCFO": true,
+          "internal_compensation_retained": true,
+          "default_head_only": true,
+          "source_only": true,
+          "target_access": false,
+          "U_used": false,
+          "V_used": false,
+          "held_RX1_used": false,
+          "automatic_training": false,
+          "device": "CPU",
+          "threads": 2,
+          "historical_model_cost": {
+            "model_epochs": 40,
+            "updates": 8880,
+            "NN": 9373356
+          },
+          "source_basis": [
+            "analysis/cvs_joint_ordinary_IQ_audit_20261016.md",
+            "analysis/cvs_ordinary_PA_schedule_correction_20261016.md",
+            "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r02/report.md"
+          ]
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Twoverifiedoriginal source-only scratchE20defaultheads,fitL5040/U45360/V21600,RX1held/final-only/4440updates,strictdefaultcos30/joint160/NoExplicitCFO;onecheckpointload/model,nativelogcopyhandlesdataclass/NaN withoutchangingexecutionargs.",
+    "Normalorder anti-shortcut/generalMPthenAWGNthenPA. Nativeprimitive executes toconsume exactdraws evenwhen effectremoved;postRNG andparameters/PAstrength matched. MPchanges AWGNsignalpowerandsigma andsubsequentPAinput:totalchaineffect,notcontrolleddirecteffect. No postRMS orPAdisable.",
+    "ExistingAs inputisraw;ordinaryAWGN/MP notsameview doublepropagation. Thisrun generatesnoAs,doesnot claim itsimprovement.",
+    "Samephysical5040 repeatsfourdraws,all72cells/labels andhardcases retained;sourcecache L6300/unusedVfeaturesdeserialize,UonlyopaqueIDmetadata/noIQ orlabels,RX1L1260excludedbeforeinference.",
+    "Primaryno_both mustmeetallconditions onbothmodels. noAWGN/noMP diagnosticsonly;no fallbackpromotion ifprimaryFAIL. PASSonlysourcebasis;futurematchedscratchE20 needsseparateregistration,notautomatictraining ornewAgclaim.",
+    "Focusedlocal17negatives+7scientificcounterexamples/480syntheticordinary/72privatekernelrandomscalars,0sourceIQ/CP/NN/update;canonicalnativeoutput/RNG,PAstrength,AWGNpowerdependency,andwrapperrestoration PASS. ExistingTorch NumPybridgewarning unused/noinstall.",
+    "Onlyoneminimalindependent P0/P1 review andrealcheckpointsmoke;nosignature/receipt/extrareview ordatarevalidation. Sourcefactorial interaction isnot the requestedfinalAg/Asfourcellinteraction."
+  ],
+  "registered_at": "2026-10-16T19:05:05+00:00"
+}

@@ -1648,5 +1648,65 @@
       "2026092701": -0.43154761904762307,
       "2026092702": -0.38690476190477163
     }
+  },
+  "ordinary_channel_source_audit": {
+    "status": "REGISTERED_LOCAL_VALIDATED_ONE_REVIEW_FIXED_P1_PASS_NOT_LAUNCHED",
+    "run_id": "20261017-diagnostic-F-crossRX-ordinaryChannel-fitL-manysig-m2-r01",
+    "package": "experiments/cvs_ordinary_channel17",
+    "baseline": "F+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
+    "source_only": true,
+    "target_access": false,
+    "model_seeds": [
+      2026092701,
+      2026092702
+    ],
+    "fitL": 5040,
+    "arms": [
+      "full",
+      "no_AWGN",
+      "no_MP",
+      "no_both"
+    ],
+    "primary": "no_both",
+    "single_bypass_diagnostic_only": true,
+    "effective_epoch": 13,
+    "augmentation_seeds": [
+      202610171701,
+      202610171702,
+      202610171703,
+      202610171704
+    ],
+    "shuffle_seeds": [
+      202610171710,
+      202610171711,
+      202610171712,
+      202610171713
+    ],
+    "dependency": "MPthenpower-relativeAWGNthenPA,totalchaineffects;Asalreadyraw/no sameview duplication",
+    "planned_NN": 171362,
+    "source_ordinary_generations": 161280,
+    "synthetic_canonical_ordinary": 320,
+    "kernel_private_primitive_replays": "Actualcount,separatefromglobalRNG",
+    "new_training_epochs": 0,
+    "optimizer_updates": 0,
+    "teacher_forwards": 0,
+    "head_fit_updates": 0,
+    "criteria": {
+      "min_primary_vs_full_accuracy_gain_pp": 0.2,
+      "min_primary_vs_full_macroF1_gain_pp": 0.0,
+      "min_positive_draws": 3,
+      "min_each_draw_gain_pp": -0.2,
+      "min_primary_vs_raw_accuracy_gain_pp": -0.5,
+      "min_primary_vs_raw_macroF1_gain_pp": -0.5,
+      "min_each_group_vs_raw_gain_pp": -1.0,
+      "min_each_group_vs_full_gain_pp": -0.5,
+      "min_raw_correct_retention": 0.99
+    },
+    "on_fail": "ClosefixedjointordinaryAWGN/MPremoval;no promoting singlebypass/PAconditioning/coefficient/draw/RX/seed rescue;notRMSrevival",
+    "automatic_training": false,
+    "Ag_efficacy_proved": false,
+    "As_efficacy_proved": false,
+    "joint_goal_complete": false,
+    "note_ref": "analysis/cvs_ordinary_channel_source_20261017.md"
   }
 }
