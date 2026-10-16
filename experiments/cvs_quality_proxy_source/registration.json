@@ -1,0 +1,281 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-FcrossRX-qualityproxy-fitL-manysig-m1-r01",
+  "group_id": "FcrossRX-finite-waveform-quality-proxy",
+  "display_name": "F＋跨 RX：白输入质量代理的状态切换与边界反事实",
+  "description": "CPU源L物理诊断，两个随机流×六practical；同H/receiver/noise对比白代理、真实Hx全长/内部质量及固定接收状态；0模型/NN/更新。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "finite-waveform quality proxy",
+    "receiver quality state switch"
+  ],
+  "tags": [
+    "PHYSICS_QUALITY",
+    "F_CROSS_RX",
+    "source_only"
+  ],
+  "comparison_group_id": "FcrossRX-finite-waveform-quality-proxy",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active Ag/As research goal;legal source-only physics diagnosis before any new IQ method/training;current F+CROSS_RX/E20 unchanged",
+  "code": {
+    "commit": "CURRENT_RELEASE_COMMIT",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "ordinary N607 existing CVS-RFFI Python/NumPy/Torch source cache reader;CPU2/noCUDA/no model",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_qualityproxy_fitL_20261017_r01"
+  },
+  "data": {
+    "dataset": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/source_cache.pt",
+    "version": "Existing VALIDATED_ONCE source carrier; exact currentC0 fitL5040 on RX3/4/6/8 only",
+    "representation": "OriginalfitL RMS IQ2x256;fullreceived outputs retained256;interior only for power statistic",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source/source_contract.json#role_ids/L_s",
+    "label_map_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#classes",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "RX3/4/6/8 originalL5040 only",
+      "U_s": "Hidden/unused;existing sourcecache deserialization disclosed",
+      "V": "unused;no values inspected",
+      "held_source_RX1": "unused;no values inspected"
+    },
+    "train_ratio": 0.1,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/preparation_complete.json",
+    "support_query_ref": null,
+    "leo_config_ref": "Original6nominal/residual/post_sync/EQoffG1/reference30/reflect;diagnosticquality overrides only;formaltest unchanged",
+    "effective_counts": {
+      "L_used": 5040,
+      "held_RX1_IQ_used": 0,
+      "U_used": 0,
+      "V_used": 0
+    }
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Finite-waveform receiverquality proxy andboundary/state premise only;not totalSNR/defaulthead gain/Ag orAs efficacy/target/crossseed/joint"
+  },
+  "checkpoint": {
+    "initialization": "not_applicable_no_model",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "provenance_verdict": "NO_CHECKPOINT_ACCESS;sourcecache is data not model;C0 contract metadata only/no inheritedstate",
+    "selection_rule": "No model/epoch selection;fixed2draws/all6scenes/allfitL;sourcephysics criterion before any future probe"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/FcrossRX-qualityproxy-20261017",
+    "gpu_policy": "CPUonly/CUDAhidden/2threads;allunrelatedhealthy jobs protected",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-qualityproxy-fitL-manysig-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_qualityproxy_fitL_20261017_r01/dispatcher.log",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_qualityproxy_20261017",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_qualityproxy_fitL_20261017_r01/experiments/cvs_quality_proxy_source/runner.py",
+    "stop_rule": "Ownrole/input/nonfinite/outputcollision/unlaunchable failure:preserve/no retry/no healthyjob changes. ScientificFAIL closes fixedpremise/no threshold/draw/seed/scene/window/RX rescue;PASS onlyfuture separatelyregistered defaulthead recoverability probe."
+  },
+  "expected_artifacts": [
+    "Actual native engine __file__/all6 configs/inputrole contracts",
+    "First-step native noquery synthetic smoke2/10physicalcalls,0CP/NN",
+    "All60480 source records/302400 nativecalls,5conditions/sharedH/receiver/noise stream",
+    "Full12scene-draw groups/864TXRXdaycells/12stableRXsessions",
+    "Independent sufficient-statistic recount,quality/lock/CFO/boundary/AGC distributions,actualcost/negativefindings"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "quality_bias_whole_and_interior_dB",
+      "white_to_waveform_lock_confusion",
+      "boundary_robust_flip_fraction",
+      "residualscale/CFO/phase/AGC",
+      "fixedreceiver_MSE/replayzero",
+      "72sourcecells/2draws/6scenes/nativecalls/wall"
+    ],
+    "dimensions": [
+      "draw",
+      "scene",
+      "state",
+      "lock",
+      "TX",
+      "RX",
+      "day",
+      "boundary",
+      "kernel_length"
+    ],
+    "prediction_ref": "No NN predictions;/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-qualityproxy-fitL-manysig-m1-r01/quality-proxy-fitRX3_4_6_8/quality_records.jsonl.gz",
+    "scorer_ref": "experiments.cvs_quality_proxy_source.analyze",
+    "criteria": {
+      "scenes": [
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "each_draw_median_abs_bias_min_db": 1,
+      "each_draw_whole_lock_flip_min": 0.05,
+      "each_draw_whole_vs_interior_quality_median_abs_difference_max_db": 0.5,
+      "each_draw_boundary_robust_flip_fraction_min": 0.5,
+      "all_interior_sample_count_min": 128
+    },
+    "target_access": false
+  },
+  "rows": [
+    {
+      "row_id": "quality-proxy-fitRX3_4_6_8",
+      "method": "Fixedfinite-waveform-quality-proxy physicalcounterfactual",
+      "purpose": "primary_source_diagnostic",
+      "config_ref": "experiments/cvs_quality_proxy_source/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-qualityproxy-fitL-manysig-m1-r01/quality-proxy-fitRX3_4_6_8/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261017891,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model/evaluation/support null(0model/no target);originalsplit392005;two independentphysics namespace draw0/1 withseed20261017891;receiver20261016102 stable rx/day/eq1 neverTX;data deterministic cachedL handles",
+      "k": null,
+      "scenario": "All6originalpractical/2draws/fitL5040 only,0held/query",
+      "optimizer": "None;0model/0updates",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "60480physicalrecords×5nativeprocess=302400;launchsynthetic10 separate;0CP/NN/updates/teacher/head",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-qualityproxy-fitL-manysig-m1-r01/quality-proxy-fitRX3_4_6_8",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_qualityproxy_fitL_20261017_r01/dispatcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_qualityproxy_fitL_20261017_r01/experiments/cvs_quality_proxy_source/runner.py",
+      "expected_artifacts": [
+        "Actual native engine __file__/all6 configs/inputrole contracts",
+        "First-step native noquery synthetic smoke2/10physicalcalls,0CP/NN",
+        "All60480 source records/302400 nativecalls,5conditions/sharedH/receiver/noise stream",
+        "Full12scene-draw groups/864TXRXdaycells/12stableRXsessions",
+        "Independent sufficient-statistic recount,quality/lock/CFO/boundary/AGC distributions,actualcost/negativefindings"
+      ],
+      "config": {
+        "schema": "source_quality_proxy_finite_waveform_v1",
+        "run_id": "20261017-diagnostic-FcrossRX-qualityproxy-fitL-manysig-m1-r01",
+        "launch_owner": "codex/root/FcrossRX-qualityproxy-20261017",
+        "row_id": "quality-proxy-fitRX3_4_6_8",
+        "arm": "quality_proxy",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-qualityproxy-fitL-manysig-m1-r01/quality-proxy-fitRX3_4_6_8",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "reference_metadata": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/C0-RX1-s2026092701/source",
+        "engine": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code",
+        "source_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "source_L": 5040,
+        "held_RX1_used": false,
+        "U_used": false,
+        "V_used": false,
+        "target_access": false,
+        "source_only": true,
+        "model_seed": null,
+        "new_models": 0,
+        "checkpoint_loads": 0,
+        "model_forwards": 0,
+        "optimizer_updates": 0,
+        "teacher_forwards": 0,
+        "head_fit_updates": 0,
+        "CPU_threads": 2,
+        "CUDA_VISIBLE_DEVICES": "",
+        "epochs": 0,
+        "automatic_training": false,
+        "goal_complete": false,
+        "baseline": "F+CROSS_RX sameTX/SIG_TIME_X3/unifiedSinc/NoExplicitCFO/joint160/defaultcos30/E20 remains;no model instantiated here",
+        "physical": {
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
+          "IQ_length": 256,
+          "scenes": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "draws": 2,
+          "seed": 20261017891,
+          "receiver_seed": 20261016102,
+          "namespace": "source_fit_quality/drawD",
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "reference_snr_db": 30,
+          "boundary": "reflect",
+          "session": "rx/day/eq1 only,neverTX",
+          "formal_test_unchanged": true
+        },
+        "measurements": {
+          "proxy": "mean(abs(x)^2)*sum(abs(H)^2)/expected_added_noise_variance",
+          "whole": "mean(abs(causal_Hx_reflect)^2)/sameexpected_added_noise_variance",
+          "interior": "sameHx indices[len(H)-1:256],no artificial-prefix dependence;statistic only,no output trimming",
+          "meaning": "Frozen-H signal-to-added-noise estimate,not totalSNR,not exact timevarying full-route quality or RX hardware identification",
+          "conditions": [
+            "native_proxy",
+            "explicit_proxy_replay",
+            "whole_quality_total_effect",
+            "interior_quality_total_effect",
+            "whole_quality_fixed_receiver_state_and_scale"
+          ],
+          "fixed_control": "Only receiver_quality return(status,scale)held to native proxy;native propagation/noise/IQ/phase/CFO/AGC code and RNG draws unchanged;zero IQ effect is sanity control",
+          "physics_records": 60480,
+          "native_process_calls": 302400,
+          "launch_synthetic_process_calls": 10
+        },
+        "primary": {
+          "scenes": [
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "each_draw_median_abs_bias_min_db": 1,
+          "each_draw_whole_lock_flip_min": 0.05,
+          "each_draw_whole_vs_interior_quality_median_abs_difference_max_db": 0.5,
+          "each_draw_boundary_robust_flip_fraction_min": 0.5,
+          "all_interior_sample_count_min": 128
+        },
+        "on_fail": "Close fixed finite-waveform quality-proxy receiver-switch premise;no thresholds/draws/seed/scenes/window/RX rescue or training",
+        "on_pass": "Only supports separately registered frozen-default-head recoverability probe;not Ag/As identification gain or automatic E20",
+        "formal_test_changed": false
+      }
+    }
+  ],
+  "notes": [
+    "Known raw/EQ sameindex entrance is closed;no new representation or data role used",
+    "Native quality proxy powerinput*Htapenergy;actual frozen-H power uses samepreRXH/no newTXhardwareeffect",
+    "No output cropping or noise/SNR test change;boundary-free indices are power measurement only",
+    "No model/checkpoint machinery:realCP smoke notapplicable;nativephysics noquerysmoke is firststep andcontinues onPASS",
+    "PASS is not proof Ag/As identityaccuracy;FAIL no rescue;fullgoal remainsactive"
+  ]
+}
