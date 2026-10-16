@@ -1,0 +1,68 @@
+{
+  "status": "VERIFIED",
+  "scientific_status": "RATIONALE_REJECTED",
+  "decision": {
+    "status": "RATIONALE_REJECTED",
+    "groups": {
+      "C0/r0": {
+        "median_As_primary_norm_ratio": 4.944536530182278,
+        "As_opposed_fraction": 0.425,
+        "control_opposed_fraction": 0,
+        "opposed_excess": 0.425,
+        "pass_rule": true
+      },
+      "C0/r1": {
+        "median_As_primary_norm_ratio": 4.827112586514971,
+        "As_opposed_fraction": 0.325,
+        "control_opposed_fraction": 0,
+        "opposed_excess": 0.325,
+        "pass_rule": true
+      },
+      "C1/r0": {
+        "median_As_primary_norm_ratio": 1.4264892279170411,
+        "As_opposed_fraction": 0.125,
+        "control_opposed_fraction": 0,
+        "opposed_excess": 0.125,
+        "pass_rule": false
+      },
+      "C1/r1": {
+        "median_As_primary_norm_ratio": 1.3522916530703195,
+        "As_opposed_fraction": 0.175,
+        "control_opposed_fraction": 0,
+        "opposed_excess": 0.175,
+        "pass_rule": false
+      }
+    },
+    "gradient_geometry_is_not_accuracy": true,
+    "actual_AdamW_motion_measured": false,
+    "automatic_training": false,
+    "goal_completed": false
+  },
+  "complete_records": {
+    "observations": 80,
+    "gradients": 1920,
+    "predictions": 60480,
+    "whole_progress_lines": 160,
+    "other_log_lines": 0,
+    "physical_L_unique": 5040,
+    "cells": 72
+  },
+  "costs": {
+    "new_models": 0,
+    "new_model_epochs": 0,
+    "optimizer_updates": 0,
+    "EMA_updates": 0,
+    "head_fit_updates": 0,
+    "NN_packets": 120964,
+    "ordinary_generations": 10080,
+    "full_As_generations": 10080,
+    "wall_seconds": 59.252369485097006,
+    "reference_model_epochs": 40,
+    "reference_updates": 8880
+  },
+  "source_only": true,
+  "target_access": false,
+  "model_seeds": 1,
+  "observation_streams": 2,
+  "goal_completed": false
+}

@@ -19,3 +19,6 @@
 本轮最小流程：局部协议负例和真实网络合成梯度检查、一次限定P0/P1、代码提交、一个run和release、单归档比较/远端compile、worker先做两真实CP no-query smoke并立即继续、唯一owner和独立PID/CWD/argv/GPU/log增长核验。只允许本run的协议、来源、非有限、状态变化、输出碰撞或无法闭合预测等技术失败停止，保留partial、无自动重试、不干预健康外部任务。公共小型汇总入Git，IQ/CP/逐包轨迹/原日志留私有产物。
 
 精确config、命令、环境/CWD、路径、GPU、stop和预期产物以同run experiment.json为准。REJECTED_EXTRA_GATE：brainstorming 的独立设计审批超出当前项目最小流程白名单；本任务已有研究授权，不增加审批等待。
+
+
+实际完成：20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01，120964 网络包／60480 源 fit-L 决策／1920 梯度记录，worker 59.252369 s、0 更新。C0 两流 As 范数比中位数 4.944537／4.827113，反向批比例 42.5%／32.5%；C1 为 1.426489／1.352292 和 12.5%／17.5%，重复 ordinary 均无负内积。原四组共同条件未通过，关闭持续梯度支配理由，不按层/RX/流/阈值救援。两个最终 checkpoint 不是时间轨迹，未检验失败 RX6 或训练早期，不推断唯一退化原因或 AdamW 步长。实际无 BN；全 state 未变。正式性能、Ag/As 联合及跨 seed 仍未证明。[完整报告](../automation_reports/CV-SincNet/20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01/report.md)。

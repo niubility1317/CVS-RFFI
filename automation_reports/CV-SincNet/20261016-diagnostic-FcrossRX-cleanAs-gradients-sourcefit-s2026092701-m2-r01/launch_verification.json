@@ -1,0 +1,31 @@
+{
+  "status": "VERIFIED",
+  "actual_code_commit": "54e152dd8617ea1787f4ab0c95da86233f70ddce",
+  "archive_transfer": "VERIFIED_SINGLE_ARCHIVE_COMPARISON",
+  "remote_compile": "PASS",
+  "ordinary_account": true,
+  "unique_dispatcher_and_worker": true,
+  "first_PID_CWD_argv_match": true,
+  "worker_gpu": 0,
+  "actual_GPU_match": true,
+  "observed_total_process_counts_le3": true,
+  "worker_log_growth_bytes": [
+    0,
+    14426
+  ],
+  "real_checkpoint_noquery_smoke": {
+    "status": "PASS",
+    "checkpoint_count": 2,
+    "synthetic_packets": 4,
+    "IQ_reads_before_smoke": 0,
+    "query_reads": 0
+  },
+  "terminal": {
+    "dispatcher_live": false,
+    "worker_live": false,
+    "completion": "ARTIFACTS_COMPLETE",
+    "failure": false,
+    "no_restart_or_hot_change": true
+  },
+  "target_access": false
+}

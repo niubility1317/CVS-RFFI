@@ -6,7 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|clean-As 梯度源诊断预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01/report.md)|
+|F＋跨 RX：冻结默认头的 ordinary／As 梯度关系|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-diagnostic-FcrossRX-cleanAs-gradients-sourcefit-s2026092701-m2-r01/report.md)|
 |有界局部观察衰减：完整源域结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-localatten-source-RX1-e20-s2026092701-m1-r01/report.md)|
 |精确 C4 相位轮转：源域完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-phasecycle-source-RX1-e20-s2026092701-m1-r01/report.md)|
 |F＋跨 RX 配对星地：五源折确认结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/report.md)|
