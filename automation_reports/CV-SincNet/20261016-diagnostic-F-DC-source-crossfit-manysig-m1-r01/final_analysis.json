@@ -1,0 +1,48 @@
+{
+  "run_id": "20261016-diagnostic-F-DC-source-crossfit-manysig-m1-r01",
+  "code_commit": "a89c7444320b7251df6bcafded2bedabe35e7693",
+  "execution": "VERIFIED",
+  "source_only": true,
+  "scientific_decision": "FAIL",
+  "independent_saved72cell_recount": "PASS: all18folds, pooled/RX/3wrongRX risks and TXhalfcosine",
+  "mean_risk_gain": -0.028039886719528173,
+  "positive_folds": 7,
+  "total_folds": 18,
+  "per_RX_risk_gain": {
+    "3": -0.06819705978960378,
+    "4": 0.10906186967855924,
+    "6": 0.05181852524001884,
+    "8": -0.06262108077574169
+  },
+  "gain_over_best_wrong_RX": 0.0004994353985219302,
+  "TX_half_center_cosine": 0.30767151679743215,
+  "DC_to_odd_even_difference_power_ratio": 0.0705608085613611,
+  "all_conditions": {
+    "nonzero_baseline": true,
+    "mean_risk_gain": false,
+    "positive_folds": false,
+    "all_RX_nonnegative": false,
+    "above_best_wrong_RX": false,
+    "TX_half_center_cosine": false,
+    "DC_cycle_repeatability": false
+  },
+  "completion": {
+    "status": "ANALYZED",
+    "scientific_decision": "FAIL",
+    "fit_L_packets": 5040,
+    "source_cells": 72,
+    "folds": 18,
+    "network_forwards": 0,
+    "checkpoint_loads": 0,
+    "optimizer_steps": 0,
+    "U_used": false,
+    "V_used": false,
+    "held_RX1_used": false,
+    "target_access": false,
+    "automatic_training": false,
+    "seconds": 0.4687737198546529
+  },
+  "full_stdout_lines": 2,
+  "process_post_state": "Natural completion; original pid absent, no failure artifact; initial PID/CWD/argv observed by launcher. Finished before independent log-growth sample; not rerun to manufacture observation.",
+  "consequence": "Close fixed source-DC hypothesis; no DC augmentation training, no target predictions; joint goal remains unachieved."
+}
