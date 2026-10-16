@@ -1,0 +1,79 @@
+{
+  "schema": "joint_augmentation_active_baseline_v1",
+  "status": "RECIPE_FIXED_NOT_TRAINED_OR_LAUNCHED",
+  "authorization": "User on 2026-10-16 changes pre-augmentation baseline to F plus cross-RX same-TX contrastive learning. Earlier E20 budget remains in force.",
+  "baseline_name": "F_PLUS_CROSS_RX_TX",
+  "applies_to": ["B00", "B10", "B01", "B11"],
+  "model": {
+    "architecture": "Existing F: three independent SIG_TIME local projections plus unified full physical Sinc correction",
+    "deployed_embedding_dimension": 160,
+    "classifier": "Existing default cosine ResidualPhysicalHead, six classes, scale30, jointly trained with backbone",
+    "NoExplicitCFO": true,
+    "internal_packet_compensation": "Preserve existing necessary implementation",
+    "new_deployment_modules": 0,
+    "head_fit_updates": 0
+  },
+  "training": {
+    "initialization": "scratch, same initialization rule per seed across all four cells",
+    "epochs": 20,
+    "label_epochs": 13,
+    "pseudo_epochs": 7,
+    "steps_per_epoch": 222,
+    "optimizer_updates_per_model": 4440,
+    "final_checkpoint": 20,
+    "label_smoothing": 0.01,
+    "RDrop_alpha": 1.0,
+    "RDrop_same_generated_IQ_in_each_pair": true,
+    "ordinary_augmentation": "Retain the actual existing F+CROSS_RX native ordinary augmentation as a common baseline ingredient in all cells; log resolved flags and generated inputs. B00 means no NEW Ag and no As, not augmentation-free.",
+    "U": "Existing hidden-label batch_neighbor oldgate/ownEMA/cos path; no new U augmentation, feature contrast or U truth access in first round",
+    "learning_rate": "Existing cosine and complete F physical Sinc optimizer units, unchanged",
+    "inherited_checkpoint_or_teacher_sources": [],
+    "same_contract_matching": true
+  },
+  "cross_RX_same_TX_contrast": {
+    "source_code_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
+    "source_module": "experiments/cvs_f_supcon50/mechanism.py",
+    "mode": "CROSS_RX",
+    "levels": ["time_down", "t2.pool"],
+    "positive": "Other physical L packets with same visible TX and different physical RX",
+    "negative": "Different visible TX only; same-TX same-RX packets excluded from denominator",
+    "temperature": 0.2,
+    "maximum_weight": 0.1,
+    "weight_schedule": "0.1 * clip((epoch-5)/10, 0, 1); retain absolute epochs, do not compress by E50/E20 ratio",
+    "descriptor": "Concatenate channel temporal mean and population std; detached current-L-batch mean/std with floor1e-4; per-packet L2 normalization eps1e-4",
+    "reduction": "Equal mean of two levels and two original RDrop forwards",
+    "invalid_anchor": "Exclude anchors without positive or other-TX negative; finite zero when none; retain original random sampler",
+    "source_RX_check": "Use physical rx_i from native (domain, metadata); validate against actual source domain map",
+    "labels": "Visible L only",
+    "direct_aux_gradient_to_classifier_weight": false,
+    "extra_model_forwards": 0,
+    "extra_trainable_parameters": 0,
+    "E20_expected_hook_calls": 4440,
+    "E20_expected_nonzero_weight_calls": 3330,
+    "E20_expected_layer_forward_objectives": 13320,
+    "not_IQ_Ag": true
+  },
+  "data": {
+    "source_contract": "Existing original source_contract.json, split392005, RX1/3/4/6/8, day1/2/3, original6TX",
+    "formal_factorial": "Full L6300/U56700/V27000; all four cells share exact physical roles; scratch, no inner-fold parent reuse",
+    "source_falsification_if_used": "Separate explicitly registered RX1-held contract: L5040/U45360 training on RX3/4/6/8, held original L1260 from RX1, seen V21600 for health; every paired cell retrained from scratch with CROSS_RX baseline. It is not full L6300 and is not L5580/Ldev720.",
+    "checkpoint_prohibition": "Do not initialize new E20 or internal-fold models from E50/full-source, old F-only, target-selected, mismatched or unverifiable checkpoints"
+  },
+  "comparison": {
+    "B00": "Shared F+CROSS_RX, no new Ag, no As",
+    "B10": "Shared F+CROSS_RX plus separately supported new Ag only",
+    "B01": "Shared F+CROSS_RX plus complete existing practical As only",
+    "B11": "Shared F+CROSS_RX plus both separately validated mechanisms; composition is a later separate ablation",
+    "view_forward_control": "Fix physical-sample/view loss weights and actual model forward counts before launch; extra views must have matched inactive-view controls",
+    "primary_SupCon_scope": "Original shared L RDrop pair; do not silently apply the source contrast to satellite, new Ag views or U",
+    "old_F_only_B00": "Historical reference only; cannot substitute for the new baseline"
+  },
+  "evaluation": {
+    "target_feedback": false,
+    "source_selection_only": true,
+    "formal_views": ["clean", "practical_high", "practical_mid", "practical_low_suburban", "practical_high_urban", "practical_mid_urban", "practical_low_urban"],
+    "prediction_before_truth": "All registered view predictions for each frozen row complete before independent truth-side scoring",
+    "historical_E50_evidence": "Existing exposed clean benchmark supports recipe context only. No E20 or satellite benefit may be inferred or added to Ag/As gains.",
+    "joint_goal_complete": false
+  }
+}

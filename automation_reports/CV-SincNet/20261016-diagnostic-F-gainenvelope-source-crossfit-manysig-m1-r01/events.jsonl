@@ -1,1 +1,2 @@
 {"at": "2026-10-16T04:55:42+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-16T05:00:00+00:00", "status": "ANALYZED", "note": "VERIFIED CPU source envelope diagnostic; all72cells/18folds/5040packet recount match. ScientificFAIL: RX riskgain63.164130%,15/18folds,but medianR2 .303317 below .8. Close fixed smooth gain ramp;0model/forward/update/target.", "evidence": ["final_analysis.json"], "row_id": null}

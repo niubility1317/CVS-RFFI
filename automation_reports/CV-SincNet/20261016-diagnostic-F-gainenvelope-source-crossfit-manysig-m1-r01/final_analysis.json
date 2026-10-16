@@ -1,0 +1,52 @@
+{
+  "run_id": "20261016-diagnostic-F-gainenvelope-source-crossfit-manysig-m1-r01",
+  "execution": "VERIFIED",
+  "code_commit": "c20beeab2395ca22879217b349ade9a1e4164846",
+  "scientific_decision": "FAIL",
+  "source_only": true,
+  "independent_recount": "All72cells/18folds/3wrongRX/TXhalf/perRX and all5040 packet slopes/R2 match",
+  "mean_risk_gain": 0.6316413018878756,
+  "positive_folds": 15,
+  "total_folds": 18,
+  "per_RX_risk_gain": {
+    "3": 0.7179663647725312,
+    "4": 0.6878827780362173,
+    "6": 0.5842736168640756,
+    "8": 0.4085908807253056
+  },
+  "gain_over_best_wrong_RX": 1.3752299746517354,
+  "TX_half_center_cosine": 0.9950556136807006,
+  "median_packet_R2": 0.3033174536625684,
+  "median_abs_slope_db": 0.06784948398935202,
+  "max_RMS_slope_difference": 1.9984014443252818e-15,
+  "all_conditions": {
+    "nonzero_baseline": true,
+    "mean_risk_gain": true,
+    "positive_folds": true,
+    "all_RX_nonnegative": true,
+    "above_best_wrong_RX": true,
+    "TX_half_center_cosine": true,
+    "median_packet_R2": false,
+    "nontrivial_slope": true,
+    "RMS_slope_retained": true
+  },
+  "completion": {
+    "status": "ANALYZED",
+    "scientific_decision": "FAIL",
+    "fit_L_packets": 5040,
+    "source_cells": 72,
+    "folds": 18,
+    "network_forwards": 0,
+    "checkpoint_loads": 0,
+    "optimizer_steps": 0,
+    "U_used": false,
+    "V_used": false,
+    "held_RX1_used": false,
+    "target_access": false,
+    "automatic_training": false,
+    "seconds": 1.0413460012059659
+  },
+  "full_stdout_lines": 2,
+  "process_post_state": "Initial PID/CWD/argv observed. Independent post-state confirms completion, no failure, pid absent; completed before independent growth sample, no rerun.",
+  "consequence": "Close fixed smooth gain-ramp rationale despite RX association; no augmentation training or target performance claim; whole joint goal remains incomplete."
+}
