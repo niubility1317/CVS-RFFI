@@ -1,6 +1,6 @@
 # additive As：固定 seed02 的独立源域确认
 
-状态：PLANNED，尚未启动。本轮只检验同一候选的独立种子可复现性，不增加 IQ 算子、损失、U 规则或模型分支。
+状态：RUNNING／VERIFIED。三组已从零启动，尚未完成训练或源评分。本轮只检验同一候选的独立种子可复现性，不增加 IQ 算子、损失、U 规则或模型分支。
 
 首轮 20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01 的三组 E20、26460 个预测和全部13320步已独立复算，原两对照源条件全通过。As 相对 D00 clean +3.333333pp、low urban +5.714286pp、urban均值 +9.708995pp；相对D_raw也通过。它仍有TX标签2/3在六practical的明显负收益，lowurban仅33.809524%，suburban自身clean差25.396825/28.809524/32.063492pp。首轮没有证明 A_g、跨seed或完整联合目标，也不能证明raw权重变化是旧normalized75/25失败的唯一原因。
 
@@ -47,3 +47,19 @@ CWD /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_additiveAs_
 新增profile接线做过一次独立P0/P1定向审查PASS，仅覆盖本次新增profile→真实seed/输出/拒绝路径，未完整复审原机制。一次N607 preflight、一份release单次本远端SHA对比、remote compile，dispatcher第一步真实CP noquery smoke PASS即继续。协议/角色/初始化/预算/输出碰撞/系统性非有限或无法合法prediction为技术失败：保存partial、取消pending、健康worker自然完成，无自动重试。科学负分不停止或改训练。
 
 保留实际args/resolved/roles/init/frozen、私有CP、全stdout/20epoch/4440native-view-unit轨迹/physical序列/As覆盖/七视图prediction/result/completion或failure。IQ、权重、原始日志、逐包轨迹、机器私有状态不入Git；小型聚合及同row报告提交推送。
+
+
+## 实际发布与启动读回
+
+执行commit 05984a1229ebac7025a95081dc5fae4108276b28 已推送，远端OID与本地HEAD独立比对一致。归档单次本远端SHA比对、remote compile VERIFIED；匹配真实CP noquery smoke PASS。dispatcher和三worker的PID/CWD/argv/CUDA环境、实际GPU进程以及日志增长独立核实VERIFIED。三行真实seed2026092702，20/13/7，sourceRX1 fold，无baseline/teacher父权重；resolved为8L前向、保留base raw.75/ordinary.25及extra raw0/raw.25/As.25，updates4440。
+
+- D00-RX1-s2026092702：GPU0，观察完整step315/4440，E2/20；stdout11753字节。仅为运行进度，无最终识别结论。
+
+- D_raw-RX1-s2026092702：GPU1，观察完整step372/4440，E2/20；stdout11771字节。仅为运行进度，无最终识别结论。
+
+- D_As-RX1-s2026092702：GPU2，观察完整step214/4440，E1/20；stdout6580字节。仅为运行进度，无最终识别结论。
+
+仅修改本轮本地报告和状态，不改已发布训练release，不重复启动同run。完整联合目标仍未完成。
+
+
+远端runtime.json的confirmation_seed02已独立读回；三row实际native与resolved model_seed均2026092702，initialization均scratch_only且checkpoint_sources/ancestors为空、无target_contact。实际F构造配置seed02的本地state验证与已提交runtime接线一致，未将首轮smoke权重用于训练。

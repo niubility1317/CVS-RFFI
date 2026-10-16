@@ -144,3 +144,6 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 固定additive As seed02独立确认已登记 20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01，三组原样scratchE20/8L前向，原条件和U保持，实际native与F modelconfig seed均02；24负例/初始state验证PASS、0IQ/0NN/0优化；一次新增profile P0/P1定向审查PASS，未复审旧机制。尚未启动。首轮PASS及TX2/3负面保留，确认失败不做seed03等救跑；目标仍未达。
+
+
+上述三组additive As源反证已发布并实际运行；执行commit 05984a1229ebac7025a95081dc5fae4108276b28，Git远端OID/归档/编译/真实CPsmoke及三worker进程、参数、GPU和日志增长VERIFIED。各组固定20/13/7、4440更新、8L前向/保留原base raw.75；尚未完成训练、源预测或独立评分。
