@@ -1,0 +1,357 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01",
+  "group_id": "F-crossRX-postAs-fixed-receiver-noise-diagnostic",
+  "display_name": "F＋跨 RX：星地训练后新增噪声的固定接收状态诊断",
+  "description": "冻结RAW10/ANTI各自原默认头，只消费seen-fitL5040；同一观测完整噪声与去新增噪声控制，检查BLOCKED/unlocked可恢复间隔；0训练/新头/目标访问",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "postAs noise control",
+    "fixed receiver noise removal"
+  ],
+  "tags": [
+    "source_only",
+    "F_CROSS_RX",
+    "defaulthead",
+    "no_training",
+    "fixed_receiver"
+  ],
+  "comparison_group_id": "F-crossRX-postAs-fixed-receiver-noise-diagnostic",
+  "parent_run_ids": [
+    "20261017-phase1-FcrossRX-noisepair-sourceRX1-e20-s2026092701-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active Ag/As goal source-only mechanism diagnosis;latest F+CROSS_RX baseline E20/model. No target or new training authorized by this diagnostic.",
+  "code": {
+    "commit": "Actual release HEAD in release_commit.txt and canonical record",
+    "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
+    "environment": "ordinary N607 CVS-RFFI Python/Torch originalfullFP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_postAs_noise_control_fitL_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged VALIDATED_ONCE split392005;samefit4RX source role handles",
+    "representation": "NativeRMS IQ2x256;clean andoriginalfull lowurban;remove only traced newnoise withsamefullreceiver andAGC",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Each matching checkpoint source_contract: fitL5040,TXxRXxday72cells70each;heldRX1 excluded",
+    "label_map_ref": "Original six visibleL TX0..5 only",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original6sourceTX",
+    "roles": {
+      "L_s": "Only existing seenfitL5040 IQ/visiblelabels consumed;one3view draw each",
+      "U_s": "Not consumed/no TXtruth",
+      "V": "Not consumed;existingcache V/oldfeatures materialized atload butunused"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse VALIDATED_ONCE source carrier;sourceL6300/V/oldfeatures cache materialized butonly exactfitL5040 values consumed",
+    "support_query_ref": null,
+    "leo_config_ref": "Unchanged original25MHz/IQ256/fc2462MHz/residual/post_sync/EQoffG1/reference30/reflect;one nominal lowurban draw peractualfitL"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Seen-source frozen own-default-head recoverability intervention,not denoising/Ag/joint/formal/crossseed performance"
+  },
+  "checkpoint": {
+    "initialization": "frozen_existing_own_default_heads",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-noisepair-sourceRX1-e20-s2026092701-m3-r01/RAW10-RX1-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-noisepair-sourceRX1-e20-s2026092701-m3-r01/ANTI-RX1-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "probe.verify_reference original sourcecontract actualconfig/args/init/completion/freeze",
+    "provenance_verdict": "Both from known scratch source-only E20/4440FINAL20 P8;zeroancestors/inheritedstates/targetcontact,ownjointlytrainedcos30,neitherrescued norpromoted",
+    "selection_rule": "Fixed P8 RAW10 descriptive and ANTI primary frozenFINAL20,never target"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/FcrossRX-postAs-noise-control-20261017",
+    "gpu_policy": "2sourceworkers;allowners<=3/GPU/free>=12000MiB/CPU2;healthyothersprotected",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/logs",
+    "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_FcrossRX_postAs_noise_control_20261017",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_postAs_noise_control_fitL_20261017_r01/experiments/cvs_f_postas_noise_probe/runner.py",
+    "stop_rule": "Only own systemic role/provenance/nonfinite/frozen-state/budget/collision/unlaunchable failures;preservepartial,no auto retry or unrelated healthy-process action"
+  },
+  "expected_artifacts": [
+    "2strictrealcheckpoint synthetic noquerysmokes2NN each,beforeIQ",
+    "Perrow exactresolvedconfig/sourceIDs/physics5040/3viewpredictions15120/full6logits/defaultmargin",
+    "Existingbranches/gates/CEintermediatederivatives/no savedembeddings orIQ",
+    "Unchanged206state/no .grad/0updates/15122NN120autograd perrow",
+    "Independentoffline sourcecounts/F1/pairedrecovery/strata/plots andnegativeoutcome",
+    "Actual modulefiles/receiverQ/compensation/AGC/kernel/boundary andsamephysics acrossmodels"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "half-gap correct-count recovery",
+      "defaultmargin/30",
+      "fixedRAW10clean-correctretention",
+      "existingbranch/gate/CEderivative"
+    ],
+    "dimensions": [
+      "arm",
+      "view",
+      "TX",
+      "RX",
+      "day",
+      "state",
+      "lock",
+      "quality",
+      "addednoiseSNR",
+      "CFO",
+      "kernel",
+      "AGC",
+      "boundary"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/<row>/predictions.jsonl.gz",
+    "scorer_ref": "experiments.cvs_f_postas_noise_probe.analyze",
+    "criteria": "ANTI BLOCKED and unlocked must EACH restore>=half of matched full->clean error gap underfixedreceiver no-added-noise control. Gap<=0 or missing stratum is unsupported. RAW10 descriptive only. Failure closes current default-head noise-masking rationale;not an information-theoretic bound or allpossible denoising impossibility.",
+    "target_access": false
+  },
+  "rows": [
+    {
+      "row_id": "frozen-RAW10-s2026092701",
+      "method": "Frozen own RAW10 F+CROSS_RX defaulthead",
+      "purpose": "descriptive_reference",
+      "config_ref": "experiments/cvs_f_postas_noise_probe/registration.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/frozen-RAW10-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261017602,
+        "support": null,
+        "evaluation": 20261017601
+      },
+      "seed_notes": "Order601/channel602/noise603 namedprivate streams,receiver20261016102;data/support null no resplit/K,identicalrealizations acrossmodels",
+      "k": null,
+      "scenario": "Original nominal practical_low_urban only,clean/full/fixed-receiver noaddednoise",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Each2smoke+15120sourceNN=15122,120autogradcalls/40batches/0updates;parentE20/4440separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/frozen-RAW10-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/logs/frozen-RAW10-s2026092701.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_postAs_noise_control_fitL_20261017_r01/experiments/cvs_f_postas_noise_probe/runner.py --worker frozen-RAW10-s2026092701",
+      "expected_artifacts": [
+        "2strictrealcheckpoint synthetic noquerysmokes2NN each,beforeIQ",
+        "Perrow exactresolvedconfig/sourceIDs/physics5040/3viewpredictions15120/full6logits/defaultmargin",
+        "Existingbranches/gates/CEintermediatederivatives/no savedembeddings orIQ",
+        "Unchanged206state/no .grad/0updates/15122NN120autograd perrow",
+        "Independentoffline sourcecounts/F1/pairedrecovery/strata/plots andnegativeoutcome",
+        "Actual modulefiles/receiverQ/compensation/AGC/kernel/boundary andsamephysics acrossmodels"
+      ],
+      "config": {
+        "schema": "FcrossRX_postAs_noise_control_fitL_v1",
+        "run_id": "20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01",
+        "launch_owner": "codex/root/FcrossRX-postAs-noise-control-20261017",
+        "row_id": "frozen-RAW10-s2026092701",
+        "arm": "RAW10",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/frozen-RAW10-s2026092701",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "checkpoint_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-noisepair-sourceRX1-e20-s2026092701-m3-r01/RAW10-RX1-s2026092701/source",
+        "backend": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noisepair_sourceRX1_E20_20261017_r01",
+        "backend_commit": "ee305facac7874bfc1340291ee5360a3665621d9",
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "held_RX1_used": false,
+        "source_L_count": 5040,
+        "source_TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "batch_size": 128,
+        "streams": {
+          "order": 20261017601,
+          "channel": 20261017602,
+          "noise": 20261017603,
+          "receiver": 20261016102
+        },
+        "views": [
+          "clean",
+          "full",
+          "no_added_noise_fixed_receiver"
+        ],
+        "scene": "practical_low_urban",
+        "channel": "Unchanged original25MHz/IQ256/fc2462MHz/residual/post_sync/EQoffG1/reference30/reflect;one nominal lowurban draw peractualfitL",
+        "controlled_effect": "Retain original full receiver state,compensation,H,residualkernel and clipped AGC scalar;remove only traced newly-added noise before that same scalar;no rerun/recomputed Q or AGC",
+        "clean": "Original normalized source recording,unknown ground RX/TX effects intact",
+        "network": "Frozen eval own defaultcos30/joint160/F+CROSS_RX/SIG_TIME_X3/unifiedSinc/NoExplicitCFO;no newhead or fittedparameters",
+        "observer": "Call-local existing projection/gate hooks,original forward_identity_only/defaulthead;sum unsmoothed CE feature derivatives via autograd.grad,no .grad accumulation or optimizer",
+        "primary": "ANTI",
+        "decision": "ANTI BLOCKED and unlocked must EACH restore>=half of matched full->clean error gap underfixedreceiver no-added-noise control. Gap<=0 or missing stratum is unsupported. RAW10 descriptive only. Failure closes current default-head noise-masking rationale;not an information-theoretic bound or allpossible denoising impossibility.",
+        "source_only": true,
+        "target_access": false,
+        "U_used": false,
+        "V_used": false,
+        "cached_carrier_L6300_V_and_old_features_materialized": true,
+        "only_fitL5040_IQ_values_consumed": true,
+        "old_cached_features_consumed": false,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "EMA_updates": 0,
+        "model_epochs": 0,
+        "automatic_training": false,
+        "expected_NN": 15122,
+        "expected_decisions": 15120,
+        "expected_autograd_calls": 120,
+        "expected_autograd_packet_equivalents": 15120,
+        "expected_batches": 40,
+        "formal_test_changed": false,
+        "stop_rule": "Only own systemic role/provenance/nonfinite/frozen-state/budget/collision/unlaunchable failures;preservepartial,no auto retry or unrelated healthy-process action"
+      }
+    },
+    {
+      "row_id": "frozen-ANTI-s2026092701",
+      "method": "Frozen own ANTI F+CROSS_RX defaulthead",
+      "purpose": "primary_source_diagnostic",
+      "config_ref": "experiments/cvs_f_postas_noise_probe/registration.json#rows/1/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/frozen-ANTI-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261017602,
+        "support": null,
+        "evaluation": 20261017601
+      },
+      "seed_notes": "Order601/channel602/noise603 namedprivate streams,receiver20261016102;data/support null no resplit/K,identicalrealizations acrossmodels",
+      "k": null,
+      "scenario": "Original nominal practical_low_urban only,clean/full/fixed-receiver noaddednoise",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Each2smoke+15120sourceNN=15122,120autogradcalls/40batches/0updates;parentE20/4440separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/frozen-ANTI-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/logs/frozen-ANTI-s2026092701.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_postAs_noise_control_fitL_20261017_r01/experiments/cvs_f_postas_noise_probe/runner.py --worker frozen-ANTI-s2026092701",
+      "expected_artifacts": [
+        "2strictrealcheckpoint synthetic noquerysmokes2NN each,beforeIQ",
+        "Perrow exactresolvedconfig/sourceIDs/physics5040/3viewpredictions15120/full6logits/defaultmargin",
+        "Existingbranches/gates/CEintermediatederivatives/no savedembeddings orIQ",
+        "Unchanged206state/no .grad/0updates/15122NN120autograd perrow",
+        "Independentoffline sourcecounts/F1/pairedrecovery/strata/plots andnegativeoutcome",
+        "Actual modulefiles/receiverQ/compensation/AGC/kernel/boundary andsamephysics acrossmodels"
+      ],
+      "config": {
+        "schema": "FcrossRX_postAs_noise_control_fitL_v1",
+        "run_id": "20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01",
+        "launch_owner": "codex/root/FcrossRX-postAs-noise-control-20261017",
+        "row_id": "frozen-ANTI-s2026092701",
+        "arm": "ANTI",
+        "model_seed": 2026092701,
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/frozen-ANTI-s2026092701",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "checkpoint_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-noisepair-sourceRX1-e20-s2026092701-m3-r01/ANTI-RX1-s2026092701/source",
+        "backend": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noisepair_sourceRX1_E20_20261017_r01",
+        "backend_commit": "ee305facac7874bfc1340291ee5360a3665621d9",
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "held_RX1_used": false,
+        "source_L_count": 5040,
+        "source_TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "batch_size": 128,
+        "streams": {
+          "order": 20261017601,
+          "channel": 20261017602,
+          "noise": 20261017603,
+          "receiver": 20261016102
+        },
+        "views": [
+          "clean",
+          "full",
+          "no_added_noise_fixed_receiver"
+        ],
+        "scene": "practical_low_urban",
+        "channel": "Unchanged original25MHz/IQ256/fc2462MHz/residual/post_sync/EQoffG1/reference30/reflect;one nominal lowurban draw peractualfitL",
+        "controlled_effect": "Retain original full receiver state,compensation,H,residualkernel and clipped AGC scalar;remove only traced newly-added noise before that same scalar;no rerun/recomputed Q or AGC",
+        "clean": "Original normalized source recording,unknown ground RX/TX effects intact",
+        "network": "Frozen eval own defaultcos30/joint160/F+CROSS_RX/SIG_TIME_X3/unifiedSinc/NoExplicitCFO;no newhead or fittedparameters",
+        "observer": "Call-local existing projection/gate hooks,original forward_identity_only/defaulthead;sum unsmoothed CE feature derivatives via autograd.grad,no .grad accumulation or optimizer",
+        "primary": "ANTI",
+        "decision": "ANTI BLOCKED and unlocked must EACH restore>=half of matched full->clean error gap underfixedreceiver no-added-noise control. Gap<=0 or missing stratum is unsupported. RAW10 descriptive only. Failure closes current default-head noise-masking rationale;not an information-theoretic bound or allpossible denoising impossibility.",
+        "source_only": true,
+        "target_access": false,
+        "U_used": false,
+        "V_used": false,
+        "cached_carrier_L6300_V_and_old_features_materialized": true,
+        "only_fitL5040_IQ_values_consumed": true,
+        "old_cached_features_consumed": false,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "EMA_updates": 0,
+        "model_epochs": 0,
+        "automatic_training": false,
+        "expected_NN": 15122,
+        "expected_decisions": 15120,
+        "expected_autograd_calls": 120,
+        "expected_autograd_packet_equivalents": 15120,
+        "expected_batches": 40,
+        "formal_test_changed": false,
+        "stop_rule": "Only own systemic role/provenance/nonfinite/frozen-state/budget/collision/unlaunchable failures;preservepartial,no auto retry or unrelated healthy-process action"
+      }
+    }
+  ],
+  "notes": [
+    "No target/heldRX1/U/V consumption;seenfitLnot generalization proof",
+    "Remove onlytracednewnoise;fullreceiver/Q/compensation/AGC/H/residualkernel fixed;not operational denoising",
+    "BLOCKEDandunlocked overlap;fixedintegerAND thresholdnotposthoc",
+    "ANTI primary diagnostic doesnot reopenclosedP8sampler,RAWdescriptive",
+    "Fullsourcecache includesunusedV/oldfeatures atload;no oldfeatures consumed",
+    "No newmodel/head/EMA/optimizer/augmentation deployment",
+    "REJECTED_EXTRA_GATE:oldextraoptimizer/reviews/seals/designapproval"
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "status": "PASS",
+  "negative_cases": 47,
+  "synthetic_NN_packets": 96,
+  "real_IQ_reads": 0,
+  "real_checkpoint_loads": 0,
+  "optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "controlled_full_reconstruction_exact": true,
+  "fixed_AGC_no_recompute": true,
+  "same_named_stream_exact": true,
+  "original_forward_logits_bitwise_equal": true,
+  "existing_branches_gates_gradient_observed": true,
+  "all_model_parameters_buffers_unchanged": true,
+  "no_parameter_grad_accumulation": true,
+  "all_hooks_removed": true,
+  "NoExplicitCFO_coordinate27_zero": true,
+  "integer_half_gap_boundary_PASS": true
+}

@@ -6,6 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
+|F＋跨 RX：星地训练后新增噪声的固定接收状态诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-postAs-noise-control-fitL-s2026092701-m2-r01/report.md)|
 |CVS补偿与顺序差：完整源V冻结归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-channel-attribution-source-manysig-m8-r01/report.md)|
 |CVS全主干前置滤波：固定权重源域反事实|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-frontfilter-attribution-source-manysig-m8-r01/report.md)|
 |连续前历史与零启动：公开FIR机制验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-mirror-history-public-m8-r01/report.md)|
