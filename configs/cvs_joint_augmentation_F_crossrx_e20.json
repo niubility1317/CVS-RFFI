@@ -1801,7 +1801,7 @@
     }
   },
   "isolated_AWGN_E20": {
-    "status": "VERIFIED_RUNNING",
+    "status": "ANALYZED_SOURCE_FIXED_NOISE_TRAINING_FAIL_CLOSED",
     "run_id": "20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01",
     "package": "experiments/cvs_isolated_awgn20",
     "baseline": "F+CROSS_RX/3SIG_TIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
@@ -1868,7 +1868,64 @@
     "execution_commit": "06ebf579c87c834d0ebc14856212e3fa97619d30",
     "actual_launch_verified": true,
     "real_CP_smoke": "PASS",
-    "completed_rows": 0,
-    "final_source_scoring_complete": false
+    "completed_rows": 3,
+    "final_source_scoring_complete": true,
+    "scientific_verdict": "FAIL_FIXED_NATIVE_AWGN_20_36_FULL_COVERAGE_TRAINING_CLOSED",
+    "qualification": {
+      "qualified": false,
+      "conditions": {
+        "B00_clean": false,
+        "B00_clean_macroF1": true,
+        "B00_each_practical": true,
+        "B00_seen_V": true,
+        "C_ordinary_clean": false,
+        "C_ordinary_clean_macroF1": false,
+        "C_ordinary_each_practical": true,
+        "C_ordinary_seen_V": true,
+        "healthy": true
+      },
+      "comparisons": {
+        "B00": {
+          "conditions": {
+            "clean": false,
+            "clean_macroF1": true,
+            "each_practical": true,
+            "seen_V": true
+          },
+          "all_view_gain_pp": {
+            "clean": 0.9523809523809601,
+            "practical_high": 3.0158730158730163,
+            "practical_mid": 3.650793650793649,
+            "practical_low_suburban": 1.5079365079365081,
+            "practical_high_urban": 2.619047619047621,
+            "practical_mid_urban": 1.8253968253968245,
+            "practical_low_urban": 0.9523809523809545
+          },
+          "clean_macroF1_gain_pp": 1.2186303961415845,
+          "seen_V_gain_pp": 0.018518518518517713
+        },
+        "C_ordinary": {
+          "conditions": {
+            "clean": false,
+            "clean_macroF1": false,
+            "each_practical": true,
+            "seen_V": true
+          },
+          "all_view_gain_pp": {
+            "clean": -0.4761904761904745,
+            "practical_high": 6.190476190476191,
+            "practical_mid": 7.380952380952377,
+            "practical_low_suburban": 4.841269841269841,
+            "practical_high_urban": 5.873015873015874,
+            "practical_mid_urban": 3.4920634920634908,
+            "practical_low_urban": 0.9523809523809545
+          },
+          "clean_macroF1_gain_pp": -0.356863622734227,
+          "seen_V_gain_pp": -0.04166666666667318
+        }
+      }
+    },
+    "source_analysis_ref": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01/source_analysis.json",
+    "actual_NN_forward_packets": 17469956
   }
 }

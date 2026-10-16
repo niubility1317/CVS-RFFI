@@ -1,0 +1,77 @@
+{
+  "status": "ANALYZED",
+  "actual_execution": "VERIFIED",
+  "executed_code_commit": "06ebf579c87c834d0ebc14856212e3fa97619d30",
+  "source_only": true,
+  "actual_rows": 3,
+  "new_model_epochs": 60,
+  "new_optimizer_updates": 13320,
+  "actual_NN_forward_packets": 17469956,
+  "dispatcher_realCP_smoke_NN_packets": 2,
+  "qualification": {
+    "qualified": false,
+    "conditions": {
+      "B00_clean": false,
+      "B00_clean_macroF1": true,
+      "B00_each_practical": true,
+      "B00_seen_V": true,
+      "C_ordinary_clean": false,
+      "C_ordinary_clean_macroF1": false,
+      "C_ordinary_each_practical": true,
+      "C_ordinary_seen_V": true,
+      "healthy": true
+    },
+    "comparisons": {
+      "B00": {
+        "conditions": {
+          "clean": false,
+          "clean_macroF1": true,
+          "each_practical": true,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": 0.9523809523809601,
+          "practical_high": 3.0158730158730163,
+          "practical_mid": 3.650793650793649,
+          "practical_low_suburban": 1.5079365079365081,
+          "practical_high_urban": 2.619047619047621,
+          "practical_mid_urban": 1.8253968253968245,
+          "practical_low_urban": 0.9523809523809545
+        },
+        "clean_macroF1_gain_pp": 1.2186303961415845,
+        "seen_V_gain_pp": 0.018518518518517713
+      },
+      "C_ordinary": {
+        "conditions": {
+          "clean": false,
+          "clean_macroF1": false,
+          "each_practical": true,
+          "seen_V": true
+        },
+        "all_view_gain_pp": {
+          "clean": -0.4761904761904745,
+          "practical_high": 6.190476190476191,
+          "practical_mid": 7.380952380952377,
+          "practical_low_suburban": 4.841269841269841,
+          "practical_high_urban": 5.873015873015874,
+          "practical_mid_urban": 3.4920634920634908,
+          "practical_low_urban": 0.9523809523809545
+        },
+        "clean_macroF1_gain_pp": -0.356863622734227,
+        "seen_V_gain_pp": -0.04166666666667318
+      }
+    }
+  },
+  "source_prediction_count": 26460,
+  "completed_source_views": 21,
+  "independent_all_native_view_unit_steps": 13320,
+  "all568320_noise_energy_stat_rows_recounted": true,
+  "source_noise_72cells_runtime_reported_RXday_recounted_from_sequences": true,
+  "TX_step_assignments_not_separately_stored": true,
+  "source_only_no_truth_side_target": true,
+  "all_own_PIDs_naturally_exited": true,
+  "no_technical_failure": true,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "joint_goal_complete": false
+}

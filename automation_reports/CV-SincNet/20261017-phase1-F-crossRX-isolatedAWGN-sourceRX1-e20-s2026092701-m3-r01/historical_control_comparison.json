@@ -1,0 +1,57 @@
+{
+  "status": "VERIFIED_STORED_HARD_PREDICTIONS_ONLY",
+  "rows": [
+    {
+      "view": "clean",
+      "labels_same": true,
+      "physical_ids_same": true,
+      "prediction_differences": 13
+    },
+    {
+      "view": "practical_high",
+      "labels_same": true,
+      "physical_ids_same": true,
+      "prediction_differences": 36
+    },
+    {
+      "view": "practical_mid",
+      "labels_same": true,
+      "physical_ids_same": true,
+      "prediction_differences": 42
+    },
+    {
+      "view": "practical_low_suburban",
+      "labels_same": true,
+      "physical_ids_same": true,
+      "prediction_differences": 30
+    },
+    {
+      "view": "practical_high_urban",
+      "labels_same": true,
+      "physical_ids_same": true,
+      "prediction_differences": 34
+    },
+    {
+      "view": "practical_mid_urban",
+      "labels_same": true,
+      "physical_ids_same": true,
+      "prediction_differences": 34
+    },
+    {
+      "view": "practical_low_urban",
+      "labels_same": true,
+      "physical_ids_same": true,
+      "prediction_differences": 41
+    }
+  ],
+  "source_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false,
+  "actual_native_argument_differences": [
+    "output_dir",
+    "run_id"
+  ],
+  "no_exact_crossrun_reproduction_claim": true
+}

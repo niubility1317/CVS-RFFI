@@ -246,3 +246,9 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 孤立AWGN三匹配E20 20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01 VERIFIED RUNNING，commit 06ebf579c87c834d0ebc14856212e3fa97619d30，真实CP smoke/归档传输/compile PASS，GPU0/1/2 actualPID/CWD/argv/CUDA与存活loggrowth核实；scratchE20已开始、尚无完整识别读出和科学结论，不增加预算、改配方或使用target。
+
+
+孤立AWGN三匹配E20 20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01 ANALYZED/VERIFIED：FAIL_FIXED_NATIVE_AWGN_20_36_FULL_COVERAGE_TRAINING_CLOSED；60modelE/13320更新/17469956NN，完整26460源预测/全部steps/noise统计复算；B10相对raw clean 0.9523809523809601pp，相对ordinary clean -0.4761904761904745pp。仅sourceRX1/seed01，无target；原晋级条件不变，联合目标ACTIVE。
+
+
+当前唯一下一source假设：原IQ的常相位／线性CFO不变相位曲率统计，是否有跨TX/day共享RX位移；只拟用fitL5040、0CP/NN/新视图/更新/target，按固定交叉TX/day误差验证后才考虑增强；尚未实现登记启动。详见analysis/cvs_phase_curvature_source_basis_20261017.md。旧commonphase训练／phase_curvature结构／cyclecovariance等失败保持关闭，联合目标ACTIVE。
