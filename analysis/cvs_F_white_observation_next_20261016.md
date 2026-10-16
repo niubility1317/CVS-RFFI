@@ -21,3 +21,9 @@
 ## 实际启动
 
 `20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01` 已发布，实际训练代码 `b30b94ce3d448d8746f7e3b41a647b766828bbf6`；worker GPU0的PID/CWD/argv/log增长、own真实scratch CP noquery smoke、F三路和统一Sinc每步physicalclip/默认头联合更新均已独立核实。E1真实新增噪声比29.9999985至30.0000014dB，其他ordinary概率0/PAOFF/classsigfalse，旧U和strong_noise_std保持。状态VERIFIED/RUNNING，尚无FINAL源成绩；没有热改或重启其他健康任务。本地1024合成fwd/1536噪声输入/2合成optimizer更新另计，0真实IQ/CP；唯一限定P0/P1审查、登记/compile均PASS。
+
+## 首轮实际结果
+
+20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01已完整收尾，源规则FAIL：W30−A0 accuracy0.018518518518517713pp、macroF1-0.17358780268385pp。完整20epoch/4440step/默认头分层、5994真实L-U序列及每步F物理clip已独立核对，0target。仅sourceRX1/一个seed，不证明clean/practical双突破；按原规则处理，不救援失败候选。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01/report.md)。
+
+W30修复80/破坏79，TX5+5.6667pp、TX2−4.7778pp；仅1条净改善且macroF1下降，不足以证明本轻度噪声Ag。WHITE30关闭，不扫强度/概率或扩fold/seed。下一项F原practical冻结源诊断已在本最终源成绩前固定于d92fd04fb，但尚未实现/运行，不能当作已有证据。

@@ -222,3 +222,7 @@ SIG相对普通增强NOMINAL：low +1.1488、mid +1.1333、urban +1.0907、最�
 ## NoPA 首轮训练已完成
 
 20261016-phase1-ordinary-noPA-RX1-e20-s2026092701-m1-r01完整收尾，RX1源规则FAIL：N2−N0 accuracy3.055555555555556pp，N2−N1-3.3518518518518503pp；默认头macroF1/seen健康/PA零调用/全L-U序列证明保留。新20epoch/4440steps完整解析，0target。一个sourcefold/modelseed，不能替代完整Ag、正式clean/urban或跨seed；按固定首轮规则处理，不救援失败候选。[完整报告](../automation_reports/CV-SincNet/20261016-phase1-ordinary-noPA-RX1-e20-s2026092701-m1-r01/report.md)。
+
+## 用户指定F/E20后的源研究
+
+F raw/wholeordinary/混合三组完整E20收尾，A2−A0 +4.0370pp，但A2−A1−0.6296pp/F1−0.5317pp，按原保持条件FAIL；不扩展或换主行。随后独立WHITE30固定观测噪声E20完成，默认头heldRX1为81.1667%，相对匹配A0 81.1481%仅+0.0185pp，F1−0.1736pp，修复80/破坏79，sourceFAIL。各自20epoch/4440update完整日志与实际L-U序列/Fclip已复核，0target；两个负候选均关闭，不靠换SNR/raw比例/seed救援。新基座仍F三路＋统一Sinc，未加载E50权重，整体clean/urban/suburban/跨seed目标仍active。WHITE30完整报告：../automation_reports/CV-SincNet/20261016-phase1-F-white-observation-RX1-e20-s2026092701-m1-r01/report.md。

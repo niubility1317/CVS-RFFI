@@ -1,0 +1,147 @@
+{
+  "status": "VERIFIED",
+  "source_decision": {
+    "status": "FAIL",
+    "checks": {
+      "held_accuracy": false,
+      "held_macroF1": false,
+      "seen_health": true,
+      "complete_health": true
+    },
+    "accuracy_gain_pp": 0.018518518518517713,
+    "macroF1_gain_pp": -0.17358780268385,
+    "seen_V_mean_drop_pp": -0.03240740740739767,
+    "source_only": true,
+    "target_access": false,
+    "automatic_extension": false,
+    "goal_completed": false
+  },
+  "paired": {
+    "repaired": 80,
+    "broken": 79
+  },
+  "full_log_proof": {
+    "A0": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "full_stdout_bytes": 114796,
+      "error_markers": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "legacy_rdrop/CE1": 0,
+        "legacy_rdrop/CE2": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_phase_objective_difference": 4.76837158203125e-07,
+      "stdout_warning_lines": []
+    },
+    "W30": {
+      "epochs": 20,
+      "steps": 4440,
+      "native_CSV_rows": 20,
+      "full_stdout_bytes": 114998,
+      "error_markers": {
+        "Traceback": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0
+      },
+      "critical_nonfinite": {
+        "train/loss": 0,
+        "train/grad_total": 0,
+        "train/grad_backbone": 0,
+        "train/grad_before_clip": 0,
+        "legacy_rdrop/paired_CE": 0,
+        "legacy_rdrop/symmetric_KL": 0,
+        "legacy_rdrop/CE1": 0,
+        "legacy_rdrop/CE2": 0
+      },
+      "U_truth_available_max": 0.0,
+      "skipped": {
+        "train/skipped_nonfinite_loss": 0,
+        "train/skipped_nonfinite_grad": 0
+      },
+      "max_label_phase_objective_difference": 3.5762786865234375e-07,
+      "stdout_warning_lines": []
+    }
+  },
+  "actual_sequence_batch_records": 5994,
+  "new_model_epochs": 20,
+  "new_updates": 4440,
+  "new_real_forward_packets": 3546618,
+  "reused_control_model_epochs": 20,
+  "reused_control_updates": 4440,
+  "reused_control_real_forward_packets": 3546618,
+  "white_observation_proof": {
+    "status": "VERIFIED",
+    "actual": {
+      "kind": "WHITE_FIXED_ENERGY",
+      "calls": 4440,
+      "packets": 568320,
+      "zero_power_packets": 0,
+      "signal_to_added_noise_db_min": 29.99999837799781,
+      "signal_to_added_noise_db_max": 30.000001676974797,
+      "energy_ratio_min": 0.0009999996138623578,
+      "energy_ratio_max": 0.0010000003734798762,
+      "waveform_MSE": 0.0005000000011620779,
+      "max_abs": 3.9652485847473145,
+      "all_other_operators": false,
+      "labels_used": false,
+      "hardware_changes": false,
+      "total_SNR_claim": false
+    },
+    "fixed_raw_weight": 0.5,
+    "white_weight": 0.5,
+    "same_IQ_within_each_RD_pair": true,
+    "whole_ordinary_calls": 0,
+    "As_calls": 0,
+    "head_fit_updates": 0,
+    "target_access": false
+  },
+  "actual_native_arg_differences": [
+    "aug_enable_pa_normal",
+    "aug_p_amp_scale",
+    "aug_p_awgn",
+    "aug_p_bandedge_taper",
+    "aug_p_cfo",
+    "aug_p_dc_offset",
+    "aug_p_multipath",
+    "aug_p_pa",
+    "aug_p_phase_noise",
+    "aug_p_phase_rot",
+    "aug_p_time_shift",
+    "aug_snr_max_db",
+    "aug_snr_min_db",
+    "candidate_id",
+    "output_dir",
+    "run_id",
+    "use_aug"
+  ],
+  "matrix_wall_seconds": 1010.7932860851288,
+  "model_seed_count": 1,
+  "source_fold_count": 1,
+  "target_access": false,
+  "goal_completed": false,
+  "automatic_extension": false,
+  "scientific_status": "FAIL_SOURCE_RX1_ONLY",
+  "actual_training_code": "b30b94ce3d448d8746f7e3b41a647b766828bbf6",
+  "terminal_workers_alive": false,
+  "terminal_dispatcher_alive": false,
+  "failure": null,
+  "local_artifact_root": "E:\\type10-7\\local_artifacts\\cvs_F_white_observation20_20261016\\final"
+}
