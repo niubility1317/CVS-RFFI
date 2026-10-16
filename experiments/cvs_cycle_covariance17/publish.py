@@ -11,7 +11,7 @@ def main():
  if runtime['run_id']!=d.RUN:raise ValueError('Private runtime for another run')
  if subprocess.check_output(['git','status','--porcelain','--',package],cwd=d.ROOT,text=True).strip():raise ValueError('Commit actual diagnostic before release')
  commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=d.ROOT,text=True).strip();project=runtime['project'];release=project+'/releases/'+d.RELEASE
- c=dict(project=project,release=release,archive=release+'.tar.gz',run=str(d.resolve(d.BASE,runtime)),config=d.config(),python=runtime['python'],user=runtime['user'],host=runtime['host'],commit=commit)
+ c=dict(project=project,release=release,archive=release+'.tar.gz',run=project+'/'+d.BASE[len('PROJECT/'):],config=d.config(),python=runtime['python'],user=runtime['user'],host=runtime['host'],commit=commit)
  script=r'''
 import json,os,shutil,subprocess
 from pathlib import Path

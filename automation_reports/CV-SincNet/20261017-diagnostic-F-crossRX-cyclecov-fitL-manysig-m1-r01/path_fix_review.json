@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "scope": "Targeted one-line publisher remote POSIX output-path fix only;not a full re-review",
+  "reviewer": "dc_p0p1_review",
+  "review": "字符串拼接保留了远端 POSIX 路径，与 Linux worker 的实际输出目录一致，修复了 Windows 反斜杠导致的预检定位错误；不影响统计实现或已完成产物。",
+  "before": {
+    "Windows_publisher_runpath_matches_remote_POSIX": false,
+    "backslash_in_runpath": true,
+    "remote_actions": 0,
+    "real_IQ": 0,
+    "NN": 0,
+    "updates": 0
+  },
+  "after": {
+    "Windows_publisher_runpath_matches_remote_POSIX": true,
+    "backslash_in_runpath": false,
+    "remote_actions": 0,
+    "real_IQ": 0,
+    "NN": 0,
+    "updates": 0
+  },
+  "new_real_run": false
+}

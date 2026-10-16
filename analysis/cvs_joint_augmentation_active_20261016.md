@@ -207,3 +207,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 周期差异残差相关形状源检验 20261017-diagnostic-F-crossRX-cyclecov-fitL-manysig-m1-r01 已实现登记未启动：L5040/72格/18折/3wrongRX控制，窗口20:180、8个20点周期、lag1至4；22本地反例检查及一次独立P0/P1审查PASS。0模型/CP/NN/更新/target，U只有角色ID、无IQ/标签。只检验源RX关联依据；未构造Ag或宣称身份收益，固定失败不改窗口/lag/RX/seed救跑。
+
+
+周期差异残差源依据 20261017-diagnostic-F-crossRX-cyclecov-fitL-manysig-m1-r01 已完整ANALYZED/VERIFIED：FAIL_FIXED_CYCLE_RESIDUAL_COVARIANCE_BASIS_CLOSED。合并形状风险改善35.211296%/17正折不足以覆盖50/72中位数、43/72q10失败和RX6风险+17.668361%；原固定窗口/cycle/lag/RX/阈值/seed关闭。L5040/0模型/NN/更新/target，全量逐包统计复算与图完成；没有新Ag或后继已登记候选，联合目标ACTIVE。
