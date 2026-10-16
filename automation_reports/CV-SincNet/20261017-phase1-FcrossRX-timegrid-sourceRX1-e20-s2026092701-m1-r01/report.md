@@ -1,6 +1,6 @@
 # F＋跨 RX：有界包内时间栅格收缩
 
-状态 PRE_REGISTERED；真实源 IQ／checkpoint／训练尚未启动。run=20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01。起点 commit 56cf99125fc954e4c2edb4132afe30deff752dd5；实际发布 commit 在 release_commit.txt／同 run 登记记录。
+状态 RUNNING；实际发布、归档传输、远端编译及首步真实checkpoint无query smoke均VERIFIED／PASS。已读回唯一worker的PID／CWD／argv／GPU／日志增长，尚无FINAL20评价结果。run=20261017-phase1-FcrossRX-timegrid-sourceRX1-e20-s2026092701-m1-r01。起点 commit 56cf99125fc954e4c2edb4132afe30deff752dd5；实际发布 commit 在 release_commit.txt／同 run 登记记录。
 
 前轮 P9 完整诊断为真实进展：两个冻结 own-default-head 模型、30244NN、0更新；主模型 BLOCKED／unlocked 去新增噪声仅恢复17.6018%／18.3118%的full→clean正确数差距，固定50%门槛FAIL，关闭当前噪声遮蔽理由。P8正负噪声配对未胜独立噪声，固定采样方案已关闭；相干IQ混合的跨seed clean收益未重复，LA16／相位／RXMIX等各自原失败保留。本轮不重新解释这些失败为成功，不重新扫其参数。
 
@@ -31,3 +31,9 @@ FINAL20固定学生默认头自动生成源clean＋六原practical：high、mid�
 stop rule只针对本run非法输入/来源、非有限数、错误预算/冻结/输出冲突/不可启动等系统技术失败；保留partial，无自动重试，不停止或热改任何其他健康进程。低分不停止健康训练。旧额外设计审批、重复review/configSHA/seal等记REJECTED_EXTRA_GATE，不阻塞。
 
 预期：逐row实际args/modulefile/contract/init/defaulthead/sinc/channel；全20轮/4440step/5994主L-U批次；完整568320timegrid trace/rho/功率/变化界；7源视图默认头预测、间隔/30、physics与独立评分；class/day/state/lock/quality/noiseSNR/CFO/kernel/AGC/boundary分层，固定D_raw clean正确集保持与修复/新错，训练曲线、覆盖、实际成本、全部负结果和commit。无IQ/权重/原始日志/物理ID入Git。当前B00/B10/B01/B11与交互项、合格Ag和正式跨seed联合突破未完成。
+
+当前实际读回：E8／20、1776更新、227328个新视图、96个epoch/session、72个TX×RX×day单元；最大相对L2=0.03012570。worker仍存活、同日志持续增长，没有技术failure。最新原始状态在本地artifact monitor_latest.json，不能把此段当后续实时状态。
+
+实际args：seed2026092701、20/13/7、LS.01、baseline_ckpt和teacher_ckpt空、source_fold_held_rx=1、use_aug=true、phase1_lr_schedule=cosine、lr=.0002/min=.000001。新旧科学数据契约逐字段无差异（仅忽略三项说明性metadata），有效L/U/V为5040/45360/21600。actual_modules记录真实leo_practical为adv3b02_xuc路径；ordinary_augmentation_actual在final阶段才写出，当前未生成，不据默认值假定它已记录。
+
+训练发布commit fee77907549a89722dd20736498308fa640dd5f3已push并经独立GitHub OID核对identical；本地后续analyze/harvest/plot属于离线工具，不热修改远端健康release。离线读取器已解析匹配D_raw完整20epochs/4440steps/7sourceviews，六类oracle及4负例PASS，0新NN/IQ/CP。最终比较仍须等新row完整冻结和七视图结束，再独立全记录核对。

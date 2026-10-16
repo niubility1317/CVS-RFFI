@@ -22,10 +22,11 @@
   "replaces_run_id": null,
   "authorization": "Active Ag/As research goal;F+CROSS_RX baseline,E20/model,source-only falsification before newcandidate seed/target expansion",
   "code": {
-    "commit": "Actual release HEAD in release_commit.txt and canonical record before realNN",
+    "commit": "fee77907549a89722dd20736498308fa640dd5f3",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "ordinary N607 CVS-RFFI Python/Torch originalfullFP32",
-    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_timegrid_sourceRX1_E20_20261017_r01"
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_timegrid_sourceRX1_E20_20261017_r01",
+    "push": "VERIFIED independent GitHub identical0ahead0behind"
   },
   "data": {
     "dataset": "ManySig",
@@ -126,8 +127,8 @@
       "fixed_final": 20,
       "held_RX": 1,
       "held_L": 1260,
-      "min_clean_gain_pp": 1.0,
-      "min_clean_macroF1_gain_pp": 0.0,
+      "min_clean_gain_pp": 1,
+      "min_clean_macroF1_gain_pp": 0,
       "max_seenV_drop_pp": 0.5,
       "max_final_common_base_objective": 0.5,
       "standalone_practical_nonblocking": true,
@@ -205,7 +206,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-timegrid-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -243,7 +244,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Unchanged raw.75/ordinary.25/SupCon base plus .25RD(timegrid(raw));all8L;originalU/defaulthead;noAs",
@@ -259,8 +260,8 @@
           "random_direction_seed": 2026101307,
           "random_direction_scales": [
             0.5,
-            1.0,
-            2.0
+            1,
+            2
           ],
           "descriptor_width": 28,
           "output_embedding": 160,
@@ -278,7 +279,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "goal_complete": false,
           "target_feedback": false
         },
@@ -298,7 +299,7 @@
           "Ag": "candidate_not_validated",
           "As": false,
           "ordinary_L": true,
-          "alpha": 1.0,
+          "alpha": 1,
           "label_smoothing": 0.01,
           "use_aug": true,
           "sinc_coordinates": "CENTER_25K",
@@ -342,8 +343,8 @@
           "fixed_final": 20,
           "held_RX": 1,
           "held_L": 1260,
-          "min_clean_gain_pp": 1.0,
-          "min_clean_macroF1_gain_pp": 0.0,
+          "min_clean_gain_pp": 1,
+          "min_clean_macroF1_gain_pp": 0,
           "max_seenV_drop_pp": 0.5,
           "max_final_common_base_objective": 0.5,
           "standalone_practical_nonblocking": true,
@@ -372,8 +373,8 @@
             "practical_mid_urban",
             "practical_low_urban"
           ],
-          "fs_hz": 25000000.0,
-          "fc_hz": 2462000000.0,
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
           "processing_route": "residual",
           "mode": "post_sync",
           "equalization_enabled": false,
@@ -391,7 +392,7 @@
           "extra_input": "timegrid(rawL)",
           "extra_weight": 0.25,
           "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
-          "base_pair_weight_sum": 1.0,
+          "base_pair_weight_sum": 1,
           "pair_weight_sum": 1.25,
           "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
           "BN_RNG": "All3rows train-mode8forwards,including explicit zero-extra-loss D00 cost control;record BN updates and actual sequences",

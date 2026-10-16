@@ -1,0 +1,38 @@
+{
+  "actual_args": {
+    "seed": 2026092701,
+    "epochs": 20,
+    "label_epochs": 13,
+    "pseudo_epochs": 7,
+    "label_smoothing": 0.01,
+    "baseline_ckpt": "",
+    "teacher_ckpt": "",
+    "source_fold_held_rx": 1,
+    "use_aug": true
+  },
+  "actual_LR_args": {
+    "lr": 0.0002,
+    "a1_r3_schedule": "legacy",
+    "a1_tail_lr": "legacy",
+    "muse_lr_schedule": "fasttrust",
+    "sat_view_schedule": "1@0.30:practical_high;41@0.60:practical_mid,practical_low_urban;91@0.80:practical_high,practical_mid,practical_low_urban",
+    "phase1_lr_schedule": "cosine",
+    "phase1_lr_min": 0.000001
+  },
+  "scientific_contract_differences": [],
+  "data_counts": {
+    "L_s": 5040,
+    "U_s": 45360,
+    "V": 21600
+  },
+  "modules": {
+    "leo_practical.channel": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+    "leo_practical.residual": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+    "DataAugmentation": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+    "SSDG.train_ssdg": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+  },
+  "source_only": true,
+  "target_access": false,
+  "observation": "Through E8;not final",
+  "ordinary_artifact_pending_until_final": true
+}

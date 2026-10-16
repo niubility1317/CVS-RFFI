@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "oracle_negatives": 4,
+  "balanced6class_oracle": true,
+  "reference_full_epochs": 20,
+  "reference_steps": 4440,
+  "reference_NN": 5823318,
+  "reference_clean": 0.8047619047619048,
+  "reference_low": 0.2761904761904762,
+  "new_NN": 0,
+  "IQ_reads": 0,
+  "checkpoint_loads": 0
+}
