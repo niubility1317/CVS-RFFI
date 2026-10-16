@@ -1,27 +1,101 @@
-# F＋跨 RX 当前底座冻结诊断预登记
+# F＋跨 RX 当前底座：冻结 practical 源诊断
 
-状态 REGISTERED_NOT_RUN。逐行矩阵、commit、命令、环境、CWD、路径、GPU、stop rule 和预期产物见 experiment.json。
+**ANALYZED_SOURCE_ONLY / VERIFIED**。实际代码 `398897a01ba161f02f9535ad8e6db597420ab4a2`。两个既有 own-student final20 默认头，模型 seed2026092701；诊断原源 RX1 L1260，均排除在两个父训练／V 角色外。worker／dispatcher 自然结束，全部预测完成后独立新进程汇总，无目标数据或 truth 服务。
 
-# 当前 F＋跨 RX 默认头的冻结 practical 诊断
+C0 为匹配四前向 ordinary 参照；C1 为 .5 ordinary＋.5 原 practical 配对 CE。二者共同保留 F、跨 RX 同 TX 对比、RDrop、旧 U 门控／own EMA、cos 和 joint160／cosine30 默认头。这个源 L1260 诊断的样本及信道流与首折源 V5400 评价不同，不能混报同一成绩。
 
-当前训练底座固定为 F（SIG_TIME_X3、CENTER_25K、CENTER_UNITS）＋跨 RX 同 TX 浅中层对比学习。默认 joint160／cosine30 分类头与全部原网络参数在正常训练中联合更新。两父模型均来自 `20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01`，从零 E20＝13L＋7U、4440 更新，C0 为四前向匹配 ordinary，C1 为固定 .5 ordinary＋.5 practical；沿用旧 U 门控、own EMA、RDrop、cos 与 NoExplicitCFO。父训练实际代码为 `8235c71cc4a1619eade9def1371e1bdfc31b9eae`，本诊断严格加载各自 final20 默认头，不继承历史 E50／E200。
+| 原视图 | C0 accuracy | C1 accuracy | 差 pp | C0 macro-F1 | C1 macro-F1 |
+|---|---:|---:|---:|---:|---:|
+| clean | 82.6190% | 86.1111% | +3.4921 | 82.3415% | 85.9331% |
+| practical_high | 38.5714% | 63.7302% | +25.1587 | 30.2355% | 61.8733% |
+| practical_mid | 36.2698% | 61.5079% | +25.2381 | 30.1710% | 59.6536% |
+| practical_low_suburban | 33.9683% | 58.7302% | +24.7619 | 28.8245% | 57.1964% |
+| practical_high_urban | 35.8730% | 59.3651% | +23.4921 | 28.9582% | 57.7254% |
+| practical_mid_urban | 29.5238% | 46.5873% | +17.0635 | 26.0188% | 45.8086% |
+| practical_low_urban | 26.3492% | 38.3333% | +11.9841 | 23.7713% | 37.8258% |
 
-RX1 首折源 V5400 的 C1 相对 C0：clean ＋2.7222 pp、urban 三场景均值＋17.7469 pp、low urban ＋12.7222 pp，low 仍为 38.4074%。LOS／locked 的改善大于 BLOCKED／unlocked；这是分层关联，尚不能归因于某个物理损伤。五源折确认正在另一不可变 release 内运行，本诊断不影响其进程、配置、选择或预算。
+urban 三场景均值 C0=30.5820%，C1=48.0952%，差 +17.5132 pp。这是单源折／单模型 seed 的源域读数，不是目标提升或跨 seed 重现。
 
-旧 F 诊断绑定 A0／W30，不能直接说明当前 F＋跨 RX 的机制。因此复用已核实的原 residual 控制实现，换用当前 C0／C1，不重做旧路线训练。唯一问题是：paired practical 训练后，移除噪声、频率／相位、传播核和注入 RX IQ 的效应，以及实际默认头／分支／梯度变化，是否与未增强参照不同。这个诊断只解释冻结模型，不构成新 Ag 有效性、因果训练归因或目标性能结论。
+| 模型／相对 full 的效应（pp） | high urban | mid urban | low urban |
+|---|---:|---:|---:|
+| C0 no_noise/fixed | -0.0794 | +0.1587 | +0.9524 |
+| C0 no_noise/total | +0.3175 | +1.5873 | +0.7937 |
+| C0 flat_H/fixed | +0.1587 | +1.9841 | +0.1587 |
+| C0 flat_H/total | +0.0794 | +1.6667 | +0.0794 |
+| C0 no_carrier/fixed | +0.1587 | +1.1111 | -0.3175 |
+| C0 no_carrier/total | +0.1587 | +1.1111 | -0.3175 |
+| C0 no_RX_IQ/fixed | +0.0794 | +0.1587 | +0.1587 |
+| C0 no_RX_IQ/total | +0.1587 | +0.1587 | +0.1587 |
+| C0 actual_power_quality | -0.0794 | +0.1587 | -0.5556 |
+| C0 edge_boundary | -8.2540 | -4.2063 | -2.5397 |
+| C1 no_noise/fixed | +1.1905 | +3.3333 | +5.1587 |
+| C1 no_noise/total | +1.3492 | +2.6190 | +4.5238 |
+| C1 flat_H/fixed | +0.4762 | +0.7937 | +0.4762 |
+| C1 flat_H/total | +0.6349 | +0.4762 | +0.3968 |
+| C1 no_carrier/fixed | -0.1587 | +1.5873 | +0.4762 |
+| C1 no_carrier/total | -0.1587 | +1.5873 | +0.4762 |
+| C1 no_RX_IQ/fixed | -0.1587 | -0.0794 | +0.3175 |
+| C1 no_RX_IQ/total | -0.0794 | -0.0794 | +0.3175 |
+| C1 actual_power_quality | -0.0794 | +0.0794 | +0.0000 |
+| C1 edge_boundary | -8.8889 | -2.9365 | -3.3333 |
 
-两个父模型 fit RX3/4/6/8 的原 L5040／隐藏 U45360／V21600；仅诊断其全部角色之外的原源 RX1 L1260（6 TX×3 day×70）。同一组物理样本、同一命名随机流及同一个生成 IQ tensor 送入两个模型。新增诊断 draw20261016621、hardware20261016622 与训练／源评价流分离，hardware session 仅 RX/day/eq，不含 TX。现有合法 source cache 反序列化可能带入未用容器，但仅使用和前向这 1260 个 L，U/V/target 均为 0。不改变原外层 7/63/30 或正式测试配置。
+fixed 保留 full 接收状态、补偿、EQ 与 AGC；total 移除该损伤后重算。full 队列固定，各条件不重新分组。移除后仍保留的损伤不同，效应不可相加；C0 与 C1 的效应大小差异也不等于训练的唯一因果机制。flat_H 保留数值延迟和共同核相位；no_carrier 是联合频率／相位移除。no_noise 仍有原录音未知噪声，新增噪声 SNR 不等于总 SNR。
 
-矩阵为 clean＋六种原 practical，每个 practical 有 full、no_noise／flat_H／no_carrier／no_RX_IQ 各 fixed 和 total、actual_power_quality、edge_boundary，共 11 条件。fixed 保留 full 的接收状态、补偿、EQ 和 AGC；total 移除对应损伤后重算。所有分层均按 full 状态定义，不因干预后状态变化重新挑选样本。噪声 SNR 仅指新增噪声；原录音噪声、TX／地面 RX 硬件仍未知。flat_H 保留数值延迟及共同复相位，不能解释成同时去掉延迟和相位。no_carrier 同时去掉所定义的频率及相位项，不能单称 Doppler 效应。控制效应不相加。
+| low urban full 队列 | n | C0 | C1 | 差 pp |
+|---|---:|---:|---:|---:|
+| state/LOS | 396 | 37.8788% | 64.3939% | +26.5152 |
+| state/PARTIAL | 169 | 26.6272% | 44.3787% | +17.7515 |
+| state/BLOCKED | 695 | 19.7122% | 22.0144% | +2.3022 |
+| lock/locked | 494 | 36.4372% | 61.7409% | +25.3036 |
+| lock/degraded | 226 | 19.0265% | 26.5487% | +7.5221 |
+| lock/unlocked | 540 | 20.1852% | 21.8519% | +1.6667 |
+| quality/<5 | 540 | 20.1852% | 21.8519% | +1.6667 |
+| quality/5..15 | 226 | 19.0265% | 26.5487% | +7.5221 |
+| quality/>=15 | 494 | 36.4372% | 61.7409% | +25.3036 |
 
-实际导入路径由 worker 打印／保存：native SSDG 与 `leo_practical` 来自既有 original release 的 `experiments/adv3b02_xuc/code/`，不是根 `code/`。fs25 MHz、IQ256、residual/post_sync、EQ=False（G=1）、reference_snr_db30、quality adaptation=True（reference20）、phase tracking=True、IQ compensation=True、reflect 边界。practical 前使用原 `normalize_input`，传播后原 AGC；clean 使用原 native carrier RMS，不追加新 packet RMS。FIR 延迟、有效观察区、边界误差、质量代理与 actual-power 重算一起记录。
+这组固定源数据中，paired practical 的收益主要集中在可用性较好的 LOS／locked，BLOCKED／unlocked 的净改善较小。这是分层关联，尚不能定位唯一物理因果。C1 low urban 移除新增噪声后仍远低于其 clean，其他单项控制也未恢复 clean；不据此把 AWGN、更强多径、Doppler 或 gate 当作唯一主因。
 
-沿真实前向采集既有 time／frequency／PA／reference／三个 SIG 描述、内部门控和 joint160；重建原默认头 logits 核对图路径，cosine logits 统一除以 30。clean 正确集合按各模型、固定 C0 和共同正确分别报告。CE（原 LS=.01）的 `autograd.grad` 仅读取 14 个既有参数张量，eval 模式、无 optimizer、无 `.grad` 累积；全部参数和 buffer 前后逐值相等。每条实际 traced packet 另有一次只读 classify 重建，不额外算作 backbone 前向。模型不另拟合任何分类头。
+| low urban full / TX | n | C0 | C1 | 差 pp |
+|---|---:|---:|---:|---:|
+| 0 | 210 | 12.8571% | 25.2381% | +12.3810 |
+| 1 | 210 | 2.8571% | 53.3333% | +50.4762 |
+| 2 | 210 | 39.0476% | 18.5714% | -20.4762 |
+| 3 | 210 | 33.8095% | 30.4762% | -3.3333 |
+| 4 | 210 | 50.9524% | 60.0000% | +9.0476 |
+| 5 | 210 | 18.5714% | 42.3810% | +23.8095 |
 
-预算：0 新模型、0 epoch、0 更新。每模型 84422 网络包（含真实 checkpoint 的 2 个零 IQ no-query smoke）、1340 次导数；合计 168844 网络包、2680 次导数、1260 个唯一物理样本。父成本分别 E20／4440 更新，已完成，不计作本次新增训练。一个 worker 同时持有两冻结模型，CPU2，所有 owner 含 preCUDA 每 GPU 最多 3 进程，free≥12000 MiB。
+固定 C0 clean 正确集合 n=1041，low urban 保持率由 26.6090%（277 包）变为 43.4198%（452 包）。各模型及共同 clean 正确集合、每 TX／day、quality、CFO 与 AGC 分层完整保留在私有 summary.json。TX2／TX3 的下降没有被总体正收益掩盖。
 
-预登记命令、环境、CWD、路径、owner、GPU 和逐行配置以本 run 的 experiment.json 为准。输出 root 独占且不可覆盖。仅本 run 的输入／来源／协议／配置／非有限数／预算／冻结状态／输出或执行技术错误触发停止并保留产物，不自动重试、不终止其他健康任务。没有按分数停止、选 checkpoint 或自动晋级新训练／目标测试的规则。
+| low urban 移除／重算 | C0 修复／新错 | C1 修复／新错 |
+|---|---:|---:|
+| no_noise/fixed | 115／103 | 180／115 |
+| no_noise/total | 118／108 | 177／120 |
+| flat_H/fixed | 97／95 | 94／88 |
+| flat_H/total | 97／96 | 96／91 |
+| no_carrier/fixed | 52／56 | 68／62 |
+| no_carrier/total | 52／56 | 68／62 |
+| no_RX_IQ/fixed | 6／4 | 4／0 |
+| no_RX_IQ/total | 6／4 | 4／0 |
+| actual_power_quality | 1／8 | 5／5 |
+| edge_boundary | 103／135 | 142／184 |
 
-源 predictions 完整后由独立 harvester 重算默认头 accuracy／macro-F1、分类间隔、clean 正确保持率、repair／break、状态／质量／CFO／AGC／TX／day 分层、实际分支与梯度统计。结果及图表只写真实产物，不将单 seed／单源折当跨 seed 或正式目标结果。联合 clean 正收益、low urban>60% 及 suburban 接近 clean 的目标仍未达成。
+实际 kernel lengths=[62]、numerical delays=[24]、interior counts=[195]；前缀无关内部区最大边界误差 0.0。full low urban AGC 增益触顶 1/1260。white-input 与实际波形功率差 {'minimum': -1.9414767956207664, 'maximum': 2.088195020285518, 'mean': 0.011315907608893285} dB；actual_power_quality 状态变化见 channel_transitions.json。边界控制只用于诊断，正式 reflect／IQ／SNR／困难样本均保持。
 
-本地验证：12 个协议负例、12 合成网络包／2 次导数、6 物理 draw／66 控制波形、两个真实父的元数据及 14 个来源负例、隔离发布导入和独立指标 fixture、compile／登记字段均 PASS。参数和 buffer 未变；0 真实 IQ／checkpoint 加载。唯一一次独立只读 P0/P1 审查 PASS。N607 普通账户 preflight 于 2026-10-16 14:52:21 CST 核实一次。真实 checkpoint smoke 留在 worker 首步，PASS 后直接继续。尚未启动、没有本轮真实诊断结果。
+真实 time／frequency／PA／reference／三个 SIG 描述及现有动态门控构成的 joint160 与原 logits 重建通过。默认头 logits／30 统一尺度；每包激活 norm、与自身 clean 的余弦、间隔，以及原 14 参数 CE 导数均有完整记录。相似度、间隔或梯度非零不替代身份准确率，静态 learned gain 不冒充随场景变化的 gate。原网络参数和 buffer 前后逐值相等，无 optimizer 或另训头。
+
+新增 0 模型／0 epoch／0 optimizer、EMA、head-fit 更新。两模型各 84422 backbone 网络包（含 2 个真实 checkpoint no-query smoke），合计 168844；2680 次 autograd.grad；1260 个唯一源物理包、7560 个场景 draw。每个 traced packet 另有一次只读 classify 重建，共 168840 次，不重复骨干。worker 墙钟 253.775 s；独立后处理另计。既有两个父各 E20／4440 更新，父训练全曲线见原报告，不计为本次新训练。
+
+一次独立只读 P0/P1、12 协议负例／14 父来源负例、合成 12 网络包／2 导数／6 物理 draw66 波形、隔离发布导入与指标 fixture、compile／登记、一次普通账户 preflight、单 archive 传输校验／remote compile、真实 smoke／PID／CWD／argv／GPU／日志增长及自然终态均核实。未动健康的五源折确认或其他 owner 进程。
+
+联合研究尚未完成：本诊断不能证明新 Ag 的独立训练收益、B00/B10/B01/B11 交互、正式 clean＋六 practical 或跨模型 seed 重现；low urban>60% 与 suburban 接近 clean 的目标仍待实际训练／冻结测试证明。下一训练只由合法源证据设计，不能用目标反馈调参或选择性重跑。
+
+实际矩阵／命令／环境／CWD／路径／GPU／stop 见 experiment.json；代码与启动核实见 launch_execution.json。原逐包 gzip／导数日志保存在不可变远端 run。私有实际产物：
+
+- [analysis/metrics.csv](E:/type10-7/local_artifacts/cvs_FcrossRX_probe20_20261016/final/analysis/metrics.csv)
+- [analysis/counterfactuals.csv](E:/type10-7/local_artifacts/cvs_FcrossRX_probe20_20261016/final/analysis/counterfactuals.csv)
+- [analysis/summary.json](E:/type10-7/local_artifacts/cvs_FcrossRX_probe20_20261016/final/analysis/summary.json)
+- [analysis/channel_transitions.json](E:/type10-7/local_artifacts/cvs_FcrossRX_probe20_20261016/final/analysis/channel_transitions.json)
+- [urban_counterfactual_effects.png](E:/type10-7/local_artifacts/cvs_FcrossRX_probe20_20261016/final/urban_counterfactual_effects.png)
+- [urban_state_strata.png](E:/type10-7/local_artifacts/cvs_FcrossRX_probe20_20261016/final/urban_state_strata.png)
+- [actual_branch_changes.png](E:/type10-7/local_artifacts/cvs_FcrossRX_probe20_20261016/final/actual_branch_changes.png)
+- [head_and_gradients.png](E:/type10-7/local_artifacts/cvs_FcrossRX_probe20_20261016/final/head_and_gradients.png)

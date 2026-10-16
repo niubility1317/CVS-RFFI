@@ -1,0 +1,2181 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "actual_code": "398897a01ba161f02f9535ad8e6db597420ab4a2",
+  "checks": {
+    "natural_terminal": true,
+    "no_failure": true,
+    "complete_counts": true,
+    "frozen_state": true,
+    "reconstruction": true,
+    "zero_updates": true,
+    "source_only": true,
+    "original_6views": true,
+    "independent_harvest": true
+  },
+  "completion": {
+    "status": "SOURCE_F_CROSSRX_PRACTICAL_DIAGNOSTIC_COMPLETE",
+    "rows": [
+      "C0",
+      "C1"
+    ],
+    "packet_forwards": 168844,
+    "derivative_calls": 2680,
+    "unique_source_physical_packets": 1260,
+    "wall_seconds": 253.7751588120591,
+    "parent_training_epochs_per_model": 20,
+    "parent_updates_per_model": 4440,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "new_models": 0,
+    "V_used": false,
+    "U_used": false,
+    "target_access": false,
+    "automatic_training": false,
+    "goal_completed": false,
+    "source_only": true
+  },
+  "model_seed": 2026092701,
+  "model_seeds": 1,
+  "source_fold": "heldRX1 originalL1260,fitRX3/4/6/8",
+  "physical_source_count": 1260,
+  "full_metrics": {
+    "C0": [
+      {
+        "scene": "clean",
+        "condition": "clean",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.8261904761904761,
+        "macro_f1": 0.8234152447091376,
+        "confusion": [
+          [
+            184,
+            8,
+            12,
+            3,
+            3,
+            0
+          ],
+          [
+            1,
+            180,
+            0,
+            29,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            129,
+            0,
+            0,
+            81
+          ],
+          [
+            0,
+            81,
+            0,
+            129,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            210,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            209
+          ]
+        ],
+        "mean_cosine_margin": 0.12994766301283286,
+        "retention": {},
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_high",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.38571428571428573,
+        "macro_f1": 0.30235523318338164,
+        "confusion": [
+          [
+            18,
+            0,
+            130,
+            40,
+            22,
+            0
+          ],
+          [
+            20,
+            3,
+            4,
+            129,
+            50,
+            4
+          ],
+          [
+            1,
+            0,
+            119,
+            4,
+            60,
+            26
+          ],
+          [
+            7,
+            1,
+            28,
+            168,
+            5,
+            1
+          ],
+          [
+            23,
+            1,
+            5,
+            15,
+            166,
+            0
+          ],
+          [
+            0,
+            0,
+            166,
+            0,
+            32,
+            12
+          ]
+        ],
+        "mean_cosine_margin": -0.025960071544562067,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1041,
+            "correct": 388,
+            "rate": 0.37271853986551395
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 388,
+            "rate": 0.37271853986551395
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 382,
+            "rate": 0.3782178217821782
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_mid",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.3626984126984127,
+        "macro_f1": 0.3017095792141889,
+        "confusion": [
+          [
+            22,
+            1,
+            128,
+            29,
+            29,
+            1
+          ],
+          [
+            32,
+            7,
+            11,
+            101,
+            55,
+            4
+          ],
+          [
+            2,
+            5,
+            103,
+            8,
+            60,
+            32
+          ],
+          [
+            22,
+            1,
+            33,
+            141,
+            13,
+            0
+          ],
+          [
+            17,
+            0,
+            9,
+            20,
+            164,
+            0
+          ],
+          [
+            0,
+            0,
+            160,
+            0,
+            30,
+            20
+          ]
+        ],
+        "mean_cosine_margin": -0.028985918978495256,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1041,
+            "correct": 376,
+            "rate": 0.3611911623439001
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 376,
+            "rate": 0.3611911623439001
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 371,
+            "rate": 0.3673267326732673
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_low_suburban",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.3396825396825397,
+        "macro_f1": 0.28824465877993316,
+        "confusion": [
+          [
+            18,
+            1,
+            128,
+            30,
+            30,
+            3
+          ],
+          [
+            41,
+            11,
+            19,
+            91,
+            43,
+            5
+          ],
+          [
+            4,
+            4,
+            110,
+            11,
+            52,
+            29
+          ],
+          [
+            15,
+            1,
+            40,
+            128,
+            23,
+            3
+          ],
+          [
+            21,
+            0,
+            22,
+            24,
+            141,
+            2
+          ],
+          [
+            0,
+            1,
+            156,
+            1,
+            32,
+            20
+          ]
+        ],
+        "mean_cosine_margin": -0.030962307644741876,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1041,
+            "correct": 357,
+            "rate": 0.34293948126801155
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 357,
+            "rate": 0.34293948126801155
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 350,
+            "rate": 0.3465346534653465
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_high_urban",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.35873015873015873,
+        "macro_f1": 0.2895823502299932,
+        "confusion": [
+          [
+            24,
+            0,
+            119,
+            37,
+            30,
+            0
+          ],
+          [
+            30,
+            3,
+            5,
+            116,
+            51,
+            5
+          ],
+          [
+            6,
+            2,
+            107,
+            9,
+            51,
+            35
+          ],
+          [
+            16,
+            1,
+            31,
+            150,
+            12,
+            0
+          ],
+          [
+            20,
+            1,
+            6,
+            29,
+            153,
+            1
+          ],
+          [
+            2,
+            0,
+            149,
+            3,
+            41,
+            15
+          ]
+        ],
+        "mean_cosine_margin": -0.03068574137897009,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1041,
+            "correct": 373,
+            "rate": 0.35830931796349663
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 373,
+            "rate": 0.35830931796349663
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 366,
+            "rate": 0.36237623762376237
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_mid_urban",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.29523809523809524,
+        "macro_f1": 0.26018803661096873,
+        "confusion": [
+          [
+            21,
+            2,
+            106,
+            28,
+            39,
+            14
+          ],
+          [
+            24,
+            9,
+            39,
+            73,
+            55,
+            10
+          ],
+          [
+            15,
+            4,
+            87,
+            14,
+            46,
+            44
+          ],
+          [
+            28,
+            6,
+            42,
+            109,
+            13,
+            12
+          ],
+          [
+            20,
+            3,
+            31,
+            26,
+            121,
+            9
+          ],
+          [
+            7,
+            0,
+            135,
+            1,
+            42,
+            25
+          ]
+        ],
+        "mean_cosine_margin": -0.040901003970897624,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1041,
+            "correct": 312,
+            "rate": 0.29971181556195964
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 312,
+            "rate": 0.29971181556195964
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 305,
+            "rate": 0.30198019801980197
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_low_urban",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.2634920634920635,
+        "macro_f1": 0.23771310740222684,
+        "confusion": [
+          [
+            27,
+            3,
+            90,
+            32,
+            42,
+            16
+          ],
+          [
+            38,
+            6,
+            30,
+            58,
+            60,
+            18
+          ],
+          [
+            19,
+            7,
+            82,
+            15,
+            57,
+            30
+          ],
+          [
+            29,
+            2,
+            51,
+            71,
+            38,
+            19
+          ],
+          [
+            32,
+            4,
+            32,
+            25,
+            107,
+            10
+          ],
+          [
+            12,
+            3,
+            118,
+            6,
+            32,
+            39
+          ]
+        ],
+        "mean_cosine_margin": -0.04494378886274284,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1041,
+            "correct": 277,
+            "rate": 0.26609029779058596
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 277,
+            "rate": 0.26609029779058596
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 274,
+            "rate": 0.2712871287128713
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      }
+    ],
+    "C1": [
+      {
+        "scene": "clean",
+        "condition": "clean",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.8611111111111112,
+        "macro_f1": 0.8593306903490846,
+        "confusion": [
+          [
+            167,
+            9,
+            26,
+            7,
+            0,
+            1
+          ],
+          [
+            2,
+            188,
+            0,
+            20,
+            0,
+            0
+          ],
+          [
+            4,
+            0,
+            185,
+            0,
+            0,
+            21
+          ],
+          [
+            0,
+            85,
+            0,
+            125,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            210,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            210
+          ]
+        ],
+        "mean_cosine_margin": 0.11930924872202532,
+        "retention": {},
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_high",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.6373015873015873,
+        "macro_f1": 0.6187333894137482,
+        "confusion": [
+          [
+            79,
+            2,
+            78,
+            51,
+            0,
+            0
+          ],
+          [
+            8,
+            184,
+            0,
+            17,
+            1,
+            0
+          ],
+          [
+            38,
+            13,
+            68,
+            7,
+            0,
+            84
+          ],
+          [
+            7,
+            63,
+            0,
+            130,
+            10,
+            0
+          ],
+          [
+            1,
+            1,
+            0,
+            0,
+            208,
+            0
+          ],
+          [
+            0,
+            0,
+            22,
+            0,
+            54,
+            134
+          ]
+        ],
+        "mean_cosine_margin": 0.056784806885416546,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1085,
+            "correct": 780,
+            "rate": 0.7188940092165899
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 770,
+            "rate": 0.7396733909702209
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 765,
+            "rate": 0.7574257425742574
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_mid",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.6150793650793651,
+        "macro_f1": 0.5965355775669157,
+        "confusion": [
+          [
+            77,
+            3,
+            81,
+            46,
+            2,
+            1
+          ],
+          [
+            11,
+            174,
+            1,
+            21,
+            1,
+            2
+          ],
+          [
+            48,
+            13,
+            62,
+            15,
+            3,
+            69
+          ],
+          [
+            9,
+            62,
+            2,
+            127,
+            10,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            3,
+            207,
+            0
+          ],
+          [
+            1,
+            1,
+            19,
+            0,
+            61,
+            128
+          ]
+        ],
+        "mean_cosine_margin": 0.05079113475180098,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1085,
+            "correct": 749,
+            "rate": 0.6903225806451613
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 741,
+            "rate": 0.7118155619596542
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 736,
+            "rate": 0.7287128712871287
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_low_suburban",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.5873015873015873,
+        "macro_f1": 0.5719635127190129,
+        "confusion": [
+          [
+            85,
+            5,
+            74,
+            42,
+            4,
+            0
+          ],
+          [
+            13,
+            164,
+            2,
+            24,
+            6,
+            1
+          ],
+          [
+            50,
+            11,
+            62,
+            9,
+            4,
+            74
+          ],
+          [
+            16,
+            60,
+            1,
+            120,
+            13,
+            0
+          ],
+          [
+            3,
+            2,
+            2,
+            7,
+            196,
+            0
+          ],
+          [
+            2,
+            1,
+            22,
+            1,
+            71,
+            113
+          ]
+        ],
+        "mean_cosine_margin": 0.0400179014993935,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1085,
+            "correct": 711,
+            "rate": 0.6552995391705069
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 702,
+            "rate": 0.6743515850144092
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 699,
+            "rate": 0.692079207920792
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_high_urban",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.5936507936507937,
+        "macro_f1": 0.5772536091827184,
+        "confusion": [
+          [
+            68,
+            4,
+            77,
+            58,
+            3,
+            0
+          ],
+          [
+            13,
+            172,
+            2,
+            20,
+            3,
+            0
+          ],
+          [
+            44,
+            5,
+            71,
+            10,
+            3,
+            77
+          ],
+          [
+            8,
+            58,
+            0,
+            126,
+            18,
+            0
+          ],
+          [
+            4,
+            0,
+            3,
+            9,
+            194,
+            0
+          ],
+          [
+            3,
+            0,
+            24,
+            0,
+            66,
+            117
+          ]
+        ],
+        "mean_cosine_margin": 0.048363143531605604,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1085,
+            "correct": 731,
+            "rate": 0.6737327188940092
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 719,
+            "rate": 0.6906820365033621
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 715,
+            "rate": 0.7079207920792079
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_mid_urban",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.4658730158730159,
+        "macro_f1": 0.45808612014285294,
+        "confusion": [
+          [
+            67,
+            9,
+            68,
+            44,
+            13,
+            9
+          ],
+          [
+            30,
+            124,
+            9,
+            20,
+            21,
+            6
+          ],
+          [
+            58,
+            25,
+            44,
+            18,
+            9,
+            56
+          ],
+          [
+            30,
+            50,
+            11,
+            99,
+            19,
+            1
+          ],
+          [
+            19,
+            11,
+            8,
+            14,
+            156,
+            2
+          ],
+          [
+            13,
+            3,
+            31,
+            0,
+            66,
+            97
+          ]
+        ],
+        "mean_cosine_margin": 0.021665495017632132,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1085,
+            "correct": 567,
+            "rate": 0.5225806451612903
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 563,
+            "rate": 0.5408261287223823
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 556,
+            "rate": 0.5504950495049505
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      },
+      {
+        "scene": "practical_low_urban",
+        "condition": "full",
+        "dimension": "all",
+        "stratum": "all",
+        "count": 1260,
+        "accuracy": 0.38333333333333336,
+        "macro_f1": 0.3782581438237837,
+        "confusion": [
+          [
+            53,
+            22,
+            66,
+            41,
+            18,
+            10
+          ],
+          [
+            38,
+            112,
+            14,
+            23,
+            18,
+            5
+          ],
+          [
+            59,
+            25,
+            39,
+            17,
+            25,
+            45
+          ],
+          [
+            35,
+            59,
+            14,
+            64,
+            29,
+            9
+          ],
+          [
+            27,
+            10,
+            20,
+            24,
+            126,
+            3
+          ],
+          [
+            12,
+            9,
+            30,
+            1,
+            69,
+            89
+          ]
+        ],
+        "mean_cosine_margin": 0.007334328088022413,
+        "retention": {
+          "clean_correct": {
+            "denominator": 1085,
+            "correct": 460,
+            "rate": 0.423963133640553
+          },
+          "C0_clean_correct": {
+            "denominator": 1041,
+            "correct": 452,
+            "rate": 0.43419788664745435
+          },
+          "common_clean_correct": {
+            "denominator": 1010,
+            "correct": 450,
+            "rate": 0.44554455445544555
+          }
+        },
+        "repaired_vs_full": 0,
+        "broken_vs_full": 0
+      }
+    ]
+  },
+  "urban_means": {
+    "C0": 0.3058201058201058,
+    "C1": 0.48095238095238096
+  },
+  "paired_model_differences": [
+    {
+      "scene": "clean",
+      "condition": "clean",
+      "count": 1260,
+      "C1_repaired_C0": 75,
+      "C1_broke_C0": 31,
+      "C1_minus_C0_accuracy_pp": 3.492063492063492
+    },
+    {
+      "scene": "practical_high",
+      "condition": "full",
+      "count": 1260,
+      "C1_repaired_C0": 450,
+      "C1_broke_C0": 133,
+      "C1_minus_C0_accuracy_pp": 25.158730158730158
+    },
+    {
+      "scene": "practical_high",
+      "condition": "no_noise/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 462,
+      "C1_broke_C0": 112,
+      "C1_minus_C0_accuracy_pp": 27.77777777777778
+    },
+    {
+      "scene": "practical_high",
+      "condition": "no_noise/total",
+      "count": 1260,
+      "C1_repaired_C0": 463,
+      "C1_broke_C0": 112,
+      "C1_minus_C0_accuracy_pp": 27.857142857142858
+    },
+    {
+      "scene": "practical_high",
+      "condition": "flat_H/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 463,
+      "C1_broke_C0": 135,
+      "C1_minus_C0_accuracy_pp": 26.03174603174603
+    },
+    {
+      "scene": "practical_high",
+      "condition": "flat_H/total",
+      "count": 1260,
+      "C1_repaired_C0": 460,
+      "C1_broke_C0": 136,
+      "C1_minus_C0_accuracy_pp": 25.714285714285715
+    },
+    {
+      "scene": "practical_high",
+      "condition": "no_carrier/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 454,
+      "C1_broke_C0": 121,
+      "C1_minus_C0_accuracy_pp": 26.428571428571427
+    },
+    {
+      "scene": "practical_high",
+      "condition": "no_carrier/total",
+      "count": 1260,
+      "C1_repaired_C0": 454,
+      "C1_broke_C0": 121,
+      "C1_minus_C0_accuracy_pp": 26.428571428571427
+    },
+    {
+      "scene": "practical_high",
+      "condition": "no_RX_IQ/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 448,
+      "C1_broke_C0": 132,
+      "C1_minus_C0_accuracy_pp": 25.07936507936508
+    },
+    {
+      "scene": "practical_high",
+      "condition": "no_RX_IQ/total",
+      "count": 1260,
+      "C1_repaired_C0": 448,
+      "C1_broke_C0": 132,
+      "C1_minus_C0_accuracy_pp": 25.07936507936508
+    },
+    {
+      "scene": "practical_high",
+      "condition": "actual_power_quality",
+      "count": 1260,
+      "C1_repaired_C0": 450,
+      "C1_broke_C0": 133,
+      "C1_minus_C0_accuracy_pp": 25.158730158730158
+    },
+    {
+      "scene": "practical_high",
+      "condition": "edge_boundary",
+      "count": 1260,
+      "C1_repaired_C0": 366,
+      "C1_broke_C0": 69,
+      "C1_minus_C0_accuracy_pp": 23.571428571428573
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "full",
+      "count": 1260,
+      "C1_repaired_C0": 440,
+      "C1_broke_C0": 122,
+      "C1_minus_C0_accuracy_pp": 25.238095238095237
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "no_noise/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 441,
+      "C1_broke_C0": 119,
+      "C1_minus_C0_accuracy_pp": 25.555555555555557
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "no_noise/total",
+      "count": 1260,
+      "C1_repaired_C0": 434,
+      "C1_broke_C0": 117,
+      "C1_minus_C0_accuracy_pp": 25.158730158730158
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "flat_H/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 446,
+      "C1_broke_C0": 117,
+      "C1_minus_C0_accuracy_pp": 26.11111111111111
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "flat_H/total",
+      "count": 1260,
+      "C1_repaired_C0": 444,
+      "C1_broke_C0": 121,
+      "C1_minus_C0_accuracy_pp": 25.634920634920636
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "no_carrier/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 434,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 24.603174603174605
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "no_carrier/total",
+      "count": 1260,
+      "C1_repaired_C0": 434,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 24.603174603174605
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "no_RX_IQ/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 440,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 25.07936507936508
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "no_RX_IQ/total",
+      "count": 1260,
+      "C1_repaired_C0": 441,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 25.158730158730158
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "actual_power_quality",
+      "count": 1260,
+      "C1_repaired_C0": 440,
+      "C1_broke_C0": 122,
+      "C1_minus_C0_accuracy_pp": 25.238095238095237
+    },
+    {
+      "scene": "practical_mid",
+      "condition": "edge_boundary",
+      "count": 1260,
+      "C1_repaired_C0": 379,
+      "C1_broke_C0": 77,
+      "C1_minus_C0_accuracy_pp": 23.96825396825397
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "full",
+      "count": 1260,
+      "C1_repaired_C0": 434,
+      "C1_broke_C0": 122,
+      "C1_minus_C0_accuracy_pp": 24.761904761904763
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_noise/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 446,
+      "C1_broke_C0": 112,
+      "C1_minus_C0_accuracy_pp": 26.50793650793651
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_noise/total",
+      "count": 1260,
+      "C1_repaired_C0": 446,
+      "C1_broke_C0": 112,
+      "C1_minus_C0_accuracy_pp": 26.50793650793651
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "flat_H/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 418,
+      "C1_broke_C0": 123,
+      "C1_minus_C0_accuracy_pp": 23.41269841269841
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "flat_H/total",
+      "count": 1260,
+      "C1_repaired_C0": 424,
+      "C1_broke_C0": 123,
+      "C1_minus_C0_accuracy_pp": 23.88888888888889
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_carrier/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 431,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 24.365079365079364
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_carrier/total",
+      "count": 1260,
+      "C1_repaired_C0": 431,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 24.365079365079364
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 428,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 24.126984126984127
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "no_RX_IQ/total",
+      "count": 1260,
+      "C1_repaired_C0": 428,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 24.126984126984127
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "actual_power_quality",
+      "count": 1260,
+      "C1_repaired_C0": 434,
+      "C1_broke_C0": 122,
+      "C1_minus_C0_accuracy_pp": 24.761904761904763
+    },
+    {
+      "scene": "practical_low_suburban",
+      "condition": "edge_boundary",
+      "count": 1260,
+      "C1_repaired_C0": 350,
+      "C1_broke_C0": 83,
+      "C1_minus_C0_accuracy_pp": 21.19047619047619
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "full",
+      "count": 1260,
+      "C1_repaired_C0": 410,
+      "C1_broke_C0": 114,
+      "C1_minus_C0_accuracy_pp": 23.49206349206349
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "no_noise/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 420,
+      "C1_broke_C0": 108,
+      "C1_minus_C0_accuracy_pp": 24.761904761904763
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "no_noise/total",
+      "count": 1260,
+      "C1_repaired_C0": 418,
+      "C1_broke_C0": 109,
+      "C1_minus_C0_accuracy_pp": 24.523809523809526
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "flat_H/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 421,
+      "C1_broke_C0": 121,
+      "C1_minus_C0_accuracy_pp": 23.80952380952381
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "flat_H/total",
+      "count": 1260,
+      "C1_repaired_C0": 422,
+      "C1_broke_C0": 119,
+      "C1_minus_C0_accuracy_pp": 24.047619047619047
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "no_carrier/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 410,
+      "C1_broke_C0": 118,
+      "C1_minus_C0_accuracy_pp": 23.174603174603174
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "no_carrier/total",
+      "count": 1260,
+      "C1_repaired_C0": 410,
+      "C1_broke_C0": 118,
+      "C1_minus_C0_accuracy_pp": 23.174603174603174
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 408,
+      "C1_broke_C0": 115,
+      "C1_minus_C0_accuracy_pp": 23.253968253968253
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "no_RX_IQ/total",
+      "count": 1260,
+      "C1_repaired_C0": 407,
+      "C1_broke_C0": 114,
+      "C1_minus_C0_accuracy_pp": 23.253968253968253
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "actual_power_quality",
+      "count": 1260,
+      "C1_repaired_C0": 410,
+      "C1_broke_C0": 114,
+      "C1_minus_C0_accuracy_pp": 23.49206349206349
+    },
+    {
+      "scene": "practical_high_urban",
+      "condition": "edge_boundary",
+      "count": 1260,
+      "C1_repaired_C0": 356,
+      "C1_broke_C0": 68,
+      "C1_minus_C0_accuracy_pp": 22.857142857142858
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "full",
+      "count": 1260,
+      "C1_repaired_C0": 340,
+      "C1_broke_C0": 125,
+      "C1_minus_C0_accuracy_pp": 17.063492063492063
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_noise/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 355,
+      "C1_broke_C0": 100,
+      "C1_minus_C0_accuracy_pp": 20.238095238095237
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_noise/total",
+      "count": 1260,
+      "C1_repaired_C0": 336,
+      "C1_broke_C0": 108,
+      "C1_minus_C0_accuracy_pp": 18.095238095238095
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "flat_H/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 324,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 15.873015873015873
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "flat_H/total",
+      "count": 1260,
+      "C1_repaired_C0": 323,
+      "C1_broke_C0": 123,
+      "C1_minus_C0_accuracy_pp": 15.873015873015873
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_carrier/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 345,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 17.53968253968254
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_carrier/total",
+      "count": 1260,
+      "C1_repaired_C0": 345,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 17.53968253968254
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 336,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 16.825396825396826
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "no_RX_IQ/total",
+      "count": 1260,
+      "C1_repaired_C0": 336,
+      "C1_broke_C0": 124,
+      "C1_minus_C0_accuracy_pp": 16.825396825396826
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "actual_power_quality",
+      "count": 1260,
+      "C1_repaired_C0": 341,
+      "C1_broke_C0": 127,
+      "C1_minus_C0_accuracy_pp": 16.984126984126984
+    },
+    {
+      "scene": "practical_mid_urban",
+      "condition": "edge_boundary",
+      "count": 1260,
+      "C1_repaired_C0": 314,
+      "C1_broke_C0": 83,
+      "C1_minus_C0_accuracy_pp": 18.333333333333332
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "full",
+      "count": 1260,
+      "C1_repaired_C0": 290,
+      "C1_broke_C0": 139,
+      "C1_minus_C0_accuracy_pp": 11.984126984126984
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_noise/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 323,
+      "C1_broke_C0": 119,
+      "C1_minus_C0_accuracy_pp": 16.19047619047619
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_noise/total",
+      "count": 1260,
+      "C1_repaired_C0": 304,
+      "C1_broke_C0": 106,
+      "C1_minus_C0_accuracy_pp": 15.714285714285714
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "flat_H/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 283,
+      "C1_broke_C0": 128,
+      "C1_minus_C0_accuracy_pp": 12.301587301587302
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "flat_H/total",
+      "count": 1260,
+      "C1_repaired_C0": 284,
+      "C1_broke_C0": 129,
+      "C1_minus_C0_accuracy_pp": 12.301587301587302
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_carrier/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 296,
+      "C1_broke_C0": 135,
+      "C1_minus_C0_accuracy_pp": 12.777777777777779
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_carrier/total",
+      "count": 1260,
+      "C1_repaired_C0": 296,
+      "C1_broke_C0": 135,
+      "C1_minus_C0_accuracy_pp": 12.777777777777779
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_RX_IQ/fixed",
+      "count": 1260,
+      "C1_repaired_C0": 290,
+      "C1_broke_C0": 137,
+      "C1_minus_C0_accuracy_pp": 12.142857142857142
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "no_RX_IQ/total",
+      "count": 1260,
+      "C1_repaired_C0": 290,
+      "C1_broke_C0": 137,
+      "C1_minus_C0_accuracy_pp": 12.142857142857142
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "actual_power_quality",
+      "count": 1260,
+      "C1_repaired_C0": 293,
+      "C1_broke_C0": 135,
+      "C1_minus_C0_accuracy_pp": 12.53968253968254
+    },
+    {
+      "scene": "practical_low_urban",
+      "condition": "edge_boundary",
+      "count": 1260,
+      "C1_repaired_C0": 245,
+      "C1_broke_C0": 104,
+      "C1_minus_C0_accuracy_pp": 11.19047619047619
+    }
+  ],
+  "physical_metadata": {
+    "status": "VERIFIED_METADATA_ONLY",
+    "source_only": true,
+    "target_access": false,
+    "extra_model_forwards": 0,
+    "extra_IQ_reads": 0,
+    "shared_channel_record_source": "C0 records; same rendered wavebank used for both original models",
+    "scenes": {
+      "practical_high": {
+        "count": 1260,
+        "AGC_limited": 0,
+        "kernel_lengths": [
+          62
+        ],
+        "interior_counts": [
+          195
+        ],
+        "numerical_delays": [
+          24
+        ],
+        "boundary_interior_max_error": 0.0,
+        "waveform_minus_white_power_db": {
+          "minimum": -1.3291555072683394,
+          "maximum": 0.8057396608221259,
+          "mean": -0.008589882348631494
+        }
+      },
+      "practical_mid": {
+        "count": 1260,
+        "AGC_limited": 0,
+        "kernel_lengths": [
+          62
+        ],
+        "interior_counts": [
+          195
+        ],
+        "numerical_delays": [
+          24
+        ],
+        "boundary_interior_max_error": 0.0,
+        "waveform_minus_white_power_db": {
+          "minimum": -1.4092241209099061,
+          "maximum": 0.996087442985143,
+          "mean": -0.008772822338007703
+        }
+      },
+      "practical_low_suburban": {
+        "count": 1260,
+        "AGC_limited": 0,
+        "kernel_lengths": [
+          62
+        ],
+        "interior_counts": [
+          195
+        ],
+        "numerical_delays": [
+          24
+        ],
+        "boundary_interior_max_error": 0.0,
+        "waveform_minus_white_power_db": {
+          "minimum": -1.5924889060704714,
+          "maximum": 1.1436413403189318,
+          "mean": -0.0050018206330167975
+        }
+      },
+      "practical_high_urban": {
+        "count": 1260,
+        "AGC_limited": 0,
+        "kernel_lengths": [
+          62
+        ],
+        "interior_counts": [
+          195
+        ],
+        "numerical_delays": [
+          24
+        ],
+        "boundary_interior_max_error": 0.0,
+        "waveform_minus_white_power_db": {
+          "minimum": -1.8814809108408488,
+          "maximum": 2.2392153309115574,
+          "mean": -0.0012803306167993662
+        }
+      },
+      "practical_mid_urban": {
+        "count": 1260,
+        "AGC_limited": 0,
+        "kernel_lengths": [
+          62
+        ],
+        "interior_counts": [
+          195
+        ],
+        "numerical_delays": [
+          24
+        ],
+        "boundary_interior_max_error": 0.0,
+        "waveform_minus_white_power_db": {
+          "minimum": -1.6315376114968956,
+          "maximum": 1.9507246060694046,
+          "mean": 0.011065591714243338
+        }
+      },
+      "practical_low_urban": {
+        "count": 1260,
+        "AGC_limited": 1,
+        "kernel_lengths": [
+          62
+        ],
+        "interior_counts": [
+          195
+        ],
+        "numerical_delays": [
+          24
+        ],
+        "boundary_interior_max_error": 0.0,
+        "waveform_minus_white_power_db": {
+          "minimum": -1.9414767956207664,
+          "maximum": 2.088195020285518,
+          "mean": 0.011315907608893285
+        }
+      }
+    },
+    "lock_transitions": {
+      "practical_high/full": {
+        "locked->locked": 1250,
+        "degraded->degraded": 9,
+        "unlocked->unlocked": 1
+      },
+      "practical_high/no_noise/fixed": {
+        "locked->locked": 1250,
+        "degraded->degraded": 9,
+        "unlocked->unlocked": 1
+      },
+      "practical_high/no_noise/total": {
+        "locked->locked": 1250,
+        "degraded->locked": 9,
+        "unlocked->locked": 1
+      },
+      "practical_high/flat_H/fixed": {
+        "locked->locked": 1250,
+        "degraded->degraded": 9,
+        "unlocked->unlocked": 1
+      },
+      "practical_high/flat_H/total": {
+        "locked->locked": 1250,
+        "degraded->degraded": 9,
+        "unlocked->unlocked": 1
+      },
+      "practical_high/no_carrier/fixed": {
+        "locked->locked": 1250,
+        "degraded->degraded": 9,
+        "unlocked->unlocked": 1
+      },
+      "practical_high/no_carrier/total": {
+        "locked->locked": 1250,
+        "degraded->degraded": 9,
+        "unlocked->unlocked": 1
+      },
+      "practical_high/no_RX_IQ/fixed": {
+        "locked->locked": 1250,
+        "degraded->degraded": 9,
+        "unlocked->unlocked": 1
+      },
+      "practical_high/no_RX_IQ/total": {
+        "locked->locked": 1250,
+        "degraded->degraded": 9,
+        "unlocked->unlocked": 1
+      },
+      "practical_high/actual_power_quality": {
+        "locked->locked": 1250,
+        "degraded->degraded": 9,
+        "unlocked->unlocked": 1
+      },
+      "practical_high/edge_boundary": {
+        "locked->locked": 1250,
+        "degraded->degraded": 9,
+        "unlocked->unlocked": 1
+      },
+      "practical_mid/full": {
+        "locked->locked": 1194,
+        "degraded->degraded": 47,
+        "unlocked->unlocked": 19
+      },
+      "practical_mid/no_noise/fixed": {
+        "locked->locked": 1194,
+        "degraded->degraded": 47,
+        "unlocked->unlocked": 19
+      },
+      "practical_mid/no_noise/total": {
+        "locked->locked": 1194,
+        "degraded->locked": 47,
+        "unlocked->locked": 19
+      },
+      "practical_mid/flat_H/fixed": {
+        "locked->locked": 1194,
+        "degraded->degraded": 47,
+        "unlocked->unlocked": 19
+      },
+      "practical_mid/flat_H/total": {
+        "locked->locked": 1194,
+        "degraded->degraded": 47,
+        "unlocked->unlocked": 19
+      },
+      "practical_mid/no_carrier/fixed": {
+        "locked->locked": 1194,
+        "degraded->degraded": 47,
+        "unlocked->unlocked": 19
+      },
+      "practical_mid/no_carrier/total": {
+        "locked->locked": 1194,
+        "degraded->degraded": 47,
+        "unlocked->unlocked": 19
+      },
+      "practical_mid/no_RX_IQ/fixed": {
+        "locked->locked": 1194,
+        "degraded->degraded": 47,
+        "unlocked->unlocked": 19
+      },
+      "practical_mid/no_RX_IQ/total": {
+        "locked->locked": 1194,
+        "degraded->degraded": 47,
+        "unlocked->unlocked": 19
+      },
+      "practical_mid/actual_power_quality": {
+        "locked->locked": 1192,
+        "degraded->degraded": 42,
+        "unlocked->unlocked": 19,
+        "degraded->unlocked": 3,
+        "locked->degraded": 2,
+        "degraded->locked": 2
+      },
+      "practical_mid/edge_boundary": {
+        "locked->locked": 1194,
+        "degraded->degraded": 47,
+        "unlocked->unlocked": 19
+      },
+      "practical_low_suburban/full": {
+        "degraded->degraded": 140,
+        "locked->locked": 1058,
+        "unlocked->unlocked": 62
+      },
+      "practical_low_suburban/no_noise/fixed": {
+        "degraded->degraded": 140,
+        "locked->locked": 1058,
+        "unlocked->unlocked": 62
+      },
+      "practical_low_suburban/no_noise/total": {
+        "degraded->locked": 140,
+        "locked->locked": 1058,
+        "unlocked->locked": 62
+      },
+      "practical_low_suburban/flat_H/fixed": {
+        "degraded->degraded": 140,
+        "locked->locked": 1058,
+        "unlocked->unlocked": 62
+      },
+      "practical_low_suburban/flat_H/total": {
+        "degraded->degraded": 140,
+        "locked->locked": 1058,
+        "unlocked->unlocked": 62
+      },
+      "practical_low_suburban/no_carrier/fixed": {
+        "degraded->degraded": 140,
+        "locked->locked": 1058,
+        "unlocked->unlocked": 62
+      },
+      "practical_low_suburban/no_carrier/total": {
+        "degraded->degraded": 140,
+        "locked->locked": 1058,
+        "unlocked->unlocked": 62
+      },
+      "practical_low_suburban/no_RX_IQ/fixed": {
+        "degraded->degraded": 140,
+        "locked->locked": 1058,
+        "unlocked->unlocked": 62
+      },
+      "practical_low_suburban/no_RX_IQ/total": {
+        "degraded->degraded": 140,
+        "locked->locked": 1058,
+        "unlocked->unlocked": 62
+      },
+      "practical_low_suburban/actual_power_quality": {
+        "degraded->degraded": 135,
+        "locked->locked": 1055,
+        "unlocked->unlocked": 61,
+        "degraded->locked": 5,
+        "locked->degraded": 3,
+        "unlocked->degraded": 1
+      },
+      "practical_low_suburban/edge_boundary": {
+        "degraded->degraded": 140,
+        "locked->locked": 1058,
+        "unlocked->unlocked": 62
+      },
+      "practical_high_urban/full": {
+        "locked->locked": 1139,
+        "degraded->degraded": 105,
+        "unlocked->unlocked": 16
+      },
+      "practical_high_urban/no_noise/fixed": {
+        "locked->locked": 1139,
+        "degraded->degraded": 105,
+        "unlocked->unlocked": 16
+      },
+      "practical_high_urban/no_noise/total": {
+        "locked->locked": 1139,
+        "degraded->locked": 105,
+        "unlocked->locked": 16
+      },
+      "practical_high_urban/flat_H/fixed": {
+        "locked->locked": 1139,
+        "degraded->degraded": 105,
+        "unlocked->unlocked": 16
+      },
+      "practical_high_urban/flat_H/total": {
+        "locked->locked": 1139,
+        "degraded->degraded": 105,
+        "unlocked->unlocked": 16
+      },
+      "practical_high_urban/no_carrier/fixed": {
+        "locked->locked": 1139,
+        "degraded->degraded": 105,
+        "unlocked->unlocked": 16
+      },
+      "practical_high_urban/no_carrier/total": {
+        "locked->locked": 1139,
+        "degraded->degraded": 105,
+        "unlocked->unlocked": 16
+      },
+      "practical_high_urban/no_RX_IQ/fixed": {
+        "locked->locked": 1139,
+        "degraded->degraded": 105,
+        "unlocked->unlocked": 16
+      },
+      "practical_high_urban/no_RX_IQ/total": {
+        "locked->locked": 1139,
+        "degraded->degraded": 105,
+        "unlocked->unlocked": 16
+      },
+      "practical_high_urban/actual_power_quality": {
+        "locked->locked": 1139,
+        "degraded->degraded": 101,
+        "unlocked->unlocked": 12,
+        "unlocked->degraded": 4,
+        "degraded->unlocked": 4
+      },
+      "practical_high_urban/edge_boundary": {
+        "locked->locked": 1139,
+        "degraded->degraded": 105,
+        "unlocked->unlocked": 16
+      },
+      "practical_mid_urban/full": {
+        "degraded->degraded": 266,
+        "locked->locked": 736,
+        "unlocked->unlocked": 258
+      },
+      "practical_mid_urban/no_noise/fixed": {
+        "degraded->degraded": 266,
+        "locked->locked": 736,
+        "unlocked->unlocked": 258
+      },
+      "practical_mid_urban/no_noise/total": {
+        "degraded->locked": 266,
+        "locked->locked": 736,
+        "unlocked->locked": 258
+      },
+      "practical_mid_urban/flat_H/fixed": {
+        "degraded->degraded": 266,
+        "locked->locked": 736,
+        "unlocked->unlocked": 258
+      },
+      "practical_mid_urban/flat_H/total": {
+        "degraded->degraded": 266,
+        "locked->locked": 736,
+        "unlocked->unlocked": 258
+      },
+      "practical_mid_urban/no_carrier/fixed": {
+        "degraded->degraded": 266,
+        "locked->locked": 736,
+        "unlocked->unlocked": 258
+      },
+      "practical_mid_urban/no_carrier/total": {
+        "degraded->degraded": 266,
+        "locked->locked": 736,
+        "unlocked->unlocked": 258
+      },
+      "practical_mid_urban/no_RX_IQ/fixed": {
+        "degraded->degraded": 266,
+        "locked->locked": 736,
+        "unlocked->unlocked": 258
+      },
+      "practical_mid_urban/no_RX_IQ/total": {
+        "degraded->degraded": 266,
+        "locked->locked": 736,
+        "unlocked->unlocked": 258
+      },
+      "practical_mid_urban/actual_power_quality": {
+        "degraded->degraded": 247,
+        "locked->locked": 735,
+        "unlocked->unlocked": 243,
+        "locked->degraded": 1,
+        "unlocked->degraded": 15,
+        "degraded->unlocked": 18,
+        "degraded->locked": 1
+      },
+      "practical_mid_urban/edge_boundary": {
+        "degraded->degraded": 266,
+        "locked->locked": 736,
+        "unlocked->unlocked": 258
+      },
+      "practical_low_urban/full": {
+        "unlocked->unlocked": 540,
+        "degraded->degraded": 226,
+        "locked->locked": 494
+      },
+      "practical_low_urban/no_noise/fixed": {
+        "unlocked->unlocked": 540,
+        "degraded->degraded": 226,
+        "locked->locked": 494
+      },
+      "practical_low_urban/no_noise/total": {
+        "unlocked->locked": 540,
+        "degraded->locked": 226,
+        "locked->locked": 494
+      },
+      "practical_low_urban/flat_H/fixed": {
+        "unlocked->unlocked": 540,
+        "degraded->degraded": 226,
+        "locked->locked": 494
+      },
+      "practical_low_urban/flat_H/total": {
+        "unlocked->unlocked": 540,
+        "degraded->degraded": 226,
+        "locked->locked": 494
+      },
+      "practical_low_urban/no_carrier/fixed": {
+        "unlocked->unlocked": 540,
+        "degraded->degraded": 226,
+        "locked->locked": 494
+      },
+      "practical_low_urban/no_carrier/total": {
+        "unlocked->unlocked": 540,
+        "degraded->degraded": 226,
+        "locked->locked": 494
+      },
+      "practical_low_urban/no_RX_IQ/fixed": {
+        "unlocked->unlocked": 540,
+        "degraded->degraded": 226,
+        "locked->locked": 494
+      },
+      "practical_low_urban/no_RX_IQ/total": {
+        "unlocked->unlocked": 540,
+        "degraded->degraded": 226,
+        "locked->locked": 494
+      },
+      "practical_low_urban/actual_power_quality": {
+        "unlocked->unlocked": 513,
+        "degraded->degraded": 209,
+        "locked->locked": 493,
+        "degraded->unlocked": 15,
+        "unlocked->degraded": 27,
+        "degraded->locked": 2,
+        "locked->degraded": 1
+      },
+      "practical_low_urban/edge_boundary": {
+        "unlocked->unlocked": 540,
+        "degraded->degraded": 226,
+        "locked->locked": 494
+      }
+    }
+  },
+  "learned_gain_summary": {
+    "C0": {
+      "PA": {
+        "count": 160,
+        "mean": 0.2551324563100934,
+        "minimum": 0.13160157203674316,
+        "maximum": 0.3895820379257202
+      },
+      "reference": {
+        "count": 160,
+        "mean": 0.002296228693739977,
+        "minimum": -0.2082659751176834,
+        "maximum": 0.17387352883815765
+      },
+      "SIG": {
+        "count": 160,
+        "mean": 0.07873778138309717,
+        "minimum": 0.06126091629266739,
+        "maximum": 0.088609978556633
+      }
+    },
+    "C1": {
+      "PA": {
+        "count": 160,
+        "mean": 0.2510581253096461,
+        "minimum": 0.09185172617435455,
+        "maximum": 0.36813652515411377
+      },
+      "reference": {
+        "count": 160,
+        "mean": -0.0001356491124170134,
+        "minimum": -0.2419826239347458,
+        "maximum": 0.2257765233516693
+      },
+      "SIG": {
+        "count": 160,
+        "mean": 0.0834888428915292,
+        "minimum": 0.06345130503177643,
+        "maximum": 0.09390109777450562
+      }
+    }
+  },
+  "scientific_conclusion": "Frozen source association and controlled inference effects, not new Ag training efficacy or causal training attribution. Formal target and model-seed replication pending.",
+  "formal_target_access": false,
+  "goal_completed": false,
+  "new_training_curves": "N/A frozen0epochs; full parent E20 curves already preserved"
+}
