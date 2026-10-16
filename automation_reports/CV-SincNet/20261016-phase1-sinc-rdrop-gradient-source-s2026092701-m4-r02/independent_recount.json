@@ -1,0 +1,124 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02",
+  "source_gradient_rows": 4,
+  "source_gradient_batches": 200,
+  "source_gradient_components": 9600,
+  "original_runtime_math_error_max_cosine": 1.6653345369377348e-16,
+  "summary": [
+    {
+      "arm": "A",
+      "stage": "initial",
+      "batches": 50,
+      "source_L_packets": 6300,
+      "conflict_count": 37,
+      "conflict_fraction": 0.74,
+      "cosine_mean": -0.18809483512158373,
+      "KL_to_CE_norm_median": 0.7845610394110774,
+      "total_gradient_opposes_CE_count": 0
+    },
+    {
+      "arm": "A",
+      "stage": "final50",
+      "batches": 50,
+      "source_L_packets": 6300,
+      "conflict_count": 20,
+      "conflict_fraction": 0.4,
+      "cosine_mean": 0.17808488575731463,
+      "KL_to_CE_norm_median": 0.4162580012228667,
+      "total_gradient_opposes_CE_count": 0
+    },
+    {
+      "arm": "E",
+      "stage": "initial",
+      "batches": 50,
+      "source_L_packets": 6300,
+      "conflict_count": 37,
+      "conflict_fraction": 0.74,
+      "cosine_mean": -0.18809470066446848,
+      "KL_to_CE_norm_median": 0.7845597665858886,
+      "total_gradient_opposes_CE_count": 0
+    },
+    {
+      "arm": "E",
+      "stage": "final50",
+      "batches": 50,
+      "source_L_packets": 6300,
+      "conflict_count": 9,
+      "conflict_fraction": 0.18,
+      "cosine_mean": 0.286772000199753,
+      "KL_to_CE_norm_median": 0.4758149290139492,
+      "total_gradient_opposes_CE_count": 0
+    }
+  ],
+  "preregistered_conflict_candidate_eligible": false,
+  "conflict_route_closed": true,
+  "source_update_observations": {
+    "source_run": "20261015-phase1-SIGTIME-RDrop-AF-e50-clean-manysig-m18-r02",
+    "arm": "E",
+    "model_seed": 2026092701,
+    "epochs": [
+      {
+        "epoch": 1,
+        "observed_optimizer_steps": 13,
+        "channel_step_observations": 312,
+        "edge_shift_over_current_bandwidth_median": 0.01811527100995817,
+        "edge_shift_over_current_bandwidth_max": 3.4593964329207374,
+        "edge_shift_over_initial_bandwidth_max": 17.389807070735838,
+        "current_bandwidth_shift_over_1pct": 183,
+        "current_bandwidth_shift_over_10pct": 70,
+        "current_bandwidth_shift_over_100pct": 9,
+        "signed_leaf_zero_crossings": 5,
+        "physical_update_L2_Hz_mean": 11037.423314562471
+      },
+      {
+        "epoch": 17,
+        "observed_optimizer_steps": 13,
+        "channel_step_observations": 312,
+        "edge_shift_over_current_bandwidth_median": 0.012322280765150174,
+        "edge_shift_over_current_bandwidth_max": 0.9946547151579943,
+        "edge_shift_over_initial_bandwidth_max": 9.289513095309047,
+        "current_bandwidth_shift_over_1pct": 164,
+        "current_bandwidth_shift_over_10pct": 35,
+        "current_bandwidth_shift_over_100pct": 0,
+        "signed_leaf_zero_crossings": 1,
+        "physical_update_L2_Hz_mean": 5686.642635391136
+      },
+      {
+        "epoch": 33,
+        "observed_optimizer_steps": 13,
+        "channel_step_observations": 312,
+        "edge_shift_over_current_bandwidth_median": 0.004830711895934604,
+        "edge_shift_over_current_bandwidth_max": 1.2269955193788205,
+        "edge_shift_over_initial_bandwidth_max": 3.8775044648270276,
+        "current_bandwidth_shift_over_1pct": 110,
+        "current_bandwidth_shift_over_10pct": 25,
+        "current_bandwidth_shift_over_100pct": 1,
+        "signed_leaf_zero_crossings": 2,
+        "physical_update_L2_Hz_mean": 1954.1257254604473
+      },
+      {
+        "epoch": 50,
+        "observed_optimizer_steps": 13,
+        "channel_step_observations": 312,
+        "edge_shift_over_current_bandwidth_median": 0.00008861657119036034,
+        "edge_shift_over_current_bandwidth_max": 0.05007641289671647,
+        "edge_shift_over_initial_bandwidth_max": 0.05526139092390138,
+        "current_bandwidth_shift_over_1pct": 20,
+        "current_bandwidth_shift_over_10pct": 0,
+        "current_bandwidth_shift_over_100pct": 0,
+        "signed_leaf_zero_crossings": 0,
+        "physical_update_L2_Hz_mean": 37.55197917400844
+      }
+    ],
+    "initial_bandwidth_Hz_min": 415.7796630859375,
+    "initial_bandwidth_Hz_max": 4172829.5,
+    "initial_bandwidth_Hz_median": 39926.68359375,
+    "limitation": "13 observed steps perdeclared epoch, not a complete trajectory or CE/KL split during training."
+  },
+  "extra_source_IQ_reads": 0,
+  "extra_model_forwards": 0,
+  "extra_optimizer_updates": 0,
+  "head_fit_updates": 0,
+  "target_access": false
+}

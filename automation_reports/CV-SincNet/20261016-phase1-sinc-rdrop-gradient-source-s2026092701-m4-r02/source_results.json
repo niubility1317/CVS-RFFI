@@ -1,0 +1,247 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02",
+  "code_commit": "c10ddb72d5b529d7e47b62dd94a4af8d57a2c669",
+  "source_models": [
+    "A",
+    "E"
+  ],
+  "model_seed": 2026092701,
+  "checkpoint_stages": [
+    "initial",
+    "final50"
+  ],
+  "rows": 4,
+  "batches": 200,
+  "source_L_packets": 25200,
+  "unique_L_packets_each_row": 6300,
+  "identity_packet_forwards": 50400,
+  "source_only": true,
+  "U_IQ_reads": 0,
+  "U_truth_read": false,
+  "V_IQ_reads": 0,
+  "target_IQ_reads": 0,
+  "target_truth_reads": 0,
+  "head_fit_updates": 0,
+  "optimizer_updates": 0,
+  "parameter_buffer_changes": 0,
+  "physical_Hz_gradients": true,
+  "augmentation": "Original native E1 and min(E50,E33) ordinary augmentation; same actual IQ in paired forwards; matched RNG per arm/stage/batch",
+  "source_seen_L": true,
+  "limitation": "Frozen already-trained source L operation diagnosis; not unseen RX, training causality or performance evidence. No pseudo/U gradient is measured.",
+  "summary": [
+    {
+      "arm": "A",
+      "stage": "initial",
+      "groups": {
+        "Sinc": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 37,
+          "conflict_fraction": 0.74,
+          "cosine_mean": -0.18809483512158373,
+          "KL_to_CE_norm_median": 0.7845610394110774,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "time_middle": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 50,
+          "conflict_fraction": 1,
+          "cosine_mean": -0.6776781844563857,
+          "KL_to_CE_norm_median": 0.5845380411025568,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "SIG_TIME": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 50,
+          "conflict_fraction": 1,
+          "cosine_mean": -0.7070054008211626,
+          "KL_to_CE_norm_median": 0.5240122416204518,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "remaining_feature": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 50,
+          "conflict_fraction": 1,
+          "cosine_mean": -0.6790942543613058,
+          "KL_to_CE_norm_median": 0.6173592749485586,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "default_W": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 50,
+          "conflict_fraction": 1,
+          "cosine_mean": -0.5122949078788613,
+          "KL_to_CE_norm_median": 0.6022203573579827,
+          "total_gradient_opposes_CE_count": 0
+        }
+      },
+      "CE_mean": 3.3175176334381105,
+      "KL_mean": 1.3195187258720398
+    },
+    {
+      "arm": "A",
+      "stage": "final50",
+      "groups": {
+        "Sinc": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 20,
+          "conflict_fraction": 0.4,
+          "cosine_mean": 0.1780848857573146,
+          "KL_to_CE_norm_median": 0.4162580012228667,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "time_middle": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 7,
+          "conflict_fraction": 0.14,
+          "cosine_mean": 0.2149548358731344,
+          "KL_to_CE_norm_median": 0.6021544222996672,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "SIG_TIME": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 5,
+          "conflict_fraction": 0.1,
+          "cosine_mean": 0.2433751912361558,
+          "KL_to_CE_norm_median": 0.47623773254623214,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "remaining_feature": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 13,
+          "conflict_fraction": 0.26,
+          "cosine_mean": 0.1842786534624049,
+          "KL_to_CE_norm_median": 0.4278442523180989,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "default_W": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 6,
+          "conflict_fraction": 0.12,
+          "cosine_mean": 0.21327132998474344,
+          "KL_to_CE_norm_median": 0.5782892873915257,
+          "total_gradient_opposes_CE_count": 0
+        }
+      },
+      "CE_mean": 0.2096663799881935,
+      "KL_mean": 0.029010571977123617
+    },
+    {
+      "arm": "E",
+      "stage": "initial",
+      "groups": {
+        "Sinc": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 37,
+          "conflict_fraction": 0.74,
+          "cosine_mean": -0.18809470066446848,
+          "KL_to_CE_norm_median": 0.7845597665858883,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "time_middle": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 50,
+          "conflict_fraction": 1,
+          "cosine_mean": -0.6776781844905168,
+          "KL_to_CE_norm_median": 0.5845380396630493,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "SIG_TIME": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 50,
+          "conflict_fraction": 1,
+          "cosine_mean": -0.7070054008309411,
+          "KL_to_CE_norm_median": 0.524012242769818,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "remaining_feature": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 50,
+          "conflict_fraction": 1,
+          "cosine_mean": -0.6790942543764544,
+          "KL_to_CE_norm_median": 0.6173592748868215,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "default_W": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 50,
+          "conflict_fraction": 1,
+          "cosine_mean": -0.5122949078788613,
+          "KL_to_CE_norm_median": 0.6022203573579827,
+          "total_gradient_opposes_CE_count": 0
+        }
+      },
+      "CE_mean": 3.3175176334381105,
+      "KL_mean": 1.3195187258720398
+    },
+    {
+      "arm": "E",
+      "stage": "final50",
+      "groups": {
+        "Sinc": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 9,
+          "conflict_fraction": 0.18,
+          "cosine_mean": 0.2867720001997531,
+          "KL_to_CE_norm_median": 0.4758149290139492,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "time_middle": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 3,
+          "conflict_fraction": 0.06,
+          "cosine_mean": 0.27005813302994036,
+          "KL_to_CE_norm_median": 0.6308844611785261,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "SIG_TIME": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 4,
+          "conflict_fraction": 0.08,
+          "cosine_mean": 0.2221767080167505,
+          "KL_to_CE_norm_median": 0.5673170008382513,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "remaining_feature": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 10,
+          "conflict_fraction": 0.2,
+          "cosine_mean": 0.22095746854619874,
+          "KL_to_CE_norm_median": 0.43243303742609757,
+          "total_gradient_opposes_CE_count": 0
+        },
+        "default_W": {
+          "batches": 50,
+          "valid_cosines": 50,
+          "conflict_count": 8,
+          "conflict_fraction": 0.16,
+          "cosine_mean": 0.22066540326481413,
+          "KL_to_CE_norm_median": 0.6628853753970412,
+          "total_gradient_opposes_CE_count": 0
+        }
+      },
+      "CE_mean": 0.21089746579527854,
+      "KL_mean": 0.02847496384754777
+    }
+  ],
+  "elapsed_seconds": 27.81764793395996
+}

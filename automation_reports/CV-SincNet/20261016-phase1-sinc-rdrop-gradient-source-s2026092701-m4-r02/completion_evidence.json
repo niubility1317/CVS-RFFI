@@ -1,0 +1,115 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02",
+  "original_pid": 3600967,
+  "process_live": false,
+  "completion": {
+    "status": "ANALYZED",
+    "rows": 4,
+    "batches": 200,
+    "head_fit_updates": 0,
+    "optimizer_updates": 0,
+    "target_access": false
+  },
+  "rows": [
+    {
+      "arm": "A",
+      "stage": "initial",
+      "batches": 50,
+      "complete": {
+        "status": "ANALYZED",
+        "row_id": "A-initial-s2026092701",
+        "source_L_packets": 6300,
+        "batches": 50,
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "parameter_buffer_changes": 0,
+        "target_access": false
+      }
+    },
+    {
+      "arm": "A",
+      "stage": "final50",
+      "batches": 50,
+      "complete": {
+        "status": "ANALYZED",
+        "row_id": "A-final50-s2026092701",
+        "source_L_packets": 6300,
+        "batches": 50,
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "parameter_buffer_changes": 0,
+        "target_access": false
+      }
+    },
+    {
+      "arm": "E",
+      "stage": "initial",
+      "batches": 50,
+      "complete": {
+        "status": "ANALYZED",
+        "row_id": "E-initial-s2026092701",
+        "source_L_packets": 6300,
+        "batches": 50,
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "parameter_buffer_changes": 0,
+        "target_access": false
+      }
+    },
+    {
+      "arm": "E",
+      "stage": "final50",
+      "batches": 50,
+      "complete": {
+        "status": "ANALYZED",
+        "row_id": "E-final50-s2026092701",
+        "source_L_packets": 6300,
+        "batches": 50,
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "parameter_buffer_changes": 0,
+        "target_access": false
+      }
+    }
+  ],
+  "real_checkpoint_no_query_smoke": [
+    {
+      "arm": "A",
+      "stage": "initial",
+      "status": "PASS",
+      "query_read": false,
+      "head_fit_updates": 0
+    },
+    {
+      "arm": "A",
+      "stage": "final50",
+      "status": "PASS",
+      "query_read": false,
+      "head_fit_updates": 0
+    },
+    {
+      "arm": "E",
+      "stage": "initial",
+      "status": "PASS",
+      "query_read": false,
+      "head_fit_updates": 0
+    },
+    {
+      "arm": "E",
+      "stage": "final50",
+      "status": "PASS",
+      "query_read": false,
+      "head_fit_updates": 0
+    }
+  ],
+  "code_commit": "c10ddb72d5b529d7e47b62dd94a4af8d57a2c669",
+  "archive_SHA_comparison": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "initial_process_identity_observed": true,
+  "log_first_bytes": 66,
+  "log_final_bytes": 6238,
+  "log_growth": true,
+  "head_fit_updates": 0,
+  "target_access": false
+}

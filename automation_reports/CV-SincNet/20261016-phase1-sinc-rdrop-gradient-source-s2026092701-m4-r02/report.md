@@ -1,6 +1,6 @@
 # Sinc 与 RDrop：源 L 梯度分解
 
-状态：PLANNED，尚无真实源梯度或性能结果。用户要求继续优化 Sinc 与 RDrop 的配合，本次先做最小无更新机制诊断。全部后续性能结论仍须默认头匹配训练与独立 truth-last 评分，本诊断不能替代。
+状态：ANALYZED／VERIFIED，四状态源诊断完成；没有新目标性能结果。完整统计、原定负判据与下一源假设见 [final_analysis.md](final_analysis.md)。用户要求继续优化 Sinc 与 RDrop 的配合，本次先做最小无更新机制诊断。全部后续性能结论仍须默认头匹配训练与独立 truth-last 评分，本诊断不能替代。
 
 固定四状态：A/E、seed2026092701、各自原始 initial 和 fixed-final50 student；A 为原 RAW 标准优化器，E 为统一居中＋物理单位更新。复用 A–F 执行提交09554c3a与已有空祖先、物理角色、默认头、固定终轮来源检查；不因目标数字选择 checkpoint。原7/63/30与 NoExplicitCFO 不变。
 
@@ -19,3 +19,5 @@
 本地验证：CPU/CUDA 两种真实网络 A/E 均通过，五组 CE/KL 梯度非零、48 个 Sinc 分量及参数 buffers 保留，3 个负例通过，compile PASS。GPU 观察超时未作为检查失败或运行依据；核实原检查进程结束后，保存重读检查日志并核实 PASS。本地源 IQ/CP/optimizer/head 更新均为0。
 
 r02 技术修复：激活脚本明确使用既有CVS-RFFI解释器，回归检查固定实际SSH命令最后一项。r01的失败归档与未启动证据保留。数据、四状态、增强、梯度方法和成本不变；新不可覆盖root。
+
+收尾：200批 Sinc 物理梯度独立复算PASS，E final50冲突9/50未过10批立项阈值；关闭KL删除/投影路线。另52个旧真实更新步的窄带相对位移证据单独报告，不冒充新训练。总性能目标仍ACTIVE。
