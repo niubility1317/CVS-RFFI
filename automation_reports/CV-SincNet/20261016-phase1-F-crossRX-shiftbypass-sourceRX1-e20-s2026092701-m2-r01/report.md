@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：旧循环移位旁路的匹配 E20 源域消融
 
-状态：RUNNING／VERIFIED。两组已从零启动，尚未完成训练或源评分。唯一假设：在所有训练成本与原始监督份额匹配时，只旁路旧普通 IQ 循环移位能提升未见源 RX clean，同时保护六个 practical。这是旧普通配方修正，不是新的时延增强，也不是已成立的 A_g。
+状态：ANALYZED_SOURCE_ONLY／VERIFIED。两组scratchE20、全部七个源视图及独立完整复算已完成。固定循环移位旁路候选未通过源条件，关闭固定配方。唯一假设：在所有训练成本与原始监督份额匹配时，只旁路旧普通 IQ 循环移位能提升未见源 RX clean，同时保护六个 practical。这是旧普通配方修正，不是新的时延增强，也不是已成立的 A_g。
 
 前项冻结源fit诊断已完整复算：3946个非零shift观测，150修复/16新错、净恢复+3.395844pp；全65520增强观测+0.204518pp，4个fitRX均为正。其模型已经见过fitL，不能由此推断训练后的跨RX收益。历史PA旁路曾有更大fit恢复却未转成E20 clean收益，本次仍须训练反证；微频移、常增益、PA旁路及分数时延的固定失败配方不救跑。
 
@@ -49,3 +49,68 @@
 
 
 本地调用环境问题在正式发布前解决：直接使用原生 Windows PowerShell 5.1和可运行的既有SSH客户端，补齐当前子进程缺失的标准环境；未修改系统配置。此前失败均发生在本地连接检查或GitHub访问层，没有远端训练提交、CP前向或重启。实际release只提交一次，训练配置和代码5476e2238保持固定。最近独立读回两worker均进入E4，前3轮各666步的shift gate/非零计数一致；此为运行核验，尚无完整源七视图结论。
+
+
+## 完整源结果与固定判断
+
+两worker与dispatcher自然退出，completion齐全，无failure、重启、热改或选择性重跑。每组E20/4440更新/3409920LNN、3330有效SupCon步/13320层位前向项；全部17640默认头源决策、20epoch日志、4440步native/view/Sincunit/shift、L/U物理序列与实际13截断日程独立复算。meanCE引用运行时默认头记录，hard predictions不含logits，未声称独立重算CE。
+
+| held源RX1视图 | B00准确率 | B10准确率 | 差值 | B00 Macro-F1 | B10 Macro-F1 | 修复/新错 |
+|---|---:|---:|---:|---:|---:|---:|
+| clean | 81.666667% | 82.063492% | +0.396825pp | 81.326326% | 81.709708% | 8/3 |
+| practical_high | 39.126984% | 38.333333% | -0.793651pp | 28.835668% | 27.457676% | 55/65 |
+| practical_mid | 38.809524% | 37.063492% | -1.746032pp | 29.626437% | 26.467528% | 48/70 |
+| practical_low_suburban | 35.317460% | 34.761905% | -0.555556pp | 27.941117% | 26.336153% | 45/52 |
+| practical_high_urban | 38.492063% | 37.380952% | -1.111111pp | 29.503436% | 27.559561% | 61/75 |
+| practical_mid_urban | 31.746032% | 31.825397% | +0.079365pp | 26.718790% | 25.708636% | 46/45 |
+| practical_low_urban | 28.492063% | 27.222222% | -1.269841pp | 24.657720% | 22.885326% | 25/41 |
+
+| suburban与自身clean绝对差 | B00 | B10 |
+|---|---:|---:|
+| practical_high | 42.539683pp | 43.730159pp |
+| practical_mid | 42.857143pp | 45.000000pp |
+| practical_low_suburban | 46.349206pp | 47.301587pp |
+
+预登记条件：{"healthy": true, "clean": false, "clean_macroF1": true, "practical_protection": false, "seen_V": true}，所有条件同时成立才晋级。不能删去任一失败视图、降低clean或用健康检查代替识别结果。
+
+- B00：finalLCE=0.277217768，seenV=98.041667%；实际NN=4686678，墙钟=1249.471秒，完整stdout=800行。ordinary eligible生成568320、调用4440，实际shift批gate284、非零shift33497、gather IQ变动33497；B10旁路返回全部ordinary调用的eligible包0，不把此数称实际施加shift。额外draw观测36352个scalar；ordinary真实输入MSE复算最大差2.38418579e-07。
+- B10：finalLCE=0.263099430，seenV=98.037037%；实际NN=4686678，墙钟=1337.337秒，完整stdout=800行。ordinary eligible生成568320、调用4440，实际shift批gate284、非零shift33497、gather IQ变动33497；B10旁路返回全部ordinary调用的eligible包568320，不把此数称实际施加shift。额外draw观测36352个scalar；ordinary真实输入MSE复算最大差2.38418579e-07。
+
+两组逐step整数shift、非零/变动mask、gate、有效概率/最大shift、PA触发和strength匹配：{"shifts": true, "nonzero_bits": true, "shift_changed_bits": true, "shift_gate_calls": true, "effective_p_time_shift": true, "effective_p_pa": true, "effective_max_time_shift": true, "PA_triggered_bits": true, "PA_strength": true}。原L/U物理序列完全相同，U真值可用和非有限跳步均0；同IQ RDrop对、六L前向和目标尺度逐步复算，无As训练、头拟合或新部署模块。
+
+正式训练共40模型轮/8880更新，含dispatcher真实CP smoke2包，总实际NN=9373358。L/U学生、EMA、V/学生评估与held8820分别计量，EMA复制的eval计数偏移2已扣除。每arm568320native ordinary生成；局部合成13056增强/2312NN/2更新和先前冻结shift诊断136082NN/0更新单列，不冒充真实训练成本。无训练父权重或target访问。
+
+已否定这项固定shift-bypass训练配方的晋级依据；冻结fit源的+3.395844pp恢复没有证明训练后的共同收益。关闭该配方，不扩seed，不换RX/draw/范围/阈值或追加训练救跑。clean、practical、类别和suburban差距按实际全表解释，不能通过错误重新分配宣称联合成功。
+
+| 分层差值 | clean | high sub | mid sub | low sub | high urban | mid urban | low urban |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| TX0 | +0.476190pp | -0.476190pp | -2.857143pp | -1.428571pp | -1.428571pp | -2.857143pp | -2.857143pp |
+| TX1 | +0.000000pp | +0.000000pp | -0.476190pp | -0.476190pp | +0.000000pp | -0.952381pp | -0.476190pp |
+| TX2 | +0.476190pp | +23.333333pp | +20.000000pp | +17.142857pp | +26.666667pp | +14.761905pp | +8.095238pp |
+| TX3 | +0.476190pp | -22.857143pp | -21.428571pp | -14.285714pp | -26.190476pp | -11.428571pp | -12.380952pp |
+| TX4 | +0.000000pp | -0.952381pp | -0.476190pp | +0.000000pp | -0.476190pp | +3.333333pp | +0.476190pp |
+| TX5 | +0.952381pp | -3.809524pp | -5.238095pp | -4.285714pp | -5.238095pp | -2.380952pp | -0.476190pp |
+| day1 | +0.000000pp | -0.952381pp | +0.000000pp | +1.190476pp | +0.000000pp | -1.190476pp | -2.857143pp |
+| day2 | +0.000000pp | -3.571429pp | -4.523810pp | -4.285714pp | -3.333333pp | -1.190476pp | -1.190476pp |
+| day3 | +1.190476pp | +2.142857pp | -0.714286pp | +1.428571pp | +0.000000pp | +2.619048pp | +0.238095pp |
+
+[完整源汇总](source_analysis.json)包含每视图CM、指标和全部成本；完整曲线、七视图/差距图、TX/day分层图及全部逐包证据保留于私有 `local_artifacts/F_shift_bypass20_20261016/final`，已渲染核对。正式target clean＋六practical、四因子交互和多seed联合目标仍未完成。
+
+
+识别收益的分配也不支持晋级：highurban中TX2为+26.666667pp、TX3为-26.190476pp；lowurban中分别为+8.095238pp和-12.380952pp。六practical的Macro-F1全部下降，包含midurban准确率微升但Macro-F1下降。不能把这类类别间错误转移称为更通用的身份提取。三个suburban与clean差距全部扩大。finalLCE由0.277218降到0.263099、V基本不变，并未改变科学FAIL。
+
+
+## 下一唯一假设：保留全部 baseline raw 监督，再独立添加 As
+
+[raw监督份额代码核对](../../../analysis/cvs_clean_supervision_mass_audit_20261016.md)确认旧六前向As比较同时把raw总权重0.75改为0.50；它不能解释因果，却使“原raw份额固定”的既有表述需要限制。这项新假设研究训练组织，保留完整practical传播、噪声、接收状态与补偿，不重开旧固定75/25替换配方，不再旁路PA或shift。
+
+后续最小控制矩阵拟固定同RX1源折、seed01、每row从零E20，沿用原F＋跨RX同TX、默认头、U、PA和shift。三个row都做8次L前向，原6次基线与全部raw0.75/ordinary0.25监督保持；新增一对同IQ随机子网络前向，分别为：D00额外raw但监督权重0的成本控制；D_raw额外raw、权重0.25的重复监督/目标尺度控制；D_As额外A_s(raw)、权重0.25。D00目标总权重1.00，后两组1.25，不能重新按视图数平均而稀释原监督。原baseline损失及每物理样本归一化、额外前向对随机状态和BatchNorm的影响须在实际实现中明确控制并记录。额外0权重仅属于明确预登记的成本控制，不引入无用教师或部署分支。
+
+0.25取自既有As监督系数，不从本次practical或目标分数选值。D_As所有合法L的卫星视图参与监督，不要求urban学生高置信。As只施加一次于raw，不把旧ordinary的AWGN/multipath再叠入As。原有RDrop仍是同IQ随机子网络配方，不能冒称IQ泛化增强。
+
+训练前固定的探索条件拟为：相对D00，D_As clean和clean Macro-F1均不下降，urban均值至少+3pp、lowurban至少+5pp，每个practical和V不低于−0.5pp；相对D_raw，也要求urban均值至少+3pp、lowurban至少+5pp，并保护clean/Macro-F1/每practical/V不低于−0.5pp。所有row完整E20、原数据权限、实际8次L前向与监督成本、无非有限跳步等健康条件也须成立。任一失败即关闭固定候选，不换seed/RX/系数/场景概率或追加预算救跑。PASS仅支持独立源确认，不等于A_g或联合目标成立。
+
+这只是下一候选的明确方案，尚未实现、登记或启动。训练命令、实际配置、BatchNorm/随机状态与8前向实现、本地验证及唯一P0/P1审查将在该新候选的正常最小流程内完成，不对当前已结束run追溯改配方。已重新读取另一对话，其当前实验为局部平滑IQ衰减；本方案研究监督组织，方向不同。正式target数据不参与设计。完整A_g/B00-B10-B01-B11、交互项、多seed和最终星地目标继续保留。
+
+
+权重口径补充：拟议D_As在保留baseline各损失绝对系数后，总目标为1.25；归一化相对份额为raw0.60/ordinary0.20/As0.20，不能写成raw相对份额不变。D_raw的raw总绝对权重1.00、ordinary0.25，同样总1.25；D00为raw0.75/ordinary0.25、总1.00。这是显式的监督重加权与新增视图组织，不是新的物理增强算子。AdamW和梯度裁剪下，原raw绝对系数保留并不保证实际clean保护，必须由三个控制row的识别结果回答；旧固定替换配方仍保持负结果和关闭状态，不做系数扫描。

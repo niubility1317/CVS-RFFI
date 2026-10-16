@@ -1,3 +1,5 @@
 # 旧循环移位匹配 E20 消融
 
 - [20261016-phase1-F-crossRX-shiftbypass-sourceRX1-e20-s2026092701-m2-r01](../../automation_reports/CV-SincNet/20261016-phase1-F-crossRX-shiftbypass-sourceRX1-e20-s2026092701-m2-r01/report.md)：F＋跨 RX 同 TX；固定sourceRX1/seed01/原U与PA/6forwards，真实状态见同row报告。
+
+最终状态：ANALYZED_SOURCE_ONLY／VERIFIED，原条件FAIL_FIXED_RECIPE_CLOSED；完整七视图与负结果、成本见同row原报告。

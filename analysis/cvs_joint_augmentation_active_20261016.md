@@ -123,3 +123,9 @@ PA旁路两组E20及七源视图已完整ANALYZED/VERIFIED，原条件FAIL固定
 
 
 上述普通循环移位旁路B00/B10已实际发布并运行，执行commit `5476e2238d6d43408227decf916f7177a02f2129`；archive/compile/真实CPsmoke/两worker PID-CWD-argv-GPU及日志增长VERIFIED。实际seed2026092701、20/13/7和无训练父权重均核对；当前未完成训练/源预测/独立评分，不能称Ag有效。
+
+
+旧循环移位旁路两组E20及七源视图完成全量复算VERIFIED，原条件FAIL固定配方关闭；clean差0.3968253968253954pp、lowurban差-1.2698412698412709pp，17640默认头决策及所有step/移位/PA/成本复算；无target或联合成功声明。
+
+
+下一唯一拟检验为保持完整baseline raw/ordinary监督的追加As训练组织，设置8前向同成本与额外raw监督/尺度控制，3row同源折/seed01 scratchE20。依据是实际旧As raw总权重.75->.50的代码事实，非已证实原因；具体原定候选条件和未启动边界见刚完成shift-bypass报告及活动配置。不复活旧shift/PA/gain/frequency失败配方，不访问target。

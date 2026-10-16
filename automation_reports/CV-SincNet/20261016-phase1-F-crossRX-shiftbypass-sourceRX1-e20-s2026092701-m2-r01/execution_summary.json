@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ANALYZED_SOURCE_ONLY",
   "code_commit": "5476e2238d6d43408227decf916f7177a02f2129",
   "archive_transfer": "VERIFIED",
   "remote_compile": "VERIFIED",
@@ -20,7 +20,10 @@
       "step_log_growth_verified": true,
       "phase_packets": 28416,
       "As_training": false,
-      "shift_bypass": false
+      "shift_bypass": false,
+      "training_epochs": 20,
+      "actual_optimizer_updates": 4440,
+      "training_and_source_views_complete": true
     },
     {
       "row_id": "B10-RX1-s2026092701",
@@ -35,10 +38,19 @@
       "step_log_growth_verified": true,
       "phase_packets": null,
       "As_training": false,
-      "shift_bypass": true
+      "shift_bypass": true,
+      "training_epochs": 20,
+      "actual_optimizer_updates": 4440,
+      "training_and_source_views_complete": true
     }
   ],
-  "independent_analysis_code": "Prepared/compiled,no completed predictions scored;CE reported only because saved hard predictions have no logits",
+  "independent_analysis_code": "Executed against all17640 complete hard predictions and full logs;CE reported only,logits not saved",
   "Git_code_delivery": "VERIFIED remote branch OID equals execution commit after recovery via existing system proxy",
-  "local_invocation_recovery": "Resolved before first remote release;no remote restarts or scientific budget changes"
+  "local_invocation_recovery": "Resolved before first remote release;no remote restarts or scientific budget changes",
+  "terminal_processes": "Dispatcher and both workers naturally exited;completion exists,failure absent",
+  "all_seven_source_views_per_row_independently_recounted": true,
+  "full_native_steps_recounted_per_row": 4440,
+  "source_qualification": "FAIL_FIXED_RECIPE_CLOSED",
+  "actual_total_NN_forward_packets": 9373358,
+  "joint_goal_complete": false
 }

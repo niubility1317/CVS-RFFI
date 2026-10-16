@@ -28,7 +28,7 @@
     "optimizer_updates_per_model": 4440,
     "final_checkpoint": 20,
     "label_smoothing": 0.01,
-    "RDrop_alpha": 1.0,
+    "RDrop_alpha": 1,
     "RDrop_same_generated_IQ_in_each_pair": true,
     "ordinary_augmentation": "Retain the actual existing F+CROSS_RX native ordinary augmentation as a common baseline ingredient in all cells; log resolved flags and generated inputs. B00 means no NEW Ag and no As, not augmentation-free.",
     "U": "Existing hidden-label batch_neighbor oldgate/ownEMA/cos path; no new U augmentation, feature contrast or U truth access in first round",
@@ -131,38 +131,69 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": {
-    "name": "Same-draw ordinary circular-shift bypass improves heldRX clean under scratchE20 F+CROSS_RX",
-    "status": "RUNNING_SOURCE_E20_NO_RESULT_YET",
-    "minimum": "Fixed sourceRX1 fold,seed01,scratchE20 matched B00/shiftbypass,6Lforwards,raw.5/oldordinary.25/slotraw.25,originalU/PA/SupCon;actual native shift draws preserved",
-    "criteria": {
-      "primary": "B10",
-      "reference": "B00",
-      "fixed_final": 20,
-      "held_RX": 1,
-      "held_L": 1260,
-      "views": [
-        "clean",
-        "practical_high",
-        "practical_mid",
-        "practical_low_suburban",
-        "practical_high_urban",
-        "practical_mid_urban",
-        "practical_low_urban"
+    "name": "Add full practical supervision without reducing any existing baseline raw/ordinary loss,with extra-forward and repeated-raw-loss controls",
+    "type": "As training organization,not new Ag or reopening fixed replacement ratio",
+    "status": "PROPOSED_NOT_IMPLEMENTED_REGISTERED_OR_LAUNCHED",
+    "basis": "Actual oldAs hook reduces rawtotal.75->.50 despite mainraw.50 fixed;this is a comparison confound,not a proved cause",
+    "baseline": "F+CROSS_RX originalPA/shift/U/defaultcos/NoExplicitCFO,all common base raw.75+ordinary.25 retained",
+    "minimum": {
+      "source_fold": "heldRX1,fitRX3/4/6/8,L5040/U45360/V21600,heldL1260",
+      "model_seed": 2026092701,
+      "rows": [
+        "D00:extra raw pair,zero extra supervision,cost control",
+        "D_raw:extra raw pair,+.25 old pair objective,scale/repeated-supervision control",
+        "D_As:extra full practical(raw) pair,+.25 old pair objective"
       ],
-      "min_clean_gain_pp": 1.0,
-      "min_clean_macroF1_gain_pp": 0.0,
-      "max_each_practical_drop_pp": 0.5,
-      "max_seenV_drop_pp": 0.5,
-      "final_L_CE_max": 0.5,
-      "on_fail": "Close fixed shift-bypass training recipe;no seed/RX/intensity/threshold rescue",
-      "on_pass": "Supports separate independent source confirmation only;not Ag/DG efficacy or automatic target"
+      "scratch_E20_each": true,
+      "L_forwards_each": 8,
+      "common_base_forward_pairs": 3,
+      "new_forward_pairs": 1,
+      "U_rule": "Original unchanged,truth hidden",
+      "loss_scales": {
+        "D00": 1,
+        "D_raw": 1.25,
+        "D_As": 1.25
+      }
     },
-    "abandon": "Any fixed criterion fails:no seed/RX/draw/threshold rescue",
-    "source_only": true,
+    "coefficient_basis": "Existing .25 satellite coefficient,not selected from target/current practical scores",
+    "proposed_source_criteria": {
+      "vs_D00": {
+        "clean_gain_pp_min": 0,
+        "clean_F1_gain_pp_min": 0,
+        "urban_mean_gain_pp_min": 3,
+        "lowurban_gain_pp_min": 5,
+        "each_practical_and_V_drop_pp_max": 0.5
+      },
+      "vs_D_raw": {
+        "urban_mean_gain_pp_min": 3,
+        "lowurban_gain_pp_min": 5,
+        "clean_F1_each_practical_V_drop_pp_max": 0.5
+      },
+      "healthy_all_E20": true
+    },
+    "implementation_requirements": "Explicit actual normalization,matched8forwards,BN/RNG effects,cost records,allLAs supervised;no new diagnostic head or deploy branch",
+    "abandon": "Any fixed criterion fails:close,no seed/RX/coefficient/scene-probability/extra-budget rescue",
     "target_access": false,
     "Ag_efficacy_proved": false,
-    "run_id": "20261016-phase1-F-crossRX-shiftbypass-sourceRX1-e20-s2026092701-m2-r01",
-    "execution_commit": "5476e2238d6d43408227decf916f7177a02f2129"
+    "joint_goal_complete": false,
+    "normalized_loss_weights": {
+      "D00": {
+        "raw": 0.75,
+        "ordinary": 0.25,
+        "As": 0
+      },
+      "D_raw": {
+        "raw": 0.8,
+        "ordinary": 0.2,
+        "As": 0
+      },
+      "D_As": {
+        "raw": 0.6,
+        "ordinary": 0.2,
+        "As": 0.2
+      }
+    },
+    "weight_scope": "Retain original absolute base-loss coefficients;relative fractions do change as explicitly disclosed;AdamW/clipping and clean protection require real controlled results"
   },
   "next_training_hypothesis": {
     "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
@@ -181,8 +212,8 @@
       0.25
     ],
     "source_thresholds": {
-      "clean_gain_pp": 1.0,
-      "macroF1_gain_pp": 0.0,
+      "clean_gain_pp": 1,
+      "macroF1_gain_pp": 0,
       "seenV_min_gain_pp": -0.5
     },
     "execution_commit": "39d95f79d91ccf2a570f1c1349adacfb409c0833",
@@ -426,8 +457,8 @@
         "actual_NN_packets": 162,
         "real_source_IQ_reads": 0,
         "criteria": {
-          "gain_RMS_relative_error_max": 1e-06,
-          "restored_input_relative_error_max": 1e-06,
+          "gain_RMS_relative_error_max": 0.000001,
+          "restored_input_relative_error_max": 0.000001,
           "restored_normalized_joint_relative_error_max": 0.0001,
           "restored_logits_abs_error_max": 0.001,
           "at_least_one_endpoint_median_normalized_joint_change_min": 0.001,
@@ -451,8 +482,8 @@
           "practical_mid_urban",
           "practical_low_urban"
         ],
-        "min_clean_gain_pp": 1.0,
-        "min_clean_macroF1_gain_pp": 0.0,
+        "min_clean_gain_pp": 1,
+        "min_clean_macroF1_gain_pp": 0,
         "max_each_practical_drop_pp": 0.5,
         "max_seenV_drop_pp": 0.5,
         "final_L_CE_max": 0.5,
@@ -499,34 +530,34 @@
     },
     "views": {
       "identity": {
-        "normalized_joint_change_median": 0.0,
-        "normalized_joint_change_max": 0.0,
-        "logits_abs_change_max": 0.0,
-        "power_relative_error_max": 0.0
+        "normalized_joint_change_median": 0,
+        "normalized_joint_change_max": 0,
+        "logits_abs_change_max": 0,
+        "power_relative_error_max": 0
       },
       "frequency_positive": {
         "normalized_joint_change_median": 0.028114057573549345,
         "normalized_joint_change_max": 0.07891873674507616,
         "logits_abs_change_max": 0.8001323938369751,
-        "power_relative_error_max": 1.1920929665620903e-07
+        "power_relative_error_max": 1.1920929665620903e-7
       },
       "frequency_negative": {
         "normalized_joint_change_median": 0.030933952366895397,
         "normalized_joint_change_max": 0.09228761947654268,
         "logits_abs_change_max": 0.6867258548736572,
-        "power_relative_error_max": 1.1920929665620903e-07
+        "power_relative_error_max": 1.1920929665620903e-7
       },
       "positive_inverse": {
-        "normalized_joint_change_median": 2.468312315427261e-07,
-        "normalized_joint_change_max": 4.3724486502102043e-07,
-        "logits_abs_change_max": 2.1457672119140625e-06,
-        "power_relative_error_max": 1.1920929665620903e-07
+        "normalized_joint_change_median": 2.468312315427261e-7,
+        "normalized_joint_change_max": 4.3724486502102043e-7,
+        "logits_abs_change_max": 0.0000021457672119140625,
+        "power_relative_error_max": 1.1920929665620903e-7
       },
       "negative_inverse": {
-        "normalized_joint_change_median": 2.435286810695189e-07,
-        "normalized_joint_change_max": 4.6643793881199466e-07,
-        "logits_abs_change_max": 2.9653310775756836e-06,
-        "power_relative_error_max": 1.1920929665620903e-07
+        "normalized_joint_change_median": 2.435286810695189e-7,
+        "normalized_joint_change_max": 4.6643793881199466e-7,
+        "logits_abs_change_max": 0.0000029653310775756836,
+        "power_relative_error_max": 1.1920929665620903e-7
       }
     },
     "actual_NN_packets": 162,
@@ -552,7 +583,7 @@
     },
     "paired": {
       "clean": {
-        "accuracy_gain_pp": 0.0,
+        "accuracy_gain_pp": 0,
         "macro_F1_gain_pp": 0.0717589121125517,
         "repaired": 9,
         "broken": 9
@@ -632,8 +663,8 @@
           "practical_mid_urban",
           "practical_low_urban"
         ],
-        "min_clean_gain_pp": 1.0,
-        "min_clean_macroF1_gain_pp": 0.0,
+        "min_clean_gain_pp": 1,
+        "min_clean_macroF1_gain_pp": 0,
         "max_each_practical_drop_pp": 0.5,
         "max_seenV_drop_pp": 0.5,
         "final_L_CE_max": 0.5,
@@ -671,5 +702,91 @@
     "training_updates": 0,
     "target_access": false,
     "Ag_efficacy_proved": false
+  },
+  "source_shift_bypass_E20_result": {
+    "run_id": "20261016-phase1-F-crossRX-shiftbypass-sourceRX1-e20-s2026092701-m2-r01",
+    "status": "ANALYZED_SOURCE_FAIL_FIXED_RECIPE_CLOSED",
+    "qualification": {
+      "qualified": false,
+      "conditions": {
+        "healthy": true,
+        "clean": false,
+        "clean_macroF1": true,
+        "practical_protection": false,
+        "seen_V": true
+      },
+      "urban_mean_gain_pp": -0.7671957671957682,
+      "seen_V_gain_pp": -0.004629629629637755
+    },
+    "paired": {
+      "clean": {
+        "accuracy_gain_pp": 0.3968253968253954,
+        "macro_F1_gain_pp": 0.3833814912544198,
+        "repaired": 8,
+        "broken": 3
+      },
+      "practical_high": {
+        "accuracy_gain_pp": -0.7936507936507908,
+        "macro_F1_gain_pp": -1.377992409275397,
+        "repaired": 55,
+        "broken": 65
+      },
+      "practical_mid": {
+        "accuracy_gain_pp": -1.7460317460317454,
+        "macro_F1_gain_pp": -3.158908567612273,
+        "repaired": 48,
+        "broken": 70
+      },
+      "practical_low_suburban": {
+        "accuracy_gain_pp": -0.5555555555555591,
+        "macro_F1_gain_pp": -1.6049646561566655,
+        "repaired": 45,
+        "broken": 52
+      },
+      "practical_high_urban": {
+        "accuracy_gain_pp": -1.1111111111111127,
+        "macro_F1_gain_pp": -1.9438753405688791,
+        "repaired": 61,
+        "broken": 75
+      },
+      "practical_mid_urban": {
+        "accuracy_gain_pp": 0.07936507936507908,
+        "macro_F1_gain_pp": -1.0101538155150136,
+        "repaired": 46,
+        "broken": 45
+      },
+      "practical_low_urban": {
+        "accuracy_gain_pp": -1.2698412698412709,
+        "macro_F1_gain_pp": -1.7723942052448622,
+        "repaired": 25,
+        "broken": 41
+      }
+    },
+    "training_updates": 8880,
+    "actual_NN_packets": 9373358,
+    "target_access": false,
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false,
+    "fixed_hypothesis_closed": true,
+    "no_rescue": "No further seed/RX/draw/range/threshold rescue;ordinary shift remains original in future common baseline"
+  },
+  "ordinary_view_weight_audit": {
+    "status": "CODE_FACT_VERIFIED_NO_NEW_IQ_OR_NN",
+    "source": "experiments/cvs_crossrx_satmix20/model.py:hook/backend0ae066",
+    "reference": "analysis/cvs_clean_supervision_mass_audit_20261016.md",
+    "old_noAs": {
+      "raw": 0.75,
+      "ordinary": 0.25,
+      "As": 0,
+      "total": 1
+    },
+    "old_As": {
+      "raw": 0.5,
+      "ordinary": 0.25,
+      "As": 0.25,
+      "total": 1
+    },
+    "causal_explanation_proved": false,
+    "healthy_tasks_changed": false
   }
 }
