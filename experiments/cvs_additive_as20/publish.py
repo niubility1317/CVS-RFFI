@@ -10,7 +10,11 @@ def remote(script):
     if r.returncode:raise RuntimeError(r.stderr.decode('utf8',errors='replace'))
     return json.loads(r.stdout)
 
-def main():
+def main(profile=None):
+    if profile is not None:
+        from .confirmation import PROFILE,activate
+        if profile!=PROFILE:raise ValueError('Unregistered immutable runtime profile')
+        activate()
     package='experiments/cvs_additive_as20';local=d.ROOT/d.LOCAL;local.mkdir(parents=True,exist_ok=True)
     if subprocess.check_output(['git','status','--porcelain','--',package],cwd=d.ROOT,text=True).strip():raise ValueError('Commit source diagnostic before release')
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=d.ROOT,text=True).strip();release=d.PROJECT+'/releases/'+d.RELEASE
@@ -31,7 +35,7 @@ print(json.dumps(dict(status='VERIFIED',ordinary_account=True,immutable_model_de
     with tarfile.open(fileobj=io.BytesIO(raw)) as source,tarfile.open(archive,'w:gz') as target:
         for member in source.getmembers():
             if member.isfile():target.addfile(member,source.extractfile(member))
-        for name,data in (('release_commit.txt',(commit+'\n').encode()),('runtime.json',json.dumps(dict(backend=d.BACKEND)).encode()),('registration/experiment.json',record)):
+        for name,data in (('release_commit.txt',(commit+'\n').encode()),('runtime.json',json.dumps(dict(backend=d.BACKEND,profile=profile)).encode()),('registration/experiment.json',record)):
             item=tarfile.TarInfo(name);item.size=len(data);target.addfile(item,io.BytesIO(data))
     c['sha256']=hashlib.sha256(archive.read_bytes()).hexdigest();subprocess.run(['scp',*SSH,str(archive),'N607:'+c['archive']],capture_output=True,check=True,timeout=60)
     script=r'''

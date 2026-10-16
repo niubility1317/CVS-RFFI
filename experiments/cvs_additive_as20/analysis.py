@@ -117,8 +117,10 @@ def analyze(arms=ARMS):
   with (OUT/name).open('w',encoding='utf8',newline='') as f:w=csv.DictWriter(f,fieldnames=fields);w.writeheader();w.writerows(values)
  return value
 if __name__=='__main__':
- arms=ARMS
- if len(sys.argv)>1:
-  assert len(sys.argv)==3 and sys.argv[1]=='--row' and sys.argv[2] in ARMS
-  arms=(sys.argv[2],)
+ args=sys.argv[1:];arms=ARMS
+ if args[:1]==['--confirmation-seed02']:
+  SEED=2026092702;RUN='20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01';OUT=ROOT/'local_artifacts/F_additive_As_confirm20_20261016/final';args=args[1:]
+ if args:
+  assert len(args)==2 and args[0]=='--row' and args[1] in ARMS
+  arms=(args[1],)
  v=analyze(arms);print(json.dumps({k:v[k] for k in ('status','qualification','total_actual_NN_forward_packets') if k in v},ensure_ascii=False))

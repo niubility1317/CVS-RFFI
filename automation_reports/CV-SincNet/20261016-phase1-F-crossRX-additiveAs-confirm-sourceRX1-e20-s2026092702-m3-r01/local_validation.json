@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "profile": "confirmation_seed02",
+  "rows": [
+    {
+      "row_id": "D00-RX1-s2026092702",
+      "native_model_seed": 2026092702,
+      "actual_F_model_config_seed": 2026092702,
+      "native_argument_changes": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "original_loss_IQ_U_channel_data_budget": true,
+      "no_checkpoint_initialization": true
+    },
+    {
+      "row_id": "D_raw-RX1-s2026092702",
+      "native_model_seed": 2026092702,
+      "actual_F_model_config_seed": 2026092702,
+      "native_argument_changes": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "original_loss_IQ_U_channel_data_budget": true,
+      "no_checkpoint_initialization": true
+    },
+    {
+      "row_id": "D_As-RX1-s2026092702",
+      "native_model_seed": 2026092702,
+      "actual_F_model_config_seed": 2026092702,
+      "native_argument_changes": [
+        "candidate_id",
+        "output_dir",
+        "run_id",
+        "seed"
+      ],
+      "original_loss_IQ_U_channel_data_budget": true,
+      "no_checkpoint_initialization": true
+    }
+  ],
+  "negative_cases": 24,
+  "three_seed02_initial_states_equal": true,
+  "seed02_states_differ_from_seed01": true,
+  "unchanged_state_keys": true,
+  "first_source_rule_pass_required": true,
+  "source_IQ_reads": 0,
+  "target_access": false,
+  "model_forward_packets": 0,
+  "optimizer_updates": 0,
+  "prior_mechanism_checks": "Original20negative/3858syntheticNN/3syntheticupdates retained;not repeated"
+}

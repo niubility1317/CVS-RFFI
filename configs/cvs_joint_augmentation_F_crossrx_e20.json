@@ -898,5 +898,24 @@
     },
     "causal_explanation_proved": false,
     "healthy_tasks_changed": false
+  },
+  "additive_As_independent_confirmation": {
+    "status": "REGISTERED_NOT_LAUNCHED",
+    "run_id": "20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01",
+    "first_source": "20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01",
+    "model_seed": 2026092702,
+    "rows": [
+      "D00-RX1-s2026092702",
+      "D_raw-RX1-s2026092702",
+      "D_As-RX1-s2026092702"
+    ],
+    "epochs_per_model": 20,
+    "new_model_epochs": 60,
+    "new_optimizer_updates": 13320,
+    "recipe_unchanged": true,
+    "original_conditions_required": true,
+    "on_fail": "Stopfixedcandidate,no seed03/RX/coefficient/sceneprobability/extra-budget rescue",
+    "target_access": false,
+    "joint_goal_complete": false
   }
 }

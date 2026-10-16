@@ -141,3 +141,6 @@ additive As三组E20、七源视图及全部轨迹已ANALYZED/VERIFIED；PASS_SO
 
 
 本轮additive As通过单seed源规则，但TX标签2/3在六practical仍负；lowurban仅33.809524%，suburban自身clean差25.396825/28.809524/32.063492pp，完整目标未达。下一唯一假设是原样seed2026092702三组E20独立确认；失败停止固定候选，不以seed03或参数救跑；尚未登记发布。
+
+
+固定additive As seed02独立确认已登记 20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01，三组原样scratchE20/8L前向，原条件和U保持，实际native与F modelconfig seed均02；24负例/初始state验证PASS、0IQ/0NN/0优化；一次新增profile P0/P1定向审查PASS，未复审旧机制。尚未启动。首轮PASS及TX2/3负面保留，确认失败不做seed03等救跑；目标仍未达。

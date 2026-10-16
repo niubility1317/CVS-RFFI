@@ -2,12 +2,17 @@
 import importlib.util,json,sys,types
 from pathlib import Path
 def bootstrap():
- here=Path(__file__).resolve().parents[2];backend=Path(json.loads((here/'runtime.json').read_text(encoding='utf8'))['backend'])
+ here=Path(__file__).resolve().parents[2];runtime=json.loads((here/'runtime.json').read_text(encoding='utf8'));profile=runtime.get('profile')
+ if profile not in (None,'confirmation_seed02'):raise ValueError('Unregistered immutable runtime profile')
+ backend=Path(runtime['backend'])
  spec=importlib.util.spec_from_file_location('additive_As_backend',backend/'experiments/cvs_crossrx_satmix20/runner.py');m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m);m.bootstrap()
  name='experiments.cvs_additive_as20';package=types.ModuleType(name);package.__path__=[str(here/'experiments/cvs_additive_as20')];sys.modules[name]=package
+ if profile=='confirmation_seed02':
+  from experiments.cvs_additive_as20.confirmation import activate
+  activate()
  return here
 if __name__=='__main__':
- if not (len(sys.argv)==1 or (len(sys.argv)==3 and sys.argv[1]=='--worker' and sys.argv[2] in ('D00-RX1-s2026092701','D_raw-RX1-s2026092701','D_As-RX1-s2026092701'))):raise ValueError('No budget/data/additive-weight overrides permitted')
+ if not (len(sys.argv)==1 or (len(sys.argv)==3 and sys.argv[1]=='--worker' and sys.argv[2] in ('D00-RX1-s2026092701','D_raw-RX1-s2026092701','D_As-RX1-s2026092701','D00-RX1-s2026092702','D_raw-RX1-s2026092702','D_As-RX1-s2026092702'))):raise ValueError('No budget/data/additive-weight overrides permitted')
  bootstrap()
  from experiments.cvs_additive_as20 import design as d
  if len(sys.argv)==3 and sys.argv[1]=='--worker':
