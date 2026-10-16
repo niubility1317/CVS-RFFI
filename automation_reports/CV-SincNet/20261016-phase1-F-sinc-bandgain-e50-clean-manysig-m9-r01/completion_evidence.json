@@ -1,0 +1,20 @@
+{
+  "status": "ARTIFACTS_COMPLETE_VERIFIED",
+  "run_id": "20261016-phase1-F-sinc-bandgain-e50-clean-manysig-m9-r01",
+  "execution_commit": "bc9130137155ae46cf302795465757b2f23e9f59",
+  "rows": 9,
+  "new_models": 6,
+  "new_epochs": 300,
+  "new_optimizer_steps": 66600,
+  "truth_last": true,
+  "head_fit_updates": 0,
+  "all_training_workers_exited_naturally": true,
+  "dispatcher_exited_naturally": true,
+  "no_owned_GPU_process_remaining": true,
+  "independent_target_confusion_recount": 162,
+  "paired_same_physical_IDs": true,
+  "source_performance_gate": false,
+  "source_steps_recounted": 66600,
+  "hidden_U_observations_recounted": 5783400,
+  "goal_actual_improvement": false
+}
