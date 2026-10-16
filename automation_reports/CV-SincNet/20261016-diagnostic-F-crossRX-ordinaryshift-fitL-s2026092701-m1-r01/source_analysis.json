@@ -1,0 +1,3196 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY_VERIFIED",
+  "run_id": "20261016-diagnostic-F-crossRX-ordinaryshift-fitL-s2026092701-m1-r01",
+  "decision": "PASS",
+  "conditions": {
+    "nonzero_coverage": true,
+    "identity_recovery": true,
+    "RX_coverage": true,
+    "RX_positive": true
+  },
+  "raw_score": {
+    "count": 5040,
+    "accuracy": 0.9984126984126984,
+    "macro_F1": 0.9984122218524187,
+    "confusion": [
+      [
+        840,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        838,
+        0,
+        2,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        839,
+        0,
+        1,
+        0
+      ],
+      [
+        1,
+        0,
+        4,
+        835,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        840,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        840
+      ]
+    ],
+    "mean_CE": 0.010994656108879116
+  },
+  "pooled_full_score": {
+    "count": 65520,
+    "accuracy": 0.9637973137973138,
+    "macro_F1": 0.9637942695839498,
+    "confusion": [
+      [
+        10549,
+        120,
+        22,
+        151,
+        68,
+        10
+      ],
+      [
+        224,
+        10344,
+        30,
+        145,
+        160,
+        17
+      ],
+      [
+        34,
+        14,
+        10663,
+        14,
+        136,
+        59
+      ],
+      [
+        86,
+        133,
+        61,
+        10349,
+        279,
+        12
+      ],
+      [
+        189,
+        123,
+        38,
+        166,
+        10376,
+        28
+      ],
+      [
+        5,
+        6,
+        20,
+        14,
+        8,
+        10867
+      ]
+    ],
+    "mean_CE": 0.10996314265724848
+  },
+  "pooled_bypass_score": {
+    "count": 65520,
+    "accuracy": 0.9658424908424909,
+    "macro_F1": 0.9658429420503785,
+    "confusion": [
+      [
+        10567,
+        117,
+        20,
+        138,
+        68,
+        10
+      ],
+      [
+        223,
+        10369,
+        27,
+        129,
+        155,
+        17
+      ],
+      [
+        26,
+        14,
+        10677,
+        13,
+        129,
+        61
+      ],
+      [
+        83,
+        78,
+        58,
+        10421,
+        269,
+        11
+      ],
+      [
+        189,
+        122,
+        38,
+        167,
+        10376,
+        28
+      ],
+      [
+        5,
+        6,
+        15,
+        14,
+        8,
+        10872
+      ]
+    ],
+    "mean_CE": 0.10398989186669133
+  },
+  "epochs": [
+    {
+      "epoch": 1,
+      "actual_time_parameters": {
+        "p_time_shift": 0.034999999999999996,
+        "max_time_shift": 3
+      },
+      "nonzero_shift": 223,
+      "changed": 223,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.986904761904762,
+        "macro_F1": 0.9867970896644499,
+        "confusion": [
+          [
+            840,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            832,
+            0,
+            7,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            837,
+            0,
+            1,
+            2
+          ],
+          [
+            16,
+            25,
+            4,
+            788,
+            6,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            839,
+            1
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            0,
+            838
+          ]
+        ],
+        "mean_CE": 0.04718153554296883
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9892857142857143,
+        "macro_F1": 0.9892114381570942,
+        "confusion": [
+          [
+            840,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            832,
+            0,
+            7,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            837,
+            0,
+            1,
+            2
+          ],
+          [
+            16,
+            15,
+            4,
+            798,
+            6,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            839,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            840
+          ]
+        ],
+        "mean_CE": 0.04070523794552402
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 223,
+          "repairs": 13,
+          "broken": 1,
+          "recovery_pp": 5.381165919282512
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 13,
+          "broken": 1,
+          "recovery_pp": 0.23809523809523808
+        },
+        "by_RX": {
+          "3": {
+            "count": 113,
+            "repairs": 11,
+            "broken": 1,
+            "recovery_pp": 8.849557522123893
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "6": {
+            "count": 80,
+            "repairs": 2,
+            "broken": 0,
+            "recovery_pp": 2.5
+          },
+          "8": {
+            "count": 30,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 55,
+            "repairs": 3,
+            "broken": 0,
+            "recovery_pp": 5.454545454545454
+          },
+          "2": {
+            "count": 82,
+            "repairs": 5,
+            "broken": 1,
+            "recovery_pp": 4.878048780487805
+          },
+          "3": {
+            "count": 86,
+            "repairs": 5,
+            "broken": 0,
+            "recovery_pp": 5.813953488372093
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "1": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "2": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "3": {
+            "count": 113,
+            "repairs": 11,
+            "broken": 1,
+            "recovery_pp": 8.849557522123893
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "5": {
+            "count": 110,
+            "repairs": 2,
+            "broken": 0,
+            "recovery_pp": 1.8181818181818181
+          }
+        }
+      },
+      "pair_MSE_mean": 0.04223289957476987,
+      "reference_window_MSE_mean": 0.03499467449469699
+    },
+    {
+      "epoch": 2,
+      "actual_time_parameters": {
+        "p_time_shift": 0.034999999999999996,
+        "max_time_shift": 3
+      },
+      "nonzero_shift": 675,
+      "changed": 675,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9736111111111111,
+        "macro_F1": 0.9734455100006777,
+        "confusion": [
+          [
+            833,
+            3,
+            2,
+            2,
+            0,
+            0
+          ],
+          [
+            5,
+            807,
+            0,
+            18,
+            9,
+            1
+          ],
+          [
+            1,
+            1,
+            837,
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            4,
+            834,
+            0,
+            0
+          ],
+          [
+            18,
+            22,
+            1,
+            36,
+            762,
+            1
+          ],
+          [
+            0,
+            0,
+            4,
+            1,
+            1,
+            834
+          ]
+        ],
+        "mean_CE": 0.0759505696016729
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9759920634920635,
+        "macro_F1": 0.9758069753248058,
+        "confusion": [
+          [
+            836,
+            2,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            5,
+            813,
+            0,
+            12,
+            9,
+            1
+          ],
+          [
+            1,
+            1,
+            837,
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            1,
+            4,
+            834,
+            0,
+            0
+          ],
+          [
+            18,
+            22,
+            1,
+            36,
+            763,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            1,
+            1,
+            836
+          ]
+        ],
+        "mean_CE": 0.06860794874923387
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 675,
+          "repairs": 12,
+          "broken": 0,
+          "recovery_pp": 1.7777777777777777
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 12,
+          "broken": 0,
+          "recovery_pp": 0.23809523809523808
+        },
+        "by_RX": {
+          "3": {
+            "count": 156,
+            "repairs": 5,
+            "broken": 0,
+            "recovery_pp": 3.2051282051282053
+          },
+          "4": {
+            "count": 164,
+            "repairs": 2,
+            "broken": 0,
+            "recovery_pp": 1.2195121951219512
+          },
+          "6": {
+            "count": 295,
+            "repairs": 4,
+            "broken": 0,
+            "recovery_pp": 1.3559322033898304
+          },
+          "8": {
+            "count": 60,
+            "repairs": 1,
+            "broken": 0,
+            "recovery_pp": 1.6666666666666667
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 166,
+            "repairs": 8,
+            "broken": 0,
+            "recovery_pp": 4.819277108433735
+          },
+          "2": {
+            "count": 249,
+            "repairs": 3,
+            "broken": 0,
+            "recovery_pp": 1.2048192771084338
+          },
+          "3": {
+            "count": 260,
+            "repairs": 1,
+            "broken": 0,
+            "recovery_pp": 0.38461538461538464
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 168,
+            "repairs": 3,
+            "broken": 0,
+            "recovery_pp": 1.7857142857142858
+          },
+          "1": {
+            "count": 156,
+            "repairs": 6,
+            "broken": 0,
+            "recovery_pp": 3.8461538461538463
+          },
+          "2": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "4": {
+            "count": 231,
+            "repairs": 1,
+            "broken": 0,
+            "recovery_pp": 0.4329004329004329
+          },
+          "5": {
+            "count": 120,
+            "repairs": 2,
+            "broken": 0,
+            "recovery_pp": 1.6666666666666667
+          }
+        }
+      },
+      "pair_MSE_mean": 0.12872105816467888,
+      "reference_window_MSE_mean": 0.1268508718866441
+    },
+    {
+      "epoch": 3,
+      "actual_time_parameters": {
+        "p_time_shift": 0.034999999999999996,
+        "max_time_shift": 3
+      },
+      "nonzero_shift": 103,
+      "changed": 103,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9809523809523809,
+        "macro_F1": 0.980907229831281,
+        "confusion": [
+          [
+            794,
+            18,
+            0,
+            24,
+            4,
+            0
+          ],
+          [
+            7,
+            826,
+            1,
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            3,
+            824,
+            1,
+            7,
+            2
+          ],
+          [
+            4,
+            10,
+            3,
+            822,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            840,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            0,
+            838
+          ]
+        ],
+        "mean_CE": 0.06312948929690143
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9833333333333333,
+        "macro_F1": 0.9832721333209026,
+        "confusion": [
+          [
+            794,
+            18,
+            0,
+            24,
+            4,
+            0
+          ],
+          [
+            7,
+            826,
+            1,
+            3,
+            2,
+            1
+          ],
+          [
+            3,
+            3,
+            824,
+            1,
+            7,
+            2
+          ],
+          [
+            2,
+            1,
+            3,
+            834,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            840,
+            0
+          ],
+          [
+            0,
+            0,
+            2,
+            0,
+            0,
+            838
+          ]
+        ],
+        "mean_CE": 0.059115864222945
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 103,
+          "repairs": 12,
+          "broken": 0,
+          "recovery_pp": 11.650485436893204
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 12,
+          "broken": 0,
+          "recovery_pp": 0.23809523809523808
+        },
+        "by_RX": {
+          "3": {
+            "count": 103,
+            "repairs": 12,
+            "broken": 0,
+            "recovery_pp": 11.650485436893204
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "6": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "8": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 24,
+            "repairs": 4,
+            "broken": 0,
+            "recovery_pp": 16.666666666666668
+          },
+          "2": {
+            "count": 56,
+            "repairs": 5,
+            "broken": 0,
+            "recovery_pp": 8.928571428571429
+          },
+          "3": {
+            "count": 23,
+            "repairs": 3,
+            "broken": 0,
+            "recovery_pp": 13.043478260869565
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "1": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "2": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "3": {
+            "count": 103,
+            "repairs": 12,
+            "broken": 0,
+            "recovery_pp": 11.650485436893204
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "5": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        }
+      },
+      "pair_MSE_mean": 0.018321717778841656,
+      "reference_window_MSE_mean": 0.018173200211354663
+    },
+    {
+      "epoch": 4,
+      "actual_time_parameters": {
+        "p_time_shift": 0.03796410769756858,
+        "max_time_shift": 3
+      },
+      "nonzero_shift": 0,
+      "changed": 0,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9738095238095238,
+        "macro_F1": 0.9734862899294972,
+        "confusion": [
+          [
+            840,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            10,
+            808,
+            0,
+            8,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            838,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            4,
+            833,
+            0,
+            1
+          ],
+          [
+            10,
+            43,
+            9,
+            24,
+            751,
+            3
+          ],
+          [
+            0,
+            0,
+            1,
+            1,
+            0,
+            838
+          ]
+        ],
+        "mean_CE": 0.07743827854288605
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9738095238095238,
+        "macro_F1": 0.9734862899294972,
+        "confusion": [
+          [
+            840,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            10,
+            808,
+            0,
+            8,
+            14,
+            0
+          ],
+          [
+            0,
+            0,
+            838,
+            0,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            4,
+            833,
+            0,
+            1
+          ],
+          [
+            10,
+            43,
+            9,
+            24,
+            751,
+            3
+          ],
+          [
+            0,
+            0,
+            1,
+            1,
+            0,
+            838
+          ]
+        ],
+        "mean_CE": 0.07743827854288605
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 0,
+          "repairs": 0,
+          "broken": 0,
+          "recovery_pp": null
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 0,
+          "broken": 0,
+          "recovery_pp": 0.0
+        },
+        "by_RX": {
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "6": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "8": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "2": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "1": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "2": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "5": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        }
+      },
+      "pair_MSE_mean": 0.0,
+      "reference_window_MSE_mean": 0.0
+    },
+    {
+      "epoch": 5,
+      "actual_time_parameters": {
+        "p_time_shift": 0.04204987592716579,
+        "max_time_shift": 4
+      },
+      "nonzero_shift": 226,
+      "changed": 226,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9630952380952381,
+        "macro_F1": 0.9627483058999573,
+        "confusion": [
+          [
+            840,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            36,
+            764,
+            10,
+            9,
+            21,
+            0
+          ],
+          [
+            0,
+            2,
+            835,
+            1,
+            1,
+            1
+          ],
+          [
+            8,
+            13,
+            5,
+            814,
+            0,
+            0
+          ],
+          [
+            15,
+            16,
+            8,
+            29,
+            762,
+            10
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            839
+          ]
+        ],
+        "mean_CE": 0.10185235094305464
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9646825396825397,
+        "macro_F1": 0.9643187208035408,
+        "confusion": [
+          [
+            840,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            36,
+            764,
+            10,
+            9,
+            21,
+            0
+          ],
+          [
+            0,
+            2,
+            835,
+            1,
+            1,
+            1
+          ],
+          [
+            8,
+            4,
+            5,
+            823,
+            0,
+            0
+          ],
+          [
+            15,
+            16,
+            8,
+            29,
+            761,
+            11
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            839
+          ]
+        ],
+        "mean_CE": 0.09580176011255867
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 226,
+          "repairs": 10,
+          "broken": 2,
+          "recovery_pp": 3.5398230088495577
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 10,
+          "broken": 2,
+          "recovery_pp": 0.15873015873015872
+        },
+        "by_RX": {
+          "3": {
+            "count": 137,
+            "repairs": 10,
+            "broken": 1,
+            "recovery_pp": 6.569343065693431
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "6": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "8": {
+            "count": 89,
+            "repairs": 0,
+            "broken": 1,
+            "recovery_pp": -1.1235955056179776
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 47,
+            "repairs": 4,
+            "broken": 0,
+            "recovery_pp": 8.51063829787234
+          },
+          "2": {
+            "count": 94,
+            "repairs": 4,
+            "broken": 1,
+            "recovery_pp": 3.1914893617021276
+          },
+          "3": {
+            "count": 85,
+            "repairs": 2,
+            "broken": 1,
+            "recovery_pp": 1.1764705882352942
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "1": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "2": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "3": {
+            "count": 114,
+            "repairs": 10,
+            "broken": 1,
+            "recovery_pp": 7.894736842105263
+          },
+          "4": {
+            "count": 89,
+            "repairs": 0,
+            "broken": 1,
+            "recovery_pp": -1.1235955056179776
+          },
+          "5": {
+            "count": 23,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          }
+        }
+      },
+      "pair_MSE_mean": 0.040654019494023586,
+      "reference_window_MSE_mean": 0.03434941822160331
+    },
+    {
+      "epoch": 6,
+      "actual_time_parameters": {
+        "p_time_shift": 0.04670295533708738,
+        "max_time_shift": 4
+      },
+      "nonzero_shift": 458,
+      "changed": 458,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9880952380952381,
+        "macro_F1": 0.9880878399914534,
+        "confusion": [
+          [
+            838,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            830,
+            1,
+            6,
+            0,
+            2
+          ],
+          [
+            6,
+            1,
+            823,
+            5,
+            4,
+            1
+          ],
+          [
+            3,
+            6,
+            5,
+            825,
+            1,
+            0
+          ],
+          [
+            0,
+            1,
+            0,
+            1,
+            838,
+            0
+          ],
+          [
+            3,
+            4,
+            2,
+            3,
+            2,
+            826
+          ]
+        ],
+        "mean_CE": 0.047471316331928796
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.989484126984127,
+        "macro_F1": 0.9894775801846927,
+        "confusion": [
+          [
+            838,
+            0,
+            2,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            830,
+            1,
+            6,
+            0,
+            2
+          ],
+          [
+            6,
+            1,
+            824,
+            4,
+            4,
+            1
+          ],
+          [
+            2,
+            3,
+            5,
+            829,
+            1,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            839,
+            0
+          ],
+          [
+            3,
+            4,
+            1,
+            3,
+            2,
+            827
+          ]
+        ],
+        "mean_CE": 0.04368687505357379
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 458,
+          "repairs": 8,
+          "broken": 1,
+          "recovery_pp": 1.5283842794759825
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 8,
+          "broken": 1,
+          "recovery_pp": 0.1388888888888889
+        },
+        "by_RX": {
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "4": {
+            "count": 221,
+            "repairs": 2,
+            "broken": 0,
+            "recovery_pp": 0.9049773755656109
+          },
+          "6": {
+            "count": 159,
+            "repairs": 2,
+            "broken": 0,
+            "recovery_pp": 1.2578616352201257
+          },
+          "8": {
+            "count": 78,
+            "repairs": 4,
+            "broken": 1,
+            "recovery_pp": 3.8461538461538463
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 160,
+            "repairs": 4,
+            "broken": 1,
+            "recovery_pp": 1.875
+          },
+          "2": {
+            "count": 150,
+            "repairs": 1,
+            "broken": 0,
+            "recovery_pp": 0.6666666666666666
+          },
+          "3": {
+            "count": 148,
+            "repairs": 3,
+            "broken": 0,
+            "recovery_pp": 2.027027027027027
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "1": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "2": {
+            "count": 115,
+            "repairs": 1,
+            "broken": 0,
+            "recovery_pp": 0.8695652173913043
+          },
+          "3": {
+            "count": 116,
+            "repairs": 5,
+            "broken": 1,
+            "recovery_pp": 3.4482758620689653
+          },
+          "4": {
+            "count": 106,
+            "repairs": 1,
+            "broken": 0,
+            "recovery_pp": 0.9433962264150944
+          },
+          "5": {
+            "count": 121,
+            "repairs": 1,
+            "broken": 0,
+            "recovery_pp": 0.8264462809917356
+          }
+        }
+      },
+      "pair_MSE_mean": 0.0848602501601572,
+      "reference_window_MSE_mean": 0.078827985622994
+    },
+    {
+      "epoch": 7,
+      "actual_time_parameters": {
+        "p_time_shift": 0.051767525224943926,
+        "max_time_shift": 5
+      },
+      "nonzero_shift": 123,
+      "changed": 123,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9777777777777777,
+        "macro_F1": 0.9774245023771799,
+        "confusion": [
+          [
+            837,
+            0,
+            1,
+            1,
+            0,
+            1
+          ],
+          [
+            45,
+            749,
+            9,
+            18,
+            14,
+            5
+          ],
+          [
+            0,
+            0,
+            839,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            9,
+            4,
+            825,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            838,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            840
+          ]
+        ],
+        "mean_CE": 0.06457047374952744
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9787698412698412,
+        "macro_F1": 0.9784182384449348,
+        "confusion": [
+          [
+            837,
+            0,
+            1,
+            1,
+            0,
+            1
+          ],
+          [
+            45,
+            749,
+            9,
+            18,
+            14,
+            5
+          ],
+          [
+            0,
+            0,
+            839,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            4,
+            4,
+            830,
+            1,
+            1
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            838,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            0,
+            840
+          ]
+        ],
+        "mean_CE": 0.06222088622789646
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 123,
+          "repairs": 5,
+          "broken": 0,
+          "recovery_pp": 4.065040650406504
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 5,
+          "broken": 0,
+          "recovery_pp": 0.0992063492063492
+        },
+        "by_RX": {
+          "3": {
+            "count": 39,
+            "repairs": 5,
+            "broken": 0,
+            "recovery_pp": 12.820512820512821
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "6": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "8": {
+            "count": 84,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 39,
+            "repairs": 5,
+            "broken": 0,
+            "recovery_pp": 12.820512820512821
+          },
+          "2": {
+            "count": 18,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          },
+          "3": {
+            "count": 66,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "1": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "2": {
+            "count": 84,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          },
+          "3": {
+            "count": 39,
+            "repairs": 5,
+            "broken": 0,
+            "recovery_pp": 12.820512820512821
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "5": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        }
+      },
+      "pair_MSE_mean": 0.022301431128843908,
+      "reference_window_MSE_mean": 0.017934542637140977
+    },
+    {
+      "epoch": 8,
+      "actual_time_parameters": {
+        "p_time_shift": 0.05716187416483811,
+        "max_time_shift": 5
+      },
+      "nonzero_shift": 110,
+      "changed": 110,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9623015873015873,
+        "macro_F1": 0.9621472023437136,
+        "confusion": [
+          [
+            765,
+            35,
+            2,
+            26,
+            9,
+            3
+          ],
+          [
+            0,
+            830,
+            2,
+            8,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            838,
+            0,
+            1,
+            1
+          ],
+          [
+            16,
+            3,
+            4,
+            812,
+            5,
+            0
+          ],
+          [
+            21,
+            14,
+            0,
+            39,
+            766,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            839
+          ]
+        ],
+        "mean_CE": 0.10660616797460781
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9632936507936508,
+        "macro_F1": 0.9631169177754604,
+        "confusion": [
+          [
+            765,
+            35,
+            2,
+            26,
+            9,
+            3
+          ],
+          [
+            0,
+            835,
+            0,
+            5,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            838,
+            0,
+            1,
+            1
+          ],
+          [
+            16,
+            3,
+            4,
+            812,
+            5,
+            0
+          ],
+          [
+            21,
+            14,
+            0,
+            39,
+            766,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            0,
+            839
+          ]
+        ],
+        "mean_CE": 0.10363083563692455
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 110,
+          "repairs": 5,
+          "broken": 0,
+          "recovery_pp": 4.545454545454546
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 5,
+          "broken": 0,
+          "recovery_pp": 0.0992063492063492
+        },
+        "by_RX": {
+          "3": {
+            "count": 110,
+            "repairs": 5,
+            "broken": 0,
+            "recovery_pp": 4.545454545454546
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "6": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "8": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 13,
+            "repairs": 1,
+            "broken": 0,
+            "recovery_pp": 7.6923076923076925
+          },
+          "2": {
+            "count": 63,
+            "repairs": 4,
+            "broken": 0,
+            "recovery_pp": 6.349206349206349
+          },
+          "3": {
+            "count": 34,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "1": {
+            "count": 110,
+            "repairs": 5,
+            "broken": 0,
+            "recovery_pp": 4.545454545454546
+          },
+          "2": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "5": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        }
+      },
+      "pair_MSE_mean": 0.021252253298307697,
+      "reference_window_MSE_mean": 0.018140684952220272
+    },
+    {
+      "epoch": 9,
+      "actual_time_parameters": {
+        "p_time_shift": 0.06283447550684676,
+        "max_time_shift": 6
+      },
+      "nonzero_shift": 468,
+      "changed": 468,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9748015873015873,
+        "macro_F1": 0.9747102349349728,
+        "confusion": [
+          [
+            790,
+            3,
+            3,
+            32,
+            12,
+            0
+          ],
+          [
+            0,
+            827,
+            0,
+            10,
+            3,
+            0
+          ],
+          [
+            1,
+            1,
+            837,
+            0,
+            1,
+            0
+          ],
+          [
+            5,
+            23,
+            12,
+            789,
+            9,
+            2
+          ],
+          [
+            0,
+            0,
+            0,
+            1,
+            838,
+            1
+          ],
+          [
+            1,
+            1,
+            2,
+            2,
+            2,
+            832
+          ]
+        ],
+        "mean_CE": 0.09564145001436246
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9799603174603174,
+        "macro_F1": 0.9799392898067456,
+        "confusion": [
+          [
+            797,
+            1,
+            1,
+            29,
+            12,
+            0
+          ],
+          [
+            0,
+            827,
+            0,
+            10,
+            3,
+            0
+          ],
+          [
+            0,
+            1,
+            838,
+            0,
+            1,
+            0
+          ],
+          [
+            6,
+            8,
+            10,
+            808,
+            7,
+            1
+          ],
+          [
+            0,
+            0,
+            0,
+            2,
+            837,
+            1
+          ],
+          [
+            1,
+            1,
+            2,
+            2,
+            2,
+            832
+          ]
+        ],
+        "mean_CE": 0.08132583195306232
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 468,
+          "repairs": 28,
+          "broken": 2,
+          "recovery_pp": 5.555555555555555
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 28,
+          "broken": 2,
+          "recovery_pp": 0.5158730158730159
+        },
+        "by_RX": {
+          "3": {
+            "count": 371,
+            "repairs": 26,
+            "broken": 2,
+            "recovery_pp": 6.46900269541779
+          },
+          "4": {
+            "count": 68,
+            "repairs": 2,
+            "broken": 0,
+            "recovery_pp": 2.9411764705882355
+          },
+          "6": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "8": {
+            "count": 29,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 159,
+            "repairs": 7,
+            "broken": 1,
+            "recovery_pp": 3.7735849056603774
+          },
+          "2": {
+            "count": 122,
+            "repairs": 9,
+            "broken": 1,
+            "recovery_pp": 6.557377049180328
+          },
+          "3": {
+            "count": 187,
+            "repairs": 12,
+            "broken": 0,
+            "recovery_pp": 6.4171122994652405
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 119,
+            "repairs": 7,
+            "broken": 0,
+            "recovery_pp": 5.882352941176471
+          },
+          "1": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "2": {
+            "count": 117,
+            "repairs": 1,
+            "broken": 0,
+            "recovery_pp": 0.8547008547008547
+          },
+          "3": {
+            "count": 145,
+            "repairs": 20,
+            "broken": 1,
+            "recovery_pp": 13.10344827586207
+          },
+          "4": {
+            "count": 87,
+            "repairs": 0,
+            "broken": 1,
+            "recovery_pp": -1.1494252873563218
+          },
+          "5": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        }
+      },
+      "pair_MSE_mean": 0.09256394379107015,
+      "reference_window_MSE_mean": 0.08777312308195091
+    },
+    {
+      "epoch": 10,
+      "actual_time_parameters": {
+        "p_time_shift": 0.06874943675049135,
+        "max_time_shift": 6
+      },
+      "nonzero_shift": 349,
+      "changed": 349,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9388888888888889,
+        "macro_F1": 0.9385483848291223,
+        "confusion": [
+          [
+            830,
+            0,
+            1,
+            8,
+            0,
+            1
+          ],
+          [
+            0,
+            824,
+            0,
+            11,
+            1,
+            4
+          ],
+          [
+            10,
+            3,
+            798,
+            4,
+            19,
+            6
+          ],
+          [
+            12,
+            3,
+            5,
+            692,
+            126,
+            2
+          ],
+          [
+            13,
+            18,
+            14,
+            32,
+            753,
+            10
+          ],
+          [
+            0,
+            0,
+            3,
+            2,
+            0,
+            835
+          ]
+        ],
+        "mean_CE": 0.21254002422188167
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9426587301587301,
+        "macro_F1": 0.9421719521726583,
+        "confusion": [
+          [
+            838,
+            0,
+            1,
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            824,
+            0,
+            11,
+            1,
+            4
+          ],
+          [
+            3,
+            4,
+            809,
+            4,
+            11,
+            9
+          ],
+          [
+            12,
+            3,
+            5,
+            692,
+            126,
+            2
+          ],
+          [
+            13,
+            18,
+            14,
+            32,
+            753,
+            10
+          ],
+          [
+            0,
+            0,
+            3,
+            2,
+            0,
+            835
+          ]
+        ],
+        "mean_CE": 0.20305365441851816
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 349,
+          "repairs": 26,
+          "broken": 7,
+          "recovery_pp": 5.444126074498567
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 26,
+          "broken": 7,
+          "recovery_pp": 0.376984126984127
+        },
+        "by_RX": {
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "4": {
+            "count": 85,
+            "repairs": 4,
+            "broken": 5,
+            "recovery_pp": -1.1764705882352942
+          },
+          "6": {
+            "count": 264,
+            "repairs": 22,
+            "broken": 2,
+            "recovery_pp": 7.575757575757576
+          },
+          "8": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 126,
+            "repairs": 14,
+            "broken": 1,
+            "recovery_pp": 10.317460317460318
+          },
+          "2": {
+            "count": 81,
+            "repairs": 6,
+            "broken": 0,
+            "recovery_pp": 7.407407407407407
+          },
+          "3": {
+            "count": 142,
+            "repairs": 6,
+            "broken": 6,
+            "recovery_pp": 0.0
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 118,
+            "repairs": 8,
+            "broken": 0,
+            "recovery_pp": 6.779661016949152
+          },
+          "1": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "2": {
+            "count": 231,
+            "repairs": 18,
+            "broken": 7,
+            "recovery_pp": 4.761904761904762
+          },
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "5": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        }
+      },
+      "pair_MSE_mean": 0.07067903861817386,
+      "reference_window_MSE_mean": 0.06818661860057286
+    },
+    {
+      "epoch": 11,
+      "actual_time_parameters": {
+        "p_time_shift": 0.07488012059698183,
+        "max_time_shift": 7
+      },
+      "nonzero_shift": 123,
+      "changed": 123,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9765873015873016,
+        "macro_F1": 0.9764814432194728,
+        "confusion": [
+          [
+            785,
+            12,
+            7,
+            19,
+            17,
+            0
+          ],
+          [
+            0,
+            829,
+            1,
+            8,
+            2,
+            0
+          ],
+          [
+            2,
+            1,
+            818,
+            0,
+            5,
+            14
+          ],
+          [
+            6,
+            13,
+            4,
+            812,
+            4,
+            1
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            839,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            839
+          ]
+        ],
+        "mean_CE": 0.08344750391224848
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9771825396825397,
+        "macro_F1": 0.977070933908767,
+        "confusion": [
+          [
+            785,
+            12,
+            7,
+            19,
+            17,
+            0
+          ],
+          [
+            0,
+            832,
+            0,
+            6,
+            1,
+            1
+          ],
+          [
+            2,
+            1,
+            818,
+            0,
+            5,
+            14
+          ],
+          [
+            6,
+            13,
+            4,
+            812,
+            4,
+            1
+          ],
+          [
+            0,
+            1,
+            0,
+            0,
+            839,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            1,
+            839
+          ]
+        ],
+        "mean_CE": 0.08005703483154047
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 123,
+          "repairs": 3,
+          "broken": 0,
+          "recovery_pp": 2.4390243902439024
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 3,
+          "broken": 0,
+          "recovery_pp": 0.05952380952380952
+        },
+        "by_RX": {
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "6": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "8": {
+            "count": 123,
+            "repairs": 3,
+            "broken": 0,
+            "recovery_pp": 2.4390243902439024
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 4,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          },
+          "2": {
+            "count": 66,
+            "repairs": 2,
+            "broken": 0,
+            "recovery_pp": 3.0303030303030303
+          },
+          "3": {
+            "count": 53,
+            "repairs": 1,
+            "broken": 0,
+            "recovery_pp": 1.8867924528301887
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "1": {
+            "count": 123,
+            "repairs": 3,
+            "broken": 0,
+            "recovery_pp": 2.4390243902439024
+          },
+          "2": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "5": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        }
+      },
+      "pair_MSE_mean": 0.02404521688345879,
+      "reference_window_MSE_mean": 0.021341126769899375
+    },
+    {
+      "epoch": 12,
+      "actual_time_parameters": {
+        "p_time_shift": 0.08120586618165314,
+        "max_time_shift": 7
+      },
+      "nonzero_shift": 358,
+      "changed": 358,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9323412698412699,
+        "macro_F1": 0.9319574540832035,
+        "confusion": [
+          [
+            836,
+            2,
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            9,
+            703,
+            2,
+            32,
+            92,
+            2
+          ],
+          [
+            11,
+            0,
+            804,
+            3,
+            13,
+            9
+          ],
+          [
+            10,
+            10,
+            2,
+            813,
+            1,
+            4
+          ],
+          [
+            112,
+            8,
+            5,
+            4,
+            710,
+            1
+          ],
+          [
+            0,
+            1,
+            3,
+            2,
+            1,
+            833
+          ]
+        ],
+        "mean_CE": 0.19827607095446842
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9331349206349207,
+        "macro_F1": 0.9328033549180182,
+        "confusion": [
+          [
+            836,
+            2,
+            0,
+            1,
+            0,
+            1
+          ],
+          [
+            10,
+            707,
+            1,
+            31,
+            90,
+            1
+          ],
+          [
+            11,
+            0,
+            804,
+            3,
+            13,
+            9
+          ],
+          [
+            10,
+            10,
+            2,
+            813,
+            1,
+            4
+          ],
+          [
+            112,
+            8,
+            5,
+            4,
+            710,
+            1
+          ],
+          [
+            0,
+            1,
+            3,
+            2,
+            1,
+            833
+          ]
+        ],
+        "mean_CE": 0.1935582368525792
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 358,
+          "repairs": 5,
+          "broken": 1,
+          "recovery_pp": 1.1173184357541899
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 5,
+          "broken": 1,
+          "recovery_pp": 0.07936507936507936
+        },
+        "by_RX": {
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "4": {
+            "count": 98,
+            "repairs": 2,
+            "broken": 0,
+            "recovery_pp": 2.0408163265306123
+          },
+          "6": {
+            "count": 25,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          },
+          "8": {
+            "count": 235,
+            "repairs": 3,
+            "broken": 1,
+            "recovery_pp": 0.851063829787234
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 89,
+            "repairs": 1,
+            "broken": 0,
+            "recovery_pp": 1.1235955056179776
+          },
+          "2": {
+            "count": 151,
+            "repairs": 2,
+            "broken": 1,
+            "recovery_pp": 0.6622516556291391
+          },
+          "3": {
+            "count": 118,
+            "repairs": 2,
+            "broken": 0,
+            "recovery_pp": 1.694915254237288
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "1": {
+            "count": 238,
+            "repairs": 5,
+            "broken": 1,
+            "recovery_pp": 1.680672268907563
+          },
+          "2": {
+            "count": 120,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          },
+          "3": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "4": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "5": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        }
+      },
+      "pair_MSE_mean": 0.0681409886653816,
+      "reference_window_MSE_mean": 0.06184037532066069
+    },
+    {
+      "epoch": 13,
+      "actual_time_parameters": {
+        "p_time_shift": 0.08771011687724094,
+        "max_time_shift": 8
+      },
+      "nonzero_shift": 730,
+      "changed": 730,
+      "full_score": {
+        "count": 5040,
+        "accuracy": 0.9001984126984127,
+        "macro_F1": 0.900406374467578,
+        "confusion": [
+          [
+            721,
+            47,
+            4,
+            38,
+            26,
+            4
+          ],
+          [
+            111,
+            715,
+            4,
+            7,
+            2,
+            1
+          ],
+          [
+            0,
+            2,
+            735,
+            0,
+            81,
+            22
+          ],
+          [
+            4,
+            16,
+            5,
+            690,
+            125,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            840,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            1,
+            836
+          ]
+        ],
+        "mean_CE": 0.25541562345772134
+      },
+      "bypass_score": {
+        "count": 5040,
+        "accuracy": 0.9043650793650794,
+        "macro_F1": 0.9046471669782149,
+        "confusion": [
+          [
+            721,
+            47,
+            4,
+            38,
+            26,
+            4
+          ],
+          [
+            109,
+            722,
+            5,
+            3,
+            0,
+            1
+          ],
+          [
+            0,
+            1,
+            736,
+            0,
+            82,
+            21
+          ],
+          [
+            3,
+            12,
+            4,
+            703,
+            118,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            0,
+            840,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            2,
+            1,
+            836
+          ]
+        ],
+        "mean_CE": 0.24266614971974465
+      },
+      "paired": {
+        "nonzero_shift": {
+          "count": 730,
+          "repairs": 23,
+          "broken": 2,
+          "recovery_pp": 2.8767123287671232
+        },
+        "all": {
+          "count": 5040,
+          "repairs": 23,
+          "broken": 2,
+          "recovery_pp": 0.4166666666666667
+        },
+        "by_RX": {
+          "3": {
+            "count": 92,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          },
+          "4": {
+            "count": 190,
+            "repairs": 2,
+            "broken": 1,
+            "recovery_pp": 0.5263157894736842
+          },
+          "6": {
+            "count": 243,
+            "repairs": 2,
+            "broken": 1,
+            "recovery_pp": 0.411522633744856
+          },
+          "8": {
+            "count": 205,
+            "repairs": 19,
+            "broken": 0,
+            "recovery_pp": 9.268292682926829
+          }
+        },
+        "by_day": {
+          "1": {
+            "count": 270,
+            "repairs": 9,
+            "broken": 1,
+            "recovery_pp": 2.962962962962963
+          },
+          "2": {
+            "count": 228,
+            "repairs": 8,
+            "broken": 1,
+            "recovery_pp": 3.0701754385964914
+          },
+          "3": {
+            "count": 232,
+            "repairs": 6,
+            "broken": 0,
+            "recovery_pp": 2.586206896551724
+          }
+        },
+        "by_TX": {
+          "0": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          },
+          "1": {
+            "count": 125,
+            "repairs": 7,
+            "broken": 0,
+            "recovery_pp": 5.6
+          },
+          "2": {
+            "count": 123,
+            "repairs": 2,
+            "broken": 1,
+            "recovery_pp": 0.8130081300813008
+          },
+          "3": {
+            "count": 268,
+            "repairs": 14,
+            "broken": 1,
+            "recovery_pp": 4.850746268656716
+          },
+          "4": {
+            "count": 214,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": 0.0
+          },
+          "5": {
+            "count": 0,
+            "repairs": 0,
+            "broken": 0,
+            "recovery_pp": null
+          }
+        }
+      },
+      "pair_MSE_mean": 0.14673714779302596,
+      "reference_window_MSE_mean": 0.14295683837244436
+    }
+  ],
+  "pooled": {
+    "nonzero_shift": {
+      "count": 3946,
+      "repairs": 150,
+      "broken": 16,
+      "recovery_pp": 3.395843892549417
+    },
+    "all": {
+      "count": 65520,
+      "repairs": 150,
+      "broken": 16,
+      "recovery_pp": 0.2045177045177045
+    },
+    "by_RX": {
+      "3": {
+        "count": 1121,
+        "repairs": 74,
+        "broken": 4,
+        "recovery_pp": 6.244424620874219
+      },
+      "4": {
+        "count": 826,
+        "repairs": 14,
+        "broken": 6,
+        "recovery_pp": 0.9685230024213075
+      },
+      "6": {
+        "count": 1066,
+        "repairs": 32,
+        "broken": 3,
+        "recovery_pp": 2.720450281425891
+      },
+      "8": {
+        "count": 933,
+        "repairs": 30,
+        "broken": 3,
+        "recovery_pp": 2.8938906752411575
+      }
+    },
+    "by_day": {
+      "1": {
+        "count": 1152,
+        "repairs": 60,
+        "broken": 4,
+        "recovery_pp": 4.861111111111111
+      },
+      "2": {
+        "count": 1360,
+        "repairs": 49,
+        "broken": 5,
+        "recovery_pp": 3.235294117647059
+      },
+      "3": {
+        "count": 1434,
+        "repairs": 41,
+        "broken": 7,
+        "recovery_pp": 2.370990237099024
+      }
+    },
+    "by_TX": {
+      "0": {
+        "count": 405,
+        "repairs": 18,
+        "broken": 0,
+        "recovery_pp": 4.444444444444445
+      },
+      "1": {
+        "count": 752,
+        "repairs": 26,
+        "broken": 1,
+        "recovery_pp": 3.324468085106383
+      },
+      "2": {
+        "count": 790,
+        "repairs": 22,
+        "broken": 8,
+        "recovery_pp": 1.7721518987341771
+      },
+      "3": {
+        "count": 898,
+        "repairs": 77,
+        "broken": 5,
+        "recovery_pp": 8.017817371937639
+      },
+      "4": {
+        "count": 727,
+        "repairs": 2,
+        "broken": 2,
+        "recovery_pp": 0.0
+      },
+      "5": {
+        "count": 374,
+        "repairs": 5,
+        "broken": 0,
+        "recovery_pp": 1.3368983957219251
+      }
+    }
+  },
+  "nonzero_shift_total": 3946,
+  "changed_total": 3946,
+  "unique_nonzero_shift_physical_packets": 2853,
+  "shift_calls": 34,
+  "shift_inspection_scalar_draws": 8704,
+  "canonical_whole_checks": 13,
+  "shift_histogram": {
+    "-8": 46,
+    "-7": 92,
+    "-6": 143,
+    "-5": 188,
+    "-4": 236,
+    "-3": 435,
+    "-2": 400,
+    "-1": 412,
+    "0": 61574,
+    "1": 424,
+    "2": 436,
+    "3": 429,
+    "4": 260,
+    "5": 174,
+    "6": 152,
+    "7": 69,
+    "8": 50
+  },
+  "paired_source_cells_recounted": 936,
+  "all136080_default_head_predictions_and_logits_recounted": true,
+  "source_decisions": 136080,
+  "actual_NN_packets": 136082,
+  "ordinary_generated_packets": 131040,
+  "canonical_check_generated_packets": 1664,
+  "total_augmentation_generated_packets": 132704,
+  "training_updates": 0,
+  "head_fit_updates": 0,
+  "model_state_unchanged": true,
+  "U_used": false,
+  "V_used": false,
+  "held_RX1_used": false,
+  "target_access": false,
+  "Ag_efficacy_proved": false,
+  "joint_goal_complete": false,
+  "elapsed_seconds": 81.47948171501048,
+  "full_stdout_lines": 16,
+  "uncertainty": "13 draws repeat same physical packets;no naive independent-packet significance claim"
+}
