@@ -1,6 +1,6 @@
 # Sinc 频带尺度位移＋原 RDrop：源 RX1 三条件
 
-状态：VERIFIED_RUNNING。代码54ceb11f已推送并核对远端；三行均已通过own真实CP no-query smoke并完成E1/20。尚无本候选最终源域或目标性能结果。总目标仍ACTIVE：使Sinc优化与RDrop配合，在完整匹配三种子验证中提高默认头clean性能；不把源资格当成最终目标。
+状态：SOURCE_ONLY_ANALYZED。三行各20轮/4440更新完整完成，进程自然退出，无目标测试。固定源资格为FAIL，本单路源公式按原计划关闭；不作为F或目标性能结论。总目标仍ACTIVE。
 
 依据：已交付的 20261016-phase1-sinc-rdrop-gradient-source-s2026092701-m4-r02（结果提交a1c4c74a）拒绝KL删除/投影假设：Efinal50冲突9/50低于预定10，合计CE+KL未反向CE。现有E真实更新的只读复算发现初始带宽约416Hz至4.17MHz；E1保存13步×24通道中，9个观察的边缘移动超过当前带宽。只说明值得检验更新尺度，不证明这些移动有害。
 
@@ -29,3 +29,5 @@ SIG_TIME和joint160、默认6×160/scale30 cosine头、完整RDrop alpha1/LS0.01
 发布核验补充：5个固定源契约负例与3个源资格布尔情形PASS；本候选唯一一次独立P0/P1审查PASS，无直接缺陷。
 
 发布后核验：一次archive传输比较、remotecompile均VERIFIED；CPU dispatcher与三个worker的PID/CWD/argv/GPU及日志增长已独立核对。源有效L5040/U45360隐藏/V21600，fitRX3/4/6/8，heldRX1。每行E1的13个真实更新独立CPU复算，origin物理衰减及自适应位移最大误差均0Hz；NORM局部范数的FP32加法舍入差最高0.001177Hz。只复算既有见证，无额外IQ/模型前向。详见run_evidence.json、early_update_recount.json。
+
+最终源默认头：FULL错误225/1260、CE0.672677017；NORM210/1260、CE0.631149267；BAND209/1260、CE0.643938569。BAND相对NORM少1个错误但CE高0.012789302，故固定资格FAIL；没有降低门槛或源seed救跑。三行finalLCE均约0.263至0.264、完整4440步，0另训头、0目标访问。原始完整结果见source_results.json。用户随后指定F和目标测试；已另行发布20261016-phase1-F-sinc-bandgain-e50-clean-manysig-m9-r01（3已有F参考＋6新fullsource50模型），方案在新目标结果前固定，不以本源结果改变系数或候选。

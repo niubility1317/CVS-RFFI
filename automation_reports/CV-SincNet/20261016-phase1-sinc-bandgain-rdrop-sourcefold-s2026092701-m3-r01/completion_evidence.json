@@ -1,0 +1,15 @@
+{
+  "status": "SOURCE_ONLY_ANALYZED",
+  "run_id": "20261016-phase1-sinc-bandgain-rdrop-sourcefold-s2026092701-m3-r01",
+  "rows": 3,
+  "new_models": 3,
+  "new_epochs": 60,
+  "new_optimizer_steps": 13320,
+  "processes_exited_naturally": true,
+  "target_access": false,
+  "head_fit_updates": 0,
+  "source_qualification": false,
+  "goal_complete": false,
+  "interpretation": "BAND fewer held source L errors than FULL and NORM, but held CE worse than NORM; original fixed source criterion fails. This is not target performance and is not a F result. No strength/seed/epoch/parent rescue of this single-view candidate.",
+  "current_primary_target_run": "20261016-phase1-F-sinc-bandgain-e50-clean-manysig-m9-r01"
+}

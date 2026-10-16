@@ -25,3 +25,5 @@
 CPU/CUDA真实F检查PASS：各8个协议负例，三个独立SIG_TIME分支/默认头形状、物理origin衰减一次、同真实梯度下其他body/W首步一致，NORM局部范数正确。测试只用合成IQ，0源/目标IQ读取，0另训头。运行见证每新行保存E1/17/33/50各13步，Sinc梯度/位移、实际clip、EMA核和移除W的joint160导出均检查；无额外训练前向或更新。完整原始日志/权重/向量/预测私有保存，Git提交实现、配置和必要结果。
 
 发布后核验：archive传输、remotecompile为VERIFIED，真实F checkpoint no-query preflight PASS；6个worker的PID/CWD/argv/GPU/log增长均已独立核验，实际900722参数、SIG_TIME_X3、50=33+17、fullsource6300/56700/27000且无sourcefold。每行E1有222实际RDrop/默认头联合更新。详见run_evidence.json。
+
+首轮真实更新独立复算：6新模型各13步，共78步，物理origin衰减及自适应增量的最大误差均0Hz；NORM局部范数FP32舍入差最大0.000784Hz。只读取保存的更新见证，无额外模型前向或源/目标IQ读取；这是执行证据，尚非目标性能结果。

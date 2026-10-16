@@ -1,0 +1,57 @@
+{
+  "status": "PASS",
+  "source": "Frozen e1 actual training update witnesses; independent CPU arithmetic",
+  "results": {
+    "NORM-s2026092701": {
+      "witnesses": 13,
+      "physical_decay_max_error_Hz": 0.0,
+      "adaptive_update_max_error_Hz": 0.0,
+      "NORM_local_adaptive_norm_rounding_Hz": 0.0007041650483194384,
+      "scalar_gain_min": 0.03249054693239688,
+      "scalar_gain_max": 0.05252646816268455
+    },
+    "BAND-s2026092701": {
+      "witnesses": 13,
+      "physical_decay_max_error_Hz": 0.0,
+      "adaptive_update_max_error_Hz": 0.0,
+      "NORM_local_adaptive_norm_rounding_Hz": 0.0,
+      "scalar_gain_min": 0.02710328981405786,
+      "scalar_gain_max": 0.05094215594639975
+    },
+    "NORM-s2026092702": {
+      "witnesses": 13,
+      "physical_decay_max_error_Hz": 0.0,
+      "adaptive_update_max_error_Hz": 0.0,
+      "NORM_local_adaptive_norm_rounding_Hz": 0.0007834072589425756,
+      "scalar_gain_min": 0.031792656210985704,
+      "scalar_gain_max": 0.05885653916866945
+    },
+    "BAND-s2026092702": {
+      "witnesses": 13,
+      "physical_decay_max_error_Hz": 0.0,
+      "adaptive_update_max_error_Hz": 0.0,
+      "NORM_local_adaptive_norm_rounding_Hz": 0.0,
+      "scalar_gain_min": 0.031459154276487086,
+      "scalar_gain_max": 0.06380790421830322
+    },
+    "NORM-s2026092703": {
+      "witnesses": 13,
+      "physical_decay_max_error_Hz": 0.0,
+      "adaptive_update_max_error_Hz": 0.0,
+      "NORM_local_adaptive_norm_rounding_Hz": 0.0004169845501007796,
+      "scalar_gain_min": 0.026719244705638724,
+      "scalar_gain_max": 0.06283767536600945
+    },
+    "BAND-s2026092703": {
+      "witnesses": 13,
+      "physical_decay_max_error_Hz": 0.0,
+      "adaptive_update_max_error_Hz": 0.0,
+      "NORM_local_adaptive_norm_rounding_Hz": 0.0,
+      "scalar_gain_min": 0.02532342494307891,
+      "scalar_gain_max": 0.06416369153965956
+    }
+  },
+  "new_IQ_reads": 0,
+  "new_forwards": 0,
+  "target_reads": 0
+}
