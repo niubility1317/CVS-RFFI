@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "Latest human:直接跑测试查看性能结果，而不是看源域留出的接收机. Only SIG_TIME＋RDrop,focus RDrop. Retain full E50 three seeds and E20 comparison;all12 fixed rows train and test regardless of source scientific scores. No target-led parameter/seed/epoch adaptation.",
   "code": {
-    "commit": "Actual Git HEAD in release_commit.txt",
+    "commit": "c0393fc8c5de7700933ba4f5f16d6cc0a73c108f",
     "checkout": "E:\\type10-7\\code\\worktrees\\report_physical_ssl_delivery_20261011",
     "environment": "ordinary N607 CVS-RFFI Python, CPU2/worker,loader0,CPUdispatcher/scorersCUDAempty",
     "cwd": "PROJECT/releases/cvs_SIGTIME_rdrop_feature_mechanisms_main20_50_20261016_r01",
@@ -2663,5 +2663,15 @@
     "CPU/CUDA each151protocolnegative checks,3qualificationfalse,198sameinitialtensors,1024synthetic identitypackets,actual t1/t2/SIG/defaultW gradientsfinite/nonzero and auxiliarydirectWNone. No realIQ/CP/optimizer/headfit/target. Unchanged geometry CPU/CUDA and completed source audits reused.",
     "One next-run independent P0/P1 review PASS.No extra blocker.No global novelty from feature consistency/gradientnorm weighting. Exposedbenchmark research,not a new independent blind test."
   ],
-  "registered_at": "2026-10-16T01:32:03+00:00"
+  "registered_at": "2026-10-16T01:32:03+00:00",
+  "result": {
+    "status": "RUNNING",
+    "source_rows_started": 12,
+    "reused_controls": 6,
+    "evidence_ref": "launch_verification.json",
+    "source_scientific_gate": false,
+    "training_complete": false,
+    "target_feedback": false,
+    "goal_completed": false
+  }
 }
