@@ -27,3 +27,5 @@ CPU/CUDA真实F检查PASS：各8个协议负例，三个独立SIG_TIME分支/默
 发布后核验：archive传输、remotecompile为VERIFIED，真实F checkpoint no-query preflight PASS；6个worker的PID/CWD/argv/GPU/log增长均已独立核验，实际900722参数、SIG_TIME_X3、50=33+17、fullsource6300/56700/27000且无sourcefold。每行E1有222实际RDrop/默认头联合更新。详见run_evidence.json。
 
 首轮真实更新独立复算：6新模型各13步，共78步，物理origin衰减及自适应增量的最大误差均0Hz；NORM局部范数FP32舍入差最大0.000784Hz。只读取保存的更新见证，无额外模型前向或源/目标IQ读取；这是执行证据，尚非目标性能结果。
+
+首批目标评分（未完成矩阵）：BAND seed01准确率84.212500%，相对F−0.142262个百分点；BAND seed02为83.511905%，相对F−0.450595；NORM seed02为83.841071%，相对F−0.121429。三行18分层CM和同物理ID配对整数差已独立复算；当前均为负差，全部保留，不以此改变其他健康训练。尚不形成完整三seed均值。详见partial_target_results.json。

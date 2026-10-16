@@ -1,0 +1,54 @@
+{
+  "status": "PARTIAL_TARGET_ROWS_VERIFIED",
+  "run_id": "20261016-phase1-F-sinc-bandgain-e50-clean-manysig-m9-r01",
+  "new_rows_scored": 3,
+  "registered_new_rows": 6,
+  "rows": [
+    {
+      "row_id": "BAND-s2026092701",
+      "arm": "BAND",
+      "model_seed": 2026092701,
+      "accuracy": 0.842125,
+      "macro_f1": 0.8387036692329795,
+      "worst_RX": 0.7131666666666666,
+      "worst_day": 0.8134047619047619,
+      "paired_F_accuracy": 0.8435476190476191,
+      "accuracy_difference_pp": -0.14226190476190476,
+      "corrected_errors": 2648,
+      "introduced_errors": 2887,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "NORM-s2026092702",
+      "arm": "NORM",
+      "model_seed": 2026092702,
+      "accuracy": 0.8384107142857142,
+      "macro_f1": 0.8335410321581372,
+      "worst_RX": 0.6843333333333333,
+      "worst_day": 0.7932142857142858,
+      "paired_F_accuracy": 0.839625,
+      "accuracy_difference_pp": -0.12142857142857143,
+      "corrected_errors": 2898,
+      "introduced_errors": 3102,
+      "head_fit_updates": 0
+    },
+    {
+      "row_id": "BAND-s2026092702",
+      "arm": "BAND",
+      "model_seed": 2026092702,
+      "accuracy": 0.8351190476190476,
+      "macro_f1": 0.8298201285402067,
+      "worst_RX": 0.675375,
+      "worst_day": 0.7875952380952381,
+      "paired_F_accuracy": 0.839625,
+      "accuracy_difference_pp": -0.4505952380952381,
+      "corrected_errors": 2819,
+      "introduced_errors": 3576,
+      "head_fit_updates": 0
+    }
+  ],
+  "raw_IQ_reads": 0,
+  "raw_truth_reads": 0,
+  "target_feedback": false,
+  "read_at": 1792120569.4949102
+}
