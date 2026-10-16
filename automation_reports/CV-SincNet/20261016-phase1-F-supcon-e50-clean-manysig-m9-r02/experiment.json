@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "User asks continued F training-mechanism optimization on target test domain using previous positive mechanisms. Historical ALL/CROSS source-label contrastive result supports independent paired-F composition. Preserve full original Sinc update/RDrop/defaulthead/data;no repeated baseline training or source performance gate.",
   "code": {
-    "commit": "Actual Git HEAD in release_commit.txt",
+    "commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_rdrop_combinations_20261015",
     "environment": "ordinary N607 CVS-RFFI Python; CPU2 perworker, loader0, CUDAempty dispatcher/scorers",
     "cwd": "PROJECT/releases/cvs_F_supcon50_clean_20261016_r02",
@@ -212,7 +212,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-paired-SupCon-20261016",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -250,7 +250,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
@@ -510,7 +510,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-paired-SupCon-20261016",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -548,7 +548,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
@@ -808,7 +808,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-paired-SupCon-20261016",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -846,7 +846,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
@@ -1106,7 +1106,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-paired-SupCon-20261016",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1144,7 +1144,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
@@ -1404,7 +1404,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-paired-SupCon-20261016",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1442,7 +1442,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
@@ -1702,7 +1702,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-paired-SupCon-20261016",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -1740,7 +1740,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
@@ -2000,7 +2000,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-paired-SupCon-20261016",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -2038,7 +2038,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
@@ -2298,7 +2298,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-paired-SupCon-20261016",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -2336,7 +2336,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
@@ -2596,7 +2596,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-paired-SupCon-20261016",
         "label_epochs": 33,
         "pseudo_epochs": 17,
@@ -2634,7 +2634,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F tripleSIG_TIME/unified full physical Sinc/RDrop1/ordinary actual augmented IQ/LS.01/oldgate-ownEMA-cos/defaultheadjoint; paired L-only shallow-middle SupCon; scratch50=33L+17U",
