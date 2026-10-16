@@ -80,3 +80,9 @@ C0已完成E20及七源视图、默认头独立复算：held RX1 clean83.444444%
 剩余源确认已实际发布，训练代码b3fe1c7b2e04d3abada07e79335508be2af01882；RX3/RX4四worker的真实scratchCP smoke／源角色／实际原practical参数／默认头及F更新／PID与日志增长均VERIFIED，RX6/RX8按四worker上限排队。当前RUNNING，尚无新增FINAL结果，0target。
 
 剩余源确认的本地独立复算工具已完成：动态heldRX／训练补集检查、四新折及RX1冻结参考汇总、最差RX／全部失败折／单modelseed边界、完整source曲线和分层可执行。原RX1的75600冻结预测回归及七个角色／聚合负例通过，0IQ/CP/网络。运行release保持b3fe1c7b2，当前健康任务继续；不能把合成读数写成新RX性能。
+
+## F＋跨 RX：五源确认实际失败
+
+20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01 八行全部自然结束且完整离线复算，科学判定 FAIL。五源平均 urban +20.039506 pp、low +14.081481 pp、clean +0.881481 pp，但 RX6/RX8 clean -3.648148/-2.129630 pp，不能按均值晋级。C1 源 low 均值40.637037%、最差RX3为34.203704%，suburban距自身clean平均8.933333/11.448148/14.285185 pp，联合目标未达。新增160模型轮／35520更新／28632144网络包、矩阵墙钟4309.823827 s；RX1既有40模型轮另列。一个model seed、五源折，0target。[实际报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/report.md)。
+
+固定 paired-As 的独立晋级关闭，不换失败折／seed、调权重、扫描强度或追加epoch救援。先前冻结的独立观测 SAME_RX/CROSS_RX 比较保持原方案，它尚不能叫数字 Ag。正式七视图、跨seed和真正四格混合目标继续 active。

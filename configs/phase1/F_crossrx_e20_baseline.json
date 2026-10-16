@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v1",
-  "status": "SOURCE_CONFIRMATION_RUNNING",
+  "status": "SOURCE_CONFIRMATION_ANALYZED_FAIL",
   "authorization": "User changed the pre-augmentation baseline to F plus cross-RX same-TX contrastive learning on 2026-10-16; existing E20 budget remains in force.",
   "baseline_name": "F+CROSS_RX_SUPCON",
   "existing_mechanism_source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
@@ -106,7 +106,7 @@
     "formal_IQ_channel_SNR_boundary": "unchanged",
     "goal_completed": false
   },
-  "execution_boundary": "Eight-row heldsource confirmation verified running under four-worker cap. RX1 firstfold PASS is source evidence only; formal fullsource/target/crossseed/independentAg/factorial joint goal remain unproven.",
+  "execution_boundary": "Five held-source folds analyzed, one model seed. Practical paired-CE improves all urban folds but fails clean protection on RX6/RX8; no standalone promotion or target/crossseed extension. Independently frozen real-pair source study remains separate; joint goal active.",
   "full_source_status": "NOT_RUN",
   "source_pair": {
     "run_id": "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01",
@@ -157,11 +157,160 @@
     "model_seed": 2026092701,
     "new_rows": 8,
     "epochs_each": 20,
-    "status": "VERIFIED_RUNNING",
+    "status": "ANALYZED_FAIL",
     "reference_RX1": "frozen results only, no weights",
     "all_five_folds_must_pass": true,
     "training_code_commit": "b3fe1c7b2e04d3abada07e79335508be2af01882",
-    "launched_rows": 4,
-    "not_yet_launched_rows": 4
+    "launched_rows": 8,
+    "not_yet_launched_rows": 0,
+    "source_decision": {
+      "status": "FAIL",
+      "per_source_RX": {
+        "1": {
+          "status": "PASS",
+          "checks": {
+            "urban": true,
+            "low": true,
+            "urban_F1": true,
+            "clean": true,
+            "seen": true,
+            "complete_health": true
+          },
+          "urban_gain_pp": 17.746913580246915,
+          "low_gain_pp": 12.722222222222223,
+          "urban_macroF1_gain_pp": 21.616060692881106,
+          "clean_drop_pp": -2.722222222222226,
+          "seen_drop_pp": 0.18518518518517713,
+          "suburban_gaps_pp": {
+            "practical_high": 22.759259259259256,
+            "practical_mid": 25.537037037037035,
+            "practical_low_suburban": 28.96296296296297
+          },
+          "source_only": true,
+          "target_access": false,
+          "automatic_extension": false,
+          "goal_completed": false
+        },
+        "3": {
+          "status": "PASS",
+          "checks": {
+            "urban": true,
+            "low": true,
+            "urban_F1": true,
+            "clean": true,
+            "seen": true,
+            "complete_health": true
+          },
+          "urban_gain_pp": 13.407407407407412,
+          "low_gain_pp": 8.129629629629632,
+          "urban_macroF1_gain_pp": 14.389396876538008,
+          "clean_drop_pp": -3.0925925925925912,
+          "seen_drop_pp": 0.2592592592592591,
+          "suburban_gaps_pp": {
+            "practical_high": 8.518518518518514,
+            "practical_mid": 9.592592592592592,
+            "practical_low_suburban": 11.481481481481476
+          },
+          "source_only": true,
+          "target_access": false,
+          "automatic_extension": false,
+          "goal_completed": false
+        },
+        "4": {
+          "status": "PASS",
+          "checks": {
+            "urban": true,
+            "low": true,
+            "urban_F1": true,
+            "clean": true,
+            "seen": true,
+            "complete_health": true
+          },
+          "urban_gain_pp": 32.20987654320988,
+          "low_gain_pp": 22.24074074074074,
+          "urban_macroF1_gain_pp": 32.01751557635797,
+          "clean_drop_pp": -4.3703703703703685,
+          "seen_drop_pp": 0.3564814814814743,
+          "suburban_gaps_pp": {
+            "practical_high": 11.814814814814822,
+            "practical_mid": 14.203703703703708,
+            "practical_low_suburban": 17.814814814814817
+          },
+          "source_only": true,
+          "target_access": false,
+          "automatic_extension": false,
+          "goal_completed": false
+        },
+        "6": {
+          "status": "FAIL",
+          "checks": {
+            "urban": true,
+            "low": true,
+            "urban_F1": true,
+            "clean": false,
+            "seen": true,
+            "complete_health": true
+          },
+          "urban_gain_pp": 26.641975308641978,
+          "low_gain_pp": 20.203703703703706,
+          "urban_macroF1_gain_pp": 28.748666056296084,
+          "clean_drop_pp": 3.648148148148145,
+          "seen_drop_pp": 0.18055555555555047,
+          "suburban_gaps_pp": {
+            "practical_high": 0.796296296296295,
+            "practical_mid": 4.425925925925933,
+            "practical_low_suburban": 7.98148148148149
+          },
+          "source_only": true,
+          "target_access": false,
+          "automatic_extension": false,
+          "goal_completed": false
+        },
+        "8": {
+          "status": "FAIL",
+          "checks": {
+            "urban": true,
+            "low": true,
+            "urban_F1": true,
+            "clean": false,
+            "seen": true,
+            "complete_health": true
+          },
+          "urban_gain_pp": 10.191358024691354,
+          "low_gain_pp": 7.1111111111111125,
+          "urban_macroF1_gain_pp": 13.670054513640617,
+          "clean_drop_pp": 2.129629629629637,
+          "seen_drop_pp": 0.18981481481481488,
+          "suburban_gaps_pp": {
+            "practical_high": 0.7777777777777772,
+            "practical_mid": 3.4814814814814743,
+            "practical_low_suburban": 5.185185185185182
+          },
+          "source_only": true,
+          "target_access": false,
+          "automatic_extension": false,
+          "goal_completed": false
+        }
+      },
+      "five_fold_mean": {
+        "urban_gain_pp": 20.03950617283951,
+        "low_gain_pp": 14.081481481481484,
+        "urban_macroF1_gain_pp": 22.088338743142756,
+        "clean_drop_pp": -0.8814814814814808,
+        "seen_drop_pp": 0.23425925925925517
+      },
+      "worst_clean_drop_pp": 3.648148148148145,
+      "model_seed_count": 1,
+      "source_fold_count": 5,
+      "failed_source_RX": [
+        6,
+        8
+      ],
+      "source_only": true,
+      "target_access": false,
+      "goal_completed": false,
+      "automatic_extension": false
+    },
+    "report": "automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/report.md"
   }
 }
