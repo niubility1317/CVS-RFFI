@@ -213,3 +213,6 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 下一单一候选端部可见性 20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01 已实现登记未启动：16点支持/外8归零内8半余弦，raw/left/right，两既有合法E20默认头fitL5040操作身份检验。19输入/配置负例和7科学反例/120合成IQ窗PASS，一次P0/P1审查PASS；预计30242NN、0新训练/更新/target。原条件失败不缩窗/换边/改阈值/RX/seed；PASS也不是Ag/DG或联合收益。与另一对话practical正负噪声方向不同，全部旧失败路线继续关闭。
+
+
+端部可见性 20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01 完整ANALYZED/VERIFIED：FAIL_FIXED_EDGE_VISIBILITY_IDENTITY_GUARD_CLOSED。两冻结模型/三视图全部30240判决、CE/F1/分层/窗统计复算，实际30242NN/0更新/target。seed02左/右accuracy−1.388889/−.654762pp，左端11包IQchange>.35；参考完全保持仍不足以保真。固定16/8zero8taper关闭，不缩长度/换边/阈值/RX/seed救跑，不启动E20；没有新有效Ag，联合目标ACTIVE。

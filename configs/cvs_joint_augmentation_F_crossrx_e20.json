@@ -1415,7 +1415,7 @@
     "successor_registered": false
   },
   "edge_visibility_source_guard": {
-    "status": "REGISTERED_LOCAL_VALIDATED_REVIEW_PASS_NOT_LAUNCHED",
+    "status": "ANALYZED_SOURCE_FAIL_FIXED_EDGE_VISIBILITY_IDENTITY_GUARD_CLOSED",
     "run_id": "20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01",
     "package": "experiments/cvs_edge_visibility17",
     "baseline": "F+CROSS_RX/3SIGTIME/unifiedSinc/joint160/defaultcos30/NoExplicitCFO",
@@ -1465,6 +1465,25 @@
     "Ag_efficacy_proved": false,
     "As_efficacy_proved": false,
     "joint_goal_complete": false,
-    "note_ref": "analysis/cvs_edge_visibility_source_20261017.md"
+    "note_ref": "analysis/cvs_edge_visibility_source_20261017.md",
+    "scientific_verdict": "FAIL_FIXED_EDGE_VISIBILITY_IDENTITY_GUARD_CLOSED",
+    "execution_commit": "06be5bd7d97c25f5ba3a3fec3b1f8f984687bd62",
+    "source_analysis_ref": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01/source_analysis.json",
+    "actual_NN": 30242,
+    "actual_updates": 0,
+    "actual_source_decisions": 30240,
+    "automatic_training": false,
+    "E20_launched": false,
+    "successor_registered": false,
+    "accuracy_gains_pp": {
+      "2026092701": {
+        "left": -0.4166666666666652,
+        "right": -0.37698412698412564
+      },
+      "2026092702": {
+        "left": -1.388888888888884,
+        "right": -0.6547619047619024
+      }
+    }
   }
 }

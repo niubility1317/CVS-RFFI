@@ -1,6 +1,6 @@
 # 单侧边缘可见性：固定候选与最小源身份检验
 
-2026-10-17。状态：原始文献与既有实现核查完成，已实现登记，19输入/配置负例与7科学判断反例及一次P0/P1审查PASS；尚未启动真实源检验。当前唯一候选是单侧边缘可见性变化，不是改名重跑已关闭的周期残差、时移、频移、谱响应或同TX插值。固定基线为F＋跨RX同TX、三路SIG_TIME、统一Sinc、joint160、NoExplicitCFO、默认cosine头联合训练；模型训练预算E20。
+2026-10-17。状态：原始文献与既有实现核查完成，已实现登记，19输入/配置负例与7科学判断反例及一次P0/P1审查PASS；真实源检验与完整独立复算已完成，固定条件FAIL／关闭。当前唯一候选是单侧边缘可见性变化，不是改名重跑已关闭的周期残差、时移、频移、谱响应或同TX插值。固定基线为F＋跨RX同TX、三路SIG_TIME、统一Sinc、joint160、NoExplicitCFO、默认cosine头联合训练；模型训练预算E20。
 
 ## 原始依据和反证
 
@@ -27,3 +27,8 @@
 全部通过也只支持另行登记匹配E20的raw槽／边缘视图两组，保留共同raw.75＋ordinary.25与原SupCon，额外.25同IQ RDrop对，8次L前向和原U规则匹配，默认头联合训练；要求clean至少+1pp、macro-F1不降、每practical和seenV下降≤.5pp。该训练尚未实现/登记/启动，单源种子通过仍需独立确认；不访问target来选参数或候选。
 
 科学失败完成两模型预定读出后关闭；技术异常保留failure/partial、不自动重试、不改健康旧任务。源guard不是heldRX、正式target、Ag或联合收益。完整目标仍需Ag/As独立证据、同契约四格与交互、跨seed和正式clean＋六practical；lowurban>60%和suburban距自身clean≤2pp探索目标没有完成。
+
+
+## 完成的源结果
+
+双模型/raw-left-right全部30240判决和窗统计独立复算一致；实际30242NN/0新增epoch或更新/0target，进程自然退出。seed01左/右准确率变化−.416667/−.376984pp，但分别RX3/TX3超出原分层限制；seed02左/右为−1.388889/−.654762pp，左端raw正确保留98.608903%低于99%。左端11包IQ变化超过.35，最大.496313。固定参考与支持外完全保持仍未满足身份条件。FAIL_FIXED_EDGE_VISIBILITY_IDENTITY_GUARD_CLOSED，不缩窗口/换边/形状/阈值/RX/seed救跑，不启动E20。完整边界与成本见[同row报告](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-edgevisibility-fitL-manysig-m2-r01/report.md)。没有Ag或联合收益证明，后继未指定/登记/启动。
