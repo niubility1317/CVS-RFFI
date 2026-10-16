@@ -1,6 +1,6 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-当前没有获得跨RX泛化证明的新增Ag。固定常数增益候选两组scratchE20/七源视图已完整独立分析，未通过源门槛，固定配方关闭，不改幅度/seed/RX救跑。clean差+0.555556pp，lowurban差-0.238095pp。真实CP输入作用PASS只属于工程证据。原ordinary含PA、默认头、原U保持；尚无target/联合成功结果。下一唯一拟检验轻度接收频偏的补偿后输入作用，保留NoExplicitCFO/内部补偿；先独立登记162合成NN/0真实IQ/0更新检查，无非平凡作用即零训练关闭。频偏范围来自实际ordinary E13截断，尚未实现、登记或启动。
+当前没有获得跨RX泛化证明的新增Ag。固定常数增益候选两组scratchE20/七源视图已完整独立分析，未通过源门槛，固定配方关闭，不改幅度/seed/RX救跑。clean差+0.555556pp，lowurban差-0.238095pp。真实CP输入作用PASS只属于工程证据。原ordinary含PA、默认头、原U保持；尚无target/联合成功结果。下一唯一拟检验轻度接收频偏的补偿后输入作用，保留NoExplicitCFO/内部补偿；先独立登记162合成NN/0真实IQ/0更新检查，无非平凡作用即零训练关闭。频偏范围来自实际ordinary E13截断，该零更新频偏检查已实现登记，尚未发布。
 用户于 2026-10-16 指定，增强前参照更换为 **F＋跨 RX 同 TX 对比学习**。该选择覆盖本对话旧的 F-only 参照；训练预算仍为 E20，没有延长到 E50 的新授权。唯一活动配方见 [配置](../configs/cvs_joint_augmentation_F_crossrx_e20.json)。两种子源 B00/B01 已完整分析；独立seed02因clean下降13.095238pp未通过，固定75/25候选关闭。正式完整源四因子尚未训练。
 
 已核实的来源是 `20261016-phase1-F-supcon-e50-clean-manysig-m9-r02` 的 `CROSS_RX`，执行 commit `4df7b94d0fd8ce29056bd8236364e45afa92e07f`。已读取完整报告、最终分析、实际 design/model/mechanism/source/observer，确认实际原生 extra 格式为 `(domain, metadata)`；不复用 r01 的错误读取方式。
@@ -90,3 +90,6 @@ PA旁路两组E20及七源视图已完整ANALYZED/VERIFIED，原条件FAIL固定
 
 
 当前下一唯一假设及最小实验见配置next_source_hypothesis与常数增益报告末尾：仅有界接收频偏观测，NoExplicitCFO与内部补偿不变；不复用失败公共常相位或gain配方，不进入关联对话状态课程。尚无新实验启动。
+
+
+频偏输入候选已实现登记 `20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r01`，真实匹配CP＋162固定合成NN/0真实IQ/0更新/0target，原NoExplicitCFO及内部参考补偿保持。10协议负例、4判断反例和实际未训练F路径PASS，一次限定P0/P1审查PASS；尚未发布或取得真实CP工程结果，更无身份收益。

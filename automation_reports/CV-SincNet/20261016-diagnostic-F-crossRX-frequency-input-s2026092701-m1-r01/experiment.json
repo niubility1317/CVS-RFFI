@@ -1,0 +1,215 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r01",
+  "group_id": "phase1-F-CROSS_RX-bounded-frequency-observation",
+  "display_name": "F＋跨 RX 同 TX：轻度接收频偏的零更新输入作用检查",
+  "description": "Fixed native zero-origin ±.00010024013357398965 cycles/sample and inverse controls;real matching frozen CP plus32 synthetic packets x5 views;162 actualNN,0sourceIQ/updates/identityaccuracy. PASS/FAIL both stop without training.",
+  "kind": "cvs",
+  "stage": "Phase1 diagnostic input only",
+  "aliases": [
+    "F CROSS_RX CFO input only"
+  ],
+  "tags": [
+    "F",
+    "CROSS_RX",
+    "NoExplicitCFO",
+    "frequency_input",
+    "synthetic_only",
+    "zero_update"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research,E20 budget;baseline user override F+CROSS_RX. Completed fixed gain sourceFAIL retained. Implement next proposed frequency engineering-only check;no new training or target here.",
+  "code": {
+    "commit": "PENDING_COMMIT",
+    "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
+    "environment": "ordinary N607 CVS-RFFI Python;fullFP32 identity model;CPU2threads,CUDA_VISIBLE_DEVICES empty",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_frequency_input_20261016_r01",
+    "entrypoint": "experiments/cvs_cfo_input16/runner.py",
+    "immutable_backend_commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8"
+  },
+  "data": {
+    "dataset": "Synthetic32 IQ256 packets;ManySig source only as frozen checkpoint provenance",
+    "version": "Fixed4families8each;Gaussian/ARcolored/QPSKsmoothed/chirp+noise;seed20261016421",
+    "representation": "float32 IQ[32,2,256],initial complex packet power1;5fixed frequency/inverse views,no noise/channel/RMS between views",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "No real IQ read or physical samples generated;CP source_contract/source_fold exact role-ID metadata only",
+    "label_map_ref": "CP original6TX/default head,not used to label synthetic packets",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "CP all6 original TX;no synthetic identity labels",
+    "roles": {
+      "L_s": "No reads;CP trained4RX L5040",
+      "U_s": "No reads;CP original hiddenTX U45360",
+      "V": "No reads;CP original V21600,source final-only20 checkpoint"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Unchanged validated source carrier and own CP provenance reused;strict matching metadata/payload checks,no data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "synthetic_no_query_diagnostic",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Engineering input effect only;no source identity/Ag efficacy/As/joint result"
+  },
+  "checkpoint": {
+    "initialization": "frozen_matching_source_checkpoint_only",
+    "sources": [
+      {
+        "run_id": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+        "row_id": "B00-RX1-s2026092701",
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth",
+        "scratch_only": true,
+        "ancestors": [],
+        "epoch": 20,
+        "optimizer_updates": 4440,
+        "selection": "fixed_final20",
+        "effective_roles": "L5040/U45360/V21600,RX3/4/6/8,heldRX1 excluded fromtraining",
+        "target_contact": false
+      }
+    ],
+    "contract_check_ref": "Prior own satmix25 B00 report/source_contract/source_fold/initialization/completion/source_frozen plus strict payload match",
+    "provenance_verdict": "MATCHING_FROZEN_SOURCE_CP_SCRATCH_NO_ANCESTOR_OR_TARGET;no optimizer/EMA/teacher/new parent initialization",
+    "selection_rule": "Previously fixed final20;not chosen by current synthetic score or target"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-CROSS_RX-frequency-input-20261016",
+    "gpu_policy": "CPU only,2threads,CUDA_VISIBLE_DEVICES empty;0GPU workers,no healthy job interference",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_frequency_input_20261016_r01/diagnostic.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r01",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_cfo_input16/runner.py",
+    "stop_rule": "Input/provenance/shape/nonfinite/budget/output/unlaunchable failure:preserve own artifacts,no retry or training. Fixed engineering condition FAIL closes frequency hypothesis with0training,no frequency/seed/control rescue;PASS merely supports separately preregistered source experiment,no automatic target."
+  },
+  "expected_artifacts": [
+    "request.json",
+    "real_checkpoint_smoke.json",
+    "input_audit.json",
+    "input_audit_traces.json(synthetic arrays,private)",
+    "completion.json or preserved failure.json",
+    "complete diagnostic.stdout.log",
+    "independent NumPy all5x32 joint/logit/power recount and report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "actual encoder/Sinc input equality and complex power",
+      "normalized joint160 difference and defaultcos logits",
+      "inverse input/function recovery",
+      "actual162NN/0updates/0realIQ/0target"
+    ],
+    "dimensions": [
+      "identity",
+      "frequency_positive",
+      "frequency_negative",
+      "positive_inverse",
+      "negative_inverse"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r01/input_audit_traces.json",
+    "scorer_ref": "Private independent NumPy recount after completion;no labels/truth",
+    "criteria": {
+      "power_relative_error_max": 1e-06,
+      "inverse_input_relative_error_max": 1e-06,
+      "inverse_normalized_joint_change_max": 0.0001,
+      "inverse_logits_abs_change_max": 0.001,
+      "one_endpoint_median_normalized_joint_change_min": 0.001,
+      "one_endpoint_logits_abs_change_min": 0.01
+    },
+    "success": "All engineering conditions only;not identity performance",
+    "identity_accuracy_computed": false,
+    "target_access": false
+  },
+  "rows": [
+    {
+      "row_id": "frequency-input-s2026092701",
+      "method": "F_CROSS_RX_fixed_frequency_input_only",
+      "purpose": "engineering falsification only",
+      "config_ref": "experiments/cvs_cfo_input16/design.py:config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r01/request.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 20261016421,
+        "augmentation": null,
+        "support": null,
+        "evaluation": 20261016421
+      },
+      "seed_notes": "model/split identify frozen CP only;synthetic data/evaluation private generator20261016421;augmentation deterministic two fixed endpoints/inverses,no random augmentation;support null no K/query;smoke synthetic generator20261016204",
+      "k": null,
+      "scenario": "Synthetic identity/positive/negative/inverse controls only;no actual source/test channel",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "162actualNN=2realCPsyntheticsmoke+32x5 fixedviews,0updates/IQ/teacher/headfit;local untrained162NN separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_F_crossRX_frequency_input_20261016_r01/diagnostic.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u experiments/cvs_cfo_input16/runner.py",
+      "expected_artifacts": [
+        "request.json",
+        "real_checkpoint_smoke.json",
+        "input_audit.json",
+        "input_audit_traces.json(synthetic arrays,private)",
+        "completion.json or preserved failure.json",
+        "complete diagnostic.stdout.log",
+        "independent NumPy all5x32 joint/logit/power recount and report"
+      ],
+      "config": {
+        "run_id": "20261016-diagnostic-F-crossRX-frequency-input-s2026092701-m1-r01",
+        "launch_owner": "codex/root/F-CROSS_RX-frequency-input-20261016",
+        "method": "Bounded native zero-origin received-frequency ramp,NoExplicitCFO retained",
+        "model": "Fixed own F+CROSS_RX B00/seed2026092701/scratchE20/final20/4440 updates;not a parent for training",
+        "source_IQ_reads": 0,
+        "target_access": false,
+        "training_updates": 0,
+        "head_fit_updates": 0,
+        "actual_NN_packets": 162,
+        "synthetic_seed": 20261016421,
+        "synthetic_packets_per_view": 32,
+        "views": [
+          "identity",
+          "frequency_positive",
+          "frequency_negative",
+          "positive_inverse",
+          "negative_inverse"
+        ],
+        "frequency_max_cycles_per_sample": 0.00010024013357398965,
+        "bound_basis": "Actual ordinary aug_cfo_max .0004 times native E13 cap scale .2506003339349741",
+        "operator": "x[n] exp(j2pi f n),n0..255;no centering,no added constant phase/RMS/noise/channel",
+        "NoExplicitCFO": true,
+        "internal_reference_compensation_retained": true,
+        "whole_network_frequency_invariance_assumed": false,
+        "on_fail": "Close fixed frequency input hypothesis with0training,no frequency/seed/control rescue",
+        "on_pass": "Engineering effect only;separately preregister source identity/E20 comparison before more IQ or training;no automatic target"
+      }
+    }
+  ],
+  "notes": [
+    "Baseline F+CROSS_RX/E20 defaultcos source recipe unchanged;no training in this diagnostic",
+    "Actual native ordinary max .0004 x E13 scale .2506003339349741;not constructor/default or extrapolatedE20 range",
+    "NoExplicitCFO only masks response coord27;internal reference compensation preserved,wholeF not assumed invariant",
+    "Native zero-origin ramp avoids introducing centered-ramp residual common phase;not failed common phase/gain routes",
+    "NoIQtruth/IDs/source cache/extra head or target read;metadata and fixedCP only",
+    "One focused P0/P1 review PASS;10protocol rejections and4qualifier counterexamples plus actual untrainedF path PASS"
+  ],
+  "registered_at": "2026-10-16T10:11:59+00:00"
+}
