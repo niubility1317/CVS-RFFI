@@ -219,3 +219,9 @@ MC2完整负结果已保留：independent相对repeat clean−0.158730pp，六pr
 
 
 下一单一候选普通增强输出RMS恢复 20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01 已实现登记未启动：同一实际E13 ordinary IQ，仅正实数恢复原包功率；四命名抽样、两既有合法E20默认头fitL5040，预计90722NN，0新训练/更新/target。19输入负例＋8科学反例/96合成RMS PASS；原审查两P1修复定向PASS。固定完整ordinary后置RMS/E13/四抽样失败不换位置/部分系数/clip/禁用旧增强/抽样/RX/seed。PASS仅源尺度身份依据，须另登记三匹配E20控制，未证明Ag或联合收益。区别于另一对话practical正负噪声方向，旧失败全部保持关闭。
+
+
+普通增强输出RMS r01 20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01 FAILED_TECHNICAL_VERIFIED：SatViewStage日志序列化失败，2合成NN/1CP加载/64合成ordinary，0源NN/训练/target；seed02未启动，全部own进程自然退出。源假设尚未检验，不把技术失败作科学FAIL，不覆盖或自动重试旧根。
+
+
+普通增强输出RMS日志技术修复r02 20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r02 已实现登记未启动：同一实际E13 ordinary IQ，仅正实数恢复原包功率；四命名抽样、两既有合法E20默认头fitL5040，预计90722NN，0新训练/更新/target。19输入负例＋8科学反例/96合成RMS PASS；原审查两P1修复定向PASS。固定完整ordinary后置RMS/E13/四抽样失败不换位置/部分系数/clip/禁用旧增强/抽样/RX/seed。PASS仅源尺度身份依据，须另登记三匹配E20控制，未证明Ag或联合收益。区别于另一对话practical正负噪声方向，旧失败全部保持关闭。

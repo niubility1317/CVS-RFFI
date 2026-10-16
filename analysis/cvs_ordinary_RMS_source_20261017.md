@@ -27,3 +27,9 @@ x为原生RMS的raw，o=A_old(x)只生成一次，n=o sqrt(sum(x²)/sum(o²))。
 下一匹配E20若获得源依据，须另登记三组：共同raw.75＋ordinary.25＋原SupCon保持，extra.25分别raw／同一ordinary／同一ordinary恢复RMS，均8L前向/1.25总权重、原U规则、默认头联合训练。恢复RMS不能隐式多抽一个ordinary，RDrop必须同IQ。须同时超过两个控制clean≥+1pp、F1不降、每practical/seenV≥−.5pp；单源种子通过再独立确认。此训练尚未实现、登记或启动。
 
 完整联合目标ACTIVE：新Ag、As稳定、完整契约四格/交互项、跨seed与正式clean＋六practical、lowurban>60%及suburban距自身clean≤2pp探索目标仍未完成。源fit修复不是跨RX clean收益，普通增强尺度修正尚不能称Ag有效。
+
+
+普通增强输出RMS r01 20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r01 FAILED_TECHNICAL_VERIFIED：SatViewStage日志序列化失败，2合成NN/1CP加载/64合成ordinary，0源NN/训练/target；seed02未启动，全部own进程自然退出。源假设尚未检验，不把技术失败作科学FAIL，不覆盖或自动重试旧根。
+
+
+r02 20261017-diagnostic-F-crossRX-ordinaryRMS-fitL-manysig-m2-r02 已登记未启动；仅修复原生dataclass日志表示，原科学矩阵和条件保持，r01失败成本单列。
