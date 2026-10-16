@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v1",
-  "status": "SOURCE_PAIR_IMPLEMENTED_NOT_RUN",
+  "status": "SOURCE_PAIR_RUNNING",
   "authorization": "User changed the pre-augmentation baseline to F plus cross-RX same-TX contrastive learning on 2026-10-16; existing E20 budget remains in force.",
   "baseline_name": "F+CROSS_RX_SUPCON",
   "existing_mechanism_source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
@@ -106,13 +106,14 @@
     "formal_IQ_channel_SNR_boundary": "unchanged",
     "goal_completed": false
   },
-  "execution_boundary": "Source-pair implementation and local checks/P0P1 completed. No real E20 for the new baseline has launched yet. Full-source formal clean+6practical and crossseed remain not run.",
+  "execution_boundary": "Two fresh F+CROSS_RX E20 held-source RX1 rows are verified running. Full-source formal clean+6practical and crossseed NOT_RUN; no final recognition result yet.",
   "full_source_status": "NOT_RUN",
   "source_pair": {
     "run_id": "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01",
     "held_RX": 1,
     "package": "experiments/cvs_f_crossrx_practical20",
-    "status": "REGISTERED_NOT_RUN",
-    "clarification": "This sourcefold has5040L/45360hiddenU/21600seenV/5400heldV, not fullsource6300L. Four L forwards match C0/C1; SupCon reuses only first2."
+    "status": "VERIFIED_RUNNING",
+    "clarification": "This sourcefold has5040L/45360hiddenU/21600seenV/5400heldV, not fullsource6300L. Four L forwards match C0/C1; SupCon reuses only first2.",
+    "training_code_commit": "8235c71cc4a1619eade9def1371e1bdfc31b9eae"
   }
 }

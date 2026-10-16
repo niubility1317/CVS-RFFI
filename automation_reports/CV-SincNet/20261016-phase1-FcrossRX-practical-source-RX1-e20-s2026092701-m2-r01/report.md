@@ -23,3 +23,9 @@ REJECTED_EXTRA_GATE：generic brainstorming 的逐级设计审批和旧optimizer
 LOCAL_VERIFIED，尚未发布。两组累计1024合成网络包、188合成practical包、2合成optimizer更新、10个协议负例，0真实IQ/CP。206初态张量与原F一致；实际E6接口验证SupCon仅第一对两次前向，额外两个图没有特征对齐；默认头直接辅助梯度为None、其CE梯度及三SIG/Sinc联合梯度有限非零，ownEMA未被合成训练改写。相同第一视图、As输入直接来自raw、RX session稳定、跨epoch刷新、train/validation流分离与物理RX正对验证通过。
 
 仅含实际发布代码的隔离目录（不在工作树sys.path）导入全部runner/source/dispatch/model/channel/publish并核对真实nativeargs20/13/7成功，0网络/CP/IQ。一次限定P0/P1发现worker锁父目录不存在的P1，已把锁移至已建立BASE，并一次定向读回PASS；其余范围PASS。审查额外只读，0数据/网络/optimizer。注册VALID、compile及N607普通账户preflight通过。唯一真实scratchCP无查询smoke在worker首步执行，PASS立即训练。
+
+## 实际启动核实
+
+VERIFIED/RUNNING，实际训练代码 8235c71cc4a1619eade9def1371e1bdfc31b9eae。两组 PID/CWD/argv/GPU/log 增长、own scratch checkpoint 无查询 smoke、实际 E20=13+7、5040/45360/21600 源角色、默认头及 F 三路/Sinc 联合更新、每步 physical clip 和四次 L 前向均已核实。SupCon 原前两次前向复用，warm5/ramp10；C0 信道调用 0，C1 每步生成一个128包 practical 视图，As 输入未叠 ordinary，EQ 关闭/G=1/ref30。实际导入依赖 release 的 experiments/adv3b02_xuc/code/leo_practical；单 archive transfer/remote compile PASS。0 target，尚无 FINAL 源收益。
+
+离线结果读取器已编译；以完整20轮/4440更新的明确合成日志测试验证了SupCon目标分解，并拒绝U真值可用和损失贡献篡改两个负例。指标复算/分层测试通过，0真实IQ/CP/model；这不构成真实成绩。

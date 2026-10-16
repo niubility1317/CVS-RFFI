@@ -62,3 +62,5 @@ OJ24 已在实际代码 `f601fc65f6eaafbfd98080882108f4d50e07db69` 启动，运�
 训练均匀三场景low_suburban/mid_urban/low_urban，源heldRX1原V5400在FINAL固定clean＋六原practical流，无target访问。判据C1−C0：sourceurban均值≥+3pp、low≥+5pp、urbanF1不降、clean及seenV损失≤0.5pp，并完整预算/全物理顺序和覆盖；FAIL关闭固定paired-As配方，PASS只支持另登记source确认，不自动扩target或Ag。suburban2pp差距如实报告为探索目标。完整矩阵/command/paths/stop见[该run报告](../automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01/report.md)。
 
 实现、1024合成网络包/188信道输入/2合成optimizer/10负例、206初态匹配、隔离导入、实际E20args和唯一限定P0/P1（锁父目录P1已修复）均通过，0真实IQ/CP；当前REGISTERED_NOT_RUN。不能把新基线接入写成已有正式性能收益。
+
+实际代码8235c71cc已发布，C0/C1在N607 GPU2/3 verified running；own scratchCP smoke、PID/CWD/argv/log增长、真实F/默认头更新及As调用核对通过。当前仅源域RX1检验，完整source基线、正式clean+6practical及跨seed尚未运行。离线读取工具增加SupCon贡献核对与完整状态分层，未修改运行release。
