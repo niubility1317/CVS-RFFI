@@ -2,7 +2,7 @@
 import math
 import numpy as np
 from dataclasses import asdict
-from . import design as d
+SCENES=('practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
 
 def imports():
     # Resolve precisely the same module ordering as the native trainer first.
@@ -15,7 +15,7 @@ def imports():
 def configurations():
     ch,_=imports()
     return {scene:ch.Config(fs_hz=25_000_000.,scenario=scene,processing_route='residual',
-        mode='post_sync',equalization_enabled=False) for scene in d.SCENES}
+        mode='post_sync',equalization_enabled=False) for scene in SCENES}
 
 def audit():
     ch,r=imports(); cfg=configurations()
@@ -49,7 +49,8 @@ def usability(meta):
 
 class PairedChannel:
     def __init__(self,c):
-        d.validate(c);self.c=c;self.configs=configurations();self.ch,self.residual=imports()
+        from . import design as d
+        d.validate(c);self.c=c;self.configs=configurations();self.ch,self.residual=imports();self.train_scenes=d.TRAIN_SCENES
 
     def apply(self,x,meta,epoch,step,*,view='L',eta=0.):
         if not 0<=eta<=self.c['curriculum_plan']['eta_max']: raise ValueError('Unbounded curriculum mixture')
@@ -61,7 +62,7 @@ class PairedChannel:
             record,_=self.ch.normalize_input(raw[i,0]+1j*raw[i,1])
             hard=bool(selection.random()<eta); attempts=8 if hard else 1;chosen=None
             for attempt in range(attempts):
-                choices=self.c['curriculum_plan']['hard_scenes'] if hard or view=='U' else d.TRAIN_SCENES
+                choices=self.c['curriculum_plan']['hard_scenes'] if hard or view=='U' else self.train_scenes
                 scene=str(selection.choice(choices));cfg=self.configs[scene]
                 seed=self.ch.stable_seed(self.c['seeds']['augmentation'],namespace,scene,pid,attempt)
                 hardware=self.ch.receiver_for_session(cfg,self.c['seeds']['receiver'],sessions[i])
