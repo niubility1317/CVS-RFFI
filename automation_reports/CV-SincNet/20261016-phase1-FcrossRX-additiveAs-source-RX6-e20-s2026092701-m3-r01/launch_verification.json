@@ -1,0 +1,37 @@
+{
+  "status": "VERIFIED",
+  "code_commit": "367b2f945ef65488e6d97eddd2357388d2477100",
+  "release_archive_comparison": "VERIFIED",
+  "remote_compile": "PASS",
+  "no_query_real_checkpoint_smoke": "PASS",
+  "source_only": true,
+  "target_access": false,
+  "owner": "codex/root/FcrossRX-additiveAs-RX6-20261016",
+  "shared_GPU_limit": 3,
+  "rows": {
+    "D00": {
+      "log_initial_bytes": 6508,
+      "log_later_bytes": 22001,
+      "log_growth": true,
+      "progress": {
+        "epoch": 1,
+        "steps": 222,
+        "L_packets": 227328,
+        "extra_L_packets": 56832,
+        "As_packets": 0,
+        "supcon_applied": 0,
+        "target_access": false
+      }
+    },
+    "D_raw": {
+      "log_initial_bytes": 6524,
+      "log_later_bytes": 22031,
+      "log_growth": true
+    },
+    "D_As": {
+      "log_initial_bytes": 6516,
+      "log_later_bytes": 11684,
+      "log_growth": true
+    }
+  }
+}

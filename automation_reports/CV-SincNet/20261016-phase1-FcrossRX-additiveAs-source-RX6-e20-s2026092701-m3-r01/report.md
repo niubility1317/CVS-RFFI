@@ -1,6 +1,6 @@
 # 固定additive As：源RX6预登记
 
-REGISTERED_NOT_RUN。actualcodecommit以release为准，精确执行字段见experiment.json。
+RUNNING / 启动已 VERIFIED。实际训练源码 commit `367b2f945ef65488e6d97eddd2357388d2477100`，精确命令、数据角色和路径见 experiment.json。归档传输比较与 remote compile 通过；匹配数据角色的真实 CP no-query smoke 通过；三组 PID/CWD/argv/GPU 及日志增长独立核实。当前尚无 final RX6 结果，不声明有效或完成。
 
 # F＋跨 RX：固定 additive As 的源 RX6 确认
 

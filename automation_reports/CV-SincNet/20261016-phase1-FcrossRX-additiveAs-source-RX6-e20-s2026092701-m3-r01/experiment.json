@@ -28,7 +28,7 @@
   "replaces_run_id": null,
   "authorization": "Active joint Ag/As goal and source discoveryPASS authorize independent known-sensitive RX6 falsification,three scratchE20;not old normalized75/25 or localatten/gradient rescue,no target/weight inheritance.",
   "code": {
-    "commit": "CURRENT_RELEASE_COMMIT",
+    "commit": "367b2f945ef65488e6d97eddd2357388d2477100",
     "checkout": "E:\\type10-7\\code\\worktrees\\phase1_urban_sigtime_20261014",
     "environment": "ordinary N607 CVS-RFFI Python",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_additiveAs_RX6_source_E20_20261016_r01"
@@ -139,18 +139,18 @@
         "practical_low_urban"
       ],
       "vs_D00": {
-        "min_clean_gain_pp": 0.0,
-        "min_clean_macroF1_gain_pp": 0.0,
-        "min_low_urban_gain_pp": 5.0,
-        "min_urban_mean_gain_pp": 3.0,
+        "min_clean_gain_pp": 0,
+        "min_clean_macroF1_gain_pp": 0,
+        "min_low_urban_gain_pp": 5,
+        "min_urban_mean_gain_pp": 3,
         "max_each_practical_drop_pp": 0.5,
         "max_seenV_drop_pp": 0.5
       },
       "vs_D_raw": {
         "max_clean_drop_pp": 0.5,
         "max_clean_macroF1_drop_pp": 0.5,
-        "min_low_urban_gain_pp": 5.0,
-        "min_urban_mean_gain_pp": 3.0,
+        "min_low_urban_gain_pp": 5,
+        "min_urban_mean_gain_pp": 3,
         "max_each_practical_drop_pp": 0.5,
         "max_seenV_drop_pp": 0.5
       },
@@ -234,7 +234,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-additiveAs-RX6-20261016",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -272,7 +272,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ScratchE20/F+CROSS_RX/defaultcos/NoExplicitCFO/originalPA+shift/U;retainraw.75+ordinary.25+SupCon;8Lforwards;extra raw0/raw.25/As(raw).25",
@@ -288,8 +288,8 @@
           "random_direction_seed": 2026101307,
           "random_direction_scales": [
             0.5,
-            1.0,
-            2.0
+            1,
+            2
           ],
           "descriptor_width": 28,
           "output_embedding": 160,
@@ -307,7 +307,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "goal_complete": false,
           "target_feedback": false
         },
@@ -327,7 +327,7 @@
           "Ag": false,
           "As": false,
           "ordinary_L": true,
-          "alpha": 1.0,
+          "alpha": 1,
           "label_smoothing": 0.01,
           "use_aug": true,
           "sinc_coordinates": "CENTER_25K",
@@ -341,7 +341,7 @@
           "base_raw_total_weight": 0.75,
           "raw_total_weight": 0.75,
           "s_slot_name": "Raw in all rows;original entire base objective retained",
-          "extra_pair_weight": 0.0,
+          "extra_pair_weight": 0,
           "extra_pair_input": "raw",
           "no_new_U_augmentation": true
         },
@@ -385,18 +385,18 @@
             "practical_low_urban"
           ],
           "vs_D00": {
-            "min_clean_gain_pp": 0.0,
-            "min_clean_macroF1_gain_pp": 0.0,
-            "min_low_urban_gain_pp": 5.0,
-            "min_urban_mean_gain_pp": 3.0,
+            "min_clean_gain_pp": 0,
+            "min_clean_macroF1_gain_pp": 0,
+            "min_low_urban_gain_pp": 5,
+            "min_urban_mean_gain_pp": 3,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
           "vs_D_raw": {
             "max_clean_drop_pp": 0.5,
             "max_clean_macroF1_drop_pp": 0.5,
-            "min_low_urban_gain_pp": 5.0,
-            "min_urban_mean_gain_pp": 3.0,
+            "min_low_urban_gain_pp": 5,
+            "min_urban_mean_gain_pp": 3,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
@@ -426,8 +426,8 @@
             "practical_mid_urban",
             "practical_low_urban"
           ],
-          "fs_hz": 25000000.0,
-          "fc_hz": 2462000000.0,
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
           "processing_route": "residual",
           "mode": "post_sync",
           "equalization_enabled": false,
@@ -443,10 +443,10 @@
         "additive": {
           "common": "Unchanged original3pair base,including original ordinary-only SupCon",
           "extra_input": "raw",
-          "extra_weight": 0.0,
+          "extra_weight": 0,
           "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
-          "base_pair_weight_sum": 1.0,
-          "pair_weight_sum": 1.0,
+          "base_pair_weight_sum": 1,
+          "pair_weight_sum": 1,
           "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
           "BN_RNG": "All3rows train-mode8forwards,including explicit zero-extra-loss D00 cost control;record BN updates and actual sequences",
           "operator": "One full practical channel per visibleL packet only inD_As;no ordinary input/double channel/confidence filter",
@@ -534,7 +534,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-additiveAs-RX6-20261016",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -572,7 +572,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ScratchE20/F+CROSS_RX/defaultcos/NoExplicitCFO/originalPA+shift/U;retainraw.75+ordinary.25+SupCon;8Lforwards;extra raw0/raw.25/As(raw).25",
@@ -588,8 +588,8 @@
           "random_direction_seed": 2026101307,
           "random_direction_scales": [
             0.5,
-            1.0,
-            2.0
+            1,
+            2
           ],
           "descriptor_width": 28,
           "output_embedding": 160,
@@ -607,7 +607,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "goal_complete": false,
           "target_feedback": false
         },
@@ -627,7 +627,7 @@
           "Ag": false,
           "As": false,
           "ordinary_L": true,
-          "alpha": 1.0,
+          "alpha": 1,
           "label_smoothing": 0.01,
           "use_aug": true,
           "sinc_coordinates": "CENTER_25K",
@@ -639,7 +639,7 @@
           "same_IQ_within_each_pair": true,
           "U_rule": "Original13L+7U oldgate/ownEMA; no added U views or contrast",
           "base_raw_total_weight": 0.75,
-          "raw_total_weight": 1.0,
+          "raw_total_weight": 1,
           "s_slot_name": "Raw in all rows;original entire base objective retained",
           "extra_pair_weight": 0.25,
           "extra_pair_input": "raw",
@@ -685,18 +685,18 @@
             "practical_low_urban"
           ],
           "vs_D00": {
-            "min_clean_gain_pp": 0.0,
-            "min_clean_macroF1_gain_pp": 0.0,
-            "min_low_urban_gain_pp": 5.0,
-            "min_urban_mean_gain_pp": 3.0,
+            "min_clean_gain_pp": 0,
+            "min_clean_macroF1_gain_pp": 0,
+            "min_low_urban_gain_pp": 5,
+            "min_urban_mean_gain_pp": 3,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
           "vs_D_raw": {
             "max_clean_drop_pp": 0.5,
             "max_clean_macroF1_drop_pp": 0.5,
-            "min_low_urban_gain_pp": 5.0,
-            "min_urban_mean_gain_pp": 3.0,
+            "min_low_urban_gain_pp": 5,
+            "min_urban_mean_gain_pp": 3,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
@@ -726,8 +726,8 @@
             "practical_mid_urban",
             "practical_low_urban"
           ],
-          "fs_hz": 25000000.0,
-          "fc_hz": 2462000000.0,
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
           "processing_route": "residual",
           "mode": "post_sync",
           "equalization_enabled": false,
@@ -745,7 +745,7 @@
           "extra_input": "raw",
           "extra_weight": 0.25,
           "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
-          "base_pair_weight_sum": 1.0,
+          "base_pair_weight_sum": 1,
           "pair_weight_sum": 1.25,
           "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
           "BN_RNG": "All3rows train-mode8forwards,including explicit zero-extra-loss D00 cost control;record BN updates and actual sequences",
@@ -834,7 +834,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-additiveAs-RX6-20261016",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -872,7 +872,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ScratchE20/F+CROSS_RX/defaultcos/NoExplicitCFO/originalPA+shift/U;retainraw.75+ordinary.25+SupCon;8Lforwards;extra raw0/raw.25/As(raw).25",
@@ -888,8 +888,8 @@
           "random_direction_seed": 2026101307,
           "random_direction_scales": [
             0.5,
-            1.0,
-            2.0
+            1,
+            2
           ],
           "descriptor_width": 28,
           "output_embedding": 160,
@@ -907,7 +907,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "goal_complete": false,
           "target_feedback": false
         },
@@ -927,7 +927,7 @@
           "Ag": false,
           "As": true,
           "ordinary_L": true,
-          "alpha": 1.0,
+          "alpha": 1,
           "label_smoothing": 0.01,
           "use_aug": true,
           "sinc_coordinates": "CENTER_25K",
@@ -985,18 +985,18 @@
             "practical_low_urban"
           ],
           "vs_D00": {
-            "min_clean_gain_pp": 0.0,
-            "min_clean_macroF1_gain_pp": 0.0,
-            "min_low_urban_gain_pp": 5.0,
-            "min_urban_mean_gain_pp": 3.0,
+            "min_clean_gain_pp": 0,
+            "min_clean_macroF1_gain_pp": 0,
+            "min_low_urban_gain_pp": 5,
+            "min_urban_mean_gain_pp": 3,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
           "vs_D_raw": {
             "max_clean_drop_pp": 0.5,
             "max_clean_macroF1_drop_pp": 0.5,
-            "min_low_urban_gain_pp": 5.0,
-            "min_urban_mean_gain_pp": 3.0,
+            "min_low_urban_gain_pp": 5,
+            "min_urban_mean_gain_pp": 3,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
@@ -1026,8 +1026,8 @@
             "practical_mid_urban",
             "practical_low_urban"
           ],
-          "fs_hz": 25000000.0,
-          "fc_hz": 2462000000.0,
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
           "processing_route": "residual",
           "mode": "post_sync",
           "equalization_enabled": false,
@@ -1045,7 +1045,7 @@
           "extra_input": "As(raw)",
           "extra_weight": 0.25,
           "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
-          "base_pair_weight_sum": 1.0,
+          "base_pair_weight_sum": 1,
           "pair_weight_sum": 1.25,
           "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
           "BN_RNG": "All3rows train-mode8forwards,including explicit zero-extra-loss D00 cost control;record BN updates and actual sequences",

@@ -11,7 +11,7 @@
         "extra_As_packets": 0,
         "loss": 4.8004560470581055,
         "base_loss": 4.8004560470581055,
-        "weight_sum": 1.0,
+        "weight_sum": 1,
         "tracked_BN_modules": 0,
         "extra_BN_batch_updates": 0,
         "default_head_joint_update": true,
@@ -101,5 +101,13 @@
     "role_and_target_negatives": 2,
     "NN": 0,
     "updates": 0
+  },
+  "independent_reader": {
+    "status": "PASS",
+    "known_repair_broken_and_fixed_clean_retention": true,
+    "numeric_strata_and_sessions": true,
+    "model_forwards": 0,
+    "updates": 0,
+    "real_IQ_reads": 0
   }
 }
