@@ -1,0 +1,202 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "run_id": "20261016-phase1-F-sinc-bandgain-e50-clean-manysig-m9-r01",
+  "execution_commit": "bc9130137155ae46cf302795465757b2f23e9f59",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_F_checkpoint_no_query_smoke": "PASS",
+  "baseline_F_rows_reused": 3,
+  "all_three_seeds_frozen_before_new_target_results": true,
+  "source_performance_gate": false,
+  "rows": [
+    {
+      "row_id": "NORM-s2026092701",
+      "pid": 3634648,
+      "live": true,
+      "cwd": "PROJECT/releases/cvs_F_sinc_bandgain50_clean_20261016_r01",
+      "argv_mode": [
+        "--worker",
+        "NORM-s2026092701"
+      ],
+      "GPU": 3,
+      "log_growth_bytes": 5134,
+      "actual_epochs": 50,
+      "stages": [
+        33,
+        17
+      ],
+      "source_fold_held_rx": null,
+      "parameter_count": 900722,
+      "feature_arm": "SIG_TIME_X3",
+      "effective_role_counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "epoch": 1,
+      "successful_steps": 222,
+      "actual_augmented_input_reused": true,
+      "default_head_joint": true,
+      "head_fit_updates": 0,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "BAND-s2026092701",
+      "pid": 3634653,
+      "live": true,
+      "cwd": "PROJECT/releases/cvs_F_sinc_bandgain50_clean_20261016_r01",
+      "argv_mode": [
+        "--worker",
+        "BAND-s2026092701"
+      ],
+      "GPU": 4,
+      "log_growth_bytes": 5133,
+      "actual_epochs": 50,
+      "stages": [
+        33,
+        17
+      ],
+      "source_fold_held_rx": null,
+      "parameter_count": 900722,
+      "feature_arm": "SIG_TIME_X3",
+      "effective_role_counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "epoch": 1,
+      "successful_steps": 222,
+      "actual_augmented_input_reused": true,
+      "default_head_joint": true,
+      "head_fit_updates": 0,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "NORM-s2026092702",
+      "pid": 3634659,
+      "live": true,
+      "cwd": "PROJECT/releases/cvs_F_sinc_bandgain50_clean_20261016_r01",
+      "argv_mode": [
+        "--worker",
+        "NORM-s2026092702"
+      ],
+      "GPU": 5,
+      "log_growth_bytes": 5135,
+      "actual_epochs": 50,
+      "stages": [
+        33,
+        17
+      ],
+      "source_fold_held_rx": null,
+      "parameter_count": 900722,
+      "feature_arm": "SIG_TIME_X3",
+      "effective_role_counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "epoch": 1,
+      "successful_steps": 222,
+      "actual_augmented_input_reused": true,
+      "default_head_joint": true,
+      "head_fit_updates": 0,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "BAND-s2026092702",
+      "pid": 3634665,
+      "live": true,
+      "cwd": "PROJECT/releases/cvs_F_sinc_bandgain50_clean_20261016_r01",
+      "argv_mode": [
+        "--worker",
+        "BAND-s2026092702"
+      ],
+      "GPU": 6,
+      "log_growth_bytes": 5133,
+      "actual_epochs": 50,
+      "stages": [
+        33,
+        17
+      ],
+      "source_fold_held_rx": null,
+      "parameter_count": 900722,
+      "feature_arm": "SIG_TIME_X3",
+      "effective_role_counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "epoch": 1,
+      "successful_steps": 222,
+      "actual_augmented_input_reused": true,
+      "default_head_joint": true,
+      "head_fit_updates": 0,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "NORM-s2026092703",
+      "pid": 3634670,
+      "live": true,
+      "cwd": "PROJECT/releases/cvs_F_sinc_bandgain50_clean_20261016_r01",
+      "argv_mode": [
+        "--worker",
+        "NORM-s2026092703"
+      ],
+      "GPU": 7,
+      "log_growth_bytes": 5134,
+      "actual_epochs": 50,
+      "stages": [
+        33,
+        17
+      ],
+      "source_fold_held_rx": null,
+      "parameter_count": 900722,
+      "feature_arm": "SIG_TIME_X3",
+      "effective_role_counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "epoch": 1,
+      "successful_steps": 222,
+      "actual_augmented_input_reused": true,
+      "default_head_joint": true,
+      "head_fit_updates": 0,
+      "U_truth_read": false
+    },
+    {
+      "row_id": "BAND-s2026092703",
+      "pid": 3634740,
+      "live": true,
+      "cwd": "PROJECT/releases/cvs_F_sinc_bandgain50_clean_20261016_r01",
+      "argv_mode": [
+        "--worker",
+        "BAND-s2026092703"
+      ],
+      "GPU": 3,
+      "log_growth_bytes": 5136,
+      "actual_epochs": 50,
+      "stages": [
+        33,
+        17
+      ],
+      "source_fold_held_rx": null,
+      "parameter_count": 900722,
+      "feature_arm": "SIG_TIME_X3",
+      "effective_role_counts": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "epoch": 1,
+      "successful_steps": 222,
+      "actual_augmented_input_reused": true,
+      "default_head_joint": true,
+      "head_fit_updates": 0,
+      "U_truth_read": false
+    }
+  ],
+  "prediction_scoring": "Automatic after every fixed final50; fresh CUDA-empty independent CPU truth-last",
+  "new_target_metrics_available": false,
+  "healthy_other_jobs_preserved": true
+}

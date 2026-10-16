@@ -1,6 +1,6 @@
 # F 三路＋统一 Sinc＋RDrop：目标 clean 三种子优化
 
-状态：PLANNED，尚未产生新候选目标结果。本轮直接使用测试集目标域衡量性能；源域仅检查合法性、运行和特征更新，不作性能晋级门槛。
+状态：VERIFIED_RUNNING。代码bc913013已推送核对远端，6个新F模型均已完成E1/50，3个历史F基线已完成核验复用；尚未产生新候选目标结果。本轮直接使用测试集目标域衡量性能；源域仅检查合法性、运行和特征更新，不作性能晋级门槛。
 
 固定9行：FULL复用A–F r02的F-s2026092701/02/03完整final50及其clean默认头prediction/独立评分；NORM和BAND各新增相同3seed，从零50轮=33L+17U、每轮222步、每行11100更新。共6新模型/300模型轮/66600更新，历史F150模型轮单列。所有三seed在任何新target结果出现前固定并提交，不读新目标成绩决定扩种子，不按成绩停止、重排、改参数或重跑。
 
@@ -23,3 +23,5 @@
 最小发布：一次archive传输比较、remotecompile、首先对真实已完成F checkpoint做无query smoke并立即继续；每新行自己的scratchcheckpoint另有原no-query smoke。一次独立下一真实运行P0/P1审查PASS。启动后独立PID/CWD/argv/GPU/log增长核验。技术停止仅数据/来源/角色、非有限、预算/输出/合法prediction问题；保留产物、停止新pending，健康worker继续，无分数停止或重复提交。
 
 CPU/CUDA真实F检查PASS：各8个协议负例，三个独立SIG_TIME分支/默认头形状、物理origin衰减一次、同真实梯度下其他body/W首步一致，NORM局部范数正确。测试只用合成IQ，0源/目标IQ读取，0另训头。运行见证每新行保存E1/17/33/50各13步，Sinc梯度/位移、实际clip、EMA核和移除W的joint160导出均检查；无额外训练前向或更新。完整原始日志/权重/向量/预测私有保存，Git提交实现、配置和必要结果。
+
+发布后核验：archive传输、remotecompile为VERIFIED，真实F checkpoint no-query preflight PASS；6个worker的PID/CWD/argv/GPU/log增长均已独立核验，实际900722参数、SIG_TIME_X3、50=33+17、fullsource6300/56700/27000且无sourcefold。每行E1有222实际RDrop/默认头联合更新。详见run_evidence.json。
