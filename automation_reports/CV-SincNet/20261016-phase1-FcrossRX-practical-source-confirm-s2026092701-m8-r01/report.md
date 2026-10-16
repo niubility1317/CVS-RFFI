@@ -23,3 +23,9 @@ C0=.5RD(同一旧ordinary)+.5RD(同IQ)，C1=.5RD(共同旧ordinary)+.5RD(practic
 LOCAL_VERIFIED，未启动。4096合成网络包、8合成optimizer、800合成practical包、37负例、五源metadata-only角色划分、八行实际E20参数、206原F初态、共同第一IQ及原两次SupCon、默认头／三SIG／Sinc联合梯度和硬件session稳定均PASS；原RX1新旧波形与物理元数据逐包完全相同。0真实IQ/CP/target。仅实际6条发布路径的隔离目录导入及实际8row参数20/13/7成功，0模型前向／checkpoint读取。
 
 唯一限定P0/P1审查PASS，无修复或重复审查，额外0IQ/CP/网络/改动。compile、登记VALID及2026-10-16 14:22:31 CST N607普通账户preflight通过；其他健康任务保持。首步真实own scratchCP无query smoke由worker执行，PASS立即继续；不增加smoke许可。
+
+## 实际发布与首轮核实
+
+VERIFIED/RUNNING，训练代码 b3fe1c7b2e04d3abada07e79335508be2af01882，归档一次本远对比及remotecompile PASS。RX3／RX4的C0/C1已在GPU2/3/4/5运行，四worker均通过own scratchCP noquery smoke；PID/CWD/argv/GPU/log增长、真实held／fit角色和5040/45360/21600/5400计数、E20=13+7、四L前向、每步F physicalclip及默认头／三SIG／Sinc更新核实通过。RX6／RX8四行由同dispatcher按四worker上限后续启动，尚无FINAL源成绩。
+
+运行时asdict审计确认所有六场景fs25MHz／residual/post_sync／EQoff=G1／reference30／quality_adaptation=true及quality_reference20／phase_tracking=true／IQcomp=true／reflect，原模块实际导入adv3b02_xuc/code。C1一次practical生成每L step，C0为0，SupCon warm5/ramp10和0额外前向保持；原U／ownEMA、NoExplicitCFO及默认头联合训练保持。0target，未干预其他健康任务或热改release。
