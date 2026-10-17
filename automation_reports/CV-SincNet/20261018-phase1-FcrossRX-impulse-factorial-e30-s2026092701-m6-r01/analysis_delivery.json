@@ -1,0 +1,45 @@
+{
+  "status": "VERIFIED_SOURCE_ANALYSIS_WAITING",
+  "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+  "training_commit": "19aedc3604fed9c193237dd92366164178af0983",
+  "analysis_commit": "c02154d6cf9fb29fafecc4145bb6c08cb26d2490",
+  "analysis_release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_analysis_20261018_r02",
+  "archive": {
+    "path": "E:\\type10-7\\local_artifacts\\cvs_FcrossRX_impulse_factorial_E30_20261018\\analysis_release_r02.zip",
+    "members": 7,
+    "SHA256": "7b8a9c7d7251c8250239c96275ca802c4c7bf45ed6fd33e7ad9ef4bdfed561fd"
+  },
+  "local_checks": {
+    "passed": 7,
+    "NN": 0,
+    "fixture_correction": "Windows Path.name used instead of forward-slash suffix in synthetic truth guard"
+  },
+  "remote_checks": {
+    "passed": 7,
+    "compiled_analysis_files": 5,
+    "archive_SHA_match": true
+  },
+  "source_analysis_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/source_analysis_r01",
+  "coverage_output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/state_coverage_r01",
+  "driver_pid": 911017,
+  "source_waiter_pid": 911026,
+  "post_state": {
+    "driver_and_source_waiter_live": true,
+    "CUDA_VISIBLE_DEVICES": "",
+    "threads": 2,
+    "training_processes_unchanged": true,
+    "source_output_not_yet_created": true,
+    "formal_scores_read": false
+  },
+  "previous_analysis_release": {
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_analysis_20261018_r01",
+    "status": "FAILED_TEST_DEPENDENCY_PACKAGING",
+    "reason": "Reference criteria.py omitted;compile passed,remote check could not import it",
+    "preserved": true,
+    "training_affected": false
+  },
+  "NN": 0,
+  "training_updates": 0,
+  "target_feedback": false,
+  "goal_complete": false
+}

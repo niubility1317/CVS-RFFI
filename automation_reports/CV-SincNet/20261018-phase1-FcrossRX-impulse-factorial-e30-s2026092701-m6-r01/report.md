@@ -33,3 +33,14 @@ B11首先是Ag与As的独立监督视图，不组合As(Ag(x))；先检验独立�
 完整精确命令/CWD/环境/路径/seed/预算/owner/停止规则/预期artifact见experiment.json；进程与验证聚合见verification.json。未修改其他健康实验，未访问目标指标。
 
 首轮真实证据已核实：六行均E1/222updates/LNN170496；三As行各14208次实际完整practical，另三行0；全部sourceRX/day角色匹配，U真值与target访问标记均false。实际模块均指向已钉住的 experiments/adv3b02_xuc/code/leo_practical 实现；source报告仍不是正式性能结果。详见 progress_e1.json。
+
+
+## 完整分析实现与等待状态
+
+分析代码提交 c02154d6cf9fb29fafecc4145bb6c08cb26d2490，已推送并独立核对远端一致。分析只复算已保存输出，不读取IQ/checkpoint、不新增模型前向或更新。7项合成检查覆盖预登记判据独立等价、边界与坏输入、因子交互公式、全部6行冻结前真值关闭、成本口径、U标签不可解封及源域完成前不产生覆盖输出。本地与N607均7项PASS。真实输入训练不变；数据handles复用。
+
+分析r01归档遗漏criteria.py参考依赖：远端5个分析文件编译通过，但检查导入失败，状态FAILED_TEST_DEPENDENCY_PACKAGING；原归档保留。r02补齐同提交内参考文件，单归档SHA匹配，远端检查7项PASS；没有修改或重启训练。Windows测试桩另已用Path.name修正路径分隔符，保留最初失败记录。这两项均不是模型训练失败。
+
+零前向源域分析driver PID911017/source waiter PID911026已独立核实CWD/argv、CUDA为空、CPU线程2、等待态；源输出尚未创建。六行完整source结束后自动解析全部4类逐step日志、完整原生epoch记录、完整stdout、物理样本序列和成本，独立复算冻结的source判据；随后按原命名信道流复算3个As行的TX×RX×day×scene×传播状态覆盖，U序列不解码TX。此处不读取正式成绩。分析归档路径、准确命令和输出见analysis_delivery.json及原launch记录；最终正式分析须在源域判定固定并记录后进行。
+
+日志口径：继承的concat/total_L、concat/L_forwards=4、concat/As_packets=64仅描述原四前向分支，其中As-off的64是raw控制槽。真实六前向、真实As-off=0和新增形态槽分别以reference_steps、shape_steps、observer/result及native encoder counters为准；训练总L独立复算为.5commonRD+.5mixedRD+原SupCon+.25shapeRD。native train/loss_tx_labeled仅第一原CE，不代表完整L目标；13个L-only轮可与native train/loss核对，U启用后不把native总loss冒充纯L。该差异属于历史字段语义，不是训练目标错误，不热改健康任务。
