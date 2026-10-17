@@ -1,0 +1,30 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+  "focused_tests": 8,
+  "AST_files": 8,
+  "embedded_remote_scripts_AST": 2,
+  "independent_P0P1": {
+    "status": "PASS",
+    "reviews": 1,
+    "findings": [],
+    "read_only": true,
+    "real_IQ_CP_target_reads": false
+  },
+  "local_real_IQ": 0,
+  "local_checkpoint_reads": 0,
+  "local_NN": 0,
+  "local_optimizer_updates": 0,
+  "existing_Torch_NumPy_ABI_warning_preserved": true,
+  "Tensor_NumPy_bridge_used": false,
+  "preflight": {
+    "status": "VERIFIED",
+    "ordinary_account": true,
+    "GPUs_observed": 8,
+    "GPU2_memory_used_MiB": 1,
+    "GPU2_memory_total_MiB": 24576,
+    "initial_local_PATH_failure_before_SSH_preserved": true,
+    "system_environment_changed": false
+  },
+  "scientific_result_available": false,
+  "goal_complete": false
+}

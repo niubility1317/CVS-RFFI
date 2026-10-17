@@ -1,0 +1,182 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-FcrossRX-nativeTaper-L6300-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-native-time-Tukey-causal-input",
+  "display_name": "原普通时域Tukey窗：全源冻结默认头同抽样反事实",
+  "description": "冻结P43匹配B00/B01 FINAL30；全部L6300、两命名流、RAW/FULL/NO_TAPER，consume原窗和gate后仅返回ones；不训练、不生成新Ag、不读target。",
+  "kind": "cvs",
+  "stage": "Phase1 source diagnostic",
+  "aliases": [
+    "P46",
+    "native-time-Tukey-bypass"
+  ],
+  "tags": [
+    "all5sourceRX",
+    "L6300",
+    "frozen-default-head",
+    "same-draw",
+    "Tukey",
+    "source-only"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active jointIQAg+As research;fixed E30/defaulthead/all5RX scope. One L-only frozen input diagnostic,no training/target or automatic extension.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "Existing N607 CVS-RFFI Python3.10/Torch2.1/NumPy2;fullFP32/CPU2/GPU2,ordinary account",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_nativeTaper_L6300_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original 7/63/30 source roles,VALIDATED_ONCE",
+    "representation": "Existing EQ1/nativeRMS center=false,Bx2x256,25MHz;original ordinary E13 only;no new practical generation",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Same source_contract#role_ids.L_s exact6300",
+    "label_map_ref": "Original6TX;L labels only;U TX hidden",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original6sourceTX,no change",
+    "roles": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "train_ratio": "Original7/63/30,no training this diagnostic;no RX holdout/Ldev",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Phase1existing source handles,splitseed392005;P2handlesnotapplicable",
+    "support_query_ref": "No support/query,source L only",
+    "leo_config_ref": "Not generated/read;formal7fixedIQ unchanged"
+  },
+  "permissions": {
+    "regime": "source_L_only_frozen_readout",
+    "query_use": "None;no targetIQ/predictions/truth/metrics",
+    "external_method_exception": null,
+    "claim_scope": "Fixed native input causal effect,not new IQAg or training/target gain;singlemodelseed two augmentationdraws"
+  },
+  "checkpoint": {
+    "initialization": "No training;strict frozen P43 B00/B01 own FINAL30,eachscratch20+own10;source ancestry/provenance previouslyverified and currentmetadataasserted",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B00-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Pinned P43 model.own_model/source.parent_payload:exactroleIDs/scratch20/ownEMA/reset10/fixedfinal30/notargetselection",
+    "provenance_verdict": "VERIFIED matching fullsource all5RX/actual6300IDs,source-only fixedfinal,0headfit;no fallback",
+    "selection_rule": "Both fixed before new source data;not chosen by formalrank;retain allL/draws/RX"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/native-taper-source46",
+    "gpu_policy": "GPU2,allowners<=3processes,>=12GBfree/newslot;existingcapacitylock;nohealthyjobsmodified",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-nativeTaper-L6300-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-nativeTaper-L6300-s2026092701-m2-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_nativeTaper_L6300_20261018",
+    "launch_command": "CVS-RFFI Python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_nativeTaper_L6300_20261018_r01/experiments/cvs_taper_source46/runner.py",
+    "stop_rule": "Only owned data/provenance/finiteness/shape/NNbudget/output/systemfailure;preserve,noautomaticretry. ScientificFAIL closes fixedTukeypremise,no strength/window/RX/draw/threshold rescue,noautomatictraining."
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "resolved_config.json",
+    "progress.json",
+    "source_predictions.npz private(noIQ)",
+    "result.json",
+    "completion.json",
+    "stdout/stderr private",
+    "independent_source_recount.json",
+    "actual source figure PNG/PDF",
+    "same-row report/registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "raw/full/bypass_accuracy",
+      "macroF1_all6_independent",
+      "fixedB00_rawcorrect_retention",
+      "sameIDrepairs/newerrors",
+      "cos30margin",
+      "allsourceRX/TX/day",
+      "actualtrigger/windowpoints/IQMSE",
+      "sourcequalification",
+      "actualNN/wall"
+    ],
+    "dimensions": [
+      "fixedmodelB00/B01",
+      "augmentationdraw0/1",
+      "all5sourceRX",
+      "all6TX",
+      "day1/2/3"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-nativeTaper-L6300-s2026092701-m2-r01/source_predictions.npz private",
+    "scorer_ref": "SourceL only;summarize then independent NPZrecount;not targetscoring"
+  },
+  "rows": [
+    {
+      "row_id": "TAPER_SOURCE_PAIR",
+      "method": "Original native time-Tukey FULL versus consume-window-and-return-ones bypass,matched allother draws",
+      "purpose": "One source causal premise,never automatic training",
+      "config_ref": "experiments/cvs_taper_source46/design.py#config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-nativeTaper-L6300-s2026092701-m2-r01/resolved_config.json",
+      "data_overrides": {
+        "source_RX_holdout": null,
+        "physicalL": 6300,
+        "U_used": false,
+        "V_used": false,
+        "target_access": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 202610180462,
+        "augmentation": 202610180461,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "model is frozenhistorical single seed;split392005 fixed;data controls one private Lorder;augmentation private callnamespace seed202610180461;support/evaluationN/A noformalpredictions",
+      "k": null,
+      "scenario": "Existing ordinary E13 only,RAW and2drawFULL/NO_TAPER;no new practical observations",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2frozenmodels*(6300raw+2draw*2views*6300)+4syntheticCPsmoke=63004NN;0training/teacher/grad/headfit;parent60modelE/13320updates historicalnotnew",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-nativeTaper-L6300-s2026092701-m2-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-nativeTaper-L6300-s2026092701-m2-r01-launch/stdout.log",
+      "command": "CVS-RFFI Python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_nativeTaper_L6300_20261018_r01/experiments/cvs_taper_source46/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "resolved_config.json",
+        "progress.json",
+        "source_predictions.npz private(noIQ)",
+        "result.json",
+        "completion.json",
+        "stdout/stderr private",
+        "independent_source_recount.json",
+        "actual source figure PNG/PDF",
+        "same-row report/registry"
+      ]
+    }
+  ],
+  "notes": [
+    "This is a time-domain Tukey window despite its bandedge name,not spectralFIR or LA16 rescue. Existing PA/shift/DC/envelope/noise failures remainclosed.",
+    "Use allL6300/all5RX;noVbackprop,hiddenUtruth neverread. Same twofrozenmodels,physicalcohort and bothdraws;original native PA/DC/propagation remain inordinary;noPAamplification or inversion.",
+    "All4model/draw retention gains>=.2pp and overallaccuracy nonnegative;eachmodel pooledRX gains positive in>=4of5 and worst>=-.25pp. Anyfail closes thisfixedpremise,not all possiblewindows;PASSonlyinputpremise,notautomatictraining.",
+    "Consume same nativewindow/gate/parameterdraws;no trigger forced;NO_TAPER returns ones;RNG restored aftereach private draw;no-trigger IQ/logits exactequal.",
+    "One independentdirectP0/P1;8localtests and8AST+2embeddedscriptAST;realCP4NN smoke first then immediate diagnostic;onepreflight/archivecomparison/remotecompile."
+  ],
+  "registered_at": "2026-10-17T23:43:32+00:00"
+}
