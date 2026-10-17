@@ -487,5 +487,16 @@
     "cumulative_epochs": 30
   },
   "replaces_run_id": null,
-  "registered_at": "2026-10-17T07:28:01+00:00"
+  "registered_at": "2026-10-17T07:28:01+00:00",
+  "result": {
+    "formal_status": "ALL_SEVEN_PREDICTED_AND_SCORED",
+    "scientific_status": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+    "CM_recounts": 252,
+    "paired_recounts": 7,
+    "clean": 0.8290952380952381,
+    "low_urban": 0.5344285714285715,
+    "low_delta_pp": -0.004166666666666667,
+    "clean_delta_pp": -0.05416666666666666,
+    "joint_goal_complete": false
+  }
 }

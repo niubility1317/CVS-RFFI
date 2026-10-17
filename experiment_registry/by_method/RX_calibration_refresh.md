@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|原分布接收校准刷新 A_s：同父 E20＋10|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md)|
+|原分布校准刷新 A_s：E30 完整匹配负结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md)|

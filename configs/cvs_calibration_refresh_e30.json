@@ -1,5 +1,5 @@
 {
-  "status": "RUNNING_VERIFIED",
+  "status": "ANALYZED_FIXED_CANDIDATE_CLOSED",
   "config": {
     "schema": "F_PRACTICAL_CALIBRATION_REFRESH_E20PLUS10_V1",
     "run_id": "20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01",
@@ -292,7 +292,7 @@
   "source_code_basis": "code/leo_practical/channel.py receiver_for_session and residual.py injectedRX/calibrationcomposition;15 fixedsourceRXdaystates inoriginaltrainer",
   "joint_goal_complete": false,
   "execution_commit": "f375e6cc47cfb7d5e7b069b0bd912d5bf8819a0e",
-  "observed_progress": {
+  "early_observed_progress": {
     "epoch": 1,
     "cumulative_epoch": 21,
     "steps": 222,
@@ -312,5 +312,128 @@
     "target_access": false,
     "status": "TRAINING_ACTIVE",
     "formal_predictions_started": false
+  },
+  "actual_training": {
+    "parent_epochs": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "new_updates": 2220,
+    "cumulative_updates": 6660,
+    "source_holdout": null,
+    "all_source_sampling_identical": true,
+    "actual_shared_args": 68,
+    "calibration_states": 150,
+    "true_hardware_sessions": 15,
+    "new_NN": 3770646
+  },
+  "result": {
+    "summary": {
+      "CAL_REFRESH": {
+        "clean": {
+          "accuracy": 0.8290952380952381,
+          "macro_F1": 0.8247107772832596,
+          "worst_RX_accuracy": 0.7275416666666666
+        },
+        "practical_high": {
+          "accuracy": 0.8161607142857142,
+          "macro_F1": 0.8118676944597708,
+          "worst_RX_accuracy": 0.7309583333333334
+        },
+        "practical_mid": {
+          "accuracy": 0.7933333333333333,
+          "macro_F1": 0.7890838191223852,
+          "worst_RX_accuracy": 0.716875
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7697380952380952,
+          "macro_F1": 0.7656351082665704,
+          "worst_RX_accuracy": 0.6975833333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7820892857142857,
+          "macro_F1": 0.7775234493841117,
+          "worst_RX_accuracy": 0.706625
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6436130952380953,
+          "macro_F1": 0.6389127011394656,
+          "worst_RX_accuracy": 0.5860416666666667
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344285714285715,
+          "macro_F1": 0.5287886415582234,
+          "worst_RX_accuracy": 0.4897916666666667
+        }
+      },
+      "NOMINAL_AS": {
+        "clean": {
+          "accuracy": 0.8296369047619048,
+          "macro_F1": 0.8253138546277144,
+          "worst_RX_accuracy": 0.730125
+        },
+        "practical_high": {
+          "accuracy": 0.816202380952381,
+          "macro_F1": 0.8119393203007693,
+          "worst_RX_accuracy": 0.73
+        },
+        "practical_mid": {
+          "accuracy": 0.7932976190476191,
+          "macro_F1": 0.7890106343859681,
+          "worst_RX_accuracy": 0.7159583333333334
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7697738095238095,
+          "macro_F1": 0.7657090405738582,
+          "worst_RX_accuracy": 0.6972083333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7818928571428572,
+          "macro_F1": 0.7773384751324953,
+          "worst_RX_accuracy": 0.7057083333333334
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6437142857142857,
+          "macro_F1": 0.639092427734011,
+          "worst_RX_accuracy": 0.5865
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344702380952381,
+          "macro_F1": 0.5289993837273708,
+          "worst_RX_accuracy": 0.48954166666666665
+        }
+      }
+    },
+    "differences_pp": {
+      "clean": -0.05416666666666666,
+      "practical_high": -0.004166666666666667,
+      "practical_mid": 0.0035714285714285718,
+      "practical_low_suburban": -0.0035714285714285718,
+      "practical_high_urban": 0.019642857142857142,
+      "practical_mid_urban": -0.01011904761904762,
+      "practical_low_urban": -0.004166666666666667
+    },
+    "suburban_gap_pp": {
+      "CAL_REFRESH": {
+        "practical_high": 1.2934523809523868,
+        "practical_mid": 3.5761904761904773,
+        "practical_low_suburban": 5.935714285714289
+      },
+      "NOMINAL_AS": {
+        "practical_high": 1.3434523809523813,
+        "practical_mid": 3.6339285714285685,
+        "practical_low_suburban": 5.986309523809529
+      }
+    },
+    "criteria": {
+      "low_urban_gain_at_least_0_5pp": false,
+      "clean_not_lower": false,
+      "mid_urban_not_lower": false,
+      "each_suburban_no_more_than_0_25pp_lower": true
+    },
+    "scientific_pass": false,
+    "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+    "clean_net_vs_B00_pp": -2.3589285714285757,
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false
   }
 }
