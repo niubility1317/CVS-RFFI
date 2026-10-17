@@ -1,3 +1,7 @@
+## 2026-10-18：L-only SAM 三行真实 E30 运行
+
+[同IQ有标签稳健更新](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md) 已RUNNING／VERIFIED；NOAS_REPLAY／AS_REPLAY／AS_LSAM分别GPU3/4/5，实际执行提交a71b0094dba1264b7bacfc742dc03ab3f3a59aa2。原REPEAT／CONCAT完整源E20各自student＋自身EMA续10轮，每行累计E30／6660更新、8Lforward和2extraVJP，原U/teacher/默认头联合训练、5RX/L6300/U56700隐藏TX/V27000/256点保持，无训练域留出。中性重放不改梯度；候选固定rho.05只替换L梯度，不是IQ Ag，未添加部署分支或头。单archive/compile、唯一P0P1、真实两父CP烟测及三行身份/GPU核实通过；真实步日志已推进，无目标指标读取。源资格和正式七视图结果待完成；固定source clean/mid不降、low+.5pp、每sub>=-.25pp，失败关闭，不据target调半径/父/seed/预算。此前包络来源失败保持关闭，完整联合目标ACTIVE。以下旧当前/运行均以本段和实际run证据为准。
+
 ## 2026-10-18：包络波动来源假设失败；匹配No-As已完成
 
 当前没有运行中的本路线新候选。最新源统计行 [包络波动尺度](../automation_reports/CV-SincNet/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01/report.md) 已 ANALYZED／VERIFIED：全部L6300／90单元／全部5RX，0新IQ／CP／NN／更新／target。共享RX相对误差0.434600、15/18折改善，但RX6为1.003873，且共享误差是同TX跨日控制的1.657039倍，两项固定条件失败；关闭DCT1／MAD来源问题，不改统计量或阈值救跑。通过部分相关性不能当身份保持或Ag收益。
