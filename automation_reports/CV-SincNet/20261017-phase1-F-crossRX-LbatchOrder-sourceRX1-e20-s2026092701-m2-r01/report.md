@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：六步 L 重排匹配 E20
 
-当前状态：REGISTERED／LOCAL_AND_ONE_P0P1_PASS，尚未发布／训练／取得识别成绩。完整联合目标 ACTIVE。本候选只研究训练组织，不是 IQ A_g，也不训练 A_s。
+当前状态：VERIFIED RUNNING，两行均已完整E1／222更新，尚无final20或源识别成绩。完整联合目标 ACTIVE。本候选只研究训练组织，不是 IQ A_g，也不训练 A_s。
 
 唯一矩阵维护在 [experiment.json](experiment.json)：两条**新** scratch E20，O0 与 O1。两者共用六步预取、专有 L RandomSampler/DataLoader generator、原 F／SIG_TIME／joint160／默认 cosine 头和正常联合更新；原 raw／ordinary 四对 RDrop、浅中层跨 RX 同 TX SupCon、13L＋7U／oldgate／ownEMA保持。唯一差异是 O1 在相邻六次更新的同一 768 个 L 观察内重排 TX/RX 组成，O0 交付原顺序。两者都计算配额、拼接和 gather，控制预取/RNG/CPU路径；不能把旧 B00 当作匹配控制。
 
@@ -39,3 +39,5 @@ O1相对同预算O0：held-source clean accuracy至少＋1pp，clean Macro-F1不
 当前唯一独立P0/P1审查PASS，未发现直接P0/P1；仅限直接影响真实运行正确性/权限/启动/产物的缺陷。没有新增审批、数据复验或hash链。尚无新训练或成绩，不把实现和合成PASS标为实验完成。
 
 源输入读取口径补充：复用既有full-source cache会反序列化原L6300/V27000等存储，原fold.prepare在模型创建前materialize RX1的L1260为只读评估缓存及144个未用于训练的fit anchor。RX1缓存不进入任何student/teacher训练、源V、校准或额外机制；只有final20冻结后才调用默认头评估。不能把“冻结后评分”写成“此前没有读取过RX1 IQ”。该既有source-only折不是正式target；训练角色仍精确L5040/U45360/V21600。
+
+实际发布与首轮证据：运行代码commit9059b58502f207331bf9643d9d1399d308a2c2da已push并独立比对远端OID。唯一archive传输比较、remotecompile VERIFIED，首个真实匹配CP no-query smoke PASS后立即启动两条scratch。原dispatcher和两个worker的PID/CWD/argv/CUDA、独立nvidia-smi GPU4/5及日志增长核实；stdout分别11673/11672字节。两组完整E1/222更新/37buffer块，O0移动位置0、O1移动28367；buffer CPU分别.833650/.920446秒。实际角色L5040/U45360/V21600，IQ_changed=false/U_buffered=false，无failure。原U仍按E14开始，当前不提前启用。这里不把运行正确或批次统计当识别收益；真实更新/NN尚未完成，等待固定final20及每行七视图。

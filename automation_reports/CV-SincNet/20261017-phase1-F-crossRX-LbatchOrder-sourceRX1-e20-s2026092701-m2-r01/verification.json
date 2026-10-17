@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_AND_ONE_P0P1_PASS",
+  "status": "VERIFIED_RUNNING_E1",
   "protocol_and_scientific_counterexamples": 26,
   "unchanged_F_state_tensors": 206,
   "default_head_shape": [
@@ -14,6 +14,13 @@
   "actual_N607_CPU_pairing_check": "PASS",
   "actual_N607_CPU_pairing_NN": 0,
   "independent_P0P1": "PASS",
-  "training_launched": false,
-  "full_goal_complete": false
+  "training_launched": true,
+  "full_goal_complete": false,
+  "actual_model_epochs_complete_per_row": 1,
+  "actual_updates_per_row": 222,
+  "actual_native_order_hook_verified": true,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_checkpoint_noquery_smoke": "PASS",
+  "formal_target_evaluated": false
 }

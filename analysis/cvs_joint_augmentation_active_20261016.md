@@ -354,3 +354,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 2026-10-17：20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01 已补齐两新匹配E20的design/model/source/runner/dispatch/publish/登记入口，REGISTERED尚未发布。真实冻结native iterator及222步wrapper已只读核对；原型N607 CPU接口PASS，本地26反例及两新模型与原F全部206状态/初始logits逐值一致、6合成NN/0更新/真实IQ/CP/target。唯一P0/P1审查进行中。O0/O1同buffer6/私有L/原8L-1.25/U/defaulthead，仅重排不同；不称IQ Ag，不复用旧控制，完整联合目标ACTIVE。
+
+
+2026-10-17：20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01 已 VERIFIED RUNNING，执行commit9059b58502f207331bf9643d9d1399d308a2c2da，单archive/compile/真实匹配CP no-query smoke PASS。两原worker PID/CWD/argv/CUDA/GPU4/5与日志增长独立核实，两行均完整E1/222更新/37块，O0 moved0、O1 moved28367；实际L5040/U45360/V21600，0target，无final20/七视图新成绩。保持每行E20，不热改/重启；当前只是训练组织，不是IQ Ag或联合收益，完整goal ACTIVE。

@@ -1,0 +1,55 @@
+{
+  "status": "VERIFIED_RUNNING_E1",
+  "execution_commit": "9059b58502f207331bf9643d9d1399d308a2c2da",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_checkpoint_noquery_smoke": "PASS",
+  "dispatcher_identity": true,
+  "rows": [
+    {
+      "row_id": "O0-RX1-s2026092701",
+      "live": true,
+      "PID_CWD_argv_CUDA_identity": true,
+      "actual_GPU": 4,
+      "GPU_matches": true,
+      "stdout_bytes": 11673,
+      "complete_epoch": 1,
+      "actual_optimizer_updates": 222,
+      "buffer_blocks": 37,
+      "moved_positions": 0,
+      "buffer_CPU_seconds": 0.8336495452094823,
+      "IQ_changed": false,
+      "U_buffered": false,
+      "role_counts": {
+        "L_s": 5040,
+        "U_s": 45360,
+        "V": 21600
+      }
+    },
+    {
+      "row_id": "O1-RX1-s2026092701",
+      "live": true,
+      "PID_CWD_argv_CUDA_identity": true,
+      "actual_GPU": 5,
+      "GPU_matches": true,
+      "stdout_bytes": 11672,
+      "complete_epoch": 1,
+      "actual_optimizer_updates": 222,
+      "buffer_blocks": 37,
+      "moved_positions": 28367,
+      "buffer_CPU_seconds": 0.9204463167116046,
+      "IQ_changed": false,
+      "U_buffered": false,
+      "role_counts": {
+        "L_s": 5040,
+        "U_s": 45360,
+        "V": 21600
+      }
+    }
+  ],
+  "source_only": true,
+  "target_access": false,
+  "full_training_complete": false,
+  "source_predictions_complete": false,
+  "performance_results_available": false
+}
