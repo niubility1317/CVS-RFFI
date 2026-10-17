@@ -1,0 +1,23 @@
+{
+  "local_checks": {
+    "status": "PASS",
+    "protocol_negatives": 10,
+    "synthetic_coupled_triplets": 12,
+    "noise_filter_max_error": 0,
+    "identity_H_delay_peaks": [
+      24,
+      64
+    ],
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0,
+    "forced_unlocked_control_exact": true
+  },
+  "review": {
+    "status": "PASS",
+    "scope": "One independent read-only P0/P1 review of nine files and preregistration;no direct defects",
+    "performed": "Syntax parse,budget63002 recount,physical coupling/unlocked skip,fixedMMSE24 decision and analysis wiring",
+    "not_performed": "No real IQ/checkpoint,NN or remote execution"
+  }
+}

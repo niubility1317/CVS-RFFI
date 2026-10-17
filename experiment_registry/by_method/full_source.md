@@ -2,6 +2,7 @@
 
 |ID|状态|名称|
 |---|---|---|
+|同传播 MMSE 接收处理：完整源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-MMSE-receiver-fullL-s2026092701-m1-r01/report.md)|
 |完整源 L 的 practical 接收质量耦合：物理依据已验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)|
 |等期望功率的接收带限观测噪声：完整 L6300 源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01/report.md)|
 |RMS 匹配的三径时延形状：单项 A_s E30 检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md)|

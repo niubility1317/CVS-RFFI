@@ -31,5 +31,6 @@
 |F＋跨 RX 同 TX：As 两次 CE 与 RDrop 的匹配 E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01/report.md)|
 |F＋跨 RX 同 TX：六步 L 重排匹配 E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01/report.md)|
 |正仿射源 PSD 关系：最小源依据预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)|
+|同传播 MMSE 接收处理：完整源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-MMSE-receiver-fullL-s2026092701-m1-r01/report.md)|
 |完整源 L 的 practical 接收质量耦合：物理依据已验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)|
 |等期望功率的接收带限观测噪声：完整 L6300 源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01/report.md)|

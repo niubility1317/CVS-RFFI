@@ -1,0 +1,198 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-MMSE-receiver-fullL-s2026092701-m1-r01",
+  "group_id": "F_crossRX_MMSE_receiver_source",
+  "display_name": "F＋跨 RX 同 TX：同传播 MMSE 接收处理完整源检验",
+  "description": "原 NoEQ 与 MMSE24／MMSE64 同 H、同新增噪声、同质量依赖；MMSE24 是唯一固定候选，64 仅延迟对照；0 新训练／target",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "F_MMSE_RECEIVER_FULLL_SOURCE"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "full_source",
+    "source_only",
+    "no_training",
+    "default_head",
+    "matched_controls",
+    "practical",
+    "MMSE_receiver"
+  ],
+  "comparison_group_id": "F_crossRX_fullsource_E30",
+  "parent_run_ids": [
+    "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As goal;latest E30 and full5RX correction. This row is frozen-default-head source-only guard with 0newtraining;no data/label expansion or target feedback.",
+  "code": {
+    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "Ordinary N607 existing pinned full-source F runtime;CPU threads2/CUDAhidden;NumPy float64 noise,original FP32 model",
+    "cwd": "PROJECT/releases/cvs_F_MMSE_receiver_source_20261017_r01",
+    "entrypoint": "experiments/cvs_mmse_source17/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated exact original L6300 source cache;all sourceRX",
+    "representation": "Existing EQ1/RMS IQ256 fullL6300;raw plus same-latent practical NoEQ/MMSE24/MMSE64;no acquired-IQ replacement",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract role_ids.L_s,exact all6300",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "All6300 IQ+legal labels for frozen source identity guard",
+      "U_s": "Only original opaque role-ID exclusion,no IQ orTXlabels used",
+      "V": "Source carrier features deserialized by existing cache then unused;no stats or updates"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse existing exact source handles and native_role_comparison;no data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": "Fixed original three training practical scenes;formal clean+six received IQ unchanged and not accessed"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source coupled receiver-input intervention only;not training gain,crossRX DG or formal target improvement"
+  },
+  "checkpoint": {
+    "initialization": "Frozen existing fullsource REPEAT source-final20/defaulthead,no updates",
+    "sources": [
+      "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/CONCAT-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse verified fullsource provenance;before load check scratch/finalonly/zero ancestors/role counts6300,56700,27000/exact original roles;no model ormetric selection",
+    "provenance_verdict": "EXPECTED_MATCH_TO_BE_CHECKED_BEFORE_LOAD",
+    "selection_rule": "Fixed metadata-matched fullsource source-final20;not target ranked"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-MMSE-receiver-source",
+    "gpu_policy": "CPU2/CUDAhidden;no training/GPU processes",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-MMSE-receiver-fullL-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_MMSE_receiver_source_20261017_r01/MMSE_source.stdout.log",
+    "local_artifact_root": "local_artifacts/F_MMSE_receiver_20261017",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_mmse_source17/runner.py",
+    "stop_rule": "One owner/immutable root;any source-role/provenance/state/nonfinite/count failure preserves outputs and stops;noautomatic rerun or target access"
+  },
+  "expected_artifacts": [
+    "checks.json",
+    "real_checkpoint_smoke.json",
+    "resolved_config.json",
+    "source_predictions.npz",
+    "coupled_draws.json",
+    "result.json",
+    "completion.json",
+    "independent same-row source recount"
+  ],
+  "metrics_plan": {
+    "identity": [
+      "source defaulthead accuracy/macroF1",
+      "RX/TX/day/state/lock strata",
+      "paired repairs/newerrors versus same NoEQ"
+    ],
+    "physics": [
+      "same H/geometry/receiver/noise seed/quality/lock/sync",
+      "EQ skips unlocked exactly",
+      "G applies to base noise exactly once;AGC recomputed",
+      "known identity-H total delay24/64"
+    ],
+    "fixed_candidate": "MMSE24 only;MMSE64 is coordinate control,not a choice",
+    "criteria": {
+      "low_accuracy_gain_min_pp": 0.5,
+      "mid_accuracy_gain_min_pp": 0.5,
+      "low_suburban_gain_min_pp": -0.25,
+      "each_RX_low_gain_min_pp": -1,
+      "low_original_errors_affected_share_min": 0.2
+    },
+    "on_fail": "Close fixed MMSE24;no64 replacement,SNR,latency,amplitude,seed or criterion rescue",
+    "on_pass": "Only source receiver-view support;separate matched cumulativeE30 training required;no automatictraining",
+    "target_access": false
+  },
+  "rows": [
+    {
+      "row_id": "FULL_L_COUPLED_MMSE",
+      "method": "Existing receiver MMSE at fixed24 target delay versus noEQ;64 delay control",
+      "purpose": "Test coupled receiver processing source identity effect without changing test receivedIQ or any training model",
+      "config_ref": "experiments/cvs_mmse_source17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-MMSE-receiver-fullL-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {
+        "L6300_all_source_RX": true,
+        "U_or_V_updates": false,
+        "target_access": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261017931,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "One fixed private source stream,common H/noise/receiver across all three processing views;no draw or parent choice",
+      "k": null,
+      "scenario": "raw plus original three training practical scenes times noEQ/MMSE24/MMSE64",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": 0,
+      "budget_ref": "6300uniqueL;63000sourceNN+2realCPsynthetic=63002;18900unique latent snapshots,56700 complete paired processing calls;0updates/teacher/headfit",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-MMSE-receiver-fullL-s2026092701-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_MMSE_receiver_source_20261017_r01/MMSE_source.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_mmse_source17/runner.py",
+      "expected_artifacts": [
+        "checks.json",
+        "real_checkpoint_smoke.json",
+        "resolved_config.json",
+        "source_predictions.npz",
+        "coupled_draws.json",
+        "result.json",
+        "completion.json",
+        "independent same-row source recount"
+      ],
+      "config": {
+        "sampling_Hz": 25000000,
+        "carrier_Hz": 2462000000,
+        "route": "residual/post_sync",
+        "reference_snr_db": 30,
+        "MMSE_length": 129,
+        "MMSE_gain_cap_db": 20,
+        "channel_estimation_nmse_db": -25,
+        "candidate_target_delay": 24,
+        "control_target_delay": 64,
+        "reference_NoEQ_common_latency": 24,
+        "boundary": "reflect",
+        "unlocked_skips_EQ": true,
+        "teacher": false,
+        "model_training": false,
+        "source_RX_holdout": null,
+        "formal_test_changed": false
+      }
+    }
+  ],
+  "notes": [
+    "Fixed fullsource ordinaryAs CONCAT source-final20 is the corresponding ordinaryAs E30 parent,not selected by target metrics. Historical parent20/4440 cost separate from current0training.",
+    "HQ/bridge reduced added noise6dB withEQoff and changed losses/forwards;oldSeptember fullEQ experiments differed architecture/epoch/testprocessing. No matched version of this source receiver experiment found.",
+    "Only candidate delay24 is derived from nominal common fractional-filter latency;64 is fixedcoordinatecontrol. No waveform shift/crop/RMS/output repair or data-selected timing.",
+    "MMSE channel estimate is existing H-plus-error simulation proxy,not a pilot estimator. Physical receiver and noise dependencies retained;no groundTX hardware inversion or realRX replacement claim.",
+    "All6300L/all5RX/day1..3;no U/V statistics or targetIQ/truth. No source domain holdout or internal5580/720 split.",
+    "Passing sourceinputintervention is not augmentation efficacy. A_g remains unproved;closed band-noise and prior routes unchanged."
+  ],
+  "registered_at": "2026-10-17T10:47:41+00:00"
+}

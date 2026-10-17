@@ -518,3 +518,4 @@
 - [完整源实验 20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md)
 - [包内冻结时标审计](../automation_reports/CV-SincNet/20261017-diagnostic-F-frozen-scatter-timescale-m1-r01/report.md)
 - [等功率接收带限噪声源检验](../automation_reports/CV-SincNet/20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01/report.md)
+- [完整源 MMSE 接收处理](../automation_reports/CV-SincNet/20261017-diagnostic-F-MMSE-receiver-fullL-s2026092701-m1-r01/report.md)
