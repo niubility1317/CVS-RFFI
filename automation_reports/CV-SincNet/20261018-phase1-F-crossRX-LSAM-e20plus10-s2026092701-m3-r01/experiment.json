@@ -26,11 +26,12 @@
   "replaces_run_id": null,
   "authorization": "Current user joint Ag/As goal;latest baseline F+CROSS_RX;latest budget E30;all5sourceRX;no holdout;existing256IQ;no target-feedback tuning;no new U rules",
   "code": {
-    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "commit": "a71b0094dba1264b7bacfc742dc03ab3f3a59aa2",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary account/existing pinned F runtime/FP32/CPU2/single shared GPU",
     "cwd": "PROJECT/releases/cvs_F_LSAM_E30_20261018_r01",
-    "entrypoint": "experiments/cvs_lsam30/runner.py"
+    "entrypoint": "experiments/cvs_lsam30/runner.py",
+    "analysis_commit": "6c542bf9b980599df63020671e6feabc8e4427f9"
   },
   "data": {
     "dataset": "ManySig",
@@ -227,7 +228,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-LSAM-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -265,7 +266,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/defaultcos/originalU/RDrop1/LS.01;commonordinary.5 plus ordinary-or-fullAs.5;SupCon.1;E20+10;only supervised L update organization differs",
@@ -498,8 +499,66 @@
         },
         "REJECTED_EXTRA_GATE": "Generic design approval/spec/plan gates exceed current authorized minimal experiment workflow;not imposed"
       },
-      "status": "PLANNED",
-      "result": {}
+      "status": "ANALYZED",
+      "result": {
+        "views": {
+          "clean": {
+            "accuracy": 0.8522619047619048,
+            "macro_F1": 0.8493532432379264,
+            "correct": 143180,
+            "count": 168000,
+            "worst_RX_accuracy": 0.77475
+          },
+          "practical_high": {
+            "accuracy": 0.45927380952380953,
+            "macro_F1": 0.40636852980671617,
+            "correct": 77158,
+            "count": 168000,
+            "worst_RX_accuracy": 0.3868333333333333
+          },
+          "practical_mid": {
+            "accuracy": 0.44232738095238094,
+            "macro_F1": 0.3953411332183883,
+            "correct": 74311,
+            "count": 168000,
+            "worst_RX_accuracy": 0.3769166666666667
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.4218452380952381,
+            "macro_F1": 0.3804311833475739,
+            "correct": 70870,
+            "count": 168000,
+            "worst_RX_accuracy": 0.36004166666666665
+          },
+          "practical_high_urban": {
+            "accuracy": 0.4464642857142857,
+            "macro_F1": 0.40014435753113253,
+            "correct": 75006,
+            "count": 168000,
+            "worst_RX_accuracy": 0.37695833333333334
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.37236309523809524,
+            "macro_F1": 0.3460044365830027,
+            "correct": 62557,
+            "count": 168000,
+            "worst_RX_accuracy": 0.323875
+          },
+          "practical_low_urban": {
+            "accuracy": 0.3166309523809524,
+            "macro_F1": 0.30161081441174786,
+            "correct": 53194,
+            "count": 168000,
+            "worst_RX_accuracy": 0.27920833333333334
+          }
+        },
+        "source_qualification": "CLOSED_FIXED_LSAM_SOURCE_RECOGNITION_FAILED",
+        "cumulative_epochs": 30,
+        "new_updates": 2220,
+        "truth_last": true,
+        "new_Ag": false,
+        "joint_goal_complete": false
+      }
     },
     {
       "row_id": "AS_REPLAY-s2026092701",
@@ -582,7 +641,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-LSAM-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -620,7 +679,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/defaultcos/originalU/RDrop1/LS.01;commonordinary.5 plus ordinary-or-fullAs.5;SupCon.1;E20+10;only supervised L update organization differs",
@@ -853,8 +912,66 @@
         },
         "REJECTED_EXTRA_GATE": "Generic design approval/spec/plan gates exceed current authorized minimal experiment workflow;not imposed"
       },
-      "status": "PLANNED",
-      "result": {}
+      "status": "ANALYZED",
+      "result": {
+        "views": {
+          "clean": {
+            "accuracy": 0.8270238095238095,
+            "macro_F1": 0.8222612189646865,
+            "correct": 138940,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7311666666666666
+          },
+          "practical_high": {
+            "accuracy": 0.8158273809523809,
+            "macro_F1": 0.8118512448196237,
+            "correct": 137059,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7237083333333333
+          },
+          "practical_mid": {
+            "accuracy": 0.7933154761904762,
+            "macro_F1": 0.7894337856249675,
+            "correct": 133277,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7109166666666666
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.7696369047619047,
+            "macro_F1": 0.7658676799107499,
+            "correct": 129299,
+            "count": 168000,
+            "worst_RX_accuracy": 0.6934583333333333
+          },
+          "practical_high_urban": {
+            "accuracy": 0.7821488095238095,
+            "macro_F1": 0.7779689983712386,
+            "correct": 131401,
+            "count": 168000,
+            "worst_RX_accuracy": 0.6997083333333334
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.6442142857142857,
+            "macro_F1": 0.6395064661705853,
+            "correct": 108228,
+            "count": 168000,
+            "worst_RX_accuracy": 0.58325
+          },
+          "practical_low_urban": {
+            "accuracy": 0.5344285714285715,
+            "macro_F1": 0.5282925822988505,
+            "correct": 89784,
+            "count": 168000,
+            "worst_RX_accuracy": 0.488125
+          }
+        },
+        "source_qualification": "CLOSED_FIXED_LSAM_SOURCE_RECOGNITION_FAILED",
+        "cumulative_epochs": 30,
+        "new_updates": 2220,
+        "truth_last": true,
+        "new_Ag": false,
+        "joint_goal_complete": false
+      }
     },
     {
       "row_id": "AS_LSAM-s2026092701",
@@ -937,7 +1054,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-LSAM-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -975,7 +1092,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/defaultcos/originalU/RDrop1/LS.01;commonordinary.5 plus ordinary-or-fullAs.5;SupCon.1;E20+10;only supervised L update organization differs",
@@ -1208,8 +1325,66 @@
         },
         "REJECTED_EXTRA_GATE": "Generic design approval/spec/plan gates exceed current authorized minimal experiment workflow;not imposed"
       },
-      "status": "PLANNED",
-      "result": {}
+      "status": "ANALYZED",
+      "result": {
+        "views": {
+          "clean": {
+            "accuracy": 0.8282738095238096,
+            "macro_F1": 0.8221300257987769,
+            "correct": 139150,
+            "count": 168000,
+            "worst_RX_accuracy": 0.756125
+          },
+          "practical_high": {
+            "accuracy": 0.8133392857142857,
+            "macro_F1": 0.8086613721206235,
+            "correct": 136641,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7270416666666667
+          },
+          "practical_mid": {
+            "accuracy": 0.7903154761904762,
+            "macro_F1": 0.7857362881404462,
+            "correct": 132773,
+            "count": 168000,
+            "worst_RX_accuracy": 0.71125
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.7667916666666666,
+            "macro_F1": 0.7623187004406385,
+            "correct": 128821,
+            "count": 168000,
+            "worst_RX_accuracy": 0.69475
+          },
+          "practical_high_urban": {
+            "accuracy": 0.7799345238095238,
+            "macro_F1": 0.7750103887003418,
+            "correct": 131029,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7024166666666667
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.6414107142857143,
+            "macro_F1": 0.6356711200747661,
+            "correct": 107757,
+            "count": 168000,
+            "worst_RX_accuracy": 0.585
+          },
+          "practical_low_urban": {
+            "accuracy": 0.5319345238095238,
+            "macro_F1": 0.5246430941049006,
+            "correct": 89365,
+            "count": 168000,
+            "worst_RX_accuracy": 0.490125
+          }
+        },
+        "source_qualification": "CLOSED_FIXED_LSAM_SOURCE_RECOGNITION_FAILED",
+        "cumulative_epochs": 30,
+        "new_updates": 2220,
+        "truth_last": true,
+        "new_Ag": false,
+        "joint_goal_complete": false
+      }
     }
   ],
   "notes": [

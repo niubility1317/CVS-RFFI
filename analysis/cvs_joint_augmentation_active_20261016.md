@@ -1,3 +1,9 @@
+## 2026-10-18：L-only SAM 完整 E30 负结果，固定路线关闭
+
+[同成本三行完整报告](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md) 已 ANALYZED／VERIFIED。NOAS_REPLAY／AS_REPLAY／AS_LSAM 均累计 E30并自然结束，clean＋六practical固定预测及独立truth-last齐全；3×2220完整步／370池／4440序列、378正式CM／39源CM／63分区／21配对独立复算误差0。clean／midurban／lowurban分别为85.226190／37.236310／31.663095%、82.702381／64.421429／53.442857%、82.827381／64.141071／53.193452%。普通As适应收益与clean代价被确认；SAM相对普通As clean仅+.125pp、全部6practical下降，mid−.280357／low−.249405pp，三种suburban差1.493452／3.795833／6.148214pp。源资格先冻结且四项均失败，关闭固定rho.05、存储坐标、L-only、父、seed、优化与预算配方，不调参救回、不扩种子。
+
+全部5源RX／3day、L6300／U56700隐藏TX／V27000、256点、F＋跨RX同TX、默认头联合训练和原U规则保持；没有训练RX留出。三行8L前向／2额外VJP匹配；本项是训练组织，无新IQ Ag，无B10/B11和四因子交互。当前本路线没有运行中新候选，也没有足够依据的新Ag候选；完整联合目标仍ACTIVE，clean净正、low>60和各suburban探索差≤2pp尚未共同达到。以下“当前／运行／下一项”均是历史，以此段和实际完成证据为准。
+
 ## 2026-10-18：L-only SAM 三行真实 E30 运行
 
 [同IQ有标签稳健更新](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md) 已RUNNING／VERIFIED；NOAS_REPLAY／AS_REPLAY／AS_LSAM分别GPU3/4/5，实际执行提交a71b0094dba1264b7bacfc742dc03ab3f3a59aa2。原REPEAT／CONCAT完整源E20各自student＋自身EMA续10轮，每行累计E30／6660更新、8Lforward和2extraVJP，原U/teacher/默认头联合训练、5RX/L6300/U56700隐藏TX/V27000/256点保持，无训练域留出。中性重放不改梯度；候选固定rho.05只替换L梯度，不是IQ Ag，未添加部署分支或头。单archive/compile、唯一P0P1、真实两父CP烟测及三行身份/GPU核实通过；真实步日志已推进，无目标指标读取。源资格和正式七视图结果待完成；固定source clean/mid不降、low+.5pp、每sub>=-.25pp，失败关闭，不据target调半径/父/seed/预算。此前包络来源失败保持关闭，完整联合目标ACTIVE。以下旧当前/运行均以本段和实际run证据为准。

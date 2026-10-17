@@ -1,19 +1,19 @@
-# L-only SAM 当前交接（2026-10-18）
+# L-only SAM 已完成交接（2026-10-18）
 
-完整联合目标仍ACTIVE；当前行尚未完成训练、源资格或正式评分，不标complete/blocked。最新用户约束为F＋跨RX同TX、E30、原256点、全部5源RX、完整L6300/U56700隐藏TX/V27000、split392005和默认cos头联合训练，不留出训练RX。包络均值/波动、FIR/clock、梯度投影/dropout/MC2/配对噪声等固定失败路线保持关闭。
+[同成本三行完整报告](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md) 已 ANALYZED／VERIFIED。NOAS_REPLAY／AS_REPLAY／AS_LSAM 均累计 E30并自然结束，clean＋六practical固定预测及独立truth-last齐全；3×2220完整步／370池／4440序列、378正式CM／39源CM／63分区／21配对独立复算误差0。clean／midurban／lowurban分别为85.226190／37.236310／31.663095%、82.702381／64.421429／53.442857%、82.827381／64.141071／53.193452%。普通As适应收益与clean代价被确认；SAM相对普通As clean仅+.125pp、全部6practical下降，mid−.280357／low−.249405pp，三种suburban差1.493452／3.795833／6.148214pp。源资格先冻结且四项均失败，关闭固定rho.05、存储坐标、L-only、父、seed、优化与预算配方，不调参救回、不扩种子。
 
-当前唯一实跑run为20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01，实际代码提交a71b0094dba1264b7bacfc742dc03ab3f3a59aa2；release cvs_F_LSAM_E30_20261018_r01；package experiments/cvs_lsam30；同row报告[report](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md)。三行NOAS_REPLAY／AS_REPLAY／AS_LSAM，原REPEAT20／CONCAT20各自student＋自身EMA追加10至E30；As两行严格同父，NoAs的treatment父不同但源契约/初始化规则一致。新增各2220更新、8Lforward/2extraVJP、一次原clip5/AdamW/EMA；只改变L梯度组织，未新增IQ Ag、部署参数、头、loss系数或U规则。原脚本launch-owner为codex/root/F-LSAM-E30。
+全部5源RX／3day、L6300／U56700隐藏TX／V27000、256点、F＋跨RX同TX、默认头联合训练和原U规则保持；没有训练RX留出。三行8L前向／2额外VJP匹配；本项是训练组织，无新IQ Ag，无B10/B11和四因子交互。当前本路线没有运行中新候选，也没有足够依据的新Ag候选；完整联合目标仍ACTIVE，clean净正、low>60和各suburban探索差≤2pp尚未共同达到。以下“当前／运行／下一项”均是历史，以此段和实际完成证据为准。
 
-已独立核实dispatcher871606；worker871633／871706／871786分别GPU3／4／5，PID/CWD/argv/CUDA及nvidia-smi映射一致；源初始化与原roleIDs一致，真实两父CP无query smoke4NN通过。三行E21回调各222新增更新已通过，native基础L113664＋重放113664＝227328实际LNN、extraVJP444，原clip/AdamW计数一次每步。旧reference_progress.L_packets只计基础4forward，不能作为总8forward成本。最新完整gzip可读步数386／271／253，日志增长、无非有限跳步、U真值0；这只是当时的观测，恢复时重新核实原句柄，不由旧RUNNING文字推断live。
 
-私有工具位于本worktree local_artifacts/F_LSAM_E30_20261018：runtime.json／remote.py／monitor.py／partial_steps.py。用既有verified native Python/SSH短连接运行这些只读脚本，不展示私有runtime或服务器账号。monitor只读源进度与进程、不读target scores；partial_steps用zlib解码未关闭gzip的完整JSON前缀，只用于健康计数，最终日志分析读取全部完成记录。不要重复publisher、覆盖run、热改或重启健康任务。观察超时先只读核对原PID和产物。
 
-每行自动train→fixed源V1800资格（全5RX/90cells，clean1＋6practical×2draw=23400NN；21600物理处理、0更新/U/target）→固定7view received预测→独立CPU truthlast。root finish先只读三行资格生成source_matrix_decision，再汇总全部正式分数；Agent在完整源资格冻结前不读取本run目标指标。三行全部固定测试，不根据source或target删行。源判据AS_LSAM vs AS_REPLAY：clean/mid不降，low≥+.5pp，每suburban≥−.25pp；失败关闭固定rho.05/坐标/父/seed/optimizer/预算配方，不调参救跑，性能差不技术停止。
+实际训练提交 `a71b0094dba1264b7bacfc742dc03ab3f3a59aa2`；独立复算工具提交 `6c542bf9b980599df63020671e6feabc8e4427f9`。所有worker与dispatcher自然完成，根completion为ARTIFACTS_COMPLETE；当前状态不是运行中，不重启publisher或重复预测。原run和release保持不可覆盖，不改动其他健康任务。
 
-训练结束后必须完整复算3×10epoch/2220step、370输入池/4440 L-U序列、原头更新与父来源，实际8LNN/2VJP/teacher/资格/正式prediction/CPUscore/父训练及synthetic成本分别记录；完整读取L_replay_steps（权重/RNG/buffers恢复、半径、中性控制误差）、reference_steps、unit_steps、actualargs和channel coverage。完成3×7视图378个CM／63分区及3对×7配对、全部RX/TX/day和source资格2draw每RX计数；不能用source loss或梯度改善替代识别收益。保留负结果、缺项；准确率/F1、suburban绝对值与差距、修复/新增错误和clean∩scene联合正确均报告。全部训练/评分产物齐全才标ARTIFACTS_COMPLETE/ANALYZED。
+源判据只消费源产物，主Agent先读冻结source_matrix_decision，确认CLOSED_FIXED_LSAM_SOURCE_RECOGNITION_FAILED后才读取正式指标。独立复算源clean−.111111pp、mid−1.5pp、low−.611111pp，全部suburban下降；正式clean小增不能救回源失败。分析0IQ／CP／NN／更新／rawtruth，不运行额外头。
 
-开发成本本地＋远端完整F各9216NN/3syntheticupdate/12extraFVJP，总18432NN/6syntheticupdate/24extraFVJP；源smoke4NN单列。首个NumPy测试seed超32位在任何F前向前失败，额外2随机modelbuild/0NN，保留记录。新增真实E10每行预估2273280LNN、4440extraVJP，实际从training_result取；两份E20父共享一次共40modelE/8880updates＋新增30modelE/6660updates＝唯一70modelE/15540updates，不以每行E30掩盖额外前向。
+公开终轮产物在同row目录：result.json／source_analysis.json／source_qualification.json／formal_metrics.json／final_analysis.md／stratified_results.md／completion_verification.json，figures下两图各PNG与PDF。已检查两张PNG。普通As与NoAs父分别为原CONCAT20与REPEAT20，各自原EMA，As两行同父；预算为原20＋10，AdamW/cos10重置，不是从零30或优化轨迹原样恢复。
 
-本候选即使source或单seed目标提高，也不是IQ Ag/factorial交互/跨seed联合目标完成；不从目标成绩自动晋级或扩seed。最终仍欠新的A_g clean独立价值、A_g×A_s四因子和多seed证明，严格匹配B00的clean正净收益、low>60%以及suburban探索≤2pp且不降低clean。
+实际新增训练＋资格＋正式预测14,792,052NN；共享真实CP烟测4NN；开发合成18,432NN／6更新／24额外FVJP；两份唯一原E20父7,322,164NN。新增6660真实更新／13320额外L VJP，唯一累计15540真实更新／70modelE，各model累计30。8L中重放部分不得遗漏。
 
-终轮辅助工具已准备：analysis/cvs_LSAM_recount_20261018.py（先完整source及源资格，再正式378CM/63分区/21配对，0IQ/CP/NN/rawtruth），analysis/check_cvs_LSAM_recount_20261018.py（39CM/2220records/8negative合成PASS），analysis/cvs_LSAM_report_20261018.py与analysis/cvs_LSAM_figures_20261018.py。尚未消费本run终轮或目标指标。旧共享analysis/cvs_view_pcgrad_source_logs_20261018.py按单行调用_base_run复用完整源日志，source_qualification要求source_matrix_decision存在；target侧复用已验证metrics函数，不引入额外预测或诊断头。执行后保留private完整recount，再从whitelist metadata生成公开report；检查两张PNG后登记实际结果。
+已关闭路线包括梯度投影、dropout配对、MC2、噪声正负配对、批次6池、FIR/clock、有限窗酉相位、包络均值/波动、RX人口、N0/PDP/MMSE/校准等，保持原固定反证；不能改名再跑。当前不凭目标负分指定新增强或调参，不把SAM当Ag，也不把普通As真实提升等同联合完成。后续候选须有独立合法源依据，仍用现有256点、全部源RX、E30、原U和默认头；无依据时如实保留证据缺口。
+
+辅助工具：analysis/cvs_LSAM_recount_20261018.py（完整source后qualification，再378CM／63分区／21配对）、analysis/check_cvs_LSAM_recount_20261018.py（合成39CM／2220记录／8负例PASS）、analysis/cvs_LSAM_report_20261018.py、analysis/cvs_LSAM_figures_20261018.py。本次绘图采用现有F:/App/miniconda3/python.exe，原ssr-gpu环境缺matplotlib；没有安装或修改任何环境。私有原始recount和SSH工具仍在local_artifacts/F_LSAM_E30_20261018，禁止提交私有runtime、原始日志、IQ、权重、预测或correctness向量。

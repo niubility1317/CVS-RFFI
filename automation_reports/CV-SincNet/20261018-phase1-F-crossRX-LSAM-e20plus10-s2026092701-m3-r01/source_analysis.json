@@ -1,0 +1,4867 @@
+{
+  "status": "VERIFIED_COMPLETE_SOURCE_LOGS",
+  "run_id": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
+  "matched_comparisons": {
+    "AS_REPLAY": {
+      "complete_input_pools": 370,
+      "L_U_sequence_records": 4440,
+      "same_input_pools_and_L_labels": true,
+      "same_L_U_physical_sequence": true,
+      "same_NN_and_extra_VJP_budget": true,
+      "different_actual_arg_keys": [
+        "baseline_ckpt",
+        "candidate_id",
+        "output_dir"
+      ],
+      "actual_arg_count": 857
+    },
+    "AS_LSAM": {
+      "complete_input_pools": 370,
+      "L_U_sequence_records": 4440,
+      "same_input_pools_and_L_labels": true,
+      "same_L_U_physical_sequence": true,
+      "same_NN_and_extra_VJP_budget": true,
+      "different_actual_arg_keys": [
+        "baseline_ckpt",
+        "candidate_id",
+        "output_dir"
+      ],
+      "actual_arg_count": 857
+    }
+  },
+  "rows": {
+    "NOAS_REPLAY": {
+      "step_log": {
+        "exists": true,
+        "records": 2220,
+        "partial": false,
+        "error": null
+      },
+      "epoch_log": {
+        "exists": true,
+        "records": 10,
+        "partial": false,
+        "error": null
+      },
+      "pool_log": {
+        "exists": true,
+        "records": 370,
+        "partial": false,
+        "error": null
+      },
+      "sequence_log": {
+        "exists": true,
+        "records": 4440,
+        "partial": false,
+        "error": null
+      },
+      "reference_log": {
+        "exists": true,
+        "records": 2220,
+        "partial": false,
+        "error": null
+      },
+      "unit_log": {
+        "exists": true,
+        "records": 2220,
+        "partial": false,
+        "error": null
+      },
+      "observed_L_packets": 284160,
+      "observed_U_packets": 567000,
+      "observed_unique_L": 6300,
+      "observed_unique_U": 56700,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "source_RX_holdout": null,
+      "supervised_objective_recount_max_error": 1.2964010243088353e-07,
+      "reference_epoch_curves": [
+        {
+          "epoch": 1,
+          "cumulative_epoch": 21,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.4273207509839857,
+            "minimum": 0.2237529456615448,
+            "maximum": 2.0283045768737793,
+            "first": 1.0944840908050537,
+            "last": 0.446492075920105
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.23459460807813182,
+            "minimum": 0.08571910858154297,
+            "maximum": 1.7237145900726318,
+            "first": 0.6998069286346436,
+            "last": 0.2369796484708786
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.034660140069218366,
+            "minimum": 0.011126747354865074,
+            "maximum": 0.12704762816429138,
+            "first": 0.06465479731559753,
+            "last": 0.0647512897849083
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.2350146831894243,
+            "minimum": 0.0871373862028122,
+            "maximum": 1.7136638164520264,
+            "first": 0.7013149261474609,
+            "last": 0.23323515057563782
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03345963058926098,
+            "minimum": 0.010350937023758888,
+            "maximum": 0.13985653221607208,
+            "first": 0.06465919315814972,
+            "last": 0.057659782469272614
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.5845621620212589,
+            "minimum": 1.1843430995941162,
+            "maximum": 3.5083396434783936,
+            "first": 3.292661190032959,
+            "last": 1.50179123878479
+          }
+        },
+        {
+          "epoch": 2,
+          "cumulative_epoch": 22,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.44317378070171887,
+            "minimum": 0.2250867336988449,
+            "maximum": 2.0569939613342285,
+            "first": 0.295087993144989,
+            "last": 0.2657175064086914
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.2510839965496514,
+            "minimum": 0.08650800585746765,
+            "maximum": 1.746381402015686,
+            "first": 0.13704675436019897,
+            "last": 0.12235512584447861
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.034659616053440014,
+            "minimum": 0.008208367973566055,
+            "maximum": 0.13033127784729004,
+            "first": 0.023668721318244934,
+            "last": 0.023089513182640076
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.25007415566224234,
+            "minimum": 0.08548648655414581,
+            "maximum": 1.7593837976455688,
+            "first": 0.13922742009162903,
+            "last": 0.10839330404996872
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.034871960751007534,
+            "minimum": 0.008416458033025265,
+            "maximum": 0.1453370749950409,
+            "first": 0.034210205078125,
+            "last": 0.016272159293293953
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.5782891560245205,
+            "minimum": 1.1061214208602905,
+            "maximum": 3.4048120975494385,
+            "first": 1.2801144123077393,
+            "last": 1.3066246509552002
+          }
+        },
+        {
+          "epoch": 3,
+          "cumulative_epoch": 23,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.41996698504364166,
+            "minimum": 0.21859610080718994,
+            "maximum": 1.6066547632217407,
+            "first": 0.2512413263320923,
+            "last": 1.0905730724334717
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.22937232349906955,
+            "minimum": 0.08911880850791931,
+            "maximum": 1.283207893371582,
+            "first": 0.11173266172409058,
+            "last": 0.6888905763626099
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03249075983625811,
+            "minimum": 0.007089735008776188,
+            "maximum": 0.10885538160800934,
+            "first": 0.024487026035785675,
+            "last": 0.08123496174812317
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.22904970211622952,
+            "minimum": 0.08775091916322708,
+            "maximum": 1.314448595046997,
+            "first": 0.11157016456127167,
+            "last": 0.6791831254959106
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03312343597697379,
+            "minimum": 0.00909932516515255,
+            "maximum": 0.10753414034843445,
+            "first": 0.026117699220776558,
+            "last": 0.07172159850597382
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.5794887043334342,
+            "minimum": 1.0860341787338257,
+            "maximum": 3.3973186016082764,
+            "first": 1.1428755521774292,
+            "last": 3.300579309463501
+          }
+        },
+        {
+          "epoch": 4,
+          "cumulative_epoch": 24,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.40784489343295227,
+            "minimum": 0.20544177293777466,
+            "maximum": 1.837325096130371,
+            "first": 0.4105788469314575,
+            "last": 0.2759972810745239
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.22363348167624558,
+            "minimum": 0.08291907608509064,
+            "maximum": 1.352383017539978,
+            "first": 0.2097490131855011,
+            "last": 0.11887942999601364
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.031411164670947705,
+            "minimum": 0.008017763495445251,
+            "maximum": 0.13583701848983765,
+            "first": 0.05825696885585785,
+            "last": 0.030191071331501007
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.22507222862662496,
+            "minimum": 0.084937185049057,
+            "maximum": 1.4076271057128906,
+            "first": 0.19873088598251343,
+            "last": 0.12004315108060837
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03151004557783069,
+            "minimum": 0.00689863134175539,
+            "maximum": 0.13841933012008667,
+            "first": 0.06348345428705215,
+            "last": 0.028327349573373795
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.5203143095110987,
+            "minimum": 1.088242530822754,
+            "maximum": 3.3978633880615234,
+            "first": 1.4546868801116943,
+            "last": 1.2727675437927246
+          }
+        },
+        {
+          "epoch": 5,
+          "cumulative_epoch": 25,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.39568891698444214,
+            "minimum": 0.19828544557094574,
+            "maximum": 1.9826382398605347,
+            "first": 0.2708369493484497,
+            "last": 0.4578660726547241
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.21596721207370628,
+            "minimum": 0.08344711363315582,
+            "maximum": 1.6609433889389038,
+            "first": 0.11615453660488129,
+            "last": 0.23951908946037292
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03000042082003511,
+            "minimum": 0.006614916026592255,
+            "maximum": 0.10571600496768951,
+            "first": 0.02082584984600544,
+            "last": 0.10100595653057098
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.2164082930901566,
+            "minimum": 0.08605138957500458,
+            "maximum": 1.6798795461654663,
+            "first": 0.13202857971191406,
+            "last": 0.223028302192688
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.030140638932468253,
+            "minimum": 0.005014898255467415,
+            "maximum": 0.11928969621658325,
+            "first": 0.022568175569176674,
+            "last": 0.06672145426273346
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4943062920828123,
+            "minimum": 1.0376255512237549,
+            "maximum": 3.323418617248535,
+            "first": 1.250483512878418,
+            "last": 1.4272868633270264
+          }
+        },
+        {
+          "epoch": 6,
+          "cumulative_epoch": 26,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.39099059911730055,
+            "minimum": 0.20131172239780426,
+            "maximum": 1.7759429216384888,
+            "first": 0.2568548321723938,
+            "last": 0.36265242099761963
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.21032881797165484,
+            "minimum": 0.08487765491008759,
+            "maximum": 1.44655179977417,
+            "first": 0.10885128378868103,
+            "last": 0.16580992937088013
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.02918361132830247,
+            "minimum": 0.007568709552288055,
+            "maximum": 0.1444624811410904,
+            "first": 0.016296332702040672,
+            "last": 0.050935566425323486
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.21160409998920587,
+            "minimum": 0.0840475857257843,
+            "maximum": 1.4555367231369019,
+            "first": 0.10325177013874054,
+            "last": 0.1667383462190628
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.029950200152155514,
+            "minimum": 0.00796978734433651,
+            "maximum": 0.1332360804080963,
+            "first": 0.020778687670826912,
+            "last": 0.0458247996866703
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.5045723082782987,
+            "minimum": 1.021303653717041,
+            "maximum": 3.3284380435943604,
+            "first": 1.3226579427719116,
+            "last": 1.479980707168579
+          }
+        },
+        {
+          "epoch": 7,
+          "cumulative_epoch": 27,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.38858210798856374,
+            "minimum": 0.19253551959991455,
+            "maximum": 2.0966856479644775,
+            "first": 0.23643967509269714,
+            "last": 0.24012334644794464
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.2194929479344471,
+            "minimum": 0.0852125883102417,
+            "maximum": 1.791324496269226,
+            "first": 0.10607872903347015,
+            "last": 0.11066310107707977
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.029732571031713673,
+            "minimum": 0.005396930035203695,
+            "maximum": 0.13591468334197998,
+            "first": 0.013138086535036564,
+            "last": 0.014630804769694805
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.21960647766654556,
+            "minimum": 0.08436623215675354,
+            "maximum": 1.7582095861434937,
+            "first": 0.11352469027042389,
+            "last": 0.11016536504030228
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.028834829417367775,
+            "minimum": 0.006553300656378269,
+            "maximum": 0.13767331838607788,
+            "first": 0.02140991762280464,
+            "last": 0.012595358304679394
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.3974869307633992,
+            "minimum": 0.9859277606010437,
+            "maximum": 3.434387683868408,
+            "first": 1.093639612197876,
+            "last": 1.16096031665802
+          }
+        },
+        {
+          "epoch": 8,
+          "cumulative_epoch": 28,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.3694209234940039,
+            "minimum": 0.18247780203819275,
+            "maximum": 2.1080989837646484,
+            "first": 0.22915759682655334,
+            "last": 0.2638191878795624
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.19948992374781016,
+            "minimum": 0.08171290904283524,
+            "maximum": 1.677716851234436,
+            "first": 0.09024535119533539,
+            "last": 0.11854031682014465
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.028313252651174594,
+            "minimum": 0.005635712295770645,
+            "maximum": 0.16981247067451477,
+            "first": 0.012247417122125626,
+            "last": 0.018640607595443726
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.19906555673292092,
+            "minimum": 0.08060567080974579,
+            "maximum": 1.7186025381088257,
+            "first": 0.09441328048706055,
+            "last": 0.12070457637310028
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.02756912354799407,
+            "minimum": 0.006257450208067894,
+            "maximum": 0.16146811842918396,
+            "first": 0.01124254148453474,
+            "last": 0.024172335863113403
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4220199158062805,
+            "minimum": 0.9398276209831238,
+            "maximum": 3.3314943313598633,
+            "first": 1.2508329153060913,
+            "last": 1.2279026508331299
+          }
+        },
+        {
+          "epoch": 9,
+          "cumulative_epoch": 29,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.3873661483998771,
+            "minimum": 0.19029584527015686,
+            "maximum": 1.7385075092315674,
+            "first": 0.22309467196464539,
+            "last": 0.9790202379226685
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.21141080185770988,
+            "minimum": 0.08046427369117737,
+            "maximum": 1.3595795631408691,
+            "first": 0.0983961820602417,
+            "last": 0.5835657119750977
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.031084623126950754,
+            "minimum": 0.006338945124298334,
+            "maximum": 0.16672027111053467,
+            "first": 0.0147108044475317,
+            "last": 0.07173961400985718
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.210766610597168,
+            "minimum": 0.07926270365715027,
+            "maximum": 1.326570987701416,
+            "first": 0.09516818821430206,
+            "last": 0.5908722877502441
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03037889997751729,
+            "minimum": 0.005208589136600494,
+            "maximum": 0.14594195783138275,
+            "first": 0.008503654040396214,
+            "last": 0.07333609461784363
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4554567817632142,
+            "minimum": 0.9763668775558472,
+            "maximum": 3.326819896697998,
+            "first": 1.147052526473999,
+            "last": 3.1926331520080566
+          }
+        },
+        {
+          "epoch": 10,
+          "cumulative_epoch": 30,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.41539966449275745,
+            "minimum": 0.19636136293411255,
+            "maximum": 1.7252331972122192,
+            "first": 0.9997963905334473,
+            "last": 1.2520228624343872
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.23613770359808262,
+            "minimum": 0.08374954760074615,
+            "maximum": 1.4052162170410156,
+            "first": 0.5996729135513306,
+            "last": 0.9972501993179321
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03109324113507797,
+            "minimum": 0.006154951639473438,
+            "maximum": 0.16333693265914917,
+            "first": 0.0793633759021759,
+            "last": 0.07222561538219452
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.23580219130124058,
+            "minimum": 0.08103328198194504,
+            "maximum": 1.3994066715240479,
+            "first": 0.6084677577018738,
+            "last": 0.9993952512741089
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.0311314211948565,
+            "minimum": 0.008231256157159805,
+            "maximum": 0.1623137891292572,
+            "first": 0.07649519294500351,
+            "last": 0.07176290452480316
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4831738348479744,
+            "minimum": 0.9405527710914612,
+            "maximum": 3.317382335662842,
+            "first": 3.1779680252075195,
+            "last": 1.8170578479766846
+          }
+        }
+      ],
+      "L_replay": {
+        "records": 2220,
+        "scope": "Actual perstep scalar witnesses and executing tensor assertions;not independent tensor reconstruction or identity evidence",
+        "radius": 0.0,
+        "radius_max_abs_error": 0.0,
+        "extra_VJP": 4440,
+        "extra_L_forward_packets": 1136640,
+        "extra_L_backward_packet_derivatives": 2273280,
+        "total_L_NN": 2273280,
+        "epochs": [
+          {
+            "epoch": 1,
+            "cumulative_epoch": 21,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.4273207509839857,
+              "minimum": 0.2237529456615448,
+              "maximum": 2.0283045768737793,
+              "first": 1.0944840908050537,
+              "last": 0.446492075920105
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.4273207509839857,
+              "minimum": 0.2237529456615448,
+              "maximum": 2.0283045768737793,
+              "first": 1.0944840908050537,
+              "last": 0.446492075920105
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.4751151677195495,
+              "minimum": 0.40737988467443004,
+              "maximum": 8.545733515793236,
+              "first": 2.7714166052966864,
+              "last": 1.4990444115877926
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.4751151676606287,
+              "minimum": 0.407379885197707,
+              "maximum": 8.545733515627424,
+              "first": 2.771416605146207,
+              "last": 1.4990444140959793
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 2.547254544210202e-07,
+              "minimum": 3.3433204864970906e-08,
+              "maximum": 3.508504273789762e-06,
+              "first": 1.667532219708462e-07,
+              "last": 4.1865662645402576e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.1352497961210624,
+              "minimum": 0.11723183002322912,
+              "maximum": 0.2000087508931756,
+              "first": 0.11825477983802557,
+              "last": 0.13498428696766496
+            }
+          },
+          {
+            "epoch": 2,
+            "cumulative_epoch": 22,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.44317378070171887,
+              "minimum": 0.2250867336988449,
+              "maximum": 2.0569939613342285,
+              "first": 0.295087993144989,
+              "last": 0.2657175064086914
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.44317378070171887,
+              "minimum": 0.2250867336988449,
+              "maximum": 2.0569939613342285,
+              "first": 0.295087993144989,
+              "last": 0.2657175064086914
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.6348405151327643,
+              "minimum": 0.41849976233068664,
+              "maximum": 10.822214369618976,
+              "first": 1.5610004686943173,
+              "last": 0.6243475013579028
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.634840515145776,
+              "minimum": 0.4184997625902285,
+              "maximum": 10.82221437037968,
+              "first": 1.5610004706810572,
+              "last": 0.6243474990070967
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 6.335853721477192e-07,
+              "minimum": 3.54283408496434e-08,
+              "maximum": 3.162309990090244e-06,
+              "first": 2.0540515598101732e-07,
+              "last": 1.2786551468518073e-06
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.13135310245661047,
+              "minimum": 0.12033328088000417,
+              "maximum": 0.1600287309847772,
+              "first": 0.12478615087457001,
+              "last": 0.12427559611387551
+            }
+          },
+          {
+            "epoch": 3,
+            "cumulative_epoch": 23,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.41996698504364166,
+              "minimum": 0.21859610080718994,
+              "maximum": 1.6066547632217407,
+              "first": 0.2512413263320923,
+              "last": 1.0905730724334717
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.41996698504364166,
+              "minimum": 0.21859610080718994,
+              "maximum": 1.6066547632217407,
+              "first": 0.2512413263320923,
+              "last": 1.0905730724334717
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.5958444322299943,
+              "minimum": 0.3934320617610242,
+              "maximum": 10.525708447175754,
+              "first": 1.0030830621640727,
+              "last": 3.765528354042725
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.5958444321384497,
+              "minimum": 0.3934320611732121,
+              "maximum": 10.525708447094216,
+              "first": 1.003083063128016,
+              "last": 3.765528354304289
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 8.242765016701493e-07,
+              "minimum": 4.709994396782973e-08,
+              "maximum": 5.590314494427408e-06,
+              "first": 4.4825047580019677e-07,
+              "last": 1.644681434525237e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12353371952446429,
+              "minimum": 0.11916457302868366,
+              "maximum": 0.23695126199163496,
+              "first": 0.11947195115499198,
+              "last": 0.12237277906388044
+            }
+          },
+          {
+            "epoch": 4,
+            "cumulative_epoch": 24,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.40784489343295227,
+              "minimum": 0.20544177293777466,
+              "maximum": 1.837325096130371,
+              "first": 0.4105788469314575,
+              "last": 0.2759972810745239
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.40784489343295227,
+              "minimum": 0.20544177293777466,
+              "maximum": 1.837325096130371,
+              "first": 0.4105788469314575,
+              "last": 0.2759972810745239
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.5234361401221916,
+              "minimum": 0.36691895053472384,
+              "maximum": 11.5524547863425,
+              "first": 1.6483133171113256,
+              "last": 0.9613152254843041
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.5234361400798602,
+              "minimum": 0.36691894873106673,
+              "maximum": 11.552454785791003,
+              "first": 1.6483133180688627,
+              "last": 0.9613152245142442
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 4.552691135324282e-07,
+              "minimum": 2.2726820201286515e-08,
+              "maximum": 3.953667777643227e-06,
+              "first": 2.3688502549727746e-07,
+              "last": 1.219669139367299e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12368096963204611,
+              "minimum": 0.11827848292887211,
+              "maximum": 0.21945733088068664,
+              "first": 0.1214022261556238,
+              "last": 0.11991908587515354
+            }
+          },
+          {
+            "epoch": 5,
+            "cumulative_epoch": 25,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.39568891698444214,
+              "minimum": 0.19828544557094574,
+              "maximum": 1.9826382398605347,
+              "first": 0.2708369493484497,
+              "last": 0.4578660726547241
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.39568891698444214,
+              "minimum": 0.19828544557094574,
+              "maximum": 1.9826382398605347,
+              "first": 0.2708369493484497,
+              "last": 0.4578660726547241
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.3994536075674102,
+              "minimum": 0.3221901519516837,
+              "maximum": 14.086819911403833,
+              "first": 1.1116842499817299,
+              "last": 1.7365248586426076
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.3994536075619686,
+              "minimum": 0.3221901508726998,
+              "maximum": 14.08681991188056,
+              "first": 1.1116842482386537,
+              "last": 1.736524857559298
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 5.98423562875927e-07,
+              "minimum": 2.8711438179464562e-08,
+              "maximum": 3.401827390213885e-06,
+              "first": 2.8531851277445156e-07,
+              "last": 7.275789020818608e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.1228795666111264,
+              "minimum": 0.1181925639975816,
+              "maximum": 0.1281451708637178,
+              "first": 0.11896233609877527,
+              "last": 0.12362080696038902
+            }
+          },
+          {
+            "epoch": 6,
+            "cumulative_epoch": 26,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.39099059911730055,
+              "minimum": 0.20131172239780426,
+              "maximum": 1.7759429216384888,
+              "first": 0.2568548321723938,
+              "last": 0.36265242099761963
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.39099059911730055,
+              "minimum": 0.20131172239780426,
+              "maximum": 1.7759429216384888,
+              "first": 0.2568548321723938,
+              "last": 0.36265242099761963
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.3597759610199083,
+              "minimum": 0.3430282289881942,
+              "maximum": 9.4716940764435,
+              "first": 0.5867050301491086,
+              "last": 1.664968546224233
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.359775960858654,
+              "minimum": 0.3430282293786941,
+              "maximum": 9.471694082284797,
+              "first": 0.5867050300534788,
+              "last": 1.6649685476635567
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 7.147597253375919e-07,
+              "minimum": 3.636103741978411e-08,
+              "maximum": 5.905402783878915e-06,
+              "first": 4.3241021594734947e-07,
+              "last": 5.630406726068655e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12198373981487207,
+              "minimum": 0.11773646506480873,
+              "maximum": 0.22436148207634687,
+              "first": 0.12192325503565371,
+              "last": 0.12182070012204349
+            }
+          },
+          {
+            "epoch": 7,
+            "cumulative_epoch": 27,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.38858210798856374,
+              "minimum": 0.19253551959991455,
+              "maximum": 2.0966856479644775,
+              "first": 0.23643967509269714,
+              "last": 0.24012334644794464
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.38858210798856374,
+              "minimum": 0.19253551959991455,
+              "maximum": 2.0966856479644775,
+              "first": 0.23643967509269714,
+              "last": 0.24012334644794464
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.3439626596434735,
+              "minimum": 0.2987135854261087,
+              "maximum": 10.53479680975556,
+              "first": 1.415233859344638,
+              "last": 0.551525704556562
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.3439626595348309,
+              "minimum": 0.29871358515636165,
+              "maximum": 10.534796811952162,
+              "first": 1.4152338591767477,
+              "last": 0.5515257038046656
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 6.499457009687752e-07,
+              "minimum": 6.699213763749632e-08,
+              "maximum": 4.291219122113983e-06,
+              "first": 2.738521383982924e-07,
+              "last": 2.731927823076994e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12137094791349326,
+              "minimum": 0.11342281103134155,
+              "maximum": 0.21755095687694848,
+              "first": 0.11638126615434885,
+              "last": 0.1250717791263014
+            }
+          },
+          {
+            "epoch": 8,
+            "cumulative_epoch": 28,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.3694209234940039,
+              "minimum": 0.18247780203819275,
+              "maximum": 2.1080989837646484,
+              "first": 0.22915759682655334,
+              "last": 0.2638191878795624
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.3694209234940039,
+              "minimum": 0.18247780203819275,
+              "maximum": 2.1080989837646484,
+              "first": 0.22915759682655334,
+              "last": 0.2638191878795624
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.0493178285656473,
+              "minimum": 0.23918304812893673,
+              "maximum": 4.965292321432786,
+              "first": 0.49034002793422754,
+              "last": 0.6829605750837086
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.049317828621715,
+              "minimum": 0.23918304818947,
+              "maximum": 4.965292323062551,
+              "first": 0.4903400278700691,
+              "last": 0.6829605754746976
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 4.410039201550167e-07,
+              "minimum": 6.156454208093183e-08,
+              "maximum": 3.748259235157467e-06,
+              "first": 2.691734979119588e-07,
+              "last": 1.5253462799257033e-06
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12390093636480873,
+              "minimum": 0.11902894685044885,
+              "maximum": 0.22045792709104717,
+              "first": 0.12180440407246351,
+              "last": 0.12533654598519206
+            }
+          },
+          {
+            "epoch": 9,
+            "cumulative_epoch": 29,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.3873661483998771,
+              "minimum": 0.19029584527015686,
+              "maximum": 1.7385075092315674,
+              "first": 0.22309467196464539,
+              "last": 0.9790202379226685
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.3873661483998771,
+              "minimum": 0.19029584527015686,
+              "maximum": 1.7385075092315674,
+              "first": 0.22309467196464539,
+              "last": 0.9790202379226685
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2191764791059778,
+              "minimum": 0.16628038557130553,
+              "maximum": 7.127117004842204,
+              "first": 1.0873749955402188,
+              "last": 2.3307772991148266
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2191764790932569,
+              "minimum": 0.16628038536508163,
+              "maximum": 7.1271170061786915,
+              "first": 1.0873749944255433,
+              "last": 2.3307772997749012
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 8.749828234254436e-07,
+              "minimum": 1.0697800615501395e-07,
+              "maximum": 4.741563897106445e-06,
+              "first": 5.780422058307205e-07,
+              "last": 2.1967608551249035e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12288600998733461,
+              "minimum": 0.11907570296898484,
+              "maximum": 0.12758988211862743,
+              "first": 0.12107736500911415,
+              "last": 0.12325756414793432
+            }
+          },
+          {
+            "epoch": 10,
+            "cumulative_epoch": 30,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.41539966449275745,
+              "minimum": 0.19636136293411255,
+              "maximum": 1.7252331972122192,
+              "first": 0.9997963905334473,
+              "last": 1.2520228624343872
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.41539966449275745,
+              "minimum": 0.19636136293411255,
+              "maximum": 1.7252331972122192,
+              "first": 0.9997963905334473,
+              "last": 1.2520228624343872
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2922627007012026,
+              "minimum": 0.36573300178711027,
+              "maximum": 7.507998057269018,
+              "first": 2.1190688697385425,
+              "last": 7.507998057269018
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2922627008062926,
+              "minimum": 0.365733002610482,
+              "maximum": 7.507998056656781,
+              "first": 2.119068871145955,
+              "last": 7.507998056656781
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 6.066263023669902e-07,
+              "minimum": 6.603447715642974e-08,
+              "maximum": 2.013049331236979e-06,
+              "first": 4.602849472979676e-07,
+              "last": 1.6520937961699278e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12364370690402784,
+              "minimum": 0.1205252530053258,
+              "maximum": 0.23276948812417686,
+              "first": 0.12604109616950154,
+              "last": 0.1221390978898853
+            }
+          }
+        ],
+        "gradient_relative_difference": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 6.05359847690106e-07,
+          "minimum": 2.2726820201286515e-08,
+          "maximum": 5.905402783878915e-06,
+          "first": 1.667532219708462e-07,
+          "last": 1.6520937961699278e-07
+        },
+        "L_loss_difference": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0
+        },
+        "host_enqueue_seconds": 277.60711396322586
+      },
+      "error_markers": {
+        "Traceback (most recent call last)": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0,
+        "skipped_nonfinite": 0
+      },
+      "warning_count": 0,
+      "parent_source_arm": "REPEAT",
+      "numeric_totals": {
+        "concat/As_packets": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0
+        },
+        "concat/L_forwards": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 4.0,
+          "minimum": 4.0,
+          "maximum": 4.0,
+          "first": 4.0,
+          "last": 4.0
+        },
+        "concat/SupCon": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 1.5019670395432292,
+          "minimum": 0.9398276209831238,
+          "maximum": 3.5083396434783936,
+          "first": 3.292661190032959,
+          "last": 1.8170578479766846
+        },
+        "concat/SupCon_weight": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.09999999999999624,
+          "minimum": 0.1,
+          "maximum": 0.1,
+          "first": 0.1,
+          "last": 0.1
+        },
+        "concat/common_CE": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.22315118169865092,
+          "minimum": 0.08046427369117737,
+          "maximum": 1.791324496269226,
+          "first": 0.6998069286346436,
+          "last": 0.9972501993179321
+        },
+        "concat/common_KL": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.031262940072311875,
+          "minimum": 0.005396930035203695,
+          "maximum": 0.16981247067451477,
+          "first": 0.06465479731559753,
+          "last": 0.07222561538219452
+        },
+        "concat/total_L": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.4045754770639243,
+          "minimum": 0.18247780203819275,
+          "maximum": 2.1080989837646484,
+          "first": 1.0944840908050537,
+          "last": 1.2520228624343872
+        },
+        "train/loss": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.4074171178244256,
+          "minimum": 0.18627497553825378,
+          "maximum": 2.1090762615203857,
+          "first": 1.0961923599243164,
+          "last": 1.2532832622528076
+        },
+        "train/loss_labeled": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.22305602211136002,
+          "minimum": 0.08127647638320923,
+          "maximum": 1.7518534660339355,
+          "first": 0.6805379986763,
+          "last": 1.001509428024292
+        },
+        "train/loss_unlabeled": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.010742373820752832,
+          "minimum": 0.0,
+          "maximum": 0.25073596835136414,
+          "first": 0.003717395942658186,
+          "last": 0.0025797742418944836
+        },
+        "train/pseudo_truth_available": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0
+        }
+      },
+      "epoch_curves": [
+        {
+          "epoch": 1,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0002,
+          "epoch_time_s": 124.02517080307007,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.4306178564155424,
+          "train_loss_labeled": 0.23462406294168653,
+          "train_loss_unlabeled": 0.011942393156025466,
+          "train_tx_acc": 93.96818693693693,
+          "val_tx_acc": 98.17037037037036,
+          "val_tx_correct": 26506,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 2,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0001939994157681979,
+          "epoch_time_s": 120.59522032737732,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.4468036334256868,
+          "train_loss_labeled": 0.25150022873873107,
+          "train_loss_unlabeled": 0.014375760511685003,
+          "train_tx_acc": 93.51773648648648,
+          "val_tx_acc": 98.1962962962963,
+          "val_tx_correct": 26513,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 3,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0001767214220903383,
+          "epoch_time_s": 113.98919224739075,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.4230217947750478,
+          "train_loss_labeled": 0.22925099824462924,
+          "train_loss_unlabeled": 0.011600871491487147,
+          "train_tx_acc": 94.3799268018018,
+          "val_tx_acc": 98.12592592592593,
+          "val_tx_correct": 26494,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 4,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.00015025000000000002,
+          "epoch_time_s": 114.12706422805786,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.4103713810175389,
+          "train_loss_labeled": 0.2235136946310868,
+          "train_loss_unlabeled": 0.008795628069295874,
+          "train_tx_acc": 94.57699887387388,
+          "val_tx_acc": 97.85925925925926,
+          "val_tx_correct": 26422,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 5,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0001177779936778596,
+          "epoch_time_s": 113.90898942947388,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.3983704194695026,
+          "train_loss_labeled": 0.21584554969727457,
+          "train_loss_unlabeled": 0.009958453820431017,
+          "train_tx_acc": 94.86908783783784,
+          "val_tx_acc": 98.28888888888889,
+          "val_tx_correct": 26538,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 6,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 8.322200632214044e-05,
+          "epoch_time_s": 112.49036717414856,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.39349622326391237,
+          "train_loss_labeled": 0.21004447226857278,
+          "train_loss_unlabeled": 0.00916654321901644,
+          "train_tx_acc": 95.24211711711712,
+          "val_tx_acc": 98.05185185185185,
+          "val_tx_correct": 26474,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 7,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 5.075000000000002e-05,
+          "epoch_time_s": 111.75486326217651,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.3912583078752767,
+          "train_loss_labeled": 0.21858637759814392,
+          "train_loss_unlabeled": 0.010215954911456703,
+          "train_tx_acc": 94.44679054054055,
+          "val_tx_acc": 98.24444444444444,
+          "val_tx_correct": 26526,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 8,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 2.42785779096617e-05,
+          "epoch_time_s": 114.29545593261719,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.3719735580521661,
+          "train_loss_labeled": 0.1994901551856651,
+          "train_loss_unlabeled": 0.009508119012058192,
+          "train_tx_acc": 95.44270833333333,
+          "val_tx_acc": 98.25185185185185,
+          "val_tx_correct": 26528,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 9,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 7.000584231802123e-06,
+          "epoch_time_s": 114.20571541786194,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.39016737372757077,
+          "train_loss_labeled": 0.21200351997672975,
+          "train_loss_unlabeled": 0.011246094248047296,
+          "train_tx_acc": 94.84093468468468,
+          "val_tx_acc": 98.21111111111111,
+          "val_tx_correct": 26517,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 10,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 1e-06,
+          "epoch_time_s": 113.955157995224,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.41809063022201126,
+          "train_loss_labeled": 0.23570116183108036,
+          "train_loss_unlabeled": 0.010613919768025176,
+          "train_tx_acc": 94.16877815315316,
+          "val_tx_acc": 98.21111111111111,
+          "val_tx_correct": 26517,
+          "val_tx_total": 27000
+        }
+      ]
+    },
+    "AS_REPLAY": {
+      "step_log": {
+        "exists": true,
+        "records": 2220,
+        "partial": false,
+        "error": null
+      },
+      "epoch_log": {
+        "exists": true,
+        "records": 10,
+        "partial": false,
+        "error": null
+      },
+      "pool_log": {
+        "exists": true,
+        "records": 370,
+        "partial": false,
+        "error": null
+      },
+      "sequence_log": {
+        "exists": true,
+        "records": 4440,
+        "partial": false,
+        "error": null
+      },
+      "reference_log": {
+        "exists": true,
+        "records": 2220,
+        "partial": false,
+        "error": null
+      },
+      "unit_log": {
+        "exists": true,
+        "records": 2220,
+        "partial": false,
+        "error": null
+      },
+      "observed_L_packets": 284160,
+      "observed_U_packets": 567000,
+      "observed_unique_L": 6300,
+      "observed_unique_U": 56700,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "source_RX_holdout": null,
+      "supervised_objective_recount_max_error": 1.2964010243088353e-07,
+      "reference_epoch_curves": [
+        {
+          "epoch": 1,
+          "cumulative_epoch": 21,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6635254716819471,
+            "minimum": 0.468017578125,
+            "maximum": 1.4215612411499023,
+            "first": 1.2102282047271729,
+            "last": 0.6082354187965393
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.27157694913514024,
+            "minimum": 0.09361262619495392,
+            "maximum": 1.607128620147705,
+            "first": 0.9742429852485657,
+            "last": 0.3064383864402771
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03168924225427143,
+            "minimum": 0.011658119037747383,
+            "maximum": 0.11916331946849823,
+            "first": 0.04633582383394241,
+            "last": 0.055058807134628296
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6744400587704804,
+            "minimum": 0.509384274482727,
+            "maximum": 0.8683987259864807,
+            "first": 0.7091100215911865,
+            "last": 0.5327819585800171
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.04605906836789202,
+            "minimum": 0.030371351167559624,
+            "maximum": 0.0716806948184967,
+            "first": 0.04340735077857971,
+            "last": 0.034936413168907166
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.5164280732472737,
+            "minimum": 1.1414544582366943,
+            "maximum": 3.4047513008117676,
+            "first": 3.2368013858795166,
+            "last": 1.4362763166427612
+          }
+        },
+        {
+          "epoch": 2,
+          "cumulative_epoch": 22,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6742788329049274,
+            "minimum": 0.4468551278114319,
+            "maximum": 1.4744595289230347,
+            "first": 0.583207368850708,
+            "last": 0.5373215675354004
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.29195423246369706,
+            "minimum": 0.09838218986988068,
+            "maximum": 1.7168034315109253,
+            "first": 0.14895683526992798,
+            "last": 0.1436043679714203
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03216522274253605,
+            "minimum": 0.011551259085536003,
+            "maximum": 0.07985656708478928,
+            "first": 0.031178202480077744,
+            "last": 0.02142014354467392
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6797676211273348,
+            "minimum": 0.48701807856559753,
+            "maximum": 0.8614891767501831,
+            "first": 0.6956541538238525,
+            "last": 0.6322022080421448
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.04394976475049515,
+            "minimum": 0.026434075087308884,
+            "maximum": 0.063792385160923,
+            "first": 0.04666516184806824,
+            "last": 0.03634584695100784
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.5036040952613763,
+            "minimum": 1.0504388809204102,
+            "maximum": 3.326223373413086,
+            "first": 1.2198021411895752,
+            "last": 1.2053531408309937
+          }
+        },
+        {
+          "epoch": 3,
+          "cumulative_epoch": 23,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6613884294355238,
+            "minimum": 0.45833486318588257,
+            "maximum": 1.3635470867156982,
+            "first": 0.5625555515289307,
+            "last": 1.1830580234527588
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.2793850450701005,
+            "minimum": 0.09113430231809616,
+            "maximum": 1.5369195938110352,
+            "first": 0.11661969125270844,
+            "last": 0.9370620250701904
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.030941280272059345,
+            "minimum": 0.011637800373136997,
+            "maximum": 0.11169202625751495,
+            "first": 0.013812227174639702,
+            "last": 0.06205785274505615
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6678269011480314,
+            "minimum": 0.4613407850265503,
+            "maximum": 0.847902774810791,
+            "first": 0.7375324964523315,
+            "last": 0.6852496862411499
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.04293065038216007,
+            "minimum": 0.025864476338028908,
+            "maximum": 0.06767547130584717,
+            "first": 0.04628374055027962,
+            "last": 0.041804343461990356
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.5084649002229846,
+            "minimum": 1.0216126441955566,
+            "maximum": 3.3277881145477295,
+            "first": 1.0543149709701538,
+            "last": 3.199711322784424
+          }
+        },
+        {
+          "epoch": 4,
+          "cumulative_epoch": 24,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6500112951338828,
+            "minimum": 0.4550410509109497,
+            "maximum": 1.4187815189361572,
+            "first": 0.7206605672836304,
+            "last": 0.5367363095283508
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.2683362486596043,
+            "minimum": 0.09570947289466858,
+            "maximum": 1.3280260562896729,
+            "first": 0.2563166916370392,
+            "last": 0.14458797872066498
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03140013420383807,
+            "minimum": 0.008862849324941635,
+            "maximum": 0.12553063035011292,
+            "first": 0.04712969809770584,
+            "last": 0.019844824448227882
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.667786324212143,
+            "minimum": 0.49781402945518494,
+            "maximum": 0.8634084463119507,
+            "first": 0.7919923067092896,
+            "last": 0.6331393718719482
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.04272336839186447,
+            "minimum": 0.027747217565774918,
+            "maximum": 0.06650209426879883,
+            "first": 0.05736309289932251,
+            "last": 0.03632289916276932
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4488825588612944,
+            "minimum": 1.008554220199585,
+            "maximum": 3.3248441219329834,
+            "first": 1.4425965547561646,
+            "last": 1.1978874206542969
+          }
+        },
+        {
+          "epoch": 5,
+          "cumulative_epoch": 25,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6402787399721576,
+            "minimum": 0.41880685091018677,
+            "maximum": 1.5553107261657715,
+            "first": 0.552940309047699,
+            "last": 0.6103061437606812
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.26066421801308254,
+            "minimum": 0.09133081883192062,
+            "maximum": 1.905763030052185,
+            "first": 0.1183035671710968,
+            "last": 0.23675376176834106
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.02883149257668101,
+            "minimum": 0.008984549902379513,
+            "maximum": 0.08485230803489685,
+            "first": 0.02799450233578682,
+            "last": 0.07035280764102936
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6642849010390204,
+            "minimum": 0.44451433420181274,
+            "maximum": 0.8750511407852173,
+            "first": 0.6893723011016846,
+            "last": 0.5931439995765686
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.04173945901529477,
+            "minimum": 0.024866925552487373,
+            "maximum": 0.06657152622938156,
+            "first": 0.0361742228269577,
+            "last": 0.04164634644985199
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4251870228363588,
+            "minimum": 0.9688853621482849,
+            "maximum": 3.2703402042388916,
+            "first": 1.1701799631118774,
+            "last": 1.3935770988464355
+          }
+        },
+        {
+          "epoch": 6,
+          "cumulative_epoch": 26,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6339446122313405,
+            "minimum": 0.44290924072265625,
+            "maximum": 1.2726671695709229,
+            "first": 0.5705397725105286,
+            "last": 0.5690396428108215
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.258448817742032,
+            "minimum": 0.09317822754383087,
+            "maximum": 1.3643790483474731,
+            "first": 0.1564406156539917,
+            "last": 0.20591121912002563
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.02913502652852519,
+            "minimum": 0.00849340669810772,
+            "maximum": 0.10496369004249573,
+            "first": 0.030287768691778183,
+            "last": 0.05381567403674126
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6517197943485535,
+            "minimum": 0.4722599387168884,
+            "maximum": 0.8579459190368652,
+            "first": 0.6638494729995728,
+            "last": 0.5620189905166626
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.04131579582017284,
+            "minimum": 0.026529207825660706,
+            "maximum": 0.06960397958755493,
+            "first": 0.04242493212223053,
+            "last": 0.03899756073951721
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.436348926913631,
+            "minimum": 0.9674962759017944,
+            "maximum": 3.2777931690216064,
+            "first": 1.2403839826583862,
+            "last": 1.3866794109344482
+          }
+        },
+        {
+          "epoch": 7,
+          "cumulative_epoch": 27,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6210397539643554,
+            "minimum": 0.4443376064300537,
+            "maximum": 1.4060440063476562,
+            "first": 0.5444566011428833,
+            "last": 0.5399353504180908
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.252787270457358,
+            "minimum": 0.09358266741037369,
+            "maximum": 1.6958355903625488,
+            "first": 0.12064581364393234,
+            "last": 0.1263904571533203
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.02817006268630828,
+            "minimum": 0.009836718440055847,
+            "maximum": 0.09224213659763336,
+            "first": 0.03019045852124691,
+            "last": 0.02157411351799965
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6526566876752956,
+            "minimum": 0.4513065814971924,
+            "maximum": 0.8571861982345581,
+            "first": 0.7034503221511841,
+            "last": 0.6703641414642334
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.04175237985747354,
+            "minimum": 0.024604467675089836,
+            "maximum": 0.06528794765472412,
+            "first": 0.03802827000617981,
+            "last": 0.04166525602340698
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.3335655409473557,
+            "minimum": 0.9135720133781433,
+            "maximum": 3.373879909515381,
+            "first": 0.9829916954040527,
+            "last": 1.0993837118148804
+          }
+        },
+        {
+          "epoch": 8,
+          "cumulative_epoch": 28,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6125783959219048,
+            "minimum": 0.4003932476043701,
+            "maximum": 1.3839747905731201,
+            "first": 0.5291809439659119,
+            "last": 0.454754501581192
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.24148975826195768,
+            "minimum": 0.09104713797569275,
+            "maximum": 1.6422879695892334,
+            "first": 0.11109177768230438,
+            "last": 0.14975696802139282
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.026610856139528995,
+            "minimum": 0.006207677070051432,
+            "maximum": 0.0799538791179657,
+            "first": 0.024046819657087326,
+            "last": 0.015785450115799904
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6454069839941489,
+            "minimum": 0.45160621404647827,
+            "maximum": 0.8152484893798828,
+            "first": 0.6431517601013184,
+            "last": 0.4809170663356781
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.04023553126466435,
+            "minimum": 0.02468137815594673,
+            "maximum": 0.06503893435001373,
+            "first": 0.044018324464559555,
+            "last": 0.03691905364394188
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.3570682892391273,
+            "minimum": 0.8758930563926697,
+            "maximum": 3.267369270324707,
+            "first": 1.180266261100769,
+            "last": 1.1306524276733398
+          }
+        },
+        {
+          "epoch": 9,
+          "cumulative_epoch": 29,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6251828395300083,
+            "minimum": 0.44247400760650635,
+            "maximum": 1.3464500904083252,
+            "first": 0.5133569836616516,
+            "last": 1.1599156856536865
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.2551322904927237,
+            "minimum": 0.08833476901054382,
+            "maximum": 1.3926618099212646,
+            "first": 0.1131460964679718,
+            "last": 0.8831392526626587
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.028996129969118146,
+            "minimum": 0.008184259757399559,
+            "maximum": 0.09438413381576538,
+            "first": 0.01406367588788271,
+            "last": 0.05331343784928322
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6478969916567072,
+            "minimum": 0.4809911251068115,
+            "maximum": 0.8577826619148254,
+            "first": 0.6490203142166138,
+            "last": 0.6985814571380615
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.040166017876283544,
+            "minimum": 0.024110283702611923,
+            "maximum": 0.06237764284014702,
+            "first": 0.040793463587760925,
+            "last": 0.048135001212358475
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.39087123000944,
+            "minimum": 0.9110654592514038,
+            "maximum": 3.290943145751953,
+            "first": 1.0484519004821777,
+            "last": 3.183311700820923
+          }
+        },
+        {
+          "epoch": 10,
+          "cumulative_epoch": 30,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.640849778378332,
+            "minimum": 0.4393286108970642,
+            "maximum": 1.3444260358810425,
+            "first": 1.0802514553070068,
+            "last": 1.1890480518341064
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.28736409873844265,
+            "minimum": 0.09382015466690063,
+            "maximum": 1.4708945751190186,
+            "first": 0.8474273681640625,
+            "last": 1.275993824005127
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.028455646175824037,
+            "minimum": 0.009102530777454376,
+            "maximum": 0.07409133017063141,
+            "first": 0.05413602292537689,
+            "last": 0.040068238973617554
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6417252719402313,
+            "minimum": 0.45602959394454956,
+            "maximum": 0.808617115020752,
+            "first": 0.5870308876037598,
+            "last": 0.6459221839904785
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03981148081554754,
+            "minimum": 0.024855883792042732,
+            "maximum": 0.06106863170862198,
+            "first": 0.040542617440223694,
+            "last": 0.04045892506837845
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4217152770038124,
+            "minimum": 0.8638491034507751,
+            "maximum": 3.3107433319091797,
+            "first": 3.156829357147217,
+            "last": 1.878264307975769
+          }
+        }
+      ],
+      "L_replay": {
+        "records": 2220,
+        "scope": "Actual perstep scalar witnesses and executing tensor assertions;not independent tensor reconstruction or identity evidence",
+        "radius": 0.0,
+        "radius_max_abs_error": 0.0,
+        "extra_VJP": 4440,
+        "extra_L_forward_packets": 1136640,
+        "extra_L_backward_packet_derivatives": 2273280,
+        "total_L_NN": 2273280,
+        "epochs": [
+          {
+            "epoch": 1,
+            "cumulative_epoch": 21,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6635254716819471,
+              "minimum": 0.468017578125,
+              "maximum": 1.4215612411499023,
+              "first": 1.2102282047271729,
+              "last": 0.6082354187965393
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6635254716819471,
+              "minimum": 0.468017578125,
+              "maximum": 1.4215612411499023,
+              "first": 1.2102282047271729,
+              "last": 0.6082354187965393
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.31937140925786,
+              "minimum": 0.6789253856097258,
+              "maximum": 13.716009945296069,
+              "first": 2.1517147870857176,
+              "last": 1.1499351093178283
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.3193714092455358,
+              "minimum": 0.6789253841862598,
+              "maximum": 13.716009946814879,
+              "first": 2.151714787606113,
+              "last": 1.1499351087721237
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 3.038609545771732e-07,
+              "minimum": 3.1865115555287895e-08,
+              "maximum": 2.358618675651633e-06,
+              "first": 9.983728735377528e-07,
+              "last": 3.394370295369919e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12660751125863376,
+              "minimum": 0.11375409294851124,
+              "maximum": 0.20180154009722173,
+              "first": 0.11375409294851124,
+              "last": 0.12349487910978496
+            }
+          },
+          {
+            "epoch": 2,
+            "cumulative_epoch": 22,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6742788329049274,
+              "minimum": 0.4468551278114319,
+              "maximum": 1.4744595289230347,
+              "first": 0.583207368850708,
+              "last": 0.5373215675354004
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6742788329049274,
+              "minimum": 0.4468551278114319,
+              "maximum": 1.4744595289230347,
+              "first": 0.583207368850708,
+              "last": 0.5373215675354004
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2820639293402627,
+              "minimum": 0.6144774346516854,
+              "maximum": 4.044682026218952,
+              "first": 1.0109247041701994,
+              "last": 1.234570460482834
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2820639293012897,
+              "minimum": 0.6144774347394637,
+              "maximum": 4.044682026712944,
+              "first": 1.0109247043730472,
+              "last": 1.2345704587910524
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 6.453460361212704e-07,
+              "minimum": 4.8254334132932276e-08,
+              "maximum": 5.440453295570038e-06,
+              "first": 3.300970413997861e-07,
+              "last": 5.441806478708517e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.13349568373985118,
+              "minimum": 0.12152677099220455,
+              "maximum": 0.16855527693405747,
+              "first": 0.12208730005659163,
+              "last": 0.12812865292653441
+            }
+          },
+          {
+            "epoch": 3,
+            "cumulative_epoch": 23,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6613884294355238,
+              "minimum": 0.45833486318588257,
+              "maximum": 1.3635470867156982,
+              "first": 0.5625555515289307,
+              "last": 1.1830580234527588
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6613884294355238,
+              "minimum": 0.45833486318588257,
+              "maximum": 1.3635470867156982,
+              "first": 0.5625555515289307,
+              "last": 1.1830580234527588
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2809880745026303,
+              "minimum": 0.6253185948573698,
+              "maximum": 4.261755831178862,
+              "first": 1.6826138786021645,
+              "last": 2.2426677886327013
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.280988074496664,
+              "minimum": 0.6253185954439541,
+              "maximum": 4.261755830754976,
+              "first": 1.6826138771697106,
+              "last": 2.2426677876792867
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 4.2325326441481667e-07,
+              "minimum": 4.7755095209670195e-08,
+              "maximum": 5.532689154876788e-06,
+              "first": 7.254573857063715e-07,
+              "last": 1.1042406491115031e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.13439480377138835,
+              "minimum": 0.11673223203979433,
+              "maximum": 0.1815842918585986,
+              "first": 0.12248239503242075,
+              "last": 0.13123524701222777
+            }
+          },
+          {
+            "epoch": 4,
+            "cumulative_epoch": 24,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6500112951338828,
+              "minimum": 0.4550410509109497,
+              "maximum": 1.4187815189361572,
+              "first": 0.7206605672836304,
+              "last": 0.5367363095283508
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6500112951338828,
+              "minimum": 0.4550410509109497,
+              "maximum": 1.4187815189361572,
+              "first": 0.7206605672836304,
+              "last": 0.5367363095283508
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2668616196885392,
+              "minimum": 0.5931317014926833,
+              "maximum": 4.775488262316566,
+              "first": 1.2261379969258592,
+              "last": 1.0155228752773955
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.266861619658244,
+              "minimum": 0.5931317014644562,
+              "maximum": 4.775488257701219,
+              "first": 1.2261379965349328,
+              "last": 1.0155228744161675
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 3.7642495652970615e-07,
+              "minimum": 4.316595729192882e-08,
+              "maximum": 2.0876900781665103e-06,
+              "first": 2.5187730519641e-07,
+              "last": 5.244440576590223e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.1311209867456676,
+              "minimum": 0.11809080094099045,
+              "maximum": 0.23265493707731366,
+              "first": 0.13140368997119367,
+              "last": 0.13158497703261673
+            }
+          },
+          {
+            "epoch": 5,
+            "cumulative_epoch": 25,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6402787399721576,
+              "minimum": 0.41880685091018677,
+              "maximum": 1.5553107261657715,
+              "first": 0.552940309047699,
+              "last": 0.6103061437606812
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6402787399721576,
+              "minimum": 0.41880685091018677,
+              "maximum": 1.5553107261657715,
+              "first": 0.552940309047699,
+              "last": 0.6103061437606812
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2995749837982438,
+              "minimum": 0.6273877619781736,
+              "maximum": 5.455379028745958,
+              "first": 1.3170349172852291,
+              "last": 3.783340475889289
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2995749837386703,
+              "minimum": 0.627387760700673,
+              "maximum": 5.455379028971109,
+              "first": 1.3170349168462774,
+              "last": 3.78334047166242
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 6.198161954618924e-07,
+              "minimum": 5.6730502342233015e-08,
+              "maximum": 3.2987250449643958e-06,
+              "first": 3.725037741874473e-07,
+              "last": 2.3240029991409632e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12240505876514625,
+              "minimum": 0.11419359408318996,
+              "maximum": 0.23039117990992963,
+              "first": 0.12918822397477925,
+              "last": 0.12253632093779743
+            }
+          },
+          {
+            "epoch": 6,
+            "cumulative_epoch": 26,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6339446122313405,
+              "minimum": 0.44290924072265625,
+              "maximum": 1.2726671695709229,
+              "first": 0.5705397725105286,
+              "last": 0.5690396428108215
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6339446122313405,
+              "minimum": 0.44290924072265625,
+              "maximum": 1.2726671695709229,
+              "first": 0.5705397725105286,
+              "last": 0.5690396428108215
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.243028474371878,
+              "minimum": 0.5997428402596905,
+              "maximum": 6.9233771438894705,
+              "first": 1.1301268696503557,
+              "last": 0.9001318897721201
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.243028474431481,
+              "minimum": 0.5997428396631728,
+              "maximum": 6.92337714044512,
+              "first": 1.1301268701347362,
+              "last": 0.9001318888877298
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 5.003094279250822e-07,
+              "minimum": 6.505403329907951e-08,
+              "maximum": 3.4164115005778258e-06,
+              "first": 5.034655652196178e-07,
+              "last": 2.484478768483173e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12267296935792442,
+              "minimum": 0.11739367409609258,
+              "maximum": 0.2383400748949498,
+              "first": 0.12231854093261063,
+              "last": 0.11872052098624408
+            }
+          },
+          {
+            "epoch": 7,
+            "cumulative_epoch": 27,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6210397539643554,
+              "minimum": 0.4443376064300537,
+              "maximum": 1.4060440063476562,
+              "first": 0.5444566011428833,
+              "last": 0.5399353504180908
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6210397539643554,
+              "minimum": 0.4443376064300537,
+              "maximum": 1.4060440063476562,
+              "first": 0.5444566011428833,
+              "last": 0.5399353504180908
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2140128208965133,
+              "minimum": 0.6053965718946754,
+              "maximum": 8.799045859365508,
+              "first": 0.7492262853760198,
+              "last": 0.7635281371815722
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.2140128208415475,
+              "minimum": 0.6053965716134,
+              "maximum": 8.79904584599764,
+              "first": 0.749226284086826,
+              "last": 0.763528134647115
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 8.395338535847617e-07,
+              "minimum": 1.0546758203830717e-07,
+              "maximum": 3.2957670843084533e-06,
+              "first": 2.6659283152719824e-07,
+              "last": 7.44722726716208e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12141700942270658,
+              "minimum": 0.11662238300777972,
+              "maximum": 0.171782991848886,
+              "first": 0.11734729912132025,
+              "last": 0.12037586700171232
+            }
+          },
+          {
+            "epoch": 8,
+            "cumulative_epoch": 28,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6125783959219048,
+              "minimum": 0.4003932476043701,
+              "maximum": 1.3839747905731201,
+              "first": 0.5291809439659119,
+              "last": 0.454754501581192
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6125783959219048,
+              "minimum": 0.4003932476043701,
+              "maximum": 1.3839747905731201,
+              "first": 0.5291809439659119,
+              "last": 0.454754501581192
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.0754068743315544,
+              "minimum": 0.6135252639860803,
+              "maximum": 5.473243155627815,
+              "first": 0.8776592993239165,
+              "last": 0.7013844857929366
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.075406874308039,
+              "minimum": 0.6135252639293635,
+              "maximum": 5.473243155067278,
+              "first": 0.8776592986396672,
+              "last": 0.7013844846755378
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 8.646609435903188e-07,
+              "minimum": 1.1455680532198575e-07,
+              "maximum": 3.5233436388710365e-06,
+              "first": 8.091835596946052e-07,
+              "last": 5.792924074876992e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12352420354937413,
+              "minimum": 0.11435326398350298,
+              "maximum": 0.21948448987677693,
+              "first": 0.11894101416692138,
+              "last": 0.12360272719524801
+            }
+          },
+          {
+            "epoch": 9,
+            "cumulative_epoch": 29,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6251828395300083,
+              "minimum": 0.44247400760650635,
+              "maximum": 1.3464500904083252,
+              "first": 0.5133569836616516,
+              "last": 1.1599156856536865
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6251828395300083,
+              "minimum": 0.44247400760650635,
+              "maximum": 1.3464500904083252,
+              "first": 0.5133569836616516,
+              "last": 1.1599156856536865
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.1411521695980713,
+              "minimum": 0.5309486638505062,
+              "maximum": 8.224792499639646,
+              "first": 1.4550826464634579,
+              "last": 1.7876292517061994
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.1411521696300515,
+              "minimum": 0.5309486642772507,
+              "maximum": 8.224792508597787,
+              "first": 1.4550826467880869,
+              "last": 1.7876292526751865
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 6.704829901174643e-07,
+              "minimum": 8.196961861864113e-08,
+              "maximum": 3.5293846763636845e-06,
+              "first": 2.729250530848954e-07,
+              "last": 3.266639146590211e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.13415951751222885,
+              "minimum": 0.11680586915463209,
+              "maximum": 0.16326783318072557,
+              "first": 0.11743563483469188,
+              "last": 0.15068111894652247
+            }
+          },
+          {
+            "epoch": 10,
+            "cumulative_epoch": 30,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.640849778378332,
+              "minimum": 0.4393286108970642,
+              "maximum": 1.3444260358810425,
+              "first": 1.0802514553070068,
+              "last": 1.1890480518341064
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.640849778378332,
+              "minimum": 0.4393286108970642,
+              "maximum": 1.3444260358810425,
+              "first": 1.0802514553070068,
+              "last": 1.1890480518341064
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.1245862904921078,
+              "minimum": 0.608290708867684,
+              "maximum": 3.8209649719676624,
+              "first": 1.4506227267437302,
+              "last": 2.881753288383861
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.1245862904743926,
+              "minimum": 0.6082907097312785,
+              "maximum": 3.8209649687189677,
+              "first": 1.4506227268104481,
+              "last": 2.881753287840057
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 5.695096690503075e-07,
+              "minimum": 1.026372403240569e-07,
+              "maximum": 2.1896126527762705e-06,
+              "first": 4.163842033186797e-07,
+              "last": 1.8299411520332562e-07
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0,
+              "minimum": 0.0,
+              "maximum": 0.0,
+              "first": 0.0,
+              "last": 0.0
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12773944256063718,
+              "minimum": 0.11814097408205271,
+              "maximum": 0.19317030999809504,
+              "first": 0.14679138897918165,
+              "last": 0.12108481698669493
+            }
+          }
+        ],
+        "gradient_relative_difference": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 5.813198291372798e-07,
+          "minimum": 3.1865115555287895e-08,
+          "maximum": 5.532689154876788e-06,
+          "first": 9.983728735377528e-07,
+          "last": 1.8299411520332562e-07
+        },
+        "L_loss_difference": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0
+        },
+        "host_enqueue_seconds": 283.61325544374995
+      },
+      "error_markers": {
+        "Traceback (most recent call last)": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0,
+        "skipped_nonfinite": 0
+      },
+      "warning_count": 0,
+      "parent_source_arm": "CONCAT",
+      "numeric_totals": {
+        "concat/As_packets": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 128.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0
+        },
+        "concat/L_forwards": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 4.0,
+          "minimum": 4.0,
+          "maximum": 4.0,
+          "first": 4.0,
+          "last": 4.0
+        },
+        "concat/SupCon": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 1.4342135914542653,
+          "minimum": 0.8638491034507751,
+          "maximum": 3.4047513008117676,
+          "first": 3.2368013858795166,
+          "last": 1.878264307975769
+        },
+        "concat/SupCon_weight": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.09999999999999624,
+          "minimum": 0.1,
+          "maximum": 0.1,
+          "first": 0.1,
+          "last": 0.1
+        },
+        "concat/common_CE": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.26671389290341385,
+          "minimum": 0.08833476901054382,
+          "maximum": 1.905763030052185,
+          "first": 0.9742429852485657,
+          "last": 1.275993824005127
+        },
+        "concat/common_KL": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.029639509354869056,
+          "minimum": 0.006207677070051432,
+          "maximum": 0.12553063035011292,
+          "first": 0.04633582383394241,
+          "last": 0.040068238973617554
+        },
+        "concat/total_L": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.642307814915438,
+          "minimum": 0.4003932476043701,
+          "maximum": 1.5553107261657715,
+          "first": 1.2102282047271729,
+          "last": 1.1890480518341064
+        },
+        "train/loss": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.6456628418854765,
+          "minimum": 0.404562771320343,
+          "maximum": 1.560767412185669,
+          "first": 1.2126924991607666,
+          "last": 1.1918394565582275
+        },
+        "train/loss_labeled": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.2668418446874565,
+          "minimum": 0.08674044907093048,
+          "maximum": 1.8916521072387695,
+          "first": 0.9600811004638672,
+          "last": 1.281294345855713
+        },
+        "train/loss_unlabeled": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.01204699298467129,
+          "minimum": 0.0,
+          "maximum": 0.2591141164302826,
+          "first": 0.0051801977679133415,
+          "last": 0.010282807052135468
+        },
+        "train/pseudo_truth_available": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0
+        }
+      },
+      "epoch_curves": [
+        {
+          "epoch": 1,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0002,
+          "epoch_time_s": 164.2307493686676,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6675019558217075,
+          "train_loss_labeled": 0.27250273962010135,
+          "train_loss_unlabeled": 0.013950835546409933,
+          "train_tx_acc": 92.31770833333333,
+          "val_tx_acc": 97.82592592592593,
+          "val_tx_correct": 26413,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 2,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0001939994157681979,
+          "epoch_time_s": 169.94728994369507,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.678501387705674,
+          "train_loss_labeled": 0.2922558630774687,
+          "train_loss_unlabeled": 0.016181729425207358,
+          "train_tx_acc": 91.69130067567568,
+          "val_tx_acc": 97.72962962962963,
+          "val_tx_correct": 26387,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 3,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0001767214220903383,
+          "epoch_time_s": 170.5100691318512,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6652356388869586,
+          "train_loss_labeled": 0.27956235824941517,
+          "train_loss_unlabeled": 0.014307895279908972,
+          "train_tx_acc": 92.22972972972973,
+          "val_tx_acc": 97.8037037037037,
+          "val_tx_correct": 26407,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 4,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.00015025000000000002,
+          "epoch_time_s": 167.02429389953613,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6532114768350447,
+          "train_loss_labeled": 0.2679299450403935,
+          "train_loss_unlabeled": 0.01090938392814211,
+          "train_tx_acc": 92.88780968468468,
+          "val_tx_acc": 97.66666666666667,
+          "val_tx_correct": 26370,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 5,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0001177779936778596,
+          "epoch_time_s": 161.30660390853882,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6434992945140546,
+          "train_loss_labeled": 0.26017353814598676,
+          "train_loss_unlabeled": 0.011447040916692942,
+          "train_tx_acc": 93.07432432432432,
+          "val_tx_acc": 98.02592592592593,
+          "val_tx_correct": 26467,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 6,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 8.322200632214044e-05,
+          "epoch_time_s": 160.68331956863403,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6368807241454855,
+          "train_loss_labeled": 0.25897312389166505,
+          "train_loss_unlabeled": 0.009979817071792707,
+          "train_tx_acc": 93.04969031531532,
+          "val_tx_acc": 98.02592592592593,
+          "val_tx_correct": 26467,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 7,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 5.075000000000002e-05,
+          "epoch_time_s": 160.15937757492065,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6243102177306339,
+          "train_loss_labeled": 0.2523553527488902,
+          "train_loss_unlabeled": 0.012183358854255514,
+          "train_tx_acc": 93.27843468468468,
+          "val_tx_acc": 98.02222222222223,
+          "val_tx_correct": 26466,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 8,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 2.42785779096617e-05,
+          "epoch_time_s": 161.1936252117157,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6156360215700425,
+          "train_loss_labeled": 0.24130465486296662,
+          "train_loss_unlabeled": 0.011018608253384177,
+          "train_tx_acc": 93.74296171171171,
+          "val_tx_acc": 97.97777777777777,
+          "val_tx_correct": 26454,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 9,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 7.000584231802123e-06,
+          "epoch_time_s": 172.7476933002472,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.62808535644063,
+          "train_loss_labeled": 0.25602338325467194,
+          "train_loss_unlabeled": 0.01018843121421817,
+          "train_tx_acc": 93.11303490990991,
+          "val_tx_acc": 97.92962962962963,
+          "val_tx_correct": 26441,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 10,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 1e-06,
+          "epoch_time_s": 165.31826496124268,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6437663452045338,
+          "train_loss_labeled": 0.28733748798300557,
+          "train_loss_unlabeled": 0.010302829356701008,
+          "train_tx_acc": 92.02913851351352,
+          "val_tx_acc": 97.94814814814815,
+          "val_tx_correct": 26446,
+          "val_tx_total": 27000
+        }
+      ]
+    },
+    "AS_LSAM": {
+      "step_log": {
+        "exists": true,
+        "records": 2220,
+        "partial": false,
+        "error": null
+      },
+      "epoch_log": {
+        "exists": true,
+        "records": 10,
+        "partial": false,
+        "error": null
+      },
+      "pool_log": {
+        "exists": true,
+        "records": 370,
+        "partial": false,
+        "error": null
+      },
+      "sequence_log": {
+        "exists": true,
+        "records": 4440,
+        "partial": false,
+        "error": null
+      },
+      "reference_log": {
+        "exists": true,
+        "records": 2220,
+        "partial": false,
+        "error": null
+      },
+      "unit_log": {
+        "exists": true,
+        "records": 2220,
+        "partial": false,
+        "error": null
+      },
+      "observed_L_packets": 284160,
+      "observed_U_packets": 567000,
+      "observed_unique_L": 6300,
+      "observed_unique_U": 56700,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_days": [
+        1,
+        2,
+        3
+      ],
+      "source_RX_holdout": null,
+      "supervised_objective_recount_max_error": 1.2367963786452663e-07,
+      "reference_epoch_curves": [
+        {
+          "epoch": 1,
+          "cumulative_epoch": 21,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6665078504933967,
+            "minimum": 0.47607168555259705,
+            "maximum": 1.4291975498199463,
+            "first": 1.2102282047271729,
+            "last": 0.6100056171417236
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.27568488537862496,
+            "minimum": 0.09586504846811295,
+            "maximum": 1.6184327602386475,
+            "first": 0.9742429852485657,
+            "last": 0.3096228539943695
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.030195300744192022,
+            "minimum": 0.011280002072453499,
+            "maximum": 0.11084304749965668,
+            "first": 0.04633582383394241,
+            "last": 0.0512775182723999
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.67659550314551,
+            "minimum": 0.512799859046936,
+            "maximum": 0.8651653528213501,
+            "first": 0.7091100215911865,
+            "last": 0.535274863243103
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.04358942951872811,
+            "minimum": 0.029769951477646828,
+            "maximum": 0.06752224266529083,
+            "first": 0.04340735077857971,
+            "last": 0.031968533992767334
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.5347528548927996,
+            "minimum": 1.1664875745773315,
+            "maximum": 3.4165117740631104,
+            "first": 3.2368013858795166,
+            "last": 1.4593372344970703
+          }
+        },
+        {
+          "epoch": 2,
+          "cumulative_epoch": 22,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6841442876302444,
+            "minimum": 0.4594998061656952,
+            "maximum": 1.4772588014602661,
+            "first": 0.5839234590530396,
+            "last": 0.542421817779541
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.302307944677703,
+            "minimum": 0.10045932233333588,
+            "maximum": 1.7164819240570068,
+            "first": 0.14647889137268066,
+            "last": 0.14309415221214294
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03104789224075707,
+            "minimum": 0.012023054994642735,
+            "maximum": 0.07116657495498657,
+            "first": 0.02751181833446026,
+            "last": 0.02180011197924614
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6866640483473873,
+            "minimum": 0.49953269958496094,
+            "maximum": 0.866898238658905,
+            "first": 0.7017585039138794,
+            "last": 0.6382726430892944
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.04144121763539744,
+            "minimum": 0.025441523641347885,
+            "maximum": 0.06162405014038086,
+            "first": 0.04322262480854988,
+            "last": 0.034358520060777664
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.5341373290027585,
+            "minimum": 1.0916495323181152,
+            "maximum": 3.3272814750671387,
+            "first": 1.244375228881836,
+            "last": 1.2365913391113281
+          }
+        },
+        {
+          "epoch": 3,
+          "cumulative_epoch": 23,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6760379120304778,
+            "minimum": 0.4675835967063904,
+            "maximum": 1.359054684638977,
+            "first": 0.5689820051193237,
+            "last": 1.2475526332855225
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.29607258706882195,
+            "minimum": 0.0934343934059143,
+            "maximum": 1.5227677822113037,
+            "first": 0.11743911355733871,
+            "last": 1.0612668991088867
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.029769569018704665,
+            "minimum": 0.011022082529962063,
+            "maximum": 0.09310327470302582,
+            "first": 0.01363770104944706,
+            "last": 0.058277279138565063
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6776485088709239,
+            "minimum": 0.4777563214302063,
+            "maximum": 0.855327844619751,
+            "first": 0.7457422018051147,
+            "last": 0.6967520713806152
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03967298879413991,
+            "minimum": 0.025465868413448334,
+            "maximum": 0.062122542411088943,
+            "first": 0.042623504996299744,
+            "last": 0.035478584468364716
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.5445608083192293,
+            "minimum": 1.058244228363037,
+            "maximum": 3.331583023071289,
+            "first": 1.0926072597503662,
+            "last": 3.2166519165039062
+          }
+        },
+        {
+          "epoch": 4,
+          "cumulative_epoch": 24,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6653050476903314,
+            "minimum": 0.46317100524902344,
+            "maximum": 1.4271113872528076,
+            "first": 0.7470462918281555,
+            "last": 0.5375193953514099
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.285190463636641,
+            "minimum": 0.09637151658535004,
+            "maximum": 1.358405351638794,
+            "first": 0.2827247977256775,
+            "last": 0.1468241810798645
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.030259441949326445,
+            "minimum": 0.009432484395802021,
+            "maximum": 0.11578104645013809,
+            "first": 0.05009319633245468,
+            "last": 0.017066512256860733
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6781998061918998,
+            "minimum": 0.5059479475021362,
+            "maximum": 0.8631978034973145,
+            "first": 0.816781222820282,
+            "last": 0.631784200668335
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03912564754687451,
+            "minimum": 0.026567403227090836,
+            "maximum": 0.06562556326389313,
+            "first": 0.04852418228983879,
+            "last": 0.03247779235243797
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4891736679248981,
+            "minimum": 1.051936149597168,
+            "maximum": 3.339054584503174,
+            "first": 1.4798457622528076,
+            "last": 1.2344304323196411
+          }
+        },
+        {
+          "epoch": 5,
+          "cumulative_epoch": 25,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6576362281769246,
+            "minimum": 0.4300568103790283,
+            "maximum": 1.5181344747543335,
+            "first": 0.5609957575798035,
+            "last": 0.6236356496810913
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.2781135490885726,
+            "minimum": 0.09257397055625916,
+            "maximum": 1.8313734531402588,
+            "first": 0.12311027199029922,
+            "last": 0.25579798221588135
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.02788858678242242,
+            "minimum": 0.009945616126060486,
+            "maximum": 0.08293770253658295,
+            "first": 0.032421186566352844,
+            "last": 0.0671960785984993
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.677359655633703,
+            "minimum": 0.45652180910110474,
+            "maximum": 0.8844242691993713,
+            "first": 0.6862815618515015,
+            "last": 0.6032227277755737
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03806881585603093,
+            "minimum": 0.023645484820008278,
+            "maximum": 0.059141483157873154,
+            "first": 0.03511994332075119,
+            "last": 0.03553543984889984
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4692092317718644,
+            "minimum": 1.0218181610107422,
+            "maximum": 3.2885494232177734,
+            "first": 1.2252929210662842,
+            "last": 1.4275953769683838
+          }
+        },
+        {
+          "epoch": 6,
+          "cumulative_epoch": 26,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6524918161265485,
+            "minimum": 0.45751848816871643,
+            "maximum": 1.2719894647598267,
+            "first": 0.5824058651924133,
+            "last": 0.5793858766555786
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.27707733032671183,
+            "minimum": 0.09767665714025497,
+            "maximum": 1.332681655883789,
+            "first": 0.16097772121429443,
+            "last": 0.2073499858379364
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.028241080647284113,
+            "minimum": 0.00902522448450327,
+            "maximum": 0.09214086085557938,
+            "first": 0.029966281726956367,
+            "last": 0.047205131500959396
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6659827790818773,
+            "minimum": 0.48981809616088867,
+            "maximum": 0.8705648183822632,
+            "first": 0.6785390973091125,
+            "last": 0.5820460319519043
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03754305635654443,
+            "minimum": 0.024641506373882294,
+            "maximum": 0.06147823482751846,
+            "first": 0.038406237959861755,
+            "last": 0.0355171263217926
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4806969058406245,
+            "minimum": 1.0122864246368408,
+            "maximum": 3.291302442550659,
+            "first": 1.2846119403839111,
+            "last": 1.4332678318023682
+          }
+        },
+        {
+          "epoch": 7,
+          "cumulative_epoch": 27,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6372238590910628,
+            "minimum": 0.45147156715393066,
+            "maximum": 1.4038337469100952,
+            "first": 0.5591496229171753,
+            "last": 0.5523776412010193
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.26570390184988846,
+            "minimum": 0.09485477209091187,
+            "maximum": 1.6244544982910156,
+            "first": 0.1235421895980835,
+            "last": 0.1358444094657898
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.02731480325261752,
+            "minimum": 0.01081288792192936,
+            "maximum": 0.087339386343956,
+            "first": 0.02537970244884491,
+            "last": 0.023109395056962967
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6675305040301504,
+            "minimum": 0.4735225439071655,
+            "maximum": 0.8604129552841187,
+            "first": 0.7273978590965271,
+            "last": 0.6746442914009094
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03827820481682146,
+            "minimum": 0.024752814322710037,
+            "maximum": 0.05725947022438049,
+            "first": 0.036486007273197174,
+            "last": 0.04129953309893608
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.3781015212471421,
+            "minimum": 0.9645165205001831,
+            "maximum": 3.3911986351013184,
+            "first": 1.0274672508239746,
+            "last": 1.1492881774902344
+          }
+        },
+        {
+          "epoch": 8,
+          "cumulative_epoch": 28,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.631209760098844,
+            "minimum": 0.408200204372406,
+            "maximum": 1.375307559967041,
+            "first": 0.5417652130126953,
+            "last": 0.47414201498031616
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.25720054928112673,
+            "minimum": 0.09269657731056213,
+            "maximum": 1.6106042861938477,
+            "first": 0.11239958554506302,
+            "last": 0.1561686396598816
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.026063844045573794,
+            "minimum": 0.007342214696109295,
+            "maximum": 0.07081564515829086,
+            "first": 0.02157614380121231,
+            "last": 0.0175267793238163
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6618650330079568,
+            "minimum": 0.46444714069366455,
+            "maximum": 0.833528995513916,
+            "first": 0.6635431051254272,
+            "last": 0.5055508613586426
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.036908729446565244,
+            "minimum": 0.022037914022803307,
+            "maximum": 0.05843830481171608,
+            "first": 0.03782813996076584,
+            "last": 0.032658617943525314
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.401906787812173,
+            "minimum": 0.9223548173904419,
+            "maximum": 3.293691635131836,
+            "first": 1.2409172058105469,
+            "last": 1.1818958520889282
+          }
+        },
+        {
+          "epoch": 9,
+          "cumulative_epoch": 29,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6436322845585711,
+            "minimum": 0.44751599431037903,
+            "maximum": 1.2913702726364136,
+            "first": 0.530522346496582,
+            "last": 1.2335313558578491
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.2721069547775629,
+            "minimum": 0.08905453234910965,
+            "maximum": 1.3537683486938477,
+            "first": 0.12011471390724182,
+            "last": 1.005415678024292
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.02826211537309998,
+            "minimum": 0.00826778169721365,
+            "maximum": 0.07824769616127014,
+            "first": 0.016140492632985115,
+            "last": 0.050478894263505936
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.66335858136147,
+            "minimum": 0.4926225543022156,
+            "maximum": 0.8534730672836304,
+            "first": 0.6684412956237793,
+            "last": 0.7263567447662354
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.036566184170812636,
+            "minimum": 0.021537896245718002,
+            "maximum": 0.05918044224381447,
+            "first": 0.035161763429641724,
+            "last": 0.04524051025509834
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4348536472062807,
+            "minimum": 0.9546995162963867,
+            "maximum": 3.3102893829345703,
+            "first": 1.105932354927063,
+            "last": 3.197854518890381
+          }
+        },
+        {
+          "epoch": 10,
+          "cumulative_epoch": 30,
+          "steps": 222,
+          "total_L": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6597371000695873,
+            "minimum": 0.45959970355033875,
+            "maximum": 1.3696368932724,
+            "first": 1.1548707485198975,
+            "last": 1.1939767599105835
+          },
+          "common_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.30613928576847454,
+            "minimum": 0.09686417877674103,
+            "maximum": 1.466090440750122,
+            "first": 0.9936158657073975,
+            "last": 1.288893222808838
+          },
+          "common_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.027783046946399385,
+            "minimum": 0.008809198625385761,
+            "maximum": 0.06456349790096283,
+            "first": 0.05384340137243271,
+            "last": 0.038739193230867386
+          },
+          "extra_CE": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.6564956530257389,
+            "minimum": 0.4785849452018738,
+            "maximum": 0.8265408277511597,
+            "first": 0.5962755084037781,
+            "last": 0.6479610204696655
+          },
+          "extra_KL": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 0.03616274430978674,
+            "minimum": 0.024666517972946167,
+            "maximum": 0.05518104135990143,
+            "first": 0.03276153653860092,
+            "last": 0.03457900881767273
+          },
+          "SupCon": {
+            "count": 222,
+            "nonfinite": 0,
+            "mean": 1.4644673547229252,
+            "minimum": 0.9068185687065125,
+            "maximum": 3.3309383392333984,
+            "first": 3.166226625442505,
+            "last": 1.8889060020446777
+          }
+        }
+      ],
+      "L_replay": {
+        "records": 2220,
+        "scope": "Actual perstep scalar witnesses and executing tensor assertions;not independent tensor reconstruction or identity evidence",
+        "radius": 0.05,
+        "radius_max_abs_error": 1.755482912507711e-08,
+        "extra_VJP": 4440,
+        "extra_L_forward_packets": 1136640,
+        "extra_L_backward_packet_derivatives": 2273280,
+        "total_L_NN": 2273280,
+        "epochs": [
+          {
+            "epoch": 1,
+            "cumulative_epoch": 21,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6665078504933967,
+              "minimum": 0.47607168555259705,
+              "maximum": 1.4291975498199463,
+              "first": 1.2102282047271729,
+              "last": 0.6100056171417236
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.7420688317165719,
+              "minimum": 0.5356993079185486,
+              "maximum": 1.6441802978515625,
+              "first": 1.3868985176086426,
+              "last": 0.6734014749526978
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.101185520219933,
+              "minimum": 0.6538780416450338,
+              "maximum": 3.5481633913344504,
+              "first": 2.151714787557157,
+              "last": 0.9579258543555375
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 2.1040641717253994,
+              "minimum": 0.8940477898806901,
+              "maximum": 5.539390091710911,
+              "first": 4.536598071731277,
+              "last": 1.679223660636611
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.0739118274094326,
+              "minimum": 0.525839335454035,
+              "maximum": 1.904256401566704,
+              "first": 1.31016328422801,
+              "last": 0.8818528006335079
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0499999997021614,
+              "minimum": 0.04999998901770847,
+              "maximum": 0.05000001005894321,
+              "first": 0.049999995375891115,
+              "last": 0.05000000089152007
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.13362068292235973,
+              "minimum": 0.11371497390791774,
+              "maximum": 0.16379250190220773,
+              "first": 0.11371497390791774,
+              "last": 0.1365139160770923
+            }
+          },
+          {
+            "epoch": 2,
+            "cumulative_epoch": 22,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6841442876302444,
+              "minimum": 0.4594998061656952,
+              "maximum": 1.4772588014602661,
+              "first": 0.5839234590530396,
+              "last": 0.542421817779541
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.754170764942427,
+              "minimum": 0.5026158094406128,
+              "maximum": 1.7055169343948364,
+              "first": 0.6447866559028625,
+              "last": 0.6189671754837036
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.1059461800333787,
+              "minimum": 0.5563252830394714,
+              "maximum": 11.157111057077648,
+              "first": 0.8821014297662892,
+              "last": 0.9881277052661319
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.9289655188712689,
+              "minimum": 0.8164922355785703,
+              "maximum": 11.80974332440004,
+              "first": 1.6631390552598109,
+              "last": 2.251187609808237
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.9528094582215125,
+              "minimum": 0.4585645362923942,
+              "maximum": 2.959920842408056,
+              "first": 0.9976663297732006,
+              "last": 1.3754752610321859
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.04999999982280091,
+              "minimum": 0.049999988747163,
+              "maximum": 0.05000001640413491,
+              "first": 0.05000001313841831,
+              "last": 0.049999999662714976
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.13321825386935357,
+              "minimum": 0.12467515398748219,
+              "maximum": 0.17762731690891087,
+              "first": 0.12754829693585634,
+              "last": 0.12862600898370147
+            }
+          },
+          {
+            "epoch": 3,
+            "cumulative_epoch": 23,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6760379120304778,
+              "minimum": 0.4675835967063904,
+              "maximum": 1.359054684638977,
+              "first": 0.5689820051193237,
+              "last": 1.2475526332855225
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.743033377973883,
+              "minimum": 0.5151727199554443,
+              "maximum": 1.4969968795776367,
+              "first": 0.6738846302032471,
+              "last": 1.3639005422592163
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.0113076832351038,
+              "minimum": 0.562476878083835,
+              "maximum": 3.1809663344261776,
+              "first": 1.3844409625375558,
+              "last": 1.688260932264882
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.8053836472967097,
+              "minimum": 0.6865217997185808,
+              "maximum": 4.2949308697807265,
+              "first": 2.9424756288945404,
+              "last": 3.0595000825801963
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.9194021463884323,
+              "minimum": 0.41112905208793676,
+              "maximum": 1.43917228652695,
+              "first": 1.1799773802075606,
+              "last": 0.90241775533818
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0500000002637932,
+              "minimum": 0.049999990817425594,
+              "maximum": 0.05000000932643589,
+              "first": 0.04999999518929262,
+              "last": 0.04999999487244437
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.1322078327690293,
+              "minimum": 0.12413487606681883,
+              "maximum": 0.19081237399950624,
+              "first": 0.12621756014414132,
+              "last": 0.13068832992576063
+            }
+          },
+          {
+            "epoch": 4,
+            "cumulative_epoch": 24,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6653050476903314,
+              "minimum": 0.46317100524902344,
+              "maximum": 1.4271113872528076,
+              "first": 0.7470462918281555,
+              "last": 0.5375193953514099
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.7296521736157907,
+              "minimum": 0.5139339566230774,
+              "maximum": 1.6038979291915894,
+              "first": 0.8291729688644409,
+              "last": 0.5866946578025818
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.9891733722104258,
+              "minimum": 0.5413047800627768,
+              "maximum": 3.2923319719318336,
+              "first": 1.2104800509816143,
+              "last": 0.7436509849940682
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.7331204943513363,
+              "minimum": 0.7436462151818228,
+              "maximum": 5.255355051535593,
+              "first": 2.208900623988611,
+              "last": 1.3121697764991405
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.9143771261190685,
+              "minimum": 0.5162220497526877,
+              "maximum": 1.4869628117939613,
+              "first": 0.9352299207494794,
+              "last": 0.8751009165128979
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.05000000006401282,
+              "minimum": 0.04999998785418935,
+              "maximum": 0.05000001046768072,
+              "first": 0.050000004243694524,
+              "last": 0.04999999907365477
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.13053862343391254,
+              "minimum": 0.12508780811913311,
+              "maximum": 0.23618958005681634,
+              "first": 0.1271773891057819,
+              "last": 0.1299602419603616
+            }
+          },
+          {
+            "epoch": 5,
+            "cumulative_epoch": 25,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6576362281769246,
+              "minimum": 0.4300568103790283,
+              "maximum": 1.5181344747543335,
+              "first": 0.5609957575798035,
+              "last": 0.6236356496810913
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.7208269348552635,
+              "minimum": 0.47420430183410645,
+              "maximum": 1.6968441009521484,
+              "first": 0.6224621534347534,
+              "last": 0.6969690322875977
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.9967610090138624,
+              "minimum": 0.5816218096118989,
+              "maximum": 12.586903950818158,
+              "first": 0.909205948004016,
+              "last": 1.029918160594813
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.6993083321995988,
+              "minimum": 0.9089214431921293,
+              "maximum": 5.178512455105341,
+              "first": 1.6211073733738337,
+              "last": 2.054092852125605
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.9221702066534708,
+              "minimum": 0.41789370295997785,
+              "maximum": 1.5249590012713046,
+              "first": 0.8639263763158792,
+              "last": 1.1296061036779652
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.0499999998807111,
+              "minimum": 0.04999998982175347,
+              "maximum": 0.05000001027141539,
+              "first": 0.050000001864882626,
+              "last": 0.050000002390573374
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12920172194014765,
+              "minimum": 0.12357768882066011,
+              "maximum": 0.2471265010535717,
+              "first": 0.12985199014656246,
+              "last": 0.1292132248636335
+            }
+          },
+          {
+            "epoch": 6,
+            "cumulative_epoch": 26,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6524918161265485,
+              "minimum": 0.45751848816871643,
+              "maximum": 1.2719894647598267,
+              "first": 0.5824058651924133,
+              "last": 0.5793858766555786
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.7130220571348259,
+              "minimum": 0.4934508800506592,
+              "maximum": 1.3938862085342407,
+              "first": 0.6433612704277039,
+              "last": 0.6222630739212036
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.9114776775091871,
+              "minimum": 0.5078119808456777,
+              "maximum": 2.4076115586983686,
+              "first": 0.9302773360975883,
+              "last": 0.7046327523251077
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.6230910424495295,
+              "minimum": 0.7543728251589337,
+              "maximum": 4.451701057035613,
+              "first": 1.6017849318017992,
+              "last": 1.085706943127988
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.8898505991698091,
+              "minimum": 0.4703470648039202,
+              "maximum": 3.039593995786074,
+              "first": 0.8221619650020591,
+              "last": 0.6850982810202685
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.05000000001661862,
+              "minimum": 0.049999988222212785,
+              "maximum": 0.05000001755482913,
+              "first": 0.050000002655221046,
+              "last": 0.04999999595437717
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12984227449612204,
+              "minimum": 0.12268989183939993,
+              "maximum": 0.23762820102274418,
+              "first": 0.1278361389413476,
+              "last": 0.130695017054677
+            }
+          },
+          {
+            "epoch": 7,
+            "cumulative_epoch": 27,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6372238590910628,
+              "minimum": 0.45147156715393066,
+              "maximum": 1.4038337469100952,
+              "first": 0.5591496229171753,
+              "last": 0.5523776412010193
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6974134206234872,
+              "minimum": 0.49860966205596924,
+              "maximum": 1.6970220804214478,
+              "first": 0.6014898419380188,
+              "last": 0.5899794101715088
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.9228726546642345,
+              "minimum": 0.5211611478191807,
+              "maximum": 5.133459394643809,
+              "first": 0.6710503413341876,
+              "last": 0.6280586901651439
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.6225768780448837,
+              "minimum": 0.6783811022708417,
+              "maximum": 8.20184392943917,
+              "first": 1.137241213588555,
+              "last": 0.9286192155254783
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.9101289099361984,
+              "minimum": 0.32529609959076417,
+              "maximum": 11.044439465837831,
+              "first": 0.8705268028151404,
+              "last": 0.6142973002045945
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.04999999999550967,
+              "minimum": 0.04999998512136386,
+              "maximum": 0.05000001259400841,
+              "first": 0.0500000056316247,
+              "last": 0.049999996064462565
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12934065436805925,
+              "minimum": 0.12382210092619061,
+              "maximum": 0.16588812903501093,
+              "first": 0.12900798092596233,
+              "last": 0.1294418671168387
+            }
+          },
+          {
+            "epoch": 8,
+            "cumulative_epoch": 28,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.631209760098844,
+              "minimum": 0.408200204372406,
+              "maximum": 1.375307559967041,
+              "first": 0.5417652130126953,
+              "last": 0.47414201498031616
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6857665856410792,
+              "minimum": 0.45889824628829956,
+              "maximum": 1.4809389114379883,
+              "first": 0.5916270613670349,
+              "last": 0.5144898891448975
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.8576383503604262,
+              "minimum": 0.5308527241019175,
+              "maximum": 3.9737090669325723,
+              "first": 0.752360791152103,
+              "last": 0.6147821073463234
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.4665329553522333,
+              "minimum": 0.6172822580121036,
+              "maximum": 3.757355782663101,
+              "first": 1.3392575215769833,
+              "last": 1.0940349946664794
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.8810790612717858,
+              "minimum": 0.503677396856276,
+              "maximum": 1.5006420856795313,
+              "first": 0.9150847149408957,
+              "last": 0.9125839033464967
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.050000000263580834,
+              "minimum": 0.049999986692818466,
+              "maximum": 0.05000001431481575,
+              "first": 0.05000000720830916,
+              "last": 0.049999998272329704
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12918069071518173,
+              "minimum": 0.12359725590795279,
+              "maximum": 0.24157326901331544,
+              "first": 0.12904090085066855,
+              "last": 0.1294249219354242
+            }
+          },
+          {
+            "epoch": 9,
+            "cumulative_epoch": 29,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6436322845585711,
+              "minimum": 0.44751599431037903,
+              "maximum": 1.2913702726364136,
+              "first": 0.530522346496582,
+              "last": 1.2335313558578491
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.7021715572556934,
+              "minimum": 0.4881976246833801,
+              "maximum": 1.6627488136291504,
+              "first": 0.6133226752281189,
+              "last": 1.3258557319641113
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.8838697674865843,
+              "minimum": 0.49894123394832196,
+              "maximum": 4.545953074031694,
+              "first": 1.1207731445371967,
+              "last": 1.3053737404648826
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.6352018217996545,
+              "minimum": 0.7212871353114932,
+              "maximum": 15.127553554268488,
+              "first": 2.2873283826332806,
+              "last": 2.542146345012762
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.9488232489294619,
+              "minimum": 0.44640511943974137,
+              "maximum": 11.603172401939556,
+              "first": 1.106482345740369,
+              "last": 1.0676643891198414
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.049999999745010675,
+              "minimum": 0.049999989033306304,
+              "maximum": 0.050000012183811865,
+              "first": 0.04999999508488093,
+              "last": 0.04999999946073851
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12790141675436684,
+              "minimum": 0.12150641717016697,
+              "maximum": 0.15236424002796412,
+              "first": 0.12719719903543591,
+              "last": 0.12694282410666347
+            }
+          },
+          {
+            "epoch": 10,
+            "cumulative_epoch": 30,
+            "L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.6597371000695873,
+              "minimum": 0.45959970355033875,
+              "maximum": 1.3696368932724,
+              "first": 1.1548707485198975,
+              "last": 1.1939767599105835
+            },
+            "replay_L_loss": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.7185460060566395,
+              "minimum": 0.5008220076560974,
+              "maximum": 1.4779863357543945,
+              "first": 1.2082092761993408,
+              "last": 1.3431897163391113
+            },
+            "L_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.8815923143873358,
+              "minimum": 0.5398944731874505,
+              "maximum": 3.0489927135386616,
+              "first": 0.8827728146389374,
+              "last": 2.0684100818447635
+            },
+            "replay_gradient_norm": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 1.5700900017020816,
+              "minimum": 0.7872623872328554,
+              "maximum": 5.10376536802296,
+              "first": 1.347662286327847,
+              "last": 4.036950224908851
+            },
+            "replay_gradient_relative_difference": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.8834765073608949,
+              "minimum": 0.5060135994936132,
+              "maximum": 1.5025421247343322,
+              "first": 0.7114622629172797,
+              "last": 1.0041170997568667
+            },
+            "actual_perturbation_L2": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.04999999979080395,
+              "minimum": 0.04999998802701963,
+              "maximum": 0.050000010945336446,
+              "first": 0.04999999516663747,
+              "last": 0.04999999403935478
+            },
+            "host_enqueue_seconds": {
+              "count": 222,
+              "nonfinite": 0,
+              "mean": 0.12888927414996532,
+              "minimum": 0.12282757903449237,
+              "maximum": 0.16250732610933483,
+              "first": 0.1244676688220352,
+              "last": 0.1311345009598881
+            }
+          }
+        ],
+        "gradient_relative_difference": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.9296029091460077,
+          "minimum": 0.32529609959076417,
+          "maximum": 11.603172401939556,
+          "first": 1.31016328422801,
+          "last": 1.0041170997568667
+        },
+        "L_loss_difference": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.06327455638496725,
+          "minimum": 0.004805862903594971,
+          "maximum": 0.3822110891342163,
+          "first": 0.17667031288146973,
+          "last": 0.14921295642852783
+        },
+        "host_enqueue_seconds": 289.47499644290656
+      },
+      "error_markers": {
+        "Traceback (most recent call last)": 0,
+        "CUDA out of memory": 0,
+        "FloatingPointError": 0,
+        "Killed": 0,
+        "skipped_nonfinite": 0
+      },
+      "warning_count": 0,
+      "parent_source_arm": "CONCAT",
+      "numeric_totals": {
+        "concat/As_packets": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 128.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0
+        },
+        "concat/L_forwards": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 4.0,
+          "minimum": 4.0,
+          "maximum": 4.0,
+          "first": 4.0,
+          "last": 4.0
+        },
+        "concat/SupCon": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 1.4731860108740695,
+          "minimum": 0.9068185687065125,
+          "maximum": 3.4165117740631104,
+          "first": 3.2368013858795166,
+          "last": 1.8889060020446777
+        },
+        "concat/SupCon_weight": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.09999999999999624,
+          "minimum": 0.1,
+          "maximum": 0.1,
+          "first": 0.1,
+          "last": 0.1
+        },
+        "concat/common_CE": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.2815597451854128,
+          "minimum": 0.08905453234910965,
+          "maximum": 1.8313734531402588,
+          "first": 0.9742429852485657,
+          "last": 1.288893222808838
+        },
+        "concat/common_KL": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.02868256810003774,
+          "minimum": 0.007342214696109295,
+          "maximum": 0.11578104645013809,
+          "first": 0.04633582383394241,
+          "last": 0.038739193230867386
+        },
+        "concat/total_L": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.6573926145965988,
+          "minimum": 0.408200204372406,
+          "maximum": 1.5181344747543335,
+          "first": 1.2102282047271729,
+          "last": 1.1939767599105835
+        },
+        "train/loss": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.6613233556752807,
+          "minimum": 0.4136866629123688,
+          "maximum": 1.5272599458694458,
+          "first": 1.2126924991607666,
+          "last": 1.1975605487823486
+        },
+        "train/loss_labeled": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.281670010824864,
+          "minimum": 0.08628075569868088,
+          "maximum": 1.815526008605957,
+          "first": 0.9600811004638672,
+          "last": 1.2913649082183838
+        },
+        "train/loss_unlabeled": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.014397243913969703,
+          "minimum": 0.0,
+          "maximum": 0.27254006266593933,
+          "first": 0.0051801977679133415,
+          "last": 0.013939138501882553
+        },
+        "train/pseudo_truth_available": {
+          "count": 2220,
+          "nonfinite": 0,
+          "mean": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0
+        }
+      },
+      "epoch_curves": [
+        {
+          "epoch": 1,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0002,
+          "epoch_time_s": 170.39950132369995,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6710603449258719,
+          "train_loss_labeled": 0.2762249493384146,
+          "train_loss_unlabeled": 0.016695772187590552,
+          "train_tx_acc": 92.12767454954955,
+          "val_tx_acc": 97.7,
+          "val_tx_correct": 26379,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 2,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0001939994157681979,
+          "epoch_time_s": 170.58782768249512,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6888050364481436,
+          "train_loss_labeled": 0.30280093805075764,
+          "train_loss_unlabeled": 0.017866016169988994,
+          "train_tx_acc": 91.26900337837837,
+          "val_tx_acc": 97.67407407407407,
+          "val_tx_correct": 26372,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 3,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0001767214220903383,
+          "epoch_time_s": 168.67450714111328,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6805013185954308,
+          "train_loss_labeled": 0.29635668619795963,
+          "train_loss_unlabeled": 0.016905017445694556,
+          "train_tx_acc": 91.50830518018019,
+          "val_tx_acc": 97.78888888888889,
+          "val_tx_correct": 26403,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 4,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.00015025000000000002,
+          "epoch_time_s": 166.05508589744568,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6692249926629367,
+          "train_loss_labeled": 0.28479187318065147,
+          "train_loss_unlabeled": 0.014064443458738498,
+          "train_tx_acc": 92.29659346846847,
+          "val_tx_acc": 97.61111111111111,
+          "val_tx_correct": 26355,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 5,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 0.0001177779936778596,
+          "epoch_time_s": 164.93894696235657,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6614062516270457,
+          "train_loss_labeled": 0.2777362608157837,
+          "train_loss_unlabeled": 0.013560847629304516,
+          "train_tx_acc": 92.31067004504504,
+          "val_tx_acc": 97.89259259259259,
+          "val_tx_correct": 26431,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 6,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 8.322200632214044e-05,
+          "epoch_time_s": 165.69584918022156,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6560108589159476,
+          "train_loss_labeled": 0.27752372035169387,
+          "train_loss_unlabeled": 0.012375036730936536,
+          "train_tx_acc": 92.28955518018019,
+          "val_tx_acc": 97.85925925925926,
+          "val_tx_correct": 26422,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 7,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 5.075000000000002e-05,
+          "epoch_time_s": 166.63944458961487,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.641097651542844,
+          "train_loss_labeled": 0.2653858003516992,
+          "train_loss_unlabeled": 0.014625528952901813,
+          "train_tx_acc": 92.76815878378379,
+          "val_tx_acc": 97.81111111111112,
+          "val_tx_correct": 26409,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 8,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 2.42785779096617e-05,
+          "epoch_time_s": 165.1764965057373,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6348095306673566,
+          "train_loss_labeled": 0.2572306673470381,
+          "train_loss_unlabeled": 0.013042559316287422,
+          "train_tx_acc": 93.16934121621621,
+          "val_tx_acc": 97.87037037037037,
+          "val_tx_correct": 26425,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 9,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 7.000584231802123e-06,
+          "epoch_time_s": 163.93119716644287,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6470183130051639,
+          "train_loss_labeled": 0.2727405354716219,
+          "train_loss_unlabeled": 0.011853738912897234,
+          "train_tx_acc": 92.43032094594595,
+          "val_tx_acc": 97.82592592592593,
+          "val_tx_correct": 26413,
+          "val_tx_total": 27000
+        },
+        {
+          "epoch": 10,
+          "epochs": 10,
+          "phase": "pseudo",
+          "lr": 1e-06,
+          "epoch_time_s": 167.46010208129883,
+          "nonfinite_val_metric_count": 1,
+          "train_loss": 0.6632992583620656,
+          "train_loss_labeled": 0.3059086771430196,
+          "train_loss_unlabeled": 0.012983478335356907,
+          "train_tx_acc": 91.14583333333333,
+          "val_tx_acc": 97.84074074074074,
+          "val_tx_correct": 26417,
+          "val_tx_total": 27000
+        }
+      ]
+    }
+  }
+}

@@ -2312,7 +2312,7 @@
   },
   "current_experiment": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
   "active_As_hypothesis": {
-    "status": "RUNNING_VERIFIED",
+    "status": "CLOSED_FIXED_LSAM_SOURCE_RECOGNITION_FAILED",
     "run_id": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
     "hypothesis": "L-only bounded parameter-neighborhood update on same generated ordinary/fullpractical IQ improves source urban while protecting clean versus matched neutral replay",
     "not_IQ_Ag": true,
@@ -2327,7 +2327,14 @@
     "new_L_forwards_each": 8,
     "extraVJP_each": 2,
     "one_optimizer_and_own_EMA_per_step": true,
-    "no_U_changes": true
+    "no_U_changes": true,
+    "source_conditions": {
+      "clean": false,
+      "midurban": false,
+      "lowurban": false,
+      "suburban": false
+    },
+    "no_rescue": true
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
@@ -3958,7 +3965,7 @@
     "updates": 0,
     "target_access": false
   },
-  "latest_completed_training_experiment": "20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01",
+  "latest_completed_training_experiment": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
   "antithetic_source_result": {
     "run_id": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02",
     "status": "ANALYZED_SOURCE_ONLY",
@@ -4260,8 +4267,8 @@
     "target_feedback": false,
     "no_rescue": true
   },
-  "latest_completed_analysis": "20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01",
-  "current_evidence_gap": "No new source-supported IQ Ag;no B10 clean gain/B11 combined gain/four-factor interaction or cross-seed joint proof. Matching E30 noAs is now completed and clean net gain is false for current As rows.",
+  "latest_completed_analysis": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
+  "current_evidence_gap": "No supported new IQ Ag;no B10 clean independent gain/B11 combined gain/factorial interaction or cross-seed proof. Exact8L/2VJP E30 matches confirm ordinaryAs practical adaptation with clean cost;fixedL-onlySAM failed source andall6formalpractical vsAsReplay. No active new training candidate;full joint goal unmet.",
   "current_source_experiment": null,
   "latest_completed_source_experiment": "20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01",
   "unitary_source_result": {
@@ -4300,7 +4307,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
+  "current_training_experiment": null,
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -5298,7 +5305,7 @@
   },
   "LSAM_release": {
     "run_id": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
-    "status": "RUNNING_VERIFIED",
+    "status": "ANALYZED_VERIFIED",
     "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md",
     "new_Ag": false,
     "actual_training_started": true,
@@ -5314,8 +5321,223 @@
     },
     "real_CP_smoke": "PASS",
     "post_launch": "VERIFIED",
-    "source_and_target_results_pending": true,
+    "source_and_target_results_pending": false,
     "first_verified_cumulative_epoch": 21,
-    "each_first_epoch_new_updates": 222
+    "each_first_epoch_new_updates": 222,
+    "all_workers_naturally_completed": true,
+    "final_cumulative_epoch": 30
+  },
+  "LSAM_result": {
+    "run_id": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
+    "status": "ANALYZED_VERIFIED",
+    "source_decision": "CLOSED_FIXED_LSAM_SOURCE_RECOGNITION_FAILED",
+    "source_delta_pp": {
+      "clean": -0.11111111111111738,
+      "practical_high": -0.5000000000000004,
+      "practical_mid": -0.6111111111111067,
+      "practical_low_suburban": -0.6111111111111178,
+      "practical_high_urban": -0.22222222222222365,
+      "practical_mid_urban": -1.5000000000000013,
+      "practical_low_urban": -0.6111111111111067
+    },
+    "summary": {
+      "NOAS_REPLAY": {
+        "clean": {
+          "accuracy": 0.8522619047619048,
+          "macro_F1": 0.8493532432379264,
+          "correct": 143180,
+          "count": 168000,
+          "worst_RX_accuracy": 0.77475
+        },
+        "practical_high": {
+          "accuracy": 0.45927380952380953,
+          "macro_F1": 0.40636852980671617,
+          "correct": 77158,
+          "count": 168000,
+          "worst_RX_accuracy": 0.3868333333333333
+        },
+        "practical_mid": {
+          "accuracy": 0.44232738095238094,
+          "macro_F1": 0.3953411332183883,
+          "correct": 74311,
+          "count": 168000,
+          "worst_RX_accuracy": 0.3769166666666667
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.4218452380952381,
+          "macro_F1": 0.3804311833475739,
+          "correct": 70870,
+          "count": 168000,
+          "worst_RX_accuracy": 0.36004166666666665
+        },
+        "practical_high_urban": {
+          "accuracy": 0.4464642857142857,
+          "macro_F1": 0.40014435753113253,
+          "correct": 75006,
+          "count": 168000,
+          "worst_RX_accuracy": 0.37695833333333334
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.37236309523809524,
+          "macro_F1": 0.3460044365830027,
+          "correct": 62557,
+          "count": 168000,
+          "worst_RX_accuracy": 0.323875
+        },
+        "practical_low_urban": {
+          "accuracy": 0.3166309523809524,
+          "macro_F1": 0.30161081441174786,
+          "correct": 53194,
+          "count": 168000,
+          "worst_RX_accuracy": 0.27920833333333334
+        }
+      },
+      "AS_REPLAY": {
+        "clean": {
+          "accuracy": 0.8270238095238095,
+          "macro_F1": 0.8222612189646865,
+          "correct": 138940,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7311666666666666
+        },
+        "practical_high": {
+          "accuracy": 0.8158273809523809,
+          "macro_F1": 0.8118512448196237,
+          "correct": 137059,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7237083333333333
+        },
+        "practical_mid": {
+          "accuracy": 0.7933154761904762,
+          "macro_F1": 0.7894337856249675,
+          "correct": 133277,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7109166666666666
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7696369047619047,
+          "macro_F1": 0.7658676799107499,
+          "correct": 129299,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6934583333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7821488095238095,
+          "macro_F1": 0.7779689983712386,
+          "correct": 131401,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6997083333333334
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6442142857142857,
+          "macro_F1": 0.6395064661705853,
+          "correct": 108228,
+          "count": 168000,
+          "worst_RX_accuracy": 0.58325
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344285714285715,
+          "macro_F1": 0.5282925822988505,
+          "correct": 89784,
+          "count": 168000,
+          "worst_RX_accuracy": 0.488125
+        }
+      },
+      "AS_LSAM": {
+        "clean": {
+          "accuracy": 0.8282738095238096,
+          "macro_F1": 0.8221300257987769,
+          "correct": 139150,
+          "count": 168000,
+          "worst_RX_accuracy": 0.756125
+        },
+        "practical_high": {
+          "accuracy": 0.8133392857142857,
+          "macro_F1": 0.8086613721206235,
+          "correct": 136641,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7270416666666667
+        },
+        "practical_mid": {
+          "accuracy": 0.7903154761904762,
+          "macro_F1": 0.7857362881404462,
+          "correct": 132773,
+          "count": 168000,
+          "worst_RX_accuracy": 0.71125
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7667916666666666,
+          "macro_F1": 0.7623187004406385,
+          "correct": 128821,
+          "count": 168000,
+          "worst_RX_accuracy": 0.69475
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7799345238095238,
+          "macro_F1": 0.7750103887003418,
+          "correct": 131029,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7024166666666667
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6414107142857143,
+          "macro_F1": 0.6356711200747661,
+          "correct": 107757,
+          "count": 168000,
+          "worst_RX_accuracy": 0.585
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5319345238095238,
+          "macro_F1": 0.5246430941049006,
+          "correct": 89365,
+          "count": 168000,
+          "worst_RX_accuracy": 0.490125
+        }
+      }
+    },
+    "suburban_gaps_pp": {
+      "NOAS_REPLAY": {
+        "practical_high": 39.298809523809524,
+        "practical_mid": 40.993452380952384,
+        "practical_low_suburban": 43.041666666666664
+      },
+      "AS_REPLAY": {
+        "practical_high": 1.1196428571428552,
+        "practical_mid": 3.370833333333334,
+        "practical_low_suburban": 5.738690476190477
+      },
+      "AS_LSAM": {
+        "practical_high": 1.493452380952387,
+        "practical_mid": 3.7958333333333427,
+        "practical_low_suburban": 6.1482142857142925
+      }
+    },
+    "matching_NN_and_VJP": true,
+    "CM_recounts": 378,
+    "source_CM_recounts": 39,
+    "paired_comparisons": 21,
+    "actual_total_cost": {
+      "shared_original_parent_E20_NN": 7322164,
+      "shared_parent_real_updates": 8880,
+      "new_real_updates": 6660,
+      "unique_total_real_updates": 15540,
+      "new_training_qualification_prediction_NN": 14792052,
+      "shared_real_CP_smoke_NN": 4,
+      "development_synthetic_F_NN": 18432,
+      "development_synthetic_updates": 6,
+      "development_extra_F_VJP": 24,
+      "new_training_extra_VJP": 13320,
+      "new_L_backward_packet_derivatives": 6819840,
+      "parent_unique_model_epochs": 40,
+      "new_model_epochs": 30,
+      "unique_total_model_epochs": 70,
+      "cumulative_epochs_each": 30,
+      "new_actual_NN": 14810488,
+      "actual_NN_with_unique_parents": 22132652
+    },
+    "new_Ag": false,
+    "Ag_As_interaction": "NOT_DEFINED_NO_NEW_AG",
+    "joint_goal_complete": false,
+    "target_feedback": false
   }
 }

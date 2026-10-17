@@ -1,4 +1,30 @@
-# F＋跨 RX 同 TX：有标签 SAM 与同 IQ 重放 E30
+# F＋跨 RX 同 TX：L-only SAM E30 完整匹配结果
+
+状态：**ANALYZED／VERIFIED**。三行各完成 E20＋10＝E30、全部 clean＋六 practical 固定预测和独立 truth-last；完整日志、378 个正式混淆矩阵、39 个源域混淆矩阵及21组配对均已复算，误差0。实际训练代码为 `a71b0094dba1264b7bacfc742dc03ab3f3a59aa2`，分析工具为 `6c542bf9b980599df63020671e6feabc8e4427f9`。
+
+|模式|clean|mid urban|low urban|
+|---|---:|---:|---:|
+|无 As，匹配重放|85.226190%|37.236310%|31.663095%|
+|普通 As，匹配重放|82.702381%|64.421429%|53.442857%|
+|As＋L-only SAM|82.827381%|64.141071%|53.193452%|
+
+普通 As 相对无 As 的 clean −2.523810 个百分点，mid urban ＋27.185119、low urban ＋21.779762 个百分点，说明星地适应具有真实收益和 clean 代价。SAM 相对同成本普通 As 的 clean ＋0.125000、mid urban −0.280357、low urban −0.249405 个百分点，全部六 practical 准确率下降。SAM 三种 suburban 距自身 clean 为1.493452／3.795833／6.148214个百分点；不能满足每场景探索差≤2pp。相对无As的 clean净收益为−2.398810pp，low未超60%。
+
+固定源资格判据在读取本run目标分数前已冻结，clean/mid/low/suburban四项均失败：源 clean −0.111111、mid urban −1.500000、low urban −0.611111pp。关闭固定rho.05／存储坐标／L-only／父／seed／优化与预算配方，不调参救回、不扩种子。本项是训练组织，不是IQ A_g；没有新B10/B11，Ag×As交互未定义。完整联合目标仍未达到。
+
+全部5个源RX、day1/2/3、完整L6300/U56700隐藏TX/V27000、256点、F/SIG_TIME/joint160、默认cosine头联合训练与原U规则保持，没有留出训练RX。As两行严格同CONCAT20父及自身EMA，无As用同契约原REPEAT20父；不是三行同一父权重。每行8次L前向／每步2次额外L VJP的成本匹配，原clip／AdamW／EMA每步一次。
+
+新增真实训练＋源资格＋正式预测共14,792,052 NN；真实父烟测4 NN、开发合成18,432 NN／6合成更新／24额外VJP单列。两份唯一E20父共7,322,164 NN／8,880更新；新增三行6,660更新／13,320额外VJP；唯一累计70 model-epochs／15,540真实更新，各模型累计E30。详细教师、前向、重放、墙钟及父成本见结果元数据。
+
+- [完整七场景、源判据与成本分析](final_analysis.md)
+- [逐 RX／TX／day 结果](stratified_results.md)
+- [复算结果元数据](result.json)
+- [七场景比较图](figures/matched_view_results.png)
+- [完整 E21至E30 训练曲线](figures/matched_training_curves.png)
+
+## 预登记与运行历史
+
+以下原文保留发布时与运行中的状态，历史“待完成／运行中”不代表当前状态；当前以以上完成证据与终轮分析为准。
 
 状态：RUNNING／VERIFIED，实际执行提交 a71b0094dba1264b7bacfc742dc03ab3f3a59aa2；三行已开始真实训练，尚无终轮或性能结果。唯一问题是在保持完整 practical、现有监督份额和原 U 规则的条件下，L 目标的有界参数邻域更新是否相对完全匹配的中性重放改善 practical 识别并保护 clean。本项是 A_s 训练组织，不是 IQ A_g；不构成四因子或联合成功。
 
