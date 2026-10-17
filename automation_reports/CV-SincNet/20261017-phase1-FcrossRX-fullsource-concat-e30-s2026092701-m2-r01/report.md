@@ -1,6 +1,6 @@
 # 完整源域 F＋跨 RX：E30 无星地与普通拼接匹配参照
 
-状态：RUNNING，两行均已实际启动；未完成训练、预测或正式评分。采用用户最新“训练预算提升到 E30”，不续训或覆盖旧 E20。唯一矩阵、seed 和路径在 experiment.json。
+状态：RUNNING，B00 已 ANALYZED；B01 健康训练中，全 run 未完成。采用用户最新“训练预算提升到 E30”，不续训或覆盖旧 E20。唯一矩阵、seed 和路径在 experiment.json。
 
 ## 研究问题与固定比较
 
@@ -58,7 +58,7 @@ run：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-f
 
 旧3至15dB/locked-degraded有界课程仅极小low增量、clean保持失败；fixed additive clean监督也跨seed失败，本轮不以改RX/系数/预算重启。源noise/fixed瓶颈成立，强状态耦合/whole梯度冲突前提失败，不据此加梯度手术或对齐。
 
-尚未证明新Ag、E30识别增益、四格交互、clean净正、low>60%、suburban接近clean或跨seed联合复现。本轮只建立新预算参照，不把它当联合目标完成。实际执行与结果返回后更新原run。
+B00结果已完成；B01完成前尚无E30星地增量比较，亦未证明新Ag、四格交互、clean净正、low>60%、suburban接近clean或跨seed联合复现。本轮只建立新预算参照，不把它当联合目标完成。实际执行与结果返回后更新原run。
 
 ## 实际启动读回
 
@@ -68,7 +68,7 @@ run：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-f
 
 日志增长独立复核 VERIFIED：同一两行PID/start_ticks/CWD/argv/GPU持续一致，B00日志6425→16724字节并完成E2/30，B01为6425→11575字节并完成E1/30；queue无failure、两行均active。证据postlaunch_growth.json。只作执行健康确认，不将早期V分数当作性能或收敛结论。
 
-## 完整分析工具已就绪，尚无 E30 结果
+## 独立完整分析入口
 
 新增独立分析入口 `analysis/cvs_fullsource_E30_results_20261017.py` 与4项聚焦测试。分析只在所请求行全部七视图冻结预测及独立评分完成后打开truth，不读取IQ/checkpoint、不运行网络或更新参数；严格拒绝旧E20、非6660、非20L10U、额外heldRX/角色改变及提前truth等记录。4项测试PASS，包含手算宏F1/混淆矩阵、非法类别、预算与完整性拒绝、第二行不完整时在truth及输出创建前停止；compile PASS。
 
@@ -81,3 +81,40 @@ run：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-f
 因此，使用更长同一物理record无缝截取256点的候选在当前表示下NOT_APPLICABLE，不是识别性能FAIL。sig_i是独立物理signal，不把相邻packet拼成上下文，也不跨L/U/V借用样本；没有构造新的crop增强或启动额外模型。该事实只约束需要真实额外上下文的候选，不从元信息推断其他增强有效或无效。
 
 E30阶段切换的独立prefix核对：无星地B00已完成24/30，前20轮U/teacher计数均0，第21至24轮U loader及ownEMA teacher eval各226800（4×56700）；全部完成epoch的L/4L/U/teacher计数均符合20L10U。其24个完整epoch记录train_pseudo_truth_available均0。B01已完成12/30，仍为label阶段，U/teacher均0。该核对不衡量U伪标签准确率，也不代表最终性能；同一两个PID/start_ticks仍live、无failure。证据source_phase_audit.json与phase_status_after_shape_audit.json。
+
+
+## B00 已完成：E30 独立正式结果
+
+B00-s2026092701 已完成训练、全部七视图冻结预测、独立 truth-last 评分及分析，状态 ANALYZED；B01 仍为健康 RUNNING，此处没有读取其未完成结果，也未按首行成绩改动任何训练配置。全 run 尚未完成。
+
+训练代码 commit 为 bafba40e365d0914a2e86f861fb55a49f1cd3997，独立分析代码 commit 为 a081a6c047462aa088394e4f233a05fd4f33ce9f。实际分析命令：
+
+```text
+python -u <committed analysis/cvs_fullsource_E30_results_20261017.py> --row B00 --truth <existing registered truth.json> --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/analysis_B00_r01 --commit a081a6c047462aa088394e4f233a05fd4f33ce9f
+```
+
+该已提交脚本通过普通账户 Python 启动为独立 CPU 进程，原训练发布目录没有改动。以完成文件、完整 stdout/stderr、已取回图表与逐项重计数读回 VERIFIED；退出码不作为唯一完成证据。分析只打开已冻结且评分完成行的 prediction 与 truth，0 IQ/CP 读取、0 网络前向、0 新更新。126 个 overall/RX/day/TX 混淆矩阵准确率与宏 F1 全部独立复算一致。
+
+以下均为原正式 168000 个物理样本、模型 seed2026092701、FINAL30 checkpoint 内默认分类头结果，单位为 %：
+
+| 测试环境 | 准确率 | 宏 F1 | 最差 RX 准确率 |
+|---|---:|---:|---:|
+| clean | 85.156548 | 84.891668 | 74.433333 |
+| practical_high | 46.513095 | 41.659905 | 37.666667 |
+| practical_mid | 44.677976 | 40.281577 | 36.908333 |
+| practical_low_suburban | 42.714286 | 38.762439 | 35.320833 |
+| practical_high_urban | 45.233333 | 40.902104 | 36.933333 |
+| practical_mid_urban | 37.582738 | 34.857566 | 31.529167 |
+| practical_low_urban | 31.985714 | 30.218017 | 27.700000 |
+
+urban 三场景均值为 38.267262%。无星地组不构成星地增强收益结论；普通拼接组完成前没有同预算 As 增量、clean 代价或固定 B00 clean 正确集合保持率。此处仅一个模型 seed，没有跨 seed 重现证据。
+
+完整 30 轮/6660 步训练记录已读；L/U 实际物理唯一数为 6300/56700，重复 loader 暴露为 852480/567000 包；L 网络前向 3409920 包。SupCon 记录6660、实际启用5550步，Sinc 更新6660步；默认头和骨干联合更新，U TX 真值始终隐藏。原 stdout 的300处 NaN 文本是未启用诊断字段，训练停止检查没有非有限损失、跳步或错误标志，不据文本计数误报训练故障。
+
+最后源 V 健康准确率98.148148%，最后配对CE0.286571、RDrop KL0.038116；最后10轮旧U门控选中率约1.33%至1.65%，其数值不代表伪标签精确率。该源 V 与正式跨 RX clean85.156548%口径不同，不混用；预算完成不宣称收敛。
+
+实际成本：无父训练，新增30轮/6660更新；student训练3976920包、student评估864002包、ownEMA teacher评估567000包（teacher训练0），源阶段总身份网络前向5407922包。训练墙钟1540.012254秒；正式预测前向1176002包（包含2包执行校验），预测墙钟47.865980秒。最初兼容性检查的历史E20父训练成本单列且权重被丢弃，不是B00的训练继承。
+
+真实输出本地目录：E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_concat_E30_20261017/analysis_B00_r01。包含 analysis_summary.json、per_row_seed.csv、training_curves.csv、completion.json、figures.json；formal_accuracy、training_curves、receiver_accuracy 的 PNG/PDF 均已生成并逐张查看PNG，未见遮挡或错误标注。原正式无逐样本物理状态旁表，不虚构 LOS/lock 分层准确率；B00 无 As 物理覆盖图属于不适用。
+
+当前唯一未决比较仍是预登记的 B01 普通拼接相对 B00；无新增 Ag、四格交互或联合突破的结论。固定 FINAL30 自动测试继续，目标成绩不回流选模、调参或选择性重跑。

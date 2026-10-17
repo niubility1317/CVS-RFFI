@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_TWO_REFERENCES_RUNNING",
+  "status": "E30_B00_ANALYZED_B01_RUNNING",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -113,7 +113,15 @@
     "target_feedback_to_design": false,
     "Ag_proved": false,
     "crossseed_confirmed": false,
-    "goal_completed": false
+    "goal_completed": false,
+    "completed_rows": [
+      "B00"
+    ],
+    "pending_rows": [
+      "B01"
+    ],
+    "analysis_commit": "a081a6c047462aa088394e4f233a05fd4f33ce9f",
+    "completed_analysis_artifacts": "E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_concat_E30_20261017/analysis_B00_r01"
   },
   "closed_routes": {
     "recoverable_course": "Prior fixed3-15dB/locked-degraded/eta<=.5 had negligible low increment; no replay as newly justified method",

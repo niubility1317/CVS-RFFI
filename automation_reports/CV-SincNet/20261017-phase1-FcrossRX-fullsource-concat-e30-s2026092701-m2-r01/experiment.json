@@ -73,7 +73,7 @@
   },
   "permissions": {
     "regime": "source_only_training_then_fixed_target_test",
-    "query_use": "test_only_after_FINAL20_and_all7predictions",
+    "query_use": "test_only_after_FINAL30_and_all7predictions",
     "external_method_exception": null,
     "claim_scope": "Exposed benchmark, scratch source training; one model seed. No target feedback, no Ag/interaction/crossseed success claim."
   },
@@ -124,7 +124,14 @@
     "analysis_r01/training_curves.png/pdf",
     "analysis_r01/receiver_accuracy.png/pdf",
     "analysis_r01/training_support_B01.png/pdf",
-    "analysis_r01/completion.json"
+    "analysis_r01/completion.json",
+    "analysis_B00_r01/analysis_summary.json",
+    "analysis_B00_r01/per_row_seed.csv",
+    "analysis_B00_r01/training_curves.csv",
+    "analysis_B00_r01/formal_accuracy.png/pdf",
+    "analysis_B00_r01/training_curves.png/pdf",
+    "analysis_B00_r01/receiver_accuracy.png/pdf",
+    "analysis_B00_r01/completion.json"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -292,7 +299,8 @@
     "One ordinaryN607preflight and metadata/sourcehandles checksVERIFIED; newrun/releaseabsent. Firststep realfullsourceE20CP smoke2synthetic only, notE50/E200. HistoricalCP20epochs/4440 explicitly separate; newtotal60modelE/13320updates.",
     "Prior3-15dB recoverablecourse and additiveclean weighting have closednegative results; not rerun here. ActualF usesGroupNorm/LayerNorm,noBatchNormrunningstate explanation.",
     "Phase1 nullK/support/capsule inapplicable; existingVALIDATED_ONCE fixedformalcarrier reused withoutrevalidation/hashchain.",
-    "Readonlysourceinputmetadataaudit:existingnativecarrierdeserialized,onlysourcecontainer shape/dtype inspected;eq1sourcearrays1000x256x2float64,NNinputfloat32/full256RMScenterfalse;crop/padbranchNO_OP. No longer samepacket context;adjacentsig_iindependentphysicalrecords.0IQvaluesinspected/Utruth/CP/NN/updates;no new augmentationtraining."
+    "Readonlysourceinputmetadataaudit:existingnativecarrierdeserialized,onlysourcecontainer shape/dtype inspected;eq1sourcearrays1000x256x2float64,NNinputfloat32/full256RMScenterfalse;crop/padbranchNO_OP. No longer samepacket context;adjacentsig_iindependentphysicalrecords.0IQvaluesinspected/Utruth/CP/NN/updates;no new augmentationtraining.",
+    "B00FINAL30 completed7viewindependenttruth-last,126CMrecountVERIFIED,localartifactsanalysis_B00_r01,analysisNN/CP/IQ/updates0; B01stillrunningunchanged. One seed, noAsgainorcrossseedevidence. Analysiscodea081a6c."
   ],
   "registered_at": "2026-10-17T05:59:13+00:00"
 }
