@@ -4519,7 +4519,7 @@
     "Ag_efficacy": false,
     "joint_goal_complete": false
   },
-  "latest_research_note": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md",
+  "latest_research_note": "analysis/cvs_post_LSAM_route_check_20261018.md",
   "amplitude_donor_route_check": {
     "status": "NOT_INDEPENDENT_SUPPORTED_NEW_ROUTE_NO_LAUNCH",
     "hypothesis": "Preserve anchor Fourier phase and borrow same-visibleTX crossRX donor amplitude",
@@ -5539,5 +5539,40 @@
     "Ag_As_interaction": "NOT_DEFINED_NO_NEW_AG",
     "joint_goal_complete": false,
     "target_feedback": false
+  },
+  "As_pair_KL_removal_historical_result": {
+    "run_id": "20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01",
+    "status": "ANALYZED_VERIFIED_FAIL_FIXED_AS_KL_REMOVAL_CLOSED",
+    "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01/report.md",
+    "actual_contract": "historicalfit4RX/L5040/U45360hidden/V21600;sourceheldRX1L1260;seed2026092701;scratchE20;notcurrentfullsourceE30",
+    "delta_vs_AsRDrop_pp": {
+      "clean": -2.539683,
+      "low_urban": 0.714286,
+      "mid_urban": -1.190476,
+      "urban_mean": -0.555556
+    },
+    "formal_target": false,
+    "no_rescue": true
+  },
+  "post_LSAM_route_check": {
+    "status": "ANALYZED_EXISTING_EVIDENCE_ONLY",
+    "report": "analysis/cvs_post_LSAM_route_check_20261018.md",
+    "hypothesis": "As-specific KL removal is not an untested route;historical matchednegative forbids repetition",
+    "current_fullsource_As_replay_loss": {
+      "steps": 2220,
+      "epochs": 10,
+      "common_CE": 0.26671389290341385,
+      "common_KL": 0.029639509354869056,
+      "As_CE": 0.6593511535911947,
+      "As_KL": 0.04206835165418483
+    },
+    "new_IQ": 0,
+    "new_CP": 0,
+    "new_NN": 0,
+    "new_updates": 0,
+    "new_remote_jobs": 0,
+    "new_Ag_candidate": false,
+    "target_feedback": false,
+    "joint_goal_complete": false
   }
 }

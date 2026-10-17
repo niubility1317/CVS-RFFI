@@ -1,3 +1,7 @@
+## 2026-10-18：补齐已关闭路线，未发布重复实验
+
+已核对当前完整十轮源损失分解和历史AsPairCE报告：仅移除As对KL的匹配E20已失败（clean−2.539683pp、low+.714286pp、urban均值−.555556pp），固定关闭包括不改RX/预算救援。六场景IID/循环也已有完成源实验，不能当新路线。旧4RX/E20源结果不冒充当前全源E30正式结果；关联对话跨视图SupCon覆盖已完成负结果，当前不重复。窄带干扰只取得一般物理动机，未取得当前源IQ可分离因素/幅度/身份依据，没有新Ag候选。本轮0新增IQ/CP/NN/更新/预测/远端任务。完整目标ACTIVE。[实际核查与证据边界](cvs_post_LSAM_route_check_20261018.md)。以下旧当前/下一项按历史保留。
+
 ## 2026-10-18：L-only SAM 完整 E30 负结果，固定路线关闭
 
 [同成本三行完整报告](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md) 已 ANALYZED／VERIFIED。NOAS_REPLAY／AS_REPLAY／AS_LSAM 均累计 E30并自然结束，clean＋六practical固定预测及独立truth-last齐全；3×2220完整步／370池／4440序列、378正式CM／39源CM／63分区／21配对独立复算误差0。clean／midurban／lowurban分别为85.226190／37.236310／31.663095%、82.702381／64.421429／53.442857%、82.827381／64.141071／53.193452%。普通As适应收益与clean代价被确认；SAM相对普通As clean仅+.125pp、全部6practical下降，mid−.280357／low−.249405pp，三种suburban差1.493452／3.795833／6.148214pp。源资格先冻结且四项均失败，关闭固定rho.05、存储坐标、L-only、父、seed、优化与预算配方，不调参救回、不扩种子。
