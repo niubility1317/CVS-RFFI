@@ -557,3 +557,5 @@
 - [共享输入RX响应 source r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01/report.md)
 
 - [固定响应归一化顺序 source r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01/report.md)
+
+- [载波增强开关相关性 E30 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/report.md)
