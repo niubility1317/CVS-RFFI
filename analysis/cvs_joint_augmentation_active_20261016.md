@@ -1,3 +1,7 @@
+## 2026-10-18：视图梯度组织 r02 已真实运行
+
+三行ORIGINAL／MEASURE／PROJECT在GPU0／1／3，独立PID/CWD/argv/GPU核对与同父真实CP smoke通过，857native参数仅candidate_id/output_dir不同；三行均完成累计E21、各222次实际更新与0／444／444额外VJP生命周期检查，U真值隐藏、无非有限跳步。r01发布占位符误伤候选名，已保留零真实训练失败记录；一次直接P1修复及定向复核后以新r02发布，预算／机制／矩阵不变。固定E30及七视图评分均未完成，不宣称识别提升；本轮不是IQ Ag。[当前报告](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/report.md)。
+
 ## 2026-10-18：完整 practical 的监督视图梯度组织 E30 已预登记
 
 实现三行 ORIGINAL／MEASURE／PROJECT，同原完整As E20父＋10至E30，全部五源RX、256点、默认头、损失尺度、4次L前向与原U规则不变。MEASURE／PROJECT每步额外2次梯度求导，候选仅在ordinary与As梯度反向时修正As分量，再原clip／AdamW；不保证有限步下降，不称IQ A_g。21负例、1536合成F前向及三行hook检查PASS，原更新和只测量梯度最大差0；唯一P0/P1审查PASS。尚未启动／完成训练或评分。若不能分别优于原更新和测量控制、保护clean/mid并增加low至少.5pp，关闭固定方案，不据target救跑或扩种子。[最小预登记](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/report.md)。

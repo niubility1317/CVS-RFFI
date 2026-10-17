@@ -1,0 +1,178 @@
+{
+  "status": "VERIFIED_LIVE_SOURCE_TRAINING",
+  "code_commit": "36ef32e643670d70702c3d0e3ceeb0831cffcac6",
+  "dispatcher_pid": 815645,
+  "rows": [
+    {
+      "row_id": "ORIGINAL-s2026092701",
+      "pid": 815670,
+      "alive": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "GPU": 0,
+      "registered_GPU": 0,
+      "source_args_written": true
+    },
+    {
+      "row_id": "MEASURE-s2026092701",
+      "pid": 815743,
+      "alive": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "GPU": 1,
+      "registered_GPU": 1,
+      "source_args_written": true
+    },
+    {
+      "row_id": "PROJECT-s2026092701",
+      "pid": 815822,
+      "alive": true,
+      "cwd_matches": true,
+      "argv_matches": true,
+      "GPU": 3,
+      "registered_GPU": 3,
+      "source_args_written": true
+    }
+  ],
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "parent_epoch": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "all3_same_parent": true
+  },
+  "remote_checks": {
+    "status": "PASS",
+    "protocol_negatives": 21,
+    "analytic_gradient_results": {
+      "ORIGINAL": [
+        6,
+        -1
+      ],
+      "MEASURE": [
+        6,
+        -1
+      ],
+      "PROJECT": [
+        8,
+        -1
+      ]
+    },
+    "physical_Sinc_metric": true,
+    "remaining_aux_gradient_preserved": true,
+    "global_RNG_preserved_for_core": true,
+    "synthetic_F_forward_packets": 1536,
+    "ORIGINAL_MEASURE_gradient_max_error": 0,
+    "IQ": 0,
+    "CP": 0,
+    "real_updates": 0,
+    "synthetic_updates": 3
+  },
+  "native_arg_count": [
+    857,
+    857,
+    857
+  ],
+  "differing_native_arg_names": [
+    "candidate_id",
+    "output_dir"
+  ],
+  "strict_matching_parent_and_ownEMA": true,
+  "optimizer_reset": true,
+  "source_step_log_bytes": [
+    {
+      "mode": "ORIGINAL",
+      "bytes": 163065
+    },
+    {
+      "mode": "MEASURE",
+      "bytes": 130079
+    },
+    {
+      "mode": "PROJECT",
+      "bytes": 130248
+    }
+  ],
+  "new_training_complete": false,
+  "target_read": false,
+  "joint_goal_complete": false,
+  "partial_source_log_snapshot": {
+    "time": 1792260808.0040104,
+    "rows": [
+      {
+        "mode": "ORIGINAL",
+        "partial_live": true,
+        "complete_training": false,
+        "records": 226,
+        "last_step": 226,
+        "log_bytes": 490244,
+        "U_truth_available_max": 0,
+        "nonfinite_skips": 0
+      },
+      {
+        "mode": "MEASURE",
+        "partial_live": true,
+        "complete_training": false,
+        "records": 211,
+        "last_step": 211,
+        "log_bytes": 457133,
+        "U_truth_available_max": 0,
+        "nonfinite_skips": 0
+      },
+      {
+        "mode": "PROJECT",
+        "partial_live": true,
+        "complete_training": false,
+        "records": 215,
+        "last_step": 215,
+        "log_bytes": 455676,
+        "U_truth_available_max": 0,
+        "nonfinite_skips": 0
+      }
+    ],
+    "analysis_reads_only": true,
+    "complete_training": false
+  },
+  "first_completed_segment_epoch": {
+    "cumulative_epoch": 21,
+    "new_epoch": 1,
+    "updates_each": 222,
+    "extra_VJP": {
+      "ORIGINAL": 0,
+      "MEASURE": 444,
+      "PROJECT": 444
+    },
+    "native_lifecycle_guard": "PASS",
+    "owned_worker_handles": [
+      {
+        "row_id": "ORIGINAL-s2026092701",
+        "pid": 815670,
+        "alive": true,
+        "GPU": 0,
+        "cumulative_epoch": 21
+      },
+      {
+        "row_id": "MEASURE-s2026092701",
+        "pid": 815743,
+        "alive": true,
+        "GPU": 1,
+        "cumulative_epoch": 21
+      },
+      {
+        "row_id": "PROJECT-s2026092701",
+        "pid": 815822,
+        "alive": true,
+        "GPU": 3,
+        "cumulative_epoch": 21
+      }
+    ],
+    "training_complete": false,
+    "formal_scoring_complete": false
+  }
+}

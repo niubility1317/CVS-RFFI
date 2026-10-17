@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：ordinary／完整 practical 监督梯度组织 E30
 
-状态：PREREGISTERED；三行实现和本地检查完成，尚未启动。联合目标 ACTIVE。本轮属于 A_s 训练组织，新增 IQ A_g=0；不能替代 B00/B10/B01/B11 或跨种子证明。
+状态：RUNNING／VERIFIED；三行已实际启动，训练及正式评分尚未完成。联合目标 ACTIVE。本轮属于 A_s 训练组织，新增 IQ A_g=0；不能替代 B00/B10/B01/B11 或跨种子证明。
 
 唯一假设：保持原 IQ、ordinary／As 权重及 U 规则，处理两种合法有标签视图的反向梯度分量，可能比普通拼接更好地兼顾跨 RX clean 与 practical 身份识别。这是待证假设；梯度冲突、投影次数或辅助损失下降不构成识别收益。
 
@@ -51,3 +51,13 @@ ORIGINAL 保留原梯度；MEASURE 每步额外求 ordinary 和 As 梯度但不�
 ## r02 技术修复边界
 
 替代20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01；r01在创建source run root前退出，实训练/IQ/CP/NN均0，远端与本地各1536合成NN／3合成更新保留。r02仅将发布注册路径展开限制为PROJECT/前缀，不改候选名PROJECT、说明文字、科学机制、三行、父、数据、E30预算或判据。定向检查与定向独立P1复核PASS；不覆盖旧release，不继承旧合成状态，无自动重复提交。预算未延长。
+
+## 启动后独立证据
+
+执行 commit36ef32e643670d70702c3d0e3ceeb0831cffcac6；单archive传输比对／远端编译／1536NN合成检查PASS。真实同契约CP smoke1／2NN／0query PASS。dispatcher815645、ORIGINAL815670 GPU0、MEASURE815743 GPU1、PROJECT815822 GPU3均live，PID/CWD/argv和实际GPU一致；source args已写。初次8秒观察stdout无增长，尚待首轮完整日志，不把存活冒称更新完成。r01失败已单列；新运行不覆盖旧产物。
+
+三行实际native args各857项，仅candidate_id/output_dir不同；同父student＋ownEMA、原角色精确匹配、空AdamW状态和原baseLR.0002/weight_decay.0001/两参数组已独立读回。step_metrics已持续写入（首次分别163065/130079/130248字节），不是只靠PID判断训练。局部计时字段capture_host_enqueue_seconds包含几何统计转标量引起的同步，应解释为该hook墙钟段，既不是纯host enqueue也不是隔离GPU精确耗时；实际总训练wall另记，不热改健康代码。
+
+实时完整可解码step日志快照：ORIGINAL226、MEASURE211、PROJECT215条；三行U truth_available最大0，非有限跳步0；step日志相对首次读回均增长。这只是partial-live运行证据，不替代完整2220步复算、固定E30和正式七视图评分。
+
+三行均已完成累计E21，所属PID仍live、GPU对应一致、无技术failure。首轮各222次实际更新，0／444／444额外VJP、原physicalclip及Sinc step计数、SupCon／4L前向／As覆盖等原生生命周期检查通过后才写出reference_progress。继续固定E30；尚无正式识别结论。
