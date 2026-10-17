@@ -541,3 +541,5 @@
 
 - [完整practical视图梯度E30 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01/report.md)
 - [完整practical视图梯度E30 r02](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/report.md)
+
+- [匹配无星地增强参考E30 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01/report.md)

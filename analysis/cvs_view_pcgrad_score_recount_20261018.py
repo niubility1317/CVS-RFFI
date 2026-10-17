@@ -9,11 +9,11 @@ def read(p):return json.loads(p.read_text(encoding='utf-8-sig'))
 def run(project):
  B=Path(project)/'runs'/RUN;terminal=read(B/'completion.json');result=read(B/'result.json');registered=read(Path(project)/'releases/cvs_F_viewPCGrad_E30_20261018_r02/registration/experiment.json');start=time.perf_counter()
  if terminal['status']!='ARTIFACTS_COMPLETE' or terminal['rows']!=3 or not terminal['truth_last'] or terminal['head_fit_updates'] or terminal['prediction_count']!=3528000 or registered['run_id']!=RUN or len(registered['rows'])!=3:raise ValueError('All fixed registered rows must complete first')
- records={};correct={};metrics={};CM=0;maxerr=0.;partitions=0;strata=[];fixed_ids=None;cost={}
+ records={};correct={};metrics={};CM=0;maxerr=0.;partitions=0;strata=[];fixed_ids=None;cost={};formal={}
  for mode in MODES:
   rid=mode+'-s2026092701';R=B/rid;done=read(R/'completion.json');p=read(R/'prediction/complete.json');score=read(R/'scores/metrics.json')
   if done['status']!='TRAINED_DEFAULT_PREDICTED_SCORED' or done['views']!=list(VIEWS) or done['count']!=168000 or not done['truth_last'] or done['head_fit_updates'] or done['cumulative_epochs']!=30 or done['optimizer_steps']!=2220 or p['truth_read'] or p['query_fit'] or not p['fixed_received_IQ'] or p['head_fit_updates'] or score['status']!='SCORED' or not score['truth_last'] or len(score['records'])!=126:raise ValueError('Defaulthead/fixedview/truthlast budget differs')
-  indexed={};metrics[mode]={}
+  formal[mode]=score['records'];indexed={};metrics[mode]={}
   for v in score['records']:
    key=(v['view'],v['dimension'],str(v['stratum']))
    if key in indexed:raise ValueError('Duplicate score stratum')
@@ -64,6 +64,6 @@ def run(project):
  passed=all(x for v in criteria.values() for x in v.values())
  if passed!=result['scientific_pass'] or CM!=378 or partitions!=63:raise ValueError('Final result scope mismatch')
  gaps={m:{v:100*(metrics[m]['clean']['accuracy']-metrics[m][v]['accuracy']) for v in VIEWS[1:4]} for m in MODES}
- return dict(status='VERIFIED',run_id=RUN,CM_recounts=CM,partition_recounts=partitions,paired_comparisons=21,max_metric_error=maxerr,summary=metrics,paired=paired,criteria=criteria,scientific_pass=passed,decision=result['decision'],suburban_gaps_pp=gaps,strata=strata,cost=cost,IQ=0,CP=0,NN=0,raw_truth_reads=0,new_updates=0,new_Ag=False,Ag_efficacy_proved=False,joint_goal_complete=False,wall_seconds=time.perf_counter()-start)
+ return dict(status='VERIFIED',run_id=RUN,CM_recounts=CM,partition_recounts=partitions,paired_comparisons=21,max_metric_error=maxerr,summary=metrics,paired=paired,criteria=criteria,scientific_pass=passed,decision=result['decision'],suburban_gaps_pp=gaps,strata=strata,cost=cost,formal_metrics=formal,IQ=0,CP=0,NN=0,raw_truth_reads=0,new_updates=0,new_Ag=False,Ag_efficacy_proved=False,joint_goal_complete=False,wall_seconds=time.perf_counter()-start)
 if __name__=='__main__':
  p=argparse.ArgumentParser();p.add_argument('--project',required=True);a=p.parse_args();print(json.dumps(run(a.project),allow_nan=False))

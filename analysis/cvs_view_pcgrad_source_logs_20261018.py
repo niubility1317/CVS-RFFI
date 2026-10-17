@@ -101,6 +101,13 @@ def run(project,complete=False):
  for key in ('total_L','common_RD','common_CE','common_KL','extra_RD','extra_CE','extra_KL','SupCon','ordinary_raw_MSE','second_raw_MSE'):
   differences=[abs(x[key]-y[key]) for x,y in zip(a[:n],b[:n])];stats[key]=dict(paired_records=n,max_absolute_error=max(differences,default=0.),nonzero_records=sum(v>0 for v in differences),first_over_1e_minus7=next((i+1 for i,v in enumerate(differences) if v>1e-7),None))
  value['ORIGINAL_MEASURE_reference_comparison']=stats
+ parent_init=read(B/'ORIGINAL-s2026092701/source/initialization.json')
+ parent_path=Path(parent_init['ancestors'][0])/'training_result.json'
+ value['parent_training_result']=read(parent_path)
+ for mode in MODES:
+  row=value['rows'][mode];truth=row['numeric_totals'].get('train/pseudo_truth_available',{})
+  row['hidden_U_truth_records']=truth.get('count',0)
+  if complete and (truth.get('count')!=2220 or truth.get('maximum')!=0):raise ValueError('Hidden U truth logs incomplete or nonzero')
  value['new_IQ_Ag']=False;value['joint_goal_complete']=False
  return value
 

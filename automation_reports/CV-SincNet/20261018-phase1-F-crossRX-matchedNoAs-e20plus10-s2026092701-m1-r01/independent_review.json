@@ -1,0 +1,16 @@
+{
+  "status": "PASS_AFTER_ONE_TARGETED_P1_FIX",
+  "reviewer": "unitary_p0p1_review",
+  "initial_findings": [
+    {
+      "priority": "P1",
+      "file": "experiments/cvs_matched_noas30/publish.py",
+      "issue": "Remote guard config missed view_release and view_commit",
+      "fix": "c.update fields before guard",
+      "targeted_review": "PASS"
+    }
+  ],
+  "other_scope": "No P0/P1;NoAs REPEAT parent,neutral MEASURE,no As/Ag,fullsourceE30/sevenviewtruthlast",
+  "real_data_or_weight_or_target_access": false,
+  "duplicate_full_review": false
+}
