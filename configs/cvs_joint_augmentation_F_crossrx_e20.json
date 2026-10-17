@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "E30_ANALYZED_FIXED_CLOCK_JOINT_CLOSED_RESEARCH_GOAL_UNPROVED",
+  "status": "RESEARCH_ACTIVE_SOURCE_SUPPORTED_AS_QUALITY_E30_RUNNING",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User baseline F plus cross-RX same-TX;latest budget E30 as fixed E20+10 on all five rows;all five now trained,score-only recovery adds zero updates.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -151,7 +151,7 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": {
-    "status": "NO_NEW_CANDIDATE_RELEASED_FIXED_CLOCK_JOINT_CLOSED",
+    "status": "CURRENT_AS_QUALITY_IDENTITY_TEST_RUNNING_SOURCE_EVIDENCE_COMPLETE",
     "reason": "Latest user correction:recent source statistics did not advance direct practical recognition;no new source-RX holdout experiments",
     "pending_raw_EQ_question": "Optionaldeferredinputonly;not prerequisite for practical experiments",
     "new_training_launched": false,
@@ -2377,5 +2377,61 @@
     "new_analysis_raw_truth": 0,
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
+  },
+  "current_experiment": {
+    "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
+    "status": "RUNNING_VERIFIED",
+    "execution_commit": "0eec04fb2b99f0cfecf6ddd18d6eda085dcf58c7",
+    "config": "configs/cvs_practical_power_e30.json",
+    "new_epochs": 10,
+    "parent_epochs": 20,
+    "cumulative_epochs": 30,
+    "new_updates": 2220,
+    "control_run": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
+    "control_row": "FULL_AS-s2026092701",
+    "same_parent_and_initialization_rule": true,
+    "source_RX_holdout": null,
+    "source_physical_evidence": {
+      "run_id": "20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01",
+      "status": "ANALYZED_VERIFIED",
+      "source_L": 6300,
+      "physical_pairs": 18900,
+      "effective_changes": 1010,
+      "lock_changes": 355,
+      "identity_benefit_proved": false
+    },
+    "observed_progress": {
+      "epoch": 1,
+      "cumulative_epoch": 21,
+      "steps": 222,
+      "cumulative_steps": 4662,
+      "L_packets": 113664,
+      "Ag_packets": 0,
+      "As_packets": 28416,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_RX_holdout": null,
+      "U_truth_read": false,
+      "target_access": false
+    },
+    "formal_score_available": false,
+    "joint_goal_complete": false
+  },
+  "active_As_hypothesis": {
+    "name": "Finite-window H*x power conditions existing coupled practical receiver processing",
+    "minimum": "One fixed source-final20+10 variant vs existing exact nominalAs E30 control;4L matched,allsource",
+    "abandon": "lowurban increment<.5pp orclean/midnegative oranysuburban<-.25pp;no strength/window/seed/budget rescue",
+    "Ag_added": false,
+    "new_losses": 0,
+    "new_U_rules": 0,
+    "extra_neural_forwards": 0,
+    "extra_physical_prefilter_per_As": 1,
+    "test_received_IQ_changed": false,
+    "target_selection": false
   }
 }
