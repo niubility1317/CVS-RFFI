@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Active user Phase1 joint augmentation research; latest scratch budget E30; full source RX required; this diagnostic adds zero training and no target access.",
   "code": {
-    "commit": null,
+    "commit": "317b5d75d319f8f4b5cba03791014c703d160749",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 ordinary CVS-RFFI; CPU2; CUDA_VISIBLE_DEVICES empty; FP32",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_EMA_sourceV_E30_20261017_r01"
@@ -219,5 +219,21 @@
     "Only exact source cached full condition0 is used; same CPU2/batch90 as student source reference.",
     "Readout success would still not prove IQ augmentation or permit target-based selection."
   ],
-  "registered_at": "2026-10-17T10:25:29+00:00"
+  "delivery": {
+    "state": "ANALYZED_SOURCE_ONLY_NEGATIVE",
+    "execution_commit": "317b5d75d319f8f4b5cba03791014c703d160749",
+    "source_rule_pass": false,
+    "source_cells_passed": 0,
+    "source_cells_total": 4,
+    "model_seed_count": 1,
+    "source_V": 1800,
+    "channel_draws": 2,
+    "NN": 25204,
+    "training_updates": 0,
+    "target_access": false,
+    "artifacts": "E:/type10-7/local_artifacts/cvs_FcrossRX_EMA_sourceV_E30_20261017/analysis_r01",
+    "independent_CM": 220,
+    "source_strata": 96,
+    "goal_completed": false
+  }
 }

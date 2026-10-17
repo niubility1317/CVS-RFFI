@@ -192,6 +192,26 @@
       "contract": "Historical all-source E20+10; not scratchE30",
       "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md",
       "formal_use": "Terminal reporting only; never tuning, candidate ranking, promotion or selective rerun"
+    },
+    "fixed_FINAL30_own_EMA_readout": {
+      "run_id": "20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01",
+      "kind": "Frozen source readout diagnostic; not a new IQ augmentation or training recipe",
+      "source_rule_pass": false,
+      "urban_cells_passed": 0,
+      "urban_cells_total": 4,
+      "B01_clean_delta_pp": -0.05555555555555314,
+      "B01_urban_draw_delta_pp": [
+        [
+          -0.11111111111111738,
+          -0.05555555555555314
+        ],
+        [
+          0.11111111111111738,
+          -0.22222222222222365
+        ]
+      ],
+      "report": "automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01/report.md",
+      "repeat_policy": "No EMA decay/epoch/RX/seed/threshold/budget rescue of this fixed readout; no target access or seed expansion"
     }
   },
   "next_method_boundary": "All-source F+CROSS_RX scratchE30/defaulthead/originalU and matched B00/B01 remain fixed references. Nativeboundary mixing and exactLA16xAs source hypotheses failed. A distinct IQ/organization candidate needs new legal source evidence and a matched factorial; no sourceRX holdout, fittedhead, targetfeedback or rescue of closed routes.",
