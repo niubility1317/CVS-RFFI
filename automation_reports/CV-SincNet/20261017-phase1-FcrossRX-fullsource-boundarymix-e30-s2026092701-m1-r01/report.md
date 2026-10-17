@@ -44,3 +44,12 @@ run：/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fu
 
 
 终局分析准备：analysis/cvs_boundary_E30_results_20261017.py 复用既有全30轮分析，等 B00/B01/BCTX 三行全部七视图预测、独立评分和E30/6660完成证据后才读取truth。输出三组配对修复/新增错误、固定B00 clean正确集合保持率、默认头margin/30、最差RX/F1、全部训练曲线、原生物理统计与180个TX×RX×场景×边界覆盖单元；无IQ/checkpoint读取、无NN/拟合。7个聚焦测试PASS，含新行未完成时不得先读truth或创建分析输出。正式样本未保存逐包状态/质量标签与门控激活，不能编造这些分层准确率。
+
+
+冻结后源域机制计划（本行尚未终局评分前固定）：独立 CPU2 程序 analysis/cvs_boundary_E30_source_20261017.py，等待 B00/B01/BCTX 的 FINAL30/6660 及全部七视图完成元数据后，先 strict-load 三个真实 E30 默认头并各做 2 合成包 smoke，再读取原 V 面板。复用 P24 的同一 V1800、90 单元各20包、2 信道 draw、3 场景的 full 与 edge_boundary 成对观察；不重抽信道。edge 保持 full 接收状态/补偿及 AGC，属于受控边界效应，不能当作重算接收机后的总效应。源缓存实际载入 V27000 和 L6300（L不消费）、U0；保持原角色，无新增留域。
+
+本机制计划每模型23402NN（clean1800＋两draw×三场景×两条件×1800＋smoke2），三模型70206NN；新增训练/头拟合/teacher/物理信道调用均0。逐项检查冻结state_dict不变，保存原time/frequency/PA/reference/signature分支、真实静态融合增益、固定B00源clean正确集合保持率、accuracy/F1/margin30及原full状态/锁定/接收新增噪声比分层。该质量比不是总SNR，不读取目标IQ、成绩或truth。只有一个模型seed，两个draw不算跨seed。
+
+源解释条件：仅当两个urban×两个draw的edge−full准确率差，相对B01均改善至少3个百分点，且各cell的full准确率下降均不超过0.5个百分点，才支持边界敏感性下降；它不是目标访问、扩seed、选模、参数修改或重跑门槛。正式成绩仍由原自动全七环境评分产生。本地3项聚焦测试PASS，含13个原角色/受控条件负例以及BCTX未完成前禁止打开源数据/CP或建立输出；compile PASS。当前该程序尚未执行，无新机制结果。
+
+补充尺度核验：实际默认头 ResidualPhysicalHead 的 scale 固定30；160维 gain 是 identity＋tanh(gain)×physical 的特征融合系数，后续joint及weight均L2归一化。分析margin/30口径成立，不能将gain的训练移动当作logit尺度提高。核验只构造默认模型读类定义，0NN/IQ/CP/更新。

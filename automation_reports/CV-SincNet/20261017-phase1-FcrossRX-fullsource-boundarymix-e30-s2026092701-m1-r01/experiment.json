@@ -120,7 +120,10 @@
     "scoring/complete.json",
     "results.json",
     "per_row_seed.csv",
-    "complete.json"
+    "complete.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-boundarymix-e30-s2026092701-m1-r01/source_boundary_mechanism_r01/completion.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-boundarymix-e30-s2026092701-m1-r01/source_boundary_mechanism_r01/source_strata.csv",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-boundarymix-e30-s2026092701-m1-r01/source_boundary_mechanism_r01/source_metrics.json"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -182,7 +185,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "original native cosine over30total epochs"
       },
       "epochs": 30,
@@ -226,7 +229,8 @@
     "Nativefullsignal/noise/quality/phase/IQcomp/noeqG1/reference30/fs25MHz/fc2.45GHz unchanged;only prehistorysyntheticextension changes attrain,notrealcontext claim. Formalclean+6 fixedIQ/SNR/reflect unchanged.",
     "Local4testsPASS:8protocol+6call+4namespace+7physicsconfig negatives,48syntheticnativecalls,0realIQ/CP/NN/updates;separate2syntheticNN verifies900722params/206identicalinit/defaultheadbackbonegradients,0updates. Initialstandaloneimportmiss resolved via existing local dependency assembly;known NumPyABI importwarning retained,no ndarray bridge.",
     "Previous spectral/PSD/phase/IQmix or urbanSSL candidates are not restarted;sourceevidence supports this different A_s boundary hypothesis only. FulljointAg/As goal remainsincomplete.",
-    "Independent bounded P0/P1 review PASS: no direct P0/P1 defects; no second unchanged review. GitHub branch OID independently matches 8cf7ceed44f9818390332cebd9f4c34c3b8b7967."
+    "Independent bounded P0/P1 review PASS: no direct P0/P1 defects; no second unchanged review. GitHub branch OID independently matches 8cf7ceed44f9818390332cebd9f4c34c3b8b7967.",
+    "Same-row postfreeze source mechanism preregistered before BCTX terminal scoring: original fixed P24 source V1800/all90TX-RX-day cells, same2draws/3scenes/full and fixed-AGCedge IQ reused. Readonly B00/B01/BCTX FINAL30 defaultheads after all7view completion metadata;CPU2,planned23402NN/model,total70206;0updates/headfits/newchannelcalls/targetscore-ortruth reads. Actual sourcecache loadsV27000/L6300unused/U0 disclosed. Fixed-AGCedge penalty improvement>=3pp at bothurban x bothdraw with full-source drop<=0.5pp percell supports reducedboundarysensitivity only;notpromotion/retuningorjointsuccess."
   ],
   "registered_at": "2026-10-17T07:24:51+00:00"
 }
