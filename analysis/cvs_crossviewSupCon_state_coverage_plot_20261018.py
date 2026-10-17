@@ -50,7 +50,7 @@ def run(root,out):
    for y in range(30):
     for x in range(3):ax.text(x,y,str(data[y,x]),ha='center',va='center',fontsize=7,color='white' if np.log1p(data[y,x])>.58*np.log1p(maxv) else '#202735')
    for y in [4.5,9.5,14.5,19.5,24.5]:ax.axhline(y,color='white',linewidth=1.5)
-  cb=fig.colorbar(im,ax=axes,shrink=.46,pad=.025);ticks=np.linspace(0,np.log1p(maxv),5);cb.set_ticks(ticks,[str(round(np.expm1(v))) for v in ticks]);cb.set_label('Actual As observations; log1p color')
+  cb=fig.colorbar(im,ax=axes,shrink=.46,pad=.025);ticks=np.linspace(0,np.log1p(maxv),5);cb.set_ticks(ticks,labels=[str(round(np.expm1(v))) for v in ticks]);cb.set_label('Actual As observations; log1p color')
   fig.suptitle(('All three rows have identical exposure' if identical else arm)+' | 6 TX x 5 source RX | days 1-3 summed',fontsize=12);save(fig,'training_TX_RX_state_exposure'+('' if identical else '_'+arm))
  fig,axes=plt.subplots(1,2,figsize=(10.6,3.7),layout='constrained')
  colors={'ORD128':'#4169a1','DUP192':'#b16f28','SAT192':'#24805a'};series={}
