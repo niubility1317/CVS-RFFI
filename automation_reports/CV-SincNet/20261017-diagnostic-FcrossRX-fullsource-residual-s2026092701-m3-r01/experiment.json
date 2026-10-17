@@ -1,0 +1,273 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01",
+  "group_id": "phase1-FcrossRX-fullsource-residual-mechanism",
+  "display_name": "完整源域 F＋跨 RX：冻结默认头的 practical 受控退化诊断",
+  "description": "恢复全部源RX后，在原V固定1800包上比较同物理draw的噪声/H选择性/载波/RXIQ控制，区分接收状态重算总效应与固定补偿效应，读取真实分支和局部CE梯度；不训练、不读目标。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "FcrossRX",
+    "fullsource",
+    "practical",
+    "source-only",
+    "controlled"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01",
+    "20261017-phase1-FcrossRX-fullsource-rawpractical-e20-s2026092701-m1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "活跃联合增强目标持续授权源机制诊断；用户最新禁止额外留训练域。仅原合法sourceV、三个既有完整源域FINAL20默认头，0新训练/目标查询/另训头，正式IQ与健康实验保持。",
+  "code": {
+    "commit": "5dc8882cc1609f3b857749368a75f856b57bcd9d",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "ordinary N607 CVS-RFFI Python; FP32; OMP/MKL/OPENBLAS2; no administrator",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_fullsource_residual_diag_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing VALIDATED_ONCE original7/63/30 roles and existing native-normalized source cache",
+    "representation": "equalized1 center256; native complex RMS after crop/pad, center=False;25MHz; actual practical residual/post_sync/noeq G1,fc2.45GHz,reference30",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701/source_cache.pt#validation.ids",
+    "label_map_ref": "original6TX mapping, class0..5",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all original6 source TX",
+    "roles": {
+      "L_s": "Original6300 unchanged; cache contains these IQ but not used by diagnostic",
+      "U_s": "Original56700 hiddenTX, no U values opened",
+      "V": "Original27000; existingcache read, fixed20 perTX×RX×day=1800 source diagnostic; no persistent model updates"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Existing VALIDATED_ONCE source carrier; no data revalidation or hashes; originalrole handles matched",
+    "support_query_ref": null,
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01/B01-s2026092701/source/actual_practical_first_batch.json#config"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "forbidden; no target reader, prediction or scorer",
+    "external_method_exception": null,
+    "claim_scope": "Frozen source-V counterfactual evidence only; off-distribution interventions not retraining or target causal effects; one modelseed/two channeldraws; not jointgoal completion"
+  },
+  "checkpoint": {
+    "initialization": "none; no new trainable model; load existing default-head checkpoints for frozen readout",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01/B00-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01/B01-s2026092701/source/final_ssdg.pth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-rawpractical-e20-s2026092701-m1-r01/RAW_PRAC-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "eachsource initialization/completion/source_frozen/source_contract metadata; exactoriginalroles6300/56700/27000, scratch/noancestors/FINAL20 frozen before formalpredictions",
+    "provenance_verdict": "VERIFIED_METADATA; prior60modelE/13320trainingupdates reused fordiagnosis only;0newepochs/updates; firststep strict3CP+6synthetic default-head/branch smoke before sourceIQ",
+    "selection_rule": "all3 fixed rows, no source/target selection; no model or optimizer update"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "/root",
+    "gpu_policy": "One diagnostic worker;max3 totalGPU experiment processes including allowners; free>=12000MB; sharedcapacitylock; no healthyjob mutation",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/worker.log",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_residual_diag_20261017",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_fullsource_residual_diag_20261017_r01/experiments/cvs_fullsource_residual_diag24/runner.py",
+    "stop_rule": "First provenance/role/receiverfreeze/parity/nonfinite/state-mutation/NN-budget/technicalerror preserves alloutputs and stops ownjob; no automaticretry, no score-based rerun or furthertraining; allother jobs protected"
+  },
+  "expected_artifacts": [
+    "diagnostic/resolved_config.json",
+    "diagnostic/checkpoint_noquery_smoke.json",
+    "diagnostic/data_roles.json",
+    "diagnostic/observations/actual_engine.json",
+    "diagnostic/observations/iq.npy",
+    "diagnostic/observations/physics.npz",
+    "diagnostic/observations/physical_records.jsonl.gz",
+    "diagnostic/observations/completion.json",
+    "diagnostic/{B00,B01,RAW_PRAC}/predictions.npz",
+    "diagnostic/{B00,B01,RAW_PRAC}/branch_metrics.npz",
+    "diagnostic/{B00,B01,RAW_PRAC}/result.json",
+    "diagnostic/per_row_source_strata.csv",
+    "diagnostic/summary.json",
+    "diagnostic/source_damage_effects.png/pdf",
+    "diagnostic/source_quality_accuracy.png/pdf",
+    "diagnostic/source_gradient_cosine.png/pdf",
+    "diagnostic/completion.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "default_head_margin_over30",
+      "fixed_B00_clean_correct_retention",
+      "repairs_breaks_vsfull",
+      "receiver_lock_changes",
+      "AGCchanges",
+      "added_noise_ratio_not_totalSNR",
+      "branch_cosine_norm",
+      "static_gate_vectors",
+      "eval_CE_gradient_cosine_norm",
+      "actualNN",
+      "updates",
+      "wallseconds"
+    ],
+    "dimensions": [
+      "checkpoint",
+      "modelseed",
+      "channeldraw",
+      "scene",
+      "condition",
+      "sourceRX",
+      "baseline_state_lock",
+      "baseline_addednoise_quality_bin"
+    ],
+    "prediction_ref": "diagnostic/eacharm/predictions.npz sourceV only; all3 same cachedIQ and physicalIDs",
+    "scorer_ref": "diagnostic/summarize.py; original source V labels allowed; no targettruth/scorer"
+  },
+  "rows": [
+    {
+      "row_id": "B00-s2026092701",
+      "method": "Frozen F+CROSS_RX FINAL20 B00 defaulthead;11nativecontrols×3scenes×2channeldraws, originalsourceV1800",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/cvs_fullsource_residual_diag24/design.py#config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/resolved_config.json",
+      "data_overrides": {
+        "held_RX": null,
+        "extra_Ldev": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Modelseed unchanged;sourcepanel202610172401,channel202610172402 withsourceV/residual_diag24/draw0/1 namespace;RXhardware2026092701 byRX/day/eq, neverTX. Twochanneldraws not2modelseeds. Supportinapplicable,no query.",
+      "k": null,
+      "scenario": "sourceV only:low_suburban/mid_urban/low_urban, full+4damagecontrols fixed/total+actualquality+edge",
+      "optimizer": {
+        "name": "none",
+        "updates": 0,
+        "requires_grad": "temporary readonly evalCE only; no .grad accumulation"
+      },
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Prior E20/4440 reused perCP,0newtraining. PerCP121232NN=120600pred+630gradfwd+2smoke;total363696;teacher0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/B00",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_fullsource_residual_diag_20261017_r01/experiments/cvs_fullsource_residual_diag24/runner.py",
+      "expected_artifacts": [
+        "predictions.npz",
+        "branch_metrics.npz",
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "method": "Frozen F+CROSS_RX FINAL20 B01 defaulthead;11nativecontrols×3scenes×2channeldraws, originalsourceV1800",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/cvs_fullsource_residual_diag24/design.py#config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/resolved_config.json",
+      "data_overrides": {
+        "held_RX": null,
+        "extra_Ldev": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Modelseed unchanged;sourcepanel202610172401,channel202610172402 withsourceV/residual_diag24/draw0/1 namespace;RXhardware2026092701 byRX/day/eq, neverTX. Twochanneldraws not2modelseeds. Supportinapplicable,no query.",
+      "k": null,
+      "scenario": "sourceV only:low_suburban/mid_urban/low_urban, full+4damagecontrols fixed/total+actualquality+edge",
+      "optimizer": {
+        "name": "none",
+        "updates": 0,
+        "requires_grad": "temporary readonly evalCE only; no .grad accumulation"
+      },
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Prior E20/4440 reused perCP,0newtraining. PerCP121232NN=120600pred+630gradfwd+2smoke;total363696;teacher0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/B01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_fullsource_residual_diag_20261017_r01/experiments/cvs_fullsource_residual_diag24/runner.py",
+      "expected_artifacts": [
+        "predictions.npz",
+        "branch_metrics.npz",
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "RAW_PRAC-s2026092701",
+      "method": "Frozen F+CROSS_RX FINAL20 RAW_PRAC defaulthead;11nativecontrols×3scenes×2channeldraws, originalsourceV1800",
+      "purpose": "diagnostic",
+      "config_ref": "experiments/cvs_fullsource_residual_diag24/design.py#config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/resolved_config.json",
+      "data_overrides": {
+        "held_RX": null,
+        "extra_Ldev": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Modelseed unchanged;sourcepanel202610172401,channel202610172402 withsourceV/residual_diag24/draw0/1 namespace;RXhardware2026092701 byRX/day/eq, neverTX. Twochanneldraws not2modelseeds. Supportinapplicable,no query.",
+      "k": null,
+      "scenario": "sourceV only:low_suburban/mid_urban/low_urban, full+4damagecontrols fixed/total+actualquality+edge",
+      "optimizer": {
+        "name": "none",
+        "updates": 0,
+        "requires_grad": "temporary readonly evalCE only; no .grad accumulation"
+      },
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Prior E20/4440 reused perCP,0newtraining. PerCP121232NN=120600pred+630gradfwd+2smoke;total363696;teacher0",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/RAW_PRAC",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/worker.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_fullsource_residual_diag_20261017_r01/experiments/cvs_fullsource_residual_diag24/runner.py",
+      "expected_artifacts": [
+        "predictions.npz",
+        "branch_metrics.npz",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "All training source roles stay original; selecting existing V is not a new training-domain holdout. No targetIQ/truth/metrics consumed by this job.",
+    "Every original observation uses actual B01 resolvedphysicalcfg;onlyscenario changes within original3envs. Fullrenderer and frozen replay mustmatch actual importednative residual on everypacket.",
+    "Predeclared interpretation checks: fixeddamage removal>=5pp on bothurban scenes/bothchanneldraws; noise totalminusfixed>=3pp forstate-coupling;evalwholeCEgradientcos<0 andsatnorm>=clean onbothurban/bothdraws forcompetition premise. These are source mechanism evidence only, no automatictrain/seedpromotion.",
+    "No-added-noise total usesquality200dB asaddednoise counterfactual, originalrecordingnoiseunknown. FlatH preserveswhitekernelenergy/latency. EQoff G1, no noisetotalSNR claim.",
+    "Existing sourcecache has L IQ/oldparentfeatures physically loaded butunused;only V x/y/rx/day/domain/IDs consumed, U unopened. Actualsamplecounts declared.",
+    "Local4testsPASS/11protocolnegatives/6nativecases/84syntheticphysicscalls,0NN/realIQ/CP/updates. OneearliernegativefailedbecauseCRLFpreventedguardinsertion;fixedandrerunpassed,failedtestartifactpreserved.",
+    "Onebounded independentP0/P1 review PASS; no direct P0/P1 found. OneN607metadata/resource preflightVERIFIED:ordinaryaccount,newrun/releaseabsent,3CPmetadatafullsourceE20,sourcecacheexists,0IQ/CP/NN."
+  ],
+  "registered_at": "2026-10-17T05:39:51+00:00"
+}
