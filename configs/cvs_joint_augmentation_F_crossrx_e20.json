@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_CALIBRATION_COVERAGE_AS_REGISTERED",
+  "status": "RESEARCH_ACTIVE_CALIBRATION_COVERAGE_AS_RUNNING",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User baseline F plus cross-RX same-TX;latest budget E30 as fixed E20+10 on all five rows;all five now trained,score-only recovery adds zero updates.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -2453,7 +2453,7 @@
   },
   "current_experiment": {
     "run_id": "20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01",
-    "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED",
     "config": "configs/cvs_calibration_refresh_e30.json",
     "parent_epochs": 20,
     "new_epochs": 10,
@@ -2461,7 +2461,29 @@
     "new_updates": 2220,
     "source_RX_holdout": null,
     "formal_score_available": false,
-    "joint_goal_complete": false
+    "joint_goal_complete": false,
+    "execution_commit": "f375e6cc47cfb7d5e7b069b0bd912d5bf8819a0e",
+    "observed_progress": {
+      "epoch": 1,
+      "cumulative_epoch": 21,
+      "steps": 222,
+      "cumulative_steps": 4662,
+      "L_packets": 113664,
+      "Ag_packets": 0,
+      "As_packets": 28416,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_RX_holdout": null,
+      "U_truth_read": false,
+      "target_access": false,
+      "status": "TRAINING_ACTIVE",
+      "formal_predictions_started": false
+    }
   },
   "active_As_hypothesis": {
     "name": "Original-distribution epoch-session RX calibration estimate coverage",

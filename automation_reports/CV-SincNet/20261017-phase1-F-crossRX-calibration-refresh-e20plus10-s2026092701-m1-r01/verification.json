@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING_VERIFIED",
   "local": {
     "status": "PASS",
     "protocol_negatives": 32,
@@ -49,7 +49,77 @@
     "scope": "Direct next-run correctness/legality/launch/prediction only",
     "review_count": 1
   },
-  "actual_new_training_updates": 0,
   "formal_prediction_status": "NOT_STARTED",
-  "joint_goal_complete": false
+  "joint_goal_complete": false,
+  "execution_commit": "f375e6cc47cfb7d5e7b069b0bd912d5bf8819a0e",
+  "local_remote_OID": "VERIFIED",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "remote_synthetic_checks": {
+    "status": "PASS",
+    "protocol_negatives": 32,
+    "calibration_only_same_latent_cases": 240
+  },
+  "N607_preflight": "VERIFIED",
+  "real_CP_noquery_smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "parent_epoch": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "matched_control": {
+      "status": "VERIFIED",
+      "run": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
+      "row": "FULL_AS-s2026092701",
+      "reused_existing": true,
+      "new_training_updates": 0,
+      "source_RX_holdout": null
+    }
+  },
+  "postlaunch": {
+    "status": "VERIFIED",
+    "worker_PID": 474445,
+    "CWD": true,
+    "argv": true,
+    "GPU_environment": true,
+    "GPU_process": true,
+    "source_step_log_growth": true,
+    "source_step_log_bytes_before": 228585,
+    "source_step_log_bytes_after": 293911,
+    "stdout_epoch_growth_observed": false,
+    "dispatcher_live": true,
+    "no_owned_technical_failure": true
+  },
+  "actual_initialization": {
+    "strict_same_source_parent": true,
+    "own_EMA_restored": true,
+    "optimizer_empty_at_start": true
+  },
+  "observed_progress": {
+    "epoch": 1,
+    "cumulative_epoch": 21,
+    "steps": 222,
+    "cumulative_steps": 4662,
+    "L_packets": 113664,
+    "Ag_packets": 0,
+    "As_packets": 28416,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_RX_holdout": null,
+    "U_truth_read": false,
+    "target_access": false,
+    "status": "TRAINING_ACTIVE",
+    "formal_predictions_started": false
+  },
+  "calibration_states_confirmed_by_complete_epoch_invariant": 15
 }
