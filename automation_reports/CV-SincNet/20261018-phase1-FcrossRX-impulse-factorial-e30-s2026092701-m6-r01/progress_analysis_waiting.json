@@ -1,0 +1,89 @@
+{
+  "status": "RUNNING_ANALYSIS_WAITING",
+  "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+  "training_commit": "19aedc3604fed9c193237dd92366164178af0983",
+  "analysis_commit": "c02154d6cf9fb29fafecc4145bb6c08cb26d2490",
+  "utc": 1792271045.3390164,
+  "source_only_observation": true,
+  "formal_scores_read": false,
+  "dispatcher_live": true,
+  "queue_failures": [],
+  "rows": [
+    {
+      "row_id": "B00-s2026092701",
+      "identity_verified": true,
+      "live": true,
+      "cumulative_epoch": 19,
+      "cumulative_steps": 4218,
+      "L_NN": 3239424,
+      "actual_As_packets": 0,
+      "U_TX_truth_read": false,
+      "target_access": false
+    },
+    {
+      "row_id": "B10_WHITE-s2026092701",
+      "identity_verified": true,
+      "live": true,
+      "cumulative_epoch": 19,
+      "cumulative_steps": 4218,
+      "L_NN": 3239424,
+      "actual_As_packets": 0,
+      "U_TX_truth_read": false,
+      "target_access": false
+    },
+    {
+      "row_id": "B10_BG-s2026092701",
+      "identity_verified": true,
+      "live": true,
+      "cumulative_epoch": 18,
+      "cumulative_steps": 3996,
+      "L_NN": 3068928,
+      "actual_As_packets": 0,
+      "U_TX_truth_read": false,
+      "target_access": false
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "identity_verified": true,
+      "live": true,
+      "cumulative_epoch": 14,
+      "cumulative_steps": 3108,
+      "L_NN": 2386944,
+      "actual_As_packets": 198912,
+      "U_TX_truth_read": false,
+      "target_access": false
+    },
+    {
+      "row_id": "B11_WHITE-s2026092701",
+      "identity_verified": true,
+      "live": true,
+      "cumulative_epoch": 14,
+      "cumulative_steps": 3108,
+      "L_NN": 2386944,
+      "actual_As_packets": 198912,
+      "U_TX_truth_read": false,
+      "target_access": false
+    },
+    {
+      "row_id": "B11_BG-s2026092701",
+      "identity_verified": true,
+      "live": true,
+      "cumulative_epoch": 14,
+      "cumulative_steps": 3108,
+      "L_NN": 2386944,
+      "actual_As_packets": 198912,
+      "U_TX_truth_read": false,
+      "target_access": false
+    }
+  ],
+  "source_analysis": {
+    "driver_live": true,
+    "waiter_live": true,
+    "new_NN": 0,
+    "CPU_threads": 2,
+    "CUDA_visible_devices": "",
+    "waiting_for_all_six": true
+  },
+  "no_new_performance_claim": true,
+  "goal_complete": false
+}
