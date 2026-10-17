@@ -47,6 +47,8 @@
 
 完整逐层结果见stratified_results.md，混淆矩阵见formal_metrics.json；曲线与七视图见figures/。
 
-匹配 No-As 参考已在读取本轮正式目标成绩前独立登记并发布：20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01，执行 commit 00cc9bad869d98bbca408858a4adec55887cf6c7；仍在训练，尚无正式净收益结论。当前三行判定已关闭，参考结果不用于挽救该固定规则。
+匹配 No-As 参考已在读取本轮正式目标成绩前独立登记并发布：20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01，执行 commit 00cc9bad869d98bbca408858a4adec55887cf6c7；现已完成匹配 E30／七视图评分。普通 As 相对该参考 clean −2.522619pp，PROJECT −2.468452pp，均无 clean 净收益。当前三行判定保持关闭。
 
 测量控制与普通更新的实际 ordinary/As 输入 MSE 逐步一致，但其浮点训练轨迹并非逐位一致，SupCon 自第 2 步、监督总损失自第 3 步出现差异；不同 GPU 和额外求导下不将亚 0.1 个百分点变化归因为稳定收益。
+
+已补齐的 No-As 完整结果见 [匹配比较](../20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01/final_analysis.md)。这里的最初三行矩阵不含 B00；独立补齐后，clean 净收益条件已被否定，不再是缺失证据。

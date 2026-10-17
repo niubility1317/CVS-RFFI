@@ -7413,18 +7413,71 @@
   "joint_target_status": {
     "low_urban_above_60": false,
     "suburban_gap_exploratory_at_most_2pp": false,
-    "clean_gain_vs_strict_matched_noAs_B00": "UNPROVEN_NO_MATCHED_NO_AS_CONTROL_IN_THIS_MATRIX",
+    "clean_gain_vs_strict_matched_noAs_B00": false,
     "IQ_Ag_proved": false,
     "Ag_As_interaction": "NOT_DEFINED",
     "cross_seed_proof": false,
-    "joint_goal_complete": false
+    "joint_goal_complete": false,
+    "clean_delta_vs_matched_B00_pp": -2.468452380952381
   },
   "execution_commit": "36ef32e643670d70702c3d0e3ceeb0831cffcac6",
   "analysis_commit": "00cc9bad869d98bbca408858a4adec55887cf6c7",
   "matched_noAs_reference": {
     "run_id": "20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "preregistered_before_current_target_score_read": true,
-    "execution_commit": "00cc9bad869d98bbca408858a4adec55887cf6c7"
+    "execution_commit": "00cc9bad869d98bbca408858a4adec55887cf6c7",
+    "summary": {
+      "clean": {
+        "accuracy": 0.852452380952381,
+        "macro_F1": 0.849544504807013,
+        "correct": 143212,
+        "count": 168000,
+        "worst_RX_accuracy": 0.7735416666666667
+      },
+      "practical_high": {
+        "accuracy": 0.46006547619047616,
+        "macro_F1": 0.4077148533348367,
+        "correct": 77291,
+        "count": 168000,
+        "worst_RX_accuracy": 0.386625
+      },
+      "practical_mid": {
+        "accuracy": 0.4431428571428571,
+        "macro_F1": 0.3966154892622001,
+        "correct": 74448,
+        "count": 168000,
+        "worst_RX_accuracy": 0.37666666666666665
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.4222142857142857,
+        "macro_F1": 0.38117208032166255,
+        "correct": 70932,
+        "count": 168000,
+        "worst_RX_accuracy": 0.36083333333333334
+      },
+      "practical_high_urban": {
+        "accuracy": 0.4475119047619048,
+        "macro_F1": 0.4017298167100072,
+        "correct": 75182,
+        "count": 168000,
+        "worst_RX_accuracy": 0.37775
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.37279761904761904,
+        "macro_F1": 0.3470981628189295,
+        "correct": 62630,
+        "count": 168000,
+        "worst_RX_accuracy": 0.3244166666666667
+      },
+      "practical_low_urban": {
+        "accuracy": 0.317125,
+        "macro_F1": 0.3027495676583896,
+        "correct": 53277,
+        "count": 168000,
+        "worst_RX_accuracy": 0.2805
+      }
+    },
+    "comparison_ref": "../20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01/result.json"
   }
 }

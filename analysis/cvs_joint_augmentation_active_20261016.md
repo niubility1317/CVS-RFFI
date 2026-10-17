@@ -464,3 +464,8 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 2026-10-18：20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02 已 ANALYZED／VERIFIED，执行36ef32e643670d70702c3d0e3ceeb0831cffcac6。三行各2220新增更新/累计E30，全部五RX/L6300/U56700隐藏/V27000；完整日志和378CM/63分区/21配对复算。ORIGINAL→PROJECT clean82.722619%→82.776786%（+.054167pp）、midurban64.376786%→64.379762%（+.002976pp）、lowurban53.458333%→53.429762%（−.028571pp）；相对MEASURE mid−.027976pp、low−.013690pp。固定梯度规则CLOSED，不改系数/度量/投影侧/seed/父/预算救跑；额外8880训练VJP，无新IQAg，联合目标ACTIVE且未达成。
 
 读取上行目标成绩前，已独立登记并发布必须的匹配No-As参考 20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01，执行00cc9bad869d98bbca408858a4adec55887cf6c7。原fullsource REPEAT固定E20 student/ownEMA+10；同初始化规则而非与As父同权重；四L前向及每步2neutralVJP、原U/默认头/全部源RX，旧ordinary保留，As/Ag0。归档/compile/16反例/真实CP2NN smoke以及原PID/CWD/argv/GPU/log增长VERIFIED。只补足No-As clean净收益基准，不新增机制，不改变已关闭三行结论，无自动扩种子。正式结果待完成。用户确认没有更长IQ映射，继续现有256点；目前无新的有证据IQAg训练候选。
+
+
+2026-10-18：20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01 已 ANALYZED／VERIFIED。原PID自然结束、1row/7×168000固定预测后独立truth-last，E20+10/E30、2220新更新、As0/Ag0、默认头、全部五源RX。与As三行370输入池/4440L-U序列相同，857实际args只差baseline_ckpt/candidate_id/output_dir/run_id；NN预算相同，MEASURE/PROJECT额外VJP成本匹配。504CM/84分区/21配对独立复算。No-As clean85.245238%、midurban37.279762%、lowurban31.712500%；普通As82.722619%/64.376786%/53.458333%，差−2.522619pp/+27.097024pp/+21.745833pp；clean∩low共同正确仍+19.779167pp。证明本配方单seed适应收益并有clean代价，非仅错误重分配；clean净收益、low>60和中低suburban≤2pp均未实现。原PCGrad仍关闭。No-As新增实际NN3772694含开发2048与smoke2、父训练3661082另列；2220新更新/4440extraVJP，0新分析NN/rawtruth。
+
+当前没有在训本任务实验或已支持新IQAg候选，目标保持ACTIVE_UNACHIEVED。历史有界CFO已做E20且关闭，本轮核对后不复跑；已读取“开发 CVS Phase1 星地增强训练”最新源噪声/默认头梯度阴性结果，不重复其路线。仅有256点IQ，不能将数字变换称作真实RX替换；不把As单seed收益当完整Ag/As联合成功。

@@ -75,3 +75,5 @@ ORIGINAL 保留原梯度；MEASURE 每步额外求 ordinary 和 As 梯度但不�
 完整日志、378 个混淆矩阵、63 个分区和 21 个配对比较已复算；源数据仍为全部五 RX/L6300/U56700/V27000。详见 [完整结果](final_analysis.md)、[逐层结果](stratified_results.md)、[曲线](figures/training_curves.png) 和 [七视图](figures/fixed_view_results.png)。新增 IQ A_g=0，low urban 未过 60%，中低 suburban 距 clean 超过探索目标。
 
 匹配 No-As 参考 20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01 在读取此轮正式目标成绩前固定并发布，正在运行，不影响关闭当前固定梯度规则；clean 净收益待该参考完成后报告。
+
+匹配 No-As 参考现已 ANALYZED／VERIFIED：普通 As 相对 B00 clean−2.522619pp、midurban+27.097024pp、lowurban+21.745833pp。适应收益明确，clean 净收益未满足。详见[独立参考](../20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01/final_analysis.md)；固定梯度规则保持关闭。

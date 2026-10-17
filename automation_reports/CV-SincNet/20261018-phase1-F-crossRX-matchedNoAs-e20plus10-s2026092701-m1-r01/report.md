@@ -18,6 +18,14 @@
 
 本地 16 个协议负例和 1024 个合成 F 前向、2 次合成更新通过；MEASURE 与原 No-As 梯度及更新逐位一致，RNG 一致，真实 IQ/权重/更新/目标访问均为 0。发布时执行唯一真实父 checkpoint 无 query smoke，PASS 后立即训练，不另设许可层。
 
-当前状态：已登记，尚未发布。此参考本身不能证明 IQ Ag 有效，也不构成联合目标完成。
+最新状态：ANALYZED／VERIFIED。固定 E30、七视图预测及独立 truth-last 已完成。此参考本身不能证明 IQ Ag 有效，也不构成联合目标完成。
 
-实际发布 VERIFIED：执行 commit 00cc9bad869d98bbca408858a4adec55887cf6c7。唯一发布归档传输比较、远端 compile 和合成检查通过；真实对应 REPEAT20 父 checkpoint 的 2 包零输入 no-query smoke PASS；独立核实原 dispatcher/worker PID、CWD、argv、GPU 和日志增长。已完整累计 E23（666 新更新），L 前向340992、As0/Ag0、五源 RX/U truth0。训练仍在进行，未完成预测或评分。
+发布后早期状态（历史记录），VERIFIED：执行 commit 00cc9bad869d98bbca408858a4adec55887cf6c7。唯一发布归档传输比较、远端 compile 和合成检查通过；真实对应 REPEAT20 父 checkpoint 的 2 包零输入 no-query smoke PASS；独立核实原 dispatcher/worker PID、CWD、argv、GPU 和日志增长。已完整累计 E23（666 新更新），L 前向340992、As0/Ag0、五源 RX/U truth0。训练仍在进行，未完成预测或评分。
+
+## 完整匹配结果
+
+No-As clean85.245238%、mid urban37.279762%、low urban31.712500%。普通 As 为82.722619%、64.376786%、53.458333%；相对差为−2.522619pp／+27.097024pp／+21.745833pp。确认当前 As 独立 practical 适应收益，同时确认 clean 代价，完整联合目标未达到。固定梯度方案仍关闭，不用该对照挽救。
+
+全部五源 RX/L6300/U56700-hidden/V27000、实际 2220 新更新／累计 E30；全部7×168000固定received IQ预测后独立评分。504CM／84分区／21新配对独立复算，额外分析0IQ/CP/NN/rawtruth/更新。No-As新增训练＋预测3770644NN；另有共享CP smoke2与开发合成2048NN，父E20训练3661082NN单列。
+
+详见 [完整比较](final_analysis.md)、[分层指标](stratified_results.md)、[七场景图](figures/matched_view_results.png)。单一seed，无新增Ag、B10/B11或完整交互证明；不修改目标IQ、信道或困难样本，不追溯重跑已关闭路线。

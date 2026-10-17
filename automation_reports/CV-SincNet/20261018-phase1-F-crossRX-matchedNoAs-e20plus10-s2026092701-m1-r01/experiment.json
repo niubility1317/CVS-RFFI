@@ -492,11 +492,73 @@
   },
   "registered_at": "2026-10-17T18:40:15+00:00",
   "result": {
-    "status": "TRAINING",
-    "archive_transfer": "VERIFIED",
-    "remote_compile": "PASS",
-    "real_checkpoint_smoke": "PASS",
-    "prediction_status": "NOT_STARTED",
+    "status": "ANALYZED",
+    "execution_commit": "00cc9bad869d98bbca408858a4adec55887cf6c7",
+    "analysis_commit": "be259183d95f0c5a08b60372480f7b2a51ee4c85",
+    "summary": {
+      "B00": {
+        "clean": {
+          "accuracy": 0.852452380952381,
+          "macro_F1": 0.849544504807013,
+          "correct": 143212,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7735416666666667
+        },
+        "practical_high": {
+          "accuracy": 0.46006547619047616,
+          "macro_F1": 0.4077148533348367,
+          "correct": 77291,
+          "count": 168000,
+          "worst_RX_accuracy": 0.386625
+        },
+        "practical_mid": {
+          "accuracy": 0.4431428571428571,
+          "macro_F1": 0.3966154892622001,
+          "correct": 74448,
+          "count": 168000,
+          "worst_RX_accuracy": 0.37666666666666665
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.4222142857142857,
+          "macro_F1": 0.38117208032166255,
+          "correct": 70932,
+          "count": 168000,
+          "worst_RX_accuracy": 0.36083333333333334
+        },
+        "practical_high_urban": {
+          "accuracy": 0.4475119047619048,
+          "macro_F1": 0.4017298167100072,
+          "correct": 75182,
+          "count": 168000,
+          "worst_RX_accuracy": 0.37775
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.37279761904761904,
+          "macro_F1": 0.3470981628189295,
+          "correct": 62630,
+          "count": 168000,
+          "worst_RX_accuracy": 0.3244166666666667
+        },
+        "practical_low_urban": {
+          "accuracy": 0.317125,
+          "macro_F1": 0.3027495676583896,
+          "correct": 53277,
+          "count": 168000,
+          "worst_RX_accuracy": 0.2805
+        }
+      }
+    },
+    "truth_last": true,
+    "CM_recounts": 504,
+    "partition_recounts": 84,
+    "paired_comparisons": 21,
+    "matched_As_run": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
+    "decision": "MATCHED_AS_PRACTICAL_GAIN_WITH_CLEAN_COST;NO_NEW_AG_OR_JOINT_PROOF",
+    "new_Ag": false,
+    "As": false,
+    "own_NoAs_new_actual_NN": 3772694,
+    "new_real_updates": 2220,
+    "extra_training_VJP": 4440,
     "joint_goal_complete": false
   }
 }
