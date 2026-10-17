@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_REFERENCES_BOUNDARY_AND_LA16_FACTORIAL_NEGATIVE_ANALYZED_SINGLE_SEED",
+  "status": "E30_SOURCE_CYCLE_ORDER_PLACEMENT_COMPATIBLE_NOT_TRAINED",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -234,7 +234,7 @@
       "repeat_policy": "No window/period/group/phasefit/probability/RX/seed/threshold/budget rescue of this post-receiver view; upstream order requires independent preregistered same-operator/same-latent source test, never target retuning"
     }
   },
-  "next_method_boundary": "All-source F+CROSS_RX scratchE30/defaulthead/originalU and matched B00/B01 remain fixed references. Nativeboundary mixing and exactLA16xAs source hypotheses failed. A distinct IQ/organization candidate needs new legal source evidence and a matched factorial; no sourceRX holdout, fittedhead, targetfeedback or rescue of closed routes.",
+  "next_method_boundary": "All-source scratchE30/defaulthead/originalU retained. Same fixed pre-receiver IQ cycle operator passed source compatibility only. Any training factorial must match the raw-secondary input in all four rows; old ordinary-secondary refs stay direct external references, never same-input controls. No targetfeedback, no new heldRX or rescue of closed routes.",
   "execution_commit": "bafba40e365d0914a2e86f861fb55a49f1cd3997",
   "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/report.md",
   "input_representation_audit": {
@@ -303,5 +303,30 @@
     ],
     "matching": "Search both spellings before proposing or launching a new F method. A missing exact-name hit is not evidence of an untested route.",
     "note": "Existing records retain immutable IDs and their original source/full-source contracts. Do not rename or rerun historical artifacts."
+  },
+  "source_cycle_order_placement": {
+    "run_id": "20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01",
+    "source_rule_pass": true,
+    "scope": "Fixed pre-receiver order compatibility only; no proof of new Ag or trained gains",
+    "post_order_FAIL_retained": true,
+    "urban_delta_pp": [
+      [
+        -0.5000000000000004,
+        -0.2777777777777768
+      ],
+      [
+        -0.05555555555555314,
+        -0.22222222222222365
+      ]
+    ],
+    "source_models": 2,
+    "model_seed_count": 1,
+    "channel_draws": 2,
+    "execution_commit": "5692278a88c025f18d21932087ede41a525be9a6",
+    "report": "automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01/report.md",
+    "NN": 21604,
+    "native_calls": 21600,
+    "updates": 0,
+    "target_access": false
   }
 }

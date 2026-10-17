@@ -1,6 +1,6 @@
 # 固定IQ重排：原生星地传播前后顺序对照
 
-状态：REGISTERED，未启动。上一轮后置Ag(As(x))在源urban显著退化，保持FAIL。新实验不改变算子/窗口/周期/排列群/phasefit/概率/seed，只检验原目标明确要求的不可交换问题：As(Ag(x))是否仍能保留原As(x)。当前并未找到有效Ag或联合提升，目标ACTIVE。
+状态：ANALYZED，源域顺序对照完成，未训练、未访问 target。上一轮后置Ag(As(x))在源urban显著退化，保持FAIL。新实验不改变算子/窗口/周期/排列群/phasefit/概率/seed，只检验原目标明确要求的不可交换问题：As(Ag(x))是否仍能保留原As(x)。当前并未找到有效Ag或联合提升，目标ACTIVE。
 
 ## 固定方法与判断
 
@@ -23,3 +23,15 @@
 本地3项focusedtests及compile PASS：原生重放差/G1/形状/非有限/错误kernel反例，恰好−.5pp浮点边界及越界/坏矩阵反例，priorclean guard独立于已失败urban且不可缺项。0真实IQ/CP/NN。唯一限定新增P31接线P0/P1审查PASS，不重审不可变旧算子。普通账户/CPU2/输出无冲突/实际engine句柄preflight VERIFIED，不新增签名、hash链、报告审批或重验数据。
 
 整体目标仍未完成：Ag跨RX clean净收益、正式low>60%、suburban接近clean及跨seed联合收益均未证明。本轮只源反证，不自动target或扩seed，后续训练须另行固定匹配矩阵和实际输入路径。
+
+## 已核实结果
+
+实际代码 commit 5692278a88c025f18d21932087ede41a525be9a6。两真实 FINAL30 默认头共 4 个合成包 smoke PASS 后继续。一次发布 archive 比较、远端编译、PID570422/start_ticks148293505/CWD/argv/CPU2/空CUDA/log增长及自然终态 VERIFIED，stderr为空。
+
+B01 同一源V1800、两个信道draw池化：原As(x) / 后置Ag(As(x)) / 前置As(Ag(x))准确率分别为 low_suburban 90.444444% / 85.972222% / 89.972222%，mid_urban 76.305556% / 72.666667% / 76.027778%，low_urban 62.555556% / 59.916667% / 62.305556%。前置相对原As分别−0.472222、−0.277778、−0.250000个百分点。四urban单元为[[-.5,-.277778],[-.055556,-.222222]]pp，按原含边界判据4/4通过；后置仍FAIL，不改写为成功。clean仅复用前轮同算子结果，两模型均−.111111pp、clean正确集合保持均>99%；并非新增训练clean结果。
+
+10800个原输入原生重放最大绝对差为0；相同物理状态、传播核、RX session、新增噪声方差和G=1检查通过。15个RX/day session；lock变化0；preAGC噪声最大相对差3.091536e−16。接收质量、补偿和AGC按原流程重算；本轮保存AGC增益，未保存逐包agc_limited布尔项，该项为明确缺项，不据此宣称无AGC限幅。不能将新增噪声比等同总SNR，也不能从顺序效应唯一归因于某一内部机制。
+
+新增native calls21600、IQ增强10800、NN21604、0训练/头拟合/教师更新，墙钟48.543259秒；独立复算342个CM、96个分层、10800个private排列和10800条物理记录，NN/IQ/CP全为0、墙钟1.659808秒。实际图E:/type10-7/local_artifacts/cvs_FcrossRX_cycleorder_placement_E30_20261017/analysis_r01/cycle_order_placement_source_comparison.png及同名PDF，已查看PNG。CSV/summary/completion保存同目录。
+
+结论只限于固定算子的前置源域兼容性，Ag泛化价值、联合训练净收益、正式low>60%及跨seed均未证明。原正式E30 ordinary拼接参考clean82.797024%/low53.137500%不变，source low62.305556%不能替代正式目标。无新训练曲线。下一步才是匹配原始secondary输入的scratchE30四因子训练，必须清楚区分旧ordinary-secondary正式参考，不能把raw输入变化冒称Ag收益。
