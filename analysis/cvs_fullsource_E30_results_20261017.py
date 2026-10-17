@@ -185,7 +185,7 @@ def plots(out,results):
   matrix=np.asarray([[sum(c['count'] for c in coverage if c['RX']==rx and c['scene']==s) for s in scenes] for rx in rxs])
   im=axes[1,1].imshow(matrix,cmap='Blues',aspect='auto');axes[1,1].set(xticks=range(3),xticklabels=scene_labels,yticks=range(5),yticklabels=['RX'+str(rx) for rx in rxs],title='Training observations by source RX/scene')
   for j in range(5):
-   for k in range(3):axes[1,1].text(k,j,str(matrix[j,k]),ha='center',va='center',fontsize=8,color='white' if matrix[j,k]>matrix.max()*.7 else 'black')
+   for k in range(3):axes[1,1].text(k,j,str(matrix[j,k]),ha='center',va='center',fontsize=8,color='white' if matrix[j,k]>matrix.min()+.6*(matrix.max()-matrix.min()) else 'black')
   fig.colorbar(im,ax=axes[1,1],fraction=.045,label='Observation count');fig.suptitle(name+' full source E30 training support; counts are not accuracy or total SNR');fig.tight_layout()
   for suffix in ['png','pdf']:p=out/('training_support_'+name+'.'+suffix);fig.savefig(p,dpi=200);figures.append(str(p))
   plt.close(fig)
