@@ -1,3 +1,5 @@
+> 已 ANALYZED／VERIFIED：固定共享响应科学失败，18/18 折及全部 5 RX 均劣于原加性控制，候选关闭。0 IQ／NN／更新／target；不是 Ag 或联合目标完成。见 [完整源结果](source_analysis.md)。下文保留运行前预登记。
+
 # 共享输入响应：已存源矩阵单项预登记
 
 状态：IMPLEMENTED_LOCAL_VERIFIED，尚未运行真实源输入。前一周期信号形状行确认V中跨TX/day的RX关联，但共享加性偏移残余为同TX控制2.609倍，固定资格失败。本行检验不同的输入作用模型，不修改旧测量、阈值或FAIL，也不复活旧FIR／phase／RXMIX固定配方。

@@ -153,7 +153,12 @@
     "qualification": "FAIL",
     "joint_goal_complete": false
   },
-  "next_source_hypothesis": null,
+  "next_source_hypothesis": {
+    "status": "UNIMPLEMENTED_SOURCE_ATTRIBUTION_QUESTION_ONLY",
+    "question": "Does packetwise normalization before averaging explain the fixed mean-proxy failure? Hold current h/window20/allbins/anchor1/referenceRX1/controls fixed and use saved source factors only;attribution cannot reopen this FAIL or authorize IQ training.",
+    "target_access": false,
+    "automatic_training": false
+  },
   "next_training_hypothesis": null,
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -2180,7 +2185,7 @@
       "joint_goal_complete": false
     }
   },
-  "latest_completed_experiment": "20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+  "latest_completed_experiment": "20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
   "source_PSD_positive_affine": {
     "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
     "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
@@ -2827,16 +2832,16 @@
   },
   "active_Ag_hypothesis": {
     "status": "NO_NEW_VALIDATED_IQ_OPERATOR",
-    "latest_source_run": "20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
-    "source_association": "Periodic signal RX contrast predicts V across TX/day,94.711077% SSE reduction",
-    "fixed_qualification": "FAILED_TXconditional_residual_ratio2.609059_above1.05",
+    "latest_source_run": "20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+    "source_association": "Prior periodic signal RX association remains source-only;not causal receiver replacement",
+    "fixed_qualification": "CLOSED_SHARED_RESPONSE_0of18folds_0of5RX_responseSSE4.021492xAdditive_10.492310xTXconditional",
     "IQ_operator": null,
     "identity_preservation_proved": false,
     "training_started": false,
     "automatic_training": false,
-    "next_question": "Can a shared input-acting physically constrained RX response explain TX-dependent shape contrasts? L-only fit and unchanged V prediction needed;no revival of closed fixed recipes."
+    "next_question": "Does packetwise normalization before averaging explain the fixed mean-proxy failure? Hold current h/window20/allbins/anchor1/referenceRX1/controls fixed and use saved source factors only;attribution cannot reopen this FAIL or authorize IQ training."
   },
-  "latest_completed_source_diagnostic": "20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+  "latest_completed_source_diagnostic": "20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
   "active_training_budget": {
     "each_total_epochs": 30,
     "parent_epochs": 20,
@@ -4250,10 +4255,10 @@
     "target_feedback": false,
     "no_rescue": true
   },
-  "latest_completed_analysis": "20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
-  "current_evidence_gap": "RX-associated periodic signal shape confirmed acrossTX/day in sourceV,but fixed shared-additive qualification failed due2.609x sameTX residual. No identity-preserving IQ operator or Ag gain established;shared input-acting response is next source-only question,not a trained candidate. Latest actual identity result remains failed viewMoment E30.",
+  "latest_completed_analysis": "20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+  "current_evidence_gap": "Current shared response population proxy failed all four substantive source qualifications;no identity-preserving IQ Ag proved. Only fixed-response normalization-order attribution remains a source question,no parameter/threshold rescue. Latest actual identity training remains failed viewMoment E30. E30/full5RX/256IQ unchanged.",
   "current_source_experiment": null,
-  "latest_completed_source_experiment": "20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+  "latest_completed_source_experiment": "20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
   "unitary_source_result": {
     "run_id": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
     "status": "ANALYZED_SOURCE_IDENTITY_PROTECTION_ONLY",
@@ -4502,7 +4507,7 @@
     "Ag_efficacy": false,
     "joint_goal_complete": false
   },
-  "latest_research_note": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/report.md",
+  "latest_research_note": "automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01/source_analysis.md",
   "amplitude_donor_route_check": {
     "status": "NOT_INDEPENDENT_SUPPORTED_NEW_ROUTE_NO_LAUNCH",
     "hypothesis": "Preserve anchor Fourier phase and borrow same-visibleTX crossRX donor amplitude",
@@ -6080,5 +6085,31 @@
     "IQ_operator_implemented": false,
     "joint_goal_complete": false,
     "report": "automation_reports/CV-SincNet/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01/source_analysis.md"
+  },
+  "shared_RX_response_source_result": {
+    "run_id": "20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+    "status": "ANALYZED_SCIENTIFIC_NEGATIVE",
+    "execution_commit": "3fc5b120460e2e3e69beccdedd7af13cb2bd996c",
+    "response_SSE": 2.944634452706236,
+    "additive_SSE": 0.7322244363511312,
+    "TXconditional_SSE": 0.28064691215104764,
+    "positive_folds": 0,
+    "improved_RX": 0,
+    "conditions": {
+      "nonzero_additive_error": true,
+      "additive_SSE_reduction": false,
+      "positive_folds": false,
+      "each_RX_not_worse": false,
+      "not_worse_TXconditional": false,
+      "phase_products_nonzero": true
+    },
+    "independent_recount_verified": true,
+    "raw_IQ_reads": 0,
+    "NN": 0,
+    "updates": 0,
+    "target_access": false,
+    "closed_fixed_recipe": true,
+    "identity_accuracy_measured": false,
+    "joint_goal_complete": false
   }
 }

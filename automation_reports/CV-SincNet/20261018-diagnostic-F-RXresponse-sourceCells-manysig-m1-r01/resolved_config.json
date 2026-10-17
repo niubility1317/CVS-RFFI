@@ -1,0 +1,71 @@
+{
+  "config": {
+    "run_id": "20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+    "launch_owner": "codex/root/F-RX-response-source-20261018",
+    "output_root": "PROJECT/runs/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+    "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "derived_input": "PROJECT/runs/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+    "RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "reference_RX": 1,
+    "source_RX_holdout": null,
+    "source_L": 6300,
+    "source_V": 27000,
+    "original_IQ_points": 256,
+    "original_window": [
+      80,
+      160
+    ],
+    "period": 20,
+    "model": "20point unitaryDFT-diagonal sharedcomplex response D_r;Phi_D(G)=D*G*D^H*trace(G)/trace(D*G*D^H);all20bins retained",
+    "fit": "L only:mean centered log diagonal ratios for amplitude;phase of mean G_r[k,1]*conj(G_ref[k,1]) for phase;unitRMS response,phase gauge harmonic1;no iterativeoptimizer or classifier",
+    "epsilon": 1e-12,
+    "phase_anchor_bin": 1,
+    "folds": "18leaveTXanddayout statistical folds;other5TX/2day/all5RX always retained;72nonreference fits;referenceRX fixed by index,not selected",
+    "readout": "Held V referenceRX matrix is input only;one shared fitted response predicts otherRX matrices;center5RX for error comparison;no V fit/update",
+    "controls": "Original L-only shared additive contrast and sameTX/other2day L conditional contrast,unchanged physical V evaluation",
+    "criteria": {
+      "min_additive_SSE_reduction": 0.2,
+      "min_positive_folds": 15,
+      "each_RX_not_worse_than_additive": true,
+      "max_SSE_to_TXconditional": 1.05,
+      "all_phase_products_nonzero": true,
+      "numerical_SSE_tolerance": 1e-20
+    },
+    "on_fail": "Close fixed DFT20/logratio/anchor1/shared-response hypothesis;no bin/window/anchor/floor/referenceRX/model-order/threshold rescue or IQ training",
+    "on_pass": "Shared source response prediction only;not pure receiver calibration,physical RXreplacement,label-preserving IQ or Ag efficacy;no automatic training",
+    "scope": "New input-acting response predictor on population mean projectors,not altered old projector statistic or reopened fixed FIR/phase/RXMIX candidate",
+    "limitations": [
+      "Mean of normalized packet projectors need not equal normalized transform of the mean;this is a fixed population prediction approximation",
+      "RX/TX cellmeans are not simultaneously paired packets;channel,equalization and samplingnoise remain mixed",
+      "Passing source prediction is not physical RXreplacement or safe full256IQ filtering;failing closes this proxy,not every possible shared receiver response"
+    ],
+    "source_only": true,
+    "raw_IQ_reads": 0,
+    "CP": 0,
+    "NN": 0,
+    "teacher_NN": 0,
+    "optimizer_steps": 0,
+    "head_fit_updates": 0,
+    "U_used": false,
+    "U_truth_read": false,
+    "target_access": false,
+    "IQ_operator_for_training": false,
+    "automatic_training": false,
+    "CPU_threads": 2,
+    "GPU": "none",
+    "future_training": "F+CROSS_RX/full5RX/L6300/U56700hidden/V27000/256IQ/defaultcos joint/E30 unchanged;no model trained in this row"
+  },
+  "execution_commit": "3fc5b120460e2e3e69beccdedd7af13cb2bd996c",
+  "source_handle_exact_match": true,
+  "derived_source_commit": "a4c557c5706a85427e190906c231f7cbe231de4e",
+  "source_RX_holdout": null,
+  "model_constructed": false,
+  "raw_IQ_read": false,
+  "target_access": false
+}

@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "negative_cases": 17,
+  "scientific_cases": {
+    "shared": {
+      "decision": "SOURCE_SHARED_RESPONSE_PREDICTION_ONLY",
+      "response_SSE": 1.0285763264852843e-21,
+      "additive_SSE": 4.822831112611139,
+      "conditions": {
+        "nonzero_additive_error": true,
+        "additive_SSE_reduction": true,
+        "positive_folds": true,
+        "each_RX_not_worse": true,
+        "not_worse_TXconditional": true,
+        "phase_products_nonzero": true
+      }
+    },
+    "TX_only": {
+      "decision": "CLOSED_FIXED_SHARED_RESPONSE",
+      "response_SSE": 8.633910337626514e-31,
+      "additive_SSE": 7.1377417102230315e-31,
+      "conditions": {
+        "nonzero_additive_error": false,
+        "additive_SSE_reduction": false,
+        "positive_folds": false,
+        "each_RX_not_worse": true,
+        "not_worse_TXconditional": true,
+        "phase_products_nonzero": true
+      }
+    },
+    "reversal": {
+      "decision": "CLOSED_FIXED_SHARED_RESPONSE",
+      "response_SSE": 14.078756345593966,
+      "additive_SSE": 5.539842366111705,
+      "conditions": {
+        "nonzero_additive_error": true,
+        "additive_SSE_reduction": false,
+        "positive_folds": false,
+        "each_RX_not_worse": false,
+        "not_worse_TXconditional": false,
+        "phase_products_nonzero": true
+      }
+    },
+    "TX_response": {
+      "decision": "CLOSED_FIXED_SHARED_RESPONSE",
+      "response_SSE": 43.185982222893195,
+      "additive_SSE": 38.71274057081958,
+      "conditions": {
+        "nonzero_additive_error": true,
+        "additive_SSE_reduction": false,
+        "positive_folds": false,
+        "each_RX_not_worse": false,
+        "not_worse_TXconditional": true,
+        "phase_products_nonzero": true
+      }
+    }
+  },
+  "synthetic_LV_cell_matrices": 720,
+  "closed_form_nonreference_fits": 360,
+  "source_response_prediction_calls": 450,
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "target": false
+}

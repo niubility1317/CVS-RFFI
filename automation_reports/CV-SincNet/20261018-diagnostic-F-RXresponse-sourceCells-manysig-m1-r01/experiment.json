@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active joint research;existing256IQ/all5RX/F+CROSS_RX/E30. This source-only closed-form fit has no model,rawIQ,training,target or automatic expansion.",
   "code": {
-    "commit": "PENDING_ACTUAL_GIT_COMMIT_PINNED_BY_PUBLISH",
+    "commit": "3fc5b120460e2e3e69beccdedd7af13cb2bd996c",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "Existing N607 CVS-RFFI Python/NumPy CPU,2threads",
     "cwd": "PROJECT/releases/cvs_F_RX_response_source_20261018_r01"
@@ -219,7 +219,21 @@
         "GPU": "none",
         "future_training": "F+CROSS_RX/full5RX/L6300/U56700hidden/V27000/256IQ/defaultcos joint/E30 unchanged;no model trained in this row"
       },
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "result": {
+        "decision": "CLOSED_FIXED_SHARED_RESPONSE",
+        "source_qualified": false,
+        "response_SSE": 2.944634452706236,
+        "additive_SSE": 0.7322244363511312,
+        "TXconditional_SSE": 0.28064691215104764,
+        "positive_folds": 0,
+        "all_RX_improved": 0,
+        "identity_accuracy_measured": false,
+        "raw_IQ_reads": 0,
+        "NN": 0,
+        "updates": 0,
+        "target_access": false
+      }
     }
   ],
   "notes": [

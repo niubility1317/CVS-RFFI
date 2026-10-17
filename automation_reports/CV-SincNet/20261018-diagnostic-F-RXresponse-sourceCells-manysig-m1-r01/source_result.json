@@ -1,0 +1,939 @@
+{
+  "decision": "CLOSED_FIXED_SHARED_RESPONSE",
+  "conditions": {
+    "nonzero_additive_error": true,
+    "additive_SSE_reduction": false,
+    "positive_folds": false,
+    "each_RX_not_worse": false,
+    "not_worse_TXconditional": false,
+    "phase_products_nonzero": true
+  },
+  "baseline_SSE": 13.844489199367734,
+  "additive_SSE": 0.7322244363511312,
+  "TXconditional_SSE": 0.28064691215104764,
+  "response_SSE": 2.944634452706236,
+  "response_vs_additive_gain": -3.02149164452928,
+  "response_vs_zero_gain": 0.7873063852120514,
+  "response_to_TXconditional_ratio": 10.492310177713257,
+  "positive_folds": 0,
+  "folds": [
+    {
+      "TX": 0,
+      "day": 1,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7888837788790379,
+      "additive_SSE": 0.08317212628915155,
+      "TXconditional_SSE": 0.01551899384234802,
+      "response_SSE": 0.20598565400397478,
+      "response_vs_additive_gain": -1.4766188288592819,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.26201078523488774,
+          "amplitude_condition_number": 91.47748325276515,
+          "amplitude_min": 0.0419984054042049,
+          "amplitude_max": 3.8419084270059956
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.3661149246818033,
+          "amplitude_condition_number": 1.54256381981806,
+          "amplitude_min": 0.8469620402646438,
+          "amplitude_max": 1.3064930000715265
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.30631383819350183,
+          "amplitude_condition_number": 2.1249575444575335,
+          "amplitude_min": 0.8153816594988891,
+          "amplitude_max": 1.732651408964468
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.22953491555395403,
+          "amplitude_condition_number": 52.26613959216382,
+          "amplitude_min": 0.045748372824490215,
+          "amplitude_max": 2.3910908401591593
+        }
+      ]
+    },
+    {
+      "TX": 1,
+      "day": 1,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7701769296749632,
+      "additive_SSE": 0.012067759520480444,
+      "TXconditional_SSE": 0.006109461982789404,
+      "response_SSE": 0.11239274089819153,
+      "response_vs_additive_gain": -8.313472041553984,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.1559694485646684,
+          "amplitude_condition_number": 123.83596283126255,
+          "amplitude_min": 0.03207651372195247,
+          "amplitude_max": 3.9722259610281894
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.36685180523479616,
+          "amplitude_condition_number": 1.361363020672837,
+          "amplitude_min": 0.8868989211516035,
+          "amplitude_max": 1.2073913943304273
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.2107302333755611,
+          "amplitude_condition_number": 2.3390517432503986,
+          "amplitude_min": 0.7850982106669063,
+          "amplitude_max": 1.8363853382831958
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.2697577205504169,
+          "amplitude_condition_number": 50.82904380379502,
+          "amplitude_min": 0.04728948570989955,
+          "amplitude_max": 2.4036793406074226
+        }
+      ]
+    },
+    {
+      "TX": 2,
+      "day": 1,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7543111064834833,
+      "additive_SSE": 0.020339566070506295,
+      "TXconditional_SSE": 0.01102038788122325,
+      "response_SSE": 0.14409493247947652,
+      "response_vs_additive_gain": -6.084464436457355,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.02699620085205402,
+          "amplitude_condition_number": 134.23932104210118,
+          "amplitude_min": 0.030544752254585392,
+          "amplitude_max": 4.100306804054733
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.2665150564839649,
+          "amplitude_condition_number": 1.2095361140846004,
+          "amplitude_min": 0.8503077377344661,
+          "amplitude_max": 1.0284779168754137
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.22526530835307965,
+          "amplitude_condition_number": 2.9966026911306676,
+          "amplitude_min": 0.7312747355946703,
+          "amplitude_max": 2.1913398406388565
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.2699552598936772,
+          "amplitude_condition_number": 51.68226997547349,
+          "amplitude_min": 0.0484593366868613,
+          "amplitude_max": 2.504488521482733
+        }
+      ]
+    },
+    {
+      "TX": 3,
+      "day": 1,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7733947588645915,
+      "additive_SSE": 0.015161917252809323,
+      "TXconditional_SSE": 0.008292548074880831,
+      "response_SSE": 0.12609957823410675,
+      "response_vs_additive_gain": -7.316862315730024,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.22729221461874963,
+          "amplitude_condition_number": 150.85015158418565,
+          "amplitude_min": 0.027310597240738144,
+          "amplitude_max": 4.119807733619991
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.3899330527309746,
+          "amplitude_condition_number": 1.5102305370480402,
+          "amplitude_min": 0.9073415449215324,
+          "amplitude_max": 1.3702949086728444
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.30250946199944323,
+          "amplitude_condition_number": 3.0509187191332527,
+          "amplitude_min": 0.7218854623130146,
+          "amplitude_max": 2.202413870040939
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.10312820979645289,
+          "amplitude_condition_number": 50.91294444396785,
+          "amplitude_min": 0.0457402915952483,
+          "amplitude_max": 2.3287729248397664
+        }
+      ]
+    },
+    {
+      "TX": 4,
+      "day": 1,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.759181263641509,
+      "additive_SSE": 0.06017819939913495,
+      "TXconditional_SSE": 0.014358271954017718,
+      "response_SSE": 0.1615577209432507,
+      "response_vs_additive_gain": -1.6846552830820167,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.1932550135781985,
+          "amplitude_condition_number": 111.40827393411016,
+          "amplitude_min": 0.0359035745832934,
+          "amplitude_max": 3.999955272389306
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.36352156593131996,
+          "amplitude_condition_number": 1.3637520388953523,
+          "amplitude_min": 0.884954277648021,
+          "amplitude_max": 1.2068582004716524
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.2386274736784338,
+          "amplitude_condition_number": 1.2826515437437793,
+          "amplitude_min": 0.9353277331845016,
+          "amplitude_max": 1.1996995608754706
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.35303379857485745,
+          "amplitude_condition_number": 41.8741936766102,
+          "amplitude_min": 0.05173243638786139,
+          "amplitude_max": 2.1662540606682246
+        }
+      ]
+    },
+    {
+      "TX": 5,
+      "day": 1,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7707028159570839,
+      "additive_SSE": 0.030740315624659464,
+      "TXconditional_SSE": 0.006954063772728883,
+      "response_SSE": 0.160849340901866,
+      "response_vs_additive_gain": -4.232520799911203,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.2461405934621645,
+          "amplitude_condition_number": 196.0256292492836,
+          "amplitude_min": 0.021565675207969825,
+          "amplitude_max": 4.22742505282796
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.05765021863042055,
+          "amplitude_condition_number": 1.2445261351803436,
+          "amplitude_min": 0.9327749505650693,
+          "amplitude_max": 1.1608628042197817
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.42063664737020035,
+          "amplitude_condition_number": 2.4618933501966844,
+          "amplitude_min": 0.8030662465939303,
+          "amplitude_max": 1.9770634522570079
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.31908853738236254,
+          "amplitude_condition_number": 54.94732497910996,
+          "amplitude_min": 0.04430223977709735,
+          "amplitude_max": 2.4342895663346202
+        }
+      ]
+    },
+    {
+      "TX": 0,
+      "day": 2,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7587979096030821,
+      "additive_SSE": 0.03157140759863121,
+      "TXconditional_SSE": 0.011733166919783974,
+      "response_SSE": 0.15461280609113354,
+      "response_vs_additive_gain": -3.897241455203183,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.20852735057204927,
+          "amplitude_condition_number": 65.98815333695559,
+          "amplitude_min": 0.05338089433539776,
+          "amplitude_max": 3.5225066406680514
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.22808509233127913,
+          "amplitude_condition_number": 2.2178160593883454,
+          "amplitude_min": 0.7865297749390614,
+          "amplitude_max": 1.7443783660469512
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.2713958643996383,
+          "amplitude_condition_number": 1.509615876910199,
+          "amplitude_min": 0.9065677276653736,
+          "amplitude_max": 1.3685690351780495
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.07727328217044263,
+          "amplitude_condition_number": 42.6355515175606,
+          "amplitude_min": 0.05115170079760921,
+          "amplitude_max": 2.1808809745673132
+        }
+      ]
+    },
+    {
+      "TX": 1,
+      "day": 2,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7593285126475896,
+      "additive_SSE": 0.013829689647045477,
+      "TXconditional_SSE": 0.006638092152820281,
+      "response_SSE": 0.12045772996281194,
+      "response_vs_additive_gain": -7.710081935103011,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.018351010856470625,
+          "amplitude_condition_number": 108.44054114296314,
+          "amplitude_min": 0.0360320656168267,
+          "amplitude_max": 3.907336693987444
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.2645707914024139,
+          "amplitude_condition_number": 2.6457352875291384,
+          "amplitude_min": 0.7932850430624646,
+          "amplitude_max": 2.098822231499435
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.20673349900260668,
+          "amplitude_condition_number": 2.1071838582016116,
+          "amplitude_min": 0.8098511484338935,
+          "amplitude_max": 1.7065052675259378
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.14600348680404882,
+          "amplitude_condition_number": 54.67965676971413,
+          "amplitude_min": 0.04305164463116556,
+          "amplitude_max": 2.3540491518038387
+        }
+      ]
+    },
+    {
+      "TX": 2,
+      "day": 2,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7949896578510971,
+      "additive_SSE": 0.045569562179723966,
+      "TXconditional_SSE": 0.019656222943586585,
+      "response_SSE": 0.16558117352306467,
+      "response_vs_additive_gain": -2.6335914940332583,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.0862595973234523,
+          "amplitude_condition_number": 121.77068941094319,
+          "amplitude_min": 0.033498571711048794,
+          "amplitude_max": 4.07914417153633
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.2785980904574303,
+          "amplitude_condition_number": 1.374703511577125,
+          "amplitude_min": 0.8051350846159625,
+          "amplitude_max": 1.1068220281155092
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.12800992100508843,
+          "amplitude_condition_number": 1.729811939195534,
+          "amplitude_min": 0.8576671688247982,
+          "amplitude_max": 1.4836029084891675
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.020117336525523662,
+          "amplitude_condition_number": 48.323785353497776,
+          "amplitude_min": 0.05103717035119265,
+          "amplitude_max": 2.4663092651009344
+        }
+      ]
+    },
+    {
+      "TX": 3,
+      "day": 2,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7847423240161797,
+      "additive_SSE": 0.024993423458774894,
+      "TXconditional_SSE": 0.011516424387222612,
+      "response_SSE": 0.1443194782541693,
+      "response_vs_additive_gain": -4.774298126553785,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.19522436173510171,
+          "amplitude_condition_number": 122.91938701169542,
+          "amplitude_min": 0.03296507882129827,
+          "amplitude_max": 4.052047281506206
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.22897134462212282,
+          "amplitude_condition_number": 2.539890606183115,
+          "amplitude_min": 0.8275654953261159,
+          "amplitude_max": 2.1019258275800783
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.2734461339825105,
+          "amplitude_condition_number": 1.877852157494822,
+          "amplitude_min": 0.8256233323766159,
+          "amplitude_max": 1.5503985559814926
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.05608472955574151,
+          "amplitude_condition_number": 44.935534346603504,
+          "amplitude_min": 0.049429179093597786,
+          "amplitude_max": 2.2211265748847793
+        }
+      ]
+    },
+    {
+      "TX": 4,
+      "day": 2,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7841057617062595,
+      "additive_SSE": 0.10920964718271339,
+      "TXconditional_SSE": 0.03705402998327649,
+      "response_SSE": 0.24303657889266744,
+      "response_vs_additive_gain": -1.2254130945598116,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.06508202499972111,
+          "amplitude_condition_number": 61.06558761337558,
+          "amplitude_min": 0.05770814095651357,
+          "amplitude_max": 3.5239815375850068
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.23167396336260523,
+          "amplitude_condition_number": 1.7066791746115872,
+          "amplitude_min": 0.8622922016874923,
+          "amplitude_max": 1.4716561430500177
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.26657932021656294,
+          "amplitude_condition_number": 1.2554377568594839,
+          "amplitude_min": 0.9050455202331243,
+          "amplitude_max": 1.1362283177771983
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.17603327414250775,
+          "amplitude_condition_number": 34.41077598721836,
+          "amplitude_min": 0.058829724234790874,
+          "amplitude_max": 2.02437646203322
+        }
+      ]
+    },
+    {
+      "TX": 5,
+      "day": 2,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7747746108382235,
+      "additive_SSE": 0.030618101264785254,
+      "TXconditional_SSE": 0.009608538863886537,
+      "response_SSE": 0.14932875932611223,
+      "response_vs_additive_gain": -3.8771397688810785,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.037885344384062866,
+          "amplitude_condition_number": 132.09740235468394,
+          "amplitude_min": 0.03038899422869615,
+          "amplitude_max": 4.0143071977822435
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.19231818759180414,
+          "amplitude_condition_number": 1.6767580249295784,
+          "amplitude_min": 0.8859451457030788,
+          "amplitude_max": 1.485515632705042
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.36511913401782264,
+          "amplitude_condition_number": 1.4593969766812007,
+          "amplitude_min": 0.9001612242338227,
+          "amplitude_max": 1.3136925691724892
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.04224758534741753,
+          "amplitude_condition_number": 51.98901719665332,
+          "amplitude_min": 0.04615521356938404,
+          "amplitude_max": 2.3995641919739135
+        }
+      ]
+    },
+    {
+      "TX": 0,
+      "day": 3,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7802397300058754,
+      "additive_SSE": 0.05486073193227661,
+      "TXconditional_SSE": 0.007559235513935835,
+      "response_SSE": 0.17754446203274926,
+      "response_vs_additive_gain": -2.2362758530440465,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.2890792083261815,
+          "amplitude_condition_number": 93.89175846408583,
+          "amplitude_min": 0.0407624222612169,
+          "amplitude_max": 3.8272555053612525
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.09766179844442331,
+          "amplitude_condition_number": 1.8697350907711936,
+          "amplitude_min": 0.722714776370591,
+          "amplitude_max": 1.3512851779989499
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.08469732220891217,
+          "amplitude_condition_number": 1.5975813933125376,
+          "amplitude_min": 0.8101344594855366,
+          "amplitude_max": 1.2942557385554032
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.17794285992898468,
+          "amplitude_condition_number": 39.340231132620154,
+          "amplitude_min": 0.0548640694786867,
+          "amplitude_max": 2.158365174167666
+        }
+      ]
+    },
+    {
+      "TX": 1,
+      "day": 3,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7294771294407227,
+      "additive_SSE": 0.018682279789585268,
+      "TXconditional_SSE": 0.015277582642109721,
+      "response_SSE": 0.14374333227747293,
+      "response_vs_additive_gain": -6.694100179229996,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.1500801557944181,
+          "amplitude_condition_number": 208.81675908740254,
+          "amplitude_min": 0.02023348268093013,
+          "amplitude_max": 4.225090278482918
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.0819810589178599,
+          "amplitude_condition_number": 2.336433480626052,
+          "amplitude_min": 0.7876666975335407,
+          "amplitude_max": 1.840330843691518
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.13471631873512824,
+          "amplitude_condition_number": 1.9640641077893815,
+          "amplitude_min": 0.8500452306920003,
+          "amplitude_max": 1.6695433275997025
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.0775242425067619,
+          "amplitude_condition_number": 54.478007854802335,
+          "amplitude_min": 0.04417360104764458,
+          "amplitude_max": 2.4064897848484863
+        }
+      ]
+    },
+    {
+      "TX": 2,
+      "day": 3,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.773415551619804,
+      "additive_SSE": 0.023312629689951125,
+      "TXconditional_SSE": 0.009918681954204213,
+      "response_SSE": 0.1521494271127414,
+      "response_vs_additive_gain": -5.526480673191716,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.18927408661039966,
+          "amplitude_condition_number": 152.11249359140018,
+          "amplitude_min": 0.02749440603924274,
+          "amplitude_max": 4.182242662443666
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.032164834659107286,
+          "amplitude_condition_number": 1.335137877830752,
+          "amplitude_min": 0.8875261266989544,
+          "amplitude_max": 1.1849697493201892
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.1037246738254284,
+          "amplitude_condition_number": 1.3862746934090375,
+          "amplitude_min": 0.8987079496576885,
+          "amplitude_max": 1.245856087375977
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.13321649703792793,
+          "amplitude_condition_number": 38.49795312067535,
+          "amplitude_min": 0.05755078949559507,
+          "amplitude_max": 2.215587596059274
+        }
+      ]
+    },
+    {
+      "TX": 3,
+      "day": 3,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7321844139587339,
+      "additive_SSE": 0.014630120066066815,
+      "TXconditional_SSE": 0.00588905654064933,
+      "response_SSE": 0.13153969001143345,
+      "response_vs_additive_gain": -7.991019172599094,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.18812304214437195,
+          "amplitude_condition_number": 138.4834913579073,
+          "amplitude_min": 0.02976079727217002,
+          "amplitude_max": 4.1213791118449885
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.052000071200326896,
+          "amplitude_condition_number": 1.6506337406892908,
+          "amplitude_min": 0.8050163436164827,
+          "amplitude_max": 1.3287871385796903
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.13410606410348178,
+          "amplitude_condition_number": 1.580393814854312,
+          "amplitude_min": 0.8789570709632077,
+          "amplitude_max": 1.3890983184727161
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.12032920162603708,
+          "amplitude_condition_number": 34.148043694812614,
+          "amplitude_min": 0.057998703110546335,
+          "amplitude_max": 1.9805422480614006
+        }
+      ]
+    },
+    {
+      "TX": 4,
+      "day": 3,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7751240857656366,
+      "additive_SSE": 0.08688163062093608,
+      "TXconditional_SSE": 0.06990277892223742,
+      "response_SSE": 0.23445897983427091,
+      "response_vs_additive_gain": -1.6986024336630345,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.13638860314725795,
+          "amplitude_condition_number": 128.7597802778351,
+          "amplitude_min": 0.0320426049455738,
+          "amplitude_max": 4.125798772321555
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.09835498026755309,
+          "amplitude_condition_number": 1.533073788068189,
+          "amplitude_min": 0.7975611335652983,
+          "amplitude_max": 1.2227200682509107
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.15564374794654712,
+          "amplitude_condition_number": 1.8014189657792377,
+          "amplitude_min": 0.6924567124063045,
+          "amplitude_max": 1.247404654709856
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.25594096734321703,
+          "amplitude_condition_number": 35.256947868939484,
+          "amplitude_min": 0.06043409522943522,
+          "amplitude_max": 2.130721745010722
+        }
+      ]
+    },
+    {
+      "TX": 5,
+      "day": 3,
+      "fit_L_cells": 50,
+      "reference_RX": 1,
+      "baseline_SSE": 0.7806588584138605,
+      "additive_SSE": 0.05640532876389913,
+      "TXconditional_SSE": 0.013639373819346566,
+      "response_SSE": 0.21688206792674225,
+      "response_vs_additive_gain": -2.845063448429936,
+      "fit_quality": [
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 1,
+          "amplitude_condition_number": 1,
+          "amplitude_min": 1,
+          "amplitude_max": 1
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.17744386692890665,
+          "amplitude_condition_number": 194.98659771190862,
+          "amplitude_min": 0.021748580438833213,
+          "amplitude_max": 4.240681704831856
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.6596692991468069,
+          "amplitude_condition_number": 1.5422327899772994,
+          "amplitude_min": 0.8185005692261075,
+          "amplitude_max": 1.2623184164755874
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.287151558603028,
+          "amplitude_condition_number": 1.4391586316526146,
+          "amplitude_min": 0.8713124441664565,
+          "amplitude_max": 1.2539568248884927
+        },
+        {
+          "all_phase_products_nonzero": true,
+          "phase_evidence_min": 0.20118528114048312,
+          "amplitude_condition_number": 41.13524292645295,
+          "amplitude_min": 0.05349666668548114,
+          "amplitude_max": 2.2005983798627495
+        }
+      ]
+    }
+  ],
+  "per_RX": {
+    "1": {
+      "additive_SSE": 0.07383550025445529,
+      "response_SSE": 0.2853028715057448,
+      "response_vs_additive_gain": -2.8640338390411246
+    },
+    "3": {
+      "additive_SSE": 0.2758978516029369,
+      "response_SSE": 1.1486919987428288,
+      "response_vs_additive_gain": -3.1634684433715288
+    },
+    "4": {
+      "additive_SSE": 0.05472453765642482,
+      "response_SSE": 0.26894135628197413,
+      "response_vs_additive_gain": -3.914456435803247
+    },
+    "6": {
+      "additive_SSE": 0.07907835580910279,
+      "response_SSE": 0.29225825730694693,
+      "response_vs_additive_gain": -2.6958059423044403
+    },
+    "8": {
+      "additive_SSE": 0.2486881910282115,
+      "response_SSE": 0.949439968868741,
+      "response_vs_additive_gain": -2.81779273452126
+    }
+  },
+  "source_RX_holdout": null,
+  "reference_RX": 1,
+  "L_only_fit": true,
+  "V_fit": false,
+  "raw_IQ_reads": 0,
+  "IQ_operator_for_training": false,
+  "Ag_proved": false,
+  "joint_goal_complete": false,
+  "target_access": false,
+  "status": "SOURCE_SHARED_RESPONSE_READOUT_COMPLETE",
+  "run_id": "20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+  "source_L": 6300,
+  "source_V": 27000,
+  "all_source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "response_fits": 72,
+  "predicted_V_cells": 90,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "U_truth_read": false,
+  "automatic_training": false
+}

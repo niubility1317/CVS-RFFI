@@ -1,3 +1,11 @@
+## 2026-10-18：固定共享 RX 响应真实源检验失败，已关闭
+
+[完整同一行源结果](../automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01/source_analysis.md) 已 ANALYZED／VERIFIED。只读已存180个源20×20单元矩阵，原L6300/V27000/全5RX/256点保持；18统计TX/day折均保留全部RX，非训练域留出。DFT20/logratio/anchor1/RX1/floor/总体均值预测固定：响应SSE2.944634453，加性控制.732224436，同TX控制.280646912；0/18折、0/5RX改善，误差分别为4.021492倍/10.492310倍，六项中四项FAIL。关闭该配方，不换窗口/频点/幅度/参考/阈值救跑，不生成训练IQ。
+
+全部1800复响应/72000源矩阵条目/18折/5RX已独立复算，最大响应差5.324e−12、指标差1.804e−13，结论一致。主过程.320131秒含smoke、独立reader.084673秒；0rawIQ/CP/NN/teacher/更新/U/target。原进程自然结束、预期产物齐全，单archive/compile/ordinarypreflight及PID/CWD/argv已VERIFIED。执行提交3fc5b120460e2e3e69beccdedd7af13cb2bd996c。
+
+本固定均值近似失败不证明所有物理响应不存在，也不证明任何身份保持IQ算子。下一项仅待归因问题：固定本轮h与所有控制，用原已存逐包因子比较先归一化再平均与均值近似；尚未实现/启动，不能改写本行FAIL或直接晋级训练。若仍不优于原加性控制/15折/全部RX/同TX界限，放弃该解释。当前无有依据的新IQ Ag或As训练候选；最新实际身份结果仍是viewMoment四行E30负结果。模型F＋跨RX同TX/defaultcos正常联合训练、全部5源RX、L6300/U56700隐藏TX/V27000、256点、E30保持，整体目标ACTIVE。以下旧当前/下一项均为历史。
+
 ## 2026-10-18：周期信号形状源统计完成；统一偏移资格失败
 
 [完整源L→V结果](../automation_reports/CV-SincNet/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01/source_analysis.md) 已 ANALYZED／VERIFIED。全部5RX/L6300/原V27000/256点保持，U容器和TX真值不读；四周期信号均值的20×20复投影区别于旧去均值残差lag1..4。源V RX差异SSE降94.711077%，18/18折、5/5RX改善，但共享残余SSE为同TX条件控制2.609059倍，超过固定1.05；五项条件最后一项失败，关闭固定共享偏移资格，不改窗口/条目/特征向量/RX/阈值救回。
