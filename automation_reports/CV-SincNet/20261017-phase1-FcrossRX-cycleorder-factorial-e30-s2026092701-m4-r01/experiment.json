@@ -1,0 +1,451 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01",
+  "group_id": "phase1-FcrossRX-cycleorder-factorial",
+  "display_name": "完整源E30：固定IQ周期重排×真实practical四因子",
+  "description": "Four scratchE30 models;common ordinary primary,matched rawsecondary with noAg/noAs,Ag,As,AsAg. P31 upstream compatibility only,not a gain. Full original L/U/V/RX;default head and originalU fixed;automatic everyrow7views truthlast.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F-crossRX cycle-order AgAs factorial",
+    "FcrossRX fullsource IQ S4 x practical E30"
+  ],
+  "tags": [
+    "full_source",
+    "scratch_E30",
+    "IQ_augmentation",
+    "four_factorial",
+    "default_head",
+    "auto_seven_view"
+  ],
+  "comparison_group_id": "FcrossRX_cycleorder_rawsecondary_E30_20261017",
+  "parent_run_ids": [
+    "20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01",
+    "20261017-diagnostic-FcrossRX-cycleorder-sourceV-e30-s2026092701-m2-r01",
+    "20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User active joint Ag/As research and fixed four-factor request,latest scratch E30;F+crossRX sameTX;all trainingRX,no holdout. Source P31 prerequisite completed;no targetfeedback.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary CVS-RFFI FP32,CPU2 perGPUworker,shared totalprocesscap3/freeMB>=12000",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_factorial_E30_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing VALIDATED_ONCE original source/target physical roles; no rebuild",
+    "representation": "Original float32 RMS IQ256;common ordinary(x) primary,raw/Ag(raw)/As(raw)/As(Ag(raw)) secondary;no external postAs RMS",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "same original source_contract.json#role_ids; exact role equality at runtime",
+    "label_map_ref": "same original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "1-1",
+      "14-7",
+      "2-1",
+      "20-1",
+      "7-14",
+      "7-7",
+      "8-8"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      "2021_03_01",
+      "2021_03_08",
+      "2021_03_15",
+      "2021_03_23"
+    ],
+    "tx_sets_ref": "original6 registered TX",
+    "roles": {
+      "L_s": "6300 original labels; all5RX, no extra L_dev or heldRX",
+      "U_s": "56700 original hiddenTX; unchanged originaloldgate/ownEMA only",
+      "V": "27000 original source validation; no gradient, no new domain holdout"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse original VALIDATED_ONCE; metadata full L/U/V role equality confirmed, no data revalidation",
+    "support_query_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/capsule/index.npz",
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_fixed_target_test",
+    "query_use": "test_only_after_FINAL30_and_all7predictions",
+    "external_method_exception": null,
+    "claim_scope": "Exposed benchmark, scratch source training; one model seed. No target feedback, no Ag/interaction/crossseed success claim."
+  },
+  "checkpoint": {
+    "initialization": "scratch only all4rows;no weights fromP25/P30/P31",
+    "sources": [],
+    "contract_check_ref": "experiments/cvs_cycleorder_factorial32/preflight.py; inherited immutableP25 own_model checks for everyownFINAL30",
+    "provenance_verdict": "No training ancestor; launchercompatibility-only fullsourceFINAL20 strict metadata/role+2syntheticNN, never used as initializer",
+    "selection_rule": "FINAL30 only;20L10U/6660;no source/target checkpoint selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "/root",
+    "gpu_policy": "Shared locked admission,total experimentprocess/GPU<=3 includingotherowners,freeMB>=12000;never modify oldhealthy tasks",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_cycleorder_factorial_E30_20261017",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_factorial_E30_20261017_r01/experiments/cvs_cycleorder_factorial32/runner.py",
+    "stop_rule": "Role/provenance/defaulthead/nonfinite/optimizerbudget/orderedroute/invalidprediction/outputconflict direct technicalfailure preserves ownpartial/log,noautomaticretry;dispatcher stops unlaunched ownrows,preserves alreadyhealthy rows. Source scientificFAIL still completes all4 declared seven-view terminal evaluations. No window/phasefit/probability/RX/seed/budget rescue."
+  },
+  "expected_artifacts": [
+    "source/source_contract.json",
+    "source/full_source_roles.json",
+    "source/resolved_config.json",
+    "source/actual_native_args.json",
+    "source/ordinary_base_config.json",
+    "source/module_files.json",
+    "source/actual_practical_first_batch.json(B01)",
+    "source/final_ssdg.pth",
+    "source/source_frozen.json",
+    "source/result.json",
+    "source/training_sequence.jsonl.gz",
+    "source/training_physics.jsonl.gz",
+    "source/SupCon_steps.jsonl.gz",
+    "source/F_optimizer_steps.jsonl.gz",
+    "source/epoch_metrics.csv",
+    "prediction/*_scores.npz",
+    "prediction/predictions.npz",
+    "prediction/complete.json",
+    "scoring/scores.json",
+    "scoring/complete.json",
+    "results.json",
+    "per_row_seed.csv",
+    "analysis_r01/analysis_summary.json",
+    "analysis_r01/per_row_seed.csv",
+    "analysis_r01/training_curves.csv",
+    "analysis_r01/formal_accuracy.png/pdf",
+    "analysis_r01/training_curves.png/pdf",
+    "analysis_r01/receiver_accuracy.png/pdf",
+    "analysis_r01/training_support_B01.png/pdf",
+    "analysis_r01/completion.json",
+    "analysis_B00_r01/analysis_summary.json",
+    "analysis_B00_r01/per_row_seed.csv",
+    "analysis_B00_r01/training_curves.csv",
+    "analysis_B00_r01/formal_accuracy.png/pdf",
+    "analysis_B00_r01/training_curves.png/pdf",
+    "analysis_B00_r01/receiver_accuracy.png/pdf",
+    "analysis_B00_r01/completion.json",
+    "figures_readable_r01/completion.json",
+    "figures_readable_r01/formal_accuracy.png/pdf",
+    "figures_readable_r01/training_curves.png/pdf",
+    "figures_readable_r01/receiver_accuracy.png/pdf",
+    "figures_readable_r01/training_support_B01.png/pdf"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "urban_mean_accuracy",
+      "low_urban_accuracy",
+      "worst_RX_accuracy",
+      "As_minus_noAs_pp",
+      "suburban_clean_gap_pp",
+      "actual_NN",
+      "updates",
+      "wall_seconds"
+    ],
+    "dimensions": [
+      "row",
+      "model_seed",
+      "view",
+      "RX",
+      "day",
+      "TX",
+      "train_scene",
+      "state",
+      "lock"
+    ],
+    "prediction_ref": "eachrow/prediction/complete.json; all7 views before any truth",
+    "scorer_ref": "independent exec evaluate.score only after preflight of complete7 predictions",
+    "completed_analysis_ref": "analysis/cvs_fullsource_E30_results_20261017.py",
+    "source_rule": "B10 fullVclean>=B00+.5pp;B11 fullVclean>=B00 and each2drawx2urban>=B01+1pp;reportcollect stores source_matrix_decision before readingformal. SourceFAIL closescandidate without parameter/seed/epoch rescue;all4 formal rows stillcomplete.",
+    "factorial_effects": "B10-B00, B01-B00, B11-B00,B11-B01, B11-B10, interaction=B11-B10-B01+B00;accuracy/F1/worstRX;urbanmean/low/mid;suburban gaps from ownclean",
+    "target_feedback": false,
+    "crossseed": "One initial modelseed2026092701 only;twochannel draws notmodelseeds;no automatic extension or claim of reproducibility"
+  },
+  "rows": [
+    {
+      "row_id": "B00-s2026092701",
+      "method": "Fixed F+CROSS_RX;ordinary primary / raw secondary; .5 each;matched4L",
+      "purpose": "factorial_control",
+      "config_ref": "experiments/cvs_cycleorder_factorial32/design.py#B00",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B00-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_RX": null,
+        "all_original_roles": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610172201,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model seed is one actual modelseed; originalsplit/data/eval392005 fixed. Privateordinary stream20261016051; nativepracticalview202610172201 and RXsession2026092701; support inapplicable. Every epoch/view refreshes train stream; target arrays unchanged. FixedAg seed202610173001 with disjoint trainL/epoch*/step*/secondary and physical occurrence IDs; same acrossB10/B11. SourceV namespace separate;formal arrays unchanged.",
+      "k": null,
+      "scenario": "train low_suburban/mid_urban/low_urban;testclean+all6fixedpractical",
+      "optimizer": {
+        "name": "AdamW",
+        "weight_decay": 0.0001,
+        "Sinc": "CENTER_UNITS/physicalglobalclip5"
+      },
+      "lr": {
+        "peak": 0.0002,
+        "min": 1e-06,
+        "schedule": "original native cosine over30total epochs"
+      },
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "20L+10U,222steps/epoch,6660updates,3409920L NN/row; ownhiddenU loader567000; ownEMA andV actualcounters; no inherited training. ModelbudgetE20 not a same-cost comparator. Extra sourcequalification12602NN/row;Ag creates852480IQ views inB10/B11,zero extra network forwards;compatibilitysmoke2NN once; all4new scratchcontrols,oldordinary-secondary refs not inputmatched.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B00-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/logs/B00-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_factorial_E30_20261017_r01/experiments/cvs_cycleorder_factorial32/runner.py --mode worker --row B00-s2026092701",
+      "expected_artifacts": [
+        "source/source_contract.json",
+        "source/full_source_roles.json",
+        "source/resolved_config.json",
+        "source/actual_native_args.json",
+        "source/ordinary_base_config.json",
+        "source/module_files.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/training_sequence.jsonl.gz",
+        "source/training_physics.jsonl.gz",
+        "source/SupCon_steps.jsonl.gz",
+        "source/F_optimizer_steps.jsonl.gz",
+        "source/epoch_metrics.csv",
+        "prediction/*_scores.npz",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scoring/scores.json",
+        "scoring/complete.json",
+        "results.json",
+        "per_row_seed.csv",
+        "source/cycle_order_views.jsonl.gz",
+        "source/actual_practical_first_batch.json(As rows only)",
+        "source_qualification/predictions.npz",
+        "source_qualification/complete.json"
+      ]
+    },
+    {
+      "row_id": "B10-s2026092701",
+      "method": "Fixed F+CROSS_RX;ordinary primary / Ag(raw) secondary; .5 each;matched4L",
+      "purpose": "factorial_control",
+      "config_ref": "experiments/cvs_cycleorder_factorial32/design.py#B10",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B10-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_RX": null,
+        "all_original_roles": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610172201,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model seed is one actual modelseed; originalsplit/data/eval392005 fixed. Privateordinary stream20261016051; nativepracticalview202610172201 and RXsession2026092701; support inapplicable. Every epoch/view refreshes train stream; target arrays unchanged. FixedAg seed202610173001 with disjoint trainL/epoch*/step*/secondary and physical occurrence IDs; same acrossB10/B11. SourceV namespace separate;formal arrays unchanged.",
+      "k": null,
+      "scenario": "train low_suburban/mid_urban/low_urban;testclean+all6fixedpractical",
+      "optimizer": {
+        "name": "AdamW",
+        "weight_decay": 0.0001,
+        "Sinc": "CENTER_UNITS/physicalglobalclip5"
+      },
+      "lr": {
+        "peak": 0.0002,
+        "min": 1e-06,
+        "schedule": "original native cosine over30total epochs"
+      },
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "20L+10U,222steps/epoch,6660updates,3409920L NN/row; ownhiddenU loader567000; ownEMA andV actualcounters; no inherited training. ModelbudgetE20 not a same-cost comparator. Extra sourcequalification12602NN/row;Ag creates852480IQ views inB10/B11,zero extra network forwards;compatibilitysmoke2NN once; all4new scratchcontrols,oldordinary-secondary refs not inputmatched.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B10-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/logs/B10-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_factorial_E30_20261017_r01/experiments/cvs_cycleorder_factorial32/runner.py --mode worker --row B10-s2026092701",
+      "expected_artifacts": [
+        "source/source_contract.json",
+        "source/full_source_roles.json",
+        "source/resolved_config.json",
+        "source/actual_native_args.json",
+        "source/ordinary_base_config.json",
+        "source/module_files.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/training_sequence.jsonl.gz",
+        "source/training_physics.jsonl.gz",
+        "source/SupCon_steps.jsonl.gz",
+        "source/F_optimizer_steps.jsonl.gz",
+        "source/epoch_metrics.csv",
+        "prediction/*_scores.npz",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scoring/scores.json",
+        "scoring/complete.json",
+        "results.json",
+        "per_row_seed.csv",
+        "source/cycle_order_views.jsonl.gz",
+        "source/actual_practical_first_batch.json(As rows only)",
+        "source_qualification/predictions.npz",
+        "source_qualification/complete.json"
+      ]
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "method": "Fixed F+CROSS_RX;ordinary primary / As(raw) secondary; .5 each;matched4L",
+      "purpose": "factorial_control",
+      "config_ref": "experiments/cvs_cycleorder_factorial32/design.py#B01",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B01-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_RX": null,
+        "all_original_roles": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610172201,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model seed is one actual modelseed; originalsplit/data/eval392005 fixed. Privateordinary stream20261016051; nativepracticalview202610172201 and RXsession2026092701; support inapplicable. Every epoch/view refreshes train stream; target arrays unchanged. FixedAg seed202610173001 with disjoint trainL/epoch*/step*/secondary and physical occurrence IDs; same acrossB10/B11. SourceV namespace separate;formal arrays unchanged.",
+      "k": null,
+      "scenario": "train low_suburban/mid_urban/low_urban;testclean+all6fixedpractical",
+      "optimizer": {
+        "name": "AdamW",
+        "weight_decay": 0.0001,
+        "Sinc": "CENTER_UNITS/physicalglobalclip5"
+      },
+      "lr": {
+        "peak": 0.0002,
+        "min": 1e-06,
+        "schedule": "original native cosine over30total epochs"
+      },
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "20L+10U,222steps/epoch,6660updates,3409920L NN/row; ownhiddenU loader567000; ownEMA andV actualcounters; no inherited training. ModelbudgetE20 not a same-cost comparator. Extra sourcequalification12602NN/row;Ag creates852480IQ views inB10/B11,zero extra network forwards;compatibilitysmoke2NN once; all4new scratchcontrols,oldordinary-secondary refs not inputmatched.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B01-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/logs/B01-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_factorial_E30_20261017_r01/experiments/cvs_cycleorder_factorial32/runner.py --mode worker --row B01-s2026092701",
+      "expected_artifacts": [
+        "source/source_contract.json",
+        "source/full_source_roles.json",
+        "source/resolved_config.json",
+        "source/actual_native_args.json",
+        "source/ordinary_base_config.json",
+        "source/module_files.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/training_sequence.jsonl.gz",
+        "source/training_physics.jsonl.gz",
+        "source/SupCon_steps.jsonl.gz",
+        "source/F_optimizer_steps.jsonl.gz",
+        "source/epoch_metrics.csv",
+        "prediction/*_scores.npz",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scoring/scores.json",
+        "scoring/complete.json",
+        "results.json",
+        "per_row_seed.csv",
+        "source/cycle_order_views.jsonl.gz",
+        "source/actual_practical_first_batch.json(As rows only)",
+        "source_qualification/predictions.npz",
+        "source_qualification/complete.json"
+      ]
+    },
+    {
+      "row_id": "B11-s2026092701",
+      "method": "Fixed F+CROSS_RX;ordinary primary / As(Ag(raw)) secondary; .5 each;matched4L",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_cycleorder_factorial32/design.py#B11",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B11-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_RX": null,
+        "all_original_roles": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610172201,
+        "support": null,
+        "evaluation": 392005
+      },
+      "seed_notes": "model seed is one actual modelseed; originalsplit/data/eval392005 fixed. Privateordinary stream20261016051; nativepracticalview202610172201 and RXsession2026092701; support inapplicable. Every epoch/view refreshes train stream; target arrays unchanged. FixedAg seed202610173001 with disjoint trainL/epoch*/step*/secondary and physical occurrence IDs; same acrossB10/B11. SourceV namespace separate;formal arrays unchanged.",
+      "k": null,
+      "scenario": "train low_suburban/mid_urban/low_urban;testclean+all6fixedpractical",
+      "optimizer": {
+        "name": "AdamW",
+        "weight_decay": 0.0001,
+        "Sinc": "CENTER_UNITS/physicalglobalclip5"
+      },
+      "lr": {
+        "peak": 0.0002,
+        "min": 1e-06,
+        "schedule": "original native cosine over30total epochs"
+      },
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "20L+10U,222steps/epoch,6660updates,3409920L NN/row; ownhiddenU loader567000; ownEMA andV actualcounters; no inherited training. ModelbudgetE20 not a same-cost comparator. Extra sourcequalification12602NN/row;Ag creates852480IQ views inB10/B11,zero extra network forwards;compatibilitysmoke2NN once; all4new scratchcontrols,oldordinary-secondary refs not inputmatched.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B11-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/logs/B11-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_factorial_E30_20261017_r01/experiments/cvs_cycleorder_factorial32/runner.py --mode worker --row B11-s2026092701",
+      "expected_artifacts": [
+        "source/source_contract.json",
+        "source/full_source_roles.json",
+        "source/resolved_config.json",
+        "source/actual_native_args.json",
+        "source/ordinary_base_config.json",
+        "source/module_files.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/training_sequence.jsonl.gz",
+        "source/training_physics.jsonl.gz",
+        "source/SupCon_steps.jsonl.gz",
+        "source/F_optimizer_steps.jsonl.gz",
+        "source/epoch_metrics.csv",
+        "prediction/*_scores.npz",
+        "prediction/predictions.npz",
+        "prediction/complete.json",
+        "scoring/scores.json",
+        "scoring/complete.json",
+        "results.json",
+        "per_row_seed.csv",
+        "source/cycle_order_views.jsonl.gz",
+        "source/actual_practical_first_batch.json(As rows only)",
+        "source_qualification/predictions.npz",
+        "source_qualification/complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Raw-secondary B00/B01 are required input and forward cost controls for new fixedAg;not revival or threshold rescue of historical failed rawAsE20. Oldordinary-concatE30 remains read-only directreference.",
+    "P30post-orderFAIL retained;P31 source compatibilityPASS only;no claim of Ag before training.",
+    "Goal clean positivevs matchedB00,formal low>60%,eachsuburban gap<=2pp is explorationtarget,not guaranteed;formal scores never reenter design/selection.",
+    "Actual F params900722/state206/joint160/defaultcos30. No newLdev,heldRX,loss/head/teacher schedule/UAg.",
+    "L/U/V original6300/56700hidden/27000;fullrolehandles reuseVALIDATED_ONCE;nativechannel sourcefull Configref path correct observations/actual_engine.json."
+  ],
+  "registered_at": "2026-10-17T11:17:12+00:00"
+}

@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_SOURCE_CYCLE_ORDER_PLACEMENT_COMPATIBLE_NOT_TRAINED",
+  "status": "E30_CYCLEORDER_FACTORIAL_REGISTERED_NOT_STARTED",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -328,5 +328,32 @@
     "native_calls": 21600,
     "updates": 0,
     "target_access": false
+  },
+  "pending_factorial": {
+    "run_id": "20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01",
+    "rows": [
+      "B00",
+      "B10",
+      "B01",
+      "B11"
+    ],
+    "scratch_epochs_each": 30,
+    "updates_each": 6660,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "input_control": "common ordinary primary;raw/Agraw/Asraw/AsAgraw secondary",
+    "old_ordinary_reference_unchanged": true,
+    "source_basis": "20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01",
+    "formal_feedback": false,
+    "source_rule": "B10cleanV>=B00+.5pp;B11cleanV>=B00;all4urban cells>=B01+1pp",
+    "formal_views": "train low_suburban/mid_urban/low_urban;testclean+all6fixedpractical",
+    "automatic_seed_extension": false,
+    "status": "REGISTERED",
+    "Ag_proved": false
   }
 }
