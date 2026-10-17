@@ -1,0 +1,103 @@
+{
+  "schema": "F_CLOCK_FACTORIAL20_PREREG_V1",
+  "status": "IMPLEMENTED_NOT_LAUNCHED",
+  "baseline": "F+CROSS_RX/SIG_TIME_X3/unifiedfullSinc/joint160/defaultcos/NoExplicitCFO",
+  "data": {
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "days": [
+      1,
+      2,
+      3
+    ],
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "held_training_RX": null,
+    "internal_L_dev_split": false,
+    "U_truth_hidden": true
+  },
+  "operator": {
+    "type": "affine sample-rate grid",
+    "max_ppm": 80,
+    "anchor": 127.5,
+    "kernel": "Lanczos16/reflection/no wrap/no global RMS",
+    "basis": "Existing receiver DG sample_dg_env_params 80ppm setting;not measured receiver calibration or target fit",
+    "input": "shared generated ordinary for G slot",
+    "seed": 202610175411
+  },
+  "partition": {
+    "rule": "(batch_position+global_step)%2",
+    "G": 64,
+    "S": 64,
+    "labels_or_quality_used": false
+  },
+  "objective": {
+    "common_ordinary_pair": 0.5,
+    "extra_mixed_pair": 0.5,
+    "L_forwards": 4,
+    "extra_SupCon": false,
+    "old_SupCon": "only shared ordinary pair",
+    "original_U": "unchanged oldgate/ownEMA/cos,13Lonly+7LwithU",
+    "RDrop": "same generated IQ in each pair"
+  },
+  "rows": {
+    "B00": "reuse exact frozen REPEAT from fullsource r02;G/S absent=>ordinary",
+    "B10": "G=SRO(ordinary),S=ordinary",
+    "B01": "G=ordinary,S=practical(raw)",
+    "B11": "G=SRO(ordinary),S=practical(raw)",
+    "FULL_AS_REF": "reuse frozen CONCAT from fullsource r02;full128 practical"
+  },
+  "budget": {
+    "new_models": 3,
+    "epochs_each": 20,
+    "model_seed": 2026092701,
+    "new_model_epochs": 60,
+    "updates_each": 4440,
+    "new_updates": 13320,
+    "extra_optimizer_updates": 0,
+    "parent_initialization": false,
+    "continuation": false,
+    "reused_reference_models": 2,
+    "reused_reference_historical_epochs": 40,
+    "each_new_L_NN": 2273280,
+    "each_enabled_operator_observations": 284160
+  },
+  "evaluation": {
+    "fixed_final": 20,
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "auto_each_row": true,
+    "prediction_then_independent_truth": true,
+    "count_per_view": 168000,
+    "all_rows_finish_no_score_selection": true,
+    "sourceV": "original health and fixed diagnostics only,no training/headfit/ranking",
+    "target_feedback": false
+  },
+  "falsification": {
+    "Ag": "B10 clean>B00,macroF1>=B00;legal source evidence required",
+    "As": "B01 practical increments reported independently;half-dose explicitly different from full reference",
+    "joint": "B11 clean>B00,lowurban>60%,each suburban gap<=2pp,lowurban>B01 and FULL_AS_REF;no gap improvement by lowering clean",
+    "interaction": "B11-B10-B01+B00 for all seven views",
+    "abandon": "Close this fixed clock/partition/recipe on failed joint criteria;no clock range,coefficient,RX,seed,budget or scene-probability rescue",
+    "single_seed": "Does not complete original cross-seed joint goal"
+  },
+  "stop_rule": "Only systemic technical/protocol/nonfinite/output/legal-prediction failure;preserve healthy tasks,no automatic retry",
+  "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01",
+  "code": "experiments/cvs_clock_factorial20",
+  "training_launched": false,
+  "Ag_efficacy_proved": false,
+  "joint_goal_complete": false
+}

@@ -1,5 +1,7 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
+最新待启动：`20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01`，仅新增采样速率IQ变化与既有完整practical，固定B00/B10/B01/B11。全部5个源RX、L6300/U56700、每新模型scratchE20、4次L前向。B00复用匹配REPEAT，额外保留完整CONCAT参照；B01/B11的As剂量明确为全As的一半，独立报告。已实现／登记／本地48项负例／唯一P0P1审查，尚未启动或产生新结果。详见[最小预登记](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)。不留出训练域，不以源统计代替星地收益，旧候选负结果保留。
+
 
 当前更新：完整源参照 20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02 已ANALYZED，3/3 scratchE20、13320更新、3528000正式决策与独立truth-last完成，所属进程已退出。CONCAT clean82.1887%、midurban63.3649%、lowurban52.3887%；相对匹配REPEAT依次−2.3815／＋25.5982／＋20.3762pp。suburban与自身clean差1.4292／3.8833／6.2958pp。所有5源RX与L6300/U56700保留、源序列逐条一致。该单seed证明普通As有实际practical收益，但当前配方没有clean净收益，未达lowurban或所有suburban目标；Ag和完整联合目标仍ACTIVE且未证明。
 

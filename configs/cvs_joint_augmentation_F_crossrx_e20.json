@@ -159,29 +159,22 @@
     "joint_goal_complete": false
   },
   "next_training_hypothesis": {
-    "status": "ANALYZED_REFERENCE_ONLY",
-    "question": "What actual clean and practical performance does the plain paired-concat recipe yield when all five original source RX train under current F+CROSS_RX and E20?",
-    "minimum_matrix": [
-      "NATIVE originalFtwoLforwards",
-      "REPEAT sameordinaryfourLforwards",
-      "CONCAT ordinary/practicalfourLforwards"
+    "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01",
+    "status": "REGISTERED_NOT_LAUNCHED",
+    "candidate": "fixed +/-80ppm affine sampling grid; separate practical factor; no composite view",
+    "data": "all original5RX; L6300/U56700/V27000; no held training RX",
+    "matrix": [
+      "B00_REUSED_REPEAT",
+      "B10",
+      "B01",
+      "B11"
     ],
-    "config": "configs/cvs_full_source_concat_reference_e20.json",
-    "training_RX_holdout": null,
-    "all_source_L_U_retained": true,
-    "reference_not_new_mechanism": true,
-    "no_new_Ag_alignment_gate_course": true,
-    "model_epochs_each": 20,
-    "registered": true,
-    "launched": true,
-    "formal_seven_views_auto_after_fixed_final": true,
-    "target_feedback": false,
-    "joint_goal_complete": false,
-    "run_id": "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02",
-    "code": "experiments/cvs_fullsource_concat20",
-    "execution_commit": "b94076b191648103daeb8a9cb1c17bdcc9c0e231",
-    "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md",
-    "result": "Single seed plainAs improves all six practical vs matchedrepeat,butclean-2.3815pp,lowurban52.3887%,onlyhighsuburban<=2pp;no newAg/jointproof"
+    "additional_reference": "FULL_AS_REF_REUSED_CONCAT",
+    "new_budget": "3 scratchE20 models; 60modelE/13320updates",
+    "reference_historical_budget": "40modelE/8880updates",
+    "config": "configs/cvs_clock_factorial_e20.json",
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",

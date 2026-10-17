@@ -489,5 +489,7 @@
 
 
 
+
 - [完整源普通拼接 r01检查桩失败](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01/report.md)
 - [完整源普通拼接 r02技术恢复](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)
+- [完整源普通拼接 r01检查桩失败](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)
