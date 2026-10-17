@@ -1,0 +1,233 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+  "group_id": "F_SHARED_INPUT_RX_RESPONSE_SOURCE_20261018",
+  "display_name": "F＋跨 RX：共享输入响应的已存源矩阵检验",
+  "description": "FixedDFT20diagonal sharedcomplex population response;L-only amplitude logratios and anchor1 phaseproducts;18heldTX/day/all5RX;inputVref only,noVfit;compare original additive/sameTX controls;0rawIQ/NN/updates.",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "F-shared-input-RX-response-source"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "source_only",
+    "shared_RX_response",
+    "all5RX",
+    "no_training",
+    "no_target"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint research;existing256IQ/all5RX/F+CROSS_RX/E30. This source-only closed-form fit has no model,rawIQ,training,target or automatic expansion.",
+  "code": {
+    "commit": "PENDING_ACTUAL_GIT_COMMIT_PINNED_BY_PUBLISH",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "Existing N607 CVS-RFFI Python/NumPy CPU,2threads",
+    "cwd": "PROJECT/releases/cvs_F_RX_response_source_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Exactly existing completed source signalCoherence cellmeans;no rawIQ/cache reread",
+    "representation": "180 complex20x20 source cellmeans from original256IQ/window80:160;full20bins,unitaryDFT",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01/source_ids.json (already checked,not reread)",
+    "label_map_ref": "Original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original all6 sourceTX",
+    "roles": {
+      "L_s": "Original all6300,90cellmeans;perfold otherTX/day fit with all5RX retained",
+      "U_s": "Original56700 TX hidden;no U array,container or truth input",
+      "V": "Original27000,90cellmeans;referenceRX matrix is input only,parameters never fitted toV"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse original source handles and parent completion/resolved_config;no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source population-response prediction only;not causal RX calibration,label-preservingIQ or identity gain"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "Data-only parent,zero model/checkpoint inheritance",
+    "provenance_verdict": "NOT_APPLICABLE_NO_MODEL",
+    "selection_rule": "No model/candidate/checkpoint selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-RX-response-source-20261018",
+    "gpu_policy": "CPU only,no GPU work",
+    "remote_run_root": "PROJECT/runs/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_RX_response_source_20261018_r01/source_RX_response.stdout.log",
+    "local_artifact_root": "WORKTREE/local_artifacts/F_RX_response_source_20261018",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_rx_response18.run",
+    "stop_rule": "Owned technical/role/nonfinite/output conflict only;preserve,no retry. Scientific failure closes fixedDFT20/logratio/anchor1/reference/floor/proxy,not all physical sharedRX theory;no automaticIQ or training"
+  },
+  "expected_artifacts": [
+    "checks.json",
+    "resolved_config.json",
+    "responses.npz private1800complexentries",
+    "result.json all18folds/5RX/fitquality",
+    "completion.json",
+    "independent full response recount",
+    "same-row source-only report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "response_SSE",
+      "additive_SSE",
+      "TXconditional_SSE",
+      "response_vs_additive_gain",
+      "positive_folds",
+      "per_RX_SSE",
+      "phase_evidence",
+      "amplitude_condition_number"
+    ],
+    "dimensions": [
+      "RX",
+      "heldTX",
+      "heldday",
+      "18statisticalfolds"
+    ],
+    "prediction_ref": "Source matrix readout only,no identity/target prediction",
+    "scorer_ref": "Independent NumPy response/matrix/SSE recount,not target truth scoring"
+  },
+  "rows": [
+    {
+      "row_id": "SHARED_RX_RESPONSE_L_TO_V",
+      "method": "DFT20_SHARED_INPUT_RESPONSE",
+      "purpose": "FixedDFT20diagonal sharedcomplex population response;L-only amplitude logratios and anchor1 phaseproducts;18heldTX/day/all5RX;inputVref only,noVfit;compare original additive/sameTX controls;0rawIQ/NN/updates.",
+      "config_ref": "experiments/cvs_rx_response18/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {
+        "source_RX_holdout": null,
+        "source_L": 6300,
+        "source_V": 27000,
+        "original_IQ_points": 256,
+        "raw_IQ_read": false
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original source physical split392005;no randomfit/model/augmentation/support/evaluation sampling",
+      "k": null,
+      "scenario": "Original source L/V derived statistics only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "72closedform fits/18folds/90sourceV predictedmatrices;0modelE/NN/CP/updates/rawIQ. Future model budgetE30 unchanged",
+      "output_root": "PROJECT/runs/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_RX_response_source_20261018_r01/source_RX_response.stdout.log",
+      "command": "CVS-RFFI/bin/python -u -m experiments.cvs_rx_response18.run",
+      "expected_artifacts": [
+        "checks.json",
+        "resolved_config.json",
+        "responses.npz private1800complexentries",
+        "result.json all18folds/5RX/fitquality",
+        "completion.json",
+        "independent full response recount",
+        "same-row source-only report"
+      ],
+      "config": {
+        "run_id": "20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+        "launch_owner": "codex/root/F-RX-response-source-20261018",
+        "output_root": "PROJECT/runs/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "derived_input": "PROJECT/runs/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+        "RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "reference_RX": 1,
+        "source_RX_holdout": null,
+        "source_L": 6300,
+        "source_V": 27000,
+        "original_IQ_points": 256,
+        "original_window": [
+          80,
+          160
+        ],
+        "period": 20,
+        "model": "20point unitaryDFT-diagonal sharedcomplex response D_r;Phi_D(G)=D*G*D^H*trace(G)/trace(D*G*D^H);all20bins retained",
+        "fit": "L only:mean centered log diagonal ratios for amplitude;phase of mean G_r[k,1]*conj(G_ref[k,1]) for phase;unitRMS response,phase gauge harmonic1;no iterativeoptimizer or classifier",
+        "epsilon": 1e-12,
+        "phase_anchor_bin": 1,
+        "folds": "18leaveTXanddayout statistical folds;other5TX/2day/all5RX always retained;72nonreference fits;referenceRX fixed by index,not selected",
+        "readout": "Held V referenceRX matrix is input only;one shared fitted response predicts otherRX matrices;center5RX for error comparison;no V fit/update",
+        "controls": "Original L-only shared additive contrast and sameTX/other2day L conditional contrast,unchanged physical V evaluation",
+        "criteria": {
+          "min_additive_SSE_reduction": 0.2,
+          "min_positive_folds": 15,
+          "each_RX_not_worse_than_additive": true,
+          "max_SSE_to_TXconditional": 1.05,
+          "all_phase_products_nonzero": true,
+          "numerical_SSE_tolerance": 1e-20
+        },
+        "on_fail": "Close fixed DFT20/logratio/anchor1/shared-response hypothesis;no bin/window/anchor/floor/referenceRX/model-order/threshold rescue or IQ training",
+        "on_pass": "Shared source response prediction only;not pure receiver calibration,physical RXreplacement,label-preserving IQ or Ag efficacy;no automatic training",
+        "scope": "New input-acting response predictor on population mean projectors,not altered old projector statistic or reopened fixed FIR/phase/RXMIX candidate",
+        "limitations": [
+          "Mean of normalized packet projectors need not equal normalized transform of the mean;this is a fixed population prediction approximation",
+          "RX/TX cellmeans are not simultaneously paired packets;channel,equalization and samplingnoise remain mixed",
+          "Passing source prediction is not physical RXreplacement or safe full256IQ filtering;failing closes this proxy,not every possible shared receiver response"
+        ],
+        "source_only": true,
+        "raw_IQ_reads": 0,
+        "CP": 0,
+        "NN": 0,
+        "teacher_NN": 0,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "U_used": false,
+        "U_truth_read": false,
+        "target_access": false,
+        "IQ_operator_for_training": false,
+        "automatic_training": false,
+        "CPU_threads": 2,
+        "GPU": "none",
+        "future_training": "F+CROSS_RX/full5RX/L6300/U56700hidden/V27000/256IQ/defaultcos joint/E30 unchanged;no model trained in this row"
+      },
+      "status": "PLANNED"
+    }
+  ],
+  "notes": [
+    "Parent is source-derived data,not a model checkpoint;previous fixed additive qualification remainsFAIL",
+    "Perpacket normalization and expectation do not commute;population proxy does not identify a physical full256IQ filter",
+    "All5RX retained including fixed referenceRX1;no trainingdomain holdout",
+    "One directP0P1 review and G0 consumed sourcehandle/statistic smoke;no unused modelCP/NN",
+    "Actual GitHEAD fills release record;one archive transfer comparison,not perfile hashes or extraapproval"
+  ],
+  "registered_at": "2026-10-17T22:17:24+00:00"
+}

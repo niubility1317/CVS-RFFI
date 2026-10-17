@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "scope": "One direct P0/P1 review of the next source-only response run",
+  "reviewer": "/root/unitary_p0p1_review",
+  "P0": [],
+  "P1": [],
+  "checked": [
+    "Complex conjugation/DFT round trip",
+    "L-only shared response fit",
+    "Vref input only,no V fit",
+    "Full5RX/source-derived handle",
+    "Release dependencies",
+    "Independent recount",
+    "Config/prereg match"
+  ],
+  "real_input_reads": 0,
+  "remote_operations": 0,
+  "CP": 0,
+  "NN": 0,
+  "target_access": false,
+  "expanded_tests": 0
+}
