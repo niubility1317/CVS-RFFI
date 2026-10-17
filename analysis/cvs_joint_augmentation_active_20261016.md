@@ -469,3 +469,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 2026-10-18：20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01 已 ANALYZED／VERIFIED。原PID自然结束、1row/7×168000固定预测后独立truth-last，E20+10/E30、2220新更新、As0/Ag0、默认头、全部五源RX。与As三行370输入池/4440L-U序列相同，857实际args只差baseline_ckpt/candidate_id/output_dir/run_id；NN预算相同，MEASURE/PROJECT额外VJP成本匹配。504CM/84分区/21配对独立复算。No-As clean85.245238%、midurban37.279762%、lowurban31.712500%；普通As82.722619%/64.376786%/53.458333%，差−2.522619pp/+27.097024pp/+21.745833pp；clean∩low共同正确仍+19.779167pp。证明本配方单seed适应收益并有clean代价，非仅错误重分配；clean净收益、low>60和中低suburban≤2pp均未实现。原PCGrad仍关闭。No-As新增实际NN3772694含开发2048与smoke2、父训练3661082另列；2220新更新/4440extraVJP，0新分析NN/rawtruth。
 
 当前没有在训本任务实验或已支持新IQAg候选，目标保持ACTIVE_UNACHIEVED。历史有界CFO已做E20且关闭，本轮核对后不复跑；已读取“开发 CVS Phase1 星地增强训练”最新源噪声/默认头梯度阴性结果，不重复其路线。仅有256点IQ，不能将数字变换称作真实RX替换；不把As单seed收益当完整Ag/As联合成功。
+
+
+2026-10-18：I/Q方向来源核对完成，analysis/cvs_IQ_orientation_basis_20261018.md。官方SDR工具有IQ交换/极性，但实际运行入口统一转置/RMS、无RX方向字段；实际参考contract iq_convention_identified=False。对称12音调支持与未知复响应使共轭方向仍可由另一未知响应表示；不能据此确认采集端方向，亦不证明方向全部相同。该强离散操作不是轻度扰动，当前无数据来源依据，不发布增强、不插值成未经验证IQ失衡。0新真实IQ/CP/NN/更新/target；不存在新的训练成功结论，完整goal ACTIVE。

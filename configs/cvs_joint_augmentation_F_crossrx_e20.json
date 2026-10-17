@@ -5222,5 +5222,20 @@
     },
     "new_Ag": false,
     "joint_goal_complete": false
+  },
+  "IQ_orientation_source_check": {
+    "status": "SOURCE_CONVENTION_UNVERIFIED_NOT_RELEASED",
+    "note_ref": "analysis/cvs_IQ_orientation_basis_20261018.md",
+    "actual_runtime_import_verified": true,
+    "data_reader_RX_specific_direction_switch": false,
+    "data_reader_proves_recording_directions_equal": false,
+    "reference_iq_convention_identified": false,
+    "new_IQ": 0,
+    "new_CP": 0,
+    "new_NN": 0,
+    "new_updates": 0,
+    "target_access": false,
+    "training_started": false,
+    "claim": "General SDR coordinate changes exist;no confirmed source RX direction variation;no identity or DG efficacy proof"
   }
 }
