@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_FIXED_FIR_FIRST_TRAINING_CLOSED",
+  "status": "RESEARCH_ACTIVE_ANTITHETIC_SOURCE_REGISTERED",
   "source_experiment": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
   "authorization": "Latest explicit user budget E30;new fixed FIR first-learning-utility rows use matching noAg fullsource E20 parents plus10;no trainingRXholdout",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -153,7 +153,7 @@
     "qualification": "FAIL",
     "joint_goal_complete": false
   },
-  "next_source_hypothesis": null,
+  "next_source_hypothesis": "Same-marginal antithetic-noise RDrop gradient variance;zero updates",
   "next_training_hypothesis": null,
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -2324,7 +2324,7 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": null,
+  "current_experiment": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r01",
   "active_As_hypothesis": {
     "status": "CLOSED_FIXED_N0_TRAINING_FAILED",
     "hypothesis": "Equalprior .5/1.5 linearN0 training provides useful practical benefit while clean protected",
