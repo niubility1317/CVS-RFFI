@@ -6,3 +6,6 @@
 
 
 20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01：原进程至少完整 E10，E6 路由实际启用并符合全 As/64:64 配置；无新增网络前向/损失，未热改。离线分析 34 反例 PASS，新识别结果待 final20/七视图；完整目标 ACTIVE。
+
+
+20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01：ANALYZED／VERIFIED，FAIL_FIXED_VIEW_ROUTING_CLOSED；四行35280源判决、每行E20/4440步、完整loss/As场景/路由/U组织/预算独立复核。Q_mix固定primary，0target，完整Ag＋As联合目标ACTIVE。

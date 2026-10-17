@@ -34,7 +34,7 @@ def draw():
   r=[v for v in rows if v['arm']==a]
   if [int(v['epoch']) for v in r]!=list(range(1,21)):raise ValueError('No truncated epoch curves')
   for ax,key in zip(axes.flat,('base_total_L','extra_pair_loss','supcon','val_tx_acc')):ax.plot(range(1,21),[float(v[key]) for v in r],label=a,color=color)
- for ax,key,title in zip(axes.flat,('base_total_L','extra_pair_loss','supcon','val_tx_acc'),('Common base objective','Extra pair CE + KL','Existing SupCon (unweighted)','Seen-source V accuracy (fraction)')):ax.set_title(title);ax.set_xlabel('Epoch');ax.grid(alpha=.2)
+ for ax,key,title in zip(axes.flat,('base_total_L','extra_pair_loss','supcon','val_tx_acc'),('Common base objective','Extra pair CE + KL','Existing SupCon (unweighted)','Seen-source V accuracy (%)')):ax.set_title(title);ax.set_xlabel('Epoch');ax.grid(alpha=.2)
  axes[0,0].legend(ncol=2);fig.suptitle('Full training trajectories; loss and seen-V health are not held-RX identity gains');save(fig,'full_training_curves')
  (out/'manifest.json').write_text(json.dumps(dict(status='VERIFIED',figures=paths,source_only=True,target_access=False,new_NN=0,new_updates=0),indent=2)+'\n',encoding='utf8');return paths
 if __name__=='__main__':print(json.dumps(draw()))
