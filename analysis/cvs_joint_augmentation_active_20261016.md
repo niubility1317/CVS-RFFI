@@ -1,5 +1,7 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
+最新预算保持 **E30**；全源五 RX／L6300／U56700 隐藏 TX／V27000，无训练域留出。公开增强实现的后续核查见[文献适用边界](cvs_receiver_augmentation_literature_limits_20261016.md)：AA-FAL 当前代码的 1200 点局部替换不能原样用于 256 点 IQ，I/Q 分别修改的身份保持未验证；ASA 操作中间特征。本轮未执行第三方代码，0 真实 IQ／CP／NN／更新，没有新候选晋级或实验启动。DC 旧负结果保持关闭，完整目标 ACTIVE。
+
 后续入口核查已完成：[共享传播与batch轴核查](cvs_as_route_audit_20261017.md)。共享传播H机制已在旧PROP_GROUP按原条件失败关闭，改变组键不作为新方向，本轮撤回且0新训练。实际F随机初始化合成检查12NN／0CP／0真实IQ／0更新：活动GroupNorm10、LayerNorm4、BatchNorm0、持久buffer更新0，eval合并/拆分默认头最大差1.43e−6。否定顺序前向污染BN状态的具体解释，不宣称整个SupCon训练batch无关或性能提升；未发布新候选，整体goal ACTIVE。
 
 最新完成：[原分布校准刷新 A_s E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md)，**ANALYZED／VERIFIED；固定收益假设失败，关闭该配方**。严格同一个普通As source-final20＋10，累计30轮／6660更新，全部5源RX／L6300／U56700隐藏TX／V27000保持，无训练域留出。默认cos头联合训练／F／三路SIG_TIME／统一Sinc／原U不变。
