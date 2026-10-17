@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_PSD_AFFINE_CLOSED_NO_QUALIFIED_AG",
+  "status": "RESEARCH_ACTIVE_FULL_SOURCE_PRACTICAL_PRIORITY_CONCAT_REFERENCE_TO_IMPLEMENT",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User on 2026-10-16 changes pre-augmentation baseline to F plus cross-RX same-TX contrastive learning. Earlier E20 budget remains in force.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -65,8 +65,28 @@
   "data": {
     "source_contract": "Existing original source_contract.json, split392005, RX1/3/4/6/8, day1/2/3, original6TX",
     "formal_factorial": "Full L6300/U56700/V27000; all four cells share exact physical roles; scratch, no inner-fold parent reuse",
-    "source_falsification_if_used": "Separate explicitly registered RX1-held contract: L5040/U45360 training on RX3/4/6/8, held original L1260 from RX1, seen V21600 for health; every paired cell retrained from scratch with CROSS_RX baseline. It is not full L6300 and is not L5580/Ldev720.",
-    "checkpoint_prohibition": "Do not initialize new E20 or internal-fold models from E50/full-source, old F-only, target-selected, mismatched or unverifiable checkpoints"
+    "checkpoint_prohibition": "Do not initialize new E20 or internal-fold models from E50/full-source, old F-only, target-selected, mismatched or unverifiable checkpoints",
+    "historical_source_falsification_if_used": "Separate explicitly registered RX1-held contract: L5040/U45360 training on RX3/4/6/8, held original L1260 from RX1, seen V21600 for health; every paired cell retrained from scratch with CROSS_RX baseline. It is not full L6300 and is not L5580/Ldev720.",
+    "training_source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "training_source_days": [
+      1,
+      2,
+      3
+    ],
+    "training_counts": {
+      "L": 6300,
+      "U": 56700,
+      "V": 27000
+    },
+    "source_RX_training_holdout_allowed": false,
+    "internal_L_train_dev_split": false,
+    "new_experiments_contract": "Complete original source L6300/U56700/V27000 only;source-fold parents/results cannot initialize or control this contract"
   },
   "comparison": {
     "B00": "Shared F+CROSS_RX, no new Ag, no As",
@@ -131,21 +151,32 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": {
-    "status": "NO_QUALIFIED_NEW_CANDIDATE",
-    "last_fixed_hypothesis": "Full256binpositiveaffinePSDrelationclosed;notidentityorAgresult",
-    "input_metadata_inquiry": "Existingraw/EQsamephysicalLmappingonly;pendingreply;thisblocksitsoptionalentranceonly",
-    "new_source_information_received": false,
+    "status": "A_G_ENTRY_PROBES_DEPRIORITIZED_FOR_PRACTICAL_REFERENCE",
+    "reason": "Latest user correction:recent source statistics did not advance direct practical recognition;no new source-RX holdout experiments",
+    "pending_raw_EQ_question": "Optionaldeferredinputonly;not prerequisite for practical experiments",
     "new_training_launched": false,
     "target_access": false,
-    "Ag_efficacy_proved": false,
-    "As_stable_clean_preservation_proved": false,
     "joint_goal_complete": false
   },
   "next_training_hypothesis": {
-    "status": "NONE_REGISTERED_OR_PROMOTED",
-    "reason": "All actual fixed candidate verdicts remain;no phase/additive/source-order rescue or new budget.",
-    "E20_budget_unchanged": true,
-    "target_access": false
+    "status": "FULL_SOURCE_PLAIN_CONCAT_REFERENCE_CONFIGURED_NOT_IMPLEMENTED_OR_LAUNCHED",
+    "question": "What actual clean and practical performance does the plain paired-concat recipe yield when all five original source RX train under current F+CROSS_RX and E20?",
+    "minimum_matrix": [
+      "NATIVE originalFtwoLforwards",
+      "REPEAT sameordinaryfourLforwards",
+      "CONCAT ordinary/practicalfourLforwards"
+    ],
+    "config": "configs/cvs_full_source_concat_reference_e20.json",
+    "training_RX_holdout": null,
+    "all_source_L_U_retained": true,
+    "reference_not_new_mechanism": true,
+    "no_new_Ag_alignment_gate_course": true,
+    "model_epochs_each": 20,
+    "registered": false,
+    "launched": false,
+    "formal_seven_views_auto_after_fixed_final": true,
+    "target_feedback": false,
+    "joint_goal_complete": false
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -2199,5 +2230,13 @@
     "Ag_efficacy_proved": false,
     "joint_goal_complete": false,
     "report": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md"
+  },
+  "research_correction_20261017": {
+    "requested_by_user": true,
+    "acknowledgement": "Too much effort spent on source-statistics/weak-IQ entry tests;no direct practical gain evidence from them",
+    "plain_concat": "Keep as mandatory matchedreference;newmechanismmustdemonstraterecognitionbenefitoverit",
+    "legacy_fold_results": "Valid historical source-only evidence under reduced training coverage;not full-source performance or grounds to suppress the full-source reference now explicitly requested",
+    "all_closed_results_preserved": true,
+    "healthy_old_jobs_unchanged": true
   }
 }

@@ -1,10 +1,12 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-## 当前状态（2026-10-17，覆盖下方历史待跑描述）
+## 当前状态（2026-10-17，按用户最新纠偏）
 
-最新全频段源 PSD 正仿射候选已 ANALYZED／VERIFIED并关闭：432个真实拟合及独立KKT／算术复算完成，六个RX对均未通过。全部a<0.5，相对训练侧目标RX均值的最佳风险改善仅3.094277%，低于固定20%；没有IQ视图、模型、更新或target访问。它没有提供可晋级的Ag依据。见[完整本行报告](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)。
+主线恢复为直接验证星地识别收益。后续新训练使用完整L6300／U56700／V27000、全部源RX1/3/4/6/8，不再留出一个源训练域，也不要求先通过源留出折。F＋跨RX同TX、scratch E20、默认头、原U和正式IQ保持。
 
-此前六步L重排已完整关闭，clean −1.825397 pp、low urban −.555556 pp；自有旧训练自然结束。当前没有已登记待跑候选，不重跑关闭方案。raw/EQ同包映射询问仅限制其入口，不构成整个研究停止条件。底座仍 F＋跨RX同TX、scratch E20、原U与默认头。完整Ag＋As联合目标ACTIVE：未证明新的跨RX身份提取、稳定As保持或联合收益。
+下一项是建立完整源的普通拼接参照：NATIVE原底座、REPEAT同ordinary额外前向控制、CONCAT普通源/practical等权配对，均固定final20并自动clean＋六practical、独立truth-last评分。只固定了配置，实际运行入口待实现，尚未登记/启动，不把已有源统计负结果当作星地性能。见[研究纠偏与最小矩阵](cvs_full_source_practical_correction_20261017.md)。
+
+历史源留出及统计实验原样保留、准确标注契约；新方案必须直接比较同完整源普通拼接参照。A_g不是放弃，而是不再以其统计入口阻塞A_s直接性能；完整联合目标仍ACTIVE，尚未达成。
 
 ## 历史记录与固定底座
 

@@ -1,0 +1,167 @@
+{
+  "schema": "F_CROSS_RX_FULL_SOURCE_CONCAT_REFERENCE_E20_V1",
+  "status": "CONFIGURED_NOT_IMPLEMENTED_OR_LAUNCHED",
+  "authorization": "2026-10-17 user correction:prioritize practical augmentation;use ALL original source RX;no leave-one-source-RX training",
+  "baseline": "F+CROSS_RX_same_TX/SIG_TIME_X3/unifiedSinc/joint160/defaultcos",
+  "data": {
+    "dataset": "ManySig/equalized1/IQ256/Fs25MHz",
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "TX_indices": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "split_seed": 392005,
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "training_source_RX_holdout": null,
+    "internal_L_train_dev_split": false,
+    "U_TX_truth_hidden": true,
+    "source_V_role": "Original V only;health and legal diagnostics;never updates parameters/EMA",
+    "physical_roles": "Reuse existing original source_contract;all original L and U retain roles;no U-to-L conversion;no new data",
+    "initialization": "All models from scratch;no source-fold or historical parent weights"
+  },
+  "budget": {
+    "epochs_per_model": 20,
+    "label_epochs": 13,
+    "pseudo_epochs": 7,
+    "steps_per_epoch": 222,
+    "updates_per_model": 4440,
+    "model_seed": 2026092701,
+    "rows": 3,
+    "new_model_epochs_total": 60,
+    "new_updates_total": 13320,
+    "continuation_epochs": 0,
+    "seed_rule": "One fixed model seed for first matched reference;no lucky-seed selection or automatic budget extension"
+  },
+  "model": {
+    "default_head": "Originalcos6x160/scale30,jointtraining",
+    "NoExplicitCFO": true,
+    "necessary_internal_compensation": true,
+    "new_deployment_parameters": 0,
+    "new_losses": 0,
+    "Ag": false,
+    "RDrop_alpha": 1,
+    "label_smoothing": 0.01,
+    "original_U": "Originaloldgate/ownEMA/cos,13L+7U;no new U augmentation or U contrast",
+    "SupCon": "Existing CROSS_RX at time_down/t2.pool,T=.2,maxweight=.1,warm5/ramp10;only shared ordinary L RDrop pair"
+  },
+  "rows": [
+    {
+      "arm": "NATIVE",
+      "purpose": "ExactoriginalF+CROSS_RXreference",
+      "L_IQ_views": "One existing ordinary IQ,generated once",
+      "L_forwards_per_physical": 2,
+      "L_forward_packets": 1136640,
+      "loss": "RD(ordinary)+wSupCon",
+      "As_observations": 0
+    },
+    {
+      "arm": "REPEAT",
+      "purpose": "Matchedextra-forwardordinarycontrol",
+      "L_IQ_views": "The SAME ordinary IQ in both pairs;no redraw",
+      "L_forwards_per_physical": 4,
+      "L_forward_packets": 2273280,
+      "loss": ".5RD(ordinary,pair1)+.5RD(ordinary,pair2)+wSupCon(pair1)",
+      "As_observations": 0
+    },
+    {
+      "arm": "CONCAT",
+      "purpose": "Plainpairedclean/practicalreference,no new training mechanism",
+      "L_IQ_views": "Sharedordinary IQ plus one unchanged practical(raw);not practical(ordinary)",
+      "L_forwards_per_physical": 4,
+      "L_forward_packets": 2273280,
+      "loss": ".5RD(sharedordinary)+.5RD(practical(raw))+wSupCon(sharedordinary)",
+      "As_observations": 568320
+    }
+  ],
+  "view_accounting": {
+    "physical_L_sampling": "Original native L128 sampler/allfiveRX;no replacementdomainholdout",
+    "ordinary": "Sameactualoldordinaryconfiginallthree;notnewAg",
+    "RDrop": "Two forwards in each pair reuse same generated IQ;no augmentation redraw",
+    "common_clean_source_pair_weight": ".5 in both matched REPEAT/CONCAT rows;explicitviewreplacement,not claiming full native clean loss retained",
+    "NATIVE_comparison": "Reports effect of doubled L forwards separately;not equal compute to4forwardrows",
+    "loss_total_pair_weight": 1,
+    "normalize": "MeanperphysicalpacketwithineachIQpair,then explicitpairweights;sourceSupConcoefficientunchanged",
+    "raw_clean_note": "Legacyclean/sourceviewcontainsoldordinary;do not call it unaugmentedrawsupervision",
+    "original_raw_IQ_preserved": true,
+    "all_labeled_satellite_supervised": true,
+    "student_confidence_filter": false
+  },
+  "As": {
+    "operator": "Existing complete practical residual/post_sync",
+    "training_scenes": [
+      "practical_low_suburban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "probabilities": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "reason": "Reproduce existing simplest C1 reference prescription;not post-hoc source/target scene selection",
+    "input": "Native-normalized originalLbeforeordinary;onepracticalapplicationonly",
+    "dependency": "Keeppropagation/noise/quality/compensation/AGC/boundarycoupling",
+    "hardware_session": "OriginalRX/day/eq;notTX",
+    "unchanged_test": true,
+    "new_course": false,
+    "new_alignment": false,
+    "new_gates": false,
+    "new_U_SSL": false
+  },
+  "evaluation": {
+    "freeze": "Fixedfinal20/defaultstudenthead,allregisteredrows;sourceVhealthcannotdeleteunfavorablemodel",
+    "source_RX_holdout_for_promotion": false,
+    "auto_after_each_row": true,
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "test_data": "Reuse existing fixed formal clean/practical IQ and physicalIDs;resolve exact artifact paths before launch",
+    "prediction_then_truth": "All7viewpredictionsfixedperrowthenindependenttruth-lastscorer",
+    "metrics": [
+      "accuracy",
+      "macroF1",
+      "urban_mean",
+      "worst_RX",
+      "per_RX_day_TX",
+      "suburban_absolute_and_gap_to_same_model_clean",
+      "paired_repairs_breaks"
+    ],
+    "suburban_gap_exploration_pp": 2,
+    "low_urban_goal_percent": 60,
+    "target_feedback_to_training_or_candidate_promotion": false,
+    "historical_source_fold_numbers": "Historicalonly;notmatchedfullsourcecontrols"
+  },
+  "claim_rule": "Establishreferenceperformanceonly;notnewAg/newAs/jointsuccess;futurecandidatecomparesdirectlytomatchedplainCONCAT",
+  "implementation_remaining": [
+    "Actual fullsource loader/runtime with all5RX and exact original physical role handles",
+    "Shared-network matched objectives and original U execution",
+    "Automatic unchanged7view prediction/truth-last pipeline",
+    "Focused checks/one independent P0P1/commit/pre-registration/N607 release per minimalworkflow"
+  ],
+  "experiment_registered": false,
+  "new_training_launched": false,
+  "target_access": false
+}
