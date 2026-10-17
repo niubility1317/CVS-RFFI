@@ -59,3 +59,13 @@ RUNNING／VERIFIED。执行代码提交 91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a
 完整读取已结束的 B0/URAW E20 段各 4440 个 step 和 1554 条额外 U 记录：每组 396900 个 U 观测，旧门控入选分别 5630／5648，额外教师连续权重为正的观测分别 341142／341716；U 真值持续隐藏，额外教师前向为 0，未跳过非有限更新。此为已完成训练段的实际覆盖，不是完整 E30 结果、U 标签精度或分类收益。额外 raw KL 步均加权损失为 0.00035928，B0 附加损失为 0；不得把损失尺度当成有效性结论。
 
 源分析仍只等待所有冻结源产物，正式成绩未读取。证据位于 local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/own20_to_10_verified_r01.json 与 completed_stage20_B0_URAW_r01.json。
+
+## UAS 已封存 E20 的完整物理记录
+
+UAS 第一段已结束，实测 4440 更新、LNN2273280、LAs284160、额外完整 As(U)396900；学生训练NN3067080、学生评估NN606602、EMA评估NN398700、EMA训练NN0。已核实后段仅继承本row自身 FINAL20，角色 EXACT_MATCH，target_contact=false。累计 E30 尚未完成。
+
+完整读取 1554 批／396900 个 U 物理记录，5个源 RX 各 79380，3个day各132300；low suburban132057、mid urban132580、low urban132263；LOS200889、PARTIAL62657、BLOCKED133354，locked239810、degraded66628、unlocked90462。全部为原 residual/post_sync/noEQ/G1、synthetic_reflect；残余核62、数值延迟24，AGC限幅30个。上述是训练覆盖，不是U分类准确率。
+
+实际 signal_to_added_noise_db 与 white-input quality proxy 差值的中位数0.0269dB、q01−1.3015dB、q99+1.2296dB；两者均不是原始录音总SNR，且差值混合波形频谱、RX残差与有限噪声实现效应，不宜直接归因于多径。实际运行质量阈值为5／15dB、quality_reference20dB、max_residual_scale10，来自actual_U_channel.json而非默认值。
+
+独立分析补充元数据阈值敏感性：复算实际记录的接收状态和残差尺度；另统计signal/added-noise与推断的post-comp signal/reference-noise替代代理是否跨阈值。原波形、receiver和补偿均不重新计算或改动，不测分类因果效应。6项检查及编译PASS；该版本尚待单独发布，现有source-only等待进程及训练release不变。

@@ -115,5 +115,58 @@
     "any_nonfinite_skip": false,
     "U_truth_read": false,
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/completed_stage20_B0_URAW_r01.json"
+  },
+  "completed_UAS_E20": {
+    "status": "VERIFIED_COMPLETE_SEGMENT_ONLY",
+    "optimizer_steps": 4440,
+    "extra_U_NN": 396900,
+    "U_As": 396900,
+    "physical_records": 396900,
+    "physical_batches": 1554,
+    "source_RX_counts": {
+      "1": 79380,
+      "3": 79380,
+      "4": 79380,
+      "6": 79380,
+      "8": 79380
+    },
+    "source_day_counts": {
+      "1": 132300,
+      "2": 132300,
+      "3": 132300
+    },
+    "source_scene_counts": {
+      "practical_low_suburban": 132057,
+      "practical_low_urban": 132263,
+      "practical_mid_urban": 132580
+    },
+    "state_counts": {
+      "BLOCKED": 133354,
+      "LOS": 200889,
+      "PARTIAL": 62657
+    },
+    "lock_counts": {
+      "degraded": 66628,
+      "unlocked": 90462,
+      "locked": 239810
+    },
+    "added_noise_ratio_is_total_SNR": false,
+    "additional_KL_mean_weighted": 0.05073946838673472,
+    "source_inheritance": "own FINAL20;roles EXACT_MATCH;target_contact false",
+    "classification_gain_measured": false,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/UAS_completed_stage20_physics_r01.json"
+  },
+  "quality_metadata_extension": {
+    "focused_checks": 6,
+    "compile": "PASS",
+    "actual_runtime_thresholds_db": {
+      "unlocked": 5,
+      "locked": 15
+    },
+    "source": "actual_U_channel.json and recorded residual metadata",
+    "classification_effect_measured": false,
+    "training_modified": false,
+    "source_waiter_modified": false,
+    "deploy_status": "NOT_YET_RELEASED"
   }
 }

@@ -152,9 +152,34 @@ def analyze_source(out):
  result=dict(status='SOURCE_ANALYZED',source_decision=independently,ordinary_sequence_comparison=ordinary,physical_sequence_comparison=seq,source_cost={a:source[a]['cost'] for a in ARMS},source_full_log_recount={a:source[a]['full_records'] for a in ARMS},first_U_qualification={a:source[a]['source_result']['first_U_qualification'] for a in ARMS},source_confusions=len(summary['rows']),source_cohort='B0 control clean-correct',new_NN=0,IQ_reads=0,checkpoint_reads=0,formal_scores_read=False,goal_complete=False)
  write(out/'complete.json',result);return result
 
+def receiver_quality_policy(cfg,quality_db):
+ """Independent recount of actual runtime policy;no channel or state mutation."""
+ q=numeric(quality_db,'receiver quality');lo=numeric(cfg['unlocked_snr_db'],'unlocked threshold');hi=numeric(cfg['locked_snr_db'],'locked threshold');ref=numeric(cfg['quality_reference_snr_db'],'quality reference');maximum=numeric(cfg['max_residual_scale'],'residual maximum')
+ if hi<=lo or maximum<1:raise ValueError('Invalid actual receiver quality policy')
+ if not cfg['quality_adaptation_enabled']:return 'locked',1.
+ return ('locked' if q>=hi else 'degraded' if q>=lo else 'unlocked'),10**min(max((ref-q)/20,0),math.log10(maximum))
+
+def quality_sensitivity(record,cfg):
+ """Metadata-only alternative proxies;original waveform/receiver remain fixed.
+
+ signal_to_added_noise_db includes only simulated added noise. The reference
+ ratio uses inferred post-compensation signal power / reference noise variance;
+ it removes realized noise-power fluctuation but retains RX/image effects. None
+ is total SNR or an acquisition estimate;no classification effect is measured.
+ """
+ state,scale=receiver_quality_policy(cfg,record['quality_snr_db'])
+ if state!=record['receiver_lock_status'] or not math.isclose(scale,numeric(record['residual_scale'],'recorded residual scale'),rel_tol=1e-10,abs_tol=1e-10):raise ValueError('Recorded receiver state differs from actual runtime policy')
+ measured=numeric(record['measured_added_noise_power_pre_agc'],'measured added noise');variance=numeric(record['added_noise_variance_reference'],'reference noise variance');ratio=numeric(record['signal_to_added_noise_db'],'signal/added-noise ratio')
+ if measured<=0 or variance<=0:raise ValueError('Positive added/reference noise powers required')
+ noise_delta=10*math.log10(measured/variance);reference_ratio=ratio+noise_delta
+ return dict(actual_state=state,signal_added_noise_state=receiver_quality_policy(cfg,ratio)[0],signal_reference_noise_state=receiver_quality_policy(cfg,reference_ratio)[0],signal_reference_noise_ratio_db=reference_ratio,signal_reference_noise_minus_white_proxy_db=reference_ratio-record['quality_snr_db'],measured_added_noise_reference_ratio_db=noise_delta)
+
 def summarize_U_physics():
- packets=batches=0;strata=Counter();sessions={};receiver_variations=0;hardware_sessions={};stats=defaultdict(list);flags=Counter()
+ packets=batches=0;strata=Counter();sessions={};receiver_variations=0;hardware_sessions={};stats=defaultdict(list);flags=Counter();sensitivity=Counter();actual_configs=None
  for stage,start,stop,expected in [('stage20',2887,4440,396900),('source',4441,6660,567000)]:
+  configs=read(ROOT/'UAS-s2026092701'/stage/'actual_U_channel.json')['configurations']
+  if actual_configs is not None and configs!=actual_configs:raise ValueError('Actual receiver configuration changed across own segments')
+  actual_configs=configs
   hardware=read(ROOT/'UAS-s2026092701'/stage/'result.json')['U_channel']['sessions']
   for session,value in hardware.items():
    if session in hardware_sessions and hardware_sessions[session]!=value:raise ValueError('Actual stable physical hardware changed across segments')
@@ -165,6 +190,9 @@ def summarize_U_physics():
    expected_step+=1;batches+=1
    for r in batch['observations']:
     if r['processing_route']!='residual' or r['mode']!='post_sync' or r['channel_equalization_applied'] or r['tx_impairment_correction_applied'] or r['true_total_snr_known'] or r['scene'] not in SCENES or '/U_S' not in r['namespace']:raise ValueError('Actual full U physics/permission differs')
+    diagnostic=quality_sensitivity(r,configs[r['scene']])
+    for kind in ['signal_added_noise_state','signal_reference_noise_state']:sensitivity[(r['scene'],kind,diagnostic['actual_state'],diagnostic[kind])]+=1
+    for k in ['signal_reference_noise_ratio_db','signal_reference_noise_minus_white_proxy_db','measured_added_noise_reference_ratio_db']:stats[k].append(diagnostic[k])
     session=r['session_id'];hardware=r['receiver']
     receiver_variations+=int(session in sessions and sessions[session]!=hardware)
     sessions[session]=hardware;pid=r['sample_id'];strata[(pid[1],pid[2],r['scene'],r['state_end'],r['receiver_lock_status'])]+=1;packets+=1
@@ -174,7 +202,7 @@ def summarize_U_physics():
   if expected_step!=stop+1 or packets-base_packets!=expected:raise ValueError('U generation count differs from all original U')
  if packets!=963900 or batches!=3774:raise ValueError('U full-physics budget differs')
  summary={k:dict(count=len(v),mean=float(np.mean(v)),quantiles=dict(zip(['min','q01','q10','q50','q90','q99','max'],np.quantile(v,[0,.01,.1,.5,.9,.99,1]).tolist()))) for k,v in stats.items()}
- return dict(packets=packets,batches=batches,sessions=hardware_sessions,receiver_metadata_variations=receiver_variations,statistics=summary,strata=[dict(RX=k[0],day=k[1],scene=k[2],state=k[3],lock=k[4],count=n) for k,n in sorted(strata.items())],flags=[dict(field=k[0],value=k[1],count=n) for k,n in sorted(flags.items())],U_TX_truth_available=False,U_accuracy_measured=False,added_noise_ratio_is_total_SNR=False,training_input_IQ_reads=0,actual_state_coverage_only_not_causal_accuracy=True)
+ return dict(packets=packets,batches=batches,sessions=hardware_sessions,receiver_metadata_variations=receiver_variations,statistics=summary,strata=[dict(RX=k[0],day=k[1],scene=k[2],state=k[3],lock=k[4],count=n) for k,n in sorted(strata.items())],flags=[dict(field=k[0],value=k[1],count=n) for k,n in sorted(flags.items())],U_TX_truth_available=False,U_accuracy_measured=False,added_noise_ratio_is_total_SNR=False,training_input_IQ_reads=0,actual_state_coverage_only_not_causal_accuracy=True,quality_policy_sensitivity=dict(rows=[dict(scene=k[0],alternative=k[1],recorded_state=k[2],alternative_state=k[3],count=n) for k,n in sorted(sensitivity.items())],runtime_configurations=actual_configs,recorded_states_match_actual_runtime_policy=True,receiver_state_and_compensation_recomputed=False,waveforms_unchanged=True,classification_effect_measured=False,alternative_ratio_is_total_SNR=False,reference_ratio_includes_post_compensation_RX_image_effects=True))
 
 def own_plots(out,source,source_summary,physics=None):
  import matplotlib
@@ -242,7 +270,7 @@ def final_analysis(out,source_dir,truth):
    n=data[new]['pred'][view]==y;o=data[old]['pred'][view]==y;gain=int((n&~o).sum());lost=int((~n&o).sum());pairs.append(dict(new=new,old=old,view=view,repairs=gain,new_errors=lost,net=gain-lost,accuracy_delta_pp=100*(gain-lost)/len(y),common_clean_count=int(common.sum()),common_clean_repairs=int((n&~o&common).sum()),common_clean_new_errors=int((~n&o&common).sum())))
  for a in ARMS:
   for view in base.VIEWS:retention.append(dict(arm=a,view=view,fixed_B0_clean_correct_count=int(fixed.sum()),retained=int(((data[a]['pred'][view]==y)&fixed).sum()),retention=float((data[a]['pred'][view][fixed]==y[fixed]).mean())))
- physics=summarize_U_physics();write(out/'U_physics_summary.json',physics)
+ physics=summarize_U_physics();write(out/'U_physics_summary.json',physics);write_csv(out/'quality_state_sensitivity.csv',physics['quality_policy_sensitivity']['rows'])
  figures=base.plots(out,results);source={a:results[a]['source'] for a in ARMS};source_summary=read(source_dir/'source_summary.json');figures+=own_plots(out,source,source_summary,physics)
  summary=dict(status='ANALYZED',run_id=RUN,model_seed=2026092701,model_seed_count=1,rows=results,pairs=pairs,fixed_B0_clean_correct_retention=retention,source_decision=read(source_dir/'independent_source_decision.json'),urban_means={a:float(np.mean([results[a]['views'][v]['accuracy'] for v in base.VIEWS[-3:]])) for a in ARMS},suburban_gaps_pp={a:{v:100*(results[a]['views']['clean']['accuracy']-results[a]['views'][v]['accuracy']) for v in base.VIEWS[1:4]} for a in ARMS},formal_confusion_matrices=sum(len(r['metrics']) for r in results.values()),source_confusion_matrices=len(source_summary['rows']),U_TX_truth_read=False,default_head_structure_changed=False,default_head_jointly_trained=True,additional_deployment_parameters=0,analysis_NN=0,IQ_reads=0,checkpoint_reads=0,target_feedback=False,Ag_proved=False,crossseed_confirmed=False,goal_complete=False,interpretation_limits=['B0 clean-correct cohort is an As-trained control;not unaugmented father','Source states are not formal target state labels','L TX-by-state coverage not saved perpacket;L RX/day/scene/state aggregate and fullphysicalID exposure available','No perpacket gates or perbranch gradient trajectories saved;do not infer them from loss/accuracy','Teacher source qualification is not measured U pseudo-label precision'])
  write_csv(out/'per_row_seed.csv',[{k:v for k,v in q.items() if k!='confusion'} for r in results.values() for q in r['metrics']]);write_csv(out/'paired_repairs.csv',pairs);write_csv(out/'fixed_B0_retention.csv',retention);write(out/'figures.json',figures);write(out/'analysis_summary.json',summary);write(out/'complete.json',dict(status='ANALYZED',rows=list(ARMS),model_seed_count=1,formal_confusions=summary['formal_confusion_matrices'],source_confusions=summary['source_confusion_matrices'],figures=figures,analysis_NN=0,goal_complete=False));return summary
