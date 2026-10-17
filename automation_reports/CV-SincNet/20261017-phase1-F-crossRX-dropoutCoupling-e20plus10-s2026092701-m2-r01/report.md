@@ -1,8 +1,8 @@
-# ordinary／As 跨视图 dropout 相关性：固定 E30 比较
+# ordinary／As 跨视图 dropout 相关性：E30 正式结果
 
-状态：**RUNNING／VERIFIED**。两行均已完成追加第1轮（累计第21轮／222新更新），训练、正式预测和评分尚未完成。完整联合目标 ACTIVE，未证明新 A_g 或身份识别收益。
+**ANALYZED／VERIFIED。** 两行均完成同父E20＋10、累计E30／6660更新，以及七视图默认头预测和独立truth-last评分。执行commit a56e02cada3f11db002115afedafb4c024151348。
 
-唯一假设：保留两对独立 RDrop 的边际目标和原 practical 输入，只改变 ordinary 对与 As 对之间的随机子网络相关性，可能改善联合优化后的真实识别。此项属于训练组织；[原 R-Drop 论文](https://proceedings.neurips.cc/paper_files/paper/2021/file/5a66b9200f29ac3fa0ae244cc2a51b39-Paper.pdf)只支持原两次随机子网络一致性的定义，不证明本项 coupling 有效。旧 AsPairCE、噪声 antithetic、RX 会话覆盖的负结果保持关闭，不改变其参数或判定。
+固定识别收益条件失败，关闭本配方；不改掩码key／p／父／seed／预算救跑，不扩种子。完整联合目标仍未证明。
 
 ## 固定比较
 
@@ -14,18 +14,54 @@ F 三路 SIG_TIME、统一 Sinc CENTER_25K／CENTER_UNITS、joint160、默认 co
 
 按 O1、O2、S1、S2 顺序，仅操作四次共有的身份 encoder 中既有 nn.Dropout。INDEPENDENT 四掩码独立；ANTITHETIC 令S1/S2分别使用O1/O2离散随机数的反射值，O1/O2及S1/S2对内仍独立。p不调，有限均匀支持 M=2^24，keep threshold=round((1−p)M)、原1/(1−p)缩放；相对原生理想p的离散误差≤1/(2M)，两行相同。私有seed20261017561只依赖step/module/occurrence，不读IQ、TX、RX或day。两行都抽4份同大小随机张量并计算反射，匹配额外抽样与反射工作；As前向不重抽IQ。原生首次前向中身份网络之外的dropout不改；U／teacher／eval范围外使用原生 dropout。新增可训练参数、NN前向、教师、loss和U规则均0；掩码缓存／抽样成本按实际记录。
 
-## 预定判定与停止
 
-全部七视图 fixed received IQ：clean、practical_high、practical_mid、practical_low_suburban、practical_high_urban、practical_mid_urban、practical_low_urban。每视图168000相同物理样本；逐row全部 prediction/logp 固定后独立CPU truth-last评分，报告accuracy、macroF1、worstRX及全部RX/TX/day。最终默认头直接预测，不另训诊断头。
+## 七视图正式身份识别
 
-固定反证条件：ANTITHETIC相对新 INDEPENDENT control 的low urban至少+0.5pp、clean及mid urban不降、每个suburban不低于−0.25pp；任一不满足即关闭固定配方，不改mask key／p／父／seed／预算救跑，不以目标做晋级或自动扩种子。以上只作本次固定比较的报告判定，不证明完整目标。仍单列clean相对无新增增强同预算参照的净收益、low>60%、三个suburban绝对值与距自身clean的差，2pp为首轮探索标准，不能靠clean下降缩差；修复／新增错误及clean和low共同正确用于检查错误重分配。本次无新Ag／四因子或交互项证明。
+|场景|独立掩码准确率 %|反射掩码准确率 %|差 pp|反射掩码宏F1 %|反射掩码最差RX %|
+|---|---:|---:|---:|---:|---:|
+|clean|82.998214|83.020238|+0.022024|82.609283|74.070833|
+|suburban high|81.770238|81.722024|-0.048214|81.293004|73.504167|
+|suburban mid|79.483929|79.447024|-0.036905|79.027910|71.966667|
+|suburban low|77.074405|77.048214|-0.026190|76.652253|70.050000|
+|urban high|78.316667|78.236310|-0.080357|77.785544|70.783333|
+|urban mid|64.460714|64.392857|-0.067857|63.954087|58.412500|
+|urban low|53.470833|53.414286|-0.056548|52.889392|49.004167|
 
-技术停止：父/数据/权限/默认头/预算/掩码轨迹不符、非有限loss/grad、已有输出冲突或所属row技术失败，保留产物，不自动重试或改动健康旧任务。每GPU最多3个全owner实验进程，并遵守原共享容量选择。两行固定矩阵互不使用先完成row的目标成绩。
+固定判定：{"low_urban_gain_at_least_0_5pp": false, "clean_not_lower": true, "mid_urban_not_lower": false, "each_suburban_no_more_than_0_25pp_lower": true}。全部14份view／2352000正式决策固定，逐row七view完成后独立CPU评分。接收IQ、测试SNR／信道和样本不改，直接checkpoint默认头。
 
-## 发布与证据
+三个suburban距自身clean的差（pp）：INDEPENDENT 1.227976／3.514286／5.923810；ANTITHETIC 1.298214／3.573214／5.972024。不能把clean下降造成的差距缩小算作联合收益。
 
-逐行完整矩阵、配置和存储以[experiment.json](experiment.json)为唯一登记入口；配置[固定矩阵](../../../configs/cvs_dropout_coupling_e30.json)。执行commit为a56e02cada3f11db002115afedafb4c024151348，由release_commit.txt记录；发布命令为CVS-RFFI/bin/python -u experiments/cvs_dropout_coupling30/runner.py，CWD为PROJECT/releases/cvs_F_dropoutCoupling_E30_20261017_r01，输出根PROJECT/runs/20261017-phase1-F-crossRX-dropoutCoupling-e20plus10-s2026092701-m2-r01。普通N607账户／固定现有Python和F依赖／全FP32／CPU2／共享GPU，owner codex/root/F-dropoutCoupling-E30。
+同预算B00 clean仅作原已冻结背景：85.268452%。两行clean净收益（pp）分别为-2.270238／-2.248214；完整目标仍要求clean正收益、low>60%、suburban接近clean及新的合法Ag和因子证据，本项训练组织比较不能替代。
 
-本地26项权限/状态负例与分布/回退/deepcopy检查通过。两行实际F合成四视图、默认头联合梯度、无state_dict变化通过；每前向13个活动dropout、每步52随机张量／13565952随机元素。实现期3次合成探针失败保留在[验证说明](verification.json)，合计1920包模型前向、384次合成As处理、0真实IQ／CP／优化更新；这些不是性能证据。发布过程中的唯一一次P0/P1审查、真实CP无query smoke、单archive传输比较、远端编译和PID/CWD/argv/GPU/loggrowth验证均已通过，训练后自动正式评分。
+## 配对错误与独立复算
 
-发布后独立核对：[执行证据](execution_evidence.json)、[全部实际参数核对](actual_config_verification.json)。dispatcher730696、INDEPENDENT730723／GPU1、ANTITHETIC730796／GPU2，PID/CWD/argv/CUDA/GPU匹配，日志分别增长5197／5196字节，技术失败为空。857项native参数仅candidate_id/output_dir不同，源物理role_ids与原契约逐项相同，13个既有身份dropout位置完全匹配，父与自身EMA及重置optimizer均正确。源epoch观察确认两行各222更新、4L前向和全部As监督；这仅证实实跑状态，不能替代冻结后识别收益。代码已提交并push，远端OID独立核实一致；未修改运行release或其他健康任务。
+|场景|修复|新增错误|差 pp|clean与场景共同正确差 pp|
+|---|---:|---:|---:|---:|
+|clean|326|289|+0.022024|+0.022024|
+|suburban high|379|460|-0.048214|-0.020238|
+|suburban mid|458|520|-0.036905|-0.006548|
+|suburban low|511|555|-0.026190|-0.009524|
+|urban high|430|565|-0.080357|-0.044643|
+|urban mid|685|799|-0.067857|-0.057143|
+|urban low|855|950|-0.056548|-0.083333|
+
+low与clean共同正确：反射82905／独立83045；共同clean正确139148包中，low修复658／新增803。
+
+252个混淆矩阵／42个分区相加／7个paired差值独立重计一致，最大指标误差2.22e-16。保留[全部分层](stratified_results.md)、[独立复算](result_summary.json)和[完整源日志分析](source_analysis.json)。
+
+## 实际匹配与成本
+
+两行857项实际原生参数仅['candidate_id', 'output_dir']不同；4440条L/U序列逐条一致，原6300／56700物理角色完整，源训练RX无留出。每行2220条参考目标、单位更新和掩码记录完整，重算目标最大误差1.19e-07；每步4L／128As、同IQ不重抽、全As监督、原U隐藏规则与默认头联合训练符合。
+
+|行|L NN（已含于student train）|student train|student eval|teacher train/eval|预测NN|源墙钟 s|预测墙钟 s|评分CPU墙钟 s|
+|---|---:|---:|---:|---:|---:|---:|---:|---:|
+|INDEPENDENT|1136640|1703640|324002|0/567000|1176002|1216.244|41.458|3.267|
+|ANTITHETIC|1136640|1703640|324002|0/567000|1176002|1234.027|43.524|3.218|
+
+新增包级身份NN前向合计7543210，已计两行训练/teacher/eval/预测、共用真实CP smoke2以及实现期1920；父E20／4440成本复用另列。父训练包级NN为3661082，student train/eval及teacher eval为2670180/594002/396900；同一父只实际复用一次，不把每行累计预算相加当新增训练。实现期384合成As处理和3次失败探针单列，0真实IQ／CP／更新，不是额外训练。每行As284160次、私有mask随机张量115440个／随机元素30116413440个，两行同抽样/反射工作；额外NN=0不等于额外算子开销=0，缓存与随机生成有GPU成本，不用共享资源墙钟差宣称提速。
+
+[完整曲线与固定测试图](figures/dropout_coupling_matched_E30.png)包含父20轮和新增10轮全部源目标，不截取有利epoch。仅显示冻结结果，不回流调参、排序、父／seed或选择性重跑。分析只读既有日志/分数/正确性，0新IQ／CP／rawtruth／NN／更新。
+
+20条旧可选诊断N/A保持null并列出路径；两行全部loss/梯度更新及正式评分有限，未把可选诊断缺项当作非有限训练失败。只验证本固定单seed配方未达条件，不能据此证明所有dropout相关性都无用。旧RDrop、AsPairCE和噪声antithetic结论不改判，本项未新增Ag或组合视图。
+
+这是已暴露固定基准上的持续研究，不声明新的独立盲测；目标不回流幅度、mask key、p、父、选模、晋级、seed或选择性重跑。执行状态见[终态证据](execution_evidence.json)，默认头/源角色与857参数核对见[实际配置核对](actual_config_verification.json)。归档/编译/唯一P0P1检查和Git交付保留。

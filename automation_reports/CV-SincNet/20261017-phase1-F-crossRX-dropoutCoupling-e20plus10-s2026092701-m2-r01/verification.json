@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_PASS",
+  "status": "FORMAL_RESULTS_VERIFIED_FIXED_CANDIDATE_FAILED",
   "protocol_negatives": 26,
   "actual_F_synthetic_modes": 2,
   "actual_active_dropout_calls_per_identity_forward": 13,
@@ -22,5 +22,14 @@
     "review_count": 1,
     "scope": "Next real run correctness/permissions/destruction/launch/legal prediction only;not performance"
   },
-  "N607_connection_preflight": "VERIFIED_ORDINARY_ACCOUNT"
+  "N607_connection_preflight": "VERIFIED_ORDINARY_ACCOUNT",
+  "actual_steps_each": 2220,
+  "CM_recounts": 252,
+  "partition_sums": 42,
+  "complete_L_U_sequence_match": true,
+  "actual_native_arg_count": 857,
+  "objective_error": 1.1920928955078125e-7,
+  "optional_NA_metadata_paths": 20,
+  "nonfinite_loss_grad_skips": 0,
+  "figure_visual_QA": "PASS"
 }

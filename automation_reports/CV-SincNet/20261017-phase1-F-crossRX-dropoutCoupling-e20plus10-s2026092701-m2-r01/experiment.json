@@ -489,7 +489,9 @@
           "no_mask_key_or_probability_rescue": true
         }
       },
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "completion_evidence": "execution_evidence.json",
+      "artifact_status": "TRAINED_DEFAULT_PREDICTED_SCORED"
     },
     {
       "row_id": "ANTITHETIC-s2026092701",
@@ -845,7 +847,9 @@
           "no_mask_key_or_probability_rescue": true
         }
       },
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "completion_evidence": "execution_evidence.json",
+      "artifact_status": "TRAINED_DEFAULT_PREDICTED_SCORED"
     }
   ],
   "notes": [
@@ -873,5 +877,6 @@
     "clean_delta_pp": -0.05416666666666666,
     "joint_goal_complete": false
   },
-  "registered_at": "2026-10-17T15:42:28+00:00"
+  "registered_at": "2026-10-17T15:42:28+00:00",
+  "status": "ANALYZED"
 }

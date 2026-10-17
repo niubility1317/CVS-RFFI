@@ -1,0 +1,2282 @@
+{
+  "status": "COMPLETE_LOGS_ANALYZED",
+  "rows": {
+    "INDEPENDENT": {
+      "epoch_count": 10,
+      "all_step_records": 2220,
+      "L_U_sequence": {
+        "exists": true,
+        "records": 4440,
+        "partial": false,
+        "error": null,
+        "role_records": {
+          "L": 2220,
+          "U": 2220
+        },
+        "packets": {
+          "L": 284160,
+          "U": 567000
+        },
+        "unique_physical": {
+          "L": 6300,
+          "U": 56700
+        },
+        "RX_day": [
+          {
+            "role": "L",
+            "RX": 1,
+            "day": 1,
+            "count": 18925
+          },
+          {
+            "role": "L",
+            "RX": 1,
+            "day": 2,
+            "count": 18927
+          },
+          {
+            "role": "L",
+            "RX": 1,
+            "day": 3,
+            "count": 18969
+          },
+          {
+            "role": "L",
+            "RX": 3,
+            "day": 1,
+            "count": 18985
+          },
+          {
+            "role": "L",
+            "RX": 3,
+            "day": 2,
+            "count": 18860
+          },
+          {
+            "role": "L",
+            "RX": 3,
+            "day": 3,
+            "count": 18976
+          },
+          {
+            "role": "L",
+            "RX": 4,
+            "day": 1,
+            "count": 18979
+          },
+          {
+            "role": "L",
+            "RX": 4,
+            "day": 2,
+            "count": 19009
+          },
+          {
+            "role": "L",
+            "RX": 4,
+            "day": 3,
+            "count": 18943
+          },
+          {
+            "role": "L",
+            "RX": 6,
+            "day": 1,
+            "count": 18910
+          },
+          {
+            "role": "L",
+            "RX": 6,
+            "day": 2,
+            "count": 18961
+          },
+          {
+            "role": "L",
+            "RX": 6,
+            "day": 3,
+            "count": 18962
+          },
+          {
+            "role": "L",
+            "RX": 8,
+            "day": 1,
+            "count": 18866
+          },
+          {
+            "role": "L",
+            "RX": 8,
+            "day": 2,
+            "count": 18945
+          },
+          {
+            "role": "L",
+            "RX": 8,
+            "day": 3,
+            "count": 18943
+          },
+          {
+            "role": "U",
+            "RX": 1,
+            "day": 1,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 1,
+            "day": 2,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 1,
+            "day": 3,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 3,
+            "day": 1,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 3,
+            "day": 2,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 3,
+            "day": 3,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 4,
+            "day": 1,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 4,
+            "day": 2,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 4,
+            "day": 3,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 6,
+            "day": 1,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 6,
+            "day": 2,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 6,
+            "day": 3,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 8,
+            "day": 1,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 8,
+            "day": 2,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 8,
+            "day": 3,
+            "count": 37800
+          }
+        ],
+        "unexpected_roles": {}
+      },
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.9797777777777777,
+        "source_val_rx_accuracy": {
+          "1": 0.9914814814814815,
+          "3": 0.9457407407407408,
+          "4": 0.9851851851851852,
+          "6": 0.9935185185185185,
+          "8": 0.9829629629629629
+        },
+        "source_val_worst_rx": 0.9457407407407408
+      },
+      "complete_stdout_markers": {
+        "config": 16,
+        "epoch_end": 10,
+        "view_complete": 7,
+        "row_scored": 1
+      },
+      "step_metric_summary": {
+        "train/loss": {
+          "count": 2220,
+          "mean": 0.6568287309091376,
+          "std": 0.2220304543396141,
+          "minimum": 0.40916377305984497,
+          "maximum": 1.4501760005950928,
+          "first": 0.5754357576370239,
+          "last": 0.5470482707023621,
+          "nonfinite": 0
+        },
+        "train/loss_labeled": {
+          "count": 2220,
+          "mean": 0.2789888445925609,
+          "std": 0.30636163384846926,
+          "minimum": 0.08980885148048401,
+          "maximum": 1.7768330574035645,
+          "first": 0.182577982544899,
+          "last": 0.11738410592079163,
+          "nonfinite": 0
+        },
+        "train/loss_tx_labeled": {
+          "count": 2220,
+          "mean": 0.2789888445925609,
+          "std": 0.30636163384846926,
+          "minimum": 0.08980885148048401,
+          "maximum": 1.7768330574035645,
+          "first": 0.182577982544899,
+          "last": 0.11738410592079163,
+          "nonfinite": 0
+        },
+        "train/loss_unlabeled": {
+          "count": 2220,
+          "mean": 0.01291787647457347,
+          "std": 0.02116681709971006,
+          "minimum": -0.0,
+          "maximum": 0.35592231154441833,
+          "first": 0.004199461080133915,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "train/grad_total": {
+          "count": 2220,
+          "mean": 1.2659766841042748,
+          "std": 0.666038315026184,
+          "minimum": 0.5548171517179796,
+          "maximum": 5.00002192146282,
+          "first": 1.0254457012513736,
+          "last": 0.9427338867735753,
+          "nonfinite": 0
+        },
+        "train/grad_before_clip": {
+          "count": 2220,
+          "mean": 1.2775428149865824,
+          "std": 0.7754359090143701,
+          "minimum": 0.554817151719489,
+          "maximum": 16.075484881022593,
+          "first": 1.0254457012513736,
+          "last": 0.9427338867741546,
+          "nonfinite": 0
+        },
+        "train/optimizer_step_applied": {
+          "count": 2220,
+          "mean": 1.0,
+          "std": 0.0,
+          "minimum": 1.0,
+          "maximum": 1.0,
+          "first": 1.0,
+          "last": 1.0,
+          "nonfinite": 0
+        },
+        "train/pseudo_truth_available": {
+          "count": 2220,
+          "mean": 0.0,
+          "std": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "train/skipped_nonfinite_loss": {
+          "count": 2220,
+          "mean": 0.0,
+          "std": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "train/skipped_nonfinite_grad": {
+          "count": 2220,
+          "mean": 0.0,
+          "std": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "concat/total_L": {
+          "count": 2220,
+          "mean": 0.6533253098930315,
+          "std": 0.22207359546460925,
+          "minimum": 0.4077475070953369,
+          "maximum": 1.447898268699646,
+          "first": 0.5729025602340698,
+          "last": 0.5457064509391785,
+          "nonfinite": 0
+        },
+        "concat/common_CE": {
+          "count": 2220,
+          "mean": 0.2789096246800716,
+          "std": 0.30572623024024465,
+          "minimum": 0.09089232981204987,
+          "maximum": 1.7334611415863037,
+          "first": 0.183192640542984,
+          "last": 0.12437704205513,
+          "nonfinite": 0
+        },
+        "concat/common_KL": {
+          "count": 2220,
+          "mean": 0.030077669761345013,
+          "std": 0.016265700298399077,
+          "minimum": 0.006313595920801163,
+          "maximum": 0.129744291305542,
+          "first": 0.03497324511408806,
+          "last": 0.018967796117067337,
+          "nonfinite": 0
+        },
+        "concat/SupCon": {
+          "count": 2220,
+          "mean": 1.4732822497685738,
+          "std": 0.6498400202354033,
+          "minimum": 0.9311605095863342,
+          "maximum": 3.3420896530151367,
+          "first": 1.4653425216674805,
+          "last": 0.9559322595596313,
+          "nonfinite": 0
+        },
+        "concat/SupCon_weight": {
+          "count": 2220,
+          "mean": 0.1,
+          "std": 0.0,
+          "minimum": 0.1,
+          "maximum": 0.1,
+          "first": 0.1,
+          "last": 0.1,
+          "nonfinite": 0
+        },
+        "concat/L_forwards": {
+          "count": 2220,
+          "mean": 4.0,
+          "std": 0.0,
+          "minimum": 4.0,
+          "maximum": 4.0,
+          "first": 4.0,
+          "last": 4.0,
+          "nonfinite": 0
+        },
+        "concat/As_packets": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        }
+      },
+      "full_reference_numeric_summary": {
+        "As_packets": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "L_forwards": {
+          "count": 2220,
+          "mean": 4.0,
+          "std": 0.0,
+          "minimum": 4.0,
+          "maximum": 4.0,
+          "first": 4.0,
+          "last": 4.0,
+          "nonfinite": 0
+        },
+        "SupCon": {
+          "count": 2220,
+          "mean": 1.4732822497685738,
+          "std": 0.6498400202354033,
+          "minimum": 0.9311605095863342,
+          "maximum": 3.3420896530151367,
+          "first": 1.4653425216674805,
+          "last": 0.9559322595596313,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/loss": {
+          "count": 2220,
+          "mean": 1.6016809544047832,
+          "std": 0.7747154104112252,
+          "minimum": 0.9569814205169678,
+          "maximum": 3.8837976455688477,
+          "first": 1.5566856861114502,
+          "last": 0.9760631918907166,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/positive_max": {
+          "count": 2220,
+          "mean": 24.459459459459428,
+          "std": 2.24083230910875,
+          "minimum": 20.0,
+          "maximum": 35.0,
+          "first": 24.0,
+          "last": 24.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/positive_min": {
+          "count": 2220,
+          "mean": 10.241891891891884,
+          "std": 1.6526124628226067,
+          "minimum": 3.0,
+          "maximum": 15.0,
+          "first": 11.0,
+          "last": 9.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/shape/0": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/shape/1": {
+          "count": 2220,
+          "mean": 48.0,
+          "std": 0.0,
+          "minimum": 48.0,
+          "maximum": 48.0,
+          "first": 48.0,
+          "last": 48.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/shape/2": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/total_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/valid_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/loss": {
+          "count": 2220,
+          "mean": 1.3447471899760746,
+          "std": 0.5269344168977135,
+          "minimum": 0.8436050415039062,
+          "maximum": 2.853862762451172,
+          "first": 1.3665473461151123,
+          "last": 0.9378746747970581,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/positive_max": {
+          "count": 2220,
+          "mean": 24.459459459459428,
+          "std": 2.24083230910875,
+          "minimum": 20.0,
+          "maximum": 35.0,
+          "first": 24.0,
+          "last": 24.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/positive_min": {
+          "count": 2220,
+          "mean": 10.241891891891884,
+          "std": 1.6526124628226067,
+          "minimum": 3.0,
+          "maximum": 15.0,
+          "first": 11.0,
+          "last": 9.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/shape/0": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/shape/1": {
+          "count": 2220,
+          "mean": 96.0,
+          "std": 0.0,
+          "minimum": 96.0,
+          "maximum": 96.0,
+          "first": 96.0,
+          "last": 96.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/shape/2": {
+          "count": 2220,
+          "mean": 32.0,
+          "std": 0.0,
+          "minimum": 32.0,
+          "maximum": 32.0,
+          "first": 32.0,
+          "last": 32.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/total_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/valid_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/loss": {
+          "count": 2220,
+          "mean": 1.6016809544047832,
+          "std": 0.7747154104112252,
+          "minimum": 0.9569814205169678,
+          "maximum": 3.8837976455688477,
+          "first": 1.5566856861114502,
+          "last": 0.9760631918907166,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/positive_max": {
+          "count": 2220,
+          "mean": 24.459459459459428,
+          "std": 2.24083230910875,
+          "minimum": 20.0,
+          "maximum": 35.0,
+          "first": 24.0,
+          "last": 24.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/positive_min": {
+          "count": 2220,
+          "mean": 10.241891891891884,
+          "std": 1.6526124628226067,
+          "minimum": 3.0,
+          "maximum": 15.0,
+          "first": 11.0,
+          "last": 9.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/shape/0": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/shape/1": {
+          "count": 2220,
+          "mean": 48.0,
+          "std": 0.0,
+          "minimum": 48.0,
+          "maximum": 48.0,
+          "first": 48.0,
+          "last": 48.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/shape/2": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/total_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/valid_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/loss": {
+          "count": 2220,
+          "mean": 1.3450198880186992,
+          "std": 0.5274332416837079,
+          "minimum": 0.8512786030769348,
+          "maximum": 2.8849220275878906,
+          "first": 1.3814514875411987,
+          "last": 0.9337279796600342,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/positive_max": {
+          "count": 2220,
+          "mean": 24.459459459459428,
+          "std": 2.24083230910875,
+          "minimum": 20.0,
+          "maximum": 35.0,
+          "first": 24.0,
+          "last": 24.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/positive_min": {
+          "count": 2220,
+          "mean": 10.241891891891884,
+          "std": 1.6526124628226067,
+          "minimum": 3.0,
+          "maximum": 15.0,
+          "first": 11.0,
+          "last": 9.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/shape/0": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/shape/1": {
+          "count": 2220,
+          "mean": 96.0,
+          "std": 0.0,
+          "minimum": 96.0,
+          "maximum": 96.0,
+          "first": 96.0,
+          "last": 96.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/shape/2": {
+          "count": 2220,
+          "mean": 32.0,
+          "std": 0.0,
+          "minimum": 32.0,
+          "maximum": 32.0,
+          "first": 32.0,
+          "last": 32.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/total_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/valid_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_weight": {
+          "count": 2220,
+          "mean": 0.1,
+          "std": 0.0,
+          "minimum": 0.1,
+          "maximum": 0.1,
+          "first": 0.1,
+          "last": 0.1,
+          "nonfinite": 0
+        },
+        "all_satellite_L_supervised": {
+          "count": 2220,
+          "mean": 1.0,
+          "std": 0.0,
+          "minimum": 1.0,
+          "maximum": 1.0,
+          "first": 1.0,
+          "last": 1.0,
+          "nonfinite": 0
+        },
+        "common_CE": {
+          "count": 2220,
+          "mean": 0.2789096246800716,
+          "std": 0.30572623024024465,
+          "minimum": 0.09089232981204987,
+          "maximum": 1.7334611415863037,
+          "first": 0.183192640542984,
+          "last": 0.12437704205513,
+          "nonfinite": 0
+        },
+        "common_KL": {
+          "count": 2220,
+          "mean": 0.030077669761345013,
+          "std": 0.016265700298399077,
+          "minimum": 0.006313595920801163,
+          "maximum": 0.129744291305542,
+          "first": 0.03497324511408806,
+          "last": 0.018967796117067337,
+          "nonfinite": 0
+        },
+        "common_RD": {
+          "count": 2220,
+          "mean": 0.30898729443281653,
+          "std": 0.3178095005329163,
+          "minimum": 0.09879690408706665,
+          "maximum": 1.7993896007537842,
+          "first": 0.21816588938236237,
+          "last": 0.14334483444690704,
+          "nonfinite": 0
+        },
+        "cumulative_step": {
+          "count": 2220,
+          "mean": 5550.5,
+          "std": 640.8587337835592,
+          "minimum": 4441.0,
+          "maximum": 6660.0,
+          "first": 4441.0,
+          "last": 6660.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/active_calls_per_view": {
+          "count": 2220,
+          "mean": 13.0,
+          "std": 0.0,
+          "minimum": 13.0,
+          "maximum": 13.0,
+          "first": 13.0,
+          "last": 13.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/additional_NN_forwards": {
+          "count": 2220,
+          "mean": 0.0,
+          "std": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/random_elements": {
+          "count": 2220,
+          "mean": 13565952.0,
+          "std": 0.0,
+          "minimum": 13565952.0,
+          "maximum": 13565952.0,
+          "first": 13565952.0,
+          "last": 13565952.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/random_tensors": {
+          "count": 2220,
+          "mean": 52.0,
+          "std": 0.0,
+          "minimum": 52.0,
+          "maximum": 52.0,
+          "first": 52.0,
+          "last": 52.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/step": {
+          "count": 2220,
+          "mean": 1110.5,
+          "std": 640.8587337835592,
+          "minimum": 1.0,
+          "maximum": 2220.0,
+          "first": 1.0,
+          "last": 2220.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/view_count": {
+          "count": 2220,
+          "mean": 4.0,
+          "std": 0.0,
+          "minimum": 4.0,
+          "maximum": 4.0,
+          "first": 4.0,
+          "last": 4.0,
+          "nonfinite": 0
+        },
+        "epoch": {
+          "count": 2220,
+          "mean": 5.500000000000008,
+          "std": 2.8722813232690103,
+          "minimum": 1.0,
+          "maximum": 10.0,
+          "first": 1.0,
+          "last": 10.0,
+          "nonfinite": 0
+        },
+        "extra_CE": {
+          "count": 2220,
+          "mean": 0.6614944898196159,
+          "std": 0.07170580017580273,
+          "minimum": 0.4383242130279541,
+          "maximum": 0.931617259979248,
+          "first": 0.5854542255401611,
+          "last": 0.70851731300354,
+          "nonfinite": 0
+        },
+        "extra_KL": {
+          "count": 2220,
+          "mean": 0.041512380940587935,
+          "std": 0.00751339997322879,
+          "minimum": 0.023537199944257736,
+          "maximum": 0.07530234754085541,
+          "first": 0.04911649972200394,
+          "last": 0.04836428165435791,
+          "nonfinite": 0
+        },
+        "extra_RD": {
+          "count": 2220,
+          "mean": 0.7030068709103914,
+          "std": 0.0737253303247922,
+          "minimum": 0.4658825099468231,
+          "maximum": 0.9841945767402649,
+          "first": 0.6345707178115845,
+          "last": 0.756881594657898,
+          "nonfinite": 0
+        },
+        "ordinary_raw_MSE": {
+          "count": 2220,
+          "mean": 0.23230966811386466,
+          "std": 0.4673659035575277,
+          "minimum": 0.0,
+          "maximum": 9.540934562683105,
+          "first": 0.010179158300161362,
+          "last": 0.005379586946219206,
+          "nonfinite": 0
+        },
+        "ordinary_redraws": {
+          "count": 2220,
+          "mean": 0.0,
+          "std": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "same_IQ_each_pair": {
+          "count": 2220,
+          "mean": 1.0,
+          "std": 0.0,
+          "minimum": 1.0,
+          "maximum": 1.0,
+          "first": 1.0,
+          "last": 1.0,
+          "nonfinite": 0
+        },
+        "scene_counts/practical_low_suburban": {
+          "count": 2220,
+          "mean": 42.746846846846786,
+          "std": 5.314425715752908,
+          "minimum": 26.0,
+          "maximum": 61.0,
+          "first": 49.0,
+          "last": 42.0,
+          "nonfinite": 0
+        },
+        "scene_counts/practical_low_urban": {
+          "count": 2220,
+          "mean": 42.777927927927855,
+          "std": 5.361840415701893,
+          "minimum": 24.0,
+          "maximum": 62.0,
+          "first": 44.0,
+          "last": 49.0,
+          "nonfinite": 0
+        },
+        "scene_counts/practical_mid_urban": {
+          "count": 2220,
+          "mean": 42.47522522522521,
+          "std": 5.370155993984164,
+          "minimum": 27.0,
+          "maximum": 60.0,
+          "first": 35.0,
+          "last": 37.0,
+          "nonfinite": 0
+        },
+        "second_raw_MSE": {
+          "count": 2220,
+          "mean": 1.0056243527848454,
+          "std": 0.00452917468769664,
+          "minimum": 0.9866876602172852,
+          "maximum": 1.023240327835083,
+          "first": 1.0052521228790283,
+          "last": 1.007637619972229,
+          "nonfinite": 0
+        },
+        "state_counts/BLOCKED": {
+          "count": 2220,
+          "mean": 42.9477477477478,
+          "std": 5.448280112899947,
+          "minimum": 23.0,
+          "maximum": 62.0,
+          "first": 40.0,
+          "last": 46.0,
+          "nonfinite": 0
+        },
+        "state_counts/LOS": {
+          "count": 2220,
+          "mean": 64.59009009009024,
+          "std": 5.694433111412604,
+          "minimum": 42.0,
+          "maximum": 85.0,
+          "first": 65.0,
+          "last": 55.0,
+          "nonfinite": 0
+        },
+        "state_counts/PARTIAL": {
+          "count": 2220,
+          "mean": 20.462162162162176,
+          "std": 4.08467922046075,
+          "minimum": 8.0,
+          "maximum": 36.0,
+          "first": 23.0,
+          "last": 27.0,
+          "nonfinite": 0
+        },
+        "step": {
+          "count": 2220,
+          "mean": 1110.5,
+          "std": 640.8587337835592,
+          "minimum": 1.0,
+          "maximum": 2220.0,
+          "first": 1.0,
+          "last": 2220.0,
+          "nonfinite": 0
+        },
+        "total_L": {
+          "count": 2220,
+          "mean": 0.6533253098930315,
+          "std": 0.22207359546460925,
+          "minimum": 0.4077475070953369,
+          "maximum": 1.447898268699646,
+          "first": 0.5729025602340698,
+          "last": 0.5457064509391785,
+          "nonfinite": 0
+        }
+      },
+      "actual_mask_totals": {
+        "mode": "INDEPENDENT",
+        "steps": 2220,
+        "random_tensors": 115440,
+        "random_elements": 30116413440,
+        "active_calls_per_view": [
+          13
+        ],
+        "global_RNG_consumption": 0,
+        "extra_parameters": 0,
+        "extra_NN_forwards": 0
+      }
+    },
+    "ANTITHETIC": {
+      "epoch_count": 10,
+      "all_step_records": 2220,
+      "L_U_sequence": {
+        "exists": true,
+        "records": 4440,
+        "partial": false,
+        "error": null,
+        "role_records": {
+          "L": 2220,
+          "U": 2220
+        },
+        "packets": {
+          "L": 284160,
+          "U": 567000
+        },
+        "unique_physical": {
+          "L": 6300,
+          "U": 56700
+        },
+        "RX_day": [
+          {
+            "role": "L",
+            "RX": 1,
+            "day": 1,
+            "count": 18925
+          },
+          {
+            "role": "L",
+            "RX": 1,
+            "day": 2,
+            "count": 18927
+          },
+          {
+            "role": "L",
+            "RX": 1,
+            "day": 3,
+            "count": 18969
+          },
+          {
+            "role": "L",
+            "RX": 3,
+            "day": 1,
+            "count": 18985
+          },
+          {
+            "role": "L",
+            "RX": 3,
+            "day": 2,
+            "count": 18860
+          },
+          {
+            "role": "L",
+            "RX": 3,
+            "day": 3,
+            "count": 18976
+          },
+          {
+            "role": "L",
+            "RX": 4,
+            "day": 1,
+            "count": 18979
+          },
+          {
+            "role": "L",
+            "RX": 4,
+            "day": 2,
+            "count": 19009
+          },
+          {
+            "role": "L",
+            "RX": 4,
+            "day": 3,
+            "count": 18943
+          },
+          {
+            "role": "L",
+            "RX": 6,
+            "day": 1,
+            "count": 18910
+          },
+          {
+            "role": "L",
+            "RX": 6,
+            "day": 2,
+            "count": 18961
+          },
+          {
+            "role": "L",
+            "RX": 6,
+            "day": 3,
+            "count": 18962
+          },
+          {
+            "role": "L",
+            "RX": 8,
+            "day": 1,
+            "count": 18866
+          },
+          {
+            "role": "L",
+            "RX": 8,
+            "day": 2,
+            "count": 18945
+          },
+          {
+            "role": "L",
+            "RX": 8,
+            "day": 3,
+            "count": 18943
+          },
+          {
+            "role": "U",
+            "RX": 1,
+            "day": 1,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 1,
+            "day": 2,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 1,
+            "day": 3,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 3,
+            "day": 1,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 3,
+            "day": 2,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 3,
+            "day": 3,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 4,
+            "day": 1,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 4,
+            "day": 2,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 4,
+            "day": 3,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 6,
+            "day": 1,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 6,
+            "day": 2,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 6,
+            "day": 3,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 8,
+            "day": 1,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 8,
+            "day": 2,
+            "count": 37800
+          },
+          {
+            "role": "U",
+            "RX": 8,
+            "day": 3,
+            "count": 37800
+          }
+        ],
+        "unexpected_roles": {}
+      },
+      "source_V": {
+        "source_val_count": 27000,
+        "source_val_accuracy": 0.98,
+        "source_val_rx_accuracy": {
+          "1": 0.9916666666666667,
+          "3": 0.945925925925926,
+          "4": 0.9853703703703703,
+          "6": 0.9938888888888889,
+          "8": 0.9831481481481481
+        },
+        "source_val_worst_rx": 0.945925925925926
+      },
+      "complete_stdout_markers": {
+        "config": 16,
+        "epoch_end": 10,
+        "view_complete": 7,
+        "row_scored": 1
+      },
+      "step_metric_summary": {
+        "train/loss": {
+          "count": 2220,
+          "mean": 0.6564971715614613,
+          "std": 0.22183946308931657,
+          "minimum": 0.41309183835983276,
+          "maximum": 1.4543123245239258,
+          "first": 0.5621088743209839,
+          "last": 0.5505849719047546,
+          "nonfinite": 0
+        },
+        "train/loss_labeled": {
+          "count": 2220,
+          "mean": 0.2787251743949476,
+          "std": 0.30591410823397686,
+          "minimum": 0.08942350000143051,
+          "maximum": 1.7591102123260498,
+          "first": 0.182577982544899,
+          "last": 0.11768580973148346,
+          "nonfinite": 0
+        },
+        "train/loss_tx_labeled": {
+          "count": 2220,
+          "mean": 0.2787251743949476,
+          "std": 0.30591410823397686,
+          "minimum": 0.08942350000143051,
+          "maximum": 1.7591102123260498,
+          "first": 0.182577982544899,
+          "last": 0.11768580973148346,
+          "nonfinite": 0
+        },
+        "train/loss_unlabeled": {
+          "count": 2220,
+          "mean": 0.01282724268817831,
+          "std": 0.021036355526134736,
+          "minimum": -0.0,
+          "maximum": 0.3108576238155365,
+          "first": 0.004199461080133915,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "train/grad_total": {
+          "count": 2220,
+          "mean": 1.2516096958417025,
+          "std": 0.6582358191929286,
+          "minimum": 0.5332970125190241,
+          "maximum": 5.0000281013682475,
+          "first": 0.972905100557439,
+          "last": 0.9992686778541782,
+          "nonfinite": 0
+        },
+        "train/grad_before_clip": {
+          "count": 2220,
+          "mean": 1.258441922030767,
+          "std": 0.7097457230706634,
+          "minimum": 0.5332970125190241,
+          "maximum": 9.138209466399974,
+          "first": 0.9729051005582816,
+          "last": 0.9992686778541782,
+          "nonfinite": 0
+        },
+        "train/optimizer_step_applied": {
+          "count": 2220,
+          "mean": 1.0,
+          "std": 0.0,
+          "minimum": 1.0,
+          "maximum": 1.0,
+          "first": 1.0,
+          "last": 1.0,
+          "nonfinite": 0
+        },
+        "train/pseudo_truth_available": {
+          "count": 2220,
+          "mean": 0.0,
+          "std": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "train/skipped_nonfinite_loss": {
+          "count": 2220,
+          "mean": 0.0,
+          "std": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "train/skipped_nonfinite_grad": {
+          "count": 2220,
+          "mean": 0.0,
+          "std": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "concat/total_L": {
+          "count": 2220,
+          "mean": 0.6530131487024806,
+          "std": 0.22188706244576745,
+          "minimum": 0.4116876721382141,
+          "maximum": 1.4518275260925293,
+          "first": 0.559575617313385,
+          "last": 0.5492631196975708,
+          "nonfinite": 0
+        },
+        "concat/common_CE": {
+          "count": 2220,
+          "mean": 0.2786920576415087,
+          "std": 0.30541551566188635,
+          "minimum": 0.08992794901132584,
+          "maximum": 1.7273890972137451,
+          "first": 0.183192640542984,
+          "last": 0.12466735392808914,
+          "nonfinite": 0
+        },
+        "concat/common_KL": {
+          "count": 2220,
+          "mean": 0.030074863080858258,
+          "std": 0.0163839213521852,
+          "minimum": 0.006464146077632904,
+          "maximum": 0.132635235786438,
+          "first": 0.03497324511408806,
+          "last": 0.017789795994758606,
+          "nonfinite": 0
+        },
+        "concat/SupCon": {
+          "count": 2220,
+          "mean": 1.4727351239404156,
+          "std": 0.6491999116485813,
+          "minimum": 0.9306504130363464,
+          "maximum": 3.3353426456451416,
+          "first": 1.4653425216674805,
+          "last": 0.9532952308654785,
+          "nonfinite": 0
+        },
+        "concat/SupCon_weight": {
+          "count": 2220,
+          "mean": 0.1,
+          "std": 0.0,
+          "minimum": 0.1,
+          "maximum": 0.1,
+          "first": 0.1,
+          "last": 0.1,
+          "nonfinite": 0
+        },
+        "concat/L_forwards": {
+          "count": 2220,
+          "mean": 4.0,
+          "std": 0.0,
+          "minimum": 4.0,
+          "maximum": 4.0,
+          "first": 4.0,
+          "last": 4.0,
+          "nonfinite": 0
+        },
+        "concat/As_packets": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        }
+      },
+      "full_reference_numeric_summary": {
+        "As_packets": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "L_forwards": {
+          "count": 2220,
+          "mean": 4.0,
+          "std": 0.0,
+          "minimum": 4.0,
+          "maximum": 4.0,
+          "first": 4.0,
+          "last": 4.0,
+          "nonfinite": 0
+        },
+        "SupCon": {
+          "count": 2220,
+          "mean": 1.4727351239404156,
+          "std": 0.6491999116485813,
+          "minimum": 0.9306504130363464,
+          "maximum": 3.3353426456451416,
+          "first": 1.4653425216674805,
+          "last": 0.9532952308654785,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/loss": {
+          "count": 2220,
+          "mean": 1.6017013906895547,
+          "std": 0.7746382857404817,
+          "minimum": 0.9584833383560181,
+          "maximum": 3.8911962509155273,
+          "first": 1.5566856861114502,
+          "last": 0.9750885367393494,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/positive_max": {
+          "count": 2220,
+          "mean": 24.459459459459428,
+          "std": 2.24083230910875,
+          "minimum": 20.0,
+          "maximum": 35.0,
+          "first": 24.0,
+          "last": 24.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/positive_min": {
+          "count": 2220,
+          "mean": 10.241891891891884,
+          "std": 1.6526124628226067,
+          "minimum": 3.0,
+          "maximum": 15.0,
+          "first": 11.0,
+          "last": 9.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/shape/0": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/shape/1": {
+          "count": 2220,
+          "mean": 48.0,
+          "std": 0.0,
+          "minimum": 48.0,
+          "maximum": 48.0,
+          "first": 48.0,
+          "last": 48.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/shape/2": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/total_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/0/valid_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/loss": {
+          "count": 2220,
+          "mean": 1.3436134734400753,
+          "std": 0.5257923292413883,
+          "minimum": 0.8396656513214111,
+          "maximum": 2.847781181335449,
+          "first": 1.3665473461151123,
+          "last": 0.9317216277122498,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/positive_max": {
+          "count": 2220,
+          "mean": 24.459459459459428,
+          "std": 2.24083230910875,
+          "minimum": 20.0,
+          "maximum": 35.0,
+          "first": 24.0,
+          "last": 24.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/positive_min": {
+          "count": 2220,
+          "mean": 10.241891891891884,
+          "std": 1.6526124628226067,
+          "minimum": 3.0,
+          "maximum": 15.0,
+          "first": 11.0,
+          "last": 9.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/shape/0": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/shape/1": {
+          "count": 2220,
+          "mean": 96.0,
+          "std": 0.0,
+          "minimum": 96.0,
+          "maximum": 96.0,
+          "first": 96.0,
+          "last": 96.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/shape/2": {
+          "count": 2220,
+          "mean": 32.0,
+          "std": 0.0,
+          "minimum": 32.0,
+          "maximum": 32.0,
+          "first": 32.0,
+          "last": 32.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/total_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/1/valid_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/loss": {
+          "count": 2220,
+          "mean": 1.6017013906895547,
+          "std": 0.7746382857404817,
+          "minimum": 0.9584833383560181,
+          "maximum": 3.8911962509155273,
+          "first": 1.5566856861114502,
+          "last": 0.9750885367393494,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/positive_max": {
+          "count": 2220,
+          "mean": 24.459459459459428,
+          "std": 2.24083230910875,
+          "minimum": 20.0,
+          "maximum": 35.0,
+          "first": 24.0,
+          "last": 24.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/positive_min": {
+          "count": 2220,
+          "mean": 10.241891891891884,
+          "std": 1.6526124628226067,
+          "minimum": 3.0,
+          "maximum": 15.0,
+          "first": 11.0,
+          "last": 9.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/shape/0": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/shape/1": {
+          "count": 2220,
+          "mean": 48.0,
+          "std": 0.0,
+          "minimum": 48.0,
+          "maximum": 48.0,
+          "first": 48.0,
+          "last": 48.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/shape/2": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/total_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/2/valid_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/loss": {
+          "count": 2220,
+          "mean": 1.3439242430635399,
+          "std": 0.5262742589613856,
+          "minimum": 0.8497099876403809,
+          "maximum": 2.870171308517456,
+          "first": 1.3814514875411987,
+          "last": 0.9312821626663208,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/positive_max": {
+          "count": 2220,
+          "mean": 24.459459459459428,
+          "std": 2.24083230910875,
+          "minimum": 20.0,
+          "maximum": 35.0,
+          "first": 24.0,
+          "last": 24.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/positive_min": {
+          "count": 2220,
+          "mean": 10.241891891891884,
+          "std": 1.6526124628226067,
+          "minimum": 3.0,
+          "maximum": 15.0,
+          "first": 11.0,
+          "last": 9.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/shape/0": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/shape/1": {
+          "count": 2220,
+          "mean": 96.0,
+          "std": 0.0,
+          "minimum": 96.0,
+          "maximum": 96.0,
+          "first": 96.0,
+          "last": 96.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/shape/2": {
+          "count": 2220,
+          "mean": 32.0,
+          "std": 0.0,
+          "minimum": 32.0,
+          "maximum": 32.0,
+          "first": 32.0,
+          "last": 32.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/total_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_details/3/valid_anchors": {
+          "count": 2220,
+          "mean": 128.0,
+          "std": 0.0,
+          "minimum": 128.0,
+          "maximum": 128.0,
+          "first": 128.0,
+          "last": 128.0,
+          "nonfinite": 0
+        },
+        "SupCon_weight": {
+          "count": 2220,
+          "mean": 0.1,
+          "std": 0.0,
+          "minimum": 0.1,
+          "maximum": 0.1,
+          "first": 0.1,
+          "last": 0.1,
+          "nonfinite": 0
+        },
+        "all_satellite_L_supervised": {
+          "count": 2220,
+          "mean": 1.0,
+          "std": 0.0,
+          "minimum": 1.0,
+          "maximum": 1.0,
+          "first": 1.0,
+          "last": 1.0,
+          "nonfinite": 0
+        },
+        "common_CE": {
+          "count": 2220,
+          "mean": 0.2786920576415087,
+          "std": 0.30541551566188635,
+          "minimum": 0.08992794901132584,
+          "maximum": 1.7273890972137451,
+          "first": 0.183192640542984,
+          "last": 0.12466735392808914,
+          "nonfinite": 0
+        },
+        "common_KL": {
+          "count": 2220,
+          "mean": 0.030074863080858258,
+          "std": 0.0163839213521852,
+          "minimum": 0.006464146077632904,
+          "maximum": 0.132635235786438,
+          "first": 0.03497324511408806,
+          "last": 0.017789795994758606,
+          "nonfinite": 0
+        },
+        "common_RD": {
+          "count": 2220,
+          "mean": 0.30876692033767167,
+          "std": 0.31759312437314846,
+          "minimum": 0.09832678735256195,
+          "maximum": 1.792204737663269,
+          "first": 0.21816588938236237,
+          "last": 0.14245715737342834,
+          "nonfinite": 0
+        },
+        "cumulative_step": {
+          "count": 2220,
+          "mean": 5550.5,
+          "std": 640.8587337835592,
+          "minimum": 4441.0,
+          "maximum": 6660.0,
+          "first": 4441.0,
+          "last": 6660.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/active_calls_per_view": {
+          "count": 2220,
+          "mean": 13.0,
+          "std": 0.0,
+          "minimum": 13.0,
+          "maximum": 13.0,
+          "first": 13.0,
+          "last": 13.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/additional_NN_forwards": {
+          "count": 2220,
+          "mean": 0.0,
+          "std": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/random_elements": {
+          "count": 2220,
+          "mean": 13565952.0,
+          "std": 0.0,
+          "minimum": 13565952.0,
+          "maximum": 13565952.0,
+          "first": 13565952.0,
+          "last": 13565952.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/random_tensors": {
+          "count": 2220,
+          "mean": 52.0,
+          "std": 0.0,
+          "minimum": 52.0,
+          "maximum": 52.0,
+          "first": 52.0,
+          "last": 52.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/step": {
+          "count": 2220,
+          "mean": 1110.5,
+          "std": 640.8587337835592,
+          "minimum": 1.0,
+          "maximum": 2220.0,
+          "first": 1.0,
+          "last": 2220.0,
+          "nonfinite": 0
+        },
+        "dropout_coupling/view_count": {
+          "count": 2220,
+          "mean": 4.0,
+          "std": 0.0,
+          "minimum": 4.0,
+          "maximum": 4.0,
+          "first": 4.0,
+          "last": 4.0,
+          "nonfinite": 0
+        },
+        "epoch": {
+          "count": 2220,
+          "mean": 5.500000000000008,
+          "std": 2.8722813232690103,
+          "minimum": 1.0,
+          "maximum": 10.0,
+          "first": 1.0,
+          "last": 10.0,
+          "nonfinite": 0
+        },
+        "extra_CE": {
+          "count": 2220,
+          "mean": 0.6613452432526126,
+          "std": 0.07132946524047344,
+          "minimum": 0.4322293996810913,
+          "maximum": 0.936936616897583,
+          "first": 0.565746545791626,
+          "last": 0.7213482856750488,
+          "nonfinite": 0
+        },
+        "extra_KL": {
+          "count": 2220,
+          "mean": 0.04136710389693442,
+          "std": 0.0075117718742525215,
+          "minimum": 0.022587880492210388,
+          "maximum": 0.07867124676704407,
+          "first": 0.04217025637626648,
+          "last": 0.04406174272298813,
+          "nonfinite": 0
+        },
+        "extra_RD": {
+          "count": 2220,
+          "mean": 0.7027123470564146,
+          "std": 0.07333010773387999,
+          "minimum": 0.47818538546562195,
+          "maximum": 0.9913381338119507,
+          "first": 0.6079168319702148,
+          "last": 0.7654100060462952,
+          "nonfinite": 0
+        },
+        "ordinary_raw_MSE": {
+          "count": 2220,
+          "mean": 0.23230966811386466,
+          "std": 0.4673659035575277,
+          "minimum": 0.0,
+          "maximum": 9.540934562683105,
+          "first": 0.010179158300161362,
+          "last": 0.005379586946219206,
+          "nonfinite": 0
+        },
+        "ordinary_redraws": {
+          "count": 2220,
+          "mean": 0.0,
+          "std": 0.0,
+          "minimum": 0.0,
+          "maximum": 0.0,
+          "first": 0.0,
+          "last": 0.0,
+          "nonfinite": 0
+        },
+        "same_IQ_each_pair": {
+          "count": 2220,
+          "mean": 1.0,
+          "std": 0.0,
+          "minimum": 1.0,
+          "maximum": 1.0,
+          "first": 1.0,
+          "last": 1.0,
+          "nonfinite": 0
+        },
+        "scene_counts/practical_low_suburban": {
+          "count": 2220,
+          "mean": 42.746846846846786,
+          "std": 5.314425715752908,
+          "minimum": 26.0,
+          "maximum": 61.0,
+          "first": 49.0,
+          "last": 42.0,
+          "nonfinite": 0
+        },
+        "scene_counts/practical_low_urban": {
+          "count": 2220,
+          "mean": 42.777927927927855,
+          "std": 5.361840415701893,
+          "minimum": 24.0,
+          "maximum": 62.0,
+          "first": 44.0,
+          "last": 49.0,
+          "nonfinite": 0
+        },
+        "scene_counts/practical_mid_urban": {
+          "count": 2220,
+          "mean": 42.47522522522521,
+          "std": 5.370155993984164,
+          "minimum": 27.0,
+          "maximum": 60.0,
+          "first": 35.0,
+          "last": 37.0,
+          "nonfinite": 0
+        },
+        "second_raw_MSE": {
+          "count": 2220,
+          "mean": 1.0056243527848454,
+          "std": 0.00452917468769664,
+          "minimum": 0.9866876602172852,
+          "maximum": 1.023240327835083,
+          "first": 1.0052521228790283,
+          "last": 1.007637619972229,
+          "nonfinite": 0
+        },
+        "state_counts/BLOCKED": {
+          "count": 2220,
+          "mean": 42.9477477477478,
+          "std": 5.448280112899947,
+          "minimum": 23.0,
+          "maximum": 62.0,
+          "first": 40.0,
+          "last": 46.0,
+          "nonfinite": 0
+        },
+        "state_counts/LOS": {
+          "count": 2220,
+          "mean": 64.59009009009024,
+          "std": 5.694433111412604,
+          "minimum": 42.0,
+          "maximum": 85.0,
+          "first": 65.0,
+          "last": 55.0,
+          "nonfinite": 0
+        },
+        "state_counts/PARTIAL": {
+          "count": 2220,
+          "mean": 20.462162162162176,
+          "std": 4.08467922046075,
+          "minimum": 8.0,
+          "maximum": 36.0,
+          "first": 23.0,
+          "last": 27.0,
+          "nonfinite": 0
+        },
+        "step": {
+          "count": 2220,
+          "mean": 1110.5,
+          "std": 640.8587337835592,
+          "minimum": 1.0,
+          "maximum": 2220.0,
+          "first": 1.0,
+          "last": 2220.0,
+          "nonfinite": 0
+        },
+        "total_L": {
+          "count": 2220,
+          "mean": 0.6530131487024806,
+          "std": 0.22188706244576745,
+          "minimum": 0.4116876721382141,
+          "maximum": 1.4518275260925293,
+          "first": 0.559575617313385,
+          "last": 0.5492631196975708,
+          "nonfinite": 0
+        }
+      },
+      "actual_mask_totals": {
+        "mode": "ANTITHETIC",
+        "steps": 2220,
+        "random_tensors": 115440,
+        "random_elements": 30116413440,
+        "active_calls_per_view": [
+          13
+        ],
+        "global_RNG_consumption": 0,
+        "extra_parameters": 0,
+        "extra_NN_forwards": 0
+      }
+    }
+  },
+  "new10_epoch_curves": {
+    "INDEPENDENT": [
+      {
+        "epoch": 1,
+        "cumulative_epoch": 21,
+        "val_accuracy": 97.46666666666667,
+        "lr": 0.0002,
+        "mean_total_objective": 0.6885060524349818
+      },
+      {
+        "epoch": 2,
+        "cumulative_epoch": 22,
+        "val_accuracy": 97.64074074074074,
+        "lr": 0.0001939994157681979,
+        "mean_total_objective": 0.6978256934666421
+      },
+      {
+        "epoch": 3,
+        "cumulative_epoch": 23,
+        "val_accuracy": 97.58518518518518,
+        "lr": 0.0001767214220903383,
+        "mean_total_objective": 0.6659677419308068
+      },
+      {
+        "epoch": 4,
+        "cumulative_epoch": 24,
+        "val_accuracy": 97.87407407407407,
+        "lr": 0.00015025000000000002,
+        "mean_total_objective": 0.662764162899138
+      },
+      {
+        "epoch": 5,
+        "cumulative_epoch": 25,
+        "val_accuracy": 97.57407407407408,
+        "lr": 0.0001177779936778596,
+        "mean_total_objective": 0.6434171124621556
+      },
+      {
+        "epoch": 6,
+        "cumulative_epoch": 26,
+        "val_accuracy": 97.85555555555555,
+        "lr": 8.322200632214044e-05,
+        "mean_total_objective": 0.6313625439867243
+      },
+      {
+        "epoch": 7,
+        "cumulative_epoch": 27,
+        "val_accuracy": 97.78888888888889,
+        "lr": 5.075000000000002e-05,
+        "mean_total_objective": 0.6501015450234886
+      },
+      {
+        "epoch": 8,
+        "cumulative_epoch": 28,
+        "val_accuracy": 97.85925925925926,
+        "lr": 2.42785779096617e-05,
+        "mean_total_objective": 0.6287026704700139
+      },
+      {
+        "epoch": 9,
+        "cumulative_epoch": 29,
+        "val_accuracy": 97.98148148148148,
+        "lr": 7.000584231802123e-06,
+        "mean_total_objective": 0.6417942530400043
+      },
+      {
+        "epoch": 10,
+        "cumulative_epoch": 30,
+        "val_accuracy": 97.97777777777777,
+        "lr": 1e-06,
+        "mean_total_objective": 0.6578455333774152
+      }
+    ],
+    "ANTITHETIC": [
+      {
+        "epoch": 1,
+        "cumulative_epoch": 21,
+        "val_accuracy": 97.35925925925926,
+        "lr": 0.0002,
+        "mean_total_objective": 0.6894005927685146
+      },
+      {
+        "epoch": 2,
+        "cumulative_epoch": 22,
+        "val_accuracy": 97.54444444444445,
+        "lr": 0.0001939994157681979,
+        "mean_total_objective": 0.6974445770721176
+      },
+      {
+        "epoch": 3,
+        "cumulative_epoch": 23,
+        "val_accuracy": 97.57407407407408,
+        "lr": 0.0001767214220903383,
+        "mean_total_objective": 0.6663738926788707
+      },
+      {
+        "epoch": 4,
+        "cumulative_epoch": 24,
+        "val_accuracy": 97.96666666666667,
+        "lr": 0.00015025000000000002,
+        "mean_total_objective": 0.6626285291738337
+      },
+      {
+        "epoch": 5,
+        "cumulative_epoch": 25,
+        "val_accuracy": 97.64814814814815,
+        "lr": 0.0001177779936778596,
+        "mean_total_objective": 0.6422405689954761
+      },
+      {
+        "epoch": 6,
+        "cumulative_epoch": 26,
+        "val_accuracy": 97.94444444444444,
+        "lr": 8.322200632214044e-05,
+        "mean_total_objective": 0.631145613016309
+      },
+      {
+        "epoch": 7,
+        "cumulative_epoch": 27,
+        "val_accuracy": 97.82222222222222,
+        "lr": 5.075000000000002e-05,
+        "mean_total_objective": 0.6491168752178414
+      },
+      {
+        "epoch": 8,
+        "cumulative_epoch": 28,
+        "val_accuracy": 97.84444444444445,
+        "lr": 2.42785779096617e-05,
+        "mean_total_objective": 0.627321115887917
+      },
+      {
+        "epoch": 9,
+        "cumulative_epoch": 29,
+        "val_accuracy": 98.0037037037037,
+        "lr": 7.000584231802123e-06,
+        "mean_total_objective": 0.6412111967802047
+      },
+      {
+        "epoch": 10,
+        "cumulative_epoch": 30,
+        "val_accuracy": 98.0,
+        "lr": 1e-06,
+        "mean_total_objective": 0.6580887540235174
+      }
+    ]
+  },
+  "parent20_reused": {
+    "epoch_count": 20,
+    "step_records": 4440,
+    "parent": "original complete source CONCAT fixed final20",
+    "actual_training_cost": {
+      "actual_steps": 4440,
+      "L_forward_packets": 2273280,
+      "student_train_forward_packets": 2670180,
+      "student_eval_forward_packets": 594002,
+      "teacher_train_forward_packets": 0,
+      "teacher_eval_forward_packets": 396900,
+      "teacher_inherited_counter_offset": {
+        "train": 0,
+        "eval": 2
+      },
+      "As_training_observations": 568320,
+      "head_fit_updates": 0,
+      "elapsed_seconds": 2171.6814489364624,
+      "status": "VERIFIED_REUSED_PARENT_TRAINING_COST",
+      "parent": "original fullsource CONCAT fixed-final20",
+      "epoch": 20,
+      "source_roles": {
+        "L": 6300,
+        "U_hiddenTX": 56700,
+        "V": 27000
+      },
+      "source_only": true,
+      "read_IQ_CP_NN_updates": 0
+    }
+  },
+  "optional_NA_paths": [
+    "/rows/INDEPENDENT/native_terminal/heldout_eval/protected_metrics/strict_udu",
+    "/rows/INDEPENDENT/native_terminal/heldout_eval/protected_metrics/receiver_floor",
+    "/rows/INDEPENDENT/native_terminal/heldout_eval/protected_metrics/sat_mean_tx",
+    "/rows/INDEPENDENT/native_terminal/heldout_eval/protected_metrics/sat_floor_tx",
+    "/rows/INDEPENDENT/native_terminal/heldout_eval/protected_metrics/sat_strict_mean",
+    "/rows/INDEPENDENT/native_terminal/heldout_eval/protected_metrics/sat_strict_floor",
+    "/rows/INDEPENDENT/native_terminal/heldout_eval/protected_metrics/sat_receiver_floor",
+    "/rows/INDEPENDENT/native_terminal/heldout_eval/protected_metrics/sat_receiver_seen_day_floor",
+    "/rows/INDEPENDENT/native_terminal/heldout_eval/protected_metrics/sat_receiver_strict_floor",
+    "/rows/INDEPENDENT/native_terminal/reference_to_final_tail_safety/final/sat_pair_angle_p95_deg",
+    "/rows/ANTITHETIC/native_terminal/heldout_eval/protected_metrics/strict_udu",
+    "/rows/ANTITHETIC/native_terminal/heldout_eval/protected_metrics/receiver_floor",
+    "/rows/ANTITHETIC/native_terminal/heldout_eval/protected_metrics/sat_mean_tx",
+    "/rows/ANTITHETIC/native_terminal/heldout_eval/protected_metrics/sat_floor_tx",
+    "/rows/ANTITHETIC/native_terminal/heldout_eval/protected_metrics/sat_strict_mean",
+    "/rows/ANTITHETIC/native_terminal/heldout_eval/protected_metrics/sat_strict_floor",
+    "/rows/ANTITHETIC/native_terminal/heldout_eval/protected_metrics/sat_receiver_floor",
+    "/rows/ANTITHETIC/native_terminal/heldout_eval/protected_metrics/sat_receiver_seen_day_floor",
+    "/rows/ANTITHETIC/native_terminal/heldout_eval/protected_metrics/sat_receiver_strict_floor",
+    "/rows/ANTITHETIC/native_terminal/reference_to_final_tail_safety/final/sat_pair_angle_p95_deg"
+  ],
+  "rawtruth_IQ_CP_NN_newupdates": 0
+}
