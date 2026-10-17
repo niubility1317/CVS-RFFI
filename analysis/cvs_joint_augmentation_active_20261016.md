@@ -1,5 +1,7 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
+后续入口核查已完成：[共享传播与batch轴核查](cvs_as_route_audit_20261017.md)。共享传播H机制已在旧PROP_GROUP按原条件失败关闭，改变组键不作为新方向，本轮撤回且0新训练。实际F随机初始化合成检查12NN／0CP／0真实IQ／0更新：活动GroupNorm10、LayerNorm4、BatchNorm0、持久buffer更新0，eval合并/拆分默认头最大差1.43e−6。否定顺序前向污染BN状态的具体解释，不宣称整个SupCon训练batch无关或性能提升；未发布新候选，整体goal ACTIVE。
+
 最新完成：[原分布校准刷新 A_s E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md)，**ANALYZED／VERIFIED；固定收益假设失败，关闭该配方**。严格同一个普通As source-final20＋10，累计30轮／6660更新，全部5源RX／L6300／U56700隐藏TX／V27000保持，无训练域留出。默认cos头联合训练／F／三路SIG_TIME／统一Sinc／原U不变。
 
 全部七视图1176000正式决策固定后独立CPU truth-last，252个CM／42个分区／七视图配对重计一致。候选clean82.909524%、mid urban64.361310%、low urban53.442857%；相对普通As为−.054167／−.010119／−.004167 pp，低urban增益和clean/mid保护条件均失败。low修复381／新增388，clean修复127／新增218；联合clean＋low仅净多5，不能替代绝对识别条件。

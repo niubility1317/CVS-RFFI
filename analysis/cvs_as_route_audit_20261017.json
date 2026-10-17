@@ -1,0 +1,101 @@
+{
+  "status": "VERIFIED_TWO_UNSUPPORTED_ENTRANCES_CLOSED",
+  "previous_goal_turn": "PROGRESS_COMPLETE_E30_CALIBRATION_NEGATIVE",
+  "HEAD_inspected": "bb89ed8f687ef36e6eb71600f47fe0058112c62c",
+  "no_new_training_candidate": true,
+  "shared_propagation": {
+    "status": "WITHDRAWN_DUPLICATE_OF_CLOSED_ROUTE",
+    "historical_run": "20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01",
+    "old_group_key": "step/RX/day/eq",
+    "proposed_group_key": "within-TX occurrence counter at current step",
+    "reason": "Changing group key would retry the same shared-propagation/private receiver streams family;not a distinct IQ direction",
+    "new_IQ": 0,
+    "new_CP": 0,
+    "new_NN": 0,
+    "new_updates": 0
+  },
+  "batchnorm_explanation": {
+    "status": "NO_ACTIVE_BATCHNORM_STATE_OR_EVAL_BATCH_DEPENDENCE",
+    "model": "Exact F+CROSS_RX parent architecture/default head/joint160",
+    "module_parameter_count": 900722,
+    "active_normalization_counts": {
+      "GroupNorm": 10,
+      "LayerNorm": 4
+    },
+    "active_normalizations": [
+      {
+        "name": "id_backbone.encoder.core.id_backbone.time_fuse.1",
+        "type": "GroupNorm"
+      },
+      {
+        "name": "id_backbone.encoder.core.id_backbone.t1.norm",
+        "type": "GroupNorm"
+      },
+      {
+        "name": "id_backbone.encoder.core.id_backbone.t2.norm",
+        "type": "GroupNorm"
+      },
+      {
+        "name": "id_backbone.encoder.core.id_backbone.t3.norm",
+        "type": "GroupNorm"
+      },
+      {
+        "name": "id_backbone.encoder.core.id_backbone.f1.norm",
+        "type": "GroupNorm"
+      },
+      {
+        "name": "id_backbone.encoder.core.id_backbone.f2.norm",
+        "type": "GroupNorm"
+      },
+      {
+        "name": "id_backbone.encoder.core.id_backbone.f3.norm",
+        "type": "GroupNorm"
+      },
+      {
+        "name": "id_backbone.encoder.core.id_backbone.pa_b1.norm",
+        "type": "GroupNorm"
+      },
+      {
+        "name": "id_backbone.encoder.core.id_backbone.pa_b2.norm",
+        "type": "GroupNorm"
+      },
+      {
+        "name": "id_backbone.encoder.core.id_backbone.pa_b3.norm",
+        "type": "GroupNorm"
+      },
+      {
+        "name": "id_backbone.encoder.core.id_backbone.cls_head.base_norm",
+        "type": "LayerNorm"
+      },
+      {
+        "name": "id_backbone.encoder.core.id_backbone.cls_head.pa_norm",
+        "type": "LayerNorm"
+      },
+      {
+        "name": "id_backbone.encoder.response_projection.3",
+        "type": "LayerNorm"
+      },
+      {
+        "name": "id_backbone.encoder.sequence_pool.output_norm",
+        "type": "LayerNorm"
+      }
+    ],
+    "active_BatchNorm": [],
+    "changed_persistent_buffers": [],
+    "max_eval_default_logit_batch_split_error": 0.000001430511474609375,
+    "max_eval_joint160_batch_split_error": 9.5367431640625e-7,
+    "real_IQ": 0,
+    "CP": 0,
+    "NN_forward_packets": 12,
+    "optimizer_updates": 0,
+    "teacher_forwards": 0,
+    "source_or_target_access": false,
+    "scope": "Synthetic execution fact;reject only sequential-BN-state explanation,not general batching laws or identity performance",
+    "initial_failed_route": "Direct script entry lacked project module path;failed before model import/NN;rerun via -m succeeded",
+    "local_numpy_warning": "Existing Torch/NumPy bridge warning retained;no ndarray bridge used",
+    "no_claim_of_training_batch_equivalence": true,
+    "SupCon_cross_packet_dependence_remains": true,
+    "random_initialization_only": true
+  },
+  "joint_goal_complete": false
+}

@@ -2715,5 +2715,22 @@
     "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
     "Ag_efficacy_proved": false,
     "joint_goal_complete": false
+  },
+  "post_calibration_route_audit": {
+    "status": "VERIFIED_NO_NEW_CANDIDATE",
+    "report": "analysis/cvs_as_route_audit_20261017.md",
+    "shared_propagation": "WITHDRAWN_ALREADY_FAILED_FAMILY_GROUP_KEY_NOT_REOPENED",
+    "sequential_BatchNorm_state_explanation": "REJECTED_NO_ACTIVE_BATCHNORM_OR_RUNNING_STATE",
+    "active_norm_counts": {
+      "GroupNorm": 10,
+      "LayerNorm": 4
+    },
+    "max_eval_logit_batch_split_error": 0.000001430511474609375,
+    "new_synthetic_NN": 12,
+    "new_IQ": 0,
+    "new_CP": 0,
+    "new_updates": 0,
+    "does_not_prove_training_batch_equivalence": true,
+    "joint_goal_complete": false
   }
 }
