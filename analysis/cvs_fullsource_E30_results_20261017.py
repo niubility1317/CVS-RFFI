@@ -8,6 +8,8 @@ RUN30='20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01'
 VIEWS=('clean','practical_high','practical_mid','practical_low_suburban','practical_high_urban','practical_mid_urban','practical_low_urban')
 ROWS={'B00':(RUN30,'B00-s2026092701'),'B01':(RUN30,'B01-s2026092701')}
 COUNT=168000
+COLORS={'B00':'#64748b','B01':'#2563eb','RAW_PRAC':'#e87918','BCTX':'#a21caf'}
+COMPARISON_PAIRS=(('B01','B00'),)
 def read(p):return json.loads(Path(p).read_text(encoding='utf8'))
 def write(p,x):Path(p).write_text(json.dumps(x,indent=2,allow_nan=False)+'\n',encoding='utf8')
 def completed(root):
@@ -133,7 +135,7 @@ def plots(out,results):
  matplotlib.use('Agg')
  import matplotlib.pyplot as plt
  labels=['Clean','High sub','Mid sub','Low sub','High urban','Mid urban','Low urban']
- colors={'B00':'#64748b','B01':'#2563eb','RAW_PRAC':'#e87918'}
+ colors=COLORS
  figures=[];fig,ax=plt.subplots(figsize=(10.5,4.6));xx=np.arange(7);width=.78/len(results)
  for i,(name,r) in enumerate(results.items()):
   vals=[100*r['views'][v]['accuracy'] for v in VIEWS];pos=xx-.39+width/2+i*width
@@ -210,7 +212,7 @@ def main():
  comparisons={};sequence_comparisons={}
  if len(names)>1:
   if any(not np.array_equal(private[names[0]]['ids'],private[n]['ids']) for n in names):raise ValueError('Paired physical IDs differ')
-  for name,ref in [('B01','B00')]:
+  for name,ref in COMPARISON_PAIRS:
    if name not in results or ref not in results:continue
    sequence_comparisons[name+'-'+ref]=compare_training_sequences(name,ref)
    y=private[name]['y'];cohort=private[ref]['pred']['clean']==y;views={}

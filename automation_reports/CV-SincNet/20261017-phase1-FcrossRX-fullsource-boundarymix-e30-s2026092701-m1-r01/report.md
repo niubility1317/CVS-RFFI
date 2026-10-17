@@ -41,3 +41,6 @@ run：/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fu
 
 
 发布读回：普通账户 N607 preflight PASS；新 run/release 无冲突；一个归档传输 SHA 比较 VERIFIED、远端 compile PASS；launcher 首步真实同契约 E20 checkpoint strict-load no-query smoke PASS（2 合成包，随后丢弃）。dispatcher 447326，GPU 0 worker 447354，真实 CWD/argv/run-root 已匹配，队列一行 active、0 failures。启动及 smoke 均不是本行训练/测试完成。
+
+
+终局分析准备：analysis/cvs_boundary_E30_results_20261017.py 复用既有全30轮分析，等 B00/B01/BCTX 三行全部七视图预测、独立评分和E30/6660完成证据后才读取truth。输出三组配对修复/新增错误、固定B00 clean正确集合保持率、默认头margin/30、最差RX/F1、全部训练曲线、原生物理统计与180个TX×RX×场景×边界覆盖单元；无IQ/checkpoint读取、无NN/拟合。7个聚焦测试PASS，含新行未完成时不得先读truth或创建分析输出。正式样本未保存逐包状态/质量标签与门控激活，不能编造这些分层准确率。
