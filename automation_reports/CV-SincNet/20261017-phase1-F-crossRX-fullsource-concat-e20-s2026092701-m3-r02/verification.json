@@ -102,5 +102,27 @@
     "query_read": false,
     "head_fit_updates": 0,
     "new_training_updates": 0
+  },
+  "offline_log_collection": {
+    "status": "PASS",
+    "synthetic_parser_cases": 15,
+    "actual_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0,
+    "target_access": false,
+    "first_live_parsed_steps": {
+      "NATIVE": 3581,
+      "REPEAT": 3160,
+      "CONCAT": 1691
+    },
+    "epoch_rows": {
+      "NATIVE": 16,
+      "REPEAT": 14,
+      "CONCAT": 7
+    },
+    "common_sampling_prefix_identical": true,
+    "live_gzip_not_final": true,
+    "closed_analysis_pending": true
   }
 }

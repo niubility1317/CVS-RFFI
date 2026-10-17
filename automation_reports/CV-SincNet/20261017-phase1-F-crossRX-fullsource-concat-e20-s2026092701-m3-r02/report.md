@@ -39,3 +39,12 @@ r02 技术恢复：r01在合成评分反例中误拒仓库reference_recipe.json�
 三个worker PID346632／346705／346862（GPU2／3／4）与CPU dispatcher346544均经独立/proc证据核对CWD、argv、start_ticks、GPU及日志增长；全部source_contract角色6300/56700/27000、source_fold_held_rx与training_receivers为空、实际E20/13L7U/seed2026092701、baseline和teacher初始化路径为空。当前观察到NATIVE E3/666、REPEAT E3/666、CONCAT E1/222，均无failure；这是已完成轮端点快照，不是最终训练成本或收益。CONCAT首轮已监督28416个完整practical L包。自动逐行clean＋六practical和独立CPUtruth-last路径已随worker发布，尚未发生正式评分。
 
 r01失败的3个合成optimizer步骤与1292NN／158physics按固定到达路径推算单列；它没有真实训练或target访问。r02真实运行继续原预算，无健康旧任务变动、无延长或改参。
+
+
+## 运行中全日志解析
+
+新增独立只读汇总工具 `experiments/cvs_fullsource_concat20/analyze_logs.py`，不改变已冻结训练 release。源日志模式不打开 IQ、checkpoint、truth 或目标评分；正式收尾模式等待原矩阵 ARTIFACTS_COMPLETE 后，收集全部既有评分，严格要求每行完整 20 轮和三类 4440 条更新记录。解析全部 stdout、逐步数值、嵌套层位记录、完整 L/U 物理采样序列及实际成本，不用尾部抽样代替全程分析。
+
+首次实时全量解析分别获得 NATIVE 3581、REPEAT 3160、CONCAT 1691 条完整 step 记录；当时 epoch 文件为 16／14／7 轮。已解析记录的更新序号连续，全部非有限更新及 pseudo_truth_available 标记为 0，原源角色数均为 L6300/U56700/V27000；三组共同采样前缀无差异。压缩流仍在写入，因此 partial/EOF 标记如实保留，不能据此认定技术失败或冒充完整训练。该读取不访问目标评分，不形成识别收益结论。
+
+15 项本地合成解析检查 PASS，包含完整结束正例、截断 gzip、缺日志拒绝、嵌套数值、全 stdout 扫描与逐物理 ID 序列比较；0 实际 IQ／CP／NN／更新／target。闭合后的完整曲线、七视图结果与成本分析仍待真实实验完成。
