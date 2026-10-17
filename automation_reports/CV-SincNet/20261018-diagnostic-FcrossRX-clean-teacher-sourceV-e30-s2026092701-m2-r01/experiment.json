@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "User latest confirmed clean-preserving route in thread01a13a98-fbec-7ba3-86b9-4cd56b8992c0; initial C4 source-evidence requirement;E30 budget latest;no source RX holdout.",
   "code": {
-    "commit": "PENDING_ACTUAL_COMMIT",
+    "commit": "c2b56188d1728c6cb189fe65c242b5a627ee3424",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 ordinary uid1000;CVS-RFFI Python3.11;Torch2.6;CPU2threads;CUDA_VISIBLE_DEVICES empty",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_clean_teacher_source_20261018_r01"
@@ -190,7 +190,8 @@
     "Qualification fixed before execution:both endpoints confidence precision>=99%,coverage>=75%,everyRXprecision>=98%,qweightedmid/lowtransferopportunity>=10% at eachdraw. No threshold sweep.",
     "PASS only justifies independent future C4 design;never proves new learning gains. Future own first-U teacher must pass same fixed source check,without loading old diagnostic weights.",
     "One future loss primitive implemented/tested in soft_transfer.py;not wired into training or launched.",
-    "E20 args and E30 actual args remain source training facts,not defaults;no target benchmark-based retune."
+    "E20 args and E30 actual args remain source training facts,not defaults;no target benchmark-based retune.",
+    "Execution code/config identity c2b56188d1728c6cb189fe65c242b5a627ee3424;independently GitHub remote identical before release. One archive comparison and remotecompile PASS."
   ],
   "registered_at": "2026-10-17T16:38:05+00:00"
 }

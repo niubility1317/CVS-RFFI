@@ -21,8 +21,23 @@
     "own_paths_absent": true,
     "ordinary_account": true
   },
-  "runtime_status": "NOT_LAUNCHED",
-  "actual_NN": 0,
+  "runtime_status": "ANALYZED",
+  "actual_NN": 28808,
   "training_updates": 0,
-  "goal_complete": false
+  "goal_complete": false,
+  "source_qualified": true,
+  "runtime_evidence": {
+    "pid": 762019,
+    "PID_naturally_exited": true,
+    "CWD_and_argv_verified": true,
+    "CPU_only": true,
+    "stdout_bytes": 2812,
+    "stderr_bytes": 0,
+    "smoke": "PASS both own student/EMA endpoints",
+    "state_unchanged": true,
+    "complete": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01/complete.json",
+    "artifacts_retrieved": "E:/type10-7/local_artifacts/cvs_FcrossRX_clean_teacher_source_20261018/source_r01",
+    "independent_recount": "PASS16CM/12records/0NN"
+  },
+  "commit": "c2b56188d1728c6cb189fe65c242b5a627ee3424"
 }

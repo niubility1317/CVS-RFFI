@@ -290,7 +290,7 @@
       "not_a_rejection_of_human_selected_complete_E20plus10_recipe": true
     }
   },
-  "next_method_boundary": "All-source scratchE30/defaulthead/originalU retained. Fixedcycle and boundedtiming Ag closed by source conditions;do not rescue bounds/probabilities/seed/budget or weaken formal channel. No new training candidate is established. Source-only existing-branch/defaulthead evidence and clean/satellite gradient relationships at low observation quality may be diagnosed without fitted heads or target feedback;not yet implemented/launched.",
+  "next_method_boundary": "Human-confirmed complete clean-preserving E20+10 organization:all5sourceRX,F/defaulthead,13L17U,cos20/resetcos10,4x128,perpacketrawpractical withoriginalfc2.462GHz. Original oldU gates remain unchanged. P38 supports independent optional clean-teacher-to-As(U) C4 with matched extra-raw-U forward/control;no new training pipeline implemented/launched,not Ag proof or target gain. No old diagnostic teacher initialization;future modelstartsE0,onlyownfixedstageweights maycontinue.",
   "execution_commit": "bafba40e365d0914a2e86f861fb55a49f1cd3997",
   "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/report.md",
   "input_representation_audit": {
@@ -587,6 +587,41 @@
     "As": "originalcustom perpacketnominal3scenes/raw/fullresidual/post_sync/G1/ref30/reflect/fc2.462GHz",
     "weights_policy": "Do not load target-selected old weights;new variants scratch atE0,only own pre-fixed stage state may continue",
     "reconciliation_report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01/reference_reconciliation.md",
-    "next_candidate": "unlaunched;do not reduce full recipe to view ratio"
+    "next_candidate": "Source-qualified independent U clean-teacher to urban test with matched extra ordinary-U control;training pipeline not implemented or launched"
+  },
+  "source_teacher_qualification38": {
+    "run_id": "20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01",
+    "status": "ANALYZED_SOURCE_PASS",
+    "model_seed_count": 1,
+    "fixed_endpoints": [
+      "E20",
+      "E30"
+    ],
+    "actual_new_NN": 28808,
+    "updates": 0,
+    "source_V": 1800,
+    "target_access": false,
+    "U_access": false,
+    "teacher_selected_precision": [
+      1,
+      0.9987995198079231
+    ],
+    "teacher_coverage": [
+      0.89,
+      0.9255555555555556
+    ],
+    "low_opportunity": [
+      [
+        0.38346366738086785,
+        0.3956463709631623
+      ],
+      [
+        0.3798061412459401,
+        0.39654654431302033
+      ]
+    ],
+    "training_gain_proved": false,
+    "report": "automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01/report.md",
+    "new_training_launched": false
   }
 }
