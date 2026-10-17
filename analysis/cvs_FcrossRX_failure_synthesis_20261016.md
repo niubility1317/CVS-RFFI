@@ -150,3 +150,12 @@ mid原73.253968%，三bank73.273810/73.273810/73.313492%；low原57.738095%，�
 固定fitL5040／RX3/4/6/8／6TX／day1/2/3，0模型/CP/NN/更新/IQ变换/target。新测度在原eq1/RMS表示上，全部5040包均无满足固定候选及float32分辨界的共同轴向affine格点，72cell均0/70，未达逐格95%；因此0crossfit折、RX风险与格距/SNR代理均null，不对阳性子集重选。独立全量逐包/角色/72格复算PASS，2PNG＋2PDF实际生成查看；主体420.515955s。
 
 当前固定格点作为接收增强依据的理由FAIL_CLOSED，不调格距/容差/窗口/RX/seed/阈值或自动dither/E20。没有证明原ADC无量化或任意旋转/非均匀格点不存在；当前表示经过处理，不能假定ADC位数加噪或套用subtractive-dither独立误差。该轮无默认头新准确率/clean代价，未获新Ag或联合/跨seed证据，完整目标仍ACTIVE。代码9b8eda74e12c03f385518c139d89f539c98163fa，离线5187b5dce47e954b98352cb40c7bca7e5686f8fc。[完整反证与图](cvs_source_quantgrid_20261017.md)。
+
+
+## P19：选择性频率证据遮蔽（2026-10-17）
+
+两冻结B00默认头在fitL5040/4draw的身份guard均PASS，完整90720判决独立复核；但四个新scratch E20／8L／1.25／held源RX1L1260／seed2026092701实际表明，MASK clean78.968254%，相对RAW/GAIN各−1.111111pp、对ORDINARY−3.015873pp；clean宏F1条件均失败。urban均值33.783069%，对RAW＋.714286pp；low28.174603%，对RAW＋.079365pp（31修复/30损坏），对ORDINARY还少1个正确。固定RAW clean正确1009包的low保持28.245788%→28.146680%，未保留同一身份集合。low的LOS/locked微增，BLOCKED/PARTIAL/unlocked下降；三suburban仍距自身clean37.14至41.19pp，不能以clean降低缩差冒充联合收益。
+
+全35280读出、17760更新/80模型epoch、23976L/U记录和3200行stdout复核PASS；四组206初始tensor六对全相同、完整L/U/私有k及mask/gain/ordinary统计全同。每行5040L×6pair全部覆盖，0新U/另训头/As/target。实际新训练与源评价23293272NN，guard90720＋r02兼容2＋技术失败r01兼容2另列，远端合计23383996NN；墙钟1589.4585s，5PNG＋5PDF实际查看，全原PID自然终止。r01只因独立包bootstrap技术失败、0源guard/训练，原产物保留；r02最小修复不改科学计划，训练commit a931a4d57aeebd836c4d973cae7b964034f490a8。
+
+FAIL_FIXED_BAND_AVAILABILITY_CLOSED：不扫宽度/深度/频率/上限/weight/RX/seed/预算/阈值，不将ORDINARY控制事后晋级。未证明新Ag；冻结源身份guard及近98% seenV都不能替代跨RXclean收益；未解决严重urban，也无正式联合或跨seed证据。完整目标继续ACTIVE。[完整报告、分层与曲线](cvs_FcrossRX_bandavailability20_20261017.md)。
