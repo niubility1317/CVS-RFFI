@@ -132,3 +132,5 @@ RXMIX实际完整结果：20261016-phase1-FcrossRX-rxmix-source-RX1-e20-s2026092
 当前唯一待回答的问题：在完整原源域和固定 E20 下，普通拼接 As 相对无 As 的 clean 代价和六 practical 收益究竟是多少？主线先补这项直接证据，不以留域评分或合成 DSP 通过替代。机器可读当前约束见 `configs/phase1/F_crossrx_e20_baseline.json`。
 
 完整源域接入已实现并预登记：`20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01`，B00 native p0 cleanrepeat 与 B01 p1 原ordinary/practical(ordinary)拼接，同4L/默认头/E20；未增加新Ag/课程/一致性/留域。完整F合成梯度检查、8项negative与独立P0/P1审查PASS；发布依赖问题已修复。此为实现/预登记状态，未启动、未产生新性能；逐row训练后自动固定七视图及独立truth-last。详见本run report，后续状态以该登记及远端产物为准。
+
+在未读取P22或其他新目标分数时，固定完整源域输入顺序检验 `20261017-phase1-FcrossRX-fullsource-rawpractical-e20-s2026092701-m1-r01`：同原F＋跨RX/E20/4L/U/默认头，clean=ordinary(raw)保持，唯一改satellite为完整practical(raw)，对照P22 B01的practical(ordinary(raw))。依据实际ordinary PA/AWGN/multipath等前置叠加；不是新Ag、弱化practical或旧留域权重救援。原留域配对As负结果保留，本次新全源合同独立scratch；候选与参照都预登记固定七视图truth-last，结果不回流。7项路由/权限检查与独立P0/P1 PASS，当前尚未发布/启动。
