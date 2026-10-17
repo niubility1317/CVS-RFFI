@@ -160,7 +160,7 @@
   },
   "next_training_hypothesis": {
     "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01",
-    "status": "REGISTERED_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED",
     "candidate": "fixed +/-80ppm affine sampling grid; separate practical factor; no composite view",
     "data": "all original5RX; L6300/U56700/V27000; no held training RX",
     "matrix": [
@@ -174,7 +174,8 @@
     "reference_historical_budget": "40modelE/8880updates",
     "config": "configs/cvs_clock_factorial_e20.json",
     "Ag_efficacy_proved": false,
-    "joint_goal_complete": false
+    "joint_goal_complete": false,
+    "execution_commit": "a5ffee44d325b69cc360d4248b673ff124110d99"
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -2256,5 +2257,24 @@
     "full_source_reference_complete": true,
     "new_training_pending": false,
     "next_work_basis": "Legal source evidence and an unfalsified operator;no held training RX,no target-score hyperparameter or seed selection,no renamed repeat of closed additiveAs or otherfailed routes"
+  },
+  "budget_amendment_20261017": {
+    "authorization": "Latest user explicitly raises budget toE30",
+    "per_model": "fixed sourceE20+10=30",
+    "new_run": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
+    "all_fixed_rows": [
+      "B00",
+      "B10",
+      "B01",
+      "B11",
+      "FULL_AS"
+    ],
+    "new_model_epochs": 50,
+    "new_updates": 11100,
+    "parent_model_epochs": 100,
+    "no_held_source_RX": true,
+    "no_target_selection": true,
+    "healthy_E20_unchanged": true,
+    "status": "REGISTERED_NOT_LAUNCHED"
   }
 }

@@ -1,6 +1,6 @@
 # 完整源采样时钟＋practical：固定四因子E20
 
-状态：REGISTERED／NOT LAUNCHED。13个Python文件语法与48项协议负例通过，独立P0/P1审查PASS，普通账号N607只读preflight VERIFIED。实际F合成检查、真实CP no-query smoke和发布尚未完成；不把实现等同有效性。
+状态：RUNNING／启动独立读回VERIFIED。执行commit `a5ffee44d325b69cc360d4248b673ff124110d99`。3组新模型实际训练中，尚无新正式性能结果。
 
 唯一假设：轻度、包内非恒定的采样速率观测变化，能在不新增部署结构／分类头／损失的情况下改善跨RX身份提取；与真实practical联合后保留其收益。它不是已失败的±.125点固定分数延时，也不是CFO或常相位旋转；没有依据声称它已经保身份或已经改善星地。
 
@@ -31,3 +31,5 @@ B01/B11每模型As284160包，为全As参照568320的一半；B10/B11每模型Ag
 运行20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01；代码experiments/cvs_clock_factorial20，实际Git commit发布时写入release_commit/resolved_config；本报告不额外要求设计或文件SHA。命令CVS-RFFI/bin/python -u experiments/cvs_clock_factorial20/runner.py，CWD PROJECT/releases/cvs_F_clock_factorial_e20_20261017_r01。N607普通账号、每worker CPU2、共享每GPU最多3总进程计入其他owner。唯一owner codex/root/F-clock-factorial-20261017；不可覆盖root PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01。实际code/config/source日志、最终CP、全部预测／scores、clock与As覆盖、全程曲线和交互分析保存在同run。期望产物与逐行字段以experiment.json为准。
 
 本地与审查证据：48项配置越权负例通过；四行均为5个完整源RX、L6300/U56700，4次L前向；本地未读取IQ/CP或执行网络。唯一独立P0/P1审查为PASS，无阻断缺陷，不追加重复审查。预检查首次因PowerShell远程文本CRLF而FAILED；同一只读脚本改为LF的私有副本后VERIFIED，账号／项目／时间／8块3090可见、当时显存各1MiB。未修改公共脚本或旧任务。
+
+实际发布：单归档传输比较／远端编译VERIFIED；实际F合成57项负例PASS、2576合成NN、128合成物理包、132采样时钟包、4次合成更新、0真实IQ/CP/target；B00与既有REPEAT的loss／全部gradient／BN状态等价。一次匹配真实CP no-query smoke PASS（2合成包、0查询／更新，丢弃CP），随后3行scratch。独立相隔62.85s核实dispatcher与3worker的PID/CWD/argv/GPU和各自step日志增长，GPU0/1/2各1个本run任务，无失败。启动证据见execution_evidence.json；不把检查通过称为Ag／As收益。

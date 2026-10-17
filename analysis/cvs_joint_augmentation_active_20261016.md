@@ -1,6 +1,8 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-最新待启动：`20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01`，仅新增采样速率IQ变化与既有完整practical，固定B00/B10/B01/B11。全部5个源RX、L6300/U56700、每新模型scratchE20、4次L前向。B00复用匹配REPEAT，额外保留完整CONCAT参照；B01/B11的As剂量明确为全As的一半，独立报告。已实现／登记／本地48项负例／唯一P0P1审查，尚未启动或产生新结果。详见[最小预登记](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)。不留出训练域，不以源统计代替星地收益，旧候选负结果保留。
+当前预算已由用户提升为E30。固定新run `20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01`：B00/B10/B01/B11与FULL_AS全部从各自固定source-final20追加相同10轮，累计每行E30／6660更新，统一AdamW/cos10复位与严格自身EMA。新增50modelE／11100更新，父100modelE单列；当前健康E20不热改，所有行无条件续训，不按目标分数选父。E30已实现并登记，尚未发布；详见[预算修订](cvs_clock_E30_budget_amendment_20261017.md)与[五组预登记](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/report.md)。
+
+最新运行：`20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01`，仅新增采样速率IQ变化与既有完整practical，固定B00/B10/B01/B11。全部5个源RX、L6300/U56700、每新模型scratchE20、4次L前向。B00复用匹配REPEAT，额外保留完整CONCAT参照；B01/B11的As剂量明确为全As的一半，独立报告。已实际启动3个scratchE20；执行commit `a5ffee44d325b69cc360d4248b673ff124110d99`，实际F合成／真实CP无查询smoke及PID/CWD/argv/GPU／日志增长VERIFIED。尚未完成新模型训练或正式评分。详见[最小预登记](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)。不留出训练域，不以源统计代替星地收益，旧候选负结果保留。
 
 
 当前更新：完整源参照 20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02 已ANALYZED，3/3 scratchE20、13320更新、3528000正式决策与独立truth-last完成，所属进程已退出。CONCAT clean82.1887%、midurban63.3649%、lowurban52.3887%；相对匹配REPEAT依次−2.3815／＋25.5982／＋20.3762pp。suburban与自身clean差1.4292／3.8833／6.2958pp。所有5源RX与L6300/U56700保留、源序列逐条一致。该单seed证明普通As有实际practical收益，但当前配方没有clean净收益，未达lowurban或所有suburban目标；Ag和完整联合目标仍ACTIVE且未证明。

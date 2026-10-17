@@ -1,5 +1,5 @@
 {
-  "status": "REGISTERED_NOT_LAUNCHED",
+  "status": "RUNNING",
   "local": {
     "status": "PASS",
     "protocol_negative_cases": 48,
@@ -35,8 +35,32 @@
     "GPUs": 8,
     "model": "RTX3090"
   },
-  "remote_synthetic_checks": "PENDING",
-  "real_checkpoint_no_query_smoke": "PENDING",
-  "launch": "NOT_LAUNCHED",
-  "code_commit": "ACTUAL_GIT_HEAD_RECORDED_AT_LAUNCH"
+  "remote_synthetic_checks": {
+    "status": "PASS",
+    "negative_cases": 57,
+    "synthetic_NN": 2576,
+    "synthetic_physics_packets": 128,
+    "synthetic_clock_packets": 132,
+    "synthetic_optimizer_steps": 4,
+    "real_IQ": 0,
+    "CP": 0,
+    "target_access": false,
+    "B00_loss_gradient_state_equivalence": true,
+    "all_rows_same_IQ_RD_pairs": true,
+    "all_rows_default_head_joint_update": true
+  },
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "new_training_updates": 0,
+    "checkpoint_used_for_training_initialization": false,
+    "source_roles": "EXACT_MATCH",
+    "reference_fixed_final20": true
+  },
+  "launch": "VERIFIED",
+  "code_commit": "a5ffee44d325b69cc360d4248b673ff124110d99"
 }

@@ -20,7 +20,7 @@
   "parent_run_ids": [],
   "authorization": "User-authorized Ag+As research with E20 per model and baseline F+CROSS_RX;latest explicit instruction retains every sourceRX/no Ldev. This fixed clock range is an agent research choice from existing receiver-model code,not a claimed measured range or user-specified value.",
   "code": {
-    "commit": "ACTUAL_GIT_HEAD_RECORDED_AT_LAUNCH",
+    "commit": "a5ffee44d325b69cc360d4248b673ff124110d99",
     "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
     "environment": "ordinary N607 CVS-RFFI Python; CPU2 perworker, loader0, CUDAempty dispatcher/scorers",
     "cwd": "PROJECT/releases/cvs_F_clock_factorial_e20_20261017_r01",
@@ -190,7 +190,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-clock-factorial-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -228,7 +228,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original full-source F+CROSS_RX/RDrop1/LS.01/oldU;four matched L forwards;B00",
@@ -522,7 +522,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-clock-factorial-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -560,7 +560,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original full-source F+CROSS_RX/RDrop1/LS.01/oldU;four matched L forwards;B10",
@@ -854,7 +854,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-clock-factorial-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -892,7 +892,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original full-source F+CROSS_RX/RDrop1/LS.01/oldU;four matched L forwards;B01",
@@ -1186,7 +1186,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-clock-factorial-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -1224,7 +1224,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original full-source F+CROSS_RX/RDrop1/LS.01/oldU;four matched L forwards;B11",
@@ -1488,7 +1488,8 @@
     "G acts on ordinary IQ;As acts once on raw before ordinary;no As(Ag)composition and no newUviews",
     "As dose284160 inB01/B11 vs568320 in full reference;this is reported,not hidden",
     "Clock bound80ppm comes from existingmodel range,not measuredRxreplacementor targetfit",
-    "All rows freeze final20 then automatically sevenviewprediction and separate CPUtruthlast;no scorefeedback or automaticbudgetextension"
+    "All rows freeze final20 then automatically sevenviewprediction and separate CPUtruthlast;no scorefeedback or automaticbudgetextension",
+    "Actual release and three owned worker PID/CWD/argv/GPU plus step-log growth VERIFIED; fixed allsource data; no formal predictions or efficacy conclusion at launch."
   ],
   "additional_reference": {
     "arm": "FULL_AS_REF",

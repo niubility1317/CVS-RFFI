@@ -1,0 +1,88 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01",
+  "execution_commit": "a5ffee44d325b69cc360d4248b673ff124110d99",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_F_synthetic_checks": {
+    "status": "PASS",
+    "negative_cases": 57,
+    "synthetic_NN": 2576,
+    "synthetic_physics_packets": 128,
+    "synthetic_clock_packets": 132,
+    "synthetic_optimizer_steps": 4,
+    "real_IQ": 0,
+    "CP": 0,
+    "target_access": false,
+    "B00_loss_gradient_state_equivalence": true,
+    "all_rows_same_IQ_RD_pairs": true,
+    "all_rows_default_head_joint_update": true
+  },
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "new_training_updates": 0,
+    "checkpoint_used_for_training_initialization": false,
+    "source_roles": "EXACT_MATCH",
+    "reference_fixed_final20": true
+  },
+  "postlaunch": {
+    "status": "VERIFIED",
+    "seconds_between_observations": 62.85078310966492,
+    "dispatcher_PID": 393662,
+    "workers": [
+      {
+        "row": "B10-s2026092701",
+        "PID": 393689,
+        "GPU": 0
+      },
+      {
+        "row": "B01-s2026092701",
+        "PID": 393764,
+        "GPU": 1
+      },
+      {
+        "row": "B11-s2026092701",
+        "PID": 393843,
+        "GPU": 2
+      }
+    ],
+    "cwd": "PROJECT/releases/cvs_F_clock_factorial_e20_20261017_r01",
+    "command": "CVS-RFFI/bin/python -u experiments/cvs_clock_factorial20/runner.py --worker ROW_ID",
+    "owned_PID_CWD_argv_GPU_match": true,
+    "all_three_step_logs_grew": true,
+    "completed_epochs_at_readback": {
+      "B10": 1,
+      "B01": 1,
+      "B11": 0
+    },
+    "failure": null,
+    "capacity": "at most3 total processes perGPU including otherowners"
+  },
+  "data": {
+    "L": 6300,
+    "U_hidden_TX": 56700,
+    "V": 27000,
+    "RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "days": [
+      1,
+      2,
+      3
+    ],
+    "source_RX_holdout": null
+  },
+  "formal_prediction": "NOT_STARTED_AT_LAUNCH_READBACK",
+  "scoring": "NOT_STARTED_AT_LAUNCH_READBACK",
+  "Ag_efficacy_proved": false,
+  "joint_goal_complete": false
+}

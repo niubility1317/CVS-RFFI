@@ -1,0 +1,36 @@
+{
+  "status": "REGISTERED_NOT_LAUNCHED",
+  "local": {
+    "status": "PASS",
+    "protocol_negative_cases": 80,
+    "syntax_files": 14,
+    "parent_selection_fixed": true,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "new_epochs_each": 10,
+    "cumulative_epochs_each": 30,
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "target_access": false
+  },
+  "N607_preflight": "VERIFIED",
+  "independent_p0p1": {
+    "initial_review": "ONE_P1",
+    "issue": "Old E20 IQ operators rejected cumulativeE21/step4441",
+    "fix": "new E30-local clock/channel adapters retain exact operators;allow onlyE21..30/4441..6660 and matchingepochstep",
+    "targeted_review": "PASS",
+    "P0_open": 0,
+    "P1_open": 0,
+    "old_E20_files_unchanged": true
+  },
+  "real_F_synthetic_checks": "PENDING",
+  "real_checkpoint_no_query_smoke": "PENDING",
+  "launch": "NOT_LAUNCHED",
+  "code_commit": "ACTUAL_GIT_HEAD_RECORDED_AT_LAUNCH"
+}
