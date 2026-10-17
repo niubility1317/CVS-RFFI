@@ -19,3 +19,14 @@
 环境/CWD为普通N607 CVS-RFFI Python，/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_fullsource_rawpractical_E20_20261017_r01；每GPU总进程≤3含其他owner，空闲≥12000MB；独占run root /home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-rawpractical-e20-s2026092701-m1-r01，launch owner/root。精确入口：`/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_fullsource_rawpractical_E20_20261017_r01/experiments/cvs_fullsource_rawpractical23/runner.py`；新worker/source/prediction/scorer均使用新包入口。dispatcher/scorer CUDA空。代码commit发布前登记，单一归档传输比较/remote compile；不触碰健康旧任务。
 
 停止：固定预算，不按微小源分数早停；数据角色/标签/来源/非有限loss/grad/预测/技术错误保留产物、阻止未启动row，不自动重启。其他健康任务继续。预算结束不等于收敛。预期实际config/module_files/raw路由证明、物理覆盖、完整step/epoch曲线与成本、FINAL20、七视图prediction、独立score、逐row/seed CSV和同row报告见experiment.json。
+
+实际实现commit：`31d7fc60f75819ff25a698a29df9fc7ec03691c8`，目标分数未读；固定此实现发布，不更改P22健康运行。
+
+
+## 实际发布与路由生效
+
+实际执行commit `31d7fc60f75819ff25a698a29df9fc7ec03691c8` 已推送，远端OID独立核对一致；一次归档传输比较VERIFIED，remote compile PASS。独立dispatcher/worker已启动，原P22进程保持运行，GPU由实际资源分配（本行GPU5），未停止或热改任何其他任务。真实fullsource CP兼容smoke PASS，2合成NN、0训练更新、无query。
+
+PID/start_ticks/CWD/argv/GPU/日志增长与全部原L6300/U56700/V27000精确角色独立读回，无fold参数。raw输入首批证明：128×2×256，与同批ordinary输出MSE=0.003188482951372862；clean不变、同一L物理元数据、接收状态正常重算、无TX条件信道或未知TX反演。首批LOS46/PARTIAL11/BLOCKED71、locked54/degraded16/unlocked58，与原固定流参照首批一致，EQoff/reference30等实际配置保持。
+
+截至早期完整可解压step记录，本行至少236次真实更新，活跃CE/RDrop/KL有限、nonfinite loss/grad skip=0；这只证明训练和输入路由实际生效，不证明urban增益/收敛/跨seed/Ag。当前没有读取目标分数，没有改变任何健康运行配方。

@@ -363,5 +363,15 @@
     "control_cost_note": "B00 native p0 cleanrepeat and B01 native p1 practicalconcat both4L; B00 is not a standard2L benchmark result"
   },
   "full_source_run_id": "20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01",
-  "full_source_execution_commit": "dc4e47fe0c2b3e0dcf73dda104cdbd4a7c814f5a"
+  "full_source_execution_commit": "dc4e47fe0c2b3e0dcf73dda104cdbd4a7c814f5a",
+  "full_source_rawpractical_candidate": {
+    "run_id": "20261017-phase1-FcrossRX-fullsource-rawpractical-e20-s2026092701-m1-r01",
+    "execution_commit": "31d7fc60f75819ff25a698a29df9fc7ec03691c8",
+    "status": "RUNNING",
+    "only_delta": "satelliteinput rawIQ instead ofordinaryIQ; all physicalpractical parameters unchanged",
+    "held_RX": null,
+    "training_epochs": 20,
+    "parent_weights": false,
+    "target_feedback": false
+  }
 }
