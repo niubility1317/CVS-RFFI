@@ -1,0 +1,230 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01",
+  "group_id": "F-practical-source-quality-coupling",
+  "display_name": "F 星地增强：完整源 L 的接收质量耦合检验",
+  "description": "All original L6300/5RX and three train practical scenes;paired same latent,whiteexpected versus waveformpower quality;0identitymodel/NN/update/target",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "source practical receiver quality"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "full_source",
+    "practical",
+    "receiver_quality",
+    "source_only",
+    "no_model",
+    "no_training"
+  ],
+  "comparison_group_id": "F-practical-source-quality-coupling",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active Ag/As goal under latest E30 budget and all-source correction;this run only physical source evidence,0training/NN,not a heldRX fold or target-driven amplitude scan",
+  "code": {
+    "commit": "Actual Git commit in release_commit/resolved config",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "Ordinary N607 existing CVS-RFFI Python,CPU2/CUDAhidden;actual pinned practical runtime,NumPyComplex128",
+    "cwd": "PROJECT/releases/cvs_F_practical_quality_fullL_20261017_r01",
+    "entrypoint": "experiments/cvs_practical_quality_source17/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated exact original L6300 source cache;all sourceRX",
+    "representation": "Original EQ1 RMS IQ256;all256 samples,no crop/shift/new ordinary damage;finite H*x power per original reflect/noEQ residual",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json role_ids.L_s,all6300 required",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "All6300 IQ used,all5RX/no training-domain holdout",
+      "U_s": "Only opaque role-ID exclusion;no IQ/labels/statistics",
+      "V": "Existing carrier deserialized then unused;no statistics"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse existing exact source handles and native_role_comparison;no data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/cvs_practical_quality_source17/design.py:config"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Only physical receiver-quality proxy mismatch;not identity/DG/As accuracy/joint success"
+  },
+  "checkpoint": {
+    "initialization": "No model orcheckpoint",
+    "sources": [],
+    "contract_check_ref": "No model/CP;exact existing source handles/L6300 roles;only fitL5040 used;unused V/features deserialize;UopaqueIDs only",
+    "provenance_verdict": "SOURCE_DATA_ONLY_NO_INHERITED_MODEL_OR_FEATURES_USED",
+    "selection_rule": "Fixed observer andcriteria before sourceaccess;no model/candidate/augmentation selection"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-practical-quality-source",
+    "gpu_policy": "CPU only;2threads;CUDA_VISIBLE_DEVICES empty;no GPU or model allocation",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_practical_quality_fullL_20261017_r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_practical_quality_source17/runner.py",
+    "stop_rule": "Wrongsourcehandle/role/nonfinite/input/outputcollision/runtimefailure:preservepartial,noautomaticretry/nohealthyprocess intervention;scientificFAIL closesfixedmeasure/window/period/carrier/CFO/quality/threshold/packet/RX/TX/day/seed;no IQaugmentation orE20"
+  },
+  "expected_artifacts": [
+    "active/resolved_config/progress/completion or preservedfailure",
+    "physical_pairs.jsonl.gz all18900 sameinput-latent comparisons",
+    "result.json fullRX/TX/day/scene/state stats and fixed decision",
+    "source_quality.stdout.log",
+    "same-row report/verification/registry"
+  ],
+  "metrics_plan": {
+    "physical": [
+      "quality delta quantiles",
+      "effective lock-or-scale changes",
+      "sameinput latent checks",
+      "relative IQ output difference",
+      "all source strata"
+    ],
+    "decision": {
+      "min_effective_quality_change_fraction": 0.05,
+      "min_each_RX_fraction": 0.03,
+      "effective_change": "lock class changes OR max(scale_old/scale_new,scale_new/scale_old)>=1.10"
+    },
+    "identity_accuracy": "Not measured here;requires later matchedE30",
+    "target_access": false
+  },
+  "rows": [
+    {
+      "row_id": "FULL_L_QUALITY_COUPLING",
+      "method": "same_latent_quality_counterfactual",
+      "purpose": "single sourcephysical hypothesis",
+      "config_ref": "experiments/cvs_practical_quality_source17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261017431,
+        "support": null,
+        "evaluation": 20261016423
+      },
+      "seed_notes": "Channel realization20261017431,originalvirtualRX session seed20261016423,source split392005;no modelseed;cache directory is old data preparation only",
+      "k": null,
+      "scenario": "three original train practical scenes,not target",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "18900pairedrawobservations/37800 independentresidual computations,0CP/NN/updates",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_practical_quality_fullL_20261017_r01/source_quality.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_practical_quality_source17/runner.py",
+      "expected_artifacts": [
+        "active/resolved_config/progress/completion or preservedfailure",
+        "physical_pairs.jsonl.gz all18900 sameinput-latent comparisons",
+        "result.json fullRX/TX/day/scene/state stats and fixed decision",
+        "source_quality.stdout.log",
+        "same-row report/verification/registry"
+      ],
+      "config": {
+        "run_id": "20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01",
+        "owner": "codex/root/F-practical-quality-source",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "output_root": "PROJECT/runs/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01",
+        "L": 6300,
+        "source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "source_TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_RX_holdout": null,
+        "physical_roles": "L6300/U56700hiddenTX/V27000",
+        "scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "all_L_each_scene": true,
+        "observations": 18900,
+        "channel_seed": 20261017431,
+        "receiver_seed": 20261016423,
+        "fs_hz": 25000000.0,
+        "fc_hz": 2462000000.0,
+        "reference_snr_db": 30.0,
+        "mode": "post_sync",
+        "route": "residual",
+        "EQ": false,
+        "boundary": "reflect",
+        "noise_or_propagation_changed": false,
+        "IQ_augmentations_stacked": false,
+        "quality_comparison": "white expected Pin*sum|h|^2 versus finite-window mean|H*x|^2;both divided by same injected reference noise floor;not true total SNR",
+        "same_raw_same_latent": true,
+        "receiver_scope": "same existing RX/day/eq physical session acrossTX",
+        "normalization": "same existing normalize_input before As;no output RMS",
+        "preregistered_threshold": {
+          "min_effective_quality_change_fraction": 0.05,
+          "min_each_RX_fraction": 0.03,
+          "effective_change": "lock class changes OR max(scale_old/scale_new,scale_new/scale_old)>=1.10"
+        },
+        "on_fail": "Close this fixed quality-coupling candidate;no window/SNR/threshold/seed/RX rescue",
+        "on_pass": "Only physical mismatch evidence;matched E30 identity accuracy must still prove benefit;not Ag/As/joint success",
+        "CPU_threads": 2,
+        "GPU": "none",
+        "network_forwards": 0,
+        "checkpoint_loads": 0,
+        "source_cache_loads": 1,
+        "optimizer_updates": 0,
+        "teacher_forwards": 0,
+        "head_fit_updates": 0,
+        "U_truth_read": false,
+        "U_statistically_used": false,
+        "V_statistically_used": false,
+        "target_access": false,
+        "automatic_training": false
+      }
+    }
+  ],
+  "notes": [
+    "No source RX removed;all legal L6300 observed in all3train scenes;no U/V/target statistics",
+    "Two counterfactual outputs start from same originalraw;never sequentially stack two full channels",
+    "Same propagation/state/geometry/hardware/noise floor with quality-dependent phase/frequency processing allowed to respond coherently",
+    "Waveform-to-added-noise proxy still includes unknown capture noise;not true total SNR and no TX-correction",
+    "Frozen5%/eachRX3% physical criterion;fail closes candidate,pass needs actual samebudget identity evidence",
+    "No model/checkpoint is consumed;realCP smoke not applicable to this numerical source-only stage;actual-engine synthetic noquery smoke instead",
+    "Read-only cache carrier includes unused old parent features/sourceV;immediately discard,not a model/teacher initialization"
+  ],
+  "registered_at": "2026-10-17T07:11:24+00:00"
+}

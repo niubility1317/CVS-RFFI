@@ -31,3 +31,4 @@
 |F＋跨 RX 同 TX：As 两次 CE 与 RDrop 的匹配 E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01/report.md)|
 |F＋跨 RX 同 TX：六步 L 重排匹配 E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01/report.md)|
 |正仿射源 PSD 关系：最小源依据预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)|
+|F 星地增强：完整源 L 的接收质量耦合检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)|

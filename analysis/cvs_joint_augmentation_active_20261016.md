@@ -8,9 +8,12 @@
 
 原训练已保存安全权重但因收尾加载检查异常返回 PARTIAL；独立 [零更新评分恢复](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/report.md)复用全部固定权重完成正式评分，原错误日志和状态保留。E30 矩阵／父选择在新 E20 目标成绩读取前固定，没有分数选父、调幅度或选择性重跑。
 
-本轮唯一待检验的 E30 联合假设已被否定，未发布下一候选。后续方案必须由合法源数据与传播／接收处理证据提出，保留全源与普通拼接参照，不调 ppm、换 seed 或加预算救跑。A_s 有实际适应证据；Ag 的跨域身份提取与联合目标仍未证明，总研究目标保持 ACTIVE。
+本轮唯一待检验的 E30 联合假设已被否定。新的源物理检验已登记，尚未发布训练候选。后续方案必须由合法源数据与传播／接收处理证据提出，保留全源与普通拼接参照，不调 ppm、换 seed 或加预算救跑。A_s 有实际适应证据；Ag 的跨域身份提取与联合目标仍未证明，总研究目标保持 ACTIVE。
 
 [完整源 E20 四因子负结果](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)与 [完整源普通拼接 E20 参照](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)保留。
+
+
+当前新活动项：[20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01](../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)，只比较 practical 的 white-input 质量近似与有限窗 H*x 功率质量是否实质改变锁定／残差 scale。全部 L6300／5 源 RX、18900 个同 latent 配对、0 模型／CP／NN／更新／target；固定总体有效差≥5%且每 RX≥3%，失败关闭该方向，不改测试 IQ、SNR 或阈值救跑。物理通过仍不等于身份识别收益，尚未启动任何新 E30 训练。
 
 以下是按时间保留的历史过程，旧的“当前／运行／下一项”表述以本页开头的最新状态为准。
 

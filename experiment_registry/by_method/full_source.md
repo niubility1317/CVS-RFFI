@@ -2,6 +2,7 @@
 
 |ID|状态|名称|
 |---|---|---|
+|F 星地增强：完整源 L 的接收质量耦合检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)|
 |E30 五行联合增强：正式结果与负结论|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/report.md)|
 |完整源采样率／practical四因子：E20完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)|
 |完整源四因子与普通拼接：E20＋10，累计E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/report.md)|

@@ -1,0 +1,20 @@
+{
+  "status": "REGISTERED_NOT_LAUNCHED",
+  "local": {
+    "protocol_negative_cases": 19,
+    "analytical_power_cases": 2,
+    "synthetic_channel_pairs": 24,
+    "synthetic_calls": 48,
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0
+  },
+  "independent_P0P1": {
+    "status": "PASS",
+    "P0": 0,
+    "P1": 0
+  },
+  "real_CP_smoke": "NOT_APPLICABLE_NO_MODEL_CONSUMED",
+  "target_access": false
+}
