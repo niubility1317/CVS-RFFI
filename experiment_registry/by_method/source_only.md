@@ -32,3 +32,4 @@
 |F＋跨 RX 同 TX：六步 L 重排匹配 E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01/report.md)|
 |正仿射源 PSD 关系：最小源依据预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)|
 |完整源 L 的 practical 接收质量耦合：物理依据已验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)|
+|F＋跨RX同TX：等功率带限观测噪声完整L源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01/report.md)|

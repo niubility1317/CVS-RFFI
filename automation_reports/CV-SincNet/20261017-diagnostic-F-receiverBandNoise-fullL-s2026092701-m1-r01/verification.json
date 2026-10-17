@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 10,
+  "synthetic_pairs": 16,
+  "expected_total_noise_power_equal": true,
+  "max_covariance_error": 2.4424906541753444e-15,
+  "expected_out_of_band_fraction": 0.002991415019816708,
+  "white_expected_out_of_band_fraction": 0.34765625,
+  "actual_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "training_updates": 0,
+  "review": {
+    "status": "PASS",
+    "scope": "One independent static P0/P1 review of actual source worker,noise math,model source and publication;no direct defects",
+    "reviewer": "dc_p0p1_review",
+    "reviewer_runtime_math_not_executed": "Reviewer Python lacked NumPy;local mathematical checks separately executed successfully with verified scientific Python"
+  }
+}

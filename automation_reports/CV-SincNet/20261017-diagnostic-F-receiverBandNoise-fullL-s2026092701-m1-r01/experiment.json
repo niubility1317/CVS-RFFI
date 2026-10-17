@@ -1,0 +1,197 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01",
+  "group_id": "F_crossRX_receiver_band_noise_source",
+  "display_name": "F＋跨RX同TX：等功率带限观测噪声完整L源检验",
+  "description": "固定物理带宽先验，白/带限噪声同20..36dB期望功率；完整L6300默认头身份保持，不访问target、不训练",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "F_RECEIVER_BAND_NOISE_FULLL_SOURCE"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "full_source",
+    "source_only",
+    "no_training",
+    "default_head",
+    "matched_controls",
+    "practical"
+  ],
+  "comparison_group_id": "F_crossRX_fullsource_E30",
+  "parent_run_ids": [
+    "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As goal;latest E30 and full5RX correction. This row is frozen-default-head source-only guard with 0newtraining;no data/label expansion or target feedback.",
+  "code": {
+    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "Ordinary N607 existing pinned full-source F runtime;CPU threads2/CUDAhidden;NumPy float64 noise,original FP32 model",
+    "cwd": "PROJECT/releases/cvs_F_receiverBandNoise_source_20261017_r01",
+    "entrypoint": "experiments/cvs_band_noise17/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated exact original L6300 source cache;all sourceRX",
+    "representation": "Existing EQ1/RMS IQ256,unchanged raw L6300 plus additive noise only;all5RX/no heldoutdomain",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract role_ids.L_s,exact all6300",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "All6300 IQ+legal labels for frozen source identity guard",
+      "U_s": "Only original opaque role-ID exclusion,no IQ orTXlabels used",
+      "V": "Source carrier features deserialized by existing cache then unused;no stats or updates"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse existing exact source handles and native_role_comparison;no data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": "No satellite generation in this diagnostic;formal test views unchanged"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Only coarse source spectral support and source identity retention;not Ag efficacy,As gain orjoint performance"
+  },
+  "checkpoint": {
+    "initialization": "Frozen existing fullsource REPEAT source-final20/defaulthead,no updates",
+    "sources": [
+      "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/REPEAT-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse verified fullsource provenance;before load check scratch/finalonly/zero ancestors/role counts6300,56700,27000/exact original roles;no model ormetric selection",
+    "provenance_verdict": "EXPECTED_MATCH_TO_BE_CHECKED_BEFORE_LOAD",
+    "selection_rule": "Fixed metadata-matched fullsource source-final20;not target ranked"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-receiver-band-noise",
+    "gpu_policy": "CPU2/CUDAhidden;no training/GPU processes",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_receiverBandNoise_source_20261017_r01/band_noise.stdout.log",
+    "local_artifact_root": "local_artifacts/F_receiver_band_noise_20261017",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_band_noise17/runner.py",
+    "stop_rule": "One owner/immutable root;any source-role/provenance/state/nonfinite/count failure preserves outputs and stops;noautomatic rerun or target access"
+  },
+  "expected_artifacts": [
+    "checks.json",
+    "real_checkpoint_smoke.json",
+    "resolved_config.json",
+    "source_predictions.npz",
+    "noise_draws.json",
+    "result.json",
+    "completion.json",
+    "same-row independent source recount/report"
+  ],
+  "metrics_plan": {
+    "identity": [
+      "source accuracy/macroF1/raw-correctretention",
+      "all RX/TX/day accuracy",
+      "fixed defaulthead true margins"
+    ],
+    "physical": [
+      "allRX median source inband power>=.9",
+      "equal expected totalnoise power;SNR20..36both",
+      "actual noise power and IQ change with full tails"
+    ],
+    "decision": {
+      "each_colored_draw_accuracy_delta_min_pp": -0.5,
+      "each_colored_draw_F1_delta_min_pp": -0.5,
+      "each_RX_TX_day_accuracy_delta_min_pp": -1,
+      "min_raw_correct_retention": 0.99,
+      "min_each_RX_median_source_inband_fraction": 0.9,
+      "min_median_IQ_change": 0.01,
+      "max_IQ_change": 0.15
+    },
+    "on_fail": "Close fixedband/covariance/SNR/draws;noamplitude/band/window/seed/RX/threshold/tailrescue",
+    "on_pass": "Only source identity support;separate matched fullsource E30 fourfactor required,noautomatictraining",
+    "identity_gain_claim": false,
+    "target_access": false
+  },
+  "rows": [
+    {
+      "row_id": "FULL_L_WHITE_VS_BAND",
+      "method": "Fixed additive stationary band-noise versus equal-expected-power white control",
+      "purpose": "Test source spectral prior and identity preservation before any new fullsource E30 factorial",
+      "config_ref": "experiments/cvs_band_noise17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {
+        "L6300_all_source_RX": true,
+        "U_or_V_updates": false,
+        "target_access": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261017821,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Two named private draws0/1,shared latent whiteGaussian and sameSNR for white/color;no seedchoice",
+      "k": null,
+      "scenario": "source raw plus white/color atdraw0/1;no satelliteview",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": 0,
+      "budget_ref": "6300uniqueL;31500sourceNN+2realCPsynthetic;1CP;0teacher/headfit/update",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_receiverBandNoise_source_20261017_r01/band_noise.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_band_noise17/runner.py",
+      "expected_artifacts": [
+        "checks.json",
+        "real_checkpoint_smoke.json",
+        "resolved_config.json",
+        "source_predictions.npz",
+        "noise_draws.json",
+        "result.json",
+        "completion.json",
+        "same-row independent source recount/report"
+      ],
+      "config": {
+        "IQ_length": 256,
+        "sampling_rate_Hz": 25000000,
+        "noise_band_edge_Hz": 8125000,
+        "covariance": "sinc(2*band/fs*(i-j));PSD square root",
+        "draws": [
+          0,
+          1
+        ],
+        "SNR_dB": [
+          20,
+          36
+        ],
+        "input_filtered": false,
+        "input_RMS_renormalized": false,
+        "source_RX_holdout": null,
+        "model_training": false
+      }
+    }
+  ],
+  "notes": [
+    "Primary rationale is official WiSig equalization at20MHz:active +/-26 bins of64,then25MHz resampling;coarsebandprior only,not exact MMSEcovariance or hardwarecausality.",
+    "Distinct from old nativewhiteAWGN20..36,no raisingSNR or changingcoefficient;distinct from filteringreceivedIQ and failed empiricalcycle-covariance estimation.",
+    "Cii=1 in both priors so expected totalpower identical;finiteGaussian realizedpower differs and islogged;no clipping/taildeletion/RMSnormalize/outputadjustment.",
+    "Original currentF defaulthead source-final20 frozen,allL6300/all5RX;noheldRX,noL_dev,noextradiagnosticclassifier.",
+    "Possible futureE30 factor matrix would need matchedviews/costandrawshare;not authorized by sourceaccuracyalone/noautomatictraining from thislauncher."
+  ],
+  "registered_at": "2026-10-17T10:24:38+00:00"
+}
