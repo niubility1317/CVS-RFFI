@@ -135,4 +135,11 @@ mid原73.253968%，三bank73.273810/73.273810/73.313492%；low原57.738095%，�
 
 固定五个历史同 modelseed2026092701／held源RX1L1260／E20／8L／1.25 控制，0新训练/NN/IQ/target。完整44100源判决、66600步、29970L/U记录和100epoch独立复算；206随机初始tensor十对完全相同，有效role/完整顺序/归一化共同配方/存储ordinaryMSE逐项相同。最终clean79.682540%至80.634921%，跨度.952381pp；low26.984127%至27.936508%，跨度.952381pp。十对hard变化clean.555556%至1.587302%、low3.015873%至6.031746%。第1步已有约1e−8及以下梯度差异，但不证明CUDA或某实现的因果作用。
 
-五控制不是五seed或新随机复制；相同MSE不证明逐点IQ相同。只有refresh/timing保存且匹配六景逐包physics，其余三控制缺失，不把未知写成已证实信道差异。历史成本直接四native counter＋held汇总29116600，本轮5个随机未训练CP/0训练后CP/0NN；3PNG＋3PDF实际生成查看。没有候选晋级、既有失败路线复活或当前SupCon-view判据调整，不把跨度当新阈值。仍无新增Ag／正式联合与跨seed证明。详见[完整描述报告](cvs_FcrossRX_RAWcontrol_audit_20261017.md)。
+五控制不是五seed或新随机复制；相同MSE不证明逐点IQ相同。只有refresh/timing保存且匹配六景逐包physics，其余三控制缺失，不把未知写成已证实信道差异。历史四native counter＋held原始和29116600，扣除5行EMA deepcopy继承的非执行smoke计数10后实际29116590；本轮5个随机未训练CP/0训练后CP/0NN；3PNG＋3PDF实际生成查看。没有候选晋级、既有失败路线复活或当前SupCon-view判据调整，不把跨度当新阈值。仍无新增Ag／正式联合与跨seed证明。详见[完整描述报告](cvs_FcrossRX_RAWcontrol_audit_20261017.md)。
+
+
+## 补充：原 SupCon 的视图组织（2026-10-17，原 owner 终态）
+
+四行sourceheldRX1L1260／一个modelseed／固定F＋跨RX＋8L＋1.25／E20，新Q_sat/Q_mix和复用Q0/Q_ord已完成七源视图35280判决。固定Q_mix clean83.809524%、low33.730159%、urban均值42.592593%；对Q_ord为−.634921／−.158730／−1.322751pp，mid−2.063492pp；对Q_sat clean＋.873016、low＋1.111111而urban仅＋.555556pp，违反原各＋1pp。科学FAIL_FIXED_VIEW_ROUTING_CLOSED，不改比例/层位/weight/scene/RX/seed/预算，不选控制替代primary。新40modelE/8880更新与旧40modelE复用成本分开，0正式target／新部署头。
+
+对Q0虽clean＋3.650794、low＋5.952381、urban＋9.523810pp，不能归因为新Ag或超越已有As；三suburban距自身clean仍25.95至32.70pp。原owner全量独立分析见[终态报告](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01/report.md)。本owner只读原报告和聚合产物，未重复收集/评分、改变健康任务或科学门槛。该As组织假设关闭，新增Ag、正式联合与跨seed目标均未完成。

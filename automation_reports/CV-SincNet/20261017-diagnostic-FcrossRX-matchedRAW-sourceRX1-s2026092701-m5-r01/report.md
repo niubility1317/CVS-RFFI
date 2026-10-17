@@ -93,22 +93,24 @@ run_id：20261017-diagnostic-FcrossRX-matchedRAW-sourceRX1-s2026092701-m5-r01。
 
 ## 实现、检查与成本
 
-运行代码 b167b4864ff6bd408a2a87e5dae71da42fceefb8；离线 physics 缺失分类/图表 329e70ee4bd0d4fb5c00d7431f9293b5e7bc0190；直接 forward-counter 口径修正 c8ca5ba4df8f2fd5a271a7a6d202b5d74b6a9199，三提交均 push 后独立 remote OID 比较 identical。仅此 package、登记/报告及相关索引提交，未提交权重、IQ、原始预测、ID、日志、生成图或机器状态。原有无关 CPU.md/coverage.json 变化保留，未暂存。
+运行代码 b167b4864ff6bd408a2a87e5dae71da42fceefb8；离线 physics 缺失分类/图表 329e70ee4bd0d4fb5c00d7431f9293b5e7bc0190；中间 counter 求和 c8ca5ba4df8f2fd5a271a7a6d202b5d74b6a9199 与最终 EMA 继承计数说明 b2d753f3dec53e2afe11d3cceabd21f9939ffd3b。各提交均 push 后独立 remote OID 比较 identical。仅此 package、登记/报告及相关索引提交，未提交权重、IQ、原始预测、ID、日志、生成图或机器状态。原有无关 CPU.md/coverage.json 变化保留，未暂存。
 
-13 个协议负例、206 合成张量及 3 个状态差异控制 PASS；5 个 physics availability 对照 PASS；所有新增模块 compile PASS。唯一独立 P0/P1 静态审查 PASS/0 findings，未重复完整审查。实际首份合法随机状态结构与有限性检查 PASS，随后完成余四份；0 NN，不能称为真实模型前向 smoke。SSRPython3.10/Torch2.1 CPU2 保留已知 NumPy2 桥警告，直接 tensor 操作成功，没有使用 NumPy 桥或修改环境。
+13 个协议负例、206 合成张量及 3 个状态差异控制 PASS；5 个 physics availability 对照 PASS；所有新增模块 compile PASS；新增一个真实计数fixture和一个错误smoke反例PASS，0真实NN/CP/IQ。唯一独立 P0/P1 静态审查 PASS/0 findings，未重复完整审查。实际首份合法随机状态结构与有限性检查 PASS，随后完成余四份；0 NN，不能称为真实模型前向 smoke。SSRPython3.10/Torch2.1 CPU2 保留已知 NumPy2 桥警告，直接 tensor 操作成功，没有使用 NumPy 桥或修改环境。
 
 普通 N607 只读收集 135 文件，本地 immutable inputs 与五快照；仅标量与已提交 plot 代码在已有 Matplotlib 环境生成图。第一次图表父目录缺失，远端独立核对无任何产物后仅修正 mkdir parents 并继续，失败 stderr 保留，不涉及训练重跑。
 
-历史成本为 100 model-epochs／22,200 更新。每行保存的 student-train4,942,928、student-eval475,202、teacher-train0、teacher-eval396,370，加 held8820，直接合计 5,823,320，五行合计 29,116,600；保留原计数中的 smoke，不作无依据扣减。这是前向样本量，不是唯一物理样本数。v1 曾每行减2、合计29,116,590，已更正为直接计数；v1 输出保留，v2 全量复核确认除该成本字段与口径说明外所有结果和完整曲线未变，不影响科学判据。
+历史成本为 100 model-epochs／22,200 更新。每行保存的 student-train4,942,928、student-eval475,202、teacher-train0、teacher-eval396,370，加 held8820，原始计数和为5,823,320。实际调用链中，学生先执行2包初始化smoke，随后EMA以deepcopy复制学生，教师继承的2个eval计数没有实际教师执行，须扣除一次。因此每行实际5,823,318，五行29,116,590；保留学生已实际执行的smoke。v1这一减2口径正确；本轮中间v2直接相加误计为29,116,600，现已查代码并明确更正，v2作为原始计数口径保留，不再称实际成本。v3逐行算式、调用链与fixture复核通过，所有预测/曲线及科学结论均未改变。这是前向样本量，不是唯一物理样本数。
 
 原 row 墙钟分别 1416.171875／2301.330696／1403.310508／1393.016820／1388.088959 s；它们不构成同一次矩阵墙钟或公平吞吐比较。新增随机状态比较主体0.321179s，成本修正后完整元数据复算12.596s；第一次元数据读取与文件传输/绘图未单独计时，不编造整轮墙钟。新增 0 modelE/更新/NN/教师/EMA/头拟合/IQ/target，5 初始 CP 读取、0 训练后 CP 读取。全部源判决来自原冻结读出，没有重预测。
 
-权威成本修正版 [summary](E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final/cost_recount_v2/analysis_summary.json) 与 [复核](E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final/cost_recount_v2/verification.json)；原 [完整曲线](E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final/training_curves.json)、[十对初始化](E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final/initial_states.json)、physics 覆盖及图保持。canonical experiment.json/events 与镜像报告指向同一 run，路径不可覆盖。
+权威全量 [summary](E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final/analysis_summary.json) 与 [实际前向计数 v3](E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final/forward_counter_reconciliation_v3.json)；v2仅保留中间原始计数求和和全量不变复核；原 [完整曲线](E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final/training_curves.json)、[十对初始化](E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final/initial_states.json)、physics 覆盖及图保持。canonical experiment.json/events 与镜像报告指向同一 run，路径不可覆盖。
 
 ## 当前判断和未完成项
 
-本轮证实五个名义同配方控制的实际初始化、role 与顺序一致，同时最终默认头判决仍有差异；没有证明某个新 Ag/As 有效，没有证明低 urban 退化被训练改善。当前四行 SupCon 视图组织实验的两新行已由原进程完成 E20/4440/七源视图；原 owner 独立终态分析仍待其报告，本轮不接管、重复评分或修改它的固定 Q_mix 判据。
+本轮证实五个名义同配方控制的实际初始化、role 与顺序一致，同时最终默认头判决仍有差异；没有证明某个新 Ag/As 有效，没有证明低 urban 退化被训练改善。收尾期间，原 owner 已完成 [SupCon视图组织完整报告](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01/report.md) 及全部35280保存源判决的独立分析；本轮只读取终态报告与analysis_summary，未接管、重复评分或改其判据。
 
-当前唯一在等待结论的训练假设仍是：保持完整原 raw/ordinary/As 监督和总预算，仅将原跨 RX 同 TX SupCon 的一半出现位置用于 As，是否比 ordinary-only 与 all-As 同时保留 clean 并提高 low/urban。最小矩阵已预登记为 Q0/Q_ord/Q_sat/Q_mix，失败按原规则关闭，不改比例、层位、损失、物理概率、RX、seed 或预算补救；本描述性审计不是新 gate，也不调整该规则。
+其固定假设是保持完整raw/ordinary/As监督和总预算，仅将原跨RX同TX SupCon一半出现位置用于As。固定Q_mix的源heldRX1/defaulthead结果：clean83.809524%、low33.730159%、urban均值42.592593%。相对Q_ord clean−.634921pp、low−.158730pp、mid−2.063492pp、urban−1.322751pp；相对Q_sat clean＋.873016pp、low＋1.111111pp、urban仅＋.555556pp，未达原各＋1pp。科学FAIL_FIXED_VIEW_ROUTING_CLOSED；原uniqueprimary保持，不调比例/层位/系数/scene/RX/seed/预算，也不把Q_sat控制事后晋级。
+
+Q_mix相对Q0虽clean＋3.650794pp、low＋5.952381pp、urban＋9.523810pp，仍未保留匹配ordinary-only As控制的收益；suburban与自身clean差25.95至32.70pp，未接近clean。此为一个sourcefold/modelseed，0正式target；最新训练组织不支持额外urban改善或跨seed重现。当前该训练假设已被否定，不再将它列为运行中或待晋级；下一项Ag必须有独立合法源证据，不能把本审计、小涨分或既有As适应改名成新Ag。
 
 新增身份保持 IQ Ag、匹配 B00/B10/B01/B11 与交互、正式 clean＋六 practical 的共同收益、low urban>60%、suburban 接近自身 clean、最差未见 RX 及跨 model seed 重现均未完成。不能以这次历史复算替代最终验证，goal 保持 ACTIVE。
