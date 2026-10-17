@@ -348,3 +348,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 2026-10-17：20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01 已完整 E20／4440 更新／源七视图独立复算 ANALYZED、VERIFIED，FAIL_FIXED_AS_KL_REMOVAL_CLOSED。C_CE clean81.904762%、low urban34.603175%；相对普通As＋RDrop clean−2.539683pp、low＋.714286pp、urban均值−.555556pp，关闭仅移除额外As对KL，不扫中间权重/场景/RX/seed救援；无新Ag或target证据，F＋跨RX同TX对比基线保持、完整goal ACTIVE。报告 automation_reports/CV-SincNet/20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01/report.md。
+
+
+2026-10-17：下一唯一训练组织假设为六步L重排，详见analysis/cvs_L_batch_order_basis_20261017.md。完整4440原L批／568320观察／13320对比统计复算，0正对缺失更新，故缺失解释否定；固定重排保留每块及全程物理多重集、将positive_min全程下限4→10。已实现元数据/合成tensor原型，并在实际N607 CPU通过222步/37块、逐包IQ/y/domain/metadata与原全局RNG/U路径检查，0真实IQ/CP/NN/更新/target。本地RandomSampler NumPy桥接失败单独保留，未改环境。尚未完成observer/launcher、未登记或启动E20；将需两条共同预取/私有L流的新匹配E20，不能复用旧控制，也不把该训练组织当IQ Ag；固定识别门槛失败关闭，不调块长/seed/RX/权重救跑，联合目标ACTIVE。
