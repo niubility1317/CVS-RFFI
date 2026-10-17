@@ -1,0 +1,29 @@
+{
+  "status": "SOURCE_DECIDED",
+  "source_only": true,
+  "formal_scores_read": false,
+  "clean_V": {
+    "C0": 0.9814814814814815,
+    "R25": 0.9804814814814815
+  },
+  "clean_net_pp": -0.10000000000000009,
+  "urban_delta_vs_AS50_pp": [
+    [
+      -2.8888888888888853,
+      -2.0000000000000018
+    ],
+    [
+      -3.0000000000000027,
+      -3.5555555555555562
+    ]
+  ],
+  "checks": {
+    "clean_preserved": true,
+    "each_urban_draw_preserved": false
+  },
+  "source_protection_evidence": false,
+  "automatic_seed_extension": false,
+  "Ag_proved": false,
+  "goal_complete": false,
+  "source_qualification_complete": true
+}

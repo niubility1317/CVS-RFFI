@@ -1,3 +1,5 @@
+**当前状态：E30训练完成；固定源保护条件 FAIL；正式收尾仍按预定执行。**
+
 **当前状态：RUNNING／启动 VERIFIED。新行已完整完成 E1，尚无新正式成绩。**
 
 # 全源 F：保留普通监督的 practical 配对，从零 E30
@@ -47,3 +49,9 @@ N607普通账户/现有CVS-RFFI/FP32/CPU2，每GPU所有owner合计最多3进程
 独立读回dispatcher723131、worker723350/GPU0，CWD/argv/CUDA和日志增长正确；实际完整源L/U/V6300/56700/27000，初始E1完成。原生第一批配置读回residual/post_sync/EQfalse/G1/ref30/fs25MHz/fc2.45GHz/reflect，quality adaptation、相位跟踪和IQ补偿开启；实际64条信道记录。原网络900722参数/206状态、6×160头/scale30保持。
 
 用户已确认就是这类保留clean的方案。P36草稿暂置、历史timing/FIR负结果保留，不修改另一对话健康RXpopulation实验。独立分析代码已实现：4个聚焦反例通过，最终读取所有30轮/6660步、426240As物理记录、三行7视图和源状态质量分层；尚未生成新结果或图表，不提前提供图表路径。
+
+## FINAL30源域先行结论
+
+6660更新完成，0父训练。源fullV clean C0=98.148148%、R25=98.048148%，差−.100000pp，≥−.25pp。相对AS50，draw0的mid/low为−2.888889/−2.000000pp，draw1为−3.000000/−3.555556pp，未满足四项均≥−2pp。固定source_protection_evidence=false，自动扩种子=false。此结论来自源模型与V，读取新正式成绩前保存；当前不调份额、扰动、seed、阈值或预算救跑。
+
+这只关闭本轮native raw-As／75:25／20L10U／直接cosine30的迁移保护假设，不把其失败泛化为原E20＋10训练组织必然无效。原参考与本轮阶段、optimizer日程、ordinary强度日程和真实As实现不同，不能只凭同E30混作等价轨迹。全部固定新行七环境收尾、原CP与输出保持。
