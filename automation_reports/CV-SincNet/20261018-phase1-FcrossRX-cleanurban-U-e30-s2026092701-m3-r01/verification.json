@@ -269,5 +269,40 @@
     "new_analysis_NN": 0,
     "UAS_observed_completed_epochs": 24,
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/two_row_prediction_closure_verified_r01.json"
+  },
+  "actual_ordinary_audit": {
+    "status": "ACTUAL_SCHEDULE_RECONSTRUCTION_MATCHES_TELEMETRY",
+    "epochs": [
+      {
+        "arm": "B0",
+        "complete_epochs_checked": 30
+      },
+      {
+        "arm": "URAW",
+        "complete_epochs_checked": 30
+      },
+      {
+        "arm": "UAS",
+        "complete_epochs_checked": 26
+      }
+    ],
+    "frozen_epoch": 13,
+    "frozen_scale": 0.2506003339349741,
+    "cyclic_shift_max": 8,
+    "multipath_boundary": "reflect",
+    "ordinary_before_practical": false,
+    "RDrop_same_generated_IQ": true,
+    "DAC_disabled": true,
+    "class_signature_disabled": true,
+    "legacy_PA_enabled": true,
+    "new_Ag_proved": false,
+    "operator_draw_counts_saved": false,
+    "NN": 0,
+    "IQ_reads": 0,
+    "checkpoint_reads_for_code_introspection": 2,
+    "checkpoint_initializer_changed": false,
+    "training_modified": false,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/ordinary_augmentation_audit_r01.json",
+    "operator_table": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/ordinary_augmentation_actual_r01.csv"
   }
 }

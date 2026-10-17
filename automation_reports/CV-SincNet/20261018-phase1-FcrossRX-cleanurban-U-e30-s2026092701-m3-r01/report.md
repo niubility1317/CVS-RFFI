@@ -93,3 +93,29 @@ B0与URAW均已完成自身20+10并冻结默认头，原PID自动exec为predict�
 B0／URAW的completed检查均PASS：各168000个physical sample、全部7个既定视图、prediction与自身固定FINAL30配置相同、所有参数冻结、head_fit_updates=0、query_fit=false；评分状态SCORED_COMPLETE且truth_last=true。此处只读取状态和成本元数据，未打开scores.json或正式truth／预测内容，不报告正式准确率。两组正式预测NN均1176002，耗时分别47.3221s／58.5044s；各自源训练和源读出7246624NN，连同正式预测各合计8422626NN。矩阵共享预烟测50NN另计一次。
 
 B0与URAW原进程完成后正常退出，有完整row完成产物；UAS原worker PID776817/start_ticks150415404继续训练，最近累计E24。原source-only等待进程PID791020仍存活。整个3row矩阵尚未完成，源判定未写入，正式分数保持未读。
+
+## 本轮实际普通 IQ 增强审计
+
+实际DataAugmentation与cvsrffi.schedule来自原pinned adv3b02_xuc实现。读取ordinary_augmentation_actual.json及实际native args，调用同一configure_augmentor_for_epoch离线重建，逐项对照B0/URAW全30轮、UAS已结束26轮telemetry，全部MATCH。E13冻结scale=0.2506003339349741，此后没有在own10重新ramp。下表是配置的随机事件概率，不是记录过的实际事件次数。
+
+| 顺序／操作 | E13后事件概率 | 实际范围与采样 |
+|---|---:|---|
+| 1 DC offset | 7.5180% | 每batch开关，每包I/Q独立偏移，上限0.0050120 |
+| 2 Tukey taper | 6.2650% | 每batch开关与共享alpha，alpha=0.0050120至0.0250600 |
+| 3 循环移位 | 8.7710% | 每batch开关，每包整数−8至8样点，包含0 |
+| 4 幅度缩放 | 11.2770% | 每batch开关，每包0.9至1.1；幅度范围没有随scale缩小 |
+| 5 全局相位 | 11.2770% | 每batch开关，每包0至2π；角度范围没有缩小 |
+| 6 CFO | 8.7710% | 每包±0.000100240134 cycles/sample，25MHz下约±2506Hz |
+| 7 相位噪声 | 7.5180% | 每包sigma≤0.0015036020 |
+| 8 普通多径 | 4.5108% | batch共享随机2至4tap，时延0至1样点，reflect左边界 |
+| 9 普通AWGN | 10.0240% | 每包20至36dB，相对当前增强波形功率；不是录音总SNR |
+| 10 普通PA | 3.5084% | 每包mask；mp_sigma0.0125300、mem_sigma0.0100240、ampm_max0.0501201 |
+| DAC／class signature | 关闭 | p_dac=0、enable_class_signature=false |
+
+循环移位通过模L gather实现，会把截断端点接到包内；256点IQ上最多8点发生wrap，是结构上限而非实测发生比例。taper先于移位，只有被抽到时才可能减轻端点差异，不能声称循环移位无接缝。普通多径的源码注释含circular-ish，但实际F.pad为reflect，应以执行语句为准。
+
+数据集输入已RMS；普通增强末尾只有有限值清理，没有再作全IQ RMS。实际SIG_TIME/Reference/IdentityOnly/CVSincNet入口把同一增强IQ传入原网络；reference相关、GroupNorm及LayerNorm等分支内部仍有各自归一化，因此不能把增益扰动视为必然有效或必然在全模型完全抵消。该零前向代码审计读取自身固定B0 checkpoint两次，没有读IQ、改变模型或新增训练／预测NN；不把代码观察冒充增益单因素性能试验。
+
+L的普通对使用上述一次已生成IQ作两次RDrop前向；混合对仅64个ordinary加64个完整As(raw)，完整As前不先加普通AWGN、多径、PA或CFO，As后不再RMS。UAS同样直接As(rawU)，原weak teacher及旧strong/noise规则保留。原NoExplicitCFO指身份表征约束，不等于旧普通增强的CFO事件为0。
+
+全部操作是三组共有的旧配方，没有新增Ag；尤其旧随机PA并未由本轮证明身份保持或跨RX泛化有效，不能据配置概率宣称Ag成立，也不据此热改当前实验。标签相关signature分支实际关闭，PA不会反演录音中未知TX硬件。真实operator事件计数与逐包谱变换未保存，报告保留该边界。
