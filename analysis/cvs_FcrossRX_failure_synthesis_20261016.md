@@ -143,3 +143,10 @@ mid原73.253968%，三bank73.273810/73.273810/73.313492%；low原57.738095%，�
 四行sourceheldRX1L1260／一个modelseed／固定F＋跨RX＋8L＋1.25／E20，新Q_sat/Q_mix和复用Q0/Q_ord已完成七源视图35280判决。固定Q_mix clean83.809524%、low33.730159%、urban均值42.592593%；对Q_ord为−.634921／−.158730／−1.322751pp，mid−2.063492pp；对Q_sat clean＋.873016、low＋1.111111而urban仅＋.555556pp，违反原各＋1pp。科学FAIL_FIXED_VIEW_ROUTING_CLOSED，不改比例/层位/weight/scene/RX/seed/预算，不选控制替代primary。新40modelE/8880更新与旧40modelE复用成本分开，0正式target／新部署头。
 
 对Q0虽clean＋3.650794、low＋5.952381、urban＋9.523810pp，不能归因为新Ag或超越已有As；三suburban距自身clean仍25.95至32.70pp。原owner全量独立分析见[终态报告](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01/report.md)。本owner只读原报告和聚合产物，未重复收集/评分、改变健康任务或科学门槛。该As组织假设关闭，新增Ag、正式联合与跨seed目标均未完成。
+
+
+## P18：源eq1观测的共同轴向格点（2026-10-17）
+
+固定fitL5040／RX3/4/6/8／6TX／day1/2/3，0模型/CP/NN/更新/IQ变换/target。新测度在原eq1/RMS表示上，全部5040包均无满足固定候选及float32分辨界的共同轴向affine格点，72cell均0/70，未达逐格95%；因此0crossfit折、RX风险与格距/SNR代理均null，不对阳性子集重选。独立全量逐包/角色/72格复算PASS，2PNG＋2PDF实际生成查看；主体420.515955s。
+
+当前固定格点作为接收增强依据的理由FAIL_CLOSED，不调格距/容差/窗口/RX/seed/阈值或自动dither/E20。没有证明原ADC无量化或任意旋转/非均匀格点不存在；当前表示经过处理，不能假定ADC位数加噪或套用subtractive-dither独立误差。该轮无默认头新准确率/clean代价，未获新Ag或联合/跨seed证据，完整目标仍ACTIVE。代码9b8eda74e12c03f385518c139d89f539c98163fa，离线5187b5dce47e954b98352cb40c7bca7e5686f8fc。[完整反证与图](cvs_source_quantgrid_20261017.md)。
