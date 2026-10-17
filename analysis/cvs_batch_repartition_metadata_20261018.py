@@ -53,6 +53,8 @@ def run(project):
  project=Path(project);c=json.loads((project/'runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json').read_text());allowed=set(c['role_ids']['L_s'])
  if len(allowed)!=6300 or c['source_rxs']!=list(FIT) or c['source_days']!=[1,2,3] or c['num_classes']!=6:raise ValueError('Original full L6300 source handles required')
  sequence=project/'runs'/REFERENCE/'CONCAT-s2026092701/source/training_sequence.jsonl.gz';source=[];seen=set();batches=0;lookup={}
+ n_per_cell=sum(len(v) for v in c['role_ids'].values())//90
+ if n_per_cell!=1000:raise ValueError('Original untruncated1000 per source cell required')
  with gzip.open(sequence,'rt',encoding='utf8') as stream:
   for line in stream:
    row=json.loads(line)
@@ -62,12 +64,13 @@ def run(project):
     if len(raw)!=5:raise ValueError('Original metadata tuple required')
     eq,rx,day,sig,base=map(int,raw);key=(eq,rx,day,sig,base)
     if key not in lookup:
-     hits=[]
-     for t in range(6):
-      opaque=hashlib.sha256(f'{t}/{rx}/{day}/{eq}/{sig}'.encode()).hexdigest()[:24]
-      if opaque in allowed:hits.append((t,opaque))
-     if len(hits)!=1:raise ValueError('Canonical opaque physical-L mapping not unique')
-     lookup[key]=hits[0]
+     # Original source dataset index iterates TX,RX,day,eq,sig;visible L only.
+     # Do not decode or join any U record. Confirm every component and opaque L ID.
+     cell,canonical_sig=divmod(base,n_per_cell);tx_rx,di=divmod(cell,3);t,ri=divmod(tx_rx,5)
+     if t not in range(6) or (FIT[ri],di+1,1,canonical_sig)!=(rx,day,eq,sig):raise ValueError('Original source index metadata differ')
+     opaque=hashlib.sha256(f'{t}/{rx}/{day}/{eq}/{sig}'.encode()).hexdigest()[:24]
+     if opaque not in allowed:raise ValueError('Resolved record not in visibleL6300')
+     lookup[key]=(t,opaque)
     t,opaque=lookup[key];seen.add(opaque);source.append(dict(occurrence=len(source),tx=t,rx=rx,day=day,base_index=base,physical_id=opaque))
    batches+=1
  if batches!=4440 or len(source)!=568320 or seen!=allowed:raise ValueError('Complete4440 steps/all6300L exposure required')
