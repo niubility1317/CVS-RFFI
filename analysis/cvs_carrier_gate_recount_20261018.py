@@ -28,14 +28,16 @@ def carrier_records(S,mode,cost):
  if result!=cost['carrier_organization'] or not cost['one_shared_NoAs20_parent'] or not cost['not_new_IQ_Ag']:raise ValueError('Independent complete carrier counters differ from trainer')
  return dict(summary=result,settings=settings,records=2220,IQ=0,CP=0,NN=0,updates=0,interpretation='Execution and correlation only;not identity recognition evidence')
 def source(project):
- B=Path(project)/'runs'/RUN;result={};pools={};seqs={};args={};parents={};oldrun,oldmodes=logs.RUN,logs.MODES;start=time.perf_counter()
+ B=Path(project)/'runs'/RUN;result={};seqs={};args={};parents={};oldrun,oldmodes=logs.RUN,logs.MODES;start=time.perf_counter()
  try:
   logs.RUN=RUN
   for mode in MODES:
-   logs.MODES=(mode,);S=B/(mode+'-s2026092701')/'source';part=logs._base_run(project,True,expected_As_packets=0 if mode.startswith('NOAS_') else 128);r=part['rows'][mode];tr=r['training_cost'];conf=read(S/'resolved_config.json');init=read(S/'initialization.json');cp_parent=Path(init['ancestors'][0]);a=read(S/'actual_native_args.json');a=a.get('args',a);args[mode]=a
+   logs.MODES=(mode,);S=B/(mode+'-s2026092701')/'source';part=logs._base_run(project,False,expected_As_packets=0 if mode.startswith('NOAS_') else 128);r=part['rows'][mode];tr=r['training_cost'];conf=read(S/'resolved_config.json');init=read(S/'initialization.json');cp_parent=Path(init['ancestors'][0]);a=read(S/'actual_native_args.json');a=a.get('args',a);args[mode]=a
    if tr['actual_steps']!=2220 or tr['parent_steps']!=4440 or tr['cumulative_steps']!=6660 or tr['cumulative_epochs']!=30 or tr['head_fit_updates'] or tr['U_truth_read'] or tr['target_access'] or tr['source_RX_holdout'] is not None or tr['Ag_training_observations'] or tr['As_training_observations']!=(0 if mode.startswith('NOAS_') else 284160) or init['source_roles']!='EXACT_MATCH' or not init['optimizer_reset'] or init['teacher_origin']!='strict own parent EMA' or conf['new_Ag'] or conf['As']!=(not mode.startswith('NOAS_')):raise ValueError('Source budget,roles,parent,U or treatment mismatch')
    parentarm='REPEAT'
    if cp_parent.parent.name!=parentarm+'-s2026092701' or a['baseline_ckpt']!=str(cp_parent/'final_ssdg.pth') or a['teacher_ckpt'] or a['freeze_backbone'] or (a['epochs'],a['label_epochs'],a['pseudo_epochs'])!=(10,0,10) or a['use_concat_sat_channel_aug'] or a.get('source_fold_held_rx') is not None:raise ValueError('Parent initialization or native training arguments mismatch')
+   required=('step_log','epoch_log','sequence_log','reference_log','unit_log')
+   if any(not r[k]['exists'] or r[k]['partial'] for k in required) or [r[k]['records'] for k in required]!=[2220,10,4440,2220,2220] or (r['observed_L_packets'],r['observed_U_packets'],r['observed_unique_L'],r['observed_unique_U'])!=(284160,567000,6300,56700) or r['source_RX']!=[1,3,4,6,8] or r['source_days']!=[1,2,3] or any(r['error_markers'].values()):raise ValueError('Incomplete actual original-loader steps,roles,budget or stdout')
    native,native_info=logs.jsonl(S/'metrics_epoch.jsonl')
    with (S/'metrics_epoch.csv').open(encoding='utf8',newline='') as stream:csvrows=list(csv.DictReader(stream))
    if native_info['partial'] or len(native)!=10 or native!=r['epoch_curves'] or len(csvrows)!=10 or any(set(x)!=set(y) or any(y[k]!=('' if value is None else str(value)) for k,value in x.items()) for x,y in zip(native,csvrows)):raise ValueError('Complete native CSV/JSONL and observer epoch telemetry differ')
@@ -43,15 +45,15 @@ def source(project):
    truth=r['numeric_totals'].get('train/pseudo_truth_available',{})
    if truth.get('count')!=2220 or truth.get('maximum')!=0:raise ValueError('Incomplete hidden U truth logs')
    r['carrier']=carrier_records(S,mode,tr);r['parent_source_arm']=parentarm;r['head_joint_updates_checked_by_trainer']=True;r['new_IQ_Ag']=False
-   pools[mode],_=logs.jsonl(S/'sampler_pools.jsonl.gz',True);seqs[mode],_=logs.jsonl(S/'training_sequence.jsonl.gz',True);parents[parentarm]=read(cp_parent/'training_result.json');result[mode]=r
+   seqs[mode],_=logs.jsonl(S/'training_sequence.jsonl.gz',True);parents[parentarm]=read(cp_parent/'training_result.json');result[mode]=r
  finally:logs.RUN,logs.MODES=oldrun,oldmodes
  comparisons={}
  for mode in MODES[1:]:
-  base=MODES[0];samep=[(p['original_L_ids'],p['visible_y']) for p in pools[mode]]==[(p['original_L_ids'],p['visible_y']) for p in pools[base]];sames=seqs[mode]==seqs[base];diff=sorted(k for k in set(args[mode])|set(args[base]) if args[mode].get(k)!=args[base].get(k));tc=result[mode]['training_cost'];bc=result[base]['training_cost'];samecost=all(tc.get(k,0)==bc.get(k,0) for k in ('actual_steps','parent_steps','cumulative_steps','L_forward_packets','student_train_forward_packets','student_eval_forward_packets','teacher_train_forward_packets','teacher_eval_forward_packets','extra_supervised_VJP_calls'))
-  if not samep or not sames or not samecost or set(diff)-{'baseline_ckpt','candidate_id','output_dir'}:raise ValueError('Matching source inputs/U/NN/actual args mismatch')
+  base=MODES[0];sames=seqs[mode]==seqs[base];diff=sorted(k for k in set(args[mode])|set(args[base]) if args[mode].get(k)!=args[base].get(k));tc=result[mode]['training_cost'];bc=result[base]['training_cost'];samecost=all(tc.get(k,0)==bc.get(k,0) for k in ('actual_steps','parent_steps','cumulative_steps','L_forward_packets','student_train_forward_packets','student_eval_forward_packets','teacher_train_forward_packets','teacher_eval_forward_packets','extra_supervised_VJP_calls'))
+  if not sames or not samecost or set(diff)-{'baseline_ckpt','candidate_id','output_dir'}:raise ValueError('Matching source inputs/U/NN/actual args mismatch')
   for component in ('phase','cfo'):
    if any(result[mode]['carrier']['settings'][component][k]!=result[base]['carrier']['settings'][component][k] for k in ('probability','maximum')):raise ValueError('Configured perpacket carrier probability/range differs across four rows')
-  comparisons[mode]=dict(complete_input_pools=370,L_U_sequence_records=4440,same_input_pools_and_L_labels=samep,same_L_U_physical_sequence=sames,same_NN_and_extra_VJP_budget=samecost,different_actual_arg_keys=diff,actual_arg_count=len(args[mode]))
+  comparisons[mode]=dict(complete_input_pools=0,custom_sampler_pools_used=False,L_U_sequence_records=4440,original_loader_physical_sequence_checked=True,same_L_U_physical_sequence=sames,same_NN_and_extra_VJP_budget=samecost,different_actual_arg_keys=diff,actual_arg_count=len(args[mode]))
  return dict(status='VERIFIED_COMPLETE_SOURCE_LOGS',run_id=RUN,rows=result,matched_comparisons=comparisons,parent_training_cost=parents,IQ=0,CP=0,NN=0,updates=0,target_access=False,joint_goal_complete=False,wall_seconds=time.perf_counter()-start)
 def source_qualification(project):
  B=Path(project)/'runs'/RUN;rows={};ids=None;fixed_meta=None;CM=0;maxerr=0.

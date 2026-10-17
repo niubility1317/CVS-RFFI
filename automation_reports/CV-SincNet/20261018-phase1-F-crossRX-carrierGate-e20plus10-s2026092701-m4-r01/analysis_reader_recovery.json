@@ -1,0 +1,33 @@
+{
+  "status": "ANALYSIS_READER_FIXED_NO_TRAINING_CHANGE",
+  "cause": "A reused complete-log reader required370 custom sampler pools,whereas this run intentionally uses original loader without pool logger",
+  "observed": {
+    "steps_each": 2220,
+    "epochs_each": 10,
+    "L_U_sequence_records_each": 4440,
+    "reference_records_each": 2220,
+    "Sinc_unit_records_each": 2220,
+    "L_unique_each": 6300,
+    "U_unique_each": 56700,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ]
+  },
+  "fix": "Validate original-loader actual steps,whole L/U physical sequences,and native680field CSV/JSONL/observer equality;no empty pool comparison",
+  "complete_NoAs_recount": "VERIFIED",
+  "training_restarts": 0,
+  "training_modifications": 0,
+  "extra_IQ": 0,
+  "extra_CP": 0,
+  "extra_NN": 0,
+  "target_numeric_scores_read": false
+}
