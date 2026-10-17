@@ -537,4 +537,4 @@
 - [视图掩码相关性 r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-dropoutCoupling-e20plus10-s2026092701-m2-r01/report.md)
 
 - [有限窗酉相位源保护 r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01/report.md)
-- [有限窗酉相位源保护 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01/report.md)
+- [完整practical批次组成E30 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01/report.md)

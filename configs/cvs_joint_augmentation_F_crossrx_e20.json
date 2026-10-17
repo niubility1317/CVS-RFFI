@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_BATCH_REPARTITION_IMPLEMENTED",
+  "status": "RESEARCH_ACTIVE_BATCH_REPARTITION_RUNNING",
   "source_experiment": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
   "authorization": "Latest explicit user budget E30;new fixed FIR first-learning-utility rows use matching noAg fullsource E20 parents plus10;no trainingRXholdout",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -156,7 +156,7 @@
   "next_source_hypothesis": null,
   "next_training_hypothesis": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
-    "status": "IMPLEMENTED_LOCAL_AND_P0P1_PASS_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED_FIRST_EPOCH_COMPLETE",
     "hypothesis": "Reduced visibleL TXxRX batchcomposition fluctuation improves existing fullpractical/defaulthead E30 training without new loss or IQ operator",
     "rows": [
       "ORIGINAL",
@@ -4326,5 +4326,37 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01"
+  "current_training_experiment": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
+  "batch_stratification_release": {
+    "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
+    "status": "RUNNING_VERIFIED",
+    "execution_commit": "c7b257262d895622f31214d60bfa65906eb4910e",
+    "rows": [
+      {
+        "row_id": "ORIGINAL-s2026092701",
+        "GPU": 3,
+        "epoch": 1,
+        "cumulative_epoch": 21
+      },
+      {
+        "row_id": "RANDOM-s2026092701",
+        "GPU": 4,
+        "epoch": 1,
+        "cumulative_epoch": 21
+      },
+      {
+        "row_id": "TX_RX_BALANCED-s2026092701",
+        "GPU": 5,
+        "epoch": 1,
+        "cumulative_epoch": 21
+      }
+    ],
+    "new_epochs_each": 10,
+    "cumulative_epochs_each": 30,
+    "source_RX_holdout": null,
+    "new_Ag": false,
+    "training_complete": false,
+    "formal_scored": false,
+    "joint_goal_complete": false
+  }
 }

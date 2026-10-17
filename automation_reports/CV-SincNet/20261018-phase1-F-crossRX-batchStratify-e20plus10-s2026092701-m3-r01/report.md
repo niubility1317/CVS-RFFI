@@ -1,6 +1,6 @@
 # 原完整 practical 的 L 批次组成：三行 E30 检验
 
-状态：IMPLEMENTED／LOCAL_CHECKS_PASS／P0P1_PASS。真实训练、正式预测和评分尚未启动。这是训练组织研究，新增 IQ A_g=false，不能替代 A_g×A_s 四因子或完整联合目标。
+状态：RUNNING／VERIFIED。三行真实训练已启动，新增首轮完成（累计E21），正式预测／评分未完成。这是训练组织研究，新增 IQ A_g=false，不能替代 A_g×A_s 四因子或完整联合目标。
 
 ## 依据与唯一假设
 
@@ -37,3 +37,9 @@ TX_RX_BALANCED分别相对ORIGINAL和RANDOM：clean不降、low urban至少+.5�
 唯一owner codex/root/F-batchStratify-E30；普通N607账户，CPU2，共享容量每GPU最多3个全owner进程且≥12GB空闲，不停/热改旧任务。不可覆盖根 PROJECT/runs/20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01；CWD PROJECT/releases/cvs_F_batchStratify_E30_20261018_r01；命令 CVS-RFFI/bin/python -u experiments/cvs_batch_stratify30/runner.py。[精确登记](experiment.json)、[配置](../../../configs/cvs_batch_stratify_e30.json)。
 
 17聚焦负例、6个完整epoch边界/1332合成输出批/222池/对齐及RNG异常恢复PASS，0真实IQ/CP/NN；一次独立P0/P1 PASS。首步真实CP无query smoke后继续；一个Git代码配置commit、一个archive/一次传输比较/远端compile、一次PID/CWD/argv/GPU/log增长核对。仅输入/父/角色/非有限/输出冲突/不能合法预测等系统技术失败停止pending并保留产物，不自动重试，不影响健康旧任务。预期完整step/epoch/reference/Sincunit/LU序列、370池原metadata+permutation、默认头CP、7视图prediction/score、RX/TX/day配对、成本曲线及同row分析/Git交付；原始数据/权重/日志/预测保持私有。
+
+## 发布后独立核实
+
+执行commit `c7b257262d895622f31214d60bfa65906eb4910e`，远端Git OID匹配；普通N607预检、单archive比较、远端compile/checks通过。首步真实原父CP/noquery smoke PASS（1CP/2合成NN/0IQ），三worker严格相同parent学生/ownEMA加载通过。ORIGINAL PID785637/GPU3、RANDOM785712/GPU4、TX_RX_BALANCED785788/GPU5；CWD/argv/startticks/CUDA与GPU进程及日志增长独立核实。全部首轮222更新完成，实际L113664NN/As28416包，sourceRX1/3/4/6/8全部保留。
+
+读取当时全部可解析step分别290/287/285条，均As128/L4/Utruth隐藏，无异常；gzip仍在写入，EOFError如实标为partial，不当成终态或失败。此为运行证据，不是完整训练成本或识别增益。预算不变，健康行继续；逐行E30后自动七视图预测与独立truth-last路径已随同一release发布。[执行快照](execution_evidence.json)。

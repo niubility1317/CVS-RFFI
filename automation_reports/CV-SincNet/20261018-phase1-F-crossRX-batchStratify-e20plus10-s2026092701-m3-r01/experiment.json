@@ -24,7 +24,7 @@
   ],
   "authorization": "Latest user E30 joint research;all5RX/256IQ retained;3 sameparentE20+10 rows;0 sourceholdout",
   "code": {
-    "commit": "ACTUAL_GIT_HEAD_IN_RELEASE_COMMIT_TXT",
+    "commit": "c7b257262d895622f31214d60bfa65906eb4910e",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary account/existing pinned F runtime/FP32/CPU2/single shared GPU",
     "cwd": "PROJECT/releases/cvs_F_batchStratify_E30_20261018_r01",
@@ -480,7 +480,7 @@
           "interpretation": "Allfixed outcomes reported;no automatic seed extension/promotion based on target;not Ag or complete joint proof"
         }
       },
-      "status": "PLANNED"
+      "status": "RUNNING"
     },
     {
       "row_id": "RANDOM-s2026092701",
@@ -821,7 +821,7 @@
           "interpretation": "Allfixed outcomes reported;no automatic seed extension/promotion based on target;not Ag or complete joint proof"
         }
       },
-      "status": "PLANNED"
+      "status": "RUNNING"
     },
     {
       "row_id": "TX_RX_BALANCED-s2026092701",
@@ -1162,7 +1162,7 @@
           "interpretation": "Allfixed outcomes reported;no automatic seed extension/promotion based on target;not Ag or complete joint proof"
         }
       },
-      "status": "PLANNED"
+      "status": "RUNNING"
     }
   ],
   "notes": [
@@ -1176,5 +1176,6 @@
   "additional_reference": null,
   "replaces_run_id": null,
   "result": null,
-  "registered_at": "2026-10-17T17:15:20+00:00"
+  "registered_at": "2026-10-17T17:15:20+00:00",
+  "status": "RUNNING"
 }
