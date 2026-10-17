@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "scope": "Postprocessing synthetic complete carrier counters and independent source integer thresholds",
+  "carrier_fixture_records": 4440,
+  "negative_cases": 12,
+  "source_boundary": {
+    "NOAS_clean_gain_correct": 5,
+    "lowurban_each_draw_gain_correct": 9,
+    "one_bad_draw_rejected": true
+  },
+  "compile": "PASS",
+  "IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "raw_truth_reads": 0,
+  "target_access": false,
+  "not_a_new_training_gate": true
+}

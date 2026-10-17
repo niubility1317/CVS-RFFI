@@ -2310,7 +2310,7 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": null,
+  "current_experiment": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
   "active_As_hypothesis": {
     "status": "NO_SUPPORTED_NEW_AS_TRAINING_CANDIDATE",
     "latest_closed_run": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
@@ -2827,14 +2827,7 @@
   },
   "active_Ag_hypothesis": {
     "status": "NO_NEW_VALIDATED_IQ_OPERATOR",
-    "latest_source_run": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
-    "source_association": "Prior RX-associated source statistics do not identify a label-preserving IQ operator",
-    "fixed_qualification": "CLOSED_FIXED_RESPONSE_AND_NORMALIZATION_ORDER_EXPLANATION",
-    "IQ_operator": null,
-    "identity_preservation_proved": false,
-    "training_started": false,
-    "automatic_training": false,
-    "next_question": "No preregistered next candidate;need independent identity-preserving observation evidence without refitting or renaming closed response/window/bin/anchor/amplitude recipes"
+    "context": "Existing256 IQ only;sharedresponse and normalizationorder recipes closed;carrierorganization is not newAg"
   },
   "latest_completed_source_diagnostic": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
   "active_training_budget": {
@@ -4290,7 +4283,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": null,
+  "current_training_experiment": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -6133,6 +6126,54 @@
     "target_access": false,
     "closed_fixed_explanation": true,
     "identity_accuracy_measured": false,
+    "joint_goal_complete": false
+  },
+  "active_training_hypothesis": {
+    "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
+    "status": "RUNNING_VERIFIED",
+    "execution_commit": "5278625865d49164872337853b0eda963b908e0e",
+    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/report.md",
+    "hypothesis": "Change only L ordinary phase/CFO selector dependence from sharedbatch to independentpacket at fixed perpacket laws;test organization x existing complete practical As",
+    "new_IQ_Ag": false,
+    "common_parent": "Original fullsource NoAs REPEAT fixedfinal20 student and ownEMA",
+    "matrix": [
+      "NOAS_BATCH",
+      "NOAS_PACKET",
+      "AS_BATCH",
+      "AS_PACKET"
+    ],
+    "budget": "Common parentE20 plus4independent10;eachcumulativeE30;8880newupdates",
+    "source_RX_holdout": null,
+    "IQ_points": 256,
+    "source_data": "L6300/U56700 TXhidden/V27000;all5RX/days1,2,3;split392005",
+    "As_exposure_epochs": 10,
+    "source_rule": "All fixed source thresholds in prereg;any failure closes fixed recipe;no targetfeedback",
+    "formal_plan": "All4 rows automatic clean+6practical168000/view then independenttruthlast",
+    "formal_scores_read": false,
+    "joint_goal_complete": false
+  },
+  "carrier_gate_release": {
+    "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
+    "status": "RUNNING_VERIFIED",
+    "execution_commit": "5278625865d49164872337853b0eda963b908e0e",
+    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/report.md",
+    "hypothesis": "Change only L ordinary phase/CFO selector dependence from sharedbatch to independentpacket at fixed perpacket laws;test organization x existing complete practical As",
+    "new_IQ_Ag": false,
+    "common_parent": "Original fullsource NoAs REPEAT fixedfinal20 student and ownEMA",
+    "matrix": [
+      "NOAS_BATCH",
+      "NOAS_PACKET",
+      "AS_BATCH",
+      "AS_PACKET"
+    ],
+    "budget": "Common parentE20 plus4independent10;eachcumulativeE30;8880newupdates",
+    "source_RX_holdout": null,
+    "IQ_points": 256,
+    "source_data": "L6300/U56700 TXhidden/V27000;all5RX/days1,2,3;split392005",
+    "As_exposure_epochs": 10,
+    "source_rule": "All fixed source thresholds in prereg;any failure closes fixed recipe;no targetfeedback",
+    "formal_plan": "All4 rows automatic clean+6practical168000/view then independenttruthlast",
+    "formal_scores_read": false,
     "joint_goal_complete": false
   }
 }

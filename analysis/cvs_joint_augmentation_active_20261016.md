@@ -1,3 +1,11 @@
+## 2026-10-18：普通载波增强开关组织 × practical 四行 E30 已运行
+
+[固定矩阵报告](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/report.md) RUNNING／VERIFIED；执行提交 `5278625865d49164872337853b0eda963b908e0e`。四worker PID/CWD/argv/GPU/loggrowth 已独立核实，GPU0/2/3/4；共同原NoAs20 student及ownEMA、真实CP／2合成包无query smoke、一次归档传输和remote compile均通过。仅发布前置POSIX路径输出错误已在0启动时修复，原记录保留。
+
+本轮只有一个训练组织假设：现有L普通phase/CFO在保持逐包概率、参数范围和顺序的条件下，整批开关改为逐包开关，是否经既有跨RX同TX对比学习改善clean并保留普通As收益。不是新IQ Ag、不是新损失／分支／U策略。四行共用一个原NoAs E20父，各独立+10至E30，As只在新增10轮施加，不能借用此前As20+10分数充当本轮控制。全部5源RX／L6300-U56700隐藏TX-V27000／256点／默认cos联合训练保持，无训练域留出。
+
+截至运行核实，无As两行累计E22，As两行E21；BATCH非平凡逐包mask为0，PACKET已每次出现混合mask，证明执行差异而非身份收益。训练未完成，未读取本轮正式分数。每行冻结后自动源资格、clean＋六practical固定预测和独立truth-last，全部四行均评价。任一源判据失败关闭固定配方，不改幅度／概率／组件／父／seed／预算救跑。完整目标ACTIVE；最新已完成训练仍为viewMoment负结果，以下旧当前／下一项按历史保留。
+
 ## 2026-10-18：逐包归一化解释真实失败，固定响应方向关闭
 
 [完整源归因](../automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01/source_analysis.md) 已 ANALYZED／VERIFIED。全部参数与旧控制固定，0重新拟合；只读原V27000已存周期因子和180源矩阵，使用参考RX1全部5400包，全部5RX/256点/L6300-U56700隐藏TX-V27000保持，18统计折不留出训练RX。精确逐包SSE2.945017782，旧均值2.944634453，总误差反增.013017906%；与加性.732224436／同TX.280646912相比仍0/18折、0/5RX改善，四项实质资格FAIL。归一化顺序不足以解释失败，关闭固定h与该解释，不重拟合/换窗口/频点/锚点/参考RX/幅度/阈值救跑。

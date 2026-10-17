@@ -56,3 +56,5 @@ CWD `PROJECT/releases/cvs_F_carrierGate_E30_20261018_r01`；命令 `CVS-RFFI/bin
 整体联合目标 ACTIVE；本行尚无训练或正式性能结果。
 
 发布前置只读检查发现 Windows 路径输出故障：`str(Path)` 将 Linux 父权重路径写成反斜杠。远端确认共同父权重存在，run／release／archive 均未创建，0 训练／NN／远端写入。仅改为 `Path.as_posix()`，本地路径断言通过；保留首次失败和独立只读核实，不把它记为科学重跑。
+
+四行运行独立核实 VERIFIED：实际执行提交 `5278625865d49164872337853b0eda963b908e0e`；共同父CP smoke通过，四个所属PID/CWD/argv/GPU和相隔145秒的日志增长均核实，GPU0/2/3/4。无As累计E22／As累计E21，仅执行差异成立；完整源／正式识别结果待训练结束，未读取本轮正式指标。

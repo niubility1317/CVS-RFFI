@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Active joint research;latest explicit budgetE30/F+CROSS_RX/full5RX/L6300U56700hiddenV27000/256IQ. Four same-NoAs20-parent plus10 rows;no extra losses/NN/U rules or test changes.",
   "code": {
-    "commit": "PENDING_ACTUAL_GIT_COMMIT_PINNED_BY_PUBLISH",
+    "commit": "5278625865d49164872337853b0eda963b908e0e",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "Existing N607 CVS-RFFI Python/PyTorch,ordinaryaccount,fullFP32",
     "cwd": "PROJECT/releases/cvs_F_carrierGate_E30_20261018_r01"
@@ -103,7 +103,9 @@
     "remote_log_root": "PROJECT/runs/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/logs",
     "local_artifact_root": "WORKTREE/local_artifacts/F_carrier_batch_E30_20261018",
     "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_carrier_batch30/runner.py",
-    "stop_rule": "One owned systemic technical/role/nonfinite failure stops newdispatch;healthy rows finish;preserve,no blindretry or performance earlystop. Source scientific failure closes fixed2carrier/correlation/parent/seed/E30 recipe,no range/probability/condition rescue"
+    "stop_rule": "One owned systemic technical/role/nonfinite failure stops newdispatch;healthy rows finish;preserve,no blindretry or performance earlystop. Source scientific failure closes fixed2carrier/correlation/parent/seed/E30 recipe,no range/probability/condition rescue",
+    "actual_status": "RUNNING_VERIFIED",
+    "launch_observation": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/launch_observation.json"
   },
   "expected_artifacts": [
     "source/initialization and matching parent/defaulthead checkpoint",
@@ -213,7 +215,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-carrierGate-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -251,7 +253,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ExistingF+CROSS_RX/defaultcos/RDrop1/LS.01/originalU;only L-carrier selector dependence x complete ordinaryAs",
@@ -503,6 +505,22 @@
           "on_pass": "Source qualification only;not newIQAg or joint completion;no target-guided seed expansion"
         },
         "REJECTED_EXTRA_GATE": "No extra design approval,source gate,seal or repeatedreview"
+      },
+      "status": "RUNNING",
+      "runtime_observation": {
+        "row": "NOAS_BATCH-s2026092701",
+        "pid": 985449,
+        "gpu": 0,
+        "alive": true,
+        "cwd_match": true,
+        "argv_match": true,
+        "log_bytes": 17189,
+        "log_growth": 10372,
+        "cumulative_epoch": 22,
+        "carrier_calls": 444,
+        "phase_nontrivial": 0,
+        "cfo_nontrivial": 0,
+        "has_traceback": false
       }
     },
     {
@@ -580,7 +598,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-carrierGate-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -618,7 +636,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ExistingF+CROSS_RX/defaultcos/RDrop1/LS.01/originalU;only L-carrier selector dependence x complete ordinaryAs",
@@ -870,6 +888,22 @@
           "on_pass": "Source qualification only;not newIQAg or joint completion;no target-guided seed expansion"
         },
         "REJECTED_EXTRA_GATE": "No extra design approval,source gate,seal or repeatedreview"
+      },
+      "status": "RUNNING",
+      "runtime_observation": {
+        "row": "NOAS_PACKET-s2026092701",
+        "pid": 985524,
+        "gpu": 2,
+        "alive": true,
+        "cwd_match": true,
+        "argv_match": true,
+        "log_bytes": 17202,
+        "log_growth": 10377,
+        "cumulative_epoch": 22,
+        "carrier_calls": 444,
+        "phase_nontrivial": 444,
+        "cfo_nontrivial": 444,
+        "has_traceback": false
       }
     },
     {
@@ -947,7 +981,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-carrierGate-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -985,7 +1019,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ExistingF+CROSS_RX/defaultcos/RDrop1/LS.01/originalU;only L-carrier selector dependence x complete ordinaryAs",
@@ -1237,6 +1271,22 @@
           "on_pass": "Source qualification only;not newIQAg or joint completion;no target-guided seed expansion"
         },
         "REJECTED_EXTRA_GATE": "No extra design approval,source gate,seal or repeatedreview"
+      },
+      "status": "RUNNING",
+      "runtime_observation": {
+        "row": "AS_BATCH-s2026092701",
+        "pid": 985603,
+        "gpu": 3,
+        "alive": true,
+        "cwd_match": true,
+        "argv_match": true,
+        "log_bytes": 11985,
+        "log_growth": 5184,
+        "cumulative_epoch": 21,
+        "carrier_calls": 222,
+        "phase_nontrivial": 0,
+        "cfo_nontrivial": 0,
+        "has_traceback": false
       }
     },
     {
@@ -1314,7 +1364,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-carrierGate-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -1352,7 +1402,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ExistingF+CROSS_RX/defaultcos/RDrop1/LS.01/originalU;only L-carrier selector dependence x complete ordinaryAs",
@@ -1604,6 +1654,22 @@
           "on_pass": "Source qualification only;not newIQAg or joint completion;no target-guided seed expansion"
         },
         "REJECTED_EXTRA_GATE": "No extra design approval,source gate,seal or repeatedreview"
+      },
+      "status": "RUNNING",
+      "runtime_observation": {
+        "row": "AS_PACKET-s2026092701",
+        "pid": 985680,
+        "gpu": 4,
+        "alive": true,
+        "cwd_match": true,
+        "argv_match": true,
+        "log_bytes": 11996,
+        "log_growth": 5187,
+        "cumulative_epoch": 21,
+        "carrier_calls": 222,
+        "phase_nontrivial": 222,
+        "cfo_nontrivial": 222,
+        "has_traceback": false
       }
     }
   ],
