@@ -1,15 +1,35 @@
-# 完整源 L：practical 接收质量耦合检验
+# 完整源 L 的 practical 接收质量耦合：物理依据已验证
 
-状态：已实现、已登记，未启动。当前唯一假设：white-input 期望功率与有限窗 H*x 功率的差异，实质改变原接收锁定／残差补偿。不是已确认的缺陷，不预告身份识别收益。
+状态：ANALYZED／VERIFIED。全部 6300 原 L、5 源 RX、三个原训练场景完成 18900 个配对，原进程自然结束；全量保存记录复算一致。**只通过物理依据条件，尚无身份识别收益。**
 
-全部原 L6300、源 RX1/3/4/6/8、day1/2/3、6TX、split392005，无训练 RX 留出。现有 exact-match source_cache 只用 L 的 x/y/rx/day/ids；U 只读 opaque 排除 ID，V 和旧父派生特征反序列化后不用。零身份模型、CP、NN、训练／EMA／头拟合／target。E30 训练预算保持，此检验不追加训练。
+残差引擎原本用 input_power×Σ|h|² 作为白输入期望功率，候选用原 reflect 边界下 mean|H*x|²；两者除以同一注入噪声方差。总体质量差的中位数 −0.010934 dB，绝对差中位数 0.159276 dB，5%／95% 分位数为 −0.612054／＋0.667234 dB。多数样本差异很小，不能称为普遍严重错误。
 
-每个 L 在原 low suburban／mid urban／low urban 三个训练场景各取一次固定 seed，共 18900 个配对。两种质量口径共享同一 raw IQ、h、几何、状态、虚拟 RX 和参考噪声方差。质量变化可依既有规则共同改变锁定、频率／相位跟踪与 AGC。两个输出各自从同一个 raw 开始，不连续叠加信道，不修改测试 received IQ、SNR 或样本。波形功率包含原采集噪声，不声称真实总 SNR。
+355／18900（1.8783%）改变锁定状态；按预定 lock 改变或 scale 比值 ≥1.10，1010／18900（5.3439%）改变有效处理，超过原 5% 条件。每源 RX 均超过原 3% 条件。输出相对差的中位数为 0，95% 分位数约 1.0861e−5；少数跨锁定边界样本差异较大，最大约 4。统计不能替代默认头识别。
 
-预定物理判据：lock 状态改变或 residual scale 比值至少 1.10，整体占比 ≥5%，且每个源 RX ≥3%。失败关闭固定方向，不改阈值／窗口／SNR／seed 救跑；通过只说明物理近似相关，后续须由同预算默认头识别证明，不记为 Ag、As 或联合成功。
+|源场景|配对数|有效处理变化数|占比|
+|---|---:|---:|---:|
+|practical_low_suburban|6300|87|1.380952%|
+|practical_low_urban|6300|501|7.952381%|
+|practical_mid_urban|6300|422|6.698413%|
 
-本地已验证项目 Python3.10.0／NumPy2.2.6：19 协议负例、2 解析功率例、24 合成实际引擎配对／48 residual 数值调用 PASS；0 真实 IQ／CP／NN／更新；7 个 Python 文件 compile PASS。一次独立限定 P0/P1 审查 PASS。发布 first-step 再在 pinned runtime 执行同一合成数值 smoke 后立即继续源检验。无模型消费，真实 CP smoke 不适用，不额外创建模型。
+|源 RX|配对数|有效处理变化数|占比|
+|---|---:|---:|---:|
+|1|3780|218|5.767196%|
+|3|3780|207|5.476190%|
+|4|3780|195|5.158730%|
+|6|3780|195|5.158730%|
+|8|3780|195|5.158730%|
 
-owner codex/root/F-practical-quality-source；唯一不可覆盖 output PROJECT/runs/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01，CWD PROJECT/releases/cvs_F_practical_quality_fullL_20261017_r01。命令 CVS-RFFI/bin/python -u experiments/cvs_practical_quality_source17/runner.py；N607 普通账户 CPU2、CUDA 为空、无 GPU 分配。执行 Git commit 写入 release_commit／resolved_config；代码依赖固定训练 R03 practical runtime。一个 N607 preflight、一个归档与一次传输核对、远端 compile、PID/CWD/argv/CPU／日志增长按原最小流程执行。
+六个源 TX 均有处理变化，占比分别为 4.0635%／4.6984%／5.1429%／4.6984%／5.6825%／7.7778%。全90个 TX×RX×day cell 各70个唯一 L、每 L 三个场景，无筛样或训练域留出。绝不按 TX 设置处理规则或阈值。
 
-停止规则：数据角色／来源不匹配、非有限或缺失记录、不可覆盖输出冲突、系统技术失败。保留产物，不自动重试，不影响其他任务。产物：全部 18900 physical_pairs、RX/TX/day/scene/state 分层、result／completion、实际模块路径与日志、同 row 报告／登记。当前没有目标预测或身份准确率。
+同一配对的 raw IQ、h、几何、传播状态、接收硬件和噪声方差完全相同。接收补偿依质量计算一致改变；不是独立改 CFO／相位幅度，不移除必要逐包补偿，不连续施加两次完整信道。波形功率仍包括原采集噪声，候选仍是 signal-to-added-noise proxy，不是真实总 SNR、真实 PLL 或在轨验证。
+
+实际源 only 数值成本：现有缓存读取 1 次、L6300 个实际 IQ、18900 个物理配对／37800 次 residual 计算，CPU2 墙钟 94.535 秒；0 身份模型／checkpoint／NN／训练／EMA／头拟合／target。V 与旧父派生特征反序列化后不用，U 真值始终隐藏。合成 smoke 的 24 配对／48 residual 调用单列，不计为真实源样本。
+
+执行 commit cc3839a2ebeeb2592291eb23b24614cac19a9cd8；普通账户／CPU preflight、单一归档与单次传输比较、remote compile、19 负例／2 解析功率例／固定实际引擎数值 smoke、PID/CWD/argv/CUDA为空/线程2／日志增长 VERIFIED。限定独立 P0/P1 一次 PASS。真实 CP smoke 不适用：该阶段不构造身份模型、不消费权重。
+
+当前唯一待检验假设：将这项有限窗功率口径用于训练 A_s 的接收质量，可保留传播、噪声和补偿依赖，并改善识别。最小后续实验为同一完整源、F＋CROSS_RX、同一个 source-final20 普通 As 父模型追加10轮，累计 E30；与已冻结的同父／同轨迹普通 As E30 对照匹配。只新增一行，既有控制复用，不因分数选择父、重训或重跑控制。分类头／骨干联合训练、原 U、全部有标签 As 监督及测试 received IQ 保持。父选择源于这个严格算子对照，不按目标成绩排序。
+
+此源结果不证明 A_g、跨 RX clean 净收益、As 识别增益或联合成功。下一训练候选尚未发布；后续须先固定识别比较和放弃条件，仍不调 SNR／幅度／窗口／seed 救跑。E30 已失败的时钟 Ag 联合配方保持关闭。
+
+原预登记配置与实际入口见 experiment.json、configs/cvs_practical_quality_source_probe.json 及 experiments/cvs_practical_quality_source17；完整 physical_pairs 保留在该 run 不可覆盖输出中，不入 Git。

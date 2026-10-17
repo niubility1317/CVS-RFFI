@@ -1,5 +1,5 @@
 {
-  "status": "IMPLEMENTED_NOT_LAUNCHED",
+  "status": "ANALYZED_PHYSICAL_MISMATCH_ONLY",
   "config": {
     "run_id": "20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01",
     "owner": "codex/root/F-practical-quality-source",
@@ -38,9 +38,9 @@
     "observations": 18900,
     "channel_seed": 20261017431,
     "receiver_seed": 20261016423,
-    "fs_hz": 25000000.0,
-    "fc_hz": 2462000000.0,
-    "reference_snr_db": 30.0,
+    "fs_hz": 25000000,
+    "fc_hz": 2462000000,
+    "reference_snr_db": 30,
     "mode": "post_sync",
     "route": "residual",
     "EQ": false,
@@ -72,5 +72,98 @@
     "target_access": false,
     "automatic_training": false
   },
-  "joint_goal_complete": false
+  "joint_goal_complete": false,
+  "result": {
+    "status": "VERIFIED",
+    "physical_pairs": 18900,
+    "unique_L": 6300,
+    "all90_source_cells_70_L_each": true,
+    "effective": 1010,
+    "effective_fraction": 0.05343915343915344,
+    "locks_changed": 355,
+    "decision": "PASS_PHYSICAL_MISMATCH_ONLY",
+    "by_RX": {
+      "1": {
+        "n": 3780,
+        "changed": 218,
+        "fraction": 0.05767195767195767
+      },
+      "3": {
+        "n": 3780,
+        "changed": 207,
+        "fraction": 0.05476190476190476
+      },
+      "4": {
+        "n": 3780,
+        "changed": 195,
+        "fraction": 0.051587301587301584
+      },
+      "6": {
+        "n": 3780,
+        "changed": 195,
+        "fraction": 0.051587301587301584
+      },
+      "8": {
+        "n": 3780,
+        "changed": 195,
+        "fraction": 0.051587301587301584
+      }
+    },
+    "by_scene": {
+      "practical_low_suburban": {
+        "n": 6300,
+        "changed": 87,
+        "fraction": 0.01380952380952381
+      },
+      "practical_low_urban": {
+        "n": 6300,
+        "changed": 501,
+        "fraction": 0.07952380952380952
+      },
+      "practical_mid_urban": {
+        "n": 6300,
+        "changed": 422,
+        "fraction": 0.06698412698412698
+      }
+    },
+    "by_TX": {
+      "0": {
+        "n": 3150,
+        "changed": 128,
+        "fraction": 0.040634920634920635
+      },
+      "1": {
+        "n": 3150,
+        "changed": 148,
+        "fraction": 0.04698412698412698
+      },
+      "2": {
+        "n": 3150,
+        "changed": 162,
+        "fraction": 0.05142857142857143
+      },
+      "3": {
+        "n": 3150,
+        "changed": 148,
+        "fraction": 0.04698412698412698
+      },
+      "4": {
+        "n": 3150,
+        "changed": 179,
+        "fraction": 0.05682539682539683
+      },
+      "5": {
+        "n": 3150,
+        "changed": 245,
+        "fraction": 0.07777777777777778
+      }
+    },
+    "new_IQ_reads": 0,
+    "NN": 0,
+    "CP": 0,
+    "updates": 0,
+    "raw_truth_reads": 0,
+    "joint_goal_complete": false
+  },
+  "identity_accuracy_benefit_proved": false
 }

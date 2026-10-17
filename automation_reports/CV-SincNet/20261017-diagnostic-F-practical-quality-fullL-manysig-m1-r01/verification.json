@@ -1,5 +1,5 @@
 {
-  "status": "REGISTERED_NOT_LAUNCHED",
+  "status": "ANALYZED",
   "local": {
     "protocol_negative_cases": 19,
     "analytical_power_cases": 2,
@@ -16,5 +16,768 @@
     "P1": 0
   },
   "real_CP_smoke": "NOT_APPLICABLE_NO_MODEL_CONSUMED",
-  "target_access": false
+  "target_access": false,
+  "execution_commit": "cc3839a2ebeeb2592291eb23b24614cac19a9cd8",
+  "local_remote_OID": "VERIFIED",
+  "N607_preflight": "VERIFIED_ORDINARY_ACCOUNT_CPU_SOURCE_CACHE",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "pinned_runtime_smoke": {
+    "status": "PASS",
+    "protocol_negatives": 19,
+    "analytical_power_cases": 2,
+    "synthetic_pairs": 24,
+    "synthetic_calls": 48,
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0
+  },
+  "postlaunch": {
+    "status": "VERIFIED",
+    "PID": 440473,
+    "CWD": true,
+    "argv": true,
+    "CUDA_empty": true,
+    "CPU_threads_2": true,
+    "log_growth": true,
+    "elapsed": 54.35643482208252
+  },
+  "completion": {
+    "status": "ANALYZED",
+    "decision": "PASS_PHYSICAL_MISMATCH_ONLY",
+    "physical_pairs": 18900,
+    "residual_channel_calls": 37800,
+    "source_L_unique": 6300,
+    "source_cache_loads": 1,
+    "model_constructed": false,
+    "checkpoint_loads": 0,
+    "NN": 0,
+    "training_updates": 0,
+    "teacher_forwards": 0,
+    "head_fit_updates": 0,
+    "U_truth_read": false,
+    "V_statistically_used": false,
+    "target_access": false,
+    "seconds": 94.53459229809232
+  },
+  "independent_recount": {
+    "status": "VERIFIED",
+    "physical_pairs": 18900,
+    "unique_L": 6300,
+    "all90_source_cells_70_L_each": true,
+    "effective": 1010,
+    "effective_fraction": 0.05343915343915344,
+    "locks_changed": 355,
+    "decision": "PASS_PHYSICAL_MISMATCH_ONLY",
+    "by_RX": {
+      "1": {
+        "n": 3780,
+        "changed": 218,
+        "fraction": 0.05767195767195767
+      },
+      "3": {
+        "n": 3780,
+        "changed": 207,
+        "fraction": 0.05476190476190476
+      },
+      "4": {
+        "n": 3780,
+        "changed": 195,
+        "fraction": 0.051587301587301584
+      },
+      "6": {
+        "n": 3780,
+        "changed": 195,
+        "fraction": 0.051587301587301584
+      },
+      "8": {
+        "n": 3780,
+        "changed": 195,
+        "fraction": 0.051587301587301584
+      }
+    },
+    "by_scene": {
+      "practical_low_suburban": {
+        "n": 6300,
+        "changed": 87,
+        "fraction": 0.01380952380952381
+      },
+      "practical_low_urban": {
+        "n": 6300,
+        "changed": 501,
+        "fraction": 0.07952380952380952
+      },
+      "practical_mid_urban": {
+        "n": 6300,
+        "changed": 422,
+        "fraction": 0.06698412698412698
+      }
+    },
+    "by_TX": {
+      "0": {
+        "n": 3150,
+        "changed": 128,
+        "fraction": 0.040634920634920635
+      },
+      "1": {
+        "n": 3150,
+        "changed": 148,
+        "fraction": 0.04698412698412698
+      },
+      "2": {
+        "n": 3150,
+        "changed": 162,
+        "fraction": 0.05142857142857143
+      },
+      "3": {
+        "n": 3150,
+        "changed": 148,
+        "fraction": 0.04698412698412698
+      },
+      "4": {
+        "n": 3150,
+        "changed": 179,
+        "fraction": 0.05682539682539683
+      },
+      "5": {
+        "n": 3150,
+        "changed": 245,
+        "fraction": 0.07777777777777778
+      }
+    },
+    "new_IQ_reads": 0,
+    "NN": 0,
+    "CP": 0,
+    "updates": 0,
+    "raw_truth_reads": 0,
+    "joint_goal_complete": false
+  },
+  "own_process_remaining": false,
+  "source_summary": {
+    "status": "ANALYZED",
+    "decision": "PASS_PHYSICAL_MISMATCH_ONLY",
+    "overall": {
+      "count": 18900,
+      "effective_changes": 1010,
+      "effective_fraction": 0.05343915343915344,
+      "lock_changes": 355,
+      "delta_quality_quantiles_db": [
+        -2.3370226219579253,
+        -0.6120541253324081,
+        -0.010934456338558718,
+        0.6672339195816007,
+        3.506890166002824
+      ],
+      "absolute_delta_median_db": 0.15927645634395837,
+      "output_relative_difference_quantiles": [
+        0,
+        0,
+        0.00001086080787899842,
+        3.9999735355377197
+      ],
+      "lock_pairs": {
+        "('locked', 'locked')": 11354,
+        "('unlocked', 'unlocked')": 4154,
+        "('degraded', 'degraded')": 3037,
+        "('degraded', 'unlocked')": 132,
+        "('unlocked', 'degraded')": 153,
+        "('degraded', 'locked')": 41,
+        "('locked', 'degraded')": 29
+      }
+    },
+    "strata": {
+      "RX": {
+        "1": {
+          "count": 3780,
+          "effective_changes": 218,
+          "effective_fraction": 0.05767195767195767,
+          "lock_changes": 64,
+          "delta_quality_quantiles_db": [
+            -1.7440665924508552,
+            -0.6687182209527798,
+            -0.035382364015876355,
+            0.6705337873779466,
+            2.198091537027228
+          ],
+          "absolute_delta_median_db": 0.1363729401081506,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.000010703444240789314,
+            3.9983391761779785
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 2242,
+            "('unlocked', 'unlocked')": 846,
+            "('degraded', 'degraded')": 628,
+            "('degraded', 'unlocked')": 29,
+            "('unlocked', 'degraded')": 27,
+            "('degraded', 'locked')": 5,
+            "('locked', 'degraded')": 3
+          }
+        },
+        "3": {
+          "count": 3780,
+          "effective_changes": 207,
+          "effective_fraction": 0.05476190476190476,
+          "lock_changes": 82,
+          "delta_quality_quantiles_db": [
+            -2.3370226219579253,
+            -0.6531548705457036,
+            0.00795654545801483,
+            0.6603674540862728,
+            3.506890166002824
+          ],
+          "absolute_delta_median_db": 0.17094289622335745,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.000009380385199619907,
+            3.9999735355377197
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 2251,
+            "('unlocked', 'unlocked')": 845,
+            "('degraded', 'degraded')": 602,
+            "('degraded', 'unlocked')": 33,
+            "('unlocked', 'degraded')": 28,
+            "('degraded', 'locked')": 12,
+            "('locked', 'degraded')": 9
+          }
+        },
+        "4": {
+          "count": 3780,
+          "effective_changes": 195,
+          "effective_fraction": 0.051587301587301584,
+          "lock_changes": 74,
+          "delta_quality_quantiles_db": [
+            -1.773963106272439,
+            -0.6019862398919708,
+            -0.04126075986656641,
+            0.6713615090467179,
+            1.3380072635686513
+          ],
+          "absolute_delta_median_db": 0.15672334561352752,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.00001254038675142495,
+            3.9977071285247803
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 2228,
+            "('unlocked', 'unlocked')": 860,
+            "('unlocked', 'degraded')": 43,
+            "('degraded', 'degraded')": 618,
+            "('degraded', 'unlocked')": 20,
+            "('locked', 'degraded')": 4,
+            "('degraded', 'locked')": 7
+          }
+        },
+        "6": {
+          "count": 3780,
+          "effective_changes": 195,
+          "effective_fraction": 0.051587301587301584,
+          "lock_changes": 61,
+          "delta_quality_quantiles_db": [
+            -1.8029575787455079,
+            -0.5956377788604559,
+            -0.028387253435012513,
+            0.6693397116184154,
+            1.8784060777130138
+          ],
+          "absolute_delta_median_db": 0.1601385765442096,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.00000962404610618247,
+            3.9955904483795166
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 2289,
+            "('degraded', 'degraded')": 601,
+            "('unlocked', 'unlocked')": 829,
+            "('degraded', 'unlocked')": 25,
+            "('unlocked', 'degraded')": 25,
+            "('locked', 'degraded')": 4,
+            "('degraded', 'locked')": 7
+          }
+        },
+        "8": {
+          "count": 3780,
+          "effective_changes": 195,
+          "effective_fraction": 0.051587301587301584,
+          "lock_changes": 74,
+          "delta_quality_quantiles_db": [
+            -1.967885762071953,
+            -0.5254706809759685,
+            0.03800040026171203,
+            0.6493864946701327,
+            2.4843535817438305
+          ],
+          "absolute_delta_median_db": 0.17221226489692976,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.000008747156198296489,
+            3.9949605464935303
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 2344,
+            "('unlocked', 'unlocked')": 774,
+            "('degraded', 'degraded')": 588,
+            "('unlocked', 'degraded')": 30,
+            "('degraded', 'unlocked')": 25,
+            "('locked', 'degraded')": 9,
+            "('degraded', 'locked')": 10
+          }
+        }
+      },
+      "TX": {
+        "0": {
+          "count": 3150,
+          "effective_changes": 128,
+          "effective_fraction": 0.040634920634920635,
+          "lock_changes": 46,
+          "delta_quality_quantiles_db": [
+            -2.1975290446615974,
+            -0.6428066238295542,
+            -0.0518480466398934,
+            0.5394767305683972,
+            3.506890166002824
+          ],
+          "absolute_delta_median_db": 0.11219185634137574,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.000006628267556152414,
+            3.9999735355377197
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 1933,
+            "('unlocked', 'unlocked')": 659,
+            "('degraded', 'degraded')": 512,
+            "('degraded', 'unlocked')": 24,
+            "('unlocked', 'degraded')": 15,
+            "('degraded', 'locked')": 1,
+            "('locked', 'degraded')": 6
+          }
+        },
+        "1": {
+          "count": 3150,
+          "effective_changes": 148,
+          "effective_fraction": 0.04698412698412698,
+          "lock_changes": 49,
+          "delta_quality_quantiles_db": [
+            -2.200852051878023,
+            -0.7453639210112786,
+            -0.10854615332048745,
+            0.5290446899164633,
+            1.3791226846027813
+          ],
+          "absolute_delta_median_db": 0.16174356000276202,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.000006742062714692997,
+            3.9983391761779785
+          ],
+          "lock_pairs": {
+            "('degraded', 'degraded')": 467,
+            "('locked', 'locked')": 1900,
+            "('unlocked', 'unlocked')": 734,
+            "('degraded', 'unlocked')": 29,
+            "('unlocked', 'degraded')": 10,
+            "('locked', 'degraded')": 5,
+            "('degraded', 'locked')": 5
+          }
+        },
+        "2": {
+          "count": 3150,
+          "effective_changes": 162,
+          "effective_fraction": 0.05142857142857143,
+          "lock_changes": 54,
+          "delta_quality_quantiles_db": [
+            -2.332221748149129,
+            -0.5094178378009612,
+            0.05968693742384801,
+            0.7049204193520717,
+            1.7975687490889745
+          ],
+          "absolute_delta_median_db": 0.125962480752281,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.000007468573130608926,
+            3.954328775405884
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 1889,
+            "('unlocked', 'unlocked')": 710,
+            "('degraded', 'degraded')": 497,
+            "('degraded', 'unlocked')": 18,
+            "('degraded', 'locked')": 8,
+            "('unlocked', 'degraded')": 26,
+            "('locked', 'degraded')": 2
+          }
+        },
+        "3": {
+          "count": 3150,
+          "effective_changes": 148,
+          "effective_fraction": 0.04698412698412698,
+          "lock_changes": 51,
+          "delta_quality_quantiles_db": [
+            -1.967885762071953,
+            -0.6936577624597595,
+            -0.08091002886499288,
+            0.5481015878791095,
+            2.0564676784571736
+          ],
+          "absolute_delta_median_db": 0.1296321742991955,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.000010676539113774175,
+            3.999131679534912
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 1875,
+            "('degraded', 'degraded')": 528,
+            "('unlocked', 'unlocked')": 696,
+            "('locked', 'degraded')": 6,
+            "('degraded', 'unlocked')": 22,
+            "('unlocked', 'degraded')": 21,
+            "('degraded', 'locked')": 2
+          }
+        },
+        "4": {
+          "count": 3150,
+          "effective_changes": 179,
+          "effective_fraction": 0.05682539682539683,
+          "lock_changes": 79,
+          "delta_quality_quantiles_db": [
+            -2.3370226219579253,
+            -0.6574732497150191,
+            -0.033498328794847154,
+            0.6554775630917258,
+            2.4843535817438305
+          ],
+          "absolute_delta_median_db": 0.14242761822440908,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.000014606249078497003,
+            3.9977071285247803
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 1887,
+            "('unlocked', 'unlocked')": 681,
+            "('degraded', 'degraded')": 503,
+            "('degraded', 'unlocked')": 28,
+            "('unlocked', 'degraded')": 34,
+            "('locked', 'degraded')": 9,
+            "('degraded', 'locked')": 8
+          }
+        },
+        "5": {
+          "count": 3150,
+          "effective_changes": 245,
+          "effective_fraction": 0.07777777777777778,
+          "lock_changes": 76,
+          "delta_quality_quantiles_db": [
+            -1.773963106272439,
+            -0.337267781631154,
+            0.2891071870190678,
+            0.9173221816885281,
+            2.198091537027228
+          ],
+          "absolute_delta_median_db": 0.31270336103099794,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.00002074893709504972,
+            3.999215602874756
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 1870,
+            "('degraded', 'degraded')": 530,
+            "('unlocked', 'unlocked')": 674,
+            "('unlocked', 'degraded')": 47,
+            "('degraded', 'locked')": 17,
+            "('degraded', 'unlocked')": 11,
+            "('locked', 'degraded')": 1
+          }
+        }
+      },
+      "day": {
+        "1": {
+          "count": 6300,
+          "effective_changes": 355,
+          "effective_fraction": 0.05634920634920635,
+          "lock_changes": 118,
+          "delta_quality_quantiles_db": [
+            -2.332221748149129,
+            -0.652033191380338,
+            -0.013204483138249401,
+            0.6440586214541001,
+            2.4843535817438305
+          ],
+          "absolute_delta_median_db": 0.1586727040600504,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.000011062041176046476,
+            3.9999735355377197
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 3757,
+            "('unlocked', 'unlocked')": 1432,
+            "('degraded', 'degraded')": 993,
+            "('degraded', 'unlocked')": 41,
+            "('unlocked', 'degraded')": 54,
+            "('locked', 'degraded')": 12,
+            "('degraded', 'locked')": 11
+          }
+        },
+        "2": {
+          "count": 6300,
+          "effective_changes": 310,
+          "effective_fraction": 0.049206349206349205,
+          "lock_changes": 116,
+          "delta_quality_quantiles_db": [
+            -2.0756950719158405,
+            -0.591858581585838,
+            -0.013671456715641739,
+            0.6457042817342165,
+            2.342410055497849
+          ],
+          "absolute_delta_median_db": 0.16188925383831432,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.000010346985391151916,
+            3.999215602874756
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 3807,
+            "('degraded', 'degraded')": 1006,
+            "('unlocked', 'unlocked')": 1371,
+            "('unlocked', 'degraded')": 46,
+            "('degraded', 'unlocked')": 49,
+            "('degraded', 'locked')": 14,
+            "('locked', 'degraded')": 7
+          }
+        },
+        "3": {
+          "count": 6300,
+          "effective_changes": 345,
+          "effective_fraction": 0.05476190476190476,
+          "lock_changes": 121,
+          "delta_quality_quantiles_db": [
+            -2.3370226219579253,
+            -0.5822672547349093,
+            -0.006060002417049404,
+            0.6964120159217195,
+            3.506890166002824
+          ],
+          "absolute_delta_median_db": 0.15688050463149095,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.0000109518188764923,
+            3.9957661628723145
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 3790,
+            "('unlocked', 'unlocked')": 1351,
+            "('degraded', 'degraded')": 1038,
+            "('degraded', 'unlocked')": 42,
+            "('unlocked', 'degraded')": 53,
+            "('locked', 'degraded')": 10,
+            "('degraded', 'locked')": 16
+          }
+        }
+      },
+      "scene": {
+        "practical_low_suburban": {
+          "count": 6300,
+          "effective_changes": 87,
+          "effective_fraction": 0.01380952380952381,
+          "lock_changes": 41,
+          "delta_quality_quantiles_db": [
+            -2.0417644272667412,
+            -0.27917730053010353,
+            -0.019449172766424994,
+            0.42544320790144474,
+            2.2292116533125093
+          ],
+          "absolute_delta_median_db": 0.12156952707781699,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            9.748683623911263e-7,
+            3.8920469284057617
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 5284,
+            "('degraded', 'degraded')": 684,
+            "('unlocked', 'unlocked')": 291,
+            "('degraded', 'unlocked')": 6,
+            "('locked', 'degraded')": 9,
+            "('degraded', 'locked')": 17,
+            "('unlocked', 'degraded')": 9
+          }
+        },
+        "practical_low_urban": {
+          "count": 6300,
+          "effective_changes": 501,
+          "effective_fraction": 0.07952380952380952,
+          "lock_changes": 178,
+          "delta_quality_quantiles_db": [
+            -2.3370226219579253,
+            -0.8282650225289854,
+            0.008369444361864709,
+            0.7796794643092658,
+            2.383085176395168
+          ],
+          "absolute_delta_median_db": 0.2252309541867894,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.000016302145741064793,
+            3.9999735355377197
+          ],
+          "lock_pairs": {
+            "('unlocked', 'unlocked')": 2746,
+            "('locked', 'locked')": 2269,
+            "('degraded', 'degraded')": 1107,
+            "('degraded', 'unlocked')": 64,
+            "('unlocked', 'degraded')": 82,
+            "('degraded', 'locked')": 16,
+            "('locked', 'degraded')": 16
+          }
+        },
+        "practical_mid_urban": {
+          "count": 6300,
+          "effective_changes": 422,
+          "effective_fraction": 0.06698412698412698,
+          "lock_changes": 136,
+          "delta_quality_quantiles_db": [
+            -2.040883724908087,
+            -0.6803038311826036,
+            -0.014152573476925667,
+            0.6993573655157844,
+            3.506890166002824
+          ],
+          "absolute_delta_median_db": 0.1630743753815702,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.00002898736183851721,
+            3.999215602874756
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 3801,
+            "('degraded', 'degraded')": 1246,
+            "('unlocked', 'unlocked')": 1117,
+            "('degraded', 'unlocked')": 62,
+            "('unlocked', 'degraded')": 62,
+            "('degraded', 'locked')": 8,
+            "('locked', 'degraded')": 4
+          }
+        }
+      },
+      "state": {
+        "BLOCKED": {
+          "count": 6351,
+          "effective_changes": 924,
+          "effective_fraction": 0.14548889938592346,
+          "lock_changes": 286,
+          "delta_quality_quantiles_db": [
+            -2.3370226219579253,
+            -1.0224533234703324,
+            0.07210992903619126,
+            0.9058263382182861,
+            3.506890166002824
+          ],
+          "absolute_delta_median_db": 0.41021916724622987,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0.00019411137327551842,
+            3.9999735355377197
+          ],
+          "lock_pairs": {
+            "('unlocked', 'unlocked')": 4143,
+            "('degraded', 'degraded')": 1921,
+            "('degraded', 'unlocked')": 132,
+            "('unlocked', 'degraded')": 152,
+            "('locked', 'locked')": 1,
+            "('locked', 'degraded')": 1,
+            "('degraded', 'locked')": 1
+          }
+        },
+        "LOS": {
+          "count": 9535,
+          "effective_changes": 0,
+          "effective_fraction": 0,
+          "lock_changes": 0,
+          "delta_quality_quantiles_db": [
+            -1.2482929786049688,
+            -0.20281935839434445,
+            -0.02688954802141552,
+            0.377822076723539,
+            1.3242492339398204
+          ],
+          "absolute_delta_median_db": 0.10829895401062473,
+          "output_relative_difference_quantiles": [
+            0,
+            0,
+            0,
+            0.000004153659574512858
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 9535
+          }
+        },
+        "PARTIAL": {
+          "count": 3014,
+          "effective_changes": 86,
+          "effective_fraction": 0.028533510285335104,
+          "lock_changes": 69,
+          "delta_quality_quantiles_db": [
+            -1.967885762071953,
+            -0.3805845157874824,
+            -0.0028944962331776125,
+            0.4512543011800409,
+            1.3061693748713843
+          ],
+          "absolute_delta_median_db": 0.14807655879054238,
+          "output_relative_difference_quantiles": [
+            0,
+            6.032615473827718e-8,
+            0.0000044343044464767435,
+            1.8081188201904297
+          ],
+          "lock_pairs": {
+            "('locked', 'locked')": 1818,
+            "('degraded', 'degraded')": 1116,
+            "('degraded', 'locked')": 40,
+            "('locked', 'degraded')": 28,
+            "('unlocked', 'unlocked')": 11,
+            "('unlocked', 'degraded')": 1
+          }
+        }
+      }
+    },
+    "source_L_unique": 6300,
+    "source_RX_holdout": null,
+    "Ag_efficacy_proved": false,
+    "As_accuracy_benefit_proved": false,
+    "joint_goal_complete": false,
+    "target_access": false,
+    "automatic_training": false
+  },
+  "joint_goal_complete": false
 }

@@ -1,0 +1,28 @@
+{
+  "status": "REGISTERED_NOT_LAUNCHED",
+  "local": {
+    "protocol_negatives": 21,
+    "single_pass_numerical_cases": 48,
+    "reference_calls": 48,
+    "states": [
+      "LOS",
+      "PARTIAL",
+      "BLOCKED"
+    ],
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0
+  },
+  "N607_preflight": "VERIFIED",
+  "independent_P0P1": {
+    "status": "PASS",
+    "P0": 0,
+    "P1": 0
+  },
+  "real_CP_noquery_smoke": "PENDING",
+  "new_model_epochs": 10,
+  "cumulative_epochs": 30,
+  "new_updates": 2220,
+  "target_access": false
+}
