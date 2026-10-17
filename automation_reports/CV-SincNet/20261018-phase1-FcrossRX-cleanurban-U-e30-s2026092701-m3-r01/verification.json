@@ -58,5 +58,26 @@
     "PID_CWD_argv_GPU_log_growth": "VERIFIED",
     "formal_complete": false,
     "source_teacher_qualified": null
+  },
+  "first_U_actual": {
+    "all3qualified": true,
+    "source_V_confident_precision": 1,
+    "source_V_coverage": {
+      "B0": 0.8055555555555556,
+      "URAW": 0.8066666666666666,
+      "UAS": 0.8066666666666666
+    },
+    "all3_E14_extra_U_NN": 56700,
+    "UAS_E14_As_U": 56700,
+    "actual_URAW_first_weight": 0.032,
+    "U_TX_truth_available": false
+  },
+  "analysis_implementation": {
+    "file": "analysis/cvs_Uurban_E30_results_20261018.py",
+    "focused_checks": 4,
+    "status": "PASS",
+    "compile": "PASS",
+    "NN": 0,
+    "executed_full_analysis": false
   }
 }

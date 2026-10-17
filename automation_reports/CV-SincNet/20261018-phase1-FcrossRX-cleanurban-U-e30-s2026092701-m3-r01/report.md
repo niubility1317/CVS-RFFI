@@ -41,3 +41,11 @@ RUNNING／VERIFIED。执行代码提交 91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a
 真实导入leo_practical为不可变依赖release内experiments/adv3b02_xuc/code/leo_practical/channel.py与residual.py，并非仓库顶层code；DataAugmentation与SSDG.train_ssdg同属该adv3b02_xuc实现。具体__file__保存在各stage20/actual_modules.json。训练／测试未完成，首次自身teacher资格尚未执行，当前没有新的准确率、图或跨seed结论。
 
 本地执行证据：E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/verified_running_r01.json 与 source_progress_r01.json。后续只读核对原PID/进度，健康任务继续；逐row冻结后自动进入既定七环境评价。
+
+## 首次 U 与独立分析准备
+
+三组首次自身teacher资格均PASS，源V覆盖B0=80.5556%、URAW/UAS=80.6667%，覆盖内precision均100%；该数字仅来自合法V1800，不是U真值精度。实际E14三个row均完成56700额外U学生前向，UAS完整As(U)也为56700，物理日志约28.9MB并继续增长。URAW首次U更新step2887的权重0.032、q均值0.61072、原mask未改、pseudo_truth_available=0、无非有限skip；仅说明机制实际执行，不说明识别改善。
+
+独立分析程序analysis/cvs_Uurban_E30_results_20261018.py已实现并通过4项聚焦检查及编译。source模式只读已冻结源预测和完整日志，重算6660更新、原L目标分解、oldU掩码/hidden标志、额外963900U前向、Sinc物理步进、原始增强和采样序列及2draw×3scene源分层；final模式必须先有独立源判定，再检查全部七视图固定及独立评分后才连接truth。所有物理统计区分白功率代理、signal/added-noise与未知总SNR，U真值不解封。
+
+该分析不修改正在运行的训练release，不增加NN或更新。门控逐包激活及逐分支梯度未在当前run保存，不从标量loss或准确率反推；L joint TX×state逐包侧表亦未保存，报告将如实区分已测的RX/day/scene/state聚合覆盖和缺项。源/正式图表尚未生成，不提供虚构图路径。
