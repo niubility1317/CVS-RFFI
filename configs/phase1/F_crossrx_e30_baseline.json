@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_REFERENCE_IMPLEMENTED_NOT_LAUNCHED",
+  "status": "E30_TWO_REFERENCES_RUNNING",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -120,5 +120,7 @@
     "additive_clean_supervision": "Prior fixed additive route failed crossseed clean protection; no coefficient rescue",
     "BN_contamination": "Actual fixed F uses GroupNorm/LayerNorm, no BatchNorm running-state mechanism"
   },
-  "next_method_boundary": "Establish authorized E30 B00/B01 first. No new Ag/curriculum/alignment module asserted or launched in this run; new methods need actual source evidence and same-budget controls."
+  "next_method_boundary": "Establish authorized E30 B00/B01 first. No new Ag/curriculum/alignment module asserted or launched in this run; new methods need actual source evidence and same-budget controls.",
+  "execution_commit": "bafba40e365d0914a2e86f861fb55a49f1cd3997",
+  "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/report.md"
 }

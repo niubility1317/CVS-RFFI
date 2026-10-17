@@ -1,6 +1,6 @@
 # 完整源域 F＋跨 RX：E30 无星地与普通拼接匹配参照
 
-状态：预登记固定，尚未启动。采用用户最新“训练预算提升到 E30”，不续训或覆盖旧 E20。唯一矩阵、seed 和路径在 experiment.json。
+状态：RUNNING，两行均已实际启动；未完成训练、预测或正式评分。采用用户最新“训练预算提升到 E30”，不续训或覆盖旧 E20。唯一矩阵、seed 和路径在 experiment.json。
 
 ## 研究问题与固定比较
 
@@ -59,3 +59,11 @@ run：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-f
 旧3至15dB/locked-degraded有界课程仅极小low增量、clean保持失败；fixed additive clean监督也跨seed失败，本轮不以改RX/系数/预算重启。源noise/fixed瓶颈成立，强状态耦合/whole梯度冲突前提失败，不据此加梯度手术或对齐。
 
 尚未证明新Ag、E30识别增益、四格交互、clean净正、low>60%、suburban接近clean或跨seed联合复现。本轮只建立新预算参照，不把它当联合目标完成。实际执行与结果返回后更新原run。
+
+## 实际启动读回
+
+唯一代码归档传输SHA比较VERIFIED、remote compile PASS。普通账户dispatcher第一步全源E20 CP兼容smoke PASS，2合成NN/0真实IQ/0query/0更新，随后丢弃。两行在GPU3/4实际运行，PID/start_ticks/CWD/argv/GPU归属已独立核对，准确证据在本地postlaunch_first.json；不以launch返回码代替完成。
+
+实际resolved args均为epochs30/label20/pseudo10/nativecosine、baseline_ckpt与teacher_ckpt为空、ownEMA/U开启。full_source_roles逐ID匹配，L6300/U56700隐藏/V27000、全部5RX、held_RX=null/extra_Ldev=false/target_loaders0；实际模型900722参数与代码commit一致。其他健康任务未修改。训练完成后由原launcher自动执行七视图prediction及独立truth-last，本轮没有目标指标或性能结论。
+
+日志增长独立复核 VERIFIED：同一两行PID/start_ticks/CWD/argv/GPU持续一致，B00日志6425→16724字节并完成E2/30，B01为6425→11575字节并完成E1/30；queue无failure、两行均active。证据postlaunch_growth.json。只作执行健康确认，不将早期V分数当作性能或收敛结论。
