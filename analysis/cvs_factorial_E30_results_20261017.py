@@ -1,5 +1,5 @@
 """Same-row independent four-factor analysis; no IQ/CP/model forward/training."""
-import argparse,gzip,json
+import argparse,gzip,json,time
 from collections import Counter
 from pathlib import Path
 import numpy as np
@@ -100,8 +100,20 @@ def source_plots(out,summary):
   fig.colorbar(im,ax=ax,fraction=.035,label='Source accuracy (%)')
  fig.suptitle('Source state/lock strata; tiny cells descriptive, not formal test states');save(fig,'source_state_lock_accuracy');return files
 
+def wait_for_run(pid):
+ if type(pid) is not int or pid<=0:raise ValueError('Positive existing run dispatcher PID required')
+ root=base.PROJECT/'runs'/RUN
+ while not (root/'complete.json').is_file():
+  if (root/'failure.json').is_file():raise RuntimeError('Run terminal failure preserved; no analysis or restart')
+  process=Path('/proc')/str(pid)
+  if not process.is_dir():raise RuntimeError('Registered dispatcher no longer live; reconcile run before analysis')
+  command=(process/'cmdline').read_bytes().replace(b'\0',b' ').decode()
+  if 'cvs_fullsource_factorial27/runner.py' not in command:raise RuntimeError('Dispatcher handle no longer belongs to this run')
+  time.sleep(15)
+
 def main():
- p=argparse.ArgumentParser();p.add_argument('--truth',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--commit',required=True);a=p.parse_args();rs=roots()
+ p=argparse.ArgumentParser();p.add_argument('--truth',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--commit',required=True);p.add_argument('--wait-dispatcher',type=int);a=p.parse_args();rs=roots()
+ if a.wait_dispatcher is not None:wait_for_run(a.wait_dispatcher)
  # Verify every requested row before any target truth access; no target consumer controls training.
  for root in rs.values():base.completed(root)
  out=a.output;out.mkdir(exist_ok=False);results={};private={}
@@ -116,7 +128,7 @@ def main():
  interaction=factorial({n:{v:results[n]['views'][v]['accuracy'] for v in base.VIEWS} for n in ORDER});flat=[q for r in results.values() for q in r['metrics']]
  for n in ORDER:results[n]['source']['local_Ag_trace']=local_trace(rs[n],results[n]['source']['source_result'])
  local_pair=same_local_stream(rs['B10'],rs['B11']);base.write_csv(out/'per_row_seed.csv',[{k:v for k,v in r.items() if k!='confusion'} for r in flat]);base.write_csv(out/'training_curves.csv',[dict(arm=n,**q) for n,r in results.items() for q in r['source']['curve']]);sources=source_readout(out)
- gaps={n:{v:100*(r['views']['clean']['accuracy']-r['views'][v]['accuracy']) for v in base.VIEWS[1:4]} for n,r in results.items()};costs={n:dict(r['source']['cost'],source_qualification_NN=12602 if n in ('B10','B11') else 0) for n,r in results.items()}
+ gaps={n:{v:100*(r['views']['clean']['accuracy']-r['views'][v]['accuracy']) for v in base.VIEWS[1:4]} for n,r in results.items()};costs={n:dict(r['source']['cost'],source_qualification_NN=(sources['source_qualification'].get(n,{}).get('NN') if n in ('B10','B11') else 0),source_qualification_wall_seconds=(sources['source_qualification'].get(n,{}).get('wall_seconds') if n in ('B10','B11') else 0),reference_frozen_source_probe_historical_NN=23402 if n in ('B00','B01') else 0) for n,r in results.items()}
  base.write(out/'analysis_summary.json',dict(code_commit=a.commit,rows=results,paired_comparisons=comparison,interaction_accuracy_pp=interaction,urban_mean_accuracy={n:sum(r['views'][v]['accuracy'] for v in base.VIEWS[4:])/3 for n,r in results.items()},suburban_clean_gaps_pp=gaps,fixed_B00_clean_correct_count=int(cohort.sum()),fixed_B00_clean_correct_satellite_retention=fixed_retention,training_sequences=sequences,local_Ag_stream_pair=local_pair,costs=costs,new_model_epochs=60,new_updates=13320,reused_reference_epochs=60,source_epoch_records=120,formal_confusion_matrices=len(flat),source_confusion_matrices=len(sources['rows'])+len(sources['source_clean']),NN=0,IQ_reads=0,CP_reads=0,training_updates=0,model_seed_count=1,crossseed_confirmed=False,Ag_proved=False,goal_complete=False,limitations=['Single model seed; two source channel draws do not establish cross-seed reproduction','Formal per-packet state metadata unavailable; source strata are not formal target states','No per-packet fusion activation trace saved; gradient or parameter movement alone is not identification gain','Source reference CPU2 batch90/newsource CPU2 batch256; numerical layout differs','U truth hidden; pseudo acceptance is not precision','Budget exhausted does not establish convergence; old LA16 standalone FAIL retained']))
  files=base.plots(out,results)+source_plots(out,sources);base.write(out/'figures.json',dict(files=files));base.write(out/'completion.json',dict(status='FACTORIAL_ANALYSIS_COMPLETE',rows=list(ORDER),model_seed_count=1,source_epochs_parsed=120,source_updates_parsed=26640,formal_confusion_matrices=len(flat),figures=len(files),NN=0,IQ_reads=0,CP_reads=0,new_updates=0,code_commit=a.commit,crossseed_confirmed=False,goal_complete=False));print(json.dumps(dict(status='FACTORIAL_ANALYSIS_COMPLETE',rows=list(ORDER),out=str(out),figures=len(files),NN=0)))
 if __name__=='__main__':main()
