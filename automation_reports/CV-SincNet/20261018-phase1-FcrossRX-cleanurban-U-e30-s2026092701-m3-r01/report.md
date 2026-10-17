@@ -87,3 +87,9 @@ B0与URAW均已完成自身20+10并冻结默认头，原PID自动exec为predict�
 该修正只涉及分析成本，不改变训练、源科学阈值、默认头或任何prediction。前两组源训练完整不等于三组矩阵完成；正式成绩依旧未读取，研究目标未完成。
 
 最终分析版本现已固定为r03／34b02721c60e4b7a7dffa2d313f2190409509b4c，7项检查PASS、单归档比较与远端编译VERIFIED；对实际B0/URAW全计数和独立冻结读出再核对，各7246624源NN，共享预烟测50NN仅计一次。r02保留，r03不覆盖任何既有release或输出。最终分析尚未启动；先等待原r01独立source_analysis及源科学判定固定、记录后，再用r03读取既定正式产物。
+
+## 前两组七环境产物的独立关闭核对
+
+B0／URAW的completed检查均PASS：各168000个physical sample、全部7个既定视图、prediction与自身固定FINAL30配置相同、所有参数冻结、head_fit_updates=0、query_fit=false；评分状态SCORED_COMPLETE且truth_last=true。此处只读取状态和成本元数据，未打开scores.json或正式truth／预测内容，不报告正式准确率。两组正式预测NN均1176002，耗时分别47.3221s／58.5044s；各自源训练和源读出7246624NN，连同正式预测各合计8422626NN。矩阵共享预烟测50NN另计一次。
+
+B0与URAW原进程完成后正常退出，有完整row完成产物；UAS原worker PID776817/start_ticks150415404继续训练，最近累计E24。原source-only等待进程PID791020仍存活。整个3row矩阵尚未完成，源判定未写入，正式分数保持未读。

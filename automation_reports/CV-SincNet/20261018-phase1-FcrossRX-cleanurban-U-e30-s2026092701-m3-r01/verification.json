@@ -218,5 +218,56 @@
     "source_waiter_unchanged": true,
     "training_release_unchanged": true,
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/analysis_transfer_r03.json"
+  },
+  "two_row_formal_closure": {
+    "status": "VERIFIED_METADATA_ONLY",
+    "rows": {
+      "B0": {
+        "predictions_status": "PREDICTIONS_COMPLETE",
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "count": 168000,
+        "actual_prediction_NN": 1176002,
+        "prediction_wall_seconds": 47.322077660122886,
+        "parameters_frozen": true,
+        "head_fit_updates": 0,
+        "query_fit": false,
+        "scoring_status": "SCORED_COMPLETE",
+        "truth_last": true,
+        "cfg_matches_own_frozen_final": true
+      },
+      "URAW": {
+        "predictions_status": "PREDICTIONS_COMPLETE",
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "count": 168000,
+        "actual_prediction_NN": 1176002,
+        "prediction_wall_seconds": 58.50442491308786,
+        "parameters_frozen": true,
+        "head_fit_updates": 0,
+        "query_fit": false,
+        "scoring_status": "SCORED_COMPLETE",
+        "truth_last": true,
+        "cfg_matches_own_frozen_final": true
+      }
+    },
+    "formal_metrics_read": false,
+    "new_analysis_NN": 0,
+    "UAS_observed_completed_epochs": 24,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/two_row_prediction_closure_verified_r01.json"
   }
 }
