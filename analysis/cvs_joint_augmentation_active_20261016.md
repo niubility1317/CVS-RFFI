@@ -1,6 +1,6 @@
 ## 2026-10-18：完整 practical 的监督视图梯度组织 E30 已预登记
 
-实现三行 ORIGINAL／MEASURE／PROJECT，同原完整As E20父＋10至E30，全部五源RX、256点、默认头、损失尺度、4次L前向与原U规则不变。MEASURE／PROJECT每步额外2次梯度求导，候选仅在ordinary与As梯度反向时修正As分量，再原clip／AdamW；不保证有限步下降，不称IQ A_g。21负例、1536合成F前向及三行hook检查PASS，原更新和只测量梯度最大差0；唯一P0/P1审查PASS。尚未启动／完成训练或评分。若不能分别优于原更新和测量控制、保护clean/mid并增加low至少.5pp，关闭固定方案，不据target救跑或扩种子。[最小预登记](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01/report.md)。
+实现三行 ORIGINAL／MEASURE／PROJECT，同原完整As E20父＋10至E30，全部五源RX、256点、默认头、损失尺度、4次L前向与原U规则不变。MEASURE／PROJECT每步额外2次梯度求导，候选仅在ordinary与As梯度反向时修正As分量，再原clip／AdamW；不保证有限步下降，不称IQ A_g。21负例、1536合成F前向及三行hook检查PASS，原更新和只测量梯度最大差0；唯一P0/P1审查PASS。尚未启动／完成训练或评分。若不能分别优于原更新和测量控制、保护clean/mid并增加low至少.5pp，关闭固定方案，不据target救跑或扩种子。[最小预登记](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/report.md)。
 
 ## 2026-10-18：保留 256 点；幅谱 donor 草案不启动
 

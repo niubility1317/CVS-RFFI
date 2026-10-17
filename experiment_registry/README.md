@@ -539,4 +539,5 @@
 - [有限窗酉相位源保护 r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01/report.md)
 - [完整practical批次组成E30 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01/report.md)
 
-- [完整practical监督视图梯度E30](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01/report.md)
+- [完整practical视图梯度E30 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01/report.md)
+- [完整practical视图梯度E30 r02](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/report.md)

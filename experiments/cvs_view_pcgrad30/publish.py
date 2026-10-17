@@ -12,12 +12,8 @@ def main():
  if subprocess.check_output(['git','status','--porcelain','--',package],cwd=d.ROOT,text=True).strip():raise ValueError('Commit actual code/config before release')
  commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=d.ROOT,text=True).strip();release=d.PROJECT+'/releases/'+d.RELEASE
  raw=subprocess.check_output(['git','archive',commit,package,'configs/cvs_view_pcgrad_e30.json'],cwd=d.ROOT);record=subprocess.check_output(['git','show',commit+':automation_reports/CV-SincNet/'+d.RUN+'/experiment.json'],cwd=d.ROOT)
- def expand(v):
-  if isinstance(v,str):return v.replace('PROJECT',d.PROJECT)
-  if isinstance(v,list):return [expand(x) for x in v]
-  if isinstance(v,dict):return {k:expand(x) for k,x in v.items()}
-  return v
- record_value=expand(json.loads(record));record_value['code']['commit']=commit
+ from .registration import expand_paths
+ record_value=expand_paths(json.loads(record),d.PROJECT);record_value['code']['commit']=commit
  record=json.dumps(record_value,ensure_ascii=False).encode('utf8')
  archive=local/(d.RELEASE+'.tar.gz')
  with tarfile.open(fileobj=io.BytesIO(raw)) as source,tarfile.open(archive,'w:gz') as target:

@@ -6,6 +6,11 @@ from .core import geometry,capture,consume
 from .checkpoint_policy import load
 
 def run(full=True):
+ from .registration import expand_paths
+ probe=dict(mode='PROJECT',row_id='PROJECT-s2026092701',cost='MEASURE/PROJECT twoVJP',path='PROJECT/runs/x',nested=['PROJECT','PROJECT/releases/x'])
+ result=expand_paths(probe,'/example/project')
+ assert result==dict(mode='PROJECT',row_id='PROJECT-s2026092701',cost='MEASURE/PROJECT twoVJP',path='/example/project/runs/x',nested=['PROJECT','/example/project/releases/x'])
+ assert probe['path']=='PROJECT/runs/x'
  negative=0
  def bad(f):
   nonlocal negative

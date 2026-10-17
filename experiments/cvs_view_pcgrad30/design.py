@@ -3,7 +3,7 @@ from copy import deepcopy
 from pathlib import Path
 from experiments.cvs_clock_factorial30 import design as trained
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01';RELEASE='cvs_F_viewPCGrad_E30_20261018_r01';LOCAL='local_artifacts/F_viewPCGrad_E30_20261018';OWNER='codex/root/F-viewPCGrad-E30'
+RUN='20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02';RELEASE='cvs_F_viewPCGrad_E30_20261018_r02';LOCAL='local_artifacts/F_viewPCGrad_E30_20261018_r02';OWNER='codex/root/F-viewPCGrad-E30'
 read,write=trained.read,trained.write
 PROJECT,SOURCE,CAPSULE,TRUTH,VIEWS_ROOT=trained.PROJECT,trained.SOURCE,trained.CAPSULE,trained.TRUTH,trained.VIEWS_ROOT
 AF_RELEASE,SEED,FIT,SCENES,VIEWS,CLASSES,FULL_FP32_POLICY=trained.AF_RELEASE,trained.SEED,trained.FIT,trained.SCENES,trained.VIEWS,trained.CLASSES,trained.FULL_FP32_POLICY

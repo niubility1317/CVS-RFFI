@@ -47,3 +47,7 @@ ORIGINAL 保留原梯度；MEASURE 每步额外求 ordinary 和 As 梯度但不�
 三行每行新增 L NN1136640，student train预计1703640、原U teacher预计567000；实际源评估、初始smoke、预测、teacher、累计父成本及wall分别记录。MEASURE／PROJECT 每行额外4440次 VJP，按每VJP覆盖一对128包计1136640个额外 L 包导数；该计数不等于精确FLOPs或耗时。ORIGINAL额外VJP0。局部捕获仅记录host enqueue时间，总训练wall包含实际GPU计算。发布远端合成再1536NN／3合成更新，以及一次实际CP smoke2，均单列。
 
 预期原source args/config/module、完整epoch/step/LU序列、原ordinary/channel审计、reference_steps/unit_steps、view_gradient_steps（每步内积／范数／系数／实际修正／额外VJP）、final默认头CP/source_frozen/completion、七视图prediction、独立全RX/TX/day指标及CM/配对错误、成本与同row报告。权重、IQ、预测、原始日志和私有runtime不入Git。
+
+## 实际发布失败：训练尚未开始
+
+发布 commit0d3954ff8da175a199dbcf566b00d7d2f79059e1。远端编译与1536NN合成检查PASS；独立post-state确认dispatcher812080已不存在、source run root未创建。dispatcher日志定位为注册配置不一致；只读复现发现发布脚本全字符串替换PROJECT路径占位符，误改候选名和说明。真实IQ/CP/NN/更新/teacher/target均0；local及remote各1536合成NN/3合成更新分别保留，不计作真实训练。原发布目录不覆盖、不启动或修补重跑，状态FAILED_TECHNICAL。新20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02仅修复路径前缀展开，预算／数据／机制／矩阵／判据不变；不继承失败发布模型。

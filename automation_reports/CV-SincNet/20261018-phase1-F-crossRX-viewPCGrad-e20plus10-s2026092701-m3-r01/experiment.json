@@ -25,7 +25,7 @@
   ],
   "authorization": "Current user joint Ag/As goal;latest baseline F+CROSS_RX;latest budget E30;all5sourceRX;no holdout;existing256IQ;no target-feedback tuning;no new U rules",
   "code": {
-    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "commit": "0d3954ff8da175a199dbcf566b00d7d2f79059e1",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary account/existing pinned F runtime/FP32/CPU2/single shared GPU",
     "cwd": "PROJECT/releases/cvs_F_viewPCGrad_E30_20261018_r01",
@@ -137,8 +137,8 @@
         "MEASURE"
       ],
       "each_reference_min_low_urban_gain_pp": 0.5,
-      "each_reference_min_clean_gain_pp": 0.0,
-      "each_reference_min_midurban_gain_pp": 0.0,
+      "each_reference_min_clean_gain_pp": 0,
+      "each_reference_min_midurban_gain_pp": 0,
       "each_reference_min_suburban_gain_pp": -0.25,
       "interpretation": "Fixed single-seed efficacy falsification only;alloutcomes;no target-guided tuning/seed extension;not IQAg or joint completion"
     },
@@ -227,7 +227,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-viewPCGrad-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -265,7 +265,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/defaultcos/originalU/ordinary.5As.5/RDrop1/LS.01;E20+10;only supervised-view gradient organization differs",
@@ -308,7 +308,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "target_feedback": false,
           "joint_goal_complete": false
         },
@@ -435,7 +435,7 @@
           },
           "route": "existingresidual/post_sync",
           "EQ": false,
-          "reference_snr_db": 30.0,
+          "reference_snr_db": 30,
           "input": "originalLbeforeordinary",
           "no_rejection": true,
           "test_IQ_unchanged": true
@@ -489,14 +489,17 @@
             "MEASURE"
           ],
           "each_reference_min_low_urban_gain_pp": 0.5,
-          "each_reference_min_clean_gain_pp": 0.0,
-          "each_reference_min_midurban_gain_pp": 0.0,
+          "each_reference_min_clean_gain_pp": 0,
+          "each_reference_min_midurban_gain_pp": 0,
           "each_reference_min_suburban_gain_pp": -0.25,
           "interpretation": "Fixed single-seed efficacy falsification only;alloutcomes;no target-guided tuning/seed extension;not IQAg or joint completion"
         }
       },
-      "status": "PREREGISTERED",
-      "result": null
+      "status": "NOT_STARTED",
+      "result": {
+        "optimizer_updates": 0,
+        "reason": "dispatcher rejected corrupted registered config before creating source run"
+      }
     },
     {
       "row_id": "MEASURE-s2026092701",
@@ -579,7 +582,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-viewPCGrad-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -617,7 +620,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/defaultcos/originalU/ordinary.5As.5/RDrop1/LS.01;E20+10;only supervised-view gradient organization differs",
@@ -660,7 +663,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "target_feedback": false,
           "joint_goal_complete": false
         },
@@ -787,7 +790,7 @@
           },
           "route": "existingresidual/post_sync",
           "EQ": false,
-          "reference_snr_db": 30.0,
+          "reference_snr_db": 30,
           "input": "originalLbeforeordinary",
           "no_rejection": true,
           "test_IQ_unchanged": true
@@ -841,14 +844,17 @@
             "MEASURE"
           ],
           "each_reference_min_low_urban_gain_pp": 0.5,
-          "each_reference_min_clean_gain_pp": 0.0,
-          "each_reference_min_midurban_gain_pp": 0.0,
+          "each_reference_min_clean_gain_pp": 0,
+          "each_reference_min_midurban_gain_pp": 0,
           "each_reference_min_suburban_gain_pp": -0.25,
           "interpretation": "Fixed single-seed efficacy falsification only;alloutcomes;no target-guided tuning/seed extension;not IQAg or joint completion"
         }
       },
-      "status": "PREREGISTERED",
-      "result": null
+      "status": "NOT_STARTED",
+      "result": {
+        "optimizer_updates": 0,
+        "reason": "dispatcher rejected corrupted registered config before creating source run"
+      }
     },
     {
       "row_id": "PROJECT-s2026092701",
@@ -931,7 +937,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-viewPCGrad-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -969,7 +975,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/defaultcos/originalU/ordinary.5As.5/RDrop1/LS.01;E20+10;only supervised-view gradient organization differs",
@@ -1012,7 +1018,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "target_feedback": false,
           "joint_goal_complete": false
         },
@@ -1139,7 +1145,7 @@
           },
           "route": "existingresidual/post_sync",
           "EQ": false,
-          "reference_snr_db": 30.0,
+          "reference_snr_db": 30,
           "input": "originalLbeforeordinary",
           "no_rejection": true,
           "test_IQ_unchanged": true
@@ -1193,14 +1199,17 @@
             "MEASURE"
           ],
           "each_reference_min_low_urban_gain_pp": 0.5,
-          "each_reference_min_clean_gain_pp": 0.0,
-          "each_reference_min_midurban_gain_pp": 0.0,
+          "each_reference_min_clean_gain_pp": 0,
+          "each_reference_min_midurban_gain_pp": 0,
           "each_reference_min_suburban_gain_pp": -0.25,
           "interpretation": "Fixed single-seed efficacy falsification only;alloutcomes;no target-guided tuning/seed extension;not IQAg or joint completion"
         }
       },
-      "status": "PREREGISTERED",
-      "result": null
+      "status": "NOT_STARTED",
+      "result": {
+        "optimizer_updates": 0,
+        "reason": "dispatcher rejected corrupted registered config before creating source run"
+      }
     }
   ],
   "notes": [
@@ -1213,7 +1222,22 @@
   ],
   "additional_reference": null,
   "replaces_run_id": null,
-  "result": null,
+  "result": {
+    "status": "FAILED_BEFORE_SOURCE_RUN_ROOT",
+    "reason": "Publisher expanded literal PROJECT candidate names as path placeholder",
+    "training_updates": 0,
+    "real_CP_loads": 0,
+    "real_IQ_reads": 0,
+    "source_NN": 0,
+    "remote_synthetic_NN": 1536,
+    "remote_synthetic_updates": 3,
+    "local_synthetic_NN": 1536,
+    "local_synthetic_updates": 3,
+    "replacement_run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
+    "dispatcher_pid": 812080,
+    "dispatcher_handle": "MISSING_VERIFIED",
+    "source_run_root_exists": false
+  },
   "registered_at": "2026-10-17T18:02:21+00:00",
-  "status": "PREREGISTERED"
+  "status": "FAILED_TECHNICAL"
 }

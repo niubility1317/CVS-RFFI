@@ -1,9 +1,9 @@
 {
-  "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01",
+  "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
   "rows": [
     {
       "schema": "F_VIEW_PCGRAD_E20PLUS10_V1",
-      "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01",
+      "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
       "stage": "fullsource_reference",
       "arm": "FULL_AS",
       "model_seed": 2026092701,
@@ -16,7 +16,7 @@
       "variant": "reference_response",
       "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
       "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01/ORIGINAL-s2026092701/source",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/ORIGINAL-s2026092701/source",
       "epochs": 10,
       "steps_per_epoch": 222,
       "model_initialization": "strict same original fullsourceAs final20 student+ownEMA;resetAdamW/cos10",
@@ -304,7 +304,7 @@
     },
     {
       "schema": "F_VIEW_PCGRAD_E20PLUS10_V1",
-      "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01",
+      "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
       "stage": "fullsource_reference",
       "arm": "FULL_AS",
       "model_seed": 2026092701,
@@ -317,7 +317,7 @@
       "variant": "reference_response",
       "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
       "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01/MEASURE-s2026092701/source",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/MEASURE-s2026092701/source",
       "epochs": 10,
       "steps_per_epoch": 222,
       "model_initialization": "strict same original fullsourceAs final20 student+ownEMA;resetAdamW/cos10",
@@ -605,7 +605,7 @@
     },
     {
       "schema": "F_VIEW_PCGRAD_E20PLUS10_V1",
-      "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01",
+      "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
       "stage": "fullsource_reference",
       "arm": "FULL_AS",
       "model_seed": 2026092701,
@@ -618,7 +618,7 @@
       "variant": "reference_response",
       "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
       "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
-      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01/PROJECT-s2026092701/source",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/PROJECT-s2026092701/source",
       "epochs": 10,
       "steps_per_epoch": 222,
       "model_initialization": "strict same original fullsourceAs final20 student+ownEMA;resetAdamW/cos10",

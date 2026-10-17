@@ -1,0 +1,10 @@
+{
+  "status": "PASS",
+  "P0": 0,
+  "P1": 0,
+  "initial_candidate_review": "One focused review,full F synthetic tests observed PASS",
+  "discovered_after_publication": "Registered placeholder expansion corrupted literal PROJECT",
+  "targeted_fix_review": "PASS,only PROJECT/ pathprefix expands,method labels unchanged,input immutable",
+  "no_second_full_review": true,
+  "real_data_access": false
+}

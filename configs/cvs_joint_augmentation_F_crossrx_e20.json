@@ -4301,7 +4301,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01",
+  "current_training_experiment": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -4532,7 +4532,7 @@
     "note": "analysis/cvs_amplitude_donor_route_check_20261018.md"
   },
   "view_pcgrad_release": {
-    "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01",
+    "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
     "status": "PREREGISTERED",
     "rows": [
       "ORIGINAL",
@@ -4550,6 +4550,13 @@
     "new_NN_per_step": 0,
     "IQ_Ag": false,
     "review": "PASS",
-    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01/report.md"
+    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/report.md",
+    "replaces_run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01",
+    "technical_r01": {
+      "status": "FAILED_BEFORE_TRAINING",
+      "updates": 0,
+      "reason": "pathplaceholder collided with PROJECT candidate",
+      "targeted_fix_review": "PASS"
+    }
   }
 }
