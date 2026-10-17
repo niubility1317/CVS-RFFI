@@ -324,3 +324,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 原SupCon视图路由 20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01 已实现登记未启动：旧Q0/Q_ord实际全配置/完整LUV物理ID/seed/20轮4440步/8L/1.25权重/默认头核对，复用40旧modelE，不载入权重；新增Q_sat全Asmaps、Q_mix64/64出现位置maps，2scratchE20/40新modelE/8880更新。完整raw.75/ordinary.25+extra.25fullAs与原浅中层SupCon总权重、4项/schedule/温度保持，0新增NN/loss项/U/teacher。29负例/4108合成NN/2合成更新/512fullAs PASS，旧ordinary-route loss exact/74参数grad接近、同As IQ/RNG、默认头更新/export160一致，一次P0/P1 PASS。Q_mix须同时胜过Q_ord/Q_sat low/urbanmean各1pp并保护clean/F1/suburban，vsQ0 low5pp/mean3pp；失败关闭固定比例/层位/系数/概率/seed，不救跑。这是As训练组织，不是Ag，联合目标ACTIVE。
+
+
+原SupCon视图组织 20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01 已实际RUNNING／VERIFIED，执行ed0ca91481f8c11a28cb8f4d4726a7c3d488720e；两旧控制复用、两新scratchE20实际GPU0/1 live，realCP2NN无querysmoke/归档传输/remotecompile/PID-CWD-argv-GPU-log增长均PASS。两行至少完整E1/222更新、227328LNN/28416fullAs/全部5040L覆盖，原E6启用对比项，当前warmup routing0，无新增NN/loss项。新训练/预测/正式评分未完成，无性能结论，不热改/重启。F+CROSS_RX/E20/默认头/原U保持，完整联合目标ACTIVE。

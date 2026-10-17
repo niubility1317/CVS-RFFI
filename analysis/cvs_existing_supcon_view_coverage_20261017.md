@@ -1,6 +1,6 @@
 # 既有跨RX同TX对比项：实际视图覆盖与下一问题
 
-2026-10-17。状态 IMPLEMENTED／PREREGISTERED_NOT_LAUNCHED。频域相位全包源依据已失败关闭，不以本笔记改阈值、子集或算子救跑。当前没有新Ag、训练、默认头性能或目标结果。
+2026-10-17。状态 RUNNING_SOURCE_E20／NOT_ANALYZED。频域相位全包源依据已失败关闭，不以本笔记改阈值、子集或算子救跑。两条源E20已启动；当前没有新Ag、默认头性能或目标结果。
 
 ## 已核实的调用路径
 
@@ -21,7 +21,7 @@
 | Q0 | raw | ordinary |
 | Q_ord | 单次完整As(raw) | ordinary |
 | Q_sat | 与Q_ord相同的单次完整As(raw) | practical |
-| Q_mix | 与Q_ord相同的单次完整As(raw) | 每个物理包选ordinary或practical，单独随机流固定64/64，与TX标签无关 |
+| Q_mix | 与Q_ord相同的单次完整As(raw) | 每次L出现位置选ordinary或practical，单独随机流固定64/64，与TX标签无关 |
 
 Q_mix在每次RDrop phase内仍是128个原物理包和原数量的SupCon项；两个layer的同一物理包必须使用同一视图选择，两个RDrop phase复用选择和已生成IQ。所有合法L的As仍无置信门控参与CE。只复用已有前向的实际maps，不增加projection/head，不平均IQ，不再次施加完整信道，不使用U真值／新增U规则。实际map捕获、额外中间量计算、显存／时间仍需计成本。
 
@@ -35,3 +35,6 @@ Q0/Q_ord有对应既有sourceCycle的B00/C_IID候选控制；可只复用原冻�
 ## 固定执行矩阵登记
 
 20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01已实现登记未启动。两旧控制Q0/Q_ord实际完整配置／LUV物理ID／seed／E20/4440/8L/1.25权重／默认头核对，并确认对应model/channel/source/design与原执行commit无diff；不加载控制权重。新增Q_sat/Q_mix两scratchE20，40新modelE/8880更新，40旧modelE另列。29反例／4108合成NN／2合成更新PASS，74组参数梯度与原ordinary-route接近、loss精确相同，As IQ／RNG／默认头／export160均通过；唯一一次P0/P1 PASS。primaryQ_mix与全部三参照的数字判据见[预登记](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01/preregistration.md)。当前0实际新训练／target。未把本路线当Ag或联合目标完成。
+
+
+原SupCon视图组织 20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01 已实际RUNNING／VERIFIED，执行ed0ca91481f8c11a28cb8f4d4726a7c3d488720e；两旧控制复用、两新scratchE20实际GPU0/1 live，realCP2NN无querysmoke/归档传输/remotecompile/PID-CWD-argv-GPU-log增长均PASS。两行至少完整E1/222更新、227328LNN/28416fullAs/全部5040L覆盖，原E6启用对比项，当前warmup routing0，无新增NN/loss项。新训练/预测/正式评分未完成，无性能结论，不热改/重启。F+CROSS_RX/E20/默认头/原U保持，完整联合目标ACTIVE。

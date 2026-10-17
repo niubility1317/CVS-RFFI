@@ -1,1 +1,4 @@
 {"at": "2026-10-17T00:12:09+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-17T00:18:11+00:00", "status": "RUNNING", "note": "VERIFIED originalPID/CWD/argv/GPU/loggrowth;completed epoch1 actual8L/As counts;no results yet", "evidence": ["Private latest.json andrunning_execution_summary.json"], "row_id": "Q_sat-RX1-s2026092701"}
+{"at": "2026-10-17T00:18:11+00:00", "status": "RUNNING", "note": "VERIFIED originalPID/CWD/argv/GPU/loggrowth;completed epoch1 actual8L/As counts;no results yet", "evidence": ["Private latest.json andrunning_execution_summary.json"], "row_id": "Q_mix-RX1-s2026092701"}
+{"at": "2026-10-17T00:18:11+00:00", "status": "RUNNING", "note": "RealCP2syntheticNNsmoke PASS;2newE20workers live,2oldcontrols reused;allrun-owned checks VERIFIED;no training/science completion", "evidence": ["Private latest.json andrunning_execution_summary.json"], "row_id": null}
