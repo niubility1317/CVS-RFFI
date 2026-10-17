@@ -1,0 +1,71 @@
+{
+  "status": "PASS",
+  "negative_cases": 19,
+  "manual_recurrence_steps": 16,
+  "max_parameter_error": 0,
+  "equal_view_native_steps": 3,
+  "synthetic_F_forward_packets": 2048,
+  "synthetic_optimizer_updates": 23,
+  "synthetic_VJP_calls": 46,
+  "integration": [
+    {
+      "row_id": "NOAS_MEASURE-s2026092701",
+      "parameters": 900722,
+      "L_forwards": 4,
+      "VJP": 2,
+      "default_head_shape": [
+        6,
+        160
+      ],
+      "Sinc_physical_clip": true
+    },
+    {
+      "row_id": "AS_MEASURE-s2026092701",
+      "parameters": 900722,
+      "L_forwards": 4,
+      "VJP": 2,
+      "default_head_shape": [
+        6,
+        160
+      ],
+      "Sinc_physical_clip": true
+    },
+    {
+      "row_id": "NOAS_VIEW-s2026092701",
+      "parameters": 900722,
+      "L_forwards": 4,
+      "VJP": 2,
+      "default_head_shape": [
+        6,
+        160
+      ],
+      "Sinc_physical_clip": true
+    },
+    {
+      "row_id": "AS_VIEW-s2026092701",
+      "parameters": 900722,
+      "L_forwards": 4,
+      "VJP": 2,
+      "default_head_shape": [
+        6,
+        160
+      ],
+      "Sinc_physical_clip": true
+    }
+  ],
+  "real_IQ": 0,
+  "CP": 0,
+  "real_updates": 0,
+  "U_truth_read": false,
+  "target_access": false,
+  "new_Ag": false,
+  "development_total": {
+    "synthetic_F_NN": 2048,
+    "synthetic_optimizer_updates": 42,
+    "synthetic_VJP_calls": 86,
+    "real_IQ": 0,
+    "real_CP": 0,
+    "real_updates": 0
+  },
+  "existing_environment_warning": "Known Torch2.1/NumPy2 bridge warning;no ndarray bridge called,remote compatible runtime unchanged"
+}

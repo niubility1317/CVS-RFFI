@@ -1,0 +1,103 @@
+{
+  "status": "VERIFIED_COMPLETE_SOURCE_GRADIENT_SCALARS",
+  "source_run": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
+  "source_row": "MEASURE-s2026092701",
+  "steps": 2220,
+  "read_all_rows": true,
+  "weighted_half_view_gradients": true,
+  "coordinate": "Sinc physicalHz gradient;all other parameters native",
+  "pooled_variance_trace_over_squared_mean": 0.7307394981320188,
+  "per_step_ratio_quantiles": [
+    0.45683075810513313,
+    0.7239100124638206,
+    1.0407558417594591
+  ],
+  "epochs": [
+    {
+      "cumulative_epoch": 21,
+      "steps": 222,
+      "variance_trace_over_squared_mean": 0.6554403735342793,
+      "ordinary_norm_mean": 0.7497023804723055,
+      "satellite_norm_mean": 0.8220447083816094,
+      "negative_dot_count": 19
+    },
+    {
+      "cumulative_epoch": 22,
+      "steps": 222,
+      "variance_trace_over_squared_mean": 0.6552163938969521,
+      "ordinary_norm_mean": 0.7807435466223593,
+      "satellite_norm_mean": 0.7877020063441383,
+      "negative_dot_count": 21
+    },
+    {
+      "cumulative_epoch": 23,
+      "steps": 222,
+      "variance_trace_over_squared_mean": 0.6865518131681213,
+      "ordinary_norm_mean": 0.7939256860600226,
+      "satellite_norm_mean": 0.7797937176340993,
+      "negative_dot_count": 19
+    },
+    {
+      "cumulative_epoch": 24,
+      "steps": 222,
+      "variance_trace_over_squared_mean": 0.7414763383469419,
+      "ordinary_norm_mean": 0.7814109118693656,
+      "satellite_norm_mean": 0.7658256760820862,
+      "negative_dot_count": 26
+    },
+    {
+      "cumulative_epoch": 25,
+      "steps": 222,
+      "variance_trace_over_squared_mean": 0.7176505310235923,
+      "ordinary_norm_mean": 0.8027924571347809,
+      "satellite_norm_mean": 0.7710249108940984,
+      "negative_dot_count": 19
+    },
+    {
+      "cumulative_epoch": 26,
+      "steps": 222,
+      "variance_trace_over_squared_mean": 0.7595565351522565,
+      "ordinary_norm_mean": 0.7764685397980599,
+      "satellite_norm_mean": 0.7879217005910947,
+      "negative_dot_count": 36
+    },
+    {
+      "cumulative_epoch": 27,
+      "steps": 222,
+      "variance_trace_over_squared_mean": 0.7994666320209113,
+      "ordinary_norm_mean": 0.7310034213854916,
+      "satellite_norm_mean": 0.7751827681568405,
+      "negative_dot_count": 41
+    },
+    {
+      "cumulative_epoch": 28,
+      "steps": 222,
+      "variance_trace_over_squared_mean": 0.7467477417421899,
+      "ordinary_norm_mean": 0.6150617868188982,
+      "satellite_norm_mean": 0.7211781325780185,
+      "negative_dot_count": 32
+    },
+    {
+      "cumulative_epoch": 29,
+      "steps": 222,
+      "variance_trace_over_squared_mean": 0.7982861456281987,
+      "ordinary_norm_mean": 0.6940581963263297,
+      "satellite_norm_mean": 0.7308890069040651,
+      "negative_dot_count": 32
+    },
+    {
+      "cumulative_epoch": 30,
+      "steps": 222,
+      "variance_trace_over_squared_mean": 0.7625382833719668,
+      "ordinary_norm_mean": 0.7100155309443448,
+      "satellite_norm_mean": 0.7045412940693099,
+      "negative_dot_count": 37
+    }
+  ],
+  "limitation": "Saved scalar norms/dot only:does not recover coordinatewise Adam v or total SupCon/U gradient,clipping,trajectory or recognition improvement",
+  "IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false
+}

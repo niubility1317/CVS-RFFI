@@ -1,3 +1,11 @@
+## 2026-10-18：逐视图二阶矩 × 原 practical 四行已实现，尚未发布
+
+[固定四行预登记](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/report.md) 已登记并完成本地19负例/16步独立递推/同视图native精确控制及4个真实F合成集成：2048F NN，0真实IQ/CP/更新/target。现有MEASURE完整2220步源标量的分歧能量/平均梯度能量=.7307395，10轮全部复算；该量不是身份或优化器效果。候选仅向原AdamW二阶矩加同clip²下的(gO-gS)²，gO/gS已各含.5视图权重；总损失/一阶矩/梯度、原Sinc物理clip/lr/eps/decay、U规则不改。四行NoAs/As×MEASURE/VIEW_SECOND各4Lforward/2额外VJP；无新IQAg，无新损失/部署分支/头。
+
+全部5源RX、L6300/U56700隐藏TX/V27000、256点及原F＋跨RX同TX/defaultcos联合训练保持；两唯一原REPEAT20/CONCAT20父各自学生+ownEMA续10至E30，重置AdamW/cos10，新增40modelE/8880updates/17760VJP。当前只是实现/本地验证，唯一P0/P1待返回，没有真实训练或性能。源资格与自动七视图truth-last均已固定；失败关闭不调系数/坐标/父/seed/预算救跑。只报告优化配方×As交互，不冒充Ag×As或联合成功。完整目标ACTIVE。
+
+历史共享传播/EMA/RXMIX/窄带峰等已有负结果已复核，本轮不改名重试。源L→V圆度关联仍只属统计证据，未授权任何TX IQ改写。上一报告提交693f73696已通过当前普通Git代理恢复推送，独立远端OID一致（VERIFIED）。以下旧“当前/下一项”按历史保留。
+
 ## 2026-10-18：全部源 RX 的 L→V 统计确认完成
 
 [同一行完整源分析](../automation_reports/CV-SincNet/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01/source_analysis.md) 已 ANALYZED／VERIFIED，执行提交 f6eee0d13b61edcbd5e85c50bca1b1177a2e675c。全部5源RX／3day／6TX、L6300／原V27000、256点保持，无训练RX留出；固定圆度幅值对比由L估计后，V相对零对比SSE降79.860766%，18/18折正收益、5/5RX改善。独立reader从全部166500保存标量复算180单元／18折／44错指派，最大误差8.89e-16；源worker4.717915s／reader.149517s，0CP／NN／teacher／更新／训练IQ变换／target。
