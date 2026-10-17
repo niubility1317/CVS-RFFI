@@ -180,7 +180,7 @@ def own_plots(out,source,source_summary,physics=None):
   c=source[a]['curve'];epoch=np.arange(1,31);color=base.COLORS[a]
   for ax,key in [(axes[0,0],'SupCon'),(axes[0,1],'aux_total_anchors'),(axes[0,2],'aux_true_satellite_anchors'),(axes[1,0],'grad_backbone'),(axes[1,1],'lr')]:ax.plot(epoch,[r[key] for r in c],label=a,color=color)
   axes[1,2].plot(epoch,[r['common_CE'] for r in c],label=a+' ordinary',color=color);axes[1,2].plot(epoch,[r['extra_CE'] for r in c],label=a+' mixed',color=color,ls='--')
- for ax,title in zip(axes.flat,['Original SupCon objective / coefficient unchanged','Anchor entries per L step across 2 depths x 2 passes','Real As anchor entries per L step;not independent IQ','Original backbone gradient norm','Actual LR / reset at20','Original ordinary/mixed CE weights .5/.5']):
+ for ax,title in zip(axes.flat,['Existing SupCon objective\nsame coefficient schedule','Descriptors per L step\n2 depths x 2 passes','Satellite descriptors per L step\n64 As x 2 depths x 2 passes','Original backbone gradient norm','Actual LR / reset at20','Original ordinary/mixed CE weights .5/.5']):
   ax.set(title=title,xlabel='Cumulative epoch');ax.axvline(5.5,ls=':',color='gray');ax.axvline(13.5,ls=':',color='gray');ax.axvline(20.5,ls='--',color='gray');ax.grid(alpha=.18)
  axes[0,0].legend(frameon=False);axes[1,2].legend(frameon=False,fontsize=7);fig.suptitle('Complete30 epochs / original U only / relationship coverage is not accuracy');save(fig,'contrastive_coverage_training_curves')
  fig,axes=plt.subplots(1,3,figsize=(14,4.6))
