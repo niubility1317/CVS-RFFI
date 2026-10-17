@@ -1,6 +1,6 @@
 # 有限窗酉相位观测：源 V 身份保护检验
 
-状态：IMPLEMENTED／LOCAL_CHECKS_PASS／P0P1_PASS_AFTER_TARGETED_FIX。尚未启动或读取真实源IQ，0新CP／NN／更新。不是新Ag有效性或完整联合目标证明。
+状态：ANALYZED_SOURCE_ONLY／VERIFIED。固定相位色散算子未通过源身份保护，按预登记关闭。0 新训练更新／teacher／头拟合／target；联合目标尚未完成。
 
 唯一假设：一个轻度、复线性、近似保能量、无循环接缝的有限窗频率相位变化，能够在原F默认头下保留源身份；若此必要条件成立，才有理由独立研究它的训练价值。这里不声称真实EQ1已经观测到该RX扰动，也不声称数字变化替换真实接收机。
 
@@ -49,3 +49,30 @@ F＋跨RX同TX／三SIG_TIME／统一Sinc／joint160／默认6×160 cosine scale
 唯一owner codex/root/F-unitary-dispersion-source；普通N607账户，CPU2，沿既有shared capacity锁每GPU最多3个全owner实验进程且至少12GB空闲。CWD PROJECT/releases/cvs_F_unitary_dispersion_source_20261018_r01；命令CVS-RFFI/bin/python -u experiments/cvs_unitary_dispersion18/runner.py；不可覆盖根PROJECT/runs/20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01。精确[登记矩阵](experiment.json)、[配置](../../../configs/cvs_unitary_dispersion_source_20261018.json)、[本地检查](verification.json)。
 
 一份代码配置Git提交、聚焦负例和真实CP无query smoke、一次限定P0/P1、一个release archive/一次传输比较/远端编译、一次PID-CWD-argv-GPU-log增长核对。来源/角色/状态/非有限/输出冲突等技术失败保留产物，不自动重试，不改其他健康任务。期待resolved、全源固定logits、源完成/完整计分和成本；数据/权重/预测/日志保持私有存储，只有汇总进入Git。
+
+## 完整结果与判定
+
+两个固定默认头的 raw 与同一份 ordinary，全部 ±.1 端点的准确率、正确保持、最差 RX 保护及最差 TX 保护均失败，共 32 项身份条件失败；12 项浮点数值条件全部通过。算子保能量与可逆，不足以保证原身份决策稳定。该结果只否定固定候选的源保护条件，不能据此证明信号的 TX 身份已经物理丢失，也不能推断训练后必然无效。按事先固定反证规则仍关闭此候选，不改幅度／profile／阶数／边界／seed／父模型救跑。
+
+|冻结默认头|输入|alpha0 准确率|alpha−.1|alpha+.1|两端相对0变化（百分点）|
+|---|---|---:|---:|---:|---:|
+|REPEAT|raw|97.8889%|95.6111%|96.8889%|-2.2778／-1.0000|
+|REPEAT|ordinary|93.9444%|91.5556%|92.8333%|-2.3889／-1.1111|
+|CONCAT|raw|97.4444%|96.2222%|96.4444%|-1.2222／-1.0000|
+|CONCAT|ordinary|92.7778%|91.7222%|91.4444%|-1.0556／-1.3333|
+
+所有端点原正确保持率为 96.6292% 至 98.7457%，均低于固定 99.5%。例如 REPEAT/raw/−.1 修复 1 包、新增 42 错；REPEAT/ordinary/−.1 修复 14 包、新增 57 错。最差内部类别准确率变化 −16.6667 个百分点，不能用平均能量误差掩盖这一损害。完整 macro-F1、混淆矩阵、RX／TX／day／90 格结果及配对计数均在 [结果](result.json)。
+
+真实 V 的最大能量相对误差 4.605e−8、正反变换误差 9.724e−8；平均相对 IQ 变化约 6.10%。这是数值实现通过，身份保护失败。旧 ordinary 的实际 E13 概率：PA .0350840、循环移位 .0877101（max8）、CFO .0877101（max.000100240 cycles/sample）、AWGN .1002401、multipath .0451081、DAC0；class-signature 关闭。两模型与所有端点共用同一次生成的 ordinary，Python 与 Torch RNG 固定并恢复。
+
+独立 CPU 重新读取固定源 logits，复算 1260 个混淆矩阵、8 组配对及全部 44 项判据，结论完全一致，最大数值差 2.22e−16，额外 IQ／CP／NN／更新均 0。不是对 target truth 的访问。[独立复算](independent_recount.json)。
+
+## 实际执行与成本
+
+执行代码提交 `1f629091f7d94f0c1e0e2c35133c44d927020f40`；Git 远端 OID 独立匹配，普通账户 N607 预检、单 archive 传输比较、远端编译及合成负例检查通过。真实 CP 首步 smoke PASS：2 CP／4 合成 NN／0 query，随后一次执行完整源 V 检查。worker PID770071／GPU0，CPU dispatcher770047；启动记录均 OBSERVED。worker 3.86565 秒、CPU 评分 .44689 秒，独立回查时已自然结束，未捕获运行中 GPU／日志增长；已核实两进程 terminal、无 failure、dispatcher_complete 与所有 source prediction／completion 产物齐全，没有重启补抓状态。精确证据边界见 [执行证据](execution_evidence.json)。
+
+实际新增：源 NN21600＋smoke4＝21604；CP2、source_cache1、ordinary1800；IQ 正向算子10800＋逆检查10800＝21600。0 反向／optimizer／teacher／头拟合／As 生成／正式测试。两个已有父模型均 E20／4440 更新，每个既有训练 NN3661082（学生训练2670180＋源eval594002＋teacher eval396900），合计40 model-epoch／8880更新／7322164训练NN，仅作来源成本披露，不算本轮新训练。它们原有正式评估成本另见父报告，不重复执行或计作本轮。
+
+## 当前结论与下一步边界
+
+唯一检验假设“固定轻度有限窗酉相位观测在原 F 默认头下保留源身份”已被本轮必要条件否定。本算子不进入 E30 训练；没有得到新的 A_g、A_s 或联合识别增益。没有可据本轮自动晋级的候选。后续若提出不同星地训练假设，需从尚未闭合的信号或监督证据出发，另列最小匹配实验；不能改动这次反证条件或用更小幅度将其改写为成功。

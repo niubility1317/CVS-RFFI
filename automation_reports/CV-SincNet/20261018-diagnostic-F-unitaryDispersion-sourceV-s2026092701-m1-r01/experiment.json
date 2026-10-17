@@ -24,7 +24,7 @@
   "replaces_run_id": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r01",
   "authorization": "Active joint Ag/As research authorization;sourceV validation only,all5trainingRX retained,0newtraining/target/teacher/headfit",
   "code": {
-    "commit": "ACTUAL_GIT_HEAD_IN_RELEASE_COMMIT_TXT",
+    "commit": "1f629091f7d94f0c1e0e2c35133c44d927020f40",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary account/existing pinned fullsource F runtime/FP32/CPU2/one shared GPU",
     "cwd": "PROJECT/releases/cvs_F_unitary_dispersion_source_20261018_r01",
@@ -272,7 +272,7 @@
         "channel_calls": 12960
       },
       "initialization": "Fixed verified CONCAT source-final20;no state update",
-      "status": "PLANNED"
+      "status": "ANALYZED"
     }
   ],
   "notes": [
@@ -283,5 +283,20 @@
     "Bibliographic support https://proceedings.mlr.press/v89/wu19c.html is variational inference,not CVS evidence. No design approval or separate feasibility permission gate;scientificstop belongs tothis preregistered experiment.",
     "Technical recovery of r01 NumPy-to-Torch error;only same-value byte-buffer bridge changed;no prior scientific result/gradient. Old root preserved,all thresholds and sampling unchanged."
   ],
-  "registered_at": "2026-10-17T16:46:37+00:00"
+  "registered_at": "2026-10-17T16:46:37+00:00",
+  "status": "ANALYZED",
+  "analysis": {
+    "scope": "SOURCE_ONLY_IDENTITY_PROTECTION",
+    "scientific_pass": false,
+    "decision": "CLOSED_FIXED_UNITARY_PROFILE_FAILED_SOURCE_PROTECTION",
+    "formal_target_scored": false,
+    "new_Ag_efficacy": false,
+    "joint_goal_complete": false,
+    "evidence": [
+      "report.md",
+      "result.json",
+      "execution_evidence.json",
+      "independent_recount.json"
+    ]
+  }
 }

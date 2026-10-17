@@ -38,4 +38,4 @@
 |全源慢变包络：固定依据检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01/report.md)|
 |原噪声分布下正负配对：源域梯度方差反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r01/report.md)|
 |原噪声分布下正负配对：源域梯度方差反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02/report.md)|
-|F＋跨 RX：有限窗酉相位观测的源 V 身份保护|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01/report.md)|
+|有限窗酉相位观测：源 V 身份保护检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01/report.md)|

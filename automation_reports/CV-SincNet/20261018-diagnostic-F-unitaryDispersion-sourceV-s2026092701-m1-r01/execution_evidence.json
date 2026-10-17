@@ -1,0 +1,43 @@
+{
+  "status": "VERIFIED_COMPLETED_SOURCE_ONLY",
+  "execution_commit": "1f629091f7d94f0c1e0e2c35133c44d927020f40",
+  "ordinary_account_preflight": "VERIFIED",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "launch_status": "OBSERVED",
+  "worker_PID": 770071,
+  "dispatcher_PID": 770047,
+  "GPU": "0",
+  "source_smoke": {
+    "status": "PASS",
+    "CP": 2,
+    "NN": 4,
+    "IQ": 0,
+    "query_read": false,
+    "updates": 0
+  },
+  "worker_dispatcher_terminal": true,
+  "dispatcher_completion": "SOURCE_EXPERIMENT_COMPLETE",
+  "live_GPU_log_growth_captured": false,
+  "postlaunch_limit": "Worker finished in3.87s before independent read;terminal artifacts and all predictions independently verified;no relaunch",
+  "source_prediction_artifact": "PROJECT/runs/20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01/predictions.json",
+  "cost": {
+    "NN": 21604,
+    "source_cache_loads": 1,
+    "CP": 2,
+    "ordinary_generations": 1800,
+    "operator_applications": 21600,
+    "forward_operator_applications": 10800,
+    "inverse_check_applications": 10800,
+    "teacher_NN": 0,
+    "updates": 0,
+    "head_fit_updates": 0,
+    "wall_seconds": 3.8656471900176257
+  },
+  "analysis_wall_seconds": 0.44689091201871634,
+  "independent_recount": "independent_recount.json",
+  "formal_target_scored": false,
+  "target_access": false,
+  "new_Ag_efficacy": false,
+  "joint_goal_complete": false
+}
