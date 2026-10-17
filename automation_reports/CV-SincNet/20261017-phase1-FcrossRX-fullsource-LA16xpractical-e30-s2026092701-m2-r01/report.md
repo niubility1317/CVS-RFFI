@@ -21,3 +21,5 @@ F 固定 SIG_TIME_X3＋统一 Sinc CENTER_UNITS＋跨 RX 同 TX SupCon，900722�
 本地4项聚焦检查PASS：24个配置负例、241个完整窗口位置/零输入/private RNG/非法step、256次synthetic native物理调用、512包synthetic完整F前向与默认头/Sinc/三SIG梯度，真实IQ/CP/优化更新均0；包编译与diff检查PASS。一次独立有界静态P0/P1审查PASS，源CPU2接线已核对。真实检查点smoke、远端传输/编译、进程与日志核验待实际启动后记录。
 
 远端启动核验：VERIFIED。单包传输SHA比较一致、远端compile PASS；dispatcher500562，B10 PID500587/GPU0，B11 PID500666/GPU1；CWD/argv匹配本release，两个日志均从0增长至6489字节，GPU进程独立可见。真实同契约CP smoke PASS：strictload、2个synthetic包、真实IQ/query/更新0；检查点未用于初始化。训练结果、正式分数均尚未产生。
+
+同 row 独立分析接续：分析代码提交 `fa7c7494722df03bcef2413a3d0a613c0b220e91` 已推送且远端OID一致；单包传输校验/编译PASS。分析进程 PID504365、CPU2/无GPU，只等待已核实 dispatcher500562 终局；全部四格冻结、七环境prediction与独立评分完成后才读取truth。输出预定 `analysis_r01`，当前尚未生成。分析无IQ/CP读取、无NN/更新；核对全部120个epoch、26640步日志、逐物理样本预测、四个差值与交互、Ag随机流/覆盖/幅度和源状态/added-noise分层，并生成图表。当前没有跨seed成功证据，也不据目标成绩安排扩种子。
