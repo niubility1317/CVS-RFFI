@@ -309,5 +309,28 @@
     "One independent bounded staticP0/P1 PASS afterCPU2wiring; reviewer read no realIQ/CP/target, ran noNN/remote. No second unchangedreview.",
     "Firstlauncherstep same-contractrealE20CP/2synthetic noquerysmoke thendiscard, no smokepermissionartifact; immediatecontinuePASS. Latest3totalprocess/GPU/free12GB overrides historical2cap. Preserveallhealthyjobs."
   ],
-  "registered_at": "2026-10-17T09:03:02+00:00"
+  "registered_at": "2026-10-17T09:03:02+00:00",
+  "delivery": {
+    "status": "ANALYZED_SINGLE_SEED_NEGATIVE",
+    "analysis_commit": "fa7c7494722df03bcef2413a3d0a613c0b220e91",
+    "analysis_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_LA16xpractical_E30_20261017/analysis_r01",
+    "source_epoch_records": 120,
+    "source_updates_parsed": 26640,
+    "formal_confusion_matrices": 504,
+    "source_confusion_matrices": 1112,
+    "PNG_PDF_files": 14,
+    "NN_new_analysis": 0,
+    "parameter_inspection_CP_reads": 4,
+    "parameter_inspection_NN": 0,
+    "source_rule_pass": false,
+    "source_cells_passed": 0,
+    "source_cells_total": 4,
+    "source_only_decision_commit": "39ed0bd6f766971217891bdfe7ea5b7828d4e922",
+    "new_seed_extension": false,
+    "crossseed_confirmed": false,
+    "Ag_proved": false,
+    "goal_complete": false,
+    "ordinary_full30_identical": true,
+    "terminal_evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_LA16xpractical_E30_20261017/terminal_audit.json"
+  }
 }

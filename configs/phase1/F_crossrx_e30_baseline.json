@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_REFERENCES_AND_BOUNDARY_NEGATIVE_ANALYZED_SINGLE_SEED",
+  "status": "E30_REFERENCES_BOUNDARY_AND_LA16_FACTORIAL_NEGATIVE_ANALYZED_SINGLE_SEED",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -140,9 +140,33 @@
       "method_evidence": "Boundary sensitivity reduced, originalfull source accuracy not preserved; not Ag or joint performance gain",
       "formal_report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-boundarymix-e30-s2026092701-m1-r01/report.md",
       "repeat_policy": "No replay by changing boundary ratio, receiver subset, threshold, seed or budget to rescue this candidate"
+    },
+    "fixed_LA16_practical_factorial": {
+      "run_id": "20261017-phase1-FcrossRX-fullsource-LA16xpractical-e30-s2026092701-m2-r01",
+      "training_budget": "Two scratchE30/6660 models;originalall5RX/fullL6300U56700hiddenV27000;reuse matchedB00/B01",
+      "source_rule": "B11 cleanV>=B01-.5pp andeach2drawx2urban sourceaccuracy>=B01+1pp;B10 health>=B00-.5pp",
+      "source_rule_pass": false,
+      "cells_passed": 0,
+      "cells_total": 4,
+      "B11_clean_V_delta_pp": -0.011111111111106187,
+      "B11_source_urban_draw_delta_pp": [
+        [
+          -0.8888888888888946,
+          0.4444444444444362
+        ],
+        [
+          0.38888888888889417,
+          -0.6111111111111178
+        ]
+      ],
+      "decision_basis": "Source-only criterion failure fixed before B11 formal metrics read;commit39ed0bd6f766971217891bdfe7ea5b7828d4e922",
+      "legacy_LA16": "Prior RX1/E20 standalone FAIL remains FAIL; sourceclean+2.555556pp was rationale, not current fullsourceAg proof",
+      "formal_use": "Terminal reporting only;never training,promotion,retuning or selective rerun",
+      "formal_report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-LA16xpractical-e30-s2026092701-m2-r01/report.md",
+      "repeat_policy": "Do not rescue by scanning localwindow,depth,probability,sourceRX subset,threshold,modelseed or budget"
     }
   },
-  "next_method_boundary": "Original all-source F+CROSS_RX E30 references remain fixed. Boundary mixing source-preservation hypothesis failed; no Ag or four-factor gain proved. Future Ag/B10/B11 needs a distinct source-supported hypothesis under all original L/U/V/RX, defaulthead/originalU/scratchE30; no targetfeedback or replay of closed routes.",
+  "next_method_boundary": "All-source F+CROSS_RX scratchE30/defaulthead/originalU and matched B00/B01 remain fixed references. Nativeboundary mixing and exactLA16xAs source hypotheses failed. A distinct IQ/organization candidate needs new legal source evidence and a matched factorial; no sourceRX holdout, fittedhead, targetfeedback or rescue of closed routes.",
   "execution_commit": "bafba40e365d0914a2e86f861fb55a49f1cd3997",
   "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/report.md",
   "input_representation_audit": {
@@ -179,5 +203,28 @@
     "U_TX_truth_consumed": false,
     "NN": 0,
     "updates": 0
+  },
+  "completed_factorial": {
+    "run_id": "20261017-phase1-FcrossRX-fullsource-LA16xpractical-e30-s2026092701-m2-r01",
+    "rows": [
+      "B00",
+      "B10",
+      "B01",
+      "B11"
+    ],
+    "new_models": 2,
+    "reused_reference_models": 2,
+    "model_seed": 2026092701,
+    "model_seed_count": 1,
+    "execution_commit": "bfbef1d853ffe2eca5d3094b60b53e2ff8a5f7e8",
+    "analysis_commit": "fa7c7494722df03bcef2413a3d0a613c0b220e91",
+    "analysis_artifacts": "E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_LA16xpractical_E30_20261017/analysis_r01",
+    "formal_confusion_matrices": 504,
+    "source_confusion_matrices": 1112,
+    "source_epochs_parsed": 120,
+    "source_updates_parsed": 26640,
+    "Ag_proved": false,
+    "crossseed_confirmed": false,
+    "goal_completed": false
   }
 }

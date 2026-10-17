@@ -1,6 +1,8 @@
 # 本轮 E30 四格的共享普通 IQ 增强审计
 
-实际证据来自本轮 B10/B11 的 `actual_native_args.json`、`ordinary_base_config.json`、`mechanism_progress.json`、`module_files.json`，以及同预算 B00/B01 的相同文件。四组基准配置完全相同；截至核验，B00/B01均E30、B10到E20、B11到E9；四组共同完成的前9个epoch，逐epoch ordinary摘要（调用数、包数、累计MSE、最大幅度、实际概率）完全相同。尚不代表未完成epoch已验证。训练保持原配方，此审计不修改健康进程、不产生新IQ/NN/优化更新。
+终局补充：四组完整30轮的ordinary调用数、包数、累计MSE、最大幅度及实际概率摘要完全一致，0差异；四组终局均6660次/852480包。
+
+实际证据来自本轮 B10/B11 的 `actual_native_args.json`、`ordinary_base_config.json`、`mechanism_progress.json`、`module_files.json`，以及同预算 B00/B01 的相同文件。四组基准配置完全相同；初次核验时，B00/B01均E30、B10到E20、B11到E9；四组共同完成的前9个epoch，逐epoch ordinary摘要（调用数、包数、累计MSE、最大幅度、实际概率）完全相同。尚不代表未完成epoch已验证。训练保持原配方，此审计不修改健康进程、不产生新IQ/NN/优化更新。
 
 实际 `DataAugmentation`、`SSDG.train_ssdg`、`leo_practical` 均来自已固定release的 `experiments/adv3b02_xuc/code/`，不是顶层 `code/`。模块绝对路径见原run的 `source/module_files.json`；本轮Ag来自自身release的 `attenuation.py`。
 
