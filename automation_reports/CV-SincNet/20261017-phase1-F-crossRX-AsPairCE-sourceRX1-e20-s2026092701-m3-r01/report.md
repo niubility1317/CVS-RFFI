@@ -57,3 +57,6 @@ ordinary N607/CVS-RFFI，dispatcher CPU2/CUDA隐藏；新worker CPU2/loader0，�
 
 
 首轮执行进展：原worker已完成E1／222实际更新，L前向227328、额外对前向56832、完整As监督28416，训练已覆盖全部5040可见L。stdout由6500增至11665字节，原PID/CWD/argv/GPU保持一致，failure不存在；epoch observer已通过逐步As meanCE/零KL梯度预算检查。原SupCon按既定E6启用，当前尚未启用，不提前更改。真实性能读出仍等待final20及源七视图，当前不能报告新增accuracy/F1/clean代价。
+
+
+离线工具进展：已实现只读完整产物收集、全4440步base/extra目标公式、原U边界、完整scene序列、8820默认头预测、paired repair/break与共同clean正确集合、TX/day及18个TX×day单元、成本和完整曲线工具。40个独立读者反例PASS，含纯CE不受诊断KL改变影响、旧控制仍使用CE＋KL、非法heldRX/U真值/预算拒绝。新读者已逐行完整复算两条旧控制（各20轮/4440步/8820预测）；没有重做NN/训练、读取IQ或权重。新行原进程已完成E5/1110更新，仍live，无final20/七视图新结果，不将前缀进度当全日志结论。离线代码未热改远端不可变发布。

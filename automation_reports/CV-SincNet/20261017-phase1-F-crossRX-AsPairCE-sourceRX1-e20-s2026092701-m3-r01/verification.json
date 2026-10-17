@@ -13,5 +13,14 @@
   "max_gradient_equivalence_error": 1.1920928955078125e-7,
   "default_head_joint": true,
   "export160_exact": true,
-  "one_P0P1_review": "PASS"
+  "one_P0P1_review": "PASS",
+  "offline_reader_counterexamples": 40,
+  "old_controls_fully_recounted": [
+    "Q0",
+    "Q_ord"
+  ],
+  "old_control_epochs_per_row": 20,
+  "old_control_steps_per_row": 4440,
+  "old_control_predictions_per_row": 8820,
+  "new_actual_source_analysis_complete": false
 }
