@@ -1,5 +1,5 @@
 {
-  "status": "RUNNING_VERIFIED",
+  "status": "ANALYZED_VERIFIED_SOURCE_NEGATIVE",
   "unit_checks": {
     "PASS": 6,
     "SKIP": 1,
@@ -23,9 +23,9 @@
   "goal_complete": false,
   "code_commit": "91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a",
   "latest_observed_updates": {
-    "B0": 6438,
-    "URAW": 6438,
-    "UAS": 4662
+    "B0": 6660,
+    "URAW": 6660,
+    "UAS": 6660
   },
   "runtime": {
     "dispatcher": 776627,
@@ -53,11 +53,12 @@
     "roles": "L6300/U56700hidden/V27000;EXACT_MATCH;all5RX",
     "actual_native": "adv3b02_xuc/code/leo_practical",
     "parameters": 900722,
-    "source_progress": "B0 E29;URAW E29;UAS E21;allown20->10transitionsverified",
+    "source_progress": "all3own20+10complete",
     "PID_CWD_argv_GPU_log_growth": "VERIFIED",
-    "formal_complete": false,
+    "formal_complete": true,
     "source_teacher_qualified": true,
-    "read_at": 1792259144.2100334
+    "read_at": 1792259144.2100334,
+    "all_original_processes_completed": true
   },
   "first_U_actual": {
     "all3qualified": true,
@@ -78,10 +79,10 @@
     "status": "PASS",
     "compile": "PASS",
     "NN": 0,
-    "executed_full_analysis": false
+    "executed_full_analysis": true
   },
   "analysis_wait": {
-    "status": "VERIFIED_LIVE_SOURCE_ONLY_WAIT",
+    "status": "COMPLETED_VERIFIED_SOURCE_ONLY",
     "pid": 791020,
     "start_ticks": 150569691,
     "code_commit": "8e9e15c093472bb722915117d3682745260d1394",
@@ -93,10 +94,10 @@
     "target_access": false,
     "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/source_analysis_r01",
     "compute_wall_excludes_wait": true,
-    "source_complete": false,
-    "final_analysis_launched": false
+    "source_complete": true,
+    "final_analysis_launched": true
   },
-  "update_count_semantics": "Lower bounds from fully completed epochs only;active partial epoch not counted",
+  "update_count_semantics": "Actual complete rows;6660 each,19980 total",
   "own20_to_10": {
     "status": "VERIFIED_B0_URAW",
     "source": "strictly own fixed E20 + own EMA only",
@@ -202,22 +203,6 @@
     "formal_scores_read": false,
     "all_three_complete": false,
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/early_source_recount_r01.json"
-  },
-  "final_analysis_runtime_planned": {
-    "code_commit": "34b02721c60e4b7a7dffa2d313f2190409509b4c",
-    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_Uurban_analysis_20261018_r03",
-    "transfer_status": "VERIFIED",
-    "remote_compile": "PASS",
-    "focused_checks": 7,
-    "real_completed_source_cost_recount": "PASS_B0_URAW",
-    "shared_preflight_NN": 50,
-    "source_prerequisite": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/source_analysis_r01",
-    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/final_analysis_r01",
-    "launched": false,
-    "formal_scores_read": false,
-    "source_waiter_unchanged": true,
-    "training_release_unchanged": true,
-    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/analysis_transfer_r03.json"
   },
   "two_row_formal_closure": {
     "status": "VERIFIED_METADATA_ONLY",
@@ -346,5 +331,51 @@
     "no_seed_extension_for_exact_recipe": true,
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/source_analysis_r01/complete.json",
     "decision_file": "source_development_decision.json"
+  },
+  "final_analysis_runtime": {
+    "code_commit": "34b02721c60e4b7a7dffa2d313f2190409509b4c",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_Uurban_analysis_20261018_r03",
+    "transfer_status": "VERIFIED",
+    "remote_compile": "PASS",
+    "focused_checks": 7,
+    "real_completed_source_cost_recount": "PASS_B0_URAW",
+    "shared_preflight_NN": 50,
+    "source_prerequisite": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/source_analysis_r01",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/final_analysis_r01",
+    "launched": true,
+    "formal_scores_read": true,
+    "source_waiter_unchanged": true,
+    "training_release_unchanged": true,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/analysis_transfer_r03.json",
+    "pid": 818932,
+    "start_ticks": 150866355,
+    "completed": true,
+    "status": "ANALYZED_VERIFIED",
+    "source_rejection_commit": "b0dcc80bdcbc79a5a234733d5518cb78b7e7afe1",
+    "formal_confusions": 378,
+    "source_confusions": 831,
+    "figure_groups": 8,
+    "original_figure_files": 16,
+    "visually_checked_original_PNG": 8,
+    "visually_checked_revised_PNG": 1,
+    "figure_revision": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/figure_revision_r01",
+    "plot_commit": "26aa4ffe7a805dbd0ba5e9b2598d041564889926",
+    "analysis_wall_seconds": 90.72262622998096,
+    "analysis_NN": 0,
+    "IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "all_artifact_evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/all_artifacts_completed_verified_r01.json"
+  },
+  "results": {
+    "path": "results_summary.json",
+    "model_seed_count": 1,
+    "formal_default_head_UAS_clean": 0.852452380952381,
+    "formal_default_head_UAS_low_urban": 0.5246130952380952,
+    "urban_mean_UAS": 0.6492301587301587,
+    "source_qualified": false,
+    "whole_goal_complete": false,
+    "new_Ag_proved": false,
+    "crossseed_confirmed": false,
+    "no_fixed_C4_seed_extension": true
   }
 }

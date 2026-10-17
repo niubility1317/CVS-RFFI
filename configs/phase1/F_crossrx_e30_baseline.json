@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_FULL_CLEAN_RETAINING_U_TRANSFER_RUNNING",
+  "status": "E30_FULL_CLEAN_RETAINING_U_TRANSFER_ANALYZED_SOURCE_NEGATIVE",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -551,7 +551,7 @@
   },
   "active_research": {
     "run_id": "20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01",
-    "status": "RUNNING_VERIFIED",
+    "status": "ANALYZED_SOURCE_NEGATIVE",
     "code_commit": "91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a",
     "rows": [
       "B0",
@@ -565,8 +565,8 @@
     "new_Ag": false,
     "C4_single_soft_KL": "samecostextraUrawvsfullAsU;owncleanEMAout_w;teacherqonly;oldUgateunchanged",
     "source_teacher_basis": "20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01",
-    "first_own_U_qualification": "pendingatE14;fixedsourceonlycheck,nooldteacherinitializer",
-    "formal_all7": "automaticperrowafterfreeze;pending",
+    "first_own_U_qualification": "PASS_all3;source_only;not_U_truth_precision",
+    "formal_all7": "ANALYZED_COMPLETE_3rows_378formalconfusions",
     "source_promotion": "each2drawmidlow UAS>=URAW+1pp;fullVclean>=B0-.25ppand>=URAW-.25pp;allownteachersqualified",
     "automatic_seed_extension": false,
     "goal_complete": false,
@@ -581,7 +581,11 @@
       1,
       2
     ],
-    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/report.md"
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/report.md",
+    "all_original_processes_completed": true,
+    "source_decision_commit": "b0dcc80bdcbc79a5a234733d5518cb78b7e7afe1",
+    "source_qualified": false,
+    "analysis_artifacts": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01"
   },
   "preferred_route": {
     "authorization": "Human explicitly confirmed clean-preserving route from referenced chat01a1427e-49c0-7840-a84d-5bb38d5a8164;benchmark-exposed recipe reference,not target-selected weight reuse",
@@ -618,7 +622,7 @@
     "As": "originalcustom perpacketnominal3scenes/raw/fullresidual/post_sync/G1/ref30/reflect/fc2.462GHz",
     "weights_policy": "Do not load target-selected old weights;new variants scratch atE0,only own pre-fixed stage state may continue",
     "reconciliation_report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01/reference_reconciliation.md",
-    "next_candidate": "IMPLEMENTED_AND_RUNNING:owncleanEMA-to-fullAsU,samecostB0zeroextraKL/URAW/UAS;fixedE30fullreference;notprovenyet"
+    "next_candidate": "NONE_SELECTED;exactC4closed_on_source_before_formal_read;retain_original_clean_preserving_reference"
   },
   "source_teacher_qualification38": {
     "run_id": "20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01",
@@ -714,5 +718,28 @@
     "completed_analysis_artifacts": "E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_concat_E30_20261017/analysis_r01",
     "figure_artifacts": "E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_concat_E30_20261017/figures_readable_r01",
     "plot_commit": "5b709b89e137839eb81e65fe84e4a1525275913f"
+  },
+  "completed_Uurban39": {
+    "run_id": "20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01",
+    "status": "ANALYZED_SOURCE_NEGATIVE",
+    "model_seed_count": 1,
+    "new_epochs_per_model": 30,
+    "new_rows": 3,
+    "new_updates": 19980,
+    "source_qualified": false,
+    "source_rejection_commit": "b0dcc80bdcbc79a5a234733d5518cb78b7e7afe1",
+    "formal_clean_B0": 0.8551130952380952,
+    "formal_clean_UAS": 0.852452380952381,
+    "formal_low_urban_B0": 0.516,
+    "formal_low_urban_UAS": 0.5246130952380952,
+    "formal_urban_mean_B0": 0.6413194444444444,
+    "formal_urban_mean_UAS": 0.6492301587301587,
+    "default_head_unchanged": true,
+    "new_Ag": false,
+    "automatic_seed_extension": false,
+    "crossseed_confirmed": false,
+    "goal_complete": false,
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/report.md",
+    "results": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/results_summary.json"
   }
 }

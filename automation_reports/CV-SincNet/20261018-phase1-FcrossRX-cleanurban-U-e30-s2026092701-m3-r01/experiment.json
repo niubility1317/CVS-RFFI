@@ -110,7 +110,11 @@
     "complete.json",
     "source_analysis_r01/{independent_source_decision.json,source_summary.json,source_strata.csv,training_curves.csv,complete.json}",
     "final_analysis_r01/{analysis_summary.json,paired_repairs.csv,fixed_B0_retention.csv,per_row_seed.csv,figures.json,complete.json}",
-    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/final_analysis_r01/quality_state_sensitivity.csv"
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/final_analysis_r01/quality_state_sensitivity.csv",
+    "E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/results_summary.json",
+    "E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/source_development_decision.json",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/figure_revision_r01/training_L_support.png",
+    "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/figure_revision_r01/training_L_support.pdf"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -294,7 +298,8 @@
     "SealedUASstage20fullmetadata396900/1554read;all5RX/all3days/exact3scenes andLOS/PARTIAL/BLOCKED present;own20->10verified. Metadata-only receiver-quality sensitivity implemented6checksPASS;sourcewaiterandtrainingunchanged;notyetdeployed.",
     "Metadataanalysis82e8a7815 releasedr02/onearchiveSHA/remotecompileVERIFIED;all396900sealedE20policystates/scalesrecountPASS. Alternativeproxythresholdchanges8866/7664arecounterfactualmetadata,notwaveform/statechangesoraccuracycausality;activeR39/sourcewaiterunchanged. LatestE29/E29/E21,source/formaldecisionpending.",
     "B0/URAWownE30+frozenSourcereadoutcomplete,all6660stepsrecountPASS;originalPIDsautoexecpredict,noheadfit. Finalanalysisr03fixed34b02721c/7checks/remotecompile/archiveVERIFIED,source7246624NN/modelplusfutureformal/shared50. Formalcloseduntilsourceanalysisdecisionrecorded;UAScontinueshealthy.",
-    "IndependentSOURCE_NEGATIVEfixedBEFOREformalmetricread:UAS-URAWmid/lowdraw0 .1111/1.5000pp,draw1 1.0556/1.2778pp;cleanprotectionPASS. ExactC4closed/noseedextension/norescuererun;all3E30/6660updates&sevenviewevaluationpreserved;goalactiveAgunproved."
+    "IndependentSOURCE_NEGATIVEfixedBEFOREformalmetricread:UAS-URAWmid/lowdraw0 .1111/1.5000pp,draw1 1.0556/1.2778pp;cleanprotectionPASS. ExactC4closed/noseedextension/norescuererun;all3E30/6660updates&sevenviewevaluationpreserved;goalactiveAgunproved.",
+    "ANALYZED/VERIFIED all3rows/all7views:378formal+831sourceconfusions/8figuregroups. ExactC4closedSOURCE_NEGATIVEincommitb0dcc80BEFOREformalread;formalUASlow52.4613 vsB051.6000,clean85.2452 vs85.5113,urbanmean64.9230 vs64.1319. SameNN25267928matrix/1modelseed/notAgproof/nocrossseed/nogoalcompletion. Allownprocessesterminal,healthyothersuntouched."
   ],
   "registered_at": "2026-10-17T16:58:44+00:00"
 }

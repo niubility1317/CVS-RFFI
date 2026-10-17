@@ -1,3 +1,84 @@
+# 完整 clean 保留配方 E30：真实星地 U 教学的最终结果
+
+本轮状态：ANALYZED／VERIFIED，科学判定为 SOURCE_NEGATIVE。三组、一个模型 seed 2026092701，均独立从零训练20+10累计E30；所有clean及6个practical已固定预测、独立truth-last评分并重算。默认分类头与网络结构不变，未留出训练RX。相对B0，UAS的urban均值64.1319%→64.9230%（+0.7911pp）、mid62.9643%→63.8571%（+0.8929pp）、low51.6000%→52.4613%（+0.8613pp）；clean85.5113%→85.2452%（−0.2661pp）。这是小幅星地增益，未达到low>60%或clean净正收益。所有正式RX的clean本轮均下降，RX8-8为−1.1833pp；不以总体平均掩盖该代价。
+
+固定C4在读取正式分数前已因源门槛未通过而关闭，提交b0dcc80bdcbc79a5a234733d5518cb78b7e7afe1；正式结果不改变不扩seed、不调参救跑的决策。三组完整NN相同，URAW的额外raw-U KL相对B0没有可观收益；UAS相对URAW的urban均值+0.7960pp、low+0.8768pp、clean−0.2565pp。模型seed只有1，两个源信道draw不是两个模型seed，不能证明跨seed复现。
+
+## 逐 row／seed 正式指标
+
+B0：原完整L配方＋一次额外rawU零loss前向；URAW：同成本rawU软KL；UAS：同成本full practical U软KL。共同L有效ordinary:satellite=.75:.25、原SupCon／RDrop／旧U门控不变。所有数值仅对应本run、上述seed、相同168000个测试physical样本和固定7视图；不是普通无As基线或新的2×2 Ag因子矩阵。
+
+| 环境 | B0 准确率% | URAW 准确率% | UAS 准确率% | UAS−B0 pp | UAS−URAW pp |
+|---|---:|---:|---:|---:|---:|
+| clean | 85.5113 | 85.5018 | 85.2452 | -0.2661 | -0.2565 |
+| practical_high | 81.3571 | 81.3881 | 81.9613 | 0.6042 | 0.5732 |
+| practical_mid | 78.5863 | 78.6333 | 79.3083 | 0.7220 | 0.6750 |
+| practical_low_suburban | 76.0030 | 76.0286 | 76.7042 | 0.7012 | 0.6756 |
+| practical_high_urban | 77.8315 | 77.8661 | 78.4506 | 0.6190 | 0.5845 |
+| practical_mid_urban | 62.9643 | 62.9304 | 63.8571 | 0.8929 | 0.9268 |
+| practical_low_urban | 51.6000 | 51.5845 | 52.4613 | 0.8613 | 0.8768 |
+
+| 环境 | UAS Macro-F1% | UAS 最差RX准确率% | UAS clean−本环境 pp |
+|---|---:|---:|---:|
+| clean | 84.9785 | 79.0333 | 0.0000 |
+| practical_high | 81.6417 | 72.8333 | 3.2839 |
+| practical_mid | 78.9635 | 71.4208 | 5.9369 |
+| practical_low_suburban | 76.3354 | 69.4625 | 8.5411 |
+| practical_high_urban | 78.0677 | 70.2708 | 6.7946 |
+| practical_mid_urban | 63.3419 | 58.0167 | 21.3881 |
+| practical_low_urban | 51.8158 | 48.1208 | 32.7839 |
+
+UAS最差low RX为14-7，46.7000%→48.1208%（相对B0+1.4208pp）。low Macro-F1为51.8158%，B0为51.1258%（+0.6900pp）。suburban三个绝对准确率确有提高，但相对clean仍差3.2839／5.9369／8.5411pp；差距缩小也包含clean下降，不能把它当成保持clean达标。完整每RX/day/TX/view及该seed记录见[per_row_seed.csv](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/per_row_seed.csv)，全部378个正式混淆矩阵已与原scorer一致。
+
+## 收益归因与未解决退化
+
+同预算raw控制非常接近B0：clean−0.0095pp、urban均值−0.0050pp。三组6660步ordinary输入MSE、L/U采样顺序均完全匹配，额外学生NN每组963900、额外教师NN0，本轮对照支持把有限星地增量归于完整practical U教学这一已登记差异，跨seed尚未验证；不归功于新骨干、换头、扩大L或另训诊断头。
+
+源V1800／两次固定draw的low PARTIAL/degraded：URAW77.8656%→UAS81.0277%（+3.1621pp，n253）；PARTIAL/locked88.5993%→90.8795%（+2.2801pp，n307）；BLOCKED/unlocked29.5847%→31.6933%（+2.1086pp，n1565），后者仍很差。新增噪声比8至15dB分层+2.9703pp（n303）、<3dB分层+2.3957pp（n1127）。这些是同源物理分层的描述性改善，不是移除噪声／多径后重算或固定接收状态的因果消融；正式target缺少逐包状态标签，不能把源分层数字冒充正式状态成绩。signal/added-noise不是原录音总SNR。
+
+正式low相对B0修复3113、引入1666个新错，净+1447；clean修复429、新错876，净−447。相对URAW，low修复3146、新错1673，净+1473。固定新B0 clean正确集合143659上，low保持率56.5408%→57.5488%（+1.0079pp）；该集合是本轮As训练控制，不是历史未增强父模型。默认头margin除以固定cos尺度30，low均值.0291499→.0333674；尺度变化没有被当作改善。详细配对见[paired_repairs.csv](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/paired_repairs.csv)和[fixed_B0_retention.csv](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/fixed_B0_retention.csv)。
+
+原门控最终接受率约1.47%，额外连续teacher q对约88.67%的U为正；U真值始终隐藏，不能把该比率称作U伪标签precision。全30轮曲线显示常规L CE／RDrop和源V走势接近，UAS额外KL持续非零；辅助loss、q覆盖或梯度健康不替代识别收益，固定预算结束不证明收敛。未保存逐包内部门控激活、逐分支训练梯度轨迹和L逐包TX×状态侧表，不编造这些机制结论；已有源/默认头和不拟合参数的分析见实际产物。
+
+## 覆盖、成本与验证
+
+每组L6300／U56700全部出现，完整5个源RX与3个day保留，无L_dev或训练域留出。每组L默认头前向3409920、L完整As426240。UAS完整额外As(U)963900／3774批，15个RX/day/eq会话硬件跨段稳定，记录变化0；全部residual/post_sync/noEQ（G=1），新增噪声、遮挡与补偿依赖保留，synthetic_reflect边界，AGC限幅67个。原formal received IQ、SNR、信道和样本集合没有改变。
+
+| Row | native训练/验证秒 | 正式预测秒 | 全部源NN | 正式预测NN | 总NN |
+|---|---:|---:|---:|---:|---:|
+| B0 | 2761.9712 | 47.3221 | 7246624 | 1176002 | 8422626 |
+| URAW | 2776.9127 | 58.5044 | 7246624 | 1176002 | 8422626 |
+| UAS | 4300.2098 | 47.1424 | 7246624 | 1176002 | 8422626 |
+
+共享预烟测50NN仅计一次，三组总25267928NN；共90新modelE／19980更新，每模型预算E30。父成本为各自已计入的E20，不加载E200或历史目标选出的权重。首次源teacher资格14400NN已在native计数中，冻结后独立源读出12600NN另计；后者没有单独墙钟记录，保留null。源独立分析16.3690s、最终独立分析90.7226s，均0模型NN／0IQ／0checkpoint／0更新；最终分析在源结论提交且全部预测完成后才读正式truth。相同NN的UAS native墙钟约为B0的1.557倍，主要额外工作含真实信道生成和物理记录；不把NN相等误写成墙钟相同。
+
+训练聚焦检查6PASS／1本地CUDA不可用SKIP，实际三个GPU私有RNG回归均PASS；一次独立P0/P1及3处修复的定点复核PASS；真实checkpoint零query smoke2NN、真实F合成梯度路由48NN PASS。独立分析7项检查及编译PASS，全部3×6660完整step／物理采样及378正式、831源混淆矩阵重算PASS。外部发布／运行／结果关闭以实际产物独立核对为VERIFIED。所有8组原PNG已逐张查看；覆盖热图文字对比度单独修正并查看，原16图文件保留，修订不改指标／不重新训练或预测。
+
+## 实际文件与复现入口
+
+训练实现：[runner.py](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_Uurban39/runner.py)、[model.py](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_Uurban39/model.py)、[observer.py](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_Uurban39/observer.py)、[channel.py](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_Uurban39/channel.py)、[source.py](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_Uurban39/source.py)、[qualification.py](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_Uurban39/qualification.py)、[criteria.py](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_Uurban39/criteria.py)、[design.py](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_Uurban39/design.py)。执行身份91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a；数据／模型／seed／阶段配置由design及本目录experiment.json记录，各run保留resolved config与actual_modules。实际leo_practical来自原pinned release的experiments/adv3b02_xuc/code，非顶层code；完整__file__审计与命令在下方历史执行记录。
+
+独立分析：[结果程序](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/analysis/cvs_Uurban_E30_results_20261018.py)、[7项检查](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/analysis/check_Uurban_E30_analysis.py)，执行身份34b02721c60e4b7a7dffa2d313f2190409509b4c；图修订程序[coverage figure](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/analysis/cvs_Uurban_coverage_figure_20261018.py)，身份26aa4ffe7a805dbd0ba5e9b2598d041564889926。真实命令为固定N607 CVS-RFFI Python执行/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cleanurban_U_E30_20261018_r01/experiments/cvs_Uurban39/runner.py；最终分析执行/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_Uurban_analysis_20261018_r03/cvs_Uurban_E30_results_20261018.py --mode final --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/final_analysis_r01 --source-analysis /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/source_analysis_r01 --truth 固定既有truth路径。图修订以已提交脚本内容经SSH UTF-8 stdin执行，参数--analysis /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/final_analysis_r01 --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/figure_revision_r01。未重启、停止、热改其他健康实验。
+
+实际小型汇总见[results_summary.json](E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/results_summary.json)，源闭合决策见[source_development_decision.json](E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/source_development_decision.json)，原始源分层见[source_strata.csv](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/source_analysis_r01/source_strata.csv)，全量U物理统计见[U_physics_summary.json](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/U_physics_summary.json)，质量代理敏感性见[quality_state_sensitivity.csv](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/quality_state_sensitivity.csv)。全部963900记录的替代代理阈值交叉为21535／18609，仅元数据反事实；实际状态、波形及补偿未改，不测分类因果效应。
+
+8组图表均实际存在，PNG供查看、PDF供导出：
+
+- [formal_accuracy PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/formal_accuracy.png)／[PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/formal_accuracy.pdf)
+- [training_curves PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/training_curves.png)／[PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/training_curves.pdf)
+- [receiver_accuracy PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/receiver_accuracy.png)／[PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/receiver_accuracy.pdf)
+- [extra_U_training_curves PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/extra_U_training_curves.png)／[PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/extra_U_training_curves.pdf)
+- [training_L_support PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/figure_revision_r01/training_L_support.png)／[PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/figure_revision_r01/training_L_support.pdf)
+- [source_added_noise_accuracy PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/source_added_noise_accuracy.png)／[PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/source_added_noise_accuracy.pdf)
+- [source_state_lock_accuracy PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/source_state_lock_accuracy.png)／[PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/source_state_lock_accuracy.pdf)
+- [training_U_physical_support PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/training_U_physical_support.png)／[PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01/training_U_physical_support.pdf)
+
+未完成项：新增Ag的独立有效性、匹配的Ag×As交互项、clean净正收益、low>60%、预先记录的suburban距clean≤2pp探索目标及跨模型seed复现。2pp为探索标准，不另立用户未指定的硬门槛。固定C4不继续扩种子；下一候选尚未选定。后续研究只能基于合法源证据重新提出IQ／训练组织假设，不能从本轮正式分数定标或挑选重跑。整体目标保持active。
+
+---
+
+下面保留启动前预登记、完整审计和执行历史；历史RUNNING／待完成文字仅描述当时状态，以本页最终结果和登记为准。
+
 # 完整 clean 保留配方：独立 U 星地教学 E30
 
 当前状态：RUNNING／VERIFIED，累计 E30、冻结源判定和正式评价均未完成。下述方法与门槛在启动前固定。唯一假设：在完整原参考配方上，复用自身clean EMA的可信分布监督同包完整practical U，能优于同成本的额外raw U监督，并保住clean。P38固定源面板已显示teacher置信precision99.88%至100%、coverage89%至92.56%、low加权教学机会38%至40%；这些是源域资格，不是U真值精度或训练增益。旧SIG_TIME E50的SSL增量很小，不能直接复用其结论或叠加收益。

@@ -1,0 +1,754 @@
+{
+  "schema": "P39_completed_default_head_summary_v1",
+  "run_id": "20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01",
+  "status": "ANALYZED_SOURCE_NEGATIVE",
+  "model_seed": 2026092701,
+  "model_seed_count": 1,
+  "training_code_commit": "91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a",
+  "analysis_code_commit": "34b02721c60e4b7a7dffa2d313f2190409509b4c",
+  "source_decision_commit": "b0dcc80bdcbc79a5a234733d5518cb78b7e7afe1",
+  "plot_display_commit": "26aa4ffe7a805dbd0ba5e9b2598d041564889926",
+  "source_decision": {
+    "status": "SOURCE_DECIDED",
+    "checks": {
+      "all_own_teachers_qualified": true,
+      "UAS_clean_kept_vs_base": true,
+      "UAS_clean_kept_vs_raw": true,
+      "each_urban_draw_gain_over_raw": false
+    },
+    "source_qualified": false,
+    "urban_deltas_pp": [
+      0.11111111111111738,
+      1.5000000000000013,
+      1.055555555555554,
+      1.2777777777777777
+    ],
+    "clean": {
+      "B0": 0.9805555555555555,
+      "URAW": 0.9808888888888889,
+      "UAS": 0.9807777777777777
+    },
+    "source_only": true,
+    "formal_scores_read": false,
+    "automatic_seed_extension": false,
+    "goal_complete": false
+  },
+  "formal_results": [
+    {
+      "arm": "B0",
+      "view": "clean",
+      "accuracy": 85.51130952380952,
+      "macro_f1": 85.2498144018197,
+      "worst_RX": 79.11666666666667,
+      "margin": 0.1447734534740448
+    },
+    {
+      "arm": "B0",
+      "view": "practical_high",
+      "accuracy": 81.35714285714286,
+      "macro_f1": 80.9886281108069,
+      "worst_RX": 71.46666666666667,
+      "margin": 0.10042229294776917
+    },
+    {
+      "arm": "B0",
+      "view": "practical_mid",
+      "accuracy": 78.58630952380953,
+      "macro_f1": 78.20702852004887,
+      "worst_RX": 69.91666666666667,
+      "margin": 0.09039613604545593
+    },
+    {
+      "arm": "B0",
+      "view": "practical_low_suburban",
+      "accuracy": 76.00297619047619,
+      "macro_f1": 75.62859758979825,
+      "worst_RX": 68.10833333333333,
+      "margin": 0.0807633027434349
+    },
+    {
+      "arm": "B0",
+      "view": "practical_high_urban",
+      "accuracy": 77.83154761904761,
+      "macro_f1": 77.42306581604976,
+      "worst_RX": 68.95416666666667,
+      "margin": 0.09179126471281052
+    },
+    {
+      "arm": "B0",
+      "view": "practical_mid_urban",
+      "accuracy": 62.964285714285715,
+      "macro_f1": 62.50917267656567,
+      "worst_RX": 56.65,
+      "margin": 0.05490702763199806
+    },
+    {
+      "arm": "B0",
+      "view": "practical_low_urban",
+      "accuracy": 51.6,
+      "macro_f1": 51.125842195125536,
+      "worst_RX": 46.7,
+      "margin": 0.02914990484714508
+    },
+    {
+      "arm": "URAW",
+      "view": "clean",
+      "accuracy": 85.50178571428572,
+      "macro_f1": 85.24342746818509,
+      "worst_RX": 79.15833333333333,
+      "margin": 0.1474471539258957
+    },
+    {
+      "arm": "URAW",
+      "view": "practical_high",
+      "accuracy": 81.38809523809523,
+      "macro_f1": 81.02629883880401,
+      "worst_RX": 71.62083333333334,
+      "margin": 0.10111384093761444
+    },
+    {
+      "arm": "URAW",
+      "view": "practical_mid",
+      "accuracy": 78.63333333333333,
+      "macro_f1": 78.26463291936014,
+      "worst_RX": 70.09166666666667,
+      "margin": 0.09087810665369034
+    },
+    {
+      "arm": "URAW",
+      "view": "practical_low_suburban",
+      "accuracy": 76.02857142857142,
+      "macro_f1": 75.66653669255005,
+      "worst_RX": 68.20833333333334,
+      "margin": 0.08104690164327621
+    },
+    {
+      "arm": "URAW",
+      "view": "practical_high_urban",
+      "accuracy": 77.86607142857143,
+      "macro_f1": 77.46802862609711,
+      "worst_RX": 69.15,
+      "margin": 0.09242420643568039
+    },
+    {
+      "arm": "URAW",
+      "view": "practical_mid_urban",
+      "accuracy": 62.93035714285714,
+      "macro_f1": 62.49672683530781,
+      "worst_RX": 56.704166666666666,
+      "margin": 0.05518915131688118
+    },
+    {
+      "arm": "URAW",
+      "view": "practical_low_urban",
+      "accuracy": 51.58452380952381,
+      "macro_f1": 51.13801160337239,
+      "worst_RX": 46.791666666666664,
+      "margin": 0.029225517064332962
+    },
+    {
+      "arm": "UAS",
+      "view": "clean",
+      "accuracy": 85.2452380952381,
+      "macro_f1": 84.9784836573713,
+      "worst_RX": 79.03333333333333,
+      "margin": 0.1455068439245224
+    },
+    {
+      "arm": "UAS",
+      "view": "practical_high",
+      "accuracy": 81.96130952380952,
+      "macro_f1": 81.64167094385178,
+      "worst_RX": 72.83333333333334,
+      "margin": 0.10759055614471436
+    },
+    {
+      "arm": "UAS",
+      "view": "practical_mid",
+      "accuracy": 79.30833333333334,
+      "macro_f1": 78.9634766415832,
+      "worst_RX": 71.42083333333333,
+      "margin": 0.09730809926986694
+    },
+    {
+      "arm": "UAS",
+      "view": "practical_low_suburban",
+      "accuracy": 76.70416666666667,
+      "macro_f1": 76.3353768845905,
+      "worst_RX": 69.4625,
+      "margin": 0.08733406662940979
+    },
+    {
+      "arm": "UAS",
+      "view": "practical_high_urban",
+      "accuracy": 78.45059523809523,
+      "macro_f1": 78.06771476498862,
+      "worst_RX": 70.27083333333334,
+      "margin": 0.09859729558229446
+    },
+    {
+      "arm": "UAS",
+      "view": "practical_mid_urban",
+      "accuracy": 63.857142857142854,
+      "macro_f1": 63.34188181983175,
+      "worst_RX": 58.01666666666667,
+      "margin": 0.060251981019973755
+    },
+    {
+      "arm": "UAS",
+      "view": "practical_low_urban",
+      "accuracy": 52.46130952380952,
+      "macro_f1": 51.81584839398642,
+      "worst_RX": 48.12083333333334,
+      "margin": 0.033367373049259186
+    }
+  ],
+  "urban_means": {
+    "B0": 0.6413194444444444,
+    "URAW": 0.6412698412698413,
+    "UAS": 0.6492301587301587
+  },
+  "suburban_gaps_pp": {
+    "B0": {
+      "practical_high": 4.154166666666659,
+      "practical_mid": 6.924999999999992,
+      "practical_low_suburban": 9.50833333333333
+    },
+    "URAW": {
+      "practical_high": 4.113690476190479,
+      "practical_mid": 6.868452380952384,
+      "practical_low_suburban": 9.473214285714294
+    },
+    "UAS": {
+      "practical_high": 3.2839285714285738,
+      "practical_mid": 5.93690476190476,
+      "practical_low_suburban": 8.541071428571435
+    }
+  },
+  "paired_repairs": [
+    {
+      "new": "URAW",
+      "old": "B0",
+      "view": "clean",
+      "repairs": 298,
+      "new_errors": 314,
+      "net": -16,
+      "accuracy_delta_pp": -0.009523809523809525,
+      "common_clean_count": 143345,
+      "common_clean_repairs": 0,
+      "common_clean_new_errors": 0
+    },
+    {
+      "new": "URAW",
+      "old": "B0",
+      "view": "practical_high",
+      "repairs": 453,
+      "new_errors": 401,
+      "net": 52,
+      "accuracy_delta_pp": 0.030952380952380953,
+      "common_clean_count": 143345,
+      "common_clean_repairs": 317,
+      "common_clean_new_errors": 299
+    },
+    {
+      "new": "URAW",
+      "old": "B0",
+      "view": "practical_mid",
+      "repairs": 550,
+      "new_errors": 471,
+      "net": 79,
+      "accuracy_delta_pp": 0.04702380952380952,
+      "common_clean_count": 143345,
+      "common_clean_repairs": 410,
+      "common_clean_new_errors": 349
+    },
+    {
+      "new": "URAW",
+      "old": "B0",
+      "view": "practical_low_suburban",
+      "repairs": 649,
+      "new_errors": 606,
+      "net": 43,
+      "accuracy_delta_pp": 0.025595238095238095,
+      "common_clean_count": 143345,
+      "common_clean_repairs": 507,
+      "common_clean_new_errors": 471
+    },
+    {
+      "new": "URAW",
+      "old": "B0",
+      "view": "practical_high_urban",
+      "repairs": 540,
+      "new_errors": 482,
+      "net": 58,
+      "accuracy_delta_pp": 0.034523809523809526,
+      "common_clean_count": 143345,
+      "common_clean_repairs": 407,
+      "common_clean_new_errors": 379
+    },
+    {
+      "new": "URAW",
+      "old": "B0",
+      "view": "practical_mid_urban",
+      "repairs": 674,
+      "new_errors": 731,
+      "net": -57,
+      "accuracy_delta_pp": -0.033928571428571426,
+      "common_clean_count": 143345,
+      "common_clean_repairs": 544,
+      "common_clean_new_errors": 594
+    },
+    {
+      "new": "URAW",
+      "old": "B0",
+      "view": "practical_low_urban",
+      "repairs": 856,
+      "new_errors": 882,
+      "net": -26,
+      "accuracy_delta_pp": -0.015476190476190477,
+      "common_clean_count": 143345,
+      "common_clean_repairs": 696,
+      "common_clean_new_errors": 748
+    },
+    {
+      "new": "UAS",
+      "old": "B0",
+      "view": "clean",
+      "repairs": 429,
+      "new_errors": 876,
+      "net": -447,
+      "accuracy_delta_pp": -0.26607142857142857,
+      "common_clean_count": 142783,
+      "common_clean_repairs": 0,
+      "common_clean_new_errors": 0
+    },
+    {
+      "new": "UAS",
+      "old": "B0",
+      "view": "practical_high",
+      "repairs": 1678,
+      "new_errors": 663,
+      "net": 1015,
+      "accuracy_delta_pp": 0.6041666666666666,
+      "common_clean_count": 142783,
+      "common_clean_repairs": 1319,
+      "common_clean_new_errors": 422
+    },
+    {
+      "new": "UAS",
+      "old": "B0",
+      "view": "practical_mid",
+      "repairs": 1969,
+      "new_errors": 756,
+      "net": 1213,
+      "accuracy_delta_pp": 0.7220238095238095,
+      "common_clean_count": 142783,
+      "common_clean_repairs": 1594,
+      "common_clean_new_errors": 501
+    },
+    {
+      "new": "UAS",
+      "old": "B0",
+      "view": "practical_low_suburban",
+      "repairs": 2076,
+      "new_errors": 898,
+      "net": 1178,
+      "accuracy_delta_pp": 0.7011904761904761,
+      "common_clean_count": 142783,
+      "common_clean_repairs": 1728,
+      "common_clean_new_errors": 621
+    },
+    {
+      "new": "UAS",
+      "old": "B0",
+      "view": "practical_high_urban",
+      "repairs": 1818,
+      "new_errors": 778,
+      "net": 1040,
+      "accuracy_delta_pp": 0.6190476190476191,
+      "common_clean_count": 142783,
+      "common_clean_repairs": 1470,
+      "common_clean_new_errors": 539
+    },
+    {
+      "new": "UAS",
+      "old": "B0",
+      "view": "practical_mid_urban",
+      "repairs": 2716,
+      "new_errors": 1216,
+      "net": 1500,
+      "accuracy_delta_pp": 0.8928571428571429,
+      "common_clean_count": 142783,
+      "common_clean_repairs": 2338,
+      "common_clean_new_errors": 921
+    },
+    {
+      "new": "UAS",
+      "old": "B0",
+      "view": "practical_low_urban",
+      "repairs": 3113,
+      "new_errors": 1666,
+      "net": 1447,
+      "accuracy_delta_pp": 0.8613095238095239,
+      "common_clean_count": 142783,
+      "common_clean_repairs": 2752,
+      "common_clean_new_errors": 1303
+    },
+    {
+      "new": "UAS",
+      "old": "URAW",
+      "view": "clean",
+      "repairs": 364,
+      "new_errors": 795,
+      "net": -431,
+      "accuracy_delta_pp": -0.256547619047619,
+      "common_clean_count": 142848,
+      "common_clean_repairs": 0,
+      "common_clean_new_errors": 0
+    },
+    {
+      "new": "UAS",
+      "old": "URAW",
+      "view": "practical_high",
+      "repairs": 1629,
+      "new_errors": 666,
+      "net": 963,
+      "accuracy_delta_pp": 0.5732142857142857,
+      "common_clean_count": 142848,
+      "common_clean_repairs": 1309,
+      "common_clean_new_errors": 431
+    },
+    {
+      "new": "UAS",
+      "old": "URAW",
+      "view": "practical_mid",
+      "repairs": 1907,
+      "new_errors": 773,
+      "net": 1134,
+      "accuracy_delta_pp": 0.675,
+      "common_clean_count": 142848,
+      "common_clean_repairs": 1566,
+      "common_clean_new_errors": 531
+    },
+    {
+      "new": "UAS",
+      "old": "URAW",
+      "view": "practical_low_suburban",
+      "repairs": 2060,
+      "new_errors": 925,
+      "net": 1135,
+      "accuracy_delta_pp": 0.6755952380952381,
+      "common_clean_count": 142848,
+      "common_clean_repairs": 1720,
+      "common_clean_new_errors": 640
+    },
+    {
+      "new": "UAS",
+      "old": "URAW",
+      "view": "practical_high_urban",
+      "repairs": 1789,
+      "new_errors": 807,
+      "net": 982,
+      "accuracy_delta_pp": 0.5845238095238096,
+      "common_clean_count": 142848,
+      "common_clean_repairs": 1471,
+      "common_clean_new_errors": 564
+    },
+    {
+      "new": "UAS",
+      "old": "URAW",
+      "view": "practical_mid_urban",
+      "repairs": 2793,
+      "new_errors": 1236,
+      "net": 1557,
+      "accuracy_delta_pp": 0.9267857142857143,
+      "common_clean_count": 142848,
+      "common_clean_repairs": 2422,
+      "common_clean_new_errors": 960
+    },
+    {
+      "new": "UAS",
+      "old": "URAW",
+      "view": "practical_low_urban",
+      "repairs": 3146,
+      "new_errors": 1673,
+      "net": 1473,
+      "accuracy_delta_pp": 0.8767857142857143,
+      "common_clean_count": 142848,
+      "common_clean_repairs": 2800,
+      "common_clean_new_errors": 1302
+    }
+  ],
+  "fixed_B0_low_urban_retention": [
+    {
+      "arm": "B0",
+      "view": "practical_low_urban",
+      "fixed_B0_clean_correct_count": 143659,
+      "retained": 81226,
+      "retention": 0.5654083628592709
+    },
+    {
+      "arm": "URAW",
+      "view": "practical_low_urban",
+      "fixed_B0_clean_correct_count": 143659,
+      "retained": 81173,
+      "retention": 0.5650394336588728
+    },
+    {
+      "arm": "UAS",
+      "view": "practical_low_urban",
+      "fixed_B0_clean_correct_count": 143659,
+      "retained": 82674,
+      "retention": 0.5754877870512811
+    }
+  ],
+  "formal_clean_RX": [
+    {
+      "RX": "1-1",
+      "B0": 79.22083333333333,
+      "UAS": 79.20833333333334,
+      "delta_pp": -0.012499999999993072
+    },
+    {
+      "RX": "14-7",
+      "B0": 79.11666666666667,
+      "UAS": 79.03333333333333,
+      "delta_pp": -0.08333333333333526
+    },
+    {
+      "RX": "2-1",
+      "B0": 90.9375,
+      "UAS": 90.67083333333333,
+      "delta_pp": -0.2666666666666706
+    },
+    {
+      "RX": "20-1",
+      "B0": 83.325,
+      "UAS": 83.28333333333333,
+      "delta_pp": -0.04166666666667318
+    },
+    {
+      "RX": "7-14",
+      "B0": 95.07916666666667,
+      "UAS": 95.00833333333333,
+      "delta_pp": -0.07083333333334219
+    },
+    {
+      "RX": "7-7",
+      "B0": 88.87083333333334,
+      "UAS": 88.66666666666667,
+      "delta_pp": -0.20416666666666083
+    },
+    {
+      "RX": "8-8",
+      "B0": 82.02916666666667,
+      "UAS": 80.84583333333333,
+      "delta_pp": -1.1833333333333362
+    }
+  ],
+  "source_low_urban_strata": [
+    {
+      "scene": "practical_low_urban",
+      "dimension": "state_lock",
+      "stratum": "LOS/locked",
+      "n": 1060,
+      "UAS": 94.81132075471697,
+      "URAW": 94.71698113207547,
+      "delta_pp": 0.09433962264150386,
+      "UAS_margin": 0.18014293909072876,
+      "URAW_margin": 0.1686447709798813
+    },
+    {
+      "scene": "practical_low_urban",
+      "dimension": "state_lock",
+      "stratum": "PARTIAL/locked",
+      "n": 307,
+      "UAS": 90.87947882736157,
+      "URAW": 88.59934853420195,
+      "delta_pp": 2.28013029315961,
+      "UAS_margin": 0.13594785332679749,
+      "URAW_margin": 0.12530559301376343
+    },
+    {
+      "scene": "practical_low_urban",
+      "dimension": "state_lock",
+      "stratum": "PARTIAL/degraded",
+      "n": 253,
+      "UAS": 81.02766798418972,
+      "URAW": 77.86561264822134,
+      "delta_pp": 3.1620553359683834,
+      "UAS_margin": 0.0679350420832634,
+      "URAW_margin": 0.06070132553577423
+    },
+    {
+      "scene": "practical_low_urban",
+      "dimension": "state_lock",
+      "stratum": "PARTIAL/unlocked",
+      "n": 1,
+      "UAS": 0,
+      "URAW": 0,
+      "delta_pp": 0,
+      "UAS_margin": -0.015103566460311413,
+      "URAW_margin": -0.0073021273128688335
+    },
+    {
+      "scene": "practical_low_urban",
+      "dimension": "state_lock",
+      "stratum": "BLOCKED/degraded",
+      "n": 414,
+      "UAS": 44.20289855072464,
+      "URAW": 43.96135265700483,
+      "delta_pp": 0.24154589371980784,
+      "UAS_margin": 0.004352007061243057,
+      "URAW_margin": 0.0009631518623791635
+    },
+    {
+      "scene": "practical_low_urban",
+      "dimension": "state_lock",
+      "stratum": "BLOCKED/unlocked",
+      "n": 1565,
+      "UAS": 31.69329073482428,
+      "URAW": 29.58466453674121,
+      "delta_pp": 2.108626198083069,
+      "UAS_margin": -0.011143521405756474,
+      "URAW_margin": -0.01353794988244772
+    },
+    {
+      "scene": "practical_low_urban",
+      "dimension": "added_noise_ratio",
+      "stratum": "<3",
+      "n": 1127,
+      "UAS": 29.103815439219165,
+      "URAW": 26.70807453416149,
+      "delta_pp": 2.395740905057675,
+      "UAS_margin": -0.014217791147530079,
+      "URAW_margin": -0.01654665172100067
+    },
+    {
+      "scene": "practical_low_urban",
+      "dimension": "added_noise_ratio",
+      "stratum": "3-8",
+      "n": 794,
+      "UAS": 40.80604534005038,
+      "URAW": 40.050377833753146,
+      "delta_pp": 0.7556675062972307,
+      "UAS_margin": -0.00039789601578377187,
+      "URAW_margin": -0.003276757663115859
+    },
+    {
+      "scene": "practical_low_urban",
+      "dimension": "added_noise_ratio",
+      "stratum": "8-15",
+      "n": 303,
+      "UAS": 73.92739273927393,
+      "URAW": 70.95709570957096,
+      "delta_pp": 2.970297029702962,
+      "UAS_margin": 0.054354533553123474,
+      "URAW_margin": 0.047956448048353195
+    },
+    {
+      "scene": "practical_low_urban",
+      "dimension": "added_noise_ratio",
+      "stratum": ">=15",
+      "n": 1376,
+      "UAS": 93.8953488372093,
+      "URAW": 93.31395348837209,
+      "delta_pp": 0.5813953488372103,
+      "UAS_margin": 0.17012502253055573,
+      "URAW_margin": 0.15880325436592102
+    }
+  ],
+  "cost": {
+    "per_model": {
+      "B0": {
+        "source_identity_NN": 7246624,
+        "prediction_identity_NN": 1176002,
+        "total_identity_NN": 8422626,
+        "new_epochs": 30,
+        "new_updates": 6660
+      },
+      "URAW": {
+        "source_identity_NN": 7246624,
+        "prediction_identity_NN": 1176002,
+        "total_identity_NN": 8422626,
+        "new_epochs": 30,
+        "new_updates": 6660
+      },
+      "UAS": {
+        "source_identity_NN": 7246624,
+        "prediction_identity_NN": 1176002,
+        "total_identity_NN": 8422626,
+        "new_epochs": 30,
+        "new_updates": 6660
+      }
+    },
+    "shared_preflight_NN": 50,
+    "matrix_total_identity_NN": 25267928,
+    "new_model_epochs": 90,
+    "new_updates": 19980,
+    "diagnostic_parent_training_epochs_charged": 0,
+    "each_own20_is_already_in30": true,
+    "analysis_NN": 0
+  },
+  "source_and_prediction_walls": {
+    "B0": {
+      "native_source_seconds": 2761.971179962158,
+      "prediction_seconds": 47.322077660122886,
+      "frozen_source_readout_seconds": null
+    },
+    "URAW": {
+      "native_source_seconds": 2776.9127469062805,
+      "prediction_seconds": 58.50442491308786,
+      "frozen_source_readout_seconds": null
+    },
+    "UAS": {
+      "native_source_seconds": 4300.209766626358,
+      "prediction_seconds": 47.142356413882226,
+      "frozen_source_readout_seconds": null
+    }
+  },
+  "formal_confusions": 378,
+  "source_confusions": 831,
+  "source_analysis_seconds": 16.368958265986294,
+  "final_analysis_seconds": 90.72262622998096,
+  "physical_U": {
+    "observations": 963900,
+    "batches": 3774,
+    "sessions": 15,
+    "hardware_variations": 0,
+    "AGC_limited": 67,
+    "equalization": false,
+    "total_SNR_known": false,
+    "proxy_state_sensitivity_counts": {
+      "signal_added_noise_state": 21535,
+      "signal_reference_noise_state": 18609
+    },
+    "receiver_state_or_compensation_recomputed": false
+  },
+  "formal_state_labels_available": false,
+  "no_deployment_head_change": true,
+  "U_TX_truth_read": false,
+  "new_Ag_proved": false,
+  "factorial_Ag_interaction_estimable": false,
+  "crossseed_confirmed": false,
+  "source_closed_before_formal_read": true,
+  "no_fixed_recipe_seed_extension": true,
+  "next_candidate_selected": false,
+  "whole_goal_complete": false,
+  "artifacts": {
+    "final": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01",
+    "source": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/source_analysis_r01",
+    "coverage_display_revision": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/figure_revision_r01"
+  },
+  "units": {
+    "formal_results_accuracy_macro_f1_worst_RX": "percent",
+    "urban_means": "fraction",
+    "suburban_gaps": "percentage_points",
+    "source_low_urban_strata_accuracies": "percent",
+    "source_low_urban_strata_deltas": "percentage_points",
+    "source_low_urban_strata_margins": "logit/30",
+    "fixed_B0_retention": "fraction",
+    "clean_RX_accuracies": "percent",
+    "cost_NN": "identity-forward packet count"
+  }
+}
