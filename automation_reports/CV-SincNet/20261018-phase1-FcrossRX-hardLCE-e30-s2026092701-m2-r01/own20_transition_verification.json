@@ -1,0 +1,107 @@
+{
+  "status": "VERIFIED_RUNNING_PARTIAL",
+  "run_id": "20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01",
+  "training_commit": "62b9bb6247b29fc98bf1379b15f3c262f9a495dc",
+  "source_analysis_commit": "1928b5ec55e584f4a93c77124fe1dfd7541c7e6f",
+  "verified_at_unix": 1792277745.7699647,
+  "rows": [
+    {
+      "row_id": "H00-s2026092701",
+      "pid": 962003,
+      "live": true,
+      "GPU": 0,
+      "stage20": {
+        "epoch": 20,
+        "cumulative_epoch": 20,
+        "steps": 4440,
+        "cumulative_steps": 4440,
+        "L_NN": 3409920,
+        "L_As": 0,
+        "extra_U_NN": 0,
+        "U_As": 0,
+        "existing_U_only": true,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "own10": {
+        "epoch": 1,
+        "cumulative_epoch": 21,
+        "steps": 222,
+        "cumulative_steps": 4662,
+        "L_NN": 170496,
+        "L_As": 0,
+        "extra_U_NN": 0,
+        "U_As": 0,
+        "existing_U_only": true,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "stage20_complete": true,
+      "FINAL30_complete": false,
+      "prediction_complete": false,
+      "scoring_complete": false,
+      "log_bytes": 121098
+    },
+    {
+      "row_id": "H01-s2026092701",
+      "pid": 962080,
+      "live": true,
+      "GPU": 1,
+      "stage20": {
+        "epoch": 16,
+        "cumulative_epoch": 16,
+        "steps": 3552,
+        "cumulative_steps": 3552,
+        "L_NN": 2727936,
+        "L_As": 227328,
+        "extra_U_NN": 0,
+        "U_As": 0,
+        "existing_U_only": true,
+        "U_truth_read": false,
+        "target_access": false
+      },
+      "own10": null,
+      "stage20_complete": false,
+      "FINAL30_complete": false,
+      "prediction_complete": false,
+      "scoring_complete": false,
+      "log_bytes": 88615
+    }
+  ],
+  "H00_own20_transition": {
+    "parent_epoch": 20,
+    "parent_updates": 4440,
+    "head_fit_updates": 0,
+    "target_access": false,
+    "source_roles": "EXACT_MATCH",
+    "parent_scope": "strict own H00 stage20;no external initializer",
+    "teacher_origin": "strict own stage20 EMA",
+    "extra_teacher": false,
+    "optimizer": {
+      "state_entries": 0,
+      "reset": true,
+      "schedule": "cosine10",
+      "lr": 0.0002,
+      "weight_decay": 0.0001
+    },
+    "L_smoothing": 0,
+    "native_U_smoothing": 0.01,
+    "cumulative_epoch_offset": 20,
+    "cumulative_step_offset": 4440,
+    "L_NN_per_step": 768,
+    "total_L_scale": 1.25
+  },
+  "H01_own20_transition": "NOT_YET_COMPLETE",
+  "source_analysis": {
+    "pid": 967127,
+    "live": true,
+    "source_complete": false,
+    "source_decision_exists": false,
+    "stderr_empty": true,
+    "mode": "source;no formal scores read"
+  },
+  "IQ_CP_NN_for_this_metadata_check": 0,
+  "new_performance_result": false,
+  "crossseed_confirmed": false,
+  "goal_complete": false
+}

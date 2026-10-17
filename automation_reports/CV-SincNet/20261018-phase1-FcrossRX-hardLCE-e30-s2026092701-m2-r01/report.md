@@ -49,3 +49,10 @@ source条件全部满足才记本消融资格通过：H00 clean−B00≥.2pp；H
 同一批模型最新读回：H00 E11/2442更新/LNN1875456，H01 E8/1776更新/LNN1363968、实际As113664包；原dispatcher与两worker均live，无failure、stderr空。未重启或改配置。
 
 引用对话的新固定RX响应检验已 [ANALYZED并关闭](E:/type10-7/automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01/source_analysis.md)：响应SSE2.944634，相对加性控制.732224变差，0/18折与0/5RX满足改善条件。本分支不从该固定模型生成IQ；先均值/逐包归一化的后续归因属于另一个尚未执行的问题，不把本FAIL翻为Ag依据。当前本分支唯一实际候选仍是已启动的L-only CE0消融，它不替代Ag研究；联合目标保持完整、尚未完成。
+
+
+## E20→自身E10阶段核验（部分矩阵）
+
+H00已完成E20/4440更新，真实默认头随骨干联合训练且head_fit_updates=0、target_access=false；已恢复严格自身student/EMA，source_roles=EXACT_MATCH。优化器state_entries=0、reset=true、lr.0002/WD.0001/cosine10，native/U平滑仍.01，L为0，6L/1.25尺度不变。当前累计E21/4662更新，追加段仍有实际L前向170496，未因label_epochs=0而漏掉L监督。H01当前E16/3552更新，尚未进入续训，不能将H00核验冒充两行均完成。
+
+原dispatcher和worker PID均live，日志持续增长，无failure；源分析PID967127独立核实live、stderr空，继续只等待源完成。正式prediction/scoring均未完成，Agent未读取任何新正式成绩。此次只读元数据核对0IQ/CP/NN/更新，见 [阶段核验](own20_transition_verification.json)。这是已完成阶段与健康等待证据，不是方法有效、收敛或联合目标达成证据。
