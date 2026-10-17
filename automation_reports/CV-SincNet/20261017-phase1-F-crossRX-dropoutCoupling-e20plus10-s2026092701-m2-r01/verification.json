@@ -1,0 +1,26 @@
+{
+  "status": "LOCAL_PASS",
+  "protocol_negatives": 26,
+  "actual_F_synthetic_modes": 2,
+  "actual_active_dropout_calls_per_identity_forward": 13,
+  "random_tensors_per_step": 52,
+  "random_elements_per_step": 13565952,
+  "default_head_joint_gradient_finite": true,
+  "deepcopy_engines_independent": true,
+  "state_dict_unchanged": true,
+  "real_IQ": 0,
+  "CP": 0,
+  "optimizer_updates": 0,
+  "local_development_probe_forward_packets": 1920,
+  "local_development_synthetic_As_calls": 384,
+  "local_failed_probe_attempts": 3,
+  "failures": "Synthetic harness used identity-only instead of native full first forward;then uncovered nuisance dropout not shared across identity forwards;then harness checked unpatched dropout attrs. Fixed before launch;no real run or optimizer updates.",
+  "numpy_ABI_warning": "Local oldtorch numpy bridge unavailable;no NumPy-Torch bridge invoked;production pinnedruntime unchanged.",
+  "P0P1": {
+    "status": "PASS",
+    "independent": true,
+    "review_count": 1,
+    "scope": "Next real run correctness/permissions/destruction/launch/legal prediction only;not performance"
+  },
+  "N607_connection_preflight": "VERIFIED_ORDINARY_ACCOUNT"
+}
