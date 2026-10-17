@@ -1,0 +1,69 @@
+{
+  "status": "RUNNING_VERIFIED",
+  "observed_UTC": "2026-10-17T15:48:55.310Z",
+  "execution_commit": "a56e02cada3f11db002115afedafb4c024151348",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "P0P1": "PASS",
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "parent_epoch": 20,
+    "new_epochs_each": 10,
+    "cumulative_epochs_each": 30,
+    "source_roles": "EXACT_MATCH",
+    "default_head": true
+  },
+  "dispatcher_pid": 730696,
+  "dispatcher_live": true,
+  "technical_failure": null,
+  "source_RX_holdout": null,
+  "all5sourceRX": true,
+  "source_roles": {
+    "L": 6300,
+    "U_hidden_TX": 56700,
+    "V": 27000
+  },
+  "rows": [
+    {
+      "row_id": "INDEPENDENT-s2026092701",
+      "pid": 730723,
+      "GPU": 1,
+      "PID_live": true,
+      "CWD_match": true,
+      "argv_match": true,
+      "CUDA_match": true,
+      "GPU_process_match": true,
+      "stdout_growth_bytes": 5197,
+      "completed_incremental_epochs": 1,
+      "completed_cumulative_epochs": 21,
+      "actual_updates": 222,
+      "training_finished": false,
+      "formal_prediction_finished": false,
+      "formal_scoring_finished": false
+    },
+    {
+      "row_id": "ANTITHETIC-s2026092701",
+      "pid": 730796,
+      "GPU": 2,
+      "PID_live": true,
+      "CWD_match": true,
+      "argv_match": true,
+      "CUDA_match": true,
+      "GPU_process_match": true,
+      "stdout_growth_bytes": 5196,
+      "completed_incremental_epochs": 1,
+      "completed_cumulative_epochs": 21,
+      "actual_updates": 222,
+      "training_finished": false,
+      "formal_prediction_finished": false,
+      "formal_scoring_finished": false
+    }
+  ],
+  "joint_goal_complete": false
+}

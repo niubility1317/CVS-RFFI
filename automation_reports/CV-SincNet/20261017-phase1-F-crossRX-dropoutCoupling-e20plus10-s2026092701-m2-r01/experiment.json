@@ -23,7 +23,7 @@
   ],
   "authorization": "Active E30 joint research authorization;all5sourceRX retained;two fixed sameparent E20+10 controls,no sourceRX holdout",
   "code": {
-    "commit": "ACTUAL_GIT_HEAD_IN_RELEASE_COMMIT_TXT",
+    "commit": "a56e02cada3f11db002115afedafb4c024151348",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary account/existing pinned F runtime/FP32/CPU2/single shared GPU",
     "cwd": "PROJECT/releases/cvs_F_dropoutCoupling_E30_20261017_r01",
@@ -223,7 +223,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-dropoutCoupling-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -261,7 +261,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX originalU/defaulthead;E20+10/cos10-reset;cross-view dropout coupling",
@@ -579,7 +579,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-dropoutCoupling-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -617,7 +617,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX originalU/defaulthead;E20+10/cos10-reset;cross-view dropout coupling",

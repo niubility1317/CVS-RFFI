@@ -1,6 +1,6 @@
 # ordinary／As 跨视图 dropout 相关性：固定 E30 比较
 
-状态：PREREGISTERED／LOCAL_CHECKS_PASS／INDEPENDENT_P0P1_PASS，普通账户连接预检通过，尚未发布或训练。完整联合目标 ACTIVE，未证明新 A_g 或身份识别收益。
+状态：**RUNNING／VERIFIED**。两行均已完成追加第1轮（累计第21轮／222新更新），训练、正式预测和评分尚未完成。完整联合目标 ACTIVE，未证明新 A_g 或身份识别收益。
 
 唯一假设：保留两对独立 RDrop 的边际目标和原 practical 输入，只改变 ordinary 对与 As 对之间的随机子网络相关性，可能改善联合优化后的真实识别。此项属于训练组织；[原 R-Drop 论文](https://proceedings.neurips.cc/paper_files/paper/2021/file/5a66b9200f29ac3fa0ae244cc2a51b39-Paper.pdf)只支持原两次随机子网络一致性的定义，不证明本项 coupling 有效。旧 AsPairCE、噪声 antithetic、RX 会话覆盖的负结果保持关闭，不改变其参数或判定。
 
@@ -24,6 +24,8 @@ F 三路 SIG_TIME、统一 Sinc CENTER_25K／CENTER_UNITS、joint160、默认 co
 
 ## 发布与证据
 
-逐行完整矩阵、配置和存储以[experiment.json](experiment.json)为唯一登记入口；配置[固定矩阵](../../../configs/cvs_dropout_coupling_e30.json)。执行commit将由release_commit.txt记录；发布命令为CVS-RFFI/bin/python -u experiments/cvs_dropout_coupling30/runner.py，CWD为PROJECT/releases/cvs_F_dropoutCoupling_E30_20261017_r01，输出根PROJECT/runs/20261017-phase1-F-crossRX-dropoutCoupling-e20plus10-s2026092701-m2-r01。普通N607账户／固定现有Python和F依赖／全FP32／CPU2／共享GPU，owner codex/root/F-dropoutCoupling-E30。
+逐行完整矩阵、配置和存储以[experiment.json](experiment.json)为唯一登记入口；配置[固定矩阵](../../../configs/cvs_dropout_coupling_e30.json)。执行commit为a56e02cada3f11db002115afedafb4c024151348，由release_commit.txt记录；发布命令为CVS-RFFI/bin/python -u experiments/cvs_dropout_coupling30/runner.py，CWD为PROJECT/releases/cvs_F_dropoutCoupling_E30_20261017_r01，输出根PROJECT/runs/20261017-phase1-F-crossRX-dropoutCoupling-e20plus10-s2026092701-m2-r01。普通N607账户／固定现有Python和F依赖／全FP32／CPU2／共享GPU，owner codex/root/F-dropoutCoupling-E30。
 
-本地26项权限/状态负例与分布/回退/deepcopy检查通过。两行实际F合成四视图、默认头联合梯度、无state_dict变化通过；每前向13个活动dropout、每步52随机张量／13565952随机元素。实现期3次合成探针失败保留在[验证说明](verification.json)，合计1920包模型前向、384次合成As处理、0真实IQ／CP／优化更新；这些不是性能证据。后续按项目最小流程进行唯一一次P0/P1审查、真实CP无query smoke、单archive传输比较、远端编译和PID/CWD/argv/GPU/loggrowth验证，随后自动训练与正式评分。
+本地26项权限/状态负例与分布/回退/deepcopy检查通过。两行实际F合成四视图、默认头联合梯度、无state_dict变化通过；每前向13个活动dropout、每步52随机张量／13565952随机元素。实现期3次合成探针失败保留在[验证说明](verification.json)，合计1920包模型前向、384次合成As处理、0真实IQ／CP／优化更新；这些不是性能证据。发布过程中的唯一一次P0/P1审查、真实CP无query smoke、单archive传输比较、远端编译和PID/CWD/argv/GPU/loggrowth验证均已通过，训练后自动正式评分。
+
+发布后独立核对：[执行证据](execution_evidence.json)、[全部实际参数核对](actual_config_verification.json)。dispatcher730696、INDEPENDENT730723／GPU1、ANTITHETIC730796／GPU2，PID/CWD/argv/CUDA/GPU匹配，日志分别增长5197／5196字节，技术失败为空。857项native参数仅candidate_id/output_dir不同，源物理role_ids与原契约逐项相同，13个既有身份dropout位置完全匹配，父与自身EMA及重置optimizer均正确。源epoch观察确认两行各222更新、4L前向和全部As监督；这仅证实实跑状态，不能替代冻结后识别收益。代码已提交并push，远端OID独立核实一致；未修改运行release或其他健康任务。

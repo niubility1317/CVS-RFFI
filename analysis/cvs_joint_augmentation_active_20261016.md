@@ -1,6 +1,6 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-当前唯一固定比较已实现并登记：[跨 ordinary／As dropout 相关性 E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-dropoutCoupling-e20plus10-s2026092701-m2-r01/report.md)。两行同原始全源As父E20＋10、E30各自封顶，仅改变共有身份dropout的跨视图相关性，保留两对RDrop和原As/U。属于训练组织，不是新Ag；已通过本地合成实现验证，尚未启动或证明识别收益。旧失败路线不改判；全部5源RX、L6300/U56700隐藏TX/V27000、256点IQ、默认cos头联合训练保留，无源训练域留出。当前状态以此run实际证据为准，以下均为历史。
+当前唯一固定比较已发布运行（RUNNING／VERIFIED）：[跨 ordinary／As dropout 相关性 E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-dropoutCoupling-e20plus10-s2026092701-m2-r01/report.md)。两行同原始全源As父E20＋10、E30各自封顶，仅改变共有身份dropout的跨视图相关性，保留两对RDrop和原As/U。属于训练组织，不是新Ag；执行commit a56e02cada3f11db002115afedafb4c024151348；两行已完成追加第1轮／累计E21／各222新更新，单archive/compile/真实CP无query smoke及PID-CWD-argv-GPU-loggrowth均通过，尚未完成训练或正式评分。旧失败路线不改判；全部5源RX、L6300/U56700隐藏TX/V27000、256点IQ、默认cos头联合训练保留，无源训练域留出。当前状态以此run实际证据为准，以下均为历史。
 
 最新完成：[完整接收先验虚拟会话覆盖 E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01/report.md)，ANALYZED／VERIFIED，固定配方关闭。全部5源RX/L6300/U56700隐藏TX/V27000保持，同一个普通As父E20＋10至累计E30／6660更新，七视图1176000正式决策固定后独立评分。150虚拟会话全部生效，clean82.923214%、mid urban64.364286%、low urban53.422024%；相对普通As−.040476／−.007143／−.025000pp，七视图准确率均降，预定low+.5、clean/mid保护失败。三个suburban差1.314881／3.594643／5.963095pp，略缩伴随clean下降，不算联合成功；clean相对B00净−2.345238pp。252CM／42分区／七视图配对、4440L/U序列、857实际参数和2220步目标独立核对，low修复331/新增373，clean与low联合正确净少62。0新头／loss／U／额外NN；不换key/间隔/先验/seed/父/预算救跑。用户确认没有可靠更长上下文映射，后续仅现有256点IQ；E30上限与无训练RX留出继续有效。当前无获合法源证据支持的新训练候选，完整联合目标ACTIVE；以下旧运行/下一项均为历史。
 
