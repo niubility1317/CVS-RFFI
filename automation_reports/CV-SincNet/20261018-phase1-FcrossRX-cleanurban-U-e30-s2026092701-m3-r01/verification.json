@@ -304,5 +304,47 @@
     "training_modified": false,
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/ordinary_augmentation_audit_r01.json",
     "operator_table": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/ordinary_augmentation_actual_r01.csv"
+  },
+  "fixed_final_source": {
+    "status": "VERIFIED_SOURCE_NEGATIVE",
+    "source_decision": {
+      "status": "SOURCE_DECIDED",
+      "checks": {
+        "all_own_teachers_qualified": true,
+        "UAS_clean_kept_vs_base": true,
+        "UAS_clean_kept_vs_raw": true,
+        "each_urban_draw_gain_over_raw": false
+      },
+      "source_qualified": false,
+      "urban_deltas_pp": [
+        0.11111111111111738,
+        1.5000000000000013,
+        1.055555555555554,
+        1.2777777777777777
+      ],
+      "clean": {
+        "B0": 0.9805555555555555,
+        "URAW": 0.9808888888888889,
+        "UAS": 0.9807777777777777
+      },
+      "source_only": true,
+      "formal_scores_read": false,
+      "automatic_seed_extension": false,
+      "goal_complete": false
+    },
+    "updates_each": 6660,
+    "new_model_epochs": 90,
+    "total_updates": 19980,
+    "all_L_U_sequences_match": true,
+    "ordinary_MSE_all_steps_match": true,
+    "source_confusions": 831,
+    "independent_analysis_wall_seconds": 16.368958265986294,
+    "source_only": true,
+    "formal_scores_read": false,
+    "model_seed_count": 1,
+    "source_channel_draws": 2,
+    "no_seed_extension_for_exact_recipe": true,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/source_analysis_r01/complete.json",
+    "decision_file": "source_development_decision.json"
   }
 }

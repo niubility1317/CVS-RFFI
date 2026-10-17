@@ -119,3 +119,13 @@ B0与URAW原进程完成后正常退出，有完整row完成产物；UAS原worke
 L的普通对使用上述一次已生成IQ作两次RDrop前向；混合对仅64个ordinary加64个完整As(raw)，完整As前不先加普通AWGN、多径、PA或CFO，As后不再RMS。UAS同样直接As(rawU)，原weak teacher及旧strong/noise规则保留。原NoExplicitCFO指身份表征约束，不等于旧普通增强的CFO事件为0。
 
 全部操作是三组共有的旧配方，没有新增Ag；尤其旧随机PA并未由本轮证明身份保持或跨RX泛化有效，不能据配置概率宣称Ag成立，也不据此热改当前实验。标签相关signature分支实际关闭，PA不会反演录音中未知TX硬件。真实operator事件计数与逐包谱变换未保存，报告保留该边界。
+
+## 正式分数读取前固定的源科学判定
+
+SOURCE_NEGATIVE／VERIFIED。三组固定20+10累计E30均已结束，每组6660更新，共90modelE／19980更新。原source-only独立分析完成，0NN、0IQ、0checkpoint、0target，16.369s；831个源分层混淆矩阵已生成。三组全6660步ordinary输入MSE完全匹配，L/U物理采样序列在两个阶段均0mismatch；因此该比较保持原完整L组织和既有U流程，差异为已登记额外U视图及其一个KL。
+
+UAS相对同成本URAW的源增益依次为draw0 mid+0.1111pp、draw0 low+1.5000pp、draw1 mid+1.0556pp、draw1 low+1.2778pp。fullV clean分别为B0 98.0556%、URAW 98.0889%、UAS 98.0778%；UAS相对B0+0.0222pp、相对URAW−0.0111pp，满足clean保持但不是有意义的跨RX clean增益证据。自身teacher资格均通过；每draw mid/low都至少+1pp的条件未通过，独立重算与dispatcher完全一致。
+
+依据启动前规则，固定C4（全名义practical U＋teacher连续q＋0.16单KL）不扩模型seed，不改系数、阈值、信道或预算救跑。保留两次源low增益及mid不稳定的事实，不把局部low改善改写成整候选通过，也不外推所有SSL无效。source_development_decision.json在主agent未读正式分数时固定，后续正式评价仍完成全部3row／7视图。下一候选尚未选择；目标成绩不回流决定候选、晋级或选择性重跑。Ag、low>60%、clean净收益和跨seed复现的联合目标仍未完成。
+
+源分析文件实际保存在local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/source_analysis_r01/。旧r01 source_identity_NN仅为native7234024；最终r03另加已完成冻结读出12600，每组源成本7246624NN，避免漏项。UAS native墙钟4300.2098s，B0 2761.9712s、URAW 2776.9127s；相同NN不等于相同信道生成墙钟。

@@ -1,0 +1,44 @@
+{
+  "schema": "P39_fixed_C4_source_decision_v1",
+  "run_id": "20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01",
+  "status": "CLOSED_EXACT_C4_SOURCE_NEGATIVE",
+  "decision": {
+    "status": "SOURCE_DECIDED",
+    "checks": {
+      "all_own_teachers_qualified": true,
+      "UAS_clean_kept_vs_base": true,
+      "UAS_clean_kept_vs_raw": true,
+      "each_urban_draw_gain_over_raw": false
+    },
+    "source_qualified": false,
+    "urban_deltas_pp": [
+      0.11111111111111738,
+      1.5000000000000013,
+      1.055555555555554,
+      1.2777777777777777
+    ],
+    "clean": {
+      "B0": 0.9805555555555555,
+      "URAW": 0.9808888888888889,
+      "UAS": 0.9807777777777777
+    },
+    "source_only": true,
+    "formal_scores_read": false,
+    "automatic_seed_extension": false,
+    "goal_complete": false
+  },
+  "source_recount_status": "VERIFIED",
+  "formal_scores_read": false,
+  "source_analysis_NN": 0,
+  "no_seed_extension_for_exact_recipe": true,
+  "no_coefficient_or_threshold_rescue": true,
+  "seven_formal_views_remain_required_for_all_three_rows": true,
+  "interpretation": "Clean retention passed;each2draw mid/low urban >=1pp over same-cost URAW failed. Fixed C4 teacher-q KL on all nominal practical U is closed;not a claim that all SSL routes fail.",
+  "next_candidate_selected": false,
+  "next_research_uses_source_evidence_only": true,
+  "new_Ag_proved": false,
+  "whole_goal_complete": false,
+  "analysis_code_for_formal": "34b02721c60e4b7a7dffa2d313f2190409509b4c",
+  "analysis_release_for_formal": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_Uurban_analysis_20261018_r03",
+  "source_evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/source_analysis_r01/independent_source_decision.json"
+}
