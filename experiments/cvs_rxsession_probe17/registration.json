@@ -1,0 +1,121 @@
+{
+  "rows": [
+    {
+      "row_id": "frozen-ALL-s2026092701",
+      "arm": "ALL",
+      "model_seed": 2026092701,
+      "method": "Frozen ownALL defaulthead / four injectedRX hardware realizations",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_rxsession_probe17/design.py#config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-RXsession-fitL-s2026092701-m1-r01/frozen-ALL-s2026092701/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016102,
+        "support": null,
+        "evaluation": 202610171911
+      },
+      "seed_notes": "Modelseed is originalfrozenALL,not newtraining;receiver20261016102 usesRX/day/eq and fixedbank suffix;evaluation202610171911 names scene/visiblephysicalID;samedrawH/noise acrossbanks;data/support not applicable",
+      "k": null,
+      "scenario": "Sourcefitmid/lowurban4banks plus sourceclean;not target practical test",
+      "optimizer": "none/frozen noautograd",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0epochs/updates,1CP/45362NN incl2smoke/10080physicsrecords/50400nativecalls/48sessions;parentE20/4440/5823318NN separate",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-RXsession-fitL-s2026092701-m1-r01/frozen-ALL-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_RXsession_fitL_20261017_r01/dispatcher.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_RXsession_fitL_20261017_r01/experiments/cvs_rxsession_probe17/runner.py",
+      "expected_artifacts": [
+        "Actual release commit/PID/CWD/argv/CPU2 and immutable completion",
+        "Strict samecontract realCP2syntheticNN smoke then immediate source continuation",
+        "ExactfitL5040 source contract/data role disclosure and actual module/config/defaulthead audit",
+        "45360 saved defaulthead6logits/hard decisions/margin30 onclean+2scenesx4banks",
+        "10080 paired physics records/50400nativeprocess calls/48stableRXsessions/exact original replay",
+        "Independent allrecord decision/CE/F1/paired/fixedclean-correct/statequality analysis/fullstdout/cost/figures"
+      ],
+      "config": {
+        "schema": "F_CROSS_RX_session_sensitivity_v1",
+        "run_id": "20261017-diagnostic-FcrossRX-RXsession-fitL-s2026092701-m1-r01",
+        "row_id": "frozen-ALL-s2026092701",
+        "arm": "ALL",
+        "model_seed": 2026092701,
+        "launch_owner": "codex/root/FcrossRX-RXsession-source-20261017",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-RXsession-fitL-s2026092701-m1-r01/frozen-ALL-s2026092701",
+        "backend": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_AsTiming_sourceRX1_E20_20261017_r01",
+        "backend_commit": "f788309f5f9e27689ec1e98ae99a6bd83237e1f9",
+        "checkpoint_source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-AsTiming-sourceRX1-e20-s2026092701-m4-r01/ALL-RX1-s2026092701/source",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "source_preparation": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "source_only": true,
+        "target_access": false,
+        "fit_RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_days": [
+          1,
+          2,
+          3
+        ],
+        "source_TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "L": 5040,
+        "U": 0,
+        "V": 0,
+        "held_RX1": 0,
+        "scenes": [
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "banks": [
+          "original",
+          "bank1",
+          "bank2",
+          "bank3"
+        ],
+        "streams": {
+          "channel": 202610171911,
+          "receiver": 20261016102
+        },
+        "batch_size": 128,
+        "network": "FrozenF+CROSS_RX/SIG_TIME_X3/unifiedSinc/joint160/defaultcos30/NoExplicitCFO;original model eval;no newhead",
+        "channel": "Original full practical residual/post_sync/fs25MHz/fc2462MHz/IQ256/EQoffG1/reference30/reflect;one H/underlying noise draw perpacket/scene,4RX parameter realizations plus exact original replay",
+        "session": "physical RX/day/eq only,bank suffix1/2/3;stable acrossallTX/packets/scenes,no TX/prediction/state defined session",
+        "controls": "Identical H/noise RNG/quality/status/scale and original replay;processed noise may vary through same RX IQ operator,AGC recomputed faithfully",
+        "criterion": {
+          "primary": "As-trained ALL",
+          "per_scene_nominal_accuracy_advantage_over_3bank_mean_min_pp": 1,
+          "per_scene_mean_nominal_to_bank_hard_disagreement_min": 0.03,
+          "each_bank_gain_over_nominal_max_pp": 0.5,
+          "all_registered_scenes_required": true
+        },
+        "on_fail": "Close fixedsession-undercoverage rationale;no different banks/seed/scenes/RX/threshold rescue,no automatic training",
+        "on_pass": "Only source-fit session sensitivity rationale;separately register matching session coverage training,not Ag/target/held/crossseed or identitygain",
+        "model_epochs": 0,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "teacher_forwards": 0,
+        "EMA_updates": 0,
+        "expected_NN": 45362,
+        "expected_decisions": 45360,
+        "expected_physics_records": 10080,
+        "expected_native_process_calls": 50400,
+        "expected_receiver_sessions": 48,
+        "automatic_training": false,
+        "formal_test_changed": false,
+        "stop_rule": "Only own role/provenance/nonfinite/wrongbudget/frozenstate/outputcollision/unlaunchable failures;preserve outputs,no automatic retry/no unrelated process action"
+      }
+    }
+  ]
+}
