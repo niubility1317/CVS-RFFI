@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v1",
-  "status": "FULL_SOURCE_THREE_ROWS_ANALYZED_NOT_JOINT_SUCCESS",
+  "status": "FULL_SOURCE_CONTROLS_AND_RESIDUAL_DIAG_ANALYZED_NOT_JOINT_SUCCESS",
   "authorization": "User changed the pre-augmentation baseline to F plus cross-RX same-TX contrastive learning on 2026-10-16; existing E20 budget remains in force. User on 2026-10-17 explicitly forbids withholding a source training domain and redirects mainline to practical augmentation against ordinary concatenation.",
   "baseline_name": "F+CROSS_RX_SUPCON",
   "existing_mechanism_source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
@@ -141,7 +141,7 @@
       "formal_after_each_row": "freeze FINAL20, predict all seven fixed views, then independent truth-last scoring; no target feedback"
     }
   },
-  "execution_boundary": "2026-10-17 correction: full-source ordinary-concat FcrossRX E20 matching control has not been run. First establish full-source no-As/ordinary-concat references; no additional held RX or allpass/synthetic Ag detour. Previous fold failures remain valid within their contracts and do not constitute full-source failure.",
+  "execution_boundary": "2026-10-17 correction completed: B00/B01/RAW_PRAC were scratch E20 on all original6300L/56700hiddenU/27000V and all5RX, with matched4L cost/defaulthead. Frozen original-sourceV residual diagnosis also completed. No held RX/Ldev/new deployment module; historical fold results remain separate; no joint-success or model-seed replication claim.",
   "full_source_status": "ANALYZED_THREE_ROWS_ONE_MODEL_SEED",
   "source_pair": {
     "run_id": "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01",
@@ -350,10 +350,7 @@
   },
   "mainline_reset": {
     "date": "2026-10-17",
-    "next_minimal_matrix": [
-      "FULL_F_CROSSRX_NO_AS",
-      "FULL_F_CROSSRX_ORDINARY_CONCAT_AS"
-    ],
+    "next_minimal_matrix": [],
     "additional_augmentation_candidate": null,
     "extra_source_domain_holdout": false,
     "extra_Ldev_split": false,
@@ -366,7 +363,7 @@
       "B01",
       "RAW_PRAC"
     ],
-    "next_step": "Frozen source default-head practical component diagnosis; no new source RX holdout, no new Ldev, no target feedback"
+    "next_step": "Use full-source ordinary practical concatenation as fixed reference. Next unvalidated hypothesis: bounded recoverable-state urban training organization may improve noise-limited source decisions while preserving nominal support and clean supervision; no additional consistency/gradient-surgery premise established. Predeclare any new E20 row before launch; no automatic training from this diagnostic."
   },
   "full_source_run_id": "20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01",
   "full_source_execution_commit": "dc4e47fe0c2b3e0dcf73dda104cdbd4a7c814f5a",
@@ -380,5 +377,47 @@
     "parent_weights": false,
     "target_feedback": false,
     "goal_complete": false
+  },
+  "source_residual_diagnostic": {
+    "run_id": "20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01",
+    "execution_commit": "5dc8882cc1609f3b857749368a75f856b57bcd9d",
+    "status": "ANALYZED_SOURCE_ONLY",
+    "training_updates": 0,
+    "head_fit_updates": 0,
+    "NN": 363696,
+    "source_V": 1800,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "held_RX": null,
+    "extra_Ldev": false,
+    "model_seeds": 1,
+    "channel_draws": 2,
+    "source_interpretation_checks": {
+      "B01": {
+        "no_noise_fixed_gain5pp_both_urban_both_draws": true,
+        "flat_H_fixed_gain5pp_both_urban_both_draws": false,
+        "no_carrier_fixed_gain5pp_both_urban_both_draws": false,
+        "no_RX_IQ_fixed_gain5pp_both_urban_both_draws": false,
+        "noise_state_coupled_gap3pp_both_urban": false,
+        "eval_CE_gradient_competition_both_urban_both_draws": false
+      },
+      "RAW_PRAC": {
+        "no_noise_fixed_gain5pp_both_urban_both_draws": true,
+        "flat_H_fixed_gain5pp_both_urban_both_draws": false,
+        "no_carrier_fixed_gain5pp_both_urban_both_draws": false,
+        "no_RX_IQ_fixed_gain5pp_both_urban_both_draws": false,
+        "noise_state_coupled_gap3pp_both_urban": false,
+        "eval_CE_gradient_competition_both_urban_both_draws": false
+      }
+    },
+    "target_access": false,
+    "goal_complete": false,
+    "automatic_training": false,
+    "report": "automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/report.md"
   }
 }

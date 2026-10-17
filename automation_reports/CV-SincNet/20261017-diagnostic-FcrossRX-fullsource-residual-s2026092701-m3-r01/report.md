@@ -1,6 +1,6 @@
 # 完整源域 F＋跨 RX：冻结默认头的 practical 受控退化诊断
 
-状态：预登记已固定，等待发布启动。唯一矩阵与种子在 experiment.json。本轮只做源机制诊断，不创建或训练新模型，也不重复正式测试。
+状态：ANALYZED，源域冻结诊断全部完成；联合性能目标未完成。唯一矩阵与种子在 experiment.json。本轮只做源机制诊断，不创建或训练新模型，也不重复正式测试。
 
 上轮三行完整源域 E20 对照已经完成。普通 practical 拼接显著改善 urban，但有 clean 代价；将卫星视图输入换成原始 IQ 只有小增量。该背景不授权用目标成绩选择本次物理参数。本轮唯一待检验假设来自源训练记录：困难 practical 观测的身份学习信号仍较弱，可能涉及特定损伤、接收状态切换或局部目标冲突。诊断先确定源证据，不预先归因于多径、CFO 或门控，不直接追加损失。
 
@@ -66,3 +66,92 @@ fixed保持原接收状态、残差尺度、估计频率、相位跟踪/EQ状态
 ```
 
 CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_fullsource_residual_diag_20261017_r01`。完整矩阵、停止条件和输出路径见 experiment.json。
+
+## 实际执行与结果
+
+发布包一次传输 SHA 比较 VERIFIED，远端 compile PASS。普通账户 GPU0 的唯一 worker PID/start_ticks/CWD/argv/GPU 归属及日志增长均 VERIFIED；三个真实默认头 smoke PASS 后才打开源 IQ。读取完整 worker.log：6 个观察阶段、3 个 MODEL_COMPLETE 和最终 SOURCE_DIAGNOSTIC_COMPLETE，未触发技术停止。三模型 state_dict 均逐项不变；每行121232NN，共363696NN，0训练/头更新/teacher前向。10800次实际 ResidualChannel＋129600次控制renderer，均复用同一命名潜在draw。墙钟280.439972秒。原三行历史训练成本60 model epochs/13320更新独立保留，本轮没有新增epoch。
+
+实际模块 `__file__`：
+
+- channel：`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py`
+- residual：`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py`
+
+不是顶层 code/leo_practical。三个场景运行值为 residual/post_sync、EQ=false且G=1、fs25MHz/fc2.45GHz、reference_snr_db30、质量适配/相位跟踪/IQ补偿开启、reflect；详细配置在实际产物 actual_engine.json。没有修改正式接收IQ或测试信道。
+
+### 源识别与损伤分解
+
+| 模型 | 源 clean | 源 low suburban | 源 mid urban | 源 low urban |
+|---|---:|---:|---:|---:|
+| B00 | 98.333% | 54.556% | 47.111% | 38.694% |
+| B01 | 97.722% | 89.167% | 75.083% | 61.333% |
+| RAW_PRAC | 97.667% | 89.611% | 74.639% | 61.056% |
+
+**本表仅为原源V1800诊断面板，不能把61%左右的源low urban写成正式low urban超过60%。正式三行成绩仍为32.222619%／52.243452%／52.479167%，模型seed均为2026092701。**
+
+以下增益单位为百分点，均相对同模型、同样本、同draw的full：
+
+| 模型/场景 | 移除新增噪声 fixed | 移除新增噪声 total | 平坦 H fixed | 去残余载波 fixed | 去注入 RX IQ fixed |
+|---|---:|---:|---:|---:|---:|
+| B01/mid_urban | 5.278 | 5.500 | 2.444 | -0.250 | -0.111 |
+| B01/low_urban | 10.083 | 11.361 | 1.556 | -0.222 | -0.056 |
+| RAW_PRAC/mid_urban | 5.194 | 5.583 | 2.500 | 0.194 | 0.000 |
+| RAW_PRAC/low_urban | 9.361 | 10.528 | 1.611 | -0.222 | 0.000 |
+
+noise/fixed 在 B01 的 mid 两draw分别 +5.388889／+5.166667，low +9.500000／+10.666667；RAW 的 mid +5.166667／+5.222222，low +9.388889／+9.333333。两模型均通过预登记的“两个urban×两个draw均至少+5pp”。另外三项损伤均未通过这一条件。支持新增噪声是本面板上较大的可定位源瓶颈；不支持认定主要是残余CFO或注入RX IQ。平坦H仍有约1.56至2.50pp受控收益，不能写成多径无影响。
+
+noise total−fixed 的额外增益：B01 mid0.222222pp／low1.277778pp，RAW mid0.388889pp／low1.166667pp，未达到两个urban至少3pp。移除新增噪声会大量改变锁定状态，但准确率增量不能只由状态切换解释。这里不移除原录音未知噪声，不能叫作总SNR或无噪声上界。
+
+### 退化集中区域
+
+| B01 low urban 原 full 分层 | n（两个 draw） | full 准确率 | 去新增噪声 fixed 增益 |
+|---|---:|---:|---:|
+| state_lock/LOS/locked | 1060 | 94.623% | 0.755 pp |
+| state_lock/BLOCKED/degraded | 414 | 45.411% | 13.768 pp |
+| state_lock/BLOCKED/unlocked | 1565 | 34.185% | 17.636 pp |
+| quality/<3 | 1127 | 30.701% | 19.521 pp |
+| quality/3-8 | 794 | 43.703% | 13.980 pp |
+| quality/8-15 | 303 | 74.587% | 5.941 pp |
+| quality/>=15 | 1376 | 93.677% | 1.017 pp |
+
+B01 low的BLOCKED/unlocked占1565/3600，full准确率34.185304%；noise fixed修复425、破坏149，净增276，占总体净增363中的76.03%。LOS/locked为94.622642%，净增仅8。普通practical训练的主要收益和剩余困难不能用一个urban均值概括；源RX分层与其他状态在1782行CSV中保留。1至2包的小层不作泛化结论。
+
+质量分层使用原full实际signal_to_added_noise_db，不是总SNR，也没有以该分层删除任何训练/测试样本。是否重采样低质量观测仍需独立训练检验，移除噪声的离分布控制不能证明课程有效。
+
+### 接收质量、噪声与边界
+
+实际波形功率相对白输入核功率代理的q01/q99：mid为−1.231450/+1.038951dB，low为−1.351333/+1.204032dB。切换为实际功率质量代理使mid87/3600、low84/3600改变锁定状态；B01准确率变化−0.250000/0pp，RAW为−0.250000/+0.222222pp。存在状态影响，本面板不支持它是主要准确率缺口；正式/训练接收机未切换。
+
+三个场景残余核均62 taps，数值延迟24；前61个输出受人工前缀边界影响，共195个不依赖该前缀的内部输出。reflect改为edge、保持同一AGC的压力控制，使B01 mid/low下降10.833333/9.250000pp，RAW下降11.305556/10.111111pp，而内部区域已检查不变。这证明对前缀边界敏感，不能证明原reflect造成同等可修复损失，不能据此改动正式IQ或测试边界。
+
+EQ关闭，G=1，所记录的新增噪声PSD动态范围均0dB；没有把EQ噪声着色错误套到本轮。AGC限幅在low为1/3600，另两场景0/3600。mid残余CFO q01/q99约−887.09/+902.12Hz，low约−1122.73/+1051.66Hz，去掉残余载波没有稳定正收益。完整物理统计在readout.json。
+
+### 真实分支、门控与梯度
+
+B01 low的clean→sat余弦：time0.968915、frequency0.984878、PA0.873587、reference0.360041、signature0.355412。RAW接近。观测变化并不均匀，不据此要求所有分支、参考响应或整个embedding复制clean；这些数值也不是身份收益的替代指标。静态160维PA/reference/signature增益已保存，模型不含本诊断虚构的逐包门控。
+
+B01两个urban×两个draw的whole eval-CE梯度余弦为0.141033至0.354815，RAW为0.160257至0.312766，均为正；“whole梯度冲突”预登记前提失败。frequency/reference的局部分组可为负，但不能把局部现象写成全网络主因。Sinc已换算Hz，PA分组仅匹配现有`.pa_`/`.cls_head.gain`名称，其余参数进入remaining，whole含所有实际参数；不能将这个分组称为全部PA链路。梯度只在90包、eval CE/.01 smoothing下读出，不代表原RDrop/SupCon训练梯度，也不证明整个训练过程从无冲突。
+
+### 收益归因、负结果与下一步边界
+
+在完整源域、固定默认头和正式practical条件下，已核实的主要收益仍来自普通星地拼接：相对同4L预算B00，urban均值+25.250992pp、low+20.020833pp，clean−2.761905pp。RAW相对普通拼接urban+0.228175pp、low+0.235714pp、clean+0.514286pp，未达到既定urban+3/low+5探索目标，也没有联合突破。这些正式背景已在上轮报告，不作为本诊断物理参数选择或新的调参依据。
+
+本轮源证据确认了新增噪声下的低质量BLOCKED困难；否定了预登记的强状态耦合和整体梯度冲突前提。未新增一致性、梯度手术、部署模块、诊断头或held RX。当前唯一值得独立检验的假设是：保留普通拼接和clean份额，以有界混合覆盖全部原nominal状态，并逐步提高可恢复urban状态的训练覆盖，可能改善噪声下身份学习；不能由本诊断直接宣称成立。最小后续比较应为全源FcrossRX、scratch E20、与B01同4L成本/同U规则的单独状态课程，不堆叠额外一致性。课程幅度、源规则和放弃条件须在新row启动前固定；不按上述正式成绩搜索，不只采最大损失或删除unlocked。未实现/未启动该后续候选，也未扩模型seed。
+
+### 可核查交付
+
+- 执行实现：`experiments/cvs_fullsource_residual_diag24/`，commit `5dc8882cc1609f3b857749368a75f856b57bcd9d`。13个文件，默认头严格加载、完整源panel、受控重放、真实分支/局部梯度、汇总、单owner容量保护发布。
+- 后处理：`analysis/cvs_fullsource_residual_diag_readout_20261017.py`。实际对三个模型共99个总体混淆矩阵独立复算一致，0NN/IQ/CP/更新/目标访问。
+- 命令与CWD见上方冻结预登记；发布调用同目录publish.py的transfer和launch两步。
+- 本地4项测试PASS、11负测/6合成native案例/84合成物理调用、compile PASS；此前CRLF guard失败已保留并修复。一次P0/P1 review PASS，无重复review。真实3CP无query smoke及远端实际控制重放PASS。
+- 本地产物目录：`E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_residual_diag_20261017/evidence`；summary.json、per_row_source_strata.csv（1782行）、readout.json、每行result.json、3张PNG/PDF与completion.json，已读回并目视检查图。共同IQ、逐包物理记录和源prediction/branch数组保留在不可变远端run，不进入Git。
+- 三图：[损伤控制](E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_residual_diag_20261017/evidence/source_damage_effects.png)、[质量分层](E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_residual_diag_20261017/evidence/source_quality_accuracy.png)、[局部梯度](E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_residual_diag_20261017/evidence/source_gradient_cosine.png)。
+- 未完成：正式low urban>60%、clean净正收益、suburban接近clean和跨模型seed复现。本诊断只有1个模型seed，两个信道draw不能代替跨seed。
+
+本地检查实际命令（原生 Windows Python，CWD 为本工作树，PYTHONPATH 为工作树及 experiments/adv3b02_xuc/code）：
+
+```text
+E:/type10-7/local_envs/ssr-gpu/python.exe -m experiments.cvs_fullsource_residual_diag24.checks
+F:/App/miniconda3/python.exe -m py_compile analysis/cvs_fullsource_residual_diag_readout_20261017.py
+```
+
+后处理使用同一个 N607 普通账户 Python 从 stdin 执行上述 readout 文件内容，诊断根作为 sys.argv[1]，只读源prediction/physics/branch产物，不重复模型前向。最终独立读回 complete.json/completion.json，worker及dispatcher均已退出，failure不存在，状态 VERIFIED。
