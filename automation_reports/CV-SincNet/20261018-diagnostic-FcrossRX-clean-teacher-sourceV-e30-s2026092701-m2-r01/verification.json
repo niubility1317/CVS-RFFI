@@ -1,0 +1,28 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "focused_checks": {
+    "count": 6,
+    "status": "PASS",
+    "command": "E:/type10-7/local_envs/ssr-gpu/python.exe -m experiments.cvs_U_teacher38.checks",
+    "numpy_abi_warning": "known existing environment;no tensor.numpy/from_numpy used;all six checks passed"
+  },
+  "compile": "PASS",
+  "independent_review": {
+    "reviewer": "/root/cleanretain37_p0p1",
+    "status": "PASS",
+    "P0": 0,
+    "P1": 0,
+    "scope": "one candidate review including publisher;no extra gates"
+  },
+  "preflight": {
+    "status": "VERIFIED",
+    "uid": 1000,
+    "CPU_only": true,
+    "own_paths_absent": true,
+    "ordinary_account": true
+  },
+  "runtime_status": "NOT_LAUNCHED",
+  "actual_NN": 0,
+  "training_updates": 0,
+  "goal_complete": false
+}

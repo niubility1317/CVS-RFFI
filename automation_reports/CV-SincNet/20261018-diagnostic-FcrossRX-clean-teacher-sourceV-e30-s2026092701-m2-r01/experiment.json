@@ -1,0 +1,196 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-clean-preserving-U-transfer",
+  "display_name": "完整 clean 保留配方：冻结默认 EMA 教师的源域资格诊断",
+  "description": "在原完整 E20+10 训练组织的两个固定自身端点，区分 clean 教师质量与 urban 学生错误；0 更新，不访问目标与 U IQ，不选权重，不自动启动 C4。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P38",
+    "clean teacher source qualification"
+  ],
+  "tags": [
+    "source-only",
+    "FcrossRX",
+    "default-head",
+    "own-EMA",
+    "E30",
+    "U-hidden"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "User latest confirmed clean-preserving route in thread01a13a98-fbec-7ba3-86b9-4cd56b8992c0; initial C4 source-evidence requirement;E30 budget latest;no source RX holdout.",
+  "code": {
+    "commit": "PENDING_ACTUAL_COMMIT",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary uid1000;CVS-RFFI Python3.11;Torch2.6;CPU2threads;CUDA_VISIBLE_DEVICES empty",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_clean_teacher_source_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "unchanged existing source data and fixed cached source observations",
+    "representation": "equalized=1;original256x2 IQ;dataset RMS;original practical no post-As RMS",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic",
+    "label_map_ref": "same source contract six TX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "same contract all6 source TX",
+    "roles": {
+      "L_s": "historical model L6300;0 records consumed",
+      "U_s": "historical model56700 hidden;0 records consumed",
+      "V": "fixed existing source1800panel from originalV27000"
+    },
+    "train_ratio": "historical7/63/30;0 newtraining",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Phase1 original source contract reused;Phase2 capsule/split IDs not applicable",
+    "support_query_ref": "not applicable;source-only",
+    "leo_config_ref": "reuse existing full source2drawx3scene;0new channel calls;formal IQ and SNR unchanged"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen source teacher qualification only;not training,Ag proof,target gain or crossseed proof"
+  },
+  "checkpoint": {
+    "initialization": "frozen diagnostic readout only;no optimizer;no future training initializer",
+    "sources": [
+      "original fixed scratchE20 B01 student+ownEMA",
+      "original same B01 own E20+10 fixedFINAL10 cumulative30 student+ownEMA"
+    ],
+    "contract_check_ref": "E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01/reference_reconciliation.md plus runtime same-role and own-parent metadata check",
+    "provenance_verdict": "Source role mapping and original scratch/own-parent histories verified;target selection excluded. E30 native posttraining own-loader failure retained;fixed same weights scored via recovery;no retraining or parent selection.",
+    "selection_rule": "both predefined endpoints;neither chosen based source or target results"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/Uteacher38",
+    "gpu_policy": "CPUonly;0GPU;no otherprocess changes",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_clean_teacher_source_20261018",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_clean_teacher_source_20261018_r01/experiments/cvs_U_teacher38/runner.py",
+    "stop_rule": "Preserve outputs and fail on wrong roles/provenance,nonfinite logits,state change,output collision or illegal data access. Scientific threshold failure is not technical failure;both endpoints still run. No auto retry,training or seed extension."
+  },
+  "expected_artifacts": [
+    "provenance.json",
+    "source_panel.json",
+    "E20/real_checkpoint_smoke.json",
+    "E30/real_checkpoint_smoke.json",
+    "E20/predictions.npz",
+    "E30/predictions.npz",
+    "E20/complete.json",
+    "E30/complete.json",
+    "complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "teacher confidence precision",
+      "q weighted precision",
+      "coverage",
+      "perRX precision",
+      "clean student accuracy",
+      "satellite student accuracy",
+      "teacher correct/student urban wrong weighted opportunity",
+      "teacher wrong/student urban correct weighted harm"
+    ],
+    "dimensions": [
+      "fixed checkpoint endpoint E20/E30",
+      "source RX",
+      "draw0/1",
+      "scene"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01/{E20,E30}/predictions.npz",
+    "scorer_ref": "same source-only V labels;no formal truth-side scorer invoked"
+  },
+  "rows": [
+    {
+      "row_id": "E20",
+      "method": "Frozen original default student and own EMA, tau=.95,q=(confidence-.95)/.05 clipped;no fitted state",
+      "purpose": "source-only qualification;both endpoints mandatory",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_clean_teacher_source_20261018_r01/experiments/cvs_U_teacher38/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01/E20/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "One modelseed, two sequential checkpoints, not independent seeds. No new augmentation/support/evaluation RNG;exact existing source IQ cache2draw reused.",
+      "k": null,
+      "scenario": "clean plus fullpractical low_suburban/mid_urban/low_urban cachedsource",
+      "optimizer": "none;0 updates",
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "14404 NN each;student12602+EMA1802;total28808. Historical own20+10=30E/6660updates,zero inherited into new training.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01/E20",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01-launch/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_clean_teacher_source_20261018_r01/experiments/cvs_U_teacher38/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "predictions.npz",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "E30",
+      "method": "Frozen original default student and own EMA, tau=.95,q=(confidence-.95)/.05 clipped;no fitted state",
+      "purpose": "source-only qualification;both endpoints mandatory",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_clean_teacher_source_20261018_r01/experiments/cvs_U_teacher38/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01/E30/complete.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "One modelseed, two sequential checkpoints, not independent seeds. No new augmentation/support/evaluation RNG;exact existing source IQ cache2draw reused.",
+      "k": null,
+      "scenario": "clean plus fullpractical low_suburban/mid_urban/low_urban cachedsource",
+      "optimizer": "none;0 updates",
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "14404 NN each;student12602+EMA1802;total28808. Historical own20+10=30E/6660updates,zero inherited into new training.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01/E30",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01-launch/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_clean_teacher_source_20261018_r01/experiments/cvs_U_teacher38/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "predictions.npz",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No target/U IQ or U TX truth read. Source V labels used only to score frozen predictions.",
+    "Qualification fixed before execution:both endpoints confidence precision>=99%,coverage>=75%,everyRXprecision>=98%,qweightedmid/lowtransferopportunity>=10% at eachdraw. No threshold sweep.",
+    "PASS only justifies independent future C4 design;never proves new learning gains. Future own first-U teacher must pass same fixed source check,without loading old diagnostic weights.",
+    "One future loss primitive implemented/tested in soft_transfer.py;not wired into training or launched.",
+    "E20 args and E30 actual args remain source training facts,not defaults;no target benchmark-based retune."
+  ],
+  "registered_at": "2026-10-17T16:38:05+00:00"
+}
