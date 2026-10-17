@@ -1,6 +1,6 @@
 # P45：仅 L 标签平滑的匹配 E30 消融
 
-状态：VERIFIED_RUNNING，两条E30已启动并完成首个epoch；无新正式成绩。实际矩阵唯一登记于 [experiment.json](experiment.json)。联合 Ag＋As 目标仍 ACTIVE；本项不是新 IQ 增强，不把源梯度现象当作训练收益。
+状态：ANALYZED；两条新 E30 及原七视图独立评分已完成，固定 L0 源域否定并关闭。完整结论、逐行指标、图表、成本和缺项见 [final_report.md](final_report.md) 与 [final_verification.json](final_verification.json)。以下进展段保留当时快照，不表示当前仍在运行。
 
 唯一问题：保留当前 clean 监督份额时，将有标签 L 的 CE 从 LS=.01 改成硬标签 CE0，能否保留 clean 并改善原完整 practical 适应。P40 的源 L 导数显示 CE01 的反向数混入高置信样本校准目标，而 CE0/默认头间隔没有相同冲突。这仅支持一次损失定义消融；不声称已定位训练主因，不复活已失败的梯度修正、投影、课程、FIR、噪声或一致性方案。
 

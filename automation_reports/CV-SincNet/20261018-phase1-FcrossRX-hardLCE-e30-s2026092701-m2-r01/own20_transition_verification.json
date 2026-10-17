@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING_PARTIAL",
+  "status": "VERIFIED_BOTH_OWN20_TRANSITIONS",
   "run_id": "20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01",
   "training_commit": "62b9bb6247b29fc98bf1379b15f3c262f9a495dc",
   "source_analysis_commit": "1928b5ec55e584f4a93c77124fe1dfd7541c7e6f",
@@ -103,5 +103,53 @@
   "IQ_CP_NN_for_this_metadata_check": 0,
   "new_performance_result": false,
   "crossseed_confirmed": false,
-  "goal_complete": false
+  "goal_complete": false,
+  "initial_milestone_status": "VERIFIED_RUNNING_PARTIAL",
+  "final_read_at_unix": 1792279627.2185729,
+  "final_rows": [
+    {
+      "arm": "H00",
+      "own_stage20_epoch": 20,
+      "own_stage20_updates": 4440,
+      "source_roles": "EXACT_MATCH",
+      "own_student_and_EMA_strict": true,
+      "optimizer_state_entries": 0,
+      "optimizer_reset": true,
+      "lr": 0.0002,
+      "weight_decay": 0.0001,
+      "schedule": "cosine10",
+      "epoch_offset": 20,
+      "step_offset": 4440,
+      "L_smoothing": 0,
+      "native_U_smoothing": 0.01,
+      "L_NN_per_step": 768,
+      "L_loss_scale": 1.25,
+      "final_cumulative_epochs": 30,
+      "final_cumulative_updates": 6660,
+      "head_fit_updates": 0,
+      "target_access_during_training": false
+    },
+    {
+      "arm": "H01",
+      "own_stage20_epoch": 20,
+      "own_stage20_updates": 4440,
+      "source_roles": "EXACT_MATCH",
+      "own_student_and_EMA_strict": true,
+      "optimizer_state_entries": 0,
+      "optimizer_reset": true,
+      "lr": 0.0002,
+      "weight_decay": 0.0001,
+      "schedule": "cosine10",
+      "epoch_offset": 20,
+      "step_offset": 4440,
+      "L_smoothing": 0,
+      "native_U_smoothing": 0.01,
+      "L_NN_per_step": 768,
+      "L_loss_scale": 1.25,
+      "final_cumulative_epochs": 30,
+      "final_cumulative_updates": 6660,
+      "head_fit_updates": 0,
+      "target_access_during_training": false
+    }
+  ]
 }

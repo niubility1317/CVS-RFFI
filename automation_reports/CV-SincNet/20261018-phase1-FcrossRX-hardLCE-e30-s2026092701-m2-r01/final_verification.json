@@ -1,0 +1,199 @@
+{
+  "status": "VERIFIED_ANALYZED_NEGATIVE",
+  "run_id": "20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01",
+  "training_commit": "62b9bb6247b29fc98bf1379b15f3c262f9a495dc",
+  "analysis_commit": "1928b5ec55e584f4a93c77124fe1dfd7541c7e6f",
+  "source_verdict_commit": "043256b73db74300b03830c7d70aaa047f286b23",
+  "verified_at_unix": 1792279627.2185729,
+  "source_decision_before_new_formal_values": true,
+  "source_qualified": false,
+  "fixed_L0_candidate_closed": true,
+  "goal_complete": false,
+  "crossseed_confirmed": false,
+  "model_seed": 2026092701,
+  "model_seed_count": 1,
+  "new_rows": [
+    "H00",
+    "H01"
+  ],
+  "reused_control_rows": [
+    "B00",
+    "B01"
+  ],
+  "each_new_row": {
+    "epochs": 30,
+    "updates": 6660,
+    "L_NN": 5114880,
+    "source_identity_NN": 7973284,
+    "formal_identity_NN_including_smoke": 1176002
+  },
+  "all_new_predictions": 2352000,
+  "new_identity_NN": 18300110,
+  "reused_control_identity_NN": 18298572,
+  "formal_confusion_recount": {
+    "matrices": 504,
+    "match_all": true
+  },
+  "source_confusion_recount": {
+    "matrices": 1168,
+    "match_all": true
+  },
+  "hard_L_recount": {
+    "H00": {
+      "records": 6660,
+      "maximum_arithmetic_error": 4.76837158203125e-7,
+      "U_function_restored_every_step": true,
+      "extra_NN": 0,
+      "native_U_smoothing": 0.01,
+      "actual_L_smoothing": 0,
+      "counterfactual_is_recalculated_at_H_updated_weights": true
+    },
+    "H01": {
+      "records": 6660,
+      "maximum_arithmetic_error": 4.172325134277344e-7,
+      "U_function_restored_every_step": true,
+      "extra_NN": 0,
+      "native_U_smoothing": 0.01,
+      "actual_L_smoothing": 0,
+      "counterfactual_is_recalculated_at_H_updated_weights": true
+    }
+  },
+  "physical_sequence_comparison": {
+    "H00": {
+      "stage20": {
+        "records": 5994,
+        "mismatched": 0
+      },
+      "source": {
+        "records": 4440,
+        "mismatched": 0
+      }
+    },
+    "H01": {
+      "stage20": {
+        "records": 5994,
+        "mismatched": 0
+      },
+      "source": {
+        "records": 4440,
+        "mismatched": 0
+      }
+    }
+  },
+  "ordinary_sequence_comparison": {
+    "H00": {
+      "records": 6660,
+      "mismatched": 0
+    },
+    "H01": {
+      "records": 6660,
+      "mismatched": 0
+    }
+  },
+  "As_scene_state_comparison": {
+    "H01": {
+      "records": 6660,
+      "mismatched": 0
+    }
+  },
+  "channel_config_all_fields_match_both_segments": true,
+  "full_log_rows": 4,
+  "full_epoch_records": 120,
+  "total_stdout_lines": 4869,
+  "error_markers": [],
+  "active_numeric_nonfinite": false,
+  "disabled_diagnostic_NaN_text_preserved": true,
+  "ordinary_U_function_restored_every_step": true,
+  "head_fit_updates": 0,
+  "extra_U_NN": 0,
+  "analysis_NN": 0,
+  "analysis_IQ_reads": 0,
+  "analysis_checkpoint_reads": 0,
+  "formal_analysis_wall_seconds": 12.557850044220686,
+  "source_analysis_wall_seconds": 26.97567732213065,
+  "processes": {
+    "961519": false,
+    "962003": false,
+    "962080": false,
+    "967127": false,
+    "989522": false
+  },
+  "queue": {
+    "active": [],
+    "pending": [],
+    "completed": [
+      "H00-s2026092701",
+      "H01-s2026092701"
+    ],
+    "failures": []
+  },
+  "rows": {
+    "H00": {
+      "status": "TRAINED_AND_SCORED",
+      "prediction": "PREDICTIONS_COMPLETE",
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "count_per_view": 168000,
+      "truth_read_during_prediction": false,
+      "parameters_frozen": true,
+      "head_fit_updates": 0,
+      "scoring": "SCORED_COMPLETE",
+      "truth_last": true
+    },
+    "H01": {
+      "status": "TRAINED_AND_SCORED",
+      "prediction": "PREDICTIONS_COMPLETE",
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "count_per_view": 168000,
+      "truth_read_during_prediction": false,
+      "parameters_frozen": true,
+      "head_fit_updates": 0,
+      "scoring": "SCORED_COMPLETE",
+      "truth_last": true
+    }
+  },
+  "tests": {
+    "candidate_focused": 7,
+    "candidate_AST_files": 18,
+    "candidate_P0P1_reviews": 1,
+    "real_checkpoint_noquery_NN": 2,
+    "actual_hook_synthetic_NN": 1536,
+    "local_analysis_tests": 7,
+    "remote_analysis_tests": 7,
+    "remote_compile": "PASS"
+  },
+  "figures": {
+    "PNG_groups": 8,
+    "PDF_companions": 8,
+    "actual_files_present": true,
+    "PNG_each_visually_inspected": true
+  },
+  "inherited_stale_descriptive_config_fields_disclosed": true,
+  "immutable_runtime_artifacts_not_rewritten": true,
+  "no_training_restarts": true,
+  "no_unrelated_process_mutation": true,
+  "coverage_scope": "Matched same physical/augmentation/channel sequences and configs;P43 direct810cell coverage inherited,no new perpacket IQ replay",
+  "missing": [
+    "effectiveIQ_Ag",
+    "formal perpacket physics causal attribution",
+    "branch/gate training trajectories",
+    "crossseed replication",
+    "lowurban>60",
+    "suburban<=2ppclean gap"
+  ]
+}
