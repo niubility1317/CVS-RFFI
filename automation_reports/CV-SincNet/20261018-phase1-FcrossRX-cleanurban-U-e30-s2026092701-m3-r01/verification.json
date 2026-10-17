@@ -23,9 +23,9 @@
   "goal_complete": false,
   "code_commit": "91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a",
   "latest_observed_updates": {
-    "B0": 5106,
-    "URAW": 5106,
-    "UAS": 3996
+    "B0": 6438,
+    "URAW": 6438,
+    "UAS": 4662
   },
   "runtime": {
     "dispatcher": 776627,
@@ -53,11 +53,11 @@
     "roles": "L6300/U56700hidden/V27000;EXACT_MATCH;all5RX",
     "actual_native": "adv3b02_xuc/code/leo_practical",
     "parameters": 900722,
-    "source_progress": "B0 E23;URAW E23;UAS E18",
+    "source_progress": "B0 E29;URAW E29;UAS E21;allown20->10transitionsverified",
     "PID_CWD_argv_GPU_log_growth": "VERIFIED",
     "formal_complete": false,
     "source_teacher_qualified": true,
-    "read_at": 1792258548.113061
+    "read_at": 1792259144.2100334
   },
   "first_U_actual": {
     "all3qualified": true,
@@ -167,6 +167,21 @@
     "classification_effect_measured": false,
     "training_modified": false,
     "source_waiter_modified": false,
-    "deploy_status": "NOT_YET_RELEASED"
+    "deploy_status": "VERIFIED",
+    "code_commit": "82e8a7815979f35f16e6920cb4849195eacbc0cf",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_Uurban_analysis_20261018_r02",
+    "transfer": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/analysis_transfer_r02.json",
+    "actual_completed_E20": {
+      "observations": 396900,
+      "recorded_policy_recount": "PASS",
+      "signal_added_noise_state_changes": 8866,
+      "signal_reference_noise_state_changes": 7664,
+      "signal_added_noise_change_fraction": 0.02233812043335853,
+      "signal_reference_noise_change_fraction": 0.019309649785840263,
+      "receiver_and_compensation_recomputed": false,
+      "classification_effect_measured": false,
+      "ratios_are_total_SNR": false,
+      "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/UAS_E20_quality_state_sensitivity_r01.json"
+    }
   }
 }

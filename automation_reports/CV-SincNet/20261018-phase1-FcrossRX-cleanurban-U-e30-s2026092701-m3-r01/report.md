@@ -69,3 +69,11 @@ UAS 第一段已结束，实测 4440 更新、LNN2273280、LAs284160、额外完
 实际 signal_to_added_noise_db 与 white-input quality proxy 差值的中位数0.0269dB、q01−1.3015dB、q99+1.2296dB；两者均不是原始录音总SNR，且差值混合波形频谱、RX残差与有限噪声实现效应，不宜直接归因于多径。实际运行质量阈值为5／15dB、quality_reference20dB、max_residual_scale10，来自actual_U_channel.json而非默认值。
 
 独立分析补充元数据阈值敏感性：复算实际记录的接收状态和残差尺度；另统计signal/added-noise与推断的post-comp signal/reference-noise替代代理是否跨阈值。原波形、receiver和补偿均不重新计算或改动，不测分类因果效应。6项检查及编译PASS；该版本尚待单独发布，现有source-only等待进程及训练release不变。
+
+## 功率代理阈值敏感性实际结果
+
+分析代码82e8a7815979f35f16e6920cb4849195eacbc0cf已单独发布r02，独立GitHub读回一致、单归档SHA比较及远端compile VERIFIED。原训练release和source-only等待进程未修改或重启。6项本地检查PASS；用全部396900个已封存E20物理记录复算原状态与residual_scale，均与实际配置吻合。
+
+将同一记录的signal/added-noise比值作为替代质量代理时，有8866/396900（2.2338%）跨过锁定阈值；用推断的post-comp signal/reference-noise去除有限新增噪声功率波动后，有7664/396900（1.9309%）跨阈值。后一比值相对白功率代理的中位差−0.0121dB，q01−1.2072dB、q99+1.0686dB。这里没有重新生成信号、接收状态或补偿，不是总SNR，不证明阈值偏差导致了哪些识别错误；RX/image残差仍包含在推断信号功率中。
+
+局部证据local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/UAS_E20_quality_state_sensitivity_r01.json保留完整分scene转移计数、统计、代码身份和0NN/0IQ/0checkpoint/0Utruth/0target标志。最新原worker为E29/E29/E21且仍健康，源矩阵判定与完整正式分析尚未完成。r02将用于后续既定final_analysis_r01，source_analysis_r01仍由原r01等待进程生成；正式成绩在源判定独立固定并记录前保持未读。
