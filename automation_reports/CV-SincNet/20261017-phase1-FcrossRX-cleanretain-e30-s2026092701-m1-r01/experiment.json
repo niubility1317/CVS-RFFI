@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Latest user asks to follow referenced clean-preserving B10-like route;E30/all5sourceRX;one scratch30 row and automatic clean+6 practical;no target-selected parent",
   "code": {
-    "commit": "TO_BE_COMMITTED_BEFORE_RELEASE",
+    "commit": "c577b3daded412337fb4181be05078ce051a64f1",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "ordinary N607 existing CVS-RFFI/Python3.10/Torch2.1 FP32/CPU2",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cleanretain_E30_20261017_r01",
@@ -188,7 +188,7 @@
       "optimizer": "original AdamW CENTER_UNITS joint F/defaulthead",
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "native cosine total30"
       },
       "epochs": 30,

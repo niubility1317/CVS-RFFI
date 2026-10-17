@@ -5,7 +5,7 @@
   "local_real_IQ": 0,
   "local_real_CP": 0,
   "local_training_updates": 0,
-  "review": "PASS:one independentP0/P1 + original output-collision targeted confirmation;no otherP0/P1",
+  "review": "PASS one independent P0/P1 plus sole issue targeted confirmation;runtime output-isolation verified",
   "source_contract": "fulloriginal5RX7/63/30",
   "new_training_parent": "none",
   "pending_remote": [
@@ -14,5 +14,33 @@
     "native synthetic512 isolation",
     "actual args comparison",
     "PID/CWD/argv/GPU/loggrowth"
-  ]
+  ],
+  "remote": {
+    "release_commit": "c577b3daded412337fb4181be05078ce051a64f1",
+    "push_remoteOID": "VERIFIED identical via independentAPI",
+    "preflight": "PASS",
+    "archive_comparison": "VERIFIED once",
+    "compile": "PASS",
+    "real_checkpoint_smoke": "PASS/2synthetic/zeroquery/zeroinit",
+    "synthetic": "PASS/512NN/64As/originalhead+Sincgrad/zerooptimizer/isolatedoutput",
+    "native_args_shared": 848,
+    "unmatched_native_args": [],
+    "dispatcher": 723131,
+    "worker": 723350,
+    "gpu": 0,
+    "cwd_argv_gpu_loggrowth": "VERIFIED",
+    "source_role_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "latest_recorded_epoch": 1
+  },
+  "analysis_tests": {
+    "count": 4,
+    "status": "PASS",
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0
+  }
 }

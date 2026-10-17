@@ -1,3 +1,5 @@
+**当前状态：RUNNING／启动 VERIFIED。新行已完整完成 E1，尚无新正式成绩。**
+
 # 全源 F：保留普通监督的 practical 配对，从零 E30
 
 状态：LOCAL_VERIFIED，尚未发布、训练或产生新成绩。整体联合目标 ACTIVE。
@@ -35,3 +37,13 @@ N607普通账户/现有CVS-RFFI/FP32/CPU2，每GPU所有owner合计最多3进程
 成本分开报告：新训练30model-E/6660更新/3409920L NN；父训练0；既有两个控制各30E/6660为历史复用成本。新source学生/自身teacher/评估实际counter、As426240、source新读出2×12602NN、兼容2NN、随机模型合成512NN、formal1176002NN及墙钟分别保存，不把多个channel draw当model seed。
 
 当前本地聚焦协议负测和编译通过；唯一P0/P1审查与修复结果在verification.json；训练和新正式结果尚未生成，不能宣称改善。实际代码commit发布前填写。
+
+## 已核实的启动证据
+
+实际训练代码 c577b3daded412337fb4181be05078ce051a64f1 已提交、推送，独立API对比当前分支OID identical。直接Git连接超时后，使用系统原已配置的本机代理恢复推送；未修改系统或Git持久网络配置。唯一发布归档一次SHA比较及远端compile PASS。
+
+同原AS50工厂848个实际native args一致，仅run_id/candidate_id/output_dir不同。真实checkpoint严格加载2合成包无query smoke PASS；随后随机F的真实native64As/512NN合成验证PASS，默认头与Sinc均有有限非零梯度，0optimizer更新，正式source输出未提前创建。
+
+独立读回dispatcher723131、worker723350/GPU0，CWD/argv/CUDA和日志增长正确；实际完整源L/U/V6300/56700/27000，初始E1完成。原生第一批配置读回residual/post_sync/EQfalse/G1/ref30/fs25MHz/fc2.45GHz/reflect，quality adaptation、相位跟踪和IQ补偿开启；实际64条信道记录。原网络900722参数/206状态、6×160头/scale30保持。
+
+用户已确认就是这类保留clean的方案。P36草稿暂置、历史timing/FIR负结果保留，不修改另一对话健康RXpopulation实验。独立分析代码已实现：4个聚焦反例通过，最终读取所有30轮/6660步、426240As物理记录、三行7视图和源状态质量分层；尚未生成新结果或图表，不提前提供图表路径。
