@@ -23,5 +23,172 @@
     "NN": 0,
     "remote_operations": 0
   },
-  "started": false
+  "started": true,
+  "release": {
+    "status": "VERIFIED",
+    "execution_commit": "cb74a0c9be02a49713b7abe140f6af525d8cfde0",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "VERIFIED",
+    "remote_checks": {
+      "status": "PASS",
+      "protocol_negatives": 10,
+      "synthetic_physical_pairs": 15,
+      "physical_processing_calls": 150,
+      "fixed_quality_signal_max_error": 0,
+      "fixed_quality_noise_max_error": 4.654751537338637e-17,
+      "mean_reference_N0_exact": true,
+      "input_and_global_RNG_unchanged": true,
+      "batch_permutation_invariant": true,
+      "real_IQ": 0,
+      "CP": 0,
+      "NN": 0,
+      "training_updates": 0
+    }
+  },
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 2,
+    "real_IQ_forwarded": 0,
+    "query_read": false,
+    "head_fit_updates": 0
+  },
+  "live_observation": {
+    "status": "VERIFIED",
+    "PID": 596194,
+    "CWD_match": true,
+    "argv_match": true,
+    "CUDA_empty": true,
+    "CPU_threads2": true,
+    "NN_progress": [
+      14622,
+      41002
+    ],
+    "log_bytes": [
+      48,
+      86
+    ],
+    "target_access": false
+  },
+  "terminal": {
+    "status": "ANALYZED_SOURCE_ONLY",
+    "process_alive": false,
+    "failure": null,
+    "actual_NN": 100802,
+    "updates": 0,
+    "target_access": false
+  },
+  "independent": {
+    "status": "VERIFIED",
+    "CM_recounts": 306,
+    "TX_recounts": 96,
+    "source_predictions": 100800,
+    "max_metric_error": 0,
+    "conditions": {
+      "low_gain": true,
+      "mid_gain": false,
+      "suburban_protection": true,
+      "all_RX_low_protection": true
+    },
+    "decision": "FAIL_FIXED_N0_PRIOR_SOURCE_CANDIDATE_CLOSED",
+    "paired_source_results": {
+      "practical_low_suburban": {
+        "N0_half": {
+          "repairs": 90,
+          "new_errors": 38,
+          "accuracy_delta_pp": 0.8253968253968255
+        },
+        "N0_1p5": {
+          "repairs": 22,
+          "new_errors": 88,
+          "accuracy_delta_pp": -1.0476190476190477
+        },
+        "N0_half_fixedQ": {
+          "repairs": 81,
+          "new_errors": 33,
+          "accuracy_delta_pp": 0.7619047619047619
+        },
+        "N0_1p5_fixedQ": {
+          "repairs": 19,
+          "new_errors": 82,
+          "accuracy_delta_pp": -1
+        },
+        "expected_single_draw": {
+          "accuracy_delta_pp": -0.11111111111110628,
+          "expected_repairs": 56,
+          "expected_new_errors": 63,
+          "not_logit_ensemble": true
+        }
+      },
+      "practical_mid_urban": {
+        "N0_half": {
+          "repairs": 262,
+          "new_errors": 121,
+          "accuracy_delta_pp": 2.238095238095238
+        },
+        "N0_1p5": {
+          "repairs": 94,
+          "new_errors": 173,
+          "accuracy_delta_pp": -1.253968253968254
+        },
+        "N0_half_fixedQ": {
+          "repairs": 207,
+          "new_errors": 80,
+          "accuracy_delta_pp": 2.015873015873016
+        },
+        "N0_1p5_fixedQ": {
+          "repairs": 50,
+          "new_errors": 142,
+          "accuracy_delta_pp": -1.4603174603174605
+        },
+        "expected_single_draw": {
+          "accuracy_delta_pp": 0.4920634920634881,
+          "expected_repairs": 178,
+          "expected_new_errors": 147,
+          "not_logit_ensemble": true
+        }
+      },
+      "practical_low_urban": {
+        "N0_half": {
+          "repairs": 399,
+          "new_errors": 194,
+          "accuracy_delta_pp": 3.2539682539682544
+        },
+        "N0_1p5": {
+          "repairs": 130,
+          "new_errors": 271,
+          "accuracy_delta_pp": -2.238095238095238
+        },
+        "N0_half_fixedQ": {
+          "repairs": 338,
+          "new_errors": 119,
+          "accuracy_delta_pp": 3.4761904761904763
+        },
+        "N0_1p5_fixedQ": {
+          "repairs": 97,
+          "new_errors": 243,
+          "accuracy_delta_pp": -2.317460317460317
+        },
+        "expected_single_draw": {
+          "accuracy_delta_pp": 0.5079365079365128,
+          "expected_repairs": 264.5,
+          "expected_new_errors": 232.5,
+          "not_logit_ensemble": true
+        }
+      }
+    },
+    "IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "training_updates": 0,
+    "target_access": false,
+    "Ag_efficacy_proved": false,
+    "As_training_gain_proved": false,
+    "joint_goal_complete": false
+  },
+  "nominal_replay_max_logit_error": {
+    "raw": 0,
+    "practical_low_suburban": 0,
+    "practical_mid_urban": 0,
+    "practical_low_urban": 0
+  }
 }

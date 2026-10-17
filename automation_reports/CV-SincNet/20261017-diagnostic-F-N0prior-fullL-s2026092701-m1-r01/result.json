@@ -1,0 +1,151 @@
+{
+  "status": "ANALYZED_SOURCE_ONLY",
+  "run_id": "20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01",
+  "decision": "FAIL_FIXED_N0_PRIOR_SOURCE_CANDIDATE_CLOSED",
+  "conditions": {
+    "low_gain": true,
+    "mid_gain": false,
+    "suburban_protection": true,
+    "all_RX_low_protection": true
+  },
+  "scores": {
+    "raw": {
+      "count": 6300,
+      "accuracy": 0.9841269841269841,
+      "macro_F1": 0.9841026408305599,
+      "raw_correct_retention": 1,
+      "mean_true_margin_over30": 0.19776388599223435
+    },
+    "practical_low_suburban/nominal": {
+      "count": 6300,
+      "accuracy": 0.9104761904761904,
+      "macro_F1": 0.9100366612201632,
+      "raw_correct_retention": 0.9216129032258065,
+      "mean_true_margin_over30": 0.13505158836152772
+    },
+    "practical_low_suburban/N0_half": {
+      "count": 6300,
+      "accuracy": 0.9187301587301587,
+      "macro_F1": 0.9183260420468012,
+      "raw_correct_retention": 0.93,
+      "mean_true_margin_over30": 0.1411669431374953
+    },
+    "practical_low_suburban/N0_1p5": {
+      "count": 6300,
+      "accuracy": 0.9,
+      "macro_F1": 0.8996026305073669,
+      "raw_correct_retention": 0.9109677419354839,
+      "mean_true_margin_over30": 0.1297958146652017
+    },
+    "practical_low_suburban/N0_half_fixedQ": {
+      "count": 6300,
+      "accuracy": 0.9180952380952381,
+      "macro_F1": 0.9177357580160725,
+      "raw_correct_retention": 0.9293548387096774,
+      "mean_true_margin_over30": 0.14112299264847747
+    },
+    "practical_low_suburban/N0_1p5_fixedQ": {
+      "count": 6300,
+      "accuracy": 0.9004761904761904,
+      "macro_F1": 0.9000285526314645,
+      "raw_correct_retention": 0.9114516129032258,
+      "mean_true_margin_over30": 0.12985447228816
+    },
+    "practical_mid_urban/nominal": {
+      "count": 6300,
+      "accuracy": 0.7390476190476191,
+      "macro_F1": 0.7380472346263683,
+      "raw_correct_retention": 0.7479032258064516,
+      "mean_true_margin_over30": 0.09355439580992116
+    },
+    "practical_mid_urban/N0_half": {
+      "count": 6300,
+      "accuracy": 0.7614285714285715,
+      "macro_F1": 0.7605639712482085,
+      "raw_correct_retention": 0.770483870967742,
+      "mean_true_margin_over30": 0.0978139756446342
+    },
+    "practical_mid_urban/N0_1p5": {
+      "count": 6300,
+      "accuracy": 0.7265079365079365,
+      "macro_F1": 0.7252970504196269,
+      "raw_correct_retention": 0.7351612903225806,
+      "mean_true_margin_over30": 0.09030921995657486
+    },
+    "practical_mid_urban/N0_half_fixedQ": {
+      "count": 6300,
+      "accuracy": 0.7592063492063492,
+      "macro_F1": 0.7584927285544479,
+      "raw_correct_retention": 0.7687096774193548,
+      "mean_true_margin_over30": 0.0977164608916402
+    },
+    "practical_mid_urban/N0_1p5_fixedQ": {
+      "count": 6300,
+      "accuracy": 0.7244444444444444,
+      "macro_F1": 0.7232544628924328,
+      "raw_correct_retention": 0.7330645161290322,
+      "mean_true_margin_over30": 0.09036740824853037
+    },
+    "practical_low_urban/nominal": {
+      "count": 6300,
+      "accuracy": 0.6101587301587301,
+      "macro_F1": 0.6078303404017404,
+      "raw_correct_retention": 0.6167741935483871,
+      "mean_true_margin_over30": 0.05833278454989521
+    },
+    "practical_low_urban/N0_half": {
+      "count": 6300,
+      "accuracy": 0.6426984126984127,
+      "macro_F1": 0.6407014182518759,
+      "raw_correct_retention": 0.6498387096774193,
+      "mean_true_margin_over30": 0.06433480935128606
+    },
+    "practical_low_urban/N0_1p5": {
+      "count": 6300,
+      "accuracy": 0.5877777777777777,
+      "macro_F1": 0.5853187470901445,
+      "raw_correct_retention": 0.5941935483870968,
+      "mean_true_margin_over30": 0.054051688355301004
+    },
+    "practical_low_urban/N0_half_fixedQ": {
+      "count": 6300,
+      "accuracy": 0.6449206349206349,
+      "macro_F1": 0.6429613282878749,
+      "raw_correct_retention": 0.6514516129032258,
+      "mean_true_margin_over30": 0.06440068229196286
+    },
+    "practical_low_urban/N0_1p5_fixedQ": {
+      "count": 6300,
+      "accuracy": 0.5869841269841269,
+      "macro_F1": 0.5844775170491904,
+      "raw_correct_retention": 0.5932258064516129,
+      "mean_true_margin_over30": 0.054103438281629695
+    },
+    "practical_low_suburban/expected_mixture": {
+      "count": 12600,
+      "accuracy": 0.9093650793650794,
+      "macro_F1": 0.9089600970430562,
+      "unique_physical_L": 6300,
+      "interpretation": "Expected random single-view law from two equally weighted observations;no logit ensemble"
+    },
+    "practical_mid_urban/expected_mixture": {
+      "count": 12600,
+      "accuracy": 0.743968253968254,
+      "macro_F1": 0.7429090755087056,
+      "unique_physical_L": 6300,
+      "interpretation": "Expected random single-view law from two equally weighted observations;no logit ensemble"
+    },
+    "practical_low_urban/expected_mixture": {
+      "count": 12600,
+      "accuracy": 0.6152380952380953,
+      "macro_F1": 0.6129318266475323,
+      "unique_physical_L": 6300,
+      "interpretation": "Expected random single-view law from two equally weighted observations;no logit ensemble"
+    }
+  },
+  "complete_source_results_ref": "PROJECT/runs/20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01/result.json",
+  "actual_NN": 100802,
+  "training_updates": 0,
+  "target_access": false,
+  "automatic_training": false
+}

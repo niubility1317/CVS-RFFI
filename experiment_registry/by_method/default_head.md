@@ -13,4 +13,4 @@
 |完整源普通星地拼接：E20 固定参照|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01/report.md)|
 |完整源普通星地拼接：E20 固定参照|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)|
 |有限窗接收质量 A_s：E30 匹配结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01/report.md)|
-|完整 practical 内等平均 N0 变化：完整 L6300 源反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01/report.md)|
+|等平均 N0 变化：完整源反证结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01/report.md)|

@@ -1,0 +1,35 @@
+{
+  "status": "ANALYZED_VERIFIED_SOURCE_ONLY",
+  "execution_commit": "cb74a0c9be02a49713b7abe140f6af525d8cfde0",
+  "PID": 596194,
+  "CPU_threads": 2,
+  "GPU": "none",
+  "actual_NN": 100802,
+  "CP": 1,
+  "source_cache_loads": 1,
+  "source_L": 6300,
+  "source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_RX_holdout": null,
+  "physical_realizations": 18900,
+  "processing_calls": 94500,
+  "elapsed_seconds": 208.8484133160673,
+  "training_updates": 0,
+  "teacher_forwards": 0,
+  "head_fit_updates": 0,
+  "U_truth_used": false,
+  "V_statistically_used": false,
+  "target_access": false,
+  "all_model_state_unchanged": true,
+  "decision": "FAIL_FIXED_N0_PRIOR_SOURCE_CANDIDATE_CLOSED",
+  "joint_goal_complete": false,
+  "actual_imports": {
+    "channel_module": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+    "residual_module": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py"
+  }
+}
