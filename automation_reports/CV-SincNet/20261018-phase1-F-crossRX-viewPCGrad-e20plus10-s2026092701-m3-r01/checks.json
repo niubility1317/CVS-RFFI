@@ -1,0 +1,27 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 21,
+  "analytic_gradient_results": {
+    "ORIGINAL": [
+      6,
+      -1
+    ],
+    "MEASURE": [
+      6,
+      -1
+    ],
+    "PROJECT": [
+      8,
+      -1
+    ]
+  },
+  "physical_Sinc_metric": true,
+  "remaining_aux_gradient_preserved": true,
+  "global_RNG_preserved_for_core": true,
+  "synthetic_F_forward_packets": 1536,
+  "ORIGINAL_MEASURE_gradient_max_error": 0,
+  "IQ": 0,
+  "CP": 0,
+  "real_updates": 0,
+  "synthetic_updates": 3
+}

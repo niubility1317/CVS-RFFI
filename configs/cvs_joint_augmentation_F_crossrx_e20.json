@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_NO_SUPPORTED_NEW_IQ_AG",
+  "status": "RESEARCH_ACTIVE_AS_VIEW_GRADIENT_PREREGISTERED",
   "source_experiment": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
   "authorization": "Latest explicit user budget E30;new fixed FIR first-learning-utility rows use matching noAg fullsource E20 parents plus10;no trainingRXholdout",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -154,7 +154,7 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": null,
-  "next_training_hypothesis": null,
+  "next_training_hypothesis": "One-sided original ordinaryAs gradient-conflict handling without changing IQ,loss mass,forwards or U rules",
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
     "status": "ANALYZED_SOURCE_SENSITIVITY_PASS_NOT_AG_EFFICACY",
@@ -4301,7 +4301,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
+  "current_training_experiment": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01",
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -4530,5 +4530,26 @@
     "teacher": 0,
     "remote_jobs": 0,
     "note": "analysis/cvs_amplitude_donor_route_check_20261018.md"
+  },
+  "view_pcgrad_release": {
+    "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01",
+    "status": "PREREGISTERED",
+    "rows": [
+      "ORIGINAL",
+      "MEASURE",
+      "PROJECT"
+    ],
+    "parent_epochs": 20,
+    "incremental_epochs": 10,
+    "cumulative_epochs": 30,
+    "extra_VJP_per_step": {
+      "ORIGINAL": 0,
+      "MEASURE": 2,
+      "PROJECT": 2
+    },
+    "new_NN_per_step": 0,
+    "IQ_Ag": false,
+    "review": "PASS",
+    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01/report.md"
   }
 }
