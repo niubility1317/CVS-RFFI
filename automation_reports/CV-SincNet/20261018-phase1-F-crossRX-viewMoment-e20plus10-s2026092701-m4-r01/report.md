@@ -1,3 +1,17 @@
+# 完整 E30 四行：逐视图二阶矩负结果
+
+状态：ANALYZED／VERIFIED；固定配方关闭。全部5源RX、L6300/U56700隐藏TX/V27000、256点、默认cos头联合训练、原U和累计E30保持，无训练域留出。四行4704000正式决策全部固定后独立truth-last，504CM/84分区/35配对复算一致。
+
+普通As clean82.697024%／midurban64.338095%／lowurban53.407143%；候选82.475595%／64.216667%／53.251786%，七视图准确率均下降。源clean/mid/low条件已先独立失败，固定系数1/存储坐标/父/seed/预算配方关闭，不按target救跑或扩seed。suburban差缩小伴随clean下降，不能算联合改善。
+
+[完整结果与判据](final_analysis.md) · [七视图与成本](result.json) · [全部RX/TX/day分层](stratified_results.md) · [完成与独立复算](completion_verification.json)
+
+此项是训练组织，不是IQ A_g；未证明泛化增强、Ag×As交互、low>60、全部suburban差≤2pp或跨seed联合收益。整体目标仍ACTIVE。执行提交 5e88542e9d6a0127fe323205a864f8ebc0645231；分析提交 35b68cd1bc69029bd03004159454ec77d6f5104c。
+
+以下保留启动前的冻结方案及历史启动状态，以本段和完成产物为当前状态。
+
+---
+
 # 逐视图二阶矩 × 原 practical：E30 四行预登记
 
 状态：RUNNING／VERIFIED，已完成至少累计 E21／各222次新增更新；真实训练与正式评分仍未完成。唯一假设：在不改变原 ordinary/As 监督目标的情况下，二阶矩使用两种视图的离散分歧项，能否保护 clean 并增加 mid/low urban 实际正确率。本项是训练配方，不是 IQ A_g；本四行只报告“优化配方 × A_s”交互，不能冒称 Ag×As 四格完成。整体联合目标 ACTIVE。

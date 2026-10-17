@@ -2180,7 +2180,7 @@
       "joint_goal_complete": false
     }
   },
-  "latest_completed_experiment": "20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
+  "latest_completed_experiment": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
   "source_PSD_positive_affine": {
     "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
     "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
@@ -2310,31 +2310,13 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
+  "current_experiment": null,
   "active_As_hypothesis": {
-    "status": "RUNNING_VERIFIED_FIRST_EPOCH",
-    "run_id": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
-    "scope": "Optimizer recipe x unchanged practical,not newIQAg",
-    "candidate": "VIEW_SECOND AdamW second moment",
-    "full_source_RX": [
-      1,
-      3,
-      4,
-      6,
-      8
-    ],
-    "source_RX_holdout": null,
-    "IQ_points": 256,
-    "cumulative_epochs_each": 30,
-    "new_updates": 8880,
-    "extra_VJP": 17760,
-    "new_IQ_operator": false,
-    "new_losses": 0,
-    "new_U_rules": 0,
-    "source_qualification_fixed": true,
-    "automatic_all7_truth_last": true,
-    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/report.md",
-    "execution_commit": "5e88542e9d6a0127fe323205a864f8ebc0645231"
+    "status": "NO_SUPPORTED_NEW_AS_TRAINING_CANDIDATE",
+    "latest_closed_run": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
+    "closed_recipe": "view second moment coefficient1/storedcoordinates/originalparents/seed2026092701/E20plus10",
+    "reason": "Source clean/midurban/lowurban failed;all seven formal accuracies decreased versus matched plain As",
+    "ordinary_As_efficacy": "Confirmed single-seed adaptation gain plus clean cost;not joint completion"
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
@@ -3967,7 +3949,7 @@
     "updates": 0,
     "target_access": false
   },
-  "latest_completed_training_experiment": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
+  "latest_completed_training_experiment": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
   "antithetic_source_result": {
     "run_id": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02",
     "status": "ANALYZED_SOURCE_ONLY",
@@ -4269,8 +4251,8 @@
     "target_feedback": false,
     "no_rescue": true
   },
-  "latest_completed_analysis": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
-  "current_evidence_gap": "Four view-second-moment x originalAs rows verified running,E21/222newupdates each;not complete or scored. No newIQAg or identificationbenefit yet;all fullsourceE30/defaulthead/sourcequalification/all7truthlast remains fixed,full jointgoalACTIVE.",
+  "latest_completed_analysis": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
+  "current_evidence_gap": "No supported new identity-preserving IQ Ag;fixed view-second-moment training recipe failed source and formal tests.Ordinary As retains urban adaptation and clean cost;clean net/low>60/suburban proximity/cross-seed joint proof remain missing.",
   "current_source_experiment": null,
   "latest_completed_source_experiment": "20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
   "unitary_source_result": {
@@ -4309,7 +4291,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
+  "current_training_experiment": null,
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -5642,7 +5624,7 @@
     "recount_wall_seconds": 0.14951708493754268
   },
   "view_second_moment_release": {
-    "status": "RUNNING_VERIFIED_FIRST_EPOCH",
+    "status": "ANALYZED_VERIFIED_SOURCE_FAILED_FIXED_RECIPE_CLOSED",
     "run_id": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
     "source_basis": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/source_gradient_basis.json",
     "pooled_source_view_disagreement_ratio": 0.7307394981320188,
@@ -5703,5 +5685,335 @@
         "new_updates": 222
       }
     ]
+  },
+  "view_second_moment_result": {
+    "status": "ANALYZED_VERIFIED",
+    "run_id": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
+    "execution_commit": "5e88542e9d6a0127fe323205a864f8ebc0645231",
+    "analysis_commit": "35b68cd1bc69029bd03004159454ec77d6f5104c",
+    "source_pass": false,
+    "source_conditions": {
+      "clean": false,
+      "midurban": false,
+      "lowurban": false,
+      "suburban": true,
+      "NOAS_clean": true
+    },
+    "formal_summary": {
+      "NOAS_MEASURE": {
+        "clean": {
+          "accuracy": 0.8518988095238095,
+          "macro_F1": 0.8489767206518019,
+          "correct": 143119,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7705833333333333
+        },
+        "practical_high": {
+          "accuracy": 0.4610416666666667,
+          "macro_F1": 0.40985126665747246,
+          "correct": 77455,
+          "count": 168000,
+          "worst_RX_accuracy": 0.38795833333333335
+        },
+        "practical_mid": {
+          "accuracy": 0.4439940476190476,
+          "macro_F1": 0.39838388407236563,
+          "correct": 74591,
+          "count": 168000,
+          "worst_RX_accuracy": 0.37883333333333336
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.42275595238095237,
+          "macro_F1": 0.3823633589268143,
+          "correct": 71023,
+          "count": 168000,
+          "worst_RX_accuracy": 0.36183333333333334
+        },
+        "practical_high_urban": {
+          "accuracy": 0.44819642857142855,
+          "macro_F1": 0.4032409854874792,
+          "correct": 75297,
+          "count": 168000,
+          "worst_RX_accuracy": 0.37833333333333335
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.3735833333333333,
+          "macro_F1": 0.3478439255730128,
+          "correct": 62762,
+          "count": 168000,
+          "worst_RX_accuracy": 0.32466666666666666
+        },
+        "practical_low_urban": {
+          "accuracy": 0.317547619047619,
+          "macro_F1": 0.30269392688346125,
+          "correct": 53348,
+          "count": 168000,
+          "worst_RX_accuracy": 0.28029166666666666
+        }
+      },
+      "AS_MEASURE": {
+        "clean": {
+          "accuracy": 0.8269702380952381,
+          "macro_F1": 0.8222188186650431,
+          "correct": 138931,
+          "count": 168000,
+          "worst_RX_accuracy": 0.73175
+        },
+        "practical_high": {
+          "accuracy": 0.8154702380952381,
+          "macro_F1": 0.8115059228389921,
+          "correct": 136999,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7239583333333334
+        },
+        "practical_mid": {
+          "accuracy": 0.7930178571428571,
+          "macro_F1": 0.7891821300433536,
+          "correct": 133227,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7111666666666666
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.769154761904762,
+          "macro_F1": 0.7655161144513021,
+          "correct": 129218,
+          "count": 168000,
+          "worst_RX_accuracy": 0.693625
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7816488095238096,
+          "macro_F1": 0.7775904739154665,
+          "correct": 131317,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6994583333333333
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6433809523809524,
+          "macro_F1": 0.6391204196684929,
+          "correct": 108088,
+          "count": 168000,
+          "worst_RX_accuracy": 0.5830416666666667
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5340714285714285,
+          "macro_F1": 0.5285327591863219,
+          "correct": 89724,
+          "count": 168000,
+          "worst_RX_accuracy": 0.4887916666666667
+        }
+      },
+      "NOAS_VIEW": {
+        "clean": {
+          "accuracy": 0.851297619047619,
+          "macro_F1": 0.8483308281141954,
+          "correct": 143018,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7692916666666667
+        },
+        "practical_high": {
+          "accuracy": 0.45882738095238096,
+          "macro_F1": 0.4071612949238641,
+          "correct": 77083,
+          "count": 168000,
+          "worst_RX_accuracy": 0.383625
+        },
+        "practical_mid": {
+          "accuracy": 0.4411904761904762,
+          "macro_F1": 0.3952904761737135,
+          "correct": 74120,
+          "count": 168000,
+          "worst_RX_accuracy": 0.3739166666666667
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.42061309523809526,
+          "macro_F1": 0.3802852062323902,
+          "correct": 70663,
+          "count": 168000,
+          "worst_RX_accuracy": 0.35825
+        },
+        "practical_high_urban": {
+          "accuracy": 0.44654166666666667,
+          "macro_F1": 0.4011965562140803,
+          "correct": 75019,
+          "count": 168000,
+          "worst_RX_accuracy": 0.3754166666666667
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.37197619047619046,
+          "macro_F1": 0.34660775984383846,
+          "correct": 62492,
+          "count": 168000,
+          "worst_RX_accuracy": 0.3233333333333333
+        },
+        "practical_low_urban": {
+          "accuracy": 0.3164345238095238,
+          "macro_F1": 0.30212200481891593,
+          "correct": 53161,
+          "count": 168000,
+          "worst_RX_accuracy": 0.2791666666666667
+        }
+      },
+      "AS_VIEW": {
+        "clean": {
+          "accuracy": 0.8247559523809523,
+          "macro_F1": 0.81988634170821,
+          "correct": 138559,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7189583333333334
+        },
+        "practical_high": {
+          "accuracy": 0.8149404761904762,
+          "macro_F1": 0.8109343717888078,
+          "correct": 136910,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7250416666666667
+        },
+        "practical_mid": {
+          "accuracy": 0.7915357142857142,
+          "macro_F1": 0.7876027913289686,
+          "correct": 132978,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7105416666666666
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7680297619047619,
+          "macro_F1": 0.7643025583776826,
+          "correct": 129029,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6929583333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7811845238095239,
+          "macro_F1": 0.7770899597234001,
+          "correct": 131239,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7012083333333333
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6421666666666667,
+          "macro_F1": 0.6378177515784743,
+          "correct": 107884,
+          "count": 168000,
+          "worst_RX_accuracy": 0.5832083333333333
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5325178571428572,
+          "macro_F1": 0.5267845687986759,
+          "correct": 89463,
+          "count": 168000,
+          "worst_RX_accuracy": 0.48791666666666667
+        }
+      }
+    },
+    "candidate_vs_As": {
+      "clean": {
+        "repairs": 327,
+        "new_errors": 699,
+        "delta_accuracy_pp": -0.22142857142857142,
+        "joint_clean_and_scene_delta_pp": -0.22142857142857142,
+        "shared_clean_count": 138232,
+        "repairs_when_both_clean_correct": 0,
+        "new_errors_when_both_clean_correct": 0
+      },
+      "practical_high": {
+        "repairs": 452,
+        "new_errors": 541,
+        "delta_accuracy_pp": -0.052976190476190475,
+        "joint_clean_and_scene_delta_pp": -0.1767857142857143,
+        "shared_clean_count": 138232,
+        "repairs_when_both_clean_correct": 273,
+        "new_errors_when_both_clean_correct": 342
+      },
+      "practical_mid": {
+        "repairs": 477,
+        "new_errors": 726,
+        "delta_accuracy_pp": -0.14821428571428572,
+        "joint_clean_and_scene_delta_pp": -0.24345238095238095,
+        "shared_clean_count": 138232,
+        "repairs_when_both_clean_correct": 298,
+        "new_errors_when_both_clean_correct": 517
+      },
+      "practical_low_suburban": {
+        "repairs": 605,
+        "new_errors": 794,
+        "delta_accuracy_pp": -0.1125,
+        "joint_clean_and_scene_delta_pp": -0.20952380952380953,
+        "shared_clean_count": 138232,
+        "repairs_when_both_clean_correct": 402,
+        "new_errors_when_both_clean_correct": 554
+      },
+      "practical_high_urban": {
+        "repairs": 561,
+        "new_errors": 639,
+        "delta_accuracy_pp": -0.04642857142857143,
+        "joint_clean_and_scene_delta_pp": -0.16785714285714284,
+        "shared_clean_count": 138232,
+        "repairs_when_both_clean_correct": 369,
+        "new_errors_when_both_clean_correct": 451
+      },
+      "practical_mid_urban": {
+        "repairs": 844,
+        "new_errors": 1048,
+        "delta_accuracy_pp": -0.12142857142857143,
+        "joint_clean_and_scene_delta_pp": -0.23273809523809524,
+        "shared_clean_count": 138232,
+        "repairs_when_both_clean_correct": 621,
+        "new_errors_when_both_clean_correct": 825
+      },
+      "practical_low_urban": {
+        "repairs": 1042,
+        "new_errors": 1303,
+        "delta_accuracy_pp": -0.15535714285714286,
+        "joint_clean_and_scene_delta_pp": -0.18988095238095237,
+        "shared_clean_count": 138232,
+        "repairs_when_both_clean_correct": 833,
+        "new_errors_when_both_clean_correct": 1025
+      }
+    },
+    "optimizer_As_interaction_pp": {
+      "clean": -0.16130952380952746,
+      "practical_high": 0.16845238095237747,
+      "practical_mid": 0.1321428571428529,
+      "practical_low_suburban": 0.10178571428570704,
+      "practical_high_urban": 0.11904761904761862,
+      "practical_mid_urban": 0.039285714285713924,
+      "practical_low_urban": -0.04404761904761578
+    },
+    "suburban_gaps_pp": {
+      "NOAS_MEASURE": {
+        "practical_high": 39.08571428571428,
+        "practical_mid": 40.79047619047619,
+        "practical_low_suburban": 42.91428571428571
+      },
+      "AS_MEASURE": {
+        "practical_high": 1.1499999999999955,
+        "practical_mid": 3.3952380952380956,
+        "practical_low_suburban": 5.781547619047611
+      },
+      "NOAS_VIEW": {
+        "practical_high": 39.24702380952381,
+        "practical_mid": 41.010714285714286,
+        "practical_low_suburban": 43.06845238095238
+      },
+      "AS_VIEW": {
+        "practical_high": 0.981547619047618,
+        "practical_mid": 3.322023809523811,
+        "practical_low_suburban": 5.672619047619043
+      }
+    },
+    "source_RX_holdout": null,
+    "IQ_points": 256,
+    "new_Ag": false,
+    "Ag_As_interaction_measured": false,
+    "all_seven_candidate_accuracy_deltas_negative": true,
+    "paired_lowurban": {
+      "repairs": 1042,
+      "new_errors": 1303,
+      "joint_clean_low_correct_net": -319
+    },
+    "fixed_recipe_closed": true,
+    "automatic_seed_extension": false,
+    "joint_goal_complete": false,
+    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/final_analysis.md"
   }
 }

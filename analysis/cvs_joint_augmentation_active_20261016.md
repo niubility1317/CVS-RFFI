@@ -1,3 +1,11 @@
+## 2026-10-18：逐视图二阶矩四行 E30 完整负结果，固定配方关闭
+
+[完整同成本报告](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/final_analysis.md) 已 ANALYZED／VERIFIED。全部5源RX／L6300-U56700隐藏TX-V27000／256点、F＋跨RX同TX／默认cos头联合训练／原U规则保持，无训练域留出；四行自身原E20＋10至累计E30，各2220新增更新和4L前向/2额外VJP。四个worker和dispatcher自然退出，全部4704000正式决策后独立truth-last；8880完整源步/矩记录、26640三坐标见证、52源CM/504正式CM/84分区/35配对独立复算一致，分析0IQ/CP/NN/更新/rawtruth。
+
+NOAS_MEASURE clean85.189881%／midurban37.358333%／lowurban31.754762%；普通AS_MEASURE 82.697024%／64.338095%／53.407143%；AS_VIEW 82.475595%／64.216667%／53.251786%。候选相对普通As为−.221429／−.121429／−.155357pp，七视图accuracy均降，low修复1042/新增1303，clean∩low联合正确净少319。NoAs VIEW也七视图均降；部分正优化器×As交互只是不同幅度的退步，不能充当真实收益。源clean/mid/low条件已在读取正式scores前独立失败，关闭固定系数1/存储坐标/父/seed/配方/预算，不调参救回或扩seed。
+
+候选三个suburban距自身clean .981548／3.322024／5.672619pp，略缩伴随clean下降，不是联合改善；low<60，clean相对无As净负。此项为训练组织，不是新IQ Ag或Ag×As四格。当前无本路线运行中新候选，也无有源依据的新IQ算子；不再把旧失败路线换名重试。下一步必须先有可解释、身份保持的256点观测变化证据，再启动新增Ag；不继续堆损失/门控/优化器猜测。完整目标仍ACTIVE。以下旧“当前／运行／下一项”按历史保留。
+
 ## 2026-10-18：逐视图二阶矩四行已真实运行
 
 [当前四行报告](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/report.md) RUNNING／VERIFIED；执行提交 5e88542e9d6a0127fe323205a864f8ebc0645231，远端OID一致。单archive/compile、唯一P0P1和两匹配原CP无query smoke通过；四worker PID/CWD/argv/GPU/loggrowth核对，GPU0/1/2/6，最近实测各累计E21/222新增更新/113664 L NN，As两行各28416完整物理处理。全5源RX/L6300/U56700隐藏TX/V27000/256点、E20+10至E30/defaultcos联合训练/原U保持，无训练域留出。只是二阶矩配方×As；没有新IQAg、完成训练或正式成绩。零前向全量独立复算代码已实现并过合成反例，真实复算待完整输出，不重复审批或改健康任务。完整目标ACTIVE；以下旧当前/下一项按历史保留。

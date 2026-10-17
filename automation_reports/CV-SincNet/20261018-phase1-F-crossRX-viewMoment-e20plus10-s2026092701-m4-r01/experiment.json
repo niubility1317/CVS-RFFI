@@ -481,12 +481,69 @@
         },
         "REJECTED_EXTRA_GATE": "No separate design approval,seal or additional review"
       },
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "result": {
-        "latest_observed_cumulative_epoch": 21,
-        "actual_new_updates": 222,
-        "training_complete": false,
-        "formal_result_available": false
+        "latest_observed_cumulative_epoch": 30,
+        "actual_new_updates": 2220,
+        "cumulative_updates": 6660,
+        "training_complete": true,
+        "formal_result_available": true,
+        "seven_views_complete": true,
+        "truth_last": true,
+        "source_RX_holdout": null,
+        "source_qualification_pass": false,
+        "metrics": {
+          "clean": {
+            "accuracy": 0.8518988095238095,
+            "macro_F1": 0.8489767206518019,
+            "correct": 143119,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7705833333333333
+          },
+          "practical_high": {
+            "accuracy": 0.4610416666666667,
+            "macro_F1": 0.40985126665747246,
+            "correct": 77455,
+            "count": 168000,
+            "worst_RX_accuracy": 0.38795833333333335
+          },
+          "practical_mid": {
+            "accuracy": 0.4439940476190476,
+            "macro_F1": 0.39838388407236563,
+            "correct": 74591,
+            "count": 168000,
+            "worst_RX_accuracy": 0.37883333333333336
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.42275595238095237,
+            "macro_F1": 0.3823633589268143,
+            "correct": 71023,
+            "count": 168000,
+            "worst_RX_accuracy": 0.36183333333333334
+          },
+          "practical_high_urban": {
+            "accuracy": 0.44819642857142855,
+            "macro_F1": 0.4032409854874792,
+            "correct": 75297,
+            "count": 168000,
+            "worst_RX_accuracy": 0.37833333333333335
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.3735833333333333,
+            "macro_F1": 0.3478439255730128,
+            "correct": 62762,
+            "count": 168000,
+            "worst_RX_accuracy": 0.32466666666666666
+          },
+          "practical_low_urban": {
+            "accuracy": 0.317547619047619,
+            "macro_F1": 0.30269392688346125,
+            "correct": 53348,
+            "count": 168000,
+            "worst_RX_accuracy": 0.28029166666666666
+          }
+        },
+        "same_row_report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/final_analysis.md"
       }
     },
     {
@@ -834,12 +891,69 @@
         },
         "REJECTED_EXTRA_GATE": "No separate design approval,seal or additional review"
       },
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "result": {
-        "latest_observed_cumulative_epoch": 21,
-        "actual_new_updates": 222,
-        "training_complete": false,
-        "formal_result_available": false
+        "latest_observed_cumulative_epoch": 30,
+        "actual_new_updates": 2220,
+        "cumulative_updates": 6660,
+        "training_complete": true,
+        "formal_result_available": true,
+        "seven_views_complete": true,
+        "truth_last": true,
+        "source_RX_holdout": null,
+        "source_qualification_pass": false,
+        "metrics": {
+          "clean": {
+            "accuracy": 0.8269702380952381,
+            "macro_F1": 0.8222188186650431,
+            "correct": 138931,
+            "count": 168000,
+            "worst_RX_accuracy": 0.73175
+          },
+          "practical_high": {
+            "accuracy": 0.8154702380952381,
+            "macro_F1": 0.8115059228389921,
+            "correct": 136999,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7239583333333334
+          },
+          "practical_mid": {
+            "accuracy": 0.7930178571428571,
+            "macro_F1": 0.7891821300433536,
+            "correct": 133227,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7111666666666666
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.769154761904762,
+            "macro_F1": 0.7655161144513021,
+            "correct": 129218,
+            "count": 168000,
+            "worst_RX_accuracy": 0.693625
+          },
+          "practical_high_urban": {
+            "accuracy": 0.7816488095238096,
+            "macro_F1": 0.7775904739154665,
+            "correct": 131317,
+            "count": 168000,
+            "worst_RX_accuracy": 0.6994583333333333
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.6433809523809524,
+            "macro_F1": 0.6391204196684929,
+            "correct": 108088,
+            "count": 168000,
+            "worst_RX_accuracy": 0.5830416666666667
+          },
+          "practical_low_urban": {
+            "accuracy": 0.5340714285714285,
+            "macro_F1": 0.5285327591863219,
+            "correct": 89724,
+            "count": 168000,
+            "worst_RX_accuracy": 0.4887916666666667
+          }
+        },
+        "same_row_report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/final_analysis.md"
       }
     },
     {
@@ -1187,12 +1301,69 @@
         },
         "REJECTED_EXTRA_GATE": "No separate design approval,seal or additional review"
       },
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "result": {
-        "latest_observed_cumulative_epoch": 21,
-        "actual_new_updates": 222,
-        "training_complete": false,
-        "formal_result_available": false
+        "latest_observed_cumulative_epoch": 30,
+        "actual_new_updates": 2220,
+        "cumulative_updates": 6660,
+        "training_complete": true,
+        "formal_result_available": true,
+        "seven_views_complete": true,
+        "truth_last": true,
+        "source_RX_holdout": null,
+        "source_qualification_pass": false,
+        "metrics": {
+          "clean": {
+            "accuracy": 0.851297619047619,
+            "macro_F1": 0.8483308281141954,
+            "correct": 143018,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7692916666666667
+          },
+          "practical_high": {
+            "accuracy": 0.45882738095238096,
+            "macro_F1": 0.4071612949238641,
+            "correct": 77083,
+            "count": 168000,
+            "worst_RX_accuracy": 0.383625
+          },
+          "practical_mid": {
+            "accuracy": 0.4411904761904762,
+            "macro_F1": 0.3952904761737135,
+            "correct": 74120,
+            "count": 168000,
+            "worst_RX_accuracy": 0.3739166666666667
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.42061309523809526,
+            "macro_F1": 0.3802852062323902,
+            "correct": 70663,
+            "count": 168000,
+            "worst_RX_accuracy": 0.35825
+          },
+          "practical_high_urban": {
+            "accuracy": 0.44654166666666667,
+            "macro_F1": 0.4011965562140803,
+            "correct": 75019,
+            "count": 168000,
+            "worst_RX_accuracy": 0.3754166666666667
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.37197619047619046,
+            "macro_F1": 0.34660775984383846,
+            "correct": 62492,
+            "count": 168000,
+            "worst_RX_accuracy": 0.3233333333333333
+          },
+          "practical_low_urban": {
+            "accuracy": 0.3164345238095238,
+            "macro_F1": 0.30212200481891593,
+            "correct": 53161,
+            "count": 168000,
+            "worst_RX_accuracy": 0.2791666666666667
+          }
+        },
+        "same_row_report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/final_analysis.md"
       }
     },
     {
@@ -1540,12 +1711,69 @@
         },
         "REJECTED_EXTRA_GATE": "No separate design approval,seal or additional review"
       },
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "result": {
-        "latest_observed_cumulative_epoch": 21,
-        "actual_new_updates": 222,
-        "training_complete": false,
-        "formal_result_available": false
+        "latest_observed_cumulative_epoch": 30,
+        "actual_new_updates": 2220,
+        "cumulative_updates": 6660,
+        "training_complete": true,
+        "formal_result_available": true,
+        "seven_views_complete": true,
+        "truth_last": true,
+        "source_RX_holdout": null,
+        "source_qualification_pass": false,
+        "metrics": {
+          "clean": {
+            "accuracy": 0.8247559523809523,
+            "macro_F1": 0.81988634170821,
+            "correct": 138559,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7189583333333334
+          },
+          "practical_high": {
+            "accuracy": 0.8149404761904762,
+            "macro_F1": 0.8109343717888078,
+            "correct": 136910,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7250416666666667
+          },
+          "practical_mid": {
+            "accuracy": 0.7915357142857142,
+            "macro_F1": 0.7876027913289686,
+            "correct": 132978,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7105416666666666
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.7680297619047619,
+            "macro_F1": 0.7643025583776826,
+            "correct": 129029,
+            "count": 168000,
+            "worst_RX_accuracy": 0.6929583333333333
+          },
+          "practical_high_urban": {
+            "accuracy": 0.7811845238095239,
+            "macro_F1": 0.7770899597234001,
+            "correct": 131239,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7012083333333333
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.6421666666666667,
+            "macro_F1": 0.6378177515784743,
+            "correct": 107884,
+            "count": 168000,
+            "worst_RX_accuracy": 0.5832083333333333
+          },
+          "practical_low_urban": {
+            "accuracy": 0.5325178571428572,
+            "macro_F1": 0.5267845687986759,
+            "correct": 89463,
+            "count": 168000,
+            "worst_RX_accuracy": 0.48791666666666667
+          }
+        },
+        "same_row_report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/final_analysis.md"
       }
     }
   ],
@@ -1560,5 +1788,6 @@
     "Budget new40modelE/8880updates/17760extraVJP;2uniqueparentE20=40modelE/8880updates counted once;eachmodelcumulative30. Allteacher/eval/qualification/prediction/checkssmoke costs separate.",
     "No automatic multiseed fromtarget;sourcepass not identityAg/joint success. full cleanpositive/low>60/suburbanwithin2pp exploratory andcrossseed goalsstillunmet."
   ],
-  "registered_at": "2026-10-17T21:19:30+00:00"
+  "registered_at": "2026-10-17T21:19:30+00:00",
+  "analysis_commit": "35b68cd1bc69029bd03004159454ec77d6f5104c"
 }
