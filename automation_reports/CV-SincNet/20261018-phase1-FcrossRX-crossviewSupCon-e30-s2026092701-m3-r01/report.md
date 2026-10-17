@@ -63,3 +63,9 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS
 三组均完成自身stage20：各4440更新、2273280个L前向样本、284160个实际As观测，extraU NN=0、target_access=false。三条原worker PID/startticks保持，source初始化均只严格继承对应自身stage20模型/EMA，数据角色EXACT_MATCH；AdamW状态0、cos10重置，未加载其他实验权重，总预算仍每模型30轮。此时训练尚未完成，未读取正式成绩。
 
 首次直接比对实际已保存训练记录与命名流复算：step1的64个As观测场景为midurban20、low_suburban25、lowurban19，传播状态LOS30、BLOCKED22、PARTIAL12，两组计数分别完全一致。只证明该批与原引擎一致；完整6660步/模型及TX×RX×day×scene×state覆盖仍待冻结后复算。未消费真实IQ值、模型CP、U真值或target，0NN。
+
+## 完整 E20 执行记录复算
+
+完整读取每组4440个L步骤及全部L/U物理曝光，三组实际顺序完全一致；各L曝光568320、U曝光396900，唯一L6300/U56700（U只数元数据，不解码TX）。SupCon各激活3330步，两个depth×两pass形成13320条描述子记录；只有SAT存在852480个真实As map条目，此数包含depth/pass重复，不是独立IQ样本数。每组L前向2273280、实际As观测284160；0额外U前向，所有卫星L参与CE。
+
+逐步复算.5(commonCE+commonKL)+.5(extraCE+extraKL)+w*SupCon，与实际total最大绝对差ORD2.98023e-7、DUP/SAT1.78814e-7；权重warm5/ramp10、四前向、同IQ配对、无ordinary重抽、sameRX正例0全部符合。E20每组native前向3661082（student_train2670180＋student_eval594002＋teacher_eval396900）；墙钟ORD1663.8696s、DUP1670.4930s、SAT1710.3920s。不同GPU上这些墙钟不作为关系矩阵的独立因果成本。E20是自身E30内的前20轮，后10轮成本另计后合并，不重复计算父训练。源训练内容及默认头没有修改，没有读取正式准确率。

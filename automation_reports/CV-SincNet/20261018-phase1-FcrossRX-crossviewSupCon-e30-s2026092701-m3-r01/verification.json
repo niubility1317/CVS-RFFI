@@ -750,5 +750,108 @@
     "total_budget_per_model": 30,
     "no_external_training_weights": true,
     "formal_scores_read": false
+  },
+  "complete_E20_observation_audit": {
+    "status": "VERIFIED_COMPLETE_E20_OBSERVATION_RECORDS",
+    "rows": {
+      "ORD128": {
+        "optimizer_steps": 4440,
+        "L_NN": 2273280,
+        "actual_As": 284160,
+        "L_physical_exposures": 568320,
+        "U_physical_exposures": 396900,
+        "unique_L": 6300,
+        "unique_U_metadata_only": 56700,
+        "complete_L_U_sequence_matches_ORD": true,
+        "active_SupCon_steps": 3330,
+        "relation_detail_counts_by_N": {
+          "128": 13320
+        },
+        "actual_satellite_map_entries_across_two_depths_two_passes": 0,
+        "max_CE_RD_SupCon_decomposition_error": 2.980232238769531e-7,
+        "student_train_NN": 2670180,
+        "student_eval_NN": 594002,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 396900,
+        "segment_native_NN": 3661082,
+        "wall_seconds": 1663.8695888519287,
+        "source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_RX_holdout": null
+      },
+      "DUP192": {
+        "optimizer_steps": 4440,
+        "L_NN": 2273280,
+        "actual_As": 284160,
+        "L_physical_exposures": 568320,
+        "U_physical_exposures": 396900,
+        "unique_L": 6300,
+        "unique_U_metadata_only": 56700,
+        "complete_L_U_sequence_matches_ORD": true,
+        "active_SupCon_steps": 3330,
+        "relation_detail_counts_by_N": {
+          "192": 13320
+        },
+        "actual_satellite_map_entries_across_two_depths_two_passes": 0,
+        "max_CE_RD_SupCon_decomposition_error": 1.7881393432617188e-7,
+        "student_train_NN": 2670180,
+        "student_eval_NN": 594002,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 396900,
+        "segment_native_NN": 3661082,
+        "wall_seconds": 1670.4929797649384,
+        "source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_RX_holdout": null
+      },
+      "SAT192": {
+        "optimizer_steps": 4440,
+        "L_NN": 2273280,
+        "actual_As": 284160,
+        "L_physical_exposures": 568320,
+        "U_physical_exposures": 396900,
+        "unique_L": 6300,
+        "unique_U_metadata_only": 56700,
+        "complete_L_U_sequence_matches_ORD": true,
+        "active_SupCon_steps": 3330,
+        "relation_detail_counts_by_N": {
+          "192": 13320
+        },
+        "actual_satellite_map_entries_across_two_depths_two_passes": 852480,
+        "max_CE_RD_SupCon_decomposition_error": 1.7881393432617188e-7,
+        "student_train_NN": 2670180,
+        "student_eval_NN": 594002,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 396900,
+        "segment_native_NN": 3661082,
+        "wall_seconds": 1710.391979932785,
+        "source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_RX_holdout": null
+      }
+    },
+    "analysis_NN": 0,
+    "real_IQ_values_consumed": 0,
+    "model_checkpoint_reads": 0,
+    "U_labels_decoded": false,
+    "target_access": false,
+    "scope": "Complete frozen E20 execution records only;no accuracy or promotion conclusion",
+    "elapsed_seconds": 4.724208506057039,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/complete_E20_observation_audit.json"
   }
 }
