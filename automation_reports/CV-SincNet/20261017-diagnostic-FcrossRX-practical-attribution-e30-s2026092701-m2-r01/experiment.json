@@ -1,0 +1,259 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-FcrossRX-practical-attribution-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-practical-impairment-attribution",
+  "display_name": "全源E30：星地训练缓解哪些损伤的冻结默认头归因",
+  "description": "固定matched B00/B01 FINAL30，复用同包P24所有11控制条件；比较移除损伤总效应和固定接收状态效应，估计As训练的敏感性降低；不训练、不读target、不救回失败Ag",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "FcrossRX",
+    "source-only",
+    "practical",
+    "attribution",
+    "E30",
+    "default-head"
+  ],
+  "comparison_group_id": "FcrossRX-cycleorder-E30-matched-control",
+  "parent_run_ids": [
+    "20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01",
+    "20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorized practical source degradation diagnosis and ongoing real IQ augmentation development; latest scratch budget E30/full original source RX. This row adds zero epochs/updates and no formal test rerun.",
+  "code": {
+    "commit": "c3700b6636bb0ed32a8c7bdb00f8f94ef1a8f632",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary account;verified CVS-RFFI conda Python;CPU2/CUDA_VISIBLE_DEVICES empty;NumPy/PyTorch/matplotlib existing",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_practical_attribution_E30_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing VALIDATED_ONCE original source/target physical roles; no rebuild",
+    "representation": "Original float32 RMS IQ256;common ordinary(x) primary,raw/Ag(raw)/As(raw)/As(Ag(raw)) secondary;no external postAs RMS",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/data_roles.json",
+    "label_map_ref": "same original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "original6 registered TX",
+    "roles": {
+      "L_s": "6300 original labels; all5RX, no extra L_dev or heldRX",
+      "U_s": "56700 original hiddenTX; unchanged originaloldgate/ownEMA only",
+      "V": "27000 original source validation; no gradient, no new domain holdout"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse original VALIDATED_ONCE; metadata full L/U/V role equality confirmed, no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen sourceV causal intervention sensitivity;not formal target recovery,not independent modelseed evidence;no training/automatic promotion"
+  },
+  "checkpoint": {
+    "initialization": "frozen_readout_only",
+    "sources": [
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B00-s2026092701/source/final_ssdg.pth",
+        "state": "model",
+        "training_epochs": 30,
+        "training_updates": 6660,
+        "source_run": "20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01",
+        "scratch": true,
+        "contract": "original full L6300/U56700hidden/V27000 split392005",
+        "selection": "FINAL30/source fixed terminal"
+      },
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B01-s2026092701/source/final_ssdg.pth",
+        "state": "model",
+        "training_epochs": 30,
+        "training_updates": 6660,
+        "source_run": "20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01",
+        "scratch": true,
+        "contract": "original full L6300/U56700hidden/V27000 split392005",
+        "selection": "FINAL30/source fixed terminal"
+      }
+    ],
+    "contract_check_ref": "E:/type10-7/local_artifacts/cvs_FcrossRX_practical_attribution_E30_20261017/preflight.json",
+    "provenance_verdict": "MATCHED full original roles;own scratch parents/no ancestors/no target training or selection;strict own_model checks before CP load in launcher",
+    "selection_rule": "Preregistered As factor controls B00/B01,not target winner;fixed FINAL30/model state/default head"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/practical-attribution33",
+    "gpu_policy": "CPU only;CUDA_VISIBLE_DEVICES empty,OMP/MKL/OPENBLAS threads2;no GPU work or process changes",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-practical-attribution-e30-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-practical-attribution-e30-s2026092701-m2-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_practical_attribution_E30_20261017",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_practical_attribution_E30_20261017_r01/experiments/cvs_practical_attribution33/runner.py",
+    "stop_rule": "Any source role/ID/condition/CP/defaulthead/logit/forward-count/state/shape failure stops own job and preserves partial output;no automatic retry,no training,no other-process mutation,no target fallback."
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "checkpoint_noquery_smoke.json",
+    "data_roles.json",
+    "runtime.json",
+    "B00/predictions.npz",
+    "B01/predictions.npz",
+    "B00/complete.json",
+    "B01/complete.json",
+    "condition_metrics.csv",
+    "paired_effects.csv",
+    "sensitivity_reduction.csv",
+    "summary.json",
+    "source_impairment_effects.png",
+    "source_impairment_effects.pdf",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "source_accuracy",
+      "macro_f1",
+      "margin_over30",
+      "fixed_B00_clean_correct_retention",
+      "within_packet_removal_delta_pp",
+      "sensitivity_reduction_pp",
+      "repairs",
+      "breaks",
+      "new_NN",
+      "wall_seconds"
+    ],
+    "dimensions": [
+      "arm",
+      "model_seed",
+      "channel_draw",
+      "scene",
+      "condition",
+      "RX",
+      "baseline_state_lock",
+      "baseline_added_noise_db"
+    ],
+    "prediction_ref": "Own cached clean/full source_qualification from P32;ten new control conditions written once per model",
+    "scorer_ref": "SourceV authorized labels only,stats.collect;never target truth",
+    "criterion": "For each condition/scene separately,descriptive stability requires sensitivity reduction>=1pp in both channel draws;no automatic seed/training promotion;report all conditions even negative",
+    "attribution_formula": "(accuracy_control-accuracy_full)_B00 - (accuracy_control-accuracy_full)_B01;fixed controls retain original lock/comp/AGC;total controls recompute receiver;stratify on baseline full metadata"
+  },
+  "rows": [
+    {
+      "row_id": "B00-s2026092701",
+      "method": "Frozen B00 FINAL30/defaultcos readout of identical10 controlled source views;cached clean/full reused",
+      "purpose": "factorial_control",
+      "config_ref": "experiments/cvs_practical_attribution33/design.py#config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-practical-attribution-e30-s2026092701-m2-r01/resolved_config.json",
+      "data_overrides": {
+        "source_role": "V",
+        "held_RX": null,
+        "new_physical_ids": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172401
+      },
+      "seed_notes": "One original modelseed2026092701;split/data392005 unchanged;existing panel202610172401 andchannel202610172402,receiver2026092701 reused exactly,not regenerated;support/K not applicable;two draws are not model seeds",
+      "k": null,
+      "scenario": "existing sourceV low_suburban/mid_urban/low_urban x11 total/fixed controls",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "108002 newNN/model=2synthetic+2draw*3scene*10controls*1800;cached clean/full12600 reused;0newnative channel calls/0updates/0target;parent30epochs6660updates each already paid",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-practical-attribution-e30-s2026092701-m2-r01/B00",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-practical-attribution-e30-s2026092701-m2-r01-launch/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_practical_attribution_E30_20261017_r01/experiments/cvs_practical_attribution33/runner.py",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "checkpoint_noquery_smoke.json",
+        "data_roles.json",
+        "runtime.json",
+        "B00/predictions.npz",
+        "B01/predictions.npz",
+        "B00/complete.json",
+        "B01/complete.json",
+        "condition_metrics.csv",
+        "paired_effects.csv",
+        "sensitivity_reduction.csv",
+        "summary.json",
+        "source_impairment_effects.png",
+        "source_impairment_effects.pdf",
+        "completion.json"
+      ]
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "method": "Frozen B01 FINAL30/defaultcos readout of identical10 controlled source views;cached clean/full reused",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_practical_attribution33/design.py#config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-practical-attribution-e30-s2026092701-m2-r01/resolved_config.json",
+      "data_overrides": {
+        "source_role": "V",
+        "held_RX": null,
+        "new_physical_ids": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172401
+      },
+      "seed_notes": "One original modelseed2026092701;split/data392005 unchanged;existing panel202610172401 andchannel202610172402,receiver2026092701 reused exactly,not regenerated;support/K not applicable;two draws are not model seeds",
+      "k": null,
+      "scenario": "existing sourceV low_suburban/mid_urban/low_urban x11 total/fixed controls",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "108002 newNN/model=2synthetic+2draw*3scene*10controls*1800;cached clean/full12600 reused;0newnative channel calls/0updates/0target;parent30epochs6660updates each already paid",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-practical-attribution-e30-s2026092701-m2-r01/B01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-practical-attribution-e30-s2026092701-m2-r01-launch/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_practical_attribution_E30_20261017_r01/experiments/cvs_practical_attribution33/runner.py",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "checkpoint_noquery_smoke.json",
+        "data_roles.json",
+        "runtime.json",
+        "B00/predictions.npz",
+        "B01/predictions.npz",
+        "B00/complete.json",
+        "B01/complete.json",
+        "condition_metrics.csv",
+        "paired_effects.csv",
+        "sensitivity_reduction.csv",
+        "summary.json",
+        "source_impairment_effects.png",
+        "source_impairment_effects.pdf",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No new physical input validation chain;existing VALIDATED_ONCE source handles reused.",
+    "This diagnostic does not train a model;no new formal test;original parents already finished all7 prediction/scoring.",
+    "No CP fitting,EMA update or autograd;strict state unchanged and permodel eval108002 check.",
+    "No cycle Ag retuning or rescue;parentB10/B11 excluded by fixed As factor question,not performance ranking."
+  ],
+  "registered_at": "2026-10-17T12:55:45+00:00"
+}
