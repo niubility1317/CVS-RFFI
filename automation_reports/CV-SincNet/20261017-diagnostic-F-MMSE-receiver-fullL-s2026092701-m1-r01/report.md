@@ -1,6 +1,6 @@
 # 同传播 MMSE 接收处理：完整源检验
 
-状态：IMPLEMENTED／LOCAL_CHECKED，真实源检验尚未启动。当前训练预算为每模型累计 E30；本行新增训练和 optimizer 更新均为 0。全部 5 个源 RX（1、3、4、6、8）、源 day1/2/3、完整 L6300、U56700 真值隐藏和 V27000 合同保持，不留出训练 RX，不拆 L5580/L_dev720。
+**状态：ANALYZED／VERIFIED，固定源接收视图条件通过；训练收益尚未证明。**当前训练预算为每模型累计 E30；本行新增训练和 optimizer 更新均为 0。全部 5 个源 RX（1、3、4、6、8）、源 day1/2/3、完整 L6300、U56700 真值隐藏和 V27000 合同保持，不留出训练 RX，不拆 L5580/L_dev720。
 
 ## 唯一假设与历史区别
 
@@ -30,4 +30,22 @@
 
 精确命令、环境／CWD、不可变 run/release、owner、CPU2/CUDA隐藏、输入来源及技术 stop rule 见 [experiment.json](experiment.json)。独立复算只读取固化源 prediction 和标量元数据，重新计算全部 RX／TX／day／state／lock 混淆矩阵与修复／新增错误，无模型或 IQ 前向。正式 target IQ 与 truth 不访问；技术失败保留输出，不自动重发，不修改其他健康任务。
 
-唯一独立 P0/P1 审查 PASS：9 个文件与登记已只读核对，语法及63002前向预算复算通过；审查者未读取真实 IQ／CP／target，未执行 NN 或远端操作。真实源运行仍待发布。
+唯一独立 P0/P1 审查 PASS：9 个文件与登记已只读核对，语法及63002前向预算复算通过；审查者未读取真实 IQ／CP／target，未执行 NN 或远端操作。真实源运行已完成。
+
+实际发布代码97e2631c8d500e015bd50f6eef9ae590284c569a已独立核对远端 OID；一次普通账号 preflight、archive传输比较、remote compile VERIFIED。源 PID561505 独立观察存活，CWD／argv／CUDA隐藏／CPU2匹配；真实 checkpoint smoke PASS，进度已从128推进至1792个首场景源包。尚未完成判决，不报告识别收益。初次观察脚本误沿用旧PID547702，已改为本行实际PID并重新独立核对，没有据此重启或误判本行终止。
+
+## 实际完成与固定判决
+
+|源场景|NoEQ Acc／F1（%）|MMSE24 Acc／F1（%）|MMSE24 Δ（百分点）|MMSE64 Acc（%）|修复／新增错误|
+|---|---:|---:|---:|---:|---:|
+|practical_low_suburban|91.047619／91.003666|92.984127／92.959363|+1.936508|39.492063|164／42|
+|practical_mid_urban|73.904762／73.804723|77.952381／77.866436|+4.047619|36.492063|386／131|
+|practical_low_urban|61.015873／60.783034|64.111111／63.908368|+3.095238|35.857143|293／98|
+
+raw源准确率98.412698%，属于普通星地CONCAT source-final20的训练源读出，不是正式clean。MMSE24五项固定条件全部通过。独立复算63000个源判决、144份混淆矩阵和60份TX recall，最大指标误差0；完整RX/TX/day/state/lock见[分组结果](stratified_results.md)。low urban原2456个错误中24.470684%具有实际MMSE24变化，超过固定20%要求；全部源RX的low保护条件通过。
+
+三场景各6300条，EQ实际生效数为5987、5030、3543；low urban的2757个unlocked包全部保留，三种处理波形逐值一致，因此没有直接恢复失锁样本。MMSE64的明显下降说明数值参考坐标必须控制，但不能将全部差异仅归因于延迟，有限FIR截断与估计误差仍保留。候选24点在结果前已由原共同延迟固定，没有根据准确率改选。
+
+实际63002 NN、6300唯一L、1CP／1源cache、18900个唯一latent、56700次独立接收处理计算；0新增model epoch／optimizer／teacher／headfit／target，模型全部state_dict不变。worker142.267270s，独立分析另0IQ／CP／NN／更新。全量基础噪声经G一次滤波误差0，全部H、质量和补偿依赖检查通过。原PID561505自然退出，完整completion和日志48→86→121→196字节、无failure／traceback独立核实。
+
+本结果只支持下一项训练假设：保留NoEQ观测，等先验混合现有MMSE24接收处理，能否使同一个F在原固定NoEQ practical上获益。源输入更容易分类不保证训练后泛化更好；61.016%→64.111%不是正式low urban提升。最小训练需与原NoEQ As共用同一source-final20／ownEMA，新增10轮、累计E30／6660更新、同4L前向及U规则，固定终轮自动七视图预测／独立truth-last。本源launcher未自动训练，该新训练run尚未发布。A_g、A_s训练收益与联合目标均未证明。

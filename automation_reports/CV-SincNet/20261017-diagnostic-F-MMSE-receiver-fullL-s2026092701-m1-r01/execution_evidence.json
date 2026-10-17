@@ -1,0 +1,37 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "97e2631c8d500e015bd50f6eef9ae590284c569a",
+  "ordinary_account": true,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "startup_PID": 561505,
+  "independent_live_context": {
+    "cwd_match": true,
+    "argv_match": true,
+    "CUDA_hidden": true,
+    "CPU_threads2": true
+  },
+  "independent_log_growth_bytes": [
+    48,
+    86,
+    121,
+    196
+  ],
+  "terminal": {
+    "PID_alive": false,
+    "completion": {
+      "status": "ANALYZED_SOURCE_ONLY",
+      "decision": "PASS_SOURCE_RECEIVER_VIEW_ONLY",
+      "actual_NN": 63002,
+      "real_IQ_unique": 6300,
+      "training_updates": 0,
+      "target_access": false,
+      "automatic_training": false
+    },
+    "failure": null,
+    "traceback": false
+  },
+  "source_actual_NN": 63002,
+  "new_updates": 0,
+  "target_access": false
+}

@@ -19,5 +19,116 @@
     "scope": "One independent read-only P0/P1 review of nine files and preregistration;no direct defects",
     "performed": "Syntax parse,budget63002 recount,physical coupling/unlocked skip,fixedMMSE24 decision and analysis wiring",
     "not_performed": "No real IQ/checkpoint,NN or remote execution"
+  },
+  "launch": {
+    "status": "VERIFIED",
+    "execution_commit": "97e2631c8d500e015bd50f6eef9ae590284c569a",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "VERIFIED",
+    "real_checkpoint_smoke": {
+      "status": "PASS",
+      "NN": 2,
+      "real_IQ_forwarded": 0,
+      "query_read": false,
+      "head_fit_updates": 0
+    },
+    "independent_live_context": {
+      "cwd_match": true,
+      "argv_match": true,
+      "CUDA_hidden": true,
+      "CPU_threads2": true
+    },
+    "progress": {
+      "scene": "practical_low_suburban",
+      "source_completed": 1792,
+      "NN": 11678,
+      "updates": 0,
+      "target_access": false
+    }
+  },
+  "independent_source_analysis": {
+    "status": "VERIFIED",
+    "CM_recounts": 144,
+    "TX_recounts": 60,
+    "source_predictions": 63000,
+    "max_metric_error": 0,
+    "conditions": {
+      "low_gain": true,
+      "mid_gain": true,
+      "suburban_protection": true,
+      "all_RX_low_protection": true,
+      "low_original_errors_affected": true
+    },
+    "decision": "PASS_SOURCE_RECEIVER_VIEW_ONLY",
+    "paired_source_results": {
+      "practical_low_suburban": {
+        "MMSE24": {
+          "accuracy_delta_pp": 1.9365079365079367,
+          "repairs": 164,
+          "new_errors": 42
+        },
+        "MMSE64": {
+          "accuracy_delta_pp": -51.55555555555556,
+          "repairs": 82,
+          "new_errors": 3330
+        },
+        "original_errors": 564,
+        "original_errors_affected_share": 0.6702127659574468
+      },
+      "practical_mid_urban": {
+        "MMSE24": {
+          "accuracy_delta_pp": 4.0476190476190474,
+          "repairs": 386,
+          "new_errors": 131
+        },
+        "MMSE64": {
+          "accuracy_delta_pp": -37.41269841269841,
+          "repairs": 185,
+          "new_errors": 2542
+        },
+        "original_errors": 1644,
+        "original_errors_affected_share": 0.4981751824817518
+      },
+      "practical_low_urban": {
+        "MMSE24": {
+          "accuracy_delta_pp": 3.0952380952380953,
+          "repairs": 293,
+          "new_errors": 98
+        },
+        "MMSE64": {
+          "accuracy_delta_pp": -25.158730158730158,
+          "repairs": 159,
+          "new_errors": 1744
+        },
+        "original_errors": 2456,
+        "original_errors_affected_share": 0.24470684039087948
+      }
+    },
+    "IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "training_updates": 0,
+    "target_access": false,
+    "As_training_gain_proved": false,
+    "joint_goal_complete": false
+  },
+  "completion": {
+    "status": "ANALYZED_SOURCE_ONLY",
+    "decision": "PASS_SOURCE_RECEIVER_VIEW_ONLY",
+    "actual_NN": 63002,
+    "real_IQ_unique": 6300,
+    "training_updates": 0,
+    "target_access": false,
+    "automatic_training": false
+  },
+  "cost": {
+    "actual_NN": 63002,
+    "source_unique": 6300,
+    "source_predictions": 63000,
+    "new_model_epochs": 0,
+    "training_updates": 0,
+    "teacher_forwards": 0,
+    "head_fit_updates": 0,
+    "target_access": false
   }
 }

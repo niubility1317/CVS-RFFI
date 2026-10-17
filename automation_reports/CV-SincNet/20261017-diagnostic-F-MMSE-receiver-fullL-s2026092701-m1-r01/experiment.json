@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "Active joint Ag/As goal;latest E30 and full5RX correction. This row is frozen-default-head source-only guard with 0newtraining;no data/label expansion or target feedback.",
   "code": {
-    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "commit": "97e2631c8d500e015bd50f6eef9ae590284c569a",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "Ordinary N607 existing pinned full-source F runtime;CPU threads2/CUDAhidden;NumPy float64 noise,original FP32 model",
     "cwd": "PROJECT/releases/cvs_F_MMSE_receiver_source_20261017_r01",
@@ -78,7 +78,7 @@
       "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/CONCAT-s2026092701/source/final_ssdg.pth"
     ],
     "contract_check_ref": "Reuse verified fullsource provenance;before load check scratch/finalonly/zero ancestors/role counts6300,56700,27000/exact original roles;no model ormetric selection",
-    "provenance_verdict": "EXPECTED_MATCH_TO_BE_CHECKED_BEFORE_LOAD",
+    "provenance_verdict": "VERIFIED_EXACT_FULLSOURCE_SCRATCH_FINAL20_CONCAT",
     "selection_rule": "Fixed metadata-matched fullsource source-final20;not target ranked"
   },
   "execution": {
