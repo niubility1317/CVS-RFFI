@@ -19,5 +19,102 @@
     "performed": "18files syntax,registration consistency,2220updates/284160As;private selection/single residual/offset/receivercalls/ownEMA andautomatic sevenview independent scoring",
     "not_performed": "No realIQ/checkpoint/target/remote operations"
   },
-  "training_started": false
+  "training_started": true,
+  "release": {
+    "status": "VERIFIED",
+    "execution_commit": "d17844d18e0795d8eac9a3465aa2613a20ab6b86",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "VERIFIED",
+    "remote_checks": {
+      "status": "PASS",
+      "protocol_negatives": 33,
+      "actual_adapter_cases": 30,
+      "direct_core_replays": 15,
+      "direct_replay_max_error": 0,
+      "NoEQ_replays": 6,
+      "MMSE24_replays": 9,
+      "global_numpy_and_torch_RNG_unchanged": true,
+      "input_unchanged": true,
+      "batch_permutation_invariant": true,
+      "actual_F_parameters": 900722,
+      "real_IQ": 0,
+      "CP": 0,
+      "synthetic_NN": 2,
+      "updates": 0,
+      "training_or_identity_gain_proved": false
+    }
+  },
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "parent_epoch": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "matched_control": {
+      "status": "VERIFIED",
+      "run": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
+      "row": "FULL_AS-s2026092701",
+      "reused_existing": true,
+      "new_training_updates": 0,
+      "source_RX_holdout": null
+    }
+  },
+  "first_epoch": {
+    "status": "RUNNING_VERIFIED",
+    "dispatcher": {
+      "pid": 572362,
+      "alive": true,
+      "cwd_match": true,
+      "argv_match": true,
+      "phase": "dispatcher",
+      "CUDA_visible": ""
+    },
+    "worker": {
+      "pid": 572387,
+      "alive": true,
+      "cwd_match": true,
+      "argv_match": true,
+      "phase": "worker",
+      "CUDA_visible": "0"
+    },
+    "gpu": 0,
+    "log_growth_bytes": [
+      6769,
+      11945
+    ],
+    "file_growth": {
+      "step_gzip": [
+        195566,
+        587466
+      ],
+      "sequence_gzip": [
+        248691,
+        713049
+      ]
+    },
+    "progress": {
+      "epoch": 1,
+      "cumulative_epoch": 21,
+      "steps": 222,
+      "cumulative_steps": 4662,
+      "L_packets": 113664,
+      "Ag_packets": 0,
+      "As_packets": 28416,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_RX_holdout": null,
+      "U_truth_read": false,
+      "target_access": false
+    }
+  }
 }

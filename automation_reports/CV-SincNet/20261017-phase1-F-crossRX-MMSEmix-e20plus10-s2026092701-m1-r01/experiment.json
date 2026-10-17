@@ -25,7 +25,7 @@
   ],
   "authorization": "Active joint Ag/As research;latest E30/all5sourceRX. Fixed source MMSE24 evidence passed;one independently fixed receiver-mixture training row,matched ownparent20+10 and automatic originalsevenview truth-last. No target feedback/extraUlabels.",
   "code": {
-    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "commit": "d17844d18e0795d8eac9a3465aa2613a20ab6b86",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "Ordinary N607 existing CVS-RFFI/FP32/CPU2/GPU total cap3 including other owners",
     "cwd": "PROJECT/releases/cvs_F_MMSEmix_E30_20261017_r01",
@@ -96,7 +96,8 @@
     "checkpoint_sources": [
       "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/CONCAT-s2026092701/source/final_ssdg.pth"
     ],
-    "selection": "Sourcefinal20 originally fixed beforetarget;newfinal10/cumulative30,allrowautomaticno target selection"
+    "selection": "Sourcefinal20 originally fixed beforetarget;newfinal10/cumulative30,allrowautomaticno target selection",
+    "provenance_verdict": "VERIFIED_EXACT_OWN_FULLSOURCE_CONCAT_FINAL20_AND_OWN_EMA"
   },
   "execution": {
     "host": "N607 ordinary account",
@@ -177,7 +178,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-MMSEmix-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -215,7 +216,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX originalU/defaulthead;E20+10/cos10-reset;one NoEQ/MMSE24 receiver-processing mixture",

@@ -1,0 +1,25 @@
+{
+  "status": "RUNNING_VERIFIED",
+  "execution_commit": "d17844d18e0795d8eac9a3465aa2613a20ab6b86",
+  "dispatcher_PID": 572362,
+  "worker_PID": 572387,
+  "GPU": 0,
+  "CPU_threads": 2,
+  "all_source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_RX_holdout": null,
+  "completed_new_epochs": 1,
+  "parent_epochs": 20,
+  "cumulative_epochs": 21,
+  "new_updates_observed": 222,
+  "cumulative_updates_observed": 4662,
+  "actual_L_forwards_observed": 113664,
+  "As_observations_observed": 28416,
+  "target_access": false,
+  "trained_or_formal_success_claim": false
+}

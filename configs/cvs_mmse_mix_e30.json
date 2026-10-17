@@ -36,7 +36,7 @@
       "temporal_mode": "batch_neighbor",
       "temporal_min_streak": 2,
       "lr_schedule": "cosine",
-      "lr_min": 1e-06,
+      "lr_min": 0.000001,
       "launch_owner": "codex/root/F-MMSEmix-E30",
       "label_epochs": 0,
       "pseudo_epochs": 10,
@@ -74,7 +74,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06
+        "lr_min": 0.000001
       },
       "source_falsification": null,
       "training_recipe": "F+CROSS_RX originalU/defaulthead;E20+10/cos10-reset;one NoEQ/MMSE24 receiver-processing mixture",
@@ -117,7 +117,7 @@
       "goal": {
         "clean_net_positive": true,
         "low_urban_above": 0.6,
-        "each_suburban_gap_exploratory_pp": 2.0,
+        "each_suburban_gap_exploratory_pp": 2,
         "target_feedback": false,
         "joint_goal_complete": false
       },
@@ -244,7 +244,7 @@
         },
         "route": "existingresidual/post_sync",
         "EQ": "Equalprior NoEQ/MMSE24,original unlocked skip;configured at actual IQ adapter only",
-        "reference_snr_db": 30.0,
+        "reference_snr_db": 30,
         "input": "originalLbeforeordinary",
         "no_rejection": true,
         "test_IQ_unchanged": true
@@ -275,8 +275,8 @@
         "method": "mmse",
         "equalizer_length": 129,
         "target_delay_samples": 24,
-        "max_gain_db": 20.0,
-        "channel_estimation_nmse_db": -25.0,
+        "max_gain_db": 20,
+        "channel_estimation_nmse_db": -25,
         "unlocked": "original rule skips EQ exactly",
         "preserved": "Original H/state/shadow/geometry/scatter/noise/RX hardware/calibration/sync/tracking/quality priors and reflect",
         "changed": "G enabled for selected non-unlocked samples;signal/noise colored jointly andAGC recomputed",
@@ -293,8 +293,8 @@
       "selection": "fixedfinal10/cumulative30;no targetfeedback/selective rerun",
       "scientific_falsification": {
         "low_urban_delta_vs_nominal_min_pp": 0.5,
-        "clean_delta_vs_nominal_min_pp": 0.0,
-        "midurban_delta_vs_nominal_min_pp": 0.0,
+        "clean_delta_vs_nominal_min_pp": 0,
+        "midurban_delta_vs_nominal_min_pp": 0,
         "each_suburban_delta_min_pp": -0.25,
         "all_joint_targets_also_reported": true,
         "no_automatic_seed_extension": true
@@ -303,5 +303,25 @@
   ],
   "hypothesis": "Equalprior NoEQ/MMSE24 receiver diversity improves originalNoEQ practical recognition",
   "budget": "same sourceE20+10 cumulativeE30",
-  "status": "IMPLEMENTED_NOT_LAUNCHED"
+  "status": "RUNNING_VERIFIED",
+  "execution_commit": "d17844d18e0795d8eac9a3465aa2613a20ab6b86",
+  "actual_observed_progress": {
+    "epoch": 1,
+    "cumulative_epoch": 21,
+    "steps": 222,
+    "cumulative_steps": 4662,
+    "L_packets": 113664,
+    "Ag_packets": 0,
+    "As_packets": 28416,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_RX_holdout": null,
+    "U_truth_read": false,
+    "target_access": false
+  }
 }

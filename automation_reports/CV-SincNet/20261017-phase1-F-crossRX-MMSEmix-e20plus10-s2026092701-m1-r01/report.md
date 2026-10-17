@@ -1,6 +1,6 @@
 # NoEQ／MMSE24 接收处理混合：同父模型累计 E30
 
-状态：IMPLEMENTED／LOCAL_CHECKED；新训练尚未启动。上一轮完整源 MMSE24 输入干预通过固定条件，但这不等于训练或正式测试收益。本轮唯一假设是：在已有完整 practical 中增加接收处理多样性，可以改善同一个 F 在仍保持 NoEQ 的正式测试上的识别，并保留 clean。
+**状态：RUNNING／VERIFIED；新增训练已完成1／10轮，累计21／30轮。**上一轮完整源 MMSE24 输入干预通过固定条件，但这不等于训练或正式测试收益。本轮唯一假设是：在已有完整 practical 中增加接收处理多样性，可以改善同一个 F 在仍保持 NoEQ 的正式测试上的识别，并保留 clean。
 
 ## 唯一训练行与匹配参照
 
@@ -32,6 +32,14 @@
 
 发布前仅对新训练接线做一次有界P0/P1检查，不重复审查已通过的源候选或原物理core。单份archive一次传输SHA比较、普通N607预检和remote compile，launcher真实同契约checkpoint no-query smoke PASS立即继续。源角色／CP继承、非有限、预算、输出冲突或系统性技术失败保留本run产物并停止新派发，不自动重发；观察超时先核实原进程和产物。
 
-当前未训练、未预测或评分，不能把源MMSE24输入收益提前当作本模型成绩。
+当前正在训练，尚未完成七视图预测或正式评分，不能把源MMSE24输入收益提前当作本模型成绩。
 
 新训练接线的唯一独立P0/P1检查PASS：18文件语法和登记一致、2220更新／284160 As预算复算、私有抽样／单residual／累计偏移／receiver_calls／同父ownEMA／七视图后独立评分均核对；审查者未读取真实IQ／CP／target或执行远端操作。
+
+## 实际启动与首轮进度
+
+实际发布代码 d17844d18e0795d8eac9a3465aa2613a20ab6b86，发布前已独立核对远端分支OID。一次普通N607 preflight、单份archive传输SHA比较、remotecompile和远端33项反例／adapter／F合成检查PASS。dispatcher真实同契约E20/default-head no-query checkpoint smoke PASS，1CP／2NN／0真实IQ／0更新；matched NoEQ E30控制的同父、预算、默认头和七视图冻结产物均核对。
+
+独立两次观察：dispatcher PID572362与worker PID572387均存活，CWD／argv匹配，worker实际GPU0／CUDA_VISIBLE_DEVICES=0，F参数900722，sourceRX完整1/3/4/6/8、无留RX。stdout6769→11945字节，step gzip195566→587466字节，训练sequence248691→713049字节，GPU owned进程和占用可见。
+
+已完成新增1轮／222更新，累计21轮／4662更新；实际L前向113664＝4×128×222，As观测28416＝128×222，0新增Ag，U真值未读、target未访问。此时source／prediction／scoring均未终结，无failure；不会将首轮健康或源输入干预作为识别收益。不重启原进程，按原队列接续剩余9轮及七视图独立评分。
