@@ -173,3 +173,7 @@ FAIL_FIXED_BAND_AVAILABILITY_CLOSED：不扫宽度/深度/频率/上限/weight/R
 实际clean RAW79.206349%、IID83.174603%、SCENE_GROUP83.571429%、PROP83.968254%；low依次30.238095%、46.507937%、45.714286%、46.666667%。大部分共有收益来自LOS/PARTIAL/locked可恢复区；PROP的BLOCKED27.785614%、unlocked25.087108%，suburban距自身clean仍8.095238至15.555556个百分点。没有达到low>60%或联合目标，没有跨seed/正式目标证据。
 
 完整80modelE/17760更新、35280源预测和完整步/轮日志独立复核，源physics与L/U序列严格匹配，23293274实际远端NN、2759.410187秒，5PNG5PDF实际生成并查看。所有训练/后处理进程自然退出，无重启或额外NN评分。详见 `cvs_FcrossRX_propgroup20_20261017.md`；该负结果不否定本次单源seed的As共有收益，也不授权把控制组当候选扩种子。
+
+## P20之后：外部归一化链疑点已排除（代码与配置核对）
+
+0 IQ/CP/NN/更新。源与固定正式输入均为center=False复数功率RMS，星地前单位RMS，星地后无外部RMS；未发现顺序错配，不重开ordinary-RMS/常数gain或P20。逐字段配置另记录source2.462GHz、formal2.45GHz及处理状态描述差异，未测试其效果，不据此调弱正式数据。具体路径与证据见 `cvs_FcrossRX_normalization_path_audit_20261017.md`。下一待证伪问题为有界频率相关全通相位响应，先纯合成边界/延迟G0；尚无实现、运行或识别收益，不冒称真实RX估计或A_g有效。
