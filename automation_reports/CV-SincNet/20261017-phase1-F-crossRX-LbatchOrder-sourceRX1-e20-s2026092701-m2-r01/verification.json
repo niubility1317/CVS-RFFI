@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING_E1",
+  "status": "VERIFIED_RUNNING_E12",
   "protocol_and_scientific_counterexamples": 26,
   "unchanged_F_state_tensors": 206,
   "default_head_shape": [
@@ -16,11 +16,14 @@
   "independent_P0P1": "PASS",
   "training_launched": true,
   "full_goal_complete": false,
-  "actual_model_epochs_complete_per_row": 1,
-  "actual_updates_per_row": 222,
+  "actual_model_epochs_complete_per_row": 12,
+  "actual_updates_per_row": 2664,
   "actual_native_order_hook_verified": true,
   "archive_transfer": "VERIFIED",
   "remote_compile": "VERIFIED",
   "real_checkpoint_noquery_smoke": "PASS",
-  "formal_target_evaluated": false
+  "formal_target_evaluated": false,
+  "offline_recount_counterexamples": 24,
+  "offline_recount_NN": 0,
+  "offline_recount_target_access": false
 }
