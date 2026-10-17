@@ -1,0 +1,24 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 36,
+  "original_receiver_prior_same_latent_cases": 120,
+  "reference_residual_calls": 120,
+  "candidate_residual_calls": 240,
+  "states": [
+    "BLOCKED",
+    "LOS",
+    "PARTIAL"
+  ],
+  "max_relative_IQ_change_synthetic": 0.01574539579451084,
+  "epoch_session_repeatable": true,
+  "virtual_session_count": 150,
+  "real_source_RX_replaced": false,
+  "propagation_quality_noise_law_unchanged": true,
+  "global_numpy_RNG_unchanged": true,
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "local_compile": "PASS",
+  "independent_review": "PASS;one independent P0/P1 review,no P0/P1;18file syntax/budget/shifted sessions/finalCP/scorechain checked"
+}
