@@ -4,17 +4,16 @@
 
 Q0/Q_ord为既有sceneCycle B00/C_IID冻结源结果，仅复用；已核对完整实际config、全部L/U/V物理ID、seed、E20/4440、8L/pairweight1.25、默认头和权限。旧model/channel/source/design与c9执行commit无差异。新Q_sat/Q_mix均scratchE20，不加载控制或其他对话权重，不是续训。历史控制40modelE/8880更新与新增预算40modelE/8880更新分开记录。
 
-## 实际启动及首轮边界
+## 实际启动及最新完整边界
 
 一次普通账户N607预检、一次release archive传输SHA比较、remote compile均VERIFIED。dispatcher第一步真实匹配数据角色checkpoint的2合成包无query兼容smoke PASS后立即继续。两行实际PID／CWD／argv／GPU环境与NVIDIA进程独立核对，原dispatcher与两worker均存活。未干预其他owner。
 
-| 新行 | GPU | 已完成epoch | 完整边界更新 | L NN样本 | As生成/监督 | stdout bytes |
+| 新行 | GPU | 已完成 epoch | 累计更新 | As 对比输入 | ordinary 对比输入 | 原对比项数 |
 |---|---:|---:|---:|---:|---:|---:|
-| Q_sat | 0 | 1 | 222 | 227328 | 28416 | 6532→11703 |
-| Q_mix | 1 | 1 | 222 | 227328 | 28416 | 6532→11703 |
+| Q_sat | 0 | 10 | 2220 | 142080 | 0 | 4440 |
+| Q_mix | 1 | 10 | 2220 | 71040 | 71040 | 4440 |
 
-
-表中L/As是完整epoch边界的实际计数，运行期间还在增长，不是最终累计成本。完整source_base_progress同步核对每步1024个L前向样本（8×128）、256个extra前向样本、128次完整As生成与监督，两个layer/phase暂存hook已清理。源IQ元数据覆盖全部5040合法L，无U真值或target。原对比schedule从E6开始，当前warmup的0次routing是预定状态；**E6实际As maps路由尚未远端验证**，不能把首轮CE成功当作机制有效。
+这是完整 epoch 边界的累计计数，运行期间继续增长。E6 对比路由启用已实际验证，两行原 PID/CWD/argv/GPU 与初次启动匹配，日志增长、无技术故障。每步 1024 个 L 前向样本、256 个 extra 前向样本及 128 次完整 As 生成/监督符合固定预算。两层/两 phase 的暂存 hook 均清理，新增网络前向和损失项均为 0；描述提取、暂存和路由仍有计算成本。该证据只证明机制按配置执行，不能证明 clean 或星地收益。
 
 ## 已验证与未验证
 
@@ -27,3 +26,8 @@ Q0/Q_ord为既有sceneCycle B00/C_IID冻结源结果，仅复用；已核对完�
 Q_mix必须同时相对Q_ord/Q_sat达到low与urban均值各≥+1pp、clean/F1不降、mid不降、每practical/seenV下降≤.5pp；相对Q0 low≥+5pp/urban均值≥+3pp及相同保护。失败关闭固定视图组织，不调比例/层位/系数/scene概率/RX/seed/预算救跑。对比loss、anchors、梯度和源健康不能代替真实身份收益。
 
 这属于As训练组织，不是新IQ泛化增强Ag；即使单seed通过也不证明稳定As或完整联合成功。有效Ag、匹配B00/B10/B01/B11和交互、跨seed、正式clean＋六practical、low>60%、suburban各景距自身clean≤2pp探索目标仍未完成，完整目标ACTIVE。原始预测/ID/权重/日志/runtime只留本地或所属run，未提交Git。
+
+
+## 终态分析工具已准备
+
+新增离线收集、逐包场景复算、全量轨迹/预测独立评分和图表工具，均不修改实际训练。34 个反例检查通过，完整合成路由 13320 步、源判决夹具 1260 条，0 真实 IQ/模型/前向/更新。已完成旧 Q_ord 的全部 8820 个源判决、4440 步及 20 轮轨迹独立复核；这属于旧控制分析，不是新行结果。新增描述统计在双方 clean 都正确的固定集合内报告 urban 修复/新增错误，不参与调参或晋级。原场景、Q_mix primary、固定判据、最终 E20 与 source-only 边界不变。

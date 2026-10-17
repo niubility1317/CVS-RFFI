@@ -38,3 +38,6 @@ Q0/Q_ord有对应既有sourceCycle的B00/C_IID候选控制；可只复用原冻�
 
 
 原SupCon视图组织 20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01 已实际RUNNING／VERIFIED，执行ed0ca91481f8c11a28cb8f4d4726a7c3d488720e；两旧控制复用、两新scratchE20实际GPU0/1 live，realCP2NN无querysmoke/归档传输/remotecompile/PID-CWD-argv-GPU-log增长均PASS。两行至少完整E1/222更新、227328LNN/28416fullAs/全部5040L覆盖，原E6启用对比项，当前warmup routing0，无新增NN/loss项。新训练/预测/正式评分未完成，无性能结论，不热改/重启。F+CROSS_RX/E20/默认头/原U保持，完整联合目标ACTIVE。
+
+
+20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01：原进程至少完整 E10，E6 路由实际启用并符合全 As/64:64 配置；无新增网络前向/损失，未热改。离线分析 34 反例 PASS，新识别结果待 final20/七视图；完整目标 ACTIVE。

@@ -1,0 +1,46 @@
+{
+  "status": "VERIFIED_RUNNING_NOT_TRAINED_OR_SCIENTIFIC_PASS",
+  "execution_commit": "ed0ca91481f8c11a28cb8f4d4726a7c3d488720e",
+  "read_unix": 1792197138.308918,
+  "rows": [
+    {
+      "arm": "Q_sat",
+      "GPU": 0,
+      "epoch": 10,
+      "updates": 2220,
+      "As_descriptors": 142080,
+      "ordinary_descriptors": 0,
+      "existing_contrastive_terms": 4440,
+      "L_NN": 2273280,
+      "extra_L_NN": 568320,
+      "As_generated_supervised": 284160,
+      "route_active_steps": 1110,
+      "handles_remaining": 0,
+      "extra_NN_forwards": 0,
+      "new_loss_terms": 0,
+      "original_process_match": true
+    },
+    {
+      "arm": "Q_mix",
+      "GPU": 1,
+      "epoch": 10,
+      "updates": 2220,
+      "As_descriptors": 71040,
+      "ordinary_descriptors": 71040,
+      "existing_contrastive_terms": 4440,
+      "L_NN": 2273280,
+      "extra_L_NN": 568320,
+      "As_generated_supervised": 284160,
+      "route_active_steps": 1110,
+      "handles_remaining": 0,
+      "extra_NN_forwards": 0,
+      "new_loss_terms": 0,
+      "original_process_match": true
+    }
+  ],
+  "source_only": true,
+  "target_access": false,
+  "Ag_efficacy_proved": false,
+  "As_efficacy_proved": false,
+  "joint_goal_complete": false
+}
