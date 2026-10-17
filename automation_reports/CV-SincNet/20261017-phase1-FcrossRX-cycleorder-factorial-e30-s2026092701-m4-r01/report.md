@@ -1,6 +1,6 @@
 # 固定周期IQ重排×真实practical：全源scratch E30四因子
 
-状态：RUNNING，已核实四行真实训练；正式预测和评分尚未完成。父训练成本为0，四行均从头E30=20L+10U/222step每轮/6660更新，modelseed2026092701。用户最新E30覆盖旧E20/E50要求；F＋跨RX同TX对比、全部原RX1/3/4/6/8、L6300/U56700隐藏TX/V27000、split392005/7-63-30不变，不切L_dev、不留RX。每行NN/墙钟/教师等实际计数独立报告。
+状态：RUNNING；B00/B10已完成E30、7环境truth-last和独立同row分析，B01/B11仍在训练。预定Ag源clean收益门槛失败，禁止据正式成绩改判或扩种。父训练成本为0，四行均从头E30=20L+10U/222step每轮/6660更新，modelseed2026092701。用户最新E30覆盖旧E20/E50要求；F＋跨RX同TX对比、全部原RX1/3/4/6/8、L6300/U56700隐藏TX/V27000、split392005/7-63-30不变，不切L_dev、不留RX。每行NN/墙钟/教师等实际计数独立报告。
 
 唯一假设：原80:160四个20点周期的phase-transported S4打乱能抑制周期位置偶然依赖，并在真实传播前保留可用身份信息。P30后置源FAIL保持；P31同算子前置源兼容4/4单元通过，原信道重放误差0，未证明泛化或训练收益。算子、窗口、相位估计、均匀24排列及seed202610173001全固定，不扫描强度/概率/窗口。
 
@@ -45,3 +45,13 @@ B00/B10均已完成scratchE30/6660更新并冻结，逐row全部7view prediction
 完整日志无RuntimeError/OOM等错误，全部active loss有限、0skipped更新。每组300个nan字样来自各30次的sat_cos/proxy_vaccept/dom/overall_tx/strict_udu/receiver_floor/sat_mean/sat_floor/sat_strict_mean/sat_strict_floor未启用或未执行统计，不能冒充非有限训练失败。源验证不是独立跨RX目标评价；该源判据FAIL也不是正式clean增益的替代。
 
 新增本次分析NN/IQ读取/CP读取/训练更新均0，source日志与排列复算27.208947秒、绘图1.266673秒；每个模型原source NN5407922，另外源读出12602NN、正式预测1176002NN，source训练墙钟B00 1584.601523秒、B10 1621.290584秒，无训练父。source_first_two_r01下summary/decision/CSV/bookkeeping/native_epoch_subset及source_first_two_curves.png/.pdf已保存，实际PNG已查看；本轮仅两组完整源分析，不冒充四组交互或跨seed。
+
+## 已完成两行的正式默认头结果
+
+源门槛失败先固定于本地Git commit dadbfdad86893af333f7058f2e9e5fc480f1d020，之后才读取两行正式成绩；该次push因GitHub443连接失败未完成，commit保留，后续正常补推，不作为科学发布阻断。整批四因子交互须等四行齐全；逐row已完成成绩按既有truth-last协议现在分析，不用整批等待作为额外门槛。
+
+同一seed2026092701、完整源数据、scratchE30和matched raw-secondary控制：B00/B10 clean=85.237500%/85.088690%（−.148810pp）；high suburban=46.350595%/46.474405%（+.123810pp）；mid suburban=44.589286%/44.553571%（−.035714pp）；low suburban=42.622024%/42.453571%（−.168452pp）；high urban=44.975000%/45.095833%（+.120833pp）；mid urban=37.426190%/37.491667%（+.065476pp）；low urban=31.755357%/31.826786%（+.071429pp）。这是未训练As的两行，不能冒充joint结果或与旧ordinary-secondary As控制相减归因Ag。
+
+clean macroF1=84.987751%/84.833337%（−.154414pp），low urban macroF1=30.425385%/30.384644%（−.040741pp）。clean最差RX=75.012500%/76.416667%，而low urban最差RX=28.183333%/26.958333%；单个最差RX变化不能替代总体净收益。clean修复1564个/新增错误1814个，净少250个正确包；low urban修复5264个/新增错误5144个，净多120个，且F1略降。当前没有证实Ag独立的跨RX身份泛化收益，不能用这些微小重分配宣称目标已达成。仅1个modelseed，无跨seed结论。
+
+独立核验252个正式CM与原scorer一致，全部7view logits/argmax/IDs/冻结及truth-last边界通过；缓存复用完整源日志，不重复NN、CP或IQ读取。formal_first_two_r01保存summary/per_row_seed.csv/completion；分析5.494258秒、NN/IQ/CP/训练更新全0。原图标签重叠保留，figures_readable_r01重排后PNG/PDF实际保存并查看，数值未改；重绘.695491秒、0truth读取。待B01/B11完成后才能给出As主效应、joint净收益、urban状态分层和完整交互，当前不扩大结论。

@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_CYCLEORDER_SOURCE_AG_CRITERION_FAILED_OTHER_ROWS_RUNNING",
+  "status": "E30_CYCLEORDER_TWO_ROWS_ANALYZED_NEGATIVE_AS_ROWS_RUNNING",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -369,6 +369,22 @@
       "automatic_seed_extension": false,
       "all_registered_rows_continue": true,
       "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cycleorder_factorial_E30_20261017/source_first_two_r01/completion.json"
+    },
+    "completed_analyses": [
+      "B00",
+      "B10"
+    ],
+    "first_two_formal": {
+      "model_seed_count": 1,
+      "source_gate_failed_before_formal": true,
+      "clean_Ag_delta_pp": -0.14880952380952328,
+      "low_urban_Ag_delta_pp": 0.07142857142857229,
+      "low_urban_macro_F1_delta_pp": -0.040741013723955,
+      "source_extension_allowed": false,
+      "artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_cycleorder_factorial_E30_20261017/formal_first_two_r01",
+      "full_factorial_pending": true,
+      "crossseed_confirmed": false,
+      "goal_complete": false
     }
   }
 }
