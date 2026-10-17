@@ -1,0 +1,174 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01",
+  "group_id": "phase1-FcrossRX-sourceL-noise-gradient",
+  "display_name": "全源 L 配对噪声诊断：冻结默认头分类间隔梯度",
+  "description": "冻结P39固定B0，对同一L900的clean和2draw×mid/low完整practical、去新增噪声fixed/total比较真实默认头与分支梯度；仅诊断、不训练、不访问target。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P40",
+    "source L noise head gradient"
+  ],
+  "tags": [
+    "FcrossRX",
+    "L-only",
+    "no-training",
+    "no-target",
+    "default-head",
+    "margin-gradient",
+    "same-latent-noise"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research goal;latest E30/full5RX/defaulthead boundaries. Only legal source diagnostic;0newtraining,0formalaccess.",
+  "code": {
+    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary uid1000;CVS-RFFI Python3.11 Torch2.6;CPU2threads FP32;CUDA empty",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noise_headgradient_L_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing validated original source contract;unchanged",
+    "representation": "original cached float32 L6300x2x256,balanced900;existing datasetRMS;native normalize_input once per view;fs25MHz/fc2.462GHz",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "same source contract;diagnostic panel saved privately",
+    "label_map_ref": "same contract six source TX",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "same all6 sourceTX",
+    "roles": {
+      "L_s": "900 balanced10perTXxRXxday sampled from original6300",
+      "U_s": "not loaded;truth hidden",
+      "V": "unused serialized carrier deserialized;no tensor access/forward/backprop"
+    },
+    "train_ratio": "original7/63/30;no sourceRXheldout,noLdev",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "existing VALIDATED_ONCE source cache+roleids;no Phase2 capsule/split applicable",
+    "support_query_ref": "not applicable;no query",
+    "leo_config_ref": "P39B0/stage20/actual_channel.json original configs: residual/post_sync/EQoff G1/ref30/reflect/quality+phase+IQ;2newdraws mid/low"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none;no target prediction/scoring",
+    "external_method_exception": null,
+    "claim_scope": "Local frozen sourceL gradient-noise mechanism;not trainingtrajectory,Ag benefit or formalaccuracy proof"
+  },
+  "checkpoint": {
+    "initialization": "read-only fixed P39 B0 own20scratch+own10 E30 defaulthead",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/B0-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "P39 model.own_model strict own20/10 roleids/init/freeze/CP ancestry + P40 realCP noquerysmoke",
+    "provenance_verdict": "same data contract,originalscratch→own20→own10;fixedB0 beforeformal,notselectedwinner;no optimizerorheadupdates",
+    "selection_rule": "fixedB0,not UAS and not scoreselected;no modelselection"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/noise-gradient40",
+    "gpu_policy": "CPU only2threads;CUDA_VISIBLE_DEVICES empty;no healthyjobmutation",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_noise_headgradient_L_20261018",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noise_headgradient_L_20261018_r01/experiments/cvs_noise_gradient40/runner.py",
+    "stop_rule": "Systemictechnical/protocolfailureonly:wrongroles/checkpoint/state/config/nativeparity/budget,nonfinitegrad/modelmutation,outputcollision,unlaunchable. Preservepartial;noautomaticretry;no stoponnegativehypothesis;never touchotherjobs."
+  },
+  "expected_artifacts": [
+    "checkpoint_noquery_smoke.json",
+    "resolved_config.json",
+    "runtime.json",
+    "data_roles.json",
+    "source_labels_ids.pt private",
+    "clean.pt private",
+    "draw0/1/scene/{observations.npy private,physics.json,full.pt/no_noise_fixed.pt/no_noise_total.pt private}",
+    "actual_channel.json",
+    "observation_complete.json",
+    "analysis/{paired_gradient_strata.csv,gate_changes.csv,source_metrics.csv,confusion_metrics.json,summary.json,2PNG+2PDF}",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "margin W gradient pairedcosine",
+      "CE0/CE01 secondary",
+      "actual4parameter/9feature gradients",
+      "sourceaccuracy/macroF1/margin",
+      "fixedcleancorrectretention",
+      "gates",
+      "NN/autograd/channel/receiver/wallcost"
+    ],
+    "dimensions": [
+      "modelseed2026092701",
+      "draw0/1",
+      "mid/lowurban",
+      "full/no_noisefixed/no_noisetotal",
+      "RX/day/TX/state/lock/addednoisebins"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01/source saved default logits only",
+    "scorer_ref": "P40 analyze independentNumPy fromsavedlogits/gradients;noNN/IQ/CP"
+  },
+  "rows": [
+    {
+      "row_id": "B0-L900-s2026092701",
+      "method": "frozen existingF/defaultcos30,0fit;3objectiveautograd",
+      "purpose": "falsification",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noise_headgradient_L_20261018_r01/experiments/cvs_noise_gradient40/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 20261018461,
+        "augmentation": 20261018462,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "panel18461;channel18462 named2drawscenePID;hardware16423 stableRX/day/eq notTX. support/evaluationnull noquery orformalnewdraw.",
+      "k": null,
+      "scenario": "source midurban/lowurban full,no_noisefixed,no_noisetotal",
+      "optimizer": "none",
+      "lr": "none",
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Parent30E6660updates;diagnostic11702NN=900clean+10800sat+2syntheticCP;1173autogradcalls;3600native+14400render;0update/0teacher/0headfit",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01-launch/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noise_headgradient_L_20261018_r01/experiments/cvs_noise_gradient40/runner.py",
+      "expected_artifacts": [
+        "checkpoint_noquery_smoke.json",
+        "resolved_config.json",
+        "runtime.json",
+        "data_roles.json",
+        "source_labels_ids.pt private",
+        "clean.pt private",
+        "draw0/1/scene/{observations.npy private,physics.json,full.pt/no_noise_fixed.pt/no_noise_total.pt private}",
+        "actual_channel.json",
+        "observation_complete.json",
+        "analysis/{paired_gradient_strata.csv,gate_changes.csv,source_metrics.csv,confusion_metrics.json,summary.json,2PNG+2PDF}",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Primary forbothlowdraws:all900denominator,validgrad>=855/fullandfixed,negativefull>=180,andnegativefull-negativefixed>=90. Otherwise close specificnoise-inducedmargin-gradientconflict explanation;no automatictrainingeitherway.",
+    "LS=.01conflictalonecannotshowidentityconflict.",
+    "ExactsameTXcrossRXIQmixandAWGNtrainingclosedhistorically;withdrawn,notrelaunched.",
+    "Noformaltestrequiredfor0training/explicit sourceonlydiagnostic;formalIQunchanged."
+  ]
+}
