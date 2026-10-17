@@ -1,6 +1,6 @@
 # P41：既有跨 RX 同 TX 对比监督的真实星地视图覆盖
 
-运行前固定设计。状态 PLANNED；尚无新训练成绩，不能宣称新 A_g 或联合目标完成。起点 commit 8105911d77983fda193b5af57841801409ae6bd4；实际发布代码 commit 在 release_commit.txt/verification.json 记录。
+预登记初始状态为 PLANNED；当前三组E30及全7正式评分均已完成，独立源域否证与正式负结果见下文。没有证明新 A_g 或联合目标完成。起点 commit 8105911d77983fda193b5af57841801409ae6bd4；实际发布代码 commit 在 release_commit.txt/verification.json 记录。
 
 源代码确认：原四个 L 前向中，SupCon只读取普通 pair；混合 pair 内64个真实full practical IQ只参与默认头CE/RDrop。本轮唯一假设：保留完整clean监督组织和既有对比预算，让已有真实星地观测进入同TX不同物理RX的身份证据关系，能改善low/mid urban且保持clean。P40未发现默认W间隔梯度反向，故不加梯度修正；原IQmix、RX分组、RXMIX、谱/时序/正负噪声等既定失败路线不重开。
 
@@ -84,3 +84,82 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS
 源fullV clean为ORD98.066667%、DUP98.077778%、SAT98.192593%，clean保持两项通过，urban提升两项失败，逐格0/4达标。两个draw复用同一V1800物理集合，不是两个模型seed。按预登记关闭这条固定既有SupCon星地视图覆盖方案；不扫系数、温度、层位、RX、seed或预算救援，不自动扩种子。其余已登记正式预测/评分与报告继续完成，正式结果只作终端报告。没有新IQ A_g、联合突破或跨seed证明。
 
 每模型native训练/验证NN6255724、冻结源读出12600，总source NN6268324；各LNN3409920、实际As426240。native两段墙钟ORD2641.8691s、DUP2647.8117s、SAT2703.8004s，冻结源读出的独立墙钟未记录，保持未知。源分析15.8905s/0NN。三组各6660步、全L6300/U56700、物理序列匹配、SupCon激活5550步；SAT真实As map条目1420800（两个depth/两个pass重复），DUP/ORD为0；所有记录的active anchor均有效。stdout每组300次nan来自10类未启用的native评价占位项，每项每轮1次，不是实际L目标非有限；L损失逐步分解通过，错误标记0。
+
+## 本轮最终结果：负结果，固定路线关闭
+
+已完成三条新scratch自身20+10=E30、固定checkpoint、全部7视图预测、每行独立truth-last评分及同row分析。运行状态ANALYZED；源判据失败、A_g未证明、整体联合目标仍ACTIVE。实际训练代码ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2；源域关闭提交76a3b2833e12466d51b2f61981e6e9f36c0aa0c9，早于本Agent首次读取正式分数。正式汇总代码4f804e560bed6e29b1bc17a086aede2f9522321e。三组均只用checkpoint中原默认头；每视图168000个样本，0换头/拟合头/测试样本删除。
+
+|固定视图|ORD128准确率（%）|DUP192准确率（%）|SAT192准确率（%）|SAT−ORD（百分点）|
+|---|---:|---:|---:|---:|
+|clean|85.441071|85.354762|84.013690|-1.427381|
+|high suburban|81.341667|81.229167|80.974405|-0.367262|
+|mid suburban|78.576190|78.469643|78.292857|-0.283333|
+|low suburban|75.980357|75.849405|75.684524|-0.295833|
+|high urban|77.831548|77.690476|77.397619|-0.433929|
+|mid urban|62.925000|62.856548|62.736905|-0.188095|
+|low urban|51.560714|51.569048|51.413095|-0.147619|
+
+urban三场景均值：ORD64.105754%、DUP64.038690%、SAT63.849206%；SAT相对ORD−0.256548个百分点，相对DUP−0.189484个百分点。候选没有改善正式urban中的任何一个场景。low urban距离60%目标仍8.586905个百分点。
+
+|视图|ORD macroF1（%）|SAT macroF1（%）|ORD最差RX（%）|SAT最差RX（%）|
+|---|---:|---:|---:|---:|
+|clean|85.178066|83.615600|79.033333|74.904167|
+|mid urban|62.479803|62.299978|56.675000|56.645833|
+|low urban|51.103643|50.959543|46.808333|46.791667|
+
+SAT的7个测试RX clean均下降，RX14-7从79.216667%降至74.904167%（−4.312500个百分点）。low最差RX同为14-7：46.808333%→46.791667%。不能把源V clean的+0.125926个百分点解释为跨RX泛化提升。
+
+固定ORD clean正确集合143541包上，low保留率56.507897%→56.388767%，mid69.607290%→69.481890%；该集合来自已训练As的ORD对照，不是未增强父模型。low修复3474例、引入3722例新错，净−248；mid修复2759、引入3075，净−316；clean修复584、引入2982，净−2398。原cos30尺度不变，true-versus-best-wrong平均归一化间隔clean .145680279→.141487777、mid .054446578→.053879134、low .028823849→.028503018；没有把logit尺度变化当改善。
+
+候选三个suburban相对自身clean的差距为3.039286/5.720833/8.329167个百分点，仍全部大于预登记探索目标2个百分点。相对ORD这些差距看似变小，同时clean下降1.427381个百分点、三个suburban绝对准确率也均下降，不能算保持目标完成。
+
+机制边界：在合法源V1800的两个固定信道draw合并读出中，low PARTIAL/degraded为77.470356%→81.422925%（n253次观测）；BLOCKED/unlocked为30.287540%→29.456869%（n1565次观测）。这是同一物理集合的重复信道观测和描述性分层，不是因果损伤移除实验或独立seed。没有任何一类urban退化得到稳定、可迁移缓解的证据；正式测试没有逐包state标签，不能移植这些源分层结论到target。未保存本轮逐包门控/逐分支梯度轨迹，不用全局梯度或loss解释具体门控因果。
+
+本轮只有model seed2026092701，2个源信道draw和3个独立配置模型不能冒充多seed复现。源urban0/4格达标，故按预登记不扩种子、不改该方案系数/温度/层位/RX/预算救援。原F＋跨RX同TX与完整clean保留配方保留；本轮只否定上述固定As对比视图覆盖候选。三组均已有As，不能由这组对照单独估计As相对完全不训练As的增益；未实现新的IQ A_g，未完成B00/B10/B01/B11新Ag因子验证。
+
+## 覆盖、成本和验证收尾
+
+所有6660个L批次/模型均与原训练scene/state计数对齐，stage20和own10的原RX/day/scene/state/lock聚合在对lock求和后也完全相等。每模型426240实际As观测、As唯一L6300；6TX×5RX×3day×3scene×3state=810单元全部非空，最少75次，SupCon激活期最少59次，355200个激活期As均有合法正负关系。三组完整物理序列、每格和每轮曝光完全相同；3998个L包见过9种scene/state组合、2057见过8种、240见过7种、5见过6种。不能把失败解释为漏训练域、空状态支持或Sat未进入约束。这里仅精确复算原包内冻结的传播状态，未重渲染真实IQ、receiverlock/AGC/噪声或模型预测。1278720次prior-state抽样复算278.9047s，0NN；等待1301.2418s单列。
+
+每模型sourceNN6268324＋正式预测1176002＝7444326；三个模型总90模型epoch/19980更新，共22332978NN；加共享smoke1538＝22334516NN。自身E20已包括在E30，不重复计算父成本；不继承历史模型，历史参考/诊断成本不冒充新训练。新增关系成员不新增模型前向。
+
+|模型|native训练/验证两段墙钟（s）|正式预测墙钟（s）|
+|---|---:|---:|
+|ORD128|2641.8691|53.6876|
+|DUP192|2647.8117|48.2202|
+|SAT192|2703.8004|48.3715|
+
+冻结源读出墙钟未记录，保留未知；源分析15.8905s、正式分析25.3451s，额外NN均0。覆盖图渲染3.3641s、排版修正3.3239s，0NN。训练曲线已保留全部90个epoch及逐步记录；预算耗尽不宣称收敛。
+
+8项原关系/协议负例测试、8项分析测试、7项当前状态映射/权限/seed负例测试均PASS；真实CP2NN和3组真实F合成1536NN接口smoke PASS、0optimizer更新；128个真实L元数据映射、64个synthetic residual状态比对、19980批次真实命名流复算PASS。独立重算831源＋378正式混淆矩阵、21个RX聚合，accuracy/F1最大误差2.22e-16。每个实验row的300个native nan文本均为10类未启用评价占位项，每类30次；实际L损失有限且逐步分解PASS。
+
+保留技术负例：状态辅助r01因错误引用seed退出，r02修正实际config引用并完整完成；绘图r01因Matplotlib色标labels位置参数失败，r02用关键字参数完成；单独排版调用首次缺分析模块搜索路径，补显式路径后同一已提交代码完成。所有原失败产物保留，不重训、不重测、不改正式IQ或强度。
+
+实际导入leo_practical为旧发布目录内experiments/adv3b02_xuc/code实现，非仓库顶层code：/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py；residual.py与DataAugmentation/SSDG来自同一实际原生目录。实际L信道fs25MHz、fc2.462GHz、IQ256，processing_route=residual、mode=post_sync、EQoff所以G=1；quality_adaptation/phase_tracking/IQcomp/AGC均true，locked15/unlocked5、quality_ref20、reference_snr30、AGClimit30dB、reflect。MMSE129/delay64是未启用EQ参数，不把它报告成已均衡；新增噪声比不是总SNR。源诊断缓存fc2.45GHz代理已预先披露，正式固定received IQ未改变。
+
+## 可复核产物与执行入口
+
+- [逐row/seed及正式分层CSV](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/final_analysis_r01/per_row_seed.csv)；[源域分层CSV](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/source_analysis_r01/source_strata.csv)。
+- [全部E30训练曲线CSV](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/source_analysis_r01/training_curves.csv)；[修复/新增错误CSV](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/final_analysis_r01/paired_repairs.csv)；[固定clean正确集合保持率CSV](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/final_analysis_r01/fixed_ORD_retention.csv)。
+- [TX×RX×day×scene×state实际计数](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_r02/TX_RX_day_scene_state.csv)；[逐轮状态曝光](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_r02/epoch_TX_RX_state.csv)；[独立混淆矩阵复算](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/independent_confusion_recount.json)。
+
+- 正式准确率: [PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/final_analysis_r01/formal_accuracy.png) / [PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/final_analysis_r01/formal_accuracy.pdf)
+- 完整E30训练曲线: [PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/final_analysis_r01/training_curves.png) / [PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/final_analysis_r01/training_curves.pdf)
+- 逐RX准确率: [PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/final_analysis_r01/receiver_accuracy.png) / [PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/final_analysis_r01/receiver_accuracy.pdf)
+- 既有对比监督与梯度/LR: [PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/figure_revision_r01/contrastive_coverage_training_curves.png) / [PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/figure_revision_r01/contrastive_coverage_training_curves.pdf)
+- 实际L接收机/场景曝光: [PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/figure_revision_r01/training_L_support.png) / [PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/figure_revision_r01/training_L_support.pdf)
+- 源域新增噪声比区间: [PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/figure_revision_r01/source_added_noise_accuracy.png) / [PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/figure_revision_r01/source_added_noise_accuracy.pdf)
+- 源域传播/接收状态: [PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/figure_revision_r01/source_state_lock_accuracy.png) / [PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/figure_revision_r01/source_state_lock_accuracy.pdf)
+- TX×RX×传播状态曝光: [PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_plots_r02/training_TX_RX_state_exposure.png) / [PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_plots_r02/training_TX_RX_state_exposure.pdf)
+- 逐轮状态支持: [PNG](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_plots_r02/training_state_support_progress.png) / [PDF](E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_plots_r02/training_state_support_progress.pdf)
+
+训练命令、环境/CWD/GPU/stop rule沿用上文已执行固定release；当前代码目录E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_crossview_supcon41。实际执行source/final入口为：
+
+```text
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_analysis_20261018_r01/analysis/cvs_crossviewSupCon_E30_results_20261018.py --mode source --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/source_analysis_r01 --wait-pids 849362 849390 849536 849617
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_analysis_20261018_r01/analysis/cvs_crossviewSupCon_E30_results_20261018.py --mode final --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/final_analysis_r01 --source-analysis /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/source_analysis_r01 --truth /home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_state_coverage_20261018_r02/analysis/cvs_crossviewSupCon_state_coverage_20261018.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/state_coverage_r02 --metadata /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_state_coverage_20261018_r02/source_container_shapes.json --source-analysis /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/source_analysis_r01 --wait-pids 854753 849362 849390 849536 849617
+CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_coverage_plots_20261018_r02/analysis/cvs_crossviewSupCon_state_coverage_plot_20261018.py --input /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/state_coverage_r02 --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/state_coverage_plots_r02
+```
+
+上述入口由既有CVS-RFFI Python执行，source/final/coverage/plot均CUDA空、OMP/BLAS线程2。原始prediction/checkpoint与完整训练日志保留在唯一远端run；本地派生图/CSV/日志等不提交Git，报告、代码、配置、验证元数据和当前登记提交。最后阶段未完成项：整体目标的有效新IQ A_g、联合clean正收益、low>60、suburban保持及跨seed复现仍未达到；本轮固定候选已结束，不冒充整体目标完成。

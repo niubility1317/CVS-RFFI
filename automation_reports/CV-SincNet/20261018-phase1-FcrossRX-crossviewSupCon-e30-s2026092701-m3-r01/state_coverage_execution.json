@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_WAITING_FOR_FROZEN_SOURCE",
+  "status": "VERIFIED_COMPLETE",
   "code_commit": "34a67169a6bb40bac5856ad1e5b8512c5c6120eb",
   "training_release_commit": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
   "failed_attempt": {
@@ -106,5 +106,30 @@
     "NN": 0,
     "real_IQ_values": 0,
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/coverage_actual_batch_smoke_r02.json"
+  },
+  "completion": {
+    "status": "VERIFIED_SOURCE_TRAINING_STATE_COVERAGE",
+    "all_rows_each_810_nonempty": true,
+    "minimum_cell_count": 75,
+    "minimum_active_cell_count": 59,
+    "actual_As_observations_each": 426240,
+    "unique_As_L_each": 6300,
+    "active_dense_satellite_eligible_each": 355200,
+    "per_batch_checks_each": 6660,
+    "all_three_exposure_arrays_equal": true,
+    "prior_state_draws_total": 1278720,
+    "real_waveform_calls": 0,
+    "identity_NN": 0,
+    "replay_seconds": 278.9047375959344,
+    "waiting_seconds": 1301.2418174098711,
+    "code_commit": "34a67169a6bb40bac5856ad1e5b8512c5c6120eb",
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_r02/complete.json"
+  },
+  "plotting": {
+    "first_attempt": "FAILED_COLORBAR_POSITIONAL_LABELS;preservedstate_coverage_plots_r01",
+    "repaired": "keyword labels;independent output r02",
+    "code_commit": "d971f1078427e901c2182c4d49e45a5f5470368e",
+    "status": "PLOTTED_VERIFIED_SOURCE_COVERAGE",
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_plots_r02/complete.json"
   }
 }

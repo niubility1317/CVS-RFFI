@@ -1,5 +1,5 @@
 {
-  "status": "PRELAUNCH_CHECKS_PASS",
+  "status": "VERIFIED_ANALYZED_SOURCE_NEGATIVE",
   "code_commit": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
   "focused_tests": {
     "status": "PASS",
@@ -19,7 +19,7 @@
     "status": "VERIFIED",
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/preflight.txt"
   },
-  "run_state": "RUNNING_THREE_SCRATCH_ROWS",
+  "run_state": "ANALYZED_SOURCE_NEGATIVE",
   "new_Ag": false,
   "goal_complete": false,
   "git_remote": {
@@ -527,57 +527,15 @@
     ]
   },
   "latest_source_progress": {
-    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_postlaunch_r02.json",
-    "rows": {
-      "ORD128": {
-        "stage20": {
-          "epoch": 18,
-          "cumulative_epoch": 18,
-          "steps": 3996,
-          "cumulative_steps": 3996,
-          "L_NN": 2045952,
-          "L_As": 255744,
-          "extra_U_NN": 0,
-          "U_As": 0,
-          "existing_U_only": true,
-          "U_truth_read": false,
-          "target_access": false
-        }
-      },
-      "DUP192": {
-        "stage20": {
-          "epoch": 17,
-          "cumulative_epoch": 17,
-          "steps": 3774,
-          "cumulative_steps": 3774,
-          "L_NN": 1932288,
-          "L_As": 241536,
-          "extra_U_NN": 0,
-          "U_As": 0,
-          "existing_U_only": true,
-          "U_truth_read": false,
-          "target_access": false
-        }
-      },
-      "SAT192": {
-        "stage20": {
-          "epoch": 17,
-          "cumulative_epoch": 17,
-          "steps": 3774,
-          "cumulative_steps": 3774,
-          "L_NN": 1932288,
-          "L_As": 241536,
-          "extra_U_NN": 0,
-          "U_As": 0,
-          "existing_U_only": true,
-          "U_truth_read": false,
-          "target_access": false
-        }
-      }
-    }
+    "status": "COMPLETE_ALL3_E30",
+    "updates_each": 6660,
+    "source_L_NN_each": 3409920,
+    "actual_As_each": 426240,
+    "extra_U_NN": 0,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/source_analysis_r01/complete.json"
   },
   "analysis_preparation": {
-    "status": "READY_NOT_EXECUTED",
+    "status": "EXECUTED_COMPLETE",
     "code": "analysis/cvs_crossviewSupCon_E30_results_20261018.py",
     "focused_tests": 8,
     "tests_status": "PASS",
@@ -586,7 +544,7 @@
     "analysis_NN": 0
   },
   "state_coverage_preparation": {
-    "status": "VERIFIED_WAITING_FOR_FROZEN_SOURCE",
+    "status": "COMPLETE_METADATA_REPLAY",
     "code_commit": "34a67169a6bb40bac5856ad1e5b8512c5c6120eb",
     "focused_tests": 7,
     "L_metadata_smoke": 128,
@@ -918,5 +876,208 @@
     ],
     "each_key_mentions": 30,
     "scope": "Unused native evaluation placeholders;actual L objectives finite and decomposition verified;no error markers"
+  },
+  "actual_final_results": {
+    "status": "VERIFIED_ALL3_ALL7_TRUTH_LAST",
+    "model_seed": 2026092701,
+    "model_seed_count": 1,
+    "source_decision_commit": "76a3b2833e12466d51b2f61981e6e9f36c0aa0c9",
+    "training_code_commit": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
+    "source_analysis_commit": "4f804e560bed6e29b1bc17a086aede2f9522321e",
+    "formal_analysis_commit": "4f804e560bed6e29b1bc17a086aede2f9522321e",
+    "source_qualified": false,
+    "views": {
+      "ORD128": {
+        "clean": {
+          "accuracy_pct": 85.44107142857142,
+          "macro_F1_pct": 85.17806583381336,
+          "worst_RX_pct": 79.03333333333333
+        },
+        "practical_high": {
+          "accuracy_pct": 81.34166666666667,
+          "macro_F1_pct": 80.97709454484935,
+          "worst_RX_pct": 71.50833333333333
+        },
+        "practical_mid": {
+          "accuracy_pct": 78.57619047619048,
+          "macro_F1_pct": 78.2020562499162,
+          "worst_RX_pct": 69.975
+        },
+        "practical_low_suburban": {
+          "accuracy_pct": 75.98035714285714,
+          "macro_F1_pct": 75.60986244708033,
+          "worst_RX_pct": 68.05833333333334
+        },
+        "practical_high_urban": {
+          "accuracy_pct": 77.83154761904761,
+          "macro_F1_pct": 77.42679824732667,
+          "worst_RX_pct": 68.98333333333333
+        },
+        "practical_mid_urban": {
+          "accuracy_pct": 62.925,
+          "macro_F1_pct": 62.47980295038927,
+          "worst_RX_pct": 56.675
+        },
+        "practical_low_urban": {
+          "accuracy_pct": 51.56071428571428,
+          "macro_F1_pct": 51.10364327497449,
+          "worst_RX_pct": 46.80833333333334
+        }
+      },
+      "DUP192": {
+        "clean": {
+          "accuracy_pct": 85.3547619047619,
+          "macro_F1_pct": 85.09605172792126,
+          "worst_RX_pct": 78.66666666666666
+        },
+        "practical_high": {
+          "accuracy_pct": 81.22916666666666,
+          "macro_F1_pct": 80.85558577823271,
+          "worst_RX_pct": 71.45833333333333
+        },
+        "practical_mid": {
+          "accuracy_pct": 78.46964285714286,
+          "macro_F1_pct": 78.08363105842257,
+          "worst_RX_pct": 69.9125
+        },
+        "practical_low_suburban": {
+          "accuracy_pct": 75.84940476190476,
+          "macro_F1_pct": 75.46845186625568,
+          "worst_RX_pct": 68.00416666666666
+        },
+        "practical_high_urban": {
+          "accuracy_pct": 77.69047619047619,
+          "macro_F1_pct": 77.27556463293045,
+          "worst_RX_pct": 68.90833333333333
+        },
+        "practical_mid_urban": {
+          "accuracy_pct": 62.85654761904762,
+          "macro_F1_pct": 62.39774458485158,
+          "worst_RX_pct": 56.625
+        },
+        "practical_low_urban": {
+          "accuracy_pct": 51.569047619047616,
+          "macro_F1_pct": 51.09377003405998,
+          "worst_RX_pct": 46.80416666666667
+        }
+      },
+      "SAT192": {
+        "clean": {
+          "accuracy_pct": 84.01369047619048,
+          "macro_F1_pct": 83.61560016140113,
+          "worst_RX_pct": 74.90416666666667
+        },
+        "practical_high": {
+          "accuracy_pct": 80.97440476190476,
+          "macro_F1_pct": 80.57607791375409,
+          "worst_RX_pct": 71.42916666666666
+        },
+        "practical_mid": {
+          "accuracy_pct": 78.29285714285714,
+          "macro_F1_pct": 77.90271786376626,
+          "worst_RX_pct": 69.60833333333333
+        },
+        "practical_low_suburban": {
+          "accuracy_pct": 75.68452380952381,
+          "macro_F1_pct": 75.30887320779006,
+          "worst_RX_pct": 67.80000000000001
+        },
+        "practical_high_urban": {
+          "accuracy_pct": 77.39761904761905,
+          "macro_F1_pct": 76.96331742145591,
+          "worst_RX_pct": 68.59166666666667
+        },
+        "practical_mid_urban": {
+          "accuracy_pct": 62.73690476190477,
+          "macro_F1_pct": 62.29997831261183,
+          "worst_RX_pct": 56.64583333333333
+        },
+        "practical_low_urban": {
+          "accuracy_pct": 51.41309523809524,
+          "macro_F1_pct": 50.95954321853545,
+          "worst_RX_pct": 46.791666666666664
+        }
+      }
+    },
+    "urban_means_pct": {
+      "ORD128": 64.10575396825396,
+      "DUP192": 64.03869047619047,
+      "SAT192": 63.849206349206355
+    },
+    "SATminusORD_urban_pp": -0.25654761904760903,
+    "identity_cost": {
+      "per_model": {
+        "ORD128": {
+          "source_identity_NN": 6268324,
+          "prediction_identity_NN": 1176002,
+          "total_identity_NN": 7444326,
+          "new_epochs": 30,
+          "new_updates": 6660
+        },
+        "DUP192": {
+          "source_identity_NN": 6268324,
+          "prediction_identity_NN": 1176002,
+          "total_identity_NN": 7444326,
+          "new_epochs": 30,
+          "new_updates": 6660
+        },
+        "SAT192": {
+          "source_identity_NN": 6268324,
+          "prediction_identity_NN": 1176002,
+          "total_identity_NN": 7444326,
+          "new_epochs": 30,
+          "new_updates": 6660
+        }
+      },
+      "shared_preflight_NN": 1538,
+      "matrix_total_identity_NN": 22334516,
+      "new_model_epochs": 90,
+      "new_updates": 19980,
+      "diagnostic_parent_training_epochs_charged": 0,
+      "each_own20_is_already_in30": true,
+      "analysis_NN": 0
+    },
+    "independent_confusion_recount": {
+      "status": "PASS",
+      "counts": {
+        "source": 831,
+        "formal": 378
+      },
+      "max_error": 2.220446049250313e-16
+    },
+    "all_seven_views_count_each": 168000,
+    "head_fit_updates": 0,
+    "default_head_jointly_trained": true,
+    "formal_test_IQ_changed": false,
+    "crossseed_confirmed": false,
+    "Ag_proved": false,
+    "goal_complete": false
+  },
+  "actual_state_coverage": {
+    "status": "VERIFIED_SOURCE_TRAINING_STATE_COVERAGE",
+    "all_rows_each_810_nonempty": true,
+    "minimum_cell_count": 75,
+    "minimum_active_cell_count": 59,
+    "actual_As_observations_each": 426240,
+    "unique_As_L_each": 6300,
+    "active_dense_satellite_eligible_each": 355200,
+    "per_batch_checks_each": 6660,
+    "all_three_exposure_arrays_equal": true,
+    "prior_state_draws_total": 1278720,
+    "real_waveform_calls": 0,
+    "identity_NN": 0,
+    "replay_seconds": 278.9047375959344,
+    "waiting_seconds": 1301.2418174098711,
+    "code_commit": "34a67169a6bb40bac5856ad1e5b8512c5c6120eb",
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_r02/complete.json"
+  },
+  "delivered_figures": {
+    "status": "VERIFIED_FILES_AND_VISUAL_LAYOUT",
+    "groups": 9,
+    "files": 18,
+    "metadata": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/delivered_figures.json",
+    "plot_code_commit": "d971f1078427e901c2182c4d49e45a5f5470368e",
+    "layout_revision_commit": "023a72794e18a02ae093b818b8ae1e64cf7a1da1",
+    "original_outputs_preserved": true
   }
 }

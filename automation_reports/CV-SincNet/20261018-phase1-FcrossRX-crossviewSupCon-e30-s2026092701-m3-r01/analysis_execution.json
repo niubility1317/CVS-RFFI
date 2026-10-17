@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_SOURCE_ANALYSIS_WAIT",
+  "status": "VERIFIED_SOURCE_AND_FINAL_ANALYZED",
   "code_commit": "4f804e560bed6e29b1bc17a086aede2f9522321e",
   "launch": {
     "status": "DISPATCHED_SOURCE_WAIT",
@@ -86,6 +86,55 @@
   "training_release_commit": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
   "training_release_changed": false,
   "analysis_NN": 0,
-  "target_access": false,
-  "goal_complete": false
+  "target_access": true,
+  "goal_complete": false,
+  "source_completion": {
+    "status": "SOURCE_ANALYZED",
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/source_analysis_r01/complete.json",
+    "wall_seconds": 15.890489618992433,
+    "formal_scores_read": false
+  },
+  "final_launch": {
+    "status": "DISPATCHED_FINAL_ANALYSIS",
+    "pid": 876314,
+    "startticks": "151485874",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_analysis_20261018_r01",
+    "args": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_analysis_20261018_r01/analysis/cvs_crossviewSupCon_E30_results_20261018.py",
+      "--mode",
+      "final",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/final_analysis_r01",
+      "--source-analysis",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/source_analysis_r01",
+      "--truth",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20260927-phase1-baselines-final-clean-satellite-m5-r01/data/truth.json"
+    ],
+    "analysis_code_commit": "4f804e560bed6e29b1bc17a086aede2f9522321e",
+    "source_closure_commit": "76a3b2833e12466d51b2f61981e6e9f36c0aa0c9",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/final_analysis_r01",
+    "NN": 0,
+    "time": 1792267154.315116,
+    "training_changed": false
+  },
+  "final_completion": {
+    "status": "ANALYZED",
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/final_analysis_r01/complete.json",
+    "wall_seconds": 25.345081191975623,
+    "source_closure_commit": "76a3b2833e12466d51b2f61981e6e9f36c0aa0c9",
+    "NN": 0
+  },
+  "final_layout_revision": {
+    "code_commit": "023a72794e18a02ae093b818b8ae1e64cf7a1da1",
+    "status": "FIGURE_LAYOUT_FIXED",
+    "NN": 0,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/figure_revision_r01/complete.json",
+    "initial_wrapper_failure": "Module search path missing;corrected explicit analysis path,code unchanged",
+    "original_outputs_preserved": true
+  },
+  "source_mode_target_access": false,
+  "final_mode_target_access": true,
+  "target_feedback": false
 }
