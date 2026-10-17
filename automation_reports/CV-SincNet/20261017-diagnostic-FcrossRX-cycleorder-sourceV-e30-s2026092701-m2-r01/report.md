@@ -70,3 +70,5 @@ low LOS/locked的1060观察：96.037736%→91.792453%，−4.245283pp，修复7/
 本地4项合成测试PASS：全部24排列的已知逆/功率/支持外、理想周期及相位进展、全局相位/正增益等变、私有RNG与非法source/判据反例。0真实IQ/CP/NN/训练。Torch旧环境的NumPy桥ABI警告保留，测试不使用该桥，未装包；远端接口通过frombuffer/tolist。预检普通账户CPU2/输出无冲突VERIFIED；唯一限定P0/P1静态审查PASS，无直接P0/P1；未读取IQ/CP/target或执行远端，不加额外gate。
 
 整体目标未完成：有效跨RX A_g、正式lowurban>60%、clean净正收益、suburban接近clean和跨seed联合证据均未证明。不会把source保护或变换非零当作识别收益。
+
+Git交付读回：此前推送失败已恢复。提交1e3065bfa52e557c4fe3241bcd0500d13d986403已由GitHub独立compare确认与远端分支identical，包含本轮7e8dc09及上轮317b5d75/14ffb1c80。源engine配置引用已校正为原P24 observations/actual_engine.json并只读核实存在；0IQ/NN/模型重跑。
