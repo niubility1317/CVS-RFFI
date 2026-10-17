@@ -1,0 +1,383 @@
+{
+  "status": "INDEPENDENT_GRAM_RECOUNT_VERIFIED",
+  "run_id": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02",
+  "source_only": true,
+  "source_criteria_passed": false,
+  "decision": "FAIL_FIXED_ANTITHETIC_COUPLING_CLOSED",
+  "conditions": {
+    "overall_full_at_most_point8": false,
+    "overall_head_at_most_point8": false,
+    "mid_full_below1": true,
+    "low_full_below1": true
+  },
+  "summary": {
+    "practical_low_suburban": {
+      "full": {
+        "independent": 2.0636598290941084,
+        "antithetic": 1.852178266068414,
+        "ratio": 0.8975211127123945
+      },
+      "head": {
+        "independent": 0.6891391912251388,
+        "antithetic": 0.6736661480991248,
+        "ratio": 0.9775472889613109
+      }
+    },
+    "practical_mid_urban": {
+      "full": {
+        "independent": 1.8822230289217432,
+        "antithetic": 1.736023509990517,
+        "ratio": 0.9223261448379055
+      },
+      "head": {
+        "independent": 0.7884330695450056,
+        "antithetic": 0.7651130745749987,
+        "ratio": 0.9704223530559613
+      }
+    },
+    "practical_low_urban": {
+      "full": {
+        "independent": 2.5483083550664554,
+        "antithetic": 2.1806197622580092,
+        "ratio": 0.8557126761848028
+      },
+      "head": {
+        "independent": 1.1569878648890166,
+        "antithetic": 1.0681630210250226,
+        "ratio": 0.923227506044314
+      }
+    },
+    "all": {
+      "full": {
+        "independent": 2.1647304043607694,
+        "antithetic": 1.9229405127723131,
+        "ratio": 0.888304847984128
+      },
+      "head": {
+        "independent": 0.8781867085530536,
+        "antithetic": 0.835647414566382,
+        "ratio": 0.9515600799097022
+      }
+    }
+  },
+  "groups": [
+    {
+      "scene": "practical_low_suburban",
+      "batch": 0,
+      "count": 30,
+      "full": {
+        "independent": 1.9321436659718827,
+        "antithetic": 2.110201667685772,
+        "ratio": 1.0921556739541542
+      },
+      "head": {
+        "independent": 0.7135284585898117,
+        "antithetic": 0.7263156904516462,
+        "ratio": 1.0179211238289032
+      }
+    },
+    {
+      "scene": "practical_low_suburban",
+      "batch": 1,
+      "count": 30,
+      "full": {
+        "independent": 1.7362284580495264,
+        "antithetic": 1.4718022993958644,
+        "ratio": 0.8477008267963091
+      },
+      "head": {
+        "independent": 0.6291098518616652,
+        "antithetic": 0.5747494697349175,
+        "ratio": 0.913591589821898
+      }
+    },
+    {
+      "scene": "practical_low_suburban",
+      "batch": 2,
+      "count": 30,
+      "full": {
+        "independent": 1.8481215341472657,
+        "antithetic": 1.782083989551062,
+        "ratio": 0.964267747885599
+      },
+      "head": {
+        "independent": 0.6218207729755809,
+        "antithetic": 0.5738522827326177,
+        "ratio": 0.9228580125854898
+      }
+    },
+    {
+      "scene": "practical_low_suburban",
+      "batch": 3,
+      "count": 30,
+      "full": {
+        "independent": 2.8184358592136967,
+        "antithetic": 2.804332001645181,
+        "ratio": 0.9949958564703862
+      },
+      "head": {
+        "independent": 1.058480128290469,
+        "antithetic": 1.1246498633224846,
+        "ratio": 1.0625139133588508
+      }
+    },
+    {
+      "scene": "practical_low_suburban",
+      "batch": 4,
+      "count": 30,
+      "full": {
+        "independent": 1.5888381782431746,
+        "antithetic": 1.5419221474906937,
+        "ratio": 0.9704714857718504
+      },
+      "head": {
+        "independent": 0.5373297218977995,
+        "antithetic": 0.5735177129496798,
+        "ratio": 1.067347830535165
+      }
+    },
+    {
+      "scene": "practical_low_suburban",
+      "batch": 5,
+      "count": 30,
+      "full": {
+        "independent": 2.458191278939105,
+        "antithetic": 1.4027274906419123,
+        "ratio": 0.5706339871351651
+      },
+      "head": {
+        "independent": 0.574566213735506,
+        "antithetic": 0.4689118694034028,
+        "ratio": 0.8161145890476258
+      }
+    },
+    {
+      "scene": "practical_mid_urban",
+      "batch": 0,
+      "count": 30,
+      "full": {
+        "independent": 1.813414235541112,
+        "antithetic": 1.9875754691612593,
+        "ratio": 1.0960405130867292
+      },
+      "head": {
+        "independent": 0.8581729319640654,
+        "antithetic": 0.8074771257021874,
+        "ratio": 0.9409258852457015
+      }
+    },
+    {
+      "scene": "practical_mid_urban",
+      "batch": 1,
+      "count": 30,
+      "full": {
+        "independent": 2.118819996535147,
+        "antithetic": 1.8225082342683536,
+        "ratio": 0.8601524609210105
+      },
+      "head": {
+        "independent": 0.8270618345324418,
+        "antithetic": 0.8097298775605031,
+        "ratio": 0.9790439405516314
+      }
+    },
+    {
+      "scene": "practical_mid_urban",
+      "batch": 2,
+      "count": 30,
+      "full": {
+        "independent": 1.9566436947865942,
+        "antithetic": 1.556001477247726,
+        "ratio": 0.7952400743138034
+      },
+      "head": {
+        "independent": 0.8376993591694161,
+        "antithetic": 0.8315508279167076,
+        "ratio": 0.9926602173137571
+      }
+    },
+    {
+      "scene": "practical_mid_urban",
+      "batch": 3,
+      "count": 30,
+      "full": {
+        "independent": 1.9503935812052926,
+        "antithetic": 1.806736903900881,
+        "ratio": 0.9263447753885472
+      },
+      "head": {
+        "independent": 0.619465982141668,
+        "antithetic": 0.6380451580506991,
+        "ratio": 1.029992245651323
+      }
+    },
+    {
+      "scene": "practical_mid_urban",
+      "batch": 4,
+      "count": 30,
+      "full": {
+        "independent": 1.6673730976147696,
+        "antithetic": 1.5541071266405366,
+        "ratio": 0.9320692104626952
+      },
+      "head": {
+        "independent": 0.8045081387818717,
+        "antithetic": 0.746127990216975,
+        "ratio": 0.9274337377701465
+      }
+    },
+    {
+      "scene": "practical_mid_urban",
+      "batch": 5,
+      "count": 30,
+      "full": {
+        "independent": 1.7866935678475446,
+        "antithetic": 1.6892118487243455,
+        "ratio": 0.9454401577990585
+      },
+      "head": {
+        "independent": 0.7836901706805705,
+        "antithetic": 0.75774746800292,
+        "ratio": 0.9668967359190924
+      }
+    },
+    {
+      "scene": "practical_low_urban",
+      "batch": 0,
+      "count": 30,
+      "full": {
+        "independent": 2.5449636316833333,
+        "antithetic": 2.113000851249775,
+        "ratio": 0.8302676018408004
+      },
+      "head": {
+        "independent": 1.2054175015645623,
+        "antithetic": 1.174003403580101,
+        "ratio": 0.97393923852633
+      }
+    },
+    {
+      "scene": "practical_low_urban",
+      "batch": 1,
+      "count": 30,
+      "full": {
+        "independent": 2.585516597575627,
+        "antithetic": 2.435572213704679,
+        "ratio": 0.9420060254064712
+      },
+      "head": {
+        "independent": 1.116609142185243,
+        "antithetic": 1.117764448828241,
+        "ratio": 1.0010346562636385
+      }
+    },
+    {
+      "scene": "practical_low_urban",
+      "batch": 2,
+      "count": 30,
+      "full": {
+        "independent": 2.220940549299679,
+        "antithetic": 1.9192585989304338,
+        "ratio": 0.864164778987725
+      },
+      "head": {
+        "independent": 1.0192588258422675,
+        "antithetic": 0.9356575246284284,
+        "ratio": 0.9179783396579815
+      }
+    },
+    {
+      "scene": "practical_low_urban",
+      "batch": 3,
+      "count": 30,
+      "full": {
+        "independent": 2.854742863756828,
+        "antithetic": 2.251730240455066,
+        "ratio": 0.7887681475773266
+      },
+      "head": {
+        "independent": 1.3375682223764331,
+        "antithetic": 1.1248858855975858,
+        "ratio": 0.8409932792803806
+      }
+    },
+    {
+      "scene": "practical_low_urban",
+      "batch": 4,
+      "count": 30,
+      "full": {
+        "independent": 2.1384971206062193,
+        "antithetic": 1.894486972292692,
+        "ratio": 0.8858964335456503
+      },
+      "head": {
+        "independent": 0.9931431900932038,
+        "antithetic": 0.9358543047549458,
+        "ratio": 0.9423155835837915
+      }
+    },
+    {
+      "scene": "practical_low_urban",
+      "batch": 5,
+      "count": 30,
+      "full": {
+        "independent": 2.945189367477044,
+        "antithetic": 2.469669696915409,
+        "ratio": 0.838543600689085
+      },
+      "head": {
+        "independent": 1.2699303072723898,
+        "antithetic": 1.1208125587608326,
+        "ratio": 0.8825780063223796
+      }
+    }
+  ],
+  "recount_max_absolute_error": 8.881784197001252e-16,
+  "source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_RX_holdout": null,
+  "parent_roles": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "gradient_parameters": 900722,
+  "all_model_parameters": 900722,
+  "head_parameter": "id_backbone.encoder.core.id_backbone.cls_head.weight",
+  "cost": {
+    "NN": 25922,
+    "backward_calls": 432,
+    "physical_channel_calls": 12960,
+    "CP": 1,
+    "cache": 1,
+    "source_packets_selected": 180,
+    "optimizer_updates": 0,
+    "teacher_NN": 0,
+    "head_fit_updates": 0,
+    "wall_seconds": 50.76789044891484
+  },
+  "extra_r01_failed_cost": {
+    "CP": 1,
+    "source_cache": 1,
+    "NN": 2,
+    "physical_channel_calls": 90,
+    "gradients": 0,
+    "updates": 0
+  },
+  "independent_analysis_cost": {
+    "IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0
+  },
+  "model_state_unchanged": true,
+  "Ag_gain_proved": false,
+  "As_identity_gain_proved": false,
+  "joint_goal_complete": false,
+  "target_access": false
+}

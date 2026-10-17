@@ -528,3 +528,6 @@
 - [完整源N0反证](../automation_reports/CV-SincNet/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01/report.md)
 
 - [固定平滑 IQ 滤波首次训练 E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01/report.md)
+
+- [正负噪声配对 r01](../automation_reports/CV-SincNet/20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r01/report.md)
+- [正负噪声配对 r02](../automation_reports/CV-SincNet/20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02/report.md)

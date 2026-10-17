@@ -1,0 +1,63 @@
+{
+  "status": "SOURCE_ANALYZED_VERIFIED",
+  "execution_commit": "a93c5b0afa615ccda3f87c29b3e0c27e2d73b6fd",
+  "worker_PID": 689194,
+  "dispatcher_PID": 689167,
+  "CWD_match": true,
+  "argv_match": true,
+  "CUDA_match": true,
+  "GPU_occupied": true,
+  "NN_observed": [
+    2882,
+    5762
+  ],
+  "log_bytes": [
+    127,
+    167
+  ],
+  "log_growth": true,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "canonical_preflight": "PASS",
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 2,
+    "IQ": 0,
+    "target_access": false
+  },
+  "synthetic_checks": {
+    "status": "PASS",
+    "protocol_negatives": 8,
+    "startup_fake_process_cases": 2,
+    "tensor_buffer_bridge_exact": true,
+    "synthetic_native_channel_calls": 48,
+    "max_native_replay_error": 0,
+    "synthetic_grad_Gram_recount_error_lt": 1e-12,
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0,
+    "target_access": false
+  },
+  "source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_RX_holdout": null,
+  "updates": 0,
+  "target_access": false,
+  "worker_terminal": true,
+  "dispatcher_terminal": true,
+  "dispatcher_completion": "SOURCE_EXPERIMENT_COMPLETE",
+  "failure": null,
+  "final_NN": 25922,
+  "backward_calls": 432,
+  "physical_channel_calls": 12960,
+  "model_state_unchanged": true,
+  "source_criteria_passed": false,
+  "scientific_decision": "FAIL_FIXED_ANTITHETIC_COUPLING_CLOSED",
+  "independent_recount_max_error": 8.881784197001252e-16
+}

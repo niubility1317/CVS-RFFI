@@ -1,6 +1,6 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-当前唯一源检验（r01 技术失败已保留，r02 同配置恢复）：[同噪声分布的正负配对](../automation_reports/CV-SincNet/20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02/report.md)，已实现并登记，PLANNED／尚未发布。固定全源 E20 CP、全部 5 源 RX、180 合法 L，0 更新；对照同 H 的 e/e2 与 e/-e 既有 RDrop 梯度方差，不平均 IQ、不改噪声强度或正式信道。25922NN／432autograd／12960完整物理处理；总量≤0.8 且 mid/low<1 的预定条件失败即关闭，不救跑；通过也不是身份收益或 E30 训练完成。预算上限 E30、无训练 RX 留出、完整联合目标 ACTIVE；以下旧“当前／下一项”按历史保存。
+最新完成：[原噪声分布正负配对源检验](../automation_reports/CV-SincNet/20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02/report.md)，ANALYZED／VERIFIED_SOURCE_ONLY；固定 coupling 未过预定条件，关闭，不进入 E30 训练或扩 seed。整体原坐标梯度方差比0.888305、默认W比0.951560，均未达≤0.8；mid/low比0.922326／0.855713，仅局部源估计器变化，不是身份收益。全部5源RX／180合法L、25922NN／432autograd／12960完整物理处理／0更新／0target；18组Gram独立复算误差≤8.89e−16，模型状态不变。r01转换技术失败保留，额外2NN／90物理处理单列；r02同科学配置自然结束。用户E30上限、全源L6300/U56700隐藏TX/V27000和无训练RX留出保持。当前无获证据支持的新训练候选，完整联合目标ACTIVE。以下旧“当前／运行／下一项”均为历史。
 
 最新完成：[固定原 FIR 首次训练效用 E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01/report.md)，ANALYZED／VERIFIED；本固定训练配方失败并关闭。全部五源 RX、L6300／U56700 隐藏 TX／V27000 无留出，两新增行各匹配 E20＋10、累计 E30／6660更新，七视图全部固定后独立评分。B10 clean−B00=−0.039286 pp；B11 clean85.466667%、mid urban62.910714%、low urban51.547619%，相对 B01 分别−0.055357／−0.020238／−0.028571 pp；七视图交互均负。suburban 距自身 clean4.122619／6.905952／9.517262 pp，微缩伴随 clean下降，不能算联合成功。630CM／105分区／全部配对计数、857实际参数／4440条L/U序列／2220步监督尺度／142080 FIR选择每行均独立核对。旧有限窗PSD保真失败不改判；不改核／幅度／父／seed／预算救跑，不扩种子或构造组合视图。当前无获源证据支持的新训练候选，完整联合目标仍 ACTIVE；本段以下“运行／下一项”均是历史。
 
