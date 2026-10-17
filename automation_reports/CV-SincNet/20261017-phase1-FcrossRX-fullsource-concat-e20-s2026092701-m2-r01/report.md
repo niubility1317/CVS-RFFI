@@ -25,3 +25,16 @@ B00使用原native concat_full但p=0，普通增强IQ精确复制成两半；B01
 停止：预算固定不早停选模；任一数据角色/标签权限/非有限loss或grad/预测/来源/技术错误保留产物，阻止未启动row；其他健康row继续完成，不自动重启，不按成绩补救。预算用尽不等于收敛。
 
 预计产物见experiment.json：完整源契约、resolved config/args、普通增强配置与真实模块文件、native星地physics/覆盖、完整逐步/逐轮日志与曲线原表、FINAL20/source冻结、每row七视图prediction及独立score、结果CSV/成本/负结果。训练结束和本地检查通过均不等于实验完成。当前唯一问题是完整源域下普通拼接的实际urban增量与clean代价；没有新增Ag或联合成功结论。
+
+实际实现代码 commit：`dc4e47fe0c2b3e0dcf73dda104cdbd4a7c814f5a`；已提交/推送，发布前使用这一固定实现。
+
+
+## 实际发布与早期运行
+
+代码 `dc4e47fe0c2b3e0dcf73dda104cdbd4a7c814f5a` 已推送，Git远端OID独立核对相同。一次归档SHA本地/远端比较VERIFIED，remote compile PASS；dispatcher已启动，真实匹配全源域CP无query兼容smoke PASS（2合成NN），两行均独立进程运行于GPU0/1。CWD/cmdline/PID/start_ticks/GPU/日志增长/角色已独立读回，完整role IDs与原L6300/U56700/V27000精确一致，未出现fold参数。运行证据与精确PID保存在本地artifact root。
+
+早期完整可解压step记录：B00至少652次更新，B01至少269次更新；活跃loss/RDrop CE/KL有限，nonfinite loss/grad skip=0。B01首批含LOS46/PARTIAL11/BLOCKED71、locked54/degraded16/unlocked58，EQ实际off、G=1，reference30和post_sync/quality/phase/IQ补偿及reflect已核实。该早期状态不是完整预算、收敛或性能证据；持续沿同PID运行。
+
+实际ordinary base配置也已保存：PA正常增强允许(p_pa=.14)、CFO(.35/最大.0004)、AWGN(.4/20至36dB)、多径(.18/2至4tap)、循环移位(.35/±32)等属于两行共有旧配方；class_signature关闭、p_dac=0。不将旧普通增强宣称已验证Ag/身份保持。本次native顺序会在practical前保留这些损伤，此为普通拼接参照的真实行为。运行时practical_buffer_input/output与execution_fast均false，按实际耗时报告，不追改健康运行来加速。
+
+截至本次读回，未完成两行训练、正式七视图评分及跨seed确认，未宣称urban>60%或clean/星地双收益。

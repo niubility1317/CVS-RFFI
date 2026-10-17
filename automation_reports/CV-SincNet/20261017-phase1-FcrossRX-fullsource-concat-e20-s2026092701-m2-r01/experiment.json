@@ -19,7 +19,7 @@
   "replaces_run_id": null,
   "authorization": "活跃混合增强目标；用户2026-10-17明确禁止额外留训练域并要求直接对照普通拼接。两行各scratch E20，每row自动clean+六practical独立truth-last。",
   "code": {
-    "commit": null,
+    "commit": "dc4e47fe0c2b3e0dcf73dda104cdbd4a7c814f5a",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "ordinary N607 CVS-RFFI Python; FP32;2CPU/worker; dispatcher/scorer CUDA empty; no administrator",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_fullsource_concat_E20_20261017_r01"
@@ -174,7 +174,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "originalE20cosine"
       },
       "epochs": 20,
@@ -236,7 +236,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "originalE20cosine"
       },
       "epochs": 20,

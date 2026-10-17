@@ -6,7 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|完整源域 F＋跨 RX 同 TX：E20 普通星地拼接参照|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01/report.md)|
+|完整源域 F＋跨 RX 同 TX：E20 普通拼接星地参照|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01/report.md)|
 |固定 SIG_TIME：HQ 监督与局部 SIG 教学 E50 预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-bridge-teaching-e50-manysig-s2026092701-m2-r01/report.md)|
 |五条件冻结默认头：源域身份与退化归因预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-source-manysig-s2026092701-m5-r01/report.md)|
 |固定 SIG_TIME：语义身份排序 E50 单种子完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-e50-manysig-s2026092701-m5-r02/report.md)|
