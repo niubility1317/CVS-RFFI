@@ -51,3 +51,9 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS
 尚未完成：E30训练、完整源判据与独立源分析、各row全7正式评分、最终收益/clean代价/跨seed证据；逐包TX×RX×信道状态sidecar未保存，不能冒充已有逐包观测。先核查能否由实际L物理顺序和命名信道流精确复算，并与已有聚合记录对齐；任何额外物理生成成本单独报告。当前仅完成RX/day/scene/state/lock聚合日志的输出安排，不预先宣称覆盖验收完成。
 
 独立分析代码commit 4f804e560bed6e29b1bc17a086aede2f9522321e已推送并经GitHub compare确认identical。源模式已在独立分析目录启动，remotecompile PASS；PID854753/startticks151256374/CWD/argv/CUDA空已独立核实，stderr为空，目标truth路径未传入。该进程等待既有4个训练/队列句柄与全部source完成产物，源输出 /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/source_analysis_r01 当前尚未创建，不会提前写完整结论；不是新训练或额外审批/哈希环节。最近源进度ORD/DUP为E8（各1776更新），SAT为E7（1554更新），全部仍存活。详细证据analysis_execution.json。
+
+## 传播状态覆盖复算准备
+
+实际首批128个L包通过原base_index与既有L6300角色ID精确映射TX，未读取U真值、真实IQ值、模型CP或target。原索引中的RX/day/sig不能单独分辨TX（存在6重歧义），已使用完整base_index解决。残余信道包内传播状态在原代码中冻结；命名geometry/states流可只复算其先验抽样，不渲染真实波形、不声称重现receiverlock/AGC/噪声或准确率。已通过64次synthetic residual状态逐包一致核对与7项映射/权限/实际seed配置测试。
+
+首个辅助程序r01因引用不存在的CHANNEL_SEEDS退出，保存failure与已完成的L映射；训练未改变。修复读取实际reference_config.channel.seeds，commit 34a67169a6bb40bac5856ad1e5b8512c5c6120eb已独立GitHub确认identical，r02独立目录编译/进程/CWD/argv/CUDA空/烟测产物均VERIFIED，等待完整冻结源记录后再逐批核对与汇总TX×RX×day×scene×state覆盖。当前未取得完整覆盖结果。最近ORD E18、DUP/SAT E17；仍为单模型seed的三组对照，无新正式成绩、无新A_g、目标未完成。

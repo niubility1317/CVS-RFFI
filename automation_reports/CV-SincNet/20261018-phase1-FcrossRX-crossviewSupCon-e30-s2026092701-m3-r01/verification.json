@@ -527,21 +527,16 @@
     ]
   },
   "latest_source_progress": {
-    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/monitor_r05.json",
-    "rows": [
-      {
-        "row": "ORD128-s2026092701",
-        "pid": 849390,
-        "alive": true,
-        "log_size": 37400,
-        "start_ticks": 151198111,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_postlaunch_r02.json",
+    "rows": {
+      "ORD128": {
         "stage20": {
-          "epoch": 6,
-          "cumulative_epoch": 6,
-          "steps": 1332,
-          "cumulative_steps": 1332,
-          "L_NN": 681984,
-          "L_As": 85248,
+          "epoch": 18,
+          "cumulative_epoch": 18,
+          "steps": 3996,
+          "cumulative_steps": 3996,
+          "L_NN": 2045952,
+          "L_As": 255744,
           "extra_U_NN": 0,
           "U_As": 0,
           "existing_U_only": true,
@@ -549,19 +544,14 @@
           "target_access": false
         }
       },
-      {
-        "row": "DUP192-s2026092701",
-        "pid": 849536,
-        "alive": true,
-        "log_size": 37403,
-        "start_ticks": 151198445,
+      "DUP192": {
         "stage20": {
-          "epoch": 6,
-          "cumulative_epoch": 6,
-          "steps": 1332,
-          "cumulative_steps": 1332,
-          "L_NN": 681984,
-          "L_As": 85248,
+          "epoch": 17,
+          "cumulative_epoch": 17,
+          "steps": 3774,
+          "cumulative_steps": 3774,
+          "L_NN": 1932288,
+          "L_As": 241536,
           "extra_U_NN": 0,
           "U_As": 0,
           "existing_U_only": true,
@@ -569,19 +559,14 @@
           "target_access": false
         }
       },
-      {
-        "row": "SAT192-s2026092701",
-        "pid": 849617,
-        "alive": true,
-        "log_size": 37400,
-        "start_ticks": 151198777,
+      "SAT192": {
         "stage20": {
-          "epoch": 6,
-          "cumulative_epoch": 6,
-          "steps": 1332,
-          "cumulative_steps": 1332,
-          "L_NN": 681984,
-          "L_As": 85248,
+          "epoch": 17,
+          "cumulative_epoch": 17,
+          "steps": 3774,
+          "cumulative_steps": 3774,
+          "L_NN": 1932288,
+          "L_As": 241536,
           "extra_U_NN": 0,
           "U_As": 0,
           "existing_U_only": true,
@@ -589,8 +574,7 @@
           "target_access": false
         }
       }
-    ],
-    "failures": []
+    }
   },
   "analysis_preparation": {
     "status": "READY_NOT_EXECUTED",
@@ -600,5 +584,15 @@
     "no_training_release_changes": true,
     "source_mode_target_access": false,
     "analysis_NN": 0
+  },
+  "state_coverage_preparation": {
+    "status": "VERIFIED_WAITING_FOR_FROZEN_SOURCE",
+    "code_commit": "34a67169a6bb40bac5856ad1e5b8512c5c6120eb",
+    "focused_tests": 7,
+    "L_metadata_smoke": 128,
+    "synthetic_physics_calls": 64,
+    "identity_NN": 0,
+    "evidence": "state_coverage_execution.json",
+    "no_training_release_changes": true
   }
 }

@@ -1,0 +1,91 @@
+{
+  "status": "VERIFIED_WAITING_FOR_FROZEN_SOURCE",
+  "code_commit": "34a67169a6bb40bac5856ad1e5b8512c5c6120eb",
+  "training_release_commit": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
+  "failed_attempt": {
+    "status": "FAILED",
+    "pid": 860642,
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/state_coverage_r01",
+    "error": "AttributeError: old design has no CHANNEL_SEEDS;no synthetic calls/no training changes",
+    "L_metadata_smoke": "PASS128",
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/state_coverage_postlaunch.json"
+  },
+  "repair": "Read named seeds from actual old.reference_config.channel.seeds",
+  "launch": {
+    "status": "DISPATCHED",
+    "pid": 862561,
+    "startticks": "151343363",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_state_coverage_20261018_r02",
+    "args": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_state_coverage_20261018_r02/analysis/cvs_crossviewSupCon_state_coverage_20261018.py",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/state_coverage_r02",
+      "--metadata",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_state_coverage_20261018_r02/source_container_shapes.json",
+      "--source-analysis",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/source_analysis_r01",
+      "--wait-pids",
+      "854753",
+      "849362",
+      "849390",
+      "849536",
+      "849617"
+    ],
+    "commit": "34a67169a6bb40bac5856ad1e5b8512c5c6120eb",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/state_coverage_r02",
+    "compile": "PASS",
+    "time": 1792265729.211257,
+    "preserves_failed_r01": true
+  },
+  "postlaunch": {
+    "pid": 862561,
+    "startticks": "151343363",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_state_coverage_20261018_r02",
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_state_coverage_20261018_r02/analysis/cvs_crossviewSupCon_state_coverage_20261018.py --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/state_coverage_r02 --metadata /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_state_coverage_20261018_r02/source_container_shapes.json --source-analysis /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/source_analysis_r01 --wait-pids 854753 849362 849390 849536 849617 ",
+    "cuda": [
+      "CUDA_VISIBLE_DEVICES="
+    ]
+  },
+  "local_tests": {
+    "status": "PASS",
+    "count": 7,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/coverage_checks_r02.txt"
+  },
+  "actual_L_metadata_smoke": {
+    "status": "PASS",
+    "L_packets": 128,
+    "unambiguous_TX_matches": 128,
+    "TX_labels_seen": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "source_IQ_values_consumed": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "NN": 0
+  },
+  "synthetic_physics_smoke": {
+    "status": "PASS",
+    "native_residual_synthetic_calls": 64,
+    "synthetic_IQ_packets": 64,
+    "real_IQ_packets": 0,
+    "identity_NN": 0,
+    "optimizer_updates": 0
+  },
+  "scope": "Frozen propagation state replay only;not receiverlock/quality/AGC/noise/identity accuracy",
+  "source_IQ_values_consumed": 0,
+  "source_carrier_reads": 0,
+  "U_TX_truth_read": false,
+  "model_checkpoint_reads": 0,
+  "identity_NN": 0,
+  "target_access": false,
+  "training_release_changed": false,
+  "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/state_coverage_r02",
+  "goal_complete": false
+}
