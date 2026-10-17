@@ -27,5 +27,19 @@
   },
   "compiler": "PASS",
   "N607_preflight": "PASS ordinary account",
-  "not_identity_benefit_evidence": true
+  "not_identity_benefit_evidence": true,
+  "offline_analysis_checks": {
+    "status": "PASS_SYNTHETIC_ANALYSIS_ONLY",
+    "synthetic_CM": 252,
+    "negative_cases": 3,
+    "known_selector_fixture": {
+      "original": 7,
+      "equispaced": 8
+    },
+    "IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0,
+    "actual_scores_read": false
+  }
 }
