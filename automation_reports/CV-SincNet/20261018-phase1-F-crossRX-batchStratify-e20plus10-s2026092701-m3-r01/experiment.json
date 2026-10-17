@@ -28,7 +28,8 @@
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary account/existing pinned F runtime/FP32/CPU2/single shared GPU",
     "cwd": "PROJECT/releases/cvs_F_batchStratify_E30_20261018_r01",
-    "entrypoint": "experiments/cvs_batch_stratify30/runner.py"
+    "entrypoint": "experiments/cvs_batch_stratify30/runner.py",
+    "analysis_commit": "c8153a3e56630952fb2a69eff2b27ed2748e2ea0"
   },
   "data": {
     "dataset": "ManySig",
@@ -480,7 +481,92 @@
           "interpretation": "Allfixed outcomes reported;no automatic seed extension/promotion based on target;not Ag or complete joint proof"
         }
       },
-      "status": "RUNNING"
+      "status": "ANALYZED",
+      "result": {
+        "summary": {
+          "clean": {
+            "accuracy": 0.8275238095238096,
+            "macro_F1": 0.822807080452264,
+            "correct": 139024,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7321666666666666
+          },
+          "practical_high": {
+            "accuracy": 0.816029761904762,
+            "macro_F1": 0.8120762070574523,
+            "correct": 137093,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7247916666666666
+          },
+          "practical_mid": {
+            "accuracy": 0.7933333333333333,
+            "macro_F1": 0.7894882658110286,
+            "correct": 133280,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7115833333333333
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.7697678571428571,
+            "macro_F1": 0.766081890610022,
+            "correct": 129321,
+            "count": 168000,
+            "worst_RX_accuracy": 0.6944583333333333
+          },
+          "practical_high_urban": {
+            "accuracy": 0.7821845238095239,
+            "macro_F1": 0.7781155160524027,
+            "correct": 131407,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7000833333333333
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.6438273809523809,
+            "macro_F1": 0.6393971153844012,
+            "correct": 108163,
+            "count": 168000,
+            "worst_RX_accuracy": 0.5834583333333333
+          },
+          "practical_low_urban": {
+            "accuracy": 0.5344107142857143,
+            "macro_F1": 0.5286049709050434,
+            "correct": 89781,
+            "count": 168000,
+            "worst_RX_accuracy": 0.48883333333333334
+          }
+        },
+        "cost": {
+          "actual_steps": 2220,
+          "parent_steps": 4440,
+          "cumulative_steps": 6660,
+          "parent_epochs": 20,
+          "new_epochs": 10,
+          "cumulative_epochs": 30,
+          "L_forward_packets": 1136640,
+          "student_train_forward_packets": 1703640,
+          "student_eval_forward_packets": 324002,
+          "teacher_train_forward_packets": 0,
+          "teacher_eval_forward_packets": 567000,
+          "As_training_observations": 284160,
+          "Ag_training_observations": 0,
+          "elapsed_seconds": 1264.3238360881805,
+          "batch_repartition": {
+            "mode": "ORIGINAL",
+            "pools": 370,
+            "input_occurrences": 284160,
+            "emitted_batches": 2220,
+            "physical_pool_multisets_unchanged": true,
+            "extra_NN": 0,
+            "new_IQ_operator": false,
+            "CPU_bookkeeping_seconds": 1.7135198232717812
+          },
+          "prediction_NN": 1176002,
+          "prediction_wall_seconds": 42.49714689911343,
+          "scorer_CPU_wall_seconds": 3.238107617944479
+        },
+        "training_complete": true,
+        "formal_scored": true,
+        "head_fit_updates": 0
+      }
     },
     {
       "row_id": "RANDOM-s2026092701",
@@ -821,7 +907,92 @@
           "interpretation": "Allfixed outcomes reported;no automatic seed extension/promotion based on target;not Ag or complete joint proof"
         }
       },
-      "status": "RUNNING"
+      "status": "ANALYZED",
+      "result": {
+        "summary": {
+          "clean": {
+            "accuracy": 0.8277797619047619,
+            "macro_F1": 0.8229634425963767,
+            "correct": 139067,
+            "count": 168000,
+            "worst_RX_accuracy": 0.726625
+          },
+          "practical_high": {
+            "accuracy": 0.8173511904761904,
+            "macro_F1": 0.8133816023069973,
+            "correct": 137315,
+            "count": 168000,
+            "worst_RX_accuracy": 0.735375
+          },
+          "practical_mid": {
+            "accuracy": 0.7944761904761904,
+            "macro_F1": 0.7906981505945612,
+            "correct": 133472,
+            "count": 168000,
+            "worst_RX_accuracy": 0.71925
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.7704702380952381,
+            "macro_F1": 0.766939652839396,
+            "correct": 129439,
+            "count": 168000,
+            "worst_RX_accuracy": 0.700125
+          },
+          "practical_high_urban": {
+            "accuracy": 0.7828273809523809,
+            "macro_F1": 0.7787243023312075,
+            "correct": 131515,
+            "count": 168000,
+            "worst_RX_accuracy": 0.709
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.644720238095238,
+            "macro_F1": 0.6406656311045859,
+            "correct": 108313,
+            "count": 168000,
+            "worst_RX_accuracy": 0.5854166666666667
+          },
+          "practical_low_urban": {
+            "accuracy": 0.5344285714285715,
+            "macro_F1": 0.5292990071517587,
+            "correct": 89784,
+            "count": 168000,
+            "worst_RX_accuracy": 0.489125
+          }
+        },
+        "cost": {
+          "actual_steps": 2220,
+          "parent_steps": 4440,
+          "cumulative_steps": 6660,
+          "parent_epochs": 20,
+          "new_epochs": 10,
+          "cumulative_epochs": 30,
+          "L_forward_packets": 1136640,
+          "student_train_forward_packets": 1703640,
+          "student_eval_forward_packets": 324002,
+          "teacher_train_forward_packets": 0,
+          "teacher_eval_forward_packets": 567000,
+          "As_training_observations": 284160,
+          "Ag_training_observations": 0,
+          "elapsed_seconds": 1251.9421834945679,
+          "batch_repartition": {
+            "mode": "RANDOM",
+            "pools": 370,
+            "input_occurrences": 284160,
+            "emitted_batches": 2220,
+            "physical_pool_multisets_unchanged": true,
+            "extra_NN": 0,
+            "new_IQ_operator": false,
+            "CPU_bookkeeping_seconds": 1.9872140234801918
+          },
+          "prediction_NN": 1176002,
+          "prediction_wall_seconds": 43.47981448704377,
+          "scorer_CPU_wall_seconds": 3.2294307539705187
+        },
+        "training_complete": true,
+        "formal_scored": true,
+        "head_fit_updates": 0
+      }
     },
     {
       "row_id": "TX_RX_BALANCED-s2026092701",
@@ -1162,7 +1333,92 @@
           "interpretation": "Allfixed outcomes reported;no automatic seed extension/promotion based on target;not Ag or complete joint proof"
         }
       },
-      "status": "RUNNING"
+      "status": "ANALYZED",
+      "result": {
+        "summary": {
+          "clean": {
+            "accuracy": 0.8295416666666666,
+            "macro_F1": 0.825257426039336,
+            "correct": 139363,
+            "count": 168000,
+            "worst_RX_accuracy": 0.72975
+          },
+          "practical_high": {
+            "accuracy": 0.8194107142857143,
+            "macro_F1": 0.8158712168187884,
+            "correct": 137661,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7339583333333334
+          },
+          "practical_mid": {
+            "accuracy": 0.7962380952380952,
+            "macro_F1": 0.7927303789977979,
+            "correct": 133768,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7191666666666666
+          },
+          "practical_low_suburban": {
+            "accuracy": 0.7719940476190477,
+            "macro_F1": 0.7685218194766866,
+            "correct": 129695,
+            "count": 168000,
+            "worst_RX_accuracy": 0.700375
+          },
+          "practical_high_urban": {
+            "accuracy": 0.78525,
+            "macro_F1": 0.7814661284032075,
+            "correct": 131922,
+            "count": 168000,
+            "worst_RX_accuracy": 0.7095
+          },
+          "practical_mid_urban": {
+            "accuracy": 0.6462976190476191,
+            "macro_F1": 0.6419767494774212,
+            "correct": 108578,
+            "count": 168000,
+            "worst_RX_accuracy": 0.5879166666666666
+          },
+          "practical_low_urban": {
+            "accuracy": 0.5363154761904761,
+            "macro_F1": 0.5305365146381288,
+            "correct": 90101,
+            "count": 168000,
+            "worst_RX_accuracy": 0.49295833333333333
+          }
+        },
+        "cost": {
+          "actual_steps": 2220,
+          "parent_steps": 4440,
+          "cumulative_steps": 6660,
+          "parent_epochs": 20,
+          "new_epochs": 10,
+          "cumulative_epochs": 30,
+          "L_forward_packets": 1136640,
+          "student_train_forward_packets": 1703640,
+          "student_eval_forward_packets": 324002,
+          "teacher_train_forward_packets": 0,
+          "teacher_eval_forward_packets": 567000,
+          "As_training_observations": 284160,
+          "Ag_training_observations": 0,
+          "elapsed_seconds": 1230.8371424674988,
+          "batch_repartition": {
+            "mode": "TX_RX_BALANCED",
+            "pools": 370,
+            "input_occurrences": 284160,
+            "emitted_batches": 2220,
+            "physical_pool_multisets_unchanged": true,
+            "extra_NN": 0,
+            "new_IQ_operator": false,
+            "CPU_bookkeeping_seconds": 2.007533002179116
+          },
+          "prediction_NN": 1176002,
+          "prediction_wall_seconds": 44.385724156862125,
+          "scorer_CPU_wall_seconds": 3.368512064917013
+        },
+        "training_complete": true,
+        "formal_scored": true,
+        "head_fit_updates": 0
+      }
     }
   ],
   "notes": [
@@ -1175,7 +1431,188 @@
   ],
   "additional_reference": null,
   "replaces_run_id": null,
-  "result": null,
+  "result": {
+    "formal_status": "ALL_THREE_ROWS_SEVEN_VIEWS_PREDICTED_SCORED",
+    "scientific_status": "CLOSED_FIXED_BATCH_REPARTITION_FAILED_RECOGNITION_BENEFIT",
+    "scientific_pass": false,
+    "model_seeds": [
+      2026092701
+    ],
+    "CM_recounts": 378,
+    "paired_comparisons": 21,
+    "new_Ag": false,
+    "joint_goal_complete": false,
+    "summary": {
+      "ORIGINAL": {
+        "clean": {
+          "accuracy": 0.8275238095238096,
+          "macro_F1": 0.822807080452264,
+          "correct": 139024,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7321666666666666
+        },
+        "practical_high": {
+          "accuracy": 0.816029761904762,
+          "macro_F1": 0.8120762070574523,
+          "correct": 137093,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7247916666666666
+        },
+        "practical_mid": {
+          "accuracy": 0.7933333333333333,
+          "macro_F1": 0.7894882658110286,
+          "correct": 133280,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7115833333333333
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7697678571428571,
+          "macro_F1": 0.766081890610022,
+          "correct": 129321,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6944583333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7821845238095239,
+          "macro_F1": 0.7781155160524027,
+          "correct": 131407,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7000833333333333
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6438273809523809,
+          "macro_F1": 0.6393971153844012,
+          "correct": 108163,
+          "count": 168000,
+          "worst_RX_accuracy": 0.5834583333333333
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344107142857143,
+          "macro_F1": 0.5286049709050434,
+          "correct": 89781,
+          "count": 168000,
+          "worst_RX_accuracy": 0.48883333333333334
+        }
+      },
+      "RANDOM": {
+        "clean": {
+          "accuracy": 0.8277797619047619,
+          "macro_F1": 0.8229634425963767,
+          "correct": 139067,
+          "count": 168000,
+          "worst_RX_accuracy": 0.726625
+        },
+        "practical_high": {
+          "accuracy": 0.8173511904761904,
+          "macro_F1": 0.8133816023069973,
+          "correct": 137315,
+          "count": 168000,
+          "worst_RX_accuracy": 0.735375
+        },
+        "practical_mid": {
+          "accuracy": 0.7944761904761904,
+          "macro_F1": 0.7906981505945612,
+          "correct": 133472,
+          "count": 168000,
+          "worst_RX_accuracy": 0.71925
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7704702380952381,
+          "macro_F1": 0.766939652839396,
+          "correct": 129439,
+          "count": 168000,
+          "worst_RX_accuracy": 0.700125
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7828273809523809,
+          "macro_F1": 0.7787243023312075,
+          "correct": 131515,
+          "count": 168000,
+          "worst_RX_accuracy": 0.709
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.644720238095238,
+          "macro_F1": 0.6406656311045859,
+          "correct": 108313,
+          "count": 168000,
+          "worst_RX_accuracy": 0.5854166666666667
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344285714285715,
+          "macro_F1": 0.5292990071517587,
+          "correct": 89784,
+          "count": 168000,
+          "worst_RX_accuracy": 0.489125
+        }
+      },
+      "TX_RX_BALANCED": {
+        "clean": {
+          "accuracy": 0.8295416666666666,
+          "macro_F1": 0.825257426039336,
+          "correct": 139363,
+          "count": 168000,
+          "worst_RX_accuracy": 0.72975
+        },
+        "practical_high": {
+          "accuracy": 0.8194107142857143,
+          "macro_F1": 0.8158712168187884,
+          "correct": 137661,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7339583333333334
+        },
+        "practical_mid": {
+          "accuracy": 0.7962380952380952,
+          "macro_F1": 0.7927303789977979,
+          "correct": 133768,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7191666666666666
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7719940476190477,
+          "macro_F1": 0.7685218194766866,
+          "correct": 129695,
+          "count": 168000,
+          "worst_RX_accuracy": 0.700375
+        },
+        "practical_high_urban": {
+          "accuracy": 0.78525,
+          "macro_F1": 0.7814661284032075,
+          "correct": 131922,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7095
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6462976190476191,
+          "macro_F1": 0.6419767494774212,
+          "correct": 108578,
+          "count": 168000,
+          "worst_RX_accuracy": 0.5879166666666666
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5363154761904761,
+          "macro_F1": 0.5305365146381288,
+          "correct": 90101,
+          "count": 168000,
+          "worst_RX_accuracy": 0.49295833333333333
+        }
+      }
+    },
+    "criteria": {
+      "ORIGINAL": {
+        "clean": true,
+        "low_urban": false,
+        "mid_urban": true,
+        "suburban": true
+      },
+      "RANDOM": {
+        "clean": true,
+        "low_urban": false,
+        "mid_urban": true,
+        "suburban": true
+      }
+    },
+    "actual_new_NN": 11311934
+  },
   "registered_at": "2026-10-17T17:15:20+00:00",
-  "status": "RUNNING"
+  "status": "ANALYZED"
 }

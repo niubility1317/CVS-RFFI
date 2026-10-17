@@ -1,177 +1,54 @@
 {
-  "status": "VERIFIED_RUNNING_NOT_TRAINED_OR_SCORED",
-  "observed_at": "2026-10-17T17:22:04.749Z",
+  "status": "VERIFIED_COMPLETE_PREDICTED_SCORED_ANALYZED",
   "execution_commit": "c7b257262d895622f31214d60bfa65906eb4910e",
-  "N607_ordinary_account_preflight": "VERIFIED",
-  "archive_transfer": "VERIFIED",
-  "remote_compile": "VERIFIED",
-  "synthetic_checks": "PASS",
-  "preflight": {
-    "status": "PASS",
-    "real_CP_loads": 1,
-    "NN_forward_packets": 2,
-    "real_IQ": 0,
-    "query_read": false,
-    "optimizer_updates": 0,
-    "head_fit_updates": 0,
-    "parent_epoch": 20,
-    "new_epochs": 10,
-    "cumulative_epochs": 30,
-    "all3_same_parent": true
-  },
-  "rows": [
-    {
-      "row_id": "ORIGINAL-s2026092701",
-      "pid": 785637,
-      "GPU": 3,
-      "live": true,
-      "CWD_matches": true,
-      "argv_matches": true,
-      "CUDA_matches": true,
-      "start_ticks_matches": true,
-      "GPU_process_present": true,
-      "log_bytes_initial": 6817,
-      "log_bytes_now": 12005,
-      "log_growth": true,
-      "actual_scope": {
-        "epochs": 10,
-        "label_epochs": 0,
-        "pseudo_epochs": 10,
-        "seed": 2026092701,
-        "source_fold_held_rx": null,
-        "freeze_backbone": false,
-        "use_aug": true,
-        "use_ema_teacher": true,
-        "use_concat_sat_channel_aug": false,
-        "max_grad_norm": 5,
-        "parent_matches": true
-      },
-      "completed_epoch": {
-        "epoch": 1,
-        "cumulative_epoch": 21,
-        "steps": 222,
-        "cumulative_steps": 4662,
-        "L_packets": 113664,
-        "Ag_packets": 0,
-        "As_packets": 28416,
-        "source_RX": [
-          1,
-          3,
-          4,
-          6,
-          8
-        ],
-        "source_RX_holdout": null,
-        "U_truth_read": false,
-        "target_access": false
-      },
-      "technical_error_marker": false
+  "launch_observation": {
+    "status": "VERIFIED_RUNNING_NOT_TRAINED_OR_SCORED",
+    "observed_at": "2026-10-17T17:22:04.749Z",
+    "execution_commit": "c7b257262d895622f31214d60bfa65906eb4910e",
+    "N607_ordinary_account_preflight": "VERIFIED",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "VERIFIED",
+    "synthetic_checks": "PASS",
+    "preflight": {
+      "status": "PASS",
+      "real_CP_loads": 1,
+      "NN_forward_packets": 2,
+      "real_IQ": 0,
+      "query_read": false,
+      "optimizer_updates": 0,
+      "head_fit_updates": 0,
+      "parent_epoch": 20,
+      "new_epochs": 10,
+      "cumulative_epochs": 30,
+      "all3_same_parent": true
     },
-    {
-      "row_id": "RANDOM-s2026092701",
-      "pid": 785712,
-      "GPU": 4,
-      "live": true,
-      "CWD_matches": true,
-      "argv_matches": true,
-      "CUDA_matches": true,
-      "start_ticks_matches": true,
-      "GPU_process_present": true,
-      "log_bytes_initial": 6801,
-      "log_bytes_now": 11984,
-      "log_growth": true,
-      "actual_scope": {
-        "epochs": 10,
-        "label_epochs": 0,
-        "pseudo_epochs": 10,
-        "seed": 2026092701,
-        "source_fold_held_rx": null,
-        "freeze_backbone": false,
-        "use_aug": true,
-        "use_ema_teacher": true,
-        "use_concat_sat_channel_aug": false,
-        "max_grad_norm": 5,
-        "parent_matches": true
-      },
-      "completed_epoch": {
-        "epoch": 1,
-        "cumulative_epoch": 21,
-        "steps": 222,
-        "cumulative_steps": 4662,
-        "L_packets": 113664,
-        "Ag_packets": 0,
-        "As_packets": 28416,
-        "source_RX": [
-          1,
-          3,
-          4,
-          6,
-          8
-        ],
-        "source_RX_holdout": null,
-        "U_truth_read": false,
-        "target_access": false
-      },
-      "technical_error_marker": false
-    },
-    {
-      "row_id": "TX_RX_BALANCED-s2026092701",
-      "pid": 785788,
-      "GPU": 5,
-      "live": true,
-      "CWD_matches": true,
-      "argv_matches": true,
-      "CUDA_matches": true,
-      "start_ticks_matches": true,
-      "GPU_process_present": true,
-      "log_bytes_initial": 6865,
-      "log_bytes_now": 12065,
-      "log_growth": true,
-      "actual_scope": {
-        "epochs": 10,
-        "label_epochs": 0,
-        "pseudo_epochs": 10,
-        "seed": 2026092701,
-        "source_fold_held_rx": null,
-        "freeze_backbone": false,
-        "use_aug": true,
-        "use_ema_teacher": true,
-        "use_concat_sat_channel_aug": false,
-        "max_grad_norm": 5,
-        "parent_matches": true
-      },
-      "completed_epoch": {
-        "epoch": 1,
-        "cumulative_epoch": 21,
-        "steps": 222,
-        "cumulative_steps": 4662,
-        "L_packets": 113664,
-        "Ag_packets": 0,
-        "As_packets": 28416,
-        "source_RX": [
-          1,
-          3,
-          4,
-          6,
-          8
-        ],
-        "source_RX_holdout": null,
-        "U_truth_read": false,
-        "target_access": false
-      },
-      "technical_error_marker": false
-    }
-  ],
-  "live_step_verification": {
-    "status": "VERIFIED_LIVE_PARTIAL",
     "rows": [
       {
-        "row": "ORIGINAL-s2026092701",
-        "available_complete_steps": 290,
-        "all_available_steps_actual_As128_and_L4_and_hiddenU": true,
-        "bad_steps": 0,
-        "partial_stream": "EOFError",
-        "step_file_before": 620005,
+        "row_id": "ORIGINAL-s2026092701",
+        "pid": 785637,
+        "GPU": 3,
+        "live": true,
+        "CWD_matches": true,
+        "argv_matches": true,
+        "CUDA_matches": true,
+        "start_ticks_matches": true,
+        "GPU_process_present": true,
+        "log_bytes_initial": 6817,
+        "log_bytes_now": 12005,
+        "log_growth": true,
+        "actual_scope": {
+          "epochs": 10,
+          "label_epochs": 0,
+          "pseudo_epochs": 10,
+          "seed": 2026092701,
+          "source_fold_held_rx": null,
+          "freeze_backbone": false,
+          "use_aug": true,
+          "use_ema_teacher": true,
+          "use_concat_sat_channel_aug": false,
+          "max_grad_norm": 5,
+          "parent_matches": true
+        },
         "completed_epoch": {
           "epoch": 1,
           "cumulative_epoch": 21,
@@ -191,15 +68,34 @@
           "U_truth_read": false,
           "target_access": false
         },
-        "step_file_after": 620005
+        "technical_error_marker": false
       },
       {
-        "row": "RANDOM-s2026092701",
-        "available_complete_steps": 287,
-        "all_available_steps_actual_As128_and_L4_and_hiddenU": true,
-        "bad_steps": 0,
-        "partial_stream": "EOFError",
-        "step_file_before": 621068,
+        "row_id": "RANDOM-s2026092701",
+        "pid": 785712,
+        "GPU": 4,
+        "live": true,
+        "CWD_matches": true,
+        "argv_matches": true,
+        "CUDA_matches": true,
+        "start_ticks_matches": true,
+        "GPU_process_present": true,
+        "log_bytes_initial": 6801,
+        "log_bytes_now": 11984,
+        "log_growth": true,
+        "actual_scope": {
+          "epochs": 10,
+          "label_epochs": 0,
+          "pseudo_epochs": 10,
+          "seed": 2026092701,
+          "source_fold_held_rx": null,
+          "freeze_backbone": false,
+          "use_aug": true,
+          "use_ema_teacher": true,
+          "use_concat_sat_channel_aug": false,
+          "max_grad_norm": 5,
+          "parent_matches": true
+        },
         "completed_epoch": {
           "epoch": 1,
           "cumulative_epoch": 21,
@@ -219,15 +115,34 @@
           "U_truth_read": false,
           "target_access": false
         },
-        "step_file_after": 621068
+        "technical_error_marker": false
       },
       {
-        "row": "TX_RX_BALANCED-s2026092701",
-        "available_complete_steps": 285,
-        "all_available_steps_actual_As128_and_L4_and_hiddenU": true,
-        "bad_steps": 0,
-        "partial_stream": "EOFError",
-        "step_file_before": 621479,
+        "row_id": "TX_RX_BALANCED-s2026092701",
+        "pid": 785788,
+        "GPU": 5,
+        "live": true,
+        "CWD_matches": true,
+        "argv_matches": true,
+        "CUDA_matches": true,
+        "start_ticks_matches": true,
+        "GPU_process_present": true,
+        "log_bytes_initial": 6865,
+        "log_bytes_now": 12065,
+        "log_growth": true,
+        "actual_scope": {
+          "epochs": 10,
+          "label_epochs": 0,
+          "pseudo_epochs": 10,
+          "seed": 2026092701,
+          "source_fold_held_rx": null,
+          "freeze_backbone": false,
+          "use_aug": true,
+          "use_ema_teacher": true,
+          "use_concat_sat_channel_aug": false,
+          "max_grad_norm": 5,
+          "parent_matches": true
+        },
         "completed_epoch": {
           "epoch": 1,
           "cumulative_epoch": 21,
@@ -247,18 +162,143 @@
           "U_truth_read": false,
           "target_access": false
         },
-        "step_file_after": 621479
+        "technical_error_marker": false
       }
     ],
+    "live_step_verification": {
+      "status": "VERIFIED_LIVE_PARTIAL",
+      "rows": [
+        {
+          "row": "ORIGINAL-s2026092701",
+          "available_complete_steps": 290,
+          "all_available_steps_actual_As128_and_L4_and_hiddenU": true,
+          "bad_steps": 0,
+          "partial_stream": "EOFError",
+          "step_file_before": 620005,
+          "completed_epoch": {
+            "epoch": 1,
+            "cumulative_epoch": 21,
+            "steps": 222,
+            "cumulative_steps": 4662,
+            "L_packets": 113664,
+            "Ag_packets": 0,
+            "As_packets": 28416,
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_RX_holdout": null,
+            "U_truth_read": false,
+            "target_access": false
+          },
+          "step_file_after": 620005
+        },
+        {
+          "row": "RANDOM-s2026092701",
+          "available_complete_steps": 287,
+          "all_available_steps_actual_As128_and_L4_and_hiddenU": true,
+          "bad_steps": 0,
+          "partial_stream": "EOFError",
+          "step_file_before": 621068,
+          "completed_epoch": {
+            "epoch": 1,
+            "cumulative_epoch": 21,
+            "steps": 222,
+            "cumulative_steps": 4662,
+            "L_packets": 113664,
+            "Ag_packets": 0,
+            "As_packets": 28416,
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_RX_holdout": null,
+            "U_truth_read": false,
+            "target_access": false
+          },
+          "step_file_after": 621068
+        },
+        {
+          "row": "TX_RX_BALANCED-s2026092701",
+          "available_complete_steps": 285,
+          "all_available_steps_actual_As128_and_L4_and_hiddenU": true,
+          "bad_steps": 0,
+          "partial_stream": "EOFError",
+          "step_file_before": 621479,
+          "completed_epoch": {
+            "epoch": 1,
+            "cumulative_epoch": 21,
+            "steps": 222,
+            "cumulative_steps": 4662,
+            "L_packets": 113664,
+            "Ag_packets": 0,
+            "As_packets": 28416,
+            "source_RX": [
+              1,
+              3,
+              4,
+              6,
+              8
+            ],
+            "source_RX_holdout": null,
+            "U_truth_read": false,
+            "target_access": false
+          },
+          "step_file_after": 621479
+        }
+      ],
+      "training_complete": false,
+      "IQ": 0,
+      "CP": 0,
+      "NN": 0,
+      "updates": 0,
+      "target_scores_read": false
+    },
+    "source_RX_holdout": null,
     "training_complete": false,
-    "IQ": 0,
-    "CP": 0,
-    "NN": 0,
-    "updates": 0,
-    "target_scores_read": false
+    "formal_scored": false,
+    "joint_goal_complete": false
   },
-  "source_RX_holdout": null,
-  "training_complete": false,
-  "formal_scored": false,
-  "joint_goal_complete": false
+  "final_observation": {
+    "all_owned_PIDs_absent": {
+      "785610": true,
+      "785637": true,
+      "785712": true,
+      "785788": true
+    },
+    "completion": {
+      "status": "ARTIFACTS_COMPLETE",
+      "rows": 3,
+      "continued_models": 3,
+      "reused_nominal_controls": 0,
+      "parent_model_epochs": 20,
+      "new_model_epochs": 30,
+      "cumulative_model_epochs": 50,
+      "new_optimizer_updates": 6660,
+      "cumulative_epochs_each": 30,
+      "prediction_count": 3528000,
+      "truth_last": true,
+      "head_fit_updates": 0,
+      "joint_goal_complete": false
+    },
+    "source_complete_verified": true,
+    "formal_CM": 378,
+    "independent_CM_recounts": 378,
+    "independent_partition_sums": 63,
+    "independent_pair_comparisons": 21,
+    "max_metric_error": 0,
+    "source_objective_max_error": 1.341104507446289e-7,
+    "scientific_pass": false,
+    "decision": "CLOSED_FIXED_BATCH_REPARTITION_FAILED_RECOGNITION_BENEFIT",
+    "training_complete": true,
+    "formal_scored": true,
+    "new_Ag": false,
+    "joint_goal_complete": false
+  }
 }

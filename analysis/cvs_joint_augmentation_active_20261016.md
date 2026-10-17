@@ -1,3 +1,7 @@
+## 2026-10-18：批次组成 E30 完整评分，小幅改善但固定条件失败
+
+三行同父 E20＋10、全部5源RX/L6300/U56700隐藏TX/V27000，均已完成E30、3528000正式决策及独立truth-last。重组clean82.954167%、midurban64.629762%、lowurban53.631548%；相对原顺序+.201786／+.247024／+.190476pp，相对随机+.176190／+.157738／+.188690pp。七视图accuracy/F1均正增量，但low未达预定+.5pp，固定6池方案关闭，不据target扩seed或改pool/父/预算救跑。三个suburban距clean1.013095／3.330357／5.754762pp；部分RX/TX退步，非联合成功。全部370输入池/2220U序列及857参数匹配，378CM/63分区/21配对复算通过，新增NN11311934；没有新IQ A_g或额外NN/loss。全部worker/dispatcher自然结束。当前无已支持新Ag候选，完整联合目标ACTIVE。[完整报告与曲线](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01/report.md)。
+
 ## 2026-10-18：完整 practical 的 L 批次组成 E30 三行候选
 
 已发布并核实三行运行，新增首轮完成（累计 E21），真实 CP smoke／进程／GPU／日志增长通过；训练与正式评分尚未完成。原4440步568320 L元数据回放发现所有锚点都有正例，TX×RX组成有波动；6批池重组保持逐物理曝光，平方偏差4.029→.772，随机重组4.054。这不是识别收益。新三行同父ordinaryAs E20＋10至E30，仅L批次组成不同，原F/defaulthead/As/U/4L前向及5源RX不变；无新增IQ A_g或loss，不与关联对话教师U路线重复。若不能分别相对原顺序/随机重组同时保护clean、midurban并使lowurban至少+.5pp，则关闭固定方案。所有正式结果固定报告，不据target晋级/扩种子或救跑。[预登记](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01/report.md)。

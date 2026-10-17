@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_BATCH_REPARTITION_RUNNING",
+  "status": "RESEARCH_ACTIVE_BATCH_REPARTITION_CLOSED_SMALL_SINGLE_SEED_GAIN",
   "source_experiment": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
   "authorization": "Latest explicit user budget E30;new fixed FIR first-learning-utility rows use matching noAg fullsource E20 parents plus10;no trainingRXholdout",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -154,32 +154,7 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": null,
-  "next_training_hypothesis": {
-    "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
-    "status": "RUNNING_VERIFIED_FIRST_EPOCH_COMPLETE",
-    "hypothesis": "Reduced visibleL TXxRX batchcomposition fluctuation improves existing fullpractical/defaulthead E30 training without new loss or IQ operator",
-    "rows": [
-      "ORIGINAL",
-      "RANDOM",
-      "TX_RX_BALANCED"
-    ],
-    "parent_epochs": 20,
-    "new_epochs": 10,
-    "cumulative_epochs": 30,
-    "source_RX": [
-      1,
-      3,
-      4,
-      6,
-      8
-    ],
-    "source_RX_holdout": null,
-    "new_Ag": false,
-    "all_source_roles_unchanged": true,
-    "model_seed_count": 1,
-    "target_feedback": false,
-    "automatic_seed_extension": false
-  },
+  "next_training_hypothesis": null,
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
     "status": "ANALYZED_SOURCE_SENSITIVITY_PASS_NOT_AG_EFFICACY",
@@ -3984,7 +3959,7 @@
     "updates": 0,
     "target_access": false
   },
-  "latest_completed_training_experiment": "20261017-phase1-F-crossRX-dropoutCoupling-e20plus10-s2026092701-m2-r01",
+  "latest_completed_training_experiment": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
   "antithetic_source_result": {
     "run_id": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02",
     "status": "ANALYZED_SOURCE_ONLY",
@@ -4287,7 +4262,7 @@
     "no_rescue": true
   },
   "latest_completed_analysis": "analysis/cvs_clean_supervision_mass_audit_20261018.md",
-  "current_evidence_gap": "Metadata rebatching proved exactexposure/composition change only;identity benefits unproved. Registered3sameparentE30rows pending;not a newIQAg candidate.",
+  "current_evidence_gap": "Fixed visibleL batchrepartition generated small all7single-seed gains but missedpredeclaredlow+.5 threshold and fulljointtargets;closed,no seed/pool/parent rescue. No new supported IQAg candidate;no current same-loader noAs B00 proof. Goalactive.",
   "current_source_experiment": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
   "latest_completed_source_experiment": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
   "unitary_source_result": {
@@ -4329,34 +4304,213 @@
   "current_training_experiment": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
-    "status": "RUNNING_VERIFIED",
+    "status": "ANALYZED_VERIFIED",
     "execution_commit": "c7b257262d895622f31214d60bfa65906eb4910e",
-    "rows": [
-      {
-        "row_id": "ORIGINAL-s2026092701",
-        "GPU": 3,
-        "epoch": 1,
-        "cumulative_epoch": 21
-      },
-      {
-        "row_id": "RANDOM-s2026092701",
-        "GPU": 4,
-        "epoch": 1,
-        "cumulative_epoch": 21
-      },
-      {
-        "row_id": "TX_RX_BALANCED-s2026092701",
-        "GPU": 5,
-        "epoch": 1,
-        "cumulative_epoch": 21
-      }
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
     ],
+    "source_RX_holdout": null,
     "new_epochs_each": 10,
     "cumulative_epochs_each": 30,
-    "source_RX_holdout": null,
+    "all_rows_scored": true,
+    "workers_dispatcher_terminal": true,
     "new_Ag": false,
-    "training_complete": false,
-    "formal_scored": false,
+    "scientific_pass": false,
+    "decision": "CLOSED_FIXED_BATCH_REPARTITION_FAILED_RECOGNITION_BENEFIT",
+    "joint_goal_complete": false
+  },
+  "batch_stratification_result": {
+    "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
+    "model_seed_count": 1,
+    "summary": {
+      "ORIGINAL": {
+        "clean": {
+          "accuracy": 0.8275238095238096,
+          "macro_F1": 0.822807080452264,
+          "correct": 139024,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7321666666666666
+        },
+        "practical_high": {
+          "accuracy": 0.816029761904762,
+          "macro_F1": 0.8120762070574523,
+          "correct": 137093,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7247916666666666
+        },
+        "practical_mid": {
+          "accuracy": 0.7933333333333333,
+          "macro_F1": 0.7894882658110286,
+          "correct": 133280,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7115833333333333
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7697678571428571,
+          "macro_F1": 0.766081890610022,
+          "correct": 129321,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6944583333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7821845238095239,
+          "macro_F1": 0.7781155160524027,
+          "correct": 131407,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7000833333333333
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6438273809523809,
+          "macro_F1": 0.6393971153844012,
+          "correct": 108163,
+          "count": 168000,
+          "worst_RX_accuracy": 0.5834583333333333
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344107142857143,
+          "macro_F1": 0.5286049709050434,
+          "correct": 89781,
+          "count": 168000,
+          "worst_RX_accuracy": 0.48883333333333334
+        }
+      },
+      "RANDOM": {
+        "clean": {
+          "accuracy": 0.8277797619047619,
+          "macro_F1": 0.8229634425963767,
+          "correct": 139067,
+          "count": 168000,
+          "worst_RX_accuracy": 0.726625
+        },
+        "practical_high": {
+          "accuracy": 0.8173511904761904,
+          "macro_F1": 0.8133816023069973,
+          "correct": 137315,
+          "count": 168000,
+          "worst_RX_accuracy": 0.735375
+        },
+        "practical_mid": {
+          "accuracy": 0.7944761904761904,
+          "macro_F1": 0.7906981505945612,
+          "correct": 133472,
+          "count": 168000,
+          "worst_RX_accuracy": 0.71925
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7704702380952381,
+          "macro_F1": 0.766939652839396,
+          "correct": 129439,
+          "count": 168000,
+          "worst_RX_accuracy": 0.700125
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7828273809523809,
+          "macro_F1": 0.7787243023312075,
+          "correct": 131515,
+          "count": 168000,
+          "worst_RX_accuracy": 0.709
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.644720238095238,
+          "macro_F1": 0.6406656311045859,
+          "correct": 108313,
+          "count": 168000,
+          "worst_RX_accuracy": 0.5854166666666667
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344285714285715,
+          "macro_F1": 0.5292990071517587,
+          "correct": 89784,
+          "count": 168000,
+          "worst_RX_accuracy": 0.489125
+        }
+      },
+      "TX_RX_BALANCED": {
+        "clean": {
+          "accuracy": 0.8295416666666666,
+          "macro_F1": 0.825257426039336,
+          "correct": 139363,
+          "count": 168000,
+          "worst_RX_accuracy": 0.72975
+        },
+        "practical_high": {
+          "accuracy": 0.8194107142857143,
+          "macro_F1": 0.8158712168187884,
+          "correct": 137661,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7339583333333334
+        },
+        "practical_mid": {
+          "accuracy": 0.7962380952380952,
+          "macro_F1": 0.7927303789977979,
+          "correct": 133768,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7191666666666666
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7719940476190477,
+          "macro_F1": 0.7685218194766866,
+          "correct": 129695,
+          "count": 168000,
+          "worst_RX_accuracy": 0.700375
+        },
+        "practical_high_urban": {
+          "accuracy": 0.78525,
+          "macro_F1": 0.7814661284032075,
+          "correct": 131922,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7095
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6462976190476191,
+          "macro_F1": 0.6419767494774212,
+          "correct": 108578,
+          "count": 168000,
+          "worst_RX_accuracy": 0.5879166666666666
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5363154761904761,
+          "macro_F1": 0.5305365146381288,
+          "correct": 90101,
+          "count": 168000,
+          "worst_RX_accuracy": 0.49295833333333333
+        }
+      }
+    },
+    "criteria": {
+      "ORIGINAL": {
+        "clean": true,
+        "low_urban": false,
+        "mid_urban": true,
+        "suburban": true
+      },
+      "RANDOM": {
+        "clean": true,
+        "low_urban": false,
+        "mid_urban": true,
+        "suburban": true
+      }
+    },
+    "scientific_pass": false,
+    "decision": "CLOSED_FIXED_BATCH_REPARTITION_FAILED_RECOGNITION_BENEFIT",
+    "candidate_low_delta_vs_original_pp": 0.19047619047619047,
+    "candidate_low_delta_vs_random_pp": 0.1886904761904762,
+    "suburban_gaps_pp": {
+      "practical_high": 1.0130952380952296,
+      "practical_mid": 3.3303571428571432,
+      "practical_low_suburban": 5.754761904761896
+    },
+    "new_NN_total": 11311934,
+    "CM_recounts": 378,
+    "partition_sums": 63,
+    "paired_comparisons": 21,
+    "target_feedback": false,
+    "no_automatic_seed_extension": true,
+    "Ag_efficacy": false,
     "joint_goal_complete": false
   }
 }
