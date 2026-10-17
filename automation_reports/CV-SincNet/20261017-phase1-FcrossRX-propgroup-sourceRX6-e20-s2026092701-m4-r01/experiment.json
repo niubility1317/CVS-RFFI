@@ -1,0 +1,1430 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01",
+  "group_id": "phase1-FcrossRX-propagation-dependence-sourceRX6-E20",
+  "display_name": "F＋跨 RX 同 TX：传播条件分组源 RX6 证伪",
+  "description": "P20: fixed F+CROSS_RX backbone/default head and original13L7U; compare extra raw/IID/scene-group/propagation-group IQ pair. Changes joint propagation dependence, no new Ag or target use.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P20",
+    "As propagation grouping",
+    "传播条件分组"
+  ],
+  "tags": [
+    "FcrossRX",
+    "propagation-group",
+    "source-only",
+    "E20",
+    "As",
+    "RX6"
+  ],
+  "comparison_group_id": "phase1-FcrossRX-propagation-dependence-sourceRX6-E20",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research goal; fixed per-model scratch E20, user baseline F plus cross-RX same-TX contrast. Four new matched source-only falsification rows; no extension, training checkpoint inheritance or target access.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "ordinary N607 CVS-RFFI project Python; CPU2,loader0,fullFP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_propgroup_sourceRX6_E20_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original VALIDATED_ONCE source carrier/split392005; existing legal heldRX6 mask",
+    "representation": "Native IQ float32 2x256,25MHz; original source RMS normalization,center=false; new As acts at IQ then unchanged model. source_eval original clean+six practical.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Eachrow/source/source_contract.json exact filtered L5040/U45360/V21600;held source RX6 originalL1260 final-only",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 original source TX",
+    "roles": {
+      "L_s": "Fit RX1/3/4/8 L5040 supervised train",
+      "U_s": "SameRX U45360,TX hidden,originalownEMA/oldgate13L7U",
+      "V": "FitRX V21600 health only;heldRX6 L1260 final20 seven-view diagnostics only"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse original VALIDATED_ONCE carrier and tested RX6 role exclusion; no IQ/data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": "Original six practical residual/post_sync/EQoff G=1,reference_snr_db30,reflect boundary; formal test unchanged",
+    "effective_counts": {
+      "L_s": 5040,
+      "U_s_hidden": 45360,
+      "V_seen_RX": 21600,
+      "held_L": 1260
+    }
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "One held source RX6/modelseed As grouping falsification only;no formal target,Ag efficacy,crossseed or jointgoal completion"
+  },
+  "checkpoint": {
+    "initialization": "scratch_only",
+    "sources": [],
+    "contract_check_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/C0-RX6-s2026092701/source/source_contract.json",
+    "provenance_verdict": "MatchingRX6 C0 FINAL20/4440 scratch,zero ancestors/target; compatibility no-query2synthetic smoke only; never init/teacher/performancecontrol. OwnEMA from current scratch.",
+    "selection_rule": "Fixed FINAL20 only, no bestepoch or target feedback"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/FcrossRX-propgroup-20261017",
+    "gpu_policy": "Four rows via existing shared all-owner<=3/GPU,free>=12000MiB,CPU2/loader0; original foreign owners protected",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_propgroup_sourceRX6_E20_20261017_r01/experiments/cvs_environment_group20/runner.py",
+    "stop_rule": "Only own exact protocol/role/provenance/nonfinite/output/prediction systemic technical failure; preserve all outputs, no auto retry, no foreign stop. Scientific FAIL closes fixed grouping/stream split/dose/RX/seed/budget/threshold; no control promotion."
+  },
+  "expected_artifacts": [
+    "MatchingRX6 realCP noquery smoke2synthetic,not traininginit",
+    "Four completeE20/4440 native/view/Sinc steps,full L/U sequences,loss/gradient curves and source roles",
+    "Defaulthead FINAL20 heldRX6 L1260 clean+all6 unchanged practical;per-packet margins/physics",
+    "568320 physical outputs and1136640 native initializations eachrow;Asconsumed0RAW/568320others;group/private-stream coverage",
+    "Independent35280sourcepred/17760steps analysis,state/lock/quality/AGC/boundary/margins/fixedRAWcleancorrect retention",
+    "Actual modelL/U/ownEMA/V/held NN,updates/physical generation/wall;parentinitcost0"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "confusion",
+      "urban_mean",
+      "own_clean_suburban_gap",
+      "paired repairs/new errors",
+      "fixed RAW clean-correct retention",
+      "state/lock/quality/CFO/kernel/noise/AGC/boundary strata",
+      "default cos30 margin",
+      "full training loss/grad/coverage/cost"
+    ],
+    "criteria": {
+      "primary": "PROP_GROUP",
+      "references": [
+        "RAW",
+        "IID",
+        "SCENE_GROUP"
+      ],
+      "held_RX": 6,
+      "fixed_final": 20,
+      "conditions": {
+        "RAW": {
+          "clean": 0,
+          "F1": 0,
+          "low": 5,
+          "urban": 3
+        },
+        "IID": {
+          "clean": 1,
+          "F1": 0,
+          "low": 0.5,
+          "urban": 1
+        },
+        "SCENE_GROUP": {
+          "clean": 1,
+          "F1": 0,
+          "low": 0.5,
+          "urban": 1
+        }
+      },
+      "each_practical_min_pp": -0.5,
+      "seenV_min_pp": -0.5,
+      "base_L_max": 0.5,
+      "on_fail": "Close fixedgrouping/streamsplit/dose/RX/seed/budget/threshold;no controlpromotion orseedrescue",
+      "on_pass": "Only one-sourceRX6/modelseed As evidence;separatelyregisterindependentseed beforetarget;not Ag orjointgoal"
+    },
+    "target_access": false,
+    "primary": "PROP_GROUP only, fixed FINAL20/heldRX6/modelseed2026092701",
+    "failure": "Close fixed hypothesis and all related rescue axes; no promote control or choose luckyseed",
+    "success": "SourceRX6 one-seed As evidence only; independent seed prereg before any target; jointgoal false"
+  },
+  "rows": [
+    {
+      "row_id": "RAW-RX6-s2026092701",
+      "method": "F_CROSS_RX_propgroup_RAW",
+      "purpose": "sourceRX6_propagation_dependence_RAW",
+      "config_ref": "experiment.json#rows/0/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/RAW-RX6-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 20261016103
+      },
+      "seed_notes": "Model/globalordinary2026092701;split392005;channel20261016101/receiver20261016102/eval20261016103. Namespaced perstep+physicalpacket or pergroup, fresh epoch/view;one modelseed,not crossseed.",
+      "k": null,
+      "scenario": "Held sourceRX6 L1260 final20 clean+6practical,fitRX1/3/4/8,no target",
+      "optimizer": "AdamW,original complete physical CENTER_UNITS Sinc/cosine",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "report.md:eachE20/4440/8L,planned5823318NN+matched568320nativeprocesses/1136640initializations;actual originalU/EMA/V tracked",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/RAW-RX6-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/logs/RAW-RX6-s2026092701.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_propgroup_sourceRX6_E20_20261017_r01/experiments/cvs_environment_group20/runner.py --worker RAW-RX6-s2026092701",
+      "expected_artifacts": [
+        "MatchingRX6 realCP noquery smoke2synthetic,not traininginit",
+        "Four completeE20/4440 native/view/Sinc steps,full L/U sequences,loss/gradient curves and source roles",
+        "Defaulthead FINAL20 heldRX6 L1260 clean+all6 unchanged practical;per-packet margins/physics",
+        "568320 physical outputs and1136640 native initializations eachrow;Asconsumed0RAW/568320others;group/private-stream coverage",
+        "Independent35280sourcepred/17760steps analysis,state/lock/quality/AGC/boundary/margins/fixedRAWcleancorrect retention",
+        "Actual modelL/U/ownEMA/V/held NN,updates/physical generation/wall;parentinitcost0"
+      ],
+      "config": {
+        "schema": "FcrossRX_propagation_group_E20_v1",
+        "run_id": "20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01",
+        "stage": "source_RX6_falsification",
+        "arm": "RAW",
+        "model_seed": 2026092701,
+        "row_id": "RAW-RX6-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/RAW-RX6-s2026092701/source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "F_CROSS_RX_propagation_dependence",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/FcrossRX-propgroup-20261017",
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "updates": 4440,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": null,
+        "training_recipe": "Original13L7U/ordinary-onlySupCon/ownEMA/common.75raw+.25ordinary plus extra.25RD(raw/IID/scene_group/prop_group);8L,total1.25;rawarmalso fullphysicalshadow,no newloss/head/U",
+        "baseline_definition": "F:three SIG_TIME branches plus unified Sinc CENTER_UNITS;unchanged joint160/cos30;ordinary-only crossRX sameTX SupCon;original13L7U/ownEMA/oldgate",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1,
+            2
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "clean_net_positive": true,
+          "low_urban_above": 0.6,
+          "each_suburban_gap_exploratory_pp": 2,
+          "goal_complete": false,
+          "target_feedback": false
+        },
+        "budget_authorization": "Active mixedgoal;fournewmatched scratchE20/80modelE/17760updates;sourceRX6only/noinheritedweights/target",
+        "cost_claim": "EachE20/4440/4546560LNNplusoriginalU/EMA/V/8820held;all4generate568320nativeprocessesand1136640nativeinitializations;Asconsumed0RAWor568320others;compatCPsmoke2separate",
+        "baseline_reference": "Fournewmatched8LsourceRX6 controls,nohistoricalscore/weightreuse",
+        "baseline_reuse": false,
+        "readouts": [
+          "FINAL"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "F_base": true,
+          "CROSS_RX": true,
+          "Ag": false,
+          "As": false,
+          "ordinary_L": true,
+          "alpha": 1,
+          "label_smoothing": 0.01,
+          "use_aug": true,
+          "sinc_coordinates": "CENTER_25K",
+          "raw_weight": 0.5,
+          "ordinary_weight": 0.25,
+          "s_slot_weight": 0.25,
+          "L_forwards_per_packet": 8,
+          "expected_L_packets": 4546560,
+          "same_IQ_within_each_pair": true,
+          "U_rule": "Original13L+7U oldgate/ownEMA; no added U views or contrast",
+          "base_raw_total_weight": 0.75,
+          "raw_total_weight": 1,
+          "s_slot_name": "Raw in all rows;original entire base objective retained",
+          "extra_pair_weight": 0.25,
+          "extra_pair_input": "raw",
+          "no_new_U_augmentation": true,
+          "base_As": false,
+          "new_U_augmentation": false
+        },
+        "fold": {
+          "held_RX": 6,
+          "training_RX": [
+            1,
+            3,
+            4,
+            8
+          ],
+          "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+          "effective_roles": {
+            "L_s": 5040,
+            "U_s": 45360,
+            "V": 21600
+          },
+          "held_L_evaluation": 1260,
+          "raw_source_carrier_and_static_domain_ID_map_retained": true,
+          "trained_checkpoint_reuse_allowed_for_all5RX": false,
+          "steps_per_epoch": 222,
+          "U_observations_per_pseudo_epoch": 56624,
+          "all_training_calibration_probe_feature_cache_inputs_exclude_held_RX": true
+        },
+        "source_selection": {
+          "primary": "PROP_GROUP",
+          "references": [
+            "RAW",
+            "IID",
+            "SCENE_GROUP"
+          ],
+          "held_RX": 6,
+          "fixed_final": 20,
+          "conditions": {
+            "RAW": {
+              "clean": 0,
+              "F1": 0,
+              "low": 5,
+              "urban": 3
+            },
+            "IID": {
+              "clean": 1,
+              "F1": 0,
+              "low": 0.5,
+              "urban": 1
+            },
+            "SCENE_GROUP": {
+              "clean": 1,
+              "F1": 0,
+              "low": 0.5,
+              "urban": 1
+            }
+          },
+          "each_practical_min_pp": -0.5,
+          "seenV_min_pp": -0.5,
+          "base_L_max": 0.5,
+          "on_fail": "Close fixedgrouping/streamsplit/dose/RX/seed/budget/threshold;no controlpromotion orseedrescue",
+          "on_pass": "Only one-sourceRX6/modelseed As evidence;separatelyregisterindependentseed beforetarget;not Ag orjointgoal"
+        },
+        "supcon": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "scope": "Two shared native ordinary L forwards only, before raw/satellite extra forwards",
+          "extra_network_forwards": 0
+        },
+        "channel": {
+          "scenes": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "selection": "Uniform original six-scene nominal draw per physical packet (IID/RAW) or per(step,RX,day,eq) group (grouped);never TX/loss/confidence conditioned",
+          "seed": 20261016101,
+          "receiver_seed": 20261016102,
+          "eval_seed": 20261016103,
+          "input": "Original raw L only in additive fourth IQ pair;third common pair stays raw",
+          "session": "rx_i/day_i/eq_i, never TX",
+          "supervised": "All128 satellite L packets; no confidence gate",
+          "composition": false
+        },
+        "additive": {
+          "common": "Unchanged original3pair base,including original ordinary-only SupCon",
+          "extra_input": "RAW",
+          "extra_weight": 0.25,
+          "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
+          "base_pair_weight_sum": 1,
+          "pair_weight_sum": 1.25,
+          "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
+          "BN_RNG": "0BN;all4same8L/privateNP/no changes to globalmodel/U RNG",
+          "operator": "Originalfullpractical rawIQ;sharedscene orsharedfrozenpropagation by(step,RX,day,eq),independentpacketnoise/phase/sync/tracking;RAWconsumesrawbutgeneratesIIDshadow",
+          "channel_seeds": "Original fixed channel/session/source-eval streams",
+          "original_U": "Unchanged original13L+7U rule,truth hidden;no extra U/teacher forwards"
+        },
+        "source_confirmation": null,
+        "channel_group": {
+          "policy": "IID",
+          "group_key": [
+            "step_namespace",
+            "rx_i",
+            "day_i",
+            "eq_i"
+          ],
+          "TX_used_in_group": false,
+          "noise_phase_sync_tracking": "originalindependentphysicalpacketseed",
+          "hardware_session": "originalrx/day/eq,stableacrossepochs",
+          "propagation_attributes": [
+            "geometry",
+            "probs",
+            "state",
+            "z",
+            "ray_hz",
+            "ray_coef",
+            "f_doppler"
+          ],
+          "f_total": "sharedorbitalDoppler+ownRXCFO",
+          "quality": "nativeprocessrecomputesfromH/inputpower;no fixedlock/scale override",
+          "marginals": "Originalsixsceneuniform/geometry/state/shadow/scatterconfigs;changes jointdependence andeffectiveindependentenvironments,not a pure shortcut-causality test",
+          "generation": "All4:2nativeinitializations+1Residual.process perLpacket,568320processes/1136640initializations each;RAWdiscardsonlythegeneratedshadow",
+          "source_eval": "OriginalPairedChannel unchanged,source_eval/RX6/final20",
+          "formal_test_unchanged": true
+        }
+      }
+    },
+    {
+      "row_id": "IID-RX6-s2026092701",
+      "method": "F_CROSS_RX_propgroup_IID",
+      "purpose": "sourceRX6_propagation_dependence_IID",
+      "config_ref": "experiment.json#rows/1/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/IID-RX6-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 20261016103
+      },
+      "seed_notes": "Model/globalordinary2026092701;split392005;channel20261016101/receiver20261016102/eval20261016103. Namespaced perstep+physicalpacket or pergroup, fresh epoch/view;one modelseed,not crossseed.",
+      "k": null,
+      "scenario": "Held sourceRX6 L1260 final20 clean+6practical,fitRX1/3/4/8,no target",
+      "optimizer": "AdamW,original complete physical CENTER_UNITS Sinc/cosine",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "report.md:eachE20/4440/8L,planned5823318NN+matched568320nativeprocesses/1136640initializations;actual originalU/EMA/V tracked",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/IID-RX6-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/logs/IID-RX6-s2026092701.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_propgroup_sourceRX6_E20_20261017_r01/experiments/cvs_environment_group20/runner.py --worker IID-RX6-s2026092701",
+      "expected_artifacts": [
+        "MatchingRX6 realCP noquery smoke2synthetic,not traininginit",
+        "Four completeE20/4440 native/view/Sinc steps,full L/U sequences,loss/gradient curves and source roles",
+        "Defaulthead FINAL20 heldRX6 L1260 clean+all6 unchanged practical;per-packet margins/physics",
+        "568320 physical outputs and1136640 native initializations eachrow;Asconsumed0RAW/568320others;group/private-stream coverage",
+        "Independent35280sourcepred/17760steps analysis,state/lock/quality/AGC/boundary/margins/fixedRAWcleancorrect retention",
+        "Actual modelL/U/ownEMA/V/held NN,updates/physical generation/wall;parentinitcost0"
+      ],
+      "config": {
+        "schema": "FcrossRX_propagation_group_E20_v1",
+        "run_id": "20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01",
+        "stage": "source_RX6_falsification",
+        "arm": "IID",
+        "model_seed": 2026092701,
+        "row_id": "IID-RX6-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/IID-RX6-s2026092701/source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "F_CROSS_RX_propagation_dependence",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/FcrossRX-propgroup-20261017",
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "updates": 4440,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": null,
+        "training_recipe": "Original13L7U/ordinary-onlySupCon/ownEMA/common.75raw+.25ordinary plus extra.25RD(raw/IID/scene_group/prop_group);8L,total1.25;rawarmalso fullphysicalshadow,no newloss/head/U",
+        "baseline_definition": "F:three SIG_TIME branches plus unified Sinc CENTER_UNITS;unchanged joint160/cos30;ordinary-only crossRX sameTX SupCon;original13L7U/ownEMA/oldgate",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1,
+            2
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "clean_net_positive": true,
+          "low_urban_above": 0.6,
+          "each_suburban_gap_exploratory_pp": 2,
+          "goal_complete": false,
+          "target_feedback": false
+        },
+        "budget_authorization": "Active mixedgoal;fournewmatched scratchE20/80modelE/17760updates;sourceRX6only/noinheritedweights/target",
+        "cost_claim": "EachE20/4440/4546560LNNplusoriginalU/EMA/V/8820held;all4generate568320nativeprocessesand1136640nativeinitializations;Asconsumed0RAWor568320others;compatCPsmoke2separate",
+        "baseline_reference": "Fournewmatched8LsourceRX6 controls,nohistoricalscore/weightreuse",
+        "baseline_reuse": false,
+        "readouts": [
+          "FINAL"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "F_base": true,
+          "CROSS_RX": true,
+          "Ag": false,
+          "As": true,
+          "ordinary_L": true,
+          "alpha": 1,
+          "label_smoothing": 0.01,
+          "use_aug": true,
+          "sinc_coordinates": "CENTER_25K",
+          "raw_weight": 0.5,
+          "ordinary_weight": 0.25,
+          "s_slot_weight": 0.25,
+          "L_forwards_per_packet": 8,
+          "expected_L_packets": 4546560,
+          "same_IQ_within_each_pair": true,
+          "U_rule": "Original13L+7U oldgate/ownEMA; no added U views or contrast",
+          "base_raw_total_weight": 0.75,
+          "raw_total_weight": 0.75,
+          "s_slot_name": "Raw in all rows;original entire base objective retained",
+          "extra_pair_weight": 0.25,
+          "extra_pair_input": "IID(raw)",
+          "no_new_U_augmentation": true,
+          "base_As": false,
+          "new_U_augmentation": false
+        },
+        "fold": {
+          "held_RX": 6,
+          "training_RX": [
+            1,
+            3,
+            4,
+            8
+          ],
+          "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+          "effective_roles": {
+            "L_s": 5040,
+            "U_s": 45360,
+            "V": 21600
+          },
+          "held_L_evaluation": 1260,
+          "raw_source_carrier_and_static_domain_ID_map_retained": true,
+          "trained_checkpoint_reuse_allowed_for_all5RX": false,
+          "steps_per_epoch": 222,
+          "U_observations_per_pseudo_epoch": 56624,
+          "all_training_calibration_probe_feature_cache_inputs_exclude_held_RX": true
+        },
+        "source_selection": {
+          "primary": "PROP_GROUP",
+          "references": [
+            "RAW",
+            "IID",
+            "SCENE_GROUP"
+          ],
+          "held_RX": 6,
+          "fixed_final": 20,
+          "conditions": {
+            "RAW": {
+              "clean": 0,
+              "F1": 0,
+              "low": 5,
+              "urban": 3
+            },
+            "IID": {
+              "clean": 1,
+              "F1": 0,
+              "low": 0.5,
+              "urban": 1
+            },
+            "SCENE_GROUP": {
+              "clean": 1,
+              "F1": 0,
+              "low": 0.5,
+              "urban": 1
+            }
+          },
+          "each_practical_min_pp": -0.5,
+          "seenV_min_pp": -0.5,
+          "base_L_max": 0.5,
+          "on_fail": "Close fixedgrouping/streamsplit/dose/RX/seed/budget/threshold;no controlpromotion orseedrescue",
+          "on_pass": "Only one-sourceRX6/modelseed As evidence;separatelyregisterindependentseed beforetarget;not Ag orjointgoal"
+        },
+        "supcon": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "scope": "Two shared native ordinary L forwards only, before raw/satellite extra forwards",
+          "extra_network_forwards": 0
+        },
+        "channel": {
+          "scenes": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "selection": "Uniform original six-scene nominal draw per physical packet (IID/RAW) or per(step,RX,day,eq) group (grouped);never TX/loss/confidence conditioned",
+          "seed": 20261016101,
+          "receiver_seed": 20261016102,
+          "eval_seed": 20261016103,
+          "input": "Original raw L only in additive fourth IQ pair;third common pair stays raw",
+          "session": "rx_i/day_i/eq_i, never TX",
+          "supervised": "All128 satellite L packets; no confidence gate",
+          "composition": false
+        },
+        "additive": {
+          "common": "Unchanged original3pair base,including original ordinary-only SupCon",
+          "extra_input": "IID",
+          "extra_weight": 0.25,
+          "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
+          "base_pair_weight_sum": 1,
+          "pair_weight_sum": 1.25,
+          "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
+          "BN_RNG": "0BN;all4same8L/privateNP/no changes to globalmodel/U RNG",
+          "operator": "Originalfullpractical rawIQ;sharedscene orsharedfrozenpropagation by(step,RX,day,eq),independentpacketnoise/phase/sync/tracking;RAWconsumesrawbutgeneratesIIDshadow",
+          "channel_seeds": "Original fixed channel/session/source-eval streams",
+          "original_U": "Unchanged original13L+7U rule,truth hidden;no extra U/teacher forwards"
+        },
+        "source_confirmation": null,
+        "channel_group": {
+          "policy": "IID",
+          "group_key": [
+            "step_namespace",
+            "rx_i",
+            "day_i",
+            "eq_i"
+          ],
+          "TX_used_in_group": false,
+          "noise_phase_sync_tracking": "originalindependentphysicalpacketseed",
+          "hardware_session": "originalrx/day/eq,stableacrossepochs",
+          "propagation_attributes": [
+            "geometry",
+            "probs",
+            "state",
+            "z",
+            "ray_hz",
+            "ray_coef",
+            "f_doppler"
+          ],
+          "f_total": "sharedorbitalDoppler+ownRXCFO",
+          "quality": "nativeprocessrecomputesfromH/inputpower;no fixedlock/scale override",
+          "marginals": "Originalsixsceneuniform/geometry/state/shadow/scatterconfigs;changes jointdependence andeffectiveindependentenvironments,not a pure shortcut-causality test",
+          "generation": "All4:2nativeinitializations+1Residual.process perLpacket,568320processes/1136640initializations each;RAWdiscardsonlythegeneratedshadow",
+          "source_eval": "OriginalPairedChannel unchanged,source_eval/RX6/final20",
+          "formal_test_unchanged": true
+        }
+      }
+    },
+    {
+      "row_id": "SCENE_GROUP-RX6-s2026092701",
+      "method": "F_CROSS_RX_propgroup_SCENE_GROUP",
+      "purpose": "sourceRX6_propagation_dependence_SCENE_GROUP",
+      "config_ref": "experiment.json#rows/2/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/SCENE_GROUP-RX6-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 20261016103
+      },
+      "seed_notes": "Model/globalordinary2026092701;split392005;channel20261016101/receiver20261016102/eval20261016103. Namespaced perstep+physicalpacket or pergroup, fresh epoch/view;one modelseed,not crossseed.",
+      "k": null,
+      "scenario": "Held sourceRX6 L1260 final20 clean+6practical,fitRX1/3/4/8,no target",
+      "optimizer": "AdamW,original complete physical CENTER_UNITS Sinc/cosine",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "report.md:eachE20/4440/8L,planned5823318NN+matched568320nativeprocesses/1136640initializations;actual originalU/EMA/V tracked",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/SCENE_GROUP-RX6-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/logs/SCENE_GROUP-RX6-s2026092701.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_propgroup_sourceRX6_E20_20261017_r01/experiments/cvs_environment_group20/runner.py --worker SCENE_GROUP-RX6-s2026092701",
+      "expected_artifacts": [
+        "MatchingRX6 realCP noquery smoke2synthetic,not traininginit",
+        "Four completeE20/4440 native/view/Sinc steps,full L/U sequences,loss/gradient curves and source roles",
+        "Defaulthead FINAL20 heldRX6 L1260 clean+all6 unchanged practical;per-packet margins/physics",
+        "568320 physical outputs and1136640 native initializations eachrow;Asconsumed0RAW/568320others;group/private-stream coverage",
+        "Independent35280sourcepred/17760steps analysis,state/lock/quality/AGC/boundary/margins/fixedRAWcleancorrect retention",
+        "Actual modelL/U/ownEMA/V/held NN,updates/physical generation/wall;parentinitcost0"
+      ],
+      "config": {
+        "schema": "FcrossRX_propagation_group_E20_v1",
+        "run_id": "20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01",
+        "stage": "source_RX6_falsification",
+        "arm": "SCENE_GROUP",
+        "model_seed": 2026092701,
+        "row_id": "SCENE_GROUP-RX6-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/SCENE_GROUP-RX6-s2026092701/source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "F_CROSS_RX_propagation_dependence",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/FcrossRX-propgroup-20261017",
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "updates": 4440,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": null,
+        "training_recipe": "Original13L7U/ordinary-onlySupCon/ownEMA/common.75raw+.25ordinary plus extra.25RD(raw/IID/scene_group/prop_group);8L,total1.25;rawarmalso fullphysicalshadow,no newloss/head/U",
+        "baseline_definition": "F:three SIG_TIME branches plus unified Sinc CENTER_UNITS;unchanged joint160/cos30;ordinary-only crossRX sameTX SupCon;original13L7U/ownEMA/oldgate",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1,
+            2
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "clean_net_positive": true,
+          "low_urban_above": 0.6,
+          "each_suburban_gap_exploratory_pp": 2,
+          "goal_complete": false,
+          "target_feedback": false
+        },
+        "budget_authorization": "Active mixedgoal;fournewmatched scratchE20/80modelE/17760updates;sourceRX6only/noinheritedweights/target",
+        "cost_claim": "EachE20/4440/4546560LNNplusoriginalU/EMA/V/8820held;all4generate568320nativeprocessesand1136640nativeinitializations;Asconsumed0RAWor568320others;compatCPsmoke2separate",
+        "baseline_reference": "Fournewmatched8LsourceRX6 controls,nohistoricalscore/weightreuse",
+        "baseline_reuse": false,
+        "readouts": [
+          "FINAL"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "F_base": true,
+          "CROSS_RX": true,
+          "Ag": false,
+          "As": true,
+          "ordinary_L": true,
+          "alpha": 1,
+          "label_smoothing": 0.01,
+          "use_aug": true,
+          "sinc_coordinates": "CENTER_25K",
+          "raw_weight": 0.5,
+          "ordinary_weight": 0.25,
+          "s_slot_weight": 0.25,
+          "L_forwards_per_packet": 8,
+          "expected_L_packets": 4546560,
+          "same_IQ_within_each_pair": true,
+          "U_rule": "Original13L+7U oldgate/ownEMA; no added U views or contrast",
+          "base_raw_total_weight": 0.75,
+          "raw_total_weight": 0.75,
+          "s_slot_name": "Raw in all rows;original entire base objective retained",
+          "extra_pair_weight": 0.25,
+          "extra_pair_input": "SCENE_GROUP(raw)",
+          "no_new_U_augmentation": true,
+          "base_As": false,
+          "new_U_augmentation": false
+        },
+        "fold": {
+          "held_RX": 6,
+          "training_RX": [
+            1,
+            3,
+            4,
+            8
+          ],
+          "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+          "effective_roles": {
+            "L_s": 5040,
+            "U_s": 45360,
+            "V": 21600
+          },
+          "held_L_evaluation": 1260,
+          "raw_source_carrier_and_static_domain_ID_map_retained": true,
+          "trained_checkpoint_reuse_allowed_for_all5RX": false,
+          "steps_per_epoch": 222,
+          "U_observations_per_pseudo_epoch": 56624,
+          "all_training_calibration_probe_feature_cache_inputs_exclude_held_RX": true
+        },
+        "source_selection": {
+          "primary": "PROP_GROUP",
+          "references": [
+            "RAW",
+            "IID",
+            "SCENE_GROUP"
+          ],
+          "held_RX": 6,
+          "fixed_final": 20,
+          "conditions": {
+            "RAW": {
+              "clean": 0,
+              "F1": 0,
+              "low": 5,
+              "urban": 3
+            },
+            "IID": {
+              "clean": 1,
+              "F1": 0,
+              "low": 0.5,
+              "urban": 1
+            },
+            "SCENE_GROUP": {
+              "clean": 1,
+              "F1": 0,
+              "low": 0.5,
+              "urban": 1
+            }
+          },
+          "each_practical_min_pp": -0.5,
+          "seenV_min_pp": -0.5,
+          "base_L_max": 0.5,
+          "on_fail": "Close fixedgrouping/streamsplit/dose/RX/seed/budget/threshold;no controlpromotion orseedrescue",
+          "on_pass": "Only one-sourceRX6/modelseed As evidence;separatelyregisterindependentseed beforetarget;not Ag orjointgoal"
+        },
+        "supcon": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "scope": "Two shared native ordinary L forwards only, before raw/satellite extra forwards",
+          "extra_network_forwards": 0
+        },
+        "channel": {
+          "scenes": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "selection": "Uniform original six-scene nominal draw per physical packet (IID/RAW) or per(step,RX,day,eq) group (grouped);never TX/loss/confidence conditioned",
+          "seed": 20261016101,
+          "receiver_seed": 20261016102,
+          "eval_seed": 20261016103,
+          "input": "Original raw L only in additive fourth IQ pair;third common pair stays raw",
+          "session": "rx_i/day_i/eq_i, never TX",
+          "supervised": "All128 satellite L packets; no confidence gate",
+          "composition": false
+        },
+        "additive": {
+          "common": "Unchanged original3pair base,including original ordinary-only SupCon",
+          "extra_input": "SCENE_GROUP",
+          "extra_weight": 0.25,
+          "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
+          "base_pair_weight_sum": 1,
+          "pair_weight_sum": 1.25,
+          "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
+          "BN_RNG": "0BN;all4same8L/privateNP/no changes to globalmodel/U RNG",
+          "operator": "Originalfullpractical rawIQ;sharedscene orsharedfrozenpropagation by(step,RX,day,eq),independentpacketnoise/phase/sync/tracking;RAWconsumesrawbutgeneratesIIDshadow",
+          "channel_seeds": "Original fixed channel/session/source-eval streams",
+          "original_U": "Unchanged original13L+7U rule,truth hidden;no extra U/teacher forwards"
+        },
+        "source_confirmation": null,
+        "channel_group": {
+          "policy": "SCENE_GROUP",
+          "group_key": [
+            "step_namespace",
+            "rx_i",
+            "day_i",
+            "eq_i"
+          ],
+          "TX_used_in_group": false,
+          "noise_phase_sync_tracking": "originalindependentphysicalpacketseed",
+          "hardware_session": "originalrx/day/eq,stableacrossepochs",
+          "propagation_attributes": [
+            "geometry",
+            "probs",
+            "state",
+            "z",
+            "ray_hz",
+            "ray_coef",
+            "f_doppler"
+          ],
+          "f_total": "sharedorbitalDoppler+ownRXCFO",
+          "quality": "nativeprocessrecomputesfromH/inputpower;no fixedlock/scale override",
+          "marginals": "Originalsixsceneuniform/geometry/state/shadow/scatterconfigs;changes jointdependence andeffectiveindependentenvironments,not a pure shortcut-causality test",
+          "generation": "All4:2nativeinitializations+1Residual.process perLpacket,568320processes/1136640initializations each;RAWdiscardsonlythegeneratedshadow",
+          "source_eval": "OriginalPairedChannel unchanged,source_eval/RX6/final20",
+          "formal_test_unchanged": true
+        }
+      }
+    },
+    {
+      "row_id": "PROP_GROUP-RX6-s2026092701",
+      "method": "F_CROSS_RX_propgroup_PROP_GROUP",
+      "purpose": "sourceRX6_propagation_dependence_PROP_GROUP",
+      "config_ref": "experiment.json#rows/3/config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/PROP_GROUP-RX6-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 20261016103
+      },
+      "seed_notes": "Model/globalordinary2026092701;split392005;channel20261016101/receiver20261016102/eval20261016103. Namespaced perstep+physicalpacket or pergroup, fresh epoch/view;one modelseed,not crossseed.",
+      "k": null,
+      "scenario": "Held sourceRX6 L1260 final20 clean+6practical,fitRX1/3/4/8,no target",
+      "optimizer": "AdamW,original complete physical CENTER_UNITS Sinc/cosine",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "report.md:eachE20/4440/8L,planned5823318NN+matched568320nativeprocesses/1136640initializations;actual originalU/EMA/V tracked",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/PROP_GROUP-RX6-s2026092701/source",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/logs/PROP_GROUP-RX6-s2026092701.stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_propgroup_sourceRX6_E20_20261017_r01/experiments/cvs_environment_group20/runner.py --worker PROP_GROUP-RX6-s2026092701",
+      "expected_artifacts": [
+        "MatchingRX6 realCP noquery smoke2synthetic,not traininginit",
+        "Four completeE20/4440 native/view/Sinc steps,full L/U sequences,loss/gradient curves and source roles",
+        "Defaulthead FINAL20 heldRX6 L1260 clean+all6 unchanged practical;per-packet margins/physics",
+        "568320 physical outputs and1136640 native initializations eachrow;Asconsumed0RAW/568320others;group/private-stream coverage",
+        "Independent35280sourcepred/17760steps analysis,state/lock/quality/AGC/boundary/margins/fixedRAWcleancorrect retention",
+        "Actual modelL/U/ownEMA/V/held NN,updates/physical generation/wall;parentinitcost0"
+      ],
+      "config": {
+        "schema": "FcrossRX_propagation_group_E20_v1",
+        "run_id": "20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01",
+        "stage": "source_RX6_falsification",
+        "arm": "PROP_GROUP",
+        "model_seed": 2026092701,
+        "row_id": "PROP_GROUP-RX6-s2026092701",
+        "features": [
+          "ema",
+          "pseudo",
+          "twostage"
+        ],
+        "variant": "reference_response",
+        "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+        "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/PROP_GROUP-RX6-s2026092701/source",
+        "epochs": 20,
+        "steps_per_epoch": 222,
+        "model_initialization": "scratch",
+        "checkpoint_sources": [],
+        "numerical_policy": {
+          "cudnn_allow_tf32": false,
+          "cuda_matmul_allow_tf32": false,
+          "cudnn_benchmark": false,
+          "cudnn_deterministic": false,
+          "matmul_precision": "highest"
+        },
+        "method": "F_CROSS_RX_propagation_dependence",
+        "target_access": false,
+        "pseudo_domain_gate": false,
+        "temporal_mode": "batch_neighbor",
+        "temporal_min_streak": 2,
+        "lr_schedule": "cosine",
+        "lr_min": 1e-06,
+        "launch_owner": "codex/root/FcrossRX-propgroup-20261017",
+        "label_epochs": 13,
+        "pseudo_epochs": 7,
+        "updates": 4440,
+        "legacy_reference_config": {
+          "schema": "legacy_no_sat_v1",
+          "run_id": "20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01",
+          "stage": "repair",
+          "arm": "legacy_cosine_no_sat",
+          "model_seed": 2026092701,
+          "row_id": "legacy_cosine_no_sat-s2026092701",
+          "features": [
+            "ema",
+            "pseudo",
+            "twostage"
+          ],
+          "variant": "reference_response",
+          "source_contract": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+          "dataset": "/home/szu2070436088/2510044040/CV-SincNet/Dataset_WigSig/ManySig.pkl",
+          "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261010-phase1-legacy-cosine-no-sat-manysig-m3-r01/legacy_cosine_no_sat-s2026092701/source",
+          "epochs": 200,
+          "steps_per_epoch": 222,
+          "model_initialization": "scratch",
+          "checkpoint_sources": [],
+          "numerical_policy": {
+            "cudnn_allow_tf32": false,
+            "cuda_matmul_allow_tf32": false,
+            "cudnn_benchmark": false,
+            "cudnn_deterministic": false,
+            "matmul_precision": "highest"
+          },
+          "method": "cvs_legacy_no_sat",
+          "target_access": false,
+          "pseudo_domain_gate": false,
+          "temporal_mode": "batch_neighbor",
+          "temporal_min_streak": 2,
+          "lr_schedule": "cosine",
+          "lr_min": 1e-06
+        },
+        "source_falsification": null,
+        "training_recipe": "Original13L7U/ordinary-onlySupCon/ownEMA/common.75raw+.25ordinary plus extra.25RD(raw/IID/scene_group/prop_group);8L,total1.25;rawarmalso fullphysicalshadow,no newloss/head/U",
+        "baseline_definition": "F:three SIG_TIME branches plus unified Sinc CENTER_UNITS;unchanged joint160/cos30;ordinary-only crossRX sameTX SupCon;original13L7U/ownEMA/oldgate",
+        "explicit_CFO_identity_feature": false,
+        "feature_extractor": {
+          "arm": "SIG_TIME",
+          "layer": "t2",
+          "local_dimension": 6,
+          "local_projection": "learned 1x1 then tanh; shared across controls",
+          "windows": 4,
+          "random_directions": 14,
+          "random_direction_seed": 2026101307,
+          "random_direction_scales": [
+            0.5,
+            1,
+            2
+          ],
+          "descriptor_width": 28,
+          "output_embedding": 160,
+          "parameter_matched": true,
+          "intrinsic_descriptor_rank_matched": false,
+          "classifier_changed": false,
+          "gain_initial": 0.05,
+          "gain_bound": 0.2,
+          "time_coordinate": true,
+          "per_packet": true
+        },
+        "classifier": "unchanged native ResidualPhysicalHead/6x160 cosine/scale30; jointly trained with backbone; no separate training or replacement",
+        "test_views": [],
+        "checkpoint_selection": "final_only",
+        "goal": {
+          "clean_net_positive": true,
+          "low_urban_above": 0.6,
+          "each_suburban_gap_exploratory_pp": 2,
+          "goal_complete": false,
+          "target_feedback": false
+        },
+        "budget_authorization": "Active mixedgoal;fournewmatched scratchE20/80modelE/17760updates;sourceRX6only/noinheritedweights/target",
+        "cost_claim": "EachE20/4440/4546560LNNplusoriginalU/EMA/V/8820held;all4generate568320nativeprocessesand1136640nativeinitializations;Asconsumed0RAWor568320others;compatCPsmoke2separate",
+        "baseline_reference": "Fournewmatched8LsourceRX6 controls,nohistoricalscore/weightreuse",
+        "baseline_reuse": false,
+        "readouts": [
+          "FINAL"
+        ],
+        "separate_head_training": false,
+        "mode": "RDROP",
+        "head_fit_updates": 0,
+        "training_mechanism": {
+          "F_base": true,
+          "CROSS_RX": true,
+          "Ag": false,
+          "As": true,
+          "ordinary_L": true,
+          "alpha": 1,
+          "label_smoothing": 0.01,
+          "use_aug": true,
+          "sinc_coordinates": "CENTER_25K",
+          "raw_weight": 0.5,
+          "ordinary_weight": 0.25,
+          "s_slot_weight": 0.25,
+          "L_forwards_per_packet": 8,
+          "expected_L_packets": 4546560,
+          "same_IQ_within_each_pair": true,
+          "U_rule": "Original13L+7U oldgate/ownEMA; no added U views or contrast",
+          "base_raw_total_weight": 0.75,
+          "raw_total_weight": 0.75,
+          "s_slot_name": "Raw in all rows;original entire base objective retained",
+          "extra_pair_weight": 0.25,
+          "extra_pair_input": "PROP_GROUP(raw)",
+          "no_new_U_augmentation": true,
+          "base_As": false,
+          "new_U_augmentation": false
+        },
+        "fold": {
+          "held_RX": 6,
+          "training_RX": [
+            1,
+            3,
+            4,
+            8
+          ],
+          "carrier_source_roles": "Original unchanged VALIDATED_ONCE L6300/U56700/V27000; metadata verified before masking",
+          "effective_roles": {
+            "L_s": 5040,
+            "U_s": 45360,
+            "V": 21600
+          },
+          "held_L_evaluation": 1260,
+          "raw_source_carrier_and_static_domain_ID_map_retained": true,
+          "trained_checkpoint_reuse_allowed_for_all5RX": false,
+          "steps_per_epoch": 222,
+          "U_observations_per_pseudo_epoch": 56624,
+          "all_training_calibration_probe_feature_cache_inputs_exclude_held_RX": true
+        },
+        "source_selection": {
+          "primary": "PROP_GROUP",
+          "references": [
+            "RAW",
+            "IID",
+            "SCENE_GROUP"
+          ],
+          "held_RX": 6,
+          "fixed_final": 20,
+          "conditions": {
+            "RAW": {
+              "clean": 0,
+              "F1": 0,
+              "low": 5,
+              "urban": 3
+            },
+            "IID": {
+              "clean": 1,
+              "F1": 0,
+              "low": 0.5,
+              "urban": 1
+            },
+            "SCENE_GROUP": {
+              "clean": 1,
+              "F1": 0,
+              "low": 0.5,
+              "urban": 1
+            }
+          },
+          "each_practical_min_pp": -0.5,
+          "seenV_min_pp": -0.5,
+          "base_L_max": 0.5,
+          "on_fail": "Close fixedgrouping/streamsplit/dose/RX/seed/budget/threshold;no controlpromotion orseedrescue",
+          "on_pass": "Only one-sourceRX6/modelseed As evidence;separatelyregisterindependentseed beforetarget;not Ag orjointgoal"
+        },
+        "supcon": {
+          "mode": "CROSS_RX",
+          "levels": [
+            "time_down",
+            "t2.pool"
+          ],
+          "temperature": 0.2,
+          "weight": 0.1,
+          "warm_epochs": 5,
+          "ramp_epochs": 10,
+          "scope": "Two shared native ordinary L forwards only, before raw/satellite extra forwards",
+          "extra_network_forwards": 0
+        },
+        "channel": {
+          "scenes": [
+            "practical_high",
+            "practical_mid",
+            "practical_low_suburban",
+            "practical_high_urban",
+            "practical_mid_urban",
+            "practical_low_urban"
+          ],
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
+          "processing_route": "residual",
+          "mode": "post_sync",
+          "equalization_enabled": false,
+          "selection": "Uniform original six-scene nominal draw per physical packet (IID/RAW) or per(step,RX,day,eq) group (grouped);never TX/loss/confidence conditioned",
+          "seed": 20261016101,
+          "receiver_seed": 20261016102,
+          "eval_seed": 20261016103,
+          "input": "Original raw L only in additive fourth IQ pair;third common pair stays raw",
+          "session": "rx_i/day_i/eq_i, never TX",
+          "supervised": "All128 satellite L packets; no confidence gate",
+          "composition": false
+        },
+        "additive": {
+          "common": "Unchanged original3pair base,including original ordinary-only SupCon",
+          "extra_input": "PROP_GROUP",
+          "extra_weight": 0.25,
+          "extra_pair_loss": "Original label-smoothed CE mean plus within-IQ RDrop1 KL;no clean-sat alignment",
+          "base_pair_weight_sum": 1,
+          "pair_weight_sum": 1.25,
+          "normalization": "Per-physical packet mean in each IQ pair;no divide by newview count;absolute base weights unchanged;relative raw fraction changes",
+          "BN_RNG": "0BN;all4same8L/privateNP/no changes to globalmodel/U RNG",
+          "operator": "Originalfullpractical rawIQ;sharedscene orsharedfrozenpropagation by(step,RX,day,eq),independentpacketnoise/phase/sync/tracking;RAWconsumesrawbutgeneratesIIDshadow",
+          "channel_seeds": "Original fixed channel/session/source-eval streams",
+          "original_U": "Unchanged original13L+7U rule,truth hidden;no extra U/teacher forwards"
+        },
+        "source_confirmation": null,
+        "channel_group": {
+          "policy": "PROP_GROUP",
+          "group_key": [
+            "step_namespace",
+            "rx_i",
+            "day_i",
+            "eq_i"
+          ],
+          "TX_used_in_group": false,
+          "noise_phase_sync_tracking": "originalindependentphysicalpacketseed",
+          "hardware_session": "originalrx/day/eq,stableacrossepochs",
+          "propagation_attributes": [
+            "geometry",
+            "probs",
+            "state",
+            "z",
+            "ray_hz",
+            "ray_coef",
+            "f_doppler"
+          ],
+          "f_total": "sharedorbitalDoppler+ownRXCFO",
+          "quality": "nativeprocessrecomputesfromH/inputpower;no fixedlock/scale override",
+          "marginals": "Originalsixsceneuniform/geometry/state/shadow/scatterconfigs;changes jointdependence andeffectiveindependentenvironments,not a pure shortcut-causality test",
+          "generation": "All4:2nativeinitializations+1Residual.process perLpacket,568320processes/1136640initializations each;RAWdiscardsonlythegeneratedshadow",
+          "source_eval": "OriginalPairedChannel unchanged,source_eval/RX6/final20",
+          "formal_test_unchanged": true
+        }
+      }
+    }
+  ],
+  "notes": [
+    "Before enhancement baseline is current F plus crossRX sameTX SupCon,3SIG_TIME/unified Sinc CENTER_UNITS/joint160/cos30/default jointhead. No explicit CFO identity feature.",
+    "All4 preserve original common .75raw+.25ordinary+ordinary-onlySupCon;extra.25 RD(raw or As),8L,total1.25. Absolute original supervision unchanged;relative fraction differs transparently.",
+    "GROUP keys step/RX/day/eq neverTX;synthetic snapshot organization,not claim original recordings simultaneous. Changes environment count along with dependence;not isolated shortcut causal proof.",
+    "All4 generate matched native physicalshadow costs;PROP_GROUP copies geometry/probs/state/z/ray_hz/ray_coef/f_doppler only,retains individual phase/sync/tracking/noise/RX, recomputes f_total/f_hat.",
+    "SCENE_GROUP/PROP_GROUP named personal random streams same;quality-dependent processed noise need not match. Sourceeval delegates exact oldsixscene physical implementation.",
+    "P19 bandavailability healthyE20 scientifically FAIL;fixed hypothesis closed. ExistingDC diagnostic already FAIL p95.00416046<ordinary bound.00501201;no repeat DC IQ or NN.",
+    "Local synthetic checks PASS:physics144 calls/7negative;model4120NN/4updates/512physical/4negative;protocol31+6negative,U truth reads0. First local model entry import failed before NN and corrected to verified overlay import;production recipe unchanged.",
+    "One independent P0/P1 review PASS static only,no IQ/CP/NN; no additional review gate.",
+    "Planned train+source23293272NN+realCPcompat2=23293274,80modelE/17760updates;0 parent training initialization. Matching smokeCP historical20E/4440 and unknown historicalNN disclosed separately;local4120syntheticNN4updates separate.",
+    "Generic separate design-approval/spec/repeated-review requirements are REJECTED_EXTRA_GATE under project exhaustive whitelist; proceed current authorization."
+  ],
+  "registered_at": "2026-10-17T02:49:38+00:00"
+}

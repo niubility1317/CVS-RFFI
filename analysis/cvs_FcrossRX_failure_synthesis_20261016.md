@@ -159,3 +159,9 @@ mid原73.253968%，三bank73.273810/73.273810/73.313492%；low原57.738095%，�
 全35280读出、17760更新/80模型epoch、23976L/U记录和3200行stdout复核PASS；四组206初始tensor六对全相同、完整L/U/私有k及mask/gain/ordinary统计全同。每行5040L×6pair全部覆盖，0新U/另训头/As/target。实际新训练与源评价23293272NN，guard90720＋r02兼容2＋技术失败r01兼容2另列，远端合计23383996NN；墙钟1589.4585s，5PNG＋5PDF实际查看，全原PID自然终止。r01只因独立包bootstrap技术失败、0源guard/训练，原产物保留；r02最小修复不改科学计划，训练commit a931a4d57aeebd836c4d973cae7b964034f490a8。
 
 FAIL_FIXED_BAND_AVAILABILITY_CLOSED：不扫宽度/深度/频率/上限/weight/RX/seed/预算/阈值，不将ORDINARY控制事后晋级。未证明新Ag；冻结源身份guard及近98% seenV都不能替代跨RXclean收益；未解决严重urban，也无正式联合或跨seed证据。完整目标继续ACTIVE。[完整报告、分层与曲线](cvs_FcrossRX_bandavailability20_20261017.md)。
+
+## P20 前的去重与下一假设（2026-10-17）
+
+旧 DC 路线已在 `20261016-diagnostic-source-DC-crossfit-manysig-m1-r01` 关闭：留 TX、留 day 交叉拟合虽有接收机关联（16/18），候选分量 p95=0.004160463488 小于原普通 DC 增强边界 0.005012006679，不能据此新增 DC 训练。本轮没有重复读取 DC IQ 或运行 DC 网络。
+
+唯一新检验为 P20 星地传播条件分组，保留独立个人噪声/相位/同步/跟踪，不增加 Ag/一致性损失/部署参数。四个新源 RX6 E20 对照的固定判据、成本与放弃条件见 `cvs_FcrossRX_propgroup20_20261017.md`。该项尚未产生真实训练或性能结果，不能替代此前失败结论。
