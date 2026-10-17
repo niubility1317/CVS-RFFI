@@ -15,6 +15,7 @@
 |旧Practical四组checkpoint统一六环境测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-practical4-sixscene-eval-s392005-r01/report.md)|
 |CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
 |完整源 L 的 practical 接收质量耦合：物理依据已验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)|
+|F＋跨RX同TX：RMS匹配的双时延形状星地增强E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md)|
 |原分布校准刷新 A_s：E30 完整匹配负结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md)|
 |完整源采样率／practical四因子：E20完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)|
 |完整源四因子与普通拼接：E20＋10，累计E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/report.md)|

@@ -503,6 +503,7 @@
 
 
 
+
 - [完整源实验 20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01/report.md)
 - [完整源实验 20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)
 - [完整源实验 20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)
@@ -513,3 +514,4 @@
 - [完整源实验 20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01](../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)
 - [完整源实验 20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01/report.md)
 - [完整源实验 20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md)
+- [完整源实验 20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md)

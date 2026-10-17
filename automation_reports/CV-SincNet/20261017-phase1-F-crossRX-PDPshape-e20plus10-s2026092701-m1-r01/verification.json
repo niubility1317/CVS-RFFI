@@ -1,0 +1,31 @@
+{
+  "status": "LOCAL_FOCUSED_CHECKS_PASS",
+  "protocol_negatives": 39,
+  "same_latent_cases": 108,
+  "current_residual_calls": 354,
+  "prior_physics_residual_calls": 324,
+  "total_local_synthetic_residual_calls": 678,
+  "states": [
+    "LOS",
+    "PARTIAL",
+    "BLOCKED"
+  ],
+  "max_ensemble_RMS_error_ns": 2.842170943040401e-14,
+  "original_profile_exact_replay": true,
+  "actual_adapter_cases": 30,
+  "actual_F_parameters": 900722,
+  "synthetic_NN": 2,
+  "real_IQ": 0,
+  "CP": 0,
+  "optimizer_updates": 0,
+  "review": {
+    "scope": "one independent next-run P0/P1",
+    "initial": "one P1 stdlib profile name collision",
+    "fix": "rename profile.py to pdp_profile.py;update both relative imports;old source absent",
+    "targeted_recheck": "PASS",
+    "direct_entry_cProfile_AdamW": "PASS,0NN"
+  },
+  "compiler": "PASS",
+  "N607_preflight": "PASS ordinary account",
+  "not_identity_benefit_evidence": true
+}
