@@ -169,7 +169,7 @@ def main():
   matched_retention[name]={v:float((private[name]['pred'][v]==private[name]['y'])[matched_cohort].mean()) for v in base.VIEWS}
  interaction=factorial({n:{v:results[n]['views'][v]['accuracy'] for v in base.VIEWS} for n in ORDER});flat=[q for r in results.values() for q in r['metrics']]
  for n in ORDER:results[n]['source']['cycle_order_trace']=local_trace(rs[n],results[n]['source']['source_result']);results[n]['source']['native_full_telemetry']=native_telemetry(rs[n])
- local_pair=same_local_stream(rs['B10'],rs['B11']);base.write_csv(out/'per_row_seed.csv',[{k:v for k,v in r.items() if k!='confusion'} for r in flat]);base.write_csv(out/'training_curves.csv',[dict(arm=n,**q) for n,r in results.items() for q in r['source']['curve']]);sources=source_readout(out)
+ local_pair=same_local_stream(rs['B10'],rs['B11']);base.write_csv(out/'per_row_seed.csv',[{k:v for k,v in r.items() if k!='confusion'} for r in flat]);base.write_csv(out/'training_curves.csv',[dict(arm=n,**q) for n,r in results.items() for q in r['source']['curve']])
  shared_smoke=base.read(base.PROJECT/'runs'/RUN/'real_checkpoint_smoke.json')
  if shared_smoke['status']!='PASS' or shared_smoke['NN']!=2 or shared_smoke['real_IQ'] or shared_smoke['target_query'] or shared_smoke['training_updates']:raise ValueError('Shared compatibility-only smoke cost differs')
  run_launch=base.read(Path(str(base.PROJECT/'runs'/RUN)+'-launch')/'launch.json');run_wall_seconds=(base.PROJECT/'runs'/RUN/'complete.json').stat().st_mtime-run_launch['read_at']
