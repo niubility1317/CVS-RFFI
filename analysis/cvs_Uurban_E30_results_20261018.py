@@ -236,7 +236,7 @@ def own_plots(out,source,source_summary,physics=None):
   strata=[r for segment in source[a]['L_support'] for r in segment['strata']];matrix=np.asarray([[sum(r['count'] for r in strata if r['RX']==rx and r['scene']==scene) for scene in SCENES] for rx in [1,3,4,6,8]])
   im=ax.imshow(matrix,cmap='Blues',aspect='auto');ax.set(xticks=range(3),xticklabels=['Low sub','Mid urban','Low urban'],yticks=range(5),yticklabels=['RX'+str(r) for r in [1,3,4,6,8]],title=a+' labeled full As')
   for j in range(5):
-   for k in range(3):ax.text(k,j,str(matrix[j,k]),ha='center',va='center',fontsize=8,color='white' if matrix[j,k]>matrix.max()*.8 else 'black')
+   for k in range(3):ax.text(k,j,str(matrix[j,k]),ha='center',va='center',fontsize=8,color='white' if sum(w*c for w,c in zip((.2126,.7152,.0722),im.cmap(im.norm(matrix[j,k]))[:3]))<.45 else 'black')
   fig.colorbar(im,ax=ax,fraction=.04,label='Full As observations')
  fig.suptitle('Actual L coverage / no held source RX; no per-packet TX-by-state sidecar saved');save(fig,'training_L_support')
  rows=source_summary['rows'];fig,axes=plt.subplots(1,2,figsize=(11,4.5));bins=['<3','3-8','8-15','>=15']
