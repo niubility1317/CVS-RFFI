@@ -34,6 +34,14 @@ def audit(inp,out):
  for actual,expected in zip(s['cells'],cr):
   for k in ('TX','RX','day','count','observable','fraction'):
    if actual[k]!=expected[k]:raise ValueError('Independent cell recount mismatch')
+  aa,bb=actual['median_relative_grid'],expected['median_relative_grid']
+  if (aa is None)!=(bb is None) or (aa is not None and not math.isclose(aa,bb,rel_tol=1e-10,abs_tol=1e-12)):raise ValueError('Cell grid median mismatch')
+ for a,b in zip(s['crossfit_folds'],folds):
+  if any(a[k]!=b[k] for k in ('held_TX','held_day')) or any(not math.isclose(a[k],b[k],rel_tol=1e-9,abs_tol=1e-12) for k in ('baseline_squared_risk','RX_squared_risk')):raise ValueError('Independent complete crossfit risk mismatch')
+  if a['positive']!=b['positive'] and not math.isclose(a['baseline_squared_risk'],a['RX_squared_risk'],rel_tol=1e-10,abs_tol=1e-12):raise ValueError('Substantive crossfit positive flag mismatch')
+ for key,val in [('crossfit_risk_reduction',red),('median_equivalent_uniform_dither_SNR_db',med)]:
+  a=s[key]
+  if (a is None)!=(val is None) or (a is not None and not math.isclose(a,val,rel_tol=1e-9,abs_tol=1e-12)):raise ValueError('Independent global scalar mismatch')
  out.mkdir();result=dict(status='ANALYZED',execution='VERIFIED',run_id=d.RUN,source_only=True,target_access=False,scientific_status=expected_status,checks=checks,observable_count=s['observable_count'],count=5040,cells=cr,reasons=dict(reason),crossfit_folds=folds,crossfit_risk_reduction=red,median_equivalent_uniform_dither_SNR_db=med,source_wall_seconds=s['wall_seconds'],offline_recount_wall_seconds=time.perf_counter()-start,source_IQ_packets=5040,source_cells=72,new_NN=0,updates=0,model_epochs=0,checkpoint_reads=0,head_fit_updates=0,automatic_training=False,Ag_efficacy_proved=False,goal_complete=False,limits=['Processed eq1/RMS representation;not rawADC or bitdepth','Only axis-aligned affine grids in fixed resolvable range;absence doesnot exclude rotated or nonuniform quantization','No identitypredictions/newAg/As/joint/target/crossseed proof'])
  d.write(out/'analysis_summary.json',result)
  with (out/'source_cells.csv').open('w',newline='',encoding='utf8') as f:
