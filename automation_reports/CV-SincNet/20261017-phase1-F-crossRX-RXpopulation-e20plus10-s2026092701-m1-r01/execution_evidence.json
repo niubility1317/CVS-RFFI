@@ -1,0 +1,68 @@
+{
+  "status": "RUNNING_VERIFIED",
+  "read_at": "2026-10-17T14:53:33.585Z",
+  "execution_commit": "6f70fbee2deff6a634130c0cb094f70cfce80e89",
+  "dispatcher_PID": 697976,
+  "worker_PID": 698001,
+  "dispatcher_live": true,
+  "worker_live": true,
+  "CWD_match": true,
+  "argv_match": true,
+  "CUDA_match": true,
+  "GPU_occupied": true,
+  "worker_log_bytes": [
+    6849,
+    12046
+  ],
+  "log_growth": true,
+  "canonical_preflight": "PASS",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "synthetic_checks": "PASS",
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "parent_epoch": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "matched_control": {
+      "status": "VERIFIED",
+      "run": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
+      "row": "FULL_AS-s2026092701",
+      "reused_existing": true,
+      "new_training_updates": 0,
+      "source_RX_holdout": null
+    }
+  },
+  "progress": {
+    "epoch": 1,
+    "cumulative_epoch": 21,
+    "steps": 222,
+    "cumulative_steps": 4662,
+    "L_packets": 113664,
+    "Ag_packets": 0,
+    "As_packets": 28416,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_RX_holdout": null,
+    "U_truth_read": false,
+    "target_access": false
+  },
+  "failure": null,
+  "training_complete": false,
+  "formal_predictions_complete": false,
+  "formal_scored": false,
+  "Ag_gain_proved": false,
+  "As_gain_proved": false,
+  "joint_goal_complete": false
+}

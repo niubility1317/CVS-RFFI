@@ -531,3 +531,5 @@
 
 - [正负噪声配对 r01](../automation_reports/CV-SincNet/20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r01/report.md)
 - [正负噪声配对 r02](../automation_reports/CV-SincNet/20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02/report.md)
+
+- [接收会话覆盖 r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01/report.md)
