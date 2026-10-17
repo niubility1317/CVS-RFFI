@@ -1,0 +1,1164 @@
+{
+  "status": "VERIFIED",
+  "cost": {
+    "actual_steps": 2220,
+    "parent_steps": 4440,
+    "cumulative_steps": 6660,
+    "parent_epochs": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "L_forward_packets": 1136640,
+    "student_train_forward_packets": 1703640,
+    "student_eval_forward_packets": 324002,
+    "teacher_train_forward_packets": 0,
+    "teacher_eval_forward_packets": 567000,
+    "As_training_observations": 0,
+    "Ag_training_observations": 142080,
+    "elapsed_seconds": 743.267947435379
+  },
+  "source_counts": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "sequence_records": 4440,
+  "same_all_LU_sequence_as_control": true,
+  "actual_args_comparison": {
+    "count": 857,
+    "differing_keys": [
+      "candidate_id",
+      "output_dir",
+      "run_id"
+    ]
+  },
+  "objective_max_error": 1.1920928955078125e-7,
+  "filter": {
+    "calls": 2220,
+    "packets": 142080,
+    "kernel_counts": {
+      "structured_RX3_6_minus": 11735,
+      "structured_RX4_6_minus": 11740,
+      "structured_RX4_8_plus": 11821,
+      "structured_RX3_8_minus": 11883,
+      "structured_RX3_4_minus": 11644,
+      "structured_RX3_4_plus": 11923,
+      "structured_RX6_8_plus": 11760,
+      "structured_RX4_6_plus": 11909,
+      "structured_RX4_8_minus": 11993,
+      "structured_RX3_6_plus": 12033,
+      "structured_RX6_8_minus": 11899,
+      "structured_RX3_8_plus": 11740
+    },
+    "per_RX_day_kernel": [
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX3_4_minus",
+        "count": 791
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX3_4_plus",
+        "count": 785
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX3_6_minus",
+        "count": 791
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX3_6_plus",
+        "count": 839
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX3_8_minus",
+        "count": 803
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX3_8_plus",
+        "count": 805
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX4_6_minus",
+        "count": 757
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX4_6_plus",
+        "count": 785
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX4_8_minus",
+        "count": 756
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX4_8_plus",
+        "count": 769
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX6_8_minus",
+        "count": 778
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "kernel": "structured_RX6_8_plus",
+        "count": 812
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX3_4_minus",
+        "count": 731
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX3_4_plus",
+        "count": 803
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX3_6_minus",
+        "count": 804
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX3_6_plus",
+        "count": 828
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX3_8_minus",
+        "count": 796
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX3_8_plus",
+        "count": 769
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX4_6_minus",
+        "count": 780
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX4_6_plus",
+        "count": 805
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX4_8_minus",
+        "count": 777
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX4_8_plus",
+        "count": 787
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX6_8_minus",
+        "count": 779
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "kernel": "structured_RX6_8_plus",
+        "count": 784
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX3_4_minus",
+        "count": 733
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX3_4_plus",
+        "count": 809
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX3_6_minus",
+        "count": 775
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX3_6_plus",
+        "count": 767
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX3_8_minus",
+        "count": 762
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX3_8_plus",
+        "count": 771
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX4_6_minus",
+        "count": 768
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX4_6_plus",
+        "count": 790
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX4_8_minus",
+        "count": 793
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX4_8_plus",
+        "count": 820
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX6_8_minus",
+        "count": 774
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "kernel": "structured_RX6_8_plus",
+        "count": 807
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX3_4_minus",
+        "count": 783
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX3_4_plus",
+        "count": 784
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX3_6_minus",
+        "count": 776
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX3_6_plus",
+        "count": 813
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX3_8_minus",
+        "count": 787
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX3_8_plus",
+        "count": 751
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX4_6_minus",
+        "count": 785
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX4_6_plus",
+        "count": 763
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX4_8_minus",
+        "count": 794
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX4_8_plus",
+        "count": 759
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX6_8_minus",
+        "count": 789
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "kernel": "structured_RX6_8_plus",
+        "count": 851
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX3_4_minus",
+        "count": 786
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX3_4_plus",
+        "count": 804
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX3_6_minus",
+        "count": 818
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX3_6_plus",
+        "count": 797
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX3_8_minus",
+        "count": 763
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX3_8_plus",
+        "count": 812
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX4_6_minus",
+        "count": 780
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX4_6_plus",
+        "count": 789
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX4_8_minus",
+        "count": 763
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX4_8_plus",
+        "count": 797
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX6_8_minus",
+        "count": 731
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "kernel": "structured_RX6_8_plus",
+        "count": 723
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX3_4_minus",
+        "count": 734
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX3_4_plus",
+        "count": 808
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX3_6_minus",
+        "count": 765
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX3_6_plus",
+        "count": 791
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX3_8_minus",
+        "count": 821
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX3_8_plus",
+        "count": 811
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX4_6_minus",
+        "count": 813
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX4_6_plus",
+        "count": 796
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX4_8_minus",
+        "count": 815
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX4_8_plus",
+        "count": 777
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX6_8_minus",
+        "count": 834
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "kernel": "structured_RX6_8_plus",
+        "count": 757
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX3_4_minus",
+        "count": 771
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX3_4_plus",
+        "count": 804
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX3_6_minus",
+        "count": 780
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX3_6_plus",
+        "count": 822
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX3_8_minus",
+        "count": 786
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX3_8_plus",
+        "count": 778
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX4_6_minus",
+        "count": 802
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX4_6_plus",
+        "count": 817
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX4_8_minus",
+        "count": 738
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX4_8_plus",
+        "count": 770
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX6_8_minus",
+        "count": 795
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "kernel": "structured_RX6_8_plus",
+        "count": 788
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX3_4_minus",
+        "count": 763
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX3_4_plus",
+        "count": 774
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX3_6_minus",
+        "count": 793
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX3_6_plus",
+        "count": 824
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX3_8_minus",
+        "count": 813
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX3_8_plus",
+        "count": 757
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX4_6_minus",
+        "count": 781
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX4_6_plus",
+        "count": 833
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX4_8_minus",
+        "count": 818
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX4_8_plus",
+        "count": 838
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX6_8_minus",
+        "count": 803
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "kernel": "structured_RX6_8_plus",
+        "count": 795
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX3_4_minus",
+        "count": 802
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX3_4_plus",
+        "count": 780
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX3_6_minus",
+        "count": 817
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX3_6_plus",
+        "count": 748
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX3_8_minus",
+        "count": 809
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX3_8_plus",
+        "count": 848
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX4_6_minus",
+        "count": 768
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX4_6_plus",
+        "count": 858
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX4_8_minus",
+        "count": 825
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX4_8_plus",
+        "count": 753
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX6_8_minus",
+        "count": 827
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "kernel": "structured_RX6_8_plus",
+        "count": 795
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX3_4_minus",
+        "count": 791
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX3_4_plus",
+        "count": 805
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX3_6_minus",
+        "count": 774
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX3_6_plus",
+        "count": 826
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX3_8_minus",
+        "count": 770
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX3_8_plus",
+        "count": 764
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX4_6_minus",
+        "count": 777
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX4_6_plus",
+        "count": 797
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX4_8_minus",
+        "count": 822
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX4_8_plus",
+        "count": 764
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX6_8_minus",
+        "count": 779
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "kernel": "structured_RX6_8_plus",
+        "count": 755
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX3_4_minus",
+        "count": 812
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX3_4_plus",
+        "count": 815
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX3_6_minus",
+        "count": 782
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX3_6_plus",
+        "count": 756
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX3_8_minus",
+        "count": 778
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX3_8_plus",
+        "count": 733
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX4_6_minus",
+        "count": 755
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX4_6_plus",
+        "count": 776
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX4_8_minus",
+        "count": 810
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX4_8_plus",
+        "count": 815
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX6_8_minus",
+        "count": 803
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "kernel": "structured_RX6_8_plus",
+        "count": 755
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX3_4_minus",
+        "count": 792
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX3_4_plus",
+        "count": 775
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX3_6_minus",
+        "count": 777
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX3_6_plus",
+        "count": 784
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX3_8_minus",
+        "count": 774
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX3_8_plus",
+        "count": 800
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX4_6_minus",
+        "count": 806
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX4_6_plus",
+        "count": 781
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX4_8_minus",
+        "count": 796
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX4_8_plus",
+        "count": 823
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX6_8_minus",
+        "count": 797
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "kernel": "structured_RX6_8_plus",
+        "count": 754
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX3_4_minus",
+        "count": 757
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX3_4_plus",
+        "count": 774
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX3_6_minus",
+        "count": 783
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX3_6_plus",
+        "count": 813
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX3_8_minus",
+        "count": 765
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX3_8_plus",
+        "count": 795
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX4_6_minus",
+        "count": 777
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX4_6_plus",
+        "count": 778
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX4_8_minus",
+        "count": 826
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX4_8_plus",
+        "count": 760
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX6_8_minus",
+        "count": 833
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "kernel": "structured_RX6_8_plus",
+        "count": 745
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX3_4_minus",
+        "count": 798
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX3_4_plus",
+        "count": 789
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX3_6_minus",
+        "count": 750
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX3_6_plus",
+        "count": 842
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX3_8_minus",
+        "count": 822
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX3_8_plus",
+        "count": 755
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX4_6_minus",
+        "count": 808
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX4_6_plus",
+        "count": 759
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX4_8_minus",
+        "count": 806
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX4_8_plus",
+        "count": 777
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX6_8_minus",
+        "count": 771
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "kernel": "structured_RX6_8_plus",
+        "count": 782
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX3_4_minus",
+        "count": 800
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX3_4_plus",
+        "count": 814
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX3_6_minus",
+        "count": 750
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX3_6_plus",
+        "count": 783
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX3_8_minus",
+        "count": 834
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX3_8_plus",
+        "count": 791
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX4_6_minus",
+        "count": 783
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX4_6_plus",
+        "count": 782
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX4_8_minus",
+        "count": 854
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX4_8_plus",
+        "count": 812
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX6_8_minus",
+        "count": 806
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "kernel": "structured_RX6_8_plus",
+        "count": 857
+      }
+    ],
+    "max_RMS_relative_error": 3.576278402306343e-7,
+    "host_enqueue_seconds": 2.988750587683171,
+    "full_GPU_wall_not_inferred_from_enqueue": true,
+    "real_FIR_MACC": 4801167360,
+    "extra_NN": 0,
+    "source_RX_holdout": null,
+    "operator": "Fixed33tap sourcebank complex-linear FIR",
+    "bank_run": "20261016-diagnostic-F-crossRX-spectralIQ-fitL-s2026092701-m1-r01",
+    "kernels": [
+      "structured_RX3_4_minus",
+      "structured_RX3_4_plus",
+      "structured_RX3_6_minus",
+      "structured_RX3_6_plus",
+      "structured_RX3_8_minus",
+      "structured_RX3_8_plus",
+      "structured_RX4_6_minus",
+      "structured_RX4_6_plus",
+      "structured_RX4_8_minus",
+      "structured_RX4_8_plus",
+      "structured_RX6_8_minus",
+      "structured_RX6_8_plus"
+    ],
+    "label_free_application": true,
+    "source_bank_fitted_only_on_legal_L_subset": true,
+    "previous_feasibility_failed_unchanged": true,
+    "no_exact_RX_replacement_claim": true,
+    "normalization": "restore inputRMS",
+    "boundary": "reflect16/centered/no roll",
+    "no_new_CFO_noise_PA_DAC": true
+  }
+}

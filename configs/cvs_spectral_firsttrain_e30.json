@@ -1,6 +1,6 @@
 {
   "run_id": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
-  "status": "IMPLEMENTED_NOT_LAUNCHED",
+  "status": "ANALYZED_FIXED_RECIPE_FAILED_CLOSED",
   "rows": [
     {
       "schema": "F_FIXED_FIR_FIRST_TRAIN_E20PLUS10_V1",
@@ -37,7 +37,7 @@
       "temporal_mode": "batch_neighbor",
       "temporal_min_streak": 2,
       "lr_schedule": "cosine",
-      "lr_min": 1e-06,
+      "lr_min": 0.000001,
       "launch_owner": "codex/root/F-spectralIQ-firsttrain-E30",
       "label_epochs": 0,
       "pseudo_epochs": 10,
@@ -75,7 +75,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06
+        "lr_min": 0.000001
       },
       "source_falsification": null,
       "training_recipe": "Original4L/commonRD.5+extraRD.5/SupCon.1/U;fixedFIR only on64Ag slots in E21..30",
@@ -245,7 +245,7 @@
         },
         "route": "existingresidual/post_sync",
         "EQ": false,
-        "reference_snr_db": 30.0,
+        "reference_snr_db": 30,
         "input": "originalLbeforeordinary",
         "no_rejection": true,
         "test_IQ_unchanged": true
@@ -271,7 +271,7 @@
         "question": "First empirical training utility of unchanged bounded digital observation FIR,not exact RX replacement",
         "taps": 33,
         "pre_RMS_response_bound_dB": 0.5,
-        "post_RMS_peak_to_peak_bound_dB": 1.0,
+        "post_RMS_peak_to_peak_bound_dB": 1,
         "boundary": "reflect16/centered/remove16numericdelay",
         "normalization": "Restore original packetRMS",
         "selection_seed": 20261017991,
@@ -287,9 +287,9 @@
       "selection": "fixedfinal10/cumulative30,no targetfeedback,allrows finish",
       "scientific_falsification": {
         "B10_clean_vs_B00_min_pp": 0.2,
-        "B11_clean_vs_B00_min_pp": 0.0,
+        "B11_clean_vs_B00_min_pp": 0,
         "B11_low_vs_B01_min_pp": 0.5,
-        "B11_mid_vs_B01_min_pp": 0.0,
+        "B11_mid_vs_B01_min_pp": 0,
         "B11_each_suburban_vs_B01_min_pp": -0.25,
         "no_automatic_seed_extension": true
       },
@@ -299,7 +299,7 @@
         "As": "None",
         "common_supervision": ".5 originalordinary RD",
         "extra_supervision": ".5 meanextraRD;64Ag plus64As/control slots",
-        "total_L_scale": 1.0,
+        "total_L_scale": 1,
         "L_forwards": 4,
         "composed_As_Ag_view": false
       }
@@ -339,7 +339,7 @@
       "temporal_mode": "batch_neighbor",
       "temporal_min_streak": 2,
       "lr_schedule": "cosine",
-      "lr_min": 1e-06,
+      "lr_min": 0.000001,
       "launch_owner": "codex/root/F-spectralIQ-firsttrain-E30",
       "label_epochs": 0,
       "pseudo_epochs": 10,
@@ -377,7 +377,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06
+        "lr_min": 0.000001
       },
       "source_falsification": null,
       "training_recipe": "Original4L/commonRD.5+extraRD.5/SupCon.1/U;fixedFIR only on64Ag slots in E21..30",
@@ -547,7 +547,7 @@
         },
         "route": "existingresidual/post_sync",
         "EQ": false,
-        "reference_snr_db": 30.0,
+        "reference_snr_db": 30,
         "input": "originalLbeforeordinary",
         "no_rejection": true,
         "test_IQ_unchanged": true
@@ -559,7 +559,7 @@
         "As": "Originalcomplete practical on64raw slots",
         "common_supervision": ".5 originalordinary RD",
         "extra_supervision": ".5 meanextraRD;64Ag plus64As/control slots",
-        "total_L_scale": 1.0,
+        "total_L_scale": 1,
         "L_forwards": 4,
         "composed_As_Ag_view": false
       },
@@ -583,7 +583,7 @@
         "question": "First empirical training utility of unchanged bounded digital observation FIR,not exact RX replacement",
         "taps": 33,
         "pre_RMS_response_bound_dB": 0.5,
-        "post_RMS_peak_to_peak_bound_dB": 1.0,
+        "post_RMS_peak_to_peak_bound_dB": 1,
         "boundary": "reflect16/centered/remove16numericdelay",
         "normalization": "Restore original packetRMS",
         "selection_seed": 20261017991,
@@ -599,14 +599,15 @@
       "selection": "fixedfinal10/cumulative30,no targetfeedback,allrows finish",
       "scientific_falsification": {
         "B10_clean_vs_B00_min_pp": 0.2,
-        "B11_clean_vs_B00_min_pp": 0.0,
+        "B11_clean_vs_B00_min_pp": 0,
         "B11_low_vs_B01_min_pp": 0.5,
-        "B11_mid_vs_B01_min_pp": 0.0,
+        "B11_mid_vs_B01_min_pp": 0,
         "B11_each_suburban_vs_B01_min_pp": -0.25,
         "no_automatic_seed_extension": true
       }
     }
   ],
   "first_training_only": true,
-  "old_source_feasibility_failed_unchanged": true
+  "old_source_feasibility_failed_unchanged": true,
+  "execution_commit": "97f260f469a47a000eed8ab84e8507a3cd0ca37d"
 }
