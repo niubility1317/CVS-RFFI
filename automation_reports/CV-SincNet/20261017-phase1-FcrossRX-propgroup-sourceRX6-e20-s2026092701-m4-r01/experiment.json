@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active joint Ag/As research goal; fixed per-model scratch E20, user baseline F plus cross-RX same-TX contrast. Four new matched source-only falsification rows; no extension, training checkpoint inheritance or target access.",
   "code": {
-    "commit": null,
+    "commit": "243ca4f460ed754da20fbe448fbcdf3398713fdc",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "ordinary N607 CVS-RFFI project Python; CPU2,loader0,fullFP32",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_propgroup_sourceRX6_E20_20261017_r01"
@@ -220,7 +220,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-propgroup-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -258,7 +258,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original13L7U/ordinary-onlySupCon/ownEMA/common.75raw+.25ordinary plus extra.25RD(raw/IID/scene_group/prop_group);8L,total1.25;rawarmalso fullphysicalshadow,no newloss/head/U",
@@ -535,7 +535,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-propgroup-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -573,7 +573,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original13L7U/ordinary-onlySupCon/ownEMA/common.75raw+.25ordinary plus extra.25RD(raw/IID/scene_group/prop_group);8L,total1.25;rawarmalso fullphysicalshadow,no newloss/head/U",
@@ -850,7 +850,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-propgroup-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -888,7 +888,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original13L7U/ordinary-onlySupCon/ownEMA/common.75raw+.25ordinary plus extra.25RD(raw/IID/scene_group/prop_group);8L,total1.25;rawarmalso fullphysicalshadow,no newloss/head/U",
@@ -1165,7 +1165,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-propgroup-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -1203,7 +1203,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original13L7U/ordinary-onlySupCon/ownEMA/common.75raw+.25ordinary plus extra.25RD(raw/IID/scene_group/prop_group);8L,total1.25;rawarmalso fullphysicalshadow,no newloss/head/U",

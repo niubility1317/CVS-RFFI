@@ -1,6 +1,6 @@
 # P20：F＋跨 RX 同 TX 的传播条件分组
 
-状态：PREREGISTERED，尚未读取本轮真实 IQ、加载兼容 checkpoint 或训练。唯一模型种子 2026092701；目标测试访问 0。实际代码 commit 待填。
+状态：RUNNING，已核实真实 checkpoint 合成烟测 PASS，四组源域训练正在执行。唯一模型种子 2026092701；目标测试访问 0。实际代码 commit `243ca4f460ed754da20fbe448fbcdf3398713fdc`。
 
 ## 已有失败与本轮问题
 
@@ -56,3 +56,11 @@ P19 频带可用性方案已完整 E20，MASK 相对 RAW clean −1.111111 个�
 一次独立 P0/P1 静态审查 PASS：传播/个人接收状态、RX6 角色排除、8L/4440 预算、own EMA、自动七视图源评价、容量及输出保护未发现直接 P0/P1；审查未读取真实 IQ/CP 或运行 NN。仅修正配置描述的 raw 份额与输入名称，不改执行。未新增重复审查、设计审批或哈希链。
 
 预期产物：逐 row args/config/角色/初始与冻结记录、4440 步/20 轮完整训练曲线、L/U 序列、传播组/私有流/场景状态覆盖、clean＋六场景默认头预测与 margin/physics、固定 RAW clean 正确集合保持率、state/lock/质量/CFO/核/噪声/AGC/边界分层图、独立评分与收益归因、实际成本及全部负结果。实验矩阵和配置唯一登记于 experiment.json。
+
+## 实际发布与运行核验
+
+实现 commit `243ca4f460ed754da20fbe448fbcdf3398713fdc` 已推送并通过 GitHub 独立读回 identical（ahead=behind=0）。一次普通账号 N607 预检通过；唯一发布归档本地/远端 SHA 比较 VERIFIED、远端编译 PASS。真实 leo_practical 与 SSDG 导入均来自不可变旧依赖的 `experiments/adv3b02_xuc/code/`，新分组包来自本次 release；实际路径保留在本地 `remote_import_probe.json`。
+
+父进程 278398；训练进程 RAW=278534/GPU0、IID=278610/GPU1、SCENE_GROUP=278689/GPU2、PROP_GROUP=278768/GPU3，PID/start_ticks/CWD/argv 与启动记录一致。真实匹配 CP 严格加载、2 个合成样本前向 PASS，0 query/IQ 读取、0 更新，随后立即开始 scratch。四组首轮222更新/28416物理生成、L NN227328；RAW不消费As、其余各28416；额外U=false。日志与 native 更新文件增长，已读早期更新全 finite/applied，U 真值可用计数0。证据：`E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017/post_launch_first.json`、`post_launch_growth.json`、`early_update_health.json`、`training_progress_latest.json`。
+
+训练仍在进行；无最终源域性能结果、正式测试、跨种子重现或联合成功声明。新增离线评分器通过15个协议负例与25个科学判据反例（0IQ/CP/NN/更新），将完整复核4440步、全部传播覆盖和35280个源域预测。该离线代码不进入本次训练 release，不热修改健康任务。
