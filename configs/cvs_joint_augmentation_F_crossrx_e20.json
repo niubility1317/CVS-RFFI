@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_BATCH_REPARTITION_CLOSED_SMALL_SINGLE_SEED_GAIN",
+  "status": "RESEARCH_ACTIVE_NO_SUPPORTED_NEW_IQ_AG",
   "source_experiment": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
   "authorization": "Latest explicit user budget E30;new fixed FIR first-learning-utility rows use matching noAg fullsource E20 parents plus10;no trainingRXholdout",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -2180,7 +2180,7 @@
       "joint_goal_complete": false
     }
   },
-  "latest_completed_experiment": "20261017-phase1-F-crossRX-dropoutCoupling-e20plus10-s2026092701-m2-r01",
+  "latest_completed_experiment": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
   "source_PSD_positive_affine": {
     "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
     "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
@@ -4512,5 +4512,23 @@
     "no_automatic_seed_extension": true,
     "Ag_efficacy": false,
     "joint_goal_complete": false
+  },
+  "latest_research_note": "analysis/cvs_amplitude_donor_route_check_20261018.md",
+  "amplitude_donor_route_check": {
+    "status": "NOT_INDEPENDENT_SUPPORTED_NEW_ROUTE_NO_LAUNCH",
+    "hypothesis": "Preserve anchor Fourier phase and borrow same-visibleTX crossRX donor amplitude",
+    "reason": [
+      "Same-identity interpolation overlaps closed route",
+      "Image AmpMix does not establish RF identity preservation",
+      "RF author method explanation concerns phase teacher and feature alignment",
+      "FreqMix original method not retrieved;title alone insufficient"
+    ],
+    "new_IQ_reads": 0,
+    "checkpoint_loads": 0,
+    "NN": 0,
+    "updates": 0,
+    "teacher": 0,
+    "remote_jobs": 0,
+    "note": "analysis/cvs_amplitude_donor_route_check_20261018.md"
   }
 }
