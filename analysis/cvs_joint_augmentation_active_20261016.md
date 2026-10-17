@@ -1,3 +1,11 @@
+## 2026-10-18：周期信号形状源统计完成；统一偏移资格失败
+
+[完整源L→V结果](../automation_reports/CV-SincNet/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01/source_analysis.md) 已 ANALYZED／VERIFIED。全部5RX/L6300/原V27000/256点保持，U容器和TX真值不读；四周期信号均值的20×20复投影区别于旧去均值残差lag1..4。源V RX差异SSE降94.711077%，18/18折、5/5RX改善，但共享残余SSE为同TX条件控制2.609059倍，超过固定1.05；五项条件最后一项失败，关闭固定共享偏移资格，不改窗口/条目/特征向量/RX/阈值救回。
+
+666000复因子条目/72000矩阵条目/180源单元/18折独立复算，指标误差2.23e−16内；源worker3.736284秒，reader1.033196秒，0CP/NN/teacher/更新/target，没有新IQ增强或识别成绩。技术自然完成；执行提交a4c557c5706a85427e190906c231f7cbe231de4e，归档本远一次对比和remote compile已VERIFIED。
+
+RX关联与共享加性偏移须区分：归一化投影在共享线性H下为HPHᴴ/tr(HPHᴴ)，与原P之差通常依赖P；TX条件控制更好不能单独否定共享输入作用的RX响应。这个代数边界不改写本行FAIL或复活旧phase/FIR/RXMIX。当前唯一待源检验问题是受物理约束的同一RX响应能否跨TX/day预测V；尚无实现/拟合/增强/训练，不启动猜测模型。完整Ag+As目标ACTIVE，最新正式身份结果仍为二阶矩E30负结果；以下旧当前/下一项按历史保留。
+
 ## 2026-10-18：逐视图二阶矩四行 E30 完整负结果，固定配方关闭
 
 [完整同成本报告](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/final_analysis.md) 已 ANALYZED／VERIFIED。全部5源RX／L6300-U56700隐藏TX-V27000／256点、F＋跨RX同TX／默认cos头联合训练／原U规则保持，无训练域留出；四行自身原E20＋10至累计E30，各2220新增更新和4L前向/2额外VJP。四个worker和dispatcher自然退出，全部4704000正式决策后独立truth-last；8880完整源步/矩记录、26640三坐标见证、52源CM/504正式CM/84分区/35配对独立复算一致，分析0IQ/CP/NN/更新/rawtruth。

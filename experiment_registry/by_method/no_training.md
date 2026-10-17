@@ -25,4 +25,4 @@
 |全源慢变包络：固定依据检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01/report.md)|
 |同 TX/RX/day 包络波动尺度的独立源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01/report.md)|
 |全部源 RX：L6300 到独立 V27000 的共享统计确认|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01/report.md)|
-|F＋跨 RX：周期信号相关形状的全源 L→V 检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01/report.md)|
+|已完成：周期信号形状源统计|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01/report.md)|

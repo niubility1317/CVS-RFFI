@@ -1,0 +1,1924 @@
+{
+  "decision": "CLOSED_FIXED_PERIODIC_SIGNAL_SHAPE",
+  "conditions": {
+    "nontrivial_RX_shape": true,
+    "relative_risk_gain": true,
+    "positive_folds": true,
+    "each_RX_nonnegative": true,
+    "not_strong_TX_dependence": false
+  },
+  "criteria": {
+    "min_baseline_Frobenius_RMS": 0.02,
+    "min_relative_risk_gain": 0.2,
+    "min_positive_folds": 15,
+    "max_each_RX_SSE_increase": 0,
+    "max_shared_to_TXconditional_SSE_ratio": 1.05,
+    "numerical_SSE_tolerance": 1e-20
+  },
+  "baseline_Frobenius_RMS": 0.3922086916053144,
+  "baseline_SSE": 13.844489199367734,
+  "shared_RX_SSE": 0.7322244363511312,
+  "TXconditional_SSE": 0.28064691215104764,
+  "risk_gain": 0.9471107654600525,
+  "positive_folds": 18,
+  "per_RX": {
+    "1": {
+      "baseline_SSE": 1.8395674983136998,
+      "shared_RX_SSE": 0.07383550025445529,
+      "risk_gain": 0.9598625762185193
+    },
+    "3": {
+      "baseline_SSE": 4.170515677118604,
+      "shared_RX_SSE": 0.2758978516029369,
+      "risk_gain": 0.9338456265452636
+    },
+    "4": {
+      "baseline_SSE": 1.8054446172248264,
+      "shared_RX_SSE": 0.05472453765642482,
+      "risk_gain": 0.9696891629162557
+    },
+    "6": {
+      "baseline_SSE": 1.828852324020626,
+      "shared_RX_SSE": 0.07907835580910279,
+      "risk_gain": 0.9567606663641088
+    },
+    "8": {
+      "baseline_SSE": 4.200109082689977,
+      "shared_RX_SSE": 0.2486881910282115,
+      "risk_gain": 0.9407900637502162
+    }
+  },
+  "folds": [
+    {
+      "TX": 0,
+      "day": 1,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7888837788790379,
+      "shared_RX_SSE": 0.08317212628915155,
+      "TXconditional_SSE": 0.01551899384234802,
+      "risk_gain": 0.894569861219184
+    },
+    {
+      "TX": 1,
+      "day": 1,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7701769296749632,
+      "shared_RX_SSE": 0.012067759520480444,
+      "TXconditional_SSE": 0.006109461982789404,
+      "risk_gain": 0.9843311853997323
+    },
+    {
+      "TX": 2,
+      "day": 1,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7543111064834833,
+      "shared_RX_SSE": 0.020339566070506295,
+      "TXconditional_SSE": 0.01102038788122325,
+      "risk_gain": 0.9730355739221087
+    },
+    {
+      "TX": 3,
+      "day": 1,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7733947588645915,
+      "shared_RX_SSE": 0.015161917252809323,
+      "TXconditional_SSE": 0.008292548074880831,
+      "risk_gain": 0.9803956296845504
+    },
+    {
+      "TX": 4,
+      "day": 1,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.759181263641509,
+      "shared_RX_SSE": 0.06017819939913495,
+      "TXconditional_SSE": 0.014358271954017718,
+      "risk_gain": 0.9207327653076123
+    },
+    {
+      "TX": 5,
+      "day": 1,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7707028159570839,
+      "shared_RX_SSE": 0.030740315624659464,
+      "TXconditional_SSE": 0.006954063772728883,
+      "risk_gain": 0.9601139181170824
+    },
+    {
+      "TX": 0,
+      "day": 2,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7587979096030821,
+      "shared_RX_SSE": 0.03157140759863121,
+      "TXconditional_SSE": 0.011733166919783974,
+      "risk_gain": 0.9583928642935432
+    },
+    {
+      "TX": 1,
+      "day": 2,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7593285126475896,
+      "shared_RX_SSE": 0.013829689647045477,
+      "TXconditional_SSE": 0.006638092152820281,
+      "risk_gain": 0.9817869480512134
+    },
+    {
+      "TX": 2,
+      "day": 2,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7949896578510971,
+      "shared_RX_SSE": 0.045569562179723966,
+      "TXconditional_SSE": 0.019656222943586585,
+      "risk_gain": 0.9426790503125524
+    },
+    {
+      "TX": 3,
+      "day": 2,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7847423240161797,
+      "shared_RX_SSE": 0.024993423458774894,
+      "TXconditional_SSE": 0.011516424387222612,
+      "risk_gain": 0.9681507895090165
+    },
+    {
+      "TX": 4,
+      "day": 2,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7841057617062595,
+      "shared_RX_SSE": 0.10920964718271339,
+      "TXconditional_SSE": 0.03705402998327649,
+      "risk_gain": 0.8607207694213764
+    },
+    {
+      "TX": 5,
+      "day": 2,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7747746108382235,
+      "shared_RX_SSE": 0.030618101264785254,
+      "TXconditional_SSE": 0.009608538863886537,
+      "risk_gain": 0.9604812795405625
+    },
+    {
+      "TX": 0,
+      "day": 3,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7802397300058754,
+      "shared_RX_SSE": 0.05486073193227661,
+      "TXconditional_SSE": 0.007559235513935835,
+      "risk_gain": 0.9296873386185249
+    },
+    {
+      "TX": 1,
+      "day": 3,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7294771294407227,
+      "shared_RX_SSE": 0.018682279789585268,
+      "TXconditional_SSE": 0.015277582642109721,
+      "risk_gain": 0.9743894920956485
+    },
+    {
+      "TX": 2,
+      "day": 3,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.773415551619804,
+      "shared_RX_SSE": 0.023312629689951125,
+      "TXconditional_SSE": 0.009918681954204213,
+      "risk_gain": 0.969857562805498
+    },
+    {
+      "TX": 3,
+      "day": 3,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7321844139587339,
+      "shared_RX_SSE": 0.014630120066066815,
+      "TXconditional_SSE": 0.00588905654064933,
+      "risk_gain": 0.9800185311416758
+    },
+    {
+      "TX": 4,
+      "day": 3,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7751240857656366,
+      "shared_RX_SSE": 0.08688163062093608,
+      "TXconditional_SSE": 0.06990277892223742,
+      "risk_gain": 0.8879126165520739
+    },
+    {
+      "TX": 5,
+      "day": 3,
+      "fit_L_cells": 50,
+      "evaluation_V_cells": 5,
+      "baseline_SSE": 0.7806588584138605,
+      "shared_RX_SSE": 0.05640532876389913,
+      "TXconditional_SSE": 0.013639373819346566,
+      "risk_gain": 0.9277465077658847
+    }
+  ],
+  "source_RX_holdout": null,
+  "L_only_fit": true,
+  "V_used_for_fit": false,
+  "shared_coefficient": 1,
+  "IQ_operator_implemented": false,
+  "Ag_proved": false,
+  "joint_goal_complete": false,
+  "target_access": false,
+  "status": "SOURCE_PERIODIC_SHAPE_READOUT_COMPLETE",
+  "run_id": "20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+  "cells": {
+    "L_s": [
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999989979,
+        "Frobenius_norm": 0.9993682660513967,
+        "projector_population_Frobenius_dispersion": 0.0012630688074206642
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.9999999999988913,
+        "Frobenius_norm": 0.9616856357513632,
+        "projector_population_Frobenius_dispersion": 0.07516073798727951
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.9999999999989985,
+        "Frobenius_norm": 0.9992752442963974,
+        "projector_population_Frobenius_dispersion": 0.0014489861343723875
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.999999999998999,
+        "Frobenius_norm": 0.9994557150501484,
+        "projector_population_Frobenius_dispersion": 0.0010882736515941405
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999989998,
+        "Frobenius_norm": 0.9999503415808539,
+        "projector_population_Frobenius_dispersion": 0.00009931437033294799
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999989984,
+        "Frobenius_norm": 0.998600509713202,
+        "projector_population_Frobenius_dispersion": 0.002797021998529603
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999989978,
+        "Frobenius_norm": 0.999224714231919,
+        "projector_population_Frobenius_dispersion": 0.0015499704661351421
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.9999999999989977,
+        "Frobenius_norm": 0.9971931823343039,
+        "projector_population_Frobenius_dispersion": 0.005605757103979037
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.9999999999989989,
+        "Frobenius_norm": 0.9995003526595105,
+        "projector_population_Frobenius_dispersion": 0.0009990450315114918
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999989986,
+        "Frobenius_norm": 0.999352182724563,
+        "projector_population_Frobenius_dispersion": 0.001295214881648854
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999989997,
+        "Frobenius_norm": 0.9999324375880724,
+        "projector_population_Frobenius_dispersion": 0.00013512025717488108
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999989982,
+        "Frobenius_norm": 0.9995322148654442,
+        "projector_population_Frobenius_dispersion": 0.0009353514441761135
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999989967,
+        "Frobenius_norm": 0.9990730608436575,
+        "projector_population_Frobenius_dispersion": 0.0018530190944787694
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.9999999999989992,
+        "Frobenius_norm": 0.9981419533935604,
+        "projector_population_Frobenius_dispersion": 0.003712640873685724
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.9999999999989984,
+        "Frobenius_norm": 0.9994728214390705,
+        "projector_population_Frobenius_dispersion": 0.0010540792026211276
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999989793,
+        "Frobenius_norm": 0.9907870652483187,
+        "projector_population_Frobenius_dispersion": 0.018340991334582224
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999989998,
+        "Frobenius_norm": 0.9999373578509525,
+        "projector_population_Frobenius_dispersion": 0.0001252803720553919
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999989975,
+        "Frobenius_norm": 0.997750755803954,
+        "projector_population_Frobenius_dispersion": 0.004493429290633788
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999987925,
+        "Frobenius_norm": 0.8963465248428245,
+        "projector_population_Frobenius_dispersion": 0.19656290739977755
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.999999999998843,
+        "Frobenius_norm": 0.9193574066142306,
+        "projector_population_Frobenius_dispersion": 0.15478195890124258
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.9999999999988772,
+        "Frobenius_norm": 0.9410609663092502,
+        "projector_population_Frobenius_dispersion": 0.11440425768685525
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999988829,
+        "Frobenius_norm": 0.9508795968804785,
+        "projector_population_Frobenius_dispersion": 0.09582799223418481
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999986602,
+        "Frobenius_norm": 0.8491723928400945,
+        "projector_population_Frobenius_dispersion": 0.2789062472355489
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999988164,
+        "Frobenius_norm": 0.9321094818318246,
+        "projector_population_Frobenius_dispersion": 0.1311719138768399
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999986761,
+        "Frobenius_norm": 0.9084246080630007,
+        "projector_population_Frobenius_dispersion": 0.17476473146293592
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.9999999999988269,
+        "Frobenius_norm": 0.9346814361583301,
+        "projector_population_Frobenius_dispersion": 0.12637061289865492
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.9999999999987477,
+        "Frobenius_norm": 0.8963052256667521,
+        "projector_population_Frobenius_dispersion": 0.1966369424399682
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999988414,
+        "Frobenius_norm": 0.9402908743972216,
+        "projector_population_Frobenius_dispersion": 0.11585307152299118
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999988698,
+        "Frobenius_norm": 0.9136589451472846,
+        "projector_population_Frobenius_dispersion": 0.16522733195009065
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999988738,
+        "Frobenius_norm": 0.9534544841376135,
+        "projector_population_Frobenius_dispersion": 0.09092454667562455
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.999999999998756,
+        "Frobenius_norm": 0.869843400068617,
+        "projector_population_Frobenius_dispersion": 0.24337245935457963
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.9999999999988636,
+        "Frobenius_norm": 0.9412975560252428,
+        "projector_population_Frobenius_dispersion": 0.11395891101863231
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.9999999999988874,
+        "Frobenius_norm": 0.9552137167428651,
+        "projector_population_Frobenius_dispersion": 0.08756675534405611
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.999999999998884,
+        "Frobenius_norm": 0.9364588190921147,
+        "projector_population_Frobenius_dispersion": 0.12304488014237047
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999986978,
+        "Frobenius_norm": 0.8318276528245218,
+        "projector_population_Frobenius_dispersion": 0.3080627559938426
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999988969,
+        "Frobenius_norm": 0.9455741160712693,
+        "projector_population_Frobenius_dispersion": 0.10588959101383155
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999989967,
+        "Frobenius_norm": 0.9962306364509026,
+        "projector_population_Frobenius_dispersion": 0.007524518994622809
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.9999999999989994,
+        "Frobenius_norm": 0.9996700156215226,
+        "projector_population_Frobenius_dispersion": 0.0006598598652635124
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.999999999998948,
+        "Frobenius_norm": 0.9666001296600706,
+        "projector_population_Frobenius_dispersion": 0.06568418933903108
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999989994,
+        "Frobenius_norm": 0.9991741699708682,
+        "projector_population_Frobenius_dispersion": 0.001650978061024877
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999989657,
+        "Frobenius_norm": 0.9898788742561677,
+        "projector_population_Frobenius_dispersion": 0.020139814299273584
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.999999999998954,
+        "Frobenius_norm": 0.9736102163433058,
+        "projector_population_Frobenius_dispersion": 0.052083146629849475
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999989988,
+        "Frobenius_norm": 0.9990243532297192,
+        "projector_population_Frobenius_dispersion": 0.0019503416519387473
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.999999999998998,
+        "Frobenius_norm": 0.9963641376607693,
+        "projector_population_Frobenius_dispersion": 0.007258505181507724
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.999999999998997,
+        "Frobenius_norm": 0.9927454109971955,
+        "projector_population_Frobenius_dispersion": 0.014456548942003544
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999989947,
+        "Frobenius_norm": 0.9956028368807958,
+        "projector_population_Frobenius_dispersion": 0.008774991192900483
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999989975,
+        "Frobenius_norm": 0.9965020861132062,
+        "projector_population_Frobenius_dispersion": 0.006983592370022995
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999989959,
+        "Frobenius_norm": 0.9982855524794602,
+        "projector_population_Frobenius_dispersion": 0.0034259557087711334
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999989992,
+        "Frobenius_norm": 0.999276062609079,
+        "projector_population_Frobenius_dispersion": 0.0014473506944940873
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.9999999999989988,
+        "Frobenius_norm": 0.9960226497666914,
+        "projector_population_Frobenius_dispersion": 0.007938881149736399
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.9999999999989705,
+        "Frobenius_norm": 0.9841862801858816,
+        "projector_population_Frobenius_dispersion": 0.0313773658918185
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999989985,
+        "Frobenius_norm": 0.9988959267911822,
+        "projector_population_Frobenius_dispersion": 0.002206927437982009
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.999999999998998,
+        "Frobenius_norm": 0.9978417012824039,
+        "projector_population_Frobenius_dispersion": 0.004311939179834079
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999989796,
+        "Frobenius_norm": 0.9857592810759078,
+        "projector_population_Frobenius_dispersion": 0.02827863977066858
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999989944,
+        "Frobenius_norm": 0.9969546174725445,
+        "projector_population_Frobenius_dispersion": 0.006081490698161218
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.999999999998998,
+        "Frobenius_norm": 0.9990727609607684,
+        "projector_population_Frobenius_dispersion": 0.001853618304223148
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.9999999999989939,
+        "Frobenius_norm": 0.9990123556454353,
+        "projector_population_Frobenius_dispersion": 0.0019743132657463747
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999989995,
+        "Frobenius_norm": 0.9998740252273942,
+        "projector_population_Frobenius_dispersion": 0.00025193367356746155
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999989928,
+        "Frobenius_norm": 0.9925605756461005,
+        "projector_population_Frobenius_dispersion": 0.014823503671067217
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999989967,
+        "Frobenius_norm": 0.9991427118426447,
+        "projector_population_Frobenius_dispersion": 0.0017138413697195265
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999989895,
+        "Frobenius_norm": 0.9901691222961131,
+        "projector_population_Frobenius_dispersion": 0.019565109249323975
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.9999999999989955,
+        "Frobenius_norm": 0.9947930770793033,
+        "projector_population_Frobenius_dispersion": 0.010386733793082303
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.999999999998999,
+        "Frobenius_norm": 0.9995964779500724,
+        "projector_population_Frobenius_dispersion": 0.0008068812678087012
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999989995,
+        "Frobenius_norm": 0.9986675433609423,
+        "projector_population_Frobenius_dispersion": 0.0026631378354191604
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999989357,
+        "Frobenius_norm": 0.9696220700269299,
+        "projector_population_Frobenius_dispersion": 0.059833041314562574
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999989976,
+        "Frobenius_norm": 0.9995031785245917,
+        "projector_population_Frobenius_dispersion": 0.0009933961172333694
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.999999999998948,
+        "Frobenius_norm": 0.9777995786102519,
+        "projector_population_Frobenius_dispersion": 0.04390798406750929
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.9999999999989962,
+        "Frobenius_norm": 0.9883348074318353,
+        "projector_population_Frobenius_dispersion": 0.023194308416669362
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.9999999999989989,
+        "Frobenius_norm": 0.9990635084918932,
+        "projector_population_Frobenius_dispersion": 0.001872105997866691
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999989995,
+        "Frobenius_norm": 0.997424462674485,
+        "projector_population_Frobenius_dispersion": 0.005144441256514032
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999988718,
+        "Frobenius_norm": 0.9437415186806422,
+        "projector_population_Frobenius_dispersion": 0.10935194591609898
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.999999999998995,
+        "Frobenius_norm": 0.9966227172010662,
+        "projector_population_Frobenius_dispersion": 0.006743159556754086
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999987704,
+        "Frobenius_norm": 0.9353783489068013,
+        "projector_population_Frobenius_dispersion": 0.1250673443939272
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.99999999999889,
+        "Frobenius_norm": 0.9482509687799422,
+        "projector_population_Frobenius_dispersion": 0.100820100205681
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.9999999999989251,
+        "Frobenius_norm": 0.9614580255593749,
+        "projector_population_Frobenius_dispersion": 0.0755984650853182
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999986795,
+        "Frobenius_norm": 0.8920290721746057,
+        "projector_population_Frobenius_dispersion": 0.20428413439267146
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999988618,
+        "Frobenius_norm": 0.9519544914843,
+        "projector_population_Frobenius_dispersion": 0.09378264614059051
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999989295,
+        "Frobenius_norm": 0.959138596561219,
+        "projector_population_Frobenius_dispersion": 0.08005315258443424
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999988942,
+        "Frobenius_norm": 0.9470362482973017,
+        "projector_population_Frobenius_dispersion": 0.10312234440875967
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.9999999999987492,
+        "Frobenius_norm": 0.9346224710900424,
+        "projector_population_Frobenius_dispersion": 0.12648083653104158
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.999999999998923,
+        "Frobenius_norm": 0.9673816502278401,
+        "projector_population_Frobenius_dispersion": 0.06417274280030716
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.999999999998854,
+        "Frobenius_norm": 0.9267220415187891,
+        "projector_population_Frobenius_dispersion": 0.14118625776095617
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999989284,
+        "Frobenius_norm": 0.9530446164309753,
+        "projector_population_Frobenius_dispersion": 0.09170595908979207
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999989283,
+        "Frobenius_norm": 0.9647808763977338,
+        "projector_population_Frobenius_dispersion": 0.06919786053507804
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 0,
+        "count": 70,
+        "mean_trace": 0.9999999999988083,
+        "Frobenius_norm": 0.9291529189269747,
+        "projector_population_Frobenius_dispersion": 0.13667485324709883
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 1,
+        "count": 70,
+        "mean_trace": 0.99999999999887,
+        "Frobenius_norm": 0.9373942552477236,
+        "projector_population_Frobenius_dispersion": 0.12129201022630542
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 2,
+        "count": 70,
+        "mean_trace": 0.9999999999989182,
+        "Frobenius_norm": 0.9690165473887135,
+        "projector_population_Frobenius_dispersion": 0.061006930884694
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 3,
+        "count": 70,
+        "mean_trace": 0.9999999999987905,
+        "Frobenius_norm": 0.9192959841351624,
+        "projector_population_Frobenius_dispersion": 0.15489489355054475
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 4,
+        "count": 70,
+        "mean_trace": 0.9999999999987923,
+        "Frobenius_norm": 0.9353629980941098,
+        "projector_population_Frobenius_dispersion": 0.1250960617939828
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 5,
+        "count": 70,
+        "mean_trace": 0.9999999999989289,
+        "Frobenius_norm": 0.9603939196284432,
+        "projector_population_Frobenius_dispersion": 0.0776435191385737
+      }
+    ],
+    "V": [
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999989846,
+        "Frobenius_norm": 0.9959136698684603,
+        "projector_population_Frobenius_dispersion": 0.008155962167104236
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999989935,
+        "Frobenius_norm": 0.9963881185357875,
+        "projector_population_Frobenius_dispersion": 0.007210717238700259
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989988,
+        "Frobenius_norm": 0.9992954797541118,
+        "projector_population_Frobenius_dispersion": 0.0014085441409968924
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999989989,
+        "Frobenius_norm": 0.9992208294534735,
+        "projector_population_Frobenius_dispersion": 0.001557733984310139
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999989999,
+        "Frobenius_norm": 0.9999387945362816,
+        "projector_population_Frobenius_dispersion": 0.00012240717932743284
+      },
+      {
+        "RX": 1,
+        "day": 1,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999989986,
+        "Frobenius_norm": 0.9984426322791322,
+        "projector_population_Frobenius_dispersion": 0.003112310045514155
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999989975,
+        "Frobenius_norm": 0.9990651721838446,
+        "projector_population_Frobenius_dispersion": 0.001868781727259794
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999989976,
+        "Frobenius_norm": 0.996052900140394,
+        "projector_population_Frobenius_dispersion": 0.007878620119906032
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989987,
+        "Frobenius_norm": 0.9994110007020752,
+        "projector_population_Frobenius_dispersion": 0.0011776516736740072
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999989992,
+        "Frobenius_norm": 0.9963943856130085,
+        "projector_population_Frobenius_dispersion": 0.00719822831687289
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999989999,
+        "Frobenius_norm": 0.9999212465405954,
+        "projector_population_Frobenius_dispersion": 0.00015750071470121974
+      },
+      {
+        "RX": 1,
+        "day": 2,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999989986,
+        "Frobenius_norm": 0.9992335060438189,
+        "projector_population_Frobenius_dispersion": 0.001532400397374123
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999989964,
+        "Frobenius_norm": 0.9981580393124639,
+        "projector_population_Frobenius_dispersion": 0.003680528553891116
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999989995,
+        "Frobenius_norm": 0.9984357807652533,
+        "projector_population_Frobenius_dispersion": 0.0031259916856775094
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989986,
+        "Frobenius_norm": 0.9994016251349898,
+        "projector_population_Frobenius_dispersion": 0.0011963916755385329
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999989984,
+        "Frobenius_norm": 0.9966518424955274,
+        "projector_population_Frobenius_dispersion": 0.0066851048482668984
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999989999,
+        "Frobenius_norm": 0.9999440206059093,
+        "projector_population_Frobenius_dispersion": 0.00011195565248822703
+      },
+      {
+        "RX": 1,
+        "day": 3,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999989976,
+        "Frobenius_norm": 0.997837058606633,
+        "projector_population_Frobenius_dispersion": 0.004321204469257767
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999987728,
+        "Frobenius_norm": 0.8999850857850131,
+        "projector_population_Frobenius_dispersion": 0.19002684536208825
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999988877,
+        "Frobenius_norm": 0.9501623545278237,
+        "projector_population_Frobenius_dispersion": 0.09719150003591737
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999988918,
+        "Frobenius_norm": 0.9560778629711796,
+        "projector_population_Frobenius_dispersion": 0.08591511993424528
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999988588,
+        "Frobenius_norm": 0.9371661312944415,
+        "projector_population_Frobenius_dispersion": 0.12171964235232735
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999987685,
+        "Frobenius_norm": 0.8852522580218034,
+        "projector_population_Frobenius_dispersion": 0.21632843966483495
+      },
+      {
+        "RX": 3,
+        "day": 1,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999988887,
+        "Frobenius_norm": 0.9546841611910551,
+        "projector_population_Frobenius_dispersion": 0.08857815236870825
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999987622,
+        "Frobenius_norm": 0.8953504645102026,
+        "projector_population_Frobenius_dispersion": 0.19834754569888835
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999988728,
+        "Frobenius_norm": 0.93409348070284,
+        "projector_population_Frobenius_dispersion": 0.12746936930619868
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999988851,
+        "Frobenius_norm": 0.9505554699122535,
+        "projector_population_Frobenius_dispersion": 0.09644429861766524
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999988735,
+        "Frobenius_norm": 0.9448987122106172,
+        "projector_population_Frobenius_dispersion": 0.10716642366046436
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999987678,
+        "Frobenius_norm": 0.8731970517565864,
+        "projector_population_Frobenius_dispersion": 0.23752690880114102
+      },
+      {
+        "RX": 3,
+        "day": 2,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.999999999998898,
+        "Frobenius_norm": 0.9541805394190851,
+        "projector_population_Frobenius_dispersion": 0.08953949819169993
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999987765,
+        "Frobenius_norm": 0.8843196285538277,
+        "projector_population_Frobenius_dispersion": 0.21797879455197278
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999987967,
+        "Frobenius_norm": 0.9049359768032309,
+        "projector_population_Frobenius_dispersion": 0.18109087788477585
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989009,
+        "Frobenius_norm": 0.9560470555825836,
+        "projector_population_Frobenius_dispersion": 0.08597402750967442
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999988587,
+        "Frobenius_norm": 0.9249694545816777,
+        "projector_population_Frobenius_dispersion": 0.1444315080885913
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999986806,
+        "Frobenius_norm": 0.8298340630503972,
+        "projector_population_Frobenius_dispersion": 0.31137542779863114
+      },
+      {
+        "RX": 3,
+        "day": 3,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999988516,
+        "Frobenius_norm": 0.9447810059338884,
+        "projector_population_Frobenius_dispersion": 0.10738885082425342
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999989968,
+        "Frobenius_norm": 0.9962742235092082,
+        "projector_population_Frobenius_dispersion": 0.0074376715691175654
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999989992,
+        "Frobenius_norm": 0.9980089369786856,
+        "projector_population_Frobenius_dispersion": 0.003978161708672268
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999988953,
+        "Frobenius_norm": 0.9489690923741144,
+        "projector_population_Frobenius_dispersion": 0.09945766171644
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999989847,
+        "Frobenius_norm": 0.9924663021245796,
+        "projector_population_Frobenius_dispersion": 0.015010639145131566
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999989988,
+        "Frobenius_norm": 0.9990523201460508,
+        "projector_population_Frobenius_dispersion": 0.0018944616087903654
+      },
+      {
+        "RX": 4,
+        "day": 1,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999989858,
+        "Frobenius_norm": 0.9930495947375092,
+        "projector_population_Frobenius_dispersion": 0.013852502389640087
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999989991,
+        "Frobenius_norm": 0.9990316566263568,
+        "projector_population_Frobenius_dispersion": 0.0019357490563947088
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999989989,
+        "Frobenius_norm": 0.9969841160701186,
+        "projector_population_Frobenius_dispersion": 0.006022672301882137
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989597,
+        "Frobenius_norm": 0.9732829608266621,
+        "projector_population_Frobenius_dispersion": 0.052720278162405765
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999989789,
+        "Frobenius_norm": 0.9908468394861144,
+        "projector_population_Frobenius_dispersion": 0.018222540678336174
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999989979,
+        "Frobenius_norm": 0.9983954527095094,
+        "projector_population_Frobenius_dispersion": 0.0032065200069696376
+      },
+      {
+        "RX": 4,
+        "day": 2,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.999999999998971,
+        "Frobenius_norm": 0.9823745235331759,
+        "projector_population_Frobenius_dispersion": 0.03494029551090738
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999989991,
+        "Frobenius_norm": 0.9993536720060718,
+        "projector_population_Frobenius_dispersion": 0.001292238245978572
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999989982,
+        "Frobenius_norm": 0.9965755587225673,
+        "projector_population_Frobenius_dispersion": 0.006837155754798707
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989687,
+        "Frobenius_norm": 0.9872204356115395,
+        "projector_population_Frobenius_dispersion": 0.025395811508899246
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999989793,
+        "Frobenius_norm": 0.9908027933865295,
+        "projector_population_Frobenius_dispersion": 0.01830982461540842
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999989915,
+        "Frobenius_norm": 0.9954223755230263,
+        "projector_population_Frobenius_dispersion": 0.009134294306077817
+      },
+      {
+        "RX": 4,
+        "day": 3,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999989759,
+        "Frobenius_norm": 0.9808977121239336,
+        "projector_population_Frobenius_dispersion": 0.037839678347984074
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999989866,
+        "Frobenius_norm": 0.995595515369227,
+        "projector_population_Frobenius_dispersion": 0.008789569774655948
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999989915,
+        "Frobenius_norm": 0.9952228364611135,
+        "projector_population_Frobenius_dispersion": 0.00953150578427897
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989957,
+        "Frobenius_norm": 0.9991297196556105,
+        "projector_population_Frobenius_dispersion": 0.0017398032988924506
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999989997,
+        "Frobenius_norm": 0.9986270802545324,
+        "projector_population_Frobenius_dispersion": 0.002743954580307073
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999989708,
+        "Frobenius_norm": 0.9822447958847531,
+        "projector_population_Frobenius_dispersion": 0.03519516095526132
+      },
+      {
+        "RX": 6,
+        "day": 1,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999989968,
+        "Frobenius_norm": 0.9991641381416806,
+        "projector_population_Frobenius_dispersion": 0.0016710250495861612
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999989899,
+        "Frobenius_norm": 0.9908560813918846,
+        "projector_population_Frobenius_dispersion": 0.018204225966698906
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999989906,
+        "Frobenius_norm": 0.9962997273195969,
+        "projector_population_Frobenius_dispersion": 0.0073868533408775194
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989985,
+        "Frobenius_norm": 0.9991020345206095,
+        "projector_population_Frobenius_dispersion": 0.0017951246147756006
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999989998,
+        "Frobenius_norm": 0.9993470344640036,
+        "projector_population_Frobenius_dispersion": 0.0013055047060008818
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999989798,
+        "Frobenius_norm": 0.9802060770770625,
+        "projector_population_Frobenius_dispersion": 0.03919604645915553
+      },
+      {
+        "RX": 6,
+        "day": 2,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999989977,
+        "Frobenius_norm": 0.9993847469123794,
+        "projector_population_Frobenius_dispersion": 0.0012301276368743563
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999989884,
+        "Frobenius_norm": 0.9959208501571413,
+        "projector_population_Frobenius_dispersion": 0.0081416602202532
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999989904,
+        "Frobenius_norm": 0.9856303712873815,
+        "projector_population_Frobenius_dispersion": 0.028532771193878204
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989991,
+        "Frobenius_norm": 0.9990843470745974,
+        "projector_population_Frobenius_dispersion": 0.0018304674285231082
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999990001,
+        "Frobenius_norm": 0.9989418701875699,
+        "projector_population_Frobenius_dispersion": 0.0021151399841595753
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999989748,
+        "Frobenius_norm": 0.9889095331186512,
+        "projector_population_Frobenius_dispersion": 0.02205793530500133
+      },
+      {
+        "RX": 6,
+        "day": 3,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999989948,
+        "Frobenius_norm": 0.9960280448887543,
+        "projector_population_Frobenius_dispersion": 0.00792813379307522
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999988156,
+        "Frobenius_norm": 0.9003806885382897,
+        "projector_population_Frobenius_dispersion": 0.18931461570494634
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999988637,
+        "Frobenius_norm": 0.9459796947238771,
+        "projector_population_Frobenius_dispersion": 0.10512241716784732
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989174,
+        "Frobenius_norm": 0.9703819512277421,
+        "projector_population_Frobenius_dispersion": 0.05835886872927509
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999987799,
+        "Frobenius_norm": 0.9283660711141656,
+        "projector_population_Frobenius_dispersion": 0.13813643800160713
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999988877,
+        "Frobenius_norm": 0.9561281779435093,
+        "projector_population_Frobenius_dispersion": 0.08581890734020026
+      },
+      {
+        "RX": 8,
+        "day": 1,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999989349,
+        "Frobenius_norm": 0.9628308111645014,
+        "projector_population_Frobenius_dispersion": 0.07295682907017842
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999988676,
+        "Frobenius_norm": 0.9287996596836229,
+        "projector_population_Frobenius_dispersion": 0.137331192169321
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999988833,
+        "Frobenius_norm": 0.9465426938557076,
+        "projector_population_Frobenius_dispersion": 0.10405692870614658
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989194,
+        "Frobenius_norm": 0.9676793845541407,
+        "projector_population_Frobenius_dispersion": 0.0635966087067581
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.9999999999988225,
+        "Frobenius_norm": 0.9233990058246366,
+        "projector_population_Frobenius_dispersion": 0.14733427603971805
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999989035,
+        "Frobenius_norm": 0.9600253347840668,
+        "projector_population_Frobenius_dispersion": 0.07835135657054704
+      },
+      {
+        "RX": 8,
+        "day": 2,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999989378,
+        "Frobenius_norm": 0.966119248777715,
+        "projector_population_Frobenius_dispersion": 0.06661359713905879
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 0,
+        "count": 300,
+        "mean_trace": 0.9999999999988632,
+        "Frobenius_norm": 0.9322291195420023,
+        "projector_population_Frobenius_dispersion": 0.1309488686756699
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 1,
+        "count": 300,
+        "mean_trace": 0.9999999999988849,
+        "Frobenius_norm": 0.9392143368118715,
+        "projector_population_Frobenius_dispersion": 0.11787642952480637
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 2,
+        "count": 300,
+        "mean_trace": 0.9999999999989178,
+        "Frobenius_norm": 0.9621454413479994,
+        "projector_population_Frobenius_dispersion": 0.07427614969109875
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 3,
+        "count": 300,
+        "mean_trace": 0.999999999998757,
+        "Frobenius_norm": 0.8990183801392957,
+        "projector_population_Frobenius_dispersion": 0.1917659521692301
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 4,
+        "count": 300,
+        "mean_trace": 0.9999999999988968,
+        "Frobenius_norm": 0.9543648404436372,
+        "projector_population_Frobenius_dispersion": 0.08918775132278478
+      },
+      {
+        "RX": 8,
+        "day": 3,
+        "TX": 5,
+        "count": 300,
+        "mean_trace": 0.9999999999989242,
+        "Frobenius_norm": 0.9630800625590316,
+        "projector_population_Frobenius_dispersion": 0.07247679309914035
+      }
+    ]
+  },
+  "quality": {
+    "L_s": {
+      "zero_mean_packets": 0,
+      "lag20_coherence_quantiles": [
+        0.04587960572003442,
+        0.8269307727619052,
+        0.9948382789459704,
+        0.9993858165649746,
+        0.999829592604135
+      ],
+      "coherent_fraction_quantiles": [
+        0.08237280903598675,
+        0.8690885317731626,
+        0.9955348686391561,
+        0.9994603215109301,
+        0.9998229754084806
+      ],
+      "packets": 6300,
+      "all_packets_retained": true
+    },
+    "V": {
+      "zero_mean_packets": 0,
+      "lag20_coherence_quantiles": [
+        0.02023905162381524,
+        0.8298029886064859,
+        0.9946494514416235,
+        0.9993859597448455,
+        0.9998093058648456
+      ],
+      "coherent_fraction_quantiles": [
+        0.11848755370170704,
+        0.8680271102935535,
+        0.9954279652453893,
+        0.9994624148458641,
+        0.9998121968543692
+      ],
+      "packets": 27000,
+      "all_packets_retained": true
+    }
+  },
+  "all_source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_L_unique": 6300,
+  "source_V_unique": 27000,
+  "physical_L_V_disjoint": true,
+  "U_used": false,
+  "U_truth_read": false,
+  "V_updates": 0,
+  "head_fit_updates": 0,
+  "automatic_training": false
+}

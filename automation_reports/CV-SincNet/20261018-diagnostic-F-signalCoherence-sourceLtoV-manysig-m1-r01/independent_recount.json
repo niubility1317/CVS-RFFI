@@ -1,0 +1,38 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+  "decision": "CLOSED_FIXED_PERIODIC_SIGNAL_SHAPE",
+  "conditions": {
+    "nontrivial_RX_shape": true,
+    "relative_risk_gain": true,
+    "positive_folds": true,
+    "each_RX_nonnegative": true,
+    "not_strong_TX_dependence": false
+  },
+  "source_L": 6300,
+  "source_V": 27000,
+  "all_source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_RX_holdout": null,
+  "source_complex_factor_entries_recounted": 666000,
+  "source_cell_matrix_entries_recounted": 72000,
+  "source_cells": 180,
+  "statistical_folds": 18,
+  "mean_matrix_max_error": 1.5265566588595902e-16,
+  "metric_max_error": 2.220446049250313e-16,
+  "IQ_reads": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "U_truth_reads": 0,
+  "raw_target_truth_reads": 0,
+  "target_access": false,
+  "IQ_operator_implemented": false,
+  "joint_goal_complete": false,
+  "wall_seconds": 1.033195641124621
+}

@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active Ag+As research;latest human:existing256IQ,all sourceRX retained,F+CROSS_RX,E30;this single source diagnostic has0NN/CP/updates and no automatic model launch",
   "code": {
-    "commit": "PENDING_ACTUAL_GIT_COMMIT_PINNED_BY_PUBLISH",
+    "commit": "a4c557c5706a85427e190906c231f7cbe231de4e",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 existing CVS-RFFI Python/Torch/NumPy CPU,2threads",
     "cwd": "PROJECT/releases/cvs_F_signal_coherence_source_20261018_r01"
@@ -239,7 +239,23 @@
           "https://www.mathworks.com/help/wlan/gs/non-ht-ppdu-structure.html"
         ]
       },
-      "status": "PLANNED"
+      "status": "ANALYZED",
+      "result": {
+        "source_only": true,
+        "complete": true,
+        "decision": "CLOSED_FIXED_PERIODIC_SIGNAL_SHAPE",
+        "source_risk_gain": 0.9471107654600525,
+        "positive_folds": 18,
+        "source_RX_holdout": null,
+        "source_L": 6300,
+        "source_V": 27000,
+        "shared_to_TXconditional_SSE_ratio": 2.6090593006668783,
+        "NN": 0,
+        "updates": 0,
+        "target_access": false,
+        "IQ_operator_implemented": false,
+        "report": "automation_reports/CV-SincNet/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01/source_analysis.md"
+      }
     }
   ],
   "notes": [
