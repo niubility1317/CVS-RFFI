@@ -23,4 +23,4 @@
 |等期望功率的接收带限观测噪声：完整 L6300 源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01/report.md)|
 |等平均 N0 变化：完整源反证结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01/report.md)|
 |全源慢变包络：固定依据检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01/report.md)|
-|F＋跨 RX：同 TX/RX/day 包络波动尺度的独立源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01/report.md)|
+|同 TX/RX/day 包络波动尺度的独立源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01/report.md)|

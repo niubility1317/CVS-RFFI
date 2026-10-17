@@ -1,3 +1,9 @@
+## 2026-10-18：包络波动来源假设失败；匹配No-As已完成
+
+当前没有运行中的本路线新候选。最新源统计行 [包络波动尺度](../automation_reports/CV-SincNet/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01/report.md) 已 ANALYZED／VERIFIED：全部L6300／90单元／全部5RX，0新IQ／CP／NN／更新／target。共享RX相对误差0.434600、15/18折改善，但RX6为1.003873，且共享误差是同TX跨日控制的1.657039倍，两项固定条件失败；关闭DCT1／MAD来源问题，不改统计量或阈值救跑。通过部分相关性不能当身份保持或Ag收益。
+
+最新正式识别对照 [匹配No-As E30](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01/report.md) 已 ANALYZED：B00 clean85.245238%、midurban37.279762%、lowurban31.712500%；普通As82.722619%／64.376786%／53.458333%，是单种子As适应正收益和clean代价。梯度投影三行正式评分已完成、固定条件失败关闭。当前仍无已支持的新IQ Ag，low未超60%，联合目标ACTIVE。全部256点／F＋跨RX同TX／E30／五源RX／完整L6300／原U／默认头保持。以下“当前、运行、下一项”等旧措辞全部为历史，以本段与实际run为准。
+
 ## 2026-10-18：视图梯度组织 r02 已真实运行
 
 三行ORIGINAL／MEASURE／PROJECT在GPU0／1／3，独立PID/CWD/argv/GPU核对与同父真实CP smoke通过，857native参数仅candidate_id/output_dir不同；三行均完成累计E21、各222次实际更新与0／444／444额外VJP生命周期检查，U真值隐藏、无非有限跳步。r01发布占位符误伤候选名，已保留零真实训练失败记录；一次直接P1修复及定向复核后以新r02发布，预算／机制／矩阵不变。固定E30及七视图评分均未完成，不宣称识别提升；本轮不是IQ Ag。[当前报告](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/report.md)。
