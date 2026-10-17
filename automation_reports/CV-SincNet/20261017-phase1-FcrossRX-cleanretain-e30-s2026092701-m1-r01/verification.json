@@ -1,0 +1,18 @@
+{
+  "focused_tests": 8,
+  "focused_status": "PASS",
+  "compile": "PASS",
+  "local_real_IQ": 0,
+  "local_real_CP": 0,
+  "local_training_updates": 0,
+  "review": "PASS:one independentP0/P1 + original output-collision targeted confirmation;no otherP0/P1",
+  "source_contract": "fulloriginal5RX7/63/30",
+  "new_training_parent": "none",
+  "pending_remote": [
+    "compile",
+    "real CP2 noquery firststep",
+    "native synthetic512 isolation",
+    "actual args comparison",
+    "PID/CWD/argv/GPU/loggrowth"
+  ]
+}
