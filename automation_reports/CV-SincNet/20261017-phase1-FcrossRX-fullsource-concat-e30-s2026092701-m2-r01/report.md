@@ -73,3 +73,11 @@ run：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-f
 新增独立分析入口 `analysis/cvs_fullsource_E30_results_20261017.py` 与4项聚焦测试。分析只在所请求行全部七视图冻结预测及独立评分完成后打开truth，不读取IQ/checkpoint、不运行网络或更新参数；严格拒绝旧E20、非6660、非20L10U、额外heldRX/角色改变及提前truth等记录。4项测试PASS，包含手算宏F1/混淆矩阵、非法类别、预算与完整性拒绝、第二行不完整时在truth及输出创建前停止；compile PASS。
 
 工具将完整读取每行30轮/6660步、SupCon/Sinc/训练L-U序列与全部physics，复算正式252个分层混淆矩阵、paired修复/新错及固定B00 clean正确集合保持率，分别记录student/teacher/prediction与墙钟成本。图包括正式准确率、30轮ordinary/second CE及KL/原U gate/源V/墙钟、正式RX表现、训练状态/锁定/质量代理/源RX覆盖。训练覆盖图不表示准确率，质量代理不表示总SNR。实际生成后才检查和提供图表；当前没有伪造结果或图路径。训练发布代码仍为 `bafba40e365d0914a2e86f861fb55a49f1cd3997`，新分析器不会热改该发布。
+
+## 原记录时间上下文核查
+
+复用与native相同的既有ManySig.pkl载体反序列化，只检查原源RX1/3/4/6/8、day1/2/3、6TX容器的shape/dtype元信息，没有索引IQ数值、读取U TX真值、加载CP或运行网络。90个equalized=1源容器均为[1000,256,2]/float64（metadata同时看到eq0也相同），原packet实际已经256点；native转换float32并转置后，out_len256的crop/pad分支没有触发，dataset层RMS作用于完整256点、center=false/epsilon1e-12。证据保留在本地source_container_shapes.json，CPU检查约1.939308秒，0NN/更新；没有修改原正式IQ或信道。
+
+因此，使用更长同一物理record无缝截取256点的候选在当前表示下NOT_APPLICABLE，不是识别性能FAIL。sig_i是独立物理signal，不把相邻packet拼成上下文，也不跨L/U/V借用样本；没有构造新的crop增强或启动额外模型。该事实只约束需要真实额外上下文的候选，不从元信息推断其他增强有效或无效。
+
+E30阶段切换的独立prefix核对：无星地B00已完成24/30，前20轮U/teacher计数均0，第21至24轮U loader及ownEMA teacher eval各226800（4×56700）；全部完成epoch的L/4L/U/teacher计数均符合20L10U。其24个完整epoch记录train_pseudo_truth_available均0。B01已完成12/30，仍为label阶段，U/teacher均0。该核对不衡量U伪标签准确率，也不代表最终性能；同一两个PID/start_ticks仍live、无failure。证据source_phase_audit.json与phase_status_after_shape_audit.json。

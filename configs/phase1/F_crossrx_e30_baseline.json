@@ -118,9 +118,45 @@
   "closed_routes": {
     "recoverable_course": "Prior fixed3-15dB/locked-degraded/eta<=.5 had negligible low increment; no replay as newly justified method",
     "additive_clean_supervision": "Prior fixed additive route failed crossseed clean protection; no coefficient rescue",
-    "BN_contamination": "Actual fixed F uses GroupNorm/LayerNorm, no BatchNorm running-state mechanism"
+    "BN_contamination": "Actual fixed F uses GroupNorm/LayerNorm, no BatchNorm running-state mechanism",
+    "real_context_crop": "NOT_APPLICABLE_CURRENT_REPRESENTATION: sourcepacket already256, no longer same-record context; neighboring sig_i are separate physical packets. No synthesized extra context, no adjacentpacket role mixing, no augmentation/performance trial."
   },
   "next_method_boundary": "Establish authorized E30 B00/B01 first. No new Ag/curriculum/alignment module asserted or launched in this run; new methods need actual source evidence and same-budget controls.",
   "execution_commit": "bafba40e365d0914a2e86f861fb55a49f1cd3997",
-  "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/report.md"
+  "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/report.md",
+  "input_representation_audit": {
+    "source_record_shape": [
+      256,
+      2
+    ],
+    "source_container_shape": [
+      1000,
+      256,
+      2
+    ],
+    "source_dtype": "float64",
+    "native_input_dtype": "float32",
+    "equalized_value": 1,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "source_TX_count": 6,
+    "native_out_len": 256,
+    "crop_pad_for_observed_source": "NO_OP; original packet already256",
+    "dataset_RMS": "after float32 conversion on complete256,center=false,eps1e-12",
+    "metadata_evidence": "local_artifacts/cvs_FcrossRX_fullsource_concat_E30_20261017/source_container_shapes.json",
+    "IQ_values_inspected": 0,
+    "U_TX_truth_consumed": false,
+    "NN": 0,
+    "updates": 0
+  }
 }
