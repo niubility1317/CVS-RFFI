@@ -29,3 +29,15 @@ UAS调用原真实residual/post_sync/noEQ(G1)/reference30/reflect，fs25MHz/fc2.
 代码与配置提交身份待实际commit写入；Git先提交push并独立比远端，单release归档一次SHA比较及远端compile。launcher首步真实E20 checkpoint零query smoke，PASS立即继续real-F三组额外U合成梯度烟测；synthetic输出独立不占stage20/source路径。worker分配GPU后先作本次CUDA RNG问题定点回归，0NN/0更新。一次独立P0/P1审查发现3个未定义变量，均已定点修复并PASS；本地6项检查PASS/1项CUDA不可用SKIP、compilePASS。
 
 成本计划：每row新30E，父成本是本row已计入的20E，不另借父预算；LNN3409920、原U学生与教师各963900、额外U学生963900、首次U源检查14400、冻结源读出12600、正式预测1176002及原native验证/初始smoke，实际NN和墙钟按完整日志逐阶段累计。总预算耗尽不等于收敛。预期产物见experiment.json：真实配置/导入文件、source角色、ownparent/EMA/optimizer、完整epoch/step/L-U-sequence、U信道元数据、覆盖、资格、默认头源预测、正式逐row/seed/RX/day/TX七环境scores、独立报告/分层图/训练曲线/成本/负结果。
+
+## 实际发布状态
+
+RUNNING／VERIFIED。执行代码提交 91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a 已独立核实GitHub远端一致，一次release归档SHA比较与远端compile PASS。dispatcher PID776627；B0 PID776653/GPU0，URAW PID776734/GPU1，UAS PID776817/GPU2，实际CWD/argv/物理GPU/日志及自身run根均独立核对。3个GPU的私有RNG定点回归PASS。
+
+真实旧E20兼容性CP零query smoke2NN PASS；真实F合成额外U路由48NN PASS，原Umask保持，CPU RNG恢复，URAW/UAS原默认头和Sinc梯度有限非零。合成使用独立目录，实际stage20/source未被占用；该证据不表示教学资格或训练性能通过。
+
+最新源进度三个row均已完成epoch1／222更新，各自LNN113664、完整L As14208，额外U尚未启用（预计E14首次）。实际初始化均scratch、checkpoint_sources/ancestors为空、角色EXACT_MATCH；真实总参数900722、13L7U、原FP32策略；无traceback。worker日志从约6.4KB增长至约11.5KB，step与sequence文件持续增长。
+
+真实导入leo_practical为不可变依赖release内experiments/adv3b02_xuc/code/leo_practical/channel.py与residual.py，并非仓库顶层code；DataAugmentation与SSDG.train_ssdg同属该adv3b02_xuc实现。具体__file__保存在各stage20/actual_modules.json。训练／测试未完成，首次自身teacher资格尚未执行，当前没有新的准确率、图或跨seed结论。
+
+本地执行证据：E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/verified_running_r01.json 与 source_progress_r01.json。后续只读核对原PID/进度，健康任务继续；逐row冻结后自动进入既定七环境评价。

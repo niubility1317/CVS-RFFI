@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "RUNNING_VERIFIED",
   "unit_checks": {
     "PASS": 6,
     "SKIP": 1,
@@ -20,6 +20,43 @@
     "other_P1": 0
   },
   "actual_training_updates": 0,
-  "launched": false,
-  "goal_complete": false
+  "launched": true,
+  "goal_complete": false,
+  "code_commit": "91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a",
+  "latest_observed_updates": {
+    "B0": 222,
+    "URAW": 222,
+    "UAS": 222
+  },
+  "runtime": {
+    "dispatcher": 776627,
+    "workers": [
+      {
+        "arm": "B0",
+        "pid": 776653,
+        "GPU": 0
+      },
+      {
+        "arm": "URAW",
+        "pid": 776734,
+        "GPU": 1
+      },
+      {
+        "arm": "UAS",
+        "pid": 776817,
+        "GPU": 2
+      }
+    ],
+    "CP_smoke_NN": 2,
+    "synthetic_smoke_NN": 48,
+    "smoke": "PASS",
+    "all_GPU_RNG_smokes": "PASS",
+    "roles": "L6300/U56700hidden/V27000;EXACT_MATCH;all5RX",
+    "actual_native": "adv3b02_xuc/code/leo_practical",
+    "parameters": 900722,
+    "source_progress": "all3epoch1/222updates;extraU0;firstUqualitypending",
+    "PID_CWD_argv_GPU_log_growth": "VERIFIED",
+    "formal_complete": false,
+    "source_teacher_qualified": null
+  }
 }
