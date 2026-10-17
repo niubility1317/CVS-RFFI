@@ -1,7 +1,7 @@
 {
   "schema": "CVS_clock_E30_amendment_v1",
   "status": "IMPLEMENTED_NOT_LAUNCHED",
-  "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
+  "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02",
   "baseline": "F+CROSS_RX/SIG_TIME_X3/CENTER_25K+CENTER_UNITS/joint160/defaultcos",
   "data": {
     "RX": [
@@ -48,7 +48,7 @@
   "rows": [
     {
       "schema": "F_clock_E20plus10_v1",
-      "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
+      "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02",
       "stage": "fullsource_reference",
       "arm": "B00",
       "model_seed": 2026092701,
@@ -61,7 +61,7 @@
       "variant": "reference_response",
       "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
       "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
-      "output_root": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/B00-s2026092701/source",
+      "output_root": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02/B00-s2026092701/source",
       "epochs": 10,
       "steps_per_epoch": 222,
       "model_initialization": "scratch",
@@ -297,6 +297,7 @@
       "parent_source": "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/REPEAT-s2026092701/source",
       "parent_epochs": 20,
       "parent_selection": "all five fixed source-final20;no target result selection",
+      "native_scratch_only": false,
       "optimizer_policy": "reset AdamW and native cosine10 at original baseLR;not exact trajectory resume",
       "EMA_policy": "strict restore own parent EMA;original EMA/gate rules;segment counters/temporal cache reset",
       "ordinary_policy": "freeze original E13 schedule using actual parent args",
@@ -306,7 +307,7 @@
     },
     {
       "schema": "F_clock_E20plus10_v1",
-      "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
+      "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02",
       "stage": "fullsource_clock_factorial",
       "arm": "B10",
       "model_seed": 2026092701,
@@ -319,7 +320,7 @@
       "variant": "reference_response",
       "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
       "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
-      "output_root": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/B10-s2026092701/source",
+      "output_root": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02/B10-s2026092701/source",
       "epochs": 10,
       "steps_per_epoch": 222,
       "model_initialization": "scratch",
@@ -577,6 +578,7 @@
       "parent_source": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/B10-s2026092701/source",
       "parent_epochs": 20,
       "parent_selection": "all five fixed source-final20;no target result selection",
+      "native_scratch_only": false,
       "optimizer_policy": "reset AdamW and native cosine10 at original baseLR;not exact trajectory resume",
       "EMA_policy": "strict restore own parent EMA;original EMA/gate rules;segment counters/temporal cache reset",
       "ordinary_policy": "freeze original E13 schedule using actual parent args",
@@ -586,7 +588,7 @@
     },
     {
       "schema": "F_clock_E20plus10_v1",
-      "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
+      "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02",
       "stage": "fullsource_clock_factorial",
       "arm": "B01",
       "model_seed": 2026092701,
@@ -599,7 +601,7 @@
       "variant": "reference_response",
       "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
       "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
-      "output_root": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/B01-s2026092701/source",
+      "output_root": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02/B01-s2026092701/source",
       "epochs": 10,
       "steps_per_epoch": 222,
       "model_initialization": "scratch",
@@ -857,6 +859,7 @@
       "parent_source": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/B01-s2026092701/source",
       "parent_epochs": 20,
       "parent_selection": "all five fixed source-final20;no target result selection",
+      "native_scratch_only": false,
       "optimizer_policy": "reset AdamW and native cosine10 at original baseLR;not exact trajectory resume",
       "EMA_policy": "strict restore own parent EMA;original EMA/gate rules;segment counters/temporal cache reset",
       "ordinary_policy": "freeze original E13 schedule using actual parent args",
@@ -866,7 +869,7 @@
     },
     {
       "schema": "F_clock_E20plus10_v1",
-      "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
+      "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02",
       "stage": "fullsource_clock_factorial",
       "arm": "B11",
       "model_seed": 2026092701,
@@ -879,7 +882,7 @@
       "variant": "reference_response",
       "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
       "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
-      "output_root": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/B11-s2026092701/source",
+      "output_root": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02/B11-s2026092701/source",
       "epochs": 10,
       "steps_per_epoch": 222,
       "model_initialization": "scratch",
@@ -1137,6 +1140,7 @@
       "parent_source": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/B11-s2026092701/source",
       "parent_epochs": 20,
       "parent_selection": "all five fixed source-final20;no target result selection",
+      "native_scratch_only": false,
       "optimizer_policy": "reset AdamW and native cosine10 at original baseLR;not exact trajectory resume",
       "EMA_policy": "strict restore own parent EMA;original EMA/gate rules;segment counters/temporal cache reset",
       "ordinary_policy": "freeze original E13 schedule using actual parent args",
@@ -1146,7 +1150,7 @@
     },
     {
       "schema": "F_clock_E20plus10_v1",
-      "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
+      "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02",
       "stage": "fullsource_reference",
       "arm": "FULL_AS",
       "model_seed": 2026092701,
@@ -1159,7 +1163,7 @@
       "variant": "reference_response",
       "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
       "dataset": "PROJECT/Dataset_WigSig/ManySig.pkl",
-      "output_root": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/FULL_AS-s2026092701/source",
+      "output_root": "PROJECT/runs/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02/FULL_AS-s2026092701/source",
       "epochs": 10,
       "steps_per_epoch": 222,
       "model_initialization": "scratch",
@@ -1395,6 +1399,7 @@
       "parent_source": "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/CONCAT-s2026092701/source",
       "parent_epochs": 20,
       "parent_selection": "all five fixed source-final20;no target result selection",
+      "native_scratch_only": false,
       "optimizer_policy": "reset AdamW and native cosine10 at original baseLR;not exact trajectory resume",
       "EMA_policy": "strict restore own parent EMA;original EMA/gate rules;segment counters/temporal cache reset",
       "ordinary_policy": "freeze original E13 schedule using actual parent args",
@@ -1407,5 +1412,7 @@
   "falsification": "same fixedE20hypothesis:clean gains;low>60andhigherB01/fullAs;eachsuburban gap<=2pp;no score-based rescue",
   "training_launched": false,
   "Ag_efficacy_proved": false,
-  "joint_goal_complete": false
+  "joint_goal_complete": false,
+  "replaces_failed_run": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
+  "native_scratch_only": false
 }

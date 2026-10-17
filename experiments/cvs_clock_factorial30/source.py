@@ -128,7 +128,12 @@ class Observer:
   d.write(self.out/'optimizer_initialization.json',dict(reset=True,state_entries=0,base_lr=opt.param_groups[0]['lr'],weight_decay=opt.param_groups[0]['weight_decay'],schedule='native cosine10',parameter_groups=len(opt.param_groups)))
  @contextmanager
  def native_scope(self,native):
-  original=native.deepcopy;aug=native.configure_augmentor_for_epoch;schedule=supcon.schedule
+  original=native.deepcopy;aug=native.configure_augmentor_for_epoch;schedule=supcon.schedule;terminal=native._resolve_phase1_terminal_status
+  def terminal_status(**kwargs):
+   kwargs['mechanism_gates_required']=False
+   return terminal(**kwargs)
+  native._resolve_phase1_terminal_status=terminal_status
+  d.write(self.out/'terminal_policy.json',dict(REJECTED_EXTRA_GATE='Historical P0/P1 mechanism promotion gates do not apply to fixed budget default-head source training',only_mechanism_promotion_disabled=True,protocol_export_nonfinite_and_prediction_failures_preserved=True))
   def copied(v,*a,**kw):
    result=original(v,*a,**kw)
    if v is getattr(self,'model',None):
@@ -143,7 +148,7 @@ class Observer:
   try:
    with native_scope(self,'CENTER_UNITS'):yield
   finally:
-   native.deepcopy=original;native.configure_augmentor_for_epoch=aug;supcon.schedule=schedule
+   native.deepcopy=original;native.configure_augmentor_for_epoch=aug;supcon.schedule=schedule;native._resolve_phase1_terminal_status=terminal
    if hasattr(self,'sequence'):self.sequence.close()
  def epoch(self,m,ctx,rows,out,device):
   ep=len(rows);n=ep*222;full=self.c['arm']=='FULL_AS';ag=self.c.get('new_Ag',False);sat=self.c.get('As',False)

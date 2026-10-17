@@ -2261,7 +2261,7 @@
   "budget_amendment_20261017": {
     "authorization": "Latest user explicitly raises budget toE30",
     "per_model": "fixed sourceE20+10=30",
-    "new_run": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
+    "new_run": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02",
     "all_fixed_rows": [
       "B00",
       "B10",
@@ -2275,6 +2275,8 @@
     "no_held_source_RX": true,
     "no_target_selection": true,
     "healthy_E20_unchanged": true,
-    "status": "REGISTERED_NOT_LAUNCHED"
+    "status": "REGISTERED_NOT_LAUNCHED",
+    "failed_run": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
+    "failed_run_real_updates": 0
   }
 }

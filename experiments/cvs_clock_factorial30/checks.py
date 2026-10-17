@@ -35,14 +35,21 @@ def run():
  from experiments.cvs_fullsource_concat20 import supcon
  from experiments.cvs_sigtime_heldcredit.held_credit import fresh_parameter_caches
  torch.set_num_threads(2);n=protocol();reports=[];NN=0;physics=0;clock_packets=0
+ from experiments.cvs_phase1_overlay.model import native_modules
+ native=native_modules()
  original_schedule=supcon.schedule
  for row in d.rows():
-  c=d.config(row);torch.manual_seed(202610175501);m=api.build(c,'cpu');initial={k:v.detach().clone() for k,v in m.state_dict().items()}
+  c=d.config(row);a=d.make_args(c,'cpu');native._validate_a1_scratch_only(a);assert a.a1_scratch_only is False and a.from_scratch is False and a.baseline_ckpt
+  bad_args=deepcopy(a);bad_args.a1_scratch_only=True
+  try:native._validate_a1_scratch_only(bad_args)
+  except ValueError:n+=1
+  else:raise AssertionError('Scratch-only flag accepted a parent')
+  torch.manual_seed(202610175501);m=api.build(c,'cpu');initial={k:v.detach().clone() for k,v in m.state_dict().items()}
   teacher=deepcopy(initial);W='id_backbone.encoder.core.id_backbone.cls_head.weight';teacher[W]=teacher[W]+.01
   parent=dict(model=initial,ema_model=teacher,args=vars(d.ref.make_args(d.clock.reference_config())))
   with tempfile.TemporaryDirectory() as folder:
    o=Observer(c,parent);o.model=m;o.out=Path(folder)
-   fake=SimpleNamespace(deepcopy=deepcopy,configure_augmentor_for_epoch=lambda obj,cfg,e,a:(e,a.label_epochs))
+   fake=SimpleNamespace(deepcopy=deepcopy,_resolve_phase1_terminal_status=native._resolve_phase1_terminal_status,configure_augmentor_for_epoch=lambda obj,cfg,e,a:(e,a.label_epochs))
    torch.manual_seed(202610175502);raw=torch.randn(128,2,256);ordinary=raw*.9;y=torch.arange(128)%6;domains=torch.arange(128)%15;rx=torch.tensor(supcon.RX_BY_DOMAIN)[domains]
    meta=dict(rx_i=rx,day_i=domains%3+1,eq_i=torch.ones(128,dtype=torch.long),sig_i=torch.arange(128),base_index=torch.arange(128))
    for obj in (m._full_channel,getattr(m,'_clock',None)):
@@ -58,6 +65,10 @@ def run():
    m.id_backbone.encoder._full_features=traced;m.train()
    with o.native_scope(fake):
     assert fake.configure_augmentor_for_epoch(None,None,0,None)==(13,13)
+    terminal_args=dict(tail_stopped=False,export_failed=False,final_blocked=False,selected_checkpoint_exists=True,heldout_eval_status='COMPLETE',p0_mechanisms_ready=False,p1_mechanisms_ready=False,endpoint_export_ready=True,mechanism_gates_required=True,endpoint_export_required=False)
+    assert fake._resolve_phase1_terminal_status(**terminal_args)=='COMPLETE'
+    for key,value,wanted in (('tail_stopped',True,'STOPPED_TAIL'),('export_failed',True,'FAILED_EXPORT'),('final_blocked',True,'NON_PROMOTABLE_GUARD_BLOCKED'),('selected_checkpoint_exists',False,'NO_SAFE_CHECKPOINT'),('heldout_eval_status','PENDING','HELDOUT_EVAL_INCOMPLETE')):
+     bad=dict(terminal_args);bad[key]=value;assert fake._resolve_phase1_terminal_status(**bad)==wanted;n+=1
     t=fake.deepcopy(m);assert all(torch.equal(v,teacher[k]) for k,v in t.state_dict().items());assert not torch.equal(t.state_dict()[W],m.state_dict()[W]);del t
     opt=torch.optim.AdamW(m.parameters(),lr=.0002,weight_decay=.0001);assert len(opt.state)==0
     with m._phase1_labeled_feature_context():z=m(ordinary,return_aux=True)

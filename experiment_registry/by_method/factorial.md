@@ -14,4 +14,5 @@
 |冻结E200独立测试：R1随机混杂诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r03/report.md)|
 |冻结E200独立测试：R2修复后四seed正式消融|managed_run|[打开](../../automation_reports/CV-SincNet/20261009-phase1-receiver-residual-test-manysig-m16-r04/report.md)|
 |完整源采样时钟＋practical：固定四因子E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)|
-|F+CROSS_RX fullsource clock/practical E20+10 five-row|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/report.md)|
+|完整源四因子与普通拼接：E20＋10，累计E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/report.md)|
+|F+CROSS_RX fullsource clock/practical E20+10 five-row|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02/report.md)|

@@ -4,9 +4,9 @@ from pathlib import Path
 from experiments.cvs_clock_factorial20 import design as clock
 from experiments.cvs_fullsource_concat20 import design as ref
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01'
-RELEASE='cvs_F_clock_factorial_e20plus10_20261017_r01'
-LOCAL='local_artifacts/F_clock_factorial30_20261017';OWNER='codex/root/F-clock-E30-20261017'
+RUN='20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02'
+RELEASE='cvs_F_clock_factorial_e20plus10_20261017_r02'
+LOCAL='local_artifacts/F_clock_factorial30_20261017_r02';OWNER='codex/root/F-clock-E30-20261017'
 read,write=ref.read,ref.write
 SOURCE,CAPSULE,TRUTH,VIEWS_ROOT=ref.SOURCE,ref.CAPSULE,ref.TRUTH,ref.VIEWS_ROOT
 PROJECT,AF_RELEASE=ref.PROJECT,ref.AF_RELEASE
@@ -36,7 +36,7 @@ def parent_proof(arm):
 def config(row):
  if row not in rows():raise ValueError('Only fixed five-row E20+10 amendment')
  c=deepcopy(parent_config(row['arm']));p=c['output_root']
- c.update(schema='F_clock_E20plus10_v1',run_id=RUN,**row,launch_owner=OWNER,output_root=(BASE/row['row_id']/'source').as_posix(),baseline_reuse=False,epochs=10,label_epochs=0,pseudo_epochs=10,updates=UPDATES,cumulative_epochs=30,cumulative_updates=6660,parent_source=p,parent_epochs=20,parent_selection='all five fixed source-final20;no target result selection',optimizer_policy='reset AdamW and native cosine10 at original baseLR;not exact trajectory resume',EMA_policy='strict restore own parent EMA;original EMA/gate rules;segment counters/temporal cache reset',ordinary_policy='freeze original E13 schedule using actual parent args',SupCon_policy='cumulative E21..30 original weight0.1/common pair only',operator_epoch_offset=20,operator_step_offset=4440,training_recipe='F+CROSS_RX original U and default head;E20+10/cos10-reset;'+row['arm'])
+ c.update(schema='F_clock_E20plus10_v1',run_id=RUN,**row,launch_owner=OWNER,output_root=(BASE/row['row_id']/'source').as_posix(),baseline_reuse=False,epochs=10,label_epochs=0,pseudo_epochs=10,updates=UPDATES,cumulative_epochs=30,cumulative_updates=6660,parent_source=p,parent_epochs=20,parent_selection='all five fixed source-final20;no target result selection',native_scratch_only=False,optimizer_policy='reset AdamW and native cosine10 at original baseLR;not exact trajectory resume',EMA_policy='strict restore own parent EMA;original EMA/gate rules;segment counters/temporal cache reset',ordinary_policy='freeze original E13 schedule using actual parent args',SupCon_policy='cumulative E21..30 original weight0.1/common pair only',operator_epoch_offset=20,operator_step_offset=4440,training_recipe='F+CROSS_RX original U and default head;E20+10/cos10-reset;'+row['arm'])
  c['training_mechanism'].update(expected_L_forward_packets=1136640,original_L_identity_forwards=284160,extra_L_identity_forwards=852480,L_forwards_per_sample=4)
  return c
 def validate(c):
@@ -46,7 +46,7 @@ def validate(c):
 def make_args(c,device='cuda:0'):
  validate(c);p=ref.make_args(clock.reference_config(),device)
  p.run_id=RUN;p.candidate_id=c['row_id'];p.output_dir=c['output_root'];p.epochs=10;p.label_epochs=0;p.pseudo_epochs=10
- p.from_scratch=False;p.baseline_ckpt=str(Path(c['parent_source'])/'final_ssdg.pth');p.teacher_ckpt=''
+ p.from_scratch=False;p.a1_scratch_only=False;p.baseline_ckpt=str(Path(c['parent_source'])/'final_ssdg.pth');p.teacher_ckpt=''
  return p
 base_model_config=ref.base_model_config
 

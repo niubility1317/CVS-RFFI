@@ -1,5 +1,5 @@
 {
-  "status": "REGISTERED_NOT_LAUNCHED",
+  "status": "FAILED",
   "local": {
     "status": "PASS",
     "protocol_negative_cases": 80,
@@ -29,8 +29,28 @@
     "P1_open": 0,
     "old_E20_files_unchanged": true
   },
-  "real_F_synthetic_checks": "PENDING",
-  "real_checkpoint_no_query_smoke": "PENDING",
-  "launch": "NOT_LAUNCHED",
-  "code_commit": "ACTUAL_GIT_HEAD_RECORDED_AT_LAUNCH"
+  "real_F_synthetic_checks": {
+    "status": "PASS",
+    "negative_cases": 106,
+    "synthetic_NN": 2580,
+    "synthetic_physics_packets": 256,
+    "synthetic_clock_packets": 128,
+    "synthetic_optimizer_steps": 5,
+    "real_IQ": 0,
+    "CP": 0,
+    "target_access": false
+  },
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "new_training_updates": 0,
+    "source_roles": "EXACT_MATCH",
+    "fixed_final20_parent": true
+  },
+  "launch": "FAILED_BEFORE_TRAINING",
+  "code_commit": "f556f833e7b6310d08122a223f3f589228f7606b"
 }

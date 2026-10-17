@@ -1,0 +1,40 @@
+{
+  "status": "FAILED",
+  "execution_commit": "f556f833e7b6310d08122a223f3f589228f7606b",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "synthetic_checks": {
+    "status": "PASS",
+    "negative_cases": 106,
+    "synthetic_NN": 2580,
+    "synthetic_physics_packets": 256,
+    "synthetic_clock_packets": 128,
+    "synthetic_optimizer_steps": 5,
+    "real_IQ": 0,
+    "CP": 0,
+    "target_access": false
+  },
+  "smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "new_training_updates": 0,
+    "source_roles": "EXACT_MATCH",
+    "fixed_final20_parent": true
+  },
+  "failure_layer": "Native argument validation before source construction",
+  "exception": "ValueError: A1 scratch-only forbids baseline/teacher checkpoints",
+  "owned_worker_PID": 403536,
+  "owned_dispatcher_PID": 403517,
+  "real_training_updates": 0,
+  "training_IQ_reads": 0,
+  "worker_parent_CP_loads": 1,
+  "own_processes_after_failure": 0,
+  "old_E20_unchanged": true,
+  "predictions": 0,
+  "truth_scoring": false,
+  "retry": "none;immutable technical replacement r02"
+}
