@@ -1,0 +1,285 @@
+{
+  "status": "PARTIAL_MATRIX_TWO_ROWS_ARTIFACTS_COMPLETE",
+  "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+  "model_seed": 2026092701,
+  "training_commit": "19aedc3604fed9c193237dd92366164178af0983",
+  "analysis_commit": "c02154d6cf9fb29fafecc4145bb6c08cb26d2490",
+  "source_full_log_audit": {
+    "status": "VERIFIED_COMPLETED_TWO_SOURCE_LOGS",
+    "rows": {
+      "B00": {
+        "cost": {
+          "native_training_and_validation_identity_NN": 7960684,
+          "frozen_source_readout_NN": 12600,
+          "source_identity_NN": 7973284,
+          "source_counters": {
+            "student_train_NN": 6078780,
+            "student_eval_NN": 918004,
+            "teacher_train_NN": 0,
+            "teacher_eval_NN": 963900
+          },
+          "first_U_qualification_NN": 0,
+          "extra_U_student_NN": 0,
+          "frozen_source_readout_wall_seconds": null,
+          "source_wall_scope": "native segments;external frozen source readout time not recorded",
+          "source_wall_seconds": 2146.190178871155,
+          "L_identity_NN": 5114880,
+          "extra_Ag_control_identity_NN": 1704960,
+          "extra_U_NN": 0,
+          "new_epochs": 30,
+          "new_updates": 6660,
+          "training_parent_epochs": 0,
+          "own_stage20_is_included": true
+        },
+        "full_records": {
+          "actual_steps": 6660,
+          "SupCon_active_steps": 5550,
+          "Ag_applied": 0,
+          "As_applied": 0,
+          "sequence_records": 10434,
+          "loader_packets": {
+            "L": 852480,
+            "U": 963900
+          },
+          "unique_physical": {
+            "L": 6300,
+            "U": 56700
+          },
+          "original_U_selected": 15118,
+          "U_truth_hidden": true,
+          "stdout_lines": 1218,
+          "error_markers": [],
+          "NaN_text_mentions": 300,
+          "native_full_epoch_telemetry": {
+            "stage20": {
+              "records": 20,
+              "numeric_values": 12567,
+              "nonfinite_field_counts": {},
+              "null_field_counts": {
+                "epoch.best_test_tx": 20,
+                "epoch.protected_overall_tx": 20,
+                "epoch.protected_receiver_floor": 20,
+                "epoch.protected_sat_floor_tx": 20,
+                "epoch.protected_sat_mean_tx": 20,
+                "epoch.protected_sat_receiver_floor": 20,
+                "epoch.protected_sat_receiver_seen_day_floor": 20,
+                "epoch.protected_sat_receiver_strict_floor": 20,
+                "epoch.protected_sat_strict_floor": 20,
+                "epoch.protected_sat_strict_mean": 20,
+                "epoch.protected_strict_udu": 20,
+                "epoch.stage_source_val_sat_floor_tx": 20,
+                "epoch.stage_source_val_sat_mean_tx": 20,
+                "epoch.test_tx_acc": 20,
+                "epoch.train_dm_accept_proxy_vaccept": 20,
+                "epoch.train_dm_accept_zid_p95_deg": 20,
+                "epoch.train_dm_accept_zid_p99_deg": 20,
+                "epoch.train_dm_accept_zid_tail_cvar_deg": 20,
+                "epoch.val_probe_dom_acc": 20
+              }
+            },
+            "source": {
+              "records": 10,
+              "numeric_values": 6290,
+              "nonfinite_field_counts": {},
+              "null_field_counts": {
+                "epoch.best_test_tx": 10,
+                "epoch.protected_overall_tx": 10,
+                "epoch.protected_receiver_floor": 10,
+                "epoch.protected_sat_floor_tx": 10,
+                "epoch.protected_sat_mean_tx": 10,
+                "epoch.protected_sat_receiver_floor": 10,
+                "epoch.protected_sat_receiver_seen_day_floor": 10,
+                "epoch.protected_sat_receiver_strict_floor": 10,
+                "epoch.protected_sat_strict_floor": 10,
+                "epoch.protected_sat_strict_mean": 10,
+                "epoch.protected_strict_udu": 10,
+                "epoch.stage_source_val_sat_floor_tx": 10,
+                "epoch.stage_source_val_sat_mean_tx": 10,
+                "epoch.test_tx_acc": 10,
+                "epoch.train_dm_accept_proxy_vaccept": 10,
+                "epoch.train_dm_accept_zid_p95_deg": 10,
+                "epoch.train_dm_accept_zid_p99_deg": 10,
+                "epoch.train_dm_accept_zid_tail_cvar_deg": 10,
+                "epoch.val_probe_dom_acc": 10
+              }
+            }
+          },
+          "warnings": [],
+          "maximum_L_decomposition_error": 2.682209014892578e-7,
+          "maximum_native_supervised_loss_error": 4.172325134277344e-7
+        },
+        "legacy_telemetry_note": "concat total_L/L_forwards/As_packets describe inherited fourforward slot;actual total uses reference_steps+shape_steps+native counters"
+      },
+      "B10_WHITE": {
+        "cost": {
+          "native_training_and_validation_identity_NN": 7960684,
+          "frozen_source_readout_NN": 12600,
+          "source_identity_NN": 7973284,
+          "source_counters": {
+            "student_train_NN": 6078780,
+            "student_eval_NN": 918004,
+            "teacher_train_NN": 0,
+            "teacher_eval_NN": 963900
+          },
+          "first_U_qualification_NN": 0,
+          "extra_U_student_NN": 0,
+          "frozen_source_readout_wall_seconds": null,
+          "source_wall_scope": "native segments;external frozen source readout time not recorded",
+          "source_wall_seconds": 2153.0906059741974,
+          "L_identity_NN": 5114880,
+          "extra_Ag_control_identity_NN": 1704960,
+          "extra_U_NN": 0,
+          "new_epochs": 30,
+          "new_updates": 6660,
+          "training_parent_epochs": 0,
+          "own_stage20_is_included": true
+        },
+        "full_records": {
+          "actual_steps": 6660,
+          "SupCon_active_steps": 5550,
+          "Ag_applied": 852480,
+          "As_applied": 0,
+          "sequence_records": 10434,
+          "loader_packets": {
+            "L": 852480,
+            "U": 963900
+          },
+          "unique_physical": {
+            "L": 6300,
+            "U": 56700
+          },
+          "original_U_selected": 15120,
+          "U_truth_hidden": true,
+          "stdout_lines": 1217,
+          "error_markers": [],
+          "NaN_text_mentions": 300,
+          "native_full_epoch_telemetry": {
+            "stage20": {
+              "records": 20,
+              "numeric_values": 12567,
+              "nonfinite_field_counts": {},
+              "null_field_counts": {
+                "epoch.best_test_tx": 20,
+                "epoch.protected_overall_tx": 20,
+                "epoch.protected_receiver_floor": 20,
+                "epoch.protected_sat_floor_tx": 20,
+                "epoch.protected_sat_mean_tx": 20,
+                "epoch.protected_sat_receiver_floor": 20,
+                "epoch.protected_sat_receiver_seen_day_floor": 20,
+                "epoch.protected_sat_receiver_strict_floor": 20,
+                "epoch.protected_sat_strict_floor": 20,
+                "epoch.protected_sat_strict_mean": 20,
+                "epoch.protected_strict_udu": 20,
+                "epoch.stage_source_val_sat_floor_tx": 20,
+                "epoch.stage_source_val_sat_mean_tx": 20,
+                "epoch.test_tx_acc": 20,
+                "epoch.train_dm_accept_proxy_vaccept": 20,
+                "epoch.train_dm_accept_zid_p95_deg": 20,
+                "epoch.train_dm_accept_zid_p99_deg": 20,
+                "epoch.train_dm_accept_zid_tail_cvar_deg": 20,
+                "epoch.val_probe_dom_acc": 20
+              }
+            },
+            "source": {
+              "records": 10,
+              "numeric_values": 6290,
+              "nonfinite_field_counts": {},
+              "null_field_counts": {
+                "epoch.best_test_tx": 10,
+                "epoch.protected_overall_tx": 10,
+                "epoch.protected_receiver_floor": 10,
+                "epoch.protected_sat_floor_tx": 10,
+                "epoch.protected_sat_mean_tx": 10,
+                "epoch.protected_sat_receiver_floor": 10,
+                "epoch.protected_sat_receiver_seen_day_floor": 10,
+                "epoch.protected_sat_receiver_strict_floor": 10,
+                "epoch.protected_sat_strict_floor": 10,
+                "epoch.protected_sat_strict_mean": 10,
+                "epoch.protected_strict_udu": 10,
+                "epoch.stage_source_val_sat_floor_tx": 10,
+                "epoch.stage_source_val_sat_mean_tx": 10,
+                "epoch.test_tx_acc": 10,
+                "epoch.train_dm_accept_proxy_vaccept": 10,
+                "epoch.train_dm_accept_zid_p95_deg": 10,
+                "epoch.train_dm_accept_zid_p99_deg": 10,
+                "epoch.train_dm_accept_zid_tail_cvar_deg": 10,
+                "epoch.val_probe_dom_acc": 10
+              }
+            }
+          },
+          "warnings": [],
+          "maximum_L_decomposition_error": 2.384185791015625e-7,
+          "maximum_native_supervised_loss_error": 3.5762786865234375e-7
+        },
+        "legacy_telemetry_note": "concat total_L/L_forwards/As_packets describe inherited fourforward slot;actual total uses reference_steps+shape_steps+native counters"
+      }
+    },
+    "model_NN": 0,
+    "IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "formal_scores_read": false,
+    "source_matrix_decided": false,
+    "performance_claim": false,
+    "wall_seconds": 8.176708216080442
+  },
+  "formal_boundary_checks": {
+    "B00": {
+      "status": "VERIFIED_SEVEN_FROZEN_PREDICTIONS_AND_TRUTH_LAST",
+      "count": 168000,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "all_parameters_frozen": true,
+      "prediction_truth_read": false,
+      "head_fit_updates": 0,
+      "actual_NN": 1176002,
+      "prediction_wall_seconds": 48.08935279189609,
+      "truth_last": true,
+      "default_head_structure_changed": false,
+      "formal_score_metrics_read": false
+    },
+    "B10_WHITE": {
+      "status": "VERIFIED_SEVEN_FROZEN_PREDICTIONS_AND_TRUTH_LAST",
+      "count": 168000,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "all_parameters_frozen": true,
+      "prediction_truth_read": false,
+      "head_fit_updates": 0,
+      "actual_NN": 1176002,
+      "prediction_wall_seconds": 47.099105114117265,
+      "truth_last": true,
+      "default_head_structure_changed": false,
+      "formal_score_metrics_read": false
+    }
+  },
+  "completed_rows": [
+    "B00-s2026092701",
+    "B10_WHITE-s2026092701"
+  ],
+  "remaining_rows": [
+    "B10_BG-s2026092701",
+    "B01-s2026092701",
+    "B11_WHITE-s2026092701",
+    "B11_BG-s2026092701"
+  ],
+  "source_matrix_decided": false,
+  "formal_score_metrics_read": false,
+  "performance_claim": false,
+  "matrix_complete": false,
+  "goal_complete": false,
+  "as_of_utc": 1792272041.288943
+}

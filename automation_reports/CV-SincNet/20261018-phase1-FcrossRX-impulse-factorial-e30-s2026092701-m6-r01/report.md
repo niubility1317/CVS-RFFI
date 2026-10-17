@@ -44,3 +44,12 @@ B11首先是Ag与As的独立监督视图，不组合As(Ag(x))；先检验独立�
 零前向源域分析driver PID911017/source waiter PID911026已独立核实CWD/argv、CUDA为空、CPU线程2、等待态；源输出尚未创建。六行完整source结束后自动解析全部4类逐step日志、完整原生epoch记录、完整stdout、物理样本序列和成本，独立复算冻结的source判据；随后按原命名信道流复算3个As行的TX×RX×day×scene×传播状态覆盖，U序列不解码TX。此处不读取正式成绩。分析归档路径、准确命令和输出见analysis_delivery.json及原launch记录；最终正式分析须在源域判定固定并记录后进行。
 
 日志口径：继承的concat/total_L、concat/L_forwards=4、concat/As_packets=64仅描述原四前向分支，其中As-off的64是raw控制槽。真实六前向、真实As-off=0和新增形态槽分别以reference_steps、shape_steps、observer/result及native encoder counters为准；训练总L独立复算为.5commonRD+.5mixedRD+原SupCon+.25shapeRD。native train/loss_tx_labeled仅第一原CE，不代表完整L目标；13个L-only轮可与native train/loss核对，U启用后不把native总loss冒充纯L。该差异属于历史字段语义，不是训练目标错误，不热改健康任务。
+
+
+## 首两行实际闭合与完整源日志复算
+
+B00和B10_WHITE完成各自scratch20+own10/E30，均为6660更新、L网络包5114880、原L观察852480、原U观察963900，实际覆盖全部L6300/U56700。全部4类step流、30个原生epoch数值记录、完整stdout和样本序列已复算；检查的活动损失有限，无非有限loss/grad跳步，epoch数值字段无非有限值，300次nan文本为未启用测试的占位打印。L目标分解与native监督总loss最大误差分别不超过2.69e-7/4.18e-7；此为执行核实，不是科学有效性结论。
+
+每行实际原生student_train NN6078780、student_eval NN918004、teacher_eval NN963900、teacher_train NN0，加冻结源读出12600NN，source合计7973284NN。原生训练/验证两段墙钟B00=2146.190秒，WHITE=2153.091秒；外部冻结源读出墙钟未独立记录，不伪造全流程耗时。
+
+两行均已自动完成原clean+6practical，逐view168000样本，全部7view固定后才独立truth-last；默认头无单独拟合，所有参数冻结、预测侧未读truth。每行实际正式预测identityNN1176002（其中1176000正式样本，另2个既有检查前向），预测耗时48.089/47.099秒。仅核对completion与独立边界，尚未读取正式成绩；其余4行继续原任务，整矩阵和性能分析未完成。全部源域判定固定前成绩继续关闭。详见first_completed_audit.json。
