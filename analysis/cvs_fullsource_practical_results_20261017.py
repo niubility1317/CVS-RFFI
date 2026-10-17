@@ -21,6 +21,32 @@ def metric(y,p):
  cm=np.bincount(y*6+p,minlength=36).reshape(6,6);den=cm.sum(0)+cm.sum(1)
  f=np.divide(2*np.diag(cm),den,out=np.zeros(6,dtype=float),where=den>0)
  return dict(count=len(y),correct=int(np.trace(cm)),accuracy=float(np.trace(cm)/len(y)),macro_f1=float(f.mean()),confusion=cm.tolist())
+def physics_summary(root,result):
+ if not result['config']['As']:return dict(satellite_packets=0,not_applicable=True)
+ stats=defaultdict(list);counts=Counter();bins=Counter();packets=batches=0
+ bounds=(-math.inf,0,5,10,15,20,math.inf);labels=('<0','0-5','5-10','10-15','15-20','>=20')
+ with gzip.open(root/'source/training_physics.jsonl.gz','rt',encoding='utf8') as f:
+  for line in f:
+   q=json.loads(line);batches+=1
+   if q['step']!=batches or len(q['records'])!=128:raise ValueError('Training physical metadata incomplete')
+   for r in q['records']:
+    packets+=1;quality=r['quality_snr_db'];actual=r['signal_to_added_noise_db']
+    bi=next(i for i in range(6) if bounds[i]<=quality<bounds[i+1])
+    bins[(q['scene'],r['state_end'],r['receiver_lock_status'],labels[bi])]+=1
+    for key in ['quality_source','boundary','noise_boundary','receiver_lock_status','state_end','agc_limited','true_total_snr_known','channel_equalization_applied']:
+     counts[(key,str(r[key]))]+=1
+    for key in ['quality_snr_db','signal_to_added_noise_db','output_frequency_hz','residual_kernel_length','residual_kernel_energy','numerical_filter_latency_samples','input_original_rms','agc_gain_db']:
+     value=r[key]
+     if not isinstance(value,(int,float)) or not math.isfinite(value):raise ValueError('Nonfinite physical metadata '+key)
+     stats[key].append(value)
+    stats['actual_added_noise_ratio_minus_white_proxy_db'].append(actual-quality)
+    stats['input_effective_energy_samples'].append(r['input_metrics']['effective_energy_samples'])
+    stats['output_effective_energy_samples'].append(r['output_metrics']['effective_energy_samples'])
+ if (packets,batches)!=(568320,4440) or sum(x['count'] for x in result['satellite_coverage'])!=packets:raise ValueError('Training physics budget mismatch')
+ summary={}
+ for key,values in stats.items():
+  x=np.asarray(values,dtype=float);summary[key]=dict(count=len(x),mean=float(x.mean()),std=float(x.std()),quantiles=dict(zip(['min','q01','q10','q50','q90','q99','max'],np.quantile(x,[0,.01,.1,.5,.9,.99,1]).tolist())))
+ return dict(satellite_packets=packets,batches=batches,statistics=summary,counts=[dict(field=k[0],value=k[1],count=v) for k,v in sorted(counts.items())],quality_bins=[dict(scene=k[0],state=k[1],lock=k[2],quality_proxy_db_bin=k[3],count=v) for k,v in sorted(bins.items())],TX_RX_scene_cells=len({(x['TX'],x['RX'],x['scene']) for x in result['satellite_coverage']}),TX_RX_state_cells=len({(x['TX'],x['RX'],x['state']) for x in result['satellite_coverage']}),true_total_SNR_identified=False,causal_state_effect_identified=False,boundary_accuracy_effect_identified=False,formal_state_accuracy_identified=False)
 def parse_source(root,done):
  source=root/'source';steps=[];epoch_sums=defaultdict(lambda:defaultdict(float));epoch_counts=Counter()
  active=('train/loss','train/loss_tx_labeled','full/RDrop_CE','full/RDrop_KL','full/SupCon','full/SupCon_weight','full/clean_CE','full/second_CE','full/clean_KL','full/second_KL')
@@ -66,7 +92,7 @@ def parse_source(root,done):
  if roles['held_RX'] is not None or roles['counts']!={'L_s':6300,'U_s':56700,'V':27000} or result['head_fit_updates'] or result['U_truth_read'] or result['checkpoint_sources']:raise ValueError('Full source/defaulthead boundary differs')
  stdout=(root.parent/'logs'/(root.name+'.log')).read_text(encoding='utf8',errors='replace')
  errors=[dict(line=i,text=line[:250]) for i,line in enumerate(stdout.splitlines(),1) if re.search(r'Traceback|CUDA out of memory|\bKilled\b|RuntimeError|AssertionError|\[ERROR\]',line)]
- return dict(curve=curve,source_result=result,full_records=dict(steps=4440,epochs=20,sequence_records=sequence_records,loader_packets=dict(observed),unique_physical={k:len(v) for k,v in physical.items()},SupCon=supcon_count,SupCon_active=supcon_active,anchors=anchors,valid_anchors=valid,Sinc_updates=opt_count,stdout_lines=len(stdout.splitlines()),error_markers=errors,NaN_text_mentions=len(re.findall(r'\bnan\b',stdout,re.I))),cost=dict(source_identity_NN=sum(result['actual_counters'].values()),source_counters=result['actual_counters'],source_wall_seconds=done['elapsed_seconds'],L_identity_NN=2273280,new_epochs=20,new_updates=4440,training_parent_epochs=0))
+ return dict(curve=curve,source_result=result,physical_metadata=physics_summary(root,result),full_records=dict(steps=4440,epochs=20,sequence_records=sequence_records,loader_packets=dict(observed),unique_physical={k:len(v) for k,v in physical.items()},SupCon=supcon_count,SupCon_active=supcon_active,anchors=anchors,valid_anchors=valid,Sinc_updates=opt_count,stdout_lines=len(stdout.splitlines()),error_markers=errors,NaN_text_mentions=len(re.findall(r'\bnan\b',stdout,re.I))),cost=dict(source_identity_NN=sum(result['actual_counters'].values()),source_counters=result['actual_counters'],source_wall_seconds=done['elapsed_seconds'],L_identity_NN=2273280,new_epochs=20,new_updates=4440,training_parent_epochs=0))
 def collect_row(name,truth_path):
  run,row=ROWS[name];root=PROJECT/'runs'/run/row
  pred_done,score_done,source_done=completed(root)
@@ -141,6 +167,15 @@ def plots(out,results):
  for suffix in ['png','pdf']:p=out/('receiver_accuracy.'+suffix);fig.savefig(p,dpi=200);figures.append(str(p))
  plt.close(fig)
  return figures
+def compare_training_sequences(name,ref):
+ from itertools import zip_longest
+ roots=[PROJECT/'runs'/ROWS[x][0]/ROWS[x][1]/'source/training_sequence.jsonl.gz' for x in (name,ref)]
+ count=mismatch=0
+ with gzip.open(roots[0],'rt',encoding='utf8') as a,gzip.open(roots[1],'rt',encoding='utf8') as b:
+  for x,y in zip_longest(a,b):
+   count+=1
+   mismatch+=x is None or y is None or json.loads(x)!=json.loads(y)
+ return dict(records_compared=count,mismatched_records=mismatch,identical=mismatch==0,no_hash_gate=True)
 def main():
  p=argparse.ArgumentParser();p.add_argument('--row',choices=[*ROWS,'all'],required=True);p.add_argument('--truth',type=Path,required=True);p.add_argument('--output',type=Path,required=True);p.add_argument('--commit',required=True);a=p.parse_args()
  names=list(ROWS) if a.row=='all' else [a.row]
@@ -149,11 +184,12 @@ def main():
   run,row=ROWS[name];completed(PROJECT/'runs'/run/row)
  out=a.output;out.mkdir(parents=True,exist_ok=False);results={};private={}
  for name in names:results[name],private[name]=collect_row(name,a.truth)
- comparisons={}
+ comparisons={};sequence_comparisons={}
  if len(names)>1:
   if any(not np.array_equal(private[names[0]]['ids'],private[n]['ids']) for n in names):raise ValueError('Paired physical IDs differ')
   for name,ref in [('B01','B00'),('RAW_PRAC','B01'),('RAW_PRAC','B00')]:
    if name not in results or ref not in results:continue
+   sequence_comparisons[name+'-'+ref]=compare_training_sequences(name,ref)
    y=private[name]['y'];cohort=private[ref]['pred']['clean']==y;views={}
    for v in VIEWS:
     correct=private[name]['pred'][v]==y;old=private[ref]['pred'][v]==y
@@ -164,7 +200,7 @@ def main():
  write_csv(out/'per_row_seed.csv',[{k:v for k,v in r.items() if k!='confusion'} for r in flat])
  curves=[dict(arm=n,**q) for n,r in results.items() for q in r['source']['curve']]
  write_csv(out/'training_curves.csv',curves)
- write(out/'analysis_summary.json',dict(code_commit=a.commit,rows=results,paired_comparisons=comparisons,source_epoch_records=sum(len(r['source']['curve']) for r in results.values()),formal_confusion_matrices=len(flat),NN=0,checkpoint_reads=0,real_IQ_reads=0,training_updates=0,crossseed_confirmed=False,Ag_proved=False,goal_complete=False,limitations=['One model seed only','No fixed formal per-sample state/quality files; no invented LOS/lock accuracy','Original U truth hidden; gate selected fraction is not precision','No per-packet fusion-gate activations saved']))
+ write(out/'analysis_summary.json',dict(code_commit=a.commit,rows=results,paired_comparisons=comparisons,training_sequences=sequence_comparisons,source_epoch_records=sum(len(r['source']['curve']) for r in results.values()),formal_confusion_matrices=len(flat),NN=0,checkpoint_reads=0,real_IQ_reads=0,training_updates=0,crossseed_confirmed=False,Ag_proved=False,goal_complete=False,limitations=['One model seed only','No fixed formal per-sample state/quality files; no invented LOS/lock accuracy','Original U truth hidden; gate selected fraction is not precision','No per-packet fusion-gate activations saved']))
  figures=plots(out,results);write(out/'figures.json',dict(files=figures))
  write(out/'completion.json',dict(status='ANALYSIS_COMPLETE',rows=names,formal_confusion_matrices=len(flat),source_updates=len(names)*4440,source_epochs=len(names)*20,NN=0,real_IQ_reads=0,checkpoint_reads=0,training_updates=0,code_commit=a.commit))
  print(json.dumps(dict(status='ANALYSIS_COMPLETE',rows=names,out=str(out),figures=len(figures),confusion_matrices=len(flat),NN=0)))
