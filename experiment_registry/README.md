@@ -547,3 +547,5 @@
 - [包络波动尺度源检验 r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01/report.md)
 
 - [有标签双遍稳健更新 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md)
+
+- [全源 RX 统计确认 r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01/report.md)

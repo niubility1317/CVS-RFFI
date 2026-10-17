@@ -8,3 +8,4 @@
 |F＋跨 RX 同 TX：ordinary／完整 practical 监督梯度组织 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01/report.md)|
 |匹配 E30 No-As 参考|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01/report.md)|
 |F＋跨 RX 同 TX：ordinary／完整 practical 监督梯度组织 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/report.md)|
+|全部源 RX：L6300 到独立 V27000 的共享统计确认|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01/report.md)|

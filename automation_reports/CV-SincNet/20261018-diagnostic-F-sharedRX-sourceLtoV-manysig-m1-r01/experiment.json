@@ -1,0 +1,229 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
+  "group_id": "phase1-F-sharedRX-L-to-V",
+  "display_name": "F＋跨RX：全部源L到独立V的共享RX统计确认",
+  "description": "Fixed original scalar onall5RX/L6300/V27000;Lonly18TX/daycrossfit,RXcontrastsourceVreadout;no model/CP/IQoperator/U/target;not a closedcandidate rerun.",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "shared RX source L-to-V confirmation"
+  ],
+  "tags": [
+    "F",
+    "F_CROSS_RX",
+    "shared_RX_observation",
+    "source_L_to_V",
+    "all5RX",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active Ag+As research;latestF+CROSS_RX/E30/256IQ/fullsource5RX.LonlysourcepredictorandVreadout withinoriginalroles.No newmodelorIQaugmentation;old circularityFAIL preserved.",
+  "code": {
+    "commit": "Actual execution Git commit recorded in release_commit.txt and resolved_config",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "N607 ordinary account/existingCVS-RFFI Python/CPU2/CUDAhidden",
+    "cwd": "PROJECT/releases/cvs_F_sharedRX_sourceLtoV_20261018_r01",
+    "entrypoint": "experiments/cvs_rx_shared_source18/run.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing VALIDATED_ONCE source cache/unalteredroles",
+    "representation": "original EQ1/RMS/IQ256/25Msps;unchanged statistic80:160,lag20 compensation only inanalysis",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract L_s/V physical roleIDsets;private source_ids.json",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "All6300 visibleL,90cells x70;fitRXcontrastmeansonly",
+      "U_s": "Container andTXtruthnotaccessed;opaqueIDs only roleexclusion",
+      "V": "All27000,90cells x300;readonly sourceconfirmation,no subdivisionorupdates"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Independent physical-source scalarassociation only;not pureRXhardware,labelpreservingIQ,classificationorAg/DGgain"
+  },
+  "checkpoint": {
+    "initialization": "not_applicable_no_model",
+    "sources": [],
+    "contract_check_ref": "Existing validatedsourcecache rolehandles match;no parametersorpretrainedfeaturesconsumed",
+    "provenance_verdict": "No checkpoint or model loaded;unusedcachefeaturesdeserializedbutnotused",
+    "selection_rule": "Fixed observable/allRX/18folds/thresholds before newsource read;no target,candidate,epochoroperatorselection"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-sharedRX-source-20261018",
+    "gpu_policy": "CPU2 only;CUDA_VISIBLE_DEVICES empty",
+    "remote_run_root": "PROJECT/runs/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_sharedRX_sourceLtoV_20261018_r01/source_shared_RX.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_rx_shared_source18.run",
+    "stop_rule": "Role/handle mismatch,missinginput,nonfinite values,outputcollision/exception:preservefailure,noautomaticretry;no otherworkload intervention"
+  },
+  "expected_artifacts": [
+    "active/resolved_config/checks/completion orfailure",
+    "result.json:all180L/Vcells,18folds,5RX,44descriptivewrongassignments",
+    "private observations.npz all33300x5scalars/source_ids.json",
+    "separate recount.json for all saved scalars,metadata,cells,folds,conditions",
+    "stdout,archivetransfer/compile/poststate;same-row report/registry/Git"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "V_RX_contrast_relative_SSE_gain",
+      "18fold gains",
+      "5RX baseline andpredictedSSE",
+      "all44wrongRX descriptiveonly",
+      "L/Vcellmeans/std"
+    ],
+    "dimensions": [
+      "all5sourceRX",
+      "6TX",
+      "3day",
+      "90sourcecellsperrole",
+      "18heldTXanddayanalyticalfolds"
+    ],
+    "prediction_ref": "No identityorRXclassifier;Lsourcecellmeanpredictoronly",
+    "scorer_ref": "Independent recount.py readsall33300savedscalars/90cellsperrole;no targettruth"
+  },
+  "rows": [
+    {
+      "row_id": "SHARED_RX_L_TO_V",
+      "method": "Original circularity/5RX contrast/sourceL-to-V",
+      "purpose": "single_source_association_hypothesis",
+      "config_ref": "experiments/cvs_rx_shared_source18/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {
+        "source_RX_holdout": null
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Originalsplit392005 reused;no randomsourceobservations;all44derangements exact;engineeringfixturesseparate",
+      "k": null,
+      "scenario": "Sourceclean statistic,no satellite/model",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "33300sourceIQobservations/166500savedscalars;0NN/CP/updates/teacher;futuretrainingE30 unchanged",
+      "output_root": "PROJECT/runs/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_sharedRX_sourceLtoV_20261018_r01/source_shared_RX.stdout.log",
+      "command": "CVS-RFFI/bin/python -u -m experiments.cvs_rx_shared_source18.run",
+      "expected_artifacts": [
+        "active/resolved_config/checks/completion orfailure",
+        "result.json:all180L/Vcells,18folds,5RX,44descriptivewrongassignments",
+        "private observations.npz all33300x5scalars/source_ids.json",
+        "separate recount.json for all saved scalars,metadata,cells,folds,conditions",
+        "stdout,archivetransfer/compile/poststate;same-row report/registry/Git"
+      ],
+      "config": {
+        "run_id": "20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
+        "launch_owner": "codex/root/F-sharedRX-source-20261018",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "output_root": "PROJECT/runs/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
+        "RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "days": [
+          1,
+          2,
+          3
+        ],
+        "TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_RX_holdout": null,
+        "L": 6300,
+        "V": 27000,
+        "L_per_cell": 70,
+        "V_per_cell": 300,
+        "U_used": false,
+        "U_truth_read": false,
+        "IQ_points": 256,
+        "window": [
+          80,
+          160
+        ],
+        "period": 20,
+        "epsilon": 0.000001,
+        "observable": "Exactly existing CFO-compensated centered circularity magnitude; no changed coordinate or window",
+        "fit": "L only; each RX/TX/day cell mean centered over all5RX;18leaveTXanddayout mean predictors",
+        "evaluation": "All original V in90cells,each physical sample in one heldTX/day evaluation;no V subdivision or persistent update",
+        "baseline": "Zero RX contrast;V contrast centers overRX within each TX/day for analysis only",
+        "criteria": {
+          "min_relative_risk_gain": 0.2,
+          "min_positive_folds": 15,
+          "max_each_RX_SSE_increase": 0,
+          "numerical_SSE_tolerance": 1e-20
+        },
+        "wrong_RX": "All44 fiveRX derangements descriptive only;no uniqueness condition",
+        "on_fail": "Stop deriving augmentation from this fixed all5RX L-to-V scalar source basis;no window/coordinate/RX/threshold rescue",
+        "on_pass": "Independent physical-source association only;no hardware identification,label preservation,IQ operator,training or target promotion",
+        "historical_result": "Original4RX circularity FAIL preserved;this source confirmation implements no closed IQ candidate",
+        "protocol": "Existing source roles/handles reused;physical L,V,U-ID exclusion only;no new data validation or hash",
+        "network_forwards": 0,
+        "checkpoint_loads": 0,
+        "optimizer_steps": 0,
+        "teacher_forwards": 0,
+        "target_access": false,
+        "automatic_training": false,
+        "CPU_threads": 2,
+        "GPU": "none",
+        "future_training_budget": "Current authorized E30,full5RX,F+CROSS_RX,unchanged defaultcos andU;no model trained in this row"
+      },
+      "status": "PLANNED",
+      "result": {}
+    }
+  ],
+  "notes": [
+    "Uses all original L6300 andV27000/all5RX;no heldtrainingRX,Ldev,Utruth,target. Vreadoutonly,no persistent updates orVrole subdivision.",
+    "Same original80:160 lag20-compensated centeredcircularity observer;novel question is L-to-independentphysicalV transfer of5RXcontrasts,not changedIQoperator or oldthresholdrescue.",
+    "Fixed source conditions:globalrelativeSSEgain>=20%,>=15/18positivefolds,eachRXerrornotgreaterthanzerocontrast baseline with1e-20 numericalSSEtolerance. Undefinedglobalbaselinefails;zeroRXbaselinewithzeroerror is nonharm.",
+    "All44derangedRXmaps descriptiveonly. A group-sharedRXeffect neednot identifyeachreceiveruniquely.",
+    "Historical4RX circularityFAIL andall closedIQ/trainingrecipespreserved.PASS is associationonly,no hardwareparameteridentification,labelpreservation,automaticIQtrainingorfullgoalclaim.",
+    "G0 consumes no model/CP;first synthetic permission/scalar smoke replaces irrelevant realCPsmoke,continues onPASS.No targetscorerbecause noidentitypredictions.",
+    "Reuse currentminimalworkflow only,onecodecommit/oneP0P1/oneprereg/onearchivecompare/preflight/compile/poststate;no extrasignatures/hashes/approval.",
+    "PROJECT is a public path alias;actual source configuration is constructed by committeddesign.py and recorded privately inresolved_config,not consumed from registration."
+  ],
+  "registered_at": "2026-10-17T20:51:03+00:00"
+}
