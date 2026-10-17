@@ -3,7 +3,7 @@
   "run_id": "20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01",
   "group_id": "phase1-FcrossRX-fullsource-concat-E30",
   "display_name": "完整源域 F＋跨 RX：E30 无星地与普通拼接匹配参照",
-  "description": "用户将从头预算提升到E30后，固定原全部5源RX与F/默认头，独立B00/B01均30轮/20L10U/6660更新/4L，自动clean+六practical与独立truth-last，建立同预算参照；不新增Ag/课程/一致性。",
+  "description": "完整原5源RX、F/默认头、同seed scratchE30/20L10U/6660/4L的B00/B01已完成自动七环境独立truth-last及252CM复算；普通As urban+26.891071pp、low+21.151786pp，但clean−2.359524pp、low53.137500%，未联合突破。单seed，无新Ag或跨seed证据。",
   "kind": "cvs",
   "stage": "Phase1",
   "aliases": [],
@@ -131,7 +131,12 @@
     "analysis_B00_r01/formal_accuracy.png/pdf",
     "analysis_B00_r01/training_curves.png/pdf",
     "analysis_B00_r01/receiver_accuracy.png/pdf",
-    "analysis_B00_r01/completion.json"
+    "analysis_B00_r01/completion.json",
+    "figures_readable_r01/completion.json",
+    "figures_readable_r01/formal_accuracy.png/pdf",
+    "figures_readable_r01/training_curves.png/pdf",
+    "figures_readable_r01/receiver_accuracy.png/pdf",
+    "figures_readable_r01/training_support_B01.png/pdf"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -300,7 +305,8 @@
     "Prior3-15dB recoverablecourse and additiveclean weighting have closednegative results; not rerun here. ActualF usesGroupNorm/LayerNorm,noBatchNormrunningstate explanation.",
     "Phase1 nullK/support/capsule inapplicable; existingVALIDATED_ONCE fixedformalcarrier reused withoutrevalidation/hashchain.",
     "Readonlysourceinputmetadataaudit:existingnativecarrierdeserialized,onlysourcecontainer shape/dtype inspected;eq1sourcearrays1000x256x2float64,NNinputfloat32/full256RMScenterfalse;crop/padbranchNO_OP. No longer samepacket context;adjacentsig_iindependentphysicalrecords.0IQvaluesinspected/Utruth/CP/NN/updates;no new augmentationtraining.",
-    "B00FINAL30 completed7viewindependenttruth-last,126CMrecountVERIFIED,localartifactsanalysis_B00_r01,analysisNN/CP/IQ/updates0; B01stillrunningunchanged. One seed, noAsgainorcrossseedevidence. Analysiscodea081a6c."
+    "B00FINAL30 completed7viewindependenttruth-last,126CMrecountVERIFIED,localartifactsanalysis_B00_r01,analysisNN/CP/IQ/updates0; B01stillrunningunchanged. One seed, noAsgainorcrossseedevidence. Analysiscodea081a6c.",
+    "ANALYZED bothrowsFINAL30/6660/7viewsindependenttruthlast;252CMrecountVERIFIED,8880samplingrecordidentical,full60epochs/13320steps and852480B01physicsparsed. One modelseed,Agfalse/crossseedfalse/goalfalse. sourceNN5407922each,predNN1176002each. Analysiscommit a081a6c,plottextcontrast5b709b89e."
   ],
   "registered_at": "2026-10-17T05:59:13+00:00"
 }
