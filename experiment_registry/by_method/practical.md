@@ -14,6 +14,7 @@
 |DAOT＋FastTrust-RC4 residual环境比例六组|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/report.md)|
 |旧Practical四组checkpoint统一六环境测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-practical4-sixscene-eval-s392005-r01/report.md)|
 |CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
+|F practical：256点窗口的冻结散射时标审计|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-frozen-scatter-timescale-m1-r01/report.md)|
 |完整源 L 的 practical 接收质量耦合：物理依据已验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)|
 |RMS 匹配的三径时延形状：单项 A_s E30 检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md)|
 |原分布校准刷新 A_s：E30 完整匹配负结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md)|

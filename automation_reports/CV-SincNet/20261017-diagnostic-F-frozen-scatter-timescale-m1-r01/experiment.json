@@ -1,0 +1,144 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-frozen-scatter-timescale-m1-r01",
+  "group_id": "F_crossRX_frozen_scatter_timescale",
+  "display_name": "F practical：256点窗口的冻结散射时标审计",
+  "description": "仅从实际代码参数计算包内变化量级；不读取IQ、不运行信道或模型",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "F_FROZEN_SCATTER_TIMESCALE_CODE_ONLY"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "practical",
+    "frozen_scatter",
+    "code_only",
+    "no_model",
+    "no_training"
+  ],
+  "comparison_group_id": "F_crossRX_fullsource_E30",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Ongoing A_g/As research;latest E30 training budget unchanged. This bounded code-only diagnostic reads no data or model and spends zero model epochs/updates.",
+  "code": {
+    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "Verified local F Python standard library only;no Torch/NumPy/native runtime import",
+    "cwd": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "entrypoint": "experiments/cvs_scatter_timescale17/audit.py"
+  },
+  "data": {
+    "dataset": "NONE",
+    "version": "No data read",
+    "representation": "Source-code AST and scalar formulas only",
+    "contract_ref": "docs/PROJECT_PROTOCOL.md;no role or IQ access",
+    "physical_ids_ref": null,
+    "label_map_ref": null,
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": null,
+    "roles": {
+      "L_s": "No IQ/labels/IDs read",
+      "U_s": "No access",
+      "V": "No access"
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "No data builder/revalidation;no data consumed",
+    "support_query_ref": null,
+    "leo_config_ref": "Actual full-source adapter fs25MHz/fc2.462GHz/residual/post_sync/noEQ and native defaults"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Only nominal engineering-proxy timescale rationale;no identity/DG/As/joint performance claims"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "data_contract_verified": "NOT_APPLICABLE_NO_CHECKPOINT",
+    "selection": "none"
+  },
+  "execution": {
+    "host": "local",
+    "launch_owner": "codex/root/F-scatter-timescale",
+    "gpu_policy": "CPU only;no CUDA/native runtime imported",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_frozen_scatter_timescale_20261017/r01",
+    "launch_command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_scatter_timescale17.audit --out E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_frozen_scatter_timescale_20261017/r01",
+    "stop_rule": "Any ambiguous actual config or missing frozen-scatter assumption fails;no data/model/channel fallback or speed retuning"
+  },
+  "expected_artifacts": [
+    "result.json",
+    "same-run report and verification"
+  ],
+  "metrics_plan": {
+    "physical": [
+      "max ray phase change",
+      "state refresh probability upper bound",
+      "stationary shadow increment RMS",
+      "ensemble coefficient-vector error bound"
+    ],
+    "decision": {
+      "max_ray_rotation_below_rad": 0.001,
+      "state_refresh_probability_below": 0.0001,
+      "shadow_RMS_below_dB": 0.01,
+      "meaning": "If all true close the material-nominal-dynamics rationale;not an identity performance threshold"
+    },
+    "identity_accuracy": "Not measured;no target data",
+    "target_access": false
+  },
+  "rows": [
+    {
+      "row_id": "CODE_ONLY_TIMESCALE",
+      "method": "AST plus closed-form original physical prior",
+      "purpose": "Falsify material omitted packet-time dynamics before spending E30 training",
+      "config_ref": "experiments/cvs_scatter_timescale17/audit.py",
+      "resolved_config_ref": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_frozen_scatter_timescale_20261017/r01/result.json",
+      "data_overrides": {
+        "data_access": false
+      },
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG",
+      "k": null,
+      "scenario": "actual nominal residual proxy,all three states;no IQ synthesis",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": 0,
+      "budget_ref": "0 model epochs,0IQ/CP/channel/NN/update",
+      "output_root": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_frozen_scatter_timescale_20261017/r01",
+      "log_path": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_frozen_scatter_timescale_20261017/r01/result.json",
+      "command": "F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_scatter_timescale17.audit --out E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_frozen_scatter_timescale_20261017/r01",
+      "expected_artifacts": [
+        "result.json"
+      ],
+      "config": {
+        "samples": 256,
+        "fs_source": "actualadapter",
+        "native_defaults_source": "actualnativeConfig",
+        "target_access": false
+      }
+    }
+  ],
+  "notes": [
+    "No new training candidate until nominal operator omission has meaningful scale;no target metric used to select or tune screen.",
+    "Common orbital carrier Doppler already appears in compensation and is not the terminal scatter Doppler.",
+    "No formal default test required because no model training or inference;all formal IQ remains fixed.",
+    "G0 source/code-only calculation consumes no real checkpoint or remote release;do not introduce unused machinery."
+  ],
+  "registered_at": "2026-10-17T10:03:19+00:00"
+}
