@@ -1,0 +1,275 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01",
+  "group_id": "phase1-FcrossRX-existing-SupCon-real-As-coverage",
+  "display_name": "完整clean保留E30：原跨RX对比监督的真实星地视图覆盖",
+  "description": "原SupCon只普通视图。固定原CE/RDrop/SupCon预算，三新scratch30比较ORD128、DUP192重复ordinary、SAT192真实As；无新Ag/loss/head/部署模块，原U不变且无额外U前向。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P41",
+    "crossview SupCon coverage"
+  ],
+  "tags": [
+    "FcrossRX",
+    "E30",
+    "all-source",
+    "clean-preserving",
+    "As-training-organization",
+    "same-existing-loss",
+    "default-head",
+    "U-hidden"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active IQAg/As joint research goal;latestE30/full5RX/defaulthead;humanconfirmedcompleteclean-preservingroute. This candidateonlytestsAscoverage,notclaimednewAg.",
+  "code": {
+    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinaryuid1000 CVS-RFFI Python3.11 Torch2.6 CPUdispatcher2threads GPUworkers FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "unchanged existing source data and fixed cached source observations",
+    "representation": "original equalized1/rawfloat32 2x256;centercrop/padthenperpacketRMS;As(raw),no postAsRMS",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "label_map_ref": "same source contract six TX mapping",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "same contract all6 source TX",
+    "roles": {
+      "L_s": 6300,
+      "U_s": "56700 hiddenTX;original student/ownEMA only",
+      "V": "27000 validationonly;existingfixed1800two-drawthree-scene frozenreadout"
+    },
+    "train_ratio": "original7/63/30;all5RX,noLdev/heldRX",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "Existing original source role contract;formal received manifest VALIDATED_ONCE;Phase2 capsule/split IDs not applicable",
+    "support_query_ref": "not applicable;source-only",
+    "leo_config_ref": "training original fullnative residual/post_sync/EQoffG1/ref30/reflect/fs25M/fc2.462GHz/quality+phase+IQ;hardwareseed16423 stableRXdayeq. Source readout existingP24 physical2draw full3scene fc2.45GHz proxy disclosed. Formalcachedclean+6 unchanged."
+  },
+  "permissions": {
+    "regime": "source_training_and_fixed_final_test",
+    "query_use": "fixedfinal all7 predictions thenseparateexec independenttruthlast;notforselection",
+    "external_method_exception": null,
+    "claim_scope": "One fixedmodelseed Ascontrastivecoverageincrement;no newAgprooforjointgoalsuccessfromsourceonly"
+  },
+  "checkpoint": {
+    "initialization": "allthree independentscratchE0;onlyownfixed20→own10",
+    "sources": [
+      "compatibilitysmokeonlyfixedP39 B0 ownE30defaulthead;nottraininginitializer",
+      "eachrowownstage20model+ownEMA only for same-row10E tail"
+    ],
+    "contract_check_ref": "P41 source.parent_payload and model.own_model originalroleids/own20scratch/sourcefreeze/strictstate",
+    "provenance_verdict": "no oldweightsfornewtraining;P39compatibilityCP originalscratch/own20+10 fixedB0 beforetarget;samecontract. AllnewrowssameoriginalphysicalIDs.",
+    "selection_rule": "allthreefixedFINAL10 cumulative30;no epoch/candidate selection bytarget"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/crossviewSupCon41",
+    "gpu_policy": "max3totalprocesses/GPU countingallowners,oneworkerperrow;>=12GBfreeslot;CPUdispatcher2threads",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/logs and /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01/experiments/cvs_crossview_supcon41/runner.py",
+    "stop_rule": "Systemictechnical/protocolfailureonly:wrongrole/CP/config,nonfinite loss/gradient,outputcollision,unlaunchable/predictionfailure. Preservepartial,noautomaticretry,stopnewpendingonfailure,never touchhealthyothers;scientificnegativenotstop. Anyrealrowfrozen alwaysall7test."
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "synthetic/complete.json",
+    "launch.json",
+    "queue_state.json",
+    "eachrow/{stage20,source}/{initialization,resolved_config,actual_modules,actual_channel,source_contract,optimizer_initialization,EMA_initialization,completion,result,source_frozen}.json",
+    "eachrow/{stage20,source}/{epoch_metrics.csv,step_metrics.jsonl.gz,reference_steps.jsonl.gz,unit_steps.jsonl.gz,training_sequence.jsonl.gz}",
+    "eachrow/source/final_ssdg.pth private",
+    "eachrow/source_qualification/{predictions.npz private,complete.json}",
+    "source_matrix_decision.json",
+    "eachrow/prediction/{all7logits,predictions,complete}",
+    "eachrow/scoring/scores.json",
+    "per_row_seed.csv",
+    "results.json",
+    "complete.json",
+    "postresultfigures/trainingcurves/coverageandfixedcleanretention"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "all7accuracy",
+      "urbanmean/low/mid",
+      "macroF1/worstRX",
+      "suburban-cleanown gap",
+      "fixedORDclean-correctsatretention",
+      "sourcefoururbancells/fullVhealth",
+      "TXxRXxstatecoverage",
+      "actualcontrastiveanchors/crossviewpositives",
+      "defaultheadmargin/30",
+      "steps/NN/teacher/cost/wall"
+    ],
+    "dimensions": [
+      "armORD128/DUP192/SAT192",
+      "modelseed2026092701",
+      "source2channel-draws",
+      "receiver/day/TX/state/lock/addednoisequality",
+      "epoch/step"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/{row}/prediction/predictions.npz",
+    "scorer_ref": "P41 evaluate.score separateexec afterall7 validatedpredictioncompletion;originalfixedtargettruth onlyscorer"
+  },
+  "rows": [
+    {
+      "row_id": "ORD128-s2026092701",
+      "method": "originalordinary128existingSupCon",
+      "purpose": "matchedcontrol",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01/experiments/cvs_crossview_supcon41/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/ORD128-s2026092701/{stage20,source}/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016051,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Sameoriginalmodel/data/split/ordinary/Lnative16421/hardware16423;source2drawsfixedexistingnotnewtrial;formalIQfixednoevaluationredraw. supportnullnotapplicable. No newchannel/noise RNG stream required.",
+      "k": null,
+      "scenario": "trainlow_suburban/midurban/lowurban originalperpacket3nominal;formalclean+all6",
+      "optimizer": "freshAdamW/cos20 then strictown20+ownEMA resetAdamW/cos10,wd.0001,CENTER_UNITSclip5",
+      "lr": "originalpeak.0002/min.000001;cos20/cos10reset",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "eachown20+10=30E/6660updates,Lall30+originalUlast17;512LNN/update=3409920LNN;0extraU/0extrateacher. Expectednative6255724 +12600frozen source +1176002formal =7444326NN/model,measureactual;sharedsmoke1538 once. 3models90modelE/19980updates.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/ORD128-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/logs/ORD128-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01/experiments/cvs_crossview_supcon41/runner.py --mode worker --row ORD128-s2026092701",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "synthetic/complete.json",
+        "launch.json",
+        "queue_state.json",
+        "eachrow/{stage20,source}/{initialization,resolved_config,actual_modules,actual_channel,source_contract,optimizer_initialization,EMA_initialization,completion,result,source_frozen}.json",
+        "eachrow/{stage20,source}/{epoch_metrics.csv,step_metrics.jsonl.gz,reference_steps.jsonl.gz,unit_steps.jsonl.gz,training_sequence.jsonl.gz}",
+        "eachrow/source/final_ssdg.pth private",
+        "eachrow/source_qualification/{predictions.npz private,complete.json}",
+        "source_matrix_decision.json",
+        "eachrow/prediction/{all7logits,predictions,complete}",
+        "eachrow/scoring/scores.json",
+        "per_row_seed.csv",
+        "results.json",
+        "complete.json",
+        "postresultfigures/trainingcurves/coverageandfixedcleanretention"
+      ]
+    },
+    {
+      "row_id": "DUP192-s2026092701",
+      "method": "sameexistingSupCon192;ordinary128+sameordinary64duplicates",
+      "purpose": "matchedcontrol",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01/experiments/cvs_crossview_supcon41/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/DUP192-s2026092701/{stage20,source}/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016051,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Sameoriginalmodel/data/split/ordinary/Lnative16421/hardware16423;source2drawsfixedexistingnotnewtrial;formalIQfixednoevaluationredraw. supportnullnotapplicable. No newchannel/noise RNG stream required.",
+      "k": null,
+      "scenario": "trainlow_suburban/midurban/lowurban originalperpacket3nominal;formalclean+all6",
+      "optimizer": "freshAdamW/cos20 then strictown20+ownEMA resetAdamW/cos10,wd.0001,CENTER_UNITSclip5",
+      "lr": "originalpeak.0002/min.000001;cos20/cos10reset",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "eachown20+10=30E/6660updates,Lall30+originalUlast17;512LNN/update=3409920LNN;0extraU/0extrateacher. Expectednative6255724 +12600frozen source +1176002formal =7444326NN/model,measureactual;sharedsmoke1538 once. 3models90modelE/19980updates.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/DUP192-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/logs/DUP192-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01/experiments/cvs_crossview_supcon41/runner.py --mode worker --row DUP192-s2026092701",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "synthetic/complete.json",
+        "launch.json",
+        "queue_state.json",
+        "eachrow/{stage20,source}/{initialization,resolved_config,actual_modules,actual_channel,source_contract,optimizer_initialization,EMA_initialization,completion,result,source_frozen}.json",
+        "eachrow/{stage20,source}/{epoch_metrics.csv,step_metrics.jsonl.gz,reference_steps.jsonl.gz,unit_steps.jsonl.gz,training_sequence.jsonl.gz}",
+        "eachrow/source/final_ssdg.pth private",
+        "eachrow/source_qualification/{predictions.npz private,complete.json}",
+        "source_matrix_decision.json",
+        "eachrow/prediction/{all7logits,predictions,complete}",
+        "eachrow/scoring/scores.json",
+        "per_row_seed.csv",
+        "results.json",
+        "complete.json",
+        "postresultfigures/trainingcurves/coverageandfixedcleanretention"
+      ]
+    },
+    {
+      "row_id": "SAT192-s2026092701",
+      "method": "sameexistingSupCon192;ordinary128+actualsatellite64existingmaps",
+      "purpose": "candidate",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01/experiments/cvs_crossview_supcon41/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/SAT192-s2026092701/{stage20,source}/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016051,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Sameoriginalmodel/data/split/ordinary/Lnative16421/hardware16423;source2drawsfixedexistingnotnewtrial;formalIQfixednoevaluationredraw. supportnullnotapplicable. No newchannel/noise RNG stream required.",
+      "k": null,
+      "scenario": "trainlow_suburban/midurban/lowurban originalperpacket3nominal;formalclean+all6",
+      "optimizer": "freshAdamW/cos20 then strictown20+ownEMA resetAdamW/cos10,wd.0001,CENTER_UNITSclip5",
+      "lr": "originalpeak.0002/min.000001;cos20/cos10reset",
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "eachown20+10=30E/6660updates,Lall30+originalUlast17;512LNN/update=3409920LNN;0extraU/0extrateacher. Expectednative6255724 +12600frozen source +1176002formal =7444326NN/model,measureactual;sharedsmoke1538 once. 3models90modelE/19980updates.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/SAT192-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/logs/SAT192-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01/experiments/cvs_crossview_supcon41/runner.py --mode worker --row SAT192-s2026092701",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "synthetic/complete.json",
+        "launch.json",
+        "queue_state.json",
+        "eachrow/{stage20,source}/{initialization,resolved_config,actual_modules,actual_channel,source_contract,optimizer_initialization,EMA_initialization,completion,result,source_frozen}.json",
+        "eachrow/{stage20,source}/{epoch_metrics.csv,step_metrics.jsonl.gz,reference_steps.jsonl.gz,unit_steps.jsonl.gz,training_sequence.jsonl.gz}",
+        "eachrow/source/final_ssdg.pth private",
+        "eachrow/source_qualification/{predictions.npz private,complete.json}",
+        "source_matrix_decision.json",
+        "eachrow/prediction/{all7logits,predictions,complete}",
+        "eachrow/scoring/scores.json",
+        "per_row_seed.csv",
+        "results.json",
+        "complete.json",
+        "postresultfigures/trainingcurves/coverageandfixedcleanretention"
+      ]
+    }
+  ],
+  "notes": [
+    "PrimarySAT>=ORD+1ppand>=DUP+1ppineach2drawxmid/low;fullVcleanSAT>=both-.25pp. Otherwisecloseexactviewcoveragecandidate,nocoefficient/temperature/RX/seed/budgetrescue. Noautomaticseedextension.",
+    "No new IQAg inthisexperiment;wholejointgoalremainsactive/unmet.",
+    "NewSupConcoefficientunchangedbutactualauxmagnitudemaychange;DUPcontrolsanchorcount/moments,reportactualweightedlossandhealth. AlllabeledAsCE unchanged.",
+    "OrdinaryE13actualstrength freeze,original13Lonly+17L/U joint schedule,strictownEMA,cumulativeSupCon warm5/ramp10 preservecompletehumanselectedorganization.",
+    "Noextralossconsistency,entireembeddingalignment,diagnostichead,newteacherorurbanconfidencegate.",
+    "All3newcontrols scratch;historicalP39hasextra963900zeroUreadoutand14400teachercheckNN,not samecostreference;do nothidecostdifference."
+  ]
+}

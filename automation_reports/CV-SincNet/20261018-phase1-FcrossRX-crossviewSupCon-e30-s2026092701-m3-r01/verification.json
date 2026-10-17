@@ -1,0 +1,25 @@
+{
+  "status": "PRELAUNCH_CHECKS_PASS",
+  "code_commit": "PENDING_ACTUAL_CODE_COMMIT",
+  "focused_tests": {
+    "status": "PASS",
+    "count": 8,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/local_checks.txt",
+    "warning": "LocalTorch2.1/NumPy2 ABI warning;no tensor-numpy bridge,testscompleted"
+  },
+  "compile": "PASS",
+  "review": {
+    "status": "PASS",
+    "reviewer": "/root/cleanretain37_p0p1",
+    "P0": 0,
+    "P1": 0,
+    "initial_P1": "Path import missing in own_model,now fixed and confirmed by same review"
+  },
+  "preflight": {
+    "status": "VERIFIED",
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/preflight.txt"
+  },
+  "run_state": "NOT_LAUNCHED",
+  "new_Ag": false,
+  "goal_complete": false
+}
