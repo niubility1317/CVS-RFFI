@@ -29,3 +29,11 @@ guard固定通过条件：MASK pooled及每draw相对raw accuracy/F1≥−.5pp�
 技术恢复预登记：20261017-phase1-FcrossRX-bandavailability-sourceRX1-e20-s2026092701-m4-r02；仅修复独立包导入，科学计划保持。
 
 技术修复验证：第一次 parent namespace stub 不覆盖原后端依赖，定向复审发现同一启动 P1；最终撤销 stub，先以 stdlib spec 读 guard_design，再完整初始化旧后端，再注入本包。两 seed 在 N607 各自 Python -I 完整 bootstrap_guard＋checkpoint/original design 导入 PASS（0 IQ/CP/NN），定向复审确认闭合。原模型/算子检查沿用未变的 r01 本地结果，未重复训练。原 N607 只读预检在本次恢复继续适用，无资源/环境改动。
+
+源域身份保护已完成并独立复核全部 90,720 个默认头预测：两个冻结模型均 PASS。seed01 原始 99.8413%、MASK 99.6974%（−0.14385 个百分点）、GAIN 99.8413%；seed02 原始 99.8413%、MASK 99.6627%（−0.17857 个百分点）、GAIN 99.8165%。MASK 对各自原始正确集合的保持率为 99.8112% 和 99.8062%。这均为 fit L5040/RX3、4、6、8，非 held RX1、正式目标或新训练成绩。
+
+IQ 相对 RMS 中位数 0.100000，97.3909% 的视图触发预定上限；最大 0.1000000047。反射边界误差/变换能量为 1.56265e−7。两模型逐样本变换随机流完全一致。保护计算各耗时 31.0836 s、30.6381 s；独立完整预测复核 4.5079 s，0 新 IQ/CP/NN。
+
+两个 guard PASS 后四个原预登记 scratch E20 row 已自动启动。独立核实 RAW/GAIN/ORDINARY/MASK 的 PID、start ticks、CWD、cmdline、CUDA 卡 1/2/3/4 与输出一致；实际 leo_practical 导入来自原固定 release 的 experiments/adv3b02_xuc/code，residual/post_sync/EQ=false（G=1）/reference_snr_db=30/quality adaptation+IQ compensation+phase tracking=true/reflect 均保持。全部四组无 As 训练，原 U/own EMA 继续；当前 RUNNING，未得出 Ag、urban 或联合模型有效结论。
+
+离线全量复核器：真实 90,720 预测核对 PASS；4 个协议负例 PASS。四组在第 2 epoch 的更新文件均增长，训练尚未完成。
