@@ -1,7 +1,7 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v1",
-  "status": "SOURCE_CONFIRMATION_ANALYZED_FAIL",
-  "authorization": "User changed the pre-augmentation baseline to F plus cross-RX same-TX contrastive learning on 2026-10-16; existing E20 budget remains in force.",
+  "status": "FULL_SOURCE_MAINLINE_RESTORED_NOT_YET_RUN",
+  "authorization": "User changed the pre-augmentation baseline to F plus cross-RX same-TX contrastive learning on 2026-10-16; existing E20 budget remains in force. User on 2026-10-17 explicitly forbids withholding a source training domain and redirects mainline to practical augmentation against ordinary concatenation.",
   "baseline_name": "F+CROSS_RX_SUPCON",
   "existing_mechanism_source_commit": "4df7b94d0fd8ce29056bd8236364e45afa92e07f",
   "existing_mechanism_source": "experiments/cvs_f_supcon50/mechanism.py",
@@ -33,7 +33,7 @@
     "resume_or_E50_parent": false
   },
   "training": {
-    "RDrop_alpha": 1.0,
+    "RDrop_alpha": 1,
     "label_smoothing": 0.01,
     "cosine_schedule": "original E20 schedule",
     "ordinary_augmentation": "preserve the existing F+CROSS_RX recipe as a common condition; record actual factory, probabilities and schedule at release",
@@ -83,9 +83,11 @@
       2,
       3
     ],
-    "source_folds": "explicit exclusion of held RX from L/U for any separately registered source diagnostic; never mix full-source and held-fold results",
+    "source_folds": "Forbidden for subsequent mainline training: do not exclude any of source RX1/3/4/6/8 from original L/U. Existing leave-RX-out records remain historical diagnostics, not full-source controls.",
     "target_use": "frozen registered prediction then independent truth-last scoring only",
-    "target_feedback_to_design": false
+    "target_feedback_to_design": false,
+    "held_source_RX": null,
+    "physical_role_policy": "Exactly reuse original L_s6300/U_s56700/V27000 IDs, split392005,7/63/30; V stays validation; never merge V into L or reveal U TX."
   },
   "comparison": {
     "future_augmentation_control": "same F+CROSS_RX_SUPCON, E20, data contract, initialization rule, original U recipe and actual forward budget",
@@ -104,9 +106,42 @@
       "practical_low_urban"
     ],
     "formal_IQ_channel_SNR_boundary": "unchanged",
-    "goal_completed": false
+    "goal_completed": false,
+    "ordinary_practical_reference": {
+      "name": "F+CROSS_RX_SUPCON+ordinary_concat_practical",
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "train_scenes": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "epochs": 20,
+      "label_epochs": 13,
+      "pseudo_epochs": 7,
+      "init": "scratch, no held-fold weights",
+      "route": "existing native ordinary concat_full; actual IQ order, CE normalization and forward cost must be recorded from launcher before launch",
+      "new_Ag": false,
+      "new_consistency": false,
+      "new_curriculum": false,
+      "formal_views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "formal_after_each_row": "freeze FINAL20, predict all seven fixed views, then independent truth-last scoring; no target feedback"
+    }
   },
-  "execution_boundary": "Five held-source folds analyzed, one model seed. Practical paired-CE improves all urban folds but fails clean protection on RX6/RX8; no standalone promotion or target/crossseed extension. Independently frozen real-pair source study remains separate; joint goal active.",
+  "execution_boundary": "2026-10-17 correction: full-source ordinary-concat FcrossRX E20 matching control has not been run. First establish full-source no-As/ordinary-concat references; no additional held RX or allpass/synthetic Ag detour. Previous fold failures remain valid within their contracts and do not constitute full-source failure.",
   "full_source_status": "NOT_RUN",
   "source_pair": {
     "run_id": "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01",
@@ -312,5 +347,17 @@
       "automatic_extension": false
     },
     "report": "automation_reports/CV-SincNet/20261016-phase1-FcrossRX-practical-source-confirm-s2026092701-m8-r01/report.md"
+  },
+  "mainline_reset": {
+    "date": "2026-10-17",
+    "next_minimal_matrix": [
+      "FULL_F_CROSSRX_NO_AS",
+      "FULL_F_CROSSRX_ORDINARY_CONCAT_AS"
+    ],
+    "additional_augmentation_candidate": null,
+    "extra_source_domain_holdout": false,
+    "extra_Ldev_split": false,
+    "success_claim": false,
+    "stopped_unlaunched_run": "20261017-diagnostic-FcrossRX-allpass-synthetic-m1-r01"
   }
 }

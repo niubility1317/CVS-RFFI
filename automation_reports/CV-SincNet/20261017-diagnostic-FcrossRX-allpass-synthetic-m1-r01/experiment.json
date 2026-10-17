@@ -1,0 +1,143 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-FcrossRX-allpass-synthetic-m1-r01",
+  "group_id": "phase1-FcrossRX-allpass-engineering",
+  "display_name": "F＋跨 RX 同 TX：全通相位响应纯合成 G0",
+  "description": "验证有界非线性相位响应、数值延迟补偿和有限记录边界；不评价身份准确率。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "FcrossRX",
+    "allpass",
+    "synthetic-G0"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "当前活跃联合增强 goal：F＋跨 RX 同 TX；每模型 E20。本阶段零训练，仅合成 DSP。",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "Windows native; ssr-gpu Python 3.10; NumPy only; no GPU/Torch/model",
+    "cwd": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014"
+  },
+  "data": {
+    "dataset": "fixed_synthetic_32",
+    "version": "allpass-G0-v1",
+    "representation": "float32 Bx2x256; true context only as independent synthetic reference",
+    "contract_ref": "experiments/cvs_allpass_probe21/design.py",
+    "physical_ids_ref": "not_applicable_no_radio_records",
+    "label_map_ref": "not_applicable_no_identity_labels",
+    "source_receivers": [],
+    "target_receivers": [],
+    "source_days": [],
+    "target_days": [],
+    "tx_sets_ref": "not_applicable_no_TX",
+    "roles": {
+      "L_s": null,
+      "U_s": null,
+      "V": null
+    },
+    "train_ratio": null,
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "32 cases x 3 fixed alpha; 8 families; no dropped cases",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "synthetic_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Engineering correct/incorrect only; no A_g or identity gain claim"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "not_applicable_no_checkpoint_reads",
+    "provenance_verdict": "NO_CHECKPOINT_USED",
+    "selection_rule": "all fixed 96 synthetic observations; no selection"
+  },
+  "execution": {
+    "host": "local_windows",
+    "launch_owner": "/root",
+    "gpu_policy": "CPU only; no training processes",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_allpass_G0_20261017",
+    "launch_command": "\"E:/type10-7/local_envs/ssr-gpu/python.exe\" -X utf8 -m experiments.cvs_allpass_probe21.runner --output \"E:/type10-7/local_artifacts/cvs_FcrossRX_allpass_G0_20261017/run\" --commit <CODE_COMMIT>",
+    "stop_rule": "First technical exception terminates and preserves artifacts; no automatic retry. Any fixed engineering criterion failure closes this construction; PASS does not launch source or training."
+  },
+  "expected_artifacts": [
+    "run/resolved_config.json",
+    "run/case_metrics.json",
+    "run/frequency_summary.json",
+    "run/summary.json",
+    "run/completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "magnitude_error",
+      "nonlinear_phase_fraction",
+      "relative_change_RMS",
+      "power_error",
+      "dense_error_RMS",
+      "boundary_RMS",
+      "pooled_boundary_fraction",
+      "interior_error_RMS"
+    ],
+    "dimensions": [
+      "family",
+      "case_id",
+      "alpha"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "independent DSP references only; no truth/classification"
+  },
+  "rows": [
+    {
+      "row_id": "ALLPASS_G0",
+      "method": "H_a(z)=(a+z^-1)/(1+a*z^-1), a=-.04/0/.04; align numerical one-sample delay; reflection context32; no post normalization",
+      "purpose": "engineering_falsification",
+      "config_ref": "experiments/cvs_allpass_probe21/design.py",
+      "resolved_config_ref": "E:/type10-7/local_artifacts/cvs_FcrossRX_allpass_G0_20261017/run/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": null,
+        "data": 202610172101,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only data seed constructs synthetic records; all other seeds inapplicable: no model, random augmentation, split, support or stochastic evaluation.",
+      "k": null,
+      "scenario": "32 synthetic records; all 96 views retained",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0 real IQ,0 CP,0 NN,0 updates; no training",
+      "output_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_allpass_G0_20261017/run",
+      "log_path": "E:/type10-7/local_artifacts/cvs_FcrossRX_allpass_G0_20261017/G0.stdout.log",
+      "command": "\"E:/type10-7/local_envs/ssr-gpu/python.exe\" -X utf8 -m experiments.cvs_allpass_probe21.runner --output \"E:/type10-7/local_artifacts/cvs_FcrossRX_allpass_G0_20261017/run\" --commit <CODE_COMMIT>",
+      "expected_artifacts": [
+        "run/resolved_config.json",
+        "run/case_metrics.json",
+        "run/frequency_summary.json",
+        "run/summary.json",
+        "run/completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "F baseline is fixed 3xSIG_TIME + unified Sinc CENTER_UNITS + RDrop + crossRX sameTX SupCon + default cosine30 joint160. No model is invoked here.",
+    "E20/model remains upper authorized training budget; this run consumes zero.",
+    "G0 consumes no data/CP/NN/remote machinery. Real-checkpoint smoke, N607 preflight/archive/compile and truth-last are not applicable to this stage.",
+    "Null optimizer/lr/physical/RX/day/TX/L/U/V/capsule/split/support/query/LEO fields are inapplicable because data are purely synthetic.",
+    "No empirical full G0 outcome has been observed before fixing the matrix and limits.",
+    "Any per-case boundary-dominated counterexample is retained even if pooled criterion passes."
+  ],
+  "registered_at": "2026-10-17T04:11:20+00:00"
+}

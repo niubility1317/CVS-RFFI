@@ -177,3 +177,20 @@ FAIL_FIXED_BAND_AVAILABILITY_CLOSED：不扫宽度/深度/频率/上限/weight/R
 ## P20之后：外部归一化链疑点已排除（代码与配置核对）
 
 0 IQ/CP/NN/更新。源与固定正式输入均为center=False复数功率RMS，星地前单位RMS，星地后无外部RMS；未发现顺序错配，不重开ordinary-RMS/常数gain或P20。逐字段配置另记录source2.462GHz、formal2.45GHz及处理状态描述差异，未测试其效果，不据此调弱正式数据。具体路径与证据见 `cvs_FcrossRX_normalization_path_audit_20261017.md`。下一待证伪问题为有界频率相关全通相位响应，先纯合成边界/延迟G0；尚无实现、运行或识别收益，不冒称真实RX估计或A_g有效。
+
+
+## 2026-10-17 用户纠偏：恢复全部训练源域，星地增强回到主线
+
+当前判断：近期研发过多转向独立 IQ 扰动、合成工程筛选与留 RX 泛化，未先完成用户指定 F＋跨 RX 同 TX＋E20 的完整源域普通拼接星地基线，主线优先级错误。不能因新方法胜过无 As，就称为胜过普通拼接；不能把留域诊断的失败直接当作完整源域方案失败。
+
+原契约实际只读核对为 RX1/3/4/6/8、day1/2/3、6TX、split392005，L6300/U56700/V27000（7/63/30），scratch_only、target_access_before_freeze=false。最近 RX6 留域 P20 训练 L5040/U45360/V21600，减少 20% 的 L/U 训练样本，并缺一个训练 RX。未做完整源域匹配，不能量化这种移除对性能的净影响，也不能将其成绩当作新完整基线。
+
+后续主线不再留训练域或额外切 L_dev：L/U 保留全部原源 RX 和原物理 ID，V 继续仅作合法源健康/机制诊断。没有向 L 合并 V，没有解封 U TX。各 E20 从零初始化，不加载留域模型或旧 E50 权重。历史失败、成本、图与权重保留，不追改旧阈值、重跑旧实验或操作健康旧进程。
+
+停止未运行的全通 G0 `20261017-diagnostic-FcrossRX-allpass-synthetic-m1-r01`，登记 STOPPED_BEFORE_LAUNCH；完整 G0 未执行，0真实 IQ/CP/NN/更新。已写代码和开发检查仅作未启动记录，不能宣称科学 FAIL、PASS、A_g 身份保持或性能收益。
+
+下一最小矩阵仅两行：完整源域 F＋跨 RX 同 TX（无 As）；相同数据与 scratch E20 的 F＋跨 RX 同 TX＋原普通拼接 practical。星地训练环境保持 low_suburban/mid_urban/low_urban；不追加新 Ag、课程、一致性或分组机制。先恢复可靠匹配参照，随后只单独检验有证据的星地训练改动。实际 launcher 须核查 native concat_full 的输入顺序、独立 CE 归一化和前向量；本配置修改本身不表示训练已启动或运行时检查已实现。
+
+每 row FINAL20 冻结后自动执行原 clean＋六 practical prediction，再独立 truth-last 评分；所有已冻结 row 的结果均报告，不能用目标分数选模/调参/选择性重跑。报告 clean、各 urban/三郊区绝对值、相对普通拼接的差、最差 RX、宏 F1 与真实成本。未取得上述结果前，不宣称双突破、low urban>60% 或跨 seed 复现。
+
+当前唯一待回答的问题：在完整原源域和固定 E20 下，普通拼接 As 相对无 As 的 clean 代价和六 practical 收益究竟是多少？主线先补这项直接证据，不以留域评分或合成 DSP 通过替代。机器可读当前约束见 `configs/phase1/F_crossrx_e20_baseline.json`。
