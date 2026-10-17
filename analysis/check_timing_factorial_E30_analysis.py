@@ -41,7 +41,7 @@ class Cases(unittest.TestCase):
     with (out/'source_strata.csv').open('x',encoding='utf8') as f:f.write('synthetic source statistics\n')
     return sources
    def collect(arm,truth):
-    return dict(views={v:dict(accuracy=.8,macro_f1=.8) for v in mod.base.VIEWS},metrics=[dict(arm=arm,view='clean',accuracy=.8)],source=dict(source_result={},cost={},curve=[dict(epoch=30)])),dict(ids=ids.copy(),y=y.copy(),pred=copy.deepcopy(pred))
+    return dict(run_id=mod.RUN if arm in ('B10','B11') else mod.REFERENCE_RUN,views={v:dict(accuracy=.8,macro_f1=.8) for v in mod.base.VIEWS},metrics=[dict(arm=arm,view='clean',accuracy=.8)],source=dict(source_result={},cost={'source_identity_NN':0,'prediction_identity_NN':0},curve=[dict(epoch=30)])),dict(ids=ids.copy(),y=y.copy(),pred=copy.deepcopy(pred))
    output=Path(td)/'result'
    with patch.object(sys,'argv',['analysis','--truth',str(Path(td)/'DO_NOT_OPEN_TRUTH'),'--output',str(output),'--commit','synthetic']),patch.object(mod.base,'PROJECT',project),patch.object(mod.base,'completed'),patch.object(mod,'source_readout',side_effect=source),patch.object(mod,'independent_source_rule',return_value={}),patch.object(mod.base,'collect_row',side_effect=collect),patch.object(mod.base,'compare_training_sequences',return_value={}),patch.object(mod,'local_trace',return_value={}),patch.object(mod,'native_telemetry',return_value={}),patch.object(mod,'same_local_stream',return_value={}),patch.object(mod.base,'plots',return_value=[]),patch.object(mod,'source_plots',return_value=[]),patch.object(mod,'timing_plot',return_value=[]),patch('builtins.print'):
     try:mod.main()
