@@ -199,3 +199,5 @@ OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 /home/szu2070436088/.
 下一步先复用已有合法源域11条件损伤控制（full；no_noise/flat_H/no_carrier/no_RX_IQ各fixed/total；实际功率质量与边界），不再重复同一冻结probe。本轮已核实其真实配置：全5源RX、L6300/U56700/V27000、V1800、无heldRX/L_dev、0更新/0头拟合/0target；旧E20 B01/RAW_PRAC在去新增噪声的fixed控制下4个urban格均超过+5pp，其余所列去损伤控制未同时达该标准。该旧冻结干预不等于重训因果效应，也不证明继续随机噪声会有效。其元数据已取回用于下一步分层误差复盘，当前没有登记新的训练或变相调参。
 
 本轮可执行实验与交付已完成；整体goal保持ACTIVE，不能因一次科学负结果或预算用尽标记目标达成。
+
+后续结构与 RX session 的合成审计见 [postmortem_audit.md](postmortem_audit.md)；没有新训练或新性能成绩，不改变本报告的负结果。
