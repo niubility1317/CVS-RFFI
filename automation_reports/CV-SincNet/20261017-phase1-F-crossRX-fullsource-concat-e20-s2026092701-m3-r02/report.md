@@ -1,6 +1,6 @@
 # 完整源普通星地拼接：E20 固定参照
 
-状态：RUNNING／VERIFIED，三条全源scratch E20已启动，尚未完成冻结预测与正式评分。训练不会留出一个源RX。原候选唯一P0/P1审查及路径P1定向复核PASS，r02只修评分测试桩，不重复全审；本地语法与33个配置／协议反例PASS，真实F合成检查安排在发布后、任何真实训练之前执行。
+状态：RUNNING／PARTIAL SCORED，NATIVE和REPEAT已完成固定E20、七视图预测及独立truth-last评分；CONCAT仍在训练，整个矩阵尚未完成。训练不会留出一个源RX。原候选唯一P0/P1审查及路径P1定向复核PASS，r02只修评分测试桩，不重复全审；本地语法与33个配置／协议反例PASS，真实F合成检查安排在发布后、任何真实训练之前执行。
 
 用户于2026-10-17指出近期探索偏离星地识别、部分新方法不如普通拼接，并要求不再减少源训练域。当前唯一问题是：固定F＋跨RX同TX和完整源覆盖下，普通源／practical配对监督的真实clean与星地收益如何。先建立该参照，后续新机制必须直接比较，不把源统计风险下降算作性能。
 
@@ -48,3 +48,51 @@ r01失败的3个合成optimizer步骤与1292NN／158physics按固定到达路径
 首次实时全量解析分别获得 NATIVE 3581、REPEAT 3160、CONCAT 1691 条完整 step 记录；当时 epoch 文件为 16／14／7 轮。已解析记录的更新序号连续，全部非有限更新及 pseudo_truth_available 标记为 0，原源角色数均为 L6300/U56700/V27000；三组共同采样前缀无差异。压缩流仍在写入，因此 partial/EOF 标记如实保留，不能据此认定技术失败或冒充完整训练。该读取不访问目标评分，不形成识别收益结论。
 
 15 项本地合成解析检查 PASS，包含完整结束正例、截断 gzip、缺日志拒绝、嵌套数值、全 stdout 扫描与逐物理 ID 序列比较；0 实际 IQ／CP／NN／更新／target。闭合后的完整曲线、七视图结果与成本分析仍待真实实验完成。
+
+
+## 已完成的两行正式结果（矩阵未完成）
+
+同一模型 seed2026092701、完整source RX1/3/4/6/8、L6300/U56700/V27000、split392005；每行固定final20学生默认cosine头，168000个物理样本×7个不变视图。以下是固定比较的单seed结果，不用于其他健康行调参、停止、续训或选择性重跑。CONCAT尚未完成，不能提前判断As收益或联合目标。
+
+|视图|NATIVE准确率%|NATIVE宏F1%|REPEAT准确率%|REPEAT宏F1%|REPEAT−NATIVE准确率pp|
+|---|---:|---:|---:|---:|---:|
+|clean|84.9929|84.7517|84.5702|84.2593|-0.4226|
+|practical_high|44.6673|41.2377|46.9738|42.5956|2.3065|
+|practical_mid|42.8851|39.7222|44.9905|41.0367|2.1054|
+|practical_low_suburban|41.1238|38.1617|42.7732|39.2099|1.6494|
+|practical_high_urban|43.2857|40.1315|45.5464|41.4960|2.2607|
+|practical_mid_urban|36.3369|34.0291|37.7667|35.0153|1.4298|
+|practical_low_urban|31.1214|29.5418|32.0125|30.1954|0.8911|
+
+NATIVE的三个suburban与自身clean差为40.3256／42.1077／43.8690 pp；REPEAT对应为37.5964／39.5798／41.7970 pp。两行均未达到lowurban>60%或suburban差≤2pp的探索目标。REPEAT仍然没有新增IQ视图或As；其lowurban增量不能算作星地增强证据。
+
+逐包固定预测比较：
+
+|视图|REPEAT修复NATIVE错误|REPEAT新增错误|clean且该视图同时正确的净变化pp|
+|---|---:|---:|---:|
+|clean|1458|2168|-0.4226|
+|practical_high|8968|5093|1.6173|
+|practical_mid|8679|5142|1.3881|
+|practical_low_suburban|8052|5281|1.0280|
+|practical_high_urban|8821|5023|1.5744|
+|practical_mid_urban|7793|5391|0.9161|
+|practical_low_urban|7153|5656|0.4792|
+
+完整日志已逐条解析：两行各20个epoch、4440条step／reference／Sinc-unit记录，5994条L/U批序列；各自覆盖全部6300个L和56700个U唯一物理样本，累计L物理暴露568320、U396900，所有5RX×3day保留。无非有限更新或U真值可用标记。NATIVE末轮source V为98.0778%，REPEAT为98.0593%，仅作seen-source健康记录，未据此选模。
+
+|成本|NATIVE|REPEAT|
+|---|---:|---:|
+|实际更新|4440|4440|
+|L学生前向包|1136640|2273280|
+|学生训练总前向包|1533540|2670180|
+|学生源评估／smoke前向包|594002|594002|
+|教师评估前向包|396900|396900|
+|教师训练模式前向包|0|0|
+|正式预测＋2包smoke前向|1176002|1176002|
+|训练墙钟秒|1021.32|1200.99|
+|预测墙钟秒|41.66|43.77|
+|独立CPU评分秒|3.53|3.38|
+
+原始20轮曲线、全部126条分RX/day/TX/overall指标、score派生同包correctness和完整日志保留在各自原run及本地私有收集目录。NATIVE在clean正确的142788包中，lowurban仍正确48839包（34.2039%）；因此仅有高clean并不等于practical适应。上述后处理0新增IQ／checkpoint／原始truth读取、0模型前向、0优化更新。
+
+实际ordinary审计补充：读取了实际DataAugmentation、cvsrffi.schedule.build_aug_base_cfg、configure_augmentor_for_epoch和L调用。标签签名开关false、DAC概率0；PA normal开关true且调用no_pa=false，属于共有旧配方，不能未经独立验证称为标签保持Ag。E1实际scale=.1，E20实际scale=.2506003339；E20 time_shift概率.0877101、最大8点，CFO概率.0877101、最大.0001002401 cycles/sample，AWGN概率.1002401且条件SNR20至36dB，multipath概率.0451081，PA概率.0350840。循环移位按模L索引把切片首尾相接，具有接缝与固定参考窗口改变风险。顺序为DC／taper→shift→gain→phase→CFO→phase-noise→multipath→AWGN→可选PA；class signature关闭不等于PA身份保持已证明。augmentor末端无RMS归一化；后续分支对增益的实际保留仍按对应特征归一化路径解释，不以输入MSE宣称身份收益。RDrop每对复用同一已生成IQ；As从ordinary前原IQ单次生成，不叠加本ordinary噪声／多径／PA。

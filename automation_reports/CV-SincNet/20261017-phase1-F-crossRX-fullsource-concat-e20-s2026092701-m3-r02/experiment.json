@@ -459,7 +459,31 @@
         "3rows/completion.json",
         "launch/queue/result/completionorfailure",
         "reportandregistration"
-      ]
+      ],
+      "observed_result": {
+        "status": "ARTIFACTS_COMPLETE",
+        "model_seed": 2026092701,
+        "epochs": 20,
+        "optimizer_steps": 4440,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "predictions": 1176000,
+        "metrics_records": 126,
+        "head_fit_updates": 0,
+        "truth_last": true,
+        "independent_recount": "VERIFIED",
+        "new_Ag": false,
+        "As": false,
+        "feedback_to_other_rows": false,
+        "metrics_ref": "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/NATIVE-s2026092701/scores/metrics.json"
+      }
     },
     {
       "row_id": "REPEAT-s2026092701",
@@ -769,7 +793,31 @@
         "3rows/completion.json",
         "launch/queue/result/completionorfailure",
         "reportandregistration"
-      ]
+      ],
+      "observed_result": {
+        "status": "ARTIFACTS_COMPLETE",
+        "model_seed": 2026092701,
+        "epochs": 20,
+        "optimizer_steps": 4440,
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "predictions": 1176000,
+        "metrics_records": 126,
+        "head_fit_updates": 0,
+        "truth_last": true,
+        "independent_recount": "VERIFIED",
+        "new_Ag": false,
+        "As": false,
+        "feedback_to_other_rows": false,
+        "metrics_ref": "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/REPEAT-s2026092701/scores/metrics.json"
+      }
     },
     {
       "row_id": "CONCAT-s2026092701",
@@ -1090,7 +1138,8 @@
     "60newmodelepochs/13320updates;syntheticchecks,2NNrealCPsmoke,originalU/teacher,3x1176000targetdecisionsandwallseparate.",
     "Old sourcefoldnegatives preserved;newexplicituserfullsource instructionoverridesoldsourcefoldscreenasentry,notrewritingit.",
     "RUNNING_VERIFIED:dispatcher346544/workers346632,346705,346862;allcwdargvGPUloggrowthmatch;actualfullroles6300/56700/27000/noheldRX/E20/13L7U/noparentweight.",
-    "r02syntheticchecksPASS33config+10roles/scoregates,1292NN/158physics/3syntheticupdates;realCPsmoke1load2NNnoquery.ObservedNATIVE/REPEAT E3,CONCAT E1;notcompleted/notperformance."
+    "r02syntheticchecksPASS33config+10roles/scoregates,1292NN/158physics/3syntheticupdates;realCPsmoke1load2NNnoquery.ObservedNATIVE/REPEAT E3,CONCAT E1;notcompleted/notperformance.",
+    "PARTIAL_SCORED:NATIVEandREPEATfixedfinal20/4440updates/sevenviews/independentCPUscorecomplete;CONCATcontinues;no targetfeedback."
   ],
   "registered_at": "2026-10-17T04:37:56+00:00"
 }

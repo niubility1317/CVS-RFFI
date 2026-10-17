@@ -1,6 +1,6 @@
 {
   "schema": "F_CROSS_RX_FULL_SOURCE_CONCAT_REFERENCE_E20_V1",
-  "status": "RUNNING_VERIFIED",
+  "status": "RUNNING_PARTIAL_SCORED",
   "authorization": "2026-10-17 user correction:prioritize practical augmentation;use ALL original source RX;no leave-one-source-RX training",
   "baseline": "F+CROSS_RX_same_TX/SIG_TIME_X3/unifiedSinc/joint160/defaultcos",
   "data": {
@@ -162,7 +162,13 @@
   ],
   "experiment_registered": true,
   "new_training_launched": true,
-  "target_access": false,
+  "target_access": true,
   "run_id": "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02",
-  "execution_commit": "b94076b191648103daeb8a9cb1c17bdcc9c0e231"
+  "execution_commit": "b94076b191648103daeb8a9cb1c17bdcc9c0e231",
+  "target_access_scope": "Only frozen NATIVE/REPEAT default-head predictions and independent truth-last scores;zero target feedback",
+  "target_evaluation_completed_rows": [
+    "NATIVE-s2026092701",
+    "REPEAT-s2026092701"
+  ],
+  "target_feedback_to_training": false
 }

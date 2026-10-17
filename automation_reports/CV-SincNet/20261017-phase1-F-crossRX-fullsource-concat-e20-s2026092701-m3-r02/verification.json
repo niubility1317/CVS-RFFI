@@ -124,5 +124,31 @@
     "common_sampling_prefix_identical": true,
     "live_gzip_not_final": true,
     "closed_analysis_pending": true
-  }
+  },
+  "closed_rows": {
+    "NATIVE": {
+      "status": "ARTIFACTS_COMPLETE",
+      "epochs": 20,
+      "step_records": 4440,
+      "reference_records": 4440,
+      "unit_records": 4440,
+      "unique_L": 6300,
+      "unique_U": 56700,
+      "formal_predictions": 1176000,
+      "metric_records": 126
+    },
+    "REPEAT": {
+      "status": "ARTIFACTS_COMPLETE",
+      "epochs": 20,
+      "step_records": 4440,
+      "reference_records": 4440,
+      "unit_records": 4440,
+      "unique_L": 6300,
+      "unique_U": 56700,
+      "formal_predictions": 1176000,
+      "metric_records": 126
+    }
+  },
+  "matrix_complete": false,
+  "new_Ag_or_joint_goal_proved": false
 }
