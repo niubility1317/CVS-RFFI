@@ -1,0 +1,30 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "focused_tests": {
+    "status": "PASS",
+    "tests": 7,
+    "AST_files": 18,
+    "real_IQ": 0,
+    "checkpoint_reads": 0,
+    "NN": 0,
+    "updates": 0,
+    "NumPy_bridge_used": false,
+    "ABI_warning_preserved_private": true
+  },
+  "independent_review": {
+    "status": "PASS",
+    "scope": "One P0/P1 only;L-hook CE cancellation/KL/Urestore/ownEMA/counters/bootstrap/7viewtruthlast/outputprotection",
+    "findings": [],
+    "code_or_runtime_mutated": false,
+    "real_IQ_CP_target_read": false
+  },
+  "N607_preflight": {
+    "status": "VERIFIED",
+    "ordinary_account": true,
+    "new_paths_absent": true,
+    "existing_reference_present": true,
+    "GPU_jobs_at_preflight": 0
+  },
+  "real_checkpoint_and_synthetic_smoke": "PENDING_FIRST_LAUNCH_STEP",
+  "remote_compile": "PENDING_TRANSFER"
+}

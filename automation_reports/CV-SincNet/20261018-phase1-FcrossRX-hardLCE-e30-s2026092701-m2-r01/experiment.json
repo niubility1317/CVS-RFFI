@@ -1,0 +1,254 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-Lsmoothing-x-practical",
+  "display_name": "完整clean保留E30：L硬标签CE与真实星地匹配消融",
+  "description": "仅L CE由原LS.01改为0，原IQ、RDrop KL、SupCon、native/U .01、全源和6L前向预算保持；两新scratch20+own10，复用P43 B00/B01作四格，不称新IQAg。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P45",
+    "hard-L-only-CE"
+  ],
+  "tags": [
+    "FcrossRX",
+    "E30",
+    "all-source",
+    "clean-preserving",
+    "loss-ablation",
+    "real-As",
+    "default-head",
+    "U-hidden"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag+As research authorization;latest E30/all5sourceRX/clean-preserving route. One fixed single-seed two-row supervised-L-loss ablation,no generic module/newhead/no automatic seed,budget or coefficient search.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing CVS-RFFI Python3.10/Torch2.1;fullFP32/CENTER_UNITS;ordinary account;CPU2 perworker",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_hardLCE_E30_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
+    "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256,fs25MHz;exact originalordinary and fullpractical(residual/post_sync/noeqG1/ref30/reflect);no newIQoperator",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Same original6TX map;no new or U truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "fixedmanifest7unseenRX;nevertrain"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original6registeredTX;formalmanifest classmappingunchanged",
+    "roles": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "train_ratio": "7/63/30 wholepool;10% labeled trainingpool;noheldRX/Ldev",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
+    "support_query_ref": "Phase1,no support;source/target disjoint fixedformalmanifest",
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_frozen_target_prediction",
+    "query_use": "Only completefrozen row predictions;independenttruthlast after all7fixed;no feedback",
+    "external_method_exception": null,
+    "claim_scope": "Loss-definition control motivated by P40 calibration distinction,not evidence of identity-gradient conflict or new Ag;singlemodelseed. Frozen defaulthead only,all7independenttruthlast,no targetfeedback."
+  },
+  "checkpoint": {
+    "initialization": "Eachrow scratch20 plusstrictown20student/ownEMAresetoptimizer10;30total. Nohistoricalweight initializer.",
+    "sources": [
+      "Own perrow futurestage20/final_ssdg.pth only;actualsource/ownEMA/fixedepoch checkedbeforeloading"
+    ],
+    "contract_check_ref": "source.parent_payload and model.own_model;exactroleIDs/ownscratch ancestry;P43B01 FINAL30 only noquerysmoke,neverinitializer",
+    "provenance_verdict": "ScratchE0,ownsourcecontract assertions before ownstage20 load;no targetselection;no fallbackweights",
+    "selection_rule": "Fixed final20 thenownfinal10/cumulative30;no target/sourceV checkpoint ranking"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/hardLCE45",
+    "gpu_policy": "Allownersmax3processes/GPU and>=12GBfree/newslot;sharedcapacitylock;no healthyjob modifications",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_hardLCE_E30_20261018",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_hardLCE_E30_20261018_r01/experiments/cvs_hard_lce45/runner.py",
+    "stop_rule": "Only owned data/provenance/shape/nonfinite/budget/output/launch failures;preserve,no automatic retry. Scientificsource failure closes fixedLCE0control,no smoothingstrength/seed/budget rescue;alltrainedrows autoall7 regardlesssourceverdict."
+  },
+  "expected_artifacts": [
+    "dispatcher.json",
+    "launch.json",
+    "queue_state.json",
+    "real_checkpoint_smoke.json",
+    "synthetic_smoke.json",
+    "ROW/stage20 and source/resolved_config.json,actual_modules.json,actual_channel.json,source_contract.json,initialization.json,EMA_initialization.json,optimizer_initialization.json",
+    "ROW/stage20 and source/reference_progress.json,completion.json,source_frozen.json,result.json",
+    "ROW/stage20 and source/step_metrics.jsonl.gz,training_sequence.jsonl.gz,reference_steps.jsonl.gz,shape_steps.jsonl.gz,hard_L_steps.jsonl.gz,unit_steps.jsonl.gz,epoch_metrics.jsonl,ordinary_augmentation_actual.json",
+    "ROW/source_qualification/predictions.npz private and complete.json",
+    "source_matrix_decision.json",
+    "ROW/prediction all7logits/predictions/completion private",
+    "ROW/scoring/scores.json and complete.json",
+    "per_row_seed.csv,results.json,complete.json",
+    "same-row fullcurves,source/formalstrata,retention,repairs,coverage,L-smoothing/As/interaction attribution,actualcosts/figures,negativeandmissingitems"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1_all6",
+      "worstRX",
+      "urbanmean",
+      "lowurban",
+      "midurban",
+      "eachsuburbanaccuracyandclean_gap",
+      "fixedcontrolcleancorrectretention",
+      "sameIDrepairs/newerrors",
+      "cos30margin",
+      "sourceRX/quality/state",
+      "coverage/fullcost/completecurves",
+      "As_independent",
+      "jointinteraction",
+      "hardL_only_effect",
+      "hardCE_x_As_interaction",
+      "original_U_scope_preserved"
+    ],
+    "dimensions": [
+      "row",
+      "singlefixedmodelseed",
+      "all7views",
+      "RX",
+      "TX",
+      "day",
+      "source2draw/scene/state/lock/quality"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01/ROW/prediction",
+    "scorer_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_hardLCE_E30_20261018_r01/experiments/cvs_hard_lce45/evaluate.py#score"
+  },
+  "rows": [
+    {
+      "row_id": "H00-s2026092701",
+      "method": "Fixed F/CROSS_RX/RDrop/SupCon/oldU;L-only CE0;As OFF",
+      "purpose": "fixed supervised-loss ablation,not IQAg",
+      "config_ref": "experiments/cvs_hard_lce45/design.py#H00",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01/H00-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016051,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Modelseed2026092701;split/data392005;oldordinary private seed20261016051;oldAs independenttrain namespace/receiver sessions unchanged;support/evaluation RNG N/A fixedformalIQ. No newaugmentation RNG.",
+      "k": null,
+      "scenario": "Train original3practical low_suburban/mid_urban/low_urban ifAs ON;formalclean+all6fixedpractical",
+      "optimizer": "ownscratchAdamW/cos20;strictownstudentEMA/resetAdamW/cos10",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "own20+own10/E30/6660updates/5114880LNN;originalU963900student/teacher inputs countedactual;noextraU;rowauto7x168000formal+2smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01/H00-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01/logs/H00-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_hardLCE_E30_20261018_r01/experiments/cvs_hard_lce45/runner.py --mode worker --row H00-s2026092701",
+      "expected_artifacts": [
+        "dispatcher.json",
+        "launch.json",
+        "queue_state.json",
+        "real_checkpoint_smoke.json",
+        "synthetic_smoke.json",
+        "ROW/stage20 and source/resolved_config.json,actual_modules.json,actual_channel.json,source_contract.json,initialization.json,EMA_initialization.json,optimizer_initialization.json",
+        "ROW/stage20 and source/reference_progress.json,completion.json,source_frozen.json,result.json",
+        "ROW/stage20 and source/step_metrics.jsonl.gz,training_sequence.jsonl.gz,reference_steps.jsonl.gz,shape_steps.jsonl.gz,hard_L_steps.jsonl.gz,unit_steps.jsonl.gz,epoch_metrics.jsonl,ordinary_augmentation_actual.json",
+        "ROW/source_qualification/predictions.npz private and complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction all7logits/predictions/completion private",
+        "ROW/scoring/scores.json and complete.json",
+        "per_row_seed.csv,results.json,complete.json",
+        "same-row fullcurves,source/formalstrata,retention,repairs,coverage,L-smoothing/As/interaction attribution,actualcosts/figures,negativeandmissingitems"
+      ]
+    },
+    {
+      "row_id": "H01-s2026092701",
+      "method": "Fixed F/CROSS_RX/RDrop/SupCon/oldU;L-only CE0;As ON",
+      "purpose": "fixed supervised-loss ablation,not IQAg",
+      "config_ref": "experiments/cvs_hard_lce45/design.py#H01",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01/H01-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016051,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Modelseed2026092701;split/data392005;oldordinary private seed20261016051;oldAs independenttrain namespace/receiver sessions unchanged;support/evaluation RNG N/A fixedformalIQ. No newaugmentation RNG.",
+      "k": null,
+      "scenario": "Train original3practical low_suburban/mid_urban/low_urban ifAs ON;formalclean+all6fixedpractical",
+      "optimizer": "ownscratchAdamW/cos20;strictownstudentEMA/resetAdamW/cos10",
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "own20+own10/E30/6660updates/5114880LNN;originalU963900student/teacher inputs countedactual;noextraU;rowauto7x168000formal+2smoke",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01/H01-s2026092701",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01/logs/H01-s2026092701.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_hardLCE_E30_20261018_r01/experiments/cvs_hard_lce45/runner.py --mode worker --row H01-s2026092701",
+      "expected_artifacts": [
+        "dispatcher.json",
+        "launch.json",
+        "queue_state.json",
+        "real_checkpoint_smoke.json",
+        "synthetic_smoke.json",
+        "ROW/stage20 and source/resolved_config.json,actual_modules.json,actual_channel.json,source_contract.json,initialization.json,EMA_initialization.json,optimizer_initialization.json",
+        "ROW/stage20 and source/reference_progress.json,completion.json,source_frozen.json,result.json",
+        "ROW/stage20 and source/step_metrics.jsonl.gz,training_sequence.jsonl.gz,reference_steps.jsonl.gz,shape_steps.jsonl.gz,hard_L_steps.jsonl.gz,unit_steps.jsonl.gz,epoch_metrics.jsonl,ordinary_augmentation_actual.json",
+        "ROW/source_qualification/predictions.npz private and complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction all7logits/predictions/completion private",
+        "ROW/scoring/scores.json and complete.json",
+        "per_row_seed.csv,results.json,complete.json",
+        "same-row fullcurves,source/formalstrata,retention,repairs,coverage,L-smoothing/As/interaction attribution,actualcosts/figures,negativeandmissingitems"
+      ]
+    }
+  ],
+  "notes": [
+    "Two new E30 models total60modelE/13320updates/10229760 LNN;6L perstep1.25 loss scale exactly matched P43 B00/B01 immutable controls. All L6300/U56700hidden/V27000/all5RX;no Ldev/RXholdout.",
+    "Native args label_smoothing remains .01 to protect original U. Scoped L hook replaces exactly three existing CE pairs byhardCE0 while reusing originalKL;function restored in finally beforeU. No new IQ,head,network,module,forward or teacher.",
+    "P40 CE0/CE01 source observation does not prove beneficial training or rescue rejected defaultW-margin-conflict hypothesis. Actual identity outcomes decide this fixed control;no coefficient scan.",
+    "Scratch20(13L+7U) thenown20student/EMA strictload,resetAdamWcos10;L runsall30;oldordinary frozenE13 andoldSupCon cumulative schedule unchanged.",
+    "Source fixedcriteria beforetraining;read no new formalresults before source_matrix_decision. Allregisteredrows fixedFINAL30 autoall7,sourcefailure never changes targetview or reruns.",
+    "One independentP0P1review andone realcheckpointnoquerysmoke atlaunch;no extraapproval/hash/signature/reportgates."
+  ],
+  "registered_at": "2026-10-17T22:29:47+00:00"
+}

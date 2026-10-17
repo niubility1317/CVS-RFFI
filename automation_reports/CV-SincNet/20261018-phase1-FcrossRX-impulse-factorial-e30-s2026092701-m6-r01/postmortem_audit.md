@@ -44,3 +44,5 @@ python analysis/cvs_fixed_forward_audit_20261018.py --release <existing-P43-rele
 目前唯一保留的 Ag 问题是：是否存在可跨 TX/day 迁移、同时保留输入 TX 差异的共享、输入相关 RX 响应。引用对话正在开展对应的源统计，本分支不重复启动。它与已经失败的统一加性/正仿射收缩不同，也尚未证明可以实现为标签保持 IQ 增强。
 
 最小下一步只复用该固定源结果，检查其跨 TX/day 预测是否优于 identity 与训练侧 RX 均值、是否保留正确 TX 对应关系，再决定一个有界 IQ 算子。任一核心条件失败就关闭该假设；不挑 RX、窗、方向、强度或 seed 救跑。统计通过仍不等于准确率改善。尚无通过上述科学检验并定稿的新训练候选，本轮未启动新模型。后续实际模型仍需保持 clean 监督份额，独立固定最小因子/匹配前向控制，按 E30/all5RX 训练并逐 row 自动七环境 truth-last，不能用现有目标分数选超参。
+
+本条后续更正：最新 canonical 登记已找到并读取 [同一固定 FIR 的首次 E30 训练](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01/report.md)，执行97f260f469a47a000eed8ab84e8507a3cd0ca37d。其两行累计E30、七视图已完成，新增FIR的独立clean与联合urban增量失败并关闭。上文仅引用较早冻结输入报告，不应被理解为该FIR至今未训练；当前负结果比冻结输入诊断更完整。未重复运行该候选。
