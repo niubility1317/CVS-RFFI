@@ -543,3 +543,5 @@
 
 - [完整practical视图梯度E30 r02](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/report.md)
 - [匹配No-As参考E30 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01/report.md)
+
+- [包络波动尺度源检验 r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01/report.md)

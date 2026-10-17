@@ -1,0 +1,198 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01",
+  "group_id": "F_ENVELOPE_WITHIN_CELL_VARIABILITY_SOURCE_20261018",
+  "display_name": "F＋跨 RX：同 TX/RX/day 包络波动尺度的独立源检验",
+  "description": "Existing allL6300 derived DCT1 coefficients only. Per90cell MAD,18 heldTX-and-day statistical folds with all5RX;compare sharedRX/zero/fixedwrongRX/TXspecific scales. No IQ/checkpoint/network/augmentation/training/target. Does not rewrite failed RXmean basis or prove identity/DG.",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "F-envelopeVariance-sourceL6300"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "source_derived_statistics",
+    "amplitude_variability",
+    "no_training",
+    "no_target"
+  ],
+  "comparison_group_id": "F_ENVELOPE_WITHIN_CELL_VARIABILITY_SOURCE_20261018",
+  "parent_run_ids": [
+    "20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01"
+  ],
+  "authorization": "Current joint Ag/As research;existing source permissions/fullL6300/noRXholdout/only256IQ/E30 futuretraining;this bounded precursor reuses existing legal derived source observations only.",
+  "code": {
+    "commit": "PENDING_COMMIT",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "N607 ordinary account/existing NumPy/CPU2/CUDAempty;no model",
+    "cwd": "PROJECT/releases/cvs_F_envelope_variance_source_20261018_r01",
+    "entrypoint": "experiments/cvs_envelope_variance18/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated exact original L6300 source cache;all sourceRX",
+    "representation": "Existing RMS-normalized256IQ fullwindow 16x16 centered logpower DCT1 derived coefficient;no IQ read or new observation/window/mode",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract role_ids.L_s,exact all6300",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "All6300 existing derived coefficients;6TXx5RXx3dayx70;legal visible labels for analytic grouping",
+      "U_s": "No U arrays or TX labels read;56700 remain hidden",
+      "V": "Not used;original27000 remain V"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse existing exact source handles and native_role_comparison;no data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "Phase1 existing allsource L derived-statistics only",
+    "L_s": "DCT1/opaqueID/visibleTX/RX/day from existing completed source row",
+    "U_s": "No IQ/labels orfeatures consumed",
+    "V": "No features orlabels consumed",
+    "query_use": "None;no target inputs/scoring",
+    "separate_head_training": false
+  },
+  "checkpoint": {
+    "initialization": "None;no model constructed or checkpoint loaded",
+    "checkpoint_sources": [],
+    "parent_run_ids": [],
+    "selection": "Not applicable;source observation parent only,not model inheritance"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-envelope-variance-source",
+    "gpu_policy": "CPU2/CUDAempty/noGPU",
+    "remote_run_root": "PROJECT/runs/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_envelope_variance_source_20261018_r01/envelope_variance.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_envelope_variance18/runner.py",
+    "stop_rule": "Only source-role/nonfinite/outputcollision/systemictechnicalfailures;preserve old/source outputs andhealthy tasks;no automatic retry. Scientific fail closes fixed statistic afterall90cells/18folds,not method/RX/threshold rescue."
+  },
+  "expected_artifacts": [
+    "checks.json",
+    "result.json all90cells/18folds/5RX",
+    "completion.json",
+    "same-row source-only report;no checkpoint/prediction or training"
+  ],
+  "metrics_plan": {
+    "primary": "HeldTX-and-day centered RX logMAD scale prediction vszero/fixedwrongRX/TXspecific controls;fixed DCT1",
+    "scientific_criteria": {
+      "RX_relative_MSE_max": 0.9,
+      "better_folds_min": 15,
+      "each_RX_relative_MSE_max": 1,
+      "RX_better_than_fixed_wrong_RX": true,
+      "RX_SSE_at_most_1_05_TX_specific_SSE": true
+    },
+    "source": "AllL6300/90cells;all5RXineachfold;statisticalcrossfit notmodeltrainingholdout",
+    "cost": "Oneexisting-derived-observationload;0rawIQ/CP/NN/updates/teacher/views/U/V/target",
+    "no_target_parameter_feedback": true,
+    "automatic_training": false,
+    "scope": "Rationale only;not AGCcausality or labelpreservation or Ag efficacy or joint completion"
+  },
+  "rows": [
+    {
+      "row_id": "ENVELOPE_MAD_ALLL",
+      "method": "SOURCE_RX_ENVELOPE_MAD",
+      "purpose": "Existing allL6300 derived DCT1 coefficients only. Per90cell MAD,18 heldTX-and-day statistical folds with all5RX;compare sharedRX/zero/fixedwrongRX/TXspecific scales. No IQ/checkpoint/network/augmentation/training/target. Does not rewrite failed RXmean basis or prove identity/DG.",
+      "config_ref": "experiments/cvs_envelope_variance18/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01/result.json#config",
+      "data_overrides": {
+        "source_RX_holdout": null,
+        "L6300": true
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "No RNG or model;reuse original split392005/allL IDs;fixed RXcyclicwrongcontrol by1",
+      "scenario": "Phase1 original source derived observations only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": 0,
+      "k": null,
+      "budget_ref": "0E/0updates/0NN;futureFbudget remainsE30",
+      "output_root": "PROJECT/runs/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_envelope_variance_source_20261018_r01/envelope_variance.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_envelope_variance18/runner.py",
+      "expected_artifacts": [
+        "checks.json",
+        "result.json all90cells/18folds/5RX",
+        "completion.json",
+        "same-row source-only report;no checkpoint/prediction or training"
+      ],
+      "config": {
+        "run_id": "20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "observations": "PROJECT/runs/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01",
+        "launch_owner": "codex/root/F-envelope-variance-source",
+        "question": "Does within-TX/RX/day envelope variability have a shared RX scale pattern transferable across TX and day without a strong TX-specific advantage?",
+        "original_observation": "Reuse original full256/16x16/logpowercentered/DCT1;DCT2 not a fallback;no new IQ measurement",
+        "scale": "Peroriginal70packetcell median absolute deviation from cellmedian,no sample deletion;logMAD floor1e-12",
+        "crossfit": "18fold exclude TX AND day for shared RX pattern;all5RX always;TXspecific control fits sameTX/other2days;not a trainingdomainholdout",
+        "criteria": {
+          "RX_relative_MSE_max": 0.9,
+          "better_folds_min": 15,
+          "each_RX_relative_MSE_max": 1,
+          "RX_better_than_fixed_wrong_RX": true,
+          "RX_SSE_at_most_1_05_TX_specific_SSE": true
+        },
+        "on_fail": "Close fixed DCT1/within-cellMAD/RXvariability source hypothesis;no mode/quantile/group/RX/threshold rescue",
+        "on_pass": "Source scale evidence only;not AGC causality,identitypreservation or DG efficacy. Separate bounded IQ/defaulthead evidence and registered E30 controls required",
+        "L": 6300,
+        "source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_RX_holdout": null,
+        "U_used": false,
+        "U_TX_truth_hidden": true,
+        "V_used": false,
+        "target_access": false,
+        "new_IQ_reads": 0,
+        "checkpoint_loads": 0,
+        "NN": 0,
+        "updates": 0,
+        "teacher_forwards": 0,
+        "new_IQ_views": 0,
+        "automatic_training": false,
+        "CPU_threads": 2,
+        "GPU": "none",
+        "F_training_budget_unchanged": "E30/F+CROSS_RX/defaulthead/originalU if later separately justified"
+      }
+    }
+  ],
+  "notes": [
+    "Prior envelope RXmean basis remains FAIL,unchanged. New question is within-cell dispersion,not changing theoldmean fitter or cutoff.",
+    "MAD from DCT1 only;DCT2/window/quantile/RX/seed/threshold not fallback afterfailure.",
+    "All5 sourceRX retained;heldTX/day refers analyticfit only;no modeltrainingsplit orLdev.",
+    "Checkpoint-free G0 reanalysis does not consume a neural stage;real-checkpoint smoke not applicable,not an added model/permission gate.",
+    "Source pass cannot establish AGCcausality,labelpreservation,crossRX clean or practical gain,fullfactorial orcrossseed proof."
+  ],
+  "registered_at": "2026-10-17T19:30:29+00:00"
+}
