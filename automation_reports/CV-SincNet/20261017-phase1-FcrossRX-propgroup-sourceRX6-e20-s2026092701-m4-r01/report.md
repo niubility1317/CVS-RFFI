@@ -64,3 +64,7 @@ P19 频带可用性方案已完整 E20，MASK 相对 RAW clean −1.111111 个�
 父进程 278398；训练进程 RAW=278534/GPU0、IID=278610/GPU1、SCENE_GROUP=278689/GPU2、PROP_GROUP=278768/GPU3，PID/start_ticks/CWD/argv 与启动记录一致。真实匹配 CP 严格加载、2 个合成样本前向 PASS，0 query/IQ 读取、0 更新，随后立即开始 scratch。四组首轮222更新/28416物理生成、L NN227328；RAW不消费As、其余各28416；额外U=false。日志与 native 更新文件增长，已读早期更新全 finite/applied，U 真值可用计数0。证据：`E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017/post_launch_first.json`、`post_launch_growth.json`、`early_update_health.json`、`training_progress_latest.json`。
 
 训练仍在进行；无最终源域性能结果、正式测试、跨种子重现或联合成功声明。新增离线评分器通过15个协议负例与25个科学判据反例（0IQ/CP/NN/更新），将完整复核4440步、全部传播覆盖和35280个源域预测。该离线代码不进入本次训练 release，不热修改健康任务。
+
+## 自动后处理连接（训练配方不变）
+
+已实现 `after_training.py`，只等待本 run 原 PID/start_ticks/CWD/argv 的真实存活状态。观测超时记 UNKNOWN 并继续观察，不重启；全体原进程消失且无完成产物时保存技术缺项。真实五个原进程的等待条件检查 PASS（0IQ/CP/NN/更新）。全部固定源域预测完成后，自动抓取固定源域产物、独立重算4440×4步与35280预测，再用既有远端绘图环境生成并取回5PNG＋5PDF。只创建独占离线分析目录，不修改训练代码/权重/预测，不新增实验或目标访问。离线工具 commit 单独记录，训练执行身份仍为 `243ca4f460ed754da20fbe448fbcdf3398713fdc`。
