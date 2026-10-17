@@ -594,5 +594,161 @@
     "identity_NN": 0,
     "evidence": "state_coverage_execution.json",
     "no_training_release_changes": true
+  },
+  "own20_to_own10": {
+    "status": "VERIFIED",
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/own20_to_own10_verified.json",
+    "rows": {
+      "ORD128": {
+        "pid": 849390,
+        "alive": true,
+        "startticks": "151198111",
+        "stage20_completion": {
+          "epoch": 20,
+          "optimizer_steps": 4440,
+          "target_access": false
+        },
+        "stage20_progress": {
+          "epoch": 20,
+          "cumulative_epoch": 20,
+          "steps": 4440,
+          "cumulative_steps": 4440,
+          "L_NN": 2273280,
+          "L_As": 284160,
+          "extra_U_NN": 0,
+          "U_As": 0,
+          "existing_U_only": true,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        "initialization.json": {
+          "scratch_only": false,
+          "checkpoint_sources": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/ORD128-s2026092701/stage20/final_ssdg.pth"
+          ],
+          "ancestors": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/ORD128-s2026092701/stage20"
+          ],
+          "source_roles": "EXACT_MATCH",
+          "target_contact": false,
+          "teacher_origin": "strict own parent EMA",
+          "seed": 2026092701
+        },
+        "optimizer_initialization.json": {
+          "state_entries": 0,
+          "reset": true,
+          "schedule": "cosine10",
+          "lr": 0.0002,
+          "weight_decay": 0.0001
+        },
+        "EMA_initialization.json": {
+          "origin": "strict own stage20 EMA",
+          "extra_teacher": false,
+          "optimizer_segment_counters_reset": true,
+          "temporal_cache_reset": true
+        }
+      },
+      "DUP192": {
+        "pid": 849536,
+        "alive": true,
+        "startticks": "151198445",
+        "stage20_completion": {
+          "epoch": 20,
+          "optimizer_steps": 4440,
+          "target_access": false
+        },
+        "stage20_progress": {
+          "epoch": 20,
+          "cumulative_epoch": 20,
+          "steps": 4440,
+          "cumulative_steps": 4440,
+          "L_NN": 2273280,
+          "L_As": 284160,
+          "extra_U_NN": 0,
+          "U_As": 0,
+          "existing_U_only": true,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        "initialization.json": {
+          "scratch_only": false,
+          "checkpoint_sources": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/DUP192-s2026092701/stage20/final_ssdg.pth"
+          ],
+          "ancestors": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/DUP192-s2026092701/stage20"
+          ],
+          "source_roles": "EXACT_MATCH",
+          "target_contact": false,
+          "teacher_origin": "strict own parent EMA",
+          "seed": 2026092701
+        },
+        "optimizer_initialization.json": {
+          "state_entries": 0,
+          "reset": true,
+          "schedule": "cosine10",
+          "lr": 0.0002,
+          "weight_decay": 0.0001
+        },
+        "EMA_initialization.json": {
+          "origin": "strict own stage20 EMA",
+          "extra_teacher": false,
+          "optimizer_segment_counters_reset": true,
+          "temporal_cache_reset": true
+        }
+      },
+      "SAT192": {
+        "pid": 849617,
+        "alive": true,
+        "startticks": "151198777",
+        "stage20_completion": {
+          "epoch": 20,
+          "optimizer_steps": 4440,
+          "target_access": false
+        },
+        "stage20_progress": {
+          "epoch": 20,
+          "cumulative_epoch": 20,
+          "steps": 4440,
+          "cumulative_steps": 4440,
+          "L_NN": 2273280,
+          "L_As": 284160,
+          "extra_U_NN": 0,
+          "U_As": 0,
+          "existing_U_only": true,
+          "U_truth_read": false,
+          "target_access": false
+        },
+        "initialization.json": {
+          "scratch_only": false,
+          "checkpoint_sources": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/SAT192-s2026092701/stage20/final_ssdg.pth"
+          ],
+          "ancestors": [
+            "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/SAT192-s2026092701/stage20"
+          ],
+          "source_roles": "EXACT_MATCH",
+          "target_contact": false,
+          "teacher_origin": "strict own parent EMA",
+          "seed": 2026092701
+        },
+        "optimizer_initialization.json": {
+          "state_entries": 0,
+          "reset": true,
+          "schedule": "cosine10",
+          "lr": 0.0002,
+          "weight_decay": 0.0001
+        },
+        "EMA_initialization.json": {
+          "origin": "strict own stage20 EMA",
+          "extra_teacher": false,
+          "optimizer_segment_counters_reset": true,
+          "temporal_cache_reset": true
+        }
+      }
+    },
+    "total_budget_per_model": 30,
+    "no_external_training_weights": true,
+    "formal_scores_read": false
   }
 }

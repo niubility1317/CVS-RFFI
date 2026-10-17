@@ -57,3 +57,9 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS
 实际首批128个L包通过原base_index与既有L6300角色ID精确映射TX，未读取U真值、真实IQ值、模型CP或target。原索引中的RX/day/sig不能单独分辨TX（存在6重歧义），已使用完整base_index解决。残余信道包内传播状态在原代码中冻结；命名geometry/states流可只复算其先验抽样，不渲染真实波形、不声称重现receiverlock/AGC/噪声或准确率。已通过64次synthetic residual状态逐包一致核对与7项映射/权限/实际seed配置测试。
 
 首个辅助程序r01因引用不存在的CHANNEL_SEEDS退出，保存failure与已完成的L映射；训练未改变。修复读取实际reference_config.channel.seeds，commit 34a67169a6bb40bac5856ad1e5b8512c5c6120eb已独立GitHub确认identical，r02独立目录编译/进程/CWD/argv/CUDA空/烟测产物均VERIFIED，等待完整冻结源记录后再逐批核对与汇总TX×RX×day×scene×state覆盖。当前未取得完整覆盖结果。最近ORD E18、DUP/SAT E17；仍为单模型seed的三组对照，无新正式成绩、无新A_g、目标未完成。
+
+## 自身 E20 完成与后 10 轮启动
+
+三组均完成自身stage20：各4440更新、2273280个L前向样本、284160个实际As观测，extraU NN=0、target_access=false。三条原worker PID/startticks保持，source初始化均只严格继承对应自身stage20模型/EMA，数据角色EXACT_MATCH；AdamW状态0、cos10重置，未加载其他实验权重，总预算仍每模型30轮。此时训练尚未完成，未读取正式成绩。
+
+首次直接比对实际已保存训练记录与命名流复算：step1的64个As观测场景为midurban20、low_suburban25、lowurban19，传播状态LOS30、BLOCKED22、PARTIAL12，两组计数分别完全一致。只证明该批与原引擎一致；完整6660步/模型及TX×RX×day×scene×state覆盖仍待冻结后复算。未消费真实IQ值、模型CP、U真值或target，0NN。
