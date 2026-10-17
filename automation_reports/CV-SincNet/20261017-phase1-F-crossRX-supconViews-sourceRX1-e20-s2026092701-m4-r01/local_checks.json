@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "protocol_scientific_negatives": 29,
+  "rows": [
+    {
+      "arm": "Q_sat",
+      "same_IQ_RDrop": true,
+      "L_forwards": 8,
+      "As_packets": 128,
+      "SupCon_terms": 4,
+      "As_positions": 128,
+      "default_head_updated": true,
+      "export160_exact": true
+    },
+    {
+      "arm": "Q_mix",
+      "same_IQ_RDrop": true,
+      "L_forwards": 8,
+      "As_packets": 128,
+      "SupCon_terms": 4,
+      "As_positions": 64,
+      "default_head_updated": true,
+      "export160_exact": true
+    }
+  ],
+  "legacy_ordinary_route_loss_exact": true,
+  "all_parameter_gradients_compared": 74,
+  "all_gradients_close": true,
+  "same_fullAs_IQ_and_CPU_Python_RNG": true,
+  "same_scratch_state": true,
+  "no_new_model_parameters": true,
+  "synthetic_raw_packets": 128,
+  "ordinary_generated": 128,
+  "fullpractical_generated": 512,
+  "synthetic_train_NN_packets": 4096,
+  "synthetic_eval_NN_packets": 12,
+  "synthetic_NN_packets": 4108,
+  "synthetic_optimizer_updates": 2,
+  "manual_aux_recomputations": 2,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "target_access": false,
+  "head_fit_updates": 0
+}

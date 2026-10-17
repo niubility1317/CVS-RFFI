@@ -321,3 +321,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 当前唯一待检验问题转为既有跨RX同TX对比项的视图覆盖：已读实际model.hook/supcon及scene_cycle extra路径，SupCon只看ordinary两次RDrop的浅/中map，raw与As均未进入该项。拟用相同As/CE/8L前向/总权重，固定ordinary-only／As-only／64:64混合的原项输入控制，复用原loss而不加项；这是As训练组织，不是新Ag，未登记或启动。见analysis/cvs_existing_supcon_view_coverage_20261017.md。频域相位源入口保持关闭，联合目标ACTIVE。
+
+
+原SupCon视图路由 20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01 已实现登记未启动：旧Q0/Q_ord实际全配置/完整LUV物理ID/seed/20轮4440步/8L/1.25权重/默认头核对，复用40旧modelE，不载入权重；新增Q_sat全Asmaps、Q_mix64/64出现位置maps，2scratchE20/40新modelE/8880更新。完整raw.75/ordinary.25+extra.25fullAs与原浅中层SupCon总权重、4项/schedule/温度保持，0新增NN/loss项/U/teacher。29负例/4108合成NN/2合成更新/512fullAs PASS，旧ordinary-route loss exact/74参数grad接近、同As IQ/RNG、默认头更新/export160一致，一次P0/P1 PASS。Q_mix须同时胜过Q_ord/Q_sat low/urbanmean各1pp并保护clean/F1/suburban，vsQ0 low5pp/mean3pp；失败关闭固定比例/层位/系数/概率/seed，不救跑。这是As训练组织，不是Ag，联合目标ACTIVE。

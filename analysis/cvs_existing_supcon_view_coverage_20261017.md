@@ -1,6 +1,6 @@
 # 既有跨RX同TX对比项：实际视图覆盖与下一问题
 
-2026-10-17。状态 CODE_EVIDENCE_ONLY／NO_NEW_EXPERIMENT。频域相位全包源依据已失败关闭，不以本笔记改阈值、子集或算子救跑。当前没有新Ag、训练、默认头性能或目标结果。
+2026-10-17。状态 IMPLEMENTED／PREREGISTERED_NOT_LAUNCHED。频域相位全包源依据已失败关闭，不以本笔记改阈值、子集或算子救跑。当前没有新Ag、训练、默认头性能或目标结果。
 
 ## 已核实的调用路径
 
@@ -30,3 +30,8 @@ Q0/Q_ord有对应既有sourceCycle的B00/C_IID候选控制；可只复用原冻�
 正式执行前在同一最小预登记固定逐行输入与判据、控制来源、实际成本和自动源七视图冻结评价。必须看Q_mix相对Q_ord和Q_sat的真实clean/urban/每suburban配对结果；对比loss下降、valid anchor数或梯度不能晋级。若不能同时优于两个控制的low和urban均值，或clean／suburban保护失败，就关闭此固定视图组织，不调比例、层位、系数、scene概率或seed救跑。数字阈值在实际登记前固定，不能在看到新行结果后补定。
 
 本笔记不是额外审批或放行门槛。当前下一动作是核对控制实际契约并实现这一个可反证组织方案；未把“ordinary-only覆盖”当成成功，也未把As收益当Ag。匹配B00/B10/B01/B11、有效Ag、跨seed及正式clean＋六practical的low>60%／suburban接近自身clean仍是完整目标，保持ACTIVE。
+
+
+## 固定执行矩阵登记
+
+20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01已实现登记未启动。两旧控制Q0/Q_ord实际完整配置／LUV物理ID／seed／E20/4440/8L/1.25权重／默认头核对，并确认对应model/channel/source/design与原执行commit无diff；不加载控制权重。新增Q_sat/Q_mix两scratchE20，40新modelE/8880更新，40旧modelE另列。29反例／4108合成NN／2合成更新PASS，74组参数梯度与原ordinary-route接近、loss精确相同，As IQ／RNG／默认头／export160均通过；唯一一次P0/P1 PASS。primaryQ_mix与全部三参照的数字判据见[预登记](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-supconViews-sourceRX1-e20-s2026092701-m4-r01/preregistration.md)。当前0实际新训练／target。未把本路线当Ag或联合目标完成。
