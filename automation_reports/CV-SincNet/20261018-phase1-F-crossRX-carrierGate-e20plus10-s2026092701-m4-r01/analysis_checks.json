@@ -15,5 +15,16 @@
   "updates": 0,
   "raw_truth_reads": 0,
   "target_access": false,
-  "not_a_new_training_gate": true
+  "not_a_new_training_gate": true,
+  "report_shape_validation": {
+    "status": "PASS",
+    "input": "Historical completed metadata remapped for shape only,explicit fixture ID;no current formal metrics read",
+    "files": 6,
+    "figure_exports": 4,
+    "source_validation_accuracy_units": "Percent preserved;no extra x100",
+    "IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0
+  }
 }
