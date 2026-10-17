@@ -1,0 +1,231 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
+  "group_id": "F_RX_RESPONSE_NORMALIZATION_ORDER_SOURCE_20261018",
+  "display_name": "F＋跨 RX：固定响应的逐包归一化源归因",
+  "description": "No-refit normalization-order attribution with fixed18x5x20h;use saved Vref packet factors,retain all300/cell;compare exactmean versus prior meanproxy/additive/sameTX;0rawIQ/NN/update/target,no automatic IQ training.",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "F-RX-response-normalization-order-source"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "source_only",
+    "normalization_order",
+    "no_refit",
+    "all5RX",
+    "no_training",
+    "no_target"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+    "20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint research;current F+CROSS_RX/E30/all5RX/256IQ. Existing source-derived factors only;fix saved responses and controls,not a parameter rescue or new training.",
+  "code": {
+    "commit": "PENDING_ACTUAL_GIT_COMMIT_PINNED_BY_PUBLISH",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "Existing N607 Python/NumPy CPU2threads,noGPU",
+    "cwd": "PROJECT/releases/cvs_F_RX_response_order_source_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Completed original source signalCoherence factors/cellmeans and completed closed RXresponse coefficients only;no new IQ/cache access",
+    "representation": "Original256IQ/window80:160/period20 saved V27000complex20factors;referenceRX1 V5400 used;180L/V20x20means;fixed1800complexh",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01/source_ids.json (only original V rx/day/visibleTX metadata used;no physicalID revalidation)",
+    "label_map_ref": "Original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original all6 sourceTX",
+    "roles": {
+      "L_s": "Original6300 represented in existing90cellmeans;no new fit or L IQ/factor access",
+      "U_s": "Original56700 TX hidden;no U feature/container/truth access",
+      "V": "Original27000 saved factors read,referenceRX1 all5400 used;all90Vcellmeans unchanged;no V fit or persistent update"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse original source handles and parent completion/resolved_config;no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Mathematical source attribution of noncommuting normalization/mean only;old mean-proxy FAIL stays closed,no identity-preservingIQ or deployment claim"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "No model/checkpoint stage;read completed source-only derived handles",
+    "provenance_verdict": "NOT_APPLICABLE_NO_MODEL",
+    "selection_rule": "No model/candidate/checkpoint selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-RX-response-order-source-20261018",
+    "gpu_policy": "CPU only,no GPU work",
+    "remote_run_root": "PROJECT/runs/20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_RX_response_order_source_20261018_r01/source_RX_response_order.stdout.log",
+    "local_artifact_root": "WORKTREE/local_artifacts/F_RX_response_order_source_20261018",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_rx_response_order18.run",
+    "stop_rule": "Owned technical/nonfinite/source-role/output conflict only;preserve,no automaticretry. Failure closes normalization-order explanation for fixedh;no refit/window/bin/anchor/reference/amplitude/threshold rescue or IQ training"
+  },
+  "expected_artifacts": [
+    "checks.json",
+    "resolved_config.json",
+    "predicted_matrices.npz private36000complexentries",
+    "result.json full18folds/5RX/meanproxy comparison",
+    "completion.json",
+    "independent full outer-product recount",
+    "same-row source attribution report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "packetwise_SSE",
+      "mean_proxy_SSE",
+      "additive_SSE",
+      "TXconditional_SSE",
+      "prediction_difference_SSE",
+      "positive_folds",
+      "per_RX_SSE"
+    ],
+    "dimensions": [
+      "RX",
+      "heldTX",
+      "heldday",
+      "18statisticalfolds"
+    ],
+    "prediction_ref": "Source matrix prediction only,no identity/target predictions",
+    "scorer_ref": "Independent packet outer-product+FFT inverse+SSE readout,no truth-side target scoring"
+  },
+  "rows": [
+    {
+      "row_id": "FIXED_RESPONSE_PACKETWISE_ORDER",
+      "method": "FIXED_RX_RESPONSE_PACKETWISE_NORMALIZATION",
+      "purpose": "No-refit normalization-order attribution with fixed18x5x20h;use saved Vref packet factors,retain all300/cell;compare exactmean versus prior meanproxy/additive/sameTX;0rawIQ/NN/update/target,no automatic IQ training.",
+      "config_ref": "experiments/cvs_rx_response_order18/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {
+        "source_RX_holdout": null,
+        "source_L": 6300,
+        "source_V": 27000,
+        "original_IQ_points": 256,
+        "raw_IQ_read": false,
+        "response_refits": 0
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Original source physical split392005;no randomfit/model/augmentation/support/evaluation sampling",
+      "k": null,
+      "scenario": "Original saved source factors and fixedresponse only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "27000V savedvectors read/5400reference used/27000packetresponse transforms/90matrixpredictions/0refits/0rawIQ/NN/updates;future modelE30 unchanged",
+      "output_root": "PROJECT/runs/20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_RX_response_order_source_20261018_r01/source_RX_response_order.stdout.log",
+      "command": "CVS-RFFI/bin/python -u -m experiments.cvs_rx_response_order18.run",
+      "expected_artifacts": [
+        "checks.json",
+        "resolved_config.json",
+        "predicted_matrices.npz private36000complexentries",
+        "result.json full18folds/5RX/meanproxy comparison",
+        "completion.json",
+        "independent full outer-product recount",
+        "same-row source attribution report"
+      ],
+      "config": {
+        "run_id": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
+        "launch_owner": "codex/root/F-RX-response-order-source-20261018",
+        "output_root": "PROJECT/runs/20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "derived_input": "PROJECT/runs/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+        "response_input": "PROJECT/runs/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01",
+        "source_L": 6300,
+        "source_V": 27000,
+        "RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_RX_holdout": null,
+        "original_IQ_points": 256,
+        "window": [
+          80,
+          160
+        ],
+        "period": 20,
+        "reference_RX": 1,
+        "phase_anchor_bin": 1,
+        "epsilon": 1e-12,
+        "CPU_threads": 2,
+        "GPU": "none",
+        "hypothesis": "Does exact mean of packetwise trace-normalized fixed response account for failed response-of-population-mean proxy?",
+        "response": "Read the exact saved18x5x20 complex h;0refit;allbins/window/reference/phase/floor unchanged",
+        "prediction": "u is saved periodic factor,not originalIQ;z=F*u;v=h*z*sqrt(norm(z)^2/norm(h*z)^2),zero input maps tozero;mean inverseDFT(v)*inverseDFT(v)^H over all300Vref packets",
+        "controls": "Original shared additive L contrast,sameTX/otherday L contrast,and original population-mean response;all5RX centered as before",
+        "criteria": {
+          "min_additive_SSE_reduction": 0.2,
+          "min_positive_folds": 15,
+          "each_RX_not_worse": true,
+          "max_SSE_to_TXconditional": 1.05,
+          "old_phase_products_nonzero": true,
+          "numerical_SSE_tolerance": 1e-20
+        },
+        "on_fail": "Close normalization-order explanation for these exact h;no refit/window/bin/anchor/reference/amplitude/threshold rescue or IQ training",
+        "on_pass": "Source mathematical attribution only;original mean-proxy FAIL stays closed;no identitypreservingIQ claim,promotion or automatic training",
+        "inputs": "Original L/V180cellmeans,V27000saved20complexfactors,Vrx/day/visibleTX metadata,and savedresponse completion/resolved/result/h;no rawIQ/cache/U/CP/target",
+        "no_sample_removal": true,
+        "source_only": true,
+        "raw_IQ_reads": 0,
+        "closed_form_fits": 0,
+        "CP": 0,
+        "NN": 0,
+        "teacher_NN": 0,
+        "updates": 0,
+        "U_used": false,
+        "U_truth_read": false,
+        "target_access": false,
+        "IQ_views_generated": 0,
+        "automatic_training": false,
+        "joint_goal_complete": false,
+        "future_model_contract": "F+CROSS_RX,SIG_TIME/unifiedSinc/joint160/defaultcos jointlytrained,full5RX,L6300/U56700hidden/V27000,256IQ,E30"
+      }
+    }
+  ],
+  "notes": [
+    "Parent is source-derived data,not a model checkpoint;previous fixed additive qualification remainsFAIL",
+    "Perpacket normalization and expectation do not commute;population proxy does not identify a physical full256IQ filter",
+    "All5RX retained including fixed referenceRX1;no trainingdomain holdout",
+    "One directP0P1 review and G0 consumed sourcehandle/statistic smoke;no unused modelCP/NN",
+    "Actual GitHEAD fills release record;one archive transfer comparison,not perfile hashes or extraapproval"
+  ],
+  "registered_at": "2026-10-17T22:32:02+00:00"
+}

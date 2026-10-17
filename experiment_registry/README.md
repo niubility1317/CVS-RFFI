@@ -555,3 +555,5 @@
 - [周期信号相关形状 source r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01/report.md)
 
 - [共享输入RX响应 source r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01/report.md)
+
+- [固定响应归一化顺序 source r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01/report.md)

@@ -1,0 +1,128 @@
+{
+  "status": "PASS_SOURCE_ONLY_SYNTHETIC",
+  "core_checks": {
+    "status": "PASS",
+    "negative_cases": 21,
+    "scientific_cases": {
+      "shared": {
+        "decision": "SOURCE_NORMALIZATION_ORDER_ATTRIBUTION_ONLY",
+        "conditions": {
+          "nonzero_additive_error": true,
+          "additive_SSE_reduction": true,
+          "positive_folds": true,
+          "each_RX_not_worse": true,
+          "not_worse_TXconditional": true,
+          "phase_products_nonzero": true
+        },
+        "packetwise_SSE": 6.374393807529194e-32,
+        "mean_proxy_SSE": 0.00021657921357654369
+      },
+      "reversal": {
+        "decision": "CLOSED_NORMALIZATION_ORDER_EXPLANATION",
+        "conditions": {
+          "nonzero_additive_error": true,
+          "additive_SSE_reduction": false,
+          "positive_folds": false,
+          "each_RX_not_worse": false,
+          "not_worse_TXconditional": false,
+          "phase_products_nonzero": true
+        },
+        "packetwise_SSE": 0.1253496247461394,
+        "mean_proxy_SSE": 0.13003868254473944
+      },
+      "TX_only": {
+        "decision": "CLOSED_NORMALIZATION_ORDER_EXPLANATION",
+        "conditions": {
+          "nonzero_additive_error": false,
+          "additive_SSE_reduction": false,
+          "positive_folds": false,
+          "each_RX_not_worse": false,
+          "not_worse_TXconditional": false,
+          "phase_products_nonzero": true
+        },
+        "packetwise_SSE": 0.036759096629220424,
+        "mean_proxy_SSE": 0.03948945018113079
+      }
+    },
+    "noncommutativity_Frobenius_difference": 0.42426406871192873,
+    "direct_matrix_error": 2.841188977517478e-17,
+    "synthetic_V_factors_generated": 81000,
+    "complete_synthetic_readout_packet_transforms": 81000,
+    "early_rejected_old_control_readout_packet_transforms": 1500,
+    "unit_packet_transform_vectors": 10,
+    "direct_outer_product_transforms": 2,
+    "response_refits": 0,
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0,
+    "target_access": false
+  },
+  "unit_vector_count_correction": {
+    "original_printed": 10,
+    "actual": 8,
+    "reason": "Four two-vector valid packet_prediction calls;invalid calls reject before transforms;no algorithm change or repeated test"
+  },
+  "recount_integration": {
+    "status": "PASS",
+    "independent_recount": {
+      "status": "VERIFIED",
+      "run_id": "SYNTHETIC_ONLY",
+      "decision": "SOURCE_NORMALIZATION_ORDER_ATTRIBUTION_ONLY",
+      "conditions": {
+        "nonzero_additive_error": true,
+        "additive_SSE_reduction": true,
+        "positive_folds": true,
+        "each_RX_not_worse": true,
+        "not_worse_TXconditional": true,
+        "phase_products_nonzero": true
+      },
+      "source_L": 6300,
+      "source_V": 27000,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_RX_holdout": null,
+      "source_complex_matrix_entries": 72000,
+      "V_complex_factor_entries": 540000,
+      "reference_V_packets": 5400,
+      "complex_fixed_response_entries": 1800,
+      "centered_prediction_entries_recounted": 36000,
+      "packetwise_outer_response_matrices": 27000,
+      "folds": 18,
+      "max_reference_matrix_error": 6.939204710620807e-18,
+      "max_prediction_error": 2.085411807634362e-17,
+      "max_metric_error": 1.0028870095490916e-18,
+      "response_refits": 0,
+      "raw_IQ_reads": 0,
+      "CP": 0,
+      "NN": 0,
+      "updates": 0,
+      "target_access": false,
+      "old_mean_proxy_decision_unchanged": true,
+      "joint_goal_complete": false,
+      "wall_seconds": 0.29360179998911917
+    },
+    "corrupt_prediction_rejected": true,
+    "corrupt_metric_rejected": true,
+    "synthetic_V_factors_generated": 27000,
+    "synthetic_core_packet_transforms": 27000,
+    "independent_outer_packet_matrices": 55500,
+    "response_refits": 0,
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0,
+    "target_access": false
+  },
+  "compile": "PASS",
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false
+}

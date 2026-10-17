@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "scope": "One direct P0/P1 review of fixed-response source normalization-order attribution",
+  "reviewer": "/root/unitary_p0p1_review",
+  "P0": [],
+  "P1": [],
+  "checked": [
+    "Fixed original h/no refit",
+    "Complex transforms and inverse",
+    "All zero packets retained",
+    "V input only/no persistent fit",
+    "Original controls unchanged",
+    "Release dependencies",
+    "Independent outer-product recount"
+  ],
+  "file_edits": 0,
+  "real_input_access": 0,
+  "remote_operations": 0,
+  "CP": 0,
+  "NN": 0,
+  "target_access": false,
+  "expanded_tests": 0
+}
