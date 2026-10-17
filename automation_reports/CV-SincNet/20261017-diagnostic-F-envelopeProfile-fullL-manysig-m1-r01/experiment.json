@@ -1,0 +1,217 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01",
+  "group_id": "F_crossRX_temporal_envelope_source",
+  "display_name": "F：全源慢变包络 RX 关联依据",
+  "description": "只读全L6300的16块时间功率形状/DCT1和2；跨TX/day统计交叉排除、保留全部5RX；0模型/增强/训练",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "F_ENVELOPE_PROFILE_FULLSOURCE"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "full_source",
+    "source_only",
+    "no_training",
+    "no_model",
+    "temporal_envelope"
+  ],
+  "comparison_group_id": "phase1-F-crossRX-fullsource-IQ-basis",
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active user authorized Ag/As research;latest E30 and no sourceRXholdout. New temporal-envelope basis only;do not reopen closed constantgain or stationaryFIR candidates. All originalL6300source observations,0CP/NN/updates/target.",
+  "code": {
+    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "Ordinary N607 existing CVS-RFFI,CPU2,CUDAempty",
+    "cwd": "PROJECT/releases/cvs_F_envelope_profile_source_20261017_r01",
+    "entrypoint": "experiments/cvs_envelope_profile17/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated exact original L6300 source cache;all sourceRX",
+    "representation": "Original EQ1/RMS IQ256 at25MHz;full256 temporal power16bins,logcenter/DCT1to2 only;no new IQ view",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract role_ids.L_s,exact all6300",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "All6300originalL,all5sourceRX/day1..3,6TX,90cells70each",
+      "U_s": "Original56700TXhidden,notused",
+      "V": "Original27000notused"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse existing exact source handles and native_role_comparison;no data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": "Fixed original three training practical scenes;formal clean+six received IQ unchanged and not accessed"
+  },
+  "permissions": {
+    "regime": "Sourceonlystatistic",
+    "L_s": "All6300originalL full5RX;TX/daylabels only balanced statistics/exclusion",
+    "U_s": "No use,TXalwayshidden",
+    "V": "No use",
+    "target": "No construction/read/scoring",
+    "separate_head_training": false,
+    "satellite_training": false,
+    "claim_scope": "RX-associated slow temporal power shape only;not AGC causality,identity preservation,Ag efficacy or joint proof"
+  },
+  "checkpoint": {
+    "initialization": "NONE,no model used",
+    "sources": [],
+    "contract_check_ref": "Not applicable:zero checkpoint/NN/updates",
+    "provenance_verdict": "NO_CHECKPOINT_CONSUMED",
+    "selection_rule": "No model selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-envelope-profile-source",
+    "gpu_policy": "CPU2/CUDAempty/noGPU",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_envelope_profile_source_20261017_r01/envelope_source.stdout.log",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_envelope_profile17/runner.py",
+    "stop_rule": "Only inputrole/nonfinite/outputcollision/systemictechnicalfailures stop ownedrun,preserve,noautoretry. Scientific failure closes fixedmeasure,no block/mode/floor/window/RX/seed/threshold rescue."
+  },
+  "expected_artifacts": [
+    "checks.json",
+    "resolved_config.json",
+    "source_observations.npz",
+    "result.json",
+    "completion.json",
+    "independent90cell/18foldsource recount"
+  ],
+  "metrics_plan": {
+    "primary": "18fold RX-centered heldTX/day DCT1to2 predictionSSE vszero and fixedwrongRXmapping",
+    "falsification": {
+      "relative_prediction_MSE_max": 0.9,
+      "better_folds_min": 15,
+      "structured_better_than_wrong_RX": true,
+      "each_RX_relative_MSE_lt": 1
+    },
+    "source": "All6300/90cells,all5RXineveryfold,no qualitysubsetting",
+    "cost": "1sourcecache/6300uniqueIQ,0CP/NN/views/teacher/headfit/updates/target",
+    "no_target_parameter_feedback": true,
+    "no_automatic_training": true
+  },
+  "rows": [
+    {
+      "row_id": "ENVELOPE_FULL_L",
+      "method": "PostRMS centered temporal logpower DCT1to2 RX association",
+      "purpose": "Falsify a source basis for mild nonconstant gain IQ observation changes before any operator or training",
+      "config_ref": "experiments/cvs_envelope_profile17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {
+        "full_L6300": true,
+        "source_RX_holdout": null,
+        "U_V_target_used": false
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Deterministic fullL/statistic;no randomfitting,augmentation or modelselection. Syntheticcheckseed20261017971 is not sourcecalibration.",
+      "k": null,
+      "scenario": "Originalclean sourceL only",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": 0,
+      "budget_ref": "0newmodelE/CP/NN/updates;future authorized training remainsE30 with matchingcontrol",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_envelope_profile_source_20261017_r01/envelope_source.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_envelope_profile17/runner.py",
+      "expected_artifacts": [
+        "checks.json",
+        "resolved_config.json",
+        "source_observations.npz",
+        "result.json",
+        "completion.json",
+        "independent90cell/18foldsource recount"
+      ],
+      "config": {
+        "run_id": "20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01",
+        "launch_owner": "codex/root/F-envelope-profile-source",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_RX_holdout": null,
+        "L": 6300,
+        "U_used": false,
+        "U_TX_truth_hidden": true,
+        "V_used": false,
+        "target_access": false,
+        "question": "Does post-RMS slow temporal power shape contain an RX-associated component transferable across TX and day?",
+        "observation": {
+          "samples": 256,
+          "blocks": 16,
+          "samples_per_block": 16,
+          "relative_floor": 1e-06,
+          "per_packet_power_normalized": true,
+          "center_log_profile": true,
+          "DCT_modes": [
+            1,
+            2
+          ],
+          "observation_window": "all256,no crop/shift/window selection"
+        },
+        "crossfit": "18 folds exclude one TX AND one day from statistics fit;all5RX retained in every fold;this is not a model training split",
+        "control": "Fixed cyclic RX permutation by1 of predicted effects;no control choice",
+        "criteria": {
+          "relative_prediction_MSE_max": 0.9,
+          "better_folds_min": 15,
+          "structured_better_than_wrong_RX": true,
+          "each_RX_relative_MSE_lt": 1
+        },
+        "on_fail": "Close fixed temporal-envelope basis;no block/mode/floor/window/RX/seed/threshold rescue",
+        "on_pass": "RX association only,not AGC causality or Ag efficacy;separate bounded IQ and default-head identity study needed before any matched E30 training",
+        "new_IQ_views": 0,
+        "checkpoint_loads": 0,
+        "NN": 0,
+        "teacher_forwards": 0,
+        "training_updates": 0,
+        "head_fit_updates": 0,
+        "source_cache_loads": 1,
+        "source_IQ_unique": 6300,
+        "CPU_threads": 2,
+        "GPU": "none",
+        "automatic_training": false,
+        "training_budget_if_later_justified": "Latest E30,F+crossRXsameTX/all5RX/defaulthead/originalU;not authorized by this source statistic alone"
+      }
+    }
+  ],
+  "notes": [
+    "This is a new nonstationary time-domain envelope question,not reopening stationary frequencyFIR/constantgain source failures. No filter,gainbound or classifier output is selected here.",
+    "Receiver gain changes can have settling transients per AD9361UG570;this does not establish WiSig usedAGC or that source RXdifferencesarecausedbyAGC. RXassociation is the only currentclaim.",
+    "Perpacketconstantgain cancels exactly. Full256 split16blocks16points;relativefloor1e-6,centerlog,DCTmodes1and2 fixedbefore source. No window/mode/RX/subset search.",
+    "18folds excludeTX ANDday in statisticsfit,all5RXineveryfold;not an L5580/dev720 or heldtrainingRX contract. No model trained or loaded.",
+    "All6300/90cells70samplesmustparticipate. Fixed cyclicwrongRXcontrolby1,allfolds/allRXreported. Pass only motivates independent boundedIQ identitystudy then matched E30 training,not Ag efficacy."
+  ],
+  "registered_at": "2026-10-17T13:05:08+00:00"
+}

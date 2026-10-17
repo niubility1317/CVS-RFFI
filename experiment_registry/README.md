@@ -524,3 +524,5 @@
 - [完整源N0反证](../automation_reports/CV-SincNet/20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01/report.md)
 
 - [完整源N0反证](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-N0prior-e20plus10-s2026092701-m1-r01/report.md)
+
+- [完整源N0反证](../automation_reports/CV-SincNet/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01/report.md)
