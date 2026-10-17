@@ -1,6 +1,6 @@
 {
   "schema": "F_CLOCK_FACTORIAL20_PREREG_V1",
-  "status": "RUNNING_VERIFIED",
+  "status": "ANALYZED",
   "baseline": "F+CROSS_RX/SIG_TIME_X3/unifiedfullSinc/joint160/defaultcos/NoExplicitCFO",
   "data": {
     "source_RX": [
@@ -100,5 +100,30 @@
   "training_launched": true,
   "Ag_efficacy_proved": false,
   "joint_goal_complete": false,
-  "execution_commit": "a5ffee44d325b69cc360d4248b673ff124110d99"
+  "execution_commit": "a5ffee44d325b69cc360d4248b673ff124110d99",
+  "result": {
+    "single_model_seed": 2026092701,
+    "B10_clean_delta_vs_B00_pp": 0.11904761904761862,
+    "B11_clean_net_vs_B00_pp": -1.0249999999999981,
+    "B11_low_accuracy": 0.5059642857142858,
+    "B11_low_delta_vs_B01_pp": -0.003571428571425006,
+    "B11_suburban_gap_pp": {
+      "practical_high": 3.5160714285714323,
+      "practical_mid": 6.353571428571425,
+      "practical_low_suburban": 8.99821428571429
+    },
+    "interaction_pp": {
+      "clean": -0.278571428571428,
+      "practical_high": -0.4166666666666763,
+      "practical_mid": -0.34107142857142114,
+      "practical_low_suburban": -0.3130952380952512,
+      "practical_high_urban": -0.2809523809523762,
+      "practical_mid_urban": -0.24821428571428772,
+      "practical_low_urban": -0.12499999999999734
+    },
+    "reference_low_accuracy": 0.5238869047619048,
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false,
+    "E30_fixed_before_target_results": true
+  }
 }

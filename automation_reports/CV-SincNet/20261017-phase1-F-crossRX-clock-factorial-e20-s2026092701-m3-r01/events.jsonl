@@ -1,2 +1,3 @@
 {"at": "2026-10-17T05:44:13+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
 {"at": "2026-10-17T05:53:25+00:00", "status": "RUNNING", "note": "Actual F checks and matching CP no-query PASS; all3 scratchE20 owned PID/CWD/argv/GPU and step-log growth VERIFIED; all5sourceRX L6300/U56700; no new formal metrics.", "evidence": ["execution_evidence.json"], "row_id": null}
+{"at": "2026-10-17T06:34:10+00:00", "status": "ANALYZED", "note": "All3new scratchE20 and7viewtruthlast closed;full logs/5994sequences matched;630CM recounts;Agclean+.119pp but jointclean-1.025pp/low50.5964%;E30 pre-fixed five rows unchanged.", "evidence": ["verification.json", "report.md"], "row_id": null}

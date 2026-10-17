@@ -1,8 +1,8 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_FULL_SOURCE_REFERENCE_ANALYZED_JOINT_UNPROVED",
+  "status": "RESEARCH_ACTIVE_E30_TRAINED_SCORE_RECOVERY_PENDING_JOINT_UNPROVED",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
-  "authorization": "User on 2026-10-16 changes pre-augmentation baseline to F plus cross-RX same-TX contrastive learning. Earlier E20 budget remains in force.",
+  "authorization": "User baseline F plus cross-RX same-TX;latest budget E30 as fixed E20+10 on all five rows;all five now trained,score-only recovery adds zero updates.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
   "applies_to": [
     "B00",
@@ -2203,28 +2203,14 @@
     }
   },
   "latest_completed_experiment": {
-    "run_id": "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02",
+    "run_id": "20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01",
     "status": "ANALYZED",
-    "execution_commit": "b94076b191648103daeb8a9cb1c17bdcc9c0e231",
-    "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md",
-    "model_seed_count": 1,
-    "full_source_RX": [
-      1,
-      3,
-      4,
-      6,
-      8
-    ],
+    "config": "configs/cvs_clock_factorial_e20.json",
     "source_RX_holdout": null,
-    "Ag_tested": false,
-    "As_practical_single_seed_gain": true,
-    "clean_joint_net_gain": false,
-    "low_urban_goal_met": false,
-    "suburban_gaps_pp": [
-      1.4291666666666591,
-      3.8833333333333275,
-      6.295833333333334
-    ],
+    "Ag_clean_delta_pp": 0.11904761904761862,
+    "joint_clean_net_pp": -1.0249999999999981,
+    "joint_low_accuracy": 0.5059642857142858,
+    "Ag_increment_with_As_low_pp": -0.003571428571425006,
     "joint_goal_complete": false
   },
   "source_PSD_positive_affine": {
@@ -2275,7 +2261,7 @@
     "no_held_source_RX": true,
     "no_target_selection": true,
     "healthy_E20_unchanged": true,
-    "status": "RUNNING_VERIFIED",
+    "status": "TRAINING_BUDGET_COMPLETE_EVALUATION_RECOVERY_PENDING",
     "failed_run": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
     "failed_run_real_updates": 0,
     "failed_runs": [
@@ -2283,6 +2269,34 @@
       "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02"
     ],
     "failed_runs_real_updates": 0,
-    "execution_commit": "8a83af076a2f632a4ee514da689b2e8d166d0592"
+    "execution_commit": "8a83af076a2f632a4ee514da689b2e8d166d0592",
+    "score_recovery_run": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
+    "actual_cumulative_updates_per_model": 6660,
+    "score_recovery_new_updates": 0
+  },
+  "clock_factorial_E20_result": {
+    "single_model_seed": 2026092701,
+    "B10_clean_delta_vs_B00_pp": 0.11904761904761862,
+    "B11_clean_net_vs_B00_pp": -1.0249999999999981,
+    "B11_low_accuracy": 0.5059642857142858,
+    "B11_low_delta_vs_B01_pp": -0.003571428571425006,
+    "B11_suburban_gap_pp": {
+      "practical_high": 3.5160714285714323,
+      "practical_mid": 6.353571428571425,
+      "practical_low_suburban": 8.99821428571429
+    },
+    "interaction_pp": {
+      "clean": -0.278571428571428,
+      "practical_high": -0.4166666666666763,
+      "practical_mid": -0.34107142857142114,
+      "practical_low_suburban": -0.3130952380952512,
+      "practical_high_urban": -0.2809523809523762,
+      "practical_mid_urban": -0.24821428571428772,
+      "practical_low_urban": -0.12499999999999734
+    },
+    "reference_low_accuracy": 0.5238869047619048,
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false,
+    "E30_fixed_before_target_results": true
   }
 }

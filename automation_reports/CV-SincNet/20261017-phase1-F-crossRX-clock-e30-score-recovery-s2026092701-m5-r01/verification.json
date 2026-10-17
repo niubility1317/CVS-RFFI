@@ -1,0 +1,25 @@
+{
+  "status": "REGISTERED_NOT_LAUNCHED",
+  "local": {
+    "status": "PASS",
+    "protocol_negative_cases": 120,
+    "syntax_files": 10,
+    "IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0,
+    "target_access": false
+  },
+  "independent_p0p1": {
+    "status": "PASS",
+    "P0": 0,
+    "P1": 0,
+    "real_IQ": 0,
+    "CP": 0,
+    "target_access": false
+  },
+  "N607_preflight": "VERIFIED",
+  "new_training_updates": 0,
+  "real_checkpoint_no_query_smoke": "PENDING",
+  "launch": "NOT_LAUNCHED"
+}

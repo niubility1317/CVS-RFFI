@@ -14,7 +14,7 @@
 |DAOT＋FastTrust-RC4 residual环境比例六组|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-daot-rc4-residual-ratios-manysig-s392005-r01/report.md)|
 |旧Practical四组checkpoint统一六环境测试|managed_run|[打开](../../automation_reports/CV-SincNet/20260920-phase1-practical4-sixscene-eval-s392005-r01/report.md)|
 |CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
-|完整源采样时钟＋practical：固定四因子E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)|
+|完整源采样率／practical四因子：E20完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)|
 |完整源四因子与普通拼接：E20＋10，累计E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/report.md)|
 |完整源四因子与普通拼接：E20＋10，累计E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02/report.md)|
 |完整源四因子与普通拼接：E20＋10，累计E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r03/report.md)|

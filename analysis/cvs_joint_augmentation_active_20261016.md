@@ -1,13 +1,16 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-当前预算已由用户提升为E30。固定新run `20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r03`：B00/B10/B01/B11与FULL_AS全部从各自固定source-final20追加相同10轮，累计每行E30／6660更新，统一AdamW/cos10复位与严格自身EMA。新增50modelE／11100更新，父100modelE单列；当前健康E20不热改，所有行无条件续训，不按目标分数选父。E30 r01在0真实更新时被原生scratch参数拒绝，产物保留；r02也在0更新时暴露输出路径初始化顺序问题；r03修复初始化顺序后五行已实际续训，执行commit `8a83af076a2f632a4ee514da689b2e8d166d0592`；严格父学生／自身EMA、实际优化器初态及PID/CWD/argv/GPU／63s日志增长VERIFIED，尚无E30正式成绩；详见[预算修订](cvs_clock_E30_budget_amendment_20261017.md)与[五组预登记](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r03/report.md)。
+当前预算为 **E30＝固定 E20＋10**。B00／B10／B01／B11／FULL_AS 五行均已完成累计 30 轮／6660 更新，全部 5 个源 RX、L6300／U56700 隐藏 TX／V27000 保持。原训练 run 的最终权重已保存，但原生收尾误拒绝读取自身 checkpoint，正式评分未完成；原错误状态和产物保留。
 
-最新运行：`20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01`，仅新增采样速率IQ变化与既有完整practical，固定B00/B10/B01/B11。全部5个源RX、L6300/U56700、每新模型scratchE20、4次L前向。B00复用匹配REPEAT，额外保留完整CONCAT参照；B01/B11的As剂量明确为全As的一半，独立报告。已实际启动3个scratchE20；执行commit `a5ffee44d325b69cc360d4248b673ff124110d99`，实际F合成／真实CP无查询smoke及PID/CWD/argv/GPU／日志增长VERIFIED。尚未完成新模型训练或正式评分。详见[最小预登记](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)。不留出训练域，不以源统计代替星地收益，旧候选负结果保留。
+当前唯一执行项是 [零更新评分恢复](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/report.md)，复用五行固定 final30 学生默认头，只做 clean＋六 practical 预测及独立 truth-last 评分。恢复尚未发布，不能报告 E30 性能。E30 五行及父权重在新 E20 目标成绩读取前固定，不据 E20 结果调参、选择父权重或追加训练。
 
+最新已完成：[完整源四因子 E20 报告](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)已 ANALYZED。B10 clean 84.6893%，相对 B00 ＋0.1190 个百分点；B11 clean 83.5452%、low urban 50.5964%。B11 相对 B01 clean −0.1595、low urban −0.0036 个百分点；相对完整普通拼接 FULL_AS，low urban −1.7923 个百分点。七视图交互项全部为负；三个 suburban 与自身 clean 差 3.5161／6.3536／8.9982 个百分点。单种子小幅独立 clean 差不构成 Ag 泛化证明，联合目标未达到。
 
-当前更新：完整源参照 20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02 已ANALYZED，3/3 scratchE20、13320更新、3528000正式决策与独立truth-last完成，所属进程已退出。CONCAT clean82.1887%、midurban63.3649%、lowurban52.3887%；相对匹配REPEAT依次−2.3815／＋25.5982／＋20.3762pp。suburban与自身clean差1.4292／3.8833／6.2958pp。所有5源RX与L6300/U56700保留、源序列逐条一致。该单seed证明普通As有实际practical收益，但当前配方没有clean净收益，未达lowurban或所有suburban目标；Ag和完整联合目标仍ACTIVE且未证明。
+[完整源普通拼接 E20 参照](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)已 ANALYZED：CONCAT clean 82.1887%、mid urban 63.3649%、low urban 52.3887%；相对同前向 REPEAT 分别 −2.3815／＋25.5982／＋20.3762 个百分点。普通 As 的 practical 适应有识别收益，clean 保持与全部 suburban 接近 clean 尚未成立。
 
-[完整结果](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)；[全部分层](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/stratified_results.md)。以下保留之前的历史过程，当前阶段以本段为准。
+接下来只检验一个预登记假设：同预算延长至 E30 后，这个固定采样速率 Ag 与 practical As 能否同时保留各自收益。最小实验就是已训练的五行评分；若 B11 没有 clean 净收益、相对 B01 没有 low urban 增益，或未达到原联合探索条件，则关闭该固定联合配方，不据目标分数调幅度、换种子或加损失救跑。
+
+以下是按时间保留的历史过程，旧的“当前／运行／下一项”表述以本页开头的最新状态为准。
 
 ## 当前状态（2026-10-17，按用户最新纠偏）
 

@@ -1,5 +1,5 @@
 {
-  "status": "RUNNING",
+  "status": "ANALYZED",
   "local": {
     "status": "PASS",
     "protocol_negative_cases": 48,
@@ -62,5 +62,49 @@
     "reference_fixed_final20": true
   },
   "launch": "VERIFIED",
-  "code_commit": "a5ffee44d325b69cc360d4248b673ff124110d99"
+  "code_commit": "a5ffee44d325b69cc360d4248b673ff124110d99",
+  "closure": {
+    "status": "ARTIFACTS_COMPLETE",
+    "new_rows": 3,
+    "epochs_each": 20,
+    "updates_each": 4440,
+    "views_each": 7,
+    "new_prediction_decisions": 3528000,
+    "own_processes_remaining": 0,
+    "truth_last": true,
+    "default_classifier_only": true
+  },
+  "analysis": {
+    "status": "ANALYZED",
+    "CM_recounts": 630,
+    "actual_config_keys_matched": 68,
+    "ordinary_MSE_all20_exact": true,
+    "full_logs_read": true,
+    "all_sampling_sequences_equal": true,
+    "Ag_independent_clean_delta_pp": 0.11904761904761862,
+    "Ag_independent_clean_macroF1_delta_pp": 0.1237997627101084,
+    "B11_clean_net_pp": -1.0249999999999981,
+    "B11_low": 0.5059642857142858,
+    "B11_low_vs_B01_pp": -0.003571428571425006,
+    "B11_suburban_gap_pp": {
+      "practical_high": 3.5160714285714323,
+      "practical_mid": 6.353571428571425,
+      "practical_low_suburban": 8.99821428571429
+    },
+    "interaction_pp": {
+      "clean": -0.278571428571428,
+      "practical_high": -0.4166666666666763,
+      "practical_mid": -0.34107142857142114,
+      "practical_low_suburban": -0.3130952380952512,
+      "practical_high_urban": -0.2809523809523762,
+      "practical_mid_urban": -0.24821428571428772,
+      "practical_low_urban": -0.12499999999999734
+    },
+    "single_model_seed": true,
+    "joint_goal_complete": false,
+    "E30_budget_fixed_before_new_target_scores": true,
+    "new_analysis_NN": 0,
+    "new_analysis_updates": 0,
+    "raw_truth_reads": 0
+  }
 }

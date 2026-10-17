@@ -1,6 +1,6 @@
 # 完整源四因子与普通拼接：E20＋10，累计E30
 
-状态：RUNNING／五组启动独立读回VERIFIED。执行commit `8a83af076a2f632a4ee514da689b2e8d166d0592`；五行均严格加载各自学生／EMA、AdamW/cos10复位，并有实际step日志增长；尚无E30正式性能结果。
+状态：PARTIAL／五行训练预算完成、原生收尾评估失败。每行追加10轮／2220更新、累计30轮；自身final_ssdg.pth安全保留，所属进程全部退出。cached_parent误拒绝自身最终CP评估读取，原生状态HELDOUT_EVAL_INCOMPLETE／7保留；正式7视图尚未执行，另建零训练评分恢复run。
 
 用户2026-10-17将预算提升E30。本修订在当前B10/B01/B11尚无正式结果时固定全部续训：B00继承完整源参照r02的REPEAT，B10/B01/B11继承clock-E20-r01对应行，FULL_AS继承完整源参照r02的CONCAT。5行都用固定source-final20，各追加10轮／2220更新，累计30轮／6660更新；不是从零单一E30，也不是原优化轨迹resume。父100modelE、新增50modelE／11100更新、累计150modelE分别记录，不按E20目标成绩筛行或选权重；健康旧E20不热改／覆盖。
 
@@ -25,3 +25,5 @@ Run 20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r03；own
 失败r01/r02均0训练IQ／0真实更新／0正式预测，根目录与证据保留；其合成检查各5次更新／2580NN与CP无查询各2包、worker父CP各1次单列为技术成本。r03不重复或停止健康E20。
 
 实际发布：单归档比较／远端编译VERIFIED；实际F合成136项负例PASS，2580合成NN／256合成practical包／128采样时钟包／5合成更新，0真实IQ／CP／target。一次真实CP无查询smoke PASS（2合成包／0查询／更新）。相隔63.05s独立核实5worker的PID/CWD/argv/GPU与各自step日志增长；5行严格父学生、严格自身EMA、空AdamW初态lr.0002／wd.0001均已读回。B00/B10/B01/B11/FULL_AS全部实际运行，源RX未留出，当前无技术失败；正式E30预测／评分尚未开始，检查通过不等于收益。见execution_evidence.json。
+
+当前独立恢复：`20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01`，只读取这五个已固定E30学生默认头，无新训练轮次或更新；不修改本run的原错误文件／权重。恢复将核对完整原生step／epoch／optimizer／角色／父证据，再在新root预测7视图与独立truth-last。瞬时reference／unit／clockMSE／scene细节未落盘明确缺项，不补造。

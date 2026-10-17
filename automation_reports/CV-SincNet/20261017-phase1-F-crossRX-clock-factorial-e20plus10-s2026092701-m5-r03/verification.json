@@ -1,5 +1,5 @@
 {
-  "status": "RUNNING",
+  "status": "PARTIAL_TRAINING_COMPLETE_EVALUATION_FAILED",
   "local": {
     "status": "PASS",
     "protocol_negative_cases": 80,
@@ -55,5 +55,17 @@
   "launch": "VERIFIED",
   "replaces_failed_run": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02",
   "prior_failed_real_updates": 0,
-  "code_commit": "8a83af076a2f632a4ee514da689b2e8d166d0592"
+  "code_commit": "8a83af076a2f632a4ee514da689b2e8d166d0592",
+  "post_training": {
+    "actual_new_epochs_each": 10,
+    "cumulative_epochs_each": 30,
+    "actual_steps_each": 2220,
+    "own_processes": 0,
+    "native_status": "HELDOUT_EVAL_INCOMPLETE",
+    "reason": "Unexpected checkpoint dependency;cached_parent rejected own final checkpoint",
+    "saved_final_checkpoints": true,
+    "formal_predictions": 0,
+    "score_recovery_run": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
+    "new_recovery_updates": 0
+  }
 }
