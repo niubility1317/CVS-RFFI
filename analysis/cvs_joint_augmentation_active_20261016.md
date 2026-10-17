@@ -357,3 +357,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 2026-10-17：20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01 已 VERIFIED RUNNING，执行commit9059b58502f207331bf9643d9d1399d308a2c2da，单archive/compile/真实匹配CP no-query smoke PASS。两原worker PID/CWD/argv/CUDA/GPU4/5与日志增长独立核实，两行均完整E1/222更新/37块，O0 moved0、O1 moved28367；实际L5040/U45360/V21600，0target，无final20/七视图新成绩。保持每行E20，不热改/重启；当前只是训练组织，不是IQ Ag或联合收益，完整goal ACTIVE。
+
+
+2026-10-17：20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01 已完整 ANALYZED／VERIFIED，FAIL_FIXED_SIX_STEP_L_ORDER_CLOSED。两条新 scratch E20／各4440更新，17640源判决、每行740块物理多重集及全部实际交付输入、13320 SupCon mask term、20轮loss/U/教师预算独立复算。O0→O1 clean80.238095%→78.412698%（−1.825397pp），Macro-F1−2.012662pp，low urban27.936508%→27.380952%（−.555556pp）；mid suburban−.555556pp。原正对统计改善但身份收益失败，关闭固定6步重排，不改块/分配/私有Lseed/SupCon/CE/RX/modelseed/预算救跑。40新modelE／8880更新／11646638实际NN含dispatcher2；0target/新IQAg/As训练/父权重。原进程自然完成，4图PNG/PDF已查看，完整goal ACTIVE。报告 automation_reports/CV-SincNet/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01/report.md。

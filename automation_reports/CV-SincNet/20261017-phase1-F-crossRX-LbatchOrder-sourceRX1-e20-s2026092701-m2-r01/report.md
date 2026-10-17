@@ -1,45 +1,107 @@
 # F＋跨 RX 同 TX：六步 L 重排匹配 E20
 
-当前状态：VERIFIED RUNNING，两行均已完整E12／2664更新，尚无final20或源识别成绩。完整联合目标 ACTIVE。本候选只研究训练组织，不是 IQ A_g，也不训练 A_s。
+状态：ANALYZED／VERIFIED，FAIL_FIXED_SIX_STEP_L_ORDER_CLOSED。两条新 scratch E20 均完成固定 final20／4440 更新及源 RX1 七视图，全部 17,640 个硬判决独立复算。正式 target 未访问；这项实验研究训练组织，不是 IQ A_g，也没有 A_s 训练。完整联合目标 ACTIVE。
 
-唯一矩阵维护在 [experiment.json](experiment.json)：两条**新** scratch E20，O0 与 O1。两者共用六步预取、专有 L RandomSampler/DataLoader generator、原 F／SIG_TIME／joint160／默认 cosine 头和正常联合更新；原 raw／ordinary 四对 RDrop、浅中层跨 RX 同 TX SupCon、13L＋7U／oldgate／ownEMA保持。唯一差异是 O1 在相邻六次更新的同一 768 个 L 观察内重排 TX/RX 组成，O0 交付原顺序。两者都计算配额、拼接和 gather，控制预取/RNG/CPU路径；不能把旧 B00 当作匹配控制。
+本轮未满足预登记源判据，关闭这个固定六步重排方案。不改块长、分配、L 私有 seed、SupCon/CE、RX、模型 seed 或预算救跑；不把统计改善当识别提升。
 
-## 来源与假设
+## 固定数据、模型与唯一差异
 
-[完整来源分析](../../../analysis/cvs_L_batch_order_basis_20261017.md)已逐4440批、568320次L观察及13320个已有对比统计复算。没有正对缺失，但批次比例和正对数波动；固定六步重排保持每块物理多重集及全部曝光次数，正对数最小值4→10。统计改善不证明身份识别受益。本轮唯一假设：在共同缓冲控制下，减小L TX/RX组成波动能提高held-source clean，同时保护practical。
+fit RX3/4/6/8、day1/2/3，L5040／U45360（TX 真值隐藏）／V21600；held source RX1 原 L1260 在 final20 冻结后用默认头评估。不是完整 L6300，也不是 L_train5580/L_dev720。该源折已有历史暴露，不声称独立盲测。复用既有 VALIDATED_ONCE 物理角色，训练无父权重。
 
-真实冻结后端的原迭代器与make_loader已只读核对；现有runtime wrapper强制222步，原L DataLoader无独立generator。新source observer在原native_scope进入后、data构建后延迟解析Order；没有提前创建输出或U迭代。原U加载器不修改，U从不进入L缓冲或标签解析。
+两条新行共用六步 L 预取、私有 L sampler/loader、配额计算、concat/gather；每块 768 个原始观察和全程频次完全相同。O0 交付原顺序，O1 平衡块内 TX/RX 组成。保持 F／SIG_TIME／真实 joint160／统一 Sinc／默认 cosine 头正常联合训练；NoExplicitCFO 和必要内部逐包补偿保留。原四对 RDrop、浅中层跨 RX 同 TX SupCon 与 13L＋7U／oldgate／ownEMA 不变。U 加载器不重排、不进入 L 缓冲、不解析 TX。没有新损失、部署分支、诊断头或 IQ 变换。
 
-## 输入、模型和预算
+共同原 base raw.75＋ordinary.25，额外 raw 对 .25，总 pair 权重 1.25；每物理 L 四对／8 次训练前向，两次 RDrop 复用同一已生成 IQ。旧 ordinary 实际 PA、CFO、时移、增益、AWGN/multipath 等开关仍作为共有历史配方，如实记录，不声称已验证标签保持。practical 只作本轮源评估，传播/噪声/接收质量/补偿/SNR 未弱化，没有修改正式 received IQ。
 
-复用原split392005／VALIDATED_ONCE数据角色，只在fit RX3/4/6/8、day1/2/3上训练L5040／U45360(hiddenTX)／V21600；源RX1 L1260只在固定final20后做clean＋六practical。该源折已有历史暴露，不声称新独立盲测。不是完整L6300或L_train5580/L_dev720。没有训练父权重；真实CP仅匹配相同4RX物理角色的scratch final20默认头no-query兼容smoke后丢弃，不初始化新行。
+输入读取口径：原 full-source cache 会反序列化 L6300/V27000，既有 fold.prepare 在模型创建前物化 RX1 L1260 的只读评估缓存及 144 个未训练 fit anchor。RX1 不进入 student/teacher 训练、源 V、校准或额外机制；仅冻结后调用默认头。冻结后评分不等于此前未读 RX1 IQ。
 
-每行E20／4440更新，8L前向4546560 NN；完整base raw.75＋ordinary.25保留，额外raw对.25，总pair权重1.25，CE/KL/SupCon及原U公式不改。两条新行合计40 model-epoch／8880更新，每模型仍E20，不追加续训。原U学生/EMA教师、V及held8820另计，预计每行总5823318 NN，dispatcher CP smoke2另计。预取/gather新增CPU时间、最大768包逻辑buffer单独记录；不冒称零计算成本。原教师初始化继承计数偏移在最终独立复算时剔除，真实前向不遗漏。
+## 七视图身份结果
 
-旧ordinary实际共有PA/CFO/时移/增益/AWGN/multipath等历史开关保持并记录，不称它们已验证标签保持。两次RDrop复用同一已生成ordinary IQ；没有新增IQ扰动、损失、教师、U视图、部署分支或诊断头。NoExplicitCFO及必要内部补偿不删除。源评估六practical传播、噪声、接收质量/补偿与固定SNR原样保留，不更改正式received IQ或访问target。
+|视图|O0 accuracy %|O1 accuracy %|差值 pp|O0 Macro-F1 %|O1 Macro-F1 %|修复/新错|
+|---|---:|---:|---:|---:|---:|---:|
+|clean|80.238095|78.412698|-1.825397|80.034893|78.022230|14/37|
+|high suburban|39.206349|38.809524|-0.396825|27.954998|28.034404|22/27|
+|mid suburban|39.920635|39.365079|-0.555556|29.231095|28.937840|21/28|
+|low suburban|35.634921|36.111111|+0.476190|27.263883|27.590250|39/33|
+|high urban|38.015873|38.015873|+0.000000|27.728251|28.159750|26/26|
+|mid urban|32.301587|32.222222|-0.079365|26.213825|26.118801|30/31|
+|low urban|27.936508|27.380952|-0.555556|24.223685|23.560196|30/37|
 
-## 固定识别判据
+每视图相同 1260 个物理包、六 TX × 三 day × 每格 70；完整 TX、day、18 个 TX/day 格及配对身份变化见本地 source_strata.csv／analysis_summary.json，没有筛除困难包。
 
-O1相对同预算O0：held-source clean accuracy至少＋1pp，clean Macro-F1不下降；六practical各场景accuracy最多下降0.5pp，seen V最多下降0.5pp。每行必须完整20轮／4440更新、默认头正常联合训练、隐藏U/no target，final base L objective≤.5。批次计数、低loss或门控选择数不作科学收益。两行完成后独立复算17,640个判决、每个TX/day与配对修复/新错、全部4440步公式/原U/EMA/物理多重集、20轮曲线、真实NN和CPU成本。
+固定判据：clean accuracy ≥＋1 pp，clean Macro-F1 不下降，每个 practical accuracy ≥−0.5 pp，seen V ≥−0.5 pp；每行原 final base L objective ≤.5 且完整执行要求通过。结果：
+- clean：FAIL
+- clean_F1：FAIL
+- each_practical：FAIL
+- seen_V：PASS
+- O0/execution：PASS
+- O1/execution：PASS
 
-报告各suburban绝对accuracy及与自身clean差距，探索性2pp不作为本轮额外晋级阈值；不通过降低clean缩小差距。任一原条件失败，关闭固定6步L重排，不改块长、分配、L私有seed、SupCon/CE、RX、模型seed或预算救跑。PASS只支持另行固定独立源seed确认，不自动target、As训练或宣称IQ A_g／四因子／联合目标完成。
+seen V 差值 -0.009259 pp；clean Macro-F1 差值 -2.012662 pp。
 
-## 命令、环境、输出与停止
+## Suburban 绝对表现与自身 clean 差距
 
-代码/config以本次Git实际commit为身份；publisher写release_commit.txt及resolved_config，不要求报告或成员SHA。ordinary N607／CVS-RFFI；CWD为PROJECT/releases/cvs_F_LbatchOrder_sourceRX1_e20_20261017_r01。命令：CVS-RFFI/bin/python -u experiments/cvs_batch_order17/runner.py；worker参数仅允许已登记O0/O1 row，无预算/seed/数据覆盖。owner codex/root/F-LbatchOrder-E20-20261017；每GPU总实验进程≤3、计所有owner、空闲≥12000MiB后启动；dispatcher CPU2/CUDA隐藏，worker CPU2/loader0。准确私有runtime留本地，不入Git。
+|场景|O0 accuracy %|O0 clean 减 suburban pp|O1 accuracy %|O1 clean 减 suburban pp|
+|---|---:|---:|---:|---:|
+|high suburban|39.206349|41.031746|38.809524|39.603175|
+|mid suburban|39.920635|40.317460|39.365079|39.047619|
+|low suburban|35.634921|44.603175|36.111111|42.301587|
 
-独占run/output root：PROJECT/runs/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01；每行独占source/及logs/ROW.stdout.log。一次普通账户preflight、一个archive／一次SHA传输比较、remotecompile；首步真实匹配CP no-query smoke PASS即继续两条scratch，不生成smoke许可或等待再次审批。发布后只读PID/CWD/argv/GPU/日志增长。错误角色／初始化／非有限／预算／输出冲突／启动或非法预测等系统技术失败保存产物、取消未启动行、健康worker继续，无自动retry；科学失败不提前停止，完成固定预算及全部源预测后判断。其他owner及健康旧实验不动。
+每场景与 clean 相差不超过 2 pp 是联合研究的探索目标，不是本轮额外晋级阈值。没有通过降低 clean 宣称 suburban 追平。
 
-## 已执行检查
+Urban 的共同 clean 正确子集只作描述，不作新筛选或因果证明：
 
-元数据与接口合成检查：N607实际CPU环境的222步／37块、真实RandomSampler、O0逐值原IQ、O1每包IQ/y/domain及全部metadata一致，Torch/Python全局RNG不变，原U无buffer；0NN／CP／真实IQ／更新。该验证不是完整F训练。
+|视图|共同 clean 正确数|修复|新错|净修复|
+|---|---:|---:|---:|---:|
+|high urban|974|20|18|+2|
+|mid urban|974|22|19|+3|
+|low urban|974|24|26|-2|
 
-本地新增26项配置／协议／科学反例PASS；两行新模型与原F全部206状态张量逐值一致，默认头6×160，初始预测逐值相同；新增参数0，合成NN6，真实IQ／checkpoint／优化更新／target0。已知本地Torch2.1/NumPy2桥接警告保留；上一轮RandomSampler本地转换失败，在实际N607环境同代码完整检查PASS，没有安装包或改环境。
+## 完整训练、输入和成本复算
 
-当前唯一独立P0/P1审查PASS，未发现直接P0/P1；仅限直接影响真实运行正确性/权限/启动/产物的缺陷。没有新增审批、数据复验或hash链。已有训练运行证据，尚无 final20 身份成绩，不把实现和合成 PASS 标为实验完成。
+每行全部 4440 步、740 块物理多重集及原预取/实际交付顺序、568320 次 L 观察／5040 个唯一 L、396368 次 U 观察／45360 个唯一 U 元数据均已复算。原 13 轮无 U／7 轮 U、EMA 4440 次更新、全部 13320 个 SupCon mask term 按实际交付标签核对。U TX 解析 0。共有原 L 顺序一致：True；未修改规则的 U 元数据序列一致：True。
 
-源输入读取口径补充：复用既有full-source cache会反序列化原L6300/V27000等存储，原fold.prepare在模型创建前materialize RX1的L1260为只读评估缓存及144个未用于训练的fit anchor。RX1缓存不进入任何student/teacher训练、源V、校准或额外机制；只有final20冻结后才调用默认头评估。不能把“冻结后评分”写成“此前没有读取过RX1 IQ”。该既有source-only折不是正式target；训练角色仍精确L5040/U45360/V21600。
+|项目|O0|O1|
+|---|---:|---:|
+|实际 L 前向包数|4546560|4546560|
+|其中额外 raw 前向|1136640|1136640|
+|实际总 NN 包数|5823318|5823318|
+|训练秒数|1529.1971209049225|1457.1814765930176|
+|final native 首次 ordinary CE|0.28347173467412723|0.2816681462163861|
+|final 完整 base L objective|0.3214085390707394|0.31453304643835034|
+|final 额外 raw CE＋KL|0.09779607672412116|0.0969627822103264|
+|完整 L 公式最大复算误差|4.76837158203125e-07|3.2782554626464844e-07|
+|重排位置数|0|567571|
+|缓冲/gather CPU 秒|16.261185598094016|16.327588016400114|
+|最大逻辑 L 缓冲包数|768|768|
 
-实际发布与首轮证据：运行代码commit9059b58502f207331bf9643d9d1399d308a2c2da已push并独立比对远端OID。唯一archive传输比较、remotecompile VERIFIED，首个真实匹配CP no-query smoke PASS后立即启动两条scratch。原dispatcher和两个worker的PID/CWD/argv/CUDA、独立nvidia-smi GPU4/5及日志增长核实；stdout分别11673/11672字节。两组完整E1/222更新/37buffer块，O0移动位置0、O1移动28367；buffer CPU分别.833650/.920446秒。实际角色L5040/U45360/V21600，IQ_changed=false/U_buffered=false，无failure。原U仍按E14开始，当前不提前启用。这里不把运行正确或批次统计当识别收益；真实更新/NN尚未完成，等待固定final20及每行七视图。
+每行四类原计数（student train/eval、teacher train/eval）及 held 评估完整保留；教师 deepcopy 继承的初始化计数 2 已扣除，真实 student 初始化 2 次保留。共 40 新 model-epoch／8880 更新，父训练及复用训练均 0；本次额外 dispatcher real-CP no-query smoke 2 NN，合计实际 11646638 NN。源 held 默认头每行 8820 次，其中 practical 7560 次；As 训练 0、附加 teacher 0、channel 训练生成 0。
 
-离线收尾工具已实现：仅在原行自然退出且 final20 七视图完成后收集元数据与硬判决，不读取 IQ 或权重，不新增推理。独立复算原预取流与实际交付流、740 块物理多重集、全部损失与 13320 个 SupCon mask term、原 13L＋7U 和教师成本；工具的 24 项元数据反例检查 PASS，新增 NN／真实 IQ／CP／更新／target 均为 0。工具未复制进运行中的 9059b585 发布目录，原训练保持。E12 原 PID／CWD／argv／GPU4/5／日志增长 VERIFIED；尚未判断科学收益。
+全部 20 轮原 CSV／JSONL／compact 曲线相符；全部 step 标量有限或显式 null，native 不适用的非有限占位单独列出。完整 stdout 检查无 Traceback/OOM/非有限跳步，原警告保留。完整 base＝.5(raw CE＋KL)＋.25(ordinary CE＋KL)＋.25(s-slot raw CE＋KL)＋原 SupCon；总 L＝base＋.25(extra raw CE＋KL)，不按视图数稀释。native train_loss_tx_labeled 是首次 ordinary CE，不能冒充完整 L；held 硬判决没有 logits，源 CE 仅运行时报告，不称独立复算。U 门控选择数不作识别正确率。
+
+重排会改变原 ordinary 增强及随机子网络抽样与样本的对应关系。即使识别提升，也只能先归因于整套批次组织；不能仅凭正对统计把因果归给 SupCon，也不把训练组织当 IQ A_g。批次统计是机制描述：
+
+|统计全步均值|O0 actual|O1 actual|
+|---|---:|---:|
+|valid_anchors|128.000000|128.000000|
+|total_anchors|128.000000|128.000000|
+|positive_min|9.420946|13.202252|
+|positive_max|23.104730|18.877252|
+|positive_mean|15.873842|15.975123|
+|positive_variance|13.178644|2.376925|
+|TX_count_range|11.452477|4.750901|
+|RX_count_range|11.446622|4.969144|
+|missing_TX_RX_cells|0.088288|0.000000|
+|missing_TX_RX_day_cells|11.757207|8.740090|
+|batch_TX_RX_mutual_information_nats|0.060341|0.010226|
+
+## 产物、执行与边界
+
+实际训练代码/config commit：9059b58502f207331bf9643d9d1399d308a2c2da。离线读者 commit 另见 Git；未复制进运行中的发布目录。发布前 26 项配置/协议反例、206 状态张量与默认 6×160 头一致；合成 NN6／0 更新。实际 N607 CPU 原迭代器合成检查 PASS／0 NN，独立一次 P0/P1 PASS。离线读者 24 项反例 PASS／0 NN/真实 IQ/CP/更新。
+
+ordinary N607 已有 CVS-RFFI 环境，CWD=PROJECT/releases/cvs_F_LbatchOrder_sourceRX1_e20_20261017_r01；命令 CVS-RFFI/bin/python -u experiments/cvs_batch_order17/runner.py，worker 只允许登记 O0/O1 row。owner codex/root/F-LbatchOrder-E20-20261017；GPU4/5，遵守每 GPU 所有 owner 总进程≤3。唯一不可变输出 PROJECT/runs/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01。单 archive 传输比较、remote compile、真实匹配 CP no-query smoke、原 PID/CWD/argv/GPU/日志增长 VERIFIED，原 worker 自然完成，不停止或重启健康任务。
+
+系统技术失败停止规则：角色/来源/预算/非有限/输出冲突/启动/非法预测失败保存产物、取消未启动行，健康 worker 继续，无自动 retry。科学判定等待两行固定预算和全部源预测；失败按上述固定方案关闭，不改参数救跑。
+
+本地产物：local_artifacts/F_L_batch_order_E20_20261017/final；analysis_summary.json、analysis_O0/O1.json、training_curves.csv、batch_order_curves.csv、source_strata.csv、全部原 metadata/stdout/七视图 predictions，以及 figures/ 的四张 PNG/PDF。Matplotlib 使用已有 ordinary N607 CPU 环境，仅传元数据，新增 NN／更新／target 0；四张 PNG 已实际查看，数值和布局核对一致。
+
+未证明：有效 IQ A_g、稳定跨 seed 的 A_s 收益、同契约 B00/B10/B01/B11 交互、正式跨 RX clean＋六 practical 与 low urban >60%、每个 suburban 接近 clean。不能把单 seed 局部收益、loss 下降或批次统计改善计为联合目标完成。完整目标保持 ACTIVE。

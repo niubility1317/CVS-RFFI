@@ -56,3 +56,6 @@ pairing原型已在实际普通N607 CPU2／CUDA隐藏环境通过合成检查：
 
 
 后续接入：两条新匹配E20的完整source observer／runner／dispatcher／七视图收尾已实现并登记 20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01；本地26反例、两新模型与原F206状态/初始logits逐值一致（6合成NN/0真实IQ/CP/更新/target）及唯一P0/P1审查PASS。当前尚未发布，完整训练调用和真实识别仍待实际运行，不把本依据分析当实验完成。
+
+
+2026-10-17：20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01 已完整 ANALYZED／VERIFIED，FAIL_FIXED_SIX_STEP_L_ORDER_CLOSED。两条新 scratch E20／各4440更新，17640源判决、每行740块物理多重集及全部实际交付输入、13320 SupCon mask term、20轮loss/U/教师预算独立复算。O0→O1 clean80.238095%→78.412698%（−1.825397pp），Macro-F1−2.012662pp，low urban27.936508%→27.380952%（−.555556pp）；mid suburban−.555556pp。原正对统计改善但身份收益失败，关闭固定6步重排，不改块/分配/私有Lseed/SupCon/CE/RX/modelseed/预算救跑。40新modelE／8880更新／11646638实际NN含dispatcher2；0target/新IQAg/As训练/父权重。原进程自然完成，4图PNG/PDF已查看，完整goal ACTIVE。报告 automation_reports/CV-SincNet/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01/report.md。
