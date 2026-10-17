@@ -81,3 +81,6 @@ Q_ord三个suburban与自身clean仍差25.079365／28.730159／31.825397pp；相
 
 
 原U阶段边界实际核实：同一原worker已完整E13/2886步并进入E14；只读当前gzip中全部已完整写出的2899条step，first_U_step=2887，前2886步pseudo_total/selected/loss_unlabeled均0。随后13个原U更新共3328次U重复观察、79次被选择；U truth_available/pseudo_correct标志仍0，EMA成功更新至2899。选择数不是伪标签精度，未读U标签。全部已写前缀的As total_L＝base_total_L＋.25×extra_pair_CE，最大误差2.3841858e−7，CE/KL数值有限、无nonfinite skip。gzip仍在写，不把该前缀称为完整E20分析。只读工具0NN/0新更新/0target，没有改远端发布或训练；该记录仅核实原13L＋7U与As纯CE执行边界，非性能证据。
+
+
+完整结果报告入口已接入：只消费ANALYZED/VERIFIED的三行final20独立summary；同时列出accuracy/F1、原判据/未通过项、普通As与纯CE的paired错误、各suburban绝对值/自身clean差距、原U观察/选择量及新增/历史NN成本。硬预测缺logits的CE重算限制与未完成Ag/正式target/跨seed/四因子边界明确保留。报告入口当前只完成编译，未执行、未生成新行结果；远端原训练保持不变，最新完整E15/3330更新。
