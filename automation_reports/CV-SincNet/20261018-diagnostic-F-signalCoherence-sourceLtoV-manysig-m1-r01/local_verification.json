@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "negative_cases": 16,
+  "synthetic_IQ_packets_observed": 41,
+  "projector_invariance_max_error": 1.0007415106216804e-16,
+  "source_control_cases": {
+    "shared_RX": "SOURCE_PERIODIC_SHAPE_ASSOCIATION_ONLY",
+    "TX_only": "CLOSED_FIXED_PERIODIC_SIGNAL_SHAPE",
+    "L_V_reversal": "CLOSED_FIXED_PERIODIC_SIGNAL_SHAPE",
+    "RX_day_reversal": "CLOSED_FIXED_PERIODIC_SIGNAL_SHAPE",
+    "RX_TX_reversal": "CLOSED_FIXED_PERIODIC_SIGNAL_SHAPE"
+  },
+  "synthetic_role_packets": 33300,
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "target": false,
+  "successful_local_check_calls": 2,
+  "cumulative_synthetic_IQ_packets_observed": 82,
+  "compile": "PASS",
+  "registration": "VALID",
+  "real_training_updates": 0,
+  "remote_release": false
+}

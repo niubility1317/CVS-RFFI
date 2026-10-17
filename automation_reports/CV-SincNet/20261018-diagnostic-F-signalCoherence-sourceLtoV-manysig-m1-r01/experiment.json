@@ -1,0 +1,253 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+  "group_id": "F_PERIODIC_SIGNAL_PROJECTOR_RX_SOURCE_20261018",
+  "display_name": "F＋跨 RX：周期信号相关形状的全源 L→V 检验",
+  "description": "One fixed20x20 normalized signal-cycle-mean projector,not cycle-difference residual covariance. All6300L/27000V/all5RX,18TX/day statistical folds. L-only sharedRX and sameTX controls;no classifier/model/augmentation/target.",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "F-periodic-signal-coherence-LtoV"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "source_only",
+    "periodic_signal_shape",
+    "all5RX",
+    "no_training",
+    "no_target"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "Active Ag+As research;latest human:existing256IQ,all sourceRX retained,F+CROSS_RX,E30;this single source diagnostic has0NN/CP/updates and no automatic model launch",
+  "code": {
+    "commit": "PENDING_ACTUAL_GIT_COMMIT_PINNED_BY_PUBLISH",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "N607 existing CVS-RFFI Python/Torch/NumPy CPU,2threads",
+    "cwd": "PROJECT/releases/cvs_F_signal_coherence_source_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing exact original source cache/role handles;no rebuild",
+    "representation": "Native IQ[2,256],existing eq setting;window80:160 only for observation;no IQview to model",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original all6 sourceTX",
+    "roles": {
+      "L_s": "All6300 visible labels fit sharedRX shape from otherTX/day,all5RX retained",
+      "U_s": "56700 TX hidden;U container never read,opaque IDs only for role exclusion",
+      "V": "All27000 evaluation only,90cells;no optimizer/EMA/head/model or profile fitting"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse existing exact role handles/source cache preparation_complete;no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none;no target or query inputs",
+    "external_method_exception": null,
+    "claim_scope": "RX-associated source statistic only;not pureRXhardware,labelpreservingIQ,Ag,As or joint identity efficacy"
+  },
+  "checkpoint": {
+    "initialization": "none",
+    "sources": [],
+    "contract_check_ref": "No checkpoint/model loaded;existing source data role handles only",
+    "provenance_verdict": "NOT_APPLICABLE_NO_MODEL",
+    "selection_rule": "No model or checkpoint selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-signal-coherence-source-20261018",
+    "gpu_policy": "CPU only;no GPU process or intervention",
+    "remote_run_root": "PROJECT/runs/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_signal_coherence_source_20261018_r01/source_signal_coherence.stdout.log",
+    "local_artifact_root": "WORKTREE/local_artifacts/F_signal_coherence_source_20261018",
+    "launch_command": "CVS-RFFI/bin/python -u -m experiments.cvs_signal_coherence18.run",
+    "stop_rule": "Only own technical exception/illegal source role/nonfinite/input shape/output conflict;preserve outputs,no automatic retry;scientific failure closes fixed question,no coordinate/window/RX/threshold rescue"
+  },
+  "expected_artifacts": [
+    "checks.json",
+    "resolved_config.json",
+    "source_ids.json private",
+    "observations.npz private20complex factors/all33300",
+    "cell_matrices.npz private180complex matrices",
+    "result.json all180cells/18folds/control",
+    "completion.json",
+    "same-row source-only report and independent full recount"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "baseline_Frobenius_RMS",
+      "shared_RX_risk_gain",
+      "positive_folds",
+      "per_RX_SSE",
+      "TXconditional_SSE",
+      "quality_descriptive"
+    ],
+    "dimensions": [
+      "sourceRX",
+      "TX",
+      "day",
+      "L_s",
+      "V"
+    ],
+    "prediction_ref": null,
+    "scorer_ref": "Source matrix readout and independent saved-factor recount,no target truth scorer"
+  },
+  "rows": [
+    {
+      "row_id": "PERIODIC_SIGNAL_PROJECTOR_L_TO_V",
+      "method": "FIXED_SIGNAL_PROJECTOR_SOURCE",
+      "purpose": "One fixed20x20 normalized signal-cycle-mean projector,not cycle-difference residual covariance. All6300L/27000V/all5RX,18TX/day statistical folds. L-only sharedRX and sameTX controls;no classifier/model/augmentation/target.",
+      "config_ref": "experiments/cvs_signal_coherence18/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01/resolved_config.json",
+      "data_overrides": {
+        "full_L6300": true,
+        "full_V27000": true,
+        "source_RX_holdout": null
+      },
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Only original physical split392005;no RNG,model,augmentation,support or prediction sampling",
+      "k": null,
+      "scenario": "Original source L/V only,all5RX",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0modelE/0updates/0NN/0CP;33300 original sourceIQ observations;future model budgetE30 unchanged",
+      "output_root": "PROJECT/runs/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_signal_coherence_source_20261018_r01/source_signal_coherence.stdout.log",
+      "command": "CVS-RFFI/bin/python -u -m experiments.cvs_signal_coherence18.run",
+      "expected_artifacts": [
+        "checks.json",
+        "resolved_config.json",
+        "source_ids.json private",
+        "observations.npz private20complex factors/all33300",
+        "cell_matrices.npz private180complex matrices",
+        "result.json all180cells/18folds/control",
+        "completion.json",
+        "same-row source-only report and independent full recount"
+      ],
+      "config": {
+        "run_id": "20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+        "launch_owner": "codex/root/F-signal-coherence-source-20261018",
+        "output_root": "PROJECT/runs/20261018-diagnostic-F-signalCoherence-sourceLtoV-manysig-m1-r01",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "days": [
+          1,
+          2,
+          3
+        ],
+        "TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "source_RX_holdout": null,
+        "L": 6300,
+        "V": 27000,
+        "L_per_cell": 70,
+        "V_per_cell": 300,
+        "IQ_points": 256,
+        "window": [
+          80,
+          160
+        ],
+        "period": 20,
+        "cycles": 4,
+        "relative_epsilon": 1e-12,
+        "CPU_threads": 2,
+        "GPU": "none",
+        "batch": 256,
+        "observable": "Blind lag20 phase cancellation,mean of4observed cycles m;u=m/sqrt(norm(m)^2+1e-12*mean_cycle_energy),zero if denominator0;P=u*u^H;all20x20 complex entries,no carrier thresholds or sample removal",
+        "quality": "Lag20 coherence/coherent power fraction/zero mean only descriptive;no quality filtering or alternate window",
+        "fit": "All5RX cellmeans;L-only sharedRX contrast from other5TX and other2days;18heldTX/day statistical folds,allRX always retained",
+        "evaluation": "All original V27000;center RX within each evaluation TX/day only for contrast readout,never fit/update",
+        "control": "ZeroRX contrast and sameTX/other2day L-only RX contrast;all coefficients1,not fitted classifier",
+        "criteria": {
+          "min_baseline_Frobenius_RMS": 0.02,
+          "min_relative_risk_gain": 0.2,
+          "min_positive_folds": 15,
+          "max_each_RX_SSE_increase": 0,
+          "max_shared_to_TXconditional_SSE_ratio": 1.05,
+          "numerical_SSE_tolerance": 1e-20
+        },
+        "on_fail": "Close fixed periodic-signal-projector source hypothesis;no offdiagonal/lag/window/eigenvector/RX/threshold rescue or automatic training",
+        "on_pass": "Source-associated periodic shape evidence only;no causal receiver identification,IQ operator,label preservation,training or candidate promotion",
+        "distinction": "Signal retained in cycle mean,not old cycle-mean-removed residual lag1to4 covariance;not reopening failed spectral-phase observer,FIR,unitary phase or RXMIX recipes",
+        "source_only": true,
+        "IQ_modified_for_training": false,
+        "IQ_views_generated": 0,
+        "network_constructed": false,
+        "checkpoint_loads": 0,
+        "NN": 0,
+        "teacher_NN": 0,
+        "optimizer_steps": 0,
+        "head_fit_updates": 0,
+        "U_used": false,
+        "U_truth_read": false,
+        "target_access": false,
+        "automatic_training": false,
+        "NoExplicitCFO_preserved": true,
+        "CFO_estimate_discarded": true,
+        "future_training": "F+CROSS_RX/full5RX/L6300/U56700hidden/V27000/256IQ/defaultcos joint/E30;no model in this row",
+        "limitations": [
+          "Mean-cycle shape mixes TX,channel,RX,equalization and finite noise;not hardware disentanglement",
+          "P gain/globalphase invariance does not establish any label-preserving IQ transform",
+          "All L/V cache roles matched;unused U/features deserialize but are never consumed",
+          "V is existing source validation,not a new independent hardware blind test"
+        ],
+        "references": [
+          "https://arxiv.org/pdf/2112.15363",
+          "https://www.mathworks.com/help/wlan/gs/non-ht-ppdu-structure.html"
+        ]
+      },
+      "status": "PLANNED"
+    }
+  ],
+  "notes": [
+    "Current full Ag+As goal unachieved;latest optimizer recipe formally failed and closed",
+    "Signal retained rather than cycle-mean removed;old phase/FIR/RXMIX/jitter failed recipes remain closed",
+    "G0 source-only smoke checks exactly consumed role/statistic machinery;no unused checkpoint/NN or extra approvals",
+    "Minimal workflow only;historical detached seals/hashchains/multireviews/exactdesign SHA/mandatory64row launch are REJECTED_EXTRA_GATE",
+    "One code/config Git identity;publisher fills actualHEAD into immutable release record;one archive SHA comparison only"
+  ],
+  "registered_at": "2026-10-17T22:01:43+00:00"
+}
