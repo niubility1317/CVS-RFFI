@@ -30,3 +30,4 @@
 |F＋跨 RX 同 TX：共享微弱加性 IQ 方向源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01/report.md)|
 |F＋跨 RX 同 TX：As 两次 CE 与 RDrop 的匹配 E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01/report.md)|
 |F＋跨 RX 同 TX：六步 L 重排匹配 E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01/report.md)|
+|F＋跨RX同TX：源PSD正仿射关系|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)|

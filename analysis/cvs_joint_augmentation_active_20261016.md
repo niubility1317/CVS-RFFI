@@ -2,9 +2,9 @@
 
 ## 当前状态（2026-10-17，覆盖下方历史待跑描述）
 
-最新六步 L 重排两行已完整 ANALYZED／VERIFIED，固定方案失败并关闭；clean −1.825397 pp、low urban −.555556 pp，没有待跑的新 A_g。真实结果与关闭边界见[当前证据缺口](cvs_ag_observation_evidence_gap_20261017.md)及文末最新报告。当前自有 dispatcher／worker 均已自然结束，不继续监视或重启旧 run。
+唯一新候选是全频段源 PSD 正仿射关系，已实现、检查及一次 P0/P1 审查通过，并登记为 `20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01`；真实源拟合尚未启动。仅复用 fit L5040 的144个已有均值谱，18个同时留 TX/day 折、两窗、12方向、432拟合。六个RX对均须有相同方向跨两窗通过预定条件，否则关闭固定模型。它不是 IQ 增强或识别成绩，不自动启动 E20。见[预登记](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)。
 
-本轮已排除重复的同 TX 插值、周期残差有色噪声、抖动、频域相位和窄带峰方向。真实同包 raw/EQ 或连续窗口仅是尚缺输入的一般问题；原入口保持关闭，正在询问是否存在额外原始处理记录。没有新增数据、模型、IQ／checkpoint 读取、NN、更新或 target 访问；没有新的实验授权请求或审批层。完整 Ag＋As 联合目标 ACTIVE，未因候选失败改写。
+此前六步 L 重排已 ANALYZED／VERIFIED并关闭，clean −1.825397 pp、low urban −.555556 pp。自有旧dispatcher／worker自然结束。raw/EQ同包映射问题仍待已有记录回复，仅限制该入口；本PSD候选不依赖同包配对。底座仍 F＋跨 RX 同 TX、scratch E20、原 U 与默认头。完整联合目标 ACTIVE，尚无通过的新增 A_g，也无稳定联合收益证明。
 
 ## 历史记录与固定底座
 

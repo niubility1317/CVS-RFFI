@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_NO_QUALIFIED_AG_NO_PENDING_EXPERIMENT",
+  "status": "RESEARCH_ACTIVE_PSD_AFFINE_SOURCE_RELATION_PREREGISTERED_NO_QUALIFIED_AG",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User on 2026-10-16 changes pre-augmentation baseline to F plus cross-RX same-TX contrastive learning. Earlier E20 budget remains in force.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -131,16 +131,16 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": {
-    "status": "NO_ACTIVE_CANDIDATE_INPUT_METADATA_INQUIRY_PENDING",
-    "question": "Traceable same-physical-L receiver preprocessing observations may support identity-preserving IQ views;existing raw/EQ and long-context entrances remain CLOSED without new physical mapping.",
-    "evidence_note": "analysis/cvs_ag_observation_evidence_gap_20261017.md",
-    "new_source_information_received": false,
-    "minimum_next_action": "If existing source packet mapping/processing records are provided,read metadata and determine whether they trace to the SAME original allowed L;no IQ view or experiment yet.",
-    "current_mapping_status": "UNKNOWN_MISSING",
-    "new_training_launched": false,
+    "status": "PREREGISTERED_NOT_RUN",
+    "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
+    "question": "Do all six source RX pairs have a TX/day-transferable positive affine normalized-PSD contraction in one same direction across both windows?",
+    "source_input": "existing approved fitL5040 cell_PSD;no new IQ/CP/model",
+    "report": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md",
+    "fixed_criteria": "experiments/cvs_psd_affine17/design.py",
+    "IQ_operator_qualified": false,
+    "training_launched": false,
     "target_access": false,
-    "Ag_efficacy_proved": false,
-    "As_stable_clean_preservation_proved": false,
+    "raw_EQ_mapping_question_independent": true,
     "joint_goal_complete": false
   },
   "next_training_hypothesis": {

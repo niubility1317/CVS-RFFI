@@ -1,0 +1,16 @@
+{
+  "status": "PASS",
+  "protocol_and_input_counterexamples": 25,
+  "synthetic_full_PSD_cases": 3,
+  "synthetic_PSD_fits": 1296,
+  "additional_closed_form_fit": 1,
+  "simplex_KKT_verified": true,
+  "source_aggregate_reads": 0,
+  "real_IQ_reads": 0,
+  "checkpoint_loads": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false,
+  "independent_P0_P1_review": "PASS_ONE_REVIEW_NO_REAL_PSD_READ",
+  "checkpoint_smoke": "NOT_APPLICABLE_ZERO_MODEL_AGGREGATE_STATISTICS"
+}

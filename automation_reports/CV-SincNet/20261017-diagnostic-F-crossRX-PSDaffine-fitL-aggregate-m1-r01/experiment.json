@@ -1,0 +1,240 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
+  "group_id": "phase1-F-crossRX-PSD-positive-affine-basis",
+  "display_name": "F＋跨RX同TX：源PSD正仿射关系",
+  "description": "Reuse144savedsourcePSD/all256bins;432positiveaffinefit/heldTXday;no IQ/model/NN/update/target",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "PSD positive affine source basis"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "PSD_positive_affine",
+    "source_only",
+    "cross_TX_day",
+    "no_model",
+    "no_training",
+    "aggregate_reuse",
+    "CPU"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [],
+  "replaces_run_id": null,
+  "authorization": "ActivejointAg/As research;newsourcebasisindependentofrawEQmapping;localCPU existingapprovedfitLaggregate,noIQ/model/target.",
+  "code": {
+    "commit": "Actual HEAD recorded at execution",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "VerifiednativeFpython/NumPy,CPU2,noCUDA/model",
+    "cwd": "worktree root",
+    "entrypoint": "experiments/cvs_psd_affine17/run.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "OriginalVALIDATED_ONCE fitL5040sourceaggregate,notL6300/Ltrain5580",
+    "representation": "Existing cell_PSD[2,6,3,4,256] fromall70packetmeans perfitLcell;144aggregate spectra/allbins;notnewIQ",
+    "contract_ref": "Originalunchangedsource roles viaoriginrunmetadata",
+    "physical_ids_ref": "Originalsource_nonDC_spurfitL5040;newrunreadsaggregateonly,noindividualIDs/IQ",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "5040 fitRX used;1260 RX1 deserialized then excluded before any IQ statistic",
+      "U_s": "Unused; TX truth never accessed",
+      "V": "Unused"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuseexistingapprovedaggregate,exactaxes/rolemetadataonly;nohashorrevalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "PositiveaffinePSD sourceassociation/modeladequacyonly;notpureRXnoise/identity/DG/As/joint"
+  },
+  "checkpoint": {
+    "initialization": "no_model_no_checkpoint",
+    "sources": [],
+    "contract_check_ref": "No model/checkpoint/features used;existing scalarPSDaggregate only",
+    "provenance_verdict": "No trainingweight inheritance",
+    "selection_rule": "No model selection;fixedall432folds/12directions/2windows/all256bins"
+  },
+  "execution": {
+    "host": "local_windows_native_CPU",
+    "launch_owner": "codex/root/F-PSDaffine-20261017",
+    "gpu_policy": "No GPU/model;CPU2",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
+    "launch_command": "Fpython -X utf8 native_run.py Fpython -X utf8 -m experiments.cvs_psd_affine17.run",
+    "stop_rule": "Inputroles/schema/nonfinite/simplex/outputconflict/implementation failurepreserves;noauto retry. ScienceFAILclosesfixedmodel,noRX/window/frequency/coefficient/criterionrescue.",
+    "local_runtime_root": "local_artifacts/F_PSD_affine_20261017/r01"
+  },
+  "expected_artifacts": [
+    "resolved_config/execution/completionorfailure",
+    "folds.jsonl.gz:all432a/b/SSE/5wrongTXcontrols",
+    "summary.json:all24directionwindowdecisions/all6pairs",
+    "independent_recount.json:convexKKT/fullscalar/criteriacheck",
+    "report/registration/Gitdelivery"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "a_range",
+      "identity_SSE",
+      "mean_RX_SSE",
+      "model_SSE",
+      "wrong_TX_SSE",
+      "heldTXdayrisk",
+      "6pair2windowcoverage",
+      "KKT/costs"
+    ],
+    "dimensions": [
+      "RX3/4/6/8",
+      "6TX",
+      "day1/2/3",
+      "18heldTXanddayfolds"
+    ],
+    "prediction_ref": "Noidentitypredictions;all432PSDrelationsonly",
+    "scorer_ref": "Independentall432SSE/simplex/convexKKT/criteriacount;no targettruth",
+    "criteria": {
+      "a_min": 0.5,
+      "a_max": 0.995,
+      "pooled_identity_risk_reduction_min": 0.25,
+      "pooled_RXmean_risk_reduction_min": 0.2,
+      "positive_folds_min": 15,
+      "every_TX_and_day_identity_risk_reduction_min": 0.0,
+      "minimum_wrong_TX_margin_over_RXmean_risk": 0.1,
+      "reference_energy_min": 1e-12
+    }
+  },
+  "rows": [
+    {
+      "row_id": "PSD_AFFINE_ALL_FIT_RX",
+      "method": "PositiveaffineunitmassPSDcontraction",
+      "purpose": "Newsourcehypothesis;notnoisegenerationoridentitytraining",
+      "config_ref": "experiments/cvs_psd_affine17/design.py:config",
+      "resolved_config_ref": "local_artifacts/F_PSD_affine_20261017/r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": null,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Deterministicstatistics;syntheticcheckseed202610178101 notusedonrealaggregate",
+      "k": null,
+      "scenario": "source_clean_PSD_statistics_no_model",
+      "optimizer": "None;convexscalar/simplexstatisticsonly",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "144existingmeanPSD/432fits;0newIQ/CP/NN/update/teacher/target;oneaggregateNPZread+oneindependentrecountread,CPUcostseparate",
+      "output_root": "local_artifacts/F_PSD_affine_20261017/r01",
+      "log_path": "local_artifacts/F_PSD_affine_20261017/source.stdout.log",
+      "command": "Fpython -X utf8 native_run.py Fpython -X utf8 -m experiments.cvs_psd_affine17.run",
+      "expected_artifacts": [
+        "resolved_config/execution/completionorfailure",
+        "folds.jsonl.gz:all432a/b/SSE/5wrongTXcontrols",
+        "summary.json:all24directionwindowdecisions/all6pairs",
+        "independent_recount.json:convexKKT/fullscalar/criteriacheck",
+        "report/registration/Gitdelivery"
+      ],
+      "config": {
+        "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
+        "source_origin_run": "20261017-diagnostic-source-nonDC-spur-crossfit-manysig-m1-r01",
+        "source_artifact": "E:\\type10-7\\local_artifacts\\cvs_source_spur_20261017\\final\\nonDC-line-fitRX3_4_6_8\\source_line_statistics.npz",
+        "input_key": "cell_PSD",
+        "axes": [
+          "window2",
+          "TX6",
+          "day3",
+          "RX4",
+          "bin256"
+        ],
+        "RX": [
+          3,
+          4,
+          6,
+          8
+        ],
+        "TX": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "days": [
+          1,
+          2,
+          3
+        ],
+        "packets_per_cell": 70,
+        "original_L_packets": 5040,
+        "original_split_id": 392005,
+        "source_only": true,
+        "U_used": false,
+        "V_used": false,
+        "held_RX1_used": false,
+        "target_access": false,
+        "new_IQ_reads": 0,
+        "checkpoint_loads": 0,
+        "network_forwards": 0,
+        "updates": 0,
+        "teacher_forwards": 0,
+        "automatic_training": false,
+        "model": "No model constructed;futureunchanged F+CROSS_RX/SIG_TIME/joint160/defaultcos/NoExplicitCFO/E20/originalU",
+        "question": "Are all six source RX pairs related in at least one SAME direction across both windows by a TX/day-transferable positive affine normalized-PSD contraction?",
+        "formula": "Pdst=a Psrc+b;0<=a<=1,b>=0,sum(b)=1-a;fit10otherTX/daycells;all256bins,no harmonic/DC/edge selection",
+        "solver": "Simplex projection for b plus64golden-section iterations for a;compare bothendpoints;ties1e-18 favorlargest a",
+        "crossfit": "18folds jointlyleaveoutoneTXandoneDAY;bothwindows/12directions/432fits;one same direction perunorderedpairmustpassbothwindows;no RXsubset promotion",
+        "criteria": {
+          "a_min": 0.5,
+          "a_max": 0.995,
+          "pooled_identity_risk_reduction_min": 0.25,
+          "pooled_RXmean_risk_reduction_min": 0.2,
+          "positive_folds_min": 15,
+          "every_TX_and_day_identity_risk_reduction_min": 0.0,
+          "minimum_wrong_TX_margin_over_RXmean_risk": 0.1,
+          "reference_energy_min": 1e-12
+        },
+        "controls": "identity PSD;training destination RX mean;all5cyclic wrongTX inputmaps sameheldday;allpackets/cells/bins retained",
+        "on_fail": "ClosefixedpositiveaffinePSDmodel;no receiver/window/frequency/coefficient/criterion rescue,no IQ view/E20",
+        "on_pass": "Only sourceassociation/model adequacy;not pureRXnoise/causality/identity/DG. Separatelyjustify boundedIQ operator+sourceidentityguard+matchedE20.",
+        "output": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016\\local_artifacts\\F_PSD_affine_20261017\\r01",
+        "command": "Fpython -X utf8 -m experiments.cvs_psd_affine17.run",
+        "environment": "Verified native Fpython/NumPy,CPU2,no CUDA/model",
+        "current_raw_EQ_mapping_question_independent": true
+      }
+    }
+  ],
+  "notes": [
+    "OnealreadyapprovedfitL5040aggregate;no rawIQ/weights/newdata downloaded. Originalsourcefoldexposed;schema/producercheckedbeforelockingmodel,notnewblindtest.",
+    "Notoldcycle-residualcolorednoise:usesfullmeanPSD/noSTFcoherenceassumption/peakselection/noIQoperator. Oldnoise/phase/spectralfilter/narrowband/As routesremainclosed.",
+    "12directions x2windows x18heldTXdayfolds;all6unorderedRXpairsneedonesamedirectionpassingbothwindows;no partialRXpromotion. a/bsharealltrainingTX/day;only10othercellsfit.",
+    "PASSonlysourceassociation/modeladequacy,notpureRXnoise/causalhardware oridentitypreservation. No automaticIQ/Ag/E20/target ordefaultheadaccuracyclaim.",
+    "Existingminimalworkflow:oneindependentP0P1PASS;0modelrealCPsmokeinapplicable;localCPU noreleasearchive/N607operation. Noextradatahashes/approval/seals.",
+    "MainbaselineF+CROSS_RX/SIG_TIME/unifiedSinc/joint160/defaultcos/NoExplicitCFO/originalU/E20unchanged;completejointgoalACTIVE."
+  ],
+  "registered_at": "2026-10-17T04:05:48+00:00"
+}
