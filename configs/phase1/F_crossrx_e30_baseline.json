@@ -164,6 +164,34 @@
       "formal_use": "Terminal reporting only;never training,promotion,retuning or selective rerun",
       "formal_report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-LA16xpractical-e30-s2026092701-m2-r01/report.md",
       "repeat_policy": "Do not rescue by scanning localwindow,depth,probability,sourceRX subset,threshold,modelseed or budget"
+    },
+    "ordinary_PA_bypass": {
+      "run_id": "20261016-phase1-F-crossRX-PAbypass-sourceRX1-e20-s2026092701-m2-r01",
+      "decision": "Source-only fixed recipe failed clean preservation. Frozen fit-L repair did not survive as training benefit. No seed/RX/strength/threshold/epoch rescue.",
+      "contract": "scratchE20 with historical heldRX1; not a current all-source E30 control",
+      "report": "automation_reports/CV-SincNet/20261016-phase1-F-crossRX-PAbypass-sourceRX1-e20-s2026092701-m2-r01/report.md",
+      "formal_use": "Terminal reporting only; never tuning, candidate ranking, promotion or selective rerun"
+    },
+    "fixed_clock_factorial": {
+      "run_id": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
+      "decision": "Predeclared fixed joint hypothesis failed. No ppm/coefficient/RX/seed/scenario/epoch rescue.",
+      "contract": "Historical all-source E20+10 with optimizer reset; not scratchE30",
+      "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/report.md",
+      "formal_use": "Terminal reporting only; never tuning, candidate ranking, promotion or selective rerun"
+    },
+    "fixed_PDP_shape": {
+      "run_id": "20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01",
+      "decision": "Fixed matched-PDP-shape hypothesis failed. Do not retune the fixed shape/mixture/seed/budget using terminal results.",
+      "contract": "Historical all-source E20+10; not scratchE30",
+      "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md",
+      "formal_use": "Terminal reporting only; never tuning, candidate ranking, promotion or selective rerun"
+    },
+    "fixed_calibration_refresh": {
+      "run_id": "20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01",
+      "decision": "Fixed calibration-refresh hypothesis failed. No error-scale/refresh-interval/seed/parent/budget rescue.",
+      "contract": "Historical all-source E20+10; not scratchE30",
+      "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md",
+      "formal_use": "Terminal reporting only; never tuning, candidate ranking, promotion or selective rerun"
     }
   },
   "next_method_boundary": "All-source F+CROSS_RX scratchE30/defaulthead/originalU and matched B00/B01 remain fixed references. Nativeboundary mixing and exactLA16xAs source hypotheses failed. A distinct IQ/organization candidate needs new legal source evidence and a matched factorial; no sourceRX holdout, fittedhead, targetfeedback or rescue of closed routes.",
@@ -226,5 +254,14 @@
     "Ag_proved": false,
     "crossseed_confirmed": false,
     "goal_completed": false
+  },
+  "history_retrieval": {
+    "registry": "experiment_registry/catalog.jsonl",
+    "method_id_spellings": [
+      "FcrossRX",
+      "F-crossRX"
+    ],
+    "matching": "Search both spellings before proposing or launching a new F method. A missing exact-name hit is not evidence of an untested route.",
+    "note": "Existing records retain immutable IDs and their original source/full-source contracts. Do not rename or rerun historical artifacts."
   }
 }
