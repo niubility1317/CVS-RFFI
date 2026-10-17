@@ -1,0 +1,238 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-cycle-order-placement-source",
+  "display_name": "完整源E30：同IQ重排的星地传播前后顺序对照",
+  "description": "Fixed P30 operator/24permutations/phasefit/seed unchanged; new As(Ag(raw)) vs existing Ag(As(raw)) under identical original native physical seeds/sessions. Replay everyoriginal As(raw) against cached source IQ; no training or target.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F-crossRX cycle order placement",
+    "FcrossRX AsAg versus AgAs"
+  ],
+  "tags": [
+    "source_only",
+    "full_source",
+    "E30",
+    "IQ_augmentation",
+    "operator_order",
+    "native_replay",
+    "no_training"
+  ],
+  "comparison_group_id": "FcrossRX_fullsource_concat_E30_20261017",
+  "parent_run_ids": [
+    "20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01",
+    "20261017-diagnostic-FcrossRX-cycleorder-sourceV-e30-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user Phase1 joint augmentation research; latest scratch budget E30; full source RX required; this diagnostic adds zero training and no target access.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary CVS-RFFI FP32 CPU2/CUDAempty",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_placement_E30_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing VALIDATED_ONCE original source/target physical roles; no rebuild",
+    "representation": "Original sourceV1800 IQ256; same fixed Ag before original normalize_input+native practical; original-input native replay must match cached full IQ. No external RMS after As, no new latent seed or noise variance.",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "same original source_contract.json#role_ids; exact role equality at runtime",
+    "label_map_ref": "same original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "original6 registered TX",
+    "roles": {
+      "L_s": "Historical parent6300; no L input consumed by analysis; cache may deserialize unused L",
+      "U_s": "Historical parent56700 hidden TX; no U IQ or truth consumed",
+      "V": "Original27000; fixed balanced1800 from P24 only for current computation"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse original VALIDATED_ONCE; metadata full L/U/V role equality confirmed, no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "forbidden",
+    "external_method_exception": null,
+    "claim_scope": "Source noncommutativity/compatibility only; not Ag crossRX or formal identity gain"
+  },
+  "checkpoint": {
+    "initialization": "Frozen two original own all-source scratchFINAL30 student states; no training initialization, unchanged defaultcos30",
+    "sources": [
+      {
+        "run_id": "20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01",
+        "row": "B00-s2026092701",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/B00-s2026092701/source/final_ssdg.pth",
+        "state_key": "model",
+        "historical_training": "scratch30/6660; no ancestors; original full roles; final-only"
+      },
+      {
+        "run_id": "20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01",
+        "row": "B01-s2026092701",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/B01-s2026092701/source/final_ssdg.pth",
+        "state_key": "model",
+        "historical_training": "scratch30/6660; no ancestors; original full roles; final-only"
+      }
+    ],
+    "contract_check_ref": "Original own_model strict completion/initialization/source_frozen/role_ids before strict own FINAL30 student readout",
+    "provenance_verdict": "Full original role match required; no mismatched/E50/E200/target-selected weights",
+    "selection_rule": "Read both declared fixed FINAL30 states, no source/target checkpoint selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "/root",
+    "gpu_policy": "CPU2 only; CUDA_VISIBLE_DEVICES empty; no GPU process or modifications to healthy tasks",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_cycleorder_placement_E30_20261017",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_placement_E30_20261017_r01/experiments/cvs_cycleorder_placement31/runner.py",
+    "stop_rule": "Ownrole/provenance/nativeoriginalreplay/hardware/kernel/G1/noisevariance/nonfinite/state/NN/outputcollision technicalfailure preserves ownpartial/logs and stops, noautomaticretry/healthy task changes. Complete both source models on scientificFAIL, then close this composition without window/phasefit/probability/seed/budget rescue."
+  },
+  "expected_artifacts": [
+    "checkpoint_noquery_smoke.json",
+    "data_roles.json",
+    "actual_engine.json",
+    "observations/iq.npy",
+    "observations/physics.npz",
+    "observations/physical_records.jsonl.gz",
+    "observations/iq_operator_trace.json",
+    "observations/completion.json",
+    "B00/predictions.npz",
+    "B01/predictions.npz",
+    "B00/result.json",
+    "B01/result.json",
+    "completion.json",
+    "independent source recount/figure/report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "margin_scale30",
+      "pre_vs_original_pp",
+      "pre_vs_post_pp",
+      "repair_newerror",
+      "original_replay_error",
+      "native_state_lock_AGC_changes",
+      "signal_to_added_noise_db_not_total_SNR",
+      "same_kernel_G1_hardware_geometry_noisevariance",
+      "phase_IQ_power_join_stats",
+      "NN",
+      "native_process_calls",
+      "wall_seconds"
+    ],
+    "dimensions": [
+      "arm",
+      "order",
+      "draw",
+      "scene",
+      "source_RX",
+      "state",
+      "lock",
+      "added_noise_interval"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01/{B00,B01}/predictions.npz",
+    "scorer_ref": "Source metrics then independent saved-prediction/physicaltrace recount; no targettruth",
+    "source_rule": "Both prior clean guards from P30 must remain their original PASS; B01 pre-order every2drawx2urban delta vs original native As>=-.5pp (1e-10pp tolerance). ScientificFAIL closes combination, no rescue. PASS only eligibility for later matched scratchE30 effects, not Ag proof."
+  },
+  "rows": [
+    {
+      "row_id": "B00-PREORDER-s2026092701",
+      "method": "Original fixed IQ cycle order before nativeAs; unchanged frozen F/CROSS_RX/defaultcos30",
+      "purpose": "readout_control",
+      "config_ref": "experiments/cvs_cycleorder_placement31/probe.py + unchanged immutable P30 iq_order.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01/B00/result.json",
+      "data_overrides": {
+        "source_V1800": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": 202610173001,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Exact P24 model2026092701/split392005/panel202610172401/channel202610172402; exact P30 operator202610173001 and sourceV/draw*/scene namespaces. hardware2026092701 byRX/day/eq, notTX. supportN/A. No new latent seed.",
+      "k": null,
+      "scenario": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "10802 new frozenNN/model; two parents each scratchE30/6660/5407922NN separate. Shared21600 nativecalls=10800originalreplay+10800before-view;10800IQaugment views. P30 prior25204NN reused separately.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01/B00",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01-launch/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_placement_E30_20261017_r01/experiments/cvs_cycleorder_placement31/runner.py",
+      "expected_artifacts": [
+        "predictions.npz",
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "B01-PREORDER-s2026092701",
+      "method": "Original fixed IQ cycle order before nativeAs; unchanged frozen F/CROSS_RX/defaultcos30",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_cycleorder_placement31/probe.py + unchanged immutable P30 iq_order.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01/B01/result.json",
+      "data_overrides": {
+        "source_V1800": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": 202610173001,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Exact P24 model2026092701/split392005/panel202610172401/channel202610172402; exact P30 operator202610173001 and sourceV/draw*/scene namespaces. hardware2026092701 byRX/day/eq, notTX. supportN/A. No new latent seed.",
+      "k": null,
+      "scenario": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "10802 new frozenNN/model; two parents each scratchE30/6660/5407922NN separate. Shared21600 nativecalls=10800originalreplay+10800before-view;10800IQaugment views. P30 prior25204NN reused separately.",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01/B01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-cycleorder-placement-sourceV-e30-s2026092701-m2-r01-launch/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_placement_E30_20261017_r01/experiments/cvs_cycleorder_placement31/runner.py",
+      "expected_artifacts": [
+        "predictions.npz",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "P30 post-receiver FAIL remainsFAIL, no changing its parameters or result. Placement is an explicitly separate same-operator contrast required by noncommutativity objective.",
+    "Source practical records are reused as paired references; no changed formalIQ/SNR/boundary or sample deletion.",
+    "Native quality and AGC naturally recomputed for newinput; all changes logged, not manually frozen to favor output. Original geometry/hardware/shadowstate/kernel/noisevariance must match.",
+    "Ag is evaluated on normalized source raw IQ before native propagation; this diagnostic does not prove compatibility of another ordinary-augmentation placement or DG.",
+    "No new model training; automatic formal tests after new training do not apply to this source-only diagnostic."
+  ],
+  "registered_at": "2026-10-17T11:03:51+00:00"
+}
