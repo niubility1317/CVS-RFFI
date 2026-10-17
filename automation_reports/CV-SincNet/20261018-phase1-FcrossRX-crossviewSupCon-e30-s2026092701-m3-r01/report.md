@@ -49,3 +49,5 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS
 独立分析程序 analysis/cvs_crossviewSupCon_E30_results_20261018.py 已完成，8项针对性复算/判据/视图归属/truth-last边界测试PASS，0真实IQ/CP/NN。它将完整解析三组90个epoch、19980步L/native/Sinc记录及全部L/U曝光，复算CE/RDrop/SupCon绝对尺度、5550个激活步/模型的真实/重复描述子覆盖、两段成本、两个draw源分层、固定ORD clean正确集合及全部正式混淆矩阵。原运行release代码不修改。
 
 尚未完成：E30训练、完整源判据与独立源分析、各row全7正式评分、最终收益/clean代价/跨seed证据；逐包TX×RX×信道状态sidecar未保存，不能冒充已有逐包观测。先核查能否由实际L物理顺序和命名信道流精确复算，并与已有聚合记录对齐；任何额外物理生成成本单独报告。当前仅完成RX/day/scene/state/lock聚合日志的输出安排，不预先宣称覆盖验收完成。
+
+独立分析代码commit 4f804e560bed6e29b1bc17a086aede2f9522321e已推送并经GitHub compare确认identical。源模式已在独立分析目录启动，remotecompile PASS；PID854753/startticks151256374/CWD/argv/CUDA空已独立核实，stderr为空，目标truth路径未传入。该进程等待既有4个训练/队列句柄与全部source完成产物，源输出 /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/source_analysis_r01 当前尚未创建，不会提前写完整结论；不是新训练或额外审批/哈希环节。最近源进度ORD/DUP为E8（各1776更新），SAT为E7（1554更新），全部仍存活。详细证据analysis_execution.json。

@@ -1,0 +1,91 @@
+{
+  "status": "VERIFIED_SOURCE_ANALYSIS_WAIT",
+  "code_commit": "4f804e560bed6e29b1bc17a086aede2f9522321e",
+  "launch": {
+    "status": "DISPATCHED_SOURCE_WAIT",
+    "pid": 854753,
+    "start_ticks": 151256374,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_analysis_20261018_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_analysis_20261018_r01/analysis/cvs_crossviewSupCon_E30_results_20261018.py",
+      "--mode",
+      "source",
+      "--output",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/source_analysis_r01",
+      "--wait-pids",
+      "849362",
+      "849390",
+      "849536",
+      "849617"
+    ],
+    "code_commit": "4f804e560bed6e29b1bc17a086aede2f9522321e",
+    "compile": "PASS",
+    "files": {
+      "cvs_crossviewSupCon_E30_results_20261018.py": 29786,
+      "cvs_fullsource_E30_results_20261017.py": 21407
+    },
+    "NN": 0,
+    "source_IQ": 0,
+    "target_access": false,
+    "training_release_changed": false,
+    "output_absent": true,
+    "time": 1792264859.3165445
+  },
+  "postlaunch": {
+    "pid": 854753,
+    "same_start_ticks": true,
+    "output_exists": false,
+    "stderr": "",
+    "stdout_bytes": 0,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_analysis_20261018_r01",
+    "cmdline": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_analysis_20261018_r01/analysis/cvs_crossviewSupCon_E30_results_20261018.py --mode source --output /home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/source_analysis_r01 --wait-pids 849362 849390 849536 849617 ",
+    "CUDA": [
+      "CUDA_VISIBLE_DEVICES="
+    ],
+    "code_commit": "4f804e560bed6e29b1bc17a086aede2f9522321e",
+    "source_mode_only": true,
+    "NN": 0,
+    "target_access": false,
+    "training_rows": [
+      {
+        "row": "ORD128-s2026092701",
+        "pid": 849390,
+        "alive": true,
+        "epoch": 8,
+        "updates": 1776,
+        "L_NN": 909312,
+        "L_As": 113664
+      },
+      {
+        "row": "DUP192-s2026092701",
+        "pid": 849536,
+        "alive": true,
+        "epoch": 8,
+        "updates": 1776,
+        "L_NN": 909312,
+        "L_As": 113664
+      },
+      {
+        "row": "SAT192-s2026092701",
+        "pid": 849617,
+        "alive": true,
+        "epoch": 7,
+        "updates": 1554,
+        "L_NN": 795648,
+        "L_As": 99456
+      }
+    ]
+  },
+  "local_tests": {
+    "status": "PASS",
+    "count": 8,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/analysis_checks.txt"
+  },
+  "training_release_commit": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
+  "training_release_changed": false,
+  "analysis_NN": 0,
+  "target_access": false,
+  "goal_complete": false
+}
