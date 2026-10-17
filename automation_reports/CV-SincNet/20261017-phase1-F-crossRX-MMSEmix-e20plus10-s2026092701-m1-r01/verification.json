@@ -1,0 +1,23 @@
+{
+  "local_checks": {
+    "status": "PASS",
+    "protocol_negatives": 33,
+    "adapter_cases": 30,
+    "direct_original_core_replays": 15,
+    "NoEQ_replays": 6,
+    "MMSE24_replays": 9,
+    "max_replay_error": 0,
+    "global_Torch_and_numpy_RNG_unchanged": true,
+    "real_IQ": 0,
+    "CP": 0,
+    "synthetic_NN": 2,
+    "new_updates": 0
+  },
+  "review": {
+    "status": "PASS",
+    "scope": "First and only review of new MMSE-mixture training wiring;no direct P0/P1",
+    "performed": "18files syntax,registration consistency,2220updates/284160As;private selection/single residual/offset/receivercalls/ownEMA andautomatic sevenview independent scoring",
+    "not_performed": "No realIQ/checkpoint/target/remote operations"
+  },
+  "training_started": false
+}
