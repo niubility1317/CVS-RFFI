@@ -1,6 +1,6 @@
 # 固定周期IQ重排×真实practical：全源scratch E30四因子
 
-状态：REGISTERED，未训练。父训练成本为0，四行均从头E30=20L+10U/222step每轮/6660更新，modelseed2026092701。用户最新E30覆盖旧E20/E50要求；F＋跨RX同TX对比、全部原RX1/3/4/6/8、L6300/U56700隐藏TX/V27000、split392005/7-63-30不变，不切L_dev、不留RX。每行NN/墙钟/教师等实际计数独立报告。
+状态：RUNNING，已核实四行真实训练；正式预测和评分尚未完成。父训练成本为0，四行均从头E30=20L+10U/222step每轮/6660更新，modelseed2026092701。用户最新E30覆盖旧E20/E50要求；F＋跨RX同TX对比、全部原RX1/3/4/6/8、L6300/U56700隐藏TX/V27000、split392005/7-63-30不变，不切L_dev、不留RX。每行NN/墙钟/教师等实际计数独立报告。
 
 唯一假设：原80:160四个20点周期的phase-transported S4打乱能抑制周期位置偶然依赖，并在真实传播前保留可用身份信息。P30后置源FAIL保持；P31同算子前置源兼容4/4单元通过，原信道重放误差0，未证明泛化或训练收益。算子、窗口、相位估计、均匀24排列及seed202610173001全固定，不扫描强度/概率/窗口。
 
@@ -19,3 +19,11 @@ Ag只用于合法L，不读TX来选排列；physical eq/RX/day/sig/base构成不
 唯一owner/root；普通N607，sharedlock下每GPU总experiment进程≤3且free≥12000MB含其他owner，2CPU线程；run/output /home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01 独占。命令/CWD/GPU/paths/stoprule见experiment.json。协议角色/非有限/步骤/实际结构/输入顺序/预测不完整/outputcollision等直接技术失败保留ownpartial，停止未发本run行，不动健康旧任务、不自动重试。已通过4个synthetic routing/protocol-negative tests和compile，0真实IQ/CP/NN；一次限定新增接线独立P0/P1静态审查PASS，未发现会使真实运行错误/越权/破坏/不可启动/非法预测的问题；无真实IQ/CP/target或远程调用。一次发布archive比较/remotecompile/启动后独立PID-CWD-argv-GPU-log增长检查。N607preflight VERIFIED：普通无特权、全源句柄一致、formalVALIDATED_ONCE、own新根不存在、8GPU可用容量将再由dispatcher准入。
 
 当前无本轮训练或性能结果，原正式ordinary拼接E30 clean82.797024%/low53.137500%仍只是只读参考；源62%不能替代正式>60%。联合目标ACTIVE。
+
+## 启动实证
+
+实际代码 commit 0c47f4bcd49c5df43093579c7f33e6c35bc5245d，GitHub独立比较与远程branch相同。一次archive本地/远端SHA比较及remote compile PASS。dispatcher PID577854；4worker分别B00 PID577955/GPU1，B10 PID578438/GPU2，B01 PID578519/GPU3，B11 PID578604/GPU4。独立/proc的PID/start/CWD/argv/CUDA及nvidia-smi核验一致，log由6449字节增长至B00/B10约16760字节、B01/B11约11605字节。最后保存状态B00/B10 E2/444更新、B01/B11 E1/222更新，failure为空；此为进度快照，不是收敛或性能结果。
+
+实际resolved结构900722参数、20label＋10pseudo、完整L6300/U56700hidden/V27000、held_RX=null、target_loaders0，训练模块实际来自不可变cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code，非顶层code。原子模块channel.py、batch.py、residual.py与实用adapter实际__file__均保存各row/source/module_files.json。Smoke兼容CP只2合成包/0真实IQ/0query/0训练初始化；各row另外严格保存ownscratch初始化。
+
+当前无本轮正式准确率、F1或跨seed结论；未完成项为各row E30、12602NN源读出、7view预测固定、独立truth-last评分、完整独立统计/曲线/分层图/收益归因和跨seed验证。运行过程不会依target结果改变其他行或健康旧任务。

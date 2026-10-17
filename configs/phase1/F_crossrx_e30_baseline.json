@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_CYCLEORDER_FACTORIAL_REGISTERED_NOT_STARTED",
+  "status": "E30_CYCLEORDER_FACTORIAL_RUNNING",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -353,7 +353,10 @@
     "source_rule": "B10cleanV>=B00+.5pp;B11cleanV>=B00;all4urban cells>=B01+1pp",
     "formal_views": "train low_suburban/mid_urban/low_urban;testclean+all6fixedpractical",
     "automatic_seed_extension": false,
-    "status": "REGISTERED",
-    "Ag_proved": false
+    "status": "RUNNING",
+    "Ag_proved": false,
+    "execution_commit": "0c47f4bcd49c5df43093579c7f33e6c35bc5245d",
+    "launch_verified": true,
+    "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/report.md"
   }
 }

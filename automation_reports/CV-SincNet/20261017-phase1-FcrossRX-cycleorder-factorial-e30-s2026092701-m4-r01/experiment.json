@@ -27,7 +27,7 @@
   "replaces_run_id": null,
   "authorization": "User active joint Ag/As research and fixed four-factor request,latest scratch E30;F+crossRX sameTX;all trainingRX,no holdout. Source P31 prerequisite completed;no targetfeedback.",
   "code": {
-    "commit": null,
+    "commit": "0c47f4bcd49c5df43093579c7f33e6c35bc5245d",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 ordinary CVS-RFFI FP32,CPU2 perGPUworker,shared totalprocesscap3/freeMB>=12000",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_factorial_E30_20261017_r01"
@@ -207,7 +207,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "original native cosine over30total epochs"
       },
       "epochs": 30,
@@ -272,7 +272,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "original native cosine over30total epochs"
       },
       "epochs": 30,
@@ -337,7 +337,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "original native cosine over30total epochs"
       },
       "epochs": 30,
@@ -402,7 +402,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "original native cosine over30total epochs"
       },
       "epochs": 30,
