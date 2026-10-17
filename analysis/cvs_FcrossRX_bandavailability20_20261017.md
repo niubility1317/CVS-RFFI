@@ -23,3 +23,9 @@ guard固定通过条件：MASK pooled及每draw相对raw accuracy/F1≥−.5pp�
 完整目标仍为新Ag的跨域身份价值、As适应和同模型联合收益；当前无新heldsource性能、更无正式clean/六practical、low>60%、suburban接近自身clean或跨seed训练证明。不会用源guard、梯度健康或本地测试替代这些证据。
 
 独立 P0/P1 静态审查：PASS；未发现会直接导致错误运行、越权、破坏输出或无法合法预测的缺陷。未读取真实 IQ/checkpoint，未运行网络或远端任务。N607 单次只读预检：PASS；尚未发布或启动本 run。
+
+技术运行 r01：FAILED。父模型真实 checkpoint 兼容性 smoke PASS（1 次 CP 读取、2 个合成 NN 前向、0 个源 IQ）。独立 guard 子进程缺顶层 experiments 包而退出；0 guard IQ/NN，0 E20。原 PID/子 PID 自然退出，输出保留。隔离 Python -I 已复现并验证最小 namespace 修复；r02 仅技术恢复，全部科学参数/预算/阈值不变。
+
+技术恢复预登记：20261017-phase1-FcrossRX-bandavailability-sourceRX1-e20-s2026092701-m4-r02；仅修复独立包导入，科学计划保持。
+
+技术修复验证：第一次 parent namespace stub 不覆盖原后端依赖，定向复审发现同一启动 P1；最终撤销 stub，先以 stdlib spec 读 guard_design，再完整初始化旧后端，再注入本包。两 seed 在 N607 各自 Python -I 完整 bootstrap_guard＋checkpoint/original design 导入 PASS（0 IQ/CP/NN），定向复审确认闭合。原模型/算子检查沿用未变的 r01 本地结果，未重复训练。原 N607 只读预检在本次恢复继续适用，无资源/环境改动。

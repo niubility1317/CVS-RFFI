@@ -11,8 +11,7 @@ def bootstrap_train():
  spec=importlib.util.spec_from_file_location('bandavailability_backend',backend/'experiments/cvs_as_timing20/runner.py');b=importlib.util.module_from_spec(spec);spec.loader.exec_module(b);b.bootstrap();inject()
 
 def bootstrap_guard(seed):
- inject()
- from experiments.cvs_bandavailability20 import guard_design as d
+ spec=importlib.util.spec_from_file_location('bandavailability_guard_design',HERE/'experiments/cvs_bandavailability20/guard_design.py');d=importlib.util.module_from_spec(spec);spec.loader.exec_module(d)
  backend=d.resolve(d.MODELS[seed]['backend'])
  if (backend/'release_commit.txt').read_text().strip()!=d.MODELS[seed]['commit']:raise ValueError('Wrong own frozen guard runtime')
  spec=importlib.util.spec_from_file_location('availability_guard_backend',backend/'experiments/cvs_crossrx_satmix20/runner.py');b=importlib.util.module_from_spec(spec);spec.loader.exec_module(b);b.bootstrap();inject()

@@ -23,3 +23,5 @@ guard固定通过条件：MASK pooled及每draw相对raw accuracy/F1≥−.5pp�
 完整目标仍为新Ag的跨域身份价值、As适应和同模型联合收益；当前无新heldsource性能、更无正式clean/六practical、low>60%、suburban接近自身clean或跨seed训练证明。不会用源guard、梯度健康或本地测试替代这些证据。
 
 独立 P0/P1 静态审查：PASS；未发现会直接导致错误运行、越权、破坏输出或无法合法预测的缺陷。未读取真实 IQ/checkpoint，未运行网络或远端任务。N607 单次只读预检：PASS；尚未发布或启动本 run。
+
+技术运行 r01：FAILED。父模型真实 checkpoint 兼容性 smoke PASS（1 次 CP 读取、2 个合成 NN 前向、0 个源 IQ）。独立 guard 子进程缺顶层 experiments 包而退出；0 guard IQ/NN，0 E20。原 PID/子 PID 自然退出，输出保留。隔离 Python -I 已复现并验证最小 namespace 修复；r02 仅技术恢复，全部科学参数/预算/阈值不变。

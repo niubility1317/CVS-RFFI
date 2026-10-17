@@ -4,7 +4,7 @@ from pathlib import Path
 from experiments.cvs_additive_as20 import design as parent
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE,FULL_FP32_POLICY,read,write,SCENES,source_validation,macro_f1=(getattr(parent,k) for k in ('PROJECT','SOURCE','FULL_FP32_POLICY','read','write','SCENES','source_validation','macro_f1'))
-RUN='20261017-phase1-FcrossRX-bandavailability-sourceRX1-e20-s2026092701-m4-r01';RELEASE='cvs_FcrossRX_bandavailability_sourceRX1_E20_20261017_r01';OWNER='codex/root/FcrossRX-bandavailability-20261017';BASE=Path(PROJECT)/'runs'/RUN
+RUN='20261017-phase1-FcrossRX-bandavailability-sourceRX1-e20-s2026092701-m4-r02';RELEASE='cvs_FcrossRX_bandavailability_sourceRX1_E20_20261017_r02';OWNER='codex/root/FcrossRX-bandavailability-20261017';BASE=Path(PROJECT)/'runs'/RUN
 SEED=2026092701;FIT=(3,4,6,8);HELD=1;UPDATES=4440;ARMS=('RAW','GAIN','ORDINARY','MASK');MASK_SEED=202610171951;SMOKE_SOURCE=parent.SMOKE_SOURCE
 
 def template():return parent.config(next(r for r in parent.rows() if r['arm']=='D_raw'))

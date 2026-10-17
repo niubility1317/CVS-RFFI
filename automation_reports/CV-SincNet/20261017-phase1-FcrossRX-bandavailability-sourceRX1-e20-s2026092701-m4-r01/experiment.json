@@ -23,7 +23,7 @@
   "replaces_run_id": null,
   "authorization": "Active Ag/As research;user fixed F+CROSS_RX andscratchE20/model. Conditional2frozen-source guards then4newsource-only matchedE20,not a new architecture or formal target selection.",
   "code": {
-    "commit": null,
+    "commit": "5353a2490719d87c2fd2028d784c1bf051efcaa6",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "ExistingN607ordinary CVS-RFFI Python/Torch;CPU2guards thencapacity-protectedGPU workers;no installs",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_bandavailability_sourceRX1_E20_20261017_r01"
@@ -193,7 +193,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-bandavailability-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -231,7 +231,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original13L7U/supcon/U/ownEMA/commonbase.75raw+.25ordinary,extra.25RD(raw/gain/sameordinary/maskedraw),8L/total1.25,all4newfromscratchE20",
@@ -486,7 +486,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-bandavailability-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -524,7 +524,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original13L7U/supcon/U/ownEMA/commonbase.75raw+.25ordinary,extra.25RD(raw/gain/sameordinary/maskedraw),8L/total1.25,all4newfromscratchE20",
@@ -779,7 +779,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-bandavailability-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -817,7 +817,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original13L7U/supcon/U/ownEMA/commonbase.75raw+.25ordinary,extra.25RD(raw/gain/sameordinary/maskedraw),8L/total1.25,all4newfromscratchE20",
@@ -1072,7 +1072,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/FcrossRX-bandavailability-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -1110,7 +1110,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Original13L7U/supcon/U/ownEMA/commonbase.75raw+.25ordinary,extra.25RD(raw/gain/sameordinary/maskedraw),8L/total1.25,all4newfromscratchE20",

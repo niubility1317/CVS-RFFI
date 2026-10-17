@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261017-phase1-FcrossRX-bandavailability-sourceRX1-e20-s2026092701-m4-r01'
+RUN='20261017-phase1-FcrossRX-bandavailability-sourceRX1-e20-s2026092701-m4-r02'
 BASE='PROJECT/runs/'+RUN+'/guard';SOURCE='PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json';PREPARATION='PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701'
 OWNER='codex/root/FcrossRX-bandavailability-20261017';FIT=(3,4,6,8);SEEDS=(2026092701,2026092702);DRAW_SEEDS=(202610171911,202610171912,202610171913,202610171914)
 MODELS={2026092701:{"run":"20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01","backend":"PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01","commit":"0ae066adb10a001e834c8c679c5b7b81c20b3ac8","source":"PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source"},2026092702:{"run":"20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01","backend":"PROJECT/releases/cvs_F_crossRX_satmix25_confirm_source_e20_20261016_r01","commit":"d71531d53c1d9ec46e3915963e05bff96760e80e","source":"PROJECT/runs/20261016-phase1-F-crossRX-satmix25-confirm-sourceRX1-e20-s2026092702-m2-r01/B00-RX1-s2026092702/source"}}
