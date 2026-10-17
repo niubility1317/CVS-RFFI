@@ -1,6 +1,6 @@
 # 完整源域 F＋跨 RX 同 TX：E20 普通拼接星地参照
 
-状态：部分完成。B00 已 ANALYZED；B01 沿原 PID 健康训练中，整个 run 尚未完成。唯一矩阵与逐行配置维护在 experiment.json；当前模型 seed2026092701 的两行参照 B00/B01。用户2026-10-17明确要求不再留训练域，主线回到真实 practical 增强与普通拼接直接比较。
+状态：两行均已 ANALYZED；预固定 RAW 对照也已完成，三行完整源域/同seed比较与378组指标复算齐全。联合目标未完成。唯一矩阵与逐行配置维护在 experiment.json；当前模型 seed2026092701 的两行参照 B00/B01。用户2026-10-17明确要求不再留训练域，主线回到真实 practical 增强与普通拼接直接比较。
 
 完整原角色：RX1/3/4/6/8，day1/2/3，6TX，split392005；原 L6300 / hidden U56700 / V27000，7/63/30。实际原契约及兼容 CP 契约 IDs 相等已只读确认，不重建数据。新source.py在构建后检查全部原角色ID精确一致，不调用任何fold.prepare、不带fold参数、不切L_dev。V仅原源健康诊断；不训练V，不解封U TX。
 
@@ -63,3 +63,42 @@ B00是同4L成本的clean重复参照，不是原两前向F；不能把额外前
 分析代码commit `936d96a695219f00d6eec677aa5d0bfb3c798465`；3项聚焦计算/边界测试与编译PASS，已push且独立远端OID相同。产物 `E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_concat_20261017/B00_analysis_r01`：summary、逐row/seed/RX/day/TX CSV、20轮曲线CSV、accuracy/training/RX图PNG/PDF；远端同row `/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01/B00-s2026092701/analysis_r01`。固定测试未保存逐样本state/quality，不推造LOS/lock测试分层。
 
 目前仅seed2026092701的B00，尚无As增量、Ag效用、urban>60%、suburban接近clean或跨seed复现结论。其余行保持原配置。
+
+
+## 两行正式七视图结果
+
+完整源域两行均已完成E20/4440、固定七视图各168000、独立truth-last共252组指标。普通As相对无As urban+25.250992pp、low+20.020833pp、clean-2.761905pp。单seed，未达clean双收益/low60/全suburban2pp，预固定RAW行仍运行，目标分数不回流。
+
+| 视图 | B00无As | B01普通拼接As | B01−B00（pp） |
+|---|---:|---:|---:|
+| clean | 84.950595% | 82.188690% | -2.761905 |
+| practical_high | 47.655952% | 80.405357% | 32.749405 |
+| practical_mid | 45.714286% | 77.935714% | 32.221429 |
+| practical_low_suburban | 43.495238% | 75.495238% | 32.000000 |
+| practical_high_urban | 46.239881% | 77.063690% | 30.823810 |
+| practical_mid_urban | 38.278571% | 63.186905% | 24.908333 |
+| practical_low_urban | 32.222619% | 52.243452% | 20.020833 |
+
+B01三郊区距自身clean差1.783333/4.252976/6.693452pp，只有high≤2pp。最差RX：clean73.0625%、midurban56.279167%、lowurban47.079167%；low宏F1为51.650902%，clean宏F1为81.705228%。urban均值由38.913690%至64.164683%。
+
+两行均全新scratch20/4440，无父训练；B00/B01 source墙钟1052.837400/1999.742716秒。每行source NN3661082（L2273280），七视图prediction NN1176002。合计新增40modelE/8880更新、9674168网络样本量；共享兼容smoke另2合成NN。本地1540合成NN/2开发更新另列。
+
+这说明真实practical训练有很大适应收益，同时clean退化2.761905pp，尚无联合突破。较小suburban差距中包含clean下降。无逐样本formal物理状态，不能归因为单一多径/CFO/门控因素。原RAW行在这些target分数读取前已锁定并启动，其他健康行/参数/预算/默认头不变。
+
+
+## B01 完整日志及物理覆盖
+
+完成B01全部20轮/4440步、5994条采样记录及568320条practical物理元数据解析；126正式混淆矩阵独立复算一致。全部90个TX×RX×scene及90个TX×RX×state组合均覆盖。0额外NN/IQ/CP/更新；曲线和RX图已取回核验，单seed/目标未达。
+
+训练覆盖：LOS285384/PARTIAL89591/BLOCKED193345；locked341069/degraded95159/unlocked132092；AGC限幅61/568320。所有568320条均EQ关闭、reflect边界、总SNR未知。残余核长62、数值滤波延迟24样本；256点输入的实际有效观察区及边界对分类的因果影响仍未识别，不能由核长直接推断准确率损失。
+
+实际signal_to_added_noise_db减white-input质量代理均值+0.029652dB，标准差0.482165dB；1%/99%分位-1.299783/+1.234072dB，极值-19.387220/+3.841197dB。该差异本身不证明锁定状态切换的因果影响，需固定接收状态的受控实验才能解释；本轮未冒称已完成。残余输出CFO的1%/99%分位-972.330797/+955.525805Hz，不据此预设主因。
+
+E20平均clean CE0.272667、sat CE0.788595、RDrop KL0.040506、SupCon1.618511（权重.1），源V97.637037%。活跃目标均有限，非有限跳步0，全部1704960有效SupCon锚有正例。E20预算耗尽不等于卫星视图收敛。U最终选择673/56700，真值隐藏，不能报告伪标签precision。
+
+分析实现 `4d451e6b09cab511b318b923b458d2c28ca0dd06`；真实产物 `E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_concat_20261017/B01_analysis_r01`，远端同row `/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01/B01-s2026092701/analysis_r01`。曲线及RX热图已检查，标题排版已修复。0新增NN/真实IQ/CP读取/训练更新。两个row均ANALYZED，完整三行比较待RAW完成；不扩seed、不调整方案。
+
+
+## 预固定 RAW 对照最终汇总
+
+RAW已按原计划完成E20/七视图/独立评分，三行13320步/60轮/采样5994条每行均完整且顺序一致，无留域。RAW vs B01 urban+0.228175pp、low+0.235714pp、clean+0.514286pp；RAW仍比B00 clean低2.247619pp，low52.479167%，未达联合目标或跨seed确认。完整结果、逐RX/day/TX表、共同B00 clean正确集合保持率、间隔、修复/破坏计数、覆盖及训练曲线见相邻run `20261017-phase1-FcrossRX-fullsource-rawpractical-e20-s2026092701-m1-r01` 的report.md。真实图/CSV/summary `E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_rawpractical_20261017/comparison_analysis_r01`，远端 `/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-rawpractical-e20-s2026092701-m1-r01/comparison_analysis_r01`；全部378混淆矩阵复算VERIFIED。未重测、未从正式成绩调参，未启动新候选或扩seed。
