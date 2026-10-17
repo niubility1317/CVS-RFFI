@@ -1,0 +1,63 @@
+{
+  "schema": "F_FROZEN_SCATTER_TIMESCALE_CODE_ONLY_V1",
+  "status": "COMPLETED_CODE_ONLY_NOT_IDENTITY_TESTED",
+  "native_channel": "experiments/adv3b02_xuc/code/leo_practical/channel.py",
+  "native_residual": "experiments/adv3b02_xuc/code/leo_practical/residual.py",
+  "configuration_source": "actual training adapter explicit fs/fc/route plus current native Config defaults",
+  "config": {
+    "fs_hz": 25000000.0,
+    "fc_hz": 2462000000.0,
+    "processing_route": "residual",
+    "mode": "post_sync",
+    "equalization_enabled": false
+  },
+  "IQ_length": 256,
+  "sample_span_s": 1.02e-05,
+  "packet_extent_s": 1.024e-05,
+  "terminal_speed_mps": 1.0,
+  "scatter_max_doppler_hz": 8.212348023778503,
+  "max_ray_rotation_rad": 0.0005263169852925941,
+  "max_ray_rotation_deg": 0.030155741943314666,
+  "max_unit_ray_complex_change": 0.0005263169792178091,
+  "state_refresh_probability_upper_bound": 1.0239947571378956e-05,
+  "shadow_correlation_time_s": 3.0,
+  "stationary_shadow_change_RMS_dB": 0.007838360488170935,
+  "coefficient_vector_bounds": [
+    {
+      "state": "LOS",
+      "ensemble_diffuse_fraction": 0.015199707944526684,
+      "coefficient_vector_ensemble_relative_RMS_bound": 6.48880924881675e-05
+    },
+    {
+      "state": "PARTIAL",
+      "ensemble_diffuse_fraction": 0.07302190247530131,
+      "coefficient_vector_ensemble_relative_RMS_bound": 0.0001422243499995335
+    },
+    {
+      "state": "BLOCKED",
+      "ensemble_diffuse_fraction": 1.0,
+      "coefficient_vector_ensemble_relative_RMS_bound": 0.0005263169852925941
+    }
+  ],
+  "screen": {
+    "max_ray_rotation_below_1mrad": true,
+    "packet_state_refresh_probability_below_1e_4": true,
+    "stationary_shadow_change_RMS_below_0_01dB": true
+  },
+  "fixed_hypothesis": "Omitted within-packet scatter/state/shadow dynamics already have material scale under existing nominal training prior",
+  "conclusion": "CLOSED_INSUFFICIENT_NOMINAL_PHYSICAL_MAGNITUDE",
+  "limitations": [
+    "No actual identity margins or accuracy measured;this cannot prove zero classifier sensitivity",
+    "Ensemble coefficient-vector bound is not a uniform relative IQ bound in near-null channels",
+    "No extra scatter Doppler is justified by already compensated common orbital Doppler",
+    "No speed/strength tuning,source RX holdout,new data,neural forward or training is authorized by this calculation"
+  ],
+  "source_RX_holdout": null,
+  "real_IQ_reads": 0,
+  "CP_loads": 0,
+  "channel_process_calls": 0,
+  "NN": 0,
+  "raw_truth_reads": 0,
+  "optimizer_updates": 0,
+  "new_model_epochs": 0
+}

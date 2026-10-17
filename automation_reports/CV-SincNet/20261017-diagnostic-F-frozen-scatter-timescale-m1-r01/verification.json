@@ -1,0 +1,24 @@
+{
+  "status": "VERIFIED_CODE_ONLY",
+  "execution_commit": "86c7733116e33089e66020542415ca5286b6c727",
+  "compile": "PASS",
+  "result_readback": "PASS",
+  "actual_native_scatter_law_checked": true,
+  "actual_adapter_fs_fc_route_read_from_AST": true,
+  "frozen_scatter_assumption_checked": true,
+  "screen": {
+    "max_ray_rotation_below_1mrad": true,
+    "packet_state_refresh_probability_below_1e_4": true,
+    "stationary_shadow_change_RMS_below_0_01dB": true
+  },
+  "fixed_hypothesis": "Omitted within-packet scatter/state/shadow dynamics already have material scale under existing nominal training prior",
+  "conclusion": "CLOSED_INSUFFICIENT_NOMINAL_PHYSICAL_MAGNITUDE",
+  "identity_accuracy_measured": false,
+  "real_IQ": 0,
+  "CP": 0,
+  "physical_channel_process": 0,
+  "NN": 0,
+  "raw_truth": 0,
+  "updates": 0,
+  "model_epochs": 0
+}

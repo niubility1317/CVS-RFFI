@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_LATEST_PDP_SHAPE_AS_IDENTITY_GAIN_FAILED_CLOSED",
+  "status": "RESEARCH_ACTIVE_NO_NEW_TRAINING_CANDIDATE_NOMINAL_TIME_DYNAMICS_RATIONALE_CLOSED",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User baseline F plus cross-RX same-TX;latest budget E30 as fixed E20+10 on all five rows;all five now trained,score-only recovery adds zero updates.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -3029,5 +3029,27 @@
       "NN": 0,
       "new_updates": 0
     }
+  },
+  "post_PDP_frozen_scatter_timescale_audit": {
+    "run_id": "20261017-diagnostic-F-frozen-scatter-timescale-m1-r01",
+    "status": "ANALYZED_VERIFIED_CODE_ONLY",
+    "execution_commit": "86c7733116e33089e66020542415ca5286b6c727",
+    "conclusion": "CLOSED_INSUFFICIENT_NOMINAL_PHYSICAL_MAGNITUDE",
+    "scatter_max_doppler_hz": 8.212348023778503,
+    "max_ray_rotation_rad": 0.0005263169852925941,
+    "state_refresh_probability_upper_bound": 0.000010239947571378956,
+    "stationary_shadow_change_RMS_dB": 0.007838360488170935,
+    "screen": {
+      "max_ray_rotation_below_1mrad": true,
+      "packet_state_refresh_probability_below_1e_4": true,
+      "stationary_shadow_change_RMS_below_0_01dB": true
+    },
+    "new_training_candidate": false,
+    "identity_accuracy_measured": false,
+    "IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0,
+    "joint_goal_complete": false
   }
 }

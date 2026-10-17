@@ -3,7 +3,7 @@
   "run_id": "20261017-diagnostic-F-frozen-scatter-timescale-m1-r01",
   "group_id": "F_crossRX_frozen_scatter_timescale",
   "display_name": "F practical：256点窗口的冻结散射时标审计",
-  "description": "仅从实际代码参数计算包内变化量级；不读取IQ、不运行信道或模型",
+  "description": "固定原参数解析审计完成：包内scatter/state/shadow量级不足，未进入训练；无IQ/CP/NN/更新",
   "kind": "diagnostic",
   "stage": "diagnostic",
   "aliases": [
@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Ongoing A_g/As research;latest E30 training budget unchanged. This bounded code-only diagnostic reads no data or model and spends zero model epochs/updates.",
   "code": {
-    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "commit": "86c7733116e33089e66020542415ca5286b6c727",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "Verified local F Python standard library only;no Torch/NumPy/native runtime import",
     "cwd": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
