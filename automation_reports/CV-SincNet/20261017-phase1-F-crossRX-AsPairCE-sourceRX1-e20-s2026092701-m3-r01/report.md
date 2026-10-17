@@ -60,3 +60,21 @@ ordinary N607/CVS-RFFI，dispatcher CPU2/CUDA隐藏；新worker CPU2/loader0，�
 
 
 离线工具进展：已实现只读完整产物收集、全4440步base/extra目标公式、原U边界、完整scene序列、8820默认头预测、paired repair/break与共同clean正确集合、TX/day及18个TX×day单元、成本和完整曲线工具。40个独立读者反例PASS，含纯CE不受诊断KL改变影响、旧控制仍使用CE＋KL、非法heldRX/U真值/预算拒绝。新读者已逐行完整复算两条旧控制（各20轮/4440步/8820预测）；没有重做NN/训练、读取IQ或权重。新行原进程已完成E5/1110更新，仍live，无final20/七视图新结果，不将前缀进度当全日志结论。离线代码未热改远端不可变发布。
+
+
+## 已有普通 As 的独立控制错误归因
+
+此次仅对固定Q_ord与Q0的17,640个已有七视图硬判决完整复算，无新IQ、checkpoint、NN或更新，不改当前C_CE/阈值/训练。该对照与新行同8L/1.25/E20/seed01/sourceRX1，原RDrop/SupCon/U保持；只能说明这个已暴露源折/seed的结果，不证明跨seed稳定或正式目标泛化。
+
+Q_ord相对Q0的clean accuracy＋4.285714pp／F1＋4.289331pp，lowurban accuracy＋6.111111pp／F1＋8.545529pp，urban三场景均值＋10.846561pp。lowurban整体修复201、新错124，净增加77个正确判决；clean修复74、新错20，净增加54。
+
+|按两模型clean判决形成的固定分组|包数|lowurban修复／新错|净正确变化|总体准确率贡献 pp|
+|---|---:|---:|---:|---:|
+|both_clean_correct|990|186/65|121|9.603175|
+|As_clean_repaired|74|5/14|-9|-0.714286|
+|As_clean_broken|20|1/7|-6|-0.476190|
+|both_clean_wrong|176|9/38|-29|-2.301587|
+
+共同clean正确集合内净＋121，而其他组净−44；因此不能把总体＋77全说成无代价修复，也不能把As收益全归为改变clean正确集合。这里是两个训练后默认头的描述性分组，不是传播状态、观测质量或因果分解，不作门控或删除样本的依据。新C_CE完成后仍按预定总体accuracy/F1与保护条件判断，同时报告同集合修复与新错。
+
+Q_ord三个suburban与自身clean仍差25.079365／28.730159／31.825397pp；相对Q0的各suburban绝对正确率增加19.444444／15.476190／16.269841pp，clean同时提高，故当前控制的差距缩小没有靠降低clean，但远未接近探索性2pp。上述仍是已有控制结果，不是新C_CE成绩。完整私有聚合保存在local_artifacts/F_As_pair_CE_E20_20261017/final/control_As_effect.json。
