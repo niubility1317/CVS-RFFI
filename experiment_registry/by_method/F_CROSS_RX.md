@@ -21,3 +21,4 @@
 |等平均 N0 变化：完整源反证结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01/report.md)|
 |固定 N0 先验训练：首个 E30 反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-N0prior-e20plus10-s2026092701-m1-r01/report.md)|
 |全源慢变包络：固定依据检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01/report.md)|
+|F＋跨RX同TX：固定平滑FIR首个训练效用E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01/report.md)|

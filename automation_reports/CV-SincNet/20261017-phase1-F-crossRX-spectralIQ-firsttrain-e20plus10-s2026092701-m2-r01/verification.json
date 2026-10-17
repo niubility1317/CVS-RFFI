@@ -1,0 +1,23 @@
+{
+  "status": "PASS",
+  "scope": "Focused checks;not training or scientific gain",
+  "protocol_negatives": 41,
+  "synthetic_FIR_packets": 128,
+  "direct_original_formula_replays": 64,
+  "max_FIR_error": 4.76837158203125e-7,
+  "global_RNG_unchanged": true,
+  "input_unchanged": true,
+  "batch_permutation_invariant": true,
+  "actual_F_parameters": 900722,
+  "synthetic_NN": 4,
+  "real_IQ": 0,
+  "CP": 0,
+  "updates": 0,
+  "independent_P0P1_review": {
+    "reviewer": "dc_p0p1_review",
+    "initial": "P1 ownfinal rejected by parent-only callback",
+    "fix": "checkpoint_policy.load delegates ownfinal to original loader, caches parent, rejects others",
+    "targeted_recheck": "PASS;original P1 closed;no new P0/P1 in fix"
+  },
+  "known_local_warning": "NumPy2/oldTorch ABI warning;all assertions and compile passed"
+}

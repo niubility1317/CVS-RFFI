@@ -1,5 +1,9 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
+最新唯一候选：固定原 12 个有界平滑 FIR 的首次训练效用，已实现并预登记、尚未发布。见[完整源 E30 两新增行](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01/report.md)。旧有限窗 PSD 保真失败保持关闭，不调整核／幅度／边界／阈值；本次不继承旧四 RX 模型，全部五 RX／L6300／U56700 隐藏 TX／V27000 保持，无训练域留出。B10/B11 分别从匹配 nonAg B00/B01 全源 E20 父＋自身 EMA 追加 10 轮，累计 E30；新增 Ag 仅在 E21 至 E30，原 As 与 U 保持。复用匹配 E30 B00/B01，四 L 前向与监督尺度相同；没有组合视图或新损失。源输入身份保护通过后同 dispatcher 自动训练与七视图 truth-last，不将源通过记为 Ag 有效。固定识别条件失败即关闭配方，不按目标调核／换父／扩 seed／续预算。完整联合目标 ACTIVE，当前尚无该训练或评分结果。
+
+以下为已完成结果与历史过程，当前入口以本段和当前 run 独立证据为准。
+
 最新状态（E30、全部5源RX，无留训练域）：[MMSE混合E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-MMSEmix-e20plus10-s2026092701-m1-r01/report.md) 已 ANALYZED／VERIFIED，六 practical 均下降，固定方案关闭。下一唯一源反证为[等平均 N0 变化](cvs_N0_prior_source_plan_20261017.md)，ANALYZED／VERIFIED_SOURCE_ONLY，固定范围未过 mid＋0.5 pp 条件，关闭；100802NN／0更新／0target，不是新 A_g 或联合证明。以下较旧“运行／当前”语句保留为历史，以这一段及实际 run 状态为准。
 
 新唯一 A_s 假设已实际 RUNNING／VERIFIED：[20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md)。在原 total-ensemble RMS/径功率及完整依赖下，等概率使用 [0,1,3]／[0,1,2] 时延形状；不是新 Ag、RDrop 修改或弱化信道。原全源 L6300/U56700隐藏TX/V27000／5RX、同父E20＋10至E30、4L前向和原U保持，复用严格匹配nominal E30。执行476f350914ca72c753365c1b25d9deebf4920701；定向检查／一次P0P1与修复复核／真实CP smoke／单archive/compile/PID-CWD-argv-CUDA-GPU-loggrowth均PASS，原worker已完整追加E1／累计E21／113664LNN／28416As、当前298更新，无终轮评分。固定low≥+.5pp、clean/mid不降、每sub≥−.25pp；失败关闭固定配方，不调形状/比例/seed/预算救跑；全部7视图truth-last，完整目标ACTIVE。
