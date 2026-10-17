@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_SOURCE_DELAY_PHASE_ATTRIBUTION_ANALYZED",
+  "status": "E30_BOUNDED_TIMING_FACTORIAL_ANALYZED_NEGATIVE",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -257,9 +257,34 @@
       "added_Ag_low_delta_pp": -0.054761904761913005,
       "repeat_policy": "No window/phasefit/permutation/probability/RX/seed/budget rescue; whole goal active",
       "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/report.md"
+    },
+    "fixed_bounded_timing_IQ_factorial": {
+      "run_id": "20261017-phase1-FcrossRX-timing-factorial-e30-s2026092701-m2-r01",
+      "execution_commit": "7e4af64bb887c08c6a225bcb6bee4856fdb7c588",
+      "analysis_commit": "2a1efbaeca711303083cb78c5a4645e089ed5dae",
+      "scratch_epochs_each": 30,
+      "new_models": 2,
+      "reused_controls": "P32 B00/B01 exact rawsecondary controls",
+      "model_seed_count": 1,
+      "source_gate_pass": false,
+      "source_gate_checks": {
+        "Ag_clean_V_preserved": false,
+        "joint_clean_V_preserved": false,
+        "both_private_timing_draws_gain": false,
+        "all_original_urban_draws_gain": false
+      },
+      "source_partial_decision_commit": "374e8ebfa9031c918ffa87a8591ab0597bed427c",
+      "formal_feedback": false,
+      "Ag_proved": false,
+      "crossseed_confirmed": false,
+      "formal_B11_clean": 0.8171845238095238,
+      "formal_B11_low": 0.5148035714285715,
+      "added_Ag_low_delta_pp": -1.9142857142857128,
+      "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-timing-factorial-e30-s2026092701-m2-r01/report.md",
+      "repeat_policy": "No bound/probability/boundary/RX/modelseed/threshold/epoch rescue or automatic seed extension;whole goal remains active"
     }
   },
-  "next_method_boundary": "All-source scratchE30/defaulthead/originalU retained. Cycle Ag remains closed. P34 source-only flat-kernel delay contribution passed,phase failed;timing Ag has not been trained or shown benefit. Next candidate must preserve IQ identity and original As dependencies,predeclare bound/source conditions,match input/NN cost and retain all source RX;no target-feedback or closed-route rescue.",
+  "next_method_boundary": "All-source scratchE30/defaulthead/originalU retained. Fixedcycle and boundedtiming Ag closed by source conditions;do not rescue bounds/probabilities/seed/budget or weaken formal channel. No new training candidate is established. Source-only existing-branch/defaulthead evidence and clean/satellite gradient relationships at low observation quality may be diagnosed without fitted heads or target feedback;not yet implemented/launched.",
   "execution_commit": "bafba40e365d0914a2e86f861fb55a49f1cd3997",
   "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/report.md",
   "input_representation_audit": {
@@ -481,6 +506,28 @@
     "scope": "Only flat-kernel family;delay shift also changes reflect prefix;not proof of original full-dispersive attribution or formal improvement",
     "report": "automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01/report.md",
     "next_candidate": "Bounded nonwrapping timing IQ Ag,not implemented/registered/launched;must match all-source scratchE30/defaulthead/U/4L controls and test source identification gains before extension",
+    "goal_complete": false,
+    "followup_result": {
+      "run_id": "20261017-phase1-FcrossRX-timing-factorial-e30-s2026092701-m2-r01",
+      "status": "ANALYZED_SOURCE_AND_FORMAL_NEGATIVE",
+      "note": "Bounded timing has now been implemented/trained/evaluated;old proposed-next-candidate text is historical,not pending. No Ag or joint gain proved."
+    }
+  },
+  "completed_timing_factorial": {
+    "run_id": "20261017-phase1-FcrossRX-timing-factorial-e30-s2026092701-m2-r01",
+    "status": "ANALYZED",
+    "source_rule_pass": false,
+    "source_only_decision": true,
+    "formal_feedback": false,
+    "new_epochs": 60,
+    "new_updates": 13320,
+    "actual_new_NN": 13203856,
+    "analysis_artifacts": "E:/type10-7/local_artifacts/cvs_FcrossRX_timing_factorial_E30_20261017/analysis_r01",
+    "telemetry_artifacts": "E:/type10-7/local_artifacts/cvs_FcrossRX_timing_factorial_E30_20261017/telemetry_r01",
+    "formal_confusions": 504,
+    "source_confusions": 1112,
+    "Ag_proved": false,
+    "crossseed_confirmed": false,
     "goal_complete": false
   }
 }
