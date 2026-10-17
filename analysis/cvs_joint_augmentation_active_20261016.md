@@ -1,3 +1,9 @@
+## 2026-10-18：256 点有限窗酉相位观测待源域检验
+
+本轮只检查源 V 身份保护，不训练、不访问 target。两个原完整源 E20 默认头、原 V 全 5 RX 的固定 1800 样本，raw 与同一份 ordinary 比较 0／±0.1 rad。合成检查已通过，ordinary 的 Python／Torch RNG 同时固定并恢复；一次 P0/P1 定点修复已通过。不读取窗外 IQ，不留出训练 RX。任一固定身份保护条件失败即关闭；通过也只说明必要保护，不能声称 A_g 或联合目标有效。
+
+[登记报告](../automation_reports/CV-SincNet/20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01/report.md)；E30 授权与 F＋跨 RX 同 TX 基线保持。
+
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
 最新完成：[ordinary／As监督份额只读核对](cvs_clean_supervision_mass_audit_20261018.md)，ANALYZED_CODE_AND_CLOSED_SOURCE_LOGS_ONLY。FULL_AS从REPEAT的ordinary总系数1改为ordinary.5／As.5，B01为ordinary.75／As.25；这证实重分配，不证明clean代价的唯一原因。原生CE被hook correction抵消后只加一次，native loss_labeled仍是首ordinary CE而非完整L目标；复用两行各2220完整源步记录核对。实际E13 scale.2506003、PA概率.035084而非base.14、shift最大8而非32；旧ordinary不是未增强x，也不是PA身份保持证据。旧additiveAs固定seed02在旧4RX折clean失败，关闭不救跑；另一对话已完成全源R25及V1800×2draw，不在本对话重复，不混合其scratch30与本E20＋10结果。本次0新IQ／CP／NN／teacher／更新／训练，无新Ag或联合成功，完整目标ACTIVE，当前无获新源依据支持的训练候选。以下旧当前／下一项保留为历史。

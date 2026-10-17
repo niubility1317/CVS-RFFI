@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_SUPERVISION_REALLOCATION_AUDITED",
+  "status": "RESEARCH_ACTIVE_UNITARY_SOURCE_GUARD_IMPLEMENTED",
   "source_experiment": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
   "authorization": "Latest explicit user budget E30;new fixed FIR first-learning-utility rows use matching noAg fullsource E20 parents plus10;no trainingRXholdout",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -153,7 +153,24 @@
     "qualification": "FAIL",
     "joint_goal_complete": false
   },
-  "next_source_hypothesis": null,
+  "next_source_hypothesis": {
+    "run_id": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
+    "config": "configs/cvs_unitary_dispersion_source_20261018.json",
+    "status": "IMPLEMENTED_LOCAL_CHECKS_PASS_P0P1_FIXED",
+    "IQ_length": 256,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_RX_holdout": null,
+    "training_updates": 0,
+    "target_access": false,
+    "on_fail": "Close fixed .1rad/profile/order8/boundary;no range/seed/parent rescue",
+    "on_pass": "Source protection only;not Ag/DG/As efficacy;no automatic training"
+  },
   "next_training_hypothesis": null,
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -4262,5 +4279,6 @@
     "no_rescue": true
   },
   "latest_completed_analysis": "analysis/cvs_clean_supervision_mass_audit_20261018.md",
-  "current_evidence_gap": "No new supported IQ Ag candidate. Ordinary reallocation confirmed but not sole causal explanation;closed additiveAs seed02 refutes sufficient protection in old4RXfold;do not repeat additive or other-thread R25/sourceV diagnostics."
+  "current_evidence_gap": "Finite-window unitary dispersion is mathematically verified only;source identity protection and Ag/DG/As efficacy remain unproved. No automatic training or target.",
+  "current_source_experiment": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01"
 }

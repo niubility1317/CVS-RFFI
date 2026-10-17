@@ -22,3 +22,4 @@
 |固定平滑 IQ 滤波首次训练 E30：最终结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01/report.md)|
 |完整接收先验的虚拟会话覆盖：E30 负结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01/report.md)|
 |ordinary／As 跨视图 dropout 相关性：E30 正式结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-dropoutCoupling-e20plus10-s2026092701-m2-r01/report.md)|
+|F＋跨 RX：有限窗酉相位观测的源 V 身份保护|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01/report.md)|

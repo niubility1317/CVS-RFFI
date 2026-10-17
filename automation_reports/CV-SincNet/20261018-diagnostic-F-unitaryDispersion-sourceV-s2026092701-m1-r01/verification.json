@@ -1,0 +1,26 @@
+{
+  "status": "LOCAL_CHECKS_PASS",
+  "protocol_negatives": 18,
+  "independent_DCT_max_error": 1.1901590823981678e-13,
+  "FP32_energy_error": 9.573144588159721e-8,
+  "FP32_inverse_error": 1.7888947929946762e-7,
+  "Taylor_operator_error_bound": 3.0455547786476197e-15,
+  "proper_complex_linear": true,
+  "no_wrap": true,
+  "identity_at_zero": true,
+  "global_RNG_unchanged": true,
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "ordinary_RNG_fix": {
+    "status": "PASS",
+    "same_seed_repeatable": true,
+    "Python_and_Torch_RNG_restored": true,
+    "exception_restored": true,
+    "realIQ": 0,
+    "CP": 0,
+    "NN": 0
+  },
+  "independent_P0P1": "one P1 Python RNG fixed;targeted re-review PASS;no other P0/P1"
+}
