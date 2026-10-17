@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 23,
+  "analytic_SAM": true,
+  "remaining_aux_gradient_preserved": true,
+  "actual_F": [
+    {
+      "row": "NOAS_REPLAY-s2026092701",
+      "neutral_gradient_max_error": 0.0,
+      "replay_relative_error_max": 0.0,
+      "actual_perturbation_max": 0.0,
+      "lifecycle_steps": 2,
+      "default_head_joint_update": true
+    },
+    {
+      "row": "AS_REPLAY-s2026092701",
+      "neutral_gradient_max_error": 0.0,
+      "replay_relative_error_max": 0.0,
+      "actual_perturbation_max": 0.0,
+      "lifecycle_steps": 2,
+      "default_head_joint_update": true
+    },
+    {
+      "row": "AS_LSAM-s2026092701",
+      "neutral_gradient_max_error": 0.0,
+      "replay_relative_error_max": 0.39501593236517873,
+      "actual_perturbation_max": 0.05000000234923594,
+      "lifecycle_steps": 2,
+      "default_head_joint_update": true
+    }
+  ],
+  "synthetic_F_forward_packets": 9216,
+  "synthetic_updates": 3,
+  "extra_F_VJP": 12,
+  "CP": 0,
+  "real_IQ": 0,
+  "real_updates": 0,
+  "target": false
+}

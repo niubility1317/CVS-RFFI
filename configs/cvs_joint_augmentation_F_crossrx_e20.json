@@ -2310,16 +2310,24 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": null,
+  "current_experiment": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
   "active_As_hypothesis": {
-    "status": "PLAIN_AS_INDEPENDENT_PRACTICAL_GAIN_WITH_CLEAN_COST_SINGLE_SEED",
-    "plain_As_vs_B00": {
-      "clean_pp": -2.5226190476190475,
-      "midurban_pp": 27.097023809523808,
-      "lowurban_pp": 21.745833333333334
-    },
-    "fixed_view_projection": "CLOSED",
-    "next_training_candidate": null
+    "status": "IMPLEMENTED_REGISTERED_NOT_LAUNCHED",
+    "run_id": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
+    "hypothesis": "L-only bounded parameter-neighborhood update on same generated ordinary/fullpractical IQ improves source urban while protecting clean versus matched neutral replay",
+    "not_IQ_Ag": true,
+    "rows": [
+      "NOAS_REPLAY",
+      "AS_REPLAY",
+      "AS_LSAM"
+    ],
+    "radius": 0.05,
+    "source_rule": "clean/mid>=0;low>=+.5pp;eachsub>=-.25pp vsAsReplay;fixedsourceV1800/2draw",
+    "on_fail": "Close fixed radius/coordinate/parent/seed/recipe;no rescue",
+    "new_L_forwards_each": 8,
+    "extraVJP_each": 2,
+    "one_optimizer_and_own_EMA_per_step": true,
+    "no_U_changes": true
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
@@ -4292,7 +4300,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": null,
+  "current_training_experiment": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -4504,7 +4512,7 @@
     "Ag_efficacy": false,
     "joint_goal_complete": false
   },
-  "latest_research_note": "automation_reports/CV-SincNet/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01/final_analysis.md",
+  "latest_research_note": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md",
   "amplitude_donor_route_check": {
     "status": "NOT_INDEPENDENT_SUPPORTED_NEW_ROUTE_NO_LAUNCH",
     "hypothesis": "Preserve anchor Fourier phase and borrow same-visibleTX crossRX donor amplitude",
@@ -5287,5 +5295,16 @@
     "automatic_training": false,
     "no_rescue": true,
     "report": "automation_reports/CV-SincNet/20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01/report.md"
+  },
+  "LSAM_release": {
+    "run_id": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
+    "status": "PLANNED",
+    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md",
+    "new_Ag": false,
+    "actual_training_started": false,
+    "each_cumulative_epochs": 30,
+    "each_new_updates": 2220,
+    "source_RX_holdout": null,
+    "independent_P0P1": "PASS"
   }
 }
