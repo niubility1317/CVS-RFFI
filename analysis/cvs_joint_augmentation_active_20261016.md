@@ -336,3 +336,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 当前下一唯一源问题：共享微弱加性IQ方向的跨RX/day迁移敏感性，见analysis/cvs_shared_iq_direction_basis_20261017.md。算子/固定12源单元/15+19反例及真实F合成检查已实现通过，合计84合成NN/36输入梯度贡献，0真实IQ/CP/更新/target。不是旧U-VAT一致性训练；无新训练loss/teacher/部署模块。尚未登记/发布/读取新源数据，E20未启动，敏感性不等于Ag收益。另一对话当前量化残留观测不在此任务中修改；原所有失败路线保持关闭，完整目标ACTIVE。
+
+
+共享微弱加性IQ方向 20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01 ANALYZED／VERIFIED：FAIL_FIXED_SHARED_DIRECTION_CLOSED。原fitL5040/12heldRXday/三视图15120判决完整复算；raw99.841270%、direction99.801587%、permuted99.841270%，差0.039683pp、0/4RX≥1pp；修复1破坏3。75602新NN／30240输入梯度贡献／240调用，0更新/As/target，未进入E20。固定所有knobs关闭；无新Ag候选晋级。F＋跨RX同TX／E20／原U/默认头保持，完整联合目标ACTIVE。

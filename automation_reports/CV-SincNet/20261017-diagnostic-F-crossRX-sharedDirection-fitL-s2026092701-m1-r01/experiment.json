@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Active joint Ag/As research;fixed source-only question recorded before source input. Current baselineF+CROSS_RX/E20;no training extension or target access.",
   "code": {
-    "commit": "Actual code commit is supplied by publisher in release_commit.txt andresolved_config",
+    "commit": "361978e3449d254258b9b61141508a0ed4c945ab",
     "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
     "environment": "ordinary N607 CVS-RFFI; CPU2/loader0",
     "cwd": "PROJECT/releases/cvs_F_sharedDirection_fitL_20261017_r01",
@@ -177,7 +177,7 @@
           "epsilon_absolute_complex_RMS": 0.001,
           "xi_absolute_complex_RMS": 0.0001,
           "peak_absolute": 0.003,
-          "FP32_relative_tolerance": 1e-06,
+          "FP32_relative_tolerance": 0.000001,
           "private_seed": 202610178001,
           "control_seed": 202610178002,
           "mean_zero_each_IQ": true,
@@ -226,7 +226,8 @@
     "One shared vector for allTX ineachheldRX/day;operatorreads no labels. Directionreferenceuses2520otherRX/otherday samples;model itself trainedfitL,so thisisnot modelblindtest.",
     "No training recipe,loss/NNdeploymentbranch/newclassifier. KL only constructsinput direction;nomodelparameterupdate. Sameenergypermutation isofnewvector,notoriginalIQ.",
     "Original cache may deserialize other source roles/features;only exactfitL entersmath. No U/V/RX1/target,priorreportsorindicesselectdirectionparameters.",
-    "Fixedfailurecloses epsilon/xi/peak/iterations/model/RX/day/threshold/seed;no rescan orautomatictraining. PASS only supportsseparate fixedE20 sourcecomparison later."
+    "Fixedfailurecloses epsilon/xi/peak/iterations/model/RX/day/threshold/seed;no rescan orautomatictraining. PASS only supportsseparate fixedE20 sourcecomparison later.",
+    "Completed all12 sourcefolds;independent all15120 logits/defaulthead decisions recount agrees. FAIL_FIXED_SHARED_DIRECTION_CLOSED;no automatictraining,targetorparameterrescue."
   ],
   "registered_at": "2026-10-17T01:32:07+00:00"
 }

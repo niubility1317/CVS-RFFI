@@ -65,3 +65,6 @@
 
 
 源执行器与单行登记已完成，尚未发布。使用实际opaque角色handle与独立RX/day元数据，明确冻结全部模型参数；直接CLI的标准库同名遮蔽已通过重命名消除。15＋19＋24项相关反例及冻结F合成检查通过，累计168合成NN／72输入梯度贡献。唯一P0/P1的旧child入口已修正并限定复核PASS；无其他直接P0/P1。真实CP smoke/源输入/识别结果待发布，不把本地检查当科学证据。
+
+
+源实验20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01已完整ANALYZED／VERIFIED，执行361978e3449d254258b9b61141508a0ed4c945ab：raw5032/5040、direction5030/5040、permuted5032/5040，总差0.03968254pp，逐RX最大0.15873016pp，0/4达1pp；direction修复1破坏3。全部15120源判决/216单元/12折向量和75602NN／30240输入梯度贡献／240调用独立复算一致，0训练更新/target。FAIL_FIXED_SHARED_DIRECTION_CLOSED；不调epsilon/xi/峰值/迭代/模型/RX/day/阈值/seed，不进入E20。结果只关闭本固定构造，不证明所有加性增强无效；完整联合目标ACTIVE。
