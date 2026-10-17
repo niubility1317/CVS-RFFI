@@ -2,6 +2,10 @@
 import math
 import numpy as np
 from . import design as d
+def tensor_input(array):
+ import torch
+ a=np.asarray(array,dtype=np.float32)
+ return torch.frombuffer(bytearray(a.tobytes()),dtype=torch.float32).reshape(a.shape)
 class ExactNoise:
  def __init__(self,draws):
   a=np.asarray(draws,dtype=np.float64)

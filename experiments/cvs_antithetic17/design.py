@@ -2,9 +2,9 @@
 import json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r01'
-RELEASE='cvs_F_antithetic_noise_source_20261017_r01'
-LOCAL='local_artifacts/F_antithetic_noise_source_20261017'
+RUN='20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02'
+RELEASE='cvs_F_antithetic_noise_source_20261017_r02'
+LOCAL='local_artifacts/F_antithetic_noise_source_20261017_r02'
 OWNER='codex/root/F-antithetic-noise-source'
 BASE='PROJECT/runs/'+RUN
 SOURCE='PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json'

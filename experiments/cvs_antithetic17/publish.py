@@ -7,7 +7,7 @@ def remote(script,runtime):
  if r.returncode:raise RuntimeError(r.stderr.decode('utf8',errors='replace'))
  return json.loads(r.stdout)
 def main():
- package='experiments/cvs_antithetic17';local=d.ROOT/'local_artifacts/F_antithetic_noise_source_20261017';runtime=d.read(local/'runtime.json')
+ package='experiments/cvs_antithetic17';local=d.ROOT/'local_artifacts/F_antithetic_noise_source_20261017_r02';runtime=d.read(local/'runtime.json')
  if runtime['run_id']!=d.RUN:raise ValueError('Private runtime for another run')
  if subprocess.check_output(['git','status','--porcelain','--',package],cwd=d.ROOT,text=True).strip():raise ValueError('Commit actual diagnostic before release')
  commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=d.ROOT,text=True).strip();project=runtime['project'];release=project+'/releases/'+d.RELEASE

@@ -1,0 +1,41 @@
+{
+  "status": "FAILED_SOURCE_TECHNICAL",
+  "execution_commit": "88de03874343a0b461072cc3f5b71c06c93556a0",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "synthetic_checks": {
+    "status": "PASS",
+    "protocol_negatives": 8,
+    "startup_fake_process_cases": 2,
+    "synthetic_native_channel_calls": 48,
+    "max_native_replay_error": 0,
+    "synthetic_grad_Gram_recount_error_lt": 1e-12,
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0,
+    "target_access": false
+  },
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 2,
+    "IQ": 0,
+    "target_access": false
+  },
+  "launch_record_status": "OBSERVED",
+  "worker_PID": 687082,
+  "worker_terminated": true,
+  "returncode": 1,
+  "failed_layer": "NumPy ndarray to torch.from_numpy under pinned native runtime",
+  "exception": "TypeError: expected np.ndarray (got numpy.ndarray)",
+  "source_CP_loads": 1,
+  "source_cache_loads": 1,
+  "NN": 2,
+  "completed_gradient_calls": 0,
+  "physical_channel_calls_before_error": 90,
+  "optimizer_updates": 0,
+  "target_access": false,
+  "scientific_results": false,
+  "root_preserved": true,
+  "automatic_retry": false
+}

@@ -2,7 +2,7 @@
 import json
 import numpy as np
 from . import design as d
-from .coupled import ExactNoise,process,three,variance
+from .coupled import ExactNoise,process,three,variance,tensor_input
 def run():
  import leo_practical.channel as ch
  import leo_practical.residual as residual
@@ -19,6 +19,8 @@ def run():
  except TimeoutError:pass
  else:raise AssertionError('Expected observation timeout')
  assert len(created)==2 and [x['status'] for x in failed]==['SUBMITTED','OBSERVATION_FAILED'] and failed[0]['pid']==failed[1]['pid']==17
+ a=(np.arange(15360,dtype=np.float32)/15361).reshape(30,2,256);b=tensor_input(a)
+ assert b.tolist()==a.tolist() and str(b.dtype)=='torch.float32' and tuple(b.shape)==(30,2,256)
  negative=0
  def bad(f):
   nonlocal negative
@@ -36,5 +38,5 @@ def run():
  for name,k in [('independent',1),('antithetic',2)]:assert abs(v[name]-np.var((g[0::3]+g[k::3])*.5,axis=0,ddof=1).sum())<1e-12
  for a in (np.zeros((8,8)),np.full((24,24),np.nan),np.zeros((24,24))):bad(lambda a=a:variance(a,8))
  if d.config()['expected_NN']!=25922 or d.config()['training_updates'] or d.config()['target_access'] or d.config()['source_RX']!=[1,3,4,6,8]:raise ValueError('Fixed source-only budget required')
- return dict(status='PASS',protocol_negatives=negative,startup_fake_process_cases=2,synthetic_native_channel_calls=calls,max_native_replay_error=max_error,synthetic_grad_Gram_recount_error_lt=1e-12,real_IQ=0,CP=0,NN=0,updates=0,target_access=False)
+ return dict(status='PASS',protocol_negatives=negative,startup_fake_process_cases=2,tensor_buffer_bridge_exact=True,synthetic_native_channel_calls=calls,max_native_replay_error=max_error,synthetic_grad_Gram_recount_error_lt=1e-12,real_IQ=0,CP=0,NN=0,updates=0,target_access=False)
 if __name__=='__main__':print(json.dumps(run()))

@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "protocol_negatives": 8,
+  "startup_fake_process_cases": 2,
+  "synthetic_native_channel_calls": 48,
+  "max_native_replay_error": 0,
+  "Gram_recount_error_lt": 1e-12,
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false,
+  "independent_review": "Original candidate review/P1 correction PASS;one array bridge targeted recheck PASS",
+  "tensor_buffer_bridge_exact": true,
+  "technical_recovery": "r01 failure independently reproduced using syntheticB30;existing buffer path exact",
+  "local_legacy_Torch_NumPy2_warning": true,
+  "bridge_checks_despite_warning": "PASS without using NumPy C API"
+}

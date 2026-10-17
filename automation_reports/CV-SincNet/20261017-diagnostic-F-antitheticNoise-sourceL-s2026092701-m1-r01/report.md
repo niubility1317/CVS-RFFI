@@ -1,6 +1,6 @@
 # 原噪声分布下正负配对：源域梯度方差反证
 
-状态：PLANNED，尚未启动。训练预算上限 E30；本行是零更新源诊断，读取固定全源 scratch E20 checkpoint，不是 E30 训练结果。
+状态：FAILED_SOURCE_TECHNICAL；已自然停止并保留输出。训练预算上限 E30；本行是零更新源诊断，读取固定全源 scratch E20 checkpoint，不是 E30 训练结果。
 
 唯一假设：保持原 practical 完整处理与每个观测噪声分布，e/-e 负相关配对相对 e/e2 独立配对，可降低既有 RDrop 监督项的梯度估计方差。Gaussian 对称性只支持边际分布保持，不保证非线性梯度方差下降。[Wu 等，2019](https://proceedings.mlr.press/v89/wu19c.html) 的变分推断研究提供动机，不能作为 CVS 身份收益证据。旧独立 MC2、N0、FIR 等负结果保持关闭，本行不改噪声幅度或传播先验。
 
@@ -28,3 +28,9 @@
 ## 已验证与待完成
 
 本地 compile PASS；8 个协议负例、2 个纯假进程启动回归、48 次合成原生物理处理 PASS，12 个正视图回放最大差 0，Gram 方差与直接重算误差 <1e-12；无真实 IQ/CP/NN/更新。独立 P0/P1 审查指出一次启动接口 P1，已修复，一次定向复查 PASS，P1 关闭。尚未发布、读取真实 CP 或得到结果。
+
+## 实际技术结果
+
+执行 commit `88de03874343a0b461072cc3f5b71c06c93556a0`，单 archive 比对、远端编译、合成检查与真实 CP smoke 均通过。worker 687082 首批物理处理后在 torch.from_numpy 处失败，returncode1；原输出不覆盖。实际 1CP/1cache/2NN/90完整物理处理/0梯度/0更新/0target，无科学结果。
+
+固定原生 runtime 下纯合成 B30 复现同一 TypeError，已验证既有源代码采用的 byte-buffer 转换逐元素完全一致（0IQ/CP/NN）。技术恢复只改转换边界，保持原科学配置及阈值，用独立 r02 输出根；不在原目录重试，不增加训练预算。

@@ -4,7 +4,7 @@ from collections import Counter
 import numpy as np
 import torch
 from . import design as d
-from .coupled import three,variance
+from .coupled import three,variance,tensor_input
 def run():
  if os.environ.get('CUDA_VISIBLE_DEVICES') in ('',None):raise ValueError('One reserved shared GPU required')
  torch.set_num_threads(2);out=d.resolve(d.BASE);started=time.perf_counter();NN=2;backwards=0;physical_calls=0
@@ -53,7 +53,7 @@ def run():
       for j,(value,meta) in enumerate(views):arrays[j].append(np.stack((value.real,value.imag)))
       metadata[(views[0][1]['state_end'],views[0][1]['receiver_lock_status'])]+=1
      for j,array in enumerate(arrays):
-      x=torch.from_numpy(np.asarray(array,dtype=np.float32)).to('cuda:0');seed=ch.stable_seed(d.DROPOUT_SEED,scene,bi,rep,0 if j==0 else 1);g,loss=grad(x,labels,seed);NN+=60;backwards+=1;vectors.append(g);losses.append(loss)
+      x=tensor_input(array).to('cuda:0');seed=ch.stable_seed(d.DROPOUT_SEED,scene,bi,rep,0 if j==0 else 1);g,loss=grad(x,labels,seed);NN+=60;backwards+=1;vectors.append(g);losses.append(loss)
      d.write(out/'progress.json',dict(scene=scene,batch=bi,repeat=rep+1,NN=NN,backward_calls=backwards,channel_calls=physical_calls,updates=0,target_access=False))
     A=torch.stack(vectors).double();gram=(A@A.T).tolist();B=A[:,offset:offset+size];hgram=(B@B.T).tolist();vf=variance(gram,d.REPEATS);vh=variance(hgram,d.REPEATS);groups.append(dict(scene=scene,batch=bi,count=30,full_gram=gram,head_gram=hgram,losses=losses,full=vf,head=vh,state_lock_counts=[dict(state=k[0],lock=k[1],count=n) for k,n in sorted(metadata.items())]));del A,B,vectors;print('GROUP_COMPLETE '+scene+' '+str(bi),flush=True)
  if NN!=d.config()['expected_NN'] or backwards!=432 or physical_calls!=12960 or any(not torch.equal(v.detach().cpu(),before[k]) for k,v in m.state_dict().items()):raise ValueError('Frozen model/budget changed')

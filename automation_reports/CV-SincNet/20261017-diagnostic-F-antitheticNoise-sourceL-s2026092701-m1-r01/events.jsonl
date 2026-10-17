@@ -1,1 +1,2 @@
 {"at": "2026-10-17T14:24:20+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-17T14:33:52+00:00", "status": "FAILED", "note": "Source worker naturally terminated at NumPy-to-Torch boundary after smoke2;zero gradients/updates/target;immutable output retained;technical recovery separate r02", "evidence": ["automation_reports/CV-SincNet/20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r01/execution_evidence.json"], "row_id": null}
