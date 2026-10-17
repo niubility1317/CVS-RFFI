@@ -40,3 +40,12 @@ source条件全部满足才记本消融资格通过：H00 clean−B00≥.2pp；H
 执行 commit `62b9bb6247b29fc98bf1379b15f3c262f9a495dc` 已推送并由独立GitHub compare核对一致。普通账号preflight、单归档传输比对与remote compile PASS。真实checkpoint/noquery2NN＋两行完整L hook1536合成NN均PASS后，同一dispatcher直接进入训练。两行各857原生参数，仅candidate_id/output_dir/run_id与对应P43控制不同；native/U平滑仍.01，实际L配置0，scratch无祖先、无外部权重、target_contact=false。
 
 独立读回dispatcher 961519、H00 962003/GPU0、H01 962080/GPU1，CWD/argv/startticks/CUDA归属一致；两日志从6372增至11504bytes，stderr空，无failure。两行均完成E1/222更新/LNN170496；H01实际As14208包，H00为0，额外U前向均0。仅作为发布健康证据，不是源资格或识别收益。后续继续按固定E30/all7，不停健康任务或改配置。详见 [execution_verification.json](execution_verification.json)。
+
+
+## 完整分析已部署，源响应候选关闭
+
+分析代码`1928b5ec55e584f4a93c77124fe1dfd7541c7e6f`已提交推送并独立OID一致。本地与N607各7项纯合成检查PASS，单分析归档比较及remotecompile PASS，0IQ/CP/NN/更新。仅source模式的分析进程967127已独立核实PID/CWD/argv/startticks并在等待所属训练；尚未读取新正式成绩。它完成后先固定/提交源结论，再启动正式四格复算。详见 [分析范围](analysis_preparation.md) 与 [执行记录](analysis_execution_verification.json)。
+
+同一批模型最新读回：H00 E11/2442更新/LNN1875456，H01 E8/1776更新/LNN1363968、实际As113664包；原dispatcher与两worker均live，无failure、stderr空。未重启或改配置。
+
+引用对话的新固定RX响应检验已 [ANALYZED并关闭](E:/type10-7/automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01/source_analysis.md)：响应SSE2.944634，相对加性控制.732224变差，0/18折与0/5RX满足改善条件。本分支不从该固定模型生成IQ；先均值/逐包归一化的后续归因属于另一个尚未执行的问题，不把本FAIL翻为Ag依据。当前本分支唯一实际候选仍是已启动的L-only CE0消融，它不替代Ag研究；联合目标保持完整、尚未完成。
