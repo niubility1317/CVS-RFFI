@@ -1,0 +1,175 @@
+{
+  "status": "VERIFIED_RUNNING_FIRST_EPOCH",
+  "run_id": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
+  "execution_commit": "5e88542e9d6a0127fe323205a864f8ebc0645231",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "remote_synthetic_checks": {
+    "status": "PASS",
+    "negative_cases": 19,
+    "manual_recurrence_steps": 16,
+    "max_parameter_error": 0,
+    "equal_view_native_steps": 3,
+    "synthetic_F_forward_packets": 2048,
+    "synthetic_optimizer_updates": 23,
+    "synthetic_VJP_calls": 46,
+    "integration": [
+      {
+        "row_id": "NOAS_MEASURE-s2026092701",
+        "parameters": 900722,
+        "L_forwards": 4,
+        "VJP": 2,
+        "default_head_shape": [
+          6,
+          160
+        ],
+        "Sinc_physical_clip": true
+      },
+      {
+        "row_id": "AS_MEASURE-s2026092701",
+        "parameters": 900722,
+        "L_forwards": 4,
+        "VJP": 2,
+        "default_head_shape": [
+          6,
+          160
+        ],
+        "Sinc_physical_clip": true
+      },
+      {
+        "row_id": "NOAS_VIEW-s2026092701",
+        "parameters": 900722,
+        "L_forwards": 4,
+        "VJP": 2,
+        "default_head_shape": [
+          6,
+          160
+        ],
+        "Sinc_physical_clip": true
+      },
+      {
+        "row_id": "AS_VIEW-s2026092701",
+        "parameters": 900722,
+        "L_forwards": 4,
+        "VJP": 2,
+        "default_head_shape": [
+          6,
+          160
+        ],
+        "Sinc_physical_clip": true
+      }
+    ],
+    "real_IQ": 0,
+    "CP": 0,
+    "real_updates": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "new_Ag": false
+  },
+  "shared_real_checkpoint_smoke": {
+    "status": "PASS",
+    "real_CP_loads": 2,
+    "NN_forward_packets": 4,
+    "real_IQ": 0,
+    "query_read": false,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "parent_epoch": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "two_original_parents": true,
+    "shared_As_parent": true
+  },
+  "dispatcher_identity_verified": true,
+  "rows": [
+    {
+      "row_id": "NOAS_MEASURE-s2026092701",
+      "PID_CWD_argv_verified": true,
+      "physical_GPU": 0,
+      "CUDA_environment_verified": true,
+      "GPU_process_seen": true,
+      "log_initial_bytes": 6825,
+      "log_observed_bytes": 12013,
+      "log_growth_verified": true,
+      "source_roles": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "source_roles_exact": true,
+      "latest_observed_cumulative_epoch": 21,
+      "new_updates": 222,
+      "L_forward_packets": 113664,
+      "As_packets": 0
+    },
+    {
+      "row_id": "AS_MEASURE-s2026092701",
+      "PID_CWD_argv_verified": true,
+      "physical_GPU": 1,
+      "CUDA_environment_verified": true,
+      "GPU_process_seen": true,
+      "log_initial_bytes": 6809,
+      "log_observed_bytes": 11995,
+      "log_growth_verified": true,
+      "source_roles": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "source_roles_exact": true,
+      "latest_observed_cumulative_epoch": 21,
+      "new_updates": 222,
+      "L_forward_packets": 113664,
+      "As_packets": 28416
+    },
+    {
+      "row_id": "NOAS_VIEW-s2026092701",
+      "PID_CWD_argv_verified": true,
+      "physical_GPU": 2,
+      "CUDA_environment_verified": true,
+      "GPU_process_seen": true,
+      "log_initial_bytes": 6801,
+      "log_observed_bytes": 11984,
+      "log_growth_verified": true,
+      "source_roles": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "source_roles_exact": true,
+      "latest_observed_cumulative_epoch": 21,
+      "new_updates": 222,
+      "L_forward_packets": 113664,
+      "As_packets": 0
+    },
+    {
+      "row_id": "AS_VIEW-s2026092701",
+      "PID_CWD_argv_verified": true,
+      "physical_GPU": 6,
+      "CUDA_environment_verified": true,
+      "GPU_process_seen": true,
+      "log_initial_bytes": 6785,
+      "log_observed_bytes": 11963,
+      "log_growth_verified": true,
+      "source_roles": {
+        "L_s": 6300,
+        "U_s": 56700,
+        "V": 27000
+      },
+      "source_roles_exact": true,
+      "latest_observed_cumulative_epoch": 21,
+      "new_updates": 222,
+      "L_forward_packets": 113664,
+      "As_packets": 28416
+    }
+  ],
+  "failure_observed": false,
+  "default_head_joint_training": true,
+  "source_RX_holdout": null,
+  "new_IQ_Ag": false,
+  "U_truth_read": false,
+  "target_metric_read": false,
+  "training_complete": false,
+  "formal_results_complete": false,
+  "joint_goal_complete": false
+}

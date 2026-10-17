@@ -1,3 +1,7 @@
+## 2026-10-18：逐视图二阶矩四行已真实运行
+
+[当前四行报告](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/report.md) RUNNING／VERIFIED；执行提交 5e88542e9d6a0127fe323205a864f8ebc0645231，远端OID一致。单archive/compile、唯一P0P1和两匹配原CP无query smoke通过；四worker PID/CWD/argv/GPU/loggrowth核对，GPU0/1/2/6，最近实测各累计E21/222新增更新/113664 L NN，As两行各28416完整物理处理。全5源RX/L6300/U56700隐藏TX/V27000/256点、E20+10至E30/defaultcos联合训练/原U保持，无训练域留出。只是二阶矩配方×As；没有新IQAg、完成训练或正式成绩。零前向全量独立复算代码已实现并过合成反例，真实复算待完整输出，不重复审批或改健康任务。完整目标ACTIVE；以下旧当前/下一项按历史保留。
+
 ## 2026-10-18：逐视图二阶矩 × 原 practical 四行已实现，尚未发布
 
 [固定四行预登记](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/report.md) 已登记并完成本地19负例/16步独立递推/同视图native精确控制及4个真实F合成集成：2048F NN，0真实IQ/CP/更新/target。现有MEASURE完整2220步源标量的分歧能量/平均梯度能量=.7307395，10轮全部复算；该量不是身份或优化器效果。候选仅向原AdamW二阶矩加同clip²下的(gO-gS)²，gO/gS已各含.5视图权重；总损失/一阶矩/梯度、原Sinc物理clip/lr/eps/decay、U规则不改。四行NoAs/As×MEASURE/VIEW_SECOND各4Lforward/2额外VJP；无新IQAg，无新损失/部署分支/头。

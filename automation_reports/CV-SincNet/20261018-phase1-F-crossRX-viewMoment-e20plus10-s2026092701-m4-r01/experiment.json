@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Active Ag+As joint research/latest humanF+CROSS_RX/E30/256IQ/full5RX. New optimizer recipe tests As adaptability;not IQAg or goal completion. No U truth/target-guided selection/oldtask mutation.",
   "code": {
-    "commit": "Actual execution Git commit recorded in release_commit.txt and resolved_config",
+    "commit": "5e88542e9d6a0127fe323205a864f8ebc0645231",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary account/existing CVS-RFFI CUDA runtime/CPU2",
     "cwd": "PROJECT/releases/cvs_F_viewMoment_E30_20261018_r01",
@@ -205,7 +205,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-viewMoment-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -243,7 +243,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/defaultcos/originalU/RDrop1/LS.01;ordinary.5 plus ordinary-or-practical.5;SupCon.1;only AdamW second moment differs",
@@ -481,8 +481,13 @@
         },
         "REJECTED_EXTRA_GATE": "No separate design approval,seal or additional review"
       },
-      "status": "PLANNED",
-      "result": {}
+      "status": "RUNNING",
+      "result": {
+        "latest_observed_cumulative_epoch": 21,
+        "actual_new_updates": 222,
+        "training_complete": false,
+        "formal_result_available": false
+      }
     },
     {
       "row_id": "AS_MEASURE-s2026092701",
@@ -553,7 +558,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-viewMoment-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -591,7 +596,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/defaultcos/originalU/RDrop1/LS.01;ordinary.5 plus ordinary-or-practical.5;SupCon.1;only AdamW second moment differs",
@@ -829,8 +834,13 @@
         },
         "REJECTED_EXTRA_GATE": "No separate design approval,seal or additional review"
       },
-      "status": "PLANNED",
-      "result": {}
+      "status": "RUNNING",
+      "result": {
+        "latest_observed_cumulative_epoch": 21,
+        "actual_new_updates": 222,
+        "training_complete": false,
+        "formal_result_available": false
+      }
     },
     {
       "row_id": "NOAS_VIEW-s2026092701",
@@ -901,7 +911,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-viewMoment-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -939,7 +949,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/defaultcos/originalU/RDrop1/LS.01;ordinary.5 plus ordinary-or-practical.5;SupCon.1;only AdamW second moment differs",
@@ -1177,8 +1187,13 @@
         },
         "REJECTED_EXTRA_GATE": "No separate design approval,seal or additional review"
       },
-      "status": "PLANNED",
-      "result": {}
+      "status": "RUNNING",
+      "result": {
+        "latest_observed_cumulative_epoch": 21,
+        "actual_new_updates": 222,
+        "training_complete": false,
+        "formal_result_available": false
+      }
     },
     {
       "row_id": "AS_VIEW-s2026092701",
@@ -1249,7 +1264,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-viewMoment-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -1287,7 +1302,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/defaultcos/originalU/RDrop1/LS.01;ordinary.5 plus ordinary-or-practical.5;SupCon.1;only AdamW second moment differs",
@@ -1525,8 +1540,13 @@
         },
         "REJECTED_EXTRA_GATE": "No separate design approval,seal or additional review"
       },
-      "status": "PLANNED",
-      "result": {}
+      "status": "RUNNING",
+      "result": {
+        "latest_observed_cumulative_epoch": 21,
+        "actual_new_updates": 222,
+        "training_complete": false,
+        "formal_result_available": false
+      }
     }
   ],
   "notes": [

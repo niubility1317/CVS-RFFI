@@ -1,0 +1,33 @@
+{
+  "status": "PASS",
+  "complete_scalar_fixture_records": 4440,
+  "coordinate_witnesses": 13320,
+  "moment_negative_cases": 6,
+  "source_threshold_cases": 7,
+  "scalar_cases": [
+    {
+      "mode": "MEASURE",
+      "records": 2220,
+      "coordinate_witnesses": 6660,
+      "max_float32_error_units": {
+        "first": 0.49871202151892224,
+        "second": 0.48925151802983036
+      }
+    },
+    {
+      "mode": "VIEW_SECOND",
+      "records": 2220,
+      "coordinate_witnesses": 6660,
+      "max_float32_error_units": {
+        "first": 0.49871202151892224,
+        "second": 0.4851218435783061
+      }
+    }
+  ],
+  "IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "optimizer_updates": 0,
+  "U_truth_read": false,
+  "target_access": false
+}

@@ -2312,7 +2312,7 @@
   },
   "current_experiment": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
   "active_As_hypothesis": {
-    "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED_FIRST_EPOCH",
     "run_id": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
     "scope": "Optimizer recipe x unchanged practical,not newIQAg",
     "candidate": "VIEW_SECOND AdamW second moment",
@@ -2333,7 +2333,8 @@
     "new_U_rules": 0,
     "source_qualification_fixed": true,
     "automatic_all7_truth_last": true,
-    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/report.md"
+    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/report.md",
+    "execution_commit": "5e88542e9d6a0127fe323205a864f8ebc0645231"
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
@@ -4269,7 +4270,7 @@
     "no_rescue": true
   },
   "latest_completed_analysis": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
-  "current_evidence_gap": "New view-second-moment recipe implemented/localverified only,not launched. No IQAg or recognition gain from this candidate;all fullsource E30/defaulthead/sourcequalification/all7truthlast requirements fixed. Joint goal still unproved.",
+  "current_evidence_gap": "Four view-second-moment x originalAs rows verified running,E21/222newupdates each;not complete or scored. No newIQAg or identificationbenefit yet;all fullsourceE30/defaulthead/sourcequalification/all7truthlast remains fixed,full jointgoalACTIVE.",
   "current_source_experiment": null,
   "latest_completed_source_experiment": "20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
   "unitary_source_result": {
@@ -5641,7 +5642,7 @@
     "recount_wall_seconds": 0.14951708493754268
   },
   "view_second_moment_release": {
-    "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED_FIRST_EPOCH",
     "run_id": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
     "source_basis": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01/source_gradient_basis.json",
     "pooled_source_view_disagreement_ratio": 0.7307394981320188,
@@ -5674,6 +5675,33 @@
       "on_fail": "Close fixed view-second-moment recipe;no coefficient/parameter-subset/parent/seed/budget rescue",
       "on_pass": "Source qualification only;not IQAg or joint completion,no automatic target-guided expansion"
     },
-    "joint_goal_complete": false
+    "joint_goal_complete": false,
+    "execution_commit": "5e88542e9d6a0127fe323205a864f8ebc0645231",
+    "actual_first_epoch": [
+      {
+        "row_id": "NOAS_MEASURE-s2026092701",
+        "physical_GPU": 0,
+        "cumulative_epoch": 21,
+        "new_updates": 222
+      },
+      {
+        "row_id": "AS_MEASURE-s2026092701",
+        "physical_GPU": 1,
+        "cumulative_epoch": 21,
+        "new_updates": 222
+      },
+      {
+        "row_id": "NOAS_VIEW-s2026092701",
+        "physical_GPU": 2,
+        "cumulative_epoch": 21,
+        "new_updates": 222
+      },
+      {
+        "row_id": "AS_VIEW-s2026092701",
+        "physical_GPU": 6,
+        "cumulative_epoch": 21,
+        "new_updates": 222
+      }
+    ]
   }
 }

@@ -1,6 +1,6 @@
 # 逐视图二阶矩 × 原 practical：E30 四行预登记
 
-状态：PLANNED／LOCAL_VERIFIED，未发布、未完成真实训练或正式评分。唯一假设：在不改变原 ordinary/As 监督目标的情况下，二阶矩使用两种视图的离散分歧项，能否保护 clean 并增加 mid/low urban 实际正确率。本项是训练配方，不是 IQ A_g；本四行只报告“优化配方 × A_s”交互，不能冒称 Ag×As 四格完成。整体联合目标 ACTIVE。
+状态：RUNNING／VERIFIED，已完成至少累计 E21／各222次新增更新；真实训练与正式评分仍未完成。唯一假设：在不改变原 ordinary/As 监督目标的情况下，二阶矩使用两种视图的离散分歧项，能否保护 clean 并增加 mid/low urban 实际正确率。本项是训练配方，不是 IQ A_g；本四行只报告“优化配方 × A_s”交互，不能冒称 Ag×As 四格完成。整体联合目标 ACTIVE。
 
 ## 依据与固定算法
 
@@ -47,3 +47,9 @@ F 三 SIG_TIME／统一 Sinc CENTER25K+UNITS／joint160／默认 cosine6×160 sc
 预期保存真实 source/result/finalcheckpoint/ownEMA、全部原生epoch与step/sequence/sampler记录、view_moment_steps的每步三坐标一阶/二阶矩原值/总梯度/分歧/新值见证、每行源资格、源矩阵判定、完整七视图预测/独立评分、同row报告/登记/Git。原IQ、逐包ID/预测/完整log/权重/私有runtime不提交；只提交代码/config/小型聚合。
 
 唯一独立 P0/P1 审查 PASS，未发现直接影响下一真实运行的缺陷；核对了二阶矩/裁剪/Sinc单位/原step顺序、EMA、四父映射、发布依赖和七视图truth-last。未重复完整测试，未访问真实IQ/CP/Utruth/target或远程。当前仍未发布真实训练。
+
+## 实际启动与首轮证据
+
+实际执行提交 5e88542e9d6a0127fe323205a864f8ebc0645231 已推送，独立远端OID一致。普通N607单次preflight、单归档单次SHA传输对比、remotecompile、远端合成检查PASS；两原匹配CP/4合成NN无query smoke通过后继续启动。四个所属worker的PID/CWD/argv、GPU/CUDA、日志增长独立核实，分别physicalGPU0/1/2/6，latest observed各E21/222新增update/113664 L-forward packets，As两行各28416完整物理处理，NoAs两行为0。实际全部L6300/U56700/V27000，初始化source_roles EXACT_MATCH，源RX无留出。没有失败、重启或健康旧任务修改；尚无本行正式身份识别成绩。见execution_verification.json。
+
+零前向完整复算入口已实现：analysis/cvs_view_moment_recount_20261018.py，复用既有完整原生step/epoch/stdout/序列/CM读取器，另独立复算8880矩状态记录、26640三坐标见证、52源CM/504正式CM/84分区/35配对及优化器×As交互。它只读取已保存标量/混淆/已评分correctness，不读IQ/CP/rawtruth、不新增NN或更新；源判据独立确认后才读正式scores。6个矩记录反例、4440合成记录/13320坐标见证、7个固定源阈值边界用例PASS，0NN/更新。复算目前仅工程验证，真实完整输入尚未产生，不写成真实recount完成。
