@@ -1,5 +1,5 @@
 """Complete carrier-organization source/log/CM/paired recount;never opens IQ,CP or raw truth."""
-import argparse,collections,json,math,time
+import argparse,collections,csv,json,math,time
 from pathlib import Path
 from analysis import cvs_view_pcgrad_source_logs_20261018 as logs
 RUN='20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01'
@@ -36,6 +36,10 @@ def source(project):
    if tr['actual_steps']!=2220 or tr['parent_steps']!=4440 or tr['cumulative_steps']!=6660 or tr['cumulative_epochs']!=30 or tr['head_fit_updates'] or tr['U_truth_read'] or tr['target_access'] or tr['source_RX_holdout'] is not None or tr['Ag_training_observations'] or tr['As_training_observations']!=(0 if mode.startswith('NOAS_') else 284160) or init['source_roles']!='EXACT_MATCH' or not init['optimizer_reset'] or init['teacher_origin']!='strict own parent EMA' or conf['new_Ag'] or conf['As']!=(not mode.startswith('NOAS_')):raise ValueError('Source budget,roles,parent,U or treatment mismatch')
    parentarm='REPEAT'
    if cp_parent.parent.name!=parentarm+'-s2026092701' or a['baseline_ckpt']!=str(cp_parent/'final_ssdg.pth') or a['teacher_ckpt'] or a['freeze_backbone'] or (a['epochs'],a['label_epochs'],a['pseudo_epochs'])!=(10,0,10) or a['use_concat_sat_channel_aug'] or a.get('source_fold_held_rx') is not None:raise ValueError('Parent initialization or native training arguments mismatch')
+   native,native_info=logs.jsonl(S/'metrics_epoch.jsonl')
+   with (S/'metrics_epoch.csv').open(encoding='utf8',newline='') as stream:csvrows=list(csv.DictReader(stream))
+   if native_info['partial'] or len(native)!=10 or native!=r['epoch_curves'] or len(csvrows)!=10 or any(set(x)!=set(y) or any(y[k]!=('' if value is None else str(value)) for k,value in x.items()) for x,y in zip(native,csvrows)):raise ValueError('Complete native CSV/JSONL and observer epoch telemetry differ')
+   r['native_telemetry']=dict(JSONL_epochs=10,CSV_epochs=10,observer_epochs=10,fields_each=len(native[0]),all_values_equal=True)
    truth=r['numeric_totals'].get('train/pseudo_truth_available',{})
    if truth.get('count')!=2220 or truth.get('maximum')!=0:raise ValueError('Incomplete hidden U truth logs')
    r['carrier']=carrier_records(S,mode,tr);r['parent_source_arm']=parentarm;r['head_joint_updates_checked_by_trainer']=True;r['new_IQ_Ag']=False
