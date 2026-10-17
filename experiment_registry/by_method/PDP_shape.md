@@ -6,4 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|F＋跨RX同TX：RMS匹配的双时延形状星地增强E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md)|
+|RMS 匹配的三径时延形状：单项 A_s E30 检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md)|

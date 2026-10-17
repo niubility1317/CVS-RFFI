@@ -1,6 +1,6 @@
 # RMS 匹配的三径时延形状：单项 A_s E30 检验
 
-状态 **REGISTERED／未启动**。唯一矩阵及命令见 [experiment.json](experiment.json)。本轮属于有界的既有传播算子修改；采用已读 CVS 实验与登记流程。另行设计审批属于 REJECTED_EXTRA_GATE／NONBLOCKING，不新增发布层。
+状态 **RUNNING／VERIFIED，尚无完整识别结果**。唯一矩阵及命令见 [experiment.json](experiment.json)。本轮属于有界的既有传播算子修改；采用已读 CVS 实验与登记流程。另行设计审批属于 REJECTED_EXTRA_GATE／NONBLOCKING，不新增发布层。
 
 假设来自实际代码：原 ChannelStream 的三条 diffuse 路径始终使用归一化时延 [0,1,3]，仅系数与状态刷新。当前训练已有连续仰角和原始三场景采样，不把新增仰角或改变旧 session 键当新路线。旧 OJ24、RX session、共享传播、calibration/finite-quality 和时钟配方负结果保持关闭。
 
@@ -34,4 +34,13 @@
 
 唯一owner codex/root/F-PDPshape-E30。CWD PROJECT/releases/cvs_F_PDPshape_E30_20261017_r01；命令 CVS-RFFI/bin/python -u experiments/cvs_pdp_shape30/runner.py；不可变输出 PROJECT/runs/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01。实际路径、GPU、日志、stop rule与预期产物见登记。仅系统技术失败保留产物并停新派发，不自动重复启动，不因低分重跑；代码commit由发布器填入release_commit.txt及远端登记。
 
-当前未训练、未评分，无新Ag、As或跨seed收益，完整目标 ACTIVE。
+以上为发布前登记；实际运行状态见下文。仍无新Ag、As或跨seed收益，完整目标 ACTIVE。
+
+
+## 实际发布与当前进度
+
+执行commit `476f350914ca72c753365c1b25d9deebf4920701` 已推送且远端OID独立匹配。一次普通N607预检、单archive传输比较、remotecompile、远端39反例及2合成F NN检查、真实匹配父CP2合成NN/noquery smoke全部通过。dispatcher PID513370、原worker PID513399的CWD/argv/CUDA/GPU与更新日志增长已独立核实；日志260805→326500字节，已读到149条完整实际更新记录。此为运行证据，不是epoch完成或准确率收益；新科学结论仍待固定final10与7view。
+
+本地合成物理调用678＋远端354＝1032；本地/远端随机初始化检查共4合成NN，真实父发布smoke另2NN，训练初始smoke包含在实际源eval计数，后续训练/教师/预测单列。初次读取活跃gzip末尾不完整JSON时只影响本地观察，现只读取完整行，不修改或重启worker。当前无failure、无正式target反馈，健康原进程继续。
+
+后续同一原PID只读核实：已完整追加E1（累计E21／4662更新），113664 L NN／28416完整As，实际全部5源RX、无留出、U真值和target访问均false；当前完整更新记录已到298，尚未完成追加10轮或任何正式七视图读出。stdout6785→11965、step日志持续增长，无failure。
