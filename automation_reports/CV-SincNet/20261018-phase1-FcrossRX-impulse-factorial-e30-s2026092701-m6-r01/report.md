@@ -1,3 +1,5 @@
+> 本轮六行E30及全部正式评价、完整分析已完成，固定BG候选源域失败并关闭，整体goal仍未完成。完整结果、负结果、成本和文件见[最终报告](E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/final_report.md)。后文保留原预登记与阶段记录。
+
 # P43：同新增噪声功率的形态 × practical 因子实验
 
 本轮仅首模型 seed2026092701，6 个独立 scratch own20+own10（累计E30）模型。基线继续 F＋跨RX同TX／SIG_TIME_X3／统一Sinc／joint160／原默认cos30，原内部门控、参考响应、旧U门控及ownEMA保持。全部原5源RX/day1/2/3、L6300/U56700隐藏/V27000，无训练RX留出；V只诊断。

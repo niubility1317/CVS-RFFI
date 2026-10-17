@@ -1,0 +1,98 @@
+{
+  "status": "ANALYZED_SCIENTIFIC_NEGATIVE",
+  "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+  "model_seed": 2026092701,
+  "model_seed_count": 1,
+  "code_commit": "19aedc3604fed9c193237dd92366164178af0983",
+  "analysis_commit": "c02154d6cf9fb29fafecc4145bb6c08cb26d2490",
+  "source_rejection_commit": "dfa1b04c86408d4d5e114ec4c71869b584480eca",
+  "coverage_plot_commit": "d315b28b5229a335bbfdd7e9be7a4900e69f4e84",
+  "source_qualified": false,
+  "source_decision_fixed_before_formal_read": true,
+  "all_six_rows_completed": true,
+  "all_seven_views_each": true,
+  "formal_samples_per_view": 168000,
+  "formal_confusion_recount": 756,
+  "source_strata_matrices": 1752,
+  "source_full_log_epochs": 180,
+  "source_full_log_updates": 39960,
+  "coverage_cells_each_As_row": 810,
+  "minimum_actual_cell_count": 75,
+  "extra_source_IQ_for_analysis": 0,
+  "extra_model_NN_for_analysis": 0,
+  "cost": {
+    "per_model": {
+      "B00": {
+        "source_identity_NN": 7973284,
+        "prediction_identity_NN": 1176002,
+        "total_identity_NN": 9149286,
+        "new_epochs": 30,
+        "new_updates": 6660
+      },
+      "B10_WHITE": {
+        "source_identity_NN": 7973284,
+        "prediction_identity_NN": 1176002,
+        "total_identity_NN": 9149286,
+        "new_epochs": 30,
+        "new_updates": 6660
+      },
+      "B10_BG": {
+        "source_identity_NN": 7973284,
+        "prediction_identity_NN": 1176002,
+        "total_identity_NN": 9149286,
+        "new_epochs": 30,
+        "new_updates": 6660
+      },
+      "B01": {
+        "source_identity_NN": 7973284,
+        "prediction_identity_NN": 1176002,
+        "total_identity_NN": 9149286,
+        "new_epochs": 30,
+        "new_updates": 6660
+      },
+      "B11_WHITE": {
+        "source_identity_NN": 7973284,
+        "prediction_identity_NN": 1176002,
+        "total_identity_NN": 9149286,
+        "new_epochs": 30,
+        "new_updates": 6660
+      },
+      "B11_BG": {
+        "source_identity_NN": 7973284,
+        "prediction_identity_NN": 1176002,
+        "total_identity_NN": 9149286,
+        "new_epochs": 30,
+        "new_updates": 6660
+      }
+    },
+    "shared_smoke_NN": 4610,
+    "matrix_total_identity_NN": 54900326,
+    "new_model_epochs": 180,
+    "new_updates": 39960,
+    "each_own20_is_included_in30": true,
+    "analysis_NN": 0
+  },
+  "source_analysis_wall_seconds": 42.56478156498633,
+  "formal_analysis_wall_seconds": 19.13279901491478,
+  "coverage_replay_wall_seconds": 270.53596273995936,
+  "all_original_owned_processes_terminal": true,
+  "queue_failures": [],
+  "other_owner_jobs_untouched": true,
+  "report_links_verified": 50,
+  "PNG_figures_inspected": 11,
+  "PNG_PDF_files_preserved": 22,
+  "full_source_and_formal_outputs_preserved": true,
+  "new_default_head_training": false,
+  "U_TX_truth_unsealed": false,
+  "test_IQ_or_channel_changed": false,
+  "target_feedback": false,
+  "crossseed_confirmed": false,
+  "goal_complete": false,
+  "notes": [
+    "FixedBG candidate closed by source criteria before first current-run target score read",
+    "One modelseed only;source channel draws are not modelseeds",
+    "Legacy descriptive4forward fields remain;actual6forward costs independently recovered",
+    "No perpacket gate/branch gradient trajectories;no formal perpacket state labels",
+    "Formal analysis was already terminal at firstpost-state;completion artifacts independently verified without rerun"
+  ]
+}
