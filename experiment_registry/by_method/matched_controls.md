@@ -21,4 +21,4 @@
 |原分布校准刷新 A_s：E30 完整匹配负结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md)|
 |有限窗接收质量 A_s：E30 匹配结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01/report.md)|
 |等平均 N0 变化：完整源反证结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01/report.md)|
-|F＋跨 RX 同 TX：固定线性 N0 先验累计 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-N0prior-e20plus10-s2026092701-m1-r01/report.md)|
+|固定 N0 先验训练：首个 E30 反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-N0prior-e20plus10-s2026092701-m1-r01/report.md)|

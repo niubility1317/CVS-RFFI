@@ -25,7 +25,7 @@
   ],
   "authorization": "Active authorized joint Ag/As research,E30/all5sourceRX. Previous fixed N0 source-input test failed and remains closed;frozen input accuracy does not test learned training utility. First actual fixed-factor training test;no source rerun or factor/probability/threshold/parent/seed rescue,no Ag claim. Own ordinaryAs E20+10 and automatic sevenview truth-last.",
   "code": {
-    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "commit": "a47ffaf90888347fc3474d43ed365c7e51b1c1a9",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "Ordinary N607 existing CVS-RFFI/FP32/CPU2/GPU total cap3 including other owners",
     "cwd": "PROJECT/releases/cvs_F_N0prior_E30_20261017_r01",
@@ -177,7 +177,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-N0prior-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -215,7 +215,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX originalU/defaulthead;E20+10/cos10-reset;one equal-prior linear-N0 multiplier;original quality and processing recomputed",

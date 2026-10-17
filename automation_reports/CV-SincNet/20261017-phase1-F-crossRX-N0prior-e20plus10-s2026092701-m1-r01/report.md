@@ -1,10 +1,10 @@
 # 固定 N0 先验训练：首个 E30 反证
 
-状态：IMPLEMENTED_NOT_LAUNCHED。代码 commit 由同一发布记录自动填入；此前源输入实验仍为失败。
+状态：RUNNING。代码 commit=a47ffaf90888347fc3474d43ed365c7e51b1c1a9，远端 OID VERIFIED；此前源输入实验仍为失败。
 
 基线为 F（三路 SIG_TIME、统一 Sinc 修正、joint160）＋跨 RX 同 TX SupCon，原默认 cos6×160/scale30 头与骨干联合训练。全部 RX [1,3,4,6,8]、day[1,2,3]、L6300/U56700（TX 真值隐藏）/V27000、split392005 保持；不留出训练 RX，不混入 L5580/L_dev720。
 
-唯一假设：固定等先验线性 N0 倍率 [0.5,1.5] 的训练观测，可使同一个模型适应原 practical residual，并保持 clean。仅改变一个有标签 As 的噪声参考方差；由原实现重新计算接收质量、锁定、残余尺度、fine CFO/相位跟踪与 AGC。NoEQ，原传播、场景、几何、状态、shadow/scatter、标准噪声、15 个 session 硬件/校准随机流保持。一包只调用一次完整 residual，不额外注入 AWGN、不重归一化输出、不按置信度筛除有标签 As。期望线性 N0=.001，实际均值和次数据实记录；不声称平均 SNR/dB 或实测接收机温度保持。
+唯一假设：固定等先验线性 N0 倍率 [0.5,1.5] 的训练观测，可使同一个模型适应原 practical residual，并保持 clean。仅改变一个有标签 As 的噪声参考方差；由原实现重新计算接收质量、锁定、残余尺度、fine CFO/相位跟踪与 AGC。NoEQ，原传播、场景、几何、状态、shadow/scatter、标准噪声、15 个 session 硬件/校准随机流保持。一包只调用一次完整 residual，不额外注入 AWGN、不重归一化输出、不按置信度筛除有标签 As。期望线性 N0=.001，实际均值和次数如实记录；不声称平均 SNR/dB 或实测接收机温度保持。
 
 前一源研究 20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01 在冻结父模型下失败：mid 增益 .492063492pp 未达 .5pp。此结果与阈值保留。它没有训练，因而不能否定训练后收益；上一轮将其扩大为永不训练的停止条件过强。本次单独登记首个训练检验，不重跑源筛查，不改倍率、概率、种子、父权重或源门槛，不宣称源通过。它是 As 配方检验，new_Ag=false。
 
@@ -23,3 +23,5 @@
 本地 focused checks：PASS，33项负例、30个适配器案例、15个原核心精确回放（误差0）、输入不变/批次次序不影响/全局 RNG 不变、900722参数与默认头。只有2条合成 NN，无真实 IQ、checkpoint、训练更新或目标读取。已知本地旧 Torch/NumPy ABI 告警存在，检查 exit0/全部断言通过；正式运行使用既有远端环境。
 
 独立 P0/P1 审查：PASS，仅检查本次新候选实际训练接线；18文件语法检查、预算复算通过，无真实 IQ/CP/目标读取，无 NN/远端动作。未增加其他审批层。
+
+发布后独立核实：archive_transfer/remote_compile VERIFIED，远端33项负例和15次精确回放 PASS，真实父 checkpoint no-query smoke PASS。dispatcher613750、worker613775/GPU0均 alive，CWD/argv匹配；参数900722、RX[1,3,4,6,8]、holdout=null，逐步日志与采样序列已增长。当前未完成训练/正式评分，不宣称成功。

@@ -26,7 +26,7 @@ def render(data,parent,out):
  ax=axes[1,0];delta=[data['result']['paired_differences'][v]['delta_accuracy_pp'] for v in VIEWS];f1=[100*(summary['N0_PRIOR'][v]['macro_F1']-summary['NOMINAL_AS'][v]['macro_F1']) for v in VIEWS]
  ax.bar(xx,delta,color='#2563a6',width=.6,label='Accuracy difference');ax.plot(xx,f1,color='#db8b25',marker='s',lw=1.5,label='Macro F1 difference');ax.axhline(0,color='0.25',lw=.8)
  for i,x in enumerate(delta):ax.annotate(f'{x:+.3f}',(i,x),xytext=(0,5 if x>=0 else -12),textcoords='offset points',ha='center',fontsize=8)
- ax.set_xticks(xx,LABELS,rotation=25,ha='right');ax.set(title='C  Receiver-processing mixture minus exact nominal As control',ylabel='Difference (pp)');ax.margins(y=.25);ax.legend(frameon=False,fontsize=9)
+ ax.set_xticks(xx,LABELS,rotation=25,ha='right');ax.set(title='C  Fixed linear-N0 prior minus exact nominal As control',ylabel='Difference (pp)');ax.margins(y=.25);ax.legend(frameon=False,fontsize=9)
  ax=axes[1,1]
  for j,name in enumerate(colors):
   gap=[100*(summary[name]['clean']['accuracy']-summary[name][v]['accuracy']) for v in VIEWS[1:4]];pos=np.arange(3)+(j-.5)*.32
@@ -34,6 +34,6 @@ def render(data,parent,out):
   for x,y in zip(pos,gap):ax.text(x,y+.15,f'{y:.2f}',ha='center',fontsize=8)
  ax.axhline(2,color='0.3',ls='--',lw=1,label='Exploratory gap 2 pp');ax.set_xticks(range(3),LABELS[1:4]);ax.set(title='D  Each suburban gap to the same model clean',ylabel='Clean minus suburban (pp)');ax.margins(y=.22);ax.legend(frameon=False,fontsize=8)
  for ax in axes.flat:ax.grid(axis='y',color='0.9',lw=.6);ax.set_axisbelow(True)
- fig.suptitle('NoEQ/N0x1.5 receiver-processing diversity | full source | seed 2026092701 | matched E20 + 10',fontsize=14)
+ fig.suptitle('Equalprior N0 x0.5/x1.5, original coupled NoEQ | full source | seed 2026092701 | matched E20 + 10',fontsize=14)
  stem=out/'N0_prior_matched_E30';fig.savefig(stem.with_suffix('.png'),dpi=180);fig.savefig(stem.with_suffix('.pdf'));plt.close(fig)
  return dict(status='PLOTS_WRITTEN',PNG=1,PDF=1,IQ=0,CP=0,NN=0,new_updates=0)
