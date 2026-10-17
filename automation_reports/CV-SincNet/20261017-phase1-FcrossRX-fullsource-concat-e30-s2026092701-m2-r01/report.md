@@ -1,0 +1,61 @@
+# 完整源域 F＋跨 RX：E30 无星地与普通拼接匹配参照
+
+状态：预登记固定，尚未启动。采用用户最新“训练预算提升到 E30”，不续训或覆盖旧 E20。唯一矩阵、seed 和路径在 experiment.json。
+
+## 研究问题与固定比较
+
+B00 为原 ordinary IQ 的精确重复；B01 为 ordinary IQ＋完整 practical(同一 ordinary IQ)。两行均 scratch E30，同 seed2026092701、同4L成本和初始化规则、原U/ownEMA/旧门控。B00不是标准2L结果。没有新增Ag、对齐、课程、诊断头或SSL规则。
+
+E20源训练的sat CE仍高，只说明预算下拟合尚不充分，不能保证延长训练有效。E30同时改变阶段长度及cosine时间轴，不能将差异唯一归因于多10轮或某个物理损伤。旧E20正式成绩不用于本轮参数选择。
+
+探索报告目标：B01相对同预算B00 urban至少+3pp、low至少+5pp、clean下降≤.5pp；low绝对>60%、每个suburban距自身clean≤2pp。这些不是保证或目标反馈晋级门槛。两行固定FINAL30后无论分数均自动七视图测试，不按目标成绩调参、挑种子、重跑。
+
+## 模型、数据、预算
+
+F＋CROSS_RX：SIG_TIME_X3、Sinc CENTER_25K/CENTER_UNITS、NoExplicitCFO、joint160、原默认cos30、900722参数/206状态，骨干和头原流程联合更新。真实代码只有GroupNorm/LayerNorm，无BatchNorm running stats；不采用BN污染解释。
+
+复用原VALIDATED_ONCE句柄/split392005，全部RX1/3/4/6/8、day1/2/3、6TX，L6300/U56700隐藏/V27000，7/63/30。全源RX训练，无heldRX/fold/Ldev，不将V并入L、不解封U TX，source训练不构建target loader。原角色物理ID已完全匹配，未新增数据验证或哈希链。
+
+每行30轮＝20L＋10U，222更新/轮＝6660。AdamW峰值LR.0002/min.000001、weight decay.0001，原native cosine按total30计算，Sinc物理clip5不变。拼接256，两RDrop forward复用同一IQ，共4L；两半各自归一化后各.5，LS.01/KLalpha1。SupCon仅clean半，time_down/t2.pool、temp.2/max.1/warm5/ramp10，无额外前向。原U/ownEMA/旧门控保持，不给U新增As或对比损失。
+
+每行L loader852480包、L网络3409920包，U loader预计567000包；student/teacher/sourceV/正式prediction/合成smoke成本与墙钟实际分列。两行新增60 model epochs/13320更新，无父训练成本；预算耗尽不等于收敛。
+
+legacy E20配置只用于未改模型工厂，make_args明确覆盖30/20/10，不加载旧权重。launcher第一步用原全源B00 FINAL20/4440的真实默认头严格兼容smoke2合成包后丢弃，随后两学生各自scratch；该CP旧20轮成本独立列，不是祖先，不加载E50/E200。新来源只接受本行FINAL30/6660。
+
+## IQ、信道与测试
+
+25MHz/IQ256/equalized1，原裁剪补齐后复RMS/center=false。原ordinary工厂及private stream20261016051保留，普通增强日程依据label_epochs20；B01训练low_suburban/mid_urban/low_urban原均匀nominal。保留ordinary PA/AWGN/multipath等，不能称完全无普通增强。
+
+As原residual/post_sync、EQoff/G1、reference_snr_db30/fc2.45GHz，质量适配/相位跟踪/RXIQ补偿开启、reflect、原AGC；不另加As后RMS，不反演TX。RX硬件按RX/day/eq跨TX稳定，channel seed202610172201随epoch/view刷新，与正式随机流分离。全部合法有标签sat参加CE，无学生置信筛选，不删除困难包或减弱物理信道。实际配置/__file__保存。
+
+每行固定168000目标物理样本，clean＋六practical。原正式received IQ/index/SNR/边界不变。FINAL30冻结默认头→全部七视图prediction完成→独立exec scorer连接truth；无训练对象/teacher存活到scorer。真值打开前核对全视图/ID/logits/argmax。正式无逐包状态旁表时不虚构其LOS/lock准确率。
+
+## 执行、检查与停止
+
+代码 commit：`bafba40e365d0914a2e86f861fb55a49f1cd3997`，已推送且独立远端OID相同。CWD：`/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_fullsource_concat_E30_20261017_r01`。普通N607 CVS-RFFI/FP32/CPU线程2，不用管理员。
+
+```text
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_fullsource_concat_E30_20261017_r01/experiments/cvs_fullsource_concat30_25/runner.py
+```
+
+实际本地检查：
+
+```text
+E:/type10-7/local_envs/ssr-gpu/python.exe E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_concat_E30_20261017/local_checks.py
+E:/type10-7/local_envs/ssr-gpu/python.exe E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_concat_E30_20261017/local_model_checks.py
+F:/App/miniconda3/python.exe -m compileall -q E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_fullsource_concat30_25
+```
+
+16协议负测、native30/20L10U/cosine端点、6660与旧4440/跳步拒绝PASS。真实F合成1028NN/2更新/0真实IQ或CP，206初态相同、默认头与SIG_TIME/Sinc梯度、4L/同IQ/首对SupCon/deepcopy绑定PASS；compile PASS。已知本地Torch/NumPy导入警告保留，未用ndarray桥。一次限定独立P0/P1 PASS，无重复review或额外gate。
+
+一次N607只读preflight及句柄/路径核对VERIFIED：普通账户、原角色匹配、兼容CP metadata合法、固定formal carrier有效，新run/release/launch路径未占用、磁盘足够。其他owner健康作业保持。一个owner/dispatcher，共享capacity lock，每GPU总进程≤3且free≥12000MB，计入其他owner。发布后实际读回单归档SHA比较/remotecompile/真实CP smoke/PID/CWD/argv/GPU/log增长。
+
+停止：首次本run来源/角色/CWD/输出碰撞/非有限loss或gradient/跳过更新/未6660/执行或prediction闭合/提前truth等技术错误，保留输出、停止进一步本run启动，已启动健康行继续，不自动重试，不改其他任务。低分或负收益不技术停止；恢复先核实同row进程和prediction，不覆盖。
+
+run：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01`；本地：`E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_concat_E30_20261017`。每行source/prediction/scoring/log/config及动态GPU见experiment.json。预期完整30轮/6660步、训练序列/physics/覆盖、骨干头移动、U隐藏、前向成本、FINAL30/freeze、七视图预测评分、逐row/seed结果及汇总；IQ/CP/原始log/机器状态不入Git。
+
+## 路线边界与未完成项
+
+旧3至15dB/locked-degraded有界课程仅极小low增量、clean保持失败；fixed additive clean监督也跨seed失败，本轮不以改RX/系数/预算重启。源noise/fixed瓶颈成立，强状态耦合/whole梯度冲突前提失败，不据此加梯度手术或对齐。
+
+尚未证明新Ag、E30识别增益、四格交互、clean净正、low>60%、suburban接近clean或跨seed联合复现。本轮只建立新预算参照，不把它当联合目标完成。实际执行与结果返回后更新原run。
