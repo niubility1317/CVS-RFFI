@@ -1,6 +1,6 @@
 # 完整源普通星地拼接：E20 固定参照
 
-状态：已实现并登记，尚未启动训练或产生新预测。训练不会留出一个源RX。原候选唯一P0/P1审查及路径P1定向复核PASS，r02只修评分测试桩，不重复全审；本地语法与33个配置／协议反例PASS，真实F合成检查安排在发布后、任何真实训练之前执行。
+状态：RUNNING／VERIFIED，三条全源scratch E20已启动，尚未完成冻结预测与正式评分。训练不会留出一个源RX。原候选唯一P0/P1审查及路径P1定向复核PASS，r02只修评分测试桩，不重复全审；本地语法与33个配置／协议反例PASS，真实F合成检查安排在发布后、任何真实训练之前执行。
 
 用户于2026-10-17指出近期探索偏离星地识别、部分新方法不如普通拼接，并要求不再减少源训练域。当前唯一问题是：固定F＋跨RX同TX和完整源覆盖下，普通源／practical配对监督的真实clean与星地收益如何。先建立该参照，后续新机制必须直接比较，不把源统计风险下降算作性能。
 
@@ -30,3 +30,12 @@ As沿用旧最朴素C1：均匀low_suburban/mid_urban/low_urban，完整residual
 
 
 r02 技术恢复：r01在合成评分反例中误拒仓库reference_recipe.json，真实run未创建、所属进程0、真实训练/CP/target0。原release及日志保留。已在本地复现该异常，修正测试桩允许读取唯一仓库配置并用Path.name处理两端路径，六项不完整预测拒绝回归PASS。模型、数据、As、损失、seed、E20均不变；r02新不可变root，不复用r01。
+
+
+## 实际启动读回
+
+执行commit `b94076b191648103daeb8a9cb1c17bdcc9c0e231`；r02单archive比较、远端编译、真实F合成检查PASS（33配置＋10角色/评分反例、1292合成NN包、158物理合成包、3个合成optimizer步骤），匹配完整源CP的no-query smoke PASS（1CP、2合成NN、0查询），均在真实训练之前完成。
+
+三个worker PID346632／346705／346862（GPU2／3／4）与CPU dispatcher346544均经独立/proc证据核对CWD、argv、start_ticks、GPU及日志增长；全部source_contract角色6300/56700/27000、source_fold_held_rx与training_receivers为空、实际E20/13L7U/seed2026092701、baseline和teacher初始化路径为空。当前观察到NATIVE E3/666、REPEAT E3/666、CONCAT E1/222，均无failure；这是已完成轮端点快照，不是最终训练成本或收益。CONCAT首轮已监督28416个完整practical L包。自动逐行clean＋六practical和独立CPUtruth-last路径已随worker发布，尚未发生正式评分。
+
+r01失败的3个合成optimizer步骤与1292NN／158physics按固定到达路径推算单列；它没有真实训练或target访问。r02真实运行继续原预算，无健康旧任务变动、无延长或改参。

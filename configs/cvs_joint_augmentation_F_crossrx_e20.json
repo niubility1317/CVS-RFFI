@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_FULL_SOURCE_CONCAT_REFERENCE_IMPLEMENTED_REGISTERED_NOT_LAUNCHED",
+  "status": "RESEARCH_ACTIVE_FULL_SOURCE_CONCAT_REFERENCE_RUNNING",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User on 2026-10-16 changes pre-augmentation baseline to F plus cross-RX same-TX contrastive learning. Earlier E20 budget remains in force.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -159,7 +159,7 @@
     "joint_goal_complete": false
   },
   "next_training_hypothesis": {
-    "status": "IMPLEMENTED_REGISTERED_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED",
     "question": "What actual clean and practical performance does the plain paired-concat recipe yield when all five original source RX train under current F+CROSS_RX and E20?",
     "minimum_matrix": [
       "NATIVE originalFtwoLforwards",
@@ -173,12 +173,14 @@
     "no_new_Ag_alignment_gate_course": true,
     "model_epochs_each": 20,
     "registered": true,
-    "launched": false,
+    "launched": true,
     "formal_seven_views_auto_after_fixed_final": true,
     "target_feedback": false,
     "joint_goal_complete": false,
     "run_id": "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02",
-    "code": "experiments/cvs_fullsource_concat20"
+    "code": "experiments/cvs_fullsource_concat20",
+    "execution_commit": "b94076b191648103daeb8a9cb1c17bdcc9c0e231",
+    "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md"
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",

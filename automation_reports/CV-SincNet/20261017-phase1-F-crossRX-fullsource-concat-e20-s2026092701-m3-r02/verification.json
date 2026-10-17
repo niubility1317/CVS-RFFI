@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_REGRESSION_AND_PROTOCOL_PASS",
+  "status": "PASS_AND_LAUNCH_VERIFIED",
   "protocol_negative_cases": 33,
   "truth_gate_regression_cases": 6,
   "original_fixture_failure_reproduced": true,
@@ -8,5 +8,99 @@
   "real_training_steps": 0,
   "target_access": false,
   "new_IQ_CP_NN": 0,
-  "real_F_synthetic_checks": "To rerun once automatically in new immutable release"
+  "real_F_synthetic_checks": "To rerun once automatically in new immutable release",
+  "actual_F_synthetic_checks": {
+    "status": "PASS",
+    "protocol": {
+      "status": "PASS",
+      "negative_cases": 33,
+      "rows": 3,
+      "full_source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "L": 6300,
+      "U": 56700,
+      "V": 27000,
+      "epochs_per_model": 20,
+      "source_RX_holdout": null,
+      "IQ": 0,
+      "CP": 0,
+      "NN": 0,
+      "updates": 0,
+      "target_access": false
+    },
+    "role_negative_cases": 10,
+    "rows": [
+      {
+        "arm": "NATIVE",
+        "L_forwards": 2,
+        "parameters": 900722,
+        "default_head_joint_update": true,
+        "export160_exact": true,
+        "full_source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "SupCon_layer_forward_terms": 4,
+        "same_IQ_pairs": true
+      },
+      {
+        "arm": "REPEAT",
+        "L_forwards": 4,
+        "parameters": 900722,
+        "default_head_joint_update": true,
+        "export160_exact": true,
+        "full_source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "SupCon_layer_forward_terms": 4,
+        "same_IQ_pairs": true
+      },
+      {
+        "arm": "CONCAT",
+        "L_forwards": 4,
+        "parameters": 900722,
+        "default_head_joint_update": true,
+        "export160_exact": true,
+        "full_source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "SupCon_layer_forward_terms": 4,
+        "same_IQ_pairs": true
+      }
+    ],
+    "synthetic_NN": 1292,
+    "synthetic_physics_packets": 158,
+    "synthetic_optimizer_steps": 3,
+    "real_IQ": 0,
+    "CP": 0,
+    "target_access": false
+  },
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "full_source_contract_matches": true,
+    "reference_fixed_final50": true,
+    "checkpoint_used_for_training_initialization": false,
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "new_training_updates": 0
+  }
 }

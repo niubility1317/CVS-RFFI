@@ -4,7 +4,7 @@
 
 主线恢复为直接验证星地识别收益。后续新训练使用完整L6300／U56700／V27000、全部源RX1/3/4/6/8，不再留出一个源训练域，也不要求先通过源留出折。F＋跨RX同TX、scratch E20、默认头、原U和正式IQ保持。
 
-下一项是建立完整源的普通拼接参照：NATIVE原底座、REPEAT同ordinary额外前向控制、CONCAT普通源/practical等权配对，均固定final20并自动clean＋六practical、独立truth-last评分。三行运行入口和逐行自动独立评分已实现，已登记 `20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02`，尚未启动，不把已有源统计负结果当作星地性能。见[研究纠偏与最小矩阵](cvs_full_source_practical_correction_20261017.md)。
+下一项是建立完整源的普通拼接参照：NATIVE原底座、REPEAT同ordinary额外前向控制、CONCAT普通源/practical等权配对，均固定final20并自动clean＋六practical、独立truth-last评分。三行已实际发布运行 `20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02`，执行commit `b94076b191648103daeb8a9cb1c17bdcc9c0e231`，全源数据角色和PID/CWD/argv/GPU/日志增长VERIFIED；最近轮端点为NATIVE/REPEAT E3、CONCAT E1。尚未完成训练、七视图预测或评分，不把已有源统计负结果当作星地性能。见[研究纠偏与最小矩阵](cvs_full_source_practical_correction_20261017.md)。
 
 历史源留出及统计实验原样保留、准确标注契约；新方案必须直接比较同完整源普通拼接参照。A_g不是放弃，而是不再以其统计入口阻塞A_s直接性能；完整联合目标仍ACTIVE，尚未达成。
 
@@ -374,3 +374,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 全频段 PSD 正仿射：`20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01`，执行commit `1091fc97568605cd1115b6fa14754f781df197cc`，432拟合／432独立复算VERIFIED，0/6 RX对通过，固定模型关闭；主拟合1.494705 s、复算0.963868 s；0新IQ/CP/模型/NN/更新/target。此结果不能证明A_g／A_s或联合成功，完整目标ACTIVE。报告见[本行结果](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)。
+
+
+最新全源普通拼接参照已RUNNING／VERIFIED：`20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02`，全L6300/U56700/V27000，无源RX训练留出。r01仅合成测试桩失败、无真实训练，已保留；r02只修测试桩，科学配方不变。三组各scratchE20，自动逐行clean＋六practical/独立truth-last已随队列发布。完整结果待实际返回，Ag与联合目标未证明。

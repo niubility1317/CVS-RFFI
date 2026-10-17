@@ -21,7 +21,7 @@
   "replaces_run_id": "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01",
   "authorization": "Latest2026-10-17 user:prioritize practical enhancement and plainconcat reference;do not leave out a source training RX. Existingjointresearch/E20permodel/originalU/defaulthead permissions retained.",
   "code": {
-    "commit": "ACTUAL_GIT_HEAD_RECORDED_AT_LAUNCH",
+    "commit": "b94076b191648103daeb8a9cb1c17bdcc9c0e231",
     "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
     "environment": "ordinary N607 CVS-RFFI Python; CPU2 perworker, loader0, CUDAempty dispatcher/scorers",
     "cwd": "PROJECT/releases/cvs_F_fullsource_concat_e20_20261017_r02",
@@ -145,8 +145,8 @@
       2026092701
     ],
     "source_RX_holdout": null,
-    "suburban_gap_exploration_pp": 2.0,
-    "low_urban_goal_percent": 60.0,
+    "suburban_gap_exploration_pp": 2,
+    "low_urban_goal_percent": 60,
     "truth_last": true,
     "target_feedback_to_training": false,
     "new_Ag_or_joint_goal_proved": false
@@ -189,7 +189,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-fullsource-concat-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -227,7 +227,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/ordinary/RDrop1/LS.01/fullSinc/defaultcos;fullL6300U56700V27000;scratch20=13L+7U;NATIVE",
@@ -270,7 +270,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "target_feedback": false,
           "joint_goal_complete": false
         },
@@ -304,7 +304,7 @@
           "L_forwards_per_sample": 2,
           "expected_L_forward_packets": 1136640,
           "pair_weights": [
-            1.0
+            1
           ],
           "second_pair": "none",
           "same_IQ_within_RDpair": true,
@@ -396,7 +396,7 @@
           },
           "route": "existingresidual/post_sync",
           "EQ": false,
-          "reference_snr_db": 30.0,
+          "reference_snr_db": 30,
           "input": "originalLbeforeordinary",
           "no_rejection": true,
           "test_IQ_unchanged": true
@@ -420,7 +420,7 @@
         "mode": "CENTER_UNITS",
         "lr": 0.0002,
         "weight_decay": 0.0001,
-        "physical_globalclip": 5.0,
+        "physical_globalclip": 5,
         "schedule": "originalcosine",
         "SupCon": {
           "mode": "CROSS_RX",
@@ -498,7 +498,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-fullsource-concat-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -536,7 +536,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/ordinary/RDrop1/LS.01/fullSinc/defaultcos;fullL6300U56700V27000;scratch20=13L+7U;REPEAT",
@@ -579,7 +579,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "target_feedback": false,
           "joint_goal_complete": false
         },
@@ -706,7 +706,7 @@
           },
           "route": "existingresidual/post_sync",
           "EQ": false,
-          "reference_snr_db": 30.0,
+          "reference_snr_db": 30,
           "input": "originalLbeforeordinary",
           "no_rejection": true,
           "test_IQ_unchanged": true
@@ -730,7 +730,7 @@
         "mode": "CENTER_UNITS",
         "lr": 0.0002,
         "weight_decay": 0.0001,
-        "physical_globalclip": 5.0,
+        "physical_globalclip": 5,
         "schedule": "originalcosine",
         "SupCon": {
           "mode": "CROSS_RX",
@@ -808,7 +808,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-fullsource-concat-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -846,7 +846,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/ordinary/RDrop1/LS.01/fullSinc/defaultcos;fullL6300U56700V27000;scratch20=13L+7U;CONCAT",
@@ -889,7 +889,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "target_feedback": false,
           "joint_goal_complete": false
         },
@@ -1016,7 +1016,7 @@
           },
           "route": "existingresidual/post_sync",
           "EQ": false,
-          "reference_snr_db": 30.0,
+          "reference_snr_db": 30,
           "input": "originalLbeforeordinary",
           "no_rejection": true,
           "test_IQ_unchanged": true
@@ -1040,7 +1040,7 @@
         "mode": "CENTER_UNITS",
         "lr": 0.0002,
         "weight_decay": 0.0001,
-        "physical_globalclip": 5.0,
+        "physical_globalclip": 5,
         "schedule": "originalcosine",
         "SupCon": {
           "mode": "CROSS_RX",
@@ -1088,7 +1088,9 @@
     "No Ag/newalignment/course/gate/newU/head.No ordinary-before-practical composition.All labeledAs supervised.",
     "Eachrow fixedfinal20 predictsall7views beforeindependentCPUtruth.All3rowsfinish regardlessscores;no target-derivedpromotion/tuning/selectivererun.",
     "60newmodelepochs/13320updates;syntheticchecks,2NNrealCPsmoke,originalU/teacher,3x1176000targetdecisionsandwallseparate.",
-    "Old sourcefoldnegatives preserved;newexplicituserfullsource instructionoverridesoldsourcefoldscreenasentry,notrewritingit."
+    "Old sourcefoldnegatives preserved;newexplicituserfullsource instructionoverridesoldsourcefoldscreenasentry,notrewritingit.",
+    "RUNNING_VERIFIED:dispatcher346544/workers346632,346705,346862;allcwdargvGPUloggrowthmatch;actualfullroles6300/56700/27000/noheldRX/E20/13L7U/noparentweight.",
+    "r02syntheticchecksPASS33config+10roles/scoregates,1292NN/158physics/3syntheticupdates;realCPsmoke1load2NNnoquery.ObservedNATIVE/REPEAT E3,CONCAT E1;notcompleted/notperformance."
   ],
   "registered_at": "2026-10-17T04:37:56+00:00"
 }
