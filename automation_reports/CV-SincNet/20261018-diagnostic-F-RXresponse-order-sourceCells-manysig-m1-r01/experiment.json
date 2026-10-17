@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "Active joint research;current F+CROSS_RX/E30/all5RX/256IQ. Existing source-derived factors only;fix saved responses and controls,not a parameter rescue or new training.",
   "code": {
-    "commit": "PENDING_ACTUAL_GIT_COMMIT_PINNED_BY_PUBLISH",
+    "commit": "21363dd9696b12fcc86fffa26daa4fc4bddc3751",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "Existing N607 Python/NumPy CPU2threads,noGPU",
     "cwd": "PROJECT/releases/cvs_F_RX_response_order_source_20261018_r01"
@@ -217,6 +217,23 @@
         "automatic_training": false,
         "joint_goal_complete": false,
         "future_model_contract": "F+CROSS_RX,SIG_TIME/unifiedSinc/joint160/defaultcos jointlytrained,full5RX,L6300/U56700hidden/V27000,256IQ,E30"
+      },
+      "status": "ANALYZED",
+      "result": {
+        "decision": "CLOSED_NORMALIZATION_ORDER_EXPLANATION",
+        "source_qualified": false,
+        "packetwise_SSE": 2.945017782437408,
+        "mean_proxy_SSE": 2.944634452706236,
+        "additive_SSE": 0.7322244363511312,
+        "TXconditional_SSE": 0.28064691215104764,
+        "positive_folds": 0,
+        "improved_RX": 0,
+        "response_refits": 0,
+        "identity_accuracy_measured": false,
+        "raw_IQ_reads": 0,
+        "NN": 0,
+        "updates": 0,
+        "target_access": false
       }
     }
   ],

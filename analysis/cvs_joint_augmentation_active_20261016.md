@@ -1,3 +1,11 @@
+## 2026-10-18：逐包归一化解释真实失败，固定响应方向关闭
+
+[完整源归因](../automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01/source_analysis.md) 已 ANALYZED／VERIFIED。全部参数与旧控制固定，0重新拟合；只读原V27000已存周期因子和180源矩阵，使用参考RX1全部5400包，全部5RX/256点/L6300-U56700隐藏TX-V27000保持，18统计折不留出训练RX。精确逐包SSE2.945017782，旧均值2.944634453，总误差反增.013017906%；与加性.732224436／同TX.280646912相比仍0/18折、0/5RX改善，四项实质资格FAIL。归一化顺序不足以解释失败，关闭固定h与该解释，不重拟合/换窗口/频点/锚点/参考RX/幅度/阈值救跑。
+
+36000复预测条目/18折/5RX独立外积复算一致，最大预测差1.411e−16、指标差6.218e−15。主过程2.539079秒含smoke、独立reader.318978秒，0rawIQ/CP/NN/teacher/更新/U/target。一次ordinarypreflight/archive/compile及PID/CWD/argv VERIFIED，原worker自然结束，产物齐全；执行提交21363dd9696b12fcc86fffa26daa4fc4bddc3751。旧总体近似FAIL保持，也没有证明所有物理RX响应不存在。
+
+本轮无新的身份分数或IQ增强，最新实际训练仍为viewMoment四行E30负结果。当前没有可晋级的新Ag/As训练候选或待运行源假设；需要独立于已关闭配方的身份保持观测依据，不将RX统计关联直接改写成数字校准或硬件替换。F＋跨RX同TX/SIG_TIME/统一Sinc/joint160/defaultcos联合训练、全部5源RX、L6300/U56700隐藏TX/V27000、256点、E30保持；完整联合目标ACTIVE。以下旧当前/下一项均属历史。
+
 ## 2026-10-18：固定共享 RX 响应真实源检验失败，已关闭
 
 [完整同一行源结果](../automation_reports/CV-SincNet/20261018-diagnostic-F-RXresponse-sourceCells-manysig-m1-r01/source_analysis.md) 已 ANALYZED／VERIFIED。只读已存180个源20×20单元矩阵，原L6300/V27000/全5RX/256点保持；18统计TX/day折均保留全部RX，非训练域留出。DFT20/logratio/anchor1/RX1/floor/总体均值预测固定：响应SSE2.944634453，加性控制.732224436，同TX控制.280646912；0/18折、0/5RX改善，误差分别为4.021492倍/10.492310倍，六项中四项FAIL。关闭该配方，不换窗口/频点/幅度/参考/阈值救跑，不生成训练IQ。

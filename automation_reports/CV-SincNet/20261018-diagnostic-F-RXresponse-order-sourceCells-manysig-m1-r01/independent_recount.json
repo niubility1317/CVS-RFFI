@@ -1,0 +1,42 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
+  "decision": "CLOSED_NORMALIZATION_ORDER_EXPLANATION",
+  "conditions": {
+    "nonzero_additive_error": true,
+    "additive_SSE_reduction": false,
+    "positive_folds": false,
+    "each_RX_not_worse": false,
+    "not_worse_TXconditional": false,
+    "phase_products_nonzero": true
+  },
+  "source_L": 6300,
+  "source_V": 27000,
+  "source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_RX_holdout": null,
+  "source_complex_matrix_entries": 72000,
+  "V_complex_factor_entries": 540000,
+  "reference_V_packets": 5400,
+  "complex_fixed_response_entries": 1800,
+  "centered_prediction_entries_recounted": 36000,
+  "packetwise_outer_response_matrices": 27000,
+  "folds": 18,
+  "max_reference_matrix_error": 2.7769124835677133e-17,
+  "max_prediction_error": 1.4100815843721178e-16,
+  "max_metric_error": 6.217248937900877e-15,
+  "response_refits": 0,
+  "raw_IQ_reads": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false,
+  "old_mean_proxy_decision_unchanged": true,
+  "joint_goal_complete": false,
+  "wall_seconds": 0.318978366907686
+}

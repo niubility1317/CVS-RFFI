@@ -1,0 +1,58 @@
+{
+  "status": "PASS",
+  "negative_cases": 21,
+  "scientific_cases": {
+    "shared": {
+      "decision": "SOURCE_NORMALIZATION_ORDER_ATTRIBUTION_ONLY",
+      "conditions": {
+        "nonzero_additive_error": true,
+        "additive_SSE_reduction": true,
+        "positive_folds": true,
+        "each_RX_not_worse": true,
+        "not_worse_TXconditional": true,
+        "phase_products_nonzero": true
+      },
+      "packetwise_SSE": 6.395219675522188e-32,
+      "mean_proxy_SSE": 0.00021657921357654369
+    },
+    "reversal": {
+      "decision": "CLOSED_NORMALIZATION_ORDER_EXPLANATION",
+      "conditions": {
+        "nonzero_additive_error": true,
+        "additive_SSE_reduction": false,
+        "positive_folds": false,
+        "each_RX_not_worse": false,
+        "not_worse_TXconditional": false,
+        "phase_products_nonzero": true
+      },
+      "packetwise_SSE": 0.1253496247461394,
+      "mean_proxy_SSE": 0.13003868254473944
+    },
+    "TX_only": {
+      "decision": "CLOSED_NORMALIZATION_ORDER_EXPLANATION",
+      "conditions": {
+        "nonzero_additive_error": false,
+        "additive_SSE_reduction": false,
+        "positive_folds": false,
+        "each_RX_not_worse": false,
+        "not_worse_TXconditional": false,
+        "phase_products_nonzero": true
+      },
+      "packetwise_SSE": 0.03675909662922043,
+      "mean_proxy_SSE": 0.03948945018113078
+    }
+  },
+  "noncommutativity_Frobenius_difference": 0.4242640687119287,
+  "direct_matrix_error": 2.809234570782673e-17,
+  "synthetic_V_factors_generated": 81000,
+  "complete_synthetic_readout_packet_transforms": 81000,
+  "early_rejected_old_control_readout_packet_transforms": 1500,
+  "unit_packet_transform_vectors": 8,
+  "direct_outer_product_transforms": 2,
+  "response_refits": 0,
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false
+}

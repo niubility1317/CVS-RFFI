@@ -1,0 +1,264 @@
+{
+  "decision": "CLOSED_NORMALIZATION_ORDER_EXPLANATION",
+  "conditions": {
+    "nonzero_additive_error": true,
+    "additive_SSE_reduction": false,
+    "positive_folds": false,
+    "each_RX_not_worse": false,
+    "not_worse_TXconditional": false,
+    "phase_products_nonzero": true
+  },
+  "baseline_SSE": 13.844489199367734,
+  "additive_SSE": 0.7322244363511312,
+  "TXconditional_SSE": 0.28064691215104764,
+  "mean_proxy_SSE": 2.944634452706236,
+  "packetwise_SSE": 2.945017782437408,
+  "packetwise_vs_additive_gain": -3.022015158512346,
+  "packetwise_to_TXconditional_ratio": 10.493676056739805,
+  "packetwise_vs_mean_proxy_gain": -0.00013017905527124007,
+  "prediction_difference_SSE": 0.000005822625418920735,
+  "positive_folds": 0,
+  "folds": [
+    {
+      "TX": 0,
+      "day": 1,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7888837788790379,
+      "additive_SSE": 0.08317212628915155,
+      "TXconditional_SSE": 0.01551899384234802,
+      "mean_proxy_SSE": 0.20598565400397478,
+      "packetwise_SSE": 0.20581451661660005,
+      "centered_predictions_difference_SSE": 0.0000010281135843250433
+    },
+    {
+      "TX": 1,
+      "day": 1,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7701769296749632,
+      "additive_SSE": 0.012067759520480444,
+      "TXconditional_SSE": 0.006109461982789404,
+      "mean_proxy_SSE": 0.11239274089819153,
+      "packetwise_SSE": 0.11257079345991888,
+      "centered_predictions_difference_SSE": 3.1811868234854837e-7
+    },
+    {
+      "TX": 2,
+      "day": 1,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7543111064834833,
+      "additive_SSE": 0.020339566070506295,
+      "TXconditional_SSE": 0.01102038788122325,
+      "mean_proxy_SSE": 0.14409493247947652,
+      "packetwise_SSE": 0.14410294726885217,
+      "centered_predictions_difference_SSE": 5.413315495499391e-9
+    },
+    {
+      "TX": 3,
+      "day": 1,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7733947588645915,
+      "additive_SSE": 0.015161917252809323,
+      "TXconditional_SSE": 0.008292548074880831,
+      "mean_proxy_SSE": 0.12609957823410675,
+      "packetwise_SSE": 0.12610827208079492,
+      "centered_predictions_difference_SSE": 4.074146742091321e-9
+    },
+    {
+      "TX": 4,
+      "day": 1,
+      "reference_packets": 300,
+      "baseline_SSE": 0.759181263641509,
+      "additive_SSE": 0.06017819939913495,
+      "TXconditional_SSE": 0.014358271954017718,
+      "mean_proxy_SSE": 0.1615577209432507,
+      "packetwise_SSE": 0.16155874322864713,
+      "centered_predictions_difference_SSE": 8.763358892722467e-12
+    },
+    {
+      "TX": 5,
+      "day": 1,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7707028159570839,
+      "additive_SSE": 0.030740315624659464,
+      "TXconditional_SSE": 0.006954063772728883,
+      "mean_proxy_SSE": 0.160849340901866,
+      "packetwise_SSE": 0.16082020674011552,
+      "centered_predictions_difference_SSE": 2.011289255197497e-7
+    },
+    {
+      "TX": 0,
+      "day": 2,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7587979096030821,
+      "additive_SSE": 0.03157140759863121,
+      "TXconditional_SSE": 0.011733166919783974,
+      "mean_proxy_SSE": 0.15461280609113354,
+      "packetwise_SSE": 0.15462718303758297,
+      "centered_predictions_difference_SSE": 4.250574640512365e-9
+    },
+    {
+      "TX": 1,
+      "day": 2,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7593285126475896,
+      "additive_SSE": 0.013829689647045477,
+      "TXconditional_SSE": 0.006638092152820281,
+      "mean_proxy_SSE": 0.12045772996281194,
+      "packetwise_SSE": 0.12062759777176973,
+      "centered_predictions_difference_SSE": 4.654180526783226e-7
+    },
+    {
+      "TX": 2,
+      "day": 2,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7949896578510971,
+      "additive_SSE": 0.045569562179723966,
+      "TXconditional_SSE": 0.019656222943586585,
+      "mean_proxy_SSE": 0.16558117352306467,
+      "packetwise_SSE": 0.16559098372402925,
+      "centered_predictions_difference_SSE": 1.4823937365462447e-9
+    },
+    {
+      "TX": 3,
+      "day": 2,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7847423240161797,
+      "additive_SSE": 0.024993423458774894,
+      "TXconditional_SSE": 0.011516424387222612,
+      "mean_proxy_SSE": 0.1443194782541693,
+      "packetwise_SSE": 0.14439142219368556,
+      "centered_predictions_difference_SSE": 0.0000018149016442224408
+    },
+    {
+      "TX": 4,
+      "day": 2,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7841057617062595,
+      "additive_SSE": 0.10920964718271339,
+      "TXconditional_SSE": 0.03705402998327649,
+      "mean_proxy_SSE": 0.24303657889266744,
+      "packetwise_SSE": 0.24303813706023022,
+      "centered_predictions_difference_SSE": 1.4666679408203075e-11
+    },
+    {
+      "TX": 5,
+      "day": 2,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7747746108382235,
+      "additive_SSE": 0.030618101264785254,
+      "TXconditional_SSE": 0.009608538863886537,
+      "mean_proxy_SSE": 0.14932875932611223,
+      "packetwise_SSE": 0.1493237847459223,
+      "centered_predictions_difference_SSE": 5.706290873659239e-8
+    },
+    {
+      "TX": 0,
+      "day": 3,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7802397300058754,
+      "additive_SSE": 0.05486073193227661,
+      "TXconditional_SSE": 0.007559235513935835,
+      "mean_proxy_SSE": 0.17754446203274926,
+      "packetwise_SSE": 0.1776226224156487,
+      "centered_predictions_difference_SSE": 1.113605170058758e-7
+    },
+    {
+      "TX": 1,
+      "day": 3,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7294771294407227,
+      "additive_SSE": 0.018682279789585268,
+      "TXconditional_SSE": 0.015277582642109721,
+      "mean_proxy_SSE": 0.14374333227747293,
+      "packetwise_SSE": 0.143854150329565,
+      "centered_predictions_difference_SSE": 1.2803014400330206e-7
+    },
+    {
+      "TX": 2,
+      "day": 3,
+      "reference_packets": 300,
+      "baseline_SSE": 0.773415551619804,
+      "additive_SSE": 0.023312629689951125,
+      "TXconditional_SSE": 0.009918681954204213,
+      "mean_proxy_SSE": 0.1521494271127414,
+      "packetwise_SSE": 0.15215465760681882,
+      "centered_predictions_difference_SSE": 1.9306565978016924e-9
+    },
+    {
+      "TX": 3,
+      "day": 3,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7321844139587339,
+      "additive_SSE": 0.014630120066066815,
+      "TXconditional_SSE": 0.00588905654064933,
+      "mean_proxy_SSE": 0.13153969001143345,
+      "packetwise_SSE": 0.13153274206759086,
+      "centered_predictions_difference_SSE": 0.0000011993381693233916
+    },
+    {
+      "TX": 4,
+      "day": 3,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7751240857656366,
+      "additive_SSE": 0.08688163062093608,
+      "TXconditional_SSE": 0.06990277892223742,
+      "mean_proxy_SSE": 0.23445897983427091,
+      "packetwise_SSE": 0.2344602420889883,
+      "centered_predictions_difference_SSE": 1.5185796835330388e-11
+    },
+    {
+      "TX": 5,
+      "day": 3,
+      "reference_packets": 300,
+      "baseline_SSE": 0.7806588584138605,
+      "additive_SSE": 0.05640532876389913,
+      "TXconditional_SSE": 0.013639373819346566,
+      "mean_proxy_SSE": 0.21688206792674225,
+      "packetwise_SSE": 0.21681878000064794,
+      "centered_predictions_difference_SSE": 4.819630877098817e-7
+    }
+  ],
+  "per_RX": {
+    "1": {
+      "additive_SSE": 0.07383550025445529,
+      "TXconditional_SSE": 0.02515012336615756,
+      "mean_proxy_SSE": 0.2853028715057448,
+      "packetwise_SSE": 0.28530185069423103
+    },
+    "3": {
+      "additive_SSE": 0.2758978516029369,
+      "TXconditional_SSE": 0.13001088823572315,
+      "mean_proxy_SSE": 1.1486919987428288,
+      "packetwise_SSE": 1.1489396886325423
+    },
+    "4": {
+      "additive_SSE": 0.05472453765642482,
+      "TXconditional_SSE": 0.02461819267434996,
+      "mean_proxy_SSE": 0.26894135628197413,
+      "packetwise_SSE": 0.2690114051310509
+    },
+    "6": {
+      "additive_SSE": 0.07907835580910279,
+      "TXconditional_SSE": 0.044627401717399276,
+      "mean_proxy_SSE": 0.29225825730694693,
+      "packetwise_SSE": 0.2923144016367748
+    },
+    "8": {
+      "additive_SSE": 0.2486881910282115,
+      "TXconditional_SSE": 0.056240306157417694,
+      "mean_proxy_SSE": 0.949439968868741,
+      "packetwise_SSE": 0.9494504363428093
+    }
+  },
+  "max_reference_matrix_error": 0,
+  "source_RX_holdout": null,
+  "response_refits": 0,
+  "old_mean_proxy_decision_unchanged": true,
+  "IQ_operator_for_training": false,
+  "identity_preservation_proved": false,
+  "Ag_proved": false,
+  "joint_goal_complete": false,
+  "target_access": false,
+  "status": "SOURCE_PACKETWISE_ORDER_COMPLETE",
+  "run_id": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01"
+}
