@@ -15,3 +15,13 @@
 本地产物 E:/type10-7/local_artifacts/cvs_FcrossRX_timing_factorial_E30_20261017。远端根 /home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-timing-factorial-e30-s2026092701-m2-r01。七环境固定预测后独立truth-last自动接续。GitHub推送FAILED（连接重置），API独立核对远端仍618b9b5912f28de5650049c493a8e8a38484bba4；本地提交保留，训练发布使用实际本地代码提交。
 
 后续交付更新：GitHub推送已恢复，远端分支OID与本地分析提交2a1efbaeca711303083cb78c5a4645e089ed5dae独立核对VERIFIED，覆盖训练代码提交7e4af64bb。完成后分析已在独立CPU进程等待全行正式评价完成，分析代码提交2a1efbaeca；不读取IQ/checkpoint或训练参数，源判据独立复算后才读取正式标签。最近核实B10完成9/30、B11完成4/30，均健康、无跳过更新；尚无新正式成绩。
+
+## 首条已完成，源域固定判据否定
+
+B10 已完成 FINAL30 / 6660 更新。源训练前向样本5407922（student train3976920/eval864002、teacher train0/eval567000），有标签前向3409920；源训练墙钟1633.512086s，源读出16202NN/8.976482s。时移实际覆盖852480视图、全部6300个L物理样本、[-16,16]全部33偏移，最大相对功率误差1.307899e-7；平均相对L2变化1.390768，不将整数时移称为数值幅度很小的波形变化。
+
+全源V clean：B10=97.896296%，匹配B00=98.303704%，差−0.407407pp，超过预登记−0.25pp下限。两个同观察timing V draw：B00均92.555556%，B10为97.444444%/97.333333%，提升4.888889/4.777778pp，均低于固定+5pp。Ag clean保持与双draw时移增益两项均FAIL，不放宽阈值、不缩小幅度或概率救跑、无扩seed依据。完整源判定文件仍由原dispatcher在两条训练完成后生成；此处是提前固定的源域否定事实，未读取新正式分数。
+
+B10自动正式评价已核实：clean+全部六种practical，每视图168000样本，共1176000固定预测，actualNN1176002；参数全部冻结、truth_read=false/query_fit=false/head_fit_updates=0，之后独立scorer truth-last，126条分层指标完成。预测墙钟47.255914s。worker已自然退出，未停止或重启。新正式分数暂不读取，等待B11及完整源判定后统一独立分析。B11仍健康执行E30，不因当前源域FAIL中止。
+
+原U阶段已读回：第21轮U56700、pseudo_truth_available=0、U_truth_read=false、head_fit_updates=0，教师评估56700NN/训练0NN；默认头随骨干有更新。门控选择数和参数位移不作为身份性能收益。
