@@ -54,3 +54,5 @@ CWD `PROJECT/releases/cvs_F_carrierGate_E30_20261018_r01`；命令 `CVS-RFFI/bin
 每 GPU 最多 3 个总实验进程、计入其他 owner，由现有 capacity lock 调度。所属系统性技术／角色／非有限失败才停止新调度，保留产物、健康行完成，不自动重试、不热改／停止旧健康任务，不以性能早停或擅自延长预算。预期每行完整 source checkpoint／初始化／真实 args、2220 步／10 轮日志、carrier_steps、L/U 物理曝光、Sinc 更新、23400 源读出 NN／21600 源传播、七视图固定预测／独立评分，以及全矩阵源决策和同 row 正式报告。
 
 整体联合目标 ACTIVE；本行尚无训练或正式性能结果。
+
+发布前置只读检查发现 Windows 路径输出故障：`str(Path)` 将 Linux 父权重路径写成反斜杠。远端确认共同父权重存在，run／release／archive 均未创建，0 训练／NN／远端写入。仅改为 `Path.as_posix()`，本地路径断言通过；保留首次失败和独立只读核实，不把它记为科学重跑。

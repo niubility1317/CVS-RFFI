@@ -16,5 +16,13 @@
   "real_input_reads": 0,
   "checkpoint_reads": 0,
   "remote_operations": 0,
-  "expanded_tests": 0
+  "expanded_tests": 0,
+  "targeted_rereview": {
+    "status": "PASS",
+    "scope": "Only publish parent Path.as_posix fix at line17",
+    "reviewer": "/root/unitary_p0p1_review",
+    "P0": [],
+    "P1": [],
+    "note": "No full repeated review,no remote or real checkpoint access"
+  }
 }

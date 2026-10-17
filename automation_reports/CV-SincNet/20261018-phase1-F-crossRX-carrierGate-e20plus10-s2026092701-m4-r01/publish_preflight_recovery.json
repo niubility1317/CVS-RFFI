@@ -1,0 +1,17 @@
+{
+  "status": "FAILED_READONLY_PREFLIGHT_NO_LAUNCH",
+  "cause": "Windows str(Path) rendered the Linux parent checkpoint path with backslashes",
+  "fix": "Use Path.as_posix for parent path in publish preflight",
+  "verification": {
+    "POSIX_parent_local": "PASS",
+    "ordinary_remote_parent_present": true,
+    "remote_run_exists": false,
+    "remote_release_exists": false,
+    "remote_archive_exists": false
+  },
+  "new_training_updates": 0,
+  "new_neural_forwards": 0,
+  "remote_mutations": 0,
+  "inputs": "No IQ/checkpoint opened by failure/reconciliation",
+  "action": "Commit targeted path fix then publish once;not a model retrain or scientific rerun"
+}

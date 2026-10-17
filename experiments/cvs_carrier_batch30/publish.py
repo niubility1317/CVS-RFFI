@@ -14,7 +14,7 @@ def expand(v):
 def main():
  package='experiments/cvs_carrier_batch30';rt=d.runtime();local=d.ROOT/d.LOCAL;local.mkdir(parents=True,exist_ok=True)
  if subprocess.check_output(['git','status','--porcelain','--',package],cwd=d.ROOT,text=True).strip():raise ValueError('Commit actual code/config before release')
- commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=d.ROOT,text=True).strip();release=d.PROJECT+'/releases/'+d.RELEASE;c=dict(project=d.PROJECT,release=release,archive=release+'.tar.gz',run=d.BASE.as_posix(),python=rt['python'],commit=commit,parent_runtime=rt['parent_runtime_release'],parent_runtime_commit=rt['parent_runtime_commit'],source=d.SOURCE,parent=str(d.parent_source()/'final_ssdg.pth'))
+ commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=d.ROOT,text=True).strip();release=d.PROJECT+'/releases/'+d.RELEASE;c=dict(project=d.PROJECT,release=release,archive=release+'.tar.gz',run=d.BASE.as_posix(),python=rt['python'],commit=commit,parent_runtime=rt['parent_runtime_release'],parent_runtime_commit=rt['parent_runtime_commit'],source=d.SOURCE,parent=(d.parent_source()/'final_ssdg.pth').as_posix())
  script=r'''
 import json,os,pwd,shutil
 from pathlib import Path
