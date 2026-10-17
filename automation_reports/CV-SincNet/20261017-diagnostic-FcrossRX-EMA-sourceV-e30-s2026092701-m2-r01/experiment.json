@@ -1,0 +1,223 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-final30-ownEMA-source-readout",
+  "display_name": "完整源 E30：自身 EMA 默认头的冻结源比较",
+  "description": "Only compare complete own FINAL30 EMA with existing same-checkpoint student logits on fixed V1800/two source channel draws; no new Ag, training, model selection from target or formal evaluation.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "F-crossRX FINAL30 EMA source",
+    "FcrossRX EMA source"
+  ],
+  "tags": [
+    "source_only",
+    "full_source",
+    "E30",
+    "frozen_default_head",
+    "EMA",
+    "no_training"
+  ],
+  "comparison_group_id": "FcrossRX_fullsource_concat_E30_20261017",
+  "parent_run_ids": [
+    "20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user Phase1 joint augmentation research; latest scratch budget E30; full source RX required; this diagnostic adds zero training and no target access.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary CVS-RFFI; CPU2; CUDA_VISIBLE_DEVICES empty; FP32",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_EMA_sourceV_E30_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing VALIDATED_ONCE original source/target physical roles; no rebuild",
+    "representation": "Existing V1800 IQ256/RMScenterfalse/fs25MHz and exact cached full practical residual observations; no new channel realization, filter, normalization or sample removal",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "same original source_contract.json#role_ids; exact role equality at runtime",
+    "label_map_ref": "same original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "original6 registered TX",
+    "roles": {
+      "L_s": "Historical parent6300; no L input consumed by analysis; cache may deserialize unused L",
+      "U_s": "Historical parent56700 hidden TX; no U IQ or truth consumed",
+      "V": "Original27000; fixed balanced1800 from P24 only for current computation"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse original VALIDATED_ONCE; metadata full L/U/V role equality confirmed, no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "forbidden",
+    "external_method_exception": null,
+    "claim_scope": "Frozen source readout falsification only; not Ag, cross-RX generalization or deployment gain"
+  },
+  "checkpoint": {
+    "initialization": "frozen existing own full-source FINAL30 EMA; no training initialization",
+    "sources": [
+      {
+        "run_id": "20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01",
+        "row": "B00-s2026092701",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/B00-s2026092701/source/final_ssdg.pth",
+        "state_key": "ema_model",
+        "historical_training": "scratch30/6660; no ancestors; original full roles; final-only"
+      },
+      {
+        "run_id": "20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01",
+        "row": "B01-s2026092701",
+        "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/B01-s2026092701/source/final_ssdg.pth",
+        "state_key": "ema_model",
+        "historical_training": "scratch30/6660; no ancestors; original full roles; final-only"
+      }
+    ],
+    "contract_check_ref": "Original own_model strict completion/initialization/source_frozen/role_ids checks before reading own EMA",
+    "provenance_verdict": "Full original role match required; no mismatched/E50/E200/target-selected weights",
+    "selection_rule": "Read both declared fixed FINAL30 states, no source/target checkpoint selection"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "/root",
+    "gpu_policy": "CPU2 only; CUDA_VISIBLE_DEVICES empty; no GPU process or modifications to healthy tasks",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_EMA_sourceV_E30_20261017",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_EMA_sourceV_E30_20261017_r01/experiments/cvs_fullsource_ema29/runner.py",
+    "stop_rule": "Own source-role/provenance/state/nonfinite/cost/outputcollision/technical failure preserves artifacts; no automatic retry or changes to other tasks. Scientific failure completes both models and closes this fixed readout."
+  },
+  "expected_artifacts": [
+    "checkpoint_noquery_smoke.json",
+    "data_roles.json",
+    "B00/predictions.npz",
+    "B01/predictions.npz",
+    "B00/result.json",
+    "B01/result.json",
+    "completion.json",
+    "independent analysis and figure",
+    "same-row report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "CM",
+      "margin_scale30",
+      "repair",
+      "new_error",
+      "clean_by_RX",
+      "NN",
+      "updates",
+      "wall_seconds"
+    ],
+    "dimensions": [
+      "arm",
+      "student_or_EMA",
+      "draw",
+      "scene",
+      "source_RX"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01/{B00,B01}/predictions.npz",
+    "scorer_ref": "source stats.py followed by independent saved-prediction CM recomputation; no target scorer or raw truth",
+    "source_rule": "B01 clean>=student; all5RX clean delta>=-.5pp; mid/low bothdraws>=+1pp; numeric tolerance1e-10pp. Report B00 separately; no Ag or joint success claim."
+  },
+  "rows": [
+    {
+      "row_id": "B00-EMA-s2026092701",
+      "method": "Full unchanged F/CROSS_RX own FINAL30 EMA/defaultcos30",
+      "purpose": "readout_control",
+      "config_ref": "experiments/cvs_fullsource_ema29/probe.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01/B00/result.json",
+      "data_overrides": {
+        "source_V1800": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Reuse P24 source panel seed202610172401/channel seed202610172402 with2draws; no new random stream, support or model; RX hardware2026092701. Two channeldraws not model seeds.",
+      "k": null,
+      "scenario": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "12602 new frozen NN/model;0update;historicalparentE30/6660/5407922NN permodel separately",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01/B00",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01-launch/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_EMA_sourceV_E30_20261017_r01/experiments/cvs_fullsource_ema29/runner.py",
+      "expected_artifacts": [
+        "predictions.npz",
+        "result.json"
+      ]
+    },
+    {
+      "row_id": "B01-EMA-s2026092701",
+      "method": "Full unchanged F/CROSS_RX own FINAL30 EMA/defaultcos30",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_fullsource_ema29/probe.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01/B01/result.json",
+      "data_overrides": {
+        "source_V1800": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 202610172401,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172402
+      },
+      "seed_notes": "Reuse P24 source panel seed202610172401/channel seed202610172402 with2draws; no new random stream, support or model; RX hardware2026092701. Two channeldraws not model seeds.",
+      "k": null,
+      "scenario": [
+        "practical_low_suburban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "12602 new frozen NN/model;0update;historicalparentE30/6660/5407922NN permodel separately",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01/B01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01-launch/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_EMA_sourceV_E30_20261017_r01/experiments/cvs_fullsource_ema29/runner.py",
+      "expected_artifacts": [
+        "predictions.npz",
+        "result.json"
+      ]
+    }
+  ],
+  "notes": [
+    "No new training: automatic formal test after training does not apply to this explicitly source-only diagnostic.",
+    "No local window/mask/PA bypass/noise/clock/PDP/calibration rescue.",
+    "Only exact source cached full condition0 is used; same CPU2/batch90 as student source reference.",
+    "Readout success would still not prove IQ augmentation or permit target-based selection."
+  ],
+  "registered_at": "2026-10-17T10:25:29+00:00"
+}
