@@ -1,0 +1,232 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-FcrossRX-matchedRAW-sourceRX1-s2026092701-m5-r01",
+  "group_id": "FcrossRX-nominalRAW-five-historical-controls",
+  "display_name": "F＋跨 RX：五个同 seed raw 控制的可比性与判决差异复算",
+  "description": "固定5个既有raw8L/1.25/E20源控制，只读随机初始化206tensor、完整轨迹及44100已冻结源判决；0新训练/NN/IQ，描述性分析不改变当前门槛或晋级旧候选。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "nominal RAW control variability",
+    "same seed source control audit"
+  ],
+  "tags": [
+    "source_only",
+    "F_CROSS_RX",
+    "RAW_CONTROL_AUDIT",
+    "zero_update",
+    "historical_reuse"
+  ],
+  "comparison_group_id": "FcrossRX-nominalRAW-five-historical-controls",
+  "parent_run_ids": [
+    "20261017-phase1-FcrossRX-viewrefresh-sourceRX1-e20-s2026092701-m3-r01",
+    "20261017-phase1-FcrossRX-AsTiming-sourceRX1-e20-s2026092701-m4-r01",
+    "20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01",
+    "20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01",
+    "20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research;read-only descriptive audit of5existing source-only controls while separatehealthy SupCon-view training continues;no new E20 or scientificpromotion",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "Windowsnative:verifiedPython3.13 stdlibreader;existingSSRPython3.10/Torch2.1 CPU2 tensorcomparison;no installs/NumPybridge",
+    "cwd": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original VALIDATED_ONCE split392005 all5matching source folds",
+    "representation": "Saved sourceheldRX1L1260 clean+6practical harddecisions/metadata;full existing training metadata;untrained initial_smoke tensors only",
+    "contract_ref": "Eachfixedsource/source_contract.json;compared exacteffective role_ids before state reads",
+    "physical_ids_ref": "Existing fitL5040/U45360/V21600 role_ids and original5994L-U sequence records perrow;U IDs treatedopaque/no TXdecode",
+    "label_map_ref": "Original6visibleL TX0..5;heldsource labels from frozen source predictions",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original6source TX",
+    "roles": {
+      "L_s": "No IQ access;only saved fitL metadata and heldRX1L1260 frozen readouts",
+      "U_s": "Only opaque IDs/order and originalpermission flags;0IQ/hiddenTXlabels",
+      "V": "Only originalsaved aggregate health,0V IQ/updates"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse existing validated source handles and knownscratch histories;5contracts and allrole IDs compared,0 data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "All7existing frozen source readouts,originalfullsixpractical configs/actualphysics compared;no new generated IQ or test changes"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Descriptive fivehistorical nominal controls,not5seeds or a new randomized replication;no exact inputIQ or CUDAcausality proof/candidatepromotion/Ag/joint/targetgain"
+  },
+  "checkpoint": {
+    "initialization": "No model instantiation;read5untrained random initial snapshots for CPU tensor comparison only",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-viewrefresh-sourceRX1-e20-s2026092701-m3-r01/RAW-RX1-s2026092701/source/initial_smoke.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-AsTiming-sourceRX1-e20-s2026092701-m4-r01/RAW-RX1-s2026092701/source/initial_smoke.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01/B00-RX1-s2026092701/source/initial_smoke.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01/B00-RX1-s2026092701/source/initial_smoke.pt",
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01/B00-RX1-s2026092701/source/initial_smoke.pt"
+    ],
+    "contract_check_ref": "design.verify_source checks sourceonlyscratch/init/final-only/hiddenU/noheadfit/budget andexactroleIDs before anysnapshotread",
+    "provenance_verdict": "Known ownsource-only scratchE20 histories,0ancestors/target;initial snapshots never used as model init/teacher/train. No finaltrainedCP downloaded.",
+    "selection_rule": "Fixed five-source cohort identified by same nominalraw8L recipe before collection;historical scores already exposed,not blind/not selected by target"
+  },
+  "execution": {
+    "host": "LocalWindowsNative;ordinaryN607 read-only sourcecollection;0remote experimentworkers",
+    "launch_owner": "codex/root/FcrossRX-RAWcontrol-audit-20261017",
+    "gpu_policy": "0GPU use;localTorchCPU2;healthyotherowner workers192098/192173 protected",
+    "remote_run_root": null,
+    "remote_log_root": null,
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017",
+    "launch_command": "F:/App/miniconda3/python.exe -m experiments.cvs_raw_control_audit17.collect --output E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/inputs ; E:/type10-7/local_envs/ssr-gpu/python.exe -m experiments.cvs_raw_control_audit17.states --input E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/inputs --output E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final ; F:/App/miniconda3/python.exe -m experiments.cvs_raw_control_audit17.audit --input E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/inputs --output E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final",
+    "stop_rule": "Missing/source-target contaminated/mismatching source roles/invalid initstate/wrong sourceprediction orbudget/outputcollision => preserve outputs andreport exactfailure;no source or trainingrerun/no currentcriteriachange/no healthyjob intervention"
+  },
+  "expected_artifacts": [
+    "Fixed source cohort config and readonlycollection list,0IQ/trainedCP",
+    "5untrainedinitialCP loads/206tensor direct10pair comparisons/firststructure noquerycheck0NN",
+    "All5x4440 native/view/unit records,5x5994L-U opaqueID sequences,100epochs/fullstdout",
+    "All44100 saved source predictions independentlyrecounted/paired repair-break/6classF1",
+    "Semanticrecipe/actualnativeargdiff/physicalID/recordedinputMSE/frozenphysics compatibility matrix",
+    "Descriptive ranges/SD notCI orseedconfirmation,actuallocalcost/figures/limits/report/registry"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "sourceaccuracy",
+      "macro_F1",
+      "pairedrepairs/breaks",
+      "harddisagreement",
+      "init206tensor differences",
+      "allrole IDs/sequence equality",
+      "stored ordinary MSE difference",
+      "first objective/gradient divergence",
+      "all7scene minmax/range/descriptiveSD",
+      "historical/new costs"
+    ],
+    "dimensions": [
+      "control",
+      "pair",
+      "view",
+      "epoch",
+      "sourceheldRX1",
+      "modelseed01"
+    ],
+    "prediction_ref": "Only existingfixedsource/source_readouts/*.json",
+    "scorer_ref": "experiments.cvs_raw_control_audit17.audit",
+    "criteria": "No candidatepromotion threshold. Report all5controls/all10pairs;state known vsunresolved compatibility;no retrospective rescue/reranking or current viewroute criteriamutation"
+  },
+  "rows": [
+    {
+      "row_id": "fixed-five-control-descriptive-audit",
+      "method": "Five frozen source nominalRAW histories plus initial random-state comparison",
+      "purpose": "descriptive_no_candidate_promotion",
+      "config_ref": "experiments/cvs_raw_control_audit17/design.py#config",
+      "resolved_config_ref": "E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/design_export.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 2026092701,
+        "support": null,
+        "evaluation": 20261016103
+      },
+      "seed_notes": "No new random training. Historicalsame model/ordinaryseed;sourceeval originalfixed20261016103;unusedshadowstreams differ byrun and disclosed;data/supportnotapplicable. Fivecontrols notfive modelseeds.",
+      "k": null,
+      "scenario": "Saved heldsourceRX1L1260 clean+sixoriginalpractical,not target",
+      "optimizer": "none;readonly tensors/metadata",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newE/updates/NN/IQ;5initCP reads;44100savedpreds/22200view+22200native+22200unit records/29970LUseq;historical100modelE/22200updates/actualNN separate",
+      "output_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final",
+      "log_path": "E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/audit.stdout.log",
+      "command": "F:/App/miniconda3/python.exe -m experiments.cvs_raw_control_audit17.collect --output E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/inputs ; E:/type10-7/local_envs/ssr-gpu/python.exe -m experiments.cvs_raw_control_audit17.states --input E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/inputs --output E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final ; F:/App/miniconda3/python.exe -m experiments.cvs_raw_control_audit17.audit --input E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/inputs --output E:/type10-7/local_artifacts/cvs_FcrossRX_RAWcontrol_audit_20261017/final",
+      "expected_artifacts": [
+        "Fixed source cohort config and readonlycollection list,0IQ/trainedCP",
+        "5untrainedinitialCP loads/206tensor direct10pair comparisons/firststructure noquerycheck0NN",
+        "All5x4440 native/view/unit records,5x5994L-U opaqueID sequences,100epochs/fullstdout",
+        "All44100 saved source predictions independentlyrecounted/paired repair-break/6classF1",
+        "Semanticrecipe/actualnativeargdiff/physicalID/recordedinputMSE/frozenphysics compatibility matrix",
+        "Descriptive ranges/SD notCI orseedconfirmation,actuallocalcost/figures/limits/report/registry"
+      ],
+      "config": {
+        "schema": "FcrossRX_five_nominalRAW_controls_descriptive_v1",
+        "run_id": "20261017-diagnostic-FcrossRX-matchedRAW-sourceRX1-s2026092701-m5-r01",
+        "owner": "codex/root/FcrossRX-RAWcontrol-audit-20261017",
+        "sources": [
+          {
+            "key": "refresh_RAW",
+            "run_id": "20261017-phase1-FcrossRX-viewrefresh-sourceRX1-e20-s2026092701-m3-r01",
+            "arm": "RAW",
+            "source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-viewrefresh-sourceRX1-e20-s2026092701-m3-r01/RAW-RX1-s2026092701/source"
+          },
+          {
+            "key": "timing_RAW",
+            "run_id": "20261017-phase1-FcrossRX-AsTiming-sourceRX1-e20-s2026092701-m4-r01",
+            "arm": "RAW",
+            "source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-AsTiming-sourceRX1-e20-s2026092701-m4-r01/RAW-RX1-s2026092701/source"
+          },
+          {
+            "key": "cycle_B00",
+            "run_id": "20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01",
+            "arm": "B00",
+            "source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01/B00-RX1-s2026092701/source"
+          },
+          {
+            "key": "awgn_B00",
+            "run_id": "20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01",
+            "arm": "B00",
+            "source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-F-crossRX-isolatedAWGN-sourceRX1-e20-s2026092701-m3-r01/B00-RX1-s2026092701/source"
+          },
+          {
+            "key": "phase_B00",
+            "run_id": "20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01",
+            "arm": "B00",
+            "source": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01/B00-RX1-s2026092701/source"
+          }
+        ],
+        "views": [
+          "clean",
+          "practical_high",
+          "practical_mid",
+          "practical_low_suburban",
+          "practical_high_urban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "new_model_epochs": 0,
+        "new_optimizer_updates": 0,
+        "new_network_forwards": 0,
+        "target_access": false,
+        "source_only": true,
+        "source_scope": "One exposed heldsourceRX1L1260,modelseed2026092701,5historicalcontrols not5seeds",
+        "weights": "Only initial_smoke.pt untrained random initialstates,never final trainedCP;CPU tensorcomparison only",
+        "data": "No IQ/Utruth/target access;only complete frozen source predictions and permitted L/U opaqueID metadata",
+        "candidate_promotion": false,
+        "limits": "Descriptive conditional recipe/roles/init/sequence/stored-input-scalars comparison;no exactIQ replay or uniqueCUDAcausalclaim;no closedroute rescue or current scientificcriteria modification"
+      }
+    }
+  ],
+  "notes": [
+    "Nonblocking analysis ofexistingcontrols,not a new gate for running or futurecandidate",
+    "Sourcecohort convenience sample ofknown historicalnominalcontrols,not universalrunnoise distribution or independentmodelseedCI",
+    "Untrainedrandomstate weights will be collected privately;0sourceIQ or trainedCP downloads/Gitweights",
+    "No exactIQequality inferredfromMSE;no uniqueattribution toGPU/numerics",
+    "Pending SupCon-view experiment retainsfixedscientificcriteria,not altered bythisaudit"
+  ],
+  "registered_at": "2026-10-17T00:48:34+00:00"
+}
