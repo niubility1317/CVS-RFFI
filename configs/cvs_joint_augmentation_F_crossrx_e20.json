@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_LATEST_CALIBRATION_AS_IDENTITY_GAIN_FAILED_CLOSED",
+  "status": "RESEARCH_ACTIVE_LATEST_PDP_SHAPE_AS_IDENTITY_GAIN_FAILED_CLOSED",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User baseline F plus cross-RX same-TX;latest budget E30 as fixed E20+10 on all five rows;all five now trained,score-only recovery adds zero updates.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -2203,9 +2203,10 @@
     }
   },
   "latest_completed_experiment": {
-    "run_id": "20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01",
+    "schema": "F_PDP_SHAPE_E30_CLOSED_V1",
+    "run_id": "20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01",
     "status": "ANALYZED_VERIFIED",
-    "execution_commit": "f375e6cc47cfb7d5e7b069b0bd912d5bf8819a0e",
+    "execution_commit": "476f350914ca72c753365c1b25d9deebf4920701",
     "model_seed_count": 1,
     "new_models": 1,
     "reused_controls": 1,
@@ -2217,44 +2218,53 @@
     "all_source_sampling_identical": true,
     "shared_actual_args": 68,
     "source_objectives_recounted": 2220,
-    "calibration_states": 150,
-    "true_hardware_sessions": 15,
+    "objective_max_error": 1.0728836064011205e-7,
+    "profile_coverage": {
+      "As_packets": 284160,
+      "unique_L_physical": 6300,
+      "shape_counts": {
+        "0": 142227,
+        "1": 141933
+      },
+      "all_private_draws_exact": true
+    },
+    "original_hardware_and_calibration_states_verified": 15,
     "summary": {
-      "CAL_REFRESH": {
+      "PDP_SHAPE": {
         "clean": {
-          "accuracy": 0.8290952380952381,
-          "macro_F1": 0.8247107772832596,
-          "worst_RX_accuracy": 0.7275416666666666
+          "accuracy": 0.8273511904761904,
+          "macro_F1": 0.8230020255571646,
+          "worst_RX_accuracy": 0.7334583333333333
         },
         "practical_high": {
-          "accuracy": 0.8161607142857142,
-          "macro_F1": 0.8118676944597708,
-          "worst_RX_accuracy": 0.7309583333333334
+          "accuracy": 0.8157142857142857,
+          "macro_F1": 0.8111892516688174,
+          "worst_RX_accuracy": 0.7315416666666666
         },
         "practical_mid": {
-          "accuracy": 0.7933333333333333,
-          "macro_F1": 0.7890838191223852,
-          "worst_RX_accuracy": 0.716875
+          "accuracy": 0.7928869047619047,
+          "macro_F1": 0.7884448944958965,
+          "worst_RX_accuracy": 0.7177916666666667
         },
         "practical_low_suburban": {
-          "accuracy": 0.7697380952380952,
-          "macro_F1": 0.7656351082665704,
-          "worst_RX_accuracy": 0.6975833333333333
+          "accuracy": 0.768375,
+          "macro_F1": 0.764039482447898,
+          "worst_RX_accuracy": 0.696875
         },
         "practical_high_urban": {
-          "accuracy": 0.7820892857142857,
-          "macro_F1": 0.7775234493841117,
-          "worst_RX_accuracy": 0.706625
+          "accuracy": 0.7813928571428571,
+          "macro_F1": 0.776619043535827,
+          "worst_RX_accuracy": 0.7067083333333334
         },
         "practical_mid_urban": {
-          "accuracy": 0.6436130952380953,
-          "macro_F1": 0.6389127011394656,
-          "worst_RX_accuracy": 0.5860416666666667
+          "accuracy": 0.6416785714285714,
+          "macro_F1": 0.6364592958549603,
+          "worst_RX_accuracy": 0.5854166666666667
         },
         "practical_low_urban": {
-          "accuracy": 0.5344285714285715,
-          "macro_F1": 0.5287886415582234,
-          "worst_RX_accuracy": 0.4897916666666667
+          "accuracy": 0.5325654761904762,
+          "macro_F1": 0.5261858540571022,
+          "worst_RX_accuracy": 0.48895833333333333
         }
       },
       "NOMINAL_AS": {
@@ -2296,19 +2306,19 @@
       }
     },
     "differences_pp": {
-      "clean": -0.05416666666666666,
-      "practical_high": -0.004166666666666667,
-      "practical_mid": 0.0035714285714285718,
-      "practical_low_suburban": -0.0035714285714285718,
-      "practical_high_urban": 0.019642857142857142,
-      "practical_mid_urban": -0.01011904761904762,
-      "practical_low_urban": -0.004166666666666667
+      "clean": -0.2285714285714286,
+      "practical_high": -0.04880952380952381,
+      "practical_mid": -0.04107142857142857,
+      "practical_low_suburban": -0.13988095238095238,
+      "practical_high_urban": -0.05,
+      "practical_mid_urban": -0.20357142857142857,
+      "practical_low_urban": -0.19047619047619047
     },
     "suburban_gap_pp": {
-      "CAL_REFRESH": {
-        "practical_high": 1.2934523809523868,
-        "practical_mid": 3.5761904761904773,
-        "practical_low_suburban": 5.935714285714289
+      "PDP_SHAPE": {
+        "practical_high": 1.163690476190471,
+        "practical_mid": 3.4464285714285725,
+        "practical_low_suburban": 5.89761904761904
       },
       "NOMINAL_AS": {
         "practical_high": 1.3434523809523813,
@@ -2322,10 +2332,63 @@
       "mid_urban_not_lower": false,
       "each_suburban_no_more_than_0_25pp_lower": true
     },
-    "clean_net_vs_B00_pp": -2.3589285714285757,
+    "clean_net_vs_B00_pp": -2.533333333333343,
+    "B00_reference": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/B00-s2026092701",
     "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+    "scientific_pass": false,
     "Ag_efficacy_proved": false,
-    "joint_goal_complete": false
+    "joint_goal_complete": false,
+    "cost": {
+      "status": "FULL_SOURCE_E30_TRAINED",
+      "actual_steps": 2220,
+      "parent_steps": 4440,
+      "cumulative_steps": 6660,
+      "parent_epochs": 20,
+      "new_epochs": 10,
+      "cumulative_epochs": 30,
+      "L_forward_packets": 1136640,
+      "student_train_forward_packets": 1703640,
+      "student_eval_forward_packets": 324002,
+      "teacher_train_forward_packets": 0,
+      "teacher_eval_forward_packets": 567000,
+      "SupCon_applied": 2220,
+      "SupCon_layer_forward_terms": 8880,
+      "As_training_observations": 284160,
+      "Ag_training_observations": 0,
+      "clock": null,
+      "source_RX_holdout": null,
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "target_access": false,
+      "elapsed_seconds": 1316.2518680095673,
+      "optimizer_reset": true,
+      "own_parent_EMA_restored": true
+    },
+    "prediction_cost": {
+      "status": "PREDICTIONS_COMPLETE",
+      "count": 168000,
+      "truth_read": false,
+      "query_fit": false,
+      "head_fit_updates": 0,
+      "wall_seconds": 43.46894478821196,
+      "NN_forward_packets": 1176002,
+      "peak_cuda_allocated_bytes": 100937728,
+      "fixed_received_IQ": true
+    },
+    "score_cost": {
+      "status": "SCORED",
+      "truth_last": true,
+      "independent_recount": "VERIFIED",
+      "CPU_wall_seconds": 3.252765452954918,
+      "head_fit_updates": 0
+    },
+    "analysis": {
+      "IQ": 0,
+      "CP": 0,
+      "raw_truth_reads": 0,
+      "NN": 0,
+      "new_updates": 0
+    }
   },
   "source_PSD_positive_affine": {
     "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
@@ -2458,18 +2521,19 @@
   },
   "current_experiment": {
     "run_id": "20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01",
-    "status": "RUNNING_VERIFIED",
-    "formal_score_available": false,
-    "scientific_pass": null,
-    "no_running_owned_jobs": false,
+    "status": "ANALYZED_VERIFIED",
+    "formal_score_available": true,
+    "scientific_pass": false,
+    "no_running_owned_jobs": true,
     "joint_goal_complete": false,
     "execution_commit": "476f350914ca72c753365c1b25d9deebf4920701",
-    "last_observed_update": 298,
-    "completed_incremental_epochs": 1,
-    "cumulative_epoch": 21
+    "completed_incremental_epochs": 10,
+    "cumulative_epoch": 30,
+    "new_updates": 2220,
+    "cumulative_updates": 6660
   },
   "active_As_hypothesis": {
-    "status": "RUNNING_VERIFIED",
+    "status": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
     "run_id": "20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01",
     "hypothesis": "RMS-matched two-shape diffuse delay profile mixture improves As identity adaptation without clean/mid/suburban regressions",
     "method": "original [0,1,3] and equispaced [0,1,2] equal prior;original state powers/RMS;quality recomputed from H",
@@ -2487,7 +2551,9 @@
     "budget": "own source-final20+10 totalE30",
     "control": "existing exact nominal FULL_AS E30",
     "no_target_parameter_selection": true,
-    "no_automatic_rerun_or_seed_extension": true
+    "no_automatic_rerun_or_seed_extension": true,
+    "scientific_pass": false,
+    "future_action": "No profile/probability/seed/parent/budget rescue;source-only rationale required for any distinct next hypothesis"
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
@@ -2775,5 +2841,193 @@
     ],
     "held_training_RX": [],
     "joint_goal_complete": false
+  },
+  "pdp_shape_E30_result": {
+    "schema": "F_PDP_SHAPE_E30_CLOSED_V1",
+    "run_id": "20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01",
+    "status": "ANALYZED_VERIFIED",
+    "execution_commit": "476f350914ca72c753365c1b25d9deebf4920701",
+    "model_seed_count": 1,
+    "new_models": 1,
+    "reused_controls": 1,
+    "budget": "strict_same_ordinaryAs_parent_E20plus10_cumulativeE30",
+    "new_updates": 2220,
+    "cumulative_updates": 6660,
+    "source_RX_holdout": null,
+    "CM_recounts": 252,
+    "all_source_sampling_identical": true,
+    "shared_actual_args": 68,
+    "source_objectives_recounted": 2220,
+    "objective_max_error": 1.0728836064011205e-7,
+    "profile_coverage": {
+      "As_packets": 284160,
+      "unique_L_physical": 6300,
+      "shape_counts": {
+        "0": 142227,
+        "1": 141933
+      },
+      "all_private_draws_exact": true
+    },
+    "original_hardware_and_calibration_states_verified": 15,
+    "summary": {
+      "PDP_SHAPE": {
+        "clean": {
+          "accuracy": 0.8273511904761904,
+          "macro_F1": 0.8230020255571646,
+          "worst_RX_accuracy": 0.7334583333333333
+        },
+        "practical_high": {
+          "accuracy": 0.8157142857142857,
+          "macro_F1": 0.8111892516688174,
+          "worst_RX_accuracy": 0.7315416666666666
+        },
+        "practical_mid": {
+          "accuracy": 0.7928869047619047,
+          "macro_F1": 0.7884448944958965,
+          "worst_RX_accuracy": 0.7177916666666667
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.768375,
+          "macro_F1": 0.764039482447898,
+          "worst_RX_accuracy": 0.696875
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7813928571428571,
+          "macro_F1": 0.776619043535827,
+          "worst_RX_accuracy": 0.7067083333333334
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6416785714285714,
+          "macro_F1": 0.6364592958549603,
+          "worst_RX_accuracy": 0.5854166666666667
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5325654761904762,
+          "macro_F1": 0.5261858540571022,
+          "worst_RX_accuracy": 0.48895833333333333
+        }
+      },
+      "NOMINAL_AS": {
+        "clean": {
+          "accuracy": 0.8296369047619048,
+          "macro_F1": 0.8253138546277144,
+          "worst_RX_accuracy": 0.730125
+        },
+        "practical_high": {
+          "accuracy": 0.816202380952381,
+          "macro_F1": 0.8119393203007693,
+          "worst_RX_accuracy": 0.73
+        },
+        "practical_mid": {
+          "accuracy": 0.7932976190476191,
+          "macro_F1": 0.7890106343859681,
+          "worst_RX_accuracy": 0.7159583333333334
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7697738095238095,
+          "macro_F1": 0.7657090405738582,
+          "worst_RX_accuracy": 0.6972083333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7818928571428572,
+          "macro_F1": 0.7773384751324953,
+          "worst_RX_accuracy": 0.7057083333333334
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6437142857142857,
+          "macro_F1": 0.639092427734011,
+          "worst_RX_accuracy": 0.5865
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344702380952381,
+          "macro_F1": 0.5289993837273708,
+          "worst_RX_accuracy": 0.48954166666666665
+        }
+      }
+    },
+    "differences_pp": {
+      "clean": -0.2285714285714286,
+      "practical_high": -0.04880952380952381,
+      "practical_mid": -0.04107142857142857,
+      "practical_low_suburban": -0.13988095238095238,
+      "practical_high_urban": -0.05,
+      "practical_mid_urban": -0.20357142857142857,
+      "practical_low_urban": -0.19047619047619047
+    },
+    "suburban_gap_pp": {
+      "PDP_SHAPE": {
+        "practical_high": 1.163690476190471,
+        "practical_mid": 3.4464285714285725,
+        "practical_low_suburban": 5.89761904761904
+      },
+      "NOMINAL_AS": {
+        "practical_high": 1.3434523809523813,
+        "practical_mid": 3.6339285714285685,
+        "practical_low_suburban": 5.986309523809529
+      }
+    },
+    "criteria": {
+      "low_urban_gain_at_least_0_5pp": false,
+      "clean_not_lower": false,
+      "mid_urban_not_lower": false,
+      "each_suburban_no_more_than_0_25pp_lower": true
+    },
+    "clean_net_vs_B00_pp": -2.533333333333343,
+    "B00_reference": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/B00-s2026092701",
+    "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+    "scientific_pass": false,
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false,
+    "cost": {
+      "status": "FULL_SOURCE_E30_TRAINED",
+      "actual_steps": 2220,
+      "parent_steps": 4440,
+      "cumulative_steps": 6660,
+      "parent_epochs": 20,
+      "new_epochs": 10,
+      "cumulative_epochs": 30,
+      "L_forward_packets": 1136640,
+      "student_train_forward_packets": 1703640,
+      "student_eval_forward_packets": 324002,
+      "teacher_train_forward_packets": 0,
+      "teacher_eval_forward_packets": 567000,
+      "SupCon_applied": 2220,
+      "SupCon_layer_forward_terms": 8880,
+      "As_training_observations": 284160,
+      "Ag_training_observations": 0,
+      "clock": null,
+      "source_RX_holdout": null,
+      "head_fit_updates": 0,
+      "U_truth_read": false,
+      "target_access": false,
+      "elapsed_seconds": 1316.2518680095673,
+      "optimizer_reset": true,
+      "own_parent_EMA_restored": true
+    },
+    "prediction_cost": {
+      "status": "PREDICTIONS_COMPLETE",
+      "count": 168000,
+      "truth_read": false,
+      "query_fit": false,
+      "head_fit_updates": 0,
+      "wall_seconds": 43.46894478821196,
+      "NN_forward_packets": 1176002,
+      "peak_cuda_allocated_bytes": 100937728,
+      "fixed_received_IQ": true
+    },
+    "score_cost": {
+      "status": "SCORED",
+      "truth_last": true,
+      "independent_recount": "VERIFIED",
+      "CPU_wall_seconds": 3.252765452954918,
+      "head_fit_updates": 0
+    },
+    "analysis": {
+      "IQ": 0,
+      "CP": 0,
+      "raw_truth_reads": 0,
+      "NN": 0,
+      "new_updates": 0
+    }
   }
 }

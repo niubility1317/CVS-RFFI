@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ARTIFACTS_COMPLETE_ANALYZED",
   "run_id": "20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01",
   "execution_commit": "476f350914ca72c753365c1b25d9deebf4920701",
   "observed_at_UTC": "2026-10-17T09:27:26.268Z",
@@ -47,30 +47,28 @@
     "use_aug": true,
     "use_concat_sat_channel_aug": false
   },
-  "completed_training": false,
-  "formal_scores_available": false,
+  "completed_training": true,
+  "formal_scores_available": true,
   "other_healthy_jobs_changed": false,
   "last_followup_UTC": "2026-10-17T09:28:58.797Z",
-  "completed_incremental_epochs": 1,
+  "completed_incremental_epochs": 10,
   "latest_reference_progress": {
-    "epoch": 1,
-    "cumulative_epoch": 21,
-    "steps": 222,
-    "cumulative_steps": 4662,
-    "L_packets": 113664,
-    "Ag_packets": 0,
-    "As_packets": 28416,
-    "source_RX": [
-      1,
-      3,
-      4,
-      6,
-      8
-    ],
-    "source_RX_holdout": null,
-    "U_truth_read": false,
-    "target_access": false
+    "incremental_epoch": 10,
+    "cumulative_epoch": 30,
+    "incremental_updates": 2220,
+    "cumulative_updates": 6660
   },
   "latest_stdout_bytes": 11965,
-  "latest_step_log_bytes": 654233
+  "latest_step_log_bytes": 654233,
+  "cumulative_epochs": 30,
+  "new_optimizer_updates": 2220,
+  "cumulative_optimizer_updates": 6660,
+  "predictions_fixed_before_truth": true,
+  "completed_views": 7,
+  "prediction_count": 1176000,
+  "independent_CM_recounts": 252,
+  "scientific_pass": false,
+  "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+  "original_worker_naturally_exited": true,
+  "final_observed_at_UTC": "2026-10-17T09:57:37.337Z"
 }

@@ -3,7 +3,7 @@
   "run_id": "20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01",
   "group_id": "phase1-F-crossRX-PDP-shape",
   "display_name": "F＋跨RX同TX：RMS匹配的双时延形状星地增强E30",
-  "description": "One training-only equal mixture of nominal and equispaced three-ray delay shapes;preserve ensemble state RMS/PDP powers and full residual dependencies;E20+10 matched nominal reference",
+  "description": "RMS 匹配的双时延形状 A_s：E20+10 累计 E30 完整匹配负结果，七场景评分与独立复算完成",
   "kind": "cvs",
   "stage": "phase1",
   "aliases": [
@@ -496,7 +496,8 @@
     "Fixed falsification low>=+.5pp,clean>=0,mid>=0,eachsub>=-.25pp vs nominal;report full joint targets and no automatic seed/strength/profile/probability/budget rescue. No target-driven promotion.",
     "Focused physics:39 negatives/108same-latent triplets/30actualadapter calls/2synthetic F NN PASS;0realIQ/CP/updates. Prior pure-physics check added324calls;current324+30 =>678total synthetic residual calls before review.",
     "REJECTED_EXTRA_GATE:separate brainstorming design approval/nonwhite-list seals or repeated review NONBLOCKING;one mandatory P0/P1 only.",
-    "At preregistration commit is pending;publisher fills actual archive Git HEAD into remote registration and release_commit.txt. No launch before actual code/config commit."
+    "At preregistration commit is pending;publisher fills actual archive Git HEAD into remote registration and release_commit.txt. No launch before actual code/config commit.",
+    "Final independent artifact evidence:all7 views fixed before CPU truth;252 CM/42 partition/7 pair verified;clean/mid/low criteria failed;fixed recipe closed,no automatic rerun or seed extension. Execution commit476f350914ca72c753365c1b25d9deebf4920701."
   ],
   "additional_reference": {
     "row": "FULL_AS",

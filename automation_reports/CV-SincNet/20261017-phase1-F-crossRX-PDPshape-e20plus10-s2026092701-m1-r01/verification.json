@@ -41,5 +41,43 @@
     "NN": 0,
     "updates": 0,
     "actual_scores_read": false
+  },
+  "closed_analysis": {
+    "status": "VERIFIED",
+    "complete_source_epochs": 10,
+    "complete_source_steps": 2220,
+    "sampling_sequence_records": 4440,
+    "same_complete_sequence": true,
+    "actual_shared_args": 68,
+    "source_objective_records": 2220,
+    "objective_max_error": 1.0728836064011205e-7,
+    "profile_coverage": {
+      "As_packets": 284160,
+      "unique_L_physical": 6300,
+      "shape_counts": {
+        "0": 142227,
+        "1": 141933
+      },
+      "all_private_draws_exact": true
+    },
+    "original_hardware_calibration_states": 15,
+    "CM_recounts": 252,
+    "partition_sums": 42,
+    "paired_recounts": 7,
+    "max_metric_error": 2.220446049250313e-16,
+    "criteria": {
+      "low_urban_gain_at_least_0_5pp": false,
+      "clean_not_lower": false,
+      "mid_urban_not_lower": false,
+      "each_suburban_no_more_than_0_25pp_lower": true
+    },
+    "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+    "IQ": 0,
+    "CP": 0,
+    "raw_truth_reads": 0,
+    "NN": 0,
+    "new_updates": 0,
+    "PNG_visual_review": "PASS",
+    "PDF_created": true
   }
 }
