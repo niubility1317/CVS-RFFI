@@ -1,0 +1,148 @@
+{
+  "status": "SOURCE_REJECTED_FIXED_L0_CLOSED",
+  "run_id": "20261018-phase1-FcrossRX-hardLCE-e30-s2026092701-m2-r01",
+  "training_commit": "62b9bb6247b29fc98bf1379b15f3c262f9a495dc",
+  "analysis_commit": "1928b5ec55e584f4a93c77124fe1dfd7541c7e6f",
+  "source_decision": {
+    "status": "SOURCE_REJECTED",
+    "source_qualified": false,
+    "checks": {
+      "hard_clean_independent": false,
+      "joint_clean_net": false,
+      "joint_clean_preserves_As": false,
+      "both_urban_each_draw": false,
+      "suburban_preservation": true,
+      "each_source_RX_preserved": true
+    },
+    "urban_differences": [
+      [
+        0.0022222222222222365,
+        -0.0011111111111111738
+      ],
+      [
+        0.0011111111111111738,
+        0.0033333333333332993
+      ]
+    ],
+    "clean": {
+      "B00": 0.9835925925925926,
+      "H00": 0.9832592592592593,
+      "B01": 0.9825555555555555,
+      "H01": 0.9821481481481481
+    },
+    "source_accuracies": {
+      "B00": [
+        [
+          0.5,
+          0.42944444444444446,
+          0.3566666666666667
+        ],
+        [
+          0.49722222222222223,
+          0.44166666666666665,
+          0.35555555555555557
+        ]
+      ],
+      "H00": [
+        [
+          0.54,
+          0.47444444444444445,
+          0.3827777777777778
+        ],
+        [
+          0.5444444444444444,
+          0.46944444444444444,
+          0.38333333333333336
+        ]
+      ],
+      "B01": [
+        [
+          0.8811111111111111,
+          0.7255555555555555,
+          0.6011111111111112
+        ],
+        [
+          0.8922222222222222,
+          0.7305555555555555,
+          0.5805555555555556
+        ]
+      ],
+      "H01": [
+        [
+          0.8838888888888888,
+          0.7277777777777777,
+          0.6
+        ],
+        [
+          0.8927777777777778,
+          0.7316666666666667,
+          0.5838888888888889
+        ]
+      ]
+    },
+    "Ag_proved": false,
+    "goal_complete": false,
+    "crossseed_confirmed": false,
+    "target_feedback": false
+  },
+  "independent_recount": "VERIFIED_ALL_CHECKS_MATCH",
+  "hard_L_recount": {
+    "H00": {
+      "records": 6660,
+      "maximum_arithmetic_error": 4.76837158203125e-7,
+      "U_function_restored_every_step": true,
+      "extra_NN": 0,
+      "native_U_smoothing": 0.01,
+      "actual_L_smoothing": 0,
+      "counterfactual_is_recalculated_at_H_updated_weights": true
+    },
+    "H01": {
+      "records": 6660,
+      "maximum_arithmetic_error": 4.172325134277344e-7,
+      "U_function_restored_every_step": true,
+      "extra_NN": 0,
+      "native_U_smoothing": 0.01,
+      "actual_L_smoothing": 0,
+      "counterfactual_is_recalculated_at_H_updated_weights": true
+    }
+  },
+  "source_full_log_recount": {
+    "B00": {
+      "actual_steps": 6660,
+      "stdout_lines": 1218,
+      "error_markers": [],
+      "maximum_L_decomposition_error": 2.682209014892578e-7,
+      "maximum_native_supervised_loss_error": 4.172325134277344e-7
+    },
+    "H00": {
+      "actual_steps": 6660,
+      "stdout_lines": 1218,
+      "error_markers": [],
+      "maximum_L_decomposition_error": 4.76837158203125e-7,
+      "maximum_native_supervised_loss_error": 5.364418029785156e-7
+    },
+    "B01": {
+      "actual_steps": 6660,
+      "stdout_lines": 1218,
+      "error_markers": [],
+      "maximum_L_decomposition_error": 2.2351741790771484e-7,
+      "maximum_native_supervised_loss_error": 5.364418029785156e-7
+    },
+    "H01": {
+      "actual_steps": 6660,
+      "stdout_lines": 1215,
+      "error_markers": [],
+      "maximum_L_decomposition_error": 4.172325134277344e-7,
+      "maximum_native_supervised_loss_error": 4.172325134277344e-7
+    }
+  },
+  "source_analysis_wall_seconds": 26.97567732213065,
+  "analysis_NN": 0,
+  "IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "head_fit_updates": 0,
+  "formal_metric_values_read": false,
+  "read_at_unix": 1792279277.244127,
+  "policy": "Close fixedLCE0/no smoothingstrength,weight,RX,seed,budget,parent rescue;alltrainedrows stillcomplete automaticsevenview;no Ag claim,goalACTIVE",
+  "goal_complete": false
+}

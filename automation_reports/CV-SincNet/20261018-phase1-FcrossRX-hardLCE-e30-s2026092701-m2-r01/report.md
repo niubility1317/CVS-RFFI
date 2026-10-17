@@ -56,3 +56,12 @@ source条件全部满足才记本消融资格通过：H00 clean−B00≥.2pp；H
 H00已完成E20/4440更新，真实默认头随骨干联合训练且head_fit_updates=0、target_access=false；已恢复严格自身student/EMA，source_roles=EXACT_MATCH。优化器state_entries=0、reset=true、lr.0002/WD.0001/cosine10，native/U平滑仍.01，L为0，6L/1.25尺度不变。当前累计E21/4662更新，追加段仍有实际L前向170496，未因label_epochs=0而漏掉L监督。H01当前E16/3552更新，尚未进入续训，不能将H00核验冒充两行均完成。
 
 原dispatcher和worker PID均live，日志持续增长，无failure；源分析PID967127独立核实live、stderr空，继续只等待源完成。正式prediction/scoring均未完成，Agent未读取任何新正式成绩。此次只读元数据核对0IQ/CP/NN/更新，见 [阶段核验](own20_transition_verification.json)。这是已完成阶段与健康等待证据，不是方法有效、收敛或联合目标达成证据。
+
+
+## 源结论已固定：L-only硬CE候选关闭
+
+在任何新正式数值读取前，独立源分析完成并与原固定criteria六项逐项一致：2 PASS／4 FAIL，SOURCE_REJECTED。全V clean：B00=98.359259%、H00=98.325926%（−.033333pp），B01=98.255556%、H01=98.214815%（相对B01−.040741pp、相对B00−.144444pp）。H01−B01的两draw×mid/low差为[[+.222222,−.111111],[+.111111,+.333333]]pp，0/4达到+.5pp。source suburban及各RX保护条件通过，不能抵消clean与urban失败。
+
+全部四格各30轮／6660步完整日志重算通过，无错误标记；两新行共13320条hardL记录逐步恢复CE0、同权重CE01及原KL，最大误差≤4.7684e−7，全部U函数恢复且0额外NN。源分析墙钟26.975677s，0IQ/CP/NN/更新/target。原B00/B01是复用成本，不冒充新训练或新seed。
+
+关闭这一固定L0损失控制，不扫描平滑值、权重、RX、seed、父或预算救跑，不据新正式微增翻案；不把源H00部分受损视图改善替代本轮完整条件。正式7环境收尾仍照原矩阵执行，其数值尚未读取。完整源证据见 [source_verdict.json](source_verdict.json)。联合Ag＋As目标保持ACTIVE。
