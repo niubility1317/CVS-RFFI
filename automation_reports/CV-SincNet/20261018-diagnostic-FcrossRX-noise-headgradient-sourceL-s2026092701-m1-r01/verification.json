@@ -18,7 +18,297 @@
     "status": "VERIFIED",
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_noise_headgradient_L_20261018/preflight.txt"
   },
-  "run_state": "NOT_LAUNCHED",
-  "code_commit": "PENDING_ACTUAL_CODE_COMMIT",
-  "goal_complete": false
+  "run_state": "ANALYZED_SOURCE_ONLY",
+  "code_commit": "d12e359a2bcfa927954535c297438d79f81d7dfe",
+  "goal_complete": false,
+  "git_remote": {
+    "status": "VERIFIED",
+    "method": "independentGithubcompare",
+    "remote_oid": "d12e359a2bcfa927954535c297438d79f81d7dfe",
+    "compare": "identical"
+  },
+  "transfer": {
+    "status": "VERIFIED",
+    "archive_SHA": "f035a8264f99abb54c58193ea21bec306d11206bee93329cd509c00554c20886",
+    "compile": "PASS",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noise_headgradient_L_20261018_r01",
+    "run_absent": true,
+    "log_absent": true
+  },
+  "launch": {
+    "status": "DISPATCHED",
+    "pid": 838895,
+    "start_ticks": 151096915,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noise_headgradient_L_20261018_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noise_headgradient_L_20261018_r01/experiments/cvs_noise_gradient40/runner.py"
+    ],
+    "CUDA_VISIBLE_DEVICES": "",
+    "read_at": 1792263264.7255816
+  },
+  "postlaunch": {
+    "run_exists": true,
+    "pid": 838895,
+    "same_start_ticks": true,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noise_headgradient_L_20261018_r01",
+    "cmdline": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_noise_headgradient_L_20261018_r01/experiments/cvs_noise_gradient40/runner.py ",
+    "CUDA": [
+      "CUDA_VISIBLE_DEVICES="
+    ],
+    "cpu_stat": [
+      "935",
+      "70"
+    ],
+    "checkpoint_noquery_smoke.json": {
+      "status": "PASS",
+      "NN": 2,
+      "source_IQ_before_smoke": 0,
+      "target_IQ": 0,
+      "optimizer_updates": 0,
+      "head_fit_updates": 0,
+      "objective_checks": {
+        "margin": [
+          2.9802322387695312e-8,
+          1.862645149230957e-9,
+          8.731149137020111e-11,
+          3.637978807091713e-12,
+          0,
+          1.280568540096283e-9
+        ],
+        "CE0": [
+          9.5367431640625e-7,
+          2.9802322387695312e-8,
+          5.820766091346741e-10,
+          2.9103830456733704e-11,
+          0,
+          2.2351741790771484e-8
+        ],
+        "CE01": [
+          9.5367431640625e-7,
+          5.960464477539063e-8,
+          1.0477378964424133e-9,
+          5.820766091346741e-11,
+          0,
+          1.1175870895385742e-8
+        ]
+      },
+      "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/B0-s2026092701/source/final_ssdg.pth",
+      "model_state_unchanged": true,
+      "contract": "EXACT_MATCH;own20scratch+own10;fixed B0 before target results"
+    },
+    "stdout.log": {
+      "size": 99,
+      "mtime": 1792263269.1346095,
+      "tail": "SMOKE PASS actual checkpoint/default W and gates;2syntheticNN;0query\nclean L900 gradients complete\n"
+    },
+    "stderr.log": {
+      "size": 0,
+      "mtime": 1792263264.72361,
+      "tail": ""
+    }
+  },
+  "postlaunch_completion": {
+    "alive": false,
+    "stdout_bytes": 945,
+    "stderr": "",
+    "completion.json": {
+      "status": "ANALYZED_SOURCE_ONLY",
+      "NN": 11702,
+      "autograd_calls": 1173,
+      "training_updates": 0,
+      "head_fit_updates": 0,
+      "target_access": false,
+      "V_backprop": false,
+      "U_truth_read": false,
+      "source_decision": {
+        "status": "SOURCE_GRADIENT_DECIDED",
+        "margin_noise_conflict_evidence": false,
+        "draw_checks": [
+          false,
+          false
+        ],
+        "primary_cells": [
+          {
+            "draw": 0,
+            "objective": "margin",
+            "parameter": "head_W",
+            "N": 900,
+            "valid_full": 900,
+            "valid_no_noise": 900,
+            "negative_full": 0,
+            "negative_no_noise": 0
+          },
+          {
+            "draw": 1,
+            "objective": "margin",
+            "parameter": "head_W",
+            "N": 900,
+            "valid_full": 900,
+            "valid_no_noise": 900,
+            "negative_full": 0,
+            "negative_no_noise": 0
+          }
+        ],
+        "source_only": true,
+        "V_backprop": false,
+        "target_access": false,
+        "training_updates": 0,
+        "head_fit_updates": 0,
+        "automatic_training": false,
+        "Ag_proved": false,
+        "goal_complete": false
+      },
+      "wall_seconds": 72.70159794203937,
+      "goal_complete": false
+    },
+    "analysis/summary.json": {
+      "status": "ANALYZED_SOURCE_ONLY",
+      "source_decision": {
+        "status": "SOURCE_GRADIENT_DECIDED",
+        "margin_noise_conflict_evidence": false,
+        "draw_checks": [
+          false,
+          false
+        ],
+        "primary_cells": [
+          {
+            "draw": 0,
+            "objective": "margin",
+            "parameter": "head_W",
+            "N": 900,
+            "valid_full": 900,
+            "valid_no_noise": 900,
+            "negative_full": 0,
+            "negative_no_noise": 0
+          },
+          {
+            "draw": 1,
+            "objective": "margin",
+            "parameter": "head_W",
+            "N": 900,
+            "valid_full": 900,
+            "valid_no_noise": 900,
+            "negative_full": 0,
+            "negative_no_noise": 0
+          }
+        ],
+        "source_only": true,
+        "V_backprop": false,
+        "target_access": false,
+        "training_updates": 0,
+        "head_fit_updates": 0,
+        "automatic_training": false,
+        "Ag_proved": false,
+        "goal_complete": false
+      },
+      "rows": 11700,
+      "metric_confusions": 300,
+      "clean_metric": {
+        "N": 900,
+        "accuracy": 0.9844444444444445,
+        "macro_f1": 0.9844130591521316,
+        "margin_over30_mean": 0.2357620276899893,
+        "confusion": [
+          [
+            150,
+            0,
+            0,
+            0,
+            0,
+            0
+          ],
+          [
+            1,
+            145,
+            0,
+            2,
+            2,
+            0
+          ],
+          [
+            0,
+            0,
+            149,
+            0,
+            1,
+            0
+          ],
+          [
+            1,
+            3,
+            0,
+            144,
+            2,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            0,
+            149,
+            0
+          ],
+          [
+            0,
+            0,
+            1,
+            0,
+            0,
+            149
+          ]
+        ]
+      },
+      "fixed_clean_correct_count": 886,
+      "NN": 0,
+      "IQ_reads": 0,
+      "checkpoint_reads": 0,
+      "training_updates": 0,
+      "V_backprop": false,
+      "U_truth_read": false,
+      "target_access": false,
+      "head_fit_updates": 0,
+      "scope": "Frozen local-point gradients,not actual historical training trajectory;LS gradients cannot alone show identity conflict",
+      "model_seed_count": 1,
+      "channel_draws": 2,
+      "new_Ag_proved": false,
+      "automatic_training": false,
+      "wall_seconds": 14.04273082409054,
+      "goal_complete": false,
+      "figures": [
+        {
+          "name": "paired_noise_gradient_and_accuracy",
+          "png": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01/analysis/paired_noise_gradient_and_accuracy.png",
+          "pdf": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01/analysis/paired_noise_gradient_and_accuracy.pdf"
+        },
+        {
+          "name": "objective_calibration_control",
+          "png": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01/analysis/objective_calibration_control.png",
+          "pdf": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01/analysis/objective_calibration_control.pdf"
+        }
+      ]
+    }
+  },
+  "validation": {
+    "status": "PASS",
+    "confusions_recounted": 300,
+    "gradient_cells_checked": 11700,
+    "primary_draw_checks": [
+      false,
+      false
+    ],
+    "figures_present": 4,
+    "NN": 0,
+    "IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "model_updates": 0,
+    "scope": "saved aggregate tables only;no performance proof"
+  },
+  "plots": {
+    "PNG": 2,
+    "PDF": 2,
+    "visually_inspected_PNG": 2
+  }
 }
