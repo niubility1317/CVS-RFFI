@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_FACTORIAL_NEGATIVE_SOURCE_ATTRIBUTION_ANALYZED",
+  "status": "E30_SOURCE_DELAY_PHASE_ATTRIBUTION_ANALYZED",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -259,7 +259,7 @@
       "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/report.md"
     }
   },
-  "next_method_boundary": "All-source scratchE30/defaulthead/originalU retained. Fixed cycle-order Ag is CLOSED after all3 source criteria failed; no parameter/seed/budget rescue. Next work may quantify total-vs-fixed-receiver impairment effects on existing matched B00/B01 frozen source-only readouts; no new training, fitted probe, heldRX, target-feedback or changes to formal conditions.",
+  "next_method_boundary": "All-source scratchE30/defaulthead/originalU retained. Cycle Ag remains closed. P34 source-only flat-kernel delay contribution passed,phase failed;timing Ag has not been trained or shown benefit. Next candidate must preserve IQ identity and original As dependencies,predeclare bound/source conditions,match input/NN cost and retain all source RX;no target-feedback or closed-route rescue.",
   "execution_commit": "bafba40e365d0914a2e86f861fb55a49f1cd3997",
   "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/report.md",
   "input_representation_audit": {
@@ -455,6 +455,32 @@
     "edge_positive_interaction_is_extra_harm_not_gain": true,
     "report": "automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-practical-attribution-e30-s2026092701-m2-r01/report.md",
     "next_source_question": "Separate fixed FIR numerical delay/effective observation and global complex phase;not implemented or launched;no test change or training rescue",
+    "goal_complete": false
+  },
+  "source_delay_phase_attribution": {
+    "run_id": "20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01",
+    "status": "ANALYZED",
+    "code_commit": "71f0c8f9fbdd530c51f54764f092b61b9e5f6f18",
+    "source_V": 1800,
+    "urban_scenes": 2,
+    "channel_draws": 2,
+    "model_seed_count": 1,
+    "new_NN": 43204,
+    "controlled_renderer_calls": 28800,
+    "new_native_residual_calls": 0,
+    "training_updates": 0,
+    "target_access": false,
+    "source_decision": {
+      "delay_major_contribution": true,
+      "phase_major_contribution": false,
+      "source_only": true,
+      "no_automatic_promotion": true,
+      "crossseed_confirmed": false,
+      "goal_complete": false
+    },
+    "scope": "Only flat-kernel family;delay shift also changes reflect prefix;not proof of original full-dispersive attribution or formal improvement",
+    "report": "automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01/report.md",
+    "next_candidate": "Bounded nonwrapping timing IQ Ag,not implemented/registered/launched;must match all-source scratchE30/defaulthead/U/4L controls and test source identification gains before extension",
     "goal_complete": false
   }
 }

@@ -1,0 +1,275 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-delay-phase-source-attribution",
+  "display_name": "全源E30：固定FIR延迟与传播复相位的四格源归因",
+  "description": "冻结匹配B00/B01默认头，分离平坦核的冲激位置24/0和原始/零传播相位；核能量、相同新增噪声、接收状态/补偿/AGC固定。只作源机制证伪，不训练/调目标/复活失败Ag。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [],
+  "tags": [
+    "FcrossRX",
+    "source-only",
+    "E30",
+    "delay",
+    "phase",
+    "default-head"
+  ],
+  "comparison_group_id": "FcrossRX-E30-matched-source",
+  "parent_run_ids": [
+    "20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01",
+    "20261017-diagnostic-FcrossRX-practical-attribution-e30-s2026092701-m2-r01",
+    "20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User authorized continued augmentation R&D and controlled practical source diagnosis;latest budget scratchE30,full original source RX;this diagnostic adds0epochs/updates/no target.",
+  "code": {
+    "commit": "71f0c8f9fbdd530c51f54764f092b61b9e5f6f18",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 ordinary account;verified CVS-RFFI Python/NumPy/PyTorch/matplotlib;CPU2/CUDA empty",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_delay_phase_E30_20261017_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "existing VALIDATED_ONCE original source/target physical roles; no rebuild",
+    "representation": "Original float32 RMS IQ256;common ordinary(x) primary,raw/Ag(raw)/As(raw)/As(Ag(raw)) secondary;no external postAs RMS",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/data_roles.json",
+    "label_map_ref": "same original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "original6 registered TX",
+    "roles": {
+      "L_s": "6300 original labels; all5RX, no extra L_dev or heldRX",
+      "U_s": "56700 original hiddenTX; unchanged originaloldgate/ownEMA only",
+      "V": "27000 original source validation; no gradient, no new domain holdout"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse original VALIDATED_ONCE; metadata full L/U/V role equality confirmed, no data revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/observations/actual_engine.json"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Same-latent flat-kernel counterfactuals on original sourceV;not formal improvement or modelseed reproduction;no automatic training"
+  },
+  "checkpoint": {
+    "initialization": "frozen_readout_only",
+    "sources": [
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B00-s2026092701/source/final_ssdg.pth",
+        "state": "model",
+        "training_epochs": 30,
+        "training_updates": 6660,
+        "source_run": "20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01",
+        "scratch": true,
+        "contract": "original full L6300/U56700hidden/V27000 split392005",
+        "selection": "FINAL30/source fixed terminal"
+      },
+      {
+        "path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01/B01-s2026092701/source/final_ssdg.pth",
+        "state": "model",
+        "training_epochs": 30,
+        "training_updates": 6660,
+        "source_run": "20261017-phase1-FcrossRX-cycleorder-factorial-e30-s2026092701-m4-r01",
+        "scratch": true,
+        "contract": "original full L6300/U56700hidden/V27000 split392005",
+        "selection": "FINAL30/source fixed terminal"
+      }
+    ],
+    "contract_check_ref": "E:/type10-7/local_artifacts/cvs_FcrossRX_delay_phase_E30_20261017/preflight.json",
+    "provenance_verdict": "MATCHED full original roles;own scratch parents/no ancestors/no target training or selection;strict own_model checks before CP load in launcher",
+    "selection_rule": "Fixed original As-factor B00/B01 FINAL30/model,not target winner;own_model strict full-source provenance before load"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/delay-phase34",
+    "gpu_policy": "CPU only;CUDA_VISIBLE_DEVICES empty;OMP/MKL/OPENBLAS2;no GPU/other job mutation",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_delay_phase_E30_20261017",
+    "launch_command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_delay_phase_E30_20261017_r01/experiments/cvs_delay_phase_attribution34/runner.py",
+    "stop_rule": "Source role/ID/order/CP/defaulthead/seed/hardware/D00 replay/noise/energy/state/finite/NN/output collision failure stops own immutable job,keeps partial and failure;no automatic retry or target fallback."
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "checkpoint_noquery_smoke.json",
+    "runtime.json",
+    "data_roles.json",
+    "actual_engine.json",
+    "controlled_iq.npy",
+    "control_records.jsonl.gz",
+    "observation_completion.json",
+    "B00/predictions.npz",
+    "B01/predictions.npz",
+    "B00/complete.json",
+    "B01/complete.json",
+    "metrics.csv",
+    "paired_effects.csv",
+    "contrasts.csv",
+    "summary.json",
+    "source_delay_phase.png",
+    "source_delay_phase.pdf",
+    "completion.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "margin_over30",
+      "fixed_B00_clean_correct_retention",
+      "delay_gain_pp",
+      "phase_gain_pp",
+      "As_advantage_reduction_after_delay_pp",
+      "As_advantage_reduction_after_phase_pp",
+      "delay_phase_interaction_pp",
+      "new_NN",
+      "renderer_calls",
+      "wall_seconds"
+    ],
+    "dimensions": [
+      "arm",
+      "model_seed",
+      "channel_draw",
+      "scene",
+      "mode",
+      "RX"
+    ],
+    "prediction_ref": "D00 old P33 controlled[:,:,flat_H/fixed] exact cached logits;D10/D01/D11 new frozen readouts;source IDs unchanged",
+    "scorer_ref": "stats.collect uses authorized sourceV TX only;no target truth",
+    "criterion": "Separately delay and phase;all4 urban/draw cells require B00 gain>=5pp AND As advantage reduction>=max(5pp,50% original advantage);joint only descriptive;FAIL closes explanation,no tuning or automatic training/seed extension",
+    "interpretation": "Only within flat-H family preserving white kernel energy;delay0 counterfactual does not reconstruct unknown future samples or invert TX hardware;do not claim full-dispersive effect identified"
+  },
+  "rows": [
+    {
+      "row_id": "B00-s2026092701",
+      "method": "Frozen B00 FINAL30/model/defaultcos;flat-H delay24/0 x original/zero propagation phase",
+      "purpose": "factorial_control",
+      "config_ref": "experiments/cvs_delay_phase_attribution34/design.py#config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01/resolved_config.json",
+      "data_overrides": {
+        "role": "V",
+        "held_RX": null,
+        "extra_Ldev": false,
+        "new_physical_ids": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172401
+      },
+      "seed_notes": "Original one modelseed2026092701;split/data392005;existing panel202610172401 and stable_seed channel202610172402 exact reused,Python reads full integer seeds;RXdayhardware2026092701;K/support not applicable;2draws notmodelseeds",
+      "k": null,
+      "scenario": "sourceV mid_urban/low_urban,2draw x4delay-phase modes",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "21602newNN=2smoke+2draw*2urban*3newmodes*1800 permodel;2models43204NN;7200physicaldraws x4renderer=28800counterfactual calls,no newnative residual;D00 cached14400 historicalNN reused;parent30epochs6660updates each already paid;0newtraining",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01/B00",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01-launch/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_delay_phase_E30_20261017_r01/experiments/cvs_delay_phase_attribution34/runner.py",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "checkpoint_noquery_smoke.json",
+        "runtime.json",
+        "data_roles.json",
+        "actual_engine.json",
+        "controlled_iq.npy",
+        "control_records.jsonl.gz",
+        "observation_completion.json",
+        "B00/predictions.npz",
+        "B01/predictions.npz",
+        "B00/complete.json",
+        "B01/complete.json",
+        "metrics.csv",
+        "paired_effects.csv",
+        "contrasts.csv",
+        "summary.json",
+        "source_delay_phase.png",
+        "source_delay_phase.pdf",
+        "completion.json"
+      ]
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "method": "Frozen B01 FINAL30/model/defaultcos;flat-H delay24/0 x original/zero propagation phase",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_delay_phase_attribution34/design.py#config",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01/resolved_config.json",
+      "data_overrides": {
+        "role": "V",
+        "held_RX": null,
+        "extra_Ldev": false,
+        "new_physical_ids": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610172402,
+        "support": null,
+        "evaluation": 202610172401
+      },
+      "seed_notes": "Original one modelseed2026092701;split/data392005;existing panel202610172401 and stable_seed channel202610172402 exact reused,Python reads full integer seeds;RXdayhardware2026092701;K/support not applicable;2draws notmodelseeds",
+      "k": null,
+      "scenario": "sourceV mid_urban/low_urban,2draw x4delay-phase modes",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "21602newNN=2smoke+2draw*2urban*3newmodes*1800 permodel;2models43204NN;7200physicaldraws x4renderer=28800counterfactual calls,no newnative residual;D00 cached14400 historicalNN reused;parent30epochs6660updates each already paid;0newtraining",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01/B01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-delay-phase-e30-s2026092701-m2-r01-launch/stdout.log",
+      "command": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_delay_phase_E30_20261017_r01/experiments/cvs_delay_phase_attribution34/runner.py",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "checkpoint_noquery_smoke.json",
+        "runtime.json",
+        "data_roles.json",
+        "actual_engine.json",
+        "controlled_iq.npy",
+        "control_records.jsonl.gz",
+        "observation_completion.json",
+        "B00/predictions.npz",
+        "B01/predictions.npz",
+        "B00/complete.json",
+        "B01/complete.json",
+        "metrics.csv",
+        "paired_effects.csv",
+        "contrasts.csv",
+        "summary.json",
+        "source_delay_phase.png",
+        "source_delay_phase.pdf",
+        "completion.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Full original L6300/U56700hidden/V27000;source raw V subset fixed1800,no held trainingRX or sourcefold.",
+    "P33 identified unresolved artificial-boundary sensitivity;new diagnosis is not MMSE24/PDPshape/allpass rescue or test reconfiguration.",
+    "Original full residual fixed receiver/AGC/noise and RXdayhardware retained;only flat kernel impulse index and phase interventions.",
+    "5synthetic tests PASS and24newrenderer/6priorflat/6native synthetic calls replay0/noise0;0realIQ/CP/NN.",
+    "REJECTED_EXTRA_GATE:brainstorming design approval and blanket full-suite prerequisite not allowed as extra blockers by exclusive project minimal workflow;authorized source diagnosis proceeds without new permission."
+  ],
+  "registered_at": "2026-10-17T13:16:38+00:00"
+}
