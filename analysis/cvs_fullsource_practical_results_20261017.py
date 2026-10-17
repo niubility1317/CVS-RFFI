@@ -137,7 +137,7 @@ def plots(out,results):
   for j in range(len(rxs)):
    for k in range(7):ax.text(k,j,f'{matrix[j,k]:.1f}',ha='center',va='center',fontsize=7,color='white' if matrix[j,k]>65 else 'black')
   fig.colorbar(im,ax=ax,fraction=.045,label='Accuracy (%)')
- fig.suptitle('All fixed test RX; no per-sample receiver-state labels inferred');fig.tight_layout()
+ fig.suptitle('Fixed test RX accuracy (state labels unavailable)',fontsize=11);fig.tight_layout()
  for suffix in ['png','pdf']:p=out/('receiver_accuracy.'+suffix);fig.savefig(p,dpi=200);figures.append(str(p))
  plt.close(fig)
  return figures

@@ -1,6 +1,6 @@
 # 完整源域 F＋跨 RX 同 TX：E20 普通拼接星地参照
 
-状态：PREREGISTERED，尚未发布/启动。唯一矩阵与逐行配置维护在 experiment.json；当前模型 seed2026092701 的两行参照 B00/B01。用户2026-10-17明确要求不再留训练域，主线回到真实 practical 增强与普通拼接直接比较。
+状态：部分完成。B00 已 ANALYZED；B01 沿原 PID 健康训练中，整个 run 尚未完成。唯一矩阵与逐行配置维护在 experiment.json；当前模型 seed2026092701 的两行参照 B00/B01。用户2026-10-17明确要求不再留训练域，主线回到真实 practical 增强与普通拼接直接比较。
 
 完整原角色：RX1/3/4/6/8，day1/2/3，6TX，split392005；原 L6300 / hidden U56700 / V27000，7/63/30。实际原契约及兼容 CP 契约 IDs 相等已只读确认，不重建数据。新source.py在构建后检查全部原角色ID精确一致，不调用任何fold.prepare、不带fold参数、不切L_dev。V仅原源健康诊断；不训练V，不解封U TX。
 
@@ -38,3 +38,28 @@ B00使用原native concat_full但p=0，普通增强IQ精确复制成两半；B01
 实际ordinary base配置也已保存：PA正常增强允许(p_pa=.14)、CFO(.35/最大.0004)、AWGN(.4/20至36dB)、多径(.18/2至4tap)、循环移位(.35/±32)等属于两行共有旧配方；class_signature关闭、p_dac=0。不将旧普通增强宣称已验证Ag/身份保持。本次native顺序会在practical前保留这些损伤，此为普通拼接参照的真实行为。运行时practical_buffer_input/output与execution_fast均false，按实际耗时报告，不追改健康运行来加速。
 
 截至本次读回，未完成两行训练、正式七视图评分及跨seed确认，未宣称urban>60%或clean/星地双收益。
+
+
+## B00 完整预算与独立评分
+
+B00 已完成 E20/4440，固定七视图各168000样本，独立truth-last评分，126个混淆矩阵复算一致；B01仍健康训练，run未完成。
+
+B00是同4L成本的clean重复参照，不是原两前向F；不能把额外前向收益当成As收益。固定FINAL20，未按源V最佳轮选择。最终源V98.118519%只作健康诊断。
+
+| 视图 | Accuracy | Macro-F1 | 最差RX accuracy |
+|---|---:|---:|---:|
+| clean | 84.950595% | 84.668105% | 74.929167% |
+| practical_high | 47.655952% | 42.971204% | 40.008333% |
+| practical_mid | 45.714286% | 41.481029% | 38.733333% |
+| practical_low_suburban | 43.495238% | 39.692490% | 36.962500% |
+| practical_high_urban | 46.239881% | 41.981278% | 38.920833% |
+| practical_mid_urban | 38.278571% | 35.544042% | 32.920833% |
+| practical_low_urban | 32.222619% | 30.502712% | 28.120833% |
+
+完整解析20轮/4440步、5994条loader记录，L暴露568320/U396900，唯一ID仍6300/56700；活跃目标有限且无跳步，完整stdout无错误标记。200次nan文本来自禁用的diagnostic/test占位。1704960个实际SupCon锚均有跨RX同TX正例。U选择比例不是伪标签正确率，真值始终隐藏。
+
+父训练成本0；新增20epoch/4440update。source NN3661082（student train2670180/eval594002、ownEMA eval396900），L前向2273280，source墙钟1052.837400秒。固定测试NN1176002（含2合成smoke），墙钟48.098098秒。共享兼容smoke另2合成NN，历史E50只作兼容参考，不初始化。离线分析0NN/0IQ/0CP/0更新。
+
+分析代码commit `936d96a695219f00d6eec677aa5d0bfb3c798465`；3项聚焦计算/边界测试与编译PASS，已push且独立远端OID相同。产物 `E:/type10-7/local_artifacts/cvs_FcrossRX_fullsource_concat_20261017/B00_analysis_r01`：summary、逐row/seed/RX/day/TX CSV、20轮曲线CSV、accuracy/training/RX图PNG/PDF；远端同row `/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01/B00-s2026092701/analysis_r01`。固定测试未保存逐样本state/quality，不推造LOS/lock测试分层。
+
+目前仅seed2026092701的B00，尚无As增量、Ag效用、urban>60%、suburban接近clean或跨seed复现结论。其余行保持原配置。
