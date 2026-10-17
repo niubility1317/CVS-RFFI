@@ -67,3 +67,9 @@ run：`/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-f
 实际resolved args均为epochs30/label20/pseudo10/nativecosine、baseline_ckpt与teacher_ckpt为空、ownEMA/U开启。full_source_roles逐ID匹配，L6300/U56700隐藏/V27000、全部5RX、held_RX=null/extra_Ldev=false/target_loaders0；实际模型900722参数与代码commit一致。其他健康任务未修改。训练完成后由原launcher自动执行七视图prediction及独立truth-last，本轮没有目标指标或性能结论。
 
 日志增长独立复核 VERIFIED：同一两行PID/start_ticks/CWD/argv/GPU持续一致，B00日志6425→16724字节并完成E2/30，B01为6425→11575字节并完成E1/30；queue无failure、两行均active。证据postlaunch_growth.json。只作执行健康确认，不将早期V分数当作性能或收敛结论。
+
+## 完整分析工具已就绪，尚无 E30 结果
+
+新增独立分析入口 `analysis/cvs_fullsource_E30_results_20261017.py` 与4项聚焦测试。分析只在所请求行全部七视图冻结预测及独立评分完成后打开truth，不读取IQ/checkpoint、不运行网络或更新参数；严格拒绝旧E20、非6660、非20L10U、额外heldRX/角色改变及提前truth等记录。4项测试PASS，包含手算宏F1/混淆矩阵、非法类别、预算与完整性拒绝、第二行不完整时在truth及输出创建前停止；compile PASS。
+
+工具将完整读取每行30轮/6660步、SupCon/Sinc/训练L-U序列与全部physics，复算正式252个分层混淆矩阵、paired修复/新错及固定B00 clean正确集合保持率，分别记录student/teacher/prediction与墙钟成本。图包括正式准确率、30轮ordinary/second CE及KL/原U gate/源V/墙钟、正式RX表现、训练状态/锁定/质量代理/源RX覆盖。训练覆盖图不表示准确率，质量代理不表示总SNR。实际生成后才检查和提供图表；当前没有伪造结果或图路径。训练发布代码仍为 `bafba40e365d0914a2e86f861fb55a49f1cd3997`，新分析器不会热改该发布。

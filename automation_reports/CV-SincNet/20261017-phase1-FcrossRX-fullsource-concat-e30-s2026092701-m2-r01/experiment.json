@@ -116,7 +116,15 @@
     "scoring/scores.json",
     "scoring/complete.json",
     "results.json",
-    "per_row_seed.csv"
+    "per_row_seed.csv",
+    "analysis_r01/analysis_summary.json",
+    "analysis_r01/per_row_seed.csv",
+    "analysis_r01/training_curves.csv",
+    "analysis_r01/formal_accuracy.png/pdf",
+    "analysis_r01/training_curves.png/pdf",
+    "analysis_r01/receiver_accuracy.png/pdf",
+    "analysis_r01/training_support_B01.png/pdf",
+    "analysis_r01/completion.json"
   ],
   "metrics_plan": {
     "metric_names": [
@@ -143,7 +151,8 @@
       "lock"
     ],
     "prediction_ref": "eachrow/prediction/complete.json; all7 views before any truth",
-    "scorer_ref": "independent exec evaluate.score only after preflight of complete7 predictions"
+    "scorer_ref": "independent exec evaluate.score only after preflight of complete7 predictions",
+    "completed_analysis_ref": "analysis/cvs_fullsource_E30_results_20261017.py"
   },
   "rows": [
     {
@@ -174,7 +183,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "original native cosine over30total epochs"
       },
       "epochs": 30,
@@ -236,7 +245,7 @@
       },
       "lr": {
         "peak": 0.0002,
-        "min": 1e-06,
+        "min": 0.000001,
         "schedule": "original native cosine over30total epochs"
       },
       "epochs": 30,
