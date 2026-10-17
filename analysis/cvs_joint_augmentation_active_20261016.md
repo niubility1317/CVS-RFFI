@@ -2,9 +2,9 @@
 
 ## 当前状态（2026-10-17，覆盖下方历史待跑描述）
 
-唯一新候选是全频段源 PSD 正仿射关系，已实现、检查及一次 P0/P1 审查通过，并登记为 `20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01`；真实源拟合尚未启动。仅复用 fit L5040 的144个已有均值谱，18个同时留 TX/day 折、两窗、12方向、432拟合。六个RX对均须有相同方向跨两窗通过预定条件，否则关闭固定模型。它不是 IQ 增强或识别成绩，不自动启动 E20。见[预登记](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)。
+最新全频段源 PSD 正仿射候选已 ANALYZED／VERIFIED并关闭：432个真实拟合及独立KKT／算术复算完成，六个RX对均未通过。全部a<0.5，相对训练侧目标RX均值的最佳风险改善仅3.094277%，低于固定20%；没有IQ视图、模型、更新或target访问。它没有提供可晋级的Ag依据。见[完整本行报告](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)。
 
-此前六步 L 重排已 ANALYZED／VERIFIED并关闭，clean −1.825397 pp、low urban −.555556 pp。自有旧dispatcher／worker自然结束。raw/EQ同包映射问题仍待已有记录回复，仅限制该入口；本PSD候选不依赖同包配对。底座仍 F＋跨 RX 同 TX、scratch E20、原 U 与默认头。完整联合目标 ACTIVE，尚无通过的新增 A_g，也无稳定联合收益证明。
+此前六步L重排已完整关闭，clean −1.825397 pp、low urban −.555556 pp；自有旧训练自然结束。当前没有已登记待跑候选，不重跑关闭方案。raw/EQ同包映射询问仅限制其入口，不构成整个研究停止条件。底座仍 F＋跨RX同TX、scratch E20、原U与默认头。完整Ag＋As联合目标ACTIVE：未证明新的跨RX身份提取、稳定As保持或联合收益。
 
 ## 历史记录与固定底座
 
@@ -369,3 +369,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 2026-10-17：20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01 已完整 ANALYZED／VERIFIED，FAIL_FIXED_SIX_STEP_L_ORDER_CLOSED。两条新 scratch E20／各4440更新，17640源判决、每行740块物理多重集及全部实际交付输入、13320 SupCon mask term、20轮loss/U/教师预算独立复算。O0→O1 clean80.238095%→78.412698%（−1.825397pp），Macro-F1−2.012662pp，low urban27.936508%→27.380952%（−.555556pp）；mid suburban−.555556pp。原正对统计改善但身份收益失败，关闭固定6步重排，不改块/分配/私有Lseed/SupCon/CE/RX/modelseed/预算救跑。40新modelE／8880更新／11646638实际NN含dispatcher2；0target/新IQAg/As训练/父权重。原进程自然完成，4图PNG/PDF已查看，完整goal ACTIVE。报告 automation_reports/CV-SincNet/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01/report.md。
+
+
+全频段 PSD 正仿射：`20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01`，执行commit `1091fc97568605cd1115b6fa14754f781df197cc`，432拟合／432独立复算VERIFIED，0/6 RX对通过，固定模型关闭；主拟合1.494705 s、复算0.963868 s；0新IQ/CP/模型/NN/更新/target。此结果不能证明A_g／A_s或联合成功，完整目标ACTIVE。报告见[本行结果](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)。

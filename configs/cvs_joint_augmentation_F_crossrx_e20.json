@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_PSD_AFFINE_SOURCE_RELATION_PREREGISTERED_NO_QUALIFIED_AG",
+  "status": "RESEARCH_ACTIVE_PSD_AFFINE_CLOSED_NO_QUALIFIED_AG",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User on 2026-10-16 changes pre-augmentation baseline to F plus cross-RX same-TX contrastive learning. Earlier E20 budget remains in force.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -131,16 +131,14 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": {
-    "status": "PREREGISTERED_NOT_RUN",
-    "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
-    "question": "Do all six source RX pairs have a TX/day-transferable positive affine normalized-PSD contraction in one same direction across both windows?",
-    "source_input": "existing approved fitL5040 cell_PSD;no new IQ/CP/model",
-    "report": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md",
-    "fixed_criteria": "experiments/cvs_psd_affine17/design.py",
-    "IQ_operator_qualified": false,
-    "training_launched": false,
+    "status": "NO_QUALIFIED_NEW_CANDIDATE",
+    "last_fixed_hypothesis": "Full256binpositiveaffinePSDrelationclosed;notidentityorAgresult",
+    "input_metadata_inquiry": "Existingraw/EQsamephysicalLmappingonly;pendingreply;thisblocksitsoptionalentranceonly",
+    "new_source_information_received": false,
+    "new_training_launched": false,
     "target_access": false,
-    "raw_EQ_mapping_question_independent": true,
+    "Ag_efficacy_proved": false,
+    "As_stable_clean_preservation_proved": false,
     "joint_goal_complete": false
   },
   "next_training_hypothesis": {
@@ -2175,18 +2173,31 @@
     }
   },
   "latest_completed_experiment": {
-    "run_id": "20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01",
-    "execution_commit": "9059b58502f207331bf9643d9d1399d308a2c2da",
-    "closure_commit": "3f0e6fe2d3d9c0a42bf95ff31309a24a953dca08",
-    "status": "ANALYZED_VERIFIED_SOURCE_ONLY",
-    "verdict": "FAIL_FIXED_SIX_STEP_L_ORDER_CLOSED",
-    "clean_delta_pp": -1.82539682539683,
-    "clean_macro_F1_delta_pp": -2.0126624701947593,
-    "low_urban_delta_pp": -0.5555555555555536,
-    "new_model_epochs": 40,
-    "new_optimizer_updates": 8880,
-    "new_actual_NN": 11646638,
-    "formal_target_access": false,
-    "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01/report.md"
+    "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
+    "status": "ANALYZED_VERIFIED_SOURCE_ONLY_FIXED_HYPOTHESIS_CLOSED",
+    "report": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md",
+    "target_access": false,
+    "training": false,
+    "joint_goal_complete": false
+  },
+  "source_PSD_positive_affine": {
+    "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
+    "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
+    "status": "ANALYZED_VERIFIED",
+    "verdict": "FAIL_FIXED_PSD_AFFINE_BASIS_CLOSED",
+    "all_fits": 432,
+    "passed_RX_pairs": 0,
+    "total_RX_pairs": 6,
+    "maximum_a": 0.4707256104776974,
+    "maximum_RXmean_risk_reduction": 0.030942769798662395,
+    "maximum_correct_wrong_TX_margin_over_mean_risk": 0.025763652540601232,
+    "new_IQ_reads": 0,
+    "checkpoint_loads": 0,
+    "NN": 0,
+    "updates": 0,
+    "target_access": false,
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false,
+    "report": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md"
   }
 }

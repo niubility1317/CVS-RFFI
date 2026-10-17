@@ -484,4 +484,5 @@
 
 - [L 六步重排：匹配 E20](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01/report.md)（原有行与历史规模保留；本行增量登记）
 
+
 - [源 PSD 正仿射：全 RX 对跨 TX/day](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)（原有行与历史规模保留；本行增量登记）

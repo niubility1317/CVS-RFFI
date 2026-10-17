@@ -1,0 +1,54 @@
+{
+  "state": "VERIFIED",
+  "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
+  "qualified": false,
+  "verdict": "FAIL_FIXED_PSD_AFFINE_BASIS_CLOSED",
+  "all_fits": 432,
+  "independent_recount": {
+    "status": "VERIFIED",
+    "all_folds_recounted": 432,
+    "all144_source_spectra_reused": true,
+    "all256_bins": true,
+    "all_masses_SSE_wrongTX_and_fixed_criteria_recounted": true,
+    "convex_KKT_max_violation": 1.2930784572842647e-10,
+    "max_scalar_recount_error": 3.469446951953614e-18,
+    "qualified": false,
+    "verdict": "FAIL_FIXED_PSD_AFFINE_BASIS_CLOSED",
+    "elapsed_CPU_wall_seconds": 0.963867600003141,
+    "additional_aggregate_NPZ_reads": 1,
+    "source_IQ_reads": 0,
+    "checkpoint_loads": 0,
+    "NN": 0,
+    "updates": 0,
+    "target_access": false
+  },
+  "input_scope": {
+    "source_origin_run": "20261017-diagnostic-source-nonDC-spur-crossfit-manysig-m1-r01",
+    "physical_packet_counts": {
+      "L": 5040,
+      "U": 0,
+      "V": 0,
+      "held_RX1": 0,
+      "target": 0
+    },
+    "source_cells": 72,
+    "axis_definition": "window,TX,day,RX,shiftedbin;original producer loops checked",
+    "reuse": "Existing VALIDATED_ONCE fit-L aggregate;not new data validation or IQ access"
+  },
+  "observation": {
+    "code": 0,
+    "stdout": "{\"status\": \"ANALYZED\", \"verdict\": \"FAIL_FIXED_PSD_AFFINE_BASIS_CLOSED\", \"fit_count\": 432, \"passed_unordered_RX_pairs\": 0, \"total_unordered_RX_pairs\": 6, \"wall_seconds\": 1.4947049000038533, \"NN\": 0, \"target_access\": false}\r\n",
+    "stderr": ""
+  },
+  "outputs_root": "local_artifacts/F_PSD_affine_20261017/r01",
+  "science_limits": {
+    "max_a": 0.4707256104776974,
+    "min_a": 0,
+    "max_RXmean_gain": 0.030942769798662395,
+    "min_RXmean_gain": -0.051658149470168446,
+    "max_wrongTX_margin": 0.025763652540601232,
+    "passed_pairs": 0
+  },
+  "actual_fit_CPU_wall_seconds": 1.4947049000038533,
+  "joint_goal_complete": false
+}

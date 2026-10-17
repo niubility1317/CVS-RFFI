@@ -16,4 +16,4 @@
 |CVS显式补偿响应：完整源V冻结归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-attribution-source-manysig-m12-r01/report.md)|
 |CVS补偿响应：完整源V判别几何|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
 |F＋跨 RX 同 TX：共享微弱加性 IQ 方向源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01/report.md)|
-|F＋跨RX同TX：源PSD正仿射关系|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)|
+|正仿射源 PSD 关系：最小源依据预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)|

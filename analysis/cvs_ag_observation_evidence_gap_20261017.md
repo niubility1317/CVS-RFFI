@@ -41,3 +41,6 @@
 [Ma 等的多接收机研究](https://arxiv.org/html/2512.12070v1)在 LoRa 谱图、预训练与 Siamese 流程中组合信道增强和跨接收机同设备正对；其高 SNR 分解近似不证明当前 CVS IQ 可任意相加或改相位。[Pan 等的 residual-channel 方法](https://arxiv.org/html/2412.08885v1)从可用 pilot 进行 LS/MMSE 估计并构造不同均衡残差，再结合 SimSiam 和新环境微调。它为真实预处理视图提供动机，但不恢复本项目丢失的物理映射，也不授权新增预测头、目标微调或更改正式 received IQ。本轮定向阅读不是穷尽综述，没有把论文成绩移植为 CVS 收益。
 
 没有声称现有数据上的 A_g 普遍不可能，也没有把目标缩减为关闭候选。尚缺的仍是：有效 A_g 的跨 RX clean 证据、稳定 A_s 的 practical 适应、同预算同契约 B00/B10/B01/B11 及交互项、跨 seed 与正式 clean＋六 practical 的联合验证。low urban >60% 和 suburban 接近自身 clean 均未证明。
+
+
+本轮实际补充：全频段源PSD正仿射模型已做432个同时留TX/day拟合及独立复算，0/6 RX对符合固定条件，模型关闭。全部输入谱权重低于0.5，最佳相对RX均值风险改善3.094277%低于20%；不能据相对原谱的误差下降生成噪声IQ。它不依赖同包映射，此负结果也不证明其他观测机制不可能。详见[本行完整结果](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)。

@@ -119,7 +119,7 @@
       "pooled_identity_risk_reduction_min": 0.25,
       "pooled_RXmean_risk_reduction_min": 0.2,
       "positive_folds_min": 15,
-      "every_TX_and_day_identity_risk_reduction_min": 0.0,
+      "every_TX_and_day_identity_risk_reduction_min": 0,
       "minimum_wrong_TX_margin_over_RXmean_risk": 0.1,
       "reference_energy_min": 1e-12
     }
@@ -149,7 +149,7 @@
       "fl_rounds": null,
       "budget_ref": "144existingmeanPSD/432fits;0newIQ/CP/NN/update/teacher/target;oneaggregateNPZread+oneindependentrecountread,CPUcostseparate",
       "output_root": "local_artifacts/F_PSD_affine_20261017/r01",
-      "log_path": "local_artifacts/F_PSD_affine_20261017/source.stdout.log",
+      "log_path": "local_artifacts/F_PSD_affine_20261017/fit.stdout",
       "command": "Fpython -X utf8 native_run.py Fpython -X utf8 -m experiments.cvs_psd_affine17.run",
       "expected_artifacts": [
         "resolved_config/execution/completionorfailure",
@@ -214,7 +214,7 @@
           "pooled_identity_risk_reduction_min": 0.25,
           "pooled_RXmean_risk_reduction_min": 0.2,
           "positive_folds_min": 15,
-          "every_TX_and_day_identity_risk_reduction_min": 0.0,
+          "every_TX_and_day_identity_risk_reduction_min": 0,
           "minimum_wrong_TX_margin_over_RXmean_risk": 0.1,
           "reference_energy_min": 1e-12
         },
@@ -236,5 +236,19 @@
     "Existingminimalworkflow:oneindependentP0P1PASS;0modelrealCPsmokeinapplicable;localCPU noreleasearchive/N607operation. Noextradatahashes/approval/seals.",
     "MainbaselineF+CROSS_RX/SIG_TIME/unifiedSinc/joint160/defaultcos/NoExplicitCFO/originalU/E20unchanged;completejointgoalACTIVE."
   ],
-  "registered_at": "2026-10-17T04:05:48+00:00"
+  "registered_at": "2026-10-17T04:05:48+00:00",
+  "result": {
+    "status": "ANALYZED",
+    "state": "VERIFIED",
+    "verdict": "FAIL_FIXED_PSD_AFFINE_BASIS_CLOSED",
+    "qualified": false,
+    "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
+    "source_only": true,
+    "target_access": false,
+    "new_models": 0,
+    "NN": 0,
+    "updates": 0,
+    "required_identity_evaluation": "NOT_APPLICABLE_NO_MODEL_OR_TRAINING",
+    "joint_goal_complete": false
+  }
 }
