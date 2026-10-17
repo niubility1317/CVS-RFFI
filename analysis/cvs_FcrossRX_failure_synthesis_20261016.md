@@ -109,3 +109,14 @@ mid urban绝对质量偏差中位数0.1728/0.1751dB、lock切换2.1032%/2.6389%�
 固定F实际实例检查：206个state张量、900722参数，BatchNorm=0，采用GroupNorm/LayerNorm；故BN运行统计污染不适用。0真实IQ/权重/NN/优化更新的架构检查只排除该实现假设，不说明任何IQ增强有效。
 
 新独立问题是固定E20内的等剂量As时序，不是Ag：RAW/ALL/EARLY7/LATE7四个新scratchE20/8L匹配，完整原base+原13L7U/oldgate/ownEMA保持，额外.25RD对按epoch使用raw或原singleAs(raw)，早晚各198912监督As包。四组全程生成同样568320原物理shadow，禁止source/target结果回流改日历；正式测试不变。它也改变As所在LR/SSL阶段，不冒称单独隔离身份先学因果；实际激活物理ID/状态集合仍需全量说明。代码f788309f5f9e27689ec1e98ae99a6bd83237e1f9，本轮已VERIFIED启动，尚无训练/准确率结果。[固定报告](../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-AsTiming-sourceRX1-e20-s2026092701-m4-r01/report.md)。
+
+
+## P15：等剂量早晚 As 时序（2026-10-17）
+
+四个新scratch E20／8L／源heldRX1L1260／seed2026092701，F＋跨RX同TX和原13L＋7U保持；原完整base外加.25同IQ RD对，RAW／全20轮As／前7轮As／后7轮As。四行同568320完整物理shadow，早晚均198912消费／全部5040唯一L／72物理格，非同一draw多重集合交换；LR和SSL日历共同改变，不能隔离先学身份因果。
+
+默认头clean为79.841270%／83.730159%／80.000000%／81.269841%；urban均值32.222222%／43.095238%／39.735450%／42.354497%；low26.984127%／33.571429%／32.539683%／34.206349%。LATE对EARLY clean＋1.269841／urban＋2.619048／low＋1.666667pp，但对ALL clean−2.460317／urban−0.740741pp，违反原固定保持条件，科学FAIL关闭。不改启用轮次／剂量／系数／RX／seed／epoch／阈值救援，不将控制事后晋级。
+
+对RAW收益主要在LOS/PARTIAL/locked，BLOCKED18.347339%→20.028011%、unlocked18.230088%→18.761062%，质量<0dB还下降；未解决最困难urban。全部80model-epochs／17760更新／23293274NN、七视图35280预测及完整曲线独立复算PASS，约2380.459s矩阵墙钟，5PNG＋5PDF已实际查看；全原PID自然终止，0target／另训头。
+
+[完整结果、分层与曲线](cvs_FcrossRX_AsTiming20_20261017.md)。训练commit f788309f5f9e27689ec1e98ae99a6bd83237e1f9。一次源RX／modelseed不能证明正式target或跨seed收益；没有新Ag或Ag×As证明，low>60%、suburban接近clean和联合目标仍未完成。
