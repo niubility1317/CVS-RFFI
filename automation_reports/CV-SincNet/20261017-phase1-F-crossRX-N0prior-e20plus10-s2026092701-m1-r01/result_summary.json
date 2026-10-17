@@ -1,0 +1,265 @@
+{
+  "prediction_cost": {
+    "wall_seconds": 42.29007518989965,
+    "NN_forward_packets": 1176002,
+    "inference_seconds": {
+      "clean": 5.826904867077246,
+      "practical_high": 5.650101408129558,
+      "practical_mid": 5.638598307035863,
+      "practical_low_suburban": 5.685006631072611,
+      "practical_high_urban": 5.647472178097814,
+      "practical_mid_urban": 5.693301180843264,
+      "practical_low_urban": 5.6460485979914665
+    }
+  },
+  "scoring_CPU_wall_seconds": 3.283799143973738,
+  "run_id": "20261017-phase1-F-crossRX-N0prior-e20plus10-s2026092701-m1-r01",
+  "status": "ANALYZED",
+  "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+  "criteria": {
+    "low_urban_gain_at_least_0_5pp": false,
+    "clean_not_lower": false,
+    "mid_urban_not_lower": true,
+    "each_suburban_no_more_than_0_25pp_lower": true
+  },
+  "model_seed": 2026092701,
+  "seed_count": 1,
+  "summary": {
+    "N0_PRIOR": {
+      "clean": {
+        "accuracy": 0.8286785714285714,
+        "macro_F1": 0.824339049671901,
+        "worst_RX_accuracy": 0.728125
+      },
+      "practical_high": {
+        "accuracy": 0.816952380952381,
+        "macro_F1": 0.8127912426915022,
+        "worst_RX_accuracy": 0.7338333333333333
+      },
+      "practical_mid": {
+        "accuracy": 0.7938928571428572,
+        "macro_F1": 0.7897462697108585,
+        "worst_RX_accuracy": 0.7190833333333333
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.7701488095238095,
+        "macro_F1": 0.7661560543918949,
+        "worst_RX_accuracy": 0.6997916666666667
+      },
+      "practical_high_urban": {
+        "accuracy": 0.7828869047619048,
+        "macro_F1": 0.7785325922444469,
+        "worst_RX_accuracy": 0.709
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6443869047619047,
+        "macro_F1": 0.6399029147989771,
+        "worst_RX_accuracy": 0.5877916666666667
+      },
+      "practical_low_urban": {
+        "accuracy": 0.53475,
+        "macro_F1": 0.5292378799592065,
+        "worst_RX_accuracy": 0.4897916666666667
+      }
+    },
+    "NOMINAL_AS": {
+      "clean": {
+        "accuracy": 0.8296369047619048,
+        "macro_F1": 0.8253138546277144,
+        "worst_RX_accuracy": 0.730125
+      },
+      "practical_high": {
+        "accuracy": 0.816202380952381,
+        "macro_F1": 0.8119393203007693,
+        "worst_RX_accuracy": 0.73
+      },
+      "practical_mid": {
+        "accuracy": 0.7932976190476191,
+        "macro_F1": 0.7890106343859681,
+        "worst_RX_accuracy": 0.7159583333333334
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.7697738095238095,
+        "macro_F1": 0.7657090405738582,
+        "worst_RX_accuracy": 0.6972083333333333
+      },
+      "practical_high_urban": {
+        "accuracy": 0.7818928571428572,
+        "macro_F1": 0.7773384751324953,
+        "worst_RX_accuracy": 0.7057083333333334
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6437142857142857,
+        "macro_F1": 0.639092427734011,
+        "worst_RX_accuracy": 0.5865
+      },
+      "practical_low_urban": {
+        "accuracy": 0.5344702380952381,
+        "macro_F1": 0.5289993837273708,
+        "worst_RX_accuracy": 0.48954166666666665
+      }
+    }
+  },
+  "differences_pp": {
+    "clean": -0.09583333333333333,
+    "practical_high": 0.075,
+    "practical_mid": 0.05952380952380953,
+    "practical_low_suburban": 0.0375,
+    "practical_high_urban": 0.0994047619047619,
+    "practical_mid_urban": 0.06726190476190476,
+    "practical_low_urban": 0.027976190476190477
+  },
+  "suburban_gap_pp": {
+    "N0_PRIOR": {
+      "practical_high": 1.172619047619039,
+      "practical_mid": 3.4785714285714198,
+      "practical_low_suburban": 5.8529761904761894
+    },
+    "NOMINAL_AS": {
+      "practical_high": 1.3434523809523813,
+      "practical_mid": 3.6339285714285685,
+      "practical_low_suburban": 5.986309523809529
+    }
+  },
+  "clean_net_vs_B00_pp": -2.400595238095249,
+  "joint": {
+    "clean_positive_vs_matched_B00": false,
+    "low_urban_above_60": false,
+    "each_suburban_gap_within_exploratory2pp": false,
+    "Ag_tested": false,
+    "joint_factorial_tested": false,
+    "model_seeds": 1,
+    "goal_complete": false
+  },
+  "cost": {
+    "actual_steps": 2220,
+    "cumulative_steps": 6660,
+    "L_forward_packets": 1136640,
+    "student_train_forward_packets": 1703640,
+    "student_eval_forward_packets": 324002,
+    "teacher_train_forward_packets": 0,
+    "teacher_eval_forward_packets": 567000,
+    "As_training_observations": 284160,
+    "Ag_training_observations": 0,
+    "elapsed_seconds": 1320.2793011665344
+  },
+  "noise": {
+    "receiver_calls": 284160,
+    "receiver_counts": {
+      "0": 142311,
+      "1": 141849
+    },
+    "equalizer_applied": 0,
+    "session_count": 15,
+    "amplitude_renormalization": false,
+    "true_hardware_and_calibration_unchanged": true,
+    "propagation_prior_unchanged": true,
+    "noise_prior_unchanged": false,
+    "NoEQ": true,
+    "original_quality_dependency_preserved": true,
+    "expected_linear_N0": 0.001,
+    "realized_linear_N0_mean": 0.000999187077698528,
+    "realized_mean_factor": 0.9991870776985279,
+    "channel_wall_seconds": 555.6687590845395,
+    "physical_channel_prepasses": 0
+  },
+  "paired": {
+    "clean": {
+      "repairs": 209,
+      "new_errors": 370,
+      "left_correct": 139218,
+      "right_correct": 139379,
+      "delta_accuracy_pp": -0.09583333333333333,
+      "left_clean_and_scene": 139218,
+      "right_clean_and_scene": 139379,
+      "joint_delta_pp": -0.09583333333333333,
+      "common_clean_count": 139009,
+      "repairs_common_clean": 0,
+      "new_errors_common_clean": 0
+    },
+    "practical_high": {
+      "repairs": 435,
+      "new_errors": 309,
+      "left_correct": 137248,
+      "right_correct": 137122,
+      "delta_accuracy_pp": 0.075,
+      "left_clean_and_scene": 129915,
+      "right_clean_and_scene": 129940,
+      "joint_delta_pp": -0.014880952380952382,
+      "common_clean_count": 139009,
+      "repairs_common_clean": 283,
+      "new_errors_common_clean": 176
+    },
+    "practical_mid": {
+      "repairs": 484,
+      "new_errors": 384,
+      "left_correct": 133374,
+      "right_correct": 133274,
+      "delta_accuracy_pp": 0.05952380952380953,
+      "left_clean_and_scene": 125688,
+      "right_clean_and_scene": 125757,
+      "joint_delta_pp": -0.04107142857142857,
+      "common_clean_count": 139009,
+      "repairs_common_clean": 331,
+      "new_errors_common_clean": 265
+    },
+    "practical_low_suburban": {
+      "repairs": 502,
+      "new_errors": 439,
+      "left_correct": 129385,
+      "right_correct": 129322,
+      "delta_accuracy_pp": 0.0375,
+      "left_clean_and_scene": 121543,
+      "right_clean_and_scene": 121638,
+      "joint_delta_pp": -0.05654761904761905,
+      "common_clean_count": 139009,
+      "repairs_common_clean": 353,
+      "new_errors_common_clean": 309
+    },
+    "practical_high_urban": {
+      "repairs": 573,
+      "new_errors": 406,
+      "left_correct": 131525,
+      "right_correct": 131358,
+      "delta_accuracy_pp": 0.0994047619047619,
+      "left_clean_and_scene": 124200,
+      "right_clean_and_scene": 124203,
+      "joint_delta_pp": -0.0017857142857142859,
+      "common_clean_count": 139009,
+      "repairs_common_clean": 419,
+      "new_errors_common_clean": 283
+    },
+    "practical_mid_urban": {
+      "repairs": 856,
+      "new_errors": 743,
+      "left_correct": 108257,
+      "right_correct": 108144,
+      "delta_accuracy_pp": 0.06726190476190476,
+      "left_clean_and_scene": 100981,
+      "right_clean_and_scene": 101023,
+      "joint_delta_pp": -0.025,
+      "common_clean_count": 139009,
+      "repairs_common_clean": 656,
+      "new_errors_common_clean": 610
+    },
+    "practical_low_urban": {
+      "repairs": 934,
+      "new_errors": 887,
+      "left_correct": 89838,
+      "right_correct": 89791,
+      "delta_accuracy_pp": 0.027976190476190477,
+      "left_clean_and_scene": 83004,
+      "right_clean_and_scene": 83045,
+      "joint_delta_pp": -0.024404761904761905,
+      "common_clean_count": 139009,
+      "repairs_common_clean": 754,
+      "new_errors_common_clean": 731
+    }
+  },
+  "original_source_input_study_failed": true,
+  "source_input_failure_relabelled": false,
+  "new_Ag": false,
+  "no_automatic_seed_extension": true,
+  "target_feedback": false,
+  "report_correction": "Raw result.json MMSE_mix prose field was inherited and stale;ignore it. Actual config/noise_policy/channel adapter and training_result are the authoritative N0 evidence. No running code or test IQ modified."
+}

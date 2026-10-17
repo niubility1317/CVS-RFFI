@@ -407,3 +407,7 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 最新全源普通拼接参照已RUNNING／VERIFIED：`20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02`，全L6300/U56700/V27000，无源RX训练留出。r01仅合成测试桩失败、无真实训练，已保留；r02只修测试桩，科学配方不变。三组各scratchE20，自动逐行clean＋六practical/独立truth-last已随队列发布。完整结果待实际返回，Ag与联合目标未证明。
+
+2026-10-17：最新有效预算E30，全部5源RX/L6300/U56700-hidden/V27000，无训练RX留出。固定N0源输入研究仍FAILED；冻结输入即时准确率不等于训练效用，先前据此一概不训练的停止条件过强，保留原失败与阈值后单独登记首次训练反证：20261017-phase1-F-crossRX-N0prior-e20plus10-s2026092701-m1-r01，同普通As E20父/ownEMA追加10、4L/defaulthead/原U，N0倍率.5/1.5等prior、原quality/lock/tracking/AGC重算，0新loss/U/NN。执行commit a47ffaf90888347fc3474d43ed365c7e51b1c1a9，运行PID/CWD/argv/GPU/log增长VERIFIED，已见累计E23/至少716新更新，尚无正式成绩。不是新Ag，无目标反馈/自动扩种；固定失败即结束配方，不改幅度/概率/seed/父/预算救跑。详见本行report。
+
+2026-10-17：20261017-phase1-F-crossRX-N0prior-e20plus10-s2026092701-m1-r01 已 ANALYZED／VERIFIED，固定N0配方首次真实训练＋全部7×168000 predictions/logp＋独立CPUtruth-last完成，原进程自然结束。普通拼接式→N0：clean82.963690%→82.867857%（−.095833pp）、midurban64.371429%→64.438690%（+.067262pp）、lowurban53.447024%→53.475000%（+.027976pp）；low修复934/新增887，clean且low共同正确净少41包。suburban距ownclean=1.172619/3.478571/5.852976pp，clean相对B00−2.400595pp。新2220/累计6660更新，1136640LNN、284160As，训练1320.279301秒；N0计数142311/141849、经验均值.000999187078，未声称经验均值精确相等。4440采样记录/68共有参数一致、252CM独立复算。CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT，不扩种/改倍率/概率/seed/父/预算救跑；源输入失败保留，As学习效用现已实测无足够净收益，Ag和完整联合目标仍未证明。当前无新的有源依据训练候选，不重复已失败路线。

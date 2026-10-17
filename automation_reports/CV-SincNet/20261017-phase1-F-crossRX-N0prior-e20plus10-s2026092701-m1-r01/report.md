@@ -1,6 +1,6 @@
 # 固定 N0 先验训练：首个 E30 反证
 
-状态：RUNNING。代码 commit=a47ffaf90888347fc3474d43ed365c7e51b1c1a9，远端 OID VERIFIED；此前源输入实验仍为失败。
+状态：ANALYZED／VERIFIED；固定 N0 训练配方未通过预定识别收益条件。执行代码 commit=a47ffaf90888347fc3474d43ed365c7e51b1c1a9，远端 OID VERIFIED；此前源输入实验仍为失败。
 
 基线为 F（三路 SIG_TIME、统一 Sinc 修正、joint160）＋跨 RX 同 TX SupCon，原默认 cos6×160/scale30 头与骨干联合训练。全部 RX [1,3,4,6,8]、day[1,2,3]、L6300/U56700（TX 真值隐藏）/V27000、split392005 保持；不留出训练 RX，不混入 L5580/L_dev720。
 
@@ -25,3 +25,37 @@
 独立 P0/P1 审查：PASS，仅检查本次新候选实际训练接线；18文件语法检查、预算复算通过，无真实 IQ/CP/目标读取，无 NN/远端动作。未增加其他审批层。
 
 发布后独立核实：archive_transfer/remote_compile VERIFIED，远端33项负例和15次精确回放 PASS，真实父 checkpoint no-query smoke PASS。dispatcher613750、worker613775/GPU0均 alive，CWD/argv匹配；参数900722、RX[1,3,4,6,8]、holdout=null，逐步日志与采样序列已增长。当前未完成训练/正式评分，不宣称成功。
+
+## 实际闭环结果
+
+状态：ANALYZED，训练、七环境预测/独立 truth-last 评分、同物理样本分析均完成。只运行1个seed，不声明跨seed复现。
+
+| 场景 | 普通拼接式 E30 | N0 先验 E30 | 差值（百分点） |
+|---|---:|---:|---:|
+| clean | 82.963690% | 82.867857% | -0.095833 |
+| practical_high | 81.620238% | 81.695238% | +0.075000 |
+| practical_mid | 79.329762% | 79.389286% | +0.059524 |
+| practical_low_suburban | 76.977381% | 77.014881% | +0.037500 |
+| practical_high_urban | 78.189286% | 78.288690% | +0.099405 |
+| practical_mid_urban | 64.371429% | 64.438690% | +0.067262 |
+| practical_low_urban | 53.447024% | 53.475000% | +0.027976 |
+
+固定判据：{'low_urban_gain_at_least_0_5pp': False, 'clean_not_lower': False, 'mid_urban_not_lower': True, 'each_suburban_no_more_than_0_25pp_lower': True}；科学结论：CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT。未改倍率、概率、门槛、父权重、seed或预算。前一冻结输入失败保留；本次首次训练证据不能与它混成源筛查通过。
+
+low urban 修复 934 个、产生 887 个新错误，净变化 47 个；clean且low共同正确数量变化为 -0.024405pp。全部7view的修复/新增错误、宏F1、最差RX见CSV，不能用锁定更多或辅助loss代替识别成绩。
+
+各suburban距模型自身clean：{'practical_high': 1.172619047619039, 'practical_mid': 3.4785714285714198, 'practical_low_suburban': 5.8529761904761894}pp。相对同预算无新增增强B00 clean净收益 -2.400595pp；联合目标核对={'clean_positive_vs_matched_B00': False, 'low_urban_above_60': False, 'each_suburban_gap_within_exploratory2pp': False, 'Ag_tested': False, 'joint_factorial_tested': False, 'model_seeds': 1, 'goal_complete': False}。这里仅As配方一行，无新Ag或四因子证据，不计算不存在的交互项。
+
+实际新增2220/累计6660更新；L前向1136640，As观测284160，学生训练/验证前向1703640/324002，教师训练/验证前向0/567000。新增训练墙钟1320.279301秒，其中channel 555.668759秒（包含关系，不重复相加）。父20与新增10分开，原nominal控制复用不重复训练；相同更新/NN预算不等于相同墙钟或物理处理FLOPs。
+
+实际倍率计数 .5=142311、1.5=141849；期望线性N0=0.001，实现均值=0.000999187077699、倍率均值=0.999187077699。未声称经验均值精确等于期望或平均SNR/dB保持。284160次完整residual、0额外传播预运行、NoEQ；15个session硬件/校准保持；原quality依赖随改变N0重算。
+
+完整日志复算：同nominal的4440条L/U采样记录完全相同，68项实际共有参数一致，2220个监督目标最大归一化误差1.0728836064e-07；252个混淆矩阵、42组分区求和与7组配对计数独立核验。无真实IQ/CP/NN额外分析读取；只复用固定scores与源日志。继承控制曾有清理阶段技术缺项，缺失的瞬时前向计数仍标缺，不补造。
+
+正式预测NN包数1176002、wall=42.290075秒，独立CPU评分wall=3.283799秒，单独记录，不纳入训练更新。
+
+原始 result.json 中 MMSE_mix 说明文本系复制的旧报告字段，描述错误；它不参与训练、配置、预测或评分。真实 channel/noise_policy/计数记录N0变体，本报告明确更正该描述，保留原产物，不热改健康任务。
+
+图：训练曲线包含共享父20轮与新增10轮所有2220步的逐epoch均值；七环境/差值/各suburban-gap图仅引用已闭环数值。失败不扩种或改参救跑。全局Ag/As联合目标未完成。
+
+闭环分析入口首尝试因独立脚本导入 experiments 路径失败，移除已有内置函数的重复导入后完成汇总；没有重训、重复NN、修改prediction或重开truth。图PNG/PDF已实际生成、下载并查看；完整source曲线与逐view配对数字见同目录CSV。

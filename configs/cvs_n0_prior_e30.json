@@ -36,7 +36,7 @@
       "temporal_mode": "batch_neighbor",
       "temporal_min_streak": 2,
       "lr_schedule": "cosine",
-      "lr_min": 1e-06,
+      "lr_min": 0.000001,
       "launch_owner": "codex/root/F-N0prior-E30",
       "label_epochs": 0,
       "pseudo_epochs": 10,
@@ -74,7 +74,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06
+        "lr_min": 0.000001
       },
       "source_falsification": null,
       "training_recipe": "F+CROSS_RX originalU/defaulthead;E20+10/cos10-reset;one equal-prior linear-N0 multiplier;original quality and processing recomputed",
@@ -117,7 +117,7 @@
       "goal": {
         "clean_net_positive": true,
         "low_urban_above": 0.6,
-        "each_suburban_gap_exploratory_pp": 2.0,
+        "each_suburban_gap_exploratory_pp": 2,
         "target_feedback": false,
         "joint_goal_complete": false
       },
@@ -244,7 +244,7 @@
         },
         "route": "existingresidual/post_sync",
         "EQ": false,
-        "reference_snr_db": 30.0,
+        "reference_snr_db": 30,
         "input": "originalLbeforeordinary",
         "no_rejection": true,
         "test_IQ_unchanged": true,
@@ -273,7 +273,7 @@
           0.5
         ],
         "sampling": "one private physical-sample/step draw;no TX label",
-        "nominal_reference_snr_db": 30.0,
+        "nominal_reference_snr_db": 30,
         "nominal_linear_N0": 0.001,
         "expected_linear_N0": 0.001,
         "realized_mean_exactly_nominal": false,
@@ -296,8 +296,8 @@
       "selection": "fixedfinal10/cumulative30;no targetfeedback/selective rerun",
       "scientific_falsification": {
         "low_urban_delta_vs_nominal_min_pp": 0.5,
-        "clean_delta_vs_nominal_min_pp": 0.0,
-        "midurban_delta_vs_nominal_min_pp": 0.0,
+        "clean_delta_vs_nominal_min_pp": 0,
+        "midurban_delta_vs_nominal_min_pp": 0,
         "each_suburban_delta_min_pp": -0.25,
         "all_joint_targets_also_reported": true,
         "no_automatic_seed_extension": true
@@ -306,5 +306,5 @@
   ],
   "hypothesis": "Fixed equal-prior .5/1.5 linearN0 training improves original practical;not yet tested",
   "budget": "same sourceE20+10 cumulativeE30",
-  "status": "IMPLEMENTED_NOT_LAUNCHED"
+  "status": "ANALYZED_FIXED_CANDIDATE_FAILED"
 }
