@@ -33,3 +33,15 @@ Ag只用于合法L，不读TX来选排列；physical eq/RX/day/sig/base构成不
 分析实现为 analysis/cvs_cycleorder_factorial_E30_results_20261017.py，准备 commit f95ec6e3ebd45b3a71c674a9ba844766cc3b870d，对应3项synthetic protocol-negative/数值检查已PASS。分析覆盖四个新E30模型的全部结构化30epoch/6660step/普通增强/原生物理/SupCon/Sinc/完整stdout记录，不以tail推断训练表现；全矩阵prediction/scoring完成后才允许分析truth，独立源判据先复算落盘。四因子accuracy和macroF1交互、原普通secondary参考、固定P25 B00 clean正确集合及新matchedB00集合的保持率分别报告；不把两种输入控制混同。
 
 成本单列每row source/teacher/EMA/额外L/U/预测/源读出，shared compatibility smoke2NN、P30/P31源前置诊断和只读P25训练成本，不冒充训练父权重继承。实际全部结果后才导出PNG/PDF/CSV/summary并核验图；当前尚未对本轮数据运行独立分析、尚无本轮正式准确率或可复现结论。
+
+## 首批两组完整源分析与预定判据
+
+B00/B10均已完成scratchE30/6660更新并冻结，逐row全部7view prediction及独立truth-last评分产物已完成，worker自然退出；本次分析尚未读取正式成绩。B01/B11仍健康训练，全部原注册行继续，不因本次源负结果停止、改配方或重启。
+
+独立读取首两组60个完整epoch、13320个step、每组8880条L/U序列记录、6660条SupCon、6660条Sinc更新及完整stdout。配对训练序列8880/8880相同；每组L_s852480次、U_s567000次，覆盖全部L6300/U56700，U真值隐藏，默认头保持联合更新。B10全部852480个private排列重算一致，覆盖24排列、全6300物理L，0phase fallback；归一功率误差最大2.980233e−7，变化L2中位.046414/q90.280245/最大1.088486。尾部扰动不能被中位数代替，亦不能据此唯一归因失败。
+
+源fullV27000：B00 98.3037037%，B10 98.2666667%，差−.0370370pp（少10个正确包），未达到事先固定的Ag独立源clean收益≥+.5pp。记录为FAIL_PREDECLARED_AG_CLEAN_SOURCE_CRITERION；这不证明微小差异是确定伤害，但源扩种条件的合取已无法成立。判定在未读正式成绩时固定；即使终态正式成绩更高，也不据此改判据、调窗口/相位/概率/seed/轮次或扩种救跑。joint及urban增量仍待后两组完成后如实报告。
+
+完整日志无RuntimeError/OOM等错误，全部active loss有限、0skipped更新。每组300个nan字样来自各30次的sat_cos/proxy_vaccept/dom/overall_tx/strict_udu/receiver_floor/sat_mean/sat_floor/sat_strict_mean/sat_strict_floor未启用或未执行统计，不能冒充非有限训练失败。源验证不是独立跨RX目标评价；该源判据FAIL也不是正式clean增益的替代。
+
+新增本次分析NN/IQ读取/CP读取/训练更新均0，source日志与排列复算27.208947秒、绘图1.266673秒；每个模型原source NN5407922，另外源读出12602NN、正式预测1176002NN，source训练墙钟B00 1584.601523秒、B10 1621.290584秒，无训练父。source_first_two_r01下summary/decision/CSV/bookkeeping/native_epoch_subset及source_first_two_curves.png/.pdf已保存，实际PNG已查看；本轮仅两组完整源分析，不冒充四组交互或跨seed。
