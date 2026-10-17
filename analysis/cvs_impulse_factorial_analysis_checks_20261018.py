@@ -43,4 +43,20 @@ class Checks(unittest.TestCase):
   finally:a.read=old_read;a.completed=old_completed;a.base.collect_row=old_collect;a.PARSED.clear()
  def test_source_cost_scope(self):
   counter=dict(student_train_NN=10,student_eval_NN=20,teacher_train_NN=0,teacher_eval_NN=30);r=a.source_cost_breakdown(counter,dict(status='SOURCE_READOUT_COMPLETE',NN=12600,training_updates=0,head_fit_updates=0,target_access=False,formal_scores_read=False));self.assertEqual(r['source_identity_NN'],12660);self.assertEqual(r['native_training_and_validation_identity_NN'],60)
+ def test_metadata_never_decodes_hidden_U(self):
+  import cvs_impulse_factorial_coverage_20261018 as cov
+  from types import SimpleNamespace
+  rows=cov.old.layout(dict(source_RX=[1,3,4,6,8],source_days=[1,2,3],source_TX_count=6,equalized_list=[0,1],metadata_records=[dict(TX=t,RX=r,day=d,eq_index=1,shape=[1000,256,2]) for t in range(6) for r in (1,3,4,6,8) for d in (1,2,3)]));opaque=lambda q:(q.tx_i,q.rx_i,q.day_i,q.eq_i,q.sig_i);allowed={(5,8,3,1,999)}
+  self.assertEqual(cov.old.decode_L([1,8,3,999,89999],'L',rows,allowed,opaque),(5,(5,8,3,1,999)))
+  with self.assertRaisesRegex(ValueError,'hidden U'):cov.old.decode_L([1,8,3,999,89999],'U',rows,allowed,opaque)
+  with self.assertRaisesRegex(ValueError,'L6300'):cov.old.decode_L([1,8,3,998,89998],'L',rows,allowed,opaque)
+ def test_coverage_requires_source_recount_before_output(self):
+  import cvs_impulse_factorial_coverage_20261018 as cov
+  old=cov.read;cov.read=lambda p:dict(status='INCOMPLETE',formal_scores_read=False)
+  try:
+   with tempfile.TemporaryDirectory() as td:
+    target=Path(td)/'preserved'
+    with self.assertRaisesRegex(ValueError,'source recount'):cov.run(target,Path(td)/'source')
+    self.assertFalse(target.exists())
+  finally:cov.read=old
 if __name__=='__main__':unittest.main()
