@@ -6,7 +6,7 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|F＋跨 RX：注入接收机 session 覆盖的冻结默认头反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-RXsession-fitL-s2026092701-m1-r01/report.md)|
+|F＋跨 RX：注入接收机 session 覆盖的冻结源域反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-RXsession-fitL-s2026092701-m1-r01/report.md)|
 |五条件冻结默认头：源域身份与退化归因预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-semantic-source-manysig-s2026092701-m5-r01/report.md)|
 |同信道 HQ 桥接：源域零更新预登记|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-sigtime-coupled-bridge-source-manysig-s2026092701-r01/report.md)|
 |固定 SIG_TIME：随机失活一致性源端检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261015-phase1-source-dropout-consistency-manysig-s2026092701-r01/report.md)|

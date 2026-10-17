@@ -1,6 +1,6 @@
 # F＋跨 RX：注入接收机 session 覆盖的冻结源域反证
 
-run_id：20261017-diagnostic-FcrossRX-RXsession-fitL-s2026092701-m1-r01。当前 LOCAL_VERIFIED／未启动，0 真实 IQ、checkpoint、NN 或更新。唯一逐行配置见 experiment.json；本次仅一个冻结 ALL 模型，不是新 E20 训练或正式目标测试。
+run_id：20261017-diagnostic-FcrossRX-RXsession-fitL-s2026092701-m1-r01。全部固定源预测和独立复算已完成，科学FAIL；图表和最终交付进行中。唯一逐行配置见 experiment.json；本次仅一个冻结 ALL 模型，不是新 E20 训练或正式目标测试。
 
 代码审计确认，原 PairedChannel 每包按 epoch/step/physical ID 刷新传播与底层噪声，而 receiver_for_session 始终由 receiver_seed20261016102 与 rx/day/eq 定义。四个 fit RX×三日只有12个注入硬件参数实现；同 session 跨 TX 稳定。既有波形自身未知 TX/RX 效应始终保留，不反演未知 TX。这只是覆盖事实，尚不是低 urban 错误的原因。
 
@@ -38,3 +38,8 @@ FAIL关闭这个固定session覆盖理由，不换bank、seed、场景、RX或�
 产物：实际配置/模块/默认头、合法fitL标签与opaqueID元数据、四bank全部logits/argmax/margin30、完整物理元数据/48session及replay检查、全部40批stdout、独立准确率/F1/CE/配对修复损坏/固定clean正确集保持和TX/RX/day/状态/质量分层、输入变化/成本/图/同row报告登记。独立读者只读取冻结预测与保存元数据，不重新打开IQ或运行网络。IQ、权重、逐包ID/原预测日志、私有机器信息及生成图不提交Git。
 
 REJECTED_EXTRA_GATE：通用skill的额外设计审批、固定spec文件、hash/signature或重复review不在项目八项白名单；当前已有授权内继续最小源反证。模型、分类头、L/U/V和正式clean＋六practical保持。当前无新的识别收益，Ag独立价值、As稳定性、B00/B10/B01/B11交互、正式low>60%、suburban接近clean与跨seed联合目标均未完成，保持ACTIVE。
+
+
+实际发布：代码31e63c58cfea58cb94cf7259f9ab87941cf59348已推送并独立核验OID identical。一次普通N607预检、单archive传输比较、remotecompile通过；真实匹配CP2合成NN smoke PASS后立即进入fitL。原PID199424的CWD/argv/CUDA隐藏和日志276→297字节均独立读回，13/40批，14978NN／16640物理调用，0更新/target，无异常；该条为启动读回时状态；最终终态见下文。
+
+完整原进程已自然终止，40/40批／45362NN／50400物理调用／48session，主体100.299359s；全部45360判决和10080物理记录独立复算一致。mid原session73.253968%、三bank73.273810/73.273810/73.313492%，平均hard变化0.449735%；low原57.738095%、三bank57.698413/57.777778/57.817460%，平均hard变化0.978836%。原session对三bank均值优势分别−0.033069/−0.026455pp，均未达原+1pp与3%变化条件，固定理由FAIL关闭，无后继训练。当前图表准备不修改运行release。
