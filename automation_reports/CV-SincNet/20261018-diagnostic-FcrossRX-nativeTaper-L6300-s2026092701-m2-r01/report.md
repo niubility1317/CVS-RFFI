@@ -1,3 +1,5 @@
+> ANALYZED／VERIFIED：原窗旁路四model/draw保持率增量0/0/0/+.015898个百分点，固定条件FAIL，已关闭。0训练/target；完整实际值、复算和成本见 [source_analysis.md](source_analysis.md)。以下保留原预登记及过程快照。
+
 # P46：原普通时域 Tukey 窗的同抽样反事实
 
 状态：SOURCE_COMPLETE，独立读回原进程已自然结束；待完整独立复算。唯一矩阵见 [experiment.json](experiment.json)。联合 Ag＋As 目标 ACTIVE；本轮不训练、不读取正式目标。上一轮 P45 已完成并关闭 L0，其正式微增不作为本项依据。
