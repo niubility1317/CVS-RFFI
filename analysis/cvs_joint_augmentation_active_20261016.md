@@ -1,14 +1,16 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-当前预算为 **E30＝固定 E20＋10**。B00／B10／B01／B11／FULL_AS 五行均已完成累计 30 轮／6660 更新，全部 5 个源 RX、L6300／U56700 隐藏 TX／V27000 保持。原训练 run 的最终权重已保存，但原生收尾误拒绝读取自身 checkpoint，正式评分未完成；原错误状态和产物保留。
+当前预算 **E30＝各自固定 E20＋10** 已完成：B00／B10／B01／B11／FULL_AS 五行各累计 30 轮／6660 更新，全部 5 源 RX 与 L6300／U56700 隐藏 TX／V27000 保持，没有留出训练域。五行 clean＋六 practical 共 5880000 个正式决策和独立 truth-last 评分已完成，630 个既有混淆矩阵重计一致。
 
-当前唯一执行项是 [零更新评分恢复](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/report.md)，复用五行固定 final30 学生默认头，只做 clean＋六 practical 预测及独立 truth-last 评分。恢复尚未发布，不能报告 E30 性能。E30 五行及父权重在新 E20 目标成绩读取前固定，不据 E20 结果调参、选择父权重或追加训练。
+[完整 E30 报告](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/report.md)为 ANALYZED／VERIFIED。B00 clean 85.2685%；B10 clean 85.3387%，独立 Ag 仅＋0.0702 个百分点。B01 clean 85.5220%、low urban 51.5762%；B11 clean 85.1744%、low urban 51.5268%；完整普通拼接 FULL_AS clean 82.9637%、low urban 53.4470%。
 
-最新已完成：[完整源四因子 E20 报告](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)已 ANALYZED。B10 clean 84.6893%，相对 B00 ＋0.1190 个百分点；B11 clean 83.5452%、low urban 50.5964%。B11 相对 B01 clean −0.1595、low urban −0.0036 个百分点；相对完整普通拼接 FULL_AS，low urban −1.7923 个百分点。七视图交互项全部为负；三个 suburban 与自身 clean 差 3.5161／6.3536／8.9982 个百分点。单种子小幅独立 clean 差不构成 Ag 泛化证明，联合目标未达到。
+**固定采样速率 Ag＋practical As 联合假设失败，关闭该配方。** B11 clean 相对 B00 −0.0940、相对 B01 −0.3476 个百分点；low urban 相对 B01 −0.0494、相对 FULL_AS −1.9202 个百分点。七视图交互均负；三个 suburban 与自身 clean 差 4.0506／6.7815／9.3399 个百分点。不能以降低 clean 缩小差距，单 seed 轻微 Ag clean 差也不能当作域泛化证明。
 
-[完整源普通拼接 E20 参照](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)已 ANALYZED：CONCAT clean 82.1887%、mid urban 63.3649%、low urban 52.3887%；相对同前向 REPEAT 分别 −2.3815／＋25.5982／＋20.3762 个百分点。普通 As 的 practical 适应有识别收益，clean 保持与全部 suburban 接近 clean 尚未成立。
+原训练已保存安全权重但因收尾加载检查异常返回 PARTIAL；独立 [零更新评分恢复](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/report.md)复用全部固定权重完成正式评分，原错误日志和状态保留。E30 矩阵／父选择在新 E20 目标成绩读取前固定，没有分数选父、调幅度或选择性重跑。
 
-接下来只检验一个预登记假设：同预算延长至 E30 后，这个固定采样速率 Ag 与 practical As 能否同时保留各自收益。最小实验就是已训练的五行评分；若 B11 没有 clean 净收益、相对 B01 没有 low urban 增益，或未达到原联合探索条件，则关闭该固定联合配方，不据目标分数调幅度、换种子或加损失救跑。
+本轮唯一待检验的 E30 联合假设已被否定，未发布下一候选。后续方案必须由合法源数据与传播／接收处理证据提出，保留全源与普通拼接参照，不调 ppm、换 seed 或加预算救跑。A_s 有实际适应证据；Ag 的跨域身份提取与联合目标仍未证明，总研究目标保持 ACTIVE。
+
+[完整源 E20 四因子负结果](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)与 [完整源普通拼接 E20 参照](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)保留。
 
 以下是按时间保留的历史过程，旧的“当前／运行／下一项”表述以本页开头的最新状态为准。
 

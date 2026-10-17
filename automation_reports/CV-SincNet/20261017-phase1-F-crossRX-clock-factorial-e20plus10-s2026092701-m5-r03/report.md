@@ -27,3 +27,5 @@ Run 20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r03；own
 实际发布：单归档比较／远端编译VERIFIED；实际F合成136项负例PASS，2580合成NN／256合成practical包／128采样时钟包／5合成更新，0真实IQ／CP／target。一次真实CP无查询smoke PASS（2合成包／0查询／更新）。相隔63.05s独立核实5worker的PID/CWD/argv/GPU与各自step日志增长；5行严格父学生、严格自身EMA、空AdamW初态lr.0002／wd.0001均已读回。B00/B10/B01/B11/FULL_AS全部实际运行，源RX未留出，当前无技术失败；正式E30预测／评分尚未开始，检查通过不等于收益。见execution_evidence.json。
 
 当前独立恢复：`20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01`，只读取这五个已固定E30学生默认头，无新训练轮次或更新；不修改本run的原错误文件／权重。恢复将核对完整原生step／epoch／optimizer／角色／父证据，再在新root预测7视图与独立truth-last。瞬时reference／unit／clockMSE／scene细节未落盘明确缺项，不补造。
+
+独立评分恢复已完成并 ANALYZED：[20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01](../20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/report.md)。复用本 run 的全部五行安全 final10／累计30，不新增训练。原 native 收尾异常及 PARTIAL 状态保留，正式指标在独立恢复报告中；联合配方未通过预登记目标，未按成绩选择性重跑。

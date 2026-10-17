@@ -1,0 +1,77 @@
+{
+  "status": "VERIFIED",
+  "commit": "1a6818841be4e7904faa070833b34f84b32a0c77",
+  "training_run": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r03",
+  "source_models_fixed": 5,
+  "source_updates_each": 2220,
+  "cumulative_epochs_each": 30,
+  "cumulative_updates_each": 6660,
+  "new_training_updates": 0,
+  "prediction_count": 5880000,
+  "checks": [
+    {
+      "row": "B00-s2026092701",
+      "pid": 428493,
+      "CWD": true,
+      "argv": true,
+      "GPU_environment": true,
+      "GPU_process": true,
+      "GPU_capacity_record": true,
+      "log_growth": true,
+      "completed": true
+    },
+    {
+      "row": "B10-s2026092701",
+      "pid": 428570,
+      "CWD": true,
+      "argv": true,
+      "GPU_environment": true,
+      "GPU_process": true,
+      "GPU_capacity_record": true,
+      "log_growth": true,
+      "completed": true
+    },
+    {
+      "row": "B01-s2026092701",
+      "pid": 428648,
+      "CWD": true,
+      "argv": true,
+      "GPU_environment": true,
+      "GPU_process": true,
+      "GPU_capacity_record": true,
+      "log_growth": true,
+      "completed": true
+    },
+    {
+      "row": "B11-s2026092701",
+      "pid": 428724,
+      "CWD": true,
+      "argv": true,
+      "GPU_environment": true,
+      "GPU_process": true,
+      "GPU_capacity_record": true,
+      "log_growth": true,
+      "completed": true
+    },
+    {
+      "row": "FULL_AS-s2026092701",
+      "pid": 428800,
+      "CWD": true,
+      "argv": true,
+      "GPU_environment": true,
+      "GPU_process": true,
+      "GPU_capacity_record": true,
+      "log_growth": true,
+      "completed": true
+    }
+  ],
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_CP_smoke_packets": 2,
+  "protocol_negative_cases": 126,
+  "independent_P0": 0,
+  "independent_P1": 0,
+  "final_own_processes": 0,
+  "truth_last": true,
+  "received_IQ_changed": false
+}

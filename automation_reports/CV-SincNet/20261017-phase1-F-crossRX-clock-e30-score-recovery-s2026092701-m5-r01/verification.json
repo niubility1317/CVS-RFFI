@@ -1,5 +1,5 @@
 {
-  "status": "REGISTERED_NOT_LAUNCHED",
+  "status": "ANALYZED",
   "local": {
     "status": "PASS",
     "protocol_negative_cases": 120,
@@ -20,6 +20,68 @@
   },
   "N607_preflight": "VERIFIED",
   "new_training_updates": 0,
-  "real_checkpoint_no_query_smoke": "PENDING",
-  "launch": "NOT_LAUNCHED"
+  "real_checkpoint_no_query_smoke": "PASS_2_SYNTHETIC_PACKETS_ZERO_UPDATES",
+  "launch": "VERIFIED",
+  "execution_commit": "1a6818841be4e7904faa070833b34f84b32a0c77",
+  "training_commit": "8a83af076a2f632a4ee514da689b2e8d166d0592",
+  "remote_branch_OID": "VERIFIED",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "remote_protocol_negative_cases": 126,
+  "pid_cwd_argv_GPU_log_growth": "VERIFIED",
+  "own_processes_remaining": 0,
+  "formal_prediction_count": 5880000,
+  "truth_last": "ALL_SEVEN_VIEWS_FIXED_PER_ROW_THEN_SEPARATE_CPU_SCORER",
+  "analysis": {
+    "status": "ANALYZED",
+    "execution_commit": "1a6818841be4e7904faa070833b34f84b32a0c77",
+    "training_commit": "8a83af076a2f632a4ee514da689b2e8d166d0592",
+    "model_seed_count": 1,
+    "models": 5,
+    "cumulative_epochs_each": 30,
+    "cumulative_updates_each": 6660,
+    "new_model_epochs": 0,
+    "new_updates": 0,
+    "CM_recounts": 630,
+    "sampling_sequence_records_each": 4440,
+    "all_sampling_sequences_identical": true,
+    "actual_shared_args": 65,
+    "Ag_clean_delta_pp": 0.07023809523809524,
+    "B11_clean_net_pp": -0.09404761904761905,
+    "B11_low": 0.5152678571428572,
+    "B11_low_delta_vs_B01_pp": -0.0494047619047619,
+    "B11_low_delta_vs_full_As_pp": -1.9202380952380953,
+    "interaction_pp": {
+      "clean": -0.4178571428571254,
+      "practical_high": -0.6202380952380959,
+      "practical_mid": -0.48214285714285876,
+      "practical_low_suburban": -0.5095238095237986,
+      "practical_high_urban": -0.5523809523809597,
+      "practical_mid_urban": -0.44047619047618003,
+      "practical_low_urban": -0.21785714285714186
+    },
+    "B11_suburban_gap_pp": {
+      "practical_high": 4.050595238095244,
+      "practical_mid": 6.781547619047624,
+      "practical_low_suburban": 9.339880952380952
+    },
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false,
+    "fixed_joint_recipe": "CLOSED_FAILED_PREREGISTERED_JOINT_CRITERIA",
+    "E30_fixed_before_new_E20_target_results": true,
+    "new_analysis_IQ": 0,
+    "new_analysis_CP": 0,
+    "new_analysis_raw_truth": 0,
+    "new_analysis_NN": 0,
+    "new_analysis_updates": 0
+  },
+  "figures": {
+    "PNG": 6,
+    "PDF": 6,
+    "visual_inspection": [
+      "matrix",
+      "B11"
+    ],
+    "new_NN": 0
+  }
 }
