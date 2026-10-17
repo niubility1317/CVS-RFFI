@@ -1,0 +1,314 @@
+{
+  "status": "ANALYZED_CODE_AND_CLOSED_SOURCE_LOGS_ONLY",
+  "date": "2026-10-18",
+  "git_HEAD": "d4f84de954c056b79da98de82f933d6cc43dd266",
+  "question": "Does the original paired-As objective add supervision or reallocate it?",
+  "coefficients": [
+    {
+      "row": "NATIVE",
+      "L_forwards_per_packet": 2,
+      "batch_average_RD_mass": {
+        "ordinary": 1,
+        "new_Ag": 0,
+        "As": 0
+      },
+      "total_RD_mass": 1,
+      "SupCon_absolute_weight_during_cumulative21_30": 0.1
+    },
+    {
+      "row": "REPEAT/B00",
+      "L_forwards_per_packet": 4,
+      "batch_average_RD_mass": {
+        "ordinary": 1,
+        "new_Ag": 0,
+        "As": 0
+      },
+      "total_RD_mass": 1,
+      "SupCon_absolute_weight_during_cumulative21_30": 0.1
+    },
+    {
+      "row": "FULL_AS/CONCAT",
+      "L_forwards_per_packet": 4,
+      "batch_average_RD_mass": {
+        "ordinary": 0.5,
+        "new_Ag": 0,
+        "As": 0.5
+      },
+      "total_RD_mass": 1,
+      "SupCon_absolute_weight_during_cumulative21_30": 0.1
+    },
+    {
+      "row": "B10",
+      "L_forwards_per_packet": 4,
+      "batch_average_RD_mass": {
+        "ordinary": 0.75,
+        "new_Ag": 0.25,
+        "As": 0
+      },
+      "total_RD_mass": 1,
+      "SupCon_absolute_weight_during_cumulative21_30": 0.1
+    },
+    {
+      "row": "B01",
+      "L_forwards_per_packet": 4,
+      "batch_average_RD_mass": {
+        "ordinary": 0.75,
+        "new_Ag": 0,
+        "As": 0.25
+      },
+      "total_RD_mass": 1,
+      "SupCon_absolute_weight_during_cumulative21_30": 0.1
+    },
+    {
+      "row": "B11",
+      "L_forwards_per_packet": 4,
+      "batch_average_RD_mass": {
+        "ordinary": 0.5,
+        "new_Ag": 0.25,
+        "As": 0.25
+      },
+      "total_RD_mass": 1,
+      "SupCon_absolute_weight_during_cumulative21_30": 0.1
+    }
+  ],
+  "coefficient_scope": "Per-packet mean,then per-pair weight; category masses average over L128;B10/B01/B11 assign64 slots,not fractional transforms per individual packet",
+  "raw_clean_warning": "ordinary is old generated augmentation O(x),not x or formal clean;no completely unaugmented comparison claimed",
+  "actual_source_rows": {
+    "INDEPENDENT": {
+      "steps": 2220,
+      "native_logged_first_CE": {
+        "count": 2220,
+        "mean": 0.2789888445925609,
+        "std": 0.30636163384846926,
+        "minimum": 0.08980885148048401,
+        "maximum": 1.7768330574035645,
+        "first": 0.182577982544899,
+        "last": 0.11738410592079163,
+        "nonfinite": 0
+      },
+      "native_logged_labeled": {
+        "count": 2220,
+        "mean": 0.2789888445925609,
+        "std": 0.30636163384846926,
+        "minimum": 0.08980885148048401,
+        "maximum": 1.7768330574035645,
+        "first": 0.182577982544899,
+        "last": 0.11738410592079163,
+        "nonfinite": 0
+      },
+      "actual_total_optimizer_objective": {
+        "count": 2220,
+        "mean": 0.6568287309091376,
+        "std": 0.2220304543396141,
+        "minimum": 0.40916377305984497,
+        "maximum": 1.4501760005950928,
+        "first": 0.5754357576370239,
+        "last": 0.5470482707023621,
+        "nonfinite": 0
+      },
+      "full_L_objective": {
+        "count": 2220,
+        "mean": 0.6533253098930315,
+        "std": 0.22207359546460925,
+        "minimum": 0.4077475070953369,
+        "maximum": 1.447898268699646,
+        "first": 0.5729025602340698,
+        "last": 0.5457064509391785,
+        "nonfinite": 0
+      },
+      "lambda_u": 0.16,
+      "lambda_ent": 0.01,
+      "closed_scale": {
+        "count": 2220,
+        "mean": 1,
+        "std": 0,
+        "minimum": 1,
+        "maximum": 1,
+        "first": 1,
+        "last": 1,
+        "nonfinite": 0
+      },
+      "ordinary_actual_epoch_ranges": {
+        "aug_scale": {
+          "min": 0.2506003339349741,
+          "max": 0.2506003339349741
+        },
+        "aug_p_dac": {
+          "min": 0,
+          "max": 0
+        },
+        "aug_p_pa": {
+          "min": 0.03508404675089638,
+          "max": 0.03508404675089638
+        },
+        "aug_p_time_shift": {
+          "min": 0.08771011687724094,
+          "max": 0.08771011687724094
+        },
+        "aug_p_cfo": {
+          "min": 0.08771011687724094,
+          "max": 0.08771011687724094
+        },
+        "aug_p_awgn": {
+          "min": 0.10024013357398964,
+          "max": 0.10024013357398964
+        },
+        "aug_p_multipath": {
+          "min": 0.045108060108295336,
+          "max": 0.045108060108295336
+        },
+        "aug_max_time_shift": {
+          "min": 8,
+          "max": 8
+        },
+        "aug_cfo_max": {
+          "min": 0.00010024013357398965,
+          "max": 0.00010024013357398965
+        },
+        "aug_phase_noise_sigma_max": {
+          "min": 0.0015036020036098448,
+          "max": 0.0015036020036098448
+        }
+      },
+      "source_RX_holdout": null
+    },
+    "ANTITHETIC": {
+      "steps": 2220,
+      "native_logged_first_CE": {
+        "count": 2220,
+        "mean": 0.2787251743949476,
+        "std": 0.30591410823397686,
+        "minimum": 0.08942350000143051,
+        "maximum": 1.7591102123260498,
+        "first": 0.182577982544899,
+        "last": 0.11768580973148346,
+        "nonfinite": 0
+      },
+      "native_logged_labeled": {
+        "count": 2220,
+        "mean": 0.2787251743949476,
+        "std": 0.30591410823397686,
+        "minimum": 0.08942350000143051,
+        "maximum": 1.7591102123260498,
+        "first": 0.182577982544899,
+        "last": 0.11768580973148346,
+        "nonfinite": 0
+      },
+      "actual_total_optimizer_objective": {
+        "count": 2220,
+        "mean": 0.6564971715614613,
+        "std": 0.22183946308931657,
+        "minimum": 0.41309183835983276,
+        "maximum": 1.4543123245239258,
+        "first": 0.5621088743209839,
+        "last": 0.5505849719047546,
+        "nonfinite": 0
+      },
+      "full_L_objective": {
+        "count": 2220,
+        "mean": 0.6530131487024806,
+        "std": 0.22188706244576745,
+        "minimum": 0.4116876721382141,
+        "maximum": 1.4518275260925293,
+        "first": 0.559575617313385,
+        "last": 0.5492631196975708,
+        "nonfinite": 0
+      },
+      "lambda_u": 0.16,
+      "lambda_ent": 0.01,
+      "closed_scale": {
+        "count": 2220,
+        "mean": 1,
+        "std": 0,
+        "minimum": 1,
+        "maximum": 1,
+        "first": 1,
+        "last": 1,
+        "nonfinite": 0
+      },
+      "ordinary_actual_epoch_ranges": {
+        "aug_scale": {
+          "min": 0.2506003339349741,
+          "max": 0.2506003339349741
+        },
+        "aug_p_dac": {
+          "min": 0,
+          "max": 0
+        },
+        "aug_p_pa": {
+          "min": 0.03508404675089638,
+          "max": 0.03508404675089638
+        },
+        "aug_p_time_shift": {
+          "min": 0.08771011687724094,
+          "max": 0.08771011687724094
+        },
+        "aug_p_cfo": {
+          "min": 0.08771011687724094,
+          "max": 0.08771011687724094
+        },
+        "aug_p_awgn": {
+          "min": 0.10024013357398964,
+          "max": 0.10024013357398964
+        },
+        "aug_p_multipath": {
+          "min": 0.045108060108295336,
+          "max": 0.045108060108295336
+        },
+        "aug_max_time_shift": {
+          "min": 8,
+          "max": 8
+        },
+        "aug_cfo_max": {
+          "min": 0.00010024013357398965,
+          "max": 0.00010024013357398965
+        },
+        "aug_phase_noise_sigma_max": {
+          "min": 0.0015036020036098448,
+          "max": 0.0015036020036098448
+        }
+      },
+      "source_RX_holdout": null
+    }
+  },
+  "full_L_objective_recount_records_each": 2220,
+  "full_L_objective_recount_max_error": 1.1920928955078125e-7,
+  "native_correction": "Native identity CE coefficient1;hook returns registeredL-nativeCE;caller adds it once to optimizer loss and the alternate closed-gradient representation,not twice to same loss",
+  "unlabeled_scope": "original lambda_u .16 plus lambda_ent .01 and other active legacy terms;U labels hidden;no change",
+  "logging_boundary": "train/loss_labeled and train/loss_tx_labeled retain native first CE before hook correction;not fullL;complete optimizer loss logged separately;unlogged standalone entropy prevents a new independent numeric decomposition of the entire optimizer objective here",
+  "findings": {
+    "ordinary_weight_reallocation_confirmed": true,
+    "reallocation_as_sole_cause_of_clean_drop": "UNPROVED",
+    "absolute_original_supervision_as_sufficient_clean_protection": "COUNTEREXAMPLE_IN_OLD_FOLD",
+    "new_IQ_Ag_proved": false,
+    "joint_goal_complete": false
+  },
+  "historical_additive": {
+    "first_run": "20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01",
+    "confirmation": "20261016-phase1-F-crossRX-additiveAs-confirm-sourceRX1-e20-s2026092702-m3-r01",
+    "roles": "OLD 4RX3/4/6/8;L5040/U45360/V21600;heldRX1 L1260,not current fullsource",
+    "first_seed_clean_As_minus_D00_pp": 3.3333333333333326,
+    "confirm_seed_clean_As_minus_D00_pp": -8.253968253968257,
+    "confirm_seed_clean_As_minus_Draw_pp": -6.825396825396822,
+    "two_seed_mean_clean_As_minus_D00_pp": -2.460317460317462,
+    "status": "CLOSED_AFTER_FIXED_CONFIRMATION;no seed/RX/coefficient/budget rescue",
+    "conclusion_scope": "Refutes sufficiency in this old fixed recipe,not everypossiblefullsourceadditive organization"
+  },
+  "other_thread_scope": {
+    "thread": "01a13a98-fbec-7ba3-86b9-4cd56b8992c0",
+    "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01/report.md",
+    "verified_from_saved_report": "ANALYZED;R25 ordinary.75/As.25;scratch30/20L10U;all5RX",
+    "action": "Do not duplicate its R25 training or its sourceV1800×2draw readouts;do not pool its scratch30 recipe with this E20plus10"
+  },
+  "new_training_launched": false,
+  "new_IQ_reads": 0,
+  "new_CP_loads": 0,
+  "new_NN": 0,
+  "new_updates": 0,
+  "new_teacher_forwards": 0,
+  "source_log_evidence": {
+    "artifact": "local_artifacts/F_dropoutCoupling_E30_20261017/closed.private.json",
+    "mode": "reuse previously complete,verified all-step summaries;no new raw-log scan",
+    "steps_covered": 4440
+  }
+}
