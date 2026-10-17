@@ -1,0 +1,25 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "unit_checks": {
+    "PASS": 6,
+    "SKIP": 1,
+    "skip_reason": "localCUDAunavailable;workeractualGPUregressionbeforetraining",
+    "command": "E:/type10-7/local_envs/ssr-gpu/python.exe -m experiments.cvs_Uurban39.checks"
+  },
+  "compile": "PASS",
+  "review": {
+    "reviewer": "/root/cleanretain37_p0p1",
+    "initial_P1": 3,
+    "fixes": [
+      "sourcepanel1800constant",
+      "CUDAprivateRNGseedreference",
+      "Uprivatechannelstreamreference"
+    ],
+    "targeted_review": "PASS",
+    "other_P0": 0,
+    "other_P1": 0
+  },
+  "actual_training_updates": 0,
+  "launched": false,
+  "goal_complete": false
+}
