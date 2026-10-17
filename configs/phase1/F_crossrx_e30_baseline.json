@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_TWO_REFERENCES_ANALYZED_SINGLE_SEED",
+  "status": "E30_REFERENCES_AND_BOUNDARY_NEGATIVE_ANALYZED_SINGLE_SEED",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -128,9 +128,21 @@
     "recoverable_course": "Prior fixed3-15dB/locked-degraded/eta<=.5 had negligible low increment; no replay as newly justified method",
     "additive_clean_supervision": "Prior fixed additive route failed crossseed clean protection; no coefficient rescue",
     "BN_contamination": "Actual fixed F uses GroupNorm/LayerNorm, no BatchNorm running-state mechanism",
-    "real_context_crop": "NOT_APPLICABLE_CURRENT_REPRESENTATION: sourcepacket already256, no longer same-record context; neighboring sig_i are separate physical packets. No synthesized extra context, no adjacentpacket role mixing, no augmentation/performance trial."
+    "real_context_crop": "NOT_APPLICABLE_CURRENT_REPRESENTATION: sourcepacket already256, no longer same-record context; neighboring sig_i are separate physical packets. No synthesized extra context, no adjacentpacket role mixing, no augmentation/performance trial.",
+    "native_training_boundary_mixture": {
+      "run_id": "20261017-phase1-FcrossRX-fullsource-boundarymix-e30-s2026092701-m1-r01",
+      "training_budget": "scratchE30/6660; all original source roles",
+      "source_rule": "Fixed-AGC edge penalty improvement>=3pp at both urban scenes and both draws AND originalfull drop<=.5pp in everycell",
+      "source_rule_pass": false,
+      "cells_passed": 1,
+      "cells_total": 4,
+      "decision_basis": "Source preservation failure; formal results terminal reporting only, never training/promotion feedback",
+      "method_evidence": "Boundary sensitivity reduced, originalfull source accuracy not preserved; not Ag or joint performance gain",
+      "formal_report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-boundarymix-e30-s2026092701-m1-r01/report.md",
+      "repeat_policy": "No replay by changing boundary ratio, receiver subset, threshold, seed or budget to rescue this candidate"
+    }
   },
-  "next_method_boundary": "E30 B00/B01 complete, no new Ag proved. Keep all original sourceRX and L/U/V; future bounded IQ candidate must have actual source evidence before E30 B10/B11, same-budget controls/defaulthead/originalU; no targetfeedback or reruns of closed routes.",
+  "next_method_boundary": "Original all-source F+CROSS_RX E30 references remain fixed. Boundary mixing source-preservation hypothesis failed; no Ag or four-factor gain proved. Future Ag/B10/B11 needs a distinct source-supported hypothesis under all original L/U/V/RX, defaulthead/originalU/scratchE30; no targetfeedback or replay of closed routes.",
   "execution_commit": "bafba40e365d0914a2e86f861fb55a49f1cd3997",
   "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/report.md",
   "input_representation_audit": {
