@@ -342,3 +342,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 下一唯一待检验问题为额外As对的RDrop KL是否抑制原监督收益：20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01，新C_CE从零E20/4440，复用Q0/Q_ord两个匹配8L/1.25控制结果，不载其权重。只移除额外As的KL，原baseRDrop/SupCon/U和singlefullAs保持，纯两CE同IQ。34反例＋真实F2054合成NN/1更新验证PASS，74参数梯度差仅旧.25KL；一次P0/P1 PASS。已登记未发布，无新真实IQ/CP/target。此为As配方而非Ag；失败关闭系数/CE权重/场景/日历/RX/seed救跑，完整目标ACTIVE。
+
+
+20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01 已RUNNING／VERIFIED，执行89505b966a853e9126f372c89581f4c2b1c8eb16：单新scratch行实际GPU0，smoke/控制复用/归档/remotecompile/原PID-CWD-argv-GPU-log增长PASS。已完整E1/222更新/227328LNN/28416fullAs/全部5040L，原U/SupCon启用时间保持，尚未完成训练、源预测或性能判定。只移除As对KL，真实meanCE两前向；无新Ag，完整目标ACTIVE，健康原进程继续不重启。

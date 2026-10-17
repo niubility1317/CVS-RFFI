@@ -28,4 +28,4 @@
 |九行冻结 RX 对抗模型的源域独立探针|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-conditional-rx-probe-health-manysig-m9-r01/report.md)|
 |六方向源机制诊断：冻结 CE30 三主种子|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-six-direction-mechanisms-manysig-m3-r01/report.md)|
 |F＋跨 RX 同 TX：共享微弱加性 IQ 方向源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01/report.md)|
-|F＋跨RX同TX：只移除As对RDrop KL的匹配E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01/report.md)|
+|F＋跨 RX 同 TX：As 两次 CE 与 RDrop 的匹配 E20|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01/report.md)|

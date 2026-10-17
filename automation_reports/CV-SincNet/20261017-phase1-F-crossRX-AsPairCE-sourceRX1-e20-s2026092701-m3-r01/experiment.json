@@ -26,7 +26,7 @@
   "replaces_run_id": null,
   "authorization": "User active jointAg/As research/currentF+CROSS_RX scratchE20;fixed source-only minimum falsification,originalUunchanged. Controls are results only,not trainingweight parents.",
   "code": {
-    "commit": "Publisher supplies actualHEAD in release_commit.txt/resolved_config",
+    "commit": "89505b966a853e9126f372c89581f4c2b1c8eb16",
     "checkout": "codex/cvs-iq-timing-e20-20261016 worktree",
     "environment": "OrdinaryN607 existingCVS-RFFI Python,FP32GPUworkers/CPUdispatcher2threads/loader0",
     "cwd": "PROJECT/releases/cvs_F_AsPairCE_sourceRX1_e20_20261017_r01",
@@ -125,22 +125,22 @@
         "practical_low_urban"
       ],
       "vs_Q0": {
-        "min_clean_gain_pp": 0.0,
-        "min_clean_F1_gain_pp": 0.0,
-        "min_low_gain_pp": 5.0,
-        "min_low_F1_gain_pp": 0.0,
-        "min_mid_gain_pp": 0.0,
-        "min_urban_mean_gain_pp": 3.0,
+        "min_clean_gain_pp": 0,
+        "min_clean_F1_gain_pp": 0,
+        "min_low_gain_pp": 5,
+        "min_low_F1_gain_pp": 0,
+        "min_mid_gain_pp": 0,
+        "min_urban_mean_gain_pp": 3,
         "max_each_suburban_drop_pp": 0.5,
         "max_seenV_drop_pp": 0.5
       },
       "vs_Q_ord": {
         "max_clean_drop_pp": 0.5,
         "max_clean_F1_drop_pp": 0.5,
-        "min_low_gain_pp": 1.0,
-        "min_low_F1_gain_pp": 0.0,
-        "min_mid_gain_pp": 0.0,
-        "min_urban_mean_gain_pp": 1.0,
+        "min_low_gain_pp": 1,
+        "min_low_F1_gain_pp": 0,
+        "min_mid_gain_pp": 0,
+        "min_urban_mean_gain_pp": 1,
         "max_each_suburban_drop_pp": 0.5,
         "max_seenV_drop_pp": 0.5
       },
@@ -169,7 +169,7 @@
         "support": null,
         "evaluation": 20261016103
       },
-      "seed_notes": "Originalmodel/ordinary/dropoutseed;channel20261016101/session20261016102/eval20261016103;newprivateviewselection202610176001+step;no globalRNGdraw/labels/targetselection",
+      "seed_notes": "Originalmodelseed2026092701 controlsinitialization/loader/ordinary/dropout;fixedsplit392005;originalprivatechannel20261016101/session20261016102/sourceeval20261016103;no new viewselection RNG or U/target seed. Q0haszeroAs training,allrows samefixedsourceeval draws.",
       "k": null,
       "scenario": "HeldsourceRX1clean+sixunchangedpractical",
       "optimizer": "AdamW+originalCENTER_UNITS Sinc/cosine",
@@ -222,7 +222,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-sceneCycle-E20-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -260,7 +260,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ScratchE20/F+CROSS_RX/NoExplicitCFO/defaultcos/originalordinary/U;wholebase raw.75+ordinary.25+SupCon plus.25R(raw/iidAs/balancedAs),8L",
@@ -276,8 +276,8 @@
           "random_direction_seed": 2026101307,
           "random_direction_scales": [
             0.5,
-            1.0,
-            2.0
+            1,
+            2
           ],
           "descriptor_width": 28,
           "output_embedding": 160,
@@ -295,7 +295,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "goal_complete": false,
           "target_feedback": false
         },
@@ -315,7 +315,7 @@
           "Ag": false,
           "As": false,
           "ordinary_L": true,
-          "alpha": 1.0,
+          "alpha": 1,
           "label_smoothing": 0.01,
           "use_aug": true,
           "sinc_coordinates": "CENTER_25K",
@@ -327,7 +327,7 @@
           "same_IQ_within_each_pair": true,
           "U_rule": "Original13L+7U oldgate/ownEMA; no added U views or contrast",
           "base_raw_total_weight": 0.75,
-          "raw_total_weight": 1.0,
+          "raw_total_weight": 1,
           "s_slot_name": "Commonraw third pair retained in allrows",
           "extra_pair_weight": 0.25,
           "extra_pair_input": "raw",
@@ -373,22 +373,22 @@
             "practical_low_urban"
           ],
           "vs_B00": {
-            "min_clean_gain_pp": 0.0,
-            "min_clean_macroF1_gain_pp": 0.0,
-            "min_low_urban_gain_pp": 5.0,
-            "min_low_urban_macroF1_gain_pp": 0.0,
-            "min_mid_urban_gain_pp": 0.0,
-            "min_urban_mean_gain_pp": 3.0,
+            "min_clean_gain_pp": 0,
+            "min_clean_macroF1_gain_pp": 0,
+            "min_low_urban_gain_pp": 5,
+            "min_low_urban_macroF1_gain_pp": 0,
+            "min_mid_urban_gain_pp": 0,
+            "min_urban_mean_gain_pp": 3,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
           "vs_C_IID": {
-            "min_clean_gain_pp": 0.0,
-            "min_clean_macroF1_gain_pp": 0.0,
-            "min_low_urban_gain_pp": 1.0,
-            "min_low_urban_macroF1_gain_pp": 0.0,
-            "min_mid_urban_gain_pp": 0.0,
-            "min_urban_mean_gain_pp": 1.0,
+            "min_clean_gain_pp": 0,
+            "min_clean_macroF1_gain_pp": 0,
+            "min_low_urban_gain_pp": 1,
+            "min_low_urban_macroF1_gain_pp": 0,
+            "min_mid_urban_gain_pp": 0,
+            "min_urban_mean_gain_pp": 1,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
@@ -418,8 +418,8 @@
             "practical_mid_urban",
             "practical_low_urban"
           ],
-          "fs_hz": 25000000.0,
-          "fc_hz": 2462000000.0,
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
           "processing_route": "residual",
           "mode": "post_sync",
           "equalization_enabled": false,
@@ -437,7 +437,7 @@
           "extra_input": "raw",
           "extra_weight": 0.25,
           "extra_pair_loss": "Original smoothedCE.01 mean+within-IQ RDrop1KL,no newloss",
-          "base_pair_weight_sum": 1.0,
+          "base_pair_weight_sum": 1,
           "pair_weight_sum": 1.25,
           "normalization": "PerphysicalL mean perIQpair,retainfullbase;extra .25,no dividebyviewcount",
           "BN_RNG": "All3rows8train forwards;private scene RNG only,raw andglobal RNG unchanged",
@@ -491,7 +491,7 @@
         "support": null,
         "evaluation": 20261016103
       },
-      "seed_notes": "Originalmodel/ordinary/dropoutseed;channel20261016101/session20261016102/eval20261016103;newprivateviewselection202610176001+step;no globalRNGdraw/labels/targetselection",
+      "seed_notes": "Originalmodelseed2026092701 controlsinitialization/loader/ordinary/dropout;fixedsplit392005;originalprivatechannel20261016101/session20261016102/sourceeval20261016103;no new viewselection RNG or U/target seed. Q0haszeroAs training,allrows samefixedsourceeval draws.",
       "k": null,
       "scenario": "HeldsourceRX1clean+sixunchangedpractical",
       "optimizer": "AdamW+originalCENTER_UNITS Sinc/cosine",
@@ -544,7 +544,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-sceneCycle-E20-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -582,7 +582,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ScratchE20/F+CROSS_RX/NoExplicitCFO/defaultcos/originalordinary/U;wholebase raw.75+ordinary.25+SupCon plus.25R(raw/iidAs/balancedAs),8L",
@@ -598,8 +598,8 @@
           "random_direction_seed": 2026101307,
           "random_direction_scales": [
             0.5,
-            1.0,
-            2.0
+            1,
+            2
           ],
           "descriptor_width": 28,
           "output_embedding": 160,
@@ -617,7 +617,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "goal_complete": false,
           "target_feedback": false
         },
@@ -637,7 +637,7 @@
           "Ag": false,
           "As": true,
           "ordinary_L": true,
-          "alpha": 1.0,
+          "alpha": 1,
           "label_smoothing": 0.01,
           "use_aug": true,
           "sinc_coordinates": "CENTER_25K",
@@ -695,22 +695,22 @@
             "practical_low_urban"
           ],
           "vs_B00": {
-            "min_clean_gain_pp": 0.0,
-            "min_clean_macroF1_gain_pp": 0.0,
-            "min_low_urban_gain_pp": 5.0,
-            "min_low_urban_macroF1_gain_pp": 0.0,
-            "min_mid_urban_gain_pp": 0.0,
-            "min_urban_mean_gain_pp": 3.0,
+            "min_clean_gain_pp": 0,
+            "min_clean_macroF1_gain_pp": 0,
+            "min_low_urban_gain_pp": 5,
+            "min_low_urban_macroF1_gain_pp": 0,
+            "min_mid_urban_gain_pp": 0,
+            "min_urban_mean_gain_pp": 3,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
           "vs_C_IID": {
-            "min_clean_gain_pp": 0.0,
-            "min_clean_macroF1_gain_pp": 0.0,
-            "min_low_urban_gain_pp": 1.0,
-            "min_low_urban_macroF1_gain_pp": 0.0,
-            "min_mid_urban_gain_pp": 0.0,
-            "min_urban_mean_gain_pp": 1.0,
+            "min_clean_gain_pp": 0,
+            "min_clean_macroF1_gain_pp": 0,
+            "min_low_urban_gain_pp": 1,
+            "min_low_urban_macroF1_gain_pp": 0,
+            "min_mid_urban_gain_pp": 0,
+            "min_urban_mean_gain_pp": 1,
             "max_each_practical_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
@@ -740,8 +740,8 @@
             "practical_mid_urban",
             "practical_low_urban"
           ],
-          "fs_hz": 25000000.0,
-          "fc_hz": 2462000000.0,
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
           "processing_route": "residual",
           "mode": "post_sync",
           "equalization_enabled": false,
@@ -759,7 +759,7 @@
           "extra_input": "As(raw)",
           "extra_weight": 0.25,
           "extra_pair_loss": "Original smoothedCE.01 mean+within-IQ RDrop1KL,no newloss",
-          "base_pair_weight_sum": 1.0,
+          "base_pair_weight_sum": 1,
           "pair_weight_sum": 1.25,
           "normalization": "PerphysicalL mean perIQpair,retainfullbase;extra .25,no dividebyviewcount",
           "BN_RNG": "All3rows8train forwards;private scene RNG only,raw andglobal RNG unchanged",
@@ -813,7 +813,7 @@
         "support": null,
         "evaluation": 20261016103
       },
-      "seed_notes": "Originalmodel/ordinary/dropoutseed;channel20261016101/session20261016102/eval20261016103;newprivateviewselection202610176001+step;no globalRNGdraw/labels/targetselection",
+      "seed_notes": "Originalmodelseed2026092701 controlsinitialization/loader/ordinary/dropout;fixedsplit392005;originalprivatechannel20261016101/session20261016102/sourceeval20261016103;no new viewselection RNG or U/target seed. Q0haszeroAs training,allrows samefixedsourceeval draws.",
       "k": null,
       "scenario": "HeldsourceRX1clean+sixunchangedpractical",
       "optimizer": "AdamW+originalCENTER_UNITS Sinc/cosine",
@@ -865,7 +865,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-AsPairCE-E20-20261017",
         "label_epochs": 13,
         "pseudo_epochs": 7,
@@ -903,7 +903,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "Retain fullbase raw.75/ordinary.25+originalSupCon+U;extra.25As pair usesmeanCE only",
@@ -919,8 +919,8 @@
           "random_direction_seed": 2026101307,
           "random_direction_scales": [
             0.5,
-            1.0,
-            2.0
+            1,
+            2
           ],
           "descriptor_width": 28,
           "output_embedding": 160,
@@ -938,7 +938,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "goal_complete": false,
           "target_feedback": false
         },
@@ -958,7 +958,7 @@
           "Ag": false,
           "As": true,
           "ordinary_L": true,
-          "alpha": 1.0,
+          "alpha": 1,
           "label_smoothing": 0.01,
           "use_aug": true,
           "sinc_coordinates": "CENTER_25K",
@@ -1016,22 +1016,22 @@
             "practical_low_urban"
           ],
           "vs_Q0": {
-            "min_clean_gain_pp": 0.0,
-            "min_clean_F1_gain_pp": 0.0,
-            "min_low_gain_pp": 5.0,
-            "min_low_F1_gain_pp": 0.0,
-            "min_mid_gain_pp": 0.0,
-            "min_urban_mean_gain_pp": 3.0,
+            "min_clean_gain_pp": 0,
+            "min_clean_F1_gain_pp": 0,
+            "min_low_gain_pp": 5,
+            "min_low_F1_gain_pp": 0,
+            "min_mid_gain_pp": 0,
+            "min_urban_mean_gain_pp": 3,
             "max_each_suburban_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
           "vs_Q_ord": {
             "max_clean_drop_pp": 0.5,
             "max_clean_F1_drop_pp": 0.5,
-            "min_low_gain_pp": 1.0,
-            "min_low_F1_gain_pp": 0.0,
-            "min_mid_gain_pp": 0.0,
-            "min_urban_mean_gain_pp": 1.0,
+            "min_low_gain_pp": 1,
+            "min_low_F1_gain_pp": 0,
+            "min_mid_gain_pp": 0,
+            "min_urban_mean_gain_pp": 1,
             "max_each_suburban_drop_pp": 0.5,
             "max_seenV_drop_pp": 0.5
           },
@@ -1061,8 +1061,8 @@
             "practical_mid_urban",
             "practical_low_urban"
           ],
-          "fs_hz": 25000000.0,
-          "fc_hz": 2462000000.0,
+          "fs_hz": 25000000,
+          "fc_hz": 2462000000,
           "processing_route": "residual",
           "mode": "post_sync",
           "equalization_enabled": false,
@@ -1080,7 +1080,7 @@
           "extra_input": "As(raw)",
           "extra_weight": 0.25,
           "extra_pair_loss": "Mean of two smoothedCE.01;zero appliedKL,detachedKLdiagnostic only",
-          "base_pair_weight_sum": 1.0,
+          "base_pair_weight_sum": 1,
           "pair_weight_sum": 1.25,
           "normalization": "PerphysicalL mean perIQpair,retainfullbase;extra .25,no dividebyviewcount",
           "BN_RNG": "Original8forward ordering/dropout calls/privatechannelRNG unchanged;F has0BN",
@@ -1119,7 +1119,7 @@
         "as_pair_objective": {
           "policy": "TWO_CE",
           "mean_CE_weight": 0.25,
-          "applied_KL_weight": 0.0,
+          "applied_KL_weight": 0,
           "diagnostic_KL": "Detached no_grad only,never entersloss/gradient",
           "all_L_As_supervised": true,
           "same_generated_IQ_for_both": true,
@@ -1142,7 +1142,8 @@
     "OriginalRDropclean evidencecannot beassumedAs benefit. Complete20epochQ_ord sourcecurvesread:meanAsCE.6143249255/diagnosticKL.0794714871;these aremotiveonly,notgradientharmorperformanceproof.",
     "RawAsoperator/sceneprobability/NoExplicitCFO/internalcompensation/SNR/receivedtestIQ stayfixed. ThisisAs recipeablation,notIQAg.",
     "I/Qreflectionnotpromoted:invertibilitydoesnot establishidentitysemantic;primaryWangetal2304.14795 cautionsflippingmayalterdevice-specificconstellationdeviation. No reflectionsource/NN/trainingperformed.",
-    "FailureclosesfixedAsKLremoval;nomidweight/CEweight/calendar/scene/RX/seedrescue. PASSdoesnotcompletejointgoalorautomaticallyauthorizeadditionalbudget."
+    "FailureclosesfixedAsKLremoval;nomidweight/CEweight/calendar/scene/RX/seedrescue. PASSdoesnotcompletejointgoalorautomaticallyauthorizeadditionalbudget.",
+    "Actualsource runstarted;one C_CE scratch worker,strictrealCPsmoke andexacttwo-controlmetadata reusePASS,effectiveL5040/U45360hiddenTX/V21600,CPU/GPUidentityreadbackVERIFIED. No completed epochorperformanceclaim yet."
   ],
   "registered_at": "2026-10-17T01:50:13+00:00"
 }

@@ -1,6 +1,6 @@
 # F＋跨 RX 同 TX：As 两次 CE 与 RDrop 的匹配 E20
 
-状态：REGISTERED_NOT_LAUNCHED。只新增一行从零 E20；两个已完成控制复用结果，不加载其权重。固定 F／三路 SIG_TIME／统一 Sinc／NoExplicitCFO／真实 joint160／默认 cosine 头正常联合训练，原 13L＋7U、oldgate、ownEMA 与隐藏 U TX 保持。
+状态：RUNNING／原进程身份与输入权限 VERIFIED；训练、预测和独立分析未完成。只新增一行从零 E20；两个已完成控制复用结果，不加载其权重。固定 F／三路 SIG_TIME／统一 Sinc／NoExplicitCFO／真实 joint160／默认 cosine 头正常联合训练，原 13L＋7U、oldgate、ownEMA 与隐藏 U TX 保持。
 
 ## 唯一假设与已核实依据
 
@@ -51,3 +51,9 @@ ordinary N607/CVS-RFFI，dispatcher CPU2/CUDA隐藏；新worker CPU2/loader0，�
 19协议/配置/入口反例＋15固定科学反例PASS；真实F初始state、8实际IQ输入、global/dropout RNG逐位相同，74参数梯度差只等于旧额外0.25KL项，最大误差1.1920929e−7；原base KL/SupCon保留，默认头与骨干正常更新，导出160与实际特征一致。合计2054合成NN包前向、256 fullAs合成生成、1合成优化更新，0真实IQ/CP/target。首反例误将已有As=true当成变更，0NN即发现并修正；Torch2.1/NumPy2旧桥警告保留，没有改环境。唯一P0/P1静态审查PASS，无额外报告审批或哈希层。
 
 完整目标仍ACTIVE：本轮不新增Ag，不证明As稳定跨seed、同契约四因子交互、clean净正收益／lowurban>60%／suburban接近自身clean；这些须后续实际身份识别结果证明。
+
+
+实际启动：执行commit 89505b966a853e9126f372c89581f4c2b1c8eb16，已push并独立核对remote OID；一次archive传输比较及remotecompile VERIFIED。真实匹配CP合成no-query smoke PASS后直接继续，两个原控制完整metadata核对PASS，控制权重没有初始化新行。唯一worker从零，原PID/CWD/argv/GPU0/CPU2一致，进程CPU ticks持续增长、已创建实际step记录；角色独立读回L5040/U45360/V21600，初始化无祖先/no target/own scratchEMA。当前尚无完整epoch结果，不宣称收益；原健康进程不热改、不重启。
+
+
+首轮执行进展：原worker已完成E1／222实际更新，L前向227328、额外对前向56832、完整As监督28416，训练已覆盖全部5040可见L。stdout由6500增至11665字节，原PID/CWD/argv/GPU保持一致，failure不存在；epoch observer已通过逐步As meanCE/零KL梯度预算检查。原SupCon按既定E6启用，当前尚未启用，不提前更改。真实性能读出仍等待final20及源七视图，当前不能报告新增accuracy/F1/clean代价。
