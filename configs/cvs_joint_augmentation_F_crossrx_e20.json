@@ -2180,7 +2180,7 @@
       "joint_goal_complete": false
     }
   },
-  "latest_completed_experiment": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
+  "latest_completed_experiment": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
   "source_PSD_positive_affine": {
     "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
     "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
@@ -2310,13 +2310,12 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
+  "current_experiment": null,
   "active_As_hypothesis": {
-    "status": "NO_SUPPORTED_NEW_AS_TRAINING_CANDIDATE",
-    "latest_closed_run": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
-    "closed_recipe": "view second moment coefficient1/storedcoordinates/originalparents/seed2026092701/E20plus10",
-    "reason": "Source clean/midurban/lowurban failed;all seven formal accuracies decreased versus matched plain As",
-    "ordinary_As_efficacy": "Confirmed single-seed adaptation gain plus clean cost;not joint completion"
+    "status": "NO_NEW_QUALIFIED_AS_CANDIDATE",
+    "reference": "Existing complete ordinary practical only",
+    "latest_closed_experiment": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
+    "context": "OrdinaryAs has large practical gains with clean cost;current organization does not preservejointbenefits"
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
@@ -2827,7 +2826,9 @@
   },
   "active_Ag_hypothesis": {
     "status": "NO_NEW_VALIDATED_IQ_OPERATOR",
-    "context": "Existing256 IQ only;sharedresponse and normalizationorder recipes closed;carrierorganization is not newAg"
+    "IQ_points": 256,
+    "raw_context_mapping_available": false,
+    "context": "Existing256 only;sharedRX/order recipes and carrierorganization failed;the latter is not newIQAg"
   },
   "latest_completed_source_diagnostic": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
   "active_training_budget": {
@@ -3941,7 +3942,7 @@
     "updates": 0,
     "target_access": false
   },
-  "latest_completed_training_experiment": "20261018-phase1-F-crossRX-viewMoment-e20plus10-s2026092701-m4-r01",
+  "latest_completed_training_experiment": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
   "antithetic_source_result": {
     "run_id": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02",
     "status": "ANALYZED_SOURCE_ONLY",
@@ -4244,7 +4245,22 @@
     "no_rescue": true
   },
   "latest_completed_analysis": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
-  "current_evidence_gap": "Exact packetwise normalization failed too:2.945017782SSE versus2.944634453meanproxy,0of18folds/0of5RX better than additive. Fixed sharedresponse and normalization-order explanation closed. No new IQAg or As training candidate supported;latest actual identity training remains viewMoment E30negative. Full5RX/256IQ/F+CROSS_RX/defaultcos/E30 unchanged;goalactive.",
+  "current_evidence_gap": {
+    "new_Ag_proved": false,
+    "new_As_recipe_qualified": false,
+    "joint_goal_complete": false,
+    "last_fixed_candidate": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
+    "source_qualified": false,
+    "clean_net_gain_pp": -1.7726190476190475,
+    "lowurban_accuracy": 0.5173035714285714,
+    "suburban_gaps_pp": {
+      "practical_high": 2.36547619047619,
+      "practical_mid": 5.00357142857143,
+      "practical_low_suburban": 7.391666666666663
+    },
+    "source_RX_holdout": null,
+    "reason": "Jointgoal unachieved;no source-qualified newIQAg,lowurbanbelow60,cleannetnegative;do not resize probability/components or use formalmetricsto rescue"
+  },
   "current_source_experiment": null,
   "latest_completed_source_experiment": "20261018-diagnostic-F-RXresponse-order-sourceCells-manysig-m1-r01",
   "unitary_source_result": {
@@ -4283,7 +4299,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
+  "current_training_experiment": null,
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -6128,33 +6144,10 @@
     "identity_accuracy_measured": false,
     "joint_goal_complete": false
   },
-  "active_training_hypothesis": {
-    "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
-    "status": "RUNNING_VERIFIED",
-    "execution_commit": "5278625865d49164872337853b0eda963b908e0e",
-    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/report.md",
-    "hypothesis": "Change only L ordinary phase/CFO selector dependence from sharedbatch to independentpacket at fixed perpacket laws;test organization x existing complete practical As",
-    "new_IQ_Ag": false,
-    "common_parent": "Original fullsource NoAs REPEAT fixedfinal20 student and ownEMA",
-    "matrix": [
-      "NOAS_BATCH",
-      "NOAS_PACKET",
-      "AS_BATCH",
-      "AS_PACKET"
-    ],
-    "budget": "Common parentE20 plus4independent10;eachcumulativeE30;8880newupdates",
-    "source_RX_holdout": null,
-    "IQ_points": 256,
-    "source_data": "L6300/U56700 TXhidden/V27000;all5RX/days1,2,3;split392005",
-    "As_exposure_epochs": 10,
-    "source_rule": "All fixed source thresholds in prereg;any failure closes fixed recipe;no targetfeedback",
-    "formal_plan": "All4 rows automatic clean+6practical168000/view then independenttruthlast",
-    "formal_scores_read": false,
-    "joint_goal_complete": false
-  },
+  "active_training_hypothesis": null,
   "carrier_gate_release": {
     "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
-    "status": "RUNNING_VERIFIED",
+    "status": "ANALYZED_VERIFIED",
     "execution_commit": "5278625865d49164872337853b0eda963b908e0e",
     "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/report.md",
     "hypothesis": "Change only L ordinary phase/CFO selector dependence from sharedbatch to independentpacket at fixed perpacket laws;test organization x existing complete practical As",
@@ -6174,6 +6167,614 @@
     "source_rule": "All fixed source thresholds in prereg;any failure closes fixed recipe;no targetfeedback",
     "formal_plan": "All4 rows automatic clean+6practical168000/view then independenttruthlast",
     "formal_scores_read": false,
-    "joint_goal_complete": false
+    "joint_goal_complete": false,
+    "completion": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/completion_verification.json"
+  },
+  "carrier_gate_result": {
+    "run_id": "20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01",
+    "status": "ANALYZED_VERIFIED",
+    "execution_commit": "5278625865d49164872337853b0eda963b908e0e",
+    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/final_analysis.md",
+    "result": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json",
+    "source_decision": "CLOSED_FIXED_CARRIER_CORRELATION_SOURCE_FAILED",
+    "source_conditions": {
+      "NOAS_clean": false,
+      "AS_clean": true,
+      "joint_clean": false,
+      "midurban": false,
+      "lowurban": false,
+      "suburban": true
+    },
+    "summary": {
+      "NOAS_BATCH": {
+        "clean": {
+          "accuracy": 0.8531845238095238,
+          "macro_F1": 0.8504277877919605,
+          "correct": 143335,
+          "count": 168000,
+          "worst_RX_accuracy": 0.763875
+        },
+        "practical_high": {
+          "accuracy": 0.45395238095238094,
+          "macro_F1": 0.40840200586732417,
+          "correct": 76264,
+          "count": 168000,
+          "worst_RX_accuracy": 0.39208333333333334
+        },
+        "practical_mid": {
+          "accuracy": 0.43597619047619046,
+          "macro_F1": 0.3964337107921563,
+          "correct": 73244,
+          "count": 168000,
+          "worst_RX_accuracy": 0.3822083333333333
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.4155654761904762,
+          "macro_F1": 0.3813758326084413,
+          "correct": 69815,
+          "count": 168000,
+          "worst_RX_accuracy": 0.3655833333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.4414642857142857,
+          "macro_F1": 0.4017584469840159,
+          "correct": 74166,
+          "count": 168000,
+          "worst_RX_accuracy": 0.38308333333333333
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.3674107142857143,
+          "macro_F1": 0.34594071966749756,
+          "correct": 61725,
+          "count": 168000,
+          "worst_RX_accuracy": 0.324625
+        },
+        "practical_low_urban": {
+          "accuracy": 0.31363690476190476,
+          "macro_F1": 0.30242952645772486,
+          "correct": 52691,
+          "count": 168000,
+          "worst_RX_accuracy": 0.281
+        }
+      },
+      "AS_BATCH": {
+        "clean": {
+          "accuracy": 0.837922619047619,
+          "macro_F1": 0.8341356562446913,
+          "correct": 140771,
+          "count": 168000,
+          "worst_RX_accuracy": 0.735
+        },
+        "practical_high": {
+          "accuracy": 0.8111785714285714,
+          "macro_F1": 0.8066545591724242,
+          "correct": 136278,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7185416666666666
+        },
+        "practical_mid": {
+          "accuracy": 0.7851011904761904,
+          "macro_F1": 0.780764684538788,
+          "correct": 131897,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7002083333333333
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7614404761904762,
+          "macro_F1": 0.7571543612222307,
+          "correct": 127922,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6836666666666666
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7747738095238095,
+          "macro_F1": 0.7703251013861286,
+          "correct": 130162,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6885833333333333
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6308392857142857,
+          "macro_F1": 0.626158187936873,
+          "correct": 105981,
+          "count": 168000,
+          "worst_RX_accuracy": 0.565375
+        },
+        "practical_low_urban": {
+          "accuracy": 0.517375,
+          "macro_F1": 0.5109796611267922,
+          "correct": 86919,
+          "count": 168000,
+          "worst_RX_accuracy": 0.4704583333333333
+        }
+      },
+      "NOAS_PACKET": {
+        "clean": {
+          "accuracy": 0.8536547619047619,
+          "macro_F1": 0.8508905707170838,
+          "correct": 143414,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7677916666666667
+        },
+        "practical_high": {
+          "accuracy": 0.4549464285714286,
+          "macro_F1": 0.4061300544946689,
+          "correct": 76431,
+          "count": 168000,
+          "worst_RX_accuracy": 0.3904166666666667
+        },
+        "practical_mid": {
+          "accuracy": 0.4364345238095238,
+          "macro_F1": 0.39325819905436665,
+          "correct": 73321,
+          "count": 168000,
+          "worst_RX_accuracy": 0.37833333333333335
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.416327380952381,
+          "macro_F1": 0.3784872364091691,
+          "correct": 69943,
+          "count": 168000,
+          "worst_RX_accuracy": 0.363625
+        },
+        "practical_high_urban": {
+          "accuracy": 0.4419404761904762,
+          "macro_F1": 0.39866492751280785,
+          "correct": 74246,
+          "count": 168000,
+          "worst_RX_accuracy": 0.38079166666666664
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.36820238095238095,
+          "macro_F1": 0.3439309143635045,
+          "correct": 61858,
+          "count": 168000,
+          "worst_RX_accuracy": 0.32233333333333336
+        },
+        "practical_low_urban": {
+          "accuracy": 0.3135,
+          "macro_F1": 0.2997722943679694,
+          "correct": 52668,
+          "count": 168000,
+          "worst_RX_accuracy": 0.2803333333333333
+        }
+      },
+      "AS_PACKET": {
+        "clean": {
+          "accuracy": 0.8354583333333333,
+          "macro_F1": 0.8312219657210363,
+          "correct": 140357,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7252916666666667
+        },
+        "practical_high": {
+          "accuracy": 0.8118035714285714,
+          "macro_F1": 0.8071393207633636,
+          "correct": 136383,
+          "count": 168000,
+          "worst_RX_accuracy": 0.717625
+        },
+        "practical_mid": {
+          "accuracy": 0.785422619047619,
+          "macro_F1": 0.7811262499080871,
+          "correct": 131951,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7019166666666666
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7615416666666667,
+          "macro_F1": 0.7573576010086892,
+          "correct": 127939,
+          "count": 168000,
+          "worst_RX_accuracy": 0.684
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7751964285714286,
+          "macro_F1": 0.7706746532917457,
+          "correct": 130233,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6889583333333333
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6315238095238095,
+          "macro_F1": 0.6269323541678091,
+          "correct": 106096,
+          "count": 168000,
+          "worst_RX_accuracy": 0.5657083333333334
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5173035714285714,
+          "macro_F1": 0.5109389257193779,
+          "correct": 86907,
+          "count": 168000,
+          "worst_RX_accuracy": 0.4699583333333333
+        }
+      }
+    },
+    "paired": {
+      "AS_BATCH__NOAS_BATCH": {
+        "clean": {
+          "repairs": 2354,
+          "new_errors": 4918,
+          "delta_accuracy_pp": -1.526190476190476,
+          "joint_clean_and_scene_delta_pp": -1.526190476190476,
+          "shared_clean_count": 138417,
+          "repairs_when_both_clean_correct": 0,
+          "new_errors_when_both_clean_correct": 0
+        },
+        "practical_high": {
+          "repairs": 63463,
+          "new_errors": 3449,
+          "delta_accuracy_pp": 35.72261904761905,
+          "joint_clean_and_scene_delta_pp": 33.65,
+          "shared_clean_count": 138417,
+          "repairs_when_both_clean_correct": 58250,
+          "new_errors_when_both_clean_correct": 1735
+        },
+        "practical_mid": {
+          "repairs": 62610,
+          "new_errors": 3957,
+          "delta_accuracy_pp": 34.9125,
+          "joint_clean_and_scene_delta_pp": 32.74523809523809,
+          "shared_clean_count": 138417,
+          "repairs_when_both_clean_correct": 57342,
+          "new_errors_when_both_clean_correct": 2329
+        },
+        "practical_low_suburban": {
+          "repairs": 62321,
+          "new_errors": 4214,
+          "delta_accuracy_pp": 34.5875,
+          "joint_clean_and_scene_delta_pp": 32.30535714285714,
+          "shared_clean_count": 138417,
+          "repairs_when_both_clean_correct": 56922,
+          "new_errors_when_both_clean_correct": 2627
+        },
+        "practical_high_urban": {
+          "repairs": 60265,
+          "new_errors": 4269,
+          "delta_accuracy_pp": 33.33095238095238,
+          "joint_clean_and_scene_delta_pp": 31.402976190476192,
+          "shared_clean_count": 138417,
+          "repairs_when_both_clean_correct": 55295,
+          "new_errors_when_both_clean_correct": 2561
+        },
+        "practical_mid_urban": {
+          "repairs": 50857,
+          "new_errors": 6601,
+          "delta_accuracy_pp": 26.34285714285714,
+          "joint_clean_and_scene_delta_pp": 24.394642857142856,
+          "shared_clean_count": 138417,
+          "repairs_when_both_clean_correct": 46096,
+          "new_errors_when_both_clean_correct": 5119
+        },
+        "practical_low_urban": {
+          "repairs": 42712,
+          "new_errors": 8484,
+          "delta_accuracy_pp": 20.373809523809523,
+          "joint_clean_and_scene_delta_pp": 18.622619047619047,
+          "shared_clean_count": 138417,
+          "repairs_when_both_clean_correct": 38380,
+          "new_errors_when_both_clean_correct": 6912
+        }
+      },
+      "AS_PACKET__AS_BATCH": {
+        "clean": {
+          "repairs": 669,
+          "new_errors": 1083,
+          "delta_accuracy_pp": -0.24642857142857144,
+          "joint_clean_and_scene_delta_pp": -0.24642857142857144,
+          "shared_clean_count": 139688,
+          "repairs_when_both_clean_correct": 0,
+          "new_errors_when_both_clean_correct": 0
+        },
+        "practical_high": {
+          "repairs": 1160,
+          "new_errors": 1055,
+          "delta_accuracy_pp": 0.0625,
+          "joint_clean_and_scene_delta_pp": 0.025,
+          "shared_clean_count": 139688,
+          "repairs_when_both_clean_correct": 802,
+          "new_errors_when_both_clean_correct": 686
+        },
+        "practical_mid": {
+          "repairs": 1324,
+          "new_errors": 1270,
+          "delta_accuracy_pp": 0.03214285714285714,
+          "joint_clean_and_scene_delta_pp": -0.017261904761904763,
+          "shared_clean_count": 139688,
+          "repairs_when_both_clean_correct": 955,
+          "new_errors_when_both_clean_correct": 894
+        },
+        "practical_low_suburban": {
+          "repairs": 1492,
+          "new_errors": 1475,
+          "delta_accuracy_pp": 0.01011904761904762,
+          "joint_clean_and_scene_delta_pp": -0.07023809523809524,
+          "shared_clean_count": 139688,
+          "repairs_when_both_clean_correct": 1068,
+          "new_errors_when_both_clean_correct": 1078
+        },
+        "practical_high_urban": {
+          "repairs": 1246,
+          "new_errors": 1175,
+          "delta_accuracy_pp": 0.042261904761904764,
+          "joint_clean_and_scene_delta_pp": -0.03988095238095238,
+          "shared_clean_count": 139688,
+          "repairs_when_both_clean_correct": 875,
+          "new_errors_when_both_clean_correct": 838
+        },
+        "practical_mid_urban": {
+          "repairs": 1922,
+          "new_errors": 1807,
+          "delta_accuracy_pp": 0.06845238095238096,
+          "joint_clean_and_scene_delta_pp": 0.011904761904761904,
+          "shared_clean_count": 139688,
+          "repairs_when_both_clean_correct": 1546,
+          "new_errors_when_both_clean_correct": 1387
+        },
+        "practical_low_urban": {
+          "repairs": 2324,
+          "new_errors": 2336,
+          "delta_accuracy_pp": -0.007142857142857143,
+          "joint_clean_and_scene_delta_pp": -0.024404761904761905,
+          "shared_clean_count": 139688,
+          "repairs_when_both_clean_correct": 1906,
+          "new_errors_when_both_clean_correct": 1844
+        }
+      },
+      "NOAS_PACKET__NOAS_BATCH": {
+        "clean": {
+          "repairs": 996,
+          "new_errors": 917,
+          "delta_accuracy_pp": 0.04702380952380952,
+          "joint_clean_and_scene_delta_pp": 0.04702380952380952,
+          "shared_clean_count": 142418,
+          "repairs_when_both_clean_correct": 0,
+          "new_errors_when_both_clean_correct": 0
+        },
+        "practical_high": {
+          "repairs": 3076,
+          "new_errors": 2909,
+          "delta_accuracy_pp": 0.0994047619047619,
+          "joint_clean_and_scene_delta_pp": 0.15178571428571427,
+          "shared_clean_count": 142418,
+          "repairs_when_both_clean_correct": 2746,
+          "new_errors_when_both_clean_correct": 2646
+        },
+        "practical_mid": {
+          "repairs": 3164,
+          "new_errors": 3087,
+          "delta_accuracy_pp": 0.04583333333333333,
+          "joint_clean_and_scene_delta_pp": 0.09285714285714286,
+          "shared_clean_count": 142418,
+          "repairs_when_both_clean_correct": 2791,
+          "new_errors_when_both_clean_correct": 2789
+        },
+        "practical_low_suburban": {
+          "repairs": 3304,
+          "new_errors": 3176,
+          "delta_accuracy_pp": 0.0761904761904762,
+          "joint_clean_and_scene_delta_pp": 0.13273809523809524,
+          "shared_clean_count": 142418,
+          "repairs_when_both_clean_correct": 2964,
+          "new_errors_when_both_clean_correct": 2869
+        },
+        "practical_high_urban": {
+          "repairs": 3159,
+          "new_errors": 3079,
+          "delta_accuracy_pp": 0.047619047619047616,
+          "joint_clean_and_scene_delta_pp": 0.12023809523809524,
+          "shared_clean_count": 142418,
+          "repairs_when_both_clean_correct": 2826,
+          "new_errors_when_both_clean_correct": 2767
+        },
+        "practical_mid_urban": {
+          "repairs": 3277,
+          "new_errors": 3144,
+          "delta_accuracy_pp": 0.07916666666666666,
+          "joint_clean_and_scene_delta_pp": 0.12023809523809524,
+          "shared_clean_count": 142418,
+          "repairs_when_both_clean_correct": 2944,
+          "new_errors_when_both_clean_correct": 2828
+        },
+        "practical_low_urban": {
+          "repairs": 3353,
+          "new_errors": 3376,
+          "delta_accuracy_pp": -0.01369047619047619,
+          "joint_clean_and_scene_delta_pp": 0.02976190476190476,
+          "shared_clean_count": 142418,
+          "repairs_when_both_clean_correct": 2988,
+          "new_errors_when_both_clean_correct": 3024
+        }
+      },
+      "AS_PACKET__NOAS_PACKET": {
+        "clean": {
+          "repairs": 2238,
+          "new_errors": 5295,
+          "delta_accuracy_pp": -1.8196428571428571,
+          "joint_clean_and_scene_delta_pp": -1.8196428571428571,
+          "shared_clean_count": 138119,
+          "repairs_when_both_clean_correct": 0,
+          "new_errors_when_both_clean_correct": 0
+        },
+        "practical_high": {
+          "repairs": 63535,
+          "new_errors": 3583,
+          "delta_accuracy_pp": 35.68571428571428,
+          "joint_clean_and_scene_delta_pp": 33.52321428571429,
+          "shared_clean_count": 138119,
+          "repairs_when_both_clean_correct": 58155,
+          "new_errors_when_both_clean_correct": 1775
+        },
+        "practical_mid": {
+          "repairs": 62718,
+          "new_errors": 4088,
+          "delta_accuracy_pp": 34.898809523809526,
+          "joint_clean_and_scene_delta_pp": 32.63511904761905,
+          "shared_clean_count": 138119,
+          "repairs_when_both_clean_correct": 57274,
+          "new_errors_when_both_clean_correct": 2363
+        },
+        "practical_low_suburban": {
+          "repairs": 62313,
+          "new_errors": 4317,
+          "delta_accuracy_pp": 34.52142857142857,
+          "joint_clean_and_scene_delta_pp": 32.102380952380955,
+          "shared_clean_count": 138119,
+          "repairs_when_both_clean_correct": 56692,
+          "new_errors_when_both_clean_correct": 2662
+        },
+        "practical_high_urban": {
+          "repairs": 60338,
+          "new_errors": 4351,
+          "delta_accuracy_pp": 33.32559523809524,
+          "joint_clean_and_scene_delta_pp": 31.242857142857144,
+          "shared_clean_count": 138119,
+          "repairs_when_both_clean_correct": 55122,
+          "new_errors_when_both_clean_correct": 2567
+        },
+        "practical_mid_urban": {
+          "repairs": 50881,
+          "new_errors": 6643,
+          "delta_accuracy_pp": 26.332142857142856,
+          "joint_clean_and_scene_delta_pp": 24.286309523809525,
+          "shared_clean_count": 138119,
+          "repairs_when_both_clean_correct": 45965,
+          "new_errors_when_both_clean_correct": 5081
+        },
+        "practical_low_urban": {
+          "repairs": 42775,
+          "new_errors": 8536,
+          "delta_accuracy_pp": 20.380357142857143,
+          "joint_clean_and_scene_delta_pp": 18.56845238095238,
+          "shared_clean_count": 138119,
+          "repairs_when_both_clean_correct": 38343,
+          "new_errors_when_both_clean_correct": 6898
+        }
+      },
+      "AS_PACKET__NOAS_BATCH": {
+        "clean": {
+          "repairs": 2205,
+          "new_errors": 5183,
+          "delta_accuracy_pp": -1.7726190476190475,
+          "joint_clean_and_scene_delta_pp": -1.7726190476190475,
+          "shared_clean_count": 138152,
+          "repairs_when_both_clean_correct": 0,
+          "new_errors_when_both_clean_correct": 0
+        },
+        "practical_high": {
+          "repairs": 63589,
+          "new_errors": 3470,
+          "delta_accuracy_pp": 35.78511904761905,
+          "joint_clean_and_scene_delta_pp": 33.675,
+          "shared_clean_count": 138152,
+          "repairs_when_both_clean_correct": 58335,
+          "new_errors_when_both_clean_correct": 1740
+        },
+        "practical_mid": {
+          "repairs": 62672,
+          "new_errors": 3965,
+          "delta_accuracy_pp": 34.94464285714286,
+          "joint_clean_and_scene_delta_pp": 32.72797619047619,
+          "shared_clean_count": 138152,
+          "repairs_when_both_clean_correct": 57334,
+          "new_errors_when_both_clean_correct": 2331
+        },
+        "practical_low_suburban": {
+          "repairs": 62397,
+          "new_errors": 4273,
+          "delta_accuracy_pp": 34.59761904761905,
+          "joint_clean_and_scene_delta_pp": 32.23511904761905,
+          "shared_clean_count": 138152,
+          "repairs_when_both_clean_correct": 56881,
+          "new_errors_when_both_clean_correct": 2676
+        },
+        "practical_high_urban": {
+          "repairs": 60354,
+          "new_errors": 4287,
+          "delta_accuracy_pp": 33.37321428571428,
+          "joint_clean_and_scene_delta_pp": 31.363095238095237,
+          "shared_clean_count": 138152,
+          "repairs_when_both_clean_correct": 55266,
+          "new_errors_when_both_clean_correct": 2568
+        },
+        "practical_mid_urban": {
+          "repairs": 51032,
+          "new_errors": 6661,
+          "delta_accuracy_pp": 26.411309523809525,
+          "joint_clean_and_scene_delta_pp": 24.40654761904762,
+          "shared_clean_count": 138152,
+          "repairs_when_both_clean_correct": 46190,
+          "new_errors_when_both_clean_correct": 5146
+        },
+        "practical_low_urban": {
+          "repairs": 42870,
+          "new_errors": 8654,
+          "delta_accuracy_pp": 20.366666666666667,
+          "joint_clean_and_scene_delta_pp": 18.598214285714285,
+          "shared_clean_count": 138152,
+          "repairs_when_both_clean_correct": 38506,
+          "new_errors_when_both_clean_correct": 7033
+        }
+      }
+    },
+    "organization_x_As_interaction_pp": {
+      "clean": -0.2934523809523748,
+      "practical_high": -0.03690476190476577,
+      "practical_mid": -0.013690476190475476,
+      "practical_low_suburban": -0.06607142857142922,
+      "practical_high_urban": -0.00535714285714306,
+      "practical_mid_urban": -0.01071428571428612,
+      "practical_low_urban": 0.006547619047614361
+    },
+    "suburban_gaps_pp": {
+      "NOAS_BATCH": {
+        "practical_high": 39.92321428571429,
+        "practical_mid": 41.72083333333333,
+        "practical_low_suburban": 43.761904761904766
+      },
+      "AS_BATCH": {
+        "practical_high": 2.6744047619047584,
+        "practical_mid": 5.2821428571428575,
+        "practical_low_suburban": 7.648214285714284
+      },
+      "NOAS_PACKET": {
+        "practical_high": 39.87083333333333,
+        "practical_mid": 41.722023809523805,
+        "practical_low_suburban": 43.73273809523809
+      },
+      "AS_PACKET": {
+        "practical_high": 2.36547619047619,
+        "practical_mid": 5.00357142857143,
+        "practical_low_suburban": 7.391666666666663
+      }
+    },
+    "actual_total_cost": {
+      "unique_parent_model_epochs": 20,
+      "new_model_epochs": 40,
+      "unique_total_model_epochs": 60,
+      "cumulative_epochs_each": 30,
+      "unique_parent_updates": 4440,
+      "new_updates": 8880,
+      "unique_total_updates": 13320,
+      "extra_VJP_calls": 0,
+      "new_training_qualification_prediction_NN": 15176176,
+      "real_parent_checkpoint_smoke_NN": 2,
+      "local_checks_model_NN": 0,
+      "remote_synthetic_checks_model_NN": 0,
+      "unique_parent_training_NN": 3661082,
+      "As_training_observations": 568320,
+      "analysis_IQ": 0,
+      "analysis_CP": 0,
+      "analysis_NN": 0,
+      "analysis_updates": 0,
+      "new_actual_NN": 15176178,
+      "actual_NN_including_unique_parent": 18837260
+    },
+    "new_IQ_Ag": false,
+    "single_seed_only": true,
+    "joint_goal_complete": false,
+    "target_feedback": false,
+    "closure": "Fixedtwo-carrier sharedbatch-vs-packet correlation/probability/range/commonNoAs20parent/seed/E30 recipe closed;no component/scale/probability/parent/seed/budget rescue"
   }
 }

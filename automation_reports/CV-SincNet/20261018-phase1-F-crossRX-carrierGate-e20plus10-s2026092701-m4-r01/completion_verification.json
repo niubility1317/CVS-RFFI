@@ -1,0 +1,106 @@
+{
+  "status": "VERIFIED",
+  "time": 1792280407.9890654,
+  "execution_commit": "5278625865d49164872337853b0eda963b908e0e",
+  "dispatcher_process_present": false,
+  "rows": [
+    {
+      "row": "NOAS_BATCH-s2026092701",
+      "pid": 985449,
+      "process_present": false,
+      "status": "TRAINED_DEFAULT_PREDICTED_SCORED",
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "count": 168000,
+      "truth_last": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 2220,
+      "cumulative_epochs": 30
+    },
+    {
+      "row": "NOAS_PACKET-s2026092701",
+      "pid": 985524,
+      "process_present": false,
+      "status": "TRAINED_DEFAULT_PREDICTED_SCORED",
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "count": 168000,
+      "truth_last": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 2220,
+      "cumulative_epochs": 30
+    },
+    {
+      "row": "AS_BATCH-s2026092701",
+      "pid": 985603,
+      "process_present": false,
+      "status": "TRAINED_DEFAULT_PREDICTED_SCORED",
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "count": 168000,
+      "truth_last": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 2220,
+      "cumulative_epochs": 30
+    },
+    {
+      "row": "AS_PACKET-s2026092701",
+      "pid": 985680,
+      "process_present": false,
+      "status": "TRAINED_DEFAULT_PREDICTED_SCORED",
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "count": 168000,
+      "truth_last": true,
+      "head_fit_updates": 0,
+      "optimizer_steps": 2220,
+      "cumulative_epochs": 30
+    }
+  ],
+  "completion": {
+    "status": "ARTIFACTS_COMPLETE_PENDING_ANALYSIS",
+    "rows": 4,
+    "continued_models": 4,
+    "unique_parent_model_epochs": 20,
+    "new_model_epochs": 40,
+    "unique_model_epochs": 60,
+    "new_optimizer_updates": 8880,
+    "cumulative_epochs_each": 30,
+    "prediction_count": 4704000,
+    "truth_last": true,
+    "head_fit_updates": 0,
+    "joint_goal_complete": false
+  },
+  "source_decision_frozen": true,
+  "source_decision_before_primary_numeric_read": true,
+  "owned_stop_commands": 0,
+  "healthy_old_jobs_modified": 0
+}

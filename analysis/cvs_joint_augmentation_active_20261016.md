@@ -1,3 +1,13 @@
+## 2026-10-18：逐包载波增强组织四行 E30 完整负结果，固定配方关闭
+
+[完整同成本结果](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/final_analysis.md) 已 ANALYZED／VERIFIED。四行共用原fullsource NoAs20 student及其ownEMA，各独立+10至E30／2220新增更新／4L前向，无额外损失或VJP。F＋跨RX同TX／SIG_TIME／统一Sinc／joint160／默认cos联合训练、原U规则、全部5源RX、L6300/U56700隐藏TX/V27000、256点保持；无训练域留出，As仅新增10轮。
+
+本轮普通AS_BATCH clean83.792262%／midurban63.083929%／lowurban51.737500%；无AS_BATCH为85.318452%／36.741071%／31.363690%，普通As low+20.373810pp、clean−1.526190pp。AS_PACKET为83.545833%／63.152381%／51.730357%，相对普通As clean−.246429pp、low−.007143pp；NOAS_PACKET clean仅+.047024pp。low修复2324／新增2336，clean修复669／新增1083，clean∩low净少41；部分mid/suburban的微小涨分不能称为联合收益。候选suburban距clean2.365476／5.003571／7.391667pp，差距缩小主要伴随clean下降，low仍<60。
+
+源判定在读取正式数值前已失败：NOASclean+.055556pp未达+.25，组合clean相对无As−.5pp，mid/low两draw条件未通过；源52CM/RX分区、正式504CM/84分区/35配对独立复算一致（最大指标差0）。完整8880步／8880载波记录／40epoch×680字段原生CSV与JSONL/observer、L/U物理序列、真实教师成本均核对。新训练8880更新、唯一父4440更新、唯一60model-epochs，新增实际NN15176178、含唯一父18837260，As处理568320包；分析0IQ/CP/NN/更新/rawtruth。四worker及dispatcher自然退出，0停止／修改旧健康任务。执行提交5278625865d49164872337853b0eda963b908e0e。
+
+关闭固定phase/CFO逐包开关相关性、概率／范围、父／seed／E30配方，不更换组件／幅度／概率／父／seed／预算救跑。这是训练组织×As，非新IQ Ag或用户IQ四格。当前没有本路线运行中新任务，也没有通过源资格的新IQ算子或待发布候选；保留现有256点约束，完整联合目标ACTIVE，以下旧当前／下一项按历史保留。
+
 ## 2026-10-18：普通载波增强开关组织 × practical 四行 E30 已运行
 
 [固定矩阵报告](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/report.md) RUNNING／VERIFIED；执行提交 `5278625865d49164872337853b0eda963b908e0e`。四worker PID/CWD/argv/GPU/loggrowth 已独立核实，GPU0/2/3/4；共同原NoAs20 student及ownEMA、真实CP／2合成包无query smoke、一次归档传输和remote compile均通过。仅发布前置POSIX路径输出错误已在0启动时修复，原记录保留。

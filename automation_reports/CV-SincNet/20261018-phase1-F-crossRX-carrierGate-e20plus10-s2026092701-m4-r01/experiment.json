@@ -104,8 +104,9 @@
     "local_artifact_root": "WORKTREE/local_artifacts/F_carrier_batch_E30_20261018",
     "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_carrier_batch30/runner.py",
     "stop_rule": "One owned systemic technical/role/nonfinite failure stops newdispatch;healthy rows finish;preserve,no blindretry or performance earlystop. Source scientific failure closes fixed2carrier/correlation/parent/seed/E30 recipe,no range/probability/condition rescue",
-    "actual_status": "RUNNING_VERIFIED",
-    "launch_observation": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/launch_observation.json"
+    "actual_status": "ANALYZED_VERIFIED",
+    "launch_observation": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/launch_observation.json",
+    "completion_verification": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/completion_verification.json"
   },
   "expected_artifacts": [
     "source/initialization and matching parent/defaulthead checkpoint",
@@ -506,22 +507,18 @@
         },
         "REJECTED_EXTRA_GATE": "No extra design approval,source gate,seal or repeatedreview"
       },
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "runtime_observation": {
-        "row": "NOAS_BATCH-s2026092701",
         "pid": 985449,
         "gpu": 0,
-        "alive": true,
-        "cwd_match": true,
-        "argv_match": true,
-        "log_bytes": 17189,
-        "log_growth": 10372,
-        "cumulative_epoch": 22,
-        "carrier_calls": 444,
-        "phase_nontrivial": 0,
-        "cfo_nontrivial": 0,
-        "has_traceback": false
-      }
+        "natural_exit": true,
+        "training_complete": true,
+        "sevenview_prediction_complete": true,
+        "independent_truthlast_complete": true,
+        "formal_numeric_unread": true
+      },
+      "analysis_status": "COMPLETE",
+      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json"
     },
     {
       "row_id": "NOAS_PACKET-s2026092701",
@@ -889,22 +886,18 @@
         },
         "REJECTED_EXTRA_GATE": "No extra design approval,source gate,seal or repeatedreview"
       },
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "runtime_observation": {
-        "row": "NOAS_PACKET-s2026092701",
         "pid": 985524,
         "gpu": 2,
-        "alive": true,
-        "cwd_match": true,
-        "argv_match": true,
-        "log_bytes": 17202,
-        "log_growth": 10377,
-        "cumulative_epoch": 22,
-        "carrier_calls": 444,
-        "phase_nontrivial": 444,
-        "cfo_nontrivial": 444,
-        "has_traceback": false
-      }
+        "natural_exit": true,
+        "training_complete": true,
+        "sevenview_prediction_complete": true,
+        "independent_truthlast_complete": true,
+        "formal_numeric_unread": true
+      },
+      "analysis_status": "COMPLETE",
+      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json"
     },
     {
       "row_id": "AS_BATCH-s2026092701",
@@ -1272,7 +1265,7 @@
         },
         "REJECTED_EXTRA_GATE": "No extra design approval,source gate,seal or repeatedreview"
       },
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "runtime_observation": {
         "row": "AS_BATCH-s2026092701",
         "pid": 985603,
@@ -1287,7 +1280,9 @@
         "phase_nontrivial": 0,
         "cfo_nontrivial": 0,
         "has_traceback": false
-      }
+      },
+      "analysis_status": "COMPLETE",
+      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json"
     },
     {
       "row_id": "AS_PACKET-s2026092701",
@@ -1655,7 +1650,7 @@
         },
         "REJECTED_EXTRA_GATE": "No extra design approval,source gate,seal or repeatedreview"
       },
-      "status": "RUNNING",
+      "status": "ANALYZED",
       "runtime_observation": {
         "row": "AS_PACKET-s2026092701",
         "pid": 985680,
@@ -1670,7 +1665,9 @@
         "phase_nontrivial": 222,
         "cfo_nontrivial": 222,
         "has_traceback": false
-      }
+      },
+      "analysis_status": "COMPLETE",
+      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json"
     }
   ],
   "notes": [
@@ -1685,5 +1682,14 @@
     "No automatic multiseed fromtarget;sourcepass not identityAg/joint success. full cleanpositive/low>60/suburbanwithin2pp exploratory andcrossseed goalsstillunmet."
   ],
   "registered_at": "2026-10-17T23:06:49+00:00",
-  "analysis_commit": "35b68cd1bc69029bd03004159454ec77d6f5104c"
+  "analysis_commit": "35b68cd1bc69029bd03004159454ec77d6f5104c",
+  "analysis": {
+    "status": "ANALYZED_VERIFIED",
+    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/final_analysis.md",
+    "result": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json",
+    "source_decision": "CLOSED_FIXED_CARRIER_CORRELATION_SOURCE_FAILED",
+    "formal_metrics_complete": true,
+    "new_IQ_Ag": false,
+    "joint_goal_complete": false
+  }
 }

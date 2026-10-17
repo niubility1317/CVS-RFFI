@@ -60,3 +60,5 @@ CWD `PROJECT/releases/cvs_F_carrierGate_E30_20261018_r01`；命令 `CVS-RFFI/bin
 四行运行独立核实 VERIFIED：实际执行提交 `5278625865d49164872337853b0eda963b908e0e`；共同父CP smoke通过，四个所属PID/CWD/argv/GPU和相隔145秒的日志增长均核实，GPU0/2/3/4。无As累计E22／As累计E21，仅执行差异成立；完整源／正式识别结果待训练结束，未读取本轮正式指标。
 
 统计读取器复用时错误要求旧实验的370池采样记录，本轮实际使用原生加载器。已改为完整2220步／4440 L-U序列、全物理曝光、680字段原生CSV／JSONL与observer一致性校验；两NoAs已VERIFIED。没有空池等价性证明，没有训练修改／重跑，保留该分析失败和修复记录。
+
+完整正式结果已完成 ANALYZED／VERIFIED：[完整分析](final_analysis.md)、[逐行成本与配对](result.json)、[源判定](source_qualification.json)、[全部RX/TX/day](stratified_results.md)。四行均累计E30，4704000正式决策后独立truth-last，源判定先冻结。固定候选sourceFAIL且未获clean/low联合收益，关闭本配方、不调参或扩种子救回；整体目标ACTIVE。
