@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "FIXED_SATMIX25_CLOSED_AFTER_FAILED_SOURCE_CONFIRMATION_AG_PENDING",
+  "status": "RESEARCH_ACTIVE_NO_QUALIFIED_AG_NO_PENDING_EXPERIMENT",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User on 2026-10-16 changes pre-augmentation baseline to F plus cross-RX same-TX contrastive learning. Earlier E20 budget remains in force.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -131,217 +131,23 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": {
-    "name": "Add full practical supervision without reducing any existing baseline raw/ordinary loss,with extra-forward and repeated-raw-loss controls",
-    "type": "As training organization,not new Ag or reopening fixed replacement ratio",
-    "status": "ANALYZED_SOURCE_PASS_NEEDS_CONFIRMATION",
-    "basis": "Actual oldAs hook reduces rawtotal.75->.50 despite mainraw.50 fixed;this is a comparison confound,not a proved cause",
-    "baseline": "F+CROSS_RX originalPA/shift/U/defaultcos/NoExplicitCFO,all common base raw.75+ordinary.25 retained",
-    "minimum": {
-      "source_fold": "heldRX1,fitRX3/4/6/8,L5040/U45360/V21600,heldL1260",
-      "model_seed": 2026092701,
-      "rows": [
-        "D00:extra raw pair,zero extra supervision,cost control",
-        "D_raw:extra raw pair,+.25 old pair objective,scale/repeated-supervision control",
-        "D_As:extra full practical(raw) pair,+.25 old pair objective"
-      ],
-      "scratch_E20_each": true,
-      "L_forwards_each": 8,
-      "common_base_forward_pairs": 3,
-      "new_forward_pairs": 1,
-      "U_rule": "Original unchanged,truth hidden",
-      "loss_scales": {
-        "D00": 1,
-        "D_raw": 1.25,
-        "D_As": 1.25
-      }
-    },
-    "coefficient_basis": "Existing .25 satellite coefficient,not selected from target/current practical scores",
-    "proposed_source_criteria": {
-      "vs_D00": {
-        "clean_gain_pp_min": 0,
-        "clean_F1_gain_pp_min": 0,
-        "urban_mean_gain_pp_min": 3,
-        "lowurban_gain_pp_min": 5,
-        "each_practical_and_V_drop_pp_max": 0.5
-      },
-      "vs_D_raw": {
-        "urban_mean_gain_pp_min": 3,
-        "lowurban_gain_pp_min": 5,
-        "clean_F1_each_practical_V_drop_pp_max": 0.5
-      },
-      "healthy_all_E20": true
-    },
-    "implementation_requirements": "Explicit actual normalization,matched8forwards,BN/RNG effects,cost records,allLAs supervised;no new diagnostic head or deploy branch",
-    "abandon": "Any fixed criterion fails:close,no seed/RX/coefficient/scene-probability/extra-budget rescue",
+    "status": "NO_ACTIVE_CANDIDATE_INPUT_METADATA_INQUIRY_PENDING",
+    "question": "Traceable same-physical-L receiver preprocessing observations may support identity-preserving IQ views;existing raw/EQ and long-context entrances remain CLOSED without new physical mapping.",
+    "evidence_note": "analysis/cvs_ag_observation_evidence_gap_20261017.md",
+    "new_source_information_received": false,
+    "minimum_next_action": "If existing source packet mapping/processing records are provided,read metadata and determine whether they trace to the SAME original allowed L;no IQ view or experiment yet.",
+    "current_mapping_status": "UNKNOWN_MISSING",
+    "new_training_launched": false,
     "target_access": false,
     "Ag_efficacy_proved": false,
-    "joint_goal_complete": false,
-    "normalized_loss_weights": {
-      "D00": {
-        "raw": 0.75,
-        "ordinary": 0.25,
-        "As": 0
-      },
-      "D_raw": {
-        "raw": 0.8,
-        "ordinary": 0.2,
-        "As": 0
-      },
-      "D_As": {
-        "raw": 0.6,
-        "ordinary": 0.2,
-        "As": 0.2
-      }
-    },
-    "weight_scope": "Retain original absolute base-loss coefficients;relative fractions do change as explicitly disclosed;AdamW/clipping and clean protection require real controlled results",
-    "run_id": "20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01",
-    "criteria": {
-      "primary": "D_As",
-      "references": [
-        "D00",
-        "D_raw"
-      ],
-      "fixed_final": 20,
-      "held_RX": 1,
-      "held_L": 1260,
-      "views": [
-        "clean",
-        "practical_high",
-        "practical_mid",
-        "practical_low_suburban",
-        "practical_high_urban",
-        "practical_mid_urban",
-        "practical_low_urban"
-      ],
-      "vs_D00": {
-        "min_clean_gain_pp": 0.0,
-        "min_clean_macroF1_gain_pp": 0.0,
-        "min_low_urban_gain_pp": 5.0,
-        "min_urban_mean_gain_pp": 3.0,
-        "max_each_practical_drop_pp": 0.5,
-        "max_seenV_drop_pp": 0.5
-      },
-      "vs_D_raw": {
-        "max_clean_drop_pp": 0.5,
-        "max_clean_macroF1_drop_pp": 0.5,
-        "min_low_urban_gain_pp": 5.0,
-        "min_urban_mean_gain_pp": 3.0,
-        "max_each_practical_drop_pp": 0.5,
-        "max_seenV_drop_pp": 0.5
-      },
-      "final_common_base_L_objective_max": 0.5,
-      "on_fail": "Close fixed additive organization,no coefficient/seed/RX/scene-probability or extra-budget rescue",
-      "on_pass": "Only supports independent source confirmation,not Ag/joint efficacy or automatic target"
-    },
-    "implemented": true,
-    "model_epochs": 60,
-    "optimizer_updates": 13320,
-    "execution_commit": "7f398321cd2ffd2c2d2cb11f52f67bfd8c44987b",
-    "scientific_verdict": "PASS_SOURCE_SINGLE_SEED",
-    "source_analysis_ref": "automation_reports/CV-SincNet/20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01/source_analysis.json",
-    "qualification": {
-      "qualified": true,
-      "conditions": {
-        "D00_clean": true,
-        "D00_clean_macroF1": true,
-        "D00_low_urban": true,
-        "D00_urban_mean": true,
-        "D00_practical_protection": true,
-        "D00_seen_V": true,
-        "D_raw_clean": true,
-        "D_raw_clean_macroF1": true,
-        "D_raw_low_urban": true,
-        "D_raw_urban_mean": true,
-        "D_raw_practical_protection": true,
-        "D_raw_seen_V": true,
-        "healthy": true
-      },
-      "comparisons": {
-        "D00": {
-          "conditions": {
-            "clean": true,
-            "clean_macroF1": true,
-            "low_urban": true,
-            "urban_mean": true,
-            "practical_protection": true,
-            "seen_V": true
-          },
-          "all_view_gain_pp": {
-            "clean": 3.3333333333333326,
-            "practical_high": 16.98412698412699,
-            "practical_mid": 14.206349206349211,
-            "practical_low_suburban": 14.2063492063492,
-            "practical_high_urban": 13.41269841269841,
-            "practical_mid_urban": 9.999999999999998,
-            "practical_low_urban": 5.714285714285716
-          },
-          "clean_macroF1_gain_pp": 3.1031925752781575,
-          "seen_V_gain_pp": 0.0694444444444442,
-          "urban_mean_gain_pp": 9.708994708994707
-        },
-        "D_raw": {
-          "conditions": {
-            "clean": true,
-            "clean_macroF1": true,
-            "low_urban": true,
-            "urban_mean": true,
-            "practical_protection": true,
-            "seen_V": true
-          },
-          "all_view_gain_pp": {
-            "clean": 3.0952380952380953,
-            "practical_high": 19.444444444444446,
-            "practical_mid": 15.396825396825403,
-            "practical_low_suburban": 15.317460317460313,
-            "practical_high_urban": 15.158730158730155,
-            "practical_mid_urban": 10.317460317460315,
-            "practical_low_urban": 6.190476190476191
-          },
-          "clean_macroF1_gain_pp": 2.9174704341306645,
-          "seen_V_gain_pp": 0.07407407407407085,
-          "urban_mean_gain_pp": 10.555555555555554
-        }
-      }
-    },
-    "actual_NN_forward_packets": 17469956
+    "As_stable_clean_preservation_proved": false,
+    "joint_goal_complete": false
   },
   "next_training_hypothesis": {
-    "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
-    "status": "ANALYZED_SOURCE_FAIL_FIXED_PHASE_CLOSED",
-    "minimum": "Matched B00/B10 scratchE20,sourceRX1 fold,same raw share/six L forwards/U/default head;fixed phase-only new slot",
-    "abandon": "No preregistered positive heldRX clean gain or harmful source health;no target feedback/angle/seed/RX rescue",
-    "Ag_efficacy_proved": false,
-    "run_id": "20261016-phase1-F-crossRX-commonphase-sourceRX1-e20-s2026092701-m2-r01",
-    "fixed_phase_range_rad": [
-      -0.37,
-      0.37
-    ],
-    "raw_ordinary_slot_weights": [
-      0.5,
-      0.25,
-      0.25
-    ],
-    "source_thresholds": {
-      "clean_gain_pp": 1,
-      "macroF1_gain_pp": 0,
-      "seenV_min_gain_pp": -0.5
-    },
-    "execution_commit": "39d95f79d91ccf2a570f1c1349adacfb409c0833",
-    "source_result": {
-      "qualified": false,
-      "conditions": {
-        "healthy": true,
-        "clean": false,
-        "clean_macroF1": false,
-        "seen_V": true
-      },
-      "clean_gain_pp": -3.9682539682539653,
-      "clean_macroF1_gain_pp": -4.4209738408452885,
-      "seen_V_gain_pp": -0.07407407407407085,
-      "target_access": false,
-      "Ag_efficacy_proved": false,
-      "joint_goal_complete": false
-    }
+    "status": "NONE_REGISTERED_OR_PROMOTED",
+    "reason": "All actual fixed candidate verdicts remain;no phase/additive/source-order rescue or new budget.",
+    "E20_budget_unchanged": true,
+    "target_access": false
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -1003,10 +809,10 @@
     "criteria": {
       "min_total_risk_gain": 0.05,
       "min_positive_folds": 14,
-      "min_RX_gain": 0.0,
+      "min_RX_gain": 0,
       "min_gain_above_best_wrong_RX": 0.02,
       "min_all_TX_split_center_cosine": 0.8,
-      "min_RX_center_to_odd_even_difference_power_ratio": 2.0
+      "min_RX_center_to_odd_even_difference_power_ratio": 2
     },
     "L_used": 5040,
     "U_used": false,
@@ -1167,7 +973,7 @@
             "practical_mid": -1.1904761904761918,
             "practical_low_suburban": -0.15873015873015817,
             "practical_high_urban": -0.47619047619048005,
-            "practical_mid_urban": 0.0,
+            "practical_mid_urban": 0,
             "practical_low_urban": 0.15873015873015817
           },
           "clean_macroF1_gain_pp": -0.5466398816697526,
@@ -1234,16 +1040,16 @@
         "practical_low_urban"
       ],
       "vs_raw": {
-        "min_clean_gain_pp": 0.0,
-        "min_clean_macroF1_gain_pp": 0.0,
-        "min_low_urban_gain_pp": 5.0,
-        "min_urban_mean_gain_pp": 3.0,
+        "min_clean_gain_pp": 0,
+        "min_clean_macroF1_gain_pp": 0,
+        "min_low_urban_gain_pp": 5,
+        "min_urban_mean_gain_pp": 3,
         "max_each_suburban_drop_pp": 0.5,
         "max_seenV_drop_pp": 0.5
       },
       "vs_repeat": {
-        "min_clean_gain_pp": 1.0,
-        "min_clean_macroF1_gain_pp": 0.0,
+        "min_clean_gain_pp": 1,
+        "min_clean_macroF1_gain_pp": 0,
         "max_each_practical_drop_pp": 0.5,
         "max_seenV_drop_pp": 0.5
       },
@@ -1452,13 +1258,13 @@
     "criteria": {
       "min_overall_accuracy_gain_pp": -0.5,
       "min_overall_macroF1_gain_pp": -0.5,
-      "min_each_RX_accuracy_gain_pp": -1.0,
-      "min_each_TX_accuracy_gain_pp": -1.0,
-      "min_each_day_accuracy_gain_pp": -1.0,
+      "min_each_RX_accuracy_gain_pp": -1,
+      "min_each_TX_accuracy_gain_pp": -1,
+      "min_each_day_accuracy_gain_pp": -1,
       "min_raw_correct_retention": 0.99,
       "min_median_relative_IQ_change": 0.01,
       "max_relative_IQ_change": 0.35,
-      "max_power_increase": 1e-06
+      "max_power_increase": 0.000001
     },
     "on_fail": "Close fixed16/8zero8halfcos,no length/edge/windowshape/threshold/RX/seed rescue",
     "on_pass": "Sourcefit identityguard only,separate matchedE20 required;notautomatictraining",
@@ -1524,17 +1330,17 @@
     "teacher_forwards": 0,
     "criteria": {
       "min_RMS_vs_ordinary_accuracy_gain_pp": 0.2,
-      "min_RMS_vs_ordinary_macroF1_gain_pp": 0.0,
+      "min_RMS_vs_ordinary_macroF1_gain_pp": 0,
       "min_positive_draws": 3,
       "min_each_draw_RMS_vs_ordinary_gain_pp": -0.2,
       "min_RMS_vs_raw_accuracy_gain_pp": -0.5,
       "min_RMS_vs_raw_macroF1_gain_pp": -0.5,
-      "min_each_group_RMS_vs_raw_gain_pp": -1.0,
+      "min_each_group_RMS_vs_raw_gain_pp": -1,
       "min_each_group_RMS_vs_ordinary_gain_pp": -0.5,
       "min_raw_correct_retention": 0.99,
       "min_fraction_gain_outside_1pct": 0.05,
-      "max_relative_power_error": 1e-05,
-      "max_positive_scalar_shape_error": 1e-06
+      "max_relative_power_error": 0.00001,
+      "max_positive_scalar_shape_error": 0.000001
     },
     "on_fail": "Close fixed fullordinary-postRMS/E13/fourdraw;no position/partialcoefficient/clip/disableoldops/draw/RX/seed rescue",
     "on_pass": "Source scale/identity only;separate threecontrols matchedE20 required,not automatictraining",
@@ -1616,17 +1422,17 @@
     "teacher_forwards": 0,
     "criteria": {
       "min_RMS_vs_ordinary_accuracy_gain_pp": 0.2,
-      "min_RMS_vs_ordinary_macroF1_gain_pp": 0.0,
+      "min_RMS_vs_ordinary_macroF1_gain_pp": 0,
       "min_positive_draws": 3,
       "min_each_draw_RMS_vs_ordinary_gain_pp": -0.2,
       "min_RMS_vs_raw_accuracy_gain_pp": -0.5,
       "min_RMS_vs_raw_macroF1_gain_pp": -0.5,
-      "min_each_group_RMS_vs_raw_gain_pp": -1.0,
+      "min_each_group_RMS_vs_raw_gain_pp": -1,
       "min_each_group_RMS_vs_ordinary_gain_pp": -0.5,
       "min_raw_correct_retention": 0.99,
       "min_fraction_gain_outside_1pct": 0.05,
-      "max_relative_power_error": 1e-05,
-      "max_positive_scalar_shape_error": 1e-06
+      "max_relative_power_error": 0.00001,
+      "max_positive_scalar_shape_error": 0.000001
     },
     "on_fail": "Close fixed fullordinary-postRMS/E13/fourdraw;no position/partialcoefficient/clip/disableoldops/draw/RX/seed rescue",
     "on_pass": "Source scale/identity only;separate threecontrols matchedE20 required,not automatictraining",
@@ -1693,12 +1499,12 @@
     "head_fit_updates": 0,
     "criteria": {
       "min_primary_vs_full_accuracy_gain_pp": 0.2,
-      "min_primary_vs_full_macroF1_gain_pp": 0.0,
+      "min_primary_vs_full_macroF1_gain_pp": 0,
       "min_positive_draws": 3,
       "min_each_draw_gain_pp": -0.2,
       "min_primary_vs_raw_accuracy_gain_pp": -0.5,
       "min_primary_vs_raw_macroF1_gain_pp": -0.5,
-      "min_each_group_vs_raw_gain_pp": -1.0,
+      "min_each_group_vs_raw_gain_pp": -1,
       "min_each_group_vs_full_gain_pp": -0.5,
       "min_raw_correct_retention": 0.99
     },
@@ -1777,7 +1583,7 @@
       "min_accuracy_gain_pp": -0.5,
       "min_macroF1_gain_pp": -0.5,
       "min_raw_correct_retention": 0.99,
-      "min_each_group_accuracy_gain_pp": -1.0,
+      "min_each_group_accuracy_gain_pp": -1,
       "require_each_draw_same_guard": true,
       "min_IQ_change_median": 0.01,
       "max_IQ_change": 0.15
@@ -1854,8 +1660,8 @@
         "practical_mid_urban",
         "practical_low_urban"
       ],
-      "min_clean_gain_pp": 1.0,
-      "min_clean_macroF1_gain_pp": 0.0,
+      "min_clean_gain_pp": 1,
+      "min_clean_macroF1_gain_pp": 0,
       "max_each_practical_drop_pp": 0.5,
       "max_seenV_drop_pp": 0.5,
       "final_base_L_objective_max": 0.5,
@@ -1947,7 +1753,7 @@
     "arithmetic": "Complex128/Float64",
     "criteria": {
       "min_pooled_risk_gain": 0.1,
-      "min_each_RX_risk_gain": 0.0,
+      "min_each_RX_risk_gain": 0,
       "min_positive_TXday_groups": 15
     },
     "checkpoint_loads": 0,
@@ -1997,7 +1803,7 @@
       "min_accuracy_gain_pp": -0.5,
       "min_macroF1_gain_pp": -0.5,
       "min_raw_correct_retention": 0.99,
-      "min_each_group_accuracy_gain_pp": -1.0,
+      "min_each_group_accuracy_gain_pp": -1,
       "require_each_draw_same_guard": true,
       "min_IQ_change_median": 0.01,
       "max_IQ_change": 0.1
@@ -2154,5 +1960,233 @@
     },
     "source_analysis_ref": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-boundedPhase-sourceRX1-e20-s2026092701-m3-r01/source_analysis.json",
     "actual_NN_forward_packets": 17469956
+  },
+  "historical_additive_As_source_hypothesis": {
+    "name": "Add full practical supervision without reducing any existing baseline raw/ordinary loss,with extra-forward and repeated-raw-loss controls",
+    "type": "As training organization,not new Ag or reopening fixed replacement ratio",
+    "status": "ANALYZED_SOURCE_PASS_NEEDS_CONFIRMATION",
+    "basis": "Actual oldAs hook reduces rawtotal.75->.50 despite mainraw.50 fixed;this is a comparison confound,not a proved cause",
+    "baseline": "F+CROSS_RX originalPA/shift/U/defaultcos/NoExplicitCFO,all common base raw.75+ordinary.25 retained",
+    "minimum": {
+      "source_fold": "heldRX1,fitRX3/4/6/8,L5040/U45360/V21600,heldL1260",
+      "model_seed": 2026092701,
+      "rows": [
+        "D00:extra raw pair,zero extra supervision,cost control",
+        "D_raw:extra raw pair,+.25 old pair objective,scale/repeated-supervision control",
+        "D_As:extra full practical(raw) pair,+.25 old pair objective"
+      ],
+      "scratch_E20_each": true,
+      "L_forwards_each": 8,
+      "common_base_forward_pairs": 3,
+      "new_forward_pairs": 1,
+      "U_rule": "Original unchanged,truth hidden",
+      "loss_scales": {
+        "D00": 1,
+        "D_raw": 1.25,
+        "D_As": 1.25
+      }
+    },
+    "coefficient_basis": "Existing .25 satellite coefficient,not selected from target/current practical scores",
+    "proposed_source_criteria": {
+      "vs_D00": {
+        "clean_gain_pp_min": 0,
+        "clean_F1_gain_pp_min": 0,
+        "urban_mean_gain_pp_min": 3,
+        "lowurban_gain_pp_min": 5,
+        "each_practical_and_V_drop_pp_max": 0.5
+      },
+      "vs_D_raw": {
+        "urban_mean_gain_pp_min": 3,
+        "lowurban_gain_pp_min": 5,
+        "clean_F1_each_practical_V_drop_pp_max": 0.5
+      },
+      "healthy_all_E20": true
+    },
+    "implementation_requirements": "Explicit actual normalization,matched8forwards,BN/RNG effects,cost records,allLAs supervised;no new diagnostic head or deploy branch",
+    "abandon": "Any fixed criterion fails:close,no seed/RX/coefficient/scene-probability/extra-budget rescue",
+    "target_access": false,
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false,
+    "normalized_loss_weights": {
+      "D00": {
+        "raw": 0.75,
+        "ordinary": 0.25,
+        "As": 0
+      },
+      "D_raw": {
+        "raw": 0.8,
+        "ordinary": 0.2,
+        "As": 0
+      },
+      "D_As": {
+        "raw": 0.6,
+        "ordinary": 0.2,
+        "As": 0.2
+      }
+    },
+    "weight_scope": "Retain original absolute base-loss coefficients;relative fractions do change as explicitly disclosed;AdamW/clipping and clean protection require real controlled results",
+    "run_id": "20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01",
+    "criteria": {
+      "primary": "D_As",
+      "references": [
+        "D00",
+        "D_raw"
+      ],
+      "fixed_final": 20,
+      "held_RX": 1,
+      "held_L": 1260,
+      "views": [
+        "clean",
+        "practical_high",
+        "practical_mid",
+        "practical_low_suburban",
+        "practical_high_urban",
+        "practical_mid_urban",
+        "practical_low_urban"
+      ],
+      "vs_D00": {
+        "min_clean_gain_pp": 0,
+        "min_clean_macroF1_gain_pp": 0,
+        "min_low_urban_gain_pp": 5,
+        "min_urban_mean_gain_pp": 3,
+        "max_each_practical_drop_pp": 0.5,
+        "max_seenV_drop_pp": 0.5
+      },
+      "vs_D_raw": {
+        "max_clean_drop_pp": 0.5,
+        "max_clean_macroF1_drop_pp": 0.5,
+        "min_low_urban_gain_pp": 5,
+        "min_urban_mean_gain_pp": 3,
+        "max_each_practical_drop_pp": 0.5,
+        "max_seenV_drop_pp": 0.5
+      },
+      "final_common_base_L_objective_max": 0.5,
+      "on_fail": "Close fixed additive organization,no coefficient/seed/RX/scene-probability or extra-budget rescue",
+      "on_pass": "Only supports independent source confirmation,not Ag/joint efficacy or automatic target"
+    },
+    "implemented": true,
+    "model_epochs": 60,
+    "optimizer_updates": 13320,
+    "execution_commit": "7f398321cd2ffd2c2d2cb11f52f67bfd8c44987b",
+    "scientific_verdict": "PASS_SOURCE_SINGLE_SEED",
+    "source_analysis_ref": "automation_reports/CV-SincNet/20261016-phase1-F-crossRX-additiveAs-sourceRX1-e20-s2026092701-m3-r01/source_analysis.json",
+    "qualification": {
+      "qualified": true,
+      "conditions": {
+        "D00_clean": true,
+        "D00_clean_macroF1": true,
+        "D00_low_urban": true,
+        "D00_urban_mean": true,
+        "D00_practical_protection": true,
+        "D00_seen_V": true,
+        "D_raw_clean": true,
+        "D_raw_clean_macroF1": true,
+        "D_raw_low_urban": true,
+        "D_raw_urban_mean": true,
+        "D_raw_practical_protection": true,
+        "D_raw_seen_V": true,
+        "healthy": true
+      },
+      "comparisons": {
+        "D00": {
+          "conditions": {
+            "clean": true,
+            "clean_macroF1": true,
+            "low_urban": true,
+            "urban_mean": true,
+            "practical_protection": true,
+            "seen_V": true
+          },
+          "all_view_gain_pp": {
+            "clean": 3.3333333333333326,
+            "practical_high": 16.98412698412699,
+            "practical_mid": 14.206349206349211,
+            "practical_low_suburban": 14.2063492063492,
+            "practical_high_urban": 13.41269841269841,
+            "practical_mid_urban": 9.999999999999998,
+            "practical_low_urban": 5.714285714285716
+          },
+          "clean_macroF1_gain_pp": 3.1031925752781575,
+          "seen_V_gain_pp": 0.0694444444444442,
+          "urban_mean_gain_pp": 9.708994708994707
+        },
+        "D_raw": {
+          "conditions": {
+            "clean": true,
+            "clean_macroF1": true,
+            "low_urban": true,
+            "urban_mean": true,
+            "practical_protection": true,
+            "seen_V": true
+          },
+          "all_view_gain_pp": {
+            "clean": 3.0952380952380953,
+            "practical_high": 19.444444444444446,
+            "practical_mid": 15.396825396825403,
+            "practical_low_suburban": 15.317460317460313,
+            "practical_high_urban": 15.158730158730155,
+            "practical_mid_urban": 10.317460317460315,
+            "practical_low_urban": 6.190476190476191
+          },
+          "clean_macroF1_gain_pp": 2.9174704341306645,
+          "seen_V_gain_pp": 0.07407407407407085,
+          "urban_mean_gain_pp": 10.555555555555554
+        }
+      }
+    },
+    "actual_NN_forward_packets": 17469956
+  },
+  "historical_commonphase_training_hypothesis": {
+    "name": "Independent bounded common-phase L view improves heldRX clean on F+CROSS_RX",
+    "status": "ANALYZED_SOURCE_FAIL_FIXED_PHASE_CLOSED",
+    "minimum": "Matched B00/B10 scratchE20,sourceRX1 fold,same raw share/six L forwards/U/default head;fixed phase-only new slot",
+    "abandon": "No preregistered positive heldRX clean gain or harmful source health;no target feedback/angle/seed/RX rescue",
+    "Ag_efficacy_proved": false,
+    "run_id": "20261016-phase1-F-crossRX-commonphase-sourceRX1-e20-s2026092701-m2-r01",
+    "fixed_phase_range_rad": [
+      -0.37,
+      0.37
+    ],
+    "raw_ordinary_slot_weights": [
+      0.5,
+      0.25,
+      0.25
+    ],
+    "source_thresholds": {
+      "clean_gain_pp": 1,
+      "macroF1_gain_pp": 0,
+      "seenV_min_gain_pp": -0.5
+    },
+    "execution_commit": "39d95f79d91ccf2a570f1c1349adacfb409c0833",
+    "source_result": {
+      "qualified": false,
+      "conditions": {
+        "healthy": true,
+        "clean": false,
+        "clean_macroF1": false,
+        "seen_V": true
+      },
+      "clean_gain_pp": -3.9682539682539653,
+      "clean_macroF1_gain_pp": -4.4209738408452885,
+      "seen_V_gain_pp": -0.07407407407407085,
+      "target_access": false,
+      "Ag_efficacy_proved": false,
+      "joint_goal_complete": false
+    }
+  },
+  "latest_completed_experiment": {
+    "run_id": "20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01",
+    "execution_commit": "9059b58502f207331bf9643d9d1399d308a2c2da",
+    "closure_commit": "3f0e6fe2d3d9c0a42bf95ff31309a24a953dca08",
+    "status": "ANALYZED_VERIFIED_SOURCE_ONLY",
+    "verdict": "FAIL_FIXED_SIX_STEP_L_ORDER_CLOSED",
+    "clean_delta_pp": -1.82539682539683,
+    "clean_macro_F1_delta_pp": -2.0126624701947593,
+    "low_urban_delta_pp": -0.5555555555555536,
+    "new_model_epochs": 40,
+    "new_optimizer_updates": 8880,
+    "new_actual_NN": 11646638,
+    "formal_target_access": false,
+    "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01/report.md"
   }
 }
