@@ -49,3 +49,5 @@ RUNNING／VERIFIED。执行代码提交 91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a
 独立分析程序analysis/cvs_Uurban_E30_results_20261018.py已实现并通过4项聚焦检查及编译。source模式只读已冻结源预测和完整日志，重算6660更新、原L目标分解、oldU掩码/hidden标志、额外963900U前向、Sinc物理步进、原始增强和采样序列及2draw×3scene源分层；final模式必须先有独立源判定，再检查全部七视图固定及独立评分后才连接truth。所有物理统计区分白功率代理、signal/added-noise与未知总SNR，U真值不解封。
 
 该分析不修改正在运行的训练release，不增加NN或更新。门控逐包激活及逐分支梯度未在当前run保存，不从标量loss或准确率反推；L joint TX×state逐包侧表亦未保存，报告将如实区分已测的RX/day/scene/state聚合覆盖和缺项。源/正式图表尚未生成，不提供虚构图路径。
+
+独立源分析等待进程已实际启动并核实：PID791020、start_ticks150569691、CUDA_VISIBLE_DEVICES空、CWD为单独analysis release，argv仅包含source模式及原三个worker PID，不传truth路径。分析代码身份8e9e15c093472bb722915117d3682745260d1394，独立GitHub读回一致、单analysis归档比较与远端compile PASS；训练release未修改。当前等待全3源冻结/源判定文件，stdout/stderr均0，尚未运行完整分析或生成图。最新已观测B0/URAW E19、UAS E16；UAS累计170100个完整额外U观测，3个原worker均活跃且无traceback。

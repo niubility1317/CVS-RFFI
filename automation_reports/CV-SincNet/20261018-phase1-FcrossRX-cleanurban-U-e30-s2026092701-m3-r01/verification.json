@@ -79,5 +79,21 @@
     "compile": "PASS",
     "NN": 0,
     "executed_full_analysis": false
+  },
+  "analysis_wait": {
+    "status": "VERIFIED_LIVE_SOURCE_ONLY_WAIT",
+    "pid": 791020,
+    "start_ticks": 150569691,
+    "code_commit": "8e9e15c093472bb722915117d3682745260d1394",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_Uurban_analysis_20261018_r01",
+    "argv_mode": "source --wait-pids 776653 776734 776817",
+    "CUDA_VISIBLE_DEVICES": "",
+    "NN": 0,
+    "training_updates": 0,
+    "target_access": false,
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/source_analysis_r01",
+    "compute_wall_excludes_wait": true,
+    "source_complete": false,
+    "final_analysis_launched": false
   }
 }
