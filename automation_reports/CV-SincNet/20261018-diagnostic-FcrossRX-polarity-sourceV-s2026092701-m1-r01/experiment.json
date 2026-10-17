@@ -1,0 +1,179 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-FcrossRX-polarity-sourceV-s2026092701-m1-r01",
+  "group_id": "phase1-FcrossRX-IQ-identity-admissibility",
+  "display_name": "全源F默认头：共轭IQ必要身份保持源检验",
+  "description": "一个固定共轭算子，原V1800/raw-conjugate成对默认头预测；2synthetic+3600sourceNN，0训练。只检验必要身份保持，不因可逆保能量假定label-preserving，不用旧失败路线重开。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P42",
+    "quadrature polarity source guard"
+  ],
+  "tags": [
+    "FcrossRX",
+    "source-only",
+    "zero-update",
+    "default-head",
+    "V1800",
+    "conjugation",
+    "Ag-not-proved"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active user goal: investigate identity-preserving IQ Ag on fixed F/defaulthead/fullsource;source-only mechanism diagnostics allowed. Latest budget E30 remains for future training;this diagnostic0epochs/updates. No target or automatictraining.",
+  "code": {
+    "commit": "f7c9bba3da8863d7fbf278f9e0e3b7ac8fd3ec6b",
+    "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing CVS-RFFI Python/Torch;nativefloat32;CUDA device chosen by one preflight",
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_polarity_guard_sourceV_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original source contract and existing sourceV1800 panel",
+    "representation": "Originalequalized1/datasetperpacketRMS/2x256float32;conjugation changes Q sign only;no normalization/filter/noise/boundary change",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/diagnostic/data_roles.json",
+    "label_map_ref": "Originalsource6TXmapping;no newlabels",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "Original6sourceTX0..5",
+    "roles": {
+      "L_s": "Parent6300;0L IQ consumed by newdiagnostic",
+      "U_s": "Parent56700hidden;0U IQ/truth consumed",
+      "V": "Existing1800 balanced20/TX/RX/day from original27000;0updates"
+    },
+    "train_ratio": "Original7/63/30 parent;new0training",
+    "capsule_id": null,
+    "split_id": null,
+    "validation_ref": "OriginalPhase1 source handles reused;Phase2 p2capsule/split notapplicable",
+    "support_query_ref": "Notapplicable;source-only Phase1 frozen diagnostic",
+    "leo_config_ref": "NoAs or channel calls;formalclean+6 fixedIQ untouched"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Necessaryidentityguard only;no Ag/generalization/training gain/crossseed claim;no automatictraining"
+  },
+  "checkpoint": {
+    "initialization": "frozen diagnostic only;no training initialization",
+    "sources": [
+      "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/ORD128-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "PinnedP41 own_model checks original source roles,parentinitialization,cumulative30/fixedfinal/ownEMA;provenance verdict recorded before sourceforward",
+    "provenance_verdict": "Metadata/source inheritance verification required at actualload;P41 ORD was preregistered before formal scores,not chosen by them",
+    "selection_rule": "Exactly fixed P41 ORD control;not best row/epoch/head"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/polarity-source-guard42",
+    "gpu_policy": "All owners counted,max3 experiment processes/GPU,atleast12GBfree forone slot;no healthy tasks modified;one preflight 2026-10-18 selected physicalGPU0,all8GPUs free,no computeprocesses",
+    "remote_run_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-polarity-sourceV-s2026092701-m1-r01",
+    "remote_log_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-polarity-sourceV-s2026092701-m1-r01-launch",
+    "local_artifact_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_polarity_guard_sourceV_20261018",
+    "launch_command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_polarity_guard_sourceV_20261018_r01/experiments/cvs_polarity_guard42/runner.py --device cuda:0",
+    "stop_rule": "Role/provenance/inputshape/nonfinite/statechange/NNbudget/outputconflict/technicalfailure stops owned newrun,preserve artifacts,no auto retry. Scientificguard FAIL closes fixedreflection,0training;PASS only necessaryadmissibility,noautomatictraining/seedextension."
+  },
+  "expected_artifacts": [
+    "resolved_config.json",
+    "real_checkpoint_smoke.json",
+    "checkpoint_provenance.json",
+    "data_roles.json",
+    "predictions.npz private",
+    "source_metrics.json",
+    "source_decision.json",
+    "input_invariants.json",
+    "complete.json",
+    "failure.json only if technicalfailure",
+    "launch PID/CWD/argv/GPU/log evidence",
+    "independent source confusion recount and paired summary",
+    "source-only report"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1_all6",
+      "fixed_raw_correct_retention",
+      "pairedrepairs/newerrors",
+      "defaultcos30true margin",
+      "exactinverse/samplepower/IQL2"
+    ],
+    "dimensions": [
+      "view",
+      "RX",
+      "day",
+      "TX",
+      "singlefixedmodelseed"
+    ],
+    "prediction_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-polarity-sourceV-s2026092701-m1-r01/predictions.npz",
+    "scorer_ref": "SamelegalVlabels;no targettruth connector;independent recomputation after fixedpredictions"
+  },
+  "rows": [
+    {
+      "row_id": "POLARITY-s2026092701",
+      "method": "Frozen existingF/defaultcos30;raw vs exact wholepacket conjugate;0fit/no newhead",
+      "purpose": "source necessary identity guard",
+      "config_ref": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_polarity_guard_sourceV_20261018_r01/experiments/cvs_polarity_guard42/design.py",
+      "resolved_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-polarity-sourceV-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Modelseedidentifies existing parent;no newmodel. Split/data unchanged. Pure deterministicreflection,no augmentation/evaluationRNG;supportN/A. Synthetic smoke only private202610185201,0realIQ.",
+      "k": null,
+      "scenario": "sourcecleanandconjugate only;0satellite/target",
+      "optimizer": "none",
+      "lr": 0,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "2synthetic+1800raw+1800conj=3602NN;0updates/teacher/As;existingparent30E/6660updatesnotnewtraining",
+      "output_root": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-polarity-sourceV-s2026092701-m1-r01",
+      "log_path": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-polarity-sourceV-s2026092701-m1-r01-launch/stdout.log",
+      "command": "CUDA_VISIBLE_DEVICES=0 OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2 /home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_polarity_guard_sourceV_20261018_r01/experiments/cvs_polarity_guard42/runner.py --device cuda:0",
+      "expected_artifacts": [
+        "resolved_config.json",
+        "real_checkpoint_smoke.json",
+        "checkpoint_provenance.json",
+        "data_roles.json",
+        "predictions.npz private",
+        "source_metrics.json",
+        "source_decision.json",
+        "input_invariants.json",
+        "complete.json",
+        "failure.json only if technicalfailure",
+        "launch PID/CWD/argv/GPU/log evidence",
+        "independent source confusion recount and paired summary",
+        "source-only report"
+      ]
+    }
+  ],
+  "notes": [
+    "Currentrunusesfull5sourceRX/noholdout/noLdev.",
+    "Parentmayhaveexposedformalreporting;prefixedORDcontrolchoicewasfixedbeforethose metrics,not target selection.",
+    "No energy/inverse test constitutes identityproof. No finitefitguard constitutes trainedAg/generalization proof.",
+    "Guardglobal>=raw-.5pp;eachRX>=raw-1.5pp;fixedrawcorrectretention>=99%;no ratio/angle/axis/seed/budget rescue of this fixedoperator.",
+    "SpecializedarXiv/CrossRefMCPsearchunavailable;verifiedoriginalarXivPDF/HTMLpages directly."
+  ],
+  "registered_at": "2026-10-17T20:25:16+00:00"
+}
