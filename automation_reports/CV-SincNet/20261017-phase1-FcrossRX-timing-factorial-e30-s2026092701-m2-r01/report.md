@@ -13,3 +13,5 @@
 完整逐行七环境结果、训练曲线、分层和收益归因待运行完成后补入；不宣称低urban>60%或clean突破。原正式As控制clean83.057143%、lowurban53.394643%，相对其无As匹配控制clean−2.180357pp、lowurban+21.639286pp，属于历史P32单seed。
 
 本地产物 E:/type10-7/local_artifacts/cvs_FcrossRX_timing_factorial_E30_20261017。远端根 /home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-timing-factorial-e30-s2026092701-m2-r01。七环境固定预测后独立truth-last自动接续。GitHub推送FAILED（连接重置），API独立核对远端仍618b9b5912f28de5650049c493a8e8a38484bba4；本地提交保留，训练发布使用实际本地代码提交。
+
+后续交付更新：GitHub推送已恢复，远端分支OID与本地分析提交2a1efbaeca711303083cb78c5a4645e089ed5dae独立核对VERIFIED，覆盖训练代码提交7e4af64bb。完成后分析已在独立CPU进程等待全行正式评价完成，分析代码提交2a1efbaeca；不读取IQ/checkpoint或训练参数，源判据独立复算后才读取正式标签。最近核实B10完成9/30、B11完成4/30，均健康、无跳过更新；尚无新正式成绩。
