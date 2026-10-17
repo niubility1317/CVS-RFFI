@@ -48,6 +48,17 @@ def routing(arm,src,mix):
   audit=read(src/'supcon_views_audit.json');assert audit['calls']==4440 and audit['applied']==active and audit['As_appearances']==selected_count and audit['ordinary_appearances']==ordinary_count and audit['phase_terms']==terms and audit['teacher_calls']==audit['reader_calls']==audit['extra_NN_forwards']==audit['new_loss_terms']==0 and audit['default_head_joint'] and not audit['target_access']
  return dict(status='VERIFIED',policy=policy,all4440_route_records_checked=True,selected_As_appearances=selected_count,selected_ordinary_appearances=ordinary_count,active_steps=active,existing_layer_phase_terms=terms,max_saved_detail_mean_error=error,As_full_batch_map_capture_layer_calls_derived=terms if arm in ('Q_sat','Q_mix') else 0,mixed_map_where_calls_derived=terms if policy=='mixed' else 0,new_NN_forwards=0,new_loss_terms=0,scope='Exact all indices/counters/detailmean;featuremaps not saved,not repeated feature-SupCon inference')
 
+def ssl_boundary(steps):
+ """Recount original E13+E7 organization without exposing or decoding U truth."""
+ warmup=active=packets=selected=0
+ for n in steps:
+  step=n['step'];epoch=(step-1)//222+1;z=n['metrics'];total=z['train/pseudo_total'];take=z['train/pseudo_selected']
+  assert n['epoch']==epoch and z['train/pseudo_truth_available']==0 and z['train/pseudo_correct']==0 and 0<=take<=total and z['train/a1_ema_successful_updates']==step
+  if epoch<=13:assert total==take==0 and z['train/loss_unlabeled']==0;warmup+=1
+  else:assert total in (48,256);active+=1;packets+=total;selected+=take
+ assert warmup==2886 and active==1554 and packets==396368
+ return dict(status='VERIFIED',labeled_only_updates=warmup,original_U_updates=active,U_appearances=packets,selected_appearances=selected,U_truth_available=False,EMA_successful_updates=steps[-1]['step'],quality_claim=False)
+
 def decision_transitions(reference,candidate,view):
  """Descriptive paired identity errors;fixed source sets,never candidate selection."""
  b,s=reference[view],candidate[view];bc,sc=reference['clean'],candidate['clean']
@@ -128,6 +139,7 @@ def analyze(arms=ARMS):
   for k in ('base_total_L','extra_pair_loss'):assert math.isclose(aggregate[20][k],r['final_base_L_objective' if k=='base_total_L' else 'final_extra_pair_objective'],abs_tol=1e-8)
   assert r['final_native_logged_L_CE']==r['final_L_CE'] and math.isclose(compact[-1]['train_loss_tx_labeled'],r['final_L_CE'],abs_tol=1e-10)
   assert math.isclose(previous_wall,r['channel_generation_wall_seconds'],abs_tol=1e-9)
+  original_ssl=ssl_boundary(steps)
   route=routing(arm,src,mix)
   sched=read(src/'schedule_recount.json');assert sched['status']=='VERIFIED' and sched['mode']==mode and sched['training_calls']==(4440 if arm!='Q0' else 0) and sched['training_packets']==expected_As
   for v in compact:curves.append(dict(row=row,arm=arm,**v,**aggregate[v['epoch']]))
@@ -145,7 +157,7 @@ def analyze(arms=ARMS):
   assert not any(s in stdout for s in ('Traceback (most recent call last)','CUDA out of memory','FloatingPointError','SIGKILL')) and 'SMOKE PASS own scratch checkpoint; query_read=false' in stdout
   counters={k:r[k] for k in ('student_train_forward_packets','student_eval_forward_packets','teacher_train_forward_packets','teacher_eval_forward_packets')}
   NN=sum(counters.values())-2+r['held_forward_packets']
-  execution[arm]=dict(full_steps=4440,full_epochs=20,full_stdout_lines=len(stdout.splitlines()),stdout_warnings=[v for v in stdout.splitlines() if 'warning' in v.lower()],native_nonfinite_placeholder_fields=sorted({k for v in native for k,x in v.items() if isinstance(x,float) and not math.isfinite(x)}),all_step_values_finite_or_explicit_null=True,max_loss_recount_error=formula_error,max_base_loss_recount_error=base_error,supcon_layer_forward_terms=terms,L_forward_packets=r['L_forward_packets'],extra_L_forward_packets=r['extra_L_forward_packets'],As_training_observations=As,As_source_eval_observations=7560,ordinary_generated_packets=568320,physical_observations=observed,unique_physical_training=unique,teacher_additive_calls=0,scene_schedule_mode=mode,schedule_recount=sched,view_routing=route,channel_generation_wall_seconds=previous_wall,teacher_inherited_counter_offset_removed=2,instrumented_counters=counters,actual_network_forward_packets=NN,held_forward_packets=r['held_forward_packets'],elapsed_training_seconds=r['elapsed_seconds'],final_native_logged_first_ordinary_CE=r['final_L_CE'],final_base_L_objective=r['final_base_L_objective'],final_extra_pair_objective=r['final_extra_pair_objective'],total_pair_weight=r['total_pair_weight'],seen_V=r['seen_V'],tracked_BN_module_names=audit['tracked_BN_module_names'],extra_BN_updates=bn,coverage=coverage,ordinary_augmentation=ordinary)
+  execution[arm]=dict(original_SSL=original_ssl,full_steps=4440,full_epochs=20,full_stdout_lines=len(stdout.splitlines()),stdout_warnings=[v for v in stdout.splitlines() if 'warning' in v.lower()],native_nonfinite_placeholder_fields=sorted({k for v in native for k,x in v.items() if isinstance(x,float) and not math.isfinite(x)}),all_step_values_finite_or_explicit_null=True,max_loss_recount_error=formula_error,max_base_loss_recount_error=base_error,supcon_layer_forward_terms=terms,L_forward_packets=r['L_forward_packets'],extra_L_forward_packets=r['extra_L_forward_packets'],As_training_observations=As,As_source_eval_observations=7560,ordinary_generated_packets=568320,physical_observations=observed,unique_physical_training=unique,teacher_additive_calls=0,scene_schedule_mode=mode,schedule_recount=sched,view_routing=route,channel_generation_wall_seconds=previous_wall,teacher_inherited_counter_offset_removed=2,instrumented_counters=counters,actual_network_forward_packets=NN,held_forward_packets=r['held_forward_packets'],elapsed_training_seconds=r['elapsed_seconds'],final_native_logged_first_ordinary_CE=r['final_L_CE'],final_base_L_objective=r['final_base_L_objective'],final_extra_pair_objective=r['final_extra_pair_objective'],total_pair_weight=r['total_pair_weight'],seen_V=r['seen_V'],tracked_BN_module_names=audit['tracked_BN_module_names'],extra_BN_updates=bn,coverage=coverage,ordinary_augmentation=ordinary)
  if len(arms)==1:
   value=dict(status='COMPLETED_SOURCE_ROW_ANALYZED',run_id=RUN,arm=arms[0],scores=scores,execution=execution,source_only=True,target_access=False,comparison_available=False);dump(OUT/('analysis_'+arms[0]+'.json'),value);return value
  assert arms==ARMS and all(s==role_sets[0] for s in role_sets)

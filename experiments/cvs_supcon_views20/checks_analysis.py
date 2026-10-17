@@ -2,7 +2,7 @@
 import copy,json,tempfile
 from pathlib import Path
 import numpy as np
-from .analyze import prediction,routing,qualification,decision_transitions,ARMS,VIEWS
+from .analyze import prediction,routing,qualification,decision_transitions,ssl_boundary,ARMS,VIEWS
 
 def run():
  negative=0
@@ -51,6 +51,14 @@ def run():
  ref['urban']['predictions'][0]=1;ref['urban']['predictions'][1]=1;cand['urban']['predictions'][1]=1;cand['urban']['predictions'][2]=1;cand['clean']['predictions'][2]=1
  z=decision_transitions(ref,cand,'urban');assert z['all']['repaired']==z['all']['broken']==1 and z['both_clean_correct']['repaired']==1 and z['both_clean_correct']['broken']==0 and z['clean_correctness_changed']['net_correct']==-1 and z['both_clean_wrong']['delta_pp'] is None
  wrong=copy.deepcopy(cand);wrong['urban']['physical_ids'].reverse();reject(lambda:decision_transitions(ref,wrong,'urban'))
+ # Full original 13 labeled-only + 7 U epochs,including all seven U tail batches.
+ ssl=[]
+ for step in range(1,4441):
+  epoch=(step-1)//222+1;total=(48 if (step-1)%222==0 else 256) if epoch>=14 else 0
+  ssl.append(dict(step=step,epoch=epoch,metrics={'train/pseudo_total':total,'train/pseudo_selected':0,'train/pseudo_truth_available':0,'train/pseudo_correct':0,'train/a1_ema_successful_updates':step,'train/loss_unlabeled':0.}))
+ assert ssl_boundary(ssl)['U_appearances']==396368
+ for step,key,value in ((2886,'train/pseudo_total',256),(2887,'train/pseudo_total',0),(2887,'train/pseudo_truth_available',1),(2887,'train/pseudo_correct',1),(2887,'train/a1_ema_successful_updates',1)):
+  before=ssl[step-1]['metrics'][key];ssl[step-1]['metrics'][key]=value;reject(lambda:ssl_boundary(ssl));ssl[step-1]['metrics'][key]=before
  fixtures=0
  with tempfile.TemporaryDirectory() as temp:
   base=Path(temp)

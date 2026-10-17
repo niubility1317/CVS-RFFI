@@ -1,0 +1,49 @@
+{
+  "status": "VERIFIED_RUNNING",
+  "rows": [
+    {
+      "arm": "Q_sat",
+      "epoch_boundary": 13,
+      "boundary_updates": 2886,
+      "As_descriptors": 227328,
+      "ordinary_descriptors": 0,
+      "contrastive_terms": 7104,
+      "last_complete_flushed_step": 2989,
+      "original_SSL": {
+        "labeled_only_updates": 2886,
+        "U_updates": 103,
+        "U_appearances": 26368,
+        "selected_appearances": 463,
+        "U_truth_available_count": 0,
+        "phase_errors": 0,
+        "EMA_counter_errors": 0
+      },
+      "original_process_match": true
+    },
+    {
+      "arm": "Q_mix",
+      "epoch_boundary": 13,
+      "boundary_updates": 2886,
+      "As_descriptors": 113664,
+      "ordinary_descriptors": 113664,
+      "contrastive_terms": 7104,
+      "last_complete_flushed_step": 2910,
+      "original_SSL": {
+        "labeled_only_updates": 2886,
+        "U_updates": 24,
+        "U_appearances": 6144,
+        "selected_appearances": 121,
+        "U_truth_available_count": 0,
+        "phase_errors": 0,
+        "EMA_counter_errors": 0
+      },
+      "original_process_match": true
+    }
+  ],
+  "partial_live_stream": true,
+  "source_only": true,
+  "target_access": false,
+  "execution_commit": "ed0ca91481f8c11a28cb8f4d4726a7c3d488720e",
+  "read_unix": 1792197486.0678802,
+  "science_results_available": false
+}
