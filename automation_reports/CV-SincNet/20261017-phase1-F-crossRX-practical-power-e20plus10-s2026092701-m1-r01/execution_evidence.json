@@ -1,0 +1,73 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "0eec04fb2b99f0cfecf6ddd18d6eda085dcf58c7",
+  "postlaunch": {
+    "status": "VERIFIED",
+    "pid": 449793,
+    "CWD": true,
+    "argv": true,
+    "GPU_environment": true,
+    "GPU_process": true,
+    "log_growth": true,
+    "source_step_log_growth": false,
+    "seconds": 86.86252045631409,
+    "source_RX_holdout": null
+  },
+  "real_CP_smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "parent_epoch": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "matched_control": {
+      "status": "VERIFIED",
+      "run": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
+      "row": "FULL_AS-s2026092701",
+      "reused_existing": true,
+      "new_training_updates": 0,
+      "source_RX_holdout": null
+    }
+  },
+  "observed_progress": {
+    "epoch": 1,
+    "cumulative_epoch": 21,
+    "steps": 222,
+    "cumulative_steps": 4662,
+    "L_packets": 113664,
+    "Ag_packets": 0,
+    "As_packets": 28416,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_RX_holdout": null,
+    "U_truth_read": false,
+    "target_access": false
+  },
+  "all_source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_counts": {
+    "L": 6300,
+    "U_hidden_TX": 56700,
+    "V": 27000
+  },
+  "default_head_joint": true,
+  "new_losses": 0,
+  "extra_neural_forwards": 0,
+  "teacher_policy": "strict own parent EMA;original U rule",
+  "nominal_control_reused": true,
+  "formal_scores_available": false
+}

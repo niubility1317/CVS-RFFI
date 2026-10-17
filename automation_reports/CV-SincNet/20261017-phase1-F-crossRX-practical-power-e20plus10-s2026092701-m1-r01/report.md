@@ -1,6 +1,6 @@
 # 有限窗接收质量 A_s：同父 E20＋10，累计 E30
 
-状态：已实现、已登记，尚未发布。唯一假设：用实际原始 IQ 的有限窗 H*x 功率决定 practical 接收质量，保留传播、噪声和补偿依赖并改善识别。依据是完整原 L6300／5 RX 的18900同信道物理配对：1010（5.34%）改变有效处理、355改变lock；不是身份识别收益。
+状态：RUNNING／VERIFIED。执行 commit 0eec04fb2b99f0cfecf6ddd18d6eda085dcf58c7；单归档比较、remote compile、实际引擎数值检查、真实 CP 无查询2包smoke、严格父与ownEMA、空optimizer复位、PID/CWD/argv/GPU／日志增长均已核实。已观察新增 E1／累计 E21、222／累计4662更新；未完成E30或正式评分。唯一假设：用实际原始 IQ 的有限窗 H*x 功率决定 practical 接收质量，保留传播、噪声和补偿依赖并改善识别。依据是完整原 L6300／5 RX 的18900同信道物理配对：1010（5.34%）改变有效处理、355改变lock；不是身份识别收益。
 
 只新增 QUALITY_POWER 一行，从完整源普通 FULL_AS 的 source-final20 学生和自身 EMA 严格追加10轮，累计 E30／6660更新。复用已完成同父 FULL_AS E30 对照，不复训或重测对照，不继承失败时钟 Ag。父是为唯一算子匹配固定的 source-final20，原五行预算与父在新 E20 目标读取前固定，不按目标排名选父。两行同父、同初始化规则、AdamW／cos10复位（lr0.0002/wd0.0001）、原 U／EMA规则与分段计数／temporal cache复位、ordinary冻结父实际E13、SupCon累计E21至30权重0.1、同场景／seed／IQ随机流；不是 scratch30 或精确 optimizer resume。
 

@@ -13,7 +13,7 @@
 [完整源 E20 四因子负结果](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)与 [完整源普通拼接 E20 参照](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)保留。
 
 
-当前新活动项：[20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01/report.md) 已实现／登记，尚未发布：仅将 As 的质量输入改为有限窗 H*x 功率，1 个模型沿同一个完整普通 As 的 source-final20 追加10轮、累计E30；现成同父 nominal E30对照复用。新loss／Ag／U机制／部署分支／额外NN均为0。
+当前新活动项：[20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01/report.md) 已实际发布 RUNNING／VERIFIED（执行commit 0eec04fb2）；已观察新增E1／累计E21、222／累计4662更新，尚无正式评分。仅将 As 的质量输入改为有限窗 H*x 功率，1 个模型沿同一个完整普通 As 的 source-final20 追加10轮、累计E30；现成同父 nominal E30对照复用。新loss／Ag／U机制／部署分支／额外NN均为0。
 
 源物理依据 [20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01](../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md) 已 ANALYZED／VERIFIED：全部 L6300／5 RX／18900 同latent配对，1010有效处理差（5.3439%）、355锁定差，每RX≥3%，通过原固定物理条件。多数功率差很小，尚不证明识别收益。源检验0模型／CP／NN／更新／target。
 
