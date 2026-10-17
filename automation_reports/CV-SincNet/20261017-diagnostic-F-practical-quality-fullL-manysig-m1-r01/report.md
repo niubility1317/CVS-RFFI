@@ -33,3 +33,6 @@
 此源结果不证明 A_g、跨 RX clean 净收益、As 识别增益或联合成功。下一训练候选尚未发布；后续须先固定识别比较和放弃条件，仍不调 SNR／幅度／窗口／seed 救跑。E30 已失败的时钟 Ag 联合配方保持关闭。
 
 原预登记配置与实际入口见 experiment.json、configs/cvs_practical_quality_source_probe.json 及 experiments/cvs_practical_quality_source17；完整 physical_pairs 保留在该 run 不可覆盖输出中，不入 Git。
+
+
+后续同父E30直接识别检验已完整完成：[有限窗接收质量As结果](../20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01/report.md)，ANALYZED／VERIFIED、固定身份收益条件失败并关闭。low urban相对普通As−0.029762 pp，clean+0.015476 pp；不改变本源物理差异结论，不把该差异当作身份有效。未延长预算或自动扩seed。

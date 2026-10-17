@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_SOURCE_SUPPORTED_AS_QUALITY_E30_RUNNING",
+  "status": "RESEARCH_ACTIVE_LATEST_AS_IDENTITY_GAIN_FAILED_CLOSED",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User baseline F plus cross-RX same-TX;latest budget E30 as fixed E20+10 on all five rows;all five now trained,score-only recovery adds zero updates.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -2203,51 +2203,124 @@
     }
   },
   "latest_completed_experiment": {
-    "run_id": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
-    "status": "ANALYZED",
-    "config": "configs/cvs_clock_e30_score_recovery.json",
-    "budget": "fixedE20+10",
-    "source_RX_holdout": null,
-    "execution_commit": "1a6818841be4e7904faa070833b34f84b32a0c77",
-    "training_commit": "8a83af076a2f632a4ee514da689b2e8d166d0592",
+    "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
+    "status": "ANALYZED_VERIFIED",
+    "execution_commit": "0eec04fb2b99f0cfecf6ddd18d6eda085dcf58c7",
     "model_seed_count": 1,
-    "models": 5,
-    "cumulative_epochs_each": 30,
-    "cumulative_updates_each": 6660,
-    "new_model_epochs": 0,
-    "new_updates": 0,
-    "CM_recounts": 630,
-    "sampling_sequence_records_each": 4440,
-    "all_sampling_sequences_identical": true,
-    "actual_shared_args": 65,
-    "Ag_clean_delta_pp": 0.07023809523809524,
-    "B11_clean_net_pp": -0.09404761904761905,
-    "B11_low": 0.5152678571428572,
-    "B11_low_delta_vs_B01_pp": -0.0494047619047619,
-    "B11_low_delta_vs_full_As_pp": -1.9202380952380953,
-    "interaction_pp": {
-      "clean": -0.4178571428571254,
-      "practical_high": -0.6202380952380959,
-      "practical_mid": -0.48214285714285876,
-      "practical_low_suburban": -0.5095238095237986,
-      "practical_high_urban": -0.5523809523809597,
-      "practical_mid_urban": -0.44047619047618003,
-      "practical_low_urban": -0.21785714285714186
+    "new_models": 1,
+    "reused_controls": 1,
+    "budget": "same_parent_E20plus10_cumulativeE30",
+    "new_updates": 2220,
+    "cumulative_updates": 6660,
+    "source_RX_holdout": null,
+    "CM_recounts": 252,
+    "all_source_sampling_identical": true,
+    "summary": {
+      "QUALITY_POWER": {
+        "clean": {
+          "accuracy": 0.8297916666666667,
+          "macro_F1": 0.8255008674327756,
+          "worst_RX_accuracy": 0.73
+        },
+        "practical_high": {
+          "accuracy": 0.8161011904761905,
+          "macro_F1": 0.8118425746215544,
+          "worst_RX_accuracy": 0.7306666666666667
+        },
+        "practical_mid": {
+          "accuracy": 0.7932202380952381,
+          "macro_F1": 0.78895533726089,
+          "worst_RX_accuracy": 0.7162083333333333
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7698988095238095,
+          "macro_F1": 0.7658227350091477,
+          "worst_RX_accuracy": 0.69775
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7818452380952381,
+          "macro_F1": 0.7773302842026032,
+          "worst_RX_accuracy": 0.7057083333333334
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6437261904761905,
+          "macro_F1": 0.6391969500784124,
+          "worst_RX_accuracy": 0.5861666666666666
+        },
+        "practical_low_urban": {
+          "accuracy": 0.534172619047619,
+          "macro_F1": 0.5289107753357049,
+          "worst_RX_accuracy": 0.49025
+        }
+      },
+      "NOMINAL_AS": {
+        "clean": {
+          "accuracy": 0.8296369047619048,
+          "macro_F1": 0.8253138546277144,
+          "worst_RX_accuracy": 0.730125
+        },
+        "practical_high": {
+          "accuracy": 0.816202380952381,
+          "macro_F1": 0.8119393203007693,
+          "worst_RX_accuracy": 0.73
+        },
+        "practical_mid": {
+          "accuracy": 0.7932976190476191,
+          "macro_F1": 0.7890106343859681,
+          "worst_RX_accuracy": 0.7159583333333334
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7697738095238095,
+          "macro_F1": 0.7657090405738582,
+          "worst_RX_accuracy": 0.6972083333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7818928571428572,
+          "macro_F1": 0.7773384751324953,
+          "worst_RX_accuracy": 0.7057083333333334
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6437142857142857,
+          "macro_F1": 0.639092427734011,
+          "worst_RX_accuracy": 0.5865
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344702380952381,
+          "macro_F1": 0.5289993837273708,
+          "worst_RX_accuracy": 0.48954166666666665
+        }
+      }
     },
-    "B11_suburban_gap_pp": {
-      "practical_high": 4.050595238095244,
-      "practical_mid": 6.781547619047624,
-      "practical_low_suburban": 9.339880952380952
+    "differences_pp": {
+      "clean": 0.015476190476190475,
+      "practical_high": -0.01011904761904762,
+      "practical_mid": -0.0077380952380952375,
+      "practical_low_suburban": 0.0125,
+      "practical_high_urban": -0.004761904761904762,
+      "practical_mid_urban": 0.0011904761904761906,
+      "practical_low_urban": -0.029761904761904764
     },
+    "suburban_gap_pp": {
+      "QUALITY_POWER": {
+        "practical_high": 1.3690476190476253,
+        "practical_mid": 3.657142857142859,
+        "practical_low_suburban": 5.989285714285719
+      },
+      "NOMINAL_AS": {
+        "practical_high": 1.3434523809523813,
+        "practical_mid": 3.6339285714285685,
+        "practical_low_suburban": 5.986309523809529
+      }
+    },
+    "criteria": {
+      "low_urban_gain_at_least_0_5pp": false,
+      "clean_not_lower": true,
+      "mid_urban_not_lower": true,
+      "each_suburban_no_more_than_0_25pp_lower": true
+    },
+    "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
     "Ag_efficacy_proved": false,
-    "joint_goal_complete": false,
-    "fixed_joint_recipe": "CLOSED_FAILED_PREREGISTERED_JOINT_CRITERIA",
-    "E30_fixed_before_new_E20_target_results": true,
-    "new_analysis_IQ": 0,
-    "new_analysis_CP": 0,
-    "new_analysis_raw_truth": 0,
-    "new_analysis_NN": 0,
-    "new_analysis_updates": 0
+    "joint_goal_complete": false
   },
   "source_PSD_positive_affine": {
     "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
@@ -2380,58 +2453,137 @@
   },
   "current_experiment": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
-    "status": "RUNNING_VERIFIED",
-    "execution_commit": "0eec04fb2b99f0cfecf6ddd18d6eda085dcf58c7",
-    "config": "configs/cvs_practical_power_e30.json",
-    "new_epochs": 10,
-    "parent_epochs": 20,
-    "cumulative_epochs": 30,
-    "new_updates": 2220,
-    "control_run": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
-    "control_row": "FULL_AS-s2026092701",
-    "same_parent_and_initialization_rule": true,
-    "source_RX_holdout": null,
-    "source_physical_evidence": {
-      "run_id": "20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01",
-      "status": "ANALYZED_VERIFIED",
-      "source_L": 6300,
-      "physical_pairs": 18900,
-      "effective_changes": 1010,
-      "lock_changes": 355,
-      "identity_benefit_proved": false
-    },
-    "observed_progress": {
-      "epoch": 1,
-      "cumulative_epoch": 21,
-      "steps": 222,
-      "cumulative_steps": 4662,
-      "L_packets": 113664,
-      "Ag_packets": 0,
-      "As_packets": 28416,
-      "source_RX": [
-        1,
-        3,
-        4,
-        6,
-        8
-      ],
-      "source_RX_holdout": null,
-      "U_truth_read": false,
-      "target_access": false
-    },
-    "formal_score_available": false,
+    "status": "ANALYZED_VERIFIED_CLOSED",
+    "formal_score_available": true,
+    "scientific_pass": false,
+    "no_running_owned_jobs": true,
     "joint_goal_complete": false
   },
   "active_As_hypothesis": {
-    "name": "Finite-window H*x power conditions existing coupled practical receiver processing",
-    "minimum": "One fixed source-final20+10 variant vs existing exact nominalAs E30 control;4L matched,allsource",
-    "abandon": "lowurban increment<.5pp orclean/midnegative oranysuburban<-.25pp;no strength/window/seed/budget rescue",
-    "Ag_added": false,
-    "new_losses": 0,
-    "new_U_rules": 0,
-    "extra_neural_forwards": 0,
-    "extra_physical_prefilter_per_As": 1,
-    "test_received_IQ_changed": false,
-    "target_selection": false
+    "status": "NONE_PROMOTED",
+    "last_hypothesis": "Finite-window H*x power conditions existing coupled practical receiver processing",
+    "last_hypothesis_outcome": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+    "no_automatic_rerun_or_seed_extension": true,
+    "next": "Source-grounded physical or IQ evidence required before a new training candidate"
+  },
+  "practical_finite_power_E30_result": {
+    "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
+    "status": "ANALYZED_VERIFIED",
+    "execution_commit": "0eec04fb2b99f0cfecf6ddd18d6eda085dcf58c7",
+    "model_seed_count": 1,
+    "new_models": 1,
+    "reused_controls": 1,
+    "budget": "same_parent_E20plus10_cumulativeE30",
+    "new_updates": 2220,
+    "cumulative_updates": 6660,
+    "source_RX_holdout": null,
+    "CM_recounts": 252,
+    "all_source_sampling_identical": true,
+    "summary": {
+      "QUALITY_POWER": {
+        "clean": {
+          "accuracy": 0.8297916666666667,
+          "macro_F1": 0.8255008674327756,
+          "worst_RX_accuracy": 0.73
+        },
+        "practical_high": {
+          "accuracy": 0.8161011904761905,
+          "macro_F1": 0.8118425746215544,
+          "worst_RX_accuracy": 0.7306666666666667
+        },
+        "practical_mid": {
+          "accuracy": 0.7932202380952381,
+          "macro_F1": 0.78895533726089,
+          "worst_RX_accuracy": 0.7162083333333333
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7698988095238095,
+          "macro_F1": 0.7658227350091477,
+          "worst_RX_accuracy": 0.69775
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7818452380952381,
+          "macro_F1": 0.7773302842026032,
+          "worst_RX_accuracy": 0.7057083333333334
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6437261904761905,
+          "macro_F1": 0.6391969500784124,
+          "worst_RX_accuracy": 0.5861666666666666
+        },
+        "practical_low_urban": {
+          "accuracy": 0.534172619047619,
+          "macro_F1": 0.5289107753357049,
+          "worst_RX_accuracy": 0.49025
+        }
+      },
+      "NOMINAL_AS": {
+        "clean": {
+          "accuracy": 0.8296369047619048,
+          "macro_F1": 0.8253138546277144,
+          "worst_RX_accuracy": 0.730125
+        },
+        "practical_high": {
+          "accuracy": 0.816202380952381,
+          "macro_F1": 0.8119393203007693,
+          "worst_RX_accuracy": 0.73
+        },
+        "practical_mid": {
+          "accuracy": 0.7932976190476191,
+          "macro_F1": 0.7890106343859681,
+          "worst_RX_accuracy": 0.7159583333333334
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7697738095238095,
+          "macro_F1": 0.7657090405738582,
+          "worst_RX_accuracy": 0.6972083333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7818928571428572,
+          "macro_F1": 0.7773384751324953,
+          "worst_RX_accuracy": 0.7057083333333334
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6437142857142857,
+          "macro_F1": 0.639092427734011,
+          "worst_RX_accuracy": 0.5865
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344702380952381,
+          "macro_F1": 0.5289993837273708,
+          "worst_RX_accuracy": 0.48954166666666665
+        }
+      }
+    },
+    "differences_pp": {
+      "clean": 0.015476190476190475,
+      "practical_high": -0.01011904761904762,
+      "practical_mid": -0.0077380952380952375,
+      "practical_low_suburban": 0.0125,
+      "practical_high_urban": -0.004761904761904762,
+      "practical_mid_urban": 0.0011904761904761906,
+      "practical_low_urban": -0.029761904761904764
+    },
+    "suburban_gap_pp": {
+      "QUALITY_POWER": {
+        "practical_high": 1.3690476190476253,
+        "practical_mid": 3.657142857142859,
+        "practical_low_suburban": 5.989285714285719
+      },
+      "NOMINAL_AS": {
+        "practical_high": 1.3434523809523813,
+        "practical_mid": 3.6339285714285685,
+        "practical_low_suburban": 5.986309523809529
+      }
+    },
+    "criteria": {
+      "low_urban_gain_at_least_0_5pp": false,
+      "clean_not_lower": true,
+      "mid_urban_not_lower": true,
+      "each_suburban_no_more_than_0_25pp_lower": true
+    },
+    "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false
   }
 }

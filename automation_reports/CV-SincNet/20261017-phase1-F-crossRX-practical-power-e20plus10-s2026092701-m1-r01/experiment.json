@@ -102,8 +102,8 @@
     "host": "N607 ordinary account",
     "launch_owner": "codex/root/F-practical-power-E30",
     "gpu_policy": "CPU2dispatcher;sharedcapacitymax3totalprocessesperGPUincludingotherowners",
-    "remote_run_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
-    "remote_log_root": "\\home\\szu2070436088\\2510044040\\CV-SincNet\\runs\\20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01\\logs",
+    "remote_run_root": "PROJECT/runs/20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/runs/20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01/logs",
     "local_artifact_root": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
     "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_practical_power30/runner.py",
     "stop_rule": "Onlysource/data/provenance/nonfinite/incompleteprediction/outputcollision/systemictechnicalfailure;preserve,no automaticretry or otherownedtaskstop"
@@ -475,5 +475,32 @@
     "cumulative_epochs": 30
   },
   "replaces_run_id": null,
-  "registered_at": "2026-10-17T07:28:01+00:00"
+  "registered_at": "2026-10-17T07:28:01+00:00",
+  "actual_training": {
+    "model_initialization": "strict_same_declared_source_final20_student_and_own_EMA",
+    "checkpoint_sources": [
+      "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/CONCAT-s2026092701/source/final_ssdg.pth"
+    ],
+    "parent_epochs": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "new_updates": 2220,
+    "cumulative_updates": 6660,
+    "optimizer_policy": "reset AdamW and native cosine10 at original baseLR;not exact trajectory resume",
+    "U_original_unchanged": true,
+    "nominal_control_reused_no_training": true,
+    "shared_actual_args": 68,
+    "same_all4440_source_sequence": true,
+    "inherited_scratch_E20_budget_strings": "HISTORICAL_TEMPLATE_FIELDS_SUPERSEDED_BY_THIS_ACTUAL_BLOCK_AND_RESOLVED_NATIVE_ARGS"
+  },
+  "result": {
+    "scientific_status": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+    "formal_status": "ALL_SEVEN_PREDICTED_AND_SCORED",
+    "CM_recounts": 252,
+    "paired_recounts": 7,
+    "clean": 0.8297916666666667,
+    "low_urban": 0.534172619047619,
+    "low_delta_pp": -0.029761904761904764,
+    "joint_goal_complete": false
+  }
 }

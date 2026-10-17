@@ -1,6 +1,13 @@
 """All persisted logs and fixed paired scores;no new IQ/checkpoint/rawtruth/model access."""
 from pathlib import Path
-import json
+import json,math
+
+def json_ready(value,path='',missing=None):
+ if missing is None:missing=[]
+ if isinstance(value,float) and not math.isfinite(value):missing.append(path);return None
+ if isinstance(value,dict):return {k:json_ready(v,path+'/'+str(k),missing) for k,v in value.items()}
+ if isinstance(value,(list,tuple)):return [json_ready(v,path+'/'+str(i),missing) for i,v in enumerate(value)]
+ return value
 from experiments.cvs_clock_factorial20.analyze_logs import read_json,records,numeric_logs,sequence,compare_sequences,stdout_scan
 
 def source_logs(source,stdout,expected=2220,require_detail=False):
@@ -32,4 +39,5 @@ def collect(run_root,original_training_root,control_root):
 
 if __name__=='__main__':
  import sys
- print(json.dumps(collect(*sys.argv[1:]),ensure_ascii=False,allow_nan=False))
+ missing=[];value=json_ready(collect(*sys.argv[1:]),missing=missing);value['nonfinite_optional_metadata_paths']=missing
+ print(json.dumps(value,ensure_ascii=False,allow_nan=False))

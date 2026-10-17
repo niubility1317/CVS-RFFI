@@ -1,23 +1,16 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-当前预算 **E30＝各自固定 E20＋10** 已完成：B00／B10／B01／B11／FULL_AS 五行各累计 30 轮／6660 更新，全部 5 源 RX 与 L6300／U56700 隐藏 TX／V27000 保持，没有留出训练域。五行 clean＋六 practical 共 5880000 个正式决策和独立 truth-last 评分已完成，630 个既有混淆矩阵重计一致。
+最新完成：[有限窗接收质量 A_s E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01/report.md) 为 **ANALYZED／VERIFIED，固定识别假设失败并关闭**。同一个普通 As source-final20追加10轮，累计30轮／6660更新；复用精确同父nominal E30，不重训或重测旧控制。全部源RX1/3/4/6/8、day1/2/3、L6300／U56700隐藏TX／V27000、split392005保留，无训练域留出。F三路SIG_TIME／统一Sinc／joint160／默认cos头联合训练与原U不变。
 
-[完整 E30 报告](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/report.md)为 ANALYZED／VERIFIED。B00 clean 85.2685%；B10 clean 85.3387%，独立 Ag 仅＋0.0702 个百分点。B01 clean 85.5220%、low urban 51.5762%；B11 clean 85.1744%、low urban 51.5268%；完整普通拼接 FULL_AS clean 82.9637%、low urban 53.4470%。
+七视图1176000个正式决策全部固定后独立CPU truth-last评分，252个CM、全部RX／TX／day与配对计数重计一致。新方法clean82.979167%、mid urban64.372619%、low urban53.417262%；相对普通As的差为+0.015476／+0.001190／−0.029762 pp。low修复380／新增430错；clean与low同时正确净少59。low增量未达到预定+0.5 pp，其他保护条件通过仍不晋级，不调参数／seed／预算救跑。
 
-**固定采样速率 Ag＋practical As 联合假设失败，关闭该配方。** B11 clean 相对 B00 −0.0940、相对 B01 −0.3476 个百分点；low urban 相对 B01 −0.0494、相对 FULL_AS −1.9202 个百分点。七视图交互均负；三个 suburban 与自身 clean 差 4.0506／6.7815／9.3399 个百分点。不能以降低 clean 缩小差距，单 seed 轻微 Ag clean 差也不能当作域泛化证明。
+三个suburban距自身clean1.369048／3.657143／5.989286 pp，仅high达到首轮2 pp探索目标；相对同预算B00 clean85.268452%，新方法clean净−2.289286 pp。low未超过60%，Ag与完整联合目标仍未证明，研究保持ACTIVE。当前没有运行或晋级的新训练候选。
 
-原训练已保存安全权重但因收尾加载检查异常返回 PARTIAL；独立 [零更新评分恢复](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/report.md)复用全部固定权重完成正式评分，原错误日志和状态保留。E30 矩阵／父选择在新 E20 目标成绩读取前固定，没有分数选父、调幅度或选择性重跑。
+[源物理18900配对](../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)仍只支持处理差异：1010有效处理变化／355锁定变化；实际训练284160 As中15358有效变化／5332锁定变化。物理差异不等于身份收益，本次已完成直接检验并得到负结果。新增仅10modelE／2220更新，总新增NN3770646，额外纯物理预滤波284160次、完整信道预跑0；旧nominal完整源eval瞬态计数缺失如实保留。
 
-本轮唯一待检验的 E30 联合假设已被否定。新的源物理检验已登记，尚未发布训练候选。后续方案必须由合法源数据与传播／接收处理证据提出，保留全源与普通拼接参照，不调 ppm、换 seed 或加预算救跑。A_s 有实际适应证据；Ag 的跨域身份提取与联合目标仍未证明，总研究目标保持 ACTIVE。
+此前[完整E30四因子](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01/report.md)也已ANALYZED：B00 clean85.268452%；B10 clean85.338690%，Ag独立仅+0.070238 pp；B01 clean85.522024%／low51.576190%；B11 clean85.174405%／low51.526786%；FULL_AS clean82.963690%／low53.447024%。七视图交互均负，固定时钟Ag联合配方关闭。保留原训练PARTIAL和零更新评分恢复记录，不调ppm、换父或续预算救跑。
 
-[完整源 E20 四因子负结果](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)与 [完整源普通拼接 E20 参照](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)保留。
-
-
-当前新活动项：[20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01/report.md) 已实际发布 RUNNING／VERIFIED（执行commit 0eec04fb2）；已观察新增E1／累计E21、222／累计4662更新，尚无正式评分。仅将 As 的质量输入改为有限窗 H*x 功率，1 个模型沿同一个完整普通 As 的 source-final20 追加10轮、累计E30；现成同父 nominal E30对照复用。新loss／Ag／U机制／部署分支／额外NN均为0。
-
-源物理依据 [20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01](../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md) 已 ANALYZED／VERIFIED：全部 L6300／5 RX／18900 同latent配对，1010有效处理差（5.3439%）、355锁定差，每RX≥3%，通过原固定物理条件。多数功率差很小，尚不证明识别收益。源检验0模型／CP／NN／更新／target。
-
-当前唯一识别假设是该质量口径改善同预算普通As；最小新增一行对照已固定。相对nominal low增量<0.5pp，或clean／mid下降，或任一suburban下降>0.25pp即关闭，不改幅度／窗口／seed／预算救跑。完整联合目标仍未达成，时钟Ag仍关闭。
+[完整源普通拼接E20参照](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)和[完整源E20四因子](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)全部保留。A_s普通训练已有实际适应收益但付出clean代价；没有获得可联合保留各项收益的新Ag。下一项必须来自合法源域或传播／接收处理证据，不使用已读目标分数选择幅度、候选、父、seed或重跑。
 
 以下是按时间保留的历史过程，旧的“当前／运行／下一项”表述以本页开头的最新状态为准。
 
