@@ -16,7 +16,7 @@
 |CVS 固定身份网络：mid／low urban 拼接增强|managed_run|[打开](../../automation_reports/CV-SincNet/20261002-phase1-cvs-selected-concat-manysig-m4-r01/report.md)|
 |256 点 practical residual 的包内冻结时标审计|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-frozen-scatter-timescale-m1-r01/report.md)|
 |完整源 L 的 practical 接收质量耦合：物理依据已验证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)|
-|F＋跨RX同TX：等功率带限观测噪声完整L源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01/report.md)|
+|等期望功率的接收带限观测噪声：完整 L6300 源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01/report.md)|
 |RMS 匹配的三径时延形状：单项 A_s E30 检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md)|
 |原分布校准刷新 A_s：E30 完整匹配负结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md)|
 |完整源采样率／practical四因子：E20完整结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)|

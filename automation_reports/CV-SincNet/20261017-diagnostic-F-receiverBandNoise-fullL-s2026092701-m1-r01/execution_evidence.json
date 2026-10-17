@@ -1,0 +1,53 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "b1d285a3b175198b9af441abdd25bdfd90d1144b",
+  "ordinary_account": true,
+  "single_preflight": true,
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "post_launch": {
+    "startup_PID": 547702,
+    "cwd_matches": true,
+    "argv_matches": true,
+    "CUDA_hidden": true,
+    "CPU_threads": 2
+  },
+  "independent_terminal": {
+    "PID_alive": false,
+    "completion_present": true,
+    "log_bytes": 131,
+    "traceback": false,
+    "failure": null
+  },
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 2,
+    "real_IQ_forwarded": 0,
+    "query_read": false,
+    "head_fit_updates": 0
+  },
+  "cost": {
+    "source_unique": 6300,
+    "source_NN": 31500,
+    "synthetic_NN": 2,
+    "total_NN": 31502,
+    "checkpoint_loads": 1,
+    "source_cache_loads": 1,
+    "teacher_forwards": 0,
+    "head_fit_updates": 0,
+    "training_updates": 0,
+    "new_model_epochs": 0,
+    "target_access": false
+  },
+  "independent_source_recount": {
+    "status": "VERIFIED",
+    "CM": 45,
+    "TX": 30,
+    "predictions": 31500,
+    "IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0
+  },
+  "scientific_decision": "FAIL_FIXED_BAND_NOISE_SOURCE_GUARD_CLOSED"
+}

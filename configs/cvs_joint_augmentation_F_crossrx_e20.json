@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_RECEIVER_BAND_NOISE_SOURCE_GUARD_PREPARED_NOT_AG_PROVED",
+  "status": "RESEARCH_ACTIVE_RECEIVER_BAND_NOISE_CLOSED_SOURCE_GUARD_FAIL_NO_AG_OR_JOINT_SUCCESS",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User baseline F plus cross-RX same-TX;latest budget E30 as fixed E20+10 on all five rows;all five now trained,score-only recovery adds zero updates.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -159,10 +159,11 @@
     "joint_goal_complete": false
   },
   "next_training_hypothesis": {
-    "status": "NO_NEW_TRAINING_REGISTERED",
-    "prerequisite": "Fixed receiver-band-noise allL6300 sourceguard;passing does not establishDG",
+    "status": "NO_NEW_TRAINING_CANDIDATE_PROMOTED",
     "latest_allowed_training_budget": "E30",
-    "no_source_RX_holdout": true
+    "no_source_RX_holdout": true,
+    "fixed_receiver_band_noise_closed": true,
+    "no_automatic_training_or_parameter_rescue": true
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -2508,12 +2509,15 @@
   },
   "current_experiment": {
     "run_id": "20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01",
-    "status": "IMPLEMENTED_NOT_LAUNCHED",
+    "status": "ANALYZED_VERIFIED_CLOSED_SOURCE_GUARD_FAIL",
     "source_guard_only": true,
     "formal_target_scores_available": false,
-    "scientific_pass": null,
+    "scientific_pass": false,
     "model_training": false,
-    "joint_goal_complete": false
+    "joint_goal_complete": false,
+    "actual_NN": 31502,
+    "training_updates": 0,
+    "target_access": false
   },
   "active_As_hypothesis": {
     "status": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
@@ -3047,7 +3051,7 @@
   },
   "active_Ag_hypothesis": {
     "run_id": "20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01",
-    "status": "IMPLEMENTED_LOCAL_CHECKED_SOURCE_NOT_LAUNCHED",
+    "status": "CLOSED_SOURCE_GUARD_FAIL",
     "hypothesis": "Receiver-band additive observation noise with same20..36dB expectedpower preserves source identity;cleanDG needs later matchedE30",
     "source_RX": [
       1,
@@ -3068,6 +3072,70 @@
     "new_deployment_parameters": 0,
     "source_guard_NN": 31502,
     "source_guard_updates": 0,
-    "no_target_parameter_selection": true
+    "no_target_parameter_selection": true,
+    "scientific_pass": false,
+    "accuracy_delta_draw0_pp": -0.4444444444444473,
+    "accuracy_delta_draw1_pp": -0.5238095238095264,
+    "macro_F1_delta_draw1_pp": -0.5249327699295647,
+    "RX3_draw1_delta_pp": -1.0317460317460392,
+    "TX3_draw1_delta_pp": -2.0952380952380945,
+    "coarse_source_spectral_support": true,
+    "Ag_efficacy_proved": false,
+    "no_parameter_rescue": true
+  },
+  "latest_completed_source_diagnostic": {
+    "run_id": "20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01",
+    "status": "ANALYZED_VERIFIED",
+    "execution_commit": "b1d285a3b175198b9af441abdd25bdfd90d1144b",
+    "decision": "FAIL_FIXED_BAND_NOISE_SOURCE_GUARD_CLOSED",
+    "source_only": true,
+    "conditions": {
+      "all_RX_source_spectral_support": true,
+      "draw0": {
+        "accuracy": true,
+        "macro_F1": true,
+        "retention": true,
+        "all_groups": true,
+        "effective_nonexcessive_noise": true
+      },
+      "draw1": {
+        "accuracy": false,
+        "macro_F1": false,
+        "retention": true,
+        "all_groups": false,
+        "effective_nonexcessive_noise": true
+      }
+    },
+    "cost": {
+      "source_unique": 6300,
+      "source_NN": 31500,
+      "synthetic_NN": 2,
+      "total_NN": 31502,
+      "checkpoint_loads": 1,
+      "source_cache_loads": 1,
+      "teacher_forwards": 0,
+      "head_fit_updates": 0,
+      "training_updates": 0,
+      "new_model_epochs": 0,
+      "target_access": false
+    },
+    "formal_target_scores": false
+  },
+  "active_training_budget": {
+    "total_epochs_per_model": 30,
+    "continuation_from_E20_max_additional_epochs": 10,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_RX_holdout": null,
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "U_TX_hidden": true,
+    "note": "Latest E30 authorization;historical training.E20 fields describe original fixed E20 factorial,not new budget"
   }
 }

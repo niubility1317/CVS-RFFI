@@ -15,5 +15,492 @@
     "scope": "One independent static P0/P1 review of actual source worker,noise math,model source and publication;no direct defects",
     "reviewer": "dc_p0p1_review",
     "reviewer_runtime_math_not_executed": "Reviewer Python lacked NumPy;local mathematical checks separately executed successfully with verified scientific Python"
+  },
+  "scope": "Technical verification PASS;fixed source scientific guard FAIL",
+  "actual_source_analysis": {
+    "status": "VERIFIED",
+    "source_CM_recounts": 45,
+    "TX_accuracy_recounts": 30,
+    "source_predictions": 31500,
+    "max_metric_error": 0,
+    "source_decision": "FAIL_FIXED_BAND_NOISE_SOURCE_GUARD_CLOSED",
+    "conditions": {
+      "all_RX_source_spectral_support": true,
+      "draw0": {
+        "accuracy": true,
+        "macro_F1": true,
+        "retention": true,
+        "all_groups": true,
+        "effective_nonexcessive_noise": true
+      },
+      "draw1": {
+        "accuracy": false,
+        "macro_F1": false,
+        "retention": true,
+        "all_groups": false,
+        "effective_nonexcessive_noise": true
+      }
+    },
+    "repairs_and_new_errors": {
+      "raw": {
+        "repairs": 0,
+        "new_errors": 0,
+        "raw_correct_retention": 1
+      },
+      "white_draw0": {
+        "repairs": 7,
+        "new_errors": 24,
+        "raw_correct_retention": 0.996167358671351
+      },
+      "color_draw0": {
+        "repairs": 8,
+        "new_errors": 36,
+        "raw_correct_retention": 0.9942510380070265
+      },
+      "white_draw1": {
+        "repairs": 3,
+        "new_errors": 23,
+        "raw_correct_retention": 0.9963270520600447
+      },
+      "color_draw1": {
+        "repairs": 1,
+        "new_errors": 34,
+        "raw_correct_retention": 0.9945704247844139
+      }
+    },
+    "source_support": {
+      "1": {
+        "count": 1260,
+        "median": 0.9924170154851331,
+        "q10": 0.9882056530143457
+      },
+      "3": {
+        "count": 1260,
+        "median": 0.9910213875719277,
+        "q10": 0.9792258451852691
+      },
+      "4": {
+        "count": 1260,
+        "median": 0.9925399106922278,
+        "q10": 0.990015155450206
+      },
+      "6": {
+        "count": 1260,
+        "median": 0.992221737874402,
+        "q10": 0.9862650501900114
+      },
+      "8": {
+        "count": 1260,
+        "median": 0.9844994821255394,
+        "q10": 0.9507266569494851
+      }
+    },
+    "power": {
+      "0": {
+        "nominal_SNR_min": 20.005034771197145,
+        "nominal_SNR_max": 35.998662123508964,
+        "white_power_over_expected": 1.0006704670641486,
+        "color_power_over_expected": 0.9993621302001287,
+        "white_noise_power_mean": 0.0026492541718571177,
+        "color_noise_power_mean": 0.0026430808761511598,
+        "IQ_change_median": 0.04025240099204597,
+        "IQ_change_max": 0.11091661778227906
+      },
+      "1": {
+        "nominal_SNR_min": 20.00037391301108,
+        "nominal_SNR_max": 35.998136263844984,
+        "white_power_over_expected": 0.998909453906696,
+        "color_power_over_expected": 0.9988945859175826,
+        "white_noise_power_mean": 0.0026936549931807006,
+        "color_noise_power_mean": 0.0026935560202613717,
+        "IQ_change_median": 0.040595238663116706,
+        "IQ_change_max": 0.10948624608035157
+      }
+    },
+    "strata": [
+      {
+        "view": "raw",
+        "dimension": "ALL",
+        "stratum": "ALL",
+        "count": 6300,
+        "accuracy": 0.993968253968254,
+        "macro_F1": 0.9939635689582289
+      },
+      {
+        "view": "raw",
+        "dimension": "RX",
+        "stratum": "1",
+        "count": 1260,
+        "accuracy": 0.9968253968253968,
+        "macro_F1": 0.9968251088534107
+      },
+      {
+        "view": "raw",
+        "dimension": "RX",
+        "stratum": "3",
+        "count": 1260,
+        "accuracy": 0.9865079365079366,
+        "macro_F1": 0.9864640498730021
+      },
+      {
+        "view": "raw",
+        "dimension": "RX",
+        "stratum": "4",
+        "count": 1260,
+        "accuracy": 0.996031746031746,
+        "macro_F1": 0.9960317280350274
+      },
+      {
+        "view": "raw",
+        "dimension": "RX",
+        "stratum": "6",
+        "count": 1260,
+        "accuracy": 1,
+        "macro_F1": 1
+      },
+      {
+        "view": "raw",
+        "dimension": "RX",
+        "stratum": "8",
+        "count": 1260,
+        "accuracy": 0.9904761904761905,
+        "macro_F1": 0.9904577401864102
+      },
+      {
+        "view": "raw",
+        "dimension": "day",
+        "stratum": "1",
+        "count": 2100,
+        "accuracy": 0.9942857142857143,
+        "macro_F1": 0.9942806669022252
+      },
+      {
+        "view": "raw",
+        "dimension": "day",
+        "stratum": "2",
+        "count": 2100,
+        "accuracy": 0.9952380952380953,
+        "macro_F1": 0.9952366929440465
+      },
+      {
+        "view": "raw",
+        "dimension": "day",
+        "stratum": "3",
+        "count": 2100,
+        "accuracy": 0.9923809523809524,
+        "macro_F1": 0.9923733779946747
+      },
+      {
+        "view": "white_draw0",
+        "dimension": "ALL",
+        "stratum": "ALL",
+        "count": 6300,
+        "accuracy": 0.9912698412698413,
+        "macro_F1": 0.9912635877030372
+      },
+      {
+        "view": "white_draw0",
+        "dimension": "RX",
+        "stratum": "1",
+        "count": 1260,
+        "accuracy": 0.9936507936507937,
+        "macro_F1": 0.9936494976299017
+      },
+      {
+        "view": "white_draw0",
+        "dimension": "RX",
+        "stratum": "3",
+        "count": 1260,
+        "accuracy": 0.9793650793650793,
+        "macro_F1": 0.9793321757972328
+      },
+      {
+        "view": "white_draw0",
+        "dimension": "RX",
+        "stratum": "4",
+        "count": 1260,
+        "accuracy": 0.9936507936507937,
+        "macro_F1": 0.9936561354397205
+      },
+      {
+        "view": "white_draw0",
+        "dimension": "RX",
+        "stratum": "6",
+        "count": 1260,
+        "accuracy": 0.9984126984126984,
+        "macro_F1": 0.9984126624186489
+      },
+      {
+        "view": "white_draw0",
+        "dimension": "RX",
+        "stratum": "8",
+        "count": 1260,
+        "accuracy": 0.9912698412698413,
+        "macro_F1": 0.99125316549181
+      },
+      {
+        "view": "white_draw0",
+        "dimension": "day",
+        "stratum": "1",
+        "count": 2100,
+        "accuracy": 0.9923809523809524,
+        "macro_F1": 0.9923718989761442
+      },
+      {
+        "view": "white_draw0",
+        "dimension": "day",
+        "stratum": "2",
+        "count": 2100,
+        "accuracy": 0.9923809523809524,
+        "macro_F1": 0.9923739626186999
+      },
+      {
+        "view": "white_draw0",
+        "dimension": "day",
+        "stratum": "3",
+        "count": 2100,
+        "accuracy": 0.9890476190476191,
+        "macro_F1": 0.9890400241779044
+      },
+      {
+        "view": "color_draw0",
+        "dimension": "ALL",
+        "stratum": "ALL",
+        "count": 6300,
+        "accuracy": 0.9895238095238095,
+        "macro_F1": 0.9895165086860728
+      },
+      {
+        "view": "color_draw0",
+        "dimension": "RX",
+        "stratum": "1",
+        "count": 1260,
+        "accuracy": 0.9928571428571429,
+        "macro_F1": 0.9928561304039688
+      },
+      {
+        "view": "color_draw0",
+        "dimension": "RX",
+        "stratum": "3",
+        "count": 1260,
+        "accuracy": 0.9777777777777777,
+        "macro_F1": 0.9777350601341341
+      },
+      {
+        "view": "color_draw0",
+        "dimension": "RX",
+        "stratum": "4",
+        "count": 1260,
+        "accuracy": 0.9920634920634921,
+        "macro_F1": 0.9920688823262083
+      },
+      {
+        "view": "color_draw0",
+        "dimension": "RX",
+        "stratum": "6",
+        "count": 1260,
+        "accuracy": 0.9968253968253968,
+        "macro_F1": 0.9968252708428568
+      },
+      {
+        "view": "color_draw0",
+        "dimension": "RX",
+        "stratum": "8",
+        "count": 1260,
+        "accuracy": 0.9880952380952381,
+        "macro_F1": 0.9880927399637839
+      },
+      {
+        "view": "color_draw0",
+        "dimension": "day",
+        "stratum": "1",
+        "count": 2100,
+        "accuracy": 0.99,
+        "macro_F1": 0.9899897110648302
+      },
+      {
+        "view": "color_draw0",
+        "dimension": "day",
+        "stratum": "2",
+        "count": 2100,
+        "accuracy": 0.9904761904761905,
+        "macro_F1": 0.9904689290817639
+      },
+      {
+        "view": "color_draw0",
+        "dimension": "day",
+        "stratum": "3",
+        "count": 2100,
+        "accuracy": 0.9880952380952381,
+        "macro_F1": 0.9880795012244042
+      },
+      {
+        "view": "white_draw1",
+        "dimension": "ALL",
+        "stratum": "ALL",
+        "count": 6300,
+        "accuracy": 0.9907936507936508,
+        "macro_F1": 0.9907840016013232
+      },
+      {
+        "view": "white_draw1",
+        "dimension": "RX",
+        "stratum": "1",
+        "count": 1260,
+        "accuracy": 0.9968253968253968,
+        "macro_F1": 0.9968251088534107
+      },
+      {
+        "view": "white_draw1",
+        "dimension": "RX",
+        "stratum": "3",
+        "count": 1260,
+        "accuracy": 0.9801587301587301,
+        "macro_F1": 0.9801110962236459
+      },
+      {
+        "view": "white_draw1",
+        "dimension": "RX",
+        "stratum": "4",
+        "count": 1260,
+        "accuracy": 0.9920634920634921,
+        "macro_F1": 0.9920704232350817
+      },
+      {
+        "view": "white_draw1",
+        "dimension": "RX",
+        "stratum": "6",
+        "count": 1260,
+        "accuracy": 1,
+        "macro_F1": 1
+      },
+      {
+        "view": "white_draw1",
+        "dimension": "RX",
+        "stratum": "8",
+        "count": 1260,
+        "accuracy": 0.984920634920635,
+        "macro_F1": 0.9848582371557834
+      },
+      {
+        "view": "white_draw1",
+        "dimension": "day",
+        "stratum": "1",
+        "count": 2100,
+        "accuracy": 0.9904761904761905,
+        "macro_F1": 0.9904608704329009
+      },
+      {
+        "view": "white_draw1",
+        "dimension": "day",
+        "stratum": "2",
+        "count": 2100,
+        "accuracy": 0.9928571428571429,
+        "macro_F1": 0.9928519319670571
+      },
+      {
+        "view": "white_draw1",
+        "dimension": "day",
+        "stratum": "3",
+        "count": 2100,
+        "accuracy": 0.9890476190476191,
+        "macro_F1": 0.9890333102532693
+      },
+      {
+        "view": "color_draw1",
+        "dimension": "ALL",
+        "stratum": "ALL",
+        "count": 6300,
+        "accuracy": 0.9887301587301587,
+        "macro_F1": 0.9887142412589333
+      },
+      {
+        "view": "color_draw1",
+        "dimension": "RX",
+        "stratum": "1",
+        "count": 1260,
+        "accuracy": 0.9944444444444445,
+        "macro_F1": 0.9944429008057795
+      },
+      {
+        "view": "color_draw1",
+        "dimension": "RX",
+        "stratum": "3",
+        "count": 1260,
+        "accuracy": 0.9761904761904762,
+        "macro_F1": 0.9760890016155611
+      },
+      {
+        "view": "color_draw1",
+        "dimension": "RX",
+        "stratum": "4",
+        "count": 1260,
+        "accuracy": 0.9912698412698413,
+        "macro_F1": 0.9912782319943897
+      },
+      {
+        "view": "color_draw1",
+        "dimension": "RX",
+        "stratum": "6",
+        "count": 1260,
+        "accuracy": 0.9992063492063492,
+        "macro_F1": 0.9992063447071695
+      },
+      {
+        "view": "color_draw1",
+        "dimension": "RX",
+        "stratum": "8",
+        "count": 1260,
+        "accuracy": 0.9825396825396825,
+        "macro_F1": 0.9824608838788258
+      },
+      {
+        "view": "color_draw1",
+        "dimension": "day",
+        "stratum": "1",
+        "count": 2100,
+        "accuracy": 0.9876190476190476,
+        "macro_F1": 0.9875855484104584
+      },
+      {
+        "view": "color_draw1",
+        "dimension": "day",
+        "stratum": "2",
+        "count": 2100,
+        "accuracy": 0.9923809523809524,
+        "macro_F1": 0.9923748896805877
+      },
+      {
+        "view": "color_draw1",
+        "dimension": "day",
+        "stratum": "3",
+        "count": 2100,
+        "accuracy": 0.9861904761904762,
+        "macro_F1": 0.986172395023105
+      }
+    ],
+    "IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "raw_target_truth": 0,
+    "updates": 0,
+    "Ag_efficacy_proved": false,
+    "joint_goal_complete": false
+  },
+  "completion": {
+    "status": "ANALYZED_SOURCE_ONLY",
+    "decision": "FAIL_FIXED_BAND_NOISE_SOURCE_GUARD_CLOSED",
+    "actual_NN": 31502,
+    "real_IQ_unique": 6300,
+    "training_updates": 0,
+    "target_access": false,
+    "automatic_training": false
+  },
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 2,
+    "real_IQ_forwarded": 0,
+    "query_read": false,
+    "head_fit_updates": 0
   }
 }
