@@ -1,0 +1,91 @@
+{
+  "status": "VERIFIED_SOURCE_ASSOCIATION_ONLY",
+  "run_id": "20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
+  "execution_commit": "f6eee0d13b61edcbd5e85c50bca1b1177a2e675c",
+  "decision": "SOURCE_ASSOCIATION_CONFIRMED_ONLY",
+  "conditions": {
+    "nonzero_baseline": true,
+    "relative_risk_gain": true,
+    "positive_folds": true,
+    "each_RX_nonnegative": true
+  },
+  "V_contrast_relative_SSE_reduction_percent": 79.86076551542075,
+  "positive_folds": 18,
+  "total_folds": 18,
+  "minimum_fold_relative_SSE_reduction_percent": 41.624808245806044,
+  "per_RX_relative_SSE_reduction_percent": {
+    "1": 87.98832200408316,
+    "3": 79.96792376839957,
+    "4": 81.97205598513072,
+    "6": 78.36841118282871,
+    "8": 74.25300964911159
+  },
+  "best_wrong_RX_descriptive_only": {
+    "permutation": [
+      2,
+      4,
+      3,
+      0,
+      1
+    ],
+    "SSE": 0.03894775393618183,
+    "risk_gain": 0.8259039651217804
+  },
+  "correct_minus_best_wrong_risk_percentage_points": -2.729630996757293,
+  "L_RX_mean": [
+    0.020573029278404452,
+    0.1272373518701218,
+    0.025538686576346142,
+    0.03294064199134262,
+    0.11967399177536832
+  ],
+  "V_RX_mean": [
+    0.020364483991611358,
+    0.12347179927205709,
+    0.026822572597703122,
+    0.033161726293349986,
+    0.1167714583023108
+  ],
+  "cost": {
+    "status": "ARTIFACTS_COMPLETE_SOURCE_ONLY",
+    "run_id": "20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
+    "decision": "SOURCE_ASSOCIATION_CONFIRMED_ONLY",
+    "L": 6300,
+    "V": 27000,
+    "unique_IQ_observations": 33300,
+    "source_cells": 90,
+    "folds": 18,
+    "wrong_RX_controls": 44,
+    "source_RX_holdout": null,
+    "IQ_transformed_for_training": 0,
+    "CP": 0,
+    "NN": 0,
+    "teacher_NN": 0,
+    "updates": 0,
+    "head_fit_updates": 0,
+    "U_used": false,
+    "U_truth_read": false,
+    "target_access": false,
+    "historical_verdict_changed": false,
+    "automatic_training": false,
+    "joint_goal_complete": false,
+    "wall_seconds": 4.717914613895118
+  },
+  "recount": {
+    "status": "VERIFIED_COMPLETE_SCALAR_RECOUNT",
+    "scalar_values": 166500,
+    "cell_means": 180,
+    "folds": 18,
+    "wrong_RX_controls": 44,
+    "max_error": 8.881784197001252e-16,
+    "wall_seconds": 0.14951708493754268,
+    "observer_recomputed_from_IQ": false
+  },
+  "source_RX_holdout": null,
+  "Ag_proved": false,
+  "identity_preservation_proved": false,
+  "IQ_operator_implemented": false,
+  "As_recognition_gain_measured": false,
+  "joint_goal_complete": false,
+  "automatic_training": false
+}

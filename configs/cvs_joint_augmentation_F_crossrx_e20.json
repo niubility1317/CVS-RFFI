@@ -2180,7 +2180,7 @@
       "joint_goal_complete": false
     }
   },
-  "latest_completed_experiment": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
+  "latest_completed_experiment": "20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
   "source_PSD_positive_affine": {
     "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
     "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
@@ -2310,7 +2310,7 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
+  "current_experiment": null,
   "active_As_hypothesis": {
     "status": "CLOSED_FIXED_LSAM_SOURCE_RECOGNITION_FAILED",
     "run_id": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
@@ -2847,7 +2847,7 @@
     "status": "NO_NEW_VALIDATED_IQ_OPERATOR",
     "constraint": "Existing256IQonly;no reliable raw/longcontext mapping",
     "closed_routes_preserved": true,
-    "observational_scope": "Historical circularity shows shared RX association;unique RX assignment is not necessary for such association. No identified pureRX factor,identitypreserving IQ operator or training benefit yet.",
+    "observational_scope": "Full5RX L-to-V fixed scalarassociation confirmed independently;group-sharedRXneednotunique. PureRXhardwarefactor,identitypreservingIQoperator andtrainingbenefit not established;historicalclosedcandidates preserved.",
     "historical_closed_candidates_preserved": true
   },
   "latest_completed_source_diagnostic": {
@@ -4270,9 +4270,9 @@
     "no_rescue": true
   },
   "latest_completed_analysis": "20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01",
-  "current_evidence_gap": "No supported new IQ Ag;no B10 clean independent gain/B11 combined gain/factorial interaction or cross-seed proof. Exact8L/2VJP E30 matches confirm ordinaryAs practical adaptation with clean cost;fixedL-onlySAM failed source andall6formalpractical vsAsReplay. No active new training candidate;full joint goal unmet.",
+  "current_evidence_gap": "Fixed full5RX L-to-V scalarassociation confirmed, not pureRXfactor,identitypreservingIQoperator or identificationbenefit. No active new model or supported new IQ operator;Agcleanindependentgain/B11jointgain/factorialinteraction/crossseedproof missing. Latest E30 AsReplay low53.442857%,clean82.702381%;ordinaryAsbenefitandcleancostconfirmed,LSAMclosed;fulljointgoalACTIVE.",
   "current_source_experiment": null,
-  "latest_completed_source_experiment": "20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01",
+  "latest_completed_source_experiment": "20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
   "unitary_source_result": {
     "run_id": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
     "status": "ANALYZED_SOURCE_IDENTITY_PROTECTION_ONLY",
@@ -4521,7 +4521,7 @@
     "Ag_efficacy": false,
     "joint_goal_complete": false
   },
-  "latest_research_note": "analysis/cvs_RX_specificity_scope_20261018.md",
+  "latest_research_note": "automation_reports/CV-SincNet/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01/source_analysis.md",
   "amplitude_donor_route_check": {
     "status": "NOT_INDEPENDENT_SUPPORTED_NEW_ROUTE_NO_LAUNCH",
     "hypothesis": "Preserve anchor Fourier phase and borrow same-visibleTX crossRX donor amplitude",
@@ -5593,5 +5593,52 @@
     "closed_candidate_reopened": false,
     "Ag_effectiveness_proved": false,
     "joint_goal_complete": false
+  },
+  "shared_RX_L_to_V_source_result": {
+    "run_id": "20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
+    "status": "ANALYZED_VERIFIED_SOURCE_ONLY",
+    "execution_commit": "f6eee0d13b61edcbd5e85c50bca1b1177a2e675c",
+    "report": "automation_reports/CV-SincNet/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01/source_analysis.md",
+    "decision": "SOURCE_ASSOCIATION_CONFIRMED_ONLY",
+    "relative_SSE_gain": 0.7986076551542075,
+    "positive_folds": 18,
+    "total_folds": 18,
+    "per_RX_risk_gain": {
+      "1": 0.8798832200408315,
+      "3": 0.7996792376839957,
+      "4": 0.8197205598513072,
+      "6": 0.7836841118282871,
+      "8": 0.7425300964911159
+    },
+    "best_wrong_RX_risk_gain": 0.8259039651217804,
+    "wrong_RX_descriptive_only": true,
+    "source_L": 6300,
+    "source_V": 27000,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_RX_holdout": null,
+    "source_cells": 180,
+    "scalar_values": 166500,
+    "NN": 0,
+    "CP": 0,
+    "updates": 0,
+    "teacher_NN": 0,
+    "training_IQ_transforms": 0,
+    "U_truth_read": false,
+    "target_access": false,
+    "Ag_proved": false,
+    "identity_preservation_proved": false,
+    "IQ_operator_implemented": false,
+    "automatic_training": false,
+    "joint_goal_complete": false,
+    "historical_closed_candidates_preserved": true,
+    "recount_max_error": 8.881784197001252e-16,
+    "worker_wall_seconds": 4.717914613895118,
+    "recount_wall_seconds": 0.14951708493754268
   }
 }

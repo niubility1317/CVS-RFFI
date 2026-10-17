@@ -1,3 +1,11 @@
+## 2026-10-18：全部源 RX 的 L→V 统计确认完成
+
+[同一行完整源分析](../automation_reports/CV-SincNet/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01/source_analysis.md) 已 ANALYZED／VERIFIED，执行提交 f6eee0d13b61edcbd5e85c50bca1b1177a2e675c。全部5源RX／3day／6TX、L6300／原V27000、256点保持，无训练RX留出；固定圆度幅值对比由L估计后，V相对零对比SSE降79.860766%，18/18折正收益、5/5RX改善。独立reader从全部166500保存标量复算180单元／18折／44错指派，最大误差8.89e-16；源worker4.717915s／reader.149517s，0CP／NN／teacher／更新／训练IQ变换／target。
+
+最佳错误RX指派SSE降82.590397%，正确指派少降2.729631pp；共享RX关联成立不等于唯一RX硬件因素。旧4RXcircularity FAIL及全部关闭候选保持，不自动实现镜像或TX IQ失衡增强、选幅、训练或扩seed。本行没有身份识别结果或新Ag；纯RX可分离因素、身份保持算子和联合识别收益仍缺。V历史健康使用和源条件共享明确保留，不称独立硬件盲测。普通As的真实适应收益与clean代价仍以完整匹配E30为准，不能加上统计SSE降幅预测low>60。
+
+当前无运行中新模型或已支持的新IQ算子；最新源证据支持继续寻找可解释的有界RX观测算子，但没有具体算子时不启动训练。后续模型仍F＋跨RX同TX／E30／默认cos头正常联合训练／完整L6300-U56700隐藏TX-V27000及原U规则；完整目标ACTIVE。以下“当前／下一项”按历史保留。
+
 ## 2026-10-18：解析反例澄清 RX 来源判据的范围
 
 实际原circularity判据在“两个RX对共享稳定偏移”的已知正例上，仅因不能胜过组内错误指派而FAIL，尽管统计风险改善99.375773%；近似共享正例同样失败，distinctRX正例PASS，TX-only/跨TX或day反向三个反例FAIL。432合成标量单元，0IQ/CP/NN/更新。故RX指派唯一性不是共享RX变化存在的必要条件；它不能被用作“没有RX因素”的证明。旧预登记FAIL和候选关闭保持；也没有证明RX硬件可辨识、标签保持或Ag有效，不自动晋级/重跑。原IQ总SNR仍未知，未发现ordinary再接完整As的调用问题，不改噪声或receivedIQ。当前约束仍256点／全部5源RX／完整L6300／F＋跨RX同TX／E30，整体目标ACTIVE。[反例与边界](cvs_RX_specificity_scope_20261018.md)。

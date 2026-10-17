@@ -1,6 +1,8 @@
 # 全部源 RX：L6300 到独立 V27000 的共享统计确认
 
-状态：PLANNED／LOCAL_VERIFIED，尚未读取本行真实源观察、没有新IQ算子或训练成绩。唯一问题是原固定窗口的circularity RX对比，能否由合法L估计并迁移到物理ID互斥的原V，而非识别每个RX的唯一代码。旧4RX circularity按原规则FAIL且固定候选保持关闭；本行不将其改判或实现镜像增强。
+状态：ANALYZED／VERIFIED，仅完成源统计；实际执行提交 f6eee0d13b61edcbd5e85c50bca1b1177a2e675c。全局 SSE 降幅 79.860766%，18/18 折和 5/5 RX 改善，独立完整标量复算误差≤8.89e-16。无 IQ 算子或识别成绩，完整联合目标 ACTIVE。见 [完整源分析](source_analysis.md)、[聚合结果](source_result.json)、[独立复算](independent_recount.json) 和 [执行终态](execution_verification.json)。
+
+以下为实际执行前固定的范围和判据。唯一问题是原固定窗口的circularity RX对比，能否由合法L估计并迁移到物理ID互斥的原V，而非识别每个RX的唯一代码。旧4RX circularity按原规则FAIL且固定候选保持关闭；本行不将其改判或实现镜像增强。
 
 输入：同一既有VALIDATED_ONCE源缓存与source_contract，split392005、L6300／U56700隐藏TX／V27000、全部5源RX[1,3,4,6,8]、day1/2/3、6TX、EQ1/RMS/IQ256/25Msps。L每TX/RX/day70包，V每格300包，90格全部保留。L/V/U-ID权限和物理角色不变；U容器、IQ、TX真值不访问。载体内未使用源特征随缓存反序列化，但不参与任何统计。V只读、不再拆分角色、不更新任何模型、EMA、归一化、原型或教师。
 

@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active Ag+As research;latestF+CROSS_RX/E30/256IQ/fullsource5RX.LonlysourcepredictorandVreadout withinoriginalroles.No newmodelorIQaugmentation;old circularityFAIL preserved.",
   "code": {
-    "commit": "Actual execution Git commit recorded in release_commit.txt and resolved_config",
+    "commit": "f6eee0d13b61edcbd5e85c50bca1b1177a2e675c",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary account/existingCVS-RFFI Python/CPU2/CUDAhidden",
     "cwd": "PROJECT/releases/cvs_F_sharedRX_sourceLtoV_20261018_r01",
@@ -211,8 +211,15 @@
         "GPU": "none",
         "future_training_budget": "Current authorized E30,full5RX,F+CROSS_RX,unchanged defaultcos andU;no model trained in this row"
       },
-      "status": "PLANNED",
-      "result": {}
+      "status": "ANALYZED",
+      "result": {
+        "decision": "SOURCE_ASSOCIATION_CONFIRMED_ONLY",
+        "risk_gain": 0.7986076551542075,
+        "positive_folds": 18,
+        "all_source_RX_preserved": true,
+        "Ag_proved": false,
+        "joint_goal_complete": false
+      }
     }
   ],
   "notes": [

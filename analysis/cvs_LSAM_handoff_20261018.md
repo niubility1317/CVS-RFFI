@@ -20,3 +20,12 @@
 
 
 最新解析证据：analysis/cvs_RX_specificity_scope_20261018.md和对应counterexample程序/JSON，实际历史原判据对已知稳定共享RX正例产生仅唯一性FAIL（风险改善99.375773%）；不再用wrongRX唯一性失败推断没有共享RX因素。旧FAIL/候选关闭不改，不推导硬件参数/身份保持或IQ Ag收益；0IQ/NN/新训练，完整目标ACTIVE。当前噪声调用没有ordinary后再As，原始IQ总SNR未知，未修改任何训练或测试。
+
+
+## 2026-10-18：全部源 RX 的 L→V 统计确认完成
+
+[同一行完整源分析](../automation_reports/CV-SincNet/20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01/source_analysis.md) 已 ANALYZED／VERIFIED，执行提交 f6eee0d13b61edcbd5e85c50bca1b1177a2e675c。全部5源RX／3day／6TX、L6300／原V27000、256点保持，无训练RX留出；固定圆度幅值对比由L估计后，V相对零对比SSE降79.860766%，18/18折正收益、5/5RX改善。独立reader从全部166500保存标量复算180单元／18折／44错指派，最大误差8.89e-16；源worker4.717915s／reader.149517s，0CP／NN／teacher／更新／训练IQ变换／target。
+
+最佳错误RX指派SSE降82.590397%，正确指派少降2.729631pp；共享RX关联成立不等于唯一RX硬件因素。旧4RXcircularity FAIL及全部关闭候选保持，不自动实现镜像或TX IQ失衡增强、选幅、训练或扩seed。本行没有身份识别结果或新Ag；纯RX可分离因素、身份保持算子和联合识别收益仍缺。V历史健康使用和源条件共享明确保留，不称独立硬件盲测。普通As的真实适应收益与clean代价仍以完整匹配E30为准，不能加上统计SSE降幅预测low>60。
+
+当前无运行中新模型或已支持的新IQ算子；最新源证据支持继续寻找可解释的有界RX观测算子，但没有具体算子时不启动训练。后续模型仍F＋跨RX同TX／E30／默认cos头正常联合训练／完整L6300-U56700隐藏TX-V27000及原U规则；完整目标ACTIVE。以下“当前／下一项”按历史保留。

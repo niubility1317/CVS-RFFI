@@ -1,0 +1,87 @@
+{
+  "status": "VERIFIED_COMPLETE_SCALAR_RECOUNT",
+  "run_id": "20261018-diagnostic-F-sharedRX-sourceLtoV-manysig-m1-r01",
+  "decision": "SOURCE_ASSOCIATION_CONFIRMED_ONLY",
+  "conditions": {
+    "nonzero_baseline": true,
+    "relative_risk_gain": true,
+    "positive_folds": true,
+    "each_RX_nonnegative": true
+  },
+  "IQ_descriptors": 33300,
+  "scalar_values": 166500,
+  "cell_means": 180,
+  "folds": 18,
+  "wrong_RX_controls": 44,
+  "risk_gain": 0.7986076551542075,
+  "per_RX_risk_gain": {
+    "1": 0.8798832200408316,
+    "3": 0.7996792376839958,
+    "4": 0.8197205598513072,
+    "6": 0.7836841118282871,
+    "8": 0.7425300964911159
+  },
+  "max_error": 8.881784197001252e-16,
+  "ranges": {
+    "L_s_primary": {
+      "minimum": 0.00018056339628353898,
+      "maximum": 0.5843482250756346,
+      "mean": 0.06519274029831666
+    },
+    "L_s_raw": {
+      "minimum": 0.0000877748619372942,
+      "maximum": 0.5856411368630108,
+      "mean": 0.07495192172269134
+    },
+    "L_s_odd": {
+      "minimum": 0.0004082334431674416,
+      "maximum": 0.5701666086711359,
+      "mean": 0.07438273466656004
+    },
+    "L_s_even": {
+      "minimum": 0.00034648132390252995,
+      "maximum": 0.6082089397006658,
+      "mean": 0.0746444919242199
+    },
+    "L_s_coherence": {
+      "minimum": 0.04587960572003442,
+      "maximum": 0.999829592604135,
+      "mean": 0.9416819469918014
+    },
+    "V_primary": {
+      "minimum": 0.00030084360646787355,
+      "maximum": 0.5614636192724858,
+      "mean": 0.06411840809140647
+    },
+    "V_raw": {
+      "minimum": 0.0003252243707688896,
+      "maximum": 0.532680522510566,
+      "mean": 0.07362801244758589
+    },
+    "V_odd": {
+      "minimum": 0.00020979554449086606,
+      "maximum": 0.7412988617267582,
+      "mean": 0.07309647702863993
+    },
+    "V_even": {
+      "minimum": 0.00012219584572401436,
+      "maximum": 0.768851504734387,
+      "mean": 0.07249330184496519
+    },
+    "V_coherence": {
+      "minimum": 0.02023905162381524,
+      "maximum": 0.9998093058648456,
+      "mean": 0.943505679681142
+    }
+  },
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "U_truth_read": false,
+  "target_access": false,
+  "observer_recomputed_from_IQ": false,
+  "historical_verdict_changed": false,
+  "joint_goal_complete": false,
+  "wall_seconds": 0.14951708493754268
+}
