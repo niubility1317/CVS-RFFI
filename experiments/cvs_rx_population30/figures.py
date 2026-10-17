@@ -26,7 +26,7 @@ def render(data,parent,out):
  ax=axes[1,0];delta=[data['result']['paired_differences'][v]['delta_accuracy_pp'] for v in VIEWS];f1=[100*(summary['RX_POPULATION'][v]['macro_F1']-summary['NOMINAL_AS'][v]['macro_F1']) for v in VIEWS]
  ax.bar(xx,delta,color='#2563a6',width=.6,label='Accuracy difference');ax.plot(xx,f1,color='#db8b25',marker='s',lw=1.5,label='Macro F1 difference');ax.axhline(0,color='0.25',lw=.8)
  for i,x in enumerate(delta):ax.annotate(f'{x:+.3f}',(i,x),xytext=(0,5 if x>=0 else -12),textcoords='offset points',ha='center',fontsize=8)
- ax.set_xticks(xx,LABELS,rotation=25,ha='right');ax.set(title='C  Calibration refresh minus exact nominal As control',ylabel='Difference (pp)');ax.margins(y=.25);ax.legend(frameon=False,fontsize=9)
+ ax.set_xticks(xx,LABELS,rotation=25,ha='right');ax.set(title='C  Virtual RX population minus exact nominal As control',ylabel='Difference (pp)');ax.margins(y=.25);ax.legend(frameon=False,fontsize=9)
  ax=axes[1,1]
  for j,name in enumerate(colors):
   gap=[100*(summary[name]['clean']['accuracy']-summary[name][v]['accuracy']) for v in VIEWS[1:4]];pos=np.arange(3)+(j-.5)*.32

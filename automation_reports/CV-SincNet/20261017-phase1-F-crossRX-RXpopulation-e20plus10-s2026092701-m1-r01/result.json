@@ -1,0 +1,308 @@
+{
+  "status": "ANALYZED",
+  "run_id": "20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01",
+  "execution_commit": "6f70fbee2deff6a634130c0cb094f70cfce80e89",
+  "scientific_pass": false,
+  "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+  "summary": {
+    "RX_POPULATION": {
+      "clean": {
+        "accuracy": 0.8292321428571429,
+        "macro_F1": 0.8249276232587072,
+        "worst_RX_accuracy": 0.730125
+      },
+      "practical_high": {
+        "accuracy": 0.8160833333333334,
+        "macro_F1": 0.8118296612660898,
+        "worst_RX_accuracy": 0.73
+      },
+      "practical_mid": {
+        "accuracy": 0.7932857142857143,
+        "macro_F1": 0.7890673125062849,
+        "worst_RX_accuracy": 0.7155833333333333
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.7696011904761905,
+        "macro_F1": 0.765533006520701,
+        "worst_RX_accuracy": 0.6964166666666667
+      },
+      "practical_high_urban": {
+        "accuracy": 0.781625,
+        "macro_F1": 0.7770943932849543,
+        "worst_RX_accuracy": 0.705625
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6436428571428572,
+        "macro_F1": 0.6390810126564528,
+        "worst_RX_accuracy": 0.5864166666666667
+      },
+      "practical_low_urban": {
+        "accuracy": 0.5342202380952381,
+        "macro_F1": 0.5287842338279642,
+        "worst_RX_accuracy": 0.48920833333333336
+      }
+    },
+    "NOMINAL_AS": {
+      "clean": {
+        "accuracy": 0.8296369047619048,
+        "macro_F1": 0.8253138546277144,
+        "worst_RX_accuracy": 0.730125
+      },
+      "practical_high": {
+        "accuracy": 0.816202380952381,
+        "macro_F1": 0.8119393203007693,
+        "worst_RX_accuracy": 0.73
+      },
+      "practical_mid": {
+        "accuracy": 0.7932976190476191,
+        "macro_F1": 0.7890106343859681,
+        "worst_RX_accuracy": 0.7159583333333334
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.7697738095238095,
+        "macro_F1": 0.7657090405738582,
+        "worst_RX_accuracy": 0.6972083333333333
+      },
+      "practical_high_urban": {
+        "accuracy": 0.7818928571428572,
+        "macro_F1": 0.7773384751324953,
+        "worst_RX_accuracy": 0.7057083333333334
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6437142857142857,
+        "macro_F1": 0.639092427734011,
+        "worst_RX_accuracy": 0.5865
+      },
+      "practical_low_urban": {
+        "accuracy": 0.5344702380952381,
+        "macro_F1": 0.5289993837273708,
+        "worst_RX_accuracy": 0.48954166666666665
+      }
+    }
+  },
+  "differences_pp": {
+    "clean": -0.04047619047619048,
+    "practical_high": -0.011904761904761904,
+    "practical_mid": -0.0011904761904761906,
+    "practical_low_suburban": -0.017261904761904763,
+    "practical_high_urban": -0.026785714285714288,
+    "practical_mid_urban": -0.0071428571428571435,
+    "practical_low_urban": -0.025
+  },
+  "suburban_gap_pp": {
+    "RX_POPULATION": {
+      "practical_high": 1.314880952380948,
+      "practical_mid": 3.59464285714286,
+      "practical_low_suburban": 5.96309523809524
+    },
+    "NOMINAL_AS": {
+      "practical_high": 1.3434523809523813,
+      "practical_mid": 3.6339285714285685,
+      "practical_low_suburban": 5.986309523809529
+    }
+  },
+  "paired": {
+    "clean": {
+      "repairs": 119,
+      "new_errors": 187,
+      "left_correct": 139311,
+      "right_correct": 139379,
+      "delta_accuracy_pp": -0.04047619047619048,
+      "left_clean_and_scene": 139311,
+      "right_clean_and_scene": 139379,
+      "joint_delta_pp": -0.04047619047619048,
+      "common_clean_count": 139192,
+      "repairs_common_clean": 0,
+      "new_errors_common_clean": 0
+    },
+    "practical_high": {
+      "repairs": 149,
+      "new_errors": 169,
+      "left_correct": 137102,
+      "right_correct": 137122,
+      "delta_accuracy_pp": -0.011904761904761904,
+      "left_clean_and_scene": 129873,
+      "right_clean_and_scene": 129940,
+      "joint_delta_pp": -0.039880952380952385,
+      "common_clean_count": 139192,
+      "repairs_common_clean": 94,
+      "new_errors_common_clean": 111
+    },
+    "practical_mid": {
+      "repairs": 185,
+      "new_errors": 187,
+      "left_correct": 133272,
+      "right_correct": 133274,
+      "delta_accuracy_pp": -0.0011904761904761906,
+      "left_clean_and_scene": 125709,
+      "right_clean_and_scene": 125757,
+      "joint_delta_pp": -0.028571428571428574,
+      "common_clean_count": 139192,
+      "repairs_common_clean": 126,
+      "new_errors_common_clean": 131
+    },
+    "practical_low_suburban": {
+      "repairs": 176,
+      "new_errors": 205,
+      "left_correct": 129293,
+      "right_correct": 129322,
+      "delta_accuracy_pp": -0.017261904761904763,
+      "left_clean_and_scene": 121583,
+      "right_clean_and_scene": 121638,
+      "joint_delta_pp": -0.03273809523809524,
+      "common_clean_count": 139192,
+      "repairs_common_clean": 140,
+      "new_errors_common_clean": 146
+    },
+    "practical_high_urban": {
+      "repairs": 148,
+      "new_errors": 193,
+      "left_correct": 131313,
+      "right_correct": 131358,
+      "delta_accuracy_pp": -0.026785714285714288,
+      "left_clean_and_scene": 124117,
+      "right_clean_and_scene": 124203,
+      "joint_delta_pp": -0.05119047619047619,
+      "common_clean_count": 139192,
+      "repairs_common_clean": 103,
+      "new_errors_common_clean": 142
+    },
+    "practical_mid_urban": {
+      "repairs": 290,
+      "new_errors": 302,
+      "left_correct": 108132,
+      "right_correct": 108144,
+      "delta_accuracy_pp": -0.0071428571428571435,
+      "left_clean_and_scene": 100970,
+      "right_clean_and_scene": 101023,
+      "joint_delta_pp": -0.03154761904761905,
+      "common_clean_count": 139192,
+      "repairs_common_clean": 223,
+      "new_errors_common_clean": 237
+    },
+    "practical_low_urban": {
+      "repairs": 331,
+      "new_errors": 373,
+      "left_correct": 89749,
+      "right_correct": 89791,
+      "delta_accuracy_pp": -0.025,
+      "left_clean_and_scene": 82983,
+      "right_clean_and_scene": 83045,
+      "joint_delta_pp": -0.036904761904761905,
+      "common_clean_count": 139192,
+      "repairs_common_clean": 270,
+      "new_errors_common_clean": 307
+    }
+  },
+  "preregistered_criteria": {
+    "low_urban_gain_at_least_0_5pp": false,
+    "clean_not_lower": false,
+    "mid_urban_not_lower": false,
+    "each_suburban_no_more_than_0_25pp_lower": true
+  },
+  "clean_net_vs_matched_B00_pp": -2.3452380952381002,
+  "B00_reference_accuracy": 0.8526845238095239,
+  "B00_reference_run": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
+  "joint": {
+    "clean_net_positive": false,
+    "low_urban_above60": false,
+    "each_suburban_gap_within_exploratory2pp": false,
+    "Ag_tested": false,
+    "joint_factorial_tested": false,
+    "model_seed_count": 1,
+    "goal_complete": false
+  },
+  "verification": {
+    "CM_recounts": 252,
+    "partition_sums": 42,
+    "max_metric_error": 2.220446049250313e-16,
+    "actual_native_keys": 857,
+    "actual_native_differences": [
+      "output_dir",
+      "run_id",
+      "candidate_id"
+    ],
+    "same_complete_LU_sequence": true,
+    "LU_sequence_records": 4440,
+    "objective_records": 2220,
+    "objective_max_error": 1.0728836064011205e-7,
+    "reference_records": 2220,
+    "unit_records": 2220,
+    "role_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_RX_holdout": null,
+    "head_fit_updates": 0,
+    "U_truth_read": false
+  },
+  "population": {
+    "original_sessions": 15,
+    "virtual_sessions": 150,
+    "changed_true_hardware": 150,
+    "applications": 284160,
+    "extra_physical_filters": 0,
+    "physical_channel_prepasses": 0,
+    "real_source_RX_replaced": false,
+    "dropped": 0,
+    "confidence_filter": false
+  },
+  "cost": {
+    "actual_steps": 2220,
+    "parent_steps": 4440,
+    "cumulative_steps": 6660,
+    "parent_epochs": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "L_forward_packets": 1136640,
+    "student_train_forward_packets": 1703640,
+    "student_eval_forward_packets": 324002,
+    "teacher_train_forward_packets": 0,
+    "teacher_eval_forward_packets": 567000,
+    "As_training_observations": 284160,
+    "Ag_training_observations": 0,
+    "elapsed_seconds": 1244.7917442321777,
+    "prediction_NN": 1176002,
+    "prediction_wall_seconds": 42.127735040849075,
+    "score_CPU_wall_seconds": 3.4729187190532684,
+    "publish_smoke_NN": 2,
+    "total_new_NN": 3770646
+  },
+  "missing_historical_optional_metadata_paths": [
+    "/rows/RX_POPULATION/native_terminal/heldout_eval/protected_metrics/strict_udu",
+    "/rows/RX_POPULATION/native_terminal/heldout_eval/protected_metrics/receiver_floor",
+    "/rows/RX_POPULATION/native_terminal/heldout_eval/protected_metrics/sat_mean_tx",
+    "/rows/RX_POPULATION/native_terminal/heldout_eval/protected_metrics/sat_floor_tx",
+    "/rows/RX_POPULATION/native_terminal/heldout_eval/protected_metrics/sat_strict_mean",
+    "/rows/RX_POPULATION/native_terminal/heldout_eval/protected_metrics/sat_strict_floor",
+    "/rows/RX_POPULATION/native_terminal/heldout_eval/protected_metrics/sat_receiver_floor",
+    "/rows/RX_POPULATION/native_terminal/heldout_eval/protected_metrics/sat_receiver_seen_day_floor",
+    "/rows/RX_POPULATION/native_terminal/heldout_eval/protected_metrics/sat_receiver_strict_floor",
+    "/rows/RX_POPULATION/native_terminal/reference_to_final_tail_safety/final/sat_pair_angle_p95_deg",
+    "/rows/NOMINAL_AS/native_terminal/reference_to_final_tail_safety/final/sat_pair_angle_p95_deg"
+  ],
+  "IQ_context_constraint": {
+    "length": 256,
+    "longer_context_mapping_available": false,
+    "user_confirmed": true
+  },
+  "Ag_gain_proved": false,
+  "As_gain_proved": false,
+  "joint_goal_complete": false,
+  "target_feedback": false,
+  "independent_analysis": {
+    "IQ": 0,
+    "CP": 0,
+    "raw_truth": 0,
+    "NN": 0,
+    "updates": 0
+  }
+}

@@ -20,4 +20,4 @@
 |固定 N0 先验训练：首个 E30 反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-N0prior-e20plus10-s2026092701-m1-r01/report.md)|
 |全源慢变包络：固定依据检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01/report.md)|
 |固定平滑 IQ 滤波首次训练 E30：最终结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01/report.md)|
-|原接收先验的虚拟会话覆盖：全源 E20＋10|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01/report.md)|
+|完整接收先验的虚拟会话覆盖：E30 负结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01/report.md)|

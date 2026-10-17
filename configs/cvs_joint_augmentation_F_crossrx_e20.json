@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_RX_POPULATION_E30_RUNNING",
+  "status": "RESEARCH_ACTIVE_FIXED_RX_POPULATION_E30_CLOSED",
   "source_experiment": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
   "authorization": "Latest explicit user budget E30;new fixed FIR first-learning-utility rows use matching noAg fullsource E20 parents plus10;no trainingRXholdout",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -154,7 +154,7 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": null,
-  "next_training_hypothesis": "Complete native receiver-prior virtualsession coverage;one fixed same ordinaryAs E20+10 comparison",
+  "next_training_hypothesis": null,
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
     "status": "ANALYZED_SOURCE_SENSITIVITY_PASS_NOT_AG_EFFICACY",
@@ -2180,7 +2180,7 @@
       "joint_goal_complete": false
     }
   },
-  "latest_completed_experiment": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02",
+  "latest_completed_experiment": "20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01",
   "source_PSD_positive_affine": {
     "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
     "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
@@ -2310,7 +2310,7 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": "20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01",
+  "current_experiment": null,
   "active_As_hypothesis": {
     "status": "CLOSED_FIXED_N0_TRAINING_FAILED",
     "hypothesis": "Equalprior .5/1.5 linearN0 training provides useful practical benefit while clean protected",
@@ -3959,21 +3959,7 @@
     "updates": 0,
     "target_access": false
   },
-  "latest_completed_training_experiment": {
-    "run_id": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
-    "status": "ANALYZED",
-    "execution_commit": "97f260f469a47a000eed8ab84e8507a3cd0ca37d",
-    "cumulative_epochs_each": 30,
-    "model_seed_count": 1,
-    "new_rows": 2,
-    "new_epochs_each": 10,
-    "new_model_epochs_total": 20,
-    "new_updates_total": 4440,
-    "cumulative_updates_each": 6660,
-    "scientific_pass": false,
-    "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
-    "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01/report.md"
-  },
+  "latest_completed_training_experiment": "20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01",
   "antithetic_source_result": {
     "run_id": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02",
     "status": "ANALYZED_SOURCE_ONLY",
@@ -4078,7 +4064,7 @@
   },
   "rx_population_release": {
     "run_id": "20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01",
-    "status": "RUNNING_VERIFIED",
+    "status": "ANALYZED_VERIFIED",
     "execution_commit": "6f70fbee2deff6a634130c0cb094f70cfce80e89",
     "source_RX": [
       1,
@@ -4093,13 +4079,13 @@
     "cumulative_updates_planned": 6660,
     "new_updates_planned": 2220,
     "observed_progress": {
-      "epoch": 3,
-      "cumulative_epoch": 23,
-      "steps": 666,
-      "cumulative_steps": 5106,
-      "L_packets": 340992,
+      "epoch": 10,
+      "cumulative_epoch": 30,
+      "steps": 2220,
+      "cumulative_steps": 6660,
+      "L_packets": 1136640,
       "Ag_packets": 0,
-      "As_packets": 85248,
+      "As_packets": 284160,
       "source_RX": [
         1,
         3,
@@ -4111,8 +4097,8 @@
       "U_truth_read": false,
       "target_access": false
     },
-    "training_complete": false,
-    "formal_scored": false,
+    "training_complete": true,
+    "formal_scored": true,
     "joint_goal_complete": false,
     "actual_config_comparison": {
       "native_keys": 857,
@@ -4122,6 +4108,157 @@
         "run_id"
       ],
       "parent_role_ID_sets_match": true
-    }
+    },
+    "worker_terminal": true,
+    "dispatcher_terminal": true
+  },
+  "IQ_context_constraint": {
+    "length": 256,
+    "longer_context_mapping_available": false,
+    "authority": "User explicitly confirmed continue existing256IQ",
+    "no_longer_context_required": true
+  },
+  "rx_population_E30_result": {
+    "run_id": "20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01",
+    "status": "ANALYZED",
+    "execution_commit": "6f70fbee2deff6a634130c0cb094f70cfce80e89",
+    "report": "automation_reports/CV-SincNet/20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01/report.md",
+    "scientific_pass": false,
+    "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+    "summary": {
+      "RX_POPULATION": {
+        "clean": {
+          "accuracy": 0.8292321428571429,
+          "macro_F1": 0.8249276232587072,
+          "worst_RX_accuracy": 0.730125
+        },
+        "practical_high": {
+          "accuracy": 0.8160833333333334,
+          "macro_F1": 0.8118296612660898,
+          "worst_RX_accuracy": 0.73
+        },
+        "practical_mid": {
+          "accuracy": 0.7932857142857143,
+          "macro_F1": 0.7890673125062849,
+          "worst_RX_accuracy": 0.7155833333333333
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7696011904761905,
+          "macro_F1": 0.765533006520701,
+          "worst_RX_accuracy": 0.6964166666666667
+        },
+        "practical_high_urban": {
+          "accuracy": 0.781625,
+          "macro_F1": 0.7770943932849543,
+          "worst_RX_accuracy": 0.705625
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6436428571428572,
+          "macro_F1": 0.6390810126564528,
+          "worst_RX_accuracy": 0.5864166666666667
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5342202380952381,
+          "macro_F1": 0.5287842338279642,
+          "worst_RX_accuracy": 0.48920833333333336
+        }
+      },
+      "NOMINAL_AS": {
+        "clean": {
+          "accuracy": 0.8296369047619048,
+          "macro_F1": 0.8253138546277144,
+          "worst_RX_accuracy": 0.730125
+        },
+        "practical_high": {
+          "accuracy": 0.816202380952381,
+          "macro_F1": 0.8119393203007693,
+          "worst_RX_accuracy": 0.73
+        },
+        "practical_mid": {
+          "accuracy": 0.7932976190476191,
+          "macro_F1": 0.7890106343859681,
+          "worst_RX_accuracy": 0.7159583333333334
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7697738095238095,
+          "macro_F1": 0.7657090405738582,
+          "worst_RX_accuracy": 0.6972083333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7818928571428572,
+          "macro_F1": 0.7773384751324953,
+          "worst_RX_accuracy": 0.7057083333333334
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6437142857142857,
+          "macro_F1": 0.639092427734011,
+          "worst_RX_accuracy": 0.5865
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344702380952381,
+          "macro_F1": 0.5289993837273708,
+          "worst_RX_accuracy": 0.48954166666666665
+        }
+      }
+    },
+    "differences_pp": {
+      "clean": -0.04047619047619048,
+      "practical_high": -0.011904761904761904,
+      "practical_mid": -0.0011904761904761906,
+      "practical_low_suburban": -0.017261904761904763,
+      "practical_high_urban": -0.026785714285714288,
+      "practical_mid_urban": -0.0071428571428571435,
+      "practical_low_urban": -0.025
+    },
+    "suburban_gap_pp": {
+      "RX_POPULATION": {
+        "practical_high": 1.314880952380948,
+        "practical_mid": 3.59464285714286,
+        "practical_low_suburban": 5.96309523809524
+      },
+      "NOMINAL_AS": {
+        "practical_high": 1.3434523809523813,
+        "practical_mid": 3.6339285714285685,
+        "practical_low_suburban": 5.986309523809529
+      }
+    },
+    "clean_net_vs_B00_pp": -2.3452380952381002,
+    "criteria": {
+      "low_urban_gain_at_least_0_5pp": false,
+      "clean_not_lower": false,
+      "mid_urban_not_lower": false,
+      "each_suburban_no_more_than_0_25pp_lower": true
+    },
+    "cost": {
+      "actual_steps": 2220,
+      "parent_steps": 4440,
+      "cumulative_steps": 6660,
+      "parent_epochs": 20,
+      "new_epochs": 10,
+      "cumulative_epochs": 30,
+      "L_forward_packets": 1136640,
+      "student_train_forward_packets": 1703640,
+      "student_eval_forward_packets": 324002,
+      "teacher_train_forward_packets": 0,
+      "teacher_eval_forward_packets": 567000,
+      "As_training_observations": 284160,
+      "Ag_training_observations": 0,
+      "elapsed_seconds": 1244.7917442321777,
+      "prediction_NN": 1176002,
+      "prediction_wall_seconds": 42.127735040849075,
+      "score_CPU_wall_seconds": 3.4729187190532684,
+      "publish_smoke_NN": 2,
+      "total_new_NN": 3770646
+    },
+    "coverage": {
+      "virtual_sessions": 150,
+      "applications": 284160,
+      "all5sourceRX": true
+    },
+    "Ag_gain_proved": false,
+    "As_gain_proved": false,
+    "joint_goal_complete": false,
+    "target_feedback": false,
+    "no_rescue": true
   }
 }

@@ -1,44 +1,75 @@
-# 原接收先验的虚拟会话覆盖：全源 E20＋10
+# 完整接收先验的虚拟会话覆盖：E30 负结果
 
-状态：RUNNING／VERIFIED；尚未完成训练或正式识别评分。唯一假设是：完整 practical 训练只复用 15 个模拟接收会话，增加同一原先验下的会话覆盖能改善 urban 身份学习。当前只由代码证实“固定15状态”，没有证实它是性能瓶颈。本实验直接训练和评分，不把模拟检查或源统计当作身份收益。
+状态：**ANALYZED／VERIFIED；固定配方失败并关闭**。同一个全源普通 As E20 学生及 ownEMA 追加 10 轮，累计 E30／6660 更新；全部七视图预测与独立 truth-last 评分完成。执行 commit：`6f70fbee2deff6a634130c0cb094f70cfce80e89`。原 worker698001／dispatcher697976 均已自然结束，失败标记为空，未改其他健康任务。
 
-## 单变量与匹配参照
+本轮只检验“原 As 固定 15 个模拟接收会话是否限制身份学习”。150 个新虚拟会话全部实际生效，但相对严格同父、同预算普通 As，clean −0.040476 pp、mid urban −0.007143 pp、low urban −0.025000 pp，七视图准确率均下降。预定 low 至少 +0.5 pp、clean/mid 不降条件失败。关闭固定配方，不换会话键／刷新间隔／幅度／seed／父模型／预算救跑，不扩种子。单 seed 微小负差只反证这套固定配方达到要求，不能证明接收多样性普遍无用。
 
-原 ordinaryAs source-final20 学生＋自身EMA严格加载，原source固定final选择，无未知上游或target选模；与既有 nominal E30 FULL_AS 共用同一个父。追加10轮／2220更新，累计E30／6660更新；重置AdamW lr.0002/wd.0001、cos10，与控制一致，不称scratch30或精确optimizerresume。父来源与完整角色匹配复用既有证明，输入未变，不重新构造或验证数据。
+## 模型、数据与唯一变化
 
-F＋跨RX同TX／三路SIG_TIME／统一Sinc／joint160／原默认cos头与骨干联合训练。全部源RX1/3/4/6/8、day1/2/3、L6300／U56700隐藏TX／V27000、split392005保持，无训练RX留出，不换5580/720契约。原U、教师、普通增强父实际E13冻结、SupCon累计E21..30=.1、4L前向、.5ordinaryRD+.5AsRD+.1SupCon均不改；每对RDrop复用同一个已生成IQ，As从raw-before-ordinary产生，全部有标签As监督。没有新loss／分支／头拟合／U规则／额外NN。
+F＋跨 RX 同 TX、三路 SIG_TIME、统一 Sinc CENTER_25K／CENTER_UNITS、joint160、原默认 cosine W6×160 与骨干联合训练、NoExplicitCFO 和必要内部补偿保持。全部源 RX1/3/4/6/8、day1/2/3、L6300／U56700 隐藏 TX／V27000、split392005，不留出训练 RX，不换5580/720。用户已明确没有可靠的更长上下文映射，后续继续使用现有 **256 点 IQ**。
 
-仅把原模拟器的完整Receiver抽样会话键改为virtual/e{21..30}/rx:day:eq，共150个；每个虚拟会话轮内稳定，不按TX／sig／标签设硬件。直接调用原receiver_for_session和原receiverseed；真实幅度范围±.2dB、正交误差±1°、RX oscillator std200Hz、估计误差std.05dB/.2°全部继承既有先验。传播／遮挡／几何／H／噪声seed与namespace不变，完整原residual／post_sync／NoEQ／referenceSNR30／reflect只执行一次，接收质量／补偿／AGC依赖保留，NoExplicitCFO及内部必要补偿保持。
+父为完整源 CONCAT-s2026092701 的 fixed-final20，无其他模型继承，来源和逐角色物理 ID 与本次契约匹配；不按目标排名选择。与 nominal E30 FULL_AS 复用相同父学生和自身 EMA，重置 AdamW lr.0002／wd.0001、cos10，原 U／门控／teacher／segment cache 规则不改。是 E20＋10，不是 scratch30 或精确 optimizer resume。旧基准目标暴露背景保留，不声明新独立盲测；目标不参与参数、父、选模、晋级或选择性重跑。
 
-真实记录的源RX与IQ不替换、不反演TX硬件、不新增PA/DAC/量化或剪裁。该操作只是 A_s 的模拟接收覆盖变化，不能据此称A_g有效或真实接收机替换。旧“校准刷新”只换估计误差且固定15组true硬件；其失败保持。本次完整原Receiver先验变化是另一个算子，不按旧目标差值选新幅度或刷新间隔。
+唯一科学变化：每个累计 epoch21..30×原 RX/day/eq，共 150 个虚拟接收会话，轮内稳定。直接调用原 receiver_for_session／原 receiver seed20261016423；true IQ 幅度范围±.2dB、正交误差±1°、RX oscillator std200Hz、校准估计误差 std.05dB/.2°均沿用原先验，不按 TX/sig/标签设硬件。原记录的真实 RX、物理 ID 和源 IQ 没有被替换或反演，未新增 PA/DAC/量化/剪裁或 TX IQ 变换。
 
-## 固定判定与测试
+H、几何、遮挡、noise seed/namespace 和完整 residual/post_sync/NoEQ/reference30/reflect 路径保持，一次完整处理，质量／锁定／频相补偿／AGC 依赖仍由原程序计算。属于 A_s 先验覆盖变化，不是新 A_g 证明。旧校准刷新只改变 estimated IQ，保留15组 true硬件；其失败不改判，本次没有调整该旧配方的参数。
 
-唯一模型 RX_POPULATION-s2026092701。固定累计final30后自动clean＋六practical，各168000包；同row全部七视图prediction/logp固定后独立CPU truth-last，用CP内默认头直接判决。正式received IQ／测试SNR／信道与困难样本不改，既有nominal控制只复用产物，不重训或重测。报告全部RX/TX/day、macroF1／worstRX、修复／新增错误、同包clean与场景联合正确和各suburban绝对值／自身clean差。
+原 ordinary 与 As 两对 RDrop 各.5，L128物理样本归一化，4L前向，SupCon .1 只作用于共有 ordinary 对；每对复用同一个已生成 IQ。As 从 raw-before-ordinary 产生，不叠加普通 AWGN/multipath，全部有标签 As 监督，无urban置信筛选；新增 loss／部署参数／头拟合／U规则／NN前向均0。
 
-固定反证条件：low urban相对nominal至少+.5pp，clean与mid urban不降，每suburban不低于nominal .25pp。任一失败关闭固定配方，不改幅度／会话键／间隔／seed／父／预算救跑，不自动扩seed。结果只作固定单seed结论，不能用于目标驱动候选排序／选模／晋级／选择性重跑。另完整报告clean相对匹配B00净正、low>60%、各suburban差≤2pp探索条件；不得降低clean缩差。此单A_s隔离不构成新的四因子或联合成功。
+## 七视图正式身份识别
 
-## 执行与产物
+每视图168000相同物理样本，合计1176000正式决策；全部prediction/logp固定后，独立CPU scorer连接truth。直接使用checkpoint内默认头，测试received IQ／SNR／信道及困难样本不改。
 
-- run：`20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01`；owner：codex/root/F-RXpopulation-E30。
-- CWD：PROJECT/releases/cvs_F_RXpopulation_E30_20261017_r01；命令：CVS-RFFI/bin/python -u experiments/cvs_rx_population30/runner.py。N607普通账户、CPU2、按所有owner每GPU最多3实验且空闲≥12GB选1GPU。
-- 不可覆盖输出：PROJECT/runs/20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01；登记与配置见[experiment.json](experiment.json)和configs/cvs_RXpopulation_e30.json。实际Git HEAD作为代码身份，发布archive内release_commit.txt记录，一次archive本地/远端SHA比较和remotecompile，不加审批或hash链。
-- 训练2220新更新、L1136640NN／U567000原规则、As284160；150会话draw，0新NN／额外滤波／完整信道预跑。父20／4440复用成本、教师／源eval／预测／smoke／墙钟实际分别记录，不称零物理成本。
-- 预期真实CP noquery smoke、resolved／actualargs／actualmodules／ordinary、全量L/U序列与每步目标、finalCP／source冻结、七视图prediction／score、coverage、成本、曲线和同row报告。
-- 仅源/协议不符、非有限、输出冲突、启动/系统技术失败停止run-owned流程并保留，不重启旧健康任务，不自动重试。
+|场景|普通 As 准确率 %|会话覆盖准确率 %|差 pp|会话覆盖宏 F1 %|会话覆盖最差 RX %|
+|---|---:|---:|---:|---:|---:|
+|clean|82.963690|82.923214|-0.040476|82.492762|73.012500|
+|suburban high|81.620238|81.608333|-0.011905|81.182966|73.000000|
+|suburban mid|79.329762|79.328571|-0.001190|78.906731|71.558333|
+|suburban low|76.977381|76.960119|-0.017262|76.553301|69.641667|
+|urban high|78.189286|78.162500|-0.026786|77.709439|70.562500|
+|urban mid|64.371429|64.364286|-0.007143|63.908101|58.641667|
+|urban low|53.447024|53.422024|-0.025000|52.878423|48.920833|
 
-## 已完成的有限验证
+会话覆盖模型三个suburban距自身clean为 **1.314881／3.594643／5.963095 pp**，普通As为1.343452／3.633929／5.986310 pp。差距略缩小伴随clean下降，不作为联合收益；只有high达到2pp首轮探索条件。
 
-本地编译PASS，36协议负例、120同latent配对（120原＋240候选/重复完整处理）、LOS/PARTIAL/BLOCKED覆盖、150虚拟会话重复性及原生调用精确回放PASS；0真实IQ/CP/NN/更新。合成最大相对IQ变化1.57454%，只用于说明算子实际生效，不是标签保持或识别提升证明。一次独立P0/P1审查PASS，0 P0/P1；N607只读预检PASS。尚未发布、训练或取得正式结果。
+相对同数据、同E20＋10预算的B00 clean85.268452%，候选clean净 **−2.345238 pp**；low53.422024%未超过60%。本行只隔离一个As变化，没有新Ag或四因子／交互项证据。完整联合目标保持ACTIVE，未完成，不把历史不同实验增益相加。
 
-## 发布后的实际观察
+## 完整匹配与同包错误变化
 
-执行 commit `6f70fbee2deff6a634130c0cb094f70cfce80e89`，推送分支OID独立一致；一次archive传输比较、remotecompile、合成检查和真实CP no-query smoke PASS。dispatcher697976／worker698001的PID/CWD/argv/CUDA/GPU、6849→12046字节日志增长独立核实。已完成新增E1／累计E21，222／累计4662更新、L113664 NN／As28416，全部5源RX，无训练RX留出、U真值或target接触。
+857项实际native参数仅run_id／candidate_id／output_dir不同。两行4440条完整L/U物理序列逐条相同，L6300／U56700全部覆盖，新增2220更新，非有限loss/梯度跳步0。2220条参考目标和2220条Sinc单位记录完整；逐步重算.5commonRD＋.5AsRD＋.1SupCon及两对CE/KL，最大误差1.0728836064011205e-7，全部4L／128As／同IQ／零重抽／全As监督符合。150个虚拟会话覆盖完整10×15笛卡尔积，150/150 true硬件与原固定会话不同；这只证明覆盖变化，不是身份收益。
 
-原进程健康，尚无final30或七视图正式结果，不宣称A_s／A_g或联合收益。预登记的10轮预算与判定条件不变，不追加训练、调整先验或重复启动同row。
+|场景|修复|新增错误|准确率差 pp|clean 与场景同时正确差 pp|
+|---|---:|---:|---:|---:|
+|clean|119|187|-0.040476|-0.040476|
+|suburban high|149|169|-0.011905|-0.039881|
+|suburban mid|185|187|-0.001190|-0.028571|
+|suburban low|176|205|-0.017262|-0.032738|
+|urban high|148|193|-0.026786|-0.051190|
+|urban mid|290|302|-0.007143|-0.031548|
+|urban low|331|373|-0.025000|-0.036905|
 
-## 恢复跟进与实际匹配
+low修复331／新增373，净多42错；clean修复119／新增187，净多68错。clean与low同时正确82983／对照83045，净少62；共同clean正确139192包中low修复270／新增307，净少37，不能将局部修复记为联合改善。
 
-最新独立读取确认同worker698001／dispatcher697976仍存活；已新增E3／累计E23，666／累计5106更新、L340992 NN／As85248。无训练／预测／评分完成标记，不能宣称实验完成。
+252个6×6混淆矩阵的准确率、固定六类macroF1和有支持类macroaccuracy重算一致，42个RX/TX/day分区逐元素相加等于overall，最大误差2.22e−16；七视图配对数与正式差值一致。[全部126个分层结果](stratified_results.md)保留所有RX/TX/day和场景，没有选取有利子集。[结果汇总](result.json)与[独立评分复算](result_summary.json)保存完整判定。
 
-857项实际native参数与原nominalE30逐项比较，仅run_id／candidate_id／output_dir不同，其余完全相同；新源source_contract的L6300／U56700／V27000物理ID集合与固定父逐角色匹配。实际加载的原leo_practical模块、25MHz／2.462GHz／residual／post_sync／NoEQ／reference30／reflect与接收先验值已读出，见[实际配置核对](actual_config_verification.json)。此项仅为同条件证据，无新增IQ／CP／NN／更新或目标读取。
+## 实际成本与限制
+
+父E20／4440更新复用，新增E10／2220更新，累计E30／6660更新。新增L1136640包NN已包含于student_train1703640中；student_eval324002、teacher_train0／eval567000、预测1176002（含预测CP合成smoke2）、发布真实CP无query合成smoke2，合计 **3770646新增NN包前向**。ownEMA继承eval计数2已扣除，0新teacher或诊断头。
+
+As完整物理处理284160次，新虚拟receiver draw150次、应用284160次，额外滤波／完整信道预跑0；无新NN不等于零物理CPU成本。源段墙钟1244.791744s，预测42.127735s，独立评分CPU墙钟3.472919s。共享资源时序与历史收尾差异存在，墙钟差不作为纯会话采样开销归因。
+
+旧nominal原训练在保存安全权重后自身final加载收尾异常，完整瞬态sourceeval计数未落盘；既有零更新恢复已完成合法七视图评分，本次只复用，不重训重测。训练更新、L/U与L训练前向匹配；不宣称缺失的旧eval总成本也精确匹配。11条旧可选诊断N/A转null并保留路径，不是本次loss/梯度或正式分数非有限。
+
+所有独立分析只读已有日志、分数、正确性数组及父20轮日志，0新IQ／CP／rawtruth／NN／更新。报告分析入口补齐缺失的旧日志工具为本包log_io，图标签同步修正；只读进程执行，训练release／权重／预测均未修改。未新增科学 gate、审批或重审。
+
+![完整源曲线与E30匹配结果](figures/RXpopulation_matched_E30.png)
+
+[独立PDF图](figures/RXpopulation_matched_E30.pdf)
+
+## 执行与交接
+
+run：`20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01`；owner codex/root/F-RXpopulation-E30；CWD PROJECT/releases/cvs_F_RXpopulation_E30_20261017_r01；命令 CVS-RFFI/bin/python -u experiments/cvs_rx_population30/runner.py。N607普通账户／CPU2／单GPU按全部owner每GPU最多3实验安排；源输出位于PROJECT/runs/20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01，原产物保留。
+
+一次独立P0/P1审查PASS；36协议负例、120同latent配对（共360完整合成处理）、150虚拟会话重复性／原生回放PASS。发布单archive比对／remotecompile／真实CP noquery smoke／PID-CWD-argv-CUDA-GPU-loggrowth均已核实。实际配置见[独立核对](actual_config_verification.json)，状态见[执行证据](execution_evidence.json)。
+
+固定配方关闭，当前没有由合法源证据支持的新训练候选；不将本结果用于目标驱动调参、选择父权重或选择性重跑。A_g跨域身份提取、A_s必要增量和二者联合保留收益仍待证明。E30上限、全部源RX和256点IQ约束继续有效。

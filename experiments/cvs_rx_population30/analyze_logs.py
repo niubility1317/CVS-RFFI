@@ -2,8 +2,8 @@
 from pathlib import Path
 from collections import Counter
 import json,math
-from experiments.cvs_practical_power30.analyze_logs import source_logs,json_ready,read_json
-from experiments.cvs_clock_factorial20.analyze_logs import compare_sequences,records
+from .log_io import source_logs,json_ready,read_json
+from .log_io import compare_sequences,records
 
 def collect(run_root,original_training_root,control_root):
  run_root=Path(run_root);original_training_root=Path(original_training_root);control_root=Path(control_root);rid='RX_POPULATION-s2026092701';b=run_root/rid

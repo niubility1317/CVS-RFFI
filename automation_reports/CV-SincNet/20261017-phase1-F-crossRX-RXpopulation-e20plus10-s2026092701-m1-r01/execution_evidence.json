@@ -1,5 +1,5 @@
 {
-  "status": "RUNNING_VERIFIED",
+  "status": "ANALYZED_VERIFIED",
   "read_at": "2026-10-17T14:53:33.585Z",
   "execution_commit": "6f70fbee2deff6a634130c0cb094f70cfce80e89",
   "dispatcher_PID": 697976,
@@ -40,13 +40,13 @@
     }
   },
   "progress": {
-    "epoch": 3,
-    "cumulative_epoch": 23,
-    "steps": 666,
-    "cumulative_steps": 5106,
-    "L_packets": 340992,
+    "epoch": 10,
+    "cumulative_epoch": 30,
+    "steps": 2220,
+    "cumulative_steps": 6660,
+    "L_packets": 1136640,
     "Ag_packets": 0,
-    "As_packets": 85248,
+    "As_packets": 284160,
     "source_RX": [
       1,
       3,
@@ -59,15 +59,15 @@
     "target_access": false
   },
   "failure": null,
-  "training_complete": false,
-  "formal_predictions_complete": false,
-  "formal_scored": false,
+  "training_complete": true,
+  "formal_predictions_complete": true,
+  "formal_scored": true,
   "Ag_gain_proved": false,
   "As_gain_proved": false,
   "joint_goal_complete": false,
-  "last_read_at": "2026-10-17T14:58:09.416Z",
-  "last_worker_live": true,
-  "last_dispatcher_live": true,
+  "last_read_at": "2026-10-17T15:19:49.277Z",
+  "last_worker_live": false,
+  "last_dispatcher_live": false,
   "last_log_bytes": 22436,
   "actual_native_config_comparison": {
     "native_keys": 857,
@@ -84,5 +84,21 @@
       "V": 27000
     },
     "evidence": "actual_config_verification.json"
+  },
+  "worker_terminal": true,
+  "dispatcher_terminal": true,
+  "truth_last": true,
+  "actual_new_epochs": 10,
+  "actual_cumulative_epochs": 30,
+  "actual_new_updates": 2220,
+  "actual_cumulative_updates": 6660,
+  "prediction_count": 1176000,
+  "scientific_pass": false,
+  "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
+  "recount": {
+    "CM": 252,
+    "partition_sums": 42,
+    "paired": 7,
+    "max_error": 2.220446049250313e-16
   }
 }
