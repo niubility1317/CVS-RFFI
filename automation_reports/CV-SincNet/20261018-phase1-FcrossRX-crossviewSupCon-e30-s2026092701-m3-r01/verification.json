@@ -525,5 +525,80 @@
         "mismatched_tensors": []
       }
     ]
+  },
+  "latest_source_progress": {
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/monitor_r05.json",
+    "rows": [
+      {
+        "row": "ORD128-s2026092701",
+        "pid": 849390,
+        "alive": true,
+        "log_size": 37400,
+        "start_ticks": 151198111,
+        "stage20": {
+          "epoch": 6,
+          "cumulative_epoch": 6,
+          "steps": 1332,
+          "cumulative_steps": 1332,
+          "L_NN": 681984,
+          "L_As": 85248,
+          "extra_U_NN": 0,
+          "U_As": 0,
+          "existing_U_only": true,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      },
+      {
+        "row": "DUP192-s2026092701",
+        "pid": 849536,
+        "alive": true,
+        "log_size": 37403,
+        "start_ticks": 151198445,
+        "stage20": {
+          "epoch": 6,
+          "cumulative_epoch": 6,
+          "steps": 1332,
+          "cumulative_steps": 1332,
+          "L_NN": 681984,
+          "L_As": 85248,
+          "extra_U_NN": 0,
+          "U_As": 0,
+          "existing_U_only": true,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      },
+      {
+        "row": "SAT192-s2026092701",
+        "pid": 849617,
+        "alive": true,
+        "log_size": 37400,
+        "start_ticks": 151198777,
+        "stage20": {
+          "epoch": 6,
+          "cumulative_epoch": 6,
+          "steps": 1332,
+          "cumulative_steps": 1332,
+          "L_NN": 681984,
+          "L_As": 85248,
+          "extra_U_NN": 0,
+          "U_As": 0,
+          "existing_U_only": true,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      }
+    ],
+    "failures": []
+  },
+  "analysis_preparation": {
+    "status": "READY_NOT_EXECUTED",
+    "code": "analysis/cvs_crossviewSupCon_E30_results_20261018.py",
+    "focused_tests": 8,
+    "tests_status": "PASS",
+    "no_training_release_changes": true,
+    "source_mode_target_access": false,
+    "analysis_NN": 0
   }
 }

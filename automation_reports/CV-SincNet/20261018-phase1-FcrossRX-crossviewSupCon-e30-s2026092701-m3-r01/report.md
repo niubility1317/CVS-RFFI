@@ -41,3 +41,11 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS
 三条真实scratch行已启动：ORD128 PID849390/GPU0，DUP192 PID849536/GPU1，SAT192 PID849617/GPU2；dispatcher PID849362。独立/proc核实CWD/argv/CUDA，nvidia-smi核实实际GPU PID，source角色EXACT_MATCH、旧checkpoint继承为0，stderr为空。source/teacher/默认头均按原流程更新；尚无正式新成绩。详细原始运行证据仅存本地 E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018，聚合verification.json已记录。
 
 三条真实行均已完成E1/30，各222更新、113664个L NN、14208个完整As观测，额外U NN=0、target_access=false；日志已增长到约11613字节，worker仍活跃，无技术失败。独立读取3份新run自己的initial_smoke.pt逐项比较206个state tensor，ORD对DUP/SAT均0不一致（0NN/0源IQ/0target），不把后续GPU轨迹小差异写成bitwise等价。当前只证明启动和首轮执行；不报告早期源V为性能收益，不据此调整方案。
+
+## 预热后运行与独立分析准备
+
+同一三条PID已核实完成累计E6/30、各1332更新、681984个L NN、85248个fullAs观测，extraU NN=0、target_access=false；stdout均增长至约37400字节，原SupCon已按计划激活，observer预算检查无失败。仅报告执行进度，不把训练/源V指标当新性能收益。
+
+独立分析程序 analysis/cvs_crossviewSupCon_E30_results_20261018.py 已完成，8项针对性复算/判据/视图归属/truth-last边界测试PASS，0真实IQ/CP/NN。它将完整解析三组90个epoch、19980步L/native/Sinc记录及全部L/U曝光，复算CE/RDrop/SupCon绝对尺度、5550个激活步/模型的真实/重复描述子覆盖、两段成本、两个draw源分层、固定ORD clean正确集合及全部正式混淆矩阵。原运行release代码不修改。
+
+尚未完成：E30训练、完整源判据与独立源分析、各row全7正式评分、最终收益/clean代价/跨seed证据；逐包TX×RX×信道状态sidecar未保存，不能冒充已有逐包观测。先核查能否由实际L物理顺序和命名信道流精确复算，并与已有聚合记录对齐；任何额外物理生成成本单独报告。当前仅完成RX/day/scene/state/lock聚合日志的输出安排，不预先宣称覆盖验收完成。
