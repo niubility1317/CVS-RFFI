@@ -61,3 +61,9 @@ ORIGINAL 保留原梯度；MEASURE 每步额外求 ordinary 和 As 梯度但不�
 实时完整可解码step日志快照：ORIGINAL226、MEASURE211、PROJECT215条；三行U truth_available最大0，非有限跳步0；step日志相对首次读回均增长。这只是partial-live运行证据，不替代完整2220步复算、固定E30和正式七视图评分。
 
 三行均已完成累计E21，所属PID仍live、GPU对应一致、无技术failure。首轮各222次实际更新，0／444／444额外VJP、原physicalclip及Sinc step计数、SupCon／4L前向／As覆盖等原生生命周期检查通过后才写出reference_progress。继续固定E30；尚无正式识别结论。
+
+## 完整日志复算范围（训练时固定，不读目标）
+
+只读分析读取全部epoch/step/stdout、L/U物理序列、370输入池及原始监督reference/unit记录；额外读取完整2220条view_gradient日志。标量独立复算区分MEASURE的理论修正量与PROJECT的实际修正量，核对额外VJP和实际执行计数。当前步投影也等价于给ordinary梯度乘1＋alpha；会报告等效系数、两监督视图合成范数前后变化及实际As分量移除比例。上述范数不包含SupCon/U、clip或AdamW，标量日志也不能重建全参数实际位移，不据此宣称身份提取改善。
+
+实际policy、初始RNG和物理数据合约一致；不声明跨行所有中间IQ字节完全相同，原U/EMA轨迹可随模型变化。每个RDrop对复用同一生成IQ，额外VJP不重抽视图。完整source分析与七视图378CM／63分区／21配对结果分别复算；不修改健康训练或追加source门。源/结果/图表三个分析脚本和3模式闭式／8反例检查已写，真实IQ/CP/NN/更新/target均0。
