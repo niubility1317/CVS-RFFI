@@ -1,6 +1,6 @@
 # P46：原普通时域 Tukey 窗的同抽样反事实
 
-状态：LOCAL_VERIFIED，尚未启动。唯一矩阵见 [experiment.json](experiment.json)。联合 Ag＋As 目标 ACTIVE；本轮不训练、不读取正式目标。上一轮 P45 已完成并关闭 L0，其正式微增不作为本项依据。
+状态：SOURCE_COMPLETE，独立读回原进程已自然结束；待完整独立复算。唯一矩阵见 [experiment.json](experiment.json)。联合 Ag＋As 目标 ACTIVE；本轮不训练、不读取正式目标。上一轮 P45 已完成并关闭 L0，其正式微增不作为本项依据。
 
 代码依据：实际普通 augmentor 的 bandedge_taper 是时域 IQ 两端的 Tukey 窗，先于原 general_channel（含循环移位）及 normal PA；不是接收频带滤波。未查到这个窗的直接消融。PA旁路、移位旁路、FIR、LA16、增益包络、DC等已失败方向保持关闭。
 
@@ -19,3 +19,9 @@
 N607普通账号、GPU2/CPU2，所有owner合计≤3进程/GPU且新slot≥12GB空闲；原capacitylock；不停止或修改其他健康任务。唯一owner codex/root/native-taper-source46，独占 20261018-diagnostic-FcrossRX-nativeTaper-L6300-s2026092701-m2-r01 run/release/log根。CWD cvs_FcrossRX_nativeTaper_L6300_20261018_r01 release；python -u experiments/cvs_taper_source46/runner.py。先一次只读preflight、一归档一次SHA比较、remotecompile；发布器本地字符串语法错误已在任何远端操作前修正，两个内嵌脚本AST通过。首次预检在本地PATH找不到whoami时停止、尚未SSH；使用已验证env15/System32路径后预检通过，未变更系统环境或重复远端作业。
 
 技术停止仅限所属角色/来源/非有限/shape/NN预算/输出冲突/系统失败，保留不自动重试。预期原模块__file__/真实E13/config、CP4NNsmoke、默认logits/opaqueID私有NPZ（不含IQ）、完整result/completion、全部RX/TX/day/触发/MSE、独立全量复算、实际PNG/PDF与同row报告/登记。p2最小句柄本Phase1不适用，复用原VALIDATED_ONCE源数据；不建额外哈希、签名、receipt、报告审查或发布许可。
+
+## 实际完成读回
+
+执行代码 ce6eee755301e942acc38e7d8937240ff44ef997 已推送并独立OID一致，单归档比较/remotecompile/远端8项检查PASS。PID1002504 的CWD/argv/startticks与GPU2曾独立核实live；之后stdout从0增至144字节，完整smoke4NN及两draw进度齐全，现自然退出、stderr空、无failure。完成63004NN/0训练/0target。源固定条件2PASS/2FAIL，原假设关闭，不启动去窗训练。
+
+实际E13不是base默认值：p_taper=.0626500835，alpha=.0050120067至.0250600334；时移最大8点。两draw分别原生触发256/512次观察。整体保持率差为B00两draw0/0、B01两draw0/+.015898pp；不是尚未执行。触发不一定意味着输出有变化，待NPZ完整复算核查。原launch.json的CUDA字段是静态空字符串，/proc独立证明实际GPU2，保留原产物；仅修正后续本地发布器元数据，不改已完成release或重跑。

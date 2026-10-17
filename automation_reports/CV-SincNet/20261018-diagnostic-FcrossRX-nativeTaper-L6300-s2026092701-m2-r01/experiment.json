@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Active jointIQAg+As research;fixed E30/defaulthead/all5RX scope. One L-only frozen input diagnostic,no training/target or automatic extension.",
   "code": {
-    "commit": null,
+    "commit": "ce6eee755301e942acc38e7d8937240ff44ef997",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "Existing N607 CVS-RFFI Python3.10/Torch2.1/NumPy2;fullFP32/CPU2/GPU2,ordinary account",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_nativeTaper_L6300_20261018_r01"
@@ -177,6 +177,5 @@
     "All4model/draw retention gains>=.2pp and overallaccuracy nonnegative;eachmodel pooledRX gains positive in>=4of5 and worst>=-.25pp. Anyfail closes thisfixedpremise,not all possiblewindows;PASSonlyinputpremise,notautomatictraining.",
     "Consume same nativewindow/gate/parameterdraws;no trigger forced;NO_TAPER returns ones;RNG restored aftereach private draw;no-trigger IQ/logits exactequal.",
     "One independentdirectP0/P1;8localtests and8AST+2embeddedscriptAST;realCP4NN smoke first then immediate diagnostic;onepreflight/archivecomparison/remotecompile."
-  ],
-  "registered_at": "2026-10-17T23:43:32+00:00"
+  ]
 }
