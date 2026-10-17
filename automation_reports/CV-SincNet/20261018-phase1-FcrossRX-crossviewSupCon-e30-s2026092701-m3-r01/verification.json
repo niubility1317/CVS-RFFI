@@ -1,6 +1,6 @@
 {
   "status": "PRELAUNCH_CHECKS_PASS",
-  "code_commit": "PENDING_ACTUAL_CODE_COMMIT",
+  "code_commit": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
   "focused_tests": {
     "status": "PASS",
     "count": 8,
@@ -19,7 +19,511 @@
     "status": "VERIFIED",
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/preflight.txt"
   },
-  "run_state": "NOT_LAUNCHED",
+  "run_state": "RUNNING_THREE_SCRATCH_ROWS",
   "new_Ag": false,
-  "goal_complete": false
+  "goal_complete": false,
+  "git_remote": {
+    "status": "VERIFIED",
+    "method": "independentGithubcompare",
+    "remote_oid": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
+    "compare": "identical"
+  },
+  "transfer": {
+    "status": "VERIFIED",
+    "archive_SHA": "fcdcbc59903e0a898273db442d514c293035dfcbfa594c9bd260bdf4061e8e67",
+    "compile": "PASS",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01",
+    "run_absent": true,
+    "log_absent": true
+  },
+  "launch": {
+    "status": "DISPATCHED",
+    "pid": 849362,
+    "start_ticks": 151197469,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01",
+    "argv": [
+      "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python",
+      "-u",
+      "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01/experiments/cvs_crossview_supcon41/runner.py"
+    ],
+    "CUDA_VISIBLE_DEVICES": "",
+    "read_at": 1792264270.2732806
+  },
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 2,
+    "source_IQ": 0,
+    "target_query": false,
+    "checkpoint": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/B0-s2026092701/source/final_ssdg.pth",
+    "training_initializer": false,
+    "optimizer_updates": 0,
+    "same_source_contract": true,
+    "fixed_parent_not_target_selected": true
+  },
+  "synthetic": {
+    "status": "PASS",
+    "records": [
+      {
+        "arm": "ORD128",
+        "NN": 512,
+        "satellite_IQ": 64,
+        "satellite_aux_gradient_L1": 0,
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "same_initial": true,
+        "extra_U_NN": 0,
+        "details": [
+          {
+            "phase": "first",
+            "level": "time_down",
+            "mode": "ORD128",
+            "shape": [
+              128,
+              48,
+              128
+            ],
+            "loss": 3.852461814880371,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "ordinary_anchors": 128,
+            "additional_anchors": 0,
+            "positive_min": 16,
+            "positive_max": 18,
+            "cross_view_positive_pairs": 0,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 0
+          },
+          {
+            "phase": "first",
+            "level": "t2.pool",
+            "mode": "ORD128",
+            "shape": [
+              128,
+              96,
+              32
+            ],
+            "loss": 2.932791233062744,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "ordinary_anchors": 128,
+            "additional_anchors": 0,
+            "positive_min": 16,
+            "positive_max": 18,
+            "cross_view_positive_pairs": 0,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 0
+          },
+          {
+            "phase": "second",
+            "level": "time_down",
+            "mode": "ORD128",
+            "shape": [
+              128,
+              48,
+              128
+            ],
+            "loss": 3.852461814880371,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "ordinary_anchors": 128,
+            "additional_anchors": 0,
+            "positive_min": 16,
+            "positive_max": 18,
+            "cross_view_positive_pairs": 0,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 0
+          },
+          {
+            "phase": "second",
+            "level": "t2.pool",
+            "mode": "ORD128",
+            "shape": [
+              128,
+              96,
+              32
+            ],
+            "loss": 2.939715623855591,
+            "valid_anchors": 128,
+            "total_anchors": 128,
+            "ordinary_anchors": 128,
+            "additional_anchors": 0,
+            "positive_min": 16,
+            "positive_max": 18,
+            "cross_view_positive_pairs": 0,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 0
+          }
+        ]
+      },
+      {
+        "arm": "DUP192",
+        "NN": 512,
+        "satellite_IQ": 64,
+        "satellite_aux_gradient_L1": 0,
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "same_initial": true,
+        "extra_U_NN": 0,
+        "details": [
+          {
+            "phase": "first",
+            "level": "time_down",
+            "mode": "DUP192",
+            "shape": [
+              192,
+              48,
+              128
+            ],
+            "loss": 3.751420736312866,
+            "valid_anchors": 192,
+            "total_anchors": 192,
+            "ordinary_anchors": 128,
+            "additional_anchors": 64,
+            "positive_min": 16,
+            "positive_max": 36,
+            "cross_view_positive_pairs": 1090,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 0
+          },
+          {
+            "phase": "first",
+            "level": "t2.pool",
+            "mode": "DUP192",
+            "shape": [
+              192,
+              96,
+              32
+            ],
+            "loss": 2.820321798324585,
+            "valid_anchors": 192,
+            "total_anchors": 192,
+            "ordinary_anchors": 128,
+            "additional_anchors": 64,
+            "positive_min": 16,
+            "positive_max": 36,
+            "cross_view_positive_pairs": 1090,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 0
+          },
+          {
+            "phase": "second",
+            "level": "time_down",
+            "mode": "DUP192",
+            "shape": [
+              192,
+              48,
+              128
+            ],
+            "loss": 3.751420736312866,
+            "valid_anchors": 192,
+            "total_anchors": 192,
+            "ordinary_anchors": 128,
+            "additional_anchors": 64,
+            "positive_min": 16,
+            "positive_max": 36,
+            "cross_view_positive_pairs": 1090,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 0
+          },
+          {
+            "phase": "second",
+            "level": "t2.pool",
+            "mode": "DUP192",
+            "shape": [
+              192,
+              96,
+              32
+            ],
+            "loss": 2.836280584335327,
+            "valid_anchors": 192,
+            "total_anchors": 192,
+            "ordinary_anchors": 128,
+            "additional_anchors": 64,
+            "positive_min": 16,
+            "positive_max": 36,
+            "cross_view_positive_pairs": 1090,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 0
+          }
+        ]
+      },
+      {
+        "arm": "SAT192",
+        "NN": 512,
+        "satellite_IQ": 64,
+        "satellite_aux_gradient_L1": 6.4772233963012695,
+        "head_fit_updates": 0,
+        "optimizer_updates": 0,
+        "same_initial": true,
+        "extra_U_NN": 0,
+        "details": [
+          {
+            "phase": "first",
+            "level": "time_down",
+            "mode": "SAT192",
+            "shape": [
+              192,
+              48,
+              128
+            ],
+            "loss": 3.6609201431274414,
+            "valid_anchors": 192,
+            "total_anchors": 192,
+            "ordinary_anchors": 128,
+            "additional_anchors": 64,
+            "positive_min": 16,
+            "positive_max": 36,
+            "cross_view_positive_pairs": 1090,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 64
+          },
+          {
+            "phase": "first",
+            "level": "t2.pool",
+            "mode": "SAT192",
+            "shape": [
+              192,
+              96,
+              32
+            ],
+            "loss": 2.7933413982391357,
+            "valid_anchors": 192,
+            "total_anchors": 192,
+            "ordinary_anchors": 128,
+            "additional_anchors": 64,
+            "positive_min": 16,
+            "positive_max": 36,
+            "cross_view_positive_pairs": 1090,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 64
+          },
+          {
+            "phase": "second",
+            "level": "time_down",
+            "mode": "SAT192",
+            "shape": [
+              192,
+              48,
+              128
+            ],
+            "loss": 3.6609201431274414,
+            "valid_anchors": 192,
+            "total_anchors": 192,
+            "ordinary_anchors": 128,
+            "additional_anchors": 64,
+            "positive_min": 16,
+            "positive_max": 36,
+            "cross_view_positive_pairs": 1090,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 64
+          },
+          {
+            "phase": "second",
+            "level": "t2.pool",
+            "mode": "SAT192",
+            "shape": [
+              192,
+              96,
+              32
+            ],
+            "loss": 2.795368194580078,
+            "valid_anchors": 192,
+            "total_anchors": 192,
+            "ordinary_anchors": 128,
+            "additional_anchors": 64,
+            "positive_min": 16,
+            "positive_max": 36,
+            "cross_view_positive_pairs": 1090,
+            "same_RX_positive_pairs": 0,
+            "true_satellite_anchors": 64
+          }
+        ]
+      }
+    ],
+    "NN": 1536,
+    "backward_calls": 3,
+    "auxiliary_VJP_calls": 3,
+    "real_IQ": 0,
+    "target_access": false,
+    "optimizer_updates": 0
+  },
+  "postlaunch": {
+    "queue": {
+      "active": [
+        "ORD128-s2026092701",
+        "DUP192-s2026092701",
+        "SAT192-s2026092701"
+      ],
+      "pending": [],
+      "completed": [],
+      "failures": [],
+      "updated_at": 1792264313.3833797,
+      "max_total_processes_per_GPU": 3
+    },
+    "workers": [
+      {
+        "row": "ORD128-s2026092701",
+        "pid": 849390,
+        "alive": true,
+        "recordedGPU": 0,
+        "start_ticks": 151198111,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01",
+        "cmdline": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01/experiments/cvs_crossview_supcon41/runner.py --mode worker --row ORD128-s2026092701 ",
+        "CUDA": [
+          "CUDA_VISIBLE_DEVICES=0"
+        ],
+        "log": {
+          "size": 6460,
+          "mtime": 1792264281.7165236,
+          "tail": "dg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75\n[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit\n[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0\n[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=13 pseudo_epochs=7 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=1 ema=1 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/ORD128-s2026092701/stage20\n[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/ORD128-s2026092701/stage20/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/ORD128-s2026092701/stage20/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats\n"
+        },
+        "stage20/initialization.json": {
+          "scratch_only": true,
+          "checkpoint_sources": [],
+          "ancestors": [],
+          "source_roles": "EXACT_MATCH",
+          "target_contact": false,
+          "teacher_origin": "own scratch student",
+          "seed": 2026092701
+        }
+      },
+      {
+        "row": "DUP192-s2026092701",
+        "pid": 849536,
+        "alive": true,
+        "recordedGPU": 1,
+        "start_ticks": 151198445,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01",
+        "cmdline": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01/experiments/cvs_crossview_supcon41/runner.py --mode worker --row DUP192-s2026092701 ",
+        "CUDA": [
+          "CUDA_VISIBLE_DEVICES=1"
+        ],
+        "log": {
+          "size": 6460,
+          "mtime": 1792264285.0125232,
+          "tail": "dg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75\n[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit\n[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0\n[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=13 pseudo_epochs=7 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=1 ema=1 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/DUP192-s2026092701/stage20\n[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/DUP192-s2026092701/stage20/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/DUP192-s2026092701/stage20/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats\n"
+        },
+        "stage20/initialization.json": {
+          "scratch_only": true,
+          "checkpoint_sources": [],
+          "ancestors": [],
+          "source_roles": "EXACT_MATCH",
+          "target_contact": false,
+          "teacher_origin": "own scratch student",
+          "seed": 2026092701
+        }
+      },
+      {
+        "row": "SAT192-s2026092701",
+        "pid": 849617,
+        "alive": true,
+        "recordedGPU": 2,
+        "start_ticks": 151198777,
+        "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01",
+        "cmdline": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_crossviewSupCon_E30_20261018_r01/experiments/cvs_crossview_supcon41/runner.py --mode worker --row SAT192-s2026092701 ",
+        "CUDA": [
+          "CUDA_VISIBLE_DEVICES=2"
+        ],
+        "log": {
+          "size": 6460,
+          "mtime": 1792264288.215523,
+          "tail": "dg.pth drop_guard_pp=2 paic_guard=0 paic_sat_ce_delta=0.12 paic_grad_delta=3 paic_reliable_drop=0.01 paic_sat_scale=0.75\n[CONFIG-PHASE1-V2] hard_gates=0 endpoint=endpoint_accept_v1 loss_gate_exported=0 tail_sm=0 tail_targets=p95:54.00,p99:70.00,cvar:56.00,proxy:0.350 tail_expansion_delta=final:2.00,best:3.50,cvar_final:4.00,cvar_best:6.00 tail_reference_window=5 tail_rollback=0:cooldown2 os_eff_min=0.000 os_eff_max=0.000 os_budget_controller=0 os_gradient_surgery=0 os_eff_all_phases=1 dg_health_guard=0:warn3.0:stop8.0:min_open0.20 guard_blocks_final=1 u_tri_state_required=0 source_episode_density_gate=0 source_episode_overflow_warn=0.900 local_component_weights=compact:0.000,invariant:0.000,inter:0.000,accept:0.000,density:0.000 local_min_samples=2 local_radius_floor=3.00deg local_caps=density:2.00,term:4.00 structural_schedule=start:-1,warmup:-1 source_views=clean:1.00,sat:1.00,normalized:1 max_grad_norm=5.00 multiview_separate=0 endpoint_artifact_required=0 feasibility_gate=0:audit\n[CONFIG-PROTO-MASK] requested=0 audit_only=1 active_loss=0 use_prototypes=0 use_masks=0 use_geometry=0 use_balanced_sampler=0 lambda_tx_proto=0 lambda_rx_proto=0 lambda_mask_aux=0 lambda_txrx_rect=0 use_proto_memory=0 lambda_proto=0 lambda_open_world_feat=0 lambda_zid_compact=0 lambda_proxy_unknown=0 lambda_soft_unknown_mixup=0 lambda_source_episode=0 phase2_export=0\n[SSDG-TRAIN] init=scratch split=tx_rx_day_1_7_2 L/U/V=6300/56700/27000 ratios=0.070/0.630/0.300 role_protocol=legacy_l_u_v label_epochs=13 pseudo_epochs=7 lambda_domain=0.000 lambda_fishr=0.000 threshold=rx_day_quantile domain_gate=0 temporal_gate=1 ema=1 best_metric=clean_val_tx output=/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/SAT192-s2026092701/stage20\n[TELEMETRY] schema=ssdg_epoch_telemetry_v1 metrics_csv=/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/SAT192-s2026092701/stage20/metrics_epoch.csv metrics_jsonl=/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/SAT192-s2026092701/stage20/metrics_epoch.jsonl loss_terms=loss,loss_labeled,loss_tx,loss_domain,loss_adv,loss_cons,loss_orth,loss_group_ce,loss_fishr,loss_sat_cls,loss_sat_cons,loss_direct_metric_accept,loss_unlabeled,weighted_losses,grad_norms,pseudo_stats,eval_stats\n"
+        },
+        "stage20/initialization.json": {
+          "scratch_only": true,
+          "checkpoint_sources": [],
+          "ancestors": [],
+          "source_roles": "EXACT_MATCH",
+          "target_contact": false,
+          "teacher_origin": "own scratch student",
+          "seed": 2026092701
+        }
+      }
+    ],
+    "GPU_processes": "849390, GPU-56adac86-77cd-36c9-8770-dbf002650461, 1230\n849536, GPU-a2d039ff-1792-4222-2b47-140429e10f94, 1230\n849617, GPU-4fb45b9a-894a-536b-0e0a-09f7c1341562, 1230\n",
+    "dispatcher_error": ""
+  },
+  "first_epoch": {
+    "status": "VERIFIED",
+    "rows": [
+      {
+        "row": "ORD128-s2026092701",
+        "pid": 849390,
+        "alive": true,
+        "log_bytes": 11613,
+        "progress": {
+          "epoch": 1,
+          "cumulative_epoch": 1,
+          "steps": 222,
+          "cumulative_steps": 222,
+          "L_NN": 113664,
+          "L_As": 14208,
+          "extra_U_NN": 0,
+          "U_As": 0,
+          "existing_U_only": true,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      },
+      {
+        "row": "DUP192-s2026092701",
+        "pid": 849536,
+        "alive": true,
+        "log_bytes": 11613,
+        "progress": {
+          "epoch": 1,
+          "cumulative_epoch": 1,
+          "steps": 222,
+          "cumulative_steps": 222,
+          "L_NN": 113664,
+          "L_As": 14208,
+          "extra_U_NN": 0,
+          "U_As": 0,
+          "existing_U_only": true,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      },
+      {
+        "row": "SAT192-s2026092701",
+        "pid": 849617,
+        "alive": true,
+        "log_bytes": 11612,
+        "progress": {
+          "epoch": 1,
+          "cumulative_epoch": 1,
+          "steps": 222,
+          "cumulative_steps": 222,
+          "L_NN": 113664,
+          "L_As": 14208,
+          "extra_U_NN": 0,
+          "U_As": 0,
+          "existing_U_only": true,
+          "U_truth_read": false,
+          "target_access": false
+        }
+      }
+    ],
+    "failures": []
+  },
+  "initial_state_comparison": {
+    "status": "VERIFIED",
+    "NN": 0,
+    "source_IQ": 0,
+    "target_access": false,
+    "checkpoint_reads": 3,
+    "initial_tensor_count": 206,
+    "comparisons": [
+      {
+        "reference": "ORD128",
+        "candidate": "DUP192",
+        "mismatched_tensors": []
+      },
+      {
+        "reference": "ORD128",
+        "candidate": "SAT192",
+        "mismatched_tensors": []
+      }
+    ]
+  }
 }

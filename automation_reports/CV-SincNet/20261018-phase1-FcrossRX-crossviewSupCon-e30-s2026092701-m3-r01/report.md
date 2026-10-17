@@ -33,3 +33,11 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS
 技术停止：仅角色/来源/配置不符、非有限loss/grad、输出冲突、不可启动/预测失败等系统问题。保留局部产物，不自动重试，不修改未完成的科学阈值；健康任务不停止或重启。一次独立P0/P1审查、直接P1最多一次定向复审；单归档一次SHA比较、remotecompile；启动后核实PID/startticks/CWD/cmdline/GPU/log增长。
 
 预期保留逐epoch/逐step/物理曝光序列、实际模块/config、CE/KL/SupCon与正样本覆盖、硬件/信道统计、原头冻结后源/全7正式结果、F1/最差RX/固定ORD clean正确集合保持率、训练曲线/分层图、收益与负结果、墙钟/更新/NN；不提交IQ、权重、逐包ID/梯度或运行原日志。
+
+## 启动实际证据
+
+运行代码 ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2 已推送并经独立GitHub compare确认identical；单归档SHA比较及remotecompile VERIFIED/PASS。真实P39固定B0 CP2NN与三组真实F合成1536NN烟测PASS，0optimizer更新；只有SAT192辅助目标到达真实As maps（该synthetic L1=6.477223），不直接到默认W；三组初始state相同，ORD原公式等价。此为接口验证，不是收益证据。独立P0/P1发现Path导入缺失，已修复并确认，余项PASS。
+
+三条真实scratch行已启动：ORD128 PID849390/GPU0，DUP192 PID849536/GPU1，SAT192 PID849617/GPU2；dispatcher PID849362。独立/proc核实CWD/argv/CUDA，nvidia-smi核实实际GPU PID，source角色EXACT_MATCH、旧checkpoint继承为0，stderr为空。source/teacher/默认头均按原流程更新；尚无正式新成绩。详细原始运行证据仅存本地 E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018，聚合verification.json已记录。
+
+三条真实行均已完成E1/30，各222更新、113664个L NN、14208个完整As观测，额外U NN=0、target_access=false；日志已增长到约11613字节，worker仍活跃，无技术失败。独立读取3份新run自己的initial_smoke.pt逐项比较206个state tensor，ORD对DUP/SAT均0不一致（0NN/0源IQ/0target），不把后续GPU轨迹小差异写成bitwise等价。当前只证明启动和首轮执行；不报告早期源V为性能收益，不据此调整方案。

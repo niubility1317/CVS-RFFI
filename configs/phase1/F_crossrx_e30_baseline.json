@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_FULL_CLEAN_RETAINING_U_TRANSFER_ANALYZED_SOURCE_NEGATIVE",
+  "status": "E30_FULL_CLEAN_RETAINING_CROSSVIEW_SUPCON_RUNNING",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -44,7 +44,7 @@
     "parent_cost": "own20isincludedin30;nohistoricalmodelinheritance",
     "first_seed": 2026092701,
     "L_NN_each": 3409920,
-    "extra_U_student_NN_each": 963900,
+    "extra_U_student_NN_each": 0,
     "automatic_seed_extension": false
   },
   "inheritance": {
@@ -62,9 +62,10 @@
     "U_TX_truth": "hidden",
     "new_U_contrastive_loss": false,
     "new_Ag": false,
-    "As": "Allnewrows Loriginalfullreference .75ordinary/.25As(raw);UASextra fullAs(rawU),B0/URAWextrarawU",
+    "As": "all3 Lonly originalfullnative .75ordinary/.25As(raw),four128forwards;noextraU",
     "RDrop_same_IQ": true,
-    "new_U_soft_KL": "B0zero/URAWraw/UASfullAs;batchmeanqKL .16*5Uepochramp;privatefork;sourcequalifiedownEMA only"
+    "new_U_soft_KL": false,
+    "crossview_SupCon": "Same oldcoefficient/temp/levels/schedule;ORD128 ordinary128,DUP192 sameordinary128+64duplicates,SAT192 actualordinary128+As64;noadditionalNN"
   },
   "contrastive": {
     "mode": "CROSS_RX",
@@ -113,13 +114,13 @@
     "physical_role_policy": "Exactly reuse original L_s6300/U_s56700/V27000 IDs, split392005,7/63/30; V stays validation; never merge V into L or reveal U TX."
   },
   "comparison": {
-    "run_id": "20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01",
+    "run_id": "20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01",
     "rows": [
-      "B0",
-      "URAW",
-      "UAS"
+      "ORD128",
+      "DUP192",
+      "SAT192"
     ],
-    "same_budget": "3newown20+10models;each6660updates/L4NN+same963900extraUstudentNN",
+    "same_budget": "3newscratch own20+10;each6660updates,3409920LNN,originalUonly,0extraU/teacher",
     "formal_views": [
       "clean",
       "practical_high",
@@ -132,7 +133,7 @@
     "formal_IQ_channel_SNR_boundary": "unchanged",
     "fixed_terminal_then_independent_truth_last": true,
     "target_feedback_to_design": false,
-    "results": "PENDING",
+    "results": "RUNNING_NO_NEW_PERFORMANCE",
     "Ag_proved": false,
     "crossseed_confirmed": false,
     "goal_completed": false
@@ -303,9 +304,9 @@
       "not_a_rejection_of_human_selected_complete_E20plus10_recipe": true
     }
   },
-  "next_method_boundary": "CompletehumanselectedfullreferenceimplementedP39;firsttryfixedsourcequalifiedC4singlelosswithmatchedextraUforwardcontrols;noothernewAgorlosses,nostudenturbanconfidencegate,noseed/strength/threshold/budgetrescue;formalconditionsfixed;waitforactualsourceandformalresultsbeforefurtherdesign",
-  "execution_commit": "bafba40e365d0914a2e86f861fb55a49f1cd3997",
-  "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01/report.md",
+  "next_method_boundary": "P41 only existingSupCon trueAs coverage vs ordinary128/duplicate192;no newloss/head/Ag/U;all3scratch own20+10,sourcefoururbancells>=both+1pp/fullVclean>=both-.25pp;no rescue;fixedall7formalautomatic",
+  "execution_commit": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
+  "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/report.md",
   "input_representation_audit": {
     "source_record_shape": [
       256,
@@ -550,42 +551,43 @@
     "goal_complete": false
   },
   "active_research": {
-    "run_id": "20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01",
-    "status": "ANALYZED_SOURCE_NEGATIVE",
-    "code_commit": "91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a",
+    "run_id": "20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01",
+    "status": "RUNNING",
+    "code_commit": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
     "rows": [
-      "B0",
-      "URAW",
-      "UAS"
+      "ORD128",
+      "DUP192",
+      "SAT192"
     ],
-    "unique_model_seed_count": 1,
-    "default_head_unchanged": true,
-    "no_source_RX_holdout": true,
-    "U_TX_hidden": true,
+    "model_seed_count": 1,
+    "E_each": 30,
+    "updates_each": 6660,
+    "full_source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
     "new_Ag": false,
-    "C4_single_soft_KL": "samecostextraUrawvsfullAsU;owncleanEMAout_w;teacherqonly;oldUgateunchanged",
-    "source_teacher_basis": "20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01",
-    "first_own_U_qualification": "PASS_all3;source_only;not_U_truth_precision",
-    "formal_all7": "ANALYZED_COMPLETE_3rows_378formalconfusions",
-    "source_promotion": "each2drawmidlow UAS>=URAW+1pp;fullVclean>=B0-.25ppand>=URAW-.25pp;allownteachersqualified",
-    "automatic_seed_extension": false,
-    "goal_complete": false,
-    "dispatcher_pid": 776627,
+    "new_losses": 0,
+    "new_heads": 0,
+    "extra_U_NN": 0,
+    "source_only_design": true,
+    "auto_all7": true,
+    "dispatcher_pid": 849362,
     "workers": [
-      776653,
-      776734,
-      776817
+      849390,
+      849536,
+      849617
     ],
     "GPU": [
       0,
       1,
       2
     ],
-    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/report.md",
-    "all_original_processes_completed": true,
-    "source_decision_commit": "b0dcc80bdcbc79a5a234733d5518cb78b7e7afe1",
-    "source_qualified": false,
-    "analysis_artifacts": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/final_analysis_r01"
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/report.md",
+    "goal_complete": false
   },
   "preferred_route": {
     "authorization": "Human explicitly confirmed clean-preserving route from referenced chat01a1427e-49c0-7840-a84d-5bb38d5a8164;benchmark-exposed recipe reference,not target-selected weight reuse",
@@ -622,7 +624,7 @@
     "As": "originalcustom perpacketnominal3scenes/raw/fullresidual/post_sync/G1/ref30/reflect/fc2.462GHz",
     "weights_policy": "Do not load target-selected old weights;new variants scratch atE0,only own pre-fixed stage state may continue",
     "reconciliation_report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01/reference_reconciliation.md",
-    "next_candidate": "NONE_SELECTED;exactC4closed_on_source_before_formal_read;retain_original_clean_preserving_reference"
+    "next_candidate": "P41 existingSupCon realAs coverage running;fullcompletecleanretain unchanged;nojointgoalproofyet"
   },
   "source_teacher_qualification38": {
     "run_id": "20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01",
@@ -741,5 +743,27 @@
     "goal_complete": false,
     "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/report.md",
     "results": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/results_summary.json"
+  },
+  "completed_noise_gradient40": {
+    "run_id": "20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01",
+    "status": "ANALYZED_SOURCE_ONLY_NEGATIVE",
+    "code_commit": "d12e359a2bcfa927954535c297438d79f81d7dfe",
+    "NN": 11702,
+    "autograd_calls": 1173,
+    "updates": 0,
+    "head_W_primary_negative_pairs": [
+      [
+        0,
+        900
+      ],
+      [
+        0,
+        900
+      ]
+    ],
+    "source_only": true,
+    "Ag_proved": false,
+    "target_access": false,
+    "report": "automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-noise-headgradient-sourceL-s2026092701-m1-r01/report.md"
   }
 }
