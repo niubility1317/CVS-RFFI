@@ -1,0 +1,188 @@
+{
+  "status": "VERIFIED_THREE_COMPLETED_CONTROLS_ACTUAL_NOISE_SHAPE",
+  "source_BG": {
+    "cost": {
+      "native_training_and_validation_identity_NN": 7960684,
+      "frozen_source_readout_NN": 12600,
+      "source_identity_NN": 7973284,
+      "source_counters": {
+        "student_train_NN": 6078780,
+        "student_eval_NN": 918004,
+        "teacher_train_NN": 0,
+        "teacher_eval_NN": 963900
+      },
+      "first_U_qualification_NN": 0,
+      "extra_U_student_NN": 0,
+      "frozen_source_readout_wall_seconds": null,
+      "source_wall_scope": "native segments;external frozen source readout time not recorded",
+      "source_wall_seconds": 2203.3934602737427,
+      "L_identity_NN": 5114880,
+      "extra_Ag_control_identity_NN": 1704960,
+      "extra_U_NN": 0,
+      "new_epochs": 30,
+      "new_updates": 6660,
+      "training_parent_epochs": 0,
+      "own_stage20_is_included": true
+    },
+    "full_records": {
+      "actual_steps": 6660,
+      "SupCon_active_steps": 5550,
+      "Ag_applied": 852480,
+      "As_applied": 0,
+      "sequence_records": 10434,
+      "loader_packets": {
+        "L": 852480,
+        "U": 963900
+      },
+      "unique_physical": {
+        "L": 6300,
+        "U": 56700
+      },
+      "original_U_selected": 15122,
+      "U_truth_hidden": true,
+      "stdout_lines": 1218,
+      "error_markers": [],
+      "NaN_text_mentions": 300,
+      "native_full_epoch_telemetry": {
+        "stage20": {
+          "records": 20,
+          "numeric_values": 12567,
+          "nonfinite_field_counts": {},
+          "null_field_counts": {
+            "epoch.best_test_tx": 20,
+            "epoch.protected_overall_tx": 20,
+            "epoch.protected_receiver_floor": 20,
+            "epoch.protected_sat_floor_tx": 20,
+            "epoch.protected_sat_mean_tx": 20,
+            "epoch.protected_sat_receiver_floor": 20,
+            "epoch.protected_sat_receiver_seen_day_floor": 20,
+            "epoch.protected_sat_receiver_strict_floor": 20,
+            "epoch.protected_sat_strict_floor": 20,
+            "epoch.protected_sat_strict_mean": 20,
+            "epoch.protected_strict_udu": 20,
+            "epoch.stage_source_val_sat_floor_tx": 20,
+            "epoch.stage_source_val_sat_mean_tx": 20,
+            "epoch.test_tx_acc": 20,
+            "epoch.train_dm_accept_proxy_vaccept": 20,
+            "epoch.train_dm_accept_zid_p95_deg": 20,
+            "epoch.train_dm_accept_zid_p99_deg": 20,
+            "epoch.train_dm_accept_zid_tail_cvar_deg": 20,
+            "epoch.val_probe_dom_acc": 20
+          }
+        },
+        "source": {
+          "records": 10,
+          "numeric_values": 6290,
+          "nonfinite_field_counts": {},
+          "null_field_counts": {
+            "epoch.best_test_tx": 10,
+            "epoch.protected_overall_tx": 10,
+            "epoch.protected_receiver_floor": 10,
+            "epoch.protected_sat_floor_tx": 10,
+            "epoch.protected_sat_mean_tx": 10,
+            "epoch.protected_sat_receiver_floor": 10,
+            "epoch.protected_sat_receiver_seen_day_floor": 10,
+            "epoch.protected_sat_receiver_strict_floor": 10,
+            "epoch.protected_sat_strict_floor": 10,
+            "epoch.protected_sat_strict_mean": 10,
+            "epoch.protected_strict_udu": 10,
+            "epoch.stage_source_val_sat_floor_tx": 10,
+            "epoch.stage_source_val_sat_mean_tx": 10,
+            "epoch.test_tx_acc": 10,
+            "epoch.train_dm_accept_proxy_vaccept": 10,
+            "epoch.train_dm_accept_zid_p95_deg": 10,
+            "epoch.train_dm_accept_zid_p99_deg": 10,
+            "epoch.train_dm_accept_zid_tail_cvar_deg": 10,
+            "epoch.val_probe_dom_acc": 10
+          }
+        }
+      },
+      "warnings": [],
+      "maximum_L_decomposition_error": 2.086162567138672e-7,
+      "maximum_native_supervised_loss_error": 3.8743019104003906e-7
+    }
+  },
+  "formal_BG": {
+    "status": "VERIFIED_SEVEN_FROZEN_PREDICTIONS_AND_TRUTH_LAST",
+    "count": 168000,
+    "views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "actual_NN": 1176002,
+    "prediction_wall_seconds": 48.988305548904464,
+    "truth_last": true,
+    "head_fit_updates": 0,
+    "prediction_truth_read": false
+  },
+  "shape": {
+    "B00": {
+      "actual_steps": 6660,
+      "relative_noise_RMS_range": [
+        0,
+        0
+      ],
+      "mean_noise_peak_fraction": 0,
+      "peak_fraction_step_quantiles": [
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "NN": 1704960,
+      "same_IQ_each_RDrop_pair": true,
+      "new_boundary_samples": 0
+    },
+    "B10_WHITE": {
+      "actual_steps": 6660,
+      "relative_noise_RMS_range": [
+        0.03162277489900589,
+        0.03162277489900589
+      ],
+      "mean_noise_peak_fraction": 0.02392547377539021,
+      "peak_fraction_step_quantiles": [
+        0.022460948675870895,
+        0.023384918458759785,
+        0.0239117294549942,
+        0.02447338942438364,
+        0.02579312026500702
+      ],
+      "NN": 1704960,
+      "same_IQ_each_RDrop_pair": true,
+      "new_boundary_samples": 0
+    },
+    "B10_BG": {
+      "actual_steps": 6660,
+      "relative_noise_RMS_range": [
+        0.03162277489900589,
+        0.03162277489900589
+      ],
+      "mean_noise_peak_fraction": 0.20748355119480744,
+      "peak_fraction_step_quantiles": [
+        0.17663142085075378,
+        0.1983583003282547,
+        0.2074507176876068,
+        0.21671538949012759,
+        0.2350175380706787
+      ],
+      "NN": 1704960,
+      "same_IQ_each_RDrop_pair": true,
+      "new_boundary_samples": 0
+    }
+  },
+  "NN": 0,
+  "IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "formal_score_metrics_read": false,
+  "performance_claim": false,
+  "wall_seconds": 4.534945673076436,
+  "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+  "training_commit": "19aedc3604fed9c193237dd92366164178af0983",
+  "analysis_commit": "c02154d6cf9fb29fafecc4145bb6c08cb26d2490"
+}

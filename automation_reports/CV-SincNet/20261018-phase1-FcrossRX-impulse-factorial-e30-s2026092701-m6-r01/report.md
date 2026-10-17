@@ -53,3 +53,10 @@ B00和B10_WHITE完成各自scratch20+own10/E30，均为6660更新、L网络包51
 每行实际原生student_train NN6078780、student_eval NN918004、teacher_eval NN963900、teacher_train NN0，加冻结源读出12600NN，source合计7973284NN。原生训练/验证两段墙钟B00=2146.190秒，WHITE=2153.091秒；外部冻结源读出墙钟未独立记录，不伪造全流程耗时。
 
 两行均已自动完成原clean+6practical，逐view168000样本，全部7view固定后才独立truth-last；默认头无单独拟合，所有参数冻结、预测侧未读truth。每行实际正式预测identityNN1176002（其中1176000正式样本，另2个既有检查前向），预测耗时48.089/47.099秒。仅核对completion与独立边界，尚未读取正式成绩；其余4行继续原任务，整矩阵和性能分析未完成。全部源域判定固定前成绩继续关闭。详见first_completed_audit.json。
+
+
+## 三个无As控制完成后的实际形态核对
+
+B10_BG亦完成E30及全部7view冻结预测/独立truth-last；完整source日志复算通过，6660updates、LNN5114880、sourceNN7973284，实际Ag852480包、As0，source原生训练/验证墙钟2203.393秒。其正式prediction identityNN1176002，耗时48.988秒；尚未读取正式成绩。
+
+实际6660step形态记录而非默认配置：WHITE与BG的relative_noise_RMS均为0.03162277489900589，记录范围无变化；每包delta功率在训练调用内与目标新增功率逐次allclose检查，实际out-x也核对，未做信号后RMS归一化。各包最大复采样点噪声能量/全包噪声能量的均值，WHITE=0.02392547，BG=0.20748355。二者形态不同、总新增噪声功率一致；这不是总SNR或身份保持/泛化有效性的证明。三组同RDrop对复用同一IQ，新增边界样本0，每个Ag或raw槽1704960NN。此阶段核实见noise_shape_actual.json，正式效应仍等全部源域判据固定后统一分析。
