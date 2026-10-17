@@ -21,3 +21,4 @@
 |完整接收先验的虚拟会话覆盖：E30 负结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-RXpopulation-e20plus10-s2026092701-m1-r01/report.md)|
 |ordinary／As 跨视图 dropout 相关性：E30 正式结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-dropoutCoupling-e20plus10-s2026092701-m2-r01/report.md)|
 |有限窗酉相位观测：源 V 身份保护检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01/report.md)|
+|原完整 practical 的 L 批次组成：三行 E30 检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01/report.md)|

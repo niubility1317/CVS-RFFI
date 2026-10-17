@@ -1,0 +1,163 @@
+{
+  "status": "METADATA_REPLAY_COMPLETE",
+  "reference_run": "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02",
+  "reference_row": "CONCAT-s2026092701",
+  "source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_days": [
+    1,
+    2,
+    3
+  ],
+  "source_RX_holdout": null,
+  "source_L_unique": 6300,
+  "source_L_batches": 4440,
+  "source_L_exposures": 568320,
+  "six_batch_pools": 740,
+  "all_physical_occurrences_preserved_within_each_pool": true,
+  "methods": {
+    "ORIGINAL": {
+      "cell_squared_imbalance": {
+        "mean": 4.029354354354333,
+        "minimum": 1.262222222222222,
+        "maximum": 10.062222222222223
+      },
+      "TX_squared_imbalance": {
+        "mean": 17.55743243243239,
+        "minimum": 0.5555555555555555,
+        "maximum": 92.88888888888887
+      },
+      "RX_squared_imbalance": {
+        "mean": 20.417387387387024,
+        "minimum": 0.24,
+        "maximum": 109.84
+      },
+      "empty_TX_RX_cells": {
+        "mean": 0.36463963963963963,
+        "minimum": 0,
+        "maximum": 4
+      },
+      "valid_anchors": {
+        "mean": 128,
+        "minimum": 128,
+        "maximum": 128
+      },
+      "positive_min": {
+        "mean": 10.16418918918919,
+        "minimum": 2,
+        "maximum": 15
+      },
+      "positive_max": {
+        "mean": 24.440765765765764,
+        "minimum": 20,
+        "maximum": 35
+      },
+      "positive_sum": {
+        "mean": 2168.9972972972973,
+        "minimum": 1992,
+        "maximum": 2538
+      }
+    },
+    "RANDOM": {
+      "cell_squared_imbalance": {
+        "mean": 4.0542642642642415,
+        "minimum": 1.3955555555555557,
+        "maximum": 9.928888888888887
+      },
+      "TX_squared_imbalance": {
+        "mean": 17.621621621621603,
+        "minimum": 0.5555555555555555,
+        "maximum": 97.55555555555556
+      },
+      "RX_squared_imbalance": {
+        "mean": 20.144234234233906,
+        "minimum": 0.24,
+        "maximum": 117.84
+      },
+      "empty_TX_RX_cells": {
+        "mean": 0.3768018018018018,
+        "minimum": 0,
+        "maximum": 4
+      },
+      "valid_anchors": {
+        "mean": 128,
+        "minimum": 128,
+        "maximum": 128
+      },
+      "positive_min": {
+        "mean": 10.188513513513513,
+        "minimum": 3,
+        "maximum": 15
+      },
+      "positive_max": {
+        "mean": 24.432207207207206,
+        "minimum": 20,
+        "maximum": 37
+      },
+      "positive_sum": {
+        "mean": 2168.635135135135,
+        "minimum": 2020,
+        "maximum": 2572
+      }
+    },
+    "TX_RX_BALANCED": {
+      "cell_squared_imbalance": {
+        "mean": 0.7722372372372411,
+        "minimum": 0.2622222222222221,
+        "maximum": 1.9288888888888884
+      },
+      "TX_squared_imbalance": {
+        "mean": 3.4162912912912193,
+        "minimum": 0.2222222222222222,
+        "maximum": 16.222222222222225
+      },
+      "RX_squared_imbalance": {
+        "mean": 3.8785585585586233,
+        "minimum": 0.24,
+        "maximum": 18.639999999999997
+      },
+      "empty_TX_RX_cells": {
+        "mean": 0,
+        "minimum": 0,
+        "maximum": 0
+      },
+      "valid_anchors": {
+        "mean": 128,
+        "minimum": 128,
+        "maximum": 128
+      },
+      "positive_min": {
+        "mean": 13.993018018018018,
+        "minimum": 11,
+        "maximum": 16
+      },
+      "positive_max": {
+        "mean": 20.198423423423424,
+        "minimum": 18,
+        "maximum": 25
+      },
+      "positive_sum": {
+        "mean": 2181.863963963964,
+        "minimum": 2146,
+        "maximum": 2244
+      }
+    }
+  },
+  "model_or_augmentation_executed": false,
+  "new_Ag": false,
+  "Ag_efficacy": false,
+  "As_efficacy": false,
+  "recognition_gain_proved": false,
+  "IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false,
+  "U_TX_resolved": false,
+  "limits": "Only batch-composition geometry;cannot establish contrastive gradient variance or identity recognition gain. No candidate promotion or target access."
+}

@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_FIXED_UNITARY_SOURCE_GUARD_CLOSED",
+  "status": "RESEARCH_ACTIVE_BATCH_REPARTITION_IMPLEMENTED",
   "source_experiment": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
   "authorization": "Latest explicit user budget E30;new fixed FIR first-learning-utility rows use matching noAg fullsource E20 parents plus10;no trainingRXholdout",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -154,7 +154,32 @@
     "joint_goal_complete": false
   },
   "next_source_hypothesis": null,
-  "next_training_hypothesis": null,
+  "next_training_hypothesis": {
+    "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
+    "status": "IMPLEMENTED_LOCAL_AND_P0P1_PASS_NOT_LAUNCHED",
+    "hypothesis": "Reduced visibleL TXxRX batchcomposition fluctuation improves existing fullpractical/defaulthead E30 training without new loss or IQ operator",
+    "rows": [
+      "ORIGINAL",
+      "RANDOM",
+      "TX_RX_BALANCED"
+    ],
+    "parent_epochs": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_RX_holdout": null,
+    "new_Ag": false,
+    "all_source_roles_unchanged": true,
+    "model_seed_count": 1,
+    "target_feedback": false,
+    "automatic_seed_extension": false
+  },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
     "status": "ANALYZED_SOURCE_SENSITIVITY_PASS_NOT_AG_EFFICACY",
@@ -4262,7 +4287,7 @@
     "no_rescue": true
   },
   "latest_completed_analysis": "analysis/cvs_clean_supervision_mass_audit_20261018.md",
-  "current_evidence_gap": "Fixed finite-window unitary profile failed source identity protection and is closed. No new supported IQ Ag candidate or automatic training. Full joint target remains unachieved.",
+  "current_evidence_gap": "Metadata rebatching proved exactexposure/composition change only;identity benefits unproved. Registered3sameparentE30rows pending;not a newIQAg candidate.",
   "current_source_experiment": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
   "latest_completed_source_experiment": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
   "unitary_source_result": {
@@ -4300,5 +4325,6 @@
     "joint_goal_complete": false,
     "target_access": false,
     "automatic_training": false
-  }
+  },
+  "current_training_experiment": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01"
 }

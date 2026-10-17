@@ -1,3 +1,7 @@
+## 2026-10-18：完整 practical 的 L 批次组成 E30 三行候选
+
+已实现／本地检查与一次 P0/P1 通过，尚未启动。原4440步568320 L元数据回放发现所有锚点都有正例，TX×RX组成有波动；6批池重组保持逐物理曝光，平方偏差4.029→.772，随机重组4.054。这不是识别收益。新三行同父ordinaryAs E20＋10至E30，仅L批次组成不同，原F/defaulthead/As/U/4L前向及5源RX不变；无新增IQ A_g或loss，不与关联对话教师U路线重复。若不能分别相对原顺序/随机重组同时保护clean、midurban并使lowurban至少+.5pp，则关闭固定方案。所有正式结果固定报告，不据target晋级/扩种子或救跑。[预登记](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01/report.md)。
+
 ## 2026-10-18：有限窗酉相位源保护失败，固定候选关闭
 
 真实检查已完成：全部 5 RX／V1800，2 原默认头 × raw/同一 ordinary × 0／±.1，共21604 NN、0训练／teacher／target。8组端点准确率下降1.00至2.39个百分点，32项身份条件均失败，12项数值条件通过；1260CM／8配对／44判据独立复算一致。不能把保能量或可逆性当身份保护，按固定反证关闭，不缩幅度或换seed救跑，无自动训练。当前没有可晋级新候选；E30、F＋跨RX同TX、256点与不留出训练RX保持。[完整报告](../automation_reports/CV-SincNet/20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01/report.md)。
