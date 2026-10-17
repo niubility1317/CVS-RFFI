@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "Active user Phase1 joint augmentation research; latest scratch budget E30; full source RX required; this diagnostic adds zero training and no target access.",
   "code": {
-    "commit": null,
+    "commit": "7e8dc09d47571e3e99a241d1ba39672d5bba70f6",
     "checkout": "E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 ordinary CVS-RFFI FP32/CPU2/CUDA empty",
     "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cycleorder_sourceV_E30_20261017_r01"
@@ -228,5 +228,21 @@
     "Reordering can still disturb TX temporal evidence and create joins. Sourceguard PASS cannot prove semantic invariance or generalization.",
     "Prior repeatcorr lag1 colored-noise hypothesis remains closed; do not reinterpret itsFAIL asPASS. Repetitionstatistics only motivate assessing this distinct IQ operation.",
     "Primary literature: https://arxiv.org/html/2304.14795 III-A/III-B; supports augmentation distinctions and caveats, not this model performance."
-  ]
+  ],
+  "delivery": {
+    "state": "ANALYZED_SOURCE_ONLY_POST_RECEIVER_CYCLE_ORDER_NEGATIVE",
+    "execution_commit": "7e8dc09d47571e3e99a241d1ba39672d5bba70f6",
+    "B00_source_guard_pass": true,
+    "B01_source_guard_pass": false,
+    "NN": 25204,
+    "IQ_views": 25200,
+    "training_updates": 0,
+    "new_channel_draws": 0,
+    "target_access": false,
+    "independent_CM": 220,
+    "source_strata": 96,
+    "all_permutations_recomputed": true,
+    "artifacts": "E:/type10-7/local_artifacts/cvs_FcrossRX_cycleorder_sourceV_E30_20261017/analysis_r01",
+    "goal_completed": false
+  }
 }

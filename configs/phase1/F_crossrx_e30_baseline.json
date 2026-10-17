@@ -212,6 +212,26 @@
       ],
       "report": "automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-EMA-sourceV-e30-s2026092701-m2-r01/report.md",
       "repeat_policy": "No EMA decay/epoch/RX/seed/threshold/budget rescue of this fixed readout; no target access or seed expansion"
+    },
+    "post_receiver_cycle_order": {
+      "run_id": "20261017-diagnostic-FcrossRX-cycleorder-sourceV-e30-s2026092701-m2-r01",
+      "scope": "Received-IQ Ag(As(x)) fixed sourcefalsification only; not evidence about untested As(Ag(x))",
+      "source_rule_pass": false,
+      "B00_clean_guard_pass": true,
+      "B01_clean_guard_pass": true,
+      "B01_urban_draw_delta_pp": [
+        [
+          -5.055555555555557,
+          -2.500000000000002
+        ],
+        [
+          -2.2222222222222143,
+          -2.777777777777779
+        ]
+      ],
+      "decision_basis": "Source-only full V1800; no target access or training",
+      "report": "automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-cycleorder-sourceV-e30-s2026092701-m2-r01/report.md",
+      "repeat_policy": "No window/period/group/phasefit/probability/RX/seed/threshold/budget rescue of this post-receiver view; upstream order requires independent preregistered same-operator/same-latent source test, never target retuning"
     }
   },
   "next_method_boundary": "All-source F+CROSS_RX scratchE30/defaulthead/originalU and matched B00/B01 remain fixed references. Nativeboundary mixing and exactLA16xAs source hypotheses failed. A distinct IQ/organization candidate needs new legal source evidence and a matched factorial; no sourceRX holdout, fittedhead, targetfeedback or rescue of closed routes.",
