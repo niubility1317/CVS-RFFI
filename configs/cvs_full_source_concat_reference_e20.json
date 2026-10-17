@@ -1,6 +1,6 @@
 {
   "schema": "F_CROSS_RX_FULL_SOURCE_CONCAT_REFERENCE_E20_V1",
-  "status": "RUNNING_PARTIAL_SCORED",
+  "status": "ANALYZED",
   "authorization": "2026-10-17 user correction:prioritize practical augmentation;use ALL original source RX;no leave-one-source-RX training",
   "baseline": "F+CROSS_RX_same_TX/SIG_TIME_X3/unifiedSinc/joint160/defaultcos",
   "data": {
@@ -155,20 +155,288 @@
     "historical_source_fold_numbers": "Historicalonly;notmatchedfullsourcecontrols"
   },
   "claim_rule": "Establishreferenceperformanceonly;notnewAg/newAs/jointsuccess;futurecandidatecomparesdirectlytomatchedplainCONCAT",
-  "implementation_remaining": [
-    "Complete each fixed scratchE20/4440updates",
-    "Automatically finish unchanged seven-view predictions and independent truth-last scores",
-    "Full same-row/seed/cost/negative-result reporting"
-  ],
+  "implementation_remaining": [],
   "experiment_registered": true,
   "new_training_launched": true,
   "target_access": true,
   "run_id": "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02",
   "execution_commit": "b94076b191648103daeb8a9cb1c17bdcc9c0e231",
-  "target_access_scope": "Only frozen NATIVE/REPEAT default-head predictions and independent truth-last scores;zero target feedback",
+  "target_access_scope": "All three fixed final20 default-head rows predicted and independently truth-last scored;zero target feedback",
   "target_evaluation_completed_rows": [
     "NATIVE-s2026092701",
-    "REPEAT-s2026092701"
+    "REPEAT-s2026092701",
+    "CONCAT-s2026092701"
   ],
-  "target_feedback_to_training": false
+  "target_feedback_to_training": false,
+  "reference_complete": true,
+  "live_owned_processes": 0,
+  "observed_results": {
+    "NATIVE": {
+      "clean": {
+        "accuracy": 0.8499285714285715,
+        "macro_F1": 0.8475166921754878,
+        "worst_RX_accuracy": 0.763
+      },
+      "practical_high": {
+        "accuracy": 0.44667261904761907,
+        "macro_F1": 0.4123768952907522,
+        "worst_RX_accuracy": 0.387625
+      },
+      "practical_mid": {
+        "accuracy": 0.42885119047619047,
+        "macro_F1": 0.3972222342834116,
+        "worst_RX_accuracy": 0.37295833333333334
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.41123809523809524,
+        "macro_F1": 0.3816173150448133,
+        "worst_RX_accuracy": 0.3556666666666667
+      },
+      "practical_high_urban": {
+        "accuracy": 0.4328571428571429,
+        "macro_F1": 0.40131497954777523,
+        "worst_RX_accuracy": 0.377375
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.3633690476190476,
+        "macro_F1": 0.3402914759656759,
+        "worst_RX_accuracy": 0.32125
+      },
+      "practical_low_urban": {
+        "accuracy": 0.3112142857142857,
+        "macro_F1": 0.2954180618678796,
+        "worst_RX_accuracy": 0.2860416666666667
+      }
+    },
+    "REPEAT": {
+      "clean": {
+        "accuracy": 0.8457023809523809,
+        "macro_F1": 0.8425932785035658,
+        "worst_RX_accuracy": 0.75225
+      },
+      "practical_high": {
+        "accuracy": 0.46973809523809523,
+        "macro_F1": 0.4259563309875573,
+        "worst_RX_accuracy": 0.383125
+      },
+      "practical_mid": {
+        "accuracy": 0.4499047619047619,
+        "macro_F1": 0.4103669271689077,
+        "worst_RX_accuracy": 0.37366666666666665
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.42773214285714284,
+        "macro_F1": 0.3920988180155593,
+        "worst_RX_accuracy": 0.36091666666666666
+      },
+      "practical_high_urban": {
+        "accuracy": 0.4554642857142857,
+        "macro_F1": 0.414960318732342,
+        "worst_RX_accuracy": 0.3749166666666667
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.37766666666666665,
+        "macro_F1": 0.35015276581074845,
+        "worst_RX_accuracy": 0.32095833333333335
+      },
+      "practical_low_urban": {
+        "accuracy": 0.320125,
+        "macro_F1": 0.3019535345127768,
+        "worst_RX_accuracy": 0.277375
+      }
+    },
+    "CONCAT": {
+      "clean": {
+        "accuracy": 0.8218869047619047,
+        "macro_F1": 0.816661735405238,
+        "worst_RX_accuracy": 0.7141666666666666
+      },
+      "practical_high": {
+        "accuracy": 0.8075952380952381,
+        "macro_F1": 0.8028171920791235,
+        "worst_RX_accuracy": 0.72375
+      },
+      "practical_mid": {
+        "accuracy": 0.7830535714285715,
+        "macro_F1": 0.7784535939994823,
+        "worst_RX_accuracy": 0.7073333333333334
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.7589285714285714,
+        "macro_F1": 0.7547040381278197,
+        "worst_RX_accuracy": 0.6894166666666667
+      },
+      "practical_high_urban": {
+        "accuracy": 0.7730178571428571,
+        "macro_F1": 0.768176213217367,
+        "worst_RX_accuracy": 0.6992083333333333
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6336488095238095,
+        "macro_F1": 0.6291846566797185,
+        "worst_RX_accuracy": 0.5752083333333333
+      },
+      "practical_low_urban": {
+        "accuracy": 0.5238869047619048,
+        "macro_F1": 0.5188819775982375,
+        "worst_RX_accuracy": 0.477875
+      }
+    }
+  },
+  "observed_comparisons": {
+    "CONCAT-REPEAT": {
+      "clean": {
+        "delta_accuracy_pp": -2.3815476190476192,
+        "repairs": 3782,
+        "new_errors": 7783,
+        "delta_macro_F1_pp": -2.593154309832779
+      },
+      "practical_high": {
+        "delta_accuracy_pp": 33.785714285714285,
+        "repairs": 62128,
+        "new_errors": 5368,
+        "delta_macro_F1_pp": 37.68608610915662
+      },
+      "practical_mid": {
+        "delta_accuracy_pp": 33.31488095238095,
+        "repairs": 61727,
+        "new_errors": 5758,
+        "delta_macro_F1_pp": 36.80866668305746
+      },
+      "practical_low_suburban": {
+        "delta_accuracy_pp": 33.11964285714286,
+        "repairs": 61830,
+        "new_errors": 6189,
+        "delta_macro_F1_pp": 36.260522011226044
+      },
+      "practical_high_urban": {
+        "delta_accuracy_pp": 31.755357142857143,
+        "repairs": 59474,
+        "new_errors": 6125,
+        "delta_macro_F1_pp": 35.32158944850249
+      },
+      "practical_mid_urban": {
+        "delta_accuracy_pp": 25.598214285714285,
+        "repairs": 51614,
+        "new_errors": 8609,
+        "delta_macro_F1_pp": 27.903189086897
+      },
+      "practical_low_urban": {
+        "delta_accuracy_pp": 20.376190476190477,
+        "repairs": 44818,
+        "new_errors": 10586,
+        "delta_macro_F1_pp": 21.69284430854607
+      },
+      "urban_mean_gain_pp": 25.909920634920635
+    },
+    "REPEAT-NATIVE": {
+      "clean": {
+        "delta_accuracy_pp": -0.4226190476190476,
+        "repairs": 1458,
+        "new_errors": 2168,
+        "delta_macro_F1_pp": -0.492341367192195
+      },
+      "practical_high": {
+        "delta_accuracy_pp": 2.306547619047619,
+        "repairs": 8968,
+        "new_errors": 5093,
+        "delta_macro_F1_pp": 1.3579435696805087
+      },
+      "practical_mid": {
+        "delta_accuracy_pp": 2.1053571428571427,
+        "repairs": 8679,
+        "new_errors": 5142,
+        "delta_macro_F1_pp": 1.3144692885496134
+      },
+      "practical_low_suburban": {
+        "delta_accuracy_pp": 1.6494047619047618,
+        "repairs": 8052,
+        "new_errors": 5281,
+        "delta_macro_F1_pp": 1.0481502970746015
+      },
+      "practical_high_urban": {
+        "delta_accuracy_pp": 2.2607142857142857,
+        "repairs": 8821,
+        "new_errors": 5023,
+        "delta_macro_F1_pp": 1.3645339184566785
+      },
+      "practical_mid_urban": {
+        "delta_accuracy_pp": 1.4297619047619048,
+        "repairs": 7793,
+        "new_errors": 5391,
+        "delta_macro_F1_pp": 0.9861289845072563
+      },
+      "practical_low_urban": {
+        "delta_accuracy_pp": 0.8910714285714286,
+        "repairs": 7153,
+        "new_errors": 5656,
+        "delta_macro_F1_pp": 0.6535472644897178
+      },
+      "urban_mean_gain_pp": 1.5271825396825396
+    },
+    "CONCAT-NATIVE": {
+      "clean": {
+        "delta_accuracy_pp": -2.8041666666666667,
+        "repairs": 3697,
+        "new_errors": 8408,
+        "delta_macro_F1_pp": -3.085495677024974
+      },
+      "practical_high": {
+        "delta_accuracy_pp": 36.092261904761905,
+        "repairs": 64989,
+        "new_errors": 4354,
+        "delta_macro_F1_pp": 39.04402967883713
+      },
+      "practical_mid": {
+        "delta_accuracy_pp": 35.4202380952381,
+        "repairs": 64279,
+        "new_errors": 4773,
+        "delta_macro_F1_pp": 38.12313597160708
+      },
+      "practical_low_suburban": {
+        "delta_accuracy_pp": 34.76904761904762,
+        "repairs": 63576,
+        "new_errors": 5164,
+        "delta_macro_F1_pp": 37.30867230830064
+      },
+      "practical_high_urban": {
+        "delta_accuracy_pp": 34.01607142857143,
+        "repairs": 62303,
+        "new_errors": 5156,
+        "delta_macro_F1_pp": 36.68612336695917
+      },
+      "practical_mid_urban": {
+        "delta_accuracy_pp": 27.027976190476192,
+        "repairs": 53433,
+        "new_errors": 8026,
+        "delta_macro_F1_pp": 28.889318071404258
+      },
+      "practical_low_urban": {
+        "delta_accuracy_pp": 21.267261904761906,
+        "repairs": 46078,
+        "new_errors": 10349,
+        "delta_macro_F1_pp": 22.34639157303579
+      },
+      "urban_mean_gain_pp": 27.437103174603177
+    }
+  },
+  "suburban_gap_to_own_clean_pp": {
+    "NATIVE": {
+      "practical_high": 40.32559523809524,
+      "practical_mid": 42.1077380952381,
+      "practical_low_suburban": 43.86904761904763
+    },
+    "REPEAT": {
+      "practical_high": 37.59642857142857,
+      "practical_mid": 39.5797619047619,
+      "practical_low_suburban": 41.79702380952381
+    },
+    "CONCAT": {
+      "practical_high": 1.4291666666666591,
+      "practical_mid": 3.8833333333333275,
+      "practical_low_suburban": 6.295833333333334
+    }
+  },
+  "Ag_tested": false,
+  "joint_goal_complete": false
 }

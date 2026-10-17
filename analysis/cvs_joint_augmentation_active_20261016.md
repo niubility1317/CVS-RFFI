@@ -1,5 +1,10 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
+
+当前更新：完整源参照 20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02 已ANALYZED，3/3 scratchE20、13320更新、3528000正式决策与独立truth-last完成，所属进程已退出。CONCAT clean82.1887%、midurban63.3649%、lowurban52.3887%；相对匹配REPEAT依次−2.3815／＋25.5982／＋20.3762pp。suburban与自身clean差1.4292／3.8833／6.2958pp。所有5源RX与L6300/U56700保留、源序列逐条一致。该单seed证明普通As有实际practical收益，但当前配方没有clean净收益，未达lowurban或所有suburban目标；Ag和完整联合目标仍ACTIVE且未证明。
+
+[完整结果](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/report.md)；[全部分层](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/stratified_results.md)。以下保留之前的历史过程，当前阶段以本段为准。
+
 ## 当前状态（2026-10-17，按用户最新纠偏）
 
 主线恢复为直接验证星地识别收益。后续新训练使用完整L6300／U56700／V27000、全部源RX1/3/4/6/8，不再留出一个源训练域，也不要求先通过源留出折。F＋跨RX同TX、scratch E20、默认头、原U和正式IQ保持。

@@ -127,28 +127,134 @@
   },
   "closed_rows": {
     "NATIVE": {
-      "status": "ARTIFACTS_COMPLETE",
+      "status": "ANALYZED",
       "epochs": 20,
       "step_records": 4440,
       "reference_records": 4440,
       "unit_records": 4440,
       "unique_L": 6300,
       "unique_U": 56700,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_RX_holdout": null,
       "formal_predictions": 1176000,
-      "metric_records": 126
+      "metric_records": 126,
+      "head_fit_updates": 0
     },
     "REPEAT": {
-      "status": "ARTIFACTS_COMPLETE",
+      "status": "ANALYZED",
       "epochs": 20,
       "step_records": 4440,
       "reference_records": 4440,
       "unit_records": 4440,
       "unique_L": 6300,
       "unique_U": 56700,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_RX_holdout": null,
       "formal_predictions": 1176000,
-      "metric_records": 126
+      "metric_records": 126,
+      "head_fit_updates": 0
+    },
+    "CONCAT": {
+      "status": "ANALYZED",
+      "epochs": 20,
+      "step_records": 4440,
+      "reference_records": 4440,
+      "unit_records": 4440,
+      "unique_L": 6300,
+      "unique_U": 56700,
+      "source_RX": [
+        1,
+        3,
+        4,
+        6,
+        8
+      ],
+      "source_RX_holdout": null,
+      "formal_predictions": 1176000,
+      "metric_records": 126,
+      "head_fit_updates": 0
     }
   },
-  "matrix_complete": false,
-  "new_Ag_or_joint_goal_proved": false
+  "matrix_complete": true,
+  "new_Ag_or_joint_goal_proved": false,
+  "figures": {
+    "NATIVE": {
+      "PNG": "VERIFIED",
+      "PDF": "VERIFIED",
+      "pixels": [
+        2340,
+        1475
+      ],
+      "visual_check": "PASS"
+    },
+    "REPEAT": {
+      "PNG": "VERIFIED",
+      "PDF": "VERIFIED",
+      "pixels": [
+        2340,
+        1475
+      ],
+      "visual_check": "PASS"
+    },
+    "plot_model_forwards": 0,
+    "plot_new_updates": 0,
+    "CONCAT": {
+      "PNG": "VERIFIED",
+      "PDF": "VERIFIED",
+      "pixels": [
+        2340,
+        1475
+      ],
+      "visual_check": "PASS"
+    },
+    "MATRIX_v2": {
+      "PNG": "VERIFIED",
+      "PDF": "VERIFIED",
+      "pixels": [
+        2520,
+        1548
+      ],
+      "visual_check": "PASS",
+      "previous_plot_preserved": true
+    }
+  },
+  "full_source_sequences_identical": true,
+  "matrix_phases": {
+    "trained": 3,
+    "frozen": 3,
+    "predicted_all_7": 3,
+    "independently_scored": 3,
+    "analyzed": 3
+  },
+  "goal_requirements": {
+    "new_Ag_tested": false,
+    "Ag_clean_gain_proved": false,
+    "As_practical_single_seed_gain_vs_matched_repeat": true,
+    "joint_clean_net_gain": false,
+    "low_urban_above_60": false,
+    "each_suburban_gap_at_most_2pp": [
+      true,
+      false,
+      false
+    ],
+    "factorial_interaction_available": false,
+    "multiple_seeds": false,
+    "joint_goal_complete": false
+  },
+  "live_owned_training_or_dispatcher_processes": 0,
+  "actual_common_config_fields": 66,
+  "actual_common_config_mismatches": [],
+  "primary_REP_CONCAT_ordinary_MSE_epoch_means_identical": true
 }
