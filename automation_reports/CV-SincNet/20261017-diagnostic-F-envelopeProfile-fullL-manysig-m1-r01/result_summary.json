@@ -1,0 +1,42 @@
+{
+  "run_id": "20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01",
+  "status": "ANALYZED_SOURCE_STATISTICS_ONLY",
+  "execution_commit": "9aea3ef017db7491a903e460d59caf0642cd5e72",
+  "decision": "FAIL_FIXED_TEMPORAL_ENVELOPE_BASIS_CLOSED",
+  "conditions": {
+    "relative_MSE_at_most_0_9": false,
+    "at_least15_of18_folds_better": false,
+    "better_than_wrong_RX": true,
+    "each_RX_better_than_zero": false
+  },
+  "relative_MSE": 1.1632397922649884,
+  "better_folds": 3,
+  "totals": {
+    "prediction_SSE": 6.8566633763640645,
+    "zero_SSE": 5.894453939727418,
+    "wrong_RX_SSE": 6.857530288377047
+  },
+  "per_RX_relative_MSE": {
+    "1": 1.100670616608671,
+    "3": 1.1404313451963535,
+    "4": 0.7655273771957808,
+    "6": 1.3490248502259767,
+    "8": 1.186332688590828
+  },
+  "source_IQ_unique": 6300,
+  "source_cells": 90,
+  "source_cache_loads": 1,
+  "source_RX_holdout": null,
+  "elapsed_seconds": 0.7468611169606447,
+  "CP": 0,
+  "NN": 0,
+  "new_IQ_views": 0,
+  "teacher_forwards": 0,
+  "training_updates": 0,
+  "head_fit_updates": 0,
+  "target_access": false,
+  "Ag_efficacy_proved": false,
+  "AGC_causality_proved": false,
+  "joint_goal_complete": false,
+  "automatic_training": false
+}

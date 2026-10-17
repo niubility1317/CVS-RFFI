@@ -22,7 +22,7 @@
   "replaces_run_id": null,
   "authorization": "Active user authorized Ag/As research;latest E30 and no sourceRXholdout. New temporal-envelope basis only;do not reopen closed constantgain or stationaryFIR candidates. All originalL6300source observations,0CP/NN/updates/target.",
   "code": {
-    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "commit": "9aea3ef017db7491a903e460d59caf0642cd5e72",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "Ordinary N607 existing CVS-RFFI,CPU2,CUDAempty",
     "cwd": "PROJECT/releases/cvs_F_envelope_profile_source_20261017_r01",
@@ -172,7 +172,7 @@
           "samples": 256,
           "blocks": 16,
           "samples_per_block": 16,
-          "relative_floor": 1e-06,
+          "relative_floor": 0.000001,
           "per_packet_power_normalized": true,
           "center_log_profile": true,
           "DCT_modes": [

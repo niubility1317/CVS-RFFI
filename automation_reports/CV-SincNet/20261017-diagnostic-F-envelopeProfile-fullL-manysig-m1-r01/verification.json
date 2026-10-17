@@ -1,0 +1,33 @@
+{
+  "status": "VERIFIED",
+  "source_observation_recounts": 6300,
+  "DCT_coefficients_recounted": 12600,
+  "cell_recounts": 90,
+  "fold_recounts": 18,
+  "RX_recounts": 5,
+  "max_DCT_error": 4.440892098500626e-16,
+  "max_centering_error": 1.5543122344752192e-15,
+  "max_cell_error": 3.3306690738754696e-16,
+  "max_fold_error": 4.440892098500626e-16,
+  "relative_MSE": 1.1632397922649884,
+  "better_folds": 3,
+  "per_RX_relative_MSE": {
+    "1": 1.1006706166086713,
+    "3": 1.1404313451963533,
+    "4": 0.7655273771957809,
+    "6": 1.3490248502259767,
+    "8": 1.1863326885908283
+  },
+  "conditions": {
+    "relative_MSE_at_most_0_9": false,
+    "at_least15_of18_folds_better": false,
+    "better_than_wrong_RX": true,
+    "each_RX_better_than_zero": false
+  },
+  "decision": "FAIL_FIXED_TEMPORAL_ENVELOPE_BASIS_CLOSED",
+  "IQ_reads": 0,
+  "CP": 0,
+  "NN": 0,
+  "training_updates": 0,
+  "target_access": false
+}
