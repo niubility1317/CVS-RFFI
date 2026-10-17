@@ -53,3 +53,6 @@ pairing原型已在实际普通N607 CPU2／CUDA隐藏环境通过合成检查：
 本地SSR Torch2.1与NumPy2桥接在RandomSampler.numpy转换处失败，前面的合成gather检查已经执行；记录保留，未修改环境或模型训练来绕过。相同代码在N607实际环境运行至全部断言PASS（Torch2.1.0+cu121、NumPy2.2.5）。没有把本地失败写成PASS，也没有安装包。
 
 本轮另核查[WiSig原论文IV-B](https://arxiv.org/html/2112.15363)：均衡阶段25→20Msps后会重采样回25Msps再保留256点；因此不能用该处理说明擅改现有采样率或重开已关闭周期增强。此文献只支持数据处理限制，不为六步重排的识别收益背书。
+
+
+后续接入：两条新匹配E20的完整source observer／runner／dispatcher／七视图收尾已实现并登记 20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01；本地26反例、两新模型与原F206状态/初始logits逐值一致（6合成NN/0真实IQ/CP/更新/target）及唯一P0/P1审查PASS。当前尚未发布，完整训练调用和真实识别仍待实际运行，不把本依据分析当实验完成。

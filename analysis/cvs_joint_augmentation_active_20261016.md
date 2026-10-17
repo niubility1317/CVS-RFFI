@@ -351,3 +351,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 2026-10-17：下一唯一训练组织假设为六步L重排，详见analysis/cvs_L_batch_order_basis_20261017.md。完整4440原L批／568320观察／13320对比统计复算，0正对缺失更新，故缺失解释否定；固定重排保留每块及全程物理多重集、将positive_min全程下限4→10。已实现元数据/合成tensor原型，并在实际N607 CPU通过222步/37块、逐包IQ/y/domain/metadata与原全局RNG/U路径检查，0真实IQ/CP/NN/更新/target。本地RandomSampler NumPy桥接失败单独保留，未改环境。尚未完成observer/launcher、未登记或启动E20；将需两条共同预取/私有L流的新匹配E20，不能复用旧控制，也不把该训练组织当IQ Ag；固定识别门槛失败关闭，不调块长/seed/RX/权重救跑，联合目标ACTIVE。
+
+
+2026-10-17：20261017-phase1-F-crossRX-LbatchOrder-sourceRX1-e20-s2026092701-m2-r01 已补齐两新匹配E20的design/model/source/runner/dispatch/publish/登记入口，REGISTERED尚未发布。真实冻结native iterator及222步wrapper已只读核对；原型N607 CPU接口PASS，本地26反例及两新模型与原F全部206状态/初始logits逐值一致、6合成NN/0更新/真实IQ/CP/target。唯一P0/P1审查进行中。O0/O1同buffer6/私有L/原8L-1.25/U/defaulthead，仅重排不同；不称IQ Ag，不复用旧控制，完整联合目标ACTIVE。
