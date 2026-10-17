@@ -202,5 +202,21 @@
     "formal_scores_read": false,
     "all_three_complete": false,
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/early_source_recount_r01.json"
+  },
+  "final_analysis_runtime_planned": {
+    "code_commit": "34b02721c60e4b7a7dffa2d313f2190409509b4c",
+    "release": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_Uurban_analysis_20261018_r03",
+    "transfer_status": "VERIFIED",
+    "remote_compile": "PASS",
+    "focused_checks": 7,
+    "real_completed_source_cost_recount": "PASS_B0_URAW",
+    "shared_preflight_NN": 50,
+    "source_prerequisite": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/source_analysis_r01",
+    "output": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-phase1-FcrossRX-cleanurban-U-e30-s2026092701-m3-r01/final_analysis_r01",
+    "launched": false,
+    "formal_scores_read": false,
+    "source_waiter_unchanged": true,
+    "training_release_unchanged": true,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/analysis_transfer_r03.json"
   }
 }

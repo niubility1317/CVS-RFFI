@@ -74,14 +74,16 @@ UAS 第一段已结束，实测 4440 更新、LNN2273280、LAs284160、额外完
 
 分析代码82e8a7815979f35f16e6920cb4849195eacbc0cf已单独发布r02，独立GitHub读回一致、单归档SHA比较及远端compile VERIFIED。原训练release和source-only等待进程未修改或重启。6项本地检查PASS；用全部396900个已封存E20物理记录复算原状态与residual_scale，均与实际配置吻合。
 
-将同一记录的signal/added-noise比值作为替代质量代理时，有8866/396900（2.2338%）跨过锁定阈值；用推断的post-comp signal/reference-noise去除有限新增噪声功率波动后，有7664/396900（1.9309%）跨阈值。后一比值相对白功率代理的中位差−0.0121dB，q01−1.2072dB、q99+1.0686dB。这里没有重新生成信号、接收状态或补偿，不是总SNR，不证明阈值偏差导致了哪些识别错误；RX/image残差仍包含在推断信号功率中。
+将同一记录的signal/added-noise比值作为替代质量代理时，有8866/396900（2.2338%）跨过锁定阈值；用推断的post-comp signal/reference-noise去除有限新增噪声功率波动后，有7664/396900（1.9310%）跨阈值。后一比值相对白功率代理的中位差−0.0121dB，q01−1.2072dB、q99+1.0686dB。这里没有重新生成信号、接收状态或补偿，不是总SNR，不证明阈值偏差导致了哪些识别错误；RX/image残差仍包含在推断信号功率中。
 
 局部证据local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/UAS_E20_quality_state_sensitivity_r01.json保留完整分scene转移计数、统计、代码身份和0NN/0IQ/0checkpoint/0Utruth/0target标志。最新原worker为E29/E29/E21且仍健康，源矩阵判定与完整正式分析尚未完成。r02将用于后续既定final_analysis_r01，source_analysis_r01仍由原r01等待进程生成；正式成绩在源判定独立固定并记录前保持未读。
 
 ## 前两组完整 E30 日志复算与成本边界
 
-B0与URAW均已完成自身20+10并冻结默认头，原PID自动exec为predict；UAS最近完成E22继续原训练。单独early_source_recount_r01完整读取前两组全部日志，各6660更新、6660条L目标、6660条Sinc物理步进、3774条U额外记录、10434条L/U采样记录；原L6300/U56700全部出现，SupCon5550个有效步，最大L损失分解误差分别2.38e−7／3.58e−7。活动训练字段有限且无非有限跳步或错误标记；300次nan文本来自未启用/不可用诊断字段，不能当成活动loss或grad失败。
+B0与URAW均已完成自身20+10并冻结默认头，原PID自动exec为predict；UAS最近完成E22继续原训练。单独early_source_recount_r01完整读取前两组全部日志，各6660更新、6660条L目标、6660条Sinc物理步进、3774条U额外记录、10434条L/U采样记录；原L6300/U56700全部出现，SupCon5550个有效步，最大L损失分解误差分别2.38e−7／3.58e−7。活动训练字段有限且无非有限跳步或错误标记；原stdout另有300次nan文本提及；逐步活动loss及非有限跳步按完整结构化日志独立核查，不用文本计数判定训练失败。
 
 每组实际native计数：student_train5337720、student_eval930604、teacher_train0、teacher_eval965700，共7234024NN；native段墙钟B0=2761.9712s、URAW=2776.9127s。初次U资格14400NN已包含在native计数中，不再相加。冻结后另行source_qualification的12600NN必须再单列，每组完整源训练及源读出合计7246624NN；该读出没有单独计时，不推算其墙钟。独立分析已补齐此项及后续正式prediction和全矩阵共享烟测的一次计费，7项检查和编译PASS。原r01源等待进程不变，其旧source_identity_NN字段仅包含native部分；后续最终分析将提供明确分项。
 
 该修正只涉及分析成本，不改变训练、源科学阈值、默认头或任何prediction。前两组源训练完整不等于三组矩阵完成；正式成绩依旧未读取，研究目标未完成。
+
+最终分析版本现已固定为r03／34b02721c60e4b7a7dffa2d313f2190409509b4c，7项检查PASS、单归档比较与远端编译VERIFIED；对实际B0/URAW全计数和独立冻结读出再核对，各7246624源NN，共享预烟测50NN仅计一次。r02保留，r03不覆盖任何既有release或输出。最终分析尚未启动；先等待原r01独立source_analysis及源科学判定固定、记录后，再用r03读取既定正式产物。
