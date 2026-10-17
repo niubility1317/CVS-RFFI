@@ -1,0 +1,17 @@
+{
+  "status": "LOCAL_AND_ONE_P0P1_PASS",
+  "negative_checks": 34,
+  "synthetic_NN_packets": 2054,
+  "synthetic_fullAs_generations": 256,
+  "synthetic_optimizer_updates": 1,
+  "real_IQ": 0,
+  "checkpoint_reads": 0,
+  "target_access": false,
+  "initial_state_inputs_RNG_exact": true,
+  "parameter_gradients_compared": 74,
+  "only_removed_extra_As_KL_gradient": true,
+  "max_gradient_equivalence_error": 1.1920928955078125e-7,
+  "default_head_joint": true,
+  "export160_exact": true,
+  "one_P0P1_review": "PASS"
+}

@@ -339,3 +339,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 共享微弱加性IQ方向 20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01 ANALYZED／VERIFIED：FAIL_FIXED_SHARED_DIRECTION_CLOSED。原fitL5040/12heldRXday/三视图15120判决完整复算；raw99.841270%、direction99.801587%、permuted99.841270%，差0.039683pp、0/4RX≥1pp；修复1破坏3。75602新NN／30240输入梯度贡献／240调用，0更新/As/target，未进入E20。固定所有knobs关闭；无新Ag候选晋级。F＋跨RX同TX／E20／原U/默认头保持，完整联合目标ACTIVE。
+
+
+下一唯一待检验问题为额外As对的RDrop KL是否抑制原监督收益：20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01，新C_CE从零E20/4440，复用Q0/Q_ord两个匹配8L/1.25控制结果，不载其权重。只移除额外As的KL，原baseRDrop/SupCon/U和singlefullAs保持，纯两CE同IQ。34反例＋真实F2054合成NN/1更新验证PASS，74参数梯度差仅旧.25KL；一次P0/P1 PASS。已登记未发布，无新真实IQ/CP/target。此为As配方而非Ag；失败关闭系数/CE权重/场景/日历/RX/seed救跑，完整目标ACTIVE。
