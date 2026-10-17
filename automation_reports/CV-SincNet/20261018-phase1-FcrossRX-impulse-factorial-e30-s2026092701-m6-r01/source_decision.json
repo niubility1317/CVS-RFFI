@@ -1,0 +1,156 @@
+{
+  "status": "SOURCE_REJECTED_FIXED_BG_CANDIDATE",
+  "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+  "training_commit": "19aedc3604fed9c193237dd92366164178af0983",
+  "analysis_commit": "c02154d6cf9fb29fafecc4145bb6c08cb26d2490",
+  "source_only": true,
+  "formal_scores_read": false,
+  "decision": {
+    "status": "SOURCE_DECIDED",
+    "source_qualified": false,
+    "checks": {
+      "Ag_clean_gain": false,
+      "joint_clean_net_gain": false,
+      "joint_clean_over_As": false,
+      "As_independent": true,
+      "As_with_Ag": true,
+      "Ag_urban_joint": false,
+      "shape_over_WHITE": false,
+      "shape_clean_preserved": true,
+      "all_RX_clean_preserved": false,
+      "suburban_source_preserved": true
+    },
+    "clean_V": {
+      "B00": 0.9835925925925926,
+      "B10_WHITE": 0.9832222222222222,
+      "B10_BG": 0.9835185185185186,
+      "B01": 0.9825555555555555,
+      "B11_WHITE": 0.9827777777777778,
+      "B11_BG": 0.9822222222222222
+    },
+    "clean_RX": {
+      "B00": {
+        "1": 0.9948148148148148,
+        "3": 0.9561111111111111,
+        "4": 0.9838888888888889,
+        "6": 0.9962962962962963,
+        "8": 0.9868518518518519
+      },
+      "B10_WHITE": {
+        "1": 0.9944444444444445,
+        "3": 0.955,
+        "4": 0.9835185185185186,
+        "6": 0.9962962962962963,
+        "8": 0.9868518518518519
+      },
+      "B10_BG": {
+        "1": 0.9948148148148148,
+        "3": 0.9562962962962963,
+        "4": 0.9833333333333333,
+        "6": 0.9964814814814815,
+        "8": 0.9866666666666667
+      },
+      "B01": {
+        "1": 0.9940740740740741,
+        "3": 0.9533333333333334,
+        "4": 0.9855555555555555,
+        "6": 0.9962962962962963,
+        "8": 0.9835185185185186
+      },
+      "B11_WHITE": {
+        "1": 0.9938888888888889,
+        "3": 0.9537037037037037,
+        "4": 0.9861111111111112,
+        "6": 0.9959259259259259,
+        "8": 0.9842592592592593
+      },
+      "B11_BG": {
+        "1": 0.9938888888888889,
+        "3": 0.952037037037037,
+        "4": 0.9859259259259259,
+        "6": 0.9961111111111111,
+        "8": 0.9831481481481481
+      }
+    },
+    "urban_delta_pp": {
+      "B10_BG-B00": [
+        [
+          0.33333333333332993,
+          0.3888888888888886
+        ],
+        [
+          -0.6111111111111123,
+          0.5555555555555536
+        ]
+      ],
+      "B10_WHITE-B00": [
+        [
+          0.05555555555555314,
+          0
+        ],
+        [
+          -0.5000000000000004,
+          0
+        ]
+      ],
+      "B11_BG-B01": [
+        [
+          -0.11111111111110628,
+          0.05555555555555314
+        ],
+        [
+          0.22222222222222365,
+          -0.11111111111111738
+        ]
+      ],
+      "B11_WHITE-B01": [
+        [
+          0.7222222222222241,
+          0
+        ],
+        [
+          0.11111111111111738,
+          -0.7222222222222241
+        ]
+      ],
+      "B11_BG-B11_WHITE": [
+        [
+          -0.8333333333333304,
+          0.05555555555555314
+        ],
+        [
+          0.11111111111110628,
+          0.6111111111111067
+        ]
+      ]
+    },
+    "source_interaction_pp": [
+      [
+        -0.4444444444444362,
+        -0.3333333333333355
+      ],
+      [
+        0.8333333333333359,
+        -0.666666666666671
+      ]
+    ],
+    "source_only": true,
+    "formal_scores_read": false,
+    "automatic_seed_extension": false,
+    "Ag_proved": false,
+    "goal_complete": false
+  },
+  "failed_checks": [
+    "Ag_clean_gain",
+    "joint_clean_net_gain",
+    "joint_clean_over_As",
+    "Ag_urban_joint",
+    "shape_over_WHITE",
+    "all_RX_clean_preserved"
+  ],
+  "closed_scope": "Fixed BG temporal shape,p=.02,excessvariance49,addedSNR30dB,slotweight.25,seed2026092701,E30;no parameter/seed/budget rescue",
+  "automatic_seed_extension": false,
+  "all_preregistered_rows_still_reported": true,
+  "overall_goal_complete": false,
+  "source_analysis_plotting_status": "Independent decision file already written;complete plots and coverage pending observable output"
+}
