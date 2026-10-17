@@ -142,7 +142,7 @@
     }
   },
   "execution_boundary": "2026-10-17 correction: full-source ordinary-concat FcrossRX E20 matching control has not been run. First establish full-source no-As/ordinary-concat references; no additional held RX or allpass/synthetic Ag detour. Previous fold failures remain valid within their contracts and do not constitute full-source failure.",
-  "full_source_status": "NOT_RUN",
+  "full_source_status": "PREREGISTERED_NOT_LAUNCHED",
   "source_pair": {
     "run_id": "20261016-phase1-FcrossRX-practical-source-RX1-e20-s2026092701-m2-r01",
     "held_RX": 1,
@@ -358,6 +358,8 @@
     "extra_source_domain_holdout": false,
     "extra_Ldev_split": false,
     "success_claim": false,
-    "stopped_unlaunched_run": "20261017-diagnostic-FcrossRX-allpass-synthetic-m1-r01"
+    "stopped_unlaunched_run": "20261017-diagnostic-FcrossRX-allpass-synthetic-m1-r01",
+    "current_run": "20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01",
+    "control_cost_note": "B00 native p0 cleanrepeat and B01 native p1 practicalconcat both4L; B00 is not a standard2L benchmark result"
   }
 }

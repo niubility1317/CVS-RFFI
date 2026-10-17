@@ -130,3 +130,5 @@ RXMIX实际完整结果：20261016-phase1-FcrossRX-rxmix-source-RX1-e20-s2026092
 每 row FINAL20 冻结后自动执行原 clean＋六 practical prediction，再独立 truth-last 评分；所有已冻结 row 的结果均报告，不能用目标分数选模/调参/选择性重跑。报告 clean、各 urban/三郊区绝对值、相对普通拼接的差、最差 RX、宏 F1 与真实成本。未取得上述结果前，不宣称双突破、low urban>60% 或跨 seed 复现。
 
 当前唯一待回答的问题：在完整原源域和固定 E20 下，普通拼接 As 相对无 As 的 clean 代价和六 practical 收益究竟是多少？主线先补这项直接证据，不以留域评分或合成 DSP 通过替代。机器可读当前约束见 `configs/phase1/F_crossrx_e20_baseline.json`。
+
+完整源域接入已实现并预登记：`20261017-phase1-FcrossRX-fullsource-concat-e20-s2026092701-m2-r01`，B00 native p0 cleanrepeat 与 B01 p1 原ordinary/practical(ordinary)拼接，同4L/默认头/E20；未增加新Ag/课程/一致性/留域。完整F合成梯度检查、8项negative与独立P0/P1审查PASS；发布依赖问题已修复。此为实现/预登记状态，未启动、未产生新性能；逐row训练后自动固定七视图及独立truth-last。详见本run report，后续状态以该登记及远端产物为准。
