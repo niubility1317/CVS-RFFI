@@ -42,5 +42,33 @@
     "IQ": 0,
     "CP": 0,
     "updates": 0
+  },
+  "final": {
+    "status": "ANALYZED_NEGATIVE",
+    "new_model_epochs": 30,
+    "new_updates": 6660,
+    "source_rule": "FAIL;source commitd6c7629a8 before agent formal result read",
+    "formal_new_decisions": 1176000,
+    "formal_views": 7,
+    "formal_independent_confusion_matrices": 378,
+    "source_confusion_matrices": 834,
+    "source_physics_selected": 426240,
+    "selected_physics_record_mismatches": 0,
+    "selected_unique_L": 6300,
+    "missing_selected_L": 0,
+    "PNG_groups_inspected": 10,
+    "PNG_PDF_files": 20,
+    "new_NN": 6609642,
+    "all_owned_processes_naturally_exited": true,
+    "original_checkpoint_and_logits_preserved": true,
+    "goal_complete": false
+  },
+  "delivery_report_tests": {
+    "count": 2,
+    "status": "PASS"
+  },
+  "physics_pair_tests": {
+    "count": 3,
+    "status": "PASS"
   }
 }

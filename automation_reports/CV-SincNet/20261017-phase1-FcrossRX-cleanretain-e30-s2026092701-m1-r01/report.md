@@ -1,57 +1,123 @@
-**当前状态：E30训练完成；固定源保护条件 FAIL；正式收尾仍按预定执行。**
+# 全源 F：保留 clean 监督的 E30 配对结果
 
-**当前状态：RUNNING／启动 VERIFIED。新行已完整完成 E1，尚无新正式成绩。**
+状态：ANALYZED／VERIFIED。新 R25 与两个复用控制完成原七环境预测及独立 truth-last；整体联合目标仍 ACTIVE。
 
-# 全源 F：保留普通监督的 practical 配对，从零 E30
+**本轮固定源保护条件未通过。** R25 相对同预算 C0 的 clean 为 -0.639286 个百分点；相对 AS50，clean +1.460119、mid urban -1.780357、low urban -2.167262、urban 均值 -1.709921 个百分点。
 
-状态：LOCAL_VERIFIED，尚未发布、训练或产生新成绩。整体联合目标 ACTIVE。
+这是一个 model seed2026092701、全部五源 RX、scratch30/20L10U 的结果。75%普通视图／25%完整 practical 是用户明确要求参考的训练组织，本轮没有新增物理 Ag，也不能把源保护通过当作域泛化创新或联合目标完成。
 
-用户指定参考聊天 01a1427e-49c0-7840-a84d-5bb38d5a8164 的 clean 保持路线。已读取该聊天及实际报告、launcher/model/config。多轮复用 B10 命名，当前最符合描述的是 clock-E30 的 B01，而非其中 Ag-only B10：原 B01 clean85.522024%、mid62.930952%、low51.576190%；完整 As clean82.963690%、mid64.371429%、low53.447024%。这是同一 seed、完整源 E20＋10 的公开探索结果，不能冒充 scratch30 或跨种子证据。clock Ag 与后继固定 FIR 均未带来增量，保持关闭。新研究参考有用的监督组织，不加载按目标成绩选中的权重，也不称新的独立盲测。
+## 默认头七环境准确率
 
-本轮唯一问题：该75%普通视图／25%完整 practical监督组织，迁移至当前 scratch E30 后，是否能保持 clean 并保留原 practical 的 urban 适应。此轮是必要的配方迁移检验，未提出新的物理 Ag、特征对齐、分类头或部署模块。未发布的 P36 梯度草稿暂置，不成为启动门槛。
+单位为%。所有模型固定既有默认6×160 cosine头/scale30，骨干与头联合训练；没有换头、另训诊断头或目标拟合。
 
-## 固定实施
+|环境|C0 无As|AS50|R25|
+|---|---:|---:|---:|
+|clean|85.156548|83.057143|84.517262|
+|practical_high|46.513095|81.772619|80.688095|
+|practical_mid|44.677976|79.417857|78.013095|
+|practical_low_suburban|42.714286|77.039286|75.378571|
+|practical_high_urban|45.233333|78.350000|77.167857|
+|practical_mid_urban|37.582738|64.337500|62.557143|
+|practical_low_urban|31.985714|53.394643|51.227381|
 
-新行 R25-s2026092701，零父训练：30轮=20L＋10U，222步/轮，6660更新。保持 F：三路SIG_TIME_X3、Sinc CENTER_25K/CENTER_UNITS、NoExplicitCFO、必要包内补偿、真实joint160、原6×160 cosine默认头/scale30，900722参数/206状态；骨干与头联合更新。原AdamW峰值.0002/min.000001、wd.0001、native cosine30、LS.01、RDrop alpha1、SupCon原层位warm5/ramp10/max.1、旧U门控与自身EMA不变。
+## 收益、代价与配对错误
 
-全部原 RX1/3/4/6/8、day1/2/3、6TX，L6300/U56700隐藏TX/V27000、split392005、7/63/30物理ID、VALIDATED_ONCE保持，无RX留出或内部L_dev。V不训练；不解封U TX。新学生/EMA从零建立，无E20/E50/E200父权重。兼容smoke读取既已核实全源FINAL20，仅2合成包后丢弃；另对既有全源C0 FINAL30作冻结源读出，不是初始化。
+R25 urban 均值 63.650794%；low urban 51.227381%；clean 84.517262%。low>60%、clean正净收益、每个suburban距自身clean≤2pp仍按原探索目标报告，不能靠clean下降缩小差距。
 
-每次实际 L128 保留共有 ordinary128；第二半128里，按(batch_position+global_step)%2==1的64个位置，从同一raw物理IQ只调用一次原 native practical，其余64位置保留同一ordinary。只生成实际监督的64 satellite，无拒绝/高置信筛选；不反演TX效应、不额外叠ordinary噪声/多径。两次RDrop使用同一生成256IQ；两半CE/KL各归一化再权重.5，合计ordinary.75/satellite.25，SupCon只用原第一半。4L网络包前向/物理样本，3409920 L NN；实际As426240包。原同物理样本标签、RX/day context切片后finally恢复，不依TX定义session。记录真实As配置、原模块__file__、全部物理序列、状态覆盖、分开CE/KL曲线与实际参数变化。
+|模型|clean宏F1 %|low宏F1 %|low最差RX %|
+|---|---:|---:|---:|
+|C0|84.891668|30.218017|27.700000|
+|AS50|82.666197|52.824516|48.737500|
+|R25|84.154010|50.668058|45.725000|
 
-25MHz/IQ256、dataset原RMS，不在As后恢复RMS。原residual/post_sync、EQfalse即G1、refSNR30、fc2.45GHz、reflect、接收质量适配／相位跟踪／RXIQ补偿／AGC依赖保留；62tap残余核、24点数值延迟保持。新增噪声比不称总SNR，white-input功率代理保持。训练stream202610172201、ordinary私有20261016051、RX会话2026092701；训练随epoch/view刷新，源读出重用原独立两draw；正式固定IQ/测试SNR/边界/难样本全部保持。实际导入为已冻结 release 的 experiments/adv3b02_xuc/code/leo_practical，而非顶层code。
+|R25差值参照／视图|准确率差pp|修复|新增错误|clean与该视图同时正确净差pp|
+|---|---:|---:|---:|---:|
+|C0/clean|-0.639286|3952|5026|-0.639286|
+|C0/practical_mid_urban|+24.974405|48684|6727|+23.369643|
+|C0/practical_low_urban|+19.241667|40934|8608|+17.754167|
+|AS50/clean|+1.460119|4522|2069|+1.460119|
+|AS50/practical_mid_urban|-1.780357|5539|8530|-1.180357|
+|AS50/practical_low_urban|-2.167262|6716|10357|-1.636310|
 
-## 对照、源判定和正式收尾
+|模型|high suburban距clean pp|mid suburban距clean pp|low suburban距clean pp|
+|---|---:|---:|---:|
+|C0|38.643452|40.478571|42.442262|
+|AS50|1.284524|3.639286|6.017857|
+|R25|3.829167|6.504167|9.138690|
 
-只新增R25，不重跑健康/已完成行。C0复用 P25 E30 B00 ordinary精确重复，AS50复用 P32 E30 B01 practical(raw128)，均同seed、完整源、scratch30/6660/4L/原U。P25 B01是As(ordinary)，不误当raw-As匹配参照；P32 B00是raw副视图，不误当ordinary-repeat C0。历史E20＋10 B01仅配方背景，不混入本轮主比较。
+固定C0 clean正确集合共143063包；R25 low保持率55.940390%，AS50为58.281317%。固定集合只是诊断参照，两个控制均非新训练父模型。
 
-新R25与既有AS50原生args应仅run_id/candidate_id/output_dir不同；C0仅另有sat_view_prob差异。正式前保存完整V clean和同一V1800两draw×三训练场景读出。源保护条件固定：fullVclean≥C0−.25pp，且两个draw各mid/low urban≥AS50−2pp；任一失败则本轮迁移保护假设不成立，不调份额/幅度/阈值/seed或追加预算救跑。不把通过解释为Ag有效、low>60%或联合成功，不自动扩种子。源结论在新正式预测前落盘；固定新行无论科学判定均完成已登记正式测试。
+## 源判据、分层和因果边界
 
-FINAL30冻结后，自动逐row完成原clean＋practical_high/mid/low_suburban/high_urban/mid_urban/low_urban，各168000包；全部7视图logits/decisions固定后exec独立CUDA空CPU scorer才读取truth。报告accuracy、urban均值、Macro-F1、最差RX及全部RX/day/TX，suburban绝对值/自身clean差、同包修复/新增错误、固定C0 clean正确集保持率、源state/quality、默认头margin/30与完整训练曲线。没有Ag因子，不能编造四格交互。low>60%、clean净收益、suburban各距自身clean≤2pp仍为未完成的探索目标；单seed不证明复现。
+正式结果读取前已落盘源判据。fullV clean R25−C0=-0.100000pp；两个独立draw×mid/low相对AS50的差=[[-2.888889, -2.0], [-3.0, -3.555556]]pp。固定要求clean≥−.25pp、四个urban差均≥−2pp。任何失败即本轮保护假设失败，不换份额、扰动、seed、阈值或预算救跑；不自动扩种子。
 
-## 执行与保护
+全部物理实现比较：426240个选中As包、6660步，完整记录一致426240，差异0。首次批次吻合不能代替该全量统计；若有差异，应同时报告对应字段，不将效果单独归因为监督份额。
 
-命令：/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cleanretain_E30_20261017_r01/experiments/cvs_cleanretain37/runner.py。CWD=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_cleanretain_E30_20261017_r01。唯一owner codex/root/cleanretain37。不可覆盖run=/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01；log=/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01/logs；本地=E:/type10-7/local_artifacts/cvs_FcrossRX_cleanretain_E30_20261017。逐row和六类seed在experiment.json维护。
+源V1800使用同一真实IQ和两组固定完整practical观测，按LOS/PARTIAL/BLOCKED、locked/degraded/unlocked、RX/day/TX及新增噪声比分层。新增噪声比不是录音已有噪声与新增噪声合计的总SNR。正式IQ没有逐包状态/质量旁表，所以不能把源分层冒称目标urban的状态因果效果。
 
-N607普通账户/现有CVS-RFFI/FP32/CPU2，每GPU所有owner合计最多3进程、启动需12GB可用；不干预其他健康任务。一次只读preflight/一个归档一次SHA比较/远端编译；launcher首步真实CP无query smoke，然后独立目录合成真实native64As和F默认头/骨干梯度验证512NN、0更新，PASS立即继续。审查发现合成验证会提前创建训练source目录的P1已本地隔离a.output_dir到BASE/synthetic/native_execution；末尾独立断言真实source仍不存在。
+|源low urban新增噪声比|样本数|C0 %|AS50 %|R25 %|
+|---|---:|---:|---:|---:|
+|<3 dB|1127|20.408163|30.079858|27.329193|
+|3-8 dB|794|27.833753|44.332494|40.428212|
+|8-15 dB|303|40.924092|78.217822|73.597360|
+|>=15 dB|1376|57.921512|95.130814|93.386628|
 
-技术停止只限数据/来源/权限错误、活动loss/grad/prediction非有限、输出冲突或不能启动/合法预测评分的系统故障；保留产物，无自动重试，不因低成绩中止。若SSH结果不明，独立读回原PID/产物后再行动。
+## 完整训练、数据与预算
 
-成本分开报告：新训练30model-E/6660更新/3409920L NN；父训练0；既有两个控制各30E/6660为历史复用成本。新source学生/自身teacher/评估实际counter、As426240、source新读出2×12602NN、兼容2NN、随机模型合成512NN、formal1176002NN及墙钟分别保存，不把多个channel draw当model seed。
+全部RX1/3/4/6/8、day1/2/3、六TX、L6300/U56700隐藏TX/V27000、7/63/30物理ID保持；不留训练RX，不合并V，不解封U TX。F为SIG_TIME_X3、Sinc CENTER_25K/CENTER_UNITS、NoExplicitCFO、真实joint160；900722参数/206状态；保留原必要包内补偿、旧U门控、自身EMA、SupCon和RDrop。
 
-当前本地聚焦协议负测和编译通过；唯一P0/P1审查与修复结果在verification.json；训练和新正式结果尚未生成，不能宣称改善。实际代码commit发布前填写。
+每个L128，原ordinary128作为第一半；第二半交替64个ordinary和64个原practical(raw)，全部生成As监督。每对RDrop共享同一生成IQ，无增强重抽。CE/KL两半归一化再.5/.5，实际ordinary.75/satellite.25；SupCon只用原第一半。4L NN/物理样本，不增加部署模块或损失。
 
-## 已核实的启动证据
+实际导入为原不可变release中experiments/adv3b02_xuc/code/leo_practical，不是顶层code。25MHz/IQ256、dataset原RMS，As前原unitRMS、As后无额外RMS；完整residual/post_sync/EQ关闭即G1/referenceSNR30/fc2.45GHz/reflect，质量适配、相位跟踪、RXIQ补偿、AGC及相互依赖保持；62tap核和24点数值延迟不变。没有改变正式IQ、SNR、边界或困难样本。
 
-实际训练代码 c577b3daded412337fb4181be05078ce051a64f1 已提交、推送，独立API对比当前分支OID identical。直接Git连接超时后，使用系统原已配置的本机代理恢复推送；未修改系统或Git持久网络配置。唯一发布归档一次SHA比较及远端compile PASS。
+本轮与C0、AS50的全部训练序列比较：{"AS50-C0": {"records_compared": 8880, "mismatched_records": 0, "identical": true, "no_hash_gate": true}, "R25-C0": {"records_compared": 8880, "mismatched_records": 0, "identical": true, "no_hash_gate": true}, "R25-AS50": {"records_compared": 8880, "mismatched_records": 0, "identical": true, "no_hash_gate": true}}。完整30轮/6660step、原SupCon5550有效步、Sinc6660更新、全量physics及活动损失均由独立分析读取。RDrop是原随机子网络正则，不记作新Ag。
 
-同原AS50工厂848个实际native args一致，仅run_id/candidate_id/output_dir不同。真实checkpoint严格加载2合成包无query smoke PASS；随后随机F的真实native64As/512NN合成验证PASS，默认头与Sinc均有有限非零梯度，0optimizer更新，正式source输出未提前创建。
+监督分量的独立尺度复算最大误差4.76837158e-07。共有ordinary完整日程与波形统计比较：{"C0": {"probability_epoch_mismatches": 0, "waveform_observation_epoch_mismatches": 0}, "AS50": {"probability_epoch_mismatches": 0, "waveform_observation_epoch_mismatches": 0}, "R25": {"probability_epoch_mismatches": 0, "waveform_observation_epoch_mismatches": 0}}。默认头/Sinc参数运动只证明联合更新，不证明分支或门控导致收益；没有保存逐包门控/分支梯度，不补造该机制证据。
 
-独立读回dispatcher723131、worker723350/GPU0，CWD/argv/CUDA和日志增长正确；实际完整源L/U/V6300/56700/27000，初始E1完成。原生第一批配置读回residual/post_sync/EQfalse/G1/ref30/fs25MHz/fc2.45GHz/reflect，quality adaptation、相位跟踪和IQ补偿开启；实际64条信道记录。原网络900722参数/206状态、6×160头/scale30保持。
+|模型|训练源NN|训练秒|正式NN|预测秒|新训练/复用|
+|---|---:|---:|---:|---:|---|
+|C0|5407922|1540.012254|1176002|47.865980|复用历史30E/6660更新|
+|AS50|5407922|2956.008296|1176002|47.819214|复用历史30E/6660更新|
+|R25|5407922|2283.089897|1176002|48.236964|新30E/6660更新|
 
-用户已确认就是这类保留clean的方案。P36草稿暂置、历史timing/FIR负结果保留，不修改另一对话健康RXpopulation实验。独立分析代码已实现：4个聚焦反例通过，最终读取所有30轮/6660步、426240As物理记录、三行7视图和源状态质量分层；尚未生成新结果或图表，不提前提供图表路径。
+新R25父训练0、30轮/6660更新、3409920L网络前向、426240真实As训练视图；U/学生/教师/评估分别由实际counter计入，teacher训练0。兼容smoke2、随机模型合成512、新C0源读出12602、新R25源读出12602、formal1176002分别保存；本轮新增总NN=6609642，历史两个控制NN=13180450单列，不能记作新增或父继承。调度到终态墙钟2364.776987秒；独立分析CPU墙钟92.326699秒，不包含等待训练。预算结束不等于收敛，不延长至E50/E200。
 
-## FINAL30源域先行结论
+## 代码、验证和可检查产物
 
-6660更新完成，0父训练。源fullV clean C0=98.148148%、R25=98.048148%，差−.100000pp，≥−.25pp。相对AS50，draw0的mid/low为−2.888889/−2.000000pp，draw1为−3.000000/−3.555556pp，未满足四项均≥−2pp。固定source_protection_evidence=false，自动扩种子=false。此结论来自源模型与V，读取新正式成绩前保存；当前不调份额、扰动、seed、阈值或预算救跑。
+训练代码c577b3daded412337fb4181be05078ce051a64f1；独立结果分析1656d1a30669153718496672a50d4eb96ef7c7ce；物理实现比较56cfd3a9f5aed9ba8e176db6fa6e49aeda6c6274。训练实现experiments/cvs_cleanretain37；原匹配控制P25 B00 ordinary-repeat和P32 B01 rawpractical；E20＋10的旧B01只作路线背景，不混作scratch30控制，也没有加载旧目标选中权重。
 
-这只关闭本轮native raw-As／75:25／20L10U／直接cosine30的迁移保护假设，不把其失败泛化为原E20＋10训练组织必然无效。原参考与本轮阶段、optimizer日程、ordinary强度日程和真实As实现不同，不能只凭同E30混作等价轨迹。全部固定新行七环境收尾、原CP与输出保持。
+本地8项训练聚焦检查、4项独立分析检查、3项物理配对反例通过。一次独立P0/P1审查发现合成验证输出冲突，已隔离且定向复核；首步真实CP2包、原生64As/512NN随机模型验证通过，无query、0optimizer；848个native args仅运行标识/输出位置不同。一次发布传输比较/编译，实际PID/CWD/argv/GPU/log增长已核实。所有其他健康任务保持。
+
+训练命令见[experiment.json](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01/experiment.json)；环境/CWD/GPU/停止规则及source权限在原预登记中保持。所有正式预测固定后独立CPU scorer，378个混淆矩阵独立复算；模型默认头无额外拟合。
+
+[逐row/seed/RX/day/TX](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanretain_E30_20261017/final_r01/analysis_r01/per_row_seed.csv)；[完整训练曲线](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanretain_E30_20261017/final_r01/analysis_r01/training_curves.csv)；[源状态质量分层](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanretain_E30_20261017/final_r01/analysis_r01/source_strata.csv)；[独立完整统计与成本](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanretain_E30_20261017/final_r01/analysis_r01/analysis_summary.json)。
+
+![formal_accuracy](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanretain_E30_20261017/final_r01/analysis_r01/formal_accuracy.png)
+
+![training_curves](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanretain_E30_20261017/final_r01/analysis_r01/training_curves.png)
+
+![source_added_noise_accuracy](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanretain_E30_20261017/final_r01/analysis_r01/source_added_noise_accuracy.png)
+
+![source_state_lock_accuracy](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanretain_E30_20261017/final_r01/analysis_r01/source_state_lock_accuracy.png)
+
+![R25_supervision_components](E:/type10-7/local_artifacts/cvs_FcrossRX_cleanretain_E30_20261017/final_r01/analysis_r01/R25_supervision_components.png)
+
+## 未完成项
+
+当前只有一个模型seed，不能回答跨seed稳定复现。源两draw不是两个模型seed。没有独立有效Ag，不能虚构Ag×As四格交互。low>60%、clean净收益、所有suburban接近clean和跨seed联合验证仍按实际结果分别审查，整体goal不标complete。
+
+固定CVS和固定practical条件下，本轮可核实的是完整组合practical的训练组织效应：默认头相对AS50的low变化-2.167262pp、mid-1.780357pp；clean相对C0变化-0.639286pp、相对AS50变化+1.460119pp。单个多径/频偏/噪声因素的训练因果增益及跨seed复现尚不能由这一行证明。
+
+## 有效覆盖、状态与原参考边界
+
+全部6300个L物理样本均实际进入过satellite视图，未进入样本数0；全6660步共426240As观测，15个RX/day单元全部有覆盖。TX×RX×场景和TX×RX×状态均90个有效单元，未筛掉困难样本。完整序列比对三组各8880条、差异0；活动loss均有限、无跳步/错误，stdout中300处NaN文本属于未启用统计，不作为活动梯度失败。
+
+源low urban的LOS/locked为C0 59.905660%、AS50 96.037736%、R25 94.811321%；PARTIAL/degraded为41.897233%／85.375494%／81.422925%；BLOCKED/unlocked为22.300319%／33.610224%／30.287540%。可恢复受损观测明显适应，噪声主导失锁仍弱，R25在全部新增噪声比区间均低于AS50。该描述只来自同一源面板，不能把它解释为正式目标的特异多径或Doppler因果改善。
+
+最差RX（accuracy比例）为{"C0":{"clean":{"RX":"14-7","accuracy":0.7443333333333333},"practical_low_urban":{"RX":"14-7","accuracy":0.277}},"AS50":{"clean":{"RX":"14-7","accuracy":0.7408333333333333},"practical_low_urban":{"RX":"20-1","accuracy":0.487375}},"R25":{"clean":{"RX":"14-7","accuracy":0.7551666666666667},"practical_low_urban":{"RX":"14-7","accuracy":0.45725}}}。R25比AS50在low修复6716包却新增10357错；恢复一部分clean时损失更多urban，不能称双方突破。
+
+本轮与原参考的训练阶段、LR/optimizer重置、ordinary强度、4×128/2×256前向组织、场景抽样及训练载频不同；仅复制监督份额不等于复现原方案。完整已核实差异见[reference_reconciliation.md](E:/type10-7/automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01/reference_reconciliation.md)。后续沿原完整参照继续，当前不启动调份额救跑。
+
+全部10张PNG已实际逐张查看，20个PNG/PDF已取回；标签、单位、源/目标边界和tiny strata说明可读。四个本run进程自然退出，原CP和全部7个logits文件保留。
+
+修改实现：[固定配置](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_cleanretain37/design.py)、[真实视图路由](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_cleanretain37/route.py)、[原默认头训练](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_cleanretain37/model.py)、[观察与native接入](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_cleanretain37/observer.py)、[自动串联](E:/type10-7/code/worktrees/phase1_urban_sigtime_20261014/experiments/cvs_cleanretain37/dispatch.py)；结果分析与报告工具位于同工作树analysis/cvs_cleanretain_*。本轮不增加部署参数、分类头、数据权限或测试难度变化。

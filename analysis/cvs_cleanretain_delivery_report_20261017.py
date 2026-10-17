@@ -26,7 +26,7 @@ def main():
    v=s['paired_comparisons']['R25-'+ref][view];lines.append(f"|{ref}/{view}|{v['accuracy_gain_pp']:+.6f}|{v['repairs']}|{v['breaks']}|{v['clean_and_view_joint_gain_pp']:+.6f}|")
  lines+=['|模型|high suburban距clean pp|mid suburban距clean pp|low suburban距clean pp|','|---|---:|---:|---:|']
  for name in ('C0','AS50','R25'):lines.append('|'+name+'|'+'|'.join(fmt(s['suburban_clean_gaps_pp'][name][v]) for v in ('practical_high','practical_mid','practical_low_suburban'))+'|')
- lines+=[f"固定C0 clean正确集合共{s['fixed_C0_clean_correct_count']}包；R25 low保持率{100*s['fixed_C0_clean_correct_retention']['R25']['practical_low_urban']:.6f}%，AS50为{100*s['fixed_C0_clean_correct_retention']['AS50']['practical_low_urban']:.6f}%。固定集合只是诊断参照，两个控制均非新训练父模型。",'## 源判据、分层和因果边界',f"正式结果读取前已落盘源判据。fullV clean R25−C0={q['clean_net_pp']:+.6f}pp；两个独立draw×mid/low相对AS50的差={q['urban_delta_vs_AS50_pp']}pp。固定要求clean≥−.25pp、四个urban差均≥−2pp。任何失败即本轮保护假设失败，不换份额、扰动、seed、阈值或预算救跑；不自动扩种子。",f"全部物理实现比较：{pair['pairs']}个选中As包、{pair['steps']}步，完整记录一致{pair['identical_records']}，差异{pair['record_mismatches']}。首次批次吻合不能代替该全量统计；若有差异，应同时报告对应字段，不将效果单独归因为监督份额。",'源V1800使用同一真实IQ和两组固定完整practical观测，按LOS/PARTIAL/BLOCKED、locked/degraded/unlocked、RX/day/TX及新增噪声比分层。新增噪声比不是录音已有噪声与新增噪声合计的总SNR。正式IQ没有逐包状态/质量旁表，所以不能把源分层冒称目标urban的状态因果效果。']
+ lines+=[f"固定C0 clean正确集合共{s['fixed_C0_clean_correct_count']}包；R25 low保持率{100*s['fixed_C0_clean_correct_retention']['R25']['practical_low_urban']:.6f}%，AS50为{100*s['fixed_C0_clean_correct_retention']['AS50']['practical_low_urban']:.6f}%。固定集合只是诊断参照，两个控制均非新训练父模型。",'## 源判据、分层和因果边界',f"正式结果读取前已落盘源判据。fullV clean R25−C0={q['clean_net_pp']:+.6f}pp；两个独立draw×mid/low相对AS50的差={[[round(v,6) for v in row] for row in q['urban_delta_vs_AS50_pp']]}pp。固定要求clean≥−.25pp、四个urban差均≥−2pp。任何失败即本轮保护假设失败，不换份额、扰动、seed、阈值或预算救跑；不自动扩种子。",f"全部物理实现比较：{pair['pairs']}个选中As包、{pair['steps']}步，完整记录一致{pair['identical_records']}，差异{pair['record_mismatches']}。首次批次吻合不能代替该全量统计；若有差异，应同时报告对应字段，不将效果单独归因为监督份额。",'源V1800使用同一真实IQ和两组固定完整practical观测，按LOS/PARTIAL/BLOCKED、locked/degraded/unlocked、RX/day/TX及新增噪声比分层。新增噪声比不是录音已有噪声与新增噪声合计的总SNR。正式IQ没有逐包状态/质量旁表，所以不能把源分层冒称目标urban的状态因果效果。']
  source=read(analysis/'source_summary.json');lines+=['|源low urban新增噪声比|样本数|C0 %|AS50 %|R25 %|','|---|---:|---:|---:|---:|']
  for label in ('<3','3-8','8-15','>=15'):
   cells={arm:next(r for r in source['rows'] if (r['arm'],r['scene'],r['draw'],r['dimension'],r['stratum'])==(arm,'practical_low_urban',-1,'added_noise_ratio',label)) for arm in ('C0','AS50','R25')};lines.append('|'+label+' dB|'+str(cells['C0']['count'])+'|'+'|'.join(fmt(100*cells[arm]['accuracy']) for arm in ('C0','AS50','R25'))+'|')
@@ -41,8 +41,9 @@ def main():
  old=a.record/'report.md';history=a.record/'progress_history.md'
  if old.exists() and not history.exists():shutil.copy2(old,history)
  text=''
- for line in lines:
-  separator='\n' if text and text.splitlines()[-1].startswith('|') and line.startswith('|') else '\n\n'
+ for index,line in enumerate(lines):
+  new_table=line.startswith('|') and index+1<len(lines) and lines[index+1].startswith('|---')
+  separator='\n' if text and text.splitlines()[-1].startswith('|') and line.startswith('|') and not new_table else '\n\n'
   text+=('' if not text else separator)+line
  old.write_text(text+'\n',encoding='utf8');print(json.dumps(dict(status='EVIDENCE_REPORT_RENDERED',path=str(old),figures_checked_existing=len(figures),goal_complete=False)))
 if __name__=='__main__':main()

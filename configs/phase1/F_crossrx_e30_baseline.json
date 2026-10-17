@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_CLEAN_RETAINING_ROUTE_LOCAL_VERIFIED",
+  "status": "E30_CLEAN_RETAINING_TRANSFER_ANALYZED_NEGATIVE",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -282,6 +282,12 @@
       "added_Ag_low_delta_pp": -1.9142857142857128,
       "report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-timing-factorial-e30-s2026092701-m2-r01/report.md",
       "repeat_policy": "No bound/probability/boundary/RX/modelseed/threshold/epoch rescue or automatic seed extension;whole goal remains active"
+    },
+    "cleanretain37_native_scratch30": {
+      "scope": "This exact directcos30/20L10U/nativebatchscene/.75ordinary+.25rawAs transfer only",
+      "source": "FAIL urban protection before formal read",
+      "no_ratio_strength_seed_threshold_budget_rescue": true,
+      "not_a_rejection_of_human_selected_complete_E20plus10_recipe": true
     }
   },
   "next_method_boundary": "All-source scratchE30/defaulthead/originalU retained. Fixedcycle and boundedtiming Ag closed by source conditions;do not rescue bounds/probabilities/seed/budget or weaken formal channel. No new training candidate is established. Source-only existing-branch/defaulthead evidence and clean/satellite gradient relationships at low observation quality may be diagnosed without fitted heads or target feedback;not yet implemented/launched.",
@@ -532,13 +538,55 @@
   },
   "active_research": {
     "run_id": "20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01",
-    "recipe": "R25 scratch30 .75ordinary+.25originalrawpractical;no newAg orloss",
-    "reference_chat": "01a1427e-49c0-7840-a84d-5bb38d5a8164",
+    "status": "ANALYZED_NEGATIVE",
     "new_rows": 1,
-    "held_RX": null,
-    "unreleased_gradient36": "set aside;not a prerequisite",
-    "source_rule": "fullV>=ordinaryC0-.25pp;each2drawmidlow>=AS50-2pp",
+    "new_epochs": 30,
+    "new_updates": 6660,
+    "source_protection_evidence": false,
+    "formal_clean": 0.8451726190476191,
+    "formal_low_urban": 0.5122738095238095,
+    "formal_urban_mean": 0.6365079365079366,
     "automatic_seed_extension": false,
-    "goal_complete": false
+    "source_rejection_commit": "d6c7629a85a87aab125ad7f360fe826db039689c",
+    "goal_complete": false,
+    "next_experiment_launched": false,
+    "unreleased_gradient36": "set aside;not a prerequisite"
+  },
+  "preferred_route": {
+    "authorization": "Human explicitly confirmed clean-preserving route from referenced chat01a1427e-49c0-7840-a84d-5bb38d5a8164;benchmark-exposed recipe reference,not target-selected weight reuse",
+    "reference_run": "20261017-phase1-F-crossRX-clock-e30-score-recovery-s2026092701-m5-r01",
+    "reference_arm": "B01",
+    "actual_training_release_commit": "8a83af076a2f632a4ee514da689b2e8d166d0592",
+    "epochs_total": 30,
+    "labeled_epochs_total": 13,
+    "pseudo_epochs_total": 17,
+    "segments": [
+      {
+        "epochs": 20,
+        "L": 13,
+        "U": 7,
+        "optimizer": "fresh AdamW/cos20"
+      },
+      {
+        "epochs": 10,
+        "L": 0,
+        "U": 10,
+        "optimizer": "reset AdamW/cos10;strict own EMA;segment counters reset"
+      }
+    ],
+    "ordinary": "originalE13 actualstrength freeze",
+    "L_forward_organization": "four128:twoordinary+twoidenticalmixed",
+    "pair_weights": [
+      0.5,
+      0.5
+    ],
+    "effective_ordinary_satellite_weights": [
+      0.75,
+      0.25
+    ],
+    "As": "originalcustom perpacketnominal3scenes/raw/fullresidual/post_sync/G1/ref30/reflect/fc2.462GHz",
+    "weights_policy": "Do not load target-selected old weights;new variants scratch atE0,only own pre-fixed stage state may continue",
+    "reconciliation_report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01/reference_reconciliation.md",
+    "next_candidate": "unlaunched;do not reduce full recipe to view ratio"
   }
 }
