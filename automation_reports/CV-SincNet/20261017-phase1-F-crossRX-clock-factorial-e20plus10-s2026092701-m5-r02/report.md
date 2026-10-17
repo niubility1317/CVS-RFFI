@@ -1,6 +1,6 @@
 # 完整源四因子与普通拼接：E20＋10，累计E30
 
-状态：REGISTERED／NOT LAUNCHED。r01训练前失败的技术替代；学生、EMA、父选择、增强、预算均不变。原生续训开关修复与末端状态保持经该缺陷定向复核PASS。
+状态：FAILED（训练前技术失败），执行commit `86c51edeb0c1eb9f9ce1d9edf72e0bd08f6cc171`。实际F合成136项负例／CP无查询smoke通过；native_scope在initialize之前读取未设out导致异常，0训练IQ／0真实更新／0正式预测。进程均退出，产物保留，健康E20不变。
 
 用户2026-10-17将预算提升E30。本修订在当前B10/B01/B11尚无正式结果时固定全部续训：B00继承完整源参照r02的REPEAT，B10/B01/B11继承clock-E20-r01对应行，FULL_AS继承完整源参照r02的CONCAT。5行都用固定source-final20，各追加10轮／2220更新，累计30轮／6660更新；不是从零单一E30，也不是原优化轨迹resume。父100modelE、新增50modelE／11100更新、累计150modelE分别记录，不按E20目标成绩筛行或选权重；健康旧E20不热改／覆盖。
 

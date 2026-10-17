@@ -1,0 +1,38 @@
+{
+  "status": "FAILED",
+  "execution_commit": "86c51edeb0c1eb9f9ce1d9edf72e0bd08f6cc171",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "synthetic_checks": {
+    "status": "PASS",
+    "negative_cases": 136,
+    "synthetic_NN": 2580,
+    "synthetic_physics_packets": 256,
+    "synthetic_clock_packets": 128,
+    "synthetic_optimizer_steps": 5,
+    "real_IQ": 0,
+    "CP": 0,
+    "target_access": false
+  },
+  "smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "new_training_updates": 0,
+    "source_roles": "EXACT_MATCH",
+    "fixed_final20_parent": true
+  },
+  "failure_layer": "Observer native_scope entered before model initialization",
+  "exception": "AttributeError: 'Observer' object has no attribute 'out'",
+  "real_training_updates": 0,
+  "training_IQ_reads": 0,
+  "worker_parent_CP_loads": 1,
+  "own_processes_after_failure": 0,
+  "old_E20_unchanged": true,
+  "predictions": 0,
+  "truth_scoring": false,
+  "retry": "none;immutable technical replacement r03"
+}

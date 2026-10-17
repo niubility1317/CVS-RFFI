@@ -112,7 +112,7 @@ from experiments.cvs_rdrop_sinc_units.optimizer import native_scope
 from experiments.cvs_fullsource_concat20 import supcon
 from . import design as d,model as api
 class Observer:
- def __init__(self,c,parent):self.c=c;self.parent=parent;self.optimizer=None
+ def __init__(self,c,parent):self.c=c;self.parent=parent;self.optimizer=None;self.out=Path(c['output_root'])
  def data(self,native,ctx,out):
   Path(out).mkdir(parents=True,exist_ok=True)
   if ctx['num_domains']!=15:raise ValueError('All five RX/day groups required')

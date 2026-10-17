@@ -24,7 +24,7 @@
   ],
   "authorization": "Latest human instruction on2026-10-17 raises budget toE30;all five fixed source-final20 parents add10;no target selection,no held sourceRX,no healthy E20 mutation.",
   "code": {
-    "commit": "ACTUAL_GIT_HEAD_RECORDED_AT_LAUNCH",
+    "commit": "86c51edeb0c1eb9f9ce1d9edf72e0bd08f6cc171",
     "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
     "environment": "ordinary N607 original CVS-RFFI;CPU2/workers;sharedGPUcapacity3",
     "cwd": "PROJECT/releases/cvs_F_clock_factorial_e20plus10_20261017_r02",
@@ -182,7 +182,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-clock-E30-20261017",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -220,7 +220,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX original U and default head;E20+10/cos10-reset;B00",
@@ -263,7 +263,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "target_feedback": false,
           "joint_goal_complete": false
         },
@@ -390,7 +390,7 @@
           },
           "route": "existingresidual/post_sync",
           "EQ": false,
-          "reference_snr_db": 30.0,
+          "reference_snr_db": 30,
           "input": "originalLbeforeordinary",
           "no_rejection": true,
           "test_IQ_unchanged": true
@@ -507,7 +507,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-clock-E30-20261017",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -545,7 +545,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX original U and default head;E20+10/cos10-reset;B10",
@@ -588,7 +588,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "target_feedback": false,
           "joint_goal_complete": false,
           "Ag_clean_gain_vs_B00": true,
@@ -718,13 +718,13 @@
           },
           "route": "existingresidual/post_sync",
           "EQ": false,
-          "reference_snr_db": 30.0,
+          "reference_snr_db": 30,
           "input": "originalLbeforeordinary",
           "no_rejection": true,
           "test_IQ_unchanged": true
         },
         "clock": {
-          "max_ppm": 80.0,
+          "max_ppm": 80,
           "anchor_sample": 127.5,
           "half_width": 16,
           "boundary": "reflect",
@@ -854,7 +854,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-clock-E30-20261017",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -892,7 +892,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX original U and default head;E20+10/cos10-reset;B01",
@@ -935,7 +935,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "target_feedback": false,
           "joint_goal_complete": false,
           "Ag_clean_gain_vs_B00": true,
@@ -1065,13 +1065,13 @@
           },
           "route": "existingresidual/post_sync",
           "EQ": false,
-          "reference_snr_db": 30.0,
+          "reference_snr_db": 30,
           "input": "originalLbeforeordinary",
           "no_rejection": true,
           "test_IQ_unchanged": true
         },
         "clock": {
-          "max_ppm": 80.0,
+          "max_ppm": 80,
           "anchor_sample": 127.5,
           "half_width": 16,
           "boundary": "reflect",
@@ -1201,7 +1201,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-clock-E30-20261017",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -1239,7 +1239,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX original U and default head;E20+10/cos10-reset;B11",
@@ -1282,7 +1282,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "target_feedback": false,
           "joint_goal_complete": false,
           "Ag_clean_gain_vs_B00": true,
@@ -1412,13 +1412,13 @@
           },
           "route": "existingresidual/post_sync",
           "EQ": false,
-          "reference_snr_db": 30.0,
+          "reference_snr_db": 30,
           "input": "originalLbeforeordinary",
           "no_rejection": true,
           "test_IQ_unchanged": true
         },
         "clock": {
-          "max_ppm": 80.0,
+          "max_ppm": 80,
           "anchor_sample": 127.5,
           "half_width": 16,
           "boundary": "reflect",
@@ -1548,7 +1548,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-clock-E30-20261017",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -1586,7 +1586,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX original U and default head;E20+10/cos10-reset;FULL_AS",
@@ -1629,7 +1629,7 @@
         "goal": {
           "clean_net_positive": true,
           "low_urban_above": 0.6,
-          "each_suburban_gap_exploratory_pp": 2.0,
+          "each_suburban_gap_exploratory_pp": 2,
           "target_feedback": false,
           "joint_goal_complete": false
         },
@@ -1756,7 +1756,7 @@
           },
           "route": "existingresidual/post_sync",
           "EQ": false,
-          "reference_snr_db": 30.0,
+          "reference_snr_db": 30,
           "input": "originalLbeforeordinary",
           "no_rejection": true,
           "test_IQ_unchanged": true

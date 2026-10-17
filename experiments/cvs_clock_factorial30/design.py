@@ -4,9 +4,9 @@ from pathlib import Path
 from experiments.cvs_clock_factorial20 import design as clock
 from experiments.cvs_fullsource_concat20 import design as ref
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02'
-RELEASE='cvs_F_clock_factorial_e20plus10_20261017_r02'
-LOCAL='local_artifacts/F_clock_factorial30_20261017_r02';OWNER='codex/root/F-clock-E30-20261017'
+RUN='20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r03'
+RELEASE='cvs_F_clock_factorial_e20plus10_20261017_r03'
+LOCAL='local_artifacts/F_clock_factorial30_20261017_r03';OWNER='codex/root/F-clock-E30-20261017'
 read,write=ref.read,ref.write
 SOURCE,CAPSULE,TRUTH,VIEWS_ROOT=ref.SOURCE,ref.CAPSULE,ref.TRUTH,ref.VIEWS_ROOT
 PROJECT,AF_RELEASE=ref.PROJECT,ref.AF_RELEASE

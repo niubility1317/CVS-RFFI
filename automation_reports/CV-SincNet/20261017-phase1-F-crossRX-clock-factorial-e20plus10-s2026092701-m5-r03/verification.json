@@ -1,0 +1,36 @@
+{
+  "status": "REGISTERED_NOT_LAUNCHED",
+  "local": {
+    "status": "PASS",
+    "protocol_negative_cases": 80,
+    "syntax_files": 14,
+    "parent_selection_fixed": true,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "new_epochs_each": 10,
+    "cumulative_epochs_each": 30,
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "target_access": false
+  },
+  "independent_p0p1": {
+    "initial_review": "ONE_P1_boundary",
+    "boundary_fix_targeted": "PASS",
+    "runtime_scratch_flag_fix_targeted": "PASS",
+    "scope_before_initialize_order_fix_targeted": "PASS",
+    "P0_open": 0,
+    "P1_open": 0
+  },
+  "N607_preflight": "VERIFIED",
+  "real_F_synthetic_checks": "PENDING",
+  "real_checkpoint_no_query_smoke": "PENDING",
+  "launch": "NOT_LAUNCHED",
+  "replaces_failed_run": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02",
+  "prior_failed_real_updates": 0
+}

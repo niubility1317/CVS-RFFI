@@ -1,6 +1,6 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
-当前预算已由用户提升为E30。固定新run `20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02`：B00/B10/B01/B11与FULL_AS全部从各自固定source-final20追加相同10轮，累计每行E30／6660更新，统一AdamW/cos10复位与严格自身EMA。新增50modelE／11100更新，父100modelE单列；当前健康E20不热改，所有行无条件续训，不按目标分数选父。E30 r01在0真实更新时被原生scratch参数拒绝，产物保留；r02只修复该启动问题，已登记且尚未发布；详见[预算修订](cvs_clock_E30_budget_amendment_20261017.md)与[五组预登记](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02/report.md)。
+当前预算已由用户提升为E30。固定新run `20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r03`：B00/B10/B01/B11与FULL_AS全部从各自固定source-final20追加相同10轮，累计每行E30／6660更新，统一AdamW/cos10复位与严格自身EMA。新增50modelE／11100更新，父100modelE单列；当前健康E20不热改，所有行无条件续训，不按目标分数选父。E30 r01在0真实更新时被原生scratch参数拒绝，产物保留；r02也在0更新时暴露输出路径初始化顺序问题；r03只修复初始化顺序，已登记且尚未发布；详见[预算修订](cvs_clock_E30_budget_amendment_20261017.md)与[五组预登记](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r03/report.md)。
 
 最新运行：`20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01`，仅新增采样速率IQ变化与既有完整practical，固定B00/B10/B01/B11。全部5个源RX、L6300/U56700、每新模型scratchE20、4次L前向。B00复用匹配REPEAT，额外保留完整CONCAT参照；B01/B11的As剂量明确为全As的一半，独立报告。已实际启动3个scratchE20；执行commit `a5ffee44d325b69cc360d4248b673ff124110d99`，实际F合成／真实CP无查询smoke及PID/CWD/argv/GPU／日志增长VERIFIED。尚未完成新模型训练或正式评分。详见[最小预登记](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20-s2026092701-m3-r01/report.md)。不留出训练域，不以源统计代替星地收益，旧候选负结果保留。
 

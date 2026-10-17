@@ -48,7 +48,8 @@ def run():
   teacher=deepcopy(initial);W='id_backbone.encoder.core.id_backbone.cls_head.weight';teacher[W]=teacher[W]+.01
   parent=dict(model=initial,ema_model=teacher,args=vars(d.ref.make_args(d.clock.reference_config())))
   with tempfile.TemporaryDirectory() as folder:
-   o=Observer(c,parent);o.model=m;o.out=Path(folder)
+   observer_config=dict(c,output_root=str(Path(folder)/'source'));o=Observer(observer_config,parent)
+   assert not hasattr(o,'model') and not o.out.exists()
    fake=SimpleNamespace(deepcopy=deepcopy,_resolve_phase1_terminal_status=native._resolve_phase1_terminal_status,configure_augmentor_for_epoch=lambda obj,cfg,e,a:(e,a.label_epochs))
    torch.manual_seed(202610175502);raw=torch.randn(128,2,256);ordinary=raw*.9;y=torch.arange(128)%6;domains=torch.arange(128)%15;rx=torch.tensor(supcon.RX_BY_DOMAIN)[domains]
    meta=dict(rx_i=rx,day_i=domains%3+1,eq_i=torch.ones(128,dtype=torch.long),sig_i=torch.arange(128),base_index=torch.arange(128))
@@ -64,6 +65,8 @@ def run():
    def traced(x):seen.append(x.detach().clone());return original(x)
    m.id_backbone.encoder._full_features=traced;m.train()
    with o.native_scope(fake):
+    assert not hasattr(o,'model') and (o.out/'terminal_policy.json').is_file()
+    o.initialize(m,observer_config,o.out)
     assert fake.configure_augmentor_for_epoch(None,None,0,None)==(13,13)
     terminal_args=dict(tail_stopped=False,export_failed=False,final_blocked=False,selected_checkpoint_exists=True,heldout_eval_status='COMPLETE',p0_mechanisms_ready=False,p1_mechanisms_ready=False,endpoint_export_ready=True,mechanism_gates_required=True,endpoint_export_required=False)
     assert fake._resolve_phase1_terminal_status(**terminal_args)=='COMPLETE'
