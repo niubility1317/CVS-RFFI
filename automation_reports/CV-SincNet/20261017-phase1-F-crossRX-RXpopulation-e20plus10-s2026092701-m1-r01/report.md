@@ -36,3 +36,9 @@ F＋跨RX同TX／三路SIG_TIME／统一Sinc／joint160／原默认cos头与骨�
 执行 commit `6f70fbee2deff6a634130c0cb094f70cfce80e89`，推送分支OID独立一致；一次archive传输比较、remotecompile、合成检查和真实CP no-query smoke PASS。dispatcher697976／worker698001的PID/CWD/argv/CUDA/GPU、6849→12046字节日志增长独立核实。已完成新增E1／累计E21，222／累计4662更新、L113664 NN／As28416，全部5源RX，无训练RX留出、U真值或target接触。
 
 原进程健康，尚无final30或七视图正式结果，不宣称A_s／A_g或联合收益。预登记的10轮预算与判定条件不变，不追加训练、调整先验或重复启动同row。
+
+## 恢复跟进与实际匹配
+
+最新独立读取确认同worker698001／dispatcher697976仍存活；已新增E3／累计E23，666／累计5106更新、L340992 NN／As85248。无训练／预测／评分完成标记，不能宣称实验完成。
+
+857项实际native参数与原nominalE30逐项比较，仅run_id／candidate_id／output_dir不同，其余完全相同；新源source_contract的L6300／U56700／V27000物理ID集合与固定父逐角色匹配。实际加载的原leo_practical模块、25MHz／2.462GHz／residual／post_sync／NoEQ／reference30／reflect与接收先验值已读出，见[实际配置核对](actual_config_verification.json)。此项仅为同条件证据，无新增IQ／CP／NN／更新或目标读取。

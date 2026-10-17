@@ -1,0 +1,131 @@
+{
+  "status": "SOURCE_ACTUAL_CONFIG_RECOUNT",
+  "native_keys": 857,
+  "different_keys": [
+    "candidate_id",
+    "output_dir",
+    "run_id"
+  ],
+  "same_except_run_candidate_output": true,
+  "source_roles": {
+    "L_s": 6300,
+    "U_s": 56700,
+    "V": 27000
+  },
+  "parent_role_ID_sets_match": true,
+  "source_RX": [
+    1,
+    3,
+    4,
+    6,
+    8
+  ],
+  "source_RX_holdout": null,
+  "actual_modules": {
+    "leo_practical.channel": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/channel.py",
+    "leo_practical.residual": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/residual.py",
+    "DataAugmentation": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/DataAugmentation.py",
+    "SSDG.train_ssdg": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/SSDG/train_ssdg.py"
+  },
+  "actual_channel_policy": {
+    "practical_high": {
+      "fs_hz": 25000000,
+      "fc_hz": 2462000000,
+      "processing_route": "residual",
+      "mode": "post_sync",
+      "equalization_enabled": false,
+      "reference_snr_db": 30,
+      "boundary": "reflect",
+      "iq_amp_max_db": 0.2,
+      "iq_phase_max_deg": 1,
+      "receiver_cfo_std_hz": 200,
+      "iq_estimation_amp_std_db": 0.05,
+      "iq_estimation_phase_std_deg": 0.2,
+      "iq_compensation_enabled": true
+    },
+    "practical_mid": {
+      "fs_hz": 25000000,
+      "fc_hz": 2462000000,
+      "processing_route": "residual",
+      "mode": "post_sync",
+      "equalization_enabled": false,
+      "reference_snr_db": 30,
+      "boundary": "reflect",
+      "iq_amp_max_db": 0.2,
+      "iq_phase_max_deg": 1,
+      "receiver_cfo_std_hz": 200,
+      "iq_estimation_amp_std_db": 0.05,
+      "iq_estimation_phase_std_deg": 0.2,
+      "iq_compensation_enabled": true
+    },
+    "practical_low_suburban": {
+      "fs_hz": 25000000,
+      "fc_hz": 2462000000,
+      "processing_route": "residual",
+      "mode": "post_sync",
+      "equalization_enabled": false,
+      "reference_snr_db": 30,
+      "boundary": "reflect",
+      "iq_amp_max_db": 0.2,
+      "iq_phase_max_deg": 1,
+      "receiver_cfo_std_hz": 200,
+      "iq_estimation_amp_std_db": 0.05,
+      "iq_estimation_phase_std_deg": 0.2,
+      "iq_compensation_enabled": true
+    },
+    "practical_high_urban": {
+      "fs_hz": 25000000,
+      "fc_hz": 2462000000,
+      "processing_route": "residual",
+      "mode": "post_sync",
+      "equalization_enabled": false,
+      "reference_snr_db": 30,
+      "boundary": "reflect",
+      "iq_amp_max_db": 0.2,
+      "iq_phase_max_deg": 1,
+      "receiver_cfo_std_hz": 200,
+      "iq_estimation_amp_std_db": 0.05,
+      "iq_estimation_phase_std_deg": 0.2,
+      "iq_compensation_enabled": true
+    },
+    "practical_mid_urban": {
+      "fs_hz": 25000000,
+      "fc_hz": 2462000000,
+      "processing_route": "residual",
+      "mode": "post_sync",
+      "equalization_enabled": false,
+      "reference_snr_db": 30,
+      "boundary": "reflect",
+      "iq_amp_max_db": 0.2,
+      "iq_phase_max_deg": 1,
+      "receiver_cfo_std_hz": 200,
+      "iq_estimation_amp_std_db": 0.05,
+      "iq_estimation_phase_std_deg": 0.2,
+      "iq_compensation_enabled": true
+    },
+    "practical_low_urban": {
+      "fs_hz": 25000000,
+      "fc_hz": 2462000000,
+      "processing_route": "residual",
+      "mode": "post_sync",
+      "equalization_enabled": false,
+      "reference_snr_db": 30,
+      "boundary": "reflect",
+      "iq_amp_max_db": 0.2,
+      "iq_phase_max_deg": 1,
+      "receiver_cfo_std_hz": 200,
+      "iq_estimation_amp_std_db": 0.05,
+      "iq_estimation_phase_std_deg": 0.2,
+      "iq_compensation_enabled": true
+    }
+  },
+  "population_mode": "epoch_session_original_receiver_prior",
+  "population_seed": 20261016423,
+  "real_source_RX_replaced": false,
+  "formal_test_changed": false,
+  "IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false
+}
