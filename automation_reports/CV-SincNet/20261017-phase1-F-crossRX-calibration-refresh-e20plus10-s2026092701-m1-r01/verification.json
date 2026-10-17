@@ -1,0 +1,55 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "local": {
+    "status": "PASS",
+    "protocol_negatives": 32,
+    "calibration_only_same_latent_cases": 240,
+    "reference_residual_calls": 240,
+    "candidate_residual_calls": 480,
+    "states": [
+      "BLOCKED",
+      "LOS",
+      "PARTIAL"
+    ],
+    "max_relative_IQ_change_synthetic": 0.007600679062306881,
+    "epoch_session_repeatable": true,
+    "true_hardware_unchanged": true,
+    "quality_and_noise_law_unchanged": true,
+    "global_numpy_RNG_unchanged": true,
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "updates": 0,
+    "REJECTED_EXTRA_GATE": "Separate brainstorming approval is NONBLOCKING under explicit user minimal experiment workflow"
+  },
+  "source_basis": {
+    "originalsourceRX": 5,
+    "originalRXdaycalibrationstates": 15,
+    "newcumulativeepochs": [
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30
+    ],
+    "plannedcalibrationstates": 150,
+    "originalGaussianScales": true,
+    "label_conditioned": false,
+    "no_real_RX_replacement_claim": true
+  },
+  "independent_P0P1": {
+    "status": "PASS",
+    "P0": 0,
+    "P1": 0,
+    "scope": "Direct next-run correctness/legality/launch/prediction only",
+    "review_count": 1
+  },
+  "actual_new_training_updates": 0,
+  "formal_prediction_status": "NOT_STARTED",
+  "joint_goal_complete": false
+}

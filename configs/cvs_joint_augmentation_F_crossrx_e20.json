@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_LATEST_AS_IDENTITY_GAIN_FAILED_CLOSED",
+  "status": "RESEARCH_ACTIVE_CALIBRATION_COVERAGE_AS_REGISTERED",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User baseline F plus cross-RX same-TX;latest budget E30 as fixed E20+10 on all five rows;all five now trained,score-only recovery adds zero updates.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -2452,19 +2452,31 @@
     "new_analysis_updates": 0
   },
   "current_experiment": {
-    "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
-    "status": "ANALYZED_VERIFIED_CLOSED",
-    "formal_score_available": true,
-    "scientific_pass": false,
-    "no_running_owned_jobs": true,
+    "run_id": "20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01",
+    "status": "LOCAL_VERIFIED_NOT_LAUNCHED",
+    "config": "configs/cvs_calibration_refresh_e30.json",
+    "parent_epochs": 20,
+    "new_epochs": 10,
+    "cumulative_epochs": 30,
+    "new_updates": 2220,
+    "source_RX_holdout": null,
+    "formal_score_available": false,
     "joint_goal_complete": false
   },
   "active_As_hypothesis": {
-    "status": "NONE_PROMOTED",
-    "last_hypothesis": "Finite-window H*x power conditions existing coupled practical receiver processing",
-    "last_hypothesis_outcome": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
-    "no_automatic_rerun_or_seed_extension": true,
-    "next": "Source-grounded physical or IQ evidence required before a new training candidate"
+    "name": "Original-distribution epoch-session RX calibration estimate coverage",
+    "source_basis": "15 fixedcalibrationstates from originalreceiver_for_session and originalfullsourceadapter",
+    "change": "OnlyestimatedIQerrors true+.05dB/.2deg Gaussian,150epochexistingSessions;truehardware/CFO/prop/noise/qualityfixed",
+    "minimum": "One fixed sourcefinal20+10 vs existing exact nominalE30,allsource,matched4L/originalU",
+    "abandon": "lowurban gain<.5pp orclean/midnegative oranysuburban<-.25pp;no scales/interval/seed/parent/budget rescue",
+    "new_Ag": false,
+    "new_losses": 0,
+    "new_U_rules": 0,
+    "new_NN_forwards": 0,
+    "extra_physical_filters": 0,
+    "complete_channel_prepasses": 0,
+    "test_IQ_changed": false,
+    "target_selection": false
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",

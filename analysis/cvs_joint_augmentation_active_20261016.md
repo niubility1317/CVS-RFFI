@@ -1,10 +1,12 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
+当前新增候选：[原分布校准刷新 A_s E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md)，LOCAL_VERIFIED／已登记未发布。仅把原模拟器15个固定校准估计扩为累计epoch21至30×15session的150组估计，原误差标准差.05dB／.2°，true硬件／CFO／传播／噪声／quality／lock不变。一个同普通As source-final20＋10的新模型，现成nominal E30控制复用；32负例／240同latent合成配对／一次P0/P1 PASS，当前0真实新IQ／CP／NN／训练更新。低urban差≥+.5pp且clean/mid不降、各suburban≥−.25pp的固定条件；失败关闭误差尺度／刷新间隔／seed／父／预算，不救跑或自动扩seed。这是As训练采样，不是已证明Ag／真实RX替换或联合成功。
+
 最新完成：[有限窗接收质量 A_s E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01/report.md) 为 **ANALYZED／VERIFIED，固定识别假设失败并关闭**。同一个普通 As source-final20追加10轮，累计30轮／6660更新；复用精确同父nominal E30，不重训或重测旧控制。全部源RX1/3/4/6/8、day1/2/3、L6300／U56700隐藏TX／V27000、split392005保留，无训练域留出。F三路SIG_TIME／统一Sinc／joint160／默认cos头联合训练与原U不变。
 
 七视图1176000个正式决策全部固定后独立CPU truth-last评分，252个CM、全部RX／TX／day与配对计数重计一致。新方法clean82.979167%、mid urban64.372619%、low urban53.417262%；相对普通As的差为+0.015476／+0.001190／−0.029762 pp。low修复380／新增430错；clean与low同时正确净少59。low增量未达到预定+0.5 pp，其他保护条件通过仍不晋级，不调参数／seed／预算救跑。
 
-三个suburban距自身clean1.369048／3.657143／5.989286 pp，仅high达到首轮2 pp探索目标；相对同预算B00 clean85.268452%，新方法clean净−2.289286 pp。low未超过60%，Ag与完整联合目标仍未证明，研究保持ACTIVE。当前没有运行或晋级的新训练候选。
+三个suburban距自身clean1.369048／3.657143／5.989286 pp，仅high达到首轮2 pp探索目标；相对同预算B00 clean85.268452%，新方法clean净−2.289286 pp。low未超过60%，Ag与完整联合目标仍未证明，研究保持ACTIVE。此前有限窗配方已关闭；本页新增校准候选尚未启动。
 
 [源物理18900配对](../automation_reports/CV-SincNet/20261017-diagnostic-F-practical-quality-fullL-manysig-m1-r01/report.md)仍只支持处理差异：1010有效处理变化／355锁定变化；实际训练284160 As中15358有效变化／5332锁定变化。物理差异不等于身份收益，本次已完成直接检验并得到负结果。新增仅10modelE／2220更新，总新增NN3770646，额外纯物理预滤波284160次、完整信道预跑0；旧nominal完整源eval瞬态计数缺失如实保留。
 
