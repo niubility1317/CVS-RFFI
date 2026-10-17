@@ -2844,9 +2844,11 @@
     "reference": "https://github.com/WiSig-dataset/wisig-process-raw/blob/master/matlab_equalization/equalize_channel.m"
   },
   "active_Ag_hypothesis": {
-    "status": "NO_NEW_SUPPORTED_CANDIDATE",
+    "status": "NO_NEW_VALIDATED_IQ_OPERATOR",
     "constraint": "Existing256IQonly;no reliable raw/longcontext mapping",
-    "closed_routes_preserved": true
+    "closed_routes_preserved": true,
+    "observational_scope": "Historical circularity shows shared RX association;unique RX assignment is not necessary for such association. No identified pureRX factor,identitypreserving IQ operator or training benefit yet.",
+    "historical_closed_candidates_preserved": true
   },
   "latest_completed_source_diagnostic": {
     "run_id": "20261018-diagnostic-F-envelopeVariance-sourceL6300-m1-r01",
@@ -4519,7 +4521,7 @@
     "Ag_efficacy": false,
     "joint_goal_complete": false
   },
-  "latest_research_note": "analysis/cvs_post_LSAM_route_check_20261018.md",
+  "latest_research_note": "analysis/cvs_RX_specificity_scope_20261018.md",
   "amplitude_donor_route_check": {
     "status": "NOT_INDEPENDENT_SUPPORTED_NEW_ROUTE_NO_LAUNCH",
     "hypothesis": "Preserve anchor Fourier phase and borrow same-visibleTX crossRX donor amplitude",
@@ -5573,6 +5575,23 @@
     "new_remote_jobs": 0,
     "new_Ag_candidate": false,
     "target_feedback": false,
+    "joint_goal_complete": false
+  },
+  "RX_specificity_scope_correction": {
+    "status": "VERIFIED_ANALYTIC_COUNTEREXAMPLE",
+    "report": "analysis/cvs_RX_specificity_scope_20261018.md",
+    "program": "analysis/cvs_RX_specificity_counterexample_20261018.py",
+    "result": "analysis/cvs_RX_specificity_counterexample_20261018.json",
+    "historical_executed_core_unchanged": true,
+    "stable_shared_RX_counterexample_rejected_by_unique_assignment_condition": true,
+    "synthetic_cells": 432,
+    "new_real_IQ": 0,
+    "new_NN": 0,
+    "new_updates": 0,
+    "source_or_target_data_read": false,
+    "historical_verdict_changed": false,
+    "closed_candidate_reopened": false,
+    "Ag_effectiveness_proved": false,
     "joint_goal_complete": false
   }
 }

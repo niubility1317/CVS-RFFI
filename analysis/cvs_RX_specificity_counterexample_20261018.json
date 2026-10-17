@@ -1,0 +1,141 @@
+{
+  "status": "VERIFIED_ANALYTIC_COUNTEREXAMPLE",
+  "hypothesis": "Beating every wrong RX assignment is necessary for a stable transferable RX-associated nuisance",
+  "hypothesis_supported": false,
+  "conclusion": "The uniqueness margin can reject a known stable shared RX nuisance; it is not a necessary condition for RX-associated variation.",
+  "limitation": "Does not identify actual RX hardware, validate an IQ operator, establish label preservation, or prove recognition benefit.",
+  "historical_verdict_changed": false,
+  "closed_candidate_promoted": false,
+  "new_candidate_launched": false,
+  "source_or_target_data_read": false,
+  "synthetic_scalar_cells": 432,
+  "synthetic_IQ": 0,
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "teacher_NN": 0,
+  "gradients": 0,
+  "updates": 0,
+  "results": {
+    "distinct_RX": {
+      "decision": "PASS",
+      "conditions": {
+        "nonzero_baseline": true,
+        "mean_risk_gain": true,
+        "positive_folds": true,
+        "all_RX_nonnegative": true,
+        "above_best_wrong_RX": true,
+        "all_TX_split_center_cosine": true,
+        "RX_cycle_repeatability": true
+      },
+      "mean_risk_gain": 0.9959461009905282,
+      "baseline_cell_risk": 0.0031377199999999997,
+      "RX_cell_risk": 1.2720000000000004e-05,
+      "gain_over_best_wrong_RX": 0.7967568807924229,
+      "positive_folds": 18,
+      "min_TX_split_center_cosine": 1.0,
+      "RX_center_repeatability_ratio": 3.125e+27,
+      "known_stable_additive_RX_effect": true
+    },
+    "shared_RX_groups": {
+      "decision": "FAIL",
+      "conditions": {
+        "nonzero_baseline": true,
+        "mean_risk_gain": true,
+        "positive_folds": true,
+        "all_RX_nonnegative": true,
+        "above_best_wrong_RX": false,
+        "all_TX_split_center_cosine": true,
+        "RX_cycle_repeatability": true
+      },
+      "mean_risk_gain": 0.9937577292267828,
+      "baseline_cell_risk": 0.00203772,
+      "RX_cell_risk": 1.272000000000003e-05,
+      "gain_over_best_wrong_RX": 0.0,
+      "positive_folds": 18,
+      "min_TX_split_center_cosine": 1.0,
+      "RX_center_repeatability_ratio": 2.0250000000000006e+27,
+      "known_stable_additive_RX_effect": true
+    },
+    "near_shared_RX_groups": {
+      "decision": "FAIL",
+      "conditions": {
+        "nonzero_baseline": true,
+        "mean_risk_gain": true,
+        "positive_folds": true,
+        "all_RX_nonnegative": true,
+        "above_best_wrong_RX": false,
+        "all_TX_split_center_cosine": true,
+        "RX_cycle_repeatability": true
+      },
+      "mean_risk_gain": 0.9937577598602366,
+      "baseline_cell_risk": 0.0020377299999999997,
+      "RX_cell_risk": 1.2719999999999998e-05,
+      "gain_over_best_wrong_RX": 1.962968597413184e-05,
+      "positive_folds": 18,
+      "min_TX_split_center_cosine": 0.9999999999999998,
+      "RX_center_repeatability_ratio": 2.0250099999999987e+27,
+      "known_stable_additive_RX_effect": true
+    },
+    "TX_only": {
+      "decision": "FAIL",
+      "conditions": {
+        "nonzero_baseline": true,
+        "mean_risk_gain": false,
+        "positive_folds": false,
+        "all_RX_nonnegative": true,
+        "above_best_wrong_RX": false,
+        "all_TX_split_center_cosine": false,
+        "RX_cycle_repeatability": false
+      },
+      "mean_risk_gain": 0.0,
+      "baseline_cell_risk": 1.2720000000000048e-05,
+      "RX_cell_risk": 1.2720000000000048e-05,
+      "gain_over_best_wrong_RX": 0.0,
+      "positive_folds": 0,
+      "min_TX_split_center_cosine": 0.0,
+      "RX_center_repeatability_ratio": 0.0,
+      "known_stable_additive_RX_effect": false
+    },
+    "RX_day_reversal": {
+      "decision": "FAIL",
+      "conditions": {
+        "nonzero_baseline": true,
+        "mean_risk_gain": false,
+        "positive_folds": false,
+        "all_RX_nonnegative": false,
+        "above_best_wrong_RX": false,
+        "all_TX_split_center_cosine": false,
+        "RX_cycle_repeatability": false
+      },
+      "mean_risk_gain": -1.25,
+      "baseline_cell_risk": 0.00135,
+      "RX_cell_risk": 0.0030375000000000003,
+      "gain_over_best_wrong_RX": -2.0,
+      "positive_folds": 0,
+      "min_TX_split_center_cosine": 0.0,
+      "RX_center_repeatability_ratio": 9.629649721936178e-05,
+      "known_stable_additive_RX_effect": false
+    },
+    "RX_TX_reversal": {
+      "decision": "FAIL",
+      "conditions": {
+        "nonzero_baseline": true,
+        "mean_risk_gain": false,
+        "positive_folds": false,
+        "all_RX_nonnegative": false,
+        "above_best_wrong_RX": false,
+        "all_TX_split_center_cosine": false,
+        "RX_cycle_repeatability": false
+      },
+      "mean_risk_gain": -0.4399999999999995,
+      "baseline_cell_risk": 0.0020250000000000008,
+      "RX_cell_risk": 0.002916,
+      "gain_over_best_wrong_RX": -0.7999999999999994,
+      "positive_folds": 0,
+      "min_TX_split_center_cosine": -1.0,
+      "RX_center_repeatability_ratio": 9.629649721936178e-05,
+      "known_stable_additive_RX_effect": false
+    }
+  }
+}

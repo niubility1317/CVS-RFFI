@@ -17,3 +17,6 @@
 已关闭路线包括梯度投影、dropout配对、MC2、噪声正负配对、批次6池、FIR/clock、有限窗酉相位、包络均值/波动、RX人口、N0/PDP/MMSE/校准等，保持原固定反证；不能改名再跑。当前不凭目标负分指定新增强或调参，不把SAM当Ag，也不把普通As真实提升等同联合完成。后续候选须有独立合法源依据，仍用现有256点、全部源RX、E30、原U和默认头；无依据时如实保留证据缺口。
 
 辅助工具：analysis/cvs_LSAM_recount_20261018.py（完整source后qualification，再378CM／63分区／21配对）、analysis/check_cvs_LSAM_recount_20261018.py（合成39CM／2220记录／8负例PASS）、analysis/cvs_LSAM_report_20261018.py、analysis/cvs_LSAM_figures_20261018.py。本次绘图采用现有F:/App/miniconda3/python.exe，原ssr-gpu环境缺matplotlib；没有安装或修改任何环境。私有原始recount和SSH工具仍在local_artifacts/F_LSAM_E30_20261018，禁止提交私有runtime、原始日志、IQ、权重、预测或correctness向量。
+
+
+最新解析证据：analysis/cvs_RX_specificity_scope_20261018.md和对应counterexample程序/JSON，实际历史原判据对已知稳定共享RX正例产生仅唯一性FAIL（风险改善99.375773%）；不再用wrongRX唯一性失败推断没有共享RX因素。旧FAIL/候选关闭不改，不推导硬件参数/身份保持或IQ Ag收益；0IQ/NN/新训练，完整目标ACTIVE。当前噪声调用没有ordinary后再As，原始IQ总SNR未知，未修改任何训练或测试。
