@@ -345,3 +345,6 @@ raw／EQ 接收预处理配对入口已完成代码及既有元数据审计，�
 
 
 20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01 已RUNNING／VERIFIED，执行89505b966a853e9126f372c89581f4c2b1c8eb16：单新scratch行实际GPU0，smoke/控制复用/归档/remotecompile/原PID-CWD-argv-GPU-log增长PASS。已完整E1/222更新/227328LNN/28416fullAs/全部5040L，原U/SupCon启用时间保持，尚未完成训练、源预测或性能判定。只移除As对KL，真实meanCE两前向；无新Ag，完整目标ACTIVE，健康原进程继续不重启。
+
+
+2026-10-17：20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01 已完整 E20／4440 更新／源七视图独立复算 ANALYZED、VERIFIED，FAIL_FIXED_AS_KL_REMOVAL_CLOSED。C_CE clean81.904762%、low urban34.603175%；相对普通As＋RDrop clean−2.539683pp、low＋.714286pp、urban均值−.555556pp，关闭仅移除额外As对KL，不扫中间权重/场景/RX/seed救援；无新Ag或target证据，F＋跨RX同TX对比基线保持、完整goal ACTIVE。报告 automation_reports/CV-SincNet/20261017-phase1-F-crossRX-AsPairCE-sourceRX1-e20-s2026092701-m3-r01/report.md。

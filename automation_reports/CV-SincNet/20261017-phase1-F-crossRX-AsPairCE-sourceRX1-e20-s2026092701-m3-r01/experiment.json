@@ -35,7 +35,7 @@
   "data": {
     "dataset": "ManySig",
     "version": "OriginalVALIDATED_ONCE carrier;actual RX1-held fold,notfullL6300/L_train5580",
-    "representation": "UnchangednativeEQ1/RMSIQ256/25Msps;ordinary andsinglefullpractical(raw);only existingSupCon featureviewselection differs;no IQmix",
+    "representation": "Unchanged native EQ1/RMS IQ256/25Msps. Original ordinary-only SupCon routing identical in all rows. Q0 extra raw pair; Q_ord extra full practical(raw) CE+KL; C_CE identical practical IQ and two forward CE, only extra KL gradient removed. No IQ mixing or new Ag.",
     "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "physical_ids_ref": "Eachrow/source/source_contract.json fitL5040/U45360/V21600;heldoriginalL1260 final-only;private orderedLmetadata andscene_indices permitcomplete perpacket recount",
     "label_map_ref": "Original6TX map",
@@ -181,13 +181,10 @@
       "log_path": "PROJECT/runs/20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01/logs/B00-RX1-s2026092701.stdout.log",
       "command": "REUSE_EXISTING_FROZEN_SOURCE_RESULT_NO_LAUNCH",
       "expected_artifacts": [
-        "LaunchrealmatchingCP2syntheticNNnoquerysmoke thenimmediatecontinue",
-        "2newrows scratch/defaultheadfinal20CP/config/roles/init/frozen",
-        "Eachnew4440native/view/Sincunit steps/privateLUsequence,actualrouteindices/4existingterms",
-        "Eachnew568320fullpractical allLCE;Q_sat426240/Q_mix213120activeAsappearances inexistingSupCon;no newU/teacher",
-        "2new heldsourceRX1clean+sixpractical/17640predictions;2old controls17640predictions reused",
-        "Actualnew8880updates/40modelE,old8880updates/40modelE separate;NN/routecapture/time/peakmemory",
-        "Independentallrows prediction/steps/route/cost/errortransition report andregistry;no target"
+        "REUSED historical scratch E20/final20/4440/default-head source result; no new training or weight initialization",
+        "Actual frozen config/roles/U sequence/source predictions audited before candidate start",
+        "Existing held-source RX1 clean plus six practical: 8820 decisions per reused row",
+        "All historical full steps/epochs/costs independently recounted; source-only no target"
       ],
       "config": {
         "schema": "F_CROSS_RX_scene_cycle_source_v1",
@@ -503,13 +500,10 @@
       "log_path": "PROJECT/runs/20261017-phase1-F-crossRX-sceneCycle-sourceRX1-e20-s2026092701-m3-r01/logs/C_IID-RX1-s2026092701.stdout.log",
       "command": "REUSE_EXISTING_FROZEN_SOURCE_RESULT_NO_LAUNCH",
       "expected_artifacts": [
-        "LaunchrealmatchingCP2syntheticNNnoquerysmoke thenimmediatecontinue",
-        "2newrows scratch/defaultheadfinal20CP/config/roles/init/frozen",
-        "Eachnew4440native/view/Sincunit steps/privateLUsequence,actualrouteindices/4existingterms",
-        "Eachnew568320fullpractical allLCE;Q_sat426240/Q_mix213120activeAsappearances inexistingSupCon;no newU/teacher",
-        "2new heldsourceRX1clean+sixpractical/17640predictions;2old controls17640predictions reused",
-        "Actualnew8880updates/40modelE,old8880updates/40modelE separate;NN/routecapture/time/peakmemory",
-        "Independentallrows prediction/steps/route/cost/errortransition report andregistry;no target"
+        "REUSED historical scratch E20/final20/4440/default-head source result; no new training or weight initialization",
+        "Actual frozen config/roles/U sequence/source predictions audited before candidate start",
+        "Existing held-source RX1 clean plus six practical: 8820 decisions per reused row",
+        "All historical full steps/epochs/costs independently recounted; source-only no target"
       ],
       "config": {
         "schema": "F_CROSS_RX_scene_cycle_source_v1",
@@ -1143,7 +1137,8 @@
     "RawAsoperator/sceneprobability/NoExplicitCFO/internalcompensation/SNR/receivedtestIQ stayfixed. ThisisAs recipeablation,notIQAg.",
     "I/Qreflectionnotpromoted:invertibilitydoesnot establishidentitysemantic;primaryWangetal2304.14795 cautionsflippingmayalterdevice-specificconstellationdeviation. No reflectionsource/NN/trainingperformed.",
     "FailureclosesfixedAsKLremoval;nomidweight/CEweight/calendar/scene/RX/seedrescue. PASSdoesnotcompletejointgoalorautomaticallyauthorizeadditionalbudget.",
-    "Actualsource runstarted;one C_CE scratch worker,strictrealCPsmoke andexacttwo-controlmetadata reusePASS,effectiveL5040/U45360hiddenTX/V21600,CPU/GPUidentityreadbackVERIFIED. No completed epochorperformanceclaim yet."
+    "Actualsource runstarted;one C_CE scratch worker,strictrealCPsmoke andexacttwo-controlmetadata reusePASS,effectiveL5040/U45360hiddenTX/V21600,CPU/GPUidentityreadbackVERIFIED. No completed epochorperformanceclaim yet.",
+    "Completion metadata correction: copied control expected-artifact text and representation description referred to preceding SupCon-view experiment. Only those descriptive fields corrected; original frozen control configs, new runtime89505b966a853e9126f372c89581f4c2b1c8eb16, training, predictions, thresholds and outputs unchanged. Actual matrix one new row plus two reused controls."
   ],
   "registered_at": "2026-10-17T01:50:13+00:00"
 }

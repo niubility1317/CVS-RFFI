@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_AND_ONE_P0P1_PASS",
+  "status": "ANALYZED_SOURCE_ONLY_FAIL_FIXED_AS_KL_REMOVAL_CLOSED",
   "negative_checks": 34,
   "synthetic_NN_packets": 2054,
   "synthetic_fullAs_generations": 256,
@@ -22,5 +22,31 @@
   "old_control_epochs_per_row": 20,
   "old_control_steps_per_row": 4440,
   "old_control_predictions_per_row": 8820,
-  "new_actual_source_analysis_complete": false
+  "new_actual_source_analysis_complete": true,
+  "complete_new_epochs": 20,
+  "complete_new_updates": 4440,
+  "new_source_predictions": 8820,
+  "reused_source_predictions": 17640,
+  "all_L_U_sequences_identical": true,
+  "all_saved_source_decisions_independently_recomputed": 26460,
+  "full_source_steps_per_row": 4440,
+  "full_source_epochs_per_row": 20,
+  "independent_qualification_matches_runtime": true,
+  "qualified": false,
+  "failed_conditions": [
+    "Q_ord/clean",
+    "Q_ord/clean_F1",
+    "Q_ord/low",
+    "Q_ord/mid",
+    "Q_ord/urban_mean",
+    "Q_ord/suburban"
+  ],
+  "new_NN_packets_including_dispatcher_smoke": 5823320,
+  "reused_historical_NN_packets": 11646636,
+  "figures_generated_and_visually_checked": 4,
+  "figure_PDF_companions": 4,
+  "formal_target_evaluated": false,
+  "full_goal_complete": false,
+  "scientific_decision": "FAIL_FIXED_AS_KL_REMOVAL_CLOSED",
+  "reader_or_plot_inference": 0
 }

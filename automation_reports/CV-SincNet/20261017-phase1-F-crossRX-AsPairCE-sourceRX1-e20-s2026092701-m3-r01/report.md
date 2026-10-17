@@ -1,5 +1,8 @@
 # F＋跨 RX 同 TX：As 两次 CE 与 RDrop 的匹配 E20
 
+**最终收尾：ANALYZED／VERIFIED，FAIL_FIXED_AS_KL_REMOVAL_CLOSED。** 新行完整 E20／4,440 更新与源七视图已完成；相对普通 As＋RDrop，clean −2.539683pp、low urban ＋0.714286pp、urban 均值 −0.555556pp，未通过原判据。本页保留原预登记和执行进展，完整结果见末尾。无正式 target 访问，联合目标仍 ACTIVE。
+
+
 状态：RUNNING／原进程身份与输入权限 VERIFIED；训练、预测和独立分析未完成。只新增一行从零 E20；两个已完成控制复用结果，不加载其权重。固定 F／三路 SIG_TIME／统一 Sinc／NoExplicitCFO／真实 joint160／默认 cosine 头正常联合训练，原 13L＋7U、oldgate、ownEMA 与隐藏 U TX 保持。
 
 ## 唯一假设与已核实依据
@@ -84,3 +87,75 @@ Q_ord三个suburban与自身clean仍差25.079365／28.730159／31.825397pp；相
 
 
 完整结果报告入口已接入：只消费ANALYZED/VERIFIED的三行final20独立summary；同时列出accuracy/F1、原判据/未通过项、普通As与纯CE的paired错误、各suburban绝对值/自身clean差距、原U观察/选择量及新增/历史NN成本。硬预测缺logits的CE重算限制与未完成Ag/正式target/跨seed/四因子边界明确保留。报告入口当前只完成编译，未执行、未生成新行结果；远端原训练保持不变，最新完整E15/3330更新。
+
+
+## As 对纯两次 CE：完整匹配 E20 源结果
+
+ANALYZED／VERIFIED；FAIL_FIXED_AS_KL_REMOVAL_CLOSED。执行代码 89505b966a853e9126f372c89581f4c2b1c8eb16。
+
+新增 C_CE 与两个复用控制共三个逻辑 E20；每行同8L前向、1.25总对权重、默认cosine头正常联合训练。仅移除额外As对KL，原base RDrop／跨RX同TX SupCon／13L＋7U及ownEMA保持。
+
+以下是已暴露源RX1／L1260／seed2026092701／固定final20的七视图结果；不是正式target测试、跨seed证明或Ag收益。重复七视图不等于七倍独立样本。
+
+|视图|Q0 accuracy／F1 %|Q_ord accuracy／F1 %|C_CE accuracy／F1 %|C_CE−Q_ord pp|C_CE−Q0 pp|
+|---|---:|---:|---:|---:|---:|
+|clean|80.158730／79.742937|84.444444／84.032268|81.904762／81.507684|-2.539683|+1.746032|
+|practical_high|39.920635／29.049466|59.365079／57.619721|58.492063／56.824862|-0.873016|+18.571429|
+|practical_mid|40.238095／30.224256|55.714286／54.049281|54.920635／53.351686|-0.793651|+14.682540|
+|practical_low_suburban|36.349206／28.312996|52.619048／50.935640|53.015873／51.814915|+0.396825|+16.666667|
+|practical_high_urban|38.968254／29.583784|54.365079／53.006631|53.174603／51.843664|-1.190476|+14.206349|
+|practical_mid_urban|32.460317／26.906529|43.492063／42.830981|42.301587／41.675569|-1.190476|+9.841270|
+|practical_low_urban|27.777778／24.569258|33.888889／33.114787|34.603175／34.172243|+0.714286|+6.825397|
+
+### 固定判据与错误转移
+
+全部固定条件通过：False。未通过项：Q_ord/clean, Q_ord/clean_F1, Q_ord/low, Q_ord/mid, Q_ord/urban_mean, Q_ord/suburban。
+
+相对Q_ord要求low urban及urban均值各至少＋1pp，mid及low F1不降，clean准确率/F1各最多−.5pp，每suburban及seenV最多−.5pp；相对Q0要求clean及F1不降、low至少＋5pp、urban均值至少＋3pp，并保留其余原条件。不能改primary或根据结果改阈值。
+
+|对照|low修复／新错|双方clean正确包数|该集合low修复／新错|low F1差 pp|urban均值差 pp|
+|---|---:|---:|---:|---:|---:|
+|Q0|206/120|983|186/63|+9.602985|+10.291005|
+|Q_ord|40/31|1028|33/28|+1.057456|-0.555556|
+
+配对集合只作描述，不等于传播质量或因果，不用于门控/删样本。全总体、共同clean正确、原对照clean正确、新模型clean正确、双方clean错及clean正确性改变的全部统计保留。
+
+### Suburban 绝对表现与自身 clean 差距
+
+|行|high绝对 %／clean差 pp|mid绝对 %／clean差 pp|low绝对 %／clean差 pp|
+|---|---:|---:|---:|
+|Q0|39.920635／40.238095|40.238095／39.920635|36.349206／43.809524|
+|Q_ord|59.365079／25.079365|55.714286／28.730159|52.619048／31.825397|
+|C_CE|58.492063／23.412698|54.920635／26.984127|53.015873／28.888889|
+
+2pp仅为探索目标，未作本行晋级硬阈值；不能以降低clean缩小差距。是否实际接近clean须看上述绝对数与差距。
+
+### 完整性与成本
+
+全部26,460个默认头判决独立复算；新增8,820、复用17,640。三行L/U物理序列逐记录相同：True；实际native args差异：[['candidate_id', 'output_dir'], ['candidate_id', 'output_dir', 'run_id']]。所有L/U/V角色匹配、U真值不可用、As全部合法L参与，无另训头或新教师/部署分支。
+
+|行|来源|model-epoch／更新|NN包前向|As训练观察|原U重复观察／选择量|训练墙钟秒|
+|---|---|---:|---:|---:|---:|---:|
+|Q0|历史复用|20／4440|5823318|0|396368／7823|1403.311|
+|Q_ord|历史复用|20／4440|5823318|568320|396368／7627|2310.321|
+|C_CE|新增|20／4440|5823318|568320|396368／7739|2294.209|
+
+新增总NN包前向（含dispatcher smoke2）：5823320；复用历史NN：11646636。父训练不重复计为新训练；不存在训练父权重继承。原EMA教师初始继承的2计数已剔除，真实教师前向另列原summary。L前向/验证/held与U分项及完整覆盖保留，不把少更新或低辅助loss当成识别收益。
+
+As纯CE的全部4440步总目标与native标量已复算，诊断KL不进入目标；所有普通/base KL/SupCon保留。硬预测没有完整logits，source meanCE沿用运行时记录，不能声称独立重算CE或margin。当前已保存source逐TX/day/TX×day分层、完整20轮曲线、实际ordinary与practical调用/覆盖、预算和完整stdout。
+
+### 图与边界
+
+![source_accuracy_all_views](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_As_pair_CE_E20_20261017/final/figures/source_accuracy_all_views.png)
+
+![urban_paired_identity_errors](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_As_pair_CE_E20_20261017/final/figures/urban_paired_identity_errors.png)
+
+![complete_training_curves](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_As_pair_CE_E20_20261017/final/figures/complete_training_curves.png)
+
+![suburban_absolute_and_own_clean_gap](E:/type10-7/code/worktrees/cvs_iq_timing_20261016/local_artifacts/F_As_pair_CE_E20_20261017/final/figures/suburban_absolute_and_own_clean_gap.png)
+
+固定假设失败：关闭本As KL移除，不扫描中间KL/CE权重、场景、日历、RX或seed救跑。
+
+该轮不是新Ag，未完成同契约B00/B10/B01/B11与交互、正式clean＋六practical、跨seed联合验证，以及clean净正收益／lowurban>60%／suburban接近自身clean。完整goal保持ACTIVE。
+
+离线绘图首个本地入口因导入设计链要求 Torch 而在联网前失败，随后改为纯元数据／标准库传输，在既有普通 N607 Matplotlib 环境生成四组 PNG／PDF 并逐图查看；0 模型加载／IQ／NN／训练更新。未安装包、未改远端不可变训练代码，原预测和训练产物完整保留。

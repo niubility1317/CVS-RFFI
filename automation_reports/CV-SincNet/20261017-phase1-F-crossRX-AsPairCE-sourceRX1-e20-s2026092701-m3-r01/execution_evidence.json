@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_COMPLETE_SOURCE_ONLY",
   "execution_commit": "89505b966a853e9126f372c89581f4c2b1c8eb16",
   "single_new_scratch_row": true,
   "archive_transfer": "VERIFIED",
@@ -10,10 +10,10 @@
   "CPU_threads": 2,
   "worker_GPU": "0",
   "stdout_bytes_first": 6500,
-  "stdout_bytes_current": 11665,
+  "stdout_bytes_current": 110087,
   "stdout_growth": true,
-  "complete_epochs": 1,
-  "actual_optimizer_updates_at_readback": 222,
+  "complete_epochs": 20,
+  "actual_optimizer_updates_at_readback": 4440,
   "L_forward_packets_at_E1": 227328,
   "As_supervised_packets_at_E1": 28416,
   "fit_L_unique": 5040,
@@ -24,7 +24,14 @@
   },
   "source_only": true,
   "target_access": false,
-  "training_complete": false,
-  "source_predictions_complete": false,
-  "new_performance_results": false
+  "training_complete": true,
+  "source_predictions_complete": true,
+  "new_performance_results": true,
+  "natural_worker_exit": true,
+  "natural_dispatcher_exit": true,
+  "systemic_technical_failure": false,
+  "independent_analysis_status": "ANALYZED",
+  "new_source_prediction_count": 8820,
+  "scientific_qualified": false,
+  "scientific_decision": "FAIL_FIXED_AS_KL_REMOVAL_CLOSED"
 }
