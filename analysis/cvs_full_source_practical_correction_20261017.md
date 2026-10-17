@@ -34,4 +34,4 @@ practical直接作用原规范化L，避免ordinary的PA/AWGN/multipath前置叠
 
 若CONCAT相对REPEAT无星地净收益，或只靠降低clean缩小gap，就否定本假设，不声称简单拼接已解决联合目标；仍完整保留参照，不按得分扫描配比或补幸运seed。后续新方案必须直接对同契约CONCAT报告增量，不能只比无星地模型。
 
-配置见[完整源参照配置](../configs/cvs_full_source_concat_reference_e20.json)与[活动契约](../configs/cvs_joint_augmentation_F_crossrx_e20.json)。当前全源loader适配、三行目标及逐行自动评分入口已实现并登记 `20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01`；本地33协议反例及语法PASS，真实F合成检查和发布前最小验证待执行，尚未启动新训练，没有新训练、IQ、checkpoint、NN、更新或target访问。不是训练成功报告。
+配置见[完整源参照配置](../configs/cvs_full_source_concat_reference_e20.json)与[活动契约](../configs/cvs_joint_augmentation_F_crossrx_e20.json)。当前全源loader适配、三行目标及逐行自动评分入口已实现并登记 `20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02`；本地33协议反例及语法PASS，真实F合成检查和发布前最小验证待执行，尚未启动新训练，没有新训练、IQ、checkpoint、NN、更新或target访问。不是训练成功报告。

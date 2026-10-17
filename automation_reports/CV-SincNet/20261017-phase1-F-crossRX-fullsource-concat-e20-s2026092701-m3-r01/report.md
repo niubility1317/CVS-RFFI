@@ -27,3 +27,10 @@ As沿用旧最朴素C1：均匀low_suburban/mid_urban/low_urban，完整residual
 运行ID：20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01。配置/代码身份为实际Git提交（release_commit及resolved_config记录HEAD）；源码experiments/cvs_fullsource_concat20。CWD PROJECT/releases/cvs_F_fullsource_concat_e20_20261017_r01。命令：`CVS-RFFI/bin/python -u experiments/cvs_fullsource_concat20/runner.py`。N607普通账户、CPU2 dispatcher／worker、共享每GPU最多3个总进程（计入其他owner）。唯一owner codex/root/F-fullsource-concat-20261017。一个不可覆盖root PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01，逐行source/prediction/scores和logs。
 
 仅协议越界、角色／输出冲突、非有限更新、实现无法执行或不能生成合法prediction触发系统技术停止；保存失败／已有产物，停止pending，健康旧任务和已启动健康行继续，无自动重试或按分数早停。预期产物见experiment.json，含完整20轮／逐步日志、实际L/U序列、Sinc更新、As覆盖、默认头checkpoint、固定7视图预测／独立scores、实际成本、同row分析图与登记。IQ／权重／原始日志和预测不提交Git。额外真实训练、合成检查3个optimizer步骤、教师、U、target前向及墙钟分别实测，不能把计划数当已执行。完整Ag／As／四因子及交互／跨seed联合目标ACTIVE。
+
+
+## r01 技术终态
+
+FAILED／VERIFIED：发布归档解包和编译后，合成检查在评分反例测试桩中失败。测试桩把读取仓库内reference_recipe.json误判为数据越界；不是真实数据泄露或性能失败。远端release保留，实际run root／submit均不存在，所属进程0；真实训练更新／IQ／checkpoint／target均0。执行提交151a7eb75d68ff3b80c429750837fa29be79de23。
+
+网络三行的合成部分已到达评分反例之前；从固定执行路径可推算合成optimizer3步、1292个NN包及158个physics包，未写出完整PASS结果，不冒充正式训练或完整检查通过。唯一测试桩修复：允许读取该仓库配置，路径比较用Path.name/parent.name；本地复现原异常后六个未完成预测门槛均正确拒绝，0真实数据／NN。保留r01，不复用release或覆盖输出；仅以新r02恢复同矩阵/数据/seed/E20，科学配方不变。

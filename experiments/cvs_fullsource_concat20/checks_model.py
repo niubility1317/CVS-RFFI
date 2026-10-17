@@ -1,5 +1,6 @@
 """Actual F/default head and optimizer; synthetic IQ only, all five source RX."""
 from copy import deepcopy
+from pathlib import Path
 import random
 import numpy as np
 import torch
@@ -56,7 +57,8 @@ def run():
   for key,bad in (('status','PENDING'),('count',5),('views',['clean']),('truth_read',True),('query_fit',True),('head_fit_updates',1)):
    value=dict(valid);value[key]=bad
    def fake_read(path):
-    if str(path).endswith('/prediction/complete.json'):return value
+    if Path(path).name=='reference_recipe.json':return original_read(path)
+    if Path(path).name=='complete.json' and Path(path).parent.name=='prediction':return value
     raise AssertionError('Truth or unregistered data opened before all views fixed')
    d.read=fake_read
    try:ev.score(d.rows()[0]['row_id'])

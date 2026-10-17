@@ -3,8 +3,8 @@ from copy import deepcopy
 import json
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01'
-RELEASE='cvs_F_fullsource_concat_e20_20261017_r01'
+RUN='20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02'
+RELEASE='cvs_F_fullsource_concat_e20_20261017_r02'
 LOCAL='local_artifacts/F_full_source_concat_20261017'
 OWNER='codex/root/F-fullsource-concat-20261017'
 def read(p):return json.loads(Path(p).read_text(encoding='utf-8-sig'))

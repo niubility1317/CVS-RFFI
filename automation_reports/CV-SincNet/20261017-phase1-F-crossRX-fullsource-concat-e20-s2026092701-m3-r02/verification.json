@@ -1,0 +1,12 @@
+{
+  "status": "LOCAL_REGRESSION_AND_PROTOCOL_PASS",
+  "protocol_negative_cases": 33,
+  "truth_gate_regression_cases": 6,
+  "original_fixture_failure_reproduced": true,
+  "independent_review": "OriginalsingleP0P1PASSpluspathtargetedPASS;no repeatedreviewofunchangedscientificcode",
+  "fix_scope": "checks_model only testfixtureallowrepositoryreference_recipe/pathportability;run/release IDs changed",
+  "real_training_steps": 0,
+  "target_access": false,
+  "new_IQ_CP_NN": 0,
+  "real_F_synthetic_checks": "To rerun once automatically in new immutable release"
+}
