@@ -120,3 +120,12 @@ mid urban绝对质量偏差中位数0.1728/0.1751dB、lock切换2.1032%/2.6389%�
 对RAW收益主要在LOS/PARTIAL/locked，BLOCKED18.347339%→20.028011%、unlocked18.230088%→18.761062%，质量<0dB还下降；未解决最困难urban。全部80model-epochs／17760更新／23293274NN、七视图35280预测及完整曲线独立复算PASS，约2380.459s矩阵墙钟，5PNG＋5PDF已实际查看；全原PID自然终止，0target／另训头。
 
 [完整结果、分层与曲线](cvs_FcrossRX_AsTiming20_20261017.md)。训练commit f788309f5f9e27689ec1e98ae99a6bd83237e1f9。一次源RX／modelseed不能证明正式target或跨seed收益；没有新Ag或Ag×As证明，low>60%、suburban接近clean和联合目标仍未完成。
+
+
+## P16：注入 RX session 覆盖源反证（2026-10-17）
+
+冻结P15 ALL原默认头，仅父已见fitL5040／RX3/4/6/8／一个modelseed；同H/底层噪声比较原12硬件session与三个固定virtual bank、原session逐点replay。原RX补偿/质量/传播边界保持，0新训练或target。完整45360判决／10080物理记录／50400原生调用／48session独立复算PASS，主体100.299359s，3PNG＋3PDF实际查看。
+
+mid原73.253968%，三bank73.273810/73.273810/73.313492%；low原57.738095%，三bank57.698413/57.777778/57.817460%。原session较三bank平均优势−0.033069/−0.026455pp，平均hard变化0.449735/0.978836%，均未达预定+1pp与3%，固定覆盖理由FAIL关闭。不换bank/seed/场景/RX/阈值救跑，不据此启动session-bank训练。BLOCKED/unlocked仍约30.4/27.3%，有限新session并未改变困难状态大差距。
+
+这不是新Ag或训练收益，fitL不是held/target，三个硬件bank不是三个modelseed。父历史E20/4440/5823318NN另列，本轮45362NN含smoke2，0更新/另训头。固定F＋跨RX、E20和正式测试保持；源荷取数ID为opaque，来源/角色已按实际缓存修正并通过审查。总体联合及跨seed目标仍未完成。[完整报告与图](cvs_FcrossRX_RXsession_source_20261017.md)。
