@@ -1,0 +1,17 @@
+"""Terminal owned-process and actual-cost readback; metadata only, no IQ/CP/NN."""
+import json,os
+from pathlib import Path
+RUN='20261017-phase1-FcrossRX-bandavailability-sourceRX1-e20-s2026092701-m4-r02';B=Path('/home/szu2070436088/2510044040/CV-SincNet/runs')/RUN;L=Path(str(B)+'-launch')
+def read(p):return json.loads(p.read_text())
+def run():
+ done=read(B/'completion.json');launch=read(B/'launch.json')['rows'];parent=read(L/'launch.json')
+ if done['status']!='ARTIFACTS_COMPLETE' or done['model_epochs']!=80 or done['updates']!=17760 or (B/'failure.json').exists() or len(launch)!=4:raise ValueError('Complete fixed four-row matrix first')
+ boot=int(next(x.split()[1] for x in Path('/proc/stat').read_text().splitlines() if x.startswith('btime ')));hz=os.sysconf('SC_CLK_TCK');rows=[]
+ for receipt in launch:
+  base=B/receipt['row_id']/'source';r=read(base/'satmix_result.json');start=boot+receipt['start_ticks']/hz;end=(base/'satmix_result.json').stat().st_mtime;times=[p.stat().st_mtime for p in (base/'source_readouts').glob('*.json')]
+  if len(times)!=7:raise ValueError('Seven declared source views required')
+  raw_counter_sum=sum(r[k] for k in ('student_train_forward_packets','student_eval_forward_packets','teacher_train_forward_packets','teacher_eval_forward_packets'));actual=raw_counter_sum-2+r['held_forward_packets'];proc=Path('/proc')/str(receipt['pid']);alive=proc.exists() and int((proc/'stat').read_text().split()[21])==receipt['start_ticks']
+  rows.append(dict(row_id=receipt['row_id'],pid=receipt['pid'],gpu=receipt['gpu'],same_worker_alive=alive,raw_student_teacher_counter_sum=raw_counter_sum,teacher_inherited_unexecuted_eval_entries_deducted=2,held_source_forward_packets=r['held_forward_packets'],actual_NN=actual,L_NN=r['L_forward_packets'],extra_L_NN=r['extra_L_forward_packets'],model_epochs=20,optimizer_updates=4440,worker_start_to_final_result_seconds=end-start,native_training_elapsed_seconds=r['elapsed_seconds'],first_to_last_source_readout_write_seconds=max(times)-min(times),head_fit_updates=0))
+ proc=Path('/proc')/str(parent['pid']);parent_alive=proc.exists() and int((proc/'stat').read_text().split()[21])==parent['start_ticks'];terminal=not parent_alive and all(not r['same_worker_alive'] for r in rows);guards={str(seed):read(B/'guard'/('s'+str(seed))/'result.json') for seed in (2026092701,2026092702)}
+ return dict(execution='VERIFIED' if terminal else 'UNKNOWN',all_own_processes_naturally_terminal=terminal,dispatcher_pid=parent['pid'],rows=rows,new_model_epochs=80,new_optimizer_updates=17760,new_training_and_source_readout_NN=sum(r['actual_NN'] for r in rows),source_guard_NN=sum(r['NN'] for r in guards.values()),source_guard_worker_seconds={s:r['wall_seconds'] for s,r in guards.items()},dispatcher_compatibility_synthetic_NN=2,previous_failed_attempt_compatibility_synthetic_NN=2,total_actual_remote_NN=sum(r['actual_NN'] for r in rows)+90724,dispatcher_wall_seconds=done['wall_seconds'],first_worker_start_to_dispatcher_completion_seconds=(B/'completion.json').stat().st_mtime-min(boot+r['start_ticks']/hz for r in launch),source_only=True,target_access=False,metadata_reader_NN=0,metadata_reader_CP_reads=0,boot_precision_seconds=1,historical_guard_parents=dict(model_epochs=40,optimizer_updates=8880,NN=9373356,reused_only_as_frozen_guards=True,new_training_initialization=False),local_synthetic_model_checks=dict(NN=4120,optimizer_updates=4,separate_from_research_training=True))
+if __name__=='__main__':print(json.dumps(run()))
