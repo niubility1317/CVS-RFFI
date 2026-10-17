@@ -1,6 +1,6 @@
 {
   "schema": "phase1_augmentation_baseline_policy_v2",
-  "status": "E30_FULL_CLEAN_RETAINING_SOURCE_GUARD_NEGATIVE",
+  "status": "E30_FULL_CLEAN_RETAINING_NOISE_SHAPE_FACTORIAL_RUNNING",
   "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
   "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
   "baseline_name": "F+CROSS_RX_SUPCON",
@@ -36,16 +36,17 @@
     ],
     "steps_per_epoch": 222,
     "optimizer_updates_per_model": 6660,
-    "new_rows": 3,
-    "total_new_model_epochs": 90,
-    "total_new_updates": 19980,
+    "new_rows": 6,
+    "total_new_model_epochs": 180,
+    "total_new_updates": 39960,
     "checkpoint_selection": "fixedFINAL10/cumulative30",
     "initialization": "eachrowscratchE0,onlyownpre-fixedstage20continuation",
     "parent_cost": "own20isincludedin30;nohistoricalmodelinheritance",
     "first_seed": 2026092701,
-    "L_NN_each": 3409920,
+    "L_NN_each": 5114880,
     "extra_U_student_NN_each": 0,
-    "automatic_seed_extension": false
+    "automatic_seed_extension": false,
+    "cost_note": "Eachrow6L128forwards/step vs4Lhistory;50%moreLNN/modelepoch;all6newrowsmatched"
   },
   "inheritance": {
     "weights": "none; scratch only",
@@ -65,7 +66,25 @@
     "As": "all3 Lonly originalfullnative .75ordinary/.25As(raw),four128forwards;noextraU",
     "RDrop_same_IQ": true,
     "new_U_soft_KL": false,
-    "crossview_SupCon": "Same oldcoefficient/temp/levels/schedule;ORD128 ordinary128,DUP192 sameordinary128+64duplicates,SAT192 actualordinary128+As64;noadditionalNN"
+    "crossview_SupCon": "Unchanged original ORD128;ordinary maps only,no extra auxiliary anchors",
+    "candidate_Ag_extension": {
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "modes": [
+        "NONE",
+        "WHITE",
+        "BG"
+      ],
+      "new_Ag_proved": false,
+      "added_noise_SNR_db": 30,
+      "total_SNR_unknown": true,
+      "BG_p": 0.02,
+      "BG_Gamma": 49,
+      "slot_weight": 0.25,
+      "extra_forward_count": 2,
+      "total_L_loss_scale": 1.25,
+      "original_As_and_clean_absolute_weights_preserved": true,
+      "extra_U_NN": 0
+    }
   },
   "contrastive": {
     "mode": "CROSS_RX",
@@ -114,13 +133,16 @@
     "physical_role_policy": "Exactly reuse original L_s6300/U_s56700/V27000 IDs, split392005,7/63/30; V stays validation; never merge V into L or reveal U TX."
   },
   "comparison": {
-    "run_id": "20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01",
+    "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
     "rows": [
-      "ORD128",
-      "DUP192",
-      "SAT192"
+      "B00",
+      "B10_WHITE",
+      "B10_BG",
+      "B01",
+      "B11_WHITE",
+      "B11_BG"
     ],
-    "same_budget": "3newscratch own20+10;each6660updates,3409920LNN,originalUonly,0extraU/teacher",
+    "same_budget": "Each own20+own10/E30/6660updates/5114880LNN;originalUonly;nohistoricalweightinitializer",
     "formal_views": [
       "clean",
       "practical_high",
@@ -133,7 +155,7 @@
     "formal_IQ_channel_SNR_boundary": "unchanged",
     "fixed_terminal_then_independent_truth_last": true,
     "target_feedback_to_design": false,
-    "results": "ANALYZED_SOURCE_NEGATIVE",
+    "results": "RUNNING_NO_NEW_PERFORMANCE",
     "Ag_proved": false,
     "crossseed_confirmed": false,
     "goal_completed": false
@@ -341,9 +363,9 @@
       "report": "automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-polarity-sourceV-s2026092701-m1-r01/report.md"
     }
   },
-  "next_method_boundary": "P41 fixed crossview coverage and P42 fixed wholepacket conjugation closed on source evidence. No new training candidate selected/launched. Keep complete cleanretain E30/fullsource/defaulthead;new IQ Ag requires independent source rationale and matched factor controls,not loss stacking.",
-  "execution_commit": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
-  "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/report.md",
+  "next_method_boundary": "P43 fixed sixrow noise-shape x actualpractical factorial only;sourcefirst criteria.py;no extrahead/loss-stack/AgAscomposition/Uchange/testchange;E30 all5sourceRX/own20+10;no shape/p/power/weight/seed/budget rescue ifFAIL",
+  "execution_commit": "19aedc3604fed9c193237dd92366164178af0983",
+  "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/report.md",
   "input_representation_audit": {
     "source_record_shape": [
       256,
@@ -588,25 +610,58 @@
     "goal_complete": false
   },
   "active_research": {
-    "run_id": "20261018-diagnostic-FcrossRX-polarity-sourceV-s2026092701-m1-r01",
-    "status": "ANALYZED_SOURCE_GUARD_NEGATIVE",
-    "code_commit": "f7c9bba3da8863d7fbf278f9e0e3b7ac8fd3ec6b",
-    "analysis_commit": "149978e989bd81c5447a4f8e7a629c9402ec26f5",
+    "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+    "status": "VERIFIED_RUNNING_E1",
+    "code_commit": "19aedc3604fed9c193237dd92366164178af0983",
     "rows": [
-      "POLARITY-s2026092701"
+      "B00",
+      "B10_WHITE",
+      "B10_BG",
+      "B01",
+      "B11_WHITE",
+      "B11_BG"
     ],
     "model_seed_count": 1,
-    "source_V": 1800,
-    "new_NN": 3602,
-    "new_epochs": 0,
-    "new_updates": 0,
-    "target_access": false,
-    "U_truth_read": false,
+    "E_each": 30,
+    "updates_each": 6660,
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "L_NN_each": 5114880,
+    "new_Ag": "candidateBG/WHITE",
     "new_Ag_proved": false,
-    "crossseed_confirmed": false,
-    "automatic_training": false,
-    "report": "automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-polarity-sourceV-s2026092701-m1-r01/report.md",
-    "goal_complete": false
+    "extra_U_NN": 0,
+    "new_losses": "No new alignment objective;existing labeledCE/RDrop on newmatchedIQslot only",
+    "default_head_unchanged": true,
+    "dispatcher_pid": 900618,
+    "workers": [
+      900700,
+      901260,
+      901341,
+      901424,
+      901507,
+      901588
+    ],
+    "GPU": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "all6_source_initialization_exact": true,
+    "shared_smoke_NN": 4610,
+    "auto_all7": true,
+    "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/report.md",
+    "goal_complete": false,
+    "real_epoch1_updates": 222,
+    "real_epoch1_L_NN": 170496,
+    "real_epoch1_As_ON": 14208
   },
   "preferred_route": {
     "authorization": "Human explicitly confirmed clean-preserving route from referenced chat01a1427e-49c0-7840-a84d-5bb38d5a8164;benchmark-exposed recipe reference,not target-selected weight reuse",
@@ -643,7 +698,7 @@
     "As": "originalcustom perpacketnominal3scenes/raw/fullresidual/post_sync/G1/ref30/reflect/fc2.462GHz",
     "weights_policy": "Do not load target-selected old weights;new variants scratch atE0,only own pre-fixed stage state may continue",
     "reconciliation_report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01/reference_reconciliation.md",
-    "next_candidate": "P42 sourceguard negative,closed;no new E30 training or seed expansion authorized by this result;goalactive,independent IQ Ag evidence still required"
+    "next_candidate": "P43 currently running;fulloriginalcleanretain is common,addedmatchedraw/WHITE/BGslot forhypothesis only,notnewprovenbaseline"
   },
   "source_teacher_qualification38": {
     "run_id": "20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01",

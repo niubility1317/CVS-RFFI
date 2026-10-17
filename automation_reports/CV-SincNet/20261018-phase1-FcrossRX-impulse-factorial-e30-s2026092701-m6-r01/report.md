@@ -1,0 +1,35 @@
+# P43：同新增噪声功率的形态 × practical 因子实验
+
+本轮仅首模型 seed2026092701，6 个独立 scratch own20+own10（累计E30）模型。基线继续 F＋跨RX同TX／SIG_TIME_X3／统一Sinc／joint160／原默认cos30，原内部门控、参考响应、旧U门控及ownEMA保持。全部原5源RX/day1/2/3、L6300/U56700隐藏/V27000，无训练RX留出；V只诊断。
+
+唯一候选Ag：独立加性接收观测噪声，新增噪声SNR固定30dB（不是总SNR），每包噪声RMS精确匹配。WHITE为同私有高斯创新的白噪声；BG令每个复采样点的两IQ分量共用Bernoulli(p=.02)状态，激活点高斯方差为背景的50倍，随后只归一化噪声能量，不归一化信号或裁剪波形。参数对所有TX/RX相同，私有种子202610185301加累计step，不含TX标签；各epoch刷新、每对RDrop复用同一IQ。它是观测干扰候选，不反演未知TX效应，不声称WiSig已实测到该EMI或其因果来源。
+
+6行：B00(noG/noAs)、B10_WHITE、B10_BG、B01(noG/As)、B11_WHITE、B11_BG。每row共同保留原完整cleanretain四前向（.75ordinary+.25As_or_raw），再加入.25Ag_or_raw的双前向。六行一律6×128 L NN／步，L总损失尺度1.25；common普通视图与实际完整As的绝对监督权重不被稀释，旧U目标尺度不变。关闭槽用同物理raw控制，不更改augmentation或额外合成ordinary。既有SupCon仍仅原ordinary128，两深度／两已有forward，temp.2/max.1/warm5ramp10；不叠加新一致性、对齐或诊断头。
+
+B11首先是Ag与As的独立监督视图，不组合As(Ag(x))；先检验独立与联合收益，若失败不靠顺序／形态／功率／概率／seed／预算救跑。已有白噪声路线作为负历史保留，本轮新加入严格同成本WHITE控制以区分功率与时间尾形状，不把它换名宣称新机制。已有重复差lag1关闭规则保留：本轮不更换其统计量、窗口或数据子集救援，不开展重尾重复差探针。
+
+因果/文献边界：原practical注入Gaussian，普通增强也含AWGN；这提供形态对照的代码依据，不意味着改成脉冲后必然更好。独立原研究对SEI比较过AWGN和impulsive环境：https://ieeexplore.ieee.org/document/7753733/ ；Bernoulli-Gaussian两状态加性噪声及平均功率公式见https://ietresearch.onlinelibrary.wiley.com/doi/10.1049/cmu2.12077 。这些只支持有物理意义的候选族，不能证明当前数据存在该分布或本模型能获益。
+
+源判据在首次训练前固定：BG独立cleanV相对B00≥+.2pp；BG联合cleanV相对B00和B01均≥+.2pp；B01−B00及B11_BG−B10_BG在2draw×mid/low4格均≥+3pp；B11_BG−B01每格≥+1pp；B11_BG−B11_WHITE每格≥+.5pp且clean≥WHITE−.1pp；上述BG配对各源RX clean下降≤.25pp、两draw low_suburban下降≤.25pp。全部通过才称source-qualified，不称Ag或跨域性能已证明。任一失败关闭该固定BG候选，不自动扩种子。冻结旧头对新增IQ不天然不变不再被错误地视为训练后收益的必要定理，真实训练增量才是判据。
+
+每模型预算：own20=13L+7U，再own10=10U，L仍每轮训练，AdamW cos20／strict自身学生与EMA／resetAdamW cos10，ordinary冻结实际E13。222步/轮、6660更新、L网络包5114880、Ag槽1704960 NN、原L物理观察852480，原U观察963900；6模型180model-epoch/39960更新/L NN30689280。源eval/teacher/realCP-smoke/合成smoke/正式推理/物理信道调用及墙钟另按实际计数。相对4前向旧记录每步L计算多50%，不能称总算力相同；本次六行严格匹配。
+
+实际first launcher step：固定P41 ORD已核实同源E30默认头仅作2合成无query smoke，绝不加载到新训练；随后六个真实F合成前向/梯度各768NN，共4610 NN、0update。source旧已验证handles复用，不新增数据验证链。
+
+所有六行固定自己的FINAL30，逐row自动原clean+全部6practical预测（每view168000）再独立CPU truth-last；无目标反馈、无改变SNR/测试信道/receivedIQ/困难样本。不因sourceFAIL跳过已预登记row正式评价；source matrix decision只用源文件，agent在其固定前不读取正式指标。报告全部6行/seed、accuracy/macroF1/worstRX/suburban绝对值和clean差、同物理错误修复与新增、固定父clean正确集合保持率、已有门控/状态/质量证据、Ag独立差/As独立差/联合交互项与WHITE形态控制。
+
+预期科学目标仍是clean相对同预算无Ag/As有净收益、low urban>60%、各suburban距自身clean≤2pp（探索条件），并需后续固定种子重现；本首seed没有跨seed结论。
+
+最小流程：1代码config提交并推送读回，8项聚焦算子/协议负例，launcher首步真实CP smoke后即续，一次P0/P1，只一份预登记/登记矩阵、不可覆盖run与唯一owner、一次N607普通账号preflight/单归档SHA传输/remotecompile、一次PID/CWD/argv/GPU/loggrowth，0额外审批。REJECTED_EXTRA_GATE：brainstorming的单独设计审批/固定spec流程在本项目最小工作流及用户已授权持续研发下NONBLOCKING。
+
+技术停止仅来源/角色/非有限/错误budget/输出冲突/不能合法闭合预测/launcher系统故障，保留产物、不自动重试，只操作run-owned进程；科学低性能不触发技术停止。
+
+## 已核实启动状态
+
+状态：VERIFIED_RUNNING_INITIALIZED。执行提交 19aedc3604fed9c193237dd92366164178af0983 已推送并独立核对远端相同。单归档传输SHA匹配、remotecompile与12个分段实际config/args核对通过。首步真实P41 ORD无query smoke2NN PASS，六个真实F合成梯度/计数共4608NN PASS，随后自动进入训练。
+
+队列PID900618，六worker PID900700/901260/901341/901424/901507/901588分别使用physicalGPU0至5。独立核对PID/startticks/CWD/argv/GPU和日志增长。六行actual initialization均scratch、checkpoint_sources为空、source roles EXACT_MATCH、无target contact。当前只是初始化/运行证据，尚无新增性能或收敛结论。
+
+完整精确命令/CWD/环境/路径/seed/预算/owner/停止规则/预期artifact见experiment.json；进程与验证聚合见verification.json。未修改其他健康实验，未访问目标指标。
+
+首轮真实证据已核实：六行均E1/222updates/LNN170496；三As行各14208次实际完整practical，另三行0；全部sourceRX/day角色匹配，U真值与target访问标记均false。实际模块均指向已钉住的 experiments/adv3b02_xuc/code/leo_practical 实现；source报告仍不是正式性能结果。详见 progress_e1.json。

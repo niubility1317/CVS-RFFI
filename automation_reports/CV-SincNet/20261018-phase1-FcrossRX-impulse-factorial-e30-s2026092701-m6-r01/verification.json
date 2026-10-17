@@ -1,0 +1,243 @@
+{
+  "status": "VERIFIED_RUNNING_E1",
+  "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+  "code_commit": "19aedc3604fed9c193237dd92366164178af0983",
+  "local_focused_tests": 8,
+  "independent_P0P1": "PASS one readonly review",
+  "remote_archive_SHA_comparison": "VERIFIED",
+  "remote_compile": "PASS",
+  "namespace_and_12segmentconfigs": "PASS",
+  "real_checkpoint_no_query_smoke": {
+    "status": "PASS",
+    "NN": 2,
+    "training_initializer": false
+  },
+  "six_real_F_synthetic_gradient_smoke": {
+    "status": "PASS",
+    "NN": 4608,
+    "optimizer_updates": 0
+  },
+  "dispatcher": {
+    "pid": 900618,
+    "live": true,
+    "state": "S",
+    "identity_verified": true,
+    "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01",
+    "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01/experiments/cvs_noise_shape_factorial43/runner.py ",
+    "start_ticks": "151747218"
+  },
+  "rows": [
+    {
+      "row_id": "B00-s2026092701",
+      "pid": 900700,
+      "start_ticks": "151748443",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01",
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01/experiments/cvs_noise_shape_factorial43/runner.py --mode worker --row B00-s2026092701 ",
+      "physical_GPU": 0,
+      "live": true,
+      "identity_verified": true,
+      "log_bytes": 6452,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student",
+        "seed": 2026092701
+      }
+    },
+    {
+      "row_id": "B10_WHITE-s2026092701",
+      "pid": 901260,
+      "start_ticks": "151748782",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01",
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01/experiments/cvs_noise_shape_factorial43/runner.py --mode worker --row B10_WHITE-s2026092701 ",
+      "physical_GPU": 1,
+      "live": true,
+      "identity_verified": true,
+      "log_bytes": 6500,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student",
+        "seed": 2026092701
+      }
+    },
+    {
+      "row_id": "B10_BG-s2026092701",
+      "pid": 901341,
+      "start_ticks": "151749112",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01",
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01/experiments/cvs_noise_shape_factorial43/runner.py --mode worker --row B10_BG-s2026092701 ",
+      "physical_GPU": 2,
+      "live": true,
+      "identity_verified": true,
+      "log_bytes": 6476,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student",
+        "seed": 2026092701
+      }
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "pid": 901424,
+      "start_ticks": "151749447",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01",
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01/experiments/cvs_noise_shape_factorial43/runner.py --mode worker --row B01-s2026092701 ",
+      "physical_GPU": 3,
+      "live": true,
+      "identity_verified": true,
+      "log_bytes": 6452,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student",
+        "seed": 2026092701
+      }
+    },
+    {
+      "row_id": "B11_WHITE-s2026092701",
+      "pid": 901507,
+      "start_ticks": "151749776",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01",
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01/experiments/cvs_noise_shape_factorial43/runner.py --mode worker --row B11_WHITE-s2026092701 ",
+      "physical_GPU": 4,
+      "live": true,
+      "identity_verified": true,
+      "log_bytes": 6500,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student",
+        "seed": 2026092701
+      }
+    },
+    {
+      "row_id": "B11_BG-s2026092701",
+      "pid": 901588,
+      "start_ticks": "151750114",
+      "cwd": "/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01",
+      "argv": "/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_impulse_factorial_E30_20261018_r01/experiments/cvs_noise_shape_factorial43/runner.py --mode worker --row B11_BG-s2026092701 ",
+      "physical_GPU": 5,
+      "live": true,
+      "identity_verified": true,
+      "log_bytes": 6476,
+      "initialization": {
+        "scratch_only": true,
+        "checkpoint_sources": [],
+        "ancestors": [],
+        "source_roles": "EXACT_MATCH",
+        "target_contact": false,
+        "teacher_origin": "own scratch student",
+        "seed": 2026092701
+      }
+    }
+  ],
+  "actual_source_contract": "Allsix initialization exact;L6300/U56700hidden/V27000,source5RX noholdout",
+  "actual_progress": [
+    {
+      "row_id": "B00-s2026092701",
+      "epoch": 1,
+      "cumulative_epoch": 1,
+      "steps": 222,
+      "cumulative_steps": 222,
+      "L_NN": 170496,
+      "L_As": 0,
+      "extra_U_NN": 0,
+      "U_As": 0,
+      "existing_U_only": true,
+      "U_truth_read": false,
+      "target_access": false
+    },
+    {
+      "row_id": "B10_WHITE-s2026092701",
+      "epoch": 1,
+      "cumulative_epoch": 1,
+      "steps": 222,
+      "cumulative_steps": 222,
+      "L_NN": 170496,
+      "L_As": 0,
+      "extra_U_NN": 0,
+      "U_As": 0,
+      "existing_U_only": true,
+      "U_truth_read": false,
+      "target_access": false
+    },
+    {
+      "row_id": "B10_BG-s2026092701",
+      "epoch": 1,
+      "cumulative_epoch": 1,
+      "steps": 222,
+      "cumulative_steps": 222,
+      "L_NN": 170496,
+      "L_As": 0,
+      "extra_U_NN": 0,
+      "U_As": 0,
+      "existing_U_only": true,
+      "U_truth_read": false,
+      "target_access": false
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "epoch": 1,
+      "cumulative_epoch": 1,
+      "steps": 222,
+      "cumulative_steps": 222,
+      "L_NN": 170496,
+      "L_As": 14208,
+      "extra_U_NN": 0,
+      "U_As": 0,
+      "existing_U_only": true,
+      "U_truth_read": false,
+      "target_access": false
+    },
+    {
+      "row_id": "B11_WHITE-s2026092701",
+      "epoch": 1,
+      "cumulative_epoch": 1,
+      "steps": 222,
+      "cumulative_steps": 222,
+      "L_NN": 170496,
+      "L_As": 14208,
+      "extra_U_NN": 0,
+      "U_As": 0,
+      "existing_U_only": true,
+      "U_truth_read": false,
+      "target_access": false
+    },
+    {
+      "row_id": "B11_BG-s2026092701",
+      "epoch": 1,
+      "cumulative_epoch": 1,
+      "steps": 222,
+      "cumulative_steps": 222,
+      "L_NN": 170496,
+      "L_As": 14208,
+      "extra_U_NN": 0,
+      "U_As": 0,
+      "existing_U_only": true,
+      "U_truth_read": false,
+      "target_access": false
+    }
+  ],
+  "new_performance_proved": false,
+  "target_metrics_read": false,
+  "crossseed_confirmed": false,
+  "goal_complete": false,
+  "log_growth": "Allsix >6400 initialbytes to >11600 bytes;realepoch1 counters all222updates/170496LNN;As ON14208,OFF0"
+}
