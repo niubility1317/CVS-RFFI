@@ -27,3 +27,9 @@ Ag只用于合法L，不读TX来选排列；physical eq/RX/day/sig/base构成不
 实际resolved结构900722参数、20label＋10pseudo、完整L6300/U56700hidden/V27000、held_RX=null、target_loaders0，训练模块实际来自不可变cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code，非顶层code。原子模块channel.py、batch.py、residual.py与实用adapter实际__file__均保存各row/source/module_files.json。Smoke兼容CP只2合成包/0真实IQ/0query/0训练初始化；各row另外严格保存ownscratch初始化。
 
 当前无本轮正式准确率、F1或跨seed结论；未完成项为各row E30、12602NN源读出、7view预测固定、独立truth-last评分、完整独立统计/曲线/分层图/收益归因和跨seed验证。运行过程不会依target结果改变其他行或健康旧任务。
+
+## 独立分析准备
+
+分析实现为 analysis/cvs_cycleorder_factorial_E30_results_20261017.py，准备 commit f95ec6e3ebd45b3a71c674a9ba844766cc3b870d，对应3项synthetic protocol-negative/数值检查已PASS。分析覆盖四个新E30模型的全部结构化30epoch/6660step/普通增强/原生物理/SupCon/Sinc/完整stdout记录，不以tail推断训练表现；全矩阵prediction/scoring完成后才允许分析truth，独立源判据先复算落盘。四因子accuracy和macroF1交互、原普通secondary参考、固定P25 B00 clean正确集合及新matchedB00集合的保持率分别报告；不把两种输入控制混同。
+
+成本单列每row source/teacher/EMA/额外L/U/预测/源读出，shared compatibility smoke2NN、P30/P31源前置诊断和只读P25训练成本，不冒充训练父权重继承。实际全部结果后才导出PNG/PDF/CSV/summary并核验图；当前尚未对本轮数据运行独立分析、尚无本轮正式准确率或可复现结论。
