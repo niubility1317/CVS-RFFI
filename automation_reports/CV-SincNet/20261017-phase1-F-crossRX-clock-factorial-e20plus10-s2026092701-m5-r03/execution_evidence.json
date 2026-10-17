@@ -1,0 +1,143 @@
+{
+  "status": "VERIFIED",
+  "execution_commit": "8a83af076a2f632a4ee514da689b2e8d166d0592",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "real_F_synthetic_checks": {
+    "status": "PASS",
+    "negative_cases": 136,
+    "synthetic_NN": 2580,
+    "synthetic_physics_packets": 256,
+    "synthetic_clock_packets": 128,
+    "synthetic_optimizer_steps": 5,
+    "real_IQ": 0,
+    "CP": 0,
+    "target_access": false,
+    "scope_before_initialize_order": "PASS",
+    "actual_native_continuation_validator": "PASS"
+  },
+  "real_CP_no_query_smoke": {
+    "status": "PASS",
+    "real_CP_loads": 1,
+    "NN_forward_packets": 2,
+    "real_IQ": 0,
+    "query_read": false,
+    "head_fit_updates": 0,
+    "new_training_updates": 0,
+    "source_roles": "EXACT_MATCH",
+    "fixed_final20_parent": true
+  },
+  "postlaunch": {
+    "dispatcher_PID": 409468,
+    "workers": [
+      {
+        "row": "B00-s2026092701",
+        "PID": 409493,
+        "GPU": 0
+      },
+      {
+        "row": "B10-s2026092701",
+        "PID": 409570,
+        "GPU": 5
+      },
+      {
+        "row": "B01-s2026092701",
+        "PID": 409643,
+        "GPU": 6
+      },
+      {
+        "row": "FULL_AS-s2026092701",
+        "PID": 409795,
+        "GPU": 7
+      },
+      {
+        "row": "B11-s2026092701",
+        "PID": 410419,
+        "GPU": 1
+      }
+    ],
+    "PID_CWD_argv_GPU_match": true,
+    "observation_interval_seconds": 63.04918026924133,
+    "rows": [
+      {
+        "row": "B00",
+        "step_log_grew": true,
+        "strict_parent": true,
+        "own_EMA": true,
+        "optimizer_reset": true
+      },
+      {
+        "row": "B10",
+        "step_log_grew": true,
+        "strict_parent": true,
+        "own_EMA": true,
+        "optimizer_reset": true
+      },
+      {
+        "row": "B01",
+        "step_log_grew": true,
+        "strict_parent": true,
+        "own_EMA": true,
+        "optimizer_reset": true
+      },
+      {
+        "row": "B11",
+        "step_log_grew": true,
+        "strict_parent": true,
+        "own_EMA": true,
+        "optimizer_reset": true
+      },
+      {
+        "row": "FULL_AS",
+        "step_log_grew": true,
+        "strict_parent": true,
+        "own_EMA": true,
+        "optimizer_reset": true
+      }
+    ],
+    "queue": {
+      "pending": [],
+      "live": [
+        "B00-s2026092701",
+        "B10-s2026092701",
+        "B01-s2026092701",
+        "FULL_AS-s2026092701",
+        "B11-s2026092701"
+      ],
+      "completed": [],
+      "failure": null
+    },
+    "GPU_capacity": "shared max3totalprocessesperGPU including otherowners"
+  },
+  "data": {
+    "RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "days": [
+      1,
+      2,
+      3
+    ],
+    "L": 6300,
+    "U_TX_hidden": 56700,
+    "V": 27000,
+    "source_RX_holdout": null
+  },
+  "budget": {
+    "parent_epochs_each": 20,
+    "new_epochs_each": 10,
+    "cumulative_epochs_each": 30,
+    "new_updates_each": 2220,
+    "cumulative_updates_each": 6660,
+    "all_five_continue_without_target_selection": true
+  },
+  "training": "RUNNING",
+  "formal_predictions": "NOT_STARTED",
+  "scoring": "NOT_STARTED",
+  "Ag_efficacy_proved": false,
+  "joint_goal_complete": false
+}

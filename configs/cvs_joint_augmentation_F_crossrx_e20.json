@@ -2275,13 +2275,14 @@
     "no_held_source_RX": true,
     "no_target_selection": true,
     "healthy_E20_unchanged": true,
-    "status": "REGISTERED_NOT_LAUNCHED",
+    "status": "RUNNING_VERIFIED",
     "failed_run": "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
     "failed_run_real_updates": 0,
     "failed_runs": [
       "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01",
       "20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r02"
     ],
-    "failed_runs_real_updates": 0
+    "failed_runs_real_updates": 0,
+    "execution_commit": "8a83af076a2f632a4ee514da689b2e8d166d0592"
   }
 }
