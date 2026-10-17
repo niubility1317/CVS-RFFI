@@ -78,3 +78,6 @@ Q_ord相对Q0的clean accuracy＋4.285714pp／F1＋4.289331pp，lowurban accurac
 共同clean正确集合内净＋121，而其他组净−44；因此不能把总体＋77全说成无代价修复，也不能把As收益全归为改变clean正确集合。这里是两个训练后默认头的描述性分组，不是传播状态、观测质量或因果分解，不作门控或删除样本的依据。新C_CE完成后仍按预定总体accuracy/F1与保护条件判断，同时报告同集合修复与新错。
 
 Q_ord三个suburban与自身clean仍差25.079365／28.730159／31.825397pp；相对Q0的各suburban绝对正确率增加19.444444／15.476190／16.269841pp，clean同时提高，故当前控制的差距缩小没有靠降低clean，但远未接近探索性2pp。上述仍是已有控制结果，不是新C_CE成绩。完整私有聚合保存在local_artifacts/F_As_pair_CE_E20_20261017/final/control_As_effect.json。
+
+
+原U阶段边界实际核实：同一原worker已完整E13/2886步并进入E14；只读当前gzip中全部已完整写出的2899条step，first_U_step=2887，前2886步pseudo_total/selected/loss_unlabeled均0。随后13个原U更新共3328次U重复观察、79次被选择；U truth_available/pseudo_correct标志仍0，EMA成功更新至2899。选择数不是伪标签精度，未读U标签。全部已写前缀的As total_L＝base_total_L＋.25×extra_pair_CE，最大误差2.3841858e−7，CE/KL数值有限、无nonfinite skip。gzip仍在写，不把该前缀称为完整E20分析。只读工具0NN/0新更新/0target，没有改远端发布或训练；该记录仅核实原13L＋7U与As纯CE执行边界，非性能证据。
