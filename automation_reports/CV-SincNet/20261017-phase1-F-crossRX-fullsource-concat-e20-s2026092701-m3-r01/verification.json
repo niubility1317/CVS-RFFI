@@ -1,0 +1,28 @@
+{
+  "status": "LOCAL_PROTOCOL_AND_SYNTAX_PASS",
+  "protocol_negative_cases": 33,
+  "source_roles_metadata": {
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "held_RX": null
+  },
+  "source_checkpoint_metadata": "Fullsource/scratch/noancestors/final50/target_contactfalse;compatibilityonly,notinitialization",
+  "fixed_formal_views_metadata": "VALIDATED_ONCE/168000/clean+sixpracticalexistingunchanged",
+  "local_torch_available": false,
+  "synthetic_actualF_checks": "Scheduledaftercommittedrelease/beforeactualtraining",
+  "independent_P0_P1": "PASS_ONE_REVIEW_PLUS_ONE_TARGETED_FIX_REVIEW",
+  "new_source_IQ_reads": 0,
+  "new_CP_loads": 0,
+  "new_NN": 0,
+  "new_optimizer_updates": 0,
+  "target_IQ_access": false,
+  "fixed_P1": "PublisheroutputrootnowBASE.as_posix();nativeWindowsPurePosixPathcheckPASS"
+}

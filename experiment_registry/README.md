@@ -486,3 +486,5 @@
 
 
 - [源 PSD 正仿射：全 RX 对跨 TX/day](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01/report.md)（原有行与历史规模保留；本行增量登记）
+
+- [完整源普通星地拼接 E20 参照](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01/report.md)（原有行与历史规模保留；本行增量登记）

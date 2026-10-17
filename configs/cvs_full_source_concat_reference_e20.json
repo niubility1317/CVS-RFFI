@@ -1,6 +1,6 @@
 {
   "schema": "F_CROSS_RX_FULL_SOURCE_CONCAT_REFERENCE_E20_V1",
-  "status": "CONFIGURED_NOT_IMPLEMENTED_OR_LAUNCHED",
+  "status": "IMPLEMENTED_REGISTERED_NOT_LAUNCHED",
   "authorization": "2026-10-17 user correction:prioritize practical augmentation;use ALL original source RX;no leave-one-source-RX training",
   "baseline": "F+CROSS_RX_same_TX/SIG_TIME_X3/unifiedSinc/joint160/defaultcos",
   "data": {
@@ -156,12 +156,12 @@
   },
   "claim_rule": "Establishreferenceperformanceonly;notnewAg/newAs/jointsuccess;futurecandidatecomparesdirectlytomatchedplainCONCAT",
   "implementation_remaining": [
-    "Actual fullsource loader/runtime with all5RX and exact original physical role handles",
-    "Shared-network matched objectives and original U execution",
-    "Automatic unchanged7view prediction/truth-last pipeline",
-    "Focused checks/one independent P0P1/commit/pre-registration/N607 release per minimalworkflow"
+    "Actual F synthetic checks and one real-checkpoint no-query smoke",
+    "One focused P0/P1 review and code/config Git identity",
+    "One archive transfer/compile/launch and post-state verification"
   ],
-  "experiment_registered": false,
+  "experiment_registered": true,
   "new_training_launched": false,
-  "target_access": false
+  "target_access": false,
+  "run_id": "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01"
 }

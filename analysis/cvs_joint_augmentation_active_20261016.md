@@ -4,7 +4,7 @@
 
 主线恢复为直接验证星地识别收益。后续新训练使用完整L6300／U56700／V27000、全部源RX1/3/4/6/8，不再留出一个源训练域，也不要求先通过源留出折。F＋跨RX同TX、scratch E20、默认头、原U和正式IQ保持。
 
-下一项是建立完整源的普通拼接参照：NATIVE原底座、REPEAT同ordinary额外前向控制、CONCAT普通源/practical等权配对，均固定final20并自动clean＋六practical、独立truth-last评分。只固定了配置，实际运行入口待实现，尚未登记/启动，不把已有源统计负结果当作星地性能。见[研究纠偏与最小矩阵](cvs_full_source_practical_correction_20261017.md)。
+下一项是建立完整源的普通拼接参照：NATIVE原底座、REPEAT同ordinary额外前向控制、CONCAT普通源/practical等权配对，均固定final20并自动clean＋六practical、独立truth-last评分。三行运行入口和逐行自动独立评分已实现，已登记 `20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r01`，尚未启动，不把已有源统计负结果当作星地性能。见[研究纠偏与最小矩阵](cvs_full_source_practical_correction_20261017.md)。
 
 历史源留出及统计实验原样保留、准确标注契约；新方案必须直接比较同完整源普通拼接参照。A_g不是放弃，而是不再以其统计入口阻塞A_s直接性能；完整联合目标仍ACTIVE，尚未达成。
 
