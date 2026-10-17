@@ -1,6 +1,6 @@
 {
   "schema": "joint_augmentation_active_baseline_v1",
-  "status": "RESEARCH_ACTIVE_MMSE_MIX_E30_FIXED_PILOT_CLOSED",
+  "status": "RESEARCH_ACTIVE_N0_SOURCE_FALSIFICATION_IMPLEMENTED",
   "source_experiment": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
   "authorization": "User baseline F plus cross-RX same-TX;latest budget E30 as fixed E20+10 on all five rows;all five now trained,score-only recovery adds zero updates.",
   "baseline_name": "F_PLUS_CROSS_RX_TX",
@@ -159,48 +159,10 @@
     "joint_goal_complete": false
   },
   "next_training_hypothesis": {
-    "status": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
-    "hypothesis": "Equal-prior NoEQ/MMSE24 receiver-processing views improve unchanged nominalNoEQ practical recognition",
-    "budget": "same ordinaryAs parentE20+10=cumulativeE30;no extraepochs",
-    "matched_control": "Existing nominalAs E30 from same parent/ownEMA/defaulthead/U/4Lforward",
-    "new_Ag": false,
-    "new_losses": 0,
-    "no_held_source_RX": true,
-    "no_formal_test_change": true,
-    "receiver_processing_prior": {
-      "NoEQ": 0.5,
-      "MMSE24": 0.5,
-      "selection": "One private TX-independent draw per physical L observation;one complete residual only"
-    },
-    "training_objective": "Original .5RD(ordinary)+.5RD(As)+unchanged crossRX SupCon;4 L forwards,all labeled As supervised",
-    "parent_epochs": 20,
-    "incremental_epochs": 10,
-    "cumulative_epochs": 30,
-    "parent_updates": 4440,
-    "new_updates": 2220,
-    "cumulative_updates": 6660,
-    "original_U_rule_fixed": true,
-    "formal_views": [
-      "clean",
-      "practical_high",
-      "practical_mid",
-      "practical_low_suburban",
-      "practical_high_urban",
-      "practical_mid_urban",
-      "practical_low_urban"
-    ],
-    "scientific_falsification": {
-      "low_urban_delta_vs_nominal_min_pp": 0.5,
-      "clean_delta_vs_nominal_min_pp": 0,
-      "mid_urban_delta_vs_nominal_min_pp": 0,
-      "each_suburban_delta_min_pp": -0.25,
-      "clean_net_vs_B00_required_for_joint": true,
-      "low_urban_above_60_required_for_joint": true,
-      "each_suburban_gap_exploratory_pp": 2,
-      "no_target_tuning_or_automatic_seed_extension": true
-    },
-    "extra_cost": "Same neural views/updates;actual equalizer CPU and total wall cost separately recorded",
-    "run_id": "20261017-phase1-F-crossRX-MMSEmix-e20plus10-s2026092701-m1-r01"
+    "status": "NONE_BEFORE_FIXED_SOURCE_N0_FALSIFICATION",
+    "no_automatic_training": true,
+    "budget": "E30,or sameparentE20+10,if independentlyfixedlater",
+    "source_RX_holdout": null
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",
@@ -2883,76 +2845,50 @@
     "execution_commit": "d17844d18e0795d8eac9a3465aa2613a20ab6b86"
   },
   "active_As_hypothesis": {
-    "run_id": "20261017-diagnostic-F-MMSE-receiver-fullL-s2026092701-m1-r01",
-    "status": "PASS_SOURCE_RECEIVER_VIEW_ONLY_NOT_TRAINING_GAIN",
-    "hypothesis": "Existing same-H/MMSE receiver processing at common24 sample target latency provides useful source identity observations;not a trained As benefit",
-    "candidate": "MMSE24",
-    "control": "NoEQ plus default64 delay diagnostic",
-    "SNR_changed": false,
-    "target_IQ_changed": false,
+    "run_id": "20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01",
+    "status": "IMPLEMENTED_LOCAL_CHECKS_PASS_NOT_LAUNCHED",
+    "source_only": true,
+    "hypothesis": "Does a fixed equalprior .5N0/1.5N0 complete-practical source observation law provide useful identity observations at the same mean reference noise power?",
+    "noise_prior": {
+      "factors": [
+        0.5,
+        1.5
+      ],
+      "probabilities": [
+        0.5,
+        0.5
+      ],
+      "mean_linear_N0_factor": 1,
+      "interpretation": "Engineering sensitivity law,not measured temperature distribution;mean SNR in dB is not preserved",
+      "location": "Replace original reference N0 before receiver_quality;no second AWGN injection",
+      "recomputed": "Original lock/fineCFO/phase-tracking/residual scale and AGC recomputed with changedN0",
+      "fixedQ_controls": "Only causal controls hold nominal quality;never training candidates"
+    },
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_RX_holdout": null,
+    "L": 6300,
+    "U_used": false,
+    "V_used": false,
+    "target_access": false,
+    "expected_NN": 100802,
+    "new_epochs": 0,
+    "new_updates": 0,
+    "new_Ag": false,
     "new_losses": 0,
-    "source_guard_criteria": {
-      "low_accuracy_gain_min_pp": 0.5,
-      "mid_accuracy_gain_min_pp": 0.5,
-      "low_suburban_gain_min_pp": -0.25,
-      "each_RX_low_gain_min_pp": -1,
-      "low_original_errors_affected_share_min": 0.2
+    "automatic_training": false,
+    "criteria": {
+      "min_expected_low_gain_pp": 0.5,
+      "min_expected_mid_gain_pp": 0.5,
+      "min_expected_suburban_gain_pp": -0.25,
+      "min_each_RX_expected_low_gain_pp": -1
     },
-    "no_automatic_training": true,
-    "source_result": {
-      "practical_low_suburban": {
-        "MMSE24": {
-          "accuracy_delta_pp": 1.9365079365079367,
-          "repairs": 164,
-          "new_errors": 42
-        },
-        "MMSE64": {
-          "accuracy_delta_pp": -51.55555555555556,
-          "repairs": 82,
-          "new_errors": 3330
-        },
-        "original_errors": 564,
-        "original_errors_affected_share": 0.6702127659574468
-      },
-      "practical_mid_urban": {
-        "MMSE24": {
-          "accuracy_delta_pp": 4.0476190476190474,
-          "repairs": 386,
-          "new_errors": 131
-        },
-        "MMSE64": {
-          "accuracy_delta_pp": -37.41269841269841,
-          "repairs": 185,
-          "new_errors": 2542
-        },
-        "original_errors": 1644,
-        "original_errors_affected_share": 0.4981751824817518
-      },
-      "practical_low_urban": {
-        "MMSE24": {
-          "accuracy_delta_pp": 3.0952380952380953,
-          "repairs": 293,
-          "new_errors": 98
-        },
-        "MMSE64": {
-          "accuracy_delta_pp": -25.158730158730158,
-          "repairs": 159,
-          "new_errors": 1744
-        },
-        "original_errors": 2456,
-        "original_errors_affected_share": 0.24470684039087948
-      }
-    },
-    "conditions": {
-      "low_gain": true,
-      "mid_gain": true,
-      "suburban_protection": true,
-      "all_RX_low_protection": true,
-      "low_original_errors_affected": true
-    },
-    "training_run": "20261017-phase1-F-crossRX-MMSEmix-e20plus10-s2026092701-m1-r01",
-    "training_status": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT",
-    "training_scientific_pass": false
+    "on_fail": "Close fixed .5/1.5 N0 prior;no SNR/factor/probability/scene/seed/threshold rescue"
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",

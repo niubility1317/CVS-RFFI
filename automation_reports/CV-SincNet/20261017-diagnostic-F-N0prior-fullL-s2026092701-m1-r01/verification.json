@@ -1,0 +1,27 @@
+{
+  "local_checks": {
+    "status": "PASS",
+    "protocol_negatives": 10,
+    "synthetic_coupled_packets": 15,
+    "physical_processing_calls": 150,
+    "fixed_quality_signal_max_error": 0,
+    "fixed_quality_noise_max_error": 4.654751537338637e-17,
+    "mean_reference_N0_exact": true,
+    "input_and_global_RNG_unchanged": true,
+    "batch_permutation_invariant": true,
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "training_updates": 0
+  },
+  "review": {
+    "status": "PASS",
+    "scope": "First and only bounded P0/P1 ofnewN0sourcewiring;no directP0/P1",
+    "checked": "9files and2publisher scripts syntax;registration consistency/100802NN;singleN0 replacement/quality/AGC/fixedQ/defaulthead/fullL/expected-single-draw legality",
+    "real_IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "remote_operations": 0
+  },
+  "started": false
+}

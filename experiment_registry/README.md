@@ -520,3 +520,5 @@
 - [等功率接收带限噪声源检验](../automation_reports/CV-SincNet/20261017-diagnostic-F-receiverBandNoise-fullL-s2026092701-m1-r01/report.md)
 - [完整源 MMSE 接收处理](../automation_reports/CV-SincNet/20261017-diagnostic-F-MMSE-receiver-fullL-s2026092701-m1-r01/report.md)
 - [完整源 MMSE 接收混合 E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-MMSEmix-e20plus10-s2026092701-m1-r01/report.md)
+
+- [完整源N0反证](../automation_reports/CV-SincNet/20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01/report.md)

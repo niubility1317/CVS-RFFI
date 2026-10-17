@@ -1,0 +1,263 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01",
+  "group_id": "F_crossRX_practical_N0_prior_fullsource",
+  "display_name": "完整 practical 内等平均 N0 变化：完整 L6300 源反证",
+  "description": "冻结同契约F默认头，在完整L6300比较原N0与.5/1.5N0等权单视图风险，并用固定quality对照分离处理状态效应；0训练/target",
+  "kind": "diagnostic",
+  "stage": "diagnostic",
+  "aliases": [
+    "F_N0_PRIOR_FULLSOURCE_SOURCE_ONLY"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "full_source",
+    "default_head",
+    "practical",
+    "source_only",
+    "no_training",
+    "N0_prior",
+    "matched_controls"
+  ],
+  "comparison_group_id": "source-complete-practical-constant-mean-N0",
+  "parent_run_ids": [
+    "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint augmentation research/latestE30/all5sourceRX;fixed source-only observation falsification,100802NN/0updates;no target-based tuning or automatic training",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "Ordinary N607 existing pinned full-source F runtime;CPU threads2/CUDAhidden;NumPy float64 noise,original FP32 model",
+    "cwd": "PROJECT/releases/cvs_F_N0_prior_source_20261017_r01",
+    "entrypoint": "experiments/cvs_n0_source17/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated exact original L6300 source cache;all sourceRX",
+    "representation": "Original EQ1/RMS IQ256/25MHz;fixed L6300;one original complete residual per diagnostic view,N0 replaced once before quality,NoEQ unchanged",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract role_ids.L_s,exact all6300",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "All6300 IQ+legal labels for frozen source identity guard",
+      "U_s": "Only original opaque role-ID exclusion,no IQ orTXlabels used",
+      "V": "Source carrier features deserialized by existing cache then unused;no stats or updates"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Reuse existing exact source handles and native_role_comparison;no data rebuild",
+    "support_query_ref": null,
+    "leo_config_ref": "Fixed original three training practical scenes;formal clean+six received IQ unchanged and not accessed"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Source expected single-observation law only;not Ag/DG/As training benefit,measuredtemperature,realRX replacement or joint proof"
+  },
+  "checkpoint": {
+    "initialization": "Frozen existing fullsource REPEAT source-final20/defaulthead,no updates",
+    "sources": [
+      "PROJECT/runs/20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/CONCAT-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse verified fullsource provenance;before load check scratch/finalonly/zero ancestors/role counts6300,56700,27000/exact original roles;no model ormetric selection",
+    "provenance_verdict": "VERIFIED_EXACT_FULLSOURCE_SCRATCH_FINAL20_CONCAT",
+    "selection_rule": "Fixed metadata-matched fullsource source-final20;not target ranked"
+  },
+  "execution": {
+    "host": "N607 ordinary account",
+    "launch_owner": "codex/root/F-N0-prior-source",
+    "gpu_policy": "CPU2/CUDAhidden;no training/GPU processes",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_N0_prior_source_20261017_r01/MMSE_source.stdout.log",
+    "local_artifact_root": "local_artifacts/F_N0_prior_source_20261017",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_n0_source17/runner.py",
+    "stop_rule": "One owner/immutable root;any source-role/provenance/state/nonfinite/count failure preserves outputs and stops;noautomatic rerun or target access"
+  },
+  "expected_artifacts": [
+    "checks.json",
+    "real_checkpoint_smoke.json",
+    "resolved_config.json",
+    "source_predictions.npz",
+    "coupled_draws.json",
+    "result.json",
+    "completion.json",
+    "independent same-row source recount"
+  ],
+  "metrics_plan": {
+    "source": "raw6300 plus3scenes x5processing conditions;all6300 defaulthead;accuracy,macroF1,RX/day/TX/state/actual andnominal lock",
+    "primary": "Expected per-draw accuracy under equalprior N0 factors .5/1.5 minus nominal;not logits ensemble",
+    "falsification": {
+      "min_expected_low_gain_pp": 0.5,
+      "min_expected_mid_gain_pp": 0.5,
+      "min_expected_suburban_gain_pp": -0.25,
+      "min_each_RX_expected_low_gain_pp": -1
+    },
+    "physical_controls": "same H/hardware/base standardnoise;fixedquality controls isolate noise amplitude;recomputed conditions restoreoriginal dependency;AGC recomputed",
+    "cost": "1CP/cache,100802NN including2smoke,18900latentrealizations/94500processingcalls,0teacher/headfit/updates/target",
+    "no_target_parameter_feedback": true,
+    "no_automatic_training": true
+  },
+  "rows": [
+    {
+      "row_id": "N0_PRIOR-source-s2026092701",
+      "method": "Equalmean referenceN0 law andfixedquality causalcontrols",
+      "purpose": "Falsify usefulness of fixed receiver-noise-power prior onalloriginalL without newtraining or target",
+      "config_ref": "experiments/cvs_n0_source17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {
+        "L6300_all_source_RX": true,
+        "U_or_V_updates": false,
+        "target_access": false
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261017931,
+        "support": null,
+        "evaluation": 20261017931
+      },
+      "seed_notes": "Reuse original source MMSE_source_coupled latentnamespace+probe20261017931/receiver20261016423 solely toholdH andstandardnoisedraws;MMSEalwaysfalse;no seedselection",
+      "k": null,
+      "scenario": "raw plus original three training practical scenes times noEQ/MMSE24/MMSE64",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": 0,
+      "budget_ref": "Fixed0newmodelE/updates;100802NN source-only;futuretraining boundedE30 andseparatelyregistered",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_N0_prior_source_20261017_r01/N0_source.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_n0_source17/runner.py",
+      "expected_artifacts": [
+        "checks.json",
+        "real_checkpoint_smoke.json",
+        "resolved_config.json",
+        "source_predictions.npz",
+        "coupled_draws.json",
+        "result.json",
+        "completion.json",
+        "independent same-row source recount"
+      ],
+      "config": {
+        "run_id": "20261017-diagnostic-F-N0prior-fullL-s2026092701-m1-r01",
+        "launch_owner": "codex/root/F-N0-prior-source",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "model_source": "20261017-phase1-F-crossRX-fullsource-concat-e20-s2026092701-m3-r02/CONCAT-s2026092701/source",
+        "source_RX": [
+          1,
+          3,
+          4,
+          6,
+          8
+        ],
+        "source_RX_holdout": null,
+        "L": 6300,
+        "U_TX_hidden": true,
+        "U_used": false,
+        "V_statistically_used": false,
+        "target_access": false,
+        "model_seed": 2026092701,
+        "checkpoint_rule": "Fixed ordinary fullAs source-final20;all6300/56700/27000;no target-based choice",
+        "question": "Does a fixed equalprior .5N0/1.5N0 complete-practical source observation law provide useful identity observations at the same mean reference noise power?",
+        "probe_seed": 20261017931,
+        "probe_namespace": "MMSE_source_coupled",
+        "receiver_seed": 20261016423,
+        "scenes": [
+          "practical_low_suburban",
+          "practical_mid_urban",
+          "practical_low_urban"
+        ],
+        "views": [
+          "raw",
+          "practical_low_suburban/nominal",
+          "practical_low_suburban/N0_half",
+          "practical_low_suburban/N0_1p5",
+          "practical_low_suburban/N0_half_fixedQ",
+          "practical_low_suburban/N0_1p5_fixedQ",
+          "practical_mid_urban/nominal",
+          "practical_mid_urban/N0_half",
+          "practical_mid_urban/N0_1p5",
+          "practical_mid_urban/N0_half_fixedQ",
+          "practical_mid_urban/N0_1p5_fixedQ",
+          "practical_low_urban/nominal",
+          "practical_low_urban/N0_half",
+          "practical_low_urban/N0_1p5",
+          "practical_low_urban/N0_half_fixedQ",
+          "practical_low_urban/N0_1p5_fixedQ"
+        ],
+        "sample_rate_Hz": 25000000,
+        "carrier_Hz": 2462000000,
+        "reference_snr_db": 30,
+        "route": "residual/post_sync",
+        "equalization_enabled": false,
+        "noise_prior": {
+          "factors": [
+            0.5,
+            1.5
+          ],
+          "probabilities": [
+            0.5,
+            0.5
+          ],
+          "mean_linear_N0_factor": 1,
+          "interpretation": "Engineering sensitivity law,not measured temperature distribution;mean SNR in dB is not preserved",
+          "location": "Replace original reference N0 before receiver_quality;no second AWGN injection",
+          "recomputed": "Original lock/fineCFO/phase-tracking/residual scale and AGC recomputed with changedN0",
+          "fixedQ_controls": "Only causal controls hold nominal quality;never training candidates"
+        },
+        "shared": "Same H/geometry/state/shadow/scatter/receiver/phase/tracking and standard normal noise draws;only N0 and consequent receiver processing differ",
+        "boundary": "Originalreflect;same IQ256/no crop/shift/extraRMS",
+        "expected_NN": 100802,
+        "source_decisions": 100800,
+        "physical_realizations": 18900,
+        "processing_calls": 94500,
+        "new_model_epochs": 0,
+        "training_updates": 0,
+        "teacher_forwards": 0,
+        "head_fit_updates": 0,
+        "criteria": {
+          "min_expected_low_gain_pp": 0.5,
+          "min_expected_mid_gain_pp": 0.5,
+          "min_expected_suburban_gain_pp": -0.25,
+          "min_each_RX_expected_low_gain_pp": -1
+        },
+        "on_fail": "Close fixed .5/1.5 N0 prior;no SNR/factor/probability/scene/seed/threshold rescue",
+        "on_pass": "Source input evidence only;no Ag/As training gain or joint proof;matched fullsource E30 training separately required",
+        "formal_test_changed": false,
+        "automatic_training": false,
+        "device": "CPU",
+        "threads": 2,
+        "physical_reference": "https://www.mathworks.com/help/comm/ref/receiverthermalnoise.html",
+        "limitation": "Thermal-noise model motivates variable power only;no published CVS benefit or empirical choice of these factors is claimed"
+      }
+    }
+  ],
+  "notes": [
+    "Fixed .5N0/1.5N0 equalprior beforeany newIQ;meanlinear referenceN0 remainsone,meanSNR/dB andreceiverstate distribution neednotremainunchanged.",
+    "Factor range isengineering sensitivity,not source/target temperature fit or measured satelliteprior.Official kTB relation alone doesnot proveaugmentation efficacy.",
+    "No second AWGN,consecutive fullchannel,MMSE,amplitudenormalization,windowreplacement,Ag/newloss/newU/headfit/inferenceensemble.",
+    "Source fixed-quality paths are causalcontrols only;futurecandidate requires recomputed quality andwhole original receiverdependence.",
+    "All5RX/allL6300/noU/Vstatistics/noheldtrainingRX;fixed own fullsourceCONCAT sourcefinal20/nochanged parentselection.",
+    "Source criteria failure closesfixedfactor/probability prior;no SNR/bounds/seed/cohort/thresholdrescue or automatictraining."
+  ],
+  "registered_at": "2026-10-17T11:50:14+00:00"
+}

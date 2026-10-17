@@ -1,5 +1,7 @@
 # 联合增强活动基线：F＋跨 RX 同 TX 对比学习
 
+最新状态（E30、全部5源RX，无留训练域）：[MMSE混合E30](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-MMSEmix-e20plus10-s2026092701-m1-r01/report.md) 已 ANALYZED／VERIFIED，六 practical 均下降，固定方案关闭。下一唯一源反证为[等平均 N0 变化](cvs_N0_prior_source_plan_20261017.md)，已实现／合成检查通过、尚未启动；0 新训练，不是新 A_g 或联合证明。以下较旧“运行／当前”语句保留为历史，以这一段及实际 run 状态为准。
+
 新唯一 A_s 假设已实际 RUNNING／VERIFIED：[20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01](../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md)。在原 total-ensemble RMS/径功率及完整依赖下，等概率使用 [0,1,3]／[0,1,2] 时延形状；不是新 Ag、RDrop 修改或弱化信道。原全源 L6300/U56700隐藏TX/V27000／5RX、同父E20＋10至E30、4L前向和原U保持，复用严格匹配nominal E30。执行476f350914ca72c753365c1b25d9deebf4920701；定向检查／一次P0P1与修复复核／真实CP smoke／单archive/compile/PID-CWD-argv-CUDA-GPU-loggrowth均PASS，原worker已完整追加E1／累计E21／113664LNN／28416As、当前298更新，无终轮评分。固定low≥+.5pp、clean/mid不降、每sub≥−.25pp；失败关闭固定配方，不调形状/比例/seed/预算救跑；全部7视图truth-last，完整目标ACTIVE。
 
 最新预算保持 **E30**；全源五 RX／L6300／U56700 隐藏 TX／V27000，无训练域留出。公开增强实现的后续核查见[文献适用边界](cvs_receiver_augmentation_literature_limits_20261016.md)：AA-FAL 当前代码的 1200 点局部替换不能原样用于 256 点 IQ，I/Q 分别修改的身份保持未验证；ASA 操作中间特征。本轮未执行第三方代码，0 真实 IQ／CP／NN／更新，没有新候选晋级或实验启动。DC 旧负结果保持关闭，完整目标 ACTIVE。
