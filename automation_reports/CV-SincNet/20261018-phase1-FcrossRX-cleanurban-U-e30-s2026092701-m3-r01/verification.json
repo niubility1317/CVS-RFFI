@@ -183,5 +183,24 @@
       "ratios_are_total_SNR": false,
       "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/UAS_E20_quality_state_sensitivity_r01.json"
     }
+  },
+  "two_row_full_E30_recount": {
+    "status": "PASS_B0_URAW_ONLY",
+    "new_updates_each": 6660,
+    "L_NN_each": 3409920,
+    "extra_U_NN_each": 963900,
+    "L_unique": 6300,
+    "U_unique": 56700,
+    "native_training_validation_NN_each": 7234024,
+    "external_frozen_source_readout_NN_each": 12600,
+    "all_source_identity_NN_each": 7246624,
+    "first_U_qualification_included_in_native": true,
+    "cost_extension_checks": 7,
+    "compile": "PASS",
+    "source_readout_wall_seconds": null,
+    "prediction_PIDs_preserved": true,
+    "formal_scores_read": false,
+    "all_three_complete": false,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/early_source_recount_r01.json"
   }
 }

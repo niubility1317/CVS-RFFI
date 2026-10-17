@@ -32,4 +32,9 @@ class Cases(unittest.TestCase):
   d=a.quality_sensitivity(r,c);self.assertEqual(d['actual_state'],'locked');self.assertEqual(d['signal_added_noise_state'],'degraded');self.assertEqual(d['signal_reference_noise_state'],'locked');self.assertAlmostEqual(d['signal_reference_noise_ratio_db'],24.8);self.assertAlmostEqual(d['signal_reference_noise_minus_white_proxy_db'],9.8)
   r['receiver_lock_status']='degraded'
   with self.assertRaisesRegex(ValueError,'Recorded receiver state'):a.quality_sensitivity(r,c)
+ def test_frozen_source_readout_is_added_once_to_native_cost(self):
+  counts=dict(student_train_NN=10,student_eval_NN=20,teacher_train_NN=0,teacher_eval_NN=30);proof=dict(status='SOURCE_READOUT_COMPLETE',NN=12600,training_updates=0,head_fit_updates=0,target_access=False,formal_scores_read=False)
+  c=a.source_cost_breakdown(counts,proof);self.assertEqual(c['native_training_and_validation_identity_NN'],60);self.assertEqual(c['source_identity_NN'],12660);self.assertEqual(c['frozen_source_readout_NN'],12600);self.assertTrue(c['first_U_qualification_already_in_native_counters'])
+  proof['NN']=14400
+  with self.assertRaises(ValueError):a.source_cost_breakdown(counts,proof)
 if __name__=='__main__':unittest.main()
