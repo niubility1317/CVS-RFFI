@@ -53,3 +53,6 @@ run：/home/szu2070436088/2510044040/CV-SincNet/runs/20261017-phase1-FcrossRX-fu
 源解释条件：仅当两个urban×两个draw的edge−full准确率差，相对B01均改善至少3个百分点，且各cell的full准确率下降均不超过0.5个百分点，才支持边界敏感性下降；它不是目标访问、扩seed、选模、参数修改或重跑门槛。正式成绩仍由原自动全七环境评分产生。本地3项聚焦测试PASS，含13个原角色/受控条件负例以及BCTX未完成前禁止打开源数据/CP或建立输出；compile PASS。当前该程序尚未执行，无新机制结果。
 
 补充尺度核验：实际默认头 ResidualPhysicalHead 的 scale 固定30；160维 gain 是 identity＋tanh(gain)×physical 的特征融合系数，后续joint及weight均L2归一化。分析margin/30口径成立，不能将gain的训练移动当作logit尺度提高。核验只构造默认模型读类定义，0NN/IQ/CP/更新。
+
+
+源结果独立读回：analysis/cvs_boundary_E30_source_readout_20261017.py 在 SOURCE_BOUNDARY_MECHANISM_COMPLETE 后，用单独的混淆矩阵累加实现复核全部源分层、clean指标、修复/破坏和固定B00 clean正确集合保持率，再按原定四个urban×draw单元解释条件读数。计划输出source边界、质量、状态和现有静态增益四张PNG/PDF，以及90个现有分支/场景/条件汇总。无新IQ/CP读取、NN、更新、目标成绩或truth读取。4个聚焦测试PASS（手算指标、全部单元解释条件及full保持、完成状态和权限负例、质量区间精确边界）；目前没有真实读数或图表，不能把计划路径当作已生成产物。
