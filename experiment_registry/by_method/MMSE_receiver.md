@@ -7,4 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |同传播 MMSE 接收处理：完整源检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-MMSE-receiver-fullL-s2026092701-m1-r01/report.md)|
-|NoEQ／MMSE24 接收处理混合：同父模型累计 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-MMSEmix-e20plus10-s2026092701-m1-r01/report.md)|
+|NoEQ／MMSE24 接收处理混合：完整源、同父模型累计 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-MMSEmix-e20plus10-s2026092701-m1-r01/report.md)|

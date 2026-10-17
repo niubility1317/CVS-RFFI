@@ -116,5 +116,32 @@
       "U_truth_read": false,
       "target_access": false
     }
-  }
+  },
+  "complete_analysis": {
+    "status": "VERIFIED",
+    "source_steps": 2220,
+    "parent_source_steps": 4440,
+    "source_epochs": 10,
+    "parent_source_epochs": 20,
+    "all_L_U_sampling_identical": true,
+    "actual_shared_args": 68,
+    "source_objectives": 2220,
+    "objective_max_error": 1.0728836064011205e-07,
+    "receiver_draws_independently_replayed": 284160,
+    "unique_L": 6300,
+    "original_hardware_and_calibration_states": 15,
+    "CM_recounts": 252,
+    "B00_overall_CM_recounts": 7,
+    "partitions": 42,
+    "max_metric_error": 2.220446049250313e-16,
+    "paired_recounts": 7,
+    "IQ": 0,
+    "CP": 0,
+    "raw_truth_reads": 0,
+    "NN": 0,
+    "new_updates": 0
+  },
+  "formal_status": "ALL_SEVEN_PREDICTED_THEN_INDEPENDENTLY_SCORED",
+  "scientific_pass": false,
+  "joint_goal_complete": false
 }

@@ -34,7 +34,7 @@
   "data": {
     "dataset": "ManySig",
     "version": "existing source contract",
-    "representation": "Original EQ1/RMS IQ256/25MHz;single practical(raw) before ordinary;only training diffuse delay-shape mixture;formal received IQ unchanged",
+    "representation": "Original EQ1/RMS IQ256/25MHz;one original practical residual from raw L IQ;NoEQ/MMSE24 receiver processing mixture only in training;all formal received IQ unchanged",
     "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
     "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
     "label_map_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
@@ -86,7 +86,7 @@
     "V": "27000originalV/healthonly/nogradientEMAstateorperformancegate",
     "separate_head_training": false,
     "satellite_training": true,
-    "claim_scope": "Single propagation-profile As isolation;engineering proxy,not empirical NTN/Ag/realRX replacement or joint proof"
+    "claim_scope": "Single As receiver-processing diversity pilot;engineering estimated-H/noise MMSE proxy,not empirical NTN/Ag/realRX replacement or joint proof"
   },
   "checkpoint": {
     "initialization": "Strict same ordinaryAs source-final20 student+ownEMA;resetAdamW/cos10;not scratch30 or exacttrajectoryresume",
@@ -452,7 +452,7 @@
         "augmentation": 20261017941,
         "support": null,
         "evaluation": null,
-        "MMSE_mix": 20261017711
+        "MMSE_mix": 20261017941
       },
       "seed_notes": "Model2026092701/split392005;original propagation/session streams unchanged,independent private receiver selector20261017941;no seed choice",
       "k": null,

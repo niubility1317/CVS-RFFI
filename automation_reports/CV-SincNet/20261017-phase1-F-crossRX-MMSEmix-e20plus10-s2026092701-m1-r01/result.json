@@ -1,0 +1,128 @@
+{
+  "status": "ARTIFACTS_COMPLETE",
+  "run_id": "20261017-phase1-F-crossRX-MMSEmix-e20plus10-s2026092701-m1-r01",
+  "execution_commit": "d17844d18e0795d8eac9a3465aa2613a20ab6b86",
+  "summary": {
+    "MMSE_MIX": {
+      "clean": {
+        "accuracy": 0.8318511904761905,
+        "macro_F1": 0.8275995824870269,
+        "worst_RX_accuracy": 0.7364166666666667
+      },
+      "practical_high": {
+        "accuracy": 0.8147083333333334,
+        "macro_F1": 0.810397695266727,
+        "worst_RX_accuracy": 0.7289166666666667
+      },
+      "practical_mid": {
+        "accuracy": 0.7909285714285714,
+        "macro_F1": 0.7867519241394083,
+        "worst_RX_accuracy": 0.71325
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.767077380952381,
+        "macro_F1": 0.7631540606207651,
+        "worst_RX_accuracy": 0.6944583333333333
+      },
+      "practical_high_urban": {
+        "accuracy": 0.7798630952380953,
+        "macro_F1": 0.7752582489026844,
+        "worst_RX_accuracy": 0.70425
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6403928571428571,
+        "macro_F1": 0.635765895599289,
+        "worst_RX_accuracy": 0.5819583333333334
+      },
+      "practical_low_urban": {
+        "accuracy": 0.5318452380952381,
+        "macro_F1": 0.526412145597603,
+        "worst_RX_accuracy": 0.488
+      }
+    },
+    "NOMINAL_AS": {
+      "clean": {
+        "accuracy": 0.8296369047619048,
+        "macro_F1": 0.8253138546277144,
+        "worst_RX_accuracy": 0.730125
+      },
+      "practical_high": {
+        "accuracy": 0.816202380952381,
+        "macro_F1": 0.8119393203007693,
+        "worst_RX_accuracy": 0.73
+      },
+      "practical_mid": {
+        "accuracy": 0.7932976190476191,
+        "macro_F1": 0.7890106343859681,
+        "worst_RX_accuracy": 0.7159583333333334
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.7697738095238095,
+        "macro_F1": 0.7657090405738582,
+        "worst_RX_accuracy": 0.6972083333333333
+      },
+      "practical_high_urban": {
+        "accuracy": 0.7818928571428572,
+        "macro_F1": 0.7773384751324953,
+        "worst_RX_accuracy": 0.7057083333333334
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6437142857142857,
+        "macro_F1": 0.639092427734011,
+        "worst_RX_accuracy": 0.5865
+      },
+      "practical_low_urban": {
+        "accuracy": 0.5344702380952381,
+        "macro_F1": 0.5289993837273708,
+        "worst_RX_accuracy": 0.48954166666666665
+      }
+    }
+  },
+  "paired_differences": {
+    "clean": {
+      "repairs": 850,
+      "new_errors": 478,
+      "delta_accuracy_pp": 0.22142857142857142,
+      "joint_clean_and_scene_delta_pp": 0.22142857142857142
+    },
+    "practical_high": {
+      "repairs": 1032,
+      "new_errors": 1283,
+      "delta_accuracy_pp": -0.1494047619047619,
+      "joint_clean_and_scene_delta_pp": 0.008928571428571428
+    },
+    "practical_mid": {
+      "repairs": 1255,
+      "new_errors": 1653,
+      "delta_accuracy_pp": -0.23690476190476192,
+      "joint_clean_and_scene_delta_pp": -0.13333333333333333
+    },
+    "practical_low_suburban": {
+      "repairs": 1361,
+      "new_errors": 1814,
+      "delta_accuracy_pp": -0.26964285714285713,
+      "joint_clean_and_scene_delta_pp": -0.1357142857142857
+    },
+    "practical_high_urban": {
+      "repairs": 1184,
+      "new_errors": 1525,
+      "delta_accuracy_pp": -0.20297619047619048,
+      "joint_clean_and_scene_delta_pp": -0.055952380952380955
+    },
+    "practical_mid_urban": {
+      "repairs": 1608,
+      "new_errors": 2166,
+      "delta_accuracy_pp": -0.33214285714285713,
+      "joint_clean_and_scene_delta_pp": -0.19047619047619047
+    },
+    "practical_low_urban": {
+      "repairs": 1898,
+      "new_errors": 2339,
+      "delta_accuracy_pp": -0.2625,
+      "joint_clean_and_scene_delta_pp": -0.13452380952380952
+    }
+  },
+  "joint_goal_complete": false,
+  "scientific_pass": false,
+  "fixed_candidate": "CLOSED_FAILED_PREREGISTERED_IDENTITY_BENEFIT"
+}

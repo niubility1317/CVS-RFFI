@@ -2,7 +2,7 @@
 
 |ID|状态|名称|
 |---|---|---|
-|NoEQ／MMSE24 接收处理混合：同父模型累计 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-MMSEmix-e20plus10-s2026092701-m1-r01/report.md)|
+|NoEQ／MMSE24 接收处理混合：完整源、同父模型累计 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-MMSEmix-e20plus10-s2026092701-m1-r01/report.md)|
 |RMS 匹配的三径时延形状：单项 A_s E30 检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-PDPshape-e20plus10-s2026092701-m1-r01/report.md)|
 |原分布校准刷新 A_s：E30 完整匹配负结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-calibration-refresh-e20plus10-s2026092701-m1-r01/report.md)|
 |完整源四因子与普通拼接：E20＋10，累计E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-F-crossRX-clock-factorial-e20plus10-s2026092701-m5-r01/report.md)|
