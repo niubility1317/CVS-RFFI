@@ -62,3 +62,6 @@
 - 源执行器、正式登记、候选唯一P0/P1、真实checkpoint smoke和远端发布尚未完成，当前不是LAUNCH_READY，不称源实验证据或增强成功。只保留必要最小流程；泛用brainstorming的额外设计审批属于REJECTED_EXTRA_GATE，不另设审批层。
 
 完整目标保持ACTIVE：有效Ag、稳定As、同契约B00/B10/B01/B11及交互、跨seed与正式clean＋六practical、clean净收益、lowurban>60%、suburban接近本模型clean均未完成。
+
+
+源执行器与单行登记已完成，尚未发布。使用实际opaque角色handle与独立RX/day元数据，明确冻结全部模型参数；直接CLI的标准库同名遮蔽已通过重命名消除。15＋19＋24项相关反例及冻结F合成检查通过，累计168合成NN／72输入梯度贡献。唯一P0/P1的旧child入口已修正并限定复核PASS；无其他直接P0/P1。真实CP smoke/源输入/识别结果待发布，不把本地检查当科学证据。

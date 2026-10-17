@@ -1,0 +1,232 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01",
+  "group_id": "phase1-F-crossRX-shared-direction-source",
+  "display_name": "F＋跨RX：共享微弱加性IQ方向的跨源条件敏感性",
+  "description": "One frozen own B00/final20;12RXday folds,shared label-free direction andsame-energy permutation;0updates/no newloss/target.",
+  "kind": "cvs",
+  "stage": "Phase1-source-diagnostic",
+  "aliases": [
+    "shared additive IQ direction",
+    "label-free common IQ sensitivity"
+  ],
+  "tags": [
+    "F",
+    "CROSS_RX",
+    "shared_IQ_direction",
+    "source_only",
+    "frozen_default_head",
+    "no_training"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Active joint Ag/As research;fixed source-only question recorded before source input. Current baselineF+CROSS_RX/E20;no training extension or target access.",
+  "code": {
+    "commit": "Actual code commit is supplied by publisher in release_commit.txt andresolved_config",
+    "checkout": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016",
+    "environment": "ordinary N607 CVS-RFFI; CPU2/loader0",
+    "cwd": "PROJECT/releases/cvs_F_sharedDirection_fitL_20261017_r01",
+    "entrypoint": "experiments/cvs_shared_iq17/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Existing validated source carrier;only exact fourRX model-fit L5040 used",
+    "representation": "Original nativeRMS/EQ1/IQ256/25Msps;no external renormalization;three fixedsource views;not fullL6300 orLtrain5580/dev720",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Exact original opaque role handles from existing validated cache;fitL5040 matched toownmodel;RX/day carried separately,no guessed ID decoding",
+    "label_map_ref": "original6TX map",
+    "source_receivers": [
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [],
+    "tx_sets_ref": "all6 originalsourceTX",
+    "roles": {
+      "L_s": "Exactfit5040used;all6TX/4RX/3day/70each",
+      "U_s": "No U values used;truth remains hidden",
+      "V": "Not used;RX1 heldL also unused inmath"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Exactcarrierrolecomparison plus existing validated source fold exclusion, no builder revalidation",
+    "support_query_ref": null,
+    "leo_config_ref": null
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Frozen trained-fitL shared-direction sensitivity only;notAg/DG/identity-preserving/RXhardware/formaltarget efficacy"
+  },
+  "checkpoint": {
+    "initialization": "frozen_evaluation_no_training",
+    "sources": [
+      "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Existing parent source_analysis/init/completion/frozen and exact effective fourRX roles reused;strict payload load before source IQ",
+    "provenance_verdict": "Same verified sourcefold scratchE20/finalonly/no ancestors/no target;strict reload reusedhelper,no new initialization",
+    "selection_rule": "Predetermined ownB00/seed01/final20,not target selected"
+  },
+  "execution": {
+    "host": "ordinary N607",
+    "launch_owner": "codex/root/F-sharedDirection-source-20261017",
+    "gpu_policy": "CPU-only2threads;CUDAhidden;no GPU allocation or unrelated process modification",
+    "remote_run_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_F_sharedDirection_fitL_20261017_r01",
+    "local_artifact_root": "automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01",
+    "launch_command": "CVS-RFFI/bin/python -u experiments/cvs_shared_iq17/runner.py",
+    "stop_rule": "Technical wrong roles/checkpoint/finite/state/RNG/cost/output errors preserve andfail;no automatic retry. ScientificFAIL continues all12folds thencloses allfixedknobs;no automaticE20/target."
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json beforeanysourceIQmath",
+    "active/resolved_config/source_contract/fit_L_ids/folds/progress",
+    "predictions/RX*_day*.json:all12 sourcefolds/logits/opaqueIDs/directions/cost",
+    "result/completion orfailure andfullstdout",
+    "independent all15120decisions/75602NN/30240inputgradientcontributions/240calls analysis",
+    "same-source report/figures/registry/Git"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "confusion",
+      "rawcorrect retention",
+      "repair/break",
+      "perRX/TX/day/cell",
+      "directionRMS/peak/DC/same-energy-control",
+      "inputgradient/forward cost andwalltime"
+    ],
+    "dimensions": [
+      "seed2026092701",
+      "fitL5040",
+      "12heldRXday units",
+      "raw/direction/permuted"
+    ],
+    "prediction_ref": "Ownsource predictions/*.json;legal visibleL only",
+    "scorer_ref": "Independent complete source logits/harddecision recount;no target truth"
+  },
+  "rows": [
+    {
+      "row_id": "SHARED_DIRECTION-sourceL-s2026092701",
+      "method": "F+CROSS_RX frozen common input direction",
+      "purpose": "zero_update_source_falsification",
+      "config_ref": "experiments/cvs_shared_iq17/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 202610178001,
+        "support": null,
+        "evaluation": 202610178002
+      },
+      "seed_notes": "Frozenownseed01/split392005;private probe/controlseed +100*heldRX+heldday;smoke202610178003;no sampler/target-dependentseed",
+      "k": null,
+      "scenario": "Source4RXx3day leaveRX ANDday outofdirectionreference;all6TX samevectorperfold",
+      "optimizer": null,
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "75602NNincl2smoke;30240inputgradientcontributions/240calls;0updates/teacher/headfit/As;parentE20cost separately",
+      "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01",
+      "log_path": "PROJECT/releases/cvs_F_sharedDirection_fitL_20261017_r01/shared_source.stdout.log",
+      "command": "CVS-RFFI/bin/python -u experiments/cvs_shared_iq17/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json beforeanysourceIQmath",
+        "active/resolved_config/source_contract/fit_L_ids/folds/progress",
+        "predictions/RX*_day*.json:all12 sourcefolds/logits/opaqueIDs/directions/cost",
+        "result/completion orfailure andfullstdout",
+        "independent all15120decisions/75602NN/30240inputgradientcontributions/240calls analysis",
+        "same-source report/figures/registry/Git"
+      ],
+      "config": {
+        "run_id": "20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01",
+        "owner": "codex/root/F-sharedDirection-source-20261017",
+        "output_root": "PROJECT/runs/20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01",
+        "backend": "PROJECT/releases/cvs_F_crossRX_satmix25_source_e20_20261016_r01",
+        "backend_commit": "0ae066adb10a001e834c8c679c5b7b81c20b3ac8",
+        "checkpoint_source": "PROJECT/runs/20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01/B00-RX1-s2026092701/source",
+        "parent_run": "20261016-phase1-F-crossRX-satmix25-sourceRX1-e20-s2026092701-m2-r01",
+        "source_contract": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+        "preparation": "PROJECT/runs/20261011-phase1-stage2-geometry-source-manysig-m3-r01/s2026092701",
+        "model_seed": 2026092701,
+        "split": 392005,
+        "model": "F/X3/unifiedSinc+CROSS_RX,NoExplicitCFO,joint160,originalcosine6x160scale30",
+        "checkpoint_role": "Frozen own scratch20/final20/no ancestors/no target;never new training initialization",
+        "data_role": "Only original fitL5040/6TX/4RX/3day/70percell;opaque original role IDs matched exactly",
+        "folds": "12 heldRX/day cells;reference excludes heldRX AND heldday;3RXx2dayx6TXx70=2520;held1RXx1dayx6TXx70=420",
+        "views": [
+          "raw",
+          "direction",
+          "permuted"
+        ],
+        "operator": {
+          "epsilon_absolute_complex_RMS": 0.001,
+          "xi_absolute_complex_RMS": 0.0001,
+          "peak_absolute": 0.003,
+          "FP32_relative_tolerance": 1e-06,
+          "private_seed": 202610178001,
+          "control_seed": 202610178002,
+          "mean_zero_each_IQ": true,
+          "one_shared_vector_per_RXday_allTX": true,
+          "label_input": false,
+          "source_RXday_only_select_reference": true,
+          "KL_only_input_direction_no_training_loss": true,
+          "steps": 1,
+          "zero_gradient": "record_unidentifiable_zero_no_fallback",
+          "normalization": "Original native RMS cache used unchanged,no postoperator RMS;record actual signalpower/perturbationratio",
+          "NoExplicitCFO": "Original internal packet compensation retained;no CFO feature or offset modification"
+        },
+        "expected": {
+          "folds": 12,
+          "reference_packets_per_fold": 2520,
+          "held_packets_per_fold": 420,
+          "reference_forward_packets": 60480,
+          "input_backward_packets": 30240,
+          "input_backward_calls": 240,
+          "source_eval_packets": 15120,
+          "noquery_smoke_packets": 2,
+          "total_forward_packets": 75602,
+          "optimizer_updates": 0
+        },
+        "scientific_rule": "Fixed question.qualify:raw>=98%,permuted-direction>=2pp,>=3RX gap>=1pp,direction rawcorrect retention overall/eachRX/eachTX>=95%,permuted overall>=99%/eachRX>=98%,all12 identifiable,fullbudget/no target",
+        "on_fail": "Close fixed shared direction,no epsilon/xi/peak/iterations/model/RX/day/threshold/seed rescue",
+        "on_pass": "Sensitivity evidence only;separately preregister any matched scratchE20 later",
+        "threads": 2,
+        "device": "CPU",
+        "CUDA_VISIBLE_DEVICES": "",
+        "U_used": false,
+        "V_used": false,
+        "held_RX1_used": false,
+        "target_access": false,
+        "new_teacher_models": 0,
+        "new_training_loss_terms": 0,
+        "optimizer_updates": 0,
+        "head_fit_updates": 0,
+        "As_generations": 0,
+        "parent_cost": "Own originalB00 E20/4440updates/4686678NN historical cost,not repeated or inherited into training"
+      }
+    }
+  ],
+  "notes": [
+    "All scientific thresholds/operator budgets fixed inquestion.py before sourceuse;source sensitivity isnot identitypreservation orAg evidence.",
+    "One shared vector for allTX ineachheldRX/day;operatorreads no labels. Directionreferenceuses2520otherRX/otherday samples;model itself trainedfitL,so thisisnot modelblindtest.",
+    "No training recipe,loss/NNdeploymentbranch/newclassifier. KL only constructsinput direction;nomodelparameterupdate. Sameenergypermutation isofnewvector,notoriginalIQ.",
+    "Original cache may deserialize other source roles/features;only exactfitL entersmath. No U/V/RX1/target,priorreportsorindicesselectdirectionparameters.",
+    "Fixedfailurecloses epsilon/xi/peak/iterations/model/RX/day/threshold/seed;no rescan orautomatictraining. PASS only supportsseparate fixedE20 sourcecomparison later."
+  ],
+  "registered_at": "2026-10-17T01:32:07+00:00"
+}

@@ -472,3 +472,5 @@
 - [源域伪目标健康：三种子冻结模型与浅中层RX探针](../automation_reports/CV-SincNet/20261013-source-pseudotarget-health-manysig-m3-r01/report.md)：ANALYZED，model seeds=[2026092701, 2026092702, 2026092703]
 - [冻结 RX 对抗模型：九行源域独立线性探针](../automation_reports/CV-SincNet/20261013-source-conditional-rx-probe-health-manysig-m9-r01/report.md)：REPLACED，model seeds=[2026092701, 2026092702, 2026092703]
 - [六方向源机制诊断：冻结 CE30 三主种子](../automation_reports/CV-SincNet/20261013-source-six-direction-mechanisms-manysig-m3-r01/report.md)：LOCAL_VERIFIED，model seeds=[2026092701, 2026092702, 2026092703]
+
+- [共享微弱 IQ 方向：源敏感性检验](../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01/report.md)（原有行与历史规模保留；本行增量登记）

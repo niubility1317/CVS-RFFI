@@ -3,7 +3,7 @@ import json
 import numpy as np
 import torch
 from torch import nn
-from .operator import EPS,XI,PEAK,complex_rms,initial_probe,bound,permuted_control,make_direction
+from .iq_direction import EPS,XI,PEAK,complex_rms,initial_probe,bound,permuted_control,make_direction
 
 def run():
  torch.set_num_threads(2);negative=0;packets=0;backwards=0

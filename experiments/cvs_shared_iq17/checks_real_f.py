@@ -2,14 +2,14 @@
 import json,sys
 from pathlib import Path
 import torch
-from .operator import make_direction,permuted_control,complex_rms,EPS,PEAK
+from .iq_direction import make_direction,permuted_control,complex_rms,EPS,PEAK
 
 def run():
  root=Path(__file__).resolve().parents[2];sys.path[:0]=[str(root/'experiments/adv3b02_xuc/code'),str(root/'code')]
  from SSDG import train_ssdg as native
  from experiments.cvs_scene_cycle20 import design as d,model as api
  from experiments.cvs_sigtime_heldcredit.held_credit import fresh_parameter_caches
- torch.set_num_threads(2);torch.manual_seed(202610178103);m=api.build(d.config(d.rows()[0]),'cpu').eval()
+ torch.set_num_threads(2);torch.manual_seed(202610178103);m=api.build(d.config(d.rows()[0]),'cpu').eval();m.requires_grad_(False)
  x=torch.randn(4,2,256,generator=torch.Generator().manual_seed(202610178104));x=x/complex_rms(x).float().view(-1,1,1);saved=x.clone();before={k:v.clone() for k,v in m.state_dict().items()};rng=torch.get_rng_state().clone()
  fn=lambda value:m.forward_identity_only(value)['tx_logits'];cache=lambda:fresh_parameter_caches(m)
  delta,e=make_direction(m,[x],fn,202610178001,cache_context=cache);control=permuted_control(delta,202610178002)

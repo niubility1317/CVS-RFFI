@@ -1,0 +1,12 @@
+{
+  "status": "LOCAL_CHECKS_AND_ONE_P0P1_PASS",
+  "negative_checks": 58,
+  "cumulative_synthetic_forward_packets": 168,
+  "cumulative_input_gradient_packets": 72,
+  "optimizer_updates": 0,
+  "real_IQ": false,
+  "real_checkpoint": false,
+  "target_access": false,
+  "review": "One independent direct-P0/P1 review; stale publisher child path fixed; targeted point-only rereview PASS",
+  "source_run_launched": false
+}

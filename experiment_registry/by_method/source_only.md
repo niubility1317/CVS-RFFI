@@ -27,3 +27,4 @@
 |冻结源域伪目标健康与浅中层 RX 探针|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-pseudotarget-health-manysig-m3-r01/report.md)|
 |九行冻结 RX 对抗模型的源域独立探针|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-conditional-rx-probe-health-manysig-m9-r01/report.md)|
 |六方向源机制诊断：冻结 CE30 三主种子|managed_run|[打开](../../automation_reports/CV-SincNet/20261013-source-six-direction-mechanisms-manysig-m3-r01/report.md)|
+|F＋跨RX：共享微弱加性IQ方向的跨源条件敏感性|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-diagnostic-F-crossRX-sharedDirection-fitL-s2026092701-m1-r01/report.md)|

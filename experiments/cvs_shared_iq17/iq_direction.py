@@ -9,9 +9,7 @@ import math
 import numpy as np
 import torch
 from torch.nn import functional as F
-EPS=1e-3
-XI=1e-4
-PEAK=3e-3
+from .parameters import EPS,XI,PEAK
 
 def complex_rms(z):return z.double().square().sum(dim=-2).mean(dim=-1).sqrt()
 def initial_probe(seed,device):
@@ -37,7 +35,7 @@ The probability reference is the same current frozen model,no EMA or teacher
 copy. No labels,RX,day,quality or decisions enter this function. Mode flags are
 restored exactly;autograd.grad does not populate parameter .grad fields.
 """
- modes=[(m,m.training) for m in model.modules()];count=forwards=backwards=0;g=None;probe=None;kl_sum=0.
+ modes=[(m,m.training) for m in model.modules()];count=forwards=backwards=calls=0;g=None;probe=None;kl_sum=0.
  def logits(x):
   with (cache_context() if cache_context is not None else nullcontext()):z=forward_logits(x)
   if z.shape!=(len(x),6) or not bool(torch.isfinite(z).all()):raise ValueError('Finite original six-class default logits required')
@@ -53,10 +51,10 @@ restored exactly;autograd.grad does not populate parameter .grad fields.
     d=probe.detach().clone().requires_grad_(True);logq=F.log_softmax(logits(x+d).double(),dim=1);loss=(prob*(logp-logq)).sum()
     grad,=torch.autograd.grad(loss,d,only_inputs=True)
    if not bool(torch.isfinite(grad).all()) or not math.isfinite(float(loss.detach())):raise ValueError('Finite input derivative required')
-   g+=grad.detach().double();count+=len(x);forwards+=2*len(x);backwards+=len(x);kl_sum+=float(loss.detach())
+   g+=grad.detach().double();count+=len(x);forwards+=2*len(x);backwards+=len(x);calls+=1;kl_sum+=float(loss.detach())
   if not count:raise ValueError('Nonempty legal reference observations required')
   direction,evidence=bound(g/count)
-  evidence.update(reference_packets=count,eval_forward_packets=forwards,input_backward_packets=backwards,probe_KL_mean=kl_sum/count,parameter_optimizer_updates=0,labels_consumed=False,teacher_copies=0,new_training_loss_terms=0,one_shared_direction=True)
+  evidence.update(reference_packets=count,eval_forward_packets=forwards,input_backward_packets=backwards,input_backward_calls=calls,probe_KL_mean=kl_sum/count,parameter_optimizer_updates=0,labels_consumed=False,teacher_copies=0,new_training_loss_terms=0,one_shared_direction=True)
   return direction,evidence
  finally:
   for module,flag in modes:module.training=flag
