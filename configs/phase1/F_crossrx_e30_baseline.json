@@ -1,0 +1,124 @@
+{
+  "schema": "phase1_augmentation_baseline_policy_v2",
+  "status": "E30_REFERENCE_IMPLEMENTED_NOT_LAUNCHED",
+  "authorization": "User explicitly raised new scratch training budget to E30 on2026-10-17. F plus cross-RX same-TX contrastive remains baseline; no source RX holdout.",
+  "supersedes_budget": "configs/phase1/F_crossrx_e20_baseline.json; historicalE20 results preserved; no E20/E30 same-cost claim",
+  "baseline_name": "F+CROSS_RX_SUPCON",
+  "model": {
+    "SIG_TIME": "SIG_TIME_X3",
+    "Sinc_coordinates": "CENTER_25K",
+    "Sinc_optimizer": "CENTER_UNITS",
+    "sample_rate_Hz": 25000000,
+    "IQ_length": 256,
+    "embedding": "original joint160",
+    "classifier": "original default cosine, jointly trained, fixed logit scale30",
+    "NoExplicitCFO": true,
+    "new_deployment_parameters": 0,
+    "new_classifier_or_probe": false
+  },
+  "budget": {
+    "epochs": 30,
+    "label_epochs": 20,
+    "pseudo_epochs": 10,
+    "steps_per_epoch": 222,
+    "optimizer_updates": 6660,
+    "checkpoint_selection": "FINAL30",
+    "initialization": "scratch only",
+    "parent_training": 0,
+    "first_seed": 2026092701,
+    "rows": 2,
+    "L_network_packets_per_row": 3409920
+  },
+  "inheritance": {
+    "weights": "none; scratch only",
+    "optimizer": "none",
+    "EMA": "own scratch model only",
+    "E50_results": "historical context only; no performance substitution or automatic budget extension"
+  },
+  "training": {
+    "RDrop_alpha": 1,
+    "label_smoothing": 0.01,
+    "cosine_schedule": "original native cosine over total30 epochs",
+    "ordinary_augmentation": "same actual F ordinary recipe as E20 reference, private stream20261016051; schedule uses label_epochs20",
+    "original_U_gates_and_EMA": true,
+    "U_TX_truth": "hidden",
+    "new_U_contrastive_loss": false,
+    "new_Ag": false,
+    "As": "B00 false/B01 original practical concat_full p1",
+    "RDrop_same_IQ": true
+  },
+  "contrastive": {
+    "mode": "CROSS_RX",
+    "input_role": "true-labeled source L only",
+    "levels": [
+      "time_down",
+      "t2.pool"
+    ],
+    "descriptor": "channel temporal mean and population std; current L-batch detached standardization floor1e-4; sample L2 eps1e-4",
+    "positive": "same true TX, different physical source RX",
+    "negative": "different true TX",
+    "exclude_from_denominator": "self and same-TX same-RX",
+    "invalid_anchor": "exclude if no positive or no negative; finite zero if no valid anchor",
+    "temperature": 0.2,
+    "max_weight": 0.1,
+    "weight_schedule": "0.1*clamp((epoch-5)/10,0,1); preserve absolute warm/ramp lengths in E20",
+    "two_forward_policy": "reuse the same generated L IQ and the two existing RDrop forwards; mean over the two depths and two forwards",
+    "physical_RX_validation": "compare metadata rx_i with the original RX/day domain map; day difference alone is not cross RX",
+    "extra_model_forwards": 0,
+    "direct_auxiliary_default_head_gradient": false,
+    "default_head_CE_training": true
+  },
+  "data": {
+    "contract": "unchanged legacy source L/U/V 7/63/30",
+    "full_source_counts": {
+      "L": 6300,
+      "U_hidden": 56700,
+      "V": 27000
+    },
+    "source_RX": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "source_folds": "Forbidden for subsequent mainline training: do not exclude any of source RX1/3/4/6/8 from original L/U. Existing leave-RX-out records remain historical diagnostics, not full-source controls.",
+    "target_use": "frozen registered prediction then independent truth-last scoring only",
+    "target_feedback_to_design": false,
+    "held_source_RX": null,
+    "physical_role_policy": "Exactly reuse original L_s6300/U_s56700/V27000 IDs, split392005,7/63/30; V stays validation; never merge V into L or reveal U TX."
+  },
+  "comparison": {
+    "same_budget_reference_run": "20261017-phase1-FcrossRX-fullsource-concat-e30-s2026092701-m2-r01",
+    "rows": [
+      "B00",
+      "B01"
+    ],
+    "formal_views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "formal_IQ_channel_SNR_boundary": "unchanged",
+    "fixed_terminal_then_independent_truth_last": true,
+    "target_feedback_to_design": false,
+    "Ag_proved": false,
+    "crossseed_confirmed": false,
+    "goal_completed": false
+  },
+  "closed_routes": {
+    "recoverable_course": "Prior fixed3-15dB/locked-degraded/eta<=.5 had negligible low increment; no replay as newly justified method",
+    "additive_clean_supervision": "Prior fixed additive route failed crossseed clean protection; no coefficient rescue",
+    "BN_contamination": "Actual fixed F uses GroupNorm/LayerNorm, no BatchNorm running-state mechanism"
+  },
+  "next_method_boundary": "Establish authorized E30 B00/B01 first. No new Ag/curriculum/alignment module asserted or launched in this run; new methods need actual source evidence and same-budget controls."
+}

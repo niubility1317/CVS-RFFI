@@ -419,5 +419,16 @@
     "goal_complete": false,
     "automatic_training": false,
     "report": "automation_reports/CV-SincNet/20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01/report.md"
+  },
+  "current_budget_override": {
+    "date": "2026-10-17",
+    "user_instruction": "训练预算提升到E30",
+    "new_scratch_epochs": 30,
+    "label_epochs": 20,
+    "pseudo_epochs": 10,
+    "updates": 6660,
+    "policy": "configs/phase1/F_crossrx_e30_baseline.json",
+    "historical_E20_results_unchanged": true,
+    "healthy_jobs_unchanged": true
   }
 }
