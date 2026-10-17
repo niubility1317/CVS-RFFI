@@ -166,7 +166,40 @@
     "new_Ag": false,
     "new_losses": 0,
     "no_held_source_RX": true,
-    "no_formal_test_change": true
+    "no_formal_test_change": true,
+    "receiver_processing_prior": {
+      "NoEQ": 0.5,
+      "MMSE24": 0.5,
+      "selection": "One private TX-independent draw per physical L observation;one complete residual only"
+    },
+    "training_objective": "Original .5RD(ordinary)+.5RD(As)+unchanged crossRX SupCon;4 L forwards,all labeled As supervised",
+    "parent_epochs": 20,
+    "incremental_epochs": 10,
+    "cumulative_epochs": 30,
+    "parent_updates": 4440,
+    "new_updates": 2220,
+    "cumulative_updates": 6660,
+    "original_U_rule_fixed": true,
+    "formal_views": [
+      "clean",
+      "practical_high",
+      "practical_mid",
+      "practical_low_suburban",
+      "practical_high_urban",
+      "practical_mid_urban",
+      "practical_low_urban"
+    ],
+    "scientific_falsification": {
+      "low_urban_delta_vs_nominal_min_pp": 0.5,
+      "clean_delta_vs_nominal_min_pp": 0,
+      "mid_urban_delta_vs_nominal_min_pp": 0,
+      "each_suburban_delta_min_pp": -0.25,
+      "clean_net_vs_B00_required_for_joint": true,
+      "low_urban_above_60_required_for_joint": true,
+      "each_suburban_gap_exploratory_pp": 2,
+      "no_target_tuning_or_automatic_seed_extension": true
+    },
+    "extra_cost": "Same neural views/updates;actual equalizer CPU and total wall cost separately recorded"
   },
   "source_commonphase_sensitivity_result": {
     "name": "Bounded common-phase sensitivity of current F+CROSS_RX default head",

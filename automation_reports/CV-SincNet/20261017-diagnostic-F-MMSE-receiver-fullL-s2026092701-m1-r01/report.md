@@ -49,3 +49,5 @@ raw源准确率98.412698%，属于普通星地CONCAT source-final20的训练源�
 实际63002 NN、6300唯一L、1CP／1源cache、18900个唯一latent、56700次独立接收处理计算；0新增model epoch／optimizer／teacher／headfit／target，模型全部state_dict不变。worker142.267270s，独立分析另0IQ／CP／NN／更新。全量基础噪声经G一次滤波误差0，全部H、质量和补偿依赖检查通过。原PID561505自然退出，完整completion和日志48→86→121→196字节、无failure／traceback独立核实。
 
 本结果只支持下一项训练假设：保留NoEQ观测，等先验混合现有MMSE24接收处理，能否使同一个F在原固定NoEQ practical上获益。源输入更容易分类不保证训练后泛化更好；61.016%→64.111%不是正式low urban提升。最小训练需与原NoEQ As共用同一source-final20／ownEMA，新增10轮、累计E30／6660更新、同4L前向及U规则，固定终轮自动七视图预测／独立truth-last。本源launcher未自动训练，该新训练run尚未发布。A_g、A_s训练收益与联合目标均未证明。
+
+下一最小训练方案已固定为每个L的As接收处理NoEQ／MMSE24各50%先验，由独立于TX的私有物理随机流选择；每包仍仅一次完整residual，原0.5 ordinary RD＋0.5 As RD和跨RX SupCon保持，4L前向、原U不变。新模型只从同一个普通As E20及ownEMA追加10轮，共30轮／6660更新，复用对应NoEQ E30控制；MMSE计算CPU成本单列。该方案当前未实现／未启动。固定否证比较为low至少+0.5个百分点、clean和mid不降低、每suburban下降不超过0.25个百分点；联合目标另要求对B00 clean净正、low>60%和各suburban与自身clean差距探索目标≤2个百分点。结果不用于调参数、改父模型、挑seed或选择性重跑，不自动扩种子。
