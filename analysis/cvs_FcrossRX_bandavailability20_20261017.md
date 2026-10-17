@@ -37,3 +37,9 @@ IQ 相对 RMS 中位数 0.100000，97.3909% 的视图触发预定上限；最大
 两个 guard PASS 后四个原预登记 scratch E20 row 已自动启动。独立核实 RAW/GAIN/ORDINARY/MASK 的 PID、start ticks、CWD、cmdline、CUDA 卡 1/2/3/4 与输出一致；实际 leo_practical 导入来自原固定 release 的 experiments/adv3b02_xuc/code，residual/post_sync/EQ=false（G=1）/reference_snr_db=30/quality adaptation+IQ compensation+phase tracking=true/reflect 均保持。全部四组无 As 训练，原 U/own EMA 继续；当前 RUNNING，未得出 Ag、urban 或联合模型有效结论。
 
 离线全量复核器：真实 90,720 预测核对 PASS；4 个协议负例 PASS。四组在第 2 epoch 的更新文件均增长，训练尚未完成。
+
+分层图已实际生成并取回、逐图查看：[源身份保护](E:/type10-7/local_artifacts/cvs_FcrossRX_bandavailability_20261017/r02/figures/guard_identity.png)、[RX/频率对/默认头间隔分层](E:/type10-7/local_artifacts/cvs_FcrossRX_bandavailability_20261017/r02/figures/guard_strata.png)，各有 PDF。图由已提交 plot_guard.py 只读汇总数生成，0 IQ/CP/NN；不得将图中的高拟合源准确率当成新训练或目标表现。
+
+最新核实：四组均已完整完成 2/20 个 epoch，每组完成 444 次更新、454656 个 L 前向（含额外 113664），生成 56832 个变换 shadow，覆盖全部 5040 个 L 和 432 个 TX×RX×day×频率对单元。此处为运行中下界；原 SupCon 在第 6 epoch 起生效，13L＋7U 和最终 20 轮预算未变。当前无失败记录、无已完成 row；仍为 RUNNING。
+
+未完成：四组 E20 和各自最终 clean＋六 practical 源域评价、完整训练曲线及预算核对、主候选相对三个匹配控制的判定。未进行正式目标评分或第二个新训练 seed，尚不能回答哪类 urban 退化获益、默认头净增多少、clean 代价及跨 seed 可复现性。原 r01 技术失败额外 1 次 CP/2 个合成 NN，与 r02 的 3 次 CP/90722 个 NN 和本地 4120 合成 NN/4 次测试更新分别记录；r02 新训练成本最终按实际前向计，不用预估预算冒充已执行。
