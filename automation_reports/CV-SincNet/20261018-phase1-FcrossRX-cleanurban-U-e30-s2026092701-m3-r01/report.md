@@ -1,6 +1,6 @@
 # 完整 clean 保留配方：独立 U 星地教学 E30
 
-状态：LOCAL_VERIFIED，尚未启动。唯一假设：在完整原参考配方上，复用自身clean EMA的可信分布监督同包完整practical U，能优于同成本的额外raw U监督，并保住clean。P38固定源面板已显示teacher置信precision99.88%至100%、coverage89%至92.56%、low加权教学机会38%至40%；这些是源域资格，不是U真值精度或训练增益。旧SIG_TIME E50的SSL增量很小，不能直接复用其结论或叠加收益。
+当前状态：RUNNING／VERIFIED，累计 E30、冻结源判定和正式评价均未完成。下述方法与门槛在启动前固定。唯一假设：在完整原参考配方上，复用自身clean EMA的可信分布监督同包完整practical U，能优于同成本的额外raw U监督，并保住clean。P38固定源面板已显示teacher置信precision99.88%至100%、coverage89%至92.56%、low加权教学机会38%至40%；这些是源域资格，不是U真值精度或训练增益。旧SIG_TIME E50的SSL增量很小，不能直接复用其结论或叠加收益。
 
 固定3组、1模型seed2026092701，全部独立从零开始，各自20+10累计E30/6660更新（总90modelE/19980更新）。B0为原参考L配方加一次rawU零损失学生前向；URAW以相同rawU学生前向计算额外软KL；UAS将该额外前向换成完整As(rawU)，其余规则相同。每个row的第一阶段13L+7U/cos20，第二阶段严格加载自身固定FINAL20及自身EMA、重置AdamW/cos10/0L+10U；原L在全部30epoch参与。未用旧目标暴露checkpoint初始化；真实旧E20只做兼容性smoke，随后丢弃。
 
@@ -51,3 +51,11 @@ RUNNING／VERIFIED。执行代码提交 91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a
 该分析不修改正在运行的训练release，不增加NN或更新。门控逐包激活及逐分支梯度未在当前run保存，不从标量loss或准确率反推；L joint TX×state逐包侧表亦未保存，报告将如实区分已测的RX/day/scene/state聚合覆盖和缺项。源/正式图表尚未生成，不提供虚构图路径。
 
 独立源分析等待进程已实际启动并核实：PID791020、start_ticks150569691、CUDA_VISIBLE_DEVICES空、CWD为单独analysis release，argv仅包含source模式及原三个worker PID，不传truth路径。分析代码身份8e9e15c093472bb722915117d3682745260d1394，独立GitHub读回一致、单analysis归档比较与远端compile PASS；训练release未修改。当前等待全3源冻结/源判定文件，stdout/stderr均0，尚未运行完整分析或生成图。最新已观测B0/URAW E19、UAS E16；UAS累计170100个完整额外U观测，3个原worker均活跃且无traceback。
+
+## 自身 E20 到 E10 的实际过渡
+
+已独立核实 B0 与 URAW 完成自身 E20／4440 更新，并仅加载各自固定 FINAL20 和自身 EMA 进入原定 10 轮续训。没有旧目标暴露权重初始化、额外预算、训练 RX 留出或分类头重训。最近完整 epoch 为 B0 E23、URAW E23、UAS E18；仅按完整 epoch 计算的更新下界分别为 5106、5106、3996，活动半轮不计入。原 dispatcher、三个 worker 和 CPU 源分析等待进程的 PID/start_ticks/CWD/argv/GPU 均再次 VERIFIED；没有 traceback。
+
+完整读取已结束的 B0/URAW E20 段各 4440 个 step 和 1554 条额外 U 记录：每组 396900 个 U 观测，旧门控入选分别 5630／5648，额外教师连续权重为正的观测分别 341142／341716；U 真值持续隐藏，额外教师前向为 0，未跳过非有限更新。此为已完成训练段的实际覆盖，不是完整 E30 结果、U 标签精度或分类收益。额外 raw KL 步均加权损失为 0.00035928，B0 附加损失为 0；不得把损失尺度当成有效性结论。
+
+源分析仍只等待所有冻结源产物，正式成绩未读取。证据位于 local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/own20_to_10_verified_r01.json 与 completed_stage20_B0_URAW_r01.json。

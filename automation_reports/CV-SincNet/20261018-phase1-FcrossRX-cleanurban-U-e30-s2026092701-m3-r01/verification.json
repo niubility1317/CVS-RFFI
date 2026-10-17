@@ -19,14 +19,13 @@
     "other_P0": 0,
     "other_P1": 0
   },
-  "actual_training_updates": 0,
   "launched": true,
   "goal_complete": false,
   "code_commit": "91bbfcdc026b48abfeaa576e14bc4b7f44d3d64a",
   "latest_observed_updates": {
-    "B0": 222,
-    "URAW": 222,
-    "UAS": 222
+    "B0": 5106,
+    "URAW": 5106,
+    "UAS": 3996
   },
   "runtime": {
     "dispatcher": 776627,
@@ -54,10 +53,11 @@
     "roles": "L6300/U56700hidden/V27000;EXACT_MATCH;all5RX",
     "actual_native": "adv3b02_xuc/code/leo_practical",
     "parameters": 900722,
-    "source_progress": "all3epoch1/222updates;extraU0;firstUqualitypending",
+    "source_progress": "B0 E23;URAW E23;UAS E18",
     "PID_CWD_argv_GPU_log_growth": "VERIFIED",
     "formal_complete": false,
-    "source_teacher_qualified": null
+    "source_teacher_qualified": true,
+    "read_at": 1792258548.113061
   },
   "first_U_actual": {
     "all3qualified": true,
@@ -95,5 +95,25 @@
     "compute_wall_excludes_wait": true,
     "source_complete": false,
     "final_analysis_launched": false
+  },
+  "update_count_semantics": "Lower bounds from fully completed epochs only;active partial epoch not counted",
+  "own20_to_10": {
+    "status": "VERIFIED_B0_URAW",
+    "source": "strictly own fixed E20 + own EMA only",
+    "optimizer": "reset AdamW/cos10;no budget extension",
+    "data_roles": "EXACT_MATCH",
+    "target_contact": false,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/own20_to_10_verified_r01.json"
+  },
+  "completed_E20_U_coverage": {
+    "scope": "B0 and URAW stage20 only;not complete E30",
+    "U_packets_each": 396900,
+    "B0_old_selected": 5630,
+    "URAW_old_selected": 5648,
+    "B0_positive_q": 341142,
+    "URAW_positive_q": 341716,
+    "any_nonfinite_skip": false,
+    "U_truth_read": false,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_cleanurban_U_E30_20261018/completed_stage20_B0_URAW_r01.json"
   }
 }
