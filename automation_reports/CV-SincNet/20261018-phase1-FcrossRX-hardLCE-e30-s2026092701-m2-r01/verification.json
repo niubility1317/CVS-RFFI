@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED",
+  "status": "VERIFIED_RUNNING",
   "focused_tests": {
     "status": "PASS",
     "tests": 7,
@@ -25,6 +25,6 @@
     "existing_reference_present": true,
     "GPU_jobs_at_preflight": 0
   },
-  "real_checkpoint_and_synthetic_smoke": "PENDING_FIRST_LAUNCH_STEP",
-  "remote_compile": "PENDING_TRANSFER"
+  "real_checkpoint_and_synthetic_smoke": "PASS1538NN",
+  "remote_compile": "PASS"
 }

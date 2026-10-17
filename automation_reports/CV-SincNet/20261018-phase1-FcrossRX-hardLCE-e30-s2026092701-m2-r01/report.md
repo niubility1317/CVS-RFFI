@@ -1,6 +1,6 @@
 # P45：仅 L 标签平滑的匹配 E30 消融
 
-状态：LOCAL_VERIFIED，尚未启动。实际矩阵唯一登记于 [experiment.json](experiment.json)。联合 Ag＋As 目标仍 ACTIVE；本项不是新 IQ 增强，不把源梯度现象当作训练收益。
+状态：VERIFIED_RUNNING，两条E30已启动并完成首个epoch；无新正式成绩。实际矩阵唯一登记于 [experiment.json](experiment.json)。联合 Ag＋As 目标仍 ACTIVE；本项不是新 IQ 增强，不把源梯度现象当作训练收益。
 
 唯一问题：保留当前 clean 监督份额时，将有标签 L 的 CE 从 LS=.01 改成硬标签 CE0，能否保留 clean 并改善原完整 practical 适应。P40 的源 L 导数显示 CE01 的反向数混入高置信样本校准目标，而 CE0/默认头间隔没有相同冲突。这仅支持一次损失定义消融；不声称已定位训练主因，不复活已失败的梯度修正、投影、课程、FIR、噪声或一致性方案。
 
@@ -33,3 +33,10 @@ source条件全部满足才记本消融资格通过：H00 clean−B00≥.2pp；H
 普通N607账号；每GPU所有owner合计最多3个实验进程、新slot至少12GB空闲，容量锁保护，不停旧任务。唯一owner codex/root/hardLCE45。不可覆盖run/output、CWD、命令、六类seed和预期artifact见experiment.json。发布入口为 experiments/cvs_hard_lce45/publish.py 的transfer/launch；远端入口 experiments/cvs_hard_lce45/runner.py。使用现有普通账号SSH配置，一次N607 preflight、一次归档SHA比较、一次remote compile；启动后独立PID/CWD/argv/GPU/log增长核实。
 
 只因所属角色/来源、非有限、shape/预算、输出冲突、不可执行或无法闭合合法prediction的技术故障停本run并保留，不自动重试、不按低成绩停健康训练。协议 p2_min_v1/capsule/split 对本Phase1不适用，复用未变VALIDATED_ONCE输入句柄，不建额外SHA、receipt、签名、重复审查或审批。代码/config由实际Git commit固定，发布时记入release_commit.txt和登记；报告文字不成为额外启动门槛。
+
+
+## 实际发布与首轮读回
+
+执行 commit `62b9bb6247b29fc98bf1379b15f3c262f9a495dc` 已推送并由独立GitHub compare核对一致。普通账号preflight、单归档传输比对与remote compile PASS。真实checkpoint/noquery2NN＋两行完整L hook1536合成NN均PASS后，同一dispatcher直接进入训练。两行各857原生参数，仅candidate_id/output_dir/run_id与对应P43控制不同；native/U平滑仍.01，实际L配置0，scratch无祖先、无外部权重、target_contact=false。
+
+独立读回dispatcher 961519、H00 962003/GPU0、H01 962080/GPU1，CWD/argv/startticks/CUDA归属一致；两日志从6372增至11504bytes，stderr空，无failure。两行均完成E1/222更新/LNN170496；H01实际As14208包，H00为0，额外U前向均0。仅作为发布健康证据，不是源资格或识别收益。后续继续按固定E30/all7，不停健康任务或改配置。详见 [execution_verification.json](execution_verification.json)。
