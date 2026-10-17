@@ -1,4 +1,115 @@
-# P20：F＋跨 RX 同 TX 的传播条件分组
+# P20 源域结果：传播分组未通过增量判据
+
+**状态：ANALYZED_SOURCE_ONLY；执行 VERIFIED，科学判据 FAIL，固定传播分组路线关闭。** 四个模型均完成从头 E20、各 4440 更新，固定 FINAL20 默认学生头完成 clean＋六种原 practical，独立评分及 5 PNG＋5 PDF 均已生成并查看。仅模型 seed 2026092701、held 源 RX6 L1260、split392005，fit RX1/3/4/8 L5040/U45360/V21600。目标访问 0、额外头训练 0。本轮不是正式目标测试或跨 seed 验证。
+
+## 收益归因与固定判据
+
+PROP_GROUP 相对同预算 RAW：clean +4.761905 个百分点（73 修复、13 新错误，净 60），urban 均值 +22.275132，low urban +16.428571（282 修复、75 新错误，净 207）。clean macro-F1 +4.624013；本次源域 clean 没有下降。
+
+但相对 IID：clean 仅 +0.793651、low urban 仅 +0.158730（23 修复、21 新错误，净 2），urban 均值 −0.052910；相对 SCENE_GROUP：clean +0.396825、low +0.952381、urban 均值 +0.714286。RAW 对照判据通过；IID 的 clean/low/urban、SCENE_GROUP 的 clean/urban 增量门槛失败，运行健康与覆盖条件全部通过。不能把三种星地训练共有的收益归因于传播分组。
+
+执行预登记失败处理：关闭固定分组、流划分、剂量、源 RX、seed、预算和阈值；不调阈值补救、不补幸运 seed、不晋级控制组 IID、不进入目标测试。这不否认本次单源/单 seed 的普通星地训练收益，也不证明 A_g、跨 seed 或联合目标成立。
+
+## 逐 row、逐 seed 结果
+
+以下每格为准确率% / macro-F1%，每格 1260 个样本，同一 seed 2026092701、源 RX6、固定 FINAL20 默认学生头。不是 EMA 选优或诊断头。
+
+|视图（准确率% / macro-F1%）|RAW|IID|SCENE_GROUP|PROP_GROUP|
+|---|---:|---:|---:|---:|
+|clean|79.2063 / 78.6843|83.1746 / 82.6017|83.5714 / 82.9096|83.9683 / 83.3083|
+|practical_high|45.0794 / 39.7382|76.1905 / 75.8829|75.7937 / 75.4497|75.8730 / 75.4775|
+|practical_mid|42.6190 / 37.8480|72.2222 / 72.2326|71.7460 / 71.7121|72.0635 / 71.9622|
+|practical_low_suburban|39.6032 / 35.5894|68.4127 / 68.4788|67.7778 / 67.8314|68.4127 / 68.4584|
+|practical_high_urban|44.4444 / 40.0785|73.0952 / 72.7932|72.7778 / 72.4743|73.0159 / 72.6383|
+|practical_mid_urban|34.0476 / 31.3105|56.1111 / 56.0762|54.9206 / 54.9096|55.8730 / 55.7998|
+|practical_low_urban|30.2381 / 28.8751|46.5079 / 46.5985|45.7143 / 45.7609|46.6667 / 46.7461|
+
+urban 三场景准确率算术均值：RAW 36.243386%、IID 58.571429%、SCENE_GROUP 57.804233%、PROP_GROUP 58.518519%。完整 28 行原始精度见 [逐行逐seed CSV](E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017/final/source_metrics_by_row_seed.csv)。
+
+PROP_GROUP 的 suburban 三场景距自身 clean 分别 8.095238、11.904762、15.555556 个百分点，仍未达到探索性的 2 个百分点接近目标。差距缩小同时伴随 clean 上升，绝对差距仍大。low urban 为 46.666667%，未达 60%。正式目标分数及目标最差 RX 未知；本轮只有一个 held 源 RX，不能冒充多 RX 最差值或多 seed 统计。
+
+## 哪类退化得到缓解
+
+同一批 low urban 源观测的条件准确率如下。所有模型的 ID、接收状态、补偿参数和 physics 记录逐项相同。
+
+|分层|n|RAW%|IID%|SCENE_GROUP%|PROP_GROUP%|
+|---|---:|---:|---:|---:|---:|
+|state: BLOCKED|709|21.1566|27.3625|26.3752|27.7856|
+|state: LOS|374|46.7914|77.0053|76.2032|76.2032|
+|state: PARTIAL|177|31.6384|58.7571|58.7571|59.8870|
+|lock: unlocked|574|20.3833|25.2613|23.8676|25.0871|
+|lock: degraded|216|28.7037|42.1296|42.5926|44.4444|
+|lock: locked|470|42.9787|74.4681|73.8298|74.0426|
+
+相对 RAW，PROP_GROUP 在 LOS/PARTIAL 分别提高 29.411765/28.248588 个百分点，BLOCKED 仅提高 6.629055；locked/degraded/unlocked 分别提高 31.063830/15.740741/4.703833。主要适应收益关联于可恢复观测；BLOCKED709 个样本仍只有 27.785614% 正确，unlocked574 个样本仍只有 25.087108%。这些是条件表现，不能作为多径、Doppler 或门控的独立因果消融。
+
+相对 IID，PROP_GROUP 的 LOS 少 3 个正确样本、PARTIAL 多 2 个、BLOCKED 多 3 个；locked 少 2 个、degraded 多 5 个、unlocked 少 1 个，没有覆盖全部困难状态的一致增量。质量、added-noise-SNR、CFO、残余核、AGC、边界、TX/day 的完整分层见 [source_strata.json](E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017/final/source_strata.json)。新增噪声 SNR 和接收质量代理不等于原录音未知噪声在内的总 SNR。
+
+固定 RAW clean 正确集合 n=998 上，low urban 保持率为 RAW33.967936%、IID50.501002%、SCENE_GROUP49.699399%、PROP_GROUP51.002004%。PROP_GROUP 相对 RAW 净增170/998，相对 IID 仅多5/998；不能与全样本仅净增2/1260混淆。
+
+统一 cos30 尺度的 low urban 平均 margin/30：RAW −0.040656307、IID 0.013094590、SCENE_GROUP 0.012645814、PROP_GROUP 0.012363107。PROP_GROUP 相对 IID 的平均 margin 略低，间隔没有提供独立增量证据。CE/margin 为运行时保存值；硬预测准确率、F1、混淆矩阵和分层独立重算。本轮未单独保存网络融合门控激活，不能把收益归因某个分支或门控；旧伪标签门控计数与完整梯度已保留。
+
+## 完整训练与实际成本
+
+4×4440 条 satmix、4×4440 条 Sinc unit、4×4440 条 native 步记录、80 轮两类 epoch JSON/CSV、23976 条 L/U 序列和35280个源预测均完整核对。活动目标和梯度全部有限，非有限跳步0、零梯度0，SupCon实际应用3330步/row。四组L/U顺序完全相同；RAW/IID物理影子相同，SCENE_GROUP/PROP_GROUP的私有noise/phase/sync/tracking命名流相同。私有随机流相同不等于质量相关处理后的噪声IQ相同。
+
+四个未训练初始快照的206个张量在6对比较中逐一相同，实际角色相同；核对0NN/0IQ/0更新。实际args均为E20/13L7U/seed2026092701/lr0.0002/label_smoothing0.01/final_only，训练初始和teacher路径为空。actual_channel整体相同，实际导入来自已核实adv3b02_xuc overlay。
+
+每row生成568320个完整物理输出，RAW消费0、其他消费全部568320个。原生初始化1136640次由每输出两次构造推算，process568320次。覆盖全部5040个L、72个TX×RX×day、432个TX×RX×day×scene单元；共53277个step/RX/day/eq组，平均每step11.999324。共享传播也降低有效独立环境数量，不能分离为纯相关性因果效应。新增U增强0，U真值读取0。
+
+|row|model epochs|更新|实际NN前向样本量|row记录elapsed秒|
+|---|---:|---:|---:|---:|
+|RAW|20|4440|5823318|2706.809|
+|IID|20|4440|5823318|2721.250|
+|SCENE_GROUP|20|4440|5823318|2680.959|
+|PROP_GROUP|20|4440|5823318|2701.059|
+
+每row：学生train4942928＝L4546560（额外对1136640）＋原U396368；学生eval/校准475202；教师train0，教师eval396370扣除深拷贝继承的2条smoke计数后实际396368；held七视图8820，合计5823318。四row训练＋源读出23293272，再加真实匹配CP烟测2，实际远端NN=**23293274**，新训练80model-epoch/17760更新。父初始化训练成本0。兼容CP原有历史E20/4440，历史NN未知，未计作新训练，也未用于初始化、teacher或性能控制。
+
+dispatcher全流程墙钟2759.410187秒（45.99分钟）；独立完整重算66.901681秒、0NN/0IQ/0CP/0更新。watch时间包含等待，不能当作计算时间。本地合成检查另计4120NN/4更新、模型检查512物理调用，独立physics检查144物理调用，0真实IQ。三种As最后5轮total L约0.4600至0.4973，seen-V约97.94%至98.04%；预算用尽不等于收敛，未追加epoch或改选其他epoch。
+
+每row完整stdout800行，nan子串260次，其中200个字面NaN均来自禁用或未运行的domain/native sat/proxy/target汇总占位；活动目标、梯度和实际预测通过，不能误报为260次训练数值失败。完整字段审计已保存。归档解包有一条Python弃用提示，不影响本次结果，没有技术重试。
+
+## 文件、命令和验证
+
+运行ID：20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01。训练实现commit 243ca4f460ed754da20fbe448fbcdf3398713fdc；完整离线工具与自动收尾commit `251f0642cc35610e1a1ba483382b2b76197610e6`。矩阵、配置、角色、输出路径见同目录experiment.json，正式测试IQ和六场景配置未修改。
+
+实际文件位于 `experiments/cvs_environment_group20/`：channel.py、model.py、design.py、source.py、runner.py、dispatch.py、preflight.py，以及analyze.py、harvest.py、after_training.py、plot.py和focused checks。新增部署参数0，默认头未改，额外头训练0。
+
+已执行训练命令：
+
+```text
+/home/szu2070436088/.conda/envs/CVS-RFFI/bin/python -u /home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_propgroup_sourceRX6_E20_20261017_r01/experiments/cvs_environment_group20/runner.py
+```
+
+已执行自动取回/评分/绘图命令（产物已存在，勿重复启动）：
+
+```text
+F:/App/miniconda3/python.exe -m experiments.cvs_environment_group20.after_training --output E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017/final --evidence E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017 --launch E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017/launch.json
+```
+
+已执行：physics144合成调用/7负例；model4120NN/4更新/4配置负例；protocol31配置科学负例＋6角色负例；离线reader15协议负例＋25科学判据反例；一次独立P0/P1静态审查PASS；一次匹配真实CP no-query smoke2合成NN PASS；一次N607预检/归档SHA比较/远端编译PASS；启动后PID/CWD/argv/start_ticks/GPU/日志增长独立核验。父PID278398、worker278534/278610/278689/278768均自然退出，本地后处理PID30280退出0。未停止或修改其他健康任务。
+
+仅取回130个固定源域产物，压缩归档244872928字节，不含IQ或权重。原始日志、预测、快照和图未提交Git，只提交报告和登记路径。实际5PNG＋同名5PDF已逐张查看：
+
+- [七场景结果](E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017/final/figures/source_scene_results.png)
+- [完整20轮训练曲线](E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017/final/figures/complete_training_curves.png)
+- [low urban分层](E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017/final/figures/low_urban_strata.png)
+- [固定正确集合与paired错误](E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017/final/figures/fixed_retention_and_paired_errors.png)
+- [剂量和覆盖](E:/type10-7/local_artifacts/cvs_FcrossRX_propgroup_20261017/final/figures/propagation_dose_and_coverage.png)
+
+本轮源域评价合法使用L标签；未做正式目标truth-last测试，不能以source-only结果宣称部署成功。
+
+## 未完成与目标状态
+
+固定传播分组候选已关闭。尚无新的A_g效力证明、A_g×A_s四格交互、独立模型seed重现或正式目标测试。low urban>60%与suburban接近clean均未达成，完整联合目标仍为active。后续先核对尚未闭合的实际幅度/归一化链证据，再决定新的可证伪问题；不重新调参本次失败路线或挑控制组发布。
+
+---
+
+## 发布前固定设计与启动记录
+
+以下保留原设计、阈值、预算和启动阶段文字；其中RUNNING/尚未完成均为当时状态，当前以本页结果为准。
+
 
 状态：RUNNING，已核实真实 checkpoint 合成烟测 PASS，四组源域训练正在执行。唯一模型种子 2026092701；目标测试访问 0。实际代码 commit `243ca4f460ed754da20fbe448fbcdf3398713fdc`。
 

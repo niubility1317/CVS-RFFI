@@ -165,3 +165,11 @@ FAIL_FIXED_BAND_AVAILABILITY_CLOSED：不扫宽度/深度/频率/上限/weight/R
 旧 DC 路线已在 `20261016-diagnostic-source-DC-crossfit-manysig-m1-r01` 关闭：留 TX、留 day 交叉拟合虽有接收机关联（16/18），候选分量 p95=0.004160463488 小于原普通 DC 增强边界 0.005012006679，不能据此新增 DC 训练。本轮没有重复读取 DC IQ 或运行 DC 网络。
 
 唯一新检验为 P20 星地传播条件分组，保留独立个人噪声/相位/同步/跟踪，不增加 Ag/一致性损失/部署参数。四个新源 RX6 E20 对照的固定判据、成本与放弃条件见 `cvs_FcrossRX_propgroup20_20261017.md`。该项尚未产生真实训练或性能结果，不能替代此前失败结论。
+
+## P20 传播条件分组完整 E20 负结果（2026-10-17）
+
+运行 `20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01`，4个新scratch E20、held源RX6 L1260、seed2026092701，F＋跨RX同TX、默认头。PROP_GROUP相对RAW clean+4.761905、urban均值+22.275132、low+16.428571个百分点；但相对IID仅clean+.793651、low+.158730（2个净正确），urban−.052910，相对SCENE_GROUP clean+.396825、urban+.714286，未通过固定增量判据。控制组IID不晋级，固定分组/流划分/剂量/RX/seed/预算/阈值关闭。
+
+实际clean RAW79.206349%、IID83.174603%、SCENE_GROUP83.571429%、PROP83.968254%；low依次30.238095%、46.507937%、45.714286%、46.666667%。大部分共有收益来自LOS/PARTIAL/locked可恢复区；PROP的BLOCKED27.785614%、unlocked25.087108%，suburban距自身clean仍8.095238至15.555556个百分点。没有达到low>60%或联合目标，没有跨seed/正式目标证据。
+
+完整80modelE/17760更新、35280源预测和完整步/轮日志独立复核，源physics与L/U序列严格匹配，23293274实际远端NN、2759.410187秒，5PNG5PDF实际生成并查看。所有训练/后处理进程自然退出，无重启或额外NN评分。详见 `cvs_FcrossRX_propgroup20_20261017.md`；该负结果不否定本次单源seed的As共有收益，也不授权把控制组当候选扩种子。
