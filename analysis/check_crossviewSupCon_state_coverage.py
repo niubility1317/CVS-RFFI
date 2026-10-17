@@ -5,6 +5,11 @@ import cvs_crossviewSupCon_state_coverage_20261018 as a
 class Cases(unittest.TestCase):
  def setUp(self):
   self.meta=dict(source_RX=list(a.RX),source_days=list(a.DAYS),source_TX_count=6,equalized_list=[0,1],metadata_records=[dict(TX=t,RX=r,day=d,eq_index=1,shape=[1000,256,2]) for t in range(6) for r in a.RX for d in a.DAYS]);self.rows=a.layout(self.meta);self.opaque=lambda q:str((q.tx_i,q.rx_i,q.day_i,q.eq_i,q.sig_i))
+ def test_named_seeds_from_real_reference_config_not_nonexistent_module_attribute(self):
+  d=SimpleNamespace(old=SimpleNamespace(reference_config=lambda:dict(channel=dict(seeds=dict(train=11,validation=12,receiver=13)))))
+  self.assertEqual(a.channel_seeds(d),dict(train=11,validation=12,receiver=13))
+  d.old.reference_config=lambda:dict(channel=dict(seeds=dict(train=11,receiver=13)))
+  with self.assertRaisesRegex(ValueError,'named seeds'):a.channel_seeds(d)
  def test_layout_matches_native_loop_and_full_base_pool(self):
   self.assertEqual(len(self.rows),90);self.assertEqual(self.rows[-1][1],90000);self.assertEqual(self.rows[15][2],1)
  def test_RX_day_sig_only_is_ambiguous_base_resolves_TX(self):

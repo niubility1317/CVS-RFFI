@@ -34,6 +34,11 @@ def decode_L(pid,role,rows,allowed,opaque):
  if key not in allowed:raise ValueError('Only existing L6300 role IDs may be labeled')
  return tx,key
 
+def channel_seeds(d):
+ seeds=d.old.reference_config()['channel']['seeds']
+ if set(seeds)!={'train','validation','receiver'} or any(type(v)is not int for v in seeds.values()):raise ValueError('Actual original reference config named seeds required')
+ return seeds
+
 def state_from_seed(ch,cfg,seed):
  geometry=ch.sample_geometry(cfg,np.random.default_rng(ch.stable_seed(seed,'geometry')));probs=ch.state_probabilities(geometry.elevation_deg,ch.SCENARIOS[cfg.scenario][0]);s=int(np.random.default_rng(ch.stable_seed(seed,'states')).choice(3,p=probs));return STATES[s]
 def marginal(c):
@@ -60,7 +65,7 @@ def synthetic_smoke(ch,residual,configs,receiver_seed):
  return dict(status='PASS',native_residual_synthetic_calls=hits,synthetic_IQ_packets=64,real_IQ_packets=0,identity_NN=0,optimizer_updates=0)
 
 def replay(arm,d,ch,opaque,rows,allowed,configs):
- root=B/(arm+'-s2026092701');total=Counter();active=Counter();epochs=Counter();seen=set();as_seen=set();perID=defaultdict(set);stage_results=[];steps=0;valid_sat=0;batch_checks=0;prior_draws=0
+ seeds=channel_seeds(d);root=B/(arm+'-s2026092701');total=Counter();active=Counter();epochs=Counter();seen=set();as_seen=set();perID=defaultdict(set);stage_results=[];steps=0;valid_sat=0;batch_checks=0;prior_draws=0
  for stage,offset in [('stage20',0),('source',4440)]:
   result=read(root/stage/'result.json');args=read(root/stage/'actual_native_args.json')
   if str(args['wisig_equalized'])!='1' or int(args['wisig_out_len'])!=256 or int(args['num_classes'])!=6 or 0<int(args['wisig_max_day123_per_combo'])<1000:raise ValueError('Actual original full source index or waveform length differs')
@@ -84,7 +89,7 @@ def replay(arm,d,ch,opaque,rows,allowed,configs):
     else:valid_log=valid
     if any(q['valid_anchors']!=int(valid_log.sum()) or q['total_anchors']!=n for q in ref['SupCon_details']):raise ValueError('Actual relationship graph exposure disagrees with physical L sequence')
    for j,i in enumerate(selected):
-    pid=tuple(r['ids'][int(i)]);scene=str(np.random.default_rng(ch.stable_seed(d.old.CHANNEL_SEEDS['train'],namespace,'scene',pid)).choice(d.TRAIN_SCENES));seed=ch.stable_seed(d.old.CHANNEL_SEEDS['train'],namespace,scene,pid);state=state_from_seed(ch,configs[scene],seed);prior_draws+=1;key=(int(yy[i]),int(rx[i]),int(pid[2]),scene,state);total[key]+=1;stage_count[key]+=1;epochs[(epoch,)+key]+=1;counts_scene[scene]+=1;counts_state[state]+=1;as_seen.add(keys[i]);perID[keys[i]].add((scene,state))
+    pid=tuple(r['ids'][int(i)]);scene=str(np.random.default_rng(ch.stable_seed(seeds['train'],namespace,'scene',pid)).choice(d.TRAIN_SCENES));seed=ch.stable_seed(seeds['train'],namespace,scene,pid);state=state_from_seed(ch,configs[scene],seed);prior_draws+=1;key=(int(yy[i]),int(rx[i]),int(pid[2]),scene,state);total[key]+=1;stage_count[key]+=1;epochs[(epoch,)+key]+=1;counts_scene[scene]+=1;counts_state[state]+=1;as_seen.add(keys[i]);perID[keys[i]].add((scene,state))
     if epoch>5:active[key]+=1;valid_sat+=int(valid[128+j])
    if dict(counts_scene)!=ref['scene_counts'] or dict(counts_state)!=ref['state_counts']:raise ValueError('Per-step native state/scene counts disagree with replay')
    batch_checks+=1
@@ -105,7 +110,7 @@ def run(out,metadata,source_analysis,wait_pids):
  if sample['role']!='L' or len(sample['ids'])!=128:raise ValueError('Actual L metadata smoke requires128 legal packets')
  decoded=[decode_L(pid,'L',rows,allowed,opaque)[0] for pid in sample['ids']]
  write(out/'L_metadata_smoke.json',dict(status='PASS',L_packets=128,unambiguous_TX_matches=128,TX_labels_seen=sorted(set(decoded)),source_IQ_values_consumed=0,U_truth_read=False,target_access=False,NN=0))
- sm=synthetic_smoke(ch,residual,configs,d.old.CHANNEL_SEEDS['receiver']);write(out/'synthetic_smoke.json',sm);print('STATE_SMOKE PASS64synthetic/128actualLmetadata/0NN;waiting actual frozen source logs',flush=True)
+ sm=synthetic_smoke(ch,residual,configs,channel_seeds(d)['receiver']);write(out/'synthetic_smoke.json',sm);print('STATE_SMOKE PASS64synthetic/128actualLmetadata/0NN;waiting actual frozen source logs',flush=True)
  wait_started=time.perf_counter()
  while not (source_analysis/'complete.json').exists():
   if not any(Path('/proc',str(pid)).exists() for pid in wait_pids):raise RuntimeError('All observed owned handles gone before source analysis')
