@@ -69,3 +69,18 @@ CUDA_VISIBLE_DEVICES='' OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS
 完整读取每组4440个L步骤及全部L/U物理曝光，三组实际顺序完全一致；各L曝光568320、U曝光396900，唯一L6300/U56700（U只数元数据，不解码TX）。SupCon各激活3330步，两个depth×两pass形成13320条描述子记录；只有SAT存在852480个真实As map条目，此数包含depth/pass重复，不是独立IQ样本数。每组L前向2273280、实际As观测284160；0额外U前向，所有卫星L参与CE。
 
 逐步复算.5(commonCE+commonKL)+.5(extraCE+extraKL)+w*SupCon，与实际total最大绝对差ORD2.98023e-7、DUP/SAT1.78814e-7；权重warm5/ramp10、四前向、同IQ配对、无ordinary重抽、sameRX正例0全部符合。E20每组native前向3661082（student_train2670180＋student_eval594002＋teacher_eval396900）；墙钟ORD1663.8696s、DUP1670.4930s、SAT1710.3920s。不同GPU上这些墙钟不作为关系矩阵的独立因果成本。E20是自身E30内的前20轮，后10轮成本另计后合并，不重复计算父训练。源训练内容及默认头没有修改，没有读取正式准确率。
+
+## 独立源域结论：固定方案不通过
+
+三组均已E30/6660更新并冻结；独立程序完整复算19980个L/native/Sinc步骤、全部L/U序列及831份源混淆矩阵，运行端和独立NumPy判据完全一致。source_qualified=false。正式成绩尚未读取，本节结论先提交，不能被随后正式成绩改写。
+
+|源视图|SAT−ORD（百分点）|SAT−DUP（百分点）|至少+1且同时超过两组|
+|---|---:|---:|---|
+|draw1 mid urban|−0.388889|−0.055556|否|
+|draw1 low urban|−0.388889|−0.222222|否|
+|draw2 mid urban|+0.277778|+0.500000|否|
+|draw2 low urban|+0.333333|+0.055556|否|
+
+源fullV clean为ORD98.066667%、DUP98.077778%、SAT98.192593%，clean保持两项通过，urban提升两项失败，逐格0/4达标。两个draw复用同一V1800物理集合，不是两个模型seed。按预登记关闭这条固定既有SupCon星地视图覆盖方案；不扫系数、温度、层位、RX、seed或预算救援，不自动扩种子。其余已登记正式预测/评分与报告继续完成，正式结果只作终端报告。没有新IQ A_g、联合突破或跨seed证明。
+
+每模型native训练/验证NN6255724、冻结源读出12600，总source NN6268324；各LNN3409920、实际As426240。native两段墙钟ORD2641.8691s、DUP2647.8117s、SAT2703.8004s，冻结源读出的独立墙钟未记录，保持未知。源分析15.8905s/0NN。三组各6660步、全L6300/U56700、物理序列匹配、SupCon激活5550步；SAT真实As map条目1420800（两个depth/两个pass重复），DUP/ORD为0；所有记录的active anchor均有效。stdout每组300次nan来自10类未启用的native评价占位项，每项每轮1次，不是实际L目标非有限；L损失逐步分解通过，错误标记0。

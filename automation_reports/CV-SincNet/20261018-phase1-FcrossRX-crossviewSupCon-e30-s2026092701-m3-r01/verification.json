@@ -853,5 +853,70 @@
     "scope": "Complete frozen E20 execution records only;no accuracy or promotion conclusion",
     "elapsed_seconds": 4.724208506057039,
     "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/complete_E20_observation_audit.json"
+  },
+  "source_closure": {
+    "status": "SOURCE_NEGATIVE",
+    "source_qualified": false,
+    "independent_recount": "PASS",
+    "checks": {
+      "clean_preserved_ORD": true,
+      "clean_preserved_DUP": true,
+      "allfour_urban_over_ORD": false,
+      "allfour_urban_over_DUP": false
+    },
+    "clean_V": {
+      "ORD128": 0.9806666666666667,
+      "DUP192": 0.9807777777777777,
+      "SAT192": 0.981925925925926
+    },
+    "urban_delta_pp": {
+      "ORD128": [
+        [
+          -0.38888888888888307,
+          -0.38888888888888307
+        ],
+        [
+          0.2777777777777768,
+          0.33333333333334103
+        ]
+      ],
+      "DUP192": [
+        [
+          -0.05555555555555314,
+          -0.22222222222222365
+        ],
+        [
+          0.5000000000000004,
+          0.05555555555555314
+        ]
+      ]
+    },
+    "source_confusions": 831,
+    "all3_updates": 6660,
+    "L_records_total": 19980,
+    "Sinc_updates_total": 19980,
+    "extra_U_NN": 0,
+    "formal_scores_read": false,
+    "automatic_seed_extension": false,
+    "evidence": "E:/type10-7/local_artifacts/cvs_FcrossRX_crossviewSupCon_E30_20261018/source_closure/complete.json",
+    "analysis_NN": 0,
+    "goal_complete": false
+  },
+  "nan_text_interpretation": {
+    "mentions_per_row": 300,
+    "keys": [
+      "sat_cos",
+      "proxy_vaccept",
+      "dom",
+      "overall_tx",
+      "strict_udu",
+      "receiver_floor",
+      "sat_mean",
+      "sat_floor",
+      "sat_strict_mean",
+      "sat_strict_floor"
+    ],
+    "each_key_mentions": 30,
+    "scope": "Unused native evaluation placeholders;actual L objectives finite and decomposition verified;no error markers"
   }
 }

@@ -302,6 +302,20 @@
       "source": "FAIL urban protection before formal read",
       "no_ratio_strength_seed_threshold_budget_rescue": true,
       "not_a_rejection_of_human_selected_complete_E20plus10_recipe": true
+    },
+    "fixed_crossview_SupCon_coverage": {
+      "run_id": "20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01",
+      "scope": "Only fixed ORD128/DUP192/SAT192 view-membership candidate;original F/cos and full cleanretain unchanged",
+      "source_qualified": false,
+      "urban_cells_passed": 0,
+      "urban_cells_total": 4,
+      "clean_preservation_pass": true,
+      "source_decision": "Independent source-only failure fixed before formal metrics read",
+      "formal_feedback": false,
+      "Ag_proved": false,
+      "crossseed_confirmed": false,
+      "repeat_policy": "No coefficient/temperature/layer/RX/modelseed/threshold/budget rescue;no automatic seed extension",
+      "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/report.md"
     }
   },
   "next_method_boundary": "P41 only existingSupCon trueAs coverage vs ordinary128/duplicate192;no newloss/head/Ag/U;all3scratch own20+10,sourcefoururbancells>=both+1pp/fullVclean>=both-.25pp;no rescue;fixedall7formalautomatic",
@@ -552,7 +566,7 @@
   },
   "active_research": {
     "run_id": "20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01",
-    "status": "RUNNING",
+    "status": "SOURCE_NEGATIVE_FIXED_FORMAL_ANALYSIS_PENDING",
     "code_commit": "ec4c5d7f46aedb5aaece77fdd72dbe6ed4c157f2",
     "rows": [
       "ORD128",
@@ -587,7 +601,9 @@
       2
     ],
     "report": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-crossviewSupCon-e30-s2026092701-m3-r01/report.md",
-    "goal_complete": false
+    "goal_complete": false,
+    "source_qualified": false,
+    "formal_scores_read": false
   },
   "preferred_route": {
     "authorization": "Human explicitly confirmed clean-preserving route from referenced chat01a1427e-49c0-7840-a84d-5bb38d5a8164;benchmark-exposed recipe reference,not target-selected weight reuse",
@@ -624,7 +640,7 @@
     "As": "originalcustom perpacketnominal3scenes/raw/fullresidual/post_sync/G1/ref30/reflect/fc2.462GHz",
     "weights_policy": "Do not load target-selected old weights;new variants scratch atE0,only own pre-fixed stage state may continue",
     "reconciliation_report": "automation_reports/CV-SincNet/20261017-phase1-FcrossRX-cleanretain-e30-s2026092701-m1-r01/reference_reconciliation.md",
-    "next_candidate": "P41 existingSupCon realAs coverage running;fullcompletecleanretain unchanged;nojointgoalproofyet"
+    "next_candidate": "P41 fixedviewcoverage sourcefailed;finish fixed formal report,no rescue;whole Ag+As goal active"
   },
   "source_teacher_qualification38": {
     "run_id": "20261018-diagnostic-FcrossRX-clean-teacher-sourceV-e30-s2026092701-m2-r01",
