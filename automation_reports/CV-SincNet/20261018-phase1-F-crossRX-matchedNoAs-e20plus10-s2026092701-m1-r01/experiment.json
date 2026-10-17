@@ -24,7 +24,7 @@
   ],
   "authorization": "Current user joint Ag/As goal;latest baseline F+CROSS_RX;latest budget E30;all5sourceRX;no holdout;existing256IQ;no target-feedback tuning;no new U rules",
   "code": {
-    "commit": "PENDING_COMMIT",
+    "commit": "00cc9bad869d98bbca408858a4adec55887cf6c7",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "N607 ordinary account/existing pinned F runtime/FP32/CPU2/single shared GPU",
     "cwd": "PROJECT/releases/cvs_F_matchedNoAs_E30_20261018_r01",
@@ -213,7 +213,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-matchedNoAs-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -251,7 +251,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "F+CROSS_RX/defaultcos/originalU/ordinary RD1/RDrop1/LS.01;noAs E20+10;MEASURE twoVJP no gradient edit",
@@ -490,5 +490,13 @@
     "reference_for_run": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
     "selected_before_target_read": true
   },
-  "registered_at": "2026-10-17T18:40:15+00:00"
+  "registered_at": "2026-10-17T18:40:15+00:00",
+  "result": {
+    "status": "TRAINING",
+    "archive_transfer": "VERIFIED",
+    "remote_compile": "PASS",
+    "real_checkpoint_smoke": "PASS",
+    "prediction_status": "NOT_STARTED",
+    "joint_goal_complete": false
+  }
 }

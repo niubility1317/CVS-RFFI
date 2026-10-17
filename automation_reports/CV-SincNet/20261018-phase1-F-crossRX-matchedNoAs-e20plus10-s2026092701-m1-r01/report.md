@@ -19,3 +19,5 @@
 本地 16 个协议负例和 1024 个合成 F 前向、2 次合成更新通过；MEASURE 与原 No-As 梯度及更新逐位一致，RNG 一致，真实 IQ/权重/更新/目标访问均为 0。发布时执行唯一真实父 checkpoint 无 query smoke，PASS 后立即训练，不另设许可层。
 
 当前状态：已登记，尚未发布。此参考本身不能证明 IQ Ag 有效，也不构成联合目标完成。
+
+实际发布 VERIFIED：执行 commit 00cc9bad869d98bbca408858a4adec55887cf6c7。唯一发布归档传输比较、远端 compile 和合成检查通过；真实对应 REPEAT20 父 checkpoint 的 2 包零输入 no-query smoke PASS；独立核实原 dispatcher/worker PID、CWD、argv、GPU 和日志增长。已完整累计 E23（666 新更新），L 前向340992、As0/Ag0、五源 RX/U truth0。训练仍在进行，未完成预测或评分。

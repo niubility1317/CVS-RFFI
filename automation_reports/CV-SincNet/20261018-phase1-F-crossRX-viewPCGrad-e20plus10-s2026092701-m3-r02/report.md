@@ -67,3 +67,11 @@ ORIGINAL 保留原梯度；MEASURE 每步额外求 ordinary 和 As 梯度但不�
 只读分析读取全部epoch/step/stdout、L/U物理序列、370输入池及原始监督reference/unit记录；额外读取完整2220条view_gradient日志。标量独立复算区分MEASURE的理论修正量与PROJECT的实际修正量，核对额外VJP和实际执行计数。当前步投影也等价于给ordinary梯度乘1＋alpha；会报告等效系数、两监督视图合成范数前后变化及实际As分量移除比例。上述范数不包含SupCon/U、clip或AdamW，标量日志也不能重建全参数实际位移，不据此宣称身份提取改善。
 
 实际policy、初始RNG和物理数据合约一致；不声明跨行所有中间IQ字节完全相同，原U/EMA轨迹可随模型变化。每个RDrop对复用同一生成IQ，额外VJP不重抽视图。完整source分析与七视图378CM／63分区／21配对结果分别复算；不修改健康训练或追加source门。源/结果/图表三个分析脚本和3模式闭式／8反例检查已写，真实IQ/CP/NN/更新/target均0。
+
+## E30 完整收尾
+
+三行固定 E30 与七视图独立 truth-last 完成，状态 ANALYZED。普通拼接 clean/mid urban/low urban 为 82.722619%/64.376786%/53.458333%；仅测量为 82.691071%/64.407738%/53.443452%；梯度投影为 82.776786%/64.379762%/53.429762%。候选 low urban 相对两控制均下降，mid urban 未超过测量控制，固定假设关闭，不改系数、不扩种子或选轮次挽救。
+
+完整日志、378 个混淆矩阵、63 个分区和 21 个配对比较已复算；源数据仍为全部五 RX/L6300/U56700/V27000。详见 [完整结果](final_analysis.md)、[逐层结果](stratified_results.md)、[曲线](figures/training_curves.png) 和 [七视图](figures/fixed_view_results.png)。新增 IQ A_g=0，low urban 未过 60%，中低 suburban 距 clean 超过探索目标。
+
+匹配 No-As 参考 20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01 在读取此轮正式目标成绩前固定并发布，正在运行，不影响关闭当前固定梯度规则；clean 净收益待该参考完成后报告。

@@ -21,7 +21,7 @@ def summary(values):
 def geometry(y,ids,indices):
  tx=collections.Counter(y[i] for i in indices);rx=collections.Counter(ids[i][1] for i in indices);cell=collections.Counter((y[i],ids[i][1]) for i in indices);positives=[tx[y[i]]-cell[(y[i],ids[i][1])] for i in indices]
  return dict(cell_squared_imbalance=sum((cell[(t,r)]-128/30)**2 for t in range(6) for r in (1,3,4,6,8))/30,TX_squared_imbalance=sum((tx[t]-128/6)**2 for t in range(6))/6,RX_squared_imbalance=sum((rx[r]-128/5)**2 for r in (1,3,4,6,8))/5,empty_TX_RX_cells=sum(cell[(t,r)]==0 for t in range(6) for r in (1,3,4,6,8)),valid_anchors=sum(v>0 for v in positives),positive_min=min(positives),positive_max=max(positives),positive_sum=sum(positives))
-def run(project,complete=False):
+def run(project,complete=False,expected_As_packets=128):
  B=Path(project)/'runs'/RUN;result={};inputs={};sequences={};args_all={};launch=read(B/'launch.json');root_complete=all((B/(m+'-s2026092701')/'source/training_result.json').exists() for m in MODES);began=time.perf_counter()
  if complete and not root_complete:raise ValueError('Final analysis requires all registered rows complete')
  for mode in MODES:
@@ -31,7 +31,7 @@ def run(project,complete=False):
   bad_steps=[];allkeys=set(k for r in steps for k in r['metrics']);numeric={k:summary([r['metrics'].get(k) for r in steps]) for k in sorted(allkeys)}
   for r in steps:
    m=r['metrics']
-   if m.get('concat/As_packets')!=128 or m.get('concat/L_forwards')!=4 or m.get('train/pseudo_truth_available',0)!=0 or m.get('train/skipped_nonfinite_loss',0) or m.get('train/skipped_nonfinite_grad',0):bad_steps.append(r['step'])
+   if m.get('concat/As_packets')!=expected_As_packets or m.get('concat/L_forwards')!=4 or m.get('train/pseudo_truth_available',0)!=0 or m.get('train/skipped_nonfinite_loss',0) or m.get('train/skipped_nonfinite_grad',0):bad_steps.append(r['step'])
   original_inputs=[];expected_L=[];original_stats=[];output_stats=[];max_geom_error=0.
   for index,p in enumerate(pools):
    if p['pool']!=index+1 or p['mode']!='ORIGINAL' or p['permutation']!=list(range(768)) or len(p['original_L_ids'])!=768 or len(p['visible_y'])!=768 or sorted(p['permutation'])!=list(range(768)):raise ValueError('Pool/exposure/permutation mismatch')
@@ -44,7 +44,7 @@ def run(project,complete=False):
   inputs[mode]=original_inputs;L=[r['ids'] for r in sequence if r['role']=='L'];U=[r['ids'] for r in sequence if r['role']=='U'];n=min(len(L),len(expected_L));L_alignment=L[:n]==expected_L[:n];sequences[mode]=dict(L=L,U=U)
   if not L_alignment or max_geom_error>1e-12 or bad_steps:raise ValueError('Actual execution violated fixed source objective/alignment')
   log=(B/'logs'/(rid+'.stdout.log')).read_text();errors={v:log.count(v) for v in ('Traceback (most recent call last)','CUDA out of memory','FloatingPointError','Killed','skipped_nonfinite')};warnings=[line for line in log.splitlines() if re.search(r'warning|warn:',line,re.I)];progress=read(S/'reference_progress.json') if (S/'reference_progress.json').exists() else None
-  value=dict(step_log=step_info,epoch_log=epoch_info,pool_log=pool_info,sequence_log=seq_info,reference_log=ref_info,unit_log=unit_info,progress=progress,all_current_steps_As128_L4_hiddenU=True,pool_L_alignment_verified_batches=n,pool_geometry_max_error=max_geom_error,all_stdout_scanned=True,error_markers=errors,warning_count=len(warnings),numeric_totals=numeric,epoch_curves=epochs,observed_L_packets=sum(len(r) for r in L),observed_U_packets=sum(len(r) for r in U),observed_unique_L=len({tuple(z) for row in L for z in row}),observed_unique_U=len({tuple(z) for row in U for z in row}),source_RX=sorted({z[1] for row in L for z in row}),source_days=sorted({z[2] for row in L for z in row}),source_RX_holdout=None,original_batch_geometry={k:summary([s[k] for s in original_stats]) for k in original_stats[0]} if original_stats else {},output_batch_geometry={k:summary([s[k] for s in output_stats]) for k in output_stats[0]} if output_stats else {})
+  value=dict(step_log=step_info,epoch_log=epoch_info,pool_log=pool_info,sequence_log=seq_info,reference_log=ref_info,unit_log=unit_info,progress=progress,all_current_steps_expected_As_L4_hiddenU=True,expected_As_packets_per_step=expected_As_packets,pool_L_alignment_verified_batches=n,pool_geometry_max_error=max_geom_error,all_stdout_scanned=True,error_markers=errors,warning_count=len(warnings),numeric_totals=numeric,epoch_curves=epochs,observed_L_packets=sum(len(r) for r in L),observed_U_packets=sum(len(r) for r in U),observed_unique_L=len({tuple(z) for row in L for z in row}),observed_unique_U=len({tuple(z) for row in U for z in row}),source_RX=sorted({z[1] for row in L for z in row}),source_days=sorted({z[2] for row in L for z in row}),source_RX_holdout=None,original_batch_geometry={k:summary([s[k] for s in original_stats]) for k in original_stats[0]} if original_stats else {},output_batch_geometry={k:summary([s[k] for s in output_stats]) for k in output_stats[0]} if output_stats else {})
   reference_epochs=[]
   for epoch in sorted({r['epoch'] for r in reference}):
    group=[r for r in reference if r['epoch']==epoch];reference_epochs.append(dict(epoch=epoch,cumulative_epoch=20+epoch,steps=len(group),**{k:summary([r.get(k) for r in group]) for k in ['total_L','common_CE','common_KL','extra_CE','extra_KL','SupCon']}))

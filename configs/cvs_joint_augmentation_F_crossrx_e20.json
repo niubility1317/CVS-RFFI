@@ -2310,17 +2310,11 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": null,
+  "current_experiment": "20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01",
   "active_As_hypothesis": {
-    "status": "CLOSED_FIXED_N0_TRAINING_FAILED",
-    "hypothesis": "Equalprior .5/1.5 linearN0 training provides useful practical benefit while clean protected",
-    "failed": [
-      "lowurban gain below fixed .5pp",
-      "clean lower than matched ordinaryAs"
-    ],
-    "next_candidate": null,
-    "reason": "No new source-grounded candidate presently justified;do not relabel noise as Ag or tune fixedprior from target scores",
-    "automatic_seed_extension": false
+    "status": "FIXED_VIEW_GRADIENT_RULE_CLOSED",
+    "next": "Only mandatory matching noAs reference pending;not a new mechanism",
+    "reference_run": "20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01"
   },
   "practical_finite_power_E30_result": {
     "run_id": "20261017-phase1-F-crossRX-practical-power-e20plus10-s2026092701-m1-r01",
@@ -2830,20 +2824,9 @@
     "reference": "https://github.com/WiSig-dataset/wisig-process-raw/blob/master/matlab_equalization/equalize_channel.m"
   },
   "active_Ag_hypothesis": {
-    "status": "CLOSED_FIXED_FIR_FIRST_TRAINING_FAILED",
-    "run_id": "20261017-phase1-F-crossRX-spectralIQ-firsttrain-e20plus10-s2026092701-m2-r01",
-    "execution_commit": "97f260f469a47a000eed8ab84e8507a3cd0ca37d",
-    "Ag_epochs": "E21..30 only",
-    "B10_clean_vs_B00_pp": -0.039285714285714285,
-    "B11_clean_vs_B01_pp": -0.055357142857142855,
-    "B11_mid_vs_B01_pp": -0.02023809523809524,
-    "B11_low_vs_B01_pp": -0.028571428571428574,
-    "interaction_all_negative": true,
-    "previous_PSD_feasibility_failed_unchanged": true,
-    "all_source_RX_retained": true,
-    "source_RX_holdout": null,
-    "automatic_seed_extension": false,
-    "next_training_candidate": null
+    "status": "NO_NEW_SUPPORTED_CANDIDATE",
+    "constraint": "Existing256IQonly;no reliable raw/longcontext mapping",
+    "closed_routes_preserved": true
   },
   "latest_completed_source_diagnostic": {
     "run_id": "20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01",
@@ -2852,11 +2835,14 @@
     "report": "automation_reports/CV-SincNet/20261017-diagnostic-F-envelopeProfile-fullL-manysig-m1-r01/report.md"
   },
   "active_training_budget": {
-    "cumulative_epochs": 30,
-    "latest_user_authorization": "训练预算提升到E30",
-    "current_mode": "same E20 parent plus10,not scratch30",
-    "new_updates": 2220,
-    "cumulative_updates": 6660
+    "each_total_epochs": 30,
+    "parent_epochs": 20,
+    "new_epochs": 10,
+    "source_RX_holdout": null,
+    "L": 6300,
+    "U": 56700,
+    "V": 27000,
+    "IQ_points": 256
   },
   "mmse_receiver_mix_E30_result": {
     "schema": "F_MMSE_RECEIVER_MIX_E30_CLOSED_V1",
@@ -3959,7 +3945,7 @@
     "updates": 0,
     "target_access": false
   },
-  "latest_completed_training_experiment": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
+  "latest_completed_training_experiment": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
   "antithetic_source_result": {
     "run_id": "20261017-diagnostic-F-antitheticNoise-sourceL-s2026092701-m1-r02",
     "status": "ANALYZED_SOURCE_ONLY",
@@ -4262,7 +4248,7 @@
     "no_rescue": true
   },
   "latest_completed_analysis": "analysis/cvs_clean_supervision_mass_audit_20261018.md",
-  "current_evidence_gap": "Fixed visibleL batchrepartition generated small all7single-seed gains but missedpredeclaredlow+.5 threshold and fulljointtargets;closed,no seed/pool/parent rescue. No new supported IQAg candidate;no current same-loader noAs B00 proof. Goalactive.",
+  "current_evidence_gap": "Strict no-As E30 under same fourLforwards/twoextraVJP/isolatedloader/initrule pending;no supported new IQAg or full factorial/crossseed proof",
   "current_source_experiment": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
   "latest_completed_source_experiment": "20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01",
   "unitary_source_result": {
@@ -4301,7 +4287,7 @@
     "target_access": false,
     "automatic_training": false
   },
-  "current_training_experiment": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
+  "current_training_experiment": "20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01",
   "batch_stratification_release": {
     "run_id": "20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01",
     "status": "ANALYZED_VERIFIED",
@@ -4564,5 +4550,218 @@
       "MEASURE": 1,
       "PROJECT": 3
     }
+  },
+  "view_pcgrad_result": {
+    "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
+    "status": "ANALYZED",
+    "execution_commit": "36ef32e643670d70702c3d0e3ceeb0831cffcac6",
+    "decision": "CLOSED_FIXED_VIEW_PCGRAD_FAILED_RECOGNITION_BENEFIT",
+    "scientific_pass": false,
+    "summary": {
+      "ORIGINAL": {
+        "clean": {
+          "accuracy": 0.8272261904761905,
+          "macro_F1": 0.8224829712305141,
+          "correct": 138974,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7328333333333333
+        },
+        "practical_high": {
+          "accuracy": 0.8160535714285714,
+          "macro_F1": 0.8120923604380249,
+          "correct": 137097,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7247083333333333
+        },
+        "practical_mid": {
+          "accuracy": 0.7933690476190476,
+          "macro_F1": 0.7895291750911494,
+          "correct": 133286,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7114166666666667
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7696964285714286,
+          "macro_F1": 0.7660039464036433,
+          "correct": 129309,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6939583333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7822440476190476,
+          "macro_F1": 0.7781528879591919,
+          "correct": 131417,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6437678571428571,
+          "macro_F1": 0.6393424068963033,
+          "correct": 108153,
+          "count": 168000,
+          "worst_RX_accuracy": 0.583375
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5345833333333333,
+          "macro_F1": 0.5288228591981537,
+          "correct": 89810,
+          "count": 168000,
+          "worst_RX_accuracy": 0.4885
+        }
+      },
+      "MEASURE": {
+        "clean": {
+          "accuracy": 0.8269107142857143,
+          "macro_F1": 0.822132105282559,
+          "correct": 138921,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7305833333333334
+        },
+        "practical_high": {
+          "accuracy": 0.8159821428571429,
+          "macro_F1": 0.8120344912279808,
+          "correct": 137085,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7242083333333333
+        },
+        "practical_mid": {
+          "accuracy": 0.7934404761904762,
+          "macro_F1": 0.7895875169734089,
+          "correct": 133298,
+          "count": 168000,
+          "worst_RX_accuracy": 0.711375
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7697321428571429,
+          "macro_F1": 0.7660129413317164,
+          "correct": 129315,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6938333333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7821130952380952,
+          "macro_F1": 0.7780005777362393,
+          "correct": 131395,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6997916666666667
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.644077380952381,
+          "macro_F1": 0.6395720950410749,
+          "correct": 108205,
+          "count": 168000,
+          "worst_RX_accuracy": 0.5835
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344345238095238,
+          "macro_F1": 0.5285988461210612,
+          "correct": 89785,
+          "count": 168000,
+          "worst_RX_accuracy": 0.48854166666666665
+        }
+      },
+      "PROJECT": {
+        "clean": {
+          "accuracy": 0.8277678571428572,
+          "macro_F1": 0.8230014462010108,
+          "correct": 139065,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7322916666666667
+        },
+        "practical_high": {
+          "accuracy": 0.8157261904761904,
+          "macro_F1": 0.811761069881948,
+          "correct": 137042,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7239166666666667
+        },
+        "practical_mid": {
+          "accuracy": 0.7933511904761905,
+          "macro_F1": 0.7894887911048163,
+          "correct": 133283,
+          "count": 168000,
+          "worst_RX_accuracy": 0.711375
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7698333333333334,
+          "macro_F1": 0.7661462778040736,
+          "correct": 129332,
+          "count": 168000,
+          "worst_RX_accuracy": 0.69425
+        },
+        "practical_high_urban": {
+          "accuracy": 0.782,
+          "macro_F1": 0.7778797624875379,
+          "correct": 131376,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6995416666666666
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.643797619047619,
+          "macro_F1": 0.6392933440959191,
+          "correct": 108158,
+          "count": 168000,
+          "worst_RX_accuracy": 0.583125
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5342976190476191,
+          "macro_F1": 0.5283619871235502,
+          "correct": 89762,
+          "count": 168000,
+          "worst_RX_accuracy": 0.4881666666666667
+        }
+      }
+    },
+    "criteria": {
+      "ORIGINAL": {
+        "clean": true,
+        "low_urban": false,
+        "mid_urban": true,
+        "suburban": true
+      },
+      "MEASURE": {
+        "clean": true,
+        "low_urban": false,
+        "mid_urban": false,
+        "suburban": true
+      }
+    },
+    "suburban_gaps_pp": {
+      "ORIGINAL": {
+        "practical_high": 1.1172619047619126,
+        "practical_mid": 3.385714285714292,
+        "practical_low_suburban": 5.752976190476189
+      },
+      "MEASURE": {
+        "practical_high": 1.0928571428571399,
+        "practical_mid": 3.347023809523808,
+        "practical_low_suburban": 5.717857142857142
+      },
+      "PROJECT": {
+        "practical_high": 1.2041666666666728,
+        "practical_mid": 3.441666666666665,
+        "practical_low_suburban": 5.793452380952379
+      }
+    },
+    "CM_recounts": 378,
+    "partition_recounts": 63,
+    "paired_comparisons": 21,
+    "extra_training_VJP": 8880,
+    "new_Ag": false,
+    "joint_goal_complete": false,
+    "no_rescue": true
+  },
+  "matched_noAs_release": {
+    "run_id": "20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01",
+    "status": "RUNNING",
+    "execution_commit": "00cc9bad869d98bbca408858a4adec55887cf6c7",
+    "preregistered_before_current_As_target_read": true,
+    "parent_arm": "REPEAT",
+    "new_updates": 2220,
+    "no_new_Ag": true,
+    "As": false,
+    "extra_VJP_per_step": 2,
+    "real_CP_smoke": "PASS",
+    "post_launch": "VERIFIED"
   }
 }

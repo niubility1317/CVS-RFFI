@@ -29,5 +29,5 @@
 |有限窗酉相位观测：源 V 身份保护检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-unitaryDispersion-sourceV-s2026092701-m1-r01/report.md)|
 |原完整 practical 的 L 批次组成：三行 E30 检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-batchStratify-e20plus10-s2026092701-m3-r01/report.md)|
 |F＋跨 RX 同 TX：ordinary／完整 practical 监督梯度组织 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01/report.md)|
+|匹配 E30 No-As 参考|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01/report.md)|
 |F＋跨 RX 同 TX：ordinary／完整 practical 监督梯度组织 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02/report.md)|
-|F＋跨 RX 同 TX：匹配 E30 无新增星地增强参考|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01/report.md)|

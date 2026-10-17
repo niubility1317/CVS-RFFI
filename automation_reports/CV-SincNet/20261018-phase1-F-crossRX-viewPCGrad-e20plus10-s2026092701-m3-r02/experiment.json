@@ -3,7 +3,7 @@
   "run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r02",
   "group_id": "F_CROSS_RX_SUPERVISED_VIEW_GRADIENT_E30_20261018",
   "display_name": "F＋跨RX同TX：ordinary与完整星地监督的梯度冲突E30三对照",
-  "description": "Same fixed original fullsourceAs E20 student+ownEMA,each+10;ORIGINAL,MEASURE twoVJP noedit,PROJECT one-sided supervisedAs gradientprojection before original physical clip/AdamW. All3 identical loader/RNG/IQ/weights/defaulthead/U. No IQAg,no new losses/NN;extraVJPs and wall counted.",
+  "description": "Same fixed fullsourceAs E20 student+ownEMA,each+10;ORIGINAL/MEASURE twoVJP/PROJECT one-sided supervised gradient rule. Same loader policies and physical sequence;within each RDrop pair reused IQ. No claim of bitwise identical across-run trajectories. No IQAg/newloss/NN;extraVJP/wall separate.",
   "kind": "cvs",
   "stage": "phase1",
   "aliases": [
@@ -1221,17 +1221,177 @@
     "MEASURE/PROJECT each2 extra VJP perupdate,0 extraNN;physicalHz Sinc metric;projection precedes original clip5/AdamW;no finite-step or AdamW descent guarantee.",
     "Single-seed3rows mandatory;allsevenfixedreceivedviews thenindependenttruth-last;no automatic seedextension or score-driven rerun.",
     "All3 same existing sixbatch ORIGINAL buffering and loaderRNG as matched organization controls;not candidate batchrepartition.",
-    "No sameTXdonor or amplitude operator;no trainingRX heldout;L6300/U56700/V27000 exactroles."
+    "No sameTXdonor or amplitude operator;no trainingRX heldout;L6300/U56700/V27000 exactroles.",
+    "Full source/score recount complete;fixed view-gradient rule CLOSED,not rescued by pending noAs reference. Actual ORIGINAL/MEASURE floating training trajectories differ despite neutral synthetic equivalence."
   ],
   "additional_reference": null,
   "replaces_run_id": "20261018-phase1-F-crossRX-viewPCGrad-e20plus10-s2026092701-m3-r01",
   "result": {
-    "status": "TRAINING",
-    "dispatcher_pid": 815645,
-    "archive_transfer": "VERIFIED",
-    "remote_compile": "PASS",
-    "real_checkpoint_smoke": "PASS",
-    "prediction_status": "NOT_STARTED",
+    "status": "ANALYZED",
+    "execution_commit": "36ef32e643670d70702c3d0e3ceeb0831cffcac6",
+    "scientific_pass": false,
+    "decision": "CLOSED_FIXED_VIEW_PCGRAD_FAILED_RECOGNITION_BENEFIT",
+    "summary": {
+      "ORIGINAL": {
+        "clean": {
+          "accuracy": 0.8272261904761905,
+          "macro_F1": 0.8224829712305141,
+          "correct": 138974,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7328333333333333
+        },
+        "practical_high": {
+          "accuracy": 0.8160535714285714,
+          "macro_F1": 0.8120923604380249,
+          "correct": 137097,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7247083333333333
+        },
+        "practical_mid": {
+          "accuracy": 0.7933690476190476,
+          "macro_F1": 0.7895291750911494,
+          "correct": 133286,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7114166666666667
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7696964285714286,
+          "macro_F1": 0.7660039464036433,
+          "correct": 129309,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6939583333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7822440476190476,
+          "macro_F1": 0.7781528879591919,
+          "correct": 131417,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.6437678571428571,
+          "macro_F1": 0.6393424068963033,
+          "correct": 108153,
+          "count": 168000,
+          "worst_RX_accuracy": 0.583375
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5345833333333333,
+          "macro_F1": 0.5288228591981537,
+          "correct": 89810,
+          "count": 168000,
+          "worst_RX_accuracy": 0.4885
+        }
+      },
+      "MEASURE": {
+        "clean": {
+          "accuracy": 0.8269107142857143,
+          "macro_F1": 0.822132105282559,
+          "correct": 138921,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7305833333333334
+        },
+        "practical_high": {
+          "accuracy": 0.8159821428571429,
+          "macro_F1": 0.8120344912279808,
+          "correct": 137085,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7242083333333333
+        },
+        "practical_mid": {
+          "accuracy": 0.7934404761904762,
+          "macro_F1": 0.7895875169734089,
+          "correct": 133298,
+          "count": 168000,
+          "worst_RX_accuracy": 0.711375
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7697321428571429,
+          "macro_F1": 0.7660129413317164,
+          "correct": 129315,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6938333333333333
+        },
+        "practical_high_urban": {
+          "accuracy": 0.7821130952380952,
+          "macro_F1": 0.7780005777362393,
+          "correct": 131395,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6997916666666667
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.644077380952381,
+          "macro_F1": 0.6395720950410749,
+          "correct": 108205,
+          "count": 168000,
+          "worst_RX_accuracy": 0.5835
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5344345238095238,
+          "macro_F1": 0.5285988461210612,
+          "correct": 89785,
+          "count": 168000,
+          "worst_RX_accuracy": 0.48854166666666665
+        }
+      },
+      "PROJECT": {
+        "clean": {
+          "accuracy": 0.8277678571428572,
+          "macro_F1": 0.8230014462010108,
+          "correct": 139065,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7322916666666667
+        },
+        "practical_high": {
+          "accuracy": 0.8157261904761904,
+          "macro_F1": 0.811761069881948,
+          "correct": 137042,
+          "count": 168000,
+          "worst_RX_accuracy": 0.7239166666666667
+        },
+        "practical_mid": {
+          "accuracy": 0.7933511904761905,
+          "macro_F1": 0.7894887911048163,
+          "correct": 133283,
+          "count": 168000,
+          "worst_RX_accuracy": 0.711375
+        },
+        "practical_low_suburban": {
+          "accuracy": 0.7698333333333334,
+          "macro_F1": 0.7661462778040736,
+          "correct": 129332,
+          "count": 168000,
+          "worst_RX_accuracy": 0.69425
+        },
+        "practical_high_urban": {
+          "accuracy": 0.782,
+          "macro_F1": 0.7778797624875379,
+          "correct": 131376,
+          "count": 168000,
+          "worst_RX_accuracy": 0.6995416666666666
+        },
+        "practical_mid_urban": {
+          "accuracy": 0.643797619047619,
+          "macro_F1": 0.6392933440959191,
+          "correct": 108158,
+          "count": 168000,
+          "worst_RX_accuracy": 0.583125
+        },
+        "practical_low_urban": {
+          "accuracy": 0.5342976190476191,
+          "macro_F1": 0.5283619871235502,
+          "correct": 89762,
+          "count": 168000,
+          "worst_RX_accuracy": 0.4881666666666667
+        }
+      }
+    },
+    "CM_recounts": 378,
+    "partition_recounts": 63,
+    "paired_comparisons": 21,
+    "new_Ag": false,
+    "truth_last": true,
+    "matched_noAs_reference": "20261018-phase1-F-crossRX-matchedNoAs-e20plus10-s2026092701-m1-r01",
     "joint_goal_complete": false
   },
   "registered_at": "2026-10-17T18:09:07+00:00",
