@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "reviewer": "unitary_p0p1_review",
+  "scope": "OneP0/P1 ofnewtrainingintegration only;unchangedsourceguardDSPnotrereviewed",
+  "checks": [
+    "commonNoAs20studentandownEMA",
+    "6Lforwards and.5/.25/.25 losscorrection",
+    "primary-onlySupCon",
+    "privatematchedlambda",
+    "sourcequalification0extraNN",
+    "sevenviewindependenttruthlast",
+    "expandedregistrationconfigmatch"
+  ],
+  "real_IQ_CP_or_remote_access": false
+}

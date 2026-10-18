@@ -565,3 +565,5 @@
 - [阴影初值分层抽样 E30 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01/report.md)
 
 - [包内重复残差源身份保护 r01](../automation_reports/CV-SincNet/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01/report.md)
+
+- [重复残差增强 E30 独立检验 r01](../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01/report.md)

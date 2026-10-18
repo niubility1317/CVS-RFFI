@@ -28,3 +28,4 @@
 |F＋跨 RX 同 TX：L-only SAM E30 完整匹配结果|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-LSAM-e20plus10-s2026092701-m3-r01/report.md)|
 |完整 practical 的阴影初值分层抽样：匹配四行 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01/report.md)|
 |包内重复残差轻度收缩：固定源身份保护检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01/report.md)|
+|完整源 E30：单包重复残差增强的匹配独立检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01/report.md)|
