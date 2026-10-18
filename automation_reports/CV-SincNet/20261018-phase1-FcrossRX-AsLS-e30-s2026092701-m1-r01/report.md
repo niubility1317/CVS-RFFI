@@ -1,6 +1,6 @@
 # 完整 practical 的 As 专属标签平滑 E30 预登记
 
-PLANNED：实现与本地聚焦检查、唯一合并P0/P1 PASS已完成；即将提交发布。没有本候选性能结果。
+TECHNICAL_RECOVERY：第一次发布在远端依赖路径检查失败；独立核验runroot未创建、无本run进程、0真实CP/NN/updates。保留r01发布，定点修复后用r02发布同一run及配方。没有本候选性能结果。
 
 唯一假设：保留完整practical及旧ordinary训练，只将合法有标签As监督CE的epsilon由已有.01提高到固定.05，能否减小clean代价并提高low/mid urban。改变目标分布，不改IQ、softmax温度、分类头或CE总体权重。
 
@@ -42,7 +42,7 @@ PLANNED：实现与本地聚焦检查、唯一合并P0/P1 PASS已完成；即将
 
 ## 发布与停止
 
-代码/config身份为一次Git commit，冻结后回填；一个不可变run/outputroot/owner codex/root/practical-AsLS。N607普通账号、现有CVS-RFFI/PyTorch fullFP32、CPU2；无安装或管理员操作。CWD=PROJECT/releases/cvs_FcrossRX_AsLS_E30_20261018_r01；输出=PROJECT/runs/20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01；公开报告automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01。
+代码/config身份为一次Git commit，冻结后回填；一个不可变run/outputroot/owner codex/root/practical-AsLS。N607普通账号、现有CVS-RFFI/PyTorch fullFP32、CPU2；无安装或管理员操作。CWD=PROJECT/releases/cvs_FcrossRX_AsLS_E30_20261018_r02；输出=PROJECT/runs/20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01；公开报告automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01。
 
 发布命令：verified native Python -m experiments.cvs_satellite_ls30.publish；worker：CVS-RFFI/python -u experiments/cvs_satellite_ls30/runner.py --mode worker --row B01-s2026092701。private RT沿原P43 reference_release/reference_commit，真实私有路径不入Git。
 

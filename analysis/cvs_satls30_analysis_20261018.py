@@ -11,7 +11,7 @@ import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import cvs_practical_budget50_analysis_20261018 as old
 RUN='20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01'
-TRAINING_RELEASE='cvs_FcrossRX_AsLS_E30_20261018_r01'
+TRAINING_RELEASE='cvs_FcrossRX_AsLS_E30_20261018_r02'
 REFERENCE_RUN=old.REFERENCE_RUN
 PRIOR_E50_RUN=old.RUN
 CONDITIONS=('NOAS30','AS30','SATLS_AS30')

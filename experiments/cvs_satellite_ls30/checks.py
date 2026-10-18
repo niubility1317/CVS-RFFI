@@ -6,6 +6,18 @@ from . import design as d
 from .protocol import cumulative,check_checkpoint,check_source_metadata,check_default_head
 from .schema import INFO_KEYS,CONCAT_FIELDS,SATLS_FIELDS
 
+def legacy_smoothing_source_check():
+ # The frozen loader owns dependency paths;the candidate release packages no legacy model.
+ import importlib.util
+ try:spec=importlib.util.find_spec('experiments.cvs_sigtime_rdrop_legacy.model')
+ except (ModuleNotFoundError,ValueError):spec=None
+ origin=getattr(spec,'origin',None)
+ p=Path(origin) if origin and origin not in ('built-in','frozen') else d.ROOT/'experiments/cvs_sigtime_rdrop_legacy/model.py'
+ if p.is_file():
+  assert 'smoothing!=.01' in p.read_text(encoding='utf8')
+  return dict(status='PASS',source=str(p),locator='actual import spec' if origin else 'local static source')
+ return dict(status='NOT_PACKAGED_NONBLOCKING',source=None,interpretation='Unchanged frozen dependency;actual args .01 and original terms remain checked by launcher smoke')
+
 def numpy_math():
  rng=np.random.default_rng(6001);z=[rng.normal(size=(128,6)) for _ in range(2)];y=np.arange(128)%6;mask=(np.arange(128)+1)%2!=0
  def ce(a,e):
@@ -98,7 +110,8 @@ def run():
  assert "m._crossview_mode!='ORD128'" in text and 'extra_loss=extra_loss+2*smooth_delta' in text and 'extra_ce=extra_ce+2*smooth_delta' in text
  assert 'smooth_delta,sr=correction(z0,z1,labels,smask' in text and 'identity_loss,sm' not in text
  assert text.count('capture_forward(self,')==3 and text.count('self.forward_identity_only(view,')==2
- assert 'forward_identity_only' not in Path(__file__).with_name('smoothing.py').read_text(encoding='utf8') and 'smoothing!=.01' in Path(d.ROOT/'experiments/cvs_sigtime_rdrop_legacy/model.py').read_text(encoding='utf8')
+ assert 'forward_identity_only' not in Path(__file__).with_name('smoothing.py').read_text(encoding='utf8')
+ legacy_source=legacy_smoothing_source_check()
  actual=set();fieldsets=dict(CONCAT_FIELDS=CONCAT_FIELDS,SATLS_FIELDS=SATLS_FIELDS)
  for node in ast.walk(tree):
   if isinstance(node,ast.DictComp) and isinstance(node.key,ast.BinOp) and isinstance(node.key.left,ast.Constant) and isinstance(node.generators[0].iter,ast.Name):actual.update(node.key.left.value+k for k in fieldsets[node.generators[0].iter.id])
@@ -124,5 +137,5 @@ def run():
   summary=report.source_decision();json.dumps(summary,allow_nan=False);assert type(summary['promotion']['passed']) is bool and summary['promotion']['passed'] is False and len(captured)==1 and summary['scientific_failure_skips_formal'] is False
  finally:report.logical_rows=old_rows;report.d.read=old_read;report.d.write=old_write;report.np.load=old_load
  for file in Path(__file__).parent.glob('*.py'):ast.parse(file.read_text(encoding='utf8'),filename=str(file))
- return dict(status='PASS',protocol_negatives=negative,math=math,Torch_synthetic_logits=actual_torch,emitted_native_info_keys=len(actual),full6L_total_metric=True,selectedAs64_only=True,native_global_smoothing_remains_0p01=True,original_P43_forward_call_count=True,source_summary_native_JSON=True,real_Torch_model_checkpoint_smoke='launcher first step pending770NN',NN=0,CP=0,IQ=0,updates=0,target=False)
+ return dict(status='PASS',protocol_negatives=negative,math=math,Torch_synthetic_logits=actual_torch,legacy_smoothing_source=legacy_source,emitted_native_info_keys=len(actual),full6L_total_metric=True,selectedAs64_only=True,native_global_smoothing_remains_0p01=True,original_P43_forward_call_count=True,source_summary_native_JSON=True,real_Torch_model_checkpoint_smoke='launcher first step pending770NN',NN=0,CP=0,IQ=0,updates=0,target=False)
 if __name__=='__main__':print(json.dumps(run()))

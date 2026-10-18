@@ -13,7 +13,7 @@ import tarfile
 from pathlib import Path, PurePosixPath
 
 RUN = '20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01'
-TRAINING_RELEASE = 'cvs_FcrossRX_AsLS_E30_20261018_r01'
+TRAINING_RELEASE = 'cvs_FcrossRX_AsLS_E30_20261018_r02'
 RELEASE = 'cvs_F_satls30_analysis_20261018_r01'
 OUTPUT = 'analysis_auto_r01'
 FILES = (

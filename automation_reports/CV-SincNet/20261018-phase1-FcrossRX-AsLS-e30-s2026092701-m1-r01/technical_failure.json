@@ -1,0 +1,16 @@
+{
+  "status": "FAILED_BEFORE_TRAINING",
+  "failed_layer": "Remote source assertion used new release root for unchanged original terms dependency",
+  "original_release": "cvs_FcrossRX_AsLS_E30_20261018_r01",
+  "release_commit": "ba7c0d0e50b475ef2e8c2d2af3c0afb7a466a8b9",
+  "release_exists": true,
+  "run_output_exists": false,
+  "submit_exists": false,
+  "owned_runner_pids": [],
+  "new_checkpoint_reads": 0,
+  "new_neural_packets": 0,
+  "new_updates": 0,
+  "preserved_original_release": true,
+  "scientific_recipe_unchanged": true,
+  "recovery": "Point correction of dependency locator and new recovery release r02; same run/output root; no overwritten logs"
+}

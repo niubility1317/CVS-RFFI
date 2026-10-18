@@ -1,0 +1,30 @@
+{
+  "schema": "targeted_p0p1_review_v1",
+  "run_id": "20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01",
+  "reviewer": "/root/lraw_p0p1",
+  "review_date": "2026-10-18",
+  "status": "PASS",
+  "findings": [],
+  "scope": "One targeted re-review of the confirmed prelaunch checks.py legacy-source FileNotFoundError and the independent r02 release-path recovery; no full candidate re-review.",
+  "reviewed_changes": [
+    {"file": "experiments/cvs_satellite_ls30/checks.py", "line": 9, "result": "The helper resolves the legacy model source with importlib.util.find_spec. Missing package/spec is caught. A fallback file is read only after is_file(); an absent packaged static source returns NOT_PACKAGED_NONBLOCKING. The former unconditional new-ROOT legacy-file read is removed."},
+    {"file": "experiments/cvs_satellite_ls30/checks.py", "line": 114, "result": "The focused-check path calls the new locator. Actual original terms execution remains in the existing 770NN launcher smoke; the static fallback does not replace that smoke."},
+    {"file": "experiments/cvs_satellite_ls30/design.py", "line": 7, "result": "Training release is cvs_FcrossRX_AsLS_E30_20261018_r02 while RUN remains the registered r01 run ID."},
+    {"file": "analysis/cvs_satls30_analysis_20261018.py", "line": 14, "result": "The expected training release basename is r02; the run/output identity remains r01."},
+    {"file": "analysis/cvs_satls30_publish_analysis_20261018.py", "line": 16, "result": "The analysis publisher resolves the r02 training release consistently."}
+  ],
+  "unchanged_recovery_protection": {
+    "training_publish_preflight": "publish.py:20 still rejects existing release, archive, or run output.",
+    "training_publish_extraction": "publish.py:55 still rejects an existing release or run output.",
+    "archive_and_release": "Derived from the r02 RELEASE basename, so the saved r01 archive/release are not overwritten.",
+    "model_recipe_or_budget_changed": false
+  },
+  "evidence": {
+    "code_readback": "Verified the corrected locator, its call site, all three r02 release constants, unchanged run IDs, and existing output guards.",
+    "prior_targeted_checks_reported_by_parent": ["Missing-module locator simulation does not raise.", "Actual import spec locates the frozen .01 assertion.", "Analysis r02 configuration-path assertion passes."],
+    "prior_external_post_state_reported_by_parent": "Failed r01 release exists; run root, submit record, and owned runner are absent; no checkpoint/neural/update work occurred. No remote state was queried by this reviewer."
+  },
+  "reviewer_execution": {"Git": 0, "SSH": 0, "NN": 0, "CP": 0, "IQ": 0, "updates": 0, "new_formal_reads": 0, "full_checks_repeated": false, "only_output_written": "local_artifacts/F_AsLS_E30_20261018/targeted_review.json"},
+  "conclusion": "The identified direct startup defect is corrected, and r02 recovery does not introduce a conflicting release/output path or overwrite of the preserved r01 artifacts. No remaining P0/P1 finding within this targeted scope.",
+  "runtime_success_claimed": false
+}
