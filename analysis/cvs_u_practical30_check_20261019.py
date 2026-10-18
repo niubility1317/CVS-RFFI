@@ -14,6 +14,11 @@ def temporary():
 def put(path,value):
  path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value,allow_nan=False)+'\n',encoding='utf8')
 
+
+def technical_history_fixture(root):
+ value=dict(status='FAILED_PREFLIGHT',run_id=m.FAILED_RUN,code_commit='17b5939f440e370dacb6e92b6b523940d726115b',NN=770,optimizer_updates=0,real_IQ=0,propagation_simulations=0,worker_count=0,preserved=True,error='missing module trusted hook;actual model featurehook used inR02')
+ put(root/'technical_history/r01/cost.json',value);return value
+
 def metadata(project,count):
  for arm,root in m.rows(project):
   cfg=dict(model_seed=m.SEED,row_id=root.name,run_id=root.parent.name)
@@ -48,7 +53,7 @@ def csvjson(root,name,rows):
 
 def u_step_fixture(step=1,arm='UPRACTICAL30'):
  n=124 if step%222==0 else 256;j=(step-1)%222;domain=j%15;rx=[1,3,4,6,8][domain//3];day=domain%3+1;ids=[[1,rx,day,100000+j*256+i,100000+j*256+i] for i in range(n)];sat=arm=='UPRACTICAL30';pos=list(range(n//4));gaussian=list(range(n//4,n)) if sat else list(range(n));z=np.zeros((n,6));z[:,1]=1.;shift=z-z.max(1,keepdims=True);lp=shift-np.log(np.exp(shift).sum(1,keepdims=True));ce=float(-lp[:,0].mean());ent=float(-(np.exp(lp)*np.log(np.maximum(np.exp(lp),1e-8))).sum(1).mean());physics=[dict(selected_position=i,scene=m.SOURCE_SCENES[i%3],sample_id=ids[i],session_id='synthetic',namespace='synthetic',state=['LOS','PARTIAL','BLOCKED'][i%3],lock=['locked','degraded','unlocked'][i%3],signal_to_added_noise_db=[1.,5.,10.,20.][i%4],quality_snr_db=10.) for i in pos] if sat else []
- q=dict(mode='QUARTER_PRACTICAL' if sat else 'GAUSSIAN_CONTROL',step=step,epoch=(step-1)//222+1,cumulative_step=4440+step,cumulative_epoch=21+(step-1)//222,U_packets=n,selected_positions=pos,Gaussian_positions=gaussian,selected_slots=n//4,As_packets=n//4 if sat else 0,sample_id_fields=['eq_i','rx_i','day_i','sig_i','base_index'],sample_ids=ids,RX=[rx]*n,day=[day]*n,eq=[1]*n,duplicate_PID_occurrences=0,U_truth_available=False,raw_to_practical=True,ordinary_before_practical=False,original_strong_draw_packets=n,original_strong_std=.015,original_strong_before_overwrite=True,C_returns_original_strong_object=not sat,teacher_qualification_before_student_view=True,student_passes=1,extra_NN=0,extra_CE_operator_calls=0,physics=physics,scene_counts=dict(__import__('collections').Counter(p['scene'] for p in physics)),slot_namespace='FcrossRX/UPractical/slots/v1',slot_private_seed=step,slot_augmentation_seed=20261016421,global_RNG_used_for_routing=False,selection_uses_TX_or_pseudo=False,selection_without_replacement=True,native_epoch=(step-1)//222+1,native_batch_idx=j,teacher_conf=[.98]*n,teacher_pseudo=[0]*n,domains=[domain]*n,conf_mask=[True]*n,temporal_mask=[True]*n,eligibility=[True]*n,threshold_policy=dict(mode='rx_day_quantile',quantile=.86,tau_min=.92,tau_max=.97),temporal_policy=dict(mode='batch_neighbor',window=2,minimum_confidence=.8),domain_gate=False,strong_agreement=False,teacher_raw_same_input=True,teacher_eval_no_grad=True,teacher_qualification_completed_before_strong=True,teacher_NN=n,student_NN=n,student_logits=z.tolist(),native_loss_u=ce,native_loss_entropy=ent,lambda_u=.16,lambda_entropy=.01,CE_denominator=n,entropy_denominator=n,eligible_selected_slots=n//4,eligible_Gaussian_slots=len(gaussian),eligible_As_slots=n//4 if sat else 0,CE_label_smoothing=0.,native_global_L_label_smoothing=.01,entropy_all_U=True,entropy_includes_unqualified=True,entropy_includes_As=sat,U_truth_used=False,extra_teacher=False,native_loss_returned_unchanged=True,CPU_timing='synthetic CPU host only')
+ q=dict(mode='QUARTER_PRACTICAL' if sat else 'GAUSSIAN_CONTROL',step=step,epoch=(step-1)//222+1,cumulative_step=4440+step,cumulative_epoch=21+(step-1)//222,U_packets=n,selected_positions=pos,Gaussian_positions=gaussian,selected_slots=n//4,As_packets=n//4 if sat else 0,sample_id_fields=['eq_i','rx_i','day_i','sig_i','base_index'],sample_ids=ids,RX=[rx]*n,day=[day]*n,eq=[1]*n,duplicate_PID_occurrences=0,U_truth_available=False,raw_to_practical=True,ordinary_before_practical=False,original_strong_draw_packets=n,original_strong_std=.015,original_strong_before_overwrite=True,C_returns_original_strong_object=not sat,teacher_qualification_before_student_view=True,student_passes=1,extra_NN=0,extra_CE_operator_calls=0,physics=physics,scene_counts=dict(__import__('collections').Counter(p['scene'] for p in physics)),slot_namespace='FcrossRX/UPractical/slots/v1',slot_private_seed=step,slot_augmentation_seed=20261016421,global_RNG_used_for_routing=False,selection_uses_TX_or_pseudo=False,selection_without_replacement=True,native_epoch=(step-1)//222+1,native_batch_idx=j+1,teacher_conf=[.98]*n,teacher_pseudo=[0]*n,domains=[domain]*n,conf_mask=[True]*n,temporal_mask=[True]*n,eligibility=[True]*n,threshold_policy=dict(mode='rx_day_quantile',quantile=.86,tau_min=.92,tau_max=.97),temporal_policy=dict(mode='batch_neighbor',window=2,minimum_confidence=.8),domain_gate=False,strong_agreement=False,teacher_raw_same_input=True,teacher_eval_no_grad=True,teacher_qualification_completed_before_strong=True,teacher_NN=n,student_NN=n,student_logits=z.tolist(),native_loss_u=ce,native_loss_entropy=ent,lambda_u=.16,lambda_entropy=.01,CE_denominator=n,entropy_denominator=n,eligible_selected_slots=n//4,eligible_Gaussian_slots=len(gaussian),eligible_As_slots=n//4 if sat else 0,CE_label_smoothing=0.,native_global_L_label_smoothing=.01,entropy_all_U=True,entropy_includes_unqualified=True,entropy_includes_As=sat,U_truth_used=False,extra_teacher=False,native_losses_preserved=True,native_feature_adjustment=None,native_optimizer_step=step,native_hook='model._source_unlabeled_feature_hook',eligibility_source='actual frozen native base_mask_and_ones with no selectionhook',CPU_timing='synthetic CPU host only')
  q.update({k:.0001 for k in m.U_TIMERS});return q
 
 def L_step_fixture(step,as_l=True):
@@ -76,6 +81,33 @@ def full_log_fixture(project,arm):
 
 
 class UPracticalChecks(unittest.TestCase):
+ def test_r02_actual_feature_hook_logging_schema(self):
+  import copy
+  for arm in m.CONDITIONS[2:]:
+   for step in (1,222):
+    q=u_step_fixture(step,arm);self.assertNotIn('native_loss_returned_unchanged',q);self.assertEqual(q['native_batch_idx'],(step-1)%222+1);m.check_u_step(q,arm)
+  base=u_step_fixture()
+  for key,value in (('native_losses_preserved',False),('native_feature_adjustment',0.),('native_hook','_trusted_pseudo_loss_hook'),('native_optimizer_step',0)):
+   q=copy.deepcopy(base);q[key]=value
+   with self.subTest(key=key),self.assertRaises(ValueError):m.check_u_step(q,'UPRACTICAL30')
+  for suffix in ('analysis','check'):
+   path=Path(__file__).parent/('cvs_u_practical30_'+suffix+'_20261019.py');ast.parse(path.read_text(encoding='utf-8-sig'),filename=str(path))
+
+ def test_r02_ID_AST_and_failed770_cost(self):
+  import cvs_u_practical30_publish_analysis_20261019 as pub
+  import cvs_u_practical30_collect_20261019 as collect
+  self.assertEqual(m.RUN,'20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02');self.assertEqual(pub.RUN,m.RUN);self.assertEqual(collect.RUN,m.RUN);self.assertEqual(m.TRAINING_RELEASE,'cvs_FcrossRX_UPractical_E30_20261019_r02');self.assertEqual(pub.TRAINING_RELEASE,m.TRAINING_RELEASE);self.assertEqual(pub.RELEASE,'cvs_F_u_practical30_analysis_20261019_r02')
+  config=pub.analysis_config(dict(project='/example/project',python='python',user='ordinary',host='host'),'a'*40);self.assertTrue(config['training_release'].endswith(m.TRAINING_RELEASE));self.assertIn('/runs/'+m.RUN+'/',config['output']);self.assertNotIn('truth',config)
+  for suffix in ('analysis','check','publish_analysis','collect'):
+   path=Path(__file__).parent/('cvs_u_practical30_'+suffix+'_20261019.py');ast.parse(path.read_text(encoding='utf-8-sig'),filename=str(path))
+  for name in ('PREFLIGHT','TRANSFER','LAUNCH'):ast.parse(getattr(pub,name).replace('CONFIG',repr(config)).replace('RUN_VALUE',m.RUN))
+  with temporary() as tmp:
+   p=Path(tmp);root=p/'runs'/m.RUN;value=technical_history_fixture(root)
+   with mock.patch.object(m,'_current_cost_summary',return_value=dict(new_total_NN=13057048)):
+    c=m.cost_summary(p,{});self.assertEqual(c['new_total_NN'],13057048);self.assertEqual(c['technical_failed_NN'],770);self.assertEqual(c['candidate_whole_attempts_NN'],13057818);self.assertEqual(c['technical_failed_attempts'][0]['run_id'],m.FAILED_RUN)
+    value['NN']=769;put(root/'technical_history/r01/cost.json',value)
+    with self.assertRaises(ValueError):m.cost_summary(p,{})
+
  def test_source_exact_two_conditions_and_native_JSON(self):
   summary={a:dict(full_V_clean=.98,mid_low_mean=.5) for a in m.CONDITIONS};summary['UPRACTICAL30']=dict(full_V_clean=.979,mid_low_mean=.505);d=m.source_conditions(summary);self.assertTrue(d['source_criteria_pass']);self.assertEqual(len(d['checks']),2);json.dumps(d,allow_nan=False);summary['NOAS30']['full_V_clean']=.999;self.assertTrue(m.source_conditions(summary)['source_criteria_pass']);summary['MATCHED_NOAS30']['full_V_clean']=.981;self.assertFalse(m.source_conditions(summary)['source_criteria_pass']);summary['MATCHED_NOAS30']['full_V_clean']=.98;summary['UPRACTICAL30']['mid_low_mean']=.50499;self.assertFalse(m.source_conditions(summary)['source_criteria_pass'])
  def test_actual_U_teacher_mask_CE_entropy_route_scope(self):
@@ -115,6 +147,7 @@ class UPracticalChecks(unittest.TestCase):
   import cvs_u_practical30_collect_20261019 as collect
   with temporary() as tmp,mock.patch.object(m,'COUNT',84):
    p=Path(tmp);s=formal_fixture(p);s['decision']=m.source_conditions(s['summary']);s['metrics']=[];tc=dict(student_train_NN=2271960,student_eval_NN=324002,teacher_train_NN=0,teacher_eval_NN=567000,native_training_and_validation_NN=3162962,wall_seconds=1.);uq=dict(qualified_packets=0,qualified_As_packets=0,qualified_Gaussian_packets=0,U_As=0,timing={k:0. for k in m.U_TIMERS});training=dict(status='VERIFIED_COMPLETE_TRAINING_LOGS',run_id=m.RUN,target_scores_read=False,rows={a:dict(cost=tc,u_practical=uq,counts=dict(U_As=0)) for a in m.CONDITIONS},parent20={a:dict(cost=tc) for a in m.CONDITIONS[2:]},unique_parent20_costs={a:tc for a in m.CONDITIONS[:2]});r=p/'runs'/m.RUN;records=[dict(row_id=root.name,reference_row_id='B00-s2026092701' if a=='MATCHED_NOAS30' else 'B01-s2026092701',L_NN=768,U_teacher_NN=8,U_student_NN=8,NN=784,optimizer_updates=0) for a,root in m.rows(p) if a in m.CONDITIONS[2:]];real=[dict(reference_row_id='B00-s2026092701',NN=2),dict(reference_row_id='B01-s2026092701',NN=2)];put(r/'synthetic_smoke.json',dict(status='PASS',records=records,NN=2352,real_checkpoint_NN=4,total_NN=2356,optimizer_updates=0,real_IQ=0,target_access=False));put(r/'real_checkpoint_smoke.json',dict(status='PASS',records=real,NN=4,optimizer_updates=0,real_IQ=0,target_query=False));out=r/'analysis_auto_r01';argv=['analysis','--project',str(p),'--release',str(p/m.TRAINING_RELEASE),'--output',str(out),'--code-commit','a'*40]
+   technical_history_fixture(r)
    with mock.patch.object(sys,'argv',argv),mock.patch.object(m,'wait_until'),mock.patch.object(m,'training_analysis',return_value=training),mock.patch.object(m,'source_analysis',return_value=s),mock.patch.object(m,'formal_analysis') as never:m.main();never.assert_not_called()
    self.assertFalse((out/'formal_summary.json').exists());before={n:(out/n).read_bytes() for n in collect.SOURCE_FILES};config=pub.analysis_config(dict(project=str(p),python='python',user='ordinary',host='host'),'a'*40);self.assertNotIn('truth',config);self.assertIn('truth',pub.analysis_config(dict(project=str(p),python='python',user='ordinary',host='host'),'a'*40,phase='final'))
    with mock.patch.object(sys,'argv',argv+['--phase','final','--truth',str(p/'truth.json')]),mock.patch.object(m,'wait_until'),mock.patch.object(m,'training_analysis',side_effect=AssertionError('Do not rescan frozen source')):m.main()

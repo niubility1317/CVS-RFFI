@@ -21,7 +21,7 @@ class Observer:
   ctx['train_loader']=RecordingLoader(ctx['train_loader'],'L',self.sequence)
   ctx['unlabeled_loader']=PendingLoader(RecordingLoader(ctx['unlabeled_loader'],'U',self.sequence),self)
  def initialize(self,m,c,out):
-  self.model=m;self.initial_head=m.id_backbone.encoder.core.id_backbone.cls_head.weight.detach().clone();self.u_router=Router(c)
+  self.model=m;self._u_scope.model_created(m);self.initial_head=m.id_backbone.encoder.core.id_backbone.cls_head.weight.detach().clone();self.u_router=Router(c)
   if sum(p.numel() for p in m.parameters())!=900722 or len(m.state_dict())!=206:raise ValueError('Fixed original F shape differs')
   if any(not torch.equal(v.detach().cpu(),self.parent['model'][k]) for k,v in m.state_dict().items()):raise ValueError('Same own B01 parent strict state differs before training')
   d.write(self.out/'actual_modules.json',{k:str(v.__file__) for k,v in sys.modules.items() if k in ['SSDG.train_ssdg','DataAugmentation','leo_practical.channel','leo_practical.residual']})
@@ -31,7 +31,7 @@ class Observer:
   d.write(self.out/'optimizer_initialization.json',dict(state_entries=0,reset=True,schedule='cosine10',lr=opt.param_groups[0]['lr'],weight_decay=opt.param_groups[0]['weight_decay']))
  @contextmanager
  def native_scope(self,native):
-  orig=native.deepcopy;aug=native.configure_augmentor_for_epoch;schedule=supcon.schedule;terminal=native._resolve_phase1_terminal_status;u_scope=NativeUScope(self,native);u_scope.install()
+  orig=native.deepcopy;aug=native.configure_augmentor_for_epoch;schedule=supcon.schedule;terminal=native._resolve_phase1_terminal_status;u_scope=NativeUScope(self,native);self._u_scope=u_scope;u_scope.install()
   def copied(v,*args,**kw):
    result=orig(v,*args,**kw)
    if v is getattr(self,'model',None):

@@ -1,0 +1,31 @@
+{
+  "status": "FAILED_PREFLIGHT",
+  "run_id": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01",
+  "training_code_commit": "17b5939f440e370dacb6e92b6b523940d726115b",
+  "dispatcher_pid": 1671149,
+  "independent_poststate": {
+    "dispatcher_alive": false,
+    "worker_count": 0,
+    "only_dispatcher_and_failure_artifacts": true
+  },
+  "error": "SSDG.train_ssdg has no module-level _trusted_pseudo_loss_hook",
+  "actual_layer": "NativeUScope.install interface assumed a module hook absent from actual frozen runtime;existing model._source_unlabeled_feature_hook is available",
+  "cost": {
+    "NN": 770,
+    "real_parent_noquery_NN": 2,
+    "synthetic_L_NN": 768,
+    "U_teacher_NN": 0,
+    "U_student_NN": 0,
+    "optimizer_updates": 0,
+    "real_IQ": 0,
+    "propagation_simulations": 0
+  },
+  "source_training_started": false,
+  "formal_predictions": 0,
+  "source_or_formal_results_available": false,
+  "preserved_outputs": true,
+  "no_blind_resubmission": true,
+  "replacement_run": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
+  "scientific_recipe_changed": false,
+  "root_cause": "Local current native source was used to infer an interface not present in actual frozen loaded runtime;actual source snapshot now used for narrow fix"
+}

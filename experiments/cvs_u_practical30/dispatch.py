@@ -29,6 +29,7 @@ def dispatch():
  if d.BASE.exists():raise FileExistsError('Reconcile own existing run; never duplicate or overwrite')
  d.BASE.mkdir();(d.BASE/'logs').mkdir()
  d.write(d.BASE/'dispatcher.json',dict(pid=os.getpid(),cwd=os.getcwd(),argv=sys.argv,owner=d.OWNER))
+ d.write(d.BASE/'technical_history/r01/cost.json',d.FAILED_R01_COST)
  from .preflight import smoke
  try:
   smoke()

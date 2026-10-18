@@ -4,6 +4,8 @@
   "run_id": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01",
   "reviewer": "/root/u_practical_p0p1",
   "reviewed_at": "2026-10-18T17:36:30.396Z",
+  "reviewed_state": "current working tree; code/config Git commit and launcher smoke handled by owner under existing minimal workflow",
+  "working_tree_base_commit": "9d97d70d44f0caa53c1471313e76da5988ec34f7",
   "scope": {
     "package": "experiments/cvs_u_practical30",
     "analysis": [
@@ -13,7 +15,7 @@
       "analysis/cvs_u_practical30_collect_20261019.py"
     ],
     "preregistration": "automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01",
-    "dependency_sources": "Read-only existing local P43/P41/native dependency sources;actual runtime pinned by originalreferencecommit"
+    "dependency_sources": "Read-only actual pinned P43/P41 and native source from existing local phase1_urban_sigtime_20261014 checkout"
   },
   "findings": [],
   "remaining_P0_P1": 0,
@@ -63,5 +65,6 @@
     "commits": 0,
     "only_written_artifact": "local_artifacts/F_UPractical_E30_20261019/review.json"
   },
-  "claim_boundary": "PASS is a bounded code/protocol review, not a scientific result, real-checkpoint smoke result, launch result or repeatable dual-gain claim"
+  "claim_boundary": "PASS is a bounded code/protocol review, not a scientific result, real-checkpoint smoke result, launch result or repeatable dual-gain claim",
+  "post_launch_limitation": "R01 real smoke disproved assumed module-level trusted pseudo hook:actual frozenruntime has no such symbol. Local currentdependency source was not sufficient for this interface. Original PASS retained as bounded prerelease record,not actualruntime proof. Only actualexisting model featurehook binding gets targeted re-review inR02."
 }

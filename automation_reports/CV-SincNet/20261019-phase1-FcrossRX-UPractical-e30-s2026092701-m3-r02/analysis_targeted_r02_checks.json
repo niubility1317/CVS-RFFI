@@ -1,0 +1,61 @@
+{
+  "status": "PASS",
+  "scope": "Targeted r02 identity, AST and preserved failed-preflight cost integration only",
+  "run_id": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
+  "training_release": "cvs_FcrossRX_UPractical_E30_20261019_r02",
+  "analysis_release": "cvs_F_u_practical30_analysis_20261019_r02",
+  "output_name": "analysis_auto_r01",
+  "failed_run_preserved": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01",
+  "history_artifact": "technical_history/r01/cost.json",
+  "focused_command": "F:/App/miniconda3/python.exe -X utf8 -B analysis/cvs_u_practical30_check_20261019.py UPracticalChecks.test_r02_ID_AST_and_failed770_cost",
+  "focused_tests_passed": 1,
+  "focused_elapsed_seconds": 0.048,
+  "AST_public_files": 4,
+  "AST_publisher_emitted_scripts": 3,
+  "source_invocation_without_truth": true,
+  "source_criteria_and_scientific_matrix_changed": false,
+  "previous_seven_fixtures_repeated": false,
+  "prior_focused_evidence": "F_UPractical_E30_20261019/analysis_prepare/analysis_local_checks.json",
+  "cost_fixture": {
+    "current_valid_run_total_NN_reference": 13057048,
+    "current_valid_shared_smoke_NN_reference": 2356,
+    "preserved_failed_r01_NN": 770,
+    "whole_candidate_all_attempts_NN_reference": 13057818,
+    "failed_r01_optimizer_updates": 0,
+    "failed_r01_real_IQ": 0,
+    "failed_r01_propagation_simulations": 0,
+    "failed_r01_workers": 0,
+    "failure_separate_from_current_training": true,
+    "mismatched_failure_count_rejected": true,
+    "actual_new_run_costs_not_yet_read": true
+  },
+  "same_interface_targeted_schema_fix": {
+    "status": "PASS",
+    "command": "F:/App/miniconda3/python.exe -X utf8 -B analysis/cvs_u_practical30_check_20261019.py UPracticalChecks.test_r02_actual_feature_hook_logging_schema",
+    "tests_passed": 1,
+    "elapsed_seconds": 0.035,
+    "production_files_changed": [
+      "analysis/cvs_u_practical30_analysis_20261019.py",
+      "analysis/cvs_u_practical30_check_20261019.py"
+    ],
+    "actual_hook": "model._source_unlabeled_feature_hook",
+    "native_losses_preserved": true,
+    "native_feature_adjustment": null,
+    "native_optimizer_step_matches_local_step": true,
+    "fixture_native_batch_idx": "1..222 (actual frozen enumerate start1)",
+    "old_native_loss_returned_unchanged_key_required": false,
+    "actual_three_row_two_batch_shapes_checked": true,
+    "negative_field_mutations_rejected": 4,
+    "AST_changed_files": 2,
+    "full_seven_fixtures_or_6660_streams_repeated": false,
+    "scientific_recipe_changed": false
+  },
+  "local_execution": {
+    "NN": 0,
+    "checkpoint_loads": 0,
+    "real_IQ_reads": 0,
+    "optimizer_updates": 0,
+    "remote_calls": 0,
+    "current_experiment_source_or_formal_reads": 0
+  }
+}

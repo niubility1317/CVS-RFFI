@@ -16,6 +16,34 @@ def legacy_smoothing_source_check():
   assert 'smoothing!=.01' in p.read_text(encoding='utf8');return dict(status='PASS',source=str(p))
  return dict(status='NOT_PACKAGED_NONBLOCKING',source=None,interpretation='Actual original terms and globalLS.01 checked by launcher real smoke')
 
+
+_NATIVE_FEATURE_CODE=None
+_NATIVE_NONE_GUARD_CODE=None
+def frozen_boundary():
+ """Compile the real frozen model-hook callsite,not a manufactured module callback."""
+ global _NATIVE_FEATURE_CODE,_NATIVE_NONE_GUARD_CODE
+ local=d.ROOT/'local_artifacts/F_UPractical_E30_20261019/frozen_native_train_ssdg.py'
+ if local.is_file():p=local
+ else:
+  from experiments.cvs_phase1_overlay.model import native_modules
+  p=Path(native_modules().__file__)
+ source=p.read_text(encoding='utf8');tree=ast.parse(source)
+ assert '_trusted_pseudo_loss_hook' not in source
+ found=[];guards=[]
+ for node in ast.walk(tree):
+  for field in ('body','orelse'):
+   body=getattr(node,field,None)
+   if not isinstance(body,list):continue
+   for i,stmt in enumerate(body[:-1]):
+    if isinstance(stmt,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='feature_hook' for t in stmt.targets) and isinstance(stmt.value,ast.Call) and isinstance(stmt.value.func,ast.Name) and stmt.value.func.id=='getattr' and len(stmt.value.args)>=2 and isinstance(stmt.value.args[0],ast.Name) and stmt.value.args[0].id=='model' and isinstance(stmt.value.args[1],ast.Constant) and stmt.value.args[1].value=='_source_unlabeled_feature_hook':found.append((stmt,body[i+1]))
+   for stmt in body:
+    if isinstance(stmt,ast.If) and isinstance(stmt.test,ast.Compare) and isinstance(stmt.test.left,ast.Name) and stmt.test.left.id=='source_unlabeled_feature_loss':guards.append(stmt)
+ assert len(found)==1 and len(guards)==1
+ assignment,condition=found[0];call=next(n for n in ast.walk(condition) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id=='feature_hook');keys=[k.arg for k in call.keywords]
+ assert keys==['model','teacher','student_output','teacher_output','extra','domains','optimizer_step','identity_loss','pseudo_loss','entropy_loss']
+ _NATIVE_FEATURE_CODE=compile(ast.fix_missing_locations(ast.Module(body=[assignment,condition],type_ignores=[])),str(p),'exec');_NATIVE_NONE_GUARD_CODE=compile(ast.fix_missing_locations(ast.Module(body=guards,type_ignores=[])),str(p),'exec')
+ return dict(status='PASS',actual_source=str(p),actual_model_hook_line=assignment.lineno,actual_call_line=call.lineno,keyword_names=keys,missing_old_module_hook=True,None_adjustment_guard_line=guards[0].lineno,NN=0,IQ=0,CP=0)
+
 def routing_checks():
  old_torch=sys.modules.get('torch');old_scope=sys.modules.pop(__package__+'.u_scope',None)
  class T(np.ndarray):
@@ -64,19 +92,25 @@ def routing_checks():
     def threshold(*args):calls['threshold']+=1;return cm
     def temporal(*args):calls['temporal']+=1;return tm
     def strong(x,std):calls['strong']+=1;return (x+np.random.normal(0,std,x.shape).astype(x.dtype)).view(T)
-    native=types.SimpleNamespace(_threshold_mask=threshold,_temporal_mask_tensor=temporal,_strong_augment=strong,_trusted_pseudo_loss_hook=None)
-    m=object();o=types.SimpleNamespace(model=m,pending_U=dict(meta=meta,count=n,hidden_y=True,teacher_raw=raw,teacher_raw_no_grad=True),u_records=[],u_router=router);scope=NativeUScope(o,native);scope.install();args=types.SimpleNamespace(pseudo_strong_agreement=False,pseudo_domain_gate=False,pseudo_temporal_gate=True,pseudo_temporal_mode='batch_neighbor',pseudo_threshold_mode='rx_day_quantile',pseudo_quantile=.86,tau_min=.92,tau_max=.97,pseudo_temporal_window=2,pseudo_temporal_min_conf=.8,lambda_u=.16,lambda_ent=.01,label_smoothing=.01)
+    native=types.SimpleNamespace(_threshold_mask=threshold,_temporal_mask_tensor=temporal,_strong_augment=strong)
+    try:{k:getattr(native,k) for k in ('_threshold_mask','_temporal_mask_tensor','_strong_augment','_trusted_pseudo_loss_hook')}
+    except AttributeError as error:assert '_trusted_pseudo_loss_hook' in str(error)
+    else:raise AssertionError('Exact frozen missing-module-hook failure was not reproduced')
+    m=types.SimpleNamespace();o=types.SimpleNamespace(model=m,pending_U=dict(meta=meta,count=n,hidden_y=True,teacher_raw=raw,teacher_raw_no_grad=True),u_records=[],u_router=router);scope=NativeUScope(o,native);scope.install();args=types.SimpleNamespace(pseudo_strong_agreement=False,pseudo_domain_gate=False,pseudo_temporal_gate=True,pseudo_temporal_mode='batch_neighbor',pseudo_threshold_mode='rx_day_quantile',pseudo_quantile=.86,tau_min=.92,tau_max=.97,pseudo_temporal_window=2,pseudo_temporal_min_conf=.8,lambda_u=.16,lambda_ent=.01,label_smoothing=.01)
     try:
      assert native._threshold_mask(conf,tensor(np.arange(n)%3),args) is cm;assert native._temporal_mask_tensor(pseudo,conf,(None,meta),args,'cpu') is tm
      state=np.random.get_state();expected=strong(raw,.015);expectedstate=np.random.get_state();np.random.set_state(state);calls['strong']=0;student=native._strong_augment(raw,.015);gotstate=np.random.get_state();assert calls['strong']==1 and np.array_equal(expectedstate[1],gotstate[1]) and expectedstate[2:]==gotstate[2:]
      selected=select(n,21,4441)[0];com=[i for i in range(n) if i not in selected];assert np.array_equal(student[com],expected[com])
      if arm=='C01':assert np.array_equal(student,expected)
      mask=cm&tm;lu=tensor(1.2 if mask.any() else 0.);ent=tensor(.7)
-     returned=native._trusted_pseudo_loss_hook(model=m,args=args,epoch=1,batch_idx=0,loss_l=tensor(1.),loss_u=lu,loss_ent=ent,active=True,logits=logits,pseudo=pseudo,mask=mask)
-     assert returned is lu and o.pending_U is None and len(o.u_records)==1 and calls==dict(threshold=1,temporal=1,strong=1)
-     r=o.u_records[0];assert r['CE_denominator']==int(mask.sum()) and r['entropy_denominator']==n and r['entropy_all_U'] and r['native_loss_returned_unchanged'] and r['CE_label_smoothing']==0 and not r['strong_agreement'];json.dumps(r,allow_nan=False)
+     env=dict(model=m,pseudo_source=types.SimpleNamespace(),out_s=dict(tx_logits=logits),out_w=dict(tx_logits=logits),extra_u=(None,meta),d_u=tensor(np.arange(n)%3),r3_optimizer_steps=0,loss_tx_l=tensor(1.),loss_u=lu,loss_ent=ent,y_u=tensor(np.full(n,-1)),r3_u_logs={})
+     exec(_NATIVE_FEATURE_CODE,{},env)
+     assert env['source_unlabeled_feature_loss'] is None and env['feature_metrics']=={} and env['loss_u'] is lu and env['loss_ent'] is ent
+     env.update(loss=tensor(1.7),scaled_closed_loss=tensor(1.7));original_loss=env['loss'];exec(_NATIVE_NONE_GUARD_CODE,{},env);assert env['loss'] is original_loss
+     assert o.pending_U is None and len(o.u_records)==1 and calls==dict(threshold=1,temporal=1,strong=1)
+     r=o.u_records[0];assert r['CE_denominator']==int(mask.sum()) and r['entropy_denominator']==n and r['entropy_all_U'] and r['native_losses_preserved'] and r['CE_label_smoothing']==0 and not r['strong_agreement'];json.dumps(r,allow_nan=False)
     finally:scope.restore()
-    assert native._threshold_mask is threshold and native._strong_augment is strong and native._trusted_pseudo_loss_hook is None
+    assert native._threshold_mask is threshold and native._strong_augment is strong and not hasattr(native,'_trusted_pseudo_loss_hook') and not hasattr(m,'_source_unlabeled_feature_hook')
     count+=1
   for n,e,s in [(0,21,4441),(125,21,4441),(256,20,4441),(256,22,4441),(256,31,6661)]:bad(lambda n=n,e=e,s=s:select(n,e,s))
   for k,v in [('tx_i',np.zeros(8,int)),('rx_i',np.full(8,2)),('day_i',np.full(8,4)),('eq_i',np.zeros(8,int)),('base_index',np.arange(7))]:
@@ -128,7 +162,7 @@ def run():
  for sh in [(5,160),(6,64),(6,160,1)]:bad(lambda sh=sh:check_default_head(sh))
  assert cumulative(1,1)==(21,4441) and cumulative(10,2220)==(30,6660)
  for ep,step in [(0,0),(1,223),(11,2221),(10,1)]:bad(lambda ep=ep,step=step:cumulative(ep,step))
- routing=routing_checks();legacy=legacy_smoothing_source_check()
+ boundary=frozen_boundary();routing=routing_checks();legacy=legacy_smoothing_source_check()
  text=Path(__file__).with_name('model.py').read_text(encoding='utf8');assert 'original.hook(self,**kw)' in text and '_full_channel=' not in text and set(INFO_KEYS)=={'concat/'+k for k in CONCAT_FIELDS} and len(INFO_KEYS)==7
  from . import report
  assert len(report.logical_rows())==5 and len(report.PAIRS)==10 and .5+.5+.25==1.25
@@ -152,5 +186,5 @@ def run():
   summary=report.source_decision();json.dumps(summary,allow_nan=False);assert type(summary['promotion']['passed']) is bool and not summary['promotion']['passed'] and summary['promotion']['S_minus_N_fullV_clean_pp']==0. and summary['promotion']['S_minus_C_midlow_pp']==0. and len(captured)==1 and not summary['scientific_failure_skips_formal']
  finally:report.logical_rows=old_rows;report.d.read=old_read;report.d.write=old_write;report.np.load=old_load
  for p in Path(__file__).parent.glob('*.py'):ast.parse(p.read_text(encoding='utf8'),filename=str(p))
- return dict(status='PASS',protocol_negatives=negative,routing=routing,legacy_smoothing_source=legacy,emitted_native_info_keys=7,full6L_original_hook=True,actual_rows=3,unique_original_parents=2,source_stage_S_minus_N=True,no_new_losses=True,real_model_checkpoint_smoke='launcher first step pending2356NN',NN=0,CP=0,IQ=0,updates=0,target=False)
+ return dict(status='PASS',protocol_negatives=negative,actual_frozen_native_boundary=boundary,routing=routing,legacy_smoothing_source=legacy,emitted_native_info_keys=7,full6L_original_hook=True,actual_rows=3,unique_original_parents=2,source_stage_S_minus_N=True,no_new_losses=True,real_model_checkpoint_smoke='launcher first step pending2356NN',NN=0,CP=0,IQ=0,updates=0,target=False)
 if __name__=='__main__':print(json.dumps(run()))

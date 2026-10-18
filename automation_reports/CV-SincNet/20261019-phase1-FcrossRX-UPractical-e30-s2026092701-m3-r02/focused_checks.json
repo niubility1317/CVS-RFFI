@@ -1,0 +1,127 @@
+{
+  "status": "PASS",
+  "scope": "targeted actual frozen native model-hook repair; no local realCP/IQ/NN/remote",
+  "run_id": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
+  "release": "cvs_FcrossRX_UPractical_E30_20261019_r02",
+  "focused": {
+    "status": "PASS",
+    "protocol_negatives": 76,
+    "actual_frozen_native_boundary": {
+      "status": "PASS",
+      "actual_source": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016\\local_artifacts\\F_UPractical_E30_20261019\\frozen_native_train_ssdg.py",
+      "actual_model_hook_line": 10858,
+      "actual_call_line": 10862,
+      "keyword_names": [
+        "model",
+        "teacher",
+        "student_output",
+        "teacher_output",
+        "extra",
+        "domains",
+        "optimizer_step",
+        "identity_loss",
+        "pseudo_loss",
+        "entropy_loss"
+      ],
+      "missing_old_module_hook": true,
+      "None_adjustment_guard_line": 11491,
+      "NN": 0,
+      "IQ": 0,
+      "CP": 0
+    },
+    "routing": {
+      "status": "PASS",
+      "mock_positive_cases": 13,
+      "negatives": 10,
+      "production_batches": [
+        256,
+        124
+      ],
+      "quarters": [
+        64,
+        31
+      ],
+      "U_packets": 567000,
+      "U_selected_slots": 141750,
+      "original_strong_numpy_RNG_endstate_equal": true,
+      "global_private_selection_numpy_Python_RNG_preserved": true,
+      "raw_unmodified": true,
+      "selected_raw_not_Gaussian": true,
+      "teacher_only_accepts_student_disagreement": true,
+      "empty_mask_differentiable_zero_interface": true,
+      "U_truth_used": false,
+      "NN": 0
+    },
+    "legacy_smoothing_source": {
+      "status": "PASS",
+      "source": "E:\\type10-7\\code\\worktrees\\cvs_iq_timing_20261016\\experiments\\cvs_sigtime_rdrop_legacy\\model.py"
+    },
+    "emitted_native_info_keys": 7,
+    "full6L_original_hook": true,
+    "actual_rows": 3,
+    "unique_original_parents": 2,
+    "source_stage_S_minus_N": true,
+    "no_new_losses": true,
+    "real_model_checkpoint_smoke": "launcher first step pending2356NN",
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "updates": 0,
+    "target": false
+  },
+  "AST": {
+    "status": "PASS",
+    "package_Python_files": 20,
+    "emitted_remote_AST": [
+      "PASS",
+      "PASS"
+    ],
+    "network_calls": 0,
+    "CP": 0,
+    "IQ": 0,
+    "target": false
+  },
+  "targeted": {
+    "old_AttributeError_exactly_reproduced": true,
+    "actual_frozen_source": "../F_UPractical_E30_20261019/frozen_native_train_ssdg.py",
+    "actual_model_feature_hook_line": 10858,
+    "actual_call_line": 10862,
+    "None_adjustment_guard_line": 11491,
+    "model_hook_bound_after_original_install": true,
+    "model_attribute_restored": true,
+    "native_three_function_wrappers_restored": true,
+    "smoke_calls_actual_model_attribute_with_exact_native_kwargs": true,
+    "loss_adjustment": null,
+    "new_NN": 0,
+    "new_CE_ops": 0,
+    "new_autograd_loss_nodes": 0,
+    "science_unchanged": true
+  },
+  "failed_r01": {
+    "status": "FAILED_PREFLIGHT",
+    "NN": 770,
+    "real_parent_forward_packets": 2,
+    "synthetic_L_forward_packets": 768,
+    "U_forward_packets": 0,
+    "optimizer_updates": 0,
+    "real_IQ": 0,
+    "propagation_simulations": 0,
+    "worker_count": 0,
+    "preserved": true
+  },
+  "fresh_smoke": {
+    "status": "NOT_RUN_LOCAL",
+    "expected_NN": 2356,
+    "real_parent_NN": 4,
+    "three_L_NN": 2304,
+    "U_teacher_NN": 24,
+    "U_student_NN": 24,
+    "continues_on_PASS": true
+  },
+  "CP": 0,
+  "IQ": 0,
+  "NN": 0,
+  "updates": 0,
+  "remote": 0,
+  "Git": 0
+}

@@ -9,8 +9,9 @@ from pathlib import Path
 import numpy as np
 sys.path.insert(0,str(Path(__file__).resolve().parent))
 import cvs_practical_budget50_analysis_20261018 as old
-RUN='20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01'
-TRAINING_RELEASE='cvs_FcrossRX_UPractical_E30_20261019_r01'
+RUN='20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02'
+TRAINING_RELEASE='cvs_FcrossRX_UPractical_E30_20261019_r02'
+FAILED_RUN='20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01'
 REFERENCE_RUN=old.REFERENCE_RUN
 PRIOR_E50_RUN=old.RUN
 CONDITIONS=('NOAS30','AS30','MATCHED_NOAS30','UTEACHER30','UPRACTICAL30')
@@ -215,7 +216,8 @@ def check_u_step(q,arm):
  positions=q['selected_positions'];selected=np.zeros(n,bool)
  if positions!=sorted(positions) or len(set(positions))!=n//4 or any(type(z) is not int or not 0<=z<n for z in positions):raise ValueError('Quarter original U positions without replacement required')
  selected[positions]=True;as_mask=selected if mode=='QUARTER_PRACTICAL' else np.zeros(n,bool);gaussian=np.flatnonzero(~as_mask).tolist()
- if q['Gaussian_positions']!=gaussian or q['As_packets']!=int(as_mask.sum()) or q['sample_id_fields']!=['eq_i','rx_i','day_i','sig_i','base_index'] or any(q[k] for k in ('U_truth_available','ordinary_before_practical','extra_NN','extra_CE_operator_calls','global_RNG_used_for_routing','selection_uses_TX_or_pseudo','domain_gate','strong_agreement','U_truth_used','extra_teacher')) or not all(q[k] for k in ('original_strong_before_overwrite','teacher_qualification_before_student_view','selection_without_replacement','teacher_raw_same_input','teacher_eval_no_grad','teacher_qualification_completed_before_strong','entropy_all_U','entropy_includes_unqualified','native_loss_returned_unchanged')):raise ValueError('Teacher-only qualification/hiddenU/input-routing boundary differs')
+ if q['native_losses_preserved'] is not True or q['native_feature_adjustment'] is not None or q['native_hook']!='model._source_unlabeled_feature_hook' or q['native_optimizer_step']!=i:raise ValueError('Actual native feature hook must preserve existing pseudo and entropy losses without adjustment')
+ if q['Gaussian_positions']!=gaussian or q['As_packets']!=int(as_mask.sum()) or q['sample_id_fields']!=['eq_i','rx_i','day_i','sig_i','base_index'] or any(q[k] for k in ('U_truth_available','ordinary_before_practical','extra_NN','extra_CE_operator_calls','global_RNG_used_for_routing','selection_uses_TX_or_pseudo','domain_gate','strong_agreement','U_truth_used','extra_teacher')) or not all(q[k] for k in ('original_strong_before_overwrite','teacher_qualification_before_student_view','selection_without_replacement','teacher_raw_same_input','teacher_eval_no_grad','teacher_qualification_completed_before_strong','entropy_all_U','entropy_includes_unqualified','native_losses_preserved')):raise ValueError('Teacher-only qualification/hiddenU/input-routing boundary differs')
  if q['C_returns_original_strong_object']!=(mode=='GAUSSIAN_CONTROL') or q['entropy_includes_As']!=(mode=='QUARTER_PRACTICAL') or (q['original_strong_draw_packets'],q['original_strong_std'],q['CE_label_smoothing'],q['native_global_L_label_smoothing'],q['lambda_u'],q['lambda_entropy'],q['entropy_denominator'])!=(n,.015,0.,.01,.16,.01,n):raise ValueError('Native all-slot Gaussian draw/U CE/entropy weights differ')
  if q['threshold_policy']!=dict(mode='rx_day_quantile',quantile=.86,tau_min=.92,tau_max=.97) or q['temporal_policy']!=dict(mode='batch_neighbor',window=2,minimum_confidence=.8):raise ValueError('Original teacher confidence/temporal policy must remain fixed')
  ids=np.asarray(q['sample_ids']);rx=np.asarray(q['RX']);day=np.asarray(q['day']);eq=np.asarray(q['eq']);dom=np.asarray(q['domains']);pseudo=np.asarray(q['teacher_pseudo']);conf=np.asarray(q['teacher_conf'],float);z=np.asarray(q['student_logits'],float)
@@ -302,7 +304,7 @@ def training_analysis(project):
   args=read(lookup[ref]/'source/actual_native_args.json');args=args.get('args',args);oldcost=result[ref]['cost'];oldtail={k:oldcost[k]-pcost[k] for k in ('student_train_NN','student_eval_NN','teacher_train_NN','teacher_eval_NN','native_training_and_validation_NN')};comparability[name]=dict(reference_condition=ref,old_step_logs_rescanned=False,old_tail_four_counters=oldtail,new_tail_four_counters=candidate['cost'],four_counters_equal=all(oldtail[k]==candidate['cost'][k] for k in oldtail),different_actual_arg_keys=sorted(k for k in set(args)|set(private['args']) if args.get(k)!=private['args'].get(k)),common_teacher_qualification_path_unchanged=True,student_strong_agreement_removed_in_all_three_new_rows=True,common_U_or_full_IQ_trajectory_not_claimed=True)
  return dict(status='VERIFIED_COMPLETE_TRAINING_LOGS',run_id=RUN,rows=result,parent20=parents,unique_parent20_costs=unique_parents,new_model_rows=3,new_model_epochs=30,new_updates=6660,cumulative_candidate_epochs_each=30,cumulative_candidate_updates_each=6660,reference_comparability=comparability,shared_parent_count=2,analysis_NN=0,IQ_reads=0,checkpoint_reads=0,updates=0,target_scores_read=False)
 
-def cost_summary(project,training):
+def _current_cost_summary(project,training):
  metadata=ensure_metadata(project,'final');out={}
  for arm,_ in rows(project):
   c=training['rows'][arm]['cost'];q=metadata[arm]['source_qualification/complete.json'];p=metadata[arm]['prediction/complete.json'];native=c['native_training_and_validation_NN'];out[arm]=dict(student_train_NN=c['student_train_NN'],student_eval_NN=c['student_eval_NN'],teacher_train_NN=c['teacher_train_NN'],teacher_eval_NN=c['teacher_eval_NN'],native_NN=native,source_readout_NN=q['NN'],source_readout_wall_seconds=q.get('wall_seconds'),formal_prediction_NN=p['actual_NN'],formal_prediction_wall_seconds=p['wall_seconds'],native_wall_seconds=c['wall_seconds'],segment_and_own_readouts_NN=native+q['NN']+p['actual_NN'],reused=arm in CONDITIONS[:2])
@@ -315,8 +317,20 @@ def cost_summary(project,training):
  return dict(rows=out,new_model_epochs=30,new_updates=6660,new_training_and_readouts_NN=segments,new_shared_smoke_NN=shared,new_total_NN=segments+shared,shared_smoke_cost=dict(synthetic_NN=smoke['NN'],real_checkpoint_NN=real['NN'],total_NN=shared,unique_parent_count=2,not_double_charged=True),parent20_native_NN_reused={a:p['cost']['native_training_and_validation_NN'] for a,p in training['parent20'].items()},unique_parent20_native_NN_reused={a:c['native_training_and_validation_NN'] for a,c in training['unique_parent20_costs'].items()},unique_parent20_native_NN_sum=sum(c['native_training_and_validation_NN'] for c in training['unique_parent20_costs'].values()),cumulative_candidate_native_NN={a:training['parent20'][a]['cost']['native_training_and_validation_NN']+out[a]['native_NN'] for a in CONDITIONS[2:]},old_two_E30_training_and_readouts_NN_reused=sum(out[a]['segment_and_own_readouts_NN'] for a in CONDITIONS[:2]),old_costs_not_recharged=True,U_physical_simulations={a:training['rows'][a]['counts']['U_As'] for a in CONDITIONS[2:]},U_CPU_host_wall={a:training['rows'][a]['u_practical']['timing'] for a in CONDITIONS[2:]},CPU_inclusive_route_not_added_to_children=True,analysis_NN=0,analysis_IQ_reads=0,analysis_checkpoint_reads=0,analysis_updates=0,wall_scope='Actual model-seconds;channel/CPU metadata cost included in native wall;not isolated speed proof')
 
 
+def failed_attempt_cost(project):
+ c=read(Path(project)/'runs'/RUN/'technical_history/r01/cost.json')
+ if c['status']!='FAILED_PREFLIGHT' or c['run_id']!=FAILED_RUN or c['NN']!=770 or any(c[k]!=0 for k in ('optimizer_updates','real_IQ','propagation_simulations','worker_count')) or c['preserved'] is not True:raise ValueError('Preserved r01 preflight cost differs from actual failed attempt')
+ return {k:c[k] for k in ('status','run_id','code_commit','NN','optimizer_updates','real_IQ','propagation_simulations','worker_count','preserved','error')}
+
+
+def cost_summary(project,training):
+ c=_current_cost_summary(project,training);failure=failed_attempt_cost(project)
+ c.update(technical_failed_attempts=[failure],technical_failed_NN=failure['NN'],candidate_whole_attempts_NN=c['new_total_NN']+failure['NN'],technical_failure_not_charged_to_training=True)
+ return c
+
+
 def render_report(source,formal,training,costs):
- d=source['decision'];s=formal['stage'];lines=['# U practical E30：固定三尾段结果','',RUN+'（immutable m2名称，actual_m3）；model seed2026092701。N01从原NoAs20，C/S从同一原As20及各自ownEMA追加10轮。旧NoAs30/As30只读复用。','',f"源资格PASS={d['source_criteria_pass']}，固定配方关闭={d['fixed_recipe_closed']}；fullV clean S−matchedN {d['fullV_clean_S_minus_matchedNoAs_pp']:+.6f}pp（≥−.1），pooled两draw且mid/low等权 S−C {d['midlow_S_minus_C_pp']:+.6f}pp（≥+.5）。源先保存并由root读取，final是另一次显式调用；FAIL仍评分，分析不自动扩E50或seed。",'',f"正式 S−matchedN clean {s['clean_delta_pp']:+.6f}pp、净修复{s['clean_net_repairs']}，0.1绝对百分点阶段约束={s['clean_absolute_0p1pp_guard_met']}；mid/low urban {s['midurban_gain_pp']:+.6f}/{s['lowurban_gain_pp']:+.6f}pp。n=1，不证明可重复双提升。",'', 'N/C/S共同去学生strong agreement，原raw ownEMA teacher的RX/day quantile与batch_neighbor资格保留。N/C保留原Gaussian strong(.015)；S先生成整批strong，再覆盖私有均匀B//4位置为完整practical(raw同一U)：256→64，末124→31。每U只有一次teacher和student前向，原L6/1.25/ORD128保留；U CE=.16×teacher-qualified槽位均值（空选为0），entropy=.01×全部U槽均值（概率clamp1e-8），包括未资格与As槽。无额外KL、U真值或新头。S−C是U视图增量；C−旧AS含共同去agreement改变，不是纯星地收益。五条件不是2×2因子。','', '|条件|视图|ACC %|macro-F1 %|最差RX %|','|---|---|---:|---:|---:|']
+ d=source['decision'];s=formal['stage'];lines=['# U practical E30：固定三尾段结果','',RUN+'（immutable m3-r02）；model seed2026092701。N01从原NoAs20，C/S从同一原As20及各自ownEMA追加10轮。旧NoAs30/As30只读复用。','',f"源资格PASS={d['source_criteria_pass']}，固定配方关闭={d['fixed_recipe_closed']}；fullV clean S−matchedN {d['fullV_clean_S_minus_matchedNoAs_pp']:+.6f}pp（≥−.1），pooled两draw且mid/low等权 S−C {d['midlow_S_minus_C_pp']:+.6f}pp（≥+.5）。源先保存并由root读取，final是另一次显式调用；FAIL仍评分，分析不自动扩E50或seed。",'',f"正式 S−matchedN clean {s['clean_delta_pp']:+.6f}pp、净修复{s['clean_net_repairs']}，0.1绝对百分点阶段约束={s['clean_absolute_0p1pp_guard_met']}；mid/low urban {s['midurban_gain_pp']:+.6f}/{s['lowurban_gain_pp']:+.6f}pp。n=1，不证明可重复双提升。",'', 'N/C/S共同去学生strong agreement，原raw ownEMA teacher的RX/day quantile与batch_neighbor资格保留。N/C保留原Gaussian strong(.015)；S先生成整批strong，再覆盖私有均匀B//4位置为完整practical(raw同一U)：256→64，末124→31。每U只有一次teacher和student前向，原L6/1.25/ORD128保留；U CE=.16×teacher-qualified槽位均值（空选为0），entropy=.01×全部U槽均值（概率clamp1e-8），包括未资格与As槽。无额外KL、U真值或新头。S−C是U视图增量；C−旧AS含共同去agreement改变，不是纯星地收益。五条件不是2×2因子。','', '|条件|视图|ACC %|macro-F1 %|最差RX %|','|---|---|---:|---:|---:|']
  for a in CONDITIONS:
   for v in VIEWS:
    q=formal['summary'][a]['views'][v];lines.append(f"|{a}|{v}|{100*q['accuracy']:.6f}|{100*q['macro_f1']:.6f}|{100*q['worst_RX_accuracy']:.6f}|")
@@ -339,6 +353,7 @@ def render_report(source,formal,training,costs):
  for a in CONDITIONS:
   for v,g in formal['suburban_selfclean_gaps_pp'][a].items():lines.append(f"|{a}|{v}|{100*formal['summary'][a]['views'][v]['accuracy']:.6f}|{g:.6f}|")
  lines+=['',f"clean降低也会缩小gap，必须同时看绝对ACC。全部5×7固定预测和独立评分后truth join，重核{formal['independent_confusion_matrices']}CM/{formal['partition_reconciliations']}分区。源科学判据与正式阶段分开，默认头联合训练，无RX留出或诊断分类器。完整10配对、F1/最差RX、分层与成本保留；n1/微差不是可重复clean收益。正式不反馈参数/候选/seed或救跑，分析NN/CP/IQ/updates均0。"]
+ lines+=['',f"此前r01首步接口技术失败单列{costs['technical_failed_NN']}NN（原NoAs checkpoint前向2＋synthetic L768，U前向/物理传播/更新/worker均0）；旧run/release/log保留。本run有效训练与smoke成本为{costs['new_total_NN']}NN，含失败尝试的候选实际总计{costs['candidate_whole_attempts_NN']}NN；失败不是额外科学训练，也不与本次有效smoke重复计数。"]
  return '\n'.join(lines)+'\n'
 
 FINAL_FILES=('formal_summary.json','formal_confusions.json','formal_metrics.csv','final_report.md','costs.json','complete.json')

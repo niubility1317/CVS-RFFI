@@ -14,7 +14,7 @@ import tarfile
 import time
 from pathlib import Path, PurePosixPath
 
-RUN = '20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01'
+RUN = '20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02'
 OUTPUT = 'analysis_auto_r01'
 SOURCE_FILES = ('source_complete.json', 'source_summary.json',
                 'source_confusions.json', 'source_metrics.csv', 'training_logs.json')

@@ -1,0 +1,95 @@
+{
+  "status": "PASS",
+  "review_type": "one_targeted_direct_P1_interface_fix_check",
+  "run_id": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
+  "reviewer": "/root/u_practical_p0p1",
+  "reviewed_at": "2026-10-18T17:49:05.073Z",
+  "scope": "Only actual frozen native U hook binding/call/restore/None guard, matching first-step smoke, R02 identities and preserved R01 failed-cost linkage; no full review or original check rerun",
+  "actual_frozen_source": "local_artifacts/F_UPractical_E30_20261019/frozen_native_train_ssdg.py",
+  "prior_review_limitation": "Earlier review used a current local native source copy; that did not prove the immutable R01 runtime interface. Original record and failed outputs remain preserved.",
+  "actual_callsite": {
+    "old_module_hook_absent": true,
+    "model_attribute": "_source_unlabeled_feature_hook",
+    "getattr_line": 10858,
+    "call_line": 10862,
+    "keywords": [
+      "model",
+      "teacher",
+      "student_output",
+      "teacher_output",
+      "extra",
+      "domains",
+      "optimizer_step",
+      "identity_loss",
+      "pseudo_loss",
+      "entropy_loss"
+    ],
+    "None_adjustment_guard_line": 11491
+  },
+  "binding_check": {
+    "only_three_existing_module_functions_wrapped": true,
+    "model_created_called_after_original_install_and_before_training": true,
+    "observer_scope_available_before_model_build": true,
+    "model_hook_restored_to_old_state": true,
+    "three_module_functions_restored": true,
+    "teacher_forward_handle_removed": true,
+    "returns": [
+      null,
+      {}
+    ],
+    "existing_pseudo_CE_and_entropy_unchanged": true,
+    "no_added_loss_or_autograd_node": true,
+    "no_added_NN_or_CE_operator": true,
+    "preflight_calls_actual_model_attribute_exact_native_keywords": true
+  },
+  "same_interface_linked_finding": {
+    "priority": "P1",
+    "status": "FIXED",
+    "producer": "experiments/cvs_u_practical30/u_scope.py:70",
+    "consumer": "analysis/cvs_u_practical30_analysis_20261019.py:219",
+    "problem": "The repair replaced native_loss_returned_unchanged with native_losses_preserved/native_feature_adjustment, but the initial R02 parser still required the old key and would fail on the first actual U record.",
+    "resolution": "Parser and fixture now require native_losses_preserved=True, native_feature_adjustment=None, actual model hook name and matching local optimizer step; old key requirement removed.",
+    "focused_existing_evidence": "local_artifacts/F_UPractical_E30_20261019_r02/analysis_prepare/analysis_targeted_r02_checks.json:same_interface_targeted_schema_fix",
+    "fixture_tests_passed": 1,
+    "three_rows_two_batch_shapes": true,
+    "negative_field_mutations_rejected": 4,
+    "full_suite_or_streams_rerun": false
+  },
+  "identity_history_check": {
+    "design_RUN": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
+    "training_release": "cvs_FcrossRX_UPractical_E30_20261019_r02",
+    "analysis_RUN": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
+    "analysis_release": "cvs_F_u_practical30_analysis_20261019_r02",
+    "collector_RUN": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02",
+    "history_path": "technical_history/r01/cost.json",
+    "failed_run": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01",
+    "failed_NN": 770,
+    "failed_real_parent_NN": 2,
+    "failed_synthetic_L_NN": 768,
+    "failed_U_NN": 0,
+    "failed_updates": 0,
+    "failed_real_IQ": 0,
+    "failed_propagation": 0,
+    "failed_workers": 0,
+    "failed_cost_written_once_before_fresh_smoke": true,
+    "failed_and_valid_run_costs_separate": true,
+    "scientific_matrix_and_thresholds_changed": false
+  },
+  "read_validation_evidence": [
+    "local_artifacts/F_UPractical_E30_20261019_r02/implementation_checks.json",
+    "local_artifacts/F_UPractical_E30_20261019_r02/analysis_prepare/analysis_targeted_r02_checks.json"
+  ],
+  "remaining_P0_P1": 0,
+  "operations": {
+    "remote_calls": 0,
+    "real_IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "NN": 0,
+    "optimizer_updates": 0,
+    "checks_rerun": 0,
+    "code_changes": 0,
+    "commits": 0,
+    "only_written_artifact": "local_artifacts/F_UPractical_E30_20261019_r02/targeted_review.json"
+  },
+  "claim_boundary": "This targeted PASS closes the direct static interface defect and its producer/parser linkage. It does not claim the fresh real-checkpoint smoke, launch, training or scientific success has occurred."
+}

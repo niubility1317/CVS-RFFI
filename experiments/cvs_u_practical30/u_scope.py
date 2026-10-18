@@ -14,11 +14,18 @@ class PendingLoader:
    self.observer.pending_U=dict(meta=meta,count=len(y),hidden_y=True)
    yield batch
 class NativeUScope:
- def __init__(self,observer,native):self.o=observer;self.n=native;self.teacher_handle=None
+ def __init__(self,observer,native):self.o=observer;self.n=native;self.teacher_handle=None;self.bound_model=None
  def install(self):
-  n=self.n;self.old={k:getattr(n,k) for k in ('_threshold_mask','_temporal_mask_tensor','_strong_augment','_trusted_pseudo_loss_hook')}
-  if self.old['_trusted_pseudo_loss_hook'] is not None:raise ValueError('Original recipe must have no competing U loss hook')
-  n._threshold_mask=self.threshold;n._temporal_mask_tensor=self.temporal;n._strong_augment=self.strong;n._trusted_pseudo_loss_hook=self.loss
+  n=self.n;self.old={k:getattr(n,k) for k in ('_threshold_mask','_temporal_mask_tensor','_strong_augment')}
+  n._threshold_mask=self.threshold;n._temporal_mask_tensor=self.temporal;n._strong_augment=self.strong
+  if getattr(self.o,'model',None) is not None:self.model_created(self.o.model)
+ def model_created(self,model):
+  if self.bound_model is model:return
+  if self.bound_model is not None or getattr(model,'_source_unlabeled_feature_hook',None) is not None or getattr(model,'_source_unlabeled_selection_hook',None) is not None:raise ValueError('Original recipe must have no competing model U hooks')
+  self.bound_model=model;self.old_feature_present=hasattr(model,'_source_unlabeled_feature_hook');self.old_feature=getattr(model,'_source_unlabeled_feature_hook',None)
+  # A function closure is copied unchanged into EMA;only the student's native callsite invokes it.
+  def observed_feature(**kwargs):return self.feature(**kwargs)
+  model._source_unlabeled_feature_hook=observed_feature
  def teacher_created(self,teacher):
   def pre(m,args):
    p=self.o.pending_U
@@ -30,6 +37,7 @@ class NativeUScope:
   result=self.old['_threshold_mask'](conf,domains,args);p=self.o.pending_U
   if p is not None:
    if 'teacher_raw' not in p or 'conf_mask' in p or args.pseudo_strong_agreement or args.pseudo_domain_gate:raise ValueError('Common teacher-only qualification must precede student strong')
+   self.native_args=args
    p.update(conf=conf.detach().clone(),conf_mask=result.detach().clone(),domains=domains.detach().clone(),threshold_policy=dict(mode=args.pseudo_threshold_mode,quantile=float(args.pseudo_quantile),tau_min=float(args.tau_min),tau_max=float(args.tau_max)))
   return result
  def temporal(self,pseudo,conf,extra,args,device):
@@ -54,13 +62,18 @@ class NativeUScope:
    record['smoke_CPU_Torch_numpy_Python_RNG_unchanged_by_route']=True
   record['original_strong_cpu_wall_seconds']=strong_seconds;p['record']=record;p['student_input']=student
   return student
- def loss(self,*,model,args,epoch,batch_idx,loss_l,loss_u,loss_ent,active,logits,pseudo,mask):
-  p=self.o.pending_U
-  if not active or p is None or 'record' not in p or logits is None or logits.shape!=(p['count'],6) or model is not self.o.model or args.pseudo_strong_agreement or not torch.equal(pseudo,p['pseudo']) or not torch.equal(mask,p['conf_mask']&p['temporal_mask']):raise ValueError('Actual native teacher-only U masked loss interface differs')
-  start=time.perf_counter();r=p['record'];positions=r['selected_positions'];eligible=mask.detach().cpu().tolist();r.update(native_epoch=int(epoch),native_batch_idx=int(batch_idx),teacher_conf=p['conf'].cpu().tolist(),teacher_pseudo=pseudo.detach().cpu().tolist(),domains=p['domains'].cpu().tolist(),conf_mask=p['conf_mask'].cpu().tolist(),temporal_mask=p['temporal_mask'].cpu().tolist(),eligibility=eligible,threshold_policy=p['threshold_policy'],temporal_policy=p['temporal_policy'],domain_gate=False,strong_agreement=False,teacher_raw_same_input=True,teacher_eval_no_grad=p['teacher_raw_no_grad'],teacher_qualification_completed_before_strong=True,teacher_NN=p['count'],student_NN=p['count'],student_logits=logits.detach().cpu().tolist(),native_loss_u=float(loss_u.detach()),native_loss_entropy=float(loss_ent.detach()),lambda_u=float(args.lambda_u),lambda_entropy=float(args.lambda_ent),CE_denominator=int(mask.sum().detach()),entropy_denominator=p['count'],eligible_selected_slots=sum(bool(eligible[i]) for i in positions),eligible_Gaussian_slots=sum(bool(eligible[i]) for i in r['Gaussian_positions']),eligible_As_slots=sum(bool(eligible[i]) for i in positions) if r['As_packets'] else 0,CE_label_smoothing=0.,native_global_L_label_smoothing=float(args.label_smoothing),extra_CE_operator_calls=0,entropy_all_U=True,entropy_includes_unqualified=True,entropy_includes_As=bool(r['As_packets']),U_truth_used=False,extra_teacher=False,native_loss_returned_unchanged=True)
+ def feature(self,*,model,teacher,student_output,teacher_output,extra,domains,optimizer_step,identity_loss,pseudo_loss,entropy_loss):
+  p=self.o.pending_U;args=self.native_args
+  if p is None or 'record' not in p or model is not self.o.model or args.pseudo_strong_agreement or getattr(model,'_source_unlabeled_selection_hook',None) is not None or optimizer_step!=p['record']['step']:raise ValueError('Actual native model U feature-hook interface differs')
+  logits=student_output['tx_logits'];pseudo=p['pseudo'];mask=p['conf_mask']&p['temporal_mask'];loss_u=pseudo_loss;loss_ent=entropy_loss;epoch=p['record']['epoch'];batch_idx=(optimizer_step-1)%222+1
+  if logits.shape!=(p['count'],6) or teacher_output['tx_logits'].shape!=logits.shape or not torch.equal(domains,p['domains']):raise ValueError('Actual native U output/domain interface differs')
+  start=time.perf_counter();r=p['record'];positions=r['selected_positions'];eligible=mask.detach().cpu().tolist();r.update(native_epoch=int(epoch),native_batch_idx=int(batch_idx),teacher_conf=p['conf'].cpu().tolist(),teacher_pseudo=pseudo.detach().cpu().tolist(),domains=p['domains'].cpu().tolist(),conf_mask=p['conf_mask'].cpu().tolist(),temporal_mask=p['temporal_mask'].cpu().tolist(),eligibility=eligible,threshold_policy=p['threshold_policy'],temporal_policy=p['temporal_policy'],domain_gate=False,strong_agreement=False,teacher_raw_same_input=True,teacher_eval_no_grad=p['teacher_raw_no_grad'],teacher_qualification_completed_before_strong=True,teacher_NN=p['count'],student_NN=p['count'],student_logits=logits.detach().cpu().tolist(),native_loss_u=float(loss_u.detach()),native_loss_entropy=float(loss_ent.detach()),lambda_u=float(args.lambda_u),lambda_entropy=float(args.lambda_ent),CE_denominator=int(mask.sum().detach()),entropy_denominator=p['count'],eligible_selected_slots=sum(bool(eligible[i]) for i in positions),eligible_Gaussian_slots=sum(bool(eligible[i]) for i in r['Gaussian_positions']),eligible_As_slots=sum(bool(eligible[i]) for i in positions) if r['As_packets'] else 0,CE_label_smoothing=0.,native_global_L_label_smoothing=float(args.label_smoothing),extra_CE_operator_calls=0,entropy_all_U=True,entropy_includes_unqualified=True,entropy_includes_As=bool(r['As_packets']),U_truth_used=False,extra_teacher=False,native_losses_preserved=True,native_feature_adjustment=None,eligibility_source='actual frozen native base_mask_and_ones with no selectionhook',native_optimizer_step=int(optimizer_step),native_hook='model._source_unlabeled_feature_hook')
   r['logging_cpu_wall_seconds']=time.perf_counter()-start;r['CPU_timing']='perf_counter host wall;no explicit CUDA sync;detach readouts may synchronize;route includes selection/simulation/copy,do not add inclusive route again'
   self.o.u_records.append(r);self.o.pending_U=None
-  return loss_u
+  return None,{}
  def restore(self):
   for k,v in self.old.items():setattr(self.n,k,v)
   if self.teacher_handle is not None:self.teacher_handle.remove()
+  if self.bound_model is not None:
+   if self.old_feature_present:self.bound_model._source_unlabeled_feature_hook=self.old_feature
+   else:delattr(self.bound_model,'_source_unlabeled_feature_hook')

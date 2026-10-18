@@ -323,3 +323,6 @@ qualityRisk E30已ANALYZED：两新tail各2220更新/10轮、4logical×7/504CM84
 
 
 UPractical 发布前矩阵补正：同runID保留m2初名/alias actual_m3，实际新增N01/C01/S01三行。N01从原B00 ownNoAs20+10，C/S原B01ownAs20+10，三行共同teacher-only资格；S−N是严格阶段clean对照，S−C是route增量。原NOAS30因studentstrongagreement仍开，仅作历史参照。源clean规则随之固定为fullV S−N≥−.1pp，midlowS−C≥+.5pp不变；无新机制/种子/单模型预算扩张。三新tail预计13054692NN（不含实际sharedsmoke），6660updates/30modelE，尚未远端发布。
+
+
+UPractical R01实际preflight技术失败：冻结native不存在假定模块trusted-pseudo hook，已独立核实dispatcher1671149退出／0worker；770NN=NoAs父2＋合成N L768，0updates/realIQ/prop，非科学负例。原root保留。新技术替代 20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02 已登记，仍N/C/S三行完全相同科学矩阵和预算；只接入实际native model._source_unlabeled_feature_hook读取pseudo_loss/entropy并return(None,{})。新commit/release/实际首步smoke待发布；oldfailed770独立计入总成本，不追加科学预算。

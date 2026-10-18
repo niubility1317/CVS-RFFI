@@ -1,6 +1,6 @@
 # U 学生 practical 视图预算重分配：E30 最小匹配实验
 
-状态：PLANNED，尚未发布，无新性能结果。run 20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01。唯一 owner codex/root/practical-UPractical。
+状态：FAILED_PREFLIGHT。已发布但首步技术失败，未启动训练worker，无新性能结果。run 20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01。唯一 owner codex/root/practical-UPractical。
 
 上一轮 nominal 质量分层已完成，源 hard 组 S−I −0.526661 pp，固定方案关闭；另一对话正在运行有界困难风险 M3，本轮不叠加其权重或 bank。历史 Uurban39 是额外 U forward＋qKL；P67 是 epochbank 资格＋Gaussian strong；P68 是第二 L As。本次精确组合未见已实训证据。
 
@@ -45,3 +45,6 @@ L 路径按各自对应原 P43 配方保持6L／768 packets per update：N 的 s
 源 panel 复用既有合法 V1800×2 draws，保存的载频2.45GHz与训练／正式2.462GHz差异沿用并披露，不将source分层当正式物理状态或clean精确预测。各候选和控制使用同一面板。
 
 冻结烟测预算为2356 NN：两个唯一真实父各2个零输入预测，共4；三行实际L路径各768；三行原生U教师／学生各8，共48。烟测只用合成IQ，无真实IQ／query／optimizer更新，合成传播128 L＋2 U另计。训练与读出三行预计13054692 NN，连同成功烟测预计13057048，以实际counter为准，技术失败另计。
+
+
+R01技术失败：实际frozen native没有假定的模块级trusted伪标签hook。失败发生于首个N probe已完成770NN（真实父零输入2＋合成L768），U forward／propagation／updates／真实IQ均0，dispatcher独立核实已退出，未启动worker。旧run/release/archive/log完整保留；真实冻结源码已只读取回作定向修复。此前当前工作树接口推断不覆盖实际冻结版本，后续用现成model._source_unlabeled_feature_hook记录原pseudo_loss/entropy_loss并return(None,{})，配方／数据／门槛不变。新不可变replacement 20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02，原结果不作科学负例。

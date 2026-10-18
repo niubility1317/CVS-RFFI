@@ -13,9 +13,9 @@ import subprocess
 import tarfile
 from pathlib import Path, PurePosixPath
 
-RUN = '20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01'
-TRAINING_RELEASE = 'cvs_FcrossRX_UPractical_E30_20261019_r01'
-RELEASE = 'cvs_F_u_practical30_analysis_20261019_r01'
+RUN = '20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m3-r02'
+TRAINING_RELEASE = 'cvs_FcrossRX_UPractical_E30_20261019_r02'
+RELEASE = 'cvs_F_u_practical30_analysis_20261019_r02'
 OUTPUT = 'analysis_auto_r01'
 FILES = (
     'cvs_u_practical30_analysis_20261019.py',
