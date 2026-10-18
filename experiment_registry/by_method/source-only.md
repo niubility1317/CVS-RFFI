@@ -6,3 +6,4 @@
 |P20 源域结果：传播分组未通过增量判据|managed_run|[打开](../../automation_reports/CV-SincNet/20261017-phase1-FcrossRX-propgroup-sourceRX6-e20-s2026092701-m4-r01/report.md)|
 |P66 实际 As20 学生父模型的源域正确集合读出|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-parent20-cohort-s2026092701-m1-r01/report.md)|
 |实际 AS_CE20 父模型的源域正确集合读出|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01/report.md)|
+|冻结默认头：固定接收状态去噪的四贡献归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r01/report.md)|
