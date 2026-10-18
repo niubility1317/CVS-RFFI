@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_RUNNING",
+  "status": "VERIFIED_ANALYZED",
   "run_id": "20261018-phase1-FcrossRX-pairMargin-tail-e30-s2026092701-m1-r01",
   "source_only_design": true,
   "historical_retest": true,
@@ -115,11 +115,11 @@
     "CP_reads": 0,
     "NN": 0
   },
-  "remote_model_training": "RUNNING_OWN_AS20_PLUS10_TOTAL30",
-  "remote_NN": null,
+  "remote_model_training": "COMPLETED_OWN_AS20_PLUS10_TOTAL30",
+  "remote_NN": 4351566,
   "remote_IQ": null,
   "remote_CP": null,
-  "source_and_formal_results_available": false,
+  "source_and_formal_results_available": true,
   "E50": false,
   "seed_extension": false,
   "previous_goal_turn": "PROGRESS",
@@ -147,7 +147,7 @@
     "remote_synthetic_repeat": false
   },
   "analysis": {
-    "status": "CODE_COMPLETE_12_TOY_PASS_REVIEW_PASS_AUTO_EXEC_AFTER_ROW",
+    "status": "ANALYZED",
     "pure_toy_checks": 12,
     "toy_wall_seconds": 1.02,
     "py_compile": "PASS_2PY",
@@ -161,7 +161,16 @@
     "all3_logical_rows_all7_before_truth": true,
     "shared_parent_costs_deduplicated": true,
     "figure_pairs_planned": 5,
-    "real_execution_started": false
+    "real_execution_started": true,
+    "full_real_run_analysis": "ANALYZED",
+    "missing": [],
+    "independent_confusion_recounts": 378,
+    "partition_reconciliations": 63,
+    "all3_rows_all7_verified_before_truth": true,
+    "wall_seconds": 22.385836499975994,
+    "updates": 0,
+    "figures_generated_and_visually_checked": 5,
+    "local_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_pair_margin_tail_E30_20261018_r01/retrieved_r01/analysis_r01"
   },
   "review": {
     "status": "PASS",
@@ -204,7 +213,7 @@
   "single_release_archive_SHA": "0e4ff49b8af910c51f03fe7086b595e58a1703847b62714150624bc9797da127",
   "single_release_archive_comparison": "VERIFIED_ONCE",
   "remote_compile": "PASS_21PY",
-  "remote_partial_cost_scope": "Preflight0NN/IQ/CP; remote real-parent launchsmoke2NN/1CP/0IQ/update0; actual ongoing trainingNN/IQ/CP not yet finalized, not zero. Local oneF768NN separate.",
+  "remote_partial_cost_scope": "Final new remote4351566NN plus separate local768NN; actual source/native/formal wall and historical exclusions in final_analysis.md. Unique IQ bytes/checkpoint-open counts not instrumented; no invented zeros.",
   "remote_real_CP_smoke": {
     "status": "PASS",
     "NN": 2,
@@ -218,6 +227,38 @@
     "synthetic_remote_NN": 0
   },
   "progress": {
+    "status": "COMPLETED_NATURALLY",
+    "dispatcher_pid": 1312196,
+    "worker_pid": 1312286,
+    "dispatcher_alive": false,
+    "worker_alive": false,
+    "gpu": 0,
+    "epochs_complete": 10,
+    "cumulative_epochs": 30,
+    "updates": 2220,
+    "cumulative_updates": 6660,
+    "source_complete": true,
+    "source_panel_complete": true,
+    "seven_view_predictions_complete": true,
+    "independent_scoring_complete": true,
+    "analysis_complete": true,
+    "failure": null,
+    "verified_at_utc": "2026-10-18T09:01:44.642Z"
+  },
+  "actual_runtime": {
+    "channel_configurations_exact_original": true,
+    "leo_module": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/{channel,residual}.py",
+    "pair_module": "PROJECT/releases/cvs_FcrossRX_pair_margin_tail_E30_20261018_r01/experiments/cvs_pair_margin61/margin.py",
+    "EMA": {
+      "origin": "strict own stage20 EMA",
+      "extra_teacher": false,
+      "optimizer_segment_counters_reset": true,
+      "temporal_cache_reset": true
+    },
+    "no_formal_test_change": true
+  },
+  "monitor_local_zeroNN_error": "Local comparison used a nonpersistent block variable; read saved independent postlaunch snapshots to compare; no SSH retry or training mutation/NN.",
+  "startup_progress": {
     "dispatcher_pid": 1312196,
     "worker_pid": 1312286,
     "gpu": 0,
@@ -240,17 +281,27 @@
     "failure": null,
     "observed_at_utc": "2026-10-18T08:36:23.616Z"
   },
-  "actual_runtime": {
-    "channel_configurations_exact_original": true,
-    "leo_module": "PROJECT/releases/cvs_SIGTIME_evidence_responsibility_train20_20261015_r02/experiments/adv3b02_xuc/code/leo_practical/{channel,residual}.py",
-    "pair_module": "PROJECT/releases/cvs_FcrossRX_pair_margin_tail_E30_20261018_r01/experiments/cvs_pair_margin61/margin.py",
-    "EMA": {
-      "origin": "strict own stage20 EMA",
-      "extra_teacher": false,
-      "optimizer_segment_counters_reset": true,
-      "temporal_cache_reset": true
+  "final_source_decision": {
+    "status": "SOURCE_READOUT_DECIDED",
+    "qualified": false,
+    "checks": {
+      "fullV_AS_clean_within_original_NOAS_0p1pp": false,
+      "mid_low_mean_gain_at_least_0p5pp": false,
+      "low_not_below_originalAs30": true
     },
-    "no_formal_test_change": true
+    "recomputed": false,
+    "read_before_new_formal": true,
+    "public_evidence": "source_decision.json"
   },
-  "monitor_local_zeroNN_error": "Local comparison used a nonpersistent block variable; read saved independent postlaunch snapshots to compare; no SSH retry or training mutation/NN."
+  "final_formal": {
+    "clean_delta_vs_NoAs30_pp": 0.025595238095232897,
+    "within_0p1pp": true,
+    "mid_urban": 0.6288333333333334,
+    "low_urban": 0.513547619047619,
+    "urban_delta_vs_As30_pp": 0.07996031746031843,
+    "urban_delta_vs_NoAs30_pp": 28.448412698412696,
+    "model_seeds": 1,
+    "reproducible_dual_gain": false
+  },
+  "final_report": "final_analysis.md"
 }

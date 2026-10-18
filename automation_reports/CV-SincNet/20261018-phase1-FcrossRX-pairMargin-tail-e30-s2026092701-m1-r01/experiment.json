@@ -101,11 +101,15 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_pair_margin_tail_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_pair_margin61/runner.py",
     "stop_rule": "Only wrongroles/provenance/runtime/nonfinite/outputcollision or preregistered technicalfailure stop own run and preserve;no automatic retries. SourceFAIL still all7;no coefficient/rho/q sweep/seed/E50 rescue.",
-    "status": "RUNNING",
+    "status": "ANALYZED",
     "dispatcher_pid": 1312196,
     "worker_pid": 1312286,
     "gpu": 0,
-    "remote_compile": "PASS_21PY"
+    "remote_compile": "PASS_21PY",
+    "completed_at_utc": "2026-10-18T09:01:44.642Z",
+    "terminal_status": "VERIFIED_TRAINED_ALL7_SCORED_ANALYZED",
+    "result_report": "final_analysis.md",
+    "analysis_root": "E:/type10-7/local_artifacts/cvs_FcrossRX_pair_margin_tail_E30_20261018_r01/retrieved_r01/analysis_r01"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -253,5 +257,97 @@
     "Minimal workflow overrides brainstorming design-approval/spec-hash/full-review extra gates: REJECTED_EXTRA_GATE; existing authorization sufficient. Only one focused P0/P1 and one realCP no-query smoke.",
     "Runtime/private actual home paths remain local; PROJECT placeholder used publicly. Weights/IQ/rawlogs/predictions not committed."
   ],
-  "registered_at": "2026-10-18T08:24:39+00:00"
+  "registered_at": "2026-10-18T08:24:39+00:00",
+  "results": {
+    "model_seed_count": 1,
+    "all3_logical_rows_all7_complete": true,
+    "missing": [],
+    "source_qualified": false,
+    "source_clean_delta_vs_NoAs30_pp": -0.1185185185185178,
+    "source_midlow_delta_vs_As30_pp": 0.0694444444444442,
+    "source_low_delta_vs_As30_pp": 0,
+    "AS_MARGIN": {
+      "clean": {
+        "accuracy": 0.8527321428571428,
+        "macro_f1": 0.8497364756024665,
+        "worst_RX": 0.7840833333333334,
+        "worst_RX_ids": [
+          "1-1"
+        ],
+        "mean_margin_over30": 0.14591175317764282,
+        "satellite_retention": 0.9735923360518378
+      },
+      "practical_high": {
+        "accuracy": 0.8145357142857143,
+        "macro_f1": 0.8113344790116012,
+        "worst_RX": 0.7207083333333333,
+        "worst_RX_ids": [
+          "14-7"
+        ],
+        "mean_margin_over30": 0.10136674344539642,
+        "satellite_retention": 0.9014914534688862
+      },
+      "practical_mid": {
+        "accuracy": 0.7871607142857143,
+        "macro_f1": 0.7841455653333215,
+        "worst_RX": 0.7036666666666667,
+        "worst_RX_ids": [
+          "14-7"
+        ],
+        "mean_margin_over30": 0.09118090569972992,
+        "satellite_retention": 0.8682758909619037
+      },
+      "practical_low_suburban": {
+        "accuracy": 0.7595357142857143,
+        "macro_f1": 0.7566286478300932,
+        "worst_RX": 0.6793333333333333,
+        "worst_RX_ids": [
+          "14-7"
+        ],
+        "mean_margin_over30": 0.0812927633523941,
+        "satellite_retention": 0.8356538375600492
+      },
+      "practical_high_urban": {
+        "accuracy": 0.7781964285714286,
+        "macro_f1": 0.7747538989309076,
+        "worst_RX": 0.6914583333333333,
+        "worst_RX_ids": [
+          "14-7"
+        ],
+        "mean_margin_over30": 0.09256844967603683,
+        "satellite_retention": 0.859862026589208
+      },
+      "practical_mid_urban": {
+        "accuracy": 0.6288333333333334,
+        "macro_f1": 0.6252615641577431,
+        "worst_RX": 0.5659166666666666,
+        "worst_RX_ids": [
+          "14-7"
+        ],
+        "mean_margin_over30": 0.05506496876478195,
+        "satellite_retention": 0.6886660708300748
+      },
+      "practical_low_urban": {
+        "accuracy": 0.513547619047619,
+        "macro_f1": 0.5099047353014262,
+        "worst_RX": 0.46575,
+        "worst_RX_ids": [
+          "14-7"
+        ],
+        "mean_margin_over30": 0.028907183557748795,
+        "satellite_retention": 0.5574865936766842
+      }
+    },
+    "clean_delta_vs_NoAs30_pp": 0.025595238095232897,
+    "stage_clean_within_0p1pp": true,
+    "urban_delta_vs_As30_pp": 0.07996031746031843,
+    "urban_delta_vs_NoAs30_pp": 28.448412698412696,
+    "reproducible_dual_gain": false,
+    "target_feedback": false,
+    "new_model_epochs": 10,
+    "new_updates": 2220,
+    "new_remote_NN": 4351566,
+    "local_verification_NN": 768,
+    "automatic_expansion": false
+  }
 }

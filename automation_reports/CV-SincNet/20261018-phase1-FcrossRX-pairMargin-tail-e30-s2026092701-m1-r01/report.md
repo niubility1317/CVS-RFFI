@@ -1,6 +1,6 @@
 # P61：去课程后独立检验单侧默认头间隔
 
-状态：**VERIFIED_RUNNING，已启动唯一真实训练，尚无新性能结果。**唯一 run 为 `20261018-phase1-FcrossRX-pairMargin-tail-e30-s2026092701-m1-r01`；前一目标轮属于 PROGRESS，已完成 P62 两行 E50、全部评价与负结果交付。目标仍未完成。
+状态：**ANALYZED／VERIFIED，missing=[]**。训练、全部七环境预测、独立评分和全量分析已完成。源判据FAIL，关闭本复验，不扫系数、不扩种或延E50。完整结论见 [最终分析](final_analysis.md)。以下预登记及执行阶段记录保留其当时口径。唯一 run 为 `20261018-phase1-FcrossRX-pairMargin-tail-e30-s2026092701-m1-r01`；前一目标轮属于 PROGRESS，已完成 P62 两行 E50、全部评价与负结果交付。目标仍未完成。
 
 当前最值得保留的是完整 practical、充足 clean 监督和默认头联合更新。P62 的 E50 源判据 FAIL，本轮不延续 DET、不使用其正式成绩选择新系数。另一聊天“审计并设计 CVS 联合增强”已在做 Asweight .125／.375 的 E50 与02／03复现，本线程不重复该路线，不干预其健康任务。
 
@@ -61,3 +61,6 @@ CWD=PROJECT/releases/cvs_FcrossRX_pair_margin_tail_E30_20261018_r01；命令 `CV
 实际发布：code/config commit 5bc8ccff40c7e1873c261eb37f8b9b444283871e 已push，独立GitHub compare identical；单release archive SHA 0e4ff49b8af910c51f03fe7086b595e58a1703847b62714150624bc9797da127 本远端一次比较VERIFIED，远端21py compile PASS。首步真实自身As20 CP无query smoke PASS（2NN／1CP／0IQ／0更新）后直接训练，未重复远端合成。dispatcher1312196、worker1312286／GPU0，CWD/argv/CUDA及nvidia PID独立核实；同一start_ticks进程日志64064→290042字节，failure为空。
 
 实际运行：source_roles EXACT_MATCH／target_contact false，严格own stage20 EMA、额外teacher=false、优化器空state/cos10/lr.0002/WD.0001与cache重置。actual_channel configurations与原As30完全一致，真正leo_practical导入来自原evidence_responsibility release内experiments/adv3b02_xuc/code；新margin来自本release。完整practical测试IQ／SNR／边界没有修改。实际训练前向与源IQ读取正在发生，完成后报告实际成本，不能记零；新增source／all7／独立score／CPU分析由同一dispatcher自动衔接，当前未完成。
+
+
+最终结果：AS_MARGIN clean85.273214%、mid urban62.883333%、low urban51.354762%、urban三均值64.019246%。相对As30 clean−.067857pp、mid+.076786、low+.110714、urban+.079960；相对NoAs30 clean+.025595pp，单seed的.1pp阶段约束通过，但cleanF1−.005988pp，无跨seed稳定双提升。源clean−NoAs30 −.118519pp、midlow−As30+.069444pp、low0，原FAIL未重算。默认头、全source及测试IQ/信道不变；low<60%，目标未完成。新增10轮/2220更新、远端4351566NN、本地768NN另计，训练1186.548547秒、source1.829463秒、formal48.443742秒、CPU分析22.385836秒/0NN；两原进程自然退出。全部五图已实际查看。详见final_analysis.md及source_decision.json。

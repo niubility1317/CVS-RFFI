@@ -1,0 +1,54 @@
+{
+  "run_id": "20261018-phase1-FcrossRX-pairMargin-tail-e30-s2026092701-m1-r01",
+  "source_decision_present": true,
+  "source_decision": {
+    "status": "SOURCE_READOUT_DECIDED",
+    "checks": {
+      "fullV_AS_clean_within_original_NOAS_0p1pp": false,
+      "mid_low_mean_gain_at_least_0p5pp": false,
+      "low_not_below_originalAs30": true
+    },
+    "source_qualified": false,
+    "fullV_AS_clean_vs_originalNOAS_pp": -0.1185185185185178,
+    "mid_low_mean_vs_originalAs30_pp": 0.0694444444444442,
+    "low_vs_originalAs30_pp": 0,
+    "source_accuracies": [
+      [
+        0.8822222222222222,
+        0.7272222222222222,
+        0.5988888888888889
+      ],
+      [
+        0.8938888888888888,
+        0.7316666666666667,
+        0.5827777777777777
+      ]
+    ],
+    "originalAs30_source_accuracies": [
+      [
+        0.8811111111111111,
+        0.7255555555555555,
+        0.6011111111111112
+      ],
+      [
+        0.8922222222222222,
+        0.7305555555555555,
+        0.5805555555555556
+      ]
+    ],
+    "formal_scores_read": false,
+    "target_scores_read": false,
+    "formal_evaluation_always_required": true,
+    "no_automatic_budget_or_seed_extension": true,
+    "target_feedback": false,
+    "model_seed_count": 1,
+    "NN": 0
+  },
+  "formal_metrics_read": false,
+  "NN": 0,
+  "IQ": 0,
+  "CP": 0,
+  "updates": 0,
+  "decision_preserved_before_new_formal_read": true,
+  "automatic_extension": false
+}
