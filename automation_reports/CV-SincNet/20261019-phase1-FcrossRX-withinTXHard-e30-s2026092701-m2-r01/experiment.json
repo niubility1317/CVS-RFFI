@@ -1,0 +1,250 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01",
+  "group_id": "CVS-PRACTICAL-WITHIN-TX-HARD-CE-E30",
+  "display_name": "完整practical：类内有界困难CE与同权重随机控制E30",
+  "description": "固定原As20＋10；保持每TX的As CE质量和名义总系数，仅将0.25质量转向当前同TX中较难的一半；随机控制使用相同类内权重直方图。0额外NN/VJP，原KL/U/ordinary/raw/CROSS_RX和fullpractical不变。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "withinTXHard30"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "practical",
+    "E30",
+    "withinTX-hard-CE",
+    "same-weight-random-control"
+  ],
+  "comparison_group_id": "F-CROSS_RX-ORIGINAL-P43-E30",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "authorization": "Current user practical-primary augmentation/training research,totalE30;one candidate plus matched random-assignment control. Existing fixedNoAs/As30 reused. Only sourcequalified futuretotalE50 allowed;no formalfeedback.",
+  "code": {
+    "commit": "PENDING_ACTUAL_CODE_COMMIT",
+    "checkout": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "environment": "N607 existing CVS-RFFI PyTorch/fullFP32 CPU2 ordinary account;no installation",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_withinTXHard_E30_20261019_r01",
+    "branch": "codex/cvs-iq-timing-e20-20261016",
+    "worktree": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "entrypoint": "experiments/cvs_as_hardrisk30/runner.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 fullsource visibleTX/all5RX/cumulative30epochs,noLdev/noRXholdout",
+      "U_s": "56700 TX hidden;exact original P43 oldU raw ownEMA/quantile/batch_neighbor and strongagreement=true,domain_gate=false,nativeGaussian strong;no newU practical route or eligibility change;one student andone teacher perU",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Original P43 full practical on rawL64/step only;unchanged propagation/noise/receiver/compensation dependency. NoAs returns raw64. U unchanged. Fixed formalreceivedIQ reused."
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Two new ownAs20+10 rows;fixed originalNoAs30 andAs30 reused. HARD vsSHUFFLE isolates association of bounded weights with withinTX difficulty;HARD vsAs tests added recipe. Same6L/oldU,0newNN/VJP;2extraCE64 tensor ops and timing recorded. No Ag claim or new fitted head."
+  },
+  "checkpoint": {
+    "policy": "Both new rows strict originalP43 B01 ownAs scratchFINAL20 student/ownEMA;originalNoAs20 ancestry belongs only reusedNoAs30 comparator",
+    "selection": "fixed FINAL10/cumulative30;not target selection",
+    "parent_run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+    "parent_sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "reference_commit": "19aedc3604fed9c193237dd92366164178af0983",
+    "inheritance": "OriginalAs scratch20->two independent10tails;matchingallsource roles;resetAdamW;no splitAdam or closedcandidate parent",
+    "initialization": "strict own source-final20 student andownEMA;resetoptimizer",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "OriginalP43 stage20/source_contract.json +initialization.json/completion.json and exact reference_config",
+    "provenance_verdict": "MATCHED_SOURCE_ONLY_SCRATCH_ANCESTOR",
+    "selection_rule": "source fixed final20 parent,child fixedfinal10/cumulative30;no target-selected parents"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/practical-withinTXHard",
+    "gpu_policy": "CPU2;allowners GPUcomputePIDs<=3;free>=12000MB;preservehealthyjobs",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_as_hardrisk30/runner.py",
+    "stop_rule": "Only own systemic protocol/role/parent/head/nonfinite/output/prediction technicalfailure;preserve/reconcile. Scientificnegative finishesall7,no automaticrestart. Never touchhealthyotherjobs.",
+    "status": "PLANNED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "synthetic_smoke.json",
+    "source_matrix_decision.json",
+    "automatic_summary.json",
+    "complete.json",
+    "each row source/result.json and full source logs",
+    "each row all7 predictions and independent scores"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "clean accuracy and paired absolute pp",
+      "all6practical accuracy",
+      "mid/lowurban",
+      "urban3scene mean"
+    ],
+    "secondary": [
+      "macroF1",
+      "worstRX",
+      "RX/day/TX strata",
+      "repairs/new errors",
+      "suburban absolute gaps",
+      "actual updates/NN/VJP/EMA/cost/wall"
+    ],
+    "scientific_promotion": {
+      "HARD_minus_originalAs_midlow_min_pp": 0.5,
+      "HARD_minus_SHUFFLE_midlow_positive": true,
+      "HARD_minus_originalNoAs_fullVclean_min_pp": -0.1,
+      "only_source_evidence": true,
+      "failure_still_all7": true,
+      "no_gamma_fraction_seed_rescue": true
+    },
+    "formal_feedback_forbidden": true,
+    "model_seeds": 1,
+    "repeatable_gain_claim": false
+  },
+  "rows": [
+    {
+      "row_id": "H01-s2026092701",
+      "method": "HARD",
+      "purpose": "WithinTX bounded current-error As CE risk",
+      "config_ref": "experiments/cvs_as_hardrisk30/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01/H01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model2026092701 controls originalloader/ordinary;original channel20261016421/422/423;privateSHUFFLE generator20261019091+localstep does not advanceglobalRNG. Fixed sourcepanel/receivedIQ reused;data/augmentationindependentseed not exposed. U TXhidden.",
+      "k": null,
+      "scenario": "Original completeAs64/step;oldU;all7fixedformal",
+      "optimizer": "OriginalresetAdamW/cos10 lr2e-4 WD1e-4 min1e-6;one native update andEMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "ownAs20 reused+new10=E30;2220new/6660cumulativeupdates;6L768/step;oldUstudent/teacher each567000;0extraNN/VJP;2extraCE64/step",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01/H01-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01/logs/H01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_as_hardrisk30/runner.py --mode worker --row H01-s2026092701",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/training_sequence.jsonl.gz",
+        "source/hardrisk_steps.jsonl.gz",
+        "source/step_metrics.jsonl.gz",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ]
+    },
+    {
+      "row_id": "R01-s2026092701",
+      "method": "SHUFFLE",
+      "purpose": "Same perTX weight histogram independently permuted withinTX",
+      "config_ref": "experiments/cvs_as_hardrisk30/design.py:config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01/R01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model2026092701 controls originalloader/ordinary;original channel20261016421/422/423;privateSHUFFLE generator20261019091+localstep does not advanceglobalRNG. Fixed sourcepanel/receivedIQ reused;data/augmentationindependentseed not exposed. U TXhidden.",
+      "k": null,
+      "scenario": "Original completeAs64/step;oldU;all7fixedformal",
+      "optimizer": "OriginalresetAdamW/cos10 lr2e-4 WD1e-4 min1e-6;one native update andEMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "ownAs20 reused+new10=E30;2220new/6660cumulativeupdates;6L768/step;oldUstudent/teacher each567000;0extraNN/VJP;2extraCE64/step",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01/R01-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01/logs/R01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_as_hardrisk30/runner.py --mode worker --row R01-s2026092701",
+      "expected_artifacts": [
+        "source/completion.json",
+        "source/final_ssdg.pth",
+        "source/source_frozen.json",
+        "source/result.json",
+        "source/training_sequence.jsonl.gz",
+        "source/hardrisk_steps.jsonl.gz",
+        "source/step_metrics.jsonl.gz",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "prediction/predictions.npz",
+        "scoring/complete.json",
+        "scoring/scores.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Primaryhypothesis: withinTX currenterrors may identify useful As learning targets betterthan fixed physicalqualitygroups;not proven",
+    "P70/P71 qualitystrat/bounded staticgroupnegative retained;not tuningtheirbins or weights",
+    "FullsupervisionallAs weightspositive .75to1.25;perTXmass exact by construction,hardnessselectionstopgrad;KLunchanged",
+    "SharedoriginalP43As20strict sourceFINAL20 student+ownEMA;resetoptimizer;notSplitAdam states",
+    "OriginalP43NoAs30/As30both fixedFINAL30 alreadyall7scored reused,0retraining/repred/scoring;matching6L/raw/oldU/data/seed/cost",
+    "As-onlylabelSmoothing05,hardLCE,CEtemperature,probmeanCE,and quality-conditionedtargetentropy are distinct closedobjectives;this changes only weight association withinTX",
+    "One modelseed only;source2draw notmodelseeds;formalfeedback forbidden",
+    "REJECTED_EXTRA_GATE: generic brainstorm designapproval/spec rituals conflict withcurrentuser authorization andexclusive minimalworkflow;single reportcontainsdesign;proceed authorized boundedhookchange"
+  ],
+  "comparators": [
+    "OriginalP43 B00/NoAs30",
+    "OriginalP43 B01/As30"
+  ],
+  "registered_at": "2026-10-18T23:29:33+00:00"
+}

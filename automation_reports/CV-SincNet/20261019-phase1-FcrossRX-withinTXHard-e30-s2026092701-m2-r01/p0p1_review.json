@@ -1,0 +1,19 @@
+{
+  "status": "PASS",
+  "reviewer": "independent dc_p0p1_review",
+  "scope": "direct P0/P1 next-run correctness only",
+  "findings": [],
+  "checked": [
+    "withinTX weight mass",
+    "SHUFFLE private RNG",
+    "CE correction coefficient",
+    "native sixL/U",
+    "parent row mapping",
+    "all7 independenttruthlast chain"
+  ],
+  "NN": 0,
+  "IQ": 0,
+  "CP": 0,
+  "remote_access": false,
+  "additional_reviews_required": false
+}

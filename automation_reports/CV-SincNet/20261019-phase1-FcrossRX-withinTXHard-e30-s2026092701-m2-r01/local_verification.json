@@ -1,0 +1,14 @@
+{
+  "status": "PASS",
+  "fixed_scope_protocol_negatives": 60,
+  "Torch_autograd_checks": 25,
+  "Torch_input_negatives": 7,
+  "Python_AST_files": 19,
+  "emitted_remote_AST": 2,
+  "NN": 0,
+  "CP": 0,
+  "IQ": 0,
+  "updates": 0,
+  "target_access": false,
+  "local_Torch": "2.1.0+cpu;existing NumPy ABI warning,tests use tensor ops/tolist only;no environment mutation"
+}
