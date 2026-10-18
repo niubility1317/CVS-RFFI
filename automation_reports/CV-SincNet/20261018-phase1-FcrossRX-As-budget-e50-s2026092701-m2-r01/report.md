@@ -88,3 +88,11 @@ source 报告 full V27000 clean 及各源 RX 准确率；固定 V1800 两 draw �
 | B01-s2026092701 | 1143703 | 2 | 33／50 | 666／4440 | 7326／11100 | +15466 bytes |
 
 两行均为原有 U 规则，extra_U_NN=0、U_As=0、U_truth_read=false、target_access=false；未出现 failure。新段 L_NN 和 As 计数只包含本次追加段，不能冒充累计 E50 成本。普通账户 preflight、一次 release archive SHA 比较与远端编译已完成；不为报告补值重新做哈希。详见 execution_verification.json。
+
+## 零模型前向的完整分析安排
+
+在训练期间发布一次独立 CPU 分析，release `cvs_F_practical_budget50_analysis_20261018_r01`，输出为本 run 的 `analysis_auto_r01`；与训练 release 分开，owner 沿用本 run。先等待原 dispatcher／row 的真实句柄和源产物，完整读取新增 4,440 step×2／20 epoch×2；旧 E30 成本复用 satelliteDropout analysis_auto_r03 已完成的 B00／B01 全日志重算，不重复扫描。
+
+源 V1800 两 draw 独立重算仅核对已有 source_matrix_decision，不增加科学晋级门槛；源结果为负仍执行已登记正式收尾。全部四逻辑行×七视图预测固定且独立评分完成后，分析才连接正式 truth，复核 CM／accuracy／F1／最差 RX、RX／day／TX 分区、四组配对修复和新增错误、预算交互与实测成本。源全 V27000 仅引用冻结原生指标，不虚构逐包重算。
+
+新增分析 0 NN／0 IQ／0 checkpoint／0 更新，CUDA 隐藏、CPU 2 线程，不修改模型／训练／预测／评分。真实任务全部终止而必要产物缺失时记录准确缺项并退出，不无限等待、不自动重试。仅收集公开汇总 JSON／CSV／Markdown，可选图；私有 IDs／NPZ／IQ／权重／原始日志不进入 Git。合成检查 9 项最终一次整套 PASS（7.868 s），四文件编译与 diff 检查 PASS；真实远端发布及 PID／CWD／argv 证据随后补记。
