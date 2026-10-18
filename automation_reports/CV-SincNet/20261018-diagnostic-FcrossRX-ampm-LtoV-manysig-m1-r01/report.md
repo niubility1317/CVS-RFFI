@@ -1,3 +1,5 @@
+> 已 ANALYZED／VERIFIED：真实源检验科学 FAIL，固定 AMPM 平移候选关闭，不启动训练。完整结果、全部RX/18折、成本及图见 [source_analysis.md](source_analysis.md)。
+
 # 幅度相关相位函数：完整源域单项预登记
 
 本行只检验一个新前提，不训练模型。当前固定频域响应、IQ 椭圆性和 Tukey 输入干预已有负结果，不调整这些已关闭配方。与另一对话正在检验的径向幅度映射不同，本行仅考察幅度保持、相位随功率变化的函数关系。
@@ -17,3 +19,5 @@
 命令：CVS-RFFI/bin/python -u -m experiments.cvs_ampm_source48.run。CWD=/home/szu2070436088/2510044040/CV-SincNet/releases/cvs_FcrossRX_ampm_source_20261018_r01；输出=/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-ampm-LtoV-manysig-m1-r01；日志=/home/szu2070436088/2510044040/CV-SincNet/runs/20261018-diagnostic-FcrossRX-ampm-LtoV-manysig-m1-r01-launch；owner=codex/root/ampm-source48。CPU2、CUDA_VISIBLE_DEVICES为空。代码/config commit 由本次 Git 提交固定并写入 release_commit.txt/resolved_config；实际值后补现有登记。启动首步7项合成 source-statistic smoke，PASS立即继续，无模型消费所以不加载额外 checkpoint。一次普通账户preflight、一个归档一次SHA比较、一次remote compile、一次PID/CWD/argv/环境/日志增长检查。
 
 仅所属路径冲突、源角色/输入不符、非有限或异常触发技术停止，保留所有产物，不自动重试、不干预健康旧任务。真实 source FAIL 是正常科学结束。预期 resolved_config/checks/active/progress、私有 observations.npz、result/completion或failure、独立recount和源RX/18折CSV、PNG/PDF、同row分析及登记/Git交付。额外审批/签名/成员哈希/重复数据验证/报告only review均不增加。
+
+实际执行代码 commit：`b5929c861d08ca31f3255c87ad6c231c74dec53a`。普通账户 preflight、单归档传输比较与 remote compile 均已独立读回 VERIFIED；唯一启动 PID 1015531/start_ticks 152967714，CPU2/CUDA隐藏，CWD及命令属于本run。首个读回stdout尚为0字节，随后仍须核对日志增长与最终completion，不能把DISPATCHED当完成。
