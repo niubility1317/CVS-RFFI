@@ -56,3 +56,8 @@ runner先加载原已发布P43运行环境，然后以新包名复用原source/e
 唯一分析owner命令为 `CVS-RFFI/bin/python -u cvs_As_seed_replication49_pipeline_20261018.py --output <analysis_auto_r01> --truth <原truth.json> --code-commit <实际分析commit>`；CWD为上述analysis release，CUDA隐藏、OMP/MKL/OpenBLAS各2线程。不读取IQ或checkpoint，不新增模型前向或更新。先等待六个源模型及source-only决定，完成独立source复算；源覆盖单独CPU子进程工作。全部六行的7视图prediction/scoring/completion齐备后才执行final truth-last复算。
 
 每15秒只读所属元数据和精确所属PID/CWD/argv，每60秒写等待摘要。完成产物优先于已经退出的训练进程；UNKNOWN不触发重训。只有所属技术失败、全部所属句柄已核实消失且必要产物缺失、分析不一致或输出碰撞时保留分析失败；不停止、重启或修改训练。源状态覆盖失败只列机制缺项，不阻断正式复算。单独完成普通账户preflight、一个archive的一次SHA对比及remotecompile/import，启动后核对分析PID/CWD/argv/CPU/log/state；分析commit与模型训练commit分别记录。
+
+
+## 自动分析启动证据
+
+VERIFIED：分析commit 706fc9fedfe7145812331da5dba2ee76892773f8 已独立比对远端分支一致。普通账户preflight、单archive传输一次SHA对比、remotecompile和纯导入均PASS；launcher首步16项合成测试PASS。独立PID 1040124 的启动tick/CWD/argv核对一致，CUDA隐藏、GPU计算进程列表中无此PID，实际状态为WAIT_SOURCE，识别原dispatcher及4个健康worker。此刻尚未执行source/final真实复算，target_scores_read=false、0新增NN/训练更新，无analysis failure。训练代码仍为 63b7c8cd7bb4139a2d800e6f4c4a7f1f2163fd47，没有热改。

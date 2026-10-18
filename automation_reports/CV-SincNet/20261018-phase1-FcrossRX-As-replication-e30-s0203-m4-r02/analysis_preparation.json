@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_READY_TO_RELEASE",
+  "status": "VERIFIED_WAIT_SOURCE",
   "run_id": "20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02",
   "files": [
     "analysis/cvs_As_seed_replication49_results_20261018.py",
@@ -31,5 +31,10 @@
   "stop_rule": "Only verified owned training technical failure/missing completed metadata after all owned handles absent, analysis inconsistency or output collision;UNKNOWN observations wait;no training stop or retry",
   "new_training_updates": 0,
   "new_model_NN": 0,
-  "real_analysis_executed": false
+  "real_analysis_executed": false,
+  "analysis_code_commit": "706fc9fedfe7145812331da5dba2ee76892773f8",
+  "analysis_PID": 1040124,
+  "remote_focused_tests": 16,
+  "archive_transport_comparison": "PASS",
+  "analysis_waiter_live": true
 }
