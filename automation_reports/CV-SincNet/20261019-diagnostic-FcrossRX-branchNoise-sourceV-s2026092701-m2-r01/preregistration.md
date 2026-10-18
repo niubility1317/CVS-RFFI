@@ -12,7 +12,7 @@ P73 概率均值 CE 已完成且相对 mean CE 的七视图均为负，固定候
 
 统计原头accuracy/macroF1/worstRX、margin÷30、修复/新增错误、固定NoAs clean正确集合上的保持率、state/lock/state×lock/addednoise/RX/day分层及learned coordinate gains；不额外训练诊断头。两draw不作为两个modelseed。
 
-代码commit：PENDING_ACTUAL_CODE_COMMIT。环境为N607既有普通账号CVS-RFFI Python，FP32 CPU2，CUDA_VISIBLE_DEVICES为空；CWD PROJECT/releases/cvs_FcrossRX_branch_noise_sourceV_20261019_r01；命令：CVS-RFFI/python -u experiments/cvs_branch_noise74/runner.py。唯一输出根 PROJECT/runs/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r01。
+代码commit：542039ceb80144758f95814fcae89f17b654cf49。环境为N607既有普通账号CVS-RFFI Python，FP32 CPU2，CUDA_VISIBLE_DEVICES为空；CWD PROJECT/releases/cvs_FcrossRX_branch_noise_sourceV_20261019_r01；命令：CVS-RFFI/python -u experiments/cvs_branch_noise74/runner.py。唯一输出根 PROJECT/runs/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r01。
 
 新增训练0epoch/0update/0优化器，两个既有总E30冻结权重；32404整网样本前向（含两个checkpoint各2包真实smoke），219652额外head-only样本调用（含52smoke），新物理模拟0。首次真实smoke通过立即继续；失败保留输出、不自动重试、不触碰其他健康任务。一次最小P0/P1评审、归档一次SHA传输对比、远端compile及PID/CWD/argv/GPU/log增长核实。
 

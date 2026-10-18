@@ -7,3 +7,4 @@
 |名称|记录类型|证据入口|
 |---|---|---|
 |冻结默认头：固定接收状态去噪的四贡献归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r01/report.md)|
+|冻结默认头：固定接收状态去噪的四贡献归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r02/report.md)|

@@ -4,8 +4,8 @@ import json
 
 ROOT = Path(__file__).resolve().parents[2]
 PROJECT = Path('/home/szu2070436088/2510044040/CV-SincNet')
-RUN = '20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r01'
-RELEASE = 'cvs_FcrossRX_branch_noise_sourceV_20261019_r01'
+RUN = '20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r02'
+RELEASE = 'cvs_FcrossRX_branch_noise_sourceV_20261019_r02'
 OWNER = 'codex/root/branch-noise74'
 BASE = PROJECT / 'runs' / RUN
 PARENT_RUN = '20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01'

@@ -18,3 +18,4 @@
 |P72：完整 practical 下 raw—As 的既有融合 Dropout 相关性|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-rawAsMask-e30-s2026092701-m2-r01/report.md)|
 |P73：完整 practical 的两随机子网 CE 聚合|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-AsMarginal-e30-s2026092701-m2-r01/report.md)|
 |冻结默认头：固定接收状态去噪的四贡献归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r01/report.md)|
+|冻结默认头：固定接收状态去噪的四贡献归因|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-branchNoise-sourceV-s2026092701-m2-r02/report.md)|
