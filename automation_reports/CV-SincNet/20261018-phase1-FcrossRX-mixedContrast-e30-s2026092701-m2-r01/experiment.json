@@ -1,0 +1,255 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-practical-fixed128-contrast-views",
+  "display_name": "固定128个对比位置：完整practical mixed视图与无As匹配对照",
+  "description": "Only existing CROSS_RX SupCon input maps change ORD128 to existing MIX128 at the original128 L batch positions. No appended64 positions,loss/branch/forward addition or sampler dedup. Historical SAT192 source failure retained;original P43 .5RDordinary+.5RDmixed+.25RDraw and originalU remain.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "FcrossRX-MIX128-E30",
+    "fixed128-practical-contrast"
+  ],
+  "tags": [
+    "F_CROSS_RX",
+    "SIG_TIME_X3",
+    "IQ256",
+    "L6300",
+    "NoExplicitCFO",
+    "mixed128",
+    "view_organization",
+    "E20plus10",
+    "default_cosine",
+    "source_only_selection"
+  ],
+  "comparison_group_id": "P43-fullsource-6L-E30-ORD128-vs-MIX128",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Current thread authorizes practical enhancement/training organization at totalE30,full training RX retained,originalU rules/default head/fixed formalIQ;E50 only later source-supported recipe. This is2 new own20+10 rows,not an E50 launch.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "environment": "N607 existingCVS-RFFI/PyTorch fullFP32,CPU2,ordinary account;no installations",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_mixedContrast_E30_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 full original visibleTX across cumulative30epochs;noLdev,no trainingRXholdout",
+      "U_s": "56700 originalTXhidden;oldU/ownEMA only,7+10 cumulativeUepochs,total17;no newU objective",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/cvs_practical_mixed_contrast30/reference_config.json actual P43 B00/B01 snapshots;train uniformlow_suburban/midurban/lowurban1/3;source fixedV1800twodraw;formalclean+all6 unchanged"
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Singlefixedmodelseed identification with defaulthead;only original SupCon view organization. Not novel IQ perturbation or provenDG;not actual in-orbit data."
+  },
+  "checkpoint": {
+    "initialization": "STRICT_EACH_OWN_ORIGINAL_NOAS20_AS20_STUDENT_AND_EMA_THEN_E10",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B00-s2026092701/stage20/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse originalP43 metadata/physicalrole audit and original source.parent_payload;current same handles checked once atpreflight before realCP smoke;no datarevalidation",
+    "provenance_verdict": "MATCHED_FULL_SOURCE_PRIOR_AUDIT_REUSED;scratch original20/4440/ownEMA/defaulthead/source-onlyfixedFINAL20;currenthandlespreflightpending",
+    "selection_rule": "FixedFINAL30;sourceincrementaleligibility only(fullVclean>=-.1pp,midlowtwodrawmean>=+.5pp vsoriginalAs);sourcefailurestillall7formal;no parameter/seed/epoch rescue or automaticnewlaunch"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/practical-mixedContrast30",
+    "gpu_policy": "EachGPUallownerscomputeprocesses<=3;free>=12000MB;CPU2;dynamiccapacityqueue;healthyjobsuntouched",
+    "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_mixed_contrast30/runner.py",
+    "stop_rule": "Only owned systemic technical/protocol/data-role/parent/head/numerical/output/prediction-closing failure;preserve artifacts,no automaticretry. Scientificnegative never stops fixed same-row formal closure."
+  },
+  "expected_artifacts": [
+    "synthetic_smoke.json",
+    "real_checkpoint_smoke.json",
+    "launch.json",
+    "each row source/completion.json and source_frozen.json",
+    "each row source_qualification/complete.json",
+    "each row prediction/complete.json all7",
+    "each row scoring/complete.json independenttruthlast",
+    "each row complete.json",
+    "analysis source_summary/training_logs/formal_summary/costs/complete",
+    "final_analysis.md and curatedresults/registry/Git"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "paired_delta_pp",
+      "urban3mean",
+      "repairs/new_errors/net",
+      "RX/day/TX",
+      "suburban_selfclean_gap",
+      "contrast_view_x_As_interaction",
+      "actualNN/studentteacher/update/exposure/wall"
+    ],
+    "dimensions": [
+      "fixedseed2026092701",
+      "NOAS30",
+      "AS30",
+      "MIXED_NOAS30",
+      "MIXED_AS30",
+      "sourcefullV27000/fixedV1800twodraw",
+      "clean+sixfixedpractical",
+      "RX/day/TX",
+      "ownparent20/new10/cumulative30"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/{row}/prediction",
+    "scorer_ref": "Existing independenttruthlast scorer onlyaftereachrowall7frozenpred;zeroNN4logicalrecountonlyafterall4all7prediction+independentscore"
+  },
+  "rows": [
+    {
+      "row_id": "B00-s2026092701",
+      "method": "MIX128 existingCROSS_RX at original128batchpositions;As=false;original6L CE/RDrop .5primary+.5mixed+.25raw,total1.25;oldU/ownEMA/defaultcos unchanged",
+      "purpose": "matched_noAs_control",
+      "config_ref": "experiments/cvs_practical_mixed_contrast30/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/B00-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixedoriginalseed/loader/ordinary/dropout streams;split392005;originaltrainchannel20261016421/val20261016422/receiver20261016423;source/formalfixedobservations unchanged;data/support null notapplicable;fullresolvedactualseedsrecorded,no seedselection.",
+      "k": null,
+      "scenario": "train clean ordinary/raw + uniform3completepractical forAs;testfixedclean+sixpractical",
+      "optimizer": "ResetAdamW lr2e-4 WD1e-4 cosine10 min1e-6,sameoriginaltail;strictownoriginal20student/EMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "Eachown20/4440+new10/2220=total30/6660;6L/768step,1704960newLNN;actualAs142080(B01) or0(B00);128contrastpositions,no addedNN;totalCEKL1.25=.5primary+.25mixedordinary+.25selected+.25raw;NoAsselectedraw64",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/B00-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/logs/B00-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_practical_mixed_contrast30/runner.py --mode worker --row B00-s2026092701",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "method": "MIX128 existingCROSS_RX at original128batchpositions;As=true;original6L CE/RDrop .5primary+.5mixed+.25raw,total1.25;oldU/ownEMA/defaultcos unchanged",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_practical_mixed_contrast30/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/B01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Fixedoriginalseed/loader/ordinary/dropout streams;split392005;originaltrainchannel20261016421/val20261016422/receiver20261016423;source/formalfixedobservations unchanged;data/support null notapplicable;fullresolvedactualseedsrecorded,no seedselection.",
+      "k": null,
+      "scenario": "train clean ordinary/raw + uniform3completepractical forAs;testfixedclean+sixpractical",
+      "optimizer": "ResetAdamW lr2e-4 WD1e-4 cosine10 min1e-6,sameoriginaltail;strictownoriginal20student/EMA",
+      "lr": 0.0002,
+      "epochs": 10,
+      "fl_rounds": null,
+      "budget_ref": "Eachown20/4440+new10/2220=total30/6660;6L/768step,1704960newLNN;actualAs142080(B01) or0(B00);128contrastpositions,no addedNN;totalCEKL1.25=.5primary+.25mixedordinary+.25selected+.25raw;NoAsselectedraw64",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/B01-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/logs/B01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_practical_mixed_contrast30/runner.py --mode worker --row B01-s2026092701",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Latest current user budget E30 default;noE50extensionlaunched",
+    "Latest user fullsource all5RX,noheldtrainingdomain/noLdev",
+    "Original source pool L/U/V7/63/30,trainingpool10%labels;Utruthhidden",
+    "Original sampler retained;128positions not a guarantee128uniquephysicalIDs;no new artificial64duplicateanchors",
+    "P41 ORD/DUP/SAT192 source failure known;not claiming AsSupCon universallyuntried;new criticalassumption fixed128positions/current6L vs historical192/4L",
+    "Sourcecriterion fixedbefore any newtraining/formal score;all scientific outcomes stillcompleteall7",
+    "NoExplicitCFO+internalpacketcomp retained;RDrop samegeneratedIQ perpair;As generatedonce fromraw selected64",
+    "NoAg/PA/DAC/classsignature additions;fullpractical physics/receivedIQ/SNR/difficultsamples unchanged",
+    "No fitting/replacing/frozenbackbone classifier,diagnostichead,deploybranch or target-based parent selection",
+    "P2 capsule/support/query fieldsnull are notapplicablePhase1;data/support/evaluationseednulls are inheritedfixedartifacts/not newglobalrandomseeds",
+    "Implementation/preflight/checks/uniqueP0P1/codecommit stillpending;PLANNED local preparation only"
+  ],
+  "comparators": [
+    {
+      "label": "NOAS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B00-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128"
+    },
+    {
+      "label": "AS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B01-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128"
+    }
+  ],
+  "registered_at": "2026-10-18T09:39:34+00:00"
+}

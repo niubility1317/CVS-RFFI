@@ -159,3 +159,10 @@ weightedAs50对匹配weightedNoAs50 clean逐seed−.042857／−.177976／−1.7
 
 
 只读历史核对已完成首部分：旧additiveAs虽有8L／重复raw及总尺度控制，但使用heldRX1／L5040，跨seed源确认失败；cleanretain37为4L比例比较，不是当前6L的加性保留；HQ的BRIDGE_CE仍有joint anchor，并非真正无一致性控制。当前不据此重启加性路线。P41也曾把完整practical selected64加入现有SupCon（SAT192／DUP192／ORD128），不增前向，固定源晋级失败；不能将“让As进入SupCon”包装成完全新机制。后续只读区分其192 anchor／重复物理样本权重与当前128 anchor的真实调用，尚未选定或登记新候选。
+
+
+## 下一项已登记：固定128个对比位置的视图替换
+
+20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01已登记PLANNED，尚未远端启动。唯一变量将原CROSS_RX SupCon的ORD128 maps替换为已生成MIX128，原L batch每位置一次、不追加SAT192的64positions，原sampler重复如存在保持。P41 SAT192已源失败，不宣称广义As进入SupCon全新；本次明确固定128positions／当前6L，与旧192／4L区别。不新加loss／层／branch／NN，原P43 .5ordinary+.5mixed+.25raw总L1.25／原U、all5RX/L6300/默认cos/IQ256保持。新NoAs／As01各own原20+10=总E30，原两E30复用。
+
+Source资格固定newAs−originalAs fullVclean≥−.1pp且两drawmidlowmean≥+.5pp；无额外cell门槛。失败关闭固定候选、不E50／扫参数救跑，仍自动all7正式收尾。正式stage仍newAs−matchednewNoAs clean≥−.1pp；单seed不证明重复双提升。实现73聚焦负例和AST已PASS，analysis接口检查与唯一P0/P1／真实CP烟测／发布待完成；不把准备写成启动。完整矩阵和命令见[预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/report.md)。
