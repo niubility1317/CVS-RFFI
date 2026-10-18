@@ -36,3 +36,5 @@ group=(RX,day,eq)，不读TX，按cumulative epoch/step刷新；四格共用相�
 预期交付：source实际模块/args/配置/parent初始化、training_sequence、全部epoch/step loss、prop_contrast_steps及physics（含合法L标签和环境pair覆盖）、final/冻结、固定V分层、source_matrix_decision、逐row七环境predictions、独立scores、analysis_r01完整曲线/分层/交互/F1/最差RX/修复新增错误/成本/PNG+PDF。新正式数据不供训练或选模。技术缺项和科学未达目标分别报告。
 
 另一对话splitAdam r02实际两As行已因相同component-gradient检查退出，NoAs完成，源矩阵未闭合；这是技术失败，不是科学负结果。本轮只读核实，没有修改或重启该owner产物。
+
+实际发布代码 32355ff0e6d73a7305e2fb8ce332651c9d1a7cbe，单archive传输和25文件远端compile VERIFIED，3076NN真实CP/四格图smoke PASS（source IQ0/target queryfalse/optimizer0）。合成标签与As parity相关，ON smoke额外As项为0，不据此称新aux已激活；实际source首批ON均61/64有效anchor、502正pair/238负pair，第1epoch平均加权As loss C01=0.0498677631、C11=0.0569158431，平均有效anchor62.225/64，确认真实训练使用新增项。OFF stats0为未计算而非无pair。四行GPU0/1/2/3的PID/CWD/argv/CUDA/实际GPU进程/日志增长已独立核实，均E21完成，角色EXACT_MATCH且target_contactfalse。尚无源域判据或正式性能结论。

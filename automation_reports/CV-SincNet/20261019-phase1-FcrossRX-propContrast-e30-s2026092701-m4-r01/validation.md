@@ -7,3 +7,5 @@
 一次N607普通账号只读preflight通过：project存在，GPU容量可用。独立P0/P1审查进行中，尚未启动训练。
 
 唯一一次连续独立P0/P1审查PASS，覆盖18核心＋2分析文件，记录local_artifacts/cvs_FcrossRX_propContrast_E30_20261019_r01/p0p1_review.md。没有真实NN/IQ/CP或远端访问。
+
+实际realCP smoke PASS3076NN，四图默认头/Sinc梯度有限且非零；合成图ON aux为零的fixture限制如report。真实训练首批pair和第1epoch非零As损失另由只读记录核实，未额外NN或重跑smoke。

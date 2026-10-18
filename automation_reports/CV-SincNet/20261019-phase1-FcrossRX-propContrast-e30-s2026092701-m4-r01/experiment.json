@@ -32,7 +32,7 @@
   "replaces_run_id": null,
   "authorization": "Latest user: satellite-first, clean drop<=0.1 absolutepp, fullsource/noheldRX, fixedF+CROSS_RX/defaulthead, E30; good source-qualified recipes may totalE50; active goal authorizes implementation/matched trials/all7 independent scoring. No extra heads/targetfeedback/healthy-task mutation.",
   "code": {
-    "commit": null,
+    "commit": "32355ff0e6d73a7305e2fb8ce332651c9d1a7cbe",
     "starting_commit": "3e82dbc9d9db95d8370028e6d6f627e89af9c4ce",
     "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
     "environment": "N607 existing ordinary CVS-RFFI Python3.10/Torch2.1/NumPy2.2; full FP32 CENTER_UNITS CPU2",
@@ -103,7 +103,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_propContrast_E30_20261019_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_prop_contrast76/runner.py",
     "stop_rule": "Own wrongroles/parent/defaulthead/nonfinite/budget/outputcollision/groupHprivate-stream scope failure or unlaunchable failure preserves ownrow and stops;no automatic retry;healthy peers finish;scientific FAIL still all7;no otherowner mutation",
-    "status": "LOCAL_VERIFIED"
+    "status": "RUNNING"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
