@@ -1,0 +1,41 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261019-phase1-FcrossRX-withinTXHard-e30-s2026092701-m2-r01",
+  "actual_code_commit": "8d7628f3fed309a068f50ee403afcf4ac736d367",
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "synthetic_noquery_smoke": {
+    "status": "PASS",
+    "total_NN": 1540,
+    "real_parent_default_head_NN": 4,
+    "optimizer_updates": 0,
+    "source_IQ": 0,
+    "target_access": false
+  },
+  "dispatcher": {
+    "PID": 1895346,
+    "CWD_correct": true,
+    "argv_correct": true
+  },
+  "rows": {
+    "H01-s2026092701": {
+      "PID": 1895457,
+      "GPU": 0,
+      "CWD_correct": true,
+      "argv_correct": true,
+      "CUDA_matches": true,
+      "actual_GPU_compute_PID_present": true
+    },
+    "R01-s2026092701": {
+      "PID": 1895535,
+      "GPU": 1,
+      "CWD_correct": true,
+      "argv_correct": true,
+      "CUDA_matches": true,
+      "actual_GPU_compute_PID_present": true
+    }
+  },
+  "log_growth": true,
+  "healthy_other_jobs_preserved": true,
+  "formal_scores_read": false
+}

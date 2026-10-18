@@ -39,3 +39,5 @@ N607普通账户，现有CVS-RFFI/PyTorch，CPU2；每GPU所有owner合计最多
 报告准确率及配对变化、macroF1、最差RX、RX/day/TX分层、urban三景均值、suburban绝对差距、修复／新增错误、完整成本和缺项。只有模型seed2026092701，两个源信道draw不是两个模型种子；单seed或<0.1pp微增不称稳定双提升。
 
 预期：真实父模型smoke、逐步reference／shape／unit／hardrisk／native日志和training_sequence、source完整结果及fixedFINAL30、source_matrix_decision、各行all7prediction／independent scores、automatic_summary、最终报告和登记。目标仍ACTIVE。
+
+实际发布代码 8d7628f3fed309a068f50ee403afcf4ac736d367；单归档传输比较与远端编译VERIFIED。真实父模型／默认头及两条synthetic hook检查PASS1540NN／0更新。dispatcher1895346，H01 PID1895457 GPU0，R01 PID1895535 GPU1；PID/CWD/argv/CUDA／实际GPU进程和log增长独立核实。状态RUNNING；未完成训练，未读取新正式分数。
