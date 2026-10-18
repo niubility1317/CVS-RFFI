@@ -2180,7 +2180,7 @@
       "joint_goal_complete": false
     }
   },
-  "latest_completed_experiment": "20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01",
+  "latest_completed_experiment": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
   "source_PSD_positive_affine": {
     "run_id": "20261017-diagnostic-F-crossRX-PSDaffine-fitL-aggregate-m1-r01",
     "execution_commit": "1091fc97568605cd1115b6fa14754f781df197cc",
@@ -2310,7 +2310,7 @@
     "new_analysis_NN": 0,
     "new_analysis_updates": 0
   },
-  "current_experiment": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
+  "current_experiment": null,
   "active_As_hypothesis": {
     "status": "NO_NEW_QUALIFIED_AS_CANDIDATE",
     "reference": "Existing complete ordinary practical;large urban gains with clean cost remain",
@@ -4254,25 +4254,24 @@
     "no_rescue": true
   },
   "latest_completed_analysis": {
-    "run_id": "20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01",
-    "status": "ANALYZED_VERIFIED",
-    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01/final_analysis.md"
+    "run_id": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
+    "status": "ANALYZED_NEGATIVE_FIXED_AG_CLOSED",
+    "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01/final_analysis.md"
   },
   "current_evidence_gap": {
-    "new_Ag_proved": false,
-    "new_As_recipe_qualified": false,
+    "new_Ag_validated": false,
+    "new_As_qualified": false,
     "joint_goal_complete": false,
-    "last_fixed_candidate": "20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01",
-    "source_qualified": false,
-    "clean_net_gain_pp": -1.6589285714285715,
-    "lowurban_accuracy": 0.5172678571428572,
-    "suburban_gaps_pp": {
-      "practical_high": 2.500595238095238,
-      "practical_mid": 5.128571428571438,
-      "practical_low_suburban": 7.502976190476196
+    "latest_candidate": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
+    "clean_net_gain_pp": -0.024404761904761905,
+    "lowurban_accuracy": 0.30423214285714284,
+    "each_suburban_gap_pp": {
+      "practical_high": 41.795238095238105,
+      "practical_mid": 43.44821428571429,
+      "practical_low_suburban": 45.26845238095238
     },
-    "source_RX_holdout": null,
-    "reason": "Fixed shadowLHS fails source urban/jointclean and allformalconditions;smaller sub-clean gap accompanies lowerclean and sub accuracies;no newIQAg/crossseed proof"
+    "full_B00_B10_B01_B11_missing": true,
+    "cross_seed_missing": true
   },
   "current_source_experiment": null,
   "latest_completed_source_experiment": "20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01",
@@ -7536,7 +7535,7 @@
   "repeat_shrink_E30_release": {
     "run_id": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
     "execution_commit": "a0461e0de33484561ab28db440c046510b02a0e6",
-    "status": "SOURCE_FAILED_FORMAL_ARTIFACTS_COMPLETE_PENDING_RECOUNT",
+    "status": "ANALYZED_SOURCE_FAILED",
     "rows": 2,
     "common_parent_epochs": 20,
     "new_epochs_each": 10,
@@ -7546,5 +7545,52 @@
     "heldRX": null,
     "IQ_points": 256,
     "report": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01/report.md"
+  },
+  "repeat_shrink_E30_result": {
+    "run_id": "20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01",
+    "source_pass": false,
+    "source_clean_gain_pp": 0,
+    "formal_clean_B00": 0.853577380952381,
+    "formal_clean_B10": 0.8533333333333334,
+    "formal_clean_delta_pp": -0.024404761904761905,
+    "formal_lowurban_B00": 0.3035357142857143,
+    "formal_lowurban_B10": 0.30423214285714284,
+    "formal_lowurban_delta_pp": 0.06964285714285715,
+    "B10_suburban_selfclean_gap_pp": {
+      "practical_high": 41.795238095238105,
+      "practical_mid": 43.44821428571429,
+      "practical_low_suburban": 45.26845238095238
+    },
+    "As_training": false,
+    "Ag_As_interaction": "NOT_DEFINED_ONLY_AG_TWO_ROWS",
+    "single_seed": true,
+    "new_Ag_efficacy": false,
+    "joint_goal_complete": false,
+    "cost_summary": {
+      "new_training_NN": 6325924,
+      "prediction_NN": 2352004,
+      "shared_real_parent_smoke_NN": 2,
+      "new_matrix_NN_total": 8677930,
+      "unique_parent_NN": 3661082,
+      "with_unique_parent_NN_total": 12339012,
+      "new_model_epochs": 20,
+      "unique_parent_model_epochs": 20,
+      "unique_model_epochs": 40,
+      "new_updates": 4440,
+      "unique_parent_updates": 4440,
+      "unique_optimizer_updates": 8880,
+      "cumulative_epochs_each": 30,
+      "cumulative_updates_each": 6660,
+      "prior_source_identity_guard_NN_separate": 14404,
+      "extra_teacher_NN": 0,
+      "extra_supervised_VJP": 0,
+      "analysis_NN": 0,
+      "raw_truth_read_by_analysis": false,
+      "CPU_bridge_operator_call_wall_seconds": {
+        "B00": 13.334534716093913,
+        "B10": 13.970596009632573
+      },
+      "CPU_bridge_timer_limitation": "Includes host waiting/CPU-GPU bridge;not isolated pure CPU kernel time"
+    }
   }
 }

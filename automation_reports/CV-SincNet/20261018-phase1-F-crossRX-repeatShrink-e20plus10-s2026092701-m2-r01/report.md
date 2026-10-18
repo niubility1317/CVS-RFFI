@@ -1,6 +1,6 @@
 # 完整源 E30：重复残差 IQ 增强的独立价值
 
-状态：两行已完成训练、七视图预测和独立评分；源判据失败关闭，正式数值尚待本轮独立复算。唯一配置与逐行矩阵在 [experiment.json](experiment.json)。
+状态：ANALYZED／VERIFIED。两行已完成E30、七视图默认头预测、独立truth-last及全量复算；固定算子失败关闭，联合目标仍未完成。唯一配置与逐行矩阵在 [experiment.json](experiment.json)。
 
 源前置检查 20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01 已通过全部36必要条件，848混淆矩阵独立复算误差0。它只证明固定轻度算子在两个原默认头下通过源保护，不能证明已提取域无关身份。本轮只检验 Ag 的独立训练价值，避免先把尚无收益证据的Ag叠进As。本对话与“开发 CVS Phase1 星地增强训练”的As扩种子方向不同，不合并不同实验增益或父权重。
 
@@ -38,3 +38,11 @@ F＋跨RX同TX、三SIG_TIME、统一Sinc、joint160、默认6×160 cosine/scale
 ## 冻结源判定
 
 完整源V两行均26532/27000（98.266667%），B10−B00为0pp，未达固定+.5pp；各RX保护通过。因此关闭固定[80,160)/period20/taper/Uniform0至.1/父seed/E30，不换强度、窗口、seed或父权重救跑，不因稍后target值重排。全部source2220步/10轮、L6300/U56700、857实际args、680字段nativeCSV/JSONL、284160私有lambda及L/U序列/NN成本完全复算；只有candidate_id/output_dir不同。见[source_decision.md](source_decision.md)和[source_analysis.json](source_analysis.json)。本结论在本轮正式target数值读取前保存，不以源保护或普通增强健康检查替代泛化成功。
+
+## 完整正式结果
+
+完整结果见[final_analysis.md](final_analysis.md)和[final_analysis.json](final_analysis.json)。B00/B10 clean为85.357738%／85.333333%，独立Ag差−.024405pp；low urban为30.353571%／30.423214%，差+.069643pp。六practical小幅单seed增长不抵消clean缺少净收益，不作为联合成功；源失败关闭决定不变。全部252正式CM、42分区求和与7组同物理包配对复算误差0。
+
+两worker和dispatcher均已自然结束，无failure。每行2220新更新/累计6660/E30，全部L6300/U56700真实角色和857actualargs匹配（仅candidate_id/output_dir不同）；680字段nativeCSV/JSONL逐值一致。总新增8677930NN（包含共享父smoke2和预测各smoke2），含共同父12339012NN，先前sourceguard14404NN另列。未重训、重复预测或重评分，0新增分析IQ/CP/NN/更新。
+
+当前唯一被本矩阵检验的假设是：固定轻度残差收缩能通过训练改善跨RX身份提取。最小B00/B10已经完整完成；源0pp与正式clean负差否定其晋级依据。固定窗口/周期/taper/Uniform范围/seed/父/E30关闭，不改参数救跑。当前没有新的合格Ag，B01/B11和交互项未开展，low>60%及suburban保护没有完成；全局研究继续ACTIVE。
