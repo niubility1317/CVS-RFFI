@@ -294,3 +294,7 @@ AsLS .01→.05 E30已完成唯一新行及全部七视图评分/完整日志：s
 单新own原P43As20student+EMA+10，总30/6660，旧AS30/NOAS30复用。source固定fullVnewAs−oldNoAs≥−.1pp且twodrawmidlownewAs−oldAs≥+.5pp，失败关固定selector/noE50/no分组父种子扫描，all7仍自动完成。privateRNG不消费旧globalstream，但实际As曝光/补集与整体参数轨迹可能改变，不称纯方差或所有U决策相同。预期新增4352334NN含770真实首步smoke，以实计数为准；selectorCPU单列。完整[最小报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/report.md)。
 
 AsAlloc E30已实际启动：代码 93693c8e4250074777a1d638f1f78fa20e1082e4，singlearchive传输/compile VERIFIED，770NN真实首步smoke PASS直接训练；dispatcher1556022/worker1556050 GPU0，PID/CWD/argv/GPU/log增长和actual satellite_allocation/全源角色/strictownAs20EMA/phase0-10/原LS.01与U规则核实。0NNanalysis1556587 WAIT_SOURCE流程已接通，尚无新识别结果；源失败仍all7、不扩E50。
+
+AsAlloc E30已ANALYZED：single新ownAs20+10/2220，总E30/6660，全部3logical×7独立truth-last与378CM/63partition完成。source先读保存FAIL：fullV clean−oldNoAs−.114815pp、midlow−oldAs−.013889pp，固定TX×RX waterfill64关闭/noE50/no分组父种子扫描，不由formal微增晋级。正式clean85.281548%、mid62.822024%、low51.322619%、urbanmean63.970635%；对原As clean−.059524pp、mid＋.015476pp、low＋.078571pp、urban＋.031349pp；对原NoAs clean＋.033929pp仅n1阶段PASS微观察，无重复双提升证据。
+
+完整2220步配额/补集/14native/U/EMA解析，全部6300L均As曝光11至37次，14.208万As包；固定物理角色、原完整practical/LS.01/6L1.25/defaulthead/原U均保持。旧parity曝光是新轨迹反事实，非旧run重放；不能称纯variance效应。新增4352334NN含770smoke，native1057.827593秒，selector1.662100秒包含hook2.582119秒不可相加，source预测wall未单列。worker/dispatcher/analysis均自然退出，无技术缺项；保留原As参照，目标仍未完成。完整[报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/final_analysis.md)。

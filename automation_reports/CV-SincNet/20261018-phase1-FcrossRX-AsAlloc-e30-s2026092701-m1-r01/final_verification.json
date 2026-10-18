@@ -1,0 +1,125 @@
+{
+  "status": "VERIFIED_ANALYZED",
+  "run_id": "20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01",
+  "code_commit": "93693c8e4250074777a1d638f1f78fa20e1082e4",
+  "source_decision_before_new_formal_read": {
+    "run_id": "20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01",
+    "read_at_UTC": "2026-10-18T15:19:52.722Z",
+    "source_archive_SHA256": "4ca9786e3a44af2d88093a0349f6ae847859611122f3a52f4720a59d6c4bc194",
+    "source_file_count": 5,
+    "formal_results_collected": false,
+    "formal_scores_read": false,
+    "decision": {
+      "fullV_clean_vs_NoAs30_pp": -0.11481481481481204,
+      "mid_low_mean_vs_original_As30_pp": -0.01388888888889106,
+      "clean_vs_NoAs30_within_absolute_0p1pp": false,
+      "mid_low_gain_at_least_0p5pp": false,
+      "source_criteria_pass": false,
+      "E50_source_eligible": false,
+      "fixed_recipe_closed": true,
+      "fullV_clean_vs_original_As30_pp": -0.011111111111106187,
+      "only_two_source_criteria": true,
+      "scientific_negative_skips_formal": false,
+      "target_scores_read": false,
+      "per_packet_protection_gate": false,
+      "automatic_extension": false
+    },
+    "action": "Fixed TX×RX As64 waterfill closed;no E50/no granularity,seed,parent or selective rerun rescue;all7 completes"
+  },
+  "all7_fixed_predictions_and_independent_scores": true,
+  "new_model_rows": 1,
+  "reused_model_rows": 2,
+  "model_seed_count": 1,
+  "curated_metric_cells_verified": 63,
+  "independent_confusion_matrices": 378,
+  "partition_reconciliations": 63,
+  "source_collection_archive": "4ca9786e3a44af2d88093a0349f6ae847859611122f3a52f4720a59d6c4bc194",
+  "final_collection_archive": "76d9e12700cf5307462f46aae4fe7bd6916a2820df672bf2030340db50bcc06d",
+  "final_collection_files": 11,
+  "new_model_epochs": 10,
+  "new_updates": 2220,
+  "cumulative_epochs": 30,
+  "cumulative_updates": 6660,
+  "actual_new_NN": 4352334,
+  "selector_accounting": {
+    "extra_model_NN": 0,
+    "extra_CE_operator_calls": 0,
+    "allocation_cpu_wall_seconds": 1.6620997083373368,
+    "allocation_hook_cpu_wall_seconds": 2.5821187591645867,
+    "timing": "perf_counter CPUwall;hook includesselector andcopies,do notaddboth;no explicitCUDA synchronization",
+    "selector_included_in_hook_time": true,
+    "do_not_add_selector_and_hook": true,
+    "not_CUDA_event_time": true,
+    "zero_extra_model_forward_is_not_zero_compute": true
+  },
+  "processes": {
+    "dispatcher": {
+      "pid": 1556022,
+      "alive": false
+    },
+    "worker": {
+      "pid": 1556050,
+      "alive": false
+    },
+    "analysis": {
+      "pid": 1556587,
+      "alive": false
+    }
+  },
+  "systemic_failure": null,
+  "final_runtime_missing": [],
+  "timing_limitations": [
+    "Source prediction wall not separately recorded",
+    "Hook includes selector;not additive;CPU not CUDA event"
+  ],
+  "scientific_decision": "Source FAIL;fixed TX×RX As64 allocation closed/no E50/no rescue. Formal n1 clean guard PASS;vs originalAs clean-.059524pp/mid+.015476pp/low+.078571pp,all micro;no repeatable dual gain.",
+  "formal_stage": {
+    "clean_delta_pp": 0.033928571428571426,
+    "clean_net_repairs": 57,
+    "clean_absolute_0p1pp_guard_met": true,
+    "clean_positive_observed": true,
+    "positive_below_0p1pp_is_micro_observation": true,
+    "midurban_gain_pp": 27.689285714285713,
+    "lowurban_gain_pp": 21.182738095238093,
+    "urban_mean_gain_pp": 28.399801587301585,
+    "repeatable_clean_gain_proven": false
+  },
+  "analysis_completion": {
+    "status": "ANALYZED",
+    "training_run": "20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01",
+    "analysis_code_commit": "93693c8e4250074777a1d638f1f78fa20e1082e4",
+    "source_complete": true,
+    "formal_complete": true,
+    "log_records_complete": true,
+    "model_seed_count": 1,
+    "new_model_rows": 1,
+    "reused_model_rows": 2,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "training_processes_untouched": true,
+    "pipeline_wall_including_wait_seconds": 1116.8523183199577,
+    "repeatable_clean_positive_proven": false,
+    "goal_complete": false
+  },
+  "curation_extra": {
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "new_scores": 0
+  },
+  "privacy_check": "PASS",
+  "stratum_report": {
+    "file": "strata_analysis.md",
+    "RX_rows": 21,
+    "day_rows": 12,
+    "TX_rows": 18,
+    "dimensions_reconcile_to_overall": 9,
+    "privacy_physical_exposure": "Only8aggregate fields each andhistograms;no rawPID maps/lists/strings",
+    "analysis_NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "new_scores": 0
+  }
+}

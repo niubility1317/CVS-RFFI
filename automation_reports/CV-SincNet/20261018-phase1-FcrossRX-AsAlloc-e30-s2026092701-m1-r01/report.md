@@ -1,8 +1,14 @@
 # 完整 practical：As64 的 TX×RX 分层分配 E30
 
-RUNNING：唯一P0/P1 PASS，代码已提交/remoteOID一致；传输/远端compile VERIFIED，770NN真实首步smoke PASS即训练。worker PID/CWD/argv/GPU/loggrowth和实际原U/EMA/父/全源角色已核验。尚无本候选性能结果。
+ANALYZED（单种子）：固定TX×RX As64分配未通过源域两条件，关闭且不扩E50。全部clean＋六practical固定预测、独立truth-last评分和完整日志分析完成，无训练/评分技术缺项。
 
 唯一假设：只在既有 L128 内均衡哪些样本进入 As64，能否在主要 clean 监督和每个物理位置权重稳定的条件下，提高完整 practical 识别。原位置交替选择不保证 TX×RX 配额。本项不增加信道损伤、视图、损失、门控、分类头或部署分支。
+
+实际结论：newAs clean85.281548%，相对原NoAs30＋.033929个百分点，本seed满足clean下降≤.1pp阶段条件；相对原As30−.059524pp。mid/lowurban62.822024%/51.322619%，相对原As仅＋.015476/＋.078571pp，urban均值＋.031349pp，全部是n1微小变化。没有可保留的新星地收益或可重复双提升证据。
+
+源决定先于正式读取保存：fullV clean−原NoAs−.114815pp、midlow−原As−.013889pp，两个固定条件均FAIL，因此不扩E50/不扫分组、父或seed。全部6300个L均As曝光，最少11次、最多37次；覆盖完整不等于机制成功。新增10modelE/2220updates、4352334NN含770smoke，native1057.828秒；selector1.662100秒包含于hook2.582119秒，不相加。
+
+完整all7 accuracy/macroF1/最差RX、配对错误、suburban差距、实际曝光和成本见[最终分析](final_analysis.md)、[公开数值](results_public.json)、[最终验证](final_verification.json)。
 
 ## 唯一变化与归因
 
