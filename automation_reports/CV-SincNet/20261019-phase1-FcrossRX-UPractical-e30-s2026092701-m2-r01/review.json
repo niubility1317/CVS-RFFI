@@ -1,0 +1,67 @@
+{
+  "status": "PASS",
+  "review_type": "single_independent_P0_P1",
+  "run_id": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01",
+  "reviewer": "/root/u_practical_p0p1",
+  "reviewed_at": "2026-10-18T17:36:30.396Z",
+  "scope": {
+    "package": "experiments/cvs_u_practical30",
+    "analysis": [
+      "analysis/cvs_u_practical30_analysis_20261019.py",
+      "analysis/cvs_u_practical30_check_20261019.py",
+      "analysis/cvs_u_practical30_publish_analysis_20261019.py",
+      "analysis/cvs_u_practical30_collect_20261019.py"
+    ],
+    "preregistration": "automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01",
+    "dependency_sources": "Read-only existing local P43/P41/native dependency sources;actual runtime pinned by originalreferencecommit"
+  },
+  "findings": [],
+  "remaining_P0_P1": 0,
+  "criterion": "Only defects directly making this real run wrong, unauthorized, destructive, unlaunchable or unable to produce legal predictions; other observations NONBLOCKING",
+  "verified_by_code_read": {
+    "three_new_rows_N_C_S": true,
+    "N_original_B00_ownNoAs20_C_S_original_B01_ownAs20_and_ownEMA": true,
+    "full_L6300_hidden_U56700_V27000_all5RX_no_holdout": true,
+    "default_joint160_cosine_head_joint_training_unchanged": true,
+    "pinned_native_teacher_call_is_module___call__": true,
+    "native_teacher_threshold_temporal_strong_student_loss_hook_order_matches": true,
+    "U_TX_hidden_no_truth_accuracy_invention": true,
+    "common_teacher_only_qualification_before_student_view": true,
+    "original_confidence_quantile_batch_neighbor_retained": true,
+    "one_original_Gaussian_draw_all_U_then_raw_same_U_quarter_overwrite": true,
+    "B256_select64_last124_select31_cumulative_E21_30_step4441_6660": true,
+    "private_selector_and_U_channel_rng_no_global_draw_added": true,
+    "original_L_6_forwards_768_and_loss_scale1p25_ORD128_preserved": true,
+    "original_U_selected_mean_CE_0p16_and_all_U_entropy_0p01_preserved": true,
+    "U_view_replacement_zero_added_NN_141750_U_simulations_disclosed": true,
+    "source_criteria_S_C_midlow_plus0p5pp_and_S_matchedN_fullV_clean_minus0p1pp_only": true,
+    "source_failure_still_all7_formal_closure": true,
+    "per_row_all7_predictions_before_separate_exec_truthlast_scorer": true,
+    "analysis_source_final_separate_CLI_and_source_no_truth_argument": true,
+    "all5_logical_10pairs_630CM_105partitions_consistent": true,
+    "analysis_does_not_launch_or_load_IQ_CP_or_NN": true,
+    "immutable_output_roots_and_ordinary_account_capacity_policy": true
+  },
+  "existing_validation_read": {
+    "implementation_checks": "local_artifacts/F_UPractical_E30_20261019/implementation_checks.json",
+    "status": "PASS",
+    "protocol_negatives": 76,
+    "routing_negatives": 10,
+    "mock_positive_cases": 13,
+    "package_AST_files": 20,
+    "emitted_remote_AST": 2,
+    "analysis_focused_fixtures": "Analysis owner is finishing the already planned local synthetic fixtures; this review makes no unverified test PASS claim and adds no check or gate",
+    "launcher_real_checkpoint_and_actual_hook_smoke": "Existing first-step smoke only; expected2356NN and continue immediately on PASS; not executed by reviewer"
+  },
+  "operations": {
+    "remote_calls": 0,
+    "real_IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "NN": 0,
+    "optimizer_updates": 0,
+    "code_changes": 0,
+    "commits": 0,
+    "only_written_artifact": "local_artifacts/F_UPractical_E30_20261019/review.json"
+  },
+  "claim_boundary": "PASS is a bounded code/protocol review, not a scientific result, real-checkpoint smoke result, launch result or repeatable dual-gain claim"
+}

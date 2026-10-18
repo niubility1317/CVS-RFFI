@@ -1,0 +1,111 @@
+{
+  "status": "PASS",
+  "scope": "local focused NumPy/mocked interfaces and AST only; actualTorch/CP smoke deferred launcherfirst",
+  "focused": {
+    "status": "PASS",
+    "protocol_negatives": 76,
+    "routing": {
+      "status": "PASS",
+      "mock_positive_cases": 13,
+      "negatives": 10,
+      "production_batches": [
+        256,
+        124
+      ],
+      "quarters": [
+        64,
+        31
+      ],
+      "U_packets": 567000,
+      "U_selected_slots": 141750,
+      "original_strong_numpy_RNG_endstate_equal": true,
+      "global_private_selection_numpy_Python_RNG_preserved": true,
+      "raw_unmodified": true,
+      "selected_raw_not_Gaussian": true,
+      "teacher_only_accepts_student_disagreement": true,
+      "empty_mask_differentiable_zero_interface": true,
+      "U_truth_used": false,
+      "NN": 0
+    },
+    "legacy_smoothing_source": {
+      "status": "PASS",
+      "source": "experiments/cvs_sigtime_rdrop_legacy/model.py"
+    },
+    "emitted_native_info_keys": 7,
+    "full6L_original_hook": true,
+    "actual_rows": 3,
+    "unique_original_parents": 2,
+    "source_stage_S_minus_N": true,
+    "no_new_losses": true,
+    "real_model_checkpoint_smoke": "launcher first step pending2356NN",
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "updates": 0,
+    "target": false
+  },
+  "AST": {
+    "status": "PASS",
+    "package_Python_files": 20,
+    "emitted_remote_AST": [
+      "PASS",
+      "PASS"
+    ],
+    "network_calls": 0,
+    "CP": 0,
+    "IQ": 0,
+    "target": false
+  },
+  "actual_smoke": {
+    "status": "NOT_RUN_LOCAL",
+    "expected_total_NN": 2356,
+    "unique_parent_noquery_NN": 4,
+    "three_actual_L_NN": 2304,
+    "three_U_teacher_NN": 24,
+    "three_U_student_NN": 24,
+    "As_L_simulations": 128,
+    "As_U_simulations": 2,
+    "real_IQ": 0,
+    "optimizer_updates": 0,
+    "continues_on_PASS": true
+  },
+  "production": {
+    "rows": [
+      "N01-s2026092701",
+      "C01-s2026092701",
+      "S01-s2026092701"
+    ],
+    "reference_rows": [
+      "B00-s2026092701",
+      "B01-s2026092701",
+      "B01-s2026092701"
+    ],
+    "per_row": {
+      "new_epochs": 10,
+      "updates": 2220,
+      "L_NN": 1704960,
+      "U_student_NN": 567000,
+      "U_teacher_NN": 567000,
+      "total_student_NN": 2271960,
+      "EMA_updates": 2220
+    },
+    "L_As_packets": {
+      "N01": 0,
+      "C01": 142080,
+      "S01": 142080
+    },
+    "U_As_packets": {
+      "N01": 0,
+      "C01": 0,
+      "S01": 141750
+    },
+    "native_metric_keys": 7,
+    "actual_rows_alias": "actual_m3",
+    "formal_views": 7
+  },
+  "CP": 0,
+  "IQ": 0,
+  "NN": 0,
+  "updates": 0,
+  "network_calls": 0
+}

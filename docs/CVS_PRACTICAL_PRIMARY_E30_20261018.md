@@ -313,3 +313,13 @@ qualityRisk r01 发布/编译已VERIFIED，但首步合成hook在NumPy array身�
 qualityRisk E30已ANALYZED：两新tail各2220更新/10轮、4logical×7/504CM84partition全部完成。source先读归档c046fd2515d25eaa743f9e1b31b888f3c78faf0803044159d6b9d59e5d0cd66b，hard<8等midlow S−I−.526661pp、easy＋.319663pp、fullVclean S−liveAs−.007407pp，hardFAIL，正式前关闭/noM3/noE50。正式S clean85.248214/mid62.816667/low51.281548/urban63.970238%；对liveAs clean−.092857pp、mid＋.010119/low＋.0375pp，对IID clean−.183929/mid＋.004167/low−.039286pp，非广泛提升。对NoAs clean仅多1包(＋.000595pp)，n1阶段PASS但无重复双提升。各suburban距clean3.798214/6.567262/9.360714pp，未达接近clean/low60目标。
 
 新增20modelE/4440updates/8704156NN＝科学计划8703898＋R01失败258，合法770检查和252000既有bank传播各只计一次；R02role元数据失败由R03零NN闭合，旧bytes/失败/分析产物保留。bank5timer/原APIcall/source预测wall缺失明确，不用恢复耗时替代。所有owned进程自然终止，defaulthead/fullL6300/Uhidden/all5RX/IQ256保持。旧普通CFO/PA实际启用、NoExplicitCFO仅显式特征坐标屏蔽的审计已记录，不热改基线、不作为新Ag标签安全证据。完整[报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/final_analysis.md)。
+
+
+## 下一项：U 学生 practical 视图预算重分配
+
+20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01 已登记PLANNED，实现中未发布。两新行C01/S01均从原P43 B01 ownAs20 student+ownEMA独立追加10，总E30/6660；原NoAs30/As30冻结读出复用。共同将student strongagreement关闭，保留原rawEMA/conf quantile/batch_neighbor，C保持原Gaussian strong std.015，S每批1/4槽替换为完整practical(rawU)，先算整批原strong再覆写，无新NN。B256选64、末B124选31，预计S新增141750 U模拟，单列实际CPU/复制/模拟成本；L原6L1.25/Asraw64/ORD128/默认头和全源RX/L6300/U56700hidden/V27000保持。原U CE接受数量分母和.16权重、全U entropy.01保持，因此其输入也受route影响；资格公式相同不保证两行未来接受集合相同。
+
+源资格固定S−C two-drawV1800 midlow等场景准确率≥+.5pp且fullV S−原NoAs≥−.1pp；失败关闭固定1/4/noE50/扫比例/父/种子，all7仍自动完成。旧Uurban39是额外前向+qKL，P67是epochbank但GaussianU，P68是L第二独立As，精确新组合未见已实训；另一对话P71实际风险M3独立运行，本侧不叠加。详见[最小预登记](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01/report.md)。当前无新性能证据，最终可重复星地与clean双收益未完成。
+
+
+UPractical 发布前矩阵补正：同runID保留m2初名/alias actual_m3，实际新增N01/C01/S01三行。N01从原B00 ownNoAs20+10，C/S原B01ownAs20+10，三行共同teacher-only资格；S−N是严格阶段clean对照，S−C是route增量。原NOAS30因studentstrongagreement仍开，仅作历史参照。源clean规则随之固定为fullV S−N≥−.1pp，midlowS−C≥+.5pp不变；无新机制/种子/单模型预算扩张。三新tail预计13054692NN（不含实际sharedsmoke），6660updates/30modelE，尚未远端发布。

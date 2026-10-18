@@ -1,0 +1,74 @@
+{
+  "status": "PASS",
+  "recorded_at_UTC": "2026-10-18 17:38:06 UTC",
+  "scope": "Local metadata-only focused fixtures for frozen UPractical analysis; no current experiment result reads",
+  "run_id": "20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01",
+  "training_release": "cvs_FcrossRX_UPractical_E30_20261019_r01",
+  "analysis_release": "cvs_F_u_practical30_analysis_20261019_r01",
+  "output_name": "analysis_auto_r01",
+  "focused_tests": {
+    "passed": 7,
+    "failed": 0,
+    "elapsed_seconds": 79.014,
+    "names": [
+      "test_actual_U_teacher_mask_CE_entropy_route_scope",
+      "test_all5_all7_before_truth_630CM105partitions",
+      "test_old_audits_reused_three_tails_two_parents",
+      "test_source_exact_two_conditions_and_native_JSON",
+      "test_three_full2220step_logs_and_native_cost",
+      "test_two_phase_source_truth_isolation_cost_and_single_archive",
+      "test_wait_terminal_missing_stops"
+    ],
+    "fixture_repair": "Added missing os import in check helper; production behavior unchanged"
+  },
+  "AST": {
+    "new_public_files": 4,
+    "publisher_embedded_scripts": 3,
+    "status": "PASS"
+  },
+  "verified_interfaces": {
+    "logical_conditions": [
+      "NOAS30",
+      "AS30",
+      "MATCHED_NOAS30",
+      "UTEACHER30",
+      "UPRACTICAL30"
+    ],
+    "new_rows": 3,
+    "source_conditions": 2,
+    "source_clean_reference": "MATCHED_NOAS30",
+    "source_midlow_reference": "UTEACHER30",
+    "formal_stage_reference": "MATCHED_NOAS30",
+    "all7_views": 7,
+    "pairs": 10,
+    "confusion_matrices": 630,
+    "partition_reconciliations": 105,
+    "new_step_records_fully_parsed": 6660,
+    "source_output_files": 5,
+    "final_collection_files": 11,
+    "explicit_source_final_phases": true,
+    "source_invocation_has_no_truth_argument": true,
+    "source_output_unchanged_by_final_fixture": true,
+    "shared_smoke_NN_reference": 2356,
+    "candidate_total_NN_reference": 13057048,
+    "actual_run_costs_not_yet_read": true,
+    "teacher_only_qualification": true,
+    "student_disagreement_not_filtered": true,
+    "CE_qualified_count_denominator": true,
+    "entropy_all_U_denominator": true,
+    "scientific_source_failure_still_all7_formal": true,
+    "terminal_missing_stops_without_infinite_wait": true
+  },
+  "analysis_local_execution_cost": {
+    "NN": 0,
+    "checkpoint_loads": 0,
+    "real_IQ_reads": 0,
+    "optimizer_updates": 0,
+    "remote_calls": 0,
+    "new_predictions": 0,
+    "new_scores": 0,
+    "U_truth_reads": 0,
+    "current_experiment_real_source_or_formal_reads": 0
+  },
+  "limits": "Synthetic metadata verifies parser and phase contracts; actual training counters, source criteria and formal scores remain to be observed by the registered run. Single model seed is not repeatability evidence."
+}

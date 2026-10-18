@@ -605,3 +605,5 @@
 - [L原始视图匹配实验 r01](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsAlloc-e30-s2026092701-m1-r01/report.md)
 
 - [L原始视图匹配实验 r01](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-qualityRisk-e30-s2026092701-m2-r01/report.md)
+
+- [L原始视图匹配实验 r01](../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-UPractical-e30-s2026092701-m2-r01/report.md)
