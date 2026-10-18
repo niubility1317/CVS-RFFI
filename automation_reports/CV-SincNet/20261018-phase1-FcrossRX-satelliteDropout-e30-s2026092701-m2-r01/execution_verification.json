@@ -97,50 +97,60 @@
     {
       "row": "AS_CE-s2026092701",
       "pid": 1099342,
+      "phase": "worker",
       "alive": true,
       "gpu": 1,
       "GPU_observed": true,
       "cwd_matches": true,
       "argv_matches": true,
       "GPU_env_matches": true,
-      "log_bytes": 73527,
+      "log_bytes": 121761,
       "progress": {
-        "epoch": 13,
-        "cumulative_epoch": 13,
-        "steps": 2886,
-        "cumulative_steps": 2886,
-        "L_NN": 2216448,
-        "L_As": 184704,
+        "epoch": 1,
+        "cumulative_epoch": 21,
+        "steps": 222,
+        "cumulative_steps": 4662,
+        "L_NN": 170496,
+        "L_As": 14208,
         "extra_U_NN": 0,
         "U_As": 0,
         "existing_U_only": true,
         "U_truth_read": false,
         "target_access": false
-      }
+      },
+      "progress_L_NN_scope": "current_segment_only",
+      "source_complete": false,
+      "prediction_complete": false,
+      "scoring_complete": false
     },
     {
       "row": "AS_DET-s2026092701",
       "pid": 1099419,
+      "phase": "worker",
       "alive": true,
       "gpu": 2,
       "GPU_observed": true,
       "cwd_matches": true,
       "argv_matches": true,
       "GPU_env_matches": true,
-      "log_bytes": 73561,
+      "log_bytes": 121826,
       "progress": {
-        "epoch": 13,
-        "cumulative_epoch": 13,
-        "steps": 2886,
-        "cumulative_steps": 2886,
-        "L_NN": 2216448,
-        "L_As": 184704,
+        "epoch": 1,
+        "cumulative_epoch": 21,
+        "steps": 222,
+        "cumulative_steps": 4662,
+        "L_NN": 170496,
+        "L_As": 14208,
         "extra_U_NN": 0,
         "U_As": 0,
         "existing_U_only": true,
         "U_truth_read": false,
         "target_access": false
-      }
+      },
+      "progress_L_NN_scope": "current_segment_only",
+      "source_complete": false,
+      "prediction_complete": false,
+      "scoring_complete": false
     }
   ],
   "source_data": {
@@ -164,5 +174,12 @@
   "new_recipe_stage_clean_tested": false,
   "new_recipe_repeatable_clean_gain_proven": false,
   "known_technical_failure": false,
-  "latest_observed_UTC": "2026-10-18T02:53:20.776Z"
+  "latest_observed_UTC": "2026-10-18T03:07:27.075Z",
+  "stage20_to_30": {
+    "status": "VERIFIED",
+    "both_cumulative_epoch": 21,
+    "both_cumulative_steps": 4662,
+    "own_stage20_parent": true,
+    "no_extra_epoch": true
+  }
 }

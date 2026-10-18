@@ -62,7 +62,7 @@
       "observation_unknown": false,
       "NN": 0,
       "truth_opened": false,
-      "updated_at": 1792291896.375524
+      "updated_at": 1792292752.4660153
     },
     "source_complete": false,
     "formal_complete": false,
@@ -73,51 +73,82 @@
     {
       "row": "AS_CE-s2026092701",
       "pid": 1099342,
+      "phase": "worker",
       "alive": true,
       "gpu": 1,
       "GPU_observed": true,
       "cwd_matches": true,
       "argv_matches": true,
       "GPU_env_matches": true,
-      "log_bytes": 73527,
+      "log_bytes": 121761,
       "progress": {
-        "epoch": 13,
-        "cumulative_epoch": 13,
-        "steps": 2886,
-        "cumulative_steps": 2886,
-        "L_NN": 2216448,
-        "L_As": 184704,
+        "epoch": 1,
+        "cumulative_epoch": 21,
+        "steps": 222,
+        "cumulative_steps": 4662,
+        "L_NN": 170496,
+        "L_As": 14208,
         "extra_U_NN": 0,
         "U_As": 0,
         "existing_U_only": true,
         "U_truth_read": false,
         "target_access": false
-      }
+      },
+      "progress_L_NN_scope": "current_segment_only",
+      "source_complete": false,
+      "prediction_complete": false,
+      "scoring_complete": false
     },
     {
       "row": "AS_DET-s2026092701",
       "pid": 1099419,
+      "phase": "worker",
       "alive": true,
       "gpu": 2,
       "GPU_observed": true,
       "cwd_matches": true,
       "argv_matches": true,
       "GPU_env_matches": true,
-      "log_bytes": 73561,
+      "log_bytes": 121826,
       "progress": {
-        "epoch": 13,
-        "cumulative_epoch": 13,
-        "steps": 2886,
-        "cumulative_steps": 2886,
-        "L_NN": 2216448,
-        "L_As": 184704,
+        "epoch": 1,
+        "cumulative_epoch": 21,
+        "steps": 222,
+        "cumulative_steps": 4662,
+        "L_NN": 170496,
+        "L_As": 14208,
         "extra_U_NN": 0,
         "U_As": 0,
         "existing_U_only": true,
         "U_truth_read": false,
         "target_access": false
-      }
+      },
+      "progress_L_NN_scope": "current_segment_only",
+      "source_complete": false,
+      "prediction_complete": false,
+      "scoring_complete": false
     }
   ],
-  "observed_UTC": "2026-10-18T02:53:20.776Z"
+  "observed_UTC": "2026-10-18T03:07:27.075Z",
+  "collector": {
+    "status": "IMPLEMENTED_NOT_INVOKED",
+    "code_commit": "50e9860874185583c9d3ac069706ecf1a10ddcc1",
+    "synthetic_mock_tests": {
+      "status": "PASS",
+      "cases": 10,
+      "seconds": 0.502,
+      "worker_observed_exit_code": 0,
+      "standalone_test_result_file": false,
+      "temporary_test_outputs_retained": false
+    },
+    "public_source_files": 11,
+    "public_final_files": 29,
+    "plus_collection_manifest": true,
+    "real_source_collection": false,
+    "real_formal_collection": false,
+    "IQ": 0,
+    "CP": 0,
+    "NN": 0,
+    "target_truth_reads": 0
+  }
 }
