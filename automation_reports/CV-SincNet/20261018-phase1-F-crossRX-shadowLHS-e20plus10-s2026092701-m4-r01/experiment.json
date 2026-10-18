@@ -24,7 +24,7 @@
   "replaces_run_id": null,
   "authorization": "Active Ag+As joint research;latest userF+CROSS_RX/E30/full5sourceRX/256IQ/nohelddomain;independent newAs samplingorganization,not reopening failed carrier/noise/gradient routes",
   "code": {
-    "commit": "PENDING_ACTUAL_GIT_COMMIT_PINNED_BY_PUBLISH",
+    "commit": "0a9e6541efc3a806cf3dc20e08b4c4ec9dc22ba3",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "Existing ordinaryN607 CVS-RFFI PyTorch;CPU2 each;sharedGPUcapacity3processes≥12GB;no software installation",
     "cwd": "PROJECT/releases/cvs_F_shadowLHS_E30_20261018_r01"
@@ -211,7 +211,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-shadowLHS-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -249,7 +249,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ExistingF+CROSS_RX/defaultcos/RDrop1/LS.01/originalU;only conditional Loo shadow sampling",
@@ -512,7 +512,8 @@
         "formal_numeric_unread": true
       },
       "analysis_status": "COMPLETE",
-      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json"
+      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json",
+      "status": "RUNNING"
     },
     {
       "row_id": "AS_NATIVE-s2026092701",
@@ -584,7 +585,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-shadowLHS-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -622,7 +623,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ExistingF+CROSS_RX/defaultcos/RDrop1/LS.01/originalU;only conditional Loo shadow sampling",
@@ -885,7 +886,8 @@
         "formal_numeric_unread": true
       },
       "analysis_status": "COMPLETE",
-      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json"
+      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json",
+      "status": "RUNNING"
     },
     {
       "row_id": "AS_IID-s2026092701",
@@ -957,7 +959,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-shadowLHS-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -995,7 +997,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ExistingF+CROSS_RX/defaultcos/RDrop1/LS.01/originalU;only conditional Loo shadow sampling",
@@ -1264,7 +1266,8 @@
         "has_traceback": false
       },
       "analysis_status": "COMPLETE",
-      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json"
+      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json",
+      "status": "RUNNING"
     },
     {
       "row_id": "AS_LHS-s2026092701",
@@ -1336,7 +1339,7 @@
         "temporal_mode": "batch_neighbor",
         "temporal_min_streak": 2,
         "lr_schedule": "cosine",
-        "lr_min": 1e-06,
+        "lr_min": 0.000001,
         "launch_owner": "codex/root/F-shadowLHS-E30",
         "label_epochs": 0,
         "pseudo_epochs": 10,
@@ -1374,7 +1377,7 @@
           "temporal_mode": "batch_neighbor",
           "temporal_min_streak": 2,
           "lr_schedule": "cosine",
-          "lr_min": 1e-06
+          "lr_min": 0.000001
         },
         "source_falsification": null,
         "training_recipe": "ExistingF+CROSS_RX/defaultcos/RDrop1/LS.01/originalU;only conditional Loo shadow sampling",
@@ -1643,7 +1646,8 @@
         "has_traceback": false
       },
       "analysis_status": "COMPLETE",
-      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json"
+      "result_ref": "automation_reports/CV-SincNet/20261018-phase1-F-crossRX-carrierGate-e20plus10-s2026092701-m4-r01/result.json",
+      "status": "RUNNING"
     }
   ],
   "notes": [
@@ -1666,5 +1670,6 @@
     "new_IQ_Ag": false,
     "joint_goal_complete": false
   },
-  "registered_at": "2026-10-18T00:17:27+00:00"
+  "registered_at": "2026-10-18T00:17:27+00:00",
+  "status": "RUNNING"
 }

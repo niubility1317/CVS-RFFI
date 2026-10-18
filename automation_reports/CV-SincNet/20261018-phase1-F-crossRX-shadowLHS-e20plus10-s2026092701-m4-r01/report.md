@@ -1,6 +1,6 @@
 # 完整 practical 的阴影初值分层抽样：匹配四行 E30
 
-状态：PLANNED，尚未启动训练；未取得识别增益。
+状态：RUNNING。四行均已开始实际更新，未完成训练或取得识别增益。
 
 ## 唯一假设和依据
 
@@ -54,3 +54,13 @@ Run：20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01；owner c
 一个普通 preflight、一个 Git 代码配置提交、一次归档传输 SHA 比较、一次远端编译；真实父 checkpoint/noquery 两包 smoke 是 dispatcher 首步，PASS立即继续。发布后核对 owned PID/CWD/argv/GPU/日志增长。系统技术失败（角色/父不匹配、非有限、输出冲突、非法或失败预测等）保留失败与健康行、清空待启行、不自动重试；科学失败只关闭固定候选，不擅停健康任务。
 
 预期完整源/step/epoch/reference/unit/LU序列、实际普通增强、每批 shadow 分组/uniform/z/物理出现记录、默认头权重、源资格、全7预测/独立评分、同row完整分析/成本/报告/登记及 Git。原 IQ、ID、模型、预测、日志和私有 runtime 不入Git。REJECTED_EXTRA_GATE：不增加审批、seal、报告形式审查或重复机制评审。
+
+## 发布后实际证据
+
+执行提交 0a9e6541efc3a806cf3dc20e08b4c4ec9dc22ba3，远端提交一致性 VERIFIED；普通账户 preflight、一次 archive 比较、远端 compile、670 次合成物理处理（0真实IQ/CP/NN）及真实 Torch 原 native 接口逐位对照 PASS。dispatcher 首步真实父 CP/noquery smoke PASS（1CP/2NN/0真实IQ/0更新）；四行严格共同父和自身 EMA 加载已通过。
+
+NOAS/AS_NATIVE/AS_IID/AS_LHS 分别在 GPU0/1/2/3，owned PID/CWD/argv/CUDA/CPU2 与 GPU进程独立核实。当前快照 NOAS 完成 E21/222更新，全部已读 step 为295；三个 As 已读完整 step 行155/171/170，阴影记录156/174/168，均仍在写入，EOFError 按 partial 而非失败处理。已读记录全128包，LHS每条件组概率区间完整，未见 technicalfailure。两秒窗口内 NOAS/AS_NATIVE训练日志增长；AS_IID/AS_LHS进程在GPU且已发生更新，当前窗口未增长，后续继续核对原 handle，不据此停止或重启。
+
+这些是运行和组织证据，不是完整训练成本或身份准确率。四行按固定 E30 继续，逐行自动七视图预测/独立truth-last，不读取正式分数指导其他行。[执行快照](execution_evidence.json)。
+
+已读取关联对话“开发 CVS Phase1 星地增强训练”的最新进展：其正在补完整源 B00/B01 的02/03 seed与初始化接线，本轮固定seed01的原先验阴影分层抽样为独立方向；不合并两条路线的增益、数据契约或成本，不干预其任务。
