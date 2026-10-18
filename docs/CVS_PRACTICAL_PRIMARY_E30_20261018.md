@@ -192,3 +192,6 @@ clean／mid／low交互−.758929／＋.018452／＋.030357pp，urbanmean交互�
 
 
 sceneBalance本地代码／分析已冻结：19py／47聚焦负例、全部2220配额／私有RNG／重复PID／实际下游mock／2remoteAST及4analysisAST／9toy PASS，唯一合并P0/P1=0/0。当前没有训练或性能结果；真实770NN烟测由launcher首步执行。nominal1/3不等于与原IID实际每包／逐ID／尾段次数匹配，不把固定分层效果直接称纯梯度方差证据。
+
+
+sceneBalance已实际启动：code/config/analysis 25747acec3171d78ef4e841c90255242b96fd7aa；一次普通preflight/source句柄roles匹配，单archive比较/compile VERIFIED，oneCP2＋6L768共770NN首步smokePASS直接训练。dispatcher1381372、B01worker1381800／GPU4；PID/CWD/argv/CUDA/nvidia/log增长核实。当前strictownAs20EMA、resetAdamWcos10、originalORD128／6L1.25／原U／配额21/21/22符合，0NN分析1383360 WAIT_SOURCE／truthclosed。最新4/10新增epoch，无新性能结论；原全部数据域／默认头／测试IQ未变，健康其他任务未动。

@@ -1,6 +1,6 @@
 # Practical 批内三场景配额：E30 最小匹配实验
 
-状态：PLANNED。20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01 已登记；实现中，尚未发布或训练，没有新性能结果。唯一 owner codex/root/practical-sceneBalance。代码提交将在发布前写入 experiment.json；矩阵以该文件唯一维护。
+状态：VERIFIED_RUNNING。20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01 已实际发布并训练；源域及正式性能尚未完成。唯一 owner codex/root/practical-sceneBalance。代码提交将在发布前写入 experiment.json；矩阵以该文件唯一维护。
 
 当前最值得保留的是原完整 practical 与普通拼接监督。已关闭的 weighted、MIXED128、stepALT、每物理包六场 sceneCycle 等配方保持关闭。现有普通 As 本来逐包独立选择三场景，本项不把“批内多场景”称为新机制。历史 sceneCycle 是 held-RX1/L5040/8L 下同 PID 跨六次访问六场轮转；本项不改变物理包覆盖规则，不复活该失败路线。
 
@@ -35,3 +35,15 @@
 
 
 唯一合并独立P0/P1完成：0／0，无阻塞缺陷；未重复旧helper审查或本地测试。当前LOCAL_VERIFIED_P0P1_PASS，真实770NN首步smoke、发布和PID/GPU验证仍待执行，不把代码就绪写成已训练。
+
+
+实际代码／配置／分析已固定提交 25747acec3171d78ef4e841c90255242b96fd7aa，远端分支OID已独立核对一致；真实770NN首步smoke和发布按此版本执行。canonical code字段已在发布前回填，不要求报告/config额外SHA。
+
+
+## 已实际发布和训练
+
+代码／配置／分析 25747acec3171d78ef4e841c90255242b96fd7aa 已发布。一次普通preflight核实当前own20／冻结30 controls的actualmetadata和roles EXACT_MATCH；生产archive比较／remotecompile VERIFIED。一个真实own20 CP2NN＋一组6L768NN，共770NN首步smoke PASS后直接训练。dispatcher1381372；B01 worker1381800／GPU4；PID/CWD/argv/CUDA与nvidia实际GPU／log增长独立VERIFIED，所有GPU compute进程counts0至4各1、其余0，cap3符合；健康旧任务未动。
+
+真实smoke配额为low_suburban22／midurban21／lowurban21，原ORD128/defaulthead/Sinc/backbone联合梯度有限且存在；0更新/真实IQ/query，不把梯度检查当识别收益。实际训练输出source roles匹配、target_contact=false、strict own20 EMA、empty resetAdamW／cos10／lr.0002／WD.0001；resolved21/21/22原位置分配／ORD128／原6L保持。最新观察已完成2/10新增epoch，无技术异常。
+
+零NN分析1383360实际CWD/argv/emptyCUDA已核实，WAIT_SOURCE／truth未开；单archive比较/remotecompile PASS，本地toy未远端重复。后续先source取回保存决定，正式3×7闭合后报告；当前无新性能结论。
