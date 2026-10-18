@@ -1,0 +1,3 @@
+{"at": "2026-10-18T11:33:00+00:00", "status": "PLANNED", "note": "已登记，未启动", "evidence": ["experiment.json"], "row_id": null}
+{"at": "2026-10-18T11:40:30+00:00", "status": "PLANNED", "note": "Code668a3f8bf verified; focusedchecks+P0P1 PASS; registered two allocation tails, no formalfeedback.", "evidence": ["verification.json"], "row_id": null}
+{"at": "2026-10-18T11:42:25+00:00", "status": "RUNNING", "note": "Two ownedGPU workers independently alive/cwd/cmdline/GPU VERIFIED; one realAs20 checkpoint smoke4NN PASS; firstepoch inprogress, noformaloutputs yet.", "evidence": ["launch_verification.json"], "row_id": null}

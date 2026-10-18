@@ -1,0 +1,97 @@
+{
+  "status": "LOCAL_FOCUSED_AND_P0P1_PASS",
+  "protocol_negatives": 35,
+  "teaching_toy": 15,
+  "flow_checks": 4,
+  "actualF": {
+    "status": "PASS",
+    "NN": 3072,
+    "rows": [
+      {
+        "arm": "MASS_UNIFORM",
+        "NN": 1536,
+        "wall_seconds": 3.5832534999935888,
+        "head_gradient_norm": 7.807944297790527,
+        "extra_logit_gradient_norm": 0,
+        "extra_q": 0
+      },
+      {
+        "arm": "OBSERVATION_WEIGHTED",
+        "NN": 1536,
+        "wall_seconds": 2.824216399982106,
+        "head_gradient_norm": 7.807944297790527,
+        "extra_logit_gradient_norm": 0,
+        "extra_q": 0
+      }
+    ],
+    "real_IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "state_keys": 206,
+    "parameters": 900722,
+    "native_masks_unchanged": true,
+    "extra_rng_preserved": true,
+    "actual_extra_gradient_limitation": "Random initial teacher qT=0; nonzero extra gradient verified by tensor toy only"
+  },
+  "preflight": {
+    "status": "VERIFIED",
+    "ordinary_account": true,
+    "GPUs_visible": 8,
+    "parent_epoch": 20,
+    "parent_updates": 4440,
+    "parent_role_counts": {
+      "L_s": 6300,
+      "U_s": 56700,
+      "V": 27000
+    },
+    "parent_scratch": true,
+    "ancestors": [],
+    "parent_target_access": false,
+    "run_output_collision": false
+  },
+  "target_scores_read_for_design": false,
+  "raw_evidence": "local_artifacts/cvs_FcrossRX_U_quality_E30_20261018_r01/local_checks_execution.json",
+  "analysis": {
+    "toy_tests": 10,
+    "status": "PASS",
+    "unittest_wall_seconds": 5.936,
+    "process_wall_seconds": 6.389,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "truth": 0,
+    "updates": 0
+  },
+  "review": {
+    "status": "PASS",
+    "reviewer": "u_quality66_p0p1",
+    "scope": "One independent P0/P1 review of next real run and legal prediction",
+    "blocking_defects": [],
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "remote": false
+  },
+  "remote_release": {
+    "status": "VERIFIED",
+    "code_commit": "668a3f8bf39c9b1eaf4d4f0f76df40b3cc0f4fe0",
+    "one_archive_SHA256": "b403a4e2380101e0fc21b4c5ce8e5b66aace36019592af6b5c90defde5782deb",
+    "local_remote_equal": true,
+    "compiled_python_files": 23
+  },
+  "actual_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 4,
+    "unique_CP": 1,
+    "query": false,
+    "source_IQ": 0,
+    "updates": 0
+  },
+  "actual_run_status": "RUNNING_FIRST_EPOCH_PENDING",
+  "local_tool_recovery": {
+    "persistent_kernel_OOM_before_launch": true,
+    "new_process_reconciled": true,
+    "repeated_NN_or_CP": false,
+    "unrelated_files_preserved": true
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "status": "VERIFIED_PROCESSES_REALCP_SMOKE_PASS",
+  "code_commit": "668a3f8bf39c9b1eaf4d4f0f76df40b3cc0f4fe0",
+  "dispatcher": {
+    "pid": 1419113,
+    "alive": true,
+    "cwd_valid": true,
+    "command_valid": true
+  },
+  "workers": [
+    {
+      "pid": 1419232,
+      "alive": true,
+      "GPU": 2,
+      "cwd_valid": true,
+      "command_valid": true
+    },
+    {
+      "pid": 1419362,
+      "alive": true,
+      "GPU": 3,
+      "cwd_valid": true,
+      "command_valid": true
+    }
+  ],
+  "actual_GPU_PIDs": [
+    1417411,
+    1417493,
+    1419232,
+    1419362
+  ],
+  "logs_nonempty": true,
+  "log_bytes": {
+    "20261018-phase1-FcrossRX-Uquality-e30-s2026092701-m2-r01.dispatcher.log": 77,
+    "MASS_UNIFORM-s2026092701.log": 41334,
+    "OBSERVATION_WEIGHTED-s2026092701.log": 41430
+  },
+  "three_second_log_delta_zero": true,
+  "first_epoch_growth_verification_pending": true,
+  "real_checkpoint_smoke": {
+    "status": "PASS",
+    "NN": 4,
+    "unique_CP": 1,
+    "query": false,
+    "source_IQ": 0,
+    "updates": 0
+  },
+  "queue": {
+    "active": [
+      "MASS_UNIFORM-s2026092701",
+      "OBSERVATION_WEIGHTED-s2026092701"
+    ],
+    "pending": [],
+    "failures": []
+  },
+  "no_other_process_mutation": true
+}
