@@ -1,0 +1,17 @@
+{
+  "status": "PASS",
+  "python_files": 20,
+  "protocol_negatives": 15,
+  "risk_checks": 8,
+  "analysis_toys": 8,
+  "real_CVS_NN": 0,
+  "IQ_reads": 0,
+  "checkpoint_reads": 0,
+  "independent_P0P1": {
+    "status": "PASS",
+    "unique_P1": "Unexpanded P70 release path literal",
+    "fixed": true,
+    "targeted_readback": "PASS",
+    "other_unresolved": []
+  }
+}

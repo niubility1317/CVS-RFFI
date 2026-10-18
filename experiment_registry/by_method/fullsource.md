@@ -14,3 +14,4 @@
 |实际 AS_CE20 父模型的源域正确集合读出|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01/report.md)|
 |完整practical续训：保留AdamW状态的匹配E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/report.md)|
 |P70：固定 nominal 质量组风险，E30 最小匹配实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/report.md)|
+|P71：固定 As 总权重下的有界组风险|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-phase1-FcrossRX-boundedRisk-e30-s2026092701-m1-r01/report.md)|

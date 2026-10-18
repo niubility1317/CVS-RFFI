@@ -1,0 +1,230 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-phase1-FcrossRX-boundedRisk-e30-s2026092701-m1-r01",
+  "group_id": "phase1-FcrossRX-fullAs-bounded-group-risk",
+  "display_name": "完整 practical 内部风险重分配：固定 As 预算的 E30",
+  "description": "仅CE采用pi=.75p+.25v, v=[.15,.40,.25,.20]；复用同池同序P70M2匹配对照，新增单M3尾段，原As/NoAs冻结参照复用",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P71",
+    "boundedRisk71",
+    "BOUNDED_RISK"
+  ],
+  "tags": [
+    "phase1",
+    "F",
+    "fullsource",
+    "default-head",
+    "E30",
+    "practical",
+    "bounded-group-risk",
+    "single-seed"
+  ],
+  "comparison_group_id": "P70-M2-nominal-versus-P71-fixedPi",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "Latest user: satellite-first, clean drop<=0.1 absolutepp, fullsource/noheldRX, fixedF+CROSS_RX/defaulthead, E30; good source-qualified recipes may totalE50; active goal authorizes implementation/matched trials/all7 independent scoring. No extra heads/targetfeedback/healthy-task mutation.",
+  "code": {
+    "commit": "PENDING_CODE_COMMIT",
+    "checkout": "code/worktrees/phase1_urban_sigtime_20261014",
+    "environment": "N607 existing ordinary CVS-RFFI Python3.10.19 Torch2.1.0+cu121 NumPy2.2.5; FP32 CPU2",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_bounded_risk_E30_20261019_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
+    "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256/fs25MHz;full residual/post_sync/EQoffG1/ref30/reflect;As fromraw,no extra ordinary PA/noise beforeAs;trainingfc2.462GHz/fixedformal2.45GHz unchanged",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Same original6TX map;no new or U truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "fixedmanifest7unseenRX;nevertrain"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original6registeredTX;formalmanifest classmappingunchanged",
+    "roles": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "train_ratio": "7/63/30 wholepool;10% labeled trainingpool;noheldRX/Ldev",
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
+    "support_query_ref": "Phase1,no support;source/target disjoint fixedformalmanifest",
+    "leo_config_ref": "PROJECT/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_frozen_target_prediction",
+    "query_use": "Frozen defaulthead all7 fixed received IQ predictions;truthlast independent perrow only afterall7complete;formal scores never candidate/seed/parameter/promotion feedback",
+    "external_method_exception": null,
+    "claim_scope": "Fixed internal As CE risk redistribution, intentionally changes nominal risk. Only source evidence sets gamma/v; no true recoverability or formal state causal claim. No extra model/head/U rule/NN or physical-channel weakening."
+  },
+  "checkpoint": {
+    "initialization": "strict original P43 scratchAs20 student/ownEMA, not P70 final; fresh AdamW/cos10/CENTER_UNITS",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Same previously verified original P43 As20 fullsource/final-only provenance and exact runtime roles",
+    "provenance_verdict": "Exact original source-only parent reused; strict real-checkpoint load first launcher step",
+    "selection_rule": "Original source-only FINAL20; new fixed FINAL30/final_only"
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/bounded-risk71",
+    "gpu_policy": "1new row,max2 total GPU processes inclotherowners,free>=12000MB; protect healthy runs",
+    "remote_run_root": "PROJECT/runs/20261019-phase1-FcrossRX-boundedRisk-e30-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/runs/20261019-phase1-FcrossRX-boundedRisk-e30-s2026092701-m1-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_bounded_risk_E30_20261019_r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_bounded_risk71/runner.py",
+    "stop_rule": "Wrongroles/provenance/outputcollision/nonfinite/labeldomainmismatch/invalidpi or positivepi on emptygroup or mismatched P70 readonlypool stops ownrun; preserve all,no automaticretry or regeneration. SourceFAIL stillall7. Formalfeedback prohibited.",
+    "status": "PREREGISTERED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "ROW/source/resolved_config.json",
+    "ROW/source/actual_modules.json",
+    "ROW/source/source_contract.json",
+    "ROW/source/initialization.json",
+    "ROW/source/EMA_initialization.json",
+    "ROW/source/risk_initialization.json",
+    "ROW/source/risk_steps.jsonl.gz",
+    "ROW/source/risk_final.json",
+    "ROW/source/step_metrics.jsonl.gz",
+    "ROW/source/training_sequence.jsonl.gz",
+    "ROW/source/epoch_metrics.jsonl",
+    "ROW/source/final_ssdg.pth",
+    "ROW/source/source_frozen.json",
+    "ROW/source/completion.json",
+    "ROW/source_qualification/complete.json",
+    "source_matrix_decision.json",
+    "ROW/prediction/all7fixed",
+    "ROW/scoring/scores.json",
+    "analysis_r01/complete.json",
+    "analysis_r01/fullcurves source_strata paired_errors costs PNG_PDF"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_f1",
+      "worst_RX",
+      "urban_mean",
+      "pairedclean_pp",
+      "pairedrepair_newerror",
+      "source_margin_over30",
+      "fixedparentclean_retention",
+      "p/v/pi group risk and CE",
+      "actualNN/updates/wall"
+    ],
+    "dimensions": [
+      "BOUNDED_RISK",
+      "reusedP70QUALITY_STRAT",
+      "reusedP43NOAS30/AS30",
+      "seed2026092701",
+      "all7formalviews",
+      "source1800x2draw",
+      "RX",
+      "TX",
+      "day",
+      "state/lock/addednoise",
+      "riskgroup"
+    ],
+    "prediction_ref": "PROJECT/runs/20261019-phase1-FcrossRX-boundedRisk-e30-s2026092701-m1-r01/M3-s2026092701/prediction; P70M2/P43 refs reused",
+    "scorer_ref": "Separate CPU scorer only after each row all7 fixed; final CPU analysis validates all4 logical rows all7 before truth joins"
+  },
+  "rows": [
+    {
+      "row_id": "M3-s2026092701",
+      "method": "BOUNDED_RISK .75p+.25v CE-only",
+      "purpose": "Isolate fixed internalAsCErisk vs exact P70M2 sameparent/pool/order/budget; originalAs/NoAs references retained",
+      "config_ref": "experiments/cvs_bounded_risk71/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261019-phase1-FcrossRX-boundedRisk-e30-s2026092701-m1-r01/M3-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "new_Ag": false,
+        "all5sourceRX": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Originalphysicaltrain20261016421/hardware20261016423; existingP70allocation20261018070. Two source draws not modelseeds, formalIQ fixed no newevaluationseed. HiddenUtruth remainsclosed.",
+      "k": null,
+      "scenario": "Originalfullresidual lowSub/midUrban/lowUrban nominalobservations; qualitybins actualaddednoise<3/3-8/8-15/>=15, EQoffG1 unchanged",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "RESET sameP43As20+10",
+        "lr_schedule": "newcos10 originalCENTER_UNITS",
+        "teacher": "ownEMA sameP43As20 originalU rules",
+        "temporal": "batch_neighbor unchanged"
+      },
+      "lr": 0.0002,
+      "epochs": 30,
+      "fl_rounds": null,
+      "budget_ref": "Only one new10/2220updates; As20/4440 reused, total30/6660. Native3162962+source12600+formal1176002+smoke4=4351568newNN. ExistingP70pool0newphysicalsimulation. No seed/gamma/v scan.",
+      "output_root": "PROJECT/runs/20261019-phase1-FcrossRX-boundedRisk-e30-s2026092701-m1-r01/M3-s2026092701",
+      "log_path": "PROJECT/runs/20261019-phase1-FcrossRX-boundedRisk-e30-s2026092701-m1-r01/logs/M3-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_bounded_risk71/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/risk_initialization.json",
+        "ROW/source/risk_steps.jsonl.gz",
+        "ROW/source/risk_final.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/epoch_metrics.jsonl",
+        "ROW/source/final_ssdg.pth",
+        "ROW/source/source_frozen.json",
+        "ROW/source/completion.json",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixed",
+        "ROW/scoring/scores.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/fullcurves source_strata paired_errors costs PNG_PDF"
+      ]
+    }
+  ],
+  "notes": [
+    "Latest user satellite-first; phaseclean drop<=.1 absolutepp vs matchedNoAs; eventual repeatable cleanpositive+lowurban>60 remain unproven.",
+    "Only fixed gamma=.25/v=[.15,.40,.25,.20], derived from source quality headroom; qualitybins not recoverability truth. No newregularizer/lossstack/Ag/U module.",
+    "M3 model initializes originalP43As20, not target-evaluated P70final. Pool generated beforeP70updates fromlegalL, source-only, read-only reuse; allocation exactlyM2.",
+    "M3 intentionally changes optimizedrisk, not unbiasednominal. AsCEtotal.25 andKL.25 unchanged, KL remainsnominalunweighted.",
+    "Only2sourceconditions: fullVcleanM3-NoAs>=-.1pp and pooledmidlowM3-M2>=+.5pp. Failureclosesfixedrecipe withoutparameter/seedrescue; all7formalstillrequired.",
+    "Another referencedchat is running nominalIID/stratifiedquality estimate, no pi riskmixture; do not duplicate or mutate.",
+    "No newresults at registration; modelseed1 only; E50notautomatic, only later source-qualified goodrecipe within userauthorization."
+  ],
+  "registered_at": "2026-10-18T16:50:52+00:00"
+}
