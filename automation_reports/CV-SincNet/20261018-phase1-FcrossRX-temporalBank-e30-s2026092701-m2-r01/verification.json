@@ -1,0 +1,36 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "new_run": "20261018-phase1-FcrossRX-temporalBank-e30-s2026092701-m2-r01",
+  "local_checks": {
+    "status": "PASS",
+    "protocol_negatives": 28,
+    "native_temporal_toy_calls": 10,
+    "source": "Independent implementation worker successful test, original output requested separately",
+    "real_IQ": 0,
+    "checkpoint_reads": 0,
+    "CVS_NN": 0,
+    "optimizer_updates": 0,
+    "target_access": false
+  },
+  "analysis_tests": 8,
+  "compile_files": 18,
+  "local_CVS_NN": 0,
+  "known_local_attempts": [
+    "Missing required --dependencies invocation:0NN",
+    "Incomplete local W dependency tree:0NN",
+    "NaN/NaN equality in comparison test:fixed only test comparator,0NN",
+    "Stdlib Python lacks NumPy for CPU analysis:used verified numeric51;0NN"
+  ],
+  "source_data_handles_reused": true,
+  "checkpoint_provenance": "existing corresponding P43 exact roles/source-only fixed20",
+  "N607_preflight": "VERIFIED_ordinary_direct8GPU_noCompute_at_preflight",
+  "new_training_started": false,
+  "goal_complete": false,
+  "independent_P0P1": {
+    "status": "PASS",
+    "reviewer": "u_quality66_p0p1",
+    "scope": "Direct next-run source/provenance/training/bank/default-head/all7/truth-last launch defects",
+    "issues": [],
+    "reviews": 1
+  }
+}
