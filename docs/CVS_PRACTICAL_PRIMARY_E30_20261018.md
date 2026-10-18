@@ -253,3 +253,6 @@ LRaw30已ANALYZED，代码 d14450bf1b0d12cc281df1f4d0e79e8760e48282，两条各2
 正式n1新As clean84.352381%、midurban62.907143%、lowurban51.597619%、urbanmean64.023810%；对匹配newNoAs clean＋1.633929pp（stage界限n1PASS）、mid＋29.510119、low＋23.147024pp。但newNoAs自身clean对oldNoAs下降2.529167pp，新As对oldAs clean−.988690pp，mid＋.100595、low＋.353571、urbanmean＋.084524pp；不能将stage相对差写成clean保护/重复双提升。六practical变化与F1/最差RX/逐RXdayTX/错误/交互/自clean差在完整报告中保留。
 
 本次新增8704668NN含1540smoke，20modelE/4440newupdates；每新tail学生2271960NN、教师567000NN、nativeeval324002NN，原ordinary计算284160输出/row仍执行并丢弃。父20和旧30成本复用不重复收费，source预测wall未单独保存如实披露。E50已PLANNED实现中，当前无该50训练/评分结果。完整[报告](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01/final_analysis.md)。
+
+
+LRaw E50下一项固定矩阵已登记PLANNED：20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01。sourcePASS决定和登记早于E30formal读取；两条strictownLRaw30student+EMA+20，总50/11100，原ordinarydraw-discard/raw返回、U/EMA/6L1.25/Asraw64不改。原NoAs50/As50为 20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01，实际releasecommit0f399c910324e21a8b1a60346d879be5c2964a9c。source50仅描述预算变化、无新晋级gate；完整8逻辑all7/13paired及成本分开报告。新增代码本地100focusednegative/19AST与analysis9synthetic/targeted20epochPASS；唯一合并P0/P1进行中，尚未启动50。详见[预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/report.md)。

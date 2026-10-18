@@ -1,0 +1,304 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01",
+  "group_id": "20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01",
+  "display_name": "F CROSS_RX LRaw fixed recipe totalE50 matched NoAs/As",
+  "description": "Source-qualified LRaw30 fixed recipe extension to totalE50,ownFINAL30 student+EMA+20;no target-informed parameter change.",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "LRaw E50",
+    "LRaw30plus20"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "F",
+    "CROSS_RX",
+    "As",
+    "LRaw",
+    "L6300",
+    "all_source_RX",
+    "default_cosine_head",
+    "E50",
+    "source_qualified_budget_extension"
+  ],
+  "comparison_group_id": "phase1-FcrossRX-practical-LRaw",
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "User explicitly permits source-supported good recipes totalE50. Source decision saved before newE30 formal read:clean-.0296296pp vsNoAs;midlow+1.1388889pp vsoriginalAs. Exactly two own30+20,not +50,no new seed.",
+  "code": {
+    "commit": null,
+    "checkout": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "environment": "N607 existingCVS-RFFI/PyTorch fullFP32,CPU2,ordinary account;no installations",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_LRaw_E50_20261018_r01"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 full original visibleTX,cumulative50epochs,noLdev/noRXholdout",
+      "U_s": "56700 TXhidden,originalUweakstrong/ownEMA,7+10+20=37Uepochs;no new U view or AsU",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "experiments/cvs_lraw_tail50/reference_config.json;originalP43 train3sceneIID/refSNR30/allphysical dependencies unchanged;As alreadyusesraw,no duplicationfixclaim"
+  },
+  "permissions": {
+    "regime": "source_train_then_frozen_truthlast",
+    "query_use": "test_only",
+    "external_method_exception": null,
+    "claim_scope": "Fixedseed operationalL-viewablation andAs interaction;not newphysicalRX,repeateddual-proof orwholetrajectoryNoAug. RDrop remainsregularizer,not IQAg."
+  },
+  "checkpoint": {
+    "initialization": "STRICT_CORRESPONDING_LRAW30_FINAL_STUDENT_AND_OWN_EMA_PLUS20",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01/B00-s2026092701/source/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01/B01-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Reuse ownLRaw30 source metadata/physicalrole checks and minimal currenthandles preflight;no datarevalidation",
+    "provenance_verdict": "LRaw30 fixedFINAL ownoriginal20+10/source-only qualified before formal;code d14450bf1b0d12cc281df1f4d0e79e8760e48282;actual parentCP smoke pending",
+    "selection_rule": "FixedFINAL50;no additional scientific threshold or automatic extension. Full7 formal required regardless result."
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/practical-LRaw50",
+    "gpu_policy": "EachGPUallownerscomputeprocesses<=3;free>=12000MB;CPU2;dynamiccapacityqueue;healthyjobsuntouched",
+    "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/logs",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_lraw_tail50/runner.py",
+    "stop_rule": "Only owned systemic technical/protocol/data-role/parent/head/numerical/output/prediction-closing failure;preserve artifacts,no automaticretry. Scientificnegative never stops fixed same-row formal closure."
+  },
+  "expected_artifacts": [
+    "source/final_ssdg.pth",
+    "source/completion.json",
+    "source/source_frozen.json",
+    "source/initialization.json",
+    "source/resolved_config.json",
+    "source/reference_steps.jsonl.gz",
+    "source/shape_steps.jsonl.gz",
+    "source_qualification/complete.json",
+    "prediction/complete.json",
+    "scoring/complete.json",
+    "analysis_auto_r01/source_complete.json",
+    "analysis_auto_r01/source_summary.json",
+    "analysis_auto_r01/training_logs.json",
+    "analysis_auto_r01/formal_summary.json",
+    "analysis_auto_r01/costs.json",
+    "analysis_auto_r01/complete.json"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "paired_delta_pp",
+      "urban3mean",
+      "repairs/new_errors/net",
+      "RX/day/TX",
+      "suburban_selfclean_gap",
+      "actualNN/studentteacher/update/exposure/wall",
+      "actual_L_input_rawMSE",
+      "discarded_ordinary_MSE/calls",
+      "Lview_by_As_interaction"
+    ],
+    "dimensions": [
+      "seed2026092701",
+      "NOAS30",
+      "AS30",
+      "LRAW_NOAS30",
+      "LRAW_AS30",
+      "NOAS50",
+      "AS50",
+      "LRAW_NOAS50",
+      "LRAW_AS50",
+      "fullV27000/fixedV1800twodraw",
+      "clean+sixfixedpractical",
+      "RX/day/TX",
+      "parentoldordinary20/LRaw30total"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/{row}/prediction",
+    "scorer_ref": "Eachnew50row all7 frozen prediction before separate truthlast scorer;0NN aggregate recount8x7 and budgetpairederrors,old6conditions reused."
+  },
+  "rows": [
+    {
+      "row_id": "B00-s2026092701",
+      "method": "OriginalP43 NoAsraw64;L ordinaryview=raw via RNGkeepingwrapper;6L1.25/ORD128/originalUEMA/defaultcos",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_lraw_tail50/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/B00-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Samefixedseed/split/channelnamespace;sourcequalified30 recipe kept. Localcall RNG control,no global RNG equivalence claim.",
+      "k": null,
+      "scenario": "Originalclean + optionalcompletepractical3sceneIID;fixedall7test",
+      "optimizer": "OriginalE50 resetAdamW lr2e-4 WD1e-4 cos20 min1e-6;strictownLRaw30student+EMA",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Own20+10+new20=total50/11100;new2x20modelE/8880updates;768LNN/step+originalUteacher;oldordinarydrawdiscard retained;oldoriginal50andall30readoutsreused",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/B00-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/logs/B00-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_lraw_tail50/runner.py --mode worker --row B00-s2026092701",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ]
+    },
+    {
+      "row_id": "B01-s2026092701",
+      "method": "OriginalP43 fullAs64;L ordinaryview=raw via RNGkeepingwrapper;6L1.25/ORD128/originalUEMA/defaultcos",
+      "purpose": "primary",
+      "config_ref": "experiments/cvs_lraw_tail50/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/B01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": 20261016421,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Samefixedseed/split/channelnamespace;sourcequalified30 recipe kept. Localcall RNG control,no global RNG equivalence claim.",
+      "k": null,
+      "scenario": "Originalclean + optionalcompletepractical3sceneIID;fixedall7test",
+      "optimizer": "OriginalE50 resetAdamW lr2e-4 WD1e-4 cos20 min1e-6;strictownLRaw30student+EMA",
+      "lr": 0.0002,
+      "epochs": 20,
+      "fl_rounds": null,
+      "budget_ref": "Own20+10+new20=total50/11100;new2x20modelE/8880updates;768LNN/step+originalUteacher;oldordinarydrawdiscard retained;oldoriginal50andall30readoutsreused",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/B01-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-LRaw-e50-s2026092701-m2-r01/logs/B01-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_lraw_tail50/runner.py --mode worker --row B01-s2026092701",
+      "expected_artifacts": [
+        "source/final_ssdg.pth",
+        "source/completion.json",
+        "source_qualification/complete.json",
+        "prediction/complete.json",
+        "scoring/complete.json",
+        "complete.json"
+      ]
+    }
+  ],
+  "notes": [
+    "Unique continuation of sourcequalified LRaw30 recipe;first20oldordinary,last30rawL return,not fullNoAug.",
+    "Runoldordinary once on clone anddiscard,returnprecallraw;original U/EMA/6L1.25/ORD128rawanchors/Asraw64/defaultcos/network unchanged.",
+    "Strict corresponding LRaw30 student andownEMA;optimizerreset/cos20 matchingoriginal50;channeloffset30/6660,SupCon+30;ordinary originalown20args/frozen13 retained.",
+    "Two new20epochsegments,40modelE/8880newupdates,cumulative50/11100 each;originalNoAs50/As50andall30readouts reused.",
+    "Source qualification was frozen before E30 formal read andbefore E50 design;source50 descriptive only,no posthoc promotion/seed/parameter change.",
+    "Full7 automatic prediction thenindependenttruthlast,source before root newformalread;allnegative preserved.",
+    "No new structure/head/PA-CFOdistortion,dataholdout/label access or formalIQ/channel/SNR changes.",
+    "One minimal review/check/smoke/archive/preflight/poststate chain;no extra gates.",
+    "PLANNED implementation/review/commit/release pending;noE50performance yet."
+  ],
+  "comparators": [
+    {
+      "label": "NOAS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B00-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128"
+    },
+    {
+      "label": "AS30",
+      "run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+      "row_id": "B01-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128"
+    },
+    {
+      "label": "LRAW_NOAS30",
+      "run_id": "20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01",
+      "row_id": "B00-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128 actualraw"
+    },
+    {
+      "label": "LRAW_AS30",
+      "run_id": "20261018-phase1-FcrossRX-LRaw-e30-s2026092701-m2-r01",
+      "row_id": "B01-s2026092701",
+      "reused": true,
+      "epochs": 30,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128 actualraw"
+    },
+    {
+      "label": "NOAS50",
+      "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
+      "row_id": "B00-s2026092701",
+      "reused": true,
+      "epochs": 50,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128",
+      "actual_release_commit": "0f399c910324e21a8b1a60346d879be5c2964a9c"
+    },
+    {
+      "label": "AS50",
+      "run_id": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
+      "row_id": "B01-s2026092701",
+      "reused": true,
+      "epochs": 50,
+      "head": "defaultjointcos",
+      "SupCon": "ORD128",
+      "actual_release_commit": "0f399c910324e21a8b1a60346d879be5c2964a9c"
+    }
+  ],
+  "registered_at": "2026-10-18T12:43:22+00:00"
+}
