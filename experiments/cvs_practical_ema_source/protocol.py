@@ -39,6 +39,14 @@ def check_panel_membership(panel,full,count=1800):
  for key in ('TX','RX','day'):
   if np.asarray(panel[key]).shape!=(count,) or not np.array_equal(np.asarray(panel[key]),np.asarray(full[key])[indices]):raise ValueError('Panel opaque-ID aligned '+key+' differs from fullV')
 
+def check_observation_schema(meta,shape,dtype,fortran):
+ """Exact original cache axes: draw, scene, eleven controls, V, IQ, time."""
+ import numpy as np
+ if tuple(shape)!=d.OBS_SHAPE or np.dtype(dtype)!=np.dtype('float32') or fortran:raise ValueError('Original source cache must be C-order float32[2,3,11,1800,2,256]')
+ if meta['status']!='SOURCE_OBSERVATIONS_COMPLETE' or meta['draws']!=2 or meta['unique_V']!=1800 or meta['scenes']!=list(d.SCENES) or meta['conditions']!=list(d.OBS_CONDITIONS) or meta['target_access'] or meta['training_updates']:raise ValueError('Original completed source observation conditions differ')
+ if meta['conditions'][d.FULL_CONDITION_INDEX]!='full':raise ValueError('Only original condition index0 full')
+ return d.FULL_CONDITION_INDEX
+
 def decision(fullv,panel):
  clean_delta=100*(fullv['AS_EMA']['accuracy']-fullv['NOAS_EMA']['accuracy'])
  clean_net=fullv['AS_EMA']['hits']-fullv['AS_STUDENT']['hits']

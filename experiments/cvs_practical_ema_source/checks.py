@@ -3,7 +3,7 @@ import copy,json,tempfile
 from pathlib import Path
 import numpy as np
 from . import design as d
-from .protocol import check_roles,check_ids,check_state_pair,check_panel,check_panel_membership,decision
+from .protocol import check_roles,check_ids,check_state_pair,check_panel,check_panel_membership,check_observation_schema,decision
 from .metrics import metric,paired,summarize
 
 def check_panel_join():
@@ -27,6 +27,31 @@ def check_panel_join():
  for key in ('TX','RX','day'):
   p={k:v.copy() for k,v in panel.items()};p[key][0]+=1;bad(p)
  return dict(status='PASS',canonical_opaque_join=True,native_tuple_kept_separate=True,reordered_panel_preserved=True,targeted_negatives=negatives,CP=0,IQ=0,NN=0)
+
+def check_observation_input():
+ """Actual eleven-condition header and index0 full; no IQ payload allocation."""
+ import ast,io
+ meta=dict(status='SOURCE_OBSERVATIONS_COMPLETE',draws=2,unique_V=1800,scenes=list(d.SCENES),conditions=list(d.OBS_CONDITIONS),target_access=False,training_updates=0)
+ stream=io.BytesIO();np.lib.format.write_array_header_1_0(stream,dict(shape=d.OBS_SHAPE,fortran_order=False,descr=np.dtype('float32').str));stream.seek(0)
+ assert np.lib.format.read_magic(stream)==(1,0)
+ shape,order,dtype=np.lib.format.read_array_header_1_0(stream)
+ index=check_observation_schema(meta,shape,dtype,order)
+ view=np.broadcast_to(np.arange(11).reshape(1,1,11,1,1,1),d.OBS_SHAPE)
+ assert index==0 and np.all(view[1,2,index,:90]==0) and np.all(view[1,2,1,:90]==1)
+ negative=0
+ def bad(m,s=shape,t=dtype,f=order):
+  nonlocal negative
+  try:check_observation_schema(m,s,t,f)
+  except ValueError:negative+=1
+  else:raise AssertionError('Wrong original source cache schema accepted')
+ bad(meta,(2,3,1,1800,2,256));bad(meta,(2,3,11,1800,2,255));bad(meta,t='float64');bad(meta,f=True)
+ for key,value in [('conditions',list(d.OBS_CONDITIONS[1:])+['full']),('scenes',list(reversed(d.SCENES))),('status','INCOMPLETE'),('target_access',True)]:
+  wrong=dict(meta);wrong[key]=value;bad(wrong)
+ tree=ast.parse(Path(__file__).with_name('evaluate.py').read_text(encoding='utf8'))
+ body=next(n for n in tree.body if isinstance(n,ast.FunctionDef) and n.name=='run')
+ calls={name:min(n.lineno for n in ast.walk(body) if isinstance(n,ast.Call) and isinstance(n.func,ast.Name) and n.func.id==name) for name in ('prepare_inputs','load_models','full_v')}
+ assert calls['prepare_inputs']<calls['load_models']<calls['full_v']
+ return dict(status='PASS',actual_header_shape=list(shape),full_index=index,condition_axes=11,early_metadata_before_CP_NN=True,targeted_negatives=negative,CP=0,IQ=0,NN=0)
 
 def run():
  negatives=0
@@ -93,6 +118,6 @@ def run():
   pv=dict(TX=y,RX=panel['RX'],day=panel['day'],**{label:dict(clean=correct,satellite=np.tile(correct,(2,3,1,1))) for label in d.LABELS})
   result=summarize(full,pv,Path(directory))
   assert result['fullV']['AS_EMA']['worst_RX_accuracy']==1 and result['paired_fullV']['AS_EMA_minus_AS_STUDENT']['net_repairs']==0
- return dict(status='PASS',protocol_negatives=negatives,panel_join=check_panel_join(),synthetic_metric_recount=True,actual_CVS_NN=0,actual_IQ_reads=0,actual_checkpoint_reads=0,updates=0,target_access=False)
+ return dict(status='PASS',protocol_negatives=negatives,panel_join=check_panel_join(),observation_input=check_observation_input(),synthetic_metric_recount=True,actual_CVS_NN=0,actual_IQ_reads=0,actual_checkpoint_reads=0,updates=0,target_access=False)
 
 if __name__=='__main__':print(json.dumps(run()))

@@ -3,13 +3,13 @@ import json
 from pathlib import Path
 
 ROOT=Path(__file__).resolve().parents[2]
-RUN='20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r02'
-RELEASE='cvs_FcrossRX_ownEMA_source_E50_20261018_r02'
+RUN='20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03'
+RELEASE='cvs_FcrossRX_ownEMA_source_E50_20261018_r03'
 PARENT_RUN='20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01'
 PARENT_RELEASE='cvs_FcrossRX_As_budget_E50_20261018_r01'
 PARENT_COMMIT='0f399c910324e21a8b1a60346d879be5c2964a9c'
 OWNER='codex/root/practical-ownEMA-source'
-LOCAL='local_artifacts/F_ownEMA_source_E50_20261018_r02'
+LOCAL='local_artifacts/F_ownEMA_source_E50_20261018_r03'
 SEED=2026092701
 RX=(1,3,4,6,8)
 DAY=(1,2,3)
@@ -17,6 +17,9 @@ ARMS=('B00','B01')
 LABELS=('NOAS_STUDENT','NOAS_EMA','AS_STUDENT','AS_EMA')
 STATES=('model','ema_model')
 SCENES=('practical_low_suburban','practical_mid_urban','practical_low_urban')
+OBS_CONDITIONS=('full','no_noise/fixed','no_noise/total','flat_H/fixed','flat_H/total','no_carrier/fixed','no_carrier/total','no_RX_IQ/fixed','no_RX_IQ/total','actual_power_quality','edge_boundary')
+OBS_SHAPE=(2,3,11,1800,2,256)
+FULL_CONDITION_INDEX=0
 HEAD='id_backbone.encoder.core.id_backbone.cls_head.weight'
 EXPECTED_NN=133204
 

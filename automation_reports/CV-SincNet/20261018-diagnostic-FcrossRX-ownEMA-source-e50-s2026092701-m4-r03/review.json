@@ -1,0 +1,26 @@
+{
+  "status": "PASS_TARGETED_OBSERVATION_FIX",
+  "reviewer": "/root/augmentation_organization_history",
+  "original_review": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r01/review.json",
+  "previous_ID_fix_review": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r02/review.json",
+  "scope": "Only actual11condition observation adapter andearlyinputvalidation;not fullrereview",
+  "actual_shape": [
+    2,
+    3,
+    11,
+    1800,
+    2,
+    256
+  ],
+  "dtype": "float32",
+  "order": "C",
+  "full_condition_index": 0,
+  "conditions_count": 11,
+  "targeted_positive": "PASS",
+  "targeted_negative_cases": 8,
+  "call_order": "prepareinputs<loadmodels/smoke<sourceIQ/fullV",
+  "CP": 0,
+  "IQ_record_reads": 0,
+  "NN": 0,
+  "residual_P0P1": []
+}

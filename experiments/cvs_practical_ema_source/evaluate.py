@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from . import design as d
-from .protocol import check_state_pair,check_roles,check_ids,check_panel,check_panel_membership,decision
+from .protocol import check_state_pair,check_roles,check_ids,check_panel,check_panel_membership,check_observation_schema,decision
 from .metrics import summarize
 
 def unchanged(model,saved):
@@ -52,6 +52,38 @@ def source_context(config,device):
  if not getattr(ctx['unlabeled_loader'].dataset,'hide',False):raise ValueError('Original hidden U dataset required, never iterated')
  return ctx,expected
 
+def prepare_inputs(rt):
+ """Read metadata, old logits and NPY header only, before any CP/NN/IQ record."""
+ from experiments.cvs_practical_budget50 import design as old
+ roles=old.read(old.PANEL/'data_roles.json');obsmeta=old.read(old.PANEL/'observations/completion.json');contract=old.read(old.SOURCE)
+ if roles['role']!='V' or roles['V_panel']!=1800 or roles['U_truth_used'] or roles['target_access']:raise ValueError('Original source-only V1800 role metadata required')
+ ids=roles['physical_ids']
+ if len(ids)!=1800 or len(set(ids))!=1800 or not set(ids)<=set(contract['role_ids']['V']):raise ValueError('Panel must retain exact legal source V IDs')
+ obs_path=d.assert_source_path(old.PANEL/'observations/iq.npy',[old.PANEL/'observations'])
+ with obs_path.open('rb') as stream:
+  version=np.lib.format.read_magic(stream)
+  if version==(1,0):shape,fortran,dtype=np.lib.format.read_array_header_1_0(stream)
+  elif version==(2,0):shape,fortran,dtype=np.lib.format.read_array_header_2_0(stream)
+  else:raise ValueError('Original source NPY header version differs')
+ full_index=check_observation_schema(obsmeta,shape,dtype,fortran);students={};reference=None
+ for arm,base in zip(d.ARMS,('NOAS','AS')):
+  path=d.assert_source_path(d.panel_predictions(rt,arm),[d.parent_source(rt,arm).parent/'source_qualification'])
+  with np.load(path,allow_pickle=False) as f:pred={k:f[k].copy() for k in f.files}
+  check_panel(pred,pred if reference is None else reference)
+  if not np.array_equal(pred['ids'],np.asarray(ids)):raise ValueError('Original student panel order differs from source role metadata')
+  complete=d.read(path.parent/'complete.json')
+  if complete['target_access'] or complete.get('formal_scores_read') or complete['NN']!=12600 or complete.get('training_updates',0) or complete.get('head_fit_updates',0):raise ValueError('Original frozen source-only student panel required')
+  students[base+'_STUDENT']=dict(clean=pred['clean'],satellite=pred['satellite']);reference=pred if reference is None else reference
+ metadata={k:reference[k] for k in ('ids','TX','RX','day')}
+ return dict(roles=roles,observation_meta=obsmeta,observation_path=obs_path,observation_shape=shape,observation_dtype=str(dtype),full_index=full_index,students=students,panel_metadata=metadata)
+
+def source_index_metadata(ctx):
+ """Native V index metadata only; no dataset __getitem__ or IQ record read."""
+ from cvsrffi.game_tracking.data import opaque_id
+ dataset=ctx['val_loader'].dataset
+ if len(dataset)!=27000 or not hasattr(dataset,'index'):raise ValueError('Original native source V index required')
+ return {k:np.asarray(v) for k,v in dict(ids=[opaque_id(it) for it in dataset.index],TX=[int(it.tx_i) for it in dataset.index],RX=[int(it.rx_i) for it in dataset.index],day=[int(it.day_i) for it in dataset.index]).items()}
+
 def full_v(models,ctx,expected,device,cost,out):
  from cvsrffi.game_tracking.data import opaque_id
  loader=ctx['val_loader'];dataset=loader.dataset
@@ -74,7 +106,7 @@ def full_v(models,ctx,expected,device,cost,out):
  for k in result:result[k]=np.concatenate(result[k]) if k in d.LABELS else np.asarray(result[k])
  return result
 
-def panel_v(models,rt,full,device,cost,out):
+def panel_v(models,inputs,full,device,cost,out):
  from experiments.cvs_practical_budget50 import design as old
  from experiments.cvs_practical_budget50.quality import panel
  from experiments.cvs_practical_budget50.channel import tensor_iq
@@ -82,16 +114,10 @@ def panel_v(models,rt,full,device,cost,out):
  result={k:np.asarray(data[n].tolist() if hasattr(data[n],'tolist') else data[n]) for k,n in [('ids','ids'),('TX','y'),('RX','rx'),('day','day')]}
  check_panel_membership(result,full)
  cost['panel_clean_IQ_reads']+=1800
- for arm,base in zip(d.ARMS,('NOAS','AS')):
-  path=d.assert_source_path(d.panel_predictions(rt,arm),[d.parent_source(rt,arm).parent/'source_qualification'])
-  with np.load(path,allow_pickle=False) as f:oldpred={k:f[k].copy() for k in f.files}
-  check_panel(oldpred,dict(result,clean=oldpred['clean'],satellite=oldpred['satellite']))
-  complete=d.read(path.parent/'complete.json')
-  if complete['target_access'] or complete.get('formal_scores_read') or complete['NN']!=12600 or complete.get('training_updates',0) or complete.get('head_fit_updates',0):raise ValueError('Original frozen source-only student panel required')
-  result[base+'_STUDENT']=dict(clean=oldpred['clean'],satellite=oldpred['satellite'])
- obs_path=d.assert_source_path(old.PANEL/'observations/iq.npy',[old.PANEL/'observations'])
- obs=np.load(obs_path,mmap_mode='r',allow_pickle=False)
- if obs.shape[:4]!=(2,3,1,1800):raise ValueError('Original two-draw three-scene fixed source observations required')
+ for label,oldpred in inputs['students'].items():
+  check_panel(dict(result,**oldpred),dict(inputs['panel_metadata'],**oldpred));result[label]=oldpred
+ obs=np.load(inputs['observation_path'],mmap_mode='r',allow_pickle=False)
+ full_index=inputs['full_index']
  for base in ('NOAS','AS'):result[base+'_EMA']=dict(clean=np.empty((1800,6),np.float32),satellite=np.empty((2,3,1800,6),np.float32))
  for i in range(0,1800,90):
   x=data['x'][i:i+90].to(device)
@@ -99,7 +125,7 @@ def panel_v(models,rt,full,device,cost,out):
  for draw in range(2):
   for si,scene in enumerate(d.SCENES):
    for i in range(0,1800,90):
-    observed=obs[draw,si,0,i:i+90];cost['panel_observation_IQ_reads']+=len(observed);x=tensor_iq(observed,device)
+    observed=obs[draw,si,full_index,i:i+90];cost['panel_observation_IQ_reads']+=len(observed);x=tensor_iq(observed,device)
     for base in ('NOAS','AS'):result[base+'_EMA']['satellite'][draw,si,i:i+90]=forward(models[base+'_EMA'],x,cost)
    print('PANEL bothEMA '+str(draw)+' '+scene,flush=True)
    d.write(out/'progress.json',dict(stage='PANEL',readout='bothEMA',draw=draw,scene=scene,identity_NN=cost['identity_NN'],target_access=False))
@@ -116,6 +142,8 @@ def run():
  try:
   from experiments.cvs_practical_budget50 import design as old
   from experiments.cvs_equivariant_identity.precision import numerical_context
+  inputs=prepare_inputs(rt)
+  d.write(out/'input_validation.json',dict(status='PASS',observation_shape=list(inputs['observation_shape']),observation_dtype=inputs['observation_dtype'],conditions=list(d.OBS_CONDITIONS),selected_condition='full',selected_index=inputs['full_index'],panel_unique_V=1800,NN=0,CP=0,IQ_record_reads=0,target_access=False))
   with numerical_context(old.FULL_FP32_POLICY):
    models,configs=load_models(rt,device,cost);before={k:{n:v.clone() for n,v in m.state_dict().items()} for k,m in models.items()}
    for label,m in models.items():
@@ -123,8 +151,9 @@ def run():
    d.write(out/'smoke.json',dict(status='PASS',actual_NN=4,checkpoint_count=2,state_keys=['model','ema_model'],readouts=list(d.LABELS),state_entries_each=206,default_head=[6,160],IQ_reads=0,query_reads=0,optimizer_updates=0,all_frozen=True))
    print('REAL_OWN_FINAL50_STUDENT_EMA_NO_QUERY_SMOKE PASS4NN;continue source',flush=True)
    ctx,expected=source_context(configs['B00'],device)
+   check_panel_membership(inputs['panel_metadata'],source_index_metadata(ctx))
    full=full_v(models,ctx,expected,device,cost,out)
-   panel=panel_v(models,rt,full,device,cost,out)
+   panel=panel_v(models,inputs,full,device,cost,out)
    for label,m in models.items():
     unchanged(m,before[label])
     expectedNN=27001+(12600 if label.endswith('_EMA') else 0)

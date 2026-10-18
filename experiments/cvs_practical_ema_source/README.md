@@ -24,7 +24,7 @@ there is no automatic retry or formal prediction path.
 
 After the source-only preregistration and actual code/config commit, the root
 owner can release with `python -m experiments.cvs_practical_ema_source.publish`.
-It reads private `local_artifacts/F_ownEMA_source_E50_20261018_r02/runtime.json`,
+It reads private `local_artifacts/F_ownEMA_source_E50_20261018_r03/runtime.json`,
 uses one ordinary-account preflight, one archive SHA transfer comparison,
 remote compile and focused checks, then starts one process on its fixed GPU.
 The owner independently checks the submitted PID/CWD/argv/GPU and log growth.
@@ -33,6 +33,14 @@ The r02 repair joins the original panel's canonical opaque SHA24 IDs with
 `fullV_ids`, checking aligned TX/RX/day. `fullV_physical_ids` retains the
 separate native `(eq_i, rx_i, day_i, sig_i, base_index)` tuples. The r01
 technical failure and its completed inference cost remain separate artifacts.
+
+The r03 input adapter fixes the actual cache shape to C-order float32
+`(2,3,11,1800,2,256)`. The third axis is the original eleven counterfactual
+conditions; only index0 `full` is read. Metadata and the NPY header (zero IQ
+record reads) plus old student panel alignment are checked before CP loading
+or model inference. Native V index metadata aligns the panel before full-V
+inference. `input_validation.json` records these existing input facts; the
+real no-query smoke remains the first neural forward.
 
 The source qualification has exactly three scientific criteria: AsEMA versus
 NoAsEMA full-V clean change ≥ −0.1 absolute pp; AsEMA versus own student full-V

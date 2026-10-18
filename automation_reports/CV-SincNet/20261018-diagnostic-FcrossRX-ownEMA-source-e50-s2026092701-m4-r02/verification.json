@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_VERIFIED_FIX_NOT_LAUNCHED",
+  "status": "FAILED_TECHNICAL_OBSERVATION_AXIS",
   "run_id": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r02",
   "original_run": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r01",
   "original_failure_preserved": true,
@@ -18,5 +18,68 @@
   "original_failed_NN": 108004,
   "expected_total_attempt_NN": 241208,
   "source_only": true,
-  "formal": false
+  "formal": false,
+  "actual_execution_commit": "71855d0007c45b3f2a3d1314e036eb333c0d408f",
+  "actual_real_checkpoint_smoke": {
+    "status": "PASS",
+    "actual_NN": 4,
+    "checkpoint_count": 2,
+    "state_keys": [
+      "model",
+      "ema_model"
+    ],
+    "readouts": [
+      "NOAS_STUDENT",
+      "NOAS_EMA",
+      "AS_STUDENT",
+      "AS_EMA"
+    ],
+    "state_entries_each": 206,
+    "default_head": [
+      6,
+      160
+    ],
+    "IQ_reads": 0,
+    "query_reads": 0,
+    "optimizer_updates": 0,
+    "all_frozen": true
+  },
+  "actual_cost": {
+    "identity_NN": 108004,
+    "checkpoint_reads": 6,
+    "fullV_raw_IQ_reads": 27000,
+    "panel_clean_IQ_reads": 1800,
+    "panel_observation_IQ_reads": 0,
+    "optimizer_updates": 0,
+    "head_fit_updates": 0,
+    "EMA_updates": 0,
+    "U_iterator_calls": 0,
+    "U_truth_read": false,
+    "target_IQ_reads": 0,
+    "target_truth_reads": 0,
+    "wall_seconds": 11.828136818949133
+  },
+  "original_PID": 1213449,
+  "original_PID_alive": false,
+  "remote_compile": "VERIFIED",
+  "remote_archive_SHA": "b40b4d6041ddf82dad7be3b0e08993ca16acdc4993472680e4ae25840b583afb",
+  "failure": {
+    "error": "ValueError('Original two-draw three-scene fixed source observations required')",
+    "layer": "Source cache observation layout:existing11counterfactualconditions,not1",
+    "source_fullV_completed": true,
+    "source_panel_classification_started": false,
+    "actual_header_shape": [
+      2,
+      3,
+      11,
+      1800,
+      2,
+      256
+    ],
+    "header_inspection_NN": 0,
+    "header_inspection_CP": 0,
+    "header_inspection_IQ_record_reads": 0,
+    "source_only": true,
+    "scientific_conclusion_available": false
+  }
 }

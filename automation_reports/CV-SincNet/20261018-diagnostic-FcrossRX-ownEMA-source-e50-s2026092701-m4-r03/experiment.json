@@ -1,0 +1,291 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03",
+  "group_id": "phase1-FcrossRX-ownEMA-source-readout",
+  "display_name": "完整practical E50：既有ownEMA与学生默认头源域匹配比较",
+  "description": "FixedFINAL50 frozenstudent vs existingownEMA,NoAs/As source-only matched readout;test whether temporal averaging preserves/improves clean andmidlow without newtraining/head/branch/teacher",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "完整As既有EMA源比较技术观察轴修复r03"
+  ],
+  "tags": [
+    "F",
+    "CROSS_RX",
+    "original_As",
+    "NoAs",
+    "ownEMA",
+    "source_only",
+    "fixed_FINAL50",
+    "L6300",
+    "all5RX",
+    "U_truth_hidden",
+    "IQ256"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": "20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r02",
+  "authorization": "Current active CVS practical-primary research;user permits source-grounded simple mechanisms within E30/default and promisingrecipe totalE50.No newtraining or budgetextension;no sourceRX holdout;latest01/02/03 fixed As results fully preserved.",
+  "code": {
+    "commit": "71855d0007c45b3f2a3d1314e036eb333c0d408f",
+    "checkout": "codex/cvs-iq-timing-e20-20261016",
+    "environment": "Ordinary N607 existingCVS Python/PyTorch runtime CPU2;no install/admin;actualnewcode commit fixedbefore release",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_ownEMA_source_E50_20261018_r03",
+    "identity_status": "ACTUAL_OBSERVATION_LAYOUT_FIX_TO_BE_COMMITTED",
+    "implementation_status": "ACTUAL_HEADER_COMPLETION_INPUT_FIX_CHECKS_AND_SCOPED_REVIEW_PASS"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing IQ256,equalized index1,sample rate25MHz;no longer context;fixed full practical residual/post_sync/noEQ formal IQ",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 full original visibleTX;supervised during all cumulative50epochs,noLdev,no trainingRXholdout",
+      "U_s": "56700 originalTXhidden;old U rule/ownEMA only;7+10+20 cumulativeUepochs,no newU objective or satelliteU",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "Existing VALIDATED_ONCE exact original sourcecontract,fullV27000/raw andsubsetV1800 panel;no data change or newholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Originalfixed sourceV1800 observation IQ2draws×3practical,read-only inheritedsource panel,no targetIQ"
+  },
+  "permissions": {
+    "regime": "source_only",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Fixed01 source-only actual defaulthead identity;no formal gain/newIQAug/causal physical impairment claim;no target scores used for candidate/parameters/promotion"
+  },
+  "checkpoint": {
+    "initialization": "FROZEN_EXISTING_OWN_STUDENT_AND_OWN_EMA_FINAL50",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01/B00-s2026092701/source/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01/B01-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Original01 E50 source.py/model.py own_model strict lineage andmatching roles;thisrunner additionally checks currentFINAL50 model/ema_model206keys6x160 finite/dtype/shapes;source-study report records provenance",
+    "provenance_verdict": "Originalstudent/ownEMA same50trajectory/allL6300 U56700hidden V27000 all5RX;independentformal scores didnottrain/select/alterweights;originalsource checks reused",
+    "selection_rule": "Both fixedFINAL50 states,each owntrajectory,no EMAdecay/epoch/seed scan;student/EMA matched.No formal until a separately frozen source-supported follow-on scope."
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged existingaccount",
+    "launch_owner": "codex/root/practical-ownEMA-source",
+    "gpu_policy": "One source-readout process on preflight availableGPU;allowner total<=3/GPU,>=12000MB free;CPU2;no otherprocess changes",
+    "remote_run_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03",
+    "remote_log_root": "PROJECT/releases/cvs_FcrossRX_ownEMA_source_E50_20261018_r03/ownEMA_source.stdout.log",
+    "local_artifact_root": "local_artifacts/F_ownEMA_source_E50_20261018_r03",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_ema_source/runner.py",
+    "stop_rule": "Only runowned protocol/source-role/parent/state/defaulthead/nonfinite/overwrite/unlaunchable technicalfailure;preserve outputs/no autoretry/no otherPID intervention.Scientificfail completes allsourcecells andcloses fixedreadout recipe.",
+    "status": "LOCAL_VERIFIED"
+  },
+  "expected_artifacts": [
+    "smoke.json",
+    "complete.json orpreservedfailure.json",
+    "costs.json",
+    "predictions.npz(sourceVonly,remote)",
+    "summary.json",
+    "metrics.csv",
+    "fullV_confusions.json",
+    "paired_errors.json",
+    "progress.json",
+    "worker.log/release ownEMA_source.stdout.log",
+    "readouts/{row_id}/summary.json",
+    "finalsourceanalysis andregistry/Git",
+    "input_validation.json (metadata/header only,0NN0CP0IQrecord)"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macro_F1",
+      "worst_RX_accuracy",
+      "RX/day/TX accuracy",
+      "paired repairs/newerrors/net",
+      "EMA-minus-student byarm",
+      "AsminusNoAs bystate",
+      "budget-neutral EMAinteraction",
+      "actualNN/CP/IQ/updates/wall"
+    ],
+    "dimensions": [
+      "fixedmodelseed01",
+      "NoAs/As",
+      "student/ownEMA",
+      "fullVraw",
+      "sourcepanelclean/low_suburban/midurban/lowurban",
+      "draw0/1",
+      "all5sourceRX",
+      "day1/2/3",
+      "TX0..5"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/source_predictions.npz",
+    "scorer_ref": "Same sourceanalysis source-only labels,alignedphysicalIDs/CM/partitions;neverimport targetevaluator"
+  },
+  "rows": [
+    {
+      "row_id": "B00_STUDENT-s2026092701",
+      "method": "F/CROSS_RX/ownFINAL50/NoAs/student/jointdefaultcos",
+      "purpose": "matchedsourcecomparison",
+      "config_ref": "experiments/cvs_practical_ema_source/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existingmodelseed01 andoriginalphysicalsplit392005;no training/channel redrawing orsupport.Original fixedsourceV1800two observationdraws reused,notnewmodelseeds.No new stochastic eval.",
+      "k": null,
+      "scenario": "SourcefullV27000raw plusfixedV1800clean/low_suburban/midurban/lowurban two draws;no formal/query",
+      "optimizer": "none,frozenreadout;original50trajectory20+10+20 preserved",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newtraining/updates/teacher;inheritedtotal50permodel.Smoke4NN+fullV4x27000+EMA_panel2x12600=expected133204NN;oldstudentpanel reused.RecordactualCP/IQ/readout.",
+      "output_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/readouts/B00_STUDENT-s2026092701",
+      "log_path": "PROJECT/releases/cvs_FcrossRX_ownEMA_source_E50_20261018_r03/ownEMA_source.stdout.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_practical_ema_source/runner.py",
+      "expected_artifacts": [
+        "readouts/B00_STUDENT-s2026092701/summary.json",
+        "sharedroot/predictions.npz andsourceaggregatefiles"
+      ]
+    },
+    {
+      "row_id": "B00_EMA-s2026092701",
+      "method": "F/CROSS_RX/ownFINAL50/NoAs/existingownEMA/jointdefaultcos",
+      "purpose": "matchedsourcecomparison",
+      "config_ref": "experiments/cvs_practical_ema_source/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existingmodelseed01 andoriginalphysicalsplit392005;no training/channel redrawing orsupport.Original fixedsourceV1800two observationdraws reused,notnewmodelseeds.No new stochastic eval.",
+      "k": null,
+      "scenario": "SourcefullV27000raw plusfixedV1800clean/low_suburban/midurban/lowurban two draws;no formal/query",
+      "optimizer": "none,frozenreadout;original50trajectory20+10+20 preserved",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newtraining/updates/teacher;inheritedtotal50permodel.Smoke4NN+fullV4x27000+EMA_panel2x12600=expected133204NN;oldstudentpanel reused.RecordactualCP/IQ/readout.",
+      "output_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/readouts/B00_EMA-s2026092701",
+      "log_path": "PROJECT/releases/cvs_FcrossRX_ownEMA_source_E50_20261018_r03/ownEMA_source.stdout.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_practical_ema_source/runner.py",
+      "expected_artifacts": [
+        "readouts/B00_EMA-s2026092701/summary.json",
+        "sharedroot/predictions.npz andsourceaggregatefiles"
+      ]
+    },
+    {
+      "row_id": "B01_STUDENT-s2026092701",
+      "method": "F/CROSS_RX/ownFINAL50/originalcompleteAs/student/jointdefaultcos",
+      "purpose": "matchedsourcecomparison",
+      "config_ref": "experiments/cvs_practical_ema_source/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existingmodelseed01 andoriginalphysicalsplit392005;no training/channel redrawing orsupport.Original fixedsourceV1800two observationdraws reused,notnewmodelseeds.No new stochastic eval.",
+      "k": null,
+      "scenario": "SourcefullV27000raw plusfixedV1800clean/low_suburban/midurban/lowurban two draws;no formal/query",
+      "optimizer": "none,frozenreadout;original50trajectory20+10+20 preserved",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newtraining/updates/teacher;inheritedtotal50permodel.Smoke4NN+fullV4x27000+EMA_panel2x12600=expected133204NN;oldstudentpanel reused.RecordactualCP/IQ/readout.",
+      "output_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/readouts/B01_STUDENT-s2026092701",
+      "log_path": "PROJECT/releases/cvs_FcrossRX_ownEMA_source_E50_20261018_r03/ownEMA_source.stdout.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_practical_ema_source/runner.py",
+      "expected_artifacts": [
+        "readouts/B01_STUDENT-s2026092701/summary.json",
+        "sharedroot/predictions.npz andsourceaggregatefiles"
+      ]
+    },
+    {
+      "row_id": "B01_EMA-s2026092701",
+      "method": "F/CROSS_RX/ownFINAL50/originalcompleteAs/existingownEMA/jointdefaultcos",
+      "purpose": "matchedsourcecomparison",
+      "config_ref": "experiments/cvs_practical_ema_source/design.py",
+      "resolved_config_ref": "PROJECT/runs/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/runtime.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Existingmodelseed01 andoriginalphysicalsplit392005;no training/channel redrawing orsupport.Original fixedsourceV1800two observationdraws reused,notnewmodelseeds.No new stochastic eval.",
+      "k": null,
+      "scenario": "SourcefullV27000raw plusfixedV1800clean/low_suburban/midurban/lowurban two draws;no formal/query",
+      "optimizer": "none,frozenreadout;original50trajectory20+10+20 preserved",
+      "lr": null,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "0newtraining/updates/teacher;inheritedtotal50permodel.Smoke4NN+fullV4x27000+EMA_panel2x12600=expected133204NN;oldstudentpanel reused.RecordactualCP/IQ/readout.",
+      "output_root": "PROJECT/runs/20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03/readouts/B01_EMA-s2026092701",
+      "log_path": "PROJECT/releases/cvs_FcrossRX_ownEMA_source_E50_20261018_r03/ownEMA_source.stdout.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_practical_ema_source/runner.py",
+      "expected_artifacts": [
+        "readouts/B01_EMA-s2026092701/summary.json",
+        "sharedroot/predictions.npz andsourceaggregatefiles"
+      ]
+    }
+  ],
+  "notes": [
+    "Solehypothesis:existingfixedownEMA temporalaverage improvesactualAs sourceclean while retainingurban;notnewIQaugmentation,notRDrop claim,notheadfit.",
+    "Historical20261015SIGTIMEBASE_SSLcleanonlyEMA sourceCE improvedbuterrors501->504;recipeclosed then.NowF/CROSS_RX/As50/NoAs50 matching differsintraining/dataorganization,notcoefftune.",
+    "Scientific conditions:fullVAsEMA-NoAsEMA>=-.1absolutepp;fullVAsEMA-AsStudentnet>=0;source(midlowcombinedequalweight)AsEMA-AsStudentnet>0.Scene/draw results allreported,no perpacket/percellsconfidence/margin gates.",
+    "EMAinteraction=(AsEMA-AsStudent)-(NoAsEMA-NoAsStudent) attributiononly;equalbenefitcalledgenerictemporalaverage benefit.Singlemodelseed/sourcePASSdoesnotprovestableformalclean gain.",
+    "Source-only readout allfourcomplete onscientificfail,automaticformal=false;no decay/epoch/seed rescue or automaticbudgetextension.",
+    "Originalall3E50 formal exposure retained asbenchmarkcontext;thisdecisionfollowscodepath/source-only hypothesis only,no formalvaluesusedforparameters/candidatepromotion.",
+    "Technicalreplacementr01:panel IDs are existingopaque24 strings,same asfullV.ids;native5coordinate tuples were wronglycompared.r02joinscanonicalIDs+TXRXday,retainsVboundary.Allcandidate/parent/threshold/budget unchanged.Failedr01cost108004NN6CP27000Vpackets/0updates/0target preserved;fullVredo only due technicalfailure,notselective scientificrerun.",
+    "r02canonicalIDjoinPASS,fixedcacheheaderactual[2,3,11,1800,2,256],oldsourcequalfullviewusescondition0.Adapterincorrectlyrequiredconditionaxis1.Fixedactual11layoutbeforemodelreadout;no databyte/role/parameter change.Prior twoattempts216008NN0updates0target preserved."
+  ],
+  "registered_at": "2026-10-18T05:34:59+00:00"
+}

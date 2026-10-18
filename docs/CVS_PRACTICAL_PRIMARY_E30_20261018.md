@@ -78,3 +78,5 @@ clean 配对逐种子：+0.365476／+0.436905／−1.252976 pp；两个通过、
 full V27000四条件逐ID读出，原V1800与两次固定三场practical观测保持，学生panel预测复用。固定源判定：AsEMA−NoAsEMA clean≥−.1绝对pp；AsEMA−AsStudent fullV净修复≥0；mid／low等权合并净修复>0。逐场／draw／RX／F1／错误配对全部报告，不设每cell涨分或预测保持门槛。差分交互只作归因，不把通用EMA收益写成As独有收益。负结果完整收尾后关闭固定读出，不扫描衰减／epoch／seed救跑。预期新增133204次前向，0训练更新；本轮source-only，暂不访问formal。单种子source通过也不证明最终重复双提升。
 
 原ownEMA source r01已按技术停止规则保留：真实smoke4NN PASS、四fullV完成后，适配代码混用了opaque ID和native辅助元组；108004NN／0更新／0target，无完整科学结果。r02按既有opaque ID与TX／RX／day严格连接，定向正负例和唯一原问题定点复核PASS；科学矩阵、来源与阈值均不改。当前源实验为`20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r02`。
+
+既有源缓存实际含11个条件，r02误写轴长度1而停止，追加108004NN／0更新／0target。已实际0NN核对header/completion；r03固定原11轴结构与index0full，前移输入检查，定向测试及该问题定点复核PASS。两失败合计216008NN保留，不作科学负结果；当前修复run `20261018-diagnostic-FcrossRX-ownEMA-source-e50-s2026092701-m4-r03`，原科学矩阵不变。

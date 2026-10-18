@@ -1,3 +1,5 @@
+**当前状态：FAILED（固定源缓存的反事实条件轴适配错误），非科学负结果。** ID连接已通过；obs缓存真实形状为2×3×11×1800×2×256，适配代码误写为仅1个条件。原PID1213449已退出，smoke4PASS／四fullV完成；108004NN、6CP、0训练更新／0target，无完整科学结论。0NN读取header已确认实际结构，保留r02，修复r03不改科学条件。
+
 **r02：同一科学矩阵的技术映射修复，尚未远端启动。** r01保留FAILED；实际source panel是既有opaque物理ID，适配代码误与native辅助五元组比较。r02按同一opaque ID连接fullV与panel并逐ID核TX／RX／day，未放宽角色边界。定向两表示正例／乱序正例及6负例PASS，0CP／IQ／NN；唯一原问题定点复核PASS。原科学判定／来源／预算保持。
 
 # 完整 practical E50：既有 own EMA 的源域默认头匹配比较

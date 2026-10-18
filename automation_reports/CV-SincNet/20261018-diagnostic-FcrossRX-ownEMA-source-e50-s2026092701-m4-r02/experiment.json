@@ -108,7 +108,10 @@
     "local_artifact_root": "local_artifacts/F_ownEMA_source_E50_20261018_r02",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_practical_ema_source/runner.py",
     "stop_rule": "Only runowned protocol/source-role/parent/state/defaulthead/nonfinite/overwrite/unlaunchable technicalfailure;preserve outputs/no autoretry/no otherPID intervention.Scientificfail completes allsourcecells andcloses fixedreadout recipe.",
-    "status": "LOCAL_VERIFIED"
+    "status": "FAILED",
+    "release_commit": "71855d0007c45b3f2a3d1314e036eb333c0d408f",
+    "pid": 1213449,
+    "alive": false
   },
   "expected_artifacts": [
     "smoke.json",
@@ -285,5 +288,13 @@
     "Originalall3E50 formal exposure retained asbenchmarkcontext;thisdecisionfollowscodepath/source-only hypothesis only,no formalvaluesusedforparameters/candidatepromotion.",
     "Technicalreplacementr01:panel IDs are existingopaque24 strings,same asfullV.ids;native5coordinate tuples were wronglycompared.r02joinscanonicalIDs+TXRXday,retainsVboundary.Allcandidate/parent/threshold/budget unchanged.Failedr01cost108004NN6CP27000Vpackets/0updates/0target preserved;fullVredo only due technicalfailure,notselective scientificrerun."
   ],
-  "registered_at": "2026-10-18T05:34:59+00:00"
+  "registered_at": "2026-10-18T05:34:59+00:00",
+  "results": {
+    "status": "TECHNICAL_FAILURE_NO_COMPLETE_SCIENTIFIC_RESULT",
+    "actual_NN": 108004,
+    "actual_CP": 6,
+    "new_updates": 0,
+    "formal": false,
+    "error": "Fixedcachehas11conditions;adapter incorrectlyrequired1.Fullconditionindex0 preservedbyoldqualification."
+  }
 }
