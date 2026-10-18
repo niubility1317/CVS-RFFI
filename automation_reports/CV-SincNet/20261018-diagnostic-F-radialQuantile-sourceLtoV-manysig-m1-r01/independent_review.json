@@ -6,5 +6,15 @@
   "scope": "Next real source-only run: math,18fold L-only,V readout,all5RX,zero packet retention,U non-consumption,publish dependencies",
   "real_inputs_read": false,
   "remote_access": false,
-  "files_modified": false
+  "files_modified": false,
+  "targeted_P0P1_fix_review": {
+    "status": "PASS",
+    "issue": "NumPy bool JSON serialization",
+    "unchanged_scientific_values": true,
+    "saved_statistics_only_recovery": true,
+    "all_fits_compared": true,
+    "immutable_child_root": true,
+    "original_failure_preserved": true,
+    "no_new_P0P1": true
+  }
 }

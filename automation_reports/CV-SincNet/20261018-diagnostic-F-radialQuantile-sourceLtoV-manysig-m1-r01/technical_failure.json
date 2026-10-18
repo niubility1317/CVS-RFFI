@@ -1,0 +1,14 @@
+{
+  "status": "FAILED",
+  "layer": "JSON aggregate serialization",
+  "original_commit": "00a2b54f5cdf7b55698a1001ad8dd7bea77cf650",
+  "original_PID": 1012547,
+  "process_exited": true,
+  "smoke": "PASS",
+  "saved_source_IQ_observations": 33300,
+  "saved_all_fits": true,
+  "error_type": "TypeError/NumPy bool not JSON serializable",
+  "original_failure_preserved": true,
+  "automatic_retry": false,
+  "recovery_plan": "Saved-statistic only,immutable json_recovery_v1,no IQ/cache/CP/NN/update/target or rule change"
+}

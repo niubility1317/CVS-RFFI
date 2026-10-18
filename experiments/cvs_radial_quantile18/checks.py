@@ -1,5 +1,5 @@
 """Fixed scaling law,scientific counterexamples and source-role negative checks."""
-import copy
+import copy,json
 import numpy as np
 from .core import observe,evaluate,cube
 from .permissions import select
@@ -38,6 +38,7 @@ def run():
   for r in range(5):
    for day in range(3):L[t,r,day]=shape*(1+.2*t+.03*day)*g[r];V[t,r,day]=shape*(1+.2*t+.03*day+.01)*g[r]
  value,arrays=evaluate(L,V)
+ json.dumps(value,allow_nan=False)
  if not value['source_pass'] or value['SSE']['shared']>1e-25:raise ValueError('True common mild radial relation should qualify')
  checks.append(dict(common_mild_radial='PASS',positive_folds=value['positive_folds']))
  vv=V.copy();vv[:,2]+=.2;_,arrays2=evaluate(L,vv)
@@ -49,6 +50,7 @@ def run():
   offset=np.array([-.1,.05,-.03,.08,-.02,.04])*r
   A[:,r]=A[:,0]+offset;B[:,r]=B[:,0]+offset
  v,_=evaluate(A,B)
+ json.dumps(v,allow_nan=False)
  if v['conditions']['shared_vs_additive'] or v['source_pass']:raise ValueError('Additive counterexample wrongly qualified')
  checks.append(dict(additive_counterexample='CLOSED'))
  # TX-conditioned variation cannot be hidden by an overall source association.

@@ -47,3 +47,9 @@ Run：20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01。Row：RAD
 唯一独立 P0/P1 review PASS：未发现导致下一次实跑错误、越权、破坏、无法启动或无法生成合法结果的缺陷；覆盖数学关系、18 折 L-only、V 读出、全部 RX、零包保留、U 不访问、发布依赖。未修改文件或访问真实输入/远端。
 
 REJECTED_EXTRA_GATE：泛化设计审批、seal 或重复报告审查不适用；按用户已授权研究及项目最小工作流直接执行。
+
+## 技术故障与固定统计恢复
+
+首次执行的数学/权限 smoke PASS，33,300 源包统计及全部拟合数组已保存；在写 result.json 时，nonzero_identity_error 为 NumPy bool，标准 JSON 拒绝序列化，原进程已退出。独立原始产物证实失败层为汇总保存，不是源输入、统计或权限错误。原 failure.json、日志及全部数组保留，不覆盖原发布、不重新读 IQ、不重跑训练。
+
+最小修复：core/recount 中该比较显式转 Python bool；新增完整正负结果 JSON 序列化回归。原失败复现后，修复验证 PASS。恢复仅消费原保存的统计，原全部 fitted_readout 值必须在 1e−12 内复现；另存不可覆盖 json_recovery_v1 子目录，再由独立 recount 全量复算。原 scientific 阈值、范围、数据及方法不变。原 source_cache 加载 1 次；恢复增加原 IQ/缓存/CP/NN/训练/target 均为 0。
