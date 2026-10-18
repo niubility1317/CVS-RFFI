@@ -1,0 +1,313 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01",
+  "group_id": "phase1-FcrossRX-satellite-dropout-budget-e50",
+  "display_name": "源域通过的 satelliteDropout：CE／DET 两行总 E50 预算检验",
+  "description": "从各自原SAT18 FINAL30 student+ownEMA继续20轮，仅预算增加。AS_CE保留As dropout关As KL；AS_DET再旁路As dropout；固定全源/6L/defaultcos/原As；复用RD/NoAs E50与四种E30，区分机制与预算。",
+  "kind": "cvs",
+  "stage": "Phase1",
+  "aliases": [
+    "P62 satellite dropout E50",
+    "AS_DET source-supported E50"
+  ],
+  "tags": [
+    "FcrossRX",
+    "all5RX",
+    "E50",
+    "6L",
+    "default-head",
+    "satellite-dropout",
+    "matched-budget",
+    "source-supported"
+  ],
+  "comparison_group_id": null,
+  "parent_run_ids": [
+    "20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01"
+  ],
+  "replaces_run_id": null,
+  "authorization": "用户最新授权表现好的方案总计E50；AS_DET在正式反馈前固定的源条件PASS，本项必要AS_CE归因控制同扩20。两新模型各30+20=50，不是E70；新增40modelE/8880updates，不扩seed。",
+  "code": {
+    "commit": null,
+    "checkout": "codex/phase1-urban-sigtime-20261014",
+    "environment": "N607 existing ordinary Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5;pinnedP43/SAT18;fullFP32/CENTER_UNITS;CPU2",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_satellite_dropout_budget_E50_20261018_r01",
+    "identity_status": "PENDING_ACTUAL_CODE_COMMIT"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Unchanged original7/63/30 source physical roles; existing VALIDATED_ONCE fixed formal IQ",
+    "representation": "equalized1/native perpacketRMS center=false;float32 Bx2x256/fs25MHz;full residual/post_sync/EQoffG1/ref30/reflect;As fromraw,no extra ordinary PA/noise beforeAs;trainingfc2.462GHz/fixedformal2.45GHz unchanged",
+    "contract_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json#role_ids",
+    "label_map_ref": "Same original6TX map;no new or U truth",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      "fixedmanifest7unseenRX;nevertrain"
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "Original6registeredTX;formalmanifest classmappingunchanged",
+    "roles": {
+      "L_s": 6300,
+      "U_s_hidden": 56700,
+      "V": 27000
+    },
+    "train_ratio": "7/63/30 wholepool;10% labeled trainingpool;noheldRX/Ldev",
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "ExistingPhase1 source handles and fixedformalmanifest;Phase2 p2capsule/splitN/A",
+    "support_query_ref": "Phase1,no support;source/target disjoint fixedformalmanifest",
+    "leo_config_ref": "/home/szu2070436088/2510044040/CV-SincNet/runs/20261002-phase1-cvs-residual-sixscene-manysig-m8-r01/received_views/manifest.json"
+  },
+  "permissions": {
+    "regime": "source_only_training_then_frozen_target_prediction",
+    "query_use": "Two newrows all7 fixed IQ predictions then independent truthlast;existing6logicalreferences reuse original predictions/scores;formal scores not promotion/seed/parameter/retry feedback",
+    "external_method_exception": null,
+    "claim_scope": "One modelseed;source-supported budget replication of existing satellite dropout recipe;notnewmechanism/notnewIQAg;total50 perrow. Low60/cleanrepeatability unproven."
+  },
+  "checkpoint": {
+    "initialization": "AS_CE/AS_DET load each ownSAT18 fixedFINAL30 student+ownEMA, strictmatching roles plus own scratch20 ancestor;reset AdamW/cos20/cache. OrdinaryE13 fromown20 args, not FINAL30 args.",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/AS_CE-s2026092701/source/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-e30-s2026092701-m2-r01/AS_DET-s2026092701/source/final_ssdg.pth"
+    ],
+    "contract_check_ref": "Both SAT18 own20+10/source_contract role_ids and init/freeze/config/checkpoint identity, Utruthhidden/no target/finalonly/source origins;reuse unchanged VALIDATED_ONCE;realparent smoke afterpreflight",
+    "provenance_verdict": "METADATA_VERIFIED_BOTH_OWN20_PLUS_FINAL30_EXACT_ROLES_NO_TARGET_FIXEDFINAL;REAL_CP_SMOKE_LAUNCH_FIRST_STEP_PENDING",
+    "selection_rule": "Select sourcePASS SAT18 AS_DET, AS_CE necessarymechanismcontrol;fixedFINAL30 not target best. Newfinal20 cumulative50, no checkpoint ranking."
+  },
+  "execution": {
+    "host": "N607 ordinary nonprivileged account",
+    "launch_owner": "codex/root/satellite-budget62",
+    "gpu_policy": "Atmost2 totalGPU PIDs includingotherowners/free>=12000MB;neverstop/patchhealthyAsweight30 orothers",
+    "remote_run_root": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01",
+    "remote_log_root": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01/logs",
+    "local_artifact_root": "local_artifacts/cvs_FcrossRX_satellite_dropout_budget_E50_20261018_r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_satellite_budget62/runner.py",
+    "stop_rule": "Onlyrunowned wrongprovenance/roles/nonfinite/outputconflict/systemictechnicalfailure;preserveall;noautomatictrainingretry;sourceFAIL stillall7;noE70/seedrescue",
+    "status": "LOCAL_VERIFIED"
+  },
+  "expected_artifacts": [
+    "real_checkpoint_smoke.json",
+    "launch.json",
+    "ROW/source/resolved_config.json",
+    "ROW/source/initialization.json",
+    "ROW/source/EMA_initialization.json",
+    "ROW/source/optimizer_initialization.json",
+    "ROW/source/actual_modules.json",
+    "ROW/source/actual_channel.json",
+    "ROW/source/source_contract.json",
+    "ROW/source/step_metrics.jsonl.gz",
+    "ROW/source/training_sequence.jsonl.gz",
+    "ROW/source/epoch_metrics.jsonl",
+    "ROW/source/satellite_subnetwork_steps.jsonl.gz",
+    "ROW/source/completion.json",
+    "ROW/source/source_frozen.json",
+    "ROW/source_qualification/predictions.npz",
+    "ROW/source_qualification/complete.json",
+    "source_matrix_decision.json",
+    "ROW/prediction/all7fixedpredictions andcomplete",
+    "ROW/scoring/scores.json",
+    "ROW/scoring/complete.json",
+    "complete.json",
+    "analysis_r01/complete.json",
+    "analysis_r01/fullsource+formal perrowseed all7/paired errors/strata/curves/cost/figures"
+  ],
+  "metrics_plan": {
+    "metric_names": [
+      "accuracy",
+      "macroF1",
+      "worstRX",
+      "all6practical",
+      "lowurban",
+      "midurban",
+      "urban3mean",
+      "stagecleanpaired_absolutepp",
+      "all50minusown30",
+      "DETminusCE/RD",
+      "budget_by_DET_interaction",
+      "sameIDrepairs/newerrors",
+      "defaultmargin_div_fixed30",
+      "fixedNoAs30cleancorrectretention",
+      "source_state/lock/quality/SNRadded",
+      "coverageTXRXday/session",
+      "sat_dropout_scope_counts/CEKL/logitdiff",
+      "allstep/epochcurves",
+      "parent/increment/uniqueNN_updates_wall"
+    ],
+    "dimensions": [
+      "new2E50",
+      "reusedNoAs50/AsRD50",
+      "reusedNoAs30/AsRD30/CE30/DET30",
+      "seed2026092701",
+      "all7formalviews",
+      "V27000",
+      "V1800x2draw",
+      "RX",
+      "TX",
+      "day",
+      "source_state/lock/quality"
+    ],
+    "prediction_ref": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01/ROW/prediction;6logicalreferences immutableoriginaloutputs",
+    "scorer_ref": "separate score process afterall7 prediction gate perrow;analysis all8logicalrows gate beforetruth"
+  },
+  "rows": [
+    {
+      "row_id": "AS_CE-s2026092701",
+      "method": "OriginalSAT18 CE/dropout withsatKLoff;own30+20",
+      "purpose": "Fixedsource-supported budget continuation;CE isolatesdropoutat50",
+      "config_ref": "experiments/cvs_satellite_budget62/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01/AS_CE-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "newAg": false,
+        "As": true,
+        "channel_unchanged": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610185301,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Sameoriginalmodel/split/data/nominalchannelstreams;fullAs cumulativeE31..50 andsteps6661..11100;ordinaryglobalPythonTorch originaldraws preserved;fixedformalIQ. TwoVdraws notmodelseeds.",
+      "k": null,
+      "scenario": "fullpractical lowSub/midUrban/lowUrban uniform1/3;formalclean+six unchanged",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "reset afterownFINAL30 strictstudent/EMA",
+        "lr_schedule": "cosine20",
+        "teacher": "strictcorrespondingownFINAL30 EMA;localupdate0..4440/cumulative6660..11100",
+        "temporal_cache": "reset"
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Parent30/6660 + new20/4440=total50/11100 each;new6L NN3409920/As284160;native6271922/source12600/formal1176002 perrow;smokesextra. Not50additional.",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01/AS_CE-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01/logs/AS_CE-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_satellite_budget62/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "launch.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/optimizer_initialization.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/actual_channel.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/epoch_metrics.jsonl",
+        "ROW/source/satellite_subnetwork_steps.jsonl.gz",
+        "ROW/source/completion.json",
+        "ROW/source/source_frozen.json",
+        "ROW/source_qualification/predictions.npz",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixedpredictions andcomplete",
+        "ROW/scoring/scores.json",
+        "ROW/scoring/complete.json",
+        "complete.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/fullsource+formal perrowseed all7/paired errors/strata/curves/cost/figures"
+      ]
+    },
+    {
+      "row_id": "AS_DET-s2026092701",
+      "method": "OriginalSAT18 DET/satdropoutbypass withsameCE;own30+20",
+      "purpose": "Fixedsource-supported budget continuation;CE isolatesdropoutat50",
+      "config_ref": "experiments/cvs_satellite_budget62/design.py#config",
+      "resolved_config_ref": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01/AS_DET-s2026092701/source/resolved_config.json",
+      "data_overrides": {
+        "held_source_RX": null,
+        "L": 6300,
+        "U_hidden": 56700,
+        "V": 27000,
+        "newAg": false,
+        "As": true,
+        "channel_unchanged": true
+      },
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": 392005,
+        "augmentation": 202610185301,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Sameoriginalmodel/split/data/nominalchannelstreams;fullAs cumulativeE31..50 andsteps6661..11100;ordinaryglobalPythonTorch originaldraws preserved;fixedformalIQ. TwoVdraws notmodelseeds.",
+      "k": null,
+      "scenario": "fullpractical lowSub/midUrban/lowUrban uniform1/3;formalclean+six unchanged",
+      "optimizer": {
+        "name": "AdamW",
+        "state": "reset afterownFINAL30 strictstudent/EMA",
+        "lr_schedule": "cosine20",
+        "teacher": "strictcorrespondingownFINAL30 EMA;localupdate0..4440/cumulative6660..11100",
+        "temporal_cache": "reset"
+      },
+      "lr": 0.0002,
+      "epochs": 50,
+      "fl_rounds": null,
+      "budget_ref": "Parent30/6660 + new20/4440=total50/11100 each;new6L NN3409920/As284160;native6271922/source12600/formal1176002 perrow;smokesextra. Not50additional.",
+      "output_root": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01/AS_DET-s2026092701",
+      "log_path": "PROJECT/runs/20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01/logs/AS_DET-s2026092701.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_satellite_budget62/runner.py",
+      "expected_artifacts": [
+        "real_checkpoint_smoke.json",
+        "launch.json",
+        "ROW/source/resolved_config.json",
+        "ROW/source/initialization.json",
+        "ROW/source/EMA_initialization.json",
+        "ROW/source/optimizer_initialization.json",
+        "ROW/source/actual_modules.json",
+        "ROW/source/actual_channel.json",
+        "ROW/source/source_contract.json",
+        "ROW/source/step_metrics.jsonl.gz",
+        "ROW/source/training_sequence.jsonl.gz",
+        "ROW/source/epoch_metrics.jsonl",
+        "ROW/source/satellite_subnetwork_steps.jsonl.gz",
+        "ROW/source/completion.json",
+        "ROW/source/source_frozen.json",
+        "ROW/source_qualification/predictions.npz",
+        "ROW/source_qualification/complete.json",
+        "source_matrix_decision.json",
+        "ROW/prediction/all7fixedpredictions andcomplete",
+        "ROW/scoring/scores.json",
+        "ROW/scoring/complete.json",
+        "complete.json",
+        "analysis_r01/complete.json",
+        "analysis_r01/fullsource+formal perrowseed all7/paired errors/strata/curves/cost/figures"
+      ]
+    }
+  ],
+  "notes": [
+    "E50 motivation uses existing sourcePASS only:DETcleanvsNoAs−.0074074074pp;DETmidlowvsRD+1.0138888889pp/vsCE+.7638888889;fouroriginalsourcecriteriaalltrue. Noformalmetricreadfornewrecipe/promotion.",
+    "Currentotherchat runs Asweight30, notthisE50;rootcheckedlivechat andregistry;no messagesent. No duplicatebudgetrunfound.",
+    "Keep exact existingSAT18 rules;no newloss,teacher,Ag,head,branch,Uroute;ordinary/raw/U behavior unchanged. Newonlybudgetfromeachown30.",
+    "Source finalE50 fixedbeforeformal:DETclean>=reusedNoAs50-.1absolutepp;DETpooledmidlow>=CE50+.5pp;low>=CE50. SourceFAIL stillall7;noE70/seed/sweep/rescue. Own50−30 andbudgetinteractionreportnotselection.",
+    "All8logicalrows twoepochsbudget by4recipes;same50 comparison primary;old30 reference onlybudgetattribution. Modelseed1 no stabledualclaim.",
+    "P61 margin61 remainsunpublished/untested0NN drafts;no training/CP/IQ/pred/scoring. We prioritizesource-supportedE50 instead ofparallelnewconstraint. Noextraapproval/designSHAgate;REJECTED_EXTRA_GATE genericbrainstormingdesignapproval (overriddenbycurrentauthorizedminimalprotocol)."
+  ],
+  "registered_at": "2026-10-18T07:21:48+00:00"
+}

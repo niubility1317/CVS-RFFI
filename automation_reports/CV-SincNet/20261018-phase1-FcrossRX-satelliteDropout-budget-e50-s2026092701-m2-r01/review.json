@@ -1,0 +1,66 @@
+{
+  "status": "PASS",
+  "run_id": "20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01",
+  "reviewer": "/root/source_state56_p0p1",
+  "review_kind": "one independent limited P0/P1 correctness review with targeted verification of direct fixes",
+  "reviewed_at_utc": "2026-10-18T07:29:46.576Z",
+  "scope": [
+    "experiments/cvs_satellite_budget62/",
+    "analysis/cvs_satellite_budget62_analysis_20261018.py truth boundary and entry point",
+    "Existing SAT18/P43 modules inspected only for the consumed interfaces; unchanged algorithms not broadly rereviewed"
+  ],
+  "open_P0": 0,
+  "open_P1": 0,
+  "findings": [],
+  "resolved_P1": [
+    {
+      "issue": "Source decision producer/consumer schema mismatch would mark a completed P62 source readout partial.",
+      "resolution": "Consumer now accepts actual SOURCE_BUDGET_READOUT_COMPLETE/PARTIAL, exact eight complete rows, source-only flags and zero-NN/single-seed fields; producer writes these fields explicitly. Scientific source FAIL remains a complete readout, not a technical failure.",
+      "verification": "Actual-shape source schema fixture PASS; zero-NN producer-to-consumer partial fixture PASS."
+    },
+    {
+      "issue": "GPU cap3 disagreed with this run preregistered cap2.",
+      "resolution": "Worker rejects more than two total GPU PIDs; dispatcher capacity_available counts actual PID union reservations below2; queue records max2.",
+      "verification": "Targeted cap2 checks PASS for one/two existing PIDs, own reserved PID union and insufficient free memory."
+    },
+    {
+      "issue": "Source qualification failure or early source-summary exception could leave no source decision and prevent later analysis/formal closure.",
+      "resolution": "Unified decide_source waits while peers unfinished, catches early and terminal source-summary errors into immutable-run source PARTIAL, preserves an existing decision, and lets healthy rows finish all7; terminal fallback precedes collect/automatic analysis exec.",
+      "verification": "Targeted early malformed-source, missing-source, unfinished-peer and existing-decision fixtures PASS; analysis accepts explicit PARTIAL and continues legal formal readout."
+    }
+  ],
+  "checked": [
+    "Each AS_CE/AS_DET own SAT18 FINAL30 student/EMA and own scratch20 ancestry, exact source physical roles and jointly trained default head.",
+    "Parent local10/2220 distinct from new local20/4440; global E31-50/6661-11100, original scratch20 augmentation args frozen at E13, SupCon offset30, reset AdamW/cos20/cache and strict own EMA/counter offsets.",
+    "Pinned original SAT18 hook retained; CE removes satellite KL, DET also bypasses actual As64 dropout outputs while retaining native mask draws; ordinary/raw/U and six L forwards/loss scale remain unchanged.",
+    "Immutable output ownership, no old reference retraining/reprediction/rescoring, no healthy-process termination.",
+    "Every new row automatically freezes all7 predictions before separate independent truth-last scorer; source scientific failure does not skip formal tests.",
+    "Eight logical rows and every all7 frozen prediction/logit/score closure are validated before the analysis sole truth read; analysis entry is dispatched only after completed row closure."
+  ],
+  "verification": {
+    "protocol_negative_checks": 33,
+    "analysis_toy_tests": 21,
+    "analysis_toy_seconds": 1.429,
+    "targeted_fix_checks": [
+      "Actual source status/schema",
+      "cap2 and reservation union",
+      "Source PARTIAL producer-to-consumer",
+      "Early source exception preserves closure",
+      "Unfinished peers not prematurely failed",
+      "Existing source decision not recomputed"
+    ],
+    "status": "PASS",
+    "reviewer_added_NN": 0,
+    "real_IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "target_data_reads": 0,
+    "optimizer_updates": 0,
+    "remote_access": false,
+    "training": false,
+    "real_F_synthetic_repeated": false,
+    "note": "No additional model forward or real checkpoint smoke was performed by this reviewer. Initial targeted-process output capture exceeded its small stderr buffer due to the known Torch/NumPy import warning; rerun with adequate output capture returned PASS and still0NN."
+  },
+  "source_edits": 0,
+  "launch_performed": false,
+  "unchanged_module_broad_rereview": false
+}

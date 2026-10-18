@@ -1,0 +1,279 @@
+{
+  "status": "LOCAL_VERIFIED",
+  "run_id": "20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01",
+  "source_supported": true,
+  "source_support": {
+    "conditions": {
+      "stage_clean": true,
+      "retained_As_gain": true,
+      "useful_vs_original": true,
+      "dropout_attribution": true
+    },
+    "passed": true,
+    "paired": {
+      "DET_minus_NOAS_clean_pp": -0.007407407407400424,
+      "DET_minus_RD_clean_pp": 0.09629629629630543,
+      "DET_minus_CE_clean_pp": 0.022222222222223476,
+      "DET_minus_RD_midlow_pp": 1.0138888888888573,
+      "DET_minus_CE_midlow_pp": 0.7638888888888715
+    }
+  },
+  "formal_used_for_selection": false,
+  "new_rows": 2,
+  "new_model_epochs": 40,
+  "new_updates": 8880,
+  "parent_epochs_per_row": 30,
+  "total_epochs_per_row": 50,
+  "local_NN": 1536,
+  "remote_NN": 0,
+  "remote_IQ": 0,
+  "remote_CP": 0,
+  "preflight": {
+    "status": "PREFLIGHT_VERIFIED",
+    "ordinary_account": true,
+    "new_roots_absent": true,
+    "pinned_runtimes": true,
+    "parents": [
+      {
+        "row": "AS_CE-s2026092701",
+        "own20plus10": true,
+        "metadata_roles_exact": true,
+        "final30_student_EMA_present": true,
+        "CP_not_loaded": true,
+        "all7_old_predictions_complete": true
+      },
+      {
+        "row": "AS_DET-s2026092701",
+        "own20plus10": true,
+        "metadata_roles_exact": true,
+        "final30_student_EMA_present": true,
+        "CP_not_loaded": true,
+        "all7_old_predictions_complete": true
+      }
+    ],
+    "reused_references": [
+      {
+        "row": "B00",
+        "run": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+        "all7_complete": true,
+        "source_roles_exact": true,
+        "re_prediction": false,
+        "re_scoring": false
+      },
+      {
+        "row": "B01",
+        "run": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+        "all7_complete": true,
+        "source_roles_exact": true,
+        "re_prediction": false,
+        "re_scoring": false
+      },
+      {
+        "row": "B00",
+        "run": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
+        "all7_complete": true,
+        "source_roles_exact": true,
+        "re_prediction": false,
+        "re_scoring": false
+      },
+      {
+        "row": "B01",
+        "run": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
+        "all7_complete": true,
+        "source_roles_exact": true,
+        "re_prediction": false,
+        "re_scoring": false
+      }
+    ],
+    "source_roles_reused_exact": true,
+    "existing_VALIDATED_ONCE_reused": true,
+    "fixed_formal_handles": true,
+    "source_panel": true,
+    "Python": "3.10.19",
+    "Torch": "2.1.0+cu121",
+    "NumPy": "2.2.5",
+    "disk_free_GB": 3703.736038208008,
+    "GPUs": [
+      {
+        "index": 0,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      },
+      {
+        "index": 1,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      },
+      {
+        "index": 2,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      },
+      {
+        "index": 3,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      },
+      {
+        "index": 4,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      },
+      {
+        "index": 5,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      },
+      {
+        "index": 6,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      },
+      {
+        "index": 7,
+        "free_mb": 24124,
+        "GPU_PIDs": [],
+        "eligible": true
+      }
+    ],
+    "IQ_reads": 0,
+    "CP_reads": 0,
+    "NN": 0
+  },
+  "review": {
+    "status": "PASS",
+    "run_id": "20261018-phase1-FcrossRX-satelliteDropout-budget-e50-s2026092701-m2-r01",
+    "reviewer": "/root/source_state56_p0p1",
+    "review_kind": "one independent limited P0/P1 correctness review with targeted verification of direct fixes",
+    "reviewed_at_utc": "2026-10-18T07:29:46.576Z",
+    "scope": [
+      "experiments/cvs_satellite_budget62/",
+      "analysis/cvs_satellite_budget62_analysis_20261018.py truth boundary and entry point",
+      "Existing SAT18/P43 modules inspected only for the consumed interfaces; unchanged algorithms not broadly rereviewed"
+    ],
+    "open_P0": 0,
+    "open_P1": 0,
+    "findings": [],
+    "resolved_P1": [
+      {
+        "issue": "Source decision producer/consumer schema mismatch would mark a completed P62 source readout partial.",
+        "resolution": "Consumer now accepts actual SOURCE_BUDGET_READOUT_COMPLETE/PARTIAL, exact eight complete rows, source-only flags and zero-NN/single-seed fields; producer writes these fields explicitly. Scientific source FAIL remains a complete readout, not a technical failure.",
+        "verification": "Actual-shape source schema fixture PASS; zero-NN producer-to-consumer partial fixture PASS."
+      },
+      {
+        "issue": "GPU cap3 disagreed with this run preregistered cap2.",
+        "resolution": "Worker rejects more than two total GPU PIDs; dispatcher capacity_available counts actual PID union reservations below2; queue records max2.",
+        "verification": "Targeted cap2 checks PASS for one/two existing PIDs, own reserved PID union and insufficient free memory."
+      },
+      {
+        "issue": "Source qualification failure or early source-summary exception could leave no source decision and prevent later analysis/formal closure.",
+        "resolution": "Unified decide_source waits while peers unfinished, catches early and terminal source-summary errors into immutable-run source PARTIAL, preserves an existing decision, and lets healthy rows finish all7; terminal fallback precedes collect/automatic analysis exec.",
+        "verification": "Targeted early malformed-source, missing-source, unfinished-peer and existing-decision fixtures PASS; analysis accepts explicit PARTIAL and continues legal formal readout."
+      }
+    ],
+    "checked": [
+      "Each AS_CE/AS_DET own SAT18 FINAL30 student/EMA and own scratch20 ancestry, exact source physical roles and jointly trained default head.",
+      "Parent local10/2220 distinct from new local20/4440; global E31-50/6661-11100, original scratch20 augmentation args frozen at E13, SupCon offset30, reset AdamW/cos20/cache and strict own EMA/counter offsets.",
+      "Pinned original SAT18 hook retained; CE removes satellite KL, DET also bypasses actual As64 dropout outputs while retaining native mask draws; ordinary/raw/U and six L forwards/loss scale remain unchanged.",
+      "Immutable output ownership, no old reference retraining/reprediction/rescoring, no healthy-process termination.",
+      "Every new row automatically freezes all7 predictions before separate independent truth-last scorer; source scientific failure does not skip formal tests.",
+      "Eight logical rows and every all7 frozen prediction/logit/score closure are validated before the analysis sole truth read; analysis entry is dispatched only after completed row closure."
+    ],
+    "verification": {
+      "protocol_negative_checks": 33,
+      "analysis_toy_tests": 21,
+      "analysis_toy_seconds": 1.429,
+      "targeted_fix_checks": [
+        "Actual source status/schema",
+        "cap2 and reservation union",
+        "Source PARTIAL producer-to-consumer",
+        "Early source exception preserves closure",
+        "Unfinished peers not prematurely failed",
+        "Existing source decision not recomputed"
+      ],
+      "status": "PASS",
+      "reviewer_added_NN": 0,
+      "real_IQ_reads": 0,
+      "checkpoint_reads": 0,
+      "target_data_reads": 0,
+      "optimizer_updates": 0,
+      "remote_access": false,
+      "training": false,
+      "real_F_synthetic_repeated": false,
+      "note": "No additional model forward or real checkpoint smoke was performed by this reviewer. Initial targeted-process output capture exceeded its small stderr buffer due to the known Torch/NumPy import warning; rerun with adequate output capture returned PASS and still0NN."
+    },
+    "source_edits": 0,
+    "launch_performed": false,
+    "unchanged_module_broad_rereview": false
+  },
+  "analysis": {
+    "pure_toy_checks": 21,
+    "seconds": 1.508,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "source_schema_targeted_fix": true,
+    "full_real_run_analysis": "NOT_YET_EXECUTED"
+  },
+  "E70": false,
+  "seed_extension": false,
+  "P61": {
+    "status": "UNPUBLISHED_UNTESTED_DRAFTS_NO_RUN",
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0
+  },
+  "implementation": {
+    "protocol_negatives": 33,
+    "capacity_toy_checks": 4,
+    "flow_checks": 4,
+    "local_F_synthetic_NN": 1536,
+    "local_F_modes": {
+      "AS_CE": {
+        "NN": 768,
+        "As": 64,
+        "dropout_calls": 26,
+        "bypassed_elements": 0,
+        "satellite_pair_logit_maxdiff": 7.8440475
+      },
+      "AS_DET": {
+        "NN": 768,
+        "As": 64,
+        "dropout_calls": 26,
+        "bypassed_elements": 3391488,
+        "satellite_pair_logit_maxdiff": 0
+      }
+    },
+    "same_global_RNG": true,
+    "same_ordinary_logits": true,
+    "joint_default_head_and_Sinc_finite_nonzero_gradient": true,
+    "strict_ownEMA_and_E13_scratch20_args_and_reset_AdamW": true,
+    "real_IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "compile_py_files": 18,
+    "local_synthetic_wall_seconds": null,
+    "wall_note": "Asynchronous local synthetic not separately timed;not rerun to invent wall.",
+    "zero_NN_failures": [
+      "Two local namespace routing attempts;resolved using verified OW-first dependencies",
+      "One truthgate toy BASE/config mismatch;correct rejection,fixture corrected"
+    ],
+    "remote_training_failed": false
+  },
+  "remote_model_training": "NOT_STARTED",
+  "remote_real_CP_smoke": {
+    "status": "PENDING_LAUNCH_FIRST_STEP",
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0
+  }
+}
