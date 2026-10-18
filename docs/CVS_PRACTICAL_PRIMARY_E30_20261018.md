@@ -213,3 +213,10 @@ root先取回source并保存关闭决定：fullVclean BAL−NOAS30−.118519pp�
 本轮核对实际发布源码、登记和源统计：完整 practical 内 0.5/1.5N0 随机化已有匹配 E30 训练并按原判据关闭；NoAs20→As10 也在全 5 RX/L6300 的 carrierGate AS_BATCH 与 shadowLHS AS_NATIVE 中完成，源 V1800 clean 对匹配 NoAs 为−.500000/−.444444pp。其4L/As128与当前6L/As64不同，不据此泛化为所有延迟As无效，也不把接口/剂量差异包装成新关键假设重开。N0源输入失败与后续独立训练关闭的依据分开记录。
 
 原完整As及固定加权As的E50三seed已完成；相对ownAs30的low/mid urban分别＋1.156746/＋.954167pp与＋1.199603/＋.995437pp，但相对匹配NoAs50的clean为−.150198pp与−.672817pp，均未满足−.1pp阶段要求。更多预算的urban收益可重复，clean与星地双提升仍无重复证据。本轮0新增更新/NN/CP/IQ/远端执行/正式预测评分，无新候选登记；E50不超过总50轮，失败配方不加预算救跑。完整[去重与预算边界](../analysis/cvs_practical_route_dedup_20261018.md)。
+
+
+## 下一项已登记：末段关闭 U
+
+20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01已登记PLANNED，实现中未发布。仅新增NoAs/As各own原20+10，总E30；末段真实U/EMA/教师/学生U前向关闭，保留父20的原U历史、原6L1.25/ORD128/Asraw64/普通aug父epoch13与全部源RX/默认头。原NoAs30/As30冻结读出复用，共4逻辑条件。nativephase字段0/10保留，但实际U消费0；global RNG和前向成本变化如实报告，不说纯伪标签loss归因或全程NoSSL。
+
+唯一假设：末段真实标签监督能否保留clean并改善practical。源资格固定新As fullVclean−新NoAs≥−.1pp且two-drawmidlow新As−原As≥+.5pp；失败关闭固定方案不扩E50/扫U/seed，all7正式仍自动收尾。当前F只有GN/LN，无BNrunningstats；连续scratch6L E30也已有源失败关闭，不重开两路线。详见[预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01/report.md)。

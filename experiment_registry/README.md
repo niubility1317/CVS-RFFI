@@ -593,3 +593,5 @@
 - [固定128位置对比视图 r01](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-mixedContrast-e30-s2026092701-m2-r01/report.md)
 
 - [As64批内场景配额 r01](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-sceneBalance-e30-s2026092701-m1-r01/report.md)
+
+- [末段关闭U匹配实验 r01](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01/report.md)

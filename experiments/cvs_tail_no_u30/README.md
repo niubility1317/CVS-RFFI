@@ -1,0 +1,22 @@
+# Original own20 plus a U-free ten-epoch tail
+
+Two fixed B00/B01 seed2026092701 rows each load the corresponding originalP43 scratchFINAL20 student. The original ownEMA is still strictly validated as part of lawful parent provenance;the child never instantiates or restores that EMA. The first20 epochs retain the original13L+7U history. This is not whole-trajectory supervised-only training.
+
+Only the final10 epochs disable U traversal,all U student/teacher forward passes and losses,teacher construction and EMA updates. The native epoch phase fields deliberately remain label0/pseudo10;use_unlabeled=False and use_ema_teacher=False control actual execution. The child checkpoint explicitly contains ema_model=None. Native a1_ema_successful_updates remains2220 because that native field counts successful optimizer steps;actual child EMA updates are0. Metadata distinguishes both meanings.
+
+The original P43 model.hook is delegated unchanged: .5RDordinary128+.5RDmixed128+.25RDraw128+.1ORD128 CROSS_RX,6L/768NN per step,total Lscale1.25. NoAs mixed selected64 is raw64;As mixed selected64 is complete practical(raw64),using the unchanged per-pid IID scene,physical seeds,hardware sessions,normalization and receiver processing. Both RD passes share the already generated IQ. No scene quota,MIX128 contrast,weighted .125/.375 loss,new head or deployment branch is inherited.
+
+Ordinary augmentation uses strict own20 args and its base configuration,frozen at epoch13. SupCon retains cumulative+20 and channel retains+20/+4440. Reset AdamW/cosine10,defaultjoint6x160 cosine head,F900722 parameters/206 state keys,allsource L6300/U56700 hiddenTX/V27000,all5RX/all3days/IQ256/split392005 remain. U role handles and len222 remain for the existing step budget;the child U loader raises if iterated. Removing U changes RNG and forward cost,so results do not isolate only the pseudo-loss coefficient or guarantee identical L IQ/dropout sequences.
+
+Each row adds2220 optimizer updates/1704960 L neural packets. B01 adds142080 As packets;B00 adds0. Parent20 costs are reused and reported separately. No child U packets,teacher forwards or EMA updates occur. Teacher/EMA fields are0;student train/eval neural costs are measured independently. First-step launcher smoke uses each actual own20 parent for2 no-query NN plus one actual6L synthetic128 probe768NN:total1540NN/0 realIQ/0 updates. It checks the default head,Sinc and backbone gradients,original ORD128 routing,As64/0,loss scale and real native args. PASS proceeds directly to training.
+
+Each fixedFINAL30 automatically completes source readout,clean+all6 fixed practical predictions,then independentexec truth-last scoring. Scientific source failure does not skip any formal view or change the other row. The only source eligibility rules are newAs-newNoAs fullVclean>=-.1 absolutepp and newAs-originalAs two-drawmidlowmean>=+.5pp. Failure closes this fixed recipe without E50/U/phase/seed rescue. Formal stage clean compares matched newAs-newNoAs at>=-.1pp. OriginalNoAs30/As30 readouts are reused,not retrained or re-predicted.
+
+Logical rows:NOAS30,AS30,TAIL_NO_U_NOAS30,TAIL_NO_U_AS30. Physical output per new row:
+- source/reference_steps.jsonl.gz:unchanged original RD/CE/KL,SupCon/details,scene_counts/state_counts and original ordinary/raw MSE fields;total_L is full6L.
+- source/shape_steps.jsonl.gz:unchanged .25 raw-pair RD/CE/KL and same-IQ/cumulative-step records.
+- source/no_u_steps.jsonl.gz:seven NO_U_FIELDS plus native and cumulative epoch/step. Native hook emits concat/7+no_u/7=14 metrics. Raw RD remains in shape_steps;no shape/RD metric is invented.
+- source/training_sequence.jsonl.gz contains only actual L traversals;the U role mapping is retained without U iteration. result.json records actual student counters,teacher/EMA/U zeros,parent history and native-counter semantics. completion.json and initialization.json explicitly describe the EMA-free child. EMA_initialization.json records validated-but-not-restored parent EMA.
+- source_qualification/{predictions.npz,complete.json};prediction/{sevenview_scores.npz,predictions.npz,complete.json};scoring/{scores.json,complete.json}.
+
+stdout=run/logs/{B00,B01}-s2026092701.log. Runtime requires pinned originalP43 release19aedc3604fed9c193237dd92366164178af0983. No unknown-parent fallback or new target-selected initialization. Local focused checks use no Torch/CP/IQ/NN;the actual1540NN smoke is pending the launcher's first step.

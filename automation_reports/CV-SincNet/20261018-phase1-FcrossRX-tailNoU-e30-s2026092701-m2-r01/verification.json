@@ -1,0 +1,113 @@
+{
+  "status": "LOCAL_VERIFIED_READY_FOR_LAUNCHER_SMOKE",
+  "run_id": "20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01",
+  "local_checks": {
+    "status": "PASS",
+    "package": "experiments/cvs_tail_no_u30",
+    "files": [
+      "channel.py",
+      "checks.py",
+      "check_emitted.py",
+      "design.py",
+      "dispatch.py",
+      "evaluate.py",
+      "model.py",
+      "observer.py",
+      "policy.py",
+      "preflight.py",
+      "protocol.py",
+      "publish.py",
+      "qualification.py",
+      "quality.py",
+      "README.md",
+      "reference_config.json",
+      "report.py",
+      "runner.py",
+      "runtime.example.json",
+      "schema.py",
+      "source.py",
+      "__init__.py"
+    ],
+    "package_file_count": 22,
+    "focused": {
+      "status": "PASS",
+      "protocol_negatives": 109,
+      "actual_make_args_kwargs_two_rows": true,
+      "actual_native_U_phase_and_epoch_pairs": true,
+      "U_loader_only_len_used_222": true,
+      "EMA_creation_guard_false": true,
+      "actual_observer_parent_aug_freeze13_and_offsets": true,
+      "actual_observer_teacher_build_and_update_forbidden": true,
+      "parent_EMA_required_child_None_required": true,
+      "original_P43_ORD128_6L_delegated": true,
+      "total_L_scale": 1.25,
+      "emitted_native_info_keys": 14,
+      "source_summary_native_JSON": true,
+      "real_Torch_or_checkpoint_smoke": "launcher first step pending1540NN",
+      "NN": 0,
+      "CP": 0,
+      "IQ": 0,
+      "updates": 0,
+      "target": false
+    },
+    "AST": {
+      "status": "PASS",
+      "package_Python_files": 19,
+      "emitted_remote_AST": [
+        "PASS",
+        "PASS"
+      ],
+      "network_calls": 0,
+      "CP": 0,
+      "IQ": 0,
+      "target": false
+    },
+    "actual_phase_fields": {
+      "label_epochs": 0,
+      "pseudo_epochs": 10,
+      "use_unlabeled": false,
+      "use_ema_teacher": false
+    },
+    "real_checkpoint_smoke": "PENDING launcher first step1540NN,not run locally",
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "remote": false
+  },
+  "review": {
+    "status": "PASS",
+    "run_id": "20261018-phase1-FcrossRX-tailNoU-e30-s2026092701-m2-r01",
+    "reviewer": "independent tailnou_p0p1",
+    "scope": "one combined direct-P0/P1 review of frozen new training package and four analysis adapters",
+    "P0": 0,
+    "P1": 0,
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "remote": false,
+    "notes": [
+      "Strictcorresponding own20 student/EMA provenance;childNoEMA/Uguards",
+      "Original6L/ORD128/defaulthead andfixedall7 truthlast",
+      "4logic504CM84partitions/source2rules/cost/observable terminal checks",
+      "Real1540NN smoke pending launcherfirststep;PASS directlycontinues training"
+    ]
+  },
+  "real_checkpoint_smoke": "PENDING_LAUNCHER_FIRST_STEP_1540NN",
+  "remote_release": "NOT_ATTEMPTED",
+  "training_started": false,
+  "analysis_local_checks": {
+    "status": "PASS",
+    "AST_files": 4,
+    "tests_run": 10,
+    "failures": 0,
+    "errors": 0,
+    "elapsed_seconds": 6.720933100004913,
+    "NN": 0,
+    "IQ_reads": 0,
+    "checkpoint_reads": 0,
+    "updates": 0,
+    "remote_calls": 0,
+    "real_scores_read": false,
+    "producer_schema": "original ORD128/full6L concat7 + no_u7;none child EMA;2220steps pernewrow,L-only source sequence"
+  }
+}
