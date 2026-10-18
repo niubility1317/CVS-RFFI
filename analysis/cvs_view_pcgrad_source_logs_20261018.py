@@ -21,7 +21,7 @@ def summary(values):
 def geometry(y,ids,indices):
  tx=collections.Counter(y[i] for i in indices);rx=collections.Counter(ids[i][1] for i in indices);cell=collections.Counter((y[i],ids[i][1]) for i in indices);positives=[tx[y[i]]-cell[(y[i],ids[i][1])] for i in indices]
  return dict(cell_squared_imbalance=sum((cell[(t,r)]-128/30)**2 for t in range(6) for r in (1,3,4,6,8))/30,TX_squared_imbalance=sum((tx[t]-128/6)**2 for t in range(6))/6,RX_squared_imbalance=sum((rx[r]-128/5)**2 for r in (1,3,4,6,8))/5,empty_TX_RX_cells=sum(cell[(t,r)]==0 for t in range(6) for r in (1,3,4,6,8)),valid_anchors=sum(v>0 for v in positives),positive_min=min(positives),positive_max=max(positives),positive_sum=sum(positives))
-def run(project,complete=False,expected_As_packets=128):
+def run(project,complete=False,expected_As_packets=128,expected_L_forwards=4):
  B=Path(project)/'runs'/RUN;result={};inputs={};sequences={};args_all={};launch=read(B/'launch.json');root_complete=all((B/(m+'-s2026092701')/'source/training_result.json').exists() for m in MODES);began=time.perf_counter()
  if complete and not root_complete:raise ValueError('Final analysis requires all registered rows complete')
  for mode in MODES:
@@ -31,7 +31,7 @@ def run(project,complete=False,expected_As_packets=128):
   bad_steps=[];allkeys=set(k for r in steps for k in r['metrics']);numeric={k:summary([r['metrics'].get(k) for r in steps]) for k in sorted(allkeys)}
   for r in steps:
    m=r['metrics']
-   if m.get('concat/As_packets')!=expected_As_packets or m.get('concat/L_forwards')!=4 or m.get('train/pseudo_truth_available',0)!=0 or m.get('train/skipped_nonfinite_loss',0) or m.get('train/skipped_nonfinite_grad',0):bad_steps.append(r['step'])
+   if m.get('concat/As_packets')!=expected_As_packets or m.get('concat/L_forwards')!=expected_L_forwards or m.get('train/pseudo_truth_available',0)!=0 or m.get('train/skipped_nonfinite_loss',0) or m.get('train/skipped_nonfinite_grad',0):bad_steps.append(r['step'])
   original_inputs=[];expected_L=[];original_stats=[];output_stats=[];max_geom_error=0.
   for index,p in enumerate(pools):
    if p['pool']!=index+1 or p['mode']!='ORIGINAL' or p['permutation']!=list(range(768)) or len(p['original_L_ids'])!=768 or len(p['visible_y'])!=768 or sorted(p['permutation'])!=list(range(768)):raise ValueError('Pool/exposure/permutation mismatch')
