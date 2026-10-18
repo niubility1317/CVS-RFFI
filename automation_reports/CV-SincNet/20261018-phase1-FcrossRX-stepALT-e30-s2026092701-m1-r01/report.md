@@ -25,3 +25,5 @@
 本地验证已完成：33 个协议负例、真实 mixed_view 的两步 mock、18 个 Python 文件与两段远端脚本 AST 均 PASS（0 NN／CP／IQ／更新）。唯一独立 P0／P1 审查 PASS（P0=0、P1=0），覆盖实际 P43／P41 调用、来源、增强份额、U、资源和自动七视图收尾；真实 checkpoint 烟测由启动器首步执行，尚未将静态通过写成训练完成。
 
 实际训练代码 `cc9a2dac5e2667dab9d730dd8b618e8e635fc5ca` 已提交、push 并独立核对远端 OID 一致。单次 N607 普通账户预检、发布归档 SHA 比较和远端编译通过。dispatcher 1233511／worker 1233539 的 PID、CWD、argv、CUDA_VISIBLE_DEVICES 和 nvidia-smi 占用均核实；step 日志由129190增至226761字节，未见本run failure。真实原As20无query烟测2NN、双步1536NN通过后已经直接训练；ORD128实际loss／gradient与原公式精确一致。初始化source_roles=EXACT_MATCH、target_contact=false、严格ownEMA，优化器为空state／resetcosine10。实际信道配置与原As30完全一致。此状态不代表训练／评分完成，没有新性能结果。
+
+同一行只读后处理已发布并独立核实 PID1235749、分析 CWD／argv／空 CUDA；代码 `b93b30b7f99f59046a368c3083b33ba4dcb61cc3`，7 项 focused synthetic checks与远端编译通过，WAIT_SOURCE／truth_opened=false。它不读取IQ／checkpoint、不执行模型或更新，等待原dispatcher／worker真实句柄；源结果完成后先保存源结论，全部三逻辑条件×七视图已固定预测并独立评分后才核对truth。新增训练已完成第1／10轮（累计21／30），首轮108.943s，日志841755字节，无本run failure；尚无完整源／正式结果。

@@ -62,5 +62,29 @@
     "weight_decay": 0.0001,
     "schedule": "cosine10"
   },
-  "performance_results_available": false
+  "performance_results_available": false,
+  "analysis": {
+    "status": "VERIFIED_WAIT_SOURCE",
+    "pid": 1235749,
+    "code_commit": "b93b30b7f99f59046a368c3083b33ba4dcb61cc3",
+    "remote_compile": "PASS",
+    "focused_synthetic_checks": 7,
+    "CWD_argv_CUDA": "VERIFIED",
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "updates": 0,
+    "truth_opened": false
+  },
+  "progress": {
+    "tail_epochs_completed": 1,
+    "tail_epochs_total": 10,
+    "cumulative_epochs_completed": 21,
+    "first_tail_epoch_time_s": 108.94294166564941,
+    "step_log_bytes": 841755,
+    "source_complete": false,
+    "prediction_complete": false,
+    "scoring_complete": false,
+    "failure": null
+  }
 }
