@@ -1,0 +1,69 @@
+{
+  "method": "SDG-author-TWC2025",
+  "repository": "https://github.com/BeechburgPieStar/SDG-for-Channel-Robust-SEI",
+  "upstream_commit": "0090f4ba1d5cf76a4200a5be4830a9b08eb39699",
+  "dataset": "author-released WiSig",
+  "rx": "1-1",
+  "source_days": [
+    1
+  ],
+  "target_days": [
+    2,
+    3,
+    4
+  ],
+  "packet_rows": [
+    0,
+    1000
+  ],
+  "tx_labels": [
+    "14-10",
+    "14-7",
+    "20-15",
+    "20-19",
+    "6-15",
+    "8-20"
+  ],
+  "representation": "author processed IQ; equalization not documented; exact public pickle bytes retained",
+  "model_seed": 2023,
+  "split_seed": 2023,
+  "evaluation_order_seed": 20261019,
+  "model": "MACNN S; channels8; 129894 parameters; original six-class head",
+  "epochs": 200,
+  "batch_size": 32,
+  "validation_batch_size": 16,
+  "test_batch_size": 16,
+  "optimizer": "Adam",
+  "lr": 0.001,
+  "weight_decay": 0,
+  "main_aug_depth": [
+    2
+  ],
+  "aux_aug_depth": [
+    1
+  ],
+  "lambda_con": [
+    1.0,
+    100.0
+  ],
+  "schedule": "constant lr; no early stop",
+  "selection": "minimum source validation NLL",
+  "author_source_holdout_accuracy_percent": 99.5,
+  "author_target_day_accuracy_percent": {
+    "2": 99.21666666666667,
+    "3": 83.26666666666667,
+    "4": 97.25
+  },
+  "author_target_mean_accuracy_percent": 93.24444444444445,
+  "engineering_mean_lower_bound_percent": 92.24444444444445,
+  "paper_effect_verified": false,
+  "scope": "single seed fixed public author recipe, clean cross-day DG; original paper table not verified",
+  "numpy": "1.23.5 task-local to preserve original ragged-list permutation; no author augmentation patch",
+  "torchsummary_forward": "retained exactly before training, including RNG and BN effects",
+  "public_data_ids": {
+    "1": "1rLoJY6lDq_fX8T265XNtPVUewLHogZpA",
+    "2": "1K_LU2z_DLO-SOD0BsdGLaRSdzDmbbSwF",
+    "3": "1BBZREmvO8WJwW5RtOFxY3phAgpY73h1g",
+    "4": "1nQqrh3-TqULklWg9TrUuclUnwUki1NC3"
+  }
+}
