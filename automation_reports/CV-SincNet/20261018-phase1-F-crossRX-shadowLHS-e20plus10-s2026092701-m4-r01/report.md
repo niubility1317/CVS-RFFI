@@ -72,3 +72,5 @@ NOAS/AS_NATIVE/AS_IID/AS_LHS 分别在 GPU0/1/2/3，owned PID/CWD/argv/CUDA/CPU2
 ## 首行完整源训练已完成
 
 NOAS行已完成E30/累计6660更新、新增2220更新，全部七视图预测后进入原CPU独立score进程（同PID、预登记--score参数、CUDA隐藏、CWD匹配）。主分析未读取正式分数；三条As仍运行，不停止或改配方。独立完整读取NOAS全部2220step/10epoch/4440LU记录/reference/Sincunit及stdout；CSV/JSONL/observer各10轮、每轮680字段全部一致。实际L曝光284160、U567000，唯一L6300/U56700，5RX/3day全部保留，Utruth始终0；原监督尺度最大复算差1.3560056677519583e−7。没有As视图或额外头训练。该结果仅证明对照训练与成本完整，不证明新As或联合收益。[单行完整源分析](NOAS_source_analysis.json)。
+
+后续独立终态核实：NOAS原PID已不存在，row completion明确TRAINED_DEFAULT_PREDICTED_SCORED，168000×7视图、truth_last=true、head_fit_updates=0；正式数值仍不读。其余3个原PID/CWD/argv/GPU正常，已完成E27，最后可解析step1686/1751/1730，均无failure。整个矩阵仍RUNNING。[单行评分完成核实](NOAS_completion_verification.json)。

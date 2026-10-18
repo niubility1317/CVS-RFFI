@@ -1,0 +1,59 @@
+{
+  "status": "VERIFIED_NATURAL_SINGLE_ROW_COMPLETION",
+  "run_id": "20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01",
+  "row_id": "NOAS-s2026092701",
+  "owned_PID_missing": true,
+  "fixed_cumulative_epoch": 30,
+  "optimizer_new_steps": 2220,
+  "count_per_view": 168000,
+  "views": [
+    "clean",
+    "practical_high",
+    "practical_mid",
+    "practical_low_suburban",
+    "practical_high_urban",
+    "practical_mid_urban",
+    "practical_low_urban"
+  ],
+  "truth_last": true,
+  "head_fit_updates": 0,
+  "full_source_logs": "VERIFIED",
+  "formal_numeric_metrics_read": false,
+  "source_matrix_pending": true,
+  "other_rows": [
+    {
+      "row_id": "AS_NATIVE-s2026092701",
+      "PID": 1024016,
+      "live": true,
+      "CWD_matches": true,
+      "argv_matches": true,
+      "CUDA": "1",
+      "completed_cumulative_epoch": 27,
+      "partial_step": 1686,
+      "failure_log": false
+    },
+    {
+      "row_id": "AS_IID-s2026092701",
+      "PID": 1024095,
+      "live": true,
+      "CWD_matches": true,
+      "argv_matches": true,
+      "CUDA": "2",
+      "completed_cumulative_epoch": 27,
+      "partial_step": 1751,
+      "failure_log": false
+    },
+    {
+      "row_id": "AS_LHS-s2026092701",
+      "PID": 1024174,
+      "live": true,
+      "CWD_matches": true,
+      "argv_matches": true,
+      "CUDA": "3",
+      "completed_cumulative_epoch": 27,
+      "partial_step": 1730,
+      "failure_log": false
+    }
+  ],
+  "joint_goal_complete": false
+}
