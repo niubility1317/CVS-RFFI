@@ -1,0 +1,29 @@
+{
+  "status": "LOCAL_IMPLEMENTED_PENDING_REMOTE",
+  "training_run": "20261018-phase1-FcrossRX-As-budget-e50-s0203-m4-r01",
+  "analysis_release": "cvs_F_practical_budget50_replication_analysis_20261018_r01",
+  "output_name": "analysis_auto_r01",
+  "local_checks": {
+    "status": "PASS",
+    "directed_cases": 7,
+    "wall_seconds": 1.868,
+    "compile_files": 4,
+    "diff_check": "PASS",
+    "scope": "12 logical rows/all3seeds/mean sampleSD/lastrow truthclosed/integer0.1pp/oldcounter schema/actualpublisher-driven main path;synthetic only"
+  },
+  "new_training_rows": 4,
+  "reused_logical_rows": 8,
+  "total_logical_rows": 12,
+  "total_model_seeds": 3,
+  "source_and_full_new_logs_before_formal": true,
+  "all12_rows7views_predictions_and_independent_scores_required_before_truth": true,
+  "NN": 0,
+  "IQ": 0,
+  "CP": 0,
+  "updates": 0,
+  "training_processes_untouched": true,
+  "remote_transfer": "NOT_EXECUTED",
+  "remote_launch": "NOT_STARTED",
+  "target_feedback": false,
+  "goal_complete": false
+}

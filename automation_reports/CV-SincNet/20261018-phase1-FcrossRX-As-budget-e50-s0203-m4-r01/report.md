@@ -19,3 +19,11 @@
 父来源静态核实：旧49 release `cvs_FcrossRX_As_replication_E30_s0203_20261018_r02`，提交 `63b7c8cd7bb4139a2d800e6f4c4a7f1f2163fd47`；其固定P43依赖提交 `19aedc3604fed9c193237dd92366164178af0983`。每行直接CP本地epoch10／EMA2220、自己的scratch20祖先epoch20／EMA4440，不能将累计E30计数误当CP本地计数。原stage20从零及source固定10轮均已完整source审计；本次真实加载前再执行每行自身严格配置、role_ids、student/ownEMA、默认头与有限值检查，未改数据不重验。
 
 本地实现已冻结：96项协议负例、4项native seed正例、13个Python文件AST/compile及2段emitted远端脚本AST均PASS，0NN/0CP/0IQ/0target；唯一一次新四行绑定P0/P1独立审查PASS，无P0/P1。详见review.json/verification.json；真实远端CP/F检查尚未执行。
+
+## 完整三种子零模型分析
+
+独立分析release `cvs_F_practical_budget50_replication_analysis_20261018_r01`，输出本run的 `analysis_auto_r01`；CPU2/CUDA隐藏，0NN/0IQ/0CP/0更新，不更改训练或模型。先等待真实dispatcher/row句柄与源产物，逐步完整读取4×4440新增step/80epoch，核对实际student/teacher计数与物理/ordinary序列；旧六个E30及01 E50直接复用已完成source full-log audit及实际原生counter，不重扫旧步骤，不重复计源读出。
+
+固定三seed×四逻辑条件共12行；源V1800两个draw与原生fullV27000分开，mid/low不是源urban三场均值。全12×7冻结prediction及独立score完成才读正式truth，独立重算CM/accuracy/F1/worstRX/RXdayTX及四类配对修复/新错、预算交互，逐seed与配对mean/sampleSD全部保留。源科学负值不跳过固定正式收尾。真实句柄消失且缺件则记录准确缺项退出，不无限等/不自动重试。
+
+7项合成定向检查最终一次整套PASS（1.868s），4文件编译及diff检查PASS。尚未远端执行分析；actualpublisher动态output→pipeline已在合成用例完整驱动，真实发布/PID/路径证据随后追加。只回收固定公开JSON/CSV/MD和可选图，不包含IDs/NPZ/IQ/权重/原始日志/私有路径。
