@@ -1,0 +1,18 @@
+{
+  "local_status": "PASS",
+  "primitive_negative_cases": 5,
+  "protocol_negative_cases": 19,
+  "marginal_randomizations": 1024,
+  "synthetic_physical_channel_calls_final_check": 414,
+  "full128_packets_retained": true,
+  "source15sessions_preserved": true,
+  "Torch_adapter_local": "NOT_RUN_NO_LOCAL_TORCH",
+  "Torch_adapter_remote": "REQUIRED_BY_RELEASE_CHECKS",
+  "whole_native_process_after_shadow_replacement": true,
+  "real_IQ": 0,
+  "CP": 0,
+  "NN": 0,
+  "updates": 0,
+  "target_access": false,
+  "compile": "PASS"
+}

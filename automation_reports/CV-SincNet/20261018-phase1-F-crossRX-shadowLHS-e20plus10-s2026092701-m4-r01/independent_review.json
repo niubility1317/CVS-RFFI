@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "reviewer": "/root/unitary_p0p1_review",
+  "P0": 0,
+  "P1": 0,
+  "scope": [
+    "latent.z before fullprocess",
+    "conditionalLHS/marginals",
+    "other randomstreams",
+    "deepcopy",
+    "single epoch/step offset",
+    "commonparent and ownEMA",
+    "immutable runtime dependencies",
+    "sevenview truthlast"
+  ],
+  "files_modified": false,
+  "real_data_or_remote_access": false
+}
