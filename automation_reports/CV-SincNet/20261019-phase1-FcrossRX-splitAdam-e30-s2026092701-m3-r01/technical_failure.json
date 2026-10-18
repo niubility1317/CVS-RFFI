@@ -1,0 +1,67 @@
+{
+  "status": "FAILED",
+  "performance_result": false,
+  "code": "37cce29bb9bf65e372b681242705a1837728b3f2",
+  "stage": "GPU physical-clip component-sum check;Nbatch17,C/Sbatch1",
+  "fingerprint": "ValueError: Component sum differs from actual clipped total gradient/active mask",
+  "affected_rows": [
+    "N01-s2026092701",
+    "C01-s2026092701",
+    "S01-s2026092701"
+  ],
+  "dispatcher_alive": false,
+  "owned_workers_alive": false,
+  "epoch_complete": 0,
+  "successful_optimizer_updates": 16,
+  "update_evidence": "Full source/step_metrics.jsonl.gz16/0/0 records and training_sequence34/2/2 L/U records independently recounted;N batch17 and C/S batch1 fail pre-step",
+  "smoke": {
+    "CPU_optimizer_toy_checks": 28,
+    "toy_optimizer_steps": 12,
+    "toy_NN": 0,
+    "CPU_realparent_synthetic_NN": 2358,
+    "extra_VJP_calls": 6,
+    "training_updates": 0
+  },
+  "failed_training_cost": {
+    "L_NN": 14592,
+    "U_student_NN": 4864,
+    "U_teacher_NN": 4864,
+    "initial_frozen_smoke_NN": 6,
+    "total_NN": 24326,
+    "extra_VJP_calls": 38,
+    "native_backward_calls": 19,
+    "successful_model_updates": 16,
+    "formal_NN": 0,
+    "source_panel_NN": 0,
+    "full_epochs_completed": 0,
+    "count_basis": "fullL/Uloadercounts,original6L andoneUstudent/teacher path,eachloadedbatch reachedafterclip,initialsourcecheckpointsmoke2/row;no completedepoch eval"
+  },
+  "target_predictions": 0,
+  "target_scoring": false,
+  "restart": false,
+  "outputs_preserved": true,
+  "diagnosis": "No tolerance change or production rerun until source of mismatch identified",
+  "per_row": {
+    "N01": {
+      "successful_updates": 16,
+      "loaded_L_packets": 2176,
+      "loaded_U_packets": 4352,
+      "loaded_batches": 17
+    },
+    "C01": {
+      "successful_updates": 0,
+      "loaded_L_packets": 128,
+      "loaded_U_packets": 256,
+      "loaded_batches": 1
+    },
+    "S01": {
+      "successful_updates": 0,
+      "loaded_L_packets": 128,
+      "loaded_U_packets": 256,
+      "loaded_batches": 1
+    }
+  },
+  "all_new_NN_including_shared_smoke": 26684,
+  "all_new_extra_VJP_calls": 44,
+  "correction": "Initial0updatesallrows statement superseded:NoAs completed16updates;bothAs0"
+}

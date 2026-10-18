@@ -1,0 +1,49 @@
+{
+  "status": "VERIFIED",
+  "commit": "37cce29bb9bf65e372b681242705a1837728b3f2",
+  "ordinary_account": true,
+  "parents_own20_and_frozen_controls_metadata": "EXACT_MATCH",
+  "source_roles": "EXACT_MATCH",
+  "CPU_threads": 2,
+  "GPU_capacity": {
+    "0": {
+      "total_GPU_processes": 0,
+      "free_mb": 24124
+    },
+    "1": {
+      "total_GPU_processes": 0,
+      "free_mb": 24124
+    },
+    "2": {
+      "total_GPU_processes": 0,
+      "free_mb": 24124
+    },
+    "3": {
+      "total_GPU_processes": 0,
+      "free_mb": 24124
+    },
+    "4": {
+      "total_GPU_processes": 0,
+      "free_mb": 24124
+    },
+    "5": {
+      "total_GPU_processes": 0,
+      "free_mb": 24124
+    },
+    "6": {
+      "total_GPU_processes": 0,
+      "free_mb": 24124
+    },
+    "7": {
+      "total_GPU_processes": 0,
+      "free_mb": 24124
+    }
+  },
+  "archive_transfer": "VERIFIED",
+  "remote_compile": "VERIFIED",
+  "dispatcher_PID": 1748242,
+  "dispatcher_CWD_argv_verified": true,
+  "training_not_yet_verified": true,
+  "smoke_pending": true,
+  "query_or_checkpoint_access_preflight": false
+}

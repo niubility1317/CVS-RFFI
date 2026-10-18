@@ -21,3 +21,4 @@
 |CVS补偿响应：完整源V判别几何|managed_run|[打开](../../automation_reports/CV-SincNet/20261003-diagnostic-cvs-response-geometry-source-manysig-m12-r01/report.md)|
 |R2耗时分析与后续执行加速|managed_run|[打开](../../automation_reports/CV-SincNet/20261004-diagnostic-reference-stack-speed-synthetic-m12-r01/report.md)|
 |Phase2实现前本地审计记录|legacy_evidence_group|[打开](../../diagnostics/phase2_implementation_audit.md)|
+|As 首批 GPU 梯度与裁剪零更新技术诊断|managed_run|[打开](../../automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-splitAdam-firstclip-s2026092701-m1-r01/report.md)|

@@ -1,0 +1,177 @@
+{
+  "schema": "experiment_record_v1",
+  "run_id": "20261019-diagnostic-FcrossRX-splitAdam-firstclip-s2026092701-m1-r01",
+  "group_id": "CVS-SPLIT-ADAM-CLIP-TECHNICAL-DIAGNOSTIC",
+  "display_name": "分离 Adam 技术诊断：As 首批 GPU 梯度与裁剪零更新复现",
+  "description": "保留失败R01，复用实际37cce29训练代码与原As20父状态；仅追加两个总loss VJP并读取裁剪前后梯度。在第一批裁剪后、optimizer之前主动结束。无性能试验/调参/正式数据/真实训练更新。",
+  "kind": "diagnostic",
+  "stage": "Phase1",
+  "aliases": [
+    "splitAdam-firstclip"
+  ],
+  "tags": [
+    "CVS",
+    "Phase1",
+    "diagnostic",
+    "source-only",
+    "zero-update"
+  ],
+  "comparison_group_id": "F-CROSS_RX-ORIGINAL-P43-E30",
+  "parent_run_ids": [
+    "20261019-phase1-FcrossRX-splitAdam-e30-s2026092701-m3-r01",
+    "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01"
+  ],
+  "authorization": "Current authorized technical repair chain;bounded onefirstsourcebatch,zerooptimizerupdate,ordinaryaccount;no performance candidate or budget extension",
+  "code": {
+    "commit": "PENDING_DIAGNOSTIC_CODE_COMMIT",
+    "checkout": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "environment": "N607 existingCVS-RFFI PyTorch/fullFP32/CPU2/ordinary account;no installation",
+    "cwd": "PROJECT/releases/cvs_FcrossRX_splitAdam_clipdiag_20261019_r01",
+    "branch": "codex/cvs-iq-timing-e20-20261016",
+    "worktree": "E:/type10-7/code/worktrees/cvs_iq_timing_20261016",
+    "entrypoint": "experiments/cvs_split_adam30/diagnose_first.py"
+  },
+  "data": {
+    "dataset": "ManySig",
+    "version": "Original full-source physical roles,split392005;reuse fixed source/cache and formal received views",
+    "representation": "Existing source IQ256,dataset equalized index1,Fs25MHz;practical residual/post_sync propagation receiver EQ=false/reference_snr_db30,complete original dependency graph;fixed received IQ untouched",
+    "contract_ref": "PROJECT/runs/phase1_daot_rc4_pure_game_m3_20260917_r2/source_contract.json",
+    "physical_ids_ref": "Original source_contract.role_ids L_s/U_s/V;fixed formal received_views manifest and opaque168000 physical IDs,unchanged",
+    "label_map_ref": "Original map [14-10,14-7,20-15,20-19,6-15,8-20]",
+    "source_receivers": [
+      1,
+      3,
+      4,
+      6,
+      8
+    ],
+    "target_receivers": [
+      0,
+      2,
+      5,
+      7,
+      9,
+      10,
+      11
+    ],
+    "source_days": [
+      1,
+      2,
+      3
+    ],
+    "target_days": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "tx_sets_ref": "All six registered originalTX,unchanged source/target registered-class map",
+    "roles": {
+      "L_s": "6300 fullsource visibleTX/all5RX/cumulative30epochs,noLdev/noRXholdout",
+      "U_s": "56700 TX hidden;exact original P43 oldU rule incl raw ownEMA,original domain/strong/time policies and weights;native Gaussian strong;no new U practical route or eligibility change",
+      "V": "27000 source validation only,never training/EMA/state updates;fixed existing V1800 two-draw source panel"
+    },
+    "train_ratio": 0.07,
+    "capsule_id": null,
+    "split_id": 392005,
+    "validation_ref": "SameVALIDATED_ONCEall5sourceRX/day/physicalL6300 U56700hidden V27000;noLdev/noRXholdout",
+    "support_query_ref": null,
+    "leo_config_ref": "Original P43 full practical on rawL64/step only;unchanged propagation/noise/receiver/compensation dependency. NoAs returns raw64. U unchanged. Fixed formalreceivedIQ reused."
+  },
+  "permissions": {
+    "regime": "source_only_zero_update_technical_diagnostic",
+    "query_use": "none",
+    "external_method_exception": null,
+    "claim_scope": "Gradient/clip arithmetic comparison only;no accuracy,training or performance claim;zerooptimizer/EMAupdate"
+  },
+  "checkpoint": {
+    "policy": "Strict originalP43 own20 scratch sourceFINAL20 student/ownEMA;metadata/data-role exact;no closed child or target-ranked parent",
+    "selection": "fixed FINAL10/cumulative30;not target selection",
+    "parent_run_id": "20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01",
+    "parent_sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B00-s2026092701/stage20/final_ssdg.pth",
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "reference_commit": "19aedc3604fed9c193237dd92366164178af0983",
+    "inheritance": "scratch20->own10;originaldata roles unchanged,matched sourceIDs;resetAdamW all rows;Sinc/head jointly trained",
+    "initialization": "strict own source-final20 student andownEMA;resetoptimizer",
+    "sources": [
+      "PROJECT/runs/20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01/B01-s2026092701/stage20/final_ssdg.pth"
+    ],
+    "contract_check_ref": "OriginalP43 stage20/source_contract.json +initialization.json/completion.json and exact reference_config",
+    "provenance_verdict": "MATCHED_SOURCE_ONLY_SCRATCH_ANCESTOR",
+    "selection_rule": "source fixed final20 parent,child fixedfinal10/cumulative30;no target-selected parents"
+  },
+  "execution": {
+    "host": "N607",
+    "launch_owner": "codex/root/splitAdam-clipdiag",
+    "gpu_policy": "CPU2;eachGPU allowners totalcomputePIDs<=3 andfree>=12000MB;ordinaryaccount;do nottouchhealthyjobs",
+    "remote_run_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-splitAdam-firstclip-s2026092701-m1-r01",
+    "remote_log_root": "PROJECT/releases/cvs_FcrossRX_splitAdam_clipdiag_20261019_r01",
+    "local_artifact_root": "E:/type10-7/automation_reports/CV-SincNet/20261019-diagnostic-FcrossRX-splitAdam-firstclip-s2026092701-m1-r01",
+    "launch_command": "CVS-RFFI/python -u experiments/cvs_split_adam30/diagnose_first.py",
+    "stop_rule": "Intentional stop after first nativeclip before optimizer;unexpected exceptions preserve outputs/no automaticretry;no otherjob intervention",
+    "status": "PLANNED"
+  },
+  "expected_artifacts": [
+    "diagnostic.json"
+  ],
+  "metrics_plan": {
+    "primary": [
+      "repeatgTotal-vs-gTotal",
+      "splitSum-vs-gTotal",
+      "backwardpreclip-vs-gTotal",
+      "postclip-vs-preclip*samefactor"
+    ],
+    "secondary": [
+      "perparameterstored/physicalerrornorm/RMS/cosine",
+      "actualflags/scaler",
+      "sourceNNcounters",
+      "0parameter/optimizer/EMAupdate"
+    ],
+    "target_access": false,
+    "scientific_selection": false
+  },
+  "rows": [
+    {
+      "row_id": "C01-s2026092701",
+      "method": "FIRST_CLIP_DIAGNOSTIC",
+      "purpose": "OriginalAs firstbatch;fourtotalVJP(twooriginalcomponent+tworepeatedtotal),readrealbackwardclipbeforeafter;intentionalstopzero update",
+      "config_ref": "experiments/cvs_split_adam30/diagnose_first.py",
+      "resolved_config_ref": "PROJECT/runs/20261019-diagnostic-FcrossRX-splitAdam-firstclip-s2026092701-m1-r01/C01-s2026092701/source/resolved_config.json",
+      "data_overrides": {},
+      "seeds": {
+        "model": 2026092701,
+        "split": 392005,
+        "data": null,
+        "augmentation": null,
+        "support": null,
+        "evaluation": null
+      },
+      "seed_notes": "Model2026092701/split392005 fixed;native model seed controls loader/ordinary RNG,independent data seed null. Original Lchannel seedvector train20261016421/validation20261016422/receiver20261016423;no new RNG. Fixed received test/sourcepanel no resampling;support N/A. No U TX access.",
+      "k": null,
+      "scenario": "Original fullpractical64/step;originalU unchanged;all7 fixed formal",
+      "optimizer": "Original native resetAdamW lr2e-4 WD1e-4 cos10 min1e-6;2VJP measurement only",
+      "lr": 0.0002,
+      "epochs": 0,
+      "fl_rounds": null,
+      "budget_ref": "Configurednative10epochs only to reproducefirstbatch;intentionalbeforefirstoptimizerstep.0trainupdates/0completeepochs;oneL128/U256,6L plusUstudent/teacher,extra4VJP;allactualNNcountersrecord",
+      "output_root": "PROJECT/runs/20261019-diagnostic-FcrossRX-splitAdam-firstclip-s2026092701-m1-r01/C01-s2026092701",
+      "log_path": "PROJECT/releases/cvs_FcrossRX_splitAdam_clipdiag_20261019_r01/diagnostic.stdout.log",
+      "command": "CVS-RFFI/python -u experiments/cvs_split_adam30/diagnose_first.py",
+      "expected_artifacts": [
+        "diagnostic.json",
+        "C01-s2026092701/source/initialization.json",
+        "C01-s2026092701/source/resolved_config.json"
+      ]
+    }
+  ],
+  "notes": [
+    "ActualfailedN01completed16steps;C01/S01firstbatch0. DiagnosticusesC01MEASURE to reproduciblefirstbatch",
+    "No tolerance/numerics/loss/productioncode change",
+    "Same underlyingoriginalCP/datahandles;not new validationchain",
+    "Source-only diagnostic zero trainedepochs therefore no formalpredictor/scorer"
+  ],
+  "comparators": [],
+  "registered_at": "2026-10-18T19:38:31+00:00"
+}

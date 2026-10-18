@@ -33,3 +33,9 @@
 报告七视图准确率、macro F1、最差 RX、RX/day/TX 分层、修复／新增错误、urban 三场景均值、suburban 绝对差距、完整成本和未完成项。只有一个模型 seed2026092701；两次信道 draw 不当作额外 seed。不足 0.1 个百分点的微增和单 seed 双涨均不能宣称稳定双提升。
 
 预期产物：experiment.json／events.jsonl、源与配置 metadata、final checkpoint、逐步完整日志、source_matrix_decision、固定 predictions、独立 scores、automatic_summary、最终分析和同 row 判定。
+
+实际发布：代码 37cce29bb9bf65e372b681242705a1837728b3f2；archive transfer／remote compile VERIFIED；dispatcher PID 1748242，CWD／argv 独立读回通过。启动首步 smoke 尚待完成，此时不宣称训练已开始。
+
+技术状态 FAILED：三行在 GPU physical clip 后的分量梯度加和检查失败：完整逐步日志复算 N01 已成功16更新后在第17批失败，C01/S01首批0更新；尚无完成epoch或prediction。CPU toy28检查及真实父权重合成 smoke2358NN 通过；原 run 完整保留。单独零更新诊断将区分 GPU 重算误差／裁剪或单位路径，未改变容差或重启。
+
+失败成本更正：19个已反向批次，L14592＋U学生4864＋U教师4864＋行内初始smoke6＝24326NN；加共享CPUsmoke2358NN，新成本共26684NN、额外VJP44次，真实模型更新16次。CPU toy的12次解析参数更新单列，不当作模型训练。
