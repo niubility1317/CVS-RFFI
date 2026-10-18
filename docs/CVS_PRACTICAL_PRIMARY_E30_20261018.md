@@ -283,3 +283,5 @@ E50实际新增14922588NN（smoke1540）、40modelE/8880更新；每行native627
 source固定newAs fullVclean−原NoAs30>=−.1pp且two-drawV1800 midlownewAs−原As30>=+.5pp；fail关固定.05/noepsscan/noE50，all7仍自动独立评分。通用label-smoothing文献仅作动机不替代CVS识别收益。最小[预登记](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01/report.md)已固定；当前无新性能结果，目标保持未完成。
 
 AsLS E30单行已于2026-10-18发布运行：code 306cd273a4af76cda62e02b45e19e6db9ae765e9，r02传输/编译VERIFIED、770NN首步smoke PASS；r01远端检查路径错误发生于0真实CP/NN/updates且原release保留，修复不改配方/run。源决定先于本轮正式分数读取，all7自动收尾，源失败不扩E50。
+
+AsLS .01→.05 E30已完成唯一新行及全部七视图评分/完整日志：source双规则FAIL（fullV−NoAs−.107407pp，midlow−As−.138889pp），在新正式读取前关闭，无E50。正式newAs clean85.423810%/mid62.435714%/low50.901786%/urbanmean63.604762%；相对原As clean＋.082738pp、mid−.370833pp、low−.342262pp、urban−.334524pp且六practical全降。相对原NoAs clean＋.176190pp，阶段clean约束PASS，但n1微增不能称可重复双提升。新增4352334NN含770smoke，10modelE/2220updates；技术及评分缺项0（source预测wall未单列）。保留原As，本固定.05路线关闭、不扫参/种子/更换父救跑。

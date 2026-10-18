@@ -1,8 +1,14 @@
 # 完整 practical 的 As 专属标签平滑 E30 预登记
 
-RUNNING：技术路径错误已定点修复，保留原r01发布。r02传输与远端编译VERIFIED，770NN首步真实烟测PASS后立即训练。唯一worker已核验PID/CWD/argv/GPU/loggrowth；尚无本候选性能结果。
+ANALYZED（单种子）：固定As-only LS .01→.05未通过来源双规则，关闭且不扩E50。全部clean＋六practical独立truth-last评分和完整日志分析已完成；没有技术缺项。
 
 唯一假设：保留完整practical及旧ordinary训练，只将合法有标签As监督CE的epsilon由已有.01提高到固定.05，能否减小clean代价并提高low/mid urban。改变目标分布，不改IQ、softmax温度、分类头或CE总体权重。
+
+实际结论：newAs clean85.423810%，相对同预算/种子原NoAs30＋.176190个百分点，满足clean下降不超过.1个百分点的阶段约束。相对原As30仅＋.082738个百分点；mid/lowurban62.435714%/50.901786%，分别−.370833/−.342262个百分点，urban三场均值−.334524，六practical全部下降。新增机制不保留，n1/微增不构成可重复双提升。
+
+源fullV clean−原NoAs−.107407pp、mid/low−原As−.138889pp，决定已先于新正式结果读取保存；不以正式clean较好重新晋级。首发路径错误在0CP/NN/updates发生，r01保留，定点修复后的r02完整完成。新增10modelE/2220updates、4352334NN含770smoke，native1064.360秒；全部3×7/378CM/63partition核对，63个公开指标精确一致。
+
+完整七视图accuracy/macroF1/最差RX、逐RX/day/TX、错误修复与新增、suburban差距、源判定和成本见[最终分析](final_analysis.md)、[公开数值](results_public.json)、[最终验证](final_verification.json)。
 
 ## 配方与最小矩阵
 

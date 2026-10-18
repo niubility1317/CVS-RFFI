@@ -1,0 +1,143 @@
+{
+  "status": "VERIFIED_ANALYZED",
+  "run_id": "20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01",
+  "code_commit": "306cd273a4af76cda62e02b45e19e6db9ae765e9",
+  "source_decision_before_new_formal_read": {
+    "run_id": "20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01",
+    "read_at_UTC": "2026-10-18T14:28:30.254Z",
+    "source_archive_SHA256": "196911e36854b88c3c1a5434ad6edb57467b803fa977c94600c73d1dff2eac6e",
+    "source_file_count": 5,
+    "formal_results_collected": false,
+    "formal_scores_read": false,
+    "decision": {
+      "fullV_clean_vs_NoAs30_pp": -0.10740740740740051,
+      "mid_low_mean_vs_original_As30_pp": -0.1388888888888884,
+      "clean_vs_NoAs30_within_absolute_0p1pp": false,
+      "mid_low_gain_at_least_0p5pp": false,
+      "source_criteria_pass": false,
+      "E50_source_eligible": false,
+      "fixed_recipe_closed": true,
+      "fullV_clean_vs_original_As30_pp": -0.0037037037036946607,
+      "only_two_source_criteria": true,
+      "scientific_negative_skips_formal": false,
+      "target_scores_read": false,
+      "per_packet_protection_gate": false,
+      "automatic_extension": false
+    },
+    "action": "Fixed epsilon .05 closed;no E50/no amplitude,parent,seed or selective rerun rescue;all7 still completes"
+  },
+  "formal_all7_predictions_and_independent_scores_complete": true,
+  "new_model_rows": 1,
+  "reused_model_rows": 2,
+  "model_seed_count": 1,
+  "curated_metric_cells_verified": 63,
+  "independent_confusion_matrices": 378,
+  "partition_reconciliations": 63,
+  "source_collection_archive": "196911e36854b88c3c1a5434ad6edb57467b803fa977c94600c73d1dff2eac6e",
+  "final_collection_archive": "c9210451ccf9972514867d41bf2b29cb6acb759014d896b14685491bff516e95",
+  "final_collection_files": 11,
+  "actual_new_NN": 4352334,
+  "new_model_epochs": 10,
+  "new_updates": 2220,
+  "cumulative_epochs": 30,
+  "cumulative_updates": 6660,
+  "actual_extra_CE": {
+    "extra_model_NN": 0,
+    "extra_CE_operator_calls": 8880,
+    "extra_CE_logit_packets": 568320,
+    "baseline_mixed_CE_operator_widths": [
+      128,
+      128
+    ],
+    "extra_CE_operator_widths": [
+      64,
+      64,
+      64,
+      64
+    ],
+    "actual_mixed_CE_operator_widths": [
+      128,
+      128,
+      64,
+      64,
+      64,
+      64
+    ],
+    "CE_operator_cpu_wall_seconds": 2.9181240575853735,
+    "scalarization_cpu_wall_seconds": 0.502464838558808,
+    "timing": "perf_counter CPUwall,notCUDAevent;no explicitCUDA synchronization;scalar reads may synchronize",
+    "explicit_CUDA_synchronize": false,
+    "autograd_extra_backward_time_not_isolated": true,
+    "zero_extra_model_forward_is_not_zero_compute": true
+  },
+  "processes": {
+    "dispatcher": {
+      "pid": 1523734,
+      "alive": false
+    },
+    "worker": {
+      "pid": 1523764,
+      "alive": false
+    },
+    "analysis": {
+      "pid": 1524320,
+      "alive": false
+    }
+  },
+  "systemic_failure": null,
+  "initial_prelaunch_failure_preserved": true,
+  "final_runtime_missing": [],
+  "timing_limitations": [
+    "Source prediction wall not separately recorded",
+    "Extra backward time not independently isolated"
+  ],
+  "scientific_decision": "Fixed .05 source FAIL; no E50/no rescue; formal clean guard PASS but additional mechanism worsens every practical view; n1 no repeatable dual gain",
+  "formal": {
+    "clean_delta_pp": 0.1761904761904762,
+    "clean_net_repairs": 296,
+    "clean_absolute_0p1pp_guard_met": true,
+    "clean_positive_observed": true,
+    "positive_below_0p1pp_is_micro_observation": false,
+    "midurban_gain_pp": 27.30297619047619,
+    "lowurban_gain_pp": 20.761904761904763,
+    "urban_mean_gain_pp": 28.03392857142857,
+    "repeatable_clean_gain_proven": false
+  },
+  "analysis_completion": {
+    "status": "ANALYZED",
+    "training_run": "20261018-phase1-FcrossRX-AsLS-e30-s2026092701-m1-r01",
+    "analysis_code_commit": "306cd273a4af76cda62e02b45e19e6db9ae765e9",
+    "source_complete": true,
+    "formal_complete": true,
+    "log_records_complete": true,
+    "model_seed_count": 1,
+    "new_model_rows": 1,
+    "reused_model_rows": 2,
+    "NN": 0,
+    "IQ": 0,
+    "CP": 0,
+    "updates": 0,
+    "training_processes_untouched": true,
+    "pipeline_wall_including_wait_seconds": 1095.737798599992,
+    "repeatable_clean_positive_proven": false,
+    "goal_complete": false
+  },
+  "local_curation": {
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "new_scores": 0
+  },
+  "privacy_check": "PASS",
+  "stratum_report": {
+    "file": "strata_analysis.md",
+    "RX_rows": 21,
+    "day_rows": 12,
+    "TX_rows": 18,
+    "dimensions_reconcile_to_overall": true,
+    "analysis_extra_NN": 0,
+    "analysis_extra_CP": 0,
+    "analysis_extra_IQ": 0,
+    "analysis_extra_scores": 0
+  }
+}
