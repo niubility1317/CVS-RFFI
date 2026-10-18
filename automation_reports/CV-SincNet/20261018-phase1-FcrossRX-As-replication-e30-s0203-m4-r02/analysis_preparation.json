@@ -1,0 +1,18 @@
+{
+  "status": "LOCAL_VERIFIED_NOT_EXECUTED_ON_REAL_RUN",
+  "run_id": "20261018-phase1-FcrossRX-As-replication-e30-s0203-m4-r02",
+  "files": [
+    "analysis/cvs_As_seed_replication49_results_20261018.py",
+    "analysis/cvs_As_seed_replication49_coverage_20261018.py",
+    "analysis/check_As_seed_replication49_analysis.py"
+  ],
+  "focused_tests": 12,
+  "tests_read_real_IQ": false,
+  "tests_read_real_checkpoints": false,
+  "tests_read_target_truth": false,
+  "tests_run_model_forwards": 0,
+  "source_stage": "Full6rows/180epochs/sourcepanel/state-quality/cohort then source-only decision before new formal score read",
+  "formal_stage": "All6rows frozen all7predictions/scoring complete then independent confusion/F1/worstRX/pairedseed/cohort and cost recount",
+  "coverage": "Source L metadata only;no U label decoding or waveform generation",
+  "new_training_release_unchanged": true
+}

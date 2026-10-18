@@ -43,3 +43,7 @@ runner先加载原已发布P43运行环境，然后以新包名复用原source/e
 预期全部原完整训练/源读出/prediction/scoring、queue/completion、逐row/seed与配对效应CSV、三seed聚合/曲线/分层图/独立复算报告。任何未完成row/seed都列缺项，不以不完整统计冒充三seed。训练权重、原IQ、逐包输出和原始日志不进Git。
 
 本次只补齐As基线再现性，不能因此完成Ag独立价值、Ag/As四因子交互、lowurban>60%或suburban接近clean的完整联合目标。该目标保持ACTIVE。
+
+## 独立分析准备
+
+新增独立分析器 `analysis/cvs_As_seed_replication49_results_20261018.py`、源训练覆盖复算 `analysis/cvs_As_seed_replication49_coverage_20261018.py`，12项聚焦测试通过。当前仅LOCAL_VERIFIED，未对真实当前run执行，没有新指标或图。source模式必须全部六个源模型完成，只读训练完整日志/源V派生预测与状态，拒绝truth参数；final模式先核对全部六行的七视图冻结/评分完成及已保存的source-only决定，再独立连接truth。种子标签以已核实row替换旧reader历史展示常量；三seed配对mean/样本SD、每seed固定B00 clean正确集合、宏F1/最差RX/urban均值、clean/suburban差距及新4模型/复用2模型成本分开报告。覆盖复算只解码L，逐batch比对原状态汇总，不读取IQ、不解封U、不生成新信道波形。命令见脚本帮助，真实执行时填独占analysis输出；未执行不编造产物路径。原训练release/配置保持不变，不热补丁。
