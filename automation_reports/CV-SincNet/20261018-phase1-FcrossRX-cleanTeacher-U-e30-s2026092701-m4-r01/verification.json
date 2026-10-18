@@ -66,5 +66,69 @@
     "GPUs_visible": 8,
     "no_admin": true
   },
-  "formal_read_for_design": false
+  "formal_read_for_design": false,
+  "remote_release": {
+    "status": "VERIFIED",
+    "code_commit": "8bfc5f53883933a6e069526dc05793340f805370",
+    "archive": "cvs_FcrossRX_clean_teacher_U_E30_20261018_r01.zip",
+    "archive_sha256": "dd67282d964a1666ce8e0af570ba3f2a1c28aa444bc959b6964ce6c39129672c",
+    "local_remote_archive_equal": true,
+    "compiled_python_files": 23,
+    "real_checkpoint_smoke": {
+      "status": "PASS",
+      "NN": 6,
+      "unique_checkpoint_sources": 2,
+      "no_query": true
+    }
+  },
+  "actual_run": {
+    "status": "FAILED_TECHNICAL_BEFORE_FIRST_UPDATE",
+    "fingerprint": "nested installed runtime captures checked_model while prepare_frozen_teachers calls original.build",
+    "four_rows_same_failure": true,
+    "run_owned_processes_alive": 0,
+    "new_training_epochs": 0,
+    "optimizer_updates": 0,
+    "training_NN": 0,
+    "formal_predictions": 0,
+    "truth_scores": 0,
+    "all_outputs_preserved": true,
+    "automatic_retry": false
+  },
+  "constructor_fix": {
+    "status": "PASS",
+    "tests": 1,
+    "process_wall_seconds": 2.7721947,
+    "helper_wall_seconds": 0.23835080000571907,
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "optimizer_updates": 0,
+    "native_builder_reentries": 0,
+    "forward_calls": 0,
+    "strict_teacher_EMA_and_independent_storage": true,
+    "student_native_EMA_RNG_unchanged": true
+  },
+  "technical_recovery": {
+    "status": "PREPARED_SAME_MATRIX_NEW_ROOT",
+    "run_id": "20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r02",
+    "authorization": "current task development and diagnosed technical recovery; no blind automatic retry; no new epochs consumed in failed attempt"
+  },
+  "constructor_fix_review": {
+    "status": "PASS",
+    "scope": "One targeted review of production nested-builder recursion fix only",
+    "remaining_P0_P1": [],
+    "independent_constructor_regression": {
+      "tests": 1,
+      "status": "PASS",
+      "helper_wall_seconds": 0.2856983,
+      "process_wall_seconds": 2.7816843,
+      "native_builder_reentries": 0,
+      "forward_calls": 0,
+      "NN": 0,
+      "CP": 0,
+      "IQ": 0,
+      "optimizer_updates": 0
+    },
+    "real_F_or_checkpoint_rerun": false
+  }
 }

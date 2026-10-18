@@ -18,7 +18,7 @@ FROZEN_NOAS20−FROZEN_AS20检验固定同龄训练来源；FROZEN_AS20−EVOLVI
 
 数据L6300/U56700隐藏/V27000，RX1/3/4/6/8、day1/2/3、sixTX、split392005，无heldRX/Ldev。现有VALIDATED_ONCE源/固定正式IQ复用，不重验数据。25MHz/IQ256/RMS center=false，完整residual/post_sync、EQfalse⇒G1、质量适配/相位跟踪/IQ补偿开启、ref30dB、reflect；训练fc2.462GHz、正式2.45GHz保持。训练lowSub/midUrban/lowUrban各1/3，L/U流独立，RX/day硬件session稳定且不由TX定义。
 
-同一普通N607环境Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5，fullFP32/CENTER_UNITS/CPU2；CWD=PROJECT/releases/cvs_FcrossRX_clean_teacher_U_E30_20261018_r01；命令CVS-RFFI/python -u experiments/cvs_clean_teacher65/runner.py。代码commit待发布前补入。owner codex/root/clean-teacher65，独占PROJECT/runs/20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r01。总GPU进程上限2计入所有owner，free≥12000MB；资源不足等待，不触碰其他任务。
+同一普通N607环境Python3.10.19/Torch2.1.0+cu121/NumPy2.2.5，fullFP32/CENTER_UNITS/CPU2；CWD=PROJECT/releases/cvs_FcrossRX_clean_teacher_U_E30_20261018_r01；命令CVS-RFFI/python -u experiments/cvs_clean_teacher65/runner.py。代码 commit：8bfc5f53883933a6e069526dc05793340f805370。owner codex/root/clean-teacher65，独占PROJECT/runs/20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r01。总GPU进程上限2计入所有owner，free≥12000MB；资源不足等待，不触碰其他任务。
 
 停止规则仅本run协议/来源/数值/无法运行/输出冲突等技术失败，保留产物，不自动补跑。source科学FAIL不会停止评价。每row全部七预测完整后独立CPU scorer读truth；最后6logicalrows×7在truthjoin前验证。原As30/NoAs30不重新训练、预测或评分。
 
@@ -29,3 +29,9 @@ FROZEN_NOAS20−FROZEN_AS20检验固定同龄训练来源；FROZEN_AS20−EVOLVI
 交付完整epoch/step曲线、各rowq/coverage/KL/teacher disagreement、source及formal acc/F1/worstRX/repair/newerrors、固定NoAs30clean正确集合保持率及margin/30、U无TX覆盖、actual native/extra/历史成本、5组真实PNG/PDF、全部负结果和缺项。U真值不开放，不把q/同意率当标签准确率；source状态/addednoise不是总SNR或物理因果。未达到lowUrban>60%或重复双提升时goal保持active。
 
 最小流程：一个code/configcommit、必要负例和一次realCPnoquerysmoke、唯一P0/P1及直接问题一次定向复核、一个archive比较/compile/独立poststate、truthlast。额外设计审批/哈希链/重复review为REJECTED_EXTRA_GATE，不作为阻塞。
+
+实际发布结果：code 8bfc5f53883933a6e069526dc05793340f805370，一个archive本地/remote比较PASS，23py compile PASS，真实2CP/6NN no-query smoke PASS。四行均在首次优化更新前因frozen teacher嵌套model builder递归退出，training_sequence均0，无finalCP/源判定/正式prediction/truth评分。五个本run PID已独立核实全部自然退出，未终止其他任务。状态FAILED技术失败，不能判断新方法性能。失败产物保留，不自动重跑；本地正在做最小修复。实际新训练0E/0更新/0训练NN，remote smoke6NN，local actualF6656NN。训练wall无已完成记录，不编造数值。
+
+最新预算授权：用户允许对表现良好、源域证据支持的方案延长至总E50，使用匹配同seed对照；不是追加50轮，不按正式测试晋级。本run因技术初始化失败，没有可供E50晋级的科学证据。
+
+递归修复已完成并通过1项0NN构造回归。当前研发任务的既有技术恢复流程允许诊断修复后使用新root完成同矩阵；准备r02一次技术替代。原noautomaticretry保留为禁止盲目原地/同指纹重启，不解释为新增用户审批。原r01继续FAILED且不改写其实际代码身份或结果。

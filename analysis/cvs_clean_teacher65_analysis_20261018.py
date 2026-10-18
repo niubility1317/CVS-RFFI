@@ -7,7 +7,7 @@ from collections import Counter,defaultdict
 from itertools import zip_longest
 from pathlib import Path
 import numpy as np
-RUN='20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r01'
+RUN='20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r02'
 REF='20261018-phase1-FcrossRX-impulse-factorial-e30-s2026092701-m6-r01'
 PANEL_RUN='20261017-diagnostic-FcrossRX-fullsource-residual-s2026092701-m3-r01'
 CONTRACT_RUN='phase1_daot_rc4_pure_game_m3_20260917_r2'

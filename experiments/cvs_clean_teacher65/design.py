@@ -4,8 +4,8 @@ from pathlib import Path
 from experiments.cvs_noise_shape_factorial43 import design as old
 ROOT=Path(__file__).resolve().parents[2]
 PROJECT,SOURCE=old.PROJECT,old.SOURCE
-RUN='20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r01'
-RELEASE='cvs_FcrossRX_clean_teacher_U_E30_20261018_r01'
+RUN='20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r02'
+RELEASE='cvs_FcrossRX_clean_teacher_U_E30_20261018_r02'
 OWNER='codex/root/clean-teacher65'
 BASE=Path(PROJECT)/'runs'/RUN
 REFERENCE_RUN=old.RUN

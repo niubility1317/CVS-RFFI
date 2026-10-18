@@ -202,6 +202,115 @@ def run():
                 frozen_teachers_external_to_student_EMA=True, hidden_TX=True)
 
 
+def run_constructor_regression():
+    """No NN: a native-builder spy must stay untouched during teacher loading.
+
+    A parameter-only skeleton matches the fixed 900722/206 shape checks. Its
+    inference method raises, so this check cannot execute a network forward.
+    All payloads are in-memory synthetic tensors, not actual checkpoints.
+    """
+    from . import model as api
+    started = time.perf_counter()
+    calls = []
+
+    class Skeleton(torch.nn.Module):
+        def __init__(self):
+            super().__init__()
+            self.register_parameter('p000', torch.nn.Parameter(torch.zeros(900517)))
+            for i in range(1, 206):
+                self.register_parameter(f'p{i:03d}', torch.nn.Parameter(torch.zeros(1)))
+            self.marker = MethodType(lambda own: id(own), self)
+            self._source_unlabeled_selection_hook = MethodType(lambda own: own, self)
+            self._source_unlabeled_feature_hook = MethodType(lambda own: own, self)
+            self._clean_teacher_config = dict(output_root='must-not-reach-a-teacher')
+            self._clean_teacher_pending = None
+            self._clean_teacher_records = []
+            self._clean_teacher_packets = 0
+            self._clean_teacher_physics = False
+            self._clean_teacher_channel = None
+            self._feature_learning_report = dict(clean_teacher65={'mode': 'test'}, original_F=True)
+
+        def forward_identity_only(self, *args, **kwargs):
+            calls.append('forbidden_forward')
+            raise AssertionError('No network forward is authorized for constructor regression')
+
+    def forbidden_builder(*args, **kwargs):
+        calls.append('forbidden_builder')
+        raise AssertionError('Teacher initialization reentered the active native builder')
+
+    original_builder = api.original.build
+    student = Skeleton().train()
+    native_ema = copy.deepcopy(student).eval().requires_grad_(False)
+    before = {k: v.detach().clone() for k, v in student.state_dict().items()}
+    native_before = {k: v.detach().clone() for k, v in native_ema.state_dict().items()}
+    c = d.config(d.rows()[0])
+    payloads = {}
+    for arm, constant in (('B01', .125), ('B00', -.25)):
+        payloads[arm] = dict(epoch=20, a1_ema_successful_updates=4440, run_id=api.original.d.RUN,
+            candidate_id=d.reference_config(arm)['row_id'], checkpoint_selection='final_only',
+            args=dict(baseline_ckpt='', teacher_ckpt=''),
+            ema_model={k: torch.full_like(v, constant) for k, v in before.items()})
+    rng = torch.get_rng_state().clone()
+    api.original.build = forbidden_builder
+    try:
+        bank = api.prepare_frozen_teachers(student, c, payloads)
+        assert api.teacher_bank(student) is bank
+        assert bank.summary()['forward_NN'] == {'B01': 0, 'B00': 0}
+        for arm, teacher in bank.teachers.items():
+            assert teacher.marker.__self__ is teacher and teacher.marker() == id(teacher)
+            assert teacher._source_unlabeled_selection_hook is None
+            assert teacher._source_unlabeled_feature_hook is None
+            assert not hasattr(teacher, '_clean_teacher_config')
+            assert not hasattr(teacher, '_clean_teacher_channel')
+            assert 'clean_teacher65' not in teacher._feature_learning_report
+            assert teacher._feature_learning_report['original_F']
+            assert not teacher.training and not any(p.requires_grad for p in teacher.parameters())
+            for key, value in teacher.state_dict().items():
+                assert torch.equal(value, payloads[arm]['ema_model'][key])
+                assert value.data_ptr() != student.state_dict()[key].data_ptr()
+            try:
+                api.teacher_bank(teacher)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError('A copied teacher inherited the student external bank')
+        assert bank.assert_frozen()
+        assert all(torch.equal(v, student.state_dict()[k]) for k, v in before.items())
+        assert all(torch.equal(v, native_ema.state_dict()[k]) for k, v in native_before.items())
+        assert student._source_unlabeled_selection_hook.__self__ is student
+        assert student._clean_teacher_config['output_root'] == 'must-not-reach-a-teacher'
+        assert student.training and all(p.requires_grad for p in student.parameters())
+        assert torch.equal(rng, torch.get_rng_state())
+        # Strict-load failure must not register an incomplete bank or mutate
+        # the student/native builder when the second teacher is incompatible.
+        other = Skeleton().train()
+        invalid = {a: dict(p) for a, p in payloads.items()}
+        invalid['B00'] = dict(invalid['B00'], ema_model={})
+        try:
+            api.prepare_frozen_teachers(other, c, invalid)
+        except RuntimeError:
+            pass
+        else:
+            raise AssertionError('Strict EMA shape mismatch was accepted')
+        try:
+            api.teacher_bank(other)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError('Partially initialized bank escaped strict-load failure')
+        assert all(bool((v == 0).all()) for v in other.state_dict().values())
+        assert not calls
+    finally:
+        api.original.build = original_builder
+    assert api.original.build is original_builder
+    return dict(status='PASS', tests=1, native_builder_reentries=0, forward_calls=0,
+                strict_EMA_states_loaded=True, separate_parameter_storage=True,
+                copied_MethodType_bound_to_copy=True, extra_U_callbacks_removed=True,
+                student_and_native_EMA_unchanged=True, failed_load_bank_absent=True,
+                private_RNG_restored=True, CVS_NN=0, real_IQ=0, CP=0,
+                optimizer_updates=0, wall_seconds=time.perf_counter() - started)
+
+
 if __name__ == '__main__':
     import json
     print(json.dumps(run()))

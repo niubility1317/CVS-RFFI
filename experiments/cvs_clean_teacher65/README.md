@@ -13,3 +13,5 @@ Extra expected NN per row: studentAs284120 and two frozen teachers568240, in add
 Run: python -u experiments/cvs_clean_teacher65/runner.py
 
 First step focused checks and one two-unique-CP/6NN no-query smoke; train each fixed final, read legal source, predict all seven fixed formal views per row, independently truth-last score, then automatic zero-NN CPU analysis. Source scientific failure still completes all7. Immutable root, cap2 total processes/GPU including other owners. All actual source module files, channel values, U coverage/q/KL, complete curves, formal strata and actual costs are preserved.
+
+Technical recovery r02: r01 preserved FAILED before first update (0 training NN/updates). Teachers now clone the existing student architecture and strict-load each audited own20 EMA without reentering the native builder. The one constructor-only regression and targeted review passed with 0 actual NN/CP/IQ/updates. Scientific matrix and total student E30 unchanged.

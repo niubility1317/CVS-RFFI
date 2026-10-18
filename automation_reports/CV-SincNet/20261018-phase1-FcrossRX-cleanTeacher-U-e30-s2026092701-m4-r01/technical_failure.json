@@ -1,0 +1,80 @@
+{
+  "status": "FAILED_TECHNICAL_BEFORE_FIRST_UPDATE",
+  "code_commit": "8bfc5f53883933a6e069526dc05793340f805370",
+  "release": "cvs_FcrossRX_clean_teacher_U_E30_20261018_r01",
+  "run_id": "20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r01",
+  "archive_sha256": "dd67282d964a1666ce8e0af570ba3f2a1c28aa444bc959b6964ce6c39129672c",
+  "remote_compile": {
+    "status": "PASS",
+    "python_files": 23
+  },
+  "checkpoint_smoke": {
+    "status": "PASS",
+    "unique_real_checkpoint_sources": 2,
+    "NN": 6,
+    "source_IQ": 0,
+    "target_query": false,
+    "updates": 0
+  },
+  "post_state": "VERIFIED all five run-owned PIDs absent; four same RecursionError workers naturally exited",
+  "failure_fingerprint": "nested installed runtime captures checked_model while prepare_frozen_teachers calls original.build",
+  "rows": [
+    {
+      "row_id": "EVOLVING_AS_EMA-s2026092701",
+      "status": "FAILED",
+      "training_sequence_rows": 0,
+      "final_checkpoints": 0,
+      "optimizer_updates": 0,
+      "source_qualification_completed": false,
+      "formal_views_completed": 0
+    },
+    {
+      "row_id": "FROZEN_AS20_EMA-s2026092701",
+      "status": "FAILED",
+      "training_sequence_rows": 0,
+      "final_checkpoints": 0,
+      "optimizer_updates": 0,
+      "source_qualification_completed": false,
+      "formal_views_completed": 0
+    },
+    {
+      "row_id": "FROZEN_NOAS20_EMA-s2026092701",
+      "status": "FAILED",
+      "training_sequence_rows": 0,
+      "final_checkpoints": 0,
+      "optimizer_updates": 0,
+      "source_qualification_completed": false,
+      "formal_views_completed": 0
+    },
+    {
+      "row_id": "ZERO_KL-s2026092701",
+      "status": "FAILED",
+      "training_sequence_rows": 0,
+      "final_checkpoints": 0,
+      "optimizer_updates": 0,
+      "source_qualification_completed": false,
+      "formal_views_completed": 0
+    }
+  ],
+  "actual_cost": {
+    "new_training_epochs": 0,
+    "optimizer_updates": 0,
+    "training_NN": 0,
+    "remote_checkpoint_smoke_NN": 6,
+    "local_real_F_synthetic_NN": 6656,
+    "local_toy_NN": 0,
+    "training_wall_seconds": null
+  },
+  "formal_predictions": 0,
+  "truth_scoring": 0,
+  "all_failed_outputs_preserved": true,
+  "automatic_retry": false,
+  "performance_claim": null,
+  "missing": [
+    "four E30 student tails",
+    "source qualification",
+    "all seven-view predictions and truth-last scores",
+    "training/stratified result plots"
+  ],
+  "health_other_runs_untouched": true
+}

@@ -1,6 +1,7 @@
 """Matched full-As U teaching; frozen training-only teachers live outside Module trees."""
 import gzip
 import json
+from copy import deepcopy
 from pathlib import Path
 from types import MethodType
 from weakref import WeakKeyDictionary
@@ -70,8 +71,10 @@ def prepare_frozen_teachers(model, config, payloads=None):
     """Load audited own20 EMA payloads, without registering any Module on student.
 
     Explicitly called by the training observer, never by build/own_model/formal
-    prediction. Model construction uses a private RNG and cannot advance the
-    original L or native-U random streams.
+    prediction. Clone the already constructed student architecture directly:
+    invoking a model builder here would reenter the native training builder
+    while its initialization callback is active. Both teacher parameter sets
+    are then replaced strictly by their audited EMA states.
     """
     d.validate(config)
     if model in _FROZEN_TEACHERS:
@@ -94,7 +97,18 @@ def prepare_frozen_teachers(model, config, payloads=None):
                 or cp['args']['baseline_ckpt'] or cp['args']['teacher_ckpt']):
             raise ValueError('Only exact same-seed P43 scratch20 final EMA teacher payloads allowed')
         with private_rng(probe, 4440):
-            teacher = original.build(ref, probe.device)
+            teacher = deepcopy(model)
+        # The copied bound inference methods point at the copied modules.
+        # Extra-U callbacks have no role in a fixed teacher and must not retain
+        # a training output path or attempt to create a nested teacher bank.
+        teacher._source_unlabeled_selection_hook = None
+        teacher._source_unlabeled_feature_hook = None
+        for name in ('_clean_teacher_config', '_clean_teacher_pending', '_clean_teacher_records',
+                     '_clean_teacher_packets', '_clean_teacher_physics', '_clean_teacher_channel'):
+            if hasattr(teacher, name):
+                delattr(teacher, name)
+        if hasattr(teacher, '_feature_learning_report'):
+            teacher._feature_learning_report.pop('clean_teacher65', None)
         teacher.load_state_dict(cp['ema_model'], strict=True)
         teacher.eval().requires_grad_(False)
         if sum(p.numel() for p in teacher.parameters()) != 900722 or len(teacher.state_dict()) != 206:

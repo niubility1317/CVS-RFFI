@@ -1,0 +1,40 @@
+{
+  "status": "LOCAL_FIX_VERIFIED",
+  "prior_verification": "automation_reports/CV-SincNet/20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r01/verification.json",
+  "real_F_NN_shared_once": 6656,
+  "new_constructor_regression": {
+    "status": "PASS",
+    "tests": 1,
+    "process_wall_seconds": 2.7721947,
+    "helper_wall_seconds": 0.23835080000571907,
+    "NN": 0,
+    "CP": 0,
+    "IQ": 0,
+    "optimizer_updates": 0,
+    "native_builder_reentries": 0,
+    "forward_calls": 0,
+    "strict_teacher_EMA_and_independent_storage": true,
+    "student_native_EMA_RNG_unchanged": true
+  },
+  "technical_prior_run": "20261018-phase1-FcrossRX-cleanTeacher-U-e30-s2026092701-m4-r01",
+  "scientific_matrix_unchanged": true,
+  "actual_command_and_stdout": "local_artifacts/cvs_FcrossRX_clean_teacher_U_E30_20261018_r01/constructor_fix_checks.json;constructor_fix.stdout.txt",
+  "targeted_review": {
+    "status": "PASS",
+    "scope": "One targeted review of production nested-builder recursion fix only",
+    "remaining_P0_P1": [],
+    "independent_constructor_regression": {
+      "tests": 1,
+      "status": "PASS",
+      "helper_wall_seconds": 0.2856983,
+      "process_wall_seconds": 2.7816843,
+      "native_builder_reentries": 0,
+      "forward_calls": 0,
+      "NN": 0,
+      "CP": 0,
+      "IQ": 0,
+      "optimizer_updates": 0
+    },
+    "real_F_or_checkpoint_rerun": false
+  }
+}
