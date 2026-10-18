@@ -31,3 +31,6 @@ As 总 CE .25、总 KL .25 保留，展开 L CE 仍 ordinary .75＋raw .25＋As 
 状态：已登记，实现与必要检查进行中；尚无 P70 训练或性能结果。
 
 发布前证据：实际训练代码提交 000a34f52dc4240c8d078254ada17e7761a27a84；35 项训练协议/池/接线检查、9 项 CPU 分析检查通过；唯一独立 P0/P1 PASS；真实 checkpoint 无查询 smoke 是 launcher 首步，PASS 后立即继续。一次归档传输 SHA 比较及远端23文件编译 PASS。未启动模型更新，未读取本轮正式成绩。
+
+
+当前收尾：P70已ANALYZED；两新行与两个复用参照全部7环境齐全。源两条件FAIL，不扩E50。正式M2−同池M1 urban+.059722pp/low+.101190pp/clean+.071429pp；M2−原As urban−.022024pp/clean−.086310pp。对NoAs clean+.007143pp，本seed0.1pp阶段要求PASS，不能称跨seed双提升。详见[最终分析](final_analysis.md)。

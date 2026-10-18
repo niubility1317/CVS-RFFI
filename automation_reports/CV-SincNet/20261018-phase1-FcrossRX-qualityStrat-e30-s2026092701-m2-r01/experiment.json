@@ -99,7 +99,7 @@
     "local_artifact_root": "local_artifacts/cvs_FcrossRX_quality_strat_E30_20261018_r01",
     "launch_command": "CVS-RFFI/python -u experiments/cvs_quality_risk70/runner.py",
     "stop_rule": "Wrongroles/provenance/outputcollision/nativecode/nonfinite/labeldomainmismatch or any positive mass quality bin N_g<2220 stops own run; preserve immutable pool/artifacts,no automaticretry. SourceFAIL stillall7, formalfeedback prohibited.",
-    "status": "READY_TO_LAUNCH"
+    "status": "ANALYZED"
   },
   "expected_artifacts": [
     "real_checkpoint_smoke.json",
@@ -296,8 +296,9 @@
     "p_g=N_g/142080 fixed from the nominal training pool before updates, not V/target. All positive mass groups must contain >=2220 observations. No silent sparse-group fallback.",
     "At fixed theta, random within-group allocation estimates finite-pool group means without bias; realized one-use weights differ slightly underfloor/ceil, no trajectory-conditional/population-exact unbiasedness claim.",
     "Only source two comparisons: fullVclean M2-NoAs>=-.1pp and pooledmidlow M2-M1>=+.5pp. No formal feedback or selection retry. SourceFAIL stillall7.",
-    "Actual channel refresh uses142080 unique original epoch/view named draws once, but pool is globally reordered across update epochs; no repeated frozen observation bank.",
-    "Current healthy tasks untouched; P69 negative closed, no optimizer rescue, no new Ag/alignment/head/U rule."
+    "Actual channel refresh uses142080 original epoch/view named observation occurrences once; physical IDs are not deduplicated, but pool is globally reordered across update epochs; no repeated frozen observation bank.",
+    "Current healthy tasks untouched; P69 negative closed, no optimizer rescue, no new Ag/alignment/head/U rule.",
+    "Completed2new rows+2reused references/all7. Source2checksFAIL/noE50. M2−M1 clean+.071429pp/mid+.101786pp/low+.101190pp/urban+.059722pp; M2−originalAs urban−.022024pp/clean−.086310pp. M2−NoAs clean+.007143pp, one seed stagePASS, no repeatable dualgain. Actual8703132newNN/4440updates,1254.797s pipeline. All required artifacts present; wholegoalACTIVE."
   ],
   "registered_at": "2026-10-18T15:55:45+00:00"
 }

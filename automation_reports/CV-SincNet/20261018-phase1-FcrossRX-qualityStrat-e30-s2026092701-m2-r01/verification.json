@@ -1,5 +1,5 @@
 {
-  "status": "VERIFIED_READY_TO_RELEASE",
+  "status": "VERIFIED_ANALYZED",
   "run_id": "20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01",
   "local_CVS_NN": 0,
   "local_IQ": 0,
@@ -70,5 +70,32 @@
   "remote_compile": {
     "status": "PASS",
     "python_files": 23
-  }
+  },
+  "new_training_started": true,
+  "real_checkpoint_smoke_PASS": true,
+  "launch_verification": "launch_verification.json",
+  "actual_module": "pinned20261015_r02/experiments/adv3b02_xuc/code/leo_practical",
+  "performance_results_available": true,
+  "model_seed_count": 1,
+  "source_closed_before_owner_formal_read": true,
+  "source_qualified": false,
+  "source_fixed_recipe_closed": true,
+  "actual_new_remote_NN": 8703132,
+  "actual_new_updates": 4440,
+  "all4_rows_all7_verified_before_truth": true,
+  "formal_independent_CM_recounts": 504,
+  "partition_reconciliations": 84,
+  "missing": [],
+  "reproducible_dual_gain": false,
+  "formal_stage_within0p1pp": true,
+  "formal_clean_gain_vs_matchedNoAs_pp": 0.00714285714285,
+  "all_owned_PIDs_absent": true,
+  "main_pipeline_failure": false,
+  "figure_verification": "figure_verification.json",
+  "delivery": "delivery.json",
+  "optional_parent_cohort_unavailable": {
+    "NoAs20_own_parent": true,
+    "formal_parent20": true
+  },
+  "whole_goal_complete": false
 }

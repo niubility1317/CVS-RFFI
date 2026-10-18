@@ -42,3 +42,12 @@ P68 最终：源 fullVclean 对NoAs −0.029630pp PASS，midlow 对同父SAME �
 P69 最终：source fullVclean−matchedNoAs−0.129630pp、midlow−原As＋0.097222pp，两项FAIL，不扩E50。正式AS_KEEP对原As urban＋0.006151pp/low−0.022024pp/clean＋0.007143pp；对matchedNOAS_KEEP urban＋28.532143pp/clean＋0.075595pp。只有seed01微增，不能宣称可重复clean＋星地双提升；low51.222024%。实际8703136NN/4440新更新，source→all7truthlast→CPU分析完整，整体目标ACTIVE。[P69最终分析](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/final_analysis.md)。
 
 用户最新方向：优先名义目标不变的退化质量分层抽样，再独立比较固定As总权重下的有界困难风险；U practical路由后续单独验证，公共传播条件已由另一对话推进，不重复。实现前区分batch分层与风险重加权，不将有限proposal/回退造成的分布改变误称为无偏名义风险；保留全部物理支持、clean份额、原头、前向和正式测试。旧连续E30的技术失败及已授权完成的补跑都保留，采用真实补跑配对结果。
+
+
+## P70：固定 nominal 质量组风险
+
+20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01 从同一P43 As20学生/ownEMA独立RESET10，两行总E30。共享142080次原完整信道观测，每行恰消费一次；M1随机均值CE，M2四个新增噪声组分层＋固定p_g=N_g/N组均值，As CE .25及原等权sameIQ KL .25、clean份额、6L768、U/ORD128/defaulthead不变。不是连续总体精确无偏或条件梯度保证，不是纯重排消融。全部四组有样本，90/90 TX×RX×场景；无proposal/drop。
+
+本轮ANALYZED，source fullVclean对NoAs−.125926pp、midlow对M1−.027778pp，两条件FAIL，固定候选不扩E50/不换seed。正式M2−M1 urban+.059722pp/mid+.101786pp/low+.101190pp/clean+.071429pp；相对原As urban−.022024pp/clean−.086310pp。对同预算NoAs clean+.007143pp，本seed满足0.1pp阶段要求，但只有12次净正确变化，无重复双提升证据。low51.320238%，未达60%。源low3–8dB+.881612pp、<3dB−.177462pp，未修复主要噪声退化。
+
+实际8703132新NN/4440新更新、1254.797秒pipeline，共享模拟142080次/287.656秒。35训练检查＋9分析toy、唯一P0/P1、真实CP4NNsmoke、独立504CM/84分区全PASS。全部必需项齐全，整体目标ACTIVE。[P70最终分析](../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/final_analysis.md)。下一项若继续，独立改变有界困难组内部风险，不再扫描本分层实现的seed或缓冲大小；U路由仍独立，公共传播另一对话不重复。

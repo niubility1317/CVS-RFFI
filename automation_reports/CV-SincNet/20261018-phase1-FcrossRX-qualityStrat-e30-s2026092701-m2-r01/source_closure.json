@@ -1,0 +1,25 @@
+{
+  "status": "SOURCE_FIXED_RECIPE_CLOSED_FAIL",
+  "run_id": "20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01",
+  "closed_at": "2026-10-18T16:27:34.177Z",
+  "source_decision_mtime": 1792340739.5010312,
+  "source_qualified": false,
+  "checks": {
+    "clean_within_NoAs_0p1pp": false,
+    "midlow_vs_same_pool_control_at_least_0p5pp": false
+  },
+  "effects": {
+    "fullV_clean_M2_vs_NoAs_pp": -0.12592592592592933,
+    "fullV_clean_M2_vs_M1_pp": -0.011111111111117289,
+    "pooled_midlow_M2_vs_M1_pp": -0.02777777777778212,
+    "low_M2_vs_M1_pp": 0.16666666666667052,
+    "pooled_midlow_M1_vs_originalAs30_pp": -0.01388888888889106
+  },
+  "formal_scores_read_by_owner": false,
+  "formal_scores_used_for_selection": false,
+  "E50_launched": false,
+  "no_seed_rescue": true,
+  "M3_launched": false,
+  "all7_still_required": true,
+  "whole_goal_complete": false
+}

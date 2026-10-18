@@ -13,5 +13,4 @@
 |P68：固定六次前向内的独立完整 practical 配对 CE|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-fullAsPair6-e30-s2026092701-m1-r01/report.md)|
 |实际 AS_CE20 父模型的源域正确集合读出|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-FcrossRX-ASCE20cohort-sourceV-s2026092701-m1-r01/report.md)|
 |完整practical续训：保留AdamW状态的匹配E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-optimizerKeep-e30-s2026092701-m2-r01/report.md)|
-|完整 practical 固定质量组风险：同池随机与分层 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/report.md)|
 |P70：固定 nominal 质量组风险，E30 最小匹配实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/report.md)|

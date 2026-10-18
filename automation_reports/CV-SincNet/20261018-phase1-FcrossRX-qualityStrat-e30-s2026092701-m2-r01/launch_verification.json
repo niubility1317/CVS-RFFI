@@ -1,0 +1,72 @@
+{
+  "status": "VERIFIED",
+  "run_id": "20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01",
+  "code_commit": "000a34f52dc4240c8d078254ada17e7761a27a84",
+  "remote_realCP_smoke": {
+    "status": "PASS",
+    "NN": 4,
+    "strict_student_ownEMA": true,
+    "query": false,
+    "updates": 0
+  },
+  "dispatcher": {
+    "alive": true,
+    "cwd": "PROJECT/releases/cvs_FcrossRX_quality_strat_E30_20261018_r01",
+    "argv": "CVS-RFFI/python -u experiments/cvs_quality_risk70/runner.py"
+  },
+  "rows": [
+    {
+      "row": "M1-s2026092701",
+      "gpu": 0,
+      "pid_alive": true,
+      "cwd_matches": true,
+      "cmdline_matches": true,
+      "gpu_process_matched": true,
+      "log_bytes_initial": 0,
+      "log_bytes_readback": 6682,
+      "log_growth": true,
+      "parameters": 900722
+    },
+    {
+      "row": "M2-s2026092701",
+      "gpu": 1,
+      "pid_alive": true,
+      "cwd_matches": true,
+      "cmdline_matches": true,
+      "gpu_process_matched": true,
+      "log_bytes_initial": 0,
+      "log_bytes_readback": 6682,
+      "log_growth": true,
+      "parameters": 900722
+    }
+  ],
+  "GPU_process_readback": true,
+  "pool_metadata_bytes": 78154709,
+  "pool_generation_active": false,
+  "log_growth_pending_pool_completion": false,
+  "private_evidence_ref": "local_artifacts/cvs_FcrossRX_quality_strat_E30_20261018_r01/last_poll_private.json",
+  "formal_scores_read": false,
+  "healthy_other_runs_untouched": true,
+  "nominal_pool": {
+    "status": "READY",
+    "N": 142080,
+    "counts": [
+      21825,
+      21572,
+      12517,
+      86166
+    ],
+    "p_g": [
+      0.15361064189189189,
+      0.15182995495495497,
+      0.08809825450450451,
+      0.6064611486486486
+    ],
+    "generation_seconds": 287.656396382954,
+    "source_IQ_observations": 142080,
+    "extra_proposals": 0,
+    "dropped": 0,
+    "actual_CVS_NN": 0,
+    "shared_across_rows": true
+  }
+}

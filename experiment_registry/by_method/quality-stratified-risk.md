@@ -6,5 +6,4 @@
 
 |名称|记录类型|证据入口|
 |---|---|---|
-|完整 practical 固定质量组风险：同池随机与分层 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/report.md)|
 |P70：固定 nominal 质量组风险，E30 最小匹配实验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-FcrossRX-qualityStrat-e30-s2026092701-m2-r01/report.md)|
