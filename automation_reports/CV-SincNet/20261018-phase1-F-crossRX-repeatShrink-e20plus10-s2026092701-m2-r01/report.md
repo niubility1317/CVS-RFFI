@@ -1,6 +1,6 @@
 # 完整源 E30：重复残差 IQ 增强的独立价值
 
-状态：LOCAL_VERIFIED，尚未启动训练；不宣称识别收益。唯一配置与逐行矩阵在 [experiment.json](experiment.json)。
+状态：RUNNING／VERIFIED，两行已进入累计 E30 训练；尚无训练完成或正式识别结果。唯一配置与逐行矩阵在 [experiment.json](experiment.json)。
 
 源前置检查 20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01 已通过全部36必要条件，848混淆矩阵独立复算误差0。它只证明固定轻度算子在两个原默认头下通过源保护，不能证明已提取域无关身份。本轮只检验 Ag 的独立训练价值，避免先把尚无收益证据的Ag叠进As。本对话与“开发 CVS Phase1 星地增强训练”的As扩种子方向不同，不合并不同实验增益或父权重。
 
@@ -28,3 +28,9 @@ F＋跨RX同TX、三SIG_TIME、统一Sinc、joint160、默认6×160 cosine/scale
 普通N607，唯一owner codex/root/F-repeat-shrink-E30；CWD PROJECT/releases/cvs_F_repeat_shrink_E30_20261018_r01，命令CVS-RFFI/bin/python -u experiments/cvs_repeat_shrink30/runner.py，本地入口F:/App/miniconda3/python.exe -X utf8 -m experiments.cvs_repeat_shrink30.publish。每GPU最多3个全owner实验进程且至少12GB空闲，CPU2；不热改/停止/重启健康旧任务。唯一不可覆盖根PROJECT/runs/20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01，Git提交为代码配置身份，一次普通预检/一个archive单次SHA传输比对/一次compile，启动后一次精确PID/CWD/argv/GPU/日志增长读回。代码执行commit写入release_commit与actualresolved。
 
 技术停止仅实际角色/父来源/非有限/输出冲突/无法执行或产生合法完整预测等系统失败，保存所有原产物，无自动重试；准确率低是科学结果。预期实际args/module路径/角色/父和EMA证明、全部2220步与10轮、L/U物理序列、新槽lambda/数值/时间、source frozen/defaultCP、完整源判据、7view prediction、独立score、终态/同row分析/登记和Git交付；私有IQ/物理ID/日志/权重/predictions不入Git。
+
+## 实际启动
+
+执行commit a0461e0de33484561ab28db440c046510b02a0e6已提交、push并独立核对远端OID。普通账户预检、单archive传输比对、远端compile与20项协议负例通过；真实hook合成检验通过6前向/同IQ对/raw锚点/1.0损失尺度/同lambda抽样，1536合成前向包单位及2次合成反向单列，0真实数据/CP。dispatcher真父1CP/2合成NN noquery检查PASS后直接训练。
+
+两行实际worker已独立核对PID/CWD/argv/GPU，日志自首次读回均增长。最近核实均完成新增第1轮/累计第21轮、222新更新/4662累计更新；每行L前向170496，恰为222×128×6。B00新增Ag0包，B10为28416包。无failure；健康旧任务未干预。精确运行证据见[启动核实](launch_evidence.json)。当前不能报告Ag训练收益、完成的正式指标或联合成功；继续至固定E30后自动七视图与独立评分，不延长预算。

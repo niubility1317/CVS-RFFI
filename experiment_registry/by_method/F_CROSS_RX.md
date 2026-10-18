@@ -42,4 +42,4 @@
 |全源 256 点：共同轻度径向幅度关系的 L→V 反证|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-radialQuantile-sourceLtoV-manysig-m1-r01/report.md)|
 |完整 practical 的阴影初值分层抽样：匹配四行 E30|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-shadowLHS-e20plus10-s2026092701-m4-r01/report.md)|
 |包内重复残差轻度收缩：固定源身份保护检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-diagnostic-F-repeatShrink-sourceV-s2026092701-m1-r01/report.md)|
-|完整源 E30：单包重复残差增强的匹配独立检验|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01/report.md)|
+|完整源 E30：重复残差 IQ 增强的独立价值|managed_run|[打开](../../automation_reports/CV-SincNet/20261018-phase1-F-crossRX-repeatShrink-e20plus10-s2026092701-m2-r01/report.md)|

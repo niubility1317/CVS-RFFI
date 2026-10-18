@@ -25,7 +25,7 @@
   "replaces_run_id": null,
   "authorization": "UserauthorizedjointAg/Asresearch,baselineF+crossRXsameTX,E30,existing256IQ,allsourceRXretained,0targetfeedback;thisstageindependentAgbeforejoint",
   "code": {
-    "commit": "HEAD_ON_RELEASE",
+    "commit": "a0461e0de33484561ab28db440c046510b02a0e6",
     "checkout": "codex/cvs-iq-timing-e20-20261016",
     "environment": "OrdinaryN607/existingpinnedFfullsourceFP32/CPU2/sharedcapacityGPU;originalnativeU/EMA",
     "cwd": "PROJECT/releases/cvs_F_repeat_shrink_E30_20261018_r01",
@@ -527,7 +527,7 @@
         },
         "REJECTED_EXTRA_GATE": "No extra designapproval,seals,datarevalidation or unchangedoperator rereview"
       },
-      "status": "PLANNED"
+      "status": "RUNNING"
     },
     {
       "row_id": "B10-s2026092701",
@@ -914,7 +914,7 @@
         },
         "REJECTED_EXTRA_GATE": "No extra designapproval,seals,datarevalidation or unchangedoperator rereview"
       },
-      "status": "PLANNED"
+      "status": "RUNNING"
     }
   ],
   "notes": [
@@ -925,6 +925,7 @@
     "Loss .5RDordinary+.25RDrawanchor+.25RDslot withmeanperphysical128,2sameIQforwardsperpair;B00slotraw/B10Agraw. Shared6forwardscontrolsMCcost;old4forwardresultscontextonly.",
     "SourcefullVgain≥.5pp andeachRX≥−.25pp;anyfailclosesfixedstrength/window/taper/distribution/seed/parent/E30. Bothregisteredrowsstillcompleteformaltest. NoAg+Asviewcomposition,noautomaticseedrescue."
   ],
-  "status": "PLANNED",
-  "registered_at": "2026-10-18T01:10:55+00:00"
+  "status": "RUNNING",
+  "registered_at": "2026-10-18T01:10:55+00:00",
+  "launch_evidence_ref": "launch_evidence.json"
 }
