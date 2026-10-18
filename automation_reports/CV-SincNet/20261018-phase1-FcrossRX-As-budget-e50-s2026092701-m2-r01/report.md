@@ -95,4 +95,4 @@ source 报告 full V27000 clean 及各源 RX 准确率；固定 V1800 两 draw �
 
 源 V1800 两 draw 独立重算仅核对已有 source_matrix_decision，不增加科学晋级门槛；源结果为负仍执行已登记正式收尾。全部四逻辑行×七视图预测固定且独立评分完成后，分析才连接正式 truth，复核 CM／accuracy／F1／最差 RX、RX／day／TX 分区、四组配对修复和新增错误、预算交互与实测成本。源全 V27000 仅引用冻结原生指标，不虚构逐包重算。
 
-新增分析 0 NN／0 IQ／0 checkpoint／0 更新，CUDA 隐藏、CPU 2 线程，不修改模型／训练／预测／评分。真实任务全部终止而必要产物缺失时记录准确缺项并退出，不无限等待、不自动重试。仅收集公开汇总 JSON／CSV／Markdown，可选图；私有 IDs／NPZ／IQ／权重／原始日志不进入 Git。合成检查 9 项最终一次整套 PASS（7.868 s），四文件编译与 diff 检查 PASS；真实远端发布及 PID／CWD／argv 证据随后补记。
+新增分析 0 NN／0 IQ／0 checkpoint／0 更新，CUDA 隐藏、CPU 2 线程，不修改模型／训练／预测／评分。真实任务全部终止而必要产物缺失时记录准确缺项并退出，不无限等待、不自动重试。仅收集公开汇总 JSON／CSV／Markdown，可选图；私有 IDs／NPZ／IQ／权重／原始日志不进入 Git。合成检查 9 项最终一次整套 PASS（7.868 s），四文件编译与 diff 检查 PASS；实际分析 release 提交 `ab16c3848794124f8c7fdee6013e01b2a46aae73` 已发布；一次 archive SHA 比较、远端编译和 9 项检查均 PASS。独立核实 PID 1152061 存活，CWD／argv 一致、CUDA 隐藏／CPU2，目前 WAIT_SOURCE、truth_opened=false、failure=null。详见 analysis_verification.json。

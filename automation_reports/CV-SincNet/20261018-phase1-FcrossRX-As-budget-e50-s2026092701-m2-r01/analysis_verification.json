@@ -1,5 +1,5 @@
 {
-  "status": "LOCAL_IMPLEMENTED_PENDING_REMOTE",
+  "status": "VERIFIED_WAITING_SOURCE",
   "training_run": "20261018-phase1-FcrossRX-As-budget-e50-s2026092701-m2-r01",
   "analysis_release": "cvs_F_practical_budget50_analysis_20261018_r01",
   "output_name": "analysis_auto_r01",
@@ -19,7 +19,33 @@
   "CP": 0,
   "updates": 0,
   "training_processes_untouched": true,
-  "remote_transfer": "NOT_STARTED",
-  "remote_launch": "NOT_STARTED",
-  "goal_complete": false
+  "remote_transfer": "TRANSFER_VERIFIED",
+  "remote_launch": "VERIFIED",
+  "goal_complete": false,
+  "analysis_code_commit": "ab16c3848794124f8c7fdee6013e01b2a46aae73",
+  "archive_SHA256": "894af6c0a7189a67cd6ea926c59889b423a1b2d6a50b214308cbad446f1c420d",
+  "remote_compile": "PASS",
+  "remote_unit_tests": "PASS_9",
+  "pid": 1152061,
+  "cwd_matches": true,
+  "argv_matches": true,
+  "CUDA_hidden": true,
+  "CPU2": true,
+  "observed_state": {
+    "status": "WAIT_SOURCE",
+    "live_owned_PIDs": [
+      1143533,
+      1143555,
+      1143703
+    ],
+    "observation_unknown": false,
+    "truth_opened": false,
+    "NN": 0
+  },
+  "observed_at": "2026-10-18T04:03:44.841Z",
+  "failure": null,
+  "stdout_bytes": 0,
+  "stderr_bytes": 0,
+  "evidence": "Private launch.json and independent postlaunch.json,immutable analysis_auto_r01;one archive SHA comparison;no rehash/member receipts",
+  "formal_scores_read": false
 }
